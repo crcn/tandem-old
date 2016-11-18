@@ -1,6 +1,6 @@
 import * as Mousetrap from "mousetrap";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
-import { KeyCommandAction } from "../messages";
+import { KeyCommandEvent } from "../messages";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { IDispatcher } from "@tandem/mesh";
@@ -74,7 +74,7 @@ class KeyBindingManager {
     this._mousetrap.bind(key, function (event) {
       if (event.target.dataset.mousetrap || /input|textarea/i.test(event.target.nodeName) || event.target.contentEditable === "true") return;
       event.preventDefault();
-      command.execute(new KeyCommandAction(key));
+      command.execute(new KeyCommandEvent(key));
     });
   }
 }

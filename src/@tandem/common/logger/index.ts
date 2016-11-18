@@ -103,15 +103,14 @@ export class Logger {
 
     text = stringify(text);
 
-    const paramCount = (String(text).match(/%\w/g) || []).length;
+    const paramCount = (String(text).match(/\b%\w\b/g) || []).length;
     const sprintfParams = params.slice(0, paramCount);
     const restParams    = params.slice(paramCount);
 
-    const message = [sprintf(
+    let message = [sprintf(
       `${this.getPrefix()}${text}`,
       ...sprintfParams.map(stringify)
     ), ...restParams].join(" ");
-
     this.bus.dispatch(new LogAction(level, message, this.filterable));
   }
 

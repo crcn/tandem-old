@@ -9,43 +9,22 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
-- [ ] center dnd file
-
 - UIKit
 
 FEATURES
 
-- [ ] auto scan for tdm files
 - [ ] scan package.json and auto-install extensions
 - [ ] open unsaved files in vscode
 - [ ] enable <script /> tags.
 
-- [ ] history slider
-- [ ] breadcrumb for elements
-
-ARCHITECTURE
-- [ ] more metadata on messages
-- [ ] change bus to dispatcher
-
 IMPORTING MODULES
 
-- [ ] resolve where to save files when dragging & dropping
-- [ ] show preview of component (if possible)
 - [ ] automatically scan for components
-
-BUGS
-- [ ] Cannot delete elements
-- [ ] css changes don't immediately get reflected in text editor
-- [ ] rebundle when file name changes. App locks up when file not found
-- [ ] kill remotely dispatched messages if there are no responses.
-
-TECH DEBT
 
 - [ ] UIKit
   - [ ] find inspiration by other apps
 - [ ] deprecate tdm files - artboards should be core
 - [ ] tandem <directory> for opening projects
-
 
 ----------------------------------
 POLISH
@@ -54,13 +33,13 @@ POLISH
 - [ ] support markdown
 - [ ] support HTML files and script imports
 
-
 ----------------------------------
 LAUNCHING
 ----------------------------------
 
 TESTING
   - [ ] TodoMVC examples
+  - [ ] actually build apps
 
 ----------------------------------
 STABILITY
@@ -80,9 +59,13 @@ UX
 
 BUGS
   - [ ] fix absolute bounds for elements
+  - [ ] cannot change source of artboard
   - [ ] cannot rapidly change .tsx? documents
-  - [ ] get sync stop to work with vscode extension
-  - [ ] stop remote browser when a user disconnects
+  - [ ] pseudo elements (::before) fooing with override flags
+  - [ ] css changes don't immediately get reflected in text editor
+  - [ ] rebundle when file name changes. App locks up when file not found
+  - [ ] Kill remotely dispatched messages if there are no responses.
+
 
 ARCHITECTURE
   - [ ] db oplog tailing
@@ -104,6 +87,9 @@ CORE
     - [ ] dnd components and files onto page
   - [ ] SVG support
   - [ ] History scrubber
+
+MEASUREMENT TOOLS
+  - [ ] key command for displaying distances between objects
 
 SOCIAL
   - *[ ] put tandem on backend

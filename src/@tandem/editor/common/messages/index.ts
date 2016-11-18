@@ -140,8 +140,10 @@ export class OpenProjectRequest extends Action {
 })
 export class ImportFileRequest extends Action {
   static readonly IMPORT_FILE = "importFile";
-  constructor(readonly filePath: string, readonly bounds?: BoundingRect, readonly targetObject?: ISyntheticObject) {
+  readonly filePath: string;
+  constructor(filePath: string, readonly bounds?: BoundingRect, readonly targetObject?: ISyntheticObject) {
     super(ImportFileRequest.IMPORT_FILE);
+    this.filePath = decodeURIComponent(filePath);
   }
 }
 

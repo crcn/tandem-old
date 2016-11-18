@@ -40,6 +40,8 @@ export class TDRootFileImporter implements IFileImporter {
 
     const previewLoader = PreviewLoaderProvider.find(filePath, this._injector);
 
+    console.log(previewLoader);
+
     if (!previewLoader) {
       throw new Error(`Cannot create preview file`);
     }
@@ -55,8 +57,6 @@ export class TDRootFileImporter implements IFileImporter {
   }
 
   private async importPreview(filePath: string, element: SyntheticDOMElement, bounds: BoundingRect) {
-
-    console.log(filePath, bounds);
 
     if (!bounds) bounds = new BoundingRect(0, 0, 1024, 768);
 

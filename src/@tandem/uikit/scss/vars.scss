@@ -1,0 +1,19 @@
+/**
+ * Colors
+ */
+
+$mult: 1;
+/*$mult: 1.62;*/
+
+
+$sizes: 0, $mult * 2px, $mult * 4px, $mult * 8px, $mult * 16px, $mult * 32px;
+
+/**
+ * Typography
+ */
+
+$default-font-family: Helvetica;
+$default-letter-spacing: 0.12em;
+$default-font-weight: 200;
+
+$default-font-size: 11px;

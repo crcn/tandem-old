@@ -1,0 +1,17 @@
+
+.dark {
+  color: white;
+  & hr {
+    height: 1px;
+    background: white;
+  }
+}
+
+.light {
+  color: black;
+
+  & hr {
+    height: 1px;
+    background: red;
+  }
+}
