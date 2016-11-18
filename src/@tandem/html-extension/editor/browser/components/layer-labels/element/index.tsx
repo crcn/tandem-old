@@ -14,7 +14,7 @@ const VOID_ELEMENTS = [];
 
 import {
   SetToolRequest
-} from "@tandem/editor/browser/actions";
+} from "@tandem/editor/browser/messages";
 
 export class ElementLayerLabelComponent extends React.Component<{ node: SyntheticDOMElement, app: any, connectDragSource: Function }, any> {
 

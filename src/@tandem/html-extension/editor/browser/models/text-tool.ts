@@ -1,9 +1,9 @@
 
 import { inject } from "@tandem/common/decorators";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
-import { MouseAction } from "@tandem/editor/browser/actions";
+import { MouseAction } from "@tandem/editor/browser/messages";
 import { IDispatcher } from "@tandem/mesh";
-import { SetToolRequest } from "@tandem/editor/browser/actions";
+import { SetToolRequest } from "@tandem/editor/browser/messages";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";

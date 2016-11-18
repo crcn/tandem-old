@@ -1,6 +1,6 @@
 import { Action, ICommand } from "@tandem/common";
 import { SyntheticDOMNode, DOMNodeType, SyntheticDocument } from "@tandem/synthetic-browser";
-import { SelectionChangeEvent } from "@tandem/editor/browser/actions";
+import { SelectionChangeEvent } from "@tandem/editor/browser/messages";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 
 export class ExpandSelectedCommand implements ICommand {

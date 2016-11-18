@@ -4,7 +4,7 @@ import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterAction } from "@tandem/common/decorators";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/actions";
 import { CoreApplicationService } from "@tandem/core";
-import { PasteRequest, SelectRequest } from "@tandem/editor/browser/actions";
+import { PasteRequest, SelectRequest } from "@tandem/editor/browser/messages";
 import {
   IInjectable,
   CommandFactoryProvider,

@@ -3,7 +3,7 @@ import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
 import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { SelectRequest, MouseAction } from "@tandem/editor/browser/actions";
+import { SelectRequest, MouseAction } from "@tandem/editor/browser/messages";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";

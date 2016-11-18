@@ -1,6 +1,6 @@
 import { flatten } from "lodash";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
-import { SelectionChangeEvent } from "@tandem/editor/browser/actions";
+import { SelectionChangeEvent } from "@tandem/editor/browser/messages";
 import { ParallelBus, CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {

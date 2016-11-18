@@ -13,7 +13,7 @@ import {
   SelectRequest,
   SelectAllRequest,
   RemoveSelectionRequest,
-} from "@tandem/editor/browser/actions";
+} from "@tandem/editor/browser/messages";
 
 // @loggable()
 // export default class SelectorService extends BaseApplicationService<any> {

@@ -1,6 +1,6 @@
 import * as Mousetrap from "mousetrap";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
-import { KeyCommandAction } from "../actions";
+import { KeyCommandAction } from "../messages";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { IDispatcher } from "@tandem/mesh";

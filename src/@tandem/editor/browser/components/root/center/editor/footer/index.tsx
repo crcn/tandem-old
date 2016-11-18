@@ -3,7 +3,7 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SetZoomRequest } from "@tandem/editor/browser/actions";
+import { SetZoomRequest } from "@tandem/editor/browser/messages";
 import * as AutosizeInput from "react-input-autosize";
 import { RegisteredComponent, FocusComponent } from "@tandem/editor/browser/components/common";
 import { FooterComponentFactoryProvider } from "@tandem/editor/browser/providers";

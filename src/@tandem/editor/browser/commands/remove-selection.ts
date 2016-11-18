@@ -2,7 +2,7 @@ import { Store } from "@tandem/editor/browser/models";
 import { IEditable, ISyntheticObject, RemoveEditChange, ApplyFileEditRequest } from "@tandem/sandbox";
 import { StoreProvider } from "@tandem/editor/browser/providers";
 import { ICommand, inject, PrivateBusProvider, IBrokerBus } from "@tandem/common";
-import { RemoveSelectionRequest } from "@tandem/editor/browser/actions";
+import { RemoveSelectionRequest } from "@tandem/editor/browser/messages";
 
 export class RemoveSelectionCommand implements ICommand {
 

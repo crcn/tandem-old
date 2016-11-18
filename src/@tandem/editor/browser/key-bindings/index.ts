@@ -6,7 +6,7 @@ import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 import { BaseCommand, inject, Metadata } from "@tandem/common";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
-import { SelectAllRequest, SetToolRequest, ZoomRequest, DeleteSelectionRequest } from "@tandem/editor/browser/actions";
+import { SelectAllRequest, SetToolRequest, ZoomRequest, DeleteSelectionRequest } from "@tandem/editor/browser/messages";
 
 class ToggleLeftSidebarCommand extends BaseCommand {
   @inject(StoreProvider.ID)

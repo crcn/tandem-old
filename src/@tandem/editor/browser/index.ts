@@ -4,7 +4,7 @@ import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 import { Injector, CommandFactoryProvider, InitializeRequest, IProvider } from "@tandem/common";
-import { AlertMessage } from "./actions";
+import { AlertMessage } from "./messages";
 import {
   StoreProvider,
   ReactComponentFactoryProvider,
@@ -74,7 +74,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
   ];
 }
 
-export * from "./actions";
+export * from "./messages";
 export * from "./config";
 export * from "./collections";
 export * from "./components";

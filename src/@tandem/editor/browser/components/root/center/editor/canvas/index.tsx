@@ -15,7 +15,7 @@ import {
   AlertMessage,
   SetZoomRequest,
   KeyboardAction,
-} from "@tandem/editor/browser/actions";
+} from "@tandem/editor/browser/messages";
 import {
   ImportFileRequest
 } from "@tandem/editor/common";

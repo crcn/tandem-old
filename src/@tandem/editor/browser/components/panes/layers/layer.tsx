@@ -5,7 +5,7 @@ import * as React from "react";
 import { IDispatcher } from "@tandem/mesh";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { flatten, intersection } from "lodash";
-import { SelectRequest, ToggleSelectRequest } from "@tandem/editor/browser/actions";
+import { SelectRequest, ToggleSelectRequest } from "@tandem/editor/browser/messages";
 import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SyntheticDOMNode, SyntheticDOMContainer } from "@tandem/synthetic-browser";

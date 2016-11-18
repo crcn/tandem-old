@@ -5,7 +5,6 @@ import Line from "./line";
 class Caret {
 
   constructor(readonly editor: TextEditor, readonly marker: Marker) {
-
   }
 
   get position() {

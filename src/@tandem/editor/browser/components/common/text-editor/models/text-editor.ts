@@ -4,7 +4,7 @@ import Caret from "./caret";
 import Marker from "./marker";
 import TextRuler from "./text-ruler";
 import { bindable } from "@tandem/common/decorators";
-import { SourceChangeAction } from "../actions";
+import { SourceChangeAction } from "../messages";
 import { PropertyChangeEvent } from "@tandem/common/actions";
 import { Observable, watchProperty } from "@tandem/common/observable";
 import { StringTokenizer, TokenTypes } from "@tandem/common/tokenizers";

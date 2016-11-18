@@ -7,7 +7,7 @@ import * as React from "react";
 import { inject } from "@tandem/common/decorators";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { Workspace } from "@tandem/editor/browser/models";
-import { SelectRequest } from "@tandem/editor/browser/actions";
+import { SelectRequest } from "@tandem/editor/browser/messages";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import { intersection, flatten } from "lodash";

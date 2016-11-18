@@ -2,7 +2,7 @@ import { inject } from "@tandem/common/decorators";
 import { Action } from "@tandem/common/actions";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { BaseCommand } from "@tandem/common/commands";
-import { SetToolRequest } from "@tandem/editor/browser/actions";
+import { SetToolRequest } from "@tandem/editor/browser/messages";
 import { textToolProvider } from "../models";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
