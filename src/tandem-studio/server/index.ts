@@ -1,23 +1,21 @@
 import { argv } from "yargs";
-import { Store } from "./models";
 import * as electron from "electron";
 import * as getPort from "get-port";
 import { EditorFamilyType } from "@tandem/editor/common";
 import { FileCacheProvider } from "@tandem/sandbox";
 import { ServiceApplication } from "@tandem/core";
-import { ServerStoreProvider } from "./providers";
 import { createCoreStudioWorkerProviders } from "../worker";
 import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
+import { InitializeWindowCommand, SpawnWorkerCommand } from "./commands";
 import { createEditorServerProviders, IEdtorServerConfig } from "@tandem/editor/server";
-import { InitializeWindowCommand, SpawnWorkerCommand, LoadProjectConfigCommand } from "./commands";
 import {
    Injector,
    LogLevel,
    serialize,
-   LoadAction,
+   LoadRequest,
    IBrokerBus,
    deserialize,
-   InitializeAction,
+   InitializeRequest,
    CommandFactoryProvider,
 } from "@tandem/common";
 
@@ -42,10 +40,8 @@ export const initializeMaster = async () => {
   const injector = new Injector(
     createCoreStudioWorkerProviders(),
     createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
-    new ServerStoreProvider(Store),
-    new CommandFactoryProvider(LoadAction.LOAD, SpawnWorkerCommand),
-    new CommandFactoryProvider(LoadAction.LOAD, LoadProjectConfigCommand),
-    new CommandFactoryProvider(InitializeAction.INITIALIZE, InitializeWindowCommand),
+    new CommandFactoryProvider(LoadRequest.LOAD, SpawnWorkerCommand),
+    new CommandFactoryProvider(InitializeRequest.INITIALIZE, InitializeWindowCommand),
   );
 
   const app = new ServiceApplication(injector);

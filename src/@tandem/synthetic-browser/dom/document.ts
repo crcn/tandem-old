@@ -453,6 +453,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   createElement(tagName: "var"): SyntheticHTMLElement;
   createElement(tagName: "video"): SyntheticHTMLElement;
   createElement(tagName: "wbr"): SyntheticHTMLElement;
+  createElement(unknownTagName: any): SyntheticHTMLElement;
 
   createElement(tagName: string) {
     return this.own(this.createElementNS(this.defaultNamespaceURI, tagName));

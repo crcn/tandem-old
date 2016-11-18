@@ -1,18 +1,45 @@
+const path = require('path');
+const fs   = require('fs');
+const stripIndent = require('strip-indent');
+
 module.exports = {
+  projectFile: './index.tdm',
+
   fileHandlers: [
     {
       test: /tsx$/,
-      preview: {
-        template: template`
+      dependencyGraph: {
+        strategy: {
+          name: "webpack"
+        }
+      },
+      createPreview({ filePath }) {
+        const basename = path.basename(filePath);
+
+        const content = fs.readFileSync(filePath, 'utf8');
+        const componentNameMatch = content.match(/(\w+) extends .*Component/);
+        if (!componentNameMatch) {
+          throw new Error(`Unable to find React component`);
+        }
+
+        const componentName = componentNameMatch[1];
+
+        const sourceContent = stripIndent(`
           import * as React from "react";
           import * as ReactDOM from "react-dom";
-          import * as Component from "${"relativePath"}";
+          import { ${componentName} } from "./${basename.replace(".tsx", "")}";
 
           export const renderPreview = () => {
             const element = document.createElement("div");
-            ReactDOM.render(<Component />, element);
-          }
-        `
+            ReactDOM.render(<${componentName} />, element);
+            return element;
+          };
+        `);
+
+        return {
+          filePath: filePath.replace(/\.tsx$/, "-preview.tsx"),
+          content: sourceContent
+        };
       }
     }
   ]

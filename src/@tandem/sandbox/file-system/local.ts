@@ -26,7 +26,7 @@ export class LocalFileSystem extends BaseFileSystem {
   }
 
   async readFile(filePath: string) {
-    this.logger.debug("read %s", filePath);
+    this.logger.debug("read", filePath);
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, (err, data) => {
         if (err) return reject(err);
@@ -43,12 +43,15 @@ export class LocalFileSystem extends BaseFileSystem {
 
   async writeFile(filePath: string, content: any) {
     return new Promise((resolve, reject) => {
-      resolve();
+      fs.writeFile(filePath, content, (err, result) => {
+        if (err) return reject(err);
+        resolve();
+      });
     });
   }
 
   watchFile2(filePath: string, onChange: () => any) {
-    this.logger.debug("watch %s", filePath);
+    this.logger.debug("watch", filePath);
     const watcher = chokidar.watch(filePath, {
       usePolling: false
     });

@@ -202,7 +202,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     const setEditorContentFromCache = async (item: FileCacheItem) => {
-        console.log("Setting file cache from %s", item.filePath);
+        console.log("Setting file cache from", item.filePath);
         await openFileCacheTextDocument(item);
         await setEditorContent({
             filePath: item.filePath,

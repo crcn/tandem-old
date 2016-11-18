@@ -5,7 +5,7 @@ import {
   Action,
   Logger,
   loggable,
-  InitializeAction,
+  InitializeRequest,
   PropertyChangeEvent,
 } from "@tandem/common";
 import { IEditorCommonConfig } from "@tandem/editor/common/config";

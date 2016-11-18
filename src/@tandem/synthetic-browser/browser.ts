@@ -28,11 +28,12 @@ import {
 } from "@tandem/common";
 
 import {
+  Sandbox,
   Dependency,
   DependencyGraph,
-  Sandbox,
   DependencyGraphProvider,
   IDependencyGraphStrategyOptions,
+  DependencyGraphStrategyOptionsProvider,
 } from "@tandem/sandbox";
 
 import {
@@ -149,8 +150,8 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
     this.logger.info(`Opening ${options.url} ...`);
     const timerLogger = this.logger.startTimer();
-
-    const graph = this._graph = DependencyGraphProvider.getInstance(options.dependencyGraphStrategyOptions, this._injector);
+    const strategyOptions = options.dependencyGraphStrategyOptions || DependencyGraphStrategyOptionsProvider.find(options.url, this._injector);
+    const graph = this._graph = DependencyGraphProvider.getInstance(strategyOptions, this._injector);
     this._entry = await graph.getDependency(await graph.resolve(options.url, "/"));
     await this._sandbox.open(this._entry);
 
@@ -179,7 +180,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
     let exportsElement: SyntheticDOMNode;
 
-    this.logger.debug("Evaluated entry %s", this.location.toString());
+    this.logger.debug("Evaluated entry", this.location.toString());
 
     // look for module exports - typically by evaluator, or loader
     if (exports.nodeType) {
@@ -190,7 +191,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       exportsElement = exports.renderPreview();
     } else {
 
-      this.logger.debug("Checking exports for render metadata: %s", Object.keys(exports).join(", "));
+      this.logger.debug(`Checking exports for render metadata:`, Object.keys(exports).join(", "));
 
       // scan for reflect metadata
       for (const key in exports) {

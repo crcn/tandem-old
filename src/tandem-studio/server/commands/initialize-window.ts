@@ -1,7 +1,7 @@
 import { BrowserWindow } from "electron";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { ApplicationConfigurationProvider } from "@tandem/core";
-import { loggable, Logger, inject, Action, ICommand, InitializeAction } from "@tandem/common"
+import { loggable, Logger, inject, Action, ICommand, InitializeRequest } from "@tandem/common"
 
 @loggable()
 export class InitializeWindowCommand implements ICommand {

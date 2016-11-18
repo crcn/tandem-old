@@ -14,7 +14,7 @@
   "scripts": {
     "test": "gulp test --coverage=50 --timeout=20000 --bail",
     "start": "SANDBOXED=1 node out/@tandem/editor/server-entry.js --open=true",
-    "start-studio": "SANDBOXED=1 electron out/tandem-studio",
+    "studio": "SANDBOXED=1 electron out/tandem-studio",
     "debug": "SANDBOXED=1 node --inspect out/@tandem/editor/server-entry.js --open=true"
   },
   "repository": {
@@ -116,6 +116,7 @@
     "react-dom": "^15.2.1",
     "sass-loader": "^4.0.1",
     "sinon": "^1.17.6",
+    "strip-indent": "^2.0.0",
     "style-loader": "^0.13.1",
     "ts-loader": "^0.9.4",
     "tslint": "^3.13.0",

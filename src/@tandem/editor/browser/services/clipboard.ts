@@ -6,7 +6,7 @@ import {
   Logger,
   loggable,
   serialize,
-  InitializeAction,
+  InitializeRequest,
   ApplicationServiceProvider,
 } from "@tandem/common";
 
@@ -18,7 +18,7 @@ export class ClipboardService extends CoreApplicationService<IEditorBrowserConfi
 
   public logger: Logger;
 
-  [InitializeAction.INITIALIZE]() {
+  [InitializeRequest.INITIALIZE]() {
     // document.addEventListener("copy", (event: ClipboardEvent) => {
 
     //   if (targetIsInput(event)) return;

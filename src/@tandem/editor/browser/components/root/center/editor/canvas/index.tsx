@@ -57,9 +57,9 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       item.getAsString((uriList) => {
         uriList.split("\n").forEach(async (uri) => {
           try {
-            await this.bus.dispatch(new ImportFileRequest(uri, this._mousePosition));
+            await this.bus.dispatch(new ImportFileRequest(uri, this._mousePosition, this.props.workspace.document.body.firstChild));
           } catch(e) {
-            this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot import ${uri}`));
+            this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot import ${uri}: ${e.message}`));
           }
         });
       })

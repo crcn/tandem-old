@@ -23,3 +23,5 @@ export function createEditorWorkerProviders(config:  IEditorWorkerConfig, dataS
 }
 
 export * from "./config";
+export * from "./providers";
+export * from "../common";

@@ -2,6 +2,7 @@ import { argv } from "yargs";
 import * as getPort from "get-port";
 import { SockService } from "@tandem/editor/server";
 import { EditorFamilyType } from "@tandem/editor/common";
+import { LoadProjectConfigCommand } from "./commands";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/worker";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/worker";
@@ -10,9 +11,20 @@ import { isMaster, fork, addListener, emit } from "cluster";
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/worker";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
-import { createEditorWorkerProviders, IEditorWorkerConfig } from "@tandem/editor/worker";
-import { Injector, LogLevel, serialize, deserialize, PrivateBusProvider, hook, MimeTypeProvider, MimeTypeAliasProvider } from "@tandem/common";
+import { createEditorWorkerProviders, IEditorWorkerConfig, FileImporterProvider } from "@tandem/editor/worker";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
+import {
+  hook,
+  Injector,
+  LogLevel,
+  serialize,
+  LoadRequest,
+  deserialize,
+  MimeTypeProvider,
+  PrivateBusProvider,
+  MimeTypeAliasProvider,
+  CommandFactoryProvider
+} from "@tandem/common";
 
 import {
   createSandboxProviders,
@@ -32,6 +44,7 @@ export const createCoreStudioWorkerProviders = () => {
     createJavaScriptWorkerProviders(),
     createTDProjectEditorWorkerProviders(),
     createTypescriptEditorWorkerProviders(),
+    new CommandFactoryProvider(LoadRequest.LOAD, LoadProjectConfigCommand),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
   ];

@@ -30,6 +30,8 @@ IMPORTING MODULES
 
 BUGS
 - [ ] css changes don't immediately get reflected in text editor
+- [ ] rebundle when file name changes. App locks up when file not found
+- [ ] kill remotely dispatched messages if there are no responses.
 
 TECH DEBT
 
@@ -37,6 +39,15 @@ TECH DEBT
   - [ ] find inspiration by other apps
 - [ ] deprecate tdm files - artboards should be core
 - [ ] tandem <directory> for opening projects
+
+
+----------------------------------
+POLISH
+----------------------------------
+
+- [ ] support markdown
+- [ ] support HTML files and script imports
+
 
 ----------------------------------
 LAUNCHING

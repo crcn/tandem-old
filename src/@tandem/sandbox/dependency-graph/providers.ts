@@ -1,6 +1,7 @@
 import {
   Injector,
   Provider,
+  MimeTypeProvider,
   ClassFactoryProvider,
 } from "@tandem/common";
 
@@ -60,11 +61,28 @@ export class DependencyGraphProvider extends Provider<any> {
     return new DependencyGraphProvider(this.clazz);
   }
   getInstance(options: IDependencyGraphStrategyOptions): DependencyGraph {
-    const strategyName = options && options.name || "default";
+    const strategyName = (options && options.name) || "default";
     if (this._instances[strategyName]) return this._instances[strategyName];
     return this._instances[strategyName] = this.owner.inject(new this.clazz(options && DependencyGraphStrategyProvider.create(options.name, options.config, this.owner)));
   }
   static getInstance(options: IDependencyGraphStrategyOptions, injector: Injector): DependencyGraph {
     return injector.query<DependencyGraphProvider>(this.ID).getInstance(options);
+  }
+}
+
+export class DependencyGraphStrategyOptionsProvider extends Provider<IDependencyGraphStrategyOptions> {
+  static readonly NS = "dependencyGraphStrategyOptions";
+  constructor(readonly name: string, readonly test: (filePath: string) => boolean, readonly options: IDependencyGraphStrategyOptions) {
+    super(DependencyGraphStrategyOptionsProvider.getId(name), options);
+  }
+  static getId(name: string) {
+    return [this.NS, name].join("/");
+  }
+  clone() {
+    return new DependencyGraphStrategyOptionsProvider(this.name, this.test, this.options);
+  }
+  static find(filePath: string, injector: Injector): IDependencyGraphStrategyOptions {
+    const provider = injector.queryAll<DependencyGraphStrategyOptionsProvider>(this.getId("**")).find(provider => provider.test(filePath));
+    return provider && provider.value;
   }
 }

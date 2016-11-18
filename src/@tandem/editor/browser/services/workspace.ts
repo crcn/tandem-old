@@ -37,7 +37,7 @@ import {
   flattenTree,
   BoundingRect,
   watchProperty,
-  InitializeAction,
+  InitializeRequest,
   InjectorProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -58,7 +58,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   private _tweener: IDisposable;
   private _zoomTimeout: any;
 
-  async [InitializeAction.INITIALIZE](action: Action) {
+  async [InitializeRequest.INITIALIZE](action: Action) {
     await this._loadWorkspaces();
   }
 
@@ -67,7 +67,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
     if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
 
-    this.logger.info("loading project file %s", filePath);
+    this.logger.info("loading project file ", filePath);
     const workspace = this.injector.inject(new Workspace());
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, this.injector.inject(new SyntheticDOMRenderer())));
     await browser.open({ url: filePath });

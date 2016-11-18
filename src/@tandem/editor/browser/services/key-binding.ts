@@ -5,7 +5,7 @@ import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { IDispatcher } from "@tandem/mesh";
 import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
-import { Action, IFactory, toArray, InitializeAction, loggable, Logger, ICommand } from "@tandem/common";
+import { Action, IFactory, toArray, InitializeRequest, loggable, Logger, ICommand } from "@tandem/common";
 
 @loggable()
 export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrowserConfig> {
@@ -14,7 +14,7 @@ export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrows
 
   private _manager: KeyBindingManager;
 
-  [InitializeAction.INITIALIZE]() {
+  [InitializeRequest.INITIALIZE]() {
     this._manager = new KeyBindingManager(this.bus, document.body);
     for (const keyBindingProvider of GlobalKeyBindingProvider.findAll(this.injector)) {
       this._addKeyBinding(keyBindingProvider);
@@ -22,7 +22,7 @@ export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrows
   }
 
   _addKeyBinding(dependency: GlobalKeyBindingProvider) {
-    this.logger.debug("add key binding:  %s", dependency.keys.join(", "));
+    this.logger.debug("add key binding: ", dependency.keys.join(", "));
     for (const key of dependency.keys) {
       this._manager.register(key, dependency.create());
     }

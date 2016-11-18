@@ -146,7 +146,7 @@ export class Sandbox extends Observable {
       throw new Error(`Cannot evaluate ${dependency.filePath}:${dependency.type} in sandbox.`);
     }
 
-    this.logger.debug("Evaluating %s", dependency.filePath);
+    this.logger.debug(`Evaluating`, dependency.filePath);
     try {
       evaluatorFactoryDepedency.create().evaluate(module);
     } catch(e) {

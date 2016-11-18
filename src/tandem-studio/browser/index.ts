@@ -29,13 +29,12 @@ const config: IEditorBrowserConfig = {
   }
 };
 
-
 const injector = new Injector(
   createEditorBrowserProviders(config),
   createHTMLEditorBrowserProviders(),
   createTDProjectEditorBrowserProviders(),
 );
 
-const app = new ServiceApplication(injector);
+const app = window["app"] = new ServiceApplication(injector);
 
 app.initialize();

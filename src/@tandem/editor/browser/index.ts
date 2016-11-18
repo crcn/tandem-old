@@ -3,7 +3,7 @@ import "./styles";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
-import { Injector, CommandFactoryProvider, InitializeAction, IProvider } from "@tandem/common";
+import { Injector, CommandFactoryProvider, InitializeRequest, IProvider } from "@tandem/common";
 import { AlertMessage } from "./actions";
 import {
   StoreProvider,
@@ -46,7 +46,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
     createCoreApplicationProviders(config, fileSystemClass, fileResolverClass),
 
     // commands
-    new CommandFactoryProvider(InitializeAction.INITIALIZE, OpenCWDCommand),
+    new CommandFactoryProvider(InitializeRequest.INITIALIZE, OpenCWDCommand),
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
 
     // services

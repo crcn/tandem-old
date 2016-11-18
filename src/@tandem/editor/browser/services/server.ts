@@ -5,7 +5,7 @@ import { IOService } from "@tandem/editor/common";
 import {
   Logger,
   loggable,
-  LoadAction,
+  LoadRequest,
   ApplicationServiceProvider,
 } from "@tandem/common";
 
@@ -20,14 +20,14 @@ export class ServerService extends IOService<IEditorBrowserConfig> {
    * initializes the back-end actor
    */
 
-  async [LoadAction.LOAD]() {
+  async [LoadRequest.LOAD]() {
     if (!this.config.server || !this.config.server.port) {
       return;
     }
 
     const { server } = this.config;
 
-    this.logger.debug("starting socket.io client on  %s:%d", server.hostname, server.port);
+    this.logger.debug(`starting socket.io client on  ${server.hostname}:${server.port}`);
     this._client = SocketIOClient(`${server.protocol || "http:"}//${server.hostname}:${server.port}`);
     await this.addConnection(this._client);
   }

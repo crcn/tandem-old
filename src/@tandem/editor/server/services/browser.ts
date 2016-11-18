@@ -18,7 +18,7 @@ import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
-import { DSUpsertRequest, LoadAction, InitializeAction } from "@tandem/common/actions";
+import { DSUpsertRequest, LoadRequest, InitializeRequest } from "@tandem/common/actions";
 
 // TODO - split this out into separate files -- turning into a god object.
 
@@ -38,7 +38,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
     this.bus.register(this._ioService = this.injector.create(IOService, []));
   }
 
-  async [InitializeAction.INITIALIZE]() {
+  async [InitializeRequest.INITIALIZE]() {
     this._port = Number(this.config.port);
     await this._loadHttpServer();
     await this._loadStaticRoutes();

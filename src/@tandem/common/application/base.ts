@@ -1,7 +1,7 @@
 import { SequenceBus } from "@tandem/mesh";
 import { IBus } from "@tandem/mesh";
 import { IBrokerBus, BrokerBus } from "@tandem/common/dispatchers";
-import { LoadAction, InitializeAction } from "../actions";
+import { LoadRequest, InitializeRequest } from "../actions";
 import {
   Provider,
   Injector,
@@ -36,13 +36,13 @@ export class Application {
     // Prepare the application for initialization. Injector that
     // need to be loaded before being used by other injector should listen on this action
     // here.
-    await this.bus.dispatch(new LoadAction());
+    await this.bus.dispatch(new LoadRequest());
 
     this.didLoad();
     this.willInitialize();
 
     // Notify the application that everything is ready
-    await this.bus.dispatch(new InitializeAction());
+    await this.bus.dispatch(new InitializeRequest());
 
     this.didInitialize();
   }

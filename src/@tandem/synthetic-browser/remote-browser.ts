@@ -109,7 +109,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     } else if (action.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
       const { data } = <RemoteBrowserDocumentMessage>action;
       const actions: EditAction[] = data;
-      this.logger.debug("Received document diffs: >>%s", actions.map(action => action.type).join(", "));
+      this.logger.debug("Received document diffs: >>", actions.map(action => action.type).join(", "));
       this._documentEditor.applyEditActions(...actions);
       this.status = new Status(Status.COMPLETED);
     }
@@ -146,7 +146,7 @@ export class RemoteBrowserService extends BaseApplicationService {
       const logger = this.logger.createChild(`${action.options.url} `);
 
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (actions: EditAction[]) => {
-        logger.info("Sending diffs: <<%s", actions.map(action => action.type).join(", "));
+        logger.info("Sending diffs: <<", actions.map(action => action.type).join(", "));
         await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, actions)) });
       }, (clone: SyntheticDocument) => {
         logger.info("Sending <<new document");

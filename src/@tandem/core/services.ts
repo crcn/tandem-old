@@ -34,7 +34,7 @@ export abstract class BaseApplicationService implements  IDispatcher<any, any>,
     const method = this[message.type];
     if (method) {
       if (this.logger) {
-        this.logger.debug("%s()", message.type);
+        this.logger.debug(`${message.type}()`);
       }
       return method.call(this, message);
     }

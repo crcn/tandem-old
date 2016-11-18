@@ -444,7 +444,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
     return Promise.all(dependencyPaths.map(async (relativePath) => {
-      this.logger.debug("Resolving dependency %s", relativePath);
+      this.logger.debug("Resolving dependency", relativePath);
       const dependencyInfo = await this._graph.resolve(relativePath, path.dirname(this.filePath));
       dependencyInfo.relativePath = relativePath;
       info.push(dependencyInfo);

@@ -41,17 +41,17 @@ export class SettingChangeAction extends Action {
   }
 }
 
-export class LoadAction extends Action {
+export class LoadRequest extends Action {
   static readonly LOAD = "load";
   constructor() {
-    super(LoadAction.LOAD);
+    super(LoadRequest.LOAD);
   }
 }
 
-export class InitializeAction extends Action {
+export class InitializeRequest extends Action {
   static readonly INITIALIZE = "initialize";
   constructor() {
-    super(InitializeAction.INITIALIZE);
+    super(InitializeRequest.INITIALIZE);
   }
 }
 

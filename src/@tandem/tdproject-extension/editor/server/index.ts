@@ -1,3 +1,4 @@
+import { FileImporterProvider } from "@tandem/editor/worker";
 import { ContentEditorFactoryProvider } from "@tandem/sandbox";
 import { createTDProjectCoreProviders } from "../../core";
 import { createTDProjectEditorWorkerProviders } from "../worker";

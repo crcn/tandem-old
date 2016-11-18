@@ -133,7 +133,7 @@ export class OpenProjectRequest extends Action {
 @setMessageTarget(EditorFamilyType.MASTER)
 @serializable({
   serialize({ filePath, options, targetObject }: ImportFileRequest) {
-    return { filePath, options, targetObject: serialize(targetObject) };
+    return { filePath, options, targetObject: serialize(targetObject && targetObject.clone(false)) };
   },
   deserialize({ filePath, options, targetObject }, injector) {
     return new ImportFileRequest(filePath, options, deserialize(targetObject, injector));
