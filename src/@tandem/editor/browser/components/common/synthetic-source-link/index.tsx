@@ -28,7 +28,6 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyn
       };
     }
 
-
     return <AltInputComponent canRenderAlt={() => this.hasSource()} className="synthetic-source-link" getAltProps={getAltProps}>
       { this.props.children }
     </AltInputComponent>

@@ -8,9 +8,12 @@ export interface IAltInputComponentProps {
   getAltProps(props): any;
   canRenderAlt?(): boolean;
   className?: string;
+  style?: any;
+  sticky?: boolean;
 }
 export class AltInputComponent extends BaseApplicationComponent<IAltInputComponentProps, { showAlt: boolean }> {
   state = { showAlt: false };
+  private _keepOpen: boolean;
 
   onKeyDown = (event: KeyboardEvent) => {
     if (event.keyCode === 91 || event.keyCode === 17) {
@@ -18,6 +21,7 @@ export class AltInputComponent extends BaseApplicationComponent<IAltInputCompone
     }
   }
   onKeyUp = (event: KeyboardEvent) => {
+    if (this._keepOpen) return;
     if (event.keyCode === 91 || event.keyCode === 17) {
       this.setState({ showAlt: false });
     }
@@ -38,16 +42,28 @@ export class AltInputComponent extends BaseApplicationComponent<IAltInputCompone
     }
   }
 
-  onMouseLeave = (event: React.MouseEvent<any>) => {
+  onMouseLeave = (event) => {
     document.removeEventListener("keydown", this.onKeyDown);
     document.removeEventListener("keyup", this.onKeyUp);
+    if (this._keepOpen) return;
     this.setState({ showAlt: false });
+  }
+
+  onClick = (event) => {
+    if (!this.props.sticky || this._keepOpen) return;
+    this._keepOpen = true;
+    const self = this;
+    document.addEventListener("click", function onClick() {
+      self._keepOpen = false;
+      document.removeEventListener("click", onClick);
+      self.onMouseLeave(event);
+    });
   }
 
   render() {
     const props = this.state.showAlt ? Object.assign({}, this.props, this.props.getAltProps(this.props)) : this.props;
 
-    return <span {...props} onMouseEnter={this.onMouseEnter.bind(this)} onMouseLeave={this.onMouseLeave.bind(this)}>
+    return <span {...props} onClick={this.onClick} onMouseEnter={this.onMouseEnter.bind(this)} onMouseLeave={this.onMouseLeave.bind(this)}>
     </span>
   }
 }

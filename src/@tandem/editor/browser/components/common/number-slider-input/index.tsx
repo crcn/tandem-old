@@ -1,5 +1,6 @@
 import * as React from "react";
 import { DraggableComponent } from "../draggable";
+import { throttle, Cancelable } from "lodash";
 
 const MAX_DECIMALS = 2;
 
@@ -19,10 +20,10 @@ export class NumberSliderInput extends React.Component<{ value: number, onChange
     document.body.style.cursor = "col-resize";
   }
 
-  onDrag = (event: MouseEvent) => {
+  onDrag = throttle((event: MouseEvent) => {
     const delta = event.clientX - this._startMouseLeft;
     this.props.onChange(Number(Number(this._startValue + delta * this._multiplier).toFixed(MAX_DECIMALS)));
-  }
+  }, 100)
 
   onStopDrag = () => {
     document.body.style.cursor = this._prevCursor;

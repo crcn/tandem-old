@@ -42,8 +42,8 @@ module.exports = {
       extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.peg', '.scss'],
       modulesDirectories: [SRC_DIR, NODE_MODULES_DIR],
       alias: {
-        'react': require.resolve('node_modules/react/dist/react.js'),
-        'react-dom': require.resolve('node_modules/react-dom/dist/react-dom.js'),
+        // 'react': require.resolve('node_modules/react/dist/react.js'),
+        // 'react-dom': require.resolve('node_modules/react-dom/dist/react-dom.js'),
         'chokidar': 'null-loader?chokidar',
         'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',

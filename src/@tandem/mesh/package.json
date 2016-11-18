@@ -12,6 +12,5 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "whatwg-streams-b": "^0.1.1"
   }
 }

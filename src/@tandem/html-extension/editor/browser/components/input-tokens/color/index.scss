@@ -1,0 +1,9 @@
+.popdown {
+  position: fixed;
+  z-index: 1024;
+  &-inner {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-100%);
+  }
+}

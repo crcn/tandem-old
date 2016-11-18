@@ -1,10 +1,20 @@
 import * as React from "react";
-import { TextEditorToken } from "@tandem/editor/browser";
+import { TextEditorToken, AltInputComponent } from "@tandem/editor/browser";
 
 export class ReferenceTokenInput extends React.Component<{ token: TextEditorToken }, any> {
   render() {
-    return <span className="a">
+
+    const value = this.props.token.value;
+
+    const getAlt = () => ({
+      style: {
+        cursor: "pointer"
+      }
+    });
+
+
+    return <AltInputComponent getAltProps={getAlt}>
       { this.props.token.value }
-    </span>
+    </AltInputComponent>
   }
 }
