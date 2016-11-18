@@ -1,4 +1,1 @@
-<tandem>
-  <artboard title="Hello World" src="./index-preview.tsx" dependency-graph-strategy="webpack" style=" left: 8px; top: 8px; width: 414px; height: 768px; "></artboard>
-  <artboard title="examples/hello-react/index2-preview.tsx" src="/Users/crcn/Developer/public/tandem/examples/hello-react/index2-preview.tsx" style="left:-573.0426287744227px;top:-45.9538188277087px;width:undefinedpx;height:undefinedpx;"></artboard>
-</tandem>
+<tandem></tandem>

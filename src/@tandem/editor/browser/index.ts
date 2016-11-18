@@ -4,7 +4,7 @@ import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 import { Injector, CommandFactoryProvider, InitializeRequest, IProvider } from "@tandem/common";
-import { AlertMessage } from "./messages";
+import { AlertMessage, RemoveSelectionRequest } from "./messages";
 import {
   StoreProvider,
   ReactComponentFactoryProvider,
@@ -27,7 +27,7 @@ import {
 import { Store } from "./models";
 
 import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "../common";
-import { OpenCWDCommand, AlertCommand } from "./commands";
+import { OpenCWDCommand, AlertCommand, RemoveSelectionCommand } from "./commands";
 
 import {
   DNDService,
@@ -46,8 +46,9 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
     createCoreApplicationProviders(config, fileSystemClass, fileResolverClass),
 
     // commands
-    new CommandFactoryProvider(InitializeRequest.INITIALIZE, OpenCWDCommand),
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
+    new CommandFactoryProvider(InitializeRequest.INITIALIZE, OpenCWDCommand),
+    new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),

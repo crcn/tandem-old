@@ -117,13 +117,6 @@ export class PasteRequest extends Action {
   }
 }
 
-export class DeleteSelectionRequest extends Action {
-  static readonly DELETE_SELECTION = "deleteSelection";
-  constructor() {
-    super(DeleteSelectionRequest.DELETE_SELECTION);
-  }
-}
-
 export class SetToolRequest extends Action {
   static readonly SET_TOOL = "setTool";
   constructor(readonly toolFactory: { create(workspace: Workspace): IWorkspaceTool }) {
