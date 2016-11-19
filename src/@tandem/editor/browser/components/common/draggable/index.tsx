@@ -7,6 +7,7 @@ export interface IDraggableComponentProps {
   onDrag(event: MouseEvent);
   style?: any;
   className?: string;
+  tabIndex?: any;
 }
 
 export class DraggableComponent extends React.Component<IDraggableComponentProps, any> {
@@ -24,7 +25,7 @@ export class DraggableComponent extends React.Component<IDraggableComponentProps
     document.removeEventListener("mousemove", this.onMouseMove);
   }
   render() {
-    return <span style={this.props.style} className={this.props.className} onMouseDown={this.startDrag}>
+    return <span style={this.props.style} tabIndex={this.props.tabIndex} className={this.props.className} onMouseDown={this.startDrag}>
       { this.props.children }
     </span>
   }

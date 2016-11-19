@@ -6,7 +6,7 @@ import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 import { BaseCommand, inject, Metadata } from "@tandem/common";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
-import { SelectAllRequest, SetToolRequest, ZoomRequest, RemoveSelectionRequest } from "@tandem/editor/browser/messages";
+import { SelectAllRequest, SetToolRequest, ZoomInRequest, ZoomOutRequest, RemoveSelectionRequest } from "@tandem/editor/browser/messages";
 
 class ToggleLeftSidebarCommand extends BaseCommand {
   @inject(StoreProvider.ID)
@@ -27,7 +27,7 @@ class ToggleRightSidebarCommand extends BaseCommand {
 export const keyBindingsProviders = [
   new GlobalKeyBindingProvider("meta+=", class ZoomInCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.dispatch(new ZoomRequest(ZOOM_INCREMENT, true));
+      this.bus.dispatch(new ZoomInRequest());
     }
   }),
   new GlobalKeyBindingProvider([POINTER_TOOL_KEY_CODE, "escape"], class SetPointerToolCommand extends BaseCommand {
@@ -42,7 +42,7 @@ export const keyBindingsProviders = [
   }),
   new GlobalKeyBindingProvider("meta+-", class ZoomOutCommand extends BaseCommand {
     execute(action: Action) {
-      this.bus.dispatch(new ZoomRequest(-ZOOM_INCREMENT, true));
+      this.bus.dispatch(new ZoomOutRequest());
     }
   }),
   new GlobalKeyBindingProvider("backspace", class DeleteSelectionCommand extends BaseCommand {

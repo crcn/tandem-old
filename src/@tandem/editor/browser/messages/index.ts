@@ -97,8 +97,22 @@ export class ToggleSelectRequest extends SelectRequest {
 
 export class ZoomRequest extends Action {
   static readonly ZOOM = "zoom";
-  constructor(readonly delta: number, readonly ease: boolean = false) {
+  constructor(readonly delta: number, readonly ease: boolean = false, readonly round: boolean = false) {
     super(ZoomRequest.ZOOM);
+  }
+}
+
+export class ZoomInRequest extends Action {
+  static readonly ZOOM_IN = "zoomIn";
+  constructor() {
+    super(ZoomInRequest.ZOOM_IN);
+  }
+}
+
+export class ZoomOutRequest extends Action {
+  static readonly ZOOM_OUT = "zoomOut";
+  constructor() {
+    super(ZoomOutRequest.ZOOM_OUT);
   }
 }
 

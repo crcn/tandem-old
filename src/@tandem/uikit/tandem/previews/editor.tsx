@@ -7,7 +7,7 @@ import * as ReactDOM from "react-dom";
 export const renderPreview = () => {
   const element = document.createElement("div");
   ReactDOM.render(<div className="editor flex row">
-    <div className="gutter dark left">
+    <div className="gutter left">
       <div className="header">
         Layers
       </div>
@@ -30,7 +30,7 @@ export const renderPreview = () => {
       </div>
     </div>
 
-    <div className="gutter dark right">
+    <div className="gutter right">
       <div className="header">
         Attributes
       </div>

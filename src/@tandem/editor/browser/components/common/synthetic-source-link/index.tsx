@@ -24,7 +24,7 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyn
     const getAltProps = () => {
       return {
         className: cx({ "active": true, "synthetic-source-link": true }),
-        onClick: this.openSourceFile
+        onMouseDown: this.openSourceFile
       };
     }
 

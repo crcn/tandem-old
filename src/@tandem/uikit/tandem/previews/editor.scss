@@ -13,8 +13,6 @@
   width: 100%;
   height: 100%;
   height: 100%;
-  background: grey;
-  border: 0px solid black;
 
   & .header {
     padding: 10px;
@@ -39,6 +37,9 @@
   &.top {
     border-bottom-width: 1px;
   }
+  border: 0px solid #868686;
+  color: #868686;
+  background: #EAEAEA;
 
   &.bottom {
     border-top-width: 1px;

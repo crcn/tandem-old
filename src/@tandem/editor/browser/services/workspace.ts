@@ -22,7 +22,7 @@ import { CoreApplicationService } from "@tandem/core";
 import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
 import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
-import { SetToolRequest, ZoomRequest, SetZoomRequest } from "@tandem/editor/browser/messages";
+import { SetToolRequest, ZoomRequest, ZoomOutRequest, ZoomInRequest, SetZoomRequest } from "@tandem/editor/browser/messages";
 
 import {
   File,
@@ -46,6 +46,10 @@ import {
 import { OpenProjectRequest, SelectSourceRequest } from "@tandem/editor/common";
 
 // TODO - defer various actions to project file controller.
+
+const normalizeZoom = (zoom) => {
+  return (zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom));
+}
 
 @loggable()
 export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfig> {
@@ -91,6 +95,28 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     // this.bus.execute(new ApplyFileEditRequest(edit));
 
     return !document.hidden;
+  }
+
+  [ZoomRequest.ZOOM](action: ZoomRequest) {
+    if (this._tweener) this._tweener.dispose();
+    const delta = action.delta * this._store.workspace.zoom;
+
+    if (!action.ease) {
+      this._store.workspace.zoom += delta;
+      return;
+    }
+
+    this._tweener = tween(this._store.workspace.zoom, this._store.workspace.zoom + delta, 200, (value) => {
+      this._store.workspace.zoom = value;
+    }, easeOutCubic);
+  }
+
+  [ZoomInRequest.ZOOM_IN]() {
+    this._store.workspace.zoom = normalizeZoom(this._store.workspace.zoom) * 2;
+  }
+
+  [ZoomOutRequest.ZOOM_OUT]() {
+    this._store.workspace.zoom = normalizeZoom(this._store.workspace.zoom) / 2;
   }
 
   [ZoomRequest.ZOOM](action: ZoomRequest) {

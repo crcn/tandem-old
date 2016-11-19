@@ -244,6 +244,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
                 // quick fix for resolving relative files - this will break in the future.
                 filePath = filePath.replace(/^\w+:\/\//, "");
+                console.log(filePath);
                 filePath = fs.existsSync(filePath) ? filePath : process.cwd() + filePath;
                 vscode.workspace.openTextDocument(filePath).then(async (doc) => {
                     let { start, end } = selection || { start: undefined, end: undefined };

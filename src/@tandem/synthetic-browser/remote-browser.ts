@@ -1,8 +1,8 @@
 import { debounce } from "lodash";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { OpenRemoteBrowserRequest, isDOMMutationEvent } from "./messages";
-import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader, pump } from "@tandem/mesh";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
+import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader, pump } from "@tandem/mesh";
 import {
   fork,
   Logger,
@@ -29,6 +29,7 @@ import {
   EditChange,
   BaseContentEdit,
   DependencyGraph,
+  ApplyFileEditRequest,
   SyntheticObjectEditor,
   DependencyGraphWatcher,
   DependencyGraphProvider,
@@ -126,7 +127,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 @loggable()
 export class RemoteBrowserService extends BaseApplicationService {
 
-  private _openBrowsers: any = {};
+  private _openBrowsers: {
+    [Identifier: string]: SyntheticBrowser
+  }
 
   $didInject() {
     super.$didInject();

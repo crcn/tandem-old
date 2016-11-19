@@ -21,13 +21,13 @@ $gutter-background: #444;
     font-size: 0.9em;
     letter-spacing: 0.15em;
     padding: 8px 16px;
-    background: rgba(0, 0, 0, 0.2);
     &:hover {
       .controls {
         display: block;
       }
     }
     font-weight: 400;
+    background: rgba(0, 0, 0, 0.14);
     .controls{
       display: none;
       float: right;
