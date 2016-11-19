@@ -1,0 +1,14 @@
+@import "@tandem/uikit/scss";
+
+.tree {
+  & .node {
+    & .node-label {
+      & .expand-button {
+        padding-right: 4px;
+      }
+      padding: 4px 8px;
+      & .attribute {
+      }
+    }
+  }
+}
