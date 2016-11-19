@@ -1,3 +1,5 @@
+@import "@tandem/uikit/scss";
+
 .gutter {
   flex-shrink:0;
   flex-grow:0;
@@ -6,8 +8,9 @@
   height: 100%;
 
   & .header {
-    padding: 4px 8px;
-    background: rgba(0,0,0,0.02);
+    text-transform: uppercase;
+    padding: 8px 8px;
+    font-size: 0.8em;
   }
 
   &.left, &.right {

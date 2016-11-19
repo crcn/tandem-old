@@ -3,7 +3,8 @@ import { TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS } from "./constants";
 import { MimeTypeProvider, HTML_MIME_TYPE, MimeTypeAliasProvider } from "@tandem/common";
 
 import {
-  SyntheticTDRepeatElement,
+  SyntheticTDRulerElement,
+  SyntheticTDRulerLineElement,
   SyntheticTDArtboardElement,
   SyntheticTDTemplateElement,
 } from "./synthetic";
@@ -27,7 +28,8 @@ export function createTDProjectCoreProviders() {
 
     // elements
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "template", SyntheticTDTemplateElement),
-    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "dom-repeat", SyntheticTDRepeatElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "ruler", SyntheticTDRulerElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "ruler-line", SyntheticTDRulerLineElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "artboard", SyntheticTDArtboardElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "link", SyntheticHTMLLink),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),

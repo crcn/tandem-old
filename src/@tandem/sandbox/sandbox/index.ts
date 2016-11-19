@@ -61,6 +61,7 @@ export class Sandbox extends Observable {
   private _shouldEvaluate: boolean;
   private _graphWatcherWatcher: IDisposable;
   private _waitingForAllLoaded: boolean;
+  private _resetting: boolean;
 
   private _global: any;
   private _context: vm.Context;
@@ -115,7 +116,6 @@ export class Sandbox extends Observable {
     this._graphWatcherWatcher = watchProperty(entry.watcher, "status", this.onDependencyGraphStatusChange.bind(this)).trigger();
     this._entry.load();
     await this._entry.watcher.waitForAllDependencies();
-
   }
 
   protected onDependencyGraphStatusChange(newValue: Status, oldValue: Status) {
@@ -158,6 +158,7 @@ export class Sandbox extends Observable {
   }
 
   private reset() {
+    this._resetting = false;
 
     try {
       const logTimer = this.logger.startTimer();
@@ -177,9 +178,12 @@ export class Sandbox extends Observable {
       logTimer.stop(`Evaluated ${this._entry.filePath}`);
       this.notify(new PropertyChangeEvent("exports", this._exports, exports));
     } catch(e) {
+      this._resetting = false;
       this.status = new Status(Status.ERROR, e);
       throw e;
     }
+
+    this._resetting = false;
 
     this.status = new Status(Status.COMPLETED);
   }

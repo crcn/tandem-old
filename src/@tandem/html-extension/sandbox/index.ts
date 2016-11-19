@@ -1,10 +1,10 @@
 import { CSSEditor, MarkupEditor } from "@tandem/synthetic-browser";
 import { CSS_MIME_TYPE, HTML_MIME_TYPE, JS_MIME_TYPE } from "@tandem/common";
 
-import { HTMLDependencyLoader } from "./html-loader";
 import { HTMLASTEvaluator } from "./html-evaluator";
-import { CSSDependencyLoader } from "./css-loader";
 import { CSSASTEvaluator } from "./css-evaluator";
+import { CSSDependencyLoader } from "./css-loader";
+import { HTMLDependencyLoader } from "./html-loader";
 
 export * from "./html-loader";
 export * from "./html-evaluator";
@@ -12,8 +12,8 @@ export * from "./css-loader";
 export * from "./css-evaluator";
 
 import {
-  DependencyLoaderFactoryProvider,
   ContentEditorFactoryProvider,
+  DependencyLoaderFactoryProvider,
   SandboxModuleEvaluatorFactoryProvider,
 } from "@tandem/sandbox";
 

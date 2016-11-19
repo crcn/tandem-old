@@ -146,7 +146,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     return this._sandbox;
   }
 
-  async open2(options: ISyntheticBrowserOpenOptions) {
+  protected async open2(options: ISyntheticBrowserOpenOptions) {
 
     this.logger.info(`Opening ${options.url} ...`);
     const timerLogger = this.logger.startTimer();

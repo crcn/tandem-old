@@ -412,11 +412,13 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
     // TODO - this needs to point to the proper registered protocol
     return {
+      Buffer: Buffer,
       __webpack_public_path__: "http://" + this._config.hostname + ":" + this._config.port + "/file-cache/" + encodeURIComponent("webpack://"),
 
       // TODO _ this should be shared by other strategies later on
       process: {
         argv: [],
+        version: process.version,
         nextTick: next => setTimeout(next, 0),
         env: process.env,
         cwd: () => process.cwd()

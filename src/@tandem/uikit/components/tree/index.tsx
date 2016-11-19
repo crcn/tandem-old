@@ -26,7 +26,7 @@ export class TreeNodeComponent extends React.Component<ITreeNodeProps, any> {
     };
 
     const nodeLabelStyle = {
-      paddingLeft: depth * 8
+      paddingLeft: depth * 11
     }
 
     return <div className="node">

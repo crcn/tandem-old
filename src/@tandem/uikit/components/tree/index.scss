@@ -4,7 +4,10 @@
   & .node {
     & .node-label {
       & .expand-button {
-        padding-right: 4px;
+        padding-right: 6px;
+        font-size: 0.6em;
+        position: relative;
+        top: -1;
       }
       padding: 4px 8px;
       & .attribute {

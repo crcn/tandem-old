@@ -101,7 +101,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this._computedStyles = {};
 
     // may be running in a worker. Do not create an element if that's the case.
-    if (typeof document !== "undefined") {
+    if (typeof window !== "undefined") {
       this.element = this.createElement();
     }
 

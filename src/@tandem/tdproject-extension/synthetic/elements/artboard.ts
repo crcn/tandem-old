@@ -39,7 +39,7 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
     width: 1024px;
     height: 768px;
     position: absolute;
-    box-shadow: 0px 6px 15px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.2);
   }
 
   .artboard-entity iframe, .artboard-entity-overlay {

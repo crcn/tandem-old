@@ -14,7 +14,6 @@ import * as vscode from "vscode";
 import * as through from "through2";
 import * as getPort from "get-port";
 import * as createServer from "express";
-import { debounce, throttle } from "lodash";
 import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage } from "@tandem/mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
@@ -179,22 +178,39 @@ export async function activate(context: vscode.ExtensionContext) {
         _ignoreSelect = false;
     }
 
-    const updateFileCacheItem = throttle(async (document:vscode.TextDocument) => {
+    let _savingFileCache: boolean;
+    let _shouldSaveFileCacheAgain: boolean;
 
-        // don't update file cache for now on edit -- clobbers the server. Need
-        // to resolve issues before unlocking this feature.
-        // if (1 + 1) return;
+    const updateFileCacheItem = async (document:vscode.TextDocument) => {
+
+        if (_savingFileCache) {
+            _shouldSaveFileCacheAgain = true;
+            return;
+        }
+
+        _savingFileCache = true;
 
         _documentUri = document.uri;
         const editorContent = document.getText();
         const filePath = document.fileName;
 
         const fileCacheItem = await client.fileCache.item(filePath);
-        if (!fileCacheItem) return;
 
-        fileCacheItem.setDataUrlContent(editorContent).save();
+        if (fileCacheItem) {
+            await fileCacheItem.setDataUrlContent(editorContent).save();
+        }
+
+        console.log("saved %s cache", filePath);
+
+        _savingFileCache = false;
+
+        if (_shouldSaveFileCacheAgain) {
+            _shouldSaveFileCacheAgain = false;
+            updateFileCacheItem(document);
+        }
+
         setCurrentMtime();
-    }, UPDATE_FILE_CACHE_TIMEOUT);
+    };
 
     async function onTextChange(e:vscode.TextDocumentChangeEvent) {
         const doc  = e.document;
