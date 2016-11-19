@@ -9,7 +9,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@tandem/mesh": "6.0.x"
+    "@tandem/mesh": "6.0.x",
+    "tinycolor2": "^1.4.1"
   },
   "peerDependencies": {
     "@tandem/editor": "^1.0.0",

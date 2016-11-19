@@ -1,5 +1,4 @@
-<tandem>
-  <artboard title="Editor Example" src="/Users/crcn/Developer/public/tandem/src/@tandem/uikit/tandem/previews/editor.tsx" style=" left: 186px; top: 216px; width: 1033px; height: 907px; "></artboard>
-  <artboard title="src/@tandem/uikit/tandem/previews/inputs.tsx" src="/Users/crcn/Developer/public/tandem/src/@tandem/uikit/tandem/previews/inputs.tsx" style="left:543.1491356594962px;top:1848.2616616209204px;width:undefinedpx;height:undefinedpx;"></artboard>
-  <artboard title="src/@tandem/uikit/tandem/previews/hello-preview.tsx" src="/Users/crcn/Developer/public/tandem/src/@tandem/uikit/tandem/previews/hello-preview.tsx" style="left:57.1280544158612px;top:-1018.4998818321146px;width:undefinedpx;height:undefinedpx;"></artboard>
+<tandem style="background-color: #444">
+  <artboard title="Editor Example" src="/Users/crcn/Developer/public/tandem/src/@tandem/uikit/tandem/previews/editor.tsx" style=" left: 1770px; top: -778px; width: 1033px; height: 907px; "></artboard>
+  <artboard title="src/@tandem/uikit/tandem/previews/inputs.tsx" src="/Users/crcn/Developer/public/tandem/src/@tandem/uikit/tandem/previews/inputs.tsx" style=" left: 432px; top: -778px; width: undefinedpx; height: undefinedpx; "></artboard>
 </tandem>

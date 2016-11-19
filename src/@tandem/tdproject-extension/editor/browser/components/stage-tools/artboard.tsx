@@ -3,13 +3,14 @@ import * as React from "react";
 import * as AutosizeInput from "react-input-autosize";
 
 import { Status } from "@tandem/common/status";
+import * as tc from "tinycolor2";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { ApplyFileEditRequest, SetKeyValueEditChange } from "@tandem/sandbox";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
-export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace }, {
+export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, backgroundColor: string }, {
   edit: SyntheticDOMElementEdit,
   titleEditChange: SetKeyValueEditChange
 }> {
@@ -91,8 +92,11 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
     const fontSize = 12;
 
+    const colorInf = tc(this.props.backgroundColor);
+
     const titleStyle = {
       position: "absolute",
+      color: colorInf.isLight() || colorInf.getAlpha() < 0.3 ? `rgba(0,0,0,0.5)` : `rgba(255, 255, 255, 0.8)`,
       display: workspace.transform.scale > 0.2 ? "block" : "none",
       top: 0,
       fontSize: 12,
@@ -114,20 +118,26 @@ export class TDArtboardStageToolComponent extends React.Component<{ workspace: W
     const { workspace } = this.props;
     const { document, transform } = workspace;
 
+    const tandem    = document.querySelector("tandem") as SyntheticHTMLElement;
     const artboards = document.querySelectorAll("artboard") as SyntheticTDArtboardElement[];
 
     if (!artboards.length) return null;
 
     const backgroundStyle = {
+      backgroundColor: "rgba(0,0,0,0.02)",
       transform: `translate(${-transform.left / transform.scale}px, ${-transform.top / transform.scale}px) scale(${1 / transform.scale})`,
       transformOrigin: "top left"
     };
+
+    if (tandem) {
+      Object.assign(backgroundStyle, tandem.style);
+    }
 
     return <div className="m-tdartboard-stage-tool">
       <div style={backgroundStyle} className="m-tdartboard-stage-tool--background" />
       {
         artboards.map((artboard) => {
-          return <TDArtboardComponent key={artboard.uid} workspace={workspace} artboard={artboard} />;
+          return <TDArtboardComponent key={artboard.uid} workspace={workspace} artboard={artboard} backgroundColor={backgroundStyle.backgroundColor} />;
         })
       }
     </div>;

@@ -251,7 +251,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     if (canvasWidth) {
       const { left, top } = this.props.workspace.transform;
-      transform = `translate(${left}px, ${top}px) scale(${this.props.zoom}) translateZ(0)`;
+      transform = `translate(${left}px, ${top}px) scale(${this.props.zoom})`;
     }
 
     const innerStyle = {
