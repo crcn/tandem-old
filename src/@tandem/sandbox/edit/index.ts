@@ -1,5 +1,4 @@
 import { flatten } from "lodash";
-import { debounce } from "lodash";
 import { FileCache } from "../file-cache";
 import { IDispatcher } from "@tandem/mesh";
 import { CallbackDispatcher } from "@tandem/mesh";
@@ -534,6 +533,9 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
   private _clone: T;
   private _target: T
   private _targetObserver: IDispatcher<any, any>;
+  private _diffing: boolean;
+  private _shouldDiffAgain: boolean;
+  private _ticking: boolean;
 
   constructor(private onChange: (changes: EditChange[]) => any, private onClone: (clone: T) => any, private filterAction?: (action: Action) => boolean) {
     this._targetObserver = new CallbackDispatcher(this.onTargetAction.bind(this));
@@ -574,15 +576,37 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
     }
   }
 
-  private requestDiff = debounce(() => {
-    this.diff();
-  }, 10);
+  private requestDiff() {
+    if (this._ticking) return;
+    this._ticking = true;
+    setImmediate(this.diff.bind(this));
+  }
 
-  private diff() {
+
+  private async diff() {
+    this._ticking = false;
+
+    if (this._diffing) {
+      this._shouldDiffAgain = true;
+      return;
+    }
+
+    this._diffing = true;
     const edit = (<BaseContentEdit<any>>this._clone.createEdit()).fromDiff(this._target);
     if (edit.changes.length) {
-      this.onChange(edit.changes);
+      try {
+        await this.onChange(edit.changes);
+      } catch(e) {
+        this._diffing = false;
+        throw e;
+      }
       edit.applyActionsTo(this._clone);
+    }
+
+    this._diffing = false;
+    if (this._shouldDiffAgain) {
+      this._shouldDiffAgain = false;
+      this.diff();
     }
   }
 }

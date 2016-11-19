@@ -146,8 +146,10 @@ export class RemoteBrowserService extends BaseApplicationService {
       const logger = this.logger.createChild(`${action.options.url} `);
 
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (changes: EditChange[]) => {
+
         logger.info("Sending diffs: <<", changes.map(action => action.type).join(", "));
         await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, changes)) });
+
       }, (clone: SyntheticDocument) => {
         logger.info("Sending <<new document");
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.NEW_DOCUMENT, clone)) });
