@@ -1,5 +1,5 @@
 import { SyntheticLocation } from "./location";
-import { SyntheticRendererAction } from "./messages";
+import { SyntheticRendererEvent } from "./messages";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer, NoopRenderer } from "./renderers";
 import { IDispatcher } from "@tandem/mesh";
@@ -16,7 +16,7 @@ import {
   IObservable,
   bindProperty,
   findTreeNode,
-  ChangeAction,
+  MetadataChangeEvent,
   watchProperty,
   HTML_MIME_TYPE,
   MimeTypeProvider,

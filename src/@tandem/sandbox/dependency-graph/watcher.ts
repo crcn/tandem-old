@@ -5,7 +5,7 @@ import { pull, values } from "lodash";
 import { IFileSystem } from "../file-system";
 import { RawSourceMap } from "source-map";
 import { IDependencyGraph } from "./graph";
-import { DependencyAction } from "./actions";
+import { DependencyEvent } from "./messages";
 import { FileCache, FileCacheItem } from "../file-cache";
 
 import {
@@ -65,7 +65,7 @@ export class DependencyGraphWatcher extends Observable {
 
   constructor(readonly entry: Dependency) {
     super();
-    this._dependencyObserver = new CallbackDispatcher(this.onDependencyAction.bind(this));
+    this._dependencyObserver = new CallbackDispatcher(this.onDependencyEvent.bind(this));
   }
 
   public dispose() {
@@ -125,7 +125,7 @@ export class DependencyGraphWatcher extends Observable {
   }
 
 
-  private onDependencyAction(action: Action) {
+  private onDependencyEvent(action: Action) {
     if (this.status && this.status.type === Status.LOADING) return;
     this.waitForAllDependencies["clear"]();
     this.waitForAllDependencies();

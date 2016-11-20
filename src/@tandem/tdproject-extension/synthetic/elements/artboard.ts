@@ -28,7 +28,7 @@ import {
   SyntheticDOMRenderer,
   SyntheticCSSStyleSheet,
   RemoteSyntheticBrowser,
-  SyntheticRendererAction,
+  SyntheticRendererEvent,
   VisibleDOMNodeCapabilities,
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";

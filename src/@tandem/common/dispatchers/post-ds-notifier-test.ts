@@ -5,7 +5,7 @@ import { PostDsNotifierBus } from "./post-ds-notifier";
 import {
   Action,
   PostDSMessage,
-} from "@tandem/common/actions";
+} from "@tandem/common/messages";
 
 describe(__filename + "#", () => {
 

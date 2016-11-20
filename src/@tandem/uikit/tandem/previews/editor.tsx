@@ -21,7 +21,7 @@ class TextNode extends TreeNode<any> {
 }
 
 // CSS tab
-const renderLayers = () => {
+const renderHTMLLayers = () => {
   const node = new ElementNode("div", { "id": "application"}, [
       new ElementNode("ul", { class: "items" }, [
         new ElementNode("li", {}, [
@@ -31,15 +31,27 @@ const renderLayers = () => {
     ]
   )
 
+  const renderAttribute = (name: string, value) => {
+    return <span>
+    &nbsp;
+      <span className={`entity other attribute-name css ${name}`}>{name}</span>
+      =
+      <span className="entity string">"{value}"</span>
+    </span>
+  }
+
   const renderLabel = (node: ElementNode|TextNode) => {
     return {
       text: ({ value }: TextNode) => <span>{ value }</span>,
       element: ({ attributes, name }: ElementNode) => <span>
         <span className="entity name tag">
-          { name }
+          &lt;{ name }
         </span>
-        { attributes.id ? <span className="entity other attribute-name">#{ attributes.id }</span> : null }
-        { attributes.class ? <span className="entity other attribute-name">.{ attributes.class }</span> : null }
+          { attributes.id ? renderAttribute("id", attributes.id) : null }
+          { attributes.class ? renderAttribute("class", attributes.class) : null }
+          <span className="entity name tag">
+          &gt;
+        </span>
         </span>
     }[node["value"] ? "text" : "element"](node);
   }
@@ -52,11 +64,17 @@ const renderLayers = () => {
   </div>
 }
 
+const renderCSSPane = () => {
+  return <div className="css-pane">
+  </div>
+}
+
 export const renderPreview = () => {
   const element = document.createElement("div");
   ReactDOM.render(<div className="editor flex row">
     <GutterComponent className="left">
-      {renderLayers()}
+      {renderHTMLLayers()}
+      {renderCSSPane()}
       <div className="header">
         CSS
       </div>

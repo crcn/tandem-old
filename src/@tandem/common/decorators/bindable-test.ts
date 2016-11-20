@@ -1,6 +1,6 @@
 import { bindable } from "./bindable";
 import { expect } from "chai";
-import { Action } from "../actions";
+import { Action } from "../messages";
 import { Observable } from "../observable";
 
 describe(__filename + "#", () => {

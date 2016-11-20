@@ -25,7 +25,7 @@ export class DOMMutationEvent extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
 }
 
-export class SyntheticRendererAction extends Action {
+export class SyntheticRendererEvent extends Action {
   static readonly UPDATE_RECTANGLES = "updateRectangles";
   static readonly UPDATED_COMPUTED_STYLE = "updatedComputedStyle";
 }

@@ -1,6 +1,6 @@
 import { IObservable } from "./base";
 import { IDisposable } from "../object";
-import { PropertyChangeEvent, Action } from "@tandem/common/actions";
+import { PropertyChangeEvent, Action } from "@tandem/common/messages";
 
 export type propertyChangeCallbackType = (newValue: any, oldValue: any) => void;
 

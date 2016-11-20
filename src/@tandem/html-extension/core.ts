@@ -39,7 +39,7 @@ export function createHTMLCoreProviders() {
   ];
 }
 
-export * from "./actions";
+export * from "./messages";
 export * from "./constants";
 export * from "./synthetic";
 export * from "./sandbox";

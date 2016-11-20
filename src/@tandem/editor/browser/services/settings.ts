@@ -5,7 +5,7 @@ import { StoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
-import { SettingChangeAction, LoadRequest, Metadata, inject, loggable, Logger } from "@tandem/common";
+import { MetadataChangeEvent, LoadRequest, Metadata, inject, loggable, Logger } from "@tandem/common";
 
 @loggable()
 export class SettingsService extends CoreApplicationService<IEditorBrowserConfig> {
@@ -23,7 +23,7 @@ export class SettingsService extends CoreApplicationService<IEditorBrowserConfig
     this._store.settings.observe(this.bus, new CallbackDispatcher(this._onSettingsChange));
   }
 
-  _onSettingsChange = (action: SettingChangeAction) => {
+  _onSettingsChange = (action: MetadataChangeEvent) => {
       store.set("settings", this._store.settings.data);
   }
 }

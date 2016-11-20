@@ -11,9 +11,9 @@ import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   Action,
   PostDSMessage,
-  DisposeAction,
-  ActiveRecordAction,
-} from "@tandem/common/actions";
+  DisposeEvent,
+  ActiveRecordEvent,
+} from "@tandem/common/messages";
 
 
 export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable, ISerializable<T> {
@@ -72,7 +72,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
   }
 
   dispose() {
-    this.notify(new DisposeAction());
+    this.notify(new DisposeEvent());
   }
 
   insert() {
@@ -141,7 +141,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     if (this.shouldDeserialize(source)) {
       this._source = source;
       this.setPropertiesFromSource(source);
-      this.notify(new ActiveRecordAction(ActiveRecordAction.ACTIVE_RECORD_DESERIALIZED));
+      this.notify(new ActiveRecordEvent(ActiveRecordEvent.ACTIVE_RECORD_DESERIALIZED));
     }
   }
 

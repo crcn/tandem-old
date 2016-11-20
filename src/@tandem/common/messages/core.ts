@@ -1,29 +1,23 @@
 import * as sift from "sift";
 import { Action } from "./base";
-import {  DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "@tandem/mesh/ds";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
 import { serializable, ISerializer } from "@tandem/common/serialize";
+import {  DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "@tandem/mesh/ds";
+
 export { Action };
 
-export class ChangeAction extends Action {
+export class MetadataChangeAction extends Action {
   static readonly CHANGE = "change";
   constructor() {
-    super(ChangeAction.CHANGE);
+    super(MetadataChangeAction.CHANGE);
   }
 }
 
-export class DisposeAction extends Action {
+export class DisposeEvent extends Action {
   static readonly DISPOSE = "dispose";
   constructor() {
-    super(DisposeAction.DISPOSE);
-  }
-}
-
-export class RemoveAction extends Action {
-  static readonly REMOVE = "remove";
-  constructor() {
-    super(RemoveAction.REMOVE);
+    super(DisposeEvent.DISPOSE);
   }
 }
 
@@ -31,13 +25,6 @@ export class PropertyChangeEvent extends Action {
   static readonly PROPERTY_CHANGE = "propertyChange";
   constructor(readonly property: string, readonly newValue: any, readonly oldValue: any, bubbles: boolean = false) {
     super(PropertyChangeEvent.PROPERTY_CHANGE, bubbles);
-  }
-}
-
-export class SettingChangeAction extends Action {
-  static readonly SETTING_CHANGE = "settingChange";
-  constructor(readonly property: string, readonly newValue: any, readonly oldValue: any) {
-    super(SettingChangeAction.SETTING_CHANGE);
   }
 }
 
@@ -82,22 +69,15 @@ export class PostDSMessage extends DSMessage {
 }
 
 export const ATTRIBUTE_CHANGE = "attributeChange";
-export class AttributeChangeAction extends Action {
+export class AttributeMetadataChangeEvent extends Action {
   constructor(readonly key: string, readonly value: string) {
     super(ATTRIBUTE_CHANGE);
   }
 }
 
-export class MetadataChangeAction extends Action {
+export class MetadataChangeEvent extends Action {
   static readonly METADATA_CHANGE = "metadataChange";
   constructor(readonly key: string, readonly value: string) {
-    super(MetadataChangeAction.METADATA_CHANGE);
-  }
-}
-
-export const UPDATE = "update";
-export class UpdateAction extends Action {
-  constructor() {
-    super(UPDATE);
+    super(MetadataChangeEvent.METADATA_CHANGE);
   }
 }

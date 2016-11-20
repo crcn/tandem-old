@@ -1,7 +1,7 @@
 import { Observable } from "./index";
 import { IObservable } from "../observable";
-import { ArrayChangeAction } from "./actions";
-import { Action, ChangeAction } from "@tandem/common/actions";
+import { ArrayMetadataChangeEvent } from "./messages";
+import { Action, MetadataChangeEvent } from "@tandem/common/messages";
 import { BubbleDispatcher } from "@tandem/common/dispatchers";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ArrayDiff, ArrayDiffInsert, ArrayDiffRemove, ArrayDiffUpdate } from "@tandem/common/utils";
@@ -61,7 +61,7 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
 
 
     this._watchItems(newItems);
-    this.notify(new ArrayChangeAction(new ArrayDiff([...deletes, ...inserts])));
+    this.notify(new ArrayMetadataChangeEvent(new ArrayDiff([...deletes, ...inserts])));
     return ret;
   }
 

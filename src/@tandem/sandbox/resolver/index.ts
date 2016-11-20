@@ -4,17 +4,17 @@ import * as fs from "fs";
 import * as memoize from "memoizee";
 
 import { IFileSystem } from "../file-system";
-import { IDispatcher, readOneChunk } from "@tandem/mesh";
 import { IFileResolver } from "../resolver";
-import { ResolveFileRequest } from "../actions";
+import { ResolveFileRequest } from "../messages";
+import { IDispatcher, readOneChunk } from "@tandem/mesh";
 import {
   inject,
   Logger,
   Injector,
   loggable,
+  InjectorProvider,
   MimeTypeProvider,
   PrivateBusProvider,
-  InjectorProvider,
 } from "@tandem/common";
 import * as resolve from "resolve";
 import * as pkgpath from "package-path";

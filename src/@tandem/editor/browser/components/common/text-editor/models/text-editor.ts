@@ -4,8 +4,8 @@ import Caret from "./caret";
 import Marker from "./marker";
 import TextRuler from "./text-ruler";
 import { bindable } from "@tandem/common/decorators";
-import { SourceChangeAction } from "../messages";
-import { PropertyChangeEvent } from "@tandem/common/actions";
+import { SourceMetadataChangeEvent } from "../messages";
+import { PropertyChangeEvent } from "@tandem/common/messages";
 import { Observable, watchProperty } from "@tandem/common/observable";
 import { StringTokenizer, TokenTypes } from "@tandem/common/tokenizers";
 import { BrokerBus, BubbleDispatcher } from "@tandem/common/dispatchers";
@@ -99,7 +99,7 @@ class TextEditor extends Observable {
   splice(start, count, repl = "") {
     const source = this.source.substr(0, start) + repl + this.source.substr(start + count);
     this.source = source;
-    this.bus.dispatch(new SourceChangeAction(this.source));
+    this.bus.dispatch(new SourceMetadataChangeEvent(this.source));
   }
 
   calculateWidth() {

@@ -2,7 +2,7 @@
 // import { ParallelBus } from "@tandem/mesh";
 // import { BrokerBus, PostDsNotifierBus } from "@tandem/common/dispatchers";
 // import { ActiveRecord, ActiveRecordCollection, insert } from "./base";
-// import { DSFindRequest, DSInsertRequest, DSUpdateRequest, DSRemoveRequest } from "@tandem/common/actions";
+// import { DSFindRequest, DSInsertRequest, DSUpdateRequest, DSRemoveRequest } from "@tandem/common/messages";
 // import { Injector, PrivateBusProvider,  } from "@tandem/common/ioc";
 
 // describe(__filename + "#", () => {

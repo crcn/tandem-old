@@ -1,5 +1,5 @@
 import { Observable } from "@tandem/common/observable";
-import { MetadataChangeAction } from "@tandem/common/actions";
+import { MetadataChangeEvent } from "@tandem/common/messages";
 
 export class Metadata extends Observable {
   constructor(private _data: any = {}) {
@@ -35,7 +35,7 @@ export class Metadata extends Observable {
     this._data[key] = value;
 
     if (value !== oldValue) {
-      this.notify(new MetadataChangeAction(key, value));
+      this.notify(new MetadataChangeEvent(key, value));
     }
   }
 }

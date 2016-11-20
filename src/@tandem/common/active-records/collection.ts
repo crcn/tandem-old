@@ -6,7 +6,7 @@ import { IBrokerBus } from "@tandem/common/dispatchers";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
-import { PostDSMessage } from "@tandem/common/actions";
+import { PostDSMessage } from "@tandem/common/messages";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   FilterBus,

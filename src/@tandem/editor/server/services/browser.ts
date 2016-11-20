@@ -18,7 +18,7 @@ import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
-import { DSUpsertRequest, LoadRequest, InitializeRequest } from "@tandem/common/actions";
+import { DSUpsertRequest, LoadRequest, InitializeRequest } from "@tandem/common/messages";
 
 // TODO - split this out into separate files -- turning into a god object.
 

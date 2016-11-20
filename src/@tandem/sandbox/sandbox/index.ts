@@ -5,7 +5,7 @@ import { SandboxModuleEvaluatorFactoryProvider } from "./providers";
 import {
   Dependency,
   DependencyGraph,
-  DependencyAction,
+  DependencyEvent,
   DependencyGraphWatcher,
 } from "@tandem/sandbox/dependency-graph";
 

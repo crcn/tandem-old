@@ -1,5 +1,5 @@
 export * from "./providers";
-export * from "./actions";
+export * from "./messages";
 export * from "./synthetic";
 export * from "./file-system";
 export * from "./resolver";

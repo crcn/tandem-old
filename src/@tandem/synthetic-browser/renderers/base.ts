@@ -1,7 +1,7 @@
 import { values } from "lodash";
 import { Action } from "@tandem/common";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
-import { SyntheticRendererAction, isDOMMutationEvent } from "../messages";
+import { SyntheticRendererEvent, isDOMMutationEvent } from "../messages";
 
 import {
   Logger,
@@ -11,7 +11,7 @@ import {
   IObservable,
   BoundingRect,
   watchProperty,
-  MetadataChangeAction,
+  MetadataChangeEvent,
   waitForPropertyChange,
 } from "@tandem/common";
 
@@ -167,7 +167,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.$rects          = rects;
     this._computedStyles = styles;
     this._rendered = true;
-    this.notify(new SyntheticRendererAction(SyntheticRendererAction.UPDATE_RECTANGLES));
+    this.notify(new SyntheticRendererEvent(SyntheticRendererEvent.UPDATE_RECTANGLES));
   }
 
   protected onDocumentAction(action: Action) {
@@ -250,7 +250,7 @@ export class BaseDecoratorRenderer extends Observable implements ISyntheticDocum
   }
 
   protected onTargetRendererAction(action: Action) {
-    if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
+    if (action.type === SyntheticRendererEvent.UPDATE_RECTANGLES) {
       this.onTargetRendererSetRectangles();
     }
     // bubble up

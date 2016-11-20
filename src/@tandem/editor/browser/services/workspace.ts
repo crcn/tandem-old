@@ -12,7 +12,7 @@ import {
   isDOMMutationEvent,
   BaseDecoratorRenderer,
   RemoteSyntheticBrowser,
-  SyntheticRendererAction,
+  SyntheticRendererEvent,
   RemoteBrowserDocumentMessage,
 } from "@tandem/synthetic-browser";
 import { Store, Workspace } from "@tandem/editor/browser/models";

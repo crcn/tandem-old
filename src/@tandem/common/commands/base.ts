@@ -1,5 +1,5 @@
 import { inject } from "@tandem/common/decorators";
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { IBus } from "@tandem/mesh";
 import {
   Injector,

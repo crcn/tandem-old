@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 
 export class TreeNodeEvent extends Action {
   static readonly NODE_ADDED    = "nodeAdded";

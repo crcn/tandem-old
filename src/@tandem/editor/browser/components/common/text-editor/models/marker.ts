@@ -1,5 +1,5 @@
 import { IDispatcher } from "@tandem/mesh";
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { Observable } from "@tandem/common/observable";
 import TextEditor from "./text-editor";
 

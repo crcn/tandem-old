@@ -13,7 +13,6 @@ import {
   IObservable,
   bindProperty,
   IInjectable,
-  EntityAction,
   Injector,
   watchProperty,
   PropertyChangeEvent,

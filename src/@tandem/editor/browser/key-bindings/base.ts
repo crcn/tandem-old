@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 
 export class KeyBinding {

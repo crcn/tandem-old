@@ -1,4 +1,4 @@
-import { Action } from "../actions";
+import { Action } from "../messages";
 import { IDispatcher } from "@tandem/mesh";
 import { IObservable } from "../observable";
 

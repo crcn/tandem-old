@@ -9,7 +9,7 @@ import {
   ReadFileRequest,
   ChildEditChange,
   WatchFileRequest,
-  DependencyAction,
+  DependencyEvent,
   ISyntheticObject,
   RemoveEditChange,
   ResolveFileRequest,

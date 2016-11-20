@@ -1,5 +1,5 @@
 import { inject } from "@tandem/common/decorators";
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { BaseCommand } from "@tandem/common/commands";
 import { SetToolRequest } from "@tandem/editor/browser/messages";

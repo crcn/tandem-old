@@ -1,7 +1,7 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ITreeNode } from "./base";
-import { TreeNodeEvent } from "./actions";
+import { TreeNodeEvent } from "./messages";
 import { ITreeWalker, IWalkable } from "./walker";
 import { Observable, IObservable } from "@tandem/common/observable";
 

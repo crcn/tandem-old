@@ -1,7 +1,7 @@
 import { IDispatcher } from "@tandem/mesh";
 import { sprintf } from "sprintf";
 import { LogLevel } from "./levels";
-import { Action } from "../actions";
+import { Action } from "../messages";
 
 export class LogAction extends Action {
   static readonly LOG        = "log";

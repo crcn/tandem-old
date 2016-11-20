@@ -5,7 +5,7 @@ import { pull, values } from "lodash";
 import { IFileSystem } from "../file-system";
 import { RawSourceMap } from "source-map";
 import { IDependencyGraph } from "./graph";
-import { DependencyAction } from "./actions";
+import { DependencyEvent } from "./messages";
 import { FileCache, FileCacheItem } from "../file-cache";
 
 import {
@@ -282,7 +282,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.status = new Status(Status.LOADING);
       this.load2().then(() => {
         this.status = new Status(Status.COMPLETED);
-        this.notify(new DependencyAction(DependencyAction.DEPENDENCY_LOADED));
+        this.notify(new DependencyEvent(DependencyEvent.DEPENDENCY_LOADED));
         resolve(this);
       }, (err) => {
         this.status = new Status(Status.ERROR);

@@ -1,7 +1,7 @@
 import { IDispatcher, ReadableStream } from "@tandem/mesh";
 import { BaseFileSystem, IReadFileResultItem } from "./base";
 import { inject, IDisposable, PrivateBusProvider } from "@tandem/common";
-import { ReadFileRequest, ReadDirectoryRequest, WatchFileRequest } from "@tandem/sandbox/actions";
+import { ReadFileRequest, ReadDirectoryRequest, WatchFileRequest } from "@tandem/sandbox/messages";
 
 export class RemoteFileSystem extends BaseFileSystem {
 

@@ -1,7 +1,7 @@
 import { IDispatcher } from "@tandem/mesh";
 import { ITyped, INamed } from "@tandem/common/object";
 import { ICommand } from "@tandem/common/commands";
-import { Action } from "../actions";
+import { Action } from "../messages";
 import { IBrokerBus } from "../dispatchers";
 
 import { File } from "@tandem/common/models";

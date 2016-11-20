@@ -1,5 +1,5 @@
 import { IDispatcher, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, IBus, DuplexStream, WritableStream, TransformStream } from "@tandem/mesh";
-import { Action, PostDSMessage } from "@tandem/common/actions";
+import { Action, PostDSMessage } from "@tandem/common/messages";
 
 export class PostDsNotifierBus implements IBus<any> {
   constructor(private _dsBus: IBus<any>, private _dispatcher: IDispatcher<any, any>) { }

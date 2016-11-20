@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { IBrokerBus } from "./base";
 import * as assert from "assert";
 import {

@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { IObservable } from "./base";
 import { IDispatcher } from "@tandem/mesh";
 
@@ -69,4 +69,4 @@ export class Observable implements IObservable {
 
 export * from "./watch-property";
 export * from "./collection";
-export * from "./actions";
+export * from "./messages";

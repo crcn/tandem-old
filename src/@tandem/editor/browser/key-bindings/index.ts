@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { KeyBinding } from "./base";
 import { Store } from "@tandem/editor/browser/models";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";

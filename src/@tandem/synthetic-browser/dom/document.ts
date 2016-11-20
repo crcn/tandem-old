@@ -42,7 +42,7 @@ import {
   serializable,
   TreeNodeEvent,
   ISerializedContent,
-  ArrayChangeAction,
+  ArrayMetadataChangeEvent,
   ObservableCollection,
 } from "@tandem/common";
 
@@ -529,8 +529,8 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   private onStyleSheetsAction(action: Action) {
-    if (action.type === ArrayChangeAction.ARRAY_CHANGE) {
-      (<ArrayChangeAction<SyntheticCSSStyleSheet>>action).diff.accept({
+    if (action.type === ArrayMetadataChangeEvent.ARRAY_CHANGE) {
+      (<ArrayMetadataChangeEvent<SyntheticCSSStyleSheet>>action).diff.accept({
         visitUpdate: () => {},
         visitInsert: ({ value, index }) => {
           value.$ownerNode = this;

@@ -1,6 +1,6 @@
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { IObservable, Observable } from "@tandem/common/observable";
-import { Action, PropertyChangeEvent } from "@tandem/common/actions";
+import { Action, PropertyChangeEvent } from "@tandem/common/messages";
 
 function shouldBubbleActions(proto: any, property: string) {
   return proto[`$bubbleActions$${property}`];

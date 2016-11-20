@@ -14,7 +14,7 @@ export class BoundingRectPoint implements IPoint {
   }
 }
 
-export function createBoundingRectPoints(rect: BoundingRect): Array<Point> {
+export function createBoundingRectPoints(rect: BoundingRect): Array<IPoint> {
   return [
     new BoundingRectPoint(rect, new Point(0, 0)),
     new BoundingRectPoint(rect, new Point(0.5, 0.5)),
@@ -36,13 +36,13 @@ export class BoundingRectSnapper {
 }
 
 export class Guider {
-  public points: Array<Point>;
+  public points: Array<IPoint>;
 
   constructor(public padding: number = 10) {
     this.points = [];
   }
 
-  addPoint(...points: Array<Point>): void {
+  addPoint(...points: Array<IPoint>): void {
     this.points.push(...points);
   }
 

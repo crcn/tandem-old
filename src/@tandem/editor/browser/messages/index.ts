@@ -2,7 +2,7 @@ import { uniq } from "lodash";
 import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { File, serialize, deserialize, LogLevel } from "@tandem/common";
 import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/models";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";

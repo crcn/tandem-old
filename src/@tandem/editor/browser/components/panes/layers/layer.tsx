@@ -15,7 +15,7 @@ import {
   flattenTree,
   traverseTree,
   findTreeNode,
-  MetadataChangeAction,
+  MetadataChangeEvent,
   BaseApplicationComponent,
 } from "@tandem/common";
 

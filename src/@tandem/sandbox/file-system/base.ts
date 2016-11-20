@@ -9,7 +9,7 @@ import {
 import {
   ReadFileRequest,
   WatchFileRequest,
-} from "../actions";
+} from "../messages";
 
 import { ReadableStream } from "@tandem/mesh";
 

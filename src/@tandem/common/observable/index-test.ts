@@ -1,4 +1,4 @@
-import { Action } from "../actions";
+import { Action } from "../messages";
 import { Observable } from "./index";
 import { expect } from "chai";
 import { CallbackDispatcher } from "@tandem/mesh";

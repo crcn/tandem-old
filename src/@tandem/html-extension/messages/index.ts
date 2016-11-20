@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { PasteRequest } from "@tandem/editor/browser";
 
 export class PasteHTMLEntityAction extends Action {

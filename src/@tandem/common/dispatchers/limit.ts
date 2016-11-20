@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/actions";
+import { Action } from "@tandem/common/messages";
 import { IBus, DuplexStream, ReadableStream, WritableStream } from "@tandem/mesh";
 
 

@@ -22,7 +22,7 @@ import {
   ISerializer,
   BoundingRect,
   serializable,
-  ArrayChangeAction,
+  ArrayMetadataChangeEvent,
   ISerializedContent,
   PropertyChangeEvent,
   ObservableCollection,
@@ -396,8 +396,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   protected onAttributesAction(action: Action) {
-    if (action.type === ArrayChangeAction.ARRAY_CHANGE) {
-      (<ArrayChangeAction<SyntheticDOMAttribute>>action).diff.accept({
+    if (action.type === ArrayMetadataChangeEvent.ARRAY_CHANGE) {
+      (<ArrayMetadataChangeEvent<SyntheticDOMAttribute>>action).diff.accept({
         visitUpdate: () => {},
         visitInsert: ({ value, index }) => {
         this.attributeChangedCallback(value.name, undefined, value.value);

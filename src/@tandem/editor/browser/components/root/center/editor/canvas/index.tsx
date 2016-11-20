@@ -2,12 +2,11 @@ import "./index.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { UpdateAction } from "@tandem/common";
 import ToolsLayerComponent from "./tools";
 import { IsolateComponent }  from "@tandem/editor/browser/components/common";
 import PreviewLayerComponent from "./preview";
 import { Injector, PrivateBusProvider } from "@tandem/common";
-import { SyntheticDOMElement, SyntheticRendererAction }  from "@tandem/synthetic-browser";
+import { SyntheticDOMElement, SyntheticRendererEvent }  from "@tandem/synthetic-browser";
 import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {
   ZoomRequest,
@@ -217,7 +216,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     const renderObserver = {
       dispatch: (action) => {
-        if (action.type === SyntheticRendererAction.UPDATE_RECTANGLES) {
+        if (action.type === SyntheticRendererEvent.UPDATE_RECTANGLES) {
           browser.unobserve(renderObserver);
           fitToCanvas();
         }
