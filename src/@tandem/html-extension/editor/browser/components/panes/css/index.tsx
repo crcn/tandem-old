@@ -16,7 +16,7 @@ import {
   MatchedCSSStyleRule,
   SyntheticDOMElement,
   SyntheticCSSStyleRule,
-  findMatchingStyleRules,
+  getMatchingStyleRules,
   isInheritedCSSStyleProperty,
   SyntheticCSSStyleDeclaration,
 } from "@tandem/synthetic-browser";
@@ -144,7 +144,7 @@ export class ElementCSSPaneComponent extends React.Component<{ workspace: Worksp
     const elements = DOMElements.fromArray(selection);
     if (!elements.length) return null;
     return <div className="td-pane">
-      { findMatchingStyleRules(elements[0]).map((matchResult, index) => {
+      { getMatchingStyleRules(elements[0]).map((matchResult, index) => {
         return <MatchedCSSStyleRuleComponent result={matchResult} key={matchResult.rule.uid} workspace={this.props.workspace} />
       }) }
     </div>

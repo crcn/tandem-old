@@ -163,7 +163,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     return document.createElement("div");
   }
 
-  protected setRects(rects: any, styles: any) {
+  protected setRects(rects: { [IDentifier: string]: BoundingRect }, styles: { [IDentifier: string]: SyntheticCSSStyleDeclaration }) {
     this.$rects          = rects;
     this._computedStyles = styles;
     this._rendered = true;

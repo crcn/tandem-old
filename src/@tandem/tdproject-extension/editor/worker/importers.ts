@@ -40,8 +40,6 @@ export class TDRootFileImporter implements IFileImporter {
 
     const previewLoader = PreviewLoaderProvider.find(filePath, this._injector);
 
-    console.log(previewLoader);
-
     if (!previewLoader) {
       throw new Error(`Cannot create preview file`);
     }

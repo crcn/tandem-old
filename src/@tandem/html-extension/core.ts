@@ -1,6 +1,15 @@
 import { CSS_MIME_TYPE, HTML_MIME_TYPE } from "@tandem/common";
 import { ContentEditorFactoryProvider } from "@tandem/sandbox";
-import { SyntheticDOMElementClassProvider, HTML_XMLNS, MarkupMimeTypeXMLNSProvider, CSSEditor } from "@tandem/synthetic-browser";
+import {
+  HTML_XMLNS,
+  CSSEditor,
+  SVG_XMLNS,
+  SVG_TAG_NAMES,
+  HTML_TAG_NAMES,
+  SyntheticHTMLElement,
+  MarkupMimeTypeXMLNSProvider,
+  SyntheticDOMElementClassProvider,
+} from "@tandem/synthetic-browser";
 
 import { 
   SyntheticHTMLLink,
@@ -13,6 +22,9 @@ import { MimeTypeProvider } from "@tandem/common";
 
 export function createHTMLCoreProviders() {
   return [
+
+    ...HTML_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(HTML_XMLNS, tagName, SyntheticHTMLElement)),
+    ...SVG_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(SVG_XMLNS, tagName, SyntheticHTMLElement)),
 
     // TODO - move these to either sandbox/ or synthetic/ directories
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLink),

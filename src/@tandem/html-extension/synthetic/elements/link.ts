@@ -13,6 +13,8 @@ import * as path from "path";
 
 const _cache = {};
 
+// refactor - all this stuff is janky, and hacked together just to get
+// something to work.
 export class SyntheticHTMLLink extends SyntheticHTMLElement {
 
   public stylesheet: SyntheticCSSStyleSheet;
@@ -30,6 +32,7 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
   createdCallback() {
     const rel     = this.getAttribute("rel") || "stylesheet";
     const href    = this.getAttribute("href");
+    if (href) this.reload();
   }
 
   attachedCallback() {
@@ -44,17 +47,26 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     const rel     = (this.getAttribute("rel") || "stylesheet").toLowerCase();
     const href    = this.href;
 
+    const dep = this.module && this.module.source.eagerGetDependency(href);
+    let content, type;
+
+    if (dep) {
+      content = dep.content;
+    } else {
+      const result = parseDataURI(href);
+      content = result && decodeURIComponent(result.content);
+    }
+
     //  TODO - need to use fetch for this
-    let { type, content } = parseDataURI(href);
-    content = decodeURIComponent(content);
 
     if (rel === "stylesheet") {
       this.stylesheet = this.stylesheet || new SyntheticCSSStyleSheet([]);
-      this.stylesheet.cssText = content;
+      this.stylesheet.cssText = content || "";
       this.attachStylesheet();
     } else if (rel === "import") {
       this.attachShadow({ mode: "open" });
-      // // Odd chunk of code.
+
+      // IMPLEMENT ME
       // // Elements that are evaluated are created in a sandbox, which require pre-loaded
       // // bundles for them to execute. Therefore it's okay to fetch a bundle here synchronously
       // // because it *must* exist for the createCallback to be called. for deserialized instances,

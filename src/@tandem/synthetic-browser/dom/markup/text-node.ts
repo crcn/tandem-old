@@ -18,6 +18,10 @@ export class SyntheticDOMText extends SyntheticDOMValueNode {
     return this.nodeValue;
   }
 
+  set textContent(value: string) {
+    this.nodeValue = value;
+  }
+
   toString() {
     return this.nodeValue;
   }

@@ -188,7 +188,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
     // check for explicit renderPreview function - less ideal
     } else if (exports.renderPreview) {
-      exportsElement = exports.renderPreview();
+      exportsElement = await exports.renderPreview();
     } else {
 
       this.logger.debug(`Checking exports for render metadata:`, Object.keys(exports).join(", "));
@@ -199,7 +199,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
         const renderPreview = exports.renderPreview || value.$$renderPreview;
         if (renderPreview) {
           this.logger.debug("Found render preview metadata");
-          exportsElement = renderPreview();
+          exportsElement = await renderPreview();
         }
       }
 

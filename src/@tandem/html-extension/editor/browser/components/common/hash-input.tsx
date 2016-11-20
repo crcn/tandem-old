@@ -62,7 +62,6 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
 
   onValueChange = (value: string) => {
     const oldName = this.item.name;
-    console.log(value);
     this.props.setKeyValue(this.item.name, this.state.currentValue = value);
   }
 

@@ -26,7 +26,7 @@ export class BoundingRect {
   }
 
   get width() {
-    return this.right - this.left;
+    return Math.max(this.right - this.left, 0);
   }
 
   set width(value) {
@@ -34,7 +34,7 @@ export class BoundingRect {
   }
 
   get height() {
-    return this.bottom - this.top;
+    return Math.max(this.bottom - this.top, 0);
   }
 
   set height(value) {
@@ -67,10 +67,22 @@ export class BoundingRect {
     return [this.left, this.top, this.right, this.bottom];
   }
 
-  intersects(...rects: Array<BoundingRect>): boolean {
+  intersects(...rects: BoundingRect[]): boolean {
     return !!rects.find((rect) => (
-      Math.max(this.left, rect.left) <= Math.min(this.right, rect.right) &&
-      Math.max(this.top , rect.top) <= Math.min(this.bottom, rect.bottom)
+      this.intersectsHorizontal(rect) &&
+      this.intersectsVertical(rect)
+    ));
+  }
+
+  intersectsHorizontal(...rects: BoundingRect[]): boolean {
+    return !!rects.find((rect) => (
+      Math.max(this.top, rect.top) <= Math.min(this.bottom, rect.bottom)
+    ));
+  }
+
+  intersectsVertical(...rects: BoundingRect[]): boolean {
+    return !!rects.find((rect) => (
+      Math.max(this.left, rect.left) <= Math.min(this.right, rect.right)
     ));
   }
 

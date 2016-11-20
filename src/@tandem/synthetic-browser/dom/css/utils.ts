@@ -22,7 +22,7 @@ export class MatchedCSSStyleRule {
   }
 }
 
-export function findMatchingStyleRules(target: SyntheticDOMElement) {
+export function getMatchingStyleRules(target: SyntheticDOMElement) {
 
   const visited = {};
   const usedStyles = {};

@@ -21,6 +21,10 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
     return "";
   }
 
+  set textContent(value: string) {
+    this.nodeValue = value;
+  }
+
   accept(visitor: IMarkupNodeVisitor) {
     return visitor.visitComment(this);
   }

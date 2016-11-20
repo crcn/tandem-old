@@ -63,9 +63,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     const bounds = new BoundingRect(left, top, left + width, top + height);
 
-    console.log(bounds);
-
-
     const importURI = async (uri: string) => {
       try {
         await this.bus.dispatch(new ImportFileRequest(uri, bounds, this.props.workspace.document.body.firstChild));
