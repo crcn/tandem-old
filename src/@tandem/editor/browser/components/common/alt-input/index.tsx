@@ -12,6 +12,7 @@ export interface IAltInputComponentProps {
   style?: any;
   sticky?: boolean;
 }
+
 export class AltInputComponent extends BaseApplicationComponent<IAltInputComponentProps, { showAlt: boolean }> {
   state = { showAlt: false };
   private _keepOpen: boolean;

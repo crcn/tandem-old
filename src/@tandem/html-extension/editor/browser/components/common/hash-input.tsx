@@ -6,7 +6,7 @@ export interface IKeyValueItem {
   name: string;
   readonly?: boolean;
   value: any;
-  overriden?: boolean;
+  overridden?: boolean;
 }
 
 export interface IKeyValueInputComponentProps {
@@ -86,7 +86,7 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
 
   render() {
     const { className, style, valueTokenizer } = this.props;
-    const { name, value, readonly, overriden } = this.item;
+    const { name, value, readonly, overridden } = this.item;
 
     return <div style={style} className={["row font-regular", className].join(" ")}>
       <div className="col-4 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
@@ -96,7 +96,7 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
         className="col-6"
         value={this.state.currentValue || value}
         injector={this.injector}
-        style={{textDecoration: overriden ? "line-through" : undefined}}
+        style={{textDecoration: overridden ? "line-through" : undefined }}
         onKeyDown={this.onValueKeyDown}
         tokenizer={valueTokenizer}
         onChange={this.onValueChange}

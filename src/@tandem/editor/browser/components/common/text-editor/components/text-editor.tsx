@@ -311,7 +311,6 @@ export class TextEditorComponent extends React.Component<ITextEditorComponentPro
   render() {
 
     const editor = this.editor;
-
     return <div
       ref="editor"
       style={editor.style}

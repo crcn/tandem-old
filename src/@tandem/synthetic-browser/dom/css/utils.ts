@@ -18,7 +18,7 @@ export function diffStyleSheetRules(oldRules: syntheticCSSRuleType[], newRules: 
 }
 
 export class MatchedCSSStyleRule {
-  constructor(readonly target: SyntheticDOMElement, readonly rule: SyntheticCSSStyleRule, readonly overridenStyleProperties: any, readonly inherited: boolean) {
+  constructor(readonly target: SyntheticDOMElement, readonly rule: SyntheticCSSStyleRule, readonly overriddenStyleProperties: any, readonly inherited: boolean) {
   }
 }
 
@@ -45,16 +45,16 @@ export function getMatchingStyleRules(target: SyntheticDOMElement) {
         const styleRule = <SyntheticCSSStyleRule>rule;
         if (styleRule.matchesElement(element)) {
           visited[rule.uid] = true;
-          const overridenStyleProperties = {};
+          const overriddenStyleProperties = {};
           for (const property of styleRule.style) {
             if (usedStyles[property]) {
-              overridenStyleProperties[property] = true;
+              overriddenStyleProperties[property] = true;
             } else {
               usedStyles[property] = true;
             }
           }
 
-          matches.push(new MatchedCSSStyleRule(element, styleRule, overridenStyleProperties, inherited));
+          matches.push(new MatchedCSSStyleRule(element, styleRule, overriddenStyleProperties, inherited));
         }
       }
     }

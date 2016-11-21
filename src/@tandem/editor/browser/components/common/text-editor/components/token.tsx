@@ -24,11 +24,11 @@ class TokenComponent extends React.Component<{ token: TextEditorToken, editor: T
       };
     }
 
-    return <div
+    return <span
       ref="token"
       className={"m-text-editor--token " + "m-text-editor--token-" + token.type }
       {...props}>
-    </div>;
+    </span>;
   }
 }
 

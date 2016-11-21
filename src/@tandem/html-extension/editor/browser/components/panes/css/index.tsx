@@ -29,7 +29,7 @@ export interface ICSSStylePaneComponentProps {
   style: SyntheticCSSStyleDeclaration;
   setDeclaration: (key, value, oldKey?) => any;
   pretty?: boolean;
-  overriden?: any;
+  overridden?: any;
   inherited?: boolean;
   renderTitle?(props?: ICSSStylePaneComponentProps): any;
 }
@@ -60,12 +60,12 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
   state = { showPrettyInput: false };
 
   render() {
-    const { setDeclaration, renderTitle, title, style, titleClassName, pretty, overriden, inherited } = this.props;
+    const { setDeclaration, renderTitle, title, style, titleClassName, pretty, overridden, inherited } = this.props;
     const items = [];
 
     for (const key of style) {
       const value = style[key];
-      items.push({ name: kebabCase(key), value: style[key], overriden: overriden && overriden[key], dim: inherited && !isInheritedCSSStyleProperty(key) });
+      items.push({ name: kebabCase(key), value: style[key], overridden: overridden && overridden[key], dim: inherited && !isInheritedCSSStyleProperty(key) });
     }
 
     return <div>
@@ -106,7 +106,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
     titleClassName="entity css selector"
     setDeclaration={this.setDeclaration}
     renderTitle={this.renderTitle}
-    overriden={result.overridenStyleProperties}
+    overridden={result.overriddenStyleProperties}
     />
   }
 

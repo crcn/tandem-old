@@ -10,7 +10,7 @@ IMMEDIATE
 Start working on UX around getting started with Tandem and projects.
 
 - [ ] column tool
-
+- [ ] resizable gutters
 - [ ] unsaved files
 - [ ] multiple workspaces
 - [ ] create tdm file in ~/.tandem if it doesn't exist
@@ -58,6 +58,7 @@ Integrations
 
 UX
   - [ ] tandem init CLI tool
+  - [ ] VM developer console
   - [ ] tandem config
     - [ ] define how to handle extensions
     - [ ] define how to handle components when dnding
@@ -66,6 +67,7 @@ UX
   - [ ] workspaces should change depending on the text editor workspaces
 
 BUGS
+  - [ ] disable attributes that are dynamically created
   - [ ] fix absolute bounds for elements
   - [ ] cannot change source of artboard
   - [ ] cannot rapidly change .tsx? documents
@@ -73,7 +75,6 @@ BUGS
   - [ ] css changes don't immediately get reflected in text editor
   - [ ] rebundle when file name changes. App locks up when file not found
   - [ ] Kill remotely dispatched messages if there are no responses.
-
 
 ARCHITECTURE
   - [ ] db oplog tailing
