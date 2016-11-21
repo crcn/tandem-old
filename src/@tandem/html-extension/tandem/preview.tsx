@@ -3,6 +3,7 @@ import "reflect-metadata";
 import "./preview.scss";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { GutterComponent } from "@tandem/uikit";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
@@ -51,10 +52,14 @@ export const renderPreview = reactEditorPreview(async () => {
         `,
         "index.html": `
           <link rel="stylesheet" href="index.css" />
+          <div id="controls">
+            Hello World
+          </div>
           <span>
             <div class="container" style="color:#F60;">
             </div>
           </span>
+          <!-- a comment -->
         `
       }
     })
@@ -69,6 +74,7 @@ export const renderPreview = reactEditorPreview(async () => {
 
   const document = browser.document;
 
+  document.querySelector("#controls").metadata.set(MetadataKeys.HOVERING, true);
   workspace.select([document.querySelector(".container")]);
 
   return <RootApplicationComponent bus={bus} injector={injector}>

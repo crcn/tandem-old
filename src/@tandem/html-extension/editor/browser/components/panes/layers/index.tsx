@@ -41,18 +41,22 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
         Layers
       </div>
       <TreeComponent
-        nodes={document.body.children}
+        nodes={this.filterChildren(document.body.children)}
         select={this.selectNode.bind(this)}
         onNodeMouseEnter={node => (node as SyntheticDOMNode).metadata.set(MetadataKeys.HOVERING, true)}
         onNodeMouseLeave={node => (node as SyntheticDOMNode).metadata.set(MetadataKeys.HOVERING, false)}
         isNodeHovering={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.HOVERING)}
         isNodeSelected={node => this.props.workspace.selection.indexOf(node as SyntheticDOMNode) !== -1}
         isNodeExpanded={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.LAYER_EXPANDED)}
-        getChildNodes={node => node["contentDocument"] ? node["contentDocument"].body.childNodes : node.children}
+        getChildNodes={node => this.filterChildren(node["contentDocument"] ? node["contentDocument"].body.childNodes : node.children)}
         toggleExpand={this.toggleExpand.bind(this)}
         renderLabel={this.renderLabelOuter.bind(this)}
       />
     </div>;
+  }
+
+  filterChildren(nodes: SyntheticDOMNode[]) {
+    return nodes.filter((node) => node.nodeType !== DOMNodeType.COMMENT);
   }
 
   renderLabelOuter(node: SyntheticDOMNode, depth: number) {
@@ -64,20 +68,13 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
   renderLabel(node: SyntheticDOMNode, depth: number): any {
     switch(node.nodeType) {
       case DOMNodeType.TEXT: return this.renderText(node as SyntheticDOMText);
-      case DOMNodeType.COMMENT: return this.renderComment(node as SyntheticDOMComment);
       case DOMNodeType.ELEMENT: return this.renderElement(node as SyntheticDOMElement, depth);
     }
     return null;
   }
 
-  renderComment({ uid, nodeValue }: SyntheticDOMComment) {
-    return <div className="node comment">
-      { nodeValue }
-    </div>;
-  }
-
   renderText({ uid, nodeValue }: SyntheticDOMText) {
-    return <div className="node text">
+    return <div className="entity text">
       { nodeValue }
     </div>;
   }
@@ -88,8 +85,8 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
       <div className="open-tag">
 
         <span key="tag-name" className="tag-name">{ tagName }</span>
-        { attributes["id"] && <span key="id" className="entity attribute id">#{attributes["id"].value}</span>}
-        { attributes["class"] && <span key="class" className="entity attribute class">.{attributes["class"].value}</span>}
+        { attributes["id"] && <span key="id" className="entity html attribute id">#{attributes["id"].value}</span>}
+        { attributes["class"] && <span key="class" className="entity html attribute class">.{attributes["class"].value}</span>}
 
       </div>
     </div>

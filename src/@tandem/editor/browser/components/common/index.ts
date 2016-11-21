@@ -9,7 +9,6 @@ export * from "./side-dragger";
 export * from "./text-editor";
 export * from "./wysiwyg";
 export * from "./status";
-export * from "./tree";
 export * from "./synthetic-source-link";
 export * from "./draggable";
 export * from "./number-slider-input";

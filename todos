@@ -11,9 +11,8 @@ Start working on UX around getting started with Tandem and projects.
 
 - [ ] column tool
 
-
-- [ ] need to debounce edits
-- [ ] UIKit
+- [ ] unsaved files
+- [ ] multiple workspaces
 - [ ] create tdm file in ~/.tandem if it doesn't exist
 - [ ] "Open current file in tandem" if not already started
 

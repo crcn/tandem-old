@@ -28,8 +28,12 @@ export class TreeComponent extends React.Component<ITreeComponentProps, any> {
 
   render() {
     return <div className="tree">
-      {this.renderChildNodes(this.props.nodes, 1)}
+      {this.renderChildNodes(this.props.nodes, 0)}
     </div>;
+  }
+
+  toggleExpand(node: TreeNode<any>, event: React.MouseEvent<any>) {
+    this.props.toggleExpand(node);
   }
 
   renderNode(node: TreeNode<any>, depth: number): any {
@@ -38,9 +42,10 @@ export class TreeComponent extends React.Component<ITreeComponentProps, any> {
 
     return <div className="node">
 
-      <div onMouseEnter={this.onMouseEnter.bind(this, node)} onMouseLeave={this.onMouseLeave.bind(this, node)} draggable={this.isDraggable(node)} onDragStart={this.onDragStart.bind(this, node)} className={cx({ label: true, hovering: this.props.isNodeHovering(node), selected: this.props.isNodeSelected(node), "no-wrap": true })} style={{paddingLeft: 8 + depth * 8 }}>
-        <i key="arrow" onClick={this.props.toggleExpand.bind(this, node)} className={[expanded ? "ion-arrow-down-b" : "ion-arrow-right-b"].join(" ")} style={{ opacity: this.hasChildren(node) ? 0.5 : 0 }} />
-        <span onClick={this.props.select.bind(this, node)}>{this.props.renderLabel(node)}</span>
+      <div onClick={this.props.select.bind(this, node)} onMouseEnter={this.onMouseEnter.bind(this, node)} onMouseLeave={this.onMouseLeave.bind(this, node)} draggable={this.isDraggable(node)} onDragStart={this.onDragStart.bind(this, node)} className={cx({ label: true, hovering: this.props.isNodeHovering(node), selected: this.props.isNodeSelected(node), "no-wrap": true })} style={{paddingLeft: 8 + depth * 8 }}>
+
+        <i key="arrow" onClick={this.toggleExpand.bind(this, node)} className={cx({"ion-arrow-right-b": true, "expand-button": true, expanded: expanded })} style={{ opacity: this.hasChildren(node) ? 0.5 : 0 }} />
+        <span>{this.props.renderLabel(node)}</span>
       </div>
 
       {expanded ? this.renderChildNodes(this.getChildNodes(node), depth + 1) : null}
