@@ -5,6 +5,29 @@
   padding: nth($sizes, 4);
 }
 
+
 .row {
 
+  padding: $padding-s $padding-r;
+
+  display: flex;
+  flex-direction: row;
+
+  .no-shrink {
+    flex-shrink: 0;
+  }
+
+  .col {
+    margin-left: 16px !important;
+    &:first-child {
+      margin-left: 0px !important;
+    }
+  }
+
+  @for $i from 1 through 10 {
+    .col-#{$i} {
+      @extend .col;
+      width: percentage($i/10);
+    }
+  }
 }

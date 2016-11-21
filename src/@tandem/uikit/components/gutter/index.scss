@@ -9,9 +9,9 @@
 
   & .header {
     text-transform: uppercase;
-    padding: 8px 8px;
-    font-weight: 800;
-    font-size: 0.66em;
+    padding: $padding-r $padding-r;
+    font-weight: 600;
+    font-size: 0.89em;
 
     .controls{
       display: none;

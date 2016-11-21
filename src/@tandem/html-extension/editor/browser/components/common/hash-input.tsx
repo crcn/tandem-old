@@ -89,11 +89,11 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
     const { name, value, readonly, overriden } = this.item;
 
     return <div style={style} className={["row font-regular", className].join(" ")}>
-      <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
+      <div className="col-4 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
       </div>
       <TextEditorComponent
-        className="col-5"
+        className="col-6"
         value={this.state.currentValue || value}
         injector={this.injector}
         style={{textDecoration: overriden ? "line-through" : undefined}}
