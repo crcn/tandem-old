@@ -5,14 +5,13 @@
   flex-grow:0;
   width: 100%;
   height: 100%;
-  height: 100%;
   overflow: scroll;
 
   & .header {
     text-transform: uppercase;
     padding: 8px 8px;
-    font-size: 0.8em;
     font-weight: 800;
+    font-size: 0.66em;
 
     .controls{
       display: none;
@@ -22,11 +21,11 @@
   }
 
   &.left, &.right {
-    width: 200px;
+    width: 300px;
   }
 
   &.top, &.bottom {
-    height: 200px;
+    height: 300px;
   }
 
   &.left {
@@ -42,7 +41,6 @@
   }
   border: 0px solid #CACACA;
   background: #FCFCFC;
-  color: #757272;
 
   &.bottom {
     border-top-width: 1px;

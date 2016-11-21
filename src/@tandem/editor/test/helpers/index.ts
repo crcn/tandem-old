@@ -1,3 +1,4 @@
+import "reflect-metadata";
 // TODO - giant mess of a setup here. This is okay for now as
 // the internal API matures along with extensions. However, it *may* be good
 // to modularize this piece of code later so that it's not so specific to certain libraries
@@ -24,6 +25,7 @@ export interface IMasterTestAppicationOptions {
   log?: {
     level: LogLevel
   };
+  typescript?: boolean;
   sandboxOptions?: ISandboxTestProviderOptions;
   createTestProviders?: () => any;
 }
@@ -39,7 +41,7 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
     createSASSSandboxProviders(),
     createHTMLSandboxProviders(),
     createJavaScriptSandboxProviders(),
-    createTypescriptEditorWorkerProviders(),
+    options.typescript !== false ? createTypescriptEditorWorkerProviders() : [],
     new ApplicationConfigurationProvider(options),
     createTestSandboxProviders(options.sandboxOptions),
     new ContentEditorFactoryProvider(HTML_MIME_TYPE, MarkupEditor),

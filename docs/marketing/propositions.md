@@ -1,12 +1,12 @@
 #### Brainstorm points
 
-- Perfect visual QA testing platform
+- Fast visual QA
   - See *every* state of your application before it goes to production
 
-- Realtime cross-browser testing
+- realtime cross-browser testing
   - Test your visual code against an *unlimited* set of browsers while you're writing code.
 
-- Collaborative
+- Collaboration
   -
 
 - Extensible

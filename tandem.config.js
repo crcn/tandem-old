@@ -4,6 +4,7 @@ const stripIndent = require('strip-indent');
 
 module.exports = {
   workspaceFiles: "./index.tdm",
+  // live: false,
   fileHandlers: [
     {
       test: /tsx$/,

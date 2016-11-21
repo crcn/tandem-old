@@ -82,10 +82,6 @@ button {
   width: 100%;
 }
 
-.dim {
-  opacity: 0.6;
-}
-
 .select {
   @extend .input;
   @extend .no-wrap;

@@ -38,7 +38,7 @@ export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ w
     if (!items.length) return null;
 
     return <div>
-      <div className="header">
+      <div className="header entity html property">
         Attributes
         <div className="controls">
           <span onClick={this.addAttribute}>+</span>

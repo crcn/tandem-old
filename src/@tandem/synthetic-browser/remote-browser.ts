@@ -163,9 +163,14 @@ export class RemoteBrowserService extends BaseApplicationService {
       }
 
       const onStatusChange = (status: Status) => {
-        if (status && status.type === Status.COMPLETED) {
-          changeWatcher.target = browser.document;
+        if (status) {
+          if (status.type === Status.COMPLETED) {
+            changeWatcher.target = browser.document;
+          } else if (status.type === Status.ERROR) {
+            this.logger.error("Sending error status: ", status.data);
+          }
         }
+
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.STATUS_CHANGE, status)) });
       };
 

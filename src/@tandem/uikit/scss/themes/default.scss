@@ -1,6 +1,17 @@
+/**
+ * Colors
+ */
 
-/*$font-family-0: BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Avenir, Cantarell, Open Sans, Helvetica Neue, sans-serif;*/
-/*$font-family-1: Avenir;*/
+
+$barney: #8467D4;
+
+$sky-blue: #00B5FF;
+
+$watermelon: #F549B8;
+
+$offset-white: rgba(255, 255, 255, 0.9);
+$offset-black: rgba(0, 0, 0, 0.05);
+
 /**
  * Typography
  */
@@ -9,19 +20,24 @@ $default-font-family: BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Aven
 $default-letter-spacing: 0.12em;
 $default-font-weight: 400;
 $default-font-size: 11px;
+$default-font-color: #555;
+$dim-font-color: #555;
+$disabled-color: rgba(0,0,0,0.2);
+
 
 .entity {
   & .css {
     & .selector {
-      color: blue;
+      color: $sky-blue;
     }
   }
 }
 
 .gutter {
-  background: #F4F4F4;
+  background: #F9F9F9;
+
   .header {
-    background: #EAEAEA;
+    background: $offset-black;
   }
 }
 
@@ -34,7 +50,17 @@ $default-font-size: 11px;
 .entity {
   &.css {
   &.selector {
-      color: #649460;
+      color: $barney;
     }
   }
+  &.html {
+    &.property {
+      color: $watermelon;
+    }
+  }
+}
+
+.selected {
+  background: $sky-blue;
+  color: $offset-white;
 }

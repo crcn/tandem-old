@@ -2,8 +2,6 @@
  * built-in element styles.
  */
 
-@import "./vars";
-
 * {
   box-sizing: border-box;
 }
@@ -12,6 +10,8 @@ html, body {
   font-weight: $default-font-weight;
   font-family: $default-font-family;
   font-size: $default-font-size;
+  color: $default-font-color;
+
   letter-spacing: $default-letter-spacing;
   padding: 0;
   margin: 0;

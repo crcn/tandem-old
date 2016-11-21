@@ -88,7 +88,6 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
     const { className, style, valueTokenizer } = this.props;
     const { name, value, readonly, overriden } = this.item;
 
-    // <input type="text" className="col-5" {...(this.state.currentValue != null ? {} : { value: value })}  disabled={readonly} onKeyDown={this.onValueKeyDown} onChange={this.onValueChange} onFocus={this.onValueFocus} onBlur={this.onValueBlur} style={{textDecoration: overriden ? "line-through" : undefined}} ></input>
     return <div style={style} className={["row font-regular", className].join(" ")}>
       <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
         { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }

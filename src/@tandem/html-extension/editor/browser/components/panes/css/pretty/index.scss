@@ -2,7 +2,6 @@
 
 .td-pretty-pane {
   & label {
-    @extend .dim;
     @extend .font-regular;
     min-width: 20px;
     line-height: 12px;

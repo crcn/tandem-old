@@ -8,19 +8,4 @@
     }
   }
 
-  & .comment, & .text {
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  & .element {
-    & .open-tag {
-      & .tag-name {
-        color: white;
-      }
-
-      & .attribute {
-        opacity: 0.5;
-      }
-    }
-  }
 }

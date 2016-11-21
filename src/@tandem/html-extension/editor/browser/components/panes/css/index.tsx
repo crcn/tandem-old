@@ -1,17 +1,16 @@
 import "./index.scss";
 
-
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { cssTokenizer } from "@tandem/html-extension/tokenizers";
+import { CallbackDispatcher } from "@tandem/mesh";
+import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { kebabCase, camelCase } from "lodash";
-import { CallbackDispatcher } from "@tandem/mesh";
 import { CSSPrettyPaneComponent } from "./pretty";
-import { BaseApplicationComponent, Action } from "@tandem/common";
-import { cssTokenizer } from "@tandem/html-extension/tokenizers";
 import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
-import { GutterComponent, SyntheticSourceLink } from "@tandem/editor/browser/components";
+import { BaseApplicationComponent, Action } from "@tandem/common";
 import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import {
   MatchedCSSStyleRule,
@@ -44,7 +43,7 @@ export class CSSStylePropertyComponent extends BaseApplicationComponent<IKeyValu
     const props = this.props;
     return <div className="css-property-input">
       <div className="css-property-input-line">
-        <KeyValueInputComponent {...props} style={props.item["dim"] ? { opacity: 0.4 } : {}} />
+        <KeyValueInputComponent {...props} className={props.item["dim"] ? "disabled" : undefined} />
         <i className={[this.state.showPrettyInput ? "ion-close" : "ion-edit", "edit-button", "dim"].join(" ")} onClick={this.togglePrettyInput} />
       </div>
       {this.state.showPrettyInput ? this.renderPrettyInput(props) : null}
@@ -129,8 +128,9 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
   }
 
   renderTitle = () => {
+
     return <div className="css-pane-title" title={this.props.result.rule.source && this.props.result.rule.source.filePath} onMouseEnter={this.onTitleMouseEnter} onMouseLeave={this.onTitleMouseLeave} onClick={this.onTitleClick}>
-      <SyntheticSourceLink target={this.props.result.rule}>{ this.props.result.rule.selector }</SyntheticSourceLink>
+      <SyntheticSourceLink target={this.props.result.rule}>{ String(this.props.result.rule.selector) }</SyntheticSourceLink>
     </div>
   }
 }

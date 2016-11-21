@@ -193,34 +193,39 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
     this.logger.debug("Evaluated entry", this.location.toString());
 
-    // look for module exports - typically by evaluator, or loader
-    if (exports.nodeType) {
-      exportsElement = exports;
+    try {
+      // look for module exports - typically by evaluator, or loader
+      if (exports.nodeType) {
+        exportsElement = exports;
 
-    // check for explicit renderPreview function - less ideal
-    } else if (exports.renderPreview) {
-      exportsElement = await exports.renderPreview();
-    } else {
+      // check for explicit renderPreview function - less ideal
+      } else if (exports.renderPreview) {
+        exportsElement = await exports.renderPreview();
+      } else {
 
-      this.logger.debug(`Checking exports for render metadata:`, Object.keys(exports).join(", "));
+        this.logger.debug(`Checking exports for render metadata:`, Object.keys(exports).join(", "));
 
-      // scan for reflect metadata
-      for (const key in exports) {
-        const value = exports[key];
-        const renderPreview = exports.renderPreview || value.$$renderPreview;
-        if (renderPreview) {
-          this.logger.debug("Found render preview metadata");
-          exportsElement = await renderPreview();
+        // scan for reflect metadata
+        for (const key in exports) {
+          const value = exports[key];
+          const renderPreview = exports.renderPreview || value.$$renderPreview;
+          if (renderPreview) {
+            this.logger.debug("Found render preview metadata");
+            exportsElement = await renderPreview();
+          }
+        }
+
+        if (!exportsElement) {
+          this.logger.warn(`Exported Sandbox object is not a synthetic DOM node.`);
         }
       }
 
-      if (!exportsElement) {
-        this.logger.warn(`Exported Sandbox object is not a synthetic DOM node.`);
+      if (exportsElement) {
+        window.document.body.appendChild(exportsElement);
       }
-    }
-
-    if (exportsElement) {
-      window.document.body.appendChild(exportsElement);
+    } catch(e) {
+      this.status = new Status(Status.ERROR, e);
+      throw e;
     }
 
     this.status = new Status(Status.COMPLETED);

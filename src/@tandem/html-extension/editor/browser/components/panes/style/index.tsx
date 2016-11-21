@@ -31,6 +31,6 @@ export class HTMLStylePaneComponent extends BaseApplicationComponent<{ workspace
     if (!workspace) return null;
     const items = this.items;
     if (!items.length || !items.style.length) return null;
-    return <CSSStylePaneComponent style={items.style} title="Style" titleClassName="color-pink-10" setDeclaration={this.setDeclaration} />;
+    return <CSSStylePaneComponent style={items.style} title="Style" titleClassName="entity html property" setDeclaration={this.setDeclaration} />;
   }
 }

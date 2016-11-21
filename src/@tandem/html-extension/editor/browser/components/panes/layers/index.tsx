@@ -88,8 +88,8 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
       <div className="open-tag">
 
         <span key="tag-name" className="tag-name">{ tagName }</span>
-        { attributes["id"] && <span key="id" className="attribute id">#{attributes["id"].value}</span>}
-        { attributes["class"] && <span key="class" className="attribute class">.{attributes["class"].value}</span>}
+        { attributes["id"] && <span key="id" className="entity attribute id">#{attributes["id"].value}</span>}
+        { attributes["class"] && <span key="class" className="entity attribute class">.{attributes["class"].value}</span>}
 
       </div>
     </div>
