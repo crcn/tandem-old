@@ -26,6 +26,8 @@ export function getMatchingStyleRules(target: SyntheticDOMElement) {
 
   const visited = {};
   const usedStyles = {};
+  const matchCache = {};
+  let jj = 0;
 
   function getStyleRules(element: SyntheticDOMElement, inherited?: boolean): MatchedCSSStyleRule[] {
     const matches = [];
@@ -33,6 +35,7 @@ export function getMatchingStyleRules(target: SyntheticDOMElement) {
     for (let i = element.ownerDocument.styleSheets.length; i--;) {
 
       const styleSheet = element.ownerDocument.styleSheets[i];
+      const filePath   = styleSheet.source.filePath;
 
       for (let j = styleSheet.rules.length; j--;) {
 
@@ -51,7 +54,6 @@ export function getMatchingStyleRules(target: SyntheticDOMElement) {
             }
           }
 
-          const inheritedStyleProperties = {};
           matches.push(new MatchedCSSStyleRule(element, styleRule, overridenStyleProperties, inherited));
         }
       }
@@ -70,6 +72,8 @@ export function getMatchingStyleRules(target: SyntheticDOMElement) {
       matchedRules.push(...getStyleRules(<SyntheticDOMElement>ancestor, true));
     }
   });
+
+  console.log(jj);
 
   return matchedRules;
 }

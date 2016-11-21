@@ -8,7 +8,7 @@ export interface IAltInputComponentProps {
   getAltProps(props): any;
   canRenderAlt?(): boolean;
   className?: string;
-  onMouseDown(event: React.MouseEvent<any>): any;
+  onMouseDown?(event: React.MouseEvent<any>): any;
   style?: any;
   sticky?: boolean;
 }

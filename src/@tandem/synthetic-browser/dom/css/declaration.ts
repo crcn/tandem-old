@@ -477,8 +477,6 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
     if (ownerNode) {
       ownerNode.notify(new CSSDeclarationValueChangeEvent(this, name, newValue, oldName));
-    } else {
-      // console.error("Declarations must have an owner node.");
     }
   }
 
@@ -584,7 +582,16 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
 
   static fromObject(declaration: any): SyntheticCSSStyleDeclaration {
     const obj = new SyntheticCSSStyleDeclaration();
-    obj.deserialize(declaration);
+    if (declaration.length) {
+      console.log(declaration.length);
+      for (let i = 0, n = declaration.length; i < n; i++) {
+        const key = declaration[i];
+        obj[key] = declaration[key];
+      }
+      obj.updatePropertyIndices();
+    } else {
+      obj.deserialize(declaration);
+    }
     return obj;
   }
 

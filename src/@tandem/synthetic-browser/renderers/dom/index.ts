@@ -82,30 +82,21 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   render() {
-
     const { document, element } = this;
 
+    const styleElement = element.firstChild as HTMLStyleElement;
+    const now = Date.now();
+    const currentCSSText = document.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n");
+    if (this._currentCSSText !== currentCSSText) {
+      styleElement.textContent = this._currentCSSText = currentCSSText;
+    }
 
-    return new Promise((resolve) => {
-      requestAnimationFrame(() => {
+    if (!this._documentElement) {
+      this._documentElement = renderHTMLNode(document, this._elementDictionary = {});
+      element.lastChild.appendChild(this._documentElement);
+    }
 
-        const styleElement = element.firstChild as HTMLStyleElement;
-        const currentCSSText = document.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n");
-        if (this._currentCSSText !== currentCSSText) {
-          styleElement.textContent = this._currentCSSText = currentCSSText;
-          console.log(document.styleSheets.length);
-        }
-
-        if (!this._documentElement) {
-          this._documentElement = renderHTMLNode(document, this._elementDictionary = {});
-          element.lastChild.appendChild(this._documentElement);
-        }
-
-        this.syncRects();
-
-        resolve();
-      });
-    });
+    this.syncRects();
   }
 
   protected reset() {
@@ -114,7 +105,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   private syncRects() {
-     const now = Date.now();
     const syntheticDOMNodesByUID = {};
     const rects  = {};
     const styles = {};
@@ -122,10 +112,16 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     for (let uid in this._elementDictionary) {
       const [native, synthetic] = this._elementDictionary[uid] || [undefined, undefined];
 
+      // (<HTMLElement>native).
+
       const syntheticNode: SyntheticDOMNode = <SyntheticDOMNode>synthetic;
       if (syntheticNode && syntheticNode.nodeType === DOMNodeType.ELEMENT) {
         const rect = rects[uid]  = BoundingRect.fromClientRect(native.getBoundingClientRect());
-        styles[uid] = SyntheticCSSStyleDeclaration.fromObject(window.getComputedStyle(native));
+        const nativeStyle = window.getComputedStyle(native);
+
+        // just attach whatever's returned by the DOM -- don't wrap this in a synthetic, or else
+        // there'll be massive performance penalties.
+        styles[uid] = nativeStyle;
         (<AttachableSyntheticDOMNode<any>>syntheticNode).attachNative(native);
       }
     }

@@ -19,14 +19,17 @@ export class EditorComponent extends BaseApplicationComponent<{}, {}> {
     const { workspace, settings } = this._store;
     const selection = workspace && workspace.selection || [];
 
+    const hideLeftGutter = this._store.settings.get(SettingKeys.HIDE_LEFT_SIDEBAR);
+    const hideRightGutter = this._store.settings.get(SettingKeys.HIDE_RIGHT_SIDEBAR);
+
     return <div className="m-editor editor">
-      <GutterComponent className="left" style={{width:350, display: this._store.settings.get(SettingKeys.HIDE_LEFT_SIDEBAR)  ? "block" : "none" }}>
+      { hideLeftGutter ? null : <GutterComponent className="left" style={{width:350, display: "block" }}>
         <RegisteredComponent workspace={workspace} ns={DocumentPaneComponentFactoryProvider.getId("**")} />
-      </GutterComponent>
+      </GutterComponent> }
       <CenterComponent />
-      <GutterComponent className="right" style={{width:350, display: this._store.settings.get(SettingKeys.HIDE_RIGHT_SIDEBAR)  ? "block" : "none" }}>
+      { hideRightGutter ? null : <GutterComponent className="right" style={{width:350, display: "block"  }}>
         <RegisteredComponent workspace={workspace} ns={EntityPaneComponentFactoryProvider.getId("**")} />
-      </GutterComponent>
+      </GutterComponent> }
     </div>;
   }
 }

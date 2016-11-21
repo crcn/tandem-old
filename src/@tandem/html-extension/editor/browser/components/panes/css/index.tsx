@@ -6,8 +6,9 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { kebabCase, camelCase } from "lodash";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { CSSPrettyPaneComponent } from "./pretty";
-import { BaseApplicationComponent } from "@tandem/common";
+import { BaseApplicationComponent, Action } from "@tandem/common";
 import { cssTokenizer } from "@tandem/html-extension/tokenizers";
 import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
 import { GutterComponent, SyntheticSourceLink } from "@tandem/editor/browser/components";
@@ -15,10 +16,12 @@ import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProp
 import {
   MatchedCSSStyleRule,
   SyntheticDOMElement,
+  isDOMMutationEvent,
   SyntheticCSSStyleRule,
   getMatchingStyleRules,
   isInheritedCSSStyleProperty,
   SyntheticCSSStyleDeclaration,
+  CSSDeclarationValueChangeEvent,
 } from "@tandem/synthetic-browser";
 
 export interface ICSSStylePaneComponentProps {
@@ -133,19 +136,64 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
 }
 
 export class ElementCSSPaneComponent extends React.Component<{ workspace: Workspace }, any> {
+  private _rulesWatcher: MatchedCSSRulesCache;
+  componentWillUnmount() {
+    if (this._rulesWatcher) this._rulesWatcher.target = undefined;
+  }
   render() {
     if (!this.props.workspace) return null;
     const { selection } = this.props.workspace;
+
+    if (!this._rulesWatcher) {
+      this._rulesWatcher = new MatchedCSSRulesCache();
+    }
 
     // CSS Selection pane only works with *one* element.
     if (selection.length !== 1) return null;
 
     const elements = DOMElements.fromArray(selection);
     if (!elements.length) return null;
+    this._rulesWatcher.target = elements[0];
+
     return <div className="td-pane">
-      { getMatchingStyleRules(elements[0]).map((matchResult, index) => {
-        return <MatchedCSSStyleRuleComponent result={matchResult} key={matchResult.rule.uid} workspace={this.props.workspace} />
+      { this._rulesWatcher.rules.map((matchResult, index) => {
+        return <MatchedCSSStyleRuleComponent result={matchResult} key={index} workspace={this.props.workspace} />
       }) }
     </div>
+  }
+}
+
+class MatchedCSSRulesCache {
+  private _target: SyntheticDOMElement;
+  private _matchedRules: MatchedCSSStyleRule[];
+  private _documentObserver: CallbackDispatcher<any, any>;
+  constructor() {
+    this._documentObserver = new CallbackDispatcher(this.onDocumentEvent.bind(this));
+  }
+
+  set target(value: SyntheticDOMElement){
+    if (this._target === value) return;
+    if (this._target) {
+      this._target.ownerDocument.unobserve(this._documentObserver);
+    }
+    this._target = value;
+    this.matchRules();
+    this._target.ownerDocument.observe(this._documentObserver);
+  }
+  get target(): SyntheticDOMElement {
+    return this._target;
+  }
+
+  get rules(): MatchedCSSStyleRule[] {
+    return this._matchedRules;
+  }
+
+  private matchRules() {
+    this._matchedRules = getMatchingStyleRules(this._target);
+  }
+
+  private onDocumentEvent(event: Action) {
+    if (!isDOMMutationEvent(event) || event.type === CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE) return;
+    this.matchRules();
   }
 }
