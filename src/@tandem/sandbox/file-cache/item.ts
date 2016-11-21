@@ -43,12 +43,11 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   @bindable(true)
   public metadata: Metadata;
 
-  private _i: number;
+  private _rawDataUrlContent: any;
 
   constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem) {
     super(source, collectionName);
     this.observe(new CallbackDispatcher(this.onAction.bind(this)));
-    this._i = _i++;
   }
 
   serialize() {
@@ -70,7 +69,6 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   setDataUrlContent(content: any, mimeType: string = "text/plain") {
-
     if (!(content instanceof Buffer)) {
       content = new Buffer(content, "utf8");
     }

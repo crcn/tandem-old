@@ -86,6 +86,7 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
 
   applyEditChange(action: ApplicableEditChange) {
     action.applyTo(this.getEditChangeTargets()[action.type]);
+    this.cssRules.forEach(rule => rule.$parentRule = this);
   }
 
   protected getEditChangeTargets() {

@@ -43,7 +43,7 @@ import {
   CommentLayerLabelCoponent,
   ElementLayerLabelComponent,
   ElementInfoStageToolComponent,
-  EntityAttributesPaneComponent,
+  ElementAttributesPaneComponent,
 } from "./components";
 
 export function createHTMLEditorBrowserProviders() {
@@ -62,7 +62,7 @@ export function createHTMLEditorBrowserProviders() {
     new LayerLabelComponentFactoryProvider(SyntheticDOMComment.name, CommentLayerLabelCoponent),
 
     // entity panes
-    new EntityPaneComponentFactoryProvider("htmlAttributes", EntityAttributesPaneComponent),
+    new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent),
     new EntityPaneComponentFactoryProvider("htmlStyle", HTMLStylePaneComponent),
     new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
     new DocumentPaneComponentFactoryProvider("htmlLayers", LayersPaneComponent),

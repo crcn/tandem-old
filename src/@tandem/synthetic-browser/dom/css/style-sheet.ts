@@ -138,13 +138,14 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     return new SyntheticCSSStyleSheet([]);
   }
 
-  applyEditChange(action: ApplicableEditChange) {
-    action.applyTo({
+  applyEditChange(change: ApplicableEditChange) {
+    change.applyTo({
       [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this,
       [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
       [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
       [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
-    }[action.type]);
+    }[change.type]);
+    this.rules.forEach(rule => rule.$parentStyleSheet = this);
   }
 
   createEdit() {

@@ -6,7 +6,7 @@ import { HashInputComponent } from "@tandem/html-extension/editor/browser/compon
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMAttribute, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
-export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
+export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
 
   addAttribute = () => {
     this.items.setAttribute("", "");

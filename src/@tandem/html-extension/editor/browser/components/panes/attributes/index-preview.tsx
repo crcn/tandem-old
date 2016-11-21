@@ -7,7 +7,7 @@ import { FocusComponent } from "@tandem/editor/browser/components/common";
 import { reactPreview, Metadata } from "@tandem/common";
 import { Workspace } from "@tandem/editor/browser";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
-import { EntityAttributesPaneComponent } from "./index";
+import { ElementAttributesPaneComponent } from "./index";
 import {
   SyntheticWindow,
   SyntheticLocation,
@@ -23,6 +23,6 @@ export const renderPreview = reactEditorPreview(() => {
   `;
   workspace.select(window.document.body.firstChild);
   return <GutterComponent>
-    <EntityAttributesPaneComponent workspace={workspace} />
+    <ElementAttributesPaneComponent workspace={workspace} />
   </GutterComponent>
 })

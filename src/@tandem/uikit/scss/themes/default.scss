@@ -21,7 +21,7 @@ $default-font-size: 11px;
 .gutter {
   background: #F4F4F4;
   .header {
-    background: #E4E4E4;
+    background: #EAEAEA;
   }
 }
 
@@ -32,9 +32,9 @@ $default-font-size: 11px;
 }
 
 .entity {
-  & .css {
-    .selector {
-      color: red;
+  &.css {
+  &.selector {
+      color: #649460;
     }
   }
 }

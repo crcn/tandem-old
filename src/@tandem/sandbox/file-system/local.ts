@@ -1,8 +1,9 @@
 import * as fs from "fs";
-import * as chokidar from "chokidar";
 import { IDisposable } from "@tandem/common";
 import { ReadableStream } from "@tandem/mesh";
 import { BaseFileSystem, IReadFileResultItem } from "./base";
+
+let _i = 0;
 
 export class LocalFileSystem extends BaseFileSystem {
 
@@ -52,22 +53,19 @@ export class LocalFileSystem extends BaseFileSystem {
 
   watchFile2(filePath: string, onChange: () => any) {
     this.logger.debug("watch", filePath);
-    const watcher = chokidar.watch(filePath, {
-      usePolling: false
-    });
 
     let currentStat = fs.lstatSync(filePath);
-
-    watcher.on("change", () => {
+    const listener = () => {
       let newStat = fs.lstatSync(filePath);
       if (newStat.mtime.getTime() === currentStat.mtime.getTime()) return;
       currentStat = newStat;
       onChange();
-    });
+    }
+    fs.watchFile(filePath, listener);
 
     return {
       dispose: () => {
-        watcher.close()
+        fs.unwatchFile(filePath, listener);
       }
     }
   }

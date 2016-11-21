@@ -9,12 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "acorn-globals": "^3.0.0",
+    "@tandem/mesh": "6.0.x",
     "detective": "^4.3.2",
+    "chokidar": "^1.6.1",
     "loader-utils": "^0.2.16",
     "lodash": "^4.16.4",
     "md5": "^2.2.1",
-    "@tandem/mesh": "6.0.x",
     "node-fetch": "^1.6.3",
     "node-libs-browser": "^1.0.0",
     "package-path": "^1.0.0",
@@ -25,6 +25,5 @@
   "peerDependencies": {
     "@tandem/common": "^1.0.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

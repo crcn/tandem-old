@@ -44,7 +44,7 @@ module.exports = {
       alias: {
         // 'react': require.resolve('node_modules/react/dist/react.js'),
         // 'react-dom': require.resolve('node_modules/react-dom/dist/react-dom.js'),
-        'chokidar': 'null-loader?chokidar',
+        'graceful-chokidar': 'null-loader?graceful-chokidar',
         'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',
         'mongodb': 'null-loader?mongodb',

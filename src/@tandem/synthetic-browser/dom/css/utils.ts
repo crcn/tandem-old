@@ -73,7 +73,5 @@ export function getMatchingStyleRules(target: SyntheticDOMElement) {
     }
   });
 
-  console.log(jj);
-
   return matchedRules;
 }

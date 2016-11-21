@@ -26,8 +26,9 @@ export class FileCacheSynchronizer {
 
         // TODO - fix this -- shouldn't be watching files that do not exist
         try {
-          if (!/^\w+:\/\//.test(value))
-          this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
+          if (!/^\w+:\/\//.test(value)) {
+            this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
+          }
         } catch(e) {
           this.logger.error(e.stack);
         }
