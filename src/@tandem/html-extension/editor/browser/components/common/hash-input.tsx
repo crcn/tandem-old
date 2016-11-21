@@ -128,7 +128,7 @@ export class HashInputComponent extends React.Component<IKeyInputComponentProps,
 
   render() {
     const { items, renderItemComponent, valueTokenizer } = this.props;
-    return <div className="td-cells">
+    return <div className="table">
       {
         // index important here since the name can change
         items.map((item, index) => {

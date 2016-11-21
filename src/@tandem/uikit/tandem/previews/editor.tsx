@@ -22,46 +22,7 @@ class TextNode extends TreeNode<any> {
 
 // CSS tab
 const renderHTMLLayers = () => {
-  const node = new ElementNode("div", { "id": "application"}, [
-      new ElementNode("ul", { class: "items" }, [
-        new ElementNode("li", {}, [
-          new TextNode("cars")
-        ])
-      ])
-    ]
-  )
-
-  const renderAttribute = (name: string, value) => {
-    return <span>
-    &nbsp;
-      <span className={`entity other attribute-name css ${name}`}>{name}</span>
-      =
-      <span className="entity string">"{value}"</span>
-    </span>
-  }
-
-  const renderLabel = (node: ElementNode|TextNode) => {
-    return {
-      text: ({ value }: TextNode) => <span>{ value }</span>,
-      element: ({ attributes, name }: ElementNode) => <span>
-        <span className="entity name tag">
-          &lt;{ name }
-        </span>
-          { attributes.id ? renderAttribute("id", attributes.id) : null }
-          { attributes.class ? renderAttribute("class", attributes.class) : null }
-          <span className="entity name tag">
-          &gt;
-        </span>
-        </span>
-    }[node["value"] ? "text" : "element"](node);
-  }
-
-  return <div>
-    <div className="header">
-      HTML
-    </div>
-    <TreeComponent nodes={[node]} renderLabel={renderLabel} />
-  </div>
+  return null;
 }
 
 const renderCSSPane = () => {

@@ -1,8 +1,9 @@
 import { bindable } from "@tandem/common";
-import { ISerializer } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
-import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
 import { SyntheticDocument } from "../document";
+import { ValueNodeChangeEvent } from "../../messages";
+import { ISerializer, PropertyChangeEvent } from "@tandem/common";
+import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
 import { BaseContentEdit, EditChange, SetValueEditActon, SetKeyValueEditChange } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMValueNode {
@@ -35,14 +36,25 @@ export class SyntheticDOMValueNodeSerializer implements ISerializer<SyntheticDOM
 
 export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
 
-  @bindable(true)
-  public nodeValue: string;
+  private _nodeValue: any;
 
   public targetNode: SyntheticDOMValueNode;
 
   constructor(nodeName: string, nodeValue: string) {
     super(nodeName);
     this.nodeValue = nodeValue;
+  }
+
+  get nodeValue() {
+    return this._nodeValue;
+  }
+
+  set nodeValue(value: any) {
+    this._nodeValue = value;
+
+    // probably want to dispatch the actual edit change instead
+    this.notify(new ValueNodeChangeEvent(value));
+    this.notify(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE, "nodeValue", value));
   }
 
   createEdit() {

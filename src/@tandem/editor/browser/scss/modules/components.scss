@@ -55,28 +55,6 @@ $gutter-background: #444;
   }
 }
 
-.td-cells {
-  .row {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .td-cell-key {
-    line-height: inherit;
-    width: 40%;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  input[type="text"]{
-    background: transparent;
-    border: none;
-    border-radius: none;
-    padding: 0px;
-    line-height: inherit;
-    &:disabled{
-      color: rgba(255, 255, 255, 0.5)
-    }
-  }
-}
 
 a {
   color: inherit;

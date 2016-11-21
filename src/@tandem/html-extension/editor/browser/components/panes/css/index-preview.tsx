@@ -3,7 +3,7 @@ import { reactEditorPreview } from "@tandem/editor/browser/preview";
 
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
-import { GutterComponent } from "@tandem/editor/browser/components";
+import { GutterComponent } from "@tandem/uikit";
 import { ElementCSSPaneComponent, CSSStylePaneComponent } from "./index";
 import {
   parseCSS,

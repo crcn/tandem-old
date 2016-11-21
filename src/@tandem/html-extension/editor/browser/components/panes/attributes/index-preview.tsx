@@ -1,10 +1,11 @@
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 
 import * as React from "react";
+import {  GutterComponent } from "@tandem/uikit";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { FocusComponent } from "@tandem/editor/browser/components/common";
 import { reactPreview, Metadata } from "@tandem/common";
-import { Workspace, GutterComponent } from "@tandem/editor/browser";
+import { Workspace } from "@tandem/editor/browser";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
 import { EntityAttributesPaneComponent } from "./index";
 import {

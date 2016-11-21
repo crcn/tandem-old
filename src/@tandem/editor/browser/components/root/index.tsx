@@ -5,7 +5,7 @@ import { Store } from "@tandem/editor/browser/models";
 import { SettingKeys } from "@tandem/editor/browser/constants";
 import CenterComponent from "./center";
 import { StoreProvider } from "@tandem/editor/browser/providers";
-import { GutterComponent } from "./gutter";
+import { GutterComponent } from "@tandem/uikit";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { DocumentPaneComponentFactoryProvider, EntityPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";

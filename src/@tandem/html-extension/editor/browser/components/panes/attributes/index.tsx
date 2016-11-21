@@ -37,8 +37,8 @@ export class EntityAttributesPaneComponent extends BaseApplicationComponent<{ wo
     const items = this.items;
     if (!items.length) return null;
 
-    return <div className="td-pane">
-      <div className="td-section-header">
+    return <div>
+      <div className="header">
         Attributes
         <div className="controls">
           <span onClick={this.addAttribute}>+</span>

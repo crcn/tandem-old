@@ -4,8 +4,9 @@ import * as cx from "classnames";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { TreeComponent } from "@tandem/uikit";
+import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { BaseApplicationComponent } from "@tandem/common";
-import { TreeComponent, SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, SyntheticDOMText, SyntheticDOMComment, DOMNodeType } from "@tandem/synthetic-browser";
 
 export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
@@ -36,7 +37,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     if (!document) return null;
 
     return <div className="html-layers-pane">
-      <div className="td-section-header">
+      <div className="header">
         Layers
       </div>
       <TreeComponent

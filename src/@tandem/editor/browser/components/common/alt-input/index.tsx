@@ -8,6 +8,7 @@ export interface IAltInputComponentProps {
   getAltProps(props): any;
   canRenderAlt?(): boolean;
   className?: string;
+  onMouseDown(event: React.MouseEvent<any>): any;
   style?: any;
   sticky?: boolean;
 }
@@ -63,7 +64,8 @@ export class AltInputComponent extends BaseApplicationComponent<IAltInputCompone
   render() {
     const props = this.state.showAlt ? Object.assign({}, this.props, this.props.getAltProps(this.props)) : this.props;
 
-    return <span {...props} onClick={this.onClick} onMouseEnter={this.onMouseEnter.bind(this)} onMouseLeave={this.onMouseLeave.bind(this)}>
+    return <span style={props.style} onMouseDown={props.onMouseDown} className={props.className} onClick={this.onClick} onMouseEnter={this.onMouseEnter.bind(this)} onMouseLeave={this.onMouseLeave.bind(this)}>
+      { props.children }
     </span>
   }
 }

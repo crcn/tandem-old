@@ -105,7 +105,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
       this.element = this.createElement();
     }
 
-    this._targetObserver = new CallbackDispatcher(this.onDocumentAction.bind(this));
+    this._targetObserver = new CallbackDispatcher(this.onDocumentEvent.bind(this));
   }
 
   get document(): SyntheticDocument {
@@ -121,6 +121,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     if (this._document) {
       this._document.unobserve(this._targetObserver);
     }
+    this.reset();
     this._document = value;
     if (!this._document) return;
     this._document.observe(this._targetObserver);
@@ -159,6 +160,10 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 
   protected abstract render();
 
+  protected reset() {
+
+  }
+
   protected createElement() {
     return document.createElement("div");
   }
@@ -170,10 +175,14 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.notify(new SyntheticRendererEvent(SyntheticRendererEvent.UPDATE_RECTANGLES));
   }
 
-  protected onDocumentAction(action: Action) {
-    if (isDOMMutationEvent(action)) {
-      this.requestRender();
+  protected onDocumentEvent(event: Action) {
+    if (isDOMMutationEvent(event)) {
+      this.onDocumentMutationEvent(event);
     }
+  }
+
+  protected onDocumentMutationEvent(event: Action) {
+    this.requestRender();
   }
 
   public requestRender() {

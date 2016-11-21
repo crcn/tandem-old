@@ -1,84 +1,40 @@
-.editor .gutter {
+
+/*$font-family-0: BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Avenir, Cantarell, Open Sans, Helvetica Neue, sans-serif;*/
+/*$font-family-1: Avenir;*/
+/**
+ * Typography
+ */
+
+$default-font-family: BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Avenir, Cantarell, Open Sans, Helvetica Neue, sans-serif;
+$default-letter-spacing: 0.12em;
+$default-font-weight: 400;
+$default-font-size: 11px;
+
+.entity {
+  & .css {
+    & .selector {
+      color: blue;
+    }
+  }
 }
 
-.layer.selected {
-  background-color: #49483E;
+.gutter {
+  background: #F4F4F4;
+  .header {
+    background: #E4E4E4;
+  }
 }
 
-.comment {
-  color: #75715E;
+.table {
+  .row {
+    border-bottom: 1px solid #E4E4E4;
+  }
 }
-.constant.character,
-.constant.language,
-.constant.numeric,
-.constant.other {
-  color: #AE81FF;
-}
-.entity.name.class {
-  text-decoration: none;
-  color: #A6E22E;
-}
-.entity.name.function {
-  color: #A6E22E;
-}
-.entity.name.instance {
-  color: #66D9EF;
-}
-.entity.name.tag {
-  color: #F92672;
-}
-.entity.other.attribute-name {
-  color: #A6E22E;
-}
-.entity.other.inherited-class {
-  font-style: italic;
-  text-decoration: none;
-  color: #A6E22E;
-}
-.invalid {
-  color: #F8F8F0;
-  background-color: #F92672;
-}
-.invalid.deprecated {
-  background-color: #AE81FF;
-}
-.keyword {
-  color: #F92672 !important;
-}
-.meta.tag {
-  color: #F8F8F2;
-}
-.storage {
-  color: #F92672;
-}
-.storage.type {
-  font-style: italic;
-  color: #66D9EF;
-}
-.string {
-  color: #E6DB74;
-}
-.support.constant,
-.support.function {
-  color: #66D9EF;
-}
-.support.class,
-.support.type {
-  font-style: italic;
-  color: #66D9EF;
-}
-.variable.parameter {
-  font-style: italic;
-  color: #FD971F;
-}
-.variable.language.python,
-.variable.language.js {
-  color: #F92672;
-}
-.class.jade {
-  color: #AE81FF;
-}
-.leading-whitespace,
-.trailing-whitespace {
-  display: inline-block;
+
+.entity {
+  & .css {
+    .selector {
+      color: red;
+    }
+  }
 }

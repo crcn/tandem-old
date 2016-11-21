@@ -15,4 +15,7 @@ export class Status {
   static readonly LOADING: string = "loading";
   static readonly COMPLETED: string = "completed";
   constructor(readonly type: string, readonly data?: any) { }
+  clone() {
+    return new Status(this.type, this.data);
+  }
 }

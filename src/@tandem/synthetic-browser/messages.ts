@@ -25,6 +25,13 @@ export class DOMMutationEvent extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
 }
 
+export class ValueNodeChangeEvent extends Action {
+  static readonly VALUE_NODE_CHANGE = "valueNodeChange";
+  constructor(readonly newValue: string) {
+    super(ValueNodeChangeEvent.VALUE_NODE_CHANGE);
+  }
+}
+
 export class SyntheticRendererEvent extends Action {
   static readonly UPDATE_RECTANGLES = "updateRectangles";
   static readonly UPDATED_COMPUTED_STYLE = "updatedComputedStyle";
@@ -42,6 +49,7 @@ const DOM_NODE_MUTATION_EVENT_TYPES = {
   [TreeNodeEvent.NODE_REMOVED]: true,
   [DOMMutationEvent.DOM_NODE_LOADED]: true,
   [AttributeChangeEvent.ATTRIBUTE_CHANGE]: true,
+  [ValueNodeChangeEvent.VALUE_NODE_CHANGE]: true,
   [CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE]: true
 };
 

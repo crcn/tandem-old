@@ -1,6 +1,7 @@
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import * as React from "react";
-import { GutterComponent, Workspace } from "@tandem/editor/browser";
+import {  GutterComponent } from "@tandem/uikit";
+import { Workspace } from "@tandem/editor/browser";
 import { HTMLStylePaneComponent } from "./index";
 import { SyntheticWindow, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 

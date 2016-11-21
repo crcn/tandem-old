@@ -67,7 +67,7 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
     }
 
     return <div>
-      <div className={["td-section-header", titleClassName].join(" ")}>
+      <div className={["header", titleClassName].join(" ")}>
         { renderTitle ? renderTitle(this.props) : title }
         <div className="controls">
           <span onClick={() => setDeclaration("", "")}>+</span>
@@ -98,11 +98,10 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
   render() {
     const { result } = this.props;
 
-
     return <CSSStylePaneComponent
     style={result.rule.style}
     inherited={result.inherited}
-    titleClassName="color-green-10"
+    titleClassName="entity css selector"
     setDeclaration={this.setDeclaration}
     renderTitle={this.renderTitle}
     overriden={result.overridenStyleProperties}

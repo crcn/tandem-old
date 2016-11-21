@@ -7,6 +7,7 @@ import {
   Action,
   inject,
   Logger,
+  Status,
   bindable,
   loggable,
   isMaster,
@@ -16,7 +17,6 @@ import {
   IObservable,
   bindProperty,
   findTreeNode,
-  MetadataChangeEvent,
   watchProperty,
   HTML_MIME_TYPE,
   MimeTypeProvider,
@@ -24,6 +24,7 @@ import {
   InjectorProvider,
   PrivateBusProvider,
   PropertyChangeEvent,
+  MetadataChangeEvent,
   waitForPropertyChange,
 } from "@tandem/common";
 
@@ -59,6 +60,9 @@ export interface ISyntheticBrowser extends IObservable {
 
 @loggable()
 export abstract class BaseSyntheticBrowser extends Observable implements ISyntheticBrowser, IInjectable {
+
+  @bindable()
+  public status: Status = new Status(null);
 
   protected readonly logger: Logger;
 
@@ -138,6 +142,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   $didInject() {
     super.$didInject();
     this._sandbox    = new Sandbox(this._injector, this.createSandboxGlobals.bind(this));
+    watchProperty(this._sandbox, "status", this.onSandboxStatusChange.bind(this));
     watchProperty(this._sandbox, "exports", this.onSandboxExportsChange.bind(this));
     watchProperty(this._sandbox, "global", this.setWindow.bind(this));
   }
@@ -156,6 +161,12 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     await this._sandbox.open(this._entry);
 
     timerLogger.stop(`Loaded ${options.url}`);
+  }
+
+  protected onSandboxStatusChange(newStatus: Status) {
+    if (newStatus.type !== Status.COMPLETED) {
+      this.status = newStatus.clone();
+    }
   }
 
   get document() {
@@ -211,5 +222,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     if (exportsElement) {
       window.document.body.appendChild(exportsElement);
     }
+
+    this.status = new Status(Status.COMPLETED);
   }
 }

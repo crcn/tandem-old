@@ -2,7 +2,7 @@ import * as React from "react";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { GutterComponent } from "@tandem/editor/browser/components";
+import { GutterComponent } from "@tandem/uikit";
 import { LayersPaneComponent } from "./index";
 import { SyntheticWindow } from "@tandem/synthetic-browser";
 
