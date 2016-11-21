@@ -8,6 +8,7 @@ import { inject } from "@tandem/common/decorators";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { Workspace } from "@tandem/editor/browser/models";
 import { SelectRequest } from "@tandem/editor/browser/messages";
+import { AltInputComponent } from "@tandem/editor/browser/components";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import { intersection, flatten } from "lodash";
@@ -36,6 +37,10 @@ class SelectableComponent extends BaseApplicationComponent<{
     this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();
     this.onMouseOut(event);
+  }
+
+  hasSource() {
+    return !!this.props.element.source;
   }
 
   shouldComponentUpdate({ absoluteBounds, hovering, zoom }) {
@@ -78,15 +83,25 @@ class SelectableComponent extends BaseApplicationComponent<{
       top        : absoluteBounds.top
     };
 
+    const getAltProps = () => {
+      return {
+        style: {
+          cursor: this.hasSource() ? "pointer" : "not-allowed"
+        }
+      }
+    }
+
     return (
-      <div
-        style={style}
-        className={classNames}
-        onMouseLeave={this.onMouseOut}
-        onMouseMove={this.onMouseOver}
-        onMouseDown={this.onMouseDown}
-      />
-    );
+      <AltInputComponent getAltProps={getAltProps}>
+        <div
+          style={style}
+          className={classNames}
+          onMouseLeave={this.onMouseOut}
+          onMouseMove={this.onMouseOver}
+          onMouseDown={this.onMouseDown}
+        />
+      </AltInputComponent>
+    )
   }
 }
 

@@ -10,4 +10,7 @@
      color: $color-sky-blue-4 !important;
    }
  }
+ &.no-source {
+   cursor: not-allowed;
+ }
 }

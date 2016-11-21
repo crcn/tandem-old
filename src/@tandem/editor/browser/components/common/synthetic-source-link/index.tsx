@@ -14,6 +14,7 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyn
   }
 
   openSourceFile = (event: React.MouseEvent<any>) => {
+    if (!this.hasSource()) return;
     event.stopPropagation();
     this.logger.info(`Opening source file ${this.props.target.source.filePath}:${this.props.target.source.start.line}:${this.props.target.source.start.column}`);
     OpenFileRequest.dispatch(this.props.target.source.filePath, this.props.target.source, this.bus);
@@ -23,12 +24,12 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyn
 
     const getAltProps = () => {
       return {
-        className: cx({ "active": true, "synthetic-source-link": true }),
+        className: cx({ "active": true, "synthetic-source-link": true, "no-source": !this.hasSource() }),
         onMouseDown: this.openSourceFile
       };
     }
 
-    return <AltInputComponent canRenderAlt={() => this.hasSource()} className="synthetic-source-link" getAltProps={getAltProps}>
+    return <AltInputComponent className="synthetic-source-link" getAltProps={getAltProps}>
       { this.props.children }
     </AltInputComponent>
   }
