@@ -51,12 +51,16 @@ gulp.task('default', gulpSequence('prepare', 'build'));
  * Build tasks
  ******************************/
 
-gulp.task('build', [
+const buildTasks = [
   'build:peg',
   'build:typescript',
+  'build:symlinks',
   'build:webpack',
   'build:electron'
-]);
+];
+
+gulp.task('build', WATCH ? buildTasks : gulpSequence(...buildTasks));
+
 
 gulp.task('build:typescript', function(done) {
   const proc = spawn('node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
@@ -75,6 +79,12 @@ gulp.task('build:peg', function() {
     file.extname = '.peg.js';
   }))
   .pipe(gulp.dest(OUT_DIR));
+});
+
+gulp.task('build:symlinks', ['clean:symlinks'], () => {
+  return gulp
+  .src(join(OUT_DIR, '*'))
+  .pipe(vfs.symlink(NODE_MODULES_DIR));
 });
 
 gulp.task('build:webpack', function(done) {
@@ -117,7 +127,6 @@ gulp.task('build:electron');
 gulp.task('prepare', gulpSequence(
   'prepare:copy-assets',
   'prepare:mono-package',
-  'prepare:symlinks',
   'prepare:integrations'
 ));
 
@@ -157,11 +166,6 @@ gulp.task('prepare:install-mono-package', ['clean:symlinks'], () => {
   .pipe(install())
 });
 
-gulp.task('prepare:symlinks', ['clean:symlinks'], () => {
-  return gulp
-  .src(join(OUT_DIR, '*'))
-  .pipe(vfs.symlink(NODE_MODULES_DIR));
-});
 
 gulp.task('prepare:integrations', [
   'prepare:vscode-extension'

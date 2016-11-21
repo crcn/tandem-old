@@ -9,8 +9,12 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
-- [ ] column tool
-- [ ] resizable gutters
+- synthetic objects should emit change events
+- Website
+- artboard tool
+- insert div tool (for html)
+- animations
+
 - [ ] unsaved files
 - [ ] multiple workspaces
 - [ ] create tdm file in ~/.tandem if it doesn't exist

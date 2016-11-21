@@ -13,9 +13,9 @@ import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collection
 import { BaseApplicationComponent, Action } from "@tandem/common";
 import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import {
+  isDOMMutationEvent,
   MatchedCSSStyleRule,
   SyntheticDOMElement,
-  isDOMMutationEvent,
   SyntheticCSSStyleRule,
   getMatchingStyleRules,
   isInheritedCSSStyleProperty,
@@ -95,7 +95,8 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
     if (value !== "") {
       edit.setDeclaration(name, value, oldName);
     }
-    this.bus.dispatch(new ApplyFileEditRequest(edit.changes));
+
+    // this.bus.dispatch(new ApplyFileEditRequest(edit.changes));
   }
   render() {
     const { result } = this.props;

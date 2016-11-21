@@ -248,6 +248,8 @@ export class MoveChildEditChange extends ChildEditChange {
   }
 })
 export class SetKeyValueEditChange extends ApplicableEditChange {
+  static readonly SET_KEY_VALUE_CHANGE = "setKeyValueChange";
+
   constructor(type: string, target: ISyntheticObject, public  name: string, public newValue: any, public oldName?: string, public newIndex?: number) {
     super(type, target);
   }

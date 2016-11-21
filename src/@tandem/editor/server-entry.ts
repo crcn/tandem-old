@@ -9,8 +9,6 @@ import { Injector, Logger, PrivateBusProvider, LogLevel } from "@tandem/common"
 import { IEdtorServerConfig, createEditorServerProviders } from "./server";
 import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 
-// extensions
-// import { createVueWorkerProviders } from "@tandem/vue-extension/editor/server";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";

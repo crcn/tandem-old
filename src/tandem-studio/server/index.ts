@@ -31,6 +31,7 @@ export const initializeMaster = async () => {
     log: {
       level: Number(process.env.LOG_LEVEL)
     },
+    experimental: process.env.EXPERIMENTAL = !!argv.experimental,
     port: process.env.PORT || (process.env.PORT = await getPort()),
     hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost")
   };

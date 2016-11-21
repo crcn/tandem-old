@@ -1,1 +1,0 @@
-export const VUE_MIME_TYPE = "text/vue";

@@ -16,7 +16,10 @@
     .controls{
       display: none;
       float: right;
-      cursor: pointer
+      cursor: pointer;
+      &.show {
+        display: block;
+      }
     }
   }
 

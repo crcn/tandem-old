@@ -37,6 +37,7 @@ import {
   UnitTokenInput,
   ReferenceTokenInput,
   LayersPaneComponent,
+  ElementCSSInspectorComponent,
   HTMLStylePaneComponent,
   TextLayerLabelComponent,
   ElementCSSPaneComponent,
@@ -65,6 +66,7 @@ export function createHTMLEditorBrowserProviders() {
     new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent),
     new EntityPaneComponentFactoryProvider("htmlStyle", HTMLStylePaneComponent),
     new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
+    new EntityPaneComponentFactoryProvider("cssInspector", ElementCSSInspectorComponent),
     new DocumentPaneComponentFactoryProvider("htmlLayers", LayersPaneComponent),
 
     // stage tool components

@@ -2,6 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import * as tinyColor from "tinycolor2";
 import { ChromePicker } from "react-color";
+import { PortalComponent, DropdownComponent } from "@tandem/uikit";
 import { TextEditorToken, AltInputComponent,  } from "@tandem/editor/browser";
 
 export class ColorTokenInput extends React.Component<{ token: TextEditorToken }, any> {
@@ -27,41 +28,8 @@ export class ColorTokenInput extends React.Component<{ token: TextEditorToken },
       background: value,
       borderRadius: 2
     };
-
-    const getAlt = () => ({
-      style: Object.assign(style, {
-        cursor: "pointer"
-      }),
-      children: <PopdownComponent renderPopdown={this.renderColorPicker}> { value } </PopdownComponent>
-    });
-
-    return <AltInputComponent showAlt={true} sticky={true} style={style} getAltProps={getAlt}>
+    return <span style={style}>
       { value }
-    </AltInputComponent>
-  }
-
-  renderColorPicker = () => {
-    return <ChromePicker color={this.props.token.value} onChange={this.onChange} />
-  }
-}
-
-export class PopdownComponent extends React.Component<{ renderPopdown(): any }, { showPopdown: boolean }> {
-  state = {
-    showPopdown: true
-  };
-
-  showPopdown = () => {
-    this.setState({ showPopdown: true });
-  }
-
-  onMouseDown = (event: React.MouseEvent<any>) => {
-    event.nativeEvent.stopImmediatePropagation();
-  }
-
-  render() {
-    return <span onClick={this.showPopdown}>
-      { this.props.children }
-      { this.state.showPopdown ? <span className="popdown" onClick={this.onMouseDown}><span className="popdown-inner">{this.props.renderPopdown()}</span></span> : null }
     </span>
   }
 }

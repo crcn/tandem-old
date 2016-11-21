@@ -1,0 +1,17 @@
+@import "@tandem/uikit/scss";
+
+.dropdown {
+  position: relative;
+  left: 0;
+  top: 0;
+  & .menu {
+    display: block;
+    top: $default-font-size + 5;
+    position: absolute;
+    z-index: 1024;
+    &-inner {
+      position: fixed;
+      transform: translateX(-100%);
+    }
+  }
+}
