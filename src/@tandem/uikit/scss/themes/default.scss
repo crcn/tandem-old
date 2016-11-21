@@ -5,7 +5,9 @@
 
 $barney: #8467D4;
 
+$aqua: #26BBC2;
 $sky-blue: #00B5FF;
+$forest-green: #20A811;
 
 $watermelon: #F549B8;
 
@@ -52,7 +54,7 @@ $disabled-color: rgba(0,0,0,0.2);
 .entity {
   &.css {
   &.selector {
-      color: $barney;
+      color: $forest-green;
     }
   }
   &.html {

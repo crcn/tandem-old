@@ -11,6 +11,7 @@ import {
   SyntheticDOMElementClassProvider,
 } from "@tandem/synthetic-browser";
 
+
 import { 
   SyntheticHTMLLink,
   SyntheticHTMLScript,
@@ -26,7 +27,7 @@ export function createHTMLCoreProviders() {
     ...HTML_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(HTML_XMLNS, tagName, SyntheticHTMLElement)),
     ...SVG_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(SVG_XMLNS, tagName, SyntheticHTMLElement)),
 
-    // TODO - move these to either sandbox/ or synthetic/ directories
+    // new SyntheticDOMElementClassProvider(HTML_XMLNS, "canvas", SyntheticHTMLCanvas),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLink),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScript),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "style", SyntheticHTMLStyle),

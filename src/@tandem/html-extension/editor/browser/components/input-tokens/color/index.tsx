@@ -35,7 +35,7 @@ export class ColorTokenInput extends React.Component<{ token: TextEditorToken },
       children: <PopdownComponent renderPopdown={this.renderColorPicker}> { value } </PopdownComponent>
     });
 
-    return <AltInputComponent sticky={true} style={style} getAltProps={getAlt}>
+    return <AltInputComponent showAlt={true} sticky={true} style={style} getAltProps={getAlt}>
       { value }
     </AltInputComponent>
   }
@@ -47,7 +47,7 @@ export class ColorTokenInput extends React.Component<{ token: TextEditorToken },
 
 export class PopdownComponent extends React.Component<{ renderPopdown(): any }, { showPopdown: boolean }> {
   state = {
-    showPopdown: false
+    showPopdown: true
   };
 
   showPopdown = () => {

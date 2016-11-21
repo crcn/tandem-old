@@ -184,3 +184,17 @@ declare module "postcss-cssnext" {
   export = postcss;
 }
 
+
+declare module "canvas-prebuilt" {
+
+  class Canvas extends HTMLCanvasElement {
+    constructor(width: number, height: number);
+  }
+
+  namespace Canvas {
+
+  }
+
+  export = Canvas;
+}
+

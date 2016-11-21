@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { TreeComponent } from "@tandem/editor/browser/components/common";
+import { TreeComponent } from "@tandem/uikit";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import {  StoreProvider } from "@tandem/editor/browser/providers";
 import { Store, Workspace } from "@tandem/editor/browser/models";

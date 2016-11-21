@@ -48,7 +48,8 @@ module.exports = {
         'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',
         'mongodb': 'null-loader?mongodb',
-        'cluster': 'null-loader?cluster'
+        'cluster': 'null-loader?cluster',
+        'canvas-prebuilt': 'null-loader?canvas-prebuilt'
       }
     },
     tandem: {

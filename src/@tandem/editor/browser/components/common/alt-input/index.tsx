@@ -6,6 +6,7 @@ import { BaseApplicationComponent } from "@tandem/common";
 
 export interface IAltInputComponentProps {
   getAltProps(props): any;
+  showAlt?: boolean;
   canRenderAlt?(): boolean;
   className?: string;
   onMouseDown?(event: React.MouseEvent<any>): any;
@@ -63,7 +64,7 @@ export class AltInputComponent extends BaseApplicationComponent<IAltInputCompone
   }
 
   render() {
-    const props = this.state.showAlt ? Object.assign({}, this.props, this.props.getAltProps(this.props)) : this.props;
+    const props = this.props.showAlt || this.state.showAlt ? Object.assign({}, this.props, this.props.getAltProps(this.props)) : this.props;
 
     return <span style={props.style} onMouseDown={props.onMouseDown} className={props.className} onClick={this.onClick} onMouseEnter={this.onMouseEnter.bind(this)} onMouseLeave={this.onMouseLeave.bind(this)}>
       { props.children }
