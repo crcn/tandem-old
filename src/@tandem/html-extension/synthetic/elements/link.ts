@@ -90,14 +90,14 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     if (!this.ownerDocument || !this._attached || !this.stylesheet) return;
     const edit = this.ownerDocument.createEdit();
     edit.addStyleSheet(this.stylesheet);
-    edit.applyActionsTo(this.ownerDocument);
+    edit.applyMutationsTo(this.ownerDocument);
   }
 
   private detachStylesheet() {
     if (!this.ownerDocument || !this._attached || !this.stylesheet) return;
     const edit = this.ownerDocument.createEdit();
     edit.removeStyleSheet(this.stylesheet);
-    edit.applyActionsTo(this.ownerDocument);
+    edit.applyMutationsTo(this.ownerDocument);
   }
 }
 

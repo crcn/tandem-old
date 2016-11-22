@@ -69,7 +69,7 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
-  applyEditChange(change: Mutation<any>) {
+  applyMutation(change: Mutation<any>) {
     if (change.type === SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
       (<PropertyMutation<any>>change).applyTo(this);
     }

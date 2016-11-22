@@ -93,7 +93,7 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
     return this.params === target.params ? 0 : -1;
   }
 
-  applyEditChange(mutation: ApplicableMutation<any>) {
+  applyMutation(mutation: ApplicableMutation<any>) {
     if (this.$ownerNode) this.$ownerNode.notify(mutation);
     mutation.applyTo(this.getEditChangeTargets()[mutation.type]);
     this.cssRules.forEach(rule => rule.$parentRule = this);

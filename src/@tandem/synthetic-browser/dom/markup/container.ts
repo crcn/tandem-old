@@ -1,5 +1,5 @@
 import { DOMNodeType } from "./node-types";
-import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
+import { SyntheticDOMNode, SyntheticDOMNodeEdit, SyntheticDOMNodeEditor } from "./node";
 import { SyntheticDOMText } from "./text-node";
 import { isDOMMutationEvent, DOMNodeEvent } from "@tandem/synthetic-browser/messages";
 import {
@@ -8,6 +8,7 @@ import {
   findTreeNode,
   Mutation,
   RemoveMutation,
+  TreeNode,
   MoveChildMutation,
   RemoveChildMutation,
   PropertyMutation,
@@ -16,9 +17,10 @@ import {
 import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import { SyntheticDOMElement } from "./element";
 import {
+  BaseEditor,
   IContentEdit,
-  ISyntheticObject,
   BaseContentEdit,
+  ISyntheticObject,
 } from "@tandem/sandbox";
 
 export namespace SyntheticDOMContainerMutationTypes {
@@ -75,6 +77,43 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   }
 }
 
+export class DOMContainerEditor<T extends SyntheticDOMContainer|Element|Document|DocumentFragment> extends BaseEditor<T> {
+  constructor(readonly target: T, readonly findChild: (parent: T, child: any) => any, readonly createNode:(source: any) => any = (source) => source.cloneNode(true)) {
+    super(target);
+  }
+
+  applySingleMutation(mutation: Mutation<any>) {
+    if (mutation.type === SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT) {
+      const removeMutation = <InsertChildMutation<any, SyntheticDOMNode>>mutation;
+      (<Element>this.target).removeChild(this.findChild(this.target, removeMutation.child));
+    } if (mutation.type === SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT) {
+      const moveMutation = <MoveChildMutation<any, SyntheticDOMNode>>mutation;
+      this._insertChildAt(this.findChild(this.target, moveMutation.child), moveMutation.index);
+    } else if (mutation.type === SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT) {
+      const insertMutation = <InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>>mutation;
+      this._insertChildAt(this.createNode(insertMutation.child), insertMutation.index);
+    }
+  }
+
+  private _insertChildAt(child: any, index: number) {
+    if (index === this.target.childNodes.length) {
+      (<SyntheticDOMContainer>this.target).appendChild(child);
+    } else {
+      const existingChild = this.target.childNodes[index] as Element;
+      (<Element>this.target).insertBefore(child, existingChild);
+    }
+  }
+}
+
+export class SyntheticDOMContainerEditor<T extends SyntheticDOMContainer> extends BaseEditor<T> {
+  applyMutations(mutations: Mutation<any>[]) {
+    new DOMContainerEditor(<any>this.target, (container, matchChild) => {
+      const index = container.childNodes.findIndex(child => child.uid === matchChild.uid);
+    }).applyMutations(mutations);
+    new SyntheticDOMNodeEditor(<SyntheticDOMContainer>this.target).applyMutations(mutations);
+  }
+}
+
 export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
 
   createEdit(): SyntheticDOMContainerEdit<any> {
@@ -114,29 +153,8 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return querySelectorAll(this, selector);
   }
 
-  applyEditChange(mutation: Mutation<any>) {
-    this.notify(mutation);
-
-    // TODO: Should probably use mutation.applyTo(this.children) instead of this stuff below
-    switch(mutation.type) {
-      case SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT:
-        const removeMutation = <InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>>mutation;
-        this.removeChild(removeMutation.findChild(this.childNodes) as SyntheticDOMNode);
-      break;
-      case SyntheticDOMNodeEdit.SET_SYNTHETIC_SOURCE_EDIT:
-        (<PropertyMutation<any>>mutation).applyTo(this);
-      break;
-      case SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT:
-        const moveMutation = <MoveChildMutation<any, SyntheticDOMNode>>mutation;
-        this.insertChildAt(moveMutation.findChild(this.childNodes), moveMutation.index);
-      break;
-      case SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT:
-        const insertMutation = <InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>>mutation;
-
-        // Clone again to ensure that the child can be re-added to multiple targets.
-        this.insertChildAt(insertMutation.child.clone(true) as SyntheticDOMNode, insertMutation.index);
-      break;
-    }
+  createEditor() {
+    return new SyntheticDOMContainerEditor(this);
   }
 
   visitWalker(walker: ITreeWalker) {

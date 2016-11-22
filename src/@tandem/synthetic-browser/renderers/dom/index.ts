@@ -38,12 +38,12 @@ import {
   SyntheticDocument,
   SyntheticDOMElement,
   SyntheticCSSCharset,
+  SyntheticDOMComment,
   SyntheticCSSObject,
   syntheticCSSRuleType,
   SyntheticCSSStyleRule,
   SyntheticDOMContainer,
   SyntheticCSSStyleSheet,
-  AttachableSyntheticDOMNode,
   SyntheticCSSStyleDeclaration,
   SyntheticDocumentMutationTypes,
   SyntheticCSSAtRuleMutationTypes,
@@ -54,7 +54,7 @@ import {
 import { DOMNodeEvent } from "../../messages";
 
 type HTMLElementDictionaryType = {
-  [IDentifier: string]: [Element, SyntheticDOMNode]
+  [IDentifier: string]: [Node, SyntheticDOMNode]
 }
 const ss: CSSStyleSheet = null;
 
@@ -70,17 +70,22 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   private _elementDictionary: HTMLElementDictionaryType;
   private _cssRuleDictionary: CSSRuleDictionaryType;
   private _nativeStyleSheet: CSSStyleSheet;
+  private _getComputedStyle: (node: Node) => CSSStyleDeclaration;
+
+  constructor(nodeFactory?: Document, getComputedStyle?: (node: Node) => CSSStyleDeclaration) {
+    super(nodeFactory);
+    this._getComputedStyle = getComputedStyle || (typeof window !== "undefined" ? window.getComputedStyle.bind(window) : () => {});
+  }
+
 
   createElement() {
-    const element = document.createElement("div");
+    const element = this.nodeFactory.createElement("div");
     element.innerHTML = this.getElementInnerHTML();
     return element;
   }
 
   protected onDocumentMutationEvent(mutation: Mutation<any>) {
     super.onDocumentMutationEvent(mutation);
-
-    console.log("handle mutation", mutation.type);
 
     this.registerStyleSheet();
 
@@ -91,16 +96,17 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     }
 
     if (mutation.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
-      const { name, newValue } = <PropertyMutation<SyntheticDOMElement>>mutation;
-      const [native, synthetic] = this.getElementDictItem(mutation.target);
-      if (native) native.setAttribute(name, newValue);
-    }
-
-    if (mutation.type === TreeNodeMutationTypes.NODE_ADDED) {
-      const [native, synthetic] = this.getElementDictItem(mutation.target.parent);
-      if (native) {
-        const childNode = renderHTMLNode(mutation.target, this._elementDictionary);
-        if (childNode) native.appendChild(childNode);
+      const { name, newValue, oldName } = <PropertyMutation<SyntheticDOMElement>>mutation;
+      const [nativeElement, syntheticElement] = this.getElementDictItem<Element>(mutation.target);
+      if (nativeElement) {
+        if (newValue == undefined) {
+          nativeElement.removeAttribute(name);
+        } else {
+          nativeElement.setAttribute(name, newValue);
+        }
+        if (oldName) {
+          nativeElement.removeAttribute(oldName);
+        }
       }
     }
 
@@ -110,12 +116,27 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       this._elementDictionary[mutation.target.uid] = undefined;
     }
 
+    if (mutation.type === TreeNodeMutationTypes.NODE_ADDED) {
+      const mutationTarget = <SyntheticDOMNode>mutation.target;
+      const [native, synthetic] = this.getElementDictItem(mutationTarget.parent);
+      if (native) {
+        const childNode = renderHTMLNode(this.nodeFactory, mutation.target, this._elementDictionary);
+        const index     = mutationTarget.parentNode.childNodes.indexOf(mutationTarget);
+        if (index !== mutationTarget.parentNode.childNodes.length - 1) {
+          const [prevChildNode] = this.getElementDictItem<Node>(mutationTarget.parentNode.childNodes[index - 1]);
+          console.log(prevChildNode, mutationTarget.parentNode.childNodes[index - 1]);
+          native.insertBefore(prevChildNode, childNode);
+        } else {
+          native.appendChild(childNode);
+        }
+        mutationTarget.attachNative(native);
+      }
+    }
+
     // CSS
     if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
       const { target, name, newValue, oldName } = <PropertyMutation<SyntheticCSSStyleRule>>mutation;
       const [nativeRule] = this.getCSSDictItem<CSSStyleRule>(target);
-      console.log(target, this._cssRuleDictionary);
-      console.log(nativeRule, name, newValue);
       if (nativeRule) {
         if (newValue == null) {
           nativeRule.style.removeProperty(name);
@@ -159,7 +180,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
         }
       }
     }
-
   }
 
   private removeNativeRule(child: SyntheticCSSObject, parent?: SyntheticCSSStyleSheet|SyntheticCSSAtRule) {
@@ -210,19 +230,19 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return index;
   }
 
-  protected getElementDictItem(synthetic: SyntheticDOMNode) {
-    return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined];
+  protected getElementDictItem<T extends Node>(synthetic: SyntheticDOMNode): [T, SyntheticDOMNode] {
+    return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined] as any;
   }
 
   protected getElementInnerHTML() {
     return `<style type="text/css"></style><div></div>`;
   }
 
-  render() {
+  protected render() {
     const { document, element } = this;
 
     if (!this._documentElement) {
-      this._documentElement = renderHTMLNode(document, this._elementDictionary = {});
+      this._documentElement = renderHTMLNode(this.nodeFactory, document, this._elementDictionary = {});
       element.lastChild.appendChild(this._documentElement);
       this.styleElement.textContent = this._currentCSSText = document.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n");
     }
@@ -251,7 +271,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     const nativeStyleSheet = this.getNativeStyleSheet();
 
     if (!nativeStyleSheet) {
-      console.warn(`Cannot find native style sheet generated by DOM renderer.`);
+      // console.warn(`Cannot find native style sheet generated by DOM renderer.`);
       return;
     }
     this._cssRuleDictionary = {};
@@ -269,7 +289,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
         this._cssRuleDictionary[rule.uid] = [nativeStyleSheet.rules[h++], rule];
       }
     }
-
   }
 
   protected reset() {
@@ -290,13 +309,14 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
       const syntheticNode: SyntheticDOMNode = <SyntheticDOMNode>synthetic;
       if (syntheticNode && syntheticNode.nodeType === DOMNodeType.ELEMENT) {
-        const rect = rects[uid]  = BoundingRect.fromClientRect(native.getBoundingClientRect());
-        const nativeStyle = window.getComputedStyle(native);
+        const rect = rects[uid]  = BoundingRect.fromClientRect((<Element>native).getBoundingClientRect());
+
+        const nativeStyle = this._getComputedStyle(native);
 
         // just attach whatever's returned by the DOM -- don't wrap this in a synthetic, or else
         // there'll be massive performance penalties.
         styles[uid] = nativeStyle;
-        (<AttachableSyntheticDOMNode<any>>syntheticNode).attachNative(native);
+        (<SyntheticDOMNode>syntheticNode).attachNative(native);
       }
     }
 
@@ -304,41 +324,44 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 }
 
-function renderHTMLNode(syntheticNode: SyntheticDOMNode, dict: HTMLElementDictionaryType): any {
+function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, dict: HTMLElementDictionaryType): any {
   switch(syntheticNode.nodeType) {
 
     case DOMNodeType.TEXT:
+      const textNode = nodeFactory.createTextNode(decode(syntheticNode.textContent));
+      dict[syntheticNode.uid] = [textNode, syntheticNode];
+      return textNode;
 
-      const textElement = renderHTMLElement("span", syntheticNode, dict);
-      textElement.appendChild(document.createTextNode(decode(syntheticNode.textContent)));
-      return textElement;
+    case DOMNodeType.COMMENT:
+      const comment = nodeFactory.createComment((<SyntheticDOMComment>syntheticNode).nodeValue);
+      return comment;
 
     case DOMNodeType.ELEMENT:
       const syntheticElement = <SyntheticDOMElement>syntheticNode;
       if (/^(style|link)$/.test(syntheticElement.nodeName)) return null;
-      const element = renderHTMLElement(syntheticElement.tagName, syntheticElement, dict);
+      const element = renderHTMLElement(nodeFactory, syntheticElement.tagName, syntheticElement, dict);
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
         const syntheticAttribute = syntheticElement.attributes[i];
         element.setAttribute(syntheticAttribute.name, syntheticAttribute.value);
       }
-      return appendChildNodes(element, syntheticElement.childNodes, dict);
+      return appendChildNodes(nodeFactory, element, syntheticElement.childNodes, dict);
     case DOMNodeType.DOCUMENT:
     case DOMNodeType.DOCUMENT_FRAGMENT:
       const syntheticContainer = <SyntheticDOMContainer>syntheticNode;
-      const containerElement = renderHTMLElement("span", syntheticContainer, dict);
-      return appendChildNodes(containerElement, syntheticContainer.childNodes, dict);
+      const containerElement = renderHTMLElement(nodeFactory, "span", syntheticContainer, dict);
+      return appendChildNodes(nodeFactory, containerElement, syntheticContainer.childNodes, dict);
   }
 }
 
-function renderHTMLElement(tagName: string, source: SyntheticDOMNode, dict: HTMLElementDictionaryType): any {
-  const element = document.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName);
+function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMNode, dict: HTMLElementDictionaryType): any {
+  const element = nodeFactory.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName);
   dict[source.uid] = [element, source];
   return element;
 }
 
-function appendChildNodes(container: HTMLElement|DocumentFragment, syntheticChildNodes: SyntheticDOMNode[], dict: HTMLElementDictionaryType) {
+function appendChildNodes(nodeFactory: Document, container: HTMLElement|DocumentFragment, syntheticChildNodes: SyntheticDOMNode[], dict: HTMLElementDictionaryType) {
   for (let i = 0, n = syntheticChildNodes.length; i < n; i++) {
-    const childNode = renderHTMLNode(syntheticChildNodes[i], dict);
+    const childNode = renderHTMLNode(nodeFactory, syntheticChildNodes[i], dict);
 
     // ignored
     if (childNode == null) continue;

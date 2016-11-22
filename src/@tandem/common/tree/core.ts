@@ -49,14 +49,15 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return [];
   }
 
-  removeChild(child: T) {
+  removeChild(child: T): T {
     const index = this._children.indexOf(child);
     if (index === -1) {
-      return;
+      return undefined;
     }
 
     this._children.splice(index, 1);
     this.onChildRemoved(child);
+    return child;
   }
 
   insertChildAt(newChild: T, index: number) {

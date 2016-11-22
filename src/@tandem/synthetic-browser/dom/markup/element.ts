@@ -216,6 +216,32 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   }
 }
 
+export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> {
+  constructor(readonly target: T, readonly createNode: (item: any) => any = (item: any) => item.cloneNode(true)) {
+
+  }
+
+  applyMutation(mutation: Mutation<any>) {
+    if (mutation.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
+      const { name, oldName, newValue } = <PropertyMutation<any>>mutation;
+      if (newValue == null) {
+        this.target.removeAttribute(name);
+      } else {
+        this.target.setAttribute(name, newValue);
+      }
+      if (oldName) this.target.removeAttribute(oldName);
+    } else if (mutation.type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {
+      const { child } = <InsertChildMutation<SyntheticDOMElement,SyntheticDOMContainer>>mutation;
+      const shadowRoot = <SyntheticDOMContainer>child;
+
+      // need to clone in case the child is an instance in this process -- hasn't
+      // been sent over a network.
+      if (this.target["$setShadowRoot"]) {
+        this.target["$setShadowRoot"](this.createNode(shadowRoot));
+      }
+    }
+  }
+}
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
 export class SyntheticDOMElement extends SyntheticDOMContainer {
@@ -257,24 +283,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return new SyntheticDOMElementEdit(this);
   }
 
-  applyEditChange(action: Mutation<any>) {
-    super.applyEditChange(action);
-    if (action.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
-      const { name, oldName, newValue } = <PropertyMutation<any>>action;
-      if (newValue == null) {
-        this.removeAttribute(name);
-      } else {
-        this.setAttribute(name, newValue);
-      }
-      if (oldName) this.removeAttribute(oldName);
-    } else if (action.type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {
-      const { child } = <InsertChildMutation<SyntheticDOMElement,SyntheticDOMContainer>>action;
-      const shadowRoot = <SyntheticDOMContainer>child;
-
-      // need to clone in case the child is an instance in this process -- hasn't
-      // been sent over a network.
-      this.$setShadowRoot(shadowRoot.cloneNode(true));
-    }
+  applyMutation(mutation: Mutation<any>) {
+    new DOMElementEditor(this).applyMutation(mutation);
   }
 
   visitWalker(walker: ITreeWalker) {
@@ -322,7 +332,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return selectorMatchesElement(selector, this);
   }
 
-  setAttribute(name: string, value: any) {
+  setAttribute(name: string, value: string) {
 
     // attributes that are not editable by the editor
     if (name === "data-td-readonly") {

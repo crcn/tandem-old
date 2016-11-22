@@ -21,13 +21,13 @@ export class SyntheticHTMLStyle extends SyntheticDOMElement {
     super.attachedCallback();
     const edit = this.ownerDocument.createEdit();
     edit.addStyleSheet(this._styleSheet);
-    edit.applyActionsTo(this.ownerDocument);
+    edit.applyMutationsTo(this.ownerDocument);
   }
 
   detachedCallback() {
     const edit = this.ownerDocument.createEdit();
     edit.removeStyleSheet(this._styleSheet);
-    edit.applyActionsTo(this.ownerDocument);
+    edit.applyMutationsTo(this.ownerDocument);
   }
 
   onChildAdded(child) {

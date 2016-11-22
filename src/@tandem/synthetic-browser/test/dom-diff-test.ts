@@ -42,7 +42,7 @@ describe(__filename + "#", () => {
       bnode.innerHTML = newSource as string;
       const edit  = anode.createEdit().fromDiff(bnode);
       expect(edit.mutations.map(action => action.type)).to.eql(actionNames);
-      edit.applyActionsTo(anode);
+      edit.applyMutationsTo(anode);
       expect(anode.innerHTML).to.equal(newSource);
     });
   });
@@ -54,8 +54,8 @@ describe(__filename + "#", () => {
     const b = document.createElement("div") as SyntheticHTMLElement;
     const c = b.clone(true) as SyntheticHTMLElement;
     const edit = b.createEdit().fromDiff(a);
-    edit.applyActionsTo(b);
-    edit.applyActionsTo(c);
+    edit.applyMutationsTo(b);
+    edit.applyMutationsTo(c);
     expect(b.innerHTML).to.equal("<div>hello</div>");
     expect(c.innerHTML).to.equal("<div>hello</div>");
   });
@@ -68,7 +68,7 @@ describe(__filename + "#", () => {
       const b = document.createElement("div") as SyntheticHTMLElement;
       a.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
       b.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
-      a.createEdit().fromDiff(b).applyActionsTo(a);
+      a.createEdit().fromDiff(b).applyMutationsTo(a);
       const mutations = a.createEdit().fromDiff(b).mutations;
       expect(mutations.length).to.equal(0, `
 
@@ -88,7 +88,7 @@ describe(__filename + "#", () => {
       const b = document.createElement("div") as SyntheticHTMLElement;
       a.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
       b.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
-      a.createEdit().fromDiff(b).applyActionsTo(a);
+      a.createEdit().fromDiff(b).applyMutationsTo(a);
 
       const asources = flattenTree(a).map(node => node.source);
       const bsources = flattenTree(b).map(node => node.source);

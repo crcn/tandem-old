@@ -111,7 +111,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     this
     .createEdit()
     .fromDiff(evaluateCSS(parseCSS(value, map), map))
-    .applyActionsTo(this);
+    .applyMutationsTo(this);
   }
 
   get cssText() {
@@ -137,7 +137,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     return new SyntheticCSSStyleSheet([]);
   }
 
-  applyEditChange(change: ApplicableMutation<any>) {
+  applyMutation(change: ApplicableMutation<any>) {
     if (this.$ownerNode) this.$ownerNode.notify(change);
     change.applyTo({
       [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this,

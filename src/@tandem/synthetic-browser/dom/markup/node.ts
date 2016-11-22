@@ -6,13 +6,16 @@ import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
 
 import {
+  IEditor,
   IEditable,
   IDiffable,
+  BaseEditor,
   Dependency,
   SandboxModule,
   SyntheticObjectEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
+  SyntheticObjectEditor,
   generateSyntheticUID,
   SyntheticObjectSerializer,
  } from "@tandem/sandbox";
@@ -42,6 +45,7 @@ export const SyntheticDOMNodeSerializer = SyntheticObjectSerializer;
 
 
 export abstract class SyntheticDOMNodeEdit<T extends SyntheticDOMNode> extends SyntheticObjectEdit<T> { }
+export class SyntheticDOMNodeEditor<T extends SyntheticDOMNode> extends SyntheticObjectEditor<T> { }
 
 // TODO - possibly have metadata here since it's generic and can be used with any synthetic
 export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implements IComparable, ISyntheticObject, IEditable {
@@ -237,7 +241,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     }
   }
 
-
   public $linkClone(clone: SyntheticDOMNode) {
     clone.$source = this.$source;
     clone.$module = this.$module;
@@ -246,13 +249,8 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return clone;
   }
 
-  protected attachedCallback() {
-
-  }
-
-  protected detachedCallback() {
-
-  }
+  protected attachedCallback() { }
+  protected detachedCallback() { }
 
   /**
    * Clone alias for standard DOM API. Note that there's a slight difference
@@ -276,10 +274,5 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<any>;
-  abstract applyEditChange(action: Mutation<any>);
-}
-
-export abstract class AttachableSyntheticDOMNode<T extends Node> extends SyntheticDOMNode {
-
-
+  abstract createEditor(): IEditor;
 }

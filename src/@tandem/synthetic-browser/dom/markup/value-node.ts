@@ -62,7 +62,7 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
     return new SyntheticDOMValueNodeEdit(this);
   }
 
-  applyEditChange(change: Mutation<any>) {
+  applyMutation(change: Mutation<any>) {
     switch(change.type) {
       case SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT:
         this.nodeValue = (<SetValueMutation<any>>change).newValue;

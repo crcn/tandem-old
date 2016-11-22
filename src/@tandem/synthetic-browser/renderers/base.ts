@@ -92,16 +92,21 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   private _shouldRenderAgain: boolean;
   private _targetObserver: IDispatcher<any, any>;
   private _computedStyles: any;
+  private _currentRenderPromise: Promise<any>;
 
   protected readonly logger: Logger;
+  readonly nodeFactory: Document;
 
-  constructor() {
+  constructor(nodeFactory?: Document) {
     super();
+
+    this.nodeFactory = nodeFactory || (typeof document !== "undefined" ? document : undefined);
+
     this._running = false;
     this._computedStyles = {};
 
     // may be running in a worker. Do not create an element if that's the case.
-    if (typeof window !== "undefined") {
+    if (this.nodeFactory) {
       this.element = this.createElement();
     }
 
@@ -165,7 +170,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected createElement() {
-    return document.createElement("div");
+    return this.nodeFactory.createElement("div");
   }
 
   protected setRects(rects: { [IDentifier: string]: BoundingRect }, styles: { [IDentifier: string]: SyntheticCSSStyleDeclaration }) {
@@ -176,7 +181,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected onDocumentEvent(event: Action) {
-    if (isDOMMutationEvent(event) || event.type === DOMNodeEvent.DOM_NODE_LOADED) {
+    if (this.element && (isDOMMutationEvent(event) || event.type === DOMNodeEvent.DOM_NODE_LOADED)) {
       this.onDocumentMutationEvent(event);
     }
   }
@@ -188,29 +193,35 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   public requestRender() {
     if (!this._document) return;
 
-    if (this._rendering) {
+    if (this._currentRenderPromise) {
       this._shouldRenderAgain = true;
-      return;
     }
-    this._rendering = true;
 
-    // renderer here doesn't need to be particularly fast since the user
-    // doesn't get to interact with visual content. Provide a slowish
-    // timeout to ensure that we don't kill CPU from unecessary renders.
-    setTimeout(async () => {
-      if (!this._document) return;
+    return this._currentRenderPromise || (this._currentRenderPromise = new Promise<any>((resolve, reject) => {
 
-      await this.whenRunning();
-
-      this._shouldRenderAgain = false;
-      this.logger.debug("Rendering synthetic document");
-      await this.render();
-      this._rendering = false;
-      if (this._shouldRenderAgain) {
-        this._shouldRenderAgain = false;
-        this.requestRender();
+      const done = () => {
+        this._currentRenderPromise = undefined;
       }
-    }, this.getRequestUpdateTimeout());
+
+      // renderer here doesn't need to be particularly fast since the user
+      // doesn't get to interact with visual content. Provide a slowish
+      // timeout to ensure that we don't kill CPU from unecessary renders.
+      const render = async () => {
+        if (!this._document) return;
+        await this.whenRunning();
+        this._shouldRenderAgain = false;
+        this.logger.debug("Rendering synthetic document");
+        await this.render();
+        if (this._shouldRenderAgain) {
+          this._shouldRenderAgain = false;
+          await render();
+        }
+      }
+
+      setTimeout(() => {
+        render().then(resolve, reject).then(done, done);
+      }, this.getRequestUpdateTimeout());
+    }));
   }
 
   protected getRequestUpdateTimeout() {

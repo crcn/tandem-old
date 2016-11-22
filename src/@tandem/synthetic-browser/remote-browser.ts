@@ -30,7 +30,7 @@ import {
   BaseContentEdit,
   DependencyGraph,
   ApplyFileEditRequest,
-  SyntheticObjectEditor,
+  SyntheticObjectTreeEditor,
   DependencyGraphWatcher,
   DependencyGraphProvider,
   SyntheticObjectChangeWatcher,
@@ -63,7 +63,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   readonly logger: Logger;
 
   private _bus: IStreamableDispatcher<any>;
-  private _documentEditor: SyntheticObjectEditor;
+  private _documentEditor: SyntheticObjectTreeEditor;
   private _remoteStreamReader: ReadableStreamDefaultReader<any>;
 
   @bindable(true)
@@ -102,7 +102,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
       const previousDocument = this.window && this.window.document;
       const newDocument      = data;
-      this._documentEditor   = new SyntheticObjectEditor(newDocument);
+      this._documentEditor   = new SyntheticObjectTreeEditor(newDocument);
 
       const window = new SyntheticWindow(this.location, this, newDocument);
       this.setWindow(window);
@@ -112,7 +112,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       const mutations: Mutation<any>[] = data;
       this.logger.debug("Received document diffs: >>", mutations.map(action => action.type).join(", "));
       try {
-        this._documentEditor.applyEditMutations(...mutations);
+        this._documentEditor.applyMutations(...mutations);
 
       // catch for now to ensure that applying edits doesn't break the stream
       } catch(e) {

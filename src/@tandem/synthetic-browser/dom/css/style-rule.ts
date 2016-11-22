@@ -106,7 +106,7 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return `${this.selector} {\n${this.style.cssText}}\n`;
   }
 
-  applyEditChange(mutation: Mutation<any>) {
+  applyMutation(mutation: Mutation<any>) {
     if (this.$ownerNode) this.$ownerNode.notify(mutation);
     if (mutation.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
       (<PropertyMutation<any>>mutation).applyTo(this);

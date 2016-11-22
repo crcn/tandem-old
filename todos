@@ -14,6 +14,7 @@ Start working on UX around getting started with Tandem and projects.
 - artboard tool
 - insert div tool (for html)
 - animations
+- test native DOM renderer
 
 - [ ] unsaved files
 - [ ] multiple workspaces
@@ -49,6 +50,7 @@ LAUNCHING
 TESTING
   - [ ] TodoMVC examples
   - [ ] actually build apps
+  - [ ] load random websites
 
 PROMO
   - [ ] try online

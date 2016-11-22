@@ -58,7 +58,7 @@ describe(__filename + "#", () => {
       const edit = a.createEdit().fromDiff(b);
 
 
-      edit.applyActionsTo(a, (target, action) => {
+      edit.applyMutationsTo(a, (target, action) => {
 
         // for debugging
         // console.log("applied %s:\n%s", chalk.magenta(action.toString()), chalk.green(removeWhitespace(a.cssText)));
@@ -87,7 +87,7 @@ describe(__filename + "#", () => {
       }
 
       const pp = prev.clone(true);
-      prev.createEdit().fromDiff(curr).applyActionsTo(prev);
+      prev.createEdit().fromDiff(curr).applyMutationsTo(prev);
 
       const mutations = prev.createEdit().fromDiff(curr).mutations;
       expect(mutations.length).to.equal(0, `
@@ -104,7 +104,7 @@ describe(__filename + "#", () => {
   it("patches the source of each synthetic object", () => {
       const a = generateRandomStyleSheet(10, 5);
       const b = generateRandomStyleSheet(10, 5);
-      a.createEdit().fromDiff(b).applyActionsTo(a);
+      a.createEdit().fromDiff(b).applyMutationsTo(a);
 
       const asources = flattenTree(a).map(node => node.source);
       const bsources = flattenTree(b).map(node => node.source);

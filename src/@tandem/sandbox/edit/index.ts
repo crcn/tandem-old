@@ -31,12 +31,12 @@ export type contentEditorType = { new(filePath: string, content: string): IEdito
 
 
 export interface IEditor {
-  applyEditMutations(...changes: Mutation<ISyntheticObject>[]): any;
+  applyMutations(changes: Mutation<ISyntheticObject>[]): any;
 }
 
 export interface IEditable {
   createEdit(): IContentEdit;
-  applyEditChange(change: Mutation<ISyntheticObject>): any;
+  createEditor(): IEditor;
 }
 
 export interface IDiffable {
@@ -57,18 +57,18 @@ export abstract class BaseContentEditor<T> implements IEditor {
   }
 
   // add filePath and content in constructor here instead
-  applyEditMutations(...changes: Mutation<ISyntheticObject>[]): any {
-    for (const action of changes) {
-      const method = this[action.type];
+  applyMutations(mutations: Mutation<ISyntheticObject>[]): any {
+    for (const mutation of mutations) {
+      const method = this[mutation.type];
       if (method) {
-        const targetASTNode = this.findTargetASTNode(this._rootASTNode, action.target);
+        const targetASTNode = this.findTargetASTNode(this._rootASTNode, mutation.target);
         if (targetASTNode) {
-          method.call(this, targetASTNode, action);
+          method.call(this, targetASTNode, mutation);
         } else {
-          this.logger.error(`Cannot apply edit ${action.type} on ${this.fileName}: AST node for synthetic object not found.`);
+          this.logger.error(`Cannot apply edit ${mutation.type} on ${this.fileName}: AST node for synthetic object not found.`);
         }
       } else {
-        this.logger.warn(`Cannot apply edit ${action.type} on ${this.fileName}.`);
+        this.logger.warn(`Cannot apply edit ${mutation.type} on ${this.fileName}.`);
       }
     }
     return this.getFormattedContent(this._rootASTNode);
@@ -120,12 +120,12 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
    * @param {(T & IEditable)} target the target to apply the edits to
    */
 
-  public applyActionsTo(target: T & IEditable, each?: (T, action: Mutation<ISyntheticObject>) => void) {
+  public applyMutationsTo(target: T & IEditable, each?: (T, mutation: Mutation<ISyntheticObject>) => void) {
 
     // need to setup an editor here since some actions may be intented for
     // children of the target object
-    const editor = new SyntheticObjectEditor(target, each);
-    editor.applyEditMutations(...this.mutations);
+    const editor = new SyntheticObjectTreeEditor(target, each);
+    editor.applyMutations(this.mutations);
   }
 
   /**
@@ -147,17 +147,17 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   protected abstract addDiff(newSynthetic: T): BaseContentEdit<T>;
 
-  protected addChange<T extends Mutation<ISyntheticObject>>(action: T) {
+  protected addChange<T extends Mutation<ISyntheticObject>>(mutation: T) {
 
     // locked to prevent other actions busting this edit.
     if (this._locked) {
       throw new Error(`Cannot modify a locked edit.`);
     }
 
-    this._mutations.push(action);
+    this._mutations.push(mutation);
 
     // return the action so that it can be edited
-    return action;
+    return mutation;
   }
 
   protected addChildEdit(edit: IContentEdit) {
@@ -184,7 +184,7 @@ export class FileEditor {
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
-  applyEditMutations(...changes: Mutation<ISyntheticObject>[]): Promise<any> {
+  applyMutations(...changes: Mutation<ISyntheticObject>[]): Promise<any> {
 
     if (this._changes == null) {
       this._shouldEditAgain = true;
@@ -211,8 +211,8 @@ export class FileEditor {
     // find all actions that are part of the same file and
     // batch them together. Important to ensure that we do not trigger multiple
     // unecessary updates to any file listeners.
-    for (const action of changes) {
-      const target = action.target;
+    for (const mutation of changes) {
+      const target = mutation.target;
 
       // This may happen if edits are being applied to synthetic objects that
       // do not have the proper mappings
@@ -225,8 +225,8 @@ export class FileEditor {
 
       const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
 
-      const filePathActions: Mutation<ISyntheticObject>[] = changesByFilePath[targetFilePath] || (changesByFilePath[targetFilePath] = []);
-      filePathActions.push(action);
+      const filePathMutations: Mutation<ISyntheticObject>[] = changesByFilePath[targetFilePath] || (changesByFilePath[targetFilePath] = []);
+      filePathMutations.push(mutation);
     }
 
     const promises = [];
@@ -250,7 +250,7 @@ export class FileEditor {
         const changes = changesByFilePath[filePath];
         this.logger.info(`Applying file edit.changes ${filePath}: >>`, changes.map(action => action.type).join(" "));
 
-        const newContent    = contentEditor.applyEditMutations(...changes);
+        const newContent    = contentEditor.applyMutations(changes);
 
         // This may trigger if the editor does special formatting to the content with no
         // actual edits. May need to have a result come from the content editors themselves to check if anything's changed.
@@ -279,10 +279,42 @@ export class FileEditor {
   }
 }
 
-export class SyntheticObjectEditor {
+export abstract class BaseEditor<T> {
+
+  constructor(readonly target: T) {
+
+  }
+
+  applyMutations(mutations: Mutation<T>[]) {
+    if (mutations.length === 1) {
+      this.applySingleMutation(mutations[0]);
+    } else {
+      for (let i = 0, n = mutations.length; i < n; i++) {
+        this.applySingleMutation(mutations[i]);
+      }
+    }
+  }
+
+  protected applySingleMutation(mutation: Mutation<T>) {
+
+  }
+}
+
+export class GroupEditor implements IEditor {
+  constructor(readonly editors: IEditor[]) {
+
+  }
+  applyMutations(mutations: Mutation<any>[]) {
+    for (let i = 0, n = this.editors.length; i < n; i++) {
+      this.editors[i].applyMutations(mutations);
+    }
+  }
+}
+
+export class SyntheticObjectTreeEditor implements IEditor {
 
   constructor(readonly root: ISyntheticObject, private _each?: (target: IEditable, change: Mutation<ISyntheticObject>) => void) { }
-  applyEditMutations(...changes: Mutation<ISyntheticObject>[]) {
+  applyMutations(mutations: Mutation<ISyntheticObject>[]) {
 
     const allSyntheticObjects = {};
 
@@ -290,24 +322,24 @@ export class SyntheticObjectEditor {
       allSyntheticObjects[child.uid] = child;
     });
 
-    for (let i = 0, n = changes.length; i < n; i++) {
-      const change = changes[i];
+    for (let i = 0, n = mutations.length; i < n; i++) {
+      const mutation = mutations[i];
 
       // Assuming that all edit.changes being applied to synthetics are editable. Otherwise
       // they shouldn't be dispatched.
-      const target = allSyntheticObjects[change.target.uid] as IEditable;
+      const target = allSyntheticObjects[mutation.target.uid] as IEditable;
 
       if (!target) {
-        throw new Error(`Edit change ${change.type} target ${change.target.uid} not found.`);
+        throw new Error(`Edit change ${mutation.type} target ${mutation.target.uid} not found.`);
       }
 
       try {
-        target.applyEditChange(change);
+        target.createEditor().applyMutations([mutation]);
 
         // each is useful particularly for debugging diff algorithms. See tests.
-        if (this._each) this._each(target, change);
+        if (this._each) this._each(target, mutation);
       } catch(e) {
-        throw new Error(`Error trying to apply edit ${change.type} to ${change.target.toString()}: ${e.stack}`);
+        throw new Error(`Error trying to apply edit ${mutation.type} to ${mutation.target.toString()}: ${e.stack}`);
       }
     }
   }
@@ -389,7 +421,7 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
         this._diffing = false;
         throw e;
       }
-      edit.applyActionsTo(this._clone);
+      edit.applyMutationsTo(this._clone);
     }
 
     this._diffing = false;
@@ -400,11 +432,23 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
   }
 }
 
+export namespace SyntheticObjectChangeTypes {
+  export const SET_SYNTHETIC_SOURCE_EDIT = "setSyntheticSourceEdit";
+}
+
+export abstract class SyntheticObjectEditor<T extends ISyntheticObject> extends BaseEditor<T> {
+  applySingleMutation(mutation: Mutation<T>) {
+    if (mutation.type === SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT) {
+      this.target.$source = (<PropertyMutation<any>>mutation).newValue;
+    }
+  }
+}
+
 export abstract class SyntheticObjectEdit<T extends ISyntheticObject> extends BaseContentEdit<T> {
-  static readonly SET_SYNTHETIC_SOURCE_EDIT = "setSyntheticSourceEdit";
+
 
   setSource(source: ISyntheticSourceInfo) {
-    this.addChange(new PropertyMutation(SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, this.target, "$source", source));
+    this.addChange(new PropertyMutation(SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, this.target, "$source", source));
   }
 
   protected addDiff(from: T) {

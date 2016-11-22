@@ -54,7 +54,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
     // apply the change back to the element so that the user sees
     // the change immediately
-    this.state.edit.applyActionsTo(artboard);
+    this.state.edit.applyMutationsTo(artboard);
 
     await this.bus.dispatch(new ApplyFileEditRequest(this.state.edit.mutations));
     this.doneEditing();

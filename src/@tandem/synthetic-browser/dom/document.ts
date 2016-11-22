@@ -465,8 +465,8 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this.registerElementNS(this.defaultNamespaceURI, tagName, options);
   }
 
-  applyEditChange(mutation: Mutation<any>) {
-    super.applyEditChange(mutation);
+  applyMutation(mutation: Mutation<any>) {
+    super.applyMutation(mutation);
 
     const target: any = {
       [SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
