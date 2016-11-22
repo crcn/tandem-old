@@ -1,23 +1,32 @@
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
 import { RemoteBrowserDocumentMessage, OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
-import { Action, serializable, ISourceLocation, DSUpsertRequest, PostDSMessage, serialize, deserialize, BoundingRect } from "@tandem/common";
+import {
+  Action,
+  serializable,
+  ISourceLocation,
+  DSUpsertRequest,
+  PostDSMessage,
+  serialize,
+  deserialize,
+  BoundingRect,
+  Mutation,
+  ChildMutation,
+  RemoveMutation,
+  MoveChildMutation,
+  ApplicableMutation,
+} from "@tandem/common";
 
 import {
-  EditChange,
   SandboxAction,
   FileCacheAction,
   ReadFileRequest,
-  ChildEditChange,
   WatchFileRequest,
   DependencyEvent,
   ISyntheticObject,
-  RemoveEditChange,
   ResolveFileRequest,
   ApplyFileEditRequest,
-  MoveChildEditChange,
   ReadDirectoryRequest,
   SandboxModuleAction,
-  ApplicableEditChange
 } from "@tandem/sandbox";
 
 import { 

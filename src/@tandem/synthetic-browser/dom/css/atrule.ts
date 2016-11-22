@@ -1,39 +1,48 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
-import { SyntheticCSSStyleSheetEdit } from "./style-sheet";
-import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
+import { SyntheticCSSStyleSheetChangeTypes } from "./style-sheet";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit,  } from "./base";
+import {
+  ISerializer,
+  serialize,
+  deserialize,
+  serializable,
+  ISerializedContent,
+  ITreeWalker,
+  ChildMutation,
+  Mutation,
+  MoveChildMutation,
+  ApplicableMutation,
+  PropertyMutation,
+  InsertChildMutation,
+  RemoveChildMutation,
+} from "@tandem/common";
 
 import {
-  EditChange,
   BaseContentEdit,
-  ChildEditChange,
-  MoveChildEditChange,
-  ApplicableEditChange,
-  SetKeyValueEditChange,
-  InsertChildEditChange,
-  RemoveChildEditChange,
 } from "@tandem/sandbox";
 
 import {diffStyleSheetRules } from "./utils";
 
+export namespace SyntheticCSSAtRuleChangeTypes {
+  export const SET_NAME_EDIT        = "setNameEdit";
+  export const INSERT_CSS_RULE_EDIT = SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT;
+  export const MOVE_CSS_RULE_EDIT   = SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT;
+  export const REMOVE_CSS_RULE_EDIT = SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT;
+}
+
 export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends SyntheticCSSObjectEdit<T> {
 
-  static readonly SET_NAME_EDIT        = "setNameEdit";
-  static readonly INSERT_CSS_RULE_EDIT = SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT;
-  static readonly MOVE_CSS_RULE_EDIT   = SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT;
-  static readonly REMOVE_CSS_RULE_EDIT = SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT;
-
   insertRule(rule: SyntheticCSSStyleRule, index: number) {
-    return this.addChange(new InsertChildEditChange(SyntheticCSSAtRuleEdit.INSERT_CSS_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new InsertChildMutation(SyntheticCSSAtRuleChangeTypes.INSERT_CSS_RULE_EDIT, this.target, rule, index));
   }
 
   moveRule(rule: SyntheticCSSStyleRule, index: number) {
-    return this.addChange(new MoveChildEditChange(SyntheticCSSAtRuleEdit.MOVE_CSS_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new MoveChildMutation(SyntheticCSSAtRuleChangeTypes.MOVE_CSS_RULE_EDIT, this.target, rule, index));
   }
 
   removeRule(rule: SyntheticCSSStyleRule) {
-    return this.addChange(new RemoveChildEditChange(SyntheticCSSAtRuleEdit.REMOVE_CSS_RULE_EDIT, this.target, rule));
+    return this.addChange(new RemoveChildMutation(SyntheticCSSAtRuleChangeTypes.REMOVE_CSS_RULE_EDIT, this.target, rule));
   }
 
   addDiff(atRule: T) {
@@ -84,17 +93,17 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
     return this.params === target.params ? 0 : -1;
   }
 
-  applyEditChange(action: ApplicableEditChange) {
-    action.applyTo(this.getEditChangeTargets()[action.type]);
+  applyEditChange(change: ApplicableMutation<any>) {
+    change.applyTo(this.getEditChangeTargets()[change.type]);
     this.cssRules.forEach(rule => rule.$parentRule = this);
   }
 
   protected getEditChangeTargets() {
     return {
       [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this as SyntheticCSSAtRule,
-      [SyntheticCSSAtRuleEdit.REMOVE_CSS_RULE_EDIT]: this.cssRules,
-      [SyntheticCSSAtRuleEdit.INSERT_CSS_RULE_EDIT]: this.cssRules,
-      [SyntheticCSSAtRuleEdit.MOVE_CSS_RULE_EDIT]: this.cssRules
+      [SyntheticCSSAtRuleChangeTypes.REMOVE_CSS_RULE_EDIT]: this.cssRules,
+      [SyntheticCSSAtRuleChangeTypes.INSERT_CSS_RULE_EDIT]: this.cssRules,
+      [SyntheticCSSAtRuleChangeTypes.MOVE_CSS_RULE_EDIT]: this.cssRules
     };
   }
 

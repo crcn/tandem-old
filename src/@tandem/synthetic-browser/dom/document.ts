@@ -6,15 +6,6 @@ import { SyntheticHTMLElement } from "./html";
 import { SyntheticCSSStyleSheet } from "./css";
 
 import {
-  EditChange,
-  RemoveEditChange,
-  MoveChildEditChange,
-  ApplicableEditChange,
-  RemoveChildEditChange,
-  InsertChildEditChange,
-} from "@tandem/sandbox";
-
-import {
   DOMNodeType,
   SyntheticDOMText,
   SyntheticDOMNode,
@@ -40,7 +31,12 @@ import {
   deserialize,
   ITreeWalker,
   serializable,
-  TreeNodeEvent,
+  Mutation,
+  RemoveMutation,
+  MoveChildMutation,
+  ApplicableMutation,
+  RemoveChildMutation,
+  InsertChildMutation,
   ISerializedContent,
   ArrayMetadataChangeEvent,
   ObservableCollection,
@@ -79,14 +75,14 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISer
 
 // TODO - this shouldn't be here
 @serializable({
-  serialize({ changes }: SyntheticDocumentEdit) {
+  serialize({ mutations }: SyntheticDocumentEdit) {
     return {
-      changes: changes.map(serialize)
+      mutations: mutations.map(serialize)
     };
   },
-  deserialize({ changes }, injector, ctor: { new(): SyntheticDocumentEdit }) {
+  deserialize({ mutations }, injector, ctor: { new(): SyntheticDocumentEdit }) {
     const edit = new ctor();
-    edit.changes.push(...changes.map(action => deserialize(action, injector)));
+    edit.mutations.push(...mutations.map(action => deserialize(action, injector)));
     return edit;
   }
 })
@@ -97,15 +93,15 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
   static readonly MOVE_DOCUMENT_STYLE_SHEET_EDIT   = "moveDocumentStyleSheetEdit";;
 
   addStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
-    return this.addChange(new InsertChildEditChange(SyntheticDocumentEdit.ADD_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
+    return this.addChange(new InsertChildMutation(SyntheticDocumentEdit.ADD_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
   }
 
   removeStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
-    return this.addChange(new RemoveChildEditChange(SyntheticDocumentEdit.REMOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
+    return this.addChange(new RemoveChildMutation(SyntheticDocumentEdit.REMOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
   }
 
   moveStyleSheet(stylesheet: SyntheticCSSStyleSheet, newIndex: number) {
-    return this.addChange(new MoveChildEditChange(SyntheticDocumentEdit.MOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet, newIndex));
+    return this.addChange(new MoveChildMutation(SyntheticDocumentEdit.MOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet, newIndex));
   }
 
   protected addDiff(newDocument: SyntheticDocument) {
@@ -117,7 +113,7 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
       }
 
       // may be very, very expensive...
-      return oldStyleSheet.createEdit().fromDiff(newStyleSheet).changes.length;
+      return oldStyleSheet.createEdit().fromDiff(newStyleSheet).mutations.length;
     }).accept({
       visitInsert: ({ index, value }) => {
         this.addStyleSheet(value);
@@ -466,7 +462,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this.registerElementNS(this.defaultNamespaceURI, tagName, options);
   }
 
-  applyEditChange(action: EditChange) {
+  applyEditChange(action: Mutation<any>) {
     super.applyEditChange(action);
 
     const target: any = {
@@ -476,7 +472,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     }[action.type];
 
     if (target) {
-      (<ApplicableEditChange>action).applyTo(target);
+      (<ApplicableMutation<any>>action).applyTo(target);
     }
   }
 

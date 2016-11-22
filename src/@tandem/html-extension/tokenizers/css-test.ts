@@ -38,8 +38,7 @@ describe(__filename + "#", function() {
       ["10", "number"],
       ["em", "unit"],
       ["/", "operator"],
-      ["-", "operator"],
-      ["10", "number"]
+      ["-10", "number"]
     ]],
     ["2-2", [
       ["2", "number"],
@@ -47,7 +46,8 @@ describe(__filename + "#", function() {
       ["2", "number"]
     ]],
     ["10deg", [
-      ["10", "degree"]
+      ["10", "number"],
+      ["deg", "unit"]
     ]],
     ["linear-gradient(to top, blue 50%, red)", [
       ["linear-gradient", "reference"],

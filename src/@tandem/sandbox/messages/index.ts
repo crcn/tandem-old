@@ -8,6 +8,7 @@ import {
   serialize,
   deserialize,
   IDisposable,
+  Mutation,
   serializable
 } from "@tandem/common";
 
@@ -19,7 +20,9 @@ import { 
   ReadableStream,
   WritableStream,
 } from "@tandem/mesh";
-import { EditChange } from "../edit";
+
+
+
 
 // TODO - ability to trace where actions go in the application - possibly
 // with a @trace(), or @log() feature
@@ -29,18 +32,18 @@ export class SandboxAction extends Action {
 }
 
 @serializable({
-  serialize({ changes }: ApplyFileEditRequest) {
+  serialize({ mutations }: ApplyFileEditRequest) {
     return {
-      changes: changes.map(serialize)
+      mutations: mutations.map(serialize)
     }
   },
-  deserialize({ changes }, injector) {
-    return new ApplyFileEditRequest(changes.map(action => deserialize(action, injector)));
+  deserialize({ mutations }, injector) {
+    return new ApplyFileEditRequest(mutations.map(action => deserialize(action, injector)));
   }
 })
 export class ApplyFileEditRequest extends Action {
   static readonly APPLY_EDITS = "applyEditChanges";
-  constructor(readonly changes: EditChange[], readonly saveFile: boolean = false) {
+  constructor(readonly mutations: Mutation<any>[], readonly saveFile: boolean = false) {
     super(ApplyFileEditRequest.APPLY_EDITS);
   }
 }

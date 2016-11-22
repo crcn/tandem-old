@@ -1,7 +1,7 @@
 import { values } from "lodash";
 import { Action } from "@tandem/common";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
-import { SyntheticRendererEvent, isDOMMutationEvent } from "../messages";
+import { SyntheticRendererEvent, isDOMMutationEvent, DOMNodeEvent } from "../messages";
 
 import {
   Logger,
@@ -176,7 +176,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected onDocumentEvent(event: Action) {
-    if (isDOMMutationEvent(event)) {
+    if (isDOMMutationEvent(event) || event.type === DOMNodeEvent.DOM_NODE_LOADED) {
       this.onDocumentMutationEvent(event);
     }
   }

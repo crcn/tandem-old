@@ -1,16 +1,17 @@
-import { serializable, isSerializable } from "@tandem/common/serialize";
+import { serializable, getSerializeType } from "@tandem/common/serialize";
 
 const getMetadataKey = (name) => `message:${name}`;
 
 export const defineMessageMetadata = (name: string, value: any) => {
-  return function(message) {
-    Reflect.defineMetadata(getMetadataKey(name), value, message);
+  return function(messageClass) {
+    Reflect.defineMetadata(getMetadataKey(name), value, messageClass);
 
-    if (!isSerializable(message)) {
-      serializable()(message);
+    if (!getSerializeType(messageClass)) {
+
+      serializable()(messageClass);
     }
 
-    return message;
+    return messageClass;
   }
 }
 

@@ -1,4 +1,4 @@
-import "reflect-metadata";
+// import "reflect-metadata";
 // TODO - giant mess of a setup here. This is okay for now as
 // the internal API matures along with extensions. However, it *may* be good
 // to modularize this piece of code later so that it's not so specific to certain libraries
@@ -7,12 +7,12 @@ import "reflect-metadata";
 import * as path from "path";
 import { MarkupEditor } from "@tandem/synthetic-browser";
 import { createSASSSandboxProviders } from "@tandem/sass-extension";
-import { createCommonEditorProviders } from "@tandem/editor/common";
+import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "@tandem/editor/common";
 import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
 import { createHTMLCoreProviders, createHTMLSandboxProviders } from "@tandem/html-extension";
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test/helpers";
-import { ServiceApplication, ApplicationConfigurationProvider } from "@tandem/core";
+import { ServiceApplication, ApplicationConfigurationProvider, ApplicationServiceProvider } from "@tandem/core";
 import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, Application, HTML_MIME_TYPE, LogLevel, LogAction } from "@tandem/common";
 import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, ProtocolURLResolverProvider, WebpackProtocolResolver, FileCacheProvider, ContentEditorFactoryProvider } from "@tandem/sandbox";
 
@@ -37,9 +37,10 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
     new InjectorProvider(),
     createHTMLCoreProviders(),
     new PrivateBusProvider(bus),
-    createCommonEditorProviders(),
     createSASSSandboxProviders(),
     createHTMLSandboxProviders(),
+    new ApplicationServiceProvider("console", ConsoleLogService),
+    new ApplicationServiceProvider("receiver", ReceiverService),
     createJavaScriptSandboxProviders(),
     options.typescript !== false ? createTypescriptEditorWorkerProviders() : [],
     new ApplicationConfigurationProvider(options),

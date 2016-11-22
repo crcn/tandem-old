@@ -10,7 +10,7 @@ export namespace CSSTokenTypes {
   export const REFERENCE = "reference";
   export const UNIT = "unit";
   export const NUMBER = "number";
-  export const DEGREE = "number";
+  export const DEGREE = "degree";
 }
 
 const tokenMap = {
@@ -46,8 +46,9 @@ export class CSSTokenizer {
       if (num) {
         tokens.push(new Token(num, CSSTokenTypes.NUMBER));
         // http://www.w3schools.com/cssref/css_units.asp
-        addToken(/^deg/, CSSTokenTypes.DEGREE);
-        addToken(/^(em|ex|%|px|cm|mm|in|pt|pc|ch|rem|vh|vw|vmin|vmax)/, CSSTokenTypes.UNIT);
+        addToken(/^(em|ex|%|px|cm|mm|in|pt|pc|ch|rem|vh|vw|vmin|vmax|unit|deg)/, CSSTokenTypes.UNIT);
+        addToken(/^-/, TokenTypes.OPERATOR)
+        continue;
       }
 
       if (addToken(/^\#\w{1,6}/, CSSTokenTypes.COLOR)) continue;

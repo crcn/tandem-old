@@ -1,31 +1,39 @@
 import * as postcss from "postcss";
 import * as syntax from "postcss-scss";
-import { Action, inject, Injector, InjectorProvider, sourcePositionEquals, MimeTypeProvider } from "@tandem/common";
 import {
-  SyntheticCSSStyleRule,
-  syntheticCSSRuleType,
-  SyntheticCSSStyleSheetEdit,
-  SyntheticCSSMediaRuleEdit,
-  SyntheticCSSAtRuleEdit,
-  SyntheticCSSAtRule,
+  Action,
+  inject,
+  Mutation,
+  Injector,
+  SetValueMutation,
+  InjectorProvider,
+  MimeTypeProvider,
+  MoveChildMutation,
+  sourcePositionEquals,
+  InsertChildMutation,
+  RemoveChildMutation,
+  PropertyMutation,
+} from "@tandem/common";
+import {
   CSSEditor,
-  SyntheticCSSKeyframesRuleEdit,
+  SyntheticCSSAtRule,
+  syntheticCSSRuleType,
+  SyntheticCSSStyleRule,
+  SyntheticCSSAtRuleEdit,
+  SyntheticCSSMediaRuleEdit,
   SyntheticCSSStyleRuleEdit,
+  SyntheticCSSStyleSheetEdit,
+  SyntheticCSSKeyframesRuleEdit,
+  SyntheticCSSStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
 import {
   Dependency,
-  EditChange,
   IContentEdit,
   BaseContentEdit,
-  InsertChildEditChange,
-  RemoveChildEditChange,
-  MoveChildEditChange,
   ISyntheticObject,
   ISyntheticObjectChild,
   ISyntheticSourceInfo,
   BaseContentEditor,
-  SetValueEditActon,
-  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 // TODO - move this to synthetic-browser
@@ -33,7 +41,7 @@ import {
 // to SASS
 export class SCSSEditor extends CSSEditor {
 
-  [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {
+  [SyntheticCSSStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<ISyntheticObject>) {
     const source = target.source;
 
     // prefix here is necessary

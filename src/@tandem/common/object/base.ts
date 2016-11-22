@@ -30,7 +30,7 @@ export interface IValued {
 }
 
 export interface ICloneable {
-  clone(): ICloneable;
+  clone(deep?: boolean): ICloneable;
 }
 
 export interface IOwnable {
@@ -49,6 +49,6 @@ export interface IPatchable {
   patch(node: IPatchable);
 }
 
-export interface IEntity2<T> {
-  readonly source: T;
+export interface IUnique {
+  readonly uid: any;
 }

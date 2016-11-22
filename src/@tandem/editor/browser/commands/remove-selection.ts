@@ -1,7 +1,7 @@
 import { Store } from "@tandem/editor/browser/models";
-import { IEditable, ISyntheticObject, RemoveEditChange, ApplyFileEditRequest } from "@tandem/sandbox";
+import { IEditable, ISyntheticObject, ApplyFileEditRequest } from "@tandem/sandbox";
 import { StoreProvider } from "@tandem/editor/browser/providers";
-import { ICommand, inject, PrivateBusProvider, IBrokerBus } from "@tandem/common";
+import { ICommand, inject, PrivateBusProvider, IBrokerBus, RemoveMutation } from "@tandem/common";
 import { RemoveSelectionRequest } from "@tandem/editor/browser/messages";
 
 export class RemoveSelectionCommand implements ICommand {
@@ -14,14 +14,14 @@ export class RemoveSelectionCommand implements ICommand {
 
   async execute(request: RemoveSelectionRequest) {
 
-    const changes = [];
+    const mutations = [];
 
     for (const selection of this._store.workspace.selection as Array<ISyntheticObject & IEditable>) {
       if (!(selection.createEdit)) continue;
-      changes.push(new RemoveEditChange(selection));
+      mutations.push(new RemoveMutation(selection));
     }
 
-    await this._bus.dispatch(new ApplyFileEditRequest(changes));
+    await this._bus.dispatch(new ApplyFileEditRequest(mutations));
   }
 }
 

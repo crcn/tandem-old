@@ -1,10 +1,11 @@
 
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser";
-import { RemoveEditChange, FileEditorProvider } from "@tandem/sandbox";
+import { FileEditorProvider } from "@tandem/sandbox";
 import {
   loggable,
   bindable,
+  RemoveMutation,
   flattenTree,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -65,7 +66,7 @@ import {
 //   async [RemoveSelectionRequest.REMOVE_SELECTION]() {
 
 //     // await FileEditorProvider.getInstance(this.app.injector).applyEditChanges(...this.app.workspace.selection.map((selection) => {
-//     //   return new RemoveEditChange(selection);
+//     //   return new RemoveMutation(selection);
 //     // }));
 
 //     // this.bus.dispatch(new SelectRequest());

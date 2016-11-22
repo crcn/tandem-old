@@ -1,17 +1,19 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
-import { BaseContentEdit, EditChange, SetKeyValueEditChange } from "@tandem/sandbox";
+import { BaseContentEdit } from "@tandem/sandbox";
 import {
   ISerializer,
   deserialize,
   serializable,
+  Mutation,
+  PropertyMutation,
   serialize,
   diffArray,
   ISerializedContent,
   ITreeWalker
 } from "@tandem/common";
-import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit } from "./atrule";
+import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit, SyntheticCSSAtRuleChangeTypes } from "./atrule";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
@@ -31,9 +33,8 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
 }
 
 export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticCSSKeyframesRule> {
-  static readonly SET_KEYFRAME_NAME_EDIT = "setKeyFrameNameEdit";
   setName(value: string) {
-    this.addChange(new SetKeyValueEditChange(SyntheticCSSKeyframesRuleEdit.SET_NAME_EDIT, this.target, "name", value));
+    this.addChange(new PropertyMutation(SyntheticCSSAtRuleChangeTypes.SET_NAME_EDIT, this.target, "name", value));
   }
   addDiff(newAtRule: SyntheticCSSKeyframesRule) {
     if (this.target.name !== newAtRule.name) {

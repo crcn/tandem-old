@@ -18,7 +18,7 @@ export class HTMLStylePaneComponent extends BaseApplicationComponent<{ workspace
       }
       const edit = element.createEdit();
       edit.setAttribute("style", element.getAttribute("style"));
-      this.bus.dispatch(new ApplyFileEditRequest(edit.changes));
+      this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
     }
   }
 

@@ -1,9 +1,22 @@
 import { Dependency } from "@tandem/sandbox";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
-import { BaseContentEdit, EditChange, SetKeyValueEditChange, SetValueEditActon } from "@tandem/sandbox";
+import { BaseContentEdit } from "@tandem/sandbox";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration, isValidCSSDeclarationProperty } from "./declaration";
-import { Action, serializable, serialize, deserialize, ISerializer, ISerializedContent, diffArray, ITreeWalker, ArrayDiff } from "@tandem/common";
+import {
+  Action,
+  serializable,
+  serialize,
+  deserialize,
+  ISerializer,
+  ISerializedContent,
+  diffArray,
+  ITreeWalker,
+  ArrayDiff,
+  Mutation,
+  PropertyMutation,
+  SetValueMutation,
+} from "@tandem/common";
 
 export interface ISerializedSyntheticCSSStyleRule {
   selector: string;
@@ -22,18 +35,20 @@ class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRu
   }
 }
 
+export namespace SyntheticCSSStyleRuleMutationTypes {
+  export const SET_DECLARATION = "setDeclaration";
+  export const SET_RULE_SELECTOR = "setRuleSelector";
+}
+
 // TODO - move this to synthetic-browser
 export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleRule> {
 
-  static readonly SET_DECLARATION = "setDeclaration";
-  static readonly SET_RULE_SELECTOR = "setRuleSelector";
-
   setSelector(selector: string) {
-    return this.addChange(new SetValueEditActon(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, selector));
+    return this.addChange(new SetValueMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.target, selector));
   }
 
   setDeclaration(name: string, value: string, oldName?: string, index?: number) {
-    return this.addChange(new SetKeyValueEditChange(SyntheticCSSStyleRuleEdit.SET_DECLARATION, this.target, name, value, oldName, index));
+    return this.addChange(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.target, name, value, oldName, index));
   }
 
   addDiff(newRule: SyntheticCSSStyleRule) {
@@ -92,11 +107,11 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return `${this.selector} {\n${this.style.cssText}}\n`;
   }
 
-  applyEditChange(action: EditChange) {
+  applyEditChange(action: Mutation<any>) {
     if (action.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<SetKeyValueEditChange>action).applyTo(this);
-    } else if (action.type === SyntheticCSSStyleRuleEdit.SET_DECLARATION) {
-      const { name, newValue, oldName } = <SetKeyValueEditChange>action;
+      (<PropertyMutation<any>>action).applyTo(this);
+    } else if (action.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+      const { name, newValue, oldName } = <PropertyMutation<any>>action;
       this.style.setProperty(name, newValue, undefined, oldName);
     } else {
       console.error(`Cannot apply ${action.type}`);

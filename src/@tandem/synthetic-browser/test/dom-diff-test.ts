@@ -11,6 +11,9 @@ import {
   SyntheticCSSObjectEdit,
   SyntheticHTMLElement,
   SyntheticDOMValueNodeEdit,
+  SyntheticDOMContainerChangeTypes,
+  SyntheticDOMElementMutationTypes,
+  SyntheticDOMValueNodeMutationTypes,
   SyntheticDOMContainerEdit,
   SyntheticDOMElementEdit,
   SyntheticDocumentEdit,
@@ -20,14 +23,14 @@ import {
 describe(__filename + "#", () => {
   [
     // All single edits
-    [`a`, `b`, [SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT]],
-    [`<!--a-->`, `<!--b-->`, [SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT]],
-    [`<div />`, `<span></span>`, [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT, SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT]],
-    [`<div /><span></span>`, `<span></span>`, [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [`<div />`, `<div></div><span></span>`, [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT]],
-    [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [`<div id="b" />`, `<div id="c"></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [`<div id="b" />`, `<div></div>`, [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`a`, `b`, [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]],
+    [`<!--a-->`, `<!--b-->`, [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]],
+    [`<div />`, `<span></span>`, [SyntheticDOMContainerChangeTypes.REMOVE_CHILD_NODE_EDIT, SyntheticDOMContainerChangeTypes.INSERT_CHILD_NODE_EDIT]],
+    [`<div /><span></span>`, `<span></span>`, [SyntheticDOMContainerChangeTypes.REMOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div />`, `<div></div><span></span>`, [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticDOMContainerChangeTypes.INSERT_CHILD_NODE_EDIT]],
+    [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerChangeTypes.MOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div id="b" />`, `<div id="c"></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div id="b" />`, `<div></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
 
   ].forEach(([oldSource, newSource, actionNames]) => {
 
@@ -38,7 +41,7 @@ describe(__filename + "#", () => {
       const bnode = document.createElement("div") as SyntheticHTMLElement;
       bnode.innerHTML = newSource as string;
       const edit  = anode.createEdit().fromDiff(bnode);
-      expect(edit.changes.map(action => action.type)).to.eql(actionNames);
+      expect(edit.mutations.map(action => action.type)).to.eql(actionNames);
       edit.applyActionsTo(anode);
       expect(anode.innerHTML).to.equal(newSource);
     });
@@ -66,12 +69,12 @@ describe(__filename + "#", () => {
       a.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
       b.appendChild(generateRandomSyntheticHTMLElement(document, 8, 4, 5));
       a.createEdit().fromDiff(b).applyActionsTo(a);
-      const changes = a.createEdit().fromDiff(b).changes;
-      expect(changes.length).to.equal(0, `
+      const mutations = a.createEdit().fromDiff(b).mutations;
+      expect(mutations.length).to.equal(0, `
 
         ${chalk.magenta(a.innerHTML)} -> ${chalk.green(b.innerHTML)}
 
-        Trying to apply edit.changes from node that should be identical: ${changes.map(action => action.type)}
+        Trying to apply edit.mutations from node that should be identical: ${mutations.map(action => action.type)}
       `);
     }
   });

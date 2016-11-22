@@ -2,9 +2,9 @@ import * as sift from "sift";
 import { SyntheticCSSObject } from "./base";
 import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
-import { CSSDeclarationValueChangeEvent } from "@tandem/synthetic-browser/messages";
-import { ISerializable, Action, serializable, diffArray, ITreeWalker } from "@tandem/common";
-import { SetKeyValueEditChange, IContentEdit, ApplicableEditChange, ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
+import { SyntheticCSSStyleRuleMutationTypes } from "./style-rule";
+import { ISerializable, Action, serializable, diffArray, ITreeWalker, PropertyMutation, ApplicableMutation } from "@tandem/common";
+import { IContentEdit , ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
 
@@ -476,7 +476,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
 
     if (ownerNode) {
-      ownerNode.notify(new CSSDeclarationValueChangeEvent(this, name, newValue, oldName));
+      ownerNode.notify(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.$parentRule, name, newValue, oldName));
     }
   }
 

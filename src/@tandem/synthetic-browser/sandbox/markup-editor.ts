@@ -1,12 +1,14 @@
-import { sourcePositionEquals } from "@tandem/common";
+import {
+  RemoveMutation,
+  SetValueMutation,
+  sourcePositionEquals,
+  MoveChildMutation,
+  PropertyMutation,
+  InsertChildMutation,
+} from "@tandem/common";
 
 import {
-  RemoveEditChange,
-  SetValueEditActon,
   BaseContentEditor,
-  MoveChildEditChange,
-  SetKeyValueEditChange,
-  InsertChildEditChange,
 } from "@tandem/sandbox";
 
 import {
@@ -24,19 +26,22 @@ import {
   SyntheticDOMValueNodeEdit,
   SyntheticDOMContainerEdit,
   IMarkupValueNodeExpression,
+  SyntheticDOMElementMutationTypes,
+  SyntheticDOMContainerChangeTypes,
+  SyntheticDOMValueNodeMutationTypes,
 } from "@tandem/synthetic-browser";
 
 export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
 
-  [RemoveEditChange.REMOVE_EDIT](node: MarkupNodeExpression, { target }: RemoveEditChange) {
+  [RemoveMutation.REMOVE_CHANGE](node: MarkupNodeExpression, { target }: RemoveMutation<any>) {
     node.parent.removeChild(node);
   }
 
-  [SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT](node: IMarkupValueNodeExpression, { target, newValue }: SetValueEditActon) {
+  [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT](node: IMarkupValueNodeExpression, { target, newValue }: SetValueMutation<any>) {
     node.nodeValue = newValue;
   }
 
-  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, newIndex }: SetKeyValueEditChange) {
+  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, newIndex }: PropertyMutation<any>) {
 
     const syntheticElement = <SyntheticHTMLElement>target;
     if (newValue == null) {
@@ -50,17 +55,17 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     }
   }
 
-  [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildEditChange) {
+  [SyntheticDOMContainerChangeTypes.INSERT_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childExpression = parseMarkup((<SyntheticDOMNode>child).toString());
     node.childNodes.splice(index, 0, childExpression);
   }
 
-  [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildEditChange) {
+  [SyntheticDOMContainerChangeTypes.REMOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
   }
 
-  [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, newIndex }: MoveChildEditChange) {
+  [SyntheticDOMContainerChangeTypes.MOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, newIndex }: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
     node.childNodes.splice(newIndex, 0, childNode);

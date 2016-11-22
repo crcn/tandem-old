@@ -1,18 +1,24 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
-import { ISerializer, serialize, deserialize, serializable, ISerializedContent, ITreeWalker } from "@tandem/common";
-
 import {
-  EditChange,
-  BaseContentEdit,
-  ChildEditChange,
-  MoveChildEditChange,
-  ApplicableEditChange,
-  SetKeyValueEditChange,
-  InsertChildEditChange,
-  RemoveChildEditChange,
-} from "@tandem/sandbox";
+  ISerializer,
+  serialize,
+  deserialize,
+  serializable,
+  ISerializedContent,
+  ITreeWalker,
+  ChildMutation,
+  Mutation,
+  MoveChildMutation,
+  ApplicableMutation,
+  PropertyMutation,
+  InsertChildMutation,
+  RemoveChildMutation,
+} from "@tandem/common";
+
+import { BaseContentEdit } from "@tandem/sandbox";
+
 import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit } from "./atrule";
 
 export interface ISerializedSyntheticCSSMediaRule {
@@ -32,12 +38,15 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
+export namespace SyntheticCSSMediaRuleChangeTypes {
+  export const SET_MEDIA_EDIT = "setMediaEdit";
+}
+
 export class SyntheticCSSMediaRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticCSSMediaRule> {
 
-  static readonly SET_MEDIA_EDIT       = "setMediaEdit";
 
   setMedia(value: string[]) {
-    return this.addChange(new SetKeyValueEditChange(SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT, this.target, "media", value));
+    return this.addChange(new PropertyMutation(SyntheticCSSMediaRuleChangeTypes.SET_MEDIA_EDIT, this.target, "media", value));
   }
 
   addDiff(newMediaRule: SyntheticCSSMediaRule) {
@@ -72,7 +81,7 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
 
   getEditChangeTargets() {
     return Object.assign({
-      [SyntheticCSSMediaRuleEdit.SET_MEDIA_EDIT]: this as SyntheticCSSAtRule,
+      [SyntheticCSSMediaRuleChangeTypes.SET_MEDIA_EDIT]: this as SyntheticCSSAtRule,
     }, super.getEditChangeTargets());
   }
 

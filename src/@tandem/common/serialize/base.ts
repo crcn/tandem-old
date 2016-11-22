@@ -145,7 +145,7 @@ export function serializable(serializer?: ISerializer<any, any>, type?: string) 
       serializer: serializer || (parentSerializerInfo ? parentSerializerInfo.serializer : createSerializer(ctor))
     };
 
-    Reflect.defineMetadata(`serialize:type`, type, ctor);
+    Reflect.defineMetadata("serialize:type", type, ctor);
   }
 }
 

@@ -19,7 +19,6 @@ import {
   parseCSS,
   evaluateCSS,
   DOMNodeEvent,
-  DOMMutationEvent,
   ISyntheticBrowser,
   SyntheticDocument,
   isDOMMutationEvent,

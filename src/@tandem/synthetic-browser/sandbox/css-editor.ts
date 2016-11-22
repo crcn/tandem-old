@@ -1,5 +1,18 @@
 import * as postcss from "postcss";
-import { Action, inject, Injector, InjectorProvider, sourcePositionEquals, MimeTypeProvider } from "@tandem/common";
+import {
+  Action,
+  inject,
+  Injector,
+  InjectorProvider,
+  sourcePositionEquals,
+  MimeTypeProvider,
+  Mutation,
+  SetValueMutation,
+  PropertyMutation,
+  InsertChildMutation,
+  RemoveChildMutation,
+  MoveChildMutation,
+} from "@tandem/common";
 import {
   parseCSS,
   SyntheticCSSStyleRule,
@@ -7,24 +20,20 @@ import {
   SyntheticCSSStyleSheetEdit,
   SyntheticCSSMediaRuleEdit,
   SyntheticCSSAtRuleEdit,
+  SyntheticCSSStyleRuleMutationTypes,
   SyntheticCSSAtRule,
+  SyntheticCSSStyleSheetChangeTypes,
   SyntheticCSSKeyframesRuleEdit,
   SyntheticCSSStyleRuleEdit,
 } from "@tandem/synthetic-browser";
 import {
   Dependency,
-  EditChange,
   IContentEdit,
   BaseContentEdit,
-  InsertChildEditChange,
-  RemoveChildEditChange,
-  MoveChildEditChange,
   ISyntheticObject,
   ISyntheticObjectChild,
   ISyntheticSourceInfo,
   BaseContentEditor,
-  SetValueEditActon,
-  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 // TODO - move this to synthetic-browser
@@ -35,24 +44,24 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  [SyntheticCSSStyleRuleEdit.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueEditActon) {
+  [SyntheticCSSStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<any>) {
     const source = target.source;
     node.selector = newValue;
   }
 
-  [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildEditChange) {
+  [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildMutation<any, any>) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     childNode.parent.removeChild(childNode);
   }
 
-  [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildEditChange) {
+  [SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildMutation<any, any>) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     const parent = childNode.parent;
     parent.removeChild(childNode);
     parent.insertBefore(node.nodes[newIndex], childNode);
   }
 
-  [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildEditChange) {
+  [SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildMutation<any, any>) {
 
     let newChild = <syntheticCSSRuleType>child;
     const newChildNode = {
@@ -96,7 +105,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
   }
 
-  [SyntheticCSSStyleRuleEdit.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, newIndex }: SetKeyValueEditChange) {
+  [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, newIndex }: PropertyMutation<any>) {
     const source = target.source;
 
     let found: boolean;

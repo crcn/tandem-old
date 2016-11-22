@@ -20,7 +20,7 @@ import {
   getMatchingStyleRules,
   isInheritedCSSStyleProperty,
   SyntheticCSSStyleDeclaration,
-  CSSDeclarationValueChangeEvent,
+  SyntheticCSSStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
 
 export interface ICSSStylePaneComponentProps {
@@ -96,7 +96,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
       edit.setDeclaration(name, value, oldName);
     }
 
-    // this.bus.dispatch(new ApplyFileEditRequest(edit.changes));
+    // this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
   }
   render() {
     const { result } = this.props;
@@ -194,7 +194,7 @@ class MatchedCSSRulesCache {
   }
 
   private onDocumentEvent(event: Action) {
-    if (!isDOMMutationEvent(event) || event.type === CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE) return;
+    if (!isDOMMutationEvent(event) || event.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) return;
     this.matchRules();
   }
 }

@@ -10,6 +10,7 @@ import {
   Status,
   isMaster,
   loggable,
+  Mutation,
   bindable,
   Injector,
   serialize,
@@ -26,7 +27,6 @@ import { BaseApplicationService } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import {
   Dependency,
-  EditChange,
   BaseContentEdit,
   DependencyGraph,
   ApplyFileEditRequest,
@@ -109,9 +109,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this.status = new Status(Status.COMPLETED);
     } else if (action.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
       const { data } = <RemoteBrowserDocumentMessage>action;
-      const changes: EditChange[] = data;
-      this.logger.debug("Received document diffs: >>", changes.map(action => action.type).join(", "));
-      this._documentEditor.applyEditChanges(...changes);
+      const mutations: Mutation<any>[] = data;
+      this.logger.debug("Received document diffs: >>", mutations.map(action => action.type).join(", "));
+      this._documentEditor.applyEditChanges(...mutations);
       this.status = new Status(Status.COMPLETED);
     }
 
@@ -148,10 +148,10 @@ export class RemoteBrowserService extends BaseApplicationService {
 
       const logger = this.logger.createChild(`${action.options.url} `);
 
-      const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (changes: EditChange[]) => {
+      const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (mutations: Mutation<any>[]) => {
 
-        logger.info("Sending diffs: <<", changes.map(action => action.type).join(", "));
-        await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, changes)) });
+        logger.info("Sending diffs: <<", mutations.map(action => action.type).join(", "));
+        await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, mutations)) });
 
       }, (clone: SyntheticDocument) => {
         logger.info("Sending <<new document");

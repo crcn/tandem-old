@@ -13,14 +13,20 @@ import { SyntheticBrowser, SyntheticHTMLElement, parseMarkup, evaluateMarkup } f
 // TODO - re-use VM instead of creating a new one each time - should be much faster
 describe(__filename + "#", () => {
 
+  const aliases = Object.assign({}, config.resolve.alias, {
+    "react": process.cwd() + "/node_modules/react/dist/react.min.js",
+    "react-dom": process.cwd() + "/node_modules/react-dom/dist/react-dom.min.js"
+  });
+
   const aliasMockFiles = {};
 
-  for (const name in config.resolve.alias) {
-    const filePath = config.resolve.alias[name];
+  for (const name in aliases) {
+    const filePath = aliases[name];
     if (fs.existsSync(filePath)) {
-      aliasMockFiles[filePath] = fs.readFileSync(filePath, "utf8");
+      aliasMockFiles[name] = fs.readFileSync(filePath, "utf8");
     }
   }
+
 
   let app: Application;
 
@@ -106,8 +112,8 @@ describe(__filename + "#", () => {
       const { element, editor, fileCache, entryFilePath, reloadElement } = await loadJSX(oldSource);
       const newElementResult = await loadJSX(newSource);
       const edit = element.createEdit().fromDiff(newElementResult.element);
-      expect(edit.changes.length).not.to.equal(0);
-      editor.applyEditChanges(...edit.changes);
+      expect(edit.mutations.length).not.to.equal(0);
+      editor.applyEditChanges(...edit.mutations);
       expect((await reloadElement()).outerHTML).to.equal(newElementResult.element.outerHTML);
     });
   });

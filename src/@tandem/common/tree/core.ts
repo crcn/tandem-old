@@ -1,11 +1,15 @@
-import { Action } from "@tandem/common/messages";
+import { Action, AddMutation, RemoveMutation, Mutation } from "@tandem/common/messages";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ITreeNode } from "./base";
-import { TreeNodeEvent } from "./messages";
 import { ITreeWalker, IWalkable } from "./walker";
 import { Observable, IObservable } from "@tandem/common/observable";
 
 export { ITreeNode };
+
+export namespace TreeNodeChangeTypes {
+  export const NODE_ADDED = "nodeAdded";
+  export const NODE_REMOVED = "nodeRemoved";
+}
 
 export class TreeNode<T extends TreeNode<any>> extends Observable implements ITreeNode<T>, IWalkable {
 
@@ -125,11 +129,11 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
   }
 
   protected onAdded() {
-    this.notify(new TreeNodeEvent(TreeNodeEvent.NODE_ADDED));
+    this.notify(new Mutation(TreeNodeChangeTypes.NODE_ADDED));
   }
 
   protected onRemoved() {
-    this.notify(new TreeNodeEvent(TreeNodeEvent.NODE_REMOVED));
+    this.notify(new Mutation(TreeNodeChangeTypes.NODE_REMOVED));
   }
 
   public clone(deep?: boolean): T {

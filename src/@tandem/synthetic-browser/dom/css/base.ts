@@ -1,14 +1,20 @@
-import { ISerializer, serialize, deserialize, ITreeWalker, sourcePositionEquals } from "@tandem/common";
+import {
+  ISerializer,
+  Mutation,
+  serialize,
+  deserialize,
+  PropertyMutation,
+  ITreeWalker,
+  sourcePositionEquals
+} from "@tandem/common";
 import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import {
   IEditable,
-  EditChange,
   BaseContentEdit,
   SyntheticObjectEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
-  SetKeyValueEditChange,
   generateSyntheticUID,
   syntheticSourceInfoEquals,
   SyntheticObjectSerializer,
@@ -63,9 +69,9 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
-  applyEditChange(action: EditChange) {
-    if (action.type === SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<SetKeyValueEditChange>action).applyTo(this);
+  applyEditChange(change: Mutation<any>) {
+    if (change.type === SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
+      (<PropertyMutation<any>>change).applyTo(this);
     }
   }
   abstract visitWalker(walker: ITreeWalker);

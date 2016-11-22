@@ -1,5 +1,4 @@
-import { EditChange } from "@tandem/sandbox";
-import { BoundingRect, IPoint } from "@tandem/common";
+import { BoundingRect, IPoint, Mutation } from "@tandem/common";
 import {
   DOMNodeType,
   SyntheticHTMLElement,
@@ -63,13 +62,13 @@ export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElem
     return VisibleDOMNodeCapabilities.merge(...this.map((element) => element.getCapabilities()));
   }
 
-  createStyleEditChanges(): EditChange[] {
-    const changes: EditChange[] = [];
+  createStyleEditChanges(): Mutation<any>[] {
+    const mutations: Mutation<any>[] = [];
     for (const element of this) {
       const edit = element.createEdit();
       edit.setAttribute("style", element.getAttribute("style"));
-      changes.push(...edit.changes);
+      mutations.push(...edit.mutations);
     }
-    return changes;
+    return mutations;
   }
 }

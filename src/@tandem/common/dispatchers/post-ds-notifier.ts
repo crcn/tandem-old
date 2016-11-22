@@ -12,7 +12,7 @@ export class PostDsNotifierBus implements IBus<any> {
         this._dsBus.dispatch(action).readable.pipeTo(new WritableStream({
           write: (chunk) => {
             writer.write(chunk);
-            this._dispatcher.dispatch(PostDSMessage.createFromDSAction(<any>action, chunk));
+            this._dispatcher.dispatch(PostDSMessage.createFromDSRequest(<any>action, chunk));
           }
         })).then(writer.close.bind(writer)).catch(writer.abort.bind(writer));
       });

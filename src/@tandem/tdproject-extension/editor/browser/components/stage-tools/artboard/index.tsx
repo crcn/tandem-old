@@ -5,14 +5,14 @@ import * as AutosizeInput from "react-input-autosize";
 import { Status } from "@tandem/common/status";
 import * as tc from "tinycolor2";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
-import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
-import { ApplyFileEditRequest, SetKeyValueEditChange } from "@tandem/sandbox";
+import { BoundingRect, BaseApplicationComponent, PropertyMutation } from "@tandem/common";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
 export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, backgroundColor: string }, {
   edit: SyntheticDOMElementEdit,
-  titleEditChange: SetKeyValueEditChange
+  titleEditChange: PropertyMutation<any>
 }> {
 
   $didInject() {
@@ -56,7 +56,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     // the change immediately
     this.state.edit.applyActionsTo(artboard);
 
-    await this.bus.dispatch(new ApplyFileEditRequest(this.state.edit.changes));
+    await this.bus.dispatch(new ApplyFileEditRequest(this.state.edit.mutations));
     this.doneEditing();
   }
 

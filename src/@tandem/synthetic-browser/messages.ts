@@ -1,40 +1,18 @@
-import { Action, TreeNodeEvent } from "@tandem/common";
-import {ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
+import { Action, TreeNodeChangeTypes } from "@tandem/common";
+import { ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser/dom/css";
+import {
+  SyntheticDOMElementMutationTypes,
+  SyntheticDOMValueNodeMutationTypes,
+  SyntheticCSSStyleRuleMutationTypes,
+} from "@tandem/synthetic-browser/dom";
 
 export class DOMNodeEvent extends Action {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
 }
 
-export class AttributeChangeEvent extends Action {
-  static readonly ATTRIBUTE_CHANGE = "attributeChange";
-  constructor(readonly name: string, readonly value: string) {
-    super(AttributeChangeEvent.ATTRIBUTE_CHANGE);
-  }
-}
-
-export class CSSDeclarationValueChangeEvent extends Action {
-  static readonly CSS_DECLARATION_VALUE_CHANGE = "cssDeclarationValueChange";
-  constructor(readonly item: SyntheticCSSStyleDeclaration, readonly name: string, readonly newValue: string, readonly oldName?: string) {
-    super(CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE);
-  }
-}
-
-// TODO - add these https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Mutation_events
-export class DOMMutationEvent extends Action {
-  static readonly DOM_NODE_LOADED = "domNodeLoaded";
-}
-
-export class ValueNodeChangeEvent extends Action {
-  static readonly VALUE_NODE_CHANGE = "valueNodeChange";
-  constructor(readonly newValue: string) {
-    super(ValueNodeChangeEvent.VALUE_NODE_CHANGE);
-  }
-}
-
 export class SyntheticRendererEvent extends Action {
   static readonly UPDATE_RECTANGLES = "updateRectangles";
-  static readonly UPDATED_COMPUTED_STYLE = "updatedComputedStyle";
 }
 
 export class OpenRemoteBrowserRequest extends Action {
@@ -45,12 +23,11 @@ export class OpenRemoteBrowserRequest extends Action {
 }
 
 const DOM_NODE_MUTATION_EVENT_TYPES = {
-  [TreeNodeEvent.NODE_ADDED]: true,
-  [TreeNodeEvent.NODE_REMOVED]: true,
-  [DOMMutationEvent.DOM_NODE_LOADED]: true,
-  [AttributeChangeEvent.ATTRIBUTE_CHANGE]: true,
-  [ValueNodeChangeEvent.VALUE_NODE_CHANGE]: true,
-  [CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE]: true
+  [TreeNodeChangeTypes.NODE_ADDED]: true,
+  [TreeNodeChangeTypes.NODE_REMOVED]: true,
+  [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]: true,
+  [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]: true,
+  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]: true,
 };
 
 export function isDOMMutationEvent(action: Action) {

@@ -1,20 +1,22 @@
 import { bindable } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
-import { ValueNodeChangeEvent } from "../../messages";
-import { ISerializer, PropertyChangeEvent } from "@tandem/common";
+import { ISerializer, PropertyChangeEvent, Mutation, SetValueMutation, PropertyMutation  } from "@tandem/common";
 import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
-import { BaseContentEdit, EditChange, SetValueEditActon, SetKeyValueEditChange } from "@tandem/sandbox";
+import { BaseContentEdit} from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMValueNode {
   nodeValue: string;
 }
 
+export namespace SyntheticDOMValueNodeMutationTypes {
+  export const SET_VALUE_NODE_EDIT = "setValueNodeEdit";
+}
+
 export class SyntheticDOMValueNodeEdit extends SyntheticDOMNodeEdit<SyntheticDOMValueNode> {
-  static readonly SET_VALUE_NODE_EDIT = "setValueNodeEdit";
 
   setValueNode(nodeValue: string) {
-    return this.addChange(new SetValueEditActon(SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT, this.target, nodeValue));
+    return this.addChange(new SetValueMutation(SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT, this.target, nodeValue));
   }
 
   addDiff(newValueNode: SyntheticDOMValueNode) {
@@ -52,8 +54,7 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
   set nodeValue(value: any) {
     this._nodeValue = value;
 
-    // probably want to dispatch the actual edit change instead
-    this.notify(new ValueNodeChangeEvent(value));
+    this.notify(new PropertyMutation(SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT, this, "nodeValue", value));
     this.notify(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE, "nodeValue", value));
   }
 
@@ -61,13 +62,13 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
     return new SyntheticDOMValueNodeEdit(this);
   }
 
-  applyEditChange(action: EditChange) {
-    switch(action.type) {
-      case SyntheticDOMValueNodeEdit.SET_VALUE_NODE_EDIT:
-        this.nodeValue = (<SetValueEditActon>action).newValue;
+  applyEditChange(change: Mutation<any>) {
+    switch(change.type) {
+      case SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT:
+        this.nodeValue = (<SetValueMutation<any>>change).newValue;
       break;
       case SyntheticDOMNodeEdit.SET_SYNTHETIC_SOURCE_EDIT:
-        (<SetKeyValueEditChange>action).applyTo(this);
+        (<PropertyMutation<any>>change).applyTo(this);
       break;
     }
   }

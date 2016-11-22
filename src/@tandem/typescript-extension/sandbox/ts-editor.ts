@@ -2,10 +2,6 @@ import * as ts from "typescript";
 import {
   BaseContentEditor,
   ISyntheticObject,
-  MoveChildEditChange,
-  RemoveChildEditChange,
-  InsertChildEditChange,
-  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 import {
@@ -14,7 +10,15 @@ import {
   SyntheticDOMElement,
   SyntheticDOMElementEdit,
   SyntheticDOMContainerEdit,
+  SyntheticDOMElementMutationTypes,
+  SyntheticDOMContainerChangeTypes,
 } from "@tandem/synthetic-browser";
+import {
+  MoveChildMutation,
+  RemoveChildMutation,
+  InsertChildMutation,
+  PropertyMutation,
+} from "@tandem/common";
 
 interface ITSReplacement {
   start: number;
@@ -26,7 +30,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
 
   private _replacements: ITSReplacement[] = [];
 
-  [SyntheticDOMContainerEdit.MOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: MoveChildEditChange) {
+  [SyntheticDOMContainerChangeTypes.MOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const child = this.findTargetASTNode(target, action.child as SyntheticDOMNode);
     this._replacements.push({
       start: child.getStart(),
@@ -41,8 +45,8 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
     });
   }
 
-  [SyntheticDOMContainerEdit.REMOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: RemoveChildEditChange) {
-    const child = this.findTargetASTNode(target, action.child as SyntheticDOMNode);
+  [SyntheticDOMContainerChangeTypes.REMOVE_CHILD_NODE_EDIT](target: ts.JsxElement, change: RemoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+    const child = this.findTargetASTNode(target, change.child as SyntheticDOMNode);
     this._replacements.push({
       start: child.getStart(),
       end: child.getEnd(),
@@ -50,19 +54,19 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
     });
   }
 
-  [SyntheticDOMContainerEdit.INSERT_CHILD_NODE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, action: InsertChildEditChange) {
+  [SyntheticDOMContainerChangeTypes.INSERT_CHILD_NODE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, change: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
 
     if (target.kind === ts.SyntaxKind.JsxSelfClosingElement) {
       const jsxElement = <ts.JsxSelfClosingElement>target;
       this._replacements.push({
         start: jsxElement.getEnd() - 2, // />,
         end: jsxElement.getEnd(),
-        value: `>${action.child.toString()}</${jsxElement.tagName.getText()}>`
+        value: `>${change.child.toString()}</${jsxElement.tagName.getText()}>`
       });
 
     } else {
       const jsxElement = <ts.JsxElement>target;
-      const index = action.index;
+      const index = change.index;
       let pos: number;
 
       if (jsxElement.children.length) {
@@ -74,12 +78,12 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
       this._replacements.push({
         start: pos,
         end: pos,
-        value: action.child.toString()
+        value: change.child.toString()
       });
     }
   }
 
-  [SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, action: SetKeyValueEditChange) {
+  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](target: ts.JsxElement | ts.JsxSelfClosingElement, change: PropertyMutation<any>) {
 
     function alternativeName(name) {
       return {
@@ -95,11 +99,11 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
 
         // TODO - need to consider spreads
         const attr = attribute as ts.JsxAttribute;
-        if (attr.name.text === action.name || attr.name.text === alternativeName(action.name)) {
+        if (attr.name.text === change.name || attr.name.text === alternativeName(change.name)) {
           found = true;
 
           // if the attribute value is undefined, then remove it
-          if (action.newValue == null) {
+          if (change.newValue == null) {
             this._replacements.push({
 
               // remove whitespace with -1
@@ -111,7 +115,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
             this._replacements.push({
               start: attr.initializer.getStart(),
               end: attr.initializer.getEnd(),
-              value: `"${action.newValue}"`
+              value: `"${change.newValue}"`
             });
           }
         }
@@ -121,7 +125,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
         this._replacements.push({
           start: target.tagName.getEnd(),
           end: target.tagName.getEnd(),
-          value: ` ${action.name}="${action.newValue}"`
+          value: ` ${change.name}="${change.newValue}"`
         });
       }
     }

@@ -22,7 +22,7 @@ export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ w
       const edit = item.createEdit() as SyntheticDOMElementEdit;
       edit.setAttribute(name, value, oldName);
 
-      this.bus.dispatch(new ApplyFileEditRequest(edit.changes));
+      this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
     }
   }
 

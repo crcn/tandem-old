@@ -97,8 +97,8 @@ describe(__filename + "#", () => {
       const a = await loadCSS(oldSource);
       const b = await loadCSS(newSource);
       const edit = a.styleSheet.createEdit().fromDiff(b.styleSheet);
-      expect(edit.changes.length).not.to.equal(0);
-      a.fileEditor.applyEditChanges(...edit.changes);
+      expect(edit.mutations.length).not.to.equal(0);
+      a.fileEditor.applyEditChanges(...edit.mutations);
       expect((await a.reloadStylesheet()).cssText).to.equal(b.styleSheet.cssText);
     });
   });

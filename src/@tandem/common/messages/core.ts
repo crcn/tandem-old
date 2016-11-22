@@ -7,13 +7,6 @@ import {  DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMe
 
 export { Action };
 
-export class MetadataChangeAction extends Action {
-  static readonly CHANGE = "change";
-  constructor() {
-    super(MetadataChangeAction.CHANGE);
-  }
-}
-
 export class DisposeEvent extends Action {
   static readonly DISPOSE = "dispose";
   constructor() {
@@ -21,6 +14,7 @@ export class DisposeEvent extends Action {
   }
 }
 
+// TODO - deprecate this for PropertyMutation
 export class PropertyChangeEvent extends Action {
   static readonly PROPERTY_CHANGE = "propertyChange";
   constructor(readonly property: string, readonly newValue: any, readonly oldValue: any, bubbles: boolean = false) {
@@ -59,19 +53,12 @@ export class PostDSMessage extends DSMessage {
     super(type, collectionName);
   }
 
-  static createFromDSAction(action: DSInsertRequest<any>|DSUpdateRequest<any, any>|DSRemoveRequest<any>, data: any) {
+  static createFromDSRequest(request: DSInsertRequest<any>|DSUpdateRequest<any, any>|DSRemoveRequest<any>, data: any) {
     return new PostDSMessage({
       [DSInsertRequest.DS_INSERT]: PostDSMessage.DS_DID_INSERT,
       [DSUpdateRequest.DS_UPDATE]: PostDSMessage.DS_DID_UPDATE,
       [DSRemoveRequest.DS_REMOVE]: PostDSMessage.DS_DID_REMOVE
-    }[action.type], action.collectionName, data, action.timestamp);
-  }
-}
-
-export const ATTRIBUTE_CHANGE = "attributeChange";
-export class AttributeMetadataChangeEvent extends Action {
-  constructor(readonly key: string, readonly value: string) {
-    super(ATTRIBUTE_CHANGE);
+    }[request.type], request.collectionName, data, request.timestamp);
   }
 }
 

@@ -14,21 +14,17 @@ import {
   ITreeWalker,
   ISerializer,
   serializable,
+  Mutation,
+  MoveChildMutation,
+  RemoveChildMutation,
+  ApplicableMutation,
+  InsertChildMutation,
   ISourceLocation,
   ISerializedContent
 } from "@tandem/common";
 
 import { syntheticCSSRuleType, diffStyleSheetRules } from "./utils";
 
-import {
-  Dependency,
-  EditChange,
-  BaseContentEdit,
-  MoveChildEditChange,
-  RemoveChildEditChange,
-  ApplicableEditChange,
-  InsertChildEditChange,
-} from "@tandem/sandbox";
 
 
 export interface ISerializedCSSStyleSheet {
@@ -46,22 +42,25 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
+export namespace SyntheticCSSStyleSheetChangeTypes {
+  export const INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
+  export const MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
+  export const REMOVE_STYLE_SHEET_RULE_EDIT = "removeStyleSheetRuleEdit";
+}
+
 export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleSheet> {
 
-  static readonly INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
-  static readonly MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
-  static readonly REMOVE_STYLE_SHEET_RULE_EDIT = "removeStyleSheetRuleEdit";
 
   insertRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addChange(new InsertChildEditChange(SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new InsertChildMutation(SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
   }
 
   moveRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addChange(new MoveChildEditChange(SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new MoveChildMutation(SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
   }
 
   removeRule(rule: syntheticCSSRuleType) {
-    return this.addChange(new RemoveChildEditChange(SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
+    return this.addChange(new RemoveChildMutation(SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
   }
 
   protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
@@ -138,12 +137,12 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     return new SyntheticCSSStyleSheet([]);
   }
 
-  applyEditChange(change: ApplicableEditChange) {
+  applyEditChange(change: ApplicableMutation<any>) {
     change.applyTo({
       [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this,
-      [SyntheticCSSStyleSheetEdit.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
-      [SyntheticCSSStyleSheetEdit.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
-      [SyntheticCSSStyleSheetEdit.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
+      [SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
+      [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
+      [SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
     }[change.type]);
     this.rules.forEach(rule => rule.$parentStyleSheet = this);
   }

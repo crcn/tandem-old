@@ -6,10 +6,9 @@ import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
 
 import {
-  Dependency,
   IEditable,
   IDiffable,
-  EditChange,
+  Dependency,
   SandboxModule,
   SyntheticObjectEdit,
   ISyntheticObject,
@@ -21,6 +20,7 @@ import {
 import { ISyntheticBrowser } from "../../browser";
 
 import {
+  Mutation,
   TreeNode,
   Metadata,
   BubbleDispatcher,
@@ -276,7 +276,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<any>;
-  abstract applyEditChange(action: EditChange);
+  abstract applyEditChange(action: Mutation<any>);
 }
 
 export abstract class AttachableSyntheticDOMNode<T extends Node> extends SyntheticDOMNode {

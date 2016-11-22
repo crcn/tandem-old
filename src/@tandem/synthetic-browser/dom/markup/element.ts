@@ -5,7 +5,6 @@ import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { parse as parseMarkup } from "./parser.peg";
 import { selectorMatchesElement } from "../selector";
-import { AttributeChangeEvent } from "@tandem/synthetic-browser/messages";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
@@ -25,24 +24,29 @@ import {
   ArrayMetadataChangeEvent,
   ISerializedContent,
   PropertyChangeEvent,
+  Mutation,
+  SetValueMutation,
+  MoveChildMutation,
+  InsertChildMutation,
+  PropertyMutation,
   ObservableCollection,
 } from "@tandem/common";
 
 import { Dependency } from "@tandem/sandbox";
 import {
-  EditChange,
   BaseContentEdit,
-  SetValueEditActon,
   ISyntheticObjectChild,
-  MoveChildEditChange,
-  InsertChildEditChange,
-  SetKeyValueEditChange,
 } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticDOMAttribute {
   name: string;
   value: string;
   readonly: boolean;
+}
+
+export namespace SyntheticDOMElementMutationTypes {
+  export const SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
+  export const ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
 }
 
 class SyntheticDOMAttributeSerializer implements ISerializer<SyntheticDOMAttribute, ISerializedSyntheticDOMAttribute> {
@@ -156,21 +160,10 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
   }
 }
 
-
-export class AttachShadowRootEditChange extends EditChange {
-  static readonly SET_ELEMENT_TAG_NAME_EDIT = "setElementTagNameEdit";
-  constructor(type: string, target: SyntheticDOMElement, readonly newName: string) {
-    super(type, target);
-  }
-}
-
 export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
 
-  static readonly SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
-  static readonly ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
-
   setAttribute(name: string, value: string, oldName?: string, newIndex?: number) {
-    return this.addChange(new SetKeyValueEditChange(SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, newIndex));
+    return this.addChange(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, newIndex));
   }
 
   removeAttribute(name: string) {
@@ -178,7 +171,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   }
 
   attachShadowRoot(shadowRoot: SyntheticDOMContainer) {
-    this.addChange(new InsertChildEditChange(SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT, this.target, shadowRoot, Infinity));
+    this.addChange(new InsertChildMutation(SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT, this.target, shadowRoot, Infinity));
   }
 
   /**
@@ -264,18 +257,18 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return new SyntheticDOMElementEdit(this);
   }
 
-  applyEditChange(action: EditChange) {
+  applyEditChange(action: Mutation<any>) {
     super.applyEditChange(action);
-    if (action.type === SyntheticDOMElementEdit.SET_ELEMENT_ATTRIBUTE_EDIT) {
-      const { name, oldName, newValue } = <SetKeyValueEditChange>action;
+    if (action.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
+      const { name, oldName, newValue } = <PropertyMutation<any>>action;
       if (newValue == null) {
         this.removeAttribute(name);
       } else {
         this.setAttribute(name, newValue);
       }
       if (oldName) this.removeAttribute(oldName);
-    } else if (action.type === SyntheticDOMElementEdit.ATTACH_SHADOW_ROOT_EDIT) {
-      const { child } = <InsertChildEditChange>action;
+    } else if (action.type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {
+      const { child } = <InsertChildMutation<SyntheticDOMElement,SyntheticDOMContainer>>action;
       const shadowRoot = <SyntheticDOMContainer>child;
 
       // need to clone in case the child is an instance in this process -- hasn't
@@ -421,7 +414,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-    this.notify(new AttributeChangeEvent(name, newValue));
+    this.notify(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
   }
 
   protected createdCallback() {

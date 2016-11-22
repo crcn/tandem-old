@@ -3,7 +3,14 @@ import { decode } from "ent";
 import { camelCase } from "lodash";
 import { BaseRenderer } from "../base";
 import { CallbackDispatcher } from "@tandem/mesh";
-import { HTML_VOID_ELEMENTS, HTML_XMLNS, SVG_XMLNS, SVG_TAG_NAMES } from "@tandem/synthetic-browser/dom";
+import {
+  HTML_XMLNS,
+  SVG_XMLNS,
+  SVG_TAG_NAMES,
+  HTML_VOID_ELEMENTS,
+  SyntheticDOMElementMutationTypes,
+  SyntheticDOMValueNodeMutationTypes
+} from "@tandem/synthetic-browser/dom";
 
 import {
   bindable,
@@ -12,8 +19,10 @@ import {
   flattenTree,
   BoundingRect,
   traverseTree,
-  TreeNodeEvent,
+  AddMutation,
+  RemoveMutation,
   watchProperty,
+  PropertyMutation,
   calculateAbsoluteBounds
 } from "@tandem/common";
 
@@ -30,14 +39,10 @@ import {
   SyntheticDOMContainer,
   AttachableSyntheticDOMNode,
   SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyleRuleMutationTypes,
 } from "../../dom";
 
-import {
-  DOMNodeEvent,
-  AttributeChangeEvent,
-  ValueNodeChangeEvent,
-  CSSDeclarationValueChangeEvent,
-} from "../../messages";
+import { DOMNodeEvent } from "../../messages";
 
 type HTMLElementDictionaryType = {
   [IDentifier: string]: [Element, SyntheticDOMNode]
@@ -67,31 +72,29 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     super.onDocumentMutationEvent(event);
 
     // DOM
-    if (event.type === ValueNodeChangeEvent.VALUE_NODE_CHANGE) {
+    if (event.type === SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT) {
       const [native, synthetic] = this.getElementDictItem(event.target);
-      if (native) native.textContent = decode((<ValueNodeChangeEvent>event).newValue);
-    } else if (event.type === AttributeChangeEvent.ATTRIBUTE_CHANGE) {
-      const { name, value } = <AttributeChangeEvent>event;
+      if (native) native.textContent = decode((<PropertyMutation<SyntheticDOMNode>>event).newValue);
+    } else if (event.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
+      const { name, newValue } = <PropertyMutation<SyntheticDOMElement>>event;
       const [native, synthetic] = this.getElementDictItem(event.target);
-      if (native) native.setAttribute(name, value);
-    } else if (event.type === TreeNodeEvent.NODE_ADDED) {
+      if (native) native.setAttribute(name, newValue);
+    } else if (event.type === AddMutation.ADD_CHANGE) {
       const [native, synthetic] = this.getElementDictItem(event.target.parent);
       if (native) {
         const childNode = renderHTMLNode(event.target, this._elementDictionary);
         if (childNode) native.appendChild(childNode);
       }
-    } else if (event.type === TreeNodeEvent.NODE_REMOVED) {
+    } else if (event.type === RemoveMutation.REMOVE_CHANGE) {
       const [native, synthetic] = this.getElementDictItem(event.target);
       if (native && native.parentNode) native.parentNode.removeChild(native);
       this._elementDictionary[event.target.uid] = undefined;
 
     // CSS
-    } else if (event.type === CSSDeclarationValueChangeEvent.CSS_DECLARATION_VALUE_CHANGE) {
-      const { item, name, newValue, oldName } = <CSSDeclarationValueChangeEvent>event;
-      const [native, synthetic] = this.getCSSDictItem(item.$parentRule);
+    } else if (event.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+      const { target, name, newValue, oldName } = <PropertyMutation<SyntheticCSSStyleRule>>event;
+      const [native, synthetic] = this.getCSSDictItem(target);
       if (native) {
-        console.log(native, name, newValue, item.$parentRule, (<CSSStyleRule>native).style[name]);
-        //  (<CSSStyleRule>native).
         (<CSSStyleRule>native).style[name] = newValue;
         if (oldName) {
           (<CSSStyleRule>native).style[name] = undefined;
@@ -101,7 +104,8 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   protected getElementDictItem(synthetic: SyntheticDOMNode) {
-    return this._elementDictionary[synthetic.uid] || [undefined, undefined];
+
+    return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined];
   }
 
   protected getElementInnerHTML() {
@@ -158,13 +162,12 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       }
     }
 
-    console.log(this._cssRuleDictionary);
   }
 
   protected reset() {
     this._documentElement = undefined;
     this._nativeStyleSheet = undefined;
-    this.element.innerHTML = this.getElementInnerHTML();
+    if (this.element) this.element.innerHTML = this.getElementInnerHTML();
   }
 
   private updateRects() {
