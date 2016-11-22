@@ -583,7 +583,6 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   static fromObject(declaration: any): SyntheticCSSStyleDeclaration {
     const obj = new SyntheticCSSStyleDeclaration();
     if (declaration.length) {
-      console.log(declaration.length);
       for (let i = 0, n = declaration.length; i < n; i++) {
         const key = declaration[i];
         obj[key] = declaration[key];

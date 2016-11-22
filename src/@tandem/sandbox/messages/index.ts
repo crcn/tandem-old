@@ -42,7 +42,7 @@ export class SandboxAction extends Action {
   }
 })
 export class ApplyFileEditRequest extends Action {
-  static readonly APPLY_EDITS = "applyEditChanges";
+  static readonly APPLY_EDITS = "applyEditMutations";
   constructor(readonly mutations: Mutation<any>[], readonly saveFile: boolean = false) {
     super(ApplyFileEditRequest.APPLY_EDITS);
   }

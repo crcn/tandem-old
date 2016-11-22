@@ -81,7 +81,7 @@ gulp.task('build:peg', function() {
   .pipe(gulp.dest(OUT_DIR));
 });
 
-gulp.task('build:symlinks', ['clean:symlinks'], () => {
+gulp.task('build:symlinks', () => {
   return gulp
   .src(join(OUT_DIR, '*'))
   .pipe(vfs.symlink(NODE_MODULES_DIR));

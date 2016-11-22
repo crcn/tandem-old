@@ -19,7 +19,6 @@ import {
    CommandFactoryProvider,
 } from "@tandem/common";
 
-
 process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || LogLevel.DEFAULT;
 
 export const initializeMaster = async () => {
@@ -31,7 +30,7 @@ export const initializeMaster = async () => {
     log: {
       level: Number(process.env.LOG_LEVEL)
     },
-    experimental: process.env.EXPERIMENTAL = !!argv.experimental,
+    experimental: argv.experimental ? (process.env.EXPERIMENTAL = true) : null,
     port: process.env.PORT || (process.env.PORT = await getPort()),
     hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost")
   };

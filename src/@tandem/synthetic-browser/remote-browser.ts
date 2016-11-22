@@ -111,7 +111,13 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       const { data } = <RemoteBrowserDocumentMessage>action;
       const mutations: Mutation<any>[] = data;
       this.logger.debug("Received document diffs: >>", mutations.map(action => action.type).join(", "));
-      this._documentEditor.applyEditChanges(...mutations);
+      try {
+        this._documentEditor.applyEditMutations(...mutations);
+
+      // catch for now to ensure that applying edits doesn't break the stream
+      } catch(e) {
+        console.error(e.stack);
+      }
       this.status = new Status(Status.COMPLETED);
     }
 

@@ -78,6 +78,6 @@ export class FileService extends CoreApplicationService<IEdtorServerConfig> {
 
 
   [ApplyFileEditRequest.APPLY_EDITS]({ mutations }: ApplyFileEditRequest) {
-    return FileEditorProvider.getInstance(this.injector).applyEditChanges(...mutations);
+    return FileEditorProvider.getInstance(this.injector).applyEditMutations(...mutations);
   }
 }

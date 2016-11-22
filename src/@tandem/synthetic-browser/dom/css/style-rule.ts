@@ -74,9 +74,9 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
           this.setDeclaration(oldKeys[index], undefined);
         }
       },
-      visitUpdate: ({ originalOldIndex, newValue, newIndex }) => {
+      visitUpdate: ({ originalOldIndex, newValue, index }) => {
         if (this.target.style[newValue] !== newRule.style[newValue]) {
-          this.setDeclaration(newValue, newRule.style[newValue], undefined, newIndex);
+          this.setDeclaration(newValue, newRule.style[newValue], undefined, index);
         }
       }
     });
@@ -90,9 +90,8 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   constructor(public selector: string, public style: SyntheticCSSStyleDeclaration) {
     super();
-    if (style) {
-      style.$parentRule = this;
-    }
+    if (!style) style = this.style = new SyntheticCSSStyleDeclaration();
+    style.$parentRule = this;
   }
 
   createEdit() {
@@ -107,14 +106,15 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return `${this.selector} {\n${this.style.cssText}}\n`;
   }
 
-  applyEditChange(action: Mutation<any>) {
-    if (action.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<PropertyMutation<any>>action).applyTo(this);
-    } else if (action.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
-      const { name, newValue, oldName } = <PropertyMutation<any>>action;
+  applyEditChange(mutation: Mutation<any>) {
+    if (this.$ownerNode) this.$ownerNode.notify(mutation);
+    if (mutation.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
+      (<PropertyMutation<any>>mutation).applyTo(this);
+    } else if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+      const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
       this.style.setProperty(name, newValue, undefined, oldName);
     } else {
-      console.error(`Cannot apply ${action.type}`);
+      console.error(`Cannot apply ${mutation.type}`);
     }
   }
 

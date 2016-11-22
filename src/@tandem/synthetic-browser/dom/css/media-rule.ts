@@ -38,7 +38,7 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
-export namespace SyntheticCSSMediaRuleChangeTypes {
+export namespace SyntheticCSSMediaRuleMutationTypes {
   export const SET_MEDIA_EDIT = "setMediaEdit";
 }
 
@@ -46,7 +46,7 @@ export class SyntheticCSSMediaRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticC
 
 
   setMedia(value: string[]) {
-    return this.addChange(new PropertyMutation(SyntheticCSSMediaRuleChangeTypes.SET_MEDIA_EDIT, this.target, "media", value));
+    return this.addChange(new PropertyMutation(SyntheticCSSMediaRuleMutationTypes.SET_MEDIA_EDIT, this.target, "media", value));
   }
 
   addDiff(newMediaRule: SyntheticCSSMediaRule) {
@@ -81,7 +81,7 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
 
   getEditChangeTargets() {
     return Object.assign({
-      [SyntheticCSSMediaRuleChangeTypes.SET_MEDIA_EDIT]: this as SyntheticCSSAtRule,
+      [SyntheticCSSMediaRuleMutationTypes.SET_MEDIA_EDIT]: this as SyntheticCSSAtRule,
     }, super.getEditChangeTargets());
   }
 

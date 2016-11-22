@@ -27,7 +27,7 @@ import {
   SyntheticDOMContainerEdit,
   IMarkupValueNodeExpression,
   SyntheticDOMElementMutationTypes,
-  SyntheticDOMContainerChangeTypes,
+  SyntheticDOMContainerMutationTypes,
   SyntheticDOMValueNodeMutationTypes,
 } from "@tandem/synthetic-browser";
 
@@ -41,13 +41,13 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     node.nodeValue = newValue;
   }
 
-  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, newIndex }: PropertyMutation<any>) {
+  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
 
     const syntheticElement = <SyntheticHTMLElement>target;
     if (newValue == null) {
       node.removeAttribute(name);
     } else {
-      node.setAttribute(name, newValue, newIndex);
+      node.setAttribute(name, newValue, index);
     }
 
     if (oldName) {
@@ -55,20 +55,20 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     }
   }
 
-  [SyntheticDOMContainerChangeTypes.INSERT_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+  [SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childExpression = parseMarkup((<SyntheticDOMNode>child).toString());
     node.childNodes.splice(index, 0, childExpression);
   }
 
-  [SyntheticDOMContainerChangeTypes.REMOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+  [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
   }
 
-  [SyntheticDOMContainerChangeTypes.MOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, newIndex }: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+  [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
-    node.childNodes.splice(newIndex, 0, childNode);
+    node.childNodes.splice(index, 0, childNode);
   }
 
   findTargetASTNode(root: MarkupFragmentExpression, synthetic: SyntheticDOMNode) {

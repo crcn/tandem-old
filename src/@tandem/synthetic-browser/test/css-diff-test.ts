@@ -11,9 +11,9 @@ import { 
   SyntheticCSSStyleRuleEdit,
   SyntheticCSSMediaRuleEdit,
   SyntheticCSSStyleSheetEdit,
-  SyntheticCSSAtRuleChangeTypes,
+  SyntheticCSSAtRuleMutationTypes,
   SyntheticCSSStyleRuleMutationTypes,
-  SyntheticCSSStyleSheetChangeTypes,
+  SyntheticCSSStyleSheetMutationTypes,
 } from "@tandem/synthetic-browser";
 
 
@@ -26,24 +26,24 @@ describe(__filename + "#", () => {
     [".a { color: red }", ".a { color: blue }", [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
 
     // style sheet edits
-    [".a {}", ".b {}", [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
-    [".a {}", ".b {} .a {}", [SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".b {}", [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".b {} .a {}", [SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".a {} .c {} .b {}", [SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".b {} .c {} .a {}", [SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {}", ".b {}", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
+    [".a {}", ".b {} .a {}", [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".b {}", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".b {} .a {}", [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".a {} .c {} .b {}", [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".b {} .c {} .a {}", [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
     [`*[class*="col-"] { padding: 10px; }`, `*[class*="col-"] { padding: 8px; }`, [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
 
     // media query edits
-    ["@media a { .a { color: red } }", "@media b { .a { color: red } }", [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
-    ["@media a { .a { color: red } }", "@media b { .a { color: red } } @media a { .a { color: red } }", [SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    ["@media a { .a { color: red } }", "@media a { .b { color: red } }", [SyntheticCSSAtRuleChangeTypes.REMOVE_CSS_RULE_EDIT, SyntheticCSSAtRuleChangeTypes.INSERT_CSS_RULE_EDIT]],
+    ["@media a { .a { color: red } }", "@media b { .a { color: red } }", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
+    ["@media a { .a { color: red } }", "@media b { .a { color: red } } @media a { .a { color: red } }", [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    ["@media a { .a { color: red } }", "@media a { .b { color: red } }", [SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT, SyntheticCSSAtRuleMutationTypes.INSERT_CSS_RULE_EDIT]],
 
     // font face
-    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
-    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
+    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
+    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
 
-    ["@keyframes a { 0% { color: red; }}", "@keyframes b { 0% { color: red; }}", [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
+    ["@keyframes a { 0% { color: red; }}", "@keyframes b { 0% { color: red; }}", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
     ["@keyframes a { 0% { color: red; }}", "@keyframes a { 0% { color: blue; }}", [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT,SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
 
     // failed fuzzy tests

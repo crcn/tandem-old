@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Action, TreeNode, TreeNodeChangeTypes } from "@tandem/common";
+import { Action, TreeNode, TreeNodeMutationTypes } from "@tandem/common";
 
 describe(__filename + "#", () => {
   it("can create a new node", () => {
@@ -133,7 +133,7 @@ describe(__filename + "#", () => {
       dispatch(action: Action) {
         if (_ignoreAction) return;
         _ignoreAction = true;
-        if (action.type === TreeNodeChangeTypes.NODE_REMOVED) {
+        if (action.type === TreeNodeMutationTypes.NODE_REMOVED) {
           action.target.parent.removeChild(action.target);
         }
         _ignoreAction = false;

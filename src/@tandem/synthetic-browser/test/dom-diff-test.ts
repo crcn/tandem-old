@@ -11,7 +11,7 @@ import {
   SyntheticCSSObjectEdit,
   SyntheticHTMLElement,
   SyntheticDOMValueNodeEdit,
-  SyntheticDOMContainerChangeTypes,
+  SyntheticDOMContainerMutationTypes,
   SyntheticDOMElementMutationTypes,
   SyntheticDOMValueNodeMutationTypes,
   SyntheticDOMContainerEdit,
@@ -25,10 +25,10 @@ describe(__filename + "#", () => {
     // All single edits
     [`a`, `b`, [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]],
     [`<!--a-->`, `<!--b-->`, [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]],
-    [`<div />`, `<span></span>`, [SyntheticDOMContainerChangeTypes.REMOVE_CHILD_NODE_EDIT, SyntheticDOMContainerChangeTypes.INSERT_CHILD_NODE_EDIT]],
-    [`<div /><span></span>`, `<span></span>`, [SyntheticDOMContainerChangeTypes.REMOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
-    [`<div />`, `<div></div><span></span>`, [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticDOMContainerChangeTypes.INSERT_CHILD_NODE_EDIT]],
-    [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerChangeTypes.MOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div />`, `<span></span>`, [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT]],
+    [`<div /><span></span>`, `<span></span>`, [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div />`, `<div></div><span></span>`, [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT]],
+    [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
     [`<div id="b" />`, `<div id="c"></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
     [`<div id="b" />`, `<div></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]],
 

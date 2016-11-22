@@ -1,10 +1,14 @@
-import { Action, TreeNodeChangeTypes } from "@tandem/common";
+import { Action, TreeNodeMutationTypes } from "@tandem/common";
 import { ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser/dom/css";
 import {
+  SyntheticDocumentMutationTypes,
+  SyntheticCSSAtRuleMutationTypes,
   SyntheticDOMElementMutationTypes,
-  SyntheticDOMValueNodeMutationTypes,
   SyntheticCSSStyleRuleMutationTypes,
+  SyntheticDOMContainerMutationTypes,
+  SyntheticDOMValueNodeMutationTypes,
+  SyntheticCSSStyleSheetMutationTypes,
 } from "@tandem/synthetic-browser/dom";
 
 export class DOMNodeEvent extends Action {
@@ -23,8 +27,17 @@ export class OpenRemoteBrowserRequest extends Action {
 }
 
 const DOM_NODE_MUTATION_EVENT_TYPES = {
-  [TreeNodeChangeTypes.NODE_ADDED]: true,
-  [TreeNodeChangeTypes.NODE_REMOVED]: true,
+  [TreeNodeMutationTypes.NODE_ADDED]: true,
+  [TreeNodeMutationTypes.NODE_REMOVED]: true,
+  [SyntheticCSSAtRuleMutationTypes.INSERT_CSS_RULE_EDIT]: true,
+  [SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT]: true,
+  [SyntheticCSSAtRuleMutationTypes.MOVE_CSS_RULE_EDIT]: true,
+  [SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT]: true,
+  [SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT]: true,
+  [SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT]: true,
+  [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]: true,
+  [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT]: true,
+  [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT]: true,
   [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]: true,
   [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]: true,
   [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]: true,

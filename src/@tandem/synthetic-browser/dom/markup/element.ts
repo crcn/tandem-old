@@ -162,8 +162,8 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
 
 export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
 
-  setAttribute(name: string, value: string, oldName?: string, newIndex?: number) {
-    return this.addChange(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, newIndex));
+  setAttribute(name: string, value: string, oldName?: string, index?: number) {
+    return this.addChange(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, index));
   }
 
   removeAttribute(name: string) {
@@ -197,9 +197,9 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
       visitRemove: ({ index }) => {
         this.removeAttribute(this.target.attributes[index].name);
       },
-      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
+      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, index }) => {
         if(this.target.attributes[originalOldIndex].value !== newValue.value) {
-          this.setAttribute(newValue.name, newValue.value, undefined, newIndex);
+          this.setAttribute(newValue.name, newValue.value, undefined, index);
         }
       }
     });

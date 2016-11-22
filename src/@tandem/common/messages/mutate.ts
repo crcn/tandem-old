@@ -123,7 +123,7 @@ export class InsertChildMutation<T extends ICloneable, U extends ICloneable & IU
       child: serialize(child.clone())
     };
   },
-  deserialize({ type, target, child, newIndex }, injector): RemoveChildMutation<any, any> {
+  deserialize({ type, target, child, index }, injector): RemoveChildMutation<any, any> {
     return new RemoveChildMutation(
       type,
       deserialize(target, injector),
@@ -143,29 +143,29 @@ export class RemoveChildMutation<T extends ICloneable, U extends ICloneable & IU
 }
 
 @serializable({
-  serialize({ type, target, name, newValue, oldName, newIndex }: PropertyMutation<ICloneable>) {
+  serialize({ type, target, name, newValue, oldName, index }: PropertyMutation<ICloneable>) {
     return {
       type: type,
       target: serialize(target.clone()),
       name: name,
       newValue: serialize(newValue),
       oldName: oldName,
-      newIndex: newIndex
+      index: index
     };
   },
-  deserialize({ type, target, name, newValue, oldName, newIndex }, injector): PropertyMutation<any> {
+  deserialize({ type, target, name, newValue, oldName, index }, injector): PropertyMutation<any> {
     return new PropertyMutation(
       type,
       deserialize(target, injector),
       name,
       deserialize(newValue, injector),
       oldName,
-      newIndex
+      index
     );
   }
 })
 export class PropertyMutation<T extends ICloneable> extends ApplicableMutation<T> {
-  constructor(type: string, target: T, public  name: string, public newValue: any, public oldName?: string, public newIndex?: number) {
+  constructor(type: string, target: T, public  name: string, public newValue: any, public oldName?: string, public index?: number) {
     super(type, target);
   }
   applyTo(target: T) {
@@ -187,48 +187,35 @@ export class RemoveMutation<T> extends Mutation<T> {
   }
 }
 
-/**
- * Removes the target synthetic object
- */
-
-export class AddMutation<T> extends Mutation<T> {
-  static readonly ADD_CHANGE = "addChange";
-  constructor(target?: T) {
-    super(AddMutation.ADD_CHANGE, target);
-  }
-}
-
-
-
 @serializable({
-  serialize({ type, target, child, newIndex }: MoveChildMutation<any, any>) {
+  serialize({ type, target, child, index }: MoveChildMutation<any, any>) {
     return {
       type: type,
       target: serialize(target.clone()),
       child: serialize(child.clone()),
-      newIndex: newIndex
+      index: index
     };
   },
-  deserialize({ type, target, child, newIndex }, injector): MoveChildMutation<any, any> {
+  deserialize({ type, target, child, index }, injector): MoveChildMutation<any, any> {
     return new MoveChildMutation(
       type,
       deserialize(target, injector),
       deserialize(child, injector),
-      newIndex
+      index
     );
   }
 })
 export class MoveChildMutation<T, U extends ICloneable & IUnique> extends ChildMutation<T, U> {
-  constructor(type: string, target: T, child: U, readonly newIndex: number) {
+  constructor(type: string, target: T, child: U, readonly index: number) {
     super(type, target, child);
   }
 
   applyTo(collection: U[]) {
     const found = this.findChild(collection);
     collection.splice(collection.indexOf(found), 1);
-    collection.splice(this.newIndex, 0, found);
+    collection.splice(this.index, 0, found);
   }
   paramsToString() {
-    return `${super.paramsToString()}, ${this.newIndex}`;
+    return `${super.paramsToString()}, ${this.index}`;
   }
 }

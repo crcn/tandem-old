@@ -65,7 +65,7 @@ import {
 
 //   async [RemoveSelectionRequest.REMOVE_SELECTION]() {
 
-//     // await FileEditorProvider.getInstance(this.app.injector).applyEditChanges(...this.app.workspace.selection.map((selection) => {
+//     // await FileEditorProvider.getInstance(this.app.injector).applyEditMutations(...this.app.workspace.selection.map((selection) => {
 //     //   return new RemoveMutation(selection);
 //     // }));
 

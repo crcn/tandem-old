@@ -13,7 +13,7 @@ import {
   ISerializedContent,
   ITreeWalker
 } from "@tandem/common";
-import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit, SyntheticCSSAtRuleChangeTypes } from "./atrule";
+import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit, SyntheticCSSAtRuleMutationTypes } from "./atrule";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
@@ -34,7 +34,7 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
 
 export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticCSSKeyframesRule> {
   setName(value: string) {
-    this.addChange(new PropertyMutation(SyntheticCSSAtRuleChangeTypes.SET_NAME_EDIT, this.target, "name", value));
+    this.addChange(new PropertyMutation(SyntheticCSSAtRuleMutationTypes.SET_NAME_EDIT, this.target, "name", value));
   }
   addDiff(newAtRule: SyntheticCSSKeyframesRule) {
     if (this.target.name !== newAtRule.name) {

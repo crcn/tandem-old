@@ -42,7 +42,7 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
-export namespace SyntheticCSSStyleSheetChangeTypes {
+export namespace SyntheticCSSStyleSheetMutationTypes {
   export const INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
   export const MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
   export const REMOVE_STYLE_SHEET_RULE_EDIT = "removeStyleSheetRuleEdit";
@@ -52,15 +52,15 @@ export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<Synthetic
 
 
   insertRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addChange(new InsertChildMutation(SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new InsertChildMutation(SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
   }
 
   moveRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addChange(new MoveChildMutation(SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new MoveChildMutation(SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
   }
 
   removeRule(rule: syntheticCSSRuleType) {
-    return this.addChange(new RemoveChildMutation(SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
+    return this.addChange(new RemoveChildMutation(SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
   }
 
   protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
@@ -73,10 +73,10 @@ export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<Synthetic
       visitRemove: ({ index }) => {
         this.removeRule(this.target.rules[index]);
       },
-      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, newIndex }) => {
+      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, index }) => {
 
-        if (patchedOldIndex !== newIndex) {
-          this.moveRule(this.target.rules[originalOldIndex], newIndex);
+        if (patchedOldIndex !== index) {
+          this.moveRule(this.target.rules[originalOldIndex], index);
         }
 
         const oldRule = this.target.rules[originalOldIndex];
@@ -138,11 +138,12 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
   }
 
   applyEditChange(change: ApplicableMutation<any>) {
+    if (this.$ownerNode) this.$ownerNode.notify(change);
     change.applyTo({
       [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this,
-      [SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
-      [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
-      [SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
+      [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
+      [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
+      [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
     }[change.type]);
     this.rules.forEach(rule => rule.$parentStyleSheet = this);
   }

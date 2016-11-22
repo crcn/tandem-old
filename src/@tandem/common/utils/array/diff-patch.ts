@@ -32,7 +32,7 @@ export class ArrayDiffRemove {
 
 export class ArrayDiffUpdate<T> {
   readonly kind = DiffKind.UPDATE;
-  constructor(readonly originalOldIndex: number, readonly patchedOldIndex: number, readonly newValue: T, readonly newIndex: number) { }
+  constructor(readonly originalOldIndex: number, readonly patchedOldIndex: number, readonly newValue: T, readonly index: number) { }
   accept(visitor: IArrayDiffVisitor<T>) {
     visitor.visitUpdate(this);
   }
@@ -162,14 +162,14 @@ export function patchArray<T>(target: Array<T>, diff: ArrayDiff<T>, mapUpdate: (
     visitRemove({ index }) {
       target.splice(index, 1);
     },
-    visitUpdate({ patchedOldIndex, newValue, newIndex }) {
+    visitUpdate({ patchedOldIndex, newValue, index }) {
       const oldValue     = target[patchedOldIndex];
       const patchedValue = mapUpdate(oldValue, newValue);
-      if (patchedValue !== oldValue || patchedOldIndex !== newIndex) {
-        if (patchedOldIndex !== newIndex) {
+      if (patchedValue !== oldValue || patchedOldIndex !== index) {
+        if (patchedOldIndex !== index) {
           target.splice(patchedOldIndex, 1);
         }
-        target.splice(newIndex, 0, patchedValue);
+        target.splice(index, 0, patchedValue);
       }
     }
   });

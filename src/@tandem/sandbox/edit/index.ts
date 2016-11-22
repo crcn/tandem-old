@@ -31,7 +31,7 @@ export type contentEditorType = { new(filePath: string, content: string): IEdito
 
 
 export interface IEditor {
-  applyEditChanges(...changes: Mutation<ISyntheticObject>[]): any;
+  applyEditMutations(...changes: Mutation<ISyntheticObject>[]): any;
 }
 
 export interface IEditable {
@@ -57,7 +57,7 @@ export abstract class BaseContentEditor<T> implements IEditor {
   }
 
   // add filePath and content in constructor here instead
-  applyEditChanges(...changes: Mutation<ISyntheticObject>[]): any {
+  applyEditMutations(...changes: Mutation<ISyntheticObject>[]): any {
     for (const action of changes) {
       const method = this[action.type];
       if (method) {
@@ -125,7 +125,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
     // need to setup an editor here since some actions may be intented for
     // children of the target object
     const editor = new SyntheticObjectEditor(target, each);
-    editor.applyEditChanges(...this.mutations);
+    editor.applyEditMutations(...this.mutations);
   }
 
   /**
@@ -184,7 +184,7 @@ export class FileEditor {
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
-  applyEditChanges(...changes: Mutation<ISyntheticObject>[]): Promise<any> {
+  applyEditMutations(...changes: Mutation<ISyntheticObject>[]): Promise<any> {
 
     if (this._changes == null) {
       this._shouldEditAgain = true;
@@ -250,7 +250,7 @@ export class FileEditor {
         const changes = changesByFilePath[filePath];
         this.logger.info(`Applying file edit.changes ${filePath}: >>`, changes.map(action => action.type).join(" "));
 
-        const newContent    = contentEditor.applyEditChanges(...changes);
+        const newContent    = contentEditor.applyEditMutations(...changes);
 
         // This may trigger if the editor does special formatting to the content with no
         // actual edits. May need to have a result come from the content editors themselves to check if anything's changed.
@@ -282,7 +282,7 @@ export class FileEditor {
 export class SyntheticObjectEditor {
 
   constructor(readonly root: ISyntheticObject, private _each?: (target: IEditable, change: Mutation<ISyntheticObject>) => void) { }
-  applyEditChanges(...changes: Mutation<ISyntheticObject>[]) {
+  applyEditMutations(...changes: Mutation<ISyntheticObject>[]) {
 
     const allSyntheticObjects = {};
 

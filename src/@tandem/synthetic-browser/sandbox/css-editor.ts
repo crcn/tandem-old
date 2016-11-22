@@ -22,7 +22,7 @@ import {
   SyntheticCSSAtRuleEdit,
   SyntheticCSSStyleRuleMutationTypes,
   SyntheticCSSAtRule,
-  SyntheticCSSStyleSheetChangeTypes,
+  SyntheticCSSStyleSheetMutationTypes,
   SyntheticCSSKeyframesRuleEdit,
   SyntheticCSSStyleRuleEdit,
 } from "@tandem/synthetic-browser";
@@ -49,19 +49,19 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     node.selector = newValue;
   }
 
-  [SyntheticCSSStyleSheetChangeTypes.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildMutation<any, any>) {
+  [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildMutation<any, any>) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     childNode.parent.removeChild(childNode);
   }
 
-  [SyntheticCSSStyleSheetChangeTypes.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, newIndex }: MoveChildMutation<any, any>) {
+  [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: MoveChildMutation<any, any>) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     const parent = childNode.parent;
     parent.removeChild(childNode);
-    parent.insertBefore(node.nodes[newIndex], childNode);
+    parent.insertBefore(node.nodes[index], childNode);
   }
 
-  [SyntheticCSSStyleSheetChangeTypes.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildMutation<any, any>) {
+  [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildMutation<any, any>) {
 
     let newChild = <syntheticCSSRuleType>child;
     const newChildNode = {
@@ -105,7 +105,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
   }
 
-  [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, newIndex }: PropertyMutation<any>) {
+  [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
     const source = target.source;
 
     let found: boolean;
@@ -123,13 +123,13 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
       }
     });
 
-    if (newIndex != null, foundIndex > -1 && foundIndex !== newIndex) {
+    if (index != null, foundIndex > -1 && foundIndex !== index) {
       const decl = node.nodes[foundIndex];
       node.removeChild(decl);
-      if (newIndex === node.nodes.length) {
+      if (index === node.nodes.length) {
         node.append(decl);
       } else {
-        node.insertBefore(node.nodes[newIndex], decl);
+        node.insertBefore(node.nodes[index], decl);
       }
     }
 

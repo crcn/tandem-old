@@ -15,14 +15,18 @@ import {
 import {
   bindable,
   isMaster,
+  Mutation,
   diffArray,
   flattenTree,
   BoundingRect,
   traverseTree,
-  AddMutation,
   RemoveMutation,
+  MoveChildMutation,
+  InsertChildMutation,
+  RemoveChildMutation,
   watchProperty,
   PropertyMutation,
+  TreeNodeMutationTypes,
   calculateAbsoluteBounds
 } from "@tandem/common";
 
@@ -30,6 +34,7 @@ import {
   DOMNodeType,
   SyntheticDOMNode,
   SyntheticDOMText,
+  SyntheticCSSAtRule,
   SyntheticDocument,
   SyntheticDOMElement,
   SyntheticCSSCharset,
@@ -37,9 +42,13 @@ import {
   syntheticCSSRuleType,
   SyntheticCSSStyleRule,
   SyntheticDOMContainer,
+  SyntheticCSSStyleSheet,
   AttachableSyntheticDOMNode,
   SyntheticCSSStyleDeclaration,
+  SyntheticDocumentMutationTypes,
+  SyntheticCSSAtRuleMutationTypes,
   SyntheticCSSStyleRuleMutationTypes,
+  SyntheticCSSStyleSheetMutationTypes,
 } from "../../dom";
 
 import { DOMNodeEvent } from "../../messages";
@@ -47,7 +56,7 @@ import { DOMNodeEvent } from "../../messages";
 type HTMLElementDictionaryType = {
   [IDentifier: string]: [Element, SyntheticDOMNode]
 }
-
+const ss: CSSStyleSheet = null;
 
 type CSSRuleDictionaryType = {
   [IDentifier: string]: [CSSRule, syntheticCSSRuleType]
@@ -68,43 +77,140 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return element;
   }
 
-  protected onDocumentMutationEvent(event: Action) {
-    super.onDocumentMutationEvent(event);
+  protected onDocumentMutationEvent(mutation: Mutation<any>) {
+    super.onDocumentMutationEvent(mutation);
+
+    console.log("handle mutation", mutation.type);
+
+    this.registerStyleSheet();
 
     // DOM
-    if (event.type === SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT) {
-      const [native, synthetic] = this.getElementDictItem(event.target);
-      if (native) native.textContent = decode((<PropertyMutation<SyntheticDOMNode>>event).newValue);
-    } else if (event.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
-      const { name, newValue } = <PropertyMutation<SyntheticDOMElement>>event;
-      const [native, synthetic] = this.getElementDictItem(event.target);
+    if (mutation.type === SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT) {
+      const [native, synthetic] = this.getElementDictItem(mutation.target);
+      if (native) native.textContent = decode((<PropertyMutation<SyntheticDOMNode>>mutation).newValue);
+    }
+
+    if (mutation.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
+      const { name, newValue } = <PropertyMutation<SyntheticDOMElement>>mutation;
+      const [native, synthetic] = this.getElementDictItem(mutation.target);
       if (native) native.setAttribute(name, newValue);
-    } else if (event.type === AddMutation.ADD_CHANGE) {
-      const [native, synthetic] = this.getElementDictItem(event.target.parent);
+    }
+
+    if (mutation.type === TreeNodeMutationTypes.NODE_ADDED) {
+      const [native, synthetic] = this.getElementDictItem(mutation.target.parent);
       if (native) {
-        const childNode = renderHTMLNode(event.target, this._elementDictionary);
+        const childNode = renderHTMLNode(mutation.target, this._elementDictionary);
         if (childNode) native.appendChild(childNode);
       }
-    } else if (event.type === RemoveMutation.REMOVE_CHANGE) {
-      const [native, synthetic] = this.getElementDictItem(event.target);
+    }
+
+    if (mutation.type === TreeNodeMutationTypes.NODE_REMOVED) {
+      const [native, synthetic] = this.getElementDictItem(mutation.target);
       if (native && native.parentNode) native.parentNode.removeChild(native);
-      this._elementDictionary[event.target.uid] = undefined;
+      this._elementDictionary[mutation.target.uid] = undefined;
+    }
 
     // CSS
-    } else if (event.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
-      const { target, name, newValue, oldName } = <PropertyMutation<SyntheticCSSStyleRule>>event;
-      const [native, synthetic] = this.getCSSDictItem(target);
-      if (native) {
-        (<CSSStyleRule>native).style[name] = newValue;
+    if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+      const { target, name, newValue, oldName } = <PropertyMutation<SyntheticCSSStyleRule>>mutation;
+      const [nativeRule] = this.getCSSDictItem<CSSStyleRule>(target);
+      console.log(target, this._cssRuleDictionary);
+      console.log(nativeRule, name, newValue);
+      if (nativeRule) {
+        if (newValue == null) {
+          nativeRule.style.removeProperty(name);
+        } else {
+          nativeRule.style[name] = newValue;
+        }
         if (oldName) {
-          (<CSSStyleRule>native).style[name] = undefined;
+          nativeRule.style[name] = undefined;
         }
       }
     }
+
+    if (mutation.type === SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT) {
+      const { target, child } = <RemoveChildMutation<SyntheticCSSStyleSheet, SyntheticCSSStyleRule>>mutation;
+      this.removeNativeRule(child, target);
+    }
+
+    if (mutation.type === SyntheticCSSAtRuleMutationTypes.INSERT_CSS_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT) {
+      const { target, child, index } = <InsertChildMutation<SyntheticCSSStyleSheet, SyntheticCSSStyleRule>>mutation;
+      this.insertNativeRule(child, index, target);
+    }
+
+    if (mutation.type === SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT || mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+      const { target, child } = <RemoveChildMutation<SyntheticDocument, SyntheticCSSStyleSheet>>mutation;
+      const actual = this.getSyntheticStyleSheet(child);
+
+      if (actual)
+      for (const syntheticRule of actual.rules) {
+        this.removeNativeRule(syntheticRule);
+      }
+    }
+
+    if (mutation.type === SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT || mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+      const { target, child, index } = <InsertChildMutation<SyntheticDocument, SyntheticCSSStyleSheet>>mutation;
+
+      // check UID - may have been bubbled up
+      if (target.uid === this.document.uid) {
+        let cindex = this.getNativeRuleIndex(index);
+        for (const syntheticRule of child.rules) {
+          this.insertNativeRule(syntheticRule, cindex++);
+        }
+      }
+    }
+
+  }
+
+  private removeNativeRule(child: SyntheticCSSObject, parent?: SyntheticCSSStyleSheet|SyntheticCSSAtRule) {
+    const [nativeRule, syntheticRule] = this.getCSSDictItem(child);
+
+    if (!nativeRule) return;
+
+    if (parent instanceof SyntheticCSSAtRule) {
+      const [groupingRule, syntheticAtRule] = this.getCSSDictItem<CSSGroupingRule>(parent);
+      if (!groupingRule) return;
+      groupingRule.deleteRule(Array.prototype.indexOf.call(groupingRule.cssRules, nativeRule));
+    } else {
+      if (parent && this.getSyntheticStyleSheetIndex(parent) === -1) return;
+      const nativeStyleSheet = this.getNativeStyleSheet();
+      nativeStyleSheet.removeRule(Array.prototype.indexOf.call(nativeStyleSheet.rules, nativeRule));
+    }
+
+    this._cssRuleDictionary[child.uid] = undefined;
+  }
+
+  private insertNativeRule(child: syntheticCSSRuleType, index: number, parent?: SyntheticCSSStyleSheet|SyntheticCSSAtRule) {
+
+    if (parent && parent instanceof SyntheticCSSAtRule) {
+      const [groupingRule, syntheticAtRule] = this.getCSSDictItem<CSSGroupingRule>(parent);
+      if (!groupingRule) return;
+      groupingRule.insertRule(child.cssText, index);
+      this._cssRuleDictionary[child.uid] = [groupingRule.cssRules.item(index), child];
+    } else {
+      if (parent && this.getSyntheticStyleSheetIndex(parent) === -1) return;
+      const nativeStyleSheet = this.getNativeStyleSheet();
+      nativeStyleSheet.insertRule(child.cssText, index);
+      this._cssRuleDictionary[child.uid] = [nativeStyleSheet.cssRules.item(index), child];
+    }
+  }
+
+  private getSyntheticStyleSheetIndex(styleSheet: SyntheticCSSObject) {
+    return this.document.styleSheets.findIndex(ss => ss.uid === styleSheet.uid);
+  }
+
+  private getSyntheticStyleSheet(styleSheet: SyntheticCSSObject) {
+    return this.document.styleSheets[this.getSyntheticStyleSheetIndex(styleSheet)];
+  }
+
+  private getNativeRuleIndex(index: number) {
+    this.document.styleSheets.slice(index + 1).forEach((ss) => {
+      index += ss.rules.length;
+    });
+    return index;
   }
 
   protected getElementDictItem(synthetic: SyntheticDOMNode) {
-
     return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined];
   }
 
@@ -121,7 +227,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       this.styleElement.textContent = this._currentCSSText = document.styleSheets.map((styleSheet) => styleSheet.cssText).join("\n");
     }
 
-
     this.updateRects();
   }
 
@@ -129,24 +234,27 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return this.element.firstChild as HTMLStyleElement;
   }
 
-  private getCSSDictItem(target: SyntheticCSSObject): [CSSRule, syntheticCSSRuleType] {
-    if (!this._cssRuleDictionary) {
-      this.registerStyleSheet();
-    }
-    return this._cssRuleDictionary[target.uid] || [undefined, undefined];
+  private getCSSDictItem<T extends CSSRule>(target: SyntheticCSSObject): [T, syntheticCSSRuleType] {
+    this.registerStyleSheet();
+    return (this._cssRuleDictionary && this._cssRuleDictionary[target.uid]) || [undefined, undefined] as any;
+  }
+
+  private getNativeStyleSheet(): CSSStyleSheet {
+    return this._nativeStyleSheet || (this._nativeStyleSheet = Array.prototype.slice.call(this.styleElement.ownerDocument.styleSheets).find((styleSheet: CSSStyleSheet) => {
+      return styleSheet.ownerNode === this.styleElement;
+    }));
   }
 
   private registerStyleSheet() {
-    this._cssRuleDictionary = {};
+    if (this._cssRuleDictionary) return;
 
-    const nativeStyleSheet = this._nativeStyleSheet = Array.prototype.slice.call(this.styleElement.ownerDocument.styleSheets).find((styleSheet: CSSStyleSheet) => {
-      return styleSheet.ownerNode === this.styleElement;
-    });
+    const nativeStyleSheet = this.getNativeStyleSheet();
 
     if (!nativeStyleSheet) {
       console.warn(`Cannot find native style sheet generated by DOM renderer.`);
       return;
     }
+    this._cssRuleDictionary = {};
 
     let h = 0;
 
