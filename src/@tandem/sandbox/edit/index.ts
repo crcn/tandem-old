@@ -301,8 +301,9 @@ export abstract class BaseEditor<T> {
 }
 
 export class GroupEditor implements IEditor {
-  constructor(readonly editors: IEditor[]) {
-
+  readonly editors: IEditor[];
+  constructor(...editors: IEditor[]) {
+    this.editors = editors;
   }
   applyMutations(mutations: Mutation<any>[]) {
     for (let i = 0, n = this.editors.length; i < n; i++) {

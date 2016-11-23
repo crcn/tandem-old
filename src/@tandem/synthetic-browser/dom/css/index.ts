@@ -8,4 +8,3 @@ export * from "./style-sheet";
 export * from "./atrule";
 export * from "./base";
 export * from "./utils";
-export * from "./charset";

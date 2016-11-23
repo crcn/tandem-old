@@ -14,6 +14,6 @@ export class SyntheticTDRulerLineElement extends SyntheticDOMElement {
     return Number(this.getAttribute("value") || 0);
   }
   set value(value: number) {
-    this.setAttribute("value", value);
+    this.setAttribute("value", String(value));
   }
 }

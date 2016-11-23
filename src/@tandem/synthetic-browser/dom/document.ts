@@ -12,12 +12,14 @@ import {
   IMarkupNodeVisitor,
   SyntheticDOMElement,
   SyntheticDOMComment,
+  DOMContainerEditor,
   SyntheticDOMContainer,
   SyntheticDOMValueNode,
   SyntheticDOMContainerEdit,
   syntheticElementClassType,
   SyntheticDocumentFragment,
   SyntheticDOMNodeSerializer,
+  SyntheticDOMContainerEditor,
 } from "./markup";
 
 import {
@@ -100,11 +102,11 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
   }
 
   removeStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
-    return this.addChange(new RemoveChildMutation(SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
+    return this.addChange(new RemoveChildMutation(SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet, this.target.styleSheets.indexOf(stylesheet)));
   }
 
   moveStyleSheet(stylesheet: SyntheticCSSStyleSheet, index: number) {
-    return this.addChange(new MoveChildMutation(SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet, index));
+    return this.addChange(new MoveChildMutation(SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet, this.target.styleSheets.indexOf(stylesheet), index));
   }
 
   protected addDiff(newDocument: SyntheticDocument) {
@@ -135,6 +137,38 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
     return super.addDiff(newDocument);
   }
 }
+
+export class SyntheticDocumentEditor<T extends SyntheticDocument> extends SyntheticDOMContainerEditor<T> {
+  applySingleMutation(mutation: Mutation<T>) {
+    super.applySingleMutation(mutation);
+    const target = this.target;
+    if (mutation.type === SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+      target.styleSheets.splice((<RemoveChildMutation<any, any>>mutation).index, 1);
+    } else if (mutation.type === SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT) {
+      target.styleSheets.splice((<InsertChildMutation<any, SyntheticCSSStyleSheet>>mutation).index, 0, (<InsertChildMutation<any, SyntheticCSSStyleSheet>>mutation).child.clone(true));
+    } else if (mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+      const oldIndex = (<MoveChildMutation<any, any>>mutation).oldIndex;
+      target.styleSheets.splice(oldIndex, 1);
+      target.styleSheets.splice((<MoveChildMutation<any, SyntheticCSSStyleSheet>>mutation).index, 0, );
+    }
+  }
+}
+
+
+
+  // applyMutation(mutation: Mutation<any>) {
+  //   super.applyMutation(mutation);
+
+  //   const target: any = {
+  //     [SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
+  //     [SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
+  //     [SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets
+  //   }[mutation.type];
+
+  //   if (target) {
+  //     (<ApplicableMutation<any>>mutation).applyTo(target);
+  //   }
+  // }
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
 export class SyntheticDocument extends SyntheticDOMContainer {
@@ -465,20 +499,6 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this.registerElementNS(this.defaultNamespaceURI, tagName, options);
   }
 
-  applyMutation(mutation: Mutation<any>) {
-    super.applyMutation(mutation);
-
-    const target: any = {
-      [SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
-      [SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
-      [SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets
-    }[mutation.type];
-
-    if (target) {
-      (<ApplicableMutation<any>>mutation).applyTo(target);
-    }
-  }
-
   // non-standard APIs to enable custom elements according to the doc type -- necessary for
   // cases where we're mixing different template engines such as angular, vuejs, etc.
   registerElementNS(ns: string, tagName: string, elementClass: syntheticElementClassType);
@@ -525,6 +545,10 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   private own<T extends SyntheticDOMNode>(node: T) {
     node.$setOwnerDocument(this);
     return node;
+  }
+
+  createEditor() {
+    return new SyntheticDocumentEditor(this);
   }
 
   private onStyleSheetsEvent(event: Action) {

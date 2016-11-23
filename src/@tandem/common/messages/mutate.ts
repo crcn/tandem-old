@@ -66,7 +66,7 @@ export class SetValueMutation<T> extends Mutation<T> {
 
 
 export abstract class ChildMutation<T, U extends IUnique & ICloneable> extends ApplicableMutation<T> {
-  constructor(type: string, target: T, readonly child: U) {
+  constructor(type: string, target: T, readonly child: U, readonly index: number) {
     super(type, target);
   }
   findChildIndex(collection: U[]) {
@@ -102,8 +102,8 @@ export abstract class ChildMutation<T, U extends IUnique & ICloneable> extends A
   }
 })
 export class InsertChildMutation<T extends ICloneable, U extends ICloneable & IUnique> extends ChildMutation<T, U> {
-  constructor(type: string, target: T, child: U, readonly index: number = Infinity) {
-    super(type, target, child);
+  constructor(type: string, target: T, child: U, index: number = Infinity) {
+    super(type, target, child, index);
   }
   applyTo(collection: U[]) {
 
@@ -116,24 +116,26 @@ export class InsertChildMutation<T extends ICloneable, U extends ICloneable & IU
 }
 
 @serializable({
-  serialize({ type, target, child }: RemoveChildMutation<ICloneable, any>) {
+  serialize({ type, target, child, index }: RemoveChildMutation<ICloneable, any>) {
     return {
       type: type,
       target: serialize(target.clone()),
-      child: serialize(child.clone())
+      child: serialize(child.clone()),
+      index: index
     };
   },
   deserialize({ type, target, child, index }, injector): RemoveChildMutation<any, any> {
     return new RemoveChildMutation(
       type,
       deserialize(target, injector),
-      deserialize(child, injector)
+      deserialize(child, injector),
+      index
     );
   }
 })
 export class RemoveChildMutation<T extends ICloneable, U extends ICloneable & IUnique> extends ChildMutation<T, U> {
-  constructor(type: string, target: T, child: U) {
-    super(type, target, child);
+  constructor(type: string, target: T, child: U, index: number) {
+    super(type, target, child, index);
   }
   applyTo(collection: U[]) {
     const foundIndex = this.findChildIndex(collection);
@@ -188,26 +190,28 @@ export class RemoveMutation<T> extends Mutation<T> {
 }
 
 @serializable({
-  serialize({ type, target, child, index }: MoveChildMutation<any, any>) {
+  serialize({ type, target, child, index, oldIndex }: MoveChildMutation<any, any>) {
     return {
       type: type,
       target: serialize(target.clone()),
       child: serialize(child.clone()),
+      oldInex: oldIndex,
       index: index
     };
   },
-  deserialize({ type, target, child, index }, injector): MoveChildMutation<any, any> {
+  deserialize({ type, target, child, index, oldIndex }, injector): MoveChildMutation<any, any> {
     return new MoveChildMutation(
       type,
       deserialize(target, injector),
       deserialize(child, injector),
+      oldIndex,
       index
     );
   }
 })
 export class MoveChildMutation<T, U extends ICloneable & IUnique> extends ChildMutation<T, U> {
-  constructor(type: string, target: T, child: U, readonly index: number) {
-    super(type, target, child);
+  constructor(type: string, target: T, child: U, readonly oldIndex: number, index: number) {
+    super(type, target, child, index);
   }
 
   applyTo(collection: U[]) {

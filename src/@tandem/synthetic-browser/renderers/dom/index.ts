@@ -37,7 +37,6 @@ import {
   SyntheticCSSAtRule,
   SyntheticDocument,
   SyntheticDOMElement,
-  SyntheticCSSCharset,
   SyntheticDOMComment,
   SyntheticCSSObject,
   syntheticCSSRuleType,
@@ -284,8 +283,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
         const rule = styleSheet.rules[j];
 
         // TODO - need to remove charset from synthetic object
-
-        if (rule instanceof SyntheticCSSCharset) continue;
         this._cssRuleDictionary[rule.uid] = [nativeStyleSheet.rules[h++], rule];
       }
     }

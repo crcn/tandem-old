@@ -18,7 +18,6 @@ import {
   SyntheticCSSStyleRule,
   syntheticCSSRuleType,
   SyntheticCSSStyleSheetEdit,
-  SyntheticCSSMediaRuleEdit,
   SyntheticCSSAtRuleEdit,
   SyntheticCSSStyleRuleMutationTypes,
   SyntheticCSSAtRule,

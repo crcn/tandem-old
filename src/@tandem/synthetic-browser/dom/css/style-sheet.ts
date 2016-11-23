@@ -1,11 +1,12 @@
 import { atob } from "abab";
 import { RawSourceMap } from "source-map";
 import { SyntheticCSSFontFace } from "./font-face";
+import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
+import { SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
 import { SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule } from "./style-rule";
-import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
 
 import {
   serialize,
@@ -42,6 +43,7 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
+
 export namespace SyntheticCSSStyleSheetMutationTypes {
   export const INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
   export const MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
@@ -56,11 +58,11 @@ export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<Synthetic
   }
 
   moveRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addChange(new MoveChildMutation(SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new MoveChildMutation(SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, this.target.rules.indexOf(rule), index));
   }
 
   removeRule(rule: syntheticCSSRuleType) {
-    return this.addChange(new RemoveChildMutation(SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule));
+    return this.addChange(new RemoveChildMutation(SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, this.target.rules.indexOf(rule)));
   }
 
   protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
@@ -88,7 +90,34 @@ export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<Synthetic
   }
 }
 
-const _smcache = {};
+export class GenericCSSStyleSheetEditor extends BaseEditor<CSSStyleSheet|SyntheticCSSStyleSheet> {
+  applySingleMutation(mutation: Mutation<any>) {
+
+    if (mutation.type === SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT) {
+
+    } else if (mutation.type === SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT) {
+
+    } else if (mutation.type === SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT) {
+
+    }
+    
+    // change.applyTo({
+    //   [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]: this,
+    //   [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
+    //   [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
+    //   [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
+    // }[change.type]);
+  }
+}
+
+export class SyntheticCSSStyleSheetEditor extends BaseEditor<SyntheticCSSStyleSheet> {
+  applyMutations(mutations: Mutation<any>[]) {
+    new SyntheticCSSObjectEditor(this.target).applyMutations(mutations);
+    super.applyMutations(mutations);
+  }
+}
+
+let _smcache = {};
 function parseSourceMaps(value) {
   if (value.indexOf("sourceMappingURL") == -1) return undefined;
   if (_smcache[value]) return _smcache[value];
@@ -97,6 +126,8 @@ function parseSourceMaps(value) {
   // assuming that it's inlined here... shouldn't.
   return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));
 }
+
+setInterval(() => _smcache = {}, 1000 * 60);
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleSheetSerializer()))
 export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
@@ -137,15 +168,11 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     return new SyntheticCSSStyleSheet([]);
   }
 
-  applyMutation(change: ApplicableMutation<any>) {
-    if (this.$ownerNode) this.$ownerNode.notify(change);
-    change.applyTo({
-      [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this,
-      [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
-      [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
-      [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
-    }[change.type]);
-    this.rules.forEach(rule => rule.$parentStyleSheet = this);
+
+  createEditor() {
+    // observe change
+    // this.rules.forEach(rule => rule.$parentStyleSheet = this);
+    return new SyntheticCSSStyleSheetEditor(this);
   }
 
   createEdit() {

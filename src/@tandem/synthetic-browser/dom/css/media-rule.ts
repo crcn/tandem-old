@@ -38,27 +38,6 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
-export namespace SyntheticCSSMediaRuleMutationTypes {
-  export const SET_MEDIA_EDIT = "setMediaEdit";
-}
-
-export class SyntheticCSSMediaRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticCSSMediaRule> {
-
-
-  setMedia(value: string[]) {
-    return this.addChange(new PropertyMutation(SyntheticCSSMediaRuleMutationTypes.SET_MEDIA_EDIT, this.target, "media", value));
-  }
-
-  addDiff(newMediaRule: SyntheticCSSMediaRule) {
-
-    if (this.target.media.join("") !== newMediaRule.media.join("")) {
-      this.setMedia(newMediaRule.media);
-    }
-
-    return super.addDiff(newMediaRule);
-  }
-}
-
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
 export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
   readonly atRuleName = "media";
@@ -79,14 +58,8 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
     return new SyntheticCSSMediaRule(this.media.concat(), []);
   }
 
-  getEditChangeTargets() {
-    return Object.assign({
-      [SyntheticCSSMediaRuleMutationTypes.SET_MEDIA_EDIT]: this as SyntheticCSSAtRule,
-    }, super.getEditChangeTargets());
-  }
-
   createEdit() {
-    return new SyntheticCSSMediaRuleEdit(this);
+    return new SyntheticCSSAtRuleEdit(this);
   }
 
   visitWalker(walker: ITreeWalker) {

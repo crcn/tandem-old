@@ -6,7 +6,7 @@ export class SyntheticTDRulerElement extends SyntheticDOMElement {
   }
   set disabled(value: boolean) {
     if (value) {
-      this.setAttribute("disabled", true);
+      this.setAttribute("disabled", String(true));
     } else {
       this.removeAttribute("disabled");
     }

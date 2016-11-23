@@ -9,7 +9,7 @@ import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
-import { SyntheticDOMContainer, SyntheticDOMContainerEdit } from "./container";
+import { SyntheticDOMContainer, SyntheticDOMContainerEdit, DOMContainerEditor, SyntheticDOMContainerEditor } from "./container";
 import {
   Action,
   BubbleDispatcher,
@@ -21,7 +21,6 @@ import {
   ISerializer,
   BoundingRect,
   serializable,
-  ArrayMetadataChangeEvent,
   ISerializedContent,
   PropertyChangeEvent,
   Mutation,
@@ -30,6 +29,7 @@ import {
   InsertChildMutation,
   PropertyMutation,
   ObservableCollection,
+  ArrayMetadataChangeEvent,
 } from "@tandem/common";
 
 import { Dependency } from "@tandem/sandbox";
@@ -216,12 +216,13 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   }
 }
 
-export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> {
-  constructor(readonly target: T, readonly createNode: (item: any) => any = (item: any) => item.cloneNode(true)) {
-
+export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> extends DOMContainerEditor<T>  {
+  constructor(target: T, findNode: (parent: T, child: any) => any, createNode?: (item: any) => any) {
+    super(target, findNode, createNode);
   }
 
-  applyMutation(mutation: Mutation<any>) {
+  applySingleMutation(mutation: Mutation<any>) {
+    super.applySingleMutation(mutation);
     if (mutation.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
       const { name, oldName, newValue } = <PropertyMutation<any>>mutation;
       if (newValue == null) {
@@ -230,15 +231,23 @@ export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> {
         this.target.setAttribute(name, newValue);
       }
       if (oldName) this.target.removeAttribute(oldName);
-    } else if (mutation.type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {
+    }
+  }
+}
+
+export class SyntheticDOMElementEditor<T extends SyntheticDOMElement> extends SyntheticDOMContainerEditor<T> {
+  constructor(target: T) {
+    super(target);
+  }
+  createDOMEditor(target: SyntheticDOMElement, findChild: any) {
+    return new DOMElementEditor(target, findChild);
+  }
+  applySingleMutation(mutation: Mutation<any>) {
+    if (mutation.type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {
       const { child } = <InsertChildMutation<SyntheticDOMElement,SyntheticDOMContainer>>mutation;
       const shadowRoot = <SyntheticDOMContainer>child;
 
-      // need to clone in case the child is an instance in this process -- hasn't
-      // been sent over a network.
-      if (this.target["$setShadowRoot"]) {
-        this.target["$setShadowRoot"](this.createNode(shadowRoot));
-      }
+      this.target.$setShadowRoot(shadowRoot.cloneNode(true));
     }
   }
 }
@@ -283,8 +292,8 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return new SyntheticDOMElementEdit(this);
   }
 
-  applyMutation(mutation: Mutation<any>) {
-    new DOMElementEditor(this).applyMutation(mutation);
+  createEditor() {
+    return new SyntheticDOMElementEditor(this);
   }
 
   visitWalker(walker: ITreeWalker) {

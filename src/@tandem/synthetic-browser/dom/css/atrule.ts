@@ -1,7 +1,8 @@
+import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSStyleDeclaration } from "./declaration";
 import { SyntheticCSSStyleSheetMutationTypes } from "./style-sheet";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit,  } from "./base";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit,  SyntheticCSSObjectEditor,  } from "./base";
 import {
   ISerializer,
   serialize,
@@ -19,6 +20,7 @@ import {
 } from "@tandem/common";
 
 import {
+  BaseEditor,
   BaseContentEdit,
 } from "@tandem/sandbox";
 
@@ -38,11 +40,11 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends Synthe
   }
 
   moveRule(rule: SyntheticCSSStyleRule, index: number) {
-    return this.addChange(new MoveChildMutation(SyntheticCSSAtRuleMutationTypes.MOVE_CSS_RULE_EDIT, this.target, rule, index));
+    return this.addChange(new MoveChildMutation(SyntheticCSSAtRuleMutationTypes.MOVE_CSS_RULE_EDIT, this.target, rule, this.target.cssRules.indexOf(rule), index));
   }
 
   removeRule(rule: SyntheticCSSStyleRule) {
-    return this.addChange(new RemoveChildMutation(SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT, this.target, rule));
+    return this.addChange(new RemoveChildMutation(SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT, this.target, rule, this.target.cssRules.indexOf(rule)));
   }
 
   addDiff(atRule: T) {
@@ -68,6 +70,45 @@ export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends Synthe
   }
 }
 
+export class GenericCSSAtRuleEditor extends BaseEditor<CSSGroupingRule|SyntheticCSSAtRule> {
+  applyMutations(mutations: Mutation<any>[]) {
+    super.applyMutations(mutations);
+  }
+  applySingleMutation(mutation: Mutation<any>) {
+
+    if (mutation.type === SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT) {
+      this.target.deleteRule((<RemoveChildMutation<any, any>>mutation).index);
+    } else if (mutation.type === SyntheticCSSAtRuleMutationTypes.INSERT_CSS_RULE_EDIT) {
+      const { child, index } = <InsertChildMutation<any, SyntheticCSSStyleRule>>mutation;
+      this.target.insertRule(child.cssText, index);
+    } else if (mutation.type === SyntheticCSSAtRuleMutationTypes.MOVE_CSS_RULE_EDIT) {
+      const { oldIndex, child, index } = <MoveChildMutation<any, SyntheticCSSStyleRule>>mutation;
+      this.target.deleteRule(oldIndex);
+      this.target.insertRule(child.cssText, index);
+    }
+  }
+}
+
+export class SyntheticCSSAtRuleEditor extends BaseEditor<SyntheticCSSAtRule> {
+
+  private _genericCSSAtRuleEditor: GenericCSSAtRuleEditor;
+
+  constructor(target: SyntheticCSSAtRule) {
+    super(target);
+    this._genericCSSAtRuleEditor = this.createCSSAtRuleEditor(target);
+  }
+
+  createCSSAtRuleEditor(target: SyntheticCSSAtRule) {
+    return new GenericCSSAtRuleEditor(target);
+  }
+
+  applyMutations(mutations: Mutation<any>[]) {
+    super.applyMutations(mutations);
+    new SyntheticCSSObjectEditor(this.target).applyMutations(mutations);
+    this._genericCSSAtRuleEditor.applyMutations(mutations);
+  }
+}
+
 export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
 
   abstract atRuleName: string;
@@ -77,6 +118,16 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
   constructor(public cssRules: SyntheticCSSStyleRule[] = []) {
     super();
     cssRules.forEach(rule => rule.$parentRule = this);
+  }
+  
+  deleteRule(index: number): void {
+    this.cssRules.splice(index, 1);
+  }
+
+  insertRule(rule: string, index: number): number {
+    const styleSheet = evaluateCSS(parseCSS(rule));
+    this.cssRules.splice(index, 0, styleSheet.rules[0] as SyntheticCSSStyleRule);
+    return index;
   }
 
   toString() {
@@ -93,19 +144,8 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSObject {
     return this.params === target.params ? 0 : -1;
   }
 
-  applyMutation(mutation: ApplicableMutation<any>) {
-    if (this.$ownerNode) this.$ownerNode.notify(mutation);
-    mutation.applyTo(this.getEditChangeTargets()[mutation.type]);
-    this.cssRules.forEach(rule => rule.$parentRule = this);
-  }
-
-  protected getEditChangeTargets() {
-    return {
-      [SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT]: this as SyntheticCSSAtRule,
-      [SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT]: this.cssRules,
-      [SyntheticCSSAtRuleMutationTypes.INSERT_CSS_RULE_EDIT]: this.cssRules,
-      [SyntheticCSSAtRuleMutationTypes.MOVE_CSS_RULE_EDIT]: this.cssRules
-    };
+  createEditor() {
+    return new SyntheticCSSAtRuleEditor(this);
   }
 
   visitWalker(walker: ITreeWalker) {

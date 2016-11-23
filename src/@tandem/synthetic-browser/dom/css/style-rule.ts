@@ -1,21 +1,21 @@
 import { Dependency } from "@tandem/sandbox";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
-import { BaseContentEdit } from "@tandem/sandbox";
+import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration, isValidCSSDeclarationProperty } from "./declaration";
 import {
   Action,
-  serializable,
+  Mutation,
   serialize,
+  ArrayDiff,
+  diffArray,
+  serializable,
   deserialize,
   ISerializer,
-  ISerializedContent,
-  diffArray,
   ITreeWalker,
-  ArrayDiff,
-  Mutation,
   PropertyMutation,
   SetValueMutation,
+  ISerializedContent,
 } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSStyleRule {
@@ -85,6 +85,38 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
   }
 }
 
+export class CSSStyleRuleEditor extends BaseEditor<CSSStyleRule> {
+  applySingleMutation(mutation: Mutation<any>) {
+    if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+      const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
+      this.target.style.setProperty(name, newValue);
+      if (newValue == null) {
+        this.target.style.removeProperty(name);
+      }
+      if (oldName) {
+        this.target.style.removeProperty(oldName);
+      }
+    } else {
+      console.error(`Cannot apply ${mutation.type}`);
+    }
+  }
+}
+
+export class SyntheticCSSStyleRuleEditor extends BaseEditor<SyntheticCSSStyleRule> {
+  applySingleMutation(mutation: Mutation<SyntheticCSSStyleRule>) {
+    new SyntheticCSSObjectEditor(this.target).applyMutations([mutation]);
+
+    if (mutation.type === SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT) {
+      (<PropertyMutation<any>>mutation).applyTo(this);
+    } else if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+      const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
+      this.target.style.setProperty(name, newValue, undefined, oldName);
+    } else {
+      console.error(`Cannot apply ${mutation.type}`);
+    }
+  }
+}
+
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
 export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
@@ -106,9 +138,13 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return `${this.selector} {\n${this.style.cssText}}\n`;
   }
 
+  createEditor() {
+    return new SyntheticCSSStyleRuleEditor(this);
+  }
+
   applyMutation(mutation: Mutation<any>) {
     if (this.$ownerNode) this.$ownerNode.notify(mutation);
-    if (mutation.type === SyntheticCSSObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
+    if (mutation.type === SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT) {
       (<PropertyMutation<any>>mutation).applyTo(this);
     } else if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
       const { name, newValue, oldName } = <PropertyMutation<any>>mutation;

@@ -20,7 +20,6 @@ import {
   syntheticCSSRuleType,
   SyntheticCSSStyleRule,
   SyntheticCSSAtRuleEdit,
-  SyntheticCSSMediaRuleEdit,
   SyntheticCSSStyleRuleEdit,
   SyntheticCSSStyleSheetEdit,
   SyntheticCSSKeyframesRuleEdit,

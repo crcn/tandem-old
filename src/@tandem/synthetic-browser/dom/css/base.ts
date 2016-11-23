@@ -11,18 +11,25 @@ import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import {
   IEditable,
+  IEditor,
   BaseContentEdit,
   SyntheticObjectEdit,
   ISyntheticObject,
   ISyntheticSourceInfo,
   generateSyntheticUID,
+  SyntheticObjectEditor,
   syntheticSourceInfoEquals,
   SyntheticObjectSerializer,
+  SyntheticObjectChangeTypes,
 } from "@tandem/sandbox";
 
 export class SyntheticCSSObjectEdit<T extends SyntheticCSSObject> extends SyntheticObjectEdit<T> {
 }
 
+
+export class SyntheticCSSObjectEditor<T extends SyntheticCSSObject> extends SyntheticObjectEditor<T> {
+
+}
 
 export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable {
 
@@ -69,11 +76,7 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
-  applyMutation(change: Mutation<any>) {
-    if (change.type === SyntheticObjectEdit.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<PropertyMutation<any>>change).applyTo(this);
-    }
-  }
+  abstract createEditor(): IEditor;
   abstract visitWalker(walker: ITreeWalker);
 
   /**

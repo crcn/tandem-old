@@ -274,5 +274,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   protected abstract cloneShallow();
   abstract createEdit(): BaseContentEdit<any>;
-  abstract createEditor(): IEditor;
+  createEditor(): IEditor {
+    return new SyntheticDOMNodeEditor(this);
+  }
 }

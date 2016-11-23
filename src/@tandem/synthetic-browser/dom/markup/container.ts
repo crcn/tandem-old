@@ -17,7 +17,9 @@ import {
 import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import { SyntheticDOMElement } from "./element";
 import {
+  IEditor,
   BaseEditor,
+  GroupEditor,
   IContentEdit,
   BaseContentEdit,
   ISyntheticObject,
@@ -39,11 +41,11 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   }
 
   removeChild(child: SyntheticDOMNode) {
-    return this.addChange(new RemoveChildMutation(SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, this.target, child));
+    return this.addChange(new RemoveChildMutation(SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, this.target, child, this.target.childNodes.indexOf(child)));
   }
 
   moveChild(child: SyntheticDOMNode, index: number) {
-    return this.addChange(new MoveChildMutation(SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT, this.target, child, index));
+    return this.addChange(new MoveChildMutation(SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT, this.target, child, this.target.childNodes.indexOf(child), index));
   }
 
   appendChild(newChild: SyntheticDOMNode) {
@@ -106,11 +108,27 @@ export class DOMContainerEditor<T extends SyntheticDOMContainer|Element|Document
 }
 
 export class SyntheticDOMContainerEditor<T extends SyntheticDOMContainer> extends BaseEditor<T> {
-  applyMutations(mutations: Mutation<any>[]) {
-    new DOMContainerEditor(<any>this.target, (container, matchChild) => {
+
+  private _domContainerEditor: DOMContainerEditor<SyntheticDOMContainer>;
+  private _nodeEditor: SyntheticDOMNodeEditor<SyntheticDOMContainer>;
+
+  constructor(target: T) {
+    super(target);
+    this._domContainerEditor = this.createDOMEditor(target, (container, matchChild) => {
       const index = container.childNodes.findIndex(child => child.uid === matchChild.uid);
-    }).applyMutations(mutations);
-    new SyntheticDOMNodeEditor(<SyntheticDOMContainer>this.target).applyMutations(mutations);
+    });
+    this._nodeEditor = new SyntheticDOMNodeEditor(target); 
+  }
+
+  protected createDOMEditor(target: SyntheticDOMContainer, findChild: (parent: SyntheticDOMContainer, child: any) => any) {
+    return new DOMContainerEditor(target, findChild);
+  }
+
+  applyMutations(mutations: Mutation<any>[]) {
+    super.applyMutations(mutations);
+    this._domContainerEditor.applyMutations(mutations);
+    this._nodeEditor.applyMutations(mutations);
+
   }
 }
 
