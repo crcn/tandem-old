@@ -2,9 +2,11 @@ import { expect } from "chai";
 import { SyntheticHTMLStyle } from "@tandem/html-extension/synthetic";
 import { SyntheticDOMRenderer } from "./index";
 import { SyntheticWindow, SyntheticDocument } from "@tandem/synthetic-browser";
-import { generateRandomSyntheticHTMLElementSource } from "@tandem/synthetic-browser/test/helpers";
+import { generateRandomSyntheticHTMLElementSource, generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
 
 describe(__filename + "#", () => {
+
+  const removeExtraWhitespace = (str) => str.replace(/[\s\r\n\t]+/g, " ");
 
   const createDocument = (html = "") => {
     const document  = new SyntheticWindow().document;
@@ -15,19 +17,26 @@ describe(__filename + "#", () => {
 
   const createRenderer = (sourceDocument: SyntheticDocument) => {
 
-    const factoryDocument = createDocument();
+    const fakeDocument = createDocument();
 
-    const renderer = new SyntheticDOMRenderer(factoryDocument as any);
+    const renderer = new SyntheticDOMRenderer(fakeDocument as any);
+    fakeDocument.body.appendChild(renderer.element as any);
     renderer.start();
     renderer.document = sourceDocument;
 
     return {
-      renderHTML: async () => {
+      render: async () => {
         await renderer.requestRender();
-        return renderer.element.innerHTML;
+        return {
+          css: fakeDocument.styleSheets[0].cssText,
+          html: (<HTMLElement>renderer.element.lastChild).innerHTML,
+        }
       }
     }
   }
+
+  const fuzzyCSSCases = Array.from({ length: 10 }).map(v => [removeExtraWhitespace(generateRandomStyleSheet(4).cssText), ``]);
+  const fuzzyHTMLCases = Array.from({ length: 10 }).map(v => [``, generateRandomSyntheticHTMLElementSource(5, 5, 2)]);
 
   [
 
@@ -45,27 +54,42 @@ describe(__filename + "#", () => {
     // // HTML mutations
     [[``, `<div>a</div>`], [``, `<div>b</div>`]],
     [[``, `<div a="b"></div>`], [``, `<div a="c"></div>`]],
+
     [[``, `<div a="b"></div>`], [``, `<div c="d"></div>`]],
     [[``, `<div>a</div><span>b</span>`], [``, `<span>b</span><div>a</div>`]],
 
+    // fuzzyHTMLCases,
+
+    // CSS Mutations
+    [[`.a { color: red; } `, `<div class="a">a</div>`], [`.a { color: blue; } `, `<div class="a">a</div>`]],
+    [[`.a { color: red; } `, `<div class="a">a</div>`], [`.a { color: red; } .b { color: green; } `, `<div class="a">a</div>`]],
+    [[`.a { color: red; } .b { color: green; } `, `<div class="a">a</div>`], [`.a { color: red; } .b { color: blue; } `, `<div class="a">a</div>`]],
+    [[`.a { color: red; } .b { color: green; } `, `<div class="a">a</div>`], [`.a { color: red; } `, `<div class="a">a</div>`]],
+    [[`@media a { .b { color: red; } } `, `<div class="a">a</div>`], [`@media a { .b { color: blue; } } `, `<div class="a">a</div>`]],
+
+    // fuzzy
+    fuzzyCSSCases,
+
   ].forEach(([[inputCSS, inputHTML], ...mutations]) => {
+
     it(`Can render ${inputCSS} ${inputHTML} -> ${mutations.join(" ")}`, async () => {
 
       const createdStyledDocument = (css, html) => createDocument(`<style>${css}</style>${html}`);
       const inputDocument = createdStyledDocument(inputCSS, inputHTML);
       const renderer      = createRenderer(inputDocument);
 
-      const assertHTML = (renderedHTML, inputCSS, inputHTML) => {
-        expect(renderedHTML.replace(/[\s\r\n\t]+/g, " ")).to.equal(`<style type="text/css">${inputCSS}</style><div><span><html><head></head><body>${inputHTML}</body></html></span></div>`);
+      const assertHTML = ({html, css}, inputCSS, inputHTML) => {
+        expect(removeExtraWhitespace(css)).to.equal(removeExtraWhitespace(inputCSS));
+        expect(html).to.equal(`<html><head></head><body>${inputHTML}</body></html>`);
       }
 
-      assertHTML(await renderer.renderHTML(), inputCSS, inputHTML);
+      assertHTML(await renderer.render(), inputCSS, inputHTML);
 
       for (const [mutatedCSS, mutatedHTML] of mutations) {
         const outputDocument = createdStyledDocument(mutatedCSS, mutatedHTML);
         inputDocument.createEdit().fromDiff(outputDocument).applyMutationsTo(inputDocument);
 
-        assertHTML(await renderer.renderHTML(), mutatedCSS, mutatedHTML);
+        assertHTML(await renderer.render(), mutatedCSS, mutatedHTML);
       }
     });
   });

@@ -14,20 +14,17 @@ export class SyntheticHTMLStyle extends SyntheticDOMElement {
 
   createdCallback() {
     this._styleSheet = new SyntheticCSSStyleSheet([]);
+    this._styleSheet.$ownerNode = this;
     this._styleSheet.cssText = this.textContent;
   }
 
   attachedCallback() {
     super.attachedCallback();
-    const edit = this.ownerDocument.createEdit();
-    edit.addStyleSheet(this._styleSheet);
-    edit.applyMutationsTo(this.ownerDocument);
+    this.ownerDocument.styleSheets.push(this._styleSheet);
   }
 
   detachedCallback() {
-    const edit = this.ownerDocument.createEdit();
-    edit.removeStyleSheet(this._styleSheet);
-    edit.applyMutationsTo(this.ownerDocument);
+    this.ownerDocument.styleSheets.splice(this.ownerDocument.styleSheets.indexOf(this._styleSheet), 1);
   }
 
   onChildAdded(child, index) {

@@ -1,7 +1,7 @@
 import { values } from "lodash";
 import { CoreEvent, MutationEvent } from "@tandem/common";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
-import { SyntheticRendererEvent, isDOMMutationEvent, DOMNodeEvent } from "../messages";
+import { SyntheticRendererEvent, DOMNodeEvent } from "../messages";
 
 import {
   Logger,

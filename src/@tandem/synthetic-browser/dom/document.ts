@@ -96,7 +96,6 @@ export namespace SyntheticDocumentMutationTypes {
 })
 export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDocument> {
 
-
   addStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
     return this.addChange(new InsertChildMutation(SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
   }
@@ -558,7 +557,10 @@ export class SyntheticDocument extends SyntheticDOMContainer {
       (<ArrayMutation<SyntheticCSSStyleSheet>>mutation).accept({
         visitUpdate: () => {},
         visitInsert: ({ value, index }) => {
-          value.$ownerNode = this;
+          if (!value.$ownerNode) {
+            console.log("INSERT", value.$ownerNode);
+            value.$ownerNode = this;
+          }
         },
         visitRemove: ({ value, index }) => {
           value.$ownerNode = undefined;

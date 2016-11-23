@@ -476,7 +476,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
 
     if (ownerNode) {
-      ownerNode.notify(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.$parentRule, name, newValue, undefined, oldName).toEvent());
+      ownerNode.notify(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.$parentRule, name, newValue, undefined, oldName).toEvent(true));
     }
   }
 

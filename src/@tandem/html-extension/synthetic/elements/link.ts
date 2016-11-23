@@ -61,6 +61,7 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
 
     if (rel === "stylesheet") {
       this.stylesheet = this.stylesheet || new SyntheticCSSStyleSheet([]);
+      this.stylesheet.$ownerNode = this;
       this.stylesheet.cssText = content || "";
       this.attachStylesheet();
     } else if (rel === "import") {

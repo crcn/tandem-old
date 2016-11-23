@@ -65,7 +65,6 @@ export class CSSGroupingRuleEditor<T extends CSSGroupingRule|SyntheticCSSGroupin
   }  
 
   applySingleMutation(mutation: Mutation<any>) {
-
     if (mutation.type === CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT) {
       const { child, index } = (<InsertChildMutation<any, any>>mutation);
       this.target.insertRule(this.createInsertableCSSRule(this.target, child), index);
@@ -109,7 +108,10 @@ export abstract class SyntheticCSSGroupingRule<T extends syntheticCSSRuleType> e
   }
 
   deleteRule(index: number) {
+    const rule = this.cssRules[index];
     this.cssRules.splice(index, 1);
+    const owner = this.ownerNode;
+    if (owner) owner.notify(new RemoveChildMutation(CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, this, rule, index).toEvent());
   }
 
   createEditor() {
@@ -123,9 +125,11 @@ export abstract class SyntheticCSSGroupingRule<T extends syntheticCSSRuleType> e
   insertRule(rule: T, index?: number): number;
   insertRule(rule: string, index?: number): number;
   insertRule(rule: any, index?: number): number {
-    const ruleInstance: T = typeof rule === "string" ? evaluateCSS(parseCSS(rule))[0] : rule as T;
+    const ruleInstance: T = typeof rule === "string" ? evaluateCSS(parseCSS(rule)).rules[0] as any : rule as T;
     this.rules.splice(index, 0, ruleInstance);
-    this.linkRule(rule);
+    this.linkRule(ruleInstance);
+    const owner = this.ownerNode;
+    if (owner) owner.notify(new InsertChildMutation(CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT, this, ruleInstance, index).toEvent());
     return index;
   }
 
