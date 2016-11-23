@@ -13,3 +13,4 @@ export * from "./ast";
 export * from "./format";
 export * from "./value-node";
 export * from "./visible-element";
+export * from "./utils";

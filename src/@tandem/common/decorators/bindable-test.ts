@@ -17,7 +17,7 @@ describe(__filename + "#", () => {
     });
 
     item.name = "john";
-    expect(lastAction.type).to.equal("propertyChange");
+    expect(lastAction.type).to.equal("mutation");
 
   });
 });

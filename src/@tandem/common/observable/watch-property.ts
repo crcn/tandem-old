@@ -1,17 +1,17 @@
 import { IObservable } from "./base";
 import { IDisposable } from "../object";
-import { PropertyChangeEvent, Action } from "@tandem/common/messages";
+import { PropertyMutation, MutationEvent, CoreEvent } from "@tandem/common/messages";
 
 export type propertyChangeCallbackType = (newValue: any, oldValue: any) => void;
 
 export function watchProperty(target: any, property: string, callback: propertyChangeCallbackType) {
 
   const observer = {
-    dispatch(action: Action) {
-      if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
-        const propertyAction = <PropertyChangeEvent>action;
-        if (propertyAction.property === property && propertyAction.target === target) {
-          callback(propertyAction.newValue, propertyAction.oldValue);
+    dispatch({ mutation }: MutationEvent<any>) {
+      if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
+        const propertyMutation = <PropertyMutation<any>>mutation; 
+        if (propertyMutation.name === property && propertyMutation.target === target) {
+          callback(propertyMutation.newValue, propertyMutation.oldValue);
         }
       }
     }

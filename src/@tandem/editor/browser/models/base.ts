@@ -15,7 +15,6 @@ import {
   IInjectable,
   Injector,
   watchProperty,
-  PropertyChangeEvent,
   InjectorProvider,
 } from "@tandem/common";
 

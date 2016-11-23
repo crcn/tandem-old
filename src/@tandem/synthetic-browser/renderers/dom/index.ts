@@ -20,29 +20,45 @@ import {
   flattenTree,
   BoundingRect,
   traverseTree,
+  MutationEvent,
+  watchProperty,
   RemoveMutation,
+  PropertyMutation,
   MoveChildMutation,
   InsertChildMutation,
   RemoveChildMutation,
-  watchProperty,
-  PropertyMutation,
   TreeNodeMutationTypes,
   calculateAbsoluteBounds
 } from "@tandem/common";
 
 import {
   DOMNodeType,
+  isCSSMutation,
   SyntheticDOMNode,
   SyntheticDOMText,
-  SyntheticCSSAtRule,
+  DOMElementEditor,
   SyntheticDocument,
-  SyntheticDOMElement,
-  SyntheticDOMComment,
+  isDOMNodeMutation,
   SyntheticCSSObject,
+  DOMValueNodeEditor,
+  DOMContainerEditor,
+  SyntheticCSSAtRule,
+  CSSStyleRuleEditor,
+  isCSSAtRuleMutaton,
+  SyntheticDOMElement,
+  CSSStyleSheetEditor,
+  SyntheticDOMComment,
+  isDOMElementMutation,
   syntheticCSSRuleType,
   SyntheticCSSStyleRule,
+  CSSGroupingRuleEditor,
+  SyntheticDOMValueNode,
   SyntheticDOMContainer,
+  isDOMContainerMutation,
+  isDOMValueNodeMutation,
+  isCSSStyleRuleMutation,
   SyntheticCSSStyleSheet,
+  isCSSGroupingStyleMutation,
   CSSGroupingRuleMutationTypes,
   SyntheticCSSStyleDeclaration,
   SyntheticDocumentMutationTypes,
@@ -82,133 +98,41 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return element;
   }
 
-  protected onDocumentMutationEvent(mutation: Mutation<any>) {
-    super.onDocumentMutationEvent(mutation);
+  protected onDocumentMutationEvent({ mutation }: MutationEvent<any>) {
+    super.onDocumentMutationEvent(arguments[0]);
 
     this.registerStyleSheet();
 
-    // DOM
-    if (mutation.type === SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT) {
-      const [native, synthetic] = this.getElementDictItem(mutation.target);
-      if (native) native.textContent = decode((<PropertyMutation<SyntheticDOMNode>>mutation).newValue);
-    }
 
-    if (mutation.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
-      const { name, newValue, oldName } = <PropertyMutation<SyntheticDOMElement>>mutation;
-      const [nativeElement, syntheticElement] = this.getElementDictItem<Element>(mutation.target);
-      if (nativeElement) {
-        if (newValue == undefined) {
-          nativeElement.removeAttribute(name);
-        } else {
-          nativeElement.setAttribute(name, newValue);
-        }
-        if (oldName) {
-          nativeElement.removeAttribute(oldName);
-        }
+    if (isDOMNodeMutation(mutation)) {
+      const [nativeNode, syntheticNode] = this.getElementDictItem(mutation.target);
+
+      const insertChild = (syntheticNode) => {
+        return renderHTMLNode(this.nodeFactory, syntheticNode, this._elementDictionary);
+      };
+
+      if (isDOMElementMutation(mutation)) {
+        new DOMElementEditor(<HTMLElement>nativeNode, insertChild).applyMutations([mutation]);
+      } else if(isDOMContainerMutation(mutation)) {
+        new DOMContainerEditor(<DocumentFragment>nativeNode, insertChild).applyMutations([mutation]);
+      } else if(isDOMValueNodeMutation(mutation)) {
+        new DOMValueNodeEditor(<Text>nativeNode).applyMutations([mutation]);
       }
     }
 
-    if (mutation.type === TreeNodeMutationTypes.NODE_REMOVED) {
-      const [native, synthetic] = this.getElementDictItem(mutation.target);
-      if (native && native.parentNode) native.parentNode.removeChild(native);
-      this._elementDictionary[mutation.target.uid] = undefined;
-    }
-
-    if (mutation.type === TreeNodeMutationTypes.NODE_ADDED) {
-      const mutationTarget = <SyntheticDOMNode>mutation.target;
-      const [native, synthetic] = this.getElementDictItem(mutationTarget.parent);
-      if (native) {
-        const childNode = renderHTMLNode(this.nodeFactory, mutation.target, this._elementDictionary);
-        const index     = mutationTarget.parentNode.childNodes.indexOf(mutationTarget);
-        if (index !== mutationTarget.parentNode.childNodes.length - 1) {
-          const [prevChildNode] = this.getElementDictItem<Node>(mutationTarget.parentNode.childNodes[index - 1]);
-          native.insertBefore(prevChildNode, childNode);
-        } else {
-          native.appendChild(childNode);
-        }
-        mutationTarget.attachNative(native);
+    if (isCSSMutation(mutation)) {
+      const [nativeRule, syntheticRule] = this.getCSSDictItem(mutation.target);
+      if (isCSSGroupingStyleMutation(mutation)) {
+        new CSSGroupingRuleEditor(<CSSGroupingRule>nativeRule, (parent, child) => {
+          return child.cssText;
+        }, (child, index) => {
+          this._cssRuleDictionary[child.uid] = [(<CSSGroupingRule>nativeRule).cssRules.item(index), child];
+        }, (child, index) => {
+          this._cssRuleDictionary[child.uid] = undefined;
+        }).applyMutations([mutation]);
+      } else if (isCSSStyleRuleMutation(mutation)) {
+        new CSSStyleRuleEditor(<CSSStyleRule>nativeRule).applyMutations([mutation]);
       }
-    }
-
-    // CSS
-    if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
-      const { target, name, newValue, oldName } = <PropertyMutation<SyntheticCSSStyleRule>>mutation;
-      const [nativeRule] = this.getCSSDictItem<CSSStyleRule>(target);
-      if (nativeRule) {
-        if (newValue == null) {
-          nativeRule.style.removeProperty(name);
-        } else {
-          nativeRule.style[name] = newValue;
-        }
-        if (oldName) {
-          nativeRule.style[name] = undefined;
-        }
-      }
-    }
-
-    if (mutation.type === CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT || mutation.type === CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT) {
-      const { target, child } = <RemoveChildMutation<SyntheticCSSStyleSheet, SyntheticCSSStyleRule>>mutation;
-      this.removeNativeRule(child, target);
-    }
-
-    if (mutation.type === CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT || mutation.type === CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT) {
-      const { target, child, index } = <InsertChildMutation<SyntheticCSSStyleSheet, SyntheticCSSStyleRule>>mutation;
-      this.insertNativeRule(child, index, target);
-    }
-
-    if (mutation.type === SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT || mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
-      const { target, child } = <RemoveChildMutation<SyntheticDocument, SyntheticCSSStyleSheet>>mutation;
-      const actual = this.getSyntheticStyleSheet(child);
-
-      if (actual)
-      for (const syntheticRule of actual.rules) {
-        this.removeNativeRule(syntheticRule);
-      }
-    }
-
-    if (mutation.type === SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT || mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
-      const { target, child, index } = <InsertChildMutation<SyntheticDocument, SyntheticCSSStyleSheet>>mutation;
-
-      // check UID - may have been bubbled up
-      if (target.uid === this.document.uid) {
-        let cindex = this.getNativeRuleIndex(index);
-        for (const syntheticRule of child.rules) {
-          this.insertNativeRule(syntheticRule, cindex++);
-        }
-      }
-    }
-  }
-
-  private removeNativeRule(child: SyntheticCSSObject, parent?: SyntheticCSSStyleSheet|SyntheticCSSAtRule) {
-    const [nativeRule, syntheticRule] = this.getCSSDictItem(child);
-
-    if (!nativeRule) return;
-
-    if (parent instanceof SyntheticCSSAtRule) {
-      const [groupingRule, syntheticAtRule] = this.getCSSDictItem<CSSGroupingRule>(parent);
-      if (!groupingRule) return;
-      groupingRule.deleteRule(Array.prototype.indexOf.call(groupingRule.cssRules, nativeRule));
-    } else {
-      if (parent && this.getSyntheticStyleSheetIndex(parent) === -1) return;
-      const nativeStyleSheet = this.getNativeStyleSheet();
-      nativeStyleSheet.removeRule(Array.prototype.indexOf.call(nativeStyleSheet.rules, nativeRule));
-    }
-
-    this._cssRuleDictionary[child.uid] = undefined;
-  }
-
-  private insertNativeRule(child: syntheticCSSRuleType, index: number, parent?: SyntheticCSSStyleSheet|SyntheticCSSAtRule) {
-
-    if (parent && parent instanceof SyntheticCSSAtRule) {
-      const [groupingRule, syntheticAtRule] = this.getCSSDictItem<CSSGroupingRule>(parent);
-      if (!groupingRule) return;
-      groupingRule.insertRule(child.cssText, index);
-      this._cssRuleDictionary[child.uid] = [groupingRule.cssRules.item(index), child];
-    } else {
-      if (parent && this.getSyntheticStyleSheetIndex(parent) === -1) return;
-      const nativeStyleSheet = this.getNativeStyleSheet();
-      nativeStyleSheet.insertRule(child.cssText, index);
-      this._cssRuleDictionary[child.uid] = [nativeStyleSheet.cssRules.item(index), child];
     }
   }
 
@@ -227,7 +151,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return index;
   }
 
-  protected getElementDictItem<T extends Node>(synthetic: SyntheticDOMNode): [T, SyntheticDOMNode] {
+  protected getElementDictItem<T extends Node, U extends SyntheticDOMNode>(synthetic: SyntheticDOMNode): [T, U] {
     return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined] as any;
   }
 
@@ -333,7 +257,10 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
 
     case DOMNodeType.ELEMENT:
       const syntheticElement = <SyntheticDOMElement>syntheticNode;
-      if (/^(style|link)$/.test(syntheticElement.nodeName)) return null;
+
+      // add a placeholder for these blacklisted elements so that diffing & patching work properly
+      
+      if (/^(style|link)$/.test(syntheticElement.nodeName)) return nodeFactory.createTextNode("");
       const element = renderHTMLElement(nodeFactory, syntheticElement.tagName, syntheticElement, dict);
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
         const syntheticAttribute = syntheticElement.attributes[i];

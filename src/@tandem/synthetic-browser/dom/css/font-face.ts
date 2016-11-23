@@ -55,7 +55,7 @@ export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
     return this.cssText === target.cssText ? 0 : -1;
   }
 
-  applyMutation(action: Mutation<any>) {
+  applyMutation(mutation: Mutation<any>) {
     console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 

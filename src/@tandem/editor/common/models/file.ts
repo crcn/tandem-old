@@ -29,8 +29,8 @@ export class BaseFSModel extends TreeNode<BaseFSModel> {
     return path.basename(this.path);
   }
 
-  onChildAdded(child: BaseFSModel) {
-    super.onChildAdded(child);
+  onChildAdded(child: BaseFSModel, index: number) {
+    super.onChildAdded(child, index);
     if (this._injector) this._injector.inject(child);
     child.observe(new BubbleDispatcher(this));
   }

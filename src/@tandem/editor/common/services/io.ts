@@ -6,7 +6,6 @@ import {
   Logger,
   loggable,
   InitializeRequest,
-  PropertyChangeEvent,
 } from "@tandem/common";
 import { IEditorCommonConfig } from "@tandem/editor/common/config";
 import { CoreApplicationService } from "@tandem/core";

@@ -26,20 +26,21 @@ import {
   Action,
   bindable,
   Injector,
-  BubbleDispatcher,
+  Mutation,
   diffArray,
   serialize,
+  ArrayMutation,
   ISerializer,
   deserialize,
   ITreeWalker,
   serializable,
-  Mutation,
+  MutationEvent,
   RemoveMutation,
+  BubbleDispatcher,
   MoveChildMutation,
-  RemoveChildMutation,
-  InsertChildMutation,
   ISerializedContent,
-  ArrayMetadataChangeEvent,
+  InsertChildMutation,
+  RemoveChildMutation,
   ObservableCollection,
 } from "@tandem/common";
 
@@ -89,7 +90,7 @@ export namespace SyntheticDocumentMutationTypes {
   },
   deserialize({ mutations }, injector, ctor: { new(): SyntheticDocumentEdit }) {
     const edit = new ctor();
-    edit.mutations.push(...mutations.map(action => deserialize(action, injector)));
+    edit.mutations.push(...mutations.map(mutation => deserialize(mutation, injector)));
     return edit;
   }
 })
@@ -527,8 +528,8 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     super.visitWalker(walker);
   }
 
-  onChildAdded(child: SyntheticDOMNode) {
-    super.onChildAdded(child);
+  onChildAdded(child: SyntheticDOMNode, index: number) {
+    super.onChildAdded(child, index);
     child.$attach(this);
   }
 
@@ -550,9 +551,11 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return new SyntheticDocumentEditor(this);
   }
 
-  private onStyleSheetsEvent(event: Action) {
-    if (event.type === ArrayMetadataChangeEvent.ARRAY_CHANGE) {
-      (<ArrayMetadataChangeEvent<SyntheticCSSStyleSheet>>event).diff.accept({
+  private onStyleSheetsEvent({ mutation }: MutationEvent<any>) {
+    if (!mutation ) return;
+
+    if (mutation.type === ArrayMutation.ARRAY_DIFF) {
+      (<ArrayMutation<SyntheticCSSStyleSheet>>mutation).accept({
         visitUpdate: () => {},
         visitInsert: ({ value, index }) => {
           value.$ownerNode = this;

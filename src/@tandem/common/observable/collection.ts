@@ -1,10 +1,9 @@
 import { Observable } from "./index";
 import { IObservable } from "../observable";
-import { ArrayMetadataChangeEvent } from "./messages";
 import { Action, MetadataChangeEvent } from "@tandem/common/messages";
 import { BubbleDispatcher } from "@tandem/common/dispatchers";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
-import { ArrayDiff, ArrayDiffInsert, ArrayDiffRemove, ArrayDiffUpdate } from "@tandem/common/utils";
+import { ArrayMutation, ArrayInsertMutation, ArrayRemoveMutation, ArrayUpdateMutation } from "@tandem/common/utils";
 
 export class ObservableCollection<T> extends Array<T> implements IObservable {
   private _observable: Observable;
@@ -44,24 +43,24 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
 
   splice(start: number, deleteCount?: number, ...newItems: T[]) {
 
-    const deletes: ArrayDiffRemove[] = this.slice(start, start + deleteCount).map((item, index) => {
+    const deletes: ArrayRemoveMutation[] = this.slice(start, start + deleteCount).map((item, index) => {
 
       if (item && item["unobserve"]) {
         (<IObservable><any>item).unobserve(this._itemObserver);
       }
 
-      return new ArrayDiffRemove(item, start + index);
+      return new ArrayRemoveMutation(item, start + index);
     });
 
-    const inserts: ArrayDiffInsert<T>[] = newItems.map((item, index) => {
-      return new ArrayDiffInsert(start + index, item);
+    const inserts: ArrayInsertMutation<T>[] = newItems.map((item, index) => {
+      return new ArrayInsertMutation(start + index, item);
     });
 
     const ret = super.splice(start, deleteCount, ...newItems);
 
 
     this._watchItems(newItems);
-    this.notify(new ArrayMetadataChangeEvent(new ArrayDiff([...deletes, ...inserts])));
+    this.notify(new ArrayMutation([...deletes, ...inserts]).toEvent());
     return ret;
   }
 

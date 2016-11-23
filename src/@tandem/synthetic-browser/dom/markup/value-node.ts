@@ -2,8 +2,8 @@ import { bindable } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
 import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
+import { ISerializer, Mutation, SetValueMutation, PropertyMutation  } from "@tandem/common";
 import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor, GroupEditor } from "@tandem/sandbox";
-import { ISerializer, PropertyChangeEvent, Mutation, SetValueMutation, PropertyMutation  } from "@tandem/common";
 
 export interface ISerializedSyntheticDOMValueNode {
   nodeValue: string;
@@ -35,6 +35,12 @@ export class DOMValueNodeEditor<T extends SyntheticDOMValueNode|Text|Comment> ex
   }
 }
 
+export function isDOMValueNodeMutation(mutation: Mutation<SyntheticDOMValueNode>) {
+  return (mutation.target.nodeType === DOMNodeType.COMMENT || mutation.target.nodeType === DOMNodeType.TEXT) && (!!{
+    [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]: true
+  }[mutation.type]);
+}
+
 export class SyntheticDOMValueNodeSerializer implements ISerializer<SyntheticDOMValueNode, ISerializedSyntheticDOMValueNode> {
   serialize({ nodeValue }: SyntheticDOMValueNode) {
     return { nodeValue };
@@ -62,8 +68,7 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
   set nodeValue(value: any) {
     this._nodeValue = value;
 
-    this.notify(new PropertyMutation(SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT, this, "nodeValue", value));
-    this.notify(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE, "nodeValue", value));
+    this.notify(new PropertyMutation(SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT, this, "nodeValue", value).toEvent(true));
   }
 
   createEdit() {

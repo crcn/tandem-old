@@ -6,7 +6,7 @@ TODOS:
 - bubbleable actions
 */
 
-export class Action {
+export class CoreEvent {
 
   private _target: any;
   private _currentTarget: any;
@@ -52,4 +52,9 @@ export class Action {
   stopImmediatePropagation() {
     this._canPropagateImmediately = false;
   }
+}
+
+// DEPRECATED
+export class Action extends CoreEvent {
+
 }

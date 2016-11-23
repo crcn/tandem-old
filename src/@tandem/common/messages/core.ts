@@ -14,14 +14,6 @@ export class DisposeEvent extends Action {
   }
 }
 
-// TODO - deprecate this for PropertyMutation
-export class PropertyChangeEvent extends Action {
-  static readonly PROPERTY_CHANGE = "propertyChange";
-  constructor(readonly property: string, readonly newValue: any, readonly oldValue: any, bubbles: boolean = false) {
-    super(PropertyChangeEvent.PROPERTY_CHANGE, bubbles);
-  }
-}
-
 export class LoadRequest extends Action {
   static readonly LOAD = "load";
   constructor() {

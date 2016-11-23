@@ -1,13 +1,13 @@
-import { Action, Mutation } from "@tandem/common/messages";
-import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ITreeNode } from "./base";
 import { ITreeWalker, IWalkable } from "./walker";
 import { Observable, IObservable } from "@tandem/common/observable";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
+import { Action, Mutation, InsertChildMutation, RemoveChildMutation } from "@tandem/common/messages";
 
 export { ITreeNode };
 
 export namespace TreeNodeMutationTypes {
-  export const NODE_ADDED = "nodeAdded";
+  export const NODE_ADDED   = "nodeAdded";
   export const NODE_REMOVED = "nodeRemoved";
 }
 
@@ -56,7 +56,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     }
 
     this._children.splice(index, 1);
-    this.onChildRemoved(child);
+    this.onChildRemoved(child, index);
     return child;
   }
 
@@ -65,7 +65,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
       newChild._parent.removeChild(newChild);
     }
     this._children.splice(index, 0, newChild);
-    this.onChildAdded(newChild);
+    this.onChildAdded(newChild, index);
   }
 
   insertBefore(newChild: T, existingChild: T) {
@@ -117,24 +117,24 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return this.ancestors.length;
   }
 
-  protected onChildAdded(child: T) {
-    child._parent = this;
+  protected onChildAdded(child: T, index: number) {
+    child._parent = this;    
     child.observe(this._childObserver);
+    child.notify(new InsertChildMutation(TreeNodeMutationTypes.NODE_ADDED, this, child, index).toEvent());
     child.onAdded();
   }
 
-  protected onChildRemoved(child: T) {
+  protected onChildRemoved(child: T, index: number) {
     child.onRemoved();
+    child.notify(new RemoveChildMutation(TreeNodeMutationTypes.NODE_REMOVED, this, child, index).toEvent());
     child.unobserve(this._childObserver);
     child._parent = undefined;
   }
 
   protected onAdded() {
-    this.notify(new Mutation(TreeNodeMutationTypes.NODE_ADDED));
   }
 
   protected onRemoved() {
-    this.notify(new Mutation(TreeNodeMutationTypes.NODE_REMOVED));
   }
 
   public clone(deep?: boolean): T {

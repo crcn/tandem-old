@@ -30,8 +30,8 @@ export class SyntheticHTMLStyle extends SyntheticDOMElement {
     edit.applyMutationsTo(this.ownerDocument);
   }
 
-  onChildAdded(child) {
-    super.onChildAdded(child);
+  onChildAdded(child, index) {
+    super.onChildAdded(child, index);
     if (this._styleSheet) {
       this._styleSheet.cssText = this.textContent;
     }

@@ -21,7 +21,7 @@ import {
   IObservable,
   IDisposable,
   watchProperty,
-  PropertyChangeEvent,
+  PropertyMutation,
 } from "@tandem/common";
 
 export type sandboxDependencyEvaluatorType = { new(): ISandboxDependencyEvaluator };
@@ -172,11 +172,11 @@ export class Sandbox extends Observable {
 
       this._global  = this.createGlobal() || {};
       this._context = vm.createContext(this._global);
-      this.notify(new PropertyChangeEvent("global", this._global, global));
+      this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "global", this._global, global).toEvent());
       this._modules = {};
       this._exports = this.evaluate(this._entry);
       logTimer.stop(`Evaluated ${this._entry.filePath}`);
-      this.notify(new PropertyChangeEvent("exports", this._exports, exports));
+      this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "exports", this._exports, exports).toEvent());
     } catch(e) {
       this._resetting = false;
       this.status = new Status(Status.ERROR, e);

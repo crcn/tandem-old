@@ -17,7 +17,7 @@ import {
   IInjectable,
   watchProperty,
   PrivateBusProvider,
-  PropertyChangeEvent,
+  PropertyMutation,
 } from "@tandem/common";
 
 import { ISyntheticObject } from "@tandem/sandbox";
@@ -139,7 +139,7 @@ export class Workspace extends Observable {
       Math.min(MAX_ZOOM, value)
     );
 
-    this.notify(new PropertyChangeEvent("zoom", this.zoom, oldZoom, true));
+    this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "zoom", this.zoom, oldZoom).toEvent(true));
   }
 
   private onBrowserChange(newBrowser: ISyntheticBrowser) {

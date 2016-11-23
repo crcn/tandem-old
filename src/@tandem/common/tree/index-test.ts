@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Action, TreeNode, TreeNodeMutationTypes } from "@tandem/common";
+import { MutationEvent, CoreEvent, TreeNode, TreeNodeMutationTypes } from "@tandem/common";
 
 describe(__filename + "#", () => {
   it("can create a new node", () => {
@@ -130,15 +130,16 @@ describe(__filename + "#", () => {
     let _ignoreAction = false;
 
     p1.observe({
-      dispatch(action: Action) {
+      dispatch(event: CoreEvent) {
         if (_ignoreAction) return;
         _ignoreAction = true;
-        if (action.type === TreeNodeMutationTypes.NODE_REMOVED) {
-          action.target.parent.removeChild(action.target);
+        if (event.type === MutationEvent.MUTATION && ((<MutationEvent<any>>event).mutation.type === TreeNodeMutationTypes.NODE_REMOVED)) {
+          event.target.parent.removeChild(event.target);
         }
         _ignoreAction = false;
       }
     });
+
 
     p1.removeChild(c1);
 

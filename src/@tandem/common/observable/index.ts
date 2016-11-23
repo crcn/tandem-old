@@ -69,4 +69,3 @@ export class Observable implements IObservable {
 
 export * from "./watch-property";
 export * from "./collection";
-export * from "./messages";

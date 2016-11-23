@@ -17,7 +17,7 @@ import {
   findTreeNode,
   PropertyWatcher,
   DisposableCollection,
-  PropertyChangeEvent,
+  PropertyMutation,
   propertyChangeCallbackType,
 } from "@tandem/common";
 
@@ -208,7 +208,7 @@ export abstract class BaseElementQuerier<T extends SyntheticDOMElement> extends 
 
   protected setQueriedElements(newQueriedElements: T[]) {
     const oldQueriedElements = this._queriedElements;
-    this.notify(new PropertyChangeEvent("queriedElements", this._queriedElements = newQueriedElements, oldQueriedElements));
+    this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "queriedElements", this._queriedElements = newQueriedElements, oldQueriedElements).toEvent());
   }
 
   dispose() {

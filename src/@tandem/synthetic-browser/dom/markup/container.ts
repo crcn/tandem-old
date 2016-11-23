@@ -3,16 +3,17 @@ import { SyntheticDOMNode, SyntheticDOMNodeEdit, SyntheticDOMNodeEditor } from "
 import { SyntheticDOMText } from "./text-node";
 import { isDOMMutationEvent, DOMNodeEvent } from "@tandem/synthetic-browser/messages";
 import {
+  Mutation,
+  TreeNode,
   diffArray,
   ITreeWalker,
   findTreeNode,
-  Mutation,
   RemoveMutation,
-  TreeNode,
+  PropertyMutation,
   MoveChildMutation,
   RemoveChildMutation,
-  PropertyMutation,
   InsertChildMutation,
+  TreeNodeMutationTypes,
 } from "@tandem/common";
 import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import { SyntheticDOMElement } from "./element";
@@ -26,9 +27,17 @@ import {
 } from "@tandem/sandbox";
 
 export namespace SyntheticDOMContainerMutationTypes {
-  export const INSERT_CHILD_NODE_EDIT = "insertChildNodeEdit";
-  export const REMOVE_CHILD_NODE_EDIT = "removeChildNodeEdit";
+  export const INSERT_CHILD_NODE_EDIT = TreeNodeMutationTypes.NODE_ADDED;
+  export const REMOVE_CHILD_NODE_EDIT = TreeNodeMutationTypes.NODE_REMOVED;
   export const MOVE_CHILD_NODE_EDIT   = "moveChildNodeEdit";
+}
+
+export function isDOMContainerMutation(mutation: Mutation<any>) {
+  return !!{
+    [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT]: true,
+    [SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT]: true,
+    [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT]: true
+  }[mutation.type];
 }
 
 export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends SyntheticDOMNodeEdit<T> {
@@ -86,14 +95,15 @@ export class DOMContainerEditor<T extends SyntheticDOMContainer|Element|Document
 
   applySingleMutation(mutation: Mutation<any>) {
     if (mutation.type === SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT) {
-      const removeMutation = <InsertChildMutation<any, SyntheticDOMNode>>mutation;
-      (<Element>this.target).removeChild(this.target.childNodes[removeMutation.index] as any);
+      const { child, index } = <InsertChildMutation<any, SyntheticDOMNode>>mutation;
+      (<Element>this.target).removeChild(this.target.childNodes[index] as any);
     } if (mutation.type === SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT) {
       const moveMutation = <MoveChildMutation<any, SyntheticDOMNode>>mutation;
       this._insertChildAt(this.target.childNodes[moveMutation.oldIndex] as any, moveMutation.index);
     } else if (mutation.type === SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT) {
       const insertMutation = <InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>>mutation;
-      this._insertChildAt(this.createNode(insertMutation.child), insertMutation.index);
+      const newChild = this.createNode(insertMutation.child);
+      this._insertChildAt(newChild, insertMutation.index);
     }
   }
 

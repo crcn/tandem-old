@@ -9,7 +9,7 @@ import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
-import { SyntheticDOMContainer, SyntheticDOMContainerEdit, DOMContainerEditor, SyntheticDOMContainerEditor } from "./container";
+import { SyntheticDOMContainer, SyntheticDOMContainerEdit, DOMContainerEditor, isDOMContainerMutation, SyntheticDOMContainerMutationTypes, SyntheticDOMContainerEditor } from "./container";
 import {
   Action,
   BubbleDispatcher,
@@ -22,14 +22,14 @@ import {
   BoundingRect,
   serializable,
   ISerializedContent,
-  PropertyChangeEvent,
   Mutation,
+  ArrayMutation,
+  MutationEvent,
   SetValueMutation,
   MoveChildMutation,
   InsertChildMutation,
   PropertyMutation,
   ObservableCollection,
-  ArrayMetadataChangeEvent,
 } from "@tandem/common";
 
 import { Dependency } from "@tandem/sandbox";
@@ -47,6 +47,13 @@ export interface ISerializedSyntheticDOMAttribute {
 export namespace SyntheticDOMElementMutationTypes {
   export const SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
   export const ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
+}
+
+export function isDOMElementMutation(mutation: Mutation<SyntheticDOMElement>) {
+  return (mutation.target.nodeType === DOMNodeType.ELEMENT) && (!!{
+    [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]: true,
+    [SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT]: true
+  }[mutation.type] || isDOMContainerMutation(mutation));
 }
 
 class SyntheticDOMAttributeSerializer implements ISerializer<SyntheticDOMAttribute, ISerializedSyntheticDOMAttribute> {
@@ -163,7 +170,7 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
 export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<SyntheticDOMElement> {
 
   setAttribute(name: string, value: string, oldName?: string, index?: number) {
-    return this.addChange(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, oldName, index));
+    return this.addChange(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this.target, name, value, undefined, oldName, index));
   }
 
   removeAttribute(name: string) {
@@ -282,7 +289,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     this._readonlyAttributeNames = [];
     this._shadowRootObserver = new BubbleDispatcher(this);
     this.attributes = new SyntheticDOMAttributes();
-    this.attributes.observe(new CallbackDispatcher(this.onAttributesAction.bind(this)));
+    this.attributes.observe(new CallbackDispatcher(this.onAttributesEvent.bind(this)));
 
     // todo - proxy this
     this.dataset = {};
@@ -407,21 +414,23 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     this.createdCallback();
   }
 
-  protected onAttributesAction(action: Action) {
-    if (action.type === ArrayMetadataChangeEvent.ARRAY_CHANGE) {
-      (<ArrayMetadataChangeEvent<SyntheticDOMAttribute>>action).diff.accept({
+  protected onAttributesEvent({ mutation }: MutationEvent<any>) {
+    if (!mutation) return;
+    
+    if (mutation.type === ArrayMutation.ARRAY_DIFF) {
+      (<ArrayMutation<SyntheticDOMAttribute>><any>mutation).accept({
         visitUpdate: () => {},
         visitInsert: ({ value, index }) => {
-        this.attributeChangedCallback(value.name, undefined, value.value);
+          this.attributeChangedCallback(value.name, undefined, value.value);
         },
         visitRemove: ({ value, index }) => {
           this.attributeChangedCallback(value.name, value.value, undefined);;
         }
       });
-    } else if (action.type === PropertyChangeEvent.PROPERTY_CHANGE && action.target instanceof SyntheticDOMAttribute) {
-      const changeAction = <PropertyChangeEvent>action;
-      const attribute = <SyntheticDOMAttribute>action.target;
-      this.attributeChangedCallback(attribute.name, changeAction.oldValue, changeAction.newValue);
+    } else if (mutation.type === PropertyMutation.PROPERTY_CHANGE && mutation.target instanceof SyntheticDOMAttribute) {
+      const changeMutation = <PropertyMutation<any>>mutation;
+      const attribute = <SyntheticDOMAttribute>mutation.target;
+      this.attributeChangedCallback(attribute.name, changeMutation.oldValue, changeMutation.newValue);
     }
   }
 
@@ -433,7 +442,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-    this.notify(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
+    this.notify(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue).toEvent(true));
   }
 
   protected createdCallback() {

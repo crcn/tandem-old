@@ -5,7 +5,6 @@ import {
   inject,
   Action,
   IInjectable,
-  PropertyChangeEvent,
 } from "@tandem/common";
 
 class History {

@@ -41,7 +41,7 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
-export class GenericCSSStyleSheetEditor<T extends SyntheticCSSStyleSheet> extends SyntheticCSSGroupingRuleEditor<T> {
+export class CSSStyleSheetEditor<T extends SyntheticCSSStyleSheet> extends SyntheticCSSGroupingRuleEditor<T> {
 }
 
 let _smcache = {};

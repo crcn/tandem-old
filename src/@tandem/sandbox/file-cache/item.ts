@@ -8,8 +8,9 @@ import {
   Metadata,
   bindable,
   ENV_IS_NODE,
+  MutationEvent,
   BaseActiveRecord,
-  PropertyChangeEvent,
+  PropertyMutation,
 } from "@tandem/common";
 
 export interface IFileCacheItemData {
@@ -112,8 +113,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     this.sourceFileModifiedAt = sourceFileModifiedAt;
   }
 
-  private onAction(action: Action) {
-    if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
+  private onAction({ mutation }: MutationEvent<any>) {
+    if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
       this.clearCache();
     }
   }

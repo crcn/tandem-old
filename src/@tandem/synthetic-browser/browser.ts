@@ -4,7 +4,6 @@ import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer, NoopRenderer } from "./renderers";
 import { IDispatcher } from "@tandem/mesh";
 import {
-  Action,
   inject,
   Logger,
   Status,
@@ -21,9 +20,9 @@ import {
   HTML_MIME_TYPE,
   MimeTypeProvider,
   BubbleDispatcher,
+  PropertyMutation,
   InjectorProvider,
   PrivateBusProvider,
-  PropertyChangeEvent,
   MetadataChangeEvent,
   waitForPropertyChange,
 } from "@tandem/common";
@@ -108,7 +107,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     this._window = value;
     this._renderer.document = value.document;
     this._window.document.observe(this._documentObserver);
-    this.notify(new PropertyChangeEvent("window", value, oldWindow));
+    this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "window", value, oldWindow).toEvent());
   }
 
   get renderer(): ISyntheticDocumentRenderer {

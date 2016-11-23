@@ -189,8 +189,8 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.childNodes.length !== 0;
   }
 
-  onChildAdded(child: SyntheticDOMNode) {
-    super.onChildAdded(child);
+  onChildAdded(child: SyntheticDOMNode, index: number) {
+    super.onChildAdded(child, index);
     if (this.ownerDocument) {
       child.$setOwnerDocument(this.ownerDocument);
       if (this._attached) {
@@ -201,8 +201,8 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     }
   }
 
-  onChildRemoved(child: SyntheticDOMNode) {
-    super.onChildRemoved(child);
+  onChildRemoved(child: SyntheticDOMNode, index: number) {
+    super.onChildRemoved(child, index);
     if (this._attached) {
       child.$detach();
     }

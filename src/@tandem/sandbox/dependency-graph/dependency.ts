@@ -39,7 +39,8 @@ import {
   MimeTypeProvider,
   BaseActiveRecord,
   InjectorProvider,
-  PropertyChangeEvent,
+  PropertyMutation,
+  MutationEvent,
   PLAIN_TEXT_MIME_TYPE,
   DisposableCollection,
 } from "@tandem/common";
@@ -458,9 +459,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     return this.load();
   }
 
-  private onFileCacheAction(action: Action) {
+  private onFileCacheAction({ mutation }: MutationEvent<any>) {
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
-    if (action.type === PropertyChangeEvent.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
+    if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
       this.logger.info("Source file changed");
       this.reload();
     }

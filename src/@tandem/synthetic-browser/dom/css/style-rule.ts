@@ -4,10 +4,9 @@ import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor } from "@tandem
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
 import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration, isValidCSSDeclarationProperty } from "./declaration";
 import {
-  Action,
   Mutation,
   serialize,
-  ArrayDiff,
+  ArrayMutation,
   diffArray,
   serializable,
   deserialize,
@@ -40,6 +39,14 @@ export namespace SyntheticCSSStyleRuleMutationTypes {
   export const SET_RULE_SELECTOR = "setRuleSelector";
 }
 
+
+export function isCSSStyleRuleMutation(mutation: Mutation<SyntheticCSSStyleRule>){
+  return !!{
+    [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]: true,
+    [SyntheticCSSStyleRuleMutationTypes.SET_RULE_SELECTOR]: true
+  }[mutation.type];
+}
+
 // TODO - move this to synthetic-browser
 export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleRule> {
 
@@ -48,7 +55,7 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
   }
 
   setDeclaration(name: string, value: string, oldName?: string, index?: number) {
-    return this.addChange(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.target, name, value, oldName, index));
+    return this.addChange(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.target, name, value, undefined, oldName, index));
   }
 
   addDiff(newRule: SyntheticCSSStyleRule) {
@@ -85,7 +92,7 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
   }
 }
 
-export class GenericCSSStyleRuleEditor extends BaseEditor<CSSStyleRule|SyntheticCSSStyleRule> {
+export class CSSStyleRuleEditor extends BaseEditor<CSSStyleRule|SyntheticCSSStyleRule> {
   applySingleMutation(mutation: Mutation<any>) {
     if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
       const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
@@ -104,7 +111,7 @@ export class SyntheticCSSStyleRuleEditor extends BaseEditor<SyntheticCSSStyleRul
   applyMutations(mutations: Mutation<SyntheticCSSStyleRule>[]) {
     super.applyMutations(mutations);
     new SyntheticCSSObjectEditor(this.target).applyMutations(mutations);
-    new GenericCSSStyleRuleEditor(this.target).applyMutations(mutations);
+    new CSSStyleRuleEditor(this.target).applyMutations(mutations);
   }
 }
 

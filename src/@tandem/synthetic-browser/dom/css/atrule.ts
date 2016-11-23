@@ -29,6 +29,11 @@ export namespace SyntheticCSSAtRuleMutationTypes {
   export const SET_NAME_EDIT = "setNameEdit";
 }
 
+export function isCSSAtRuleMutaton(mutation: Mutation<SyntheticCSSAtRule>) {
+  return !!{
+    [SyntheticCSSAtRuleMutationTypes.SET_NAME_EDIT]: true
+  }[mutation.type];
+}
 
 export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends SyntheticCSSGroupingRuleEdit<T> { }
 export class SyntheticCSSAtRuleEditor<T extends SyntheticCSSAtRule>  extends SyntheticCSSGroupingRuleEditor<T> { }

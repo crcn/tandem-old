@@ -1,5 +1,5 @@
 import { values } from "lodash";
-import { Action } from "@tandem/common";
+import { CoreEvent, MutationEvent } from "@tandem/common";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticRendererEvent, isDOMMutationEvent, DOMNodeEvent } from "../messages";
 
@@ -180,13 +180,13 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this.notify(new SyntheticRendererEvent(SyntheticRendererEvent.UPDATE_RECTANGLES));
   }
 
-  protected onDocumentEvent(event: Action) {
-    if (this.element && (isDOMMutationEvent(event) || event.type === DOMNodeEvent.DOM_NODE_LOADED)) {
-      this.onDocumentMutationEvent(event);
+  protected onDocumentEvent(event: CoreEvent) {
+    if (this.element && (event.type === MutationEvent.MUTATION || event.type === DOMNodeEvent.DOM_NODE_LOADED)) {
+      this.onDocumentMutationEvent(<MutationEvent<any>>event);
     }
   }
 
-  protected onDocumentMutationEvent(event: Action) {
+  protected onDocumentMutationEvent(event: MutationEvent<any>) {
     this.requestRender();
   }
 
@@ -235,7 +235,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
 export class BaseDecoratorRenderer extends Observable implements ISyntheticDocumentRenderer {
   constructor(protected _renderer: ISyntheticDocumentRenderer) {
     super();
-    _renderer.observe(new CallbackDispatcher(this.onTargetRendererAction.bind(this)));
+    _renderer.observe(new CallbackDispatcher(this.onTargetRendererEvent.bind(this)));
   }
   getComputedStyle(uid) {
     return this._renderer.getComputedStyle(uid);
@@ -269,7 +269,7 @@ export class BaseDecoratorRenderer extends Observable implements ISyntheticDocum
     return this._renderer.requestRender();
   }
 
-  protected onTargetRendererAction(action: Action) {
+  protected onTargetRendererEvent(action: CoreEvent) {
     if (action.type === SyntheticRendererEvent.UPDATE_RECTANGLES) {
       this.onTargetRendererSetRectangles();
     }

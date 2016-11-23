@@ -5,7 +5,6 @@ import Marker from "./marker";
 import TextRuler from "./text-ruler";
 import { bindable } from "@tandem/common/decorators";
 import { SourceMetadataChangeEvent } from "../messages";
-import { PropertyChangeEvent } from "@tandem/common/messages";
 import { Observable, watchProperty } from "@tandem/common/observable";
 import { StringTokenizer, TokenTypes } from "@tandem/common/tokenizers";
 import { BrokerBus, BubbleDispatcher } from "@tandem/common/dispatchers";

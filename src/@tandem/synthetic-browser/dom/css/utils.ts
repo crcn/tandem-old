@@ -1,13 +1,14 @@
 import { DOMNodeType } from "@tandem/synthetic-browser/dom/markup/node-types";
 import { SyntheticCSSObject } from "./base";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser/dom";
-import { diffArray, ArrayDiff } from "@tandem/common";
+import { diffArray, ArrayMutation } from "@tandem/common";
 import { SyntheticCSSFontFace } from "./font-face";
-import { SyntheticCSSAtRule } from "./atrule";
-import { isInheritedCSSStyleProperty } from "./declaration";
 import { SyntheticCSSMediaRule } from "./media-rule";
-import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
+import { isCSSGroupingStyleMutation } from "./grouping";
+import { isInheritedCSSStyleProperty } from "./declaration";
+import { SyntheticCSSAtRule, isCSSAtRuleMutaton } from "./atrule";
+import { SyntheticCSSStyleRule, isCSSStyleRuleMutation } from "./style-rule";
 
 export type syntheticCSSRuleType = SyntheticCSSStyleRule|SyntheticCSSAtRule;
 
@@ -75,4 +76,8 @@ export function getMatchingStyleRules(target: SyntheticDOMElement) {
   });
 
   return matchedRules;
+}
+
+export function isCSSMutation(mutation) {
+  return isCSSGroupingStyleMutation(mutation) || isCSSStyleRuleMutation(mutation) || isCSSAtRuleMutaton(mutation);
 }

@@ -13,7 +13,6 @@ describe(__filename + "#", () => {
     return document;
   }
 
-
   const createRenderer = (sourceDocument: SyntheticDocument) => {
 
     const factoryDocument = createDocument();
@@ -43,14 +42,14 @@ describe(__filename + "#", () => {
     // fuzzy
     // [[``, generateRandomSyntheticHTMLElementSource(10, 10, 2)]],
 
-    // HTML mutations
+    // // HTML mutations
     [[``, `<div>a</div>`], [``, `<div>b</div>`]],
     [[``, `<div a="b"></div>`], [``, `<div a="c"></div>`]],
     [[``, `<div a="b"></div>`], [``, `<div c="d"></div>`]],
     [[``, `<div>a</div><span>b</span>`], [``, `<span>b</span><div>a</div>`]],
 
   ].forEach(([[inputCSS, inputHTML], ...mutations]) => {
-    xit(`Can render ${inputCSS} ${inputHTML} -> ${mutations.join(" ")}`, async () => {
+    it(`Can render ${inputCSS} ${inputHTML} -> ${mutations.join(" ")}`, async () => {
 
       const createdStyledDocument = (css, html) => createDocument(`<style>${css}</style>${html}`);
       const inputDocument = createdStyledDocument(inputCSS, inputHTML);

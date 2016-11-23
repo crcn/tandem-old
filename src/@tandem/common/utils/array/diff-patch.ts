@@ -1,65 +1,70 @@
-export interface IArrayChangeAddition {
-  index: number;
-  value: any;
+import { Mutation } from "../../messages/mutate";
+
+export namespace ArrayItemMutationTypes {
+  export const INSERT = "insert";
+  export const UPDATE = "update";
+  export const DELETE = "delete";
 }
 
-export enum DiffKind {
-  REMOVE = 0,
-  INSERT = REMOVE + 1,
-  UPDATE = UPDATE + 1
+export abstract class ArraItemMutation<T> extends Mutation<T> {
+  constructor(type: string) {
+    super(type);
+  }
+  abstract accept(visitor: IArrayMutationVisitor<T>);
 }
 
-export interface IArrayDiffChange {
-  readonly kind: DiffKind;
-  accept(visitor: IArrayDiffVisitor<any>);
-}
-
-export class ArrayDiffInsert<T>  implements IArrayDiffChange {
-  readonly kind = DiffKind.INSERT;
-  constructor(readonly index: number, readonly value: T) { }
-  accept(visitor: IArrayDiffVisitor<T>) {
+export class ArrayInsertMutation<T>  extends ArraItemMutation<T> {
+  constructor(readonly index: number, readonly value: T) {
+    super(ArrayItemMutationTypes.INSERT);
+  }
+  accept(visitor: IArrayMutationVisitor<T>) {
     visitor.visitInsert(this);
   }
 }
 
-export class ArrayDiffRemove {
-  readonly kind = DiffKind.REMOVE;
-  constructor(readonly value: any, readonly index: number) { }
-  accept(visitor: IArrayDiffVisitor<any>) {
+export class ArrayRemoveMutation extends ArraItemMutation<any> {
+  constructor(readonly value: any, readonly index: number) {
+    super(ArrayItemMutationTypes.DELETE);
+  }
+  accept(visitor: IArrayMutationVisitor<any>) {
     visitor.visitRemove(this);
   }
 }
 
-export class ArrayDiffUpdate<T> {
-  readonly kind = DiffKind.UPDATE;
-  constructor(readonly originalOldIndex: number, readonly patchedOldIndex: number, readonly newValue: T, readonly index: number) { }
-  accept(visitor: IArrayDiffVisitor<T>) {
+export class ArrayUpdateMutation<T> extends ArraItemMutation<T> {
+  constructor(readonly originalOldIndex: number, readonly patchedOldIndex: number, readonly newValue: T, readonly index: number) {
+    super(ArrayItemMutationTypes.UPDATE);
+  }
+  accept(visitor: IArrayMutationVisitor<T>) {
     visitor.visitUpdate(this);
   }
 }
 
-export interface IArrayDiffVisitor<T> {
-  visitRemove(del: ArrayDiffRemove);
-  visitInsert(insert: ArrayDiffInsert<T>);
-  visitUpdate(update: ArrayDiffUpdate<T>);
+export interface IArrayMutationVisitor<T> {
+  visitRemove(del: ArrayRemoveMutation);
+  visitInsert(insert: ArrayInsertMutation<T>);
+  visitUpdate(update: ArrayUpdateMutation<T>);
 }
 
-export class ArrayDiff<T> {
+export class ArrayMutation<T> extends Mutation<T> {
+
+  static readonly ARRAY_DIFF = "arrayDiff";
 
   readonly count: number;
 
   constructor(
-    readonly changes: IArrayDiffChange[],
+    readonly mutations: ArraItemMutation<T>[],
   ) {
-    this.count = changes.length;
+    super(ArrayMutation.ARRAY_DIFF);
+    this.count = mutations.length;
   }
 
-  accept(visitor: IArrayDiffVisitor<T>) {
-    this.changes.forEach(change => change.accept(visitor));
+  accept(visitor: IArrayMutationVisitor<T>) {
+    this.mutations.forEach(change => change.accept(visitor));
   }
 }
 
-export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs: (a: T, b: T) => number): ArrayDiff<T> {
+export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs: (a: T, b: T) => number): ArrayMutation<T> {
 
   // model used to figure out the proper mutation indices
   const model    = [].concat(oldArray);
@@ -70,8 +75,8 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
   // remaining new values. Remainders get inserted.
   const newPool  = [].concat(newArray);
 
-  const changes: IArrayDiffChange[] = [];
-  let   matches: Array<[T, T]>        = [];
+  const mutations: ArraItemMutation<any>[] = [];
+  let   matches: Array<[T, T]>           = [];
 
   for (let i = 0, n = oldPool.length; i < n; i++) {
 
@@ -113,7 +118,7 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
   for (let i = oldPool.length; i--;) {
     const oldValue  = oldPool[i];
     const index     = oldArray.indexOf(oldValue);
-    changes.push(new ArrayDiffRemove(oldValue, index));
+    mutations.push(new ArrayRemoveMutation(oldValue, index));
     model.splice(index, 1);
   }
 
@@ -138,12 +143,12 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
 
     // insert
     if (oldValue == null) {
-      changes.push(new ArrayDiffInsert(newIndex, newValue));
+      mutations.push(new ArrayInsertMutation(newIndex, newValue));
       model.splice(newIndex, 0, newValue);
     // updated
     } else {
       const oldIndex = model.indexOf(oldValue);
-      changes.push(new ArrayDiffUpdate(oldArray.indexOf(oldValue), oldIndex, newValue, newIndex));
+      mutations.push(new ArrayUpdateMutation(oldArray.indexOf(oldValue), oldIndex, newValue, newIndex));
       if (oldIndex !== newIndex) {
         model.splice(oldIndex, 1);
         model.splice(newIndex, 0, oldValue);
@@ -151,10 +156,10 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
     }
   }
 
-  return new ArrayDiff(changes);
+  return new ArrayMutation<any>(mutations);
 }
 
-export function patchArray<T>(target: Array<T>, diff: ArrayDiff<T>, mapUpdate: (a: T, b: T) => T, mapInsert?: (b: T) => T) {
+export function patchArray<T>(target: Array<T>, diff: ArrayMutation<T>, mapUpdate: (a: T, b: T) => T, mapInsert?: (b: T) => T) {
   diff.accept({
     visitInsert({ index, value }) {
       target.splice(index, 0, mapInsert(value));

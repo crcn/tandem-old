@@ -50,9 +50,17 @@ export class SyntheticCSSGroupingRuleEdit<T extends SyntheticCSSGroupingRule<syn
   }
 }
 
-export class GenericCSSGroupingRuleEditor<T extends CSSStyleSheet|SyntheticCSSGroupingRule<any>> extends BaseEditor<T> {
+export function isCSSGroupingStyleMutation(mutation: Mutation<SyntheticCSSGroupingRule<any>>){
+  return !!{
+    [CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]: true,
+    [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT]: true,
+    [CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT]: true
+  }[mutation.type];
+}
 
-  constructor(readonly target: T, readonly createInsertableCSSRule: (parent: T, child: any|CSSRule) => any = (parent, child) => child.cssText) {
+export class CSSGroupingRuleEditor<T extends CSSGroupingRule|SyntheticCSSGroupingRule<any>> extends BaseEditor<T> {
+
+  constructor(readonly target: T, readonly createInsertableCSSRule: (parent: T, child: any|CSSRule) => any = (parent, child) => child.cssText, readonly onInsertedChild?: (child: any, index?: number) => any, readonly onDeletedChild?: (child: any, index?: number) => any) {
     super(target);
   }  
 
@@ -61,8 +69,11 @@ export class GenericCSSGroupingRuleEditor<T extends CSSStyleSheet|SyntheticCSSGr
     if (mutation.type === CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT) {
       const { child, index } = (<InsertChildMutation<any, any>>mutation);
       this.target.insertRule(this.createInsertableCSSRule(this.target, child), index);
+      if (this.onInsertedChild) this.onInsertedChild(child, index);
     } else if (mutation.type === CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT) {
-      this.target.deleteRule((<RemoveChildMutation<any, any>>mutation).index)
+      const { child, index } = (<RemoveChildMutation<any, any>>mutation);
+      this.target.deleteRule(index);
+      if (this.onDeletedChild) this.onDeletedChild(child, index);
     } else if (mutation.type === CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT) {
       const { oldIndex, child, index } = <MoveChildMutation<any, any>>mutation;
       
@@ -72,13 +83,14 @@ export class GenericCSSGroupingRuleEditor<T extends CSSStyleSheet|SyntheticCSSGr
 
       // TODO - move the existing instance -- don't just create a new one
       this.target.insertRule(this.createInsertableCSSRule(this.target, existingChild), index);
+      if (this.onInsertedChild) this.onInsertedChild(existingChild, index);
     }
   }
 }
 
 export class SyntheticCSSGroupingRuleEditor<T extends SyntheticCSSGroupingRule<any>> extends BaseEditor<T> {
   applyMutations(mutations: Mutation<any>[]) {
-    new GenericCSSGroupingRuleEditor(this.target, (parent, child) => {
+    new CSSGroupingRuleEditor(this.target, (parent, child) => {
       return child.$parentRule === parent ? child : child.clone(true);
     }).applyMutations(mutations);
     new SyntheticCSSObjectEditor(this.target).applyMutations(mutations);

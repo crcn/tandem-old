@@ -1,6 +1,6 @@
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { IObservable, Observable } from "@tandem/common/observable";
-import { Action, PropertyChangeEvent } from "@tandem/common/messages";
+import { Action, PropertyMutation } from "@tandem/common/messages";
 
 function shouldBubbleActions(proto: any, property: string) {
   return proto[`$bubbleActions$${property}`];
@@ -53,7 +53,7 @@ export function bindable(bubbles: boolean = false) {
         const oldValue = bv.getValue();
         if (oldValue !== newValue) {
           bv.setValue(newValue);
-          this.notify(new PropertyChangeEvent(property, newValue, oldValue, bubbles));
+          this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, property, newValue, oldValue).toEvent(bubbles));
         }
       }
     });
