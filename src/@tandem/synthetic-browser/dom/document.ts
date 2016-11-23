@@ -558,7 +558,6 @@ export class SyntheticDocument extends SyntheticDOMContainer {
         visitUpdate: () => {},
         visitInsert: ({ value, index }) => {
           if (!value.$ownerNode) {
-            console.log("INSERT", value.$ownerNode);
             value.$ownerNode = this;
           }
         },

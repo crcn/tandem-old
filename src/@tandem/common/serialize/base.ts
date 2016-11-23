@@ -162,7 +162,6 @@ export function serialize(value: any): ISerializedContent<any> {
 }
 
 export function deserialize(content: ISerializedContent<any>, injector: Injector): any {
-
   const info: ISerializerInfo = _serializers[content.type];
 
   if (!info) {

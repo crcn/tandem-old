@@ -96,7 +96,7 @@ export class InsertChildMutation<T extends ICloneable, U extends ICloneable> ext
   serialize({ type, target, child, index }: RemoveChildMutation<ICloneable, any>) {
     return [type, serialize(target.clone(false)), serialize(child.clone(false)), index];
   },
-  deserialize({ type, target, child, index }, injector): RemoveChildMutation<any, any> {
+  deserialize([ type, target, child, index ], injector): RemoveChildMutation<any, any> {
     return new RemoveChildMutation(
       type,
       deserialize(target, injector),

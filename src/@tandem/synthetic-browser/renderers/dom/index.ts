@@ -77,6 +77,13 @@ type CSSRuleDictionaryType = {
   [IDentifier: string]: [CSSRule|CSSStyleSheet, syntheticCSSRuleType|SyntheticCSSStyleSheet]
 }
 
+function getHostStylesheets(node: Node) {
+  let p = node.parentNode;
+  while(p.parentNode) p = p.parentNode;
+
+  return (<Document>p).styleSheets || [];
+}
+
 export class SyntheticDOMRenderer extends BaseRenderer {
 
   private _currentCSSText: string;
@@ -92,9 +99,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   createElement() {
-    const element = this.nodeFactory.createElement("div");
-    element.innerHTML = this.getElementInnerHTML();
-    return element;
+    return this.nodeFactory.createElement("div");
   }
 
   protected onDocumentMutationEvent({ mutation }: MutationEvent<any>) {
@@ -159,23 +164,19 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined] as any;
   }
 
-  protected getElementInnerHTML() {
-    return `<style type="text/css"></style><div></div>`;
-  }
-
   protected async render() {
     const { document, element } = this;
 
     if (!this._documentElement) {
       await Promise.all(document.styleSheets.map((styleSheet) => {
         const styleElement = this.nodeFactory.createElement("style");
+        styleElement.setAttribute("type", "text/css");
         styleElement.textContent = styleSheet.cssText;
         element.appendChild(styleElement);
         return new Promise((resolve) => {
           const tryRegistering = () => {
-
             this.tryRegisteringStyleSheet(styleElement, styleSheet).then(() => resolve(styleElement), () => {
-              setTimeout(tryRegistering, 10);
+              setTimeout(tryRegistering, 20);
             });
           }
           setImmediate(tryRegistering);
@@ -196,7 +197,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
   private tryRegisteringStyleSheet(styleElement: HTMLStyleElement, styleSheet: SyntheticCSSStyleSheet) {
 
-    const nativeStyleSheet = Array.prototype.slice.call(this._documentElement.ownerDocument.styleSheets).find((styleSheet: CSSStyleSheet) => {
+    const nativeStyleSheet = Array.prototype.slice.call(getHostStylesheets(styleElement)).find((styleSheet: CSSStyleSheet) => {
       return styleSheet.ownerNode === styleElement;
     });
 
@@ -228,6 +229,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     this._documentElement = undefined;
     this._cssRuleDictionary = {};
     this._elementDictionary = {};
+    console.log("RESET");
     if (this.element) this.element.innerHTML = "";
   }
 
