@@ -88,16 +88,15 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
 
   private attachStylesheet() {
     if (!this.ownerDocument || !this._attached || !this.stylesheet) return;
-    const edit = this.ownerDocument.createEdit();
-    edit.addStyleSheet(this.stylesheet);
-    edit.applyMutationsTo(this.ownerDocument);
+    this.ownerDocument.styleSheets.push(this.stylesheet);
   }
 
   private detachStylesheet() {
     if (!this.ownerDocument || !this._attached || !this.stylesheet) return;
-    const edit = this.ownerDocument.createEdit();
-    edit.removeStyleSheet(this.stylesheet);
-    edit.applyMutationsTo(this.ownerDocument);
+    const index = this.ownerDocument.styleSheets.indexOf(this.stylesheet);
+    if (index !== -1) {
+      this.ownerDocument.styleSheets.splice(index, 1);
+    }
   }
 }
 

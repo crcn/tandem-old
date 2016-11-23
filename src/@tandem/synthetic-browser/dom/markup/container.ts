@@ -44,8 +44,8 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
     return this.addChange(new RemoveChildMutation(SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, this.target, child, this.target.childNodes.indexOf(child)));
   }
 
-  moveChild(child: SyntheticDOMNode, index: number) {
-    return this.addChange(new MoveChildMutation(SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT, this.target, child, this.target.childNodes.indexOf(child), index));
+  moveChild(child: SyntheticDOMNode, index: number, patchedOldIndex?: number) {
+    return this.addChange(new MoveChildMutation(SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT, this.target, child, patchedOldIndex || this.target.childNodes.indexOf(child), index));
   }
 
   appendChild(newChild: SyntheticDOMNode) {
@@ -69,7 +69,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, index }) => {
         if (patchedOldIndex !== index) {
-          this.moveChild(this.target.childNodes[originalOldIndex], index);
+          this.moveChild(this.target.childNodes[originalOldIndex], index, patchedOldIndex);
         }
         const oldValue = this.target.childNodes[originalOldIndex];
         this.addChildEdit(oldValue.createEdit().fromDiff(newValue));
@@ -80,17 +80,17 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
 }
 
 export class DOMContainerEditor<T extends SyntheticDOMContainer|Element|Document|DocumentFragment> extends BaseEditor<T> {
-  constructor(readonly target: T, readonly findChild: (parent: T, child: any) => any, readonly createNode:(source: any) => any = (source) => source.cloneNode(true)) {
+  constructor(readonly target: T, readonly createNode:(source: any) => any = (source) => source.cloneNode(true)) {
     super(target);
   }
 
   applySingleMutation(mutation: Mutation<any>) {
     if (mutation.type === SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT) {
       const removeMutation = <InsertChildMutation<any, SyntheticDOMNode>>mutation;
-      (<Element>this.target).removeChild(this.findChild(this.target, removeMutation.child));
+      (<Element>this.target).removeChild(this.target.childNodes[removeMutation.index] as any);
     } if (mutation.type === SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT) {
       const moveMutation = <MoveChildMutation<any, SyntheticDOMNode>>mutation;
-      this._insertChildAt(this.findChild(this.target, moveMutation.child), moveMutation.index);
+      this._insertChildAt(this.target.childNodes[moveMutation.oldIndex] as any, moveMutation.index);
     } else if (mutation.type === SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT) {
       const insertMutation = <InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>>mutation;
       this._insertChildAt(this.createNode(insertMutation.child), insertMutation.index);
@@ -98,6 +98,11 @@ export class DOMContainerEditor<T extends SyntheticDOMContainer|Element|Document
   }
 
   private _insertChildAt(child: any, index: number) {
+
+    if (child.parentNode) {
+      child.parentNode.removeChild(child);
+    }
+
     if (index === this.target.childNodes.length) {
       (<SyntheticDOMContainer>this.target).appendChild(child);
     } else {
@@ -114,14 +119,12 @@ export class SyntheticDOMContainerEditor<T extends SyntheticDOMContainer> extend
 
   constructor(target: T) {
     super(target);
-    this._domContainerEditor = this.createDOMEditor(target, (container, matchChild) => {
-      const index = container.childNodes.findIndex(child => child.uid === matchChild.uid);
-    });
+    this._domContainerEditor = this.createDOMEditor(target);
     this._nodeEditor = new SyntheticDOMNodeEditor(target); 
   }
 
-  protected createDOMEditor(target: SyntheticDOMContainer, findChild: (parent: SyntheticDOMContainer, child: any) => any) {
-    return new DOMContainerEditor(target, findChild);
+  protected createDOMEditor(target: SyntheticDOMContainer) {
+    return new DOMContainerEditor(target);
   }
 
   applyMutations(mutations: Mutation<any>[]) {

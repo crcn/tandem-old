@@ -51,6 +51,7 @@ export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
   constructor(public name: string, rules: SyntheticCSSStyleRule[]) {
     super(rules);
   }
+  
 
   get params() {
     return this.name;

@@ -6,27 +6,25 @@ import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
 import { SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule } from "./style-rule";
+import { SyntheticCSSGroupingRuleEdit, SyntheticCSSGroupingRuleEditor, SyntheticCSSGroupingRule } from "./grouping";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
 
 import {
   serialize,
+  Mutation,
   diffArray,
   deserialize,
   ITreeWalker,
   ISerializer,
   serializable,
-  Mutation,
-  MoveChildMutation,
-  RemoveChildMutation,
-  ApplicableMutation,
-  InsertChildMutation,
   ISourceLocation,
-  ISerializedContent
+  MoveChildMutation,
+  ISerializedContent,
+  RemoveChildMutation,
+  InsertChildMutation,
 } from "@tandem/common";
 
 import { syntheticCSSRuleType, diffStyleSheetRules } from "./utils";
-
-
 
 export interface ISerializedCSSStyleSheet {
   rules: Array<ISerializedContent<ISerializedSyntheticCSSStyleRule>>;
@@ -43,78 +41,7 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
   }
 }
 
-
-export namespace SyntheticCSSStyleSheetMutationTypes {
-  export const INSERT_STYLE_SHEET_RULE_EDIT = "insertStyleSheetRuleEdit";
-  export const MOVE_STYLE_SHEET_RULE_EDIT   = "moveStyleSheetRuleEdit";
-  export const REMOVE_STYLE_SHEET_RULE_EDIT = "removeStyleSheetRuleEdit";
-}
-
-export class SyntheticCSSStyleSheetEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleSheet> {
-
-
-  insertRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addChange(new InsertChildMutation(SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, this.target, rule, index));
-  }
-
-  moveRule(rule: syntheticCSSRuleType, index: number) {
-    return this.addChange(new MoveChildMutation(SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, this.target.rules.indexOf(rule), index));
-  }
-
-  removeRule(rule: syntheticCSSRuleType) {
-    return this.addChange(new RemoveChildMutation(SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, this.target, rule, this.target.rules.indexOf(rule)));
-  }
-
-  protected addDiff(newStyleSheet: SyntheticCSSStyleSheet) {
-    super.addDiff(newStyleSheet);
-
-    diffStyleSheetRules(this.target.rules, newStyleSheet.rules).accept({
-      visitInsert: ({ index, value }) => {
-        this.insertRule(value, index);
-      },
-      visitRemove: ({ index }) => {
-        this.removeRule(this.target.rules[index]);
-      },
-      visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, index }) => {
-
-        if (patchedOldIndex !== index) {
-          this.moveRule(this.target.rules[originalOldIndex], index);
-        }
-
-        const oldRule = this.target.rules[originalOldIndex];
-        this.addChildEdit((<SyntheticCSSObject>oldRule).createEdit().fromDiff(<SyntheticCSSObject>newValue));
-      }
-    });
-
-    return this;
-  }
-}
-
-export class GenericCSSStyleSheetEditor extends BaseEditor<CSSStyleSheet|SyntheticCSSStyleSheet> {
-  applySingleMutation(mutation: Mutation<any>) {
-
-    if (mutation.type === SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT) {
-
-    } else if (mutation.type === SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT) {
-
-    } else if (mutation.type === SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT) {
-
-    }
-    
-    // change.applyTo({
-    //   [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]: this,
-    //   [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]: this.rules,
-    //   [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT]: this.rules,
-    //   [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT]: this.rules
-    // }[change.type]);
-  }
-}
-
-export class SyntheticCSSStyleSheetEditor extends BaseEditor<SyntheticCSSStyleSheet> {
-  applyMutations(mutations: Mutation<any>[]) {
-    new SyntheticCSSObjectEditor(this.target).applyMutations(mutations);
-    super.applyMutations(mutations);
-  }
+export class GenericCSSStyleSheetEditor<T extends SyntheticCSSStyleSheet> extends SyntheticCSSGroupingRuleEditor<T> {
 }
 
 let _smcache = {};
@@ -130,11 +57,15 @@ function parseSourceMaps(value) {
 setInterval(() => _smcache = {}, 1000 * 60);
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleSheetSerializer()))
-export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
+export class SyntheticCSSStyleSheet extends SyntheticCSSGroupingRule<syntheticCSSRuleType> {
 
-  constructor(readonly rules: Array<syntheticCSSRuleType>) {
-    super();
-    rules.forEach(rule => rule.$parentStyleSheet = this);
+  constructor(readonly rules: syntheticCSSRuleType[]) {
+    super(rules);
+  }
+
+  protected linkRule(rule: syntheticCSSRuleType) {
+    super.linkRule(rule);
+    rule.$parentStyleSheet = this;
   }
 
   set cssText(value: string) {
@@ -143,6 +74,11 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
     .createEdit()
     .fromDiff(evaluateCSS(parseCSS(value, map), map))
     .applyMutationsTo(this);
+  }
+
+  addImport(bstrURL: string, lIndex?: number): number {
+    // TODO -
+    return -1;
   }
 
   get cssText() {
@@ -166,17 +102,6 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSObject {
 
   cloneShallow() {
     return new SyntheticCSSStyleSheet([]);
-  }
-
-
-  createEditor() {
-    // observe change
-    // this.rules.forEach(rule => rule.$parentStyleSheet = this);
-    return new SyntheticCSSStyleSheetEditor(this);
-  }
-
-  createEdit() {
-    return new SyntheticCSSStyleSheetEdit(this);
   }
 
   visitWalker(walker: ITreeWalker) {

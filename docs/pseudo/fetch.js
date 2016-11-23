@@ -31,6 +31,5 @@ var s = Symbol.create({
 
 var runtime = s.run({
   notifier: function(message) {
-    console.log(runtime.context); // { test: 'value' }
   }
 });

@@ -17,11 +17,10 @@ import {
   parseCSS,
   SyntheticCSSStyleRule,
   syntheticCSSRuleType,
-  SyntheticCSSStyleSheetEdit,
   SyntheticCSSAtRuleEdit,
   SyntheticCSSStyleRuleMutationTypes,
   SyntheticCSSAtRule,
-  SyntheticCSSStyleSheetMutationTypes,
+  CSSGroupingRuleMutationTypes,
   SyntheticCSSKeyframesRuleEdit,
   SyntheticCSSStyleRuleEdit,
 } from "@tandem/synthetic-browser";
@@ -48,19 +47,19 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     node.selector = newValue;
   }
 
-  [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildMutation<any, any>) {
+  [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT](node: postcss.Container, { target, child }: RemoveChildMutation<any, any>) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     childNode.parent.removeChild(childNode);
   }
 
-  [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: MoveChildMutation<any, any>) {
+  [CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT](node: postcss.Container, { target, child, index }: MoveChildMutation<any, any>) {
     const childNode = this.findTargetASTNode(node, <syntheticCSSRuleType>child);
     const parent = childNode.parent;
     parent.removeChild(childNode);
     parent.insertBefore(node.nodes[index], childNode);
   }
 
-  [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildMutation<any, any>) {
+  [CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT](node: postcss.Container, { target, child, index }: InsertChildMutation<any, any>) {
 
     let newChild = <syntheticCSSRuleType>child;
     const newChildNode = {

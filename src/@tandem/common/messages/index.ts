@@ -1,6 +1,6 @@
+import { File } from "../models";
 import { Action } from "./base";
 import { IDispatcher, IStreamableDispatcher, DuplexStream, readOneChunk } from "@tandem/mesh";
-import { File } from "../models";
 
 export * from "./base";
 export * from "./core";

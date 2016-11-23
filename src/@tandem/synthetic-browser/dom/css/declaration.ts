@@ -3,7 +3,7 @@ import { SyntheticCSSObject } from "./base";
 import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import { SyntheticCSSStyleRuleMutationTypes } from "./style-rule";
-import { ISerializable, Action, serializable, diffArray, ITreeWalker, PropertyMutation, ApplicableMutation } from "@tandem/common";
+import { ISerializable, Action, serializable, diffArray, ITreeWalker, PropertyMutation } from "@tandem/common";
 import { IContentEdit , ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }

@@ -73,15 +73,4 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
   createEditor() {
     return new GroupEditor(new DOMValueNodeEditor(this), super.createEditor());
   }
-
-  applyMutation(change: Mutation<any>) {
-    switch(change.type) {
-      case SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT:
-        this.nodeValue = (<SetValueMutation<any>>change).newValue;
-      break;
-      case SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT:
-        (<PropertyMutation<any>>change).applyTo(this);
-      break;
-    }
-  }
 }

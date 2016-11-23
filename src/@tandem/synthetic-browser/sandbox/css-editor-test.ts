@@ -72,6 +72,7 @@ describe(__filename + "#", () => {
     await app.initialize();
   });
 
+
   const loadCSS = async (content: string) => {
 
     const { injector } = app;
@@ -92,7 +93,7 @@ describe(__filename + "#", () => {
         name: "webpack"
       }
     });
-
+    
     return {
       styleSheet: browser.document.styleSheets[0],
       fileEditor: FileEditorProvider.getInstance(injector),
@@ -116,9 +117,12 @@ describe(__filename + "#", () => {
     it(`can apply a file edit from ${oldSource} to ${newSource}`, async () => {
       const a = await loadCSS(oldSource);
       const b = await loadCSS(newSource);
+      expect(a.styleSheet.cssRules.length).not.to.equal(0);
+      expect(b.styleSheet.cssRules.length).not.to.equal(0);
+      
       const edit = a.styleSheet.createEdit().fromDiff(b.styleSheet);
       expect(edit.mutations.length).not.to.equal(0);
-      a.fileEditor.applyMutations(...edit.mutations);
+      a.fileEditor.applyMutations(edit.mutations);
       expect((await a.reloadStylesheet()).cssText).to.equal(b.styleSheet.cssText);
     });
   });

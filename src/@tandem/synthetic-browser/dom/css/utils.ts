@@ -3,15 +3,16 @@ import { SyntheticCSSObject } from "./base";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser/dom";
 import { diffArray, ArrayDiff } from "@tandem/common";
 import { SyntheticCSSFontFace } from "./font-face";
+import { SyntheticCSSAtRule } from "./atrule";
 import { isInheritedCSSStyleProperty } from "./declaration";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 
-export type syntheticCSSRuleType = SyntheticCSSFontFace|SyntheticCSSKeyframesRule|SyntheticCSSMediaRule|SyntheticCSSStyleRule;
+export type syntheticCSSRuleType = SyntheticCSSStyleRule|SyntheticCSSAtRule;
 
 export function diffStyleSheetRules(oldRules: syntheticCSSRuleType[], newRules: syntheticCSSRuleType[]) {
-  return diffArray(oldRules, newRules, (oldRule, newRule) => {
+  return diffArray<syntheticCSSRuleType>(oldRules, newRules, (oldRule, newRule) => {
     if (oldRule.constructor.name !== newRule.constructor.name) return -1;
     return (<SyntheticCSSObject>oldRule).countShallowDiffs(<SyntheticCSSObject>newRule);
   });

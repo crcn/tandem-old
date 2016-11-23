@@ -217,8 +217,8 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
 }
 
 export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> extends DOMContainerEditor<T>  {
-  constructor(target: T, findNode: (parent: T, child: any) => any, createNode?: (item: any) => any) {
-    super(target, findNode, createNode);
+  constructor(target: T, createNode?: (item: any) => any) {
+    super(target, createNode);
   }
 
   applySingleMutation(mutation: Mutation<any>) {
@@ -239,8 +239,8 @@ export class SyntheticDOMElementEditor<T extends SyntheticDOMElement> extends Sy
   constructor(target: T) {
     super(target);
   }
-  createDOMEditor(target: SyntheticDOMElement, findChild: any) {
-    return new DOMElementEditor(target, findChild);
+  createDOMEditor(target: SyntheticDOMElement) {
+    return new DOMElementEditor(target);
   }
   applySingleMutation(mutation: Mutation<any>) {
     if (mutation.type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {

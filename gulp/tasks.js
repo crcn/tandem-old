@@ -268,7 +268,7 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
       bail: argv.bail
     }))
 
-    .on('error', error => console.error(error.message))
+    .on('error', error => console.error(error.stack))
     .on('error', notify.onError({ message: `Error: <%= error.message %>`, title: `Error running tests` }));
 
     if (argv.coverage) {

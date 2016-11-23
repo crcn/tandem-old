@@ -43,11 +43,10 @@ import {
   SyntheticCSSStyleRule,
   SyntheticDOMContainer,
   SyntheticCSSStyleSheet,
+  CSSGroupingRuleMutationTypes,
   SyntheticCSSStyleDeclaration,
   SyntheticDocumentMutationTypes,
-  SyntheticCSSAtRuleMutationTypes,
   SyntheticCSSStyleRuleMutationTypes,
-  SyntheticCSSStyleSheetMutationTypes,
 } from "../../dom";
 
 import { DOMNodeEvent } from "../../messages";
@@ -123,7 +122,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
         const index     = mutationTarget.parentNode.childNodes.indexOf(mutationTarget);
         if (index !== mutationTarget.parentNode.childNodes.length - 1) {
           const [prevChildNode] = this.getElementDictItem<Node>(mutationTarget.parentNode.childNodes[index - 1]);
-          console.log(prevChildNode, mutationTarget.parentNode.childNodes[index - 1]);
           native.insertBefore(prevChildNode, childNode);
         } else {
           native.appendChild(childNode);
@@ -148,12 +146,12 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       }
     }
 
-    if (mutation.type === SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT) {
+    if (mutation.type === CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT || mutation.type === CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT) {
       const { target, child } = <RemoveChildMutation<SyntheticCSSStyleSheet, SyntheticCSSStyleRule>>mutation;
       this.removeNativeRule(child, target);
     }
 
-    if (mutation.type === SyntheticCSSAtRuleMutationTypes.INSERT_CSS_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT || mutation.type === SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT) {
+    if (mutation.type === CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT || mutation.type === CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT) {
       const { target, child, index } = <InsertChildMutation<SyntheticCSSStyleSheet, SyntheticCSSStyleRule>>mutation;
       this.insertNativeRule(child, index, target);
     }

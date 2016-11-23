@@ -113,7 +113,7 @@ describe(__filename + "#", () => {
       const newElementResult = await loadJSX(newSource);
       const edit = element.createEdit().fromDiff(newElementResult.element);
       expect(edit.mutations.length).not.to.equal(0);
-      editor.applyMutations(...edit.mutations);
+      editor.applyMutations(edit.mutations);
       expect((await reloadElement()).outerHTML).to.equal(newElementResult.element.outerHTML);
     });
   });

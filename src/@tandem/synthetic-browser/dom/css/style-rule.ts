@@ -85,35 +85,26 @@ export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticC
   }
 }
 
-export class CSSStyleRuleEditor extends BaseEditor<CSSStyleRule> {
+export class GenericCSSStyleRuleEditor extends BaseEditor<CSSStyleRule|SyntheticCSSStyleRule> {
   applySingleMutation(mutation: Mutation<any>) {
     if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
       const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
-      this.target.style.setProperty(name, newValue);
+      (<SyntheticCSSStyleRule>this.target).style.setProperty(name, newValue);
       if (newValue == null) {
         this.target.style.removeProperty(name);
       }
       if (oldName) {
         this.target.style.removeProperty(oldName);
       }
-    } else {
-      console.error(`Cannot apply ${mutation.type}`);
     }
   }
 }
 
 export class SyntheticCSSStyleRuleEditor extends BaseEditor<SyntheticCSSStyleRule> {
-  applySingleMutation(mutation: Mutation<SyntheticCSSStyleRule>) {
-    new SyntheticCSSObjectEditor(this.target).applyMutations([mutation]);
-
-    if (mutation.type === SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<PropertyMutation<any>>mutation).applyTo(this);
-    } else if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
-      const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
-      this.target.style.setProperty(name, newValue, undefined, oldName);
-    } else {
-      console.error(`Cannot apply ${mutation.type}`);
-    }
+  applyMutations(mutations: Mutation<SyntheticCSSStyleRule>[]) {
+    super.applyMutations(mutations);
+    new SyntheticCSSObjectEditor(this.target).applyMutations(mutations);
+    new GenericCSSStyleRuleEditor(this.target).applyMutations(mutations);
   }
 }
 
@@ -140,18 +131,6 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   createEditor() {
     return new SyntheticCSSStyleRuleEditor(this);
-  }
-
-  applyMutation(mutation: Mutation<any>) {
-    if (this.$ownerNode) this.$ownerNode.notify(mutation);
-    if (mutation.type === SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT) {
-      (<PropertyMutation<any>>mutation).applyTo(this);
-    } else if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
-      const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
-      this.style.setProperty(name, newValue, undefined, oldName);
-    } else {
-      console.error(`Cannot apply ${mutation.type}`);
-    }
   }
 
   cloneShallow(deep?: boolean) {

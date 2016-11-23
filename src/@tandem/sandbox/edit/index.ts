@@ -18,7 +18,6 @@ import {
   flattenTree,
   serializable,
   ISerializable,
-  ApplicableMutation,
   getSerializeType,
   MimeTypeProvider,
   InjectorProvider,
@@ -173,7 +172,7 @@ export class FileEditor {
   protected readonly logger: Logger;
 
   private _editing: boolean;
-  private _changes: Mutation<ISyntheticObject>[];
+  private _mutations: Mutation<ISyntheticObject>[];
   private _shouldEditAgain: boolean;
 
   private _promise: Promise<any>;
@@ -184,14 +183,14 @@ export class FileEditor {
   @inject(FileSystemProvider.ID)
   private _fileSystem: IFileSystem;
 
-  applyMutations(...changes: Mutation<ISyntheticObject>[]): Promise<any> {
+  applyMutations(mutations: Mutation<ISyntheticObject>[]): Promise<any> {
 
-    if (this._changes == null) {
+    if (this._mutations == null) {
       this._shouldEditAgain = true;
-      this._changes = [];
+      this._mutations = [];
     }
 
-    this._changes.push(...changes);
+    this._mutations.push(...mutations);
 
     return this._promise || (this._promise = new Promise((resolve, reject) => {
       setImmediate(() => {
@@ -203,10 +202,10 @@ export class FileEditor {
 
   private async run(): Promise<any> {
     this._shouldEditAgain = false;
-    const changes = this._changes;
-    this._changes = undefined;
+    const changes = this._mutations;
+    this._mutations = undefined;
 
-    const changesByFilePath = {};
+    const mutationsByFilePath = {};
 
     // find all actions that are part of the same file and
     // batch them together. Important to ensure that we do not trigger multiple
@@ -225,13 +224,13 @@ export class FileEditor {
 
       const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
 
-      const filePathMutations: Mutation<ISyntheticObject>[] = changesByFilePath[targetFilePath] || (changesByFilePath[targetFilePath] = []);
+      const filePathMutations: Mutation<ISyntheticObject>[] = mutationsByFilePath[targetFilePath] || (mutationsByFilePath[targetFilePath] = []);
       filePathMutations.push(mutation);
     }
 
     const promises = [];
 
-    for (const filePath in changesByFilePath) {
+    for (const filePath in mutationsByFilePath) {
       const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._injector), this._injector);
 
       if (!contentEditorFactoryProvider) {
@@ -247,7 +246,7 @@ export class FileEditor {
       try {
         const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
 
-        const changes = changesByFilePath[filePath];
+        const changes = mutationsByFilePath[filePath];
         this.logger.info(`Applying file edit.changes ${filePath}: >>`, changes.map(action => action.type).join(" "));
 
         const newContent    = contentEditor.applyMutations(changes);

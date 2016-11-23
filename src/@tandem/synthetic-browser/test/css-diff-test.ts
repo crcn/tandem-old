@@ -9,10 +9,8 @@ import { 
   SyntheticCSSObjectEdit,
   SyntheticCSSAtRuleEdit,
   SyntheticCSSStyleRuleEdit,
-  SyntheticCSSStyleSheetEdit,
-  SyntheticCSSAtRuleMutationTypes,
+  CSSGroupingRuleMutationTypes,
   SyntheticCSSStyleRuleMutationTypes,
-  SyntheticCSSStyleSheetMutationTypes,
 } from "@tandem/synthetic-browser";
 import { SyntheticObjectChangeTypes } from "@tandem/sandbox";
 
@@ -26,40 +24,38 @@ describe(__filename + "#", () => {
     [".a { color: red }", ".a { color: blue }", [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
 
     // style sheet edits
-    [".a {}", ".b {}", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
-    [".a {}", ".b {} .a {}", [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".b {}", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".b {} .a {}", [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".a {} .c {} .b {}", [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
-    [".a {} .b {}", ".b {} .c {} .a {}", [SyntheticCSSStyleSheetMutationTypes.MOVE_STYLE_SHEET_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {}", ".b {}", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
+    [".a {}", ".b {} .a {}", [CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".b {}", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".b {} .a {}", [CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".a {} .c {} .b {}", [CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    [".a {} .b {}", ".b {} .c {} .a {}", [CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
     [`*[class*="col-"] { padding: 10px; }`, `*[class*="col-"] { padding: 8px; }`, [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
 
     // media query edits
-    ["@media a { .a { color: red } }", "@media b { .a { color: red } }", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
-    ["@media a { .a { color: red } }", "@media b { .a { color: red } } @media a { .a { color: red } }", [SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
-    ["@media a { .a { color: red } }", "@media a { .b { color: red } }", [SyntheticCSSAtRuleMutationTypes.REMOVE_CSS_RULE_EDIT, SyntheticCSSAtRuleMutationTypes.INSERT_CSS_RULE_EDIT]],
+    ["@media a { .a { color: red } }", "@media b { .a { color: red } }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
+    ["@media a { .a { color: red } }", "@media b { .a { color: red } } @media a { .a { color: red } }", [CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    ["@media a { .a { color: red } }", "@media a { .b { color: red } }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
 
     // font face
-    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
-    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
+    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
+    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
 
-    ["@keyframes a { 0% { color: red; }}", "@keyframes b { 0% { color: red; }}", [SyntheticCSSStyleSheetMutationTypes.REMOVE_STYLE_SHEET_RULE_EDIT, SyntheticCSSStyleSheetMutationTypes.INSERT_STYLE_SHEET_RULE_EDIT]],
+    ["@keyframes a { 0% { color: red; }}", "@keyframes b { 0% { color: red; }}", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
     ["@keyframes a { 0% { color: red; }}", "@keyframes a { 0% { color: blue; }}", [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT,SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
 
     // failed fuzzy tests
     [`.g{}.g{b:b;e:b;}.b{}.f{c:b;b:bf;}.e{}`, `.c{e:cf;a:a;}.c{}.e{}.b{c:g;e:ec;d:da;}.d{a:dg;g:b;c:c;}.g{d:ea;e:f;f:b;}`, false],
-    [`.f{g:ad;c:g;a:dg;e:fc;}.g{a:gc;d:ad;g:c;}.c{c:b;g:bc;}`, `.c{g:fd;d:fg;f:ef;a:e;}.b{e:e;}.c{e:e;d:bc;}.g{a:g;b:gc;f:f;e:bc;}.f{}.g{c:af;}`, false],
-
-
+    [`.f{g:ad;c:g;a:dg;e:fc;}.g{a:gc;d:ad;g:c;}.c{c:b;g:bc;}`, `.c{g:fd;d:fg;f:ef;a:e;}.b{e:e;}.c{e:e;d:bc;}.g{a:g;b:gc;f:f;e:bc;}.f{}.g{c:af;}`, false]
   ].forEach(([oldSource, newSource, changeActions]) => {
     it(`Can diff & patch ${oldSource} to ${newSource} with ops: ${changeActions}`, () => {
       const a = evaluateCSS(parseCSS(oldSource as string));
       const b = evaluateCSS(parseCSS(newSource as string));
       const edit = a.createEdit().fromDiff(b);
 
-
+      expect(edit.mutations.length).not.to.equal(0);
+      
       edit.applyMutationsTo(a, (target, action) => {
-
         // for debugging
         // console.log("applied %s:\n%s", chalk.magenta(action.toString()), chalk.green(removeWhitespace(a.cssText)));
       });
@@ -67,6 +63,9 @@ describe(__filename + "#", () => {
       if (changeActions) {
         expect(edit.mutations.map(action => action.type)).to.eql(changeActions);
       }
+
+      // ensure that there are no more changes
+      expect(a.createEdit().fromDiff(b).mutations.length).to.equal(0);
     });
   });
 
@@ -76,7 +75,7 @@ describe(__filename + "#", () => {
   }
 
   // fuzzy testing
-  xit("can diff & patch random CSS style sheets", () => {
+  it("can diff & patch random CSS style sheets", () => {
     let prev: SyntheticCSSStyleSheet;
     for (let i = 100; i--;) {
       let curr = generateRandomStyleSheet(10, 5);

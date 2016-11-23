@@ -33,17 +33,11 @@ export class Mutation<T> extends Action {
   }
 }
 
-
-export abstract class ApplicableMutation<T> extends Mutation<T> {
-  abstract applyTo(target: any);
-}
-
-
 @serializable({
   serialize({ type, target, newValue }: SetValueMutation<any>) {
     return {
       type: type,
-      target: serialize(target.clone()),
+      target: serialize(target.clone(false)),
       newValue: newValue
     };
   },
@@ -65,30 +59,22 @@ export class SetValueMutation<T> extends Mutation<T> {
 }
 
 
-export abstract class ChildMutation<T, U extends IUnique & ICloneable> extends ApplicableMutation<T> {
+export abstract class ChildMutation<T, U extends IUnique & ICloneable> extends Mutation<T> {
   constructor(type: string, target: T, readonly child: U, readonly index: number) {
     super(type, target);
   }
-  findChildIndex(collection: U[]) {
-    const index = collection.findIndex(child => child.uid === this.child.uid);
-    if (index === -1) throw new Error(`Cannot apply ${this.type} edit - child ${this.child.uid} not found.`);
-    return index;
-  }
-  findChild(collection: U[]) {
-    return collection[this.findChildIndex(collection)];
-  }
-  abstract applyTo(collection: U[]);
   paramsToString() {
     return `${super.paramsToString()}, ${this.child.toString().replace(/[\n\r\s\t]+/g, " ")}`;
   }
 }
 
+// TODO - change index to newIndex 
 @serializable({
   serialize({ type, target, child, index }: InsertChildMutation<ICloneable, any>) {
     return {
       type: type,
-      target: serialize(target.clone()),
-      child: serialize(child.clone(true)),
+      target: serialize(target.clone(false)),
+      child: serialize(child),
       index: index
     };
   },
@@ -104,11 +90,6 @@ export abstract class ChildMutation<T, U extends IUnique & ICloneable> extends A
 export class InsertChildMutation<T extends ICloneable, U extends ICloneable & IUnique> extends ChildMutation<T, U> {
   constructor(type: string, target: T, child: U, index: number = Infinity) {
     super(type, target, child, index);
-  }
-  applyTo(collection: U[]) {
-
-    // need to clone child in case the edit is applied to multiple targets
-    collection.splice(this.index, 0, this.child.clone(true) as any);
   }
   paramsToString() {
     return `${super.paramsToString()}, ${this.index}`;
@@ -137,11 +118,6 @@ export class RemoveChildMutation<T extends ICloneable, U extends ICloneable & IU
   constructor(type: string, target: T, child: U, index: number) {
     super(type, target, child, index);
   }
-  applyTo(collection: U[]) {
-    const foundIndex = this.findChildIndex(collection);
-    if (foundIndex === -1) throw new Error(`Cannot apply move edit - child ${this.child.uid} not found`);
-    collection.splice(foundIndex, 1);
-  }
 }
 
 @serializable({
@@ -166,12 +142,9 @@ export class RemoveChildMutation<T extends ICloneable, U extends ICloneable & IU
     );
   }
 })
-export class PropertyMutation<T extends ICloneable> extends ApplicableMutation<T> {
+export class PropertyMutation<T extends ICloneable> extends Mutation<T> {
   constructor(type: string, target: T, public  name: string, public newValue: any, public oldName?: string, public index?: number) {
     super(type, target);
-  }
-  applyTo(target: T) {
-    target[this.name] = this.newValue;
   }
   paramsToString() {
     return `${super.paramsToString()}, ${this.name}, ${this.newValue}`;
@@ -189,6 +162,7 @@ export class RemoveMutation<T> extends Mutation<T> {
   }
 }
 
+// TODO - change oldIndex to index, and index to newIndex
 @serializable({
   serialize({ type, target, child, index, oldIndex }: MoveChildMutation<any, any>) {
     return {
@@ -212,12 +186,6 @@ export class RemoveMutation<T> extends Mutation<T> {
 export class MoveChildMutation<T, U extends ICloneable & IUnique> extends ChildMutation<T, U> {
   constructor(type: string, target: T, child: U, readonly oldIndex: number, index: number) {
     super(type, target, child, index);
-  }
-
-  applyTo(collection: U[]) {
-    const found = this.findChild(collection);
-    collection.splice(collection.indexOf(found), 1);
-    collection.splice(this.index, 0, found);
   }
   paramsToString() {
     return `${super.paramsToString()}, ${this.index}`;

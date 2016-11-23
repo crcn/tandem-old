@@ -74,7 +74,7 @@ describe(__filename + "#", () => {
       expect(oldResult.body.firstChild.source).not.to.be.undefined;
       const edit    = oldResult.body.firstChild.createEdit().fromDiff(newResult.body.firstChild);
       expect(edit.mutations.length).not.to.equal(0);
-      await FileEditorProvider.getInstance(app.injector).applyMutations(...edit.mutations);
+      await FileEditorProvider.getInstance(app.injector).applyMutations(edit.mutations);
       expect((await oldResult.reloadBody()).innerHTML.replace(/\n\s*/g, "")).to.equal(newResult.body.innerHTML);
     });
   });

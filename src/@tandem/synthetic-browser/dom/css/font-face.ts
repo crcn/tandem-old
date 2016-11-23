@@ -17,12 +17,6 @@ export interface ISerializedSyntheticCSSFontFace {
   declaration: ISerializedContent<any>;
 }
 
-export class FontFaceEdit extends BaseContentEdit<SyntheticCSSFontFace> {
-  addDiff(newAtRule: SyntheticCSSFontFace) {
-    return this;
-  }
-}
-
 class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace, ISerializedSyntheticCSSFontFace> {
   serialize({ declaration }: SyntheticCSSFontFace) {
     return {
@@ -65,9 +59,6 @@ export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
     console.warn(`Cannot currently edit ${this.constructor.name}`);
   }
 
-  createEdit() {
-    return new FontFaceEdit(this);
-  }
   visitWalker(walker: ITreeWalker) {
     walker.accept(this.declaration);
   }

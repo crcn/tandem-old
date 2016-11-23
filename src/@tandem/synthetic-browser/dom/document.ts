@@ -36,7 +36,6 @@ import {
   Mutation,
   RemoveMutation,
   MoveChildMutation,
-  ApplicableMutation,
   RemoveChildMutation,
   InsertChildMutation,
   ISerializedContent,

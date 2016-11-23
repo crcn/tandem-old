@@ -5,6 +5,7 @@ import {
   inject,
   Mutation,
   Injector,
+  PropertyMutation,
   SetValueMutation,
   InjectorProvider,
   MimeTypeProvider,
@@ -12,8 +13,8 @@ import {
   sourcePositionEquals,
   InsertChildMutation,
   RemoveChildMutation,
-  PropertyMutation,
 } from "@tandem/common";
+
 import {
   CSSEditor,
   SyntheticCSSAtRule,
@@ -21,10 +22,10 @@ import {
   SyntheticCSSStyleRule,
   SyntheticCSSAtRuleEdit,
   SyntheticCSSStyleRuleEdit,
-  SyntheticCSSStyleSheetEdit,
   SyntheticCSSKeyframesRuleEdit,
   SyntheticCSSStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
+
 import {
   Dependency,
   IContentEdit,
