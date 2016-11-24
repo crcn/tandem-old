@@ -26,8 +26,8 @@
   }
 
   .col {
-    flex-grow: 1;
-    flex-shrink: 1;
+    flex-grow: 0;
+    flex-shrink: 0;
     padding-left: $padding-s;
     padding-right: $padding-s;
     // margin-left: 16px !important;
@@ -39,10 +39,15 @@
     }
   }
 
-  @for $i from 1 through 10 {
+  @for $i from 1 through 12 {
     .col-#{$i} {
       @extend .col;
-      width: percentage($i/10);
+      width: percentage($i/12);
+    }
+
+    .col-#{$i + "-5"} {
+      @extend .col;
+      width: percentage($i/12 + 0.5 / 12);
     }
   }
 }

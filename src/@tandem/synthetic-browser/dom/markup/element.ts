@@ -232,12 +232,26 @@ export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> extends
     super.applySingleMutation(mutation);
     if (mutation.type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
       const { name, oldName, newValue } = <PropertyMutation<any>>mutation;
+
+      // need to set the current value (property), and the default value (attribute)
+      // TODO - this may need to be separated later on.
+      if (this.target.constructor.prototype.hasOwnProperty(name)) {
+        this.target[name] = newValue;
+      }
+
       if (newValue == null) {
         this.target.removeAttribute(name);
       } else {
         this.target.setAttribute(name, newValue);
       }
-      if (oldName) this.target.removeAttribute(oldName);
+
+      if (oldName) {
+        if (this.target.hasOwnProperty(oldName)) {
+          this.target[oldName] = undefined;
+        }
+
+        this.target.removeAttribute(oldName);
+      }
     }
   }
 }
@@ -365,7 +379,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
     let oldValue;
     const attribute = this.attributes[name];
-
     if (attribute) {
       attribute.value = value;
     } else {
@@ -424,7 +437,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
           this.attributeChangedCallback(value.name, undefined, value.value);
         },
         visitRemove: ({ value, index }) => {
-          this.attributeChangedCallback(value.name, value.value, undefined);;
+          this.attributeChangedCallback(value.name, value.value, undefined);
         }
       });
     } else if (mutation.type === PropertyMutation.PROPERTY_CHANGE && mutation.target instanceof SyntheticDOMAttribute) {

@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "@tandem/editor/browser/style.ts"
 
 import "./preview.scss";
 import * as React from "react";

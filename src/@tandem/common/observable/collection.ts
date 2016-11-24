@@ -1,7 +1,7 @@
 import { Observable } from "./index";
 import { IObservable } from "../observable";
-import { Action, MetadataChangeEvent } from "@tandem/common/messages";
 import { BubbleDispatcher } from "@tandem/common/dispatchers";
+import { Action, MetadataChangeEvent } from "@tandem/common/messages";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ArrayMutation, ArrayInsertMutation, ArrayRemoveMutation, ArrayUpdateMutation } from "@tandem/common/utils";
 
@@ -57,7 +57,6 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
     });
 
     const ret = super.splice(start, deleteCount, ...newItems);
-
 
     this._watchItems(newItems);
     this.notify(new ArrayMutation([...deletes, ...inserts]).toEvent());

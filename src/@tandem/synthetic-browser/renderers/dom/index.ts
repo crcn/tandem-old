@@ -228,7 +228,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     this._documentElement = undefined;
     this._cssRuleDictionary = {};
     this._elementDictionary = {};
-    console.log("RESET");
     if (this.element) this.element.innerHTML = "";
   }
 

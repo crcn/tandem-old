@@ -112,15 +112,23 @@ export class RemoveChildMutation<T extends ICloneable, U extends ICloneable> ext
 }
 
 @serializable({
-  serialize({ type, target, name, newValue, oldName, index }: PropertyMutation<ICloneable>) {
-    return [type, serialize(target.clone ? target.clone(false) : target), name, serialize(newValue), oldName, index];    
+  serialize({ type, target, name, newValue, oldValue, oldName, index }: PropertyMutation<ICloneable>) {
+    return [
+      type, 
+      serialize(target.clone ? target.clone(false) : target), 
+      name, 
+      serialize(newValue),
+      serialize(oldValue),
+      oldName, 
+    index];    
   },
-  deserialize([ type, target, name, newValue, oldName, index ], injector): PropertyMutation<any> {
+  deserialize([ type, target, name, newValue, oldValue, oldName, index ], injector): PropertyMutation<any> {
     return new PropertyMutation(
       type,
       deserialize(target, injector),
       name,
       deserialize(newValue, injector),
+      deserialize(oldValue, injector),
       oldName,
       index
     );

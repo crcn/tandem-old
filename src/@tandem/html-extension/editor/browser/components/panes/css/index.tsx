@@ -23,13 +23,17 @@ import {
   SyntheticCSSStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
 
-export interface ICSSStylePaneComponentProps {
+export interface ICSSStyleHashInputProps {
+  style: SyntheticCSSStyleDeclaration;
+  overridden?: any;
+  inherited?: any;
+  setDeclaration: (key, value, oldKey?) => any;
+}
+
+export interface ICSSStylePaneComponentProps extends ICSSStyleHashInputProps {
   title?: string;
   titleClassName?: string;
-  style: SyntheticCSSStyleDeclaration;
-  setDeclaration: (key, value, oldKey?) => any;
   pretty?: boolean;
-  overridden?: any;
   inherited?: boolean;
   renderTitle?(props?: ICSSStylePaneComponentProps): any;
 }
@@ -55,6 +59,25 @@ export class CSSStylePropertyComponent extends BaseApplicationComponent<IKeyValu
   }
 }
 
+export class CSSStyleHashInputComponent extends React.Component<ICSSStyleHashInputProps, any> {
+  render() {
+    const { setDeclaration, style, overridden, inherited } = this.props;
+    const items = [];
+
+    for (const key of style) {
+      const value = style[key];
+      items.push({ name: kebabCase(key), value: style[key], overridden: overridden && overridden[key], dim: inherited && !isInheritedCSSStyleProperty(key) });
+    }
+
+    return <HashInputComponent items={items} setKeyValue={setDeclaration} valueTokenizer={cssTokenizer} renderItemComponent={this.renderItem} />
+  }
+
+  renderItem = (props: IKeyValueInputComponentProps) => {
+    return <CSSStylePropertyComponent {...props} />;
+  }
+}
+
+
 export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePaneComponentProps, any> {
 
   state = { showPrettyInput: false };
@@ -75,12 +98,8 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
           <span onClick={() => setDeclaration("", "")}>+</span>
         </div>
       </div>
-      { pretty ? <CSSPrettyPaneComponent style={style} /> : <HashInputComponent items={items} setKeyValue={setDeclaration} valueTokenizer={cssTokenizer} renderItemComponent={this.renderItem} /> }
+      { pretty ? <CSSPrettyPaneComponent style={style} /> : <CSSStyleHashInputComponent {...this.props} /> }
     </div>
-  }
-
-  renderItem = (props: IKeyValueInputComponentProps) => {
-    return <CSSStylePropertyComponent {...props} />;
   }
 }
 

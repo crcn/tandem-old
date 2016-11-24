@@ -2,7 +2,10 @@ import "./index.scss";
 import * as cx from "classnames";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
+import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { BaseApplicationComponent } from "@tandem/common";
+import { CSSStyleHashInputComponent } from "../css";
+import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
 
 export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
 
@@ -27,7 +30,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
     return <div className="css-inspector">
       <div className="header">
-        Style
+        CSS
         <div className="controls show">
           {
             Object.keys(tabs).map((tabId) => {
@@ -41,7 +44,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
           }
         </div>
       </div>
-      { selectedTab && selectedTab.render() }
+      { selectedTab && selectedTab.render.call(this) }
     </div>
   }
 
@@ -50,10 +53,24 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   }
 
   renderComputedStylePane() {
+    return <ComputedPropertiesPaneComponent  workspace={this.props.workspace} />;
+  }
+}
+
+export class ComputedPropertiesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
+  setDeclaration = (name: string, value: string, oldName?: string) => {
+    console.log("SET DECL")
+  }
+  render() {
+    const { selection } = this.props.workspace;
+    const elements = HTMLDOMElements.fromArray(selection);
+
+    if (elements.length !== 1) return null;
+
+    const computedStyle = elements[0].getComputedStyle() || SyntheticCSSStyleDeclaration.fromObject({ fontWeight: 400 });
+    
     return <div className="container">
-      <div className="row">
-        Computed
-      </div>
+      <CSSStyleHashInputComponent style={computedStyle} setDeclaration={this.setDeclaration} />
     </div>;
   }
 }
@@ -63,37 +80,64 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
     return <div className="pretty">
 
       <div className="container section">
-        <div className="row">
-          <div className="col-1 label">
-            X
-          </div>
-          <div className="col-10">
-            <input type="text" />
-          </div>
-          <div className="col-1 label">
-            Y
-          </div>
-          <div className="col-10">
-            <input type="text"  />
-          </div>
+        <div className="row title">
+          Layout
         </div>
         <div className="row">
           <div className="col-1 label">
             W
           </div>
-          <div className="col-10">
-            <input type="text" />
+          <div className="col-4-5">
+            <input type="text" value="10px" />
           </div>
           <div className="col-1 label">
             H
           </div>
-          <div className="col-10">
-            <input type="text" />
+          <div className="col-4-5">
+            <input type="text" value="10%" />
+          </div>
+          <div className="col-1">
+            <i className="ion-arrow-right-b" />
+          </div>
+        </div>
+        <div className="hide">
+          <div className="row">
+            <div className="col-1 label">
+              &lt;
+            </div>
+            <div className="col-4-5">
+              <input type="text" value="10px" />
+            </div>
+            <div className="col-1 label">
+              &lt;
+            </div>
+            <div className="col-4-5">
+              <input type="text" value="10%" />
+            </div>
+            <div className="col-1">
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-1 label">
+              &gt;
+            </div>
+            <div className="col-4-5">
+              <input type="text" value="10px" />
+            </div>
+            <div className="col-1 label">
+              &gt;
+            </div>
+            <div className="col-4-5">
+              <input type="text" value="10%" />
+            </div>
+            <div className="col-1">
+            </div>
           </div>
         </div>
       </div>
 
       <hr />
+      
       <div className="container section">
         <div className="row title">
           Typography
@@ -112,13 +156,13 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
           <div className="col-1 label">
             <i className="glyphicon glyphicon-text-size" />
           </div>
-          <div className="col-10">
+          <div className="col-4-5">
             <input type="text" />
           </div>
           <div className="col-1 label">
             <i className="glyphicon glyphicon-text-color" />
           </div>
-          <div className="col-10">
+          <div className="col-4-5">
             <input type="text" />
           </div>
         </div>
@@ -127,13 +171,13 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
           <div className="col-1 label">
             <i className="glyphicon glyphicon-text-width" />
           </div>
-          <div className="col-10">
+          <div className="col-4-5">
             <input type="text" />
           </div>
           <div className="col-1 label">
             <i className="glyphicon glyphicon-text-height" />
           </div>
-          <div className="col-10">
+          <div className="col-4-5">
             <input type="text" />
           </div>
         </div>
@@ -143,7 +187,26 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
 
       <div className="container section">
         <div className="row title">
+          Appearance
+        </div>
+        <div className="row">
+          opacity, blend mode
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="container section">
+        <div className="row title">
           Background
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="container section">
+        <div className="row title">
+          Shadows
         </div>
       </div>
     </div>

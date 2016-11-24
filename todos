@@ -9,12 +9,12 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
-- synthetic objects should emit change events
 - Website
 - artboard tool
 - insert div tool (for html)
 - animations
-- test native DOM renderer
+- show css selectors affected by pretty pane
+- show diff of unsaved drafts
 
 - [ ] unsaved files
 - [ ] multiple workspaces
@@ -51,6 +51,7 @@ TESTING
   - [ ] TodoMVC examples
   - [ ] actually build apps
   - [ ] load random websites
+  - [ ] code "playground" for features before they're released
 
 PROMO
   - [ ] online demo with codemirror (like jsfiddle)
