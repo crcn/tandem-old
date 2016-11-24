@@ -20,10 +20,6 @@
     }
   }
 
-  & i {
-    line-height: 22px;
-  }
-
   & .section {
     .title {
 
@@ -41,6 +37,10 @@
       min-width: 15px;
       text-align: center;
       line-height: 22px;
+
+      & i {
+        line-height: 22px;
+      }
     }
   }
 }

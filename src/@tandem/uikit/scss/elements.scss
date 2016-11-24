@@ -2,7 +2,8 @@ $input-radius: 3px;
 $input-top-bottom: 4px;
 $input-left-right: 8px;
 $input-padding: $input-top-bottom $input-left-right;
-$input-border: 1px solid rgba(0,0,0,0.15);
+$border-color: #DDDDDD;
+$input-border: 1px solid $border-color;
 $input-background: rgba(0,0,0,0.1);
 
 /**
@@ -54,6 +55,24 @@ a {
   width: 100%;
 }
 
+
+.button-group {
+  @extend .input;
+  padding: 0px !important;
+  position: relative;
+  background: $border-color;
+  color: white;
+  & * {
+    padding: $input-padding $padding-s;
+    vertical-align: top;
+  }
+  &:first-child {
+    padding-left: 0;
+  }
+  &:last-child {
+    padding-right: 0;
+  }
+}
 
 input[type="text"] {
   @extend .input;

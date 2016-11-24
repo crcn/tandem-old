@@ -181,6 +181,25 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
             <input type="text" />
           </div>
         </div>
+
+        <div className="row">
+          <div className="col-6-5">
+            <div className="row button-group text-center">
+              <i className="col-3 glyphicon glyphicon-align-left" />
+              <i className="col-3 glyphicon selected glyphicon-align-center" />
+              <i className="col-3 glyphicon glyphicon-align-right" />
+              <i className="col-3 glyphicon glyphicon-align-justify" />
+            </div>
+          </div>
+          <div className="col-4-5">
+            <div className="row button-group text-center">
+              <i className="col-3 glyphicon glyphicon-align-left" />
+              <i className="col-3 glyphicon glyphicon-align-center" />
+              <i className="col-3 glyphicon glyphicon-align-right" />
+              <i className="col-3 glyphicon glyphicon-align-justify" />
+            </div>
+          </div>
+        </div>
       </div>
 
       <hr />
