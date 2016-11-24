@@ -2,11 +2,19 @@
 
 .container {
   position:relative;
-  padding: nth($sizes, 4);
+  padding: $padding-s;
+}
+
+.container {
+  & .row {
+    padding-left: $padding-s;
+    padding-right: $padding-s;
+  }
 }
 
 
 .row {
+  width: 100%;
 
   padding: $padding-s $padding-r;
 
@@ -18,9 +26,16 @@
   }
 
   .col {
-    margin-left: 16px !important;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding-left: $padding-s;
+    padding-right: $padding-s;
+    // margin-left: 16px !important;
     &:first-child {
-      margin-left: 0px !important;
+      padding-left: 0;
+    }
+    &:last-child {
+      padding-right: 0;
     }
   }
 

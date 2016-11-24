@@ -42,7 +42,12 @@ $disabled-color: rgba(0,0,0,0.2);
   border-color: $superlight-black;
 
   .header {
-    background: rgba(82, 0, 0, 0.25);
+    background: $superlight-black;
+  }
+
+  hr {
+    height: 1px;
+    background: $superlight-black;
   }
 }
 
@@ -61,7 +66,7 @@ $disabled-color: rgba(0,0,0,0.2);
   }
   &.html {
     &.property {
-      color: #FF9900;
+      color: $watermelon;
     }
     &.attribute {
       color: $light-black;
@@ -70,10 +75,17 @@ $disabled-color: rgba(0,0,0,0.2);
 }
 
 .selected {
-  background: $sky-blue;
-  color: $offset-white;
-  * {
-    color: $offset-white !important;
+  &:not(.fill-text) {
+    background: $sky-blue;
+    color: $offset-white;
+    * {
+      color: $offset-white !important;
+    }
+  }
+
+  &.fill-text {
+    color: $sky-blue;
+
   }
 }
 

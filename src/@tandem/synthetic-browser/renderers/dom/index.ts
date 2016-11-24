@@ -105,7 +105,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   protected onDocumentMutationEvent({ mutation }: MutationEvent<any>) {
     super.onDocumentMutationEvent(arguments[0]);
 
-
     if (isDOMNodeMutation(mutation)) {
       const [nativeNode, syntheticNode] = this.getElementDictItem(mutation.target);
 
@@ -140,7 +139,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
           new CSSStyleRuleEditor(<CSSStyleRule>nativeRule).applyMutations([mutation]);
         }
       } else {
-        console.warn(`Unable to find matching declaration`);
+        this.logger.warn(`Unable to find matching declaration`);
       }
     }
   }

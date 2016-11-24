@@ -181,7 +181,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected onDocumentEvent(event: CoreEvent) {
-    if (this.element && (event.type === MutationEvent.MUTATION || event.type === DOMNodeEvent.DOM_NODE_LOADED)) {
+    if (this.element && (event.type === MutationEvent.MUTATION)) {
       this.onDocumentMutationEvent(<MutationEvent<any>>event);
     }
   }

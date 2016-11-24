@@ -60,9 +60,9 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
     this.setState({ editName: false, currentValue: undefined });
   };
 
-  onValueChange = (value: string) => {
+  onValueChange = (event: React.KeyboardEvent<any>) => {
     const oldName = this.item.name;
-    this.props.setKeyValue(this.item.name, this.state.currentValue = value);
+    this.props.setKeyValue(this.item.name, this.state.currentValue = event.currentTarget.value);
   }
 
   onValueFocus = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -88,17 +88,31 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
     const { className, style, valueTokenizer } = this.props;
     const { name, value, readonly, overridden } = this.item;
 
-    return <div style={style} className={["row font-regular", className].join(" ")}>
-      <div className="col-4 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
-        { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
-      </div>
-      <TextEditorComponent
+    /*
+
+    <TextEditorComponent
         className="col-6"
         value={this.state.currentValue || value}
         injector={this.injector}
         style={{textDecoration: overridden ? "line-through" : undefined }}
         onKeyDown={this.onValueKeyDown}
         tokenizer={valueTokenizer}
+        onChange={this.onValueChange}
+        onFocus={this.onValueFocus}
+        onBlur={this.onValueBlur}
+        />*/
+
+    return <div style={style} className={["row font-regular", className].join(" ")}>
+      <div className="col-4 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
+        { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
+      </div>
+      
+      <input
+        className="col-6"
+        type="text"
+        {...(this.state.currentValue ? {} : { value: value })}
+        style={{textDecoration: overridden ? "line-through" : undefined }}
+        onKeyDown={this.onValueKeyDown}
         onChange={this.onValueChange}
         onFocus={this.onValueFocus}
         onBlur={this.onValueBlur}

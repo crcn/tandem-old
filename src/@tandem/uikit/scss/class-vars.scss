@@ -41,3 +41,7 @@ $sides: left, right, top, bottom;
 .disabled {
   color: $disabled-color;
 }
+
+.uppercase {
+  text-transform: uppercase;
+}

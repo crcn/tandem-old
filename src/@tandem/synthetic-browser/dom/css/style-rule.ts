@@ -1,4 +1,5 @@
 import { Dependency } from "@tandem/sandbox";
+import { kebabCase } from "lodash";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
@@ -96,7 +97,7 @@ export class CSSStyleRuleEditor extends BaseEditor<CSSStyleRule|SyntheticCSSStyl
   applySingleMutation(mutation: Mutation<any>) {
     if (mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
       const { name, newValue, oldName } = <PropertyMutation<any>>mutation;
-      (<SyntheticCSSStyleRule>this.target).style.setProperty(name, newValue);
+      (<SyntheticCSSStyleRule>this.target).style.setProperty(kebabCase(name), newValue);
       if (newValue == null) {
         this.target.style.removeProperty(name);
       }

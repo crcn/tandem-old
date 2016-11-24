@@ -1,3 +1,10 @@
+$input-radius: 3px;
+$input-top-bottom: 4px;
+$input-left-right: 8px;
+$input-padding: $input-top-bottom $input-left-right;
+$input-border: 1px solid rgba(0,0,0,0.15);
+$input-background: rgba(0,0,0,0.1);
+
 /**
  * built-in element styles.
  */
@@ -19,6 +26,7 @@ html, body {
 
 hr {
   border: none;
+  margin: 0;
 }
 
 ul {
@@ -28,4 +36,32 @@ ul {
 
 a {
   color: inherit;
+}
+
+
+.input {
+  letter-spacing: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  padding: $input-padding;
+  line-height: inherit;
+  height: auto;
+  background: transparent;
+  border: $input-border;
+  margin: 0;
+  border-radius: $input-radius;
+  width: 100%;
+}
+
+
+input[type="text"] {
+  @extend .input;
+}
+
+.select {
+  @extend .input;
+  & .button {
+    float: right;
+  }
 }

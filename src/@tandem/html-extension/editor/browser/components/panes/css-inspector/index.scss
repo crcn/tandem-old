@@ -1,16 +1,42 @@
+@import "@tandem/uikit/scss";
 
 .css-inspector {
   & .header {
     & .controls {
       font-size: 2em;
       & i {
+        cursor: pointer;
+        position: relative;
+        top: -5px;
+        margin-left: 9px;
+        
 
         &.ion-paintbrush {
-          font-size: 0.8em;
+          font-size: 0.71em;
           position: relative;
-          top: -1px;
+          top: -7px;
         }
       }
+    }
+  }
+
+  & .section {
+    .title {
+
+      padding-bottom: $padding-r;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  }
+
+  & .pretty {
+    & .label {
+
+      vertical-align: bottom;
+      min-width: 15px;
+      text-align: center;
+      line-height: 22px;
     }
   }
 }

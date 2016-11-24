@@ -1,9 +1,4 @@
-$input-radius: 3px;
-$input-top-bottom: 4px;
-$input-left-right: 8px;
-$input-padding: $input-top-bottom $input-left-right;
-$input-border: 1px solid rgba(0,0,0,0.15);
-$input-background: rgba(0,0,0,0.1);
+
 
 $gutter-background: #444;
 
@@ -66,30 +61,6 @@ button {
   background: none;
 }
 
-.input {
-  color: $font-color-white;
-  letter-spacing: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  font-family: inherit;
-  padding: $input-padding;
-  line-height: inherit;
-  height: auto;
-  background: $input-background;
-  border: $input-border;
-  margin: 0;
-  border-radius: $input-radius;
-  width: 100%;
-}
-
-.select {
-  @extend .input;
-  @extend .no-wrap;
-  & .button {
-    float: right;
-  }
-}
-
 *:focus {
   outline: none;
 }
@@ -127,15 +98,6 @@ button {
   }
 }
 
-label {
-  font-weight: inherit;
-  padding: $input-top-bottom 0px;
-  margin: 0px;
-}
-
-input[type="text"] {
-  @extend .input;
-}
 
 .font-regular {
   font-size: 11px;
@@ -148,9 +110,4 @@ input[type="text"] {
   padding-bottom: 8px;
 }
 
-hr {
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin: 0;
-}
 
