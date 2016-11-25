@@ -9,6 +9,9 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
+- [ ] computed css pane
+- [ ] all CSS declarations pane
+
 - [ ] pretty pane
   - [ ] advanced layout
 - [ ] computed styles

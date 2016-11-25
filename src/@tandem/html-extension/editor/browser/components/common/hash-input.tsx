@@ -9,15 +9,21 @@ export interface IKeyValueItem {
   overridden?: boolean;
 }
 
+
 export interface IKeyValueInputComponentProps {
   item: IKeyValueItem;
   setKeyValue: (name: string, value: any, oldName?: string) => any;
   onValueEnter: (item) =>  any;
   className?: string;
+  renderName?: (props: IKeyValueNameComponentProps) => any;
   valueTokenizer?: ITokenizer;
   style?: any;
 }
 
+
+export interface IKeyValueNameComponentProps extends IKeyValueInputComponentProps {
+  children: any;
+}
 // TODO - add some color for the CSS rules
 export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueInputComponentProps, { editName: boolean, currentValue: string }> {
 
@@ -85,8 +91,10 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
   }
 
   render() {
-    const { className, style, valueTokenizer } = this.props;
     const { name, value, readonly, overridden } = this.item;
+    let { className, style, valueTokenizer, renderName } = this.props;
+
+    if (!renderName) renderName = (props) => props.children;
 
     /*
 
@@ -103,14 +111,16 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
         />*/
 
     return <div style={style} className={["row font-regular", className].join(" ")}>
-      <div className="col-4 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
-        { !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name }
+      <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
+        {renderName(Object.assign({}, this.props, {
+          children: !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name
+        }))}
       </div>
       
       <input
-        className="col-6"
+        className="col-7"
         type="text"
-        {...(this.state.currentValue ? {} : { value: value })}
+        {...(this.state.currentValue != undefined ? {} : { value: value })}
         style={{textDecoration: overridden ? "line-through" : undefined }}
         onKeyDown={this.onValueKeyDown}
         onChange={this.onValueChange}
@@ -124,6 +134,7 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
 export interface IKeyInputComponentProps {
   items: IKeyValueItem[];
   valueTokenizer?: ITokenizer;
+  renderName?: (props: IKeyValueNameComponentProps) => any;
   setKeyValue: (key: string, value: string, oldKey?: string) => any;
   renderItemComponent?: (props: IKeyValueInputComponentProps) => any;
 }
@@ -140,15 +151,16 @@ export class HashInputComponent extends React.Component<IKeyInputComponentProps,
   }
 
   render() {
-    const { items, renderItemComponent, valueTokenizer } = this.props;
+    const { items, renderItemComponent, renderName, setKeyValue, valueTokenizer } = this.props;
     return <div className="table">
       {
         // index important here since the name can change
         items.map((item, index) => {
           const props = {
             item: item,
+            renderName: renderName,
             valueTokenizer: valueTokenizer,
-            setKeyValue: this.props.setKeyValue,
+            setKeyValue: setKeyValue,
             onValueEnter: this.onValueEnter
           }
           return <span key={index}>

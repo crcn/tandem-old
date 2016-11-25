@@ -66,7 +66,7 @@ export function createHTMLEditorBrowserProviders() {
     new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent),
     // new EntityPaneComponentFactoryProvider("htmlStyle", HTMLStylePaneComponent),
     new EntityPaneComponentFactoryProvider("cssInspector", ElementCSSInspectorComponent),
-    new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
+    // new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
     new DocumentPaneComponentFactoryProvider("htmlLayers", LayersPaneComponent),
 
     // stage tool components

@@ -7,17 +7,21 @@ import { AltInputComponent } from "../alt-input";
 import { BaseApplicationComponent } from "@tandem/common";
 
 // TODO: add preview of source file here
-export class SyntheticSourceLink extends BaseApplicationComponent<{ target: ISyntheticObject }, any> {
+export class SyntheticSourceLink extends BaseApplicationComponent<{ target?: ISyntheticObject, getTarget?: () => ISyntheticObject }, any> {
+
+  getTarget() {
+    return this.props.target || (this.props.getTarget && this.props.getTarget()); 
+  }
 
   hasSource() {
-    return !!(this.props.target.source && this.props.target.source.filePath);
+    return !!(this.getTarget() && !!this.getTarget().source && this.getTarget().source.filePath);
   }
 
   openSourceFile = (event: React.MouseEvent<any>) => {
     if (!this.hasSource()) return;
     event.stopPropagation();
-    this.logger.info(`Opening source file ${this.props.target.source.filePath}:${this.props.target.source.start.line}:${this.props.target.source.start.column}`);
-    OpenFileRequest.dispatch(this.props.target.source.filePath, this.props.target.source, this.bus);
+    this.logger.info(`Opening source file ${this.getTarget().source.filePath}:${this.getTarget().source.start.line}:${this.getTarget().source.start.column}`);
+    OpenFileRequest.dispatch(this.getTarget().source.filePath, this.getTarget().source, this.bus);
   }
 
   render() {

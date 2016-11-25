@@ -11,12 +11,12 @@ import { kebabCase, camelCase } from "lodash";
 import { CSSPrettyPaneComponent } from "./pretty";
 import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
 import { BaseApplicationComponent, MutationEvent } from "@tandem/common";
-import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
+import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps, IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import {
   MatchedCSSStyleRule,
   SyntheticDOMElement,
   SyntheticCSSStyleRule,
-  getMatchingStyleRules,
+  getMatchingCSSStyleRules,
   isInheritedCSSStyleProperty,
   SyntheticCSSStyleDeclaration,
   SyntheticCSSStyleRuleMutationTypes,
@@ -26,6 +26,7 @@ export interface ICSSStyleHashInputProps {
   style: SyntheticCSSStyleDeclaration;
   overridden?: any;
   inherited?: any;
+  renderName?: (props: IKeyValueNameComponentProps) => any;
   setDeclaration: (key, value, oldKey?) => any;
 }
 
@@ -60,7 +61,7 @@ export class CSSStylePropertyComponent extends BaseApplicationComponent<IKeyValu
 
 export class CSSStyleHashInputComponent extends React.Component<ICSSStyleHashInputProps, any> {
   render() {
-    const { setDeclaration, style, overridden, inherited } = this.props;
+    const { setDeclaration, style, overridden, inherited, renderName } = this.props;
     const items = [];
 
     for (const key of style) {
@@ -68,7 +69,7 @@ export class CSSStyleHashInputComponent extends React.Component<ICSSStyleHashInp
       items.push({ name: kebabCase(key), value: style[key], overridden: overridden && overridden[key], dim: inherited && !isInheritedCSSStyleProperty(key) });
     }
 
-    return <HashInputComponent items={items} setKeyValue={setDeclaration} valueTokenizer={cssTokenizer} renderItemComponent={this.renderItem} />
+    return <HashInputComponent items={items} renderName={renderName} setKeyValue={setDeclaration} valueTokenizer={cssTokenizer} renderItemComponent={this.renderItem} />
   }
 
   renderItem = (props: IKeyValueInputComponentProps) => {
@@ -208,7 +209,7 @@ class MatchedCSSRulesCache {
   }
 
   private matchRules() {
-    this._matchedRules = getMatchingStyleRules(this._target);
+    this._matchedRules = getMatchingCSSStyleRules(this._target);
   }
 
   private onDocumentEvent(event: MutationEvent<any>) {

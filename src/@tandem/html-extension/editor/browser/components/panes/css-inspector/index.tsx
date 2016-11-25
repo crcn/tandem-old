@@ -3,14 +3,17 @@ import * as cx from "classnames";
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
-import { BaseApplicationComponent } from "@tandem/common";
+import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
+import { BaseApplicationComponent, Mutation } from "@tandem/common";
 import { CSSStyleHashInputComponent } from "../css";
-import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
+import { IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
+import { SyntheticCSSStyleDeclaration, getMergedCSSStyleRule, MergedCSSStyleRule, SyntheticHTMLElement, SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
 
 export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
 
   state = {
-    pane: "pretty"
+    pane: "computed"
   };
 
   selectTab(id: string) {
@@ -57,20 +60,51 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   }
 }
 
-export class ComputedPropertiesPaneComponent extends React.Component<{ workspace: Workspace }, any> {
+export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
+
   setDeclaration = (name: string, value: string, oldName?: string) => {
-    console.log("SET DECL")
+    const mergedRule = this.mergedCSSStyleRule;
+
+    if (value === "") return;
+
+    const main = mergedRule.getDeclarationMainSourceRule(name);
+    const mutations: Mutation<any>[] = [];
+
+    if (main instanceof SyntheticCSSStyleRule) {
+      const rule = main as SyntheticCSSStyleRule;
+      main.style.setProperty(name, value, undefined, oldName);
+      const edit = rule.createEdit();
+      edit.setDeclaration(name, value, oldName);
+      mutations.push(...edit.mutations);
+    } else {
+      const element = main as SyntheticHTMLElement;
+      const edit = element.createEdit();
+      element.style[name] = value;
+      edit.setAttribute("style", element.getAttribute("style"));
+      mutations.push(...edit.mutations);
+    }
+
+    this.bus.dispatch(new ApplyFileEditRequest(mutations));
   }
-  render() {
+
+  get mergedCSSStyleRule() {
     const { selection } = this.props.workspace;
     const elements = HTMLDOMElements.fromArray(selection);
+    return elements.length === 1 ? getMergedCSSStyleRule(elements[0]) : null;
+  }
+  render() {
+    const rule = this.mergedCSSStyleRule;
+    if (!rule) return null;
 
-    if (elements.length !== 1) return null;
-
-    const computedStyle = elements[0].getComputedStyle() || SyntheticCSSStyleDeclaration.fromObject({ fontWeight: 400 });
+    const renderName = (props: IKeyValueNameComponentProps) => {
+      const mainStyleRule = rule.getDeclarationMainSourceRule(props.item.name); 
+      return <SyntheticSourceLink target={mainStyleRule}>
+        <span title={mainStyleRule["selector"] || "style attribute"}>{ props.children }</span>
+      </SyntheticSourceLink>;
+    }
     
     return <div className="container">
-      <CSSStyleHashInputComponent style={computedStyle} setDeclaration={this.setDeclaration} />
+      <CSSStyleHashInputComponent renderName={renderName} style={rule.style} setDeclaration={this.setDeclaration} />
     </div>;
   }
 }

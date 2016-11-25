@@ -3,7 +3,7 @@ import { Workspace } from "@tandem/editor/browser/models";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import * as React from "react";
 
-import { SyntheticBrowser, BaseRenderer, getMatchingStyleRules, MatchedCSSStyleRule, SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
+import { SyntheticBrowser, BaseRenderer, getMatchingCSSStyleRules, MatchedCSSStyleRule, SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
 import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, BoundingRect } from "@tandem/common";
 import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
@@ -31,7 +31,7 @@ class MockRenderer extends BaseRenderer {
     const styles = {};
 
     this.document.querySelectorAll("*").forEach((element) => {
-      const rules = getMatchingStyleRules(element);
+      const rules = getMatchingCSSStyleRules(element);
 
       if (!rules) return;
 

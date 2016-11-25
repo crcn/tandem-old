@@ -17,7 +17,9 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
 
   private _style: SyntheticCSSStyleDeclaration;
   private _styleProxy: SyntheticCSSStyleDeclaration;
+  private _classList: string[];
   protected _native: HTMLElement;
+
 
   constructor(ns: string, tagName: string) {
     super(ns, tagName);
@@ -26,6 +28,10 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
 
   getBoundingClientRect() {
     return (this.browser && this.browser.renderer.getBoundingRect(this.uid)) || BoundingRect.zeros();
+  }
+
+  get classList() {
+    return this._classList;
   }
 
   get style(): SyntheticCSSStyleDeclaration {
@@ -66,6 +72,12 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     super.attributeChangedCallback(name, oldValue, newValue);
     if (name === "style") {
       this._resetStyleFromAttribute();
+    } else if (name === "class") {
+      if (newValue) {
+        this._classList = String(newValue).split(" ");
+      } else {
+        this._classList = [];
+      }
     }
   }
 

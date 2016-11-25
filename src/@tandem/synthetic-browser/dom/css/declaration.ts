@@ -409,7 +409,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   }
 
   get length() {
-    return this.$length;
+    return this.$length || 0;
   }
 
   item(index) {

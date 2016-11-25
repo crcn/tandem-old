@@ -2,6 +2,7 @@ import { parseSelector } from "./parser";
 import { getTreeAncestors, getPreviousTreeSiblings } from "@tandem/common";
 import { SelectorExpression, AllSelectorExpression } from "./ast";
 import { SyntheticDOMNode, SyntheticDOMElement, DOMNodeType } from "../markup";
+import { SyntheticHTMLElement } from "../html";
 
 const _testers = {};
 
@@ -39,7 +40,7 @@ export function getSelectorTester(selectorSource: string): ISelectorTester {
 
     return ast.accept({
       visitClassNameSelector({ className }) {
-        return node.hasAttribute("class") && String(node.getAttribute("class")).split(" ").indexOf(className) !== -1;
+        return (<SyntheticHTMLElement>node).classList && (<SyntheticHTMLElement>node).classList.indexOf(className) !== -1;
       },
       visitIDSelector({ id }) {
         return node.getAttribute("id") === id;
