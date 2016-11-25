@@ -30,12 +30,16 @@
     flex-shrink: 0;
     padding-left: $padding-s;
     padding-right: $padding-s;
-    // margin-left: 16px !important;
-    &:first-child {
-      padding-left: 0;
-    }
-    &:last-child {
-      padding-right: 0;
+  }
+
+  &:not(.no-padding) {
+    & .col {
+      &:first-child {
+        padding-left: 0;
+      }
+      &:last-child {
+        padding-right: 0;
+      }
     }
   }
 

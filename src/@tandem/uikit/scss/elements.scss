@@ -58,19 +58,14 @@ a {
 
 .button-group {
   @extend .input;
-  padding: 0px !important;
+  border: none;
   position: relative;
   background: $border-color;
   color: white;
-  & * {
-    padding: $input-padding $padding-s;
+  text-align: center;
+  & i {
+    padding: $padding-s;
     vertical-align: top;
-  }
-  &:first-child {
-    padding-left: 0;
-  }
-  &:last-child {
-    padding-right: 0;
   }
 }
 
