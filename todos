@@ -9,6 +9,8 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
+- use http://cssreference.io/#hn for CSS pretty pane
+- [ ] style normalizer
 - [ ] computed css pane
 - [ ] all CSS declarations pane
 

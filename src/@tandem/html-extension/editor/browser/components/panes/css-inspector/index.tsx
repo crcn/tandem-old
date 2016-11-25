@@ -9,6 +9,9 @@ import { CSSStyleHashInputComponent } from "../css";
 import { IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import { SyntheticCSSStyleDeclaration, getMergedCSSStyleRule, MergedCSSStyleRule, SyntheticHTMLElement, SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
+import { CSSPrettyInspectorComponent } from "./pretty";
+import { ComputedPropertiesPaneComponent } from "./computed";
+
 
 export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
 
@@ -24,12 +27,18 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
     const { workspace } = this.props;
     if (!workspace || !workspace.selection.length) return null;
 
+    const elements = HTMLDOMElements.fromArray(workspace.selection);
+    if (elements.length !== 1) return null;
+
     const tabs = {
       pretty: { icon: "paintbrush", render: this.renderPrettyPane },
       computed: { icon: "code", render: this.renderComputedStylePane }
     };
 
     const selectedTab = tabs[this.state.pane];
+
+
+    const mergedRule = getMergedCSSStyleRule(elements[0]);
 
     return <div className="css-inspector">
       <div className="header">
@@ -47,297 +56,15 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
           }
         </div>
       </div>
-      { selectedTab && selectedTab.render.call(this) }
+      { selectedTab && selectedTab.render.call(this, mergedRule) }
     </div>
   }
 
-  renderPrettyPane() {
-    return <PrettyInspectorPaneComponent />;
+  renderPrettyPane(rule: MergedCSSStyleRule) {
+    return <CSSPrettyInspectorComponent rule={rule} />;
   }
 
-  renderComputedStylePane() {
-    return <ComputedPropertiesPaneComponent  workspace={this.props.workspace} />;
-  }
-}
-
-export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
-
-  setDeclaration = (name: string, value: string, oldName?: string) => {
-    const mergedRule = this.mergedCSSStyleRule;
-
-    if (value === "") return;
-
-    const main = mergedRule.getDeclarationMainSourceRule(name);
-    const mutations: Mutation<any>[] = [];
-
-    if (main instanceof SyntheticCSSStyleRule) {
-      const rule = main as SyntheticCSSStyleRule;
-      main.style.setProperty(name, value, undefined, oldName);
-      const edit = rule.createEdit();
-      edit.setDeclaration(name, value, oldName);
-      mutations.push(...edit.mutations);
-    } else {
-      const element = main as SyntheticHTMLElement;
-      const edit = element.createEdit();
-      element.style[name] = value;
-      edit.setAttribute("style", element.getAttribute("style"));
-      mutations.push(...edit.mutations);
-    }
-
-    this.bus.dispatch(new ApplyFileEditRequest(mutations));
-  }
-
-  get mergedCSSStyleRule() {
-    const { selection } = this.props.workspace;
-    const elements = HTMLDOMElements.fromArray(selection);
-    return elements.length === 1 ? getMergedCSSStyleRule(elements[0]) : null;
-  }
-  render() {
-    const rule = this.mergedCSSStyleRule;
-    if (!rule) return null;
-
-    const renderName = (props: IKeyValueNameComponentProps) => {
-      const mainStyleRule = rule.getDeclarationMainSourceRule(props.item.name); 
-      return <SyntheticSourceLink target={mainStyleRule}>
-        <span title={mainStyleRule["selector"] || "style attribute"}>{ props.children }</span>
-      </SyntheticSourceLink>;
-    }
-    
-    return <div className="container">
-      <CSSStyleHashInputComponent renderName={renderName} style={rule.style} setDeclaration={this.setDeclaration} />
-    </div>;
-  }
-}
-
-// TODO - pseudo elements
-export class PrettyInspectorPaneComponent extends React.Component<any, any> {
-  render() {
-    return <div className="pretty">
-
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Layout
-            <div className="controls">
-              <i className="ion-more" />
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            Display
-          </div>
-          <div className="col-10">
-            <input type="text" value="Block" />
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            Left
-          </div>
-          <div className="col-4">
-            <input type="text" value="" />
-          </div>
-          <div className="col-2 label">
-            Top
-          </div>
-          <div className="col-4">
-            <input type="text" value="" />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-2 label">
-            Width
-          </div>
-          <div className="col-4">
-            <input type="text" value="10px" />
-          </div>
-          <div className="col-2 label">
-            Height
-          </div>
-          <div className="col-4">
-            <input type="text" value="10%" />
-          </div>
-        </div>
-      </div>
-
-      <hr />
-      
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Typograghy
-            <div className="controls">
-              <i className="ion-more" />
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            Font
-          </div>
-          <div className="col-10">
-            <input type="text" value="Helvetica" />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-2 label">
-            Weight
-          </div>
-          <div className="col-10">
-            <input type="text" value="100 - Thin" />
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            Size
-          </div>
-          <div className="col-4">
-            <input type="text" value="0.9em" />
-          </div>
-          <div className="col-2 label">
-            Color
-          </div>
-          <div className="col-4">
-            <FillInputComponent />
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            Spacing
-          </div>
-          <div className="col-4">
-            <input type="text" value="0.9em" />
-          </div>
-          <div className="col-2 label">
-            Line
-          </div>
-          <div className="col-4">
-            <input type="text" value="0.9em" />
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            Align
-          </div>
-          <div className="col-10">
-            <div className="row button-group text-center no-padding">
-              <div className="col-3">
-                <i className="glyphicon glyphicon-align-left" />
-              </div>
-              <div className="col-3 selected">
-                <i className="glyphicon glyphicon-align-center" />
-              </div>
-              <div className="col-3">
-                <i className="glyphicon glyphicon-align-right" />
-              </div>
-              <div className="col-3">
-                <i className="glyphicon glyphicon-align-justify" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="container section">
-        <div className="row">
-          <div className="col-2 label">
-            Opacity
-          </div>
-          <div className="col-10">
-            <input type="text" value="0.9" />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-2 label">
-            Blend
-          </div>
-          <div className="col-10">
-            <input type="text" value="--" />
-          </div>
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Backgrounds
-            <div className="controls">
-              <i className="ion-plus-round" />
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2">
-            <FillInputComponent />
-          </div>
-          <div className="col-10">
-            <input type="text" value="multiply" />
-          </div>
-        </div>
-
-      </div>
-
-      <hr />
-
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Box shadows
-            <div className="controls">
-              <i className="ion-plus-round" />
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-2">
-            <FillInputComponent />
-          </div>
-          <div className="col-10">
-            h shadow, v shadow, blur, spread, color, inset
-          </div>
-        </div>
-      </div>
-
-
-      <hr />
-
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Filters
-            <div className="controls">
-              <i className="ion-plus-round" />
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-12">
-            contrast
-          </div>
-        </div>
-      </div>
-
-      
-    </div>
-  }
-}
-
-
-export class FillInputComponent extends React.Component<any, any> {
-  render() {
-    return <div className="fill-input">
-    </div>
+  renderComputedStylePane(rule: MergedCSSStyleRule) {
+    return <ComputedPropertiesPaneComponent  rule={rule} />;
   }
 }

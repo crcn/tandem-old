@@ -235,7 +235,7 @@ export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> extends
       // need to set the current value (property), and the default value (attribute)
       // TODO - this may need to be separated later on.
       if (this.target.constructor.prototype.hasOwnProperty(name)) {
-        this.target[name] = newValue;
+        this.target[name] = newValue == null ? "" : newValue;
       }
 
       if (newValue == null) {

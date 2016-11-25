@@ -30,7 +30,7 @@ import {
 } from "@tandem/sandbox";
 
 import { 
-    Action,
+    CoreEvent,
     SockBus,
     Injector,
     serialize,
@@ -39,15 +39,16 @@ import { 
     deserialize,
     PostDSMessage,
     PrivateBusProvider,
-    PropertyChangeEvent,
+    MutationEvent,
+    PropertyMutation
 } from "@tandem/common";
 
 const UPDATE_FILE_CACHE_TIMEOUT = 100;
 
-class FileCacheChangeAction extends Action{
+class FileCacheChangeEvent extends CoreEvent{
     static readonly FILE_CACHE_CHANGE = "fileCachChange";
     constructor(readonly item: FileCacheItem) {
-        super(FileCacheChangeAction.FILE_CACHE_CHANGE);
+        super(FileCacheChangeEvent.FILE_CACHE_CHANGE);
     }
 }
 
@@ -118,11 +119,10 @@ class TandemClient extends Observable {
     }
 
     private watchFileCache() {
-        this.fileCache.collection.observe(new CallbackDispatcher((action: Action) => {
-            if (action.type === PropertyChangeEvent.PROPERTY_CHANGE) {
-                const changeAction = <PropertyChangeEvent>action;
-                if (changeAction.property === "url") {
-                    this.notify(new FileCacheChangeAction(changeAction.target));
+        this.fileCache.collection.observe(new CallbackDispatcher(({ mutation }: MutationEvent<any>) => {
+            if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
+                if ((<PropertyMutation<any>>mutation).name === "url") {
+                    this.notify(new FileCacheChangeEvent(mutation.target));
                 }
             }
         }));
@@ -140,9 +140,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     await client.connect();
 
-    client.observe(new CallbackDispatcher((action: Action) => {
-        if (action.type === FileCacheChangeAction.FILE_CACHE_CHANGE) {
-            setEditorContentFromCache((<FileCacheChangeAction>action).item);
+    client.observe(new CallbackDispatcher((action: CoreEvent) => {
+        if (action.type === FileCacheChangeEvent.FILE_CACHE_CHANGE) {
+            setEditorContentFromCache((<FileCacheChangeEvent>action).item);
         }
     }));
 
@@ -257,6 +257,8 @@ export async function activate(context: vscode.ExtensionContext) {
     client.bus.register({
         dispatch({ filePath, selection, type }: OpenFileRequest) {
             if (type === OpenFileRequest.OPEN_FILE) {
+
+                console.log(type, filePath);
 
                 // quick fix for resolving relative files - this will break in the future.
                 filePath = filePath.replace(/^\w+:\/\//, "");

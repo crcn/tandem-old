@@ -31,7 +31,7 @@ export class NumberSliderInput extends React.Component<{ value: number, onChange
 
   render() {
     return <DraggableComponent style={{ cursor: "col-resize" }} tabIndex={-1} onDrag={this.onDrag} onStartDrag={this.onStartDrag} onStopDrag={this.onStopDrag}>
-      { this.props.value }
+      { this.props.children || this.props.value }
     </DraggableComponent>
   }
 }

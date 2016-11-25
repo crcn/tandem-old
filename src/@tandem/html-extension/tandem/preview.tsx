@@ -37,9 +37,11 @@ export const renderPreview = reactEditorPreview(async () => {
         "index.css": `
         .container {
           color: red;
+          display: block;
           background: rgba(255, 255, 255, 0);
           box-sizing: border-box;
           padding-right: border-box;
+          left: 10px;
         }
 
         div {

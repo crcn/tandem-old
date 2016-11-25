@@ -132,6 +132,7 @@
     "webpack-notifier": "^1.4.0"
   },
   "dependencies": {
+    "@types/rc-select": "^5.9.28",
     "abab": "^1.0.3",
     "babel": "^6.5.2",
     "babel-core": "^6.17.0",

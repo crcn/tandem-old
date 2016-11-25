@@ -87,6 +87,14 @@ export class SyntheticWindow extends Observable {
     this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);
   }
 
+  addEventListener() {
+    // eat it for now
+  }
+
+  removeEventListener() {
+    
+  }
+
   get depth(): number {
     let i = 0;
     let c = this;

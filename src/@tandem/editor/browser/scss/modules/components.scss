@@ -69,35 +69,6 @@ button {
   float: right;
 }
 
-.slider {
-  position: relative;
-
-  & > *, &:before {
-    top: 50%;
-    position: absolute;
-    transform: translateY(-50%);
-  }
-
-
-  &:before {
-    content: " ";
-    background: rgba(255, 255, 255, 0.1);
-    width: 100%;
-    display: block;
-    height: 2px;
-  }
-
-  width: 100%;
-
-  & a {
-    width: 10px;
-    height: 10px;
-    display: block;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 100px;
-  }
-}
-
 
 .font-regular {
   font-size: 11px;

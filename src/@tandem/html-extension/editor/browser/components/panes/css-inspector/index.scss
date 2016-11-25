@@ -1,6 +1,16 @@
 @import "@tandem/uikit/scss";
 
 .css-inspector {
+  position: relative;
+  & .advanced {
+    width: 280px;
+    background: #F9F9F9;
+    position: fixed;
+    transform: translateX(-100%);
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  
    & .controls {
     font-size: 1.5em;
     & i {
@@ -23,17 +33,21 @@
     }
   }
 
+  & .labels {
+    @extend .dim;
+    font-size: 0.8em;
+    padding-top: 0;
+    text-align: center;
+  }
 
-  & .section {
-    .title {
-      @extend .dim;
-      width: 100%;
+  .title {
+    @extend .dim;
+    width: 100%;
 
-      padding-bottom: $padding-r;
-      font-size: 0.9em;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
+    padding-bottom: $padding-r;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
   }
 
   & .pretty {

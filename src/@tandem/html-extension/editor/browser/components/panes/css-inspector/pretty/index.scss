@@ -1,0 +1,16 @@
+@import "@tandem/uikit/scss";
+
+.css-pretty-inspector {
+  & .label {
+    @extend .dim;
+    font-size: 0.8em;
+    vertical-align: bottom;
+    min-width: 15px;
+    text-align: right;
+    line-height: 24px;
+
+    & i {
+      line-height: 22px;
+    }
+  }
+}

@@ -40,34 +40,6 @@ a {
 }
 
 
-.input {
-  letter-spacing: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  font-family: inherit;
-  padding: $input-padding;
-  line-height: inherit;
-  height: auto;
-  background: transparent;
-  border: $input-border;
-  margin: 0;
-  border-radius: $input-radius;
-  width: 100%;
-}
-
-.button-group {
-  @extend .input;
-  border: none;
-  position: relative;
-  line-height: inherit;
-  background: $border-color;
-  color: white;
-  text-align: center;
-  & .col {
-    padding: $padding-s + 1 $padding-r;
-  }
-  cursor: pointer;
-}
 
 input[type="text"] {
   @extend .input;

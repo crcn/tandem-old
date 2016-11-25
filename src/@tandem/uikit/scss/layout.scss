@@ -7,15 +7,13 @@
 
 .container {
   & .row {
-    padding-left: $padding-s;
-    padding-right: $padding-s;
   }
 }
 
 .row {
   width: 100%;
 
-  padding: $padding-r $padding-r;
+  padding: $padding-s;
 
   display: flex;
   flex-direction: row;
