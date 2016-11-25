@@ -1,7 +1,7 @@
-import { IDispatcher } from "@tandem/mesh";
+import { IDispatcher, IMessage } from "@tandem/mesh";
 import { ITyped, INamed } from "@tandem/common/object";
 import { ICommand } from "@tandem/common/commands";
-import { Action } from "../messages";
+import { CoreEvent } from "../messages";
 import { IBrokerBus } from "../dispatchers";
 
 import { File } from "@tandem/common/models";
@@ -98,7 +98,7 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
   constructor(actionFilter: string|Function, readonly clazz: { new(...rest: any[]): ICommand }) {
     super([CommandFactoryProvider.NS, clazz.name].join("/"), clazz);
     if (typeof actionFilter === "string") {
-      this.actionFilter = (action: Action) => action.type === actionFilter;
+      this.actionFilter = (action: IMessage) => action.type === actionFilter;
     } else {
       this.actionFilter = actionFilter;
     }
@@ -110,7 +110,7 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
     return providers.queryAll<CommandFactoryProvider>([CommandFactoryProvider.NS, "**"].join("/"));
   }
 
-  static findAllByAction(action: Action, providers: Injector): CommandFactoryProvider[] {
+  static findAllByAction(action: IMessage, providers: Injector): CommandFactoryProvider[] {
     return this.findAll(providers).filter((dep) => dep.actionFilter(action));
   }
 

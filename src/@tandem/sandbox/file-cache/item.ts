@@ -4,7 +4,6 @@ import { IFileSystem } from "@tandem/sandbox/file-system";
 import { btoa, atob } from "abab"
 
 import {
-  Action,
   Metadata,
   bindable,
   ENV_IS_NODE,

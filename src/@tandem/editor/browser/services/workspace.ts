@@ -9,7 +9,6 @@ import {
   SyntheticDocument,
   SyntheticDOMElement,
   SyntheticDOMRenderer,
-  isDOMMutationEvent,
   BaseDecoratorRenderer,
   RemoteSyntheticBrowser,
   SyntheticRendererEvent,
@@ -27,7 +26,7 @@ import { SetToolRequest, ZoomRequest, ZoomOutRequest, ZoomInRequest, SetZoomRequ
 import {
   File,
   tween,
-  Action,
+  CoreEvent,
   Logger,
   inject,
   loggable,
@@ -62,7 +61,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   private _tweener: IDisposable;
   private _zoomTimeout: any;
 
-  async [InitializeRequest.INITIALIZE](action: Action) {
+  async [InitializeRequest.INITIALIZE](action: CoreEvent) {
     await this._loadWorkspaces();
   }
 

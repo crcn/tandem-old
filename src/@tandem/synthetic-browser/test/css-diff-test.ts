@@ -47,8 +47,8 @@ describe(__filename + "#", () => {
     // failed fuzzy tests
     [`.g{}.g{b:b;e:b;}.b{}.f{c:b;b:bf;}.e{}`, `.c{e:cf;a:a;}.c{}.e{}.b{c:g;e:ec;d:da;}.d{a:dg;g:b;c:c;}.g{d:ea;e:f;f:b;}`, false],
     [`.f{g:ad;c:g;a:dg;e:fc;}.g{a:gc;d:ad;g:c;}.c{c:b;g:bc;}`, `.c{g:fd;d:fg;f:ef;a:e;}.b{e:e;}.c{e:e;d:bc;}.g{a:g;b:gc;f:f;e:bc;}.f{}.g{c:af;}`, false]
-  ].forEach(([oldSource, newSource, changeActions]) => {
-    it(`Can diff & patch ${oldSource} to ${newSource} with ops: ${changeActions}`, () => {
+  ].forEach(([oldSource, newSource, mutationTypes]) => {
+    it(`Can diff & patch ${oldSource} to ${newSource} with ops: ${mutationTypes}`, () => {
       const a = evaluateCSS(parseCSS(oldSource as string));
       const b = evaluateCSS(parseCSS(newSource as string));
       const edit = a.createEdit().fromDiff(b);
@@ -60,8 +60,8 @@ describe(__filename + "#", () => {
         // console.log("applied %s:\n%s", chalk.magenta(action.toString()), chalk.green(removeWhitespace(a.cssText)));
       });
       expect(removeWhitespace(a.cssText)).to.equal(removeWhitespace(b.cssText));
-      if (changeActions) {
-        expect(edit.mutations.map(action => action.type)).to.eql(changeActions);
+      if (mutationTypes) {
+        expect(edit.mutations.map(mutation => mutation.type)).to.eql(mutationTypes);
       }
 
       // ensure that there are no more changes

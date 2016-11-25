@@ -1,6 +1,5 @@
 import { inject } from "@tandem/common/decorators";
-import { Action } from "@tandem/common/messages";
-import { IBus } from "@tandem/mesh";
+import { IBus, IMessage } from "@tandem/mesh";
 import {
   Injector,
   IInjectable,
@@ -9,7 +8,7 @@ import {
 } from "@tandem/common/ioc";
 
 export interface ICommand {
-  execute(action?: Action): any;
+  execute(message?: IMessage): any;
 }
 
 export abstract class BaseCommand implements ICommand, IInjectable {
@@ -20,5 +19,5 @@ export abstract class BaseCommand implements ICommand, IInjectable {
   @inject(InjectorProvider.ID)
   protected injector: Injector;
 
-  abstract execute(action: Action);
+  abstract execute(message: IMessage);
 }

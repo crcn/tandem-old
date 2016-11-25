@@ -1,6 +1,6 @@
 import * as postcss from "postcss";
 import {
-  Action,
+  CoreEvent,
   inject,
   Injector,
   InjectorProvider,

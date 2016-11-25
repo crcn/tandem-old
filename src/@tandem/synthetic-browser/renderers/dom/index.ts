@@ -1,4 +1,3 @@
-import { Action } from "@tandem/common";
 import { decode } from "ent";
 import { camelCase } from "lodash";
 import { BaseRenderer } from "../base";

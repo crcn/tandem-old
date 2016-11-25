@@ -3,7 +3,7 @@ import { SandboxModuleAction } from "@tandem/sandbox";
 import { SyntheticBrowser } from "@tandem/synthetic-browser";
 import {
   inject,
-  Action,
+  CoreEvent,
   IInjectable,
 } from "@tandem/common";
 
@@ -101,7 +101,7 @@ export class ModuleHistory implements IInjectable {
 
   $didInject() { }
 
-  protected onAction(action: Action) {
+  protected onAction(action: CoreEvent) {
 
     // target may be comming from an embedded browser instance
     // i

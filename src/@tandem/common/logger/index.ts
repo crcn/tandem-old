@@ -1,9 +1,9 @@
 import { IDispatcher } from "@tandem/mesh";
 import { sprintf } from "sprintf";
 import { LogLevel } from "./levels";
-import { Action } from "../messages";
+import { CoreEvent } from "../messages";
 
-export class LogAction extends Action {
+export class LogAction extends CoreEvent {
   static readonly LOG        = "log";
   constructor(readonly level: number, readonly text: string, readonly filterable?: boolean) {
     super(LogAction.LOG);

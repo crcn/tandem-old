@@ -53,8 +53,3 @@ export class CoreEvent {
     this._canPropagateImmediately = false;
   }
 }
-
-// DEPRECATED
-export class Action extends CoreEvent {
-
-}

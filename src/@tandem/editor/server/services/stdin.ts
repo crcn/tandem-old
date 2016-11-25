@@ -1,7 +1,7 @@
 import * as readline from "readline";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
-import { InitializeRequest, Action } from "@tandem/common";
+import { InitializeRequest } from "@tandem/common";
 import { StdinHandlerProvider } from "@tandem/editor/server/providers";
 
 /**

@@ -1,7 +1,7 @@
 import * as sift from "sift";
 import { flatten } from "lodash";
 import { HTML_MIME_TYPE } from "@tandem/common";
-import { filterAction } from "@tandem/common/decorators";
+import { filterMessage } from "@tandem/common/decorators";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/messages";
 import { CoreApplicationService } from "@tandem/core";
 import { PasteRequest, SelectRequest } from "@tandem/editor/browser/messages";
@@ -16,7 +16,7 @@ import {
 
 export class PasteHTMLService extends CoreApplicationService<any> {
 
-  @filterAction(sift({ "item.type": HTML_MIME_TYPE }))
+  @filterMessage(sift({ "item.type": HTML_MIME_TYPE }))
   [PasteRequest.PASTE](action: PasteRequest) {
     this.bus.dispatch(new PasteHTMLEntityAction(action.item));
   }

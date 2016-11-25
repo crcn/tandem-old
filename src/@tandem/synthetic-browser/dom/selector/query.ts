@@ -3,7 +3,7 @@ import { throttle, Cancelable } from "lodash";
 import { getSelectorTester, ISelectorTester } from "./tester";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, DOMNodeType } from "../markup";
 import {
-  Action,
+  CoreEvent,
   bindable,
   IWalkable,
   diffArray,
@@ -21,7 +21,6 @@ import {
   propertyChangeCallbackType,
 } from "@tandem/common";
 
-import { isDOMMutationEvent } from "@tandem/synthetic-browser/messages";
 
 import { CallbackDispatcher } from "@tandem/mesh";
 
@@ -225,7 +224,7 @@ export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends Base
 
   constructor(target?: SyntheticDOMContainer, selector: string = "*", filter?: elementQueryFilterType) {
     super(target, selector, filter);
-    this._rootObserver = new CallbackDispatcher(this.onRootAction.bind(this));
+    this._rootObserver = new CallbackDispatcher(this.onRootEvent.bind(this));
   }
 
   protected reset() {
@@ -251,7 +250,7 @@ export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends Base
     return new ChildElementQuerier<U>(this, selector, filter);
   }
 
-  private onRootAction(action: Action) {
+  private onRootEvent(action: CoreEvent) {
 
     // reset on ALL actions -- there are cases where Nodes may contain state that
     // parts of the app using this querier needs to access (metadata for example). Debounce so

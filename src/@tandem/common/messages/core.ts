@@ -1,27 +1,28 @@
 import * as sift from "sift";
-import { Action } from "./base";
+import { CoreEvent } from "./base";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";
 import { serializable, ISerializer } from "@tandem/common/serialize";
 import {  DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "@tandem/mesh/ds";
+import { Message } from "@tandem/mesh";
 
-export { Action };
+export { CoreEvent };
 
-export class DisposeEvent extends Action {
+export class DisposeEvent extends CoreEvent {
   static readonly DISPOSE = "dispose";
   constructor() {
     super(DisposeEvent.DISPOSE);
   }
 }
 
-export class LoadRequest extends Action {
+export class LoadRequest extends Message {
   static readonly LOAD = "load";
   constructor() {
     super(LoadRequest.LOAD);
   }
 }
 
-export class InitializeRequest extends Action {
+export class InitializeRequest extends Message {
   static readonly INITIALIZE = "initialize";
   constructor() {
     super(InitializeRequest.INITIALIZE);
@@ -54,7 +55,7 @@ export class PostDSMessage extends DSMessage {
   }
 }
 
-export class MetadataChangeEvent extends Action {
+export class MetadataChangeEvent extends CoreEvent {
   static readonly METADATA_CHANGE = "metadataChange";
   constructor(readonly key: string, readonly value: string) {
     super(MetadataChangeEvent.METADATA_CHANGE);

@@ -1,10 +1,10 @@
-import { Action } from "@tandem/common/messages";
 import { IBrokerBus } from "./base";
 import * as assert from "assert";
 import {
+  IBus,
+  IMessage,
   ParallelBus,
   IDispatcher,
-  IBus,
   TransformStream,
   FanoutBusDispatchersParamType,
   IMessageTester
@@ -27,7 +27,7 @@ export class BrokerBus implements IBrokerBus {
   constructor(busClass: { new(actors: FanoutBusDispatchersParamType<any>): IBus<any> } = ParallelBus, ...actors: Array<IDispatcher<any, any>>) {
     this.actors = [];
 
-    this._bus = new busClass((message: Action) => {
+    this._bus = new busClass((message: IMessage) => {
 
       // dispatches are expensive since they typically use streams. This chunk reduces
       // unecessary operations to dispatch handlers that can't handle a given message.
@@ -54,7 +54,7 @@ export class BrokerBus implements IBrokerBus {
     }
   }
 
-  dispatch(action: Action) {
-    return this._bus.dispatch(action);
+  dispatch(message: IMessage) {
+    return this._bus.dispatch(message);
   }
 }

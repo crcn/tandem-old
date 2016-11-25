@@ -1,33 +1,27 @@
 @import "@tandem/uikit/scss";
 
 .css-inspector {
-  & .header {
-    & .controls {
-      font-size: 2em;
-      & i {
-        cursor: pointer;
-        position: relative;
-        top: -5px;
-        margin-left: 9px;
-        
+   & .controls {
+    font-size: 1.5em;
+    & i {
+      cursor: pointer;
+      position: relative;
+      top: -2px;
+      margin-left: 9px;
+      
 
-        &.ion-paintbrush {
-          font-size: 0.71em;
-          position: relative;
-          top: -7px;
-        }
+      &.ion-paintbrush {
+        font-size: 0.71em;
+        position: relative;
+        top: -4px;
       }
     }
   }
 
+
   & .section {
     .title {
-
       width: 100%;
-      & .controls {
-        float: right;
-        display: block;
-      }
 
       padding-bottom: $padding-r;
       font-size: 0.9em;
@@ -38,11 +32,11 @@
 
   & .pretty {
     & .label {
-
+      font-size: 0.8em;
       vertical-align: bottom;
       min-width: 15px;
-      text-align: center;
-      line-height: 22px;
+      text-align: right;
+      line-height: 24px;
 
       & i {
         line-height: 22px;
@@ -52,6 +46,7 @@
 
   & .fill-input {
     @extend .input;
+    cursor: pointer;
     height: 23px;
     background: #8467D4;
     width: 100%;

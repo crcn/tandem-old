@@ -1,5 +1,5 @@
 import { IDispatcher } from "@tandem/mesh";
-import { Action } from "@tandem/common/messages";
+import { CoreEvent } from "@tandem/common/messages";
 import { Observable } from "@tandem/common/observable";
 import TextEditor from "./text-editor";
 
@@ -40,7 +40,7 @@ class Marker extends Observable {
     this.position = position;
     this.length   = length;
 
-    this.notify(new Action("changeMarkerSelection"));
+    this.notify(new CoreEvent("changeMarkerSelection"));
   }
 
   getSelectedText() {

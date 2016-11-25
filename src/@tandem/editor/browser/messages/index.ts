@@ -2,12 +2,12 @@ import { uniq } from "lodash";
 import { toArray } from "@tandem/common/utils/array";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";
-import { Action } from "@tandem/common/messages";
+import { CoreEvent } from "@tandem/common/messages";
 import { File, serialize, deserialize, LogLevel } from "@tandem/common";
 import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/models";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
-export class MouseAction extends Action {
+export class MouseAction extends CoreEvent {
 
   static readonly CANVAS_MOUSE_DOWN = "canvasMouseDown";
   static readonly SELECTION_DOUBLE_CLICK = "selectionDoubleClick";
@@ -25,7 +25,7 @@ export class MouseAction extends Action {
   }
 }
 
-export class AlertMessage extends Action {
+export class AlertMessage extends CoreEvent {
   static readonly ALERT = "alert";
   constructor(type: string, readonly level: LogLevel, readonly text: string) {
     super(type);
@@ -40,7 +40,7 @@ export class AlertMessage extends Action {
   }
 }
 
-export class KeyboardAction extends Action {
+export class KeyboardAction extends CoreEvent {
 
   static readonly CANVAS_KEY_DOWN = "canvasKeyDown";
 
@@ -59,7 +59,7 @@ export class KeyboardAction extends Action {
   }
 }
 
-export class SelectRequest extends Action {
+export class SelectRequest extends CoreEvent {
 
   static readonly SELECT = "SELECT";
 
@@ -75,14 +75,14 @@ export class SelectRequest extends Action {
   }
 }
 
-export class SelectionChangeEvent extends Action {
+export class SelectionChangeEvent extends CoreEvent {
   static readonly SELECTION_CHANGE = "selectionChange";
   constructor(readonly items: any[] = []) {
     super(SelectionChangeEvent.SELECTION_CHANGE);
   }
 }
 
-export class SelectAllRequest extends Action {
+export class SelectAllRequest extends CoreEvent {
   static readonly SELECT_ALL = "selectAll";
   constructor() {
     super(SelectAllRequest.SELECT_ALL);
@@ -95,56 +95,56 @@ export class ToggleSelectRequest extends SelectRequest {
   }
 }
 
-export class ZoomRequest extends Action {
+export class ZoomRequest extends CoreEvent {
   static readonly ZOOM = "zoom";
   constructor(readonly delta: number, readonly ease: boolean = false, readonly round: boolean = false) {
     super(ZoomRequest.ZOOM);
   }
 }
 
-export class ZoomInRequest extends Action {
+export class ZoomInRequest extends CoreEvent {
   static readonly ZOOM_IN = "zoomIn";
   constructor() {
     super(ZoomInRequest.ZOOM_IN);
   }
 }
 
-export class ZoomOutRequest extends Action {
+export class ZoomOutRequest extends CoreEvent {
   static readonly ZOOM_OUT = "zoomOut";
   constructor() {
     super(ZoomOutRequest.ZOOM_OUT);
   }
 }
 
-export class SetZoomRequest extends Action {
+export class SetZoomRequest extends CoreEvent {
   static readonly SET_ZOOM = "setZoom";
   constructor(readonly value: number, readonly ease: boolean = false) {
     super(SetZoomRequest.SET_ZOOM);
   }
 }
 
-export class PasteRequest extends Action {
+export class PasteRequest extends CoreEvent {
   static readonly PASTE = "paste";
   constructor(readonly item: DataTransferItem) {
     super(PasteRequest.PASTE);
   }
 }
 
-export class SetToolRequest extends Action {
+export class SetToolRequest extends CoreEvent {
   static readonly SET_TOOL = "setTool";
   constructor(readonly toolFactory: { create(workspace: Workspace): IWorkspaceTool }) {
     super(SetToolRequest.SET_TOOL);
   }
 }
 
-export class KeyCommandEvent extends Action {
+export class KeyCommandEvent extends CoreEvent {
   static readonly KEY_COMMAND = "keyCommand";
   constructor(readonly combo: string) {
     super(KeyCommandEvent.KEY_COMMAND);
   }
 }
 
-export class RemoveSelectionRequest extends Action {
+export class RemoveSelectionRequest extends CoreEvent {
   static readonly REMOVE_SELECTION = "removeSelection";
   constructor() {
     super(RemoveSelectionRequest.REMOVE_SELECTION);

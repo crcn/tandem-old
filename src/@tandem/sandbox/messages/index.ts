@@ -3,7 +3,6 @@ import { IFileResolverOptions } from "../resolver";
 import { IReadFileResultItem } from "@tandem/sandbox/file-system";
 
 import {
-  Action,
   IASTNode,
   serialize,
   deserialize,
@@ -13,6 +12,7 @@ import {
 } from "@tandem/common";
 
 import { 
+  Message,
   IDispatcher,
   IStreamableDispatcher,
   readAllChunks,
@@ -21,15 +21,6 @@ import { 
   WritableStream,
 } from "@tandem/mesh";
 
-
-
-
-// TODO - ability to trace where actions go in the application - possibly
-// with a @trace(), or @log() feature
-
-export class SandboxAction extends Action {
-  static readonly EVALUATED = "sandboxEvaluated";
-}
 
 @serializable({
   serialize({ mutations }: ApplyFileEditRequest) {
@@ -41,31 +32,31 @@ export class SandboxAction extends Action {
     return new ApplyFileEditRequest(mutations.map(action => deserialize(action, injector)));
   }
 })
-export class ApplyFileEditRequest extends Action {
+export class ApplyFileEditRequest extends Message {
   static readonly APPLY_EDITS = "applyMutations";
   constructor(readonly mutations: Mutation<any>[], readonly saveFile: boolean = false) {
     super(ApplyFileEditRequest.APPLY_EDITS);
   }
 }
 
-export class ModuleImporterAction extends Action {
+export class ModuleImporterAction extends Message {
   static readonly MODULE_CONTENT_CHANGED = "moduleContentChanged";
 }
 
-export class SandboxModuleAction extends Action {
+export class SandboxModuleAction extends Message {
   static readonly EVALUATING = "evaluating";
   static readonly EDITED = "edited";
 }
 
 @serializable()
-export class ResolveFileRequest extends Action {
+export class ResolveFileRequest extends Message {
   static readonly RESOLVE_FILE = "resolveFile";
   constructor(readonly relativePath: string, readonly cwd?: string, readonly options?: IFileResolverOptions) {
     super(ResolveFileRequest.RESOLVE_FILE);
   }
 }
 
-export class FileCacheAction extends Action {
+export class FileCacheAction extends Message {
   static readonly ADDED_ENTITY = "addedEntity";
   constructor(type: string, readonly item?: any) {
     super(type);
@@ -73,7 +64,7 @@ export class FileCacheAction extends Action {
 }
 
 @serializable()
-export class ReadFileRequest extends Action {
+export class ReadFileRequest extends Message {
   static readonly READ_FILE = "readFile";
   constructor(readonly filePath: string) {
     super(ReadFileRequest.READ_FILE);
@@ -85,7 +76,7 @@ export class ReadFileRequest extends Action {
 }
 
 @serializable()
-export class ReadDirectoryRequest extends Action {
+export class ReadDirectoryRequest extends Message {
   static readonly READ_DIRECTORY = "readDirectory";
   constructor(readonly directoryPath: string) {
     super(ReadDirectoryRequest.READ_DIRECTORY);
@@ -97,7 +88,7 @@ export class ReadDirectoryRequest extends Action {
 }
 
 @serializable()
-export class WatchFileRequest extends Action {
+export class WatchFileRequest extends Message {
   static readonly WATCH_FILE = "watchFile";
   constructor(readonly filePath: string) {
     super(WatchFileRequest.WATCH_FILE);

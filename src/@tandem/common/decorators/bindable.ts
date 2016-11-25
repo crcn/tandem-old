@@ -1,21 +1,21 @@
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { IObservable, Observable } from "@tandem/common/observable";
-import { Action, PropertyMutation } from "@tandem/common/messages";
+import { CoreEvent, PropertyMutation } from "@tandem/common/messages";
 
-function shouldBubbleActions(proto: any, property: string) {
-  return proto[`$bubbleActions$${property}`];
+function shouldBubbleEvents(proto: any, property: string) {
+  return proto[`$bubbleEvents$${property}`];
 }
 
 export function bindable(bubbles: boolean = false) {
 
   class BindableValue {
     private _value: any;
-    private _shouldBubbleActions: boolean;
+    private _shouldBubbleEvents: boolean;
     private _valueObserver: IDispatcher<any, any>;
 
     constructor(readonly target: IObservable, readonly property: string) {
-      if (shouldBubbleActions(target, property)) {
-        this._valueObserver = new CallbackDispatcher(this.onValueAction.bind(this));
+      if (shouldBubbleEvents(target, property)) {
+        this._valueObserver = new CallbackDispatcher(this.onValueEvent.bind(this));
       }
     }
 
@@ -33,8 +33,8 @@ export function bindable(bubbles: boolean = false) {
       }
     }
 
-    private onValueAction(action: Action) {
-      this.target.notify(action);
+    private onValueEvent(event: CoreEvent) {
+      this.target.notify(event);
     }
   }
 
@@ -62,6 +62,6 @@ export function bindable(bubbles: boolean = false) {
 
 export function bubble() {
   return (proto: IObservable, property: string = undefined, descriptor: PropertyDescriptor = undefined) => {
-    proto[`$bubbleActions$${property}`] = true;
+    proto[`$bubbleEvents$${property}`] = true;
   };
 }

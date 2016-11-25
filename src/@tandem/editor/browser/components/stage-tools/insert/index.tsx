@@ -8,7 +8,7 @@ import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers"
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { SelectionSizeComponent, SelectablesComponent } from "@tandem/editor/browser/components/common";
 import {
-  Action,
+  CoreEvent,
   BoundingRect,
   BaseApplicationComponent,
 } from "@tandem/common";

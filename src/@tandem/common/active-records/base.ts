@@ -9,7 +9,6 @@ import { Observable, IObservable } from "@tandem/common/observable";
 import { CallbackDispatcher, ParallelBus, readOneChunk, DSFindRequest, DSInsertRequest, DSUpdateRequest, DSRemoveRequest, IMessage } from "@tandem/mesh";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
-  Action,
   PostDSMessage,
   DisposeEvent,
   ActiveRecordEvent,
@@ -32,7 +31,7 @@ export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable,
   deserialize(value: any);
 }
 
-// TODO - need to queue actions
+// TODO - need to queue requests
 // TODO - add schema here
 
 export abstract class BaseActiveRecord<T> extends Observable implements IActiveRecord<T> {

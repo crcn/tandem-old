@@ -1,4 +1,4 @@
-import { Action } from "../messages";
+import { CoreEvent } from "../messages";
 import { Observable } from "./index";
 import { expect } from "chai";
 import { CallbackDispatcher } from "@tandem/mesh";
@@ -15,7 +15,7 @@ describe(__filename + "#", () => {
       dispatch: action => i++
     });
 
-    obs.notify(new Action("change"));
+    obs.notify(new CoreEvent("change"));
     expect(i).to.equal(1);
   });
 
@@ -28,7 +28,7 @@ describe(__filename + "#", () => {
     obs.observe({
       dispatch: action => i++
     });
-    obs.notify(new Action("change"));
+    obs.notify(new CoreEvent("change"));
     expect(i).to.equal(2);
   });
 
@@ -41,7 +41,7 @@ describe(__filename + "#", () => {
     obs.observe({
       dispatch: action => i++
     });
-    obs.notify(new Action("change"));
+    obs.notify(new CoreEvent("change"));
     expect(i).to.equal(1);
   });
 
@@ -61,9 +61,9 @@ describe(__filename + "#", () => {
     });
 
     obs.observe({ dispatch: obs2.notify.bind(obs2) });
-    obs.notify(new Action("change"));
+    obs.notify(new CoreEvent("change"));
     expect(i).to.equal(1);
-    obs.notify(new Action("change"));
+    obs.notify(new CoreEvent("change"));
     expect(i).to.equal(1);
   });
 
@@ -72,10 +72,10 @@ describe(__filename + "#", () => {
     let i = 0;
     const observer = new CallbackDispatcher(() => i++);
     obs.observe(observer);
-    obs.notify(new Action("a"));
+    obs.notify(new CoreEvent("a"));
     expect(i).to.equal(1);
     obs.unobserve(observer);
-    obs.notify(new Action("a"));
+    obs.notify(new CoreEvent("a"));
     expect(i).to.equal(1);
   });
 });

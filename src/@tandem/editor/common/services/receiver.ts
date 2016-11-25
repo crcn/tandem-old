@@ -1,6 +1,5 @@
 import {
   inject,
-  Action,
   Injector,
   LogAction,
   InjectorProvider,
@@ -9,7 +8,7 @@ import {
 } from "@tandem/common";
 
 import { BaseApplicationService } from "@tandem/core";
-import { SequenceBus, DuplexStream, CallbackDispatcher } from "@tandem/mesh";
+import { SequenceBus, DuplexStream, CallbackDispatcher, IMessage } from "@tandem/mesh";
 
 // Command pattern receiver
 export class ReceiverService extends BaseApplicationService {
@@ -17,9 +16,9 @@ export class ReceiverService extends BaseApplicationService {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  dispatch(action: Action) {
+  dispatch(action: IMessage) {
     const commands = CommandFactoryProvider.findAllByAction(action, this._injector).map((dep) => {
-      return new CallbackDispatcher((message: Action) => {
+      return new CallbackDispatcher((message: IMessage) => {
         return dep.create().execute(message)
       });
     });

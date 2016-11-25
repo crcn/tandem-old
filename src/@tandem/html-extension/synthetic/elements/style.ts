@@ -1,6 +1,6 @@
 import { omit } from "lodash";
 import * as React from "react";
-import { Action, CSS_MIME_TYPE } from "@tandem/common";
+import { CSS_MIME_TYPE } from "@tandem/common";
 import {
   parseCSS,
   evaluateCSS,

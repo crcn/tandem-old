@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/messages";
+import { IMessage } from "@tandem/mesh";
 import { KeyBinding } from "./base";
 import { Store } from "@tandem/editor/browser/models";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
@@ -11,7 +11,7 @@ import { SelectAllRequest, SetToolRequest, ZoomInRequest, ZoomOutRequest, Remove
 class ToggleLeftSidebarCommand extends BaseCommand {
   @inject(StoreProvider.ID)
   private _store: Store;
-  execute(action: Action) {
+  execute(action: IMessage) {
     this._store.settings.toggle(SettingKeys.HIDE_LEFT_SIDEBAR);
   }
 }
@@ -19,19 +19,19 @@ class ToggleLeftSidebarCommand extends BaseCommand {
 class ToggleRightSidebarCommand extends BaseCommand {
   @inject(StoreProvider.ID)
   private _store: Store;
-  execute(action: Action) {
+  execute(action: IMessage) {
     this._store.settings.toggle(SettingKeys.HIDE_RIGHT_SIDEBAR);
   }
 }
 
 export const keyBindingsProviders = [
   new GlobalKeyBindingProvider("meta+=", class ZoomInCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: IMessage) {
       this.bus.dispatch(new ZoomInRequest());
     }
   }),
   new GlobalKeyBindingProvider([POINTER_TOOL_KEY_CODE, "escape"], class SetPointerToolCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: IMessage) {
 
       // slight delay to enable other tools to catch escape key if it' s hit - important
       // for text editing tool particularly
@@ -41,22 +41,22 @@ export const keyBindingsProviders = [
     }
   }),
   new GlobalKeyBindingProvider("meta+-", class ZoomOutCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: IMessage) {
       this.bus.dispatch(new ZoomOutRequest());
     }
   }),
   new GlobalKeyBindingProvider("backspace", class DeleteSelectionCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: IMessage) {
       this.bus.dispatch(new RemoveSelectionRequest());
     }
   }),
   new GlobalKeyBindingProvider("meta+a", class DeleteSelectionCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: IMessage) {
       this.bus.dispatch(new SelectAllRequest());
     }
   }),
   new GlobalKeyBindingProvider("meta+x", class CutCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: IMessage) {
       document.execCommand("copy");
       this.bus.dispatch(new RemoveSelectionRequest());
     }

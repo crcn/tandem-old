@@ -9,6 +9,11 @@ IMMEDIATE
 
 Start working on UX around getting started with Tandem and projects.
 
+- [ ] pretty pane
+  - [ ] advanced layout
+- [ ] computed styles
+  - [ ] show corresponding css selectors
+
 - Website
 - artboard tool
 - insert div tool (for html)

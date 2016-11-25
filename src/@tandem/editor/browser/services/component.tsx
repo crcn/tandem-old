@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import { CallbackDispatcher } from "@tandem/mesh";
 import { Store } from "@tandem/editor/browser/models";
-import { inject, Action } from "@tandem/common";
+import { inject, CoreEvent } from "@tandem/common";
 import { StoreProvider } from "@tandem/editor/browser/providers";
 import { RootComponent } from "@tandem/editor/browser/components";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
@@ -22,7 +22,7 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
     this._store.observe(new CallbackDispatcher(this.onRootModelAction.bind(this)));
   }
 
-  onRootModelAction(action: Action) {
+  onRootModelAction(action: CoreEvent) {
     this.requestRender();
   }
 

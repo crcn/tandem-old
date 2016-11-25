@@ -12,7 +12,7 @@ import { AltInputComponent } from "@tandem/editor/browser/components";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import { intersection, flatten } from "lodash";
-import { IInjectable,  Action } from "@tandem/common";
+import { IInjectable } from "@tandem/common";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";

@@ -4,7 +4,7 @@ import { SelectionChangeEvent } from "@tandem/editor/browser/messages";
 import { ParallelBus, CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {
-  Action,
+  CoreEvent,
   inject,
   IPoint,
   bindable,
@@ -148,7 +148,7 @@ export class Workspace extends Observable {
     this.updatePropertiesFromBrowser();
   }
 
-  private onBrowserAction(action: Action) {
+  private onBrowserAction(action: CoreEvent) {
     this.updatePropertiesFromBrowser();
   }
 

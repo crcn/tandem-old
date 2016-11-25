@@ -1,6 +1,6 @@
 import { IDispatcher, RemoteBus, filterFamilyMessage } from "@tandem/mesh";
 import { serialize, deserialize } from "../serialize";
-import { Action } from "../messages";
+import { CoreEvent } from "../messages";
 
 let loadedScripts;
 let lastScriptSrc;

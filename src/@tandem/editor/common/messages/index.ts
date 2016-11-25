@@ -1,7 +1,7 @@
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
 import { RemoteBrowserDocumentMessage, OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
 import {
-  Action,
+  CoreEvent,
   Mutation,
   serialize,
   deserialize,
@@ -16,7 +16,6 @@ import {
 } from "@tandem/common";
 
 import {
-  SandboxAction,
   FileCacheAction,
   ReadFileRequest,
   WatchFileRequest,
@@ -84,7 +83,7 @@ setMessageTarget(EditorFamilyType.MASTER)(DSFindAllRequest);
 addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
 
 @setMessageTarget(EditorFamilyType.MASTER)
-export class GetPrimaryProjectFilePathRequest extends Action {
+export class GetPrimaryProjectFilePathRequest extends CoreEvent {
   static readonly GET_PRIMARY_PROJECT_FILE_PATH = "getPrimaryProjectFilePath";
   constructor() {
     super(GetPrimaryProjectFilePathRequest.GET_PRIMARY_PROJECT_FILE_PATH);
@@ -95,7 +94,7 @@ export class GetPrimaryProjectFilePathRequest extends Action {
 }
 
 @setMessageTarget(EditorFamilyType.MASTER)
-export class GetServerPortRequest extends Action {
+export class GetServerPortRequest extends CoreEvent {
   static readonly GET_SERVER_PORT = "getServerPort";
   constructor() {
     super(GetServerPortRequest.GET_SERVER_PORT);
@@ -116,7 +115,7 @@ export class GetServerPortRequest extends Action {
     return new OpenFileRequest(filePath, selection);
   }
 })
-export class OpenFileRequest extends Action {
+export class OpenFileRequest extends CoreEvent {
   static readonly OPEN_FILE = "openSourceFile";
   constructor(readonly filePath: string, readonly selection?: ISourceLocation) {
     super(OpenFileRequest.OPEN_FILE);
@@ -128,7 +127,7 @@ export class OpenFileRequest extends Action {
 }
 
 @setMessageTarget(EditorFamilyType.MASTER)
-export class OpenProjectRequest extends Action {
+export class OpenProjectRequest extends CoreEvent {
   static readonly OPEN_PROJECT_FILE = "openProjectFile";
   constructor(readonly filePath: string) {
     super(OpenProjectRequest.OPEN_PROJECT_FILE);
@@ -147,7 +146,7 @@ export class OpenProjectRequest extends Action {
     return new ImportFileRequest(filePath, bounds, deserialize(targetObject, injector));
   }
 })
-export class ImportFileRequest extends Action {
+export class ImportFileRequest extends CoreEvent {
   static readonly IMPORT_FILE = "importFile";
   readonly filePath: string;
   constructor(filePath: string, readonly bounds?: BoundingRect, readonly targetObject?: ISyntheticObject) {
@@ -169,7 +168,7 @@ export class ImportFileRequest extends Action {
     return new SelectSourceRequest(filePath, ranges);
   }
 })
-export class SelectSourceRequest extends Action {
+export class SelectSourceRequest extends CoreEvent {
   static readonly SELECT_SOURCE = "selectSource";
   constructor(readonly filePath: string, readonly ranges: ISourceLocation[]) {
     super(SelectSourceRequest.SELECT_SOURCE);

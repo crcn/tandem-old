@@ -10,11 +10,11 @@ import { PostDSMessage } from "@tandem/common/messages";
 import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   FilterBus,
-  readAllChunks,
   readOneChunk,
-  CallbackDispatcher,
   DSFindRequest,
+  readAllChunks,
   DSUpdateRequest,
+  CallbackDispatcher,
   DSInsertRequest } from "@tandem/mesh";
 
 // TODO - remove global listener
@@ -25,7 +25,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
   public query: Object;
   public createActiveRecord: (source: U) => T;
   private _bus: IBrokerBus;
-  private _globalActionObserver: IDispatcher<any, any>;
+  private _globalMessageObserver: IDispatcher<any, any>;
 
   private constructor(...items: T[]) {
     super();
@@ -39,7 +39,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     this.collectionName = collectionName;
     this._bus = PrivateBusProvider.getInstance(injector);
     this.createActiveRecord = createActiveRecord;
-    this._globalActionObserver = new FilterBus((action: PostDSMessage) => {
+    this._globalMessageObserver = new FilterBus((action: PostDSMessage) => {
       return (action.type === DSUpdateRequest.DS_UPDATE || action.type === DSInsertRequest.DS_INSERT || action.type === PostDSMessage.DS_DID_UPDATE || action.type === PostDSMessage.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data);
     }, new CallbackDispatcher(this.onPostDSMessage.bind(this)));
     this.query = query || {};
@@ -65,13 +65,13 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     // TODO - this is very smelly. Collections should not be registering themselves
     // to the global message bus. Instead they should be registering themselves to a DS manager
     // which handles all incomming and outgoing DS actions from the message bus.
-    this._bus.register(this._globalActionObserver);
+    this._bus.register(this._globalMessageObserver);
 
 
     return this._sync = {
       dispose: () => {
         this._sync = undefined;
-        this._bus.unregister(this._globalActionObserver);
+        this._bus.unregister(this._globalMessageObserver);
       }
     }
   }

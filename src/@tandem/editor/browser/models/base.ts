@@ -5,7 +5,7 @@ import {
   File,
   IPoint,
   inject,
-  Action,
+  CoreEvent,
   bindable,
   BubbleDispatcher,
   Transform,
@@ -39,7 +39,7 @@ export abstract class BaseEditorTool implements IWorkspaceTool, IInjectable {
 
   dispose() { }
 
-  dispatch(action: Action) {
+  dispatch(action: CoreEvent) {
     if (this[action.type]) {
       return this[action.type](action);
     }

@@ -22,7 +22,7 @@ import { CallbackDispatcher } from "@tandem/mesh";
 import { IDispatcher } from "@tandem/mesh";
 
 import {
-  Action,
+  CoreEvent,
   inject,
   Logger,
   loggable,
@@ -124,7 +124,7 @@ export class DependencyGraphWatcher extends Observable {
   }
 
 
-  private onDependencyEvent(action: Action) {
+  private onDependencyEvent(action: CoreEvent) {
     if (this.status && this.status.type === Status.LOADING) return;
     this.waitForAllDependencies["clear"]();
     this.waitForAllDependencies();

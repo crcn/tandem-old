@@ -22,7 +22,6 @@ import {
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {
-  Action,
   inject,
   Logger,
   Status,

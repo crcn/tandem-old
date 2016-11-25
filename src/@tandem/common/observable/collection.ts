@@ -1,7 +1,7 @@
 import { Observable } from "./index";
 import { IObservable } from "../observable";
 import { BubbleDispatcher } from "@tandem/common/dispatchers";
-import { Action, MetadataChangeEvent } from "@tandem/common/messages";
+import { CoreEvent, MetadataChangeEvent } from "@tandem/common/messages";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ArrayMutation, ArrayInsertMutation, ArrayRemoveMutation, ArrayUpdateMutation } from "@tandem/common/utils";
 
@@ -24,7 +24,7 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
     this._observable.unobserve(actor);
   }
 
-  notify(action: Action) {
+  notify(action: CoreEvent) {
     return this._observable.notify(action);
   }
 

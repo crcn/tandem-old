@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/messages";
+import { CoreEvent } from "@tandem/common/messages";
 import { IObservable } from "./base";
 import { IDispatcher } from "@tandem/mesh";
 
@@ -50,18 +50,18 @@ export class Observable implements IObservable {
     }
   }
 
-  public notify(action: Action) {
-    if (action.canPropagate === false) return;
-    if (action.target && action.bubbles === false) return;
-    action.currentTarget = this._target;
+  public notify(event: CoreEvent) {
+    if (event.canPropagate === false) return;
+    if (event.target && event.bubbles === false) return;
+    event.currentTarget = this._target;
     if (!this._observers) return;
-    if (!Array.isArray(this._observers)) return this._observers.dispatch(action);
+    if (!Array.isArray(this._observers)) return this._observers.dispatch(event);
 
     // fix case where observable unlistens and re-listens to events during a notifiction
     const observers = this._observers.concat();
     for (let i = observers.length; i--; ) {
-      if (action.canPropagateImmediately === false) break;
-      observers[i].dispatch(action);
+      if (event.canPropagateImmediately === false) break;
+      observers[i].dispatch(event);
     }
   }
 }

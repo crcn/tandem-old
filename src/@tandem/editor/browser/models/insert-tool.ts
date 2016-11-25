@@ -3,7 +3,7 @@ import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { BaseEditorTool, IWorkspaceTool } from "@tandem/editor/browser/models";
 import { MouseAction, SetToolRequest, SelectRequest } from "@tandem/editor/browser/messages";
 import {
-  Action,
+  CoreEvent,
   inject,
   startDrag,
   PrivateBusProvider,

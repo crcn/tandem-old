@@ -1,13 +1,13 @@
 import * as path from "path";
 
-import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
+import { CallbackDispatcher, IDispatcher, IMessage } from "@tandem/mesh";
 import { debounce } from "lodash";
 
 import {
-  Action,
   Status,
   isMaster,
   bindable,
+  CoreEvent,
   ITreeWalker,
   serializable,
   BoundingRect,
@@ -21,7 +21,6 @@ import {
   DOMNodeEvent,
   ISyntheticBrowser,
   SyntheticDocument,
-  isDOMMutationEvent,
   SyntheticHTMLElement,
   BaseDecoratorRenderer,
   SyntheticDOMRenderer,
@@ -105,7 +104,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     const documentRenderer = new SyntheticDOMRenderer();
     this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
     bindProperty(this._artboardBrowser, "status", this, "status").trigger();
-    this._contentDocumentObserver = new CallbackDispatcher(this.onContentDocumentAction.bind(this));
+    this._contentDocumentObserver = new CallbackDispatcher(this.onContentDocumentEvent.bind(this));
     watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();
   }
@@ -190,8 +189,8 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     this.notify(new DOMNodeEvent(DOMNodeEvent.DOM_NODE_LOADED));
   }
 
-  protected onContentDocumentAction(action: Action) {
-    this.notify(action);
+  protected onContentDocumentEvent(event: CoreEvent) {
+    this.notify(event);
   }
 }
 

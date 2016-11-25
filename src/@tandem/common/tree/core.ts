@@ -2,7 +2,7 @@ import { ITreeNode } from "./base";
 import { ITreeWalker, IWalkable } from "./walker";
 import { Observable, IObservable } from "@tandem/common/observable";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
-import { Action, Mutation, InsertChildMutation, RemoveChildMutation } from "@tandem/common/messages";
+import { CoreEvent, Mutation, InsertChildMutation, RemoveChildMutation } from "@tandem/common/messages";
 
 export { ITreeNode };
 
@@ -151,7 +151,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return <T>new TreeNode<T>();
   }
 
-  protected onChildAction(action: Action) {
+  protected onChildAction(action: CoreEvent) {
     this.notify(action);
   }
 

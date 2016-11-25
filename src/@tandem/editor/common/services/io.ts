@@ -1,8 +1,7 @@
 import * as sift from "sift";
 import { serialize, deserialize } from "@tandem/common/serialize";
-import { ParallelBus, CallbackDispatcher, FilterBus, SocketIOBus, filterFamilyMessage } from "@tandem/mesh";
+import { ParallelBus, IMessage, CallbackDispatcher, FilterBus, SocketIOBus, filterFamilyMessage } from "@tandem/mesh";
 import {
-  Action,
   Logger,
   loggable,
   InitializeRequest,
@@ -31,9 +30,9 @@ export class IOService<T extends  IEditorCommonConfig> extends CoreApplicationS
     // setup the bus which wil facilitate in all
     // transactions between the remote service
     const remoteBus = new SocketIOBus({ family: this.config.family, connection, testMessage: filterFamilyMessage }, {
-      dispatch: (action: Action) => {
+      dispatch: (message: IMessage) => {
         // attach a flag so that the action does not get dispatched again
-        return this.bus.dispatch(Object.assign(action, { $$remote: true }));
+        return this.bus.dispatch(Object.assign(message, { $$remote: true }));
       }
     }, { serialize, deserialize });
 

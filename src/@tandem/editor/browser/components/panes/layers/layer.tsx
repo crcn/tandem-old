@@ -10,7 +10,7 @@ import { LayerLabelComponentFactoryProvider } from "@tandem/editor/browser/provi
 import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SyntheticDOMNode, SyntheticDOMContainer } from "@tandem/synthetic-browser";
 import {
-  Action,
+  CoreEvent,
   Injector,
   flattenTree,
   traverseTree,
@@ -331,7 +331,7 @@ export default class LayerComponent extends BaseApplicationComponent<{ node: Syn
     // this.props.entity.observe(this._entityObserver);
   }
 
-  dispatch(action: Action) {
+  dispatch(action: CoreEvent) {
     // // when the select action is dispatchd, take all items
     // // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
     // if (action.type === SelectRequest.SELECT) {

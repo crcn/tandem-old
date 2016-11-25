@@ -12,7 +12,7 @@ import {
   loggable,
   document,
   Injector,
-  filterAction,
+  filterMessage,
   PostDSMessage,
   InjectorProvider,
   ApplicationServiceProvider,

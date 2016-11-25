@@ -10,10 +10,9 @@ import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { kebabCase, camelCase } from "lodash";
 import { CSSPrettyPaneComponent } from "./pretty";
 import { DOMElements, MatchedStyleRule } from "@tandem/html-extension/collections";
-import { BaseApplicationComponent, Action } from "@tandem/common";
+import { BaseApplicationComponent, MutationEvent } from "@tandem/common";
 import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import {
-  isDOMMutationEvent,
   MatchedCSSStyleRule,
   SyntheticDOMElement,
   SyntheticCSSStyleRule,
@@ -212,8 +211,8 @@ class MatchedCSSRulesCache {
     this._matchedRules = getMatchingStyleRules(this._target);
   }
 
-  private onDocumentEvent(event: Action) {
-    if (!isDOMMutationEvent(event) || event.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) return;
+  private onDocumentEvent(event: MutationEvent<any>) {
+    if (!event.mutation || event.mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) return;
     this.matchRules();
   }
 }

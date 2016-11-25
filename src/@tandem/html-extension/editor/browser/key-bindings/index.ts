@@ -1,5 +1,5 @@
 import { inject } from "@tandem/common/decorators";
-import { Action } from "@tandem/common/messages";
+import { CoreEvent } from "@tandem/common/messages";
 import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
 import { BaseCommand } from "@tandem/common/commands";
 import { SetToolRequest } from "@tandem/editor/browser/messages";
@@ -41,7 +41,7 @@ function createElementInsertToolClass(options) {
 
 export const keyBindingProvider = [
   new GlobalKeyBindingProvider(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: CoreEvent) {
       // this.bus.dispatch(new SetToolRequest(this.injector.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
     }
   })
@@ -58,7 +58,7 @@ for (const key in insertElementKeyBindings) {
 
 function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
   keyBindingProvider.push(new GlobalKeyBindingProvider(key, class SetPointerToolCommand extends BaseCommand {
-    execute(action: Action) {
+    execute(action: CoreEvent) {
       this.bus.dispatch(new SetToolRequest(<ClassFactoryProvider>this.injector.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
     }
   }));

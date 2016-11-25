@@ -1,4 +1,4 @@
-import { Action } from "@tandem/common/messages";
+import { CoreEvent } from "@tandem/common/messages";
 import { IBus, DuplexStream, ReadableStream, WritableStream } from "@tandem/mesh";
 
 
@@ -9,7 +9,7 @@ export class LimitBus implements IBus<any> {
 
   constructor(readonly max: number, readonly actor: IBus<any>) { }
 
-  dispatch(action: Action) {
+  dispatch(action: CoreEvent) {
     return new DuplexStream((input, output) => {
       if (this._running > this.max) {
         this._queue.push({ action, input, output });

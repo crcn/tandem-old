@@ -1,7 +1,7 @@
 import {
   inject,
   Logger,
-  Action,
+  CoreEvent,
   ICommand,
   loggable,
 } from "@tandem/common";

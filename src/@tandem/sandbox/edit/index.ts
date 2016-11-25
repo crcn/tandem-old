@@ -6,18 +6,19 @@ import { IFileSystem } from "../file-system";
 import { FileCacheProvider, ContentEditorFactoryProvider, ProtocolURLResolverProvider, FileSystemProvider } from "../providers";
 import { ISyntheticObject, ISyntheticSourceInfo, syntheticSourceInfoEquals } from "../synthetic";
 import {
-  Action,
   inject,
-  Mutation,
   Logger,
+  Mutation,
   Injector,
   loggable,
   serialize,
+  CoreEvent,
   Observable,
   deserialize,
   flattenTree,
   serializable,
   ISerializable,
+  MutationEvent,
   getSerializeType,
   MimeTypeProvider,
   InjectorProvider,
@@ -121,7 +122,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   public applyMutationsTo(target: T & IEditable, each?: (T, mutation: Mutation<ISyntheticObject>) => void) {
 
-    // need to setup an editor here since some actions may be intented for
+    // need to setup an editor here since some events may be intented for
     // children of the target object
     const editor = new SyntheticObjectTreeEditor(target, each);
     editor.applyMutations(this.mutations);
@@ -129,7 +130,7 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   /**
    * creates a new diff edit -- note that diff edits can only contain diff
-   * actions since any other action may foo with the diffing.
+   * events since any other event may foo with the diffing.
    *
    * @param {T} newSynthetic
    * @returns
@@ -148,14 +149,14 @@ export abstract class BaseContentEdit<T extends ISyntheticObject> {
 
   protected addChange<T extends Mutation<ISyntheticObject>>(mutation: T) {
 
-    // locked to prevent other actions busting this edit.
+    // locked to prevent other events busting this edit.
     if (this._locked) {
       throw new Error(`Cannot modify a locked edit.`);
     }
 
     this._mutations.push(mutation);
 
-    // return the action so that it can be edited
+    // return the event so that it can be edited
     return mutation;
   }
 
@@ -207,7 +208,7 @@ export class FileEditor {
 
     const mutationsByFilePath = {};
 
-    // find all actions that are part of the same file and
+    // find all events that are part of the same file and
     // batch them together. Important to ensure that we do not trigger multiple
     // unecessary updates to any file listeners.
     for (const mutation of changes) {
@@ -247,7 +248,7 @@ export class FileEditor {
         const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
 
         const changes = mutationsByFilePath[filePath];
-        this.logger.info(`Applying file edit.changes ${filePath}: >>`, changes.map(action => action.type).join(" "));
+        this.logger.info(`Applying file edit.changes ${filePath}: >>`, changes.map(event => event.type).join(" "));
 
         const newContent    = contentEditor.applyMutations(changes);
 
@@ -265,7 +266,7 @@ export class FileEditor {
           this.logger.debug(`No changes to ${filePath}`);
         }
       } catch(e) {
-        this.logger.error(`Error trying to apply ${changes.map(action => action.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
+        this.logger.error(`Error trying to apply ${changes.map(event => event.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
       }
     }
 
@@ -358,8 +359,11 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
   private _shouldDiffAgain: boolean;
   private _ticking: boolean;
 
-  constructor(private onChange: (changes: Mutation<ISyntheticObject>[]) => any, private onClone: (clone: T) => any, private filterAction?: (action: Action) => boolean) {
-    this._targetObserver = new CallbackDispatcher(this.onTargetAction.bind(this));
+  constructor(private onChange: (changes: Mutation<ISyntheticObject>[]) => any, private onClone: (clone: T) => any, private filterMessage?: (event: CoreEvent) => boolean) {
+    this._targetObserver = new CallbackDispatcher(this.onTargetEvent.bind(this));
+    if (!this.filterMessage) {
+      this.filterMessage = (event: MutationEvent<any>) => !!event.mutation;
+    }
   }
 
   get target() {
@@ -388,9 +392,9 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
   }
 
 
-  private onTargetAction(action: Action) {
+  private onTargetEvent(event: CoreEvent) {
 
-    if (!this.filterAction || this.filterAction(action)) {
+    if (!this.filterMessage || this.filterMessage(event)) {
 
       // debounce to batch multiple operations together
       this.requestDiff();

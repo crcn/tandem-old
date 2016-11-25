@@ -1,10 +1,10 @@
 import { ModuleHistory } from "@tandem/history-extension/history";
 import {
-  Action,
   ICommand,
   inject,
   IInjectable,
 } from "@tandem/common";
+import { IMessage } from "@tandem/mesh";
 
 
 export class InitializeHistoryCommand implements ICommand {
@@ -15,7 +15,7 @@ export class InitializeHistoryCommand implements ICommand {
 
   }
 
-  execute(action: Action) {
+  execute(action: IMessage) {
     return this._history.initialize();
   }
 }
@@ -27,7 +27,7 @@ export class UndoComand implements ICommand {
 
   }
 
-  execute(action: Action) {
+  execute(action: IMessage) {
     this._history.position--;
   }
 }
@@ -39,7 +39,7 @@ export class RedoCommand implements ICommand {
 
   }
 
-  execute(action: Action) {
+  execute(action: IMessage) {
     this._history.position++;
   }
 }

@@ -1,6 +1,6 @@
 import { bindable } from "./bindable";
 import { expect } from "chai";
-import { Action } from "../messages";
+import { IMessage } from "@tandem/mesh";
 import { Observable } from "../observable";
 
 describe(__filename + "#", () => {
@@ -11,13 +11,13 @@ describe(__filename + "#", () => {
     }
 
     const item = new Item();
-    let lastAction: Action;
+    let lastMessage:  IMessage;
     item.observe({
-      dispatch: action => lastAction = action
+      dispatch: message => lastMessage = message
     });
 
     item.name = "john";
-    expect(lastAction.type).to.equal("mutation");
+    expect(lastMessage.type).to.equal("mutation");
 
   });
 });

@@ -75,6 +75,7 @@ export class ComputedPropertiesPaneComponent extends React.Component<{ workspace
   }
 }
 
+// TODO - pseudo elements
 export class PrettyInspectorPaneComponent extends React.Component<any, any> {
   render() {
     return <div className="pretty">
@@ -90,51 +91,40 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
         </div>
 
         <div className="row">
-          <div className="col-1 label">
-            W
+          <div className="col-2 label">
+            Display
           </div>
-          <div className="col-5">
-            <input type="text" value="10px" />
-          </div>
-          <div className="col-1 label">
-            H
-          </div>
-          <div className="col-5">
-            <input type="text" value="10%" />
+          <div className="col-10">
+            <input type="text" value="Block" />
           </div>
         </div>
-        <div className="hide">
-          <div className="row">
-            <div className="col-1 label">
-              &lt;
-            </div>
-            <div className="col-5">
-              <input type="text" value="10px" />
-            </div>
-            <div className="col-1 label">
-              &lt;
-            </div>
-            <div className="col-5">
-              <input type="text" value="10%" />
-            </div>
-            <div className="col-1">
-            </div>
+
+        <div className="row">
+          <div className="col-2 label">
+            Left
           </div>
-          <div className="row">
-            <div className="col-1 label">
-              &gt;
-            </div>
-            <div className="col-5">
-              <input type="text" value="10px" />
-            </div>
-            <div className="col-1 label">
-              &gt;
-            </div>
-            <div className="col-5">
-              <input type="text" value="10%" />
-            </div>
-            <div className="col-1">
-            </div>
+          <div className="col-4">
+            <input type="text" value="" />
+          </div>
+          <div className="col-2 label">
+            Top
+          </div>
+          <div className="col-4">
+            <input type="text" value="" />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2 label">
+            Width
+          </div>
+          <div className="col-4">
+            <input type="text" value="10px" />
+          </div>
+          <div className="col-2 label">
+            Height
+          </div>
+          <div className="col-4">
+            <input type="text" value="10%" />
           </div>
         </div>
       </div>
@@ -152,46 +142,57 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
         </div>
 
         <div className="row">
-          <div className="col-1 label">
-            <i className="glyphicon glyphicon-font" />
+          <div className="col-2 label">
+            Font
           </div>
-          <div className="col-11">
+          <div className="col-10">
             <input type="text" value="Helvetica" />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2 label">
+            Weight
+          </div>
+          <div className="col-10">
+            <input type="text" value="100 - Thin" />
           </div>
         </div>
 
         <div className="row">
-          <div className="col-1 label">
-            <i className="glyphicon glyphicon-text-size" />
+          <div className="col-2 label">
+            Size
           </div>
-          <div className="col-5">
-            <input type="text" />
+          <div className="col-4">
+            <input type="text" value="0.9em" />
           </div>
-          <div className="col-1 label">
-            <i className="glyphicon glyphicon-text-color" />
+          <div className="col-2 label">
+            Color
           </div>
-          <div className="col-5">
+          <div className="col-4">
             <FillInputComponent />
           </div>
         </div>
 
         <div className="row">
-          <div title="letter spacing" className="col-1 label">
-            <i className="glyphicon glyphicon-text-width" />
+          <div className="col-2 label">
+            Spacing
           </div>
-          <div className="col-5">
-            <input type="text" />
+          <div className="col-4">
+            <input type="text" value="0.9em" />
           </div>
-          <div title="line height" className="col-1 label">
-            <i className="glyphicon glyphicon-text-height" />
+          <div className="col-2 label">
+            Line
           </div>
-          <div className="col-5">
-            <input type="text" />
+          <div className="col-4">
+            <input type="text" value="0.9em" />
           </div>
         </div>
 
         <div className="row">
-          <div className="col-7">
+          <div className="col-2 label">
+            Align
+          </div>
+          <div className="col-10">
             <div className="row button-group text-center no-padding">
               <div className="col-3">
                 <i className="glyphicon glyphicon-align-left" />
@@ -204,19 +205,6 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
               </div>
               <div className="col-3">
                 <i className="glyphicon glyphicon-align-justify" />
-              </div>
-            </div>
-          </div>
-          <div className="col-5">
-            <div className="row button-group text-center no-padding">
-              <div className="col-4">
-                <i className="glyphicon glyphicon-align-left" />
-              </div>
-              <div className="col-4 selected">
-                <i className="glyphicon glyphicon-align-center" />
-              </div>
-              <div className="col-4">
-                <i className="glyphicon glyphicon-align-right" />
               </div>
             </div>
           </div>

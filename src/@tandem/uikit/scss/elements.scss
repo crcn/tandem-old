@@ -55,18 +55,18 @@ a {
   width: 100%;
 }
 
-
 .button-group {
   @extend .input;
   border: none;
   position: relative;
+  line-height: inherit;
   background: $border-color;
   color: white;
   text-align: center;
-  & i {
-    padding: $padding-s;
-    vertical-align: top;
+  & .col {
+    padding: $padding-s + 1 $padding-r;
   }
+  cursor: pointer;
 }
 
 input[type="text"] {

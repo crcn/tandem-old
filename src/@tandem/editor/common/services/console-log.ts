@@ -10,14 +10,14 @@ chalk["" + "enabled"] = true;
 
 import {
   Logger,
-  Action,
+  CoreEvent,
   LogLevel,
   serialize,
   LogAction,
   serializable,
 } from "@tandem/common";
 
-export class ConsoleLogServiceAction extends Action {
+export class ConsoleLogServiceAction extends CoreEvent {
   static readonly HIGHLIGHT_LOG = "hlog"; // abbreviated to make
   constructor(type: string, readonly match: string) {
     super(type);

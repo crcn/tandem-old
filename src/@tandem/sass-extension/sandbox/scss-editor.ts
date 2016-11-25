@@ -1,7 +1,6 @@
 import * as postcss from "postcss";
 import * as syntax from "postcss-scss";
 import {
-  Action,
   inject,
   Mutation,
   Injector,
@@ -36,9 +35,8 @@ import {
   BaseContentEditor,
 } from "@tandem/sandbox";
 
-// TODO - move this to synthetic-browser
-// TODO - may need to split this out into separate CSS editors. Some of this is specific
-// to SASS
+
+// TODO - follow scss variables to their original declaration
 export class SCSSEditor extends CSSEditor {
 
   [SyntheticCSSStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<ISyntheticObject>) {

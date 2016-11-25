@@ -1,6 +1,5 @@
 import {
   inject,
-  Action,
   Logger,
   Injector,
   loggable,
@@ -10,7 +9,7 @@ import {
   PrivateBusProvider,
 } from "@tandem/common";
 
-import {  IDispatcher, IMessageTester } from "@tandem/mesh";
+import {  IDispatcher, IMessageTester, IMessage } from "@tandem/mesh";
 import { ApplicationConfigurationProvider } from "./providers";
 
 /**
@@ -30,7 +29,7 @@ export abstract class BaseApplicationService implements  IDispatcher<any, any>,
 
   private _acceptedMessageTypes: string[];
 
-  dispatch(message: Action) {
+  dispatch(message: IMessage) {
     const method = this[message.type];
     if (method) {
       if (this.logger) {

@@ -23,7 +23,6 @@ import {
 } from "./markup";
 
 import {
-  Action,
   bindable,
   Injector,
   Mutation,

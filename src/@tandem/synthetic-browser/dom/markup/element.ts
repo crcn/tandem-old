@@ -11,7 +11,6 @@ import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMContainer, SyntheticDOMContainerEdit, DOMContainerEditor, isDOMContainerMutation, SyntheticDOMContainerMutationTypes, SyntheticDOMContainerEditor } from "./container";
 import {
-  Action,
   BubbleDispatcher,
   serialize,
   diffArray,

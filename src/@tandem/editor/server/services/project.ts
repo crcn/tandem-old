@@ -6,7 +6,7 @@ import {
   loggable,
   document,
   Injector,
-  filterAction,
+  filterMessage,
   InjectorProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
