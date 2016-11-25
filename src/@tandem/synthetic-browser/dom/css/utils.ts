@@ -137,7 +137,7 @@ export function getMergedCSSStyleRule(element: SyntheticHTMLElement) {
   const addStyle = (current: SyntheticHTMLElement, match: MatchedCSSStyleRuleType) => {
     const inherited = current !== element;
     for (const property of match.style) {
-      if (!inherited || (isInheritedCSSStyleProperty(property) && !result.getDeclarationMainSourceRule(property))) {
+      if (!inherited || isInheritedCSSStyleProperty(property) && !result.getDeclarationMainSourceRule(property)) {
         result.setProperty(match, property, match.style[property]);
       }
     }

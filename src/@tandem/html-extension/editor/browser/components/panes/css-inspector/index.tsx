@@ -168,7 +168,7 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
       <div className="container section">
         <div className="row title">
           <div className="col-12">
-            Typography
+            Typograghy
             <div className="controls">
               <i className="ion-more" />
             </div>
@@ -248,11 +248,21 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
       <hr />
 
       <div className="container section">
-        <div className="row title">
-          Appearance
+        <div className="row">
+          <div className="col-2 label">
+            Opacity
+          </div>
+          <div className="col-10">
+            <input type="text" value="0.9" />
+          </div>
         </div>
         <div className="row">
-          opacity, blend mode
+          <div className="col-2 label">
+            Blend
+          </div>
+          <div className="col-10">
+            <input type="text" value="--" />
+          </div>
         </div>
       </div>
 
@@ -260,20 +270,70 @@ export class PrettyInspectorPaneComponent extends React.Component<any, any> {
 
       <div className="container section">
         <div className="row title">
-          Background
+          <div className="col-12">
+            Backgrounds
+            <div className="controls">
+              <i className="ion-plus-round" />
+            </div>
+          </div>
         </div>
+
+        <div className="row">
+          <div className="col-2">
+            <FillInputComponent />
+          </div>
+          <div className="col-10">
+            <input type="text" value="multiply" />
+          </div>
+        </div>
+
       </div>
 
       <hr />
 
       <div className="container section">
         <div className="row title">
-          Box Shadows
+          <div className="col-12">
+            Box shadows
+            <div className="controls">
+              <i className="ion-plus-round" />
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2">
+            <FillInputComponent />
+          </div>
+          <div className="col-10">
+            h shadow, v shadow, blur, spread, color, inset
+          </div>
         </div>
       </div>
+
+
+      <hr />
+
+      <div className="container section">
+        <div className="row title">
+          <div className="col-12">
+            Filters
+            <div className="controls">
+              <i className="ion-plus-round" />
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            contrast
+          </div>
+        </div>
+      </div>
+
+      
     </div>
   }
 }
+
 
 export class FillInputComponent extends React.Component<any, any> {
   render() {
