@@ -23,6 +23,12 @@
   & .section {
     .title {
 
+      width: 100%;
+      & .controls {
+        float: right;
+        display: block;
+      }
+
       padding-bottom: $padding-r;
       font-size: 0.9em;
       font-weight: 600;
@@ -42,5 +48,12 @@
         line-height: 22px;
       }
     }
+  }
+
+  & .fill-input {
+    @extend .input;
+    height: 23px;
+    background: #8467D4;
+    width: 100%;
   }
 }

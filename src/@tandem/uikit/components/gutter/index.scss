@@ -12,14 +12,13 @@
     padding: $padding-r $padding-r;
     font-weight: 600;
     font-size: 0.89em;
+  }
 
-    .controls{
-      display: none;
-      float: right;
-      cursor: pointer;
-      &.show {
-        display: block;
-      }
+  .controls {
+    float: right;
+    cursor: pointer;
+    &.show {
+      display: block;
     }
   }
 
