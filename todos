@@ -105,12 +105,7 @@ FEATURES
 
 CORE
   - *[ ] right click edit text
-  - *[ ] component templates when dragging & dropping
-  - *[ ] ability to hide sidebars
   - [ ] config for scanning application for components
-  - [ ] folder navigator pane
-    - [ ] dnd components and files onto page
-  - [ ] SVG support
   - [ ] History scrubber
 
 MEASUREMENT TOOLS
@@ -136,7 +131,6 @@ OPTIMIZATIONS
   - [ ] have data store records owned
   - [ ] tail oplog for DS operations
   - [ ] store workspaces in data store
-  - [ ] Have separate node workers for synthetic browsers
 
 DOCUMENTS GUTTER
   - [ ] layers

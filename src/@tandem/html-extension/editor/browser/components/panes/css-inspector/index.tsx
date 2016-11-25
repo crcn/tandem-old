@@ -13,7 +13,7 @@ import { ApplyFileEditRequest } from "@tandem/sandbox";
 export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
 
   state = {
-    pane: "computed"
+    pane: "pretty"
   };
 
   selectTab(id: string) {
