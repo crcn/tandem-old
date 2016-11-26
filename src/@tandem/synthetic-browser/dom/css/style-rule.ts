@@ -3,7 +3,7 @@ import { kebabCase } from "lodash";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
-import { ISerializedSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration, isValidCSSDeclarationProperty } from "./declaration";
+import { ISerializedSyntheticCSSStyle, SyntheticCSSStyle, isValidCSSDeclarationProperty } from "./style";
 import {
   Mutation,
   serialize,
@@ -20,7 +20,7 @@ import {
 
 export interface ISerializedSyntheticCSSStyleRule {
   selector: string;
-  style: ISerializedContent<ISerializedSyntheticCSSStyleDeclaration>
+  style: ISerializedContent<ISerializedSyntheticCSSStyle>
 }
 
 class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule> {
@@ -119,9 +119,9 @@ export class SyntheticCSSStyleRuleEditor extends BaseEditor<SyntheticCSSStyleRul
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
 export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
-  constructor(public selector: string, public style: SyntheticCSSStyleDeclaration) {
+  constructor(public selector: string, public style: SyntheticCSSStyle) {
     super();
-    if (!style) style = this.style = new SyntheticCSSStyleDeclaration();
+    if (!style) style = this.style = new SyntheticCSSStyle();
     style.$parentRule = this;
   }
 

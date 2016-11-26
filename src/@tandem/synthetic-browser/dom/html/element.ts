@@ -1,5 +1,5 @@
 import { SyntheticDocument } from "../document";
-import { SyntheticCSSStyleDeclaration } from "../css";
+import { SyntheticCSSStyle } from "../css";
 import { BoundingRect, serializable, IPoint } from "@tandem/common";
 
 import {
@@ -13,17 +13,17 @@ import {
 
 // TODO - proxy dataset
 @serializable()
-export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCSSStyleDeclaration> {
+export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCSSStyle> {
 
-  private _style: SyntheticCSSStyleDeclaration;
-  private _styleProxy: SyntheticCSSStyleDeclaration;
+  private _style: SyntheticCSSStyle;
+  private _styleProxy: SyntheticCSSStyle;
   private _classList: string[];
   protected _native: HTMLElement;
 
 
   constructor(ns: string, tagName: string) {
     super(ns, tagName);
-    this._style = new SyntheticCSSStyleDeclaration();
+    this._style = new SyntheticCSSStyle();
   }
 
   getBoundingClientRect() {
@@ -34,7 +34,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     return this._classList;
   }
 
-  get style(): SyntheticCSSStyleDeclaration {
+  get style(): SyntheticCSSStyle {
     return this._styleProxy || this._resetStyleProxy();
   }
 
@@ -62,7 +62,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     this.setAttribute("text", value);
   }
 
-  set style(value: SyntheticCSSStyleDeclaration) {
+  set style(value: SyntheticCSSStyle) {
     this._style.clearAll();
     Object.assign(this._style, value);
     this.onStyleChange();
@@ -96,7 +96,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
 
   private _resetStyleFromAttribute() {
     this._style.clearAll();
-    Object.assign(this._style, SyntheticCSSStyleDeclaration.fromString(this.getAttribute("style") || ""));
+    Object.assign(this._style, SyntheticCSSStyle.fromString(this.getAttribute("style") || ""));
   }
 
   private _resetStyleProxy() {
@@ -126,14 +126,14 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     this.setAttribute("style", this.style.cssText.replace(/[\n\t\s]+/g, " "));
   }
 
-  protected computeCapabilities(style: SyntheticCSSStyleDeclaration): VisibleDOMNodeCapabilities {
+  protected computeCapabilities(style: SyntheticCSSStyle): VisibleDOMNodeCapabilities {
     return new VisibleDOMNodeCapabilities(
       false,
       false
     );
   }
 
-  protected computeAbsoluteBounds(style: SyntheticCSSStyleDeclaration): BoundingRect {
+  protected computeAbsoluteBounds(style: SyntheticCSSStyle): BoundingRect {
     return this.getBoundingClientRect();
   }
 

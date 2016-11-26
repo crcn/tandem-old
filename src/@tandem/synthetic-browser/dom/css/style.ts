@@ -6,7 +6,7 @@ import { SyntheticCSSStyleRuleMutationTypes } from "./style-rule";
 import { ISerializable, serializable, diffArray, ITreeWalker, PropertyMutation } from "@tandem/common";
 import { IContentEdit , ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
-export interface ISerializedSyntheticCSSStyleDeclaration extends SyntheticCSSStyleDeclaration { }
+export interface ISerializedSyntheticCSSStyle extends SyntheticCSSStyle { }
 
 export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: /^\d+$/ }] });
 
@@ -60,7 +60,7 @@ export function isInheritedCSSStyleProperty(name: string) {
 }
 
 @serializable()
-export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSyntheticCSSStyleDeclaration>, ISyntheticObject {
+export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSStyle>, ISyntheticObject {
 
   public $uid: any;
   public $source: any = null;
@@ -403,7 +403,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   }
 
   clone() {
-    const clone = new SyntheticCSSStyleDeclaration();
+    const clone = new SyntheticCSSStyle();
     clone.deserialize(this);
     clone.$uid = this.$uid;
     return clone;
@@ -511,7 +511,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     this.$length = Object.keys(model).length;
   }
 
-  equalTo(declaration: SyntheticCSSStyleDeclaration) {
+  equalTo(declaration: SyntheticCSSStyle) {
     function compare(a, b) {
       for (const key in a) {
         if (!isValidCSSDeclarationProperty(key)) continue;
@@ -546,8 +546,8 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return this.cssText;
   }
 
-  serialize(): ISerializedSyntheticCSSStyleDeclaration {
-    const obj = {} as ISerializedSyntheticCSSStyleDeclaration;
+  serialize(): ISerializedSyntheticCSSStyle {
+    const obj = {} as ISerializedSyntheticCSSStyle;
     for (const key in this) {
       const value = this[key];
       if (typeof value === "object") continue;
@@ -556,7 +556,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return obj;
   }
 
-  deserialize(value: ISerializedSyntheticCSSStyleDeclaration) {
+  deserialize(value: ISerializedSyntheticCSSStyle) {
     Object.assign(this, value);
     this.updatePropertyIndices();
   }
@@ -569,7 +569,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   }
 
   static fromString(source: string) {
-    const decl = new SyntheticCSSStyleDeclaration();
+    const decl = new SyntheticCSSStyle();
     const items = source.split(";");
     for (let i = 0, n = items.length; i < n; i++) {
       const expr = items[i];
@@ -581,8 +581,8 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
     return decl;
   }
 
-  static fromObject(declaration: any): SyntheticCSSStyleDeclaration {
-    const obj = new SyntheticCSSStyleDeclaration();
+  static fromObject(declaration: any): SyntheticCSSStyle {
+    const obj = new SyntheticCSSStyle();
     if (declaration.length) {
       for (let i = 0, n = declaration.length; i < n; i++) {
         const key = declaration[i];

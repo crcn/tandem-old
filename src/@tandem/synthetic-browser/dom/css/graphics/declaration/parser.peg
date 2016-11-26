@@ -1,0 +1,86 @@
+{
+  const {
+    CSSDeclListExpression,
+    CSSDeclCallExpression,
+    CSSDeclColorExpression,
+    CSSDeclDegreeExpression,
+    CSSDeclNumberExpression,
+    CSSDeclLiteralExpression,
+    CSSDeclSpaceListExpression,
+    CSSDeclCommaListExpression,
+    CSSDeclIdentifierExpression,
+    CSSDeclMeasurementExpression,
+  } = require("./ast");
+}
+
+Start
+  = CommaList
+
+CommaList 
+  = first: SpaceList rest: CommaListRest* {
+    return rest.length ? new CSSDeclCommaListExpression([first].concat(rest), location()) : first;
+  }
+
+SpaceList 
+  = first: Expression rest: SpaceListRest* {
+    return new CSSDeclSpaceListExpression([first].concat(rest), location());
+  }
+
+CommaListRest
+  = "," _ expr: SpaceList {
+    return expr;
+  }
+
+SpaceListRest
+  = " " expr: Expression {
+    return expr;
+  }
+
+Expression 
+  = Degree/Measurement/Number/Color/String/Call/Identifier
+
+Measurement 
+  = number: Number unit: ("%"/"cm"/"em"/"ex"/"in"/"mm"/"pc"/"pt"/"px"/"vh"/"vw"/"vmin") {
+    return new CSSDeclMeasurementExpression(number.value, unit, location());
+  }
+
+Degree 
+  = number: Number "deg" {
+    return new CSSDeclDegreeExpression(number.value, location());
+  }
+
+Color 
+  = "#" color: [a-zA-Z0-9]+ {
+    return new CSSDeclColorExpression(text(), location());
+  }
+
+Call
+  = id: Identifier "(" params: CommaList ")" {
+    return new CSSDeclCallExpression(id, params.items || [params], location());
+  }
+
+Identifier 
+  = [^ \(\),]+ {
+    return new CSSDeclIdentifierExpression(text(), location());
+  }
+
+Number 
+  = "-"?("."[0-9]+/[0-9]+("."[0-9]+)?) {
+    return new CSSDeclLiteralExpression(Number(text()), location());
+  }
+
+String
+  = '"' characters:DoubleStringCharacter* '"' { return new CSSDeclLiteralExpression(characters.join(""), location()); }
+  / "'" characters:SingleStringCharacter* "'" { return new CSSDeclLiteralExpression(characters.join(""), location()); }
+
+
+DoubleStringCharacter
+  = !('"' / "\\") . { return text(); }
+  / '\\"'
+
+SingleStringCharacter
+  = !("'" / "\\") . { return text(); }
+  / "\\'"
+
+_
+  = [ \n\r\t]*

@@ -1,7 +1,7 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { BaseContentEdit } from "@tandem/sandbox";
 import { SyntheticCSSAtRule } from "./atrule";
-import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { SyntheticCSSStyle } from "./style";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import {
   Mutation,
@@ -33,7 +33,7 @@ export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
 
   readonly atRuleName = "font-face";
 
-  constructor(public declaration: SyntheticCSSStyleDeclaration) {
+  constructor(public declaration: SyntheticCSSStyle) {
     super();
     declaration.$parentRule = this;
   }
@@ -48,7 +48,7 @@ export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
     }`;
   }
   cloneShallow() {
-    return new SyntheticCSSFontFace(new SyntheticCSSStyleDeclaration());
+    return new SyntheticCSSFontFace(new SyntheticCSSStyle());
   }
 
   countShallowDiffs(target: SyntheticCSSFontFace) {

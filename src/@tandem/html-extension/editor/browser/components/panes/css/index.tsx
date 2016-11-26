@@ -18,12 +18,12 @@ import {
   SyntheticCSSStyleRule,
   getMatchingCSSStyleRules,
   isInheritedCSSStyleProperty,
-  SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyle,
   SyntheticCSSStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
 
 export interface ICSSStyleHashInputProps {
-  style: SyntheticCSSStyleDeclaration;
+  style: SyntheticCSSStyle;
   overridden?: any;
   inherited?: any;
   renderName?: (props: IKeyValueNameComponentProps) => any;

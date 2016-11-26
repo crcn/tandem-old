@@ -1,9 +1,9 @@
 import { DOMElements } from "./dom-elements";
-import { SyntheticHTMLElement, SyntheticCSSStyleDeclaration, DOMNodeType } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement, SyntheticCSSStyle, DOMNodeType } from "@tandem/synthetic-browser";
 
 export class HTMLDOMElements extends DOMElements<SyntheticHTMLElement> {
 
-  get style(): SyntheticCSSStyleDeclaration {
+  get style(): SyntheticCSSStyle {
     const allStyle = {};
     for (const item of <SyntheticHTMLElement[]><any>this) {
       const itemStyle =  item.style;
@@ -15,7 +15,7 @@ export class HTMLDOMElements extends DOMElements<SyntheticHTMLElement> {
         }
       }
     }
-    return SyntheticCSSStyleDeclaration.fromObject(allStyle);
+    return SyntheticCSSStyle.fromObject(allStyle);
   }
 
   static fromArray(items: any): HTMLDOMElements {

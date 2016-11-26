@@ -8,7 +8,7 @@ import "./entry-shims";
 
 import { Injector } from "@tandem/common";
 import { ServiceApplication } from "@tandem/core";
-import { IEditorBrowserConfig, createEditorBrowserProviders } from "./browser";
+import { IEditorBrowserConfig, createEditorBrowserProviders, EditorFamilyType } from "./browser";
 
 // extensions
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/worker";
@@ -20,7 +20,7 @@ const element = document.createElement("div");
 document.body.appendChild(element);
 
 const config: IEditorBrowserConfig = {
-  family: "browser",
+  family: EditorFamilyType.BROWSER,
   element: element,
   server: server,
   log: log

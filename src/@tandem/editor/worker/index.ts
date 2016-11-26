@@ -1,12 +1,13 @@
 import { IDispatcher } from "@tandem/mesh";
 import { ImportFileRequest } from "@tandem/editor/common";
-import { Injector, CommandFactoryProvider } from "@tandem/common";
+import { Injector, CommandFactoryProvider, LoadRequest } from "@tandem/common";
 import { ConsoleLogService, ReceiverService } from "@tandem/editor/common";
 import { RemoteFileSystem, RemoteFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 import { DependencyGraphStrategyProvider, WebpackDependencyGraphStrategy, ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 
 import { IEditorWorkerConfig } from "./config";
+import { LoadProjectConfigCommand } from "./commands";
 import { createCommonEditorProviders } from "../common";
 
 export function createEditorWorkerProviders(config:  IEditorWorkerConfig, dataStore?: IDispatcher<any, any>) {
@@ -14,8 +15,7 @@ export function createEditorWorkerProviders(config:  IEditorWorkerConfig, dataS
     createCommonEditorProviders(),
     createCoreApplicationProviders(config, RemoteFileSystem, RemoteFileResolver),
 
-    // commands
-    // new CommandFactoryProvider(ImportFileRequest.IMPORT_FILE, AddFilesCommand),
+    new CommandFactoryProvider(LoadRequest.LOAD,  LoadProjectConfigCommand),
 
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),

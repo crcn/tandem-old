@@ -1,5 +1,5 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
-import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { SyntheticCSSStyle } from "./style";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import {
   ISerializer,

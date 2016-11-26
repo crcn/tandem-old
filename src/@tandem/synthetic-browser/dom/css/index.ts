@@ -1,4 +1,4 @@
-export * from "./declaration";
+export * from "./style";
 export * from "./evaluate";
 export * from "./parsers";
 export * from "./style-rule";
@@ -9,4 +9,4 @@ export * from "./atrule";
 export * from "./base";
 export * from "./utils";
 export * from "./grouping";
-export * from "./ast";
+export * from "./graphics";

@@ -60,6 +60,8 @@ LAUNCHING
 ----------------------------------
 
 TESTING
+  - [ ] Firefox support
+  - [ ] safari support
   - [ ] TodoMVC examples
   - [ ] actually build apps
   - [ ] load random websites

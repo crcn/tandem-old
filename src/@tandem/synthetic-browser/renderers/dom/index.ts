@@ -60,7 +60,7 @@ import {
   SyntheticCSSGroupingRule,
   isCSSGroupingStyleMutation,
   CSSGroupingRuleMutationTypes,
-  SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyle,
   SyntheticDocumentMutationTypes,
   SyntheticCSSStyleRuleMutationTypes,
 } from "../../dom";

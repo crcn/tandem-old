@@ -1,7 +1,7 @@
 import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSGroupingRule, SyntheticCSSGroupingRuleEditor, SyntheticCSSGroupingRuleEdit } from "./grouping";
-import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { SyntheticCSSStyle } from "./style";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit,  SyntheticCSSObjectEditor  } from "./base";
 import {
   serialize,

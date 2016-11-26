@@ -1,6 +1,6 @@
 import { CoreEvent, MutationEvent, TreeNodeMutationTypes } from "@tandem/common";
 import { ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
-import { SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser/dom/css";
+import { SyntheticCSSStyle } from "@tandem/synthetic-browser/dom/css";
 import {
   isDOMNodeMutation,
   isCSSMutation,

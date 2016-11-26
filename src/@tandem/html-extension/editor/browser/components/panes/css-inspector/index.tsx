@@ -17,7 +17,7 @@ import {
   SyntheticHTMLElement, 
   SyntheticCSSStyleRule,
   getMergedCSSStyleRule,
-  SyntheticCSSStyleDeclaration, 
+  SyntheticCSSStyle, 
   SyntheticCSSStyleRuleMutationTypes,  
 } from "@tandem/synthetic-browser";
 

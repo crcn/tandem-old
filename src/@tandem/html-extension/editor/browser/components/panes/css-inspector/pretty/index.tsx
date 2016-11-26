@@ -1,10 +1,16 @@
 import "./index.scss";
 import * as React from "react";
-import { BaseApplicationComponent } from "@tandem/common";
-import { SyntheticHTMLElement, MergedCSSStyleRule, SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
 import { CSSUnitInputComponent } from "./common";
-import { CSSMergedRuleLinkComponent } from "../common";
+import { BaseApplicationComponent } from "@tandem/common";
 import * as ReactSliderComponent from "react-slider";
+import { CSSMergedRuleLinkComponent } from "../common";
+import { 
+  parseCSSDeclValue, 
+  evaluateCSSDeclValue,
+  MergedCSSStyleRule, 
+  SyntheticHTMLElement, 
+  SyntheticCSSStyle, 
+} from "@tandem/synthetic-browser";
 
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule }, any> {
   render() {
@@ -277,6 +283,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 
   renderBackgrounds() {
+    const { rule } = this.props;
     return <div className="section">
       <div className="container section">
         <div className="row title">
@@ -289,13 +296,18 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           
         </div>
 
-        <div className="row">
-          <div className="col-2">
-          </div>
-          <div className="col-10">
-            <input type="text" value="multiply" />
-          </div>
-        </div>
+        {
+          getStyleBackground(rule.style).map((background) => {
+            return <div className="row">
+              <div className="col-2">
+              </div>
+              <div className="col-10">
+                <input type="text" value="multiply" />
+              </div>
+            </div>
+          })
+        }
+
         <div className="row labels">
           <div className="col-2">
             color
@@ -364,6 +376,22 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
       </div>
     </div>
   }
+}
+
+class CSSColor {
+
+}
+
+class CSSBackground {
+  
+}
+
+function getStyleBackground(style: SyntheticCSSStyle): CSSBackground[] {
+  const background = style.background;
+  if (!background) return [];
+  const value = evaluateCSSDeclValue(parseCSSDeclValue(background));
+  console.log(value);
+  return [];
 }
 
 export class FillInputComponent extends React.Component<any, any> {

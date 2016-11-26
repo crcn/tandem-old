@@ -11,7 +11,7 @@ import {
   SyntheticWindow,
   SyntheticHTMLElement,
   SyntheticCSSStyleRule,
-  SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyle,
 } from "@tandem/synthetic-browser";
 
 
@@ -53,7 +53,7 @@ export const renderPreview = reactEditorPreview(() => {
   const workspace = new Workspace();
   workspace.select(document.querySelector(".container"));
 
-  const style = SyntheticCSSStyleDeclaration.fromObject({
+  const style = SyntheticCSSStyle.fromObject({
     backgroundColor: "red",
     color: "blue"
   });

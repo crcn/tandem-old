@@ -21,7 +21,7 @@ import {
   SyntheticDOMText,
   SyntheticDocument,
   SyntheticDOMElement,
-  SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyle,
 } from "../dom";
 
 
@@ -173,7 +173,7 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     return this.nodeFactory.createElement("div");
   }
 
-  protected setRects(rects: { [IDentifier: string]: BoundingRect }, styles: { [IDentifier: string]: SyntheticCSSStyleDeclaration }) {
+  protected setRects(rects: { [IDentifier: string]: BoundingRect }, styles: { [IDentifier: string]: SyntheticCSSStyle }) {
     this.$rects          = rects;
     this._computedStyles = styles;
     this._rendered = true;

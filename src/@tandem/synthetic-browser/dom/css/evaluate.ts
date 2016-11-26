@@ -10,7 +10,7 @@ import { SyntheticCSSStyleRule } from "./style-rule";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
-import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { SyntheticCSSStyle } from "./style";
 import { ISourceLocation } from "@tandem/common";
 
 export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, module?: SandboxModule): SyntheticCSSStyleSheet {
@@ -33,7 +33,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
       obj[camelCase(decl.prop)] = decl.value + (decl.important ? " !important" : "");
     }
 
-    return SyntheticCSSStyleDeclaration.fromObject(obj);
+    return SyntheticCSSStyle.fromObject(obj);
   }
 
   function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {

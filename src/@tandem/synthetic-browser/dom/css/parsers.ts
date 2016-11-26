@@ -1,5 +1,4 @@
 import * as postcss from "postcss";
-import { parse as parseCSSDeclValue } from "./decl-value-parser.peg";
 
 import { IRange } from "@tandem/common";
 import { RawSourceMap } from "source-map";
@@ -12,5 +11,3 @@ export function parseCSS(source: string, map?: RawSourceMap, syntax?: any, useCa
     }
   }).root;
 }
-
-export { parseCSSDeclValue };

@@ -7,8 +7,7 @@ import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { isCSSGroupingStyleMutation } from "./grouping";
-import { isInheritedCSSStyleProperty } from "./declaration";
-import { SyntheticCSSStyleDeclaration } from "./declaration";
+import { isInheritedCSSStyleProperty, SyntheticCSSStyle } from "./style";
 import { SyntheticCSSAtRule, isCSSAtRuleMutaton } from "./atrule";
 import { SyntheticCSSStyleRule, isCSSStyleRuleMutation } from "./style-rule";
 
@@ -88,7 +87,7 @@ export type MatchedCSSStyleRuleType = SyntheticCSSStyleRule|SyntheticHTMLElement
 
 export class MergedCSSStyleRule {
 
-  readonly style: SyntheticCSSStyleDeclaration;
+  readonly style: SyntheticCSSStyle;
 
   private _main: {
     [Identifier: string]: MatchedCSSStyleRuleType;
@@ -99,7 +98,7 @@ export class MergedCSSStyleRule {
   };
 
   constructor(readonly target: SyntheticDOMElement) {
-    this.style = new SyntheticCSSStyleDeclaration();
+    this.style = new SyntheticCSSStyle();
     this._sources = {};
     this._main    = {};
   }
