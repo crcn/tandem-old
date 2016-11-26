@@ -87,5 +87,12 @@ describe(__filename + "#", () => {
       })
     });
   });
+
+  describe("filters", () => {
+    it("can add multiple filters", () => {
+      const graphics = new SyntheticCSSStyleGraphics(SyntheticCSSStyle.fromObject({ filter: "contrast(175%) brightness(3%)" }));
+      expect(graphics.filters.length).to.equal(2);
+    });
+  });
 });
 

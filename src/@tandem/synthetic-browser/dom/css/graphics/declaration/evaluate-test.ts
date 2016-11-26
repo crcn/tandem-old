@@ -4,6 +4,8 @@ import {
   BUILTIN_CSS_COLOR_MAP, 
   evaluateCSSDeclValue, 
   SyntheticCSSColor, 
+  CSS_FILTER_TYPES,
+  SyntheticCSSFilter,
   SyntheticCSSMeasurment, 
   CSSDeclLiteralExpression,
   SyntheticCSSLinearGradient,
@@ -70,6 +72,15 @@ describe(__filename + "#", () => {
     expect(gradient.colorStops[1].stop).to.equal(0.5);
     expect(gradient.colorStops[2].color.toHex()).to.equal("#0000FF");
     expect(gradient.toString()).to.equal("linear-gradient(red, lime 50%, blue)");
+  });
+
+  describe("filters", () => {
+    it("can evaluate CSS filters", () => {
+      for (const filterType of CSS_FILTER_TYPES) {
+        const [filter] = evaluateCSSDeclValue(parseCSSDeclValue(`${filterType}(5px)`)) as [SyntheticCSSFilter];
+        expect(filter).to.be.an.instanceof(SyntheticCSSFilter);
+      }
+    });
   });
 });
 

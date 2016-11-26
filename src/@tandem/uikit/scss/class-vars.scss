@@ -28,6 +28,10 @@ $sides: left, right, top, bottom;
   text-align: center;
 }
 
+.text-left {
+  text-align: left;
+}
+
 .flex {
   display: flex;
   &.column {

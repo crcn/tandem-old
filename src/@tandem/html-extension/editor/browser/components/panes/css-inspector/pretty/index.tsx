@@ -4,9 +4,11 @@ import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";
 import * as ReactSliderComponent from "react-slider";
 import { CSSMergedRuleLinkComponent } from "../common";
+import { capitalize, startCase } from "lodash";
 import { 
   parseCSSDeclValue, 
   evaluateCSSDeclValue,
+  SyntheticCSSFilter,
   MergedCSSStyleRule, 
   SyntheticHTMLElement, 
   SyntheticCSSStyle, 
@@ -37,24 +39,6 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
       { this.renderFilters() }
       <hr />
-    </div>
-  }
-
-  renderFilters() {
-    return <div className="section">
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Filters
-            <div className="controls">
-              <i className="ion-plus-round" />
-            </div>
-          </div>
-          
-        </div>
-
-        Filter this
-      </div>
     </div>
   }
 
@@ -362,6 +346,30 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
       </div>
     </div>
   }
+
+  renderFilters() {
+    const { graphics } = this.props;
+    return <div className="section">
+      <div className="container section">
+        <div className="row title">
+          <div className="col-12">
+            Filters
+            <div className="controls">
+              <i className="ion-plus-round" />
+            </div>
+          </div>
+          
+        </div>
+
+        {
+          graphics.filters.map((filter) => {
+            return <CSSFilterInputComponent filter={filter} />
+          })
+        }
+      </div>
+    </div>
+  }
+
 }
 
 class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground }, any> {
@@ -403,6 +411,27 @@ class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticC
         <input type="text" value={spread.value} />
       </div>
 
+    </div>
+  }
+}
+
+class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilter }, any> {
+  render() {
+    const { filter } = this.props;
+    const { name, params } = filter;
+    return <div className="row">
+      <div className="col-12">
+        <div className="row">
+          <div className="col-12">
+            <input type="text" value="b" />
+          </div>
+        </div>
+        <div className="row labels">
+          <div className="col-12 text-left">
+            { capitalize(startCase(name).toLowerCase()) }
+          </div>
+        </div>
+      </div>
     </div>
   }
 }

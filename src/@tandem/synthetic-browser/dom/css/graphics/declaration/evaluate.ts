@@ -223,6 +223,17 @@ export class SyntheticCSSColor extends SyntheticCSSValue {
   }
 }
 
+export class SyntheticCSSFilter extends SyntheticCSSValue {
+  constructor(readonly name: string, readonly params: any[]) {
+    super();
+  }
+  clone() {
+    return new SyntheticCSSFilter(this.name, this.params);
+  }
+}
+
+
+
 export class SyntheticCSSMeasurment extends SyntheticCSSValue {
   constructor(public value: number, public unit: CSSUnitType) {
     super();
@@ -291,6 +302,9 @@ const globalContext = {
   url(value: string) {
     return value; 
   },
+  blur(params) {
+    return new SyntheticCSSFilter("blur", params);
+  },  
   "linear-gradient": (...args: any[]) => {
     const angle = typeof args[0][0] === "number" || typeof args[0][0] === "string" ? args.shift() : 0;
     const colorStops = args.map(([color, measurement]) => {
@@ -300,6 +314,23 @@ const globalContext = {
     return new SyntheticCSSLinearGradient(angle, colorStops);
   }
 };
+
+export const CSS_FILTER_TYPES = [
+  "blur", 
+  "brightness", 
+  "contrast", 
+  "drop-shadow",
+  "grayscale",
+  "hue-rotate",
+  "invert",
+  "opacity",
+  "saturate",
+  "sepia"
+];
+
+for (const filterType of CSS_FILTER_TYPES) {
+  globalContext[filterType] = (params) => new SyntheticCSSFilter(filterType, params);
+}
 
 const parseHexColor = (value: string) => {
   const c = tinyColor(value);

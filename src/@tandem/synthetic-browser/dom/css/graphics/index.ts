@@ -4,6 +4,7 @@
 
 import { SyntheticCSSStyle } from "../style";
 import { 
+  SyntheticCSSFilter,
   evaluateCSSDeclValue, 
   parseCSSDeclValue, 
   SyntheticCSSColor,   
@@ -130,24 +131,29 @@ export class SyntheticCSSStyleBoxShadow {
   }
 }
 
+
 export class SyntheticCSSStyleGraphics {
   
-  readonly backgrounds: SyntheticCSSStyleBackground[];
-  readonly boxShadows: SyntheticCSSStyleBoxShadow[];
+  public backgrounds: SyntheticCSSStyleBackground[];
+  public boxShadows: SyntheticCSSStyleBoxShadow[];
+  public filters: SyntheticCSSFilter[];
 
   constructor(readonly style: SyntheticCSSStyle) {
     this.backgrounds = [];
     this.boxShadows  = [];
+    this.filters     = [];
     this.setProperties(style);
   }
 
   public setProperties(style: SyntheticCSSStyle) {
+
 
     const handlers = {
       backgroundColor    : ([value]) => this.primaryBackground.color = value,
       backgroundRepeat   : ([value]) => this.primaryBackground.repeat = value,
       backgroundImage    : ([value]) => this.primaryBackground.image = value,
       backgroundPosition : (value) => this.primaryBackground.setPosition(value),
+      filter             : (value) => this.filters = value,
       background         : (value: any) => {
 
         // check for background: #F60, #F0F
@@ -201,6 +207,10 @@ export class SyntheticCSSStyleGraphics {
 
     if (this.boxShadows.length) {
       style.boxShadow = this.boxShadows.join(", ");
+    }
+
+    if (this.filters.length) {
+      style.filter = this.filters.join(" ");
     }
 
     return style;
