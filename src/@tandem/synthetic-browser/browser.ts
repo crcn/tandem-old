@@ -1,7 +1,7 @@
 import { SyntheticLocation } from "./location";
 import { SyntheticRendererEvent } from "./messages";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
-import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, TetherRenderer, NoopRenderer } from "./renderers";
+import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, NoopRenderer } from "./renderers";
 import { IDispatcher } from "@tandem/mesh";
 import {
   inject,

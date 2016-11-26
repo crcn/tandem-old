@@ -50,26 +50,4 @@
     text-transform: uppercase;
   }
 
-  & .pretty {
-    & .label {
-      @extend .dim;
-      font-size: 0.8em;
-      vertical-align: bottom;
-      min-width: 15px;
-      text-align: right;
-      line-height: 24px;
-
-      & i {
-        line-height: 22px;
-      }
-    }
-  }
-
-  & .fill-input {
-    @extend .input;
-    cursor: pointer;
-    height: 23px;
-    background: #8467D4;
-    width: 100%;
-  }
 }

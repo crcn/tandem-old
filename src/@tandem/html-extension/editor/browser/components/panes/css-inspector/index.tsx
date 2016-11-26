@@ -4,20 +4,21 @@ import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
-import { BaseApplicationComponent, Mutation, MutationEvent} from "@tandem/common";
 import { CallbackDispatcher } from "@tandem/mesh";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { CSSStyleHashInputComponent } from "../css";
 import { IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { CSSPrettyInspectorComponent } from "./pretty";
 import { ComputedPropertiesPaneComponent } from "./computed";
+import { BaseApplicationComponent, Mutation, MutationEvent} from "@tandem/common";
 import { 
   SyntheticDocument, 
+  SyntheticCSSStyle, 
   MergedCSSStyleRule, 
   SyntheticHTMLElement, 
   SyntheticCSSStyleRule,
   getMergedCSSStyleRule,
-  SyntheticCSSStyle, 
+  SyntheticCSSStyleGraphics,
   SyntheticCSSStyleRuleMutationTypes,  
 } from "@tandem/synthetic-browser";
 
@@ -52,7 +53,7 @@ class DocumentMutationChangeWatcher {
   }
 
   protected onMutationEvent({ mutation }: MutationEvent<any>) {
-    if (mutation && mutation.type !== SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+    if (mutation) {
       this._onChange();
     }
   }
@@ -70,8 +71,8 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   componentDidMount() {
     this._mutationWatcher = new DocumentMutationChangeWatcher(() => {
       const { workspace } = this.props;
-
-      this.setState({ pane: this.state.pane, mergedRule: workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined });
+      const rule = workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined;
+      this.setState({ pane: this.state.pane, mergedRule: rule });
     });
 
     this._mutationWatcher.target = this.getTarget(this.props);
@@ -132,7 +133,8 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   }
 
   renderPrettyPane(rule: MergedCSSStyleRule) {
-    return <CSSPrettyInspectorComponent rule={rule} />;
+    const graphics = new SyntheticCSSStyleGraphics(rule.style);
+    return <CSSPrettyInspectorComponent rule={rule} graphics={graphics} />;
   }
 
   renderComputedStylePane(rule: MergedCSSStyleRule) {

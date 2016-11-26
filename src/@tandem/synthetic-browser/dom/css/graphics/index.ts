@@ -23,11 +23,19 @@ export class SyntheticCSSStylePosition {
   }
 }
 
+// blend modes: http://www.w3schools.com/cssref/pr_background-blend-mode.asp
+export function isCSSBlendMode(blendMode: string) {
+  return /^(normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity)/.test(blendMode);
+}
+
+export type CSSBlendModeType = "normal"|"multiply"|"screen"|"overlay"|"darken"|"lighten"|"color-dodge"|"saturation"|"color"|"luminosity";
+
 export class SyntheticCSSStyleBackground {
   public color: SyntheticCSSColor;
   public image: string;
   public position: SyntheticCSSStylePosition;
   public repeat: string;
+  public blendMode: CSSBlendModeType;
 
   constructor(properties?: any) {
     if (properties) this.setProperties(properties);
@@ -40,7 +48,7 @@ export class SyntheticCSSStyleBackground {
   }
 
   setProperties(properties: any[]) {
-    let color, image, position = [], repeat;
+    let color, image, blendMode, position = [], repeat;
 
     for (const value of properties) {
       if (typeof value === "object") {
@@ -51,6 +59,8 @@ export class SyntheticCSSStyleBackground {
         position.push(value); 
       } else if(/repeat/.test(value)) {
         repeat = value;
+      } else if (isCSSBlendMode(value)) {
+        blendMode = value;
       } else {
         image = value;
       }
@@ -60,6 +70,7 @@ export class SyntheticCSSStyleBackground {
     if (image) this.image = image;
     if (position.length)  this.setPosition(position);
     if (repeat) this.repeat = repeat;
+    if (blendMode) this.blendMode = blendMode;
   }
 
   toString() {

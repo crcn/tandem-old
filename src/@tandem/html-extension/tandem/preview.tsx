@@ -42,7 +42,9 @@ export const renderPreview = reactEditorPreview(async () => {
           font-size: 12pt;
           color: red;
           display: block;
-          background: rgba(255, 255, 255, 0);
+          mix-blend-mode: overlay;
+          background: rgba(255, 100, 255, 1), lime overlay;
+          box-shadow: inset 1 2 3 4 indianred;
           box-sizing: border-box;
           padding-right: border-box;
           left: 10px;

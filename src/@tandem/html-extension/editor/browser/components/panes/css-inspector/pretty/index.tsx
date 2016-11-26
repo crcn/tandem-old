@@ -10,12 +10,15 @@ import {
   MergedCSSStyleRule, 
   SyntheticHTMLElement, 
   SyntheticCSSStyle, 
+  SyntheticCSSStyleGraphics,
+  SyntheticCSSStyleBackground,
+  SyntheticCSSStyleBoxShadow,
 } from "@tandem/synthetic-browser";
 
-export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule }, any> {
+export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
     const { rule } = this.props;
-    return <div className="pretty">
+    return <div className="css-pretty-inspector">
 
       { this.renderLayout() }
       <hr />
@@ -283,7 +286,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 
   renderBackgrounds() {
-    const { rule } = this.props;
+    const { rule, graphics } = this.props;
     return <div className="section">
       <div className="container section">
         <div className="row title">
@@ -297,14 +300,8 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
         </div>
 
         {
-          getStyleBackground(rule.style).map((background) => {
-            return <div className="row">
-              <div className="col-2">
-              </div>
-              <div className="col-10">
-                <input type="text" value="multiply" />
-              </div>
-            </div>
+          graphics.backgrounds.map((background, i) => {
+            return <CSSBackgroundInputComponent background={background} key={i} />
           })
         }
 
@@ -322,6 +319,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 
   renderBoxShadows() {
+    const { graphics } = this.props;
     return <div className="section">
       <div className="container section">
         <div className="row title">
@@ -332,26 +330,13 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-2">
-          </div>
-          <div className="col-2-5">
-            <input type="text" value="0" />
-          </div>
 
-          <div className="col-2-5">
-            <input type="text" value="3" />
-          </div>
-
-          <div className="col-2-5">
-            <input type="text" value="5" />
-          </div>
-
-          <div className="col-2-5">
-            <input type="text" value="2" />
-          </div>
-
-        </div>
+        {
+          graphics.boxShadows.map((boxShadow, i) => {
+            return <CSSBoxShadowInputComponent boxShadow={boxShadow} key={i} />
+          })
+        }
+        
         <div className="row labels">
           <div className="col-2">
             color
@@ -378,25 +363,53 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 }
 
-class CSSColor {
-
-}
-
-class CSSBackground {
-  
-}
-
-function getStyleBackground(style: SyntheticCSSStyle): CSSBackground[] {
-  const background = style.background;
-  if (!background) return [];
-  const value = evaluateCSSDeclValue(parseCSSDeclValue(background));
-  console.log(value);
-  return [];
-}
-
-export class FillInputComponent extends React.Component<any, any> {
+class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground }, any> {
   render() {
-    return <div className="fill-input">
+    const { background } = this.props;
+    const { color, blendMode } = background;
+    return <div className="row">
+      <div className="col-2">
+        <BackgroundFillComponent value={color.toString()} />
+      </div>
+      <div className="col-10">
+        <input type="text" value={blendMode} />
+      </div>
+    </div>;
+  }
+}
+
+class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticCSSStyleBoxShadow }, any> {
+  render() {
+    const { boxShadow } = this.props;
+    const { color, x, y, blur, spread, inset } = boxShadow;
+    return <div className="row">
+      <div className="col-2">
+        <BackgroundFillComponent value={color.toString()} />
+      </div>
+      <div className="col-2-5">
+        <input type="text" value={x.value} />
+      </div>
+
+      <div className="col-2-5">
+        <input type="text" value={y.value} />
+      </div>
+
+      <div className="col-2-5">
+        <input type="text" value={blur.value} />
+      </div>
+
+      <div className="col-2-5">
+        <input type="text" value={spread.value} />
+      </div>
+
+    </div>
+  }
+}
+
+class BackgroundFillComponent extends React.Component<{ value: string }, any> {
+  render() {
+    const { value } = this.props;
+    return <div className="fill-input" style={{background: value }}>
     </div>
   }
 }
