@@ -1,5 +1,6 @@
 import "./index.scss";
 import * as React from "react";
+import * as cx from "classnames";
 import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";
 import * as ReactSliderComponent from "react-slider";
@@ -272,6 +273,8 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
   renderBackgrounds() {
     const { rule, graphics } = this.props;
+    const labelClassnames = cx({ row: true, labels: true, hide: graphics.backgrounds.length === 0 });
+
     return <div className="section">
       <div className="container section">
         <div className="row title">
@@ -290,7 +293,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           })
         }
 
-        <div className="row labels">
+        <div className={labelClassnames}>
           <div className="col-2">
             color
           </div>
@@ -305,6 +308,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
   renderBoxShadows() {
     const { graphics } = this.props;
+
+    const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
+
     return <div className="section">
       <div className="container section">
         <div className="row title">
@@ -322,7 +328,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           })
         }
         
-        <div className="row labels">
+        <div className={labelClassnames}>
           <div className="col-2">
             color
           </div>
