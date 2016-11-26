@@ -66,24 +66,24 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
     mergedRule: undefined
   };
 
-  private _mutationWatcher: DocumentMutationChangeWatcher;
+  // private _mutationWatcher: DocumentMutationChangeWatcher;
 
   componentDidMount() {
-    this._mutationWatcher = new DocumentMutationChangeWatcher(() => {
-      const { workspace } = this.props;
-      const rule = workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined;
-      this.setState({ pane: this.state.pane, mergedRule: rule });
-    });
+    // this._mutationWatcher = new DocumentMutationChangeWatcher(() => {
+    //   const { workspace } = this.props;
+    //   const rule = workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined;
+    //   this.setState({ pane: this.state.pane, mergedRule: rule });
+    // });
 
-    this._mutationWatcher.target = this.getTarget(this.props);
+    // this._mutationWatcher.target = this.getTarget(this.props);
   }
 
   componentWillReceiveProps(props) {
-    this._mutationWatcher.target = this.getTarget(props);
+    // this._mutationWatcher.target = this.getTarget(props);
   }
 
   componentWillUnmount() {
-    this._mutationWatcher.dispose();
+    // this._mutationWatcher.dispose();
   }
 
   getTarget(props) {
@@ -98,8 +98,10 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
   render() {
     const { workspace } = this.props;
-    const { mergedRule, pane } = this.state;
-    
+    const { pane } = this.state;
+
+    const mergedRule = workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined;
+
     if (!workspace || !workspace.selection.length || !mergedRule) return null;
 
     const elements = HTMLDOMElements.fromArray(workspace.selection);

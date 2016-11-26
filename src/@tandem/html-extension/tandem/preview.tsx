@@ -69,7 +69,7 @@ export const renderPreview = reactEditorPreview(async () => {
             Hello World
           </div>
           <span>
-            <div class="container" style="color:#F60;">
+            <div class="container" style="color:#444;">
             </div>
           </span>
           <!-- a comment -->

@@ -238,6 +238,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             Color
           </div>
           <div className="col-4">
+            <BackgroundFillComponent value={rule.style.color || "#000"} />
           </div>
         </div>
 
@@ -369,7 +370,7 @@ class CSSBackgroundInputComponent extends React.Component<{ background: Syntheti
     const { color, blendMode } = background;
     return <div className="row">
       <div className="col-2">
-        <BackgroundFillComponent value={color.toString()} />
+        <BackgroundFillComponent value={color && color.toString()} />
       </div>
       <div className="col-10">
         <input type="text" value={blendMode} />
@@ -384,7 +385,7 @@ class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticC
     const { color, x, y, blur, spread, inset } = boxShadow;
     return <div className="row">
       <div className="col-2">
-        <BackgroundFillComponent value={color.toString()} />
+        <BackgroundFillComponent value={color && color.toString()} />
       </div>
       <div className="col-2-5">
         <input type="text" value={x.value} />
