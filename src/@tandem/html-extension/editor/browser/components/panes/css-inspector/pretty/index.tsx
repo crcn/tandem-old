@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SyntheticHTMLElement, MergedCSSStyleRule } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement, MergedCSSStyleRule, SyntheticCSSStyleDeclaration } from "@tandem/synthetic-browser";
 import { CSSUnitInputComponent } from "./common";
 import { CSSMergedRuleLinkComponent } from "../common";
 import * as ReactSliderComponent from "react-slider";
@@ -361,24 +361,6 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
 
         </div>
-      </div>
-    </div>
-  }
-}
-
-class StyleDeclInput extends React.Component<{ rule: MergedCSSStyleRule, name: string, label?: string, colSize?: number }, any> {
-  render() {
-    let { rule, name, label, colSize } = this.props;
-    if (!colSize) colSize = 6;
-    
-    return <div className="row">
-      <div className="col-2 label">
-        <CSSMergedRuleLinkComponent rule={rule} propertyName={name}>
-          { label || name }
-        </CSSMergedRuleLinkComponent>
-      </div>
-      <div className={"col-" + colSize}>
-        <input type="text" value={rule.style[name]} />
       </div>
     </div>
   }

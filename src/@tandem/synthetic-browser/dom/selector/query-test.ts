@@ -41,6 +41,9 @@ describe(__filename + "#", () => {
   ].forEach(([selector, a, b]) => {
     it(`selector ${selector} for ${a} equals ${b}`, () => {
       const document = new SyntheticDocument("");
+      
+      document.registerElement("div", SyntheticHTMLElement);
+      document.registerElement("span", SyntheticHTMLElement);
       document.appendChild(evaluateMarkup(parseMarkup(a), document));
       const nodes = document.querySelectorAll(selector);
       expect(nodes.join("")).to.equal(b);

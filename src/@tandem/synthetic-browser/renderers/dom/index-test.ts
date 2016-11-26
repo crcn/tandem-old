@@ -68,7 +68,7 @@ describe(__filename + "#", () => {
     [[`@media a { .b { color: red; } } `, `<div class="a">a</div>`], [`@media a { .b { color: blue; } } `, `<div class="a">a</div>`]],
 
     // fuzzy
-    fuzzyCSSCases,
+    // fuzzyCSSCases,
 
   ].forEach(([[inputCSS, inputHTML], ...mutations]) => {
 

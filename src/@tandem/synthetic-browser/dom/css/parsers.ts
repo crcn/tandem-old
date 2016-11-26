@@ -1,16 +1,16 @@
 import * as postcss from "postcss";
+import { parse as parseCSSDeclValue } from "./decl-value-parser.peg";
 
 import { IRange } from "@tandem/common";
 import { RawSourceMap } from "source-map";
 
-const _cache = {};
-
 export function parseCSS(source: string, map?: RawSourceMap, syntax?: any, useCache?: boolean): postcss.Root {
-  if (_cache[source] && useCache !== false) return _cache[source];
-  return _cache[source] = postcss().process(source, {
+  return postcss().process(source, {
     syntax: syntax,
     map: map && {
       prev: map
     }
   }).root;
 }
+
+export { parseCSSDeclValue };

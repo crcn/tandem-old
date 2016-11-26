@@ -1,5 +1,5 @@
 import { Mutation, InsertChildMutation, RemoveChildMutation, MoveChildMutation } from "@tandem/common";
-import { parseCSS } from "./parser";
+import { parseCSS } from "./parsers";
 import { diffStyleSheetRules, syntheticCSSRuleType } from "./utils";
 import { BaseEditor } from "@tandem/sandbox";
 import { evaluateCSS } from "./evaluate";
