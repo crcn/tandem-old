@@ -8,7 +8,7 @@ import { IContentEdit , ISyntheticObject, generateSyntheticUID, IEditable, BaseC
 
 export interface ISerializedSyntheticCSSStyle extends SyntheticCSSStyle { }
 
-export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^\$/ }, {$ne: "uid" }, { $ne: /^\d+$/ }] });
+export const isValidCSSDeclarationProperty = sift({ $and: [ { $ne: /^[\$_]/ }, {$ne: "uid" }, { $ne: /^\d+$/ }] });
 
 // https://www.w3.org/TR/CSS21/propidx.html
 export const INHERITED_CSS_STYLE_PROPERTIES = [

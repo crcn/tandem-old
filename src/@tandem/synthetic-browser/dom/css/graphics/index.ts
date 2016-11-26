@@ -2,12 +2,13 @@
  * The data model for style declarations
  */
 
-import { SyntheticCSSStyle } from "../style";
+import { SyntheticCSSStyle, isValidCSSDeclarationProperty } from "../style";
+import { Observable, ObservableCollection, bindable, bubble } from "@tandem/common";
 import { 
-  SyntheticCSSFilter,
-  evaluateCSSDeclValue, 
   parseCSSDeclValue, 
   SyntheticCSSColor,   
+  SyntheticCSSFilter,
+  evaluateCSSDeclValue, 
   SyntheticCSSMeasurment,
 } from "./declaration";
 export * from "./declaration";
@@ -31,14 +32,25 @@ export function isCSSBlendMode(blendMode: string) {
 
 export type CSSBlendModeType = "normal"|"multiply"|"screen"|"overlay"|"darken"|"lighten"|"color-dodge"|"saturation"|"color"|"luminosity";
 
-export class SyntheticCSSStyleBackground {
+export class SyntheticCSSStyleBackground extends Observable {
+
+  @bindable(true)
   public color: SyntheticCSSColor;
+
+  @bindable(true)
   public image: string;
+
+  @bindable(true)
   public position: SyntheticCSSStylePosition;
+
+  @bindable(true)
   public repeat: string;
+
+  @bindable(true)
   public blendMode: CSSBlendModeType;
 
   constructor(properties?: any) {
+    super();
     if (properties) this.setProperties(properties);
   }
 
@@ -74,6 +86,10 @@ export class SyntheticCSSStyleBackground {
     if (blendMode) this.blendMode = blendMode;
   }
 
+  setProperty(name: string, value: any) {
+    this[name] = evaluateCSSDeclValue2(value, name)[0];
+  }
+
   toString() {
     const params = [];
 
@@ -86,17 +102,37 @@ export class SyntheticCSSStyleBackground {
   }
 }
 
+function evaluateCSSDeclValue2(value, property) {
+  value = evaluateCSSDeclValue(parseCSSDeclValue(String(value)));
+  return isUnitBasedCSSProperty(property) ? value.map(SyntheticCSSMeasurment.cast) : value;
+}
 
-export class SyntheticCSSStyleBoxShadow {
+export class SyntheticCSSStyleBoxShadow  extends Observable {
 
+  @bindable(true)
   public inset: boolean; 
+
+  @bindable(true)
+  @bubble()
   public x: SyntheticCSSMeasurment; 
+
+  @bindable(true)
+  @bubble()
   public y: SyntheticCSSMeasurment; 
+
+  @bindable(true)
+  @bubble()
   public blur: SyntheticCSSMeasurment; 
+
+  @bindable(true)
+  @bubble()
   public spread: SyntheticCSSMeasurment; 
+
+  @bindable(true)
   public color: SyntheticCSSColor;
 
   constructor(properties?: any) {
+    super();
     if (properties) this.setProperties(properties);
   }
 
@@ -115,10 +151,14 @@ export class SyntheticCSSStyleBoxShadow {
 
     this.color  = color;
     this.inset  = inset;
-    this.x      = SyntheticCSSMeasurment.cast(dims[0]);
-    this.y      = SyntheticCSSMeasurment.cast(dims[1]);
-    this.blur   = SyntheticCSSMeasurment.cast(dims[2]);
-    this.spread = SyntheticCSSMeasurment.cast(dims[3]);
+    this.setProperty("x", dims[0]);
+    this.setProperty("y", dims[1]);
+    this.setProperty("blur", dims[2]);
+    this.setProperty("spread", dims[3]);
+  }
+
+  setProperty(name: string, value: any) {
+    this[name] = evaluateCSSDeclValue2(value, name)[0];
   }
 
   toString() {
@@ -131,29 +171,123 @@ export class SyntheticCSSStyleBoxShadow {
   }
 }
 
+export function isUnitBasedCSSProperty(property: string) {
+  return /^(x|y|blur|spread|letterSpacing|fontSize|lineHeight|width|height|minWidth|minHeight|maxWidth|maxHeight|left|top|right|bottom)$/.test(property);
+}
 
-export class SyntheticCSSStyleGraphics {
-  
-  public backgrounds: SyntheticCSSStyleBackground[];
-  public boxShadows: SyntheticCSSStyleBoxShadow[];
-  public filters: SyntheticCSSFilter[];
+
+export class SyntheticCSSStyleGraphics extends Observable {
+
+  @bindable(true)
+  @bubble()
+  public backgrounds: ObservableCollection<SyntheticCSSStyleBackground>;
+
+  @bindable(true)
+  @bubble()
+  public boxShadows: ObservableCollection<SyntheticCSSStyleBoxShadow>;
+
+  @bindable(true)
+  @bubble()
+  public filters: ObservableCollection<SyntheticCSSFilter>;
+
+  @bindable(true)
+  @bubble()
+  public opacity: number;
+
+  @bindable(true)
+  @bubble()
+  public mixBlendMode: string;
+
+  @bindable(true)
+  @bubble()
+  public fontFamily: string;
+
+  @bindable(true)
+  @bubble()
+  public color: SyntheticCSSColor;
+
+  @bindable(true)
+  @bubble()
+  public fontSize: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public letterSpacing: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public lineHeight: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public textAlign: string;
+
+  @bindable(true)
+  @bubble()
+  public width: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public height: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public left: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public top: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public right: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public bottom: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public minWidth: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public minHeight: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public maxWidth: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public maxHeight: SyntheticCSSMeasurment;
 
   constructor(readonly style: SyntheticCSSStyle) {
-    this.backgrounds = [];
-    this.boxShadows  = [];
-    this.filters     = [];
+    super();
+    this.backgrounds = new ObservableCollection<SyntheticCSSStyleBackground>();
+    this.boxShadows  = new ObservableCollection<SyntheticCSSStyleBoxShadow>();
+    this.filters     = new ObservableCollection<SyntheticCSSFilter>();
     this.setProperties(style);
   }
 
   public setProperties(style: SyntheticCSSStyle) {
+    for (const propertyName of style) {
+      this.setProperty(propertyName, style[propertyName]);
+    }
+  }
 
+  public setProperty(name: string, value: string) {
+
+    value = evaluateCSSDeclValue2(value, name);
 
     const handlers = {
       backgroundColor    : ([value]) => this.primaryBackground.color = value,
       backgroundRepeat   : ([value]) => this.primaryBackground.repeat = value,
       backgroundImage    : ([value]) => this.primaryBackground.image = value,
       backgroundPosition : (value) => this.primaryBackground.setPosition(value),
-      filter             : (value) => this.filters = value,
+      opacity            : ([value]) => this.opacity = value,
+      mixBlendMode       : ([value]) => this.mixBlendMode = value,
+      filter             : (value) => this.filters = new ObservableCollection<SyntheticCSSFilter>(...value),
       background         : (value: any) => {
 
         // check for background: #F60, #F0F
@@ -172,13 +306,12 @@ export class SyntheticCSSStyleGraphics {
         }
       }
     };
-    
-    for (const propertyName of style) {
-      const rawValue = style[propertyName];
-      const value    = evaluateCSSDeclValue(parseCSSDeclValue(rawValue))
-      const handler  = handlers[propertyName];
-      if (!handler) continue;
+
+    const handler  = handlers[name];
+    if (handler) {
       handler(value);
+    } else {
+      this[name] = [value];
     }
   }
 
@@ -201,17 +334,35 @@ export class SyntheticCSSStyleGraphics {
   toStyle() {
     const style = new SyntheticCSSStyle();
 
-    if (this.backgrounds.length) {
-      style.background = this.backgrounds.join(", ");
-    }
-
-    if (this.boxShadows.length) {
-      style.boxShadow = this.boxShadows.join(", ");
-    }
-
-    if (this.filters.length) {
-      style.filter = this.filters.join(" ");
-    }
+    [
+      ["backgrounds", "background", ", "],
+      ["boxShadows", "boxShadow", ", "],
+      ["filters", "filter", " "],
+      ["opacity"],
+      ["mixBlendMode"],
+      ["fontFamily"],
+      ["color"],
+      ["fontFamily"],
+      ["letterSpacing"],
+      ["fontSize"],
+      ["textAlign"],
+      ["width"],
+      ["height"],
+      ["minWidth"],
+      ["minHeight"],
+      ["maxWidth"],
+      ["maxHeight"],
+      ["left"],
+      ["top"],
+      ["right"],
+      ["bottom"],
+    ].forEach(([propertyName, styleName, sep]) => {
+      const value = this[propertyName];
+      const exists = value != null && (!sep || value.length);
+      if (exists) {
+        style.setProperty(styleName || propertyName, String(sep ? value.join(sep) : value));
+      }
+    });
 
     return style;
   }

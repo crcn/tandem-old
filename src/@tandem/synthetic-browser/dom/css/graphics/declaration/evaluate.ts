@@ -1,5 +1,5 @@
 import * as tinyColor from "tinycolor2";
-import { ITreeWalker } from "@tandem/common";
+import { ITreeWalker, bindable, bubble, Observable, ObservableCollection } from "@tandem/common";
 import { ISyntheticObject, generateSyntheticUID, ISyntheticSourceInfo } from "@tandem/sandbox";
 
 import { 
@@ -14,6 +14,7 @@ import {
   CSSDeclIdentifierExpression, 
   CSSDeclMeasurementExpression,
 } from "./ast";
+
 
 /*
 
@@ -186,9 +187,10 @@ for (const key in BUILTIN_CSS_COLOR_MAP) {
   BUILTIN_CSS_COLOR_MAP[BUILTIN_CSS_COLOR_MAP[key]] = key;
 }
 
-export abstract class SyntheticCSSValue implements ISyntheticObject {
+export abstract class SyntheticCSSValue extends Observable implements ISyntheticObject {
   readonly $uid: any;
   constructor() {
+    super();
     this.$uid = generateSyntheticUID();
   }
   get uid() {
@@ -203,8 +205,25 @@ const toHex = (value: number) => {
 }
 
 export class SyntheticCSSColor extends SyntheticCSSValue {
-  constructor(public r: number, public g: number, public b: number, public a: number = 1) {
+
+  @bindable(true)
+  public r: number;
+
+  @bindable(true)
+  public g: number;
+
+  @bindable(true)
+  public b: number;
+
+  @bindable(true)
+  public a: number;
+
+  constructor(r: number, g: number, b: number, a: number = 1) {
     super();
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = a;
   }
   clone() {
     return new SyntheticCSSColor(this.r, this.g, this.b, this.a);
@@ -224,15 +243,17 @@ export class SyntheticCSSColor extends SyntheticCSSValue {
 }
 
 export class SyntheticCSSFilter extends SyntheticCSSValue {
-  constructor(readonly name: string, readonly params: any[]) {
+  @bubble()
+  readonly params: ObservableCollection<any>;
+  constructor(readonly name: string, params: any[]) {
     super();
+    if (!Array.isArray(params)) params = [params];
+    this.params = new ObservableCollection<any>(...params);
   }
   clone() {
     return new SyntheticCSSFilter(this.name, this.params);
   }
 }
-
-
 
 export class SyntheticCSSMeasurment extends SyntheticCSSValue {
   constructor(public value: number, public unit: CSSUnitType) {
@@ -254,8 +275,18 @@ export class SyntheticCSSMeasurment extends SyntheticCSSValue {
 }
 
 export class SyntheticCSSGradientColorStop extends SyntheticCSSValue {
-  constructor(public color: SyntheticCSSColor, public stop?: number) {
+
+  @bindable(true)
+  @bubble()
+  public color: SyntheticCSSColor;
+
+  @bindable(true)
+  public stop: number;
+
+  constructor(color: SyntheticCSSColor, stop?: number) {
     super();
+    this.color = color;
+    this.stop = stop;
   }
   clone() {
     return new SyntheticCSSGradientColorStop(this.color, this.stop);
@@ -263,8 +294,17 @@ export class SyntheticCSSGradientColorStop extends SyntheticCSSValue {
 }
 
 export class SyntheticCSSLinearGradient extends SyntheticCSSValue {
-  constructor(public angle: number, public colorStops: SyntheticCSSGradientColorStop[]) {
+  @bindable(true)
+  public angle: number;
+
+  @bindable(true)
+  @bubble()
+  public colorStops: ObservableCollection<SyntheticCSSGradientColorStop>;
+
+  constructor(angle: number, colorStops: SyntheticCSSGradientColorStop[]) {
     super();
+    this.angle = angle;
+    this.colorStops = new ObservableCollection(...colorStops);
   }
   clone() {
     return new SyntheticCSSLinearGradient(this.angle, this.colorStops.map(colorStop => colorStop.clone()));
@@ -291,6 +331,7 @@ export class SyntheticCSSLinearGradient extends SyntheticCSSValue {
 }
 
 
+
 // for now use built-in functions 
 const globalContext = {
   rgba([r], [g], [b], [a]) {
@@ -299,12 +340,20 @@ const globalContext = {
   rgb([r], [g], [b]) {
     return new SyntheticCSSColor(r, g, b);
   },
-  url(value: string) {
+  url([value]) {
     return value; 
   },
-  blur(params) {
-    return new SyntheticCSSFilter("blur", params);
-  },  
+
+  // TODO - translate
+  translateY([value]) {
+    return value;
+  },
+  translateX([value]) {
+    return value;
+  },
+  translate([value]) {
+    return value;
+  },
   "linear-gradient": (...args: any[]) => {
     const angle = typeof args[0][0] === "number" || typeof args[0][0] === "string" ? args.shift() : 0;
     const colorStops = args.map(([color, measurement]) => {
@@ -329,7 +378,7 @@ export const CSS_FILTER_TYPES = [
 ];
 
 for (const filterType of CSS_FILTER_TYPES) {
-  globalContext[filterType] = (params) => new SyntheticCSSFilter(filterType, params);
+  globalContext[filterType] = (...params) => new SyntheticCSSFilter(filterType, params.map(param => param[0]));
 }
 
 const parseHexColor = (value: string) => {
@@ -346,7 +395,9 @@ for (const colorName in BUILTIN_CSS_COLOR_MAP) {
 export const evaluateCSSDeclValue = (expression: CSSDeclValueExpression) => {
   return expression.accept({
     visitCall(call: CSSDeclCallExpression) {
-      return globalContext[(<CSSDeclIdentifierExpression>call.identifier).value](...call.params.map((param) => {
+      const name = (<CSSDeclIdentifierExpression>call.identifier).value;
+      if (!globalContext[name]) throw new Error(`Cannot call CSS property value ${name}`);
+      return globalContext[name](...call.params.map((param) => {
         return param.accept(this);
       }))
     },

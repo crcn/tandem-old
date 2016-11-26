@@ -14,11 +14,13 @@
 }
 
 Start
-  = CommaList
+  = list: CommaList {
+    return list.items.length === 1 ? list.items[0] : list;
+  }
 
 CommaList 
   = first: SpaceList rest: CommaListRest* {
-    return rest.length ? new CSSDeclCommaListExpression([first].concat(rest), location()) : first;
+    return new CSSDeclCommaListExpression([first].concat(rest), location());
   }
 
 SpaceList 

@@ -59,32 +59,13 @@ class DocumentMutationChangeWatcher {
   }
 }
 
-export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string, mergedRule: MergedCSSStyleRule }> {
+export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
 
   state = {
-    pane: "pretty",
-    mergedRule: undefined
+    pane: "pretty"
   };
 
-  // private _mutationWatcher: DocumentMutationChangeWatcher;
-
-  componentDidMount() {
-    // this._mutationWatcher = new DocumentMutationChangeWatcher(() => {
-    //   const { workspace } = this.props;
-    //   const rule = workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined;
-    //   this.setState({ pane: this.state.pane, mergedRule: rule });
-    // });
-
-    // this._mutationWatcher.target = this.getTarget(this.props);
-  }
-
-  componentWillReceiveProps(props) {
-    // this._mutationWatcher.target = this.getTarget(props);
-  }
-
-  componentWillUnmount() {
-    // this._mutationWatcher.dispose();
-  }
+ 
 
   getTarget(props) {
     const { workspace } = props;
@@ -93,19 +74,18 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
 
   selectTab(id: string) {
-    this.setState({ pane: id, mergedRule: this.state.mergedRule });
+    this.setState({ pane: id });
   }
 
   render() {
     const { workspace } = this.props;
     const { pane } = this.state;
 
-    const mergedRule = workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined;
-
-    if (!workspace || !workspace.selection.length || !mergedRule) return null;
+    if (!workspace || !workspace.selection.length) return null;
 
     const elements = HTMLDOMElements.fromArray(workspace.selection);
     if (elements.length !== 1) return null;
+    const mergedRule = getMergedCSSStyleRule(elements[0]);
 
     const tabs = {
       pretty: { icon: "paintbrush", render: this.renderPrettyPane },
@@ -136,6 +116,15 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
   renderPrettyPane(rule: MergedCSSStyleRule) {
     const graphics = new SyntheticCSSStyleGraphics(rule.style);
+    graphics.observe({
+      dispatch() {
+        const style = graphics.toStyle();
+        for (const propertyName of style) {
+          const mainDeclarationSource = rule.getDeclarationMainSourceRule(propertyName);
+          mainDeclarationSource.style.setProperty(propertyName, style[propertyName]);
+        }
+      }
+    })
     return <CSSPrettyInspectorComponent rule={rule} graphics={graphics} />;
   }
 

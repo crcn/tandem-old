@@ -49,6 +49,7 @@ export const renderPreview = reactEditorPreview(async () => {
           padding-right: border-box;
           filter: contrast(50%) brightness(200%) drop-shadow(0px 0px 0px #F60);
           left: 10px;
+          top: 10px;
         }
 
         div {

@@ -10,14 +10,11 @@ IMMEDIATE
 Start working on UX around getting started with Tandem and projects.
 
 - use http://cssreference.io/#hn for CSS pretty pane
-- [ ] style normalizer
-- [ ] computed css pane
-- [ ] all CSS declarations pane
 
-- [ ] pretty pane
-  - [ ] advanced layout
-- [ ] computed styles
-  - [ ] show corresponding css selectors
+- [ ] arrow keys for manipulating inputs
+- [ ] unit conversion
+- [ ] advanced layout pane
+- [ ] see selectors matching computed layout
 
 - [ ] constraints
 

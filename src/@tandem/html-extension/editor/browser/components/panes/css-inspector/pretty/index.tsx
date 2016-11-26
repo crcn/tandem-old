@@ -44,7 +44,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 
   renderAppearance() {
-    const { rule } = this.props;
+    const { rule, graphics } = this.props;
     return <div className="section">
       <div className="container section">
         <div className="row">
@@ -54,10 +54,10 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-7">
-            <ReactSliderComponent min={0} max={1} step={0.01} value={Number(rule.style.opacity)} />
+            <ReactSliderComponent min={0} max={1} step={0.01} value={graphics.opacity || 1} onChange={(value) => graphics.opacity = value} />
           </div>
           <div className="col-3">
-            <input type="text" value={rule.style.opacity} />
+            <input type="text" value={graphics.opacity || 1} onChange={(value) => graphics.opacity = Number(value)} />
           </div>
         </div>
         <div className="row">
@@ -75,7 +75,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 
   renderLayout() {
-    const { rule } = this.props;
+    const { rule, graphics } = this.props;
     return <div className="section">
 
       <div className="advanced hide">
@@ -144,7 +144,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={rule.style.left} />
+            <input type="text" value={graphics.left && graphics.left.toString()} onChange={bindGraphicInputEvent(graphics, "left")} />
           </div>
           <div className="col-2 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="top">
@@ -152,7 +152,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={rule.style.top} />
+            <input type="text" value={graphics.top && graphics.top.toString()} onChange={bindGraphicInputEvent(graphics, "top")} />
           </div>
         </div>
         <div className="row">
@@ -162,7 +162,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSUnitInputComponent rule={rule} propertyName="width" />
+            <input type="text" value={graphics.width && graphics.width.toString()} onChange={bindGraphicInputEvent(graphics, "width")} />
           </div>
           <div className="col-2 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="height">
@@ -170,7 +170,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSUnitInputComponent rule={rule} propertyName="height" />
+            <input type="text" value={graphics.height && graphics.height.toString()} onChange={bindGraphicInputEvent(graphics, "height")} />
           </div>
         </div>
       </div>
@@ -178,7 +178,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 
   renderTypography() {
-    const { rule } = this.props;
+    const { rule, graphics } = this.props;
     return <div className="section">
       <div className="container">
         <div className="row title">
@@ -217,7 +217,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={rule.style.fontSize} />
+            <input type="text" value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicInputEvent(graphics, "fontSize")} />
           </div>
           <div className="col-2 label">
             Color
@@ -234,7 +234,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={rule.style.letterSpacing} />
+            <input type="text" value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicInputEvent(graphics, "letterSpacing")} />
           </div>
           <div className="col-2 label">       
             <CSSMergedRuleLinkComponent rule={rule} propertyName="lineHeight">
@@ -242,7 +242,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={rule.style.lineHeight} />
+            <input type="text" value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicInputEvent(graphics, "lineHeight")} />
           </div>
         </div>
 
@@ -375,7 +375,12 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
       </div>
     </div>
   }
+}
 
+function bindGraphicInputEvent(graphics: SyntheticCSSStyleGraphics, propertyName: string) {
+  return (event: React.KeyboardEvent<HTMLInputElement>) => {
+    graphics.setProperty(propertyName, event.currentTarget.value);
+  }
 }
 
 class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground }, any> {
@@ -397,6 +402,7 @@ class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticC
   render() {
     const { boxShadow } = this.props;
     const { color, x, y, blur, spread, inset } = boxShadow;
+    
     return <div className="row">
       <div className="col-2">
         <BackgroundFillComponent value={color && color.toString()} />
@@ -429,7 +435,7 @@ class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilt
       <div className="col-12">
         <div className="row">
           <div className="col-12">
-            <input type="text" value="b" />
+            {this.renderInput(name, params)}
           </div>
         </div>
         <div className="row labels">
@@ -439,6 +445,10 @@ class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilt
         </div>
       </div>
     </div>
+  }
+
+  renderInput(name: string, params: any[]) {
+    return <input type="text" value={params[0]} />
   }
 }
 

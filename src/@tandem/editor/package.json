@@ -2,13 +2,13 @@
   "name": "@tandem/editor",
   "version": "1.0.1",
   "description": "",
-  "browser": "./bundle/browser-entry.js",
+  "browser": "./bundle/index.bundle.js",
   "main": "./index.ts",
   "bin": {
     "tandem": "./bin/tandem"
   },
   "entries": {
-    "browser": "./browser-entry.ts"
+    "browser": "./index.bundle.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
