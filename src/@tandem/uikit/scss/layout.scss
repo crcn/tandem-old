@@ -5,15 +5,10 @@
   padding: $padding-s;
 }
 
-.container {
-  & .row {
-  }
-}
-
 .row {
   width: 100%;
 
-  padding: $padding-s;
+  padding: $padding-r;
 
   display: flex;
   flex-direction: row;
@@ -27,6 +22,12 @@
     flex-shrink: 0;
     padding-left: $padding-s;
     padding-right: $padding-s;
+    & > .row {
+      padding-left: 0;
+      padding-right: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
   }
 
   &:not(.no-padding) {

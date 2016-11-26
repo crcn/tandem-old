@@ -183,7 +183,8 @@ export class ElementCSSPaneComponent extends React.Component<{ workspace: Worksp
   }
 }
 
-class MatchedCSSRulesCache {
+
+export class MatchedCSSRulesCache {
   private _target: SyntheticDOMElement;
   private _matchedRules: MatchedCSSStyleRule[];
   private _documentObserver: CallbackDispatcher<any, any>;

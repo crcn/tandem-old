@@ -4,28 +4,102 @@ import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
-import { BaseApplicationComponent, Mutation } from "@tandem/common";
+import { BaseApplicationComponent, Mutation, MutationEvent} from "@tandem/common";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { CSSStyleHashInputComponent } from "../css";
 import { IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
-import { SyntheticCSSStyleDeclaration, getMergedCSSStyleRule, MergedCSSStyleRule, SyntheticHTMLElement, SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { CSSPrettyInspectorComponent } from "./pretty";
 import { ComputedPropertiesPaneComponent } from "./computed";
+import { 
+  SyntheticDocument, 
+  MergedCSSStyleRule, 
+  SyntheticHTMLElement, 
+  SyntheticCSSStyleRule,
+  getMergedCSSStyleRule,
+  SyntheticCSSStyleDeclaration, 
+  SyntheticCSSStyleRuleMutationTypes,  
+} from "@tandem/synthetic-browser";
+
+class DocumentMutationChangeWatcher {
+
+  private _observer: CallbackDispatcher<any, any>;
+  private _target: SyntheticDocument;
+
+  constructor(private _onChange: () => any) {
+    this._observer = new CallbackDispatcher(this.onMutationEvent.bind(this));
+  }
+
+  get target(): SyntheticDocument {
+    return this._target;
+  }
+
+  set target(value: SyntheticDocument) {
+    if (this._target === value) return;
+    if (this._target) {
+      this._target.unobserve(this._observer);
+    }
+    this._target = value;
+    if (this._target) {
+      this._target.observe(this._observer);
+      this._onChange();
+    }
+  }
 
 
-export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
+  public dispose() {
+    this.target = undefined;
+  }
+
+  protected onMutationEvent({ mutation }: MutationEvent<any>) {
+    if (mutation && mutation.type !== SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) {
+      this._onChange();
+    }
+  }
+}
+
+export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string, mergedRule: MergedCSSStyleRule }> {
 
   state = {
-    pane: "pretty"
+    pane: "pretty",
+    mergedRule: undefined
   };
 
+  private _mutationWatcher: DocumentMutationChangeWatcher;
+
+  componentDidMount() {
+    this._mutationWatcher = new DocumentMutationChangeWatcher(() => {
+      const { workspace } = this.props;
+
+      this.setState({ pane: this.state.pane, mergedRule: workspace.selection.length ? getMergedCSSStyleRule(HTMLDOMElements.fromArray(workspace.selection)[0]) : undefined });
+    });
+
+    this._mutationWatcher.target = this.getTarget(this.props);
+  }
+
+  componentWillReceiveProps(props) {
+    this._mutationWatcher.target = this.getTarget(props);
+  }
+
+  componentWillUnmount() {
+    this._mutationWatcher.dispose();
+  }
+
+  getTarget(props) {
+    const { workspace } = props;
+    return workspace && workspace.selection.length ? workspace.selection[0].ownerDocument : undefined;
+  }
+
+
   selectTab(id: string) {
-    this.setState({ pane: id });
+    this.setState({ pane: id, mergedRule: this.state.mergedRule });
   }
 
   render() {
     const { workspace } = this.props;
-    if (!workspace || !workspace.selection.length) return null;
+    const { mergedRule, pane } = this.state;
+    
+    if (!workspace || !workspace.selection.length || !mergedRule) return null;
 
     const elements = HTMLDOMElements.fromArray(workspace.selection);
     if (elements.length !== 1) return null;
@@ -36,9 +110,6 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
     };
 
     const selectedTab = tabs[this.state.pane];
-
-
-    const mergedRule = getMergedCSSStyleRule(elements[0]);
 
     return <div className="css-inspector">
       <div className="header">

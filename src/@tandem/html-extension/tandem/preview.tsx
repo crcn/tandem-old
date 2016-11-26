@@ -36,6 +36,10 @@ export const renderPreview = reactEditorPreview(async () => {
       mockFiles: {
         "index.css": `
         .container {
+          font-family: Helvetica;
+          font-weight: 100;
+          line-height: 0.05em;
+          font-size: 12pt;
           color: red;
           display: block;
           background: rgba(255, 255, 255, 0);
@@ -46,6 +50,9 @@ export const renderPreview = reactEditorPreview(async () => {
 
         div {
           color: blue;
+          width: 100px;
+          height: 200px;
+          opacity: 0.5;
         }
 
         span {

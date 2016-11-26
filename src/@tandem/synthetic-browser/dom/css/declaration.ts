@@ -83,6 +83,7 @@ export class SyntheticCSSStyleDeclaration implements ISerializable<ISerializedSy
   public backfaceVisibility: string | null;
   public background: string | null;
   public backgroundAttachment: string | null;
+  public mixBlendMode: string | null;
   public backgroundClip: string | null;
   public backgroundColor: string | null;
   public backgroundImage: string | null;
