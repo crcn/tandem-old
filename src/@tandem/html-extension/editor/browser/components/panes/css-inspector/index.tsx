@@ -180,7 +180,8 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
           <div className="col-12">
             <ul className="matching-selectors">
               {selectorLabels.map(({ source, label }, i) => {
-                return <li onMouseEnter={this.onSelectorEnter.bind(this, label)} key={i} className={cx({ hovering: source.style.metadata.get(MetadataKeys.HOVERING) })} onMouseLeave={this.onSelectorLeave.bind(this, label)}>
+                
+                return <li onMouseEnter={this.onSelectorEnter.bind(this, label)} key={i} className={cx({ hovering: source.style.metadata.get(MetadataKeys.HOVERING), selected: source.style.metadata.get(MetadataKeys.SELECTED) })} onMouseLeave={this.onSelectorLeave.bind(this, label)}>
                   <SyntheticSourceLink target={source}>{ label }</SyntheticSourceLink>
                 </li>
               })}

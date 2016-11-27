@@ -98,6 +98,7 @@ export const renderPreview = reactEditorPreview(async () => {
 
   const document = browser.document;
 
+
   document.querySelector("#controls").metadata.set(MetadataKeys.HOVERING, true);
   (document.querySelector(".container") as SyntheticHTMLElement).style.metadata.set(MetadataKeys.HOVERING, true);
   workspace.select([document.querySelector(".container")]);

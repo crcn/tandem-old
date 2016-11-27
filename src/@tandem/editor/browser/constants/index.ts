@@ -12,6 +12,8 @@ export namespace MetadataKeys {
   export const ENTITY_VISIBLE = "entityVisible";
   export const LAYER_DEPENDENCY_NAME = "layerProviderName";
   export const HOVERING = "hovering";
+  export const SELECTED = "selected";
+  
   export const HIDDEN = "hidden";
   export const SELECTABLE = "selectable";
   export const MOVING = "moving";
