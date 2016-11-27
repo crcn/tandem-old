@@ -64,7 +64,7 @@ class DocumentMutationChangeWatcher {
 export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
 
   state = {
-    pane: "pretty"
+    pane: "computed"
   };
 
   getTarget(props) {
@@ -150,6 +150,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     this.props.element.ownerDocument.querySelectorAll(selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, false));
   }
 
+
   render() {
 
     const { rule } = this.props;
@@ -158,12 +159,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     
     const selectorLabels = [];
     
-    rule.allSources.forEach((source) => {
-
-      const hash = source.toString();
-      
-      if (used[hash]) return;
-      used[hash] = true;
+    rule.mainSources.forEach((source) => {
       
       if (source instanceof SyntheticHTMLElement) {
         selectorLabels.push({ source: source, label: "style" });
@@ -177,9 +173,6 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
         <div className="row title">
           <div className="col-12">
             Rules
-            <div className="controls">
-              <i className="ion-arrow-swap" />
-            </div>
           </div>
         </div>
 
@@ -187,7 +180,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
           <div className="col-12">
             <ul className="matching-selectors">
               {selectorLabels.map(({ source, label }, i) => {
-                return <li onMouseEnter={this.onSelectorEnter.bind(this, label)} key={i} onMouseLeave={this.onSelectorLeave.bind(this, label)}>
+                return <li onMouseEnter={this.onSelectorEnter.bind(this, label)} key={i} className={cx({ hovering: source.style.metadata.get(MetadataKeys.HOVERING) })} onMouseLeave={this.onSelectorLeave.bind(this, label)}>
                   <SyntheticSourceLink target={source}>{ label }</SyntheticSourceLink>
                 </li>
               })}

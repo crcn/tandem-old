@@ -3,9 +3,10 @@ import * as React from "react";
 import * as cx from "classnames";
 import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { RadioGroupComponent } from "@tandem/uikit";
 import * as ReactSliderComponent from "react-slider";
-import { CSSMergedRuleLinkComponent } from "../common";
+import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 import * as Select from "react-select";  
 import { capitalize, startCase } from "lodash";
 import { 
@@ -15,6 +16,7 @@ import {
   MergedCSSStyleRule, 
   SyntheticHTMLElement, 
   SyntheticCSSStyle, 
+  SyntheticCSSStyleRule, 
   SyntheticCSSStyleGraphics,
   SyntheticCSSStyleBackground,
   SyntheticCSSStyleBoxShadow,
@@ -156,7 +158,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <Select placeholder="--" options={POSITION_OPTIONS} onChange={bindGraphicSelectChange(graphics, "position")} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("left")}>
+              <Select placeholder="--" options={POSITION_OPTIONS} onChange={bindGraphicSelectChange(graphics, "position")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
 
@@ -167,7 +171,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={graphics.left && graphics.left.toString()} onChange={bindGraphicInputEvent(graphics, "left")} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("left")}>
+              <input type="text" value={graphics.left && graphics.left.toString()} onChange={bindGraphicInputEvent(graphics, "left")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="top">
@@ -185,7 +191,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("width")}>
             <input type="text" value={graphics.width && graphics.width.toString()} onChange={bindGraphicInputEvent(graphics, "width")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="height">
@@ -426,6 +434,7 @@ class CSSBackgroundInputComponent extends React.Component<{ background: Syntheti
     </div>;
   }
 }
+
 
 class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticCSSStyleBoxShadow }, any> {
   render() {

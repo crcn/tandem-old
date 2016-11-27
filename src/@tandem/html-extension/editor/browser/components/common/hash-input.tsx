@@ -12,6 +12,7 @@ export interface IKeyValueItem {
 
 export interface IKeyValueInputComponentProps {
   item: IKeyValueItem;
+  children?: any;
   setKeyValue: (name: string, value: any, oldName?: string) => any;
   onValueEnter: (item) =>  any;
   className?: string;

@@ -10,7 +10,7 @@ import { ReceiverService } from "@tandem/editor/common";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
 import { createTestMasterApplication } from "@tandem/editor/test";
-import { SyntheticBrowser, NoopRenderer } from "@tandem/synthetic-browser";
+import { SyntheticBrowser, NoopRenderer, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
@@ -99,6 +99,7 @@ export const renderPreview = reactEditorPreview(async () => {
   const document = browser.document;
 
   document.querySelector("#controls").metadata.set(MetadataKeys.HOVERING, true);
+  (document.querySelector(".container") as SyntheticHTMLElement).style.metadata.set(MetadataKeys.HOVERING, true);
   workspace.select([document.querySelector(".container")]);
 
   return <RootApplicationComponent bus={bus} injector={injector}>

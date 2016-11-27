@@ -2,6 +2,7 @@ import { argv } from "yargs";
 import * as getPort from "get-port";
 import { SockService } from "@tandem/editor/server";
 import { EditorFamilyType } from "@tandem/editor/common";
+import { PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 import { LoadProjectConfigCommand } from "@tandem/editor/worker/commands";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";

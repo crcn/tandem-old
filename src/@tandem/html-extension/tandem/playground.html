@@ -8,7 +8,12 @@
         }
 
         .container {
+          
+        }
 
+        ul {
+          margin: 0;
+          padding: 0;
         }
 
         .container .header {
@@ -21,15 +26,30 @@
           opacity: 0.5;
           font-size: 0.5em;
           text-align: left;
+          list-style-type: none;
+        }
+
+        .navigation li {
+          display: inline-block;
+          margin-left: 10px;
+          text-transform: uppercase;
         }
       </style>
     </head>
   <body>
     <div class="container">
       <div class="header">
-          <div class="navigation">
-            Home
-          </div>
+          <ul class="navigation">
+            <li>
+              home
+            </li>
+            <li>
+              Contact
+            </li>
+            <li>
+              About
+            </li>
+          </ul>
       </div>
     </div>
   </body>

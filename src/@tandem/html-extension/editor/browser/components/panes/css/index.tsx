@@ -27,6 +27,7 @@ export interface ICSSStyleHashInputProps {
   overridden?: any;
   inherited?: any;
   renderName?: (props: IKeyValueNameComponentProps) => any;
+  renderValue?: (props: IKeyValueInputComponentProps) => any;
   setDeclaration: (key, value, oldKey?) => any;
 }
 
@@ -73,7 +74,8 @@ export class CSSStyleHashInputComponent extends React.Component<ICSSStyleHashInp
   }
 
   renderItem = (props: IKeyValueInputComponentProps) => {
-    return <CSSStylePropertyComponent {...props} />;
+    const children = <CSSStylePropertyComponent {...props} />;
+    return this.props.renderValue ? this.props.renderValue(Object.assign({ children }, props)) : children;
   }
 }
 

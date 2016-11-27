@@ -1,4 +1,4 @@
-import { camelCase } from "lodash";
+import { camelCase, values, uniq } from "lodash";
 import { DOMNodeType } from "@tandem/synthetic-browser/dom/markup/node-types";
 import { SyntheticCSSObject } from "./base";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser/dom";
@@ -110,6 +110,12 @@ export class MergedCSSStyleRule {
     return this._allSources;
   }
 
+  get mainSources() {
+    return uniq(values(this._main));
+  }
+
+
+
   setProperty(source: MatchedCSSStyleRuleType, name: string, value: string) {
 
     if (!this._sources[name]) {
@@ -130,10 +136,6 @@ export class MergedCSSStyleRule {
     for (let property in this._main) {
       this.style.setProperty(property, this._main[property].style[property]);
     }
-  }
-
-  getDeclarationSourceRules(name: string): Array<MatchedCSSStyleRuleType> {
-    return this._sources[camelCase(name)] || [];
   }
 
   getDeclarationSourceRules(name: string): Array<MatchedCSSStyleRuleType> {

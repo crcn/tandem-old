@@ -9,7 +9,8 @@ import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-bro
 
 // TODO - add attribute information here so that the user
 // knows what they're hovering on. OR, highlight the line in code.
-class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLElement, workspace: Workspace }, any> {
+const MAX_TOOLTIP_COUNT = 20;
+class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLElement, workspace: Workspace, hoverCount: number }, any> {
 
   render() {
     const { element, workspace } = this.props;
@@ -75,7 +76,10 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
 
     const tagInfoStyle = {
       transform: `translateY(-${1/scale * 100}%) scale(${1/scale})`,
-      transformOrigin: "top left"
+      transformOrigin: "top left",
+
+      // don't want too many tooltips to show
+      display: this.props.hoverCount < MAX_TOOLTIP_COUNT ? "block" : "none"
     }
 
     return <div className="td-html-element-info-item" style={style}>
@@ -104,7 +108,7 @@ export class ElementInfoStageToolComponent extends React.Component<IElementInfoS
     });
 
     return <div className="td-html-element-info">
-      { htmlElements.map((element) => <ElementInfoComponent element={element as SyntheticHTMLElement} workspace={workspace} key={element.uid} />)}
+      { htmlElements.map((element) => <ElementInfoComponent hoverCount={htmlElements.length} element={element as SyntheticHTMLElement} workspace={workspace} key={element.uid} />)}
     </div>;
   }
 }

@@ -8,7 +8,7 @@
     "tandem": "./bin/tandem"
   },
   "entries": {
-    "browser": "./index.bundle.ts"
+    "browser": "./browser-entry.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

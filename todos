@@ -43,13 +43,7 @@ FEATURES
 - [ ] open unsaved files in vscode
 - [ ] enable <script /> tags.
 
-IMPORTING MODULES
-
-- [ ] automatically scan for components
-
 - [ ] UIKit
-  - [ ] find inspiration by other apps
-- [ ] deprecate tdm files - artboards should be core
 - [ ] tandem <directory> for opening projects
 
 ----------------------------------
@@ -85,12 +79,7 @@ Integrations
 UX
   - [ ] tandem init CLI tool
   - [ ] VM developer console
-  - [ ] tandem config
-    - [ ] define how to handle extensions
-    - [ ] define how to handle components when dnding
-    - [ ] define what extensions to use
   - [ ] gutters need to be resizable
-  - [ ] workspaces should change depending on the text editor workspaces
   - [ ] custom layer for artboard
 
 BUGS
@@ -127,7 +116,6 @@ SOCIAL
   - *[ ] put tandem on backend
   - *[ ] possibly attach messages to commits
   - *[ ] enable people to comment on components (necessary for feedback)
-
 
 CSS PANE
   - [ ] toggle styles on and off

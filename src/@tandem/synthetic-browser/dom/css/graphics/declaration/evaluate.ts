@@ -357,6 +357,9 @@ const globalContext = {
   rotate([value]) {
     return value;
   },
+  scale([value]) {
+    return value;
+  },
   "linear-gradient": (...args: any[]) => {
     const angle = typeof args[0][0] === "number" || typeof args[0][0] === "string" ? args.shift() : 0;
     const colorStops = args.map(([color, measurement]) => {

@@ -3,11 +3,13 @@ import * as React from"react";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import {  SyntheticSourceLink } from "@tandem/editor/browser/components/common";
-import { CSSStyleHashInputComponent } from "../../css";
-import { IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
+import { CSSStyleHashInputComponent, CSSStylePropertyComponent } from "../../css";
+import { IKeyValueNameComponentProps, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import { BaseApplicationComponent, Mutation } from "@tandem/common";
 import { SyntheticCSSStyleRule, SyntheticHTMLElement, getMergedCSSStyleRule, MergedCSSStyleRule } from "@tandem/synthetic-browser";
-import { CSSMergedRuleLinkComponent } from "../common";
+import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
+
+
 
 export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule }, any> {
 
@@ -45,13 +47,19 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
         { props.children }
       </CSSMergedRuleLinkComponent> 
     }
+
+    const renderValue = (props: IKeyValueInputComponentProps) => {
+      return <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule(props.item.name)}>
+        { props.children }
+      </CSSHighlightTargetRuleHintComponent>
+    }
     
     return <div className="container">
       <div className="section">
         <div className="row title">
           Computed
         </div>
-        <CSSStyleHashInputComponent renderName={renderName} style={rule.style} setDeclaration={this.setDeclaration} />
+        <CSSStyleHashInputComponent renderName={renderName} renderValue={renderValue} style={rule.style} setDeclaration={this.setDeclaration} />
       </div>
     </div>;
   }

@@ -5,9 +5,12 @@
 
   .matching-selectors {
     li {
+      cursor: pointer;
+      &:not(.selected) {
+        background: #BFBFBF;
+      }
       display: inline-block;
       padding: 2px 4px;
-      background: #BFBFBF;
       color: rgba(255, 255, 255, 0.9);
       border-radius: 2px;
       margin-right: 4px;

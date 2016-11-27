@@ -79,6 +79,9 @@
   padding: 4px 8px;
   z-index: 1024;
   position: relative;
+  filter: drop-shadow(0px 0px 1px rgba(255, 255, 255, 0.4));
+  
+  /* arrow */
   &:after {
     z-index: -1;
     content: " ";
