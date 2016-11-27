@@ -115,7 +115,8 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
           value = Math.round(value) + "px";
         }
 
-        target[propertyName] = value;
+
+        target.setProperty(propertyName.toString(), value);
         this.onStyleChange();
         return true;
       }

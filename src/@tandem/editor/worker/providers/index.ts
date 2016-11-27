@@ -31,17 +31,25 @@ export class FileImporterProvider extends ClassFactoryProvider {
 
 export interface IPreviewLoaderResult {
   filePath: string;
-  content: string;
+  content?: string;
 }
 
 export interface IFilePreviewLoader {
   loadFilePreview(request: ImportFileRequest): Promise<IPreviewLoaderResult>;
 }
 
+export class SelfPreviewLoader implements IFilePreviewLoader {
+  async loadFilePreview(request: ImportFileRequest) {
+    return {
+      filePath: request.filePath.replace(/^file:\/\//, "")
+    }
+  }
+}
+
 export class PreviewLoaderProvider extends ClassFactoryProvider {
   static readonly NS = "filePreviewLoaders";
 
-  constructor(readonly name: string, readonly test: (filePath: string) => boolean, readonly loaderClass: { new(): IFilePreviewLoader }) {
+  constructor(readonly name: string, readonly test: (filePath: string, injector?: Injector) => boolean, readonly loaderClass: { new(): IFilePreviewLoader }) {
     super(PreviewLoaderProvider.getId(name), loaderClass);
   }
 
@@ -59,7 +67,7 @@ export class PreviewLoaderProvider extends ClassFactoryProvider {
 
   static find(filePath: string, injector: Injector) {
     const providers = injector.queryAll<PreviewLoaderProvider>(this.getId("**"));
-    const provider = providers.find(provider => provider.test(filePath));
+    const provider = providers.find(provider => provider.test(filePath, injector));
     return provider && provider.create();
   }
 }

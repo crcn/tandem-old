@@ -1,6 +1,6 @@
 // note unused imports - fixes --declaration issue with typescript
 
-import { MimeTypeProvider } from "@tandem/common";
+import { MimeTypeProvider, HTML_MIME_TYPE } from "@tandem/common";
 import { createHTMLCoreProviders, createHTMLSandboxProviders } from "../../index";
 import {
   DependencyLoaderFactoryProvider,
@@ -9,11 +9,15 @@ import {
 } from "@tandem/sandbox";
 
 import { SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
+import { SelfPreviewLoader, PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 
 export const createHTMLEditorWorkerProviders = () => {
   return [
     ...createHTMLCoreProviders(),
-    ...createHTMLSandboxProviders()
+    ...createHTMLSandboxProviders(),
+    new PreviewLoaderProvider("htmlPreview", (filePath, injector) => {
+      return MimeTypeProvider.lookup(filePath, injector) === HTML_MIME_TYPE;
+    }, SelfPreviewLoader)
   ];
 }
 

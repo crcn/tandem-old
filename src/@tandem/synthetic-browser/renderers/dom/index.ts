@@ -276,7 +276,11 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
       const element = renderHTMLElement(nodeFactory, syntheticElement.tagName, syntheticElement, dict);
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
         const syntheticAttribute = syntheticElement.attributes[i];
-        element.setAttribute(syntheticAttribute.name, syntheticAttribute.value);
+        if (syntheticAttribute.name === "class") {
+          element.className = syntheticAttribute.value;
+        } else {
+          element.setAttribute(syntheticAttribute.name, syntheticAttribute.value);
+        }
       }
       return appendChildNodes(nodeFactory, element, syntheticElement.childNodes, dict);
     case DOMNodeType.DOCUMENT:
@@ -287,10 +291,11 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
   }
 }
 
-function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMNode, dict: HTMLElementDictionaryType): any {
+function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMNode, dict: HTMLElementDictionaryType): HTMLElement {
+  if (/html|body|head/.test(tagName)) tagName = "div";
   const element = nodeFactory.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName);
   dict[source.uid] = [element, source];
-  return element;
+  return element as any;
 }
 
 function appendChildNodes(nodeFactory: Document, container: HTMLElement|DocumentFragment, syntheticChildNodes: SyntheticDOMNode[], dict: HTMLElementDictionaryType) {

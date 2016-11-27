@@ -41,6 +41,7 @@ export const renderPreview = reactEditorPreview(async () => {
           line-height: 0.05em;
           font-size: 12pt;
           color: red;
+          text-align: justify;
           display: block;
           mix-blend-mode: overlay;
           background: rgba(255, 100, 255, 1), lime overlay;

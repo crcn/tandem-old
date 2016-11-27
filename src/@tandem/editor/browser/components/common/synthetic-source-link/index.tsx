@@ -7,6 +7,7 @@ import { AltInputComponent } from "../alt-input";
 import { BaseApplicationComponent } from "@tandem/common";
 
 // TODO: add preview of source file here
+// TODO: highlight other objects that share the same source
 export class SyntheticSourceLink extends BaseApplicationComponent<{ target?: ISyntheticObject, getTarget?: () => ISyntheticObject }, any> {
 
   getTarget() {

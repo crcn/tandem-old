@@ -73,8 +73,9 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     const url = event.dataTransfer.getData("URL");
     if (url) return url.split("\n").forEach(importURI);
 
-    for (let i = event.dataTransfer.files.length; i--;) {
-      const file = event.dataTransfer.files[i];
+    
+    for (let i = event.dataTransfer.items.length; i--;) {
+      const file = event.dataTransfer.items[i].getAsFile();
       importURI(file.path);
     }
   }

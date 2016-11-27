@@ -446,6 +446,8 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
   }
 
   setProperty(name: string, newValue: string, priority?: string, oldName?: string, notifyOwnerNode: boolean = true) {
+    
+    if (!isValidCSSDeclarationProperty(name)) return false;
 
     // fix in case they"re kebab case
     name    = camelCase(name);

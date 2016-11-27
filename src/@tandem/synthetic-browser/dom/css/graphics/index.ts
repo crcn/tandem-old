@@ -30,7 +30,12 @@ export function isCSSBlendMode(blendMode: string) {
   return /^(normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity)/.test(blendMode);
 }
 
+export function isCSSClipType(clip: string) {
+  return /^(border-box|padding-box|content-box|initial|inherit|text)/.test(clip);
+}
+
 export type CSSBlendModeType = "normal"|"multiply"|"screen"|"overlay"|"darken"|"lighten"|"color-dodge"|"saturation"|"color"|"luminosity";
+export type CSSBackgroundClipType = "border-box"|"padding-box"|"content-box"|"text";
 
 export class SyntheticCSSStyleBackground extends Observable {
 
@@ -49,6 +54,9 @@ export class SyntheticCSSStyleBackground extends Observable {
   @bindable(true)
   public blendMode: CSSBlendModeType;
 
+  @bindable(true)
+  public clip: CSSBackgroundClipType;
+
   constructor(properties?: any) {
     super();
     if (properties) this.setProperties(properties);
@@ -61,7 +69,7 @@ export class SyntheticCSSStyleBackground extends Observable {
   }
 
   setProperties(properties: any[]) {
-    let color, image, blendMode, position = [], repeat;
+    let color, clip, image, blendMode, position = [], repeat;
 
     for (const value of properties) {
       if (typeof value === "object") {
@@ -74,6 +82,8 @@ export class SyntheticCSSStyleBackground extends Observable {
         repeat = value;
       } else if (isCSSBlendMode(value)) {
         blendMode = value;
+      } else if(isCSSClipType(value)) {
+        clip = value;
       } else {
         image = value;
       }
@@ -84,6 +94,7 @@ export class SyntheticCSSStyleBackground extends Observable {
     if (position.length)  this.setPosition(position);
     if (repeat) this.repeat = repeat;
     if (blendMode) this.blendMode = blendMode;
+    if (clip) this.clip = clip;
   }
 
   setProperty(name: string, value: any) {
@@ -262,6 +273,14 @@ export class SyntheticCSSStyleGraphics extends Observable {
   @bubble()
   public maxHeight: SyntheticCSSMeasurment;
 
+  @bindable(true)
+  @bubble()
+  public position: string;
+
+  @bindable(true)
+  @bubble()
+  public display: string;
+
   constructor(readonly style: SyntheticCSSStyle) {
     super();
     this.backgrounds = new ObservableCollection<SyntheticCSSStyleBackground>();
@@ -276,7 +295,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
     }
   }
 
-  public setProperty(name: string, value: string) {
+  public setProperty(name: string, value: any) {
 
     value = evaluateCSSDeclValue2(value, name);
 
@@ -311,7 +330,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
     if (handler) {
       handler(value);
     } else {
-      this[name] = [value];
+      this[name] = value[0];
     }
   }
 
@@ -348,6 +367,8 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["textAlign"],
       ["width"],
       ["height"],
+      ["display"],
+      ["position"],
       ["minWidth"],
       ["minHeight"],
       ["maxWidth"],

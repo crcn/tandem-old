@@ -11,18 +11,24 @@ Start working on UX around getting started with Tandem and projects.
 
 - use http://cssreference.io/#hn for CSS pretty pane
 
+- [ ] show css selectors affected by pretty pane
+- [ ] pretty pane
+  - [ ] background color input
+    - [ ] dnd images
+    - [ ] bg constraints
+  -  box shadow input
+
+- [ ] color input
 - [ ] arrow keys for manipulating inputs
-- [ ] unit conversion
+- [ ] ability to edit style attribute
 - [ ] advanced layout pane
 - [ ] see selectors matching computed layout
 
-- [ ] constraints
+- [ ] background constraints
 
 - Website
 - artboard tool
 - insert div tool (for html)
-- animations
-- show css selectors affected by pretty pane
 - show diff of unsaved drafts
 
 - [ ] unsaved files
@@ -84,8 +90,10 @@ UX
     - [ ] define what extensions to use
   - [ ] gutters need to be resizable
   - [ ] workspaces should change depending on the text editor workspaces
+  - [ ] custom layer for artboard
 
 BUGS
+  - [ ] css class selectors are case insensitive
   - [ ] disable attributes that are dynamically created
   - [ ] fix absolute bounds for elements
   - [ ] cannot change source of artboard
@@ -123,12 +131,10 @@ SOCIAL
 CSS PANE
   - [ ] toggle styles on and off
   - [ ] force states
-  - [ ]
   - [ ] syntax highlighting for declaration values
   - [ ] visual editor for declaration values
   - [ ] drag slider for unit values
   - [ ] unit value converter
-  - [ ] arrow keys when changing values
 
 OPTIMIZATIONS
   - [ ] have data store records owned

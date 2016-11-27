@@ -3,8 +3,10 @@ import * as React from "react";
 import * as cx from "classnames";
 import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";
+import { RadioGroupComponent } from "@tandem/uikit";
 import * as ReactSliderComponent from "react-slider";
 import { CSSMergedRuleLinkComponent } from "../common";
+import * as Select from "react-select";  
 import { capitalize, startCase } from "lodash";
 import { 
   parseCSSDeclValue, 
@@ -17,6 +19,27 @@ import {
   SyntheticCSSStyleBackground,
   SyntheticCSSStyleBoxShadow,
 } from "@tandem/synthetic-browser";
+
+
+// http://www.w3schools.com/csSref/pr_class_display.asp
+const DISPLAY_OPTIONS = ["block", "inline", "inline-block", "flex", "non", "table"].map((value) => {
+  return { label: value, value: value };
+});
+
+// http://www.w3schools.com/css/css_positioning.asp
+const POSITION_OPTIONS = ["static", "relative", "fixed", "absolute"].map((value) => {
+  return { label: value, value: value };
+});
+
+// http://www.w3schools.com/cssref/pr_background-blend-mode.asp
+const BLEND_MODE_OPTIONS = ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "saturation", "color", "lumocity"].map((value) => {
+  return { label: value, value: value };
+});
+
+// http://www.w3schools.com/cssref/pr_background-blend-mode.asp
+const TEXT_ALIGN_OPTIONS = ["left", "center", "right", "justify"].map((value) => {
+  return { label: value, value: value };
+});
 
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
@@ -45,7 +68,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
   renderAppearance() {
     const { rule, graphics } = this.props;
-    return <div className="section">
+    return <div className="section" key="appearance">
       <div className="container section">
         <div className="row">
           <div className="col-2 label">
@@ -67,7 +90,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <input type="text" value={rule.style.mixBlendMode} />
+            <Select placeholder="--" value={graphics.mixBlendMode} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(graphics, "mixBlendMode")} />
           </div>
         </div>
       </div>
@@ -76,7 +99,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
   renderLayout() {
     const { rule, graphics } = this.props;
-    return <div className="section">
+    return <div className="section" key="layout">
 
       <div className="advanced hide">
         <div className="container">
@@ -123,7 +146,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSUnitInputComponent rule={rule} propertyName="display" />
+            <Select placeholder="--" options={DISPLAY_OPTIONS} onChange={bindGraphicSelectChange(graphics, "display")} />
           </div>
         </div>
         <div className="row">
@@ -133,7 +156,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSUnitInputComponent rule={rule} propertyName="position" />
+            <Select placeholder="--" options={POSITION_OPTIONS} onChange={bindGraphicSelectChange(graphics, "position")} />
           </div>
         </div>
 
@@ -179,7 +202,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
   renderTypography() {
     const { rule, graphics } = this.props;
-    return <div className="section">
+    return <div className="section" key="typography">
       <div className="container">
         <div className="row title">
           Typography
@@ -248,23 +271,13 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
         <div className="row">
           <div className="col-2 label">
-            Align
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="textAlign">
+              Align
+            </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <div className="row button-group text-center no-padding">
-              <div className="col-3">
-                <i className="glyphicon glyphicon-align-left" />
-              </div>
-              <div className="col-3 selected">
-                <i className="glyphicon glyphicon-align-center" />
-              </div>
-              <div className="col-3">
-                <i className="glyphicon glyphicon-align-right" />
-              </div>
-              <div className="col-3">
-                <i className="glyphicon glyphicon-align-justify" />
-              </div>
-            </div>
+            <RadioGroupComponent options={TEXT_ALIGN_OPTIONS} value={graphics.textAlign} onChange={bindGraphicSelectChange(graphics, "textAlign")} className="row button-group text-center no-padding" optionClassName="col-3" renderOption={(option) => <i className={"glyphicon glyphicon-align-" + option.value} /> }>
+            </RadioGroupComponent>
           </div>
         </div>
       </div>
@@ -275,7 +288,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
     const { rule, graphics } = this.props;
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.backgrounds.length === 0 });
 
-    return <div className="section">
+    return <div className="section" key="backgrounds">
       <div className="container section">
         <div className="row title">
           <div className="col-12">
@@ -298,7 +311,10 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             color
           </div>
           <div className="col-4">
-            Blend mode
+            Blend
+          </div>
+          <div className="col-4">
+            Clip
           </div>
         </div>
       
@@ -311,7 +327,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
 
-    return <div className="section">
+    return <div className="section" key="boxShadows">
       <div className="container section">
         <div className="row title">
           <div className="col-12">
@@ -332,20 +348,24 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           <div className="col-2">
             color
           </div>
-          <div className="col-2-5">
+          <div className="col-2">
             X
           </div>
 
-          <div className="col-2-5">
+          <div className="col-2">
             Y
           </div>
 
-          <div className="col-2-5">
+          <div className="col-2">
             Blur
           </div>
 
-          <div className="col-2-5">
+          <div className="col-2">
             Spread
+          </div>
+
+          <div className="col-2">
+            Inset
           </div>
 
         </div>
@@ -355,7 +375,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
   renderFilters() {
     const { graphics } = this.props;
-    return <div className="section">
+    return <div className="section" key="filters">
       <div className="container section">
         <div className="row title">
           <div className="col-12">
@@ -369,7 +389,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
         {
           graphics.filters.map((filter) => {
-            return <CSSFilterInputComponent filter={filter} />
+            return <CSSFilterInputComponent filter={filter} key={filter.name} />
           })
         }
       </div>
@@ -377,22 +397,31 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   }
 }
 
-function bindGraphicInputEvent(graphics: SyntheticCSSStyleGraphics, propertyName: string) {
+function bindGraphicInputEvent(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string) {
   return (event: React.KeyboardEvent<HTMLInputElement>) => {
     graphics.setProperty(propertyName, event.currentTarget.value);
+  }
+}
+
+function bindGraphicSelectChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string) {
+  return ({ value, label }) => {
+    graphics.setProperty(propertyName, value);
   }
 }
 
 class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground }, any> {
   render() {
     const { background } = this.props;
-    const { color, blendMode } = background;
+    const { color, blendMode, clip } = background;
     return <div className="row">
       <div className="col-2">
         <BackgroundFillComponent value={color && color.toString()} />
       </div>
-      <div className="col-10">
+      <div className="col-5">
         <input type="text" value={blendMode} />
+      </div>
+      <div className="col-5">
+        <input type="text" value={clip} />
       </div>
     </div>;
   }
@@ -407,20 +436,24 @@ class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticC
       <div className="col-2">
         <BackgroundFillComponent value={color && color.toString()} />
       </div>
-      <div className="col-2-5">
-        <input type="text" value={x.value} />
+      <div className="col-2">
+        <input type="text" value={x.value} onChange={bindGraphicInputEvent(boxShadow, "x")} />
       </div>
 
-      <div className="col-2-5">
-        <input type="text" value={y.value} />
+      <div className="col-2">
+        <input type="text" value={y.value} onChange={bindGraphicInputEvent(boxShadow, "y")} />
       </div>
 
-      <div className="col-2-5">
-        <input type="text" value={blur.value} />
+      <div className="col-2">
+        <input type="text" value={blur.value} onChange={bindGraphicInputEvent(boxShadow, "blur")} />
       </div>
 
-      <div className="col-2-5">
-        <input type="text" value={spread.value} />
+      <div className="col-2">
+        <input type="text" value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
+      </div>
+
+      <div className="col-2">
+        <input type="text" value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
       </div>
 
     </div>

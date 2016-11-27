@@ -1,5 +1,4 @@
 import { IDispatcher } from "@tandem/mesh";
-import { sprintf } from "sprintf";
 import { LogLevel } from "./levels";
 import { CoreEvent } from "../messages";
 
@@ -114,6 +113,13 @@ export class Logger {
     this.bus.dispatch(new LogAction(level, message, this.filterable));
   }
 
+}
+
+function sprintf(text: string, ...params: any[]) {
+  for (const param of params) {
+    text = text.replace(/%\w/, param);
+  }
+  return text;
 }
 
 

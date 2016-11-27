@@ -9,7 +9,6 @@ export abstract class BaseCSSInputComponent extends BaseApplicationComponent<{ r
     const { rule, propertyName } = this.props;
     const target = rule.getDeclarationMainSourceRule(propertyName);
     target.style[propertyName] = newValue;
-    console.log(target, rule.getDeclarationSourceRules(propertyName));
     const mutations: Mutation<any>[] = [];
     if (rule instanceof SyntheticHTMLElement) {
       const edit = rule.createEdit();

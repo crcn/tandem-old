@@ -1,3 +1,4 @@
 <tandem style="background-color:#333;">
-  <artboard title="HTML Extension" src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tandem/preview.tsx" style=" width: 1939px; height: 1539px; left: 8px; top: 8px; "></artboard>
+  <artboard title="HTML Extension" src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tandem/preview.tsx" style=" width: 2154px; height: 1433px; left: -932px; top: -462px; "></artboard>
+  <artboard title="Playground" src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tandem/playground.html" style=" left: 1475px; top: -462px; width: undefinedpx; height: undefinedpx; "></artboard>
 </tandem>
