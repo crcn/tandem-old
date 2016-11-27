@@ -43,9 +43,11 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
     if (!rule) return null;
 
     const renderName = (props: IKeyValueNameComponentProps) => {
-      return <CSSMergedRuleLinkComponent rule={rule} propertyName={props.item.name}>
-        { props.children }
-      </CSSMergedRuleLinkComponent> 
+      return <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule(props.item.name)}>
+        <CSSMergedRuleLinkComponent rule={rule} propertyName={props.item.name}>
+          { props.children }
+        </CSSMergedRuleLinkComponent>
+       </CSSHighlightTargetRuleHintComponent>
     }
 
     const renderValue = (props: IKeyValueInputComponentProps) => {

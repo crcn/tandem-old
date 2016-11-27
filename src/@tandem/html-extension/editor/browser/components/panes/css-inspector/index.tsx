@@ -64,7 +64,7 @@ class DocumentMutationChangeWatcher {
 export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
 
   state = {
-    pane: "computed"
+    pane: "pretty"
   };
 
   getTarget(props) {
