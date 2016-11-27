@@ -88,6 +88,8 @@ export type MatchedCSSStyleRuleType = SyntheticCSSStyleRule|SyntheticHTMLElement
 export class MergedCSSStyleRule {
 
   readonly style: SyntheticCSSStyle;
+  
+  private _allSources:  MatchedCSSStyleRuleType[];
 
   private _main: {
     [Identifier: string]: MatchedCSSStyleRuleType;
@@ -101,12 +103,21 @@ export class MergedCSSStyleRule {
     this.style = new SyntheticCSSStyle();
     this._sources = {};
     this._main    = {};
+    this._allSources = [];
+  }
+
+  get allSources() {
+    return this._allSources;
   }
 
   setProperty(source: MatchedCSSStyleRuleType, name: string, value: string) {
 
     if (!this._sources[name]) {
       this._sources[name] = []; 
+    }
+
+    if (this._allSources.indexOf(source) === -1) {
+      this._allSources.push(source);
     }
 
     this._sources[name].push(source);
@@ -119,6 +130,10 @@ export class MergedCSSStyleRule {
     for (let property in this._main) {
       this.style.setProperty(property, this._main[property].style[property]);
     }
+  }
+
+  getDeclarationSourceRules(name: string): Array<MatchedCSSStyleRuleType> {
+    return this._sources[camelCase(name)] || [];
   }
 
   getDeclarationSourceRules(name: string): Array<MatchedCSSStyleRuleType> {

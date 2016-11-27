@@ -54,8 +54,8 @@
   border: none;
   position: relative;
   line-height: inherit;
-  background: $border-color;
-  color: white;
+  background: #BFBFBF;
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
   & .col {
     padding: $padding-s + 1 $padding-r;

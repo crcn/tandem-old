@@ -47,7 +47,12 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
     }
     
     return <div className="container">
-      <CSSStyleHashInputComponent renderName={renderName} style={rule.style} setDeclaration={this.setDeclaration} />
+      <div className="section">
+        <div className="row title">
+          Computed
+        </div>
+        <CSSStyleHashInputComponent renderName={renderName} style={rule.style} setDeclaration={this.setDeclaration} />
+      </div>
     </div>;
   }
 }

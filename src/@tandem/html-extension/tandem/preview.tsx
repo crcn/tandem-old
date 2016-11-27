@@ -60,6 +60,14 @@ export const renderPreview = reactEditorPreview(async () => {
           opacity: 0.5;
         }
 
+        * {
+          padding: 0;
+        }
+
+        span, .container {
+          color: red;
+        }
+
         span {
           letter-spacing: 0.01em;
           color: red;

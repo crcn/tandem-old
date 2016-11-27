@@ -2,6 +2,19 @@
 
 .css-inspector {
   position: relative;
+
+  .matching-selectors {
+    li {
+      display: inline-block;
+      padding: 2px 4px;
+      background: #BFBFBF;
+      color: rgba(255, 255, 255, 0.9);
+      border-radius: 2px;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+  }
+  
   & .advanced {
     width: 280px;
     background: #F9F9F9;

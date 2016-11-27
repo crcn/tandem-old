@@ -156,3 +156,4 @@ ARTBOARD PANE
 
 BROWSERTAP INTEGRATION
   - [ ] rendering engine adapter for synthetic browsers to support IE, chrome, and other browsers
+  - [ ] show browser icon next to each artboard
