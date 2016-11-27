@@ -72,6 +72,24 @@
   cursor: pointer;
 }
 
+.tooltip {
+  background: #333;
+  border-radius: 2px;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  z-index: 1024;
+  position: relative;
+  &:after {
+    z-index: -1;
+    content: " ";
+    display: block;
+    width: 10px;
+    height: 10px;
+    background: #333;
+    position: absolute;
+    transform: rotate(45deg) translateY(-50%);
+  }
+}
 
 .button {
   @extend .input;
@@ -88,12 +106,16 @@
 
 .Select {
   width: 100%;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  height: 22px;
 }
+
 .Select-control {
   height: 22px;
   background: transparent;
-  border: 1px solid #DDDDDD;
-  border-radius: 4px;
+  border: none;
+
   width: 100%;
   & .Select-placeholder {
     @extend .dim;

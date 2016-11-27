@@ -1,4 +1,5 @@
 import "./index.scss";
+import "@tandem/uikit";
 
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/models";
@@ -16,11 +17,17 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
     const computedStyle = element.getComputedStyle();
     if (!computedStyle) return null;
 
-    const scale = workspace.transform.scale;
+    const {left, top, scale } = workspace.transform;
 
     const style = {
       left: rect.left,
       top: rect.top,
+      position: "absolute"
+    };
+
+    const styleInner = {
+      top: 0,
+      left: 0,
       width: rect.width,
       height: rect.height,
       position: "absolute"
@@ -56,9 +63,27 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
       height: `calc(100% + ${marginTop + marginBottom}px)`
     };
 
+    let tagInfo = element.tagName;
+
+    if (element.getAttribute("id")) {
+      tagInfo += "#" + element.getAttribute("id");
+    }
+
+    if (element.getAttribute("class")) {
+      tagInfo += "." + element.getAttribute("class").trim().split(/\s+/g).join(".");
+    }
+
+    const tagInfoStyle = {
+      transform: `translateY(-${1/scale * 100}%) scale(${1/scale})`,
+      transformOrigin: "top left"
+    }
+
     return <div className="td-html-element-info-item" style={style}>
-      <div className="td-html-padding-info" style={paddingStyle}></div>
-      <div className="td-html-margin-info" style={marginStyle}></div>
+      <div className="td-html-tag-info tooltip" style={tagInfoStyle}>{tagInfo}</div>
+      <div style={styleInner}>
+        <div className="td-html-padding-info" style={paddingStyle}></div>
+        <div className="td-html-margin-info" style={marginStyle}></div>
+      </div>
     </div>;
   }
 }

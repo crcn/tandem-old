@@ -111,6 +111,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
         </div>
       </div>
       {this.renderSelectorsSection(mergedRule, elements[0]) }
+      <hr />
       { selectedTab && selectedTab.render.call(this, mergedRule) }
     </div>
   }
@@ -171,11 +172,15 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
       }
     });
 
-
     return <div className="section">
       <div className="container">
         <div className="row title">
-          Selectors
+          <div className="col-12">
+            Rules
+            <div className="controls">
+              <i className="ion-arrow-swap" />
+            </div>
+          </div>
         </div>
 
         <div className="row">

@@ -18,6 +18,7 @@
   }
 
   .col {
+    position: relative;
     flex-grow: 0;
     flex-shrink: 0;
     padding-left: $padding-s;

@@ -12,6 +12,7 @@ Start working on UX around getting started with Tandem and projects.
 - use http://cssreference.io/#hn for CSS pretty pane
 
 - [ ] show css selectors affected by pretty pane
+  - [ ] hovering state for selector
 - [ ] pretty pane
   - [ ] background color input
     - [ ] dnd images

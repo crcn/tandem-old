@@ -1,4 +1,6 @@
+
 .td-html-element-info {
+  pointer-events: none;
   &-item {
     position: absolute;
 
@@ -18,6 +20,10 @@
       left: 0;
       width: 100%;
       height: 100%;
+    }
+
+    .td-html-tag-info {
+      transform: translateY(-100%);
     }
   }
 }
