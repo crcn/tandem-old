@@ -10,7 +10,7 @@ export class CSSMergedRuleLinkComponent  extends BaseApplicationComponent<{ rule
     const { rule, propertyName, children } = this.props;
     const match = rule.getDeclarationMainSourceRule(propertyName);
 
-    return <CSSHighlightTargetRuleHintComponent target={match}>
+    return <CSSHighlightTargetRuleHintComponent rule={rule} propertyName={propertyName}>
       <SyntheticSourceLink target={match}>
         <span title={match && (match["selector"] || "style attribute")}>{ children || propertyName }</span>
       </SyntheticSourceLink>

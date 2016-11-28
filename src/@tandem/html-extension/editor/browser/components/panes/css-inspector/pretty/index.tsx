@@ -148,7 +148,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("display")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="display"> 
               <Select placeholder="--" options={DISPLAY_OPTIONS} onChange={bindGraphicSelectChange(graphics, "display")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -160,7 +160,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("position")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="position"> 
               <Select placeholder="--" options={POSITION_OPTIONS} onChange={bindGraphicSelectChange(graphics, "position")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -173,7 +173,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("left")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="left"> 
               <input type="text" value={graphics.left && graphics.left.toString()} onChange={bindGraphicInputEvent(graphics, "left")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -183,7 +183,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("top")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="top"> 
               <input type="text" value={graphics.top && graphics.top.toString()} onChange={bindGraphicInputEvent(graphics, "top")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -195,8 +195,8 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("width")}>
-            <input type="text" value={graphics.width && graphics.width.toString()} onChange={bindGraphicInputEvent(graphics, "width")} />
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="width"> 
+              <input type="text" value={graphics.width && graphics.width.toString()} onChange={bindGraphicInputEvent(graphics, "width")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
@@ -205,8 +205,8 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("height")}>
-            <input type="text" value={graphics.height && graphics.height.toString()} onChange={bindGraphicInputEvent(graphics, "height")} />
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="height"> 
+              <input type="text" value={graphics.height && graphics.height.toString()} onChange={bindGraphicInputEvent(graphics, "height")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -231,7 +231,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("fontFamily")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily">
               <input type="text" value={rule.style.fontFamily} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -245,7 +245,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("fontWeight")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontWeight">
               <input type="text" value={rule.style.fontWeight} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -258,7 +258,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("fontSize")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontSize">
               <input type="text" value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicInputEvent(graphics, "fontSize")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -268,7 +268,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("color")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="color">
               <BackgroundFillComponent value={rule.style.color || "#000"} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -281,7 +281,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("letterSpacing")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="letterSpacing">
               <input type="text" value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicInputEvent(graphics, "letterSpacing")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -291,7 +291,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("lineHeight")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="lineHeight">
               <input type="text" value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicInputEvent(graphics, "lineHeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -304,7 +304,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("textAlign")}>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textAlign">
               <RadioGroupComponent options={TEXT_ALIGN_OPTIONS} value={graphics.textAlign} onChange={bindGraphicSelectChange(graphics, "textAlign")} className="row button-group text-center no-padding" optionClassName="col-3" renderOption={(option) => <i className={"glyphicon glyphicon-align-" + option.value} /> }>
               </RadioGroupComponent>
             </CSSHighlightTargetRuleHintComponent>
@@ -397,7 +397,6 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           <div className="col-2">
             Inset
           </div>
-
         </div>
       </div>
     </div>

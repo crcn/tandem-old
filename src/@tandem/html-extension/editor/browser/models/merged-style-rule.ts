@@ -1,19 +1,28 @@
 import { uniq, values, camelCase } from "lodash";
 import { SyntheticCSSStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleGraphics, SyntheticCSSStyleRuleMutationTypes } from "@tandem/synthetic-browser";
-import { MutationEvent } from "@tandem/common";
+import { MutationEvent, bindable, bubble, Observable } from "@tandem/common";
 import { CallbackDispatcher, IMessage } from "@tandem/mesh";
 
 export type MatchedCSSStyleRuleType = SyntheticCSSStyleRule|SyntheticHTMLElement;
 
-export class MergedCSSStyleRule {
+export class MergedCSSStyleRule extends Observable {
 
   readonly style: SyntheticCSSStyle;
+
+  @bindable(true)
+  @bubble()
+  public selectedStyle: MatchedCSSStyleRuleType;
+
+  @bindable(true)
+  @bubble()
+  public selectedStyleProperty: string;
   
   private _allSources:  MatchedCSSStyleRuleType[];
   private _graphics: SyntheticCSSStyleGraphics;
   private _documentObserver: CallbackDispatcher<any, any>;
   private _document: SyntheticDocument;
+  
 
   private _main: {
     [Identifier: string]: MatchedCSSStyleRuleType;
@@ -24,6 +33,7 @@ export class MergedCSSStyleRule {
   };
 
   constructor(readonly target: SyntheticHTMLElement) {
+    super();
     this.style = new SyntheticCSSStyle();
     this._documentObserver = new CallbackDispatcher(this._onDocumentEvent.bind(this));
     this.reset();

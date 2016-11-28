@@ -50,7 +50,7 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
     }
 
     const renderValue = (props: IKeyValueInputComponentProps) => {
-      return <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule(props.item.name)}>
+      return <CSSHighlightTargetRuleHintComponent rule={rule} propertyName={props.item.name}>
         { props.children }
       </CSSHighlightTargetRuleHintComponent>
     }

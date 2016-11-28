@@ -177,7 +177,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
           <div className="col-12">
             <ul className="matching-selectors">
               {selectorLabels.map(({ source, label }, i) => {
-                return <li onMouseEnter={this.onSelectorEnter.bind(this, source)} key={i} className={cx({ hovering: source.metadata.get(MetadataKeys.REVEAL) || source.metadata.get(MetadataKeys.HOVERING), selected: source.metadata.get(MetadataKeys.SELECTED) })} onMouseLeave={this.onSelectorLeave.bind(this, source)}>
+                return <li onMouseEnter={this.onSelectorEnter.bind(this, source)} key={i} className={cx({ disabled: true, hovering: source.metadata.get(MetadataKeys.REVEAL) || source.metadata.get(MetadataKeys.HOVERING), selected: source.metadata.get(MetadataKeys.SELECTED) })} onMouseLeave={this.onSelectorLeave.bind(this, source)}>
                   <SyntheticSourceLink target={source}>{ label }</SyntheticSourceLink>
                 </li>
               })}
