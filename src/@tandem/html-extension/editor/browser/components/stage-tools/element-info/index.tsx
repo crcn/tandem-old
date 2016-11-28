@@ -76,6 +76,7 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
 
     const tagInfoStyle = {
       transform: `translateY(-${1/scale * 100}%) scale(${1/scale})`,
+      minWidth: 80,
       transformOrigin: "top left",
 
       // don't want too many tooltips to show

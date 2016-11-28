@@ -4,11 +4,11 @@ import { SyntheticDOMNode, DOMNodeType, SyntheticDocument } from "@tandem/synthe
 import { Store } from "@tandem/editor/browser/models";
 import { HTMLExtensionStore, MergedCSSStyleRule  } from "@tandem/html-extension/editor/browser/models";
 import { HTMLExtensionStoreProvider  } from "@tandem/html-extension/editor/browser/providers";
-import { StoreProvider } from "@tandem/editor/browser/providers";
+import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 
 export class UpdateMergedRuleCommand implements ICommand {
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
 
   @inject(HTMLExtensionStoreProvider.ID)

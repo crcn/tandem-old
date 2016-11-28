@@ -1,12 +1,12 @@
 import { Store } from "@tandem/editor/browser/models";
 import { IEditable, ISyntheticObject, ApplyFileEditRequest } from "@tandem/sandbox";
-import { StoreProvider } from "@tandem/editor/browser/providers";
+import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { ICommand, inject, PrivateBusProvider, IBrokerBus, RemoveMutation } from "@tandem/common";
 import { RemoveSelectionRequest } from "@tandem/editor/browser/messages";
 
 export class RemoveSelectionCommand implements ICommand {
 
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
 
   @inject(PrivateBusProvider.ID)

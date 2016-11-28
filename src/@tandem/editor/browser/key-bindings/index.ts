@@ -4,12 +4,12 @@ import { Store } from "@tandem/editor/browser/models";
 import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
 import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 import { BaseCommand, inject, Metadata } from "@tandem/common";
-import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
+import { WorkspaceToolFactoryProvider, EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { SettingKeys, ZOOM_INCREMENT, POINTER_TOOL_KEY_CODE } from "@tandem/editor/browser/constants";
 import { SelectAllRequest, SetToolRequest, ZoomInRequest, ZoomOutRequest, RemoveSelectionRequest } from "@tandem/editor/browser/messages";
 
 class ToggleLeftSidebarCommand extends BaseCommand {
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
   execute(action: IMessage) {
     this._store.settings.toggle(SettingKeys.HIDE_LEFT_SIDEBAR);
@@ -17,7 +17,7 @@ class ToggleLeftSidebarCommand extends BaseCommand {
 }
 
 class ToggleRightSidebarCommand extends BaseCommand {
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
   execute(action: IMessage) {
     this._store.settings.toggle(SettingKeys.HIDE_RIGHT_SIDEBAR);

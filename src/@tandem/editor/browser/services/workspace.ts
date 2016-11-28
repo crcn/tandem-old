@@ -20,7 +20,7 @@ import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
 import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
-import { WorkspaceToolFactoryProvider, StoreProvider } from "@tandem/editor/browser/providers";
+import { WorkspaceToolFactoryProvider, EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { SetToolRequest, ZoomRequest, ZoomOutRequest, ZoomInRequest, SetZoomRequest } from "@tandem/editor/browser/messages";
 
 import {
@@ -55,7 +55,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
   readonly logger: Logger;
 
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
 
   private _tweener: IDisposable;

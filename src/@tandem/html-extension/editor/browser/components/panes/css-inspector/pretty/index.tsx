@@ -79,10 +79,14 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-7">
-            <ReactSliderComponent min={0} max={1} step={0.01} value={graphics.opacity || 1} onChange={(value) => graphics.opacity = value} />
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="opacity">
+              <ReactSliderComponent min={0} max={1} step={0.01} value={graphics.opacity || 1} onChange={bindGraphicsValueChange(graphics, "opacitye")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-3">
-            <input type="text" value={graphics.opacity || 1} onChange={(value) => graphics.opacity = Number(value)} />
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="opacity">
+              <input type="text" value={graphics.opacity || 1} onChange={bindGraphicInputEvent(graphics, "opacity")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
         <div className="row">
@@ -92,7 +96,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <Select placeholder="--" value={graphics.mixBlendMode} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(graphics, "mixBlendMode")} />
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="mixBlendMode">
+              <Select placeholder="--" value={graphics.mixBlendMode} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(graphics, "mixBlendMode")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
       </div>
@@ -232,7 +238,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily">
-              <input type="text" value={rule.style.fontFamily} />
+              <input type="text" value={rule.style.fontFamily} onChange={bindGraphicInputEvent(graphics, "fontFamily")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -246,7 +252,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontWeight">
-              <input type="text" value={rule.style.fontWeight} />
+              <input type="text" value={rule.style.fontWeight} onChange={bindGraphicInputEvent(graphics, "fontWeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -435,6 +441,13 @@ function bindGraphicInputEvent(graphics: SyntheticCSSStyleGraphics|SyntheticCSSS
 function bindGraphicSelectChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string) {
   return ({ value, label }) => {
     graphics.setProperty(propertyName, value);
+  }
+}
+
+
+function bindGraphicsValueChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string) {
+  return (value) => {
+    graphics[propertyName] = value;
   }
 }
 

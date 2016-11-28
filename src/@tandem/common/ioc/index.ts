@@ -1,8 +1,9 @@
-import { IDispatcher, IMessage } from "@tandem/mesh";
-import { ITyped, INamed } from "@tandem/common/object";
+import {Observable } from "../observable";
 import { ICommand } from "@tandem/common/commands";
 import { CoreEvent } from "../messages";
 import { IBrokerBus } from "../dispatchers";
+import { ITyped, INamed } from "@tandem/common/object";
+import { IDispatcher, IMessage } from "@tandem/mesh";
 
 import { File } from "@tandem/common/models";
 import {
@@ -155,6 +156,31 @@ export class MimeTypeAliasProvider extends Provider<string> {
     const mimeType = MimeTypeProvider.lookup(filePathOrMimeType, providers);
     const dep = (mimeType && providers.query<MimeTypeAliasProvider>(this.getNamespace(mimeType))) || providers.query<MimeTypeAliasProvider>(this.getNamespace(filePathOrMimeType));
     return (dep && dep.value) || mimeType || filePathOrMimeType;
+  }
+}
+
+export class StoreProvider implements IProvider {
+
+  static readonly NS = "store";
+  private _value: Observable;
+  readonly overridable = false;
+  readonly id: string;
+  public owner: Injector;
+
+  constructor(readonly name: string, private _clazz:{ new(): Observable }) {
+    this.id = StoreProvider.getId(name);
+  }
+  
+  get value() {
+    return this._value || (this._value = new this._clazz());
+  }
+
+  clone() {
+    return new StoreProvider(this.name, this._clazz);
+  }
+
+  static getId(name: string) {
+    return [this.NS, name].join("/");
   }
 }
 

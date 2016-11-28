@@ -1,7 +1,6 @@
 import "./index.scss";
 import * as React from "react";
 import { Store, Workspace } from "@tandem/editor/browser/models";
-import { StoreProvider } from "@tandem/editor/browser/providers";
 import { RegisteredComponent, SideDraggerComponent } from "@tandem/editor/browser/components/common";
 import { BaseApplicationComponent, inject, Metadata } from "@tandem/common";
 import { MetadataValueReference, DefaultValueReference, MinMaxValueReference } from "@tandem/common/reference";

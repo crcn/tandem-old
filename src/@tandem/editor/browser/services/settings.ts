@@ -1,7 +1,7 @@
 import  * as store from "store";
 import { Store } from "@tandem/editor/browser/models";
 import { CallbackDispatcher } from "@tandem/mesh";
-import { StoreProvider } from "@tandem/editor/browser/providers";
+import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
@@ -10,7 +10,7 @@ import { MetadataChangeEvent, LoadRequest, Metadata, inject, loggable, Logger } 
 @loggable()
 export class SettingsService extends CoreApplicationService<IEditorBrowserConfig> {
 
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
 
   [LoadRequest.LOAD](action: LoadRequest) {

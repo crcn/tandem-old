@@ -19,11 +19,12 @@ import {
   SyntheticHTMLElement, 
   SyntheticCSSStyleRule,
   SyntheticCSSStyleGraphics,
+  isInheritedCSSStyleProperty,
   SyntheticCSSStyleRuleMutationTypes,  
 } from "@tandem/synthetic-browser";
 
 
-import { HTMLExtensionStore, MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
+import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/models";
 import { HTMLExtensionStoreProvider } from "@tandem/html-extension/editor/browser/providers";
 
 class DocumentMutationChangeWatcher {
@@ -147,7 +148,6 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     this.props.rule.target.ownerDocument.querySelectorAll(rule.selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, false));
   }
 
-
   render() {
 
     const { rule } = this.props;
@@ -156,32 +156,81 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     
     const selectorLabels = [];
     
-    rule.mainSources.forEach((source) => {
-      
+
+    const getLabel = (source) => {
       if (source instanceof SyntheticHTMLElement) {
-        selectorLabels.push({ source: source, label: "style" });
-      } else if (source instanceof SyntheticCSSStyleRule) {
-        selectorLabels.push({ source: source, label: source.selector });
+        return "style";
+      } else {
+        return source.selector;
       }
-    });
+    }
+
+    const mainRules = rule.mainSources;
+    const inheritedRules = rule.inheritedRules;
+    
+    const matchingRules = rule.matchingRules;
+    const selectedProperty = rule.selectedStyleProperty;
+    const selectedRule = selectedProperty && rule.getSelectedSourceRule(selectedProperty);
+    const selectedRuleIndex = mainRules.indexOf(selectedRule);
+    const selectedRuleHasProperty = selectedRule && !!selectedRule.style[selectedProperty];
+    let previouslySetRule = selectedRuleHasProperty;
+
+    const renderMatchingSelectors = (rules: MatchedCSSStyleRuleType[]) => {
+      return <ul className="matching-selectors">
+        {rules.map((source) => {
+
+          const index = mainRules.indexOf(source);
+
+          const isMatchingOrInheritable = source instanceof SyntheticCSSStyleRule ? source.matchesElement(rule.target) || isInheritedCSSStyleProperty(selectedProperty) : true
+
+          const enabled = selectedRule && !previouslySetRule ? isMatchingOrInheritable : index <= selectedRuleIndex;
+          
+          previouslySetRule = previouslySetRule || !!source.style[selectedProperty];
+          const className = cx({ 
+            disabled: !enabled, 
+            hovering: source.metadata.get(MetadataKeys.REVEAL) || source.metadata.get(MetadataKeys.HOVERING), 
+            selected: source === selectedRule
+          });
+
+          const select = (event: React.MouseEvent<any>) => {
+            const activeElement = document.activeElement;
+            event.preventDefault();
+            event.stopPropagation();
+            (activeElement as any).focus();
+            if (!enabled) return;
+            rule.selectSourceRule(source, selectedProperty);
+          }
+
+          return <li onMouseDown={select} onMouseEnter={this.onSelectorEnter.bind(this, source)} key={index} className={className} onMouseLeave={this.onSelectorLeave.bind(this, source)}>
+            <SyntheticSourceLink target={source}>{ getLabel(source) }</SyntheticSourceLink>
+          </li>
+        })}
+      </ul>;
+    }
 
     return <div className="section">
       <div className="container">
         <div className="row title">
           <div className="col-12">
-            Rules
+            Matching Rules
           </div>
         </div>
 
         <div className="row">
           <div className="col-12">
-            <ul className="matching-selectors">
-              {selectorLabels.map(({ source, label }, i) => {
-                return <li onMouseEnter={this.onSelectorEnter.bind(this, source)} key={i} className={cx({ disabled: true, hovering: source.metadata.get(MetadataKeys.REVEAL) || source.metadata.get(MetadataKeys.HOVERING), selected: source.metadata.get(MetadataKeys.SELECTED) })} onMouseLeave={this.onSelectorLeave.bind(this, source)}>
-                  <SyntheticSourceLink target={source}>{ label }</SyntheticSourceLink>
-                </li>
-              })}
-            </ul>
+            { renderMatchingSelectors(matchingRules) }
+          </div>
+        </div>
+
+        <div className="row title">
+          <div className="col-12">
+            Inherited Rules
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-12">
+            { renderMatchingSelectors(inheritedRules) }
           </div>
         </div>
       </div>

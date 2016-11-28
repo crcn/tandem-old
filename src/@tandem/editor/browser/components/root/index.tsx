@@ -4,7 +4,7 @@ import * as React from "react";
 import { Store } from "@tandem/editor/browser/models";
 import { SettingKeys } from "@tandem/editor/browser/constants";
 import CenterComponent from "./center";
-import { StoreProvider } from "@tandem/editor/browser/providers";
+import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { GutterComponent } from "@tandem/uikit";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { DocumentPaneComponentFactoryProvider, EntityPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
@@ -12,7 +12,7 @@ import { Injector, RootApplicationComponent, BaseApplicationComponent, inject } 
 
 export class EditorComponent extends BaseApplicationComponent<{}, {}> {
 
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
 
   render() {

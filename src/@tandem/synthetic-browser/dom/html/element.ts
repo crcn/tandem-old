@@ -69,7 +69,6 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   }
 
   protected attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
     if (name === "style") {
       this._resetStyleFromAttribute();
     } else if (name === "class") {
@@ -79,6 +78,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
         this._classList = [];
       }
     }
+    super.attributeChangedCallback(name, oldValue, newValue);
   }
 
   get innerHTML(): string {

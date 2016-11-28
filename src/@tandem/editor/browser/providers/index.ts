@@ -10,6 +10,7 @@ import {
   ICommand,
   Provider,
   Injector,
+  StoreProvider,
   ClassFactoryProvider,
   createSingletonProviderClass,
 } from "@tandem/common";
@@ -145,6 +146,12 @@ export class FooterComponentFactoryProvider extends ReactComponentFactoryProvide
   }
 }
 
-export const StoreProvider = createSingletonProviderClass<Store>("store");
+export class EditorStoreProvider extends StoreProvider {
+  static readonly NAME = "editorStore";
+  static readonly ID = StoreProvider.getId(EditorStoreProvider.NAME);
+  constructor(clazz: { new(): Store }) {
+    super(EditorStoreProvider.NAME, clazz);
+  }
+}
 
 export * from "./base";

@@ -13,6 +13,7 @@ Start working on UX around getting started with Tandem and projects.
 
 - [ ] show css selectors affected by pretty pane
   - [ ] hovering state for selector
+- [ ] drop menu containing all matching rules for computed styles
 - [ ] pretty pane
   - [ ] background color input
     - [ ] dnd images

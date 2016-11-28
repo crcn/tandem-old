@@ -223,6 +223,10 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
   @bubble()
+  public fontWeight: string;
+
+  @bindable(true)
+  @bubble()
   public letterSpacing: SyntheticCSSMeasurment;
 
   @bindable(true)
@@ -362,6 +366,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["fontFamily"],
       ["color"],
       ["fontFamily"],
+      ["fontWeight"],
       ["letterSpacing"],
       ["fontSize"],
       ["textAlign"],

@@ -3,23 +3,24 @@ import * as ReactDOM from "react-dom";
 
 import { CallbackDispatcher } from "@tandem/mesh";
 import { Store } from "@tandem/editor/browser/models";
-import { inject, CoreEvent } from "@tandem/common";
-import { StoreProvider } from "@tandem/editor/browser/providers";
+import { inject, CoreEvent, StoreProvider } from "@tandem/common";
 import { RootComponent } from "@tandem/editor/browser/components";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 
 export class ComponentService extends CoreApplicationService<IEditorBrowserConfig> {
 
-  @inject(StoreProvider.ID)
-  private _store: Store;
+  @inject(StoreProvider.getId("**"))
+  private _stores: Store[];
 
   private _rendering: boolean;
   private _shouldRenderAgain: boolean;
 
   $didInject() {
     super.$didInject();
-    this._store.observe(new CallbackDispatcher(this.onRootModelAction.bind(this)));
+    for (const store of this._stores) {
+      store.observe(new CallbackDispatcher(this.onRootModelAction.bind(this)));
+    }
   }
 
   onRootModelAction(action: CoreEvent) {

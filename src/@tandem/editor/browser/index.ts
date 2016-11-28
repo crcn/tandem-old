@@ -6,7 +6,8 @@ import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tan
 import { Injector, CommandFactoryProvider, InitializeRequest, IProvider } from "@tandem/common";
 import { AlertMessage, RemoveSelectionRequest } from "./messages";
 import {
-  StoreProvider,
+  EditorStoreProvider,
+  GlobalKeyBindingProvider,
   ReactComponentFactoryProvider,
   StageToolComponentFactoryProvider,
   LayerLabelComponentFactoryProvider,
@@ -68,7 +69,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
     // pane components
     new DocumentPaneComponentFactoryProvider("layers", LayersPaneComponent),
 
-    new StoreProvider(Store),
+    new EditorStoreProvider(Store),
 
     // pointerToolProvider
   ];

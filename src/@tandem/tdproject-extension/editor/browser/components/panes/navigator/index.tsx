@@ -2,13 +2,13 @@ import "./index.scss";
 import * as React from "react";
 import { TreeComponent } from "@tandem/uikit";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
-import {  StoreProvider } from "@tandem/editor/browser/providers";
+import {  EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { Store, Workspace } from "@tandem/editor/browser/models";
 import { DirectoryModel, FileModel, BaseFSModel } from "@tandem/editor/common/models";
 import { BaseApplicationComponent, TreeNode, inject } from "@tandem/common";
 
 export class NavigatorPaneComponent extends BaseApplicationComponent<{ store?: Store, workspace: Workspace }, any> {
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
 
   render() {

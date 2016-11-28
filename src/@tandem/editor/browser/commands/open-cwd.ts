@@ -3,13 +3,13 @@ import { ICommand, inject, Injector, InjectorProvider } from "@tandem/common";
 import { Store } from "@tandem/editor/browser/models";
 import { DirectoryModel } from "@tandem/editor/common";
 import { IMessage } from "@tandem/mesh";
-import { StoreProvider } from "@tandem/editor/browser/providers";
+import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { ApplicationConfigurationProvider } from "@tandem/core";
 
 export class OpenCWDCommand implements ICommand {
 
-  @inject(StoreProvider.ID)
+  @inject(EditorStoreProvider.ID)
   private _store: Store;
 
   @inject(ApplicationConfigurationProvider.ID)
