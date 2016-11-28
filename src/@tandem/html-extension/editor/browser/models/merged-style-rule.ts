@@ -17,14 +17,18 @@ export class MergedCSSStyleRule extends Observable {
   @bindable(true)
   @bubble()
   public selectedStyleProperty: string;
+
   
   private _allSources:  MatchedCSSStyleRuleType[];
   private _graphics: SyntheticCSSStyleGraphics;
   private _documentObserver: CallbackDispatcher<any, any>;
   private _document: SyntheticDocument;
   private _selectedSourceRule: any;
-  
 
+  @bindable(true)
+  @bubble()
+  private _pinnedRule: MatchedCSSStyleRuleType;
+  
   private _main: {
     [Identifier: string]: MatchedCSSStyleRuleType;
   };
@@ -60,6 +64,14 @@ export class MergedCSSStyleRule extends Observable {
     if (this._document) {
       this._document.unobserve(this._documentObserver);
     }
+  }
+
+  get pinnedRule() {
+    return this._pinnedRule;
+  }
+
+  pinRule(rule: MatchedCSSStyleRuleType) {
+    this._pinnedRule = this._pinnedRule === rule ? undefined : rule;
   }
 
   get allSources() {
@@ -113,13 +125,32 @@ export class MergedCSSStyleRule extends Observable {
     return this._main[camelCase(name)];
   }
 
+  getAssignableRules(styleName: string) {
+    const matchingRule = this.getDeclarationMainSourceRule(styleName);
+    const mainSources = this.mainSources;
+    const matchingRuleIndex = mainSources.indexOf(matchingRule);
+    let currentRuleIndex = matchingRuleIndex;
+    const rules = !matchingRule && isInheritedCSSStyleProperty(styleName) ? mainSources : this.matchingRules;
+
+    return rules.filter((rule) => {
+      const index = mainSources.indexOf(rule);
+      
+      const assignable = currentRuleIndex <= index;
+
+      // this will fail all proceeding filters
+      if(rule.style[styleName]) currentRuleIndex = index;
+      
+      return assignable;
+    });
+  }
+
   selectSourceRule(rule: MatchedCSSStyleRuleType, styleName: string) {
     this._selectedSourceRule[styleName] = rule;
     this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this._selectedSourceRule, styleName, rule).toEvent(true));
   }
 
   getSelectedSourceRule(styleName: string): MatchedCSSStyleRuleType {
-    return this._selectedSourceRule[styleName] || this.getDeclarationMainSourceRule(styleName) || this.getBestSourceRule();
+    return this._selectedSourceRule[styleName] || this.getDeclarationMainSourceRule(styleName) || this._pinnedRule || this.getBestSourceRule();
   }
  
   getBestSourceRule(): MatchedCSSStyleRuleType {

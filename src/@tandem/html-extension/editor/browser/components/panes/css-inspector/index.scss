@@ -5,6 +5,25 @@
 
   .matching-selectors {
     li {
+      &:hover {
+        & .pin {
+          opacity: 1;
+        }
+      }
+
+
+      .pin {
+        &.pinned {
+          opacity: 1;
+          color: #FFE869;
+        }
+        cursor: pointer;
+        opacity: 0;
+        font-size: 1em;
+        position: relative;
+        margin-right: 2px;
+      }
+
       cursor: pointer;
       &:not(.selected) {
         background: #BFBFBF;

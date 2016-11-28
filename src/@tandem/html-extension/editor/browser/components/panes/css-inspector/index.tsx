@@ -175,6 +175,8 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     const selectedRuleHasProperty = selectedRule && !!selectedRule.style[selectedProperty];
     let previouslySetRule = selectedRuleHasProperty;
 
+    const assignableRules = rule.getAssignableRules(selectedProperty);
+
     const renderMatchingSelectors = (rules: MatchedCSSStyleRuleType[]) => {
       return <ul>
         {rules.map((source) => {
@@ -183,9 +185,8 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
 
           const isMatchingOrInheritable = source instanceof SyntheticCSSStyleRule ? source.matchesElement(rule.target) || isInheritedCSSStyleProperty(selectedProperty) : true
 
-          const enabled = selectedRule && !previouslySetRule ? isMatchingOrInheritable : index <= selectedRuleIndex;
+          const enabled = assignableRules.indexOf(source) !== -1; //selectedRule && !previouslySetRule ? isMatchingOrInheritable : index <= selectedRuleIndex;
           
-          previouslySetRule = previouslySetRule || !!source.style[selectedProperty];
           const className = cx({ 
             disabled: !enabled, 
             hovering: source.metadata.get(MetadataKeys.REVEAL) || source.metadata.get(MetadataKeys.HOVERING), 
@@ -202,6 +203,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
           }
 
           return <li onMouseDown={select} onMouseEnter={this.onSelectorEnter.bind(this, source)} key={index} className={className} onMouseLeave={this.onSelectorLeave.bind(this, source)}>
+            <i onClick={() => rule.pinRule(source)} className={cx({ pin: true, "ion-star": true, pinned: source === rule.pinnedRule})} />
             <SyntheticSourceLink target={source}>{ getLabel(source) }</SyntheticSourceLink>
           </li>
         })}
