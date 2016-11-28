@@ -1,5 +1,6 @@
 import { Dependency } from "@tandem/sandbox";
 import { kebabCase } from "lodash";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
@@ -7,11 +8,13 @@ import { ISerializedSyntheticCSSStyle, SyntheticCSSStyle, isValidCSSDeclarationP
 import {
   Mutation,
   serialize,
+  Metadata,
   ArrayMutation,
   diffArray,
   serializable,
   deserialize,
   ISerializer,
+  CoreEvent,
   ITreeWalker,
   PropertyMutation,
   SetValueMutation,
@@ -118,11 +121,21 @@ export class SyntheticCSSStyleRuleEditor extends BaseEditor<SyntheticCSSStyleRul
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
 export class SyntheticCSSStyleRule extends SyntheticCSSObject {
+  
+  private _metadata: Metadata;
+  private _metadataObserver: CallbackDispatcher<any, any>;
 
   constructor(public selector: string, public style: SyntheticCSSStyle) {
     super();
     if (!style) style = this.style = new SyntheticCSSStyle();
     style.$parentRule = this;
+  }
+
+  get metadata() {
+    if (this._metadata) return this._metadata;
+    this._metadata = new Metadata();
+    this._metadata.observe(this._metadataObserver = new CallbackDispatcher(this._onMetadataEvent.bind(this)));
+    return this._metadata;
   }
 
   createEdit() {
@@ -155,5 +168,10 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
 
   visitWalker(walker: ITreeWalker) {
     walker.accept(this.style);
+  }
+
+  private _onMetadataEvent(event: CoreEvent) {
+    const ownerNode = this.$ownerNode || (this.$parentStyleSheet && this.$parentStyleSheet.$ownerNode);
+    if (ownerNode) ownerNode.notify(event);
   }
 }

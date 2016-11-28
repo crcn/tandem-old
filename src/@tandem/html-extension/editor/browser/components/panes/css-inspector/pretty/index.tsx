@@ -256,11 +256,13 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicInputEvent(graphics, "fontSize")} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("fontSize")}>
+              <input type="text" value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicInputEvent(graphics, "fontSize")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="color">
-              Size
+              Color
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">

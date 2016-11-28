@@ -4,7 +4,7 @@ import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import { CallbackDispatcher } from "@tandem/mesh";
 import { SyntheticCSSStyleRuleMutationTypes } from "./style-rule";
-import { ISerializable, serializable, diffArray, ITreeWalker, PropertyMutation, Metadata } from "@tandem/common";
+import { ISerializable, serializable, diffArray, ITreeWalker, PropertyMutation } from "@tandem/common";
 import { IContentEdit , ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyle extends SyntheticCSSStyle { }
@@ -62,9 +62,6 @@ export function isInheritedCSSStyleProperty(name: string) {
 
 @serializable()
 export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSStyle>, ISyntheticObject {
-
-  private _metadata: Metadata;
-  private _metadataObserver: CallbackDispatcher<any, any>;
 
   public $uid: any;
   public $source: any = null;
@@ -412,14 +409,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     clone.$uid = this.$uid;
     return clone;
   }
-
-  get metadata() {
-    if (this._metadata) return this._metadata;
-    this._metadata = new Metadata();
-    this._metadata.observe(this._metadataObserver = new CallbackDispatcher(this._onMetadataEvent.bind(this)));
-    return this._metadata;
-  }
-
+  
   get length() {
     return this.$length || 0;
   }
@@ -491,13 +481,6 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
 
     if (ownerNode) {
       ownerNode.notify(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.$parentRule, name, newValue, undefined, oldName).toEvent(true));
-    }
-  }
-
-  private _onMetadataEvent(event: any) {
-    const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
-    if (ownerNode) {
-      ownerNode.notify(event);
     }
   }
 

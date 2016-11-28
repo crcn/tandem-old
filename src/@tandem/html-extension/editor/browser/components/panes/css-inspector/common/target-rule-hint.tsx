@@ -11,31 +11,29 @@ export class CSSHighlightTargetRuleHintComponent extends React.Component<{ targe
 
   onFocus = () => {
     this._entered = true;
-    this.props.target.style.metadata.set(MetadataKeys.REVEAL, this._focused = true);
+    this.props.target.metadata.set(MetadataKeys.REVEAL, this._focused = true);
   }
 
   onBlur = () => {
     this._entered = false;
-    this.props.target.style.metadata.set(MetadataKeys.REVEAL, this._focused = false);
+    this.props.target.metadata.set(MetadataKeys.REVEAL, this._focused = false);
   }
 
   onMouseEnter = () => {
     if (this._focused) return;
     this._entered = true;
-    this.props.target.style.metadata.set(MetadataKeys.REVEAL, true);
+    this.props.target.metadata.set(MetadataKeys.REVEAL, true);
 
   }
 
   onMouseLeave = () => {
     if (this._focused) return;
     this._entered = false;
-    this.props.target.style.metadata.set(MetadataKeys.REVEAL, false);
+    this.props.target.metadata.set(MetadataKeys.REVEAL, false);
   }
 
   render() {
-
-    const hovering = !this._entered && this.props.target && this.props.target.style && this.props.target.style.metadata.get(MetadataKeys.HOVERING);
-
+    const hovering = !this._entered && this.props.target && this.props.target.metadata.get(MetadataKeys.HOVERING);
     return <div className={cx({ highlight: hovering, "target-rule-hint": true })} onFocus={this.onFocus} onBlur={this.onBlur} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
       {this.props.children}
     </div>;
