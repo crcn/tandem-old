@@ -135,12 +135,16 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
 export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCSSStyleRule }, any> {
 
-  onSelectorEnter = (selector: string) => {
-    this.props.rule.target.ownerDocument.querySelectorAll(selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, true));
+  onSelectorEnter = (rule: SyntheticCSSStyleRule) => {
+    if (!rule.selector) return;
+    rule.style.metadata.set(MetadataKeys.HOVERING, true);
+    this.props.rule.target.ownerDocument.querySelectorAll(rule.selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, true));
   }
 
-  onSelectorLeave = (selector: string) => {
-    this.props.rule.target.ownerDocument.querySelectorAll(selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, false));
+  onSelectorLeave = (rule: SyntheticCSSStyleRule) => {
+    if (!rule.selector) return;
+    rule.style.metadata.set(MetadataKeys.HOVERING, false);
+    this.props.rule.target.ownerDocument.querySelectorAll(rule.selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, false));
   }
 
 
@@ -174,7 +178,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
             <ul className="matching-selectors">
               {selectorLabels.map(({ source, label }, i) => {
                 
-                return <li onMouseEnter={this.onSelectorEnter.bind(this, label)} key={i} className={cx({ hovering: source.style.metadata.get(MetadataKeys.HOVERING), selected: source.style.metadata.get(MetadataKeys.SELECTED) })} onMouseLeave={this.onSelectorLeave.bind(this, label)}>
+                return <li onMouseEnter={this.onSelectorEnter.bind(this, source)} key={i} className={cx({ hovering: source.style.metadata.get(MetadataKeys.REVEAL), selected: source.style.metadata.get(MetadataKeys.SELECTED) })} onMouseLeave={this.onSelectorLeave.bind(this, source)}>
                   <SyntheticSourceLink target={source}>{ label }</SyntheticSourceLink>
                 </li>
               })}

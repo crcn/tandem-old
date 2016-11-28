@@ -1,0 +1,10 @@
+@import "@tandem/uikit/scss";
+
+.target-rule-hint {
+  &.highlight {
+    & .input, input {
+      @extend .reveal-border;
+      @extend .reveal-color;
+    }
+  }
+}

@@ -24,4 +24,5 @@ export class UpdateMergedRuleCommand implements ICommand {
     if (selection.length === 1) {
       this._htmlStore.mergedStyleRule = new MergedCSSStyleRule(selection[0]);
     }
+  }
 }

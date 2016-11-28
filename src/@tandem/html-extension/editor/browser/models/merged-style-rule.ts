@@ -86,7 +86,7 @@ export class MergedCSSStyleRule {
   }
 
   getDeclarationMainSourceRule(name: string): MatchedCSSStyleRuleType {
-    return this._main[camelCase(name)];
+    return this._main[camelCase(name)] || this.mainSources[0];
   }
 
   private _onDocumentEvent({ mutation }: MutationEvent<any>) {

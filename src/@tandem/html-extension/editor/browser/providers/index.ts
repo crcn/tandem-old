@@ -1,4 +1,4 @@
-import { createSingletonProviderClass } from "@tandem/common"; 
+import { createSingletonProviderClass, Injector, IProvider } from "@tandem/common"; 
 import { HTMLExtensionStore } from "../models";
 
 
