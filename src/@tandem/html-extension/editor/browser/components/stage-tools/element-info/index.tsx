@@ -83,7 +83,7 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
     }
 
     return <div className="td-html-element-info-item" style={style}>
-      <div className="td-html-tag-info tooltip" style={tagInfoStyle}>{tagInfo}</div>
+      <div className="td-html-tag-info selected" style={tagInfoStyle}>{tagInfo}</div>
       <div style={styleInner}>
         <div className="td-html-padding-info" style={paddingStyle}></div>
         <div className="td-html-margin-info" style={marginStyle}></div>

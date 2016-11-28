@@ -76,7 +76,7 @@ class SelectableComponent extends BaseApplicationComponent<{
     const style = {
       background : "transparent",
       position   : "absolute",
-      boxShadow  : `inset 0 0 0 ${borderWidth}px #6f98e0`,
+      boxShadow  : `inset 0 0 0 ${borderWidth}px #00B5FF`,
       width      : absoluteBounds.width,
       height     : absoluteBounds.height,
       left       : absoluteBounds.left,

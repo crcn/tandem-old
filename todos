@@ -57,6 +57,9 @@ POLISH
 LAUNCHING
 ----------------------------------
 
+< BURN
+  - [ ] default project should be an interactive tutorial
+
 TESTING
   - [ ] Firefox support
   - [ ] safari support
