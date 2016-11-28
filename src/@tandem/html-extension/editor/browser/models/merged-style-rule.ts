@@ -4,6 +4,9 @@ import { SyntheticCSSStyleGraphics, SyntheticCSSStyleRuleMutationTypes } from "@
 import { MutationEvent, bindable, bubble, Observable, PropertyMutation } from "@tandem/common";
 import { CallbackDispatcher, IMessage } from "@tandem/mesh";
 
+
+// Cluster fuck - clean me, and test me.
+
 export type MatchedCSSStyleRuleType = SyntheticCSSStyleRule|SyntheticHTMLElement;
 
 export class MergedCSSStyleRule extends Observable {
@@ -134,7 +137,7 @@ export class MergedCSSStyleRule extends Observable {
     const matchingRuleIndex = mainSources.indexOf(matchingRule);
     let currentRuleIndex = matchingRuleIndex;
 
-    const rules = !matchingRule && (!styleName || isInheritedCSSStyleProperty(styleName)) ? mainSources : this.matchingRules;
+    const rules = this.matchingRules.indexOf(matchingRule) === -1 || (!styleName || isInheritedCSSStyleProperty(styleName)) ? mainSources : this.matchingRules;
 
 
     return rules.filter((rule) => {
