@@ -13,6 +13,7 @@ import { createTestMasterApplication } from "@tandem/editor/test";
 import { SyntheticBrowser, NoopRenderer, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { Injector, PrivateBusProvider, BrokerBus, InjectorProvider, RootApplicationComponent } from "@tandem/common";
 import {
@@ -98,7 +99,6 @@ export const renderPreview = reactEditorPreview(async () => {
 
   const document = browser.document;
 
-
   document.querySelector("#controls").metadata.set(MetadataKeys.HOVERING, true);
   (document.querySelector(".container") as SyntheticHTMLElement).style.metadata.set(MetadataKeys.HOVERING, true);
   workspace.select([document.querySelector(".container")]);
@@ -113,7 +113,7 @@ export const renderPreview = reactEditorPreview(async () => {
       </div>
       <GutterComponent className="right">
         <ElementAttributesPaneComponent workspace={workspace} />
-        <ElementCSSInspectorComponent workspace={workspace} />
+        <ElementCSSInspectorComponent workspace={workspace} rule={new MergedCSSStyleRule(document.querySelector(".container") as any)} />
       </GutterComponent>
     </div>
   </RootApplicationComponent>

@@ -12,17 +12,19 @@ import { CSSStyleHashInputComponent } from "../css";
 import { IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import { CSSPrettyInspectorComponent } from "./pretty";
 import { ComputedPropertiesPaneComponent } from "./computed";
-import { BaseApplicationComponent, Mutation, MutationEvent} from "@tandem/common";
+import { BaseApplicationComponent, Mutation, MutationEvent, inject } from "@tandem/common";
 import { 
   SyntheticDocument, 
   SyntheticCSSStyle, 
-  MergedCSSStyleRule, 
   SyntheticHTMLElement, 
   SyntheticCSSStyleRule,
-  getMergedCSSStyleRule,
   SyntheticCSSStyleGraphics,
   SyntheticCSSStyleRuleMutationTypes,  
 } from "@tandem/synthetic-browser";
+
+
+import { HTMLExtensionStore, MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
+import { HTMLExtensionStoreProvider } from "@tandem/html-extension/editor/browser/providers";
 
 class DocumentMutationChangeWatcher {
 
@@ -61,7 +63,10 @@ class DocumentMutationChangeWatcher {
   }
 }
 
-export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace }, { pane: string }> {
+export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ workspace: Workspace, rule?: MergedCSSStyleRule }, { pane: string }> {
+
+  @inject(HTMLExtensionStoreProvider.ID)
+  private _store: HTMLExtensionStore;
 
   state = {
     pane: "pretty"
@@ -80,12 +85,9 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   render() {
     const { workspace } = this.props;
     const { pane } = this.state;
-
-    if (!workspace || !workspace.selection.length) return null;
-
-    const elements = HTMLDOMElements.fromArray(workspace.selection);
-    if (elements.length !== 1) return null;
-    const mergedRule = getMergedCSSStyleRule(elements[0]);
+    const mergedRule = this._store.mergedStyleRule || this.props.rule;
+    
+    if (!mergedRule) return null;
 
     const tabs = {
       pretty: { icon: "paintbrush", render: this.renderPrettyPane },
@@ -110,28 +112,19 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
           }
         </div>
       </div>
-      {this.renderSelectorsSection(mergedRule, elements[0]) }
+      {this.renderSelectorsSection(mergedRule) }
       <hr />
       { selectedTab && selectedTab.render.call(this, mergedRule) }
     </div>
   }
 
   renderPrettyPane(rule: MergedCSSStyleRule) {
-    const graphics = new SyntheticCSSStyleGraphics(rule.style);
-    graphics.observe({
-      dispatch() {
-        const style = graphics.toStyle();
-        for (const propertyName of style) {
-          const mainDeclarationSource = rule.getDeclarationMainSourceRule(propertyName);
-          mainDeclarationSource.style.setProperty(propertyName, style[propertyName]);
-        }
-      }
-    })
-    return <CSSPrettyInspectorComponent rule={rule} graphics={graphics} />;
+    
+    return <CSSPrettyInspectorComponent rule={rule} graphics={rule.graphics} />;
   }
 
-  renderSelectorsSection(mergedRule: MergedCSSStyleRule, element: SyntheticHTMLElement) {
-    return <MatchingSelectorsComponent rule={mergedRule} element={element} />
+  renderSelectorsSection(mergedRule: MergedCSSStyleRule) {
+    return <MatchingSelectorsComponent rule={mergedRule}  />
   }
 
   renderComputedStylePane(rule: MergedCSSStyleRule) {
@@ -140,14 +133,14 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 }
 
 
-export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCSSStyleRule, element: SyntheticHTMLElement }, any> {
+export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCSSStyleRule }, any> {
 
   onSelectorEnter = (selector: string) => {
-    this.props.element.ownerDocument.querySelectorAll(selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, true));
+    this.props.rule.target.ownerDocument.querySelectorAll(selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, true));
   }
 
   onSelectorLeave = (selector: string) => {
-    this.props.element.ownerDocument.querySelectorAll(selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, false));
+    this.props.rule.target.ownerDocument.querySelectorAll(selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, false));
   }
 
 

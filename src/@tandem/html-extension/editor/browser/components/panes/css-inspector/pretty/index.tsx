@@ -13,7 +13,6 @@ import {
   parseCSSDeclValue, 
   evaluateCSSDeclValue,
   SyntheticCSSFilter,
-  MergedCSSStyleRule, 
   SyntheticHTMLElement, 
   SyntheticCSSStyle, 
   SyntheticCSSStyleRule, 
@@ -22,6 +21,7 @@ import {
   SyntheticCSSStyleBoxShadow,
 } from "@tandem/synthetic-browser";
 
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
 
 // http://www.w3schools.com/csSref/pr_class_display.asp
 const DISPLAY_OPTIONS = ["block", "inline", "inline-block", "flex", "non", "table"].map((value) => {
@@ -181,7 +181,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={graphics.top && graphics.top.toString()} onChange={bindGraphicInputEvent(graphics, "top")} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("top")}>
+              <input type="text" value={graphics.top && graphics.top.toString()} onChange={bindGraphicInputEvent(graphics, "top")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
         <div className="row">
@@ -201,7 +203,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("height")}>
             <input type="text" value={graphics.height && graphics.height.toString()} onChange={bindGraphicInputEvent(graphics, "height")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
       </div>
@@ -225,7 +229,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <input type="text" value={rule.style.fontFamily} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("fontFamily")}>
+              <input type="text" value={rule.style.fontFamily} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
 
@@ -237,7 +243,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <input type="text" value={rule.style.fontWeight} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("fontWeight")}>
+              <input type="text" value={rule.style.fontWeight} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
 
@@ -251,7 +259,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             <input type="text" value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicInputEvent(graphics, "fontSize")} />
           </div>
           <div className="col-2 label">
-            Color
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="color">
+              Size
+            </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
             <BackgroundFillComponent value={rule.style.color || "#000"} />

@@ -6,9 +6,10 @@ import {  SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { CSSStyleHashInputComponent, CSSStylePropertyComponent } from "../../css";
 import { IKeyValueNameComponentProps, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import { BaseApplicationComponent, Mutation } from "@tandem/common";
-import { SyntheticCSSStyleRule, SyntheticHTMLElement, getMergedCSSStyleRule, MergedCSSStyleRule } from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleRule, SyntheticHTMLElement} from "@tandem/synthetic-browser";
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
 
 
 export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule }, any> {
@@ -43,11 +44,9 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
     if (!rule) return null;
 
     const renderName = (props: IKeyValueNameComponentProps) => {
-      return <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule(props.item.name)}>
-        <CSSMergedRuleLinkComponent rule={rule} propertyName={props.item.name}>
-          { props.children }
-        </CSSMergedRuleLinkComponent>
-       </CSSHighlightTargetRuleHintComponent>
+      return <CSSMergedRuleLinkComponent rule={rule} propertyName={props.item.name}>
+        { props.children }
+      </CSSMergedRuleLinkComponent>
     }
 
     const renderValue = (props: IKeyValueInputComponentProps) => {

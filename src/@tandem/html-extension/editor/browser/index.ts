@@ -1,13 +1,15 @@
 import { keyBindingProvider } from "./key-bindings";
 import { createHTMLCoreProviders } from "../../core";
 import { Injector, CommandFactoryProvider } from "@tandem/common";
-import { textToolProvider, editInnerHTMLProvider } from "./models";
+import { textToolProvider, editInnerHTMLProvider, HTMLExtensionStore } from "./models";
 
 import {
   SyntheticDOMText,
   SyntheticDOMComment,
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
+
+import { HTMLExtensionStoreProvider } from "./providers";
 
 import { CSSTokenTypes } from "@tandem/html-extension/tokenizers";
 
@@ -22,7 +24,8 @@ import {
 } from "@tandem/editor/browser";
 
 import {
-  ExpandSelectedCommand
+  ExpandSelectedCommand,
+  UpdateMergedRuleCommand,
 } from "./commands";
 
 import {
@@ -50,9 +53,9 @@ import {
 export function createHTMLEditorBrowserProviders() {
 
   return new Injector(
-
     createHTMLCoreProviders(),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
+    new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, UpdateMergedRuleCommand),
 
     // layer components
     new LayerLabelComponentFactoryProvider(SyntheticHTMLElement.name, ElementLayerLabelComponent),
@@ -79,6 +82,8 @@ export function createHTMLEditorBrowserProviders() {
     new TokenComponentFactoryProvider(CSSTokenTypes.NUMBER, NumberTokenInput),
     new TokenComponentFactoryProvider(CSSTokenTypes.REFERENCE, ReferenceTokenInput),
 
+    new HTMLExtensionStoreProvider(HTMLExtensionStore),
+    
     // tools
     textToolProvider,
     editInnerHTMLProvider,
