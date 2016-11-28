@@ -176,7 +176,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     let previouslySetRule = selectedRuleHasProperty;
 
     const renderMatchingSelectors = (rules: MatchedCSSStyleRuleType[]) => {
-      return <ul className="matching-selectors">
+      return <ul>
         {rules.map((source) => {
 
           const index = mainRules.indexOf(source);
@@ -207,33 +207,26 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
         })}
       </ul>;
     }
-
-    return <div className="section">
-      <div className="container">
+    
+    const renderGroupRules = (title: string, rules: MatchedCSSStyleRuleType[]) => {
+      return <div>
         <div className="row title">
           <div className="col-12">
-            Matching Rules
+            { title }
           </div>
         </div>
 
-        <div className="row">
+        <div className="row matching-selectors">
           <div className="col-12">
-            { renderMatchingSelectors(matchingRules) }
+            { renderMatchingSelectors(rules) }
           </div>
         </div>
+      </div>;
+    }
 
-        <div className="row title">
-          <div className="col-12">
-            Inherited Rules
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12">
-            { renderMatchingSelectors(inheritedRules) }
-          </div>
-        </div>
-      </div>
+    return <div className="section container">
+      { renderGroupRules("Matching rules", matchingRules) }
+      { renderGroupRules("Inherited rules", inheritedRules) }
     </div> 
   }
 }
