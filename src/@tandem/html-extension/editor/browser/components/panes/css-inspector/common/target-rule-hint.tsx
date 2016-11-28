@@ -8,19 +8,29 @@ import { MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extens
 export class CSSHighlightTargetRuleHintComponent extends React.Component<{ rule: MergedCSSStyleRule, propertyName: string, block?: boolean }, any> {
 
   private _focused: boolean;
-  private _entered: boolean;
 
   get sourceRule() {
     return this.props.rule.getDeclarationMainSourceRule(this.props.propertyName);
   }
 
   onFocus = () => {
-    this._entered = true;
-    this.props.rule.selectedStyleProperty = this.props.propertyName;
+    this._focused = true;
+    this.selectProperty();
   }
 
+  componentWillReceiveProps(props) {
+    if (this._focused) {
+      this.selectProperty();
+    }
+  }
+
+  selectProperty() {
+    this.props.rule.selectedStyleProperty = this.props.propertyName || "";
+  }
+
+
   onBlur = () => {
-    this._entered = false;
+    this._focused = false;
     this.props.rule.selectedStyleProperty = undefined;
   }
   
@@ -38,16 +48,16 @@ export class CSSHighlightTargetRuleHintComponent extends React.Component<{ rule:
   render() {
     const sourceRule = this.sourceRule;
     const pinnedRule = this.props.rule.pinnedRule;
-    const hovering = !this._entered && sourceRule && sourceRule.metadata.get(MetadataKeys.HOVERING);
+    const hovering = !this._focused && sourceRule && sourceRule.metadata.get(MetadataKeys.HOVERING);
     
     return <div className={cx({ highlight: hovering, "target-rule-hint": true })} onFocus={this.onFocus} onBlur={this.onBlur} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-      { pinnedRule && this.props.block && pinnedRule instanceof SyntheticCSSStyleRule && !pinnedRule.matchesElement(this.props.rule.target) && !isInheritedCSSStyleProperty(this.props.propertyName) ? this.renderBlocker() : undefined }
+      { !sourceRule && pinnedRule && this.props.block && pinnedRule instanceof SyntheticCSSStyleRule && !pinnedRule.matchesElement(this.props.rule.target) && !isInheritedCSSStyleProperty(this.props.propertyName) ? this.renderBlocker() : undefined }
       {this.props.children}
     </div>;
   }
 
   renderBlocker() {
-    return <div className="blocker" title="link with CSS selector">
+    return <div className="blocker">
     </div>;
   }
 }

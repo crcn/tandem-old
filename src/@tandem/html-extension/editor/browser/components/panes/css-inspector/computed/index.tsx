@@ -16,27 +16,14 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
 
   setDeclaration = (name: string, value: string, oldName?: string) => {
     const mergedRule = this.props.rule;
-
-    if (value === "") return;
+    
+    if (name && value === "") return;
 
     const main = mergedRule.getDeclarationMainSourceRule(name);
     const mutations: Mutation<any>[] = [];
 
-    if (main instanceof SyntheticCSSStyleRule) {
-      const rule = main as SyntheticCSSStyleRule;
-      main.style.setProperty(name, value, undefined, oldName);
-      const edit = rule.createEdit();
-      edit.setDeclaration(name, value, oldName);
-      mutations.push(...edit.mutations);
-    } else {
-      const element = main as SyntheticHTMLElement;
-      const edit = element.createEdit();
-      element.style[name] = value;
-      edit.setAttribute("style", element.getAttribute("style"));
-      mutations.push(...edit.mutations);
-    }
 
-    this.bus.dispatch(new ApplyFileEditRequest(mutations));
+    this.props.rule.setSelectedStyleProperty(name, value);
   }
 
   render() {

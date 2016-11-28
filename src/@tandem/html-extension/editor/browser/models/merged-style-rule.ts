@@ -23,7 +23,6 @@ export class MergedCSSStyleRule extends Observable {
   private _graphics: SyntheticCSSStyleGraphics;
   private _documentObserver: CallbackDispatcher<any, any>;
   private _document: SyntheticDocument;
-  private _selectedSourceRule: any;
 
   @bindable(true)
   @bubble()
@@ -39,7 +38,6 @@ export class MergedCSSStyleRule extends Observable {
 
   constructor(readonly target: SyntheticHTMLElement) {
     super();
-    this._selectedSourceRule = {};
     this.style = new SyntheticCSSStyle();
     this._documentObserver = new CallbackDispatcher(this._onDocumentEvent.bind(this));
     this.reset();
@@ -52,8 +50,7 @@ export class MergedCSSStyleRule extends Observable {
       dispatch: () => {
         const style = graphics.toStyle();
         for (const propertyName of style) {
-          const mainDeclarationSource = this.getSelectedSourceRule(propertyName);
-          mainDeclarationSource.style.setProperty(propertyName, style[propertyName]);
+          this.setSelectedStyleProperty(propertyName, style[propertyName]);
         }
       }
     });
@@ -105,10 +102,16 @@ export class MergedCSSStyleRule extends Observable {
 
     if (this._allSources.indexOf(source) === -1) {
       this._allSources.push(source);
-   
     }
 
     this._sources[name].push(source);
+  }
+
+  setSelectedStyleProperty(name: string, value: string) {
+    this.style.setProperty(name, value);
+    const target = this.getTargetRule(name);
+    this.selectedStyleRule = undefined;
+    target.style.setProperty(name, value);
   }
 
   computeStyle() {
@@ -130,12 +133,14 @@ export class MergedCSSStyleRule extends Observable {
     const mainSources = this.mainSources;
     const matchingRuleIndex = mainSources.indexOf(matchingRule);
     let currentRuleIndex = matchingRuleIndex;
-    const rules = !matchingRule && isInheritedCSSStyleProperty(styleName) ? mainSources : this.matchingRules;
+
+    const rules = !matchingRule && (!styleName || isInheritedCSSStyleProperty(styleName)) ? mainSources : this.matchingRules;
+
 
     return rules.filter((rule) => {
       const index = mainSources.indexOf(rule);
       
-      const assignable = currentRuleIndex <= index;
+      const assignable = !~currentRuleIndex || index <= currentRuleIndex;
 
       // this will fail all proceeding filters
       if(rule.style[styleName]) currentRuleIndex = index;
@@ -144,13 +149,9 @@ export class MergedCSSStyleRule extends Observable {
     });
   }
 
-  selectSourceRule(rule: MatchedCSSStyleRuleType, styleName: string) {
-    this._selectedSourceRule[styleName] = rule;
-    this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this._selectedSourceRule, styleName, rule).toEvent(true));
-  }
 
-  getSelectedSourceRule(styleName: string): MatchedCSSStyleRuleType {
-    return this._selectedSourceRule[styleName] || this.getDeclarationMainSourceRule(styleName) || this._pinnedRule || this.getBestSourceRule();
+  getTargetRule(styleName: string): MatchedCSSStyleRuleType {
+    return this.selectedStyleRule || this.getDeclarationMainSourceRule(styleName) || this._pinnedRule || this.getBestSourceRule();
   }
  
   getBestSourceRule(): MatchedCSSStyleRuleType {
@@ -175,7 +176,7 @@ export class MergedCSSStyleRule extends Observable {
   }
 
   private _onDocumentEvent({ mutation }: MutationEvent<any>) {
-    if (!mutation || mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) return;
+    if (!mutation) return;
     this.reset();
   }
 

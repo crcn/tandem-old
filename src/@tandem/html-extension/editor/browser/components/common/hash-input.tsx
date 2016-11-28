@@ -26,17 +26,16 @@ export interface IKeyValueNameComponentProps extends IKeyValueInputComponentProp
   children: any;
 }
 // TODO - add some color for the CSS rules
-export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueInputComponentProps, { editName: boolean, currentValue: string }> {
-
-  private _currentValue: any;
+export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueInputComponentProps, { editName: boolean, currentName: string, currentValue: string }> {
 
   state = {
     editName: false,
-    currentValue: undefined
+    currentValue: undefined,
+    currentName: undefined
   };
 
   editName = () => {
-    this.setState({ editName: true, currentValue: undefined })
+    this.setState({ editName: true, currentName: undefined, currentValue: undefined })
   }
 
   onNameKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -49,8 +48,20 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
   }
 
   saveName = (event: React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
-    const oldName = this.item.name;
+    
     const newName = event.currentTarget.value;
+    if (!this.item.name) {
+
+      // delete the row
+      if (!newName) {
+        this.props.setKeyValue(undefined, undefined);
+      }
+      
+      return this.state.currentName = newName;
+    }
+
+    this.state.currentName = undefined;
+    const oldName = this.item.name;
 
     // unset
     if (newName === "") {
@@ -64,27 +75,30 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
 
   onNameBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     this.saveName(event);
-    this.setState({ editName: false, currentValue: undefined });
+    this.setState({ editName: false, currentName: this.state.currentName, currentValue: undefined });
   };
 
+
   onValueChange = (event: React.KeyboardEvent<any>) => {
-    const oldName = this.item.name;
-    this.props.setKeyValue(this.item.name, this.state.currentValue = event.currentTarget.value);
+    this.props.setKeyValue(this.currentItemName, this.state.currentValue = event.currentTarget.value);
+  }
+
+  get currentItemName() {
+    return this.item.name || this.state.currentName;
   }
 
   onValueFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    this.setState({ currentValue: this.item.value, editName: this.state.editName });
-    // event.currentTarget.select();
+    this.setState({ currentValue: this.item && this.item.value, currentName: this.state.currentName, editName: this.state.editName });
   }
 
   onValueBlur = (event: React.FocusEvent<any>) => {
 
     // unset
     if (this.state.currentValue === "") {
-      this.props.setKeyValue(this.item.name, undefined);
+      this.props.setKeyValue(this.currentItemName, undefined);
     }
 
-    this.setState({ currentValue: undefined, editName: this.state.editName });
+    this.setState({ currentValue: undefined, currentName: undefined, editName: this.state.editName });
   }
 
   onValueKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -92,29 +106,15 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
   }
 
   render() {
-    const { name, value, readonly, overridden } = this.item;
+    let { name, value, readonly, overridden } = this.item;
     let { className, style, valueTokenizer, renderName } = this.props;
+    if (!name) name = this.state.currentName;
 
     if (!renderName) renderName = (props) => props.children;
-
-    /*
-
-    <TextEditorComponent
-        className="col-6"
-        value={this.state.currentValue || value}
-        injector={this.injector}
-        style={{textDecoration: overridden ? "line-through" : undefined }}
-        onKeyDown={this.onValueKeyDown}
-        tokenizer={valueTokenizer}
-        onChange={this.onValueChange}
-        onFocus={this.onValueFocus}
-        onBlur={this.onValueBlur}
-        />*/
-
     return <div style={style} className={["row font-regular", className].join(" ")}>
       <div className="col-5 no-wrap dim" title={name} onDoubleClick={!readonly && this.editName}>
         {renderName(Object.assign({}, this.props, {
-          children: !name || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name
+          children: (!name && !this.state.currentName)  || this.state.editName ? <FocusComponent select={true}><input type="text" onBlur={this.onNameBlur} defaultValue={name} onKeyDown={this.onNameKeyDown} /></FocusComponent> : name
         }))}
       </div>
       
@@ -141,34 +141,59 @@ export interface IKeyInputComponentProps {
 }
 
 // TODO - add some color for the CSS rules
-export class HashInputComponent extends React.Component<IKeyInputComponentProps, any> {
+export class HashInputComponent extends React.Component<IKeyInputComponentProps, { showNewInput: boolean }> {
+  
+  state = {
+    showNewInput: false
+  };
 
   onValueEnter = (item) => {
 
     // TODO - possibly insert new prop here - this.setKeyValue("", "", index)
     if (this.props.items.indexOf(item) === this.props.items.length - 1) {
-      this.props.setKeyValue("", "");
+      this.setState({ showNewInput: true });
     }
   }
 
   render() {
-    const { items, renderItemComponent, renderName, setKeyValue, valueTokenizer } = this.props;
+    let { items, renderItemComponent, renderName, setKeyValue, valueTokenizer } = this.props;
+
+    const renderInput = (item: IKeyValueItem, index, setKeyValue) => {
+
+      const props = {
+        item: item,
+        renderName: renderName,
+        valueTokenizer: valueTokenizer,
+        setKeyValue: setKeyValue,
+        onValueEnter: this.onValueEnter
+      };
+
+      return <span key={index}>
+        { renderItemComponent ? renderItemComponent(props) : <KeyValueInputComponent {...props} /> }
+      </span>;
+    }
+
+    const children = [];
+
+    children.push(...items.map((item, index) => renderInput(item, index, setKeyValue)));
+    if (this.state.showNewInput) {
+      children.push(renderInput({ name: undefined, value: undefined }, items.length, (name: string, value: any, oldName?: any) => {
+        
+        if (name == null) return this.setState({ showNewInput: false });
+        // do not want to set state here since this particular input will get updated
+        // with the new entry
+        this.state.showNewInput = false;
+        setKeyValue(name, value, oldName);
+      }));
+    }
+
+
+
     return <div className="table">
       {
-        // index important here since the name can change
-        items.map((item, index) => {
-          const props = {
-            item: item,
-            renderName: renderName,
-            valueTokenizer: valueTokenizer,
-            setKeyValue: setKeyValue,
-            onValueEnter: this.onValueEnter
-          }
-          return <span key={index}>
-            { renderItemComponent ? renderItemComponent(props) : <KeyValueInputComponent {...props} /> }
-          </span>;
-        })
+        children
       }
+
     </div>
   }
 }

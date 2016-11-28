@@ -79,7 +79,6 @@ export class CSSStyleHashInputComponent extends React.Component<ICSSStyleHashInp
   }
 }
 
-
 export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePaneComponentProps, any> {
 
   state = { showPrettyInput: false };

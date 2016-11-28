@@ -70,7 +70,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   private _store: HTMLExtensionStore;
 
   state = {
-    pane: "pretty"
+    pane: "computed"
   };
 
   getTarget(props) {
@@ -170,22 +170,17 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     
     const matchingRules = rule.matchingRules;
     const selectedProperty = rule.selectedStyleProperty;
-    const selectedRule = selectedProperty && rule.getSelectedSourceRule(selectedProperty);
+    const selectedRule = selectedProperty != null && rule.getTargetRule(selectedProperty);
     const selectedRuleIndex = mainRules.indexOf(selectedRule);
     const selectedRuleHasProperty = selectedRule && !!selectedRule.style[selectedProperty];
     let previouslySetRule = selectedRuleHasProperty;
 
-    const assignableRules = rule.getAssignableRules(selectedProperty);
+    const assignableRules = selectedProperty != null ? rule.getAssignableRules(selectedProperty) : [];
 
     const renderMatchingSelectors = (rules: MatchedCSSStyleRuleType[]) => {
       return <ul>
-        {rules.map((source) => {
-
-          const index = mainRules.indexOf(source);
-
-          const isMatchingOrInheritable = source instanceof SyntheticCSSStyleRule ? source.matchesElement(rule.target) || isInheritedCSSStyleProperty(selectedProperty) : true
-
-          const enabled = assignableRules.indexOf(source) !== -1; //selectedRule && !previouslySetRule ? isMatchingOrInheritable : index <= selectedRuleIndex;
+        {rules.map((source, index) => {
+          const enabled = assignableRules.indexOf(source) !== -1; 
           
           const className = cx({ 
             disabled: !enabled, 
@@ -199,7 +194,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
             event.stopPropagation();
             (activeElement as any).focus();
             if (!enabled) return;
-            rule.selectSourceRule(source, selectedProperty);
+            rule.selectedStyleRule = source;
           }
 
           return <li onMouseDown={select} onMouseEnter={this.onSelectorEnter.bind(this, source)} key={index} className={className} onMouseLeave={this.onSelectorLeave.bind(this, source)}>
