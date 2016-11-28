@@ -188,6 +188,11 @@ export class MergedCSSStyleRule extends Observable {
     this._document = this.target.ownerDocument;
     this._document.observe(this._documentObserver);
 
+    if (this._graphics) {
+      this._graphics.dispose();
+      this._graphics = undefined;
+    }
+
     this._sources    = {};
     this._main       = {};
     this._allSources = [];

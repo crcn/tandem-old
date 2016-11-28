@@ -299,6 +299,10 @@ export class SyntheticCSSStyleGraphics extends Observable {
     }
   }
 
+  public dispose() {
+    // nothing
+  }
+
   public setProperty(name: string, value: any) {
 
     value = evaluateCSSDeclValue2(value, name);

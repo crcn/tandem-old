@@ -85,7 +85,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-3">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="opacity" block={true}>
-              <input type="text" value={graphics.opacity || 1} onChange={bindGraphicInputEvent(graphics, "opacity")} />
+              <BetterTextInput value={graphics.opacity || 1} onChange={bindGraphicsValueChange(graphics, "opacity")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -124,13 +124,13 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
               Min Width
             </div>
             <div className="col-3-5">
-              <input type="text" value="10px" />
+              <BetterTextInput value="10px" onChange={bindGraphicsValueChange(graphics, "minWidth")} />
             </div>
             <div className="col-2-5 label">
               Min Height
             </div>
             <div className="col-3-5">
-              <input type="text" value="10px" />
+              <BetterTextInput value="10px" onChange={bindGraphicsValueChange(graphics, "minHeight")} />
             </div>
           </div>
         </div>
@@ -180,7 +180,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="left" block={true}> 
-              <input type="text" value={graphics.left && graphics.left.toString()} onChange={bindGraphicInputEvent(graphics, "left")} />
+              <BetterTextInput value={graphics.left && graphics.left.toString()} onChange={bindGraphicsValueChange(graphics, "left")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
@@ -190,7 +190,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="top" block={true}> 
-              <input type="text" value={graphics.top && graphics.top.toString()} onChange={bindGraphicInputEvent(graphics, "top")} />
+              <BetterTextInput value={graphics.top && graphics.top.toString()} onChange={bindGraphicsValueChange(graphics, "top")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -202,7 +202,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="width" block={true}> 
-              <input type="text" value={graphics.width && graphics.width.toString()} onChange={bindGraphicInputEvent(graphics, "width")} />
+              <BetterTextInput value={graphics.width && graphics.width.toString()} onChange={bindGraphicsValueChange(graphics, "width")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
@@ -212,7 +212,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="height" block={true}> 
-              <input type="text" value={graphics.height && graphics.height.toString()} onChange={bindGraphicInputEvent(graphics, "height")} />
+              <BetterTextInput value={graphics.height && graphics.height.toString()} onChange={bindGraphicsValueChange(graphics, "height")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -238,11 +238,10 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily" block={true}>
-              <input type="text" value={rule.style.fontFamily} onChange={bindGraphicInputEvent(graphics, "fontFamily")} />
+              <BetterTextInput value={rule.style.fontFamily} onChange={bindGraphicsValueChange(graphics, "fontFamily")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
-
 
         <div className="row">
           <div className="col-2 label">
@@ -252,7 +251,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontWeight" block={true}>
-              <input type="text" value={rule.style.fontWeight} onChange={bindGraphicInputEvent(graphics, "fontWeight")} />
+              <BetterTextInput value={rule.style.fontWeight} onChange={bindGraphicsValueChange(graphics, "fontWeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -265,7 +264,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontSize" block={true}>
-              <input type="text" value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicInputEvent(graphics, "fontSize")} />
+              <BetterTextInput value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicsValueChange(graphics, "fontSize")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
@@ -288,7 +287,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="letterSpacing" block={true}>
-              <input type="text" value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicInputEvent(graphics, "letterSpacing")} />
+              <BetterTextInput value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicsValueChange(graphics, "letterSpacing")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">       
@@ -298,7 +297,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="lineHeight" block={true}>
-              <input type="text" value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicInputEvent(graphics, "lineHeight")} />
+              <BetterTextInput value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicsValueChange(graphics, "lineHeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -460,10 +459,10 @@ class CSSBackgroundInputComponent extends React.Component<{ background: Syntheti
         <BackgroundFillComponent value={color && color.toString()} />
       </div>
       <div className="col-5">
-        <input type="text" value={blendMode} />
+        <BetterTextInput value={blendMode} onChange={bindGraphicsValueChange(background, "blendMode")} />
       </div>
       <div className="col-5">
-        <input type="text" value={clip} />
+        <BetterTextInput value={clip} onChange={bindGraphicsValueChange(background, "clip")}  />
       </div>
     </div>;
   }
@@ -480,26 +479,44 @@ class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticC
         <BackgroundFillComponent value={color && color.toString()} />
       </div>
       <div className="col-2">
-        <input type="text" value={x.value} onChange={bindGraphicInputEvent(boxShadow, "x")} />
+        <BetterTextInput value={x.value} onChange={bindGraphicsValueChange(boxShadow, "x")} />
       </div>
 
       <div className="col-2">
-        <input type="text" value={y.value} onChange={bindGraphicInputEvent(boxShadow, "y")} />
+        <BetterTextInput value={y.value} onChange={bindGraphicsValueChange(boxShadow, "y")} />
       </div>
 
       <div className="col-2">
-        <input type="text" value={blur.value} onChange={bindGraphicInputEvent(boxShadow, "blur")} />
+        <BetterTextInput value={blur.value} onChange={bindGraphicInputEvent(boxShadow, "blur")} />
       </div>
 
       <div className="col-2">
-        <input type="text" value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
+        <BetterTextInput value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
       </div>
 
       <div className="col-2">
-        <input type="text" value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
+        <BetterTextInput value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
       </div>
-
     </div>
+  }
+}
+
+
+export class BetterTextInput extends React.Component<{ onChange(newValue): any, value: any }, { currentValue }> {
+  state = {
+    currentValue: undefined
+  }
+  onChange = (event: React.KeyboardEvent<any>) => {
+    this.props.onChange(this.state.currentValue = event.currentTarget.value);
+  }
+  onFocus = (event: React.FocusEvent<any>) => {
+    this.setState({ currentValue: event.currentTarget.value });
+  }
+  onBlur = () => {
+    this.setState({ currentValue: undefined });
+  }
+  render() {
+    return <input type="text" {...(this.state.currentValue ? { } : { value: this.props.value })} onFocus={this.onFocus} onBlur={this.onBlur} onChange={this.onChange} />
   }
 }
 
@@ -524,7 +541,7 @@ class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilt
   }
 
   renderInput(name: string, params: any[]) {
-    return <input type="text" value={params[0]} />
+    return <BetterTextInput value={params[0]} onChange={() => {}} />
   }
 }
 
