@@ -52,6 +52,7 @@ POLISH
 
 - [ ] support markdown
 - [ ] support HTML files and script imports
+- [ ] must work with regular webpack config - just open HTML file
 
 ----------------------------------
 LAUNCHING

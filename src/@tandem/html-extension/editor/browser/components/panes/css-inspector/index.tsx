@@ -27,6 +27,8 @@ import {
 import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/models";
 import { HTMLExtensionStoreProvider } from "@tandem/html-extension/editor/browser/providers";
 
+const MAX_LABEL_LENGTH = 80;
+
 class DocumentMutationChangeWatcher {
 
   private _observer: CallbackDispatcher<any, any>;
@@ -70,7 +72,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   private _store: HTMLExtensionStore;
 
   state = {
-    pane: "computed"
+    pane: "pretty"
   };
 
   getTarget(props) {
@@ -158,11 +160,8 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     
 
     const getLabel = (source) => {
-      if (source instanceof SyntheticHTMLElement) {
-        return "style";
-      } else {
-        return source.selector;
-      }
+      let label = String(source instanceof SyntheticHTMLElement ? "style" : source.selector);
+      return label.length > MAX_LABEL_LENGTH ? label.substr(0, MAX_LABEL_LENGTH) + "..." : label;
     }
 
     const mainRules = rule.mainSources;
