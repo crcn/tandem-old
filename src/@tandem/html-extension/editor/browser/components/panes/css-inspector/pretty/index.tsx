@@ -148,7 +148,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <Select placeholder="--" options={DISPLAY_OPTIONS} onChange={bindGraphicSelectChange(graphics, "display")} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("display")}>
+              <Select placeholder="--" options={DISPLAY_OPTIONS} onChange={bindGraphicSelectChange(graphics, "display")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
         <div className="row">
@@ -158,7 +160,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("left")}>
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("position")}>
               <Select placeholder="--" options={POSITION_OPTIONS} onChange={bindGraphicSelectChange(graphics, "position")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -266,7 +268,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <BackgroundFillComponent value={rule.style.color || "#000"} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("color")}>
+              <BackgroundFillComponent value={rule.style.color || "#000"} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
 
@@ -277,7 +281,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicInputEvent(graphics, "letterSpacing")} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("letterSpacing")}>
+              <input type="text" value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicInputEvent(graphics, "letterSpacing")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">       
             <CSSMergedRuleLinkComponent rule={rule} propertyName="lineHeight">
@@ -285,7 +291,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-4">
-            <input type="text" value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicInputEvent(graphics, "lineHeight")} />
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("lineHeight")}>
+              <input type="text" value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicInputEvent(graphics, "lineHeight")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
 
@@ -296,8 +304,10 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-10">
-            <RadioGroupComponent options={TEXT_ALIGN_OPTIONS} value={graphics.textAlign} onChange={bindGraphicSelectChange(graphics, "textAlign")} className="row button-group text-center no-padding" optionClassName="col-3" renderOption={(option) => <i className={"glyphicon glyphicon-align-" + option.value} /> }>
-            </RadioGroupComponent>
+            <CSSHighlightTargetRuleHintComponent target={rule.getDeclarationMainSourceRule("textAlign")}>
+              <RadioGroupComponent options={TEXT_ALIGN_OPTIONS} value={graphics.textAlign} onChange={bindGraphicSelectChange(graphics, "textAlign")} className="row button-group text-center no-padding" optionClassName="col-3" renderOption={(option) => <i className={"glyphicon glyphicon-align-" + option.value} /> }>
+              </RadioGroupComponent>
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
       </div>
