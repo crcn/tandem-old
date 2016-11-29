@@ -202,3 +202,17 @@ declare module "detect-font" {
   function supportedFonts(html: HTMLElement): string[];
   function detectFont(element: HTMLElement): string|boolean;
 }
+
+declare module "rc-checkbox" {
+  import * as React from "react";
+  
+  class RCCheckbox extends React.Component<{ className?: string, type: string, prefixCls?: string, name?: string, checked?: number, onChange: (checked: number) => any}, any> {
+
+  }
+
+  namespace RCCheckbox {
+
+  }
+
+  export = RCCheckbox;
+}

@@ -9,6 +9,8 @@ import { ChromePicker } from "react-color";
 import * as ReactSliderComponent from "react-slider";
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 import * as Select from "react-select";  
+import * as CheckboxComponent from "rc-checkbox";
+
 import { capitalize, startCase } from "lodash";
 import { SUPPORTED_FONTS } from "@tandem/html-extension/editor/browser/constants";
 import { 
@@ -542,7 +544,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="background" block={true}>
               Backgrounds
               <div className="controls">
-                <i className="ion-trash-a" style={{ display: selectedBackgroundIndex !== -1 ? undefined : "none" }} onClick={() => {
+                <i className="ion-trash-a" style={{ display: selectedBackgroundIndex !== -1 ? undefined : "none" }} onMouseDown={() => {
                   this.selectBackground(undefined);
                   graphics.removeBackground(graphics.backgrounds[selectedBackgroundIndex]);
                 }} />
@@ -633,6 +635,14 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
 
   private _selectedBoxShadowIndex: number = -1;
 
+
+  componentDidMount() {
+    if (process.env.SANDBOXED) {
+      this._selectedBoxShadowIndex = 0;
+      this.openPopup("Options", this.renderShadowOptions);
+    }
+  }
+
   selectBoxShadow = (boxShadow: SyntheticCSSStyleBoxShadow) => {
     this._selectedBoxShadowIndex = this.props.graphics.boxShadows.indexOf(boxShadow);
     if (this._selectedBoxShadowIndex === -1) {
@@ -660,7 +670,7 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
               Box shadows
               <div className="controls">
 
-                <i className="ion-trash-a" style={{ display: selectedBoxShadowIndex !== -1 ? undefined : "none" }} onClick={() => {
+                <i className="ion-trash-a" style={{ display: selectedBoxShadowIndex !== -1 ? undefined : "none" }} onMouseDown={() => {
                   this.selectBoxShadow(undefined);
                   graphics.removeBoxShadow(graphics.boxShadows[selectedBoxShadowIndex]);
                 }} />
@@ -691,13 +701,15 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
   renderShadowOptions = () => {
     const boxShadow = this.props.graphics.boxShadows[this._selectedBoxShadowIndex] || new SyntheticCSSStyleBoxShadow([0, 0, 0, 0, new SyntheticCSSColor(0, 0, 0, 1)])
     if (!boxShadow) return null;
+
+
     return <div className="container"> 
        <div className="container">
         <div className="row">
           <div className="col-12">
-            <ChromePicker color={boxShadow.color.toString()} onChange={({ rgb }) => {
+            { !process.env.SANDBOXED ? <ChromePicker color={boxShadow.color.toString()} onChange={({ rgb }) => {
               boxShadow.color = SyntheticCSSColor.fromRGBA(rgb);
-            }} />
+            }} /> : null }
           </div>
         </div>
       </div>
@@ -727,6 +739,14 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
         </div>
         <div className="col-4">
           <BetterTextInput value={boxShadow.spread} onChange={bindGraphicsValueChange(boxShadow, "spread")} />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-2 label">
+          Inset
+        </div>
+        <div className="col-4">
+          <BetterCheckbox checked={boxShadow.inset} onChange={bindGraphicsValueChange(boxShadow, "inset")} />
         </div>
       </div>
     </div>;
@@ -784,6 +804,25 @@ export class BetterTextInput extends React.Component<{ onChange(newValue): any, 
   render() {
     return <input type="text" {...(this.state.currentValue != null ? { } : { value: this.props.value })} onFocus={this.onFocus} onBlur={this.onBlur} onChange={this.onChange} />
   }
+}
+
+export class BetterCheckbox extends React.Component<{ onChange(newValue): any, checked: any }, { currentValue }> {
+  state = {
+    currentValue: undefined
+  }
+  onChange = (event: any) => {
+    this.props.onChange(!!event.target.checked);
+  }
+  render() {
+    return <CheckboxComponent type="checkbox" name="default" prefixCls="checkbox" checked={Number(!!this.props.checked)} onChange={this.onChange} />
+  }
+}
+
+// TODO - drag input values
+// TODO - drop menu
+// TODO - up/down arrow support
+export class CSSUnitInput extends BetterTextInput {
+  // TODO 
 }
 
 

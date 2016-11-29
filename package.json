@@ -168,6 +168,7 @@
     "pegjs": "^0.10.0",
     "postcss": "^5.2.5",
     "postcss-scss": "^0.3.1",
+    "rc-checkbox": "^1.4.3",
     "react": "^15.2.1",
     "react-addons-pure-render-mixin": "^15.3.1",
     "react-color": "^2.5.0",

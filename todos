@@ -11,12 +11,10 @@ Start working on UX around getting started with Tandem and projects.
 
 - use http://cssreference.io/#hn for CSS pretty pane
 
-- [ ] pretty pane
-  -  box shadow input
-- [ ] ability to override properties
-
 CSS PANE  
+  - [ ] box shadow inset
   - [ ] custom color picker
+  - [ ] up/down arrows for inputs
   - [ ] background input
     - [ ] image constraints
   - [ ] Box
@@ -36,7 +34,6 @@ CSS PANE
       - [ ] min width
       - [ ] max width
   - [ ] force state (hover, checked, etc.)
-  - [ ] up/down arrows for inputs
   - [ ] calc input
   - [ ] unit value converter
 

@@ -66,7 +66,7 @@ export class MergedCSSStyleRule extends Observable {
       dispatch: () => {
         const newStyle = graphics.toStyle();
         const handleUpdate = (key) => {
-          if (this._style[key] !== newStyle[key]) {
+          if (currentStyle[key] !== newStyle[key]) {
             this.setSelectedStyleProperty(key, newStyle[key]);
           }
         }      

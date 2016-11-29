@@ -57,7 +57,7 @@ export const renderPreview = reactEditorPreview(async () => {
           display: block;
           mix-blend-mode: overlay;
           background: rgba(255, 100, 255, 1), lime overlay;
-          box-shadow: inset 1 2 3 4 indianred;
+          box-shadow: inset 1px 2px 3px 4px indianred;
           box-sizing: border-box;
           padding-right: border-box;
           filter: contrast(50%) brightness(200%) drop-shadow(0px 0px 0px #F60);

@@ -5,13 +5,12 @@
 
   .matching-selectors {
     li {
+      word-break: break-all;
       &:hover {
         & .pin {
           opacity: 1;
         }
       }
-
-
       .pin {
         &.pinned {
           opacity: 1;

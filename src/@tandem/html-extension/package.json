@@ -14,13 +14,14 @@
   "dependencies": {
     "chai": "^3.5.0",
     "detect-font": "^0.1.3",
+    "rc-checkbox": "^1.4.3",
     "react-color": "^2.5.0",
     "sift": "^3.2.6",
     "tinycolor2": "^1.4.1"
   },
   "peerDependencies": {
-    "@tandem/editor": "^1.0.0",
     "@tandem/common": "^1.0.0",
+    "@tandem/editor": "^1.0.0",
     "@tandem/sandbox": "^1.0.0",
     "@tandem/synthetic-browser": "^1.0.0"
   },
