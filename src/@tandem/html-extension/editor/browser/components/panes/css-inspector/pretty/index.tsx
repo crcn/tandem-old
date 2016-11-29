@@ -100,7 +100,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="mixBlendMode" block={true}>
-              <Select placeholder="--" value={graphics.mixBlendMode} clearable={false} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(graphics, "mixBlendMode")} />
+              <Select placeholder="--" value={graphics.mixBlendMode} clearable={true} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(graphics, "mixBlendMode")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -158,7 +158,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="display" block={true}> 
-              <Select placeholder="--" options={DISPLAY_OPTIONS} clearable={false} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
+              <Select placeholder="--" options={DISPLAY_OPTIONS} clearable={true} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -170,7 +170,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="position" block={true}> 
-              <Select placeholder="--" options={POSITION_OPTIONS} clearable={false} value={graphics.position} onChange={bindGraphicSelectChange(graphics, "position")} />
+              <Select placeholder="--" options={POSITION_OPTIONS} clearable={true} value={graphics.position} onChange={bindGraphicSelectChange(graphics, "position")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
