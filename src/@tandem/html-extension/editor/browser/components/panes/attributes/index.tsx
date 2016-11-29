@@ -38,7 +38,7 @@ export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ w
     if (!items.length) return null;
 
     return <div>
-      <div className="header entity html property">
+      <div className="header entity ">
         Attributes
         <div className="controls">
           <span onClick={this.addAttribute}>+</span>
@@ -52,7 +52,6 @@ export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ w
 
     // TODO: temporary - make this prettier.
     return <div className="container">
-      <div onClick={this.addAttribute} style={{ cursor: "pointer" }}>Add one</div>
     </div>;
   }
 }

@@ -11,24 +11,21 @@ Start working on UX around getting started with Tandem and projects.
 
 - use http://cssreference.io/#hn for CSS pretty pane
 
-- [ ] ability to edit inputs without info getting replaced
 - [ ] pretty pane
-  - [ ] background color input
-    - [ ] dnd images
-    - [ ] bg constraints
   -  box shadow input
 
 CSS PANE
+  - [ ] background input
+    - [ ] bg constraints
+    - [ ] background color input
   - [ ] box model
-  - [ ] border radius
-  - [ ] toggle styles on and off
-  - [ ] force states
+    - [ ] border radius
+    - [ ] padding
+    - [ ] margin
   - [ ] visual editor for declaration values
   - [ ] unit value converter
 
-
 - [ ] copy & paste
-- [ ] color input
 - [ ] arrow keys for manipulating inputs
 - [ ] ability to edit style attribute
 - [ ] advanced layout pane
