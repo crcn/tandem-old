@@ -357,6 +357,21 @@ class SidebarPopupComponent extends React.Component<ISectionComponentPopup & { c
     if (rect.bottom > window.innerHeight) {
       this.setState({ stickToBottom: true });
     }
+    
+    document.body.addEventListener("click", this.onDocumentClick);
+  }
+
+  onDocumentClick = (event: MouseEvent) => {
+    const popup = (this.refs as any).popup as HTMLElement;
+    if (event.target === popup || popup.contains(event.target as HTMLElement)) {
+      return;
+    }
+
+    this.props.closePopup();
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener("click", this.onDocumentClick);
   }
 
   render() {
@@ -487,7 +502,13 @@ class TypographySectionComponent extends SectionComponent<any> {
 
   renderFontColorPicker = () => {
     const { rule, graphics } = this.props;
-    return <ChromePicker color={graphics.color.toString()} onChange={(color) => graphics.color = new SyntheticCSSColor(color.rgb.r, color.rgb.g, color.rgb.b, color.rgb.a)} />
+    return <div className="container">
+      <div className="row">
+        <div className="col-12">
+          <ChromePicker color={graphics.color.toString()} onChange={(color) => graphics.color = new SyntheticCSSColor(color.rgb.r, color.rgb.g, color.rgb.b, color.rgb.a)} />
+        </div>
+      </div>
+    </div>
   }
 }
 
