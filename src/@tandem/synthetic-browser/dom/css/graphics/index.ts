@@ -373,17 +373,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
     const style = new SyntheticCSSStyle();
 
     [
-      ["backgrounds", "background", ", "],
-      ["boxShadows", "boxShadow", ", "],
-      ["filters", "filter", " "],
-      ["opacity"],
-      ["mixBlendMode"],
-      ["color"],
-      ["fontFamily", "fontFamily", ", "],
-      ["fontWeight"],
-      ["letterSpacing"],
-      ["fontSize"],
-      ["textAlign"],
+      // Layout
       ["width"],
       ["height"],
       ["display"],
@@ -396,6 +386,24 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["top"],
       ["right"],
       ["bottom"],
+
+      // Typography
+      ["fontFamily", "fontFamily", ", "],
+      ["fontWeight"],
+      ["fontSize"],
+      ["color"],
+      ["letterSpacing"],
+      ["lineHeight"],
+      ["textAlign"],
+
+      // Appearange
+      ["opacity"],
+      ["mixBlendMode"],
+
+      // Effects
+      ["backgrounds", "background", ", "],
+      ["boxShadows", "boxShadow", ", "],
+      ["filters", "filter", " "],
     ].forEach(([propertyName, styleName, sep]) => {
       const value = this[propertyName];
       const exists = value != null && (!sep || value.length);

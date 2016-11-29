@@ -24,7 +24,7 @@ export class CSSHighlightTargetRuleHintComponent extends React.Component<{ rule:
     }
   }
 
-  selectProperty() {
+  selectProperty = () => {
     this.props.rule.selectedStyleProperty = this.props.propertyName || "";
   }
 
@@ -50,7 +50,7 @@ export class CSSHighlightTargetRuleHintComponent extends React.Component<{ rule:
     const pinnedRule = this.props.rule.pinnedRule;
     const hovering = !this._focused && sourceRule && sourceRule.metadata.get(MetadataKeys.HOVERING);
     
-    return <div className={cx({ highlight: hovering, "target-rule-hint": true })} onFocus={this.onFocus} onBlur={this.onBlur} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+    return <div className={cx({ highlight: hovering, "target-rule-hint": true })} onClick={this.selectProperty} onFocus={this.onFocus} onBlur={this.onBlur} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
       { pinnedRule && this.props.block && pinnedRule instanceof SyntheticCSSElementStyleRule && !pinnedRule.matchesElement(this.props.rule.target) && !isInheritedCSSStyleProperty(this.props.propertyName) ? this.renderBlocker() : undefined }
       {this.props.children}
     </div>;

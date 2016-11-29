@@ -23,8 +23,9 @@ CSS PANE
     - [ ] border radius
     - [ ] padding
     - [ ] margin
-  - [ ] visual editor for declaration values
   - [ ] force state (hover, checked, etc.)
+  - [ ] up/down arrows for inputs
+  - [ ] calc input
   - [ ] unit value converter
 
 - [ ] copy & paste
