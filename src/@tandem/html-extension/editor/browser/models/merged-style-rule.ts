@@ -161,11 +161,10 @@ export class MergedCSSStyleRule extends Observable {
         this._style.setProperty(value, newStyle[value]);
       },
       visitRemove: ({ value }) => {
-        console.log("REMOVE", value);
         this._style.removeProperty(value);
       },
       visitUpdate: ({ newValue }) => {
-        // ignore this
+        this._style.setProperty(newValue, newStyle[newValue]);
       }
     })
   }
