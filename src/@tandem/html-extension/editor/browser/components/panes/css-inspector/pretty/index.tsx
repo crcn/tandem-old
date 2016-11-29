@@ -471,10 +471,10 @@ class TypographySectionComponent extends SectionComponent<any> {
 
 class BackgroundsSectionComponent extends SectionComponent<any> {
   
-  private _selectedBackground: SyntheticCSSStyleBackground;
+  private _selectedBackgroundIndex: number = -1;
 
   selectBackground = (background: SyntheticCSSStyleBackground) => {
-    this._selectedBackground = background;
+    this._selectedBackgroundIndex = this.props.graphics.backgrounds.indexOf(background);
 
     if (background == null) {
       this.closePopup();
@@ -485,7 +485,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
 
   renderMainSection() {
     const { rule, graphics } = this.props;
-    const selectedBackground = this._selectedBackground;
+    const selectedBackgroundIndex = this._selectedBackgroundIndex;
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.backgrounds.length === 0 });
 
     return <div className="section background-section" key="backgrounds">
@@ -494,9 +494,9 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
           <div className="col-12">
             Backgrounds
             <div className="controls">
-              <i className="ion-trash-a" style={{ display: selectedBackground ? undefined : "none" }} onClick={() => {
+              <i className="ion-trash-a" style={{ display: selectedBackgroundIndex !== -1 ? undefined : "none" }} onClick={() => {
                 this.selectBackground(undefined);
-                graphics.removeBackground(selectedBackground);
+                graphics.removeBackground(graphics.backgrounds[selectedBackgroundIndex]);
               }} />
               <i className="ion-plus-round" onClick={() => {
                 this.selectBackground(graphics.addBackground([new SyntheticCSSColor(0, 0, 0, 1)]));
@@ -524,7 +524,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
 
   renderFill = () => {
 
-    const background = this._selectedBackground;
+    const background = this.props.graphics.backgrounds[this._selectedBackgroundIndex];
 
     if (!background) return null;
     console.log(background.toString());
