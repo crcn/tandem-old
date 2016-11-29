@@ -314,8 +314,7 @@ interface ISectionComponentPopup {
 
 abstract class SectionComponent<T extends ISectionComponentProps> extends React.Component<T, any> {
 
-
-  private _popup: ISectionComponentPopup;
+  protected _popup: ISectionComponentPopup;
 
   openPopup = (title: string, renderBody: () => any) => {
     this._popup = { title, renderBody };
@@ -479,7 +478,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
     if (background == null) {
       this.closePopup();
     } else {
-      this.openPopup("Fill Options", this.renderFill);
+      this.openPopup("Options", this.renderFill);
     }
   }
 
@@ -583,13 +582,21 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
 class BoxShadowsSectionComponent extends SectionComponent<any> {
 
   private _selectedBoxShadowIndex: number = -1;
+  
+  protected _popup = {
+    title: "blagh",
+    renderBody: () => {
+      // return "hello"
+      return this.renderShadowOptions();
+    }
+  }
 
   selectBoxShadow = (boxShadow: SyntheticCSSStyleBoxShadow) => {
     this._selectedBoxShadowIndex = this.props.graphics.boxShadows.indexOf(boxShadow);
     if (this._selectedBoxShadowIndex === -1) {
       this.closePopup();
     } else {
-      this.openPopup("Shadow Options", this.renderShadowOptions);
+      this.openPopup("Options", this.renderShadowOptions);
     }
   }
 
@@ -633,11 +640,48 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
   }
 
   renderShadowOptions = () => {
-    const boxShadow = this.props.graphics.boxShadows[this._selectedBoxShadowIndex];
+    const boxShadow = this.props.graphics.boxShadows[this._selectedBoxShadowIndex] || new SyntheticCSSStyleBoxShadow([0, 0, 0, 0, new SyntheticCSSColor(0, 0, 0, 1)])
     if (!boxShadow) return null;
 
+    //  <ChromePicker color={boxShadow.color.toString()} onChange={({ rgb }) => {
+              // boxShadow.color = SyntheticCSSColor.fromRGBA(rgb);
+            // }} />
     return <div className="container"> 
-
+       <div className="container">
+        <div className="row">
+          <div className="col-12">
+           
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-2 label">
+          X
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={boxShadow.x} onChange={bindGraphicsValueChange(boxShadow, "x")} />
+        </div>
+        <div className="col-2 label">
+          Y
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={boxShadow.x} onChange={bindGraphicsValueChange(boxShadow, "y")} />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-2 label">
+          Blur
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={boxShadow.blur} onChange={bindGraphicsValueChange(boxShadow, "blur")} />
+        </div>
+        <div className="col-2 label">
+          Spread
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={boxShadow.spread} onChange={bindGraphicsValueChange(boxShadow, "spread")} />
+        </div>
+      </div>
     </div>;
   }
 }

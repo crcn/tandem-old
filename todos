@@ -40,6 +40,8 @@ CSS PANE
   - [ ] calc input
   - [ ] unit value converter
 
+
+
 MEDIA QUERIES
   - [ ] attached to each artboard
 - [ ] copy & paste
@@ -109,6 +111,7 @@ UX
   - [ ] gutters need to be resizable
   - [ ] custom layer for artboard
   - [ ] input focus state
+  - [ ] display visible dimensions of HTML element
 
 BUGS
   - [ ] css class selectors are case insensitive
