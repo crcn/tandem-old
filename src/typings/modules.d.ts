@@ -198,3 +198,7 @@ declare module "canvas-prebuilt" {
   export = Canvas;
 }
 
+declare module "detect-font" {
+  function supportedFonts(html: HTMLElement): string[];
+  function detectFont(element: HTMLElement): string|boolean;
+}

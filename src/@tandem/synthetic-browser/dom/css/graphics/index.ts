@@ -297,6 +297,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
     this.backgrounds = new ObservableCollection<SyntheticCSSStyleBackground>();
     this.boxShadows  = new ObservableCollection<SyntheticCSSStyleBoxShadow>();
     this.filters     = new ObservableCollection<SyntheticCSSFilter>();
+    this.fontFamily  = [];
     this.setProperties(style);
   }
 

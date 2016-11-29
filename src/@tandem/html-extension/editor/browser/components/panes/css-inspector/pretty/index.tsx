@@ -10,18 +10,20 @@ import * as ReactSliderComponent from "react-slider";
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 import * as Select from "react-select";  
 import { capitalize, startCase } from "lodash";
+import { SUPPORTED_FONTS } from "@tandem/html-extension/editor/browser/constants";
 import { 
   parseCSSDeclValue, 
   SyntheticCSSColor,
   SyntheticCSSStyle, 
   SyntheticCSSFilter,
+  getCSSFontFaceRules,
+  SyntheticCSSFontFace,
   evaluateCSSDeclValue,
   SyntheticHTMLElement, 
-  SyntheticCSSElementStyleRule, 
-  getCSSFontFaceRules,
   SyntheticCSSStyleGraphics,
   SyntheticCSSStyleBoxShadow,
   SyntheticCSSStyleBackground,
+  SyntheticCSSElementStyleRule, 
 } from "@tandem/synthetic-browser";
 
 import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
@@ -45,6 +47,10 @@ const BLEND_MODE_OPTIONS = ["normal", "multiply", "screen", "overlay", "darken",
 const TEXT_ALIGN_OPTIONS = ["left", "center", "right", "justify"].map((value) => {
   return { label: value, value: value };
 });
+
+const DEFAULT_FONT_FAMILY_OPTIONS = SUPPORTED_FONTS.map((value) => {
+  return { label: value, value: value };
+})
 
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
@@ -364,9 +370,10 @@ function bindGraphicInputEvent(graphics: SyntheticCSSStyleGraphics|SyntheticCSSS
   }
 }
 
-function bindGraphicSelectChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string) {
+function bindGraphicSelectChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string, map?: (value) => any) {
+  if (!map) map = value => value;
   return (option) => {
-    graphics.setProperty(propertyName, option ? option.value : undefined);
+    graphics.setProperty(propertyName, option ? map(option.value) : undefined);
   }
 }
 
@@ -436,7 +443,7 @@ class TypographySectionComponent extends SectionComponent {
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily" block={true}>
-              <Select options={this.getCSSFontFaceOptions()} placeholder="--" onChange={bindGraphicSelectChange(graphics, "options")} />
+              <Select options={this.getFontFamilyOptions()} placeholder="--" value={graphics.fontFamily.length ? graphics.fontFamily[0] : undefined} onChange={bindGraphicSelectChange(graphics, "fontFamily", font => [`'${font}'`])} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -519,10 +526,11 @@ class TypographySectionComponent extends SectionComponent {
     </div>
   }
 
-  getCSSFontFaceOptions = () => {
-    return getCSSFontFaceRules(this.props.rule.target).map((rule) => {
-      return { value: rule, label: String(rule.style.fontFamily).replace(/["']/g, "") };
-    });
+  getFontFamilyOptions = () => {
+    return [...getCSSFontFaceRules(this.props.rule.target).map((rule) => {
+      const font = String(rule.style.fontFamily).replace(/["']/g, "");
+      return  { value: font, label: font };
+    }), ...DEFAULT_FONT_FAMILY_OPTIONS];
   }
 
   renderFontColorPicker = () => {

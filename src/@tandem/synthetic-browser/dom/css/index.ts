@@ -10,3 +10,4 @@ export * from "./base";
 export * from "./utils";
 export * from "./grouping";
 export * from "./graphics";
+export * from "./font-face";

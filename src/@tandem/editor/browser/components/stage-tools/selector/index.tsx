@@ -53,7 +53,7 @@ export class SelectorStageToolComponent extends React.Component<{ workspace: Wor
       left: entireBounds.left,
       width: entireBounds.width,
       height: entireBounds.height,
-      boxShadow: `inset 0 0 0 ${borderWidth}px #F0F`
+      boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
     };
 
     const sections: any = {

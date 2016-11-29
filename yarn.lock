@@ -238,10 +238,6 @@
   version "0.1.29"
   resolved "https://registry.yarnpkg.com/@types/source-map/-/source-map-0.1.29.tgz#d7048a60180b09f8aa6d53bda311c6b51cbd7018"
 
-"@types/sprintf@0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@types/sprintf/-/sprintf-0.0.28.tgz#d8492827c13ade9bcb3c50095a828c26d5c95f20"
-
 "@types/through2@^2.0.31":
   version "2.0.31"
   resolved "https://registry.yarnpkg.com/@types/through2/-/through2-2.0.31.tgz#d834f540b2275afa4f5119801cea4bbddac0ffc6"
@@ -1949,6 +1945,12 @@ detect-file@^0.1.0:
   resolved "https://registry.yarnpkg.com/detect-file/-/detect-file-0.1.0.tgz#4935dedfd9488648e006b0129566e9386711ea63"
   dependencies:
     fs-exists-sync "^0.1.0"
+
+detect-font@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/detect-font/-/detect-font-0.1.3.tgz#49f892669fe3e2412878b1e7c22f5d41d402cd21"
+  dependencies:
+    is-element "^0.1.0"
 
 detect-indent@^4.0.0:
   version "4.0.0"
@@ -3703,6 +3705,10 @@ is-builtin-module@^1.0.0:
 is-dotfile@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-dotfile/-/is-dotfile-1.0.2.tgz#2c132383f39199f8edc268ca01b9b007d205cc4d"
+
+is-element@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/is-element/-/is-element-0.1.0.tgz#c43478df14ab02b7c66d7498fb5456600bfef1fb"
 
 is-equal-shallow@^0.1.3:
   version "0.1.3"
@@ -7106,10 +7112,6 @@ split@0.3:
 sprintf-js@^1.0.3, sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
-
-sprintf@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/sprintf/-/sprintf-0.1.5.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
 
 sshpk@^1.7.0:
   version "1.10.1"
