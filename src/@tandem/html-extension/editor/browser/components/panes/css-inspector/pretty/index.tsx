@@ -438,8 +438,8 @@ function bindGraphicInputEvent(graphics: SyntheticCSSStyleGraphics|SyntheticCSSS
 }
 
 function bindGraphicSelectChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string) {
-  return ({ value, label }) => {
-    graphics.setProperty(propertyName, value);
+  return (option) => {
+    graphics.setProperty(propertyName, option ? option.value : undefined);
   }
 }
 

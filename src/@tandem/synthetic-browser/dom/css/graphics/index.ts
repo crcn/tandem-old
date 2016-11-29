@@ -98,7 +98,7 @@ export class SyntheticCSSStyleBackground extends Observable {
   }
 
   setProperty(name: string, value: any) {
-    this[name] = evaluateCSSDeclValue2(value, name)[0];
+    this[name] = evaluateCSSDeclValue2(value, name)[0] || "";
   }
 
   toString() {
@@ -114,6 +114,7 @@ export class SyntheticCSSStyleBackground extends Observable {
 }
 
 function evaluateCSSDeclValue2(value, property) {
+  if (value == null) return [value];
   try {
     value = evaluateCSSDeclValue(parseCSSDeclValue(String(value)));
   } catch(e) {
@@ -343,7 +344,9 @@ export class SyntheticCSSStyleGraphics extends Observable {
     if (handler) {
       handler(value);
     } else {
-      this[name] = value[0];
+
+      // set to a blank string to unset the value - null / undefined get ignored
+      this[name] = value[0] || "";
     }
   }
 
