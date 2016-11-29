@@ -33,7 +33,7 @@ export class SyntheticDocumentFragment extends SyntheticDOMContainer {
   accept(visitor: IMarkupNodeVisitor) {
     return visitor.visitDocumentFragment(this);
   }
-  cloneShallow() {
+  protected cloneShallow() {
     return new SyntheticDocumentFragment();
   }
 }

@@ -29,7 +29,7 @@ export class SyntheticDOMComment extends SyntheticDOMValueNode {
     return visitor.visitComment(this);
   }
 
-  cloneShallow() {
+  protected cloneShallow() {
     return new SyntheticDOMComment(this.nodeValue);
   }
 

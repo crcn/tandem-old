@@ -22,7 +22,6 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
     const main = mergedRule.getDeclarationMainSourceRule(name);
     const mutations: Mutation<any>[] = [];
 
-
     this.props.rule.setSelectedStyleProperty(name, value);
   }
 

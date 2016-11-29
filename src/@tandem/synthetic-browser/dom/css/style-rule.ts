@@ -154,7 +154,7 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return new SyntheticCSSStyleRuleEditor(this);
   }
 
-  cloneShallow(deep?: boolean) {
+  protected cloneShallow() {
     return new SyntheticCSSStyleRule(this.selector, undefined);
   }
 

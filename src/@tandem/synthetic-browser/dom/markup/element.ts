@@ -462,7 +462,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   }
 
-  cloneShallow() {
+  protected cloneShallow() {
     const constructor = this.constructor as syntheticElementClassType;
     const clone = new constructor(this.namespaceURI, this.tagName);
     for (const attribute of this.attributes) {

@@ -42,8 +42,8 @@ Expression
   = Degree/Measurement/Number/Color/String/Call/Identifier
 
 Measurement 
-  = number: Number unit: ("%"/"cm"/"em"/"ex"/"in"/"mm"/"pc"/"pt"/"px"/"vh"/"vw"/"vmin") {
-    return new CSSDeclMeasurementExpression(number.value, unit, location());
+  = number: Number unit: [a-zA-Z%]+ {
+    return new CSSDeclMeasurementExpression(number.value, unit.join(""), location());
   }
 
 Degree 

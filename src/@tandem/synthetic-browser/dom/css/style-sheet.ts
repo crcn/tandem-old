@@ -100,7 +100,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSGroupingRule<syntheticCS
     return diffStyleSheetRules(this.rules, target.rules).count;
   }
 
-  cloneShallow() {
+  protected cloneShallow() {
     return new SyntheticCSSStyleSheet([]);
   }
 

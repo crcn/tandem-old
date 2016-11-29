@@ -270,6 +270,9 @@ export class SyntheticCSSMeasurment extends SyntheticCSSValue {
 
   static cast(value: any) {
     if (typeof value === "number") return new SyntheticCSSMeasurment(value, "px");
+
+    // check for invalid units -- something like 40p should be defaulted to 40px
+    if (typeof value === "string") return new SyntheticCSSMeasurment(Number(value.match(/\d+/)[0]), "px");
     return value;
   }
 }

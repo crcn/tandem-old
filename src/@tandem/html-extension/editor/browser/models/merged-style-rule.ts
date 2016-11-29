@@ -1,7 +1,8 @@
-import { uniq, values, camelCase } from "lodash";
+import { uniq, values, camelCase, debounce } from "lodash";
 import { SyntheticCSSStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleGraphics, SyntheticCSSStyleRuleMutationTypes } from "@tandem/synthetic-browser";
-import { MutationEvent, bindable, bubble, Observable, PropertyMutation } from "@tandem/common";
+import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject } from "@tandem/common";
+import { ApplyFileEditRequest, IContentEdit } from "@tandem/sandbox";
 import { CallbackDispatcher, IMessage } from "@tandem/mesh";
 
 
@@ -11,7 +12,7 @@ export type MatchedCSSStyleRuleType = SyntheticCSSStyleRule|SyntheticHTMLElement
 
 export class MergedCSSStyleRule extends Observable {
 
-  readonly style: SyntheticCSSStyle;
+  private _style: SyntheticCSSStyle;
 
   @bindable(true)
   @bubble()
@@ -21,6 +22,8 @@ export class MergedCSSStyleRule extends Observable {
   @bubble()
   public selectedStyleProperty: string;
 
+  @inject(PrivateBusProvider.ID)
+  private _bus: IBrokerBus;
   
   private _allSources:  MatchedCSSStyleRuleType[];
   private _graphics: SyntheticCSSStyleGraphics;
@@ -41,9 +44,12 @@ export class MergedCSSStyleRule extends Observable {
 
   constructor(readonly target: SyntheticHTMLElement) {
     super();
-    this.style = new SyntheticCSSStyle();
     this._documentObserver = new CallbackDispatcher(this._onDocumentEvent.bind(this));
     this.reset();
+  }
+
+  get style() {
+    return this._style;
   }
 
   get graphics() {
@@ -54,11 +60,7 @@ export class MergedCSSStyleRule extends Observable {
         const style = graphics.toStyle();
         for (const propertyName of style) {
           const value = style[propertyName];
-          if (!value) {
-            this.removeSelectedStyleProperty(propertyName);
-          } else {
-            this.setSelectedStyleProperty(propertyName, style[propertyName]);
-          }
+          this.setSelectedStyleProperty(propertyName, style[propertyName]);
         }
       }
     });
@@ -116,17 +118,30 @@ export class MergedCSSStyleRule extends Observable {
   }
 
   setSelectedStyleProperty(name: string, value: string) {
-    this.style.setProperty(name, value);
     const target = this.getTargetRule(name);
     this.selectedStyleRule = undefined;
-    target.style.setProperty(name, value);
-  }
 
-  removeSelectedStyleProperty(name: string) {
-    this.style.removeProperty(name);
-    const target = this.getTargetRule(name);
-    this.selectedStyleRule = undefined;
-    target.style.removeProperty(name);
+    // need to perform diff since setting the style may mutate other parts
+    // of the object (such as attributes)
+
+    const clone = target.clone() as SyntheticCSSStyleRule;
+    const model = target.clone() as SyntheticCSSStyleRule;
+    clone.style.setProperty(name, target.style[name]);
+    model.style.setProperty(name, target.style[name]);
+
+    if (value) {
+      model.style.setProperty(name, value);
+      target.style.setProperty(name, value);
+    } else {
+      model.style.removeProperty(name);
+      target.style.removeProperty(name);
+    }
+
+    const edit = clone.createEdit().fromDiff(model);
+    
+    if (edit.mutations.length) {
+      this._bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    }
   }
 
   computeStyle() {
@@ -192,10 +207,15 @@ export class MergedCSSStyleRule extends Observable {
 
   private _onDocumentEvent({ mutation }: MutationEvent<any>) {
     if (!mutation) return;
-    this.reset();
+    this.requestReset();
   }
 
+  private requestReset = debounce(() => {
+    this.reset();
+  }, 0);
+
   private reset() {
+    this._style = new SyntheticCSSStyle();
     if (this._document) {
       this._document.unobserve(this._documentObserver);
     }

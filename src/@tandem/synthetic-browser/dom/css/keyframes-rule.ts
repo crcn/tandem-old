@@ -63,7 +63,7 @@ export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
     }`
   }
 
-  cloneShallow(deep?: boolean) {
+  protected cloneShallow() {
     return new SyntheticCSSKeyframesRule(this.name, []);
   }
 

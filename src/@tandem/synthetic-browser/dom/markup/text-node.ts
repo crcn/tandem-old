@@ -30,7 +30,7 @@ export class SyntheticDOMText extends SyntheticDOMValueNode {
     return visitor.visitText(this);
   }
 
-  cloneShallow() {
+  protected cloneShallow() {
     return new SyntheticDOMText(this.nodeValue);
   }
 

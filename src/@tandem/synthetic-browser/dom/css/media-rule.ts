@@ -53,7 +53,7 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
     return this.media.join(" ");
   }
 
-  cloneShallow() {
+  protected cloneShallow() {
     return new SyntheticCSSMediaRule(this.media.concat(), []);
   }
 

@@ -56,7 +56,7 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSGroupingRule<Synthe
     return this.cssRules.map(rule => rule.cssText).join("\n");
   }
 
-  abstract cloneShallow();
+  protected abstract cloneShallow();
 
   countShallowDiffs(target: SyntheticCSSAtRule) {
     return this.params === target.params ? 0 : -1;

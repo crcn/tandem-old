@@ -74,7 +74,8 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
     return clone;
   }
 
-  protected abstract cloneShallow();
+  protected abstract cloneShallow(): SyntheticCSSObject;
+
   abstract createEdit(): BaseContentEdit<SyntheticCSSObject>;
   abstract createEditor(): IEditor;
   abstract visitWalker(walker: ITreeWalker);

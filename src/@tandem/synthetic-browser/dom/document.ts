@@ -531,7 +531,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     child.$attach(this);
   }
 
-  cloneShallow() {
+  protected cloneShallow() {
     return new SyntheticDocument(this.defaultNamespaceURI);
   }
 
