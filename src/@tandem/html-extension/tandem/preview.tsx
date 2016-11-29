@@ -36,6 +36,17 @@ export const renderPreview = reactEditorPreview(async () => {
     createTestSandboxProviders({
       mockFiles: {
         "index.css": `
+
+        @font-face {
+          font-family: "Test Family 1";
+          src: url(./font.ttf);
+        }
+
+        @font-face {
+          font-family: "Test Family 2";
+          src: url(./font2.ttf);
+        }
+        
         .container {
           font-family: Helvetica;
           font-weight: 100;

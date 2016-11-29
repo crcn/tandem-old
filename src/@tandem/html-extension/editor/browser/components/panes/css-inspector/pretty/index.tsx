@@ -520,12 +520,9 @@ class TypographySectionComponent extends SectionComponent {
   }
 
   getCSSFontFaceOptions = () => {
-    const fontFaceRules = getCSSFontFaceRules(this.props.rule.target);
-    console.log(fontFaceRules);
-    return [];
-    // return getCSSFontFaceRules(this.props.rule.target).map((rule) => {
-    //   return { value: rule, name: rule}
-    // });
+    return getCSSFontFaceRules(this.props.rule.target).map((rule) => {
+      return { value: rule, label: String(rule.style.fontFamily).replace(/["']/g, "") };
+    });
   }
 
   renderFontColorPicker = () => {

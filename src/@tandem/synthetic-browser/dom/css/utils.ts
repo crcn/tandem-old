@@ -86,11 +86,17 @@ export function getCSSFontFaceRules(element: SyntheticDOMElement): SyntheticCSSF
   const ownerDocument = element.ownerDocument;
 
   const fontFaces: SyntheticCSSFontFace[] = [];
+
+  const used = {};
+  
   for (let i = ownerDocument.styleSheets.length; i--;) {
     const styleSheet = ownerDocument.styleSheets[i];
-    for (let j = styleSheet.rules.length; i--;) {
-      const rule = styleSheet[j];
+    for (let j = styleSheet.rules.length; j--;) {
+      const rule = styleSheet.rules[j] as any;
       if (rule["atRuleName"] && (rule as SyntheticCSSFontFace).atRuleName === "font-face") {
+        const fontFamily = String((rule as SyntheticCSSFontFace).style.fontFamily);
+        if (used[fontFamily]) continue;
+        used[fontFamily] = true;
         fontFaces.push(rule);
       }
     }
