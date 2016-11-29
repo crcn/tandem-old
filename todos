@@ -86,11 +86,7 @@ PROMO
 STABILITY
 ----------------------------------
 
-Integrations
-- [ ] open project in tandem
-
 UX
-  - [ ] tandem init CLI tool
   - [ ] VM developer console
   - [ ] gutters need to be resizable
   - [ ] custom layer for artboard
