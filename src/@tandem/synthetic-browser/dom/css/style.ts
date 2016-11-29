@@ -424,12 +424,16 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     }
   }
 
+  getProperties() {
+    return [...this];
+  }
+
   get uid(): any {
     return this.$uid;
   }
 
   getPropertyIndex(name: string) {
-    return [...this].indexOf(name);
+    return this.getProperties().indexOf(name);
   }
 
   removeProperty(name: string, notifyOwnerNode?: boolean) {

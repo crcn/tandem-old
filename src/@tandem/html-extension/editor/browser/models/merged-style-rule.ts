@@ -1,7 +1,7 @@
 import { uniq, values, camelCase, debounce } from "lodash";
 import { SyntheticCSSStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleGraphics, SyntheticCSSStyleRuleMutationTypes } from "@tandem/synthetic-browser";
-import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject } from "@tandem/common";
+import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject, diffArray } from "@tandem/common";
 import { ApplyFileEditRequest, IContentEdit } from "@tandem/sandbox";
 import { CallbackDispatcher, IMessage } from "@tandem/mesh";
 
@@ -44,6 +44,7 @@ export class MergedCSSStyleRule extends Observable {
 
   constructor(readonly target: SyntheticHTMLElement) {
     super();
+    this._style = new SyntheticCSSStyle();
     this._documentObserver = new CallbackDispatcher(this._onDocumentEvent.bind(this));
     this.reset();
   }
@@ -129,6 +130,8 @@ export class MergedCSSStyleRule extends Observable {
     clone.style.setProperty(name, target.style[name]);
     model.style.setProperty(name, target.style[name]);
 
+    this._style.setProperty(name, value);
+
     if (value) {
       model.style.setProperty(name, value);
       target.style.setProperty(name, value);
@@ -145,9 +148,26 @@ export class MergedCSSStyleRule extends Observable {
   }
 
   computeStyle() {
+
+    const newStyle = new SyntheticCSSStyle();
+
     for (let property in this._main) {
-      this.style.setProperty(property, this._main[property].style[property]);
+      newStyle.setProperty(property, this._main[property].style[property]);
     }
+
+    // diff & patch to maintain order
+    diffArray(this._style.getProperties(), newStyle.getProperties(), (a, b) => a === b ? 0 : -1).accept({
+      visitInsert: ({ value }) => {
+        this._style.setProperty(value, newStyle[value]);
+      },
+      visitRemove: ({ value }) => {
+        console.log("REMOVE", value);
+        this._style.removeProperty(value);
+      },
+      visitUpdate: ({ newValue }) => {
+        // ignore this
+      }
+    })
   }
 
   getDeclarationSourceRules(name: string): Array<MatchedCSSStyleRuleType> {
@@ -215,7 +235,6 @@ export class MergedCSSStyleRule extends Observable {
   }, 0);
 
   private reset() {
-    this._style = new SyntheticCSSStyle();
     if (this._document) {
       this._document.unobserve(this._documentObserver);
     }

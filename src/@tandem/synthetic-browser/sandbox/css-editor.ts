@@ -1,4 +1,5 @@
 import * as postcss from "postcss";
+import { kebabCase } from "lodash";
 import {
   CoreEvent,
   inject,
@@ -105,6 +106,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
   [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
     const source = target.source;
+    name = kebabCase(name);
 
     let found: boolean;
     let foundIndex: number = -1;
