@@ -200,7 +200,7 @@ export class MergedCSSStyleRule extends Observable {
 
 
   getTargetRule(styleName: string): MatchedCSSStyleRuleType {
-    return this.selectedStyleRule || this.getDeclarationMainSourceRule(styleName) || this._pinnedRule || this.getBestSourceRule();
+    return this.selectedStyleRule  || this._pinnedRule || this.getDeclarationMainSourceRule(styleName) || this.getBestSourceRule();
   }
  
   getBestSourceRule(): MatchedCSSStyleRuleType {
