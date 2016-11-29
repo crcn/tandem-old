@@ -16,14 +16,14 @@ import {
 } from "@tandem/common";
 import {
   parseCSS,
-  SyntheticCSSStyleRule,
+  SyntheticCSSElementStyleRule,
   syntheticCSSRuleType,
-  SyntheticCSSAtRuleEdit,
-  SyntheticCSSStyleRuleMutationTypes,
-  SyntheticCSSAtRule,
+  SyntheticCSSGroupAtRuleEdit,
+  SyntheticCSSElementStyleRuleMutationTypes,
+  SyntheticCSSGroupAtRule,
   CSSGroupingRuleMutationTypes,
   SyntheticCSSKeyframesRuleEdit,
-  SyntheticCSSStyleRuleEdit,
+  SyntheticCSSElementStyleRuleEdit,
 } from "@tandem/synthetic-browser";
 import {
   Dependency,
@@ -43,7 +43,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  [SyntheticCSSStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<any>) {
+  [SyntheticCSSElementStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<any>) {
     const source = target.source;
     node.selector = newValue;
   }
@@ -64,7 +64,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
     let newChild = <syntheticCSSRuleType>child;
     const newChildNode = {
-      rule(rule: SyntheticCSSStyleRule) {
+      rule(rule: SyntheticCSSElementStyleRule) {
         const ruleNode = postcss.rule({
           selector: rule.selector,
         });
@@ -78,7 +78,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
         return ruleNode;
       },
-      atrule(atrule: SyntheticCSSAtRule) {
+      atrule(atrule: SyntheticCSSGroupAtRule) {
         const ruleNode = postcss.atRule({
           name: atrule.atRuleName,
           params: atrule.params
@@ -104,7 +104,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     }
   }
 
-  [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
+  [SyntheticCSSElementStyleRuleMutationTypes.SET_DECLARATION](node: postcss.Rule, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
     const source = target.source;
     name = kebabCase(name);
 

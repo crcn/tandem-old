@@ -16,13 +16,13 @@ import {
 
 import {
   CSSEditor,
-  SyntheticCSSAtRule,
+  SyntheticCSSGroupAtRule,
   syntheticCSSRuleType,
-  SyntheticCSSStyleRule,
-  SyntheticCSSAtRuleEdit,
-  SyntheticCSSStyleRuleEdit,
+  SyntheticCSSElementStyleRule,
+  SyntheticCSSGroupAtRuleEdit,
+  SyntheticCSSElementStyleRuleEdit,
   SyntheticCSSKeyframesRuleEdit,
-  SyntheticCSSStyleRuleMutationTypes,
+  SyntheticCSSElementStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
 
 import {
@@ -39,7 +39,7 @@ import {
 // TODO - follow scss variables to their original declaration
 export class SCSSEditor extends CSSEditor {
 
-  [SyntheticCSSStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<ISyntheticObject>) {
+  [SyntheticCSSElementStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<ISyntheticObject>) {
     const source = target.source;
 
     // prefix here is necessary
@@ -105,7 +105,7 @@ export class SCSSEditor extends CSSEditor {
 
   private findNestedASTNode(node: postcss.Container, target: ISyntheticObject): postcss.Node {
     if (isRuleNode(node)) {
-      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSStyleRule>target);
+      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSElementStyleRule>target);
     } else {
       return node;
     }
@@ -116,12 +116,12 @@ export class SCSSEditor extends CSSEditor {
    *
    * @private
    * @param {postcss.Rule} node
-   * @param {SyntheticCSSStyleRule} synthetic
+   * @param {SyntheticCSSElementStyleRule} synthetic
    * @param {string} [prefix='']
    * @returns {postcss.Rule}
    */
 
-  private findMatchingRuleNode(node: postcss.Rule, synthetic: SyntheticCSSStyleRule, prefix = ''): postcss.Rule {
+  private findMatchingRuleNode(node: postcss.Rule, synthetic: SyntheticCSSElementStyleRule, prefix = ''): postcss.Rule {
     let found: postcss.Rule;
     const selector = prefix + (!prefix.length || node.selector.search(/^\&/) !== -1 ? node.selector.replace(/^\&/, "") : " " + node.selector);
     if (selector === synthetic.selector) return node;

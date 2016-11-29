@@ -5,7 +5,7 @@ import {
   SyntheticDOMNode,
   getSelectorTester,
   SyntheticDOMElement,
-  SyntheticCSSStyleRule,
+  SyntheticCSSElementStyleRule,
   SyntheticDOMContainer,
   SyntheticDOMAttributes,
 } from "@tandem/synthetic-browser";
@@ -13,7 +13,7 @@ import {
 export class MatchedStyleRule {
   public overriddenDeclarations: any;
   public disabledDeclarations: any;
-  constructor(readonly value: SyntheticCSSStyleRule) {
+  constructor(readonly value: SyntheticCSSElementStyleRule) {
     this.overriddenDeclarations = {};
     this.disabledDeclarations
   }

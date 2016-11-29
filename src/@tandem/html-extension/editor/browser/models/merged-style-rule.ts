@@ -1,6 +1,6 @@
 import { uniq, values, camelCase, debounce } from "lodash";
-import { SyntheticCSSStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { SyntheticCSSStyleGraphics, SyntheticCSSStyleRuleMutationTypes } from "@tandem/synthetic-browser";
+import { SyntheticCSSElementStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleGraphics, SyntheticCSSElementStyleRuleMutationTypes } from "@tandem/synthetic-browser";
 import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject, diffArray } from "@tandem/common";
 import { ApplyFileEditRequest, IContentEdit } from "@tandem/sandbox";
 import { CallbackDispatcher, IMessage } from "@tandem/mesh";
@@ -8,7 +8,7 @@ import { CallbackDispatcher, IMessage } from "@tandem/mesh";
 
 // Cluster fuck - clean me, and test me.
 
-export type MatchedCSSStyleRuleType = SyntheticCSSStyleRule|SyntheticHTMLElement;
+export type MatchedCSSStyleRuleType = SyntheticCSSElementStyleRule|SyntheticHTMLElement;
 
 export class MergedCSSStyleRule extends Observable {
 
@@ -93,13 +93,13 @@ export class MergedCSSStyleRule extends Observable {
 
   get inheritedRules() {
     return this.mainSources.filter((a, b) => {
-      return a !== this.target && !(a as SyntheticCSSStyleRule).matchesElement(this.target);
+      return a !== this.target && !(a as SyntheticCSSElementStyleRule).matchesElement(this.target);
     });
   }
 
   get matchingRules() {
     return this.mainSources.filter((a) => {
-      return a === this.target || (a as SyntheticCSSStyleRule).matchesElement(this.target);
+      return a === this.target || (a as SyntheticCSSElementStyleRule).matchesElement(this.target);
     });
   }
 
@@ -126,8 +126,8 @@ export class MergedCSSStyleRule extends Observable {
     // need to perform diff since setting the style may mutate other parts
     // of the object (such as attributes)
 
-    const clone = target.clone() as SyntheticCSSStyleRule;
-    const model = target.clone() as SyntheticCSSStyleRule;
+    const clone = target.clone() as SyntheticCSSElementStyleRule;
+    const model = target.clone() as SyntheticCSSElementStyleRule;
     clone.style.setProperty(name, target.style[name]);
     model.style.setProperty(name, target.style[name]);
 
@@ -208,12 +208,12 @@ export class MergedCSSStyleRule extends Observable {
     return this.mainSources.filter((source) => {
       if (source instanceof SyntheticDOMElement) {
         return true;
-      } else if (source instanceof SyntheticCSSStyleRule) {
+      } else if (source instanceof SyntheticCSSElementStyleRule) {
 
         // ensure that the source is not an inherited property
         return source.matchesElement(this.target);
       }
-    }).sort((a: SyntheticCSSStyleRule, b: SyntheticCSSStyleRule) => {
+    }).sort((a: SyntheticCSSElementStyleRule, b: SyntheticCSSElementStyleRule) => {
       if (a === this.target as any) return -1;
 
       // de-prioritize selectors that match everything

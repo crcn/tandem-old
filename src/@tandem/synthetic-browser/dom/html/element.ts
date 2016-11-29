@@ -49,6 +49,14 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   blur() {
     // TODO
   }
+  
+  get className(): string {
+    return this.class;
+  }
+
+  set className(value: string) {
+    this.class = value;
+  }
 
   get class(): string {
     return this.getAttribute("class");

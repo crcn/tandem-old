@@ -5,7 +5,7 @@ import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
-import { SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule } from "./style-rule";
+import { SyntheticCSSElementStyleRule } from "./style-rule";
 import { SyntheticCSSGroupingRuleEdit, SyntheticCSSGroupingRuleEditor, SyntheticCSSGroupingRule } from "./grouping";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
 
@@ -27,7 +27,7 @@ import {
 import { syntheticCSSRuleType, diffStyleSheetRules } from "./utils";
 
 export interface ISerializedCSSStyleSheet {
-  rules: Array<ISerializedContent<ISerializedSyntheticCSSStyleRule>>;
+  rules: Array<ISerializedContent<any>>;
 }
 
 class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleSheet, ISerializedCSSStyleSheet> {

@@ -1,4 +1,4 @@
-import { SyntheticCSSStyleRule } from "./style-rule";
+import { SyntheticCSSElementStyleRule } from "./style-rule";
 import { SyntheticCSSStyle } from "./style";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit } from "./base";
 import {
@@ -18,7 +18,7 @@ import {
 
 import { BaseContentEdit } from "@tandem/sandbox";
 
-import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit } from "./atrule";
+import { SyntheticCSSGroupAtRule, SyntheticCSSGroupAtRuleEdit } from "./atrule";
 
 export interface ISerializedSyntheticCSSMediaRule {
   media: string[];
@@ -38,10 +38,10 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
-export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
+export class SyntheticCSSMediaRule extends SyntheticCSSGroupAtRule {
   readonly atRuleName = "media";
 
-  constructor(public media: string[], rules: SyntheticCSSStyleRule[]) {
+  constructor(public media: string[], rules: SyntheticCSSElementStyleRule[]) {
     super(rules);
   }
 
@@ -58,7 +58,7 @@ export class SyntheticCSSMediaRule extends SyntheticCSSAtRule {
   }
 
   createEdit() {
-    return new SyntheticCSSAtRuleEdit(this);
+    return new SyntheticCSSGroupAtRuleEdit(this);
   }
 
   visitWalker(walker: ITreeWalker) {

@@ -7,10 +7,10 @@ import { 
   evaluateCSS,
   SyntheticCSSStyleSheet,
   SyntheticCSSObjectEdit,
-  SyntheticCSSAtRuleEdit,
-  SyntheticCSSStyleRuleEdit,
+  SyntheticCSSGroupAtRuleEdit,
+  SyntheticCSSElementStyleRuleEdit,
   CSSGroupingRuleMutationTypes,
-  SyntheticCSSStyleRuleMutationTypes,
+  SyntheticCSSElementStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
 import { SyntheticObjectChangeTypes } from "@tandem/sandbox";
 
@@ -21,7 +21,7 @@ describe(__filename + "#", () => {
   [
 
     // style rule edits
-    [".a { color: red }", ".a { color: blue }", [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
+    [".a { color: red }", ".a { color: blue }", [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSElementStyleRuleMutationTypes.SET_DECLARATION]],
 
     // style sheet edits
     [".a {}", ".b {}", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
@@ -30,7 +30,7 @@ describe(__filename + "#", () => {
     [".a {} .b {}", ".b {} .a {}", [CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
     [".a {} .b {}", ".a {} .c {} .b {}", [CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
     [".a {} .b {}", ".b {} .c {} .a {}", [CSSGroupingRuleMutationTypes.MOVE_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
-    [`*[class*="col-"] { padding: 10px; }`, `*[class*="col-"] { padding: 8px; }`, [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
+    [`*[class*="col-"] { padding: 10px; }`, `*[class*="col-"] { padding: 8px; }`, [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticCSSElementStyleRuleMutationTypes.SET_DECLARATION]],
 
     // media query edits
     ["@media a { .a { color: red } }", "@media b { .a { color: red } }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
@@ -38,11 +38,11 @@ describe(__filename + "#", () => {
     ["@media a { .a { color: red } }", "@media a { .b { color: red } }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
 
     // font face
-    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
-    ["@font-face { family: Helvetica }", "@font-face { family: Arial }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
+    ["@font-face { font-family: Helvetica }", "@font-face { font-family: Arial }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
+    ["@font-face { font-family: Helvetica }", "@font-face { font-family: Arial }", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
 
     ["@keyframes a { 0% { color: red; }}", "@keyframes b { 0% { color: red; }}", [CSSGroupingRuleMutationTypes.REMOVE_RULE_EDIT, CSSGroupingRuleMutationTypes.INSERT_RULE_EDIT]],
-    ["@keyframes a { 0% { color: red; }}", "@keyframes a { 0% { color: blue; }}", [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT,SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]],
+    ["@keyframes a { 0% { color: red; }}", "@keyframes a { 0% { color: blue; }}", [SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT,SyntheticCSSElementStyleRuleMutationTypes.SET_DECLARATION]],
 
     // failed fuzzy tests
     [`.g{}.g{b:b;e:b;}.b{}.f{c:b;b:bf;}.e{}`, `.c{e:cf;a:a;}.c{}.e{}.b{c:g;e:ec;d:da;}.d{a:dg;g:b;c:c;}.g{d:ea;e:f;f:b;}`, false],

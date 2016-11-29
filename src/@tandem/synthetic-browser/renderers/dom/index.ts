@@ -41,7 +41,7 @@ import {
   SyntheticCSSObject,
   DOMValueNodeEditor,
   DOMContainerEditor,
-  SyntheticCSSAtRule,
+  SyntheticCSSGroupAtRule,
   CSSStyleRuleEditor,
   isCSSAtRuleMutaton,
   SyntheticDOMElement,
@@ -49,7 +49,7 @@ import {
   SyntheticDOMComment,
   isDOMElementMutation,
   syntheticCSSRuleType,
-  SyntheticCSSStyleRule,
+  SyntheticCSSElementStyleRule,
   CSSGroupingRuleEditor,
   SyntheticDOMValueNode,
   SyntheticDOMContainer,
@@ -62,7 +62,7 @@ import {
   CSSGroupingRuleMutationTypes,
   SyntheticCSSStyle,
   SyntheticDocumentMutationTypes,
-  SyntheticCSSStyleRuleMutationTypes,
+  SyntheticCSSElementStyleRuleMutationTypes,
 } from "../../dom";
 
 import { DOMNodeEvent } from "../../messages";
@@ -110,6 +110,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       const insertChild = (syntheticNode) => {
         return renderHTMLNode(this.nodeFactory, syntheticNode, this._elementDictionary);
       };
+        
 
       if (nativeNode) {
         if (isDOMElementMutation(mutation)) {

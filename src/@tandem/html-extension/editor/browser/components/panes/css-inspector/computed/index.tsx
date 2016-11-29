@@ -6,7 +6,7 @@ import {  SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { CSSStyleHashInputComponent, CSSStylePropertyComponent } from "../../css";
 import { IKeyValueNameComponentProps, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import { BaseApplicationComponent, Mutation } from "@tandem/common";
-import { SyntheticCSSStyleRule, SyntheticHTMLElement} from "@tandem/synthetic-browser";
+import { SyntheticCSSElementStyleRule, SyntheticHTMLElement} from "@tandem/synthetic-browser";
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 
 import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";

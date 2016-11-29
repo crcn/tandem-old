@@ -24,6 +24,7 @@ CSS PANE
     - [ ] padding
     - [ ] margin
   - [ ] visual editor for declaration values
+  - [ ] force state (hover, checked, etc.)
   - [ ] unit value converter
 
 - [ ] copy & paste

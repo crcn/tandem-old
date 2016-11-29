@@ -3,71 +3,44 @@ import { kebabCase } from "lodash";
 import { CallbackDispatcher } from "@tandem/mesh";
 import { SyntheticDOMElement, getSelectorTester } from "@tandem/synthetic-browser";
 import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
-import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
 import { ISerializedSyntheticCSSStyle, SyntheticCSSStyle, isValidCSSDeclarationProperty } from "./style";
+import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit, SyntheticCSSObjectEditor } from "./base";
 import {
   Mutation,
   serialize,
   Metadata,
-  ArrayMutation,
   diffArray,
-  serializable,
+  CoreEvent,
   deserialize,
   ISerializer,
-  CoreEvent,
   ITreeWalker,
+  serializable,
+  ArrayMutation,
   PropertyMutation,
   SetValueMutation,
   ISerializedContent,
 } from "@tandem/common";
 
-export interface ISerializedSyntheticCSSStyleRule {
-  selector: string;
-  style: ISerializedContent<ISerializedSyntheticCSSStyle>
-}
-
-class SyntheticCSSStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRule, ISerializedSyntheticCSSStyleRule> {
-  serialize(value: SyntheticCSSStyleRule): ISerializedSyntheticCSSStyleRule {
-    return {
-      selector: value.selector,
-      style: serialize(value.style)
-    };
-  }
-  deserialize(value: ISerializedSyntheticCSSStyleRule, injector): SyntheticCSSStyleRule {
-    return new SyntheticCSSStyleRule(value.selector, deserialize(value.style, injector));
-  }
-}
-
 export namespace SyntheticCSSStyleRuleMutationTypes {
   export const SET_DECLARATION = "setDeclaration";
-  export const SET_RULE_SELECTOR = "setRuleSelector";
 }
-
 
 export function isCSSStyleRuleMutation(mutation: Mutation<SyntheticCSSStyleRule>){
   return !!{
-    [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]: true,
-    [SyntheticCSSStyleRuleMutationTypes.SET_RULE_SELECTOR]: true
+    [SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION]: true
   }[mutation.type];
 }
 
 // TODO - move this to synthetic-browser
-export class SyntheticCSSStyleRuleEdit extends SyntheticCSSObjectEdit<SyntheticCSSStyleRule> {
+export class SyntheticCSSStyleRuleEdit<T extends SyntheticCSSStyleRule> extends SyntheticCSSObjectEdit<T> {
 
-  setSelector(selector: string) {
-    return this.addChange(new SetValueMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.target, selector));
-  }
 
   setDeclaration(name: string, value: string, oldName?: string, index?: number) {
     return this.addChange(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.target, name, value, undefined, oldName, index));
   }
 
-  addDiff(newRule: SyntheticCSSStyleRule) {
+  addDiff(newRule: T) {
     super.addDiff(newRule);
-
-    if (this.target.selector !== newRule.selector) {
-      this.setSelector(newRule.selector);
-    }
 
     const oldKeys = Object.keys(this.target.style).filter(isValidCSSDeclarationProperty as any);
     const newKeys = Object.keys(newRule.style).filter(isValidCSSDeclarationProperty as any);
@@ -119,13 +92,12 @@ export class SyntheticCSSStyleRuleEditor extends BaseEditor<SyntheticCSSStyleRul
   }
 }
 
-@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleRuleSerializer()))
-export class SyntheticCSSStyleRule extends SyntheticCSSObject {
+export abstract class SyntheticCSSStyleRule extends SyntheticCSSObject {
   
   private _metadata: Metadata;
   private _metadataObserver: CallbackDispatcher<any, any>;
 
-  constructor(public selector: string, public style: SyntheticCSSStyle) {
+  constructor(public style: SyntheticCSSStyle) {
     super();
     if (!style) style = this.style = new SyntheticCSSStyle();
     style.$parentRule = this;
@@ -146,25 +118,15 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
     return this.cssText;
   }
 
-  get cssText() {
-    return `${this.selector} {\n${this.style.cssText}}\n`;
-  }
+  abstract cssText: string;
 
   createEditor() {
     return new SyntheticCSSStyleRuleEditor(this);
   }
 
-  protected cloneShallow() {
-    return new SyntheticCSSStyleRule(this.selector, undefined);
-  }
+  protected abstract cloneShallow(); 
 
-  matchesElement(element: SyntheticDOMElement) {
-    return getSelectorTester(this.selector).test(element);
-  }
-
-  countShallowDiffs(target: SyntheticCSSStyleRule): number {
-    return this.selector === target.selector ? 0 : -1;
-  }
+  abstract countShallowDiffs(target: SyntheticCSSStyleRule): number;
 
   visitWalker(walker: ITreeWalker) {
     walker.accept(this.style);
@@ -173,5 +135,76 @@ export class SyntheticCSSStyleRule extends SyntheticCSSObject {
   private _onMetadataEvent(event: CoreEvent) {
     const ownerNode = this.$ownerNode || (this.$parentStyleSheet && this.$parentStyleSheet.$ownerNode);
     if (ownerNode) ownerNode.notify(event);
+  }
+}
+
+
+export namespace SyntheticCSSElementStyleRuleMutationTypes {
+  export const SET_DECLARATION = SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION;
+  export const SET_RULE_SELECTOR = "setRuleSelector";
+}
+
+export function isCSSSElementtyleRuleMutation(mutation: Mutation<SyntheticCSSStyleRule>){
+  return isCSSStyleRuleMutation(mutation) || !!{
+    [SyntheticCSSElementStyleRuleMutationTypes.SET_RULE_SELECTOR]: true
+  }[mutation.type];
+}
+
+
+export class SyntheticCSSElementStyleRuleEdit<T extends SyntheticCSSElementStyleRule> extends SyntheticCSSStyleRuleEdit<T> {
+  setSelector(selector: string) {
+    return this.addChange(new SetValueMutation(SyntheticCSSElementStyleRuleMutationTypes.SET_RULE_SELECTOR, this.target, selector));
+  }
+  addDiff(newRule: T) {
+    super.addDiff(newRule);
+    if (this.target.selector !== newRule.selector) {
+      this.setSelector(newRule.selector);
+    }
+    return this;
+  }
+}
+
+
+export interface ISerializedSyntheticCSSElementStyleRule {
+  selector: string;
+  style: ISerializedContent<ISerializedSyntheticCSSStyle>
+}
+
+
+class SyntheticCSSElementStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRule, ISerializedSyntheticCSSElementStyleRule> {
+  serialize(value: SyntheticCSSElementStyleRule): ISerializedSyntheticCSSElementStyleRule {
+    return {
+      selector: value.selector,
+      style: serialize(value.style)
+    };
+  }
+  deserialize(value: ISerializedSyntheticCSSElementStyleRule, injector): SyntheticCSSElementStyleRule {
+    return new SyntheticCSSElementStyleRule(value.selector, deserialize(value.style, injector));
+  }
+}
+
+@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSElementStyleRuleSerializer()))
+export class SyntheticCSSElementStyleRule extends SyntheticCSSStyleRule {
+  constructor(public selector: string, style: SyntheticCSSStyle) {
+    super(style);
+  }
+  get cssText() {
+    return `${this.selector} {\n${this.style.cssText}}\n`;
+  }
+  
+  createEdit() {
+    return new SyntheticCSSElementStyleRuleEdit(this);
+  }
+
+  protected cloneShallow() {
+    return new SyntheticCSSElementStyleRule(this.selector, undefined);
+  }
+
+  matchesElement(element: SyntheticDOMElement) {
+    return getSelectorTester(this.selector).test(element);
+  }
+
+  countShallowDiffs(target: SyntheticCSSElementStyleRule): number {
+    return this.selector === target.selector ? 0 : -1;
   }
 }

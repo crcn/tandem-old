@@ -17,10 +17,10 @@ import {
   SyntheticDocument, 
   SyntheticCSSStyle, 
   SyntheticHTMLElement, 
-  SyntheticCSSStyleRule,
+  SyntheticCSSElementStyleRule,
   SyntheticCSSStyleGraphics,
   isInheritedCSSStyleProperty,
-  SyntheticCSSStyleRuleMutationTypes,  
+  SyntheticCSSElementStyleRuleMutationTypes,  
 } from "@tandem/synthetic-browser";
 
 
@@ -138,13 +138,13 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
 export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCSSStyleRule }, any> {
 
-  onSelectorEnter = (rule: SyntheticCSSStyleRule) => {
+  onSelectorEnter = (rule: SyntheticCSSElementStyleRule) => {
     rule.metadata.set(MetadataKeys.HOVERING, true);
     if (!rule.selector) return;
     this.props.rule.target.ownerDocument.querySelectorAll(rule.selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, true));
   }
 
-  onSelectorLeave = (rule: SyntheticCSSStyleRule) => {
+  onSelectorLeave = (rule: SyntheticCSSElementStyleRule) => {
     rule.metadata.set(MetadataKeys.HOVERING, false);
     if (!rule.selector) return;
     this.props.rule.target.ownerDocument.querySelectorAll(rule.selector).forEach((element) => element.metadata.set(MetadataKeys.HOVERING, false));

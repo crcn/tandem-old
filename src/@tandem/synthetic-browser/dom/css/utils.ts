@@ -8,10 +8,10 @@ import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { isCSSGroupingStyleMutation } from "./grouping";
 import { isInheritedCSSStyleProperty, SyntheticCSSStyle } from "./style";
-import { SyntheticCSSAtRule, isCSSAtRuleMutaton } from "./atrule";
-import { SyntheticCSSStyleRule, isCSSStyleRuleMutation } from "./style-rule";
+import { SyntheticCSSGroupAtRule, isCSSAtRuleMutaton } from "./atrule";
+import { SyntheticCSSElementStyleRule, isCSSStyleRuleMutation } from "./style-rule";
 
-export type syntheticCSSRuleType = SyntheticCSSStyleRule|SyntheticCSSAtRule;
+export type syntheticCSSRuleType = SyntheticCSSElementStyleRule|SyntheticCSSGroupAtRule;
 
 export function diffStyleSheetRules(oldRules: syntheticCSSRuleType[], newRules: syntheticCSSRuleType[]) {
   return diffArray<syntheticCSSRuleType>(oldRules, newRules, (oldRule, newRule) => {
@@ -21,23 +21,23 @@ export function diffStyleSheetRules(oldRules: syntheticCSSRuleType[], newRules: 
 }
 
 export class MatchedCSSStyleRule {
-  constructor(readonly target: SyntheticDOMElement, readonly rule: SyntheticCSSStyleRule, readonly overriddenStyleProperties: any, readonly inherited: boolean) {
+  constructor(readonly target: SyntheticDOMElement, readonly rule: SyntheticCSSElementStyleRule, readonly overriddenStyleProperties: any, readonly inherited: boolean) {
   }
 }
 
-export function eachMatchingStyleRule(element: SyntheticDOMElement, each: (rule: SyntheticCSSStyleRule) => any, filter?: (rule: SyntheticCSSStyleRule) => boolean) {
+export function eachMatchingStyleRule(element: SyntheticDOMElement, each: (rule: SyntheticCSSElementStyleRule) => any, filter?: (rule: SyntheticCSSElementStyleRule) => boolean) {
   if (!filter) filter = () => true;
   for (let i = element.ownerDocument.styleSheets.length; i--;) {
     const styleSheet = element.ownerDocument.styleSheets[i];
     for (let j = styleSheet.rules.length; j--;) {
-      const rule = <SyntheticCSSStyleRule>styleSheet.rules[j]
-      if (!(rule instanceof SyntheticCSSStyleRule) || !filter(rule) || !rule.matchesElement(element)) continue;
+      const rule = <SyntheticCSSElementStyleRule>styleSheet.rules[j]
+      if (!(rule instanceof SyntheticCSSElementStyleRule) || !filter(rule) || !rule.matchesElement(element)) continue;
       each(rule);
     }
   }
 }
 
-export function eachInheritedMatchingStyleRule(element: SyntheticDOMElement, each: (element: SyntheticDOMElement, rule: SyntheticCSSStyleRule) => any, filter?: (rule: SyntheticCSSStyleRule) => boolean) {
+export function eachInheritedMatchingStyleRule(element: SyntheticDOMElement, each: (element: SyntheticDOMElement, rule: SyntheticCSSElementStyleRule) => any, filter?: (rule: SyntheticCSSElementStyleRule) => boolean) {
   if (!filter) filter = () => true;
 
   const visited = {};
@@ -61,7 +61,7 @@ export function getMatchingCSSStyleRules(target: SyntheticDOMElement) {
 
   const matches = [];
 
-  eachInheritedMatchingStyleRule(target, (current: SyntheticDOMElement, rule: SyntheticCSSStyleRule) => {
+  eachInheritedMatchingStyleRule(target, (current: SyntheticDOMElement, rule: SyntheticCSSElementStyleRule) => {
     const inherited = current !== target;
     const overriddenStyleProperties = {};
     for (const property of rule.style) {
@@ -82,3 +82,19 @@ export function isCSSMutation(mutation) {
   return isCSSGroupingStyleMutation(mutation) || isCSSStyleRuleMutation(mutation) || isCSSAtRuleMutaton(mutation);
 }
 
+export function getCSSFontFaceRules(element: SyntheticDOMElement): SyntheticCSSFontFace[] {
+  const ownerDocument = element.ownerDocument;
+
+  const fontFaces: SyntheticCSSFontFace[] = [];
+  for (let i = ownerDocument.styleSheets.length; i--;) {
+    const styleSheet = ownerDocument.styleSheets[i];
+    for (let j = styleSheet.rules.length; i--;) {
+      const rule = styleSheet[j];
+      if (rule["atRuleName"] && (rule as SyntheticCSSFontFace).atRuleName === "font-face") {
+        fontFaces.push(rule);
+      }
+    }
+  }
+
+  return fontFaces;
+}

@@ -1,4 +1,4 @@
-import { SyntheticCSSStyleRule } from "./style-rule";
+import { SyntheticCSSElementStyleRule } from "./style-rule";
 import { SyntheticCSSStyle } from "./style";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import { BaseContentEdit } from "@tandem/sandbox";
@@ -13,7 +13,7 @@ import {
   ISerializedContent,
   ITreeWalker
 } from "@tandem/common";
-import { SyntheticCSSAtRule, SyntheticCSSAtRuleEdit, SyntheticCSSAtRuleMutationTypes } from "./atrule";
+import { SyntheticCSSGroupAtRule, SyntheticCSSGroupAtRuleEdit, SyntheticCSSGroupAtRuleMutationTypes } from "./atrule";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
@@ -32,9 +32,9 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
   }
 }
 
-export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSAtRuleEdit<SyntheticCSSKeyframesRule> {
+export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSGroupAtRuleEdit<SyntheticCSSKeyframesRule> {
   setName(value: string) {
-    this.addChange(new PropertyMutation(SyntheticCSSAtRuleMutationTypes.SET_NAME_EDIT, this.target, "name", value));
+    this.addChange(new PropertyMutation(SyntheticCSSGroupAtRuleMutationTypes.SET_NAME_EDIT, this.target, "name", value));
   }
   addDiff(newAtRule: SyntheticCSSKeyframesRule) {
     if (this.target.name !== newAtRule.name) {
@@ -45,10 +45,10 @@ export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSAtRuleEdit<Synthe
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSKeyframesRuleSerializer()))
-export class SyntheticCSSKeyframesRule extends SyntheticCSSAtRule {
+export class SyntheticCSSKeyframesRule extends SyntheticCSSGroupAtRule {
   readonly atRuleName: string = "keyframes";
 
-  constructor(public name: string, rules: SyntheticCSSStyleRule[]) {
+  constructor(public name: string, rules: SyntheticCSSElementStyleRule[]) {
     super(rules);
   }
   

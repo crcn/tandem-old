@@ -80,7 +80,7 @@ describe(__filename + "#", () => {
 
       const assertHTML = ({html, css}, inputCSS, inputHTML) => {
         expect(removeExtraWhitespace(css)).to.equal(removeExtraWhitespace(inputCSS));
-        expect(html).to.equal(`<html><head></head><body>${inputHTML}</body></html>`);
+        expect(html).to.equal(`<div><div></div><div>${inputHTML}</div></div>`);
       }
 
       assertHTML(await renderer.render(), inputCSS, inputHTML);

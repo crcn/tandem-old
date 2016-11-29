@@ -1,5 +1,5 @@
 import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
-import { SyntheticCSSStyleRule } from "./style-rule";
+import { SyntheticCSSElementStyleRule } from "./style-rule";
 import { SyntheticCSSGroupingRule, SyntheticCSSGroupingRuleEditor, SyntheticCSSGroupingRuleEdit } from "./grouping";
 import { SyntheticCSSStyle } from "./style";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer, SyntheticCSSObjectEdit,  SyntheticCSSObjectEditor  } from "./base";
@@ -25,26 +25,32 @@ import {
 
 import {diffStyleSheetRules } from "./utils";
 
-export namespace SyntheticCSSAtRuleMutationTypes {
+export namespace SyntheticCSSGroupAtRuleMutationTypes {
   export const SET_NAME_EDIT = "setNameEdit";
 }
 
-export function isCSSAtRuleMutaton(mutation: Mutation<SyntheticCSSAtRule>) {
+export function isCSSAtRuleMutaton(mutation: Mutation<SyntheticCSSGroupAtRule>) {
   return !!{
-    [SyntheticCSSAtRuleMutationTypes.SET_NAME_EDIT]: true
+    [SyntheticCSSGroupAtRuleMutationTypes.SET_NAME_EDIT]: true
   }[mutation.type];
 }
 
-export class SyntheticCSSAtRuleEdit<T extends SyntheticCSSAtRule> extends SyntheticCSSGroupingRuleEdit<T> { }
-export class SyntheticCSSAtRuleEditor<T extends SyntheticCSSAtRule>  extends SyntheticCSSGroupingRuleEditor<T> { }
+export interface ISyntheticCSSAtRule {
+  atRuleName: string;
+  params: string;
+  cssText: string;
+}
 
-export abstract class SyntheticCSSAtRule extends SyntheticCSSGroupingRule<SyntheticCSSStyleRule> {
+export class SyntheticCSSGroupAtRuleEdit<T extends SyntheticCSSGroupAtRule> extends SyntheticCSSGroupingRuleEdit<T> { }
+export class SyntheticCSSGroupAtRuleEditor<T extends SyntheticCSSGroupAtRule>  extends SyntheticCSSGroupingRuleEditor<T> { }
+
+export abstract class SyntheticCSSGroupAtRule extends SyntheticCSSGroupingRule<SyntheticCSSElementStyleRule> implements ISyntheticCSSAtRule {
 
   abstract atRuleName: string;
   abstract params: string;
   abstract cssText: string;
 
-  constructor(cssRules: SyntheticCSSStyleRule[] = []) {
+  constructor(cssRules: SyntheticCSSElementStyleRule[] = []) {
     super(cssRules);
   }
 
@@ -58,7 +64,7 @@ export abstract class SyntheticCSSAtRule extends SyntheticCSSGroupingRule<Synthe
 
   protected abstract cloneShallow();
 
-  countShallowDiffs(target: SyntheticCSSAtRule) {
+  countShallowDiffs(target: SyntheticCSSGroupAtRule) {
     return this.params === target.params ? 0 : -1;
   }
 

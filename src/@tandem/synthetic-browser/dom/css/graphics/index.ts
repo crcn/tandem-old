@@ -116,15 +116,12 @@ export class SyntheticCSSStyleBackground extends Observable {
 
 function evaluateCSSDeclValue2(value, property) {
   
-
   try {
     value = evaluateCSSDeclValue(parseCSSDeclValue(value));
   } catch(e) {
-    console.warn(value, e.message);
     value = [value];
   }
   
-
   return isUnitBasedCSSProperty(property) ? value.map(SyntheticCSSMeasurment.cast) : value;
 }
 

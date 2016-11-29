@@ -15,11 +15,11 @@ import { HashInputComponent, KeyValueInputComponent, IKeyValueInputComponentProp
 import {
   MatchedCSSStyleRule,
   SyntheticDOMElement,
-  SyntheticCSSStyleRule,
+  SyntheticCSSElementStyleRule,
   getMatchingCSSStyleRules,
   isInheritedCSSStyleProperty,
   SyntheticCSSStyle,
-  SyntheticCSSStyleRuleMutationTypes,
+  SyntheticCSSElementStyleRuleMutationTypes,
 } from "@tandem/synthetic-browser";
 
 export interface ICSSStyleHashInputProps {
@@ -215,7 +215,7 @@ export class MatchedCSSRulesCache {
   }
 
   private onDocumentEvent(event: MutationEvent<any>) {
-    if (!event.mutation || event.mutation.type === SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION) return;
+    if (!event.mutation || event.mutation.type === SyntheticCSSElementStyleRuleMutationTypes.SET_DECLARATION) return;
     this.matchRules();
   }
 }

@@ -6,7 +6,7 @@ import { camelCase } from "lodash";
 import { SandboxModule } from "@tandem/sandbox";
 import { SyntheticCSSObject } from "./base";
 import { SyntheticCSSFontFace } from "./font-face";
-import { SyntheticCSSStyleRule } from "./style-rule";
+import { SyntheticCSSElementStyleRule } from "./style-rule";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSStyleSheet } from "./style-sheet";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
@@ -97,7 +97,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
       return null;
     },
     visitRule(rule: postcss.Rule) {
-      return link(rule, new SyntheticCSSStyleRule(rule.selector, getStyleDeclaration(rule.nodes as postcss.Declaration[])));
+      return link(rule, new SyntheticCSSElementStyleRule(rule.selector, getStyleDeclaration(rule.nodes as postcss.Declaration[])));
     }
   };
 

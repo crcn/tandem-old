@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ApplyFileEditRequest } from "@tandem/sandbox"
 import { BaseApplicationComponent, Mutation } from "@tandem/common";
-import { SyntheticHTMLElement, SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement, SyntheticCSSElementStyleRule } from "@tandem/synthetic-browser";
 import { MergedCSSStyleRule,  } from "@tandem/html-extension/editor/browser/models";
 
 export abstract class BaseCSSInputComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, propertyName: string }, any> {
@@ -14,7 +14,7 @@ export abstract class BaseCSSInputComponent extends BaseApplicationComponent<{ r
     if (rule instanceof SyntheticHTMLElement) {
       const edit = rule.createEdit();
       mutations.push(...edit.mutations);
-    } else if (rule instanceof SyntheticCSSStyleRule) {
+    } else if (rule instanceof SyntheticCSSElementStyleRule) {
       const edit = rule.createEdit();
       edit.setDeclaration(propertyName, newValue);
       mutations.push(...edit.mutations);

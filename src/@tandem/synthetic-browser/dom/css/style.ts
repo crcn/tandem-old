@@ -3,7 +3,7 @@ import { SyntheticCSSObject } from "./base";
 import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import { CallbackDispatcher } from "@tandem/mesh";
-import { SyntheticCSSStyleRuleMutationTypes } from "./style-rule";
+import { SyntheticCSSElementStyleRuleMutationTypes } from "./style-rule";
 import { ISerializable, serializable, diffArray, ITreeWalker, PropertyMutation } from "@tandem/common";
 import { IContentEdit , ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
@@ -484,7 +484,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     const ownerNode = this.$parentRule && this.$parentRule.ownerNode;
 
     if (ownerNode) {
-      ownerNode.notify(new PropertyMutation(SyntheticCSSStyleRuleMutationTypes.SET_DECLARATION, this.$parentRule, name, newValue, undefined, oldName).toEvent(true));
+      ownerNode.notify(new PropertyMutation(SyntheticCSSElementStyleRuleMutationTypes.SET_DECLARATION, this.$parentRule, name, newValue, undefined, oldName).toEvent(true));
     }
   }
 

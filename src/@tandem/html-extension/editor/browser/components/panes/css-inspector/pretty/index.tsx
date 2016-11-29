@@ -17,7 +17,8 @@ import {
   SyntheticCSSFilter,
   evaluateCSSDeclValue,
   SyntheticHTMLElement, 
-  SyntheticCSSStyleRule, 
+  SyntheticCSSElementStyleRule, 
+  getCSSFontFaceRules,
   SyntheticCSSStyleGraphics,
   SyntheticCSSStyleBoxShadow,
   SyntheticCSSStyleBackground,
@@ -435,7 +436,7 @@ class TypographySectionComponent extends SectionComponent {
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily" block={true}>
-              <BetterTextInput value={rule.style.fontFamily} onChange={bindGraphicsValueChange(graphics, "fontFamily")} />
+              <Select options={this.getCSSFontFaceOptions()} placeholder="--" onChange={bindGraphicSelectChange(graphics, "options")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -516,6 +517,15 @@ class TypographySectionComponent extends SectionComponent {
         </div>
       </div>
     </div>
+  }
+
+  getCSSFontFaceOptions = () => {
+    const fontFaceRules = getCSSFontFaceRules(this.props.rule.target);
+    console.log(fontFaceRules);
+    return [];
+    // return getCSSFontFaceRules(this.props.rule.target).map((rule) => {
+    //   return { value: rule, name: rule}
+    // });
   }
 
   renderFontColorPicker = () => {

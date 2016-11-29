@@ -1,7 +1,7 @@
 import { SyntheticCSSStyleRule } from "./style-rule";
 import { BaseContentEdit } from "@tandem/sandbox";
-import { SyntheticCSSAtRule } from "./atrule";
 import { SyntheticCSSStyle } from "./style";
+import { SyntheticCSSGroupAtRule, ISyntheticCSSAtRule } from "./atrule";
 import { SyntheticCSSObject, SyntheticCSSObjectSerializer } from "./base";
 import {
   Mutation,
@@ -14,28 +14,27 @@ import {
 } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSFontFace {
-  declaration: ISerializedContent<any>;
+  style: ISerializedContent<any>;
 }
 
 class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace, ISerializedSyntheticCSSFontFace> {
-  serialize({ declaration }: SyntheticCSSFontFace) {
+  serialize({ style }: SyntheticCSSFontFace) {
     return {
-      declaration: serialize(declaration)
+      style: serialize(style)
     };
   }
-  deserialize({ declaration }: ISerializedSyntheticCSSFontFace, injector) {
-    return new SyntheticCSSFontFace(deserialize(declaration, injector));
+  deserialize({ style }: ISerializedSyntheticCSSFontFace, injector) {
+    return new SyntheticCSSFontFace(deserialize(style, injector));
   }
 }
 
 @serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSFontFaceSerializer()))
-export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
+export class SyntheticCSSFontFace extends SyntheticCSSStyleRule implements ISyntheticCSSAtRule {
 
   readonly atRuleName = "font-face";
 
-  constructor(public declaration: SyntheticCSSStyle) {
-    super();
-    declaration.$parentRule = this;
+  constructor(style: SyntheticCSSStyle) {
+    super(style);
   }
 
   get params() {
@@ -44,22 +43,15 @@ export class SyntheticCSSFontFace extends SyntheticCSSAtRule {
 
   get cssText() {
     return `@font-face {
-      ${this.declaration.cssText}
+      ${this.style.cssText}
     }`;
   }
+
   cloneShallow() {
     return new SyntheticCSSFontFace(new SyntheticCSSStyle());
   }
 
   countShallowDiffs(target: SyntheticCSSFontFace) {
     return this.cssText === target.cssText ? 0 : -1;
-  }
-
-  applyMutation(mutation: Mutation<any>) {
-    console.warn(`Cannot currently edit ${this.constructor.name}`);
-  }
-
-  visitWalker(walker: ITreeWalker) {
-    walker.accept(this.declaration);
   }
 }

@@ -10,7 +10,7 @@ import {
   evaluateCSS,
   SyntheticWindow,
   SyntheticHTMLElement,
-  SyntheticCSSStyleRule,
+  SyntheticCSSElementStyleRule,
   SyntheticCSSStyle,
 } from "@tandem/synthetic-browser";
 

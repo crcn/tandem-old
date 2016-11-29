@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { SyntheticCSSStyleSheet, SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
+import { SyntheticCSSStyleSheet, SyntheticCSSElementStyleRule } from "@tandem/synthetic-browser";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -14,6 +14,6 @@ describe(__filename + "#", () => {
       }
     `;
 
-    expect((styleSheet.rules[0] as SyntheticCSSStyleRule).style["color"]).to.equal("red !important");
+    expect((styleSheet.rules[0] as SyntheticCSSElementStyleRule).style["color"]).to.equal("red !important");
   });
 });

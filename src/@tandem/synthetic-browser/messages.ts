@@ -7,7 +7,7 @@ import {
   CSSGroupingRuleMutationTypes,
   SyntheticDocumentMutationTypes,
   SyntheticDOMElementMutationTypes,
-  SyntheticCSSStyleRuleMutationTypes,
+  SyntheticCSSElementStyleRuleMutationTypes,
   SyntheticDOMContainerMutationTypes,
   SyntheticDOMValueNodeMutationTypes,
 } from "@tandem/synthetic-browser/dom";
