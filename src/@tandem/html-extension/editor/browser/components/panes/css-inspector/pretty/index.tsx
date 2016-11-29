@@ -83,7 +83,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-7">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="opacity" block={true}>
-              <ReactSliderComponent min={0} max={1} step={0.01} value={graphics.opacity || 1} onChange={bindGraphicsValueChange(graphics, "opacitye")} />
+              <ReactSliderComponent min={0} max={1} step={0.01} value={Number(graphics.opacity || 1)} onChange={bindGraphicsValueChange(graphics, "opacity")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-3">

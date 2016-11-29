@@ -2,6 +2,7 @@
  * The data model for style declarations
  */
 
+import { flattenDeep } from "lodash";
 import { SyntheticCSSStyle, isValidCSSDeclarationProperty } from "../style";
 import { Observable, ObservableCollection, bindable, bubble } from "@tandem/common";
 import { 
@@ -321,7 +322,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       backgroundRepeat   : ([value]) => this.primaryBackground.repeat = value,
       backgroundImage    : ([value]) => this.primaryBackground.image = value,
       backgroundPosition : (value) => this.primaryBackground.setPosition(value),
-      fontFamily         : (value) => this.fontFamily = value.map(([value]) => value),
+      fontFamily         : (value) => this.fontFamily = flattenDeep<string>(value).map((value) => value),
       opacity            : ([value]) => this.opacity = value,
       mixBlendMode       : ([value]) => this.mixBlendMode = value,
       filter             : (value) => this.filters = new ObservableCollection<SyntheticCSSFilter>(...value),
