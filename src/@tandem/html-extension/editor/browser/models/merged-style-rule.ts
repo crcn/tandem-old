@@ -10,6 +10,10 @@ import { CallbackDispatcher, IMessage } from "@tandem/mesh";
 
 export type MatchedCSSStyleRuleType = SyntheticCSSElementStyleRule|SyntheticHTMLElement;
 
+const diffStyle = (oldStyle: SyntheticCSSStyle, newStyle: SyntheticCSSStyle) => {
+  return diffArray(oldStyle.getProperties(), newStyle.getProperties(), (a, b) => a === b ? 0 : -1);
+}
+
 export class MergedCSSStyleRule extends Observable {
 
   private _style: SyntheticCSSStyle;
@@ -57,14 +61,27 @@ export class MergedCSSStyleRule extends Observable {
   get graphics() {
     if (this._graphics) return this._graphics;
     const graphics = this._graphics = new SyntheticCSSStyleGraphics(this.style);
+    let currentStyle = graphics.toStyle();
     graphics.observe({
       dispatch: () => {
-        const style = graphics.toStyle();
-        for (const propertyName of style) {
-          const value = style[propertyName];
-          if (this.style[propertyName] === value) continue;
-          this.setSelectedStyleProperty(propertyName, style[propertyName]);
-        }
+        const newStyle = graphics.toStyle();
+        const handleUpdate = (key) => {
+          if (this._style[key] !== newStyle[key]) {
+            this.setSelectedStyleProperty(key, newStyle[key]);
+          }
+        }      
+        diffStyle(currentStyle, newStyle).accept({
+          visitInsert({ value }) {
+            handleUpdate(value);
+          },
+          visitRemove({ value }) {
+            handleUpdate(value);
+          },
+          visitUpdate({ newValue }) {
+            handleUpdate(newValue);
+          }
+        });
+        currentStyle = newStyle;
       }
     });
     return graphics;
@@ -157,8 +174,7 @@ export class MergedCSSStyleRule extends Observable {
       newStyle.setProperty(property, this._main[property].style[property]);
     }
 
-    // diff & patch to maintain order
-    diffArray(this._style.getProperties(), newStyle.getProperties(), (a, b) => a === b ? 0 : -1).accept({
+    diffStyle(this._style, newStyle).accept({
       visitInsert: ({ value }) => {
         this._style.setProperty(value, newStyle[value]);
       },
@@ -168,7 +184,7 @@ export class MergedCSSStyleRule extends Observable {
       visitUpdate: ({ newValue }) => {
         this._style.setProperty(newValue, newStyle[newValue]);
       }
-    })
+    });
   }
 
   getDeclarationSourceRules(name: string): Array<MatchedCSSStyleRuleType> {

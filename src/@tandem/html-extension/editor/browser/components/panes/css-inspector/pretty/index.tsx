@@ -479,7 +479,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
     if (background == null) {
       this.closePopup();
     } else {
-      this.openPopup("Fill", this.renderFill);
+      this.openPopup("Fill Options", this.renderFill);
     }
   }
 
@@ -506,7 +506,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
           
         </div>
 
-        <div className="row">
+        <div className="row bg-list">
           <div className="col-12">
             <ul>
               {
@@ -527,7 +527,6 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
     const background = this.props.graphics.backgrounds[this._selectedBackgroundIndex];
 
     if (!background) return null;
-    console.log(background.toString());
 
     return <div>
       <div className="container">
@@ -540,7 +539,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
         </div>
       </div>
       <hr />
-      <div className="container">
+      <div className="container hide">
         <div className="row title">
           <div className="col-12">
             Image
@@ -582,8 +581,21 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
 }
 
 class BoxShadowsSectionComponent extends SectionComponent<any> {
+
+  private _selectedBoxShadowIndex: number = -1;
+
+  selectBoxShadow = (boxShadow: SyntheticCSSStyleBoxShadow) => {
+    this._selectedBoxShadowIndex = this.props.graphics.boxShadows.indexOf(boxShadow);
+    if (this._selectedBoxShadowIndex === -1) {
+      this.closePopup();
+    } else {
+      this.openPopup("Shadow Options", this.renderShadowOptions);
+    }
+  }
+
   renderMainSection() {
     const { graphics } = this.props;
+    const selectedBoxShadowIndex = this._selectedBoxShadowIndex;
 
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
 
@@ -593,42 +605,39 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
           <div className="col-12">
             Box shadows
             <div className="controls">
-              <i className="ion-plus-round" />
+
+              <i className="ion-trash-a" style={{ display: selectedBoxShadowIndex !== -1 ? undefined : "none" }} onClick={() => {
+                this.selectBoxShadow(undefined);
+                graphics.removeBoxShadow(graphics.boxShadows[selectedBoxShadowIndex]);
+              }} />
+              <i className="ion-plus-round" onClick={() => {
+                this.selectBoxShadow(graphics.addBoxShadow([0, 0, 2, 1, new SyntheticCSSColor(0, 0, 0, 1)]));
+              }} />
             </div>
           </div>
         </div>
 
-        {
-          graphics.boxShadows.map((boxShadow, i) => {
-            return <CSSBoxShadowInputComponent boxShadow={boxShadow} key={i} />
-          })
-        }
-        
-        <div className={labelClassnames}>
-          <div className="col-2">
-            color
-          </div>
-          <div className="col-2">
-            X
-          </div>
-
-          <div className="col-2">
-            Y
-          </div>
-
-          <div className="col-2">
-            Blur
-          </div>
-
-          <div className="col-2">
-            Spread
-          </div>
-
-          <div className="col-2">
-            Inset
+        <div className="row bg-list">
+          <div className="col-12">
+            <ul>
+              {
+                graphics.boxShadows.map((background, i) => {
+                  return <CSSBoxShadowInputComponent boxShadow={background} key={i} select={this.selectBoxShadow}  />
+                })
+              }
+            </ul>
           </div>
         </div>
       </div>
+    </div>;
+  }
+
+  renderShadowOptions = () => {
+    const boxShadow = this.props.graphics.boxShadows[this._selectedBoxShadowIndex];
+    if (!boxShadow) return null;
+
+    return <div className="container"> 
+
     </div>;
   }
 }
@@ -650,36 +659,16 @@ class CSSBackgroundInputComponent extends React.Component<{ background: Syntheti
   }
 }
 
-
-class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticCSSStyleBoxShadow }, any> {
+class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticCSSStyleBoxShadow, select: (shadow: SyntheticCSSStyleBoxShadow) => any }, any> {
   render() {
     const { boxShadow } = this.props;
     const { color, x, y, blur, spread, inset } = boxShadow;
     
-    return <div className="row">
-      <div className="col-2">
-        <BackgroundFillComponent value={color && color.toString()} />
-      </div>
-      <div className="col-2">
-        <BetterTextInput value={x.value} onChange={bindGraphicsValueChange(boxShadow, "x")} />
-      </div>
-
-      <div className="col-2">
-        <BetterTextInput value={y.value} onChange={bindGraphicsValueChange(boxShadow, "y")} />
-      </div>
-
-      <div className="col-2">
-        <BetterTextInput value={blur.value} onChange={bindGraphicInputEvent(boxShadow, "blur")} />
-      </div>
-
-      <div className="col-2">
-        <BetterTextInput value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
-      </div>
-
-      <div className="col-2">
-        <BetterTextInput value={spread.value} onChange={bindGraphicInputEvent(boxShadow, "spread")} />
-      </div>
-    </div>
+    return <li>
+      <BackgroundFillComponent value={color && color.toString()} onClick={() => {
+        this.props.select(boxShadow);
+      }} />
+    </li>
   }
 }
 

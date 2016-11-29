@@ -102,7 +102,7 @@ export class SyntheticCSSStyleBackground extends Observable {
   }
 
   setProperty(name: string, value: any) {
-    this[name] = evaluateCSSDeclValue2(value, name)[0] || "";
+    this[name] = evaluateCSSDeclValue2(value, name)[0];
   }
 
   toString() {
@@ -352,7 +352,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
     } else {
 
       // set to a blank string to unset the value - null / undefined get ignored
-      this[name] = value[0] || "";
+      this[name] = value[0];
     }
   }
 
@@ -368,14 +368,19 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   public removeBackground(background: SyntheticCSSStyleBackground) {
     const index = this.backgrounds.indexOf(background);
-    console.log("REMOVE", index, background);
     if (index !== -1) this.backgrounds.splice(index, 1);
     return background;
   }
 
-  public addBoxShadow(params?: any) {
+  public addBoxShadow(params?: any[]) {
     const boxShadow = new SyntheticCSSStyleBoxShadow(params);
     this.boxShadows.push(boxShadow);
+    return boxShadow;
+  }
+
+  public removeBoxShadow(boxShadow: SyntheticCSSStyleBoxShadow) {
+    const index = this.boxShadows.indexOf(boxShadow);
+    if (index !== -1) this.boxShadows.splice(index, 1);
     return boxShadow;
   }
 
@@ -416,11 +421,12 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["filters", "filter", " "],
     ].forEach(([propertyName, styleName, sep]) => {
       const value = this[propertyName];
-      const exists = value != null && (!sep || value.length);
+      const exists = value != null;
       if (exists) {
         style.setProperty(styleName || propertyName, String(sep ? value.join(sep) : value));
       }
     });
+
     return style;
   }
 }

@@ -15,10 +15,10 @@ Start working on UX around getting started with Tandem and projects.
   -  box shadow input
 - [ ] ability to override properties
 
-CSS PANE
+CSS PANE  
+  - [ ] custom color picker
   - [ ] background input
     - [ ] bg constraints
-    - [ ] background color input
   - [ ] Box
     - [ ] border radius
     - [ ] padding
@@ -108,6 +108,7 @@ UX
   - [ ] VM developer console
   - [ ] gutters need to be resizable
   - [ ] custom layer for artboard
+  - [ ] input focus state
 
 BUGS
   - [ ] css class selectors are case insensitive
