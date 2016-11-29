@@ -114,13 +114,16 @@ export class SyntheticCSSStyleBackground extends Observable {
 }
 
 function evaluateCSSDeclValue2(value, property) {
-  if (value == null) return [value];
+  
+
   try {
-    value = evaluateCSSDeclValue(parseCSSDeclValue(String(value)));
+    value = evaluateCSSDeclValue(parseCSSDeclValue(value));
   } catch(e) {
     console.warn(value, e.message);
     value = [value];
   }
+  
+
   return isUnitBasedCSSProperty(property) ? value.map(SyntheticCSSMeasurment.cast) : value;
 }
 
@@ -217,7 +220,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
   @bubble()
-  public fontFamily: string;
+  public fontFamily: string[];
 
   @bindable(true)
   @bubble()
@@ -318,6 +321,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       backgroundRepeat   : ([value]) => this.primaryBackground.repeat = value,
       backgroundImage    : ([value]) => this.primaryBackground.image = value,
       backgroundPosition : (value) => this.primaryBackground.setPosition(value),
+      fontFamily         : (value) => this.fontFamily = value.map(([value]) => value),
       opacity            : ([value]) => this.opacity = value,
       mixBlendMode       : ([value]) => this.mixBlendMode = value,
       filter             : (value) => this.filters = new ObservableCollection<SyntheticCSSFilter>(...value),
@@ -375,9 +379,8 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["filters", "filter", " "],
       ["opacity"],
       ["mixBlendMode"],
-      ["fontFamily"],
       ["color"],
-      ["fontFamily"],
+      ["fontFamily", "fontFamily", ", "],
       ["fontWeight"],
       ["letterSpacing"],
       ["fontSize"],

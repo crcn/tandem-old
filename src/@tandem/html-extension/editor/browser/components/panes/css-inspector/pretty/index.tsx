@@ -5,12 +5,14 @@ import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { RadioGroupComponent } from "@tandem/uikit";
+import { ChromePicker } from "react-color";
 import * as ReactSliderComponent from "react-slider";
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 import * as Select from "react-select";  
 import { capitalize, startCase } from "lodash";
 import { 
   parseCSSDeclValue, 
+  SyntheticCSSColor,
   SyntheticCSSStyle, 
   SyntheticCSSFilter,
   evaluateCSSDeclValue,
@@ -46,12 +48,13 @@ const TEXT_ALIGN_OPTIONS = ["left", "center", "right", "justify"].map((value) =>
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
     const { rule } = this.props;
+    const graphics = rule.graphics;
     return <div className="css-pretty-inspector">
 
       { this.renderLayout() }
       <hr />
       
-      { this.renderTypography() }
+      <TypographySectionComponent rule={rule} graphics={graphics} />
       <hr />
 
       { this.renderAppearance() }
@@ -97,7 +100,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="mixBlendMode" block={true}>
-              <Select placeholder="--" value={graphics.mixBlendMode} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(graphics, "mixBlendMode")} />
+              <Select placeholder="--" value={graphics.mixBlendMode} clearable={false} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(graphics, "mixBlendMode")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -155,7 +158,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="display" block={true}> 
-              <Select placeholder="--" options={DISPLAY_OPTIONS} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
+              <Select placeholder="--" options={DISPLAY_OPTIONS} clearable={false} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -167,7 +170,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="position" block={true}> 
-              <Select placeholder="--" options={POSITION_OPTIONS} value={graphics.position} onChange={bindGraphicSelectChange(graphics, "position")} />
+              <Select placeholder="--" options={POSITION_OPTIONS} clearable={false} value={graphics.position} onChange={bindGraphicSelectChange(graphics, "position")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -213,105 +216,6 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="height" block={true}> 
               <BetterTextInput value={graphics.height && graphics.height.toString()} onChange={bindGraphicsValueChange(graphics, "height")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  renderTypography() {
-    const { rule, graphics } = this.props;
-    return <div className="section" key="typography">
-      <div className="container">
-        <div className="row title">
-          Typography
-          <div className="controls">
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="fontFamily">
-              Font
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily" block={true}>
-              <BetterTextInput value={rule.style.fontFamily} onChange={bindGraphicsValueChange(graphics, "fontFamily")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="fontWeight">
-              Weight
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontWeight" block={true}>
-              <BetterTextInput value={rule.style.fontWeight} onChange={bindGraphicsValueChange(graphics, "fontWeight")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="fontSize">
-              Size
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontSize" block={true}>
-              <BetterTextInput value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicsValueChange(graphics, "fontSize")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="color">
-              Color
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="color" block={true}>
-              <BackgroundFillComponent value={rule.style.color || "#000"} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">      
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="letterSpacing">
-              Spacing
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="letterSpacing" block={true}>
-              <BetterTextInput value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicsValueChange(graphics, "letterSpacing")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-          <div className="col-2 label">       
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="lineHeight">
-              Line
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="lineHeight" block={true}>
-              <BetterTextInput value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicsValueChange(graphics, "lineHeight")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="textAlign">
-              Align
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textAlign" block={true}>
-              <RadioGroupComponent options={TEXT_ALIGN_OPTIONS} value={graphics.textAlign} onChange={bindGraphicSelectChange(graphics, "textAlign")} className="row button-group text-center no-padding" optionClassName="col-3" renderOption={(option) => <i className={"glyphicon glyphicon-align-" + option.value} /> }>
-              </RadioGroupComponent>
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -450,6 +354,154 @@ function bindGraphicsValueChange(graphics: SyntheticCSSStyleGraphics|SyntheticCS
   }
 }
 
+abstract class SectionComponent extends React.Component<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, { popup: { title, renderBody } }> {
+
+  state = {
+    popup: undefined
+  }
+
+  openPopup(title: string, renderBody: any) {
+    this.setState({ popup: { title, renderBody }});
+  }
+
+  closePopup() {
+    this.setState({ popup: undefined });
+  }
+
+  render() {
+    return <div className="section">
+      {this.state.popup ? this.renderPopup() : undefined } 
+      {this.renderMainSection()}
+    </div>;
+  }
+
+  renderPopup() {
+    return <div className="popup">
+      <div className="container">
+        <div className="row title">
+          <div className="col-12">
+            { this.state.popup.title }
+            <div className="pull-right">
+              <i className="ion-close" onClick={() => this.closePopup()} />
+            </div>
+          </div>
+        </div>
+        {this.state.popup.renderBody && this.state.popup.renderBody() }
+      </div>
+    </div>
+  }
+
+  abstract renderMainSection();
+}
+
+class TypographySectionComponent extends SectionComponent {
+  renderMainSection() {
+    const { rule, graphics } = this.props;
+    return <div className="section" key="typography">
+      <div className="container">
+        <div className="row title">
+          Typography
+          <div className="controls">
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="fontFamily">
+              Font
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-10">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily" block={true}>
+              <BetterTextInput value={rule.style.fontFamily} onChange={bindGraphicsValueChange(graphics, "fontFamily")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="fontWeight">
+              Weight
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-10">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontWeight" block={true}>
+              <BetterTextInput value={rule.style.fontWeight} onChange={bindGraphicsValueChange(graphics, "fontWeight")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="fontSize">
+              Size
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontSize" block={true}>
+              <BetterTextInput value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicsValueChange(graphics, "fontSize")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="color">
+              Color
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="color" block={true}>
+              <BackgroundFillComponent value={rule.style.color || "#000"} onClick={() => 
+                this.openPopup("Font Color", this.renderFontColorPicker)
+              } />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2 label">      
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="letterSpacing">
+              Spacing
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="letterSpacing" block={true}>
+              <BetterTextInput value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicsValueChange(graphics, "letterSpacing")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+          <div className="col-2 label">       
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="lineHeight">
+              Line
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="lineHeight" block={true}>
+              <BetterTextInput value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicsValueChange(graphics, "lineHeight")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="textAlign">
+              Align
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-10">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textAlign" block={true}>
+              <RadioGroupComponent options={TEXT_ALIGN_OPTIONS} value={graphics.textAlign} onChange={bindGraphicSelectChange(graphics, "textAlign")} className="row button-group text-center no-padding" optionClassName="col-3" renderOption={(option) => <i className={"glyphicon glyphicon-align-" + option.value} /> }>
+              </RadioGroupComponent>
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  renderFontColorPicker = () => {
+    const { rule, graphics } = this.props;
+    return <ChromePicker color={graphics.color.toString()} onChange={(color) => graphics.color = new SyntheticCSSColor(color.rgb.r, color.rgb.g, color.rgb.b, color.rgb.a)} />
+  }
+}
+
 class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground }, any> {
   render() {
     const { background } = this.props;
@@ -545,10 +597,10 @@ class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilt
   }
 }
 
-class BackgroundFillComponent extends React.Component<{ value: string }, any> {
+class BackgroundFillComponent extends React.Component<{ value: string, onClick?: () => any }, any> {
   render() {
     const { value } = this.props;
-    return <div className="fill-input" style={{background: value }}>
+    return <div className="fill-input" onClick={this.props.onClick} style={{background: value }}>
     </div>
   }
 }

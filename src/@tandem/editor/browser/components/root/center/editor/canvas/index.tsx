@@ -54,7 +54,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     const transform = this.props.workspace.transform;
 
-
     const width  = 1024;
     const height = 768;
     const left   = (this._mousePosition.left - transform.left) / transform.scale;

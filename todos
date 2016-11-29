@@ -11,7 +11,6 @@ Start working on UX around getting started with Tandem and projects.
 
 - use http://cssreference.io/#hn for CSS pretty pane
 
-- [ ] 
 - [ ] ability to edit inputs without info getting replaced
 - [ ] pretty pane
   - [ ] background color input
@@ -19,6 +18,16 @@ Start working on UX around getting started with Tandem and projects.
     - [ ] bg constraints
   -  box shadow input
 
+CSS PANE
+  - [ ] box model
+  - [ ] border radius
+  - [ ] toggle styles on and off
+  - [ ] force states
+  - [ ] visual editor for declaration values
+  - [ ] unit value converter
+
+
+- [ ] copy & paste
 - [ ] color input
 - [ ] arrow keys for manipulating inputs
 - [ ] ability to edit style attribute
@@ -53,6 +62,9 @@ POLISH
 - [ ] support markdown
 - [ ] support HTML files and script imports
 - [ ] must work with regular webpack config - just open HTML file
+
+- [ ] do not dispatch ApplyFileEdit action for each input
+  - [ ] store edits somewhere until explicitly saved
 
 ----------------------------------
 LAUNCHING
@@ -120,14 +132,6 @@ SOCIAL
   - *[ ] put tandem on backend
   - *[ ] possibly attach messages to commits
   - *[ ] enable people to comment on components (necessary for feedback)
-
-CSS PANE
-  - [ ] toggle styles on and off
-  - [ ] force states
-  - [ ] syntax highlighting for declaration values
-  - [ ] visual editor for declaration values
-  - [ ] drag slider for unit values
-  - [ ] unit value converter
 
 OPTIMIZATIONS
   - [ ] have data store records owned

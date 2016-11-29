@@ -73,9 +73,9 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     return null;
   }
 
-  renderText({ uid, nodeValue }: SyntheticDOMText) {
+  renderText({ uid, textContent }: SyntheticDOMText) {
     return <div className="entity text">
-      { nodeValue }
+      { textContent || "<empty text node>" }
     </div>;
   }
 

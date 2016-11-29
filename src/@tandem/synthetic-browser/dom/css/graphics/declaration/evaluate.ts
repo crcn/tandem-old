@@ -255,6 +255,7 @@ export class SyntheticCSSFilter extends SyntheticCSSValue {
   }
 }
 
+
 export class SyntheticCSSMeasurment extends SyntheticCSSValue {
   constructor(public value: number, public unit: CSSUnitType) {
     super();
@@ -272,7 +273,8 @@ export class SyntheticCSSMeasurment extends SyntheticCSSValue {
     if (typeof value === "number") return new SyntheticCSSMeasurment(value, "px");
 
     // check for invalid units -- something like 40p should be defaulted to 40px
-    if (typeof value === "string") return new SyntheticCSSMeasurment(Number(value.match(/\d+/)[0]), "px");
+    if (typeof value === "string") return new SyntheticCSSMeasurment(Number(/\d/.test(value) ? value.match(/\d+/)[0] : 0), "px");
+    if (value == null) return new SyntheticCSSMeasurment(0, "px");
     return value;
   }
 }

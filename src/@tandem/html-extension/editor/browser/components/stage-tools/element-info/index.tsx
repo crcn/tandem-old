@@ -9,7 +9,7 @@ import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-bro
 
 // TODO - add attribute information here so that the user
 // knows what they're hovering on. OR, highlight the line in code.
-const MAX_TOOLTIP_COUNT = 20;
+const MAX_TOOLTIP_COUNT = 10;
 class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLElement, workspace: Workspace, hoverCount: number }, any> {
 
   render() {

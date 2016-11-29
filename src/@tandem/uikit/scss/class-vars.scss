@@ -50,6 +50,10 @@ $sides: left, right, top, bottom;
   opacity: 0.7;
 }
 
+.pull-right {
+  float: right;
+} 
+
 .disabled {
   color: $disabled-color;
 }

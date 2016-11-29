@@ -18,8 +18,8 @@
     border-radius: 10px;
   }
 
-  // fixed with here, otherwise the react slider gets a little
-  // buggy when resizing the doc
+  /* fixed with here, otherwise the react slider gets a little*/
+  /* buggy when resizing the doc*/
   width: 100%;
   height: 22px;
   position: relative;
@@ -112,6 +112,16 @@
   border: 1px solid #DDDDDD;
   border-radius: 4px;
   height: 22px;
+
+  & * {
+    color: inherit !important;
+  }
+
+  .Select-value {
+    line-height: 22px !important;
+    display: inline;
+    position: relative;
+  }
 }
 
 .Select-control {
@@ -131,12 +141,26 @@
   & .Select-input {
     & input {
       padding: 0;
+      line-height: 22px;
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
     }
   }
 
   & .Select-arrow-zone {
     & .Select-arrow {
-      
+      border: none;
+      &::before {
+        display: block;
+        position: relative;
+        top: -3px;
+        left: 4px;
+        transform: rotate(90deg);
+        font-family: Ionicons;
+        content: "\F10A";
+      }
     }
   }
 }
