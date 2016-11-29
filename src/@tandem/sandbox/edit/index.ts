@@ -217,7 +217,7 @@ export class FileEditor {
       // This may happen if edits are being applied to synthetic objects that
       // do not have the proper mappings
       if (!target.source || !target.source.filePath) {
-        console.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
+        this.logger.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
         continue;
       }
 
@@ -235,7 +235,7 @@ export class FileEditor {
       const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._injector), this._injector);
 
       if (!contentEditorFactoryProvider) {
-        console.error(`No synthetic edit consumer exists for ${filePath}.`);
+        this.logger.error(`No synthetic edit consumer exists for ${filePath}.`);
         continue;
       }
 

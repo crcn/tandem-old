@@ -50,7 +50,11 @@ const TEXT_ALIGN_OPTIONS = ["left", "center", "right", "justify"].map((value) =>
 
 const DEFAULT_FONT_FAMILY_OPTIONS = SUPPORTED_FONTS.map((value) => {
   return { label: value, value: value };
-})
+});
+
+const BACKGROUND_REPEAT_OPTIONS = ["repeat", "repeat-x", "repeat-y", "no-repeat"].map((value) => {
+  return { label: value, value: value };
+});
 
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
@@ -67,10 +71,10 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
       { this.renderAppearance() }
       <hr />
 
-      { this.renderBackgrounds() }
+      <BackgroundsSectionComponent rule={rule} graphics={graphics} />
       <hr />
 
-      { this.renderBoxShadows() }
+      <BoxShadowsSectionComponent rule={rule} graphics={graphics} />
       <hr />
 
       { this.renderFilters() }
@@ -232,94 +236,6 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
     </div>
   }
 
-  renderBackgrounds() {
-    const { rule, graphics } = this.props;
-    const labelClassnames = cx({ row: true, labels: true, hide: graphics.backgrounds.length === 0 });
-
-    return <div className="section" key="backgrounds">
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Backgrounds
-            <div className="controls">
-              <i className="ion-plus-round" />
-            </div>
-          </div>
-          
-        </div>
-
-        {
-          graphics.backgrounds.map((background, i) => {
-            return <CSSBackgroundInputComponent background={background} key={i} />
-          })
-        }
-
-        <div className={labelClassnames}>
-          <div className="col-2">
-            color
-          </div>
-          <div className="col-4">
-            Blend
-          </div>
-          <div className="col-4">
-            Clip
-          </div>
-        </div>
-      
-      </div>
-    </div>
-  }
-
-  renderBoxShadows() {
-    const { graphics } = this.props;
-
-    const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
-
-    return <div className="section" key="boxShadows">
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Box shadows
-            <div className="controls">
-              <i className="ion-plus-round" />
-            </div>
-          </div>
-        </div>
-
-        {
-          graphics.boxShadows.map((boxShadow, i) => {
-            return <CSSBoxShadowInputComponent boxShadow={boxShadow} key={i} />
-          })
-        }
-        
-        <div className={labelClassnames}>
-          <div className="col-2">
-            color
-          </div>
-          <div className="col-2">
-            X
-          </div>
-
-          <div className="col-2">
-            Y
-          </div>
-
-          <div className="col-2">
-            Blur
-          </div>
-
-          <div className="col-2">
-            Spread
-          </div>
-
-          <div className="col-2">
-            Inset
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
   renderFilters() {
     const { graphics } = this.props;
     return <div className="section" key="filters">
@@ -384,23 +300,36 @@ function bindGraphicsValueChange(graphics: SyntheticCSSStyleGraphics|SyntheticCS
   }
 }
 
-abstract class SectionComponent extends React.Component<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, { popup: { title, renderBody } }> {
+type OpenPopupFunction = (title: string, renderBody: () => any) => any;
 
-  state = {
-    popup: undefined
+interface ISectionComponentProps {
+  rule: MergedCSSStyleRule;
+  graphics: SyntheticCSSStyleGraphics;
+}
+
+interface ISectionComponentPopup {
+  title: string;
+  renderBody: () => any;
+}
+
+abstract class SectionComponent<T extends ISectionComponentProps> extends React.Component<T, any> {
+
+
+  private _popup: ISectionComponentPopup;
+
+  openPopup = (title: string, renderBody: () => any) => {
+    this._popup = { title, renderBody };
+    this.setState({});
   }
 
-  openPopup(title: string, renderBody: any) {
-    this.setState({ popup: { title, renderBody }});
-  }
-
-  closePopup() {
-    this.setState({ popup: undefined });
+  closePopup = () => {
+    this._popup = undefined;
+    this.setState({});
   }
 
   render() {
     return <div className="section">
-      {this.state.popup ? this.renderPopup() : undefined } 
+      {this._popup ? this.renderPopup() : undefined } 
       {this.renderMainSection()}
     </div>;
   }
@@ -410,13 +339,13 @@ abstract class SectionComponent extends React.Component<{ rule: MergedCSSStyleRu
       <div className="container">
         <div className="row title">
           <div className="col-12">
-            { this.state.popup.title }
+            { this._popup.title }
             <div className="pull-right">
               <i className="ion-close" onClick={() => this.closePopup()} />
             </div>
           </div>
         </div>
-        {this.state.popup.renderBody && this.state.popup.renderBody() }
+        {this._popup.renderBody && this._popup.renderBody() }
       </div>
     </div>
   }
@@ -424,7 +353,7 @@ abstract class SectionComponent extends React.Component<{ rule: MergedCSSStyleRu
   abstract renderMainSection();
 }
 
-class TypographySectionComponent extends SectionComponent {
+class TypographySectionComponent extends SectionComponent<any> {
   renderMainSection() {
     const { rule, graphics } = this.props;
     return <div className="section" key="typography">
@@ -539,21 +468,185 @@ class TypographySectionComponent extends SectionComponent {
   }
 }
 
-class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground }, any> {
-  render() {
-    const { background } = this.props;
-    const { color, blendMode, clip } = background;
-    return <div className="row">
-      <div className="col-2">
-        <BackgroundFillComponent value={color && color.toString()} />
+
+class BackgroundsSectionComponent extends SectionComponent<any> {
+  
+  private _selectedBackground: SyntheticCSSStyleBackground;
+
+  selectBackground = (background: SyntheticCSSStyleBackground) => {
+    this._selectedBackground = background;
+
+    if (background == null) {
+      this.closePopup();
+    } else {
+      this.openPopup("Fill", this.renderFill);
+    }
+  }
+
+  renderMainSection() {
+    const { rule, graphics } = this.props;
+    const selectedBackground = this._selectedBackground;
+    const labelClassnames = cx({ row: true, labels: true, hide: graphics.backgrounds.length === 0 });
+
+    return <div className="section background-section" key="backgrounds">
+      <div className="container section">
+        <div className="row title">
+          <div className="col-12">
+            Backgrounds
+            <div className="controls">
+              <i className="ion-trash-a" style={{ display: selectedBackground ? undefined : "none" }} onClick={() => {
+                this.selectBackground(undefined);
+                graphics.removeBackground(selectedBackground);
+              }} />
+              <i className="ion-plus-round" onClick={() => {
+                this.selectBackground(graphics.addBackground([new SyntheticCSSColor(0, 0, 0, 1)]));
+              }} />
+            </div>
+          </div>
+          
+        </div>
+
+        <div className="row">
+          <div className="col-12">
+            <ul>
+              {
+                graphics.backgrounds.map((background, i) => {
+                  return <CSSBackgroundInputComponent background={background} key={i} select={this.selectBackground}  />
+                })
+              }
+            </ul>
+          </div>
+        </div>
+
       </div>
-      <div className="col-5">
-        <BetterTextInput value={blendMode} onChange={bindGraphicsValueChange(background, "blendMode")} />
+    </div> 
+  }
+
+  renderFill = () => {
+
+    const background = this._selectedBackground;
+
+    if (!background) return null;
+    console.log(background.toString());
+
+    return <div>
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <ChromePicker color={background.color.toString()} onChange={({ rgb }) => {
+              background.color = SyntheticCSSColor.fromRGBA(rgb);
+            }} />
+          </div>
+        </div>
       </div>
-      <div className="col-5">
-        <BetterTextInput value={clip} onChange={bindGraphicsValueChange(background, "clip")}  />
+      <hr />
+      <div className="container">
+        <div className="row title">
+          <div className="col-12">
+            Image
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-6">
+            [IMAGE]
+          </div>
+          <div className="col-6">
+            <button>Choose file...</button>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2 label">
+            Size
+          </div>
+          <div className="col-4">
+            <BetterTextInput value={background.size} onChange={bindGraphicsValueChange(background, "size")} />
+          </div>
+          <div className="col-2 label">
+            Repeat
+          </div>
+          <div className="col-4">
+            <Select options={BACKGROUND_REPEAT_OPTIONS} value={background.repeat} onChange={bindGraphicsValueChange(background, "repeat")} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2 label">
+            Blend
+          </div>
+          <div className="col-4">
+            <Select placeholder="--" value={background.blendMode} clearable={true} options={BLEND_MODE_OPTIONS} onChange={bindGraphicSelectChange(background, "blendMode")} />
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+}
+
+class BoxShadowsSectionComponent extends SectionComponent<any> {
+  renderMainSection() {
+    const { graphics } = this.props;
+
+    const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
+
+    return <div className="section" key="boxShadows">
+      <div className="container section">
+        <div className="row title">
+          <div className="col-12">
+            Box shadows
+            <div className="controls">
+              <i className="ion-plus-round" />
+            </div>
+          </div>
+        </div>
+
+        {
+          graphics.boxShadows.map((boxShadow, i) => {
+            return <CSSBoxShadowInputComponent boxShadow={boxShadow} key={i} />
+          })
+        }
+        
+        <div className={labelClassnames}>
+          <div className="col-2">
+            color
+          </div>
+          <div className="col-2">
+            X
+          </div>
+
+          <div className="col-2">
+            Y
+          </div>
+
+          <div className="col-2">
+            Blur
+          </div>
+
+          <div className="col-2">
+            Spread
+          </div>
+
+          <div className="col-2">
+            Inset
+          </div>
+        </div>
       </div>
     </div>;
+  }
+}
+
+class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground, select: (background: SyntheticCSSStyleBackground) => any }, any> {
+
+  componentDidMount() {
+    // this.props.openPopup("Fill", this.renderFill);
+  }
+
+  render() {
+    const { background, select } = this.props;
+    const { color, blendMode, clip } = background;
+    return <li>
+      <BackgroundFillComponent value={color && color.toString()} onClick={() => {
+        select(background);
+      }} />
+    </li>;
   }
 }
 

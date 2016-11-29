@@ -1,6 +1,13 @@
 @import "@tandem/uikit/scss";
 
 .css-pretty-inspector {
+
+  & .ion-trash-a {
+    font-size: 0.9em;
+    position: relative;
+    top: -4px !important;
+  }
+
   & .label {
     @extend .dim;
     font-size: 0.8em;
@@ -18,11 +25,18 @@
   & .fill-input {
     @extend .input;
     padding: 0;
-    border: 1px solid transparent;
     z-index: 2;
     display: inline-block;
     cursor: pointer;
     height: 23px;
     width: 100%;
+  }
+
+  & .background-section {
+    & li {
+      width: 20%;
+      display: inline-block;
+      margin-right: 4px;
+    }
   }
 }

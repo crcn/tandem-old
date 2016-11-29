@@ -42,6 +42,7 @@ export class MergedCSSStyleRule extends Observable {
     [Identifier: string]: Array<MatchedCSSStyleRuleType>
   };
 
+
   constructor(readonly target: SyntheticHTMLElement) {
     super();
     this._style = new SyntheticCSSStyle();

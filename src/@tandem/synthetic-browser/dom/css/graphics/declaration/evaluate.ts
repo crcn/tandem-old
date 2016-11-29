@@ -204,6 +204,13 @@ const toHex = (value: number) => {
   return ("0" + value.toString(16)).slice(-2);
 }
 
+export interface IRGBA {
+  r: number;
+  b: number;
+  g: number;
+  a?: number;
+}
+
 export class SyntheticCSSColor extends SyntheticCSSValue {
 
   @bindable(true)
@@ -225,6 +232,11 @@ export class SyntheticCSSColor extends SyntheticCSSValue {
     this.b = b;
     this.a = a;
   }
+
+  static fromRGBA({ r, g, b, a }: IRGBA) {
+    return new SyntheticCSSColor(r, g, b, a);
+  }
+
   clone() {
     return new SyntheticCSSColor(this.r, this.g, this.b, this.a);
   }

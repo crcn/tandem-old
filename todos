@@ -19,15 +19,29 @@ CSS PANE
   - [ ] background input
     - [ ] bg constraints
     - [ ] background color input
-  - [ ] box model
+  - [ ] Box
     - [ ] border radius
     - [ ] padding
     - [ ] margin
+  - [ ] Typography
+    - [ ] font style (italic, underline, bold)
+    - [ ] Fallback font options
+    - [ ] advanced
+      - [ ] white-space (normal, pre, pre-line, pre-wrap)
+      - [ ] text-overflow (clip, ellipsis)
+      - [ ] text transform
+    - [ ] text decoration
+  - [ ] Layout
+    - [ ] advanced
+      - [ ] min width
+      - [ ] max width
   - [ ] force state (hover, checked, etc.)
   - [ ] up/down arrows for inputs
   - [ ] calc input
   - [ ] unit value converter
 
+MEDIA QUERIES
+  - [ ] attached to each artboard
 - [ ] copy & paste
 - [ ] arrow keys for manipulating inputs
 - [ ] ability to edit style attribute
@@ -35,6 +49,7 @@ CSS PANE
 - [ ] see selectors matching computed layout
 
 - [ ] background constraints
+- [ ] pseudo elements
 
 - Website
 - artboard tool
@@ -143,7 +158,6 @@ DOCUMENTS GUTTER
 
 ANIMATION PANE
 
-MEDIA QUERIES
 
 ARTBOARD PANE
   - [ ] preset

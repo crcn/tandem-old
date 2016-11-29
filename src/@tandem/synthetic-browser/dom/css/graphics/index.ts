@@ -53,6 +53,9 @@ export class SyntheticCSSStyleBackground extends Observable {
   public repeat: string;
 
   @bindable(true)
+  public size: string|Array<SyntheticCSSMeasurment>;
+
+  @bindable(true)
   public blendMode: CSSBlendModeType;
 
   @bindable(true)
@@ -357,9 +360,16 @@ export class SyntheticCSSStyleGraphics extends Observable {
     return this.backgrounds.length ? this.backgrounds[0] : this.addBackground();
   }
 
-  public addBackground(params?: any) {
+  public addBackground(params?: any[]) {
     const background = new SyntheticCSSStyleBackground(params);
     this.backgrounds.push(background);
+    return background;
+  }
+
+  public removeBackground(background: SyntheticCSSStyleBackground) {
+    const index = this.backgrounds.indexOf(background);
+    console.log("REMOVE", index, background);
+    if (index !== -1) this.backgrounds.splice(index, 1);
     return background;
   }
 
@@ -411,7 +421,6 @@ export class SyntheticCSSStyleGraphics extends Observable {
         style.setProperty(styleName || propertyName, String(sep ? value.join(sep) : value));
       }
     });
-
     return style;
   }
 }
