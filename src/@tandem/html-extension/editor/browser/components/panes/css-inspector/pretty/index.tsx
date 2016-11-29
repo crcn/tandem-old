@@ -11,20 +11,20 @@ import * as Select from "react-select";
 import { capitalize, startCase } from "lodash";
 import { 
   parseCSSDeclValue, 
-  evaluateCSSDeclValue,
-  SyntheticCSSFilter,
-  SyntheticHTMLElement, 
   SyntheticCSSStyle, 
+  SyntheticCSSFilter,
+  evaluateCSSDeclValue,
+  SyntheticHTMLElement, 
   SyntheticCSSStyleRule, 
   SyntheticCSSStyleGraphics,
-  SyntheticCSSStyleBackground,
   SyntheticCSSStyleBoxShadow,
+  SyntheticCSSStyleBackground,
 } from "@tandem/synthetic-browser";
 
 import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
 
 // http://www.w3schools.com/csSref/pr_class_display.asp
-const DISPLAY_OPTIONS = ["block", "inline", "inline-block", "flex", "non", "table"].map((value) => {
+const DISPLAY_OPTIONS = ["block", "inline", "inline-block", "flex", "none", "table"].map((value) => {
   return { label: value, value: value };
 });
 
@@ -155,7 +155,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="display" block={true}> 
-              <Select placeholder="--" options={DISPLAY_OPTIONS} onChange={bindGraphicSelectChange(graphics, "display")} />
+              <Select placeholder="--" options={DISPLAY_OPTIONS} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -167,7 +167,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="position" block={true}> 
-              <Select placeholder="--" options={POSITION_OPTIONS} onChange={bindGraphicSelectChange(graphics, "position")} />
+              <Select placeholder="--" options={POSITION_OPTIONS} value={graphics.position} onChange={bindGraphicSelectChange(graphics, "position")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>

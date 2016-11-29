@@ -53,7 +53,12 @@ export class MergedCSSStyleRule extends Observable {
       dispatch: () => {
         const style = graphics.toStyle();
         for (const propertyName of style) {
-          this.setSelectedStyleProperty(propertyName, style[propertyName]);
+          const value = style[propertyName];
+          if (!value) {
+            this.removeSelectedStyleProperty(propertyName);
+          } else {
+            this.setSelectedStyleProperty(propertyName, style[propertyName]);
+          }
         }
       }
     });
@@ -117,6 +122,13 @@ export class MergedCSSStyleRule extends Observable {
     target.style.setProperty(name, value);
   }
 
+  removeSelectedStyleProperty(name: string) {
+    this.style.removeProperty(name);
+    const target = this.getTargetRule(name);
+    this.selectedStyleRule = undefined;
+    target.style.removeProperty(name);
+  }
+
   computeStyle() {
     for (let property in this._main) {
       this.style.setProperty(property, this._main[property].style[property]);
@@ -136,7 +148,7 @@ export class MergedCSSStyleRule extends Observable {
     const mainSources = this.mainSources;
     const matchingRuleIndex = mainSources.indexOf(matchingRule);
     let currentRuleIndex = matchingRuleIndex;
-
+    
     const rules = this.matchingRules.indexOf(matchingRule) === -1 || (!styleName || isInheritedCSSStyleProperty(styleName)) ? mainSources : this.matchingRules;
 
 
