@@ -21,6 +21,15 @@
     }
   }
 
+  & .advanced-layout {
+    min-width: 280px;
+  }
+
+
+  & .advanced-typography {
+    min-width: 250px;
+  }
+
 
   & .fill-input {
     @extend .input;

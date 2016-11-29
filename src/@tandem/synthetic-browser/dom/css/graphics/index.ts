@@ -249,6 +249,14 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
   @bubble()
+  public wordWrap: string;
+
+  @bindable(true)
+  @bubble()
+  public textOverflow: string;
+
+  @bindable(true)
+  @bubble()
   public width: SyntheticCSSMeasurment;
 
   @bindable(true)
@@ -270,6 +278,10 @@ export class SyntheticCSSStyleGraphics extends Observable {
   @bindable(true)
   @bubble()
   public bottom: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public overflow: string;
 
   @bindable(true)
   @bubble()
@@ -401,6 +413,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["top"],
       ["right"],
       ["bottom"],
+      ["overflow"],
 
       // Typography
       ["fontFamily", "fontFamily", ", "],
@@ -410,6 +423,8 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["letterSpacing"],
       ["lineHeight"],
       ["textAlign"],
+      ["wordWrap"],
+      ["textOverflow"],
 
       // Appearange
       ["opacity"],

@@ -58,13 +58,25 @@ const BACKGROUND_REPEAT_OPTIONS = ["repeat", "repeat-x", "repeat-y", "no-repeat"
   return { label: value, value: value };
 });
 
+const WORD_WRAP_OPTIONS = ["normal", "break-word", "initial"].map((value) => {
+  return { label: value, value: value };
+});
+
+const TEXT_OVERFLOW_OPTIONS = ["initial", "ellipsis", "clip"].map((value) => {
+  return { label: value, value: value };
+});
+
+const LAYOUT_OVERFLOW_OPTIONS = ["visible", "hidden", "scroll"].map((value) => {
+  return { label: value, value: value };
+});
+
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
     const { rule } = this.props;
     const graphics = rule.graphics;
     return <div className="css-pretty-inspector">
 
-      { this.renderLayout() }
+      <LayoutSectionComponent rule={rule} graphics={graphics} />
       <hr />
       
       <TypographySectionComponent rule={rule} graphics={graphics} />
@@ -121,121 +133,6 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
         </div>
       </div>
     </div>;
-  }
-
-  renderLayout() {
-    const { rule, graphics } = this.props;
-    return <div className="section" key="layout">
-
-      <div className="advanced hide">
-        <div className="container">
-          <div className="row title">
-            <div className="col-12">
-              Advanced
-              <div className="controls">
-                <i className="ion-close" />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-2-5 label">
-              Min Width
-            </div>
-            <div className="col-3-5">
-              <BetterTextInput value="10px" onChange={bindGraphicsValueChange(graphics, "minWidth")} />
-            </div>
-            <div className="col-2-5 label">
-              Min Height
-            </div>
-            <div className="col-3-5">
-              <BetterTextInput value="10px" onChange={bindGraphicsValueChange(graphics, "minHeight")} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div className="container">
-        <div className="row title">
-          <div className="col-12">
-            Layout
-            <div className="controls">
-              <i className="ion-more" />
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="display">
-              Display
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="display" block={true}> 
-              <Select placeholder="--" options={DISPLAY_OPTIONS} clearable={true} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="position">
-              Position
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="position" block={true}> 
-              <Select placeholder="--" options={POSITION_OPTIONS} clearable={true} value={graphics.position} onChange={bindGraphicSelectChange(graphics, "position")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="left">
-              Left
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="left" block={true}> 
-              <BetterTextInput value={graphics.left && graphics.left.toString()} onChange={bindGraphicsValueChange(graphics, "left")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="top">
-              Top
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="top" block={true}> 
-              <BetterTextInput value={graphics.top && graphics.top.toString()} onChange={bindGraphicsValueChange(graphics, "top")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="width">
-              Width
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="width" block={true}> 
-              <BetterTextInput value={graphics.width && graphics.width.toString()} onChange={bindGraphicsValueChange(graphics, "width")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-          <div className="col-2 label">
-            <CSSMergedRuleLinkComponent rule={rule} propertyName="height">
-              Height
-            </CSSMergedRuleLinkComponent>
-          </div>
-          <div className="col-4">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="height" block={true}> 
-              <BetterTextInput value={graphics.height && graphics.height.toString()} onChange={bindGraphicsValueChange(graphics, "height")} />
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
-        </div>
-      </div>
-    </div>
   }
 
   renderFilters() {
@@ -393,14 +290,194 @@ class SidebarPopupComponent extends React.Component<ISectionComponentPopup & { c
   }
 }
 
+class LayoutSectionComponent extends SectionComponent<any> {  
+  
+  componentDidMount() {
+    if (process.env.SANDBOXED) {
+      this.openPopup("Advanced", this.renderAdvancedSection);
+    }
+  }
+
+  renderMainSection() {
+    const { rule, graphics } = this.props;
+    return <div className="section" key="layout">
+
+      <div className="container">
+        <div className="row title">
+          <div className="col-12">
+            Layout
+            <div className="controls">
+              <i className="ion-more" onClick={() => {
+                this.openPopup("Advanced", this.renderAdvancedSection);
+              }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="display">
+              Display
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-10">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="display" block={true}> 
+              <Select placeholder="--" options={DISPLAY_OPTIONS} clearable={true} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="position">
+              Position
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-10">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="position" block={true}> 
+              <Select placeholder="--" options={POSITION_OPTIONS} clearable={true} value={graphics.position} onChange={bindGraphicSelectChange(graphics, "position")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="left">
+              Left
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="left" block={true}> 
+              <BetterTextInput value={graphics.left && graphics.left.toString()} onChange={bindGraphicsValueChange(graphics, "left")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="top">
+              Top
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="top" block={true}> 
+              <BetterTextInput value={graphics.top && graphics.top.toString()} onChange={bindGraphicsValueChange(graphics, "top")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="width">
+              Width
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="width" block={true}> 
+              <BetterTextInput value={graphics.width && graphics.width.toString()} onChange={bindGraphicsValueChange(graphics, "width")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="height">
+              Height
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-4">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="height" block={true}> 
+              <BetterTextInput value={graphics.height && graphics.height.toString()} onChange={bindGraphicsValueChange(graphics, "height")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  renderAdvancedSection = () => {
+    const { graphics, rule } = this.props;
+    return <div>
+      <div className="advanced-layout">
+        <div className="row">
+          <div className="col-2-5 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="minWidth">
+              Min width
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-3-5">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minWidth" block={true}> 
+              <BetterTextInput value={graphics.minWidth} onChange={bindGraphicsValueChange(graphics, "minWidth")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+          <div className="col-2-5 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="minHeight">
+              Min height
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-3-5">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minheight" block={true}> 
+              <BetterTextInput value={graphics.minHeight} onChange={bindGraphicsValueChange(graphics, "minHeight")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2-5 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="maxWidth">
+              Max width
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-3-5">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="maxWidth" block={true}> 
+              <BetterTextInput value={graphics.maxWidth} onChange={bindGraphicsValueChange(graphics, "maxWidth")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+          <div className="col-2-5 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="maxHeight">
+              Max height
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-3-5">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="maxHeight" block={true}> 
+              <BetterTextInput value={graphics.maxHeight} onChange={bindGraphicsValueChange(graphics, "maxHeight")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-2-5 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="overflow">
+              Overflow
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-3-5">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="maxWidth" block={true}> 
+              <Select options={LAYOUT_OVERFLOW_OPTIONS} placeholder="--" value={graphics.overflow} onChange={bindGraphicSelectChange(graphics, "overflow")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+          <div className="col-6">
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+}
+
+
+
 class TypographySectionComponent extends SectionComponent<any> {
+
+  componentDidMount() {
+    if (process.env.SANDBOXED) {
+      this.openPopup("Advanced", this.renderAdvancedSection);
+    }
+  }
+
   renderMainSection() {
     const { rule, graphics } = this.props;
     return <div className="section" key="typography">
       <div className="container">
         <div className="row title">
-          Typography
-          <div className="controls">
+          <div className="col-12">
+            Typography
+            <div className="controls">
+              <i className="ion-more" onClick={() => {
+                this.openPopup("Advanced", this.renderAdvancedSection);
+              }} />
+            </div>
           </div>
         </div>
 
@@ -488,6 +565,38 @@ class TypographySectionComponent extends SectionComponent<any> {
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textAlign" block={true}>
               <RadioGroupComponent options={TEXT_ALIGN_OPTIONS} value={graphics.textAlign} onChange={bindGraphicSelectChange(graphics, "textAlign")} className="row button-group text-center no-padding" optionClassName="col-3" renderOption={(option) => <i className={"glyphicon glyphicon-align-" + option.value} /> }>
               </RadioGroupComponent>
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  renderAdvancedSection = () => {
+    const { graphics, rule } = this.props;
+    return <div>
+      <div className="advanced-typography">
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="wordWrap">
+              Wrap
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-10">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minWidth" block={true}> 
+              <Select options={WORD_WRAP_OPTIONS} placeholder="--" value={graphics.wordWrap} onChange={bindGraphicSelectChange(graphics, "wordWrap")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-2 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="wordWrap">
+              Overflow
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-10">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minWidth" block={true}> 
+              <Select options={TEXT_OVERFLOW_OPTIONS} placeholder="--" value={graphics.textOverflow} onChange={bindGraphicSelectChange(graphics, "textOverflow")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>

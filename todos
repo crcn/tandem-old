@@ -12,8 +12,6 @@ Start working on UX around getting started with Tandem and projects.
 - use http://cssreference.io/#hn for CSS pretty pane
 
 CSS PANE  
-  - [ ] box shadow inset
-  - [ ] custom color picker
   - [ ] up/down arrows for inputs
   - [ ] background input
     - [ ] image constraints
@@ -30,13 +28,10 @@ CSS PANE
       - [ ] text transform
     - [ ] text decoration
   - [ ] Layout
-    - [ ] advanced
-      - [ ] min width
-      - [ ] max width
   - [ ] force state (hover, checked, etc.)
   - [ ] calc input
+  - [ ] custom color picker
   - [ ] unit value converter
-
 
 
 MEDIA QUERIES
@@ -107,8 +102,7 @@ UX
   - [ ] VM developer console
   - [ ] gutters need to be resizable
   - [ ] custom layer for artboard
-  - [ ] input focus state
-  - [ ] display visible dimensions of HTML element
+  - [ ] input focus border
 
 BUGS
   - [ ] css class selectors are case insensitive
@@ -132,6 +126,10 @@ CLEANUP
 ----------------------------------
 FEATURES
 ----------------------------------
+
+STAGE TOOLS
+  - [ ] resizer
+  - [ ] text input
 
 CORE
   - *[ ] right click edit text
@@ -159,6 +157,9 @@ DOCUMENTS GUTTER
     - [ ] ability to add new declaration
 
 ANIMATION PANE
+
+KEYBOARD SHORTCUTS
+  - [ ] select parent of current selection
 
 
 ARTBOARD PANE
