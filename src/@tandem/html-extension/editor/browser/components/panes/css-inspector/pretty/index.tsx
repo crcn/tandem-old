@@ -68,6 +68,8 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
       { this.renderFilters() }
       <hr />
+
+      { this.renderAnimations() }
     </div>
   }
 
@@ -332,6 +334,26 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
         }
       </div>
     </div>
+  }
+
+  renderAnimations() {
+    const { graphics } = this.props;
+
+    // TODO - more buttons needs to popup an animation timeline footer
+    return <div className="section" key="animations">
+      <div className="container section">
+        <div className="row title">
+          <div className="col-12">
+            Animations
+            <div className="controls">
+              <i className="ion-more" />
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+    </div>;
   }
 }
 

@@ -61,6 +61,7 @@ export class MergedCSSStyleRule extends Observable {
         const style = graphics.toStyle();
         for (const propertyName of style) {
           const value = style[propertyName];
+          if (this.style[propertyName] === value) continue;
           this.setSelectedStyleProperty(propertyName, style[propertyName]);
         }
       }
