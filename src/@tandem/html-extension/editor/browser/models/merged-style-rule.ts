@@ -151,7 +151,7 @@ export class MergedCSSStyleRule extends Observable {
 
     this._style.setProperty(name, value);
 
-    if (value) {
+    if (value != null) {
       model.style.setProperty(name, value);
       target.style.setProperty(name, value);
     } else {

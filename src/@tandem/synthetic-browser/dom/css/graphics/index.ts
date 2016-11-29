@@ -421,7 +421,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["filters", "filter", " "],
     ].forEach(([propertyName, styleName, sep]) => {
       const value = this[propertyName];
-      const exists = value != null;
+      const exists = value != null && (!sep || value.length);
       if (exists) {
         style.setProperty(styleName || propertyName, String(sep ? value.join(sep) : value));
       }

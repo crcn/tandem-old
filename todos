@@ -18,7 +18,7 @@ Start working on UX around getting started with Tandem and projects.
 CSS PANE  
   - [ ] custom color picker
   - [ ] background input
-    - [ ] bg constraints
+    - [ ] image constraints
   - [ ] Box
     - [ ] border radius
     - [ ] padding
@@ -126,6 +126,7 @@ BUGS
 
 ARCHITECTURE
   - [ ] db oplog tailing
+  - [ ] artboard should define window size
 
 CLEANUP
   - [ ] do not use absolute paths for dependency graphs

@@ -323,7 +323,12 @@ abstract class SectionComponent<T extends ISectionComponentProps> extends React.
 
   closePopup = () => {
     this._popup = undefined;
+    this.onClosePopup();
     this.setState({});
+  }
+
+  onClosePopup() {
+
   }
 
   render() {
@@ -334,22 +339,41 @@ abstract class SectionComponent<T extends ISectionComponentProps> extends React.
   }
 
   renderPopup() {
-    return <div className="popup">
-      <div className="container">
-        <div className="row title">
-          <div className="col-12">
-            { this._popup.title }
-            <div className="pull-right">
-              <i className="ion-close" onClick={() => this.closePopup()} />
-            </div>
-          </div>
-        </div>
-        {this._popup.renderBody && this._popup.renderBody() }
-      </div>
-    </div>
+    return <SidebarPopupComponent {...this._popup} closePopup={() => this.closePopup()} />;
   }
 
   abstract renderMainSection();
+}
+
+class SidebarPopupComponent extends React.Component<ISectionComponentPopup & { closePopup(): any }, { stickToBottom: boolean }> {
+
+  state = {
+    stickToBottom: false
+  }
+
+  componentDidMount() {
+    const popup = (this.refs as any).popup;
+    const rect = popup.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight) {
+      this.setState({ stickToBottom: true });
+    }
+  }
+
+  render() {
+    return <div className="popup" ref="popup" style={{ bottom: this.state.stickToBottom ? 0 : undefined }}>
+      <div className="container">
+        <div className="row title">
+          <div className="col-12">
+            { this.props.title }
+            <div className="pull-right">
+              <i className="ion-close" onClick={() => this.props.closePopup()} />
+            </div>
+          </div>
+        </div>
+        {this.props.renderBody && this.props.renderBody() }
+      </div>
+    </div>;
+  }
 }
 
 class TypographySectionComponent extends SectionComponent<any> {
@@ -467,7 +491,6 @@ class TypographySectionComponent extends SectionComponent<any> {
   }
 }
 
-
 class BackgroundsSectionComponent extends SectionComponent<any> {
   
   private _selectedBackgroundIndex: number = -1;
@@ -482,6 +505,10 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
     }
   }
 
+  onClosePopup() {
+    this._selectedBackgroundIndex = -1;
+  }
+
   renderMainSection() {
     const { rule, graphics } = this.props;
     const selectedBackgroundIndex = this._selectedBackgroundIndex;
@@ -491,18 +518,20 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
       <div className="container section">
         <div className="row title">
           <div className="col-12">
-            Backgrounds
-            <div className="controls">
-              <i className="ion-trash-a" style={{ display: selectedBackgroundIndex !== -1 ? undefined : "none" }} onClick={() => {
-                this.selectBackground(undefined);
-                graphics.removeBackground(graphics.backgrounds[selectedBackgroundIndex]);
-              }} />
-              <i className="ion-plus-round" onClick={() => {
-                this.selectBackground(graphics.addBackground([new SyntheticCSSColor(0, 0, 0, 1)]));
-              }} />
-            </div>
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="background" block={true}>
+              Backgrounds
+              <div className="controls">
+                <i className="ion-trash-a" style={{ display: selectedBackgroundIndex !== -1 ? undefined : "none" }} onClick={() => {
+                  this.selectBackground(undefined);
+                  graphics.removeBackground(graphics.backgrounds[selectedBackgroundIndex]);
+                }} />
+
+                  <i className="ion-plus-round" onClick={() => {
+                    this.selectBackground(graphics.addBackground([new SyntheticCSSColor(0, 0, 0, 1)]));
+                  }} />
+              </div>
+            </CSSHighlightTargetRuleHintComponent>
           </div>
-          
         </div>
 
         <div className="row bg-list">
@@ -510,7 +539,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
             <ul>
               {
                 graphics.backgrounds.map((background, i) => {
-                  return <CSSBackgroundInputComponent background={background} key={i} select={this.selectBackground}  />
+                  return <CSSBackgroundInputComponent background={background} rule={rule} key={i} select={this.selectBackground}  />
                 })
               }
             </ul>
@@ -582,14 +611,6 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
 class BoxShadowsSectionComponent extends SectionComponent<any> {
 
   private _selectedBoxShadowIndex: number = -1;
-  
-  protected _popup = {
-    title: "blagh",
-    renderBody: () => {
-      // return "hello"
-      return this.renderShadowOptions();
-    }
-  }
 
   selectBoxShadow = (boxShadow: SyntheticCSSStyleBoxShadow) => {
     this._selectedBoxShadowIndex = this.props.graphics.boxShadows.indexOf(boxShadow);
@@ -600,8 +621,12 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
     }
   }
 
+  onClosePopup() {
+    this._selectedBoxShadowIndex = -1;
+  }
+
   renderMainSection() {
-    const { graphics } = this.props;
+    const { graphics, rule } = this.props;
     const selectedBoxShadowIndex = this._selectedBoxShadowIndex;
 
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
@@ -610,17 +635,20 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
       <div className="container section">
         <div className="row title">
           <div className="col-12">
-            Box shadows
-            <div className="controls">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="boxShadow" block={true}>
+              Box shadows
+              <div className="controls">
 
-              <i className="ion-trash-a" style={{ display: selectedBoxShadowIndex !== -1 ? undefined : "none" }} onClick={() => {
-                this.selectBoxShadow(undefined);
-                graphics.removeBoxShadow(graphics.boxShadows[selectedBoxShadowIndex]);
-              }} />
-              <i className="ion-plus-round" onClick={() => {
-                this.selectBoxShadow(graphics.addBoxShadow([0, 0, 2, 1, new SyntheticCSSColor(0, 0, 0, 1)]));
-              }} />
-            </div>
+                <i className="ion-trash-a" style={{ display: selectedBoxShadowIndex !== -1 ? undefined : "none" }} onClick={() => {
+                  this.selectBoxShadow(undefined);
+                  graphics.removeBoxShadow(graphics.boxShadows[selectedBoxShadowIndex]);
+                }} />
+
+                  <i className="ion-plus-round" onClick={() => {
+                    this.selectBoxShadow(graphics.addBoxShadow([0, 0, 2, 1, new SyntheticCSSColor(0, 0, 0, 1)]));
+                  }} />
+              </div>
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
 
@@ -629,7 +657,7 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
             <ul>
               {
                 graphics.boxShadows.map((background, i) => {
-                  return <CSSBoxShadowInputComponent boxShadow={background} key={i} select={this.selectBoxShadow}  />
+                  return <CSSBoxShadowInputComponent boxShadow={background} key={i} rule={rule} select={this.selectBoxShadow}  />
                 })
               }
             </ul>
@@ -642,15 +670,13 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
   renderShadowOptions = () => {
     const boxShadow = this.props.graphics.boxShadows[this._selectedBoxShadowIndex] || new SyntheticCSSStyleBoxShadow([0, 0, 0, 0, new SyntheticCSSColor(0, 0, 0, 1)])
     if (!boxShadow) return null;
-
-    //  <ChromePicker color={boxShadow.color.toString()} onChange={({ rgb }) => {
-              // boxShadow.color = SyntheticCSSColor.fromRGBA(rgb);
-            // }} />
     return <div className="container"> 
        <div className="container">
         <div className="row">
           <div className="col-12">
-           
+            <ChromePicker color={boxShadow.color.toString()} onChange={({ rgb }) => {
+              boxShadow.color = SyntheticCSSColor.fromRGBA(rgb);
+            }} />
           </div>
         </div>
       </div>
@@ -686,32 +712,36 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
   }
 }
 
-class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground, select: (background: SyntheticCSSStyleBackground) => any }, any> {
+class CSSBackgroundInputComponent extends React.Component<{ background: SyntheticCSSStyleBackground, rule: MergedCSSStyleRule, select: (background: SyntheticCSSStyleBackground) => any }, any> {
 
   componentDidMount() {
     // this.props.openPopup("Fill", this.renderFill);
   }
 
   render() {
-    const { background, select } = this.props;
+    const { background, select, rule } = this.props;
     const { color, blendMode, clip } = background;
     return <li>
-      <BackgroundFillComponent value={color && color.toString()} onClick={() => {
-        select(background);
-      }} />
+      <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="background" block={true}>
+        <BackgroundFillComponent value={color && color.toString()} onClick={() => {
+          select(background);
+        }} />
+      </CSSHighlightTargetRuleHintComponent>
     </li>;
   }
 }
 
-class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticCSSStyleBoxShadow, select: (shadow: SyntheticCSSStyleBoxShadow) => any }, any> {
+class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticCSSStyleBoxShadow, rule: MergedCSSStyleRule, select: (shadow: SyntheticCSSStyleBoxShadow) => any }, any> {
   render() {
-    const { boxShadow } = this.props;
+    const { boxShadow, rule } = this.props;
     const { color, x, y, blur, spread, inset } = boxShadow;
     
     return <li>
-      <BackgroundFillComponent value={color && color.toString()} onClick={() => {
-        this.props.select(boxShadow);
-      }} />
+      <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="background" block={true}>
+        <BackgroundFillComponent value={color && color.toString()} onClick={() => {
+          this.props.select(boxShadow);
+        }} />
+      </CSSHighlightTargetRuleHintComponent>
     </li>
   }
 }
@@ -731,9 +761,10 @@ export class BetterTextInput extends React.Component<{ onChange(newValue): any, 
     this.setState({ currentValue: undefined });
   }
   render() {
-    return <input type="text" {...(this.state.currentValue ? { } : { value: this.props.value })} onFocus={this.onFocus} onBlur={this.onBlur} onChange={this.onChange} />
+    return <input type="text" {...(this.state.currentValue != null ? { } : { value: this.props.value })} onFocus={this.onFocus} onBlur={this.onBlur} onChange={this.onChange} />
   }
 }
+
 
 class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilter }, any> {
   render() {
@@ -756,7 +787,7 @@ class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilt
   }
 
   renderInput(name: string, params: any[]) {
-    return <BetterTextInput value={params[0]} onChange={() => {}} />
+    return <BetterTextInput value={params && params[0]} onChange={() => {}} />
   }
 }
 
