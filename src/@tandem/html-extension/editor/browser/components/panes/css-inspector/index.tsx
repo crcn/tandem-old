@@ -117,7 +117,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
         </div>
       </div>
 
-      <div className="container">
+      <div>
         {this.renderSelectorsSection(mergedRule) }
         <hr />
         { selectedTab && selectedTab.render.call(this, mergedRule) }
@@ -224,7 +224,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
       </div>;
     }
 
-    return <div className="section">
+    return <div className="container section">
       { renderGroupRules("Matching rules", matchingRules) }
       { renderGroupRules("Inherited rules", inheritedRules) }
     </div> 

@@ -8,6 +8,105 @@
     top: -4px !important;
   }
 
+    .td-html-padding-info {
+      border-color: #87D37C;
+    }
+
+    .td-html-margin-info {
+      border-color: #e67e22;
+    }
+
+  & .box-section {
+    & .box-input {
+
+
+      & input {
+        border: none;
+        background: transparent;
+      }
+
+      & label {
+        box-sizing: border-box;
+        @extend .dim;
+        position: relative;
+        line-height: $padding-l;
+        display: inline-block;
+        font-size: 0.7em;
+      }
+
+      & .box {
+        cursor: pointer;
+
+        & .inputs-section {
+          min-width: 300px;
+        }
+
+
+        padding: $padding-l;
+        position: relative;
+        padding-top: 0;
+
+
+        &.border {
+          background: #F3EEA2;
+          color: $default-font-color;
+        }
+
+        &.margin {
+          background: #F9CEA9;
+          color: $default-font-color;
+        }
+
+        &.padding {
+          background: #B8EFB0;
+          color: $default-font-color;
+        }
+
+        &.content {
+          background: #C1DEF5;
+          text-align: center;
+          padding-top: $padding-l;
+          color: $default-font-color;
+        }
+
+        &.focused {
+          background: $sky-blue;
+          color: $offset-white;
+        }
+      }
+
+      .value {
+        position: absolute;
+        @extend .dim;
+        font-size: 0.6em;
+        &.left, &.right {
+          top: 50%;
+          transform: translateY(-50%);
+        }
+
+        &.left {
+          left: $padding-r / 2;
+        }
+        &.right {
+          right: $padding-r / 2;
+        }
+
+        &.top, &.bottom {
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        &.top {
+          top: $padding-r / 2;
+        }
+
+        &.bottom {
+          bottom: $padding-r / 2;
+        }
+      }
+    }
+  }
+
   & .label {
     @extend .dim;
     font-size: 0.8em;

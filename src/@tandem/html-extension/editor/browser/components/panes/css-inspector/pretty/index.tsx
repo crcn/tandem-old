@@ -6,6 +6,7 @@ import { BaseApplicationComponent } from "@tandem/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { RadioGroupComponent } from "@tandem/uikit";
 import { ChromePicker } from "react-color";
+import * as AutoSizeInput from "react-input-autosize";
 import * as ReactSliderComponent from "react-slider";
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 import * as Select from "react-select";  
@@ -105,6 +106,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
       <LayoutSectionComponent rule={rule} graphics={graphics} />
       <hr />
+
+      <CSSBoxSectionComponent rule={rule} graphics={graphics} />
+      <hr />
       
       <TypographySectionComponent rule={rule} graphics={graphics} />
       <hr />
@@ -127,7 +131,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
   renderAppearance() {
     const { rule, graphics } = this.props;
-    return <div className="section" key="appearance">
+    return <div className="container section" key="appearance">
       <div className="container section">
         <div className="row">
           <div className="col-2 label">
@@ -442,7 +446,7 @@ class LayoutSectionComponent extends SectionComponent<any> {
 
   renderMainSection() {
     const { rule, graphics } = this.props;
-    return <div className="section" key="layout">
+    return <div className="container section" key="layout">
 
       <div>
         <div className="row title">
@@ -1081,6 +1085,138 @@ class CSSBackgroundInputComponent extends React.Component<{ background: Syntheti
         }} />
       </CSSHighlightTargetRuleHintComponent>
     </li>;
+  }
+}
+
+class CSSBoxSectionComponent extends SectionComponent<any> {
+  
+  private _selectedBoxName: string;
+  
+  selectBox(name: string) {
+    this._selectedBoxName = name;
+    if (name) {
+      this.openPopup(name, this.renderBoxInputs);
+    } else {
+      this.closePopup();
+    }
+  }
+
+  componentDidMount() {
+    if (process.env.SANDBOXED) {
+      this.selectBox("padding");
+    }
+  }
+
+  onClosePopup() {
+    this._selectedBoxName = undefined;
+  }
+
+  renderMainSection() {
+    const selectedBox = this._selectedBoxName;
+
+    return <div className="container box-section">
+      <div className="row title">
+        <div className="col-12">
+          Box
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-12">
+          <div className="box-input">
+            {
+              this.renderBox(
+                "margin",
+                this.renderBox(
+                  "border",
+                  this.renderBox(
+                    "padding",
+                    this.renderBox(
+                      "content"
+                    )
+                  )
+                ) 
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  renderBoxInputs = () => {
+    if (!this._selectedBoxName) return null;
+    if (this._selectedBoxName === "border") return this.renderBorderInputs();
+    return this.renderSpacedInput();
+  }
+
+  renderBorderInputs() {
+    return <div>
+      BORDER
+    </div>
+  }
+
+  renderSpacedInput() {
+    const box = {} as any;
+    
+    return <div className="inputs-section">
+      <div className="row">
+        <div className="col-2 label">
+          left
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={box.top} onChange={bindGraphicsValueChange(box, "left")} />
+        </div>
+        <div className="col-2 label">
+          right
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={box.top} onChange={bindGraphicsValueChange(box, "right")} />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-2 label">
+          top
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={box.top} onChange={bindGraphicsValueChange(box, "top")} />
+        </div>
+        <div className="col-2 label">
+          bottom
+        </div>
+        <div className="col-4">
+          <BetterTextInput value={box.bottom} onChange={bindGraphicsValueChange(box, "bottom")} />
+        </div>
+      </div>
+    </div>
+  }
+  
+  renderBox(name: string, child?: any) {
+    const classNames = cx({ "focused": name === this._selectedBoxName, box: true, [name]: true, "not-nested": true });
+
+    return <div className={classNames} onClick={(event) => {
+      event.stopPropagation();
+      this.selectBox(name);
+    }}>
+      <label>{ name.substr(0, 1).toUpperCase() + name.substr(1).toLowerCase() }</label>
+
+      <div className="top value">
+        10
+      </div>
+      
+      <div className="left value">
+        10
+      </div>
+
+      <div className="right value">
+        10
+      </div>
+      
+      <div className="bottom value">
+        10
+      </div>
+
+      { child }
+    </div>
   }
 }
 

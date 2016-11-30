@@ -260,7 +260,7 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
   switch(syntheticNode.nodeType) {
 
     case DOMNodeType.TEXT:
-      const textNode = nodeFactory.createTextNode(decode(syntheticNode.textContent));
+      const textNode = nodeFactory.createTextNode(decode(String(syntheticNode.textContent)));
       dict[syntheticNode.uid] = [textNode, syntheticNode];
       return textNode;
 
