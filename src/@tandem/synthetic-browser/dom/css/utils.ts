@@ -37,20 +37,23 @@ export function eachMatchingStyleRule(element: SyntheticDOMElement, each: (rule:
   }
 }
 
-export function eachInheritedMatchingStyleRule(element: SyntheticDOMElement, each: (element: SyntheticDOMElement, rule: SyntheticCSSElementStyleRule) => any, filter?: (rule: SyntheticCSSElementStyleRule) => boolean) {
+export function eachInheritedMatchingStyleRule(element: SyntheticDOMElement, each: (element: SyntheticDOMElement, rule: SyntheticCSSElementStyleRule|SyntheticHTMLElement) => any, filter?: (rule: SyntheticCSSElementStyleRule) => boolean) {
   if (!filter) filter = () => true;
 
   const visited = {};
 
-  const run = (current: SyntheticDOMElement) => {
+  const run = (current: SyntheticHTMLElement) => {
     if (current.nodeType !== DOMNodeType.ELEMENT) return;
+    if (current.style) {
+      each(current, current);
+    }
     eachMatchingStyleRule(current, (rule) => {
       visited[rule.uid] = true;
       each(current, rule);
     }, (rule) => !visited[rule.uid]);
   }
 
-  run(element);
+  run(element as SyntheticHTMLElement);
   element.ancestors.forEach(run);
 }
 

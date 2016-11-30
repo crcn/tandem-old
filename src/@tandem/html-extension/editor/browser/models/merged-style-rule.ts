@@ -111,13 +111,13 @@ export class MergedCSSStyleRule extends Observable {
 
   get inheritedRules() {
     return this.mainSources.filter((a, b) => {
-      return a !== this.target && !(a as SyntheticCSSElementStyleRule).matchesElement(this.target);
+      return a !== this.target && (a instanceof SyntheticHTMLElement || !(a as SyntheticCSSElementStyleRule).matchesElement(this.target));
     });
   }
 
   get matchingRules() {
     return this.mainSources.filter((a) => {
-      return a === this.target || (a as SyntheticCSSElementStyleRule).matchesElement(this.target);
+      return a === this.target || (a instanceof SyntheticCSSElementStyleRule && (a as SyntheticCSSElementStyleRule).matchesElement(this.target));
     });
   }
 
@@ -277,7 +277,6 @@ export class MergedCSSStyleRule extends Observable {
       }
     };
 
-    addStyle(this.target, this.target);
     eachInheritedMatchingStyleRule(this.target, addStyle);
     this.computeStyle();
   }
