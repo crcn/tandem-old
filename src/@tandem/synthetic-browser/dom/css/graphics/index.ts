@@ -257,6 +257,10 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
   @bubble()
+  public fontStyle: string;
+
+  @bindable(true)
+  @bubble()
   public whiteSpace: string;
 
   @bindable(true)
@@ -427,6 +431,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["fontFamily", "fontFamily", ", "],
       ["fontWeight"],
       ["fontSize"],
+      ["fontStyle"],
       ["color"],
       ["letterSpacing"],
       ["lineHeight"],

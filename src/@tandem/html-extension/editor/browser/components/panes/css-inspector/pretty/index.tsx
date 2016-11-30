@@ -79,6 +79,10 @@ const LAYOUT_OVERFLOW_OPTIONS = ["visible", "hidden", "scroll"].map((value) => {
   return { label: value, value: value };
 });
 
+const FONT_STYLE_OPTIONS = ["normal", "italic", "oblique", "initial"].map((value) => {
+  return { label: value, value: value };
+});
+
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
     const { rule } = this.props;
@@ -577,6 +581,7 @@ class TypographySectionComponent extends SectionComponent<any> {
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
+        
       </div>
     </div>
   }
@@ -628,8 +633,21 @@ class TypographySectionComponent extends SectionComponent<any> {
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-9">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textDecoration" block={true}> 
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textDecoration"> 
               <Select options={TEXT_DECOR_OPTIONS} placeholder="--" value={graphics.textDecoration} onChange={bindGraphicSelectChange(graphics, "textDecoration")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+
+         <div className="row">
+          <div className="col-3 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="whiteSpace">
+              Style
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-9">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontStyle"> 
+              <Select options={FONT_STYLE_OPTIONS} placeholder="--" value={graphics.fontStyle} onChange={bindGraphicSelectChange(graphics, "fontStyle")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
