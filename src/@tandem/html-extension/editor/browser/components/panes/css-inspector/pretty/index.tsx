@@ -50,6 +50,11 @@ const TEXT_ALIGN_OPTIONS = ["left", "center", "right", "justify"].map((value) =>
   return { label: value, value: value };
 });
 
+// http://www.w3schools.com/cssref/pr_background-blend-mode.asp
+const TEXT_DECOR_OPTIONS = ["none", "underline", "overline", "line-through"].map((value) => {
+  return { label: value, value: value };
+});
+
 const DEFAULT_FONT_FAMILY_OPTIONS = SUPPORTED_FONTS.map((value) => {
   return { label: value, value: value };
 });
@@ -63,6 +68,10 @@ const WORD_WRAP_OPTIONS = ["normal", "break-word", "initial"].map((value) => {
 });
 
 const TEXT_OVERFLOW_OPTIONS = ["initial", "ellipsis", "clip"].map((value) => {
+  return { label: value, value: value };
+});
+
+const WHITE_SPACE_OPTIONS = ["normal", "nowrap", "pre", "pre-line", "pre-wrap"].map((value) => {
   return { label: value, value: value };
 });
 
@@ -577,26 +586,50 @@ class TypographySectionComponent extends SectionComponent<any> {
     return <div>
       <div className="advanced-typography">
         <div className="row">
-          <div className="col-2 label">
+          <div className="col-3 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="wordWrap">
               Wrap
             </CSSMergedRuleLinkComponent>
           </div>
-          <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minWidth" block={true}> 
+          <div className="col-9">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="wordWrap"> 
               <Select options={WORD_WRAP_OPTIONS} placeholder="--" value={graphics.wordWrap} onChange={bindGraphicSelectChange(graphics, "wordWrap")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
-        </div>
+        </div>        
         <div className="row">
-          <div className="col-2 label">
+          <div className="col-3 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="wordWrap">
               Overflow
             </CSSMergedRuleLinkComponent>
           </div>
-          <div className="col-10">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minWidth" block={true}> 
+          <div className="col-9">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="overflow"> 
               <Select options={TEXT_OVERFLOW_OPTIONS} placeholder="--" value={graphics.textOverflow} onChange={bindGraphicSelectChange(graphics, "textOverflow")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-3 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="whiteSpace">
+              White space
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-9">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="whiteSpace"> 
+              <Select options={WHITE_SPACE_OPTIONS} placeholder="--" value={graphics.whiteSpace} onChange={bindGraphicSelectChange(graphics, "whiteSpace")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+         <div className="row">
+          <div className="col-3 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="whiteSpace">
+              Decoration
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-9">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textDecoration" block={true}> 
+              <Select options={TEXT_DECOR_OPTIONS} placeholder="--" value={graphics.textDecoration} onChange={bindGraphicSelectChange(graphics, "textDecoration")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>

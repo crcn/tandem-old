@@ -253,6 +253,14 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
   @bubble()
+  public textDecoration: string;
+
+  @bindable(true)
+  @bubble()
+  public whiteSpace: string;
+
+  @bindable(true)
+  @bubble()
   public textOverflow: string;
 
   @bindable(true)
@@ -424,6 +432,8 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["lineHeight"],
       ["textAlign"],
       ["wordWrap"],
+      ["textDecoration"],
+      ["whiteSpace"],
       ["textOverflow"],
 
       // Appearange
