@@ -1,7 +1,7 @@
 import { uniq, values, camelCase, debounce } from "lodash";
-import { SyntheticCSSElementStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyleGraphics, SyntheticCSSElementStyleRuleMutationTypes } from "@tandem/synthetic-browser";
 import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject, diffArray } from "@tandem/common";
+import { SyntheticCSSElementStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ApplyFileEditRequest, IContentEdit } from "@tandem/sandbox";
 import { CallbackDispatcher, IMessage } from "@tandem/mesh";
 

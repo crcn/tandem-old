@@ -13,7 +13,7 @@ const GREP                 = argv.grep;
 
 const PACKAGE_FILE_PATHS = glob.sync(join(SRC_DIR, '**', 'package.json'));
 const PACKAGES           = PACKAGE_FILE_PATHS.map(require);
-const PACKAGE_NAMES      = PACKAGES.map(({name}) => name);
+const PACKAGE_NAMES      = PACKAGES.map(({name}) => name).filter((name) => !!name);
 
 // argv
 const WATCH = argv.watch;

@@ -5,6 +5,7 @@ import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
 
+import { SyntheticDOMElement } from "./element";
 import {
   IEditor,
   IEditable,
@@ -119,14 +120,14 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.children;
   }
 
-  get parentElement(): HTMLElement {
+  get parentElement(): SyntheticDOMElement {
     const parent = this.parentNode;
     if (!parent || parent.nodeType !== DOMNodeType.ELEMENT) {
 
       // NULL is standard here, otherwise undefined would be a better option.
       return null;
     }
-    return parent as any as HTMLElement;
+    return parent as any as SyntheticDOMElement;
   }
 
   get parentNode() {

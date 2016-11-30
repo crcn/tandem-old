@@ -4,6 +4,7 @@
 
 import { flattenDeep } from "lodash";
 import { SyntheticCSSStyle, isValidCSSDeclarationProperty } from "../style";
+import { uniq } from "lodash";
 import { Observable, ObservableCollection, bindable, bubble } from "@tandem/common";
 import { 
   parseCSSDeclValue, 
@@ -122,16 +123,182 @@ function evaluateCSSDeclValue2(value, property?) {
   try {
     value = evaluateCSSDeclValue(parseCSSDeclValue(value));
   } catch(e) {
-    console.warn(String(value), e.stack.toString());
+    // console.warn(String(value), e.stack.toString());
     value = [value];
   }
   
   return property && isUnitBasedCSSProperty(property) ? value.map(SyntheticCSSMeasurment.cast) : value;
 }
 
+export class SyntheticCSSBox extends Observable {
+  
+  @bindable(true)
+  @bubble()
+  public leftWidth: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public topWidth: SyntheticCSSMeasurment;
+  
+  @bindable(true)
+  @bubble()
+  public rightWidth: SyntheticCSSMeasurment;
+  
+  @bindable(true)
+  @bubble()
+  public bottomWidth: SyntheticCSSMeasurment;
+
+  setProperty(name: string, value) {
+    this[name] = evaluateCSSDeclValue2(value, name)[0];
+  }
+
+  get width() {
+    return [this.topWidth, this.rightWidth, this.bottomWidth, this.leftWidth];
+  }
+
+  set width(params: any) {
+    if (params.length !== 4) {
+      this.leftWidth = params[1].clone();
+      this.rightWidth = params[1].clone();
+      this.topWidth = params[0].clone();
+      this.bottomWidth = params[0].clone();
+    } else {
+      [this.topWidth, this.rightWidth, this.bottomWidth, this.leftWidth] = params;
+    }
+  }
+
+  getStyleProperties() {
+    if (String(this.leftWidth) === String(this.rightWidth) && String(this.topWidth) === String(this.bottomWidth)) {
+      return `${this.topWidth || 0} ${this.rightWidth || 0}`;
+    } else {
+      return `${this.topWidth || 0} ${this.rightWidth || 0} ${this.bottomWidth || 0} ${this.leftWidth || 0}`;
+    }
+  }
+}
+
+export class SyntheticCSSBorder extends SyntheticCSSBox {
+  
+  @bindable(true)
+  @bubble()
+  public leftColor: SyntheticCSSColor;
+
+  @bindable(true)
+  @bubble()
+  public leftStyle: string;
+
+  @bindable(true)
+  @bubble()
+  public topColor: SyntheticCSSColor;
+
+  @bindable(true)
+  @bubble()
+  public topStyle: string;
+  
+  @bindable(true)
+  @bubble()
+  public rightColor: SyntheticCSSColor;
+
+  @bindable(true)
+  @bubble()
+  public rightStyle: string;
+  
+  @bindable(true)
+  @bubble()
+  public bottomColor: SyntheticCSSColor;
+
+  @bindable(true)
+  @bubble()
+  public bottomStyle: string;
+
+  get left() {
+    return this._getSideStyle("left");
+  }
+
+  set left(value: any) {
+    this._setSideStyle("left", value);
+  }
+
+  get top() {
+    return this._getSideStyle("top");
+  }
+
+  set top(value: any) {
+    this._setSideStyle("top", value);
+  }
+
+  get right() {
+    return this._getSideStyle("right");
+  }
+
+  set right(value: any) {
+    this._setSideStyle("right", value);
+  }
+
+  get bottom() {
+    return this._getSideStyle("bottom");
+  }
+
+  set width(value: SyntheticCSSMeasurment) {
+    this.leftWidth   = value && value.clone();
+    this.topWidth    = value && value.clone();
+    this.rightWidth  = value && value.clone();
+    this.bottomWidth = value && value.clone();
+  }
+
+  set color(value: SyntheticCSSColor) {
+    this.leftColor   = value && value.clone();
+    this.topColor    = value && value.clone();
+    this.rightColor  = value && value.clone();
+    this.bottomColor = value && value.clone();
+  }
+
+  set style(value: string) {
+    this.leftStyle   = value;
+    this.topStyle    = value;
+    this.rightStyle  = value;
+    this.bottomStyle = value;
+  }
+
+  set bottom(value: any) {
+    this._setSideStyle("bottom", value);
+  }
+
+  private _getSideStyle(side: string): [SyntheticCSSMeasurment, SyntheticCSSColor, string] {
+    return [this[`${side}Width`], this[`${side}Color`], this[`${side}Style`]];
+  }
+
+  private _setSideStyle(side: string, value: [SyntheticCSSMeasurment, SyntheticCSSColor, string]) {
+    [this[`${side}Width`], this[`${side}Color`], this[`${side}Style`]] = this._sortParams(value);
+  }
+
+  setProperties(value: any) {
+    [this.width, this.color, this.style] = this._sortParams(value);
+  }
+
+  private _sortParams(params: any[]): [SyntheticCSSMeasurment, SyntheticCSSColor, string] {
+    const ret = [] as any;
+    while(params.length) {
+      const v = params.shift();
+      if (v instanceof SyntheticCSSColor) {
+        ret[1] = v;
+      } else if (v instanceof SyntheticCSSMeasurment) {
+        ret[0] = v;
+      } else {
+        ret[2] = v;
+      }
+    }
+    return ret;
+  }
+
+  // getStyleProperties() {
+    
+  // }
+}
+
 export class SyntheticCSSStyleBoxShadow  extends Observable {
 
   @bindable(true)
+  @bubble()
   public inset: boolean; 
 
   @bindable(true)
@@ -197,7 +364,6 @@ export function isUnitBasedCSSProperty(property: string) {
   return /^(x|y|blur|spread|letterSpacing|fontSize|lineHeight|width|height|minWidth|minHeight|maxWidth|maxHeight|left|top|right|bottom)$/.test(property);
 }
 
-
 export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
@@ -211,6 +377,18 @@ export class SyntheticCSSStyleGraphics extends Observable {
   @bindable(true)
   @bubble()
   public filters: ObservableCollection<SyntheticCSSFilter>;
+
+  @bindable(true)
+  @bubble()
+  public margin: SyntheticCSSBox;
+
+  @bindable(true)
+  @bubble()
+  public border: SyntheticCSSBorder;
+
+  @bindable(true)
+  @bubble()
+  public padding: SyntheticCSSBox;
 
   @bindable(true)
   @bubble()
@@ -326,16 +504,45 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
   @bubble()
+  public flex: string;
+
+
+  @bindable(true)
+  @bubble()
+  public alignItems: string;
+
+  @bindable(true)
+  @bubble()
+  public justifyContent: string;
+
+  @bindable(true)
+  @bubble()
+  public flexFlow: string;
+
+  @bindable(true)
+  @bubble()
+  public flexWrap: string;
+
+  @bindable(true)
+  @bubble()
+  public flexDirection: string;
+
+  @bindable(true)
+  @bubble()
   public float: string;
 
   constructor(readonly style: SyntheticCSSStyle) {
     super();
+    this.border = new SyntheticCSSBorder();
+    this.margin = new SyntheticCSSBox();
+    this.padding = new SyntheticCSSBox();
     this.backgrounds = new ObservableCollection<SyntheticCSSStyleBackground>();
     this.boxShadows  = new ObservableCollection<SyntheticCSSStyleBoxShadow>();
     this.filters     = new ObservableCollection<SyntheticCSSFilter>();
     this.fontFamily  = [];
     this.setProperties(style);
   }
+  
 
   public setProperties(style: SyntheticCSSStyle) {
     for (const propertyName of style) {
@@ -352,6 +559,44 @@ export class SyntheticCSSStyleGraphics extends Observable {
     value = evaluateCSSDeclValue2(value, name);
 
     const handlers = {
+      // border             : (value) => this.border.setProperties(value),
+
+      // borderLeft         : (value) => this.border.left = value,
+      // borderLeftWidth    : ([value]) => this.border.leftWidth = value,
+      // borderLeftColor    : ([value]) => this.border.leftColor = value,
+      // borderLeftStyle    : ([value]) => this.border.leftStyle = value,
+
+      // borderTop          : (value) => this.border.top = value,
+      // borderTopWidth     : ([value]) => this.border.topWidth = value,
+      // borderTopColor     : ([value]) => this.border.topColor = value,
+      // borderTopStyle     : ([value]) => this.border.topStyle = value,
+
+      // borderRight        : (value) => this.border.right = value,
+      // borderRightWidth   : ([value]) => this.border.rightWidth = value,
+      // borderRightColor   : ([value]) => this.border.rightColor = value,
+      // borderRightStyle   : ([value]) => this.border.rightStyle = value,
+
+      // borderBottom       : (value) => this.border.bottom = value,
+      // borderBottomtWidth : ([value]) => this.border.bottomWidth = value,
+      // borderBottomColor  : ([value]) => this.border.bottomColor = value,
+      // borderBottomStyle  : ([value]) => this.border.bottomStyle = value,
+
+      // borderWidth        : ([value]) => this.border.width = value,
+      // borderColor        : ([value]) => this.border.color = value,
+      // borderStyle        : ([value]) => this.border.style = value,
+
+      // margin             : (value) => this.margin.width = value,
+      // marginTop          : (value) => this.margin.topWidth = value.clone(),
+      // marginRight        : (value) => this.margin.rightWidth = value.clone(),
+      // marginBottom       : (value) => this.margin.bottomWidth = value.clone(),
+      // marginLeft         : (value) => this.margin.leftWidth = value.clone(),
+
+      // padding            : (value) => this.padding.width = value,
+      // paddingTop          : (value) => this.padding.topWidth = value.clone(),
+      // paddingRight        : (value) => this.padding.rightWidth = value.clone(),
+      // paddingBottom       : (value) => this.padding.bottomWidth = value.clone(),
+      // paddingLeft         : (value) => this.padding.leftWidth = value.clone(),
+
       backgroundColor    : ([value]) => this.primaryBackground.color = value,
       backgroundRepeat   : ([value]) => this.primaryBackground.repeat = value,
       backgroundImage    : ([value]) => this.primaryBackground.image = value,
@@ -460,6 +705,16 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["bottom"],
       ["overflow"],
       ["float"],
+
+      // flex
+      ["flexDirection"],
+      ["order"],
+      ["flex-grow"],
+      ["flex-shrink"],
+      ["flex-wrap"],
+      ["flex-flow"],
+      ["justify-content"],
+      ["align-items"],
 
       // Typography
       ["fontFamily", "fontFamily", ", "],

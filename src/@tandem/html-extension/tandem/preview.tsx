@@ -54,7 +54,7 @@ export const renderPreview = reactEditorPreview(async () => {
           font-size: 12pt;
           color: red;
           text-align: justify;
-          display: block;
+          display: flex;
           mix-blend-mode: overlay;
           background: rgba(255, 100, 255, 1), lime overlay;
           box-shadow: inset 1px 2px 3px 4px indianred;
@@ -120,7 +120,12 @@ export const renderPreview = reactEditorPreview(async () => {
         <LayersPaneComponent workspace={workspace} />
       </GutterComponent>
       <div className="center">
-        center
+        <div className="content">
+          content
+        </div>
+        <GutterComponent className="bottom">
+          Footsie
+        </GutterComponent>
       </div>
       <GutterComponent className="right">
         <ElementAttributesPaneComponent workspace={workspace} />

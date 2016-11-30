@@ -94,5 +94,48 @@ describe(__filename + "#", () => {
       expect(graphics.filters.length).to.equal(2);
     });
   });
+
+
+  // describe("borders", () => {
+  //   it("can add add a border", () => {
+  //     const graphics = new SyntheticCSSStyleGraphics(SyntheticCSSStyle.fromObject({ borderLeft: "1px" }));
+  //     expect(graphics.border.leftWidth.value).to.equal(1);
+  //     const graphics2 = new SyntheticCSSStyleGraphics(SyntheticCSSStyle.fromObject({ borderBottom: "black solid 5px" }));
+  //     expect(graphics2.border.bottomWidth.value).to.equal(5);
+  //     expect(graphics2.border.bottomColor.toString()).to.equal("black");
+  //     expect(graphics2.border.bottomStyle.toString()).to.equal("solid");
+
+  //     const graphics3 = new SyntheticCSSStyleGraphics(SyntheticCSSStyle.fromObject({ borderWidth: "3px" }));
+  //     expect(graphics3.border.bottomWidth.value).to.equal(3);
+  //     expect(graphics3.border.topWidth.value).to.equal(3);
+  //     expect(graphics3.border.rightWidth.value).to.equal(3);
+  //     expect(graphics3.border.leftWidth.value).to.equal(3);
+  //   });
+
+  //   it("returns style properties according to the variances in width/color/style", () => {
+  //     const graphics = new SyntheticCSSStyleGraphics(SyntheticCSSStyle.fromObject({ borderTop: "2px solid black", borderRight: "3px solid black", borderLeft: "1px solid black", borderBottom: "4px solid black" }));
+      
+  //   });
+  // });
+
+  // describe("boxes", () => {
+  //   it("can add padding with 2 params", () => {
+  //     const graphics = new SyntheticCSSStyleGraphics(SyntheticCSSStyle.fromObject({ padding: "2px 4px" }));
+  //     expect(graphics.padding.leftWidth.value).to.equal(4);
+  //     expect(graphics.padding.rightWidth.value).to.equal(4);
+  //     expect(graphics.padding.topWidth.value).to.equal(2);
+  //     expect(graphics.padding.bottomWidth.value).to.equal(2);
+  //   });
+
+
+  //   it("can add padding with 4 params", () => {
+  //     const graphics = new SyntheticCSSStyleGraphics(SyntheticCSSStyle.fromObject({ padding: "1px 2px 3px 4px" }));
+  //     expect(graphics.padding.topWidth.value).to.equal(1);
+  //     expect(graphics.padding.rightWidth.value).to.equal(2);
+  //     expect(graphics.padding.bottomWidth.value).to.equal(3);
+  //     expect(graphics.padding.leftWidth.value).to.equal(4);
+  //   });
+
+  // });
 });
 

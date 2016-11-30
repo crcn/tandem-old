@@ -2,6 +2,65 @@
 
 .css-pretty-inspector {
 
+  .property-preview {
+    display: block;
+    // background: trans;
+
+
+    .body {
+      padding: 1px;
+
+      .box {
+        background: hotpink;
+        border: 4px solid white;
+        min-width: 20px;
+        min-height: 20px;
+        opacity: 0.5;
+        color: #333;
+        & .box {
+          background: limegreen;
+        }
+      }
+    }
+
+    &:hover {
+      .card {
+        display: block;
+      }
+    }
+    .card {
+
+      .body {
+        background:white;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+      }
+
+      display: none;
+      background: #555;
+      color: white;
+      padding: $padding-s;
+      border-radius: 4px;
+      position: fixed;
+      z-index: 9999;
+      min-width: 100px;
+      transform: translate(calc(-100% - 10px), calc(-50% + 11px));
+      &::before {
+        content: " ";
+        display: block;
+        width: 10px;
+        height: 10px;
+        background: #555;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        z-index: -1;
+        transform: translate(50%, -50%) rotate(45deg);
+      }
+    }
+  }
+
   & .ion-trash-a {
     font-size: 0.9em;
     position: relative;

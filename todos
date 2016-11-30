@@ -11,18 +11,14 @@ Start working on UX around getting started with Tandem and projects.
 
 - use http://cssreference.io/#hn for CSS pretty pane
 
-- [ ] more padding on right bar
+- [ ] multi drag
+- [ ] unsaved files
 
 CSS PANE  
   - [ ] up/down arrows for inputs
   - [ ] background input
     - [ ] image constraints
-  - [ ] Box
-    - [ ] border radius
-    - [ ] padding
-    - [ ] margin
   - [ ] Typography
-    - [ ] font style (italic, underline, bold)
     - [ ] Fallback font options
     - [ ] advanced
       - [ ] white-space (normal, pre, pre-line, pre-wrap)
@@ -58,13 +54,10 @@ FEATURES
 - [ ] open unsaved files in vscode
 - [ ] enable <script /> tags.
 
-- [ ] tandem <directory> for opening projects
-
 ----------------------------------
 POLISH
 ----------------------------------
 
-- [ ] support markdown
 - [ ] support HTML files and script imports
 - [ ] must work with regular webpack config - just open HTML file
 

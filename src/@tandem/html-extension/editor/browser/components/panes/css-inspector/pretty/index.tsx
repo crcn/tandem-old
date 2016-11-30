@@ -38,6 +38,30 @@ const DISPLAY_OPTIONS = ["block", "inline", "inline-block", "flex", "none", "tab
   return { label: value, value: value };
 });
 
+// https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+const FLEX_DIRECTION_OPTIONS = ["row", "column"].map((value) => {
+  return { label: value, value: value };
+});
+
+const FLEX_WRAP_OPTIONS = ["nowrap", "wrap", "wrap-reverse"].map((value) => {
+  return { label: value, value: value };
+});
+const FLEX_FLOW_OPTIONS = ["start", "end", "center", "space-bwtween", "space-around"].map((value) => {
+  return { label: value, value: value };
+});
+
+const FLEX_JUSTIFY_CONTENT_OPTIONS = ["flex-start", "flex-end", "center", "space-between", "space-around"].map((value) => {
+  return { label: value, value: value };
+});
+
+const FLEX_ALIGN_ITEMS_OPTIONS = ["flex-start", "flex-end", "center", "baseline"].map((value) => {
+  return { label: value, value: value };
+});
+
+const FLEX_ALIGN_CONTENT_OPTIONS = ["flex-start", "flex-end", "center", "space-between", "space-around", "stretch"].map((value) => {
+  return { label: value, value: value };
+});
+
 // http://www.w3schools.com/css/css_positioning.asp
 const POSITION_OPTIONS = ["static", "relative", "fixed", "absolute"].map((value) => {
   return { label: value, value: value };
@@ -98,32 +122,107 @@ const TEXT_TRANSFORM_OPTIONS = ["none", "uppercase", "lowercase", "capitalize"].
   return { label: value, value: value };
 });
 
+const DISPLAY_PREVIEWS = {
+  block: () => {
+    return <div>
+      Lorem
+      <div className="box" style={{display: "block" }} />
+      ipsum
+      <div className="box" style={{display: "block" }} />
+      dolar
+      <div className="box" style={{display: "block" }} />
+      sit
+    </div>
+  },
+  inline: () => {
+    return <div>
+      Lorem <span className="box" style={{display: "inline"}}>ipsum</span> dolor sit amet, <span className="box" style={{display: "inline"}}>consectetur</span> adipiscing elit. In velit.
+    </div>
+  },
+  "inline-block": () => {
+    return <div>
+      Lorem
+      <div className="box" style={{display: "inline-block" }} />
+      ipsum
+      <div className="box" style={{display: "inline-block" }} />
+      dolar
+      <div className="box" style={{display: "inline-block" }} />
+      sit
+    </div>
+  },
+  "flex": () => {
+    return <div>
+      <div className="box" style={{ display: "flex", position: "relative" }}>
+        <div className="box" style={{ width: "100%" }} />
+        <div className="box" style={{ width: "30%" }} />
+        <div className="box" style={{ width: "10%" }} />
+      </div>
+    </div>
+  }
+}
+
+const FLEX_ALIGN_ITEMS_PREVIEWS = {
+
+}
+
+const FLEX_ALIGN_CONTENT_PREVIEWS = {
+
+}
+
+const FLEX_DIRECTION_PREVIEWS = {
+  row: () => {
+    return <div>
+      <div className="box" style={{ display: "flex", position: "relative", flexDirection: "row" }}>
+        <div className="box" style={{ height: "100%" }} />
+        <div className="box" style={{ height: "30%" }} />
+        <div className="box" style={{ height: "10%" }} />
+      </div>
+    </div>
+  },
+  column: () => {
+    return <div>
+      <div className="box" style={{ display: "flex", position: "relative", flexDirection: "column" }}>
+        <div className="box" style={{ width: "100%" }} />
+        <div className="box" style={{ width: "30%" }} />
+        <div className="box" style={{ width: "10%" }} />
+      </div>
+    </div>
+  }
+}
+
+const FLEX_WRAP_PREVIEWS = {
+
+}
+
+const createPreviewMenuOption = (previewRenderers: any) => {
+  return (option) => {
+    return <StylePropertyPreviewComponent renderer={previewRenderers[option.value]}>{ option.label }</StylePropertyPreviewComponent>
+  }
+}
+
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
     const { rule } = this.props;
     const graphics = rule.graphics;
+
+      // <CSSBoxSectionComponent rule={rule} graphics={graphics} />
+      // <hr />
     return <div className="css-pretty-inspector">
 
       <LayoutSectionComponent rule={rule} graphics={graphics} />
-      <hr />
 
-      <CSSBoxSectionComponent rule={rule} graphics={graphics} />
-      <hr />
+      <FlexContainerSectionComponent rule={rule} graphics={graphics} />
+      <FlexContainerChildSectionComponent rule={rule} graphics={graphics} />
       
       <TypographySectionComponent rule={rule} graphics={graphics} />
-      <hr />
 
       { this.renderAppearance() }
-      <hr />
 
       <BackgroundsSectionComponent rule={rule} graphics={graphics} />
-      <hr />
 
       <BoxShadowsSectionComponent rule={rule} graphics={graphics} />
-      <hr />
 
       <FilterSectionComponent rule={rule} graphics={graphics} />
-      <hr />
 
       { this.renderAnimations() }
     </div>
@@ -200,6 +299,18 @@ function bindGraphicSelectChange(graphics: SyntheticCSSStyleGraphics|SyntheticCS
   }
 }
 
+function bindMergedRuleSelectChange(rule: MergedCSSStyleRule, propertyName?: string) {
+  return (option) => {
+    rule.setSelectedStyleProperty(propertyName, option.value);
+  }
+}
+
+function bindMergedRuleValueChange(rule: MergedCSSStyleRule, propertyName?: string) {
+  return (value) => {
+    rule.setSelectedStyleProperty(propertyName, value);
+  }
+}
+
 
 function bindGraphicsValueChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground|SyntheticCSSFilter, propertyName: string) {
   return (value) => {
@@ -239,9 +350,14 @@ abstract class SectionComponent<T extends ISectionComponentProps> extends React.
   }
 
   render() {
-    return <div className="section">
-      {this._popup ? this.renderPopup() : undefined } 
-      {this.renderMainSection()}
+    const mainSection = this.renderMainSection();
+    if (!mainSection) return null;
+    return <div>
+      <div className="section">
+        {this._popup ? this.renderPopup() : undefined } 
+        {mainSection}
+      </div>
+      <hr />
     </div>;
   }
 
@@ -299,7 +415,7 @@ class SidebarPopupComponent extends React.Component<ISectionComponentPopup & { c
 }
 
 
-class FilterSectionComponent extends SectionComponent<any> {  
+class FilterSectionComponent extends SectionComponent<ISectionComponentProps> {  
 
   private _selectedFilterIndex: number = -1;
 
@@ -317,9 +433,9 @@ class FilterSectionComponent extends SectionComponent<any> {
   }
 
   componentDidMount() {
-    if (process.env.SANDBOXED) {
-      this.selectFilter(this.props.graphics.filters[2]);
-    }
+    // if (process.env.SANDBOXED) {
+    //   this.selectFilter(this.props.graphics.filters[2]);
+    // }
   }
   
   renderMainSection() {
@@ -427,21 +543,34 @@ class FilterSectionComponent extends SectionComponent<any> {
       "saturate": filter => renderPercentFilter(filter, 1000),
     }[filter.name];
 
-
     return <div>
       { renderer && renderer(filter) }
     </div>
   }
-
-  
 }
 
-class LayoutSectionComponent extends SectionComponent<any> {  
+class StylePropertyPreviewComponent extends React.Component<{ renderer(): any }, any> {
+  render() {
+    const { renderer } = this.props;
+    return <div className="property-preview">
+      <div className="card" style={{ visibility: !!renderer ? "visible" : "hidden" }}>
+        <div className="body">
+          { renderer && renderer() }
+        </div>
+      </div>
+      <div className="contentt">
+        { this.props.children }
+      </div>
+    </div>
+  }
+}
+
+class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {  
   
   componentDidMount() {
-    if (process.env.SANDBOXED) {
-      this.openPopup("Advanced", this.renderAdvancedSection);
-    }
+    // if (process.env.SANDBOXED) {
+    //   this.openPopup("Advanced", this.renderAdvancedSection);
+    // }
   }
 
   renderMainSection() {
@@ -468,10 +597,11 @@ class LayoutSectionComponent extends SectionComponent<any> {
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="display" block={true}> 
-              <Select placeholder="--" options={DISPLAY_OPTIONS} clearable={true} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} />
+              <Select placeholder="--" options={DISPLAY_OPTIONS} clearable={true} value={graphics.display} onChange={bindGraphicSelectChange(graphics, "display")} optionRenderer={createPreviewMenuOption(DISPLAY_PREVIEWS)} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
+
         <div className="row">
           <div className="col-2 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="position">
@@ -590,7 +720,7 @@ class LayoutSectionComponent extends SectionComponent<any> {
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-3-5">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="maxWidth" block={true}> 
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="overflow" block={true}> 
               <Select options={LAYOUT_OVERFLOW_OPTIONS} placeholder="--" value={graphics.overflow} onChange={bindGraphicSelectChange(graphics, "overflow")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
@@ -610,10 +740,8 @@ class LayoutSectionComponent extends SectionComponent<any> {
   }
 }
 
-
-
-class TypographySectionComponent extends SectionComponent<any> {
-
+class FlexContainerSectionComponent extends SectionComponent<ISectionComponentProps> {  
+  
   componentDidMount() {
     if (process.env.SANDBOXED) {
       this.openPopup("Advanced", this.renderAdvancedSection);
@@ -621,7 +749,166 @@ class TypographySectionComponent extends SectionComponent<any> {
   }
 
   renderMainSection() {
+    const { graphics, rule } = this.props;
+    if (graphics.display !== "flex") return null;
+    return <div className="container">
+      <div className="row title">
+        <div className="col-12">
+          Flex Container
+
+          <div className="controls">
+            <i className="ion-more" onClick={() => {
+              this.openPopup("Advanced", this.renderAdvancedSection);
+            }} />
+          </div>
+        </div>
+      </div>
+      
+      <div className="row">
+        <div className="col-2 label">
+          Direction
+        </div>
+        <div className="col-4">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="flexDirection" block={true}> 
+            <Select options={FLEX_DIRECTION_OPTIONS} placeholder="--" value={rule.style.flexDirection} onChange={bindMergedRuleSelectChange(rule, "flexDirection")} optionRenderer={createPreviewMenuOption(FLEX_DIRECTION_PREVIEWS)} />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+        <div className="col-2 label">
+          Wrap
+        </div>
+        <div className="col-4">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="flexWrap" block={true}>
+            <Select options={FLEX_WRAP_OPTIONS} placeholder="--" value={rule.style.flexWrap} onChange={bindMergedRuleSelectChange(rule, "flexWrap")} optionRenderer={createPreviewMenuOption(FLEX_WRAP_PREVIEWS)}  />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+
+      </div>
+      <div className="row">
+        <div className="col-2 label">
+          Justify
+        </div>
+        <div className="col-4">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="justifyContent" block={true}>
+            <Select options={FLEX_JUSTIFY_CONTENT_OPTIONS} placeholder="--" value={rule.style.justifyContent} onChange={bindMergedRuleSelectChange(rule, "justifyContent")} optionRenderer={createPreviewMenuOption(FLEX_JUSTIFY_CONTENT_OPTIONS)}  />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+        <div className="col-6">
+        </div>
+      </div>
+     
+    </div>
+  }
+
+  renderAdvancedSection = () => {
+    const { rule } = this.props;
+    return <div>
+      <div className="row">
+        <div className="col-4 label">
+          Align items
+        </div>
+        <div className="col-8">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="alignItems" block={true}>
+            <Select options={FLEX_ALIGN_ITEMS_OPTIONS} placeholder="--" value={rule.style.alignItems} onChange={bindMergedRuleSelectChange(rule, "alignItems")} optionRenderer={createPreviewMenuOption(FLEX_ALIGN_ITEMS_PREVIEWS)}  />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-4 label">
+          Align content
+        </div>
+        <div className="col-8">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="alignContent" block={true}>
+            <Select options={FLEX_ALIGN_CONTENT_OPTIONS} placeholder="--" value={rule.style.alignContent} onChange={bindMergedRuleSelectChange(rule, "alignContent")} optionRenderer={createPreviewMenuOption(FLEX_ALIGN_CONTENT_PREVIEWS)}  />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+      </div>
+    </div>
+  }
+}
+
+class FlexContainerChildSectionComponent extends SectionComponent<ISectionComponentProps> {  
+  
+  componentDidMount() {
+    // if (process.env.SANDBOXED) {
+    //   this.openPopup("Advanced", this.renderAdvancedSection);
+    // }
+  }
+  renderMainSection() {
+
+    // OTHERS - align-self, flex, flex-basis
+    const { graphics, rule } = this.props;
+
+    // yuck - checking computed property here just to get it to work
+    if (!rule.target.parentElement || ((rule.target.parentElement as SyntheticHTMLElement).getComputedStyle() || {} as any).display !== "flex") return null;
+    return <div className="container">
+      <div className="row title">
+        <div className="col-12">
+          Flex Child
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-2 label">
+          Grow
+        </div>
+        <div className="col-4">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="flexGrow" block={true}> 
+            <BetterTextInput value={rule.style.flexGrow} onChange={bindMergedRuleValueChange(rule, "flexGrow")} />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+        <div className="col-2 label">
+          Shrink
+        </div>
+        <div className="col-4">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="flexShrink" block={true}> 
+            <BetterTextInput value={rule.style.flexShrink} onChange={bindMergedRuleValueChange(rule, "flexShrink")} />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-2 label">
+          Order
+        </div>
+        <div className="col-4">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="order" block={true}> 
+            <BetterTextInput value={rule.style.order}  onChange={bindMergedRuleValueChange(rule, "order")} />
+          </CSSHighlightTargetRuleHintComponent>
+        </div>
+        <div className="col-6">
+        </div>
+      </div>
+    </div>;
+    // if (!rule.target.parentNode || rule.target.parentNode) return null;
+  }
+}
+
+
+class TypographySectionComponent extends SectionComponent<ISectionComponentProps> {
+
+  componentDidMount() {
+    // if (process.env.SANDBOXED) {
+    //   this.openPopup("Advanced", this.renderAdvancedSection);
+    // }
+  }
+
+  // TODO - implement this
+  previewFont = (option) => {
+    // if (option == null) {
+    //   this.props.rule.getTargetRule("fontFamily").style.setProperty("fontFamily", this.props.rule.style.fontFamily);
+    // } else {
+    //   console.log(this.props.rule.getTargetRule("fontFamily").style);
+    //   this.props.rule.getTargetRule("fontFamily").style.setProperty("fontFamily", option.value);
+    // }
+  }
+
+  renderMainSection() {
     const { rule, graphics } = this.props;
+
+    // TODO - preview font on key down
+    const renderFontOption = (option) => {
+      return <span style={{fontFamily: option.value }} onFocus={this.previewFont.bind(this, option)} onMouseEnter={this.previewFont.bind(this, option)} onMouseLeave={this.previewFont.bind(this, undefined)}>{ option.label }</span>
+    };
+
     return <div className="section" key="typography">
       <div>
         <div className="row title">
@@ -643,7 +930,7 @@ class TypographySectionComponent extends SectionComponent<any> {
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontFamily" block={true}>
-              <Select options={this.getFontFamilyOptions()} placeholder="--" value={graphics.fontFamily.length ? graphics.fontFamily[0] : undefined} onChange={bindGraphicSelectChange(graphics, "fontFamily", font => [`'${font}'`])} />
+              <Select options={this.getFontFamilyOptions()} placeholder="--" value={graphics.fontFamily.length ? graphics.fontFamily[0] : undefined} onChange={bindGraphicSelectChange(graphics, "fontFamily", font => [`'${font}'`])} valueRenderer={renderFontOption} onFocus={this.previewFont} optionRenderer={renderFontOption} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -942,7 +1229,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
   }
 }
 
-class BoxShadowsSectionComponent extends SectionComponent<any> {
+class BoxShadowsSectionComponent extends SectionComponent<ISectionComponentProps> {
 
   private _selectedBoxShadowIndex: number = -1;
 
@@ -1088,7 +1375,7 @@ class CSSBackgroundInputComponent extends React.Component<{ background: Syntheti
   }
 }
 
-class CSSBoxSectionComponent extends SectionComponent<any> {
+class CSSBoxSectionComponent extends SectionComponent<ISectionComponentProps> {
   
   private _selectedBoxName: string;
   
