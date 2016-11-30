@@ -117,15 +117,16 @@ export class SyntheticCSSStyleBackground extends Observable {
   }
 }
 
-function evaluateCSSDeclValue2(value, property) {
+function evaluateCSSDeclValue2(value, property?) {
   
   try {
     value = evaluateCSSDeclValue(parseCSSDeclValue(value));
   } catch(e) {
+    console.warn(String(value), e.stack.toString());
     value = [value];
   }
   
-  return isUnitBasedCSSProperty(property) ? value.map(SyntheticCSSMeasurment.cast) : value;
+  return property && isUnitBasedCSSProperty(property) ? value.map(SyntheticCSSMeasurment.cast) : value;
 }
 
 export class SyntheticCSSStyleBoxShadow  extends Observable {
@@ -400,6 +401,31 @@ export class SyntheticCSSStyleGraphics extends Observable {
     const boxShadow = new SyntheticCSSStyleBoxShadow(params);
     this.boxShadows.push(boxShadow);
     return boxShadow;
+  }
+
+
+  public addFilter(name: string, params: any[] = []) {
+    console.log(`${name}(${params.join(" ")})`);
+    const filter = evaluateCSSDeclValue2(`${name}(${params.join(" ")})`)[0];
+    this.filters.push(filter);
+    return filter;
+  }
+
+  public renameFilter(filter: SyntheticCSSFilter, newName: string) {
+    const newFilter = evaluateCSSDeclValue2(`${newName}(${filter.params.join(" ")})`)[0];
+    const index = this.filters.indexOf(filter);
+    if (index !== -1) {
+      this.filters.splice(index, 1, newFilter);
+    }
+    return filter;
+  }
+
+  public removeFilter(filter: SyntheticCSSFilter) {
+    const index = this.filters.indexOf(filter);
+    if (index !== -1) {
+      this.filters.splice(index, 1);
+    }
+    return filter;
   }
 
   public removeBoxShadow(boxShadow: SyntheticCSSStyleBoxShadow) {

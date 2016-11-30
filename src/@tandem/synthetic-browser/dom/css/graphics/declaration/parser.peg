@@ -57,8 +57,8 @@ Color
   }
 
 Call
-  = id: Identifier "(" params: CommaList ")" {
-    return new CSSDeclCallExpression(id, params.items || [params], location());
+  = id: Identifier "(" _ params: CommaList? _ ")" {
+    return new CSSDeclCallExpression(id, params ? params.items : [], location());
   }
 
 Identifier 

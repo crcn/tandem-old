@@ -18,6 +18,8 @@ import {
   SyntheticCSSColor,
   SyntheticCSSStyle, 
   SyntheticCSSFilter,
+  SyntheticAmountFilter,
+  SyntheticDropShadowFilter,
   getCSSFontFaceRules,
   SyntheticCSSFontFace,
   evaluateCSSDeclValue,
@@ -83,6 +85,10 @@ const FONT_STYLE_OPTIONS = ["normal", "italic", "oblique", "initial"].map((value
   return { label: value, value: value };
 });
 
+const CSS_FILTER_OPTIONS = ["blur", "brightness", "contrast", "drop-shadow", "grayscale", "hue-rotate", "invert", "opacity", "saturate", "sepia"].map((value) => {
+  return { label: value, value: value };
+});
+
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
     const { rule } = this.props;
@@ -104,7 +110,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
       <BoxShadowsSectionComponent rule={rule} graphics={graphics} />
       <hr />
 
-      { this.renderFilters() }
+      <FilterSectionComponent rule={rule} graphics={graphics} />
       <hr />
 
       { this.renderAnimations() }
@@ -148,29 +154,6 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
     </div>;
   }
 
-  renderFilters() {
-    const { graphics } = this.props;
-    return <div className="section" key="filters">
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            Filters
-            <div className="controls">
-              <i className="ion-plus-round" />
-            </div>
-          </div>
-          
-        </div>
-
-        {
-          graphics.filters.map((filter) => {
-            return <CSSFilterInputComponent filter={filter} key={filter.name} />
-          })
-        }
-      </div>
-    </div>
-  }
-
   renderAnimations() {
     const { graphics } = this.props;
 
@@ -206,7 +189,7 @@ function bindGraphicSelectChange(graphics: SyntheticCSSStyleGraphics|SyntheticCS
 }
 
 
-function bindGraphicsValueChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground, propertyName: string) {
+function bindGraphicsValueChange(graphics: SyntheticCSSStyleGraphics|SyntheticCSSStyleBoxShadow|SyntheticCSSStyleBackground|SyntheticCSSFilter, propertyName: string) {
   return (value) => {
     graphics[propertyName] = value;
   }
@@ -301,6 +284,132 @@ class SidebarPopupComponent extends React.Component<ISectionComponentPopup & { c
       </div>
     </div>;
   }
+}
+
+
+class FilterSectionComponent extends SectionComponent<any> {  
+
+  private _selectedFilterIndex: number = -1;
+
+  selectFilter = (filter: SyntheticCSSFilter) => {
+    this._selectedFilterIndex = this.props.graphics.filters.indexOf(filter);
+    if (filter) {
+      this.openPopup(startCase(filter.name), this.renderFilterOptions);
+    } else {
+      this.closePopup();
+    }
+  }
+
+  onClosePopup() {
+    this._selectedFilterIndex = -1;
+  }
+
+  componentDidMount() {
+    if (process.env.SANDBOXED) {
+      this.selectFilter(this.props.graphics.filters[0]);
+    }
+  }
+  
+  renderMainSection() {
+    const { graphics, rule } = this.props;
+    const selectedFilterIndex = this._selectedFilterIndex;
+
+    return <div className="section filters-section" key="filters">
+      <div className="container section">
+
+        <div className="row title">        
+          <div className="col-12">
+           <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="filters" block={true}>
+              Filters
+              <div className="controls">
+
+                <i className="ion-trash-a" style={{ display: selectedFilterIndex !== -1 ? undefined : "none" }} onMouseDown={() => {
+                  this.selectFilter(undefined);
+                  graphics.removeFilter(graphics.filters[selectedFilterIndex]);
+                }} />
+
+                <i className="ion-plus-round" onClick={() => {
+                  graphics.addFilter("drop-shadow", [0, 0, 3, "#000"]);
+                }} />
+              </div>
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+        {
+          graphics.filters.map((filter, i) => {
+            return <CSSFilterInputComponent filter={filter} key={i} select={this.selectFilter} rename={(filter, newName) => {
+              graphics.renameFilter(filter, newName);
+            }} />;
+          })
+        }
+      </div>
+    </div>
+  }
+
+  renderFilterOptions = () => {
+
+    const filter = this.props.graphics.filters[this._selectedFilterIndex];
+    if (!filter) return null;
+
+    const renderPercentFilter = (filter: SyntheticAmountFilter, max: number = 100) => {
+      const setNewAmount = (newValue) => {
+        filter.setProperty("amount", newValue + "%");
+      } 
+      return <div className="row">
+        <div className="col-2 label">
+          Amount
+        </div>
+        <div className="col-7">
+          <ReactSliderComponent min={0} max={max} step={1} value={filter.amount.value} onChange={setNewAmount} />
+        </div>
+        <div className="col-3">
+          <BetterTextInput value={filter.amount.value} onChange={setNewAmount} />
+        </div>
+      </div>
+    }
+
+    const renderLengthFilter = (filter: SyntheticAmountFilter) => {
+      return <div className="row">
+        <div className="col-2 label">
+          Amount
+        </div>
+        <div className="col-3">
+          <BetterTextInput value={0} onChange={() => {}} />
+        </div>
+      </div>
+    }
+
+
+    const renderDropShadowFilter = (filter: SyntheticDropShadowFilter) => {
+
+    }
+
+
+    const renderAngleFilter = (filter: SyntheticAmountFilter) => {
+
+    }
+
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/filter
+    const renderer = {
+      "blur": renderLengthFilter,
+      "brightness": filter => renderPercentFilter(filter, 1000),
+      "contrast": filter => renderPercentFilter(filter, 1000),
+      "drop-shadow": renderDropShadowFilter,
+      "grayscale": renderPercentFilter,
+      "hue-rotate": renderPercentFilter,
+      "invert": renderPercentFilter,
+      "opacity": renderPercentFilter,
+      "sepia": renderPercentFilter,
+      "saturate": filter => renderPercentFilter(filter, 1000),
+    }[filter.name];
+
+
+    return <div>
+      { renderer && renderer(filter) }
+    </div>
+  }
+
+  
 }
 
 class LayoutSectionComponent extends SectionComponent<any> {  
@@ -795,12 +904,11 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
 
   private _selectedBoxShadowIndex: number = -1;
 
-
   componentDidMount() {
-    if (process.env.SANDBOXED) {
-      this._selectedBoxShadowIndex = 0;
-      this.openPopup("Options", this.renderShadowOptions);
-    }
+    // if (process.env.SANDBOXED) {
+    //   this._selectedBoxShadowIndex = 0;
+    //   this.openPopup("Options", this.renderShadowOptions);
+    // }
   }
 
   selectBoxShadow = (boxShadow: SyntheticCSSStyleBoxShadow) => {
@@ -986,20 +1094,24 @@ export class CSSUnitInput extends BetterTextInput {
 }
 
 
-class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilter }, any> {
+class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilter, select: (filter: SyntheticCSSFilter) => any, rename: (filter: SyntheticCSSFilter, newName: string) => any }, any> {
   render() {
     const { filter } = this.props;
     const { name, params } = filter;
     return <div className="row">
       <div className="col-12">
         <div className="row">
-          <div className="col-12">
-            {this.renderInput(name, params)}
+          <div className="col-1">
+            <div className="filter-config-button">
+              <i className="ion-wand" onClick={() => {
+                this.props.select(filter);
+              }} />
+            </div>
           </div>
-        </div>
-        <div className="row labels">
-          <div className="col-12 text-left">
-            { capitalize(startCase(name).toLowerCase()) }
+          <div className="col-11">
+            <Select options={CSS_FILTER_OPTIONS} placeholder="--" value={filter.name} onChange={(option) => {
+              if (option) this.props.rename(filter, (option as any).value);
+            }} />
           </div>
         </div>
       </div>

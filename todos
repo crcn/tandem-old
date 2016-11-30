@@ -11,6 +11,8 @@ Start working on UX around getting started with Tandem and projects.
 
 - use http://cssreference.io/#hn for CSS pretty pane
 
+- [ ] more padding on right bar
+
 CSS PANE  
   - [ ] up/down arrows for inputs
   - [ ] background input
@@ -56,11 +58,9 @@ MEDIA QUERIES
 
 FEATURES
 
-- [ ] scan package.json and auto-install extensions
 - [ ] open unsaved files in vscode
 - [ ] enable <script /> tags.
 
-- [ ] UIKit
 - [ ] tandem <directory> for opening projects
 
 ----------------------------------
@@ -92,6 +92,9 @@ TESTING
 PROMO
   - [ ] online demo with codemirror (like jsfiddle)
   - [ ] try online
+
+WEBSITE
+  - [ ] cross-browser testing demo (show same browser window with different icons
 
 ----------------------------------
 STABILITY
@@ -138,6 +141,8 @@ CORE
 MEASUREMENT TOOLS
   - [ ] key command for displaying distances between objects
 
+DEV TOOLS
+  - [ ] ability to set global values in the sandbox such as env (useful for changing states in app)
 SOCIAL
   - *[ ] put tandem on backend
   - *[ ] possibly attach messages to commits

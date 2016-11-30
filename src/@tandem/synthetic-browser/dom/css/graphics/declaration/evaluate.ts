@@ -1,4 +1,5 @@
 import * as tinyColor from "tinycolor2";
+import { parse } from "./parser.peg";
 import { ITreeWalker, bindable, bubble, Observable, ObservableCollection } from "@tandem/common";
 import { ISyntheticObject, generateSyntheticUID, ISyntheticSourceInfo } from "@tandem/sandbox";
 
@@ -254,23 +255,110 @@ export class SyntheticCSSColor extends SyntheticCSSValue {
   }
 }
 
-export class SyntheticCSSFilter extends SyntheticCSSValue {
-  @bubble()
-  readonly params: ObservableCollection<any>;
-  constructor(readonly name: string, params: any[]) {
+export abstract class SyntheticCSSFilter extends SyntheticCSSValue {
+  constructor(readonly name: string, readonly params: any[]) {
     super();
-    if (!Array.isArray(params)) params = [params];
-    this.params = new ObservableCollection<any>(...params);
   }
   clone() {
-    return new SyntheticCSSFilter(this.name, this.params);
+    return evaluateCSSDeclValue(parse(this.toString()))[0];
+  }
+  abstract toString();
+  abstract setProperty(name: string, value: any);
+}
+
+export class SyntheticAmountFilter extends SyntheticCSSFilter {
+
+  @bindable(true)
+  @bubble()
+  public amount: SyntheticCSSMeasurment;
+
+  constructor(public name: string, params: SyntheticCSSMeasurment[]) {
+    super(name, params);
+    this.amount = params[0] || new SyntheticCSSMeasurment(0, "px");
+  }
+
+  setProperty(name: string, value: any) {
+    this[name] = evaluateCSSDeclValue(parse(value))[0];
+  }
+
+  toString() {
+    return `${this.name}(${this.amount})`;
+  }
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/CSS/filter see drop-shadow options
+export class SyntheticDropShadowFilter extends SyntheticCSSFilter {
+  @bindable(true)
+  @bubble()
+  public x: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public y: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public blur: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public spread: SyntheticCSSMeasurment;
+
+  @bindable(true)
+  @bubble()
+  public color: SyntheticCSSColor;
+
+
+  constructor(name: string, params: any[]) {
+    super(name, params);
+    params = params.concat();
+    console.log(params, params.length);
+    this.x = SyntheticCSSMeasurment.cast(params.shift());
+    this.y = SyntheticCSSMeasurment.cast(params.shift());
+    
+    const colorOrMeasurement = params.pop();
+
+    if (colorOrMeasurement instanceof SyntheticCSSColor) {
+      this.color = colorOrMeasurement;
+    } else {
+      params.push(colorOrMeasurement);
+    }
+
+    const blur   = params.shift();
+    const spread = params.shift();
+
+    if (blur) this.blur = SyntheticCSSMeasurment.cast(blur);
+    if (spread) this.spread = SyntheticCSSMeasurment.cast(spread);
+  }
+
+  setProperty(name: string, value: any) {
+    this[name] = evaluateCSSDeclValue(parse(value))[0];
+  }
+
+  toString() {
+    const params: any[] = [this.x, this.y];
+    if (this.blur) params.push(this.blur);
+    if (this.spread) params.push(this.spread);
+    if (this.color) params.push(this.color);
+
+    return `drop-shadow(${params.join(" ")})`;
   }
 }
 
 
 export class SyntheticCSSMeasurment extends SyntheticCSSValue {
-  constructor(public value: number, public unit: CSSUnitType) {
+  @bindable(true)
+  @bubble()
+  public value: number;
+
+  @bindable(true)
+  @bubble()
+  public unit: CSSUnitType;
+
+  constructor(value: number, unit: CSSUnitType) {
     super();
+    this.value = value;
+    this.unit = unit;
   }
   
   clone() {
@@ -401,7 +489,16 @@ export const CSS_FILTER_TYPES = [
 ];
 
 for (const filterType of CSS_FILTER_TYPES) {
-  globalContext[filterType] = (...params) => new SyntheticCSSFilter(filterType, params.map(param => param[0]));
+  globalContext[filterType] = (...params): SyntheticCSSFilter =>  {
+
+    const params2 = params.map(param => param[0]);
+
+    if (filterType === "drop-shadow") {
+      return new SyntheticDropShadowFilter(filterType, params2);
+    }
+
+    return new SyntheticAmountFilter(filterType, params2);
+  }
 }
 
 const parseHexColor = (value: string) => {

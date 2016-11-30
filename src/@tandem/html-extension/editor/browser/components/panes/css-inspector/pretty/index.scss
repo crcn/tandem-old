@@ -25,6 +25,18 @@
     min-width: 280px;
   }
 
+  & .filters-section {
+    & .filter-config-button {
+      @extend .input;
+      height: 22px;
+      cursor: pointer;
+      & i {
+        top: -1px;
+        left: -4px;
+        position: relative; 
+      }     
+    }
+  }
 
   & .advanced-typography {
     min-width: 250px;
