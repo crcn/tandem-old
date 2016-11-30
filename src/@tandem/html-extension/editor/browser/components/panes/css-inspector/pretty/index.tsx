@@ -89,6 +89,10 @@ const CSS_FILTER_OPTIONS = ["blur", "brightness", "contrast", "drop-shadow", "gr
   return { label: value, value: value };
 });
 
+const TEXT_TRANSFORM_OPTIONS = ["none", "uppercase", "lowercase", "capitalize"].map((value) => {
+  return { label: value, value: value };
+});
+
 export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, graphics: SyntheticCSSStyleGraphics }, any> {
   render() {
     const { rule } = this.props;
@@ -760,7 +764,7 @@ class TypographySectionComponent extends SectionComponent<any> {
           </div>
         </div>
 
-         <div className="row">
+        <div className="row">
           <div className="col-3 label">
             <CSSMergedRuleLinkComponent rule={rule} propertyName="whiteSpace">
               Style
@@ -769,6 +773,19 @@ class TypographySectionComponent extends SectionComponent<any> {
           <div className="col-9">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontStyle"> 
               <Select options={FONT_STYLE_OPTIONS} placeholder="--" value={graphics.fontStyle} onChange={bindGraphicSelectChange(graphics, "fontStyle")} />
+            </CSSHighlightTargetRuleHintComponent>
+          </div>
+        </div>
+        
+        <div className="row">
+          <div className="col-3 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="whiteSpace">
+              Transform
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-9">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontStyle"> 
+              <Select options={TEXT_TRANSFORM_OPTIONS} placeholder="--" value={graphics.textTransform} onChange={bindGraphicSelectChange(graphics, "textTransform")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>

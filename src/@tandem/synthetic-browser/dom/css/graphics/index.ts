@@ -258,6 +258,10 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
   @bindable(true)
   @bubble()
+  public textTransform: string;
+
+  @bindable(true)
+  @bubble()
   public fontStyle: string;
 
   @bindable(true)
@@ -405,7 +409,6 @@ export class SyntheticCSSStyleGraphics extends Observable {
 
 
   public addFilter(name: string, params: any[] = []) {
-    console.log(`${name}(${params.join(" ")})`);
     const filter = evaluateCSSDeclValue2(`${name}(${params.join(" ")})`)[0];
     this.filters.push(filter);
     return filter;
@@ -456,6 +459,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       // Typography
       ["fontFamily", "fontFamily", ", "],
       ["fontWeight"],
+      ["textTransform"],
       ["fontSize"],
       ["fontStyle"],
       ["color"],
