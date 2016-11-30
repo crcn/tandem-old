@@ -47,6 +47,7 @@ export const INHERITED_CSS_STYLE_PROPERTIES = [
   "stress",
   "textAlign",
   "textIndent",
+  "textDecoration", // not documented as inherited, but it is under certain conditions.
   "textTransform",
   "visibility",
   "voiceFamily",

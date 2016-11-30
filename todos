@@ -50,7 +50,6 @@ MEDIA QUERIES
 - show diff of unsaved drafts
 
 - [ ] unsaved files
-- [ ] multiple workspaces
 - [ ] create tdm file in ~/.tandem if it doesn't exist
 - [ ] "Open current file in tandem" if not already started
 
@@ -106,7 +105,7 @@ UX
 
 BUGS
   - [ ] css class selectors are case insensitive
-  - [ ] disable attributes that are dynamically created
+  - [ ] disable attributes that are dynamically created (React for instance)
   - [ ] fix absolute bounds for elements
   - [ ] cannot change source of artboard
   - [ ] cannot rapidly change .tsx? documents
