@@ -324,6 +324,10 @@ export class SyntheticCSSStyleGraphics extends Observable {
   @bubble()
   public display: string;
 
+  @bindable(true)
+  @bubble()
+  public float: string;
+
   constructor(readonly style: SyntheticCSSStyle) {
     super();
     this.backgrounds = new ObservableCollection<SyntheticCSSStyleBackground>();
@@ -455,6 +459,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
       ["right"],
       ["bottom"],
       ["overflow"],
+      ["float"],
 
       // Typography
       ["fontFamily", "fontFamily", ", "],

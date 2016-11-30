@@ -29,16 +29,14 @@ CSS PANE
       - [ ] text-overflow (clip, ellipsis)
       - [ ] text transform
     - [ ] text decoration
-  - [ ] Layout
-  - [ ] force state (hover, checked, etc.)
   - [ ] custom color picker
+  - [ ] force state (hover, checked, etc.)
   - [ ] unit value converter
 
 
 MEDIA QUERIES
   - [ ] attached to each artboard
 - [ ] copy & paste
-- [ ] arrow keys for manipulating inputs
 - [ ] ability to edit style attribute
 - [ ] advanced layout pane
 - [ ] see selectors matching computed layout

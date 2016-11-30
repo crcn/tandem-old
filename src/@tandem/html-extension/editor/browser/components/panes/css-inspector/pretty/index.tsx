@@ -81,6 +81,10 @@ const LAYOUT_OVERFLOW_OPTIONS = ["visible", "hidden", "scroll"].map((value) => {
   return { label: value, value: value };
 });
 
+const FLOAT_OPTIONS = ["none", "left", "right", "inline-start", "inline-end"].map((value) => {
+  return { label: value, value: value };
+});
+
 const FONT_STYLE_OPTIONS = ["normal", "italic", "oblique", "initial"].map((value) => {
   return { label: value, value: value };
 });
@@ -586,7 +590,15 @@ class LayoutSectionComponent extends SectionComponent<any> {
               <Select options={LAYOUT_OVERFLOW_OPTIONS} placeholder="--" value={graphics.overflow} onChange={bindGraphicSelectChange(graphics, "overflow")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
-          <div className="col-6">
+          <div className="col-2-5 label">
+            <CSSMergedRuleLinkComponent rule={rule} propertyName="overflow">
+              Float
+            </CSSMergedRuleLinkComponent>
+          </div>
+          <div className="col-3-5">
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="float" block={true}> 
+              <Select options={FLOAT_OPTIONS} placeholder="--" value={graphics.float} onChange={bindGraphicSelectChange(graphics, "float")} />
+            </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
       </div>
@@ -784,7 +796,7 @@ class TypographySectionComponent extends SectionComponent<any> {
             </CSSMergedRuleLinkComponent>
           </div>
           <div className="col-9">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontStyle"> 
+            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="textTransform"> 
               <Select options={TEXT_TRANSFORM_OPTIONS} placeholder="--" value={graphics.textTransform} onChange={bindGraphicSelectChange(graphics, "textTransform")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
