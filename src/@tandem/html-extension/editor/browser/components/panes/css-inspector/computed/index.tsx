@@ -41,13 +41,11 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
       </CSSHighlightTargetRuleHintComponent>
     }
     
-    return <div className="container">
-      <div className="section">
-        <div className="row title">
-          Computed
-        </div>
-        <CSSStyleHashInputComponent renderName={renderName} renderValue={renderValue} style={rule.style} setDeclaration={this.setDeclaration} />
+    return <div className="section">
+      <div className="row title">
+        Computed
       </div>
+      <CSSStyleHashInputComponent renderName={renderName} renderValue={renderValue} style={rule.style} setDeclaration={this.setDeclaration} />
     </div>;
   }
 }

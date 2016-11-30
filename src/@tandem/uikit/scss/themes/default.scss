@@ -38,7 +38,7 @@ $disabled-color: rgba(0,0,0,0.2);
 }
 
 .gutter {
-
+  min-width: 250px;
   & .popup {
     background: #F9F9F9;
     border: 1px solid $superlight-black;
@@ -59,7 +59,7 @@ $disabled-color: rgba(0,0,0,0.2);
 
 .table {
   .row {
-    border-bottom: 1px solid #E4E4E4;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 }
 

@@ -312,7 +312,6 @@ export class SyntheticDropShadowFilter extends SyntheticCSSFilter {
   constructor(name: string, params: any[]) {
     super(name, params);
     params = params.concat();
-    console.log(params, params.length);
     this.x = SyntheticCSSMeasurment.cast(params.shift());
     this.y = SyntheticCSSMeasurment.cast(params.shift());
     
@@ -342,6 +341,22 @@ export class SyntheticDropShadowFilter extends SyntheticCSSFilter {
     if (this.color) params.push(this.color);
 
     return `drop-shadow(${params.join(" ")})`;
+  }
+}
+
+export class SyntheticCSSDegree extends SyntheticCSSValue {
+  @bindable(true) 
+  @bubble()
+  public value: number;
+  constructor(value: number) {
+    super();
+    this.value = Math.round(value) % 360;
+  }
+  clone() {
+    return new SyntheticCSSDegree(this.value);
+  }
+  toString() {
+    return `${this.value}deg`;
   }
 }
 
@@ -489,9 +504,9 @@ export const CSS_FILTER_TYPES = [
 ];
 
 for (const filterType of CSS_FILTER_TYPES) {
-  globalContext[filterType] = (...params): SyntheticCSSFilter =>  {
+  globalContext[filterType] = (...params: Array<Array<any>>): SyntheticCSSFilter =>  {
 
-    const params2 = params.map(param => param[0]);
+    const params2 = params[0];
 
     if (filterType === "drop-shadow") {
       return new SyntheticDropShadowFilter(filterType, params2);
@@ -525,7 +540,7 @@ export const evaluateCSSDeclValue = (expression: CSSDeclValueExpression) => {
       return parseHexColor(color.value);
     },
     visitDegree(degree: CSSDeclDegreeExpression) {
-      return degree.value;
+      return new SyntheticCSSDegree(degree.value);
     },
     visitLiteral(literal: CSSDeclLiteralExpression) {
       return literal.value;

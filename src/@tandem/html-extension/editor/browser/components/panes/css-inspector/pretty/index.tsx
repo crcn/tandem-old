@@ -159,7 +159,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
 
     // TODO - more buttons needs to popup an animation timeline footer
     return <div className="section" key="animations">
-      <div className="container section">
+      <div className="section">
         <div className="row title">
           <div className="col-12">
             Animations
@@ -306,7 +306,7 @@ class FilterSectionComponent extends SectionComponent<any> {
 
   componentDidMount() {
     if (process.env.SANDBOXED) {
-      this.selectFilter(this.props.graphics.filters[0]);
+      this.selectFilter(this.props.graphics.filters[2]);
     }
   }
   
@@ -314,35 +314,32 @@ class FilterSectionComponent extends SectionComponent<any> {
     const { graphics, rule } = this.props;
     const selectedFilterIndex = this._selectedFilterIndex;
 
-    return <div className="section filters-section" key="filters">
-      <div className="container section">
+    return <div className="filters-section">
+      <div className="row title">        
+        <div className="col-12">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="filters" block={true}>
+            Filters
+            <div className="controls">
 
-        <div className="row title">        
-          <div className="col-12">
-           <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="filters" block={true}>
-              Filters
-              <div className="controls">
+              <i className="ion-trash-a" style={{ display: selectedFilterIndex !== -1 ? undefined : "none" }} onMouseDown={() => {
+                this.selectFilter(undefined);
+                graphics.removeFilter(graphics.filters[selectedFilterIndex]);
+              }} />
 
-                <i className="ion-trash-a" style={{ display: selectedFilterIndex !== -1 ? undefined : "none" }} onMouseDown={() => {
-                  this.selectFilter(undefined);
-                  graphics.removeFilter(graphics.filters[selectedFilterIndex]);
-                }} />
-
-                <i className="ion-plus-round" onClick={() => {
-                  graphics.addFilter("drop-shadow", [0, 0, 3, "#000"]);
-                }} />
-              </div>
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
+              <i className="ion-plus-round" onClick={() => {
+                graphics.addFilter("drop-shadow", [0, 0, 3, "#000"]);
+              }} />
+            </div>
+          </CSSHighlightTargetRuleHintComponent>
         </div>
-        {
-          graphics.filters.map((filter, i) => {
-            return <CSSFilterInputComponent filter={filter} key={i} select={this.selectFilter} rename={(filter, newName) => {
-              graphics.renameFilter(filter, newName);
-            }} />;
-          })
-        }
       </div>
+      {
+        graphics.filters.map((filter, i) => {
+          return <CSSFilterInputComponent filter={filter} key={i} select={this.selectFilter} rename={(filter, newName) => {
+            graphics.renameFilter(filter, newName);
+          }} />;
+        })
+      }
     </div>
   }
 
@@ -369,24 +366,39 @@ class FilterSectionComponent extends SectionComponent<any> {
     }
 
     const renderLengthFilter = (filter: SyntheticAmountFilter) => {
+
+      const setNewAmount = (newValue) => {
+        filter.setProperty("amount", newValue + "px");
+      } 
+
       return <div className="row">
         <div className="col-2 label">
           Amount
         </div>
         <div className="col-3">
-          <BetterTextInput value={0} onChange={() => {}} />
+          <BetterTextInput value={filter.amount.value} onChange={setNewAmount} />
         </div>
       </div>
     }
 
-
     const renderDropShadowFilter = (filter: SyntheticDropShadowFilter) => {
-
+      return <CSSShadowInputComponent target={filter} />
     }
-
 
     const renderAngleFilter = (filter: SyntheticAmountFilter) => {
 
+      const setNewAmount = (newValue) => {
+        filter.setProperty("amount", newValue + "deg");
+      } 
+
+      return <div className="row">
+        <div className="col-2 label">
+          Degree
+        </div>
+        <div className="col-3">
+          <BetterTextInput value={filter.amount.value} onChange={setNewAmount} />
+        </div>
+      </div>
     }
 
     // https://developer.mozilla.org/en-US/docs/Web/CSS/filter
@@ -396,7 +408,7 @@ class FilterSectionComponent extends SectionComponent<any> {
       "contrast": filter => renderPercentFilter(filter, 1000),
       "drop-shadow": renderDropShadowFilter,
       "grayscale": renderPercentFilter,
-      "hue-rotate": renderPercentFilter,
+      "hue-rotate": renderAngleFilter,
       "invert": renderPercentFilter,
       "opacity": renderPercentFilter,
       "sepia": renderPercentFilter,
@@ -424,7 +436,7 @@ class LayoutSectionComponent extends SectionComponent<any> {
     const { rule, graphics } = this.props;
     return <div className="section" key="layout">
 
-      <div className="container">
+      <div>
         <div className="row title">
           <div className="col-12">
             Layout
@@ -591,7 +603,7 @@ class TypographySectionComponent extends SectionComponent<any> {
   renderMainSection() {
     const { rule, graphics } = this.props;
     return <div className="section" key="typography">
-      <div className="container">
+      <div>
         <div className="row title">
           <div className="col-12">
             Typography
@@ -806,40 +818,37 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
     const selectedBackgroundIndex = this._selectedBackgroundIndex;
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.backgrounds.length === 0 });
 
-    return <div className="section background-section" key="backgrounds">
-      <div className="container section">
-        <div className="row title">
-          <div className="col-12">
-            <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="background" block={true}>
-              Backgrounds
-              <div className="controls">
-                <i className="ion-trash-a" style={{ display: selectedBackgroundIndex !== -1 ? undefined : "none" }} onMouseDown={() => {
-                  this.selectBackground(undefined);
-                  graphics.removeBackground(graphics.backgrounds[selectedBackgroundIndex]);
+    return <div className="background-section">
+      <div className="row title">
+        <div className="col-12">
+          <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="background" block={true}>
+            Backgrounds
+            <div className="controls">
+              <i className="ion-trash-a" style={{ display: selectedBackgroundIndex !== -1 ? undefined : "none" }} onMouseDown={() => {
+                this.selectBackground(undefined);
+                graphics.removeBackground(graphics.backgrounds[selectedBackgroundIndex]);
+              }} />
+
+                <i className="ion-plus-round" onClick={() => {
+                  this.selectBackground(graphics.addBackground([new SyntheticCSSColor(0, 0, 0, 1)]));
                 }} />
-
-                  <i className="ion-plus-round" onClick={() => {
-                    this.selectBackground(graphics.addBackground([new SyntheticCSSColor(0, 0, 0, 1)]));
-                  }} />
-              </div>
-            </CSSHighlightTargetRuleHintComponent>
-          </div>
+            </div>
+          </CSSHighlightTargetRuleHintComponent>
         </div>
-
-        <div className="row bg-list">
-          <div className="col-12">
-            <ul>
-              {
-                graphics.backgrounds.map((background, i) => {
-                  return <CSSBackgroundInputComponent background={background} rule={rule} key={i} select={this.selectBackground}  />
-                })
-              }
-            </ul>
-          </div>
-        </div>
-
       </div>
-    </div> 
+
+      <div className="row bg-list">
+        <div className="col-12">
+          <ul>
+            {
+              graphics.backgrounds.map((background, i) => {
+                return <CSSBackgroundInputComponent background={background} rule={rule} key={i} select={this.selectBackground}  />
+              })
+            }
+          </ul>
+        </div>
+      </div>
+    </div>;
   }
 
   renderFill = () => {
@@ -930,8 +939,7 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
 
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
 
-    return <div className="section" key="boxShadows">
-      <div className="container section">
+    return <div>
         <div className="row title">
           <div className="col-12">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="boxShadow" block={true}>
@@ -962,7 +970,6 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
             </ul>
           </div>
         </div>
-      </div>
     </div>;
   }
 
@@ -971,28 +978,36 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
     if (!boxShadow) return null;
 
 
-    return <div className="container"> 
-       <div className="container">
+    return <CSSShadowInputComponent target={boxShadow} />;
+  }
+}
+
+class CSSShadowInputComponent extends React.Component<{ target: SyntheticCSSStyleBoxShadow|SyntheticDropShadowFilter }, any> {
+  render() {
+    const { target } = this.props;
+    return <div> 
+       <div>
         <div className="row">
           <div className="col-12">
-            { !process.env.SANDBOXED ? <ChromePicker color={boxShadow.color.toString()} onChange={({ rgb }) => {
-              boxShadow.color = SyntheticCSSColor.fromRGBA(rgb);
+            { !process.env.SANDBOXED ? <ChromePicker color={target.color.toString()} onChange={({ rgb }) => {
+              target.color = SyntheticCSSColor.fromRGBA(rgb);
             }} /> : null }
           </div>
         </div>
       </div>
+      <hr />
       <div className="row">
         <div className="col-2 label">
           X
         </div>
         <div className="col-4">
-          <BetterTextInput value={boxShadow.x} onChange={bindGraphicsValueChange(boxShadow, "x")} />
+          <BetterTextInput value={target.x} onChange={bindGraphicsValueChange(target, "x")} />
         </div>
         <div className="col-2 label">
           Y
         </div>
         <div className="col-4">
-          <BetterTextInput value={boxShadow.x} onChange={bindGraphicsValueChange(boxShadow, "y")} />
+          <BetterTextInput value={target.x} onChange={bindGraphicsValueChange(target, "y")} />
         </div>
       </div>
       <div className="row">
@@ -1000,21 +1015,21 @@ class BoxShadowsSectionComponent extends SectionComponent<any> {
           Blur
         </div>
         <div className="col-4">
-          <BetterTextInput value={boxShadow.blur} onChange={bindGraphicsValueChange(boxShadow, "blur")} />
+          <BetterTextInput value={target.blur} onChange={bindGraphicsValueChange(target, "blur")} />
         </div>
         <div className="col-2 label">
           Spread
         </div>
         <div className="col-4">
-          <BetterTextInput value={boxShadow.spread} onChange={bindGraphicsValueChange(boxShadow, "spread")} />
+          <BetterTextInput value={target.spread} onChange={bindGraphicsValueChange(target, "spread")} />
         </div>
       </div>
-      <div className="row">
+      <div className="row" style={{display: !!target["inset"] ? "block" : "none" }}>
         <div className="col-2 label">
           Inset
         </div>
         <div className="col-4">
-          <BetterCheckbox checked={boxShadow.inset} onChange={bindGraphicsValueChange(boxShadow, "inset")} />
+          <BetterCheckbox checked={target["inset"]} onChange={bindGraphicsValueChange(target, "inset")} />
         </div>
       </div>
     </div>;
@@ -1092,7 +1107,6 @@ export class BetterCheckbox extends React.Component<{ onChange(newValue): any, c
 export class CSSUnitInput extends BetterTextInput {
   // TODO 
 }
-
 
 class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilter, select: (filter: SyntheticCSSFilter) => any, rename: (filter: SyntheticCSSFilter, newName: string) => any }, any> {
   render() {

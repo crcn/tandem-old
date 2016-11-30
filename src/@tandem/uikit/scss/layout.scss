@@ -2,13 +2,13 @@
 
 .container {
   position:relative;
-  padding: $padding-s;
+  padding: $padding-r 0;
 }
 
 .row {
   width: 100%;
 
-  padding: $padding-s;
+  padding: $padding-s $padding-l;
 
   display: flex;
   flex-direction: row;

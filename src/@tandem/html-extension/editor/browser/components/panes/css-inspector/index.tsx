@@ -17,9 +17,9 @@ import {
   SyntheticDocument, 
   SyntheticCSSStyle, 
   SyntheticHTMLElement, 
-  SyntheticCSSElementStyleRule,
   SyntheticCSSStyleGraphics,
   isInheritedCSSStyleProperty,
+  SyntheticCSSElementStyleRule,
   SyntheticCSSElementStyleRuleMutationTypes,  
 } from "@tandem/synthetic-browser";
 
@@ -28,6 +28,7 @@ import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from 
 import { HTMLExtensionStoreProvider } from "@tandem/html-extension/editor/browser/providers";
 
 const MAX_LABEL_LENGTH = 80;
+const DEFAULT_PANE = "pretty";
 
 class DocumentMutationChangeWatcher {
 
@@ -72,7 +73,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
   private _store: HTMLExtensionStore;
 
   state = {
-    pane: "pretty"
+    pane: DEFAULT_PANE
   };
 
   getTarget(props) {
@@ -99,7 +100,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
     const selectedTab = tabs[this.state.pane];
 
-    return <div className="css-inspector">
+    return <div className="container css-inspector">
       <div className="header">
         CSS
         <div className="controls show">
@@ -115,9 +116,12 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
           }
         </div>
       </div>
-      {this.renderSelectorsSection(mergedRule) }
-      <hr />
-      { selectedTab && selectedTab.render.call(this, mergedRule) }
+
+      <div className="container">
+        {this.renderSelectorsSection(mergedRule) }
+        <hr />
+        { selectedTab && selectedTab.render.call(this, mergedRule) }
+      </div>
     </div>
   }
 
@@ -220,7 +224,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
       </div>;
     }
 
-    return <div className="section container">
+    return <div className="section">
       { renderGroupRules("Matching rules", matchingRules) }
       { renderGroupRules("Inherited rules", inheritedRules) }
     </div> 
