@@ -2,7 +2,7 @@ import { IMessage } from "@tandem/mesh";
 import { BrowserWindow } from "electron";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { ApplicationConfigurationProvider } from "@tandem/core";
-import { loggable, Logger, inject, ICommand, InitializeRequest } from "@tandem/common"
+import { loggable, Logger, inject, ICommand, InitializeApplicationRequest } from "@tandem/common"
 
 @loggable()
 export class InitializeWindowCommand implements ICommand {
@@ -15,8 +15,12 @@ export class InitializeWindowCommand implements ICommand {
   execute(message: IMessage) {
     this.logger.debug("Opening browser window");
     try {
-      const window = new BrowserWindow({width: 1024, height: 768 });
-      window.loadURL(`file://${__dirname}/../../browser/index.html?backendPort=${this._config.port}`);
+      const win = new BrowserWindow({width: 1024, height: 768 });
+      win.loadURL(`file://${__dirname}/../../browser/index.html?backendPort=${this._config.port}`);
+      // console.log(window["tog"])
+      if (this._config.argv["dev-tools"]) {
+        win["toggleDevTools"]();
+      }
     } catch(e) {
       console.error(e.stack);
     }

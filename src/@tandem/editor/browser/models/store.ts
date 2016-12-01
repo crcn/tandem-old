@@ -1,4 +1,5 @@
 import {
+  Status,
   bubble,
   Metadata,
   bindable,
@@ -10,6 +11,10 @@ import { DirectoryModel } from "@tandem/editor/common";
 
 // TODO: add workspaces
 export class Store extends Observable {
+
+  @bindable(true)
+  @bubble()
+  public status: Status = new Status(Status.LOADING);
 
   @bindable()
   @bubble()

@@ -15,17 +15,25 @@ export class DisposeEvent extends CoreEvent {
   }
 }
 
-export class LoadRequest extends Message {
-  static readonly LOAD = "load";
+export class LoadApplicationRequest extends Message {
+  static readonly LOAD = "loadApplication";
   constructor() {
-    super(LoadRequest.LOAD);
+    super(LoadApplicationRequest.LOAD);
   }
 }
 
-export class InitializeRequest extends Message {
-  static readonly INITIALIZE = "initialize";
+export class InitializeApplicationRequest extends Message {
+  static readonly INITIALIZE = "initializeApplication";
   constructor() {
-    super(InitializeRequest.INITIALIZE);
+    super(InitializeApplicationRequest.INITIALIZE);
+  }
+}
+
+
+export class ApplicationReadyMessage extends Message {
+  static readonly READY = "applicationReady";
+  constructor() {
+    super(ApplicationReadyMessage.READY);
   }
 }
 

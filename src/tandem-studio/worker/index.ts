@@ -20,10 +20,10 @@ import {
   Injector,
   LogLevel,
   serialize,
-  LoadRequest,
+  LoadApplicationRequest,
   deserialize,
   MimeTypeProvider,
-  InitializeRequest,
+  InitializeApplicationRequest,
   PrivateBusProvider,
   MimeTypeAliasProvider,
   CommandFactoryProvider
@@ -47,7 +47,7 @@ export const createCoreStudioWorkerProviders = () => {
     createJavaScriptWorkerProviders(),
     createTDProjectEditorWorkerProviders(),
     createTypescriptEditorWorkerProviders(),
-    new CommandFactoryProvider(LoadRequest.LOAD, LoadProjectConfigCommand),
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadProjectConfigCommand),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
   ];

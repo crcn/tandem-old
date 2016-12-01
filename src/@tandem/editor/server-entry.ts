@@ -5,7 +5,7 @@ import { argv } from "yargs";
 import * as getPort from "get-port";
 import { ServiceApplication } from "@tandem/core";
 import { MemoryDataStore, MongoDataStore } from "@tandem/mesh";
-import { Injector, Logger, PrivateBusProvider, LogLevel, CommandFactoryProvider, LoadRequest } from "@tandem/common";
+import { Injector, Logger, PrivateBusProvider, LogLevel, CommandFactoryProvider, LoadApplicationRequest } from "@tandem/common";
 import { IEdtorServerConfig, createEditorServerProviders, EditorFamilyType } from "./server";
 import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, ProtocolURLResolverProvider, WebpackProtocolResolver } from "@tandem/sandbox";
 
@@ -45,7 +45,7 @@ const start = async () => {
     createTypescriptEditorWorkerProviders(),
     createSyntheticBrowserWorkerProviders(),
     createTDProjectEditorServerProviders(),
-    new CommandFactoryProvider(LoadRequest.LOAD, LoadProjectConfigCommand),
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadProjectConfigCommand),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
     createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore())

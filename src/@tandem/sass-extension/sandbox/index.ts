@@ -1,4 +1,3 @@
-export * from "./scss-loader";
 import * as postcssSassSyntax from "postcss-scss";
 
 import { SCSSEditor } from "./scss-editor";
@@ -9,7 +8,9 @@ import { DependencyLoaderFactoryProvider, ContentEditorFactoryProvider } from "@
 
 export const createSASSSandboxProviders = () => {
   return [
-    new DependencyLoaderFactoryProvider(SASS_MIME_TYPE, SCSSLoader),
+
+    // deprecated for now since node-sass is an pain to get implemented with electron
+    // new DependencyLoaderFactoryProvider(SASS_MIME_TYPE, SCSSLoader),
     new ContentEditorFactoryProvider(SASS_MIME_TYPE, SCSSEditor),
     new MimeTypeProvider("scss", SASS_MIME_TYPE)
   ];

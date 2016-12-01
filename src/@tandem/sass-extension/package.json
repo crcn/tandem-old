@@ -9,11 +9,5 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-sass": "^3.10.1"
-  },
-  "peerDependencies": {
-    "@tandem/common": "^1.0.0",
-    "@tandem/sandbox": "^1.0.0",
-    "@tandem/synthetic-browser": "^1.0.0"
   }
 }

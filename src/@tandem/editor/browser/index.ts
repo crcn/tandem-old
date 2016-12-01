@@ -3,7 +3,15 @@ import "./styles";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
-import { Injector, CommandFactoryProvider, InitializeRequest, IProvider } from "@tandem/common";
+
+import { 
+  Injector, 
+  IProvider,
+  CommandFactoryProvider, 
+  ApplicationReadyMessage,
+  InitializeApplicationRequest, 
+} from "@tandem/common";
+
 import { AlertMessage, RemoveSelectionRequest } from "./messages";
 import {
   EditorStoreProvider,
@@ -28,7 +36,14 @@ import {
 import { Store } from "./models";
 
 import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "../common";
-import { OpenCWDCommand, AlertCommand, RemoveSelectionCommand } from "./commands";
+
+import { 
+  AlertCommand, 
+  OpenCWDCommand, 
+  SetReadyStatusCommand,
+  RemoveSelectionCommand, 
+  LoadCurrentWorkspaceCommand,
+} from "./commands";
 
 import {
   DNDService,
@@ -47,8 +62,10 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
 
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
-    new CommandFactoryProvider(InitializeRequest.INITIALIZE, OpenCWDCommand),
+    new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
     new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadCurrentWorkspaceCommand),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),

@@ -5,7 +5,7 @@ import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
-import { MetadataChangeEvent, LoadRequest, Metadata, inject, loggable, Logger } from "@tandem/common";
+import { MetadataChangeEvent, LoadApplicationRequest, Metadata, inject, loggable, Logger } from "@tandem/common";
 
 @loggable()
 export class SettingsService extends CoreApplicationService<IEditorBrowserConfig> {
@@ -13,7 +13,7 @@ export class SettingsService extends CoreApplicationService<IEditorBrowserConfig
   @inject(EditorStoreProvider.ID)
   private _store: Store;
 
-  [LoadRequest.LOAD](action: LoadRequest) {
+  [LoadApplicationRequest.LOAD](action: LoadApplicationRequest) {
 
     this.logger.debug("loading settings");
 

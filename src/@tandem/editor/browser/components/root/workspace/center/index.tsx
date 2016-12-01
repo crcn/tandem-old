@@ -11,9 +11,10 @@ import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers"
 
 export default class StageComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
+    const { workspace } = this.props;
     return (<div ref="container" className="m-editor-stage">
-      <CanvasComponent workspace={this.props.workspace} zoom={this.props.workspace.transform.scale} />
-      <FooterComponent workspace={this.props.workspace} />
+      { workspace && <CanvasComponent workspace={workspace} zoom={workspace.transform.scale} /> }
+      { workspace && <FooterComponent workspace={workspace} />  }
     </div>);
   }
 }

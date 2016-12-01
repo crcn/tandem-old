@@ -36,7 +36,7 @@ import {
   flattenTree,
   BoundingRect,
   watchProperty,
-  InitializeRequest,
+  InitializeApplicationRequest,
   InjectorProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -60,22 +60,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
 
   private _tweener: IDisposable;
   private _zoomTimeout: any;
-
-  async [InitializeRequest.INITIALIZE](action: CoreEvent) {
-    await this._loadWorkspaces();
-  }
-
-  async _loadWorkspaces() {
-    const filePath = await GetPrimaryProjectFilePathRequest.dispatch(this.bus);
-
-    if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
-
-    this.logger.info("loading project file ", filePath);
-    const workspace = this.injector.inject(new Workspace());
-    const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, this.injector.inject(new SyntheticDOMRenderer())));
-    await browser.open({ url: filePath });
-    this._store.workspace = workspace;
-  }
+  
 
   async [OpenProjectRequest.OPEN_PROJECT_FILE](action: OpenProjectRequest) {
 
@@ -161,35 +146,5 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     });
 
     this._store.workspace.select(selection);
-  }
-}
-
-/**
- * Offset the transform skewing that happens with the editor
- */
-
-class CanvasRenderer extends BaseDecoratorRenderer {
-  private _rects: any;
-
-  constructor(readonly workspace: Workspace, _renderer: BaseRenderer) {
-    super(_renderer);
-    this._rects = {};
-  }
-
-  getBoundingRect(uid: string) {
-    return this._rects[uid] || BoundingRect.zeros();
-  }
-
-  protected onTargetRendererSetRectangles() {
-    const offsetRects = {};
-    const { transform } = this.workspace;
-    const rects = (<BaseRenderer>this._renderer).$rects;
-    for (const uid in rects) {
-      offsetRects[uid] = (<BoundingRect>rects[uid]).move({
-        left: -transform.left,
-        top: -transform.top
-      }).zoom(1 / transform.scale);
-    }
-    this._rects = offsetRects;
   }
 }

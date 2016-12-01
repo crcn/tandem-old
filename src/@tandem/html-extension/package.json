@@ -19,12 +19,6 @@
     "sift": "^3.2.6",
     "tinycolor2": "^1.4.1"
   },
-  "peerDependencies": {
-    "@tandem/common": "^1.0.0",
-    "@tandem/editor": "^1.0.0",
-    "@tandem/sandbox": "^1.0.0",
-    "@tandem/synthetic-browser": "^1.0.0"
-  },
   "devDependencies": {
     "react-select": "^1.0.0-rc.2"
   }

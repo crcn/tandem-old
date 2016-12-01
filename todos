@@ -4,49 +4,35 @@ Notes about this doc:
 - Remove a checklist item when it's completed.
 
 ----------------------------------
-IMMEDIATE
+IMMEDIAT
 ----------------------------------
 
 Start working on UX around getting started with Tandem and projects.
 
-- use http://cssreference.io/#hn for CSS pretty pane
+Workflow:
 
-- [ ] multi drag
+1. User opens Tandem
+2. Tandem prompts to open an HTML or tandem project file
+3. User can save the current workspace to disk
+4. User can configure how tandem operates in the UI
+
+
+- [ ] splash just like sketch
 - [ ] unsaved files
 
-CSS PANE  
-  - [ ] up/down arrows for inputs
-  - [ ] background input
-    - [ ] image constraints
-  - [ ] Typography
-    - [ ] Fallback font options
-    - [ ] advanced
-      - [ ] white-space (normal, pre, pre-line, pre-wrap)
-      - [ ] text-overflow (clip, ellipsis)
-      - [ ] text transform
-    - [ ] text decoration
-  - [ ] custom color picker
-  - [ ] force state (hover, checked, etc.)
-  - [ ] unit value converter
+- [ ] tandem config
+  
+- [ ] artboard
+  - [ ] toolbar item
+  - [ ] import file button
+  - [ ] enter http url button
+  - [ ] globals pane
 
-
-MEDIA QUERIES
-  - [ ] attached to each artboard
-- [ ] copy & paste
-- [ ] ability to edit style attribute
-- [ ] see selectors matching computed layout
-
-- [ ] background constraints
-- [ ] pseudo elements
-
-- Website
-- artboard tool
 - insert div tool (for html)
 - show diff of unsaved drafts
+- Website
 
 - [ ] unsaved files
-- [ ] create tdm file in ~/.tandem if it doesn't exist
-- [ ] "Open current file in tandem" if not already started
 
 FEATURES
 
@@ -93,6 +79,8 @@ UX
   - [ ] gutters need to be resizable
   - [ ] custom layer for artboard
   - [ ] input focus border
+  - [ ] multi drag
+  - [ ] minimap (can also be done by opening up a new window of tandem)
 
 BUGS
   - [ ] css class selectors are case insensitive
@@ -121,6 +109,15 @@ STAGE TOOLS
   - [ ] resizer
   - [ ] text input
 
+CSS PANE  
+  - [ ] up/down arrows for inputs
+  - [ ] background image
+  - [ ] Typography
+    - [ ] Fallback font options
+  - [ ] custom color picker
+  - [ ] force state (hover, checked, etc.)
+  - [ ] unit value converter
+
 CORE
   - *[ ] right click edit text
   - [ ] config for scanning application for components
@@ -135,6 +132,14 @@ SOCIAL
   - *[ ] put tandem on backend
   - *[ ] possibly attach messages to commits
   - *[ ] enable people to comment on components (necessary for feedback)
+
+MEDIA QUERIES
+  - [ ] attached to each artboard
+  - [ ] copy & paste
+  - [ ] ability to edit style attribute
+  - [ ] see selectors matching computed layout
+  - [ ] background constraints
+  - [ ] pseudo elements
 
 OPTIMIZATIONS
   - [ ] have data store records owned

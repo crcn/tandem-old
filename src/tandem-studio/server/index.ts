@@ -13,9 +13,9 @@ import {
    LogLevel,
    serialize,
    IBrokerBus,
-   LoadRequest,
+   LoadApplicationRequest,
    deserialize,
-   InitializeRequest,
+   InitializeApplicationRequest,
    CommandFactoryProvider,
 } from "@tandem/common";
 
@@ -37,8 +37,8 @@ export const initializeMaster = async () => {
 
   const injector = new Injector(
     createCommonEditorProviders(config),
-    new CommandFactoryProvider(LoadRequest.LOAD, SpawnWorkerCommand),
-    new CommandFactoryProvider(InitializeRequest.INITIALIZE, InitializeWindowCommand),
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, SpawnWorkerCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, InitializeWindowCommand),
   );
 
   const app = new ServiceApplication(injector);

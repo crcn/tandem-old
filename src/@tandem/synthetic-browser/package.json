@@ -12,16 +12,12 @@
     "abab": "^1.0.3",
     "ent": "^2.2.0",
     "lodash": "^4.16.4",
-    "@tandem/mesh": "6.0.x",
     "postcss": "^5.2.5",
     "postcss-scss": "^0.3.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "socket.io-client": "^1.5.1",
     "source-map": "^0.5.6"
-  },
-  "peerDependencies": {
-    "@tandem/common": "^1.0.0"
   },
   "devDependencies": {
   }

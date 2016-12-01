@@ -5,7 +5,7 @@ import { IOService } from "@tandem/editor/common";
 import {
   Logger,
   loggable,
-  LoadRequest,
+  LoadApplicationRequest,
   ApplicationServiceProvider,
 } from "@tandem/common";
 
@@ -20,7 +20,7 @@ export class ServerService extends IOService<IEditorBrowserConfig> {
    * initializes the back-end actor
    */
 
-  async [LoadRequest.LOAD]() {
+  async [LoadApplicationRequest.LOAD]() {
     if (!this.config.server || !this.config.server.port) {
       return;
     }

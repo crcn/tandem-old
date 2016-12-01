@@ -4,7 +4,7 @@ import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
 import { isMaster } from "cluster";
-import { LoadRequest, InitializeRequest, SockBus, CoreEvent, serialize, deserialize } from "@tandem/common";
+import { LoadApplicationRequest, InitializeApplicationRequest, SockBus, CoreEvent, serialize, deserialize } from "@tandem/common";
 import { EditorFamilyType } from "@tandem/editor/common";
 import * as os from "os";
 import * as path from "path";
@@ -42,7 +42,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
   /**
    */
 
-  [LoadRequest.LOAD](action: LoadRequest) {
+  [LoadApplicationRequest.LOAD](action: LoadApplicationRequest) {
 
     return new Promise((resolve, reject) => {
       let bus: IDispatcher<any, any>;
@@ -72,7 +72,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
     }
   }
 
-  [InitializeRequest.INITIALIZE](action: LoadRequest) {
+  [InitializeApplicationRequest.INITIALIZE](action: LoadApplicationRequest) {
     if (this.config.argv) {
       ExecAction.dispatch(this.config, this.bus);
     }

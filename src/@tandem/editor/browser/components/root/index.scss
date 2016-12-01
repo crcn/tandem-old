@@ -1,12 +1,7 @@
 @import "@tandem/editor/browser/scss/variables";
 
-.m-editor {
-  background-color: #333;
+.td-main {
+  background-color: #EFEFEF;
   width: 100vw;
   height: 100vh;
-  display: flex;
-  flex-direction: row;
-  & .td-gutter {
-    flex-grow: 0;
-  }
 }

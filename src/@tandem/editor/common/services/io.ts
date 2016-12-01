@@ -4,7 +4,7 @@ import { ParallelBus, IMessage, CallbackDispatcher, FilterBus, SocketIOBus, filt
 import {
   Logger,
   loggable,
-  InitializeRequest,
+  InitializeApplicationRequest,
 } from "@tandem/common";
 import { IEditorCommonConfig } from "@tandem/editor/common/config";
 import { CoreApplicationService } from "@tandem/core";

@@ -1,6 +1,6 @@
 import { IDispatcher } from "@tandem/mesh";
 import { ImportFileRequest } from "@tandem/editor/common";
-import { Injector, CommandFactoryProvider, LoadRequest } from "@tandem/common";
+import { Injector, CommandFactoryProvider, LoadApplicationRequest } from "@tandem/common";
 import { ConsoleLogService, ReceiverService } from "@tandem/editor/common";
 import { RemoteFileSystem, RemoteFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
@@ -15,7 +15,7 @@ export function createEditorWorkerProviders(config:  IEditorWorkerConfig, dataS
     createCommonEditorProviders(),
     createCoreApplicationProviders(config, RemoteFileSystem, RemoteFileResolver),
 
-    new CommandFactoryProvider(LoadRequest.LOAD,  LoadProjectConfigCommand),
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD,  LoadProjectConfigCommand),
 
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),

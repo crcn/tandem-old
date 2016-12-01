@@ -1,7 +1,7 @@
 import * as readline from "readline";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
-import { InitializeRequest } from "@tandem/common";
+import { InitializeApplicationRequest } from "@tandem/common";
 import { StdinHandlerProvider } from "@tandem/editor/server/providers";
 
 /**
@@ -12,7 +12,7 @@ export class StdinService extends CoreApplicationService<IEdtorServerConfig> {
 
   private _rl: readline.ReadLine;
 
-  [InitializeRequest.INITIALIZE]() {
+  [InitializeApplicationRequest.INITIALIZE]() {
     this._rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
