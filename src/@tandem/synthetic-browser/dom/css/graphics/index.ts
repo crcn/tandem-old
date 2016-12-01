@@ -506,7 +506,6 @@ export class SyntheticCSSStyleGraphics extends Observable {
   @bubble()
   public flex: string;
 
-
   @bindable(true)
   @bubble()
   public alignItems: string;

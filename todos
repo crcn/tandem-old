@@ -34,7 +34,6 @@ MEDIA QUERIES
   - [ ] attached to each artboard
 - [ ] copy & paste
 - [ ] ability to edit style attribute
-- [ ] advanced layout pane
 - [ ] see selectors matching computed layout
 
 - [ ] background constraints
@@ -51,7 +50,6 @@ MEDIA QUERIES
 
 FEATURES
 
-- [ ] open unsaved files in vscode
 - [ ] enable <script /> tags.
 
 ----------------------------------

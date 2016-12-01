@@ -1,40 +1,48 @@
 import "./index.scss";
 import * as React from "react";
 import { BaseApplicationComponent } from "@tandem/common";
+import { Workspace } from "@tandem/editor/browser/models";
+import { SyntheticDOMElement, getCSSFontFaceRules } from "@tandem/synthetic-browser";
 
-export class CSSAnimationComponent extends BaseApplicationComponent<any, any> {
+
+
+class StyleRuleAnimationsComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
+
+}
+
+export class CSSAnimationComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
   render() {
+    const { selection } = this.props.workspace;
+    if (!selection.length) return null;
+
     return <div className="css-animation-pane">
-      <div className="td-section-header">
+      <div className="header">
         CSS Animations
+        <div className="rail">
+          <div className="scrub" />
+        </div>
+        <div className="controls">
+          <i className="ion-play" />
+        </div>
       </div>
-
-      <div className="controls">
-        <div className="scrub-rail" />
-        <div className="needle">
+      <div className="row selector">
+        <div className="label">
+          .container
         </div>
-
-        <div className="rule arow">
-          <label className="color-pink-10">.container</label>
+      </div>
+      <div className="row animation">
+        <div className="label">
+          fade-in
         </div>
-        <div className="animation arow">
-          <label>fade-in</label>
-          <div className="boundary">
-            <div className="range" style={{ left: 10, width: 100 }}>
-
-            </div>
-          </div>
+        <div className="keyframes">
+          <div className="keyframe" style={{left: 200 }} />
+          <div className="keyframe" style={{left: 300 }} />
         </div>
-        <div className="animation arow">
-          <label>pop-up</label>
-          <div className="boundary">
-            <div className="range" style={{ left: 100, width: 100 }}>
-              <div className="keyframe" style={{ left: 10 }} />
-            </div>
-          </div>
+      </div>
+      <div className="row selector">
+        <div className="label">
+          container2
         </div>
-
-        <hr />
       </div>
     </div>;
   }

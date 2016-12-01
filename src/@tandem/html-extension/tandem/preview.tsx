@@ -22,6 +22,7 @@ import {
   ElementCSSPaneComponent,
   ElementCSSInspectorComponent,
   ElementAttributesPaneComponent,
+  CSSAnimationComponent,
 } from "@tandem/html-extension/editor/browser/components";
 
 export const renderPreview = reactEditorPreview(async () => {
@@ -124,7 +125,7 @@ export const renderPreview = reactEditorPreview(async () => {
           content
         </div>
         <GutterComponent className="bottom">
-          Footsie
+          <CSSAnimationComponent workspace={workspace} />
         </GutterComponent>
       </div>
       <GutterComponent className="right">
