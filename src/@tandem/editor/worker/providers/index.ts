@@ -1,7 +1,7 @@
-import { ISyntheticObject } from "@tandem/sandbox";
+import { IDispatcher } from "@tandem/mesh";
 import { ImportFileRequest } from "@tandem/editor/common/messages";
-import { IDependencyLoader } from "@tandem/sandbox";
-import { ClassFactoryProvider, Injector } from "@tandem/common";
+import { ISyntheticObject, IDependencyLoader } from "@tandem/sandbox";
+import { ClassFactoryProvider, Injector, Provider } from "@tandem/common";
 
 export interface IFileImporter {
   importFile(request: ImportFileRequest): Promise<any>;

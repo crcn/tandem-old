@@ -1,5 +1,6 @@
 import { inject, loggable } from "@tandem/common/decorators";
 import { IBus, IMessage } from "@tandem/mesh";
+import { IBrokerBus } from "../dispatchers";
 import {
   Injector,
   IInjectable,
@@ -19,7 +20,7 @@ export abstract class BaseCommand implements ICommand, IInjectable {
   protected readonly logger: Logger;
 
   @inject(PrivateBusProvider.ID)
-  protected bus: IBus<any>;
+  protected bus: IBrokerBus;
 
   @inject(InjectorProvider.ID)
   protected injector: Injector;

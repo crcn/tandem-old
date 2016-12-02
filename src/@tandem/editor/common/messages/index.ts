@@ -67,46 +67,24 @@ export namespace EditorFamilyType {
   export const MASTER  = "master";
 }
 
-setMessageTarget(EditorFamilyType.MASTER)(WatchFileRequest);
-addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
-setMessageTarget(EditorFamilyType.MASTER)(ReadFileRequest);
-setMessageTarget(EditorFamilyType.MASTER)(ReadDirectoryRequest);
-setMessageTarget(EditorFamilyType.MASTER)(ResolveFileRequest);
-setMessageTarget(EditorFamilyType.MASTER)(ApplyFileEditRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(WatchFileRequest);
+// addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
+// setMessageTarget(EditorFamilyType.MASTER)(ReadFileRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(ReadDirectoryRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(ResolveFileRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(ApplyFileEditRequest);
 
-setMessageTarget(EditorFamilyType.MASTER)(DSFindRequest);
-setMessageTarget(EditorFamilyType.MASTER)(DSUpsertRequest);
-setMessageTarget(EditorFamilyType.MASTER)(DSInsertRequest);
-setMessageTarget(EditorFamilyType.MASTER)(DSRemoveRequest);
-setMessageTarget(EditorFamilyType.MASTER)(DSUpdateRequest);
-setMessageTarget(EditorFamilyType.MASTER)(DSFindAllRequest);
-addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
-
-@setMessageTarget(EditorFamilyType.MASTER)
-export class GetPrimaryProjectFilePathRequest extends CoreEvent {
-  static readonly GET_PRIMARY_PROJECT_FILE_PATH = "getPrimaryProjectFilePath";
-  constructor() {
-    super(GetPrimaryProjectFilePathRequest.GET_PRIMARY_PROJECT_FILE_PATH);
-  }
-  static async dispatch(dispatcher: IStreamableDispatcher<any>): Promise<string> {
-    return (await readOneChunk(dispatcher.dispatch(new GetPrimaryProjectFilePathRequest()))).value;
-  }
-}
-
-@setMessageTarget(EditorFamilyType.MASTER)
-export class GetServerPortRequest extends CoreEvent {
-  static readonly GET_SERVER_PORT = "getServerPort";
-  constructor() {
-    super(GetServerPortRequest.GET_SERVER_PORT);
-  }
-  static async dispatch(bus: IStreamableDispatcher<any>) {
-    return (await readOneChunk(bus.dispatch(new GetServerPortRequest()))).value;
-  }
-}
+// setMessageTarget(EditorFamilyType.MASTER)(DSFindRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(DSUpsertRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(DSInsertRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(DSRemoveRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(DSUpdateRequest);
+// setMessageTarget(EditorFamilyType.MASTER)(DSFindAllRequest);
+// addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
 
 
-@addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.BROWSER)
-@setMessageTarget(EditorFamilyType.TEXT_EDITOR)
+@addMessageVisitor(EditorFamilyType.BROWSER)
+// @setMessageTarget(EditorFamilyType.TEXT_EDITOR)
 @serializable({
   serialize({ filePath, selection }: OpenFileRequest) {
     return { filePath, selection };
@@ -137,7 +115,7 @@ export class OpenWorkspaceRequest extends CoreEvent {
   }
 }
 
-@setMessageTarget(EditorFamilyType.MASTER)
+@addMessageVisitor(EditorFamilyType.BROWSER)
 @serializable({
   serialize({ filePath, bounds, targetObject }: ImportFileRequest) {
     return { filePath, bounds, targetObject: serialize(targetObject && targetObject.clone(false)) };
@@ -155,7 +133,6 @@ export class ImportFileRequest extends CoreEvent {
   }
 }
 
-@addMessageVisitor(EditorFamilyType.MASTER)
 @setMessageTarget(EditorFamilyType.BROWSER)
 @serializable({
   serialize({ filePath, ranges }: SelectSourceRequest) {

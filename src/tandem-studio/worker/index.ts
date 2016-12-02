@@ -1,9 +1,8 @@
 import { argv } from "yargs";
 import * as getPort from "get-port";
-import { SockService } from "@tandem/editor/server";
-import { EditorFamilyType } from "@tandem/editor/common";
+import { SockService, DSService } from "./services";
+
 import { PreviewLoaderProvider } from "@tandem/editor/worker/providers";
-import { LoadProjectConfigCommand } from "@tandem/editor/worker/commands";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
@@ -12,9 +11,11 @@ import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/s
 import { isMaster, fork, addListener, emit } from "cluster";
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
+import { EditorFamilyType, createCommonEditorProviders } from "@tandem/editor/common";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
-import { GetProjectStartOptionsRequest, StartProjectRequest } from "tandem-studio/common";
-import { IEdtorServerConfig, FileImporterProvider, createEditorServerProviders } from "@tandem/editor/server";
+import { GetProjectStartOptionsRequest, StartProjectRequest, LoadProjectConfigCommand } from "tandem-studio/common";
+import { FileImporterProvider } from "@tandem/editor/worker";
+import { IStudioWorkerConfig } from "./config";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 import {
   hook,
@@ -30,9 +31,7 @@ import {
   InitializeApplicationRequest,
 } from "@tandem/common";
 
-import { GetProjectStarterOptionsCommand, StartProjectCommand } from "./commands";
-import { ProjectStarterFactoryProvider } from "./providers"; 
-import { HTMLProjectStarter } from "./project"; 
+import { DSProvider } from "./providers"; 
 
 import {
   createSandboxProviders,
@@ -60,12 +59,11 @@ export const createCoreStudioWorkerProviders = () => {
 
 export const initializeWorker = async () => {
 
-  const config: IEdtorServerConfig = {
-    family: EditorFamilyType.MASTER,
+  const config: IStudioWorkerConfig = {
+    family: EditorFamilyType.WORKER,
     cwd: process.cwd(),
     experimental: !!process.env.EXPERIMENTAL,
     port: process.env.PORT,
-    argv: argv,
     hostname: process.env.HOSTNAME,
     log: {
       level: Number(process.env.LOG_LEVEL),
@@ -74,49 +72,13 @@ export const initializeWorker = async () => {
   };
 
   const injector = new Injector(
+    createCommonEditorProviders(config),
     createCoreStudioWorkerProviders(),
-    createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
+    new DSProvider(config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
+    new ApplicationServiceProvider("sock", SockService),
+    new ApplicationServiceProvider("ds", DSService),
     createSyntheticBrowserWorkerProviders(),
 
-    // commands
-    new CommandFactoryProvider(GetProjectStartOptionsRequest.GET_PROJECT_STARTER_OPTIONS, GetProjectStarterOptionsCommand),
-    new CommandFactoryProvider(StartProjectRequest.START_NEW_PROJECT, StartProjectCommand),
-    
-    // starters
-    new ProjectStarterFactoryProvider({ 
-      id: "html", 
-      label: "HTML",
-      image: "assets/html5-logo.png",
-      enabled: true
-    }, HTMLProjectStarter),
-
-    new ProjectStarterFactoryProvider({ 
-      id: "react+webpack", 
-      label: "React + Webpack",
-      image: "assets/react-logo.png",
-      enabled: false
-    }, function(){} as any),
-
-    new ProjectStarterFactoryProvider({ 
-      id: "angular2", 
-      label: "Angular2",
-      image: "assets/angular-logo.png",
-      enabled: false
-    }, function(){} as any),
-
-    new ProjectStarterFactoryProvider({ 
-      id: "ember", 
-      label: "Ember",
-      image: "assets/ember-logo.png",
-      enabled: false
-    }, function(){} as any),
-
-    new ProjectStarterFactoryProvider({ 
-      id: "jekyll", 
-      label: "Jekyll",
-      image: "assets/jekyll-logo.png",
-      enabled: false
-    }, function(){} as any)
   );
 
   const app = new ServiceApplication(injector);

@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as glob from "glob";
-import { BaseServerCommand } from "./base";
+import { BaseStudioServerCommand } from "./base";
 import { OpenNewWorkspaceRequest } from "tandem-studio/common";
 
-export class CLIOpenWorkspaceCommand extends BaseServerCommand {
+export class CLIOpenWorkspaceCommand extends BaseStudioServerCommand {
   execute(): any {
     let filePath = this.config.argv._[0];
 

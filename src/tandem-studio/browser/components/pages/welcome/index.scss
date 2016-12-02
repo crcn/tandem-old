@@ -48,6 +48,14 @@
       color: #333;
     }
   }
+
+  .directory-options {
+    padding: 16px;
+    font-size: 1.2em;
+    & input {
+      background: #ECECEC;
+    }
+  }
   
   .rightbar {
     display: flex;

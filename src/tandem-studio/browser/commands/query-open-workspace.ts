@@ -1,4 +1,5 @@
 import * as URL from "url";
+import { TransformStream } from "@tandem/mesh";
 import { OpenWorkspaceRequest } from "tandem-studio/common";
 import { BaseStudioEditorBrowserCommand } from "./base";
 

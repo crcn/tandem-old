@@ -1,5 +1,14 @@
 import { RouteFactoryProvider } from "@tandem/editor/browser/providers";
-import { Injector, inject, InjectorProvider, PropertyMutation, Observable, bindable, PropertyWatcher } from "@tandem/common";
+import { IMessage } from "@tandem/mesh";
+import { 
+  Injector, 
+  inject, 
+  InjectorProvider, 
+  PropertyMutation, 
+  Observable, 
+  bindable, 
+  PropertyWatcher 
+} from "@tandem/common";
 
 export interface IRouterState {
   [Identifier: string]: string

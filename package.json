@@ -13,9 +13,7 @@
   },
   "scripts": {
     "test": "gulp test --coverage=50 --timeout=20000 --bail",
-    "start": "SANDBOXED=1 node out/@tandem/editor/server-entry.js --open=true",
-    "studio": "SANDBOXED=1 electron out/tandem-studio",
-    "debug": "SANDBOXED=1 node --inspect out/@tandem/editor/server-entry.js --open=true"
+    "studio": "SANDBOXED=1 electron out/tandem-studio"
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,21 @@
 import { IMessage } from "@tandem/mesh";
 import { IStarterOption } from "tandem-studio/common/stores";
 import { EditorFamilyType } from "@tandem/editor/common";
-import { setMessageTarget, IBus, readAllChunks, TransformStream } from "@tandem/mesh";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
+import { OpenRemoteBrowserRequest } from "@tandem/editor/common";
+import { 
+  setMessageTarget, 
+  addMessageVisitor, 
+  IBus, 
+  readAllChunks, 
+  readOneChunk, 
+  TransformStream 
+} from "@tandem/mesh";
+
+// scoping here
+setMessageTarget(EditorFamilyType.MASTER)(ApplyFileEditRequest);
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
+
 
 @setMessageTarget(EditorFamilyType.MASTER)
 export class OpenGettingStartedProjectRequest implements IMessage {
@@ -35,4 +49,16 @@ export class OpenNewWorkspaceRequest implements IMessage {
   static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
   readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
   constructor(readonly filePath: string) { }
+}
+
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class SelectDirectoryRequest implements IMessage {
+  static readonly SELECT_DIRECTORY_REQUEST: string = "selectDirectoryRequest";
+  readonly type = SelectDirectoryRequest.SELECT_DIRECTORY_REQUEST;
+  constructor() { }
+
+  static async dispatch(bus: IBus<any>): Promise<string> {
+    return (await readOneChunk<string>(bus.dispatch(new SelectDirectoryRequest()))).value;
+  }
 }

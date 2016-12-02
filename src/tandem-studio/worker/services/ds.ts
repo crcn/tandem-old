@@ -1,8 +1,7 @@
 import { titleize } from "inflection";
 import { IDispatcher, DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest } from "@tandem/mesh";
-import { DSProvider } from "@tandem/editor/server/providers";
-import { IEdtorServerConfig } from "@tandem/editor/server/config";
-import { CoreApplicationService } from "@tandem/core";
+import { DSProvider } from "tandem-studio/worker/providers";
+import { BaseApplicationService } from "@tandem/core";
 import {
   inject,
   UpsertBus,
@@ -12,7 +11,7 @@ import {
   ApplicationServiceProvider,
 } from "@tandem/common";
 
-export class DSService extends  CoreApplicationService<IEdtorServerConfig> {
+export class DSService extends BaseApplicationService {
 
   @inject(DSProvider.ID)
   private _mainDs: IDispatcher<any, any>;

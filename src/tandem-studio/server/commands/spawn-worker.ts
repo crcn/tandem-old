@@ -1,17 +1,11 @@
+import { BaseStudioServerCommand } from "./base";
 import { IDispatcher, IMessage } from "@tandem/mesh";
-import { IEditorCommonConfig } from "@tandem/editor/common";
-import { ApplicationConfigurationProvider } from "@tandem/core";
-import { inject, PrivateBusProvider, ICommand, isMaster,fork, IBrokerBus } from "@tandem/common";
+import { fork } from "@tandem/common";
 
-export class SpawnWorkerCommand implements ICommand {
+export class SpawnWorkerCommand extends  BaseStudioServerCommand {
 
-  @inject(ApplicationConfigurationProvider.ID)
-  private _config: IEditorCommonConfig;
-
-  @inject(PrivateBusProvider.ID)
-  private _bus: IBrokerBus;
 
   execute(action: IMessage) {
-    this._bus.register(fork(this._config.family, this._bus));
+    this.bus.register(fork(this.config.family, this.bus));
   }
 }

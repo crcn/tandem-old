@@ -64,7 +64,9 @@ const injector = new Injector(
 
   // Pages
   new PageFactoryProvider(StudioPageNames.WELCOME, WelcomeComponent),
-  new RouteFactoryProvider(StudioPageNames.WELCOME, "/welcome", createStatedRouteClass({[RouteNames.ROOT]: StudioPageNames.WELCOME })),
+  new RouteFactoryProvider(StudioPageNames.WELCOME, "/welcome", createStatedRouteClass({
+    [RouteNames.ROOT]: StudioPageNames.WELCOME 
+  })),
   
   new TandemStudioBrowserStoreProvider(TandemStudioBrowserStore),
   createEditorBrowserProviders(config),

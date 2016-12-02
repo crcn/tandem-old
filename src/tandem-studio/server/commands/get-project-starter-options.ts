@@ -1,5 +1,5 @@
 import { BaseCommand, injectProvider } from "@tandem/common";
-import { ProjectStarterFactoryProvider } from "tandem-studio/worker/providers";
+import { ProjectStarterFactoryProvider } from "tandem-studio/server/providers";
 import { GetProjectStartOptionsRequest, IStarterOption } from "tandem-studio/common";
 
 export class GetProjectStarterOptionsCommand extends BaseCommand {

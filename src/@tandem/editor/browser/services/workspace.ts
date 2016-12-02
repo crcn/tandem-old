@@ -18,7 +18,6 @@ import { Store, Workspace } from "@tandem/editor/browser/stores";
 import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
-import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
 import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { SetToolRequest, ZoomRequest, ZoomOutRequest, ZoomInRequest, SetZoomRequest } from "@tandem/editor/browser/messages";

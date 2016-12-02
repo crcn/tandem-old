@@ -2,7 +2,6 @@
   "name": "@tandem/editor",
   "version": "1.0.1",
   "description": "",
-  "browser": "./bundle/index.bundle.js",
   "main": "./index.ts",
   "bin": {
     "tandem": "./bin/tandem"

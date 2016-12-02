@@ -10,11 +10,10 @@ import * as express from "express";
 import * as compression from "compression";
 import * as createSocketIOServer from "socket.io";
 
-import { GetServerPortRequest } from "@tandem/editor/common";
 import { exec } from "child_process";
 import { IOService } from "@tandem/editor/common";
 import { loggable, inject } from "@tandem/common/decorators";
-import { IEdtorServerConfig } from "@tandem/editor/server/config";
+import { IStudioEditorServerConfig } from "tandem-studio/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
@@ -23,10 +22,10 @@ import { DSUpsertRequest, LoadApplicationRequest, InitializeApplicationRequest }
 // TODO - split this out into separate files -- turning into a god object.
 
 @loggable()
-export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
+export class BrowserService extends CoreApplicationService<IStudioEditorServerConfig> {
 
   private _server: express.Express;
-  private _ioService:IOService<IEdtorServerConfig>;
+  private _ioService:IOService<IStudioEditorServerConfig>;
   private _port:number;
   private _socket:any;
 
@@ -50,10 +49,6 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
     }
 
     this._fileCache.syncWithLocalFiles();
-  }
-
-  [GetServerPortRequest.GET_SERVER_PORT]() {
-    return this._port;
   }
 
   async _loadHttpServer() {

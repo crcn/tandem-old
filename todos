@@ -16,6 +16,9 @@ Workflow:
 3. User can save the current workspace to disk
 4. User can configure how tandem operates in the UI
 
+- [ ] auto updater
+- [ ] analytics on usage
+  - [ ] need usage report prompt
 - [ ] location prompt when creating new project
 - [ ] install CLI tools menu option
 - [ ] store settings in ~/.tandem
