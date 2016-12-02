@@ -16,6 +16,7 @@ Workflow:
 3. User can save the current workspace to disk
 4. User can configure how tandem operates in the UI
 
+- [ ] location prompt when creating new project
 - [ ] store settings in ~/.tandem
   - [ ] first startup config
   - [ ] extensions
@@ -24,6 +25,7 @@ Workflow:
 - [ ] splash just like sketch
 - [ ] unsaved files
 - [ ] need to be able to click elements on the page
+- [ ] rename artboard
 
 - [ ] mesh templates should be dynamic
 
@@ -130,11 +132,9 @@ CORE
   - [ ] config for scanning application for components
   - [ ] History scrubber
 
-MEASUREMENT TOOLS
-  - [ ] key command for displaying distances between objects
-
 DEV TOOLS
   - [ ] ability to set global values in the sandbox such as env (useful for changing states in app)
+  - [ ] menu option for auto adding artboards from url - or possibly another element
 SOCIAL
   - *[ ] put tandem on backend
   - *[ ] possibly attach messages to commits
@@ -155,17 +155,10 @@ OPTIMIZATIONS
   - [ ] run VM code in a new worker for speed and to prevent mem leaks
   - [ ] connect studio with repo of extensions
 
-DOCUMENTS GUTTER
-  - [ ] layers
-    - *[ ] preview of code that generated particular node
-  - [ ] css files
-    - [ ] ability to add new declaration
-
-ANIMATION PANE
-
 KEYBOARD SHORTCUTS
   - [ ] select parent of current selection
 
+- [ ] html breadcrumb
 
 ARTBOARD PANE
   - [ ] preset

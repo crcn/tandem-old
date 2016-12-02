@@ -9,14 +9,17 @@ import { createEditorServerProviders, IEdtorServerConfig } from "@tandem/editor/
 import { createCommonEditorProviders, IEditorCommonConfig } from "@tandem/editor/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 
+import { IStudioEditorServerConfig } from "./config";
 import { 
   SpawnWorkerCommand, 
-  InitializeWindowCommand,
+  OpenNewWorkspaceCommand,
+  CLIOpenWorkspaceCommand
 } from "./commands";
 
 
 import { 
-  GetProjectStartOptionsRequest
+  OpenNewWorkspaceRequest,
+  GetProjectStartOptionsRequest,
 } from "tandem-studio/common";
 
 import {
@@ -27,15 +30,22 @@ import {
    deserialize,
    CommandFactoryProvider,
    LoadApplicationRequest,
+   ApplicationReadyMessage,
    InitializeApplicationRequest,
 } from "@tandem/common";
 
 process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || LogLevel.DEFAULT;
 
+const BROWSER_BASE_PATH  = `${__dirname}/../browser`;
+
 export const initializeMaster = async () => {
 
-  const config: IEdtorServerConfig = {
+  const config: IStudioEditorServerConfig = {
     family: "none",
+    browser: {
+      assetUrl: `file://${BROWSER_BASE_PATH}/path`,
+      indexUrl: `file://${BROWSER_BASE_PATH}/index.html`
+    },
     cwd: process.cwd(),
     argv: argv,
     log: {
@@ -49,7 +59,8 @@ export const initializeMaster = async () => {
   const injector = new Injector(
     createCommonEditorProviders(config),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, SpawnWorkerCommand),
-    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, InitializeWindowCommand),
+    new CommandFactoryProvider(OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE, OpenNewWorkspaceCommand),
+    new CommandFactoryProvider(ApplicationReadyMessage.READY, CLIOpenWorkspaceCommand)
   );
 
   const app = new ServiceApplication(injector);

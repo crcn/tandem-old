@@ -1,6 +1,6 @@
 import { BaseCommand, injectProvider } from "@tandem/common";
-import { GetProjectStartOptionsRequest } from "tandem-studio/common";
 import { ProjectStarterFactoryProvider } from "tandem-studio/worker/providers";
+import { GetProjectStartOptionsRequest, IStarterOption } from "tandem-studio/common";
 
 export class GetProjectStarterOptionsCommand extends BaseCommand {
   @injectProvider(ProjectStarterFactoryProvider.getId("**"))

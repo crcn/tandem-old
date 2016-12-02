@@ -126,14 +126,14 @@ export class OpenFileRequest extends CoreEvent {
   }
 }
 
-@setMessageTarget(EditorFamilyType.MASTER)
-export class OpenProjectRequest extends CoreEvent {
-  static readonly OPEN_PROJECT_FILE = "openProjectFile";
+// opens the given workspace in this session
+export class OpenWorkspaceRequest extends CoreEvent {
+  static readonly OPEN_WORKSPACE = "openWorkspace";
   constructor(readonly filePath: string) {
-    super(OpenProjectRequest.OPEN_PROJECT_FILE);
+    super(OpenWorkspaceRequest.OPEN_WORKSPACE);
   }
-  static async dispatch({ filePath }: { filePath: string }, bus: IStreamableDispatcher<any>): Promise<boolean> {
-    return (await readOneChunk(bus.dispatch(new OpenProjectRequest(filePath)))).value;
+  static async dispatch(filePath: string, bus: IStreamableDispatcher<any>): Promise<boolean> {
+    return (await readOneChunk(bus.dispatch(new OpenWorkspaceRequest(filePath)))).value;
   }
 }
 

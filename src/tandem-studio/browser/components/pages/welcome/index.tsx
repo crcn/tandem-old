@@ -2,10 +2,11 @@ import "./index.scss";
 
 import * as React from "react";
 import * as cx from "classnames";
+import { FileInputComponent } from "@tandem/uikit";
 import { TandemStudioBrowserStore } from "tandem-studio/browser/stores";
 import { BaseApplicationComponent, inject } from "@tandem/common";
 import { TandemStudioBrowserStoreProvider } from "tandem-studio/browser/providers";
-import { OpenGettingStartedProjectRequest, StartProjectRequest } from "tandem-studio/common/messages";
+import { OpenGettingStartedProjectRequest, StartProjectRequest, OpenWorkspaceRequest } from "tandem-studio/common";
 
 // TODO - scan application directory for VSCode, and display "install extension" button if not already installed
 export class WelcomeComponent extends BaseApplicationComponent<any, any> {
@@ -34,8 +35,9 @@ export class WelcomeComponent extends BaseApplicationComponent<any, any> {
     StartProjectRequest.dispatch(option, this.bus);
   }
 
-  openExistingProject = () => {
-
+  onOpenExistingProject = (event: React.SyntheticEvent<any>) => {
+    const file = event.currentTarget.files[0] as File;
+    OpenWorkspaceRequest.dispatch(file.path, this.bus);
   }
 
   render() {
@@ -72,7 +74,7 @@ export class WelcomeComponent extends BaseApplicationComponent<any, any> {
 
         </div>
         <div className="footer">
-          <a href="#" className="button" onClick={this.openExistingProject}>Open existing project</a>
+          <FileInputComponent accept=".tandem" label="Open existing project" onChange={this.onOpenExistingProject} />
         </div>
       </div>
     </div>;

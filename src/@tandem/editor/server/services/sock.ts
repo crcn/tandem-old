@@ -1,5 +1,4 @@
 import { IDispatcher, readAllChunks, IStreamableDispatcher, FilterBus, filterFamilyMessage, setMessageTarget } from "@tandem/mesh";
-import { OpenProjectRequest } from "@tandem/editor/common";
 import { IEdtorServerConfig } from "@tandem/editor/server/config";
 import { CoreApplicationService } from "@tandem/core";
 import { ApplicationServiceProvider } from "@tandem/common";
@@ -12,17 +11,6 @@ import * as net from "net";
 import * as fsa from "fs-extra";
 
 const SOCK_FILE = path.join(os.tmpdir(), `tandem-${process.env.USER}.sock`);
-
-@setMessageTarget(EditorFamilyType.MASTER)
-class ExecAction extends CoreEvent {
-  static readonly EXEC = "exec";
-  constructor(readonly config: IEdtorServerConfig) {
-    super(ExecAction.EXEC);
-  }
-  static dispatch(config: any, bus: IStreamableDispatcher<any>) {
-    return readAllChunks(bus.dispatch(new ExecAction(config)));
-  }
-}
 
 export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
@@ -51,9 +39,6 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
 
       client.once("connect", async () => {
         const remoteBus = this._registerSocketBus(client);
-        if (this._argv) {
-          await ExecAction.dispatch(this.config, remoteBus);
-        }
 
         if (this._argv.terminate) {
           client.end();
@@ -66,16 +51,7 @@ export class SockService extends CoreApplicationService<IEdtorServerConfig> {
     });
   }
 
-  [ExecAction.EXEC]({ config }: ExecAction) {
-    if (config.argv && config.argv._.length) {
-      OpenProjectRequest.dispatch({ filePath: path.resolve(config.cwd, config.argv._[0]) }, this.bus);
-    }
-  }
-
   [InitializeApplicationRequest.INITIALIZE](action: LoadApplicationRequest) {
-    if (this.config.argv) {
-      ExecAction.dispatch(this.config, this.bus);
-    }
     this._printSockFile();
   }
 

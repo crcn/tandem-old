@@ -42,7 +42,7 @@ import {
 } from "@tandem/common";
 
 
-import { OpenProjectRequest, SelectSourceRequest } from "@tandem/editor/common";
+import { SelectSourceRequest } from "@tandem/editor/common";
 
 // TODO - defer various actions to project file controller.
 
@@ -61,26 +61,6 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   private _tweener: IDisposable;
   private _zoomTimeout: any;
   
-
-  async [OpenProjectRequest.OPEN_PROJECT_FILE](action: OpenProjectRequest) {
-
-    // const path = action.filePath;
-
-    // const syntheticDocument = this._store.workspace.document;
-
-    // const root = <SyntheticDOMElement>syntheticDocument.body.firstChild;
-    // const artboard = syntheticDocument.createElement("artboard");
-    // artboard.setAttribute("src", path);
-
-    // const edit = root.createEdit();
-
-    // edit.appendChild(artboard);
-
-    // this.bus.execute(new ApplyFileEditRequest(edit));
-
-    return !document.hidden;
-  }
-
   [ZoomRequest.ZOOM](action: ZoomRequest) {
     if (this._tweener) this._tweener.dispose();
     const delta = action.delta * this._store.workspace.zoom;

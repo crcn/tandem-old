@@ -1,7 +1,7 @@
 import { IMessage } from "@tandem/mesh";
 import { IStarterOption } from "tandem-studio/common/stores";
 import { EditorFamilyType } from "@tandem/editor/common";
-import { setMessageTarget, IBus, readAllChunks } from "@tandem/mesh";
+import { setMessageTarget, IBus, readAllChunks, TransformStream } from "@tandem/mesh";
 
 @setMessageTarget(EditorFamilyType.MASTER)
 export class OpenGettingStartedProjectRequest implements IMessage {
@@ -28,4 +28,11 @@ export class StartProjectRequest implements IMessage {
   static async dispatch(option: IStarterOption, bus: IBus<any>) {
     return bus.dispatch(new StartProjectRequest(option));
   }
+}
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class OpenNewWorkspaceRequest implements IMessage {
+  static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
+  readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
+  constructor(readonly filePath: string) { }
 }

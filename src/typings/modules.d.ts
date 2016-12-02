@@ -216,3 +216,24 @@ declare module "rc-checkbox" {
 
   export = RCCheckbox;
 }
+
+declare module "react-file-input" {
+  import * as React from "react";
+  interface FileInputProps {
+    name: string;
+    className: string;
+    accept: string;
+    placeholder: string;
+    disabled?: boolean;
+    onChange: (event: React.SyntheticEvent<any>) => void;
+  }
+
+  class FileInputComponent extends React.Component<FileInputProps, {}> {
+  }
+
+  namespace FileInputComponent {
+
+  }
+
+  export = FileInputComponent;
+}

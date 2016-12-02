@@ -1,39 +1,25 @@
-import { IMessage } from "@tandem/mesh";
-import { Store, Workspace } from "@tandem/editor/browser/stores";
-import { EditorStoreProvider } from "@tandem/editor/browser/providers";
-import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
+import { Workspace } from "@tandem/editor/browser/stores";
+import { BoundingRect } from "@tandem/common";
+import { OpenWorkspaceRequest } from "@tandem/editor/common";
+import { BaseEditorBrowserCommand } from "./base";
+import { RouteNames } from "@tandem/editor/browser/constants";
+
 import { 
   BaseRenderer, 
-  SyntheticDOMRenderer,
+  SyntheticDOMRenderer, 
   BaseDecoratorRenderer, 
   RemoteSyntheticBrowser, 
 } from "@tandem/synthetic-browser";
-import { 
-  inject, 
-  BrokerBus, 
-  BaseCommand, 
-  BoundingRect, 
-  InjectorProvider, 
-  PrivateBusProvider, 
-} from "@tandem/common";
 
-export class LoadCurrentWorkspaceCommand extends BaseCommand {
-
-  @inject(EditorStoreProvider.ID)
-  private _store: Store;
-
-  async execute(message: IMessage) {
-    const filePath = await GetPrimaryProjectFilePathRequest.dispatch(this.bus);
-    if (this._store.workspace && this._store.workspace.browser.location.toString() === filePath) return;
-    if (!filePath) return;
-
+export class OpenWorkspaceCommand extends BaseEditorBrowserCommand {
+  async execute({ filePath }: OpenWorkspaceRequest) {
     const workspace = this.injector.inject(new Workspace());
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, this.injector.inject(new SyntheticDOMRenderer())));
     await browser.open({ url: filePath });
-    this._store.workspace = workspace;
+    this.editorStore.workspace = workspace;
+    await this.editorStore.router.redirect(RouteNames.WORKSPACE);
   }
 }
-
 
 /**
  * Offset the transform skewing that happens with the editor

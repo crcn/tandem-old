@@ -1,2 +1,3 @@
 export * from "./spawn-worker";
-export * from "./initialize-window";
+export * from "./open-new-workspace";
+export * from "./cli-open-workspace";

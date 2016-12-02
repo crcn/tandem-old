@@ -41,15 +41,20 @@ import {
 
 import { Store, createStatedRouteClass } from "./stores";
 
-import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "../common";
+import { 
+  ReceiverService, 
+  ConsoleLogService, 
+  OpenWorkspaceRequest, 
+  createCommonEditorProviders, 
+} from "../common";
 
 import { 
   AlertCommand, 
   OpenCWDCommand, 
   LoadRouterCommand,
+  OpenWorkspaceCommand,
   SetReadyStatusCommand,
   RemoveSelectionCommand, 
-  LoadCurrentWorkspaceCommand,
 } from "./commands";
 
 import {
@@ -76,12 +81,12 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
+    new CommandFactoryProvider(OpenWorkspaceRequest.OPEN_WORKSPACE, OpenWorkspaceCommand),
     new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),
     
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadRouterCommand),
 
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
-    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadCurrentWorkspaceCommand),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),

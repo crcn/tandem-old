@@ -13,7 +13,6 @@ import {
   FileService,
   SockService,
   StdinService,
-  ProjectService,
   BrowserService,
   ResolverService,
 } from "./services";
@@ -33,7 +32,6 @@ export function createEditorServerProviders(config: IEdtorServerConfig, dataStor
     new ApplicationServiceProvider("ds", DSService),
     new ApplicationServiceProvider("file", FileService),
     new ApplicationServiceProvider("sock", SockService),
-    new ApplicationServiceProvider("project", ProjectService),
     new ApplicationServiceProvider("browser", BrowserService),
     new ApplicationServiceProvider("resolver", ResolverService),
   ];

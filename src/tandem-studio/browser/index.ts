@@ -35,7 +35,11 @@ import {
 
 import { StudioPageNames } from "./constants";
 import { WelcomeComponent } from "./components";
-import { InitializeWelcomePageCommand, LoadStartOptionsCommand } from "./commands";
+import { 
+  LoadStartOptionsCommand, 
+  QueryOpenWorkspaceCommand, 
+  InitializeWelcomePageCommand, 
+} from "./commands";
 
 const config: IEditorBrowserConfig = {
   family: EditorFamilyType.BROWSER,
@@ -56,11 +60,11 @@ const injector = new Injector(
   // Commands
   new CommandFactoryProvider(ApplicationReadyMessage.READY, InitializeWelcomePageCommand),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadStartOptionsCommand),
+  new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, QueryOpenWorkspaceCommand),
 
   // Pages
   new PageFactoryProvider(StudioPageNames.WELCOME, WelcomeComponent),
   new RouteFactoryProvider(StudioPageNames.WELCOME, "/welcome", createStatedRouteClass({[RouteNames.ROOT]: StudioPageNames.WELCOME })),
-
   
   new TandemStudioBrowserStoreProvider(TandemStudioBrowserStore),
   createEditorBrowserProviders(config),
