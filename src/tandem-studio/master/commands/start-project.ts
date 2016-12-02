@@ -1,7 +1,7 @@
 import { BaseCommand } from "@tandem/common";
 import { StartProjectRequest } from "tandem-studio/common";
-import { ProjectStarterFactoryProvider } from "tandem-studio/server/providers";
-import { BaseProjectStarter } from "tandem-studio/server/project";
+import { ProjectStarterFactoryProvider } from "tandem-studio/master/providers";
+import { BaseProjectStarter } from "tandem-studio/master/project";
 
 export class StartProjectCommand extends BaseCommand {
   async execute(request: StartProjectRequest) {

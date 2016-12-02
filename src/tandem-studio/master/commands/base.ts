@@ -1,4 +1,4 @@
-import { IStudioEditorServerConfig } from "tandem-studio/server/config";
+import { IStudioEditorServerConfig } from "tandem-studio/master/config";
 import { ApplicationConfigurationProvider } from "@tandem/core";
 import { BaseCommand, Logger, loggable, inject } from "@tandem/common";
 

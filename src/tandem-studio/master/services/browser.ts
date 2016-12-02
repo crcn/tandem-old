@@ -13,7 +13,7 @@ import * as createSocketIOServer from "socket.io";
 import { exec } from "child_process";
 import { IOService } from "@tandem/editor/common";
 import { loggable, inject } from "@tandem/common/decorators";
-import { IStudioEditorServerConfig } from "tandem-studio/server/config";
+import { IStudioEditorServerConfig } from "tandem-studio/master/config";
 import { CoreApplicationService } from "@tandem/core";
 import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";

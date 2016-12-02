@@ -1,6 +1,6 @@
 
 import { IStarterOption } from "tandem-studio/common/stores";
-import { BaseProjectStarter } from "tandem-studio/worker/project";
+import { BaseProjectStarter } from "tandem-studio/master/project";
 import { ClassFactoryProvider, Provider, Injector } from "@tandem/common";
 
 

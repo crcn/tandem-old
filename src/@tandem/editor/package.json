@@ -6,9 +6,6 @@
   "bin": {
     "tandem": "./bin/tandem"
   },
-  "entries": {
-    "browser": "./browser-entry.ts"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { app } from "electron";
 import { isMaster } from "cluster";
-import { initializeMaster } from "./server";
+import { initializeMaster } from "./master";
 import { initializeWorker } from "./worker";
 
 process.on("unhandledRejection", function(error) {
