@@ -1,9 +1,10 @@
 import { argv } from "yargs";
 import * as electron from "electron";
 import * as getPort from "get-port";
+import { EditorFamilyType } from "@tandem/editor/common";
 import { FileCacheProvider } from "@tandem/sandbox";
 import { ServiceApplication } from "@tandem/core";
-import { EditorFamilyType } from "@tandem/editor/common";
+import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
 import { createCoreStudioWorkerProviders } from "../worker";
 import { createEditorServerProviders, IEdtorServerConfig } from "@tandem/editor/server";
 import { createCommonEditorProviders, IEditorCommonConfig } from "@tandem/editor/common";
@@ -41,6 +42,7 @@ const BROWSER_BASE_PATH  = `${__dirname}/../browser`;
 export const initializeMaster = async () => {
 
   const config: IStudioEditorServerConfig = {
+    projectFileExtensions: TD_FILE_EXTENSIONS,
     family: "none",
     browser: {
       assetUrl: `file://${BROWSER_BASE_PATH}/path`,

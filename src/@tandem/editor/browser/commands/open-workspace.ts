@@ -17,6 +17,10 @@ export class OpenWorkspaceCommand extends BaseEditorBrowserCommand {
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, this.injector.inject(new SyntheticDOMRenderer())));
     await browser.open({ url: filePath });
     this.editorStore.workspace = workspace;
+
+    // for desktop -- this may get ignored in the browser 
+    window.resizeTo(1024, 768);
+    
     await this.editorStore.router.redirect(RouteNames.WORKSPACE);
   }
 }
