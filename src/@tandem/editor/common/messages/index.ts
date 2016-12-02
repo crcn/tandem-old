@@ -67,24 +67,27 @@ export namespace EditorFamilyType {
   export const MASTER  = "master";
 }
 
-// setMessageTarget(EditorFamilyType.MASTER)(WatchFileRequest);
-// addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
-// setMessageTarget(EditorFamilyType.MASTER)(ReadFileRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(ReadDirectoryRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(ResolveFileRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(ApplyFileEditRequest);
 
-// setMessageTarget(EditorFamilyType.MASTER)(DSFindRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(DSUpsertRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(DSInsertRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(DSRemoveRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(DSUpdateRequest);
-// setMessageTarget(EditorFamilyType.MASTER)(DSFindAllRequest);
-// addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
+setMessageTarget(EditorFamilyType.WORKER)(WatchFileRequest);
+setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest);
+setMessageTarget(EditorFamilyType.WORKER)(ReadDirectoryRequest);
+setMessageTarget(EditorFamilyType.WORKER)(ResolveFileRequest);
+setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
+
+setMessageTarget(EditorFamilyType.WORKER)(DSFindRequest);
+setMessageTarget(EditorFamilyType.WORKER)(DSUpsertRequest);
+setMessageTarget(EditorFamilyType.WORKER)(DSInsertRequest);
+setMessageTarget(EditorFamilyType.WORKER)(DSRemoveRequest);
+setMessageTarget(EditorFamilyType.WORKER)(DSUpdateRequest);
+setMessageTarget(EditorFamilyType.WORKER)(DSFindAllRequest);
+
+addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
 
 
 @addMessageVisitor(EditorFamilyType.BROWSER)
-// @setMessageTarget(EditorFamilyType.TEXT_EDITOR)
+@addMessageVisitor(EditorFamilyType.WORKER)
+@addMessageVisitor(EditorFamilyType.MASTER)
+@setMessageTarget(EditorFamilyType.TEXT_EDITOR)
 @serializable({
   serialize({ filePath, selection }: OpenFileRequest) {
     return { filePath, selection };

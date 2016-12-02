@@ -14,10 +14,12 @@ import * as vscode from "vscode";
 import * as through from "through2";
 import * as getPort from "get-port";
 import * as createServer from "express";
-import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage } from "@tandem/mesh";
+import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage, setMessageTarget } from "@tandem/mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
-import { GetServerPortRequest, OpenProjectRequest, SelectSourceRequest, OpenFileRequest, EditorFamilyType } from "@tandem/editor/common";
+import { SelectSourceRequest, OpenFileRequest, EditorFamilyType } from "@tandem/editor/common";
+
+setMessageTarget(EditorFamilyType.TEXT_EDITOR)(OpenFileRequest);
 
 import {
     FileCache,
@@ -256,6 +258,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     client.bus.register({
         dispatch({ filePath, selection, type }: OpenFileRequest) {
+            console.log(type);
             if (type === OpenFileRequest.OPEN_FILE) {
                 
                 const setSelection = () => {

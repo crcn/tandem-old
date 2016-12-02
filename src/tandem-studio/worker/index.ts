@@ -1,6 +1,7 @@
 import { argv } from "yargs";
 import * as getPort from "get-port";
 import { SockService, DSService } from "./services";
+import "./messages";
 
 import { PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
