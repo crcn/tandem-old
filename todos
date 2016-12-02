@@ -17,7 +17,6 @@ Workflow:
 4. User can configure how tandem operates in the UI
 
 - [ ] mobile sizes
-- [ ] can reload the same browser without losing the session
 - [ ] analytics on usage
   - [ ] need usage report prompt
 - [ ] location prompt when creating new project

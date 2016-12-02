@@ -54,10 +54,11 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
     const file = event.currentTarget.files[0] as File;
     await this.bus.dispatch(createWorkspaceRedirectRequest(file.path));
   }
+  
 
   startNewDocument = async () => {
     try {
-      await StartNewProjectRequest.dispatch(this.state.selectedStarterOption, this.state.cwd, this.bus);
+      await this.bus.dispatch(createWorkspaceRedirectRequest(await StartNewProjectRequest.dispatch(this.state.selectedStarterOption, this.state.cwd, this.bus)));
     } catch(e) {
       this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot start project: ${e.stack}`));
     }

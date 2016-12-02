@@ -1108,7 +1108,7 @@ class TypographySectionComponent extends SectionComponent<ISectionComponentProps
     return <div className="container">
       <div className="row">
         <div className="col-12">
-          <ChromePicker color={graphics.color.toString()} onChange={(color) => graphics.color = new SyntheticCSSColor(color.rgb.r, color.rgb.g, color.rgb.b, color.rgb.a)} />
+          <ChromePicker color={graphics.color && graphics.color.toString()} onChange={(color) => graphics.color = new SyntheticCSSColor(color.rgb.r, color.rgb.g, color.rgb.b, color.rgb.a)} />
         </div>
       </div>
     </div>

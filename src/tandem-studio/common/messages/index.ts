@@ -39,8 +39,8 @@ export class StartNewProjectRequest implements IMessage {
   readonly type = StartNewProjectRequest.START_NEW_PROJECT;
   constructor(readonly option: IStarterOption, readonly directoryPath: string) { }
 
-  static async dispatch(option: IStarterOption, directoryPath: string, bus: IBus<any>) {
-    return bus.dispatch(new StartNewProjectRequest(option, directoryPath));
+  static async dispatch(option: IStarterOption, directoryPath: string, bus: IBus<any>): Promise<string> {
+    return (await readOneChunk<string>(bus.dispatch(new StartNewProjectRequest(option, directoryPath)))).value;
   }
 }
 

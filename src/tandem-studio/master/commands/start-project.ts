@@ -13,7 +13,6 @@ export class StartProjectCommand extends BaseCommand {
     const starter = ProjectStarterFactoryProvider.create(request.option, this.injector);
     const { workspaceFilePath } = await starter.start(request.directoryPath);
 
-
-    this.bus.dispatch(new OpenWorkspaceRequest(workspaceFilePath));
+    return workspaceFilePath; 
   }
 }
