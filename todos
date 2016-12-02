@@ -17,6 +17,7 @@ Workflow:
 4. User can configure how tandem operates in the UI
 
 - [ ] location prompt when creating new project
+- [ ] install CLI tools menu option
 - [ ] store settings in ~/.tandem
   - [ ] first startup config
   - [ ] extensions

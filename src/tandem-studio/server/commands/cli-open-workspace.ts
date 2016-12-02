@@ -9,7 +9,7 @@ export class CLIOpenWorkspaceCommand extends BaseServerCommand {
     let filePath = this.config.argv._[0];
 
     // scan the CWD for any tandem files
-    if (!filePath) {
+    if (filePath === ".") {
       filePath = glob.sync(path.join(process.cwd(), `{${this.config.projectFileExtensions.map(ext => `*.${ext}`).join(",")}}`)).find((filePath) => {
         return true;
       });
