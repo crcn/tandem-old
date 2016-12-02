@@ -24,7 +24,7 @@ import { ProjectStarterFactoryProvider } from "./providers";
 import { BrowserService } from "./services";
 
 import { 
-  StartProjectRequest,
+  StartNewProjectRequest,
   SelectDirectoryRequest,
   OpenNewWorkspaceRequest,
   GetProjectStartOptionsRequest,
@@ -77,7 +77,7 @@ export const initializeMaster = async () => {
     new CommandFactoryProvider(SelectDirectoryRequest.SELECT_DIRECTORY_REQUEST, SelectDirectoryCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, CLIOpenWorkspaceCommand),
     new CommandFactoryProvider(GetProjectStartOptionsRequest.GET_PROJECT_STARTER_OPTIONS, GetProjectStarterOptionsCommand),
-    new CommandFactoryProvider(StartProjectRequest.START_NEW_PROJECT, StartProjectCommand),
+    new CommandFactoryProvider(StartNewProjectRequest.START_NEW_PROJECT, StartProjectCommand),
 
 
     

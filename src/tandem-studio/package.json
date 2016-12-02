@@ -16,6 +16,7 @@
   "dependencies": {
     "glob": "^7.1.1",
     "qs": "^6.3.0",
-    "react-file-input": "^0.2.5"
+    "react-file-input": "^0.2.5",
+    "strip-indent": "^2.0.0"
   }
 }

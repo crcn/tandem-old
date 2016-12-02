@@ -1,12 +1,19 @@
+import * as fs from "fs";
+import * as path from "path";
+
 import { BaseCommand } from "@tandem/common";
-import { StartProjectRequest } from "tandem-studio/common";
-import { ProjectStarterFactoryProvider } from "tandem-studio/master/providers";
 import { BaseProjectStarter } from "tandem-studio/master/project";
+import { ProjectStarterFactoryProvider } from "tandem-studio/master/providers";
+import { StartNewProjectRequest, OpenWorkspaceRequest } from "tandem-studio/common";
 
 export class StartProjectCommand extends BaseCommand {
-  async execute(request: StartProjectRequest) {
-    this.logger.info("Starting new project");
+  async execute(request: StartNewProjectRequest) {
+    this.logger.info(`Starting new ${request.option.label} project in ${request.directoryPath}`);
+    
     const starter = ProjectStarterFactoryProvider.create(request.option, this.injector);
-    await starter.start();
+    const { workspaceFilePath } = await starter.start(request.directoryPath);
+
+
+    this.bus.dispatch(new OpenWorkspaceRequest(workspaceFilePath));
   }
 }

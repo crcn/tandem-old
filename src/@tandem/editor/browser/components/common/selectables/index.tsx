@@ -146,7 +146,7 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
         element={element}
         absoluteBounds={element.getAbsoluteBounds()}
         hovering={element.metadata.get(MetadataKeys.HOVERING)}
-        key={element.uid}
+        key={element.browser.uid + "." + element.uid}
       />
     });
 

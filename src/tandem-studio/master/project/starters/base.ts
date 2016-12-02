@@ -1,3 +1,7 @@
+export interface IProjectStarterResult {
+  workspaceFilePath: string;
+}
+
 export abstract class BaseProjectStarter {
-  abstract start(): Promise<any>;
+  abstract start(directoryPath: string): Promise<IProjectStarterResult>;
 }

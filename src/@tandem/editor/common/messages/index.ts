@@ -105,6 +105,7 @@ export class OpenFileRequest extends CoreEvent {
 }
 
 // opens the given workspace in this session
+@setMessageTarget(EditorFamilyType.BROWSER)
 export class OpenWorkspaceRequest extends CoreEvent {
   static readonly OPEN_WORKSPACE = "openWorkspace";
   constructor(readonly filePath: string) {

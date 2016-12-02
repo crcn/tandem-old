@@ -53,7 +53,6 @@ export class LocalFileSystem extends BaseFileSystem {
 
   watchFile2(filePath: string, onChange: () => any) {
     this.logger.debug("watch", filePath);
-
     let currentStat = fs.lstatSync(filePath);
     const listener = () => {
       let newStat = fs.lstatSync(filePath);
@@ -61,7 +60,8 @@ export class LocalFileSystem extends BaseFileSystem {
       currentStat = newStat;
       onChange();
     }
-    fs.watchFile(filePath, listener);
+
+    fs.watchFile(filePath, { interval: 200 }, listener);
 
     return {
       dispose: () => {

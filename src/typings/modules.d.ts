@@ -237,3 +237,11 @@ declare module "react-file-input" {
 
   export = FileInputComponent;
 }
+
+declare module "strip-indent" {
+  function stripIndent(value: string): string;
+  namespace stripIndent {
+
+  }
+  export = stripIndent;
+}

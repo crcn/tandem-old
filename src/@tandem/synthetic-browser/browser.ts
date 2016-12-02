@@ -31,6 +31,7 @@ import {
   Sandbox,
   Dependency,
   DependencyGraph,
+  generateSyntheticUID,
   DependencyGraphProvider,
   IDependencyGraphStrategyOptions,
   DependencyGraphStrategyOptionsProvider,
@@ -50,6 +51,7 @@ export interface ISyntheticBrowserOpenOptions {
 export interface ISyntheticBrowser extends IObservable {
   open(options: ISyntheticBrowserOpenOptions): Promise<any>;
   window: SyntheticWindow;
+  uid: any;
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
   document: SyntheticDocument;
@@ -71,6 +73,8 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   private _location: SyntheticLocation;
   private _openOptions: ISyntheticBrowserOpenOptions;
   private _renderer: ISyntheticDocumentRenderer;
+  
+  readonly uid = generateSyntheticUID();
 
   constructor(protected _injector: Injector, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();

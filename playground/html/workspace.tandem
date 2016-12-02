@@ -1,0 +1,8 @@
+<tandem>
+  <!-- Desktop -->
+  <artboard src="./index.html" title="1024x768" style="width: 1024px; height: 768px;"></artboard>
+  <!-- iPhone -->
+  <artboard src="./index.html" title="iPhone 4" style=" left: 0px; top: 2811px; "></artboard>
+  <!-- Mobile -->
+  <artboard src="./index.html" title="iPad Air 2" style=" left: 0px; top: 1023px; width: 2048px; height: 1536px; "></artboard>
+</tandem>

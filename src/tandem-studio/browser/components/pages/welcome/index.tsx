@@ -4,14 +4,15 @@ import * as React from "react";
 import * as cx from "classnames";
 import * as electron from "electron";
 import { FileInputComponent } from "@tandem/uikit";
+import { AlertMessage } from "@tandem/editor/browser";
 import { TandemStudioBrowserStore } from "tandem-studio/browser/stores";
 import { BaseApplicationComponent, inject } from "@tandem/common";
 import { TandemStudioBrowserStoreProvider } from "tandem-studio/browser/providers";
 import { 
   IStarterOption, 
-  StartProjectRequest, 
   OpenWorkspaceRequest, 
   SelectDirectoryRequest,
+  StartNewProjectRequest, 
   OpenGettingStartedProjectRequest, 
 } from "tandem-studio/common";
 
@@ -43,13 +44,21 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
 
   }
 
-  startNewDocument = (option) => {
+  selectStarterOption = (option) => {
     this.setState({ selectedStarterOption: option });
   }
 
   onOpenExistingProject = (event: React.SyntheticEvent<any>) => {
     const file = event.currentTarget.files[0] as File;
     OpenWorkspaceRequest.dispatch(file.path, this.bus);
+  }
+
+  startNewDocument = async () => {
+    try {
+      await StartNewProjectRequest.dispatch(this.state.selectedStarterOption, this.state.cwd, this.bus);
+    } catch(e) {
+      this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot start project: ${e.stack}`));
+    }
   }
 
   selectDirectory = async () => {
@@ -96,6 +105,9 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
           </div>
         </div>
       </div>
+      <div className="footer">
+        <a href="#" className="button pull-right" onClick={this.startNewDocument.bind(this)}>Start Project</a>
+      </div>
     </div>
   }
 
@@ -108,7 +120,7 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
         <ul>
           { this._store.projectStarterOptions.map((option, index) => {
             return <li key={index}>
-              <div className={cx({ inner: true, disable: !option.enabled })} onClick={option.enabled && this.startNewDocument.bind(this, option)}>
+              <div className={cx({ inner: true, disable: !option.enabled })} onClick={option.enabled && this.selectStarterOption.bind(this, option)}>
                 <div className="image" style={{ backgroundImage: `url(${option.image})` }} />
                 <div className="label">
                   { option.label }

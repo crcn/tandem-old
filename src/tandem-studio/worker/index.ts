@@ -13,9 +13,10 @@ import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extensio
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
 import { EditorFamilyType, createCommonEditorProviders } from "@tandem/editor/common";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
-import { GetProjectStartOptionsRequest, StartProjectRequest, LoadProjectConfigCommand } from "tandem-studio/common";
+import { GetProjectStartOptionsRequest, LoadProjectConfigCommand } from "tandem-studio/common";
 import { FileImporterProvider } from "@tandem/editor/worker";
 import { IStudioWorkerConfig } from "./config";
+
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 import {
   hook,
@@ -31,9 +32,11 @@ import {
   InitializeApplicationRequest,
 } from "@tandem/common";
 
-import { DSProvider } from "./providers"; 
+import { DSProvider } from "./providers";
+import { ApplyFileEditCommand, SyncFileCacheCommand } from "./commands";
 
 import {
+  ApplyFileEditRequest,
   createSandboxProviders,
   WebpackProtocolResolver,
   ProtocolURLResolverProvider,
@@ -78,7 +81,10 @@ export const initializeWorker = async () => {
     new ApplicationServiceProvider("sock", SockService),
     new ApplicationServiceProvider("ds", DSService),
     createSyntheticBrowserWorkerProviders(),
-
+    
+    // commands
+    new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, SyncFileCacheCommand)
   );
 
   const app = new ServiceApplication(injector);

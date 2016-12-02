@@ -16,7 +16,8 @@ Workflow:
 3. User can save the current workspace to disk
 4. User can configure how tandem operates in the UI
 
-- [ ] auto updater
+- [ ] mobile sizes
+- [ ] can reload the same browser without losing the session
 - [ ] analytics on usage
   - [ ] need usage report prompt
 - [ ] location prompt when creating new project
@@ -24,12 +25,8 @@ Workflow:
 - [ ] store settings in ~/.tandem
   - [ ] first startup config
   - [ ] extensions
-- [ ] audit source files and delete code
-- [ ] user profile in 
-- [ ] splash just like sketch
 - [ ] unsaved files
-- [ ] need to be able to click elements on the page
-- [ ] rename artboard
+- [ ] auto updater
 
 - [ ] mesh templates should be dynamic
 

@@ -19,7 +19,6 @@ module.exports = {
     output: {
       filename: '[name].js',
     },
-    target: "electron",
     sassLoader: {
       includePaths: [SRC_DIR],
       outputStyle: "expanded"
@@ -87,6 +86,7 @@ module.exports = {
     ],
     node: {
       __filename: true,
+      fs:  'empty',
       Buffer: true
     },
     postcss: () => [cssnext()],

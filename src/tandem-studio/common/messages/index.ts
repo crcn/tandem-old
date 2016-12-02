@@ -13,7 +13,7 @@ import {
 } from "@tandem/mesh";
 
 // scoping here
-setMessageTarget(EditorFamilyType.MASTER)(ApplyFileEditRequest);
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest));
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
 
 
@@ -34,13 +34,13 @@ export class GetProjectStartOptionsRequest implements IMessage {
 }
 
 @setMessageTarget(EditorFamilyType.MASTER)
-export class StartProjectRequest implements IMessage {
+export class StartNewProjectRequest implements IMessage {
   static readonly START_NEW_PROJECT: string = "startNewProject";
-  readonly type = StartProjectRequest.START_NEW_PROJECT;
-  constructor(readonly option: IStarterOption) { }
+  readonly type = StartNewProjectRequest.START_NEW_PROJECT;
+  constructor(readonly option: IStarterOption, readonly directoryPath: string) { }
 
-  static async dispatch(option: IStarterOption, bus: IBus<any>) {
-    return bus.dispatch(new StartProjectRequest(option));
+  static async dispatch(option: IStarterOption, directoryPath: string, bus: IBus<any>) {
+    return bus.dispatch(new StartNewProjectRequest(option, directoryPath));
   }
 }
 
