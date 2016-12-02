@@ -79,10 +79,10 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
         <i className="ion-close" onClick={this.close}></i>
         <h2 className="header">Welcome to Tandem</h2>
         <ul>
-          <li><a href="#" onClick={this.getStarted}>Getting started</a></li>
-          <li><a href="#" onClick={this.getStarted}>Key Commands</a></li>
-          <li><a href="#" onClick={this.joinNewsLetter}>Join newsletter</a></li>
-          <li><a href="#" onClick={this.installExtension.bind(this, "vscode")}>Install VSCode Extension</a></li>
+          <li className="hide"><a href="#" onClick={this.getStarted}>Getting started</a></li>
+          <li className="hide"><a href="#" onClick={this.getStarted}>Key Commands</a></li>
+          <li className="hide"><a href="#" onClick={this.joinNewsLetter}>Join newsletter</a></li>
+          <li className="hide"><a href="#" onClick={this.installExtension.bind(this, "vscode")}>Install VSCode Extension</a></li>
         </ul>
       </div>
       { this.state.selectedStarterOption ? this.renderSelectedStarterOption() : this.renderStarterOptions() }

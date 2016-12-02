@@ -39,19 +39,6 @@ const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
     position: absolute;
     box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.2);
   }
-
-  .artboard-entity iframe, .artboard-entity-overlay {
-    border: none;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-  }
-
-  .artboard-entity-overlay {
-    background: transparent;
-  }
 `));
 
 // TODO - watch src for any changes
@@ -70,7 +57,10 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
   createdCallback() {
     this.setAttribute("class", "artboard-entity");
-    this.innerHTML = `<iframe /><div class="artboard-entity-overlay" />`;
+    this.innerHTML = `
+      <iframe data-td-selectable="false" style="border: none; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px;" />
+      <div class="artboard-entity-overlay" style="background: transparent; border: none; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; " data-td-selectable="false" />
+    `;
   }
 
   get contentDocument() {

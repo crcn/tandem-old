@@ -135,7 +135,7 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
     const { workspace, zoom, allElements } = this.props;
 
     const visibleElements = allElements.filter(element => {
-      return (element as SyntheticHTMLElement).getAbsoluteBounds && (element as SyntheticHTMLElement).getAbsoluteBounds().visible
+      return (element as SyntheticHTMLElement).getAbsoluteBounds && (element as SyntheticHTMLElement).getAbsoluteBounds().visible && element.getAttribute("data-td-selectable") !== "false"
     }) as SyntheticHTMLElement[];
 
     const selectables = visibleElements.map((element) => {

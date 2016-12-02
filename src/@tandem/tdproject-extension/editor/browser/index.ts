@@ -1,9 +1,24 @@
 import { ContentEditorFactoryProvider } from "@tandem/sandbox";
 import { createTDProjectCoreProviders } from "../../core";
 import { MimeTypeAliasProvider, MimeTypeProvider } from "@tandem/common";
-import { TDArtboardStageToolComponent, ArtboardLoaderComponent, NavigatorPaneComponent, MeasurementStageToolComponent } from "./components";
-import { ReactComponentFactoryProvider, FooterComponentFactoryProvider, DocumentPaneComponentFactoryProvider, StageToolComponentFactoryProvider } from "@tandem/editor/browser";
+
+import { 
+  ArtboardPaneComponent, 
+  NavigatorPaneComponent, 
+  ArtboardLoaderComponent, 
+  TDArtboardStageToolComponent, 
+  MeasurementStageToolComponent,
+} from "./components";
+
 import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider} from "@tandem/synthetic-browser";
+import { 
+  ReactComponentFactoryProvider, 
+  FooterComponentFactoryProvider, 
+  StageToolComponentFactoryProvider, 
+  EntityPaneComponentFactoryProvider,
+  DocumentPaneComponentFactoryProvider, 
+} from "@tandem/editor/browser";
+
 
 
 export function createTDProjectEditorBrowserProviders() {
@@ -13,6 +28,8 @@ export function createTDProjectEditorBrowserProviders() {
     new StageToolComponentFactoryProvider("artboard", "pointer", TDArtboardStageToolComponent),
     new StageToolComponentFactoryProvider("altDistances", "pointer", MeasurementStageToolComponent),
     new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),
+    new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),
+    new EntityPaneComponentFactoryProvider("artboard", ArtboardPaneComponent)
   ];
 }
 

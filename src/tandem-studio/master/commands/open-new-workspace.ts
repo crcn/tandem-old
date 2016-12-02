@@ -17,7 +17,7 @@ export class OpenNewWorkspaceCommand extends BaseStudioServerCommand {
       } as any;
 
       if (filePath) {
-        hash = "#/workspace?${encodeURIComponent(filePath)}"
+        hash = `#/workspace?workspacePath=${encodeURIComponent(filePath)}`;
       } else {
         hash = "#/welcome";
       }

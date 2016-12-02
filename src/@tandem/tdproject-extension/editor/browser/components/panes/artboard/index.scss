@@ -1,0 +1,32 @@
+@import "@tandem/uikit/scss";
+
+.artboard-pane {
+  .preset-group {
+    .option {
+      cursor: pointer;
+      .preset-preview {
+        background: #CCCCCC;
+        border-radius: 2px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      &:hover {
+        background: rgba(0,0,0,0.03);
+      }
+
+      & .label {
+        text-align: left;
+        &.name {
+          opacity: 1;
+        }
+      }
+
+
+      & .dims {
+        text-align: right;
+
+      }
+    }
+  }
+}

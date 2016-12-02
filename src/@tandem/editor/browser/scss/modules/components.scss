@@ -1,55 +1,6 @@
-
+@import "@tandem/uikit/scss";
 
 $gutter-background: #444;
-
-.td-gutter {
-  overflow: scroll;
-  font-size: $font-size-sm;
-  letter-spacing: 0.15em;
-  height: 100%;
-  width: 100%;
-  position: relative;
-  color: $font-color-white;
-  background-color: $gutter-background;
-
-  .td-section-header {
-    font-size: 0.9em;
-    letter-spacing: 0.15em;
-    padding: 8px 16px;
-    &:hover {
-      .controls {
-        display: block;
-      }
-    }
-    font-weight: 400;
-    background: rgba(0, 0, 0, 0.14);
-    .controls{
-      display: none;
-      float: right;
-      cursor: pointer
-    }
-  }
-
-  .td-section-subheader {
-    @extend .font-regular;
-    text-transform: uppercase;
-    padding: 8px 16px;
-  }
-
-  .td-section {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  }
-
-  &.right {
-    border-left: 2px solid rgba(0, 0, 0, 0.2)
-  }
-
-
-  &.left {
-    border-right: 2px solid rgba(0,0, 0, 0.2)
-  }
-}
-
 
 a {
   color: inherit;
@@ -82,3 +33,28 @@ button {
 }
 
 
+.pane {
+  .label {
+    @extend .dim;
+    font-size: 0.8em;
+    vertical-align: bottom;
+    min-width: 15px;
+    text-align: right;
+    line-height: 24px;
+
+    & i {
+      line-height: 22px;
+    }
+  }
+
+
+  .title {
+    @extend .dim;
+    width: 100%;
+
+    padding-bottom: $padding-r;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+}

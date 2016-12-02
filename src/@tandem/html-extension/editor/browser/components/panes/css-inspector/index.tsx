@@ -14,6 +14,8 @@ import { CSSPrettyInspectorComponent } from "./pretty";
 import { ComputedPropertiesPaneComponent } from "./computed";
 import { BaseApplicationComponent, Mutation, MutationEvent, inject } from "@tandem/common";
 import { 
+  SVG_XMLNS,
+  HTML_XMLNS, 
   SyntheticDocument, 
   SyntheticCSSStyle, 
   SyntheticHTMLElement, 
@@ -24,8 +26,8 @@ import {
 } from "@tandem/synthetic-browser";
 
 
-import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/stores";
 import { HTMLExtensionStoreProvider } from "@tandem/html-extension/editor/browser/providers";
+import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/stores";
 
 const MAX_LABEL_LENGTH = 80;
 const DEFAULT_PANE = "pretty";
@@ -100,7 +102,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
 
     const selectedTab = tabs[this.state.pane];
 
-    return <div className="container css-inspector">
+    return <div className="container css-inspector pane">
       <div className="header">
         CSS
         <div className="controls show">

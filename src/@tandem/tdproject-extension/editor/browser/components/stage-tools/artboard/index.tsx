@@ -124,7 +124,7 @@ export class TDArtboardStageToolComponent extends React.Component<{ workspace: W
     if (!artboards.length) return null;
 
     const backgroundStyle = {
-      backgroundColor: "rgba(0,0,0,0.02)",
+      backgroundColor: "rgba(0,0,0,0.09)",
       transform: `translate(${-transform.left / transform.scale}px, ${-transform.top / transform.scale}px) scale(${1 / transform.scale}) translateZ(0)`,
       transformOrigin: "top left"
     };

@@ -2,7 +2,8 @@
 
 .m-preview-footer {
   font-size: $font-size-1;
-  background: $color-grey-10;
+  background: #F9F9F9;
+  border-top: 2px solid rgba(0, 0, 0, 0.05);
   position: absolute;
   color: $color-grey-7;
   padding: $padding-1 $padding-2;

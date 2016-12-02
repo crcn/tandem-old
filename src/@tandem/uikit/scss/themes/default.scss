@@ -44,15 +44,16 @@ $disabled-color: rgba(0,0,0,0.2);
     border: 1px solid $superlight-black;
   }
 
+
   background: #F9F9F9;
   border-color: $superlight-black;
 
   .header {
-    background: $superlight-black;
+    background: rgba(0,0,0,0.03);
   }
 
   hr {
-    height: 1px;
+    height: 2px;
     background: $superlight-black;
   }
 }

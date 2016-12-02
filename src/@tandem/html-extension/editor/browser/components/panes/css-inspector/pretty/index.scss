@@ -166,19 +166,6 @@
     }
   }
 
-  & .label {
-    @extend .dim;
-    font-size: 0.8em;
-    vertical-align: bottom;
-    min-width: 15px;
-    text-align: right;
-    line-height: 24px;
-
-    & i {
-      line-height: 22px;
-    }
-  }
-
   & .advanced-layout {
     min-width: 300px;
   }

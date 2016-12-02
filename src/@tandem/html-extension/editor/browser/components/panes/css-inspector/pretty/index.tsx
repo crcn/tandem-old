@@ -4,10 +4,11 @@ import * as cx from "classnames";
 import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { RadioGroupComponent } from "@tandem/uikit";
+import { RadioGroupComponent, TextInputComponent } from "@tandem/uikit";
 import { ChromePicker } from "react-color";
 import * as AutoSizeInput from "react-input-autosize";
 import * as ReactSliderComponent from "react-slider";
+
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 import * as Select from "react-select";  
 import * as CheckboxComponent from "rc-checkbox";
@@ -217,6 +218,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
       <TypographySectionComponent rule={rule} graphics={graphics} />
 
       { this.renderAppearance() }
+      <hr />
 
       <BackgroundsSectionComponent rule={rule} graphics={graphics} />
 
@@ -245,7 +247,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
           </div>
           <div className="col-3">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="opacity" block={true}>
-              <BetterTextInput value={graphics.opacity || 1} onChange={bindGraphicsValueChange(graphics, "opacity")} />
+              <TextInputComponent value={graphics.opacity || 1} onChange={bindGraphicsValueChange(graphics, "opacity")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -269,7 +271,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
     const { graphics } = this.props;
 
     // TODO - more buttons needs to popup an animation timeline footer
-    return <div className="section" key="animations">
+    return <div className="container section" key="animations">
       <div className="section">
         <div className="row title">
           <div className="col-12">
@@ -442,7 +444,7 @@ class FilterSectionComponent extends SectionComponent<ISectionComponentProps> {
     const { graphics, rule } = this.props;
     const selectedFilterIndex = this._selectedFilterIndex;
 
-    return <div className="filters-section">
+    return <div className="container filters-section">
       <div className="row title">        
         <div className="col-12">
           <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="filters" block={true}>
@@ -488,7 +490,7 @@ class FilterSectionComponent extends SectionComponent<ISectionComponentProps> {
           <ReactSliderComponent min={0} max={max} step={1} value={filter.amount.value} onChange={setNewAmount} />
         </div>
         <div className="col-3">
-          <BetterTextInput value={filter.amount.value} onChange={setNewAmount} />
+          <TextInputComponent value={filter.amount.value} onChange={setNewAmount} />
         </div>
       </div>
     }
@@ -504,7 +506,7 @@ class FilterSectionComponent extends SectionComponent<ISectionComponentProps> {
           Amount
         </div>
         <div className="col-3">
-          <BetterTextInput value={filter.amount.value} onChange={setNewAmount} />
+          <TextInputComponent value={filter.amount.value} onChange={setNewAmount} />
         </div>
       </div>
     }
@@ -524,7 +526,7 @@ class FilterSectionComponent extends SectionComponent<ISectionComponentProps> {
           Degree
         </div>
         <div className="col-3">
-          <BetterTextInput value={filter.amount.value} onChange={setNewAmount} />
+          <TextInputComponent value={filter.amount.value} onChange={setNewAmount} />
         </div>
       </div>
     }
@@ -623,7 +625,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="left" block={true}> 
-              <BetterTextInput value={graphics.left && graphics.left.toString()} onChange={bindGraphicsValueChange(graphics, "left")} />
+              <TextInputComponent value={graphics.left && graphics.left.toString()} onChange={bindGraphicsValueChange(graphics, "left")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
@@ -633,7 +635,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="top" block={true}> 
-              <BetterTextInput value={graphics.top && graphics.top.toString()} onChange={bindGraphicsValueChange(graphics, "top")} />
+              <TextInputComponent value={graphics.top && graphics.top.toString()} onChange={bindGraphicsValueChange(graphics, "top")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -645,7 +647,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="width" block={true}> 
-              <BetterTextInput value={graphics.width && graphics.width.toString()} onChange={bindGraphicsValueChange(graphics, "width")} />
+              <TextInputComponent value={graphics.width && graphics.width.toString()} onChange={bindGraphicsValueChange(graphics, "width")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
@@ -655,7 +657,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="height" block={true}> 
-              <BetterTextInput value={graphics.height && graphics.height.toString()} onChange={bindGraphicsValueChange(graphics, "height")} />
+              <TextInputComponent value={graphics.height && graphics.height.toString()} onChange={bindGraphicsValueChange(graphics, "height")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -675,7 +677,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-3-5">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minWidth" block={true}> 
-              <BetterTextInput value={graphics.minWidth} onChange={bindGraphicsValueChange(graphics, "minWidth")} />
+              <TextInputComponent value={graphics.minWidth} onChange={bindGraphicsValueChange(graphics, "minWidth")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2-5 label">
@@ -685,7 +687,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-3-5">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="minheight" block={true}> 
-              <BetterTextInput value={graphics.minHeight} onChange={bindGraphicsValueChange(graphics, "minHeight")} />
+              <TextInputComponent value={graphics.minHeight} onChange={bindGraphicsValueChange(graphics, "minHeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -698,7 +700,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-3-5">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="maxWidth" block={true}> 
-              <BetterTextInput value={graphics.maxWidth} onChange={bindGraphicsValueChange(graphics, "maxWidth")} />
+              <TextInputComponent value={graphics.maxWidth} onChange={bindGraphicsValueChange(graphics, "maxWidth")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2-5 label">
@@ -708,7 +710,7 @@ class LayoutSectionComponent extends SectionComponent<ISectionComponentProps> {
           </div>
           <div className="col-3-5">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="maxHeight" block={true}> 
-              <BetterTextInput value={graphics.maxHeight} onChange={bindGraphicsValueChange(graphics, "maxHeight")} />
+              <TextInputComponent value={graphics.maxHeight} onChange={bindGraphicsValueChange(graphics, "maxHeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -853,7 +855,7 @@ class FlexContainerChildSectionComponent extends SectionComponent<ISectionCompon
         </div>
         <div className="col-4">
           <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="flexGrow" block={true}> 
-            <BetterTextInput value={rule.style.flexGrow} onChange={bindMergedRuleValueChange(rule, "flexGrow")} />
+            <TextInputComponent value={rule.style.flexGrow} onChange={bindMergedRuleValueChange(rule, "flexGrow")} />
           </CSSHighlightTargetRuleHintComponent>
         </div>
         <div className="col-2 label">
@@ -861,7 +863,7 @@ class FlexContainerChildSectionComponent extends SectionComponent<ISectionCompon
         </div>
         <div className="col-4">
           <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="flexShrink" block={true}> 
-            <BetterTextInput value={rule.style.flexShrink} onChange={bindMergedRuleValueChange(rule, "flexShrink")} />
+            <TextInputComponent value={rule.style.flexShrink} onChange={bindMergedRuleValueChange(rule, "flexShrink")} />
           </CSSHighlightTargetRuleHintComponent>
         </div>
       </div>
@@ -871,7 +873,7 @@ class FlexContainerChildSectionComponent extends SectionComponent<ISectionCompon
         </div>
         <div className="col-4">
           <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="order" block={true}> 
-            <BetterTextInput value={rule.style.order}  onChange={bindMergedRuleValueChange(rule, "order")} />
+            <TextInputComponent value={rule.style.order}  onChange={bindMergedRuleValueChange(rule, "order")} />
           </CSSHighlightTargetRuleHintComponent>
         </div>
         <div className="col-6">
@@ -909,7 +911,7 @@ class TypographySectionComponent extends SectionComponent<ISectionComponentProps
       return <span style={{fontFamily: option.value }} onFocus={this.previewFont.bind(this, option)} onMouseEnter={this.previewFont.bind(this, option)} onMouseLeave={this.previewFont.bind(this, undefined)}>{ option.label }</span>
     };
 
-    return <div className="section" key="typography">
+    return <div className="container section" key="typography">
       <div>
         <div className="row title">
           <div className="col-12">
@@ -943,7 +945,7 @@ class TypographySectionComponent extends SectionComponent<ISectionComponentProps
           </div>
           <div className="col-10">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontWeight" block={true}>
-              <BetterTextInput value={rule.style.fontWeight} onChange={bindGraphicsValueChange(graphics, "fontWeight")} />
+              <TextInputComponent value={rule.style.fontWeight} onChange={bindGraphicsValueChange(graphics, "fontWeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -956,7 +958,7 @@ class TypographySectionComponent extends SectionComponent<ISectionComponentProps
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="fontSize" block={true}>
-              <BetterTextInput value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicsValueChange(graphics, "fontSize")} />
+              <TextInputComponent value={graphics.fontSize && graphics.fontSize.toString()} onChange={bindGraphicsValueChange(graphics, "fontSize")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">
@@ -981,7 +983,7 @@ class TypographySectionComponent extends SectionComponent<ISectionComponentProps
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="letterSpacing" block={true}>
-              <BetterTextInput value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicsValueChange(graphics, "letterSpacing")} />
+              <TextInputComponent value={graphics.letterSpacing && graphics.letterSpacing.toString()} onChange={bindGraphicsValueChange(graphics, "letterSpacing")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
           <div className="col-2 label">       
@@ -991,7 +993,7 @@ class TypographySectionComponent extends SectionComponent<ISectionComponentProps
           </div>
           <div className="col-4">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="lineHeight" block={true}>
-              <BetterTextInput value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicsValueChange(graphics, "lineHeight")} />
+              <TextInputComponent value={graphics.lineHeight && graphics.lineHeight.toString()} onChange={bindGraphicsValueChange(graphics, "lineHeight")} />
             </CSSHighlightTargetRuleHintComponent>
           </div>
         </div>
@@ -1138,7 +1140,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
     const selectedBackgroundIndex = this._selectedBackgroundIndex;
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.backgrounds.length === 0 });
 
-    return <div className="background-section">
+    return <div className="container background-section">
       <div className="row title">
         <div className="col-12">
           <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="background" block={true}>
@@ -1207,7 +1209,7 @@ class BackgroundsSectionComponent extends SectionComponent<any> {
             Size
           </div>
           <div className="col-4">
-            <BetterTextInput value={background.size} onChange={bindGraphicsValueChange(background, "size")} />
+            <TextInputComponent value={background.size} onChange={bindGraphicsValueChange(background, "size")} />
           </div>
           <div className="col-2 label">
             Repeat
@@ -1259,7 +1261,7 @@ class BoxShadowsSectionComponent extends SectionComponent<ISectionComponentProps
 
     const labelClassnames = cx({ row: true, labels: true, hide: graphics.boxShadows.length === 0 });
 
-    return <div>
+    return <div className="container">
         <div className="row title">
           <div className="col-12">
             <CSSHighlightTargetRuleHintComponent rule={rule} propertyName="boxShadow" block={true}>
@@ -1321,13 +1323,13 @@ class CSSShadowInputComponent extends React.Component<{ target: SyntheticCSSStyl
           X
         </div>
         <div className="col-4">
-          <BetterTextInput value={target.x} onChange={bindGraphicsValueChange(target, "x")} />
+          <TextInputComponent value={target.x} onChange={bindGraphicsValueChange(target, "x")} />
         </div>
         <div className="col-2 label">
           Y
         </div>
         <div className="col-4">
-          <BetterTextInput value={target.x} onChange={bindGraphicsValueChange(target, "y")} />
+          <TextInputComponent value={target.x} onChange={bindGraphicsValueChange(target, "y")} />
         </div>
       </div>
       <div className="row">
@@ -1335,13 +1337,13 @@ class CSSShadowInputComponent extends React.Component<{ target: SyntheticCSSStyl
           Blur
         </div>
         <div className="col-4">
-          <BetterTextInput value={target.blur} onChange={bindGraphicsValueChange(target, "blur")} />
+          <TextInputComponent value={target.blur} onChange={bindGraphicsValueChange(target, "blur")} />
         </div>
         <div className="col-2 label">
           Spread
         </div>
         <div className="col-4">
-          <BetterTextInput value={target.spread} onChange={bindGraphicsValueChange(target, "spread")} />
+          <TextInputComponent value={target.spread} onChange={bindGraphicsValueChange(target, "spread")} />
         </div>
       </div>
       <div className="row" style={{display: !!target["inset"] ? "block" : "none" }}>
@@ -1451,13 +1453,13 @@ class CSSBoxSectionComponent extends SectionComponent<ISectionComponentProps> {
           left
         </div>
         <div className="col-4">
-          <BetterTextInput value={box.top} onChange={bindGraphicsValueChange(box, "left")} />
+          <TextInputComponent value={box.top} onChange={bindGraphicsValueChange(box, "left")} />
         </div>
         <div className="col-2 label">
           right
         </div>
         <div className="col-4">
-          <BetterTextInput value={box.top} onChange={bindGraphicsValueChange(box, "right")} />
+          <TextInputComponent value={box.top} onChange={bindGraphicsValueChange(box, "right")} />
         </div>
       </div>
       <div className="row">
@@ -1465,13 +1467,13 @@ class CSSBoxSectionComponent extends SectionComponent<ISectionComponentProps> {
           top
         </div>
         <div className="col-4">
-          <BetterTextInput value={box.top} onChange={bindGraphicsValueChange(box, "top")} />
+          <TextInputComponent value={box.top} onChange={bindGraphicsValueChange(box, "top")} />
         </div>
         <div className="col-2 label">
           bottom
         </div>
         <div className="col-4">
-          <BetterTextInput value={box.bottom} onChange={bindGraphicsValueChange(box, "bottom")} />
+          <TextInputComponent value={box.bottom} onChange={bindGraphicsValueChange(box, "bottom")} />
         </div>
       </div>
     </div>
@@ -1522,25 +1524,6 @@ class CSSBoxShadowInputComponent extends React.Component<{ boxShadow: SyntheticC
   }
 }
 
-
-export class BetterTextInput extends React.Component<{ onChange(newValue): any, value: any }, { currentValue }> {
-  state = {
-    currentValue: undefined
-  }
-  onChange = (event: React.KeyboardEvent<any>) => {
-    this.props.onChange(this.state.currentValue = event.currentTarget.value);
-  }
-  onFocus = (event: React.FocusEvent<any>) => {
-    this.setState({ currentValue: event.currentTarget.value });
-  }
-  onBlur = () => {
-    this.setState({ currentValue: undefined });
-  }
-  render() {
-    return <input type="text" {...(this.state.currentValue != null ? { } : { value: this.props.value })} onFocus={this.onFocus} onBlur={this.onBlur} onChange={this.onChange} />
-  }
-}
-
 export class BetterCheckbox extends React.Component<{ onChange(newValue): any, checked: any }, { currentValue }> {
   state = {
     currentValue: undefined
@@ -1556,7 +1539,7 @@ export class BetterCheckbox extends React.Component<{ onChange(newValue): any, c
 // TODO - drag input values
 // TODO - drop menu
 // TODO - up/down arrow support
-export class CSSUnitInput extends BetterTextInput {
+export class CSSUnitInput extends TextInputComponent {
   // TODO 
 }
 
@@ -1585,7 +1568,7 @@ class CSSFilterInputComponent extends React.Component<{ filter: SyntheticCSSFilt
   }
 
   renderInput(name: string, params: any[]) {
-    return <BetterTextInput value={params && params[0]} onChange={() => {}} />
+    return <TextInputComponent value={params && params[0]} onChange={() => {}} />
   }
 }
 

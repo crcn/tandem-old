@@ -1,6 +1,6 @@
 <tandem>
   <!-- Desktop -->
-  <artboard src="./index.html" title="1024x768" style="width: 1024px; height: 768px;"></artboard>
+  <artboard src="./index.html" title="1024x768" style=" width: 375px; height: 667px; " width="100px"></artboard>
   <!-- iPhone -->
   <artboard src="./index.html" title="iPhone 4" style=" left: 0px; top: 2811px; "></artboard>
   <!-- Mobile -->
