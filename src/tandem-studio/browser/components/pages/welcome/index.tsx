@@ -8,6 +8,8 @@ import { AlertMessage } from "@tandem/editor/browser";
 import { TandemStudioBrowserStore } from "tandem-studio/browser/stores";
 import { BaseApplicationComponent, inject } from "@tandem/common";
 import { TandemStudioBrowserStoreProvider } from "tandem-studio/browser/providers";
+import { RedirectRequest, createWorkspaceRedirectRequest } from "@tandem/editor/browser/messages";
+import { RouteNames } from "@tandem/editor/browser/constants";
 import { 
   IStarterOption, 
   OpenWorkspaceRequest, 
@@ -48,9 +50,9 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
     this.setState({ selectedStarterOption: option });
   }
 
-  onOpenExistingProject = (event: React.SyntheticEvent<any>) => {
+  onOpenExistingProject = async (event: React.SyntheticEvent<any>) => {
     const file = event.currentTarget.files[0] as File;
-    OpenWorkspaceRequest.dispatch(file.path, this.bus);
+    await this.bus.dispatch(createWorkspaceRedirectRequest(file.path));
   }
 
   startNewDocument = async () => {

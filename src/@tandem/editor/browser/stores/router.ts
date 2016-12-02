@@ -1,21 +1,38 @@
+import * as qs from "qs";
+
 import { RouteFactoryProvider } from "@tandem/editor/browser/providers";
+import { RedirectRequest } from "@tandem/editor/browser/messages";
 import { IMessage } from "@tandem/mesh";
 import { 
   Injector, 
   inject, 
-  InjectorProvider, 
-  PropertyMutation, 
-  Observable, 
   bindable, 
-  PropertyWatcher 
+  Observable, 
+  PropertyMutation, 
+  InjectorProvider, 
+  PropertyWatcher,
+  IBrokerBus,
+  PrivateBusProvider,
 } from "@tandem/common";
 
 export interface IRouterState {
   [Identifier: string]: string
 }
 
-export interface IRoute {
-  load(): Promise<IRouterState>;
+export interface IRouteHandlerLoadResult {
+  redirect?: RedirectRequest;
+  state?: IRouterState;
+}
+
+
+export interface IRouteHandler {
+  load(request: RedirectRequest): Promise<IRouteHandlerLoadResult>;
+}
+
+export abstract class BaseRouteHandler implements IRouteHandler {
+  @inject(PrivateBusProvider.ID)
+  protected bus: IBrokerBus;
+  abstract load(request: RedirectRequest): Promise<IRouteHandlerLoadResult>;
 }
 
 export class Router extends Observable {
@@ -24,7 +41,6 @@ export class Router extends Observable {
   private _injector: Injector;
 
   private _state: IRouterState = {};
-  private _currentRoute: IRoute;
   private _path: string;
 
   readonly stateWatcher: PropertyWatcher<Router, IRouterState>;
@@ -52,22 +68,21 @@ export class Router extends Observable {
     this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "currentPath", path, oldPath).toEvent());
   }
 
-  async redirect(path: string) {
-    const routeProvider = RouteFactoryProvider.findByPath(path, this._injector);
-    if (!routeProvider) throw new Error(`Route ${path} does not exist`);
+  async redirect(request: RedirectRequest) {
+
+    // do nothing with params for now
+
+    let path: string = request.routeNameOrPath;
+
+    const routeProvider = RouteFactoryProvider.findByPath(request.routeNameOrPath, this._injector);
+    if (!routeProvider) throw new Error(`Route ${request.routeNameOrPath} does not exist`);
     
     const route = routeProvider.create();
 
-    this.setState(path, await route.load() || {});
-  }
-}
+    if (request.query) path += "?" + qs.stringify(request.query);
 
-export const createStatedRouteClass = (state: IRouterState): { new(): IRoute } => {
-  return class implements IRoute {
-    load() {
+    const result = await route.load(request);
 
-      // protect state against any mutations
-      return Promise.resolve(Object.assign({}, state)); 
-    }
+    this.setState(path, result.state);
   }
 }

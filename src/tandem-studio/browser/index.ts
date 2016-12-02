@@ -23,21 +23,21 @@ import {
   InitializeApplicationRequest, 
 } from "@tandem/common";
 
+import { WelcomeRouteHandler } from "./routes";
+
 import { 
   RouteNames,
   PageFactoryProvider, 
   IEditorBrowserConfig, 
   RouteFactoryProvider,
-  createStatedRouteClass,
   createCommonEditorProviders, 
   createEditorBrowserProviders, 
 } from "@tandem/editor/browser";
 
-import { StudioPageNames } from "./constants";
+import {StudioRouteNames } from "./constants";
 import { WelcomeComponent } from "./components";
 import { 
   LoadStartOptionsCommand, 
-  QueryOpenWorkspaceCommand, 
   InitializeWelcomePageCommand, 
 } from "./commands";
 
@@ -60,13 +60,10 @@ const injector = new Injector(
   // Commands
   new CommandFactoryProvider(ApplicationReadyMessage.READY, InitializeWelcomePageCommand),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadStartOptionsCommand),
-  new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, QueryOpenWorkspaceCommand),
 
   // Pages
-  new PageFactoryProvider(StudioPageNames.WELCOME, WelcomeComponent),
-  new RouteFactoryProvider(StudioPageNames.WELCOME, "/welcome", createStatedRouteClass({
-    [RouteNames.ROOT]: StudioPageNames.WELCOME 
-  })),
+  new PageFactoryProvider(StudioRouteNames.WELCOME, WelcomeComponent),
+  new RouteFactoryProvider(StudioRouteNames.WELCOME, "/welcome", WelcomeRouteHandler),
   
   new TandemStudioBrowserStoreProvider(TandemStudioBrowserStore),
   createEditorBrowserProviders(config),

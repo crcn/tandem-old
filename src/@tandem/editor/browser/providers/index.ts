@@ -3,7 +3,7 @@ import { Store } from "@tandem/editor/browser/stores";
 import { IDispatcher } from "@tandem/mesh";
 import { IWorkspaceTool } from "@tandem/editor/browser/stores";
 import { ReactComponentFactoryProvider } from "./base";
-import { IRoute } from "../stores/router"; 
+import { IRouteHandler } from "../stores/router"; 
 import {
   Metadata,
   IFactory,
@@ -158,7 +158,7 @@ export class EditorStoreProvider extends StoreProvider {
 export class RouteFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "routeFactories";
 
-  constructor(readonly name: string, readonly path: string, readonly routeClass: { new(): IRoute }) {
+  constructor(readonly name: string, readonly path: string, readonly routeClass: { new(): IRouteHandler }) {
     super(RouteFactoryProvider.getId(name), routeClass);
   }
 
@@ -166,7 +166,7 @@ export class RouteFactoryProvider extends ClassFactoryProvider {
     return [this.NS, name].join("/");
   }
 
-  create(): IRoute {
+  create(): IRouteHandler {
     return super.create();
   }
 

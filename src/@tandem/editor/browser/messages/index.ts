@@ -1,11 +1,14 @@
+import * as Url from "url";
 import { uniq } from "lodash";
 import { toArray } from "@tandem/common/utils/array";
+import { IMessage } from "@tandem/mesh";
+import { CoreEvent } from "@tandem/common/messages";
+import { RouteNames } from "@tandem/editor/browser/constants";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";
-import { CoreEvent } from "@tandem/common/messages";
+import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 import { File, serialize, deserialize, LogLevel } from "@tandem/common";
 import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/stores";
-import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
 export class MouseAction extends CoreEvent {
 
@@ -73,6 +76,23 @@ export class SelectRequest extends CoreEvent {
     this.keepPreviousSelection = !!keepPreviousSelection;
     this.toggle = toggle;
   }
+}
+
+export class RedirectRequest implements IMessage {
+  static readonly REDIRECT = "redirect";
+  readonly type = RedirectRequest.REDIRECT;
+  constructor(readonly routeNameOrPath: string, readonly params?: any, readonly query?: any) {
+
+  }
+
+  static fromURL(value: string) {
+    const parts = Url.parse(value, true);
+    return new RedirectRequest(parts.pathname, {}, parts.query);
+  }
+}
+
+export function createWorkspaceRedirectRequest(filePath: string) {
+  return new RedirectRequest(RouteNames.WORKSPACE, {}, { workspacePath: filePath });
 }
 
 export class SelectionChangeEvent extends CoreEvent {

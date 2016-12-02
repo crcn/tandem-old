@@ -10,15 +10,19 @@ export class OpenNewWorkspaceCommand extends BaseStudioServerCommand {
     try {
       const win = new BrowserWindow({ width: 600, height: 400, titleBarStyle: "hidden" });
 
+      let hash: string = "";
+
       const query = {
         backendPort: this.config.port
       } as any;
 
       if (filePath) {
-        query.workspacePath = filePath;
+        hash = "#/workspace?${encodeURIComponent(filePath)}"
+      } else {
+        hash = "#/welcome";
       }
 
-      win.loadURL(`${this.config.browser.indexUrl}?${qs.stringify(query)}`);
+      win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.port}${hash}`);
 
       if (this.config.argv["dev-tools"]) {
         win["toggleDevTools"]();

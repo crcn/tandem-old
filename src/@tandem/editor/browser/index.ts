@@ -14,7 +14,7 @@ import {
   InitializeApplicationRequest, 
 } from "@tandem/common";
 
-import { AlertMessage, RemoveSelectionRequest } from "./messages";
+import { AlertMessage, RemoveSelectionRequest, RedirectRequest } from "./messages";
 import {
   PageFactoryProvider,
   EditorStoreProvider,
@@ -39,7 +39,8 @@ import {
   SelectableStageToolComponent,
 } from "./components";
 
-import { Store, createStatedRouteClass } from "./stores";
+import { Store } from "./stores";
+import { WorkspaceRouteHandler } from "./routes";
 
 import { 
   ReceiverService, 
@@ -51,6 +52,7 @@ import {
 import { 
   AlertCommand, 
   OpenCWDCommand, 
+  RedirectCommand,
   LoadRouterCommand,
   OpenWorkspaceCommand,
   SetReadyStatusCommand,
@@ -73,18 +75,19 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
     createCommonEditorProviders(config, fileSystemClass, fileResolverClass),
     
     // routes
-    new RouteFactoryProvider(RouteNames.WORKSPACE, "/workspace", createStatedRouteClass({ [RouteNames.ROOT]: RouteNames.WORKSPACE })),
+    new RouteFactoryProvider(RouteNames.WORKSPACE, "/workspace", WorkspaceRouteHandler),
 
     // pages
     new PageFactoryProvider(RouteNames.WORKSPACE, WorkspaceComponent),
 
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
+    new CommandFactoryProvider(RedirectRequest.REDIRECT, RedirectCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
     new CommandFactoryProvider(OpenWorkspaceRequest.OPEN_WORKSPACE, OpenWorkspaceCommand),
     new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),
     
-    new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadRouterCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadRouterCommand),
 
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
 
