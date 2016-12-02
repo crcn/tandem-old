@@ -46,7 +46,7 @@ export class BrowserService extends CoreApplicationService<IEdtorServerConfig> {
     await this._loadSocketServer();
 
     if (this.config.argv.open) {
-      exec(`open http://localhost:${this._port}/editor`);
+      exec(`open http://localhost:${this._port}/editor#/workspace`);
     }
 
     this._fileCache.syncWithLocalFiles();

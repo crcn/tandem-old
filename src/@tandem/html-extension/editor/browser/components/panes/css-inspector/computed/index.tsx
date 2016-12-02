@@ -9,7 +9,7 @@ import { BaseApplicationComponent, Mutation } from "@tandem/common";
 import { SyntheticCSSElementStyleRule, SyntheticHTMLElement} from "@tandem/synthetic-browser";
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
 
-import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 
 
 export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule }, any> {

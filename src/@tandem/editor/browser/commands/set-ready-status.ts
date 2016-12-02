@@ -8,6 +8,6 @@ import { BaseEditorBrowserCommand } from "./base";
 
 export class SetReadyStatusCommand extends BaseEditorBrowserCommand {
   execute(message: IMessage) {
-    this.store.status = new Status(Status.COMPLETED);
+    this.editorStore.status = new Status(Status.COMPLETED);
   }
 }

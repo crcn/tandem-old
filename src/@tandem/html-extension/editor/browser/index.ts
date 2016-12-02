@@ -1,7 +1,7 @@
 import { keyBindingProvider } from "./key-bindings";
 import { createHTMLCoreProviders } from "../../core";
 import { Injector, CommandFactoryProvider } from "@tandem/common";
-import { textToolProvider, editInnerHTMLProvider, HTMLExtensionStore } from "./models";
+import { textToolProvider, editInnerHTMLProvider, HTMLExtensionStore } from "./stores";
 
 import {
   SyntheticDOMText,
@@ -96,6 +96,6 @@ export function createHTMLEditorBrowserProviders() {
 export * from "./components";
 export * from "./key-bindings";
 export * from "./services";
-export * from "./models";
+export * from "./stores";
 export * from "../../core";
 export * from "../worker";

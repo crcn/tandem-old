@@ -2,7 +2,7 @@ import "./index.scss";
 
 import * as cx from "classnames";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { TreeComponent } from "@tandem/uikit";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";

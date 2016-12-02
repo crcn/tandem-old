@@ -1,7 +1,7 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { cssTokenizer } from "@tandem/html-extension/tokenizers";
 import { CallbackDispatcher } from "@tandem/mesh";

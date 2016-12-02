@@ -2,7 +2,7 @@ import "./index.scss";
 import "@tandem/uikit";
 
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { calculateCSSMeasurments } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";

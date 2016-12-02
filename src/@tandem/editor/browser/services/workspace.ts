@@ -14,8 +14,8 @@ import {
   SyntheticRendererEvent,
   RemoteBrowserDocumentMessage,
 } from "@tandem/synthetic-browser";
-import { Store, Workspace } from "@tandem/editor/browser/models";
-import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
+import { Store, Workspace } from "@tandem/editor/browser/stores";
+import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
 import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";

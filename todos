@@ -16,9 +16,13 @@ Workflow:
 3. User can save the current workspace to disk
 4. User can configure how tandem operates in the UI
 
-
+- [ ] audit source files and delete code
+- [ ] user profile
 - [ ] splash just like sketch
 - [ ] unsaved files
+- [ ] need to be able to click elements on the page
+
+- [ ] mesh templates should be dynamic
 
 - [ ] tandem config
   
@@ -146,6 +150,7 @@ OPTIMIZATIONS
   - [ ] tail oplog for DS operations
   - [ ] store workspaces in data store
   - [ ] run VM code in a new worker for speed and to prevent mem leaks
+  - [ ] connect studio with repo of extensions
 
 DOCUMENTS GUTTER
   - [ ] layers

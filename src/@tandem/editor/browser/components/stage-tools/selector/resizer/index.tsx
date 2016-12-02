@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
 import { MetadataKeys } from "@tandem/editor/browser/constants";

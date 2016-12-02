@@ -38,8 +38,8 @@ export function createTDProjectCoreProviders() {
 
     // mime types
     new MimeTypeAliasProvider(TDPROJECT_MIME_TYPE, HTML_MIME_TYPE),
-    new MimeTypeProvider("tdproject", TDPROJECT_MIME_TYPE),
     new MimeTypeProvider("tdm", TDPROJECT_MIME_TYPE),
+    new MimeTypeProvider("tandem", TDPROJECT_MIME_TYPE),
 
     // xml namespaces
     new MarkupMimeTypeXMLNSProvider(TDPROJECT_MIME_TYPE, TDPROJECT_XMLNS),

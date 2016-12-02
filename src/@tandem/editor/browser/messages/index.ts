@@ -4,7 +4,7 @@ import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";
 import { CoreEvent } from "@tandem/common/messages";
 import { File, serialize, deserialize, LogLevel } from "@tandem/common";
-import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/models";
+import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/stores";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 
 export class MouseAction extends CoreEvent {

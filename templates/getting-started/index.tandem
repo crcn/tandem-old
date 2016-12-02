@@ -1,0 +1,171 @@
+<tandem style="background-color:#333;">
+  <style>
+    .section {
+      padding: 200px;
+      color: rgba(240, 240, 240, 1);
+      display: flex;
+      flex-direction: column;
+      line-height: 2em;
+    }
+
+    .section .instructions {
+      margin-top: 200px;
+    }
+
+    p {
+      margin: 40px 0px;
+    }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 100;
+    }
+
+    strong {
+      font-weight: 400;
+    }
+
+    h1::before {
+      content: "> ";
+    }
+
+    code {
+      background: #444;
+      word-break: break-all;
+    }
+
+    .instructions {
+      display: flex;
+      font-family: Roboto, Helvetica;
+      font-weight: 100;
+      font-size: 14px;
+    }
+
+    .step {
+      display: flex;
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      margin-right: 200px;
+    }
+
+    .instructions .artboard {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    artboard {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .description {
+      padding: 16px;
+      word-wrap: break-word;
+      width: 200px
+    }
+  </style>
+  <div class="section">
+    <h1>Integrating</h1>
+    <div class="instructions">
+      <div class="step">
+        <div class="description">
+          <!--p>Tandem comes with an IDE extension that offers a richer set of features such as realtime </p-->
+          <p>Tandem's IDE extension enables you to design & hack on your application in real time.</p>
+
+          <p>To install, search for "Tandem" in your default IDE extension pane. </p>  
+        </div>
+        <div class="artboard">
+          <artboard src="./1-install-extension.html" title="Install IDE Extension"></artboard>
+        </div>
+      </div>
+      <div class="step">
+        <div class="description">
+          <!-- TODO - docs for enabling source maps -->
+          <p>1. Turn on source maps for JavaScript and CSS. Tandem needs that information in order to modify code.</p>
+          <p>
+            2. For <strong>Webpack</strong>, you can add the JSX loader (<code>npm install tandem-jsx-loader</code>) 
+            which enables Tandem to modify JSX code (React, vue, etc). 
+          </p>
+        </div>
+        <div class="artboard">
+          <artboard src="./2-setup-web-framework.html" title="Modify your Application Bundler (Webpack, SystemJS, etc.)"></artboard>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h1>Usage</h1>
+    <div class="instructions">
+      <div class="step">
+        <div class="description">
+          <p>1. Copy & Paste an Artboard that you'd like to see in a different size or browser.</p>
+
+          <p>2. Modify the size & browser information the right panel.</p>
+
+          <p>Tandem will launch a real browser instance via BrowserTap and render your Artboard's HTML & CSS against it.</p>
+
+          <p>
+            Source code change automatically synchronize across all Artboards that share the same document.
+          </p>
+        </div>
+        <div class="artboard">
+          <artboard title="Responsive & Cross-browser testing"></artboard>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="description">
+          <p>
+            You can inject any variable you want into the Window object of any Artboard. This includes the window location, navigator information, or any other custom property. 
+          </p> 
+
+
+          <p>
+            1. Define a new Window global by selecting an Artboard and clicking the + button in the "Window Globals" panel. 
+            Set first field to "message", and the second field to "Hola Mundo".
+          </p> 
+
+
+          <p>
+            2. In the Artboard source file, write: <code>console.log(window.message);</code>.
+            In the Tandem developer console pane, you should see "Hola Mundo" appear immediately. 
+          </p> 
+
+          <p>
+            Tip: You can use the globals panel to define custom properties that reveal visual elements.
+          </p>
+
+        </div>
+        <div class="artboard">
+          <artboard title="Defining Artboard States"></artboard>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="description">
+          <p>Hold ⌘ while moving your mouse over any visual item in Tandem to reveal a link that will open the item source code in your IDE.</p> 
+
+        </div>
+        <div class="artboard">
+          <artboard title="Linking back to source files"></artboard>
+        </div>
+      </div>
+      <div class="step">
+        <div class="description">
+          <p>
+            Click the X button in the right hand side to share your workspace with other users. 
+          </p> 
+
+          <p>Tip: You can use your shared link to test how your HTML & CSS response on different devices.</p>
+        </div>
+        <div class="artboard">
+          <artboard title="Sharing Workspaces"></artboard>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</tandem>

@@ -1,22 +1,33 @@
 import { argv } from "yargs";
 import * as electron from "electron";
 import * as getPort from "get-port";
-import { createCommonEditorProviders, IEditorCommonConfig } from "@tandem/editor/common";
 import { FileCacheProvider } from "@tandem/sandbox";
 import { ServiceApplication } from "@tandem/core";
+import { EditorFamilyType } from "@tandem/editor/common";
 import { createCoreStudioWorkerProviders } from "../worker";
-import { SpawnWorkerCommand, InitializeWindowCommand } from "./commands";
 import { createEditorServerProviders, IEdtorServerConfig } from "@tandem/editor/server";
+import { createCommonEditorProviders, IEditorCommonConfig } from "@tandem/editor/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
+
+import { 
+  SpawnWorkerCommand, 
+  InitializeWindowCommand,
+} from "./commands";
+
+
+import { 
+  GetProjectStartOptionsRequest
+} from "tandem-studio/common";
+
 import {
    Injector,
    LogLevel,
    serialize,
    IBrokerBus,
-   LoadApplicationRequest,
    deserialize,
-   InitializeApplicationRequest,
    CommandFactoryProvider,
+   LoadApplicationRequest,
+   InitializeApplicationRequest,
 } from "@tandem/common";
 
 process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || LogLevel.DEFAULT;

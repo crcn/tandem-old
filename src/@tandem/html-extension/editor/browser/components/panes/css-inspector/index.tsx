@@ -2,7 +2,7 @@ import "./index.scss";
 import * as cx from "classnames";
 import { uniq } from "lodash";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
@@ -24,7 +24,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 
-import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/models";
+import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/stores";
 import { HTMLExtensionStoreProvider } from "@tandem/html-extension/editor/browser/providers";
 
 const MAX_LABEL_LENGTH = 80;

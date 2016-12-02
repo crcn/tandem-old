@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { PointerTool } from "@tandem/editor/browser/models/pointer-tool";
+import { PointerTool } from "@tandem/editor/browser/stores/pointer-tool";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SelectRequest, MouseAction } from "@tandem/editor/browser/messages";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";

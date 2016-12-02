@@ -3,7 +3,7 @@ import * as cx from "classnames";
 import * as React from "react";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticCSSElementStyleRule, SyntheticHTMLElement, isInheritedCSSStyleProperty } from "@tandem/synthetic-browser";
-import { MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/models";
+import { MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/stores";
 
 export class CSSHighlightTargetRuleHintComponent extends React.Component<{ rule: MergedCSSStyleRule, propertyName: string, block?: boolean }, any> {
 

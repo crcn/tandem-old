@@ -1,0 +1,158 @@
+
+
+.welcome {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .info {
+    background: #272D3C;
+    height: 100%;
+    .ion-close {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 0.7em;
+      cursor: pointer;
+    }
+    width: 33.333%;
+    height: 100%;
+    color: #EFEFEF;
+
+    padding: 16px;
+
+    .header {
+      text-align: left;
+      font-weight: 400;
+    }
+
+    & li {
+      font-weight: 100;
+      line-height: 22px;
+      &::before {
+        content: "> ";
+      }
+    }
+  }
+
+  .logo {
+    padding: 16px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: 2em;
+    letter-spacing: 0.1em;
+    .tan {
+      color: white;
+    }
+    .dem {
+      color: #333;
+    }
+  }
+  
+  .rightbar {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+  
+    .options {
+      
+      padding: 8px;
+      width: 100%;
+      height: 100%;
+      flex-shrink: 1;
+      flex-grow: 1;
+      .header {
+        padding: 8px;
+
+        /* cells have padding top*/
+        padding-bottom: 0;
+      }
+      
+      ul {
+        display: flex;
+        height: 100%;
+        align-content: flex-start;
+        li {
+          position: relative;
+          padding: 8px;
+          width: 33.333%;
+          height: 33.3333%;
+
+          .inner {
+
+            &.disable {
+              opacity: 0.3;
+            }
+
+            cursor: default;
+
+            &:not(.disable) {
+              cursor: pointer;
+            }
+
+            padding: 8px;
+            background: whitesmoke;
+            border-radius: 4px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .image {
+              width: 100%;
+              height: 100%;
+              background-repeat: no-repeat;
+              background-size: contain;
+              background-position: center;
+              filter: grayscale(100%);
+              animation-duration: 1s;
+              animation-name: color-to-gray;
+              &:hover, &.hover {
+                animation-name: gray-to-color;
+                filter: grayscale(0%);
+              }
+            }
+
+            .label {
+              font-weight: 400;
+              letter-spacing: 0.07em;
+              font-size: 1.1em;
+
+              padding: 8px;
+              position: relative;
+              bottom: 0;
+              display: block;
+              text-align: center;
+            }
+          }
+        }
+        flex-wrap: wrap;
+      }
+    }
+
+    .footer {
+      background: #F9F9F9;
+      width: 100%;
+      padding: 8px 16px;
+    }
+  }
+}
+
+@keyframes color-to-gray {
+  0% {
+    filter: grayscale(0%);
+  }
+  100% {
+    filter: grayscale(100%);
+  }
+}
+@keyframes gray-to-color {
+  0% {
+    filter: grayscale(100%);
+  }
+
+  100% {
+    filter: grayscale(0%);
+  }
+}

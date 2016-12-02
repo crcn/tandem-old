@@ -3,7 +3,7 @@ import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { CSSHighlightTargetRuleHintComponent } from "./target-rule-hint";
-import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 
 export class CSSMergedRuleLinkComponent  extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, propertyName: string }, any> {
   render() {

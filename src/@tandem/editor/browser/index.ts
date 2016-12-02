@@ -1,5 +1,6 @@
 import "./styles";
 
+import { RouteNames } from "./constants";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
@@ -7,6 +8,7 @@ import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tan
 import { 
   Injector, 
   IProvider,
+  LoadApplicationRequest,
   CommandFactoryProvider, 
   ApplicationReadyMessage,
   InitializeApplicationRequest, 
@@ -14,7 +16,9 @@ import {
 
 import { AlertMessage, RemoveSelectionRequest } from "./messages";
 import {
+  PageFactoryProvider,
   EditorStoreProvider,
+  RouteFactoryProvider,
   GlobalKeyBindingProvider,
   ReactComponentFactoryProvider,
   StageToolComponentFactoryProvider,
@@ -25,6 +29,8 @@ import {
 import { keyBindingsProviders } from "./key-bindings";
 
 import {
+  RootComponent,
+  WorkspaceComponent,
   LayersPaneComponent,
   GridStageToolComponent,
   InsertStageToolComponent,
@@ -33,13 +39,14 @@ import {
   SelectableStageToolComponent,
 } from "./components";
 
-import { Store } from "./models";
+import { Store, createStatedRouteClass } from "./stores";
 
 import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "../common";
 
 import { 
   AlertCommand, 
   OpenCWDCommand, 
+  LoadRouterCommand,
   SetReadyStatusCommand,
   RemoveSelectionCommand, 
   LoadCurrentWorkspaceCommand,
@@ -59,12 +66,21 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
   return [
     ...keyBindingsProviders,
     createCommonEditorProviders(config, fileSystemClass, fileResolverClass),
+    
+    // routes
+    new RouteFactoryProvider(RouteNames.WORKSPACE, "/workspace", createStatedRouteClass({ [RouteNames.ROOT]: RouteNames.WORKSPACE })),
+
+    // pages
+    new PageFactoryProvider(RouteNames.WORKSPACE, WorkspaceComponent),
 
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
-    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
     new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),
+    
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadRouterCommand),
+
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadCurrentWorkspaceCommand),
 
     // services
@@ -99,6 +115,7 @@ export * from "./components";
 export * from "./constants";
 export * from "./providers";
 export * from "./key-bindings";
-export * from "./models";
+export * from "./stores";
 export * from "./services";
 export * from "../common";
+export * from"./commands/base";

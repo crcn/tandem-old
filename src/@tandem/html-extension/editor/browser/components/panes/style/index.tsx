@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";

@@ -141,7 +141,13 @@ export function wrapDuplexStream<T, U>(value): TransformStream<T, U> {
   return new TransformStream({
     async start(controller) {
       const v = await value;
-      if (v != null) controller.enqueue(v);
+      if (v != null) {
+        if (Array.isArray(v)) {
+          v.forEach((i) => controller.enqueue(i));
+        } else {
+          controller.enqueue(v);          
+        }
+      }
       controller.close();
     }
   });

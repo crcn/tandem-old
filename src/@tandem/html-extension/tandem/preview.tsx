@@ -3,7 +3,7 @@ import "@tandem/editor/browser/style.ts"
 
 import "./preview.scss";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { GutterComponent } from "@tandem/uikit";
 import { ReceiverService } from "@tandem/editor/common";
@@ -13,7 +13,7 @@ import { createTestMasterApplication } from "@tandem/editor/test";
 import { SyntheticBrowser, NoopRenderer, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
-import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { Injector, PrivateBusProvider, BrokerBus, InjectorProvider, RootApplicationComponent } from "@tandem/common";
 import {

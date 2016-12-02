@@ -1,8 +1,8 @@
 import { ICommand, inject, InjectorProvider, Injector } from "@tandem/common";
 import { IMessage } from "@tandem/mesh";
 import { SyntheticDOMNode, DOMNodeType, SyntheticDocument } from "@tandem/synthetic-browser";
-import { Store } from "@tandem/editor/browser/models";
-import { HTMLExtensionStore, MergedCSSStyleRule  } from "@tandem/html-extension/editor/browser/models";
+import { Store } from "@tandem/editor/browser/stores";
+import { HTMLExtensionStore, MergedCSSStyleRule  } from "@tandem/html-extension/editor/browser/stores";
 import { HTMLExtensionStoreProvider  } from "@tandem/html-extension/editor/browser/providers";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { MetadataKeys } from "@tandem/editor/browser/constants";

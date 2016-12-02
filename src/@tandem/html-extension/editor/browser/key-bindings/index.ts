@@ -1,11 +1,11 @@
 import { inject } from "@tandem/common/decorators";
 import { CoreEvent } from "@tandem/common/messages";
-import { InsertTool } from "@tandem/editor/browser/models/insert-tool";
+import { InsertTool } from "@tandem/editor/browser/stores/insert-tool";
 import { BaseCommand } from "@tandem/common/commands";
 import { SetToolRequest } from "@tandem/editor/browser/messages";
-import { textToolProvider } from "../models";
+import { textToolProvider } from "../stores";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
-import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
+import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ClassFactoryProvider, InjectorProvider, Injector } from "@tandem/common";
 import { WorkspaceToolFactoryProvider, GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";

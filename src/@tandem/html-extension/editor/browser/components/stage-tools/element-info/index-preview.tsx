@@ -7,7 +7,7 @@ import * as ReactDOM from "react-dom";
 import { BoundingRect } from "@tandem/common";
 import { ElementInfoStageToolComponent } from "./index";
 import { SyntheticWindow, SyntheticCSSStyle } from "@tandem/synthetic-browser";
-import { Workspace  } from "@tandem/editor/browser/models";
+import { Workspace  } from "@tandem/editor/browser/stores";
 import { MetadataKeys  } from "@tandem/editor/browser/constants";
 
 export const renderPreview = reactEditorPreview(() => {

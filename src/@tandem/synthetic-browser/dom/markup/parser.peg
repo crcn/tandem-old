@@ -101,6 +101,6 @@ TextNode
   }
 
 Name
-  = [a-z0-9$-.]+ { return text(); }
+  = [a-zA-Z0-9$-.]+ { return text(); }
 _
   = [ \n\r\t]*

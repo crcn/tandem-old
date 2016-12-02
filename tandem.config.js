@@ -25,15 +25,17 @@ module.exports = {
         const componentName = componentNameMatch[1];
 
         const sourceContent = stripIndent(`
+          import "reflect-metadata";
+          import "@tandem/uikit/scss";
+          import { reactEditorPreview } from "@tandem/editor/browser/preview";
           import * as React from "react";
           import * as ReactDOM from "react-dom";
           import { ${componentName} } from "./${basename.replace(".tsx", "")}";
 
-          export const renderPreview = () => {
-            const element = document.createElement("div");
-            ReactDOM.render(<${componentName} />, element);
-            return element;
-          };
+          export const renderPreview = reactEditorPreview(() => {
+            return <${componentName} />;
+          });
+        
         `);
 
         return {

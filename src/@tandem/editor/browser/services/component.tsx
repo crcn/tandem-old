@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { CallbackDispatcher } from "@tandem/mesh";
-import { Store } from "@tandem/editor/browser/models";
+import { Store } from "@tandem/editor/browser/stores";
 import { inject, CoreEvent, StoreProvider } from "@tandem/common";
 import { RootComponent } from "@tandem/editor/browser/components";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";

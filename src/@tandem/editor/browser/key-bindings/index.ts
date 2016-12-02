@@ -1,7 +1,7 @@
 import { IMessage } from "@tandem/mesh";
 import { KeyBinding } from "./base";
-import { Store } from "@tandem/editor/browser/models";
-import { pointerToolProvider } from "@tandem/editor/browser/models/pointer-tool";
+import { Store } from "@tandem/editor/browser/stores";
+import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 import { BaseCommand, inject, Metadata } from "@tandem/common";
 import { WorkspaceToolFactoryProvider, EditorStoreProvider } from "@tandem/editor/browser/providers";

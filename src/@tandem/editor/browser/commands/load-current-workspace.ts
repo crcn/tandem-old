@@ -1,5 +1,5 @@
 import { IMessage } from "@tandem/mesh";
-import { Store, Workspace } from "@tandem/editor/browser/models";
+import { Store, Workspace } from "@tandem/editor/browser/stores";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { GetPrimaryProjectFilePathRequest } from "@tandem/editor/common/messages";
 import { 

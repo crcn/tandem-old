@@ -3,7 +3,7 @@ import * as React from "react";
 import { TreeComponent } from "@tandem/uikit";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import {  EditorStoreProvider } from "@tandem/editor/browser/providers";
-import { Store, Workspace } from "@tandem/editor/browser/models";
+import { Store, Workspace } from "@tandem/editor/browser/stores";
 import { DirectoryModel, FileModel, BaseFSModel } from "@tandem/editor/common/models";
 import { BaseApplicationComponent, TreeNode, inject } from "@tandem/common";
 

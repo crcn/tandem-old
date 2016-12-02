@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Store } from "@tandem/editor/browser/models";
+import { Store } from "@tandem/editor/browser/stores";
 import { IDispatcher } from "@tandem/mesh";
-import { IWorkspaceTool } from "@tandem/editor/browser/models";
+import { IWorkspaceTool } from "@tandem/editor/browser/stores";
 import { ReactComponentFactoryProvider } from "./base";
+import { IRoute } from "../stores/router"; 
 import {
   Metadata,
   IFactory,
@@ -153,5 +154,49 @@ export class EditorStoreProvider extends StoreProvider {
     super(EditorStoreProvider.NAME, clazz);
   }
 }
+
+export class RouteFactoryProvider extends ClassFactoryProvider {
+  static readonly NS = "routeFactories";
+
+  constructor(readonly name: string, readonly path: string, readonly routeClass: { new(): IRoute }) {
+    super(RouteFactoryProvider.getId(name), routeClass);
+  }
+
+  static getId(name: string) {
+    return [this.NS, name].join("/");
+  }
+
+  create(): IRoute {
+    return super.create();
+  }
+
+  clone() {
+    return new RouteFactoryProvider(this.name, this.path, this.routeClass);
+  }
+  
+  testPath(path: string) {
+
+    // exact for now
+    return this.path === path || this.name === path;
+  }
+
+  static findByPath(path: string, injector: Injector) {  
+    return injector.queryAll<RouteFactoryProvider>(this.getId("**")).find((provider) => {
+      return provider.testPath(path);
+    })
+  }
+} 
+
+export class PageFactoryProvider extends ReactComponentFactoryProvider {
+  static readonly NS = "pageComponents";
+
+  constructor(readonly pageName: string, readonly routeClass: any) {
+    super(PageFactoryProvider.getId(pageName), routeClass);
+  }
+
+  static getId(name: string) {
+    return [this.NS, name].join("/");
+  }
+} 
 
 export * from "./base";

@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { getRectDiagLine, getShortestLine, getRectCenterPoint, getOuterRectCenterPoints, getRectPoints, getRectCornerPoints } from "./box-intersections";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { BoundingRect, Point, Line } from "@tandem/common";

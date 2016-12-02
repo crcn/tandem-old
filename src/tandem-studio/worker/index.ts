@@ -13,6 +13,7 @@ import { isMaster, fork, addListener, emit } from "cluster";
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
+import { GetProjectStartOptionsRequest, StartProjectRequest } from "tandem-studio/common";
 import { IEdtorServerConfig, FileImporterProvider, createEditorServerProviders } from "@tandem/editor/server";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 import {
@@ -20,14 +21,18 @@ import {
   Injector,
   LogLevel,
   serialize,
-  LoadApplicationRequest,
   deserialize,
   MimeTypeProvider,
-  InitializeApplicationRequest,
   PrivateBusProvider,
   MimeTypeAliasProvider,
-  CommandFactoryProvider
+  CommandFactoryProvider,
+  LoadApplicationRequest,
+  InitializeApplicationRequest,
 } from "@tandem/common";
+
+import { GetProjectStarterOptionsCommand, StartProjectCommand } from "./commands";
+import { ProjectStarterFactoryProvider } from "./providers"; 
+import { HTMLProjectStarter } from "./project"; 
 
 import {
   createSandboxProviders,
@@ -72,6 +77,46 @@ export const initializeWorker = async () => {
     createCoreStudioWorkerProviders(),
     createEditorServerProviders(config, config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
     createSyntheticBrowserWorkerProviders(),
+
+    // commands
+    new CommandFactoryProvider(GetProjectStartOptionsRequest.GET_PROJECT_STARTER_OPTIONS, GetProjectStarterOptionsCommand),
+    new CommandFactoryProvider(StartProjectRequest.START_NEW_PROJECT, StartProjectCommand),
+    
+    // starters
+    new ProjectStarterFactoryProvider({ 
+      id: "html", 
+      label: "HTML",
+      image: "assets/html5-logo.png",
+      enabled: true
+    }, HTMLProjectStarter),
+
+    new ProjectStarterFactoryProvider({ 
+      id: "react+webpack", 
+      label: "React + Webpack",
+      image: "assets/react-logo.png",
+      enabled: false
+    }, function(){} as any),
+
+    new ProjectStarterFactoryProvider({ 
+      id: "angular2", 
+      label: "Angular2",
+      image: "assets/angular-logo.png",
+      enabled: false
+    }, function(){} as any),
+
+    new ProjectStarterFactoryProvider({ 
+      id: "ember", 
+      label: "Ember",
+      image: "assets/ember-logo.png",
+      enabled: false
+    }, function(){} as any),
+
+    new ProjectStarterFactoryProvider({ 
+      id: "jekyll", 
+      label: "Jekyll",
+      image: "assets/jekyll-logo.png",
+      enabled: false
+    }, function(){} as any)
   );
 
   const app = new ServiceApplication(injector);

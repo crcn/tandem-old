@@ -31,7 +31,7 @@ import {
   SyntheticCSSElementStyleRule, 
 } from "@tandem/synthetic-browser";
 
-import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/models";
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 
 // http://www.w3schools.com/csSref/pr_class_display.asp
 const DISPLAY_OPTIONS = ["block", "inline", "inline-block", "flex", "none", "table"].map((value) => {

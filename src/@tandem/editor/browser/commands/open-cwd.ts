@@ -1,6 +1,6 @@
 import { ICommand, inject, Injector, InjectorProvider } from "@tandem/common";
 
-import { Store } from "@tandem/editor/browser/models";
+import { Store } from "@tandem/editor/browser/stores";
 import { DirectoryModel } from "@tandem/editor/common";
 import { IMessage } from "@tandem/mesh";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";

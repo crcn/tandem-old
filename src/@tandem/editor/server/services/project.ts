@@ -21,12 +21,7 @@ export class ProjectService extends CoreApplicationService<IEdtorServerConfig> {
   private _primaryProjectPath: string;
 
   async [OpenProjectRequest.OPEN_PROJECT_FILE](action: OpenProjectRequest) {
-    if (/\.tdm$/.test(action.filePath)) {
-      this._primaryProjectPath = action.filePath;
-    } else if (!this._primaryProjectPath) {
-      fs.writeFileSync(tmpProjectFile, `<tdproject xmlns="tandem"><frame src="${action.filePath}" inherit-css /></tdproject>`);
-      this._primaryProjectPath = tmpProjectFile;
-    }
+    this._primaryProjectPath = action.filePath;
   }
 
   [GetPrimaryProjectFilePathRequest.GET_PRIMARY_PROJECT_FILE_PATH](action: GetPrimaryProjectFilePathRequest) {

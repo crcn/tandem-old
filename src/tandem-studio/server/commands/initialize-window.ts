@@ -15,8 +15,8 @@ export class InitializeWindowCommand implements ICommand {
   execute(message: IMessage) {
     this.logger.debug("Opening browser window");
     try {
-      const win = new BrowserWindow({width: 1024, height: 768 });
-      win.loadURL(`file://${__dirname}/../../browser/index.html?backendPort=${this._config.port}`);
+      const win = new BrowserWindow({ width: 600, height: 400, titleBarStyle: "hidden" });
+      win.loadURL(`file://${__dirname}/../../browser/index.html?backendPort=${this._config.port}#/workspace`);
       // console.log(window["tog"])
       if (this._config.argv["dev-tools"]) {
         win["toggleDevTools"]();

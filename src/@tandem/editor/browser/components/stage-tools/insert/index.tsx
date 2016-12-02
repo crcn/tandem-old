@@ -2,7 +2,7 @@ import "./index.scss";
 
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { Workspace, InsertTool } from "@tandem/editor/browser/models";
+import { Workspace, InsertTool } from "@tandem/editor/browser/stores";
 import { SetToolRequest, SelectRequest } from "@tandem/editor/browser/messages";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticDOMElement, SyntheticHTMLElement } from "@tandem/synthetic-browser";

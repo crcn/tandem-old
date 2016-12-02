@@ -123,30 +123,6 @@ export interface IElementQuerier<T extends SyntheticDOMElement> extends IObserva
  * @class ElementQuerierObserver
  */
 
-// TODO - listeners need to be typed here
-export class ElementQuerierWatcher extends PropertyWatcher<IElementQuerier<any>> {
-
-  constructor(target: IElementQuerier<any>) {
-    super(target);
-  }
-
-  public watchTarget = (callback: propertyChangeCallbackType) => {
-    return this.addPropertyWatcher("target", callback);
-  }
-
-  public watchFilter = (callback: propertyChangeCallbackType) => {
-    return this.addPropertyWatcher("filter", callback);
-  }
-
-  public watchQueriedElements = (callback: propertyChangeCallbackType) => {
-    return this.addPropertyWatcher("queriedElements", callback);
-  }
-
-  public watchSelector = (callback: propertyChangeCallbackType) => {
-    return this.addPropertyWatcher("selector", callback);
-  }
-}
-
 export type elementQueryFilterType = (element: SyntheticDOMElement) => boolean;
 const ELEMENT_QUERY_TIMEOUT = 10;
 
@@ -168,7 +144,10 @@ export abstract class BaseElementQuerier<T extends SyntheticDOMElement> extends 
   @bindable() public selector: string;
 
   // listener of bindable properties
-  readonly watcher: ElementQuerierWatcher;
+  readonly targetWatcher: PropertyWatcher<BaseElementQuerier<any>, SyntheticDOMContainer>;
+  readonly filterWatcher: PropertyWatcher<BaseElementQuerier<any>, (element: SyntheticDOMElement) => boolean>;
+  readonly selectorWatcher: PropertyWatcher<BaseElementQuerier<any>, string>;
+  readonly queriedElementsWatcher: PropertyWatcher<BaseElementQuerier<any>, T[]>;
 
   private _queriedElements: T[];
   private _disposed: boolean;
@@ -181,19 +160,18 @@ export abstract class BaseElementQuerier<T extends SyntheticDOMElement> extends 
     this.filter   = filter;
     this._queriedElements = [];
 
-    const { watchTarget, watchFilter, watchSelector } = this.watcher = this.createWatcher();
+    this.targetWatcher          = new PropertyWatcher<BaseElementQuerier<any>, SyntheticDOMContainer>(this, "target");
+    this.filterWatcher          = new PropertyWatcher<BaseElementQuerier<any>, (element: SyntheticDOMElement) => boolean>(this, "target");
+    this.selectorWatcher        = new PropertyWatcher<BaseElementQuerier<any>, string>(this, "target");
+    this.queriedElementsWatcher = new PropertyWatcher<BaseElementQuerier<any>, T[]>(this, "queriedElements");
 
     // all of this stuff may be set at the same time, so add a debounce. Besides, ElementQuerier
     // is intended to be asyncronous
-    watchTarget(this.debounceReset);
-    watchFilter(this.debounceReset);
-    watchSelector(this.debounceReset);
+    this.targetWatcher.connect(this.debounceReset);
+    this.filterWatcher.connect(this.debounceReset);
+    this.selectorWatcher.connect(this.debounceReset);
 
     this.reset();
-  }
-
-  protected createWatcher(): ElementQuerierWatcher {
-    return new ElementQuerierWatcher(this);
   }
 
   get queriedElements(): T[] {
@@ -270,36 +248,30 @@ export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends Base
   }
 }
 
-export class ChildElementQuerierWatcher extends ElementQuerierWatcher {
-  watchParent = (listener: propertyChangeCallbackType) => {
-    return this.addPropertyWatcher("parent", listener);
-  }
-}
-
 export class ChildElementQuerier<T extends SyntheticDOMElement> extends BaseElementQuerier<T>{
 
-  readonly watcher: ChildElementQuerierWatcher;
   @bindable() public parent: IElementQuerier<any>;
+
+  readonly parentWatcher: PropertyWatcher<ChildElementQuerier<any>, IElementQuerier<any>>;
 
   private _parentWatchers: DisposableCollection;
 
   constructor(parent?: IElementQuerier<any>, selector: string = "*", filter?: elementQueryFilterType) {
     super(parent && parent.target, selector, filter);
 
-    const { watchParent } = this.watcher;
+    this.parentWatcher = new PropertyWatcher<ChildElementQuerier<any>, IElementQuerier<any>>(this, "parent");
 
-    watchParent((parent: SyntheticElementQuerier<any>) => {
+    
+
+    this.parentWatcher.connect((parent: SyntheticElementQuerier<any>) => {
       if (this._parentWatchers) this._parentWatchers.dispose();
-      const { watchTarget, watchQueriedElements } = parent.watcher;
+      const { targetWatcher, queriedElementsWatcher } = parent;
+      parent.targetWatcher
       this._parentWatchers = new DisposableCollection(
-        watchTarget(target => this.target = target).trigger(),
-        watchQueriedElements(this.reset.bind(this))
+        targetWatcher.connect(target => this.target = target).trigger(),
+        queriedElementsWatcher.connect(this.reset.bind(this))
       );
     });
-  }
-
-  protected createWatcher() {
-    return new ChildElementQuerierWatcher(this);
   }
 
   protected reset() {

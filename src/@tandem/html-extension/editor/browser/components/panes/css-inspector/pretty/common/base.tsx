@@ -2,7 +2,7 @@ import * as React from "react";
 import { ApplyFileEditRequest } from "@tandem/sandbox"
 import { BaseApplicationComponent, Mutation } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticCSSElementStyleRule } from "@tandem/synthetic-browser";
-import { MergedCSSStyleRule,  } from "@tandem/html-extension/editor/browser/models";
+import { MergedCSSStyleRule,  } from "@tandem/html-extension/editor/browser/stores";
 
 export abstract class BaseCSSInputComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, propertyName: string }, any> {
 

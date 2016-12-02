@@ -2,7 +2,7 @@ import "./index.scss";
 
 import * as React from "react";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 
 export class GridStageToolComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {

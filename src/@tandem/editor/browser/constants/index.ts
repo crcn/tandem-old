@@ -1,3 +1,4 @@
+
 export const CANVAS_SIZE = 5000;
 export const ZOOM_INCREMENT = 0.3;
 export const POINTER_TOOL_KEY_CODE = "p";
@@ -22,4 +23,9 @@ export namespace MetadataKeys {
   export const EDIT_LAYER = "editLayer";
   export const LAYER_EXPANDED = "layerExpanded";
   export const CHILD_LAYER_PROPERTY = "childLayerProperty";
+}
+
+export namespace RouteNames {
+  export const ROOT      = "root";
+  export const WORKSPACE = "workspace";
 }

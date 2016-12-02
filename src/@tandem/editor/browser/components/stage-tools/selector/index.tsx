@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
 import ResizerComponent from "./resizer";

@@ -1,4 +1,5 @@
 import { bindable } from "@tandem/common";
+import { decode } from "ent";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
 import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
@@ -30,7 +31,7 @@ export class SyntheticDOMValueNodeEdit extends SyntheticDOMNodeEdit<SyntheticDOM
 export class DOMValueNodeEditor<T extends SyntheticDOMValueNode|Text|Comment> extends BaseEditor<T> {
   applySingleMutation(mutation: Mutation<T>) {
     if (mutation.type === SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT) {
-        this.target.nodeValue = (<SetValueMutation<any>>mutation).newValue;
+        this.target.nodeValue = decode((<SetValueMutation<any>>mutation).newValue);
     }
   }
 }

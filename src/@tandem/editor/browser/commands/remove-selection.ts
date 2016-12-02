@@ -1,4 +1,4 @@
-import { Store } from "@tandem/editor/browser/models";
+import { Store } from "@tandem/editor/browser/stores";
 import { IEditable, ISyntheticObject, ApplyFileEditRequest } from "@tandem/sandbox";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { ICommand, inject, PrivateBusProvider, IBrokerBus, RemoveMutation } from "@tandem/common";

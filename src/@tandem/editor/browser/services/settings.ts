@@ -1,5 +1,5 @@
 import  * as store from "store";
-import { Store } from "@tandem/editor/browser/models";
+import { Store } from "@tandem/editor/browser/stores";
 import { CallbackDispatcher } from "@tandem/mesh";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";

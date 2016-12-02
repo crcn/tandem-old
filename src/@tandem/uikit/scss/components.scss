@@ -2,7 +2,6 @@
 
 .slider {
   
-  
   opacity: 0.9;
   display: block;
 
@@ -123,10 +122,13 @@
 
 .button {
   @extend .input;
-  background: #f60;
-  color: white;
-  padding: nth($sizes, 2);
-  border-radius: nth($sizes, 2);
+  font-weight: 100;
+  display: inline-block;
+  border-width: 2px;
+  width: auto;
+  border-color: #777;
+  padding: 4px 8px;
+  border-radius: 32px;
 }
 
 .progress {

@@ -6,7 +6,7 @@ import * as cx from "classnames";
 import * as React from "react";
 import { inject } from "@tandem/common/decorators";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { SelectRequest } from "@tandem/editor/browser/messages";
 import { AltInputComponent } from "@tandem/editor/browser/components";
 import { MetadataKeys } from "@tandem/editor/browser/constants";

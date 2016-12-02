@@ -1,6 +1,6 @@
 import * as React from "react";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
-import { Workspace } from "@tandem/editor/browser/models";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { GutterComponent } from "@tandem/uikit";
 import { LayersPaneComponent } from "./index";
