@@ -144,7 +144,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   private updateCSSRules(staleStyleSheet: CSSStyleSheet, syntheticStyleSheet: SyntheticCSSStyleSheet) {
-    while(staleStyleSheet.rules.length) {
+    while (staleStyleSheet.rules.length) {
       staleStyleSheet.deleteRule(0);
     }
 

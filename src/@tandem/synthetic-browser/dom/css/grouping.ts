@@ -126,6 +126,9 @@ export abstract class SyntheticCSSGroupingRule<T extends syntheticCSSRuleType> e
   insertRule(rule: string, index?: number): number;
   insertRule(rule: any, index?: number): number {
     const ruleInstance: T = typeof rule === "string" ? evaluateCSS(parseCSS(rule)).rules[0] as any : rule as T;
+    if (index == undefined) {
+      index = this.rules.length;
+    }
     this.rules.splice(index, 0, ruleInstance);
     this.linkRule(ruleInstance);
     const owner = this.ownerNode;
