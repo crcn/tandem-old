@@ -7,6 +7,7 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { GutterComponent } from "@tandem/uikit";
 import { ReceiverService } from "@tandem/editor/common";
+// import { WorkspaceComponent } from "@tandem/editor/browser/components/pages";
 import { WorkspaceTitlebarComponent } from "@tandem/editor/browser/components/pages/workspace/titlebar";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
@@ -115,6 +116,7 @@ export const renderPreview = reactEditorPreview(async () => {
   document.querySelector("#controls").metadata.set(MetadataKeys.HOVERING, true);
   (document.querySelector(".container") as SyntheticHTMLElement).metadata.set(MetadataKeys.HOVERING, true);
   workspace.select([document.querySelector(".container")]);
+
 
   return <RootApplicationComponent bus={bus} injector={injector}>
     <div className="td-workspace">

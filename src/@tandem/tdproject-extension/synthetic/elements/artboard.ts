@@ -83,7 +83,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
   attributeChangedCallback(key: string, oldValue: string, newValue: string) {
     super.attributeChangedCallback(key, oldValue, newValue);
-    if (/src|strategy/.test(key)) {
+    if (/src|strategy|inject/.test(key)) {
       this.loadBrowser();
     }
   }
@@ -110,6 +110,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       const window = this.ownerDocument.defaultView;
       this._artboardBrowser.open({
         url: this.getAttribute("src"),
+        injectScript: decodeURIComponent(this.getAttribute("inject-script")),
         dependencyGraphStrategyOptions: this.getAttribute("dependency-graph-strategy") && {
           name: this.getAttribute("dependency-graph-strategy"),
           config: this.getAttribute("dependency-graph-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export class TextInputComponent extends React.Component<{ onChange?(newValue): any, value?: any }, { currentValue }> {
+export class TextInputComponent extends React.Component<{ onChange?(newValue): any, value?: any, placeholder?: string, rows?: number }, { currentValue }> {
   state = {
     currentValue: undefined
   }
@@ -14,6 +14,22 @@ export class TextInputComponent extends React.Component<{ onChange?(newValue): a
     this.setState({ currentValue: undefined });
   }
   render() {
-    return <input type="text" {...(this.state.currentValue != null ? { } : { value: this.props.value })} onFocus={this.onFocus} onBlur={this.onBlur} onChange={this.onChange} />
+    const props = {
+      onFocus: this.onFocus,
+      onBlur: this.onBlur,
+      onChange: this.onChange,
+      placeholder: this.props.placeholder,
+      rows: this.props.rows
+    } as any;
+
+    if (this.state.currentValue == null && props.value != null) {
+      props.value = this.props.value;
+    }
+
+    if (props.rows) {
+      return <textarea {...props} />
+    }
+
+    return <input type="text" {...props} />;
   }
 }

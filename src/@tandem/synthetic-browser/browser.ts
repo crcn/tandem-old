@@ -1,3 +1,4 @@
+import * as vm from "vm";
 import { SyntheticLocation } from "./location";
 import { SyntheticRendererEvent } from "./messages";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
@@ -45,6 +46,7 @@ import { CallbackDispatcher } from "@tandem/mesh";
 
 export interface ISyntheticBrowserOpenOptions {
   url: string;
+  injectScript: string;
   dependencyGraphStrategyOptions?: IDependencyGraphStrategyOptions;
 }
 
@@ -141,6 +143,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   private _sandbox: Sandbox;
   private _entry: Dependency;
   private _graph: DependencyGraph;
+  private _script: string;
 
   $didInject() {
     super.$didInject();
@@ -156,6 +159,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   protected async open2(options: ISyntheticBrowserOpenOptions) {
 
+    this._script = options.injectScript;
     this.logger.info(`Opening ${options.url} ...`);
     const timerLogger = this.logger.startTimer();
     const strategyOptions = options.dependencyGraphStrategyOptions || DependencyGraphStrategyOptionsProvider.find(options.url, this._injector);
@@ -180,7 +184,15 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     const window = new SyntheticWindow(this.location, this);
     this._registerElementClasses(window.document);
     Object.assign(window, this._graph.createGlobalContext());
+
+    // user injected script to tweak the state of an app
+    this._injectScript(window);
     return window;
+  }
+
+  private _injectScript(window: SyntheticWindow) {
+    if (!this._script) return;
+    vm.runInNewContext(this._script, window);
   }
 
   private _registerElementClasses(document: SyntheticDocument) {

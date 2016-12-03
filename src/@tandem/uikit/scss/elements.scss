@@ -45,6 +45,9 @@ a {
 }
 
 
+textarea {
+  @extend .input;
+}
 
 input[type="text"] {
   @extend .input;
