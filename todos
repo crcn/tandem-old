@@ -29,9 +29,6 @@ This is only the beginning
   - [ ] install CLI tools menu option
   - [ ] react starter project
   - [ ] show diff of unsaved drafts
-  - [ ] artboard pane
-    - [ ] globals pane
-    - [ ] pop artboards out in new window
 
 - [ ] Core
   - [ ] enable script tags
@@ -128,35 +125,29 @@ CLEANUP
 FEATURES
 ----------------------------------
 
-STAGE TOOLS
-  - [ ] resizer
-  - [ ] text input
-
-CSS PANE  
-  - [ ] up/down arrows for inputs
-  - [ ] background image
-  - [ ] Typography
-    - [ ] Fallback font options
-  - [ ] custom color picker
-  - [ ] force state (hover, checked, etc.)
-  - [ ] unit value converter
-
 CORE
   - *[ ] right click edit text
   - [ ] config for scanning application for components
-  - [ ] History scrubber
 
-DEV TOOLS
-  - [ ] ability to set global values in the sandbox such as env (useful for changing states in app)
-  - [ ] menu option for auto adding artboards from url - or possibly another element
 
-SOCIAL
-  - *[ ] possibly attach messages to commits
+- [ ] Editor
 
-MEDIA QUERIES
-  - [ ] attached to each artboard
+  - [ ] CSS pane
+    - [ ] up/down arrows for inputs
+    - [ ] background image
+    - [ ] Typography
+      - [ ] Fallback font options
+    - [ ] custom color picker
+    - [ ] force state (hover, checked, etc.)
+    - [ ] unit value converter
+  
+  - [ ] artboard pane
+    - [ ] pop artboards out in new window
 
-OPTIMIZATIONS
+  - [ ] media query pane
+    - [ ] attached to each artboard
+
+- [ ] Optimizations
   - [ ] have data store records owned
   - [ ] tail oplog for DS operations
   - [ ] store workspaces in data store

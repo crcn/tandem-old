@@ -1,9 +1,13 @@
 <tandem style="background-color:#333;">
-  <artboard title="Jumbotron Playground" src="/Users/crcn/Developer/tandem/playground/bootstrap/jumbotron/index.html" style=" left: 1223px; top: 431px; width: 1440px; height: 900px; " class="artboard-entity">
+  <artboard title="CSS Pretty" src="/Users/crcn/Developer/tandem/src/@tandem/html-extension/tandem/preview.tsx" style=" width: 1434px; height: 1344px; left: -1700px; top: 431px; " class="artboard-entity">
     <iframe data-td-selectable="false" style="border: none; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px;"></iframe>
     <div class="artboard-entity-overlay" style="background: transparent; border: none; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; " data-td-selectable="false"></div>
   </artboard>
-  <artboard title="HTML Extension" src="./src/@tandem/html-extension/tandem/preview.tsx" style=" width: 1434px; height: 1344px; left: -1700px; top: 431px; "></artboard>
+  <artboard title="Jumbotron Playground" src="/Users/crcn/Developer/tandem/playground/bootstrap/jumbotron/index.html" style=" left: -2733px; top: 3826px; width: 1440px; height: 900px; " class="artboard-entity">
+    <iframe data-td-selectable="false" style="border: none; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px;"></iframe>
+    <div class="artboard-entity-overlay" style="background: transparent; border: none; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; " data-td-selectable="false"></div>
+  </artboard>
+  <artboard title="CSS Computed" src="./src/@tandem/html-extension/tandem/preview.tsx" style=" left: -66px; top: 431px; width: 1434px; height: 1344px; " inject-script="process.env.CSS_PANE%20%3D%20%22computed%22%3B"></artboard>
   <artboard title="HTML Stage Info" src="./src/@tandem/html-extension/editor/browser/components/stage-tools/element-info/index-preview.tsx" style=" left: -2733px; top: -150px; width: 230px; height: 206px; "></artboard>
   <artboard title="Launchpad" src="./src/tandem-studio/browser/components/pages/welcome/index-preview.tsx" style=" left: -2733px; top: 431px; width: 800px; height: 500px; "></artboard>
   <artboard title="Drag select stage tool" src="/Users/crcn/Developer/tandem/src/@tandem/editor/browser/components/stage-tools/drag-select/index-preview.tsx" style=" left: -2426px; top: -150px; width: 493px; height: 343px; "></artboard>

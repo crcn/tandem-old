@@ -30,7 +30,7 @@ import { HTMLExtensionStoreProvider } from "@tandem/html-extension/editor/browse
 import { HTMLExtensionStore, MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/stores";
 
 const MAX_LABEL_LENGTH = 80;
-const DEFAULT_PANE = "pretty";
+const DEFAULT_PANE = process.env.CSS_PANE || "pretty";
 
 class DocumentMutationChangeWatcher {
 

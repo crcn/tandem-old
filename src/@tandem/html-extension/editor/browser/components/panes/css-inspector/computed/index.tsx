@@ -41,7 +41,7 @@ export class ComputedPropertiesPaneComponent extends BaseApplicationComponent<{ 
       </CSSHighlightTargetRuleHintComponent>
     }
     
-    return <div className="section">
+    return <div className="container section">
       <div className="row title">
         Computed
       </div>

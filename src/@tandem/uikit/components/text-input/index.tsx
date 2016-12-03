@@ -22,7 +22,7 @@ export class TextInputComponent extends React.Component<{ onChange?(newValue): a
       rows: this.props.rows
     } as any;
 
-    if (this.state.currentValue == null && props.value != null) {
+    if (this.state.currentValue == null && this.props.value != null) {
       props.value = this.props.value;
     }
 
