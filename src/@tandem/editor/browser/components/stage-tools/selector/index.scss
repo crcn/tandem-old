@@ -8,7 +8,8 @@
   z-index: 1024;
 
   &--size {
-    background-color: rgba($color-blue-4, 0.8);
+    background-color: rgba(#333, 0.8);
+    
     color: white;
     border-radius: 5px;
     padding: 5px;
@@ -26,8 +27,8 @@
 
   & svg {
     & rect {
-      fill: $color-blue-7;
-      stroke: $color-blue-7;
+      fill: #00B5FF;
+      stroke: #00B5FF;
     }
   }
 

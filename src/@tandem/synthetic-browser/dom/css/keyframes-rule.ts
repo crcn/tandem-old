@@ -10,14 +10,14 @@ import {
   PropertyMutation,
   serialize,
   diffArray,
-  ISerializedContent,
+  SerializedContentType,
   ITreeWalker
 } from "@tandem/common";
 import { SyntheticCSSGroupAtRule, SyntheticCSSGroupAtRuleEdit, SyntheticCSSGroupAtRuleMutationTypes } from "./atrule";
 
 export interface ISerializedSyntheticCSSKeyframesRule {
   name: string;
-  cssRules: Array<ISerializedContent<any>>;
+  cssRules: Array<SerializedContentType<any>>;
 }
 
 class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKeyframesRule, ISerializedSyntheticCSSKeyframesRule> {

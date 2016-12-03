@@ -14,8 +14,13 @@ Messaging:
 No setup required.
 This is only the beginning
 
+- [ ] Guides
+  - [ ] Shortcuts
+  - [ ] getting started
+
 - [ ] Editor
-  - [ ] drag select
+  - [ ] drag url from browser
+  - [ ] eye dropper
   - [ ] top bar
     - [ ] paint bucket tool
     - [ ] artboard tool
@@ -38,8 +43,10 @@ This is only the beginning
   - [ ] import existing HTML file from start page - auto-create artboards
 
 - [ ] Bugs
+  - [ ] cannot add a new style sheet
   - [ ] fix jankiness when updating docs
   - [ ] source maps not working for CSS
+  - [ ] fix renderers not updating based on computed props
   - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
 
 - [ ] Stability
@@ -153,6 +160,7 @@ OPTIMIZATIONS
   - [ ] have data store records owned
   - [ ] tail oplog for DS operations
   - [ ] store workspaces in data store
+  - [ ] tree shaking dependencies
   - [ ] run VM code in a new worker for speed and to prevent mem leaks
   - [ ] connect studio with repo of extensions
 

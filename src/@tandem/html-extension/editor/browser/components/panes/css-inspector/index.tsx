@@ -211,6 +211,7 @@ export class MatchingSelectorsComponent extends React.Component<{ rule: MergedCS
     }
     
     const renderGroupRules = (title: string, rules: MatchedCSSStyleRuleType[]) => {
+      if (rules.length === 0) return null;
       return <div>
         <div className="row title">
           <div className="col-12">

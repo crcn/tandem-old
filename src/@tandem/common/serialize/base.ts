@@ -1,9 +1,6 @@
 import { Injector } from "@tandem/common/ioc";
 
-export interface ISerializedContent<T> {
-  type: string;
-  value: T;
-}
+export type SerializedContentType<T> = [string, T];
 
 export interface ISerializer<T, U> {
   serialize(value: T): U;
@@ -153,20 +150,17 @@ export function isSerializable(value: Object) {
   return !!value && (typeof value === "function" ? !!Reflect.getMetadata("serialize:type", value) : !!Reflect.getMetadata("serialize:type", value.constructor));
 }
 
-export function serialize(value: any): ISerializedContent<any> {
+export function serialize(value: any): SerializedContentType<any> {
   const type = getSerializeType(value) || LITERAL_TYPE;
-  return {
-    type: type,
-    value: (<ISerializer<any, any>>_serializers[type].serializer).serialize(value)
-  };
+  return [ type, (<ISerializer<any, any>>_serializers[type].serializer).serialize(value)]
 }
 
-export function deserialize(content: ISerializedContent<any>, injector: Injector): any {
-  const info: ISerializerInfo = _serializers[content.type];
+export function deserialize(content: SerializedContentType<any>, injector: Injector): any {
+  const info: ISerializerInfo = _serializers[content[0]];
 
   if (!info) {
-    return content;
+    throw new Error(`Trying to deserialize non serialized object:` + content);
   }
 
-  return info.serializer.deserialize(content.value, injector, info.ctor);
+  return info.serializer.deserialize(content[1], injector, info.ctor);
 }

@@ -66,6 +66,9 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
   selectEntity = (event: React.MouseEvent<any>) => {
     this.props.workspace.select(this.props.artboard, event.metaKey || event.shiftKey);
+
+    // prevent root from deselecting all
+    event.stopPropagation();
   }
 
   onKeyDown = (event: React.KeyboardEvent<any>): any => {
@@ -105,7 +108,7 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     };
 
     return <div className="m-tdartboard-stage-tool--item" style={style}>
-      <div className="m-tdartboard-stage-tool--item--title" onClick={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
+      <div className="m-tdartboard-stage-tool--item--title" onMouseDown={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
         { this.state.titleEditChange ? <AutosizeInput ref="input" value={this.state.titleEditChange.newValue} onChange={this.onTitleChange} onBlur={this.save} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
         <StatusComponent status={artboard.status} />
       </div>

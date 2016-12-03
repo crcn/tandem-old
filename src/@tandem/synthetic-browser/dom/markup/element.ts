@@ -20,7 +20,7 @@ import {
   ISerializer,
   BoundingRect,
   serializable,
-  ISerializedContent,
+  SerializedContentType,
   Mutation,
   ArrayMutation,
   MutationEvent,
@@ -128,9 +128,9 @@ export interface ISerializedSyntheticDOMElement {
   nodeName: string;
   namespaceURI: string;
   readonlyAttributeNames: string[];
-  shadowRoot: ISerializedContent<any>;
-  attributes: Array<ISerializedContent<ISerializedSyntheticDOMAttribute>>;
-  childNodes: Array<ISerializedContent<any>>;
+  shadowRoot: SerializedContentType<any>;
+  attributes: Array<SerializedContentType<ISerializedSyntheticDOMAttribute>>;
+  childNodes: Array<SerializedContentType<any>>;
 }
 
 export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMElement, ISerializedSyntheticDOMElement> {

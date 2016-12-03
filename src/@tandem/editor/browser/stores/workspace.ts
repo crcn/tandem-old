@@ -121,6 +121,7 @@ export class Workspace extends Observable {
         newSelection.push(item);
       }
     }
+    
 
     this.selection = newSelection;
 

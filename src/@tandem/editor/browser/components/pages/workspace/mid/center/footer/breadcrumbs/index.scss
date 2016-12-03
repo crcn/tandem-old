@@ -1,0 +1,85 @@
+@import "@tandem/uikit/scss";
+
+.element-breadcrumbs {
+  background: #F9F9F9;
+  display: inline-block;
+  overflow: hidden;
+  li {
+
+    cursor: pointer;
+
+
+    display: inline-block;
+    padding: 8px 8px;
+    padding-left: 22px;
+    padding-right: 18px;
+
+    
+    position: relative;
+    /* margin-right: 4px;*/
+
+    &::before, &::after {
+
+      content: " ";
+
+      display: block;
+      width: 20px;
+      height: 20px;
+      border: 0px solid rgba(0, 0, 0, 0.05);
+      top: calc(50% - 4px);
+      position: absolute;
+      border-left-style: none;
+      border-bottom-style: none;
+      border-top-width: 2px;
+      background: #F9F9F9;
+      border-right-width: 2px;
+      transform: rotate(45deg) translateY(-50%);
+    }
+
+    &::before {
+      left: -20px;
+    }
+
+    &::after {
+      right: -2px;
+      background: transparent;
+    }
+
+
+    &:hover, &.hovering {
+
+      color: #00B5FF;
+      box-shadow: none !important;
+
+      // box-shadow: inset -2px 0 0 0px #E7E7E7, inset 0 0 0 2px #00B5FF;
+      // &:before {
+      //   border-width: 2px;
+      //   border-color: #00B5FF;
+      // }
+      // &:after {
+      //   right: 0.5px;
+      //   top: calc(50% - 3px);
+
+      //   border-width: 2px;
+      //   border-color: #00B5FF;
+      // }
+    }
+
+
+    &:first-child {
+      &::before {
+        display: none;
+      }
+    }
+
+    &:last-child {
+      &::after {
+        display: none;
+      }
+    }
+
+    
+  }
+
+    
+}

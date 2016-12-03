@@ -23,7 +23,7 @@ import {
   MimeTypeProvider,
   InjectorProvider,
   SetValueMutation,
-  ISerializedContent,
+  SerializedContentType,
   PropertyMutation,
 } from "@tandem/common";
 

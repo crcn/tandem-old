@@ -19,6 +19,8 @@ import {
   FileSystemProvider,
 } from "../providers";
 
+
+
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {
@@ -461,7 +463,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private onFileCacheAction({ mutation }: MutationEvent<any>) {
     // reload the dependency if file cache item changes -- could be the data url, source file, etc.
     if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
-      this.logger.info("Source file changed");
+      this.logger.info("Source file changed ");
+
       this.reload();
     }
   }

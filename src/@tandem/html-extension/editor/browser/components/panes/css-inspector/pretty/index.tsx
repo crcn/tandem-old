@@ -1346,7 +1346,7 @@ class CSSShadowInputComponent extends React.Component<{ target: SyntheticCSSStyl
           <TextInputComponent value={target.spread} onChange={bindGraphicsValueChange(target, "spread")} />
         </div>
       </div>
-      <div className="row" style={{display: !!target["inset"] ? "block" : "none" }}>
+      <div className="row" style={{display: target instanceof SyntheticCSSStyleBoxShadow ? "block" : "none" }}>
         <div className="col-2 label">
           Inset
         </div>

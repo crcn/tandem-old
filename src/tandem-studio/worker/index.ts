@@ -3,6 +3,7 @@ import * as getPort from "get-port";
 import { SockService, DSService } from "./services";
 import "./messages";
 
+import { ImportFileRequest } from "@tandem/editor/browser/messages";
 import { PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
@@ -34,7 +35,7 @@ import {
 } from "@tandem/common";
 
 import { DSProvider } from "./providers";
-import { ApplyFileEditCommand, SyncFileCacheCommand } from "./commands";
+import { ApplyFileEditCommand, SyncFileCacheCommand, ImportFileCommand } from "./commands";
 
 import {
   ApplyFileEditRequest,
@@ -84,6 +85,7 @@ export const initializeWorker = async () => {
     createSyntheticBrowserWorkerProviders(),
     
     // commands
+    new CommandFactoryProvider(ImportFileRequest.IMPORT_FILE, ImportFileCommand),
     new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, SyncFileCacheCommand)
   );

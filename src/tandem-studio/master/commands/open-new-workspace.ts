@@ -25,7 +25,7 @@ export class OpenNewWorkspaceCommand extends BaseStudioServerCommand {
         hash = "#/welcome";
       }
 
-      const win = new BrowserWindow({ width: width, height: height, titleBarStyle: "hidden" });
+      const win = new BrowserWindow({ width: width, height: height, titleBarStyle: "hidden-inset" });
 
       win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.port}${hash}`);
 

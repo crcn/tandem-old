@@ -3,10 +3,10 @@ import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
 import { SyntheticDOMContainer } from "./container";
 
-import { serializable, ISerializer, serialize, deserialize, ISerializedContent } from "@tandem/common";
+import { serializable, ISerializer, serialize, deserialize, SerializedContentType } from "@tandem/common";
 
 export interface ISerializedSyntheticDocumentFragment {
-  childNodes: Array<ISerializedContent<any>>;
+  childNodes: Array<SerializedContentType<any>>;
 }
 
 class SyntheticDocumentFragmentSerializer implements ISerializer<SyntheticDocumentFragment, ISerializedSyntheticDocumentFragment> {

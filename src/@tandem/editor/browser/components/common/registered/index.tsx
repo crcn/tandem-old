@@ -5,9 +5,9 @@ import { ReactComponentFactoryProvider, PageFactoryProvider, EditorStoreProvider
 
 export class RegisteredComponent extends BaseApplicationComponent<{ ns: string, providers?: ReactComponentFactoryProvider[] } & any, any> {
   render() {
-    return <span> { (this.props.providers || this.injector.queryAll<ReactComponentFactoryProvider>(this.props.ns)).map((dependency, i) => {
+    return <span> { (this.props.providers || ((this.injector && this.injector.queryAll<ReactComponentFactoryProvider>(this.props.ns)) || []).map((dependency, i) => {
       return dependency.create(Object.assign({ key: i }, this.props));
-    })} </span>;
+    }))} </span>;
   }
 }
 

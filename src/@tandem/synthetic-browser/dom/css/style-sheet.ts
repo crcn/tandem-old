@@ -19,7 +19,7 @@ import {
   serializable,
   ISourceLocation,
   MoveChildMutation,
-  ISerializedContent,
+  SerializedContentType,
   RemoveChildMutation,
   InsertChildMutation,
 } from "@tandem/common";
@@ -27,7 +27,7 @@ import {
 import { syntheticCSSRuleType, diffStyleSheetRules } from "./utils";
 
 export interface ISerializedCSSStyleSheet {
-  rules: Array<ISerializedContent<any>>;
+  rules: Array<SerializedContentType<any>>;
 }
 
 class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleSheet, ISerializedCSSStyleSheet> {

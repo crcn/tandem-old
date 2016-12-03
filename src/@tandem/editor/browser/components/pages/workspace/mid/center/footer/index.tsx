@@ -2,6 +2,7 @@ import "./index.scss";
 
 import * as React from "react";
 import { Workspace } from "@tandem/editor/browser/stores";
+import { BreadcrumbsComponent } from "./breadcrumbs";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SetZoomRequest } from "@tandem/editor/browser/messages";
 import * as AutosizeInput from "react-input-autosize";
@@ -10,9 +11,8 @@ import { FooterComponentFactoryProvider } from "@tandem/editor/browser/providers
 
 class ZoomLabelComponent extends BaseApplicationComponent<{ workspace: Workspace }, { editZoom: number }> {
 
-  $didInject() {
-    super.$didInject();
-    this.state = { editZoom: null };
+  state = {
+    editZoom: null
   }
 
   editZoom = () => {
@@ -57,14 +57,18 @@ class ZoomLabelComponent extends BaseApplicationComponent<{ workspace: Workspace
   }
 }
 
-class FooterComponent extends React.Component<{ workspace: Workspace }, any> {
+export default class FooterComponent extends React.Component<{ workspace: Workspace }, any> {
   render() {
     const { scale } = this.props.workspace.transform;
     return (<div className="m-preview-footer">
-      <ZoomLabelComponent workspace={this.props.workspace} />
-      <RegisteredComponent ns={FooterComponentFactoryProvider.getNamespace("**")} workspace={this.props.workspace} />
+      <div className="footer-inner">
+        <div className="info">
+          <ZoomLabelComponent workspace={this.props.workspace} />
+          <RegisteredComponent ns={FooterComponentFactoryProvider.getNamespace("**")} workspace={this.props.workspace} />
+        </div>
+        <BreadcrumbsComponent workspace={this.props.workspace} />
+      </div>
     </div>);
   }
 }
 
-export default FooterComponent;

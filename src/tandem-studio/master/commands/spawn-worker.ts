@@ -1,6 +1,6 @@
 import { BaseStudioServerCommand } from "./base";
 import { IDispatcher, IMessage, ProxyBus, RemoteBus } from "@tandem/mesh";
-import { createProcessBus } from "@tandem/common/workers/node";
+import { createProcessBus, fork as forkElectron } from "@tandem/common/workers/node";
 import { spawn } from "child_process";
 
 export class SpawnWorkerCommand extends  BaseStudioServerCommand {
@@ -8,7 +8,7 @@ export class SpawnWorkerCommand extends  BaseStudioServerCommand {
 
     const proxy = new ProxyBus();
 
-    const fork = () => {
+    const forkNode = () => {
 
       // need to completely separate from master process so that native node modules on the 
       // user machine work properly.
@@ -20,11 +20,12 @@ export class SpawnWorkerCommand extends  BaseStudioServerCommand {
       proxy.target = createProcessBus(this.config.family, proc, this.bus);
 
       proc.on("close", () => {
-        setTimeout(fork, 500);
+        setTimeout(forkNode, 500);
       });
     };
 
-    fork();
+    // TODO - check if node actually exists on system before doing this
+    forkNode();
     this.bus.register(proxy);
   }
 }

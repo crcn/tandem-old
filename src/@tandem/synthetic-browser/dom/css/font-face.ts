@@ -10,11 +10,11 @@ import {
   ISerializer,
   deserialize,
   serializable,
-  ISerializedContent,
+  SerializedContentType,
 } from "@tandem/common";
 
 export interface ISerializedSyntheticCSSFontFace {
-  style: ISerializedContent<any>;
+  style: SerializedContentType<any>;
 }
 
 class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace, ISerializedSyntheticCSSFontFace> {

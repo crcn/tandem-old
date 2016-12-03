@@ -61,7 +61,21 @@ $disabled-color: rgba(0,0,0,0.2);
 .table {
   .row {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    & .col {
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      & span {
+        overflow: hidden;
+        display: inline-block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+      }
+    }
   }
+  
 }
 
 
@@ -86,7 +100,7 @@ $disabled-color: rgba(0,0,0,0.2);
 }
 
 .selected {
-  &:not(.fill-text) {
+  &:not(.fill-text):not(.underline) {
     background: $sky-blue;
     color: $offset-white !important;
 
@@ -98,6 +112,9 @@ $disabled-color: rgba(0,0,0,0.2);
   &.fill-text {
     color: $sky-blue;
 
+  }
+  &.underline {
+    border-bottom: 2px solid $sky-blue;
   }
 }
 

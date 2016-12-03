@@ -7,6 +7,7 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { GutterComponent } from "@tandem/uikit";
 import { ReceiverService } from "@tandem/editor/common";
+import { WorkspaceTitlebarComponent } from "@tandem/editor/browser/components/pages/workspace/titlebar";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
 import { createTestMasterApplication } from "@tandem/editor/test";
@@ -116,22 +117,25 @@ export const renderPreview = reactEditorPreview(async () => {
   workspace.select([document.querySelector(".container")]);
 
   return <RootApplicationComponent bus={bus} injector={injector}>
-    <div className="editor flex">
-      <GutterComponent className="left">
-        <LayersPaneComponent workspace={workspace} />
-      </GutterComponent>
-      <div className="center">
-        <div className="content">
-          content
+    <div className="td-workspace">
+      <WorkspaceTitlebarComponent />
+      <div className="td-workspace-mid">
+        <GutterComponent className="left">
+          <LayersPaneComponent workspace={workspace} />
+        </GutterComponent>
+        <div className="m-editor-stage">
+          <div className="content">
+            content
+          </div>
+          <GutterComponent className="bottom hide">
+            <CSSAnimationComponent workspace={workspace} />
+          </GutterComponent>
         </div>
-        <GutterComponent className="bottom">
-          <CSSAnimationComponent workspace={workspace} />
+        <GutterComponent className="right">
+          <ElementAttributesPaneComponent workspace={workspace} />
+          <ElementCSSInspectorComponent workspace={workspace} rule={new MergedCSSStyleRule(document.querySelector(".container") as any)} />
         </GutterComponent>
       </div>
-      <GutterComponent className="right">
-        <ElementAttributesPaneComponent workspace={workspace} />
-        <ElementCSSInspectorComponent workspace={workspace} rule={new MergedCSSStyleRule(document.querySelector(".container") as any)} />
-      </GutterComponent>
     </div>
   </RootApplicationComponent>
 });

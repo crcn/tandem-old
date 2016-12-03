@@ -120,11 +120,13 @@ export class OpenWorkspaceRequest extends CoreEvent {
 }
 
 @addMessageVisitor(EditorFamilyType.BROWSER)
+@addMessageVisitor(EditorFamilyType.MASTER)
+@setMessageTarget(EditorFamilyType.WORKER)
 @serializable({
   serialize({ filePath, bounds, targetObject }: ImportFileRequest) {
-    return { filePath, bounds, targetObject: serialize(targetObject && targetObject.clone(false)) };
+    return [ filePath, bounds, serialize(targetObject && targetObject.clone(false)) ];
   },
-  deserialize({ filePath, bounds, targetObject }, injector) {
+  deserialize([ filePath, bounds, targetObject ], injector) {
     return new ImportFileRequest(filePath, bounds, deserialize(targetObject, injector));
   }
 })

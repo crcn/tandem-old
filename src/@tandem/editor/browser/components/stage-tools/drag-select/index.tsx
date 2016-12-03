@@ -1,27 +1,36 @@
 import "./index.scss";
 import * as React from "react";
 import { startDrag } from "@tandem/common/utils/component";
-import { PointerTool } from "@tandem/editor/browser/stores/pointer-tool";
+import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SelectRequest, MouseAction } from "@tandem/editor/browser/messages";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 
-export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app: any, zoom: number, tool: PointerTool }, any> {
+export class DragSelectStageToolComponent extends BaseApplicationComponent<{ workspace: Workspace, style?: any }, any> {
 
-  startDrag(event) {
+  componentDidMount() {
+    document.body.addEventListener("mousedown", this.startDrag);
+  }
+
+  componentWillImount() {
+    document.body.removeEventListener("mousedown", this.startDrag);
+  }
+
+  startDrag = (event: MouseEvent) => {
+
+    const { zoom } = this.props.workspace;
 
     const container = (this.refs as any).container;
     if (!container) return;
 
     const b = container.getBoundingClientRect();
 
-    // const visibleEntities = new VisibleDOMEntityCollection(...this.props.app.workspace.document.querySelectorAll("*"));
     const visibleEntities = [];
 
-    const left = (event.clientX - b.left) / this.props.zoom;
-    const top  = (event.clientY - b.top) / this.props.zoom;
+    const left = (event.clientX - b.left) / zoom;
+    const top  = (event.clientY - b.top) / zoom;
 
     this.setState({
       left: left,
@@ -33,9 +42,8 @@ export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app
 
       let x = left;
       let y = top;
-      let w = Math.abs(delta.x / this.props.zoom);
-      let h = Math.abs(delta.y / this.props.zoom);
-
+      let w = Math.abs(delta.x / zoom);
+      let h = Math.abs(delta.y / zoom);
 
       if (delta.x < 0) {
         x = left - w;
@@ -62,7 +70,7 @@ export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app
         }
       });
 
-      this.props.app.bus.dispatch(new SelectRequest(selection));
+      this.props.workspace.select(selection);
 
     }, () => {
       this.setState({
@@ -77,23 +85,22 @@ export class DragSelectStageToolComponent extends BaseApplicationComponent<{ app
 
   render() {
 
-    if (1 + 1) return null;
+    if (!process.env.SANDBOXED) return null;
 
-    if (!(this.props.tool instanceof PointerTool)) return null;
+    const { zoom } = this.props.workspace;
+    const bounds = this.props.style || this.state || { left: 0, top: 0, width: 0, bottom: 0 };
 
     const style = {
-      left   : this.state.left,
-      top    : this.state.top,
-      width  : this.state.width,
-      height : this.state.height,
-      boxShadow: `0 0 0 ${1 / this.props.zoom}px #CCC`
+      display: bounds.width && bounds.height ? "block" : "none",
+      left   : bounds.left,
+      top    : bounds.top,
+      width  : bounds.width,
+      height : bounds.height,
+      boxShadow: `0 0 0 ${1 / zoom}px #00B5FF`
     };
 
-    const box = (<div style={style} className="m-drag-select--box">
-    </div>);
-
     return (<div ref="container" className="m-drag-select">
-      {this.state.dragging ? box : void 0}
+      <div style={style} className="m-drag-select--box" />
     </div>);
   }
 }

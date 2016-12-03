@@ -18,7 +18,7 @@ import {
   ArrayMutation,
   PropertyMutation,
   SetValueMutation,
-  ISerializedContent,
+  SerializedContentType,
 } from "@tandem/common";
 
 export namespace SyntheticCSSStyleRuleMutationTypes {
@@ -167,7 +167,7 @@ export class SyntheticCSSElementStyleRuleEdit<T extends SyntheticCSSElementStyle
 
 export interface ISerializedSyntheticCSSElementStyleRule {
   selector: string;
-  style: ISerializedContent<ISerializedSyntheticCSSStyle>
+  style: SerializedContentType<ISerializedSyntheticCSSStyle>
 }
 
 

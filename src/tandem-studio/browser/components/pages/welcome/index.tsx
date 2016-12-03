@@ -84,6 +84,7 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
       <div className="info">
         <i className="ion-close" onClick={this.close}></i>
         <h2 className="header">Welcome to Tandem</h2>
+
         <ul>
           <li className="hide"><a href="#" onClick={this.getStarted}>Getting started</a></li>
           <li className="hide"><a href="#" onClick={this.getStarted}>Key Commands</a></li>

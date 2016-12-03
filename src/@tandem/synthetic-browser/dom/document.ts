@@ -37,7 +37,7 @@ import {
   RemoveMutation,
   BubbleDispatcher,
   MoveChildMutation,
-  ISerializedContent,
+  SerializedContentType,
   InsertChildMutation,
   RemoveChildMutation,
   ObservableCollection,

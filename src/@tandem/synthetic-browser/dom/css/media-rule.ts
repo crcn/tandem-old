@@ -6,7 +6,7 @@ import {
   serialize,
   deserialize,
   serializable,
-  ISerializedContent,
+  SerializedContentType,
   ITreeWalker,
   ChildMutation,
   Mutation,
@@ -22,7 +22,7 @@ import { SyntheticCSSGroupAtRule, SyntheticCSSGroupAtRuleEdit } from "./atrule";
 
 export interface ISerializedSyntheticCSSMediaRule {
   media: string[];
-  cssRules: Array<ISerializedContent<any>>;
+  cssRules: Array<SerializedContentType<any>>;
 }
 
 class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRule, ISerializedSyntheticCSSMediaRule> {

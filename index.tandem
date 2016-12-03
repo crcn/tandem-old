@@ -1,6 +1,11 @@
 <tandem style="background-color:#333;">
-  <artboard title="HTML Extension" src="./src/@tandem/html-extension/tandem/preview.tsx" style=" width: 1146px; height: 1258px; left: -932px; top: -462px; "></artboard>
-  <artboard title="Playground" src="./src/@tandem/html-extension/tandem/playground.html" style=" left: 347px; top: -462px; width: 511px; height: 629px; "></artboard>
-  <artboard title="HTML Stage Info" src="./src/@tandem/html-extension/editor/browser/components/stage-tools/element-info/index-preview.tsx" style=" left: 347px; top: 298px; width: 230px; height: 206px; "></artboard>
-  <artboard title="Launchpad" src="./src/tandem-studio/browser/components/pages/welcome/index-preview.tsx" style=" left: -1878px; top: -462px; width: 800px; height: 500px; "></artboard>
+  <artboard title="Jumbotron Playground" src="/Users/crcn/Developer/tandem/playground/bootstrap/jumbotron/index.html" style=" left: 37px; top: 653px; width: 1440px; height: 900px; " class="artboard-entity">
+    <iframe data-td-selectable="false" style="border: none; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px;"></iframe>
+    <div class="artboard-entity-overlay" style="background: transparent; border: none; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; " data-td-selectable="false"></div>
+  </artboard>
+  <artboard title="HTML Extension" src="./src/@tandem/html-extension/tandem/preview.tsx" style=" width: 1440px; height: 1495px; left: -1707px; top: 653px; "></artboard>
+  <artboard title="HTML Stage Info" src="./src/@tandem/html-extension/editor/browser/components/stage-tools/element-info/index-preview.tsx" style=" left: -2733px; top: -150px; width: 230px; height: 206px; "></artboard>
+  <artboard title="Launchpad" src="./src/tandem-studio/browser/components/pages/welcome/index-preview.tsx" style=" left: -2733px; top: 653px; width: 800px; height: 500px; "></artboard>
+  <artboard title="Drag select stage tool" src="/Users/crcn/Developer/tandem/src/@tandem/editor/browser/components/stage-tools/drag-select/index-preview.tsx" style=" left: -2383px; top: -150px; width: 512px; height: 431px; "></artboard>
+  <artboard title="Footer" src="/Users/crcn/Developer/tandem/src/@tandem/editor/browser/components/pages/workspace/mid/center/footer/index-preview.tsx" style=" left: -1804px; top: -150px; width: 633px; height: 384px; "></artboard>
 </tandem>

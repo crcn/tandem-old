@@ -13,7 +13,7 @@ import {
   ChildMutation,
   PropertyMutation,
   MoveChildMutation,
-  ISerializedContent,
+  SerializedContentType,
   InsertChildMutation,
   RemoveChildMutation,
 } from "@tandem/common";
@@ -76,7 +76,7 @@ export abstract class SyntheticCSSGroupAtRule extends SyntheticCSSGroupingRule<S
 export interface ISerializedSyntheticCSSUnknownAtRule {
   atRuleName: string;
   params: string;
-  cssRules: Array<ISerializedContent<any>>;
+  cssRules: Array<SerializedContentType<any>>;
 }
 
 class SyntheticCSSUnknownAtRuleSerializer implements ISerializer<SyntheticCSSUnknownGroupAtRule, ISerializedSyntheticCSSUnknownAtRule> {

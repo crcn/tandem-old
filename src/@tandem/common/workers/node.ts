@@ -34,8 +34,10 @@ export const createProcessBus = (family: string, proc: ChildProcess | NodeJS.Pro
       send(message) {
         proc.send(message);
       },
-      addListener(message) {
-        (proc as any).on("message", message);
+      addListener(listener) {
+        (proc as any).on("message", (message) => {
+          listener(message);
+        });
       }
     }
   }, target, { serialize, deserialize });

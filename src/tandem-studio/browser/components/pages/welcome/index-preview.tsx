@@ -11,5 +11,3 @@ export const renderPreview = reactEditorPreview(() => {
   store.projectStarterOptions = [];
   return <WelcomeComponent store={store} />;
 });
-        
-        
