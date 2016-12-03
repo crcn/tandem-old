@@ -138,7 +138,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       if (nativeRule) {
         this.updateCSSRules(nativeRule as any as CSSStyleSheet, styleSheet);
       } else {
-        this.logger.warn(`Unable to find matching declaration`);
+        // this.logger.warn(`Unable to find matching declaration`);
       }
     }
   }
@@ -149,7 +149,12 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     }
 
     for (const rule of syntheticStyleSheet.cssRules) {
-      staleStyleSheet.insertRule(rule.cssText);
+      try {
+        staleStyleSheet.insertRule(rule.cssText, staleStyleSheet.cssRules.length);
+      } catch(e) {
+        // browser may throw errors if it cannot parse the rule -- this will
+        // happen unsupported vendor prefixes.
+      }
     }
   }
 

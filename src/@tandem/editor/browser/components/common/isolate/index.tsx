@@ -66,7 +66,15 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
     });
   }
 
+  onScroll = (event) => {
+    if (this.props.onScroll) this.props.onScroll(event);
+    if (this.props.scrolling === false) {
+      const db = (this.refs as any).container.contentDocument;
+      db.body.scrollLeft = db.body.scrollTop = 0;
+    }
+  }
+
   render() {
-    return <iframe ref="container" scrolling={this.props.scrolling} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.props.onWheel} onScroll={this.props.onScroll} onLoad={this.props.onLoad} className={this.props.className} style={this.props.style} />;
+    return <iframe ref="container" scrolling={this.props.scrolling} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.props.onWheel} onScroll={this.onScroll} onLoad={this.props.onLoad} className={this.props.className} style={this.props.style} />;
   }
 }
