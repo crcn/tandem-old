@@ -7,6 +7,7 @@ import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { TreeComponent } from "@tandem/uikit";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { BaseApplicationComponent } from "@tandem/common";
+import { ElementLayerLabelProvider } from "@tandem/html-extension/editor/browser/providers";
 import { SyntheticDOMNode, SyntheticDOMElement, SyntheticDOMContainer, SyntheticDOMText, SyntheticDOMComment, DOMNodeType } from "@tandem/synthetic-browser";
 
 export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: Workspace }, any> {
@@ -50,7 +51,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
         isNodeExpanded={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.LAYER_EXPANDED)}
         getChildNodes={node => this.filterChildren(node["contentDocument"] ? node["contentDocument"].body.childNodes : node.children)}
         toggleExpand={this.toggleExpand.bind(this)}
-        renderLabel={this.renderLabelOuter.bind(this)}
+        renderLabel={this.renderNode.bind(this)}
       />
     </div>;
   }
@@ -59,16 +60,20 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     return nodes.filter((node) => node.nodeType !== DOMNodeType.COMMENT);
   }
 
-  renderLabelOuter(node: SyntheticDOMNode, depth: number) {
+  renderNode(node: SyntheticDOMNode, renderOuter: (inner) => any) {
+    const label = this.renderLabel(node, renderOuter);
+
+    if (!label) return null;
+
     return <SyntheticSourceLink target={node}>
-      {this.renderLabel(node, depth)}
+      { label }
     </SyntheticSourceLink>;
   }
 
-  renderLabel(node: SyntheticDOMNode, depth: number): any {
+  renderLabel(node: SyntheticDOMNode, renderDefault?: any): any {
     switch(node.nodeType) {
       case DOMNodeType.TEXT: return this.renderText(node as SyntheticDOMText);
-      case DOMNodeType.ELEMENT: return this.renderElement(node as SyntheticDOMElement, depth);
+      case DOMNodeType.ELEMENT: return this.renderElement(node as SyntheticDOMElement, renderDefault);
     }
     return null;
   }
@@ -79,9 +84,19 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     </div>;
   }
 
-  renderElement({ uid, tagName, attributes, childNodes}: SyntheticDOMElement, depth: number) {
+  renderElement(element: SyntheticDOMElement, renderOuterLabel) {
 
-    return <div className="node element">
+    const { attributes, tagName } = element;
+
+    if (attributes["data-td-hide-layer"]) return null;
+    
+    const layerLabelProvider = ElementLayerLabelProvider.find(tagName, this.injector);
+    
+    if (layerLabelProvider) {
+      return layerLabelProvider.create({ element, renderOuterLabel });
+    }
+
+    return renderOuterLabel(<div className="node element">
       <div className="open-tag">
 
         <span key="tag-name" className="tag-name">{ tagName }</span>
@@ -89,6 +104,6 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
         { attributes["class"] && <span key="class" className="entity html attribute class">.{attributes["class"].value}</span>}
 
       </div>
-    </div>
+    </div>);
   }
 }

@@ -86,7 +86,6 @@ STABILITY
 UX
   - [ ] VM developer console
   - [ ] gutters need to be resizable
-  - [ ] custom layer for artboard
   - [ ] input focus border
   - [ ] multi drag
   - [ ] minimap (can also be done by opening up a new window of tandem)

@@ -42,10 +42,7 @@ import {
   LayersPaneComponent,
   ElementCSSInspectorComponent,
   HTMLStylePaneComponent,
-  TextLayerLabelComponent,
   ElementCSSPaneComponent,
-  CommentLayerLabelCoponent,
-  ElementLayerLabelComponent,
   ElementInfoStageToolComponent,
   ElementAttributesPaneComponent,
 } from "./components";
@@ -56,14 +53,6 @@ export function createHTMLEditorBrowserProviders() {
     createHTMLCoreProviders(),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, UpdateMergedRuleCommand),
-
-    // layer components
-    new LayerLabelComponentFactoryProvider(SyntheticHTMLElement.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryProvider(SyntheticHTMLStyle.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryProvider(SyntheticHTMLScript.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryProvider(SyntheticHTMLLink.name, ElementLayerLabelComponent),
-    new LayerLabelComponentFactoryProvider(SyntheticDOMText.name, TextLayerLabelComponent),
-    new LayerLabelComponentFactoryProvider(SyntheticDOMComment.name, CommentLayerLabelCoponent),
 
     // entity panes
     new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent),
@@ -99,3 +88,4 @@ export * from "./services";
 export * from "./stores";
 export * from "../../core";
 export * from "../worker";
+export * from "./providers";

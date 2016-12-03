@@ -8,7 +8,7 @@ import * as cx from "classnames";
 export interface ITreeComponentProps {
   nodes: TreeNode<any>[];
   renderRoot?: boolean;
-  renderLabel: (node: TreeNode<any>) => any;
+  renderLabel: (node: TreeNode<any>, renderOuter: (inner) => any) => any;
   select: (node: TreeNode<any>, event?: React.MouseEvent<any>) => any;
   renderLayer?: (component: any) => any;
   getLayerClassName?: (node: TreeNode<any>) => string;
@@ -40,14 +40,18 @@ export class TreeComponent extends React.Component<ITreeComponentProps, any> {
 
     const expanded = this.props.isNodeExpanded(node);
 
-    return <div className="node">
-
-      <div onClick={this.props.select.bind(this, node)} onMouseEnter={this.onMouseEnter.bind(this, node)} onMouseLeave={this.onMouseLeave.bind(this, node)} draggable={this.isDraggable(node)} onDragStart={this.onDragStart.bind(this, node)} className={cx({ label: true, hovering: this.props.isNodeHovering(node), selected: this.props.isNodeSelected(node), "no-wrap": true })} style={{paddingLeft: 8 + depth * 8 }}>
+    const label = this.props.renderLabel(node, (inner, className?: string) => {
+      return <div onClick={this.props.select.bind(this, node)} onMouseEnter={this.onMouseEnter.bind(this, node)} onMouseLeave={this.onMouseLeave.bind(this, node)} draggable={this.isDraggable(node)} onDragStart={this.onDragStart.bind(this, node)} className={cx({ label: true, hovering:    this.props.isNodeHovering(node), selected: this.props.isNodeSelected(node), "no-wrap": true, [className]: true })} style={{paddingLeft: 8 + depth * 8 }}>
 
         <i key="arrow" onClick={this.toggleExpand.bind(this, node)} className={cx({"ion-arrow-right-b": true, "expand-button": true, expanded: expanded })} style={{ opacity: this.hasChildren(node) ? 0.5 : 0 }} />
-        <span>{this.props.renderLabel(node)}</span>
+        <span>{inner}</span>
       </div>
+    });
 
+    if (!label) return this.renderChildNodes(this.getChildNodes(node), depth);
+
+    return <div className="node">
+      { label }
       {expanded ? this.renderChildNodes(this.getChildNodes(node), depth + 1) : null}
     </div>
   }
