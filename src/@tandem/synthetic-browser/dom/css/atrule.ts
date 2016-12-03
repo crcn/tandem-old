@@ -72,3 +72,38 @@ export abstract class SyntheticCSSGroupAtRule extends SyntheticCSSGroupingRule<S
     this.cssRules.forEach(rule => walker.accept(rule));
   }
 }
+
+export interface ISerializedSyntheticCSSUnknownAtRule {
+  atRuleName: string;
+  params: string;
+  cssRules: Array<ISerializedContent<any>>;
+}
+
+class SyntheticCSSUnknownAtRuleSerializer implements ISerializer<SyntheticCSSUnknownGroupAtRule, ISerializedSyntheticCSSUnknownAtRule> {
+  serialize({ atRuleName, params, cssRules }: SyntheticCSSUnknownGroupAtRule) {
+    return {
+      atRuleName: atRuleName,
+      params: params,
+      cssRules: cssRules.map(serialize)
+    };
+  }
+  deserialize({ atRuleName, params, cssRules }: ISerializedSyntheticCSSUnknownAtRule, injector) {
+    return new SyntheticCSSUnknownGroupAtRule(atRuleName, params, cssRules.map((cs) => deserialize(cs, injector)));
+  }
+}
+
+
+@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSUnknownAtRuleSerializer()))
+export class SyntheticCSSUnknownGroupAtRule extends SyntheticCSSGroupAtRule {
+  constructor(readonly atRuleName: string, readonly params: string, cssRules: SyntheticCSSElementStyleRule[] = []) {
+    super(cssRules);
+  }
+
+  get cssText() {
+    return `@${this.atRuleName} ${this.params} {\n${this.innerText} }`;
+  }
+
+  cloneShallow() {
+    return new SyntheticCSSUnknownGroupAtRule(this.atRuleName, this.params);
+  }
+}

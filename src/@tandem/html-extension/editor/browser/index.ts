@@ -15,6 +15,7 @@ import { CSSTokenTypes } from "@tandem/html-extension/tokenizers";
 
 import {
   SelectionChangeEvent,
+  AddSyntheticObjectRequest,
   TokenComponentFactoryProvider,
   FooterComponentFactoryProvider,
   StageToolComponentFactoryProvider,
@@ -26,6 +27,7 @@ import {
 import {
   ExpandSelectedCommand,
   UpdateMergedRuleCommand,
+  AddSyntheticElementCommand,
 } from "./commands";
 
 import {
@@ -53,6 +55,7 @@ export function createHTMLEditorBrowserProviders() {
     createHTMLCoreProviders(),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, UpdateMergedRuleCommand),
+    new CommandFactoryProvider(AddSyntheticObjectRequest.ADD_SYNTHETIC_OBJECT, AddSyntheticElementCommand),
 
     // entity panes
     new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent),

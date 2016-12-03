@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "@tandem/editor/browser/stores";
+import { EditorStore } from "@tandem/editor/browser/stores";
 import { IDispatcher } from "@tandem/mesh";
 import { IWorkspaceTool } from "@tandem/editor/browser/stores";
 import { ReactComponentFactoryProvider } from "./base";
@@ -150,7 +150,7 @@ export class FooterComponentFactoryProvider extends ReactComponentFactoryProvide
 export class EditorStoreProvider extends StoreProvider {
   static readonly NAME = "editorStore";
   static readonly ID = StoreProvider.getId(EditorStoreProvider.NAME);
-  constructor(clazz: { new(): Store }) {
+  constructor(clazz: { new(): EditorStore }) {
     super(EditorStoreProvider.NAME, clazz);
   }
 }

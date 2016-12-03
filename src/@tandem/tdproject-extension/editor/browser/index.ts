@@ -29,7 +29,6 @@ export function createTDProjectEditorBrowserProviders() {
     // new DocumentPaneComponentFactoryProvider("navigator", NavigatorPaneComponent),
     new ElementLayerLabelProvider("artboard", ArtboardLayerLabelComponent),
     new StageToolComponentFactoryProvider("artboard", "pointer", TDArtboardStageToolComponent),
-    new StageToolComponentFactoryProvider("artboard", "pointer", TDArtboardStageToolComponent),
     new StageToolComponentFactoryProvider("altDistances", "pointer", MeasurementStageToolComponent),
     new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),
     new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),

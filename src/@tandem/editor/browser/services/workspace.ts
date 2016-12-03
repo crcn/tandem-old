@@ -14,7 +14,7 @@ import {
   SyntheticRendererEvent,
   RemoteBrowserDocumentMessage,
 } from "@tandem/synthetic-browser";
-import { Store, Workspace } from "@tandem/editor/browser/stores";
+import { EditorStore, Workspace } from "@tandem/editor/browser/stores";
 import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { CoreApplicationService } from "@tandem/core";
@@ -55,7 +55,7 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   readonly logger: Logger;
 
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
 
   private _tweener: IDisposable;
   private _zoomTimeout: any;

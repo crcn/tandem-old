@@ -144,9 +144,12 @@ export class SetZoomRequest extends CoreEvent {
 }
 
 export class PasteRequest extends CoreEvent {
-  static readonly PASTE = "paste";
   constructor(readonly item: DataTransferItem) {
-    super(PasteRequest.PASTE);
+    super(PasteRequest.getRequestType(item));
+  }
+
+  static getRequestType(item: DataTransferItem | string) {
+    return ["paste", typeof item === "string" ? item : item.type].join("/");
   }
 }
 
@@ -154,6 +157,14 @@ export class SetToolRequest extends CoreEvent {
   static readonly SET_TOOL = "setTool";
   constructor(readonly toolFactory: { create(workspace: Workspace): IWorkspaceTool }) {
     super(SetToolRequest.SET_TOOL);
+  }
+}
+
+export class AddSyntheticObjectRequest implements IMessage {
+  static readonly ADD_SYNTHETIC_OBJECT = "addSyntheticObject";
+  readonly type = AddSyntheticObjectRequest.ADD_SYNTHETIC_OBJECT;
+  constructor(readonly item: ISyntheticObject) {
+    
   }
 }
 

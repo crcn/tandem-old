@@ -11,7 +11,7 @@ import { Workspace } from "./workspace";
 import { DirectoryModel } from "@tandem/editor/common";
 
 // TODO: add workspaces
-export class Store extends Observable {
+export class EditorStore extends Observable {
 
   @bindable(true)
   @bubble()

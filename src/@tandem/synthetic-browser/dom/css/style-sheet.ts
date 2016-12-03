@@ -46,9 +46,10 @@ export class CSSStyleSheetEditor<T extends SyntheticCSSStyleSheet> extends Synth
 
 let _smcache = {};
 function parseSourceMaps(value) {
-  if (value.indexOf("sourceMappingURL") == -1) return undefined;
+  if (String(value).indexOf("sourceMappingURL=data") == -1) return undefined;
   if (_smcache[value]) return _smcache[value];
-  const sourceMappingURL = value.match(/sourceMappingURL=(data\:[^\s]+)/)[1];
+
+  const sourceMappingURL = String(value).match(/sourceMappingURL=(data\:[^\s]+)/)[1];
 
   // assuming that it's inlined here... shouldn't.
   return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));

@@ -207,10 +207,10 @@ export class ArtboardPaneComponent extends BaseApplicationComponent<{ workspace 
       <div className="col-2">
         <div className="preset-preview" style={{width: scaledWidth, height: scaledHeight }} />
       </div>
-      <div className="col-7 label name">
+      <div className="col-6 label name">
         { preset.label }
       </div>
-      <div className="col-3 label dims">
+      <div className="col-4 label dims">
         {preset.width} x {preset.height}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "@tandem/editor/browser/stores";
+import { EditorStore } from "@tandem/editor/browser/stores";
 import { BaseApplicationComponent, appComponentContextTypes, inject } from "@tandem/common";
 import { ReactComponentFactoryProvider, PageFactoryProvider, EditorStoreProvider } from "@tandem/editor/browser/providers";
 
@@ -13,7 +13,7 @@ export class RegisteredComponent extends BaseApplicationComponent<{ ns: string, 
 
 export class PageOutletComponent extends BaseApplicationComponent<{ pageName: string } & any, any> {
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
   
   render() {
     const pageName: string = this._store.router.state[this.props.routeName];

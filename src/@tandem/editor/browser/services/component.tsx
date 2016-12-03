@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { CallbackDispatcher } from "@tandem/mesh";
-import { Store } from "@tandem/editor/browser/stores";
+import { EditorStore } from "@tandem/editor/browser/stores";
 import { inject, CoreEvent, StoreProvider } from "@tandem/common";
 import { RootComponent } from "@tandem/editor/browser/components";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
@@ -11,7 +11,7 @@ import { CoreApplicationService } from "@tandem/core";
 export class ComponentService extends CoreApplicationService<IEditorBrowserConfig> {
 
   @inject(StoreProvider.getId("**"))
-  private _stores: Store[];
+  private _stores: EditorStore[];
 
   private _rendering: boolean;
   private _shouldRenderAgain: boolean;

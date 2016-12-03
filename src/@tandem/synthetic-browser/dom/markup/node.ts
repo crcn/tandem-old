@@ -6,6 +6,7 @@ import { IMarkupNodeVisitor } from "./visitor";
 import { MarkupNodeExpression } from "./ast";
 
 import { SyntheticDOMElement } from "./element";
+import { SyntheticDOMContainer } from "./container";
 import {
   IEditor,
   IEditable,
@@ -130,8 +131,8 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return parent as any as SyntheticDOMElement;
   }
 
-  get parentNode() {
-    return this.parent;
+  get parentNode(): SyntheticDOMContainer {
+    return this.parent as SyntheticDOMContainer;
   }
 
   addEventListener() {

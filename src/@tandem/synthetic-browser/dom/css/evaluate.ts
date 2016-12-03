@@ -5,6 +5,7 @@ import { without } from "lodash";
 import { camelCase } from "lodash";
 import { SandboxModule } from "@tandem/sandbox";
 import { SyntheticCSSObject } from "./base";
+import { SyntheticCSSUnknownGroupAtRule } from "./atrule";
 import { SyntheticCSSFontFace } from "./font-face";
 import { SyntheticCSSElementStyleRule } from "./style-rule";
 import { SyntheticCSSMediaRule } from "./media-rule";
@@ -88,7 +89,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
         return link(atRule, new SyntheticCSSFontFace(getStyleDeclaration(atRule.nodes as postcss.Declaration[])));
       }
 
-      return null;
+      return link(atRule, new SyntheticCSSUnknownGroupAtRule(atRule.name, atRule.params, acceptAll(atRule.nodes)));
     },
     visitComment(comment: postcss.Comment) {
       return null;

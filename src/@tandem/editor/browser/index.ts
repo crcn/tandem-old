@@ -14,7 +14,13 @@ import {
   InitializeApplicationRequest, 
 } from "@tandem/common";
 
-import { AlertMessage, RemoveSelectionRequest, RedirectRequest } from "./messages";
+import { 
+  AlertMessage, 
+  RedirectRequest, 
+  RemoveSelectionRequest, 
+  AddSyntheticObjectRequest, 
+} from "./messages";
+
 import {
   PageFactoryProvider,
   EditorStoreProvider,
@@ -39,7 +45,7 @@ import {
   SelectableStageToolComponent,
 } from "./components";
 
-import { Store } from "./stores";
+import { EditorStore } from "./stores";
 import { WorkspaceRouteHandler } from "./routes";
 
 import { 
@@ -110,7 +116,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
     // pane components
     new DocumentPaneComponentFactoryProvider("layers", LayersPaneComponent),
 
-    new EditorStoreProvider(Store),
+    new EditorStoreProvider(EditorStore),
 
     // pointerToolProvider
   ];

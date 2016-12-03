@@ -1,3 +1,4 @@
+import * as assert from "assert";
 import { decode } from "ent";
 import { camelCase } from "lodash";
 import { BaseRenderer } from "../base";
@@ -83,6 +84,12 @@ function getHostStylesheets(node: Node) {
   return (<Document>p).styleSheets || [];
 }
 
+function filterInvalidMediaRules(rules: SyntheticCSSGroupAtRule[]) {
+
+}
+
+const INVALID_AT_NAME_REGEXP = /@(-webkit-keyframes|-o-keyframes)/;
+
 export class SyntheticDOMRenderer extends BaseRenderer {
 
   private _currentCSSText: string;
@@ -110,7 +117,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       const insertChild = (syntheticNode) => {
         return renderHTMLNode(this.nodeFactory, syntheticNode, this._elementDictionary);
       };
-        
 
       if (nativeNode) {
         if (isDOMElementMutation(mutation)) {
@@ -124,23 +130,26 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     }
 
     if (isCSSMutation(mutation)) {
-      const [nativeRule, syntheticRule] = this.getCSSDictItem(mutation.target);
-      if (nativeRule) {
-        if (isCSSGroupingStyleMutation(mutation)) {
-          new CSSGroupingRuleEditor(<CSSGroupingRule>nativeRule, (parent, child) => {
-            return child.cssText;
-          }, (child, index) => {
+      const styleSheet = mutation.target instanceof SyntheticCSSStyleSheet ? mutation.target : mutation.target.parentStyleSheet;
+      const [nativeRule, syntheticRule] = this.getCSSDictItem(styleSheet);
 
-            this._cssRuleDictionary[child.uid] = [(<CSSGroupingRule>nativeRule).cssRules[index], child];
-          }, (child, index) => {
-            this._cssRuleDictionary[child.uid] = undefined;
-          }).applyMutations([mutation]);
-        } else if (isCSSStyleRuleMutation(mutation)) {
-          new CSSStyleRuleEditor(<CSSStyleRule>nativeRule).applyMutations([mutation]);
-        }
+      // MUST replace the entire CSS text here since vendor prefixes get stripped out
+      // depending on the browser. This is the simplest method for syncing changes.
+      if (nativeRule) {
+        this.updateCSSRules(nativeRule as any as CSSStyleSheet, styleSheet);
       } else {
         this.logger.warn(`Unable to find matching declaration`);
       }
+    }
+  }
+
+  private updateCSSRules(staleStyleSheet: CSSStyleSheet, syntheticStyleSheet: SyntheticCSSStyleSheet) {
+    while(staleStyleSheet.rules.length) {
+      staleStyleSheet.deleteRule(0);
+    }
+
+    for (const rule of syntheticStyleSheet.cssRules) {
+      staleStyleSheet.insertRule(rule.cssText);
     }
   }
 
@@ -206,20 +215,25 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
     this._cssRuleDictionary[styleSheet.uid] = [nativeStyleSheet, styleSheet];
 
-    const registerGroupingRule = (nativeRule: CSSGroupingRule|CSSStyleSheet, syntheticRule: SyntheticCSSGroupingRule<any>) => {
-      for (let i = 0, n  = nativeRule.cssRules.length; i < n; i++){
-        const nativeChildRule    = nativeRule.cssRules[i];
-        const syntheticChildRule = syntheticRule.cssRules[i];
-        this._cssRuleDictionary[syntheticChildRule.uid] = [nativeChildRule, syntheticChildRule];
+    // const registerGroupingRule = (nativeRule: CSSGroupingRule|CSSStyleSheet, syntheticRule: SyntheticCSSGroupingRule<any>) => {
 
-        // possible grouping rule
-        if ((<CSSGroupingRule>nativeChildRule).cssRules) {
-          registerGroupingRule(<CSSGroupingRule>nativeChildRule, <SyntheticCSSGroupingRule<any>>syntheticChildRule);
-        }
-      }
-    }
+    //   for (let i = 0, n  = syntheticRule.cssRules.length; i < n; i++){
+    //     const nativeChildRule    = nativeRule.cssRules[i];
+    //     const syntheticChildRule = syntheticRule.cssRules[i];
+    //     this._cssRuleDictionary[syntheticChildRule.uid] = [nativeChildRule, syntheticChildRule];
 
-    registerGroupingRule(nativeStyleSheet, styleSheet);
+    //     // possible grouping rule
+    //     if ((<SyntheticCSSGroupingRule<any>>syntheticChildRule).cssRules && (<CSSGroupingRule>nativeChildRule).cssRules) {
+    //       registerGroupingRule(<CSSGroupingRule>nativeChildRule, <SyntheticCSSGroupingRule<any>>syntheticChildRule);
+    //     }
+    //   }
+    // }
+
+    // console.log(nativeStyleSheet.cssRules.length, styleSheet.cssRules.length);
+    
+    // assert.equal(nativeStyleSheet.cssRules.length, styleSheet.cssRules.length, "CSS Style rule length mismatch");
+
+    // registerGroupingRule(nativeStyleSheet, styleSheet);
     
     return Promise.resolve();
   }
@@ -273,8 +287,9 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
 
       // add a placeholder for these blacklisted elements so that diffing & patching work properly
       
-      if (/^(style|link)$/.test(syntheticElement.nodeName)) return nodeFactory.createTextNode("");
-      const element = renderHTMLElement(nodeFactory, syntheticElement.tagName, syntheticElement, dict);
+      if(/^(style|link|script)$/.test(syntheticElement.nodeName)) return nodeFactory.createTextNode("");
+      
+      const element = renderHTMLElement(nodeFactory, syntheticElement.nodeName, syntheticElement, dict);
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
         const syntheticAttribute = syntheticElement.attributes[i];
         if (syntheticAttribute.name === "class") {

@@ -16,10 +16,10 @@ import {
 
 export class PasteHTMLService extends CoreApplicationService<any> {
 
-  @filterMessage(sift({ "item.type": HTML_MIME_TYPE }))
-  [PasteRequest.PASTE](action: PasteRequest) {
-    this.bus.dispatch(new PasteHTMLEntityAction(action.item));
-  }
+  // @filterMessage(sift({ "item.type": HTML_MIME_TYPE }))
+  // [PasteRequest.PASTE](action: PasteRequest) {
+  //   this.bus.dispatch(new PasteHTMLEntityAction(action.item));
+  // }
 
   [PasteHTMLEntityAction.PASTE_HTML_ENTITY](action: PasteHTMLEntityAction) {
 

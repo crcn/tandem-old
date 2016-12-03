@@ -15,11 +15,13 @@ Start
 
 Fragment
   = nodes:(Node/TextNode)* {
-    return new MarkupFragmentExpression(nodes, location());
+    return new MarkupFragmentExpression(nodes.filter(function(node) {
+      return !!node;
+    }), location());
   }
 
 Node
-  = _ node:(Comment/VoidElement/Element/TextNode) _ { return node; }
+  = _ node:(Comment/DOCTYPE/Script/VoidElement/Element/TextNode) _ { return node; }
 
 Comment
   = '<!--' characters:CommentCharacter* '-->' { return new MarkupCommentExpression(characters.join(''), location()); }
@@ -27,6 +29,13 @@ Comment
 CommentCharacter
   = !'-->' character:. { return character; }
 
+
+DOCTYPE
+  = '<!' chars:DOCTYPECharacter* '>' { return null; }
+
+DOCTYPECharacter
+  = !'>' character:. { return character; }
+  
 VoidElement
   = "<" nodeName: VoidTagName attributes:ElementAttributes _ (">"/"/>")? endTag:EndVoidTag? {
 
@@ -46,6 +55,42 @@ EndVoidTag
 
 VoidTagName
   = name:  ("area"/"base"/"br"/"col"/"command"/"embed"/"hr"/"img"/"input"/"keygen"/"link"/"meta"/"param"/"source"/"track"/"wbr")
+
+
+Script
+  = ScriptWithoutChildNodes
+  / ScriptWithChildNodes
+
+ScriptWithoutChildNodes 
+  = open:ScriptTagOpen "/>" {
+    return new MarkupElementExpression("script", open.attributes, [], location()); 
+  } 
+
+ScriptWithChildNodes 
+  = open:ScriptTagOpen ">" _ child:ScriptChildNode? _ ScriptTagClose  {
+    return new MarkupElementExpression("script", open.attributes, child ? [child] : [], location()); 
+  } 
+
+ScriptTagOpen
+  = "<script" _ attributes:ElementAttributes _ {
+    return {
+      attributes: attributes
+    }
+  }
+
+ScriptChildNode
+  = childChars: (String/ScriptTagChildChar)* {
+  
+    return new MarkupTextExpression(text(), location());
+  }
+
+ScriptTagChildChar
+  = !ScriptTagClose char:. {
+    return text();
+  }
+
+ScriptTagClose
+  = "</script>";
 
 Element
   = ElementWithoutChildNodes

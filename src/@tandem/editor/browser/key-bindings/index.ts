@@ -1,6 +1,6 @@
 import { IMessage } from "@tandem/mesh";
 import { KeyBinding } from "./base";
-import { Store } from "@tandem/editor/browser/stores";
+import { EditorStore } from "@tandem/editor/browser/stores";
 import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 import { BaseCommand, inject, Metadata } from "@tandem/common";
@@ -10,7 +10,7 @@ import { SelectAllRequest, SetToolRequest, ZoomInRequest, ZoomOutRequest, Remove
 
 class ToggleLeftSidebarCommand extends BaseCommand {
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
   execute(action: IMessage) {
     this._store.settings.toggle(SettingKeys.HIDE_LEFT_SIDEBAR);
   }
@@ -18,7 +18,7 @@ class ToggleLeftSidebarCommand extends BaseCommand {
 
 class ToggleRightSidebarCommand extends BaseCommand {
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
   execute(action: IMessage) {
     this._store.settings.toggle(SettingKeys.HIDE_RIGHT_SIDEBAR);
   }

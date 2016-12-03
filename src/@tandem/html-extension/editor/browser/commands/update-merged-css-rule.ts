@@ -1,7 +1,7 @@
 import { ICommand, inject, InjectorProvider, Injector } from "@tandem/common";
 import { IMessage } from "@tandem/mesh";
 import { SyntheticDOMNode, DOMNodeType, SyntheticDocument, SVG_XMLNS, HTML_XMLNS } from "@tandem/synthetic-browser";
-import { Store } from "@tandem/editor/browser/stores";
+import { EditorStore } from "@tandem/editor/browser/stores";
 import { HTMLExtensionStore, MergedCSSStyleRule  } from "@tandem/html-extension/editor/browser/stores";
 import { HTMLExtensionStoreProvider  } from "@tandem/html-extension/editor/browser/providers";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
@@ -9,7 +9,7 @@ import { MetadataKeys } from "@tandem/editor/browser/constants";
 
 export class UpdateMergedRuleCommand implements ICommand {
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
 
   @inject(HTMLExtensionStoreProvider.ID)
   private _htmlStore: HTMLExtensionStore;

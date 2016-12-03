@@ -1,7 +1,7 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Store } from "@tandem/editor/browser/stores";
+import { EditorStore } from "@tandem/editor/browser/stores";
 import { RouteNames } from "@tandem/editor/browser/constants";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { PageOutletComponent } from "@tandem/editor/browser/components/common";
@@ -10,7 +10,7 @@ import { Injector, RootApplicationComponent, BaseApplicationComponent, inject, S
 export class MainComponent extends BaseApplicationComponent<{}, {}> {
 
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
 
   render() {
     return <div className="td-main">  

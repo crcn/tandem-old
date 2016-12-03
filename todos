@@ -16,7 +16,12 @@ Workflow:
 3. User can save the current workspace to disk
 4. User can configure how tandem operates in the UI
 
-- [ ] C & P items
+- [ ] prevent scrolling when text input
+- [ ] artboards should not store absolute paths
+- [ ] rotate 
+- [ ] double click artboard layer to edit
+- [ ] drag/select
+- [ ] history
 - [ ] analytics on usage
   - [ ] need usage report prompt
 - [ ] location prompt when creating new project

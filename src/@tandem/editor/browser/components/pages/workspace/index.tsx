@@ -1,7 +1,7 @@
 import "./index.scss";
 
 import * as React from "react";
-import { Store } from "@tandem/editor/browser/stores";
+import { EditorStore } from "@tandem/editor/browser/stores";
 import { SettingKeys } from "@tandem/editor/browser/constants";
 import CenterComponent from "./center";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
@@ -13,7 +13,7 @@ import { Injector, RootApplicationComponent, BaseApplicationComponent, inject } 
 export class WorkspaceComponent extends BaseApplicationComponent<{}, {}> {
 
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
 
   render() {
     const { workspace, settings } = this._store;

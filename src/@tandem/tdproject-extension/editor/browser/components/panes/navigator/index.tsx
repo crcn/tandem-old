@@ -3,13 +3,13 @@ import * as React from "react";
 import { TreeComponent } from "@tandem/uikit";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import {  EditorStoreProvider } from "@tandem/editor/browser/providers";
-import { Store, Workspace } from "@tandem/editor/browser/stores";
+import { EditorStore, Workspace } from "@tandem/editor/browser/stores";
 import { DirectoryModel, FileModel, BaseFSModel } from "@tandem/editor/common/models";
 import { BaseApplicationComponent, TreeNode, inject } from "@tandem/common";
 
-export class NavigatorPaneComponent extends BaseApplicationComponent<{ store?: Store, workspace: Workspace }, any> {
+export class NavigatorPaneComponent extends BaseApplicationComponent<{ store?: EditorStore, workspace: Workspace }, any> {
   @inject(EditorStoreProvider.ID)
-  private _store: Store;
+  private _store: EditorStore;
 
   render() {
     const cwd = (this.props.store || this._store).cwd;

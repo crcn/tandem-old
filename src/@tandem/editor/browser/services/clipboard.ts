@@ -1,11 +1,12 @@
 
-import { PasteRequest } from "@tandem/editor/browser/messages";
+import { PasteRequest, AddSyntheticObjectRequest } from "@tandem/editor/browser/messages";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { CoreApplicationService } from "@tandem/core";
+import { BaseEditorApplicationService } from "./base";
 import {
   Logger,
   loggable,
   serialize,
+  deserialize,
   InitializeApplicationRequest,
   ApplicationServiceProvider,
 } from "@tandem/common";
@@ -14,35 +15,39 @@ function targetIsInput(event) {
   return /input|textarea/i.test(event.target.nodeName);
 }
 
-export class ClipboardService extends CoreApplicationService<IEditorBrowserConfig> {
+const SYNTHETIC_OBJECT_MIME_TYPE = "text/x-synthetic-object";
 
-  public logger: Logger;
+export class ClipboardService extends BaseEditorApplicationService<IEditorBrowserConfig> {
+
+  protected readonly logger: Logger;
 
   [InitializeApplicationRequest.INITIALIZE]() {
-    // document.addEventListener("copy", (event: ClipboardEvent) => {
+    document.addEventListener("copy", (event: ClipboardEvent) => {
 
-    //   if (targetIsInput(event)) return;
+      if (targetIsInput(event)) return;
 
-    //   const content = this.app.workspace.selection.map((entity) => (
-    //     entity.source.toString()
-    //   )).join("");
+      const content = JSON.stringify(this.editorStore.workspace.selection.map((item) => {
+        return serialize(item); 
+      }));
 
-    //   event.clipboardData.setData(this.app.workspace.file.type, content);
-    //   event.preventDefault();
-    // });
+      event.clipboardData.setData(SYNTHETIC_OBJECT_MIME_TYPE, content);
+      event.preventDefault();
+    });
 
-    // document.addEventListener("paste", (event: any) => {
-    //   Array.prototype.forEach.call(event.clipboardData.items, this._paste);
-    // });
+    document.addEventListener("paste", (event: any) => {
+      Array.prototype.forEach.call(event.clipboardData.items, (item) => {
+        this.bus.dispatch(new PasteRequest(item));
+      });
+    });
   }
 
-  _paste = async (item: DataTransferItem) => {
-
-    try {
-      await this.bus.dispatch(new PasteRequest(item));
-    } catch (e) {
-      this.logger.warn("cannot paste x-entity data: ", item.type);
-    }
+  [PasteRequest.getRequestType(SYNTHETIC_OBJECT_MIME_TYPE)](request: PasteRequest) {
+    request.item.getAsString((value) => {
+      JSON.parse(value).forEach((serializedSyntheticObject) => {
+        const item = deserialize(serializedSyntheticObject, this.injector);
+        this.bus.dispatch(new AddSyntheticObjectRequest(item));
+      });
+    });
   }
 }
 
