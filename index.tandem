@@ -1,6 +1,6 @@
 <tandem style="background-color:#333;">
-  <artboard title="HTML Extension" src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tandem/preview.tsx" style=" width: 1146px; height: 1258px; left: -932px; top: -462px; "></artboard>
-  <artboard title="Playground" src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/tandem/playground.html" style=" left: 347px; top: -462px; width: 511px; height: 629px; "></artboard>
-  <artboard title="HTML Stage Info" src="/Users/crcn/Developer/public/tandem/src/@tandem/html-extension/editor/browser/components/stage-tools/element-info/index-preview.tsx" style=" left: 347px; top: 298px; width: 230px; height: 206px; "></artboard>
-  <artboard title="Launchpad" src="/Users/crcn/Developer/public/tandem/src/tandem-studio/browser/components/pages/welcome/index-preview.tsx" style=" left: -1878px; top: -462px; width: 800px; height: 500px; "></artboard>
+  <artboard title="HTML Extension" src="./src/@tandem/html-extension/tandem/preview.tsx" style=" width: 1146px; height: 1258px; left: -932px; top: -462px; "></artboard>
+  <artboard title="Playground" src="./src/@tandem/html-extension/tandem/playground.html" style=" left: 347px; top: -462px; width: 511px; height: 629px; "></artboard>
+  <artboard title="HTML Stage Info" src="./src/@tandem/html-extension/editor/browser/components/stage-tools/element-info/index-preview.tsx" style=" left: 347px; top: 298px; width: 230px; height: 206px; "></artboard>
+  <artboard title="Launchpad" src="./src/tandem-studio/browser/components/pages/welcome/index-preview.tsx" style=" left: -1878px; top: -462px; width: 800px; height: 500px; "></artboard>
 </tandem>

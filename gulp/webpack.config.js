@@ -47,6 +47,8 @@ module.exports = {
         'graceful-chokidar': 'null-loader?graceful-chokidar',
         'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',
+        'child_process': 'null-loader?child_process',
+        'sass.js': 'null-loader?sass.js',
         'mongodb': 'null-loader?mongodb',
         'cluster': 'null-loader?cluster',
         'canvas-prebuilt': 'null-loader?canvas-prebuilt'

@@ -28,8 +28,8 @@ export class MergedCSSStyleRule extends Observable {
 
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
-  
-  private _allSources:  MatchedCSSStyleRuleType[];
+
+  private _main: MatchedCSSStyleRuleType[];
   private _graphics: SyntheticCSSStyleGraphics;
   private _documentObserver: CallbackDispatcher<any, any>;
   private _document: SyntheticDocument;
@@ -38,7 +38,7 @@ export class MergedCSSStyleRule extends Observable {
   @bubble()
   private _pinnedRule: MatchedCSSStyleRuleType;
   
-  private _main: {
+  private _mainByProperty: {
     [Identifier: string]: MatchedCSSStyleRuleType;
   };
 
@@ -101,12 +101,8 @@ export class MergedCSSStyleRule extends Observable {
     this._pinnedRule = this._pinnedRule === rule ? undefined : rule;
   }
 
-  get allSources() {
-    return this._allSources;
-  }
-
   get mainSources() {
-    return uniq(values(this._main));
+    return this._main;
   }
 
   get inheritedRules() {
@@ -127,11 +123,11 @@ export class MergedCSSStyleRule extends Observable {
       this._sources[name] = []; 
       
        // TODO - consider priority
-       this._main[name] = source;
-    }
-
-    if (this._allSources.indexOf(source) === -1) {
-      this._allSources.push(source);
+       this._mainByProperty[name] = source;
+       
+       if (this._main.indexOf(source) === -1) {
+         this._main.push(source);
+       }
     }
 
     this._sources[name].push(source);
@@ -170,8 +166,8 @@ export class MergedCSSStyleRule extends Observable {
 
     const newStyle = new SyntheticCSSStyle();
 
-    for (let property in this._main) {
-      newStyle.setProperty(property, this._main[property].style[property]);
+    for (let property in this._mainByProperty) {
+      newStyle.setProperty(property, this._mainByProperty[property].style[property]);
     }
 
     diffStyle(this._style, newStyle).accept({
@@ -192,7 +188,7 @@ export class MergedCSSStyleRule extends Observable {
   }
 
   getDeclarationMainSourceRule(name: string): MatchedCSSStyleRuleType {
-    return this._main[camelCase(name)];
+    return this._mainByProperty[camelCase(name)];
   }
 
   getAssignableRules(styleName: string) {
@@ -265,8 +261,11 @@ export class MergedCSSStyleRule extends Observable {
     }
 
     this._sources    = {};
-    this._main       = {};
-    this._allSources = [];
+    this._mainByProperty       = {};
+
+    // target is always added by defalt so that the user
+    // can select the style attribute in the right pane
+    this._main = [this.target];
 
     const addStyle = (current: SyntheticHTMLElement, match: MatchedCSSStyleRuleType) => {
       const inherited = current !== this.target;
@@ -279,5 +278,6 @@ export class MergedCSSStyleRule extends Observable {
 
     eachInheritedMatchingStyleRule(this.target, addStyle);
     this.computeStyle();
+
   }
 }

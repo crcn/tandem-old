@@ -31,7 +31,6 @@ export function createTDProjectEditorBrowserProviders() {
     new StageToolComponentFactoryProvider("artboard", "pointer", TDArtboardStageToolComponent),
     new StageToolComponentFactoryProvider("altDistances", "pointer", MeasurementStageToolComponent),
     new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),
-    new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),
     new EntityPaneComponentFactoryProvider("artboard", ArtboardPaneComponent)
   ];
 }

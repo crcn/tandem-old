@@ -9,54 +9,57 @@ IMMEDIAT
 
 Start working on UX around getting started with Tandem and projects.
 
-Workflow:
+Messaging:
 
-1. User opens Tandem
-2. Tandem prompts to open an HTML or tandem project file
-3. User can save the current workspace to disk
-4. User can configure how tandem operates in the UI
+No setup required.
+This is only the beginning
 
-- [ ] prevent scrolling when text input
-- [ ] artboards should not store absolute paths
-- [ ] rotate 
-- [ ] double click artboard layer to edit
-- [ ] drag/select
-- [ ] history
-- [ ] analytics on usage
+- [ ] Editor
+  - [ ] drag select
+  - [ ] top bar
+    - [ ] paint bucket tool
+    - [ ] artboard tool
+  - [ ] History
+  - [ ] unsaved files pane
+  - [ ] install CLI tools menu option
+  - [ ] react starter project
+  - [ ] show diff of unsaved drafts
+  - [ ] artboard pane
+    - [ ] globals pane
+    - [ ] pop artboards out in new window
+
+- [ ] Core
+  - [ ] enable script tags
+  - [ ] ability to load HTTP urls
+  - [ ] memoize remote browser -- diff against only one document
+
+- [ ] UX
+  - [ ] getting started project
+  - [ ] import existing HTML file from start page - auto-create artboards
+
+- [ ] Bugs
+  - [ ] fix jankiness when updating docs
+  - [ ] source maps not working for CSS
+  - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
+
+- [ ] Stability
+  - [ ] analytics on usage
+  - [ ] auto updater
+
+- [ ] top bar
+  - [ ] share workspace
+- [ ] comment tag? kind of like code comments, but visual - possibly td-comment attribute
+- [ ] source maps not working for CSS
+- [ ] rotate artboard button
+- [ ] scrolling artboards (alt key?) 
   - [ ] need usage report prompt
-- [ ] location prompt when creating new project
-- [ ] install CLI tools menu option
-- [ ] store settings in ~/.tandem
   - [ ] first startup config
   - [ ] extensions
-- [ ] unsaved files
-- [ ] auto updater
-
-- [ ] mesh templates should be dynamic
-
-- [ ] tandem config
   
-- [ ] artboard
-  - [ ] toolbar item
-  - [ ] import file button
-  - [ ] enter http url button
-  - [ ] globals pane
-
-- insert div tool (for html)
-- show diff of unsaved drafts
-- Website
-
-- [ ] unsaved files
-
-FEATURES
-
-- [ ] enable <script /> tags.
-
 ----------------------------------
 POLISH
 ----------------------------------
 
-- [ ] support HTML files and script imports
 - [ ] must work with regular webpack config - just open HTML file
 
 - [ ] do not dispatch ApplyFileEdit action for each input
@@ -139,18 +142,12 @@ CORE
 DEV TOOLS
   - [ ] ability to set global values in the sandbox such as env (useful for changing states in app)
   - [ ] menu option for auto adding artboards from url - or possibly another element
+
 SOCIAL
-  - *[ ] put tandem on backend
   - *[ ] possibly attach messages to commits
-  - *[ ] enable people to comment on components (necessary for feedback)
 
 MEDIA QUERIES
   - [ ] attached to each artboard
-  - [ ] copy & paste
-  - [ ] ability to edit style attribute
-  - [ ] see selectors matching computed layout
-  - [ ] background constraints
-  - [ ] pseudo elements
 
 OPTIMIZATIONS
   - [ ] have data store records owned
@@ -163,9 +160,6 @@ KEYBOARD SHORTCUTS
   - [ ] select parent of current selection
 
 - [ ] html breadcrumb
-
-ARTBOARD PANE
-  - [ ] preset
 
 BROWSERTAP INTEGRATION
   - [ ] rendering engine adapter for synthetic browsers to support IE, chrome, and other browsers

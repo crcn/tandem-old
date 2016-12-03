@@ -53,8 +53,8 @@ function createWorkerBus(family: string, worker: any, localBus: IDispatcher<any,
 /**
  */
 
-export function fork(family: string, localBus: IDispatcher<any, any>) {
-  return createWorkerBus(family, new Worker(lastScriptSrc), localBus);
+export function fork(family: string, localBus: IDispatcher<any, any>, pathName?: string, argv?: any[], env?: any) {
+  return createWorkerBus(family, new Worker(pathName || lastScriptSrc), localBus);
 }
 
 /**

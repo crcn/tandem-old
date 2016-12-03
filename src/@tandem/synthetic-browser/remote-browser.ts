@@ -149,6 +149,7 @@ export class RemoteBrowserService extends BaseApplicationService {
       const writer = output.getWriter();
       const id = JSON.stringify(event.options);
 
+      // TODO - memoize opened browser if same session is up
       const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.injector, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
 

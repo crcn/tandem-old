@@ -79,8 +79,6 @@ export const initializeMaster = async () => {
     new CommandFactoryProvider(GetProjectStartOptionsRequest.GET_PROJECT_STARTER_OPTIONS, GetProjectStarterOptionsCommand),
     new CommandFactoryProvider(StartNewProjectRequest.START_NEW_PROJECT, StartProjectCommand),
 
-
-    
     // starters
     new ProjectStarterFactoryProvider({ 
       id: "html", 

@@ -19,7 +19,7 @@ import {
 } from "tandem-studio/common";
 
 // TODO - scan application directory for VSCode, and display "install extension" button if not already installed
-export class WelcomeComponent extends BaseApplicationComponent<any, { selectedStarterOption: IStarterOption, cwd?: string }> {
+export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemStudioBrowserStore }, { selectedStarterOption: IStarterOption, cwd?: string }> {
 
   state = {
     selectedStarterOption: undefined,
@@ -52,13 +52,21 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
 
   onOpenExistingProject = async (event: React.SyntheticEvent<any>) => {
     const file = event.currentTarget.files[0] as File;
-    await this.bus.dispatch(createWorkspaceRedirectRequest(file.path));
+    this.redirectToWorkspace(file.path);
   }
   
 
+  async redirectToWorkspace(filePath: string) {   
+    const w = 1024;
+    const h = 768;
+    window.moveTo(window.screen.width / 2 - w / 2, window.screen.height / 2 - h / 2);
+    window.resizeTo(w, h);
+    await this.bus.dispatch(createWorkspaceRedirectRequest(filePath));
+  }
+
   startNewDocument = async () => {
     try {
-      await this.bus.dispatch(createWorkspaceRedirectRequest(await StartNewProjectRequest.dispatch(this.state.selectedStarterOption, this.state.cwd, this.bus)));
+      await this.redirectToWorkspace(await StartNewProjectRequest.dispatch(this.state.selectedStarterOption, this.state.cwd, this.bus));
     } catch(e) {
       this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot start project: ${e.stack}`));
     }
@@ -72,8 +80,6 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
   }
 
   render() {
-    this._store.projectStarterOptions;
-
     return <div className="welcome">
       <div className="info">
         <i className="ion-close" onClick={this.close}></i>
@@ -121,7 +127,7 @@ export class WelcomeComponent extends BaseApplicationComponent<any, { selectedSt
         <h2 className="header">Start a New Project</h2>
 
         <ul>
-          { this._store.projectStarterOptions.map((option, index) => {
+          { (this.props.store || this._store).projectStarterOptions.map((option, index) => {
             return <li key={index}>
               <div className={cx({ inner: true, disable: !option.enabled })} onClick={option.enabled && this.selectStarterOption.bind(this, option)}>
                 <div className="image" style={{ backgroundImage: `url(${option.image})` }} />

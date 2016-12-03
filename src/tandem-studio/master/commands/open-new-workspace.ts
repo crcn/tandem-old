@@ -8,19 +8,24 @@ export class OpenNewWorkspaceCommand extends BaseStudioServerCommand {
     this.logger.info(`Opening workspace: ${filePath}`);
 
     try {
-      const win = new BrowserWindow({ width: 600, height: 400, titleBarStyle: "hidden" });
 
       let hash: string = "";
+      let width: number = 600;
+      let height: number = 400;
 
       const query = {
         backendPort: this.config.port
       } as any;
 
       if (filePath) {
+        width = 1024;
+        height = 768;
         hash = `#/workspace?workspacePath=${encodeURIComponent(filePath)}`;
       } else {
         hash = "#/welcome";
       }
+
+      const win = new BrowserWindow({ width: width, height: height, titleBarStyle: "hidden" });
 
       win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.port}${hash}`);
 

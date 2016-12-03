@@ -12,7 +12,7 @@ process.on("uncaughtException", function(error) {
   console.error(`(${isMaster ? "master" : "worker"}) Uncaught Exception ${error.stack}`);
 });
 
-if (isMaster) {
+if (isMaster && app) {
   app.once("ready", initializeMaster);
 } else {
   initializeWorker();

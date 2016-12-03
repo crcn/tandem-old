@@ -103,7 +103,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
   };
 
   function acceptAll(nodes: postcss.Node[]) {
-    return without(nodes.map((child) => accept(child)), null);
+    return without((nodes || []).map((child) => accept(child)), null);
   }
 
   function accept(expression: postcss.Node) {
