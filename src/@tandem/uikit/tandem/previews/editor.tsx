@@ -30,7 +30,7 @@ const renderCSSPane = () => {
   </div>
 }
 
-export const renderPreview = () => {
+export const createBodyElement = () => {
   const element = document.createElement("div");
   ReactDOM.render(<div className="editor flex row">
     <GutterComponent className="left">

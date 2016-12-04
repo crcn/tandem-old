@@ -1,1 +1,1 @@
-import { renderPreview } from "./index-preview";
+import { createBodyElement } from "./index-preview";

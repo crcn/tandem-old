@@ -34,7 +34,7 @@ export class TDRootFileImporter implements IFileImporter {
 
     const element = <SyntheticDOMElement>targetObject;
 
-    if (content.indexOf("renderPreview") !== -1) {
+    if (content.indexOf("createBodyElement") !== -1) {
       return this.importPreview(filePath, element, bounds);
     }
 

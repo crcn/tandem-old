@@ -266,8 +266,8 @@ export async function activate(context: vscode.ExtensionContext) {
                     if (!end) end = start;
                     if (start) {
                         const range = new vscode.Range(
-                            new vscode.Position(start.line - 1, start.column), 
-                            new vscode.Position(end.line - 1, end.column + 1)
+                            new vscode.Position(start.line - 1, start.column - 1), 
+                            new vscode.Position(end.line - 1, end.column)
                         );
                         
                         vscode.window.activeTextEditor.selection = new vscode.Selection(

@@ -15,7 +15,7 @@ import {
   SyntheticDOMAttribute,
 } from "@tandem/synthetic-browser";
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
   const workspace = new Workspace();
   const window = new SyntheticWindow(new SyntheticLocation("test"));
   (window.document.body as SyntheticHTMLElement).innerHTML = `

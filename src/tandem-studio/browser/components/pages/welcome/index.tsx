@@ -84,8 +84,6 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
   }
 
   render() {
-    
-    console.log(this._store.helpOptions);
     return <div className="welcome">
       <div className="info">
         <i className="ion-close" onClick={this.close}></i>

@@ -3,7 +3,11 @@
 .element-breadcrumbs {
   background: #F9F9F9;
   display: inline-block;
-  overflow: hidden;
+  overflow-x: scroll;
+  width: 100%;
+  white-space: nowrap;
+  z-index: 1;
+  
   li {
 
     cursor: pointer;

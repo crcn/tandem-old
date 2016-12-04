@@ -10,7 +10,7 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticWindow } from "@tandem/synthetic-browser";
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
 
   const { document } = new SyntheticWindow();
 

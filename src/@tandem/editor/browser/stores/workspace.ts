@@ -43,6 +43,11 @@ export class Workspace extends Observable {
   private _bus: IDispatcher<any, any>;
 
   /**
+   */
+
+  
+
+  /**
    * workspace canvas transform. TODO - may need to move this to WorkspaceCanvas object, or similar
    *
    * @type {Transform}

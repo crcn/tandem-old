@@ -15,7 +15,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
   const { document } = new SyntheticWindow(null);
 
   document.styleSheets.push(evaluateCSS(parseCSS(`

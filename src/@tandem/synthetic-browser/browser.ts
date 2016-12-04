@@ -1,7 +1,7 @@
 import * as vm from "vm";
 import { SyntheticLocation } from "./location";
 import { SyntheticRendererEvent } from "./messages";
-import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode } from "./dom";
+import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode, SyntheticDOMElement } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, NoopRenderer } from "./renderers";
 import { IDispatcher } from "@tandem/mesh";
 import {
@@ -59,6 +59,15 @@ export interface ISyntheticBrowser extends IObservable {
   document: SyntheticDocument;
   injector: Injector;
   location: SyntheticLocation;
+}
+
+export interface IMainEntryExports {
+
+  documentElement?: SyntheticDOMElement;
+  bodyElement?: SyntheticDOMElement;
+
+  createDocumentElement: () => SyntheticDOMElement;
+  createBodyElement: () => SyntheticDOMElement;
 }
 
 @loggable()
@@ -201,43 +210,26 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     }
   }
 
-  private async onSandboxExportsChange(exports: any) {
-    const window = this._sandbox.global as SyntheticWindow;
+  private async onSandboxExportsChange(exports: IMainEntryExports) {
+    const window   = this._sandbox.global as SyntheticWindow;
+    const document = window.document;
 
     let exportsElement: SyntheticDOMNode;
 
     this.logger.debug("Evaluated entry", this.location.toString());
-
+    
     try {
-      // look for module exports - typically by evaluator, or loader
-      if (exports.nodeType) {
-        exportsElement = exports;
 
-      // check for explicit renderPreview function - less ideal
-      } else if (exports.renderPreview) {
-        exportsElement = await exports.renderPreview();
-      } else {
-
-        this.logger.debug(`Checking exports for render metadata:`, Object.keys(exports).join(", "));
-
-        // scan for reflect metadata
-        for (const key in exports) {
-          const value = exports[key];
-          const renderPreview = exports.renderPreview || value.$$renderPreview;
-          if (renderPreview) {
-            this.logger.debug("Found render preview metadata");
-            exportsElement = await renderPreview();
-          }
-        }
-
-        if (!exportsElement) {
-          this.logger.warn(`Exported Sandbox object is not a synthetic DOM node.`);
-        }
+      if (exports.documentElement || exports.createDocumentElement) {
+        document.removeAllChildren();
+        document.appendChild(exports.documentElement || exports.createDocumentElement());
       }
 
-      if (exportsElement) {
-        window.document.body.appendChild(exportsElement);
+      if (exports.bodyElement || exports.createBodyElement) {
+        document.removeAllChildren();
+        document.body.appendChild(exports.bodyElement || exports.createBodyElement());
       }
+
     } catch(e) {
       this.status = new Status(Status.ERROR, e);
       throw e;

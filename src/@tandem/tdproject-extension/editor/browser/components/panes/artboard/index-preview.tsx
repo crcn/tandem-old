@@ -10,7 +10,7 @@ import { SyntheticWindow } from "@tandem/synthetic-browser";
 import { GutterComponent } from "@tandem/uikit";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
   const workspace = new Workspace();
   const { document } = new SyntheticWindow();
   document.registerElement("artboard", SyntheticTDArtboardElement);

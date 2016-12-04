@@ -20,12 +20,11 @@ resolve UX. May want to optimize experience around writing code.
 Polish up vanilla HTML ext
 
 - [ ] Editor
-  - [ ] toggle tools on and off (header button) & menu option
-  - [ ] 
   - [ ] menu items
-  - [ ] Debugger Pane
     - [ ] create new project
     - [ ] open project
+    - [ ] toggle tools on and off (header button) & menu option
+  - [ ] Debugger Pane
   - [ ] drag url from browser
   - [ ] eye dropper
   - [ ] top bar
@@ -48,7 +47,6 @@ Polish up vanilla HTML ext
   - [ ] import existing HTML file from start page - auto-create artboards
 
 - [ ] Bugs
-  - [ ] kill worker if master is disposed of
   - [ ] Fix vscode source code overwrites
   - [ ] fix centering
   - [ ] local images must work in HTML ext

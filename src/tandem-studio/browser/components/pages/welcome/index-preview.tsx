@@ -6,7 +6,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { WelcomeComponent } from "./index";
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
   const store = new  TandemStudioBrowserStore();
   store.projectStarterOptions = [];
   return <WelcomeComponent store={store} />;

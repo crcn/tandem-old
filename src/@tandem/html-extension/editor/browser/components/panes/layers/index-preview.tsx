@@ -6,7 +6,7 @@ import { GutterComponent } from "@tandem/uikit";
 import { LayersPaneComponent } from "./index";
 import { SyntheticWindow } from "@tandem/synthetic-browser";
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
   const { document } = new SyntheticWindow(null);
 
   document.body.innerHTML = `

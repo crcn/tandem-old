@@ -27,7 +27,7 @@ import {
   CSSAnimationComponent,
 } from "@tandem/html-extension/editor/browser/components";
 
-export const renderPreview = reactEditorPreview(async () => {
+export const createBodyElement = reactEditorPreview(async () => {
 
   const bus = new BrokerBus();
   const injector = new Injector(

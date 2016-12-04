@@ -12,7 +12,6 @@ export class OpenHelpOptionCommand extends  BaseStudioMasterCommand {
     const basename = path.basename(option.filePath);
     const dir = path.dirname(option.filePath);
     const tmp = path.join(this.config.tmpDirectory, String(Date.now()));
-    console.log(tmp, path.join(tmp, basename));
     fsa.copySync(dir, tmp);
     return this.bus.dispatch(new OpenNewWorkspaceRequest(path.join(tmp, basename)));
   }

@@ -5,7 +5,7 @@ import { Workspace } from "@tandem/editor/browser";
 import { HTMLStylePaneComponent } from "./index";
 import { SyntheticWindow, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
   const ws = new Workspace();
 
   const { document } = new SyntheticWindow(null);

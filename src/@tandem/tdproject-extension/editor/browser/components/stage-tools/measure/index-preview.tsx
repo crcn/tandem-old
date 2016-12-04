@@ -77,7 +77,7 @@ class MockRootComponent extends React.Component<{ browser: SyntheticBrowser }, a
   }
 }
 
-export const renderPreview = reactEditorPreview(async () => {
+export const createBodyElement = reactEditorPreview(async () => {
 
   const bus = new BrokerBus();
 

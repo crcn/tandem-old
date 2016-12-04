@@ -6,7 +6,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { WorkspaceTitlebarComponent } from "./index";
 
-export const renderPreview = reactEditorPreview(() => {
+export const createBodyElement = reactEditorPreview(() => {
   return <WorkspaceTitlebarComponent />;
 });
         

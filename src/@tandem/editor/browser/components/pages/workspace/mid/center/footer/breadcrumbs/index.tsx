@@ -29,7 +29,7 @@ export class BreadcrumbsComponent extends React.Component<{ workspace: Workspace
     return <div className="element-breadcrumbs">
       <ul>
       { 
-        [element, ...element.ancestors.slice(0, 5)].reverse().map((node, i, nodes) => {
+        [element, ...element.ancestors].reverse().filter(node => node.nodeName.charAt(0) !== "#").map((node, i, nodes) => {
 
           let label = node.nodeName;
 

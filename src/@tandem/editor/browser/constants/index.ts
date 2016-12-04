@@ -29,3 +29,7 @@ export namespace RouteNames {
   export const ROOT      = "root";
   export const WORKSPACE = "workspace";
 }
+
+export namespace ToolFamily {
+  export const INTERACT = "interact";
+}

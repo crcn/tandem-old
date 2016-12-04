@@ -4,7 +4,7 @@ import "./inputs.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-export const renderPreview = () => {
+export const createBodyElement = () => {
   const element = document.createElement("div");
   ReactDOM.render(<div className="container">
     <ul className="row">
