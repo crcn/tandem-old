@@ -1,7 +1,7 @@
 import * as fsa from "fs-extra";
-import { BaseStudioServerCommand } from "./base";
+import { BaseStudioMasterCommand } from "./base";
 
-export class InitSettingsDirectoryCommand extends BaseStudioServerCommand {
+export class InitSettingsDirectoryCommand extends  BaseStudioMasterCommand {
   execute() {
     try {
       fsa.removeSync(this.config.tmpDirectory)

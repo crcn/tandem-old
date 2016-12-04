@@ -15,7 +15,7 @@ import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extensio
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
 import { EditorFamilyType, createCommonEditorProviders } from "@tandem/editor/common";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
-import { GetProjectStartOptionsRequest, LoadProjectConfigCommand } from "tandem-studio/common";
+import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest } from "tandem-studio/common";
 import { FileImporterProvider } from "@tandem/editor/worker";
 import { IStudioWorkerConfig } from "./config";
 
@@ -35,7 +35,12 @@ import {
 } from "@tandem/common";
 
 import { DSProvider } from "./providers";
-import { ApplyFileEditCommand, SyncFileCacheCommand, ImportFileCommand } from "./commands";
+import { 
+  ApplyFileEditCommand, 
+  SyncFileCacheCommand, 
+  ImportFileCommand, 
+  StartMasterPingCommand, 
+} from "./commands";
 
 import {
   ApplyFileEditRequest,
@@ -87,7 +92,8 @@ export const initializeWorker = async () => {
     // commands
     new CommandFactoryProvider(ImportFileRequest.IMPORT_FILE, ImportFileCommand),
     new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
-    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, SyncFileCacheCommand)
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, SyncFileCacheCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, StartMasterPingCommand),
   );
 
   const app = new ServiceApplication(injector);

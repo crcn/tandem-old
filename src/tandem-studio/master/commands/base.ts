@@ -4,7 +4,7 @@ import { BaseCommand, Logger, loggable, inject } from "@tandem/common";
 import { TandemStudioMasterStore } from "tandem-studio/master/stores";
 import { TandemMasterStudioStoreProvider } from "tandem-studio/master/providers";
 
-export abstract class BaseStudioServerCommand extends BaseCommand {
+export abstract class  BaseStudioMasterCommand extends BaseCommand {
   @inject(TandemMasterStudioStoreProvider.ID)
   protected readonly store: TandemStudioMasterStore;
 

@@ -11,10 +11,11 @@ import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider
 
 import { IStudioEditorServerConfig } from "./config";
 import { 
-  GetHelpOptionsCommand,
-  OpenHelpOptionCommand,
+  HandlePingCommand,
   SpawnWorkerCommand, 
   StartProjectCommand,
+  GetHelpOptionsCommand,
+  OpenHelpOptionCommand,
   SelectDirectoryCommand,
   OpenNewWorkspaceCommand,
   CLIOpenWorkspaceCommand,
@@ -27,6 +28,7 @@ import { HTMLProjectStarter } from "./project/starters";
 import { ProjectStarterFactoryProvider, TandemMasterStudioStoreProvider } from "./providers";
 
 import { 
+  PingRequest,
   GetHelpOptionsRequest,
   OpenHelpOptionRequest,
   StartNewProjectRequest,
@@ -86,6 +88,7 @@ export const initializeMaster = async () => {
     new ApplicationServiceProvider("browser", BrowserService),
     
     // commands
+    new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsDirectoryCommand),
     new CommandFactoryProvider(GetHelpOptionsRequest.GET_HELP_OPTIONS, GetHelpOptionsCommand),
     new CommandFactoryProvider(OpenHelpOptionRequest.OPEN_HELP_OPTION, OpenHelpOptionCommand),

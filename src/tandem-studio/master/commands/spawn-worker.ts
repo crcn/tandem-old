@@ -1,9 +1,9 @@
-import { BaseStudioServerCommand } from "./base";
+import { BaseStudioMasterCommand } from "./base";
 import { IDispatcher, IMessage, ProxyBus, RemoteBus } from "@tandem/mesh";
 import { createProcessBus, fork as forkElectron } from "@tandem/common/workers/node";
 import { spawn } from "child_process";
 
-export class SpawnWorkerCommand extends  BaseStudioServerCommand {
+export class SpawnWorkerCommand extends  BaseStudioMasterCommand {
   execute(action: IMessage) {
 
     const proxy = new ProxyBus();

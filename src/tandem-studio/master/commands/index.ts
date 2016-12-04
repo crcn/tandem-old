@@ -8,3 +8,4 @@ export * from "./start-project";
 export * from "./get-help-options";
 export * from "./open-help-option";
 export * from "./init-settings-directory";
+export * from "./handle-ping";

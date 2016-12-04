@@ -1,11 +1,11 @@
 import { IHelpOption } from "tandem-studio/master/stores";
-import { BaseStudioServerCommand } from "./base";
+import { BaseStudioMasterCommand } from "./base";
 import { SyntheticWindow, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 import * as glob from "glob";
 import * as fs from "fs";
 
-export class GetHelpOptionsCommand extends BaseStudioServerCommand {
+export class GetHelpOptionsCommand extends  BaseStudioMasterCommand {
   execute() {
     return  glob.sync(this.config.help.directory + "/**/*.tandem").map((filePath) => {
       const { document } = new SyntheticWindow();

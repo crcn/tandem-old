@@ -1,9 +1,9 @@
 import * as qs from "qs";
 import { BrowserWindow } from "electron";
-import { BaseStudioServerCommand } from "./base";
+import { BaseStudioMasterCommand } from "./base";
 import { OpenNewWorkspaceRequest } from "tandem-studio/common";
 
-export class OpenNewWorkspaceCommand extends BaseStudioServerCommand {
+export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
   execute({ filePath }: OpenNewWorkspaceRequest) {
     this.logger.info(`Opening workspace: ${filePath}`);
 

@@ -31,6 +31,7 @@ export class SockService extends CoreApplicationService<IEditorCommonConfig> {
 
       client.once("connect", async () => {
         const remoteBus = this._registerSocketBus(client);
+        resolve();
       });
 
       client.once("error", this._startSocketServer.bind(this));

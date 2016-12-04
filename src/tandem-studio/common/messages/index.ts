@@ -18,6 +18,12 @@ import { IHelpOption } from "tandem-studio/common/stores";
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest));
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
 
+@setMessageTarget(EditorFamilyType.MASTER)
+export class PingRequest implements IMessage {
+  static readonly PING: string = "ping";
+  readonly type = PingRequest.PING;
+}
+
 
 @setMessageTarget(EditorFamilyType.MASTER)
 export class OpenGettingStartedProjectRequest implements IMessage {

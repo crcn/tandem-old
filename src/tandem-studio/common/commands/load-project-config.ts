@@ -24,7 +24,7 @@ export class LoadProjectConfigCommand implements ICommand {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  async execute() {
+  execute() {
     const configPath = path.join(process.cwd(),  PROJECT_CONFIG_FILE_NAME);
     this.logger.info(`Loading project config ${configPath}`);
 

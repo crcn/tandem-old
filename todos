@@ -20,6 +20,8 @@ resolve UX. May want to optimize experience around writing code.
 Polish up vanilla HTML ext
 
 - [ ] Editor
+  - [ ] toggle tools on and off (header button) & menu option
+  - [ ] 
   - [ ] menu items
   - [ ] Debugger Pane
     - [ ] create new project
@@ -37,6 +39,7 @@ Polish up vanilla HTML ext
 - [ ] Core
   - [ ] enable script tags
   - [ ] ability to load HTTP urls
+  - [ ] register event listeners
   - [ ] memoize remote browser -- diff against only one document
 
 - [ ] UX
@@ -45,6 +48,7 @@ Polish up vanilla HTML ext
   - [ ] import existing HTML file from start page - auto-create artboards
 
 - [ ] Bugs
+  - [ ] kill worker if master is disposed of
   - [ ] Fix vscode source code overwrites
   - [ ] fix centering
   - [ ] local images must work in HTML ext
@@ -164,6 +168,8 @@ CORE
   - [ ] tree shaking dependencies
   - [ ] run VM code in a new worker for speed and to prevent mem leaks
   - [ ] connect studio with repo of extensions
+
+- [ ] a/b testing framework
 
 KEYBOARD SHORTCUTS
   - [ ] select parent of current selection
