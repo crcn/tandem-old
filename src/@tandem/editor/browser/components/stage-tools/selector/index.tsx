@@ -35,6 +35,7 @@ export class SelectorStageToolComponent extends React.Component<{ workspace: Wor
   render() {
 
     const { workspace } = this.props;
+    if (!workspace.showStageTools) return null;
 
     const selection = new VisibleSyntheticElementCollection(...(workspace.selection as any));
 

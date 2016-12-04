@@ -45,6 +45,8 @@ export class Workspace extends Observable {
   /**
    */
 
+  @bindable(true)
+  public showStageTools: boolean = true;
   
 
   /**
@@ -135,6 +137,9 @@ export class Workspace extends Observable {
     }
   }
 
+  public toggleStageTools() {
+    this.showStageTools = !this.showStageTools;
+  }
 
   get zoom() { return this.transform.scale; }
   set zoom(value: number) {

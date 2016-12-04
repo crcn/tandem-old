@@ -1,6 +1,6 @@
 import { BaseRouteHandler } from "@tandem/editor/browser/stores";
 import { RedirectRequest, OpenWorkspaceRequest } from "@tandem/editor/browser/messages";
-import { RouteNames  } from "@tandem/editor/browser/constants";
+import { EditorRouteNames  } from "@tandem/editor/browser/constants";
 
 export class WorkspaceRouteHandler extends BaseRouteHandler {
   async load({ query }: RedirectRequest) {
@@ -9,7 +9,7 @@ export class WorkspaceRouteHandler extends BaseRouteHandler {
 
     return {
       state: {
-        [RouteNames.ROOT]: [RouteNames.WORKSPACE]
+        [EditorRouteNames.ROOT]: EditorRouteNames.WORKSPACE
       }
     };
   }

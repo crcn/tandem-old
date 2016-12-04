@@ -319,7 +319,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   createElement(tagName: "map"): SyntheticHTMLElement;
   createElement(tagName: "mark"): SyntheticHTMLElement;
   createElement(tagName: "menu"): SyntheticHTMLElement;
-  createElement(tagName: "menuitem"): SyntheticHTMLElement;
+  createElement(tagName: "WebMenuItem"): SyntheticHTMLElement;
   createElement(tagName: "meta"): SyntheticHTMLElement;
   createElement(tagName: "meter"): SyntheticHTMLElement;
   createElement(tagName: "nav"): SyntheticHTMLElement;
@@ -434,7 +434,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   createElement(tagName: "map"): SyntheticHTMLElement;
   createElement(tagName: "mark"): SyntheticHTMLElement;
   createElement(tagName: "menu"): SyntheticHTMLElement;
-  createElement(tagName: "menuitem"): SyntheticHTMLElement;
+  createElement(tagName: "WebMenuItem"): SyntheticHTMLElement;
   createElement(tagName: "meta"): SyntheticHTMLElement;
   createElement(tagName: "meter"): SyntheticHTMLElement;
   createElement(tagName: "nav"): SyntheticHTMLElement;

@@ -1,7 +1,7 @@
 import * as qs from "qs";
 
 import { RouteFactoryProvider } from "@tandem/editor/browser/providers";
-import { RedirectRequest } from "@tandem/editor/browser/messages";
+import { RedirectRequest, DidRedirectMessage } from "@tandem/editor/browser/messages";
 import { IMessage } from "@tandem/mesh";
 import { 
   Injector, 
@@ -39,6 +39,9 @@ export class Router extends Observable {
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
+
+  @inject(PrivateBusProvider.ID)
+  private _bus: IBrokerBus;
 
   private _state: IRouterState = {};
   private _path: string;
@@ -84,5 +87,7 @@ export class Router extends Observable {
     const result = await route.load(request);
 
     this.setState(path, result.state);
+
+    this._bus.dispatch(new DidRedirectMessage(path, result.state)); 
   }
 }

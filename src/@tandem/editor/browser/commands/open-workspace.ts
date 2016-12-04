@@ -2,7 +2,7 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { BoundingRect } from "@tandem/common";
 import { OpenWorkspaceRequest } from "@tandem/editor/common";
 import { BaseEditorBrowserCommand } from "./base";
-import { RouteNames } from "@tandem/editor/browser/constants";
+import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { RedirectRequest } from "@tandem/editor/browser/messages";
 
 import { 

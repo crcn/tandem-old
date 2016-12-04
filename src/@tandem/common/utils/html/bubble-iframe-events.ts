@@ -1,5 +1,7 @@
+import { calculateAbsoluteBounds } from "./transform";
 
-export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: any = {}) {
+
+export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: { ignoreInputEvents?: boolean, ignoreScrollEvents?: boolean } = {}) {
   const window = iframe.contentWindow;
   const body   = window.document.childNodes[0];
 
@@ -14,11 +16,23 @@ export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: any =
       bubbles: true,
       cancelable: true
     });
+    
+    const rect = iframe.getBoundingClientRect();
+    const actualRect = calculateAbsoluteBounds(iframe);
+    const zoom = rect.width / actualRect.width;
 
     for (let key in event) {
       let value = event[key];
       if (typeof value === "function") {
         value = value.bind(event);
+      }
+
+      if (key === "pageX" || key === "clientX") {
+        value = rect.left + value * zoom;
+      }
+
+      if (key === "pageY" || key === "clientY") {
+        value = rect.top + value * zoom;
       }
 
       // bypass read-only issues here

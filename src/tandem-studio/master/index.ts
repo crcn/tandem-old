@@ -2,6 +2,7 @@ import { argv } from "yargs";
 import * as path from "path";
 import * as electron from "electron";
 import * as getPort from "get-port";
+
 import { EditorFamilyType } from "@tandem/editor/common";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
@@ -39,7 +40,6 @@ import {
 
 import { TandemStudioMasterStore } from "./stores";
 
-
 import {
    Injector,
    LogLevel,
@@ -55,6 +55,7 @@ import {
 process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || LogLevel.DEFAULT;
 
 const BROWSER_BASE_PATH  = `${__dirname}/../browser`;
+
 
 export const initializeMaster = async () => {
 

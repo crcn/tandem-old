@@ -9,7 +9,7 @@ import { TandemStudioBrowserStore } from "tandem-studio/browser/stores";
 import { BaseApplicationComponent, inject } from "@tandem/common";
 import { TandemStudioBrowserStoreProvider } from "tandem-studio/browser/providers";
 import { RedirectRequest, createWorkspaceRedirectRequest } from "@tandem/editor/browser/messages";
-import { RouteNames } from "@tandem/editor/browser/constants";
+import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { 
   IHelpOption,
   IStarterOption,

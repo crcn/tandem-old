@@ -87,13 +87,12 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   onMouseEvent = (event: React.MouseEvent<any>) => {
-
-    let left: number = event.pageX;
-    let top: number = event.pageY;
+    let pageX = event.pageX;
+    let pageY = event.pageY;
 
     this._mousePosition = {
-      left: left,
-      top: top
+      left: pageX,
+      top: pageY
     };
   }
 

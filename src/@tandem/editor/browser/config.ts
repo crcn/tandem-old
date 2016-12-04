@@ -14,6 +14,8 @@ import { IEditorCommonConfig } from "../common";
 
 export interface IEditorBrowserConfig extends IEditorCommonConfig {
 
+  useDefaultKeyBindings?: boolean;
+
   /**
    * The mounting point into the application
    */

@@ -25,7 +25,7 @@ export namespace MetadataKeys {
   export const CHILD_LAYER_PROPERTY = "childLayerProperty";
 }
 
-export namespace RouteNames {
+export namespace EditorRouteNames {
   export const ROOT      = "root";
   export const WORKSPACE = "workspace";
 }

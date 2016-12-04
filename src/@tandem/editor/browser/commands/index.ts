@@ -6,3 +6,4 @@ export * from "./load-router";
 export * from "./base";
 export * from "./open-workspace";
 export * from "./redirect";
+export * from "./toggle-tools-layer";

@@ -1,5 +1,5 @@
 import { TandemStudioBrowserStore } from "../stores";
-import { StoreProvider } from "@tandem/common";
+import { StoreProvider, ClassFactoryProvider, Injector } from "@tandem/common";
 
 export class TandemStudioBrowserStoreProvider extends StoreProvider {
   static readonly NAME = "studioBrowserStore";
@@ -8,5 +8,3 @@ export class TandemStudioBrowserStoreProvider extends StoreProvider {
     super(TandemStudioBrowserStoreProvider.NAME, clazz);
   }
 } 
-
-

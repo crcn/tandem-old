@@ -13,6 +13,7 @@ import {
   BoundingRect,
   bindProperty,
   watchProperty,
+  bubbleHTMLIframeEvents,
 } from "@tandem/common";
 
 import {
@@ -59,7 +60,6 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     this.setAttribute("class", "artboard-entity");
     this.innerHTML = `
       <iframe data-td-selectable="false" style="border: none; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px;" />
-      <div class="artboard-entity-overlay" style="background: transparent; border: none; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; " data-td-selectable="false" />
     `;
   }
 
@@ -124,6 +124,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     super.attachNative(node);
     this.createBrowser();
     const iframe = this._iframe = node.querySelector("iframe") as HTMLIFrameElement;
+    bubbleHTMLIframeEvents(iframe);
 
     const onload = async () => {
       iframe.contentDocument.body.appendChild(this._artboardBrowser.renderer.element);

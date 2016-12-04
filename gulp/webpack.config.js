@@ -15,7 +15,9 @@ const {
 
 // SANDBOXED=1 tandem component.tsx
 const SANDBOXED = !!process.env.SANDBOXED;
+const TARGET = "electron";
 module.exports = {
+    target: TARGET,
     output: {
       filename: '[name].js',
     },
@@ -88,7 +90,7 @@ module.exports = {
     ],
     node: {
       __filename: true,
-      fs:  'empty',
+      fs:  TARGET === "electron" ? undefined : 'empty',
       Buffer: true
     },
     postcss: () => [cssnext()],

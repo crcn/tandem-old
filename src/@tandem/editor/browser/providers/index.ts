@@ -16,6 +16,8 @@ import {
   createSingletonProviderClass,
 } from "@tandem/common";
 
+import { WebMenuItem } from "../menus";
+
 export class GlobalKeyBindingProvider extends ClassFactoryProvider {
   static readonly NS = "globalKeyBindings";
   readonly keys: string[];
@@ -197,6 +199,42 @@ export class PageFactoryProvider extends ReactComponentFactoryProvider {
   static getId(name: string) {
     return [this.NS, name].join("/");
   }
+} 
+
+
+export class WebMenuItemFactoryProvider extends ClassFactoryProvider {
+  static readonly NS = "menuItems";
+  constructor(readonly name: string, readonly parentTester: any, readonly WebMenuItemClass: { new(name: string): WebMenuItem }) {
+    super(WebMenuItemFactoryProvider.getId(name), WebMenuItemClass);
+  }
+
+  clone() {
+    return new WebMenuItemFactoryProvider(this.name, this.parentTester, this.WebMenuItemClass);
+  }
+
+  create() {
+    return super.create(this.name);
+  }
+
+  testParent(parent: WebMenuItem) {
+    if (typeof this.parentTester === "string") {
+      return this.parentTester === parent.name;
+    }
+    return this.parentTester(parent);
+  }
+
+  static getId(name: string) {
+    return [this.NS, name].join("/");
+  }
+
+  static createSubWebMenuItems(parent: WebMenuItem, injector: Injector): WebMenuItem[] {
+    return injector.queryAll<WebMenuItemFactoryProvider>(this.getId("**")).filter((provider) => {
+      return provider.testParent(parent);
+    }).map((provider) => {
+      return provider.create();
+    });
+  }
+
 } 
 
 export * from "./base";

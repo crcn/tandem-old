@@ -106,11 +106,11 @@ class SelectableComponent extends BaseApplicationComponent<{
 }
 
 export interface ISelectableComponentProps {
-  zoom: number,
-  zooming: boolean,
-  workspace: Workspace,
-  onSyntheticMouseDown: (element: SyntheticHTMLElement, event?: React.MouseEvent<any>) => void,
-  canvasRootSelectable?: boolean,
+  zoom: number;
+  show: boolean;
+  workspace: Workspace;
+  onSyntheticMouseDown: (element: SyntheticHTMLElement, event?: React.MouseEvent<any>) => void;
+  canvasRootSelectable?: boolean;
   allElements: SyntheticDOMElement[]
 }
 
@@ -124,13 +124,13 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
    * @returns
    */
 
-  shouldComponentUpdate({ allElements, zoom, zooming }: ISelectableComponentProps) {
-    return allElements !== this.props.allElements || this.props.zoom !== zoom || this.props.zooming !== zooming;
+  shouldComponentUpdate({ allElements, zoom, show }: ISelectableComponentProps) {
+    return allElements !== this.props.allElements || this.props.zoom !== zoom || this.props.show !== show;
   }
 
   render() {
 
-    if (this.props.zooming) return null;
+    if (!this.props.show) return null;
 
     const { workspace, zoom, allElements } = this.props;
 

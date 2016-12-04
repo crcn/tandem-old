@@ -1,6 +1,6 @@
 import "./styles";
 
-import { RouteNames } from "./constants";
+import { EditorRouteNames } from "./constants";
 import { IEditorBrowserConfig } from "./config";
 import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
@@ -18,6 +18,7 @@ import { 
   AlertMessage, 
   RedirectRequest, 
   RemoveSelectionRequest, 
+  ToggleStageToolsRequest,
   AddSyntheticObjectRequest, 
 } from "./messages";
 
@@ -63,6 +64,7 @@ import {
   OpenWorkspaceCommand,
   SetReadyStatusCommand,
   RemoveSelectionCommand, 
+  toggleStageToolsCommand,
 } from "./commands";
 
 import {
@@ -77,17 +79,18 @@ import {
 
 export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
   return [
-    ...keyBindingsProviders,
+
     createCommonEditorProviders(config, fileSystemClass, fileResolverClass),
     
     // routes
-    new RouteFactoryProvider(RouteNames.WORKSPACE, "/workspace", WorkspaceRouteHandler),
+    new RouteFactoryProvider(EditorRouteNames.WORKSPACE, "/workspace", WorkspaceRouteHandler),
 
     // pages
-    new PageFactoryProvider(RouteNames.WORKSPACE, WorkspaceComponent),
+    new PageFactoryProvider(EditorRouteNames.WORKSPACE, WorkspaceComponent),
 
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
+    new CommandFactoryProvider(ToggleStageToolsRequest.TOGGLE_STAGE_TOOLS, toggleStageToolsCommand),
     new CommandFactoryProvider(RedirectRequest.REDIRECT, RedirectCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
     new CommandFactoryProvider(OpenWorkspaceRequest.OPEN_WORKSPACE, OpenWorkspaceCommand),
@@ -104,7 +107,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
     new ApplicationServiceProvider("clipboard", ClipboardService),
     new ApplicationServiceProvider("component", ComponentService),
     new ApplicationServiceProvider("workspace", WorkspaceService),
-    new ApplicationServiceProvider("keyBindings", GlobalKeyBindingService),
+    // new ApplicationServiceProvider("keyBindings", GlobalKeyBindingService),
 
     // stage tool components
     new StageToolComponentFactoryProvider("selector", "pointer", SelectorStageToolComponent),
@@ -132,4 +135,5 @@ export * from "./key-bindings";
 export * from "./stores";
 export * from "./services";
 export * from "../common";
-export * from"./commands/base";
+export * from "./commands/base";
+export * from "./menus";

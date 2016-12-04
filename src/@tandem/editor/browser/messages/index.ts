@@ -3,12 +3,12 @@ import { uniq } from "lodash";
 import { toArray } from "@tandem/common/utils/array";
 import { IMessage } from "@tandem/mesh";
 import { CoreEvent } from "@tandem/common/messages";
-import { RouteNames } from "@tandem/editor/browser/constants";
+import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
 import { File, serialize, deserialize, LogLevel } from "@tandem/common";
-import { Workspace, IWorkspaceTool, IHistoryItem } from "@tandem/editor/browser/stores";
+import { Workspace, IWorkspaceTool, IHistoryItem, IRouterState } from "@tandem/editor/browser/stores";
 
 export class MouseAction extends CoreEvent {
 
@@ -91,8 +91,16 @@ export class RedirectRequest implements IMessage {
   }
 }
 
+export class DidRedirectMessage implements IMessage {
+  static readonly DID_REDIRECT = "didRedirect";
+  readonly type = DidRedirectMessage.DID_REDIRECT;
+  constructor(readonly pathname: string, readonly state: IRouterState) {
+    
+  }
+}
+
 export function createWorkspaceRedirectRequest(filePath: string) {
-  return new RedirectRequest(RouteNames.WORKSPACE, {}, { workspacePath: filePath });
+  return new RedirectRequest(EditorRouteNames.WORKSPACE, {}, { workspacePath: filePath });
 }
 
 export class SelectionChangeEvent extends CoreEvent {
@@ -126,6 +134,13 @@ export class ZoomInRequest extends CoreEvent {
   static readonly ZOOM_IN = "zoomIn";
   constructor() {
     super(ZoomInRequest.ZOOM_IN);
+  }
+}
+
+export class ToggleStageToolsRequest extends CoreEvent {
+  static readonly TOGGLE_STAGE_TOOLS = "toggleStageTools";
+  constructor() {
+    super(ToggleStageToolsRequest.TOGGLE_STAGE_TOOLS);
   }
 }
 

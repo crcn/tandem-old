@@ -19,6 +19,8 @@ resolve UX. May want to optimize experience around writing code.
 
 Polish up vanilla HTML ext
 
+http://electron.atom.io/docs/api/auto-updater/
+
 - [ ] Editor
   - [ ] menu items
     - [ ] create new project

@@ -8,7 +8,7 @@
     z-index: -1;
   }
 
-  &--item {
+  &--item-background {
     background: white;
     position: absolute;
     z-index: -1;
@@ -33,4 +33,8 @@
     }
   }
 
+  &--item-overlay {
+    position: absolute;
+    background: transparent;
+  }
 }
