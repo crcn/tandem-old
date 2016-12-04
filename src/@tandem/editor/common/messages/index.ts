@@ -86,8 +86,7 @@ addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamily
 
 @addMessageVisitor(EditorFamilyType.BROWSER)
 @addMessageVisitor(EditorFamilyType.WORKER)
-@addMessageVisitor(EditorFamilyType.MASTER)
-@setMessageTarget(EditorFamilyType.TEXT_EDITOR)
+@setMessageTarget(EditorFamilyType.MASTER)
 @serializable({
   serialize({ filePath, selection }: OpenFileRequest) {
     return { filePath, selection };
@@ -106,6 +105,29 @@ export class OpenFileRequest extends CoreEvent {
     return bus.dispatch(new OpenFileRequest(filePath, selection));
   }
 }
+
+@addMessageVisitor(EditorFamilyType.WORKER)
+@addMessageVisitor(EditorFamilyType.MASTER)
+@setMessageTarget(EditorFamilyType.TEXT_EDITOR)
+@serializable({
+  serialize({ filePath, selection }: SetCurrentFileRequest) {
+    return { filePath, selection };
+  },
+  deserialize({ filePath, selection }, injector) {
+    return new SetCurrentFileRequest(filePath, selection);
+  }
+})
+export class SetCurrentFileRequest extends CoreEvent {
+  static readonly SET_CURRENT_FILE = "setCurrentFile";
+  constructor(readonly filePath: string, readonly selection?: ISourceLocation) {
+    super(SetCurrentFileRequest.SET_CURRENT_FILE);
+  }
+  static dispatch(filePath: string, selection: ISyntheticSourceInfo, bus: IStreamableDispatcher<any>) {
+    return bus.dispatch(new SetCurrentFileRequest(filePath, selection));
+  }
+}
+
+
 
 // opens the given workspace in this session
 @setMessageTarget(EditorFamilyType.BROWSER)

@@ -21,16 +21,7 @@ Polish up vanilla HTML ext
 
 http://electron.atom.io/docs/api/auto-updater/
 
-- [ ] Editor
-  - [ ] Debugger Pane
-  - [ ] eye dropper
-  - [ ] top bar
-    - [ ] paint bucket tool
-    - [ ] artboard tool
-  - [ ] History
-  - [ ] unsaved files pane
-  - [ ] install CLI tools menu option
-  - [ ] react starter project
+html css source maps
 
 - [ ] Core
   - [ ] enable script tags
@@ -39,19 +30,32 @@ http://electron.atom.io/docs/api/auto-updater/
   - [ ] memoize remote browser -- diff against only one document
 
 - [ ] UX
-  - [ ] open main code editor
-  - [ ] getting started project
-  - [ ] import existing HTML file from start page - auto-create artboards
-
+  - [ ] open main code editor with shift click if not already opened
+  - [ ] open tandem from text editor
+  
 - [ ] Bugs
+  - [ ] source maps not working for CSS
   - [ ] Fix vscode source code overwrites
   - [ ] fix centering
   - [ ] local images must work in HTML ext
   - [ ] cannot add a new style sheet
   - [ ] fix jankiness when updating docs
-  - [ ] source maps not working for CSS
   - [ ] fix renderers not updating based on computed props
-  - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
+
+- [ ] Editor
+  - [ ] History
+  - [ ] unsaved files pane
+  - [ ] install CLI tools menu option
+  - [ ] react starter project
+
+- [ ] Getting Started page
+  - [ ] big header explaining how to zoom & use tools
+
+
+- [ ] UX
+  - [ ] open main code editor
+  - [ ] getting started project
+  - [ ] import existing HTML file from start page - auto-create artboards
 
 - [ ] Stability
   - [ ] analytics on usage
@@ -110,6 +114,7 @@ UX
   - [ ] minimap (can also be done by opening up a new window of tandem)
 
 BUGS
+  - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
   - [ ] css class selectors are case insensitive
   - [ ] disable attributes that are dynamically created (React for instance)
   - [ ] fix absolute bounds for elements
@@ -138,6 +143,10 @@ CORE
 
 
 - [ ] Editor
+  - [ ] Debugger Pane
+  - [ ] eye dropper
+  - [ ] Settings page
+    - [ ] where main editor bin is
 
   - [ ] CSS pane
     - [ ] up/down arrows for inputs
@@ -148,6 +157,10 @@ CORE
     - [ ] force state (hover, checked, etc.)
     - [ ] unit value converter
 
+  - [ ] top bar
+    - [ ] paint bucket tool
+    - [ ] artboard tool
+    
   - [ ] dnd url from browser
   - [ ] dnd images
   

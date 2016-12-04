@@ -17,9 +17,7 @@ import * as createServer from "express";
 import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage, setMessageTarget } from "@tandem/mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";
-import { SelectSourceRequest, OpenFileRequest, EditorFamilyType } from "@tandem/editor/common";
-
-setMessageTarget(EditorFamilyType.TEXT_EDITOR)(OpenFileRequest);
+import { SelectSourceRequest, OpenFileRequest, SetCurrentFileRequest, EditorFamilyType } from "@tandem/editor/common";
 
 import {
     FileCache,
@@ -257,9 +255,9 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     client.bus.register({
-        dispatch({ filePath, selection, type }: OpenFileRequest) {
+        dispatch({ filePath, selection, type }: SetCurrentFileRequest) {
             console.log(type);
-            if (type === OpenFileRequest.OPEN_FILE) {
+            if (type === SetCurrentFileRequest.SET_CURRENT_FILE) {
                 
                 const setSelection = () => {
                     let { start, end } = selection || { start: undefined, end: undefined };
@@ -286,6 +284,8 @@ export async function activate(context: vscode.ExtensionContext) {
                     await vscode.window.showTextDocument(doc);
                     setSelection();
                 }, setSelection);
+
+                return true;
             }
         }
     })

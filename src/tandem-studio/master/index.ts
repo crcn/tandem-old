@@ -12,7 +12,9 @@ import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider
 
 import { IStudioEditorServerConfig } from "./config";
 import { 
+  InitSettingsCommand,
   HandlePingCommand,
+  OpenTextFileCommand,
   SpawnWorkerCommand, 
   StartProjectCommand,
   GetHelpOptionsCommand,
@@ -30,6 +32,7 @@ import { ProjectStarterFactoryProvider, TandemMasterStudioStoreProvider } from "
 
 import { 
   PingRequest,
+  OpenFileRequest,
   GetHelpOptionsRequest,
   OpenHelpOptionRequest,
   StartNewProjectRequest,
@@ -91,9 +94,11 @@ export const initializeMaster = async () => {
     // commands
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsDirectoryCommand),
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsCommand),
     new CommandFactoryProvider(GetHelpOptionsRequest.GET_HELP_OPTIONS, GetHelpOptionsCommand),
     new CommandFactoryProvider(OpenHelpOptionRequest.OPEN_HELP_OPTION, OpenHelpOptionCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, SpawnWorkerCommand),
+    new CommandFactoryProvider(OpenFileRequest.OPEN_FILE, OpenTextFileCommand),
     new CommandFactoryProvider(OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE, OpenNewWorkspaceCommand),
     new CommandFactoryProvider(SelectDirectoryRequest.SELECT_DIRECTORY_REQUEST, SelectDirectoryCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, CLIOpenWorkspaceCommand),

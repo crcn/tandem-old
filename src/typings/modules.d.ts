@@ -129,6 +129,17 @@ declare module "loader-utils" {
   export function getLoaderConfig(module, name: string): any;
 }
 
+declare module "react-tappable" {
+  import * as React from "react";
+
+  class HammerComponent extends React.Component<any, any>{
+
+  }
+  namespace HammerComponent {
+
+  }
+  export = HammerComponent;
+}
 
 declare module "vue-loader" {
   function loader();

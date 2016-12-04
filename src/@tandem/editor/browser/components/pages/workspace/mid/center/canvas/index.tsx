@@ -144,6 +144,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   onWheel = (event: React.WheelEvent<any>) => {
+    
     this._zooming();
     this.onMouseEvent(event);
     if (event.metaKey) {
@@ -164,11 +165,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     this._zoomTimer = setTimeout(() => this.setState({ zooming: false }), 100);
   }
 
-  onScroll = () => {
-    if (!this._hideTools()) {
-      this.forceUpdate();
-    }
-  }
 
   _hideTools() {
     const paused = !!this._toolsHidden;
@@ -229,6 +225,9 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   onKey = (event) => {
     this.bus.dispatch(new KeyboardAction(KeyboardAction.CANVAS_KEY_DOWN, event));
   }
+  onTouchMove = (event: React.TouchEvent<any>) => {
+    console.log(event.touches);
+  }
 
   render() {
 
@@ -259,7 +258,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       border: "none"
     };
 
-    return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" scrolling={false} translateMousePositions={false} ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
+    return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" scrolling={false} translateMousePositions={false} ignoreInputEvents={true} onWheel={this.onWheel} inheritCSS className="m-editor-stage-isolate">
       <style>
         {
           `html, body {

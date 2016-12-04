@@ -5,8 +5,9 @@ import { TandemStudioMasterStore } from "tandem-studio/master/stores";
 import { TandemMasterStudioStoreProvider } from "tandem-studio/master/providers";
 
 export abstract class  BaseStudioMasterCommand extends BaseCommand {
+  
   @inject(TandemMasterStudioStoreProvider.ID)
-  protected readonly store: TandemStudioMasterStore;
+  protected readonly masterStore: TandemStudioMasterStore;
 
   @inject(ApplicationConfigurationProvider.ID)
   protected readonly config:  IStudioEditorServerConfig;
