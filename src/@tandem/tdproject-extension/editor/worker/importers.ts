@@ -62,7 +62,7 @@ export class TDRootFileImporter implements IFileImporter {
     const artboard = document.createElement("artboard");
     artboard.setAttribute("title", path.relative(process.cwd(), filePath));;
     artboard.setAttribute("src", filePath);
-    artboard.setAttribute("style", `left:${bounds.left}px;top:${bounds.top}px;width:${bounds.width }px;height:${bounds.height || 768}px;`);
+    artboard.setAttribute("style", `left:${bounds.left}px;top:${bounds.top}px;width:${bounds.width || 1024}px;height:${bounds.height || 768}px;`);
 
     const edit = element.createEdit();
     edit.appendChild(artboard);

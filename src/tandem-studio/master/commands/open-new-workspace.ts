@@ -12,6 +12,7 @@ export class OpenNewWorkspaceCommand extends BaseStudioServerCommand {
       let hash: string = "";
       let width: number = 600;
       let height: number = 400;
+      let frame = true;
 
       const query = {
         backendPort: this.config.port
@@ -23,9 +24,10 @@ export class OpenNewWorkspaceCommand extends BaseStudioServerCommand {
         hash = `#/workspace?workspacePath=${encodeURIComponent(filePath)}`;
       } else {
         hash = "#/welcome";
+        frame = false;
       }
 
-      const win = new BrowserWindow({ width: width, height: height, titleBarStyle: "hidden-inset" });
+      const win = new BrowserWindow({ width: width, height: height, frame: frame, titleBarStyle: frame ? "hidden-inset" : undefined });
 
       win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.port}${hash}`);
 

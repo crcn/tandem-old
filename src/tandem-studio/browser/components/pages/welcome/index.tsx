@@ -17,6 +17,7 @@ import {
   SelectDirectoryRequest,
   OpenHelpOptionRequest, 
   StartNewProjectRequest, 
+  OpenNewWorkspaceRequest,
   OpenGettingStartedProjectRequest, 
 } from "tandem-studio/common";
 
@@ -40,7 +41,7 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
   }
 
   close = () => {
-
+    window.close();
   }
 
   // TODO
@@ -54,21 +55,17 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
 
   onOpenExistingProject = async (event: React.SyntheticEvent<any>) => {
     const file = event.currentTarget.files[0] as File;
-    this.redirectToWorkspace(file.path);
+    this.openNewWorkspace(file.path);
+  }
+
+  openNewWorkspace = async (filePath: string) => {
+    await this.bus.dispatch(new OpenNewWorkspaceRequest(filePath));
+    this.close();
   }
   
-
-  async redirectToWorkspace(filePath: string) {   
-    const w = 1024;
-    const h = 768;
-    window.moveTo(window.screen.width / 2 - w / 2, window.screen.height / 2 - h / 2);
-    window.resizeTo(w, h);
-    await this.bus.dispatch(createWorkspaceRedirectRequest(filePath));
-  }
-
   startNewDocument = async () => {
     try {
-      await this.redirectToWorkspace(await StartNewProjectRequest.dispatch(this.state.selectedStarterOption, this.state.cwd, this.bus));
+      await this.openNewWorkspace(await StartNewProjectRequest.dispatch(this.state.selectedStarterOption, this.state.cwd, this.bus));
     } catch(e) {
       this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot start project: ${e.stack}`));
     }
@@ -91,13 +88,13 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
     console.log(this._store.helpOptions);
     return <div className="welcome">
       <div className="info">
-        <i className="ion-close hide" onClick={this.close}></i>
+        <i className="ion-close" onClick={this.close}></i>
         <h2 className="header">Welcome to Tandem</h2>
 
         <ul>
           {
-            this._store.helpOptions.filter((option) => option.page === "welcome").map((option) => {
-              return <li key={option.id}><a href="#" onClick={this.openHelpOption.bind(this, option)}>{ option.label }</a></li>;
+            this._store.helpOptions.filter((option) => option.page === "welcome").map((option, i) => {
+              return <li key={i}><a href="#" onClick={this.openHelpOption.bind(this, option)}>{ option.label }</a></li>;
             })
           }
           <li className="hide"><a href="#" onClick={this.joinNewsLetter}>Join newsletter</a></li>

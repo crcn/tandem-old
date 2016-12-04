@@ -39,10 +39,12 @@ This is only the beginning
   - [ ] memoize remote browser -- diff against only one document
 
 - [ ] UX
+  - [ ] open main code editor
   - [ ] getting started project
   - [ ] import existing HTML file from start page - auto-create artboards
 
 - [ ] Bugs
+  - [ ] fix centering
   - [ ] cannot add a new style sheet
   - [ ] fix jankiness when updating docs
   - [ ] source maps not working for CSS
