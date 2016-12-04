@@ -259,7 +259,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       border: "none"
     };
 
-    return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" scrolling={false} ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
+    return (<IsolateComponent onKeyDown={this.onKey} ref="isolate" scrolling={false} translateMousePositions={false} ignoreInputEvents={true} onWheel={this.onWheel} onScroll={this.onScroll} inheritCSS className="m-editor-stage-isolate">
       <style>
         {
           `html, body {

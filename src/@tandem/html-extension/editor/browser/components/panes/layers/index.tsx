@@ -37,12 +37,13 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
     const { document, selection } = this.props.workspace;
     if (!document) return null;
 
+
     return <div className="html-layers-pane">
       <div className="header">
         Layers
       </div>
       <TreeComponent
-        nodes={this.filterChildren(document.body.children)}
+        nodes={this.filterChildren(document.documentElement.children)}
         select={this.selectNode.bind(this)}
         onNodeMouseEnter={node => (node as SyntheticDOMNode).metadata.set(MetadataKeys.HOVERING, true)}
         onNodeMouseLeave={node => (node as SyntheticDOMNode).metadata.set(MetadataKeys.HOVERING, false)}

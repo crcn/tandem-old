@@ -66,7 +66,8 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
 
   _addListeners() {
     bubbleHTMLIframeEvents((this.refs as any).container, {
-      ignoreInputEvents: this.props.ignoreInputEvents
+      ignoreInputEvents: this.props.ignoreInputEvents,
+      translateMousePositions: this.props.translateMousePositions
     });
   }
 
