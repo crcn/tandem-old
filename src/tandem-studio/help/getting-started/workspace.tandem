@@ -112,7 +112,7 @@
           </p>
         </div>
         <div class="artboard">
-          <artboard title="Responsive & Cross-browser testing"></artboard>
+          <artboard title="Responsive & Cross-browser testing" src="./responsive-testing.html"></artboard>
         </div>
       </div>
 
@@ -140,7 +140,7 @@
 
         </div>
         <div class="artboard">
-          <artboard title="Defining Artboard States"></artboard>
+          <artboard title="Defining Artboard States" src="./artboard-states.html"></artboard>
         </div>
       </div>
 
@@ -150,7 +150,7 @@
 
         </div>
         <div class="artboard">
-          <artboard title="Linking back to source files"></artboard>
+          <artboard title="Linking back to source files" src="./link-to-source.html"></artboard>
         </div>
       </div>
       <div class="step">
@@ -162,7 +162,7 @@
           <p>Tip: You can use your shared link to test how your HTML & CSS response on different devices.</p>
         </div>
         <div class="artboard">
-          <artboard title="Sharing Workspaces"></artboard>
+          <artboard title="Sharing Workspaces" src="./sharing-workspace.html"></artboard>
         </div>
       </div>
 

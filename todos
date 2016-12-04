@@ -14,12 +14,14 @@ Messaging:
 No setup required.
 This is only the beginning
 
-- [ ] Guides
-  - [ ] Shortcuts
-  - [ ] getting started
+TODO - strip of all functionality that does not work all the time - need to
+resolve UX. May want to optimize experience around writing code.
+
+Polish up vanilla HTML ext
 
 - [ ] Editor
   - [ ] menu items
+  - [ ] Debugger Pane
     - [ ] create new project
     - [ ] open project
   - [ ] drag url from browser
@@ -31,7 +33,6 @@ This is only the beginning
   - [ ] unsaved files pane
   - [ ] install CLI tools menu option
   - [ ] react starter project
-  - [ ] show diff of unsaved drafts
 
 - [ ] Core
   - [ ] enable script tags
@@ -44,7 +45,9 @@ This is only the beginning
   - [ ] import existing HTML file from start page - auto-create artboards
 
 - [ ] Bugs
+  - [ ] Fix vscode source code overwrites
   - [ ] fix centering
+  - [ ] local images must work in HTML ext
   - [ ] cannot add a new style sheet
   - [ ] fix jankiness when updating docs
   - [ ] source maps not working for CSS
@@ -152,8 +155,10 @@ CORE
   - [ ] media query pane
     - [ ] attached to each artboard
 
+  - [ ] unsaved files
+    - [ ] show diff of unsaved drafts
+
 - [ ] Optimizations
-  - [ ] have data store records owned
   - [ ] tail oplog for DS operations
   - [ ] store workspaces in data store
   - [ ] tree shaking dependencies
