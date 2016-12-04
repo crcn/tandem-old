@@ -1,0 +1,1 @@
+export const MARKDOWN_MIME_TYPE = "text/markdown";

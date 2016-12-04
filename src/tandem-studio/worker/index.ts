@@ -10,6 +10,7 @@ import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/server";
+import { createCoreMarkdownExtensionProviders } from "@tandem/markdown-extension";
 import { isMaster, fork, addListener, emit } from "cluster";
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
@@ -59,6 +60,7 @@ export const createCoreStudioWorkerProviders = () => {
     createHTMLEditorWorkerProviders(),
     createSASSEditorWorkerProviders(),
     createJavaScriptWorkerProviders(),
+    createCoreMarkdownExtensionProviders(),
     createTDProjectEditorWorkerProviders(),
     createTypescriptEditorWorkerProviders(),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadProjectConfigCommand),

@@ -22,12 +22,7 @@ Polish up vanilla HTML ext
 http://electron.atom.io/docs/api/auto-updater/
 
 - [ ] Editor
-  - [ ] menu items
-    - [ ] create new project
-    - [ ] open project
-    - [ ] toggle tools on and off (header button) & menu option
   - [ ] Debugger Pane
-  - [ ] drag url from browser
   - [ ] eye dropper
   - [ ] top bar
     - [ ] paint bucket tool
@@ -152,6 +147,9 @@ CORE
     - [ ] custom color picker
     - [ ] force state (hover, checked, etc.)
     - [ ] unit value converter
+
+  - [ ] dnd url from browser
+  - [ ] dnd images
   
   - [ ] artboard pane
     - [ ] pop artboards out in new window

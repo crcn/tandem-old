@@ -144,7 +144,7 @@ export class ToggleSettingRequest extends CoreEvent {
   }
 }
 
-export function createToggleSettingRequestClass(settingName: string) {
+export function createToggleSettingRequestClass(settingName: string): { new(): ToggleSettingRequest } {
   return class extends ToggleSettingRequest {
     constructor() {
       super(settingName);
