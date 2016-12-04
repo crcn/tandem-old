@@ -46,7 +46,7 @@ import { CallbackDispatcher } from "@tandem/mesh";
 
 export interface ISyntheticBrowserOpenOptions {
   url: string;
-  injectScript: string;
+  injectScript?: string;
   dependencyGraphStrategyOptions?: IDependencyGraphStrategyOptions;
 }
 

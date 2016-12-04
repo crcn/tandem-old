@@ -1,4 +1,4 @@
-<tandem style="background-color:#333;">
+<tandem style="background-color:#333;" page="welcome" label="Getting Started">
   <style>
     .section {
       padding: 200px;

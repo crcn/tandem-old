@@ -37,6 +37,7 @@ import {
 import {StudioRouteNames } from "./constants";
 import { WelcomeComponent } from "./components";
 import { 
+  LoadHelpOptionsCommad,
   LoadStartOptionsCommand, 
   InitializeWelcomePageCommand, 
 } from "./commands";
@@ -59,6 +60,7 @@ const injector = new Injector(
 
   // Commands
   new CommandFactoryProvider(ApplicationReadyMessage.READY, InitializeWelcomePageCommand),
+  new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadHelpOptionsCommad),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadStartOptionsCommand),
 
   // Pages

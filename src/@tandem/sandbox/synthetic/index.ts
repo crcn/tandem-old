@@ -25,7 +25,7 @@ export interface ISyntheticSourceInfo {
    * @type {*}
    */
 
-  kind: any;
+  kind?: any;
 
   /**
    * Source file of the synthetic object expression.

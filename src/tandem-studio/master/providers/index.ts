@@ -1,7 +1,8 @@
-
 import { IStarterOption } from "tandem-studio/common/stores";
 import { BaseProjectStarter } from "tandem-studio/master/project";
 import { ClassFactoryProvider, Provider, Injector } from "@tandem/common";
+import { StoreProvider } from "@tandem/common";
+import { TandemStudioMasterStore } from "tandem-studio/master/stores";
 
 
 export class ProjectStarterFactoryProvider extends ClassFactoryProvider {
@@ -25,5 +26,12 @@ export class ProjectStarterFactoryProvider extends ClassFactoryProvider {
   static create(option: IStarterOption, injector: Injector) {
     const provider = injector.query<ProjectStarterFactoryProvider>(this.getId(option.id));
     return provider && provider.create(option);
+  }
+}
+
+export class TandemMasterStudioStoreProvider extends StoreProvider {
+  static readonly ID = StoreProvider.getId("tandemMasterStudio");
+  constructor(clazz: { new(): TandemStudioMasterStore }) {
+    super("tandemMasterStudio", clazz);
   }
 }

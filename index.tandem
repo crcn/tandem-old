@@ -9,7 +9,7 @@
   </artboard>
   <artboard title="CSS Computed" src="./src/@tandem/html-extension/tandem/preview.tsx" style=" left: -66px; top: 431px; width: 1434px; height: 1344px; " inject-script="process.env.CSS_PANE%20%3D%20%22computed%22%3B"></artboard>
   <artboard title="HTML Stage Info" src="./src/@tandem/html-extension/editor/browser/components/stage-tools/element-info/index-preview.tsx" style=" left: -2733px; top: -150px; width: 230px; height: 206px; "></artboard>
-  <artboard title="Launchpad" src="./src/tandem-studio/browser/components/pages/welcome/index-preview.tsx" style=" left: -2733px; top: 431px; width: 800px; height: 500px; "></artboard>
+  <artboard title="Launchpad" src="./src/tandem-studio/browser/components/pages/welcome/index-preview.tsx" style=" left: -2733px; top: 431px; width: 600px; height: 400px; "></artboard>
   <artboard title="Drag select stage tool" src="/Users/crcn/Developer/tandem/src/@tandem/editor/browser/components/stage-tools/drag-select/index-preview.tsx" style=" left: -2426px; top: -150px; width: 493px; height: 343px; "></artboard>
   <artboard title="Footer" src="/Users/crcn/Developer/tandem/src/@tandem/editor/browser/components/pages/workspace/mid/center/footer/index-preview.tsx" style=" left: -1804px; top: -150px; width: 633px; height: 73px; "></artboard>
   <artboard title="Artboard Pane" src="/Users/crcn/Developer/tandem/src/@tandem/tdproject-extension/editor/browser/components/panes/artboard/index-preview.tsx" style=" left: -531px; top: 1929px; width: 265px; height: 768px; " inject="var%20message%20%3D%20%22hello%22%3B" inject-script="%0A"></artboard>

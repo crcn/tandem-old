@@ -12,6 +12,8 @@ import {
   TransformStream 
 } from "@tandem/mesh";
 
+import { IHelpOption } from "tandem-studio/common/stores";
+
 // scoping here
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest));
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
@@ -60,5 +62,30 @@ export class SelectDirectoryRequest implements IMessage {
 
   static async dispatch(bus: IBus<any>): Promise<string> {
     return (await readOneChunk<string>(bus.dispatch(new SelectDirectoryRequest()))).value;
+  }
+}
+
+
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class GetHelpOptionsRequest implements IMessage {
+  static readonly GET_HELP_OPTIONS: string = "getHelpOptions";
+  readonly type = GetHelpOptionsRequest.GET_HELP_OPTIONS;
+  constructor() { }
+
+  static async dispatch(bus: IBus<any>): Promise<IHelpOption[]> {
+    return readAllChunks(bus.dispatch(new GetHelpOptionsRequest()));
+  }
+}
+
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class OpenHelpOptionRequest implements IMessage {
+  static readonly OPEN_HELP_OPTION: string = "openHelpOption";
+  readonly type = OpenHelpOptionRequest.OPEN_HELP_OPTION;
+  constructor(readonly option: IHelpOption) { }
+
+  static async dispatch(option: IHelpOption, bus: IBus<any>): Promise<any> {
+    return bus.dispatch(new OpenHelpOptionRequest(option));
   }
 }

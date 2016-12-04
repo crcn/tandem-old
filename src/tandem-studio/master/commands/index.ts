@@ -5,3 +5,6 @@ export * from "./select-directory";
 export * from "./import-file";
 export * from "./get-project-starter-options";
 export * from "./start-project";
+export * from "./get-help-options";
+export * from "./open-help-option";
+export * from "./init-settings-directory";

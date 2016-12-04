@@ -1,4 +1,5 @@
 import { argv } from "yargs";
+import * as path from "path";
 import * as electron from "electron";
 import * as getPort from "get-port";
 import { EditorFamilyType } from "@tandem/editor/common";
@@ -10,25 +11,32 @@ import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider
 
 import { IStudioEditorServerConfig } from "./config";
 import { 
+  GetHelpOptionsCommand,
+  OpenHelpOptionCommand,
   SpawnWorkerCommand, 
   StartProjectCommand,
   SelectDirectoryCommand,
   OpenNewWorkspaceCommand,
   CLIOpenWorkspaceCommand,
+  InitSettingsDirectoryCommand,
   GetProjectStarterOptionsCommand,
 } from "./commands";
 
-import { HTMLProjectStarter } from "./project/starters";
-import { ProjectStarterFactoryProvider } from "./providers";
-
 import { BrowserService } from "./services";
+import { HTMLProjectStarter } from "./project/starters";
+import { ProjectStarterFactoryProvider, TandemMasterStudioStoreProvider } from "./providers";
 
 import { 
+  GetHelpOptionsRequest,
+  OpenHelpOptionRequest,
   StartNewProjectRequest,
   SelectDirectoryRequest,
   OpenNewWorkspaceRequest,
   GetProjectStartOptionsRequest,
 } from "tandem-studio/common";
+
+import { TandemStudioMasterStore } from "./stores";
+
 
 import {
    Injector,
@@ -51,6 +59,12 @@ export const initializeMaster = async () => {
   const config: IStudioEditorServerConfig = {
     projectFileExtensions: TD_FILE_EXTENSIONS,
     family: EditorFamilyType.MASTER,
+    settingsDirectory: process.env.HOME + "/.tandem",
+    cacheDirectory: process.env.HOME + "/.tandem/cache",
+    tmpDirectory: process.env.HOME + "/.tandem/tmp",
+    help: {
+      directory: path.normalize(__dirname + "/../help")
+    },
     browser: {
       assetUrl: `file://${BROWSER_BASE_PATH}/path`,
       indexUrl: `file://${BROWSER_BASE_PATH}/index.html`
@@ -72,12 +86,17 @@ export const initializeMaster = async () => {
     new ApplicationServiceProvider("browser", BrowserService),
     
     // commands
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsDirectoryCommand),
+    new CommandFactoryProvider(GetHelpOptionsRequest.GET_HELP_OPTIONS, GetHelpOptionsCommand),
+    new CommandFactoryProvider(OpenHelpOptionRequest.OPEN_HELP_OPTION, OpenHelpOptionCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, SpawnWorkerCommand),
     new CommandFactoryProvider(OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE, OpenNewWorkspaceCommand),
     new CommandFactoryProvider(SelectDirectoryRequest.SELECT_DIRECTORY_REQUEST, SelectDirectoryCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, CLIOpenWorkspaceCommand),
     new CommandFactoryProvider(GetProjectStartOptionsRequest.GET_PROJECT_STARTER_OPTIONS, GetProjectStarterOptionsCommand),
     new CommandFactoryProvider(StartNewProjectRequest.START_NEW_PROJECT, StartProjectCommand),
+
+    new TandemMasterStudioStoreProvider(TandemStudioMasterStore),
 
     // starters
     new ProjectStarterFactoryProvider({ 

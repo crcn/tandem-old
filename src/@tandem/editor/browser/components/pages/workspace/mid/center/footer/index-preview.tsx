@@ -5,7 +5,7 @@ import "@tandem/uikit/scss";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import  FooterComponent from "./index.tsx";
+import  FooterComponent from "./index";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticWindow } from "@tandem/synthetic-browser";

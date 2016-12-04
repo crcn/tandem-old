@@ -11,9 +11,11 @@ import { TandemStudioBrowserStoreProvider } from "tandem-studio/browser/provider
 import { RedirectRequest, createWorkspaceRedirectRequest } from "@tandem/editor/browser/messages";
 import { RouteNames } from "@tandem/editor/browser/constants";
 import { 
-  IStarterOption, 
+  IHelpOption,
+  IStarterOption,
   OpenWorkspaceRequest, 
   SelectDirectoryRequest,
+  OpenHelpOptionRequest, 
   StartNewProjectRequest, 
   OpenGettingStartedProjectRequest, 
 } from "tandem-studio/common";
@@ -71,6 +73,11 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
       this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot start project: ${e.stack}`));
     }
   }
+  
+  openHelpOption = async (option: IHelpOption) => {
+    await this.bus.dispatch(new OpenHelpOptionRequest(option));
+    window.close();
+  }
 
   selectDirectory = async () => {
     this.setState({
@@ -80,14 +87,19 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
   }
 
   render() {
+    
+    console.log(this._store.helpOptions);
     return <div className="welcome">
       <div className="info">
-        <i className="ion-close" onClick={this.close}></i>
+        <i className="ion-close hide" onClick={this.close}></i>
         <h2 className="header">Welcome to Tandem</h2>
 
         <ul>
-          <li className="hide"><a href="#" onClick={this.getStarted}>Getting started</a></li>
-          <li className="hide"><a href="#" onClick={this.getStarted}>Key Commands</a></li>
+          {
+            this._store.helpOptions.filter((option) => option.page === "welcome").map((option) => {
+              return <li key={option.id}><a href="#" onClick={this.openHelpOption.bind(this, option)}>{ option.label }</a></li>;
+            })
+          }
           <li className="hide"><a href="#" onClick={this.joinNewsLetter}>Join newsletter</a></li>
           <li className="hide"><a href="#" onClick={this.installExtension.bind(this, "vscode")}>Install VSCode Extension</a></li>
         </ul>
