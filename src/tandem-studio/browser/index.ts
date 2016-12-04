@@ -14,11 +14,13 @@ import { TandemStudioBrowserStore } from "./stores";
 
 import { 
   WebMenuItem, 
+  SettingKeys,
   createWebMenuItemClass, 
   ToggleStageToolsRequest,
   createMenuSeparatorClass, 
   WebMenuItemFactoryProvider, 
   createKeyCommandMenuItemClass, 
+  createToggleSettingRequestClass,
 } from "@tandem/editor/browser";
 
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
@@ -88,6 +90,7 @@ function createMenuProviders() {
  ];
 }
 
+
 function createWorkspaceMenuProviders() {
   return [
     new WebMenuItemFactoryProvider("edit", EditorRouteNames.WORKSPACE, createWebMenuItemClass("Edit")),
@@ -111,6 +114,8 @@ function createWorkspaceMenuProviders() {
 
     new WebMenuItemFactoryProvider("debugSep", "view", createMenuSeparatorClass()),
     new WebMenuItemFactoryProvider("toggleTools", "view", createKeyCommandMenuItemClass("Toggle Stage Tools", "Ctrl+CmdOrCtrl+T", ToggleStageToolsRequest)),
+    new WebMenuItemFactoryProvider("toggleLeftGutter", "view", createKeyCommandMenuItemClass("Toggle Left Gutter", "Alt+\\", createToggleSettingRequestClass(SettingKeys.HIDE_LEFT_SIDEBAR))),
+    new WebMenuItemFactoryProvider("toggleRightGutter", "view", createKeyCommandMenuItemClass("Toggle Right Gutter", "Alt+/", createToggleSettingRequestClass(SettingKeys.HIDE_RIGHT_SIDEBAR))),
 
 
 

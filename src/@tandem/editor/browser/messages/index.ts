@@ -137,6 +137,21 @@ export class ZoomInRequest extends CoreEvent {
   }
 }
 
+export class ToggleSettingRequest extends CoreEvent {
+  static readonly TOGGLE_SETTING = "toggleSetting";
+  constructor(readonly settingName: string) {
+    super(ToggleSettingRequest.TOGGLE_SETTING);
+  }
+}
+
+export function createToggleSettingRequestClass(settingName: string) {
+  return class extends ToggleSettingRequest {
+    constructor() {
+      super(settingName);
+    }
+  }
+} 
+
 export class ToggleStageToolsRequest extends CoreEvent {
   static readonly TOGGLE_STAGE_TOOLS = "toggleStageTools";
   constructor() {

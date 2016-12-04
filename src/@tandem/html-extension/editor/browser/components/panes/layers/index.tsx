@@ -49,7 +49,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
         isNodeHovering={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.HOVERING)}
         isNodeSelected={node => this.props.workspace.selection.indexOf(node as SyntheticDOMNode) !== -1}
         isNodeExpanded={node => (node as SyntheticDOMNode).metadata.get(MetadataKeys.LAYER_EXPANDED)}
-        getChildNodes={node => this.filterChildren(node["contentDocument"] ? node["contentDocument"].body.childNodes : node.children)}
+        getChildNodes={node => this.filterChildren(node["contentDocument"] ? node["contentDocument"].documentElement.childNodes || [] : node.children)}
         toggleExpand={this.toggleExpand.bind(this)}
         renderLabel={this.renderNode.bind(this)}
       />

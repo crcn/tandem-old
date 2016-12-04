@@ -17,6 +17,7 @@ import {
 import { 
   AlertMessage, 
   RedirectRequest, 
+  ToggleSettingRequest,
   RemoveSelectionRequest, 
   ToggleStageToolsRequest,
   AddSyntheticObjectRequest, 
@@ -61,6 +62,7 @@ import {
   OpenCWDCommand, 
   RedirectCommand,
   LoadRouterCommand,
+  ToggleSettingCommand,
   OpenWorkspaceCommand,
   SetReadyStatusCommand,
   RemoveSelectionCommand, 
@@ -90,6 +92,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileS
 
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
+    new CommandFactoryProvider(ToggleSettingRequest.TOGGLE_SETTING, ToggleSettingCommand),
     new CommandFactoryProvider(ToggleStageToolsRequest.TOGGLE_STAGE_TOOLS, toggleStageToolsCommand),
     new CommandFactoryProvider(RedirectRequest.REDIRECT, RedirectCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
