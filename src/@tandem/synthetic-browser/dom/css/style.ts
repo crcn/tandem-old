@@ -550,6 +550,10 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     return buffer.join("");
   }
 
+  set cssText(value: string) {
+    console.warn("cssText setter not currently functional for SyntheticStyleRule")
+  }
+
   toString() {
     return this.cssText;
   }

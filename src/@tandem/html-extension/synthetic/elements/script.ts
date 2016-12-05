@@ -20,9 +20,15 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
   executeScript() {
     if (!this.$module) return;
     const src = this.getAttribute("src");
-    const content = src ? this.$module.source.eagerGetDependency(src).content : this.textContent;
-    const script = compileGlobalSandboxScript(src || this.$source.filePath, this.$source.filePath, content);
-    runGlobalSandboxScript(script, this.$module.sandbox);
+    const type = this.getAttribute("type");
+    this.ownerDocument.scripts.push(this); 
+    
+
+    if (!type || type === "text/javascript" || type === "application/javascript") {
+      const content = src ? this.$module.source.eagerGetDependency(src).content : this.textContent;
+      const script = compileGlobalSandboxScript(src || this.$source.filePath, this.$source.filePath, content);
+      runGlobalSandboxScript(script, this.$module.sandbox);
+    }
   }
 
 }

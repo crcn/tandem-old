@@ -8,7 +8,7 @@ export class SyntheticLocalStorage {
   }
 
   getItem(key) {
-    return this._data;
+    return this._data.get(key);
   }
 
   setItem(key: string, value: string) {

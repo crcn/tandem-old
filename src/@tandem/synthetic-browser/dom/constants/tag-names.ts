@@ -65,7 +65,7 @@ export const HTML_TAG_NAMES = [
   "hr",
   "html",
   "i",
-  "iframe",
+  // "iframe",
   "img",
   "input",
   "ins",

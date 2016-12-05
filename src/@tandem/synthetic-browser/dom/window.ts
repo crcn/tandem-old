@@ -9,6 +9,7 @@ import { SyntheticLocalStorage } from "./local-storage";
 import { SyntheticDOMElement } from "./markup";
 import { SyntheticWindowTimers } from "./timers";
 import { noopDispatcherInstance } from "@tandem/mesh";
+import { SyntheticCSSStyle } from "./css";
 import { Blob, FakeBlob } from "./blob";
 import { URL, FakeURL } from "./url";
 import { btoa, atob } from "abab"
@@ -61,6 +62,7 @@ export class SyntheticWindow extends Observable {
   readonly clearInterval: Function;
   readonly clearImmediate: Function;
   readonly localStorage: SyntheticLocalStorage;
+  readonly self: SyntheticWindow;
 
   readonly HTMLElement;
   readonly Element;
@@ -78,11 +80,12 @@ export class SyntheticWindow extends Observable {
     // but doesn't work -- element instanceof HTMLElement 
     this.HTMLElement = SyntheticHTMLElement;
     this.Element     =  SyntheticDOMElement;
+    this.self = this;
 
     this.localStorage = new SyntheticLocalStorage();
     this.document = document || this.createDocument();
     this.document.$window = this;
-    this.location = location;
+    this.location = location || new SyntheticLocation("");
     this.window   = this;
     this.console  = new SyntheticConsole(
       new Logger(browser && PrivateBusProvider.getInstance(browser.injector) || noopDispatcherInstance, "**VM** ")
@@ -95,6 +98,10 @@ export class SyntheticWindow extends Observable {
     this.clearTimeout   = windowTimers.clearTimeout.bind(windowTimers);
     this.clearInterval  = windowTimers.clearInterval.bind(windowTimers);
     this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);
+  }
+
+  getComputedStyle() {
+    return new SyntheticCSSStyle();
   }
 
   addEventListener() {

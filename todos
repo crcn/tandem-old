@@ -24,7 +24,18 @@ http://electron.atom.io/docs/api/auto-updater/
 html css source maps
 
 - [ ] TodoMVC
-  - [ ] angular example not worker
+  - [ ] broken
+    - [ ] angular example not worker
+    - [ ] angular-dart
+    - [ ] atmas
+    - [ ] Aurelia
+    - [ ] Backbone Marionette
+    - [ ] binding scala
+    - [ ] canjs
+    - [ ] closure
+    - [ ] dijon
+    - [ ] Emberjs
+    - [ ] React
 
 - [ ] Core
   - [ ] ability to load HTTP urls
@@ -36,6 +47,7 @@ html css source maps
   - [ ] Drop file CTA when no artboards are present
   
 - [ ] Bugs
+  - [ ] artboards do not show up if there's an error in the load
   - [ ] source maps not working for CSS
   - [ ] Fix vscode source code overwrites
   - [ ] fix centering

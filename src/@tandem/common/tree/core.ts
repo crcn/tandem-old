@@ -35,8 +35,9 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return this._children[this._children.length - 1];
   }
 
-  appendChild(child: T) {
+  appendChild(child: T): T {
     this.insertChildAt(child, this._children.length);
+    return child;
   }
 
   removeAllChildren() {
@@ -74,6 +75,7 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     if (index !== -1) {
       this.insertChildAt(newChild, index);
     }
+    return newChild;
   }
 
   replaceChild(newChild: T, existingChild: T) {

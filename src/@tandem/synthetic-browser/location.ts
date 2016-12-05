@@ -5,32 +5,38 @@ import * as Url from "url";
 export class SyntheticLocation extends Observable {
 
   @bindable()
-  public href: string;
+  public href: string = "";
 
   @bindable()
-  public hash: string;
+  public hash: string = "";
 
   @bindable()
-  public search: string;
+  public search: string = "";
 
   @bindable()
-  public pathname: string;
+  public pathname: string = "";
 
   @bindable()
-  public port: string;
+  public port: string = "";
 
   @bindable()
-  public hostname: string;
+  public hostname: string = "";
 
   @bindable()
-  public protocol: string;
+  public protocol: string = "";
 
   @bindable()
-  public host: string;
+  public host: string = "";
 
   constructor(urlStr: string) {
     super();
-    Object.assign(this, Url.parse(urlStr));
+    const parts = Url.parse(urlStr);
+    for (const part in parts) {
+      const value = parts[part];
+      if (value) this[part] = value;
+    };
+
+    console.log(this.hash)
   }
 
   toString() {

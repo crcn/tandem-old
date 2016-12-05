@@ -45,6 +45,10 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     this._style = new SyntheticCSSStyle();
   }
 
+  getClientRects() {
+    return [BoundingRect.zeros()];
+  }
+
   getBoundingClientRect() {
     return (this.browser && this.browser.renderer.getBoundingRect(this.uid)) || BoundingRect.zeros();
   }

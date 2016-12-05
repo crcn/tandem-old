@@ -177,9 +177,12 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   public $window: SyntheticWindow;
   public $ownerNode: SyntheticDOMNode;
 
+  readonly scripts: SyntheticHTMLElement[];
+
   // namespaceURI here is non-standard, but that's
   constructor(readonly defaultNamespaceURI: string) {
     super("#document");
+    this.scripts = [];
     this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
     this.styleSheets.observe(new CallbackDispatcher(this.onStyleSheetsEvent.bind(this)));
     this._registeredElements = {};
@@ -217,8 +220,20 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     this.$window.location = value;
   }
 
+  open() {
+
+  }
+
+  close() {
+    
+  }
+
   accept(visitor: IMarkupNodeVisitor) {
     return visitor.visitDocument(this);
+  }
+
+  getElementById(id: string) {
+    return this.querySelector("#" + id);
   }
 
   createElementNS(ns: string, tagName: string): SyntheticDOMElement {

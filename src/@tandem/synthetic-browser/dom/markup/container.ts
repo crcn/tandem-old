@@ -158,7 +158,8 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
   // TODO - insertBefore here
   appendChild(child: SyntheticDOMNode) {
     if (child.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) {
-      return child.children.concat().forEach((child) => this.appendChild(child));
+      child.children.concat().forEach((child) => this.appendChild(child));
+      return child;
     }
     return super.appendChild(child);
   }

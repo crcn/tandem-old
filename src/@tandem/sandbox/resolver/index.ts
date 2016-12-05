@@ -86,6 +86,9 @@ export class LocalFileResolver extends BaseFileResolver {
       directories: []
     });
 
+    let modulesBaseDir = cwd;
+
+
     if (cwd) {
       const pkgPath = fs.existsSync(cwd + "/package.json") ? cwd : pkgpath.sync(cwd);
 
@@ -94,29 +97,30 @@ export class LocalFileResolver extends BaseFileResolver {
       // check browser flag in package.json
 
       if (!/^(\.|\/)/.test(relativePath)) {
-        cwd = pkgPath;
+        modulesBaseDir = pkgPath;
       }
+
 
       if (pkg && pkg.browser && pkg.browser[relativePath] != null) {
         relativePath = pkg.browser[relativePath];
       }
 
-      directories.push(cwd + "/node_modules");
+      directories.push(modulesBaseDir + "/node_modules");
 
       if (<boolean><any>relativePath === false) return Promise.resolve(undefined);
     } else {
-      cwd = process.cwd();
+      modulesBaseDir = process.cwd();
     }
 
     // override resolve js functionality here -- directories here are
     // typically scanned in the beginning. We want to resolve from node_modules
     // after the target directories.
-    directories.push(...cwd.split("/").map((dir, index, parts) => {
+    directories.push(...modulesBaseDir.split("/").map((dir, index, parts) => {
       return parts.slice(0, index + 1).join("/") + "/node_modules";
     }), cwd);
 
     const resolvedPath = resolve.sync(relativePath, {
-      basedir: cwd,
+      basedir: modulesBaseDir,
       extensions: extensions,
       paths: directories.filter(dir => !!dir),
 

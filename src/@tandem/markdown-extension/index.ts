@@ -9,7 +9,6 @@ export const createCoreMarkdownExtensionProviders = () => {
     new MimeTypeProvider("md", MARKDOWN_MIME_TYPE),
     new DependencyLoaderFactoryProvider(MARKDOWN_MIME_TYPE, MarkdownDependencyLoader),
     new PreviewLoaderProvider("markdown", (filePath, injector) => {
-      console.log(filePath);
       return MimeTypeProvider.lookup(filePath, injector) === MARKDOWN_MIME_TYPE;
     }, SelfPreviewLoader)
   ]
