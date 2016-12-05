@@ -3,13 +3,14 @@ import { SandboxModule } from "@tandem/sandbox";
 import { SyntheticDOMNode } from "./node";
 import { SyntheticDocument } from "../document";
 import { SyntheticDOMContainer } from "./container";
+import { SyntheticDocumentFragment } from "./document-fragment";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 
 // TODO - this needs to be async
-export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule): any {
-
-  function initialize(expression: IMarkupExpression, synthetic: SyntheticDOMNode) {
+export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule, parentContainer?: SyntheticDOMContainer): any {
+  
+  function linkSourceInfo(expression: IMarkupExpression, synthetic: SyntheticDOMNode) {
     synthetic.$module = module;
 
     synthetic.$source     = {
@@ -18,10 +19,16 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       start: expression.location.start,
       end: expression.location.end
     };
-    if (synthetic.nodeType === DOMNodeType.ELEMENT) {
-      (<SyntheticDOMElement><any>synthetic).$createdCallback();
-    }
     return synthetic;
+  }
+
+  function appendChildNodes(container: SyntheticDOMContainer, expression: MarkupContainerExpression) {
+    for (let i = 0, n = expression.childNodes.length; i < n; i++) {
+      const child = evaluateMarkup(expression.childNodes[i], doc, namespaceURI, module, container);
+      if (child.nodeType == DOMNodeType.ELEMENT) {
+        child.$createdCallback();
+      }
+    }
   }
 
   return expression.accept({
@@ -29,7 +36,10 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       return { name: expression.name, value: expression.value };
     },
     visitComment(expression) {
-      return initialize(expression, doc.createComment(expression.nodeValue));
+      const node = linkSourceInfo(expression, doc.createComment(expression.nodeValue));
+      linkSourceInfo(expression, node);
+      parentContainer.appendChild(node);
+      return node;
     },
     visitElement(expression) {
       const xmlns = expression.getAttribute("xmlns") || namespaceURI || doc.defaultNamespaceURI;
@@ -37,6 +47,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
       const element = new elementClass(xmlns, expression.nodeName);
       element.$setOwnerDocument(doc);
+      parentContainer.appendChild(element);
 
       for (let i = 0, n = expression.attributes.length; i < n; i++) {
         const attributeExpression = expression.attributes[i];
@@ -44,25 +55,31 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
         element.setAttribute(attribute.name, attribute.value);
       }
 
-      for (let i = 0, n = expression.childNodes.length; i < n; i++) {
-        const childExpression = expression.childNodes[i];
-        element.appendChild(xmlns === namespaceURI ? childExpression.accept(this) : evaluateMarkup(childExpression, doc, xmlns, module));
-      }
+      linkSourceInfo(expression, element);
+      appendChildNodes(element, expression);
 
-      return initialize(expression, element);
+      return element;
     },
     visitDocumentFragment(expression) {
 
-      const fragment = doc.createDocumentFragment();
+      let container;
 
-      for (let i = 0, n = expression.childNodes.length; i < n; i++) {
-        fragment.appendChild(expression.childNodes[i].accept(this));
+      if (!expression.parent && parentContainer) {
+        container = parentContainer;
+      } else {
+        container = doc.createDocumentFragment();
+        linkSourceInfo(expression, container);
       }
 
-      return initialize(expression, fragment);
+      appendChildNodes(container, expression);
+
+      return container;
     },
     visitText(expression) {
-      return initialize(expression, doc.createTextNode(expression.nodeValue));
+      const node = doc.createTextNode(expression.nodeValue);
+      linkSourceInfo(expression, node);
+      parentContainer.appendChild(node);
+      return node;
     }
   });
 }

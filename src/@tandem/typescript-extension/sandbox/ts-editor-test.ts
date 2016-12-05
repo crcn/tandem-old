@@ -52,7 +52,7 @@ describe(__filename + "#", () => {
       import * as ReactDOM from "react-dom";
       const element = document.createElement("div");
       ReactDOM.render(${jsx}, element);
-      module.exports = element;
+      exports.documentElement = element;
     `);
 
     const browser = new SyntheticBrowser(injector);
@@ -64,7 +64,7 @@ describe(__filename + "#", () => {
     });
 
     const getElement = () => {
-      return  browser.document.body.firstChild.firstChild as SyntheticHTMLElement;
+      return  browser.document.documentElement.firstChild as SyntheticHTMLElement;
     }
 
     return {

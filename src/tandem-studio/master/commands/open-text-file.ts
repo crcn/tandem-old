@@ -5,10 +5,21 @@ import { OpenFileRequest, SetCurrentFileRequest } from "@tandem/editor/common";
 
 export class OpenTextFileCommand extends BaseStudioMasterCommand {
   async execute(request: OpenFileRequest) {
+    this.logger.debug(`Opening text document: ${request.filePath}`);
 
-    const opened = (await readOneChunk(this.bus.dispatch(new SetCurrentFileRequest(request.filePath, request.selection)))).value;
+    let opened;
+
+    try {
+      opened = (await readOneChunk(this.bus.dispatch(new SetCurrentFileRequest(request.filePath, request.selection)))).value;
+    } catch(e) {
+      this.logger.error(e.stack);
+      throw e;
+    }
+
+    this.logger.debug(`Received ${opened} response from text editor`);
 
     if (!opened) {
+      this.logger.debug(`Opening new text editor session`);
       spawn(this.masterStore.userSettings.textEditor.bin, [request.filePath]);
     }
   }

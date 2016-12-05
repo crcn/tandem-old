@@ -33,10 +33,10 @@ describe(__filename + "#", () => {
 
     return {
       entryFilePath: entryFilePath,
-      body: browser.document.body,
-      reloadBody: async () => {
+      documentElement: browser.document.documentElement,
+      reloadDocumentElement: async () => {
         await waitForPropertyChange(browser.sandbox, "exports");
-        return browser.document.body
+        return browser.document.documentElement;
       }
     };
   };
@@ -71,11 +71,11 @@ describe(__filename + "#", () => {
     it(`Can apply file edits from ${oldSource} to ${newSource}`, async () => {
       const oldResult = await loadHTML(oldSource);
       const newResult = await loadHTML(newSource);
-      expect(oldResult.body.firstChild.source).not.to.be.undefined;
-      const edit    = oldResult.body.firstChild.createEdit().fromDiff(newResult.body.firstChild);
+      expect(oldResult.documentElement.source).not.to.be.undefined;
+      const edit    = oldResult.documentElement.createEdit().fromDiff(newResult.documentElement);
       expect(edit.mutations.length).not.to.equal(0);
       await FileEditorProvider.getInstance(app.injector).applyMutations(edit.mutations);
-      expect((await oldResult.reloadBody()).innerHTML.replace(/\n\s*/g, "")).to.equal(newResult.body.innerHTML);
+      expect((await oldResult.reloadDocumentElement()).innerHTML.replace(/\n\s*/g, "")).to.equal(newResult.documentElement.innerHTML);
     });
   });
 });

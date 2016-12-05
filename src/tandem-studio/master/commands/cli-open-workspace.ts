@@ -4,15 +4,25 @@ import * as glob from "glob";
 import {  BaseStudioMasterCommand } from "./base";
 import { OpenNewWorkspaceRequest } from "tandem-studio/common";
 
+function fileExists(filePath: string) {
+  return fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
+}
+
 export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
   execute(): any {
     let filePath = this.config.argv._[0];
 
+  
     // scan the CWD for any tandem files
-    if (filePath === ".") {
-      filePath = glob.sync(path.join(process.cwd(), `{${this.config.projectFileExtensions.map(ext => `*.${ext}`).join(",")}}`)).find((filePath) => {
-        return true;
-      });
+    if (!filePath || !fileExists(filePath)) {
+
+      filePath = filePath.replace(/^\./, process.cwd()).replace(/^~/, process.env.HOME);
+
+      if (!fileExists(filePath)) {
+        filePath = glob.sync(path.join(filePath, `{${this.config.projectFileExtensions.map(ext => `*.${ext}`).join(",")}}`)).find((filePath) => {
+          return true;
+        });
+      }
     }
 
     // open new workspace anyways -- the user will be prompted to open a file from there
@@ -24,7 +34,7 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
       filePath = path.join(process.cwd(), filePath);
     }
 
-    if (!fs.existsSync(filePath)) {
+    if (!fileExists(filePath)) {
       this.logger.error(`Cannot open ${filePath}: File does not exist.`);
       return;
     }

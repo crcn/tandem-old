@@ -32,16 +32,6 @@ import {
   ISyntheticDocumentRenderer,
 } from "@tandem/synthetic-browser";
 
-// default CSS styles to inject into the synthetic document
-const DEFAULT_FRAME_STYLE_SHEET = evaluateCSS(parseCSS(`
-  .artboard-entity {
-    width: 1024px;
-    height: 768px;
-    position: absolute;
-    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.2);
-  }
-`));
-
 // TODO - watch src for any changes
 @serializable()
 export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
@@ -57,7 +47,15 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   readonly status: Status = new Status(null);
 
   createdCallback() {
-    this.setAttribute("class", "artboard-entity");
+
+    // defaults - note wierd Object assign nesting here -- required
+    // since style is a proxy object.
+    Object.assign(this.style, Object.assign({
+      position: "absolute",
+      width: "1024px",
+      height: "1024px"
+    }, this.style));  
+
     this.innerHTML = `
       <iframe data-td-selectable="false" style="border: none; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px;" />
     `;
@@ -73,12 +71,6 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
   set title(value: string) {
     this.setAttribute("title", value);
-  }
-
-  attachedCallback() {
-    if (this.ownerDocument.styleSheets.indexOf(DEFAULT_FRAME_STYLE_SHEET) === -1) {
-      this.ownerDocument.styleSheets.push(DEFAULT_FRAME_STYLE_SHEET);
-    }
   }
 
   attributeChangedCallback(key: string, oldValue: string, newValue: string) {

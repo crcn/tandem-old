@@ -1,30 +1,6 @@
 import * as vm from "vm";
 import * as path from "path";
-import { ISandboxDependencyEvaluator, SandboxModule } from "@tandem/sandbox";
-
-const _cache = {};
-function compile(filePath: string, hash: string, content: string): vm.Script {
-
-  // Using string concatenation here to preserve line numbers.
-  return _cache[hash + content] || (_cache[hash + content] = new vm.Script(
-    "with($$contexts['"+hash+"']) {" +
-
-      // Ugly, but native constructors can only be used from the global object if they are
-      // defined within a VM context.
-      "if (!global.Object)" +
-      "Object.assign(global, { Object, Array, String, Math, Number , Boolean, Date, Function, RegExp, TypeError }); " +
-
-      // guard from global context values from being overwritten.
-      "(function(){" +
-
-        // new line in case there's comment
-        content + "\n" +
-      "})();" +
-    "}", {
-      filename: filePath,
-      displayErrors: true
-    }));
-}
+import { ISandboxDependencyEvaluator, SandboxModule, compileModuleSandboxScript, runModuleSandboxScript } from "@tandem/sandbox";
 
 export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule) {
@@ -32,7 +8,7 @@ export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {
     const { content, hash } = source;
     const { global, vmContext } = sandbox;
 
-    const script = compile(module.filePath, hash, content);
+    const script = compileModuleSandboxScript(module.filePath, hash, content);
 
     const resolve = (relativePath) => {
       return source.eagerGetDependency(relativePath);
@@ -46,13 +22,8 @@ export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {
     }
 
     (require as any).resolve = resolve;
-
-    if (!global.$$contexts) global.$$contexts = {};
-
-    const context = global.$$contexts[hash] = source.graph.createModuleContext(module);
-
+    const context = source.graph.createModuleContext(module);
     Object.assign(context, { global, require });
-
-    script.runInContext(vmContext);
+    runModuleSandboxScript(script, hash, sandbox, context);
   }
 }

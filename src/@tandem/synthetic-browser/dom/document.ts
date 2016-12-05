@@ -4,6 +4,7 @@ import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
 import { SyntheticHTMLElement } from "./html";
 import { SyntheticCSSStyleSheet } from "./css";
+import { Sandbox } from "@tandem/sandbox";
 
 import {
   DOMNodeType,

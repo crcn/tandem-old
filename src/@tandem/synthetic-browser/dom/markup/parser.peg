@@ -117,11 +117,17 @@ ElementAttributes
     return attributes;
   }
 
+
 ElementAttribute
-  = _ key:Name '=' value:AttributeValue {
+  = _ attribute: ElementAttributeInner {
+    return attribute;
+  }
+
+ElementAttributeInner
+  = key:Name '=' value:AttributeValue {
     return new MarkupAttributeExpression(key, value, location());
   }
-  / _ key:Name _ {
+  / key:Name {
     return new MarkupAttributeExpression(key, "", location());
   }
 

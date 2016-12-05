@@ -85,8 +85,6 @@ export class DragSelectStageToolComponent extends BaseApplicationComponent<{ wor
 
   render() {
 
-    if (!process.env.SANDBOXED) return null;
-
     if ((1 + 1) || !this.props.workspace.showStageTools) return null;
 
     const { zoom } = this.props.workspace;

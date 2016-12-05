@@ -12,15 +12,17 @@ export class SyntheticHTMLStyle extends SyntheticDOMElement {
 
   private _styleSheet: SyntheticCSSStyleSheet;
 
-  createdCallback() {
+  attachedCallback() {
+    super.attachedCallback();
+    this.ownerDocument.styleSheets.push(this.getStyleSheet());
+  }
+
+  getStyleSheet() {
+    if (this._styleSheet) return this._styleSheet;
     this._styleSheet = new SyntheticCSSStyleSheet([]);
     this._styleSheet.$ownerNode = this;
     this._styleSheet.cssText = this.textContent;
-  }
-
-  attachedCallback() {
-    super.attachedCallback();
-    this.ownerDocument.styleSheets.push(this._styleSheet);
+    return this._styleSheet;
   }
 
   detachedCallback() {

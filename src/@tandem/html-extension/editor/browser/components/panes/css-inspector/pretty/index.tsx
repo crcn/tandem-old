@@ -1311,7 +1311,7 @@ class CSSShadowInputComponent extends React.Component<{ target: SyntheticCSSStyl
        <div>
         <div className="row">
           <div className="col-12">
-            { !process.env.SANDBOXED ? <ChromePicker color={target.color.toString()} onChange={({ rgb }) => {
+            { !process.env.HIDE_COLOR_PICKER ? <ChromePicker color={target.color.toString()} onChange={({ rgb }) => {
               target.color = SyntheticCSSColor.fromRGBA(rgb);
             }} /> : null }
           </div>
@@ -1392,7 +1392,7 @@ class CSSBoxSectionComponent extends SectionComponent<ISectionComponentProps> {
 
   componentDidMount() {
     if (process.env.SANDBOXED) {
-      this.selectBox("padding");
+      // this.selectBox("padding");
     }
   }
 

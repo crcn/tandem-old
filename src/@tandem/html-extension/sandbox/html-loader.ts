@@ -65,7 +65,14 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
     const lines = content.split("\n");
 
     function getPosition({ line, column }: ISourcePosition) {
-      return lines.slice(0, line - 1).join("").length + line + lines[line - 1].substr(0, column - 1).length;
+      const lineChunk   = lines.slice(0, line);
+      lineChunk[lineChunk.length - 1] = lineChunk[lineChunk.length - 1].substr(0, column - 1);
+
+
+      return lineChunk.join("\n").length;
+      // const n = lines.slice(0, line - 1).join("").length + line + lines[line - 1].substr(0, column - 1).length;
+      // console.log(n, line, column, lines[line - 1].substr(0, column - 1));
+      // return n;
     }
 
     await ast.accept({
@@ -73,7 +80,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
         // ignore redirecting tag names
         if (/src|href/.test(attribute.name) && !/^a$/i.test(attribute.parent.nodeName)) {
           const absoluteFilePathOptions = await this.strategy.resolve(attribute.value, path.dirname(filePath));
-          addReplacement(attribute, getPosition(attribute.location.start) + attribute.name.length + 2, getPosition(attribute.location.end) - 2, absoluteFilePathOptions.filePath);
+          addReplacement(attribute, getPosition(attribute.location.start) + attribute.name.length + 2, getPosition(attribute.location.end) - 1, absoluteFilePathOptions.filePath);
           importedDependencyPaths.push(attribute.value);
         }
       },

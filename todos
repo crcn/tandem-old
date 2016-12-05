@@ -27,7 +27,6 @@ html css source maps
   - [ ] enable script tags
   - [ ] ability to load HTTP urls
   - [ ] register event listeners
-  - [ ] memoize remote browser -- diff against only one document
 
 - [ ] UX
   - [ ] open main code editor with shift click if not already opened
@@ -112,6 +111,7 @@ UX
   - [ ] input focus border
   - [ ] multi drag
   - [ ] minimap (can also be done by opening up a new window of tandem)
+  - [ ] incompatible browser notification
 
 BUGS
   - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
@@ -160,6 +160,7 @@ CORE
   - [ ] top bar
     - [ ] paint bucket tool
     - [ ] artboard tool
+    - [ ] share session tool
     
   - [ ] dnd url from browser
   - [ ] dnd images
@@ -178,14 +179,9 @@ CORE
   - [ ] store workspaces in data store
   - [ ] tree shaking dependencies
   - [ ] run VM code in a new worker for speed and to prevent mem leaks
-  - [ ] connect studio with repo of extensions
+  - [ ] connect studio with git repo of extensions
 
 - [ ] a/b testing framework
-
-KEYBOARD SHORTCUTS
-  - [ ] select parent of current selection
-
-- [ ] html breadcrumb
 
 BROWSERTAP INTEGRATION
   - [ ] rendering engine adapter for synthetic browsers to support IE, chrome, and other browsers

@@ -132,7 +132,7 @@ export class ElementMeasurementComponent extends React.Component<{ from: Synthet
 export class MeasurementStageToolComponent extends React.Component<{ workspace: Workspace }, { showMeasurements: boolean }> {
 
   state = {
-    showMeasurements: process.env.SANDBOXED ? true : false
+    showMeasurements: process.env.SHOW_CSS_MEASUREMENTS ? true : false
   };
 
   componentWillUnmount() {

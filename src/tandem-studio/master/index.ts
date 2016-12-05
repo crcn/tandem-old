@@ -55,7 +55,7 @@ import {
    InitializeApplicationRequest,
 } from "@tandem/common";
 
-process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || LogLevel.DEFAULT;
+process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || (argv.verbose ? LogLevel.VERBOSE : LogLevel.DEFAULT);
 
 const BROWSER_BASE_PATH  = `${__dirname}/../browser`;
 

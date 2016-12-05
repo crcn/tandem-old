@@ -256,7 +256,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
     client.bus.register({
         dispatch({ filePath, selection, type }: SetCurrentFileRequest) {
-            console.log(type);
             if (type === SetCurrentFileRequest.SET_CURRENT_FILE) {
                 
                 const setSelection = () => {
