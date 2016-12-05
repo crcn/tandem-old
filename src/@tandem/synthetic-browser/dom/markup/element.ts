@@ -280,11 +280,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   readonly dataset: any;
   private _shadowRoot: SyntheticDocumentFragment;
 
-  /**
-   * Bool check to ensure that createdCallback doesn't get called twice accidentally
-   */
-
-  private _createdCallbackCalled: boolean;
   private _shadowRootObserver: IDispatcher<any, any>;
 
   /**
@@ -357,6 +352,15 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return this._shadowRoot;
   }
 
+  get id() {
+    return this.getAttribute("id");
+  }
+
+  set id(value: string) {
+    
+    this.setAttribute("id", value);
+  }
+
   matches(selector) {
     return selectorMatchesElement(selector, this);
   }
@@ -416,15 +420,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     ].join("");
   }
 
-  $createdCallback() {
-
-    if (this._createdCallbackCalled) {
-      throw new Error(`createdCallback() has already been called.`);
-    }
-
-    this._createdCallbackCalled = true;
-    this.createdCallback();
-  }
 
   protected onAttributesEvent({ mutation }: MutationEvent<any>) {
     if (!mutation) return;
@@ -456,10 +451,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
     this.notify(new PropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue).toEvent(true));
-  }
-
-  protected createdCallback() {
-
   }
 
   protected cloneShallow() {

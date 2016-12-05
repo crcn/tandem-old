@@ -13,6 +13,7 @@ import {
 
 
 import { 
+  SyntheticAnchor,
   SyntheticIframe,
   SyntheticHTMLLink,
   SyntheticHTMLScript,
@@ -30,6 +31,7 @@ export function createHTMLCoreProviders() {
 
     // new SyntheticDOMElementClassProvider(HTML_XMLNS, "canvas", SyntheticHTMLCanvas),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLink),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "a", SyntheticAnchor),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScript),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "style", SyntheticHTMLStyle),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "iframe", SyntheticIframe),

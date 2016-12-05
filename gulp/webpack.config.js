@@ -58,7 +58,6 @@ module.exports = {
     },
     tandem: {
       setup(strategy) {
-
         strategy.config.sassLoader.importer = (url, prev, done) => {
           strategy.resolve(url, dirname(prev)).then(({ filePath }) => {
             const fileCache = FileCacheProvider.getInstance(strategy.injector);

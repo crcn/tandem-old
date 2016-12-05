@@ -125,27 +125,3 @@ export function waitForPropertyChange(target: IObservable, property: string, fil
     });
   });
 }
-
-export abstract class PropertyWatcher2<T extends IObservable> {
-
-  private _watchers: IDisposable[];
-
-  constructor(readonly target: T) {
-    this._watchers = [];
-  }
-
-  protected addPropertyWatcher(propertyName: string, listener: propertyChangeCallbackType) {
-    const watcher = watchProperty(this.target, propertyName, listener)
-    this._watchers.push(watcher);
-    return {
-      dispose: () => {
-        const index = this._watchers.indexOf(watcher);
-        if (index !== -1) this._watchers.splice(index, 1);
-      },
-      trigger() {
-        watcher.trigger();
-        return this;
-      }
-    }
-  }
-}

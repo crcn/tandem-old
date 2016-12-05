@@ -25,9 +25,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
   function appendChildNodes(container: SyntheticDOMContainer, expression: MarkupContainerExpression) {
     for (let i = 0, n = expression.childNodes.length; i < n; i++) {
       const child = evaluateMarkup(expression.childNodes[i], doc, namespaceURI, module, container);
-      if (child.nodeType == DOMNodeType.ELEMENT) {
-        child.$createdCallback();
-      }
+      child.$createdCallback();
     }
   }
 
@@ -44,6 +42,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
     visitElement(expression) {
       const xmlns = expression.getAttribute("xmlns") || namespaceURI || doc.defaultNamespaceURI;
 
+      // bypass $createdCallback executed by document
       const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
       const element = new elementClass(xmlns, expression.nodeName);
       element.$setOwnerDocument(doc);
@@ -62,7 +61,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
     },
     visitDocumentFragment(expression) {
 
-      let container;
+      let container: SyntheticDOMContainer;
 
       if (!expression.parent && parentContainer) {
         container = parentContainer;
@@ -72,6 +71,10 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       }
 
       appendChildNodes(container, expression);
+
+      if (container !== parentContainer) {
+        container.$createdCallback();
+      }
 
       return container;
     },

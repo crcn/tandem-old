@@ -1,20 +1,23 @@
 import { Injector } from "@tandem/common";
+import { sample, sampleSize, random } from "lodash";
+import { createTestMasterApplication } from "@tandem/editor/test";
+import { createCoreApplicationProviders } from "@tandem/core";
+import { createSandboxProviders, IFileResolver, IFileSystem } from "@tandem/sandbox";
+
 import {
+  parseCSS,
+  parseMarkup,
+  evaluateCSS,
+  evaluateMarkup,
+  SyntheticWindow,
+  SyntheticDOMText,
   SyntheticBrowser,
   SyntheticDocument,
-  SyntheticDOMContainer,
-  SyntheticDOMElement,
-  SyntheticDOMText,
-  parseCSS,
-  evaluateCSS,
-  parseMarkup,
-  evaluateMarkup,
   SyntheticDOMComment,
+  SyntheticDOMElement,
+  SyntheticDOMContainer,
   SyntheticCSSStyleSheet,
 } from "@tandem/synthetic-browser";
-import { createSandboxProviders, IFileResolver, IFileSystem } from "@tandem/sandbox";
-import { createCoreApplicationProviders } from "@tandem/core";
-import { sample, sampleSize, random } from "lodash";
 
 export function createMockBrowser() {
   const deps = createSandboxProviders();
@@ -30,7 +33,6 @@ function generateRandomText(maxLength: number = 5) {
 function generateRandomChar() {
   return sample(CHARS);
 }
-
 
 export function generateRandomSyntheticHTMLElementSource(maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10) {
 
@@ -115,4 +117,20 @@ export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations
 
 
   return evaluateCSS(parseCSS(randomStyleSheet));
+}
+
+export const loadTestWindow = async (mockFiles: any, entryFilePath: string) => {
+  const app = createTestMasterApplication({
+    sandboxOptions: {
+      mockFiles: mockFiles
+    }
+  });
+
+  const browser = new SyntheticBrowser(app.injector);
+
+  await browser.open({
+    url: entryFilePath
+  });
+
+  return browser.window;
 }

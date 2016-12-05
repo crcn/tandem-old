@@ -141,6 +141,10 @@ declare module "react-tappable" {
   export = HammerComponent;
 }
 
+declare module "w3c-xmlhttprequest" {
+  export class XMLHttpRequest { }
+}
+
 declare module "vue-loader" {
   function loader();
   namespace loader {

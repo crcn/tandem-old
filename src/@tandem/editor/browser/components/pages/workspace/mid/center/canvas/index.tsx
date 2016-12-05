@@ -225,9 +225,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   onKey = (event) => {
     this.bus.dispatch(new KeyboardAction(KeyboardAction.CANVAS_KEY_DOWN, event));
   }
-  onTouchMove = (event: React.TouchEvent<any>) => {
-    console.log(event.touches);
-  }
 
   render() {
 

@@ -1,9 +1,9 @@
 import * as vm from "vm";
+import { IDispatcher } from "@tandem/mesh";
 import { SyntheticLocation } from "./location";
 import { SyntheticRendererEvent } from "./messages";
 import { SyntheticDocument, SyntheticWindow, SyntheticDOMNode, SyntheticDOMElement } from "./dom";
 import { ISyntheticDocumentRenderer, SyntheticDOMRenderer, NoopRenderer } from "./renderers";
-import { IDispatcher } from "@tandem/mesh";
 import {
   inject,
   Logger,
@@ -54,6 +54,7 @@ export interface ISyntheticBrowser extends IObservable {
   open(options: ISyntheticBrowserOpenOptions): Promise<any>;
   window: SyntheticWindow;
   uid: any;
+  sandbox?: Sandbox;
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
   document: SyntheticDocument;
@@ -144,8 +145,9 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   }
 
   protected abstract async open2(options: ISyntheticBrowserOpenOptions);
-
 }
+
+
 
 export class SyntheticBrowser extends BaseSyntheticBrowser {
 
@@ -235,6 +237,9 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       throw e;
     }
 
+    window.$doneLoading();
+    
+    // quick fix to get synthetic window to fire load events
     this.status = new Status(Status.COMPLETED);
   }
 }

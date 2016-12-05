@@ -62,6 +62,8 @@ class ReadableWritableStream<T> {
     let writerController: WritableStreamDefaultController<T>;
     let cancelReason: any;
     let abortReason: any;
+    let _writePromise: Promise<any> = Promise.resolve();
+
     const queue = new ChunkQueue<T>();
 
     const close = (reason) => {
@@ -96,11 +98,16 @@ class ReadableWritableStream<T> {
         // need to eat the chunk here. Streams will re-throw
         // any exception that are occur in in sink.write()
         if (cancelReason) return;
-        return queue.push(chunk);
+        return _writePromise = queue.push(chunk);
       },
       close() {
         if (cancelReason) return;
-        readerController.close();
+
+        const close = () => {
+          readerController.close();
+        }
+
+        return _writePromise.then(close, close);
       },
       abort(reason) {
         if (cancelReason) return;

@@ -1,18 +1,28 @@
+import { Sandbox } from "@tandem/sandbox";
 import { bindable } from "@tandem/common/decorators";
 import { HTML_XMLNS } from "./constants";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
-import { Logger, Observable, PrivateBusProvider } from "@tandem/common";
+import { Logger, Observable, PrivateBusProvider, PropertyWatcher } from "@tandem/common";
 import { SyntheticHTMLElement } from "./html";
 import { SyntheticLocalStorage } from "./local-storage";
 import { SyntheticDOMElement } from "./markup";
 import { SyntheticWindowTimers } from "./timers";
-import { noopDispatcherInstance } from "@tandem/mesh";
+import { noopDispatcherInstance, IStreamableDispatcher } from "@tandem/mesh";
 import { SyntheticCSSStyle } from "./css";
 import { Blob, FakeBlob } from "./blob";
 import { URL, FakeURL } from "./url";
 import { btoa, atob } from "abab"
+import { bindDOMNodeEventMethods } from "./utils";
+import { SyntheticXMLHttpRequest, XHRServer } from "./xhr";
+import { 
+  DOMEventDispatcherMap, 
+  DOMEventListenerFunction, 
+  SyntheticDOMEvent,
+  IDOMEventEmitter,
+  DOMEventTypes
+} from "./events";
 
 export class SyntheticNavigator {
   readonly appCodeName = "Tandem";
@@ -41,6 +51,33 @@ export class SyntheticConsole {
   }
 }
 
+// TODO - register element types from injector
+export class SyntheticDOMImplementation {
+  constructor(private _window: SyntheticWindow) {
+
+  }
+  hasFeature(value: string) {
+    return false;
+  }
+
+  createHTMLDocument(title?: string) {
+    const document = new SyntheticDocument(HTML_XMLNS, this);
+    document.registerElementNS(HTML_XMLNS, "default", SyntheticHTMLElement);
+    const documentElement = document.createElement("html");
+
+    // head
+    documentElement.appendChild(document.createElement("head"));
+
+    // body
+    documentElement.appendChild(document.createElement("body"));
+
+    document.appendChild(documentElement);
+    return document;
+
+  }
+}
+
+
 export class SyntheticWindow extends Observable {
 
   readonly navigator = new SyntheticNavigator();
@@ -50,6 +87,9 @@ export class SyntheticWindow extends Observable {
 
   @bindable()
   public location: SyntheticLocation;
+
+  @bindable()
+  public onload: DOMEventListenerFunction;
 
   readonly document: SyntheticDocument;
   readonly window: SyntheticWindow;
@@ -64,10 +104,16 @@ export class SyntheticWindow extends Observable {
   readonly localStorage: SyntheticLocalStorage;
   readonly self: SyntheticWindow;
 
+  private _implementation: SyntheticDOMImplementation;
+
+  readonly XMLHttpRequest:  { new(): SyntheticXMLHttpRequest };
+
   readonly HTMLElement;
   readonly Element;
 
   private _windowTimers: SyntheticWindowTimers;
+  private _eventListeners: DOMEventDispatcherMap;
+  private _server: XHRServer;
 
   readonly Blob = Blob;
   readonly URL  = URL;
@@ -75,20 +121,39 @@ export class SyntheticWindow extends Observable {
 
   constructor(location?: SyntheticLocation, readonly browser?: ISyntheticBrowser, document?: SyntheticDocument) {
     super();
+
+    const injector = browser && browser.injector;
+
+    const bus = injector && PrivateBusProvider.getInstance(injector) || noopDispatcherInstance;
     
     // in case proto gets set - don't want the original to get fudged
     // but doesn't work -- element instanceof HTMLElement 
     this.HTMLElement = SyntheticHTMLElement;
     this.Element     =  SyntheticDOMElement;
+
+    const xhrServer = this._server = new XHRServer(this);
+
+    if (injector) injector.inject(xhrServer);
+
+    this.XMLHttpRequest = class extends SyntheticXMLHttpRequest { 
+      constructor() {
+        super(xhrServer);
+      }
+    };
+
+
     this.self = this;
 
+    this._implementation = new SyntheticDOMImplementation(this);
+    this._eventListeners = new DOMEventDispatcherMap(this);
+
     this.localStorage = new SyntheticLocalStorage();
-    this.document = document || this.createDocument();
+    this.document = document || this._implementation.createHTMLDocument();
     this.document.$window = this;
     this.location = location || new SyntheticLocation("");
     this.window   = this;
     this.console  = new SyntheticConsole(
-      new Logger(browser && PrivateBusProvider.getInstance(browser.injector) || noopDispatcherInstance, "**VM** ")
+      new Logger(bus, "**VM** ")
     );
 
     const windowTimers  = this._windowTimers = new SyntheticWindowTimers();
@@ -98,18 +163,24 @@ export class SyntheticWindow extends Observable {
     this.clearTimeout   = windowTimers.clearTimeout.bind(windowTimers);
     this.clearInterval  = windowTimers.clearInterval.bind(windowTimers);
     this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);
+
+    bindDOMNodeEventMethods(this);
+  }
+
+  get sandbox() {
+    return this.browser && this.browser.sandbox;
   }
 
   getComputedStyle() {
     return new SyntheticCSSStyle();
   }
 
-  addEventListener() {
-    // eat it for now
+  addEventListener(type: string, listener: DOMEventListenerFunction) {
+    this._eventListeners.add(type, listener);
   }
 
-  removeEventListener() {
-    
+  removeEventListener(type: string, listener: DOMEventListenerFunction) {
+    this._eventListeners.remove(type, listener);
   }
 
   get depth(): number {
@@ -130,18 +201,15 @@ export class SyntheticWindow extends Observable {
     return this.browser.parent && this.browser.parent.window && this.browser.parent.window;
   }
 
-  private createDocument() {
-    const document = new SyntheticDocument(HTML_XMLNS);
-    document.registerElementNS(HTML_XMLNS, "default", SyntheticHTMLElement);
-    const documentElement = document.createElement("html");
+  // ugly method invoked by browser to fire load events
+  public $doneLoading() {
 
-    // head
-    documentElement.appendChild(document.createElement("head"));
+    // always comes before load event since DOM_CONTENT_LOADED assumes that assets
+    // such as stylesheets have not yet been loaded in
+    this.notify(new SyntheticDOMEvent(DOMEventTypes.DOM_CONTENT_LOADED));
 
-    // body
-    documentElement.appendChild(document.createElement("body"));
-
-    document.appendChild(documentElement);
-    return document;
+    // sandbox has already mapped & loaded external dependencies, so go ahead and fire
+    // the DOM events
+    this.notify(new SyntheticDOMEvent(DOMEventTypes.LOAD));
   }
 }

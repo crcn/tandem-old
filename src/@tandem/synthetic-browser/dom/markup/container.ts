@@ -15,6 +15,7 @@ import {
   InsertChildMutation,
   TreeNodeMutationTypes,
 } from "@tandem/common";
+import { SyntheticHTMLCollection } from "../collections";
 import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import { SyntheticDOMElement } from "./element";
 import {
@@ -186,7 +187,11 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
   }
 
   public getElementsByTagName(selector: string) {
-    return this.querySelectorAll(selector);
+    return new SyntheticHTMLCollection(...this.querySelectorAll(selector));
+  }
+
+  public getElementsByClassName(className: string) {
+    return new SyntheticHTMLCollection(...this.querySelectorAll("." + className));
   }
 
   createEditor() {

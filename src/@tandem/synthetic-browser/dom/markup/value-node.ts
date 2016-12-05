@@ -53,7 +53,7 @@ export class SyntheticDOMValueNodeSerializer implements ISerializer<SyntheticDOM
 
 export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
 
-  private _nodeValue: any;
+  private _nodeValue: string;
 
   public targetNode: SyntheticDOMValueNode;
 
@@ -66,8 +66,8 @@ export abstract class SyntheticDOMValueNode extends SyntheticDOMNode {
     return this._nodeValue;
   }
 
-  set nodeValue(value: any) {
-    this._nodeValue = value;
+  set nodeValue(value: string) {
+    this._nodeValue = String(value);
 
     this.notify(new PropertyMutation(SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT, this, "nodeValue", value).toEvent(true));
   }

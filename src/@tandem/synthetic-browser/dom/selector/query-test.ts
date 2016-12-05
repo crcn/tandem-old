@@ -45,6 +45,7 @@ describe(__filename + "#", () => {
       
       document.registerElement("div", SyntheticHTMLElement);
       document.registerElement("span", SyntheticHTMLElement);
+      document.removeAllChildren();
       document.appendChild(evaluateMarkup(parseMarkup(a), document));
       const nodes = document.querySelectorAll(selector);
       expect(nodes.join("")).to.equal(b);

@@ -33,7 +33,7 @@ describe(__filename + "#", () => {
     });
     const entry = await graph.getDependency(await graph.resolve('entry.js', ''))
     await entry.load();
-    expect(entry.type).to.equal("text/plain");
+    expect(entry.type).to.equal("application/javascript");
     expect(entry.content).to.equal("hello world");
   });
 

@@ -5,3 +5,4 @@ export * from "./css";
 export * from "./html";
 export * from "./constants";
 export * from "./selector";
+export * from "./xhr";

@@ -1,10 +1,12 @@
 import { CallbackDispatcher } from "@tandem/mesh";
-import { SyntheticWindow } from "./window";
+import { SyntheticWindow, SyntheticDOMImplementation } from "./window";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
 import { SyntheticHTMLElement } from "./html";
 import { SyntheticCSSStyleSheet } from "./css";
 import { Sandbox } from "@tandem/sandbox";
+
+import { SyntheticHTMLCollection } from "./collections";
 
 import {
   DOMNodeType,
@@ -154,7 +156,6 @@ export class SyntheticDocumentEditor<T extends SyntheticDocument> extends Synthe
 }
 
 
-
   // applyMutation(mutation: Mutation<any>) {
   //   super.applyMutation(mutation);
 
@@ -173,19 +174,32 @@ export class SyntheticDocumentEditor<T extends SyntheticDocument> extends Synthe
 export class SyntheticDocument extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.DOCUMENT;
   readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;
-  private _registeredElements: any;
+  public $registeredElements: any;
   public $window: SyntheticWindow;
   public $ownerNode: SyntheticDOMNode;
+  public $implementation: SyntheticDOMImplementation;
 
-  readonly scripts: SyntheticHTMLElement[];
 
   // namespaceURI here is non-standard, but that's
-  constructor(readonly defaultNamespaceURI: string) {
+  constructor(readonly defaultNamespaceURI: string, implementation?: SyntheticDOMImplementation) {
     super("#document");
-    this.scripts = [];
+    this.$implementation = implementation;
     this.styleSheets = new ObservableCollection<SyntheticCSSStyleSheet>();
     this.styleSheets.observe(new CallbackDispatcher(this.onStyleSheetsEvent.bind(this)));
-    this._registeredElements = {};
+    this.$registeredElements = {};
+  }
+
+  get implementation() {
+    return this.$implementation;
+  }
+  
+
+  get sandbox() {
+    return this.defaultView.sandbox;
+  }
+
+  get scripts() {
+    return this.getElementsByTagName("script");
   }
 
   get browser(): ISyntheticBrowser {
@@ -237,7 +251,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   createElementNS(ns: string, tagName: string): SyntheticDOMElement {
-    const nsElements = this._registeredElements[ns] || {};
+    const nsElements = this.$registeredElements[ns] || {};
     const elementClass = this.$getElementClassNS(ns, tagName);
     const element = this.own(new elementClass(ns, tagName));
     element.$createdCallback();
@@ -245,7 +259,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   $getElementClassNS(ns: string, tagName: string): syntheticElementClassType {
-    const nsElements = this._registeredElements[ns] || {};
+    const nsElements = this.$registeredElements[ns] || {};
     const elementClass = nsElements[tagName.toLowerCase()] || nsElements.default || SyntheticDOMElement;
     return elementClass;
   }
@@ -519,8 +533,8 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   registerElementNS(ns: string, tagName: string, options: IRegisterComponentOptions);
 
   registerElementNS(ns: string, tagName: string, ctor: any): syntheticElementClassType {
-    if (!this._registeredElements[ns]) {
-      this._registeredElements[ns] = {};
+    if (!this.$registeredElements[ns]) {
+      this.$registeredElements[ns] = {};
     }
 
     // let ctor;
@@ -540,7 +554,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     //   ctor = prototypeOrCtor;
     // }
 
-    return this._registeredElements[ns][tagName.toLowerCase()] = ctor;
+    return this.$registeredElements[ns][tagName.toLowerCase()] = ctor;
   }
 
   createComment(nodeValue: string) {
@@ -566,11 +580,12 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   protected cloneShallow() {
-    return new SyntheticDocument(this.defaultNamespaceURI);
+    return new SyntheticDocument(this.defaultNamespaceURI, this.implementation);
   }
 
   public $linkClone(clone: SyntheticDocument) {
-    clone.$window = this.defaultView;
+    clone.$window         = this.defaultView;
+    clone.$implementation = clone.implementation;
     return super.$linkClone(clone);
   }
 

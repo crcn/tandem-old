@@ -8,7 +8,9 @@ export class SyntheticLocalStorage {
   }
 
   getItem(key) {
-    return this._data.get(key);
+
+    // note that null is parsable here -- important to ensure that operations such as JSON.parse work
+    return this._data.get(key) || null;
   }
 
   setItem(key: string, value: string) {

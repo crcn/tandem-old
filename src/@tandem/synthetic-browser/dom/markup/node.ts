@@ -58,6 +58,13 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   readonly namespaceURI: string;
   public $uid: any;
   protected _attached: boolean;
+  private _attachedBeforeCreatedCallback: boolean;
+
+  /**
+   * Bool check to ensure that createdCallback doesn't get called twice accidentally
+   */
+
+  private _createdCallbackCalled: boolean;
 
   /**
    * TRUE if the node has been loaded
@@ -135,7 +142,7 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.parent as SyntheticDOMContainer;
   }
 
-  addEventListener() {
+  addEventListener(type: string) {
     // TODO
   }
 
@@ -217,21 +224,49 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     }
   }
 
+  $createdCallback() {
+
+    if (this._createdCallbackCalled) {
+      throw new Error(`createdCallback() has already been called.`);
+    }
+
+    this._createdCallbackCalled = true;
+    this.createdCallback();
+    
+    if (this._attachedBeforeCreatedCallback) {
+      this.$attachedCallback();
+    }
+  }
+
+  protected createdCallback() {
+
+  }
+
 
   $attach(document: SyntheticDocument) {
 
     if (this._attached && this._ownerDocument === document) {
       return console.warn("Trying to attach an already attached node");
     }
-
     this._attached = true;
-    this._ownerDocument = document;
 
-    this.attachedCallback();
+    this._ownerDocument = document;
+    this.$attachedCallback();
 
     for (let i = 0, n = this.childNodes.length; i < n; i++) {
       this.childNodes[i].$attach(document);
     }
+  }
+
+  protected $attachedCallback() {
+
+    // this will happen during the loading phase of the document
+    if (!this._createdCallbackCalled) {
+      this._attachedBeforeCreatedCallback = true;
+      return;
+    }
+
+    this.attachedCallback();
   }
 
   $detach() {

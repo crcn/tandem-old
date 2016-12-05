@@ -35,8 +35,6 @@ export class SyntheticLocation extends Observable {
       const value = parts[part];
       if (value) this[part] = value;
     };
-
-    console.log(this.hash)
   }
 
   toString() {
