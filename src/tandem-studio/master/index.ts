@@ -27,7 +27,7 @@ import {
 } from "./commands";
 
 import { BrowserService } from "./services";
-import { HTMLProjectStarter } from "./project/starters";
+import { ResponsiveProjectStarter, BlankProjectStarter } from "./project/starters";
 import { ProjectStarterFactoryProvider, TandemMasterStudioStoreProvider } from "./providers";
 
 import { 
@@ -107,13 +107,21 @@ export const initializeMaster = async () => {
 
     new TandemMasterStudioStoreProvider(TandemStudioMasterStore),
 
+    new ProjectStarterFactoryProvider({ 
+      id: "blank", 
+      label: "Blank",
+      image: "assets/html5-logo.png",
+      enabled: true
+    }, BlankProjectStarter),
+
     // starters
     new ProjectStarterFactoryProvider({ 
       id: "html", 
-      label: "HTML",
+      label: "Responsive",
       image: "assets/html5-logo.png",
       enabled: true
-    }, HTMLProjectStarter),
+    }, ResponsiveProjectStarter),
+
 
     new ProjectStarterFactoryProvider({ 
       id: "react+webpack", 

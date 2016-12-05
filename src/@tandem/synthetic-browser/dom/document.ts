@@ -503,11 +503,29 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   registerElementNS(ns: string, tagName: string, elementClass: syntheticElementClassType);
   registerElementNS(ns: string, tagName: string, options: IRegisterComponentOptions);
 
-  registerElementNS(ns: string, tagName: string, options: any): syntheticElementClassType {
+  registerElementNS(ns: string, tagName: string, ctor: any): syntheticElementClassType {
     if (!this._registeredElements[ns]) {
       this._registeredElements[ns] = {};
     }
-    return this._registeredElements[ns][tagName.toLowerCase()] = typeof options === "function" ? options : createElementClass(options);
+
+    // let ctor;
+
+    
+    // if (typeof prototypeOrCtor === "object") {
+    //   function sup() {
+    //   }
+    //   sup.prototype = this.$window.HTMLElement.prototype;
+    //   function ctor() {
+    //     console.log("CTOR");
+    //     // prototypeOrCtor.constructor.apply(this, arguments);
+    //   }
+    //   ctor.prototype = Object.assign(new sup(), prototypeOrCtor);
+      
+    // } else {
+    //   ctor = prototypeOrCtor;
+    // }
+
+    return this._registeredElements[ns][tagName.toLowerCase()] = ctor;
   }
 
   createComment(nodeValue: string) {
@@ -550,6 +568,10 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return new SyntheticDocumentEditor(this);
   }
 
+  write(content: string) {
+    // TODO
+  }
+
   private onStyleSheetsEvent({ mutation }: MutationEvent<any>) {
     if (!mutation ) return;
 
@@ -567,10 +589,4 @@ export class SyntheticDocument extends SyntheticDOMContainer {
       })
     }
   }
-}
-
-function createElementClass(options: IRegisterComponentOptions): syntheticElementClassType {
-  return class extends SyntheticDOMElement {
-    // TODO
-  };
 }

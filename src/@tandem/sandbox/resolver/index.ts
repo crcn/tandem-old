@@ -113,7 +113,7 @@ export class LocalFileResolver extends BaseFileResolver {
     // after the target directories.
     directories.push(...cwd.split("/").map((dir, index, parts) => {
       return parts.slice(0, index + 1).join("/") + "/node_modules";
-    }));
+    }), cwd);
 
     const resolvedPath = resolve.sync(relativePath, {
       basedir: cwd,

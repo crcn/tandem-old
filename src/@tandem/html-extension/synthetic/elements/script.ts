@@ -9,11 +9,19 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
     this.executeScript();
   }
 
+  get src() {
+    return this.getAttribute("src");
+  }
+
+  set src(value: string) {
+    this.setAttribute("src", value);
+  }
+
   executeScript() {
     if (!this.$module) return;
     const src = this.getAttribute("src");
     const content = src ? this.$module.source.eagerGetDependency(src).content : this.textContent;
-    const script = compileGlobalSandboxScript(this.$source.filePath, this.$source.filePath, content);
+    const script = compileGlobalSandboxScript(src || this.$source.filePath, this.$source.filePath, content);
     runGlobalSandboxScript(script, this.$module.sandbox);
   }
 

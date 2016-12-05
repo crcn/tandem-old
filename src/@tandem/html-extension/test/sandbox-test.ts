@@ -75,6 +75,25 @@ describe(__filename + "#", () => {
     expect(stripNewLines(document.body.textContent)).to.equal(`Hello WorldHello World`);
   });
 
+  it(`script can reference itself when executed`, async () => {
+    const document = await evaluateHTML({
+      "index.html": `
+        <html>
+          <head>
+          </head>
+          <body>
+            <script>
+              const scripts = document.getElementsByTagName("script");
+              document.body.appendChild(document.createTextNode(scripts[scripts.length - 1].textContent.length));
+            </script>
+          </body>
+        </html>
+      `
+    });
+
+    expect(stripNewLines(document.body.textContent)).to.equal(`const scripts = document.getElementsByTagName("script"); document.body.appendChild(document.createTextNode(scripts[scripts.length - 1].textContent.length)); 183`);
+  });
+
   it(`Executes scripts immediately after being appended to the document`, async () => {
     const document = await evaluateHTML({
       "index.html": `

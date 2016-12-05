@@ -23,14 +23,17 @@ http://electron.atom.io/docs/api/auto-updater/
 
 html css source maps
 
+- [ ] TodoMVC
+  - [ ] angular example not worker
+
 - [ ] Core
-  - [ ] enable script tags
   - [ ] ability to load HTTP urls
   - [ ] register event listeners
 
 - [ ] UX
   - [ ] open main code editor with shift click if not already opened
   - [ ] open tandem from text editor
+  - [ ] Drop file CTA when no artboards are present
   
 - [ ] Bugs
   - [ ] source maps not working for CSS

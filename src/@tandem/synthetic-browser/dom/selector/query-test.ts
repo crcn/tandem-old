@@ -2,6 +2,7 @@ import { expect } from "chai";
 import {
   parseMarkup,
   evaluateMarkup,
+  SyntheticWindow,
   SyntheticDocument,
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
@@ -40,7 +41,7 @@ describe(__filename + "#", () => {
     // ["h1:nth-last-of-type(2)", `<ul><h1>a</h1><h2>b</h2><h1>c</h1><h2>d</h2><h1>e</h1><h2>f</h2><h1>g</h1><h2>h</h2></ul>`, `<h1>equals</h1>`],
   ].forEach(([selector, a, b]) => {
     it(`selector ${selector} for ${a} equals ${b}`, () => {
-      const document = new SyntheticDocument("");
+      const { document } = new SyntheticWindow();
       
       document.registerElement("div", SyntheticHTMLElement);
       document.registerElement("span", SyntheticHTMLElement);

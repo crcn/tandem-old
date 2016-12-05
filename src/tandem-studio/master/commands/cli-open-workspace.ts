@@ -12,9 +12,8 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
   execute(): any {
     let filePath = this.config.argv._[0];
 
-  
     // scan the CWD for any tandem files
-    if (!filePath || !fileExists(filePath)) {
+    if (filePath != null && !fileExists(filePath)) {
 
       filePath = filePath.replace(/^\./, process.cwd()).replace(/^~/, process.env.HOME);
 

@@ -46,7 +46,7 @@ const FILES = {
   `)
 };
 
-export class HTMLProjectStarter extends BaseProjectStarter {
+export class ResponsiveProjectStarter extends BaseProjectStarter {
   async start(directoryPath: string) {
 
     for (const fileName in FILES) {

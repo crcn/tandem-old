@@ -11,6 +11,25 @@ import {
   VisibleDOMNodeCapabilities,
 } from "../markup";
 
+class ElementClassList extends Array<string> {
+  constructor(readonly target: SyntheticDOMElement) {
+    super(...String(target.getAttribute("class") || "").split(" "));
+  }
+  add(value: string) {
+    this.push(value);
+    this._reset();
+  }
+  remove(value: string) {
+    const index = this.indexOf(value);
+    if (index !== -1) this.splice(index, 1);
+    this._reset();
+  }
+
+  _reset() {
+    this.target.setAttribute("className", this.join(" "));
+  }
+}
+
 // TODO - proxy dataset
 @serializable()
 export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCSSStyle> {
@@ -59,7 +78,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   }
 
   get class(): string {
-    return this.getAttribute("class");
+    return this.getAttribute("class") || "";
   }
 
   set class(value: string) {
@@ -80,11 +99,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     if (name === "style") {
       this._resetStyleFromAttribute();
     } else if (name === "class") {
-      if (newValue) {
-        this._classList = String(newValue).split(" ");
-      } else {
-        this._classList = [];
-      }
+      this._classList = new ElementClassList(this);
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }

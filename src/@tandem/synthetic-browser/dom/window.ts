@@ -5,6 +5,8 @@ import { SyntheticLocation } from "../location";
 import { SyntheticDocument } from "./document";
 import { Logger, Observable, PrivateBusProvider } from "@tandem/common";
 import { SyntheticHTMLElement } from "./html";
+import { SyntheticLocalStorage } from "./local-storage";
+import { SyntheticDOMElement } from "./markup";
 import { SyntheticWindowTimers } from "./timers";
 import { noopDispatcherInstance } from "@tandem/mesh";
 import { Blob, FakeBlob } from "./blob";
@@ -58,6 +60,10 @@ export class SyntheticWindow extends Observable {
   readonly clearTimeout: Function;
   readonly clearInterval: Function;
   readonly clearImmediate: Function;
+  readonly localStorage: SyntheticLocalStorage;
+
+  readonly HTMLElement;
+  readonly Element;
 
   private _windowTimers: SyntheticWindowTimers;
 
@@ -65,11 +71,15 @@ export class SyntheticWindow extends Observable {
   readonly URL  = URL;
   readonly btoa = btoa;
 
-  public resolve: { extensions: string[], directories: string[] };
-
   constructor(location?: SyntheticLocation, readonly browser?: ISyntheticBrowser, document?: SyntheticDocument) {
     super();
-    this.resolve = { extensions: [], directories: [] };
+    
+    // in case proto gets set - don't want the original to get fudged
+    // but doesn't work -- element instanceof HTMLElement 
+    this.HTMLElement = SyntheticHTMLElement;
+    this.Element     =  SyntheticDOMElement;
+
+    this.localStorage = new SyntheticLocalStorage();
     this.document = document || this.createDocument();
     this.document.$window = this;
     this.location = location;
@@ -78,12 +88,12 @@ export class SyntheticWindow extends Observable {
       new Logger(browser && PrivateBusProvider.getInstance(browser.injector) || noopDispatcherInstance, "**VM** ")
     );
 
-    const windowTimers = this._windowTimers = new SyntheticWindowTimers();
-    this.setTimeout = windowTimers.setTimeout.bind(windowTimers);
-    this.setInterval = windowTimers.setInterval.bind(windowTimers);
-    this.setImmediate = windowTimers.setImmediate.bind(windowTimers);
-    this.clearTimeout = windowTimers.clearTimeout.bind(windowTimers);
-    this.clearInterval = windowTimers.clearInterval.bind(windowTimers);
+    const windowTimers  = this._windowTimers = new SyntheticWindowTimers();
+    this.setTimeout     = windowTimers.setTimeout.bind(windowTimers);
+    this.setInterval    = windowTimers.setInterval.bind(windowTimers);
+    this.setImmediate   = windowTimers.setImmediate.bind(windowTimers);
+    this.clearTimeout   = windowTimers.clearTimeout.bind(windowTimers);
+    this.clearInterval  = windowTimers.clearInterval.bind(windowTimers);
     this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);
   }
 

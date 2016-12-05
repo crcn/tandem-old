@@ -184,6 +184,10 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return querySelectorAll(this, selector);
   }
 
+  public getElementsByTagName(selector: string) {
+    return this.querySelectorAll(selector);
+  }
+
   createEditor() {
     return new SyntheticDOMContainerEditor(this);
   }
