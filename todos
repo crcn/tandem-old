@@ -46,6 +46,7 @@ html css source maps
     - [ ] vue
 
 - [ ] fix zombie processes
+
 - [ ] bundle as electron application
 
 - [ ] Core
@@ -66,13 +67,14 @@ html css source maps
   - [ ] remove layout for getting started, use abs pos
   
 - [ ] BUGS
+  - [ ] source maps not working for CSS
+  - [ ] absolute bounds and moving around objects
   - [ ] app locked if artboard has a broken link
   - [ ] fix "channel close" linking back to source
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
   - [ ] child processes are STILL not shutting down  
   - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
   - [ ] artboards do not show up if there's an error in the load
-  - [ ] source maps not working for CSS
   - [ ] Fix vscode source code overwrites
   - [ ] fix centering
   - [ ] local images must work in HTML ext

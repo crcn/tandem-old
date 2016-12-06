@@ -48,13 +48,11 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
   createdCallback() {
 
-    // defaults - note wierd Object assign nesting here -- required
-    // since style is a proxy object.
-    Object.assign(this.style, Object.assign({
+    Object.assign(this.style, {
       position: "absolute",
       width: "1024px",
       height: "1024px"
-    }, this.style));  
+    }, this.style.toObject());  
 
     this.innerHTML = `
       <iframe data-td-selectable="false" style="border: none; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px;" />

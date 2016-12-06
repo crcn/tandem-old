@@ -68,7 +68,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
 
   protected addDiff(newContainer: SyntheticDOMContainer) {
     diffArray(this.target.childNodes, newContainer.childNodes, (oldNode, newNode) => {
-      if (oldNode.nodeName !== newNode.nodeName) return -1;
+      if (oldNode.nodeName !== newNode.nodeName || oldNode.namespaceURI !== newNode.namespaceURI) return -1;
       return 0;
     }).accept({
       visitInsert: ({ index, value }) => {
