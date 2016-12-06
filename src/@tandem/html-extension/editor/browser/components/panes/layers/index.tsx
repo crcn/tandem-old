@@ -73,16 +73,16 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
 
   renderLabel(node: SyntheticDOMNode, renderDefault?: any): any {
     switch(node.nodeType) {
-      case DOMNodeType.TEXT: return this.renderText(node as SyntheticDOMText);
+      case DOMNodeType.TEXT: return this.renderText(node as SyntheticDOMText, renderDefault);
       case DOMNodeType.ELEMENT: return this.renderElement(node as SyntheticDOMElement, renderDefault);
     }
     return null;
   }
 
-  renderText({ uid, textContent }: SyntheticDOMText) {
-    return <div className="entity text">
+  renderText({ uid, textContent }: SyntheticDOMText, renderDefault) {
+    return renderDefault(<div className="entity text">
       { textContent || "<empty text node>" }
-    </div>;
+    </div>);
   }
 
   renderElement(element: SyntheticDOMElement, renderOuterLabel) {

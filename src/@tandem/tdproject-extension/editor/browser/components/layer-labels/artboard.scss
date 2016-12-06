@@ -1,6 +1,18 @@
 .td-artboard-layer-label {
-  margin-top: 1px;
-  padding-top: 8px !important;
-  padding-bottom: 8px !important;
-  background: rgba(0, 0, 0, 0.03);
+  &-inner {
+    margin-top: 1px;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    background: rgba(0, 0, 0, 0.03);
+  }
+  &-outer {
+    input {
+      background: transparent;
+      border: none;
+      line-height: inherit;
+      padding: 0;
+      font-size: inherit;
+      letter-spacing: inherit;
+    }
+  }
 }

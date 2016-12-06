@@ -3,8 +3,10 @@
 .tree {
   & .node {
     & .label {
+      -webkit-user-select: none;
       cursor: default;
       & * {
+        -webkit-user-select: none;
         display: inline-block;
       }
       & .expand-button {
