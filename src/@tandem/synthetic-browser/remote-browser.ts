@@ -157,6 +157,7 @@ export class RemoteBrowserService extends BaseApplicationService {
 
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (mutations: Mutation<any>[]) => {
 
+
         logger.info("Sending diffs: <<", mutations.map(event => event.type).join(", "));
         await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, mutations)) });
 

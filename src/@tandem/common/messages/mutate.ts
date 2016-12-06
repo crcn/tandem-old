@@ -84,7 +84,7 @@ export abstract class ChildMutation<T, U extends ICloneable> extends Mutation<T>
   }
 })
 export class InsertChildMutation<T extends ICloneable, U extends ICloneable> extends ChildMutation<T, U> {
-  constructor(type: string, target: T, child: U, index: number = Infinity) {
+  constructor(type: string, target: T, child: U, index: number = Number.MAX_SAFE_INTEGER) {
     super(type, target, child, index);
   }
   paramsToString() {

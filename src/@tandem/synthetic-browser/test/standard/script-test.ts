@@ -2,13 +2,13 @@ import { expect } from "chai";
 import { LogLevel } from "@tandem/common";
 import { SyntheticBrowser, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { createTestMasterApplication } from "@tandem/editor/test";
-import { loadTestWindow } from "@tandem/synthetic-browser/test";
+import { loadTestBrowser } from "@tandem/synthetic-browser/test";
 
 // poorly organized DOM spec tests. TODO - move these into sep fiels
 describe(__filename + "#", () => {
 
   it("Can dynamically create a new script", async () => {
-    const window = await loadTestWindow({
+    const { window } = await loadTestBrowser({
       "index.html": `
         <script>
           var script = document.createElement("script");
@@ -22,7 +22,7 @@ describe(__filename + "#", () => {
   });
 
   it("Can set the text of a script after it's been added to the DOM", async () => {
-    const window = await loadTestWindow({
+    const { window } = await loadTestBrowser({
       "index.html": `
         <script>
           var script = document.createElement("script");

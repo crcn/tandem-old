@@ -2,14 +2,14 @@ import { expect } from "chai";
 import { LogLevel } from "@tandem/common";
 import { SyntheticBrowser, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { createTestMasterApplication } from "@tandem/editor/test";
-import { loadTestWindow } from "@tandem/synthetic-browser/test";
+import { loadTestBrowser } from "@tandem/synthetic-browser/test";
 
 // poorly organized DOM spec tests. TODO - move these into sep fiels
 describe(__filename + "#", () => {
 
   // note that this does not work yet.
   xit("the HTMLElement prototype can be modified without affecting the original", async () => {
-    const window = await loadTestWindow({
+    const { window } = await loadTestBrowser({
       "index.js": `HTMLElement.prototype.message = "hello";`
     }, "index.js");
 
@@ -17,7 +17,7 @@ describe(__filename + "#", () => {
   });
 
   it("new elements are instances of HTMLElement", async () => {
-    const window = await loadTestWindow({
+    const { window } = await loadTestBrowser({
       "index.js": `document.body.appendChild(document.createTextNode(document.createElement("div") instanceof HTMLElement))`
     }, "index.js");
 
@@ -28,7 +28,7 @@ describe(__filename + "#", () => {
     describe("DOMContentLoaded event", () => {
       
       it("is dispatched after load", async () => {
-        const window = await loadTestWindow({
+        const { window } = await loadTestBrowser({
           "index.js": `
             window.addEventListener("DOMContentLoaded", () => {
               document.body.appendChild(document.createTextNode("DOM content loaded"))
@@ -44,7 +44,7 @@ describe(__filename + "#", () => {
     describe("load event", () => {
 
       it("is dispatched by window after DOMContentLoaded", async () => {
-        const window = await loadTestWindow({
+        const { window } = await loadTestBrowser({
           "index.js": `
             let i = 0;
             window.addEventListener("DOMContentLoaded", () => {
@@ -63,7 +63,7 @@ describe(__filename + "#", () => {
 
 
       it("can be registered with window.onload", async () => {
-        const window = await loadTestWindow({
+        const { window } = await loadTestBrowser({
           "index.js": `
             let i = 0;
             window.onload = () => document.body.appendChild(document.createTextNode(++i));
@@ -77,7 +77,7 @@ describe(__filename + "#", () => {
 
     describe("document", () => {
       it("scripts property returns a collection of loaded scripts", async () => {
-        const window = await loadTestWindow({
+        const { window } = await loadTestBrowser({
           "index.html": `
             <script>  
               window.onload = () => {
@@ -93,7 +93,7 @@ describe(__filename + "#", () => {
       });
 
       it("scripts.item returns the script with the matching index", async () => {
-        const window = await loadTestWindow({
+        const { window } = await loadTestBrowser({
           "index.html": `
             <script a="b">  
               window.onload = () => {
@@ -112,7 +112,7 @@ describe(__filename + "#", () => {
 
   describe("nodes", () => {
     it("getElementsByTagName returns an HTMLCollection", async () => {
-      const window = await loadTestWindow({
+      const { window } = await loadTestBrowser({
         "index.html": `
           <span>
             a
@@ -131,7 +131,7 @@ describe(__filename + "#", () => {
 
   describe("script tags", () => {
     it("returns the type of script", async () => {
-      const window = await loadTestWindow({
+      const { window } = await loadTestBrowser({
         "index.html": `
           <script type="text/jsx">  
 

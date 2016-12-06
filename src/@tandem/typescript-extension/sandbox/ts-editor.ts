@@ -70,7 +70,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
       let pos: number;
 
       if (jsxElement.children.length) {
-        pos = jsxElement.children[index === Infinity ? jsxElement.children.length - 1 : index].getEnd();
+        pos = jsxElement.children[index >= jsxElement.children.length ? jsxElement.children.length - 1 : index].getEnd();
       } else {
         pos = jsxElement.openingElement.getEnd();
       }

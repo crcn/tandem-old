@@ -119,7 +119,11 @@ export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations
   return evaluateCSS(parseCSS(randomStyleSheet));
 }
 
-export const loadTestWindow = async (mockFiles: any, entryFilePath: string) => {
+export const timeout = (ms = 10) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export const loadTestBrowser = async (mockFiles: any, entryFilePath: string) => {
   const app = createTestMasterApplication({
     sandboxOptions: {
       mockFiles: mockFiles
@@ -132,5 +136,5 @@ export const loadTestWindow = async (mockFiles: any, entryFilePath: string) => {
     url: entryFilePath
   });
 
-  return browser.window;
+  return browser;
 }

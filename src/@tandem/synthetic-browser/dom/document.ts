@@ -118,14 +118,16 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
       if (oldStyleSheet.source && newStyleSheet.source) {
         return oldStyleSheet.source.filePath === newStyleSheet.source.filePath ? 0 : -1;
       }
-
-      // may be very, very expensive...
-      return oldStyleSheet.createEdit().fromDiff(newStyleSheet).mutations.length;
+      
+      // simple distance function
+      return Math.abs(oldStyleSheet.cssText.length - newStyleSheet.cssText.length);
     }).accept({
       visitInsert: ({ index, value }) => {
         this.addStyleSheet(value);
       },
       visitRemove: ({ index }) => {
+        // console.log(this.target.styleSheets.map(ss => ss.cssText));
+        // console.log("REMOVING", index, this.target.styleSheets[index].cssText);
         this.removeStyleSheet(this.target.styleSheets[index]);
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, index }) => {
@@ -151,7 +153,7 @@ export class SyntheticDocumentEditor<T extends SyntheticDocument> extends Synthe
     } else if (mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
       const oldIndex = (<MoveChildMutation<any, any>>mutation).oldIndex;
       target.styleSheets.splice(oldIndex, 1);
-      target.styleSheets.splice((<MoveChildMutation<any, SyntheticCSSStyleSheet>>mutation).index, 0, );
+      target.styleSheets.splice((<MoveChildMutation<any, SyntheticCSSStyleSheet>>mutation).index, 0);
     }
   }
 }
@@ -539,7 +541,6 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     //   }
     //   sup.prototype = this.$window.HTMLElement.prototype;
     //   function ctor() {
-    //     console.log("CTOR");
     //     // prototypeOrCtor.constructor.apply(this, arguments);
     //   }
     //   ctor.prototype = Object.assign(new sup(), prototypeOrCtor);

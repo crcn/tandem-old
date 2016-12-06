@@ -20,6 +20,8 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
   public stylesheet: SyntheticCSSStyleSheet;
   public import: SyntheticHTMLElement;
 
+  private _addedToDocument: boolean;
+
   get href() {
     return this.getAttribute("href");
   }
@@ -88,12 +90,14 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
   }
 
   private attachStylesheet() {
-    if (!this.ownerDocument || !this._attached || !this.stylesheet) return;
+    if (this._addedToDocument || !this.ownerDocument || !this._attached || !this.stylesheet) return;
+    this._addedToDocument = true;
     this.ownerDocument.styleSheets.push(this.stylesheet);
   }
 
   private detachStylesheet() {
     if (!this.ownerDocument || !this._attached || !this.stylesheet) return;
+    this._addedToDocument = false;
     const index = this.ownerDocument.styleSheets.indexOf(this.stylesheet);
     if (index !== -1) {
       this.ownerDocument.styleSheets.splice(index, 1);

@@ -48,7 +48,6 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
       exec(`open http://localhost:${this._port}/editor#/workspace`);
     }
 
-    this._fileCache.syncWithLocalFiles();
   }
 
   async _loadHttpServer() {

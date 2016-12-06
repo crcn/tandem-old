@@ -331,7 +331,8 @@ export class SyntheticObjectTreeEditor implements IEditor {
       const target = allSyntheticObjects[mutation.target.uid] as IEditable;
 
       if (!target) {
-        throw new Error(`Edit change ${mutation.type} target ${mutation.target.uid} not found.`);
+        console.error(new Error(`Edit change ${mutation.type} target ${mutation.target.uid} not found.`));
+        continue;
       }
 
       try {

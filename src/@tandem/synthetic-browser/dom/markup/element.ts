@@ -177,7 +177,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   }
 
   attachShadowRoot(shadowRoot: SyntheticDOMContainer) {
-    this.addChange(new InsertChildMutation(SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT, this.target, shadowRoot, Infinity));
+    this.addChange(new InsertChildMutation(SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT, this.target, shadowRoot, Number.MAX_SAFE_INTEGER));
   }
 
   /**

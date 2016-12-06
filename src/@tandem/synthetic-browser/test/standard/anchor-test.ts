@@ -2,14 +2,14 @@ import { expect } from "chai";
 import { LogLevel } from "@tandem/common";
 import { SyntheticBrowser, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { createTestMasterApplication } from "@tandem/editor/test";
-import { loadTestWindow } from "@tandem/synthetic-browser/test";
+import { loadTestBrowser } from "@tandem/synthetic-browser/test";
 
 // poorly organized DOM spec tests. TODO - move these into sep fiels
 describe(__filename + "#", () => {
 
   // note that this does not work yet.
   it("anchor tags have a pathname property", async () => {
-    const window = await loadTestWindow({
+    const { window } = await loadTestBrowser({
       "index.html": `
         <a href="http://localhost:8080/a/b/c/d?e=f#/hash/path"></a>
         <script>
@@ -41,7 +41,7 @@ describe(__filename + "#", () => {
 
   // note that this does not work yet.
   it("can change any property of the anchor tag and see it reflected in the href", async () => {
-    const window = await loadTestWindow({
+    const { window } = await loadTestBrowser({
       "index.html": `
         <a href="http://localhost:8080/a/b/c/d?e=f#/hash/path"></a>
         <span></span>

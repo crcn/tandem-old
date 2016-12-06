@@ -202,13 +202,13 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined] as any;
   }
 
-  private _registerStyleSheet(syntheticStyleSheet: SyntheticCSSStyleSheet, index = Infinity) {
+  private _registerStyleSheet(syntheticStyleSheet: SyntheticCSSStyleSheet, index = Number.MAX_SAFE_INTEGER) {
      const styleElement = this.nodeFactory.createElement("style");
     styleElement.setAttribute("type", "text/css");
     styleElement.textContent = syntheticStyleSheet.cssText;
     const styleContainer = this.element.firstChild;
 
-    if (index == Infinity || index > styleContainer.childNodes.length) {
+    if (index > styleContainer.childNodes.length) {
       styleContainer.appendChild(styleElement);
     } else {
       styleContainer.insertBefore(styleElement, styleContainer.childNodes[index]);

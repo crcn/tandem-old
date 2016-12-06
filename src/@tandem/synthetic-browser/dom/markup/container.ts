@@ -59,7 +59,7 @@ export class SyntheticDOMContainerEdit<T extends SyntheticDOMContainer> extends 
   }
 
   appendChild(newChild: SyntheticDOMNode) {
-    return this.insertChild(newChild, Infinity);
+    return this.insertChild(newChild, Number.MAX_SAFE_INTEGER);
   }
 
   remove() {
