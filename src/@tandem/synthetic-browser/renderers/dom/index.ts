@@ -39,10 +39,10 @@ import {
   DOMElementEditor,
   SyntheticDocument,
   isDOMNodeMutation,
+  SyntheticCSSStyle,
   SyntheticCSSObject,
   DOMValueNodeEditor,
   DOMContainerEditor,
-  SyntheticCSSGroupAtRule,
   CSSStyleRuleEditor,
   isCSSAtRuleMutaton,
   SyntheticDOMElement,
@@ -50,18 +50,19 @@ import {
   SyntheticDOMComment,
   isDOMElementMutation,
   syntheticCSSRuleType,
-  SyntheticCSSElementStyleRule,
   CSSGroupingRuleEditor,
   SyntheticDOMValueNode,
   SyntheticDOMContainer,
   isDOMContainerMutation,
+  isDOMDocumentMutation,
   isDOMValueNodeMutation,
   isCSSStyleRuleMutation,
+  SyntheticCSSGroupAtRule,
   SyntheticCSSStyleSheet,
   SyntheticCSSGroupingRule,
   isCSSGroupingStyleMutation,
   CSSGroupingRuleMutationTypes,
-  SyntheticCSSStyle,
+  SyntheticCSSElementStyleRule,
   SyntheticDocumentMutationTypes,
   SyntheticCSSElementStyleRuleMutationTypes,
 } from "../../dom";
@@ -88,8 +89,6 @@ function filterInvalidMediaRules(rules: SyntheticCSSGroupAtRule[]) {
 
 }
 
-const INVALID_AT_NAME_REGEXP = /@(-webkit-keyframes|-o-keyframes)/;
-
 export class SyntheticDOMRenderer extends BaseRenderer {
 
   private _currentCSSText: string;
@@ -105,7 +104,13 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 
   createElement() {
-    return this.nodeFactory.createElement("div");
+    const element = this.nodeFactory.createElement("div");
+    element.innerHTML = this.createElementInnerHTML();
+    return element;
+  }
+
+  createElementInnerHTML() {
+    return "<span></span><div></div>";
   }
 
   protected onDocumentMutationEvent({ mutation }: MutationEvent<any>) {
@@ -125,6 +130,18 @@ export class SyntheticDOMRenderer extends BaseRenderer {
           new DOMContainerEditor(<DocumentFragment>nativeNode, insertChild).applyMutations([mutation]);
         } else if(isDOMValueNodeMutation(mutation)) {
           new DOMValueNodeEditor(<Text>nativeNode).applyMutations([mutation]);
+        }
+      }
+
+      if (isDOMDocumentMutation(mutation)) {
+        if (mutation.type === SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+          this.removeCSSRules((<RemoveChildMutation<any, any>>mutation).child);      
+        } else if (mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+          const moveMutation = <MoveChildMutation<any, any>>mutation;
+
+        } else if (mutation.type === SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT) {
+          const insertMutation = <InsertChildMutation<any, any>>mutation;
+          this._registerStyleSheet(insertMutation.child, insertMutation.index);
         }
       }
     }
@@ -158,6 +175,14 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     }
   }
 
+
+  private removeCSSRules(syntheticStyleSheet: SyntheticCSSStyleSheet) {
+    const [nativeRule, syntheticRule] = this.getCSSDictItem(syntheticStyleSheet);
+    if (!nativeRule) return;
+    nativeRule.ownerNode.parentNode.removeChild(nativeRule.ownerNode);
+    this._cssRuleDictionary[syntheticStyleSheet.uid] = undefined;
+  }
+
   private getSyntheticStyleSheetIndex(styleSheet: SyntheticCSSObject) {
     return this.document.styleSheets.findIndex(ss => ss.uid === styleSheet.uid);
   }
@@ -177,26 +202,37 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     return this._elementDictionary && this._elementDictionary[synthetic.uid] || [undefined, undefined] as any;
   }
 
+  private _registerStyleSheet(syntheticStyleSheet: SyntheticCSSStyleSheet, index = Infinity) {
+     const styleElement = this.nodeFactory.createElement("style");
+    styleElement.setAttribute("type", "text/css");
+    styleElement.textContent = syntheticStyleSheet.cssText;
+    const styleContainer = this.element.firstChild;
+
+    if (index == Infinity || index > styleContainer.childNodes.length) {
+      styleContainer.appendChild(styleElement);
+    } else {
+      styleContainer.insertBefore(styleElement, styleContainer.childNodes[index]);
+    }
+
+    return new Promise((resolve) => {
+      const tryRegistering = () => {
+        this.tryRegisteringStyleSheet(styleElement, syntheticStyleSheet).then(() => resolve(styleElement), () => {
+          setTimeout(tryRegistering, 20);
+        });
+      }
+      setImmediate(tryRegistering);
+    });
+  }
+
   protected async render() {
     const { document, element } = this;
 
     if (!this._documentElement) {
       await Promise.all(document.styleSheets.map((styleSheet) => {
-        const styleElement = this.nodeFactory.createElement("style");
-        styleElement.setAttribute("type", "text/css");
-        styleElement.textContent = styleSheet.cssText;
-        element.appendChild(styleElement);
-        return new Promise((resolve) => {
-          const tryRegistering = () => {
-            this.tryRegisteringStyleSheet(styleElement, styleSheet).then(() => resolve(styleElement), () => {
-              setTimeout(tryRegistering, 20);
-            });
-          }
-          setImmediate(tryRegistering);
-        });
+        return this._registerStyleSheet(styleSheet);
       }).concat((new Promise(resolve => {
         this._documentElement = renderHTMLNode(this.nodeFactory, document, this._elementDictionary = {});
-        element.appendChild(this._documentElement);
+        element.lastChild.appendChild(this._documentElement);
         resolve();
       }))));
     }
@@ -204,7 +240,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     this.updateRects();
   }
 
-  private getCSSDictItem<T extends CSSRule>(target: SyntheticCSSObject): [T, syntheticCSSRuleType] {
+  private getCSSDictItem(target: SyntheticCSSObject): [CSSStyleSheet, syntheticCSSRuleType] {
     return (this._cssRuleDictionary && this._cssRuleDictionary[target.uid]) || [undefined, undefined] as any;
   }
 
@@ -220,26 +256,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
     this._cssRuleDictionary[styleSheet.uid] = [nativeStyleSheet, styleSheet];
 
-    // const registerGroupingRule = (nativeRule: CSSGroupingRule|CSSStyleSheet, syntheticRule: SyntheticCSSGroupingRule<any>) => {
-
-    //   for (let i = 0, n  = syntheticRule.cssRules.length; i < n; i++){
-    //     const nativeChildRule    = nativeRule.cssRules[i];
-    //     const syntheticChildRule = syntheticRule.cssRules[i];
-    //     this._cssRuleDictionary[syntheticChildRule.uid] = [nativeChildRule, syntheticChildRule];
-
-    //     // possible grouping rule
-    //     if ((<SyntheticCSSGroupingRule<any>>syntheticChildRule).cssRules && (<CSSGroupingRule>nativeChildRule).cssRules) {
-    //       registerGroupingRule(<CSSGroupingRule>nativeChildRule, <SyntheticCSSGroupingRule<any>>syntheticChildRule);
-    //     }
-    //   }
-    // }
-
-    // console.log(nativeStyleSheet.cssRules.length, styleSheet.cssRules.length);
-    
-    // assert.equal(nativeStyleSheet.cssRules.length, styleSheet.cssRules.length, "CSS Style rule length mismatch");
-
-    // registerGroupingRule(nativeStyleSheet, styleSheet);
-    
     return Promise.resolve();
   }
 
@@ -247,7 +263,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     this._documentElement = undefined;
     this._cssRuleDictionary = {};
     this._elementDictionary = {};
-    if (this.element) this.element.innerHTML = "";
+    if (this.element) this.element.innerHTML = this.createElementInnerHTML();
   }
 
   private updateRects() {

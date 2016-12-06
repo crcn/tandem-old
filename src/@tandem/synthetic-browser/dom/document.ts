@@ -18,6 +18,7 @@ import {
   DOMContainerEditor,
   SyntheticDOMContainer,
   SyntheticDOMValueNode,
+  isDOMContainerMutation,
   SyntheticDOMContainerEdit,
   syntheticElementClassType,
   SyntheticDocumentFragment,
@@ -155,20 +156,13 @@ export class SyntheticDocumentEditor<T extends SyntheticDocument> extends Synthe
   }
 }
 
-
-  // applyMutation(mutation: Mutation<any>) {
-  //   super.applyMutation(mutation);
-
-  //   const target: any = {
-  //     [SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
-  //     [SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets,
-  //     [SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT]: this.styleSheets
-  //   }[mutation.type];
-
-  //   if (target) {
-  //     (<ApplicableMutation<any>>mutation).applyTo(target);
-  //   }
-  // }
+export function isDOMDocumentMutation(mutation: Mutation<any>) {
+  return !!{
+    [SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT]: true,
+    [SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT]: true,
+    [SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT]: true
+  }[mutation.type];
+}
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
 export class SyntheticDocument extends SyntheticDOMContainer {
@@ -603,18 +597,24 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   private onStyleSheetsEvent({ mutation }: MutationEvent<any>) {
-    if (!mutation ) return;
+    if (!mutation) return;
 
     if (mutation.type === ArrayMutation.ARRAY_DIFF) {
       (<ArrayMutation<SyntheticCSSStyleSheet>>mutation).accept({
-        visitUpdate: () => {},
+        visitUpdate: ({ newValue, index, patchedOldIndex }) => {
+          if (index !== patchedOldIndex) {
+            this.notify(new MoveChildMutation(SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT, this, newValue, patchedOldIndex, index).toEvent());
+          }
+        },
         visitInsert: ({ value, index }) => {
           if (!value.$ownerNode) {
             value.$ownerNode = this;
           }
+          this.notify(new RemoveChildMutation(SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT, this, value, index).toEvent());
         },
         visitRemove: ({ value, index }) => {
           value.$ownerNode = undefined;
+          this.notify(new RemoveChildMutation(SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT, this, value, index).toEvent());
         }
       })
     }

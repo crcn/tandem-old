@@ -29,7 +29,7 @@ describe(__filename + "#", () => {
         await renderer.requestRender();
         return {
           css: fakeDocument.styleSheets[0].cssText,
-          html: (<HTMLElement>renderer.element.lastChild).innerHTML,
+          html: (<HTMLElement>renderer.element.lastChild.lastChild).innerHTML,
         }
       }
     }

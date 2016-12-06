@@ -45,10 +45,12 @@ html css source maps
     - [ ] vanilla dart
     - [ ] vue
 
+- [ ] fix zombie processes
+- [ ] bundle as electron application
+
 - [ ] Core
   - [ ] wait for all XHR requests to be completed before sending diff
   - [ ] ability to load HTTP urls
-  - [ ] display title of document (if present)
   - [ ] enable history push state observations in app (test for todomvc example)
   - [ ] register event listeners
   - [ ] ensure that location changes are observable
@@ -60,7 +62,7 @@ html css source maps
   - [ ] open tandem from text editor
   - [ ] open tandem by right clivck - open with tandem
   - [ ] ability to setup workspace before saving one
-  - [ ] Drop file CTA when no artboards are present
+  - [ ] Add file CTA when no artboards are present
   - [ ] remove layout for getting started, use abs pos
   
 - [ ] BUGS
@@ -74,9 +76,8 @@ html css source maps
   - [ ] Fix vscode source code overwrites
   - [ ] fix centering
   - [ ] local images must work in HTML ext
-  - [ ] cannot add a new style sheet
   - [ ] fix jankiness when updating docs
-  - [ ] fix renderers not updating based on computed props
+
 
 - [ ] Editor
   - [ ] History
@@ -143,6 +144,7 @@ STABILITY
 ----------------------------------
 
 UX
+  - [ ] display title of document (if present)
   - [ ] VM developer console
   - [ ] gutters need to be resizable
   - [ ] input focus border
