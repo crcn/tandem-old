@@ -9,13 +9,13 @@ import {
   InjectorProvider,
 } from "@tandem/common";
 
-import * as md5 from "md5";
-import * as fs from "fs";
-import * as nodeLibs from "node-libs-browser";
-import * as detective from "detective";
+import md5 =  require("md5");
+import fs =  require("fs");
+import nodeLibs = require("node-libs-browser");
+import detective =  require("detective");
 
 // TODO - handle __webpack_public_path__
-import * as sm from "source-map";
+import sm = require("source-map");
 import { IDependencyContent } from "../../base";
 
 import {
@@ -31,9 +31,9 @@ import { IFileResolver } from "@tandem/sandbox/resolver";
 import { ApplicationConfigurationProvider } from "@tandem/core/providers";
 import { FileResolverProvider, FileCacheProvider } from "@tandem/sandbox/providers";
 
-import * as path from "path";
-import * as sift from "sift";
-import * as resolve from "resolve";
+import path =  require("path");
+import sift = require("sift");
+import resolve =  require("resolve");
 
 // https://webpack.github.io/docs/configuration.html
 // internal APIs

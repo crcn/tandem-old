@@ -9,6 +9,10 @@
     "experimentalDecorators": true,
     "jsx": "react"
   },
+  "types": [
+    "sift",
+    "get-port"
+  ],
   "exclude": [
     "node_modules",
     "*-test",

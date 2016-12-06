@@ -1,7 +1,7 @@
 import "./index.scss";
 
-import * as cx from "classnames";
-import * as React from "react";
+import cx =  require("classnames");
+import React =  require("React");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { TreeComponent } from "@tandem/uikit";

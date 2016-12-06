@@ -55,7 +55,6 @@ const buildTasks = [
   'build:peg',
   'build:typescript',
   'build:symlinks',
-  'build:webpack',
   'build:electron'
 ];
 
@@ -87,42 +86,64 @@ gulp.task('build:symlinks', () => {
   .pipe(vfs.symlink(NODE_MODULES_DIR));
 });
 
-gulp.task('build:webpack', function(done) {
-
-  const webPackages = PACKAGES.filter(sift({ 'entries.browser': { $exists: true }}));
-
-  let i = webPackages.length;
-  const config = require('./webpack.config.js');
-
-  const run = (pkg, i) => {
-    const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
-    const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
-
-    webpack(Object.assign(config, {
-        entry: srcFilePath,
-        output: {
-          path: outDir,
-          filename: basename(pkg.browser)
-        }
-    }), (err, stats) => {
-      if(err) throw new gutil.PluginError("webpack", err);
-      gutil.log("[webpack]", stats.toString(config.stats));
-
-      if (!WATCH && ++i === webPackages.length) {
-        done();
-      }
-    })
-  }
-
-  webPackages.forEach(run);
-});
-
 gulp.task('build:electron', gulpSequence(
+  'build:electron:browser',
+  'build:electron:server',
   'prepare:electron', 
   'build:electron:package'
 ));
 
-gulp.task('build:electron:package', function() {
+gulp.task('build:electron:browser', (done) => {
+
+  const pkg = getElectronPackage();
+  
+  const webPackages = PACKAGES.filter(sift({ 'entries.browser': { $exists: true }}));
+
+  let i = webPackages.length;
+
+  const config = require('./webpack/electron');
+
+  /*
+  Object.assign({}, config, {
+    entry: join(SRC_DIR, pkg.name, pkg.entries.browser),
+    output: {
+      path: join(OUT_DIR, pkg.name, dirname(pkg.browser)),
+      filename: basename(pkg.browser).replace(".js", ".bundle.js")
+    }
+  })*/
+
+
+  bundle(join(SRC_DIR, pkg.name, pkg.entries.browser), done);
+
+  // const run = (pkg, i) => {
+  //   const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
+  //   const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
+
+  //   webpack(Object.assign(config, {
+  //       entry: srcFilePath,
+  //       output: {
+  //         path: outDir,
+  //         filename: basename(pkg.browser)
+  //       }
+  //   }), (err, stats) => {
+  //     if(err) throw new gutil.PluginError("webpack", err);
+  //     gutil.log("[webpack]", stats.toString(config.stats));
+
+  //     if (!WATCH && ++i === webPackages.length) {
+  //       done();
+  //     }
+  //   })
+  // }
+
+  // webPackages.forEach(run);
+});
+
+gulp.task('build:electron:server', (done) => {
+  const pkg = getElectronPackage();
+  bundle(join(SRC_DIR, pkg.name, pkg.main), Object.assign({}, require('./webpack/electron'), done);
+});
+
+gulp.task('build:electron:package', () => {
   const electronPackage = getElectronPackage();
   return gulp.src(join(OUT_DIR, electronPackage.name, "**"))
   .pipe(electron({ version: electronPackage.electronVersion, platform: 'darwin' }))
@@ -149,7 +170,8 @@ gulp.task('prepare:electron', gulpSequence(
 
   // clean electron node_modules to prevent stale local @tandem dependencies 
   'clean:electron',
-  'prepare:electron:install'
+  'prepare:electron:install',
+  'prepare:electron:paths-to-relative'
 ));
 
 
@@ -157,7 +179,6 @@ gulp.task('prepare:electron:install', () => {
   return gulp.src(join(OUT_DIR, getElectronPackage().name, "package.json"))
   .pipe(install());
 });
-
 
 gulp.task('prepare:mono-package', gulpSequence(
   'prepare:create-mono-package',
@@ -335,11 +356,34 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
  * Utilities
  ******************************/
 
+function bundle(srcEntryPath, config, done) {
+   const outDir  = srcEntryPath.replace(SRC_DIR, OUT_DIR);
+   const outBasename = basename(srcEntryPath.replace(/\.(js|ts)$/, ".bundle.js"));
+
+   webpack(Object.assign({}, config, {
+    entry: srcEntryPath,
+    output: {
+      path: outDir,
+      filename: outBasename
+    }
+   }, (err, stats) => {
+    if(err) throw new gutil.PluginError("webpack", err);
+    gutil.log("[webpack]", stats.toString(config.stats));
+    if (!WATCH) {
+      done();
+    }
+  });
+}
+
 function getPackageOutDirs() {
   return PACKAGE_NAMES.map(name => join(OUT_DIR, name));
 }
 
 function noop() { }
+
+function getElectronAppDir() {
+  return join(OUT_DIR, getElectronPackage().name);
+}
 
 function getElectronPackage() {
   return PACKAGES.find(sift({ 'electronVersion': { $exists: true }}));

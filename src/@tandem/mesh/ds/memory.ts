@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { BaseDataStore } from "./base";
 import { ReadableStream, DuplexStream } from "@tandem/mesh/core";
 import { DSFindRequest, DSFindAllRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "./messages";

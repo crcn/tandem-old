@@ -1,6 +1,6 @@
 import "./index.scss";
-import * as React from "react";
-import * as cx from "classnames";
+import React =  require("React");
+import cx =  require("classnames");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";

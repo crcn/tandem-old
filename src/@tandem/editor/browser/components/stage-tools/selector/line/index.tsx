@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 
 const STEM_WIDTH = 4;
 

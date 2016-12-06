@@ -1,4 +1,4 @@
-import * as vm from "vm";
+import vm =  require("vm");
 import { IDispatcher } from "@tandem/mesh";
 import { SyntheticLocation } from "./location";
 import { SyntheticRendererEvent } from "./messages";

@@ -1,11 +1,11 @@
 import "./index.scss";
 
-import * as React from "react";
+import React =  require("React");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { BreadcrumbsComponent } from "./breadcrumbs";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SetZoomRequest } from "@tandem/editor/browser/messages";
-import * as AutosizeInput from "react-input-autosize";
+import AutosizeInput = require("react-input-autosize");
 import { RegisteredComponent, FocusComponent } from "@tandem/editor/browser/components/common";
 import { FooterComponentFactoryProvider } from "@tandem/editor/browser/providers";
 

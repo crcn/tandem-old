@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 import { Status } from "@tandem/common/status";
 
 export class StatusComponent extends React.Component<{ status: Status, className?: string, style?: any }, any> {

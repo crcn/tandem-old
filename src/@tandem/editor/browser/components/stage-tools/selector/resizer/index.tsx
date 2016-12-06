@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";

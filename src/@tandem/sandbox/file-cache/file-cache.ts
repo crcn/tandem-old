@@ -1,4 +1,4 @@
-import * as memoize from "memoizee";
+import memoize =  require("memoizee");
 import { FileCacheSynchronizer } from "./synchronizer";
 
 import {

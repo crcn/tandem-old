@@ -1,4 +1,4 @@
-import * as sinon from "sinon";
+import sinon =  require("sinon");
 import { expect } from "chai";
 import { Injector, Status } from "@tandem/common";
 import { MockFileSystem, MockFileResolver, createSandboxTestInjector } from "@tandem/sandbox/test/helpers";

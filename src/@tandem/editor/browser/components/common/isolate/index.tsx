@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 import { bubbleHTMLIframeEvents, BaseApplicationComponent, RootApplicationComponent } from "@tandem/common";
 
 export class IsolateComponent extends BaseApplicationComponent<any, any> {

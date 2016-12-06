@@ -1,4 +1,4 @@
-import * as path from "path";
+import path =  require("path");
 import { JS_MIME_TYPE } from "@tandem/common";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";

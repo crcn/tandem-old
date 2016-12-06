@@ -2,8 +2,8 @@ import { IHelpOption } from "tandem-studio/master/stores";
 import { BaseStudioMasterCommand } from "./base";
 import { SyntheticWindow, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
-import * as glob from "glob";
-import * as fs from "fs";
+import glob =  require("glob");
+import fs =  require("fs");
 
 export class GetHelpOptionsCommand extends  BaseStudioMasterCommand {
   execute() {

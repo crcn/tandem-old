@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 
 import { CallbackDispatcher } from "@tandem/mesh";
 import { EditorStore } from "@tandem/editor/browser/stores";

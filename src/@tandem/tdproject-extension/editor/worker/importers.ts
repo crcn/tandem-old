@@ -1,5 +1,5 @@
-import * as assert from "assert";
-import * as path from "path";
+import assert = require("assert");
+import path =  require("path");
 import { SyntheticDOMElement, SyntheticWindow } from "@tandem/synthetic-browser";
 import { IFileSystem, FileSystemProvider, ApplyFileEditRequest } from "@tandem/sandbox";
 import { IFileImporter, ImportFileRequest, PreviewLoaderProvider, OpenFileRequest } from "@tandem/editor/worker";

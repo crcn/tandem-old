@@ -1,7 +1,7 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { inject } from "@tandem/common/decorators";
 import { IStreamableDispatcher, IBus, DuplexStream, DSMessage } from "@tandem/mesh";
-import * as mongoid from "mongoid-js";
+import mongoid = require("mongoid-js");
 import { IDisposable } from "@tandem/common/object";
 import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus } from "@tandem/common/dispatchers";

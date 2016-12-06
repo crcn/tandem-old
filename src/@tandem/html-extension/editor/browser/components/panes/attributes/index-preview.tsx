@@ -1,6 +1,6 @@
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 
-import * as React from "react";
+import React =  require("React");
 import {  GutterComponent } from "@tandem/uikit";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { FocusComponent } from "@tandem/editor/browser/components/common";

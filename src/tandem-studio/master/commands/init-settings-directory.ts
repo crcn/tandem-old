@@ -1,4 +1,4 @@
-import * as fsa from "fs-extra";
+import fsa = require("fs-extra");
 import { BaseStudioMasterCommand } from "./base";
 
 export class InitSettingsDirectoryCommand extends  BaseStudioMasterCommand {

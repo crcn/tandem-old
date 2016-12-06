@@ -1,4 +1,4 @@
-import * as vm from "vm";
+import vm =  require("vm");
 import { Sandbox } from "./index";
 
 let _cache = {};

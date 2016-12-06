@@ -1,5 +1,5 @@
-import * as path from "path";
-import * as memoize from "memoizee";
+import path =  require("path");
+import memoize =  require("memoizee");
 
 import { pull, values } from "lodash";
 import { IFileSystem } from "../file-system";

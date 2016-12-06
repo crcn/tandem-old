@@ -1,6 +1,6 @@
 import "./index.scss";
-import * as React from "react";
-import * as cx from "classnames";
+import React =  require("React");
+import cx =  require("classnames");
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import { ISyntheticObject } from "@tandem/sandbox";
 import { AltInputComponent } from "../alt-input";

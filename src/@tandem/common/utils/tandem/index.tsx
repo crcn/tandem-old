@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 
 export const reactPreview = (render?: () => any) => {
   return function(ComponentClass: any): Promise<any> {

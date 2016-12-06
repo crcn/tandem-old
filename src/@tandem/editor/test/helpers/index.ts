@@ -4,7 +4,7 @@
 // to modularize this piece of code later so that it's not so specific to certain libraries
 // such as typescript, and sass.
 
-import * as path from "path";
+import path =  require("path");
 import { MarkupEditor } from "@tandem/synthetic-browser";
 import { createSASSSandboxProviders } from "@tandem/sass-extension";
 import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "@tandem/editor/common";

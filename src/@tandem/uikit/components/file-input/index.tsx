@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 
 export class FileInputComponent extends React.Component<{ className?: string, accept: string, label: string, onChange: (event: React.SyntheticEvent<any>) => any }, any> {
 

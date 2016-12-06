@@ -1,4 +1,4 @@
-import * as Mousetrap from "mousetrap";
+import Mousetrap =  require("mousetrap");
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { KeyCommandEvent } from "../messages";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";

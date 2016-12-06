@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { SyntheticCSSObject } from "./base";
 import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";

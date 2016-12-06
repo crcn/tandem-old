@@ -1,7 +1,7 @@
 import "./index.scss";
-import * as cx from "classnames";
-import * as React from "react";
-import * as CheckboxComponent from "rc-checkbox";
+import cx =  require("classnames");
+import React =  require("React");
+import CheckboxComponent = require("rc-checkbox");
 import { BaseApplicationComponent } from "@tandem/common";
 
 export class WorkspaceTitlebarComponent extends BaseApplicationComponent<any, any> {

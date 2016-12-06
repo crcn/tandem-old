@@ -1,5 +1,5 @@
-import * as path from "path";
-import * as assert from "assert";
+import path =  require("path");
+import assert = require("assert");
 import { PROJECT_CONFIG_FILE_NAME } from "../constants";
 import { ProjectConfig, ProjectFileHandler } from "tandem-studio/common/stores";
 import { inject, ICommand, loggable, Logger, InjectorProvider, Injector } from "@tandem/common";

@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
+import fs =  require("fs");
+import path =  require("path");
 import { expect } from "chai";
 import { generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
 import { FileEditorProvider, FileSystemProvider } from "@tandem/sandbox";

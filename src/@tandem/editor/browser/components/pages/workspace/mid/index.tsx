@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import * as React from "react";
+import React =  require("React");
 import { EditorStore } from "@tandem/editor/browser/stores";
 import { SettingKeys } from "@tandem/editor/browser/constants";
 import CenterComponent from "./center";

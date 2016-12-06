@@ -1,4 +1,4 @@
-import * as net from "net";
+import net =  require("net");
 import { ISerializer } from "@tandem/common";
 import { IDispatcher, IMessageTester, IBus, RemoteBus, RemoteBusMessageTester, DuplexStream, TransformStream } from "@tandem/mesh";
 

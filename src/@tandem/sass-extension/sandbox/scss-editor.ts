@@ -1,5 +1,5 @@
-import * as postcss from "postcss";
-import * as syntax from "postcss-scss";
+import postcss =  require("postcss");
+import syntax = require("postcss-scss");
 import {
   inject,
   Mutation,

@@ -1,13 +1,13 @@
 import "reflect-metadata";
 
-import * as path from "path";
+import path =  require("path");
 
 declare let __webpack_public_path__: any;
 
 __webpack_public_path__ = `${location.protocol}//${path.dirname(location.pathname)}/`;
 
 
-import * as Url from "url";
+import Url =  require("url");
 import { ServiceApplication } from "@tandem/core";
 import { EditorFamilyType } from "@tandem/editor/common";
 import { TandemStudioBrowserStore } from "./stores";

@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 import { Workspace } from "@tandem/editor/browser/stores";
 import ToolComponent from "./tool";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";

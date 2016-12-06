@@ -1,5 +1,5 @@
-import * as path from "path";
-import * as sass from "node-sass";
+import path =  require("path");
+import sass = require("node-sass");
 import { inject, CSS_MIME_TYPE, isMaster, Queue } from "@tandem/common";
 
 import { evaluateCSS, SyntheticWindow } from "@tandem/synthetic-browser";

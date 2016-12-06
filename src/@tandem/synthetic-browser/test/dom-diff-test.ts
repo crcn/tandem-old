@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { flattenTree } from "@tandem/common";
 import { generateRandomSyntheticHTMLElement } from "@tandem/synthetic-browser/test/helpers";
-import * as chalk from "chalk";
+import chalk =  require("chalk");
 import {
   parseMarkup,
   evaluateMarkup,

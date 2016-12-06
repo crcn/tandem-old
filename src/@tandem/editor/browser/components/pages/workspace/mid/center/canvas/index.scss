@@ -21,8 +21,8 @@
   &::before {
     content: " ";
     display: block;
-    width: 11px;
-    height: 11px;
+    width: 14px;
+    height: 14px;
     background: #00B5FF;
     border-radius: 10px;
   }
@@ -34,17 +34,19 @@
   transform: translate(-50%, -50%);
 }
 
+// TODO - bounce
 @keyframes stage-loading-pulse {
   0% {
-    opacity: 0.4;
+    opacity: 0.2;
   } 
 
   50% {
     opacity: 0.8;
+    // transform: translate(-50%, calc(-50% - 10px));
   }
 
   100% {
-    opacity: 0.4;
+    opacity: 0.2;
   }
 }
 

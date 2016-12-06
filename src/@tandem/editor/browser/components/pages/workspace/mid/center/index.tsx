@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 import HeaderComponent from "./header";
 import FooterComponent from "./footer";
 import CanvasComponent from "./canvas";

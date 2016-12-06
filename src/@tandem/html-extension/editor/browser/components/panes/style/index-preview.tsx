@@ -1,5 +1,5 @@
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
-import * as React from "react";
+import React =  require("React");
 import {  GutterComponent } from "@tandem/uikit";
 import { Workspace } from "@tandem/editor/browser";
 import { HTMLStylePaneComponent } from "./index";

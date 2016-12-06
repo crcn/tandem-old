@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { TextEditorToken } from "@tandem/editor/browser";
 
 export interface IDraggableComponentProps {

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { IInjectable } from "@tandem/common";
 
 export const editorComponentContextTypes = {

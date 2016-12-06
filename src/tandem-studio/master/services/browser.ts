@@ -1,14 +1,14 @@
-import * as fs from "fs";
-import * as fsa from "fs-extra";
-import * as path from "path";
-import * as gaze from "gaze";
-import * as mime from "mime";
-import * as sift from "sift";
-import * as cors from "cors";
-import * as getPort from "get-port";
-import * as express from "express";
-import * as compression from "compression";
-import * as createSocketIOServer from "socket.io";
+import fs =  require("fs");
+import fsa = require("fs-extra");
+import path =  require("path");
+import gaze =  require("gaze");
+import mime =  require("mime");
+import sift = require("sift");
+import cors =  require("cors");
+import getPort =  require("get-port");
+import express =  require("express");
+import compression =  require("compression");
+import createSocketIOServer = require("socket.io");
 
 import { exec } from "child_process";
 import { IOService } from "@tandem/editor/common";

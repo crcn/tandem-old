@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { BaseCSSInputComponent } from "./base";
 import { NumberSliderInput } from "@tandem/editor/browser/components/common";
 

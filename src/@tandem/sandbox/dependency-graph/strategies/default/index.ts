@@ -1,5 +1,5 @@
-import * as md5 from "md5";
-import * as path from "path";
+import md5 =  require("md5");
+import path =  require("path");
 import { IModule } from "@tandem/sandbox/sandbox";
 import { IFileResolver } from "@tandem/sandbox/resolver";
 import { IDependencyContent } from "../../base";

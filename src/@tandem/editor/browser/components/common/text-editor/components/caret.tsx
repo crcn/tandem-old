@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as cx from "classnames";
+import React =  require("React");
+import cx =  require("classnames");
 import TextEditor from "../models/text-editor";
 import Caret from "../models/caret";
 

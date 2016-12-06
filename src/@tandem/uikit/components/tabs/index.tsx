@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 
 export class TabsComponent extends React.Component<any, any> {
   render() {

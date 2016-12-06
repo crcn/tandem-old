@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import * as sinon from "sinon";
+import sinon =  require("sinon");
 import { Sandbox, DependencyGraphProvider } from "@tandem/sandbox";
 import { createSandboxTestInjector, timeout } from "@tandem/sandbox/test/helpers";
 

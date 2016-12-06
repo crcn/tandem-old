@@ -1,7 +1,7 @@
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import * as React from "react";
+import React =  require("React");
 
 import { SyntheticBrowser, BaseRenderer, getMatchingCSSStyleRules, MatchedCSSStyleRule, SyntheticCSSStyle } from "@tandem/synthetic-browser";
 import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, BoundingRect } from "@tandem/common";

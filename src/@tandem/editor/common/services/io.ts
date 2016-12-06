@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { serialize, deserialize } from "@tandem/common/serialize";
 import { ParallelBus, IMessage, CallbackDispatcher, FilterBus, SocketIOBus, filterFamilyMessage } from "@tandem/mesh";
 import {

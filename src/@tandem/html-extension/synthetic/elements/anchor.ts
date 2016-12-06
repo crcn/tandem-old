@@ -1,4 +1,4 @@
-import * as Url from "url";
+import Url =  require("url");
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { bindable, PropertyWatcher } from "@tandem/common";
 

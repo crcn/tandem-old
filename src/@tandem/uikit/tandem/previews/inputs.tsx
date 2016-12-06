@@ -1,8 +1,8 @@
 import "@tandem/uikit/scss/index.scss";
 import "./inputs.scss";
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 
 export const createBodyElement = () => {
   const element = document.createElement("div");

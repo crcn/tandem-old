@@ -1,5 +1,5 @@
 import Marker from "../models/marker";
-import * as React from "react";
+import React =  require("React");
 import TextEditor from "../models/text-editor";
 
 class HighlightComponent extends React.Component<{ editor: TextEditor, marker: Marker }, any> {

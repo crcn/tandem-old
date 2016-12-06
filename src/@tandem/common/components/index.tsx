@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { IDispatcher, IBus } from "@tandem/mesh";
 import { inject, loggable } from "@tandem/common/decorators";
 import {

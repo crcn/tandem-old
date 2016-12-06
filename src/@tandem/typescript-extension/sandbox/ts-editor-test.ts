@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
+import fs =  require("fs");
+import path =  require("path");
 import { expect } from "chai";
 const config = require(process.cwd() + "/webpack.config.js");
 import { waitForPropertyChange, Application, LogLevel } from "@tandem/common";
@@ -48,8 +48,8 @@ describe(__filename + "#", () => {
     const entryFilePath = createRandomFileName("tsx");
 
     await FileSystemProvider.getInstance(injector).writeFile(entryFilePath, `
-      import * as React from "react";
-      import * as ReactDOM from "react-dom";
+      import React =  require("React");
+      import ReactDOM = require("react-dom");
       const element = document.createElement("div");
       ReactDOM.render(${jsx}, element);
       exports.documentElement = element;

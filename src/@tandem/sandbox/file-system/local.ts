@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import fs =  require("fs");
 import { IDisposable } from "@tandem/common";
 import { ReadableStream } from "@tandem/mesh";
 import { BaseFileSystem, IReadFileResultItem } from "./base";

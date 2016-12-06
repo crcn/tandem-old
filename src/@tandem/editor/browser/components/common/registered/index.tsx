@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { EditorStore } from "@tandem/editor/browser/stores";
 import { BaseApplicationComponent, appComponentContextTypes, inject } from "@tandem/common";
 import { ReactComponentFactoryProvider, PageFactoryProvider, EditorStoreProvider } from "@tandem/editor/browser/providers";

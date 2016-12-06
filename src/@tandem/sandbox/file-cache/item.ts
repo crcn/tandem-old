@@ -1,4 +1,4 @@
-import * as memoize from "memoizee";
+import memoize =  require("memoizee");
 import { CallbackDispatcher } from "@tandem/mesh";
 import { IFileSystem } from "@tandem/sandbox/file-system";
 import { btoa, atob } from "abab"

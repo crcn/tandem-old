@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import assert = require("assert");
 import { DOMNodeType } from "./node-types";
 import {BaseContentEdit } from "@tandem/sandbox";
 import { SyntheticDocument } from "../document";

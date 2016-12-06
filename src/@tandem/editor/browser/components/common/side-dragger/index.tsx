@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 import { DragDropComponent } from "../drag-drop";
 import { IReference } from "@tandem/common/reference";
 

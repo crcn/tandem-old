@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { IDispatcher } from "@tandem/mesh";
 import { inject } from "@tandem/common/decorators";
 import { isMaster } from "@tandem/common/workers";

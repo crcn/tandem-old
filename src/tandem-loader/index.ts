@@ -1,7 +1,7 @@
-import * as babel from "babel-core";
-import * as babylon from "babylon";
+import babel = require("babel-core");
+import babylon =  require("babylon");
 import { Visitor, NodePath } from "babel-traverse";
-import * as sm from "source-map";
+import sm = require("source-map");
 import { ISyntheticSourceInfo } from "@tandem/sandbox";
 import {
   NullLiteral,

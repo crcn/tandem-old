@@ -1,4 +1,4 @@
-import * as qs from "qs";
+import qs =  require("qs");
 
 import { RouteFactoryProvider } from "@tandem/editor/browser/providers";
 import { RedirectRequest, DidRedirectMessage } from "@tandem/editor/browser/messages";

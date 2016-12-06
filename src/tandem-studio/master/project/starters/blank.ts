@@ -1,9 +1,9 @@
 // TODO - move this to tandem-starters repository
 
-import * as fs from "fs";
-import * as path from "path";
+import fs =  require("fs");
+import path =  require("path");
 import { BaseProjectStarter } from "./base";
-import * as stripIndent from "strip-indent";
+import stripIndent = require("strip-indent");
 
 const FILES = {
   "workspace.tandem": stripIndent(`

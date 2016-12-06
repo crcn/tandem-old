@@ -1,7 +1,7 @@
 import { argv } from "yargs";
-import * as path from "path";
-import * as electron from "electron";
-import * as getPort from "get-port";
+import path =  require("path");
+import electron =  require("electron");
+import getPort =  require("get-port");
 
 import { EditorFamilyType } from "@tandem/editor/common";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
@@ -59,7 +59,6 @@ process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).
 
 const BROWSER_BASE_PATH  = `${__dirname}/../browser`;
 
-
 export const initializeMaster = async () => {
 
   const config: IStudioEditorServerConfig = {
@@ -69,7 +68,7 @@ export const initializeMaster = async () => {
     cacheDirectory: process.env.HOME + "/.tandem/cache",
     tmpDirectory: process.env.HOME + "/.tandem/tmp",
     help: {
-      directory: path.normalize(__dirname + "/../help")
+      directory: path.normalize(__dirname + "/../../help")
     },
     browser: {
       assetUrl: `file://${BROWSER_BASE_PATH}/path`,

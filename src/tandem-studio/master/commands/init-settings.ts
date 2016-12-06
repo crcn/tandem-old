@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
+import fs =  require("fs");
+import path =  require("path");
 import { merge } from "lodash";
 import { IUserSettings } from "../stores";
 import { BaseStudioMasterCommand } from "./base";
@@ -23,7 +23,7 @@ export class InitSettingsCommand extends BaseStudioMasterCommand {
     let config: IUserSettings;
 
     if (fs.existsSync(configPath)) {
-      config = require(configPath);
+      config = JSON.parse(fs.readFileSync(configPath, "utf8"))
     }
 
     this.masterStore.userSettings = addDefaults(config || {} as any);

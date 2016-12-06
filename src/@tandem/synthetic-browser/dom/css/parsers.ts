@@ -1,4 +1,4 @@
-import * as postcss from "postcss";
+import postcss =  require("postcss");
 
 import { IRange } from "@tandem/common";
 import { RawSourceMap } from "source-map";

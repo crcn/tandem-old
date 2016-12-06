@@ -1,17 +1,17 @@
 import "./index.scss";
-import * as React from "react";
-import * as cx from "classnames";
+import React =  require("React");
+import cx =  require("classnames");
 import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { RadioGroupComponent, TextInputComponent } from "@tandem/uikit";
 import { ChromePicker } from "react-color";
-import * as AutoSizeInput from "react-input-autosize";
-import * as ReactSliderComponent from "react-slider";
+import AutoSizeInput = require("react-input-autosize");
+import ReactSliderComponent = require("react-slider");
 
 import { CSSMergedRuleLinkComponent, CSSHighlightTargetRuleHintComponent } from "../common";
-import * as Select from "react-select";  
-import * as CheckboxComponent from "rc-checkbox";
+import Select = require("react-select");  
+import CheckboxComponent = require("rc-checkbox");
 
 import { capitalize, startCase } from "lodash";
 import { SUPPORTED_FONTS } from "@tandem/html-extension/editor/browser/constants";

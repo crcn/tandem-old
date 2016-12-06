@@ -1,7 +1,7 @@
 import "./intersecting-point.scss";
 
 
-import * as React from "react";
+import React =  require("React");
 import { IPoint } from "@tandem/common/geom";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { BoundingRectPoint, GuideLine } from "../guider";

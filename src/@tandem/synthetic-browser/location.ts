@@ -1,6 +1,6 @@
 import { Observable } from "@tandem/common/observable";
 import { bindable } from "@tandem/common/decorators";
-import * as Url from "url";
+import Url =  require("url");
 
 export class SyntheticLocation extends Observable {
 

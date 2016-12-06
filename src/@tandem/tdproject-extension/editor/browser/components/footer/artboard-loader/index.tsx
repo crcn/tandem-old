@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { Status } from "@tandem/common/status";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic/elements";

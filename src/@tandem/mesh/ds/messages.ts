@@ -1,5 +1,5 @@
 import { IMessage, IStreamableDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh/core";
-import * as sift from "sift";
+import sift = require("sift");
 
 export class DSMessage implements IMessage {
   readonly timestamp: number = Date.now();

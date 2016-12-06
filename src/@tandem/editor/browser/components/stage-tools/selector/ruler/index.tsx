@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import * as React from "react";
+import React =  require("React");
 import LineComponent from "../line";
 import calculateDistances from "./calculate-distances";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { TextEditorComponent } from "../text-editor";
 import { StringScanner } from "@tandem/common/string/scanner";
 // import createToken from "saffronmon/tokenizers/create-token";

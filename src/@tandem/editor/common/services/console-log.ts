@@ -1,8 +1,8 @@
-import * as chalk from "chalk";
-import * as path from "path";
+import chalk =  require("chalk");
+import path =  require("path");
 import { CoreApplicationService } from "@tandem/core";
 import { titleize } from "inflection";
-import * as moment from "moment";
+import moment =  require("moment");
 import { ansi_to_html } from "ansi_up";
 
 // beat TS type checking

@@ -1,23 +1,27 @@
+require("reflect-metadata");
+
 const webpack               = require('webpack');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const cssnext               = require('cssnext');
 const { join, dirname }     = require('path');
-const { FileCacheProvider } = require('../out/@tandem/sandbox');
+const { FileCacheProvider } = require('../../out/@tandem/sandbox');
 
 const {
   WATCH,
   SRC_DIR,
   OUT_DIR,
   BASE_DIR,
-  NODE_MODULES_DIR
-} = require('./config');
+  NODE_MODULES_DIR,
+  OUT_NODE_MODULES_DIR
+} = require('../config');
+
 
 // SANDBOXED=1 tandem component.tsx
 const SANDBOXED = !!process.env.SANDBOXED;
-const TARGET = "electron";
+
 module.exports = {
-    target: TARGET,
+    target: "electron",
     output: {
       filename: '[name].js',
     },
@@ -41,8 +45,8 @@ module.exports = {
       publicPath: false
     },
     resolve: {
-      extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.peg', '.scss'],
-      modulesDirectories: [SRC_DIR, NODE_MODULES_DIR],
+      extensions: ['', '.json', '.ts', '.tsx', '.js', '.jsx', '.peg', '.scss'],
+      modulesDirectories: [SRC_DIR, NODE_MODULES_DIR, OUT_NODE_MODULES_DIR],
       alias: {
         // 'react': require.resolve('node_modules/react/dist/react.js'),
         // 'react-dom': require.resolve('node_modules/react-dom/dist/react-dom.js'),
@@ -87,11 +91,6 @@ module.exports = {
       }),
       new ExtractTextPlugin('styles.css')
     ],
-    node: {
-      __filename: true,
-      fs:  TARGET === "electron" ? undefined : 'empty',
-      Buffer: true
-    },
     postcss: () => [cssnext()],
     module: {
       loaders: [
@@ -112,7 +111,7 @@ module.exports = {
 
           // TODO - add jsx dataSource loader here
           loader: SANDBOXED ? [
-            join(__dirname, '/../out/tandem-loader'),
+            join(__dirname, '/../../out/tandem-loader'),
             'ts-loader?sourceMap',
           ].join('!') : 'ts-loader',
           exclude:  /node_modules/

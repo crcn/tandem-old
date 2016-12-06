@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { DraggableComponent } from "../draggable";
 import { throttle, Cancelable } from "lodash";
 

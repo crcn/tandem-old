@@ -1,7 +1,7 @@
 import "./index.scss";
-import * as cx from "classnames";
+import cx =  require("classnames");
 import { uniq } from "lodash";
-import * as React from "react";
+import React =  require("React");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";

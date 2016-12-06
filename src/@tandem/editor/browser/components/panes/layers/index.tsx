@@ -1,10 +1,10 @@
 import "./index.scss";
 
-import * as React from "react";
+import React =  require("React");
 import { PaneComponent } from "@tandem/editor/browser/components/common";
 import LayerComponent from "./layer";
 import { findTreeNode, BaseApplicationComponent } from "@tandem/common";
-import * as path from "path";
+import path =  require("path");
 
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";

@@ -1,4 +1,4 @@
-import * as path from "path";
+import path =  require("path");
 import { FileSystemProvider, IFileSystem } from "@tandem/sandbox";
 import {
   inject,

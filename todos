@@ -55,6 +55,7 @@ html css source maps
 - [ ] right click + open any index.html file
 - [ ] auto updater
 - [ ] update banner
+- [ ] right click context menus
 
 - [ ] Core
   - [ ] ability to load HTTP urls

@@ -3,8 +3,8 @@ import "reflect-metadata";
 import "@tandem/uikit/scss";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 import { DragSelectStageToolComponent } from "./index";
 
 export const createBodyElement = reactEditorPreview(() => {

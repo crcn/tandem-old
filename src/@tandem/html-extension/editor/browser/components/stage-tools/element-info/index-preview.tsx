@@ -2,8 +2,8 @@ import "@tandem/uikit/scss";
 import "reflect-metatadata";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 import { BoundingRect } from "@tandem/common";
 import { ElementInfoStageToolComponent } from "./index";
 import { SyntheticWindow, SyntheticCSSStyle } from "@tandem/synthetic-browser";

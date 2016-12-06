@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as fsa from "fs-extra";
-import * as glob from "glob";
-import * as path from "path";
+import fs =  require("fs");
+import fsa = require("fs-extra");
+import glob =  require("glob");
+import path =  require("path");
 import { IHelpOption } from "tandem-studio/master/stores";
 import { TransformStream } from "@tandem/mesh";
 import { BaseStudioMasterCommand } from "./base";

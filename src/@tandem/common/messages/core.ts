@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { CoreEvent } from "./base";
 import { ITreeNode } from "@tandem/common/tree";
 import { IDisposable } from "@tandem/common/object";

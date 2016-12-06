@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { DuplexStream, IBus, readOneChunk } from "@tandem/mesh";
 
 export class UpsertBus implements IBus<any> {

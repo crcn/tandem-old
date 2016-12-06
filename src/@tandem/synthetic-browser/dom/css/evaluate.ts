@@ -1,5 +1,5 @@
-import * as sm from "source-map";
-import * as postcss from "postcss";
+import sm = require("source-map");
+import postcss =  require("postcss");
 
 import { without } from "lodash";
 import { camelCase } from "lodash";

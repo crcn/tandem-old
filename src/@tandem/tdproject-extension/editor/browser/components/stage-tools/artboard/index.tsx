@@ -1,9 +1,9 @@
 import "./index.scss";
-import * as React from "react";
-import * as AutosizeInput from "react-input-autosize";
+import React =  require("React");
+import AutosizeInput = require("react-input-autosize");
 
 import { Status } from "@tandem/common/status";
-import * as tc from "tinycolor2";
+import tc =  require("tinycolor2");
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { BoundingRect, BaseApplicationComponent, PropertyMutation } from "@tandem/common";
 import { ApplyFileEditRequest } from "@tandem/sandbox";

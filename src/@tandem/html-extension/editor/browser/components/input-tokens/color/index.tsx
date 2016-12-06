@@ -1,6 +1,6 @@
 import "./index.scss";
-import * as React from "react";
-import * as tinyColor from "tinycolor2";
+import React =  require("React");
+import tinyColor =  require("tinycolor2");
 import { ChromePicker } from "react-color";
 import { PortalComponent, DropdownComponent } from "@tandem/uikit";
 import { TextEditorToken, AltInputComponent,  } from "@tandem/editor/browser";

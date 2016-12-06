@@ -1,5 +1,5 @@
-import * as path from "path";
-import * as sm from "source-map";
+import path =  require("path");
+import sm = require("source-map");
 
 import {
   Dependency,

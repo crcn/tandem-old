@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 import { PortalComponent } from "../portal";
 
 export interface IDropdownComponentProps {

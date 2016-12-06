@@ -6,14 +6,14 @@
 import "reflect-metadata";
 
 import { exec, spawn, ChildProcess } from "child_process";
-import * as net from "net";
-import * as os from "os";
-import * as fs from "fs";
-import * as path from "path";
-import * as vscode from "vscode";
-import * as through from "through2";
-import * as getPort from "get-port";
-import * as createServer from "express";
+import net =  require("net");
+import os =  require("os");
+import fs =  require("fs");
+import path =  require("path");
+import vscode = require("vscode");
+import through =  require("through");
+import getPort =  require("get-port");
+import createServer =  require("createServer");
 import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage, setMessageTarget } from "@tandem/mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";

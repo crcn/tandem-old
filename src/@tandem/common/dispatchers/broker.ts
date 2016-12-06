@@ -1,5 +1,5 @@
 import { IBrokerBus } from "./base";
-import * as assert from "assert";
+import assert = require("assert");
 import {
   IBus,
   IMessage,

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 
 export class Hello extends React.Component<any, any> {
   render()  {

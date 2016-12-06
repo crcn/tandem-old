@@ -1,4 +1,4 @@
-import { parse } from "./parser.peg";
+const { parse } = require("./parser.peg");
 
 const _cache = {};
 export const parseMarkup = (source: string) => {

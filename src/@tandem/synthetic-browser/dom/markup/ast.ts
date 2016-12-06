@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 
 import {
   INamed,

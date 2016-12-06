@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 
 export class FocusComponent extends React.Component<{ select?: boolean, focus?: boolean, children?: any }, any> {
   private _timeout: any;

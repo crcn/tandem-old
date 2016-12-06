@@ -1,4 +1,4 @@
-import * as Url from "url";
+import Url =  require("url");
 import { uniq } from "lodash";
 import { toArray } from "@tandem/common/utils/array";
 import { IMessage } from "@tandem/mesh";

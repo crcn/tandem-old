@@ -1,5 +1,5 @@
 import { argv } from "yargs";
-import * as getPort from "get-port";
+import getPort = require("get-port");
 import { SockService, DSService } from "./services";
 import "./messages";
 

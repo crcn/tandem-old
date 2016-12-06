@@ -3,8 +3,8 @@
 import "reflect-metadata";
 import "@tandem/uikit/scss";
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React =  require("React");
+import ReactDOM = require("react-dom");
 import  FooterComponent from "./index";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";

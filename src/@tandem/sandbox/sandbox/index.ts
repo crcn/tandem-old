@@ -1,4 +1,4 @@
-import * as vm from "vm";
+import vm =  require("vm");
 import { CallbackDispatcher } from "@tandem/mesh";
 import { SandboxModuleEvaluatorFactoryProvider } from "./providers";
 

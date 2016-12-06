@@ -1,6 +1,6 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as glob from "glob";
+import fs =  require("fs");
+import path =  require("path");
+import glob =  require("glob");
 import {  BaseStudioMasterCommand } from "./base";
 import { OpenNewWorkspaceRequest } from "tandem-studio/common";
 

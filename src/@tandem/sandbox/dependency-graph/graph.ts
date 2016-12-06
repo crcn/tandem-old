@@ -1,4 +1,4 @@
-import * as memoize from "memoizee";
+import memoize =  require("memoizee");
 import { IModule } from "@tandem/sandbox/sandbox";
 
 import { 

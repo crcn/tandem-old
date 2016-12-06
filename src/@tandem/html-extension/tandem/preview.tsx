@@ -2,7 +2,7 @@ import "reflect-metadata";
 import "@tandem/editor/browser/style.ts"
 
 import "./preview.scss";
-import * as React from "react";
+import React =  require("React");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { GutterComponent } from "@tandem/uikit";

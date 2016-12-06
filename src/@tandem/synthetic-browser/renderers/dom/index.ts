@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import assert = require("assert");
 import { decode } from "ent";
 import { camelCase } from "lodash";
 import { BaseRenderer } from "../base";

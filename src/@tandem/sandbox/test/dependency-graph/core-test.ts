@@ -1,4 +1,4 @@
-import * as sinon from "sinon";
+import sinon =  require("sinon");
 import { expect } from "chai";
 import { Injector, IProvider, MimeTypeProvider, Status } from "@tandem/common";
 import {

@@ -1,4 +1,4 @@
-import * as postcssSassSyntax from "postcss-scss";
+import postcssSassSyntax = require("postcss-scss");
 
 import { SCSSEditor } from "./scss-editor";
 import { SASS_MIME_TYPE } from "../constants";

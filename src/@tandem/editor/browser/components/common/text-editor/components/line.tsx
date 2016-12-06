@@ -1,5 +1,5 @@
 import TextEditorLine from "../models/line";
-import * as React from "react";
+import React =  require("React");
 import TextEditor from "../models/text-editor";
 import { Injector } from "@tandem/common";
 import TokenComponent from "./token";

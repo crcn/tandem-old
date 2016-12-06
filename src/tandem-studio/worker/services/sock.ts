@@ -3,10 +3,10 @@ import { CoreApplicationService } from "@tandem/core";
 import { isMaster } from "cluster";
 import { LoadApplicationRequest, InitializeApplicationRequest, SockBus, CoreEvent, serialize, deserialize } from "@tandem/common";
 import { EditorFamilyType, IEditorCommonConfig } from "@tandem/editor/common";
-import * as os from "os";
-import * as path from "path";
-import * as net from "net";
-import * as fsa from "fs-extra";
+import os =  require("os");
+import path =  require("path");
+import net =  require("net");
+import fsa = require("fs-extra");
 
 const SOCK_FILE = path.join(os.tmpdir(), `tandem-${process.env.USER}.sock`);
 

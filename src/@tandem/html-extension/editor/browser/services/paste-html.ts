@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift = require("sift");
 import { flatten } from "lodash";
 import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterMessage } from "@tandem/common/decorators";

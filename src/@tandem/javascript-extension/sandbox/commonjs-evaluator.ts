@@ -1,5 +1,5 @@
-import * as vm from "vm";
-import * as path from "path";
+import vm =  require("vm");
+import path =  require("path");
 import { ISandboxDependencyEvaluator, SandboxModule, compileModuleSandboxScript, runModuleSandboxScript } from "@tandem/sandbox";
 
 export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {

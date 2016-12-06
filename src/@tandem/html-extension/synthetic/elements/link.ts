@@ -9,7 +9,7 @@ import {
   SyntheticHTMLElement,
   SyntheticCSSStyleSheet
 } from "@tandem/synthetic-browser";
-import * as path from "path";
+import path =  require("path");
 
 const _cache = {};
 

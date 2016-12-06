@@ -1,9 +1,9 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 import { TreeNode } from "@tandem/common/tree";
 
 import "./index.scss";
-import * as cx from "classnames";
+import cx =  require("classnames");
 
 export interface ITreeComponentProps {
   nodes: TreeNode<any>[];

@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from "react";
+import React =  require("React");
 import { debounce } from "lodash";
 import * as cx  from "classnames";
 import { Workspace } from "@tandem/editor/browser/stores";
@@ -210,7 +210,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
         canvasHeight : height,
         centerLeft   : 0.5,
         centerTop    : 0.5,
-        show: show
+        show: false
       });
 
       const entireBounds = BoundingRect.merge(...browser.renderer.getAllBoundingRects());

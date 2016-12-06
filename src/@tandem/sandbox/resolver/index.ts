@@ -1,7 +1,7 @@
 // TODO - this is deprecated. Move to strategies/default
 
-import * as fs from "fs";
-import * as memoize from "memoizee";
+import fs =  require("fs");
+import memoize =  require("memoizee");
 
 import { IFileSystem } from "../file-system";
 import { IFileResolver } from "../resolver";
@@ -16,8 +16,8 @@ import {
   MimeTypeProvider,
   PrivateBusProvider,
 } from "@tandem/common";
-import * as resolve from "resolve";
-import * as pkgpath from "package-path";
+import resolve =  require("resolve");
+import pkgpath = require("package-path");
 
 export interface IFileResolverOptions {
   extensions: string[];

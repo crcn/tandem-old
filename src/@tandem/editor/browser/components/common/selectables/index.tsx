@@ -2,8 +2,8 @@
 // areas when mouse hits the bounds of an item
 import "./index.scss";
 
-import * as cx from "classnames";
-import * as React from "react";
+import cx =  require("classnames");
+import React =  require("React");
 import { inject } from "@tandem/common/decorators";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { Workspace } from "@tandem/editor/browser/stores";

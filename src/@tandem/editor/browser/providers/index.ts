@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { EditorStore } from "@tandem/editor/browser/stores";
 import { IDispatcher } from "@tandem/mesh";
 import { IWorkspaceTool } from "@tandem/editor/browser/stores";

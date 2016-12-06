@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic"; 

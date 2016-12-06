@@ -1,4 +1,4 @@
-import * as React from "react";
+import React =  require("React");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { BaseApplicationComponent } from "@tandem/common";

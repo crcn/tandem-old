@@ -1,4 +1,4 @@
-import * as qs from "qs";
+import qs =  require("qs");
 import { BrowserWindow } from "electron";
 import { BaseStudioMasterCommand } from "./base";
 import { OpenNewWorkspaceRequest } from "tandem-studio/common";
