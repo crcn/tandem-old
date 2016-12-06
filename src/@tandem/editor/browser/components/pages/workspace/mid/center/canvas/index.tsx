@@ -204,7 +204,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     // TODO: Move this to a data model instead of here -- this is janky.
     const fitToCanvas = () => {
-      if (watcher) watcher.dispose();
 
       this.setState({
         canvasWidth  : width,
@@ -215,8 +214,9 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
       });
 
       const entireBounds = BoundingRect.merge(...browser.renderer.getAllBoundingRects());
+      
 
-      console.log(entireBounds);
+      console.log(entireBounds, browser.renderer.getAllBoundingRects());
       const padding = 200;
       const zoom = Math.min((width - padding) / entireBounds.width, (height - padding) / entireBounds.height);
       this.translate(width / 2 - entireBounds.width / 2 - entireBounds.left, height / 2 - entireBounds.height / 2 - entireBounds.top);
@@ -226,7 +226,12 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     if (browser.renderer.rects) {
       fitToCanvas();
     } else {
-      watcher = browser.renderer.rectsWatcher.connect(fitToCanvas);
+
+      // rects may get fired multiple times
+      watcher = browser.renderer.rectsWatcher.connect(() => {
+        watcher.dispose();
+        setTimeout(fitToCanvas, 500);
+      });
     }
   }
 
@@ -283,6 +288,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
         onDragExit={this.onDragExit}
         className={cx({ "m-editor-stage-canvas": true, "fade-in": this.state.show })}
         style={style}>
+          <div className="m-editor-stage-loading" style={{display: this.state.show ? "none" : "block" }} />
           <div style={innerStyle} className="noselect preview-root" data-previewroot>
             <PreviewLayerComponent renderer={this.props.workspace.browser.renderer} />
             { workspace.document ? <ToolsLayerComponent workspace={workspace} zoom={workspace.zoom} zooming={this.state.zooming} allElements={workspace.documentQuerier.queriedElements} /> : undefined }

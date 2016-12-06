@@ -1,6 +1,7 @@
 {
   "name": "@tandem/editor",
   "version": "1.0.1",
+  "private": true,
   "description": "",
   "main": "./index.ts",
   "bin": {
@@ -23,8 +24,8 @@
     "fs-extra": "^0.30.0",
     "get-port": "^2.1.0",
     "inflection": "^1.10.0",
+    "memoizee": "^0.4.1",
     "moment": "^2.15.2",
-    "mongodb": "^2.2.11",
     "mousetrap": "^1.6.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",

@@ -17,6 +17,37 @@
   -webkit-backface-visibility: hidden;
 }
 
+.m-editor-stage-loading {
+  &::before {
+    content: " ";
+    display: block;
+    width: 11px;
+    height: 11px;
+    background: #00B5FF;
+    border-radius: 10px;
+  }
+  opacity: 0.4;
+  animation: stage-loading-pulse 2s infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes stage-loading-pulse {
+  0% {
+    opacity: 0.4;
+  } 
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0.4;
+  }
+}
+
 .m-editor-stage-canvas {
   background: transparent;
   width: 100%;

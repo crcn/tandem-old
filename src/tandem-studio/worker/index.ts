@@ -3,10 +3,10 @@ import * as getPort from "get-port";
 import { SockService, DSService } from "./services";
 import "./messages";
 
+import { MemoryDataStore } from "@tandem/mesh";
 import { ImportFileRequest } from "@tandem/editor/browser/messages";
 import { PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
-import { MongoDataStore, MemoryDataStore } from "@tandem/mesh";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/server";
@@ -86,7 +86,7 @@ export const initializeWorker = async () => {
   const injector = new Injector(
     createCommonEditorProviders(config),
     createCoreStudioWorkerProviders(),
-    new DSProvider(config.experimental ? new MongoDataStore("mongodb://localhost:27017/tandem") : new MemoryDataStore()),
+    new DSProvider(new MemoryDataStore()),
     new ApplicationServiceProvider("sock", SockService),
     new ApplicationServiceProvider("ds", DSService),
     createSyntheticBrowserWorkerProviders(),

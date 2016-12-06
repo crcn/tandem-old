@@ -117,8 +117,17 @@ gulp.task('build:webpack', function(done) {
   webPackages.forEach(run);
 });
 
-// TODO
-gulp.task('build:electron');
+gulp.task('build:electron', gulpSequence(
+  'prepare:electron', 
+  'build:electron:package'
+));
+
+gulp.task('build:electron:package', function() {
+  const electronPackage = getElectronPackage();
+  return gulp.src(join(OUT_DIR, electronPackage.name, "**"))
+  .pipe(electron({ version: electronPackage.electronVersion, platform: 'darwin' }))
+  .pipe(symdest(join(OUT_DIR, electronPackage.name, "app")));
+});
 
 /******************************
  * Prepare tasks
@@ -134,6 +143,21 @@ gulp.task('prepare:copy-assets', () => {
   return gulp.src(join(SRC_DIR, '**', '!(*.ts|*.peg)'))
   .pipe(gulp.dest(OUT_DIR));
 });
+
+
+gulp.task('prepare:electron', gulpSequence(
+
+  // clean electron node_modules to prevent stale local @tandem dependencies 
+  'clean:electron',
+  'prepare:electron:install'
+));
+
+
+gulp.task('prepare:electron:install', () => {
+  return gulp.src(join(OUT_DIR, getElectronPackage().name, "package.json"))
+  .pipe(install());
+});
+
 
 gulp.task('prepare:mono-package', gulpSequence(
   'prepare:create-mono-package',
@@ -196,6 +220,12 @@ gulp.task('clean:javascript', function() {
     fsa.removeSync(filePath);
   });
 });
+
+gulp.task('clean:electron', function() {
+  fsa.removeSync(join(OUT_DIR, getElectronPackage().name, 'app'));
+  fsa.removeSync(join(OUT_DIR, getElectronPackage().name, 'node_modules'));
+});
+
 
 gulp.task('clean:out', function() {
   fsa.removeSync(OUT_DIR);
@@ -309,5 +339,8 @@ function getPackageOutDirs() {
   return PACKAGE_NAMES.map(name => join(OUT_DIR, name));
 }
 
-
 function noop() { }
+
+function getElectronPackage() {
+  return PACKAGES.find(sift({ 'electronVersion': { $exists: true }}));
+}

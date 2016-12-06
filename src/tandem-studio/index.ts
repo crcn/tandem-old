@@ -1,3 +1,4 @@
+
 import "reflect-metadata";
 import { app } from "electron";
 import { isMaster } from "cluster";

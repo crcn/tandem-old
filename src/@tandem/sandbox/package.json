@@ -1,6 +1,7 @@
 {
   "name": "@tandem/sandbox",
   "version": "1.0.0",
+  "private": true,
   "description": "```javascript import { Sandbox } from \"@tandem/sandbox\"; import { Injector } from \"@tandem/providers\";",
   "main": "index.js",
   "scripts": {

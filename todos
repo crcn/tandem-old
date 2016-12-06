@@ -50,7 +50,11 @@ html css source maps
 
 - [ ] fix zombie processes
 
+- [ ] minify code
 - [ ] bundle as electron application
+- [ ] right click + open any index.html file
+- [ ] auto updater
+- [ ] update banner
 
 - [ ] Core
   - [ ] ability to load HTTP urls
@@ -65,7 +69,7 @@ html css source maps
 - [ ] UX
   - [ ] open main code editor with shift click if not already opened
   - [ ] open tandem from text editor
-  - [ ] open tandem by right clivck - open with tandem
+  - [ ] open any file with tandem
   - [ ] ability to setup workspace before saving one
   - [ ] Add file CTA when no artboards are present
   - [ ] remove layout for getting started, use abs pos
@@ -81,9 +85,7 @@ html css source maps
   - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
   - [ ] artboards do not show up if there's an error in the load
   - [ ] Fix vscode source code overwrites
-  - [ ] fix centering
   - [ ] local images must work in HTML ext
-  - [ ] fix jankiness when updating docs
 
 - [ ] Editor
   - [ ] History
@@ -103,6 +105,7 @@ html css source maps
 - [ ] Stability
   - [ ] analytics on usage
   - [ ] auto updater
+  - [ ] account for infinite loops in code
 
 - [ ] top bar
   - [ ] share workspace

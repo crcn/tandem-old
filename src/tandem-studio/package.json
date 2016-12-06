@@ -2,21 +2,36 @@
   "name": "tandem-studio",
   "version": "1.0.0",
   "main": "index.js",
+  "electronVersion": "1.4.6",
   "browser": "./browser/index.bundle.js",
   "entries": {
     "browser": "./browser/index.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": ""
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {},
   "dependencies": {
+    "@tandem/common": "file:../@tandem/common",
+    "@tandem/core": "file:../@tandem/core",
+    "@tandem/editor": "file:../@tandem/editor",
+    "@tandem/html-extension": "file:../@tandem/html-extension",
+    "@tandem/javascript-extension": "file:../@tandem/javascript-extension",
+    "@tandem/markdown-extension": "file:../@tandem/markdown-extension",
+    "@tandem/mesh": "file:../@tandem/mesh",
+    "@tandem/sandbox": "file:../@tandem/sandbox",
+    "@tandem/sass-extension": "file:../@tandem/sass-extension",
+    "@tandem/synthetic-browser": "file:../@tandem/synthetic-browser",
+    "@tandem/tdproject-extension": "file:../@tandem/tdproject-extension",
+    "@tandem/typescript-extension": "file:../@tandem/typescript-extension",
     "fs-extra": "^1.0.0",
     "glob": "^7.1.1",
     "qs": "^6.3.0",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
     "react-file-input": "^0.2.5",
     "strip-indent": "^2.0.0"
   }

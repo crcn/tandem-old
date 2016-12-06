@@ -16,6 +16,7 @@ export class SpawnWorkerCommand extends  BaseStudioMasterCommand {
         env: process.env,
         stdio: ["inherit", "inherit", "inherit", "ipc"]
       });
+      
 
       proxy.target = createProcessBus(this.config.family, proc, this.bus);
 
