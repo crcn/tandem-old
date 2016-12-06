@@ -11,6 +11,8 @@ import {
   IObservable,
   BoundingRect,
   watchProperty,
+  PropertyWatcher,
+  PropertyMutation,
   MetadataChangeEvent,
   waitForPropertyChange,
 } from "@tandem/common";
@@ -28,6 +30,10 @@ import {
 export interface ISyntheticDocumentRenderer extends IObservable {
   readonly element: HTMLElement;
   document: SyntheticDocument;
+
+  rects: any;
+
+  rectsWatcher: PropertyWatcher<ISyntheticDocumentRenderer, any>;
 
   /**
    * Called by whatever is mounting the document renderer
@@ -89,6 +95,8 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   @bindable()
   protected _running: boolean;
 
+  readonly rectsWatcher: PropertyWatcher<BaseRenderer, any>;
+
   private _shouldRenderAgain: boolean;
   private _targetObserver: IDispatcher<any, any>;
   private _computedStyles: any;
@@ -105,12 +113,18 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
     this._running = false;
     this._computedStyles = {};
 
+    this.rectsWatcher = new PropertyWatcher<BaseRenderer, boolean>(this, "rects");
+
     // may be running in a worker. Do not create an element if that's the case.
     if (this.nodeFactory) {
       this.element = this.createElement();
     }
 
     this._targetObserver = new CallbackDispatcher(this.onDocumentEvent.bind(this));
+  }
+
+  get rects(): any {
+    return this.$rects;
   }
 
   get document(): SyntheticDocument {
@@ -174,9 +188,13 @@ export abstract class BaseRenderer extends Observable implements ISyntheticDocum
   }
 
   protected setRects(rects: { [IDentifier: string]: BoundingRect }, styles: { [IDentifier: string]: SyntheticCSSStyle }) {
+    const oldRects = this.$rects;
     this.$rects          = rects;
     this._computedStyles = styles;
     this._rendered = true;
+    this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "rects", rects, oldRects).toEvent());
+
+    // DEPRECATED
     this.notify(new SyntheticRendererEvent(SyntheticRendererEvent.UPDATE_RECTANGLES));
   }
 
@@ -237,6 +255,13 @@ export class BaseDecoratorRenderer extends Observable implements ISyntheticDocum
     super();
     _renderer.observe(new CallbackDispatcher(this.onTargetRendererEvent.bind(this)));
   }
+  get rects() {
+    return this._renderer.rects;
+  }
+  get rectsWatcher() {
+    return this._renderer.rectsWatcher;
+  }
+  
   getComputedStyle(uid) {
     return this._renderer.getComputedStyle(uid);
   }
@@ -282,11 +307,14 @@ export class BaseDecoratorRenderer extends Observable implements ISyntheticDocum
   }
 }
 
-export class NoopRenderer extends Observable implements ISyntheticDocumentRenderer {
+export class NoopRenderer extends BaseRenderer implements ISyntheticDocumentRenderer {
   readonly element: HTMLElement;
   public document: SyntheticDocument;
   public getBoundingRect() {
     return BoundingRect.zeros();
+  }
+  get rects() {
+    return {};
   }
   public getEagerComputedStyle() {
     return null;
@@ -305,6 +333,6 @@ export class NoopRenderer extends Observable implements ISyntheticDocumentRender
   public hasLoadedComputedStyle() {
     return false;
   }
-  requestRender() { }
+  render() { }
   createElement() { return undefined; }
 }

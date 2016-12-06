@@ -77,7 +77,6 @@ export class SyntheticDOMImplementation {
   }
 }
 
-
 export class SyntheticWindow extends Observable {
 
   readonly navigator = new SyntheticNavigator();
@@ -129,7 +128,7 @@ export class SyntheticWindow extends Observable {
     // in case proto gets set - don't want the original to get fudged
     // but doesn't work -- element instanceof HTMLElement 
     this.HTMLElement = SyntheticHTMLElement;
-    this.Element     =  SyntheticDOMElement;
+    this.Element     = SyntheticDOMElement;
 
     const xhrServer = this._server = new XHRServer(this);
 

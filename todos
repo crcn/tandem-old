@@ -25,7 +25,7 @@ html css source maps
 
 - [ ] TodoMVC
   - [ ] broken
-    - [ ] *angular2 - document.write not supported & prototype shim on HTMLElement
+    - [ ] *angular2 - document.write not supported
     - [ ] guit
     - [ ] humble 
     - [ ] js_of_ocaml
@@ -45,15 +45,19 @@ html css source maps
     - [ ] vanilla dart
     - [ ] vue
 
+- test
+  - https://github.com/facebookincubator/create-react-app
+
 - [ ] fix zombie processes
 
 - [ ] bundle as electron application
 
 - [ ] Core
-  - [ ] wait for all XHR requests to be completed before sending diff
   - [ ] ability to load HTTP urls
+  - [ ] do NOT use file paths anymore - use urls
+    - [ ] file watcher dependent on url type
+  - [ ] *wait for all XHR requests to be completed before sending diff - (flickering otherwise)
   - [ ] enable history push state observations in app (test for todomvc example)
-  - [ ] register event listeners
   - [ ] ensure that location changes are observable
   - [ ] ability to dynamically add dependencies to the dependency graph -- required for stuff like systemjs.
   - [ ] ability to define local storage (and see possibly)
@@ -67,8 +71,9 @@ html css source maps
   - [ ] remove layout for getting started, use abs pos
   
 - [ ] BUGS
-  - [ ] source maps not working for CSS
-  - [ ] absolute bounds and moving around objects
+  - [ ] source maps not working for CSS 
+  - [ ] source maps not working with React
+  - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
   - [ ] app locked if artboard has a broken link
   - [ ] fix "channel close" linking back to source
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
@@ -79,7 +84,6 @@ html css source maps
   - [ ] fix centering
   - [ ] local images must work in HTML ext
   - [ ] fix jankiness when updating docs
-
 
 - [ ] Editor
   - [ ] History

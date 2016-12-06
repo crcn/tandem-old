@@ -1,5 +1,7 @@
 import "./index.scss";
 import * as React from "react";
+import { debounce } from "lodash";
+import * as cx  from "classnames";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import ToolsLayerComponent from "./tools";
@@ -22,6 +24,7 @@ import {
 // TODO - most of this logic should be stored within the a child of the workspace
 // model.
 export default class EditorStageLayersComponent extends BaseApplicationComponent<{ workspace: Workspace, zoom: number }, any> {
+
 
   private _mousePosition: IPoint;
   private _toolsHidden: any;
@@ -98,7 +101,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
   componentWillUpdate(props) {
     if (props.workspace !== this.props.workspace) {
-      requestAnimationFrame(this._recenter);
+      this._debounceRecenter();
     } else if (props.zoom !== this.props.zoom) {
       this._center(this.props.zoom, props.zoom);
     }
@@ -138,9 +141,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     const top  = v1h * v1py - v2nh * v2py;
 
     this.translate(left, top);
-    if (this.state.showCanvas !== true) {
-      this.setState({ showCanvas: true });
-    }
   }
 
   onWheel = (event: React.WheelEvent<any>) => {
@@ -160,9 +160,9 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   private _zoomTimer = null;
 
   _zooming() {
-    this.setState({ zooming: true });
+    this.setState({ zooming: true, show: this.state.show });
     clearTimeout(this._zoomTimer);
-    this._zoomTimer = setTimeout(() => this.setState({ zooming: false }), 100);
+    this._zoomTimer = setTimeout(() => this.setState({ zooming: false, show: this.state.show }), 100);
   }
 
 
@@ -179,46 +179,55 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   componentDidMount() {
-    this._recenter();
+    this._debounceRecenter();
   }
 
-  _recenter = () => {
+  _debounceRecenter = () => {
+    setTimeout(() => {
+      this._recenter(true);
+    }, 400);
+  };
+
+  _recenter = (show?: boolean) => {
     const body = (this.refs as any).isolate.body;
     this._mousePosition = undefined;
 
     let width  = body.offsetWidth;
     let height = body.offsetHeight;
 
-    this.setState({
-      canvasWidth  : width,
-      canvasHeight : height,
-      centerLeft   : 0.5,
-      centerTop    : 0.5
-    });
+
 
     const workspace =  this.props.workspace;
     const browser = this.props.workspace.browser;
 
+    let watcher;
+
     // TODO: Move this to a data model instead of here -- this is janky.
     const fitToCanvas = () => {
+      if (watcher) watcher.dispose();
+
+      this.setState({
+        canvasWidth  : width,
+        canvasHeight : height,
+        centerLeft   : 0.5,
+        centerTop    : 0.5,
+        show: show
+      });
+
       const entireBounds = BoundingRect.merge(...browser.renderer.getAllBoundingRects());
+
+      console.log(entireBounds);
       const padding = 200;
       const zoom = Math.min((width - padding) / entireBounds.width, (height - padding) / entireBounds.height);
       this.translate(width / 2 - entireBounds.width / 2 - entireBounds.left, height / 2 - entireBounds.height / 2 - entireBounds.top);
       this.bus.dispatch(new SetZoomRequest(zoom, false));
     }
 
-
-    const renderObserver = {
-      dispatch: (action) => {
-        if (action.type === SyntheticRendererEvent.UPDATE_RECTANGLES) {
-          browser.unobserve(renderObserver);
-          fitToCanvas();
-        }
-      }
-    };
-
-    browser.observe(renderObserver);
+    if (browser.renderer.rects) {
+      fitToCanvas();
+    } else {
+      watcher = browser.renderer.rectsWatcher.connect(fitToCanvas);
+    }
   }
 
 
@@ -227,7 +236,6 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   render() {
-
     const { workspace } = this.props;
     const style = {
       cursor: this.props.workspace.cursor
@@ -238,6 +246,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     const centerLeft   = this.state.centerLeft;
     const centerTop    = this.state.centerTop;
 
+
     let transform;
 
     if (canvasWidth) {
@@ -247,6 +256,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     const innerStyle = {
       transform: transform,
+      opacity: this.state.show ? 1 : 0,
       transformOrigin: "top left",
       position: "absolute",
       width: "100%",
@@ -271,7 +281,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
         onMouseDown={this.onMouseDown}
         tabIndex={-1}
         onDragExit={this.onDragExit}
-        className="m-editor-stage-canvas"
+        className={cx({ "m-editor-stage-canvas": true, "fade-in": this.state.show })}
         style={style}>
           <div style={innerStyle} className="noselect preview-root" data-previewroot>
             <PreviewLayerComponent renderer={this.props.workspace.browser.renderer} />

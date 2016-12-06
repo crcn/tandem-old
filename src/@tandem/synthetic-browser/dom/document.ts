@@ -532,23 +532,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     if (!this.$registeredElements[ns]) {
       this.$registeredElements[ns] = {};
     }
-
-    // let ctor;
-
     
-    // if (typeof prototypeOrCtor === "object") {
-    //   function sup() {
-    //   }
-    //   sup.prototype = this.$window.HTMLElement.prototype;
-    //   function ctor() {
-    //     // prototypeOrCtor.constructor.apply(this, arguments);
-    //   }
-    //   ctor.prototype = Object.assign(new sup(), prototypeOrCtor);
-      
-    // } else {
-    //   ctor = prototypeOrCtor;
-    // }
-
     return this.$registeredElements[ns][tagName.toLowerCase()] = ctor;
   }
 
@@ -594,7 +578,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   write(content: string) {
-    // TODO
+    throw new Error(`document.write is not currently supported`);
   }
 
   private onStyleSheetsEvent({ mutation }: MutationEvent<any>) {

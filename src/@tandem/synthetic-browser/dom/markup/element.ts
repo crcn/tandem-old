@@ -9,6 +9,7 @@ import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
+import { DOMEventListenerFunction } from "../events";
 import { SyntheticDOMContainer, SyntheticDOMContainerEdit, DOMContainerEditor, isDOMContainerMutation, SyntheticDOMContainerMutationTypes, SyntheticDOMContainerEditor } from "./container";
 import {
   BubbleDispatcher,
@@ -274,6 +275,10 @@ export class SyntheticDOMElementEditor<T extends SyntheticDOMElement> extends Sy
 
 @serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
 export class SyntheticDOMElement extends SyntheticDOMContainer {
+
+  // TODO - wire this up when front-end starts sending events to backend
+  @bindable()
+  public onclick: DOMEventListenerFunction;
 
   readonly nodeType: number = DOMNodeType.ELEMENT;
   readonly attributes: SyntheticDOMAttributes;

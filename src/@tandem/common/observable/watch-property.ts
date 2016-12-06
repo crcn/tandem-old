@@ -7,7 +7,7 @@ import { PropertyMutation, MutationEvent, CoreEvent } from "@tandem/common/messa
 export type propertyChangeCallbackType = (newValue: any, oldValue: any) => void;
 
 
-export class PropertyWatcher<T extends Observable, U> extends Observable {
+export class PropertyWatcher<T extends IObservable, U> extends Observable {
   private _currentValue: U;
   private _observer: IDispatcher<any, any>;
   private _listening: boolean;
