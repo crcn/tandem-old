@@ -1,7 +1,7 @@
 import "./layer.scss";
 
 import cx =  require("classnames");
-import React =  require("React");
+import React =  require("react");
 import { IDispatcher } from "@tandem/mesh";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { flatten, intersection } from "lodash";

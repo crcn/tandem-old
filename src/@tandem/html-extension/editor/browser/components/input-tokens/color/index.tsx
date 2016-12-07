@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import tinyColor =  require("tinycolor2");
 import { ChromePicker } from "react-color";
 import { PortalComponent, DropdownComponent } from "@tandem/uikit";

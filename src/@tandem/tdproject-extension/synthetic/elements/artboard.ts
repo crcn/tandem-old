@@ -33,7 +33,7 @@ import {
 } from "@tandem/synthetic-browser";
 
 // TODO - watch src for any changes
-@serializable()
+@serializable("SyntheticTDArtboardElement")
 export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
   private _iframe: HTMLIFrameElement;

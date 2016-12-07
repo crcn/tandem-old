@@ -1,6 +1,6 @@
 import "./text-editor.scss";
 
-import React =  require("React");
+import React =  require("react");
 import TextEditor from "../models/text-editor";
 import LineComponent from "./line";
 import CaretComponent from "./caret";

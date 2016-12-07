@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";

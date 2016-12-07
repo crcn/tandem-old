@@ -37,7 +37,7 @@ import {
   IDependencyGraphStrategyOptions
 } from "@tandem/sandbox";
 
-@serializable({
+@serializable("RemoteBrowserDocumentMessage", {
   serialize({ type, data }: RemoteBrowserDocumentMessage) {
     return {
       type: type,

@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { debounce } from "lodash";
 import * as cx  from "classnames";
 import { Workspace } from "@tandem/editor/browser/stores";
@@ -210,13 +210,12 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
         canvasHeight : height,
         centerLeft   : 0.5,
         centerTop    : 0.5,
-        show: false
+        show: show
       });
 
       const entireBounds = BoundingRect.merge(...browser.renderer.getAllBoundingRects());
       
 
-      console.log(entireBounds, browser.renderer.getAllBoundingRects());
       const padding = 200;
       const zoom = Math.min((width - padding) / entireBounds.width, (height - padding) / entireBounds.height);
       this.translate(width / 2 - entireBounds.width / 2 - entireBounds.left, height / 2 - entireBounds.height / 2 - entireBounds.top);

@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import { EditorStore } from "@tandem/editor/browser/stores";
 import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";

@@ -28,7 +28,7 @@ class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace
   }
 }
 
-@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSFontFaceSerializer()))
+@serializable("SyntheticCSSFontFace", new SyntheticCSSObjectSerializer(new SyntheticCSSFontFaceSerializer()))
 export class SyntheticCSSFontFace extends SyntheticCSSStyleRule implements ISyntheticCSSAtRule {
 
   readonly atRuleName = "font-face";

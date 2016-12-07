@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import { Workspace } from "@tandem/editor/browser";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { ApplyFileEditRequest } from "@tandem/sandbox";

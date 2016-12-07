@@ -1,7 +1,7 @@
 import "./index.scss";
 import "@tandem/uikit";
 
-import React =  require("React");
+import React =  require("react");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { calculateCSSMeasurments } from "@tandem/common";

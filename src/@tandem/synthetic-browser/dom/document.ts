@@ -85,7 +85,7 @@ export namespace SyntheticDocumentMutationTypes {
 }
 
 // TODO - this shouldn't be here
-@serializable({
+@serializable("SyntheticDocumentEdit", {
   serialize({ mutations }: SyntheticDocumentEdit) {
     return {
       mutations: mutations.map(serialize)
@@ -166,7 +166,7 @@ export function isDOMDocumentMutation(mutation: Mutation<any>) {
   }[mutation.type];
 }
 
-@serializable(new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
+@serializable("SyntheticDocument", new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
 export class SyntheticDocument extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.DOCUMENT;
   readonly styleSheets: ObservableCollection<SyntheticCSSStyleSheet>;

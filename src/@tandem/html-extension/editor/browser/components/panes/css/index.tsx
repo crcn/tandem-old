@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { cssTokenizer } from "@tandem/html-extension/tokenizers";

@@ -3,6 +3,7 @@ const fs            = require('fs');
 const fsa           = require('fs-extra');
 const exec          = require('child_process').exec;
 const gulp          = require('gulp');
+const deleteEmpty   = require('delete-empty');
 const sift          = require('sift');
 const glob          = require('glob');
 const mocha         = require('gulp-mocha');
@@ -87,67 +88,31 @@ gulp.task('build:symlinks', () => {
 });
 
 gulp.task('build:electron', gulpSequence(
+  'prepare:electron', 
   'build:electron:browser',
   'build:electron:server',
-  'prepare:electron', 
   'build:electron:package'
 ));
 
 gulp.task('build:electron:browser', (done) => {
-
   const pkg = getElectronPackage();
-  
-  const webPackages = PACKAGES.filter(sift({ 'entries.browser': { $exists: true }}));
-
-  let i = webPackages.length;
-
-  const config = require('./webpack/electron');
-
-  /*
-  Object.assign({}, config, {
-    entry: join(SRC_DIR, pkg.name, pkg.entries.browser),
-    output: {
-      path: join(OUT_DIR, pkg.name, dirname(pkg.browser)),
-      filename: basename(pkg.browser).replace(".js", ".bundle.js")
-    }
-  })*/
-
-
-  bundle(join(SRC_DIR, pkg.name, pkg.entries.browser), done);
-
-  // const run = (pkg, i) => {
-  //   const srcFilePath = join(SRC_DIR, pkg.name, pkg.entries.browser);
-  //   const outDir      = join(OUT_DIR, pkg.name, dirname(pkg.browser));
-
-  //   webpack(Object.assign(config, {
-  //       entry: srcFilePath,
-  //       output: {
-  //         path: outDir,
-  //         filename: basename(pkg.browser)
-  //       }
-  //   }), (err, stats) => {
-  //     if(err) throw new gutil.PluginError("webpack", err);
-  //     gutil.log("[webpack]", stats.toString(config.stats));
-
-  //     if (!WATCH && ++i === webPackages.length) {
-  //       done();
-  //     }
-  //   })
-  // }
-
-  // webPackages.forEach(run);
+  bundleElectron(join(SRC_DIR, pkg.name, pkg.entries.browser), require('./webpack/browser'), done);
 });
 
 gulp.task('build:electron:server', (done) => {
   const pkg = getElectronPackage();
-  bundle(join(SRC_DIR, pkg.name, pkg.main), Object.assign({}, require('./webpack/electron'), done);
+  bundleElectron(join(SRC_DIR, pkg.name, pkg.entries.server), require('./webpack/node').create(getElectronBundleDir() + "/node_modules"), done);
 });
 
 gulp.task('build:electron:package', () => {
   const electronPackage = getElectronPackage();
-  return gulp.src(join(OUT_DIR, electronPackage.name, "**"))
-  .pipe(electron({ version: electronPackage.electronVersion, platform: 'darwin' }))
-  .pipe(symdest(join(OUT_DIR, electronPackage.name, "app")));
+  return gulp.src(join(getElectronBundleDir(), "**"))
+  .pipe(electron({ 
+    version: electronPackage.electronVersion, 
+    platform: 'darwin',
+    asar: !!process.env.ASAR 
+  }))
+  .pipe(symdest(join(getElectronBundleDir(), "app")));
 });
 
 /******************************
@@ -170,13 +135,28 @@ gulp.task('prepare:electron', gulpSequence(
 
   // clean electron node_modules to prevent stale local @tandem dependencies 
   'clean:electron',
-  'prepare:electron:install',
-  'prepare:electron:paths-to-relative'
+  'prepare:electron:create-bundle-out',
+  'prepare:electron:clean-empty-dirs',
+  'prepare:electron:install'
 ));
 
+gulp.task('prepare:electron:create-bundle-out', () => {
+  const electronDir = join(OUT_DIR, getElectronPackage().name);
+  const electronSrcDir = join(SRC_DIR, getElectronPackage().name);
+  const bundleDir = getElectronBundleDir(); 
+  fsa.mkdirpSync(bundleDir);
+
+  return gulp.src(join(electronSrcDir, '**', '!(*.js|*.ts)'))
+  .pipe(gulp.dest(bundleDir));
+});
+
+
+gulp.task('prepare:electron:clean-empty-dirs', () => {
+  deleteEmpty.sync(getElectronBundleDir());
+});
 
 gulp.task('prepare:electron:install', () => {
-  return gulp.src(join(OUT_DIR, getElectronPackage().name, "package.json"))
+  return gulp.src(join(getElectronBundleDir(), "package.json"))
   .pipe(install());
 });
 
@@ -243,8 +223,7 @@ gulp.task('clean:javascript', function() {
 });
 
 gulp.task('clean:electron', function() {
-  fsa.removeSync(join(OUT_DIR, getElectronPackage().name, 'app'));
-  fsa.removeSync(join(OUT_DIR, getElectronPackage().name, 'node_modules'));
+  fsa.removeSync(getElectronBundleDir());
 });
 
 
@@ -287,6 +266,7 @@ gulp.task('test', ['test:flag', 'test:all']);
 
 gulp.task('test:flag', () => {
   process.env.TESTING   = true;
+  process.env.SOURCE_MAPS = 1;
   process.env.SANDBOXED = true;
 });
 
@@ -356,17 +336,25 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
  * Utilities
  ******************************/
 
+function bundleElectron(entry, config, done) {
+  bundle(entry, Object.assign({}, config, {
+    output: {
+      path: dirname(entry.replace(SRC_DIR + "/" + getElectronPackage().name, getElectronBundleDir()))
+    }
+  }), done);
+}
+
 function bundle(srcEntryPath, config, done) {
-   const outDir  = srcEntryPath.replace(SRC_DIR, OUT_DIR);
+   const outDir  = dirname(srcEntryPath.replace(SRC_DIR, OUT_DIR));
    const outBasename = basename(srcEntryPath.replace(/\.(js|ts)$/, ".bundle.js"));
 
    webpack(Object.assign({}, config, {
     entry: srcEntryPath,
     output: {
-      path: outDir,
+      path: config.output && config.output.path || outDir,
       filename: outBasename
     }
-   }, (err, stats) => {
+   }), (err, stats) => {
     if(err) throw new gutil.PluginError("webpack", err);
     gutil.log("[webpack]", stats.toString(config.stats));
     if (!WATCH) {
@@ -383,6 +371,10 @@ function noop() { }
 
 function getElectronAppDir() {
   return join(OUT_DIR, getElectronPackage().name);
+}
+
+function getElectronBundleDir() {
+  return join(OUT_DIR, getElectronPackage().name, "bundle");
 }
 
 function getElectronPackage() {

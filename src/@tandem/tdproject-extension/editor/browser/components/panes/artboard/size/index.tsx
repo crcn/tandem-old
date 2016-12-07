@@ -1,5 +1,5 @@
 import  "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { TextInputComponent } from "@tandem/uikit";
 import { BaseApplicationComponent } from "@tandem/common";
 import { ApplyFileEditRequest } from "@tandem/sandbox";

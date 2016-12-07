@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import cx =  require("classnames");
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import { ISyntheticObject } from "@tandem/sandbox";

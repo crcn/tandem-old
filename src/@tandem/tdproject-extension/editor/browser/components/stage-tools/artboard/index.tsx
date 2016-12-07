@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import AutosizeInput = require("react-input-autosize");
 
 import { Status } from "@tandem/common/status";

@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import { TextEditorToken, AltInputComponent } from "@tandem/editor/browser";
 
 export class ReferenceTokenInput extends React.Component<{ token: TextEditorToken }, any> {

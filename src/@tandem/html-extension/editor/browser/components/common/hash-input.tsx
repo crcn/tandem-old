@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import { FocusComponent, TextEditorComponent } from "@tandem/editor/browser/components/common";
 import { ITokenizer, inject, InjectorProvider, Injector, BaseApplicationComponent } from "@tandem/common";
 

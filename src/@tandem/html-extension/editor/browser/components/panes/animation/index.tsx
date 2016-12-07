@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { BaseApplicationComponent } from "@tandem/common";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { SyntheticDOMElement, getCSSFontFaceRules } from "@tandem/synthetic-browser";

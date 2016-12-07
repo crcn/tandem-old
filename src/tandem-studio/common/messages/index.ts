@@ -2,7 +2,7 @@ import { IMessage } from "@tandem/mesh";
 import { IStarterOption } from "tandem-studio/common/stores";
 import { EditorFamilyType } from "@tandem/editor/common";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
-import { OpenRemoteBrowserRequest } from "@tandem/editor/common";
+import { OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
 import { 
   setMessageTarget, 
   addMessageVisitor, 

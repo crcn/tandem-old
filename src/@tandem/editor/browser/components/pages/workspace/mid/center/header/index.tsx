@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import ToolbarComponent from "./toolbar";
 
 export default class StageEditorHeaderComponent extends React.Component<any, any> {

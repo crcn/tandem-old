@@ -43,7 +43,7 @@ declare module "ent" {
 }
 
 declare module "react-input-autosize" {
-  import React =  require("React");
+  import React =  require("react");
 
   class AutosizeInput extends React.Component<any, any> {
 
@@ -130,7 +130,7 @@ declare module "loader-utils" {
 }
 
 declare module "react-tappable" {
-  import React =  require("React");
+  import React =  require("react");
 
   class HammerComponent extends React.Component<any, any>{
 
@@ -219,7 +219,7 @@ declare module "detect-font" {
 }
 
 declare module "rc-checkbox" {
-  import React =  require("React");
+  import React =  require("react");
   
   class RCCheckbox extends React.Component<{ className?: string, type: string, prefixCls?: string, name?: string, checked?: number, onChange: (checked: number) => any}, any> {
 
@@ -233,7 +233,7 @@ declare module "rc-checkbox" {
 }
 
 declare module "react-file-input" {
-  import React =  require("React");
+  import React =  require("react");
   interface FileInputProps {
     name: string;
     className: string;

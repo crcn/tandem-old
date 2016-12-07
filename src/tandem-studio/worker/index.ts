@@ -62,7 +62,7 @@ export const createCoreStudioWorkerProviders = () => {
     createJavaScriptWorkerProviders(),
     createCoreMarkdownExtensionProviders(),
     createTDProjectEditorWorkerProviders(),
-    createTypescriptEditorWorkerProviders(),
+    // createTypescriptEditorWorkerProviders(),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadProjectConfigCommand),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),

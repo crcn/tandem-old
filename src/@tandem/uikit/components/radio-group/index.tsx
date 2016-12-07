@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import cx =  require("classnames");
 
 export interface IRadioGroupComponentOption {

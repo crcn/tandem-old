@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 
 /**
  * Enables people to drag componens & drop components

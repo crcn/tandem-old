@@ -18,9 +18,103 @@ const {
 
 
 // SANDBOXED=1 tandem component.tsx
-const SANDBOXED = !!process.env.SANDBOXED;
+const SANDBOXED   = !!process.env.SANDBOXED;
+const MINIFY      = !!process.env.MINIFY;
+const SOURCE_MAPS = !!process.env.SOURCE_MAPS;
 
-module.exports = {
+const plugins = [
+  new webpack.DefinePlugin({
+
+    // required for mongoid-js plugin particularly
+    'process.pid': process.pid
+  }),
+  new WebpackNotifierPlugin({
+    excludeWarnings: true,
+    alwaysNotify: true
+  }),
+  new ExtractTextPlugin('styles.css')
+];
+
+const SM_QUERY_PARAM = SOURCE_MAPS ? "?sourceMap" : "";
+
+const tsLoaders = [];
+const pegLoaders = [];
+const loaders = [];
+
+if (SANDBOXED) {
+  tsLoaders.push(join(__dirname, '/../../out/tandem-loader'));
+}
+
+// does not work
+if (MINIFY) {
+  // plugins.push(
+  //   new webpack.optimize.UglifyJsPlugin({
+  //     compress: true
+  //   })
+  // )
+
+  // const traceurLoader = 'traceur-loader?runtime';
+
+  // tsLoaders.push(traceurLoader);
+  // pegLoaders.push(traceurLoader);
+
+  // loaders.push(
+  //   {
+  //     test: /\.js?$/,
+
+  //     // TODO - add jsx dataSource loader here
+  //     loader: traceurLoader,
+  //     exclude:  /node_modules/
+  //   }
+  // )
+}
+
+
+
+tsLoaders.push('ts-loader' + SM_QUERY_PARAM);
+pegLoaders.push('pegjs-loader');
+
+exports.plugins = plugins;
+
+loaders.push(
+  {
+    test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
+    loader: 'url-loader?limit=1000'
+  },
+  {
+    test: /\.json$/,
+    loader: 'json-loader'
+  },
+  {
+    test: /\.peg$/,
+    loader: pegLoaders.join('!')
+  },
+  {
+    test: /\.tsx?$/,
+
+    // TODO - add jsx dataSource loader here
+    loader: tsLoaders.join('!'),
+    exclude:  /node_modules/
+  },
+  {
+    test: /\.scss$/,
+    loader: [
+      'style-loader',
+      'css-loader' + SM_QUERY_PARAM,
+      'sass-loader' + SM_QUERY_PARAM
+    ].join('!')
+  },
+  {
+    test: /\.css$/,
+    loader: [
+      'style-loader',
+      'css-loader' + SM_QUERY_PARAM
+    ].join('!')
+  }
+);
+
+
+exports.config = {
     target: "electron",
     output: {
       filename: '[name].js',
@@ -46,10 +140,12 @@ module.exports = {
     },
     resolve: {
       extensions: ['', '.json', '.ts', '.tsx', '.js', '.jsx', '.peg', '.scss'],
-      modulesDirectories: [SRC_DIR, NODE_MODULES_DIR, OUT_NODE_MODULES_DIR],
+      modulesDirectories: [SRC_DIR, NODE_MODULES_DIR],
       alias: {
-        // 'react': require.resolve('node_modules/react/dist/react.js'),
-        // 'react-dom': require.resolve('node_modules/react-dom/dist/react-dom.js'),
+
+        // don't uncomment these -- fudges with tests. Need to decouple tests from these
+        // 'react': require.resolve('react/dist/react.js'),
+        // 'react-dom': require.resolve('react-dom/dist/react-dom.js'),
         'graceful-chokidar': 'null-loader?graceful-chokidar',
         'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',
@@ -79,58 +175,12 @@ module.exports = {
       logLevel: "error"
     },
     watch: !!WATCH,
-    plugins: [
-      new webpack.DefinePlugin({
-
-        // required for mongoid-js plugin particularly
-        'process.pid': process.pid
-      }),
-      new WebpackNotifierPlugin({
-        excludeWarnings: true,
-        alwaysNotify: true
-      }),
-      new ExtractTextPlugin('styles.css')
-    ],
+    node: {
+      __dirname: true
+    },
+    plugins: plugins,
     postcss: () => [cssnext()],
     module: {
-      loaders: [
-        {
-          test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
-          loader: 'url-loader?limit=1000'
-        },
-        {
-          test: /\.json$/,
-          loader: 'json-loader'
-        },
-        {
-          test: /\.peg$/,
-          loader: 'pegjs-loader'
-        },
-        {
-          test: /\.tsx?$/,
-
-          // TODO - add jsx dataSource loader here
-          loader: SANDBOXED ? [
-            join(__dirname, '/../../out/tandem-loader'),
-            'ts-loader?sourceMap',
-          ].join('!') : 'ts-loader',
-          exclude:  /node_modules/
-        },
-        {
-          test: /\.scss$/,
-          loader: [
-            'style-loader',
-            'css-loader?sourceMap',
-            'sass-loader?sourceMap=true'
-          ].join('!')
-        },
-        {
-          test: /\.css$/,
-          loader: [
-            'style-loader',
-            'css-loader?sourceMap=true'
-          ].join('!')
-        }
-      ]
+      loaders: loaders
     }
   }

@@ -183,7 +183,7 @@ class SyntheticCSSElementStyleRuleSerializer implements ISerializer<SyntheticCSS
   }
 }
 
-@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSElementStyleRuleSerializer()))
+@serializable("SyntheticCSSElementStyleRule", new SyntheticCSSObjectSerializer(new SyntheticCSSElementStyleRuleSerializer()))
 export class SyntheticCSSElementStyleRule extends SyntheticCSSStyleRule {
   constructor(public selector: string, style: SyntheticCSSStyle) {
     super(style);

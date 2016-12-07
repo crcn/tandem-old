@@ -2,7 +2,7 @@ import { CoreEvent } from "./base";
 import { ICloneable } from "../object";
 import { serializable, serialize, deserialize } from "../serialize";
 
-@serializable({
+@serializable("Mutation", {
   serialize({ type, target }: Mutation<any>) {
     return [type, serialize(target && (target.clone ? target.clone(false) : target))];
   },
@@ -38,7 +38,7 @@ export class MutationEvent<T> extends CoreEvent {
   }
 }
 
-@serializable({
+@serializable("SetValueMutation", {
   serialize({ type, target, newValue }: SetValueMutation<any>) {
     return [type, serialize(target.clone(false)), newValue];
   },
@@ -70,7 +70,7 @@ export abstract class ChildMutation<T, U extends ICloneable> extends Mutation<T>
 }
 
 // TODO - change index to newIndex 
-@serializable({
+@serializable("InsertChildMutation", {
   serialize({ type, target, child, index }: InsertChildMutation<ICloneable, any>) {
     return [type, serialize(target.clone(false)), serialize(child), index]
   },
@@ -92,7 +92,7 @@ export class InsertChildMutation<T extends ICloneable, U extends ICloneable> ext
   }
 }
 
-@serializable({
+@serializable("RemoveChildMutation", {
   serialize({ type, target, child, index }: RemoveChildMutation<ICloneable, any>) {
     return [type, serialize(target.clone(false)), serialize(child.clone(false)), index];
   },
@@ -111,7 +111,7 @@ export class RemoveChildMutation<T extends ICloneable, U extends ICloneable> ext
   }
 }
 
-@serializable({
+@serializable("PropertyMutation", {
   serialize({ type, target, name, newValue, oldValue, oldName, index }: PropertyMutation<ICloneable>) {
     return [
       type, 
@@ -162,7 +162,7 @@ export class RemoveMutation<T> extends Mutation<T> {
 }
 
 // TODO - change oldIndex to index, and index to newIndex
-@serializable({
+@serializable("MoveChildMutation", {
   serialize({ type, target, child, index, oldIndex }: MoveChildMutation<any, any>) {
     return [type, serialize(target), serialize(child.clone(false)), oldIndex, index];
   },

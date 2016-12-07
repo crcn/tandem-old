@@ -32,7 +32,7 @@ class ElementClassList extends Array<string> {
 }
 
 // TODO - proxy dataset
-@serializable()
+@serializable("SyntheticHTMLElement")
 export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCSSStyle> {
 
   private _style: SyntheticCSSStyle;

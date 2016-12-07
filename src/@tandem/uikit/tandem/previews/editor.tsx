@@ -1,6 +1,6 @@
 // import "@tandem/uikit/scss/themes/monokai";
 import "reflect-metadata";
-import React =  require("React");
+import React =  require("react");
 import ReactDOM = require("react-dom");
 import { TreeNode } from "@tandem/common/tree";
 import { TreeComponent, GutterComponent } from "@tandem/uikit";

@@ -57,7 +57,7 @@ function parseSourceMaps(value) {
 
 setInterval(() => _smcache = {}, 1000 * 60);
 
-@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSStyleSheetSerializer()))
+@serializable("SyntheticCSSStyleSheet", new SyntheticCSSObjectSerializer(new SyntheticCSSStyleSheetSerializer()))
 export class SyntheticCSSStyleSheet extends SyntheticCSSGroupingRule<syntheticCSSRuleType> {
 
   constructor(readonly rules: syntheticCSSRuleType[]) {

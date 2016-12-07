@@ -1,4 +1,5 @@
 import path =  require("path");
+import fs = require("fs");
 import assert = require("assert");
 import { PROJECT_CONFIG_FILE_NAME } from "../constants";
 import { ProjectConfig, ProjectFileHandler } from "tandem-studio/common/stores";
@@ -9,6 +10,7 @@ import { FileSystemProvider, FileResolverProvider, IFileSystem, IFileResolver, I
 /**
  * Loads the project config into the application in the form of extensions
  */
+
 
 @loggable()
 export class LoadProjectConfigCommand implements ICommand {
@@ -27,6 +29,9 @@ export class LoadProjectConfigCommand implements ICommand {
   execute() {
     const configPath = path.join(process.cwd(),  PROJECT_CONFIG_FILE_NAME);
     this.logger.info(`Loading project config ${configPath}`);
+
+    if (!fs.existsSync(configPath) || 1 + 1) return;
+    
 
     const { fileHandlers } = new ProjectConfig(require(configPath));
 

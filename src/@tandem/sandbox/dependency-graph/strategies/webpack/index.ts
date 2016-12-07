@@ -308,13 +308,15 @@ function normalizeConfigLoaders(...loaders: IWebpackLoaderConfig[]) {
 
 function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWebpackLoaderOptions {
 
+
   const loaderParts = moduleInfo.replace(/^(-|!)?!/,"").split("!");
   if (hasFile) loaderParts.pop();
+  
 
   const options: IWebpackLoaderOptions = {
     disablePreloaders: /^-?!/.test(moduleInfo),
     disableAllLoaders: /^(-|!)!/.test(moduleInfo), // !!raw!filePath
-    loaders: loaderParts.map((loaderName) => {
+    loaders: (moduleInfo.length ? loaderParts : []).map((loaderName) => {
       const [moduleName, query] = loaderName.split("?");
       return {
         modulePath: require.resolve(moduleName),

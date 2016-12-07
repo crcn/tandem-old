@@ -44,7 +44,7 @@ export class SyntheticCSSKeyframesRuleEdit extends SyntheticCSSGroupAtRuleEdit<S
   }
 }
 
-@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSKeyframesRuleSerializer()))
+@serializable("SyntheticCSSKeyframesRule", new SyntheticCSSObjectSerializer(new SyntheticCSSKeyframesRuleSerializer()))
 export class SyntheticCSSKeyframesRule extends SyntheticCSSGroupAtRule {
   readonly atRuleName: string = "keyframes";
 

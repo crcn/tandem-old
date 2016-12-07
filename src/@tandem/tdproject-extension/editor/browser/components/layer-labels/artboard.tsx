@@ -1,5 +1,5 @@
 import "./artboard.scss";
-import React =  require("React");
+import React =  require("react");
 import AutosizeInput = require("react-input-autosize");
 import { FocusComponent } from "@tandem/editor/browser";
 import { ApplyFileEditRequest } from "@tandem/sandbox";

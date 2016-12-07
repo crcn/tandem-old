@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { TreeNode } from "@tandem/common/tree";
 
 import "./index.scss";

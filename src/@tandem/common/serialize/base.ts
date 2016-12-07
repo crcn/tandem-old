@@ -129,9 +129,8 @@ function getNativeSerializeType(value: any) {
   return undefined;
 }
 
-export function serializable(serializer?: ISerializer<any, any>, type?: string) {
+export function serializable(type: string, serializer?: ISerializer<any, any>) {
   return function(ctor: { new(...rest:any[]): any }) {
-    if (!type) type = ctor.name;
     if (_serializers[type]) throw new Error(`Cannot override existing serializer "${type}".`);
 
     // if serializer does not exist, then fetch from parent class serializer if it exists

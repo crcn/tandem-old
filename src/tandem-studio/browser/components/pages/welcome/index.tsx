@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import cx =  require("classnames");
 import electron =  require("electron");
 import { FileInputComponent } from "@tandem/uikit";

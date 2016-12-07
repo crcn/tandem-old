@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import { ApplyFileEditRequest } from "@tandem/sandbox"
 import { BaseApplicationComponent, Mutation } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticCSSElementStyleRule } from "@tandem/synthetic-browser";

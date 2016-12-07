@@ -61,7 +61,7 @@ export function isInheritedCSSStyleProperty(name: string) {
   return INHERITED_CSS_STYLE_PROPERTIES.indexOf(name) !== -1;
 }
 
-@serializable()
+@serializable("SyntheticCSSStyle")
 export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSStyle>, ISyntheticObject {
 
   public $uid: any;

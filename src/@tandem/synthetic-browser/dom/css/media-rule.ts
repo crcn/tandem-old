@@ -37,7 +37,7 @@ class SyntheticCSSMediaRuleSerializer implements ISerializer<SyntheticCSSMediaRu
   }
 }
 
-@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
+@serializable("SyntheticCSSMediaRule", new SyntheticCSSObjectSerializer(new SyntheticCSSMediaRuleSerializer()))
 export class SyntheticCSSMediaRule extends SyntheticCSSGroupAtRule {
   readonly atRuleName = "media";
 

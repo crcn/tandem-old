@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";

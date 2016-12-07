@@ -1,5 +1,6 @@
 import { IMessage, IStreamableDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh/core";
 import sift = require("sift");
+import { serializable } from "@tandem/common/serialize";
 
 export class DSMessage implements IMessage {
   readonly timestamp: number = Date.now();
@@ -7,6 +8,7 @@ export class DSMessage implements IMessage {
   }
 }
 
+@serializable("DSInsertRequest")
 export class DSInsertRequest<T> extends DSMessage {
   static readonly DS_INSERT = "dsInsert";
   constructor(collectionName: string, readonly data: T) {
@@ -17,6 +19,7 @@ export class DSInsertRequest<T> extends DSMessage {
   }
 }
 
+@serializable("DSUpdateRequest")
 export class DSUpdateRequest<T, U> extends DSMessage {
   static readonly DS_UPDATE = "dsUpdate";
   constructor(collectionName: string, readonly data: T, readonly query: U) {
@@ -28,6 +31,7 @@ export class DSUpdateRequest<T, U> extends DSMessage {
   }
 }
 
+@serializable("DSFindRequest")
 export class DSFindRequest<T> extends DSMessage {
   static readonly DS_FIND   = "dsFind";
   constructor(collectionName: string, readonly query: T, readonly multi: boolean = false) {
@@ -44,12 +48,14 @@ export class DSFindRequest<T> extends DSMessage {
   }
 }
 
+@serializable("DSFindAllRequest")
 export class DSFindAllRequest extends DSFindRequest<any> {
   constructor(collectionName: string) {
     super(collectionName, {}, true);
   }
 }
 
+@serializable("DSRemoveRequest")
 export class DSRemoveRequest<T> extends DSMessage {
   static readonly DS_REMOVE   = "dsRemove";
   constructor(collectionName: string, readonly query: T) {

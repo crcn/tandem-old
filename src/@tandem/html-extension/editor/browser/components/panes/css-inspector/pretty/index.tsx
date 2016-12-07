@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import cx =  require("classnames");
 import { CSSUnitInputComponent } from "./common";
 import { BaseApplicationComponent } from "@tandem/common";

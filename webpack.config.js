@@ -1,1 +1,1 @@
-module.exports = require("./gulp/webpack.config.js");
+module.exports = require("./gulp/webpack/browser.js");

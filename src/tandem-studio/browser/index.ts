@@ -92,6 +92,16 @@ function createMenuProviders() {
 
 
 function createWorkspaceMenuProviders() {
+
+  const debugMenuOptions = [
+
+    // turn off for production
+    new WebMenuItemFactoryProvider("debug", "view", createWebMenuItemClass("Debug")),
+    new WebMenuItemFactoryProvider("debugReload", "debug", createWebMenuItemClass(undefined, "reload")),
+    new WebMenuItemFactoryProvider("debugToggleDevTools", "debug", createWebMenuItemClass(undefined, "toggledevtools")),
+
+  ];
+
   return [
     new WebMenuItemFactoryProvider("edit", EditorRouteNames.WORKSPACE, createWebMenuItemClass("Edit")),
     // new WebMenuItemFactoryProvider("undo", "edit", createKeyCommandMenuItemClass("Zoom In", "CmdOrCtrl+plus", ZoomInRequest)),
@@ -107,18 +117,12 @@ function createWorkspaceMenuProviders() {
     new WebMenuItemFactoryProvider("zoomOut", "view", createKeyCommandMenuItemClass("Zoom Out", "CmdOrCtrl+-", ZoomOutRequest)),
     new WebMenuItemFactoryProvider("zoomSep", "view", createMenuSeparatorClass()),
 
-    // turn off for production
-    new WebMenuItemFactoryProvider("debug", "view", createWebMenuItemClass("Debug")),
-    new WebMenuItemFactoryProvider("debugReload", "debug", createWebMenuItemClass(undefined, "reload")),
-    new WebMenuItemFactoryProvider("debugToggleDevTools", "debug", createWebMenuItemClass(undefined, "toggledevtools")),
+    ...(process.env.DEBUG ? debugMenuOptions : []),
 
     new WebMenuItemFactoryProvider("debugSep", "view", createMenuSeparatorClass()),
     new WebMenuItemFactoryProvider("toggleTools", "view", createKeyCommandMenuItemClass("Toggle Stage Tools", "Ctrl+CmdOrCtrl+T", ToggleStageToolsRequest)),
     new WebMenuItemFactoryProvider("toggleLeftGutter", "view", createKeyCommandMenuItemClass("Toggle Left Gutter", "Alt+\\", createToggleSettingRequestClass(SettingKeys.HIDE_LEFT_SIDEBAR))),
     new WebMenuItemFactoryProvider("toggleRightGutter", "view", createKeyCommandMenuItemClass("Toggle Right Gutter", "Alt+/", createToggleSettingRequestClass(SettingKeys.HIDE_RIGHT_SIDEBAR))),
-
-
-
   ]
 }
 

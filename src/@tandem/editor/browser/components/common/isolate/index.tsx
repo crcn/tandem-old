@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import ReactDOM = require("react-dom");
 import { bubbleHTMLIframeEvents, BaseApplicationComponent, RootApplicationComponent } from "@tandem/common";
 

@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import { TextEditorToken } from "../models/token";
 import TextEditorLine from "../models/line";
 import TextEditor from "../models/text-editor";

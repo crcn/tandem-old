@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { BoundingRect } from "@tandem/common/geom";
 
 export class SelectionSizeComponent extends React.Component<{ zoom: number, left: number, top: number, bounds: BoundingRect }, any> {

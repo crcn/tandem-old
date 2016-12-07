@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";

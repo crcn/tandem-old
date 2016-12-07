@@ -5,12 +5,6 @@ const getMetadataKey = (name) => `message:${name}`;
 export const defineMessageMetadata = (name: string, value: any) => {
   return function(messageClass) {
     Reflect.defineMetadata(getMetadataKey(name), value, messageClass);
-
-    if (!getSerializeType(messageClass)) {
-
-      serializable()(messageClass);
-    }
-
     return messageClass;
   }
 }

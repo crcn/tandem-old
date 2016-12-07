@@ -1,5 +1,5 @@
 import "./index.scss";
-import * as React from"react";
+import React = require("react");
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import {  SyntheticSourceLink } from "@tandem/editor/browser/components/common";

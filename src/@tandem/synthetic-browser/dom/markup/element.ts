@@ -65,7 +65,7 @@ class SyntheticDOMAttributeSerializer implements ISerializer<SyntheticDOMAttribu
   }
 }
 
-@serializable(new SyntheticDOMAttributeSerializer())
+@serializable("SyntheticDOMAttribute", new SyntheticDOMAttributeSerializer())
 export class SyntheticDOMAttribute extends Observable implements ISyntheticObjectChild {
 
   @bindable(true)
@@ -273,7 +273,7 @@ export class SyntheticDOMElementEditor<T extends SyntheticDOMElement> extends Sy
   }
 }
 
-@serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
+@serializable("SyntheticDOMElement", new SyntheticDOMNodeSerializer(new SyntheticDOMElementSerializer()))
 export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   // TODO - wire this up when front-end starts sending events to backend

@@ -3,7 +3,7 @@
 import "./index.scss";
 
 import cx =  require("classnames");
-import React =  require("React");
+import React =  require("react");
 import { inject } from "@tandem/common/decorators";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { Workspace } from "@tandem/editor/browser/stores";

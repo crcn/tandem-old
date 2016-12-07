@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { startDrag } from "@tandem/common/utils/component";
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";

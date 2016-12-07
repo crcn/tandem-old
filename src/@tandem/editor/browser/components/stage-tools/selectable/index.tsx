@@ -1,5 +1,5 @@
 import cx =  require("classnames");
-import React =  require("React");
+import React =  require("react");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { SelectRequest } from "@tandem/editor/browser/messages";
 import { SelectablesComponent } from "@tandem/editor/browser/components/common";

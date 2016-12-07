@@ -93,7 +93,7 @@ class SyntheticCSSUnknownAtRuleSerializer implements ISerializer<SyntheticCSSUnk
 }
 
 
-@serializable(new SyntheticCSSObjectSerializer(new SyntheticCSSUnknownAtRuleSerializer()))
+@serializable("SyntheticCSSUnknownGroupAtRule", new SyntheticCSSObjectSerializer(new SyntheticCSSUnknownAtRuleSerializer()))
 export class SyntheticCSSUnknownGroupAtRule extends SyntheticCSSGroupAtRule {
   constructor(readonly atRuleName: string, readonly params: string, cssRules: SyntheticCSSElementStyleRule[] = []) {
     super(cssRules);

@@ -5,12 +5,12 @@ import { serialize, deserialize } from "@tandem/common";
 
 export { isMaster };
 
-export const fork = (family: string, localBus: IDispatcher<any, any>, pathName: string, argv?: any[], env?: any) => {
+export const fork = (family: string, localBus: IDispatcher<any, any>, env?: any) => {
 
   const remoteBus = new ProxyBus();
 
   const spawn = () => {
-    const worker = forkChild(pathName || process.argv[1], argv || process.argv.slice(2), { env: env });
+    const worker = clusterFork(env);
     remoteBus.target = createProcessBus(family, worker, localBus);
 
     worker.on("disconnect", () => {
@@ -26,7 +26,7 @@ export const fork = (family: string, localBus: IDispatcher<any, any>, pathName: 
   return remoteBus;
 }
 
-export const createProcessBus = (family: string, proc: ChildProcess | NodeJS.Process, target: IDispatcher<any, any>) => {
+export const createProcessBus = (family: string, proc: Worker | ChildProcess | NodeJS.Process, target: IDispatcher<any, any>) => {
   return new RemoteBus({
     family,
     testMessage: filterFamilyMessage,

@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 
 export class TextInputComponent extends React.Component<{ onChange?(newValue): any, value?: any, placeholder?: string, rows?: number }, { currentValue }> {
   state = {

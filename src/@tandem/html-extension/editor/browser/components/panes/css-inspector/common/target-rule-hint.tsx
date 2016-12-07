@@ -1,6 +1,6 @@
 import "./target-rule-hint.scss";
 import cx =  require("classnames");
-import React =  require("React");
+import React =  require("react");
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { SyntheticCSSElementStyleRule, SyntheticHTMLElement, isInheritedCSSStyleProperty } from "@tandem/synthetic-browser";
 import { MergedCSSStyleRule, MatchedCSSStyleRuleType } from "@tandem/html-extension/editor/browser/stores";

@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import { PaneComponent } from "@tandem/editor/browser/components/common";
 import LayerComponent from "./layer";
 import { findTreeNode, BaseApplicationComponent } from "@tandem/common";

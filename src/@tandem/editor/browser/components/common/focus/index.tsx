@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import ReactDOM = require("react-dom");
 
 export class FocusComponent extends React.Component<{ select?: boolean, focus?: boolean, children?: any }, any> {

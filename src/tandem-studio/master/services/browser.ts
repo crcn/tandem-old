@@ -47,7 +47,6 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
     if (this.config.argv.open) {
       exec(`open http://localhost:${this._port}/editor#/workspace`);
     }
-
   }
 
   async _loadHttpServer() {

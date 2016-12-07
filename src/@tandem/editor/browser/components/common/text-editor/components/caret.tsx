@@ -1,4 +1,4 @@
-import React =  require("React");
+import React =  require("react");
 import cx =  require("classnames");
 import TextEditor from "../models/text-editor";
 import Caret from "../models/caret";

@@ -87,7 +87,7 @@ addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamily
 @addMessageVisitor(EditorFamilyType.BROWSER)
 @addMessageVisitor(EditorFamilyType.WORKER)
 @setMessageTarget(EditorFamilyType.MASTER)
-@serializable({
+@serializable("OpenFileRequest", {
   serialize({ filePath, selection }: OpenFileRequest) {
     return { filePath, selection };
   },
@@ -109,7 +109,7 @@ export class OpenFileRequest extends CoreEvent {
 @addMessageVisitor(EditorFamilyType.WORKER)
 @addMessageVisitor(EditorFamilyType.MASTER)
 @setMessageTarget(EditorFamilyType.TEXT_EDITOR)
-@serializable({
+@serializable("SetCurrentFileRequest", {
   serialize({ filePath, selection }: SetCurrentFileRequest) {
     return { filePath, selection };
   },
@@ -131,6 +131,7 @@ export class SetCurrentFileRequest extends CoreEvent {
 
 // opens the given workspace in this session
 @setMessageTarget(EditorFamilyType.BROWSER)
+@serializable("OpenWorkspaceRequest")
 export class OpenWorkspaceRequest extends CoreEvent {
   static readonly OPEN_WORKSPACE = "openWorkspace";
   constructor(readonly filePath: string) {
@@ -144,7 +145,7 @@ export class OpenWorkspaceRequest extends CoreEvent {
 @addMessageVisitor(EditorFamilyType.BROWSER)
 @addMessageVisitor(EditorFamilyType.MASTER)
 @setMessageTarget(EditorFamilyType.WORKER)
-@serializable({
+@serializable("ImportFileRequest", {
   serialize({ filePath, bounds, targetObject }: ImportFileRequest) {
     return [ filePath, bounds, serialize(targetObject && targetObject.clone(false)) ];
   },
@@ -162,7 +163,7 @@ export class ImportFileRequest extends CoreEvent {
 }
 
 @setMessageTarget(EditorFamilyType.BROWSER)
-@serializable({
+@serializable("SelectSourceRequest", {
   serialize({ filePath, ranges }: SelectSourceRequest) {
     return {
       filePath: filePath,

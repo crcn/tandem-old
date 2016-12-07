@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import { startDrag } from "@tandem/common/utils/component";
 import { Workspace, InsertTool } from "@tandem/editor/browser/stores";
 import { SetToolRequest, SelectRequest } from "@tandem/editor/browser/messages";

@@ -7,7 +7,7 @@ import { serializable, serialize, deserialize, ISerializable, ISerializer, ITree
 import { SyntheticDOMValueNode, SyntheticDOMValueNodeSerializer, SyntheticDOMValueNodeEdit } from "./value-node";
 
 
-@serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMValueNodeSerializer()))
+@serializable("SyntheticDOMText", new SyntheticDOMNodeSerializer(new SyntheticDOMValueNodeSerializer()))
 export class SyntheticDOMText extends SyntheticDOMValueNode {
   readonly nodeType: number = DOMNodeType.TEXT;
   constructor(nodeValue: string) {

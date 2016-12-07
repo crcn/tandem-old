@@ -1,6 +1,6 @@
 import "./slider.scss";
 
-import React =  require("React");
+import React =  require("react");
 import SliderComponent = require("react-slider");
 // import { HistorySingletonProvider } from "@tandem/history-extension/providers";
 

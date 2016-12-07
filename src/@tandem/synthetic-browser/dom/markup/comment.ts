@@ -5,7 +5,7 @@ import { serializable, ITreeWalker } from "@tandem/common";
 import { SyntheticDOMNodeSerializer } from "./node";
 import { SyntheticDOMValueNode, SyntheticDOMValueNodeSerializer, SyntheticDOMValueNodeEdit } from "./value-node";
 
-@serializable(new SyntheticDOMNodeSerializer(new SyntheticDOMValueNodeSerializer()))
+@serializable("SyntheticDOMComment", new SyntheticDOMNodeSerializer(new SyntheticDOMValueNodeSerializer()))
 export class SyntheticDOMComment extends SyntheticDOMValueNode {
   readonly nodeType: number = DOMNodeType.COMMENT;
 

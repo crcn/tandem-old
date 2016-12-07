@@ -1,8 +1,8 @@
 import { argv } from "yargs";
+import fs = require("fs");
 import path =  require("path");
 import electron =  require("electron");
 import getPort =  require("get-port");
-
 import { EditorFamilyType } from "@tandem/editor/common";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
@@ -55,9 +55,13 @@ import {
    InitializeApplicationRequest,
 } from "@tandem/common";
 
+declare const __root: any;
+
 process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || (argv.verbose ? LogLevel.VERBOSE : LogLevel.DEFAULT);
 
-const BROWSER_BASE_PATH  = `${__dirname}/../browser`;
+const ROOT_DIR           = (typeof __root !== "undefined" ? __root : __dirname + "/../");
+const BROWSER_BASE_PATH  = `${ROOT_DIR}/browser`;
+const ASSETS_DIR         = `${ROOT_DIR}/assets`;
 
 export const initializeMaster = async () => {
 
@@ -68,7 +72,7 @@ export const initializeMaster = async () => {
     cacheDirectory: process.env.HOME + "/.tandem/cache",
     tmpDirectory: process.env.HOME + "/.tandem/tmp",
     help: {
-      directory: path.normalize(__dirname + "/../../help")
+      directory: ASSETS_DIR + "/help"
     },
     browser: {
       assetUrl: `file://${BROWSER_BASE_PATH}/path`,
@@ -109,7 +113,7 @@ export const initializeMaster = async () => {
     new ProjectStarterFactoryProvider({ 
       id: "blank", 
       label: "Blank",
-      image: "assets/html5-logo.png",
+      image: "../assets/images/html5-logo.png",
       enabled: true
     }, BlankProjectStarter),
 
@@ -117,7 +121,7 @@ export const initializeMaster = async () => {
     new ProjectStarterFactoryProvider({ 
       id: "html", 
       label: "Responsive",
-      image: "assets/html5-logo.png",
+      image: "../assets/images/html5-logo.png",
       enabled: true
     }, ResponsiveProjectStarter),
 
@@ -125,28 +129,28 @@ export const initializeMaster = async () => {
     new ProjectStarterFactoryProvider({ 
       id: "react+webpack", 
       label: "React + Webpack",
-      image: "assets/react-logo.png",
+      image: "../assets/images/react-logo.png",
       enabled: false
     }, function(){} as any),
 
     new ProjectStarterFactoryProvider({ 
       id: "angular2", 
       label: "Angular2",
-      image: "assets/angular-logo.png",
+      image: "../assets/images/angular-logo.png",
       enabled: false
     }, function(){} as any),
 
     new ProjectStarterFactoryProvider({ 
       id: "ember", 
       label: "Ember",
-      image: "assets/ember-logo.png",
+      image: "../assets/images/ember-logo.png",
       enabled: false
     }, function(){} as any),
 
     new ProjectStarterFactoryProvider({ 
       id: "jekyll", 
       label: "Jekyll",
-      image: "assets/jekyll-logo.png",
+      image: "../assets/images/jekyll-logo.png",
       enabled: false
     }, function(){} as any)
   );

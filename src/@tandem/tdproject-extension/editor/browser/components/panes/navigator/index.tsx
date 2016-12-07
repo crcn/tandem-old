@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { TreeComponent } from "@tandem/uikit";
 import { OpenFileRequest } from "@tandem/editor/common/messages";
 import {  EditorStoreProvider } from "@tandem/editor/browser/providers";

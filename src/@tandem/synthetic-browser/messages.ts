@@ -1,4 +1,4 @@
-import { CoreEvent, MutationEvent, TreeNodeMutationTypes } from "@tandem/common";
+import { CoreEvent, MutationEvent, TreeNodeMutationTypes, serializable } from "@tandem/common";
 import { ISyntheticBrowserOpenOptions } from "@tandem/synthetic-browser";
 import { SyntheticCSSStyle } from "@tandem/synthetic-browser/dom/css";
 import {
@@ -20,6 +20,7 @@ export class SyntheticRendererEvent extends CoreEvent {
   static readonly UPDATE_RECTANGLES = "updateRectangles";
 }
 
+@serializable("OpenRemoteBrowserRequest")
 export class OpenRemoteBrowserRequest extends CoreEvent {
   static readonly OPEN_REMOTE_BROWSER = "openRemoteBrowser";
   constructor(readonly options: ISyntheticBrowserOpenOptions) {

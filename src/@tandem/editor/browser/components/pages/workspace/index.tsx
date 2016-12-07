@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import { WorkspaceMidComponent } from "./mid";
 import { WorkspaceTitlebarComponent } from "./titlebar";
 import { BaseApplicationComponent } from "@tandem/common";

@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 
 export class PaneComponent extends React.Component<{ title?: string, onTitleClick?: (event: React.MouseEvent<any>) => any }, any> {
   render() {

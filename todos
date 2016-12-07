@@ -48,10 +48,6 @@ html css source maps
 - test
   - https://github.com/facebookincubator/create-react-app
 
-- [ ] fix zombie processes
-
-- [ ] minify code
-- [ ] bundle as electron application
 - [ ] right click + open any index.html file
 - [ ] auto updater
 - [ ] update banner
@@ -66,6 +62,8 @@ html css source maps
   - [ ] ensure that location changes are observable
   - [ ] ability to dynamically add dependencies to the dependency graph -- required for stuff like systemjs.
   - [ ] ability to define local storage (and see possibly)
+
+- [ ] Fun features
 
 - [ ] UX
   - [ ] open main code editor with shift click if not already opened
@@ -87,6 +85,7 @@ html css source maps
   - [ ] artboards do not show up if there's an error in the load
   - [ ] Fix vscode source code overwrites
   - [ ] local images must work in HTML ext
+  - [ ] fix zombie process
 
 - [ ] Editor
   - [ ] History
@@ -164,6 +163,7 @@ UX
 
 TESTING
  - [ ] use todomvc code for testing synthetic browser
+ - [ ] test various webpack configs
 
 BUGS
   - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
@@ -229,6 +229,7 @@ CORE
 
 - [ ] Tech Debt
   - [ ] move core html-extension files to synthetic-browser
+  - [ ] tests are coupled to webpack config
   
 - [ ] Optimizations
   - [ ] tail oplog for DS operations

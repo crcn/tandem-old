@@ -27,7 +27,7 @@
     "memoizee": "^0.4.1",
     "moment": "^2.15.2",
     "mousetrap": "^1.6.0",
-    "react": "^15.3.2",
+    "react": "^15.4.1",
     "react-dom": "^15.3.2",
     "reflect-metadata": "^0.1.8",
     "sift": "^3.2.6",

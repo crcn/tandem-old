@@ -24,7 +24,7 @@ class SyntheticDocumentFragmentSerializer implements ISerializer<SyntheticDocume
   }
 }
 
-@serializable(new SyntheticDocumentFragmentSerializer())
+@serializable("SyntheticDocumentFragment", new SyntheticDocumentFragmentSerializer())
 export class SyntheticDocumentFragment extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.DOCUMENT_FRAGMENT;
   constructor() {

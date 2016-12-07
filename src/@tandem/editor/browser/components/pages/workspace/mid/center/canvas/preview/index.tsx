@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React =  require("React");
+import React =  require("react");
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { ISyntheticDocumentRenderer } from "@tandem/synthetic-browser";
 

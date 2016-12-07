@@ -1,7 +1,7 @@
 
 import { serializable, serialize, deserialize } from "../serialize";
 
-@serializable({
+@serializable("Status", {
   serialize({ type, data }: Status) {
     return { type, data: serialize(data) };
   },

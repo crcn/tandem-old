@@ -48,7 +48,7 @@ describe(__filename + "#", () => {
     const entryFilePath = createRandomFileName("tsx");
 
     await FileSystemProvider.getInstance(injector).writeFile(entryFilePath, `
-      import React =  require("React");
+      import React =  require("react");
       import ReactDOM = require("react-dom");
       const element = document.createElement("div");
       ReactDOM.render(${jsx}, element);

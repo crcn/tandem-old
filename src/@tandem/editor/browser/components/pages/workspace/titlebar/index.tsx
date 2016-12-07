@@ -1,6 +1,6 @@
 import "./index.scss";
 import cx =  require("classnames");
-import React =  require("React");
+import React =  require("react");
 import CheckboxComponent = require("rc-checkbox");
 import { BaseApplicationComponent } from "@tandem/common";
 

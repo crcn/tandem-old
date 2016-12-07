@@ -22,7 +22,7 @@ import { 
 } from "@tandem/mesh";
 
 
-@serializable({
+@serializable("ApplyFileEditRequest", {
   serialize({ mutations }: ApplyFileEditRequest) {
     return {
       mutations: mutations.map(serialize)
@@ -48,7 +48,7 @@ export class SandboxModuleAction extends Message {
   static readonly EDITED = "edited";
 }
 
-@serializable()
+@serializable("ResolveFileRequest")
 export class ResolveFileRequest extends Message {
   static readonly RESOLVE_FILE = "resolveFile";
   constructor(readonly relativePath: string, readonly cwd?: string, readonly options?: IFileResolverOptions) {
@@ -63,7 +63,7 @@ export class FileCacheAction extends Message {
   }
 }
 
-@serializable()
+@serializable("ReadFileRequest")
 export class ReadFileRequest extends Message {
   static readonly READ_FILE = "readFile";
   constructor(readonly filePath: string) {
@@ -75,7 +75,7 @@ export class ReadFileRequest extends Message {
   }
 }
 
-@serializable()
+@serializable("ReadDirectoryRequest")
 export class ReadDirectoryRequest extends Message {
   static readonly READ_DIRECTORY = "readDirectory";
   constructor(readonly directoryPath: string) {
@@ -87,7 +87,7 @@ export class ReadDirectoryRequest extends Message {
   }
 }
 
-@serializable()
+@serializable("WatchFileRequest")
 export class WatchFileRequest extends Message {
   static readonly WATCH_FILE = "watchFile";
   constructor(readonly filePath: string) {

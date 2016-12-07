@@ -37,6 +37,7 @@ export class ApplicationReadyMessage extends Message {
   }
 }
 
+@serializable("DSUpsertRequest")
 export class DSUpsertRequest<T> extends DSMessage {
   static readonly DS_UPSERT = "dsUpsert";
   constructor(collectionName: string, readonly data: any, readonly query: T) {
@@ -44,6 +45,7 @@ export class DSUpsertRequest<T> extends DSMessage {
   }
 }
 
+@serializable("PostDSMessage")
 export class PostDSMessage extends DSMessage {
 
   static readonly DS_DID_INSERT = "dsDidInsert";

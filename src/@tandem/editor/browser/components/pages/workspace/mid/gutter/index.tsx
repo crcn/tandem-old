@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 import { EditorStore, Workspace } from "@tandem/editor/browser/stores";
 import { RegisteredComponent, SideDraggerComponent } from "@tandem/editor/browser/components/common";
 import { BaseApplicationComponent, inject, Metadata } from "@tandem/common";

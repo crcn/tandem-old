@@ -1,5 +1,5 @@
 import cx =  require("classnames");
-import React =  require("React");
+import React =  require("react");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { SetToolRequest } from "@tandem/editor/browser/messages";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";

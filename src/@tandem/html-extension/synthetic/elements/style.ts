@@ -1,5 +1,5 @@
 import { omit } from "lodash";
-import React =  require("React");
+import React =  require("react");
 import { CSS_MIME_TYPE } from "@tandem/common";
 import {
   parseCSS,

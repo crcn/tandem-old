@@ -24,6 +24,7 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
       }
     }
 
+
     // open new workspace anyways -- the user will be prompted to open a file from there
     if (!filePath) {
       return this.bus.dispatch(new  OpenNewWorkspaceRequest(undefined));

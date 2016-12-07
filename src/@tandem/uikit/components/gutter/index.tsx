@@ -1,5 +1,5 @@
 import "./index.scss";
-import React =  require("React");
+import React =  require("react");
 
 export interface IGutterComponentProps {
   className?: string;
