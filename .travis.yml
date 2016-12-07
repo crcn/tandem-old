@@ -7,5 +7,5 @@ notifications:
   email: false
 
 before_install:
-  - gulp default
+  - ./node_modules/.bin/gulp default
 
