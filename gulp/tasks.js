@@ -109,8 +109,7 @@ gulp.task('build:electron:package', () => {
   return gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ 
     version: electronPackage.electronVersion, 
-    platform: 'darwin',
-    asar: !!process.env.ASAR 
+    platform: 'darwin'
   }))
   .pipe(symdest(join(getElectronBundleDir(), "app")));
 });
