@@ -6,6 +6,7 @@ const BASE_DIR             = process.cwd();
 const NODE_MODULES_DIR     = join(BASE_DIR, 'node_modules');
 const SRC_DIR              = join(BASE_DIR, 'src');
 const OUT_DIR              = join(BASE_DIR, 'out');
+const BUILD_DIR            = join(BASE_DIR, 'build');
 const MONO_PKG_FILE_PATH   = join(OUT_DIR, 'package.json');
 const OUT_NODE_MODULES_DIR = join(OUT_DIR, 'node_modules');
 const INTEGRATIONS_DIR     = join(BASE_DIR, 'integrations');
@@ -25,6 +26,7 @@ module.exports = {
   BASE_DIR,
   SRC_DIR,
   OUT_DIR,
+  BUILD_DIR,
   PACKAGES,
   PACKAGE_NAMES,
   INTEGRATIONS_DIR,

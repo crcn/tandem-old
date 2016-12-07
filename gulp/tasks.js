@@ -31,6 +31,7 @@ const {
   GREP,
   argv,
   WATCH,
+  BUILD_DIR,
   SRC_DIR,
   OUT_DIR,
   PACKAGES,
@@ -106,11 +107,14 @@ gulp.task('build:electron:server', (done) => {
 
 gulp.task('build:electron:package', () => {
   const electronPackage = getElectronPackage();
+
+  const version = electronPackage.version;
+  const platform = process.platform;
+  const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
+
+
   return gulp.src(join(getElectronBundleDir(), "**"))
-  .pipe(electron({ 
-    version: electronPackage.electronVersion, 
-    platform: 'darwin'
-  }))
+  .pipe(electron({ version, platform, arch }))
   .pipe(symdest(join(getElectronBundleDir(), "app")));
 });
 
@@ -373,7 +377,7 @@ function getElectronAppDir() {
 }
 
 function getElectronBundleDir() {
-  return join(OUT_DIR, getElectronPackage().name, "bundle");
+  return join(BUILD_DIR, getElectronPackage().name);
 }
 
 function getElectronPackage() {

@@ -49,6 +49,7 @@ html css source maps
   - https://github.com/facebookincubator/create-react-app
 
 - [ ] right click + open any index.html file
+- [ ] test on windows
 - [ ] auto updater
 - [ ] update banner
 - [ ] right click context menus
