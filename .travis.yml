@@ -6,3 +6,6 @@ node_js:
 notifications:
   email: false
 
+before_install:
+  - gulp default
+
