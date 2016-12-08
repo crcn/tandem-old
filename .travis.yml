@@ -7,6 +7,6 @@ notifications:
   email: false
 
 install:
-  - yarn install
+  - npm install
   - npm run build
   
