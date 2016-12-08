@@ -124,7 +124,7 @@ gulp.task('build:electron:package', () => {
 
   return gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ version, platform, arch }))
-  .pipe(zip.dest(join(getElectronBundleDir(), `tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
+  .pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
 });
 
 /******************************
