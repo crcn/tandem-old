@@ -3,7 +3,7 @@ yarn*
 node_modules
 lib
 out
-build
+dist
 all-tests.js
 coverage/
 bundle/

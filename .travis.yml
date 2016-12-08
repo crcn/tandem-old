@@ -19,4 +19,9 @@ notifications:
     on_success: never
     on_failure: change
 
-  
+
+addons:
+  artifacts:
+    paths:
+      - dist/tandem-amd-x64.zip
+    target_paths: travis-artifacts/$TRAVIS_BUILD_ID

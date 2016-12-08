@@ -8,6 +8,7 @@ const sift          = require('sift');
 const glob          = require('glob');
 const mocha         = require('gulp-mocha');
 const chalk         = require('chalk');
+const zip           = require('gulp-vinyl-zip');
 const install       = require('gulp-install');
 const istanbul      = require('gulp-istanbul');
 const peg           = require('gulp-peg');
@@ -31,11 +32,11 @@ const {
   GREP,
   argv,
   WATCH,
-  BUILD_DIR,
   SRC_DIR,
   OUT_DIR,
   PACKAGES,
   BASE_DIR,
+  DIST_DIR,
   PACKAGE_NAMES,
   INTEGRATIONS_DIR,
   NODE_MODULES_DIR,
@@ -61,7 +62,6 @@ const buildTasks = [
 ];
 
 gulp.task('build', WATCH ? buildTasks : gulpSequence(...buildTasks));
-
 
 gulp.task('build:typescript', function(done) {
   const proc = spawn('node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
@@ -112,10 +112,11 @@ gulp.task('build:electron:package', () => {
   const platform = process.platform;
   const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
 
+  console.log(`platform: ${platform}; arch: ${arch}`);
 
   return gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ version, platform, arch }))
-  .pipe(symdest(join(getElectronBundleDir(), "app")));
+  .pipe(zip.dest(join(getElectronBundleDir(), `tandem-${platform}-${arch}.zip`)));
 });
 
 /******************************
@@ -260,7 +261,6 @@ gulp.task('publish', function() {
   // inquier here about what package to publish
 });
 
-
 /******************************
  * Test tasks
  ******************************/
@@ -334,7 +334,6 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
   }
 });
 
-
 /******************************
  * Utilities
  ******************************/
@@ -372,12 +371,8 @@ function getPackageOutDirs() {
 
 function noop() { }
 
-function getElectronAppDir() {
-  return join(OUT_DIR, getElectronPackage().name);
-}
-
 function getElectronBundleDir() {
-  return join(BUILD_DIR, getElectronPackage().name);
+  return join(DIST_DIR);
 }
 
 function getElectronPackage() {
