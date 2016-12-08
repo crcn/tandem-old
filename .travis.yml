@@ -7,9 +7,5 @@ notifications:
   email: false
 
 before_install:
-  - npm install gulp -g
-  - gulp default
+  - npm run build
   
-
-install:
-  - npm install

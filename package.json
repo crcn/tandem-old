@@ -12,6 +12,7 @@
   },
   "scripts": {
     "test": "SOURCE_MAPS=1 gulp test --coverage=50 --timeout=20000 --bail",
+    "build": "gulp default", 
     "studio": "SANDBOXED=1 electron out/tandem-studio/index.js",
     "studio-package": "SANDBOXED=1 ./out/tandem-studio/bundle/app/tandem-studio.app/Contents/MacOS/Electron"
   },
