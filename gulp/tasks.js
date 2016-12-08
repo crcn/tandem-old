@@ -114,6 +114,8 @@ const PLATFORM_LABELS = {
 gulp.task('build:electron:package', () => {
   const electronPackage = getElectronPackage();
 
+  const appVersion = electronPackage.version;
+
   const version = electronPackage.version;
   const platform = process.platform;
   const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
@@ -122,7 +124,7 @@ gulp.task('build:electron:package', () => {
 
   return gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ version, platform, arch }))
-  .pipe(zip.dest(join(getElectronBundleDir(), `tandem-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
+  .pipe(zip.dest(join(getElectronBundleDir(), `tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
 });
 
 /******************************
