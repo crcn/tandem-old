@@ -9,3 +9,5 @@ notifications:
 before_install:
   - ./node_modules/.bin/gulp default
 
+install:
+  - npm install
