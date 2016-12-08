@@ -12,7 +12,7 @@ machine:
 
 general:
   artifacts:
-    - dist/
+    - dist/*.zip
 
 test:
   override:

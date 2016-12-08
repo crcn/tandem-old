@@ -23,5 +23,5 @@ notifications:
 addons:
   artifacts:
     paths:
-      - dist/
+      - dist/*.zip
     target_paths: travis-artifacts/$TRAVIS_BUILD_ID
