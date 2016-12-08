@@ -24,4 +24,4 @@ addons:
   artifacts:
     paths:
       - dist/zip
-    target_paths: travis-artifacts/$TRAVIS_BUILD_ID
+    target_paths: dist/

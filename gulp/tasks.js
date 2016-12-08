@@ -119,8 +119,7 @@ gulp.task('build:electron:package', () => {
   const version = electronPackage.version;
   const platform = process.platform;
   const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
-
-  // set CI server -- needed for API request limit by GitHub
+  
   const token = process.env.GITHUB_TOKEN;
 
   console.log(`platform: ${platform}; arch: ${arch}`);
