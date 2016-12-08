@@ -24,4 +24,4 @@ addons:
   artifacts:
     paths:
       - dist/tandem-linux-x64.zip
-    target_paths: tandem-artifacts/$TRAVIS_BUILD_ID
+    target_paths: travis-artifacts/$TRAVIS_BUILD_ID
