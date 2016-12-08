@@ -260,3 +260,35 @@ declare module "strip-indent" {
   }
   export = stripIndent;
 }
+
+// declare module "auto-updater" {
+
+//   interface AutoUpdaterOptions {
+//     pathToJson?: string,
+//     autoupdate?: boolean,
+//     checkgit?: boolean,
+//     jsonhost?: string,
+//     contenthost?: string,
+//     progressDebounce?: number,
+//     devmode?: boolean
+//   }
+
+//   class AutoUpdater {
+//     constructor(options?: AutoUpdaterOptions);
+
+//     on(type: "git-clone", listener: Function);
+//     on(type: "check.up-to-date", listener: Function);
+//     on(type: "check.out-dated", listener: Function);
+//     on(type: "update.downloaded", listener: Function);
+//     on(type: "update.not-installed", listener: Function);
+//     on(type: "update.extracted", listener: Function);
+//     on(type: "download.start", listener: Function);
+//     on(type: "download.progress", listener: Function);
+//     on(type: "download.end", listener: Function);
+//     on(type: "download.error", listener: Function);
+//     on(type: "end", listener: Function);
+//     on(type: "error", listener: Function);
+    
+//     fire(type: "check"|"extract"|"download-update");
+//   }
+// }

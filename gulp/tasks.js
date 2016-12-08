@@ -48,7 +48,7 @@ const {
  * Default tasks
  ******************************/
 
-gulp.task('default', gulpSequence('prepare', 'build'));
+gulp.task('default', ['build']);
 
 /******************************
  * Build tasks
@@ -61,7 +61,8 @@ const buildTasks = [
   'build:electron'
 ];
 
-gulp.task('build', WATCH ? buildTasks : gulpSequence(...buildTasks));
+gulp.task('build', WATCH ? gulpSequence('prepare', buildTasks) : gulpSequence('prepare', ...buildTasks));
+gulp.task('build:dist', gulpSequence('prepare', ...buildTasks, 'build:electron:dist'));
 
 gulp.task('build:typescript', function(done) {
   const proc = spawn('node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
@@ -90,8 +91,10 @@ gulp.task('build:symlinks', () => {
 
 gulp.task('build:electron', gulpSequence(
   'prepare:electron', 
-  'build:electron:browser',
-  'build:electron:server',
+  ['build:electron:browser', 'build:electron:server']
+));
+
+gulp.task('build:electron:dist', gulpSequence(
   'build:electron:package'
 ));
 
@@ -107,11 +110,20 @@ gulp.task('build:electron:server', (done) => {
 
 const PLATFORM_LABELS = {
   linux: 'linux',
-  darwin: 'mac',
+  darwin: 'osx',
   win32: 'win'
 };
 
 gulp.task('build:electron:package', () => {
+
+  try {
+    fsa.removeSync(join(getElectronBundleDir(), "zip"));
+  } catch(e) { }
+
+  try {
+    fsa.removeSync(join(getElectronBundleDir(), "app"));
+  } catch(e) { }
+
   const electronPackage = getElectronPackage();
 
   const appVersion = electronPackage.version;
@@ -124,10 +136,18 @@ gulp.task('build:electron:package', () => {
 
   console.log(`platform: ${platform}; arch: ${arch}`);
 
-  return gulp.src(join(getElectronBundleDir(), "**"))
+  let stream = gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ version, platform, arch, token }))
-  .pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
+
+  if (process.env.SYMDEST) {
+    stream = stream.pipe(symdest(join(getElectronBundleDir(), "app")));
+  } else {
+    stream = stream.pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
+  }
+
+  return stream;
 });
+
 
 /******************************
  * Prepare tasks
@@ -186,7 +206,7 @@ gulp.task('prepare:mono-package', gulpSequence(
 
 gulp.task('prepare:create-mono-package', () => {
 
-  const { dependencies, devDependencies } = merge(...PACKAGES);
+  const { dependencies, devDependencies } = merge({}, ...PACKAGES);
 
   // one mono package for everything to go under
   const monoPackage = {
