@@ -23,5 +23,5 @@ notifications:
 addons:
   artifacts:
     paths:
-      - dist/tandem-mac-x64.zip
+      - dist/
     target_paths: travis-artifacts/$TRAVIS_BUILD_ID
