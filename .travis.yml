@@ -6,6 +6,6 @@ node_js:
 notifications:
   email: false
 
-before_install:
-  - npm run build
+after_install:
+  - npm install gulp -g
   
