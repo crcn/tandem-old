@@ -1,1 +1,0 @@
-- [ ] run tandem worker on fast EC2 instance for faster bundling & rendering

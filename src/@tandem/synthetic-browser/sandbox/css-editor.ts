@@ -123,7 +123,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
       }
     });
 
-    if (index != null, foundIndex > -1 && foundIndex !== index) {
+    if (index != null && foundIndex > -1 && foundIndex !== index) {
       const decl = node.nodes[foundIndex];
       node.removeChild(decl);
       if (index === node.nodes.length) {

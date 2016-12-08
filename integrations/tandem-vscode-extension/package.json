@@ -31,10 +31,10 @@
     "vscode": "^0.11.0"
   },
   "dependencies": {
-    "@tandem/common": "@tandem/common",
-    "@tandem/core": "@tandem/core",
-    "@tandem/editor": "@tandem/editor",
-    "@tandem/sandbox": "@tandem/sandbox",
+    "@tandem/core": "1.0.x",
+    "@tandem/common": "1.0.x",
+    "@tandem/sandbox": "1.0.x",
+    "@tandem/mesh": "1.0.x",
     "express": "^4.14.0",
     "get-port": "^2.1.0",
     "lodash": "^4.15.0",

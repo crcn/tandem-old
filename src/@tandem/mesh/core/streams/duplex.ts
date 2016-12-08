@@ -79,7 +79,7 @@ class ReadableWritableStream<T> {
       },
       pull(controller) {
         return queue.shift().then((value) => {
-          readerController.enqueue(value);
+          readerController.enqueue(value as T);
         });
       },
       cancel(reason) {

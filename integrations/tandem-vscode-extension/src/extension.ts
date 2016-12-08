@@ -11,9 +11,9 @@ import os =  require("os");
 import fs =  require("fs");
 import path =  require("path");
 import vscode = require("vscode");
-import through =  require("through");
+import through =  require("through2");
 import getPort =  require("get-port");
-import createServer =  require("createServer");
+import createServer =  require("express");
 import { CallbackDispatcher, NoopDispatcher, filterFamilyMessage, setMessageTarget } from "@tandem/mesh";
 
 import { createCoreApplicationProviders, ServiceApplication } from "@tandem/core";

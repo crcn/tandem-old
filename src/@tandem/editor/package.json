@@ -1,7 +1,6 @@
 {
   "name": "@tandem/editor",
-  "version": "1.0.1",
-  "private": true,
+  "version": "1.0.6",
   "description": "",
   "main": "./index.ts",
   "bin": {
@@ -40,5 +39,10 @@
     "chokidar": "^1.6.1",
     "memoizee": "^0.4.1",
     "sinon": "^1.17.6"
+  },
+  "peerDependencies": {
+    "@tandem/common": "1.0.x",
+    "@tandem/sandbox": "1.0.x",
+    "@tandem/synthetic-browser": "1.0.x"
   }
 }

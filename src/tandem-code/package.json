@@ -1,6 +1,7 @@
 {
   "name": "tandem-code",
-  "version": "1.0.0",
+  "version": "1.0.5",
+  "private": true,
   "main": "./index.bundle.js",
   "electronVersion": "1.4.6",
   "browser": "./browser/index.bundle.js",

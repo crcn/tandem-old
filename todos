@@ -48,11 +48,8 @@ html css source maps
 - test
   - https://github.com/facebookincubator/create-react-app
 
-- [ ] change to tandem-code
 - [ ] right click + open any index.html file
 - [ ] test on windows
-- [ ] auto updater
-- [ ] update banner
 - [ ] right click context menus
 
 - [ ] Core

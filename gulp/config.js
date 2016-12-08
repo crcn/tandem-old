@@ -13,7 +13,11 @@ const INTEGRATIONS_DIR     = join(BASE_DIR, 'integrations');
 const GREP                 = argv.grep;
 
 const PACKAGE_FILE_PATHS = glob.sync(join(SRC_DIR, '**', 'package.json'));
-const PACKAGES           = PACKAGE_FILE_PATHS.map(require);
+const PACKAGES           = PACKAGE_FILE_PATHS.map((path) => {
+  const pkg = require(path);
+  pkg.path = path;
+  return pkg;
+});
 const PACKAGE_NAMES      = PACKAGES.map(({name}) => name).filter((name) => !!name);
 
 // argvDIST_DIR

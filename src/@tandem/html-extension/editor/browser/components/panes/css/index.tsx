@@ -67,7 +67,7 @@ export class CSSStyleHashInputComponent extends React.Component<ICSSStyleHashInp
 
     for (const key of style) {
       const value = style[key];
-      items.push({ name: kebabCase(key), value: style[key], overridden: overridden && overridden[key], dim: inherited && !isInheritedCSSStyleProperty(key) });
+      items.push({ name: kebabCase(key), value: style[key], overridden: overridden && overridden[key], dim: inherited && !isInheritedCSSStyleProperty(key) } as any);
     }
 
     return <HashInputComponent items={items} renderName={renderName} setKeyValue={setDeclaration} valueTokenizer={cssTokenizer} renderItemComponent={this.renderItem} />

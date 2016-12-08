@@ -1,7 +1,6 @@
 {
   "name": "@tandem/mesh",
-  "version": "1.0.0",
-  "private": false,
+  "version": "1.0.5",
   "description": "Temporary directory for the updated version of [Mesh](http://mesh.js.org/).",
   "main": "index.js",
   "directories": {
@@ -12,9 +11,6 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-  },
-  "peerDependencies": {
-    
-  }
+  "devDependencies": {},
+  "peerDependencies": {}
 }

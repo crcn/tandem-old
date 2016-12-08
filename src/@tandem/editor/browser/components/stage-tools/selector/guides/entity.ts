@@ -16,7 +16,7 @@ export default class EntityGuide extends BaseGuide {
 
     var margin = this.margin;
 
-    function snapToLines(lines) {
+    function snapToLines(lines: Array<number[]>) {
       for (const [from, to = -1, offset = 0] of lines) {
 
         // no guide. Return from.

@@ -11,7 +11,7 @@ export class MongoDataStore extends  BaseDataStore {
   }
 
   protected connect() {
-    return new Promise((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       MongoClient.connect(this._url, (err, db) => {
         if (err) return reject(err);
         this._db = db;

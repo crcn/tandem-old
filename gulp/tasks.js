@@ -241,6 +241,38 @@ gulp.task('prepare:vscode-extension-symlinks', () => {
 });
 
 /******************************
+ * Publish tasks
+ ******************************/
+
+gulp.task('publish:npm', () => {
+
+  const publicPackages = PACKAGES.filter((pkg) => {
+    return !pkg.private;
+  });
+
+  return _(publicPackages)
+  .each((pkg) => {
+    console.log("publishing %s", pkg.name);
+    // console.log(join(OUT_DIR, dirname(pkg.path)));
+    return spawn(`npm`, ['publish', '--access', 'public'], {
+      cwd: dirname(pkg.path),
+      stdio: ['inherit', 'inherit', 'inherit']
+    });
+  });
+});
+
+gulp.task('bump', () => {
+  return _(PACKAGES)
+  .each((pkg) => {
+    console.log("bumping %s", pkg.name);
+    return spawn(`npm`, ['version', 'patch'], {
+      cwd: dirname(pkg.path),
+      stdio: ['inherit', 'inherit', 'inherit']
+    });
+  });
+});
+
+/******************************
  * Clean tasks
  ******************************/
 
