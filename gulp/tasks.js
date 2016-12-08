@@ -105,6 +105,12 @@ gulp.task('build:electron:server', (done) => {
   bundleElectron(join(SRC_DIR, pkg.name, pkg.entries.server), require('./webpack/node').create(getElectronBundleDir() + "/node_modules"), done);
 });
 
+const PLATFORM_LABELS = {
+  linux: 'linux',
+  darwin: 'mac',
+  win32: 'win'
+};
+
 gulp.task('build:electron:package', () => {
   const electronPackage = getElectronPackage();
 
@@ -116,7 +122,7 @@ gulp.task('build:electron:package', () => {
 
   return gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ version, platform, arch }))
-  .pipe(zip.dest(join(getElectronBundleDir(), `tandem-${platform}-${arch}.zip`)));
+  .pipe(zip.dest(join(getElectronBundleDir(), `tandem-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
 });
 
 /******************************
