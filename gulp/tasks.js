@@ -383,3 +383,8 @@ function getElectronBundleDir() {
 function getElectronPackage() {
   return PACKAGES.find(sift({ 'electronVersion': { $exists: true }}));
 }
+
+
+gulp.on('stop', () => {
+  if (!WATCH) process.exit();
+});
