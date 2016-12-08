@@ -1,9 +1,22 @@
-language: node_js
+matrix:
+  include:
+    - os: linux
+      env: NODE_VERSION=7.1.0 DISPLAY=:99.0 CC=clang CXX=clang++ npm_config_clang=1
 
-node_js:
-  - 7.1.0
+install:
+  - git clone https://github.com/creationix/nvm.git /tmp/.nvm
+  - source /tmp/.nvm/nvm.sh
+  - nvm install $NODE_VERSION
+  - nvm use --delete-prefix $NODE_VERSION
+  - npm install -g npm
+  - npm install
+
+script: 
+  - npm test
 
 notifications:
-  email: false
+  email:
+    on_success: never
+    on_failure: change
 
   
