@@ -120,10 +120,13 @@ gulp.task('build:electron:package', () => {
   const platform = process.platform;
   const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
 
+  // set CI server -- needed for API request limit by GitHub
+  const token = process.env.GITHUB_TOKEN;
+
   console.log(`platform: ${platform}; arch: ${arch}`);
 
   return gulp.src(join(getElectronBundleDir(), "**"))
-  .pipe(electron({ version, platform, arch }))
+  .pipe(electron({ version, platform, arch, token }))
   .pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
 });
 
