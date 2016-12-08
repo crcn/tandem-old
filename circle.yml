@@ -12,7 +12,7 @@ machine:
 
 general:
   artifacts:
-    - dist/tandem-darwin-x64.zip
+    - dist/tandem-linux-x64.zip
 
 test:
   override:
