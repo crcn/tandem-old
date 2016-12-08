@@ -1,6 +1,6 @@
 matrix:
   include:
-    - os: mac
+    - os: osx
       env: NODE_VERSION=7.1.0 DISPLAY=:99.0 CC=clang CXX=clang++ npm_config_clang=1
 
 install:
