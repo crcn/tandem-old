@@ -56,7 +56,8 @@ export class FileURIProtocol extends URIProtocol {
     });
   }
 
-  watch2(filePath: string, onChange: () => any) {
+  watch2(uri: string, onChange: () => any) {
+    const filePath = this.removeProtocol(uri);
     this.logger.debug("watch", filePath);
     let currentStat = fs.lstatSync(filePath);
     const listener = () => {

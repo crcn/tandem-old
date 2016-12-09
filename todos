@@ -23,36 +23,12 @@ http://electron.atom.io/docs/api/auto-updater/
 
 html css source maps
 
-- FIX HANGING PROCESS
-  - causing more bugs such as channel close with tscode
-
 - open any HTML file
 - launch tandem from vscode
 - do not require workspaces - should be secondary
 - changes not syncing to  vscode
 - bark for unsaved changes
 
-- [ ] TodoMVC
-  - [ ] broken
-    - [ ] *angular2 - document.write not supported
-    - [ ] guit
-    - [ ] humble 
-    - [ ] js_of_ocaml
-    - [ ] kendo
-    - [ ] mithril (history.pushState access)
-    - [ ] olives
-    - [ ] atmas
-    - [ ] Aurelia
-    - [ ] Backbone Marionette
-    - [ ] binding scala
-    - [ ] canjs
-    - [ ] closure
-    - [ ] Emberjs
-    - [ ] RiotJS
-    - [ ] *sammyJS - stream error state
-    - [ ] *typescript-angular - node not defined
-    - [ ] vanilla dart
-    - [ ] vue
 
 - test
   - https://github.com/facebookincubator/create-react-app
@@ -73,8 +49,11 @@ html css source maps
 
 - [ ] UX
   - [ ] open tandem from text editor
+  - [ ] ability to define location
+  - [ ] CTA for adding files to a blank artboard
   
 - [ ] BUGS
+  - [ ] files not always synced from vscode -> tandem
   - [ ] local images must work in HTML ext
   - [ ] source maps not working for CSS 
   - [ ] source maps not working with React
@@ -94,12 +73,6 @@ html css source maps
 
 - [ ] Getting Started page
   - [ ] big header explaining how to zoom & use tools
-
-
-- [ ] UX
-  - [ ] open main code editor
-  - [ ] getting started project
-  - [ ] import existing HTML file from start page - auto-create artboards
 
 - [ ] Stability
   - [ ] analytics on usage
@@ -162,6 +135,8 @@ TESTING
  - [ ] test various webpack configs
 
 BUGS
+  - [ ] Get all TodoMVC frameworks to work
+  - [ ] cannot resize artboard to 0/0 width/height
   - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
   - [ ] css class selectors are case insensitive
   - [ ] disable attributes that are dynamically created (React for instance)
