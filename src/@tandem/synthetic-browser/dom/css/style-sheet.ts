@@ -50,6 +50,7 @@ function parseSourceMaps(value) {
   if (_smcache[value]) return _smcache[value];
 
   const sourceMappingURL = String(value).match(/sourceMappingURL=(data\:[^\s]+)/)[1];
+  
 
   // assuming that it's inlined here... shouldn't.
   return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));

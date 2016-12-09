@@ -23,7 +23,9 @@ export const resolveCSSImports = (uri: string, css: string, map?: sm.RawSourceMa
   
     const compile = (node: postcss.Node): sm.SourceNode => {
     const line = node.source.start.line;
-    const column = node.source.start.column;
+
+    // inconsistencies between source maps lib and postcss -- this offset should fix that.
+    const column = node.source.start.column - 1;
 
     let buffer: (string | sm.SourceNode)[] | string | sm.SourceNode;
 

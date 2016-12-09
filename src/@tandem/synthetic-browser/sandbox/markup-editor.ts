@@ -112,7 +112,6 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
   
     if (!contentMimeType) return super.handleUnknownMutation(mutation);
 
-    
     const editorProvider = ContentEditorFactoryProvider.find(contentMimeType, this.injector);
     if (!editorProvider) {
       return this.logger.error(`Cannot edit ${element.nodeName}:${contentMimeType} element text content.`);
@@ -121,6 +120,10 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     // need to add whitespace before the text node since the editor needs the proper line number in order to apply the
     // mutation. The column number should match.
     const lines = Array.from({ length: matchingTextNode.location.start.line - 1 }).map(() => "\n").join("");
+
+    // console.log(matchingTextNode.location.start);
+
+    // console.log(lines.length, "LINES", JSON.stringify(matchingTextNode.nodeValue), mutation.target.source);
 
     const newTextContent = editorProvider.create(this.uri, lines + matchingTextNode.nodeValue).applyMutations([mutation]);
 

@@ -8,6 +8,7 @@ import {
   BaseDependencyLoader,
   DefaultDependencyLoader,
   IDependencyLoaderResult,
+  DependencyLoaderFactoryProvider,
 } from "@tandem/sandbox";
 
 import {
@@ -23,13 +24,13 @@ import {
   parseMarkup,
   MarkupExpression,
   MarkupTextExpression,
-  formatMarkupExpression,
   MarkupElementExpression,
   MarkupCommentExpression,
   MarkupAttributeExpression,
   MarkupFragmentExpression,
   serializeMarkupExpression,
   deserializeMarkupExpression,
+  ElementTextContentMimeTypeProvider,
 } from "@tandem/synthetic-browser";
 
 interface IMarkupReplacement {
@@ -51,6 +52,8 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
   async load({ uri, hash }, { type, content }): Promise<IDependencyLoaderResult> {
 
+    const self = this;
+
 
     const expression = parseMarkup(String(content));
     const imports: string[] = [];
@@ -69,14 +72,46 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
         
         return new sm.SourceNode(location.start.line, location.start.column, uri, [" ", name, `="`, value,`"`]);
       },
-      async visitElement({ nodeName, attributes, childNodes, location }: MarkupElementExpression) {
-        return new sm.SourceNode(location.start.line, location.start.column, uri, [
+      async visitElement(expression: MarkupElementExpression) {
+
+        const { nodeName, attributes, childNodes, location } = expression;
+
+        const buffer: (string | sm.SourceNode)[] | string | sm.SourceNode = [
           `<` + nodeName,
-          ...(await Promise.all(attributes.map((attrib) => attrib.accept(this)))),
-          `>`,
-          ...(await Promise.all(childNodes.map((child) => child.accept(this)))),
-          `</${nodeName}>`
-        ])
+          ...(await Promise.all(attributes.map(attrib => attrib.accept(this)))),
+          `>`
+        ];
+
+        const textMimeType = ElementTextContentMimeTypeProvider.lookup(expression, self._injector);
+        const textLoaderProvider = textMimeType && DependencyLoaderFactoryProvider.find(textMimeType, self._injector);
+
+
+        if (textLoaderProvider && expression.childNodes.length) {
+          const textLoader = textLoaderProvider.create(self.strategy);
+
+          const firstChild = expression.childNodes[0] as MarkupTextExpression;
+          const lines = Array.from({ length: firstChild.location.start.line - 1 }).map(() => "\n").join("");
+
+          const textResult = await textLoader.load({ uri, hash }, { 
+            type: textMimeType, 
+            content: lines + firstChild.nodeValue
+          });
+
+          let textContent = textResult.content;
+
+          if (textResult.map) {
+            const sourceMappingURL = `data:application/json;base64,${new Buffer(JSON.stringify(textResult.map)).toString("base64")}`;
+            textContent += `/*# sourceMappingURL=${sourceMappingURL} */`;
+          }
+
+          buffer.push(new sm.SourceNode(firstChild.location.start.line, firstChild.location.start.column, uri, textContent));
+
+        } else {
+          buffer.push(...(await Promise.all(childNodes.map(child => child.accept(this)))));
+        }
+
+        buffer.push(`</${nodeName}>`);
+        return new sm.SourceNode(location.start.line, location.start.column, uri, buffer);
       },
       async visitComment({ location, nodeValue }: MarkupCommentExpression) {
         return new sm.SourceNode(location.start.line, location.start.column, uri, [`<!--${nodeValue}-->`]);

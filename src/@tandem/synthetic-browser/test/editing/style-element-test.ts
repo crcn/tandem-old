@@ -6,7 +6,7 @@ import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 
 // TODO - media queries, keyframes 
 describe(__filename + "#", () => {
-  it("Can returns the proper line & column information for style sheets in style elements", async () => {
+  xit("Can returns the proper line & column information for style sheets in style elements", async () => {
     const { injector, window } = await loadTestBrowser({
       "index.html": `
         <style>
@@ -43,6 +43,25 @@ describe(__filename + "#", () => {
     await timeout();
 
     expect(browser.window.document.styleSheets[0].cssText).to.equal(`.container {\n\tcolor: blue;\n}\n`);
+  });
+
+  it("Maps urls to their full path", async () => {
+    const browser = await loadTestBrowser({
+      "index.html": `
+        <style>
+          .container {
+            color: red;
+            background: url(test.png);
+          }
+        </style>
+      `,
+      "test.png": `something`
+    }, "index.html");
+
+  
+    const styleSheet = browser.window.document.styleSheets[0];
+    const rule = styleSheet.rules[0] as SyntheticCSSStyleRule;
+    expect(rule.style.background).to.equal(`url(file://./test.png)`);
   });
 
   [
