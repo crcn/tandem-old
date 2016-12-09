@@ -60,23 +60,3 @@ export abstract class URIProtocol {
     return uri.replace(/^\w+:\/\//, "");
   }
 }
-
-export class HTTPURIProtocol extends URIProtocol {
-  async read(uri: string): Promise<string> {
-    return (await fetch(uri)).text();
-  }
-  async write(uri: string, content: string) {
-    this.logger.info(`Cannot currenty write to uris`);
-  }
-  async exists(uri: string) {
-    this.logger.info(`Cannot currenty check http 404s`);
-    return false;
-  }
-  watch2(uri: string, onChange: () => any) {
-    this.logger.info(`Cannot currently watch uris`);
-
-    return {
-      dispose() { }
-    }
-  }
-}

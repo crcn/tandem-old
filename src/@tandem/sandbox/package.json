@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "detective": "^4.3.2",
     "chokidar": "^1.6.1",
+    "detective": "^4.3.2",
     "loader-utils": "^0.2.16",
     "lodash": "^4.16.4",
     "md5": "^2.2.1",
