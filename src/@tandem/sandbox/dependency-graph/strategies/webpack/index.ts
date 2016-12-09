@@ -33,7 +33,7 @@ import { FileResolverProvider, FileCacheProvider } from "@tandem/sandbox/provide
 
 import path =  require("path");
 import sift = require("sift");
-import resolve =  require("resolve");
+import resolveNodeModule =  require("resolve");
 
 // https://webpack.github.io/docs/configuration.html
 // internal APIs
@@ -157,6 +157,9 @@ class WebpackLoaderContext {
   }
 
   private get module() {
+    if (!this.loader.modulePath) {
+      console.log(this);
+    }
     return require(this.loader.modulePath);
   }
 
@@ -319,7 +322,7 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
     loaders: (moduleInfo.length ? loaderParts : []).map((loaderName) => {
       const [moduleName, query] = loaderName.split("?");
       return {
-        modulePath: require.resolve(moduleName),
+        modulePath: resolveNodeModule.sync(moduleName),
         query: query && "?" + query
       }
     })
@@ -468,7 +471,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
       this.logger.warn(`Unable to resolve ${relativeFilePath}`);
     }
 
-    const isCore = resolvedFilePath && resolve.isCore(resolvedFilePath);
+    const isCore = resolvedFilePath && resolveNodeModule.isCore(resolvedFilePath);
 
     if (isCore) {
       let type = moduleInfo;
@@ -478,7 +481,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
           type = "empty";
         }
       }
-      resolvedFilePath = nodeLibs[type] || require.resolve(`node-libs-browser/mock/${type}`);
+      resolvedFilePath = nodeLibs[type] || resolveNodeModule.sync(`node-libs-browser/mock/${type}`);
     }
 
     return {

@@ -18,6 +18,7 @@
     "*-test",
     "old",
     "out",
+    "dist",
     "integrations",
     "examples"
   ],

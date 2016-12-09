@@ -23,6 +23,15 @@ http://electron.atom.io/docs/api/auto-updater/
 
 html css source maps
 
+- FIX HANGING PROCESS
+  - causing more bugs such as channel close with tscode
+
+- open any HTML file
+- launch tandem from vscode
+- do not require workspaces - should be secondary
+- changes not syncing to  vscode
+- bark for unsaved changes
+
 - [ ] TodoMVC
   - [ ] broken
     - [ ] *angular2 - document.write not supported

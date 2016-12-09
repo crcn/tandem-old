@@ -1,6 +1,7 @@
 import React =  require("react");
 import { EditorStore } from "@tandem/editor/browser/stores";
 import { IDispatcher } from "@tandem/mesh";
+import {createMenuSeparatorClass } from "../menus";
 import { IWorkspaceTool } from "@tandem/editor/browser/stores";
 import { ReactComponentFactoryProvider } from "./base";
 import { IRouteHandler } from "../stores/router"; 
@@ -202,6 +203,8 @@ export class PageFactoryProvider extends ReactComponentFactoryProvider {
 } 
 
 
+let i = 0;
+
 export class WebMenuItemFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "menuItems";
   constructor(readonly name: string, readonly parentTester: any, readonly WebMenuItemClass: { new(name: string): WebMenuItem }) {
@@ -223,6 +226,10 @@ export class WebMenuItemFactoryProvider extends ClassFactoryProvider {
     return this.parentTester(parent);
   }
 
+  static createSeparatorProvider(parent: string) {
+    return new WebMenuItemFactoryProvider(`sep${i++}`, parent, createMenuSeparatorClass());
+  }
+
   static getId(name: string) {
     return [this.NS, name].join("/");
   }
@@ -234,7 +241,6 @@ export class WebMenuItemFactoryProvider extends ClassFactoryProvider {
       return provider.create();
     });
   }
-
 } 
 
 export * from "./base";

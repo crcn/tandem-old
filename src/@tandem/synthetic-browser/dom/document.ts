@@ -578,7 +578,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   write(content: string) {
-    throw new Error(`document.write is not currently supported`);
+    console.error(`document.write is not currently supported`);
   }
 
   private onStyleSheetsEvent({ mutation }: MutationEvent<any>) {

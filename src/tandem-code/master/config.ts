@@ -2,6 +2,7 @@ import { IEditorCommonConfig } from "@tandem/editor/common";
 
 export interface IStudioEditorServerConfig extends IEditorCommonConfig {
   projectFileExtensions: string[],
+  appDirectory: string,
   settingsDirectory: string, // ~/.tandem
   cacheDirectory: string, // ~/.tandem
   tmpDirectory: string, // ~/.tandem

@@ -12,11 +12,18 @@ export class StartMasterPingCommand extends BaseCommand {
   execute() {
     const ping = async () => {
       this.logger.debug("Pinging master");
-      const value = (await readOneChunk(this.bus.dispatch(new PingRequest()))).value;
-      if (value !== true) {
+
+      const kill = () => {
         this.logger.warn(`Master didn't return a ping -- closing server`);
         process.exit(1);
       }
+
+      // give some room -- server may be busy
+      const raceTimer = setTimeout(kill, 1000 * 5);
+      
+      const value = (await readOneChunk(this.bus.dispatch(new PingRequest()))).value;
+      clearTimeout(raceTimer);
+      if (!value) kill();
 
       setTimeout(ping, PING_TIMEOUT);
     }

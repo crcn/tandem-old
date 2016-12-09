@@ -498,7 +498,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
       const value = this[key];
 
       if (value != null) {
-        model[key] = value;
+        model[key + ""] = value;
       }
 
       // reset for now
@@ -508,7 +508,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     for (const key in this) {
       if (!isValidCSSDeclarationProperty(key)) continue;
       if (this[key] == null) continue;
-      model[key] = this[key];
+      model[key + ""] = this[key];
     }
 
     let i = 0;
@@ -563,7 +563,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     for (const key in this) {
       const value = this[key];
       if (typeof value === "object") continue;
-      obj[key] = value;
+      obj[key + ""] = value;
     }
     return obj;
   }
@@ -598,7 +598,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     if (declaration.length) {
       for (let i = 0, n = declaration.length; i < n; i++) {
         const key = declaration[i];
-        obj[key] = declaration[key];
+        obj[key + ""] = declaration[key];
       }
       obj.updatePropertyIndices();
     } else {
@@ -612,7 +612,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     for (const key in this) {
       if (!isValidCSSDeclarationProperty(key)) continue;
       if (this[key] == null) continue;
-      obj[key] = this[key];
+      obj[key + ""] = this[key];
     }
     return obj;
   }

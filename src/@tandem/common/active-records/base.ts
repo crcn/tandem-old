@@ -150,7 +150,7 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
 
   protected setPropertiesFromSource(source: T) {
     for (const key in source) {
-      this[key] = source[key];
+      this[key + ""] = source[key];
     }
   }
 

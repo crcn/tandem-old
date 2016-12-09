@@ -231,12 +231,12 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._updatedAt = Date.now();
   }
 
-  getDependencyHash(relativeOrAbsolutePath: string): string {
-    const info = this._importedDependencyInfo.find(info => info.relativePath === relativeOrAbsolutePath || info.filePath === relativeOrAbsolutePath);
+  getDependencyHash(url: string): string {
+    const info = this._importedDependencyInfo.find(info => info.originalUrl === url || info.resolvedUrl === url);
     return info && info.hash;
   }
 
-  eagerGetDependency(relativeOrAbsolutePath: string) {
+  eagerGetDependency(url: string) {
     return this._graph.eagerFindByHash(this.getDependencyHash(relativeOrAbsolutePath));
   }
 

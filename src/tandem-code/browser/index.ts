@@ -11,6 +11,7 @@ import Url =  require("url");
 import { ServiceApplication } from "@tandem/core";
 import { EditorFamilyType } from "@tandem/editor/common";
 import { TandemStudioBrowserStore } from "./stores";
+import { InstallCommandLineToolsRequest } from "tandem-code/common";
 
 import { 
   WebMenuItem, 
@@ -26,6 +27,7 @@ import {
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
 import { TandemStudioBrowserStoreProvider } from "./providers";
+
 import { 
   Injector, 
   LogLevel, 
@@ -53,9 +55,9 @@ import {
 import {StudioRouteNames } from "./constants";
 import { WelcomeComponent } from "./components";
 import { 
+  SetMenuCommand,
   LoadHelpOptionsCommad,
   LoadStartOptionsCommand, 
-  SetMenuCommand,
   InitializeWelcomePageCommand, 
 } from "./commands";
 
@@ -73,12 +75,17 @@ const config: IEditorBrowserConfig = {
   }
 };
 
+let i = 0;
+const createSepName = () => `sep${i++}`;
+
 function createMenuProviders() {
   return [
 
     new WebMenuItemFactoryProvider("app", (parent: WebMenuItem) => parent.root === parent, createWebMenuItemClass("Tandem")),
     new WebMenuItemFactoryProvider("appAbout", "app", createWebMenuItemClass(undefined, "about")),
-    new WebMenuItemFactoryProvider("sep", "app", createWebMenuItemClass(undefined, "separator")),
+    WebMenuItemFactoryProvider.createSeparatorProvider("app"),
+    new WebMenuItemFactoryProvider("installShellCommands", "app", createKeyCommandMenuItemClass("Install Shell Commands", undefined, InstallCommandLineToolsRequest)),
+    WebMenuItemFactoryProvider.createSeparatorProvider("app"),
     new WebMenuItemFactoryProvider("quit", "app", createWebMenuItemClass(undefined, "quit")),
 
     ...createWorkspaceMenuProviders(),
@@ -117,7 +124,7 @@ function createWorkspaceMenuProviders() {
     new WebMenuItemFactoryProvider("zoomOut", "view", createKeyCommandMenuItemClass("Zoom Out", "CmdOrCtrl+-", ZoomOutRequest)),
     new WebMenuItemFactoryProvider("zoomSep", "view", createMenuSeparatorClass()),
 
-    ...(process.env.DEBUG ? debugMenuOptions : []),
+    ...(process.env.DEV ? debugMenuOptions : []),
 
     new WebMenuItemFactoryProvider("debugSep", "view", createMenuSeparatorClass()),
     new WebMenuItemFactoryProvider("toggleTools", "view", createKeyCommandMenuItemClass("Toggle Stage Tools", "Ctrl+CmdOrCtrl+T", ToggleStageToolsRequest)),

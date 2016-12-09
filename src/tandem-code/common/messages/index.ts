@@ -59,6 +59,17 @@ export class OpenNewWorkspaceRequest implements IMessage {
   constructor(readonly filePath: string) { }
 }
 
+@setMessageTarget(EditorFamilyType.MASTER)
+export class CreateTemporaryWorkspaceRequest implements IMessage {
+  static readonly CREATE_TEMPORARY_WORKSPACE: string = "createTemporaryWorkspace";
+  readonly type = CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE;
+  constructor(readonly filePath: string) { }
+
+  static async dispatch(filePath: string, bus: IBus<any>):Promise<string> {
+    return (await readOneChunk<string>(bus.dispatch(new CreateTemporaryWorkspaceRequest(filePath)))).value;
+  }
+}
+
 
 @setMessageTarget(EditorFamilyType.MASTER)
 export class SelectDirectoryRequest implements IMessage {
@@ -81,6 +92,15 @@ export class BannerPromptMessage implements IMessage {
 
   static async dispatch(message: string, okMessage: string, bus: IBus<any>): Promise<boolean> {
     return (await readOneChunk(bus.dispatch(new BannerPromptMessage(message, okMessage)))).value;
+  }
+}
+
+@addMessageVisitor(EditorFamilyType.MASTER)
+export class InstallCommandLineToolsRequest implements IMessage {
+  static readonly INSTALL_COMMAND_LINE_TOOLS: string = "installCommandLineTools";
+  readonly type = InstallCommandLineToolsRequest.INSTALL_COMMAND_LINE_TOOLS;
+  constructor() {
+
   }
 }
 

@@ -92,7 +92,7 @@ export class LocalFileResolver extends BaseFileResolver {
     if (cwd) {
       const pkgPath = fs.existsSync(cwd + "/package.json") ? cwd : pkgpath.sync(cwd);
 
-      const pkg = pkgPath && require(pkgPath + "/package.json");
+      const pkg = pkgPath && JSON.parse(fs.readFileSync(pkgPath + "/package.json", "utf8"));
 
       // check browser flag in package.json
 

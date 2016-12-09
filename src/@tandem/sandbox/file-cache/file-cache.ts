@@ -13,7 +13,7 @@ import {
 
 import { IFileSystem } from "../file-system";
 import { FileSystemProvider } from "../providers";
-import { FileCacheItem, IFileCacheItemData } from "./item";
+import { FileCacheItem, IFileCacheItemData, createDataUrl } from "./item";
 
 // TODO - move a lot of this logic to ActiveRecordCollection
 // TODO - remove files here after TTL
@@ -53,6 +53,22 @@ export class FileCache extends Observable {
 
   get collectionName() {
     return "fileCache";
+  }
+
+  /**
+   * ability to shove temporary files into mem -- like unsaved files.
+   */
+
+  async add(filePath: string, content: string|Buffer): Promise<FileCacheItem> {
+    let fileCache = await this.collection.loadItem({ filePath });
+    if (!fileCache) fileCache = this.collection.create({
+      filePath: filePath,
+      url: undefined,
+      sourceFileModifiedAt: -1,
+    });
+    
+    fileCache.setDataUrlContent(content);
+    return fileCache.save();
   }
 
   /**

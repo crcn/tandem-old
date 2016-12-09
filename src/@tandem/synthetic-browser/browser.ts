@@ -32,6 +32,7 @@ import {
   Sandbox,
   Dependency,
   DependencyGraph,
+  URLProtocolProvider,
   generateSyntheticUID,
   DependencyGraphProvider,
   IDependencyGraphStrategyOptions,

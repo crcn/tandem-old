@@ -22,11 +22,12 @@ export class FileCacheSynchronizer {
     const b = this._cache.collection.map((item) => item.filePath);
 
     diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
-      visitInsert: ({ index, value }) => {
+      visitInsert: async ({ index, value }) => {
 
-        // TODO - fix this -- shouldn't be watching files that do not exist
         try {
-          if (!/^\w+:\/\//.test(value)) {
+
+          // some files may be temporarily stored in memory, so even urls. Don't watch that stuff.
+          if (!/^\w+:\/\//.test(value) && (await this._fileSystem.fileExists(value))) {
             this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
           }
         } catch(e) {

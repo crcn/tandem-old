@@ -12,17 +12,19 @@ import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider
 
 import { IStudioEditorServerConfig } from "./config";
 import { 
-  AutoUpdateCommand,
-  InitSettingsCommand,
   HandlePingCommand,
-  OpenTextFileCommand,
+  AutoUpdateCommand,
   SpawnWorkerCommand, 
+  InitSettingsCommand,
+  OpenTextFileCommand,
   StartProjectCommand,
   GetHelpOptionsCommand,
   OpenHelpOptionCommand,
   SelectDirectoryCommand,
   OpenNewWorkspaceCommand,
   CLIOpenWorkspaceCommand,
+  CreateTempWorkspaceCommand,
+  InstallShellCommandsCommand,
   InitSettingsDirectoryCommand,
   GetProjectStarterOptionsCommand,
 } from "./commands";
@@ -40,6 +42,8 @@ import {
   SelectDirectoryRequest,
   OpenNewWorkspaceRequest,
   GetProjectStartOptionsRequest,
+  InstallCommandLineToolsRequest,
+  CreateTemporaryWorkspaceRequest,
 } from "tandem-code/common";
 
 import { TandemStudioMasterStore } from "./stores";
@@ -69,6 +73,7 @@ export const initializeMaster = async () => {
   const config: IStudioEditorServerConfig = {
     projectFileExtensions: TD_FILE_EXTENSIONS,
     family: EditorFamilyType.MASTER,
+    appDirectory: ROOT_DIR,
     settingsDirectory: process.env.HOME + "/.tandem",
     cacheDirectory: process.env.HOME + "/.tandem/cache",
     tmpDirectory: process.env.HOME + "/.tandem/tmp",
@@ -98,6 +103,8 @@ export const initializeMaster = async () => {
     
     // commands
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
+    new CommandFactoryProvider(CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE, CreateTempWorkspaceCommand),
+    new CommandFactoryProvider(InstallCommandLineToolsRequest.INSTALL_COMMAND_LINE_TOOLS, InstallShellCommandsCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsDirectoryCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsCommand),
     new CommandFactoryProvider(GetHelpOptionsRequest.GET_HELP_OPTIONS, GetHelpOptionsCommand),

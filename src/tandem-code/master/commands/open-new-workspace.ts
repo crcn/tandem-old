@@ -1,12 +1,26 @@
 import qs =  require("qs");
+import { MimeTypeProvider } from "@tandem/common";
+import { TDPROJECT_MIME_TYPE } from "@tandem/tdproject-extension/constants";
 import { BrowserWindow } from "electron";
 import { BaseStudioMasterCommand } from "./base";
-import { OpenNewWorkspaceRequest } from "tandem-code/common";
+import { OpenNewWorkspaceRequest, CreateTemporaryWorkspaceRequest } from "tandem-code/common";
 
 export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
   execute({ filePath }: OpenNewWorkspaceRequest) {
     this.logger.info(`Opening workspace: ${filePath}`);
 
+    if (MimeTypeProvider.lookup(filePath, this.injector) !== TDPROJECT_MIME_TYPE) {
+      return this.createAndOpenTandemWorkspaceFile(filePath);
+    } 
+
+    this.openTandemWorkspaceFile(filePath);
+  }
+
+  async createAndOpenTandemWorkspaceFile(filePath: string) {
+    this.openTandemWorkspaceFile(await CreateTemporaryWorkspaceRequest.dispatch(filePath, this.bus));
+  }
+
+  openTandemWorkspaceFile(filePath: string) {
     try {
 
       let hash: string = "";

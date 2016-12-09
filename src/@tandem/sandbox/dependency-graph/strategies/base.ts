@@ -6,7 +6,7 @@ export interface IResolvedDependencyInfo {
   /**
    */
 
-  relativePath?: string;
+  originalUrl?: string;
 
   /**
    */
@@ -17,7 +17,7 @@ export interface IResolvedDependencyInfo {
    * Resolved file path
    */
 
-  filePath: string;
+  resolvedUrl: string;
 
   /**
    * The loader for the file path

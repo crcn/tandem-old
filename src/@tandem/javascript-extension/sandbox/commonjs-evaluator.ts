@@ -10,8 +10,8 @@ export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {
 
     const script = compileModuleSandboxScript(module.filePath, hash, content);
 
-    const resolve = (relativePath) => {
-      return source.eagerGetDependency(relativePath);
+    const resolve = (url) => {
+      return source.eagerGetDependency(url);
     };
 
     const require = (relativePath) => {

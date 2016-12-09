@@ -12,3 +12,5 @@ export * from "./handle-ping";
 export * from "./open-text-file";
 export * from "./init-settings";
 export * from "./auto-update";
+export * from "./install-shell-commands";
+export * from "./create-temp-workspace";

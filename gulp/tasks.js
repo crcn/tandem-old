@@ -159,8 +159,13 @@ gulp.task('prepare', gulpSequence(
   'prepare:integrations'
 ));
 
-gulp.task('prepare:copy-assets', () => {
+gulp.task('prepare:copy-assets', ['prepare:copy-d-ts-assets'], () => {
   return gulp.src(join(SRC_DIR, '**', '!(*.ts|*.peg)'))
+  .pipe(gulp.dest(OUT_DIR));
+});
+
+gulp.task('prepare:copy-d-ts-assets', () => {
+  return gulp.src(join(SRC_DIR, '**', '*.d.ts'))
   .pipe(gulp.dest(OUT_DIR));
 });
 
@@ -244,7 +249,7 @@ gulp.task('prepare:vscode-extension-symlinks', () => {
  * Publish tasks
  ******************************/
 
-gulp.task('publish:npm', () => {
+gulp.task('publish:npm', ['prepare:copy-assets'], () => {
 
   const publicPackages = PACKAGES.filter((pkg) => {
     return !pkg.private;
@@ -255,8 +260,8 @@ gulp.task('publish:npm', () => {
     console.log("publishing %s", pkg.name);
     // console.log(join(OUT_DIR, dirname(pkg.path)));
     return spawn(`npm`, ['publish', '--access', 'public'], {
-      cwd: dirname(pkg.path),
-      stdio: ['inherit', 'inherit', 'inherit']
+      cwd: dirname(pkg.path).replace(SRC_DIR, OUT_DIR),
+      stdi: ['inherit', 'inherit', 'inherit']
     });
   });
 });
@@ -359,7 +364,7 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
     .src(testFiles)
     .pipe(mocha({
       reporter: argv.reporter || 'dot',
-      timeout: argv.timeout || 1000 * 2,
+      timeout: argv.timeout || 1000 * 5,
       grep: GREP,
       bail: argv.bail
     }))
