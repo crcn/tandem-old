@@ -1,8 +1,8 @@
-import { DependencyGraph } from "./dependency-graph";
-import { FileCache, FileCacheProtocol } from "./file-cache";
 import { FileEditor } from "./edit";
+import { DependencyGraph } from "./dependency-graph";
+import { FileURIProtocol } from "./file-system";
+import { FileCache, FileCacheProtocol } from "./file-cache";
 import { ENV_IS_NODE, IProvider } from "@tandem/common";
-import { IFileSystem, LocalFileSystem, RemoteFileSystem } from "./file-system";
 import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
 import { DependencyGraphProvider, DependencyGraphStrategyProvider } from "./dependency-graph";
 import {
@@ -13,17 +13,17 @@ import {
   ProtocolURLResolverProvider,
 } from "./providers";
 
-import { FileURLProtocol, HTTPURLProtocol, URLProtocolProvider } from "./url";
+import { HTTPURIProtocol, URIProtocolProvider } from "./uri";
 
-export function createSandboxProviders(fileSystemClass?: { new(): IFileSystem }, fileResoverClass?: { new(): IFileResolver }) {
+export function createSandboxProviders(fileResoverClass?: { new(): IFileResolver }) {
   return [
-    new FileSystemProvider(fileSystemClass || (ENV_IS_NODE ?  LocalFileSystem : RemoteFileSystem)),
+    // new FileSystemProvider(fileSystemClass || (ENV_IS_NODE ?  LocalFileSystem : RemoteFileSystem)),
     new FileResolverProvider(fileResoverClass || (ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver)),
     new FileCacheProvider(FileCache),
-    new URLProtocolProvider("file", FileURLProtocol),
-    new URLProtocolProvider("http", HTTPURLProtocol),
-    new URLProtocolProvider("https", HTTPURLProtocol),
-    new URLProtocolProvider("cache", FileCacheProtocol),
+    new URIProtocolProvider("file", FileURIProtocol),
+    new URIProtocolProvider("http", HTTPURIProtocol),
+    new URIProtocolProvider("https", HTTPURIProtocol),
+    new URIProtocolProvider("cache", FileCacheProtocol),
     new FileEditorProvider(FileEditor),
     new DependencyGraphProvider(DependencyGraph)
   ];

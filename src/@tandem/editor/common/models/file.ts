@@ -47,8 +47,8 @@ export class DirectoryModel extends BaseFSModel {
     this._fileSystem.readDirectory(this.path).pipeTo(new WritableStream({
       write: ({ name, isDirectory }) => {
       if (name.charAt(0) === ".") return;
-      const filePath = path.join(this.path, name);
-      this.appendChild(isDirectory ? new DirectoryModel(filePath) : new FileModel(filePath));
+      const uri = path.join(this.path, name);
+      this.appendChild(isDirectory ? new DirectoryModel(uri) : new FileModel(uri));
       }
     }));
   }

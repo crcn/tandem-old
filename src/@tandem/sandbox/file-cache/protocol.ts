@@ -1,9 +1,10 @@
 import { inject } from "@tandem/common";
-import { URLProtocol } from "../url";
+import { URIProtocol } from "../uri";
 import { FileCacheProvider } from "../providers";
+import { FileCacheItem } from "./item";
 import { FileCache } from "./file-cache";
 
-export class FileCacheProtocol extends URLProtocol {
+export class FileCacheProtocol extends URIProtocol {
 
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;

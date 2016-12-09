@@ -88,21 +88,21 @@ addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamily
 @addMessageVisitor(EditorFamilyType.WORKER)
 @setMessageTarget(EditorFamilyType.MASTER)
 @serializable("OpenFileRequest", {
-  serialize({ filePath, selection }: OpenFileRequest) {
-    return { filePath, selection };
+  serialize({ uri, selection }: OpenFileRequest) {
+    return { uri, selection };
   },
-  deserialize({ filePath, selection }, injector) {
-    return new OpenFileRequest(filePath, selection);
+  deserialize({ uri, selection }, injector) {
+    return new OpenFileRequest(uri, selection);
   }
 })
 export class OpenFileRequest extends CoreEvent {
   static readonly OPEN_FILE = "openSourceFile";
-  constructor(readonly filePath: string, readonly selection?: ISourceLocation) {
+  constructor(readonly uri: string, readonly selection?: ISourceLocation) {
     super(OpenFileRequest.OPEN_FILE);
   }
-  static dispatch(filePath: string, selection: ISyntheticSourceInfo, bus: IStreamableDispatcher<any>) {
+  static dispatch(uri: string, selection: ISyntheticSourceInfo, bus: IStreamableDispatcher<any>) {
     // TODO - RESOLVE HERE
-    return bus.dispatch(new OpenFileRequest(filePath, selection));
+    return bus.dispatch(new OpenFileRequest(uri, selection));
   }
 }
 
@@ -110,20 +110,20 @@ export class OpenFileRequest extends CoreEvent {
 @addMessageVisitor(EditorFamilyType.MASTER)
 @setMessageTarget(EditorFamilyType.TEXT_EDITOR)
 @serializable("SetCurrentFileRequest", {
-  serialize({ filePath, selection }: SetCurrentFileRequest) {
-    return { filePath, selection };
+  serialize({ uri, selection }: SetCurrentFileRequest) {
+    return { uri, selection };
   },
-  deserialize({ filePath, selection }, injector) {
-    return new SetCurrentFileRequest(filePath, selection);
+  deserialize({ uri, selection }, injector) {
+    return new SetCurrentFileRequest(uri, selection);
   }
 })
 export class SetCurrentFileRequest extends CoreEvent {
   static readonly SET_CURRENT_FILE = "setCurrentFile";
-  constructor(readonly filePath: string, readonly selection?: ISourceLocation) {
+  constructor(readonly uri: string, readonly selection?: ISourceLocation) {
     super(SetCurrentFileRequest.SET_CURRENT_FILE);
   }
-  static dispatch(filePath: string, selection: ISyntheticSourceInfo, bus: IStreamableDispatcher<any>) {
-    return bus.dispatch(new SetCurrentFileRequest(filePath, selection));
+  static dispatch(uri: string, selection: ISyntheticSourceInfo, bus: IStreamableDispatcher<any>) {
+    return bus.dispatch(new SetCurrentFileRequest(uri, selection));
   }
 }
 
@@ -134,11 +134,11 @@ export class SetCurrentFileRequest extends CoreEvent {
 @serializable("OpenWorkspaceRequest")
 export class OpenWorkspaceRequest extends CoreEvent {
   static readonly OPEN_WORKSPACE = "openWorkspace";
-  constructor(readonly filePath: string) {
+  constructor(readonly uri: string) {
     super(OpenWorkspaceRequest.OPEN_WORKSPACE);
   }
-  static async dispatch(filePath: string, bus: IStreamableDispatcher<any>): Promise<boolean> {
-    return (await readOneChunk(bus.dispatch(new OpenWorkspaceRequest(filePath)))).value;
+  static async dispatch(uri: string, bus: IStreamableDispatcher<any>): Promise<boolean> {
+    return (await readOneChunk(bus.dispatch(new OpenWorkspaceRequest(uri)))).value;
   }
 }
 
@@ -146,37 +146,37 @@ export class OpenWorkspaceRequest extends CoreEvent {
 @addMessageVisitor(EditorFamilyType.MASTER)
 @setMessageTarget(EditorFamilyType.WORKER)
 @serializable("ImportFileRequest", {
-  serialize({ filePath, bounds, targetObject }: ImportFileRequest) {
-    return [ filePath, bounds, serialize(targetObject && targetObject.clone(false)) ];
+  serialize({ uri, bounds, targetObject }: ImportFileRequest) {
+    return [ uri, bounds, serialize(targetObject && targetObject.clone(false)) ];
   },
-  deserialize([ filePath, bounds, targetObject ], injector) {
-    return new ImportFileRequest(filePath, bounds, deserialize(targetObject, injector));
+  deserialize([ uri, bounds, targetObject ], injector) {
+    return new ImportFileRequest(uri, bounds, deserialize(targetObject, injector));
   }
 })
 export class ImportFileRequest extends CoreEvent {
   static readonly IMPORT_FILE = "importFile";
-  readonly filePath: string;
-  constructor(filePath: string, readonly bounds?: BoundingRect, readonly targetObject?: ISyntheticObject) {
+  readonly uri: string;
+  constructor(uri: string, readonly bounds?: BoundingRect, readonly targetObject?: ISyntheticObject) {
     super(ImportFileRequest.IMPORT_FILE);
-    this.filePath = decodeURIComponent(filePath);
+    this.uri = decodeURIComponent(uri);
   }
 }
 
 @setMessageTarget(EditorFamilyType.BROWSER)
 @serializable("SelectSourceRequest", {
-  serialize({ filePath, ranges }: SelectSourceRequest) {
+  serialize({ uri, ranges }: SelectSourceRequest) {
     return {
-      filePath: filePath,
+      uri: uri,
       ranges: ranges
     }
   },
-  deserialize({ filePath, ranges }): SelectSourceRequest {
-    return new SelectSourceRequest(filePath, ranges);
+  deserialize({ uri, ranges }): SelectSourceRequest {
+    return new SelectSourceRequest(uri, ranges);
   }
 })
 export class SelectSourceRequest extends CoreEvent {
   static readonly SELECT_SOURCE = "selectSource";
-  constructor(readonly filePath: string, readonly ranges: ISourceLocation[]) {
+  constructor(readonly uri: string, readonly ranges: ISourceLocation[]) {
     super(SelectSourceRequest.SELECT_SOURCE);
   }
 }

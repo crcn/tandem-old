@@ -150,7 +150,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
 
   renderTitle = () => {
 
-    return <div className="css-pane-title" title={this.props.result.rule.source && this.props.result.rule.source.filePath} onMouseEnter={this.onTitleMouseEnter} onMouseLeave={this.onTitleMouseLeave} onClick={this.onTitleClick}>
+    return <div className="css-pane-title" title={this.props.result.rule.source && this.props.result.rule.source.uri} onMouseEnter={this.onTitleMouseEnter} onMouseLeave={this.onTitleMouseLeave} onClick={this.onTitleClick}>
       <SyntheticSourceLink target={this.props.result.rule}>{ String(this.props.result.rule.selector) }</SyntheticSourceLink>
     </div>
   }

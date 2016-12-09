@@ -134,8 +134,8 @@ export class MimeTypeProvider extends Provider<string> {
   static findAll(providers: Injector) {
     return providers.queryAll<MimeTypeProvider>([MimeTypeProvider.NS, "**"].join("/"));
   }
-  static lookup(filePath: string, providers: Injector): string {
-    const extension = filePath.split(".").pop();
+  static lookup(uri: string, providers: Injector): string {
+    const extension = uri.split(".").pop();
     const dep = providers.query<MimeTypeProvider>([MimeTypeProvider.NS, extension].join("/"));
     return dep ? dep.value : undefined;
   }
@@ -152,10 +152,10 @@ export class MimeTypeAliasProvider extends Provider<string> {
   static getNamespace(mimeType: string) {
     return [MimeTypeAliasProvider.NS, mimeType].join("/");
   }
-  static lookup(filePathOrMimeType: string, providers: Injector): string {
-    const mimeType = MimeTypeProvider.lookup(filePathOrMimeType, providers);
-    const dep = (mimeType && providers.query<MimeTypeAliasProvider>(this.getNamespace(mimeType))) || providers.query<MimeTypeAliasProvider>(this.getNamespace(filePathOrMimeType));
-    return (dep && dep.value) || mimeType || filePathOrMimeType;
+  static lookup(uriOrMimeType: string, providers: Injector): string {
+    const mimeType = MimeTypeProvider.lookup(uriOrMimeType, providers);
+    const dep = (mimeType && providers.query<MimeTypeAliasProvider>(this.getNamespace(mimeType))) || providers.query<MimeTypeAliasProvider>(this.getNamespace(uriOrMimeType));
+    return (dep && dep.value) || mimeType || uriOrMimeType;
   }
 }
 

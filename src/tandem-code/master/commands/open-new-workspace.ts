@@ -6,21 +6,21 @@ import { BaseStudioMasterCommand } from "./base";
 import { OpenNewWorkspaceRequest, CreateTemporaryWorkspaceRequest } from "tandem-code/common";
 
 export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
-  execute({ filePath }: OpenNewWorkspaceRequest) {
-    this.logger.info(`Opening workspace: ${filePath}`);
+  execute({ uri }: OpenNewWorkspaceRequest) {
+    this.logger.info(`Opening workspace: ${uri}`);
 
-    if (MimeTypeProvider.lookup(filePath, this.injector) !== TDPROJECT_MIME_TYPE) {
-      return this.createAndOpenTandemWorkspaceFile(filePath);
+    if (MimeTypeProvider.lookup(uri, this.injector) !== TDPROJECT_MIME_TYPE) {
+      return this.createAndOpenTandemWorkspaceFile(uri);
     } 
 
-    this.openTandemWorkspaceFile(filePath);
+    this.openTandemWorkspaceFile(uri);
   }
 
-  async createAndOpenTandemWorkspaceFile(filePath: string) {
-    this.openTandemWorkspaceFile(await CreateTemporaryWorkspaceRequest.dispatch(filePath, this.bus));
+  async createAndOpenTandemWorkspaceFile(uri: string) {
+    this.openTandemWorkspaceFile(await CreateTemporaryWorkspaceRequest.dispatch(uri, this.bus));
   }
 
-  openTandemWorkspaceFile(filePath: string) {
+  openTandemWorkspaceFile(uri: string) {
     try {
 
       let hash: string = "";
@@ -32,10 +32,10 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
         backendPort: this.config.port
       } as any;
 
-      if (filePath) {
+      if (uri) {
         width = 1024;
         height = 768;
-        hash = `#/workspace?workspacePath=${encodeURIComponent(filePath)}`;
+        hash = `#/workspace?workspaceUri=${encodeURIComponent(uri)}`;
       } else {
         hash = "#/welcome";
         frame = false;

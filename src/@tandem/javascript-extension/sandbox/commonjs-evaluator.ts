@@ -8,7 +8,7 @@ export class CommonJSSandboxEvaluator implements ISandboxDependencyEvaluator {
     const { content, hash } = source;
     const { global, vmContext } = sandbox;
 
-    const script = compileModuleSandboxScript(module.filePath, hash, content);
+    const script = compileModuleSandboxScript(module.uri, hash, content);
 
     const resolve = (url) => {
       return source.eagerGetDependency(url);

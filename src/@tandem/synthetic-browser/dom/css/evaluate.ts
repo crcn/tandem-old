@@ -39,7 +39,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
 
   function link<T extends SyntheticCSSObject>(expression: postcss.Node, synthetic: T): T {
 
-    let filePath: string = dependency && dependency.filePath;
+    let uri: string = dependency && dependency.uri;
     let start =  expression.source.start;
     let end   = expression.source.end;
 
@@ -58,7 +58,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
         column: originalPosition.column + 1
       };
 
-      filePath = originalPosition.source;
+      uri = originalPosition.source;
       end = undefined;
     }
 
@@ -67,7 +67,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
       kind: expression.type,
 
       // todo - this may not be correct.
-      filePath: filePath,
+      uri: uri,
       start: start,
       end: end
     }

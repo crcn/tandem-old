@@ -19,7 +19,7 @@ export class FileCacheSynchronizer {
 
   private update() {
     const a = Object.keys(this._watchers);
-    const b = this._cache.collection.map((item) => item.filePath);
+    const b = this._cache.collection.map((item) => item.sourceUri);
 
     diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
       visitInsert: async ({ index, value }) => {
@@ -48,9 +48,9 @@ export class FileCacheSynchronizer {
 
     // just set the timestamp instead of checking lstat -- primarily
     // to ensure that this class works in other environments.
-    entity.sourceFileModifiedAt = Date.now();
+    entity.sourceModifiedAt = Date.now();
 
     // override any data urls that might be stored on the entity
-    entity.setFileUrl(filePath).save();
+    entity.setContentUri(`file://${filePath}`).save();
   }
 }

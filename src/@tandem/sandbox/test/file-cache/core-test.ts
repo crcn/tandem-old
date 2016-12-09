@@ -58,7 +58,7 @@ describe(__filename + "#", () => {
         item.observe({
           dispatch({ mutation }: MutationEvent<any>) {
             if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
-              expect(item.url).to.equal("data:text/plain,aGVsbG8=");
+              expect(item.contentUri).to.equal("data:text/plain,aGVsbG8=");
               resolve();
             }
           }
@@ -74,14 +74,14 @@ describe(__filename + "#", () => {
         "entry.js": "a"
       });
       const item = await fileCache.item("entry.js");
-      const mtime = item.sourceFileModifiedAt;
+      const mtime = item.sourceModifiedAt;
 
       return new Promise((resolve) => {
         item.observe({
           dispatch({ mutation }: MutationEvent<any>) {
             if (mutation.type === PropertyMutation.PROPERTY_CHANGE) {
-              expect(item.url).to.equal("file://entry.js");
-              expect(item.sourceFileModifiedAt).to.not.equal(mtime);
+              expect(item.contentUri).to.equal("file://entry.js");
+              expect(item.sourceModifiedAt).to.not.equal(mtime);
               resolve();
             }
           }

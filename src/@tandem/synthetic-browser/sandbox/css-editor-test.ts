@@ -88,7 +88,7 @@ describe(__filename + "#", () => {
 
     const browser = new SyntheticBrowser(injector);
     await browser.open({
-      url: entryJSFilePath,
+      uri: entryJSFilePath,
       dependencyGraphStrategyOptions: {
         name: "webpack"
       }

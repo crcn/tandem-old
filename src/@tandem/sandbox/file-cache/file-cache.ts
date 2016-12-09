@@ -43,8 +43,8 @@ export class FileCache extends Observable {
     this._collection.sync();
   }
 
-  eagerFindByFilePath(filePath) {
-    return this.collection.find(item => item.filePath === filePath);
+  eagerFindByFilePath(sourceUri) {
+    return this.collection.find(item => item.sourceUri === sourceUri);
   }
 
   get collection() {
@@ -59,12 +59,13 @@ export class FileCache extends Observable {
    * ability to shove temporary files into mem -- like unsaved files.
    */
 
-  async add(filePath: string, content: string|Buffer): Promise<FileCacheItem> {
-    let fileCache = await this.collection.loadItem({ filePath });
+  async add(sourceUri: string, content: string|Buffer): Promise<FileCacheItem> {
+    let fileCache = await this.collection.loadItem({ sourceUri });
+
     if (!fileCache) fileCache = this.collection.create({
-      filePath: filePath,
-      url: undefined,
-      sourceFileModifiedAt: -1,
+      sourceUri: sourceUri,
+      contentUri: createDataUrl(""),
+      sourceModifiedAt: -1,
     });
     
     fileCache.setDataUrlContent(content);
@@ -76,11 +77,11 @@ export class FileCache extends Observable {
    * from the file system
    */
 
-  item = memoize(async (filePath: string): Promise<FileCacheItem> => {
-    if (filePath == null) throw new Error(`File path must not be null or undefined`);
-    return this.collection.find((entity) => entity.filePath === filePath) || await this.collection.loadOrInsertItem({ filePath },{
-      filePath: filePath,
-      url: "file://" + filePath
+  item = memoize(async (sourceUri: string): Promise<FileCacheItem> => {
+    if (sourceUri == null) throw new Error(`File path must not be null or undefined`);
+    return this.collection.find((entity) => entity.sourceUri === sourceUri) || await this.collection.loadOrInsertItem({ sourceUri },{
+      sourceUri: sourceUri,
+      contentUri: sourceUri
     });
   }, { promise: true }) as (filePath) => Promise<FileCacheItem>;
 

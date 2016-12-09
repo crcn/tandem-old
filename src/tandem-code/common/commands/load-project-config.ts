@@ -50,7 +50,7 @@ const createProjectPreviewLoader = (fileHandler: ProjectFileHandler) => {
   return class ProjectPreviewLoader implements IFilePreviewLoader {
     async loadFilePreview(request: ImportFileRequest) {
       const ret = fileHandler.createPreview({
-        filePath: request.filePath.replace(/file:\/\//, "")
+        uri: request.uri,
       }) as IPreviewLoaderResult;
       return ret;
     }

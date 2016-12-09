@@ -29,7 +29,7 @@ import {
 //     // });
 
 //     // const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
-//     //   return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(action.filePath) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
+//     //   return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(action.uri) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
 //     // });
 
 //     // const selection = [];

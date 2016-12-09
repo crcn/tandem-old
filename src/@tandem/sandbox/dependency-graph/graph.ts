@@ -33,7 +33,7 @@ export interface IDependencyGraph {
   createModuleContext(module: IModule);
   getLoader(loaderOptions: any): IDependencyLoader;
   eagerFindByHash(hash): Dependency;
-  resolve(filePath: string, cwd: string): Promise<IResolvedDependencyInfo>;
+  resolve(uri: string, cwd: string): Promise<IResolvedDependencyInfo>;
   getDependency(info: IResolvedDependencyInfo): Promise<Dependency>;
   loadDependency(info: IResolvedDependencyInfo): Promise<Dependency>;
 }
@@ -104,8 +104,8 @@ export class DependencyGraph extends Observable implements IDependencyGraph {
   /**
    */
 
-  resolve(filePath: string, cwd: string): Promise<IResolvedDependencyInfo> {
-    return this.$strategy.resolve(filePath, cwd);
+  resolve(uri: string, origin?: string): Promise<IResolvedDependencyInfo> {
+    return this.$strategy.resolve(uri, origin);
   }
 
   /**
@@ -122,7 +122,7 @@ export class DependencyGraph extends Observable implements IDependencyGraph {
     const entry  = await this.getDependency(ops);
     const logTimer = this.logger.startTimer();
     await entry.load();
-    logTimer.stop(`Loaded ${ops.filePath}`);
+    logTimer.stop(`Loaded ${ops.uri}`);
     return entry;
   }, { promise: true, normalizer: args => args[0].hash }) as (ops: IResolvedDependencyInfo) => Promise<Dependency>;
 }

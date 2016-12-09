@@ -56,17 +56,17 @@ export class StartNewProjectRequest implements IMessage {
 export class OpenNewWorkspaceRequest implements IMessage {
   static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
   readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
-  constructor(readonly filePath: string) { }
+  constructor(readonly uri: string) { }
 }
 
 @setMessageTarget(EditorFamilyType.MASTER)
 export class CreateTemporaryWorkspaceRequest implements IMessage {
   static readonly CREATE_TEMPORARY_WORKSPACE: string = "createTemporaryWorkspace";
   readonly type = CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE;
-  constructor(readonly filePath: string) { }
+  constructor(readonly uri: string) { }
 
-  static async dispatch(filePath: string, bus: IBus<any>):Promise<string> {
-    return (await readOneChunk<string>(bus.dispatch(new CreateTemporaryWorkspaceRequest(filePath)))).value;
+  static async dispatch(uri: string, bus: IBus<any>):Promise<string> {
+    return (await readOneChunk<string>(bus.dispatch(new CreateTemporaryWorkspaceRequest(uri)))).value;
   }
 }
 

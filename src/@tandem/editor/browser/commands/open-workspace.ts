@@ -13,10 +13,10 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class OpenWorkspaceCommand extends BaseEditorBrowserCommand {
-  async execute({ filePath }: OpenWorkspaceRequest) {
+  async execute({ uri }: OpenWorkspaceRequest) {
     const workspace = this.injector.inject(new Workspace());
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, this.injector.inject(new SyntheticDOMRenderer())));
-    await browser.open({ url: filePath });
+    await browser.open({ uri: uri });
     this.editorStore.workspace = workspace;
   }
 }

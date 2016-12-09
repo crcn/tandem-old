@@ -51,12 +51,12 @@ export class SyntheticHTMLScript extends SyntheticHTMLElement {
 
     this._executed = true;
 
-    const filePath = src || source && source.filePath || window.location.toString();
+    const uri = src || source && source.uri || window.location.toString();
 
     // node that $module will only exist if the script is evaluated from an HTML file
 
     // TODO - this doesn't work.. need 
-    const script = compileGlobalSandboxScript(filePath, filePath, content);
+    const script = compileGlobalSandboxScript(uri, uri, content);
     runGlobalSandboxScript(script, sandox);
   }
 }

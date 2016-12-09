@@ -46,10 +46,10 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  async load({ filePath, hash }, { type, content }): Promise<IDependencyLoaderResult> {
+  async load({ uri, hash }, { type, content }): Promise<IDependencyLoaderResult> {
 
     content = String(content);
-    const importedDependencyPaths = [];
+    const importedDependencyUris = [];
     const injector = this._injector;
     const self = this;
 
@@ -79,9 +79,9 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
       visitAttribute: async (attribute: MarkupAttributeExpression)  => {
         // ignore redirecting tag names
         if (/src|href/.test(attribute.name) && !/^a$/i.test(attribute.parent.nodeName)) {
-          const absoluteFilePathOptions = await this.strategy.resolve(attribute.value, path.dirname(filePath));
-          addReplacement(attribute, getPosition(attribute.location.start) + attribute.name.length + 2, getPosition(attribute.location.end) - 1, absoluteFilePathOptions.filePath);
-          importedDependencyPaths.push(attribute.value);
+          const absoluteFilePathOptions = await this.strategy.resolve(attribute.value, path.dirname(uri));
+          addReplacement(attribute, getPosition(attribute.location.start) + attribute.name.length + 2, getPosition(attribute.location.end) - 1, absoluteFilePathOptions.uri);
+          importedDependencyUris.push(attribute.value);
         }
       },
       visitComment(comment) { },
@@ -102,7 +102,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
         //   if (type) {
 
-        //     const result = await self.strategy.getLoader(null).load({ filePath, hash }, {
+        //     const result = await self.strategy.getLoader(null).load({ uri, hash }, {
         //       type: type,
         //       content: textNode.nodeValue
         //     });
@@ -127,7 +127,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
     return {
       content: content,
       type: HTML_MIME_TYPE,
-      importedDependencyPaths: importedDependencyPaths
+      importedDependencyUris: importedDependencyUris
     };
   }
 }

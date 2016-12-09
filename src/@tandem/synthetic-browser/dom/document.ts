@@ -116,7 +116,7 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
     diffArray(this.target.styleSheets, newDocument.styleSheets, (oldStyleSheet, newStyleSheet) => {
 
       if (oldStyleSheet.source && newStyleSheet.source) {
-        return oldStyleSheet.source.filePath === newStyleSheet.source.filePath ? 0 : -1;
+        return oldStyleSheet.source.uri === newStyleSheet.source.uri ? 0 : -1;
       }
       
       // simple distance function

@@ -99,8 +99,8 @@ export class DidRedirectMessage implements IMessage {
   }
 }
 
-export function createWorkspaceRedirectRequest(filePath: string) {
-  return new RedirectRequest(EditorRouteNames.WORKSPACE, {}, { workspacePath: filePath });
+export function createWorkspaceRedirectRequest(uri: string) {
+  return new RedirectRequest(EditorRouteNames.WORKSPACE, {}, { workspaceUri: uri });
 }
 
 export class SelectionChangeEvent extends CoreEvent {

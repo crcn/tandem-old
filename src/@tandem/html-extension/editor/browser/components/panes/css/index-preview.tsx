@@ -39,7 +39,7 @@ export const createBodyElement = reactEditorPreview(() => {
 
   document.styleSheets[0].rules[0].$source = {
     kind: null,
-    filePath: "some/file/super/long/file/path/that/should/not/wrap/path.css",
+    uri: "file://some/file/super/long/file/path/that/should/not/wrap/path.css",
     start: {
       line: 0,
       column: 0

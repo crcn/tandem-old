@@ -5,12 +5,12 @@ import { OpenFileRequest, SetCurrentFileRequest } from "@tandem/editor/common";
 
 export class OpenTextFileCommand extends BaseStudioMasterCommand {
   async execute(request: OpenFileRequest) {
-    this.logger.debug(`Opening text document: ${request.filePath}`);
+    this.logger.debug(`Opening text document: ${request.uri}`);
 
     let opened;
 
     try {
-      opened = (await readOneChunk(this.bus.dispatch(new SetCurrentFileRequest(request.filePath, request.selection)))).value;
+      opened = (await readOneChunk(this.bus.dispatch(new SetCurrentFileRequest(request.uri, request.selection)))).value;
     } catch(e) {
       this.logger.error(e.stack);
       throw e;
@@ -20,7 +20,7 @@ export class OpenTextFileCommand extends BaseStudioMasterCommand {
 
     if (!opened) {
       this.logger.debug(`Opening new text editor session`);
-      spawn(this.masterStore.userSettings.textEditor.bin, [request.filePath]);
+      spawn(this.masterStore.userSettings.textEditor.bin, [request.uri]);
     }
   }
 }

@@ -1,11 +1,13 @@
 import fs =  require("fs");
 import { IDisposable } from "@tandem/common";
 import { ReadableStream } from "@tandem/mesh";
+import { URIProtocol } from "../uri";
 import { BaseFileSystem, IReadFileResultItem } from "./base";
 
 let _i = 0;
 
-export class LocalFileSystem extends BaseFileSystem {
+// TODO - deprecated - use FileURIProtocol instead
+export class FileURIProtocol extends URIProtocol {
 
   readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]> {
     return new ReadableStream({
@@ -26,7 +28,8 @@ export class LocalFileSystem extends BaseFileSystem {
     });
   }
 
-  async readFile(filePath: string) {
+  async read(uri: string) {
+    const filePath = this.removeProtocol(uri);
     this.logger.debug("read", filePath);
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, (err, data) => {
@@ -36,13 +39,15 @@ export class LocalFileSystem extends BaseFileSystem {
     });
   }
 
-  fileExists(filePath: string): Promise<boolean> {
+  exists(uri: string): Promise<boolean> {
+    const filePath = this.removeProtocol(uri);
     return new Promise((resolve) => {
       fs.exists(filePath, resolve);
     });
   }
 
-  async writeFile(filePath: string, content: any) {
+  async write(uri: string, content: any) {
+    const filePath = this.removeProtocol(uri);
     return new Promise((resolve, reject) => {
       fs.writeFile(filePath, content, (err, result) => {
         if (err) return reject(err);
@@ -51,7 +56,7 @@ export class LocalFileSystem extends BaseFileSystem {
     });
   }
 
-  watchFile2(filePath: string, onChange: () => any) {
+  watch2(filePath: string, onChange: () => any) {
     this.logger.debug("watch", filePath);
     let currentStat = fs.lstatSync(filePath);
     const listener = () => {

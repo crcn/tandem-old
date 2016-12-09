@@ -6,7 +6,7 @@ export interface IResolvedDependencyInfo {
   /**
    */
 
-  originalUrl?: string;
+  originalUri?: string;
 
   /**
    */
@@ -17,7 +17,7 @@ export interface IResolvedDependencyInfo {
    * Resolved file path
    */
 
-  resolvedUrl: string;
+  uri: string;
 
   /**
    * The loader for the file path
@@ -32,13 +32,13 @@ export interface IDependencyLoaderResult extends IDependencyContent {
    *  Dependencies that imported in at runtime.
    */
 
-  importedDependencyPaths?: string[];
+  importedDependencyUris?: string[];
 
   /**
    * Dependencies that are included and part of the loaded content
    */
 
-  includedDependencyPaths?: string[];
+  includedDependencyUris?: string[];
 }
 
 export interface IDependencyLoader {
@@ -62,7 +62,7 @@ export interface IDependencyGraphStrategy {
    * strategy.resolve('text!./filePath.txt', 'src/content') // { filePath: src/content/filePath.txt, loaderOptions: ['text'] }
    */
 
-  resolve(filePath: string, cwd: string): Promise<IResolvedDependencyInfo>;
+  resolve(uri: string, origin: string): Promise<IResolvedDependencyInfo>;
 
   /**
    * Strategies may contain global variables that need to be

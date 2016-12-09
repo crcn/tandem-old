@@ -15,7 +15,7 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
 
     synthetic.$source     = {
       kind: expression.kind,
-      filePath: module && module.source.filePath,
+      uri: module && module.source.uri,
       start: expression.location.start,
       end: expression.location.end
     };

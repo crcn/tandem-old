@@ -25,20 +25,20 @@ export class TDRootFileImporter implements IFileImporter {
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
 
-  async importFile({ filePath, targetObject, bounds }: ImportFileRequest) {
+  async importFile({ uri, targetObject, bounds }: ImportFileRequest) {
 
     // TODO: temporary fix for DNDd files
-    filePath = filePath.replace(/^file:\/\//g, "");
+    uri = uri.replace(/^file:\/\//g, "");
 
-    const content = String(await this._fileSystem.readFile(filePath));
+    const content = String(await this._fileSystem.readFile(uri));
 
     const element = <SyntheticDOMElement>targetObject;
 
     if (content.indexOf("createBodyElement") !== -1) {
-      return this.importPreview(filePath, element, bounds);
+      return this.importPreview(uri, element, bounds);
     }
 
-    const previewLoader = PreviewLoaderProvider.find(filePath, this._injector);
+    const previewLoader = PreviewLoaderProvider.find(uri, this._injector);
 
     if (!previewLoader) {
       throw new Error(`Cannot create preview file`);
@@ -46,22 +46,22 @@ export class TDRootFileImporter implements IFileImporter {
 
     const preview = await previewLoader.loadFilePreview(arguments[0]);
 
-    if (!(await this._fileSystem.fileExists(preview.filePath))) {
-      await this._fileSystem.writeFile(preview.filePath, preview.content);
-      await this._bus.dispatch(new OpenFileRequest(preview.filePath));
+    if (!(await this._fileSystem.fileExists(preview.uri))) {
+      await this._fileSystem.writeFile(preview.uri, preview.content);
+      await this._bus.dispatch(new OpenFileRequest(preview.uri));
     }
 
-    return this.importPreview(preview.filePath, element, bounds);
+    return this.importPreview(preview.uri, element, bounds);
   }
 
-  private async importPreview(filePath: string, element: SyntheticDOMElement, bounds: BoundingRect) {
+  private async importPreview(uri: string, element: SyntheticDOMElement, bounds: BoundingRect) {
 
     if (!bounds) bounds = new BoundingRect(0, 0, 1024, 768);
 
     const { document } = new SyntheticWindow();
     const artboard = document.createElement("artboard");
-    artboard.setAttribute("title", path.relative(process.cwd(), filePath));;
-    artboard.setAttribute("src", filePath);
+    artboard.setAttribute("title", path.relative(process.cwd(), uri));
+    artboard.setAttribute("src", uri);
     artboard.setAttribute("style", `left:${bounds.left}px;top:${bounds.top}px;width:${bounds.width || 1024}px;height:${bounds.height || 768}px;`);
 
     const edit = element.createEdit();

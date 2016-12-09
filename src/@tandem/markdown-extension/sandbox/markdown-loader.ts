@@ -17,9 +17,7 @@ import {
 
 
 export class MarkdownDependencyLoader extends BaseDependencyLoader {
-
-
-  async load({ filePath, hash }, { type, content }): Promise<IDependencyLoaderResult> {
+  async load({ uri, hash }, { type, content }): Promise<IDependencyLoaderResult> {
     return {
       content: `
         <style>
@@ -30,7 +28,7 @@ export class MarkdownDependencyLoader extends BaseDependencyLoader {
         ${marked(String(content))}
       `,
       type: HTML_MIME_TYPE,
-      importedDependencyPaths: []
+      importedDependencyUris: []
     };
   }
 }

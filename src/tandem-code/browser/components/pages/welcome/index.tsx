@@ -58,8 +58,8 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
     this.openNewWorkspace(file.path);
   }
 
-  openNewWorkspace = async (filePath: string) => {
-    await this.bus.dispatch(new OpenNewWorkspaceRequest(filePath));
+  openNewWorkspace = async (uri: string) => {
+    await this.bus.dispatch(new OpenNewWorkspaceRequest(uri));
     this.close();
   }
   

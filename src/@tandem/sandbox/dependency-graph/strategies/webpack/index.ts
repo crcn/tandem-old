@@ -152,7 +152,7 @@ class WebpackLoaderContext {
 
   }
 
-  get includedDependencyPaths(): string[] {
+  get includedDependencyUris(): string[] {
     return this._dependencies;
   }
 
@@ -232,7 +232,7 @@ class WebpackLoaderContext {
 
   resolve(cwd: string, relativePath: string, callback: (err, result?) => any) {
     this.strategy.resolve(relativePath, cwd).then((info) => {
-      callback(null, info.filePath);
+      callback(null, info.uri && info.uri.replace("file://", ""));
     }).catch(callback);
   }
 }
@@ -241,8 +241,8 @@ class WebpackLoaderContext {
 class WebpackDependencyLoader implements IDependencyLoader {
   protected readonly logger: Logger;
   constructor(readonly strategy: WebpackDependencyGraphStrategy, readonly options: IWebpackLoaderOptions) { }
-  async load({ filePath, hash }: IResolvedDependencyInfo, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
-    this.logger.debug("Loading", filePath);
+  async load({ uri, hash }: IResolvedDependencyInfo, { type, content, map }: IDependencyContent): Promise<IDependencyLoaderResult> {
+    this.logger.debug("Loading", uri);
 
     const { config } = this.strategy;
 
@@ -255,20 +255,20 @@ class WebpackDependencyLoader implements IDependencyLoader {
     }
 
     const moduleLoaders = [
-      ...normalizeConfigLoaders(...usableConfigLoaders.filter(testLoader.bind(this, filePath))),
+      ...normalizeConfigLoaders(...usableConfigLoaders.filter(testLoader.bind(this, uri))),
       ...(this.options.loaders || [])
     ]
 
-    const includedDependencyPaths = [];
+    const includedDependencyUris = [];
 
     const contexts = moduleLoaders.map((loader) => {
       return this.strategy.injector.inject(new WebpackLoaderContext(
         moduleLoaders,
         loader,
         this.strategy,
-        filePath,
+        uri,
         hash,
-        includedDependencyPaths
+        includedDependencyUris
       ));
     });
 
@@ -281,7 +281,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
 
     const result = await loadNext(content, map, 0);
 
-    this.logger.debug("loaded", filePath);
+    this.logger.debug("loaded", uri);
 
     const foundProviderPaths = detective(result.content);
 
@@ -289,8 +289,8 @@ class WebpackDependencyLoader implements IDependencyLoader {
       map: result.map,
       type: JS_MIME_TYPE,
       content: result.content,
-      importedDependencyPaths: foundProviderPaths,
-      includedDependencyPaths: includedDependencyPaths
+      importedDependencyUris: foundProviderPaths,
+      includedDependencyUris: includedDependencyUris
     };
   }
 }
@@ -342,8 +342,8 @@ export class WebpackSandboxContext {
     this.id = _target.source.hash;
 
     // TODO - need to check webpack config for this.
-    this.__filename = _target.source.filePath;
-    this.__dirname = path.dirname(_target.source.filePath);
+    this.__filename = _target.source.uri;
+    this.__dirname = path.dirname(_target.source.uri);
   }
 
   get exports() {
@@ -485,7 +485,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
     }
 
     return {
-      filePath: resolvedFilePath,
+      uri: resolvedFilePath,
       loaderOptions: loaderOptions,
       hash: md5(`webpack:${resolvedFilePath}:${JSON.stringify(loaderOptions)}`)
     };

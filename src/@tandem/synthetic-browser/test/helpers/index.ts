@@ -133,7 +133,7 @@ export const loadTestBrowser = async (mockFiles: any, entryFilePath: string) => 
   const browser = new SyntheticBrowser(app.injector);
 
   await browser.open({
-    url: entryFilePath
+    uri: entryFilePath
   });
 
   return browser;

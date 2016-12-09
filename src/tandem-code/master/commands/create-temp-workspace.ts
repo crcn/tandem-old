@@ -15,19 +15,19 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
   @inject(FileSystemProvider.ID)
   private _fs: IFileSystem;
   
-  async execute({ filePath }: CreateTemporaryWorkspaceRequest) {
+  async execute({ uri }: CreateTemporaryWorkspaceRequest) {
 
     // temp name must share the same path as the file to ensure that all relative assets
     // are loaded in.
-    const tmpName = path.join(path.dirname(filePath), `unsaved${i++}.workspace`);
+    const tmpName = path.join(path.dirname(uri), `unsaved${i++}.workspace`);
 
     let content;
 
-    if (MimeTypeProvider.lookup(filePath, this.injector) === TDPROJECT_MIME_TYPE) {
-      content = await this._fs.readFile(filePath);
+    if (MimeTypeProvider.lookup(uri, this.injector) === TDPROJECT_MIME_TYPE) {
+      content = await this._fs.readFile(uri);
     } else {
       content = `<tandem>
-        <artboard src="${filePath} />
+        <artboard src="${uri} />
       </tandem>`;
     }
 

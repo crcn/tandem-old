@@ -28,8 +28,8 @@ export class ContentEditorFactoryProvider extends ClassFactoryProvider {
     return [ContentEditorFactoryProvider.NS, mimeType].join("/");
   }
 
-  create(filePath: string, content: string): IEditor {
-    return super.create(filePath, content);
+  create(uri: string, content: string): IEditor {
+    return super.create(uri, content);
   }
 
   static find(mimeType: string, injector: Injector) {
@@ -41,8 +41,7 @@ export interface IProtocolResolver {
   resolve(url: string): Promise<any>;
 }
 
-// Necessary for certain libraries that think it's really
-// cute to add custom protocols.
+// DEPRECATED - use URIProtocolProvider instead
 export class ProtocolURLResolverProvider extends ClassFactoryProvider {
   static readonly NS = "protocolReader";
   constructor(readonly name: string, readonly clazz: { new(): IProtocolResolver }) {

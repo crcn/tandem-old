@@ -11,12 +11,15 @@ export class GetHelpOptionsCommand extends  BaseStudioMasterCommand {
       const { document } = new SyntheticWindow();
       document.body.innerHTML = fs.readFileSync(filePath, "utf8");
       const root =  document.body.firstChild as SyntheticDOMElement;
-      root.$source = { filePath };
+      const uri =  `file://${filePath}`;
+      root.$source = {
+        uri: uri
+      };
       return {
         id: root.uid,
         page: root.getAttribute("page"),
         label: root.getAttribute("label"),
-        filePath: filePath
+        uri: uri
       }
     });
   }

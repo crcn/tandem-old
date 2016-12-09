@@ -82,10 +82,10 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
 
   async _loadFileCacheRoutes() {
     this._server.use("/file-cache/", async (req, res) => {
-      const filePath = decodeURIComponent(req.path.substr(1));
-      const item = this._fileCache.eagerFindByFilePath(filePath);
+      const uri = decodeURIComponent(req.path.substr(1));
+      const item = this._fileCache.eagerFindByFilePath(uri);
       const content = await item.read();
-      res.type(mime.lookup(filePath));
+      res.type(mime.lookup(uri));
       res.end(content);
     });
   }

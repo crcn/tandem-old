@@ -34,7 +34,7 @@ export class DefaultDependencyLoader implements IDependencyLoader {
   constructor(readonly stragegy: DefaultDependencyGraphStrategy, readonly options: any) { }
 
   async load(info: IResolvedDependencyInfo, content: IDependencyContent): Promise<IDependencyLoaderResult> {
-    const importedDependencyPaths: string[] = [];
+    const importedDependencyUris: string[] = [];
 
     let current: IDependencyLoaderResult = Object.assign({}, content);
 
@@ -47,8 +47,8 @@ export class DefaultDependencyLoader implements IDependencyLoader {
     while(current.type && (dependency = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._injector), this._injector)) && !used[dependency.id]) {
       used[dependency.id] = true;
       current = await dependency.create(this.stragegy).load(info, current);
-      if (current.importedDependencyPaths) {
-        importedDependencyPaths.push(...current.importedDependencyPaths);
+      if (current.importedDependencyUris) {
+        importedDependencyUris.push(...current.importedDependencyUris);
       }
     }
 
@@ -56,7 +56,7 @@ export class DefaultDependencyLoader implements IDependencyLoader {
       map: current.map,
       type: current.type,
       content: current.content,
-      importedDependencyPaths: importedDependencyPaths
+      importedDependencyUris: importedDependencyUris
     };
   }
 }
@@ -81,16 +81,16 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     return {
       module: module,
       exports: module.exports,
-      __filename: module.source.filePath,
-      __dirname: path.dirname(module.source.filePath)
+      __filename: module.source.uri,
+      __dirname: path.dirname(module.source.uri)
     }
   }
 
   async resolve(relativeFilePath, cwd: string): Promise<IResolvedDependencyInfo> {
-    const filePath = await this._resolver.resolve(relativeFilePath, cwd);
+    const uri = await this._resolver.resolve(relativeFilePath, cwd);
     return {
-      filePath: filePath,
-      hash: md5(filePath)
+      uri: uri,
+      hash: md5(uri)
     };
   }
 }

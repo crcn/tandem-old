@@ -96,7 +96,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSGroupingRule<syntheticCS
     // by some other code such as <style /> blocks. It *will* probably break if the source
     // that instantiated this SyntheticCSSStyleSheet instance maintains a reference to it. Though, that's
     // a totally different problem that needs to be resolved.
-    if (target.source.filePath === this.source.filePath) return 0;
+    if (target.source.uri === this.source.uri) return 0;
 
     return diffStyleSheetRules(this.rules, target.rules).count;
   }

@@ -22,7 +22,7 @@ export class ImportFileCommand implements ICommand {
 
   async execute(request: ImportFileRequest) {
 
-    this.logger.info(`Importing ${request.filePath}`);
+    this.logger.info(`Importing ${request.uri}`);
 
     const importerProvider = FileImporterProvider.findByDropTarget(request, this._injector);
 

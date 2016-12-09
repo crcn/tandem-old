@@ -13,7 +13,7 @@ describe(__filename + "#", () => {
 
     const browser = new SyntheticBrowser(app.injector);
     await browser.open({
-      url: "index.html"
+      uri: "index.html"
     });
 
     return browser.document;

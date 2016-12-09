@@ -32,7 +32,7 @@ import {
   Sandbox,
   Dependency,
   DependencyGraph,
-  URLProtocolProvider,
+  URIProtocolProvider,
   generateSyntheticUID,
   DependencyGraphProvider,
   IDependencyGraphStrategyOptions,
@@ -46,7 +46,7 @@ import {
 import { CallbackDispatcher } from "@tandem/mesh";
 
 export interface ISyntheticBrowserOpenOptions {
-  url: string;
+  uri: string;
   injectScript?: string;
   dependencyGraphStrategyOptions?: IDependencyGraphStrategyOptions;
 }
@@ -141,7 +141,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     }
 
     this._openOptions = options;
-    this._location = new SyntheticLocation(options.url);
+    this._location = new SyntheticLocation(options.uri);
     await this.open2(options);
   }
 
@@ -172,14 +172,14 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   protected async open2(options: ISyntheticBrowserOpenOptions) {
 
     this._script = options.injectScript;
-    this.logger.info(`Opening ${options.url} ...`);
+    this.logger.info(`Opening ${options.uri} ...`);
     const timerLogger = this.logger.startTimer();
-    const strategyOptions = options.dependencyGraphStrategyOptions || DependencyGraphStrategyOptionsProvider.find(options.url, this._injector);
+    const strategyOptions = options.dependencyGraphStrategyOptions || DependencyGraphStrategyOptionsProvider.find(options.uri, this._injector);
     const graph = this._graph = DependencyGraphProvider.getInstance(strategyOptions, this._injector);
-    this._entry = await graph.getDependency(await graph.resolve(options.url, "/"));
+    this._entry = await graph.getDependency(await graph.resolve(options.uri));
     await this._sandbox.open(this._entry);
 
-    timerLogger.stop(`Loaded ${options.url}`);
+    timerLogger.stop(`Loaded ${options.uri}`);
   }
 
   protected onSandboxStatusChange(newStatus: Status) {

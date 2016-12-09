@@ -168,7 +168,7 @@ export const createBodyElement = reactEditorPreview(async () => {
   const workspace = new Workspace();
   workspace.browser = browser;
 
-  browser.open({ url: "index.html" }).then(() => {
+  browser.open({ uri: "index.html" }).then(() => {
 
     workspace.select(browser.document.querySelector(".box6"));
     browser.document.querySelector(".box1").metadata.set(MetadataKeys.HOVERING, true);

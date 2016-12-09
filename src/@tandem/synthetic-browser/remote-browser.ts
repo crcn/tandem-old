@@ -153,7 +153,7 @@ export class RemoteBrowserService extends BaseApplicationService {
       const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.injector, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
 
-      const logger = this.logger.createChild(`${event.options.url} `);
+      const logger = this.logger.createChild(`${event.options.uri} `);
 
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (mutations: Mutation<any>[]) => {
 

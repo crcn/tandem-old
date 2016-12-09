@@ -42,7 +42,7 @@ module.exports = (content, contentMap) => {
 
       const source: ISyntheticSourceInfo = {
         kind: null,
-        filePath: originalPosition.source,
+        uri: `file://` + originalPosition.source,
         start: {
           line: originalPosition.line,
           column: originalPosition.column,

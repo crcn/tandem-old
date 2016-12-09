@@ -48,7 +48,7 @@ import {
 
 export interface IDependencyData {
   hash: string;
-  filePath: string;
+  uri: string;
   loaderOptions?: any;
   content?: string;
   map?: RawSourceMap;
@@ -68,7 +68,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   readonly idProperty = "hash";
 
-  private _filePath: string;
+  private _uri: string;
   private _watcher: DependencyGraphWatcher;
   private _ready: boolean;
   private _shouldLoadAgain: boolean;
@@ -102,7 +102,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   }
 
   $didInject() {
-    this.logger.generatePrefix = () => `${this.hash}:${this.filePath} `;
+    this.logger.generatePrefix = () => `${this.hash}:${this.uri} `;
   }
 
   /**
@@ -114,7 +114,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   async getSourceFileCacheItem(): Promise<FileCacheItem> {
     if (this._fileCacheItem) return this._fileCacheItem;
-    return this._fileCacheItem = await this._fileCache.item(this.filePath);
+    return this._fileCacheItem = await this._fileCache.item(this.uri);
   }
 
   get graph(): IDependencyGraph {
@@ -155,8 +155,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
    * @readonly
    */
 
-  get filePath() {
-    return this._filePath;
+  get uri() {
+    return this._uri;
   }
 
   /**
@@ -178,16 +178,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   get loaderOptions() {
     return this._loaderOptions;
-  }
-
-  /**
-   * The relative to absolute dependency paths defined in this bundle
-   *
-   * @readonly
-   */
-
-  get absoluteProviderPaths() {
-    return this._importedDependencyInfo.map(info => info.filePath);
   }
 
   @bindable()
@@ -231,22 +221,22 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._updatedAt = Date.now();
   }
 
-  getDependencyHash(url: string): string {
-    const info = this._importedDependencyInfo.find(info => info.originalUrl === url || info.resolvedUrl === url);
+  getDependencyHash(uri: string): string {
+    const info = this._importedDependencyInfo.find(info => info.originalUri === uri || info.uri === uri);
     return info && info.hash;
   }
 
-  eagerGetDependency(url: string) {
-    return this._graph.eagerFindByHash(this.getDependencyHash(relativeOrAbsolutePath));
+  eagerGetDependency(uri: string) {
+    return this._graph.eagerFindByHash(this.getDependencyHash(uri));
   }
 
   serialize() {
     return {
+      uri: this.uri,
       map: this._map,
       hash: this._hash,
       type: this._type,
       content: this._content,
-      filePath: this.filePath,
       updatedAt: this._updatedAt,
       loaderOptions: this._loaderOptions,
       sourceUpdatedAt: this._sourceUpdatedAt,
@@ -255,9 +245,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     };
   }
 
-  setPropertiesFromSource({ filePath, loaderOptions, type, updatedAt, map, content, importedDependencyInfo, includedDependencyInfo, hash, sourceUpdatedAt }: IDependencyData) {
+  setPropertiesFromSource({ uri, loaderOptions, type, updatedAt, map, content, importedDependencyInfo, includedDependencyInfo, hash, sourceUpdatedAt }: IDependencyData) {
     this._type          = type;
-    this._filePath      = filePath;
+    this._uri           = uri;
     this._loaderOptions = loaderOptions || {};
     this._updatedAt     = updatedAt;
     this._sourceUpdatedAt = sourceUpdatedAt;
@@ -348,7 +338,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private async getSourceFiles() {
     return [
       await this.getSourceFileCacheItem(),
-      ...(await Promise.all(this._includedDependencyInfo.map(info => this._fileCache.item(info.filePath))))
+      ...(await Promise.all(this._includedDependencyInfo.map(info => this._fileCache.item(info.uri))))
     ];
   }
 
@@ -369,15 +359,15 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     this._importedDependencyInfo = [];
     this._includedDependencyInfo = [];
 
-    const importedDependencyPaths = transformResult.importedDependencyPaths || [];
+    const importedDependencyUris = transformResult.importedDependencyUris || [];
 
     // cases where there's overlapping between imported & included dependencies (probably)
     // a bug with the module loader, or discrepancy between how the strategy and target bundler should behave.
-    const includedDependencyPaths = pull(transformResult.includedDependencyPaths || [], ...importedDependencyPaths);
+    const includedDependencyUris = pull(transformResult.includedDependencyUris || [], ...importedDependencyUris);
 
     await Promise.all([
-      this.resolveDependencies(includedDependencyPaths, this._includedDependencyInfo),
-      this.resolveDependencies(importedDependencyPaths, this._importedDependencyInfo)
+      this.resolveDependencies(includedDependencyUris, this._includedDependencyInfo),
+      this.resolveDependencies(importedDependencyUris, this._importedDependencyInfo)
     ]);
   }
 
@@ -386,22 +376,22 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private async loadDependencies() {
     await Promise.all(this.importedDependencyInfo.map(async (info: IResolvedDependencyInfo) => {
-      if (!info.filePath) return Promise.resolve();
+      if (!info.uri) return Promise.resolve();
 
       const dependency = await this._graph.getDependency(info);
-      const waitLogger = this.logger.startTimer(`Waiting for dependency ${info.hash}:${info.filePath} to load...`, 1000 * 10, LogLevel.DEBUG);
+      const waitLogger = this.logger.startTimer(`Waiting for dependency ${info.hash}:${info.uri} to load...`, 1000 * 10, LogLevel.DEBUG);
 
       // if the dependency is loading, then they're likely a cyclical dependency
       if (dependency.status.type !== Status.LOADING) {
         try {
           await dependency.load();
         } catch(e) {
-          waitLogger.stop(`Error while loading dependency: ${info.filePath}`);
+          waitLogger.stop(`Error while loading dependency: ${info.uri}`);
           throw e;
         }
       }
 
-      waitLogger.stop(`Loaded dependency ${info.hash}:${info.filePath}`);
+      waitLogger.stop(`Loaded dependency ${info.hash}:${info.uri}`);
     }));
   }
 
@@ -411,8 +401,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   protected async getInitialSourceContent(): Promise<IDependencyLoaderResult> {
     return {
-      type: this.filePath && MimeTypeProvider.lookup(this.filePath, this._injector) || PLAIN_TEXT_MIME_TYPE,
-      content: this.filePath && await (await this.getSourceFileCacheItem()).read()
+      type: this.uri && MimeTypeProvider.lookup(this.uri, this._injector) || PLAIN_TEXT_MIME_TYPE,
+      content: this.uri && await (await this.getSourceFileCacheItem()).read()
     };
   }
 
@@ -432,7 +422,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     // that we'll need to watch their file cache active record and watch it for any changes. Since
     // they're typically included in the
     for (const sourceFile of await this.getSourceFiles()) {
-      this.logger.debug(`Watching file cache ${sourceFile.filePath} for changes`);
+      this.logger.debug(`Watching file cache ${sourceFile.sourceUri} for changes`);
       sourceFile.observe(this._fileCacheItemObserver);
       changeWatchers.push({
         dispose: () => sourceFile.unobserve(this._fileCacheItemObserver)
@@ -445,10 +435,10 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   }
 
   private resolveDependencies(dependencyPaths: string[], info: IResolvedDependencyInfo[]) {
-    return Promise.all(dependencyPaths.map(async (relativePath) => {
-      this.logger.debug("Resolving dependency", relativePath);
-      const dependencyInfo = await this._graph.resolve(relativePath, path.dirname(this.filePath));
-      dependencyInfo.relativePath = relativePath;
+    return Promise.all(dependencyPaths.map(async (uri) => {
+      this.logger.debug("Resolving dependency", uri);
+      const dependencyInfo = await this._graph.resolve(uri, path.dirname(this.uri));
+      dependencyInfo.originalUri = uri;
       info.push(dependencyInfo);
     }));
   }
@@ -461,7 +451,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   }
 
   private onFileCacheAction({ mutation }: MutationEvent<any>) {
-    // reload the dependency if file cache item changes -- could be the data url, source file, etc.
+    // reload the dependency if file cache item changes -- could be the data uri, source file, etc.
     if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
       this.logger.info("Source file changed ");
 

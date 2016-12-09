@@ -109,7 +109,7 @@ export const createBodyElement = reactEditorPreview(async () => {
 
   const workspace = injector.inject(new Workspace());
   const browser = workspace.browser = new SyntheticBrowser(injector, new NoopRenderer());
-  await browser.open({ url: "index.html" });
+  await browser.open({ uri: "index.html" });
 
   const document = browser.document;
 

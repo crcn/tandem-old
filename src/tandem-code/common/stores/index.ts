@@ -2,7 +2,7 @@
 export interface IHelpOption {
   page?: string;
   label: string;
-  filePath: string;
+  uri: string;
 }
 
 

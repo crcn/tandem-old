@@ -72,7 +72,7 @@ export class DependencyGraphProvider extends Provider<any> {
 
 export class DependencyGraphStrategyOptionsProvider extends Provider<IDependencyGraphStrategyOptions> {
   static readonly NS = "dependencyGraphStrategyOptions";
-  constructor(readonly name: string, readonly test: (filePath: string) => boolean, readonly options: IDependencyGraphStrategyOptions) {
+  constructor(readonly name: string, readonly test: (uri: string) => boolean, readonly options: IDependencyGraphStrategyOptions) {
     super(DependencyGraphStrategyOptionsProvider.getId(name), options);
   }
   static getId(name: string) {
@@ -81,8 +81,8 @@ export class DependencyGraphStrategyOptionsProvider extends Provider<IDependency
   clone() {
     return new DependencyGraphStrategyOptionsProvider(this.name, this.test, this.options);
   }
-  static find(filePath: string, injector: Injector): IDependencyGraphStrategyOptions {
-    const provider = injector.queryAll<DependencyGraphStrategyOptionsProvider>(this.getId("**")).find(provider => provider.test(filePath));
+  static find(uri: string, injector: Injector): IDependencyGraphStrategyOptions {
+    const provider = injector.queryAll<DependencyGraphStrategyOptionsProvider>(this.getId("**")).find(provider => provider.test(uri));
     return provider && provider.value;
   }
 }

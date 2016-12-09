@@ -8,8 +8,8 @@ export const createCoreMarkdownExtensionProviders = () => {
   return [
     new MimeTypeProvider("md", MARKDOWN_MIME_TYPE),
     new DependencyLoaderFactoryProvider(MARKDOWN_MIME_TYPE, MarkdownDependencyLoader),
-    new PreviewLoaderProvider("markdown", (filePath, injector) => {
-      return MimeTypeProvider.lookup(filePath, injector) === MARKDOWN_MIME_TYPE;
+    new PreviewLoaderProvider("markdown", (uri, injector) => {
+      return MimeTypeProvider.lookup(uri, injector) === MARKDOWN_MIME_TYPE;
     }, SelfPreviewLoader)
   ]
 }

@@ -27,7 +27,7 @@ import {
   PropertyMutation,
 } from "@tandem/common";
 
-export type contentEditorType = { new(filePath: string, content: string): IEditor };
+export type contentEditorType = { new(uri: string, content: string): IEditor };
 
 
 export interface IEditor {
@@ -56,7 +56,7 @@ export abstract class BaseContentEditor<T> implements IEditor {
     this._rootASTNode = this.parseContent(this.content);
   }
 
-  // add filePath and content in constructor here instead
+  // add uri and content in constructor here instead
   applyMutations(mutations: Mutation<ISyntheticObject>[]): any {
     for (const mutation of mutations) {
       const method = this[mutation.type];
@@ -206,7 +206,7 @@ export class FileEditor {
     const changes = this._mutations;
     this._mutations = undefined;
 
-    const mutationsByFilePath = {};
+    const mutationsByUri = {};
 
     // find all events that are part of the same file and
     // batch them together. Important to ensure that we do not trigger multiple
@@ -216,39 +216,39 @@ export class FileEditor {
 
       // This may happen if edits are being applied to synthetic objects that
       // do not have the proper mappings
-      if (!target.source || !target.source.filePath) {
+      if (!target.source || !target.source.uri) {
         this.logger.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
         continue;
       }
 
       const targetSource = target.source;
 
-      const targetFilePath = await ProtocolURLResolverProvider.resolve(targetSource.filePath, this._injector);
+      const targetUri = await ProtocolURLResolverProvider.resolve(targetSource.uri, this._injector);
 
-      const filePathMutations: Mutation<ISyntheticObject>[] = mutationsByFilePath[targetFilePath] || (mutationsByFilePath[targetFilePath] = []);
-      filePathMutations.push(mutation);
+      const fileMutations: Mutation<ISyntheticObject>[] = mutationsByUri[targetUri] || (mutationsByUri[targetUri] = []);
+      fileMutations.push(mutation);
     }
 
     const promises = [];
 
-    for (const filePath in mutationsByFilePath) {
-      const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(filePath, this._injector), this._injector);
+    for (const uri in mutationsByUri) {
+      const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(uri, this._injector), this._injector);
 
       if (!contentEditorFactoryProvider) {
-        this.logger.error(`No synthetic edit consumer exists for ${filePath}.`);
+        this.logger.error(`No synthetic edit consumer exists for ${uri}.`);
         continue;
       }
 
       const autoSave   = contentEditorFactoryProvider.autoSave    ;
-      const fileCache  = await  FileCacheProvider.getInstance(this._injector).item(filePath);
+      const fileCache  = await  FileCacheProvider.getInstance(this._injector).item(uri);
       const oldContent = String(await fileCache.read());
 
       // error may be thrown if the content is invalid
       try {
-        const contentEditor = contentEditorFactoryProvider.create(filePath, oldContent);
+        const contentEditor = contentEditorFactoryProvider.create(uri, oldContent);
 
-        const changes = mutationsByFilePath[filePath];
-        this.logger.info(`Applying file edit.changes ${filePath}: >>`, changes.map(event => event.type).join(" "));
+        const changes = mutationsByUri[uri];
+        this.logger.info(`Applying file edit.changes ${uri}: >>`, changes.map(event => event.type).join(" "));
 
         const newContent    = contentEditor.applyMutations(changes);
 
@@ -260,13 +260,13 @@ export class FileEditor {
           fileCache.setDataUrlContent(newContent);
           promises.push(fileCache.save());
           if (autoSave) {
-            promises.push(this._fileSystem.writeFile(fileCache.filePath, newContent));
+            promises.push(this._fileSystem.writeFile(fileCache.sourceUri, newContent));
           }
         } else {
-          this.logger.debug(`No changes to ${filePath}`);
+          this.logger.debug(`No changes to ${uri}`);
         }
       } catch(e) {
-        this.logger.error(`Error trying to apply ${changes.map(event => event.type).join(", ")} file edit to ${filePath}: ${e.stack}`);
+        this.logger.error(`Error trying to apply ${changes.map(event => event.type).join(", ")} file edit to ${uri}: ${e.stack}`);
       }
     }
 

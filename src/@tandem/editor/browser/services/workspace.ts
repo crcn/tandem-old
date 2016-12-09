@@ -104,12 +104,12 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     // this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);
   }
 
-  [SelectSourceRequest.SELECT_SOURCE]({ ranges, filePath }: SelectSourceRequest) {
+  [SelectSourceRequest.SELECT_SOURCE]({ ranges, uri }: SelectSourceRequest) {
     const selection = [];
 
     flattenTree(this._store.workspace.document).forEach((item) => {
       const { source } = item;
-      if (!source || source.filePath !== filePath || !source.start) return;
+      if (!source || source.uri !== uri || !source.start) return;
 
       for (const range of ranges) {
         if (

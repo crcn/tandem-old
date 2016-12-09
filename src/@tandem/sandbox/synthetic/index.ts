@@ -33,7 +33,7 @@ export interface ISyntheticSourceInfo {
    * @type {string}
    */
 
-  filePath: string;
+  uri: string;
 
   /**
    * Start AST expression position (necessary for edits).
@@ -53,7 +53,7 @@ export interface ISyntheticSourceInfo {
 }
 
 export function syntheticSourceInfoEquals(a: ISyntheticSourceInfo, b: ISyntheticSourceInfo) {
-  return (a == null && b == null) || (a && b && a.kind === b.kind && a.filePath === b.filePath && sourcePositionEquals(a.start, b.start) && sourcePositionEquals(a.end, b.end));
+  return (a == null && b == null) || (a && b && a.kind === b.kind && a.uri === b.uri && sourcePositionEquals(a.start, b.start) && sourcePositionEquals(a.end, b.end));
 }
 
 /**

@@ -66,12 +66,12 @@ export class FileCacheAction extends Message {
 @serializable("ReadFileRequest")
 export class ReadFileRequest extends Message {
   static readonly READ_FILE = "readFile";
-  constructor(readonly filePath: string) {
+  constructor(readonly uri: string) {
     super(ReadFileRequest.READ_FILE);
   }
 
-  static async dispatch(filePath: string, bus: IStreamableDispatcher<any>): Promise<Buffer> {
-    return new Buffer((await readOneChunk(bus.dispatch(new ReadFileRequest(filePath)))).value, "base64");
+  static async dispatch(uri: string, bus: IStreamableDispatcher<any>): Promise<Buffer> {
+    return new Buffer((await readOneChunk(bus.dispatch(new ReadFileRequest(uri)))).value, "base64");
   }
 }
 
@@ -90,12 +90,12 @@ export class ReadDirectoryRequest extends Message {
 @serializable("WatchFileRequest")
 export class WatchFileRequest extends Message {
   static readonly WATCH_FILE = "watchFile";
-  constructor(readonly filePath: string) {
+  constructor(readonly uri: string) {
     super(WatchFileRequest.WATCH_FILE);
   }
 
-  static dispatch(filePath: string, bus: IStreamableDispatcher<any>, onFileChange: () => any): IDisposable {
-    const { readable } = bus.dispatch(new WatchFileRequest(filePath));
+  static dispatch(uri: string, bus: IStreamableDispatcher<any>, onFileChange: () => any): IDisposable {
+    const { readable } = bus.dispatch(new WatchFileRequest(uri));
     readable.pipeTo(new WritableStream({
       write: onFileChange
     }));

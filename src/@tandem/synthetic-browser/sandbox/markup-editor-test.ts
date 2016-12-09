@@ -28,7 +28,7 @@ describe(__filename + "#", () => {
 
     const browser = new SyntheticBrowser(injector);
     await browser.open({
-      url: entryFilePath
+      uri: entryFilePath
     });
 
     return {

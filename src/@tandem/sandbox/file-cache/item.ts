@@ -14,9 +14,9 @@ import {
 
 export interface IFileCacheItemData {
   _id?: string;
-  filePath: string;
-  url: string;
-  sourceFileModifiedAt?: number;
+  sourceUri: string;
+  contentUri: string;
+  sourceModifiedAt?: number;
   updatedAt?: number;
   metadata?: Object;
 }
@@ -41,13 +41,13 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   public updatedAt: number;
 
   @bindable(true)
-  public sourceFileModifiedAt: number;
+  public sourceModifiedAt: number;
 
   @bindable(true)
-  public url: string;
+  public contentUri: string;
 
   @bindable(true)
-  public filePath: string;
+  public sourceUri: string;
 
   @bindable(true)
   public metadata: Metadata;
@@ -61,16 +61,16 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   serialize() {
     return {
-      updatedAt : this.updatedAt,
-      filePath  : this.filePath,
-      sourceFileModifiedAt: this.sourceFileModifiedAt,
-      url       : this.url,
-      metadata  : this.metadata.data
+      updatedAt  : this.updatedAt,
+      sourceUri  : this.sourceUri,
+      sourceModifiedAt: this.sourceModifiedAt,
+      contentUri  : this.contentUri,
+      metadata    : this.metadata.data
     };
   }
 
   shouldUpdate() {
-    return this.url !== this.source.url || this.sourceFileModifiedAt !== this.source.sourceFileModifiedAt;
+    return this.contentUri !== this.sourceUri || this.sourceModifiedAt !== this.source.sourceModifiedAt;
   }
 
   willSave() {
@@ -78,29 +78,28 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   setDataUrlContent(content: string|Buffer, mimeType: string = "text/plain") {
-    this.url = createDataUrl(content, mimeType);
-    return this;
+    return this.setContentUri(createDataUrl(content, mimeType));
   }
 
-  setFileUrl(url: string) {
-    this.url = `file://${url}`;
+  setContentUri(uri: string) {
+    this.contentUri = uri;
     return this;
   }
 
   read = memoize(async () => {
-    if (/^file:\/\//.test(this.url)) {
-      return await this._fileSystem.readFile(this.url.substr("file://".length));
+    if (/^file:\/\//.test(this.contentUri)) {
+      return await this._fileSystem.readFile(this.contentUri.substr("file://".length));
     } else {
 
       // pollyfills don't work for data uris in Node.JS. Need to PR node-fetch for that. Quick
       // fix or bust for now.
       if (ENV_IS_NODE) {
-        const data = parseDataURI(this.url);
-        if (!data) throw new Error(`Cannot load ${this.url}.`);
+        const data = parseDataURI(this.contentUri);
+        if (!data) throw new Error(`Cannot load ${this.contentUri}.`);
         return new Buffer(data.content, "base64");
       }
 
-      const response = await fetch(this.url);
+      const response = await fetch(this.contentUri);
       return await response.text();
     }
   }, { promise: true, length: 0 })
@@ -109,12 +108,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return this.updatedAt < b.updatedAt;
   }
 
-  setPropertiesFromSource({ filePath, updatedAt, url, metadata, sourceFileModifiedAt }: IFileCacheItemData) {
-    this.filePath            = filePath;
-    this.url                 = url;
+  setPropertiesFromSource({ sourceUri, updatedAt, contentUri, metadata, sourceModifiedAt }: IFileCacheItemData) {
+    this.sourceUri           = sourceUri;
+    this.contentUri          = contentUri;
     this.updatedAt           = updatedAt;
     this.metadata            = new Metadata(metadata);
-    this.sourceFileModifiedAt = sourceFileModifiedAt;
+    this.sourceModifiedAt = sourceModifiedAt;
   }
 
   private onAction({ mutation }: MutationEvent<any>) {

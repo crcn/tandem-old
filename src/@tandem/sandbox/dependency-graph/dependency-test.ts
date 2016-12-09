@@ -29,10 +29,10 @@ class MockDependencyGraph implements IDependencyGraph {
   eagerFindByHash(hash) {
     return this._deps[hash];
   }
-  async resolve(filePath: string, cwd: string) {
+  async resolve(uri: string, origin: string) {
     return Promise.resolve({
-      hash: filePath,
-      filePath: await FileResolverProvider.getInstance(this.injector).resolve(filePath, cwd)
+      hash: uri,
+      uri: await FileResolverProvider.getInstance(this.injector).resolve(uri, origin)
     });
   }
   getDependency(info: IResolvedDependencyInfo) {
@@ -49,7 +49,7 @@ class MockDependencyGraph implements IDependencyGraph {
         return Promise.resolve({
           type: "plain/text",
           content: options.content.content,
-          importedDependencyPaths: options.content.importedDependencyPaths
+          importedDependencyUris: options.content.importedDependencyUris
         });
       }
     }
@@ -113,7 +113,7 @@ describe(__filename + "#", () => {
     }, {
       a: {
         content: "aa",
-        importedDependencyPaths: ["b", "c"]
+        importedDependencyUris: ["b", "c"]
       },
       b: {
         content: "bb"

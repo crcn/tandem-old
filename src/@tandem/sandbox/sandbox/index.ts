@@ -39,8 +39,8 @@ export class SandboxModule implements IModule {
     this.exports = {};
   }
 
-  get filePath() {
-    return this.source.filePath;
+  get uri() {
+    return this.source.uri;
   }
 }
 
@@ -142,10 +142,10 @@ export class Sandbox extends Observable {
     const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(dependency.type, this._injector);
 
     if (!evaluatorFactoryDepedency) {
-      throw new Error(`Cannot evaluate ${dependency.filePath}:${dependency.type} in sandbox.`);
+      throw new Error(`Cannot evaluate ${dependency.uri}:${dependency.type} in sandbox.`);
     }
 
-    this.logger.debug(`Evaluating`, dependency.filePath);
+    this.logger.debug(`Evaluating`, dependency.uri);
     try {
       evaluatorFactoryDepedency.create().evaluate(module);
     } catch(e) {
@@ -174,7 +174,7 @@ export class Sandbox extends Observable {
       this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "global", this._global, global).toEvent());
       this._modules = {};
       this._exports = this.evaluate(this._entry);
-      logTimer.stop(`Evaluated ${this._entry.filePath}`);
+      logTimer.stop(`Evaluated ${this._entry.uri}`);
       this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "exports", this._exports, exports).toEvent());
     } catch(e) {
       this._resetting = false;

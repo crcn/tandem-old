@@ -93,11 +93,11 @@ describe(__filename + "#", () => {
     }, [
       new MimeTypeProvider('mu', 'text/mu'),
       new DependencyLoaderFactoryProvider('text/mu', class implements IDependencyLoader {
-        async load({ filePath }, { type, content }) {
+        async load({ uri }, { type, content }) {
           return {
             type: "text/plain",
             content: content,
-            importedDependencyPaths: (content.match(/import\((.*?)\)/g) || []).map((expression) => {
+            importedDependencyUris: (content.match(/import\((.*?)\)/g) || []).map((expression) => {
               return expression.match(/\((.*?)\)/)[1];
             })
           }

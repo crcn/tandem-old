@@ -32,7 +32,7 @@ class SelectableComponent extends BaseApplicationComponent<{
 
   onMouseDown = (event: React.MouseEvent<any>): any => {
     if (event.metaKey && this.props.element.source) {
-      return OpenFileRequest.dispatch(this.props.element.source.filePath, this.props.element.source, this.bus);
+      return OpenFileRequest.dispatch(this.props.element.source.uri, this.props.element.source, this.bus);
     }
     this.props.onSyntheticMouseDown(this.props.element, event);
     event.stopPropagation();

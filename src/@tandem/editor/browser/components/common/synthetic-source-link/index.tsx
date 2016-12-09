@@ -15,14 +15,14 @@ export class SyntheticSourceLink extends BaseApplicationComponent<{ target?: ISy
   }
 
   hasSource() {
-    return !!(this.getTarget() && !!this.getTarget().source && this.getTarget().source.filePath);
+    return !!(this.getTarget() && !!this.getTarget().source && this.getTarget().source.uri);
   }
 
   openSourceFile = (event: React.MouseEvent<any>) => {
     if (!this.hasSource()) return;
     event.stopPropagation();
-    this.logger.info(`Opening source file ${this.getTarget().source.filePath}:${this.getTarget().source.start.line}:${this.getTarget().source.start.column}`);
-    OpenFileRequest.dispatch(this.getTarget().source.filePath, this.getTarget().source, this.bus);
+    this.logger.info(`Opening source file ${this.getTarget().source.uri}:${this.getTarget().source.start.line}:${this.getTarget().source.start.column}`);
+    OpenFileRequest.dispatch(this.getTarget().source.uri, this.getTarget().source, this.bus);
   }
 
   render() {

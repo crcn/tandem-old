@@ -99,12 +99,8 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
       this._artboardBrowser.open({
-        url: this.getAttribute("src"),
-        injectScript: decodeURIComponent(this.getAttribute("inject-script")),
-        dependencyGraphStrategyOptions: this.getAttribute("dependency-graph-strategy") && {
-          name: this.getAttribute("dependency-graph-strategy"),
-          config: this.getAttribute("dependency-graph-config") && path.resolve(this.source.filePath, this.getAttribute("strategy-config"))
-        }
+        uri: this.getAttribute("src"),
+        injectScript: decodeURIComponent(this.getAttribute("inject-script"))
       });
     }
   }, 0)

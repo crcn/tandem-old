@@ -12,9 +12,9 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class CSSDependencyLoader extends BaseDependencyLoader {
-  async load({ filePath }, { type, content, map }): Promise<IDependencyLoaderResult> {
-    /*const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, filePath) => {
-      return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.filePath), filePath.split(/\?|#/).shift())) + '")';
+  async load({ uri }, { type, content, map }): Promise<IDependencyLoaderResult> {
+    /*const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, uri) => {
+      return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.uri), uri.split(/\?|#/).shift())) + '")';
     });*/
 
     return {

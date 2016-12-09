@@ -22,18 +22,18 @@ export class SCSSLoader implements IDependencyLoader {
   @inject(FileResolverProvider.ID)
   private _fileResolver: IFileResolver;
 
-  async load(filePath, { type, content }): Promise<any> {
+  async load(uri, { type, content }): Promise<any> {
 
     const importer = (url, prev, done) => {
       new Promise(async (resolve) => {
-        const filePath = await this._fileResolver.resolve(url, path.dirname(prev), {
+        const uri = await this._fileResolver.resolve(url, path.dirname(prev), {
 
           // TODO: this should be left up to the resolver.
           extensions: [".scss", ".css"],
           directories: []
         });
 
-        const content = await (await this._fileCache.item(filePath)).read();
+        const content = await (await this._fileCache.item(uri)).read();
 
         resolve(content);
       }).then(done);
@@ -41,7 +41,7 @@ export class SCSSLoader implements IDependencyLoader {
 
     return new Promise((resolve, reject) => {
       sass.render({
-        file: filePath,
+        file: uri,
         data: content,
         importer: importer
       }, (error, result) => {

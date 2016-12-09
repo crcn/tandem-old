@@ -9,8 +9,8 @@ import { OpenHelpOptionRequest, OpenNewWorkspaceRequest } from "tandem-code/comm
 
 export class OpenHelpOptionCommand extends  BaseStudioMasterCommand {
   execute({ option }: OpenHelpOptionRequest) {
-    const basename = path.basename(option.filePath);
-    const dir = path.dirname(option.filePath);
+    const basename = path.basename(option.uri);
+    const dir = path.dirname(option.uri);
     const tmp = path.join(this.config.tmpDirectory, String(Date.now()));
     fsa.copySync(dir, tmp);
     return this.bus.dispatch(new OpenNewWorkspaceRequest(path.join(tmp, basename)));

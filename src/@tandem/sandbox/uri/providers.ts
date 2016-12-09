@@ -1,15 +1,15 @@
-import { URLProtocol } from "./reader";
+import { URIProtocol } from "./reader";
 import { Injector, createSingletonProviderClass, IProvider } from "@tandem/common";
 
-export class URLProtocolProvider implements IProvider {
+export class URIProtocolProvider implements IProvider {
 
-  private _value: URLProtocol;
+  private _value: URIProtocol;
   readonly id: string;
   public owner: Injector;
   readonly overridable: boolean = true;
 
-  constructor(readonly name: string, readonly clazz: { new(): URLProtocol }) {
-    this.id = URLProtocolProvider.getId(name);
+  constructor(readonly name: string, readonly clazz: { new(): URIProtocol }) {
+    this.id = URIProtocolProvider.getId(name);
   }
 
   static getId(name: string) {
@@ -17,7 +17,7 @@ export class URLProtocolProvider implements IProvider {
   }
 
   clone() {
-    return new URLProtocolProvider(this.name, this.clazz);
+    return new URIProtocolProvider(this.name, this.clazz);
   }
 
   get value() {
@@ -33,7 +33,7 @@ export class URLProtocolProvider implements IProvider {
 
     const protocol = url.split(":")[0];
 
-    const provider = injector.query<URLProtocolProvider>(this.getId(protocol));
+    const provider = injector.query<URIProtocolProvider>(this.getId(protocol));
     return provider && provider.value;
   }
 }

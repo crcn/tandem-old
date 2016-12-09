@@ -3,10 +3,10 @@ import { Sandbox } from "./index";
 
 let _cache = {};
 
-function compileSandboxScript(filePath: string, hash: string, createSource: () => string): vm.Script { 
+function compileSandboxScript(uri: string, hash: string, createSource: () => string): vm.Script { 
   // Using string concatenation here to preserve line numbers.
   return _cache[hash] || (_cache[hash] = new vm.Script(createSource(), {
-    filename: filePath,
+    filename: uri,
     displayErrors: true
   }));
 }
@@ -20,10 +20,10 @@ setInterval(() => {
   _cache = {};
 }, 1000 * 60);
 
-export function compileModuleSandboxScript(filePath: string, hash: string, content: string): vm.Script {
+export function compileModuleSandboxScript(uri: string, hash: string, content: string): vm.Script {
 
   // Using string concatenation here to preserve line numbers.
-  return compileSandboxScript(filePath, hash + content, () =>
+  return compileSandboxScript(uri, hash + content, () =>
     "with($$contexts['"+hash+"']) {" +
 
       GLOBAL_FIX_SHIM +
@@ -49,8 +49,8 @@ export function runGlobalSandboxScript(script: vm.Script, { global, vmContext }:
   script.runInContext(vmContext);
 }
 
-export function compileGlobalSandboxScript(filePath: string, hash: string, content: string): vm.Script {
-  return compileSandboxScript(filePath, hash + content, () => 
+export function compileGlobalSandboxScript(uri: string, hash: string, content: string): vm.Script {
+  return compileSandboxScript(uri, hash + content, () => 
     GLOBAL_FIX_SHIM + content
   );
 }
