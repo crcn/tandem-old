@@ -8,6 +8,7 @@ import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
 import { createCoreStudioWorkerProviders } from "../worker";
 import { createCommonEditorProviders, IEditorCommonConfig } from "@tandem/editor/common";
+import { createTDProjectCoreProviders } from "@tandem/tdproject-extension/core";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 
 import { IStudioEditorServerConfig } from "./config";
@@ -119,6 +120,7 @@ export const initializeMaster = async () => {
     new CommandFactoryProvider(StartNewProjectRequest.START_NEW_PROJECT, StartProjectCommand),
 
     new TandemMasterStudioStoreProvider(TandemStudioMasterStore),
+    createTDProjectCoreProviders(),
 
     new ProjectStarterFactoryProvider({ 
       id: "blank", 

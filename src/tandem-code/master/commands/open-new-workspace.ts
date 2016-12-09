@@ -8,8 +8,8 @@ import { OpenNewWorkspaceRequest, CreateTemporaryWorkspaceRequest } from "tandem
 export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
   execute({ uri }: OpenNewWorkspaceRequest) {
     this.logger.info(`Opening workspace: ${uri}`);
-
-    if (MimeTypeProvider.lookup(uri, this.injector) !== TDPROJECT_MIME_TYPE) {
+    
+    if (uri && MimeTypeProvider.lookup(uri, this.injector) !== TDPROJECT_MIME_TYPE) {
       return this.createAndOpenTandemWorkspaceFile(uri);
     } 
 

@@ -1,9 +1,10 @@
 import path =  require("path");
 import glob =  require("glob");
 import { inject } from "@tandem/common";
+import { TransformStream } from "@tandem/mesh";
 import { URIProtocolProvider } from "@tandem/sandbox";
-import {  BaseStudioMasterCommand } from "./base";
 import { OpenNewWorkspaceRequest } from "tandem-code/common";
+import {  BaseStudioMasterCommand } from "./base";
 
 
 export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
@@ -11,7 +12,8 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
   
   async execute() {
     let uri = this.config.argv._[0];
-    const protocol = URIProtocolProvider.lookup(uri, this.injector);
+
+    const protocol = uri && URIProtocolProvider.lookup(uri, this.injector);
 
     // scan the CWD for any tandem files
     if (uri != null && !(await protocol.exists(uri))) {

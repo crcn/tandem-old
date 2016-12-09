@@ -26,10 +26,6 @@ export class URIProtocolProvider implements IProvider {
 
   static lookup(uri: string, injector: Injector) {
 
-    if (!uri) {
-      console.error(new Error().stack);
-    }
-
     // no protocol - it's a file
     if (uri.indexOf(":") === -1) {
       uri = "file://" + uri;
