@@ -17,18 +17,8 @@ This is only the beginning
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-Polish up vanilla HTML ext
-
-http://electron.atom.io/docs/api/auto-updater/
-
-html css source maps
-
-- open any HTML file
-- launch tandem from vscode
-- do not require workspaces - should be secondary
-- changes not syncing to  vscode
-- bark for unsaved changes
-
+- 
+- [ ] bark for unsaved changes
 
 - test
   - https://github.com/facebookincubator/create-react-app
@@ -39,13 +29,10 @@ html css source maps
 - [ ] resolve css urls
 - [ ] css source maps
 - [ ] prompt to save if certain files are unsaved
-- [ ] ability to load images
 
 - [ ] Core
   - [ ] enable history push state observations in app (test for todomvc example)
   - [ ] ensure that location changes are observable
-  - [ ] ability to dynamically add dependencies to the dependency graph -- required for stuff like systemjs.
-  - [ ] ability to define local storage (and see possibly)
 
 - [ ] UX
   - [ ] open tandem from text editor
@@ -58,9 +45,7 @@ html css source maps
   - [ ] source maps not working for CSS 
   - [ ] source maps not working with React
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
-  - [ ] app locked if artboard has a broken link
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
-  - [ ] child processes are STILL not shutting down  
   - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
   - [ ] artboards do not show up if there's an error in the load
   - [ ] Fix vscode source code overwrites
@@ -80,7 +65,6 @@ html css source maps
   - [ ] account for infinite loops in code
 
 - [ ] top bar
-- [ ] source maps not working for CSS
 - [ ] rotate artboard button
 - [ ] scrolling artboards (alt key?) 
   - [ ] need usage report prompt
@@ -122,6 +106,7 @@ STABILITY
 ----------------------------------
 
 UX
+  - [ ] launch tandem from vscode
   - [ ] display title of document (if present)
   - [ ] VM developer console
   - [ ] gutters need to be resizable
@@ -165,7 +150,7 @@ CORE
   - *[ ] right click edit text
   - [ ] *wait for all XHR requests to be completed before sending diff - (flickering otherwise)
   - [ ] config for scanning application for components
-
+  - [ ] ability to dynamically add dependencies to the dependency graph -- required for stuff like systemjs.
 
 - [ ] Editor
   - [ ] Debugger Pane

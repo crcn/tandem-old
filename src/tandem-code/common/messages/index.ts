@@ -53,13 +53,6 @@ export class StartNewProjectRequest implements IMessage {
 }
 
 @setMessageTarget(EditorFamilyType.MASTER)
-export class OpenNewWorkspaceRequest implements IMessage {
-  static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
-  readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
-  constructor(readonly uri: string) { }
-}
-
-@setMessageTarget(EditorFamilyType.MASTER)
 export class CreateTemporaryWorkspaceRequest implements IMessage {
   static readonly CREATE_TEMPORARY_WORKSPACE: string = "createTemporaryWorkspace";
   readonly type = CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE;
@@ -126,3 +119,5 @@ export class OpenHelpOptionRequest implements IMessage {
     return bus.dispatch(new OpenHelpOptionRequest(option));
   }
 }
+
+export * from "@tandem/editor/common/messages";

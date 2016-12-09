@@ -1,6 +1,6 @@
 {
   "name": "@tandem/mesh",
-  "version": "1.0.13",
+  "version": "1.0.15",
   "description": "Temporary directory for the updated version of [Mesh](http://mesh.js.org/).",
   "main": "index.js",
   "directories": {

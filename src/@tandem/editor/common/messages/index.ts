@@ -28,6 +28,7 @@ import {
 } from "@tandem/sandbox";
 
 import { 
+  IMessage,
   readOneChunk,
   DSFindRequest,
   DSInsertRequest,
@@ -137,10 +138,22 @@ export class OpenWorkspaceRequest extends CoreEvent {
   constructor(readonly uri: string) {
     super(OpenWorkspaceRequest.OPEN_WORKSPACE);
   }
+
   static async dispatch(uri: string, bus: IStreamableDispatcher<any>): Promise<boolean> {
     return (await readOneChunk(bus.dispatch(new OpenWorkspaceRequest(uri)))).value;
   }
 }
+
+@addMessageVisitor(EditorFamilyType.TEXT_EDITOR)
+@addMessageVisitor(EditorFamilyType.WORKER)
+@setMessageTarget(EditorFamilyType.MASTER)
+@serializable("OpenNewWorkspaceRequest")
+export class OpenNewWorkspaceRequest implements IMessage {
+  static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
+  readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
+  constructor(readonly uri: string) { }
+}
+
 
 @addMessageVisitor(EditorFamilyType.BROWSER)
 @addMessageVisitor(EditorFamilyType.MASTER)
