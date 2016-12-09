@@ -17,14 +17,13 @@ import {
   Sandbox,
   FileCache,
   Dependency,
-  IFileSystem,
   IFileResolver,
-  BaseFileSystem,
+  URIProtocol,
   IDependencyGraph,
   DependencyGraph,
   IDependencyLoader,
+  URIProtocolProvider,
   FileCacheProvider,
-  FileSystemProvider,
   IFileResolverOptions,
   createSandboxProviders,
   IResolvedDependencyInfo,
@@ -54,16 +53,16 @@ export interface ISandboxTestProviderOptions {
   fileCacheSync?: boolean;
 }
 
-export class MockFileSystem extends BaseFileSystem {
+export class MockFileURIProtocol extends URIProtocol {
 
   @inject(MockFilesProvider.ID)
   private _mockFiles: IMockFiles;
 
-  private _watchers: any;
+  private _watchers2: any;
 
   constructor() {
     super();
-    this._watchers = {};
+    this._watchers2 = {};
   }
 
   readDirectory(directoryPath: string): ReadableStream<any> {
@@ -74,11 +73,11 @@ export class MockFileSystem extends BaseFileSystem {
     })
   }
 
-  fileExists(filePath: string): Promise<boolean> {
+  exists(filePath: string): Promise<boolean> {
     return Promise.resolve(!!this._mockFiles[filePath]);
   }
 
-  readFile(filePath: string): Promise<any> {
+  read(filePath: string): Promise<any> {
     const content = this._mockFiles[filePath];
     return new Promise((resolve, reject) => {
 
@@ -92,21 +91,21 @@ export class MockFileSystem extends BaseFileSystem {
       }, 5);
     });
   }
-  writeFile(filePath: string, content: string): Promise<void> {
+  write(filePath: string, content: string): Promise<void> {
 
     this._mockFiles[filePath] = content;
 
-    if (this._watchers[filePath]) {
-      this._watchers[filePath]();
+    if (this._watchers2[filePath]) {
+      this._watchers2[filePath]();
     }
 
     return Promise.resolve();
   }
-  watchFile2(filePath: string, onChange: Function): IDisposable {
-    this._watchers[filePath] = onChange;
+  watch2(filePath: string, onChange: Function): IDisposable {
+    this._watchers2[filePath] = onChange;
     return {
       dispose: () => {
-        this._watchers[filePath] = undefined;
+        this._watchers2[filePath] = undefined;
       }
     }
   }
@@ -129,7 +128,8 @@ export const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 export const createTestSandboxProviders = (options: ISandboxTestProviderOptions = {}) => {
   return [
     new MockFilesProvider(options.mockFiles || {}),
-    createSandboxProviders(MockFileSystem, MockFileResolver)
+    createSandboxProviders(MockFileResolver),
+    new URIProtocolProvider("file", MockFileURIProtocol)
   ];
 }
 

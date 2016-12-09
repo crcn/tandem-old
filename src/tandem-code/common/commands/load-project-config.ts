@@ -4,8 +4,8 @@ import assert = require("assert");
 import { PROJECT_CONFIG_FILE_NAME } from "../constants";
 import { ProjectConfig, ProjectFileHandler } from "tandem-code/common/stores";
 import { inject, ICommand, loggable, Logger, InjectorProvider, Injector } from "@tandem/common";
+import { FileResolverProvider, IFileResolver, IDependencyLoader, DependencyGraphStrategyOptionsProvider } from "@tandem/sandbox";
 import { PreviewLoaderProvider, IFileImporter, ImportFileRequest, IFilePreviewLoader, IPreviewLoaderResult } from "@tandem/editor/worker";
-import { FileSystemProvider, FileResolverProvider, IFileSystem, IFileResolver, IDependencyLoader, DependencyGraphStrategyOptionsProvider } from "@tandem/sandbox";
 
 /**
  * Loads the project config into the application in the form of extensions
@@ -16,9 +16,6 @@ import { FileSystemProvider, FileResolverProvider, IFileSystem, IFileResolver, I
 export class LoadProjectConfigCommand implements ICommand {
 
   protected logger: Logger;
-
-  @inject(FileSystemProvider.ID)
-  private _fileSystem: IFileSystem;
 
   @inject(FileResolverProvider.ID)
   private _fileResolver: IFileResolver;

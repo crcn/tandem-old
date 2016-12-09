@@ -23,7 +23,6 @@ import { WorkspaceToolFactoryProvider, EditorStoreProvider } from "@tandem/edito
 import { SetToolRequest, ZoomRequest, ZoomOutRequest, ZoomInRequest, SetZoomRequest } from "@tandem/editor/browser/messages";
 
 import {
-  File,
   tween,
   CoreEvent,
   Logger,

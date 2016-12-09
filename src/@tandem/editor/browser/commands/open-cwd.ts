@@ -1,7 +1,7 @@
 import { ICommand, inject, Injector, InjectorProvider } from "@tandem/common";
 
 import { EditorStore } from "@tandem/editor/browser/stores";
-import { DirectoryModel } from "@tandem/editor/common";
+// import { DirectoryModel } from "@tandem/editor/common";
 import { IMessage } from "@tandem/mesh";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
@@ -19,7 +19,7 @@ export class OpenCWDCommand implements ICommand {
   private _injector: Injector;
 
   async execute(action: IMessage) {
-    this._store.cwd = this._injector.inject(new DirectoryModel(this._config.server.cwd));
-    this._store.cwd.load();
+    // this._store.cwd = this._injector.inject(new DirectoryModel(this._config.server.cwd));
+    // this._store.cwd.load();
   }
 }

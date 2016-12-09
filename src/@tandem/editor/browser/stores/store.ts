@@ -8,7 +8,6 @@ import {
 
 import { Router } from "./router";
 import { Workspace } from "./workspace";
-import { DirectoryModel } from "@tandem/editor/common";
 
 // TODO: add workspaces
 export class EditorStore extends Observable {
@@ -28,8 +27,4 @@ export class EditorStore extends Observable {
   @bindable()
   @bubble()
   public workspace: Workspace;
-
-  @bindable()
-  @bubble()
-  public cwd: DirectoryModel;
 }

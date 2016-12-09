@@ -5,7 +5,6 @@ import { IBrokerBus } from "../dispatchers";
 import { ITyped, INamed } from "@tandem/common/object";
 import { IDispatcher, IMessage } from "@tandem/mesh";
 
-import { File } from "@tandem/common/models";
 import {
   IFactory,
   Provider,

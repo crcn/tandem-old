@@ -2,7 +2,6 @@ import path =  require("path");
 import memoize =  require("memoizee");
 
 import { pull, values } from "lodash";
-import { IFileSystem } from "../file-system";
 import { RawSourceMap } from "source-map";
 import { IDependencyGraph } from "./graph";
 import { DependencyEvent } from "./messages";
@@ -15,7 +14,6 @@ import {
 
 import {
   FileCacheProvider,
-  FileSystemProvider,
 } from "../providers";
 
 import { CallbackDispatcher } from "@tandem/mesh";

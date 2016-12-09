@@ -2,8 +2,8 @@ import { flatten } from "lodash";
 import { FileCache } from "../file-cache";
 import { IDispatcher } from "@tandem/mesh";
 import { CallbackDispatcher } from "@tandem/mesh";
-import { IFileSystem } from "../file-system";
-import { FileCacheProvider, ContentEditorFactoryProvider, ProtocolURLResolverProvider, FileSystemProvider } from "../providers";
+import { FileCacheProvider, ContentEditorFactoryProvider, ProtocolURLResolverProvider } from "../providers";
+import { URIProtocol, URIProtocolProvider } from "../uri";
 import { ISyntheticObject, ISyntheticSourceInfo, syntheticSourceInfoEquals } from "../synthetic";
 import {
   inject,
@@ -181,9 +181,6 @@ export class FileEditor {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  @inject(FileSystemProvider.ID)
-  private _fileSystem: IFileSystem;
-
   applyMutations(mutations: Mutation<ISyntheticObject>[]): Promise<any> {
 
     if (this._mutations == null) {
@@ -260,7 +257,7 @@ export class FileEditor {
           fileCache.setDataUrlContent(newContent);
           promises.push(fileCache.save());
           if (autoSave) {
-            promises.push(this._fileSystem.writeFile(fileCache.sourceUri, newContent));
+            promises.push(URIProtocolProvider.lookup(fileCache.sourceUri, this._injector).write(fileCache.sourceUri, newContent));
           }
         } else {
           this.logger.debug(`No changes to ${uri}`);

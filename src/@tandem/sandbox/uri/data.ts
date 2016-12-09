@@ -1,0 +1,30 @@
+import { URIProtocol } from "./protocol";
+import { ENV_IS_NODE } from "@tandem/common";
+
+
+function parseDataURI(uri: string): { type: string, content: string } {
+  const parts = uri.match(/data:(.*?),(.*)/);
+  return parts && { type: parts[1], content: parts[2] };
+}
+
+export class DataURIProtocol extends URIProtocol {
+  read(uri: string) {
+    const data = parseDataURI(uri);
+    if (!data) throw new Error(`Cannot load ${uri}.`);
+    return Promise.resolve(new Buffer(data.content, "base64"));
+  }
+
+  async write(uri: string, content: string) {
+    // nothing for now
+  }
+
+  exists(uri: string) {
+    return Promise.resolve(!!parseDataURI(uri));
+  }
+
+  watch2(uri: string, listener: () => any) {
+    return {
+      dispose() { }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import assert = require("assert");
 import path =  require("path");
 import { SyntheticDOMElement, SyntheticWindow } from "@tandem/synthetic-browser";
-import { IFileSystem, FileSystemProvider, ApplyFileEditRequest } from "@tandem/sandbox";
+import { URIProtocolProvider, ApplyFileEditRequest } from "@tandem/sandbox";
 import { IFileImporter, ImportFileRequest, PreviewLoaderProvider, OpenFileRequest } from "@tandem/editor/worker";
 import { Injector, InjectorProvider, PrivateBusProvider, IBrokerBus, inject, BoundingRect } from "@tandem/common";
 
@@ -19,9 +19,6 @@ export class TDRootFileImporter implements IFileImporter {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  @inject(FileSystemProvider.ID)
-  private _fileSystem: IFileSystem;
-
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
 
@@ -30,7 +27,7 @@ export class TDRootFileImporter implements IFileImporter {
     // TODO: temporary fix for DNDd files
     uri = uri.replace(/^file:\/\//g, "");
 
-    const content = String(await this._fileSystem.readFile(uri));
+    const content = String(await URIProtocolProvider.lookup(uri, this._injector).read(uri));
 
     const element = <SyntheticDOMElement>targetObject;
 
@@ -46,8 +43,10 @@ export class TDRootFileImporter implements IFileImporter {
 
     const preview = await previewLoader.loadFilePreview(arguments[0]);
 
-    if (!(await this._fileSystem.fileExists(preview.uri))) {
-      await this._fileSystem.writeFile(preview.uri, preview.content);
+    const previewURIProtocol = URIProtocolProvider.lookup(preview.uri, this._injector);
+
+    if (!(await previewURIProtocol.exists(preview.uri))) {
+      await previewURIProtocol.write(preview.uri, preview.content);
       await this._bus.dispatch(new OpenFileRequest(preview.uri));
     }
 

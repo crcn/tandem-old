@@ -2,7 +2,6 @@
 import { debounce } from "lodash";
 import { CallbackDispatcher } from "@tandem/mesh";
 import {
-  File,
   IPoint,
   inject,
   CoreEvent,

@@ -5,7 +5,7 @@ const config = require(process.cwd() + "/webpack.config.js");
 import { waitForPropertyChange, Application, LogLevel } from "@tandem/common";
 import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test";
-import { Sandbox, FileCacheProvider, FileSystemProvider, FileEditorProvider } from "@tandem/sandbox";
+import { Sandbox, FileCacheProvider, URIProtocolProvider, FileEditorProvider } from "@tandem/sandbox";
 
 import { SyntheticBrowser, SyntheticHTMLElement, parseMarkup, evaluateMarkup } from "@tandem/synthetic-browser";
 
@@ -47,7 +47,7 @@ describe(__filename + "#", () => {
 
     const entryFilePath = createRandomFileName("tsx");
 
-    await FileSystemProvider.getInstance(injector).writeFile(entryFilePath, `
+    await URIProtocolProvider.lookup(entryFilePath, injector).write(entryFilePath, `
       import React =  require("react");
       import ReactDOM = require("react-dom");
       const element = document.createElement("div");

@@ -3,7 +3,7 @@ import path =  require("path");
 import { expect } from "chai";
 import { cssEditorTestCases } from "@tandem/synthetic-browser/sandbox/css-editor-test";
 import { generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
-import { FileEditorProvider, FileSystemProvider } from "@tandem/sandbox";
+import { FileEditorProvider, URIProtocolProvider } from "@tandem/sandbox";
 import { waitForPropertyChange, Application, LogLevel, serialize } from "@tandem/common";
 import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
 import { SyntheticCSSStyleSheet, SyntheticBrowser, parseCSS, evaluateCSS } from "@tandem/synthetic-browser";
@@ -35,13 +35,13 @@ describe(__filename + "#", () => {
   const loadCSS = async (content: string) => {
 
     const { injector } = app;
-    const fs = FileSystemProvider.getInstance(injector);
 
     const entryCSSFilePath = createRandomFileName("scss");
     const entryJSFilePath  = createRandomFileName("js");
+    const protocol = URIProtocolProvider.lookup(entryCSSFilePath, injector);
 
-    await fs.writeFile(entryCSSFilePath, content);
-    await fs.writeFile(entryJSFilePath, `
+    await protocol.write(entryCSSFilePath, content);
+    await protocol.write(entryJSFilePath, `
       require("${entryCSSFilePath}");
     `);
 

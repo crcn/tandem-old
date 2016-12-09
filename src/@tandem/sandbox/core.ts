@@ -7,7 +7,6 @@ import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver
 import { DependencyGraphProvider, DependencyGraphStrategyProvider } from "./dependency-graph";
 import {
   FileCacheProvider,
-  FileSystemProvider,
   FileEditorProvider,
   FileResolverProvider,
   ProtocolURLResolverProvider,

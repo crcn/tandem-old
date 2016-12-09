@@ -1,10 +1,11 @@
 import { inject, IDisposable, loggable, Logger } from "@tandem/common"; 
-import { FileSystemProvider } from "../providers";
 
 export interface IURIWatcher {
   dispose(): any;
 }
 
+// TODO - URI needs to be wrapped around a file object so that certain
+// protocols such data:// can be written to
 
 @loggable()
 export abstract class URIProtocol {
@@ -19,6 +20,7 @@ export abstract class URIProtocol {
 
   abstract read(uri: string): Promise<string|Buffer>;
   abstract write(uri: string, content: any): Promise<any>;
+  abstract exists(uri: string): Promise<boolean>;
 
   watch(uri: string, onChange: () => any) {
 
@@ -66,7 +68,11 @@ export class HTTPURIProtocol extends URIProtocol {
   async write(uri: string, content: string) {
     this.logger.info(`Cannot currenty write to uris`);
   }
-  watch(uri: string, onChange: () => any) {
+  async exists(uri: string) {
+    this.logger.info(`Cannot currenty check http 404s`);
+    return false;
+  }
+  watch2(uri: string, onChange: () => any) {
     this.logger.info(`Cannot currently watch uris`);
 
     return {

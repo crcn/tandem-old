@@ -9,12 +9,12 @@ export class FileCacheProtocol extends URIProtocol {
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
 
-  async read(url: string) {
-    const item = await this._fileCache.collection.loadItem({ filePath: this.removeProtocol(url) })
+  async read(uri: string) {
+    const item = await this._find(uri)
     return item && item.read();
   }
 
-  watch(url: string, onChange: () => any) {
+  watch2(uri: string, onChange: () => any) {
     this.logger.info(`Cannot currently watch file cache items`);
     return {
       dispose() {
@@ -22,7 +22,15 @@ export class FileCacheProtocol extends URIProtocol {
     }
   }
 
-  async write(url: string, content: any) {
-    return this._fileCache.add(this.removeProtocol(url), content);
+  async exists(uri: string) {
+    return !!(await this._find(uri));
+  }
+
+  async write(uri: string, content: any) {
+    return this._fileCache.add(this.removeProtocol(uri), content);
+  }
+
+  _find(uri: string) {
+    return this._fileCache.collection.loadItem({ filePath: this.removeProtocol(uri) });
   }
 }

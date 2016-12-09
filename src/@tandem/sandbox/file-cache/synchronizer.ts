@@ -1,7 +1,7 @@
 import { CallbackDispatcher } from "@tandem/mesh";
 import { FileCache } from "./file-cache";
-import { IFileSystem, IFileWatcher } from "@tandem/sandbox/file-system";
-import { IBrokerBus, diffArray, inject, loggable, Logger } from "@tandem/common";
+import { IURIWatcher, URIProtocolProvider } from "@tandem/sandbox";
+import { IBrokerBus, diffArray, inject, loggable, Logger, Injector, InjectorProvider } from "@tandem/common";
 
 // TODO - need to check if file cache is up to date with local
 // TODO - needs to support other protocols such as http, and in-app
@@ -9,9 +9,13 @@ import { IBrokerBus, diffArray, inject, loggable, Logger } from "@tandem/common"
 export class FileCacheSynchronizer {
 
   protected logger: Logger;
+
+  @inject(InjectorProvider.ID)
+  private _injector: Injector;
+
   private _watchers: any;
 
-  constructor(private _cache: FileCache, private _bus: IBrokerBus, private _fileSystem: IFileSystem) {
+  constructor(private _cache: FileCache, private _bus: IBrokerBus) {
     this._watchers = {};
     this._cache.collection.observe(new CallbackDispatcher(this.update.bind(this)));
     this.update();
@@ -24,18 +28,19 @@ export class FileCacheSynchronizer {
     diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
       visitInsert: async ({ index, value }) => {
 
+        const protocol = URIProtocolProvider.lookup(value, this._injector);
+
         try {
 
-          // some files may be temporarily stored in memory, so even urls. Don't watch that stuff.
-          if (!/^\w+:\/\//.test(value) && (await this._fileSystem.fileExists(value))) {
-            this._watchers[value] = this._fileSystem.watchFile(value, this.onLocalFindChange.bind(this, value));
+          if (!/^\w+:\/\//.test(value) && (await protocol.exists(value))) {
+            this._watchers[value] = protocol.watch(value, this.onLocalFindChange.bind(this, value));
           }
         } catch(e) {
           this.logger.error(e.stack);
         }
       },
       visitRemove: ({ index }) => {
-        (<IFileWatcher>this._watchers[a[index]]).dispose();
+        (<IURIWatcher>this._watchers[a[index]]).dispose();
       },
       visitUpdate() { }
     });

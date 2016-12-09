@@ -2,31 +2,31 @@ import fs =  require("fs");
 import { IDisposable } from "@tandem/common";
 import { ReadableStream } from "@tandem/mesh";
 import { URIProtocol } from "../uri";
-import { BaseFileSystem, IReadFileResultItem } from "./base";
+// import { BaseFileSystem, IReadFileResultItem } from "./base";
 
 let _i = 0;
 
 // TODO - deprecated - use FileURIProtocol instead
 export class FileURIProtocol extends URIProtocol {
 
-  readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]> {
-    return new ReadableStream({
-      start(controller) {
-        fs.readdir(directoryPath, (err, result) => {
-          if (err) return controller.error(err);
-          result.map(name => ({
-            name: name,
-            isDirectory: fs.lstatSync(directoryPath + "/" + name).isDirectory()
-          })).sort((a, b) => {
-            return a.isDirectory && !b.isDirectory ? -1 : a.isDirectory === b.isDirectory ? a.name > b.name ? 1 : -1 : 1;
-          }).forEach((file) => {
-            controller.enqueue(file);
-          });
-          controller.close();
-        });
-      }
-    });
-  }
+  // readDirectory(directoryPath: string): ReadableStream<IReadFileResultItem[]> {
+  //   return new ReadableStream({
+  //     start(controller) {
+  //       fs.readdir(directoryPath, (err, result) => {
+  //         if (err) return controller.error(err);
+  //         result.map(name => ({
+  //           name: name,
+  //           isDirectory: fs.lstatSync(directoryPath + "/" + name).isDirectory()
+  //         })).sort((a, b) => {
+  //           return a.isDirectory && !b.isDirectory ? -1 : a.isDirectory === b.isDirectory ? a.name > b.name ? 1 : -1 : 1;
+  //         }).forEach((file) => {
+  //           controller.enqueue(file);
+  //         });
+  //         controller.close();
+  //       });
+  //     }
+  //   });
+  // }
 
   async read(uri: string) {
     const filePath = this.removeProtocol(uri);

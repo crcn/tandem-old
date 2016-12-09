@@ -1,7 +1,7 @@
 import sinon =  require("sinon");
 import { expect } from "chai";
 import { Injector, Status } from "@tandem/common";
-import { MockFileSystem, MockFileResolver, createSandboxTestInjector } from "@tandem/sandbox/test/helpers";
+import { MockFileResolver, createSandboxTestInjector } from "@tandem/sandbox/test/helpers";
 import {
   Dependency,
   IDependencyGraph,

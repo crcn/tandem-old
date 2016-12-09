@@ -1,5 +1,5 @@
 import { SyntheticWindow } from "../window";
-import { FileSystemProvider, IFileSystem } from "@tandem/sandbox";
+import { URIProtocolProvider } from "@tandem/sandbox";
 import { IStreamableDispatcher, DuplexStream } from "@tandem/mesh";
 import { inject, Injector, InjectorProvider, loggable, Logger } from "@tandem/common";
 import { IHTTPHeaders, HTTPRequest, HTTPResponse, HTTPStatusType } from "./messages";
@@ -9,8 +9,8 @@ export class XHRServer implements IStreamableDispatcher<HTTPRequest> {
   
   protected readonly logger: Logger;
 
-  @inject(FileSystemProvider.ID)
-  private _fs: IFileSystem;
+  @inject(InjectorProvider.ID)
+  private _injector: Injector;
 
   constructor(window: SyntheticWindow) {
     
@@ -21,6 +21,7 @@ export class XHRServer implements IStreamableDispatcher<HTTPRequest> {
     return new DuplexStream((input, output) => {
 
       const writer = output.getWriter();
+      
 
       const response = new HTTPResponse(HTTPStatusType.OK, {
         contentType: "text/plain"
@@ -29,8 +30,8 @@ export class XHRServer implements IStreamableDispatcher<HTTPRequest> {
       writer.write(response);
       
       this.logger.info(`XHR ${request.method} ${request.url}`);
-      // TODO - do not assume FS - only assuming for now to get certain features to work
-      this._fs.readFile(request.url).catch((e) => {
+
+      URIProtocolProvider.lookup(request.url, this._injector).read(request.url).catch((e) => {
         writer.abort(e);
       }).then((buffer) => {
         writer.write(String(buffer));

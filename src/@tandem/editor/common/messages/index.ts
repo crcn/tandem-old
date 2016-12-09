@@ -23,7 +23,7 @@ import {
   ISyntheticObject,
   ResolveFileRequest,
   ApplyFileEditRequest,
-  ReadDirectoryRequest,
+  // ReadDirectoryRequest,
   SandboxModuleAction,
 } from "@tandem/sandbox";
 
@@ -70,7 +70,7 @@ export namespace EditorFamilyType {
 
 setMessageTarget(EditorFamilyType.WORKER)(WatchFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest);
-setMessageTarget(EditorFamilyType.WORKER)(ReadDirectoryRequest);
+// setMessageTarget(EditorFamilyType.WORKER)(ReadDirectoryRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ResolveFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
 

@@ -11,8 +11,6 @@ import {
   ActiveRecordCollection,
 } from "@tandem/common";
 
-import { IFileSystem } from "../file-system";
-import { FileSystemProvider } from "../providers";
 import { FileCacheItem, IFileCacheItemData, createDataUrl } from "./item";
 
 // TODO - move a lot of this logic to ActiveRecordCollection
@@ -25,9 +23,6 @@ export class FileCache extends Observable {
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
 
-  @inject(FileSystemProvider.ID)
-  private _fileSystem: IFileSystem;
-
   private _synchronizer: FileCacheSynchronizer;
   private _collection: ActiveRecordCollection<FileCacheItem, IFileCacheItemData>;
 
@@ -37,7 +32,7 @@ export class FileCache extends Observable {
 
   public $didInject() {
     this._collection = ActiveRecordCollection.create(this.collectionName, this._injector, (source: IFileCacheItemData) => {
-      return this._injector.inject(new FileCacheItem(source, this.collectionName, this._fileSystem));
+      return this._injector.inject(new FileCacheItem(source, this.collectionName));
     });
     this._collection.load();
     this._collection.sync();
@@ -91,6 +86,6 @@ export class FileCache extends Observable {
    */
 
   syncWithLocalFiles() {
-    return this._synchronizer || (this._synchronizer = this._injector.inject(new FileCacheSynchronizer(this, this._bus, this._fileSystem)));
+    return this._synchronizer || (this._synchronizer = this._injector.inject(new FileCacheSynchronizer(this, this._bus)));
   }
 }

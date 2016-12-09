@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { Mutation, serialize, deserialize } from "@tandem/common";
-import { FileSystemProvider, SyntheticObjectChangeWatcher, SyntheticObjectTreeEditor } from "@tandem/sandbox";
+import { SyntheticObjectChangeWatcher, SyntheticObjectTreeEditor, URIProtocolProvider } from "@tandem/sandbox";
 import { loadTestBrowser, timeout } from "@tandem/synthetic-browser/test";
 import { SyntheticCSSElementStyleRule, SyntheticDocument } from "@tandem/synthetic-browser";
 
@@ -140,7 +140,7 @@ describe(__filename + "#", () => {
       while (changes.length) {
         const fileChanges = changes.shift() as any;
         for (const fileName in fileChanges) {
-          await FileSystemProvider.getInstance(browser.injector).writeFile(fileName, fileChanges[fileName]);
+          await URIProtocolProvider.lookup(fileName, browser.injector).write(fileName, fileChanges[fileName]);
         }
         await timeout();
         testClone();

@@ -2,7 +2,6 @@ import path =  require("path");
 import memoize =  require("memoizee");
 
 import { pull, values } from "lodash";
-import { IFileSystem } from "../file-system";
 import { RawSourceMap } from "source-map";
 import { IDependencyGraph } from "./graph";
 import { DependencyEvent } from "./messages";
@@ -16,7 +15,6 @@ import { DependencyGraphWatcher } from "./watcher";
 
 import {
   FileCacheProvider,
-  FileSystemProvider,
 } from "../providers";
 
 
@@ -82,9 +80,6 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
-
-  @inject(FileSystemProvider.ID)
-  private _fileSystem: IFileSystem;
 
   private _map: RawSourceMap;
   private _fileCacheItem: FileCacheItem;

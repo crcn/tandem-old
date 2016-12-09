@@ -3,7 +3,7 @@ import { BaseStudioMasterCommand } from "./base";
 import { MimeTypeProvider, inject } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE } from "@tandem/tdproject-extension/constants";
 import { CreateTemporaryWorkspaceRequest } from "tandem-code/common";
-import { FileCacheProvider, FileCache, IFileSystem, FileSystemProvider } from "@tandem/sandbox"; 
+import { FileCacheProvider, FileCache, URIProtocolProvider } from "@tandem/sandbox"; 
 
 let i = 0;
 
@@ -11,9 +11,6 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
 
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
-
-  @inject(FileSystemProvider.ID)
-  private _fs: IFileSystem;
   
   async execute({ uri }: CreateTemporaryWorkspaceRequest) {
 
@@ -24,7 +21,7 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
     let content;
 
     if (MimeTypeProvider.lookup(uri, this.injector) === TDPROJECT_MIME_TYPE) {
-      content = await this._fs.readFile(uri);
+      content = await URIProtocolProvider.lookup(uri, this.injector).read(uri);
     } else {
       content = `<tandem>
         <artboard src="${uri} />

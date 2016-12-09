@@ -7,7 +7,7 @@ import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { IRange, IPoint } from "@tandem/common/geom";
 import { ISyntheticObject } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider } from "@tandem/editor/browser/providers";
-import { File, serialize, deserialize, LogLevel } from "@tandem/common";
+import { serialize, deserialize, LogLevel } from "@tandem/common";
 import { Workspace, IWorkspaceTool, IHistoryItem, IRouterState } from "@tandem/editor/browser/stores";
 
 export class MouseAction extends CoreEvent {

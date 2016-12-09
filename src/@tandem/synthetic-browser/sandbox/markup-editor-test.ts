@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { SyntheticBrowser, SyntheticHTMLElement } from "@tandem/synthetic-browser";
-import { FileSystemProvider, FileEditorProvider } from "@tandem/sandbox";
+import { URIProtocolProvider, FileEditorProvider } from "@tandem/sandbox";
 import { generateRandomSyntheticHTMLElementSource } from "@tandem/synthetic-browser/test";
 import { Application, waitForPropertyChange, LogLevel } from "@tandem/common";
 import { createTestMasterApplication, createRandomFileName } from "@tandem/editor/test";
@@ -23,8 +23,8 @@ describe(__filename + "#", () => {
   const loadHTML = async (source: string) => {
     const { injector } = app;
     const entryFilePath = createRandomFileName("html");
-    const fs = FileSystemProvider.getInstance(injector);
-    await fs.writeFile(entryFilePath, `<div>${source}</div>`);
+    const protocol = URIProtocolProvider.lookup(entryFilePath, injector);
+    await protocol.write(entryFilePath, `<div>${source}</div>`);
 
     const browser = new SyntheticBrowser(injector);
     await browser.open({

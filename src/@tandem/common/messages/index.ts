@@ -1,4 +1,3 @@
-import { File } from "../models";
 import { CoreEvent } from "./base";
 import { IDispatcher, IStreamableDispatcher, DuplexStream, readOneChunk } from "@tandem/mesh";
 

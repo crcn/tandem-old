@@ -1,6 +1,6 @@
 import { IContentEdit } from "../edit";
 import { IFileResolverOptions } from "../resolver";
-import { IReadFileResultItem } from "@tandem/sandbox/file-system";
+// import { IReadFileResultItem } from "@tandem/sandbox/file-system";
 
 import {
   IASTNode,
@@ -75,17 +75,17 @@ export class ReadFileRequest extends Message {
   }
 }
 
-@serializable("ReadDirectoryRequest")
-export class ReadDirectoryRequest extends Message {
-  static readonly READ_DIRECTORY = "readDirectory";
-  constructor(readonly directoryPath: string) {
-    super(ReadDirectoryRequest.READ_DIRECTORY);
-  }
+// @serializable("ReadDirectoryRequest")
+// export class ReadDirectoryRequest extends Message {
+//   static readonly READ_DIRECTORY = "readDirectory";
+//   constructor(readonly directoryPath: string) {
+//     super(ReadDirectoryRequest.READ_DIRECTORY);
+//   }
 
-  static dispatch(directoryPath: string, bus: IStreamableDispatcher<any>): ReadableStream<IReadFileResultItem[]> {
-    return bus.dispatch(new ReadDirectoryRequest(directoryPath)).readable;
-  }
-}
+//   static dispatch(directoryPath: string, bus: IStreamableDispatcher<any>): ReadableStream<IReadFileResultItem[]> {
+//     return bus.dispatch(new ReadDirectoryRequest(directoryPath)).readable;
+//   }
+// }
 
 @serializable("WatchFileRequest")
 export class WatchFileRequest extends Message {

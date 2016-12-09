@@ -3,7 +3,6 @@
 import fs =  require("fs");
 import memoize =  require("memoizee");
 
-import { IFileSystem } from "../file-system";
 import { IFileResolver } from "../resolver";
 import { ResolveFileRequest } from "../messages";
 import { IDispatcher, readOneChunk } from "@tandem/mesh";

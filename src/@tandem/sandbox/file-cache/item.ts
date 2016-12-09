@@ -1,14 +1,17 @@
 import memoize =  require("memoizee");
 import { CallbackDispatcher } from "@tandem/mesh";
-import { IFileSystem } from "@tandem/sandbox/file-system";
 import { btoa, atob } from "abab"
+import { URIProtocolProvider, URIProtocol } from "../uri";
 
 import {
   Metadata,
   bindable,
+  Injector,
+  inject,
   ENV_IS_NODE,
   MutationEvent,
   BaseActiveRecord,
+  InjectorProvider,
   PropertyMutation,
 } from "@tandem/common";
 
@@ -37,6 +40,9 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   readonly idProperty = "filePath";
 
+  @inject(InjectorProvider.ID)
+  private _injector: Injector;
+
   @bindable(true)
   public updatedAt: number;
 
@@ -54,7 +60,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   private _rawDataUrlContent: any;
 
-  constructor(source: IFileCacheItemData, collectionName: string, private _fileSystem: IFileSystem) {
+  constructor(source: IFileCacheItemData, collectionName: string) {
     super(source, collectionName);
     this.observe(new CallbackDispatcher(this.onAction.bind(this)));
   }
@@ -87,21 +93,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   read = memoize(async () => {
-    if (/^file:\/\//.test(this.contentUri)) {
-      return await this._fileSystem.readFile(this.contentUri.substr("file://".length));
-    } else {
-
-      // pollyfills don't work for data uris in Node.JS. Need to PR node-fetch for that. Quick
-      // fix or bust for now.
-      if (ENV_IS_NODE) {
-        const data = parseDataURI(this.contentUri);
-        if (!data) throw new Error(`Cannot load ${this.contentUri}.`);
-        return new Buffer(data.content, "base64");
-      }
-
-      const response = await fetch(this.contentUri);
-      return await response.text();
-    }
+    const protocol = URIProtocolProvider.lookup(this.contentUri, this._injector);
+    return protocol.read(this.contentUri);
   }, { promise: true, length: 0 })
 
   shouldDeserialize(b: IFileCacheItemData) {
@@ -127,8 +120,3 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 }
 
-
-function parseDataURI(uri: string): { type: string, content: string } {
-  const parts = uri.match(/data:(.*?),(.*)/);
-  return parts && { type: parts[1], content: parts[2] };
-}

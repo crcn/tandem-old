@@ -1,5 +1,5 @@
 import { inject } from "@tandem/common";
-import { IFileSystem, IDependencyGraphStrategyOptions } from "@tandem/sandbox";
+import { IDependencyGraphStrategyOptions } from "@tandem/sandbox";
 
 export interface ISavePreviewOptions {
   uri: string;

@@ -12,10 +12,7 @@ import {
 import { SequenceBus } from "@tandem/mesh";
 
 import {
-  IFileSystem,
   IFileResolver,
-  LocalFileSystem,
-  RemoteFileSystem,
   LocalFileResolver,
   RemoteFileResolver,
   createSandboxProviders,
@@ -30,12 +27,12 @@ function createBusProviders() {
   );
 }
 
-export function createCoreApplicationProviders(config: any, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
+export function createCoreApplicationProviders(config: any, fileResolverClass?: { new(): IFileResolver }) {
   return new Injector(
     createBusProviders(),
     new InjectorProvider(),
     new ApplicationConfigurationProvider(config),
-    createSandboxProviders(fileSystemClass, fileResolverClass),
+    createSandboxProviders(fileResolverClass),
   );
 }
 

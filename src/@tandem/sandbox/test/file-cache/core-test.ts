@@ -2,9 +2,8 @@ import { expect } from "chai";
 import { createSandboxTestInjector } from "@tandem/sandbox/test/helpers";
 import {
   FileCache,
-  IFileSystem,
   FileCacheProvider,
-  FileSystemProvider,
+  URIProtocolProvider,
 } from "@tandem/sandbox";
 
 import { PropertyMutation, MutationEvent } from "@tandem/common";
@@ -15,7 +14,7 @@ describe(__filename + "#", () => {
     const injector = createSandboxTestInjector({ mockFiles });
     return {
       fileCache: FileCacheProvider.getInstance(injector),
-      fileSystem: FileSystemProvider.getInstance(injector),
+      fileProtocol: URIProtocolProvider.lookup("file://", injector),
     }
   }
 
@@ -38,13 +37,13 @@ describe(__filename + "#", () => {
 
   describe("file cache item#", () => {
     it("reloads the source file changes", async () => {
-      const { fileSystem, fileCache } = createSandboxSingletons({
+      const { fileProtocol, fileCache } = createSandboxSingletons({
         "entry.js": "a"
       });
 
       const item = await fileCache.item("entry.js");
       expect(await item.read()).to.eql("a");
-      await fileSystem.writeFile("entry.js", "b");
+      await fileProtocol.write("entry.js", "b");
       expect(await item.read()).to.eql("b");
     });
 
@@ -70,7 +69,7 @@ describe(__filename + "#", () => {
     });
 
     it("emits a changes when the source file changes", async () => {
-      const { fileSystem, fileCache } = createSandboxSingletons({
+      const { fileProtocol, fileCache } = createSandboxSingletons({
         "entry.js": "a"
       });
       const item = await fileCache.item("entry.js");
@@ -87,7 +86,7 @@ describe(__filename + "#", () => {
           }
         });
 
-        fileSystem.writeFile("entry.js", "b");
+        fileProtocol.write("entry.js", "b");
       });
     });
   });

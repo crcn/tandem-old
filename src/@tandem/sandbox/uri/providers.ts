@@ -1,4 +1,4 @@
-import { URIProtocol } from "./reader";
+import { URIProtocol } from "./protocol";
 import { Injector, createSingletonProviderClass, IProvider } from "@tandem/common";
 
 export class URIProtocolProvider implements IProvider {

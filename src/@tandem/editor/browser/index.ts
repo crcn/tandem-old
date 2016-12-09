@@ -1,8 +1,8 @@
 import "./styles";
 
+import { IFileResolver } from "@tandem/sandbox";
 import { EditorRouteNames } from "./constants";
 import { IEditorBrowserConfig } from "./config";
-import { IFileSystem, IFileResolver } from "@tandem/sandbox";
 import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
 
 import { 
@@ -79,10 +79,10 @@ import {
   GlobalKeyBindingService,
 } from "./services";
 
-export function createEditorBrowserProviders(config: IEditorBrowserConfig, fileSystemClass?: { new(): IFileSystem }, fileResolverClass?: { new(): IFileResolver }) {
+export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileResolverClass?: { new(): IFileResolver }) {
   return [
 
-    createCommonEditorProviders(config, fileSystemClass, fileResolverClass),
+    createCommonEditorProviders(config, fileResolverClass),
     
     // routes
     new RouteFactoryProvider(EditorRouteNames.WORKSPACE, "/workspace", WorkspaceRouteHandler),
