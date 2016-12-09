@@ -245,7 +245,7 @@ export class FileEditor {
         const contentEditor = contentEditorFactoryProvider.create(uri, oldContent);
 
         const changes = mutationsByUri[uri];
-        this.logger.info(`Applying file edit.changes ${uri}: >>`, changes.map(event => event.type).join(" "));
+        this.logger.info(`Applying file changes ${uri}: >>`, changes.map(event => event.type).join(" "));
 
         const newContent    = contentEditor.applyMutations(changes);
 

@@ -86,8 +86,8 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     }
   }
 
-  async resolve(relativeFilePath, cwd: string): Promise<IResolvedDependencyInfo> {
-    const uri = await this._resolver.resolve(relativeFilePath, cwd);
+  async resolve(fileUri: string, cwd: string): Promise<IResolvedDependencyInfo> {
+    const uri = await this._resolver.resolve(fileUri, cwd); 
     return {
       uri: uri,
       hash: md5(uri)

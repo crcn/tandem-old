@@ -55,16 +55,17 @@ export class FileCache extends Observable {
    */
 
   async add(sourceUri: string, content: string|Buffer): Promise<FileCacheItem> {
-    let fileCache = await this.collection.loadItem({ sourceUri });
+    const fileCache = await this.collection.loadItem({ sourceUri });
 
-    if (!fileCache) fileCache = this.collection.create({
-      sourceUri: sourceUri,
-      contentUri: createDataUrl(""),
-      sourceModifiedAt: -1,
-    });
-    
-    fileCache.setDataUrlContent(content);
-    return fileCache.save();
+    if (!fileCache) {
+      return this.collection.create({
+        sourceUri: sourceUri,
+        contentUri: createDataUrl(content),
+        sourceModifiedAt: -1,
+      }).insert();
+    } else {
+      return fileCache.setDataUrlContent(content).save();
+    }
   }
 
   /**

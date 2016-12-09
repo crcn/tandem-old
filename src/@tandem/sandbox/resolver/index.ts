@@ -80,6 +80,13 @@ export class LocalFileResolver extends BaseFileResolver {
 
   async resolve2(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
 
+    // do not resolve not file: protocols
+    if (/\w+:\/\//.test(relativePath) && relativePath.indexOf("file:") !== 0) {
+      return relativePath;
+    }
+
+    relativePath = relativePath.replace("file://", "");
+
     const { extensions, directories } = combineResoverOptions(options, {
       extensions: [], // temp
       directories: []

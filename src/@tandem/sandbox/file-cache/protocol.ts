@@ -10,8 +10,8 @@ export class FileCacheProtocol extends URIProtocol {
   private _fileCache: FileCache;
 
   async read(uri: string) {
-    const item = await this._find(uri)
-    return item && item.read();
+    const item = await this._find(uri);
+    return item && await item.read();
   }
 
   watch2(uri: string, onChange: () => any) {
