@@ -71,6 +71,7 @@ describe(__filename + "#", () => {
     it(`Can apply file edits from ${oldSource} to ${newSource}`, async () => {
       const oldResult = await loadHTML(oldSource);
       const newResult = await loadHTML(newSource);
+
       expect(oldResult.documentElement.source).not.to.be.undefined;
       const edit    = oldResult.documentElement.createEdit().fromDiff(newResult.documentElement);
       expect(edit.mutations.length).not.to.equal(0);

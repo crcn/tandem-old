@@ -14,6 +14,7 @@ export function sourcePositionEquals(a: ISourcePosition, b: ISourcePosition) {
   return (a == null && b == null) || (a && b && (a.line === b.line && a.column === b.column));
 }
 
+
 export interface ISourceLocation {
   start?: ISourcePosition;
   end?: ISourcePosition;
@@ -51,7 +52,6 @@ export abstract class BaseExpression implements IExpression {
 
   public parent: IASTNode;
   public location: ISourceLocation;
-  public offset: number = 0;
 
   constructor(location: ISourceLocation) {
     this.location = location;

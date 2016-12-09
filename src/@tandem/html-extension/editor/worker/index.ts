@@ -8,7 +8,7 @@ import {
   SandboxModuleEvaluatorFactoryProvider,
 } from "@tandem/sandbox";
 
-import { SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
+import { SyntheticDOMElementClassProvider, ElementTextContentMimeTypeProvider } from "@tandem/synthetic-browser";
 import { SelfPreviewLoader, PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 
 export const createHTMLEditorWorkerProviders = () => {

@@ -98,6 +98,16 @@ export function findMarkupExpression(target: MarkupExpression, filter: (expressi
   return found;
 }
 
+export function fitlerMarkupExpressions(target: MarkupExpression, filter: (expression: MarkupExpression) => boolean): MarkupExpression[] {
+  let found = [];
+  traverseMarkupExpression(target, (expression) => {
+    if (filter(expression)) {
+      found.push(expression);
+    }
+  });
+  return found;
+}
+
 export interface IMarkupValueNodeExpression extends IMarkupExpression {
   nodeValue: any;
 }

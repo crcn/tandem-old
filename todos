@@ -23,12 +23,10 @@ resolve UX. May want to optimize experience around writing code.
 - test
   - https://github.com/facebookincubator/create-react-app
 
-- [ ] right click + open any index.html file
 - [ ] test on windows
 - [ ] Show unsaved files
-- [ ] resolve css urls
-- [ ] css source maps
-- [ ] prompt to save if certain files are unsaved
+- [ ] result style css urls
+- [ ] proper source mapping for html loader
 
 - [ ] Core
   - [ ] enable history push state observations in app (test for todomvc example)
@@ -40,8 +38,6 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] CTA for adding files to a blank artboard
   
 - [ ] BUGS
-  - [ ] files not always synced from vscode -> tandem
-  - [ ] local images must work in HTML ext
   - [ ] source maps not working for CSS 
   - [ ] source maps not working with React
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
@@ -49,6 +45,7 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
   - [ ] artboards do not show up if there's an error in the load
   - [ ] Fix vscode source code overwrites
+  - [ ] files not always synced from vscode -> tandem
 
 - [ ] Editor
   - [ ] History
@@ -150,6 +147,7 @@ CORE
   - *[ ] right click edit text
   - [ ] *wait for all XHR requests to be completed before sending diff - (flickering otherwise)
   - [ ] config for scanning application for components
+  - [ ] support css imports
   - [ ] ability to dynamically add dependencies to the dependency graph -- required for stuff like systemjs.
 
 - [ ] Editor

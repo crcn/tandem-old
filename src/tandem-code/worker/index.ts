@@ -20,7 +20,7 @@ import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest } 
 import { FileImporterProvider } from "@tandem/editor/worker";
 import { IStudioWorkerConfig } from "./config";
 
-import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
+import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider, ElementTextContentMimeTypeProvider } from "@tandem/synthetic-browser";
 import {
   hook,
   Injector,

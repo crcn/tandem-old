@@ -1,14 +1,17 @@
 import {
+  Mutation,
   RemoveMutation,
   SetValueMutation,
-  sourcePositionEquals,
-  MoveChildMutation,
   PropertyMutation,
+  MoveChildMutation,
   InsertChildMutation,
+  sourcePositionEquals,
 } from "@tandem/common";
 
 import {
+  ISyntheticObject,
   BaseContentEditor,
+  ContentEditorFactoryProvider,
 } from "@tandem/sandbox";
 
 import {
@@ -16,9 +19,13 @@ import {
   MarkupExpression,
   SyntheticDOMNode,
   SyntheticDOMElement,
+  MarkupExpressionKind,
   SyntheticHTMLElement,
   findMarkupExpression,
+  
+  fitlerMarkupExpressions,
   MarkupNodeExpression,
+  MarkupTextExpression,
   formatMarkupExpression,
   SyntheticDOMElementEdit,
   MarkupElementExpression,
@@ -29,8 +36,10 @@ import {
   SyntheticDOMElementMutationTypes,
   SyntheticDOMContainerMutationTypes,
   SyntheticDOMValueNodeMutationTypes,
+  ElementTextContentMimeTypeProvider,
 } from "@tandem/synthetic-browser";
 
+// TODO - replace text instead of modifying the AST
 export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
 
   [RemoveMutation.REMOVE_CHANGE](node: MarkupNodeExpression, { target }: RemoveMutation<any>) {
@@ -75,6 +84,48 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     return findMarkupExpression(root, (expression) => {
       return expression.kind === synthetic.source.kind && sourcePositionEquals(expression.location.start, synthetic.source.start)
     });
+  }
+
+  protected handleUnknownMutation(mutation: Mutation<ISyntheticObject>) {
+
+    const mstart = mutation.target.source.start;
+
+    // for now just support text nodes. However, attributes may need to be implemented here in thre future
+    const matchingTextNode = fitlerMarkupExpressions(this._rootASTNode, (expression) => {
+      const eloc = expression.location;
+      
+      // may be new -- ignore if there is no location 
+      if (!eloc) return false;
+      
+      return (mstart.line > eloc.start.line || (mstart.line === eloc.start.line && mstart.column >= eloc.start.column)) && 
+        (mstart.line < eloc.end.line || (mstart.line === eloc.end.line && mstart.column <= eloc.end.column)); 
+    }).pop() as MarkupTextExpression;
+
+    if (!matchingTextNode || matchingTextNode.kind !== MarkupExpressionKind.TEXT) {
+      return super.handleUnknownMutation(mutation);
+    }
+
+    if (!matchingTextNode.parent) return super.handleUnknownMutation(mutation);
+
+    const element = matchingTextNode.parent as MarkupElementExpression;
+    const contentMimeType = ElementTextContentMimeTypeProvider.lookup(element, this.injector);
+  
+    if (!contentMimeType) return super.handleUnknownMutation(mutation);
+
+    
+    const editorProvider = ContentEditorFactoryProvider.find(contentMimeType, this.injector);
+    if (!editorProvider) {
+      return this.logger.error(`Cannot edit ${element.nodeName}:${contentMimeType} element text content.`);
+    }
+
+    // need to add whitespace before the text node since the editor needs the proper line number in order to apply the
+    // mutation. The column number should match.
+    const lines = Array.from({ length: matchingTextNode.location.start.line - 1 }).map(() => "\n").join("");
+
+    const newTextContent = editorProvider.create(this.uri, lines + matchingTextNode.nodeValue).applyMutations([mutation]);
+
+    
+    matchingTextNode.nodeValue = newTextContent;
   }
 
   parseContent(content: string) {

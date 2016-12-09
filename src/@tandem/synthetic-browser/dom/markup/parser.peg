@@ -14,14 +14,17 @@ Start
   = Fragment
 
 Fragment
-  = nodes:(Node/TextNode)* {
+  = nodes:Node* {
     return new MarkupFragmentExpression(nodes.filter(function(node) {
       return !!node;
     }), location());
   }
 
 Node
-  = _ node:(Comment/DOCTYPE/Script/VoidElement/Element/TextNode) _ { return node; }
+  = TagNode/TextNode
+
+TagNode
+  = _ node:(Comment/DOCTYPE/Script/VoidElement/Element) _ { return node; }
 
 Comment
   = '<!--' characters:CommentCharacter* '-->' { return new MarkupCommentExpression(characters.join(''), location()); }
@@ -102,7 +105,7 @@ ElementWithoutChildNodes
   }
 
 ElementWithChildNodes
-  = startTag:ElementStart attributes:ElementAttributes _ '>' _ childNodes:Node* _ '</' endTag:Name '>' {
+  = startTag:ElementStart attributes:ElementAttributes _ '>' childNodes:Node* '</' endTag:Name '>' {
     if (startTag != endTag) {
       expected('</' + startTag + '>');
     }

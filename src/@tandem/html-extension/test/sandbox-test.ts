@@ -32,7 +32,7 @@ describe(__filename + "#", () => {
       `
     });
 
-    expect(stripNewLines(document.documentElement.outerHTML)).to.equal(`<div>hello world </div>`);
+    expect(stripNewLines(document.documentElement.outerHTML)).to.equal(`<div> hello world </div>`);
   });
 
   // TODO - order of script tags

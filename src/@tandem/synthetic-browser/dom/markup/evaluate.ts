@@ -1,3 +1,5 @@
+import sm = require("source-map");
+import { ISourcePosition } from "@tandem/common";
 import { DOMNodeType } from "./node-types";
 import { SandboxModule } from "@tandem/sandbox";
 import { SyntheticDOMNode } from "./node";
@@ -9,15 +11,38 @@ import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 
 // TODO - this needs to be async
 export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule, parentContainer?: SyntheticDOMContainer): any {
+
+
+  const source = module && module.source;
+  let smg: sm.SourceMapConsumer;
+  let fileUri: string;
+  
+  if (source) {
+    fileUri = source.uri;
+    if (source.map) {
+      smg = new sm.SourceMapConsumer(source.map);
+    }
+  }
+
   
   function linkSourceInfo(expression: IMarkupExpression, synthetic: SyntheticDOMNode) {
     synthetic.$module = module;
 
+    let euri: string = fileUri;
+    let start: ISourcePosition = expression.location.start;
+    let end: ISourcePosition = expression.location.end;
+
+    if (smg) {
+      const org = smg.originalPositionFor({ line: start.line, column: start.column - 1 });
+      start = { line: org.line, column: org.column };
+      euri  = org.source;
+      end = undefined;
+    }
+
     synthetic.$source     = {
       kind: expression.kind,
-      uri: module && module.source.uri,
-      start: expression.location.start,
-      end: expression.location.end
+      uri: euri,
+      start: start
     };
     return synthetic;
   }

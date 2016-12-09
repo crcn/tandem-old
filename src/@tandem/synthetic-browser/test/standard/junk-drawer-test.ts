@@ -58,7 +58,7 @@ describe(__filename + "#", () => {
         }, "index.js");
 
 
-        expect(window.document.body.textContent).to.equal("2");
+        expect(window.document.body.textContent).to.contain("2");
       });
 
 
@@ -71,7 +71,7 @@ describe(__filename + "#", () => {
         }, "index.js");
 
 
-        expect(window.document.body.textContent).to.equal("1");
+        expect(window.document.body.textContent).to.contain("1");
       });
     });
 
@@ -89,7 +89,7 @@ describe(__filename + "#", () => {
           `
         }, "index.html");
 
-        expect(window.document.lastChild.textContent).to.equal("1");
+        expect(window.document.lastChild.textContent).to.contain("1");
       });
 
       it("scripts.item returns the script with the matching index", async () => {
@@ -105,7 +105,7 @@ describe(__filename + "#", () => {
           `
         }, "index.html");
 
-        expect(window.document.lastChild.textContent).to.equal("b");
+        expect(window.document.lastChild.textContent).to.contain("b");
       });
     });
   });

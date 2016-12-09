@@ -105,7 +105,7 @@ describe(__filename + "#", () => {
           </html>
           `
       },
-    ],
+    ]
     
   ].forEach((changes) => {
     it(`properly diffs ${JSON.stringify(changes)}`, async () => {

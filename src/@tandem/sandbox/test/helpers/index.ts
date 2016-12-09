@@ -112,6 +112,7 @@ export class MockFileResolver implements IFileResolver {
   private _mockFiles: IMockFiles;
 
   resolve(relativePath: string, cwd: string, options?: IFileResolverOptions) {
+    relativePath = relativePath.replace("file://", "");
     return Promise.resolve([
       path.resolve(cwd || "", relativePath),
       path.join("", relativePath)

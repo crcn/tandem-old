@@ -9,6 +9,7 @@ import {
   SyntheticHTMLElement,
   MarkupMimeTypeXMLNSProvider,
   SyntheticDOMElementClassProvider,
+  ElementTextContentMimeTypeProvider,
 } from "@tandem/synthetic-browser";
 
 
@@ -35,6 +36,7 @@ export function createHTMLCoreProviders() {
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScript),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "style", SyntheticHTMLStyle),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "iframe", SyntheticIframe),
+    new ElementTextContentMimeTypeProvider("style", () => "text/css"),
 
     // TODO - move these to htmlCoreProviders
     // mime types

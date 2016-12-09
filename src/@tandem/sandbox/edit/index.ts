@@ -48,9 +48,12 @@ export abstract class BaseContentEditor<T> implements IEditor {
 
   readonly logger: Logger;
 
+  @inject(InjectorProvider.ID)
+  protected injector: Injector;
+
   protected _rootASTNode: T;
 
-  constructor(readonly fileName: string, readonly content: string) { }
+  constructor(readonly uri: string, readonly content: string) { }
 
   $didInject() {
     this._rootASTNode = this.parseContent(this.content);
@@ -65,13 +68,17 @@ export abstract class BaseContentEditor<T> implements IEditor {
         if (targetASTNode) {
           method.call(this, targetASTNode, mutation);
         } else {
-          this.logger.error(`Cannot apply edit ${mutation.type} on ${this.fileName}: AST node for synthetic object not found.`);
+          this.logger.error(`Cannot apply edit ${mutation.type} on ${this.uri}: AST node for synthetic object not found.`);
         }
       } else {
-        this.logger.warn(`Cannot apply edit ${mutation.type} on ${this.fileName}.`);
+        this.handleUnknownMutation(mutation);
       }
     }
     return this.getFormattedContent(this._rootASTNode);
+  }
+
+  protected handleUnknownMutation(mutation: Mutation<ISyntheticObject>) {
+    this.logger.warn(`Cannot apply edit ${mutation.type} on ${this.uri}.`);
   }
 
   protected abstract findTargetASTNode(root: T, target: ISyntheticObject): T;

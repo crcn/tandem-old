@@ -1,4 +1,4 @@
-import { Injector } from "@tandem/common";
+import { Injector, LogLevel } from "@tandem/common";
 import { sample, sampleSize, random } from "lodash";
 import { createTestMasterApplication } from "@tandem/editor/test";
 import { createCoreApplicationProviders } from "@tandem/core";
@@ -125,6 +125,9 @@ export const timeout = (ms = 10) => {
 
 export const loadTestBrowser = async (mockFiles: any, entryFilePath: string) => {
   const app = createTestMasterApplication({
+    log: {
+      level: LogLevel.VERBOSE
+    },
     sandboxOptions: {
       mockFiles: mockFiles
     }

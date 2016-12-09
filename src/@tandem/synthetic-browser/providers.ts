@@ -1,6 +1,6 @@
 import { SyntheticBrowser } from "./browser";
 import { RemoteBrowserService } from "./remote-browser";
-import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
+import { syntheticElementClassType, SyntheticDOMNode, MarkupElementExpression } from "./dom";
 import { Provider, Injector, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
 
 export class SyntheticDOMElementClassProvider extends Provider<syntheticElementClassType> {
@@ -35,5 +35,24 @@ export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
     const mimeType = MimeTypeProvider.lookup(path, injector);
     const provider = injector.query<MarkupMimeTypeXMLNSProvider>(this.getNamespace(mimeType));
     return provider && provider.value;
+  }
+}
+
+export type ElementTextContentMimeTypeGetter = (element: MarkupElementExpression) => string;
+
+export class ElementTextContentMimeTypeProvider extends Provider<ElementTextContentMimeTypeGetter> {
+  static readonly NS = "elementTetContentMimeTypes";
+  constructor(readonly tagName: string, readonly getter: ElementTextContentMimeTypeGetter) {
+    super(ElementTextContentMimeTypeProvider.getId(tagName.toLowerCase()), getter);
+  }
+  clone() {
+    return new ElementTextContentMimeTypeProvider(this.tagName, this.getter);
+  }
+  static getId(tagName: string) {
+    return [this.NS, tagName].join("/");
+  }
+  static lookup(element: MarkupElementExpression, injector: Injector) {
+    const provider = injector.query<ElementTextContentMimeTypeProvider>(this.getId(element.nodeName.toLowerCase()));
+    return provider && provider.getter(element);
   }
 }

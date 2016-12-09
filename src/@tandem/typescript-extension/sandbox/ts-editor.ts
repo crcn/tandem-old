@@ -11,6 +11,7 @@ import {
   SyntheticDOMElementEdit,
   SyntheticDOMContainerEdit,
   SyntheticDOMElementMutationTypes,
+  ElementTextContentMimeTypeProvider,
   SyntheticDOMContainerMutationTypes,
 } from "@tandem/synthetic-browser";
 import {
@@ -138,7 +139,7 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
   }
 
   parseContent(content: string) {
-    return ts.createSourceFile(this.fileName, content, ts.ScriptTarget.ES2016, true);
+    return ts.createSourceFile(this.uri, content, ts.ScriptTarget.ES2016, true);
   }
 
   findTargetASTNode(root: ts.Node, target: SyntheticDOMNode) {

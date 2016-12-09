@@ -143,7 +143,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
     const walk = (node: postcss.Node, index: number) => {
       if (found) return false;
-
+      
       if (this.nodeMatchesSyntheticSource(node, target.source)) {
         found = node;
         return false;

@@ -149,7 +149,7 @@ export class WelcomeComponent extends BaseApplicationComponent<{ store?: TandemS
 
       </div>
       <div className="footer">
-        <FileInputComponent accept=".tandem" label="Open existing project" onChange={this.onOpenExistingProject} />
+        <FileInputComponent accept=".tandem, .html" label="Open existing project" onChange={this.onOpenExistingProject} />
       </div>
     </div>
   }
