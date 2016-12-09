@@ -121,10 +121,6 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     // mutation. The column number should match.
     const lines = Array.from({ length: matchingTextNode.location.start.line - 1 }).map(() => "\n").join("");
 
-    // console.log(matchingTextNode.location.start);
-
-    // console.log(lines.length, "LINES", JSON.stringify(matchingTextNode.nodeValue), mutation.target.source);
-
     const newTextContent = editorProvider.create(this.uri, lines + matchingTextNode.nodeValue).applyMutations([mutation]);
 
     
