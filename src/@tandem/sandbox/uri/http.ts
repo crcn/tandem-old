@@ -30,7 +30,7 @@ export class HTTPURIProtocol extends URIProtocol {
   }
   async exists(uri: string) {
     this.logger.info(`Cannot currenty check http 404s`);
-    return false;
+    return true;
   }
   watch2(uri: string, onChange: () => any) {
     this.logger.info(`Cannot currently watch uris`);

@@ -85,6 +85,7 @@ export class LocalFileResolver extends BaseFileResolver {
       return relativePath;
     }
 
+    cwd = cwd && cwd.replace("file://", "");
     relativePath = relativePath.replace("file://", "");
 
     const { extensions, directories } = combineResoverOptions(options, {
@@ -144,6 +145,6 @@ export class LocalFileResolver extends BaseFileResolver {
 
     this.logger.debug(`Resolved ${relativePath}:${resolvedPath}`);
 
-    return resolvedPath;
+    return "file://" + resolvedPath;
   }
 }
