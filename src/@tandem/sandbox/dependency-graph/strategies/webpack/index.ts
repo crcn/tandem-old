@@ -41,7 +41,7 @@ import resolveNodeModule =  require("resolve");
 export interface IWebpackLoaderConfig {
 
   // file name test
-  test: RegExp|((filePath:string) => boolean);
+  test: RegExp|((uri:string) => boolean);
 
   // whitelist
   include: string[];
@@ -99,8 +99,8 @@ export interface IWebpackConfig {
   }
 }
 
-function testLoader(filePath: string, loader: IWebpackLoaderConfig) {
-  if (!(typeof loader.test === "function" ? loader.test(filePath) : (<RegExp>loader.test).test(filePath))) return false;
+function testLoader(uri: string, loader: IWebpackLoaderConfig) {
+  if (!(typeof loader.test === "function" ? loader.test(uri) : (<RegExp>loader.test).test(uri))) return false;
   // more here
   return true;
 }
@@ -158,7 +158,7 @@ class WebpackLoaderContext {
 
   private get module() {
     if (!this.loader.modulePath) {
-      console.log(this);
+      // console.log(this);
     }
     return require(this.loader.modulePath);
   }
@@ -222,12 +222,12 @@ class WebpackLoaderContext {
     this._dependencies = [];
   }
 
-  addDependency(filePath) {
-    this._dependencies.push(filePath);
+  addDependency(uri) {
+    this._dependencies.push(uri);
   }
 
-  dependency(filePath) {
-    return this.addDependency(filePath);
+  dependency(uri) {
+    return this.addDependency(uri);
   }
 
   resolve(cwd: string, relativePath: string, callback: (err, result?) => any) {
@@ -318,7 +318,7 @@ function parserLoaderOptions(moduleInfo: string, hasFile: boolean = false): IWeb
 
   const options: IWebpackLoaderOptions = {
     disablePreloaders: /^-?!/.test(moduleInfo),
-    disableAllLoaders: /^(-|!)!/.test(moduleInfo), // !!raw!filePath
+    disableAllLoaders: /^(-|!)!/.test(moduleInfo), // !!raw!uri
     loaders: (moduleInfo.length ? loaderParts : []).map((loaderName) => {
       const [moduleName, query] = loaderName.split("?");
       return {

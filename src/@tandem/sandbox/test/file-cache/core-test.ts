@@ -72,7 +72,7 @@ describe(__filename + "#", () => {
       const { fileProtocol, fileCache } = createSandboxSingletons({
         "entry.js": "a"
       });
-      const item = await fileCache.item("entry.js");
+      const item = await fileCache.item("file://entry.js");
       const mtime = item.sourceModifiedAt;
 
       return new Promise((resolve) => {

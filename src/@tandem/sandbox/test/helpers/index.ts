@@ -65,19 +65,13 @@ export class MockFileURIProtocol extends URIProtocol {
     this._watchers2 = {};
   }
 
-  readDirectory(directoryPath: string): ReadableStream<any> {
-    return new ReadableStream({
-      start(controller) {
-        controller.close();
-      }
-    })
-  }
 
   exists(filePath: string): Promise<boolean> {
-    return Promise.resolve(!!this._mockFiles[filePath]);
+    return Promise.resolve(!!this._mockFiles[this.removeProtocol(filePath)]);
   }
 
-  read(filePath: string): Promise<any> {
+  read(uri: string): Promise<any> {
+    const filePath = this.removeProtocol(uri);
     const content = this._mockFiles[filePath];
     return new Promise((resolve, reject) => {
 
@@ -86,12 +80,13 @@ export class MockFileURIProtocol extends URIProtocol {
         if (content) {
           resolve(content);
         } else {
-          reject(new Error(`File ${filePath} not found.`));
+          reject(new Error(`Mock file ${uri} not found.`));
         }
       }, 5);
     });
   }
-  write(filePath: string, content: string): Promise<void> {
+  write(uri: string, content: string): Promise<void> {
+    const filePath = this.removeProtocol(uri);
 
     this._mockFiles[filePath] = content;
 
@@ -101,7 +96,8 @@ export class MockFileURIProtocol extends URIProtocol {
 
     return Promise.resolve();
   }
-  watch2(filePath: string, onChange: Function): IDisposable {
+  watch2(uri: string, onChange: Function): IDisposable {
+    const filePath = this.removeProtocol(uri);
     this._watchers2[filePath] = onChange;
     return {
       dispose: () => {

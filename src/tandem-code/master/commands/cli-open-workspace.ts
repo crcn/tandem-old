@@ -1,45 +1,45 @@
-import fs =  require("fs");
 import path =  require("path");
 import glob =  require("glob");
+import { inject } from "@tandem/common";
+import { URIProtocolProvider } from "@tandem/sandbox";
 import {  BaseStudioMasterCommand } from "./base";
 import { OpenNewWorkspaceRequest } from "tandem-code/common";
 
-function fileExists(filePath: string) {
-  return fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
-}
 
 export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
-  execute(): any {
-    let filePath = this.config.argv._[0];
+
+  
+  async execute() {
+    let uri = this.config.argv._[0];
+    const protocol = URIProtocolProvider.lookup(uri, this.injector);
 
     // scan the CWD for any tandem files
-    if (filePath != null && !fileExists(filePath)) {
+    if (uri != null && !(await protocol.exists(uri))) {
 
-      filePath = filePath.replace(/^\./, process.cwd()).replace(/^~/, process.env.HOME);
+      uri = uri.replace(/^\./, process.cwd()).replace(/^~/, process.env.HOME);
 
-      if (!fileExists(filePath)) {
-        filePath = glob.sync(path.join(filePath, `{${this.config.projectFileExtensions.map(ext => `*.${ext}`).join(",")}}`)).find((filePath) => {
+      if (!(await protocol.exists(uri))) {
+        uri = glob.sync(path.join(uri, `{${this.config.projectFileExtensions.map(ext => `*.${ext}`).join(",")}}`)).find((uri) => {
           return true;
         });
       }
     }
 
-
     // open new workspace anyways -- the user will be prompted to open a file from there
-    if (!filePath) {
+    if (!uri) {
       return this.bus.dispatch(new  OpenNewWorkspaceRequest(undefined));
     }
-
-    if (filePath.substr(0, 1) !== "/") {
-      filePath = path.join(process.cwd(), filePath);
+      
+    if (uri.substr(0, 1) !== "/" && !/\w+:\/\//.test(uri)) {
+      uri = path.join(process.cwd(), uri);
     }
 
-    if (!fileExists(filePath)) {
-      this.logger.error(`Cannot open ${filePath}: File does not exist.`);
+    if (!(await protocol.exists(uri))) {
+      this.logger.error(`Cannot open ${uri}: File does not exist.`);
       return;
     }
 
-    return this.bus.dispatch(new OpenNewWorkspaceRequest(filePath));
+    return this.bus.dispatch(new OpenNewWorkspaceRequest(uri));
   }
 } 
 

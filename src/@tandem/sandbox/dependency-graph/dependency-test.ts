@@ -66,7 +66,7 @@ describe(__filename + "#", () => {
   }
   it("Can load a dependency", async () => {
     const dep = createMockDependency({
-      filePath: "a"
+      uri: "a"
     }, { "a": { content: "blarg" } });
     await dep.load();
     expect(dep.content).to.equal("blarg");
@@ -75,7 +75,7 @@ describe(__filename + "#", () => {
   it("Can reload a dependency if an error is thrown during load", async () => {
     let depa = { throwError: false, content: "something" };
     const dep = createMockDependency({
-      filePath: "a"
+      uri: "a"
     }, { "a": depa });
     depa.throwError = true;
 
@@ -109,7 +109,7 @@ describe(__filename + "#", () => {
     let depc;
 
     const dep = createMockDependency({
-      filePath: "a"
+      uri: "a"
     }, {
       a: {
         content: "aa",
@@ -149,7 +149,7 @@ describe(__filename + "#", () => {
   it("emits a DEPENDENCY_LOADED action even when load() is called multiple times", async () => {
     let i = 0;
     const dep = createMockDependency({
-      filePath: "a"
+      uri: "a"
     }, { a: { content: "aa" }});
     dep.observe({
       dispatch: (action) => action.type === DependencyEvent.DEPENDENCY_LOADED ? i++ : 0

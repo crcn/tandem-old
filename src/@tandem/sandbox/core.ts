@@ -12,13 +12,14 @@ import {
   ProtocolURLResolverProvider,
 } from "./providers";
 
-import { HTTPURIProtocol, URIProtocolProvider } from "./uri";
+import { HTTPURIProtocol, URIProtocolProvider, DataURIProtocol } from "./uri";
 
 export function createSandboxProviders(fileResoverClass?: { new(): IFileResolver }) {
   return [
     // new FileSystemProvider(fileSystemClass || (ENV_IS_NODE ?  LocalFileSystem : RemoteFileSystem)),
     new FileResolverProvider(fileResoverClass || (ENV_IS_NODE ? LocalFileResolver : RemoteFileResolver)),
     new FileCacheProvider(FileCache),
+    new URIProtocolProvider("data", DataURIProtocol),
     new URIProtocolProvider("file", FileURIProtocol),
     new URIProtocolProvider("http", HTTPURIProtocol),
     new URIProtocolProvider("https", HTTPURIProtocol),

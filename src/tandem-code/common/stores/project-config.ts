@@ -25,13 +25,13 @@ export interface IModulePreview {
 }
 
 export class ProjectFileHandler implements IProjectConfigFileHandlerOptions {
-  readonly test: (filePath: string) =>  boolean;
+  readonly test: (uri: string) =>  boolean;
   readonly dependencyGraph: { strategy: IDependencyGraphStrategyOptions };
   readonly createPreview: (options: { uri: string }) => { uri: string, content: string };
 
   constructor({ test, createPreview, dependencyGraph }: IProjectConfigFileHandlerOptions) {
     if (test instanceof RegExp) {
-      this.test = filePath => test.test(filePath);
+      this.test = uri => test.test(uri);
     } else {
       this.test = test;
     }

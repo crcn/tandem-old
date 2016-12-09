@@ -31,6 +31,6 @@ export class FileCacheProtocol extends URIProtocol {
   }
 
   _find(uri: string) {
-    return this._fileCache.collection.loadItem({ filePath: this.removeProtocol(uri) });
+    return this._fileCache.collection.loadItem({ sourceUri: this.removeProtocol(uri) });
   }
 }

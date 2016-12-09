@@ -74,11 +74,11 @@ export class FileCache extends Observable {
 
   item = memoize(async (sourceUri: string): Promise<FileCacheItem> => {
     if (sourceUri == null) throw new Error(`File path must not be null or undefined`);
-    return this.collection.find((entity) => entity.sourceUri === sourceUri) || await this.collection.loadOrInsertItem({ sourceUri },{
+    return this.collection.find((entity) => entity.sourceUri === sourceUri) || await this.collection.loadOrInsertItem({ sourceUri }, {
       sourceUri: sourceUri,
       contentUri: sourceUri
     });
-  }, { promise: true }) as (filePath) => Promise<FileCacheItem>;
+  }, { promise: true }) as (uri) => Promise<FileCacheItem>;
 
   /**
    * Synchronizes the file cache DS with the file system. This is intended

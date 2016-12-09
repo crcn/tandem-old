@@ -28,12 +28,13 @@ export class FileCacheSynchronizer {
     diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
       visitInsert: async ({ index, value }) => {
 
+        if (!value) return;
+
         const protocol = URIProtocolProvider.lookup(value, this._injector);
 
         try {
-
-          if (!/^\w+:\/\//.test(value) && (await protocol.exists(value))) {
-            this._watchers[value] = protocol.watch(value, this.onLocalFindChange.bind(this, value));
+          if (await protocol.exists(value)) {
+            this._watchers[value] = protocol.watch(value, this.onURISourceChange.bind(this, value));
           }
         } catch(e) {
           this.logger.error(e.stack);
@@ -46,16 +47,16 @@ export class FileCacheSynchronizer {
     });
   }
 
-  private async onLocalFindChange(filePath: string) {
-    const entity = await this._cache.item(filePath);
+  private async onURISourceChange(uri: string) {
+    const entity = await this._cache.item(uri);
 
-    this.logger.debug(`${filePath} changed, updating cache.`);
+    this.logger.debug(`${uri} changed, updating cache.`);
 
     // just set the timestamp instead of checking lstat -- primarily
     // to ensure that this class works in other environments.
     entity.sourceModifiedAt = Date.now();
 
     // override any data urls that might be stored on the entity
-    entity.setContentUri(`file://${filePath}`).save();
+    entity.setContentUri(uri).save();
   }
 }

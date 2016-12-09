@@ -38,7 +38,7 @@ let _i = 0;
 // TODO - filePath should be sourceUrl to enable different protocols such as urls
 export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
-  readonly idProperty = "filePath";
+  readonly idProperty = "sourceUri";
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;

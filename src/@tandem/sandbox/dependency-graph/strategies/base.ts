@@ -59,7 +59,7 @@ export interface IDependencyGraphStrategy {
   /**
    * Returns where the target file path is and how it should be loaded. Examples
    *
-   * strategy.resolve('text!./filePath.txt', 'src/content') // { filePath: src/content/filePath.txt, loaderOptions: ['text'] }
+   * strategy.resolve('text!./uri.txt', 'src/content') // { uri: src/content/uri.txt, loaderOptions: ['text'] }
    */
 
   resolve(uri: string, origin: string): Promise<IResolvedDependencyInfo>;

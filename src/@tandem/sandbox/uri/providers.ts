@@ -24,14 +24,18 @@ export class URIProtocolProvider implements IProvider {
     return this._value || (this._value = this.owner.inject(new this.clazz())); 
   }
 
-  static lookup(url: string, injector: Injector) {
+  static lookup(uri: string, injector: Injector) {
 
-    // no protocol - it's a file
-    if (url.indexOf(":") === -1) {
-      url = "file://" + url;
+    if (!uri) {
+      console.error(new Error().stack);
     }
 
-    const protocol = url.split(":")[0];
+    // no protocol - it's a file
+    if (uri.indexOf(":") === -1) {
+      uri = "file://" + uri;
+    }
+
+    const protocol = uri.split(":")[0];
 
     const provider = injector.query<URIProtocolProvider>(this.getId(protocol));
     return provider && provider.value;
