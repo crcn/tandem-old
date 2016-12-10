@@ -1,6 +1,6 @@
 import { uniq, values, camelCase, debounce } from "lodash";
 import { SyntheticCSSStyleGraphics, SyntheticCSSElementStyleRuleMutationTypes } from "@tandem/synthetic-browser";
-import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject, diffArray } from "@tandem/common";
+import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject, diffArray, Mutation } from "@tandem/common";
 import { SyntheticCSSElementStyleRule, SyntheticHTMLElement, SyntheticDocument, eachInheritedMatchingStyleRule, isInheritedCSSStyleProperty, SyntheticCSSStyle, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ApplyFileEditRequest, IContentEdit } from "@tandem/sandbox";
 import { CallbackDispatcher, IMessage } from "@tandem/mesh";
@@ -33,6 +33,7 @@ export class MergedCSSStyleRule extends Observable {
   private _graphics: SyntheticCSSStyleGraphics;
   private _documentObserver: CallbackDispatcher<any, any>;
   private _document: SyntheticDocument;
+  private _queuedEditMutations: Array<Mutation<MatchedCSSStyleRuleType>>;
 
   @bindable(true)
   @bubble()
@@ -49,6 +50,7 @@ export class MergedCSSStyleRule extends Observable {
 
   constructor(readonly target: SyntheticHTMLElement) {
     super();
+    this._queuedEditMutations = [];
     this._style = new SyntheticCSSStyle();
     this._documentObserver = new CallbackDispatcher(this._onDocumentEvent.bind(this));
     this.reset();
@@ -136,7 +138,7 @@ export class MergedCSSStyleRule extends Observable {
   setSelectedStyleProperty(name: string, value: string) {
     const target = this.getTargetRule(name);
     this.selectedStyleRule = undefined;
-
+    
     // need to perform diff since setting the style may mutate other parts
     // of the object (such as attributes)
 
@@ -156,11 +158,38 @@ export class MergedCSSStyleRule extends Observable {
     }
 
     const edit = clone.createEdit().fromDiff(model);
+
     
     if (edit.mutations.length) {
-      this._bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+      this._queuedEditMutations.push(...(edit.mutations as any));
     }
+
+    this.requestFlushEdits();
   }
+
+  requestFlushEdits = debounce(() => {
+    const editsByTarget = {};
+    const mutations = [];
+    
+    for (let i = this._queuedEditMutations.length; i--;) {
+      const mutation = this._queuedEditMutations[i];
+      if (!editsByTarget[mutation.target.uid]) editsByTarget[mutation.target.uid] = {};
+
+      // take only the most recent
+      if (mutation instanceof PropertyMutation) {
+        if (!editsByTarget[mutation.target.uid][mutation.name]) {
+          editsByTarget[mutation.target.uid][mutation.name] = true;
+          mutations.unshift(mutation);
+        }
+      } else {
+        mutations.unshift(mutation);
+      }
+    }
+
+    this._queuedEditMutations = [];
+    
+    this._bus.dispatch(new ApplyFileEditRequest(mutations));
+  }, 500) 
 
   computeStyle() {
 

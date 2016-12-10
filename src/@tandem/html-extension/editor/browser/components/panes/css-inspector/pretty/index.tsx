@@ -221,9 +221,7 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
       <hr />
 
       <BackgroundsSectionComponent rule={rule} graphics={graphics} />
-
       <BoxShadowsSectionComponent rule={rule} graphics={graphics} />
-
       <FilterSectionComponent rule={rule} graphics={graphics} />
 
       { this.renderAnimations() }
