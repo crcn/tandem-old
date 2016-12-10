@@ -105,13 +105,30 @@ describe(__filename + "#", () => {
           </html>
           `
       },
+      { 
+        "index.html": `
+          <html lang="en">
+            <head>
+              <link rel="stylesheet" href="./index.css">
+              <meta charset="utf-8">
+              <style>
+                html, body {
+                  color: red;
+                }
+              </style>
+            </head>
+            <body>
+              Hola Mundo!!
+            </body>
+          </html>
+          `
+      },
     ]
     
   ].forEach((changes) => {
     it(`properly diffs ${JSON.stringify(changes)}`, async () => {
       
       let clone: SyntheticDocument;    
-
 
       const browser = await loadTestBrowser(changes.shift(), "index.html");
 

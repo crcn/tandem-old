@@ -99,8 +99,8 @@ export namespace SyntheticDocumentMutationTypes {
 })
 export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDocument> {
 
-  addStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
-    return this.addChange(new InsertChildMutation(SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet));
+  addStyleSheet(stylesheet: SyntheticCSSStyleSheet, index?: number) {
+    return this.addChange(new InsertChildMutation(SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT, this.target, stylesheet, index));
   }
 
   removeStyleSheet(stylesheet: SyntheticCSSStyleSheet) {
@@ -123,11 +123,9 @@ export class SyntheticDocumentEdit extends SyntheticDOMContainerEdit<SyntheticDo
       return Math.abs(oldStyleSheet.cssText.length - newStyleSheet.cssText.length);
     }).accept({
       visitInsert: ({ index, value }) => {
-        this.addStyleSheet(value);
+        this.addStyleSheet(value, index);
       },
       visitRemove: ({ index }) => {
-        // console.log(this.target.styleSheets.map(ss => ss.cssText));
-        // console.log("REMOVING", index, this.target.styleSheets[index].cssText);
         this.removeStyleSheet(this.target.styleSheets[index]);
       },
       visitUpdate: ({ originalOldIndex, patchedOldIndex, newValue, index }) => {

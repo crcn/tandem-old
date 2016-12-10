@@ -63,7 +63,11 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
       visitAttribute({ name, value, location }: MarkupAttributeExpression) {
 
         if (/src|href/.test(name) && !hasProtocol(value)) {
-          value = dirname + "/" + value;
+          if (value.charAt(0) === "/") {
+            value = "file://" + value;
+          } else {
+            value = dirname.replace(/^\w+:\/\//g, "") + "/" + value;
+          }
           if (!hasProtocol(value)) {
             value = "file://" + value;
           }

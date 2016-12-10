@@ -148,6 +148,7 @@ CORE
   - [ ] *wait for all XHR requests to be completed before sending diff - (flickering otherwise)
   - [ ] config for scanning application for components
   - [ ] support css imports
+  - [ ] Style declaration should use CWD in urls when stringifying
   - [ ] ability to dynamically add dependencies to the dependency graph -- required for stuff like systemjs.
 
 - [ ] Editor
