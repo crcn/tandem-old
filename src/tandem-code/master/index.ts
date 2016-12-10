@@ -7,7 +7,7 @@ import { EditorFamilyType } from "@tandem/editor/common";
 import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
 import { createCoreStudioWorkerProviders } from "../worker";
-import { createCommonEditorProviders, IEditorCommonConfig } from "@tandem/editor/common";
+import { createCommonEditorProviders, IEditorCommonConfig, SaveAllRequest } from "@tandem/editor/common";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension/core";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 
@@ -16,6 +16,7 @@ import {
   HandlePingCommand,
   AutoUpdateCommand,
   SpawnWorkerCommand, 
+  SaveAllFilesCommand,
   InitSettingsCommand,
   OpenTextFileCommand,
   StartProjectCommand,
@@ -24,6 +25,7 @@ import {
   SelectDirectoryCommand,
   OpenNewWorkspaceCommand,
   CLIOpenWorkspaceCommand,
+  ResolveWorkspaceURICommand,
   CreateTempWorkspaceCommand,
   InstallShellCommandsCommand,
   InitSettingsDirectoryCommand,
@@ -42,6 +44,7 @@ import {
   StartNewProjectRequest,
   SelectDirectoryRequest,
   OpenNewWorkspaceRequest,
+  ResolveWorkspaceURIRequest,
   GetProjectStartOptionsRequest,
   InstallCommandLineToolsRequest,
   CreateTemporaryWorkspaceRequest,
@@ -103,7 +106,9 @@ export const initializeMaster = async () => {
     new ApplicationServiceProvider("browser", BrowserService),
     
     // commands
+    new CommandFactoryProvider(ResolveWorkspaceURIRequest.RESOLVE_WORKSPACE_URI, ResolveWorkspaceURICommand),
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
+    new CommandFactoryProvider(SaveAllRequest.SAVE_ALL, SaveAllFilesCommand),
     new CommandFactoryProvider(CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE, CreateTempWorkspaceCommand),
     new CommandFactoryProvider(InstallCommandLineToolsRequest.INSTALL_COMMAND_LINE_TOOLS, InstallShellCommandsCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsDirectoryCommand),

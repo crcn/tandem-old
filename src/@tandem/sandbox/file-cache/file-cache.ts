@@ -4,14 +4,34 @@ import { FileCacheSynchronizer } from "./synchronizer";
 import {
   inject,
   Injector,
-  Observable,
   IBrokerBus,
+  Observable,
   InjectorProvider,
   PrivateBusProvider,
   ActiveRecordCollection,
 } from "@tandem/common";
 
+import { WritableStream, DSFindRequest } from "@tandem/mesh";
+
 import { FileCacheItem, IFileCacheItemData, createDataUrl } from "./item";
+
+export const FILE_CACHE_COLLECTION_NAME = "fileCache";
+
+
+export const getAllUnsavedFiles = (injector: Injector) => {
+  return new Promise<FileCacheItem[]>((resolve, reject) => {
+    const chunks: IFileCacheItemData[] = [];
+    PrivateBusProvider.getInstance(injector).dispatch(new DSFindRequest(FILE_CACHE_COLLECTION_NAME, { synchronized: false }, true)).readable.pipeTo(new WritableStream<IFileCacheItemData>({
+      write(chunk) {
+        chunks.push(chunk);
+      },
+      close() {
+        resolve(chunks.map((item) => injector.inject(new FileCacheItem(item, FILE_CACHE_COLLECTION_NAME))))
+      },
+      abort: reject
+    }));
+  })
+}
 
 // TODO - move a lot of this logic to ActiveRecordCollection
 // TODO - remove files here after TTL
@@ -47,7 +67,7 @@ export class FileCache extends Observable {
   }
 
   get collectionName() {
-    return "fileCache";
+    return FILE_CACHE_COLLECTION_NAME;
   }
 
   /**

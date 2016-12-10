@@ -117,6 +117,7 @@ export class SelectAllRequest extends CoreEvent {
   }
 }
 
+
 export class ToggleSelectRequest extends SelectRequest {
   constructor(items = undefined, keepPreviousSelection: boolean = false) {
     super(items, keepPreviousSelection, true);

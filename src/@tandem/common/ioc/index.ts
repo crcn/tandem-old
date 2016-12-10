@@ -92,11 +92,13 @@ export class InjectorProvider extends Provider<Injector> {
 /**
  */
 
+let i = 0;
+
 export class CommandFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "commands";
   readonly actionFilter: Function;
   constructor(actionFilter: string|Function, readonly clazz: { new(...rest: any[]): ICommand }) {
-    super([CommandFactoryProvider.NS, clazz.name].join("/"), clazz);
+    super([CommandFactoryProvider.NS, i++].join("/"), clazz);
     if (typeof actionFilter === "string") {
       this.actionFilter = (action: IMessage) => action.type === actionFilter;
     } else {

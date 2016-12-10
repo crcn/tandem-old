@@ -14,12 +14,15 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] config element for CLI <config><script>SCRIPT</script></config>
-- [ ] welcome to tandem
+- [ ] Save all command
+- [ ] open command
+- [ ] ability to select unsaved files
+- [ ] welcome to tandem video
 - [ ] bark for unsaved changes
 - [ ] launch checklist
 - [ ] wire up auto updater
 - [ ] Logo
+
 
 - test
   - https://github.com/facebookincubator/create-react-app

@@ -19,6 +19,7 @@ export interface IFileCacheItemData {
   _id?: string;
   sourceUri: string;
   contentUri: string;
+  synchronized?: boolean
   sourceModifiedAt?: number;
   updatedAt?: number;
   metadata?: Object;
@@ -64,6 +65,10 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     super(source, collectionName);
     this.observe(new CallbackDispatcher(this.onAction.bind(this)));
   }
+  
+  get synchronized() {
+    return this.sourceUri === this.contentUri;
+  }
 
   serialize() {
     return {
@@ -71,6 +76,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
       sourceUri  : this.sourceUri,
       sourceModifiedAt: this.sourceModifiedAt,
       contentUri  : this.contentUri,
+      synchronized : this.synchronized, 
       metadata    : this.metadata.data
     };
   }

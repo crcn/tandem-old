@@ -14,8 +14,9 @@ import { TandemStudioBrowserStore } from "./stores";
 import { InstallCommandLineToolsRequest } from "tandem-code/common";
 
 import { 
-  WebMenuItem, 
   SettingKeys,
+  WebMenuItem, 
+  SaveAllRequest,
   createWebMenuItemClass, 
   ToggleStageToolsRequest,
   createMenuSeparatorClass, 
@@ -27,6 +28,8 @@ import {
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
 import { TandemStudioBrowserStoreProvider } from "./providers";
+
+import { OpenRequest } from "./messages";
 
 import { 
   Injector, 
@@ -55,6 +58,7 @@ import {
 import {StudioRouteNames } from "./constants";
 import { WelcomeComponent } from "./components";
 import { 
+  OpenCommand,
   SetMenuCommand,
   LoadHelpOptionsCommad,
   LoadStartOptionsCommand, 
@@ -91,7 +95,6 @@ function createMenuProviders() {
     ...createWorkspaceMenuProviders(),
     ...createWelcomeMenuProviders(),
 
-
     new WebMenuItemFactoryProvider("help", (parent: WebMenuItem) => parent.root === parent, createWebMenuItemClass(undefined, "help")),
 
  ];
@@ -110,6 +113,10 @@ function createWorkspaceMenuProviders() {
   ];
 
   return [
+    new WebMenuItemFactoryProvider("file", EditorRouteNames.WORKSPACE, createWebMenuItemClass("File")),
+    new WebMenuItemFactoryProvider("open", "file", createKeyCommandMenuItemClass("Open", "CmdOrCtrl+o", OpenRequest)),
+    new WebMenuItemFactoryProvider("saveAll", "file", createKeyCommandMenuItemClass("Save All", "Alt+CmdOrCtrl+s", SaveAllRequest)),
+
     new WebMenuItemFactoryProvider("edit", EditorRouteNames.WORKSPACE, createWebMenuItemClass("Edit")),
     // new WebMenuItemFactoryProvider("undo", "edit", createKeyCommandMenuItemClass("Zoom In", "CmdOrCtrl+plus", ZoomInRequest)),
     // new WebMenuItemFactoryProvider("redo", "edit", createKeyCommandMenuItemClass("Zoom In", "CmdOrCtrl+plus", ZoomInRequest)),
@@ -143,6 +150,7 @@ function createWelcomeMenuProviders() {
 const injector = new Injector(
 
   // Commands
+  new CommandFactoryProvider(OpenRequest.OPEN, OpenCommand),
   new CommandFactoryProvider(ApplicationReadyMessage.READY, InitializeWelcomePageCommand),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadHelpOptionsCommad),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadStartOptionsCommand),

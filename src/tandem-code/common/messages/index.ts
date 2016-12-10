@@ -41,6 +41,20 @@ export class GetProjectStartOptionsRequest implements IMessage {
   }
 }
 
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class ResolveWorkspaceURIRequest implements IMessage {
+  static readonly RESOLVE_WORKSPACE_URI: string = "resolveWorkspaceUri";
+  readonly type = ResolveWorkspaceURIRequest.RESOLVE_WORKSPACE_URI;
+  constructor(readonly uri: string) {
+
+  }
+
+  static async dispatch(uri: string, bus: IBus<any>): Promise<string> {
+    return (await readOneChunk(bus.dispatch(new ResolveWorkspaceURIRequest(uri)))).value;
+  }
+}
+
 @setMessageTarget(EditorFamilyType.MASTER)
 export class StartNewProjectRequest implements IMessage {
   static readonly START_NEW_PROJECT: string = "startNewProject";

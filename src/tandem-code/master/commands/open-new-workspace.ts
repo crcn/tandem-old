@@ -3,21 +3,13 @@ import { MimeTypeProvider } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE } from "@tandem/tdproject-extension/constants";
 import { BrowserWindow } from "electron";
 import { BaseStudioMasterCommand } from "./base";
-import { OpenNewWorkspaceRequest, CreateTemporaryWorkspaceRequest } from "tandem-code/common";
+import { OpenNewWorkspaceRequest, CreateTemporaryWorkspaceRequest, ResolveWorkspaceURIRequest } from "tandem-code/common";
 
 export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
-  execute({ uri }: OpenNewWorkspaceRequest) {
+  async execute({ uri }: OpenNewWorkspaceRequest) {
     this.logger.info(`Opening workspace: ${uri}`);
-    
-    if (uri && MimeTypeProvider.lookup(uri, this.injector) !== TDPROJECT_MIME_TYPE) {
-      return this.createAndOpenTandemWorkspaceFile(uri);
-    } 
 
-    this.openTandemWorkspaceFile(uri);
-  }
-
-  async createAndOpenTandemWorkspaceFile(uri: string) {
-    this.openTandemWorkspaceFile(await CreateTemporaryWorkspaceRequest.dispatch(uri, this.bus));
+    this.openTandemWorkspaceFile(await ResolveWorkspaceURIRequest.dispatch(uri, this.bus));
   }
 
   openTandemWorkspaceFile(uri: string) {

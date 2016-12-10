@@ -26,13 +26,14 @@ const plugins = [
   new webpack.DefinePlugin({
 
     // required for mongoid-js plugin particularly
-    'process.pid': process.pid
+    'process.pid': process.pid,
+    'process.env.DEV': process.env.DEV
   }),
   new WebpackNotifierPlugin({
     excludeWarnings: true,
     alwaysNotify: true
   }),
-  new ExtractTextPlugin('styles.css')
+  new ExtractTextPlugin('styles.css'),
 ];
 
 const SM_QUERY_PARAM = SOURCE_MAPS ? "?sourceMap" : "";

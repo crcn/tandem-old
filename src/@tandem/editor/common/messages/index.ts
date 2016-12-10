@@ -75,14 +75,14 @@ setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ResolveFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
 
-setMessageTarget(EditorFamilyType.WORKER)(DSFindRequest);
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(DSFindRequest))
 setMessageTarget(EditorFamilyType.WORKER)(DSUpsertRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSInsertRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSRemoveRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSUpdateRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSFindAllRequest);
 
-addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
+addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.BROWSER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
 
 
 @addMessageVisitor(EditorFamilyType.BROWSER)
@@ -104,6 +104,15 @@ export class OpenFileRequest extends CoreEvent {
   static dispatch(uri: string, selection: ISyntheticSourceInfo, bus: IStreamableDispatcher<any>) {
     // TODO - RESOLVE HERE
     return bus.dispatch(new OpenFileRequest(uri, selection));
+  }
+}
+
+@addMessageVisitor(EditorFamilyType.WORKER)
+@setMessageTarget(EditorFamilyType.MASTER)
+export class SaveAllRequest extends CoreEvent {
+  static readonly SAVE_ALL = "saveAll";
+  constructor() {
+    super(SaveAllRequest.SAVE_ALL);
   }
 }
 

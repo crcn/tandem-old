@@ -13,3 +13,5 @@ export * from "./init-settings";
 export * from "./auto-update";
 export * from "./install-shell-commands";
 export * from "./create-temp-workspace";
+export * from "./save-all-files";
+export * from "./resolve-workspace-uri";

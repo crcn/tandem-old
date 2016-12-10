@@ -75,11 +75,11 @@ export class EntityPaneComponentFactoryProvider extends ReactComponentFactoryPro
 
 export class DocumentPaneComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS = "components/panes/document";
-  constructor(readonly name: string, readonly componentClass: any) {
-    super(DocumentPaneComponentFactoryProvider.getId(name), componentClass);
+  constructor(readonly name: string, readonly componentClass: any, readonly priority?: number) {
+    super(DocumentPaneComponentFactoryProvider.getId(name), componentClass, priority);
   }
   clone() {
-    return new DocumentPaneComponentFactoryProvider(this.name, this.componentClass);
+    return new DocumentPaneComponentFactoryProvider(this.name, this.componentClass, this.priority);
   }
   static getId(name) {
     return [DocumentPaneComponentFactoryProvider.NS, name].join("/");

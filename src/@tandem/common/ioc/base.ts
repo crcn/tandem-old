@@ -37,11 +37,16 @@ export interface IProvider extends ICloneable {
    */
 
   clone(): IProvider;
+
+  /**
+   */
+
+  readonly priority?: number;
 }
 
 export class Provider<T> implements IProvider {
   public owner: Injector;
-  constructor(readonly id: string, public value: T, readonly overridable: boolean = true) { }
+  constructor(readonly id: string, public value: T, readonly overridable: boolean = true, readonly priority?: number) { }
 
   /**
    * Clones the dependency - works with base classes.
@@ -225,6 +230,10 @@ export class Injector implements ICloneable {
         }
 
         this._providersByNs[ns].push(dependency);
+
+        this._providersByNs[ns] = this._providersByNs[ns].sort((a, b) => {
+          return a.priority === b.priority ? 0 : a.priority > b.priority ? -1 : 1; 
+        })
       }
     }
 
