@@ -41,7 +41,7 @@ const tsLoaders = [];
 const pegLoaders = [];
 const loaders = [];
 
-if (SANDBOXED) {
+if (SANDBOXED && false) {
   tsLoaders.push(join(__dirname, '/../../out/tandem-loader'));
 }
 

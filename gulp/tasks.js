@@ -130,6 +130,7 @@ gulp.task('build:electron:package', () => {
 
   const version = electronPackage.electronVersion;
   const platform = process.platform;
+  const productName = electronPackage.productName;
   const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
   
   const token = process.env.GITHUB_TOKEN;
@@ -137,7 +138,7 @@ gulp.task('build:electron:package', () => {
   console.log(`electron version: ${version}; platform: ${platform}; arch: ${arch}`);
 
   let stream = gulp.src(join(getElectronBundleDir(), "**"))
-  .pipe(electron({ version, platform, arch, token }))
+  .pipe(electron({ version, platform, arch, token, productName }))
 
   if (process.env.SYMDEST) {
     stream = stream.pipe(symdest(join(getElectronBundleDir(), "app")));

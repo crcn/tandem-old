@@ -17,6 +17,9 @@ resolve UX. May want to optimize experience around writing code.
 - [ ] config element for CLI <config><script>SCRIPT</script></config>
 - [ ] welcome to tandem
 - [ ] bark for unsaved changes
+- [ ] launch checklist
+- [ ] wire up auto updater
+- [ ] Logo
 
 - test
   - https://github.com/facebookincubator/create-react-app
@@ -35,7 +38,6 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] CTA for adding files to a blank artboard
   
 - [ ] BUGS
-  - [ ] CWD not scanned
   - [ ] canvas still misalaigned
   - [ ] source maps not working with React
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
