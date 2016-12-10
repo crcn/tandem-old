@@ -14,6 +14,8 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
+- [ ] launch checklist
+- [ ] get recent file cache when switching
 - [ ] ability to select unsaved files
 - [ ] welcome to tandem video
 - [ ] bark for unsaved changes
@@ -41,6 +43,8 @@ resolve UX. May want to optimize experience around writing code.
   
 - [ ] BUGS
   - [ ] canvas still misalaigned
+  - [ ] height seems to be inherited
+    child class must contain parent class - e.g: .header .title, where .header contains the height prop 
   - [ ] source maps not working with React
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
