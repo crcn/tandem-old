@@ -39,7 +39,7 @@
       To install, search for "Tandem" in your default IDE extension pane.
     </p>
   </div>
-  <artboard src="./1-install-extension.html" title="Install IDE Extension" style=" position: absolute; width: 1440px; height: 900px; left: -3129px; top: -3277px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
+  <artboard src="./demo/index.html" title="Writing Code" style=" position: absolute; width: 1440px; height: 900px; left: -3129px; top: -3277px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
   <!-- TODO - docs for enabling source maps -->
   <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -1329px; top: -3277px; ">
     <p>

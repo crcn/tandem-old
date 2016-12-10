@@ -18,7 +18,7 @@ export class DataURIProtocol extends URIProtocol {
     // nothing for now
   }
 
-  exists(uri: string) {
+  fileExists(uri: string) {
     return Promise.resolve(!!parseDataURI(uri));
   }
 

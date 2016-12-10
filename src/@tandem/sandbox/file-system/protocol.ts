@@ -39,10 +39,13 @@ export class FileURIProtocol extends URIProtocol {
     });
   }
 
-  exists(uri: string): Promise<boolean> {
+  fileExists(uri: string): Promise<boolean> {
     const filePath = this.removeProtocol(uri);
     return new Promise((resolve) => {
-      fs.exists(filePath, resolve);
+      fs.stat(filePath, (err, stat) => {
+        if (err) return resolve(err);
+        resolve(!stat.isDirectory());
+      });
     });
   }
 

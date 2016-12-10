@@ -40,8 +40,8 @@ export function bindable(bubbles: boolean = false) {
 
   return (proto: IObservable, property: string = undefined, descriptor: PropertyDescriptor = undefined) => {
 
-    function getBindableValue(proto): BindableValue {
-      return proto[`$binding$${property}`] || (proto[`$binding$${property}`] = new BindableValue(proto, property));
+    function getBindableValue(object): BindableValue {
+      return object[`$binding$${property}`] || (object[`$binding$${property}`] = new BindableValue(object, property));
     }
 
     Object.defineProperty(proto, property, {
@@ -50,6 +50,7 @@ export function bindable(bubbles: boolean = false) {
       },
       set(newValue) {
         const bv = getBindableValue(this);
+
         const oldValue = bv.getValue();
         if (oldValue !== newValue) {
           bv.setValue(newValue);

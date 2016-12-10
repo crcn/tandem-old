@@ -33,7 +33,7 @@ export class FileCacheSynchronizer {
         const protocol = URIProtocolProvider.lookup(value, this._injector);
 
         try {
-          if (await protocol.exists(value)) {
+          if (await protocol.fileExists(value)) {
             this._watchers[value] = protocol.watch(value, this.onURISourceChange.bind(this, value));
           }
         } catch(e) {

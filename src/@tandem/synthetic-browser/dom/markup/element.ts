@@ -436,7 +436,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
           this.attributeChangedCallback(value.name, undefined, value.value);
         },
         visitRemove: ({ value, index }) => {
-          
           this.attributeChangedCallback(value.name, value.value, undefined);
         }
       });

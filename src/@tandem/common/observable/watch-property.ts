@@ -53,6 +53,12 @@ export class PropertyWatcher<T extends IObservable, U> extends Observable {
     }
   }
 
+  connectToProperty(target: any, property: string) {
+    return this.connect((newValue) => {
+      target[property] = newValue;
+    });
+  }
+
   onEvent = ({ mutation }: MutationEvent<any>) => {
     if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE && (<PropertyMutation<any>>mutation).name === this.propertyName && mutation.target === this.target) {
       const oldValue = this._currentValue;

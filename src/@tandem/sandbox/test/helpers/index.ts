@@ -65,8 +65,7 @@ export class MockFileURIProtocol extends URIProtocol {
     this._watchers2 = {};
   }
 
-
-  exists(filePath: string): Promise<boolean> {
+  fileExists(filePath: string): Promise<boolean> {
     return Promise.resolve(!!this._mockFiles[this.removeProtocol(filePath)]);
   }
 

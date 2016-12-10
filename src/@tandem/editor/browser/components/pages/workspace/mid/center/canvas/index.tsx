@@ -223,7 +223,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     }
 
     if (browser.renderer.rects) {
-      fitToCanvas();
+      setTimeout(fitToCanvas, 500);
     } else {
 
       // rects may get fired multiple times

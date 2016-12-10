@@ -11,13 +11,11 @@ Start working on UX around getting started with Tandem and projects.
 
 Messaging:
 
-No setup required.
-This is only the beginning
-
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- 
+- [ ] config element for CLI <config><script>SCRIPT</script></config>
+- [ ] welcome to tandem
 - [ ] bark for unsaved changes
 
 - test
@@ -38,7 +36,8 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] CTA for adding files to a blank artboard
   
 - [ ] BUGS
-  - [ ] source maps not working for CSS 
+  - [ ] CWD not scanned
+  - [ ] canvas still misalaigned
   - [ ] source maps not working with React
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 

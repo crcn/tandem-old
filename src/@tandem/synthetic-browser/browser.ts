@@ -193,7 +193,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   protected createSandboxGlobals(): SyntheticWindow {
-    const window = new SyntheticWindow(this.location, this, undefined);
+    const window = new SyntheticWindow(this.location.clone(), this, undefined);
     this._registerElementClasses(window.document);
     Object.assign(window, this._graph.createGlobalContext());
 

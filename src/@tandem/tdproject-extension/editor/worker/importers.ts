@@ -45,7 +45,7 @@ export class TDRootFileImporter implements IFileImporter {
 
     const previewURIProtocol = URIProtocolProvider.lookup(preview.uri, this._injector);
 
-    if (!(await previewURIProtocol.exists(preview.uri))) {
+    if (!(await previewURIProtocol.fileExists(preview.uri))) {
       await previewURIProtocol.write(preview.uri, preview.content);
       await this._bus.dispatch(new OpenFileRequest(preview.uri));
     }

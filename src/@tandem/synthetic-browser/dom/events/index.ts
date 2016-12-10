@@ -23,6 +23,12 @@ export namespace DOMEventTypes {
    */
 
   export const LOAD = "load";
+
+  /**
+   * Fired when a location object property changes
+   */
+
+  export const POP_STATE = "popState";
 }
 
 export type DOMEventListenerFunction = <T extends SyntheticDOMNode>(event: SyntheticDOMEvent<T>) => boolean|void;

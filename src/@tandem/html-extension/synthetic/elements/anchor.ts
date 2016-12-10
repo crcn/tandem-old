@@ -1,43 +1,32 @@
 import Url =  require("url");
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement, SyntheticLocation } from "@tandem/synthetic-browser";
 import { bindable, PropertyWatcher } from "@tandem/common";
 
 export class SyntheticAnchor extends SyntheticHTMLElement {
 
-  @bindable()
-  public hostname: string;
+  private _location: SyntheticLocation;
+
+  get hostname() { return this._location.hostname; }
+  set hostname(value) { this._location.hostname = value; }
+
+  get pathname() { return this._location.pathname; }
+  set pathname(value) { this._location.pathname = value; }
+
+  get port() { return this._location.port; }
+  set port(value) { this._location.port = value; }
+
+  get protocol() { return this._location.protocol; }
+  set protocol(value) { this._location.protocol = value; }
+
+  get hash() { return this._location.hash; }
+  set hash(value) { this._location.hash = value; }
+
+  get search() { return this._location.search; }
+  set search(value) { this._location.search = value; }
 
 
-  @bindable()
-  public pathname: string;
-
-  @bindable()
-  public port: string;
-
-  @bindable()
-  public protocol: string;
-
-  @bindable()
-  public hash: string;
-
-  @bindable()
-  public search: string;
-
-  private _ignoreRebuild: boolean;
-
-  get host() {
-    return this.hostname + (this.port && this.port.length ? ":" + this.port : "");
-  }
-
-  set host(value: string) {
-
-    const [hostname, port] = (value || ":").split(":");
-
-    this._ignoreRebuild = true;
-    this.hostname = hostname;
-    this._ignoreRebuild = false;
-    this.port = port;
-  }
+  get host() { return this._location.host; }
+  set host(value) { this._location.host = value; }
   
   get href() {
     return this.getAttribute("href");
@@ -49,34 +38,16 @@ export class SyntheticAnchor extends SyntheticHTMLElement {
 
   createdCallback() {
     super.createdCallback();
-    ["hostname", "pathname", "port", "protocol", "hash", "query"].forEach((part) => {
-      new PropertyWatcher(this, part).connect(this._rebuildHref);
+    this._location = new SyntheticLocation(this.href);
+    new PropertyWatcher<SyntheticLocation, string>(this._location, "href").connect((value) => {
+      this.setAttribute("href", value);
     });
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    if (name === "href") {
-      this._parseHref();
+    if (name === "href" && this._location) {
+      this._location.href = newValue;
     }
-  }
-
-  private _parseHref() {
-    this._ignoreRebuild = true;
-    const href = this.href;
-    const parts = Url.parse(href);
-    for (const key in parts) {
-      if (key === "host") continue;
-      this[key] = parts[key] || "";
-    }
-    this._ignoreRebuild = false;
-  }
-
-  private _rebuildHref = () => {
-    if (this._ignoreRebuild) return;
-    this.href = this.protocol + "//" + 
-    this.host + 
-    this.pathname + this.search + 
-    (this.hash && (this.hash.charAt(0) === "#" ? this.hash : "#" + this.hash));
   }
 }

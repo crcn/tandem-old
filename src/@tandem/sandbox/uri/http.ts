@@ -28,7 +28,7 @@ export class HTTPURIProtocol extends URIProtocol {
   async write(uri: string, content: string) {
     this.logger.info(`Cannot currenty write to uris`);
   }
-  async exists(uri: string) {
+  async fileExists(uri: string) {
     this.logger.info(`Cannot currenty check http 404s`);
     return true;
   }

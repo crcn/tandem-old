@@ -22,7 +22,7 @@ export class FileCacheProtocol extends URIProtocol {
     }
   }
 
-  async exists(uri: string) {
+  async fileExists(uri: string) {
     return !!(await this._find(uri));
   }
 

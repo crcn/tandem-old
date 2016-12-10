@@ -1,27 +1,28 @@
 import { Sandbox } from "@tandem/sandbox";
 import { bindable } from "@tandem/common/decorators";
+import { btoa, atob } from "abab"
 import { HTML_XMLNS } from "./constants";
+import { URL, FakeURL } from "./url";
+import { Blob, FakeBlob } from "./blob";
+import { SyntheticHistory } from "./history";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
+import { SyntheticCSSStyle } from "./css";
 import { SyntheticDocument } from "./document";
-import { Logger, Observable, PrivateBusProvider, PropertyWatcher } from "@tandem/common";
+import { SyntheticDOMElement } from "./markup";
 import { SyntheticHTMLElement } from "./html";
 import { SyntheticLocalStorage } from "./local-storage";
-import { SyntheticDOMElement } from "./markup";
 import { SyntheticWindowTimers } from "./timers";
-import { noopDispatcherInstance, IStreamableDispatcher } from "@tandem/mesh";
-import { SyntheticCSSStyle } from "./css";
-import { Blob, FakeBlob } from "./blob";
-import { URL, FakeURL } from "./url";
-import { btoa, atob } from "abab"
 import { bindDOMNodeEventMethods } from "./utils";
 import { SyntheticXMLHttpRequest, XHRServer } from "./xhr";
+import { Logger, Observable, PrivateBusProvider, PropertyWatcher, MutationEvent } from "@tandem/common";
+import { noopDispatcherInstance, IStreamableDispatcher, CallbackDispatcher } from "@tandem/mesh";
 import { 
+  DOMEventTypes,
+  IDOMEventEmitter,
+  SyntheticDOMEvent,
   DOMEventDispatcherMap, 
   DOMEventListenerFunction, 
-  SyntheticDOMEvent,
-  IDOMEventEmitter,
-  DOMEventTypes
 } from "./events";
 
 export class SyntheticNavigator {
@@ -90,10 +91,14 @@ export class SyntheticWindow extends Observable {
   @bindable()
   public onload: DOMEventListenerFunction;
 
+  @bindable()
+  public onpopstate: DOMEventListenerFunction;
+
   readonly document: SyntheticDocument;
   readonly window: SyntheticWindow;
 
   // TODO - need to wrap around these
+  readonly history: SyntheticHistory;
   readonly setTimeout: Function;
   readonly setInterval: Function;
   readonly setImmediate: Function;
@@ -140,7 +145,6 @@ export class SyntheticWindow extends Observable {
       }
     };
 
-
     this.self = this;
 
     this._implementation = new SyntheticDOMImplementation(this);
@@ -150,6 +154,19 @@ export class SyntheticWindow extends Observable {
     this.document = document || this._implementation.createHTMLDocument();
     this.document.$window = this;
     this.location = location || new SyntheticLocation("");
+    this.history = new SyntheticHistory(this.location.toString());
+
+    this.history.$locationWatcher.connect((newLocation) => {
+
+      // copy props over -- changing the location means a redirect.
+      this.location.$copyPropertiesFromUrl(newLocation.toString());
+    });
+
+    
+    new PropertyWatcher<SyntheticLocation, string>(this.location, "href").connect((newValue) =>  {
+      this.notify(new SyntheticDOMEvent(DOMEventTypes.POP_STATE));
+    });
+    
     this.window   = this;
     this.console  = new SyntheticConsole(
       new Logger(bus, "**VM** ")
@@ -163,7 +180,7 @@ export class SyntheticWindow extends Observable {
     this.clearInterval  = windowTimers.clearInterval.bind(windowTimers);
     this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);
 
-    bindDOMNodeEventMethods(this);
+    bindDOMNodeEventMethods(this, DOMEventTypes.POP_STATE);
   }
 
   get sandbox() {

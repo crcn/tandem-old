@@ -19,6 +19,6 @@ export const bindDOMEventMethods = (eventTypes: string[], target: Observable & I
 }
 
 
-export const bindDOMNodeEventMethods = (target: Observable & IDOMEventEmitter) => {
-  bindDOMEventMethods(["load"], target);
+export const bindDOMNodeEventMethods = (target: Observable & IDOMEventEmitter, ...additional: string[]) => {
+  bindDOMEventMethods(["load", ...additional], target);
 }

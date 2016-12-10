@@ -20,7 +20,7 @@ export abstract class URIProtocol {
 
   abstract read(uri: string): Promise<string|Buffer>;
   abstract write(uri: string, content: any): Promise<any>;
-  abstract exists(uri: string): Promise<boolean>;
+  abstract fileExists(uri: string): Promise<boolean>;
 
   watch(uri: string, onChange: () => any) {
 
