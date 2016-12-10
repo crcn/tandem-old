@@ -128,13 +128,13 @@ gulp.task('build:electron:package', () => {
 
   const appVersion = electronPackage.version;
 
-  const version = electronPackage.version;
+  const version = electronPackage.electronVersion;
   const platform = process.platform;
   const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
   
   const token = process.env.GITHUB_TOKEN;
 
-  console.log(`platform: ${platform}; arch: ${arch}`);
+  console.log(`electron version: ${version}; platform: ${platform}; arch: ${arch}`);
 
   let stream = gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ version, platform, arch, token }))

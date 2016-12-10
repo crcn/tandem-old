@@ -27,7 +27,6 @@ resolve UX. May want to optimize experience around writing code.
 - [ ] proper source mapping for html loader
 
 - [ ] Core
-  - [ ] enable history push state observations in app (test for todomvc example)
   - [ ] ensure that location changes are observable
 
 - [ ] UX
@@ -79,12 +78,7 @@ POLISH
 LAUNCHING
 ----------------------------------
 
-< BURN
-  - [ ] default project should be an interactive tutorial
-
 TESTING
-  - [ ] Firefox support
-  - [ ] safari support
   - [ ] TodoMVC examples
   - [ ] actually build apps
   - [ ] load random websites
