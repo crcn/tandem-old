@@ -34,10 +34,6 @@ export class MergedCSSStyleRule extends Observable {
   private _documentObserver: CallbackDispatcher<any, any>;
   private _document: SyntheticDocument;
   private _queuedEditMutations: Array<Mutation<MatchedCSSStyleRuleType>>;
-
-  @bindable(true)
-  @bubble()
-  private _pinnedRule: MatchedCSSStyleRuleType;
   
   private _mainByProperty: {
     [Identifier: string]: MatchedCSSStyleRuleType;
@@ -95,12 +91,16 @@ export class MergedCSSStyleRule extends Observable {
     }
   }
 
-  get pinnedRule() {
-    return this._pinnedRule;
+  get pinnedRule(): MatchedCSSStyleRuleType {
+    return this.target.metadata.get("pinnedRule");
   }
 
   pinRule(rule: MatchedCSSStyleRuleType) {
-    this._pinnedRule = this._pinnedRule === rule ? undefined : rule;
+    const oldRule = this.pinnedRule;
+    
+    // cache on the target element so that the user doesn't have to re-pin the rule
+    this.target.metadata.set("pinnedRule", this.pinnedRule === rule ? undefined : rule);
+    this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "pinnedRule", rule, oldRule).toEvent());
   }
 
   get mainSources() {
@@ -243,7 +243,7 @@ export class MergedCSSStyleRule extends Observable {
 
 
   getTargetRule(styleName: string): MatchedCSSStyleRuleType {
-    return this.selectedStyleRule  || this._pinnedRule || this.getDeclarationMainSourceRule(styleName) || this.getBestSourceRule();
+    return this.selectedStyleRule  || this.pinnedRule || this.getDeclarationMainSourceRule(styleName) || this.getBestSourceRule();
   }
  
   getBestSourceRule(): MatchedCSSStyleRuleType {

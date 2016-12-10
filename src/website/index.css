@@ -1,3 +1,25 @@
-.home {
-  background: red;
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica;
+}
+
+
+h1, h2, h3, h4 {
+  font-weight: 100;
+}
+
+.header {
+  background: #B7B7B7;
+  height: 300px;
+  color: white;
+  position: relative;
+}
+
+.header .title {
+  text-align: center;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  
 }

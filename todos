@@ -14,14 +14,13 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] Save all command
-- [ ] open command
 - [ ] ability to select unsaved files
 - [ ] welcome to tandem video
 - [ ] bark for unsaved changes
 - [ ] launch checklist
 - [ ] wire up auto updater
 - [ ] Logo
+- [ ] block before quitting for unsaved changes
 
 
 - test
@@ -106,6 +105,7 @@ UX
   - [ ] VM developer console
   - [ ] gutters need to be resizable
   - [ ] input focus border
+  - [ ] auto save
   - [ ] multi drag
   - [ ] minimap (can also be done by opening up a new window of tandem)
   - [ ] incompatible browser notification
@@ -143,6 +143,7 @@ FEATURES
 
 CORE
   - *[ ] right click edit text
+  - [ ] send all mutations back to server, but don't save
   - [ ] *wait for all XHR requests to be completed before sending diff - (flickering otherwise)
   - [ ] config for scanning application for components
   - [ ] support css imports
