@@ -26,7 +26,8 @@ export class SpawnWorkerCommand extends  BaseStudioMasterCommand {
 
       const proc = fork(root + "/" + PACKAGE.main, [], {
         env: Object.assign({}, process.env, {
-          ELECTRON_RUN_AS_NODE: true
+          ELECTRON_RUN_AS_NODE: true,
+          WORKER: true
         })
       });
 

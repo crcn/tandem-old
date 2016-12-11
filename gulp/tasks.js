@@ -145,7 +145,7 @@ gulp.task('build:electron:package', () => {
 
 
 gulp.task('build:electron:sign', () => {
-    stream = stream.pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
+    // stream = stream.pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
 });
 
 
