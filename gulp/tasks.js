@@ -65,7 +65,7 @@ gulp.task('build', WATCH ? gulpSequence('prepare', buildTasks) : gulpSequence('p
 gulp.task('build:dist', gulpSequence('prepare', ...buildTasks, 'build:electron:dist'));
 
 gulp.task('build:typescript', function(done) {
-  const proc = spawn(os.platform() === "win32" ? 'node_modules\\.bin\\tsc.cmd' : 'node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
+  const proc = spawn(process.platform === "win32" ? 'node_modules\\.bin\\tsc.cmd' : 'node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
     cwd: BASE_DIR
   });
   proc.stdout.pipe(process.stdout);
