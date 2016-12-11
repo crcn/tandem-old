@@ -62,14 +62,16 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
     const sourceNode = (await expression.accept({
       visitAttribute({ name, value, location }: MarkupAttributeExpression) {
 
-        if (/src|href/.test(name) && !hasProtocol(value)) {
-          if (value.charAt(0) === "/") {
-            value = "file://" + value;
-          } else {
-            value = dirname.replace(/^\w+:\/\//g, "") + "/" + value;
-          }
-          if (!hasProtocol(value)) {
-            value = "file://" + value;
+        if (/src|href/.test(name)) {
+          if (!hasProtocol(value)) { 
+            if (value.charAt(0) === "/") {
+              value = "file://" + value;
+            } else {
+              value = dirname.replace(/^\w+:\/\//g, "") + "/" + value;
+            }
+            if (!hasProtocol(value)) {
+              value = "file://" + value;
+            }
           }
           imports.push(value);
         }

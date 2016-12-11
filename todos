@@ -50,8 +50,6 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
   - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
   - [ ] artboards do not show up if there's an error in the load
-  - [ ] Fix vscode source code overwrites
-  - [ ] files not always synced from vscode -> tandem
 
 - [ ] Editor
   - [ ] History
@@ -102,6 +100,9 @@ WEBSITE
 ----------------------------------
 STABILITY
 ----------------------------------
+
+DOCS
+  - [ ] browser compatibility table (what you can & cannot currently do in Tandem)
 
 UX
   - [ ] launch tandem from vscode

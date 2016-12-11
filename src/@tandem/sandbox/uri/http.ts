@@ -14,6 +14,9 @@ export class HTTPURIProtocol extends URIProtocol {
       const req = uri.indexOf("https:") === 0 ? https.get(parts as any) : http.get(parts);
       const buffer = [];
       req.on("response", (resp) => {
+        if (!/^20/.test(String(resp.statusCode))) {
+          return reject(new Error(`Unable to load: ${resp.statusCode}`));
+        }
         resp.on("data", (chunk) => {
           buffer.push(chunk);
         });
