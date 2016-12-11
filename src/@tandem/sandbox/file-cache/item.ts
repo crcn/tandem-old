@@ -82,7 +82,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   shouldUpdate() {
-    return this.contentUri !== this.sourceUri || this.sourceModifiedAt !== this.source.sourceModifiedAt;
+    return this.source.contentUri !== this.contentUri || this.sourceModifiedAt !== this.source.sourceModifiedAt;
   }
 
   willSave() {
