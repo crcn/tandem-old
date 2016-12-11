@@ -16,7 +16,7 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
 
     // temp name must share the same path as the file to ensure that all relative assets
     // are loaded in.
-    const tmpName = path.join(path.dirname(uri), `unsaved${i++}.${TD_PRIMARY_FILE_EXTENSION}`);
+    const tmpName = `cache://` + path.join(path.dirname(uri), `unsaved${i++}.${TD_PRIMARY_FILE_EXTENSION}`);
 
     let content;
 
@@ -28,9 +28,11 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
       </tandem>`;
     }
 
+
+
     await this._fileCache.add(tmpName, content);
 
     
-    return 'cache://' + tmpName;
+    return tmpName;
   }
 } 
