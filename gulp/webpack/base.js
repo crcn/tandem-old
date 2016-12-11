@@ -147,7 +147,6 @@ exports.config = {
         // don't uncomment these -- fudges with tests. Need to decouple tests from these
         // 'react': require.resolve('react/dist/react.js'),
         // 'react-dom': require.resolve('react-dom/dist/react-dom.js'),
-        'graceful-chokidar': 'null-loader?graceful-chokidar',
         'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',
         'child_process': 'null-loader?child_process',

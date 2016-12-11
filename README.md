@@ -1,3 +1,2 @@
-[![Join the chat at https://gitter.im/crcn/tandem](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/tandem?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
+[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) [![CircleCI](https://circleci.com/gh/crcn/tandem.svg?style=svg)](https://circleci.com/gh/crcn/tandem)
 Tandem is a visual editor for building web applications. 

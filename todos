@@ -15,6 +15,9 @@ TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
 - [ ] launch checklist
+- [ ] Atom editor
+- [ ] code sign application
+- [ ] analytics & usage
 - [ ] get recent file cache when switching
 - [ ] ability to select unsaved files
 - [ ] welcome to tandem video

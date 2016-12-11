@@ -23,6 +23,7 @@ const electron      = require('gulp-atom-electron');
 const vfs           = require('vinyl-fs');
 const gulpSequence  = require('gulp-sequence');
 const _             = require('highland');
+const osxSign       = require('gup')
 
 const { spawn }                   = require('child_process');
 const { merge, omit }             = require('lodash');
@@ -65,7 +66,7 @@ gulp.task('build', WATCH ? gulpSequence('prepare', buildTasks) : gulpSequence('p
 gulp.task('build:dist', gulpSequence('prepare', ...buildTasks, 'build:electron:dist'));
 
 gulp.task('build:typescript', function(done) {
-  const proc = spawn('node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
+  const proc = spawn(os.platform() === "win32" ? 'node_modules\\.bin\\tsc.cmd' : 'node_modules/.bin/tsc', ['--declaration', '--pretty'].concat(WATCH ? '--watch' : []), {
     cwd: BASE_DIR
   });
   proc.stdout.pipe(process.stdout);
@@ -95,7 +96,8 @@ gulp.task('build:electron', gulpSequence(
 ));
 
 gulp.task('build:electron:dist', gulpSequence(
-  'build:electron:package'
+  'build:electron:package',
+  'build:electron:sign'
 ));
 
 gulp.task('build:electron:browser', (done) => {
@@ -137,16 +139,14 @@ gulp.task('build:electron:package', () => {
 
   console.log(`electron version: ${version}; platform: ${platform}; arch: ${arch}`);
 
-  let stream = gulp.src(join(getElectronBundleDir(), "**"))
+  return gulp.src(join(getElectronBundleDir(), "**"))
   .pipe(electron({ version, platform, arch, token, productName }))
+  .pipe(symdest(join(getElectronBundleDir(), "app")));
+});
 
-  if (process.env.SYMDEST) {
-    stream = stream.pipe(symdest(join(getElectronBundleDir(), "app")));
-  } else {
+
+gulp.task('build:electron:sign', () => {
     stream = stream.pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
-  }
-
-  return stream;
 });
 
 
