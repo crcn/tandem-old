@@ -23,7 +23,6 @@ const electron      = require('gulp-atom-electron');
 const vfs           = require('vinyl-fs');
 const gulpSequence  = require('gulp-sequence');
 const _             = require('highland');
-const osxSign       = require('gup')
 
 const { spawn }                   = require('child_process');
 const { merge, omit }             = require('lodash');
