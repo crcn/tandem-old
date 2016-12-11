@@ -111,6 +111,11 @@ export class MockFileResolver implements IFileResolver {
   private _mockFiles: IMockFiles;
 
   resolve(relativePath: string, cwd: string, options?: IFileResolverOptions) {
+
+    // http url or something other than file
+    if (/^\w+:\/\//.test(relativePath) && relativePath.indexOf("file://") !== 0) {
+      return Promise.resolve(relativePath);
+    }
     relativePath = relativePath.replace("file://", "");
     return Promise.resolve([
       path.resolve(cwd || "", relativePath),
