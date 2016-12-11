@@ -45,6 +45,7 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] CTA for adding files to a blank artboard
   
 - [ ] BUGS
+  - [ ] prevent copy & paste html elements in css inspector
   - [ ] canvas still misalaigned
   - [ ] height seems to be inherited
     child class must contain parent class - e.g: .header .title, where .header contains the height prop 

@@ -18,6 +18,7 @@ import {
 export interface IActiveRecord<T> extends IObservable, IInjectable, IDisposable, ISerializable<T> {
   collectionName: string;
   idProperty: string;
+  source: T;
   save();
   insert();
   remove();

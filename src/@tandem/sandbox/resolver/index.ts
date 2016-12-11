@@ -85,8 +85,15 @@ export class LocalFileResolver extends BaseFileResolver {
       return relativePath;
     }
 
+    // quick fix -- cwd 
+    if (cwd && cwd.indexOf("file:") !== 0) {
+      return relativePath;
+    }
+
     cwd = cwd && cwd.replace("file://", "");
     relativePath = relativePath.replace("file://", "");
+
+
 
     const { extensions, directories } = combineResoverOptions(options, {
       extensions: [], // temp
@@ -94,7 +101,6 @@ export class LocalFileResolver extends BaseFileResolver {
     });
 
     let modulesBaseDir = cwd;
-
 
     if (cwd) {
       const pkgPath = fs.existsSync(cwd + "/package.json") ? cwd : pkgpath.sync(cwd);

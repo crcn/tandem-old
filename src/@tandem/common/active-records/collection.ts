@@ -81,6 +81,10 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
    */
 
   async loadItem(query: any): Promise<T|undefined> {
+    const test = sift(query) as any;
+    const loaded = this.find((model) => test(model.source));
+    if (loaded) return loaded;
+    
     const { value, done } = await readOneChunk<any>(this._bus.dispatch(new DSFindRequest(this.collectionName, query, false)));
 
     // item exists, so add and return it. Otherwise return undefined indicating

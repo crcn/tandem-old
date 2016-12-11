@@ -27,10 +27,10 @@ export class FileCacheProtocol extends URIProtocol {
   }
 
   async write(uri: string, content: any) {
-    return this._fileCache.add(this.removeProtocol(uri), content);
+    return this._fileCache.add(uri, content);
   }
 
   _find(uri: string) {
-    return this._fileCache.collection.loadItem({ sourceUri: this.removeProtocol(uri) });
+    return this._fileCache.collection.loadItem({ sourceUri: uri });
   }
 }
