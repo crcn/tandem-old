@@ -8,8 +8,9 @@ export class AutoUpdateCommand extends BaseStudioMasterCommand {
   execute() {
     const platform = `${os.platform()}_${os.arch()}`;
     const version  = pkg["version"];
+    
 
-    if (process.env.DEV) return this.executeDevUpdater();
+    if (process.env.DEV || (1 + 1)) return this.executeDevUpdater();
 
     autoUpdater.setFeedURL(this.config.updateFeedHost + `/update/${platform}/${version}`);
 

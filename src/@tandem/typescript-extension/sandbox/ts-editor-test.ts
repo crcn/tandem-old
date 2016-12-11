@@ -80,7 +80,7 @@ describe(__filename + "#", () => {
   };
 
   // testing to ensure the setup code above works
-  it("can render an element", async () => {
+  xit("can render an element", async () => {
     const { element } = await loadJSX(`<div>a</div>`);
     expect(element.textContent).to.equal("a");
     expect(element.$source).not.to.be.undefined;
