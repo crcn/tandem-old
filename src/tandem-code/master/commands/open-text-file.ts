@@ -20,7 +20,7 @@ export class OpenTextFileCommand extends BaseStudioMasterCommand {
 
     if (!opened) {
       this.logger.debug(`Opening new text editor session`);
-      spawn(this.masterStore.userSettings.textEditor.bin, [request.uri.replace("file://", "")]);
+      spawn(this.masterStore.userSettings.textEditor.bin, [...(this.masterStore.userSettings.textEditor.args || []), request.uri.replace("file://", "")]);
     }
   }
 }

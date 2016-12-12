@@ -3,7 +3,8 @@ import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 
 export interface IUserSettings {
   textEditor: {
-    bin: string
+    bin: string,
+    args?: any[]
   }
 }
 

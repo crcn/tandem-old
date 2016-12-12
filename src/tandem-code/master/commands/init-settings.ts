@@ -4,15 +4,19 @@ import { merge } from "lodash";
 import { IUserSettings } from "../stores";
 import { BaseStudioMasterCommand } from "./base";
 
-function getTextEditorBin() {
-  return "/usr/bin/open";
+function getTextEditor() {
+  return process.platform === "win32" ? {
+    bin: "cmd",
+    args: ["/c", "start", `""`]
+  } : { 
+    "bin": "/usr/bin/open",
+    args: []
+  }
 }
 
 function addDefaults(config: IUserSettings) {
   return merge({
-    textEditor: {
-      bin: getTextEditorBin()
-    }
+    textEditor: getTextEditor()
   } as IUserSettings, config) as IUserSettings;
 }
 
