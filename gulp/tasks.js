@@ -95,8 +95,7 @@ gulp.task('build:electron', gulpSequence(
 ));
 
 gulp.task('build:electron:dist', gulpSequence(
-  'build:electron:package',
-  'build:electron:sign'
+  'build:electron:package'
 ));
 
 gulp.task('build:electron:browser', (done) => {
@@ -129,23 +128,19 @@ gulp.task('build:electron:package', () => {
 
   const appVersion = electronPackage.version;
 
-  const version = electronPackage.electronVersion;
-  const platform = process.platform;
-  const productName = electronPackage.productName;
-  const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
-  
+  const { productVersion, electronVersion, platform, productName, arch } = getElectronInfo();
   const token = process.env.GITHUB_TOKEN;
 
-  console.log(`electron version: ${version}; platform: ${platform}; arch: ${arch}`);
+  console.log(`electron version: ${productVersion}; platform: ${platform}; arch: ${arch}`);
 
-  return gulp.src(join(getElectronBundleDir(), "**"))
-  .pipe(electron({ version, platform, arch, token, productName }))
-  .pipe(symdest(join(getElectronBundleDir(), "app")));
-});
+  let stream = gulp.src(join(getElectronBundleDir(), "**"))
+  .pipe(electron({ version: electronVersion, platform, arch, token, productName }));
 
-
-gulp.task('build:electron:sign', () => {
-    // stream = stream.pipe(zip.dest(join(getElectronBundleDir(), `zip/tandem-${appVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
+  if (process.env.SYMDEST) {
+    return stream.pipe(symdest(join(getElectronBundleDir(), "app")))
+  } else {
+    return stream.pipe(zip.dest(join(DIST_DIR, `zip/tandem-${productVersion}-${PLATFORM_LABELS[platform]}-${arch}.zip`)));
+  }
 });
 
 
@@ -401,6 +396,18 @@ function bundleElectron(entry, config, done) {
       path: dirname(entry.replace(join(SRC_DIR, getElectronPackage().name), getElectronBundleDir()))
     }
   }), done);
+}
+
+function getElectronInfo() {
+
+  const electronPackage = getElectronPackage();
+  
+  const electronVersion = electronPackage.electronVersion;
+  const platform = process.platform;
+  const productName = electronPackage.productName;
+  const productVersion = electronPackage.version;
+  const arch = process.env.ELECTRON_PLATFORM || (platform === 'win32' ? 'ia32' : process.arch)
+  return { productVersion, electronVersion, productName, platform, arch };
 }
 
 function bundle(srcEntryPath, config, done) {
