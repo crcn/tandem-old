@@ -24,7 +24,7 @@ Node
   = TagNode/TextNode
 
 TagNode
-  = _ node:(Comment/DOCTYPE/Script/VoidElement/Element) _ { return node; }
+  = _ node:(Comment/DOCTYPE/Script/VoidElement/Element) { return node; }
 
 Comment
   = '<!--' characters:CommentCharacter* '-->' { return new MarkupCommentExpression(characters.join(''), location()); }

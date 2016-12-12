@@ -2,6 +2,7 @@
   <style>
     p {
       margin: 40px 0px;
+      line-height: 1.5em;
     }
 
     .description {
@@ -28,89 +29,88 @@
       word-break: break-all;
     }
   </style>
-  <h1 xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -3129px; top: -3671px; ">
-    Integrating
-  </h1>
-  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -3329px; top: -3277px; ">
-    <p>
-      Tandem's IDE extension enables you to design & hack on your application in real time.
-    </p>
-    <p>
-      To install, search for "Tandem" in your default IDE extension pane.
-    </p>
+  <div xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -5335px; top: -2225px; width: 3125px; height: 298px; color: #F1F1F5; font-size: 200px; ">
+    ⌘ + scroll
+    to zoom
   </div>
-  <artboard src="./demo/index.html" title="Writing Code" style=" position: absolute; width: 1440px; height: 900px; left: -3129px; top: -3277px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
-  <!-- TODO - docs for enabling source maps -->
-  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -1329px; top: -3277px; ">
+  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -5335px; top: -1519px; ">
     <p>
-      1. Turn on source maps for JavaScript and CSS. Tandem needs that information in order to modify code.
+      Welcome! This brief tutorial will teach how to use Tandem.
     </p>
     <p>
-      2. For
-      <strong>
-        Webpack
-      </strong>
-      , you can add the JSX loader (
+      What you're looking at on the right side is an Artboard - a browser VM that displays a
+      <i>
+        live
+      </i>
+      preview of your web application. Source code changes will automatically appear here, along with
+      <i>
+        other
+      </i>
+      artboards that share the same resources.
+    </p>
+    
+  </div>
+  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -4717px; top: -1519px; ">
+    <p>
+      This version of Tandem works best with your favorite code editor, so we'll need to open that. Hold ⌘ and click the "Grocery list" title element. You
+      <i>
+        should
+      </i>
+      see its source code pop up 
+      in your default HTML editor.
+    </p>
+    <p>
+      For VSCode users, you can install the "Tandem sync" extension which enables realtime changes (as you type) between your code editor and Tandem.
+    </p>
+    
+  </div>
+  <artboard title="2. Open your text editor with ⌘ + click" src="./demo/index.html" style=" position: absolute; width: 375px; height: 667px; left: -4525px; top: -1519px; ">
+    
+  </artboard>
+  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -3976px; top: -1519px; ">
+    <p>
+      In your text editor, go ahead and change "Grocery list" to just "Groceries". Hit save, and you should see changes appear here ->.
+    </p>
+    
+  </div>
+  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -3172px; top: -1519px; ">
+    <p>
+      Tandem will write code for you if you decide to the visual tools. HTML & CSS are supported out of the box. If you want to use Sass, or other language, you'll
+      need to turn on source maps.
+    </p>
+    <p>
+      Since this demo just uses vanilla HTML & CSS, we can go ahead and make some visual adjustments. Select the header element (div.header) and click the
+      background color button in the CSS Inspector in the right panel. Change the color to whatever you want.
+    </p>
+    <p>
+      Tandem will apply your background color change to the original
       <code>
-        npm install tandem-jsx-loader
+        .header
       </code>
-      ) 
-            which enables Tandem to modify JSX code (React, vue, etc).
+      CSS class source code, and reload all other Artboards that use it. Go ahead and zoom out to check how your change appears in other pages and device sizes.
     </p>
+    <p>
+      If you'd like to save your change, you can click the save button in the Unsaved Files panel in the right side. 
+      If you're using the VSCode extension, changes will automatically appear when you open the demo CSS file. You can also save changes from there.
+    </p>
+    
   </div>
-  <artboard src="./2-setup-web-framework.html" title="Modify your Application Bundler (Webpack, SystemJS, etc.)" style=" position: absolute; width: 1440px; height: 900px; left: -1130px; top: -3277px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
-  <h1 xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -3129px; top: -1921px; ">
-    Usage
-  </h1>
-  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -3329px; top: -1519px; ">
+  <artboard title="3. Change title text in code editor" src="./demo/index.html" style=" position: absolute; width: 414px; height: 736px; left: -3792px; top: -1519px; ">
+    
+  </artboard>
+  <artboard title="1. What you're looking at" src="./demo/index.html" style=" position: absolute; width: 320px; height: 568px; left: -5144px; top: -1519px; ">
+    
+  </artboard>
+  <artboard title="4. Change the header Background" src="./demo/index.html" style=" position: absolute; width: 768px; height: 1024px; left: -2968px; top: -1519px; ">
+    
+  </artboard>
+  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -5335px; top: -304px; ">
     <p>
-      1. Copy & Paste an Artboard that you'd like to see in a different size or browser.
+      You can inject JavaScript code into artboards to reveal various states of your application. Select this Artboard, and go to the Script pane 
+      in the right panel. Change "Budapest, Hunagary" to "New York, New York", and you should see change appear immediately.
     </p>
-    <p>
-      2. Modify the size & browser information the right panel.
-    </p>
-    <p>
-      Tandem will launch a real browser instance via BrowserTap and render your Artboard's HTML & CSS against it.
-    </p>
-    <p>
-      Source code change automatically synchronize across all Artboards that share the same document.
-    </p>
+    
   </div>
-  <artboard title="Responsive & Cross-browser testing" src="./responsive-testing.html" style=" position: absolute; width: 1440px; height: 900px; left: -3149px; top: -1519px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
-  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -1296px; top: -1519px; display: block; ">
-    <p>
-      You can inject any variable you want into the Window object of any Artboard. This includes the window location, navigator information, or any other custom property.
-    </p>
-    <p>
-      1. Define a new Window global by selecting an Artboard and clicking the + button in the "Window Globals" panel. 
-            Set first field to "message", and the second field to "Hola Mundo".
-    </p>
-    <p>
-      2. In the Artboard source file, write:
-      <code>
-        console.log(window.message);
-      </code>
-      .
-            In the Tandem developer console pane, you should see "Hola Mundo" appear immediately.
-    </p>
-    <p>
-      Tip: You can use the globals panel to define custom properties that reveal visual elements.
-    </p>
-  </div>
-  <artboard title="Defining Artboard States" src="./artboard-states.html" style=" position: absolute; width: 1440px; height: 900px; left: -1097px; top: -1519px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
-  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: 671px; top: -1519px; ">
-    <p>
-      Hold ⌘ while moving your mouse over any visual item in Tandem to reveal a link that will open the item source code in your IDE.
-    </p>
-  </div>
-  <artboard title="Linking back to source files" src="./link-to-source.html" style=" position: absolute; width: 1440px; height: 900px; left: 864px; top: -1519px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
-  <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: 2749px; top: -1519px; height: 158px; ">
-    <p>
-      Click the X button in the right hand side to share your workspace with other users.
-    </p>
-    <p>
-      Tip: You can use your shared link to test how your HTML & CSS response on different devices.
-    </p>
-  </div>
-  <artboard title="Sharing Workspaces" src="./sharing-workspace.html" style=" position: absolute; width: 1440px; height: 900px; left: 2966px; top: -1519px; symbol-symbol-iterator: function* () { for (let i = 0, n = this.length || 0; "></artboard>
+  <artboard title="5. Inject some JavaScript" src="./demo/contact.html" style=" position: absolute; width: 1024px; height: 1366px; left: -5144px; top: -304px; " inject-script="window.config%20%3D%20%7B%0A%20%20city%3A%20%22Budapest%2C%20Hungary%C3%B7%22%0A%7D%3B"></artboard>
+  
 </tandem>
