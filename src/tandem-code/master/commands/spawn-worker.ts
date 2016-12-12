@@ -27,8 +27,10 @@ export class SpawnWorkerCommand extends  BaseStudioMasterCommand {
       const proc = fork(root + "/" + PACKAGE.main, [], {
         env: Object.assign({}, process.env, {
           ELECTRON_RUN_AS_NODE: true,
-          WORKER: true
-        })
+          WORKER: true,
+          CWD: this.config.cwd
+        }),
+        cwd: this.config.cwd
       });
 
       proxy.target = createProcessBus(this.config.family, proc, this.bus);

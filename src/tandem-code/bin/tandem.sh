@@ -58,7 +58,7 @@ fi
 if [ $OS == 'Mac' ]; then
   
   TANDEM_APP_NAME="Tandem.app"
-  TANDEM_EXECUTABLE_NAME="Tandem"
+  TANDEM_EXECUTABLE_NAME="Electron"
 
   if [ -z "${TANDEM_PATH}" ]; then
     # If TANDEM_PATH isnt set, check /Applications and then ~/Applications for Tandem.app
@@ -82,7 +82,7 @@ if [ $OS == 'Mac' ]; then
     "$TANDEM_PATH/$TANDEM_APP_NAME/Contents/MacOS/$TANDEM_EXECUTABLE_NAME" --executed-from="$(pwd)" --pid=$$ "$@"
     exit $?
   else
-    open -a "$TANDEM_PATH/$TANDEM_APP_NAME" -n --args --executed-from="$(pwd)" --pid=$$ --path-environment="$PATH" "$@"
+    open -a "$TANDEM_PATH/$TANDEM_APP_NAME" -n --args -- --pid=$$ --executed-from="$(pwd)" --path-environment="$PATH" "$@"
   fi
 elif [ $OS == 'Linux' ]; then
   SCRIPT=$(readlink -f "$0")

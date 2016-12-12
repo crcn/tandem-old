@@ -16,17 +16,13 @@ resolve UX. May want to optimize experience around writing code.
 
 - [ ] launch checklist
 - [ ] Atom editor
-- [ ] code sign application
 - [ ] analytics & usage
 - [ ] get recent file cache when switching
 - [ ] ability to select unsaved files
 - [ ] welcome to tandem video
 - [ ] bark for unsaved changes
-- [ ] launch checklist
 - [ ] wire up auto updater
 - [ ] Logo
-- [ ] block before quitting for unsaved changes
-
 
 - test
   - https://github.com/facebookincubator/create-react-app

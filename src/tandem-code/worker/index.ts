@@ -71,6 +71,8 @@ export const createCoreStudioWorkerProviders = () => {
 
 export const initializeWorker = async () => {
 
+  process.chdir(process.cwd());
+
   const config: IStudioWorkerConfig = {
     family: EditorFamilyType.WORKER,
     cwd: process.cwd(),

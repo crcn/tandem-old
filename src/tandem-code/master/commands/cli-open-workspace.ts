@@ -18,7 +18,11 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
     // scan the CWD for any tandem files
     if (uri != null && !(await protocol.fileExists(uri))) {
 
-      uri = uri.replace(/^\./, process.cwd()).replace(/^~/, process.env.HOME);
+      if (uri.charAt(0) === "~") {
+        uri = uri.sustr(1) + (process.env.HOME || process.env.USERPROFILE);
+      } else if (uri.charAt(0) !== "/") {
+        uri = path.join(this.config.cwd, uri);
+      }
 
       if (!(await protocol.fileExists(uri))) {
         uri = glob.sync(path.join(uri, `{${this.config.projectFileExtensions.map(ext => `*.${ext}`).join(",")}}`)).find((uri) => {
@@ -33,7 +37,7 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
     }
       
     if (uri.substr(0, 1) !== "/" && !/\w+:\/\//.test(uri)) {
-      uri = path.join(process.cwd(), uri);
+      uri = path.join(this.config.cwd, uri);
     }
 
     if (!(await protocol.fileExists(uri))) {

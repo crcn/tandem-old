@@ -20,6 +20,7 @@ export interface IStudioEditorServerConfig extends IEditorCommonConfig {
   hostname: string,
   argv: {
     _: any[],
+    executedFrom?: string,
     open?: boolean,
     hlog?: string,
     exposeSockFile?: boolean

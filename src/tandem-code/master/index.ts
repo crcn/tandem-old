@@ -68,6 +68,10 @@ declare const __root: any;
 
 process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).toUpperCase()] || (argv.verbose ? LogLevel.VERBOSE : LogLevel.DEFAULT);
 
+if (argv.executedFrom) {
+  process.chdir(argv.executedFrom);
+}
+
 const ROOT_DIR           = (typeof __root !== "undefined" ? __root : __dirname + "/../");
 const BROWSER_BASE_PATH  = `${ROOT_DIR}/browser`;
 const ASSETS_DIR         = `${ROOT_DIR}/assets`;
