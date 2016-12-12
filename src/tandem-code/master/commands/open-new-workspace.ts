@@ -30,7 +30,7 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
         hash = `#/workspace?workspaceUri=${encodeURIComponent(uri)}`;
       } else {
         hash = "#/welcome";
-        frame = false;
+        frame = process.platform === "win32";
       }
 
       const win = new BrowserWindow({ width: width, height: height, frame: frame, titleBarStyle: frame ? "hidden-inset" : undefined });

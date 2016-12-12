@@ -155,8 +155,7 @@ gulp.task('build:electron:sign', () => {
 
 gulp.task('prepare', gulpSequence(
   'prepare:copy-assets',
-  'prepare:mono-package',
-  'prepare:integrations'
+  'prepare:mono-package'
 ));
 
 gulp.task('prepare:copy-assets', ['prepare:copy-d-ts-assets'], () => {
@@ -229,15 +228,6 @@ gulp.task('prepare:install-mono-package', ['clean:symlinks'], () => {
   .pipe(gulp.dest(OUT_DIR))
   .pipe(install())
 });
-
-
-gulp.task('prepare:integrations', [
-  'prepare:vscode-extension'
-]);
-
-gulp.task('prepare:vscode-extension', [
-  'prepare:vscode-extension-symlinks'
-]);
 
 gulp.task('prepare:vscode-extension-symlinks', () => {
   return gulp
@@ -408,7 +398,7 @@ gulp.task('test:all', ['hook:istanbul'], function(done) {
 function bundleElectron(entry, config, done) {
   bundle(entry, Object.assign({}, config, {
     output: {
-      path: dirname(entry.replace(SRC_DIR + "/" + getElectronPackage().name, getElectronBundleDir()))
+      path: dirname(entry.replace(join(SRC_DIR, getElectronPackage().name), getElectronBundleDir()))
     }
   }), done);
 }

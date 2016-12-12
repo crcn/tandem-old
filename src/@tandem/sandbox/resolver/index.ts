@@ -109,7 +109,7 @@ export class LocalFileResolver extends BaseFileResolver {
 
       // check browser flag in package.json
 
-      if (!/^(\.|\/)/.test(relativePath)) {
+	    if (!/^(\.|[\/\\]|(\w:\\))/.test(relativePath)) {
         modulesBaseDir = pkgPath;
       }
 

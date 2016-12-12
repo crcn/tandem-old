@@ -21,6 +21,10 @@ import {
   ImportFileRequest
 } from "@tandem/editor/common";
 
+
+const PANE_SENSITIVITY = process.platform === "win32" ? 0.1 : 1;
+const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
+
 // TODO - most of this logic should be stored within the a child of the workspace
 // model.
 export default class EditorStageLayersComponent extends BaseApplicationComponent<{ workspace: Workspace, zoom: number }, any> {
@@ -86,7 +90,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   }
 
   pane(leftDelta, topDelta) {
-    this.translate(this.props.workspace.transform.left - leftDelta, this.props.workspace.transform.top - topDelta);
+    this.translate(this.props.workspace.transform.left - leftDelta * PANE_SENSITIVITY, this.props.workspace.transform.top - topDelta * PANE_SENSITIVITY);
   }
 
   onMouseEvent = (event: React.MouseEvent<any>) => {
@@ -147,9 +151,9 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
     
     this._zooming();
     this.onMouseEvent(event);
-    if (event.metaKey) {
+    if (event.metaKey || event.ctrlKey) {
       event.preventDefault();
-      this.bus.dispatch(new ZoomRequest((event.deltaY / 250)));
+      this.bus.dispatch(new ZoomRequest((event.deltaY / ZOOM_SENSITIVITY)));
     } else {
       this.pane(event.deltaX, event.deltaY);
       event.preventDefault();

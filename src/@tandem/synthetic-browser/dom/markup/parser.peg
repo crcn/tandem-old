@@ -142,12 +142,10 @@ String
   / "'" characters:SingleStringCharacter* "'" { return characters.join(''); }
 
 DoubleStringCharacter
-  = !('"' / "\\") . { return text(); }
-  / '\\"'
+  = !'"' . { return text(); }
 
 SingleStringCharacter
-  = !("'" / "\\") . { return text(); }
-  / "\\'"
+  = !"'". { return text(); }
 
 TextNode
   = [^<]+ {
