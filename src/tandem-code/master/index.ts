@@ -71,6 +71,7 @@ process.env.LOG_LEVEL = process.env.LOG_LEVEL || LogLevel[String(argv.logLevel).
 const ROOT_DIR           = (typeof __root !== "undefined" ? __root : __dirname + "/../");
 const BROWSER_BASE_PATH  = `${ROOT_DIR}/browser`;
 const ASSETS_DIR         = `${ROOT_DIR}/assets`;
+const HOME               = process.env.HOME || process.env.USERPROFILE;
 
 export const initializeMaster = async () => {
 
@@ -78,9 +79,9 @@ export const initializeMaster = async () => {
     projectFileExtensions: TD_FILE_EXTENSIONS,
     family: EditorFamilyType.MASTER,
     appDirectory: ROOT_DIR,
-    settingsDirectory: process.env.HOME + "/.tandem",
-    cacheDirectory: process.env.HOME + "/.tandem/cache",
-    tmpDirectory: process.env.HOME + "/.tandem/tmp",
+    settingsDirectory: HOME + "/.tandem",
+    cacheDirectory: HOME + "/.tandem/cache",
+    tmpDirectory: HOME + "/.tandem/tmp",
     updateFeedHost: 'http://tandem-code.herokuapp.com/',
     help: {
       directory: ASSETS_DIR + "/help"

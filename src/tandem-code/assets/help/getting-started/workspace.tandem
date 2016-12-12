@@ -6,7 +6,7 @@
     }
 
     .description {
-      color: #C92F2F;
+      color: white;
       width: 160px;
     }
 
