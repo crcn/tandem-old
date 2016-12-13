@@ -50,6 +50,7 @@ export class SCSSEditor extends CSSEditor {
   protected findTargetASTNode(root: postcss.Container, target: ISyntheticObject) {
     let found: postcss.Node;
 
+
     const walk = (node: postcss.Node, index: number) => {
 
       let offsetStart = {
@@ -68,8 +69,8 @@ export class SCSSEditor extends CSSEditor {
         offsetStart.column -= ruleCount;
       }
 
-      if (node.type === target.source.kind && target.source && sourcePositionEquals(nodeStart, offsetStart)) {
 
+      if (node.type === target.source.kind && target.source && sourcePositionEquals(nodeStart, offsetStart)) {
         // next find the actual node that the synthetic matches with -- the source position may not be
         // entirely accurate for cases such as nested selectors.
         found = this.findNestedASTNode(<any>node, target);
@@ -105,7 +106,9 @@ export class SCSSEditor extends CSSEditor {
 
   private findNestedASTNode(node: postcss.Container, target: ISyntheticObject): postcss.Node {
     if (isRuleNode(node)) {
-      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSElementStyleRule>target);
+
+      // note that different SCSS engines generate *different* source maps (ugh). node-sass for instance defines source maps
+      return this.findMatchingRuleNode(<postcss.Rule>node, <SyntheticCSSElementStyleRule>target) || node;
     } else {
       return node;
     }

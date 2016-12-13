@@ -14,7 +14,7 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] browsertap live demo
+- [ ] need edits to work with browsertap demo
 - [ ] launch checklist
 - [ ] Atom editor
 - [ ] analytics & usage

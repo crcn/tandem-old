@@ -64,7 +64,7 @@ describe(__filename + "#", () => {
   }
 
   const scssTestCases = [
-    ...cssEditorTestCases,
+    // ...cssEditorTestCases,
     [
       `.a { .b { color: red }}`,
       `.a { .b { color: green }}`,
@@ -77,6 +77,20 @@ describe(__filename + "#", () => {
       `.a { &-b { color: red } &-c { color: green }}`,
       `.a { &-b { color: blue } &-c { color: white }}`,
     ],
+    [
+      `a { 
+        background: black; 
+        #header { 
+          color: red 
+        }
+      }`,
+      `a { 
+        background: black; 
+        #header {
+          color: blue 
+        }
+      }`,
+    ]
   ];
 
   [
@@ -104,7 +118,6 @@ describe(__filename + "#", () => {
   });
 
 
-  xit("doesn't save the file if there's a syntax error in an edit");
 });
 
 function formatCSS(source) {
