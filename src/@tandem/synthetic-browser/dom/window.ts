@@ -114,6 +114,7 @@ export class SyntheticWindow extends Observable {
 
   readonly HTMLElement;
   readonly Element;
+  readonly WebSocket: { new(): any };
 
   private _windowTimers: SyntheticWindowTimers;
   private _eventListeners: DOMEventDispatcherMap;
@@ -136,6 +137,8 @@ export class SyntheticWindow extends Observable {
     this.Element     = SyntheticDOMElement;
 
     const xhrServer = this._server = new XHRServer(this);
+
+    this.WebSocket = class WebSocket { }
 
     if (injector) injector.inject(xhrServer);
 

@@ -21,11 +21,11 @@ import {
 import {
   inject,
   Injector,
+  hasURIProtocol,
   InjectorProvider,
   MimeTypeAliasProvider,
 } from "@tandem/common";
 
-const hasProtocol = (url) => /^\w+:\/\//.test(url);
 
 export type dependencyLoaderType = { new(strategy: IDependencyGraphStrategy): IDependencyLoader };
 
@@ -102,24 +102,29 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     
     // TODO - move this logic to HTTPFileResolver instead
     let resolvedUri;
-    const relativeUriPathname = path.normalize(Url.parse(relativeUri).pathname); 
+    const relativeUriPathname = path.normalize(Url.parse(relativeUri).pathname);
+
+    // strip to ensure that
+    if (origin) origin = origin.replace("file://", "");
 
     // protocol?
-    if (hasProtocol(relativeUri)) {
+    if (hasURIProtocol(relativeUri)) {
       resolvedUri = relativeUri;
     } else {
       // root
       if (relativeUri.charAt(0) === "/" || !origin) {
         resolvedUri = (this.options.rootDirectoryUri || "file:///") + relativeUriPathname;
       } else {
-        const originParts = hasProtocol(origin) ? Url.parse(origin) : { 
+        const originParts = hasURIProtocol(origin) ? Url.parse(origin) : { 
           protocol: "file:",
           host: "",
           pathname: origin
         };
+
         resolvedUri = originParts.protocol + "//" + path.join(originParts.host || "", path.dirname(originParts.pathname), relativeUriPathname);
       }
     }
+
 
     return {
       uri: resolvedUri,

@@ -37,9 +37,19 @@ export class HTTPURIProtocol extends URIProtocol {
   }
   watch2(uri: string, onChange: () => any) {
     this.logger.info(`Cannot currently watch uris`);
+    let _disposed: boolean;
+
+    const check = () => {
+      if (_disposed) return;
+      setTimeout(check, 1000);
+    };
+    
+    check();
 
     return {
-      dispose() { }
+      dispose() {
+        _disposed = true;
+      }
     }
   }
 }

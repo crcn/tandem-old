@@ -8,7 +8,8 @@ import {
 import * as path from "path";
 import sm = require("source-map");
 import postcss = require("postcss");
-import { CSS_MIME_TYPE } from "@tandem/common";
+import { URIProtocolProvider } from "@tandem/sandbox"; 
+import { CSS_MIME_TYPE, inject, Injector, InjectorProvider } from "@tandem/common";
 
 import {
   parseCSS,
@@ -17,20 +18,43 @@ import {
 const hasProtocol = (value) => /^\w+:\/\//.test(value);
 
 export class CSSDependencyLoader extends BaseDependencyLoader {
+
+  @inject(InjectorProvider.ID)
+  private _injector: Injector;
+  
+  
   async load(dependency: Dependency, { type, content, map }): Promise<IDependencyLoaderResult> {
     /*const content = this.content.replace(/url\(['"]?(.*?)['"]?\)/g, (match, uri) => {
       return `url("http://${window.location.host}/asset/` + encodeURIComponent(path.join(path.dirname(this.uri), uri.split(/\?|#/).shift())) + '")';
     });*/
 
     const { uri } = dependency;
+    const sourceMappingUrl = (String(content).match(/sourceMappingURL=([^\s]+)/) || [])[1];
+
+    if (!map && sourceMappingUrl) {
+      const resolveSourceMappingUrl = (await this.strategy.resolve(sourceMappingUrl, uri)).uri;
+      const protocol = URIProtocolProvider.lookup(resolveSourceMappingUrl, this._injector);
+      const mapContent = String(await protocol.read(resolveSourceMappingUrl));
+      map = JSON.parse(mapContent);
+    }
+
+    const consumer = map && new sm.SourceMapConsumer(map);
     const fileDirectory = path.dirname(uri);
     const importedUris: string[] = [];
     
     const compile = async (node: postcss.Node): Promise<sm.SourceNode> => {
-      const line = node.source.start.line;
+      let line = node.source.start.line;
 
       // inconsistencies between source maps lib and postcss -- this offset should fix that.
-      const column = node.source.start.column - 1;
+      let column = node.source.start.column - 1;
+      let origUri = uri;
+
+      if (consumer) {
+        const orig = consumer.originalPositionFor({ line, column });
+        line = orig.line;
+        column = orig.column;
+        origUri = orig.source && (await this.strategy.resolve(orig.source, uri)).uri || uri;
+      }
 
       let buffer: (string | sm.SourceNode)[] | string | sm.SourceNode;
 
@@ -70,18 +94,11 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
         buffer = [prop, ':', value, ';'];
       }
 
-      return new sm.SourceNode(line, column, uri,  buffer);
+      return new sm.SourceNode(line, column, origUri,  buffer);
     }
 
     let result;
-
     result = (await compile(parseCSS(content, map))).toStringWithSourceMap();
-
-    // previous map? Apply now.
-    if (map) {
-      result.map.applySourceMap(new sm.SourceMapConsumer(map));
-    }
-
 
     return {
       type: CSS_MIME_TYPE,
