@@ -1,5 +1,7 @@
 import { IModule } from "@tandem/sandbox/sandbox";
+import { Dependency } from "../dependency";
 import { IDependencyContent } from "../base";
+import { IDependencyGraphStrategyOptions } from "../graph";
 
 export interface IResolvedDependencyInfo {
 
@@ -42,11 +44,13 @@ export interface IDependencyLoaderResult extends IDependencyContent {
 }
 
 export interface IDependencyLoader {
-  load(info: IResolvedDependencyInfo, content: IDependencyContent): Promise<IDependencyLoaderResult>;
+  load(dependency: Dependency, content: IDependencyContent): Promise<IDependencyLoaderResult>;
 }
 
 
 export interface IDependencyGraphStrategy {
+
+  options?: IDependencyGraphStrategyOptions;
 
   /**
    * Returns a loader with the given options. Example

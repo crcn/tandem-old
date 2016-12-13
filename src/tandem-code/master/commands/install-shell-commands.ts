@@ -9,7 +9,6 @@ export class InstallShellCommandsCommand extends BaseStudioMasterCommand {
     const binPath = "/usr/local/bin/tandem";
 
     if (fs.existsSync(binPath)) fs.unlinkSync(binPath);
-    console.log(this.config.appDirectory + "/bin/tandem.sh");
     
     fs.linkSync(this.config.appDirectory + "/bin/tandem.sh", binPath);
 

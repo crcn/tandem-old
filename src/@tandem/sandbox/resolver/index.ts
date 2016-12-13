@@ -4,7 +4,6 @@ import fs =  require("fs");
 import memoize =  require("memoizee");
 
 import { IFileResolver } from "../resolver";
-import { ResolveFileRequest } from "../messages";
 import { IDispatcher, readOneChunk } from "@tandem/mesh";
 import {
   inject,
@@ -18,67 +17,22 @@ import {
 import resolve =  require("resolve");
 import pkgpath = require("package-path");
 
-export interface IFileResolverOptions {
-  extensions: string[];
-  directories: string[];
-}
 
 export interface IFileResolver {
-  resolve(uri: string, cwd?: string, options?: IFileResolverOptions): Promise<string>;
+  resolve(uri: string, origin?: string): Promise<string>;
 }
 
-const createFileResolverOptions = (extensions?: string[], directories?: string[]): IFileResolverOptions => {
-  return {
-    extensions: extensions || [],
-    directories: directories || []
-  }
-}
 
-const combineResoverOptions = (...options: IFileResolverOptions[]): IFileResolverOptions => {
-  return options.reduce((a, b) => {
-    if (!a) a = createFileResolverOptions();
-    if (!b) b = createFileResolverOptions();
-    return {
-      extensions: a.extensions.concat(b.extensions),
-      directories: a.directories.concat(b.directories)
-    };
-  });
-}
-
-@loggable()
-export abstract class BaseFileResolver implements IFileResolver {
-  private _cache: any;
-  public options: IFileResolverOptions;
-  protected logger: Logger;
-
-  constructor() {
-    this._cache = {};
-    this.options = createFileResolverOptions();
-  }
-
-  // TODO - there will be cases where we want to bust the cache on this.
-  resolve = memoize(async (relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> => {
-    return this.resolve2(relativePath, cwd, combineResoverOptions(this.options, options));
-  }, { promise: true, normalizer: ([relativePath, cwd, options]) => relativePath + cwd + JSON.stringify(options) })
-
-  protected abstract async resolve2(uri: string, cwd?: string, options?: IFileResolverOptions): Promise<string>;
-}
-
-export class RemoteFileResolver extends BaseFileResolver {
-  @inject(PrivateBusProvider.ID)
-  private _bus: IDispatcher<any, any>;
-
-  async resolve2(uri: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
-    return (await readOneChunk<string>(this._bus.dispatch(new ResolveFileRequest(uri, cwd, options)))).value;
-  }
-}
-
-export class LocalFileResolver extends BaseFileResolver {
+export class NodeModuleResolver  {
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  async resolve2(relativePath: string, cwd?: string, options?: IFileResolverOptions): Promise<string> {
+  constructor(readonly options: { extensions: string[], directories: string[] }) {
+
+  }
+
+  async resolve(relativePath: string, cwd?: string): Promise<string> {
 
     // do not resolve not file: protocols
     if (/\w+:\/\//.test(relativePath) && relativePath.indexOf("file:") !== 0) {
@@ -93,12 +47,7 @@ export class LocalFileResolver extends BaseFileResolver {
     cwd = cwd && cwd.replace("file://", "");
     relativePath = relativePath.replace("file://", "");
 
-
-
-    const { extensions, directories } = combineResoverOptions(options, {
-      extensions: [], // temp
-      directories: []
-    });
+    const { extensions, directories } = this.options;
 
     let modulesBaseDir = cwd;
 
@@ -148,8 +97,6 @@ export class LocalFileResolver extends BaseFileResolver {
         }
       }
     });
-
-    this.logger.debug(`Resolved ${relativePath}:${resolvedPath}`);
 
     return "file://" + resolvedPath;
   }

@@ -131,7 +131,7 @@ function createWorkspaceMenuProviders() {
     new WebMenuItemFactoryProvider("zoomOut", "view", createKeyCommandMenuItemClass("Zoom Out", "CmdOrCtrl+-", ZoomOutRequest)),
     new WebMenuItemFactoryProvider("zoomSep", "view", createMenuSeparatorClass()),
 
-    ...(process.env.DEV ? debugMenuOptions : []),
+    ...(process.env.DEV || true ? debugMenuOptions : []),
 
     new WebMenuItemFactoryProvider("debugSep", "view", createMenuSeparatorClass()),
     new WebMenuItemFactoryProvider("toggleTools", "view", createKeyCommandMenuItemClass("Toggle Stage Tools", "Ctrl+CmdOrCtrl+T", ToggleStageToolsRequest)),

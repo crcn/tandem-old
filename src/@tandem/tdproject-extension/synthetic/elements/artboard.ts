@@ -13,6 +13,7 @@ import {
   BoundingRect,
   bindProperty,
   watchProperty,
+  hasURIProtocol,
   bubbleHTMLIframeEvents,
 } from "@tandem/common";
 
@@ -99,8 +100,13 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
       this._artboardBrowser.open({
-        uri: this.getAttribute("src"),
-        injectScript: decodeURIComponent(this.getAttribute("inject-script"))
+        uri: src,
+        injectScript: decodeURIComponent(this.getAttribute("inject-script")),
+        dependencyGraphStrategyOptions: {
+          config: {
+            rootDirectoryUri: hasURIProtocol(src) ? src : path.dirname(this.$source.uri)
+          }
+        }
       });
     }
   }, 0)

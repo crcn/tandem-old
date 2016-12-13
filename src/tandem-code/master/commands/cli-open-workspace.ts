@@ -1,6 +1,6 @@
 import path =  require("path");
 import glob =  require("glob");
-import { inject } from "@tandem/common";
+import { inject, hasURIProtocol } from "@tandem/common";
 import { TransformStream } from "@tandem/mesh";
 import { URIProtocolProvider } from "@tandem/sandbox";
 import { OpenNewWorkspaceRequest } from "tandem-code/common";
@@ -43,6 +43,10 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
     if (!(await protocol.fileExists(uri))) {
       this.logger.error(`Cannot open ${uri}: File does not exist.`);
       return;
+    }
+
+    if (!hasURIProtocol(uri)) {
+      uri = "file://" + uri;
     }
 
     return this.bus.dispatch(new OpenNewWorkspaceRequest(uri));

@@ -14,7 +14,7 @@ describe(__filename + "#", () => {
           history.pushState("a", "page 1", "hello.html");
         </script>
       `
-    }, "/path/to/index.html");
+    }, "file:///path/to/index.html");
 
     expect(browser.window.location.pathname).to.equal("/path/to/hello.html");
     expect(browser.window.history.length).to.equal(2);
@@ -26,7 +26,7 @@ describe(__filename + "#", () => {
           history.pushState("a", "page 1", "/hello2.html");
         </script>
       `
-    }, "/path/to/index.html");
+    }, "file:///path/to/index.html");
 
     expect(browser.window.location.pathname).to.equal("/hello2.html");
 
@@ -41,7 +41,7 @@ describe(__filename + "#", () => {
           history.replaceState("b", "page 2", "hello2.html");
         </script>
       `
-    }, "/path/to/index.html");
+    }, "file:///path/to/index.html");
 
     expect(browser.window.location.pathname).to.equal("/path/to/hello2.html");
     expect(browser.window.history.length).to.equal(2);
@@ -57,7 +57,7 @@ describe(__filename + "#", () => {
           history.replaceState("b", "page 2", "hello2.html");
         </script>
       `
-    }, "/path/to/index.html");
+    }, "file:///path/to/index.html");
 
     expect(browser.window.history.state).to.equal("b");
   });
@@ -74,7 +74,7 @@ describe(__filename + "#", () => {
           
         </script>
       `
-    }, "/path/to/index.html");
+    }, "file:///path/to/index.html");
 
     expect(browser.window.history.state).to.equal("c");
     browser.window.history.back();
@@ -107,9 +107,9 @@ describe(__filename + "#", () => {
           document.querySelector("span").textContent = locations.join(", ");
         </script>
       `
-    }, "/path/to/index.html");
+    }, "file:///path/to/index.html");
 
-    expect(browser.window.document.querySelector("span").textContent).to.equal("/path/to/a.html, /path/to/b.html, /path/to/c.html, /path/to/c.html#d");
+    expect(browser.window.document.querySelector("span").textContent).to.equal("file:///path/to/a.html, file:///path/to/b.html, file:///path/to/c.html, file:///path/to/c.html#d");
   });
 
 })

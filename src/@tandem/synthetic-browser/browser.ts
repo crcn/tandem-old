@@ -1,4 +1,6 @@
 import vm =  require("vm");
+import Url = require("url");
+import path = require("path");
 import { IDispatcher } from "@tandem/mesh";
 import { SyntheticLocation } from "./location";
 import { SyntheticRendererEvent } from "./messages";
@@ -19,9 +21,10 @@ import {
   findTreeNode,
   watchProperty,
   HTML_MIME_TYPE,
-  MimeTypeProvider,
+  hasURIProtocol,
   BubbleDispatcher,
   PropertyMutation,
+  MimeTypeProvider,
   InjectorProvider,
   PrivateBusProvider,
   MetadataChangeEvent,
@@ -140,9 +143,12 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
       return;
     }
 
+    const options2 = Object.assign({}, options);
+    if (!hasURIProtocol(options2.uri)) options2.uri = "file://" + options2.uri;
+
     this._openOptions = options;
-    this._location = new SyntheticLocation(options.uri);
-    await this.open2(options);
+    this._location = new SyntheticLocation(options2.uri);
+    await this.open2(options2);
   }
 
   protected abstract async open2(options: ISyntheticBrowserOpenOptions);
@@ -169,17 +175,22 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     return this._sandbox;
   }
 
-  protected async open2(options: ISyntheticBrowserOpenOptions) {
+  protected async open2({ uri, dependencyGraphStrategyOptions, injectScript }: ISyntheticBrowserOpenOptions) {
+    
 
-    this._script = options.injectScript;
-    this.logger.info(`Opening ${options.uri} ...`);
+    // TODO - setup file protocol specific to this CWD
+
+    this._script = injectScript;
+    this.logger.info(`Opening ${uri} ...`);
     const timerLogger = this.logger.startTimer();
-    const strategyOptions = options.dependencyGraphStrategyOptions || DependencyGraphStrategyOptionsProvider.find(options.uri, this._injector);
+    const strategyOptions = Object.assign({}, dependencyGraphStrategyOptions || {}) as IDependencyGraphStrategyOptions;
+    const uriParts = Url.parse(uri);
+    const dirname = path.dirname(uriParts.pathname);
+    strategyOptions.rootDirectoryUri = strategyOptions.rootDirectoryUri || (uriParts.protocol || "file:") + "//" + (uriParts.host || (dirname === "." ? "/" : dirname));
     const graph = this._graph = DependencyGraphProvider.getInstance(strategyOptions, this._injector);
-    this._entry = await graph.getDependency(await graph.resolve(options.uri));
+    this._entry = await graph.getDependency(await graph.resolve(uri));
     await this._sandbox.open(this._entry);
-
-    timerLogger.stop(`Loaded ${options.uri}`);
+    timerLogger.stop(`Loaded ${uri}`);
   }
 
   protected onSandboxStatusChange(newStatus: Status) {

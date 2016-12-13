@@ -38,7 +38,7 @@ export class SyntheticAnchor extends SyntheticHTMLElement {
 
   createdCallback() {
     super.createdCallback();
-    this._location = new SyntheticLocation(this.href);
+    this._location = new SyntheticLocation(this.href || "");
     new PropertyWatcher<SyntheticLocation, string>(this._location, "href").connect((value) => {
       this.setAttribute("href", value);
     });

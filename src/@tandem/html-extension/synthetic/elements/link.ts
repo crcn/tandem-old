@@ -46,6 +46,8 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
 
   private reload() {
     const rel     = (this.getAttribute("rel") || "stylesheet").toLowerCase();
+
+    if (rel !== "stylesheet") return;
     const href    = this.href;
 
     const dep = this.module && this.module.source.eagerGetDependency(href);

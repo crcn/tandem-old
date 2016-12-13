@@ -24,6 +24,7 @@ resolve UX. May want to optimize experience around writing code.
 - [ ] wire up auto updater
 - [ ] Logo
 
+
 - test
   - https://github.com/facebookincubator/create-react-app
 
@@ -39,8 +40,11 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] open tandem from text editor
   - [ ] ability to define location
   - [ ] CTA for adding files to a blank artboard
+  - [ ] server config that maps where files are
   
 - [ ] BUGS
+  - [ ] HTML
+    - [ ] cannot load index HTML
   - [ ] prevent copy & paste html elements in css inspector
   - [ ] canvas still misalaigned
   - [ ] height seems to be inherited
@@ -70,29 +74,18 @@ resolve UX. May want to optimize experience around writing code.
 - [ ] scrolling artboards (alt key?) 
   - [ ] need usage report prompt
   - [ ] extensions
-  
+
+
 ----------------------------------
-POLISH
+NOTES
 ----------------------------------
 
-- [ ] must work with regular webpack config - just open HTML file
-
-- [ ] do not dispatch ApplyFileEdit action for each input
-  - [ ] store edits somewhere until explicitly saved
+- [ ] tandem must have full UI editing capabilities. Too much context switching between code & design
 
 ----------------------------------
 LAUNCHING
 ----------------------------------
 
-TESTING
-  - [ ] TodoMVC examples
-  - [ ] actually build apps
-  - [ ] load random websites
-  - [ ] code "playground" for features before they're released
-
-PROMO
-  - [ ] online demo with codemirror (like jsfiddle)
-  - [ ] try online
 
 WEBSITE
   - [ ] cross-browser testing demo (show same browser window with different icons

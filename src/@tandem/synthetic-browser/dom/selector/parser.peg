@@ -63,7 +63,7 @@ AllSelector = "*" {
   return new AllSelectorExpression(location());
 }
 
-DescendentSelector = parent:NestedSelector " "+ descendent:CombinatorSelector {
+DescendentSelector = parent:NestedSelector WS+ descendent:CombinatorSelector {
   return new DescendentSelectorExpression(parent, descendent, location());
 }
 
@@ -131,4 +131,6 @@ SingleStringCharacter
   = !("'" / "\\") . { return text(); }
   / "\\'"
 
-_ = [ \n\r\t]*
+_ = WS*
+
+WS = [ \n\r\t]

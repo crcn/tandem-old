@@ -21,7 +21,6 @@ import {
   WatchFileRequest,
   DependencyEvent,
   ISyntheticObject,
-  ResolveFileRequest,
   ApplyFileEditRequest,
   // ReadDirectoryRequest,
   SandboxModuleAction,
@@ -71,8 +70,6 @@ export namespace EditorFamilyType {
 
 setMessageTarget(EditorFamilyType.WORKER)(WatchFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest);
-// setMessageTarget(EditorFamilyType.WORKER)(ReadDirectoryRequest);
-setMessageTarget(EditorFamilyType.WORKER)(ResolveFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
 
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(DSFindRequest))

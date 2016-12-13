@@ -27,9 +27,9 @@ import {
 
 import { IModule } from "@tandem/sandbox/sandbox";
 import { Dependency } from "@tandem/sandbox/dependency-graph/dependency";
-import { IFileResolver } from "@tandem/sandbox/resolver";
+import { NodeModuleResolver } from "@tandem/sandbox/resolver";
 import { ApplicationConfigurationProvider } from "@tandem/core/providers";
-import { FileResolverProvider, FileCacheProvider } from "@tandem/sandbox/providers";
+import { FileCacheProvider } from "@tandem/sandbox/providers";
 
 import path =  require("path");
 import sift = require("sift");
@@ -157,9 +157,6 @@ class WebpackLoaderContext {
   }
 
   private get module() {
-    if (!this.loader.modulePath) {
-      // console.log(this);
-    }
     return require(this.loader.modulePath);
   }
 
@@ -381,8 +378,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  @inject(FileResolverProvider.ID)
-  private _resolver: IFileResolver;
+  private _resolver: NodeModuleResolver;
 
   @inject(ApplicationConfigurationProvider.ID)
   private _config: any;
@@ -391,7 +387,9 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
   readonly compiler: MockWebpackCompiler;
   readonly basedir: string;
 
-  constructor(config?: string|IWebpackConfig) {
+  constructor(options: any = {}) {
+
+    const { config } = options;
 
     if (config && typeof config === "object") {
       this.basedir = process.cwd();
@@ -407,6 +405,11 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
     if (this.config.tandem && this.config.tandem.setup) {
       this.config.tandem.setup(this);
     }
+
+    this._resolver = new NodeModuleResolver({
+      extensions: ["", ...this.config.resolve.extensions],
+      directories: [...this.config.resolve.modulesDirectories, this.config.resolve.root, this.basedir]
+    });
   }
 
   get injector() {
@@ -456,20 +459,18 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
     let loaderOptions = parserLoaderOptions(moduleInfo, true);
 
-    let resolvedFilePath;
     const relativeFilePath = moduleInfo.split("!").pop();
+    let resolvedFilePath = relativeFilePath;
 
     try {
 
       this.logger.debug(`Resolving ${cwd}:${relativeFilePath} (${moduleInfo})`);
 
-      resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd, {
-        extensions: ["", ...this.config.resolve.extensions],
-        directories: [...this.config.resolve.modulesDirectories, config.resolve.root, this.basedir]
-      });
+      resolvedFilePath = await this._resolver.resolve(relativeFilePath, cwd);
     } catch(e) {
       this.logger.warn(`Unable to resolve ${relativeFilePath}`);
     }
+
 
     const isCore = resolvedFilePath && resolveNodeModule.isCore(resolvedFilePath);
 

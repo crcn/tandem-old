@@ -52,7 +52,7 @@ describe(__filename + "#", () => {
       `
     });
 
-    expect(stripNewLines(document.body.textContent)).to.equal(`document.body.appendChild(document.createTextNode("Hello World")); Hello World`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`document.body.appendChild(document.createTextNode("Hello World")); Hello World`);
   });
 
   it(`Can evaluate a script src tag`, async () => {
@@ -72,7 +72,7 @@ describe(__filename + "#", () => {
       `
     });
 
-    expect(stripNewLines(document.body.textContent)).to.equal(`Hello WorldHello World`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`Hello WorldHello World`);
   });
 
   it(`script can reference itself when executed`, async () => {
@@ -91,7 +91,7 @@ describe(__filename + "#", () => {
       `
     });
 
-    expect(stripNewLines(document.body.textContent)).to.equal(`const scripts = document.getElementsByTagName("script"); document.body.appendChild(document.createTextNode(scripts[scripts.length - 1].textContent.length)); 183`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`const scripts = document.getElementsByTagName("script"); document.body.appendChild(document.createTextNode(scripts[scripts.length - 1].textContent.length)); 183`);
   });
 
   it(`Executes scripts immediately after being appended to the document`, async () => {
@@ -115,7 +115,7 @@ describe(__filename + "#", () => {
       `
     });
 
-    expect(stripNewLines(document.body.textContent)).to.equal(`document.body.appendChild(document.createTextNode("a")); adocument.body.appendChild(document.createTextNode("b")); b`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`document.body.appendChild(document.createTextNode("a")); adocument.body.appendChild(document.createTextNode("b")); b`);
   });
   
 

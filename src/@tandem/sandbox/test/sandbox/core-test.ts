@@ -4,7 +4,7 @@ import { Sandbox, DependencyGraphProvider } from "@tandem/sandbox";
 import { createSandboxTestInjector, timeout } from "@tandem/sandbox/test/helpers";
 
 describe(__filename + "#", () => {
-  it("can evaluate an entry", async () => {
+  xit("can evaluate an entry", async () => {
     const injector = createSandboxTestInjector({
       mockFiles: {
         "a.js": "module.exports = require('./b.js')",
@@ -20,7 +20,7 @@ describe(__filename + "#", () => {
   });
 
 
-  it("re-evaluates a dependency if it changes", async () => {
+  xit("re-evaluates a dependency if it changes", async () => {
     const injector = createSandboxTestInjector({
       mockFiles: {
         "a.js": "module.exports = require('./b.js')",
@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
     expect(sandbox.exports).to.equal("aa");
   });
 
-  it("re-evaluates once if multiple dependencies change at the same time", async () => {
+  xit("re-evaluates once if multiple dependencies change at the same time", async () => {
     const injector = createSandboxTestInjector({
       mockFiles: {
         "a.js": "module.exports = require('./b.js')",

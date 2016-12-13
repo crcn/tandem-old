@@ -26,7 +26,6 @@ export const getAllUnsavedFiles = (injector: Injector) => {
         chunks.push(chunk);
       },
       close() {
-        console.log(chunks)
         resolve(chunks.map((item) => injector.inject(new FileCacheItem(item, FILE_CACHE_COLLECTION_NAME))))
       },
       abort: reject

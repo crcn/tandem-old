@@ -23,15 +23,17 @@ import {
   ActiveRecordCollection,
 } from "@tandem/common";
 
+
 export interface IDependencyGraphStrategyOptions {
   name?: string;
+  rootDirectoryUri?: string;
   config?: any;
 }
 
 export interface IDependencyGraph {
   createGlobalContext();
   createModuleContext(module: IModule);
-  getLoader(loaderOptions: any): IDependencyLoader;
+  getLoader(options: any): IDependencyLoader;
   eagerFindByHash(hash): Dependency;
   resolve(uri: string, cwd: string): Promise<IResolvedDependencyInfo>;
   getDependency(info: IResolvedDependencyInfo): Promise<Dependency>;
@@ -61,7 +63,7 @@ export class DependencyGraph extends Observable implements IDependencyGraph {
   $didInject() {
 
     // temporary - this should be passed into the constructor
-    this.$strategy = this._strategy || this.$injector.inject(new DefaultDependencyGraphStrategy());
+    this.$strategy = this._strategy;
     this._collection = ActiveRecordCollection.create(this.collectionName, this.$injector, (source: IDependencyData) => {
       return this.$injector.inject(new Dependency(source, this.collectionName, this));
     });
@@ -84,8 +86,8 @@ export class DependencyGraph extends Observable implements IDependencyGraph {
     return this.$strategy.createModuleContext(module);
   }
 
-  getLoader(loaderOptions: any) {
-    return this.$strategy.getLoader(loaderOptions);
+  getLoader(options: any) {
+    return this.$strategy.getLoader(options);
   }
 
   get collectionName() {

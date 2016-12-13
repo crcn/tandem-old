@@ -7,6 +7,26 @@ import {
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
 
+/*
+
+input[type="radio"][disabled], fieldset[disabled] input[type="radio"],
+input[type="checkbox"][disabled],
+fieldset[disabled]
+input[type="checkbox"],
+.radio[disabled],
+fieldset[disabled]
+.radio,
+.radio-inline[disabled],
+fieldset[disabled]
+.radio-inline,
+.checkbox[disabled],
+fieldset[disabled]
+.checkbox,
+.checkbox-inline[disabled],
+fieldset[disabled]
+.checkbox-inline
+*/
+
 describe(__filename + "#", () => {
   [
     [".item", `<div class="div">a</div>b<span>c</span><div class="item">d</div>`, `<div class="item">d</div>`],
@@ -25,6 +45,7 @@ describe(__filename + "#", () => {
     ["[data-test^=b]", `<div data-test="ab">a</div><span data-test="bc">c</span>`, `<span data-test="bc">c</span>`],
     ["[data-test$=b]", `<div data-test="ab">a</div><span data-test="bc">c</span>`, `<div data-test="ab">a</div>`],
     ["[data-test*=b]", `<div data-test="abc">a</div><span data-test="bc">c</span>`, `<div data-test="abc">a</div><span data-test="bc">c</span>`],
+    [`input[type="radio"][disabled],\nfieldset[disabled]\ninput[type="radio"]`, `<input type="radio" disabled />`, `<input type="radio" disabled=""></input>`],
     [`[data-test*=b][class="test"]`, `<div data-test="abc" class="test">a</div><span data-test="bc">c</span>`, `<div data-test="abc" class="test">a</div>`],
     ["div[data-test*=b]", `<div data-test="abc">a</div><span data-test="bc">c</span>`, `<div data-test="abc">a</div>`],
     ["*[data-test]", `<div data-test="abc">a</div><span data-test="bc">c</span>`, `<div data-test="abc">a</div><span data-test="bc">c</span>`],

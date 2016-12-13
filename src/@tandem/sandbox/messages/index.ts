@@ -1,5 +1,4 @@
 import { IContentEdit } from "../edit";
-import { IFileResolverOptions } from "../resolver";
 // import { IReadFileResultItem } from "@tandem/sandbox/file-system";
 
 import {
@@ -46,14 +45,6 @@ export class ModuleImporterAction extends Message {
 export class SandboxModuleAction extends Message {
   static readonly EVALUATING = "evaluating";
   static readonly EDITED = "edited";
-}
-
-@serializable("ResolveFileRequest")
-export class ResolveFileRequest extends Message {
-  static readonly RESOLVE_FILE = "resolveFile";
-  constructor(readonly relativePath: string, readonly cwd?: string, readonly options?: IFileResolverOptions) {
-    super(ResolveFileRequest.RESOLVE_FILE);
-  }
 }
 
 export class FileCacheAction extends Message {

@@ -1,9 +1,10 @@
 import md5 =  require("md5");
 import path =  require("path");
+import Url = require("url");
 import { IModule } from "@tandem/sandbox/sandbox";
+import { Dependency } from "../../dependency";
 import { IFileResolver } from "@tandem/sandbox/resolver";
 import { IDependencyContent } from "../../base";
-import { FileResolverProvider } from "@tandem/sandbox/providers";
 import { DependencyLoaderFactoryProvider } from "@tandem/sandbox/dependency-graph/providers";
 
 import {
@@ -14,11 +15,17 @@ import {
 } from "../base";
 
 import {
+  IDependencyGraphStrategyOptions
+} from "../../graph";
+
+import {
   inject,
   Injector,
   InjectorProvider,
   MimeTypeAliasProvider,
 } from "@tandem/common";
+
+const hasProtocol = (url) => /^\w+:\/\//.test(url);
 
 export type dependencyLoaderType = { new(strategy: IDependencyGraphStrategy): IDependencyLoader };
 
@@ -33,20 +40,20 @@ export class DefaultDependencyLoader implements IDependencyLoader {
 
   constructor(readonly stragegy: DefaultDependencyGraphStrategy, readonly options: any) { }
 
-  async load(info: IResolvedDependencyInfo, content: IDependencyContent): Promise<IDependencyLoaderResult> {
+  async load(dependency: Dependency, content: IDependencyContent): Promise<IDependencyLoaderResult> {
     const importedDependencyUris: string[] = [];
 
     let current: IDependencyLoaderResult = Object.assign({}, content);
 
-    let dependency: DependencyLoaderFactoryProvider;
+    let loaderProvider: DependencyLoaderFactoryProvider;
 
     // Some loaders may return the same mime type (such as html-loader, and css-loader which simply return an AST node).
     // This ensures that they don't get re-used.
     const used = {};
 
-    while(current.type && (dependency = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._injector), this._injector)) && !used[dependency.id]) {
-      used[dependency.id] = true;
-      current = await dependency.create(this.stragegy).load(info, current);
+    while(current.type && (loaderProvider = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._injector), this._injector)) && !used[loaderProvider.id]) {
+      used[loaderProvider.id] = true;
+      current = await loaderProvider.create(this.stragegy).load(dependency, current);
       if (current.importedDependencyUris) {
         importedDependencyUris.push(...current.importedDependencyUris);
       }
@@ -63,11 +70,11 @@ export class DefaultDependencyLoader implements IDependencyLoader {
 
 export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy {
 
-  @inject(FileResolverProvider.ID)
-  private _resolver: IFileResolver;
-
   @inject(InjectorProvider.ID)
   private _injector: Injector;
+
+  constructor(readonly options: IDependencyGraphStrategyOptions) {
+  }
 
   getLoader(loaderOptions: any): IDependencyLoader {
     return this._injector.inject(new DefaultDependencyLoader(this, loaderOptions));
@@ -86,11 +93,37 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     }
   }
 
-  async resolve(fileUri: string, cwd: string): Promise<IResolvedDependencyInfo> {
-    const uri = await this._resolver.resolve(fileUri, cwd);
+  /**
+   * TODO - move logic here to HTTP resolver since there's some logic such as resolving indexes, and redirects
+   * that also need to be considered here.
+   */
+
+  async resolve(relativeUri: string, origin: string): Promise<IResolvedDependencyInfo> {
+    
+    // TODO - move this logic to HTTPFileResolver instead
+    let resolvedUri;
+    const relativeUriPathname = path.normalize(Url.parse(relativeUri).pathname); 
+
+    // protocol?
+    if (hasProtocol(relativeUri)) {
+      resolvedUri = relativeUri;
+    } else {
+      // root
+      if (relativeUri.charAt(0) === "/" || !origin) {
+        resolvedUri = (this.options.rootDirectoryUri || "file:///") + relativeUriPathname;
+      } else {
+        const originParts = hasProtocol(origin) ? Url.parse(origin) : { 
+          protocol: "file:",
+          host: "",
+          pathname: origin
+        };
+        resolvedUri = originParts.protocol + "//" + path.join(originParts.host || "", path.dirname(originParts.pathname), relativeUriPathname);
+      }
+    }
+
     return {
-      uri: uri,
-      hash: md5(uri)
+      uri: resolvedUri,
+      hash: md5(resolvedUri)
     };
   }
 }

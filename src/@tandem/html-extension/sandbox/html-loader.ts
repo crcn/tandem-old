@@ -20,6 +20,8 @@ import {
   InjectorProvider,
 } from "@tandem/common";
 
+
+
 import {
   parseMarkup,
   MarkupExpression,
@@ -50,35 +52,36 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
   @inject(InjectorProvider.ID)
   private _injector: Injector;
 
-  async load({ uri, hash }, { type, content }): Promise<IDependencyLoaderResult> {
+  async load(dependency: Dependency, { type, content }): Promise<IDependencyLoaderResult> {
 
     const self = this;
 
+    const { uri, hash } = dependency;
 
     const expression = parseMarkup(String(content));
     const imports: string[] = [];
     const dirname = path.dirname(uri);
 
     const sourceNode = (await expression.accept({
-      visitAttribute({ name, value, location }: MarkupAttributeExpression) {
-
-        if (/src|href/.test(name)) {
-          if (!hasProtocol(value)) { 
-            if (value.charAt(0) === "/") {
-              value = "file://" + value;
-            } else {
-              value = dirname.replace(/^\w+:\/\//g, "") + "/" + value;
-            }
-            if (!hasProtocol(value)) {
-              value = "file://" + value;
-            }
+      async visitAttribute({ name, value, location, parent }: MarkupAttributeExpression) {
+        
+        // must be white listed here to presetn certain elements such as artboard & anchor tags from loading resources. Even
+        // better to have a provider for loadable elements, but that's a little overkill for now.
+        if (/^(link|script|img)$/.test(parent.nodeName)) {        
+          if (value.substr(0, 2) === "//") {
+            value = "http:" + value;
           }
-          imports.push(value);
+
+          if (/src|href/.test(name)) {
+            value = (await self.strategy.resolve(value, uri)).uri;
+            imports.push(value);
+          }
         }
         
         return new sm.SourceNode(location.start.line, location.start.column, uri, [" ", name, `="`, value,`"`]);
       },
       async visitElement(expression: MarkupElementExpression) {
+
 
         const { nodeName, attributes, childNodes, location } = expression;
 
@@ -87,6 +90,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
           ...(await Promise.all(attributes.map(attrib => attrib.accept(this)))),
           `>`
         ];
+
 
         const textMimeType = ElementTextContentMimeTypeProvider.lookup(expression, self._injector);
         const textLoaderProvider = textMimeType && DependencyLoaderFactoryProvider.find(textMimeType, self._injector);
@@ -98,7 +102,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
           const firstChild = expression.childNodes[0] as MarkupTextExpression;
           const lines = Array.from({ length: firstChild.location.start.line - 1 }).map(() => "\n").join("");
 
-          const textResult = await textLoader.load({ uri, hash }, { 
+          const textResult = await textLoader.load(dependency, { 
             type: textMimeType, 
             content: lines + firstChild.nodeValue
           });

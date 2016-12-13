@@ -24,7 +24,6 @@ import {
   IDependencyLoader,
   URIProtocolProvider,
   FileCacheProvider,
-  IFileResolverOptions,
   createSandboxProviders,
   IResolvedDependencyInfo,
   IDependencyLoaderResult,
@@ -71,7 +70,10 @@ export class MockFileURIProtocol extends URIProtocol {
 
   read(uri: string): Promise<any> {
     const filePath = this.removeProtocol(uri);
-    const content = this._mockFiles[filePath];
+
+    // try removing root if not found initially
+    const content = this._mockFiles[filePath] || this._mockFiles[filePath.substr(1)];
+
     return new Promise((resolve, reject) => {
 
       // simulated latency
@@ -110,7 +112,7 @@ export class MockFileResolver implements IFileResolver {
   @inject(MockFilesProvider.ID)
   private _mockFiles: IMockFiles;
 
-  resolve(relativePath: string, cwd: string, options?: IFileResolverOptions) {
+  resolve(relativePath: string, origin: string) {
 
     // http url or something other than file
     if (/^\w+:\/\//.test(relativePath) && relativePath.indexOf("file://") !== 0) {
@@ -118,7 +120,7 @@ export class MockFileResolver implements IFileResolver {
     }
     relativePath = relativePath.replace("file://", "");
     return Promise.resolve([
-      path.resolve(cwd || "", relativePath),
+      path.resolve(origin || "", relativePath),
       path.join("", relativePath)
     ].find(filePath => !!this._mockFiles[filePath]));
   }

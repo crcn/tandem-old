@@ -89,7 +89,7 @@ describe(__filename + "#", () => {
           `
         }, "index.html");
 
-        expect(window.document.lastChild.textContent).to.contain("1");
+        expect(window.document.querySelector("span").textContent).to.contain("1");
       });
 
       it("scripts.item returns the script with the matching index", async () => {
@@ -105,7 +105,7 @@ describe(__filename + "#", () => {
           `
         }, "index.html");
 
-        expect(window.document.lastChild.textContent).to.contain("b");
+        expect(window.document.querySelector("span").textContent).to.contain("b");
       });
     });
   });
@@ -117,15 +117,17 @@ describe(__filename + "#", () => {
           <span>
             a
           </span>
+          <div>
+          </div>
           <script>  
-            document.appendChild(
+            document.querySelector("div").appendChild(
               document.createTextNode(document.getElementsByTagName("span").item(0).textContent.toUpperCase())
             )
           </script>
         `
       }, "index.html");
 
-      expect(window.document.lastChild.textContent).to.contain("A");
+      expect(window.document.querySelector("div").textContent).to.contain("A");
     });
   });
 
@@ -136,13 +138,15 @@ describe(__filename + "#", () => {
           <script type="text/jsx">  
 
           </script>
+          <span>
+          </span>
           <script>
-            document.appendChild(document.createTextNode(document.scripts.item(0).type));
+            document.querySelector("span").appendChild(document.createTextNode(document.scripts.item(0).type));
           </script>
         `
       }, "index.html");
 
-      expect(window.document.lastChild.textContent).to.contain("text/jsx");
+      expect(window.document.querySelector("span").textContent).to.contain("text/jsx");
     });
   });
 

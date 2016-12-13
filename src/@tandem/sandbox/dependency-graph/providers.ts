@@ -13,6 +13,7 @@ import {
 import {
   IDependencyLoader,
   dependencyLoaderType,
+  DefaultDependencyGraphStrategy,
   IDependencyGraphStrategy,
 } from "./strategies";
 
@@ -40,13 +41,14 @@ export class DependencyGraphStrategyProvider extends ClassFactoryProvider {
   constructor(readonly name: string, clazz: { new(config:any): IDependencyGraphStrategy }) {
     super(DependencyGraphStrategyProvider.getNamespace(name), clazz);
   }
+
   static getNamespace(name: string) {
     return [DependencyGraphStrategyProvider.ID, name].join("/");
   }
 
-  static create(strategyName: string, config: any, injector: Injector): IDependencyGraphStrategy {
+  static create(strategyName: string, options: any, injector: Injector): IDependencyGraphStrategy {
     const dependency = injector.query<DependencyGraphStrategyProvider>(this.getNamespace(strategyName));
-    return dependency && dependency.create(config);
+    return dependency ? dependency.create(options) : injector.inject(new DefaultDependencyGraphStrategy(options));
   }
 }
 
@@ -61,9 +63,10 @@ export class DependencyGraphProvider extends Provider<any> {
     return new DependencyGraphProvider(this.clazz);
   }
   getInstance(options: IDependencyGraphStrategyOptions): DependencyGraph {
+    const hash = JSON.stringify(options);
     const strategyName = (options && options.name) || "default";
-    if (this._instances[strategyName]) return this._instances[strategyName];
-    return this._instances[strategyName] = this.owner.inject(new this.clazz(options && DependencyGraphStrategyProvider.create(options.name, options.config, this.owner)));
+    if (this._instances[hash]) return this._instances[hash];
+    return this._instances[hash] = this.owner.inject(new this.clazz(DependencyGraphStrategyProvider.create(strategyName, options, this.owner)));
   }
   static getInstance(options: IDependencyGraphStrategyOptions, injector: Injector): DependencyGraph {
     return injector.query<DependencyGraphProvider>(this.ID).getInstance(options);

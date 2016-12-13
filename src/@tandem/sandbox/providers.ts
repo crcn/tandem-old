@@ -1,7 +1,7 @@
 import { FileCache } from "./file-cache";
 import { ENV_IS_NODE, IProvider } from "@tandem/common";
 import { FileEditor, contentEditorType, IEditor } from "./edit";
-import { IFileResolver, LocalFileResolver, RemoteFileResolver } from "./resolver";
+import { IFileResolver } from "./resolver";
 
 import {
   Provider,
@@ -66,7 +66,7 @@ export class ProtocolURLResolverProvider extends ClassFactoryProvider {
 }
 
 // export const FileSystemProvider  = createSingletonProviderClass<IFileSystem>("fileSystem");
-export const FileResolverProvider  = createSingletonProviderClass<IFileResolver>("fileResolver");
+// export const FileResolverProvider  = createSingletonProviderClass<IFileResolver>("fileResolver");
 export const FileCacheProvider  = createSingletonProviderClass<FileCache>("fileCache");
 export const FileEditorProvider = createSingletonProviderClass<FileEditor>("fileEditor");
 

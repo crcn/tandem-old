@@ -10,7 +10,6 @@ import {
   FileCacheItem,
   DependencyEvent,
   IDependencyLoader,
-  FileResolverProvider,
   IDependencyLoaderResult,
   IResolvedDependencyInfo,
 } from "@tandem/sandbox";
@@ -32,7 +31,8 @@ class MockDependencyGraph implements IDependencyGraph {
   async resolve(uri: string, origin: string) {
     return Promise.resolve({
       hash: uri,
-      uri: await FileResolverProvider.getInstance(this.injector).resolve(uri, origin)
+      uri: origin + uri
+      // uri: await FileResolverProvider.getInstance(this.injector).resolve(uri, origin)
     });
   }
   getDependency(info: IResolvedDependencyInfo) {

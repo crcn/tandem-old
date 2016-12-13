@@ -61,7 +61,7 @@ describe(__filename + "#", () => {
   
     const styleSheet = browser.window.document.styleSheets[0];
     const rule = styleSheet.rules[0] as SyntheticCSSStyleRule;
-    expect(rule.style.background).to.equal(`url(file://./test.png)`);
+    expect(rule.style.background).to.equal(`url(file:///test.png)`);
   });
 
   [

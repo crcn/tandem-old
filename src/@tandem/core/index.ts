@@ -13,8 +13,6 @@ import { SequenceBus } from "@tandem/mesh";
 
 import {
   IFileResolver,
-  LocalFileResolver,
-  RemoteFileResolver,
   createSandboxProviders,
 } from "@tandem/sandbox";
 
