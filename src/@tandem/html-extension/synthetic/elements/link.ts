@@ -25,6 +25,14 @@ export class SyntheticHTMLLink extends SyntheticHTMLElement {
     return this.getAttribute("href");
   }
 
+  get rel() {
+    return this.getAttribute("rel");
+  }
+
+  get type() {
+    return this.getAttribute("type");
+  }
+
   set href(value: string) {
     this.setAttribute("href", value);
     this.reload();

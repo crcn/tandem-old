@@ -113,7 +113,12 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     } else {
       // root
       if (relativeUri.charAt(0) === "/" || !origin) {
-        resolvedUri = (this.options.rootDirectoryUri || "file:///") + relativeUriPathname;
+        if (origin && hasURIProtocol(origin)) {
+          const originParts = Url.parse(origin);
+          resolvedUri = originParts.protocol + "//" + originParts.host + "/" + relativeUriPathname;
+        } else {
+          resolvedUri = (this.options.rootDirectoryUri || "file:///") + relativeUriPathname;
+        }
       } else {
         const originParts = hasURIProtocol(origin) ? Url.parse(origin) : { 
           protocol: "file:",

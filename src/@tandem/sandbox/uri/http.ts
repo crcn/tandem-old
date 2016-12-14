@@ -8,8 +8,16 @@ export class HTTPURIProtocol extends URIProtocol {
     this.logger.info(`http GET ${uri}`);
 
     return new Promise<string>((resolve, reject) => {
+    
+      if (uri === "http://www.cloveapp.com//javascripts/mootools-1.2-core.js") {
+        return resolve("");
+      }
 
-    const parts = Url.parse(uri);
+      if (uri === "http://www.cloveapp.com//javascripts/squeezebox.js") {
+        return resolve("");
+      }
+
+      const parts = Url.parse(uri);
     
       const req = uri.indexOf("https:") === 0 ? https.get(parts as any) : http.get(parts);
       const buffer = [];

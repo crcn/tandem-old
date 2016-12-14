@@ -198,6 +198,10 @@ export class SyntheticWindow extends Observable {
     this._eventListeners.add(type, listener);
   }
 
+  addEvent(type: string, listener: DOMEventListenerFunction) {
+    this._eventListeners.add(type, listener);
+  }
+
   removeEventListener(type: string, listener: DOMEventListenerFunction) {
     this._eventListeners.remove(type, listener);
   }
