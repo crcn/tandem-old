@@ -15,6 +15,10 @@ export class HTTPURIProtocol extends URIProtocol {
       const buffer = [];
       req.on("response", (resp) => {
         const contentType = resp.headers["content-type"];
+
+        if (/^30/.test(String(resp.statusCode))) {
+          return this.read(resp.headers.location).then(resolve, reject);
+        }
         
         if (!/^20/.test(String(resp.statusCode))) {
           return reject(new Error(`Unable to load: ${resp.statusCode}`));
