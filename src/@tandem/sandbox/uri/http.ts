@@ -10,7 +10,7 @@ export class HTTPURIProtocol extends URIProtocol {
     return new Promise<IURIProtocolReadResult>((resolve, reject) => {
 
       const parts = Url.parse(uri);
-    
+
       const req = uri.indexOf("https:") === 0 ? https.get(parts as any) : http.get(parts);
       const buffer = [];
       req.on("response", (resp) => {

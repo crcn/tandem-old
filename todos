@@ -14,7 +14,6 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] need to respect content type from server
 - [ ] launch checklist
 - [ ] Atom editor
 - [ ] analytics & usage
@@ -43,8 +42,7 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] server config that maps where files are
   
 - [ ] BUGS
-  - [ ] HTML
-    - [ ] cannot load index HTML
+  - [ ] allow gzip decompression
   - [ ] prevent copy & paste html elements in css inspector
   - [ ] canvas still misalaigned
   - [ ] height seems to be inherited
