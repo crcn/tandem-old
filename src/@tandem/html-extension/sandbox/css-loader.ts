@@ -69,6 +69,8 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
         buffer = [`@${rule.name} ${rule.params}`];
         if (rule.nodes) {
           buffer.push(`{`, ...(await Promise.all(rule.nodes.map(compile))), `}\n`);
+        } else {
+          buffer.push(";");
         }
       } else if (node.type === "decl") {
 
@@ -82,8 +84,6 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
 
             let repl;
 
-            
-
             // this can still break, but it's a quick implementation that should work 99% of the time.
             // Good for now.
             repl = url.replace(/["']/g, "");
@@ -91,7 +91,7 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
 
             importedUris.push(repl);
 
-            value = value.replace(url, repl);
+            value = value.replace(url, `"${repl}"`);
           }
         }
         buffer = [prop, ':', value, ';'];
