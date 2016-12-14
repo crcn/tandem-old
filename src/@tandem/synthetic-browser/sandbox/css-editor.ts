@@ -111,6 +111,7 @@ export class CSSEditor extends BaseContentEditor<postcss.Node> {
     let found: boolean;
     let foundIndex: number = -1;
     const shouldAdd = node.walkDecls((decl, index) => {
+      if (decl.parent !== node) return;
       if (decl.prop === name || decl.prop === oldName) {
         if (name && newValue) {
           decl.prop  = name;

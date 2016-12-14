@@ -39,6 +39,7 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
     }
 
     const consumer = map && new sm.SourceMapConsumer(map);
+    const sourceRoot = map && map.sourceRoot || uri;
     const fileDirectory = path.dirname(uri);
     const importedUris: string[] = [];
     
@@ -53,7 +54,7 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
         const orig = consumer.originalPositionFor({ line, column });
         line = orig.line;
         column = orig.column;
-        origUri = orig.source && (await this.strategy.resolve(orig.source, uri)).uri || uri;
+        origUri = orig.source && (await this.strategy.resolve(orig.source, sourceRoot)).uri || uri;
       }
 
       let buffer: (string | sm.SourceNode)[] | string | sm.SourceNode;
@@ -80,6 +81,8 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
             const [whole, url] = match.match(/url\((.*?)\)/);
 
             let repl;
+
+            
 
             // this can still break, but it's a quick implementation that should work 99% of the time.
             // Good for now.

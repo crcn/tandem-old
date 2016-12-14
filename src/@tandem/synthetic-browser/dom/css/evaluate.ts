@@ -19,6 +19,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
   const dependency = module && module.source;
 
   const sourceMapConsumer = map && new sm.SourceMapConsumer(map);
+  const sourceRoot = map && map.sourceRoot || "";
 
   function getStyleDeclaration(rules: postcss.Declaration[]) {
 
@@ -58,10 +59,11 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
         column: originalPosition.column + 1
       };
 
-      uri = originalPosition.source;
+      // source-map will automatically prefix with file:// if root / is present, so replace file:// with the actual
+      // source root. This MAY not be a bug, but I'm treating it as one for now.
+      uri = originalPosition.source && originalPosition.source.replace("file:///", sourceRoot + "/"); 
       end = undefined;
     }
-
 
     synthetic.$source = {
       kind: expression.type,
