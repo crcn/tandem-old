@@ -90,7 +90,7 @@
       CSS class source code, and reload all other Artboards that use it. Go ahead and zoom out to check how your change appears in other pages and device sizes.
     </p>
     <p>
-      If you'd like to save your change, you can click the save button in the Unsaved Files panel in the right side. 
+      If you'd like to save your change, you can click the save button in the Unsaved Files panel in the left panel. 
       If you're using the VSCode extension, changes will automatically appear when you open the demo CSS file. You can also save changes from there.
     </p>
     

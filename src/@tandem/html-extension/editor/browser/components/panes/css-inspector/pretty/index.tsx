@@ -268,6 +268,9 @@ export class CSSPrettyInspectorComponent extends BaseApplicationComponent<{ rule
   renderAnimations() {
     const { graphics } = this.props;
 
+    // unblock when actually working
+    if (1 + 1) return null;
+
     // TODO - more buttons needs to popup an animation timeline footer
     return <div className="container section" key="animations">
       <div className="section">

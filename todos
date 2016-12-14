@@ -100,6 +100,8 @@ DOCS
   - [ ] browser compatibility table (what you can & cannot currently do in Tandem)
 
 UX
+  - [ ] *"LIVE" button that loads the application up in an iframe in the client
+
   - [ ] launch tandem from vscode
   - [ ] display title of document (if present)
   - [ ] VM developer console
