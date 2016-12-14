@@ -1,27 +1,21 @@
-import { URIProtocol } from "./protocol";
+import { URIProtocol, IURIProtocolReadResult } from "./protocol";
 import http = require("http");
 import https = require("https");
 import Url = require("url");
 
 export class HTTPURIProtocol extends URIProtocol {
-  async read(uri: string): Promise<string> {
+  async read(uri: string): Promise<IURIProtocolReadResult> {
     this.logger.info(`http GET ${uri}`);
 
-    return new Promise<string>((resolve, reject) => {
-    
-      if (uri === "http://www.cloveapp.com//javascripts/mootools-1.2-core.js") {
-        return resolve("");
-      }
-
-      if (uri === "http://www.cloveapp.com//javascripts/squeezebox.js") {
-        return resolve("");
-      }
+    return new Promise<IURIProtocolReadResult>((resolve, reject) => {
 
       const parts = Url.parse(uri);
     
       const req = uri.indexOf("https:") === 0 ? https.get(parts as any) : http.get(parts);
       const buffer = [];
       req.on("response", (resp) => {
+        const contentType = resp.headers["content-type"];
+        
         if (!/^20/.test(String(resp.statusCode))) {
           return reject(new Error(`Unable to load: ${resp.statusCode}`));
         }
@@ -30,7 +24,10 @@ export class HTTPURIProtocol extends URIProtocol {
         });
 
         resp.on("end", () => {
-          resolve(buffer.join(""));
+          resolve({
+            type: contentType && contentType.split(";").shift(),
+            content: buffer.join("")
+          });
         });
       });
   

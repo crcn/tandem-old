@@ -236,20 +236,22 @@ export class FileEditor {
     const promises = [];
 
     for (const uri in mutationsByUri) {
-      const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(MimeTypeProvider.lookup(uri, this._injector), this._injector);
+
+      const fileCache  = await  FileCacheProvider.getInstance(this._injector).item(uri);
+      const { type, content } = await fileCache.read();
+
+      const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(type, this._injector);
 
       if (!contentEditorFactoryProvider) {
         this.logger.error(`No synthetic edit consumer exists for ${uri}.`);
         continue;
       }
 
-      const autoSave   = contentEditorFactoryProvider.autoSave    ;
-      const fileCache  = await  FileCacheProvider.getInstance(this._injector).item(uri);
-      const oldContent = String(await fileCache.read());
+      const autoSave   = contentEditorFactoryProvider.autoSave;
 
       // error may be thrown if the content is invalid
       try {
-        const contentEditor = contentEditorFactoryProvider.create(uri, oldContent);
+        const contentEditor = contentEditorFactoryProvider.create(uri, String(content));
 
         const changes = mutationsByUri[uri];
         this.logger.info(`Applying file changes ${uri}: >>`, changes.map(event => event.type).join(" "));
@@ -260,7 +262,7 @@ export class FileEditor {
         // actual edits. May need to have a result come from the content editors themselves to check if anything's changed.
         // Note that checking WS changes won't cut it since formatters may swap certain characters. E.g: HTML may change single quotes
         // to double quotes for attributes.
-        if (oldContent !== newContent) {
+        if (content !== newContent) {
           fileCache.setDataUrlContent(newContent);
           promises.push(fileCache.save());
           if (autoSave) {

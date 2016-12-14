@@ -102,7 +102,8 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
     
     // TODO - move this logic to HTTPFileResolver instead
     let resolvedUri;
-    const relativeUriPathname = path.normalize(Url.parse(relativeUri).pathname);
+    const uriParts = Url.parse(relativeUri);
+    const relativeUriPathname = uriParts.pathname && path.normalize(uriParts.pathname);
 
     // strip to ensure that
     if (origin) origin = origin.replace("file://", "");

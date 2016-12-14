@@ -395,9 +395,10 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
    */
 
   protected async getInitialSourceContent(): Promise<IDependencyLoaderResult> {
+    const readResult = this.uri && await (await this.getSourceFileCacheItem()).read();
     return {
-      type: this.uri && MimeTypeProvider.lookup(this.uri, this._injector) || PLAIN_TEXT_MIME_TYPE,
-      content: this.uri && await (await this.getSourceFileCacheItem()).read()
+      type: readResult && readResult.type || MimeTypeProvider.lookup(this.uri, this._injector) || PLAIN_TEXT_MIME_TYPE,
+      content: readResult && readResult.content
     };
   }
 

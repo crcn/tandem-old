@@ -7,6 +7,11 @@ export interface IURIWatcher {
 // TODO - URI needs to be wrapped around a file object so that certain
 // protocols such data:// can be written to
 
+export interface IURIProtocolReadResult {
+  type: string;
+  content: string|Buffer;
+}
+
 @loggable()
 export abstract class URIProtocol {
   protected readonly logger: Logger;
@@ -19,7 +24,7 @@ export abstract class URIProtocol {
   } = {};
 
   // TODO - this must return { type: mimeType, content: any }
-  abstract read(uri: string): Promise<string|Buffer>;
+  abstract read(uri: string): Promise<IURIProtocolReadResult>;
   abstract write(uri: string, content: any): Promise<any>;
   abstract fileExists(uri: string): Promise<boolean>;
 

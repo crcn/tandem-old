@@ -4,7 +4,7 @@ Notes about this doc:
 - Remove a checklist item when it's completed.
 
 ----------------------------------
-IMMEDIAT
+IMMEDIATE
 ----------------------------------
 
 Start working on UX around getting started with Tandem and projects.
@@ -15,7 +15,6 @@ TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
 - [ ] need to respect content type from server
-- [ ] need edits to work with browsertap demo
 - [ ] launch checklist
 - [ ] Atom editor
 - [ ] analytics & usage
@@ -23,7 +22,6 @@ resolve UX. May want to optimize experience around writing code.
 - [ ] ability to select unsaved files
 - [ ] welcome to tandem video
 - [ ] bark for unsaved changes
-- [ ] wire up auto updater
 - [ ] Logo
 
 
@@ -88,9 +86,11 @@ NOTES
 LAUNCHING
 ----------------------------------
 
-
 WEBSITE
   - [ ] cross-browser testing demo (show same browser window with different icons
+
+CORE
+  - [ ] wire up auto updater
 
 ----------------------------------
 STABILITY

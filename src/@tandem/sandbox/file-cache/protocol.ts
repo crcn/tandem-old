@@ -1,5 +1,5 @@
 import { inject } from "@tandem/common";
-import { URIProtocol } from "../uri";
+import { URIProtocol, IURIProtocolReadResult } from "../uri";
 import { FileCacheProvider } from "../providers";
 import { FileCacheItem } from "./item";
 import { FileCache } from "./file-cache";

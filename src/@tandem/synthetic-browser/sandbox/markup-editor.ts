@@ -50,7 +50,7 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     node.nodeValue = newValue;
   }
 
-  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
+    [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
 
     const syntheticElement = <SyntheticHTMLElement>target;
     if (newValue == null) {

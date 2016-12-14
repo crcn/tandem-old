@@ -24,7 +24,7 @@ describe(__filename + "#", () => {
     });
 
     const item = await fileCache.item("entry.js");
-    expect(await item.read()).to.equal("hello world");
+    expect(await item.read()).to.eql({ type: "application/javascript", content: "hello world" });
   });
 
   it("caches loaded items", async () => {
@@ -42,9 +42,9 @@ describe(__filename + "#", () => {
       });
 
       const item = await fileCache.item("entry.js");
-      expect(await item.read()).to.eql("a");
+      expect(await item.read()).to.eql({ type: "application/javascript", content: "a" });
       await fileProtocol.write("entry.js", "b");
-      expect(await item.read()).to.eql("b");
+      expect(await item.read()).to.eql({ type: "application/javascript", content: "b" });
     });
 
     it("emits a change when changing the data url", async () => {
@@ -57,7 +57,7 @@ describe(__filename + "#", () => {
         item.observe({
           dispatch({ mutation }: MutationEvent<any>) {
             if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
-              expect(item.contentUri).to.equal("data:text/plain,aGVsbG8=");
+              expect(item.contentUri).to.equal("data:application/javascript,aGVsbG8=");
               resolve();
             }
           }

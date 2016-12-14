@@ -34,8 +34,8 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
     if (!map && sourceMappingUrl) {
       const resolveSourceMappingUrl = (await this.strategy.resolve(sourceMappingUrl, uri)).uri;
       const protocol = URIProtocolProvider.lookup(resolveSourceMappingUrl, this._injector);
-      const mapContent = String(await protocol.read(resolveSourceMappingUrl));
-      map = JSON.parse(mapContent);
+      const result = await protocol.read(resolveSourceMappingUrl);
+      map = JSON.parse(String(result.content));
     }
 
     const consumer = map && new sm.SourceMapConsumer(map);

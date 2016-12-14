@@ -21,20 +21,20 @@ export class XHRServer implements IStreamableDispatcher<HTTPRequest> {
     return new DuplexStream((input, output) => {
 
       const writer = output.getWriter();
-      
 
-      const response = new HTTPResponse(HTTPStatusType.OK, {
-        contentType: "text/plain"
-      });
-
-      writer.write(response);
-      
       this.logger.info(`XHR ${request.method} ${request.url}`);
 
       URIProtocolProvider.lookup(request.url, this._injector).read(request.url).catch((e) => {
         writer.abort(e);
-      }).then((buffer) => {
-        writer.write(String(buffer));
+      }).then((data) => {
+
+        const response = new HTTPResponse(data ? HTTPStatusType.OK : HTTPStatusType.INTERNAL_SERVER_ERROR, {
+          contentType: data && data.type || "text/plain"
+        });
+
+        writer.write(response);
+
+        writer.write(String(data && data.content));
         writer.close();
       });
     });

@@ -27,7 +27,9 @@ export class TDRootFileImporter implements IFileImporter {
     // TODO: temporary fix for DNDd files
     uri = uri.replace(/^file:\/\//g, "");
 
-    const content = String(await URIProtocolProvider.lookup(uri, this._injector).read(uri));
+    let { type, content } = await URIProtocolProvider.lookup(uri, this._injector).read(uri);
+
+    content = String(content);
 
     const element = <SyntheticDOMElement>targetObject;
 

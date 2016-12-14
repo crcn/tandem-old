@@ -11,7 +11,10 @@ export class DataURIProtocol extends URIProtocol {
   read(uri: string) {
     const data = parseDataURI(uri);
     if (!data) throw new Error(`Cannot load ${uri}.`);
-    return Promise.resolve(new Buffer(data.content, "base64"));
+    return Promise.resolve({
+      type: data.type, 
+      content: new Buffer(data.content, "base64")
+    });
   }
 
   async write(uri: string, content: string) {

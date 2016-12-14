@@ -6,6 +6,7 @@ import {
   Injector,
   IBrokerBus,
   Observable,
+  MimeTypeProvider,
   InjectorProvider,
   PrivateBusProvider,
   ActiveRecordCollection,
@@ -16,7 +17,6 @@ import { WritableStream, DSFindRequest } from "@tandem/mesh";
 import { FileCacheItem, IFileCacheItemData, createDataUrl } from "./item";
 
 export const FILE_CACHE_COLLECTION_NAME = "fileCache";
-
 
 export const getAllUnsavedFiles = (injector: Injector) => {
   return new Promise<FileCacheItem[]>((resolve, reject) => {
@@ -74,17 +74,19 @@ export class FileCache extends Observable {
    * ability to shove temporary files into mem -- like unsaved files.
    */
 
-  async add(sourceUri: string, content: string|Buffer): Promise<FileCacheItem> {
+  async add(sourceUri: string, { type, content }: { type: string, content: string|Buffer }): Promise<FileCacheItem> {
     const fileCache = await this.collection.loadItem({ sourceUri });
+
+    if (!type) type = MimeTypeProvider.lookup(sourceUri, this._injector);
 
     if (!fileCache) {
       return this.collection.create({
         sourceUri: sourceUri,
-        contentUri: createDataUrl(content),
+        contentUri: createDataUrl(content, type),
         sourceModifiedAt: -1,
       }).insert();
     } else {
-      return fileCache.setDataUrlContent(content).save();
+      return fileCache.setDataUrlContent(content, type).save();
     }
   }
 

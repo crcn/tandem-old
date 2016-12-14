@@ -20,9 +20,12 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
     const tmpName = `cache://` + path.join(path.dirname(removeURIProtocol(uri)), `unsaved${i++}.${TD_PRIMARY_FILE_EXTENSION}`);
 
     let content;
+    let type;
 
     if (MimeTypeProvider.lookup(uri, this.injector) === TDPROJECT_MIME_TYPE) {
-      content = await URIProtocolProvider.lookup(uri, this.injector).read(uri);
+      const result = await URIProtocolProvider.lookup(uri, this.injector).read(uri);
+      content = result.content;
+      type    = result.type;
     } else {
       content = `<tandem>
         <artboard src="${uri}" />
@@ -30,7 +33,7 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
     }
 
 
-    await this._fileCache.add(tmpName, content);
+    await this._fileCache.add(tmpName, { type, content });
 
     
     return tmpName;

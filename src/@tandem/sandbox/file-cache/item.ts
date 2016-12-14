@@ -1,7 +1,7 @@
 import memoize =  require("memoizee");
 import { CallbackDispatcher } from "@tandem/mesh";
 import { btoa, atob } from "abab"
-import { URIProtocolProvider, URIProtocol } from "../uri";
+import { URIProtocolProvider, URIProtocol, IURIProtocolReadResult  } from "../uri";
 
 import {
   Metadata,
@@ -10,6 +10,7 @@ import {
   inject,
   ENV_IS_NODE,
   MutationEvent,
+  MimeTypeProvider,
   BaseActiveRecord,
   InjectorProvider,
   PropertyMutation,
@@ -89,8 +90,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     this.updatedAt = Date.now();
   }
 
-  setDataUrlContent(content: string|Buffer, mimeType: string = "text/plain") {
-    return this.setContentUri(createDataUrl(content, mimeType));
+  setDataUrlContent(content: string|Buffer, mimeType?: string)  {
+    return this.setContentUri(createDataUrl(content, mimeType || MimeTypeProvider.lookup(this.sourceUri, this._injector)));
   }
 
   setContentUri(uri: string) {
@@ -100,8 +101,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   read = memoize(async () => {
     const protocol = URIProtocolProvider.lookup(this.contentUri, this._injector);
-    return protocol.read(this.contentUri);
-  }, { promise: true, length: 0 })
+    return await protocol.read(this.contentUri);
+  }, { promise: true, length: 0 }) as (() => Promise<IURIProtocolReadResult>);
 
   shouldDeserialize(b: IFileCacheItemData) {
     return this.updatedAt < b.updatedAt;

@@ -7,6 +7,7 @@ import { 
   UpsertBus,
   BrokerBus,
   IDisposable,
+  MimeTypeProvider,
   InjectorProvider,
   PrivateBusProvider,
 } from "@tandem/common";
@@ -57,6 +58,9 @@ export class MockFileURIProtocol extends URIProtocol {
   @inject(MockFilesProvider.ID)
   private _mockFiles: IMockFiles;
 
+  @inject(InjectorProvider.ID)
+  private _injector: Injector;
+
   private _watchers2: any;
 
   constructor() {
@@ -79,7 +83,7 @@ export class MockFileURIProtocol extends URIProtocol {
       // simulated latency
       setTimeout(() => {
         if (content) {
-          resolve(content);
+          resolve({ type: MimeTypeProvider.lookup(uri, this._injector), content: content });
         } else {
           reject(new Error(`Mock file ${uri} not found.`));
         }

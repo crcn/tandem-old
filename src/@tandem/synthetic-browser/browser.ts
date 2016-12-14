@@ -185,7 +185,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     const timerLogger = this.logger.startTimer();
     const strategyOptions = Object.assign({}, dependencyGraphStrategyOptions || {}) as IDependencyGraphStrategyOptions;
     const uriParts = Url.parse(uri);
-    const dirname = path.dirname(uriParts.pathname);
+    const dirname = uriParts.pathname && path.dirname(uriParts.pathname) || ".";
     strategyOptions.rootDirectoryUri = strategyOptions.rootDirectoryUri || (uriParts.protocol || "file:") + "//" + (uriParts.host || (dirname === "." ? "/" : dirname));
     const graph = this._graph = DependencyGraphProvider.getInstance(strategyOptions, this._injector);
     this._entry = await graph.getDependency(await graph.resolve(uri));
