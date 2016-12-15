@@ -8,9 +8,11 @@ import { SyntheticDOMContainer } from "./container";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
 import { IMarkupExpression, MarkupContainerExpression } from "./ast";
+import parse5 = require("parse5");
+import { getHTMLASTNodeLocation } from "./parser";
 
 // TODO - this needs to be async
-export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule, parentContainer?: SyntheticDOMContainer): any {
+export function evaluateMarkup(expression: parse5.AST.Default.Node, doc: SyntheticDocument, namespaceURI?: string, module?: SandboxModule, parentContainer?: SyntheticDOMContainer): any {
 
 
   const source = module && module.source;
@@ -23,91 +25,104 @@ export function evaluateMarkup(expression: IMarkupExpression, doc: SyntheticDocu
       smg = new sm.SourceMapConsumer(source.map);
     }
   }
-
+  const stack = new Error().stack;
+  const root = expression;
   
-  function linkSourceInfo(expression: IMarkupExpression, synthetic: SyntheticDOMNode) {
+  function linkSourceInfo(expression: parse5.AST.Default.Node, synthetic: SyntheticDOMNode) {
     synthetic.$module = module;
 
     let euri: string = fileUri;
-    let start: ISourcePosition = expression.location.start;
-    let end: ISourcePosition = expression.location.end;
+
+    // may be undefined if setting innerHTML
+    let start: ISourcePosition = getHTMLASTNodeLocation(expression) || { line: 1, column: 1 };
 
     if (smg) {
       const org = smg.originalPositionFor({ line: start.line, column: start.column - 1 });
       start = { line: org.line, column: org.column };
       euri  = org.source;
-      end = undefined;
     }
 
     synthetic.$source     = {
-      kind: expression.kind,
       uri: euri,
       start: start
     };
     return synthetic;
   }
 
-  function appendChildNodes(container: SyntheticDOMContainer, expression: MarkupContainerExpression) {
+  function appendChildNodes(container: SyntheticDOMContainer, expression: parse5.AST.Default.Element) {
     for (let i = 0, n = expression.childNodes.length; i < n; i++) {
       const child = evaluateMarkup(expression.childNodes[i], doc, namespaceURI, module, container);
       child.$createdCallback();
     }
   }
 
-  return expression.accept({
-    visitAttribute(expression) {
-      return { name: expression.name, value: expression.value };
-    },
-    visitComment(expression) {
-      const node = linkSourceInfo(expression, doc.createComment(expression.nodeValue));
+  const getAttribute = (expression: parse5.AST.Default.Element, name: string) => {
+    const attr = expression.attrs.find((attr) => attr.name === name);
+    return attr && attr.value;
+  }
+  
+  const map = (expression: parse5.AST.Default.Node) => {
+    
+    // nothing for now for doc type
+    if (expression.nodeName === "#documentType") {
+      const node = doc.createTextNode("");
       linkSourceInfo(expression, node);
       parentContainer.appendChild(node);
       return node;
-    },
-    visitElement(expression) {
-      const xmlns = expression.getAttribute("xmlns") || namespaceURI || doc.defaultNamespaceURI;
-
-      // bypass $createdCallback executed by document
-      const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
-      const element = new elementClass(xmlns, expression.nodeName);
-      element.$setOwnerDocument(doc);
-      parentContainer.appendChild(element);
-
-      for (let i = 0, n = expression.attributes.length; i < n; i++) {
-        const attributeExpression = expression.attributes[i];
-        const attribute = attributeExpression.accept(this);
-        element.setAttribute(attribute.name, attribute.value);
-      }
-
-      linkSourceInfo(expression, element);
-      appendChildNodes(element, expression);
-
-      return element;
-    },
-    visitDocumentFragment(expression) {
+    } if (expression.nodeName === "#comment") {
+      const node = linkSourceInfo(expression, doc.createComment((expression as parse5.AST.Default.CommentNode).data));
+      linkSourceInfo(expression, node);
+      parentContainer.appendChild(node);
+      return node;
+    } else if (expression.nodeName === "#text") {
+      const value = (expression as parse5.AST.Default.TextNode).value;
+      const node = doc.createTextNode((expression as parse5.AST.Default.TextNode).value);
+      linkSourceInfo(expression, node);
+      parentContainer.appendChild(node);
+      // if (/\S+/.test(value)) {
+      //   console.log(JSON.stringify(value));
+      // }
+      return node;
+    } else if (expression.nodeName === "#document" || expression.nodeName === "#document-fragment") {
 
       let container: SyntheticDOMContainer;
 
-      if (!expression.parent && parentContainer) {
+      if (!(expression as parse5.AST.Default.Element).parentNode && parentContainer) {
         container = parentContainer;
       } else {
         container = doc.createDocumentFragment();
         linkSourceInfo(expression, container);
       }
 
-      appendChildNodes(container, expression);
+      appendChildNodes(container, expression as parse5.AST.Default.Element);
 
       if (container !== parentContainer) {
         container.$createdCallback();
       }
 
       return container;
-    },
-    visitText(expression) {
-      const node = doc.createTextNode(expression.nodeValue);
-      linkSourceInfo(expression, node);
-      parentContainer.appendChild(node);
-      return node;
     }
-  });
+
+    const elementExpression = expression as parse5.AST.Default.Element;
+
+    const xmlns = getAttribute(elementExpression, "xmlns") || namespaceURI || doc.defaultNamespaceURI;
+
+    // bypass $createdCallback executed by document
+    const elementClass = doc.$getElementClassNS(xmlns, expression.nodeName);
+    const element = new elementClass(xmlns, expression.nodeName);
+    element.$setOwnerDocument(doc);
+    parentContainer.appendChild(element);
+
+    for (let i = 0, n = elementExpression.attrs.length; i < n; i++) {
+      const attributeExpression = elementExpression.attrs[i];
+      element.setAttribute(attributeExpression.name, attributeExpression.value);
+    }
+
+    linkSourceInfo(expression, element);
+    appendChildNodes(element, elementExpression);
+
+    return element;
+  }
+
+  return map(expression);
 }

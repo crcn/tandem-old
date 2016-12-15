@@ -1,5 +1,6 @@
 import path =  require("path");
 import sm = require("source-map");
+import parse5 = require("parse5");
 
 import {
   Dependency,
@@ -23,9 +24,9 @@ import {
 
 
 import {
-  parseMarkup,
   MarkupExpression,
   MarkupTextExpression,
+  getHTMLASTNodeLocation,
   MarkupElementExpression,
   MarkupCommentExpression,
   MarkupAttributeExpression,
@@ -58,13 +59,12 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
     const { uri, hash } = dependency;
 
-    const expression = parseMarkup(String(content));
+    const expression = parse5.parse(String(content), { locationInfo: true }) as parse5.AST.Default.Document;
     const imports: string[] = [];
     const dirname = path.dirname(uri);
 
-    const sourceNode = (await expression.accept({
-      async visitAttribute({ name, value, location, parent }: MarkupAttributeExpression) {
-        
+    const mapAttribute = async (parent: parse5.AST.Default.Element, { name, value }: parse5.AST.Default.Attribute) => {
+
         // must be white listed here to presetn certain elements such as artboard & anchor tags from loading resources. Even
         // better to have a provider for loadable elements, but that's a little overkill for now.
         if (/^(link|script|img)$/.test(parent.nodeName)) {        
@@ -78,63 +78,66 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
           }
         }
         
-        return new sm.SourceNode(location.start.line, location.start.column, uri, [" ", name, `="`, value,`"`]);
-      },
-      async visitElement(expression: MarkupElementExpression) {
+        return [" ", name, `="`, value,`"`].join("");
+    }
+
+    const map = async (expression: parse5.AST.Default.Node): Promise<sm.SourceNode> => {
+      const location = getHTMLASTNodeLocation(expression) || { line: 1, column: 1 };
+      if (expression.nodeName === "#documentType") {
+        return new sm.SourceNode(location.line, location.column, uri, `<!DOCTYPE ${(expression as parse5.AST.Default.DocumentType).name}>`);
+      } else if (expression.nodeName === "#comment") {
+        return new sm.SourceNode(location.line, location.column, uri, [`<!--${(expression as parse5.AST.Default.CommentNode).data}-->`]);
+      } else if (expression.nodeName === "#text") {
+        return new sm.SourceNode(location.line, location.column, uri, [(expression as parse5.AST.Default.TextNode).value]);
+      } else if (expression.nodeName === "#document" || expression.nodeName === "#document-fragment") {
+        return new sm.SourceNode(location.line, location.column, uri, (await Promise.all((expression as parse5.AST.Default.Element).childNodes.map(map))));
+      }
+
+      const elementExpression = expression as parse5.AST.Default.Element;
+
+      const { nodeName, attrs, childNodes } = elementExpression;
+
+      const buffer: (string | sm.SourceNode)[] | string | sm.SourceNode = [
+        `<` + nodeName,
+        ...(await Promise.all(attrs.map(attrib => mapAttribute(elementExpression, attrib)))),
+        `>`
+      ];
 
 
-        const { nodeName, attributes, childNodes, location } = expression;
-
-        const buffer: (string | sm.SourceNode)[] | string | sm.SourceNode = [
-          `<` + nodeName,
-          ...(await Promise.all(attributes.map(attrib => attrib.accept(this)))),
-          `>`
-        ];
+      const textMimeType = ElementTextContentMimeTypeProvider.lookup(expression, self._injector);
+      const textLoaderProvider = textMimeType && DependencyLoaderFactoryProvider.find(textMimeType, self._injector);
 
 
-        const textMimeType = ElementTextContentMimeTypeProvider.lookup(expression, self._injector);
-        const textLoaderProvider = textMimeType && DependencyLoaderFactoryProvider.find(textMimeType, self._injector);
+      if (textLoaderProvider && elementExpression.childNodes.length) {
+        const textLoader = textLoaderProvider.create(self.strategy);
 
+        const firstChild = elementExpression.childNodes[0] as parse5.AST.Default.TextNode;
+        const firstChildLocation = getHTMLASTNodeLocation(firstChild);
+        const lines = Array.from({ length: firstChildLocation.line - 1 }).map(() => "\n").join("");
 
-        if (textLoaderProvider && expression.childNodes.length) {
-          const textLoader = textLoaderProvider.create(self.strategy);
+        const textResult = await textLoader.load(dependency, { 
+          type: textMimeType, 
+          content: lines + firstChild.value
+        });
 
-          const firstChild = expression.childNodes[0] as MarkupTextExpression;
-          const lines = Array.from({ length: firstChild.location.start.line - 1 }).map(() => "\n").join("");
+        let textContent = textResult.content;
 
-          const textResult = await textLoader.load(dependency, { 
-            type: textMimeType, 
-            content: lines + firstChild.nodeValue
-          });
-
-          let textContent = textResult.content;
-
-          if (textResult.map) {
-            const sourceMappingURL = `data:application/json;base64,${new Buffer(JSON.stringify(textResult.map)).toString("base64")}`;
-            textContent += `/*# sourceMappingURL=${sourceMappingURL} */`;
-          }
-
-          buffer.push(new sm.SourceNode(firstChild.location.start.line, firstChild.location.start.column, uri, textContent));
-
-        } else {
-          buffer.push(...(await Promise.all(childNodes.map(child => child.accept(this)))));
+        if (textResult.map) {
+          const sourceMappingURL = `data:application/json;base64,${new Buffer(JSON.stringify(textResult.map)).toString("base64")}`;
+          textContent += `/*# sourceMappingURL=${sourceMappingURL} */`;
         }
 
-        buffer.push(`</${nodeName}>`);
-        return new sm.SourceNode(location.start.line, location.start.column, uri, buffer);
-      },
-      async visitComment({ location, nodeValue }: MarkupCommentExpression) {
-        return new sm.SourceNode(location.start.line, location.start.column, uri, [`<!--${nodeValue}-->`]);
-      },
-      async visitText({ nodeValue, location }: MarkupTextExpression) {
-        return new sm.SourceNode(location.start.line, location.start.column, uri, [nodeValue]);
-      },
-      async visitDocumentFragment({ childNodes, location }: MarkupFragmentExpression) {
-        return new sm.SourceNode(location.start.line, location.start.column, uri, (await Promise.all(childNodes.map((child) => {
-          return child.accept(this);
-        }))));
+        buffer.push(new sm.SourceNode(firstChildLocation.line, firstChildLocation.column, uri, textContent));
+
+      } else {
+        buffer.push(...(await Promise.all(childNodes.map(child => map(child)))));
       }
-    })) as sm.SourceNode;
+
+      buffer.push(`</${nodeName}>`);
+      return new sm.SourceNode(location.line, location.column, uri, buffer);
+    }
+
+    const sourceNode = await map(expression);
 
     const result = sourceNode.toStringWithSourceMap();
     

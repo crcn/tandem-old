@@ -3,43 +3,48 @@ import {
   MarkupExpression
 } from "./ast";
 
+import parse5 = require("parse5");
 import { repeat } from "lodash";
 
 
-export function formatMarkupExpression(node: MarkupNodeExpression, defaultIndentation: string = "  "): string {
+export function formatMarkupExpression(node: parse5.AST.Default.Node, defaultIndentation: string = "  "): string {
 
   const indentation = defaultIndentation;
 
-  function format(current: MarkupExpression, level: number = 0) {
+  function format(current: parse5.AST.Default.Node, level: number = 0) {
 
     function indent() {
       return repeat(indentation, level);
     }
 
-    return current.accept({
-      visitAttribute(attribute) {
-        return ` ${attribute.name}="${attribute.value}"`;
-      },
-      visitElement(element) {
-        let buffer = indent() + `<${element.nodeName}${element.attributes.map((attribute) => format(attribute)).join("")}>`;
+    const mapAttribute = ({ name, value }: any) => {
+      return ` ${name}="${value}"`;
+    }
+    
+    if (current.nodeName === "#documentType") {
+      const doctype = current as parse5.AST.Default.DocumentType;
+      return `<!DOCTYPE ${doctype.name}>`;
+    } else if (current.nodeName === "#text") {
+      const text = current as parse5.AST.Default.TextNode;
+      return indent() + text.value.trim();
+    } else if (current.nodeName === "#comment") {
+      const comment = current as parse5.AST.Default.CommentNode;
+      return indent() + `<!--${comment.data}-->`;
+    } else if (current.nodeName === "#document" || current.nodeName === "#document-fragment") {
+      const fragment = current as parse5.AST.Default.DocumentFragment;
+      return fragment.childNodes.map((child) => format(child, level)).join("\n");
+    }
 
-        if (element.childNodes.length) {
-          buffer += "\n" + element.childNodes.map((child) => format(child, level + 1)).join("\n") + "\n" + indent();
-        }
+    const element = current as parse5.AST.Default.Element;
 
-        buffer += `</${element.nodeName}>`;
-        return buffer;
-      },
-      visitComment(comment) {
-        return indent() + `<!--${comment.nodeValue}-->`;
-      },
-      visitDocumentFragment(fragment) {
-        return fragment.childNodes.map((child) => format(child, level)).join("\n");
-      },
-      visitText(text) {
-        return indent() + text.nodeValue.trim();
-      }
-    });
+    let buffer = indent() + `<${element.nodeName}${element.attrs.map(mapAttribute).join("")}>`;
+
+    if (element.childNodes.length) {
+      buffer += "\n" + element.childNodes.map((child) => format(child, level + 1)).join("\n") + "\n" + indent();
+    }
+
+    buffer += `</${element.nodeName}>`;
+    return buffer;
   }
 
   return format(node, 0);

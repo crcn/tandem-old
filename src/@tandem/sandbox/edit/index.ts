@@ -255,7 +255,7 @@ export class FileEditor {
 
         const changes = mutationsByUri[uri];
         this.logger.info(`Applying file changes ${uri}: >>`, changes.map(event => event.type).join(" "));
-
+        
         const newContent    = contentEditor.applyMutations(changes);
 
         // This may trigger if the editor does special formatting to the content with no

@@ -14,21 +14,21 @@ import {
   ContentEditorFactoryProvider,
 } from "@tandem/sandbox";
 
+import parse5 = require("parse5");
+
 import {
-  parseMarkup,
   MarkupExpression,
   SyntheticDOMNode,
   SyntheticDOMElement,
   MarkupExpressionKind,
+  getHTMLASTNodeLocation,
   SyntheticHTMLElement,
-  findMarkupExpression,
-  
-  fitlerMarkupExpressions,
+  findDOMNodeExpression,
+  filterDOMNodeExpressions,
   MarkupNodeExpression,
   MarkupTextExpression,
   formatMarkupExpression,
   SyntheticDOMElementEdit,
-  MarkupElementExpression,
   MarkupFragmentExpression,
   SyntheticDOMValueNodeEdit,
   SyntheticDOMContainerEdit,
@@ -40,49 +40,95 @@ import {
 } from "@tandem/synthetic-browser";
 
 // TODO - replace text instead of modifying the AST
-export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
+export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
 
-  [RemoveMutation.REMOVE_CHANGE](node: MarkupNodeExpression, { target }: RemoveMutation<any>) {
-    node.parent.removeChild(node);
+  [RemoveMutation.REMOVE_CHANGE](node: parse5.AST.Default.Element, { target }: RemoveMutation<any>) {
+    const index = node.parentNode.childNodes.indexOf(node);
+    if (index !== -1) {
+      node.parentNode.childNodes.splice(index, 1);
+    }
   }
 
-  [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT](node: IMarkupValueNodeExpression, { target, newValue }: SetValueMutation<any>) {
-    node.nodeValue = newValue;
+  // compatible with command & value node
+  [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT](node: any, { target, newValue }: SetValueMutation<any>) {
+    node.value = node.data = newValue;
   }
 
-    [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](node: MarkupElementExpression, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
+  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](node: parse5.AST.Default.Element, { target, name, newValue, oldName, index }: PropertyMutation<any>) {
+    
+    // let attribute: MarkupAttributeExpression;
+    // let i = 0;
 
+    // for (;i < this.attributes.length; i++) {
+    //   attribute = this.attributes[i];
+    //   if (attribute.name === name) {
+    //     attribute.value = newValue;
+    //     break;
+    //   }
+    // }
+
+    // if (i === this.attributes.length) {
+    //   this.attributes.push(attribute = new MarkupAttributeExpression(name, newValue, null));
+    // }
+
+    // if (newIndex != null && newIndex !== i) {
+    //   this.attributes.splice(i, 1);
+    //   this.attributes.splice(newIndex, 0, attribute);
+    // }
+    
     const syntheticElement = <SyntheticHTMLElement>target;
-    if (newValue == null) {
-      node.removeAttribute(name);
-    } else {
-      node.setAttribute(name, newValue, index);
+    let found;
+    for (let i = node.attrs.length; i--;) {
+      const attr = node.attrs[i];
+      if (attr.name === name) {
+        found = true;
+        if (newValue == null) {
+          node.attrs.splice(i, 1);
+        } else {
+          attr.value = newValue;
+          if (i !== index) {
+            node.attrs.splice(i, 1);
+            node.attrs.splice(index, 0, attr);
+          }
+        }
+        break;
+      }
+    }
+
+    if (!found) {
+      node.attrs.splice(index, 0, { name, value: newValue });
     }
 
     if (oldName) {
-      node.removeAttribute(oldName);
+      for (let i = node.attrs.length; i--;) {
+        const attr = node.attrs[i];
+        if (attr.name === name) {
+          node.attrs.splice(i, 1);
+        }
+      }
     }
   }
 
-  [SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
-    const childExpression = parseMarkup((<SyntheticDOMNode>child).toString());
+  [SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT](node: parse5.AST.Default.Element, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+    const childExpression = parse5.parseFragment((<SyntheticDOMNode>child).toString(), { locationInfo: true }) as any;
     node.childNodes.splice(index, 0, childExpression);
   }
 
-  [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+  [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT](node: parse5.AST.Default.Element, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
   }
 
-  [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT](node: MarkupElementExpression, { target, child, index }: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+  [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT](node: parse5.AST.Default.Element, { target, child, index }: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
     const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
     node.childNodes.splice(index, 0, childNode);
   }
 
-  findTargetASTNode(root: MarkupFragmentExpression, synthetic: SyntheticDOMNode) {
-    return findMarkupExpression(root, (expression) => {
-      return expression.kind === synthetic.source.kind && sourcePositionEquals(expression.location.start, synthetic.source.start)
+  findTargetASTNode(root: parse5.AST.Default.Node, synthetic: SyntheticDOMNode) {
+    return findDOMNodeExpression(root, (expression) => {
+      const location = getHTMLASTNodeLocation(expression);
+      return /*expression.kind === synthetic.source.kind &&*/ sourcePositionEquals(location, synthetic.source.start)
     });
   }
 
@@ -91,23 +137,24 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
     const mstart = mutation.target.source.start;
 
     // for now just support text nodes. However, attributes may need to be implemented here in thre future
-    const matchingTextNode = fitlerMarkupExpressions(this._rootASTNode, (expression) => {
-      const eloc = expression.location;
+    const matchingTextNode = filterDOMNodeExpressions(this._rootASTNode, (expression) => {
+      const eloc = getHTMLASTNodeLocation(expression);
       
       // may be new -- ignore if there is no location 
       if (!eloc) return false;
-      
-      return (mstart.line > eloc.start.line || (mstart.line === eloc.start.line && mstart.column >= eloc.start.column)) && 
-        (mstart.line < eloc.end.line || (mstart.line === eloc.end.line && mstart.column <= eloc.end.column)); 
-    }).pop() as MarkupTextExpression;
 
-    if (!matchingTextNode || matchingTextNode.kind !== MarkupExpressionKind.TEXT) {
+      //  && 
+        // (mstart.line < eloc.end.line || (mstart.line === eloc.end.line && mstart.column <= eloc.end.column)
+      return (mstart.line > eloc.line || (mstart.line === eloc.line && mstart.column >= eloc.column)); 
+    }).pop() as parse5.AST.Default.TextNode;
+
+    if (!matchingTextNode || matchingTextNode.nodeName !== "#text") {
       return super.handleUnknownMutation(mutation);
     }
 
-    if (!matchingTextNode.parent) return super.handleUnknownMutation(mutation);
+    if (!matchingTextNode.parentNode) return super.handleUnknownMutation(mutation);
 
-    const element = matchingTextNode.parent as MarkupElementExpression;
+    const element = matchingTextNode.parentNode as parse5.AST.Default.Element;
     const contentMimeType = ElementTextContentMimeTypeProvider.lookup(element, this.injector);
   
     if (!contentMimeType) return super.handleUnknownMutation(mutation);
@@ -117,21 +164,22 @@ export class MarkupEditor extends BaseContentEditor<MarkupExpression> {
       return this.logger.error(`Cannot edit ${element.nodeName}:${contentMimeType} element text content.`);
     }
 
+    const nodeLocation = getHTMLASTNodeLocation(matchingTextNode);
+
     // need to add whitespace before the text node since the editor needs the proper line number in order to apply the
     // mutation. The column number should match.
-    const lines = Array.from({ length: matchingTextNode.location.start.line - 1 }).map(() => "\n").join("");
+    const lines = Array.from({ length: nodeLocation.line - 1 }).map(() => "\n").join("");
 
-    const newTextContent = editorProvider.create(this.uri, lines + matchingTextNode.nodeValue).applyMutations([mutation]);
+    const newTextContent = editorProvider.create(this.uri, lines + matchingTextNode.value).applyMutations([mutation]);
 
-    
-    matchingTextNode.nodeValue = newTextContent;
+    matchingTextNode.value = newTextContent;
   }
 
   parseContent(content: string) {
-    return parseMarkup(content);
+    return parse5.parse(content, { locationInfo: true }) as any;
   }
 
-  getFormattedContent(root: MarkupFragmentExpression) {
+  getFormattedContent(root: parse5.AST.Default.Node) {
     return formatMarkupExpression(root);
   }
 }

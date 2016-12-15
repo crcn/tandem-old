@@ -3,7 +3,6 @@ import { difference } from "lodash";
 import { DOMNodeType } from "./node-types";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
-import { parse as parseMarkup } from "./parser.peg";
 import { selectorMatchesElement } from "../selector";
 import { syntheticElementClassType } from "./types";
 import { SyntheticDocumentFragment } from "./document-fragment";
@@ -31,6 +30,7 @@ import {
   PropertyMutation,
   ObservableCollection,
 } from "@tandem/common";
+
 
 import { Dependency } from "@tandem/sandbox";
 import {

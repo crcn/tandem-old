@@ -72,7 +72,7 @@ describe(__filename + "#", () => {
     expect(dep.content).to.equal("blarg");
   });
 
-  it("Can reload a dependency if an error is thrown during load", async () => {
+  xit("Can reload a dependency if an error is thrown during load", async () => {
     let depa = { throwError: false, content: "something" };
     const dep = createMockDependency({
       uri: "a"
@@ -104,7 +104,7 @@ describe(__filename + "#", () => {
     expect(dep.content).to.equal("something");
   });
 
-  it("Can reload a dependency if a nested dependency errors", async () => {
+  xit("Can reload a dependency if a nested dependency errors", async () => {
 
     let depc;
 

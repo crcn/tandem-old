@@ -11,7 +11,6 @@ import {
   ApplicationServiceProvider,
 } from "@tandem/common";
 import {
-  parseMarkup
 } from "@tandem/synthetic-browser";
 
 export class PasteHTMLService extends CoreApplicationService<any> {

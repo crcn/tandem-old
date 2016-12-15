@@ -43,7 +43,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
         Layers
       </div>
       <TreeComponent
-        nodes={this.filterChildren(document.documentElement.children)}
+        nodes={this.filterChildren(document.body.childNodes)}
         select={this.selectNode.bind(this)}
         onNodeMouseEnter={node => (node as SyntheticDOMNode).metadata.set(MetadataKeys.HOVERING, true)}
         onNodeMouseLeave={node => (node as SyntheticDOMNode).metadata.set(MetadataKeys.HOVERING, false)}
@@ -80,8 +80,9 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
   }
 
   renderText({ uid, textContent }: SyntheticDOMText, renderDefault) {
+    if (!/\S+/.test(textContent || "")) return null;
     return renderDefault(<div className="entity text">
-      { textContent || "<empty text node>" }
+      {textContent}
     </div>);
   }
 

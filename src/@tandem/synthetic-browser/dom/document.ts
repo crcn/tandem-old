@@ -164,6 +164,8 @@ export function isDOMDocumentMutation(mutation: Mutation<any>) {
   }[mutation.type];
 }
 
+const filterDOMElement = (element: SyntheticDOMNode) => element.nodeType === DOMNodeType.ELEMENT;
+
 @serializable("SyntheticDocument", new SyntheticDOMNodeSerializer(new SyntheticDocumentSerializer()))
 export class SyntheticDocument extends SyntheticDOMContainer {
   readonly nodeType: number = DOMNodeType.DOCUMENT;
@@ -172,6 +174,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   public $window: SyntheticWindow;
   public $ownerNode: SyntheticDOMNode;
   public $implementation: SyntheticDOMImplementation;
+  public cookie: string = "";
 
 
   // namespaceURI here is non-standard, but that's
@@ -209,15 +212,15 @@ export class SyntheticDocument extends SyntheticDOMContainer {
   }
 
   get documentElement(): SyntheticHTMLElement {
-    return this.childNodes[0] as SyntheticHTMLElement;
+    return this.childNodes.find(filterDOMElement) as SyntheticHTMLElement;
   }
 
   get head(): SyntheticHTMLElement {
-    return this.documentElement.childNodes[0] as SyntheticHTMLElement;
+    return this.documentElement.childNodes.find(filterDOMElement) as SyntheticHTMLElement;
   }
 
   get body(): SyntheticHTMLElement {
-    return this.documentElement.childNodes[1] as SyntheticHTMLElement;
+    return this.documentElement.childNodes.filter(filterDOMElement)[1] as SyntheticHTMLElement;
   }
 
   get location(): SyntheticLocation {

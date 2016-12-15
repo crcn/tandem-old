@@ -1,6 +1,7 @@
 import { SyntheticBrowser } from "./browser";
 import { RemoteBrowserService } from "./remote-browser";
 import { syntheticElementClassType, SyntheticDOMNode, MarkupElementExpression } from "./dom";
+import parse5 = require("parse5");
 import { Provider, Injector, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
 
 export class SyntheticDOMElementClassProvider extends Provider<syntheticElementClassType> {
@@ -38,7 +39,7 @@ export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
   }
 }
 
-export type ElementTextContentMimeTypeGetter = (element: MarkupElementExpression) => string;
+export type ElementTextContentMimeTypeGetter = (element: parse5.AST.Default.Node) => string;
 
 export class ElementTextContentMimeTypeProvider extends Provider<ElementTextContentMimeTypeGetter> {
   static readonly NS = "elementTetContentMimeTypes";
@@ -51,7 +52,7 @@ export class ElementTextContentMimeTypeProvider extends Provider<ElementTextCont
   static getId(tagName: string) {
     return [this.NS, tagName].join("/");
   }
-  static lookup(element: MarkupElementExpression, injector: Injector) {
+  static lookup(element: parse5.AST.Default.Node, injector: Injector) {
     const provider = injector.query<ElementTextContentMimeTypeProvider>(this.getId(element.nodeName.toLowerCase()));
     return provider && provider.getter(element);
   }

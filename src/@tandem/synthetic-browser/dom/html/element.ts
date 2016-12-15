@@ -4,13 +4,14 @@ import { BoundingRect, serializable, IPoint, bindable } from "@tandem/common";
 import { DOMEventListenerFunction } from "../events";
 
 import {
-  parseMarkup,
   evaluateMarkup,
   SyntheticDOMElement,
   SyntheticDOMAttribute,
   VisibleSyntheticDOMElement,
   VisibleDOMNodeCapabilities,
 } from "../markup";
+
+import parse5 = require("parse5");
 
 class ElementClassList extends Array<string> {
   constructor(readonly target: SyntheticDOMElement) {
@@ -119,7 +120,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
 
   set innerHTML(value: string) {
     this.removeAllChildren();
-    this.appendChild(evaluateMarkup(parseMarkup(value), this.ownerDocument, this.namespaceURI));
+    this.appendChild(evaluateMarkup(parse5.parseFragment(value, { locationInfo: true }) as any, this.ownerDocument, this.namespaceURI));
   }
 
   private _resetStyleFromAttribute() {

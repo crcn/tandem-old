@@ -3,10 +3,9 @@ import { sample, sampleSize, random } from "lodash";
 import { createTestMasterApplication } from "@tandem/editor/test";
 import { createCoreApplicationProviders } from "@tandem/core";
 import { createSandboxProviders, IFileResolver } from "@tandem/sandbox";
-
+import parse5 = require("parse5");
 import {
   parseCSS,
-  parseMarkup,
   evaluateCSS,
   evaluateMarkup,
   SyntheticWindow,
@@ -78,7 +77,7 @@ export function generateRandomSyntheticHTMLElementSource(maxChildCount: number =
 }
 
 export function generateRandomSyntheticHTMLElement(document: SyntheticDocument, maxChildCount: number = 10, maxDepth: number = 10, maxAttributes: number = 10, generateShadow: boolean = false) {
-  return evaluateMarkup(parseMarkup(generateRandomSyntheticHTMLElementSource(maxChildCount, maxDepth, maxAttributes)), document);
+  return evaluateMarkup(parse5.parse(generateRandomSyntheticHTMLElementSource(maxChildCount, maxDepth, maxAttributes), { locationInfo: true }) as any, document);
 }
 
 export function generateRandomStyleSheet(maxRules: number = 100, maxDeclarations: number = 20): SyntheticCSSStyleSheet {

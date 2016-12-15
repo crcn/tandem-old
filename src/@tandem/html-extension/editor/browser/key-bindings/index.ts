@@ -6,7 +6,7 @@ import { SetToolRequest } from "@tandem/editor/browser/messages";
 import { textToolProvider } from "../stores";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
-import { parseMarkup, evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ClassFactoryProvider, InjectorProvider, Injector } from "@tandem/common";
 import { WorkspaceToolFactoryProvider, GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 
@@ -26,8 +26,9 @@ abstract class BaseInsertElementTool extends InsertTool {
 
   createSyntheticDOMElement() {
 
+    return null;
     // width & height need to be 0'd since some elements have a size by default such as iframes
-    return evaluateMarkup(parseMarkup(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).childNodes[0], this.editor.document) as SyntheticDOMElement;
+    // return evaluateMarkup(parseMarkup(`<${this.options.nodeName} ${this.options.attributes ? this.options.attributes + " " : ""}style="${this.options.style}position:absolute;width:0px;height:0px;" />`).childNodes[0], this.editor.document) as SyntheticDOMElement;
   }
 }
 

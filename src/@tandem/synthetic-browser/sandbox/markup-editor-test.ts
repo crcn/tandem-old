@@ -10,7 +10,7 @@ describe(__filename + "#", () => {
   before(async () => {
     app = createTestMasterApplication({
       log: {
-        level: LogLevel.NONE,
+        level: LogLevel.ERROR,
       },
       sandboxOptions: {
         mockFiles: {}

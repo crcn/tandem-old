@@ -70,7 +70,8 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
 
     const importURI = async (uri: string) => {
       try {
-        await this.bus.dispatch(new ImportFileRequest(uri, bounds, this.props.workspace.document.documentElement));
+        
+        await this.bus.dispatch(new ImportFileRequest(uri, bounds, this.props.workspace.document.body.firstChild));
       } catch(e) {
         this.bus.dispatch(AlertMessage.createErrorMessage(`Cannot import ${uri}: ${e.message}`));
       }

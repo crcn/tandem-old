@@ -1,11 +1,11 @@
 import { expect } from "chai";
 import {
-  parseMarkup,
   evaluateMarkup,
   SyntheticWindow,
   SyntheticDocument,
   SyntheticHTMLElement,
 } from "@tandem/synthetic-browser";
+import parse5 = require("parse5");
 
 /*
 
@@ -67,7 +67,7 @@ describe(__filename + "#", () => {
       document.registerElement("div", SyntheticHTMLElement);
       document.registerElement("span", SyntheticHTMLElement);
       document.removeAllChildren();
-      document.appendChild(evaluateMarkup(parseMarkup(a), document));
+      document.appendChild(evaluateMarkup(parse5.parseFragment(a, { locationInfo: true }) as any, document));
       const nodes = document.querySelectorAll(selector);
       expect(nodes.join("")).to.equal(b);
     });

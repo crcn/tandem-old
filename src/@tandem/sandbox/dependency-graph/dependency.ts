@@ -382,7 +382,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
           await dependency.load();
         } catch(e) {
           waitLogger.stop(`Error while loading dependency: ${info.uri}`);
-          throw e;
+
+          // do not re-throw -- error may be expected here especially if
+          // the dependency 404d. Let the sandbox take the fall instead.
         }
       }
 

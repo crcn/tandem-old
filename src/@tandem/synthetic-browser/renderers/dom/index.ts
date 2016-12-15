@@ -333,7 +333,7 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
 }
 
 function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMNode, dict: HTMLElementDictionaryType): HTMLElement {
-  if (/html|body|head/.test(tagName)) tagName = "div";
+  if (/^(html|body|head)$/.test(tagName)) tagName = "div";
   const element = nodeFactory.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName);
   dict[source.uid] = [element, source];
   return element as any;

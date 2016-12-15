@@ -31,8 +31,7 @@ describe(__filename + "#", () => {
         </div>
       `
     });
-
-    expect(stripNewLines(document.documentElement.outerHTML)).to.equal(`<div> hello world </div>`);
+    expect(stripNewLines(document.body.innerHTML)).to.contain(`<div> hello world </div>`);
   });
 
   // TODO - order of script tags
@@ -62,8 +61,8 @@ describe(__filename + "#", () => {
           <head>
           </head>
           <body>
-            <script type="text/javascript" src="./index.js" />
-            <script src="./index.js" />
+            <script type="text/javascript" src="./index.js"></script>
+            <script src="./index.js"></script>
           </body>
         </html>
       `,
@@ -71,8 +70,9 @@ describe(__filename + "#", () => {
         document.body.appendChild(document.createTextNode("Hello World"));
       `
     });
+    
 
-    expect(stripNewLines(document.body.textContent)).to.contain(`Hello WorldHello World`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`Hello World Hello World`);
   });
 
   it(`script can reference itself when executed`, async () => {
@@ -91,7 +91,7 @@ describe(__filename + "#", () => {
       `
     });
 
-    expect(stripNewLines(document.body.textContent)).to.contain(`const scripts = document.getElementsByTagName("script"); document.body.appendChild(document.createTextNode(scripts[scripts.length - 1].textContent.length)); 183`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`const scripts = document.getElementsByTagName("script"); document.body.appendChild(document.createTextNode(scripts[scripts.length - 1].textContent.length)); 198`);
   });
 
   it(`Executes scripts immediately after being appended to the document`, async () => {
@@ -115,7 +115,7 @@ describe(__filename + "#", () => {
       `
     });
 
-    expect(stripNewLines(document.body.textContent)).to.contain(`document.body.appendChild(document.createTextNode("a")); adocument.body.appendChild(document.createTextNode("b")); b`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`document.body.appendChild(document.createTextNode("a")); a document.body.appendChild(document.createTextNode("b")); b`);
   });
   
 

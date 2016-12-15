@@ -3,7 +3,6 @@ import { flattenTree } from "@tandem/common";
 import { generateRandomSyntheticHTMLElement } from "@tandem/synthetic-browser/test/helpers";
 import chalk =  require("chalk");
 import {
-  parseMarkup,
   evaluateMarkup,
   SyntheticDOMNode,
   SyntheticWindow,
@@ -26,11 +25,11 @@ describe(__filename + "#", () => {
     [`a`, `b`, [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]],
     [`<!--a-->`, `<!--b-->`, [SyntheticDOMValueNodeMutationTypes.SET_VALUE_NODE_EDIT]],
     [`<div />`, `<span></span>`, [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT]],
-    [`<div /><span></span>`, `<span></span>`, [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div></div><span></span>`, `<span></span>`, [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
     [`<div />`, `<div></div><span></span>`, [SyntheticDOMContainerMutationTypes.INSERT_CHILD_NODE_EDIT]],
-    [`<span /><div />`, `<div></div><span></span>`, [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
-    [`<div id="b" />`, `<div id="c"></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]],
-    [`<div id="b" />`, `<div></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]],
+    [`<span></span><div></div>`, `<div></div><span></span>`, [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT, SyntheticObjectChangeTypes.SET_SYNTHETIC_SOURCE_EDIT]],
+    [`<div id="b"></div>`, `<div id="c"></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]],
+    [`<div id="b"></div>`, `<div></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]],
 
   ].forEach(([oldSource, newSource, actionNames]) => {
 

@@ -116,7 +116,9 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
       if (relativeUri.charAt(0) === "/" || !origin) {
         if (origin && hasURIProtocol(origin)) {
           const originParts = Url.parse(origin);
-          resolvedUri = originParts.protocol + "//" + originParts.host + "/" + relativeUriPathname;
+
+          // omit slash if relative URI has it
+          resolvedUri = originParts.protocol + "//" + originParts.host + (relativeUriPathname.charAt(0) === "/" ? relativeUriPathname : "/" + relativeUriPathname);
         } else {
           resolvedUri = (this.options.rootDirectoryUri || "file:///") + relativeUriPathname;
         }

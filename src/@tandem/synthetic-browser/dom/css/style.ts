@@ -551,7 +551,10 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
   }
 
   set cssText(value: string) {
-    console.warn("cssText setter not currently functional for SyntheticStyleRule")
+    value.split(";").forEach((decl) => {
+      const [key, value] = decl.split(":");
+      this.setProperty(key, value);
+    });
   }
 
   toString() {

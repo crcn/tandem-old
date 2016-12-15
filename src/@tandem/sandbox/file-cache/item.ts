@@ -29,8 +29,8 @@ export interface IFileCacheItemData {
 export function createDataUrl(content: Buffer|string, mimeType: string = "text/plain") {
   
   if (!(content instanceof Buffer)) {
-      content = new Buffer(content, "utf8");
-    }
+    content = new Buffer(content, "utf8");
+  }
 
   return `data:${mimeType},${content.toString("base64")}`;
 }
@@ -90,7 +90,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     this.updatedAt = Date.now();
   }
 
-  setDataUrlContent(content: string|Buffer, mimeType?: string)  {
+  setDataUrlContent(content: string|Buffer, mimeType?: string) {
     return this.setContentUri(createDataUrl(content, mimeType || MimeTypeProvider.lookup(this.sourceUri, this._injector)));
   }
 
