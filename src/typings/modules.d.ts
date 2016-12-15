@@ -292,3 +292,20 @@ declare module "strip-indent" {
 //     fire(type: "check"|"extract"|"download-update");
 //   }
 // }
+
+declare module "nwmatcher" {
+
+  interface ISelector {
+    match<T>(element: T, selector: string, context?: T): T;
+    select<T>(element: T, selector: string, callback);
+    first<T>(selector: string, context: T);
+  }
+
+  function nwmatcher(global: { document: { documentElement: any }}): ISelector;
+
+  namespace nwmatcher {
+
+  }
+  
+  export = nwmatcher;
+}

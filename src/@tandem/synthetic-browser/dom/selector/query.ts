@@ -52,7 +52,7 @@ export function createSyntheticDOMWalker(each: (node: SyntheticDOMNode, walker?:
 
 export function querySelector(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement {
   let found: SyntheticDOMElement;
-  const tester = getSelectorTester(selectorSource);
+  const tester = getSelectorTester(selectorSource, node);
   const walker = createSyntheticDOMWalker(node => {
     if (tester.test(node)) {
       found = <SyntheticDOMElement>node;
@@ -65,7 +65,7 @@ export function querySelector(node: SyntheticDOMNode, selectorSource: string): S
 
 export function querySelectorAll(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement[] {
   let found: SyntheticDOMElement[] = [];
-  const tester = getSelectorTester(selectorSource);
+  const tester = getSelectorTester(selectorSource, node);
   const walker = createSyntheticDOMWalker(node => {
     if (tester.test(node)) {
       found.push(<SyntheticDOMElement>node);
@@ -76,7 +76,7 @@ export function querySelectorAll(node: SyntheticDOMNode, selectorSource: string)
 }
 
 export function selectorMatchesElement(selector: string, element: SyntheticDOMElement): boolean {
-  const tester = getSelectorTester(selector);
+  const tester = getSelectorTester(selector, element);
   return tester.test(element);
 }
 
@@ -212,7 +212,7 @@ export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends Base
 
     const found = [];
     const filter = this.filter || (() => true);
-    const tester = getSelectorTester(this.selector);
+    const tester = getSelectorTester(this.selector, this.target);
     let i = 0;
 
     createSyntheticDOMWalker(node => {
@@ -278,7 +278,7 @@ export class ChildElementQuerier<T extends SyntheticDOMElement> extends BaseElem
     if (!this.parent) return this.setQueriedElements([]);
 
     const filter = this.filter || (() => true);
-    const tester = getSelectorTester(this.selector);
+    const tester = getSelectorTester(this.selector, this.parent.target);
 
     this.setQueriedElements(this.parent.queriedElements.filter(element => tester.test(element) && filter(element)));
   }

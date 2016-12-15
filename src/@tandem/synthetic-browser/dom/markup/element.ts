@@ -70,6 +70,7 @@ export class SyntheticDOMAttribute extends Observable implements ISyntheticObjec
 
   @bindable(true)
   public value: any;
+  readonly specified = true;
 
   constructor(readonly name: string, value: any, public readonly?: boolean) {
     super();
@@ -323,6 +324,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
 
   getAttribute(name: string) {
     return this.hasAttribute(name) ? this.attributes[name].value : null;
+  }
+
+  getAttributeNode(name: string) {
+    return this.hasAttribute(name) ? this.attributes[name] : null;
   }
 
   hasAttribute(name: string) {

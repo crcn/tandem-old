@@ -32,6 +32,8 @@ import {
   Mutation,
   diffArray,
   serialize,
+  findTreeNode,
+  filterTree,
   ArrayMutation,
   ISerializer,
   deserialize,

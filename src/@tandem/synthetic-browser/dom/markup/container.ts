@@ -2,10 +2,12 @@ import { DOMNodeType } from "./node-types";
 import { SyntheticDOMNode, SyntheticDOMNodeEdit, SyntheticDOMNodeEditor } from "./node";
 import { SyntheticDOMText } from "./text-node";
 import { DOMNodeEvent } from "@tandem/synthetic-browser/messages";
+import nwmatcher =  require("nwmatcher");
 import {
   Mutation,
   TreeNode,
   diffArray,
+  filterTree,
   ITreeWalker,
   findTreeNode,
   RemoveMutation,
@@ -16,7 +18,7 @@ import {
   TreeNodeMutationTypes,
 } from "@tandem/common";
 import { SyntheticHTMLCollection } from "../collections";
-import { getSelectorTester, ISelectorTester, querySelector, querySelectorAll } from "../selector";
+import { ISelectorTester, querySelector, querySelectorAll } from "../selector";
 import { SyntheticDOMElement } from "./element";
 import {
   IEditor,
@@ -186,8 +188,10 @@ export abstract class SyntheticDOMContainer extends SyntheticDOMNode {
     return querySelectorAll(this, selector);
   }
 
-  public getElementsByTagName(selector: string) {
-    return new SyntheticHTMLCollection(...this.querySelectorAll(selector));
+  public getElementsByTagName(tagName: string) {
+    return new SyntheticHTMLCollection(...filterTree(this, (node) => {
+      return node.nodeType === DOMNodeType.ELEMENT && (tagName === "*" || node.nodeName === tagName);
+    }));
   }
 
   public getElementsByClassName(className: string) {

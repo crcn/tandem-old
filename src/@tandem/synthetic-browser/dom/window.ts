@@ -3,6 +3,7 @@ import { bindable } from "@tandem/common/decorators";
 import { btoa, atob } from "abab"
 import { HTML_XMLNS } from "./constants";
 import { URL, FakeURL } from "./url";
+import nwmatcher = require("nwmatcher");
 import { Blob, FakeBlob } from "./blob";
 import { SyntheticHistory } from "./history";
 import { ISyntheticBrowser } from "../browser";
@@ -124,10 +125,13 @@ export class SyntheticWindow extends Observable {
   readonly URL  = URL;
   readonly btoa = btoa;
 
+  readonly selector: any; 
+
   constructor(location?: SyntheticLocation, readonly browser?: ISyntheticBrowser, document?: SyntheticDocument) {
     super();
 
     const injector = browser && browser.injector;
+
 
     const bus = injector && PrivateBusProvider.getInstance(injector) || noopDispatcherInstance;
     
@@ -184,6 +188,13 @@ export class SyntheticWindow extends Observable {
     this.clearImmediate = windowTimers.clearImmediate.bind(windowTimers);
 
     bindDOMNodeEventMethods(this, DOMEventTypes.POP_STATE);
+
+    this.selector = nwmatcher(this);
+
+    // VERBOSITY = false to prevent breaking on invalid selector rules
+    this.selector.configure({ CACHING: true, VERBOSITY: false });
+    
+    // TODO - register selectors that are specific to the web browser
   }
 
   get sandbox() {

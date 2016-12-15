@@ -201,7 +201,7 @@ export class SyntheticCSSElementStyleRule extends SyntheticCSSStyleRule {
   }
 
   matchesElement(element: SyntheticDOMElement) {
-    return getSelectorTester(this.selector).test(element);
+    return getSelectorTester(this.selector, element).test(element);
   }
 
   countShallowDiffs(target: SyntheticCSSElementStyleRule): number {

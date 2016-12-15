@@ -14,7 +14,11 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] use sizzle.js 
+- [ ] more dev tools similar to chrome
+- [ ] add search bar for each artboard
+- [ ] check messaging around firefox & chrome dev tools
+
+- [ ] change welcome screen to just a URL bar
 - [ ] change "Open file" to "enter url"
 - [ ] anchor tags should change the source of the artboard
 - [ ] launch checklist
