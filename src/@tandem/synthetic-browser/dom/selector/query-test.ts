@@ -39,6 +39,8 @@ describe(__filename + "#", () => {
     ["div + span", "<div>a</div><span>b</span>", "<span>b</span>"],
     ["div ~ span", "<div>a</div><strong>b</strong><span>c</span>", "<span>c</span>"],
     ["[data-test]", "<div data-test>a</div><span>c</span>", `<div data-test="">a</div>`],
+    [":nth-child(2n)", "<div></div>", ""],
+    [":nth-child(n+11)", "<div></div>", ""],
     ["[data-test=1]", `<div data-test="1">a</div><span>c</span>`, "<div data-test=\"1\">a</div>"],
     ["[data-test~=b]", `<div data-test="abc">a</div><span data-test="ac">c</span>`, `<div data-test="abc">a</div>`],
     ["[data-test|=b]", `<div data-test="ab">a</div><span data-test="bc">c</span>`, `<span data-test="bc">c</span>`],

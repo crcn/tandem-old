@@ -227,6 +227,10 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return this.$window.location;
   }
 
+  get URL() {
+    return this.location.toString();
+  }
+
   set location(value: SyntheticLocation) {
     this.$window.location = value;
   }

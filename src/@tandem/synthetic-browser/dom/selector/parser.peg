@@ -55,9 +55,11 @@ IDSelector = "#" id: Word {
   return new IDSelectorExpression(id, location());
 }
 
-TagNameSelector = tagName: Word {
+TagNameSelector = tagName: TagName {
   return new TagNameSelectorExpression(tagName, location());
 }
+
+TagName = [a-zA-Z\-] Word? { return text(); }
 
 AllSelector = "*" {
   return new AllSelectorExpression(location());
@@ -87,7 +89,7 @@ PseudoElementSelector = name: PseudoElementName {
   return new PseudoElementExpression(name, null, location());
 }
 
-SelectorParameter = "(" parameter: (LiteralExpression/CombinatorSelector) ")" {
+SelectorParameter = "(" parameter: (CombinatorSelector/LiteralExpression) ")" {
   return parameter;
 }
 
@@ -109,12 +111,13 @@ AttributeSelectorWithValue = name: AttributeName operator: ("="/"~="/"|="/"^="/"
 }
 
 AttributeName = [a-zA-Z0-9_-]+ { return text(); }
-Word = [a-zA-Z0-9_$-]+ { return text(); }
+Word = [a-zA-Z0-9_$+-]+ { return text(); }
 
 LiteralExpression
-  = value: (Number/String) {
+  = value: Word {
     return new SelectorLiteralExpression(value, location());
   }
+
 
 String
   = '"' characters:DoubleStringCharacter* '"' { return characters.join(""); }

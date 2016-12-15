@@ -28,7 +28,11 @@ export class UpdateMergedRuleCommand implements ICommand {
     if (selection.length === 1) {
       const item = selection[0] as SyntheticDOMNode;
       if ([SVG_XMLNS, HTML_XMLNS].indexOf(item.namespaceURI) !== -1) {
-        this._htmlStore.mergedStyleRule = this._injector.inject(new MergedCSSStyleRule(item as any));
+        try {
+          this._htmlStore.mergedStyleRule = this._injector.inject(new MergedCSSStyleRule(item as any));
+        } catch(e) {
+          console.error(e.stack);
+        }
       } 
     }
   }

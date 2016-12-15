@@ -2,6 +2,7 @@ import { URIProtocol, IURIProtocolReadResult } from "./protocol";
 import http = require("http");
 import https = require("https");
 import Url = require("url");
+import request = require("request");
 
 export class HTTPURIProtocol extends URIProtocol {
 
@@ -14,40 +15,51 @@ export class HTTPURIProtocol extends URIProtocol {
 
     return new Promise<IURIProtocolReadResult>((resolve, reject) => {
 
-      const parts = Url.parse(uri);
+      // const parts = Url.parse(uri);
 
-      const req = uri.indexOf("https:") === 0 ? https.get(parts as any) : http.get(parts);
-      const buffer = [];
-      req.on("response", (resp) => {
-        let contentType = resp.headers["content-type"];
+      // const req = uri.indexOf("https:") === 0 ? https.get(parts as any) : http.get(parts);
+
+      request(uri, { followAllRedirects: true, gzip: true }, (err, response, body) => {
+
+        if (!/^20/.test(String(response.statusCode))) {
+          return reject(new Error(`Unable to load: ${response.statusCode}`));
+        }
+
+        let contentType = response.headers["content-type"];
         if (contentType) contentType = contentType.split(";").shift();
-        
-        // if (this._writes[uri]) {
-        //   req.abort();
-        //   return {
-        //     type: contentType ,
-        //     content: this._writes[uri]
-        //   };
-        // }
 
-        if (/^30/.test(String(resp.statusCode))) {
-          return this.read(resp.headers.location).then(resolve, reject);
-        }
-        
-        if (!/^20/.test(String(resp.statusCode))) {
-          return reject(new Error(`Unable to load: ${resp.statusCode}`));
-        }
-        resp.on("data", (chunk) => {
-          buffer.push(chunk);
-        });
-
-        resp.on("end", () => {
-          resolve({
-            type: contentType,
-            content: buffer.join("")
-          });
+        resolve({
+          type: contentType,
+          content: body
         });
       });
+
+      // const buffer = [];
+      // req.on("response", (resp) => {
+        
+      //   // if (this._writes[uri]) {
+      //   //   req.abort();
+      //   //   return {
+      //   //     type: contentType ,
+      //   //     content: this._writes[uri]
+      //   //   };
+      //   // }
+
+      //   if (/^30/.test(String(resp.statusCode))) {
+      //     return this.read(resp.headers.location).then(resolve, reject);
+      //   }
+        
+      //   if (!/^20/.test(String(resp.statusCode))) {
+      //     return reject(new Error(`Unable to load: ${resp.statusCode}`));
+      //   }
+
+      //   resp.on("data", (chunk) => {
+      //     buffer.push(chunk);
+      //   });
+
+      //   resp.on("end", () => {
+      //   });
+      // });
   
     });
   }

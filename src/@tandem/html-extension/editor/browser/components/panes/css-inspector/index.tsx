@@ -92,6 +92,7 @@ export class ElementCSSInspectorComponent extends BaseApplicationComponent<{ wor
     const { workspace } = this.props;
     const { pane } = this.state;
     const mergedRule = this._store.mergedStyleRule || this.props.rule;
+
     
     if (!mergedRule) return null;
 
