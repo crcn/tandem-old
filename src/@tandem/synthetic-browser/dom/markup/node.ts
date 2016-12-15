@@ -3,7 +3,6 @@ import { DOMNodeType } from "./node-types";
 import {BaseContentEdit } from "@tandem/sandbox";
 import { SyntheticDocument } from "../document";
 import { IMarkupNodeVisitor } from "./visitor";
-import { MarkupNodeExpression } from "./ast";
 
 import { SyntheticDOMElement } from "./element";
 import { SyntheticDOMContainer } from "./container";

@@ -9,7 +9,6 @@ export * from "./visitor";
 export * from "./types";
 export * from "./parser";
 export * from "./evaluate";
-export * from "./ast";
 export * from "./format";
 export * from "./value-node";
 export * from "./visible-element";

@@ -7,7 +7,6 @@ import { SyntheticDocument } from "../document";
 import { SyntheticDOMContainer } from "./container";
 import { SyntheticDocumentFragment } from "./document-fragment";
 import { SyntheticDOMAttribute, SyntheticDOMElement } from "./element";
-import { IMarkupExpression, MarkupContainerExpression } from "./ast";
 import parse5 = require("parse5");
 import { getHTMLASTNodeLocation } from "./parser";
 

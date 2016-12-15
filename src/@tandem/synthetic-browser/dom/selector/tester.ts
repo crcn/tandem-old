@@ -1,11 +1,9 @@
-import { parseSelector } from "./parser";
 import nwmatcher =  require("nwmatcher");
-import { getTreeAncestors, getPreviousTreeSiblings } from "@tandem/common";
-import { SelectorExpression, AllSelectorExpression } from "./ast";
-import { SyntheticDOMNode, SyntheticDOMElement, DOMNodeType } from "../markup";
-import { SyntheticDocument } from "../document";
 import { SyntheticWindow } from "../window";
+import { SyntheticDocument } from "../document";
 import { SyntheticHTMLElement } from "../html";
+import { getTreeAncestors, getPreviousTreeSiblings } from "@tandem/common";
+import { SyntheticDOMNode, SyntheticDOMElement, DOMNodeType } from "../markup";
 
 const _testers = {};
 

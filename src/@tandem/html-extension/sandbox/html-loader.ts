@@ -21,27 +21,10 @@ import {
   InjectorProvider,
 } from "@tandem/common";
 
-
-
 import {
-  MarkupExpression,
-  MarkupTextExpression,
   getHTMLASTNodeLocation,
-  MarkupElementExpression,
-  MarkupCommentExpression,
-  MarkupAttributeExpression,
-  MarkupFragmentExpression,
-  serializeMarkupExpression,
-  deserializeMarkupExpression,
   ElementTextContentMimeTypeProvider,
 } from "@tandem/synthetic-browser";
-
-interface IMarkupReplacement {
-  node: MarkupExpression;
-  start: number;
-  end: number;
-  value: string;
-}
 
 const hasProtocol = (value) => !!/\w+:\/\//.test(value);
 

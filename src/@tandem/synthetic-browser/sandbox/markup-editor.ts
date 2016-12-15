@@ -17,22 +17,16 @@ import {
 import parse5 = require("parse5");
 
 import {
-  MarkupExpression,
   SyntheticDOMNode,
   SyntheticDOMElement,
-  MarkupExpressionKind,
   getHTMLASTNodeLocation,
   SyntheticHTMLElement,
   findDOMNodeExpression,
   filterDOMNodeExpressions,
-  MarkupNodeExpression,
-  MarkupTextExpression,
   formatMarkupExpression,
   SyntheticDOMElementEdit,
-  MarkupFragmentExpression,
   SyntheticDOMValueNodeEdit,
   SyntheticDOMContainerEdit,
-  IMarkupValueNodeExpression,
   SyntheticDOMElementMutationTypes,
   SyntheticDOMContainerMutationTypes,
   SyntheticDOMValueNodeMutationTypes,
@@ -115,12 +109,12 @@ export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
   }
 
   [SyntheticDOMContainerMutationTypes.REMOVE_CHILD_NODE_EDIT](node: parse5.AST.Default.Element, { target, child, index }: InsertChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
-    const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
+    const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode);
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
   }
 
   [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT](node: parse5.AST.Default.Element, { target, child, index }: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
-    const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode) as MarkupNodeExpression;
+    const childNode = this.findTargetASTNode(node, child as SyntheticDOMNode);
     node.childNodes.splice(node.childNodes.indexOf(childNode), 1);
     node.childNodes.splice(index, 0, childNode);
   }

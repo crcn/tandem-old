@@ -1,6 +1,6 @@
 import { SyntheticBrowser } from "./browser";
 import { RemoteBrowserService } from "./remote-browser";
-import { syntheticElementClassType, SyntheticDOMNode, MarkupElementExpression } from "./dom";
+import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
 import parse5 = require("parse5");
 import { Provider, Injector, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
 
