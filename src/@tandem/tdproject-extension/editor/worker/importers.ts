@@ -22,7 +22,8 @@ export class TDRootFileImporter implements IFileImporter {
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
 
-  async importFile({ uri, targetObject, bounds }: ImportFileRequest) {
+  async importFile(request: ImportFileRequest) {
+    let { uri, targetObject, bounds } = request;
 
     // TODO: temporary fix for DNDd files
     uri = uri.replace(/^file:\/\//g, "");
@@ -43,7 +44,7 @@ export class TDRootFileImporter implements IFileImporter {
       throw new Error(`Cannot create preview file`);
     }
 
-    const preview = await previewLoader.loadFilePreview(arguments[0]);
+    const preview = await previewLoader.loadFilePreview(request);
 
     const previewURIProtocol = URIProtocolProvider.lookup(preview.uri, this._injector);
 

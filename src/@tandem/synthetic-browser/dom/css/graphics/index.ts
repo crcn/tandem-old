@@ -544,7 +544,7 @@ export class SyntheticCSSStyleGraphics extends Observable {
   
 
   public setProperties(style: SyntheticCSSStyle) {
-    for (const propertyName of style) {
+    for (const propertyName of style.getProperties()) {
       this.setProperty(propertyName, style[propertyName]);
     }
   }

@@ -67,7 +67,7 @@ export function getMatchingCSSStyleRules(target: SyntheticDOMElement) {
   eachInheritedMatchingStyleRule(target, (current: SyntheticDOMElement, rule: SyntheticCSSElementStyleRule) => {
     const inherited = current !== target;
     const overriddenStyleProperties = {};
-    for (const property of rule.style) {
+    for (const property of rule.style.getProperties()) {
       if (usedStyles[property]) {
         overriddenStyleProperties[property] = true;
       } else {

@@ -65,7 +65,7 @@ export class CSSStyleHashInputComponent extends React.Component<ICSSStyleHashInp
     const { setDeclaration, style, overridden, inherited, renderName } = this.props;
     const items = [];
 
-    for (const key of style) {
+    for (const key of style.getProperties()) {
       const value = style[key];
       items.push({ name: kebabCase(key), value: style[key], overridden: overridden && overridden[key], dim: inherited && !isInheritedCSSStyleProperty(key) } as any);
     }
@@ -87,7 +87,7 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
     const { setDeclaration, renderTitle, title, style, titleClassName, pretty, overridden, inherited } = this.props;
     const items = [];
 
-    for (const key of style) {
+    for (const key of style.getProperties()) {
       const value = style[key];
       items.push({ name: kebabCase(key), value: style[key], overridden: overridden && overridden[key], dim: inherited && !isInheritedCSSStyleProperty(key) });
     }

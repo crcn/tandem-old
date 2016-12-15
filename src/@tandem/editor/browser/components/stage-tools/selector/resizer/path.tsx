@@ -7,6 +7,8 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
 
   onPointDown(point, index, event) {
 
+    const args = Array.prototype.slice.call(arguments, 0);
+
     // slight UX tweak to ensure that the resizer cursor stays the same
     // as the user is dragging the selected entity.
     const oldCursor = this.props.workspace.cursor;
@@ -16,7 +18,7 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
     const sy = point.top;
 
     event.stopPropagation();
-    this.props.onPointMouseDown(...arguments);
+    this.props.onPointMouseDown(...args);
 
     startDrag(event, (event2, info) => {
 
@@ -34,7 +36,7 @@ class PathComponent extends React.Component<{ strokeWidth: number, showPoints: b
       this.props.onPointChange(point, event2);
     }, () => {
       this.props.workspace.cursor = oldCursor;
-      this.props.onPointMouseUp(...arguments);
+      this.props.onPointMouseUp(...args);
     });
   }
 

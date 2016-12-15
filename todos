@@ -14,19 +14,22 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
+- Splash page
+
+- [ ] package app in Chrome
 - [ ] more dev tools similar to chrome
 - [ ] add search bar for each artboard
 - [ ] check messaging around firefox & chrome dev tools
+- [ ] remove welcome page
+- [ ] Getting started video popup
 
 - [ ] change welcome screen to just a URL bar
 - [ ] change "Open file" to "enter url"
 - [ ] anchor tags should change the source of the artboard
 - [ ] launch checklist
-- [ ] Atom editor
 - [ ] analytics & usage
 - [ ] get recent file cache when switching
 - [ ] ability to select unsaved files
-- [ ] welcome to tandem video
 - [ ] bark for unsaved changes
 - [ ] Logo
 

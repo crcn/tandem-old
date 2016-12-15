@@ -25,13 +25,14 @@ export const getShortestLine = (from: Point[], to: Point[]) => {
   });
 }
 
-export const getRectPoints = ({ top, left, width, height }: BoundingRect): [Point, Point, Point] => {
+export const getRectPoints = (rect: BoundingRect): [Point, Point, Point] => {
+  const { top, left, width, height } = rect;
   return [
     // top left
     new Point(left, top),
 
     // center
-    getRectCenterPoint(arguments[0]),
+    getRectCenterPoint(rect),
 
     // bottom
     new Point(left + width, top + height)
@@ -67,10 +68,11 @@ export const getLineBoundingRect = ({ from, to }: Line) => {
   );
 }
 
-export const getOuterRectCenterPoints = ({ top, left, width, height }: BoundingRect): Point[] => {
+export const getOuterRectCenterPoints = (rect: BoundingRect): Point[] => {
+
   return [
-    ...getHorizontalRectCenterPoints(arguments[0]),
-    ...getVerticalRectCenterPoints(arguments[0])
+    ...getHorizontalRectCenterPoints(rect[0]),
+    ...getVerticalRectCenterPoints(rect[0])
   ]
 }
 

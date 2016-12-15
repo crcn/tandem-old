@@ -7,7 +7,7 @@ export class HTMLDOMElements extends DOMElements<SyntheticHTMLElement> {
     const allStyle = {};
     for (const item of <SyntheticHTMLElement[]><any>this) {
       const itemStyle =  item.style;
-      for (const name of itemStyle) {
+      for (const name of itemStyle.getProperties()) {
         if (allStyle[name]) {
           allStyle[name] = "multiple values";
         } else {

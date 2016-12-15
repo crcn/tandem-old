@@ -298,7 +298,7 @@ export class MergedCSSStyleRule extends Observable {
 
     const addStyle = (current: SyntheticHTMLElement, match: MatchedCSSStyleRuleType) => {
       const inherited = current !== this.target;
-      for (const property of match.style) {
+      for (const property of match.style.getProperties()) {
         if (!inherited || isInheritedCSSStyleProperty(property) && !this.getDeclarationMainSourceRule(property)) {
           this.setProperty(match, property, match.style[property]);
         }

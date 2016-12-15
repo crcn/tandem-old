@@ -419,14 +419,18 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     return this[index];
   }
 
-  [Symbol.iterator] = function*() {
+  [Symbol.iterator] = async function() {
     for (let i = 0, n = this.length || 0; i < n; i++) {
-      yield this[i];
+      await this[i];
     }
   }
 
   getProperties() {
-    return [...this];
+    const props = [];
+    for (let i = 0, n = this.length || 0; i < n; i++) {
+      props.push(this[i]);
+    }
+    return props;
   }
 
   get uid(): any {
@@ -577,7 +581,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
   }
 
   clearAll() {
-    for (const key of this) {
+    for (const key of this.getProperties()) {
       this[key] = undefined;
     }
     this.updatePropertyIndices();

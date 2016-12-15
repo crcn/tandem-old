@@ -215,9 +215,9 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
   }
 
   dispose() {
-    for (const pending of this._pendingConnections.values()) {
+    this._pendingConnections.forEach((pending) => {
       pending.abort(new Error("disposed"));
-    }
+    });
   }
 
   private greet(shouldSayHiBack?: boolean) {

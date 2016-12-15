@@ -33,8 +33,8 @@ export class SyntheticWindowTimers implements WindowTimers {
   }
 
   dispose() {
-    for (const timerID of this._timerIDs.keys()) {
+    this._timerIDs.forEach((value, timerID) => {
       this.clearTimer(timerID);
-    }
+    });
   }
 }
