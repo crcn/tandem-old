@@ -8,7 +8,7 @@ import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
-import { BoundingRect, BaseApplicationComponent, PropertyMutation, startDrag } from "@tandem/common";
+import { BoundingRect, BaseApplicationComponent, PropertyMutation, startDrag, hasURIProtocol } from "@tandem/common";
 
 export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteBrowser: SyntheticRemoteBrowserElement, workspace: Workspace, backgroundColor: string }, {
   edit: SyntheticDOMElementEdit,
@@ -106,8 +106,10 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
   onSrcKeyDown = (event: React.KeyboardEvent<any>): any => {
     if (event.keyCode === 13) {
       const edit = this.props.remoteBrowser.createEdit();
-      this.props.remoteBrowser.src = event.currentTarget.value;
-      edit.setAttribute("src", event.currentTarget.value);
+      let value = event.currentTarget.value;
+      if (!hasURIProtocol(value)) value = "http://" + value;
+      this.props.remoteBrowser.src = value;
+      edit.setAttribute("src", value);
       this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
     }
   }
@@ -152,12 +154,9 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
 
     const colorInf = tc(this.props.backgroundColor);
 
-
     return <div className="remote-browser-window platform desktop" style={chromeStyle}>
       <div className="header" onClick={this.select} onMouseDown={this.startDrag}>
         <div className="tabbar">
-          
-
           <div className="tab">{ remoteBrowser.title || "Untitled" }</div>
           <div className="controls">
             <i className="ion-plus-round" onClick={this.clone} />
@@ -185,21 +184,6 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
 
       { workspace.showStageTools ? <div className="overlay" /> : undefined } 
     </div>
-
-    // return <div>
-    //   <div className="m-remote-browser-stage-tool--item-background" style={chromeStyle}>
-    //     <div className="m-remote-browser-stage-tool--item-background--title">
-    //       <span className="search">
-    //         <input type="text" defaultValue={remoteBrowser.src} placeholder="http://localhost:8080" onKeyDown={this.onSrcKeyDown} />
-    //         <StatusComponent status={remoteBrowser.status} />
-    //       </span>
-    //       <span className="hide" onDoubleClick={this.editTitle} style={{ display: "none"}} onMouseDown={this.selectEntity}>
-    //         { this.state.titleEditChange ? <AutosizeInput ref="input" value={this.state.titleEditChange.newValue} onChange={this.onTitleChange} onBlur={this.save} onKeyDown={this.onKeyDown} /> : <span>{remoteBrowser.title || "Untitled"}</span> }
-    //       </span>
-    //     </div>
-    //   </div>
-
-    // </div>
   }
 }
 
