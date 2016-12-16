@@ -83,6 +83,7 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
             const [whole, url] = match.match(/url\((.*?)\)/);
 
             let repl;
+            if (url.substr(0, 5) === "data:") continue;
 
             // this can still break, but it's a quick implementation that should work 99% of the time.
             // Good for now.
