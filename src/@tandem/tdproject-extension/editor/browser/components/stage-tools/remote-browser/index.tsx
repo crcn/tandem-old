@@ -111,6 +111,23 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
       this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
     }
   }
+  
+
+  clone = () => {
+    const remoteBrowser = this.props.remoteBrowser;
+    const style = remoteBrowser.style;
+    let left = Number(style.left && style.left.replace(/[a-z]+/g, "") || 0);
+    let top  = Number(style.top && style.top.replace(/[a-z]+/g, "") || 0);
+
+    const clone = remoteBrowser.clone(true) as SyntheticRemoteBrowserElement;
+    clone.style.left = ((left || 0) + 25) + "px";
+    clone.style.top  = ((top || 0) + 25) + "px";
+    // alert(clone.uid + " " + remoteBrowser.uid);
+    const parentEdit = remoteBrowser.parentElement.createEdit();
+    parentEdit.appendChild(clone);
+
+    this.bus.dispatch(new ApplyFileEditRequest(parentEdit.mutations));
+  }
 
   selectSearch = (event: React.MouseEvent<any>) => {
     event.stopPropagation();
@@ -135,6 +152,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
 
     const colorInf = tc(this.props.backgroundColor);
 
+
     return <div className="remote-browser-window platform desktop" style={chromeStyle}>
       <div className="header" onClick={this.select} onMouseDown={this.startDrag}>
         <div className="tabbar">
@@ -142,6 +160,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
 
           <div className="tab">{ remoteBrowser.title || "Untitled" }</div>
           <div className="controls">
+            <i className="ion-plus-round" onClick={this.clone} />
           </div>
         </div>
         <div className="searchbar">
@@ -193,6 +212,7 @@ export class RemoteBrowserStageToolComponent extends React.Component<{ workspace
     const remoteBrowsers = document.querySelectorAll("remote-browser") as SyntheticRemoteBrowserElement[];
 
     if (!remoteBrowsers.length) return null;
+    
 
     const backgroundStyle = {
       backgroundColor: "rgba(0,0,0,0.05)",
@@ -207,8 +227,8 @@ export class RemoteBrowserStageToolComponent extends React.Component<{ workspace
     return <div className="remote-browser-stage-tool">
       <div style={backgroundStyle} className="remote-browser-stage-tool--background" />
       {
-        remoteBrowsers.map((remoteBrowser) => {
-          return <TDRemoteBrowserComponent key={remoteBrowser.uid} workspace={workspace} remoteBrowser={remoteBrowser} backgroundColor={backgroundStyle.backgroundColor} />;
+        remoteBrowsers.map((remoteBrowser, i) => {
+          return <TDRemoteBrowserComponent key={i} workspace={workspace} remoteBrowser={remoteBrowser} backgroundColor={backgroundStyle.backgroundColor} />;
         })
       }
     </div>;

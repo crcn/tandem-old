@@ -16,7 +16,6 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-- [ ] enter URL CTA
 - [ ] save current workspace option
 
 - [ ] check messaging around firefox & chrome dev tools
@@ -28,6 +27,7 @@ NEW TARGET: Dev tools - qa testing. Develop
 - [ ] ability to select unsaved files
 - [ ] bark for unsaved changes
 - [ ] Logo
+- [ ] http cache
 
 
 - test

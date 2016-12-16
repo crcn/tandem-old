@@ -22,15 +22,15 @@
       .tabbar {
         position: relative;
         
-
         }
         
         .controls {
           top: 50%;
           transform: translateY(-50%);
           right: 26px;
-
-          
+          color: #888;
+          position: absolute;
+          cursor: pointer;
         }
       }
       .searchbar {

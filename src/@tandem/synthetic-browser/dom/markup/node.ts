@@ -97,9 +97,18 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   constructor(readonly nodeName: string) {
     super();
-    this.$uid = generateSyntheticUID();
+    this.regenerateUID();
     this.metadata = new Metadata(this.getInitialMetadata());
     this.metadata.observe(new BubbleDispatcher(this));
+  }
+
+  // necessary after cloning
+  regenerateUID() {
+    this.$uid = generateSyntheticUID();
+    for (let i = this.children.length; i--;) {
+      this.children[i].regenerateUID();
+    }
+    return this;
   }
 
   get uid(): any {

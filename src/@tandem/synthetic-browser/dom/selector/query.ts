@@ -32,15 +32,14 @@ function isDocumentOrShadow(node: SyntheticDOMNode) {
   return node.nodeType === DOMNodeType.DOCUMENT || node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT;
 }
 
-export function createSyntheticDOMWalker(each: (node: SyntheticDOMNode, walker?: IDOMTreeWalker) => void, deep: boolean = true): IDOMTreeWalker {
+export function createSyntheticDOMWalker(each: (node: SyntheticDOMNode, walker?: IDOMTreeWalker) => void|boolean, deep: boolean = true): IDOMTreeWalker {
   const walker = {
     stop() {
       this._stopped = true;
     },
     accept(node: IWalkable & SyntheticDOMNode) {
       if (!this._stopped && (node.nodeType === DOMNodeType.ELEMENT || (deep && isDocumentOrShadow(node)))) {
-        each(node, this);
-        if (!this._stopped) {
+        if (each(node, this) !== false && !this._stopped) {
           node.visitWalker(this);
         }
       }
@@ -56,9 +55,8 @@ export function querySelector(node: SyntheticDOMNode, selectorSource: string): S
 
   // no deep -- nwmatcher busts otherwise
   const walker = createSyntheticDOMWalker(node => {
-
-    // no shadow
-    if (node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) return walker.stop();
+    // no shadows
+    if (node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) return false;
     if (tester.test(node)) {
       found = <SyntheticDOMElement>node;
       walker.stop();
@@ -73,8 +71,8 @@ export function querySelectorAll(node: SyntheticDOMNode, selectorSource: string)
   const tester = getSelectorTester(selectorSource, node);
   const walker = createSyntheticDOMWalker(node => {
 
-    // no shadow
-    if (node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) return walker.stop();
+    // no shadows
+    if (node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) return false;
     if (tester.test(node)) {
       found.push(<SyntheticDOMElement>node);
     }
