@@ -65,7 +65,9 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
   }
 
   get title(): string {
-    return this.getAttribute("title");
+    if (!this.contentDocument) return null;
+    const title = this.contentDocument.querySelector("title");
+    return title && title.textContent;
   }
 
   get src() {
@@ -74,10 +76,6 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
 
   set src(value) {
     this.setAttribute("src", value);
-  }
-
-  set title(value: string) {
-    this.setAttribute("title", value);
   }
 
   attributeChangedCallback(key: string, oldValue: string, newValue: string) {

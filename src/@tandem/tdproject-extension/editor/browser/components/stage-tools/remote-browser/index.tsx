@@ -8,7 +8,7 @@ import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
-import { BoundingRect, BaseApplicationComponent, PropertyMutation } from "@tandem/common";
+import { BoundingRect, BaseApplicationComponent, PropertyMutation, startDrag } from "@tandem/common";
 
 export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteBrowser: SyntheticRemoteBrowserElement, workspace: Workspace, backgroundColor: string }, {
   edit: SyntheticDOMElementEdit,
@@ -71,6 +71,22 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
     event.stopPropagation();
   }
 
+  startDrag = (event) => {
+    const browser = this.props.remoteBrowser;
+    const zoom = this.props.workspace.zoom;
+    const pos = browser.getAbsoluteBounds();
+    startDrag(event, (event, data) => {
+      Object.assign(browser.style, {
+        left: pos.left + data.delta.x / zoom,
+        top: pos.top + data.delta.y / zoom
+      });
+    }, () => {
+      const edit = browser.createEdit();
+      edit.setAttribute("style", browser.getAttribute("style"));
+      this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    });
+  }
+
   componentDidMount() {
     if (!this.props.remoteBrowser.src) {
       setTimeout(() => {
@@ -90,15 +106,15 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
   onSrcKeyDown = (event: React.KeyboardEvent<any>): any => {
     if (event.keyCode === 13) {
       const edit = this.props.remoteBrowser.createEdit();
-      this.props.remoteBrowser.src = event.target.value;
-      edit.setAttribute("src", event.target.value);
+      this.props.remoteBrowser.src = event.currentTarget.value;
+      edit.setAttribute("src", event.currentTarget.value);
       this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
     }
   }
 
-  selectSearch = (event: React.KeyboardEvent<any>) => {
+  selectSearch = (event: React.MouseEvent<any>) => {
     event.stopPropagation();
-    event.target.select();
+    event.currentTarget.select();
   }
 
   render() {
@@ -118,25 +134,34 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
     const fontSize = 12;
 
     const colorInf = tc(this.props.backgroundColor);
-    const titleElement = remoteBrowser.contentDocument && remoteBrowser.contentDocument.querySelector("title");
 
     return <div className="remote-browser-window platform desktop" style={chromeStyle}>
-      <div className="header" onClick={this.select}>
+      <div className="header" onClick={this.select} onMouseDown={this.startDrag}>
         <div className="tabbar">
-          <div className="tab">{ titleElement && titleElement.textContent || "Untitled" }</div>
+          
+
+          <div className="tab">{ remoteBrowser.title || "Untitled" }</div>
           <div className="controls">
-            <div className="app">
-              <i className="chrome"></i>
-            </div>
           </div>
         </div>
         <div className="searchbar">
-          <input ref="src" type="text" defaultValue={remoteBrowser.src} placeholder="http://localhost:8080" onKeyDown={this.onSrcKeyDown} onClick={this.selectSearch} />
+          <input ref="src" type="text" defaultValue={remoteBrowser.src} placeholder="enter address" onKeyDown={this.onSrcKeyDown} onClick={this.selectSearch} />
           <StatusComponent status={window["$synthetic"] ? new Status(Status.LOADING) : remoteBrowser.status} />
         </div>
       </div>
       <div className="frame">
         <div className="background"></div>
+      </div>
+
+      <div className="footer">
+        <div className="info">
+          <div className="app">
+            <i className="chrome"></i>
+            <span className="version">
+              v53
+            </span>
+          </div>
+        </div>
       </div>
 
       { workspace.showStageTools ? <div className="overlay" /> : undefined } 
