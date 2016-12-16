@@ -16,6 +16,7 @@ import { IInjectable } from "@tandem/common";
 import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
+import { fitBoundsInDocument } from "@tandem/editor/browser/utils";
 
 class SelectableComponent extends BaseApplicationComponent<{
   element: SyntheticHTMLElement,
@@ -64,9 +65,13 @@ class SelectableComponent extends BaseApplicationComponent<{
   }
 
   render() {
-    const { element, selection, absoluteBounds, hovering } = this.props;
+    let { element, selection, absoluteBounds, hovering } = this.props;
 
     const borderWidth = 2 / this.props.zoom;
+
+
+
+    absoluteBounds = fitBoundsInDocument(element);
 
     const classNames = cx({
       "m-selectable": true,
@@ -134,8 +139,19 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
 
     const { workspace, zoom, allElements } = this.props;
 
+    const isVisible = (element: SyntheticDOMElement) => {
+      const doc = element.ownerDocument.$ownerNode;
+      if (!doc) return true;
+      const elementBounds = element.getAbsoluteBounds();
+      const documentBounds    = doc.getBoundingClientRect();
+      return (elementBounds.left > documentBounds.left || elementBounds.right > documentBounds.left) &&
+      elementBounds.left < documentBounds.right && 
+      (elementBounds.top > documentBounds.top || elementBounds.bottom > documentBounds.top) && 
+      elementBounds.top < documentBounds.bottom;
+    }
+
     const visibleElements = allElements.filter(element => {
-      return (element as SyntheticHTMLElement).getAbsoluteBounds && (element as SyntheticHTMLElement).getAbsoluteBounds().visible && element.getAttribute("data-td-selectable") !== "false"
+      return (element as SyntheticHTMLElement).getAbsoluteBounds && (element as SyntheticHTMLElement).getAbsoluteBounds().visible && element.getAttribute("data-td-selectable") !== "false" && isVisible(element)
     }) as SyntheticHTMLElement[];
 
     const selectables = visibleElements.map((element) => {

@@ -4,6 +4,7 @@ import "@tandem/uikit";
 import React =  require("react");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { fitBoundsInDocument } from "@tandem/editor/browser/utils";
 import { calculateCSSMeasurments } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMElement } from "@tandem/synthetic-browser";
 
@@ -14,7 +15,7 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
 
   render() {
     const { element, workspace } = this.props;
-    const rect = element.getBoundingClientRect();
+    const rect = fitBoundsInDocument(element);
     const computedStyle = element.getComputedStyle();
     if (!computedStyle) return null;
 
