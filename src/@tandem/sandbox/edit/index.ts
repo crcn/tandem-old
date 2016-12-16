@@ -243,7 +243,7 @@ export class FileEditor {
       const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(type, this._injector);
 
       if (!contentEditorFactoryProvider) {
-        this.logger.error(`No synthetic edit consumer exists for ${uri}.`);
+        this.logger.error(`No synthetic edit consumer exists for ${uri}:${type}.`);
         continue;
       }
 
@@ -263,7 +263,7 @@ export class FileEditor {
         // Note that checking WS changes won't cut it since formatters may swap certain characters. E.g: HTML may change single quotes
         // to double quotes for attributes.
         if (content !== newContent) {
-          fileCache.setDataUrlContent(newContent);
+          fileCache.setDataUrlContent(newContent, type);
           promises.push(fileCache.save());
           if (autoSave) {
             promises.push(URIProtocolProvider.lookup(fileCache.sourceUri, this._injector).write(fileCache.sourceUri, newContent));

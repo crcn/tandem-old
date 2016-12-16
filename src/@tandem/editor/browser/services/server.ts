@@ -22,7 +22,7 @@ export class ServerService extends IOService<IEditorBrowserConfig> {
 
   async [LoadApplicationRequest.LOAD]() {
     if (!this.config.server || !this.config.server.port) {
-      return;
+      return this.logger.warn(`Cannot connect with backend -- "server" or "port" is missing.`);
     }
 
     const { server } = this.config;

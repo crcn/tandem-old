@@ -5,17 +5,12 @@ import { SyntheticDOMContainer } from "./container";
 
 import { serializable, ISerializer, serialize, deserialize, SerializedContentType } from "@tandem/common";
 
-export interface ISerializedSyntheticDocumentFragment {
-  childNodes: Array<SerializedContentType<any>>;
-}
 
-class SyntheticDocumentFragmentSerializer implements ISerializer<SyntheticDocumentFragment, ISerializedSyntheticDocumentFragment> {
+class SyntheticDocumentFragmentSerializer implements ISerializer<SyntheticDocumentFragment, any[]> {
   serialize({ childNodes }) {
-    return {
-      childNodes: childNodes.map(serialize)
-    };
+    return childNodes.map(serialize);
   }
-  deserialize({ childNodes }, injector) {
+  deserialize(childNodes, injector) {
     const fragment = new SyntheticDocumentFragment();
     for (let i = 0, n = childNodes.length; i < n; i++) {
       fragment.appendChild(deserialize(childNodes[i], injector));

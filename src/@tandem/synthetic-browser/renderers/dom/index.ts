@@ -89,6 +89,20 @@ function filterInvalidMediaRules(rules: SyntheticCSSGroupAtRule[]) {
 
 }
 
+const parsePx = (unit) => {
+  const v = Number(unit && unit.replace(/[a-z]+/g, "") || 0);
+  return isNaN(v) ? 0 : v;
+}
+
+const calculateSyntheticBoundingRect = (style: SyntheticCSSStyle) => {
+  const { width, height, left, top } = style;
+  let lp  = parsePx(left);
+  let tp  = parsePx(top);
+  let rp  = lp + parsePx(width);
+  let bp  = tp + parsePx(height);
+  return new BoundingRect(lp, tp, rp, bp);
+}
+
 export class SyntheticDOMRenderer extends BaseRenderer {
 
   private _currentCSSText: string;
@@ -96,11 +110,11 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   private _documentElement: HTMLElement;
   private _elementDictionary: HTMLElementDictionaryType;
   private _cssRuleDictionary: CSSRuleDictionaryType;
-  private _getComputedStyle: (node: Node) => CSSStyleDeclaration;
+  private _getComputedStyle: (node: Node) => CSSStyleDeclaration|SyntheticCSSStyle;
 
   constructor(nodeFactory?: Document, getComputedStyle?: (node: Node) => CSSStyleDeclaration) {
     super(nodeFactory);
-    this._getComputedStyle = getComputedStyle || (typeof window !== "undefined" ? window.getComputedStyle.bind(window) : () => {});
+    this._getComputedStyle = getComputedStyle || (typeof window !== "undefined" ? window.getComputedStyle.bind(window) : () => { });
   }
 
   createElement() {
@@ -276,13 +290,15 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
       const syntheticNode: SyntheticDOMNode = <SyntheticDOMNode>synthetic;
       if (syntheticNode && syntheticNode.nodeType === DOMNodeType.ELEMENT) {
-        const rect = BoundingRect.fromClientRect((<Element>native).getBoundingClientRect());
+
+        const nativeStyle = this._getComputedStyle(native);
+
+        const rect = window["$synthetic"] ? calculateSyntheticBoundingRect(nativeStyle as SyntheticCSSStyle) : BoundingRect.fromClientRect((<Element>native).getBoundingClientRect());
         
         if (rect.width || rect.height || rect.left || rect.top) {
           rects[uid] = rect;
         }
 
-        const nativeStyle = this._getComputedStyle(native);
 
         // just attach whatever's returned by the DOM -- don't wrap this in a synthetic, or else
         // there'll be massive performance penalties.
@@ -327,14 +343,17 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
     case DOMNodeType.DOCUMENT:
     case DOMNodeType.DOCUMENT_FRAGMENT:
       const syntheticContainer = <SyntheticDOMContainer>syntheticNode;
-      const containerElement = renderHTMLElement(nodeFactory, "span", syntheticContainer, dict);
+      const containerElement = renderHTMLElement(nodeFactory, "span", syntheticContainer as SyntheticDOMElement, dict);
       return appendChildNodes(nodeFactory, containerElement, syntheticContainer.childNodes, dict);
   }
 }
 
-function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMNode, dict: HTMLElementDictionaryType): HTMLElement {
+function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMElement, dict: HTMLElementDictionaryType): HTMLElement {
   if (/^(html|body|head)$/.test(tagName)) tagName = "div";
-  const element = nodeFactory.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName);
+  const element = nodeFactory.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName) as HTMLElement;
+  if (source.shadowRoot) {
+    appendChildNodes(nodeFactory, element.attachShadow({ mode: "open" }), source.shadowRoot.childNodes, dict);
+  }
   dict[source.uid] = [element, source];
   return element as any;
 }

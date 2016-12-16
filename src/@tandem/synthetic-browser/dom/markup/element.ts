@@ -342,6 +342,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     return this._readonlyAttributeNames;
   }
 
+  createShadowRoot() {
+    return this.attachShadow({ mode: "open" });
+  }
+
   attachShadow({ mode }: { mode: "open"|"close" }) {
     if (this._shadowRoot) return this._shadowRoot;
     return this.$setShadowRoot(new SyntheticDocumentFragment());
@@ -451,10 +455,26 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     }
   }
 
+
   $setOwnerDocument(document: SyntheticDocument) {
     super.$setOwnerDocument(document);
     if (this._shadowRoot) {
       this._shadowRoot.$setOwnerDocument(document);
+    }
+  }
+
+  $attach(document: SyntheticDocument) {
+    super.$attach(document);
+    if (this._shadowRoot) {
+      this._shadowRoot.$attach(document);
+    }
+  }
+
+
+  $detach() {
+    super.$detach();
+    if (this._shadowRoot) {
+      this._shadowRoot.$detach();
     }
   }
 

@@ -150,6 +150,10 @@ export class OpenWorkspaceRequest extends CoreEvent {
   }
 }
 
+export interface INewWorkspaceOptions {
+  commonjs?: boolean;
+}
+
 @addMessageVisitor(EditorFamilyType.TEXT_EDITOR)
 @addMessageVisitor(EditorFamilyType.WORKER)
 @setMessageTarget(EditorFamilyType.MASTER)
@@ -157,7 +161,7 @@ export class OpenWorkspaceRequest extends CoreEvent {
 export class OpenNewWorkspaceRequest implements IMessage {
   static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
   readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
-  constructor(readonly uri: string) { }
+  constructor(readonly uri: string, options: INewWorkspaceOptions = {}) { }
 }
 
 

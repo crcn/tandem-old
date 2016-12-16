@@ -4,10 +4,13 @@ import { ISourcePosition, ISerializer, IWalkable, sourcePositionEquals } from "@
 
 let _i = 0;
 
+
+const seed = Math.round(Math.random() * 100);
+
 export function generateSyntheticUID() {
 
   // TODO - add seed & platform information here
-  return _i++;
+  return "" + seed + "." + _i++;
 }
 
 /**
@@ -118,18 +121,34 @@ export interface ISerializedSyntheticObject {
  * Converts the synthetic object into a format that can be transfered over a network.
  */
 
-export class SyntheticObjectSerializer implements ISerializer<ISyntheticObject, ISerializedSyntheticObject> {
+export class SyntheticObjectSerializer implements ISerializer<ISyntheticObject, any[]> {
   constructor(readonly childSerializer: ISerializer<ISyntheticObject, any>) { }
   serialize(value: ISyntheticObject) {
-    return Object.assign(this.childSerializer.serialize(value), {
-      source: value.$source,
-      uid: value.$uid
-    });
+    const source  = value.$source && [
+      value.$source.uri, 
+      value.$source.kind, 
+      value.$source.start.line, 
+      value.$source.start.column, 
+      value.$source.end && value.$source.end.line, 
+      value.$source.end && value.$source.end.column, 
+    ] || [];
+    return [this.childSerializer.serialize(value), source, value.$uid];
   }
-  deserialize(value: ISerializedSyntheticObject, injector, ctor) {
-    return Object.assign(this.childSerializer.deserialize(value, injector, ctor), {
-      $source: value.source,
-      $uid: value.uid
-    });
+  deserialize([child, [uri, kind, sline, scolumn, eline, ecolumn], uid], injector, ctor) {
+    const obj = this.childSerializer.deserialize(child, injector, ctor);
+    obj.$source = sline && {
+      uri: uri,
+      kind: kind,
+      start: {
+        line: sline,
+        column: scolumn
+      },
+      end: eline && {
+        line: eline,
+        column: ecolumn
+      }
+    };
+    obj.$uid = uid;
+    return obj;
   }
 }

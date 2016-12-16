@@ -26,7 +26,9 @@ import {
 } from "@tandem/editor/browser";
 
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
+import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
 import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
+import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/worker";
 import { TandemStudioBrowserStoreProvider } from "./providers";
 
 import { OpenRequest } from "./messages";
@@ -62,8 +64,10 @@ import {
   SetMenuCommand,
   LoadHelpOptionsCommad,
   LoadStartOptionsCommand, 
+  LoadSandboxedWorkspaceCommand,
   InitializeWelcomePageCommand, 
 } from "./commands";
+
 
 const config: IEditorBrowserConfig = {
   family: EditorFamilyType.BROWSER,
@@ -140,10 +144,8 @@ function createWorkspaceMenuProviders() {
   ]
 }
 
-
 function createWelcomeMenuProviders() {
   return [
-
   ];
 }
 
@@ -156,6 +158,11 @@ const injector = new Injector(
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadStartOptionsCommand),
   new CommandFactoryProvider(DidRedirectMessage.DID_REDIRECT, SetMenuCommand),
 
+  // for DEV
+  new CommandFactoryProvider(ApplicationReadyMessage.READY, LoadSandboxedWorkspaceCommand),
+  createHTMLEditorWorkerProviders(),
+  createTDProjectEditorWorkerProviders(),
+
   // menus
   ...createMenuProviders(),
 
@@ -167,6 +174,8 @@ const injector = new Injector(
   createEditorBrowserProviders(config),
   createHTMLEditorBrowserProviders(),
   createTDProjectEditorBrowserProviders(),
+
+
 );
 
 const app = window["app"] = new ServiceApplication(injector);

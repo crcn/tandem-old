@@ -18,9 +18,10 @@ const {
 
 
 // SANDBOXED=1 tandem component.tsx
-const SANDBOXED   = !!process.env.SANDBOXED;
 const MINIFY      = !!process.env.MINIFY;
 const SOURCE_MAPS = !!process.env.SOURCE_MAPS;
+
+const extractCSS = new ExtractTextPlugin('style.css');
 
 const plugins = [
   new webpack.DefinePlugin({
@@ -33,7 +34,7 @@ const plugins = [
     excludeWarnings: true,
     alwaysNotify: true
   }),
-  new ExtractTextPlugin('styles.css'),
+  extractCSS,
 ];
 
 const SM_QUERY_PARAM = SOURCE_MAPS ? "?sourceMap" : "";
@@ -42,8 +43,8 @@ const tsLoaders = [];
 const pegLoaders = [];
 const loaders = [];
 
-if (SANDBOXED && false) {
-  tsLoaders.push(join(__dirname, '/../../out/tandem-loader'));
+if (SOURCE_MAPS) {
+  tsLoaders.push("webpack-tandem-jsx-loader");
 }
 
 // does not work
@@ -69,7 +70,6 @@ if (MINIFY) {
   //   }
   // )
 }
-
 
 
 tsLoaders.push('ts-loader' + SM_QUERY_PARAM);
@@ -99,24 +99,21 @@ loaders.push(
   },
   {
     test: /\.scss$/,
-    loader: [
-      'style-loader',
+    loader: extractCSS.extract([
       'css-loader' + SM_QUERY_PARAM,
       'sass-loader' + SM_QUERY_PARAM
-    ].join('!')
+    ])
   },
   {
     test: /\.css$/,
-    loader: [
-      'style-loader',
-      'css-loader' + SM_QUERY_PARAM
-    ].join('!')
+    loader: extractCSS.extract([
+      'css-loader'
+    ])
   }
 );
 
 
 exports.config = {
-    target: "electron",
     output: {
       filename: '[name].js',
     },
@@ -124,6 +121,7 @@ exports.config = {
       includePaths: [SRC_DIR],
       outputStyle: "expanded"
     },
+    // devtool: 'eval-source-map',
     stats: {
       hash: false,
       version: false,
@@ -147,7 +145,6 @@ exports.config = {
         // don't uncomment these -- fudges with tests. Need to decouple tests from these
         // 'react': require.resolve('react/dist/react.js'),
         // 'react-dom': require.resolve('react-dom/dist/react-dom.js'),
-        'detective': 'null-loader?detective',
         'node-sass': 'null-loader?node-sass',
         'child_process': 'null-loader?child_process',
         'sass.js': 'null-loader?sass.js',
@@ -179,7 +176,6 @@ exports.config = {
       __dirname: true
     },
     plugins: plugins,
-    postcss: () => [cssnext()],
     module: {
       loaders: loaders
     }

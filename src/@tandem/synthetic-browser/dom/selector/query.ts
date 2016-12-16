@@ -53,7 +53,12 @@ export function createSyntheticDOMWalker(each: (node: SyntheticDOMNode, walker?:
 export function querySelector(node: SyntheticDOMNode, selectorSource: string): SyntheticDOMElement {
   let found: SyntheticDOMElement;
   const tester = getSelectorTester(selectorSource, node);
+
+  // no deep -- nwmatcher busts otherwise
   const walker = createSyntheticDOMWalker(node => {
+
+    // no shadow
+    if (node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) return walker.stop();
     if (tester.test(node)) {
       found = <SyntheticDOMElement>node;
       walker.stop();
@@ -67,6 +72,9 @@ export function querySelectorAll(node: SyntheticDOMNode, selectorSource: string)
   let found: SyntheticDOMElement[] = [];
   const tester = getSelectorTester(selectorSource, node);
   const walker = createSyntheticDOMWalker(node => {
+
+    // no shadow
+    if (node.nodeType === DOMNodeType.DOCUMENT_FRAGMENT) return walker.stop();
     if (tester.test(node)) {
       found.push(<SyntheticDOMElement>node);
     }
@@ -213,10 +221,7 @@ export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends Base
     const found = [];
     const filter = this.filter || (() => true);
     const tester = getSelectorTester(this.selector, this.target);
-    let i = 0;
-
     createSyntheticDOMWalker(node => {
-      i++;
       if (tester.test(node) && filter(<SyntheticDOMElement>node)) found.push(node);
     }).accept(this.target);
 

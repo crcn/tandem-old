@@ -19,7 +19,7 @@ export class StartMasterPingCommand extends BaseCommand {
       }
 
       // give some room -- server may be busy
-      const raceTimer = setTimeout(kill, 1000 * 5);
+      const raceTimer = setTimeout(kill, 1000 * 10);
       
       const value = (await readOneChunk(this.bus.dispatch(new PingRequest()))).value;
       clearTimeout(raceTimer);

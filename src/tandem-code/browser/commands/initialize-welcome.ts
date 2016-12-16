@@ -5,7 +5,7 @@ import { RedirectRequest } from "@tandem/editor/browser/messages";
 export class InitializeWelcomePageCommand extends BaseStudioEditorBrowserCommand {
   async execute() {
     if (!this.editorStore.workspace) {
-      await this.bus.dispatch(new RedirectRequest(StudioRouteNames.WELCOME))
+      // await this.bus.dispatch(new RedirectRequest(StudioRouteNames.WELCOME))
     }
   }
 }

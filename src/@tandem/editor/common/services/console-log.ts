@@ -122,7 +122,7 @@ export class ConsoleLogService extends CoreApplicationService<any> {
       text = colorize(text);
     }
 
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && !window["$synthetic"]) {
       return styledConsoleLog(ansi_to_html(text));
     }
 

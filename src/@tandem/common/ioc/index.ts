@@ -190,7 +190,7 @@ export function createSingletonProviderClass<T>(id: string): { getInstance(provi
     static readonly ID: string = id;
     private _value: T;
     private _clazz: { new(...rest): T };
-    readonly overridable = false;
+    readonly overridable = true;
     readonly id = id;
     public owner: Injector;
 

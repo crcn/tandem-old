@@ -3,9 +3,9 @@ import { serializable } from "../serialize";
 
 @serializable("BoundingRect", {
   serialize({ left, top, right, bottom }: BoundingRect) {
-    return { left, top, right, bottom };
+    return [left, top, right, bottom ];
   },
-  deserialize({ left, top, right, bottom }) {
+  deserialize([ left, top, right, bottom ]) {
     return new BoundingRect(left, top, right, bottom);
   }
 })

@@ -55,26 +55,20 @@ export interface IRegisterComponentOptions {
   extends: string;
 }
 
-export interface ISerializedSyntheticDocument {
-  styleSheets: any[];
-  defaultNamespaceURI: string;
-  childNodes: any[];
-}
-
-class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, ISerializedSyntheticDocument> {
+class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, any[]> {
   serialize(document: SyntheticDocument) {
-    return {
+    return [
       // need to cast style sheet to vanilla array before mapping
-      styleSheets: [].concat(document.styleSheets).map(serialize),
-      defaultNamespaceURI: document.defaultNamespaceURI,
-      childNodes: document.childNodes.map(serialize),
-    };
+      document.defaultNamespaceURI,
+      [].concat(document.styleSheets).map(serialize),
+      document.childNodes.map(serialize),
+    ];
   }
-  deserialize(value: ISerializedSyntheticDocument, injector) {
-    const document = new SyntheticDocument(value.defaultNamespaceURI);
-    document.styleSheets.push(...value.styleSheets.map(raw => deserialize(raw, injector)));
-    for (let i = 0, n = value.childNodes.length; i < n; i++) {
-      document.appendChild(deserialize(value.childNodes[i], injector));
+  deserialize([defaultNamespaceURI, styleSheets, childNodes], injector) {
+    const document = new SyntheticDocument(defaultNamespaceURI);
+    document.styleSheets.push(...styleSheets.map(raw => deserialize(raw, injector)));
+    for (let i = 0, n = childNodes.length; i < n; i++) {
+      document.appendChild(deserialize(childNodes[i], injector));
     }
     return document;
   }

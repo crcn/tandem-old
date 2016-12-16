@@ -2,13 +2,13 @@ import "./index.scss";
 import React =  require("react");
 import AutosizeInput = require("react-input-autosize");
 
-import { Status } from "@tandem/common/status";
 import tc =  require("tinycolor2");
-import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
-import { BoundingRect, BaseApplicationComponent, PropertyMutation } from "@tandem/common";
+import { Status } from "@tandem/common/status";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
+import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
+import { BoundingRect, BaseApplicationComponent, PropertyMutation } from "@tandem/common";
 
 export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement, workspace: Workspace, backgroundColor: string }, {
   edit: SyntheticDOMElementEdit,
@@ -79,6 +79,15 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
     }
   }
 
+  onSrcKeyDown = (event: React.KeyboardEvent<any>): any => {
+    if (event.keyCode === 13) {
+      const edit = this.props.artboard.createEdit();
+      this.props.artboard.src = event.target.value;
+      edit.setAttribute("src", event.target.value);
+      this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    }
+  }
+
   render() {
     const { artboard, workspace } = this.props;
 
@@ -97,21 +106,25 @@ export class TDArtboardComponent extends BaseApplicationComponent<{ artboard: Sy
 
     const colorInf = tc(this.props.backgroundColor);
 
-    const titleStyle = {
-      position: "absolute",
-      color: colorInf.isLight() || colorInf.getAlpha() < 0.3 ? `rgba(0,0,0,0.5)` : `rgba(255, 255, 255, 0.8)`,
-      display: workspace.transform.scale > 0.2 ? "block" : "none",
-      top: 0,
-      fontSize: 12,
-      transform: `translateY(${-25 * scale}px) scale(${scale})`,
-      transformOrigin: "top left"
-    };
+    // const titleStyle = {
+    //   position: "absolute",
+    //   // color: colorInf.isLight() || colorInf.getAlpha() < 0.3 ? `rgba(0,0,0,0.5)` : `rgba(255, 255, 255, 0.8)`,
+    //   display: workspace.transform.scale > 0.2 ? "block" : "none",
+    //   top: 0,
+    //   fontSize: 12,
+    //   transformOrigin: "top left"
+    // };
 
     return <div>
       <div className="m-tdartboard-stage-tool--item-background" style={style}>
-        <div className="m-tdartboard-stage-tool--item-background--title" onMouseDown={this.selectEntity} onDoubleClick={this.editTitle} style={titleStyle}>
-          { this.state.titleEditChange ? <AutosizeInput ref="input" value={this.state.titleEditChange.newValue} onChange={this.onTitleChange} onBlur={this.save} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
-          <StatusComponent status={artboard.status} />
+        <div className="m-tdartboard-stage-tool--item-background--title">
+          <span className="search">
+            <input type="text" defaultValue={artboard.src} placeholder="http://localhost:8080" onKeyDown={this.onSrcKeyDown} />
+            <StatusComponent status={artboard.status} />
+          </span>
+          <span className="hide" onDoubleClick={this.editTitle} style={{ display: "none"}} onMouseDown={this.selectEntity}>
+            { this.state.titleEditChange ? <AutosizeInput ref="input" value={this.state.titleEditChange.newValue} onChange={this.onTitleChange} onBlur={this.save} onKeyDown={this.onKeyDown} /> : <span>{artboard.title || "Untitled"}</span> }
+          </span>
         </div>
       </div>
 

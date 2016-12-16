@@ -53,6 +53,7 @@ describe(__filename + "#", () => {
       const b = evaluateCSS(parseCSS(newSource as string));
       const edit = a.createEdit().fromDiff(b);
 
+
       expect(edit.mutations.length).not.to.equal(0);
       
       edit.applyMutationsTo(a, (target, action) => {

@@ -17,13 +17,11 @@ export interface ISerializedSyntheticCSSFontFace {
   style: SerializedContentType<any>;
 }
 
-class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace, ISerializedSyntheticCSSFontFace> {
+class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace, Object> {
   serialize({ style }: SyntheticCSSFontFace) {
-    return {
-      style: serialize(style)
-    };
+    return serialize(style);
   }
-  deserialize({ style }: ISerializedSyntheticCSSFontFace, injector) {
+  deserialize(style, injector) {
     return new SyntheticCSSFontFace(deserialize(style, injector));
   }
 }

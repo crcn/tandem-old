@@ -44,7 +44,6 @@ export interface ISerializedSyntheticDOMNode {
 
 export const SyntheticDOMNodeSerializer = SyntheticObjectSerializer;
 
-
 export abstract class SyntheticDOMNodeEdit<T extends SyntheticDOMNode> extends SyntheticObjectEdit<T> { }
 export class SyntheticDOMNodeEditor<T extends SyntheticDOMNode> extends SyntheticObjectEditor<T> { }
 
@@ -198,9 +197,12 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
   }
 
   onChildAdded(child: SyntheticDOMNode, index: number) {
+
+    // must come before super to ensure that ownerDocument is present
+    // if mutation listeners look for it.
+    child.$setOwnerDocument(this.ownerDocument);
     super.onChildAdded(child, index);
     if (this.ownerDocument) {
-      child.$setOwnerDocument(this.ownerDocument);
       if (this._attached) {
         child.$attach(this.ownerDocument);
       } else if (child._attached) {

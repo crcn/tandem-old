@@ -165,21 +165,12 @@ export class SyntheticCSSElementStyleRuleEdit<T extends SyntheticCSSElementStyle
 }
 
 
-export interface ISerializedSyntheticCSSElementStyleRule {
-  selector: string;
-  style: SerializedContentType<ISerializedSyntheticCSSStyle>
-}
-
-
-class SyntheticCSSElementStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRule, ISerializedSyntheticCSSElementStyleRule> {
-  serialize(value: SyntheticCSSElementStyleRule): ISerializedSyntheticCSSElementStyleRule {
-    return {
-      selector: value.selector,
-      style: serialize(value.style)
-    };
+class SyntheticCSSElementStyleRuleSerializer implements ISerializer<SyntheticCSSStyleRule, any[]> {
+  serialize(value: SyntheticCSSElementStyleRule) {
+    return [value.selector, serialize(value.style)];
   }
-  deserialize(value: ISerializedSyntheticCSSElementStyleRule, injector): SyntheticCSSElementStyleRule {
-    return new SyntheticCSSElementStyleRule(value.selector, deserialize(value.style, injector));
+  deserialize([ selector, style ], injector): SyntheticCSSElementStyleRule {
+    return new SyntheticCSSElementStyleRule(selector, deserialize(style, injector));
   }
 }
 

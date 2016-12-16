@@ -194,13 +194,20 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
   };
 
   _recenter = (show?: boolean) => {
+
+    // TODO - eventually 
+    if (window["$synthetic"]) return this.setState({ 
+      canvasWidth  : 500,
+      canvasHeight : 500,
+      centerLeft   : 0.5,
+      centerTop    : 0.5,
+      show: true 
+    });
     const body = (this.refs as any).isolate.body;
     this._mousePosition = undefined;
 
     let width  = body.offsetWidth;
     let height = body.offsetHeight;
-
-
 
     const workspace =  this.props.workspace;
     const browser = this.props.workspace.browser;

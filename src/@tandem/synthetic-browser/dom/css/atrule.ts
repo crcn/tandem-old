@@ -73,21 +73,12 @@ export abstract class SyntheticCSSGroupAtRule extends SyntheticCSSGroupingRule<S
   }
 }
 
-export interface ISerializedSyntheticCSSUnknownAtRule {
-  atRuleName: string;
-  params: string;
-  cssRules: Array<SerializedContentType<any>>;
-}
 
-class SyntheticCSSUnknownAtRuleSerializer implements ISerializer<SyntheticCSSUnknownGroupAtRule, ISerializedSyntheticCSSUnknownAtRule> {
+class SyntheticCSSUnknownAtRuleSerializer implements ISerializer<SyntheticCSSUnknownGroupAtRule, any[]> {
   serialize({ atRuleName, params, cssRules }: SyntheticCSSUnknownGroupAtRule) {
-    return {
-      atRuleName: atRuleName,
-      params: params,
-      cssRules: cssRules.map(serialize)
-    };
+    return [atRuleName, params, cssRules.map(serialize)]
   }
-  deserialize({ atRuleName, params, cssRules }: ISerializedSyntheticCSSUnknownAtRule, injector) {
+  deserialize([ atRuleName, params, cssRules ], injector) {
     return new SyntheticCSSUnknownGroupAtRule(atRuleName, params, cssRules.map((cs) => deserialize(cs, injector)));
   }
 }

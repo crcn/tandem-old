@@ -78,9 +78,6 @@ export function evaluateMarkup(expression: parse5.AST.Default.Node, doc: Synthet
       const node = doc.createTextNode((expression as parse5.AST.Default.TextNode).value);
       linkSourceInfo(expression, node);
       parentContainer.appendChild(node);
-      // if (/\S+/.test(value)) {
-      //   console.log(JSON.stringify(value));
-      // }
       return node;
     } else if (expression.nodeName === "#document" || expression.nodeName === "#document-fragment") {
 

@@ -14,6 +14,10 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
+NEW TARGET: Dev tools - qa testing. Develop
+
+- hide selectables if they're out of the artboard
+
 - Splash page
 
 - [ ] package app in Chrome

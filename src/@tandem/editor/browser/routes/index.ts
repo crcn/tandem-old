@@ -5,7 +5,9 @@ import { EditorRouteNames  } from "@tandem/editor/browser/constants";
 export class WorkspaceRouteHandler extends BaseRouteHandler {
   async load({ query }: RedirectRequest) {
 
-    await this.bus.dispatch(new OpenWorkspaceRequest(query.workspaceUri));
+    if (!window["$synthetic"]) {
+      await this.bus.dispatch(new OpenWorkspaceRequest(query.workspaceUri));
+    }
 
     return {
       state: {

@@ -6,10 +6,6 @@ import { SyntheticDOMNode, SyntheticDOMNodeEdit } from "./node";
 import { ISerializer, Mutation, SetValueMutation, PropertyMutation  } from "@tandem/common";
 import { BaseContentEdit, SyntheticObjectChangeTypes, BaseEditor, GroupEditor } from "@tandem/sandbox";
 
-export interface ISerializedSyntheticDOMValueNode {
-  nodeValue: string;
-}
-
 export namespace SyntheticDOMValueNodeMutationTypes {
   export const SET_VALUE_NODE_EDIT = "setValueNodeEdit";
 }
@@ -42,11 +38,11 @@ export function isDOMValueNodeMutation(mutation: Mutation<SyntheticDOMValueNode>
   }[mutation.type]);
 }
 
-export class SyntheticDOMValueNodeSerializer implements ISerializer<SyntheticDOMValueNode, ISerializedSyntheticDOMValueNode> {
+export class SyntheticDOMValueNodeSerializer implements ISerializer<SyntheticDOMValueNode, string> {
   serialize({ nodeValue }: SyntheticDOMValueNode) {
-    return { nodeValue };
+    return nodeValue;
   }
-  deserialize({ nodeValue }, injector, ctor) {
+  deserialize(nodeValue, injector, ctor) {
     return new ctor(nodeValue);
   }
 }

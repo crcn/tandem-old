@@ -18,6 +18,7 @@
   "description": "",
   "devDependencies": {},
   "dependencies": {
+    "yargs": "^6.3.0",
     "auto-updater": "^1.0.2",
     "fs-extra": "^1.0.0",
     "glob": "^7.1.1",

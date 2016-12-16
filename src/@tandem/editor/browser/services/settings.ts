@@ -18,7 +18,7 @@ export class SettingsService extends CoreApplicationService<IEditorBrowserConfig
     this.logger.debug("loading settings");
 
     this._store.settings.setProperties(store.get("settings"));
-
+    
     // TODO - don't want to do this
     this._store.settings.observe(this.bus, new CallbackDispatcher(this._onSettingsChange));
   }

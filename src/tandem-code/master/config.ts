@@ -20,6 +20,9 @@ export interface IStudioEditorServerConfig extends IEditorCommonConfig {
   hostname: string,
   argv: {
     _: any[],
+
+    // allow require() statements in code
+    commonjs: boolean,
     executedFrom?: string,
     open?: boolean,
     hlog?: string,

@@ -68,6 +68,14 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     return this.getAttribute("title");
   }
 
+  get src() {
+    return this.getAttribute("src");
+  }
+
+  set src(value) {
+    this.setAttribute("src", value);
+  }
+
   set title(value: string) {
     this.setAttribute("title", value);
   }

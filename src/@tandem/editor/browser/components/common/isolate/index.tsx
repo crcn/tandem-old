@@ -13,6 +13,10 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
 
   componentDidMount() {
 
+    if (window["$synthetic"]) {
+      return;
+    }
+
     if (this.props.inheritCSS) {
       const head    = this.head;
 
@@ -61,6 +65,7 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
   }
 
   _render() {
+    if (window["$synthetic"]) return;
     ReactDOM.render(<RootApplicationComponent bus={this.bus} injector={this.injector}>{this.props.children}</RootApplicationComponent>, this._mountElement);
   }
 
@@ -80,6 +85,12 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
   }
 
   render() {
+
+    // TODO - eventually want to use iframes. Currently not supported though.
+    if (window["$synthetic"]) {
+      return <span>{this.props.children}</span>;
+    }
+
     return <iframe ref="container" scrolling={this.props.scrolling} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.props.onWheel} onScroll={this.onScroll} onLoad={this.props.onLoad} className={this.props.className} style={this.props.style} />;
   }
 }

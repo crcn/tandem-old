@@ -2,7 +2,6 @@ import "./index.scss";
 
 import React =  require("react");
 import cx =  require("classnames");
-import electron =  require("electron");
 import { FileInputComponent } from "@tandem/uikit";
 import { AlertMessage } from "@tandem/editor/browser";
 import { TandemStudioBrowserStore } from "tandem-code/browser/stores";

@@ -23,7 +23,12 @@ export class DSService extends BaseApplicationService {
     super.$didInject();
 
     // TODO - detch data store dependency here
-    this._ds = new PostDsNotifierBus(this._mainDs, this.bus);
+
+    // post DS notifications = revoked until it's faster. -- can send large
+    // payloads across the network which clogs everything up. Opt for tailing instead
+    // which is more explicit.
+    // this._ds = new PostDsNotifierBus(this._mainDs, this.bus);
+    this._ds = this._mainDs;
     this._upsertBus = new UpsertBus(this.bus);
   }
 

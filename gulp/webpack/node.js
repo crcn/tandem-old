@@ -21,7 +21,8 @@ exports.create = (dirname) => {
 
   externals.__root = "__dirname";
 
-  return merge(base.config, {
+  return merge({}, base.config, {
+    target: "electron",
     externals: externals,
     plugins: base.plugins.concat([
       new webpack.ProvidePlugin({

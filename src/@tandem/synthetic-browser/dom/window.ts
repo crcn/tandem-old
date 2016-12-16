@@ -8,14 +8,14 @@ import { Blob, FakeBlob } from "./blob";
 import { SyntheticHistory } from "./history";
 import { ISyntheticBrowser } from "../browser";
 import { SyntheticLocation } from "../location";
-import { SyntheticCSSStyle } from "./css";
 import { SyntheticDocument } from "./document";
-import { SyntheticDOMElement } from "./markup";
 import { SyntheticHTMLElement } from "./html";
 import { SyntheticLocalStorage } from "./local-storage";
 import { SyntheticWindowTimers } from "./timers";
 import { bindDOMNodeEventMethods } from "./utils";
+import { SyntheticDOMElement, DOMNodeType } from "./markup";
 import { SyntheticXMLHttpRequest, XHRServer } from "./xhr";
+import { SyntheticCSSStyle, SyntheticCSSElementStyleRule } from "./css";
 import { Logger, Observable, PrivateBusProvider, PropertyWatcher, MutationEvent } from "@tandem/common";
 import { noopDispatcherInstance, IStreamableDispatcher, CallbackDispatcher } from "@tandem/mesh";
 import { 
@@ -127,6 +127,10 @@ export class SyntheticWindow extends Observable {
 
   readonly selector: any; 
 
+  readonly $synthetic = true;
+
+  readonly requestAnimationFrame = (tick) => setImmediate(tick);
+
   constructor(location?: SyntheticLocation, readonly browser?: ISyntheticBrowser, document?: SyntheticDocument) {
     super();
 
@@ -201,8 +205,36 @@ export class SyntheticWindow extends Observable {
     return this.browser && this.browser.sandbox;
   }
 
-  getComputedStyle() {
-    return new SyntheticCSSStyle();
+  getComputedStyle(element: SyntheticHTMLElement) {
+    const style = new SyntheticCSSStyle();
+    if (element.nodeType !== DOMNodeType.ELEMENT) return style;
+    const copy = (from: SyntheticCSSStyle) => {
+      if (from)
+      for (let i = 0, n = from.length; i < n; i++) {
+        if (style[from[i]]) continue;
+        style[from[i]] = from[from[i]];
+      }
+    }
+    copy(element.style);
+    for (let i = this.document.styleSheets.length; i--;) {
+      const ss = this.document.styleSheets[i];
+      for (let j = ss.cssRules.length; j--;) {
+        const rule = ss.cssRules[j];
+        if (rule instanceof SyntheticCSSElementStyleRule) {
+
+          // may bust if parent is a shadow root
+          try {
+            if (rule.matchesElement(element)) {
+              copy(rule.style);
+            }
+          } catch(e) {
+
+          }
+        }
+      }
+    }
+    style.$updatePropertyIndices();
+    return style;
   }
 
   addEventListener(type: string, listener: DOMEventListenerFunction) {

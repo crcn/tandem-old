@@ -81,7 +81,8 @@ export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy 
   }
 
   createGlobalContext() {
-    return { };
+    return {
+    };
   }
 
   createModuleContext(module: IModule) {

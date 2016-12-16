@@ -4,7 +4,7 @@ import { kebabCase, camelCase } from "lodash";
 import { SyntheticDOMNode } from "@tandem/synthetic-browser/dom";
 import { CallbackDispatcher } from "@tandem/mesh";
 import { SyntheticCSSElementStyleRuleMutationTypes } from "./style-rule";
-import { ISerializable, serializable, diffArray, ITreeWalker, PropertyMutation } from "@tandem/common";
+import { ISerializable, serializable, diffArray, ITreeWalker, PropertyMutation, serialize, deserialize } from "@tandem/common";
 import { IContentEdit , ISyntheticObject, generateSyntheticUID, IEditable, BaseContentEdit } from "@tandem/sandbox";
 
 export interface ISerializedSyntheticCSSStyle extends SyntheticCSSStyle { }
@@ -61,8 +61,25 @@ export function isInheritedCSSStyleProperty(name: string) {
   return INHERITED_CSS_STYLE_PROPERTIES.indexOf(name) !== -1;
 }
 
-@serializable("SyntheticCSSStyle")
-export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSStyle>, ISyntheticObject {
+@serializable("SyntheticCSSStyle", {
+  serialize(style: SyntheticCSSStyle) {
+    const props = [];
+    for (let i = 0, n = style.length; i < n; i++) {
+      props.push(style[i], style[style[i]]);
+    }
+    return props;
+  },
+  deserialize(props) {
+    const style = new SyntheticCSSStyle();
+    
+    for (let i = 0, n = props.length; i < n; i += 2) { 
+      style[props[i]] = props[i + 1];
+    }
+    style.$updatePropertyIndices();
+    return style;
+  }
+})
+export class SyntheticCSSStyle implements ISyntheticObject {
 
   public $uid: any;
   public $source: any = null;
@@ -405,10 +422,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
   }
 
   clone() {
-    const clone = new SyntheticCSSStyle();
-    clone.deserialize(this);
-    clone.$uid = this.$uid;
-    return clone;
+    return deserialize(serialize(this), null);
   }
   
   get length() {
@@ -478,7 +492,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
       this[oldName] = undefined;
     }
 
-    this.updatePropertyIndices();
+    this.$updatePropertyIndices();
 
     if (notifyOwnerNode !== true) return;
 
@@ -493,7 +507,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     }
   }
 
-  private updatePropertyIndices() {
+  public $updatePropertyIndices() {
 
     const model = {};
 
@@ -565,26 +579,11 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
     return this.cssText;
   }
 
-  serialize(): ISerializedSyntheticCSSStyle {
-    const obj = {} as ISerializedSyntheticCSSStyle;
-    for (const key in this) {
-      const value = this[key];
-      if (typeof value === "object") continue;
-      obj[key + ""] = value;
-    }
-    return obj;
-  }
-
-  deserialize(value: ISerializedSyntheticCSSStyle) {
-    Object.assign(this, value);
-    this.updatePropertyIndices();
-  }
-
   clearAll() {
     for (const key of this.getProperties()) {
       this[key] = undefined;
     }
-    this.updatePropertyIndices();
+    this.$updatePropertyIndices();
   }
 
   static fromString(source: string) {
@@ -596,7 +595,7 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
       if (!name || !value) continue;
       decl[camelCase(name.trim())] = value.trim();
     }
-    decl.updatePropertyIndices();
+    decl.$updatePropertyIndices();
     return decl;
   }
 
@@ -607,9 +606,10 @@ export class SyntheticCSSStyle implements ISerializable<ISerializedSyntheticCSSS
         const key = declaration[i];
         obj[key + ""] = declaration[key];
       }
-      obj.updatePropertyIndices();
+      obj.$updatePropertyIndices();
     } else {
-      obj.deserialize(declaration);
+      Object.assign(obj, declaration);
+      obj.$updatePropertyIndices();
     }
     return obj;
   }

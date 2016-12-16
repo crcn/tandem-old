@@ -13,7 +13,6 @@ export class OpenTextFileCommand extends BaseStudioMasterCommand {
       opened = (await readOneChunk(this.bus.dispatch(new SetCurrentFileRequest(request.uri, request.selection)))).value;
     } catch(e) {
       this.logger.error(e.stack);
-      throw e;
     }
 
     this.logger.debug(`Received ${opened} response from text editor`);

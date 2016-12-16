@@ -4,11 +4,11 @@ import { TDPROJECT_XMLNS } from "@tandem/tdproject-extension/constants";
 import { RedirectRequest, createWorkspaceRedirectRequest } from "@tandem/editor/browser/messages";
 import { } from "@tandem/common";
 import { ResolveWorkspaceURIRequest } from "tandem-code/common";
-import { remote } from "electron";
-const { dialog } = remote;
 
 export class OpenCommand extends BaseEditorBrowserCommand {
   execute() {
+    const { remote } = require("electron");
+    const { dialog } = remote;
     dialog.showOpenDialog({
 
     }, async (fileNames: string[]) => {

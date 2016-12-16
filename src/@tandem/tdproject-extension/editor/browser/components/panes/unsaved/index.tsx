@@ -47,8 +47,8 @@ export class UnsavedFilesPaneComponent extends BaseApplicationComponent<any, any
       </div>
       <div className="container">
           {
-            this._store.unsavedFiles.map((item) => {
-              return <UnsavedFileComponent item={item} />
+            this._store.unsavedFiles.map((item, index) => {
+              return <UnsavedFileComponent item={item} key={index} />
             })
           }
       </div>
