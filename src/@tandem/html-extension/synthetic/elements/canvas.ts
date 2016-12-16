@@ -2,7 +2,7 @@
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLCanvas extends SyntheticHTMLElement {
-  private _canvas: HTMLCanvasElement;
+  private _canvas: any; // HTMLCanvasElement
 
   createdCallback() {
     super.createdCallback();
@@ -39,8 +39,8 @@ export class SyntheticHTMLCanvas extends SyntheticHTMLElement {
     this._canvas.width = value;
   }
 
-  getContext(contextId: "2d", contextAttributes?: Canvas2DContextAttributes): CanvasRenderingContext2D | null;
-  getContext(contextId: "webgl" | "experimental-webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
+  // getContext(contextId: "2d", contextAttributes?: Canvas2DContextAttributes): CanvasRenderingContext2D | null;
+  // getContext(contextId: "webgl" | "experimental-webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
 
   getContext(contextId: string, contextAttributes?: any) {
     // return this._canvas.getContext(contextId, contextAttributes);

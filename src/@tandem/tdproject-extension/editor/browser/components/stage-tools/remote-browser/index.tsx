@@ -145,7 +145,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
           </div>
         </div>
         <div className="searchbar">
-          <input ref="src" type="text" defaultValue={remoteBrowser.src} placeholder="enter address" onKeyDown={this.onSrcKeyDown} onClick={this.selectSearch} />
+          <input ref="src" type="text" defaultValue={remoteBrowser.src} placeholder="enter address" onKeyDown={this.onSrcKeyDown} onClick={this.selectSearch} onMouseDown={(event) => event.stopPropagation()} />
           <StatusComponent status={window["$synthetic"] ? new Status(Status.LOADING) : remoteBrowser.status} />
         </div>
       </div>

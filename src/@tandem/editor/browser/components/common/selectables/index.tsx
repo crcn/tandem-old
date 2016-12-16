@@ -139,11 +139,11 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
 
     const { workspace, zoom, allElements } = this.props;
 
-    const isVisible = (element: SyntheticDOMElement) => {
+    const isVisible = (element: SyntheticHTMLElement) => {
       const doc = element.ownerDocument.$ownerNode;
       if (!doc) return true;
-      const elementBounds = element.getAbsoluteBounds();
-      const documentBounds    = doc.getBoundingClientRect();
+      const elementBounds     = element.getAbsoluteBounds();
+      const documentBounds    = (doc as SyntheticHTMLElement).getBoundingClientRect();
       return (elementBounds.left > documentBounds.left || elementBounds.right > documentBounds.left) &&
       elementBounds.left < documentBounds.right && 
       (elementBounds.top > documentBounds.top || elementBounds.bottom > documentBounds.top) && 
@@ -151,7 +151,7 @@ export class SelectablesComponent extends React.Component<ISelectableComponentPr
     }
 
     const visibleElements = allElements.filter(element => {
-      return (element as SyntheticHTMLElement).getAbsoluteBounds && (element as SyntheticHTMLElement).getAbsoluteBounds().visible && element.getAttribute("data-td-selectable") !== "false" && isVisible(element)
+      return (element as SyntheticHTMLElement).getAbsoluteBounds && (element as SyntheticHTMLElement).getAbsoluteBounds().visible && element.getAttribute("data-td-selectable") !== "false" && isVisible(element as any)
     }) as SyntheticHTMLElement[];
 
     const selectables = visibleElements.map((element) => {

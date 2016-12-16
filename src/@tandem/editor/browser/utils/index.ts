@@ -10,7 +10,7 @@ export const fitBoundsInDocument = (element: SyntheticHTMLElement) => {
     // ensure that the bounds don't overflow -- this foos
     // with selecting other elements in other remote browsers
     if (doc) {
-      const documentBounds    = doc.getAbsoluteBounds();
+      const documentBounds    = (doc as SyntheticHTMLElement).getAbsoluteBounds();
       absoluteBounds = new BoundingRect(
         Math.max(absoluteBounds.left, documentBounds.left),
         Math.max(absoluteBounds.top, documentBounds.top),
