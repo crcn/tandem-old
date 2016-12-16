@@ -24,14 +24,9 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
         backendPort: this.config.port
       } as any;
 
-      if (uri) {
-        width = 1024;
-        height = 768;
-        hash = `#/workspace?workspaceUri=${encodeURIComponent(uri)}`;
-      } else {
-        hash = "#/welcome";
-        frame = process.platform === "win32";
-      }
+      width = 1024;
+      height = 768;
+      hash = `#/workspace?workspaceUri=${encodeURIComponent(uri)}`;
 
       const win = new BrowserWindow({ width: width, height: height, frame: frame, titleBarStyle: frame ? "hidden-inset" : undefined });
 
