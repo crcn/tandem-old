@@ -27,8 +27,8 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
       type    = result.type;
     } else {
       content = uri ? `<tandem>
-        <artboard src="${uri}" />
-      </tandem>` : `<tandem><artboard /></tandem>`;
+        <remote-browser src="${uri}" />
+      </tandem>` : `<tandem><remote-browser /></tandem>`;
     }
 
 

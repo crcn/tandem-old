@@ -61,13 +61,13 @@ export class TDRootFileImporter implements IFileImporter {
     if (!bounds) bounds = new BoundingRect(0, 0, 1024, 768);
 
     const { document } = new SyntheticWindow();
-    const artboard = document.createElement("artboard");
-    artboard.setAttribute("title", path.relative(process.cwd(), uri));
-    artboard.setAttribute("src", uri);
-    artboard.setAttribute("style", `left:${bounds.left}px;top:${bounds.top}px;width:${bounds.width || 1024}px;height:${bounds.height || 768}px;`);
+    const remoteBrowser = document.createElement("remote-browser");
+    remoteBrowser.setAttribute("title", path.relative(process.cwd(), uri));
+    remoteBrowser.setAttribute("src", uri);
+    remoteBrowser.setAttribute("style", `left:${bounds.left}px;top:${bounds.top}px;width:${bounds.width || 1024}px;height:${bounds.height || 768}px;`);
 
     const edit = element.createEdit();
-    edit.appendChild(artboard);
+    edit.appendChild(remoteBrowser);
 
     this._bus.dispatch(new ApplyFileEditRequest(edit.mutations, true));
   }

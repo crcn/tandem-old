@@ -1,3 +1,3 @@
 - [ ] TODOs
   - [ ] bundle strategy
-  - [ ] automatically create artboards
+  - [ ] automatically create remote browsers

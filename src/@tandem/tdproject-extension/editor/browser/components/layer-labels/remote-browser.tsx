@@ -1,12 +1,12 @@
-import "./artboard.scss";
+import "./remote-browser.scss";
 import React =  require("react");
 import AutosizeInput = require("react-input-autosize");
 import { FocusComponent } from "@tandem/editor/browser";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
+import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic";
 
-export class ArtboardLayerLabelComponent extends BaseApplicationComponent<{ element: SyntheticTDArtboardElement, renderOuterLabel: (inner, className) => any }, { edit: boolean }> {
+export class RemoteBrowserLayerLabelComponent extends BaseApplicationComponent<{ element: SyntheticRemoteBrowserElement, renderOuterLabel: (inner, className) => any }, { edit: boolean }> {
 
   private _currentInputValue: string;
 
@@ -34,8 +34,8 @@ export class ArtboardLayerLabelComponent extends BaseApplicationComponent<{ elem
   }
   render() {
     const { element, renderOuterLabel } = this.props;
-    return <span className="td-artboard-layer-label-outer" onDoubleClick={this.editTitle} onBlur={this.saveTitle}>
-      {renderOuterLabel(<span>{this.state.edit ? this.renderInput() : element.title || "Untitled" }</span>, "td-artboard-layer-label-inner") }
+    return <span className="td-remote-browser-layer-label-outer" onDoubleClick={this.editTitle} onBlur={this.saveTitle}>
+      {renderOuterLabel(<span>{this.state.edit ? this.renderInput() : element.title || "Untitled" }</span>, "td-remote-browser-layer-label-inner") }
     </span>
   }
 

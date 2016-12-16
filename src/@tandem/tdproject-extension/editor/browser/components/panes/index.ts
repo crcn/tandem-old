@@ -1,2 +1,2 @@
-export * from "./artboard";
+export * from "./remote-browser";
 export * from "./unsaved";

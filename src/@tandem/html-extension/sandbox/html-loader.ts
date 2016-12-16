@@ -46,22 +46,39 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
     const imports: string[] = [];
     const dirname = path.dirname(uri);
 
+    const getAttr = (element: parse5.AST.Default.Element, name: string) => {
+      return element.attrs.find((attr) => attr.name === name);
+    }
+
     const mapAttribute = async (parent: parse5.AST.Default.Element, { name, value }: parse5.AST.Default.Attribute) => {
 
-        // must be white listed here to presetn certain elements such as artboard & anchor tags from loading resources. Even
-        // better to have a provider for loadable elements, but that's a little overkill for now.
-        if (/^(link|script|img)$/.test(parent.nodeName)) {        
-          if (value.substr(0, 2) === "//") {
-            value = "http:" + value;
-          }
-
-          if (/src|href/.test(name)) {
-            value = (await self.strategy.resolve(value, uri)).uri;
-            imports.push(value);
-          }
+      let shouldGraph = false;
+      
+      // must be white listed here to presetn certain elements such as remote browser & anchor tags from loading resources. Even
+      // better to have a provider for loadable elements, but that's a little overkill for now.
+      if (/^(link|script|img)$/.test(parent.nodeName)) {     
+        if (parent.nodeName === "link") {
+          const rel = getAttr(parent, "rel");
+          shouldGraph = rel && /(stylesheet|import)/.test(rel.value);
+        } else {
+          shouldGraph = true;
         }
-        
-        return [" ", name, `="`, value,`"`].join("");
+      } else {
+        shouldGraph = false;
+      }
+
+      if (shouldGraph) {     
+        if (value.substr(0, 2) === "//") {
+          value = "http:" + value;
+        }
+
+        if (/src|href/.test(name)) {
+          value = (await self.strategy.resolve(value, uri)).uri;
+          imports.push(value);
+        }
+      }
+      
+      return [" ", name, `="`, value,`"`].join("");
     }
 
     const map = async (expression: parse5.AST.Default.Node): Promise<sm.SourceNode> => {

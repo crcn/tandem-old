@@ -8,7 +8,7 @@ export const fitBoundsInDocument = (element: SyntheticHTMLElement) => {
     const doc = element.ownerDocument.$ownerNode;
 
     // ensure that the bounds don't overflow -- this foos
-    // with selecting other elements in other artboards
+    // with selecting other elements in other remote browsers
     if (doc) {
       const documentBounds    = doc.getAbsoluteBounds();
       absoluteBounds = new BoundingRect(

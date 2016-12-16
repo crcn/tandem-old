@@ -34,15 +34,15 @@ import {
 } from "@tandem/synthetic-browser";
 
 // TODO - watch src for any changes
-@serializable("SyntheticTDArtboardElement")
-export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
+@serializable("SyntheticRemoteBrowserElement")
+export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
 
   private _iframe: HTMLIFrameElement;
   private _contentDocument: SyntheticDocument;
   private _contentDocumentObserver: IDispatcher<any, any>;
-  private _artboardBrowser: ISyntheticBrowser;
+  private _browser: ISyntheticBrowser;
   private _combinedStyleSheet: SyntheticCSSStyleSheet;
-  private _artboardBrowserObserver: IDispatcher<any, any>;
+  private _browserObserver: IDispatcher<any, any>;
 
   @bindable(true)
   readonly status: Status = new Status(null);
@@ -88,13 +88,13 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   }
 
   async createBrowser() {
-    if (this._artboardBrowser) return;
+    if (this._browser) return;
 
     const documentRenderer = new SyntheticDOMRenderer();
-    this._artboardBrowser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticArtboardRenderer(this, documentRenderer), this.browser);
-    bindProperty(this._artboardBrowser, "status", this, "status").trigger();
+    this._browser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticRemoteBrowserRenderer(this, documentRenderer), this.browser);
+    bindProperty(this._browser, "status", this, "status").trigger();
     this._contentDocumentObserver = new CallbackDispatcher(this.onContentDocumentEvent.bind(this));
-    watchProperty(this._artboardBrowser, "window", this.onBrowserWindowChange.bind(this));
+    watchProperty(this._browser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();
   }
 
@@ -103,11 +103,11 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   }
 
   private loadBrowser = debounce(async () => {
-    if (!this._artboardBrowser) return;
+    if (!this._browser) return;
     if (this.hasAttribute("src")) {
       const src = this.getAttribute("src");
       const window = this.ownerDocument.defaultView;
-      this._artboardBrowser.open({
+      this._browser.open({
         uri: src,
         injectScript: decodeURIComponent(this.getAttribute("inject-script")),
         dependencyGraphStrategyOptions: {
@@ -127,8 +127,8 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
     bubbleHTMLIframeEvents(iframe);
 
     const onload = async () => {
-      iframe.contentDocument.body.appendChild(this._artboardBrowser.renderer.element);
-      this._artboardBrowser.renderer.start();
+      iframe.contentDocument.body.appendChild(this._browser.renderer.element);
+      this._browser.renderer.start();
     };
 
     iframe.onload = onload;
@@ -141,7 +141,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
 
   protected injectCSS() {
 
-    const document = this._artboardBrowser.document;
+    const document = this._browser.document;
     if (!this.inheritCSS || !document) return;
     if (this._combinedStyleSheet) {
       const index = document.styleSheets.indexOf(this._combinedStyleSheet);
@@ -172,7 +172,7 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
       this._contentDocument.unobserve(this._contentDocumentObserver);
     }
 
-    this._contentDocument = this._artboardBrowser.window.document;
+    this._contentDocument = this._browser.window.document;
     this._contentDocument.$ownerNode = this;
     this._contentDocument.observe(this._contentDocumentObserver);
     this.injectCSS();
@@ -186,13 +186,13 @@ export class SyntheticTDArtboardElement extends SyntheticHTMLElement {
   }
 }
 
-export class SyntheticArtboardRenderer extends BaseDecoratorRenderer {
-  constructor(private _artboard: SyntheticTDArtboardElement, _renderer: ISyntheticDocumentRenderer) {
+export class SyntheticRemoteBrowserRenderer extends BaseDecoratorRenderer {
+  constructor(private _element: SyntheticRemoteBrowserElement, _renderer: ISyntheticDocumentRenderer) {
     super(_renderer);
   }
   getBoundingRect(uid: string): BoundingRect {
     const rect = this._renderer.getBoundingRect(uid);
-    const offset = this._artboard.getBoundingClientRect();
+    const offset = this._element.getBoundingClientRect();
     return rect.move({ left: offset.left, top: offset.top });
   }
 }

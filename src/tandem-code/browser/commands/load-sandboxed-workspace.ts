@@ -17,7 +17,7 @@ export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserComman
             <head>
             </head>
             <body>
-              <artboard title="Something" style="width: 600px; height: 400px; left: 100px; top: 100px; position: absolute;"></artboard>
+              <remote-browser title="Something" style="width: 600px; height: 400px; left: 100px; top: 100px; position: absolute;"></remote-browser>
               <div></div>
             </body>
           </html>

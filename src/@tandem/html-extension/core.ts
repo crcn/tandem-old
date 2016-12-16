@@ -17,6 +17,7 @@ import { 
   SyntheticAnchor,
   SyntheticIframe,
   SyntheticHTMLLink,
+  SyntheticHTMLCanvas,
   SyntheticHTMLScript,
   SyntheticHTMLStyle,
 } from "./synthetic";
@@ -30,7 +31,7 @@ export function createHTMLCoreProviders() {
     ...HTML_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(HTML_XMLNS, tagName, SyntheticHTMLElement)),
     ...SVG_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(SVG_XMLNS, tagName, SyntheticHTMLElement)),
 
-    // new SyntheticDOMElementClassProvider(HTML_XMLNS, "canvas", SyntheticHTMLCanvas),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "canvas", SyntheticHTMLCanvas),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLink),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "a", SyntheticAnchor),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScript),

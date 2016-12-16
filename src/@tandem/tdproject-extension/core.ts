@@ -6,7 +6,7 @@ import {
   SyntheticTDRootElement,
   SyntheticTDRulerElement,
   SyntheticTDRulerLineElement,
-  SyntheticTDArtboardElement,
+  SyntheticRemoteBrowserElement,
   SyntheticTDTemplateElement,
 } from "./synthetic";
 
@@ -32,7 +32,7 @@ export function createTDProjectCoreProviders() {
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "tandem", SyntheticTDRootElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "ruler", SyntheticTDRulerElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "ruler-line", SyntheticTDRulerLineElement),
-    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "artboard", SyntheticTDArtboardElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "remote-browser", SyntheticRemoteBrowserElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "link", SyntheticHTMLLink),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "script", SyntheticHTMLScript),

@@ -3,17 +3,17 @@ import React =  require("react");
 import { TextInputComponent } from "@tandem/uikit";
 import { BaseApplicationComponent } from "@tandem/common";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
-import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic";
+import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic";
 
-export interface IArtboardPreset {
+export interface IRemoteBrowserPreset {
   label: string;
   width: number;
   height: number;
 }
 
-export interface IArtboardPresetGroup {
+export interface IRemoteBrowserPresetGroup {
   label: string;
-  presets: IArtboardPreset[];
+  presets: IRemoteBrowserPreset[];
 }
 
 const PRESET_GROUPS = [
@@ -91,34 +91,34 @@ const PRESET_GROUPS = [
   }
 ];
 
-export class ArtboardPaneSizeComponent extends BaseApplicationComponent<{ workspace, artboard: SyntheticTDArtboardElement }, any> {
+export class RemoteBrowserPaneSizeComponent extends BaseApplicationComponent<{ workspace, remoteBrowser: SyntheticRemoteBrowserElement }, any> {
 
-  get selectedArtboard() {
-    return this.props.artboard;
+  get selectedRemoteBrowser() {
+    return this.props.remoteBrowser;
   }
 
   setStyleProperty = (name: string, value: any) => {
-    const artboard = this.selectedArtboard;
-    artboard.style[name] = value;
-    const edit = artboard.createEdit();
-    edit.setAttribute("style", artboard.getAttribute("style"));
+    const remoteBrowser = this.selectedRemoteBrowser;
+    remoteBrowser.style[name] = value;
+    const edit = remoteBrowser.createEdit();
+    edit.setAttribute("style", remoteBrowser.getAttribute("style"));
     this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
   }
 
-  usePreset = (preset: IArtboardPreset) => {
-    const artboard = this.selectedArtboard;
-    artboard.style.width = String(preset.width) + "px";
-    artboard.style.height = String(preset.height) + "px";
-    const edit = artboard.createEdit();
-    edit.setAttribute("style", artboard.getAttribute("style"));
+  usePreset = (preset: IRemoteBrowserPreset) => {
+    const remoteBrowser = this.selectedRemoteBrowser;
+    remoteBrowser.style.width = String(preset.width) + "px";
+    remoteBrowser.style.height = String(preset.height) + "px";
+    const edit = remoteBrowser.createEdit();
+    edit.setAttribute("style", remoteBrowser.getAttribute("style"));
     this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
   }
 
   render() {
-    const artboard = this.selectedArtboard;
-    if (!artboard) return null;
+    const remoteBrowser = this.selectedRemoteBrowser;
+    if (!remoteBrowser) return null;
     
-    return <div className="pane artboard-pane-size">
+    return <div className="pane remote-browser-pane-size">
       <div className="header">
         Size
       </div>
@@ -129,14 +129,14 @@ export class ArtboardPaneSizeComponent extends BaseApplicationComponent<{ worksp
             Left
           </div>
           <div className="col-4">
-            <TextInputComponent value={artboard.style.left} onChange={this.setStyleProperty.bind(this, "left")} />
+            <TextInputComponent value={remoteBrowser.style.left} onChange={this.setStyleProperty.bind(this, "left")} />
           </div>
           
           <div className="col-2 label">
             Top
           </div>
           <div className="col-4">            
-            <TextInputComponent value={artboard.style.top} onChange={this.setStyleProperty.bind(this, "top")} />
+            <TextInputComponent value={remoteBrowser.style.top} onChange={this.setStyleProperty.bind(this, "top")} />
           </div>
         </div>
 
@@ -145,14 +145,14 @@ export class ArtboardPaneSizeComponent extends BaseApplicationComponent<{ worksp
             Width
           </div>
           <div className="col-4">
-            <TextInputComponent value={artboard.style.width} onChange={this.setStyleProperty.bind(this, "width")} />
+            <TextInputComponent value={remoteBrowser.style.width} onChange={this.setStyleProperty.bind(this, "width")} />
           </div>
           
           <div className="col-2 label">
             Height
           </div>
           <div className="col-4">
-            <TextInputComponent value={artboard.style.height} onChange={this.setStyleProperty.bind(this, "height")} />
+            <TextInputComponent value={remoteBrowser.style.height} onChange={this.setStyleProperty.bind(this, "height")} />
           </div>
         </div>
       </div>
@@ -170,7 +170,7 @@ export class ArtboardPaneSizeComponent extends BaseApplicationComponent<{ worksp
     </div>; 
   }
 
-  renderPresetGroup = (group: IArtboardPresetGroup) => {
+  renderPresetGroup = (group: IRemoteBrowserPresetGroup) => {
     return <div className="container preset-group" key={group.label}>
       <div className="row title">
         { group.label }
@@ -180,7 +180,7 @@ export class ArtboardPaneSizeComponent extends BaseApplicationComponent<{ worksp
   }
 
 
-  renderPreset = (preset: IArtboardPreset) => {
+  renderPreset = (preset: IRemoteBrowserPreset) => {
     let scaledWidth, scaledHeight;
     const MAX_SIZE = 15;
 

@@ -563,6 +563,10 @@ export class SyntheticDocument extends SyntheticDOMContainer {
     return new SyntheticDocument(this.defaultNamespaceURI, this.implementation);
   }
 
+  hasFocus() {
+    return false;
+  }
+
   public $linkClone(clone: SyntheticDocument) {
     clone.$window         = this.defaultView;
     clone.$implementation = clone.implementation;

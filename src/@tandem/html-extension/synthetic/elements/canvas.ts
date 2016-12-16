@@ -1,4 +1,4 @@
-import Canvas = require("canvas-prebuilt");
+// import Canvas = require("canvas-prebuilt");
 import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
 
 export class SyntheticHTMLCanvas extends SyntheticHTMLElement {
@@ -8,7 +8,7 @@ export class SyntheticHTMLCanvas extends SyntheticHTMLElement {
     super.createdCallback();
 
     // default
-    this._canvas = new Canvas(500, 500);
+    this._canvas = {};
   }
 
   get height() {
@@ -43,6 +43,15 @@ export class SyntheticHTMLCanvas extends SyntheticHTMLElement {
   getContext(contextId: "webgl" | "experimental-webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
 
   getContext(contextId: string, contextAttributes?: any) {
-    return this._canvas.getContext(contextId, contextAttributes);
+    // return this._canvas.getContext(contextId, contextAttributes);
+    // stub for now
+    return {
+      clearRect() { },
+      canvas: { width: 500, height: 500 },
+      arc() { },
+      closePath() { },
+      fill() { },
+      beginPath() { }
+    };
   }
 }

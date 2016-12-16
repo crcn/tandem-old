@@ -13,12 +13,12 @@ import { TDProjectExtensionStore } from "./stores";
 import { TandemExtensionStoreProvider } from "./providers";
 
 import { 
-  ArtboardPaneComponent, 
+  RemoteBrowserPaneComponent, 
   NavigatorPaneComponent, 
-  ArtboardLoaderComponent, 
+  RemoteBrowserLoaderComponent, 
   UnsavedFilesPaneComponent,
-  ArtboardLayerLabelComponent,
-  TDArtboardStageToolComponent, 
+  RemoteBrowserLayerLabelComponent,
+  RemoteBrowserStageToolComponent, 
   MeasurementStageToolComponent,
 } from "./components";
 
@@ -38,13 +38,13 @@ export function createTDProjectEditorBrowserProviders() {
   return [
     ...createTDProjectCoreProviders(),
     // new DocumentPaneComponentFactoryProvider("navigator", NavigatorPaneComponent),
-    new ElementLayerLabelProvider("artboard", ArtboardLayerLabelComponent),
+    new ElementLayerLabelProvider("remote-browser", RemoteBrowserLayerLabelComponent),
     new TandemExtensionStoreProvider(TDProjectExtensionStore),
-    new StageToolComponentFactoryProvider("artboard", "pointer", TDArtboardStageToolComponent),
+    new StageToolComponentFactoryProvider("remote-browser", "pointer", RemoteBrowserStageToolComponent),
     new DocumentPaneComponentFactoryProvider("unsavedFiles", UnsavedFilesPaneComponent, 999),
     new StageToolComponentFactoryProvider("altDistances", "pointer", MeasurementStageToolComponent),
-    new FooterComponentFactoryProvider("artboardLoader", ArtboardLoaderComponent),
-    new EntityPaneComponentFactoryProvider("artboard", ArtboardPaneComponent),
+    new FooterComponentFactoryProvider("artboardLoader", RemoteBrowserLoaderComponent),
+    new EntityPaneComponentFactoryProvider("remote-browser", RemoteBrowserPaneComponent),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, LoadUnsavedFileCommand),
     new CommandFactoryProvider(PostDSMessage.DS_DID_UPDATE, LoadUnsavedFileCommand),
     new CommandFactoryProvider(PostDSMessage.DS_DID_INSERT, LoadUnsavedFileCommand),

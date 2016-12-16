@@ -38,7 +38,7 @@
       Welcome! This brief tutorial will teach how to use Tandem.
     </p>
     <p>
-      What you're looking at on the right side is an Artboard - a browser VM that displays a
+      What you're looking at on the right side is a remote browser that displays a
       <i>
         live
       </i>
@@ -46,7 +46,7 @@
       <i>
         other
       </i>
-      artboards that share the same resources.
+      remote browsers that share the same resources.
     </p>
     
   </div>
@@ -64,9 +64,9 @@
     </p>
     
   </div>
-  <artboard title="2. Open your text editor with ⌘ + click" src="./demo/index.html" style=" position: absolute; width: 375px; height: 667px; left: -4525px; top: -1519px; ">
+  <remote-browser title="2. Open your text editor with ⌘ + click" src="./demo/index.html" style=" position: absolute; width: 375px; height: 667px; left: -4525px; top: -1519px; ">
     
-  </artboard>
+  </remote-browser>
   <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -3976px; top: -1519px; ">
     <p>
       In your text editor, go ahead and change "Grocery list" to just "Groceries". Hit save, and you should see changes appear here ->.
@@ -87,7 +87,7 @@
       <code>
         .header
       </code>
-      CSS class source code, and reload all other Artboards that use it. Go ahead and zoom out to check how your change appears in other pages and device sizes.
+      CSS class source code, and reload all other remote browsers that use it. Go ahead and zoom out to check how your change appears in other pages and device sizes.
     </p>
     <p>
       If you'd like to save your change, you can click the save button in the Unsaved Files panel in the left panel. 
@@ -95,22 +95,22 @@
     </p>
     
   </div>
-  <artboard title="3. Change title text in code editor" src="./demo/index.html" style=" position: absolute; width: 414px; height: 736px; left: -3792px; top: -1519px; ">
+  <remote-browser title="3. Change title text in code editor" src="./demo/index.html" style=" position: absolute; width: 414px; height: 736px; left: -3792px; top: -1519px; ">
     
-  </artboard>
-  <artboard title="1. What you're looking at" src="./demo/index.html" style=" position: absolute; width: 320px; height: 568px; left: -5144px; top: -1519px; ">
+  </remote-browser>
+  <remote-browser title="1. What you're looking at" src="./demo/index.html" style=" position: absolute; width: 320px; height: 568px; left: -5144px; top: -1519px; ">
     
-  </artboard>
-  <artboard title="4. Change the header Background" src="./demo/index.html" style=" position: absolute; width: 768px; height: 1024px; left: -2968px; top: -1519px; ">
+  </remote-browser>
+  <remote-browser title="4. Change the header Background" src="./demo/index.html" style=" position: absolute; width: 768px; height: 1024px; left: -2968px; top: -1519px; ">
     
-  </artboard>
+  </remote-browser>
   <div class="description" xmlns="http://www.w3.org/1999/xhtml" style=" position: absolute; left: -5335px; top: -304px; ">
     <p>
-      You can inject JavaScript code into artboards to reveal various states of your application. Select this Artboard, and go to the Script pane 
+      You can inject JavaScript code into remote-browsers to reveal various states of your application. Select the header of this remote browser, and go to the Script pane 
       in the right panel. Change "Budapest, Hunagary" to "New York, New York", and you should see change appear immediately.
     </p>
     
   </div>
-  <artboard title="5. Inject some JavaScript" src="./demo/contact.html" style=" position: absolute; width: 1024px; height: 1366px; left: -5144px; top: -304px; " inject-script="window.config%20%3D%20%7B%0A%20%20city%3A%20%22Budapest%2C%20Hungary%C3%B7%22%0A%7D%3B"></artboard>
+  <remote-browser title="5. Inject some JavaScript" src="./demo/contact.html" style=" position: absolute; width: 1024px; height: 1366px; left: -5144px; top: -304px; " inject-script="window.config%20%3D%20%7B%0A%20%20city%3A%20%22Budapest%2C%20Hungary%C3%B7%22%0A%7D%3B"></remote-browser>
   
 </tandem>

@@ -16,13 +16,14 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-
 - [ ] change artboard to something else
 - [ ] enter URL CTA
+- [ ] use native browser chrome
+- [ ] show browser version
+- [ ] show interactive preview directly in iframe
+- [ ] save current workspace option
 
 
-- [ ] more dev tools similar to chrome
-- [ ] add search bar for each artboard
 - [ ] check messaging around firefox & chrome dev tools
 - [ ] remove welcome page
 - [ ] Getting started video popup

@@ -1,21 +1,21 @@
 import React =  require("react");
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { BaseApplicationComponent } from "@tandem/common";
-import { SyntheticTDArtboardElement } from "@tandem/tdproject-extension/synthetic"; 
+import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic"; 
 import { TextInputComponent } from "@tandem/uikit";
 
-export class InjectComponent extends  BaseApplicationComponent<{ artboard: SyntheticTDArtboardElement }, any> {
+export class InjectComponent extends  BaseApplicationComponent<{ remoteBrowser: SyntheticRemoteBrowserElement }, any> {
 
   onChange = (newValue: any) => {
-    const edit = this.props.artboard.createEdit();
+    const edit = this.props.remoteBrowser.createEdit();
     edit.setAttribute("inject-script", encodeURIComponent(newValue));
     this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
   }
   
   render() {
-    const { artboard } = this.props;
+    const { remoteBrowser } = this.props;
 
-    let inject = artboard.getAttribute("inject-script");
+    let inject = remoteBrowser.getAttribute("inject-script");
     if (inject) inject = decodeURIComponent(inject);
 
     

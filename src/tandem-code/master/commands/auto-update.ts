@@ -22,7 +22,6 @@ export class AutoUpdateCommand extends BaseStudioMasterCommand {
   }
 
   executeDevUpdater() {
-    // console.log(this.restartPrompt());
   }
 
   restartPrompt() {
