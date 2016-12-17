@@ -14,6 +14,8 @@ export class FileCacheSynchronizer {
   private _injector: Injector;
 
   private _watchers: any;
+  private _updating: boolean;
+  private _shouldUpdateAgain: boolean;
 
   constructor(private _cache: FileCache, private _bus: IBrokerBus) {
     this._watchers = {};
@@ -21,11 +23,16 @@ export class FileCacheSynchronizer {
     this.update();
   }
 
-  private update() {
+  private async update() {
+    if (this._updating) {
+      this._shouldUpdateAgain = true;
+      return;
+    }
+    this._updating = true;
     const a = Object.keys(this._watchers);
     const b = this._cache.collection.map((item) => item.sourceUri);
 
-    diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
+    await diffArray(a, b, (a, b) => a === b ? 0 : -1).accept({
       visitInsert: async ({ index, value }) => {
 
         if (!value) return;
@@ -45,10 +52,16 @@ export class FileCacheSynchronizer {
       },
       visitUpdate() { }
     });
+
+    this._updating = false;
+    if (this._shouldUpdateAgain) {
+      this._shouldUpdateAgain = false;
+      this.update();
+    }
   }
 
   private async onURISourceChange(uri: string) {
-    const entity = await this._cache.item(uri);
+    const entity = await this._cache.find(uri);
 
     this.logger.debug(`${uri} changed, updating cache.`);
 

@@ -30,6 +30,7 @@ import { 
   IMessage,
   readOneChunk,
   DSFindRequest,
+  DSTailRequest,
   DSInsertRequest,
   DSRemoveRequest,
   DSUpdateRequest,
@@ -76,11 +77,11 @@ addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WOR
 setMessageTarget(EditorFamilyType.WORKER)(DSUpsertRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSInsertRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSRemoveRequest);
-setMessageTarget(EditorFamilyType.WORKER)(DSUpdateRequest);
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(DSUpdateRequest));
 setMessageTarget(EditorFamilyType.WORKER)(DSFindAllRequest);
 
 addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.BROWSER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
-
+addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.BROWSER, EditorFamilyType.TEXT_EDITOR)(setMessageTarget(EditorFamilyType.WORKER)(DSTailRequest));
 
 @addMessageVisitor(EditorFamilyType.BROWSER)
 @addMessageVisitor(EditorFamilyType.WORKER)

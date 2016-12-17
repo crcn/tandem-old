@@ -42,7 +42,7 @@ export class FileCacheProtocol extends URIProtocol {
       // eat it -- file cache will provide content type
     }
     
-    return this._fileCache.add(uri, { type, content });
+    return this._fileCache.save(uri, { type, content });
   }
 
   _find(uri: string) {

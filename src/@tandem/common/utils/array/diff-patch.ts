@@ -18,7 +18,7 @@ export class ArrayInsertMutation<T>  extends ArraItemMutation<T> {
     super(ArrayItemMutationTypes.INSERT);
   }
   accept(visitor: IArrayMutationVisitor<T>) {
-    visitor.visitInsert(this);
+    return visitor.visitInsert(this);
   }
 }
 
@@ -27,7 +27,7 @@ export class ArrayRemoveMutation extends ArraItemMutation<any> {
     super(ArrayItemMutationTypes.DELETE);
   }
   accept(visitor: IArrayMutationVisitor<any>) {
-    visitor.visitRemove(this);
+    return visitor.visitRemove(this);
   }
 }
 
@@ -36,7 +36,7 @@ export class ArrayUpdateMutation<T> extends ArraItemMutation<T> {
     super(ArrayItemMutationTypes.UPDATE);
   }
   accept(visitor: IArrayMutationVisitor<T>) {
-    visitor.visitUpdate(this);
+    return visitor.visitUpdate(this);
   }
 }
 
@@ -60,7 +60,7 @@ export class ArrayMutation<T> extends Mutation<T> {
   }
 
   accept(visitor: IArrayMutationVisitor<T>) {
-    this.mutations.forEach(change => change.accept(visitor));
+    return Promise.all(this.mutations.map(change => change.accept(visitor)));
   }
 }
 

@@ -16,6 +16,10 @@ export class SockBus implements IBus<any>, IMessageTester<any> {
   private _remoteBus: RemoteBus<any>;
   constructor({ family, connection, testMessage }: ISockBusOptions, localBus: IDispatcher<any, any>, serializer?: ISerializer<any, any>) {
 
+    connection.once("close", () => {
+      this._remoteBus.dispose();
+    });
+
     this._remoteBus = new RemoteBus({
       family: family,
       testMessage: testMessage,

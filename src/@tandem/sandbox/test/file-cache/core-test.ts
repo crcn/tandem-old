@@ -23,7 +23,7 @@ describe(__filename + "#", () => {
       "entry.js": "hello world"
     });
 
-    const item = await fileCache.item("entry.js");
+    const item = await fileCache.findOrInsert("entry.js");
     expect(await item.read()).to.eql({ type: "application/javascript", content: "hello world" });
   });
 
@@ -31,8 +31,8 @@ describe(__filename + "#", () => {
     const { fileCache } = createSandboxSingletons({
       "entry.js": "a"
     });
-    const item = await fileCache.item("entry.js");
-    expect(item).to.eql(await fileCache.item("entry.js"));
+    const item = await fileCache.findOrInsert("entry.js");
+    expect(item).to.eql(await fileCache.find("entry.js"));
   });
 
   describe("file cache item#", () => {
@@ -41,7 +41,7 @@ describe(__filename + "#", () => {
         "entry.js": "a"
       });
 
-      const item = await fileCache.item("entry.js");
+      const item = await fileCache.findOrInsert("entry.js");
       expect(await item.read()).to.eql({ type: "application/javascript", content: "a" });
       await fileProtocol.write("entry.js", "b");
       expect(await item.read()).to.eql({ type: "application/javascript", content: "b" });
@@ -51,7 +51,7 @@ describe(__filename + "#", () => {
       const { fileCache } = createSandboxSingletons({
         "entry.js": "a"
       });
-      const item = await fileCache.item("entry.js");
+      const item = await fileCache.findOrInsert("entry.js");
 
       return new Promise((resolve) => {
         item.observe({
@@ -72,7 +72,7 @@ describe(__filename + "#", () => {
       const { fileProtocol, fileCache } = createSandboxSingletons({
         "entry.js": "a"
       });
-      const item = await fileCache.item("file://entry.js");
+      const item = await fileCache.findOrInsert("file://entry.js");
       const mtime = item.sourceModifiedAt;
 
       return new Promise((resolve) => {

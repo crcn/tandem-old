@@ -32,8 +32,7 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
     }
 
 
-    await this._fileCache.add(tmpName, { type, content });
-
+    await this._fileCache.save(tmpName, { type, content });
     
     return tmpName;
   }

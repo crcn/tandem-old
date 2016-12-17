@@ -155,8 +155,8 @@ export abstract class BaseActiveRecord<T> extends Observable implements IActiveR
     }
   }
 
-  async fetch(action: IMessage) {
-    const { value, done } = await readOneChunk<any>(this.dispatcher.dispatch(action));
+  async fetch(request: IMessage) {
+    const { value, done } = await readOneChunk<any>(this.dispatcher.dispatch(request));
     if (value) {
       this.deserialize(value);
     }

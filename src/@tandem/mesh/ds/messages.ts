@@ -1,4 +1,4 @@
-import { IMessage, IStreamableDispatcher, readAllChunks, readOneChunk } from "@tandem/mesh/core";
+import { IMessage, IStreamableDispatcher, readAllChunks, readOneChunk, DuplexStream } from "@tandem/mesh/core";
 import sift = require("sift");
 import { serializable } from "@tandem/common/serialize";
 
@@ -45,6 +45,25 @@ export class DSFindRequest<T> extends DSMessage {
   }
   static async findMulti(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any[]> {
     return await readAllChunks(dispatcher.dispatch(new DSFindRequest(collectionName, query, true)));
+  }
+}
+
+@serializable("DSTailRequest")
+export class DSTailRequest extends DSMessage {
+  static readonly DS_TAIL   = "dsTail";
+  constructor(collectionName: string, readonly query: any) {
+    super(DSTailRequest.DS_TAIL, collectionName);
+  }
+  static dispatch(collectionName: string, query: any, dispatcher: IStreamableDispatcher<any>): DuplexStream<any, DSTailedOperation> {
+    return dispatcher.dispatch(new DSTailRequest(collectionName, query)) as DuplexStream<any, DSTailedOperation>;
+  }
+}
+
+@serializable("DSTailedOperation")
+export class DSTailedOperation implements IMessage {
+  static readonly DS_TAILED_OPERATION   = "tsTailedOperation";
+  readonly type = DSTailedOperation.DS_TAILED_OPERATION;
+  constructor(request: DSUpdateRequest<any, any>|DSRemoveRequest<any>|DSInsertRequest<any>, readonly data: any) {
   }
 }
 

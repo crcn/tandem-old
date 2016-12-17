@@ -16,24 +16,22 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-- [ ] save current workspace option
+- [ ] fix vscode extension
+- [ ] CTA blog
 
 - [ ] check messaging around firefox & chrome dev tools
 - [ ] Getting started video popup
 
-- [ ] anchor tags should change the source of the artboard
 - [ ] launch checklist
-- [ ] get recent file cache when switching
 - [ ] ability to select unsaved files
 - [ ] bark for unsaved changes
 - [ ] Logo
-- [ ] http cache
+- [ ] make it open source
 
 
 - test
   - https://github.com/facebookincubator/create-react-app
 
-- [ ] test on windows
 - [ ] Show unsaved files
 - [ ] result style css urls
 - [ ] proper source mapping for html loader
@@ -47,8 +45,6 @@ NEW TARGET: Dev tools - qa testing. Develop
   - [ ] server config that maps where files are
   
 - [ ] BUGS
-  - [ ] allow gzip decompression
-  - [ ] prevent copy & paste html elements in css inspector
   - [ ] canvas still misalaigned
   - [ ] height seems to be inherited
     child class must contain parent class - e.g: .header .title, where .header contains the height prop 
@@ -120,7 +116,7 @@ TESTING
  - [ ] test various webpack configs
 
 BUGS
-  - [ ] Get all TodoMVC frameworks to work
+  - [ ] prevent copy & paste html elements in css inspector
   - [ ] cannot resize artboard to 0/0 width/height
   - [ ] do not resolve full path for html ext - causing issues when copying & pasting - use relative path instead
   - [ ] css class selectors are case insensitive
@@ -204,4 +200,3 @@ CORE
 
 BROWSERTAP INTEGRATION
   - [ ] rendering engine adapter for synthetic browsers to support IE, chrome, and other browsers
-  - [ ] show browser icon next to each artboard

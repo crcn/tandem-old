@@ -191,9 +191,7 @@ class WebpackLoaderContext {
     // this.addDependency(uri);
     this.logger.debug(`Emitting asset ${fileName}`);
     const fileCache = FileCacheProvider.getInstance(this.strategy.injector);
-    const item = await fileCache.item(uri);
-    item.setDataUrlContent(content);
-    await item.save();
+    await fileCache.save(uri, { content });
   }
 
   async() {

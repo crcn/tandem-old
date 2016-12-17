@@ -1,5 +1,13 @@
 import { titleize } from "inflection";
-import { IDispatcher, DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest } from "@tandem/mesh";
+import { 
+  DSTailer,
+  IDispatcher, 
+  DSFindRequest, 
+  DSTailRequest, 
+  DSInsertRequest, 
+  DSRemoveRequest, 
+  DSUpdateRequest,
+} from "@tandem/mesh";
 import { DSProvider } from "tandem-code/worker/providers";
 import { BaseApplicationService } from "@tandem/core";
 import {
@@ -10,6 +18,8 @@ import {
   PostDsNotifierBus,
   ApplicationServiceProvider,
 } from "@tandem/common";
+
+
 
 export class DSService extends BaseApplicationService {
 
@@ -28,7 +38,7 @@ export class DSService extends BaseApplicationService {
     // payloads across the network which clogs everything up. Opt for tailing instead
     // which is more explicit.
     // this._ds = new PostDsNotifierBus(this._mainDs, this.bus);
-    this._ds = this._mainDs;
+    this._ds = new DSTailer(this._mainDs);
     this._upsertBus = new UpsertBus(this.bus);
   }
 
@@ -36,38 +46,46 @@ export class DSService extends BaseApplicationService {
    * finds one or more items against the database
    */
 
-  [DSFindRequest.DS_FIND](action: DSFindRequest<any>) {
-    return this._ds.dispatch(action);
+  [DSFindRequest.DS_FIND](request: DSFindRequest<any>) {
+    return this._ds.dispatch(request);
+  }
+
+  /**
+   * finds one or more items against the database
+   */
+
+  [DSTailRequest.DS_TAIL](request: DSFindRequest<any>) {
+    return this._ds.dispatch(request);
   }
 
   /**
    * removes one or more items against the db
    */
 
-  [DSRemoveRequest.DS_REMOVE](action: DSRemoveRequest<any>) {
-    return this._ds.dispatch(action);
+  [DSRemoveRequest.DS_REMOVE](request: DSRemoveRequest<any>) {
+    return this._ds.dispatch(request);
   }
 
   /**
    * inserts one or more items against the db
    */
 
-  [DSInsertRequest.DS_INSERT](action: DSInsertRequest<any>) {
-    return this._ds.dispatch(action);
+  [DSInsertRequest.DS_INSERT](request: DSInsertRequest<any>) {
+    return this._ds.dispatch(request);
   }
 
   /**
    */
 
-  [DSUpdateRequest.DS_UPDATE](action: DSUpdateRequest<any, any>) {
-    return this._ds.dispatch(action);
+  [DSUpdateRequest.DS_UPDATE](request: DSUpdateRequest<any, any>) {
+    return this._ds.dispatch(request);
   }
 
 
   /**
    */
 
-  [DSUpsertRequest.DS_UPSERT](action: DSUpsertRequest<any>) {
-    return this._upsertBus.dispatch(action);
+  [DSUpsertRequest.DS_UPSERT](request: DSUpsertRequest<any>) {
+    return this._upsertBus.dispatch(request);
   }
 }

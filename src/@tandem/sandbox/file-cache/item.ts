@@ -18,6 +18,7 @@ import {
 
 export interface IFileCacheItemData {
   _id?: string;
+  type: string;
   sourceUri: string;
   contentUri: string;
   synchronized?: boolean
@@ -44,6 +45,9 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   @inject(InjectorProvider.ID)
   private _injector: Injector;
+
+  @bindable(true)
+  public type: string;
 
   @bindable(true)
   public updatedAt: number;
@@ -73,6 +77,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   serialize() {
     return {
+      type       : this.type,
       updatedAt  : this.updatedAt,
       sourceUri  : this.sourceUri,
       sourceModifiedAt: this.sourceModifiedAt,
@@ -90,8 +95,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     this.updatedAt = Date.now();
   }
 
-  setDataUrlContent(content: string|Buffer, mimeType?: string) {
-    return this.setContentUri(createDataUrl(content, mimeType || MimeTypeProvider.lookup(this.sourceUri, this._injector)));
+  setDataUrlContent(content: string|Buffer) {
+    return this.setContentUri(createDataUrl(content, this.type));
   }
 
   setContentUri(uri: string) {
@@ -108,9 +113,10 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return this.updatedAt < b.updatedAt;
   }
 
-  setPropertiesFromSource({ sourceUri, updatedAt, contentUri, metadata, sourceModifiedAt }: IFileCacheItemData) {
+  setPropertiesFromSource({ sourceUri, type, updatedAt, contentUri, metadata, sourceModifiedAt }: IFileCacheItemData) {
     this.sourceUri           = sourceUri;
     this.contentUri          = contentUri;
+    this.type                = type;
     this.updatedAt           = updatedAt;
     this.metadata            = new Metadata(metadata);
     this.sourceModifiedAt = sourceModifiedAt;

@@ -237,7 +237,7 @@ export class FileEditor {
 
     for (const uri in mutationsByUri) {
 
-      const fileCache  = await  FileCacheProvider.getInstance(this._injector).item(uri);
+      const fileCache  = await FileCacheProvider.getInstance(this._injector).findOrInsert(uri);
       const { type, content } = await fileCache.read();
 
       const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(type, this._injector);
@@ -263,7 +263,7 @@ export class FileEditor {
         // Note that checking WS changes won't cut it since formatters may swap certain characters. E.g: HTML may change single quotes
         // to double quotes for attributes.
         if (content !== newContent) {
-          fileCache.setDataUrlContent(newContent, type);
+          fileCache.setDataUrlContent(newContent);
           promises.push(fileCache.save());
           if (autoSave) {
             promises.push(URIProtocolProvider.lookup(fileCache.sourceUri, this._injector).write(fileCache.sourceUri, newContent));

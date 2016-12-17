@@ -109,7 +109,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   async getSourceFileCacheItem(): Promise<FileCacheItem> {
     if (this._fileCacheItem) return this._fileCacheItem;
-    return this._fileCacheItem = await this._fileCache.item(this.uri);
+    return this._fileCacheItem = await this._fileCache.findOrInsert(this.uri);
   }
 
   get graph(): IDependencyGraph {
@@ -333,7 +333,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private async getSourceFiles() {
     return [
       await this.getSourceFileCacheItem(),
-      ...(await Promise.all(this._includedDependencyInfo.map(info => this._fileCache.item(info.uri))))
+      ...(await Promise.all(this._includedDependencyInfo.map(info => this._fileCache.findOrInsert(info.uri))))
     ];
   }
 

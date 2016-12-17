@@ -74,19 +74,23 @@ export class FileCache extends Observable {
    * ability to shove temporary files into mem -- like unsaved files.
    */
 
-  async add(sourceUri: string, { type, content }: { type: string, content: string|Buffer }): Promise<FileCacheItem> {
+  async save(sourceUri: string, data?: { type?: string, content?: string|Buffer }): Promise<FileCacheItem> {
     const fileCache = await this.collection.loadItem({ sourceUri });
-
-    if (!type) type = MimeTypeProvider.lookup(sourceUri, this._injector);
+    
 
     if (!fileCache) {
+      const type = data && data.type || MimeTypeProvider.lookup(sourceUri, this._injector);;
       return this.collection.create({
+        type: type,
         sourceUri: sourceUri,
-        contentUri: createDataUrl(content, type),
+        contentUri: data ? createDataUrl(data.content, type) : sourceUri,
         sourceModifiedAt: -1,
       }).insert();
     } else {
-      return fileCache.setDataUrlContent(content, type).save();
+      if (data && data.content) {
+        fileCache.setDataUrlContent(data.content);
+      }
+      return fileCache.save();
     }
   }
 
@@ -95,13 +99,20 @@ export class FileCache extends Observable {
    * from the file system
    */
 
-  item = memoize(async (sourceUri: string): Promise<FileCacheItem> => {
+  find = memoize(async (sourceUri: string): Promise<FileCacheItem> => {
     if (sourceUri == null) throw new Error(`File path must not be null or undefined`);
-    return this.collection.find((entity) => entity.sourceUri === sourceUri) || await this.collection.loadOrInsertItem({ sourceUri }, {
-      sourceUri: sourceUri,
-      contentUri: sourceUri
-    });
-  }, { promise: true }) as (uri) => Promise<FileCacheItem>;
+    return this.collection.find((entity) => entity.sourceUri === sourceUri) || await this.collection.loadItem({ sourceUri });
+  }, { promise: true }) as (uri: string) => Promise<FileCacheItem>;
+
+  /**
+   * Returns an existing cache item entry, or creates a new one
+   * from the file system
+   */
+
+  findOrInsert = memoize(async (sourceUri: string): Promise<FileCacheItem> => {
+    if (sourceUri == null) throw new Error(`File path must not be null or undefined`);
+    return this.collection.find((entity) => entity.sourceUri === sourceUri) || await this.save(sourceUri);
+  }, { promise: true }) as (uri: string) => Promise<FileCacheItem>;
 
   /**
    * Synchronizes the file cache DS with the file system. This is intended

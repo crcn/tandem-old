@@ -293,7 +293,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
         const nativeStyle = this._getComputedStyle(native);
 
-        const rect = window["$synthetic"] ? calculateSyntheticBoundingRect(nativeStyle as SyntheticCSSStyle) : BoundingRect.fromClientRect((<Element>native).getBoundingClientRect());
+        const rect = typeof window !== "undefined" && window["$synthetic"] ? calculateSyntheticBoundingRect(nativeStyle as SyntheticCSSStyle) : BoundingRect.fromClientRect((<Element>native).getBoundingClientRect());
         
         if (rect.width || rect.height || rect.left || rect.top) {
           rects[uid] = rect;
