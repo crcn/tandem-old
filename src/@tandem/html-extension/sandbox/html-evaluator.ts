@@ -23,6 +23,5 @@ export class HTMLASTEvaluator implements ISandboxDependencyEvaluator {
     // that we're not manually setting document element here to ensure that HTMLASTEvaluator works for imported docs
     // which is (slowly) being implemented in real browsers.
     evaluateMarkup(parse5.parse(module.source.content, { locationInfo: true }) as any, window.document, MarkupMimeTypeXMLNSProvider.lookup(module.source.uri, window.browser.injector), module, window.document);
-
   }
 }

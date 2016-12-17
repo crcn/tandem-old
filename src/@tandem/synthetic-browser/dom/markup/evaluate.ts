@@ -75,9 +75,11 @@ export function evaluateMarkup(expression: parse5.AST.Default.Node, doc: Synthet
       return node;
     } else if (expression.nodeName === "#text") {
       const value = (expression as parse5.AST.Default.TextNode).value;
+      const isWS = /^[\n\r\t ]+$/.test(value);
       const node = doc.createTextNode((expression as parse5.AST.Default.TextNode).value);
-      linkSourceInfo(expression, node);
-      parentContainer.appendChild(node);
+      if (!isWS) {
+        parentContainer.appendChild(node);
+      }
       return node;
     } else if (expression.nodeName === "#document" || expression.nodeName === "#document-fragment") {
 
