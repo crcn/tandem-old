@@ -14,13 +14,13 @@ import { createHTMLCoreProviders, createHTMLSandboxProviders } from "@tandem/htm
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test/helpers";
 
 import { 
-  Injector, 
+  Kernel, 
   LogLevel, 
   LogAction, 
   BrokerBus, 
   Application, 
   HTML_MIME_TYPE, 
-  InjectorProvider, 
+  KernelProvider, 
   PrivateBusProvider, 
   ServiceApplication,
   ApplicationServiceProvider,
@@ -46,8 +46,8 @@ export interface IMasterTestAppicationOptions {
 export const createTestMasterApplication = (options: IMasterTestAppicationOptions = {}) => {
   const bus = new BrokerBus();
 
-  const injector = new Injector(
-    new InjectorProvider(),
+  const kernel = new Kernel(
+    new KernelProvider(),
     createHTMLCoreProviders(),
     new PrivateBusProvider(bus),
     createSASSSandboxProviders(),
@@ -64,12 +64,12 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
   );
 
   if (options.createTestProviders) {
-    injector.register(options.createTestProviders());
+    kernel.register(options.createTestProviders());
   }
 
-  FileCacheProvider.getInstance(injector).syncWithLocalFiles();
+  FileCacheProvider.getInstance(kernel).syncWithLocalFiles();
 
-  return new ServiceApplication(injector);
+  return new ServiceApplication(kernel);
 }
 
 

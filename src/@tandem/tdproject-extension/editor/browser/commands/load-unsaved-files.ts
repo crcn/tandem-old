@@ -4,6 +4,6 @@ import { FileCacheItem, getAllUnsavedFiles, IFileCacheItemData, FILE_CACHE_COLLE
 
 export class LoadUnsavedFileCommand extends BaseTDProjectExtensionCommand {
   async execute() {
-    this.tdProjectStore.unsavedFiles = await getAllUnsavedFiles(this.injector);
+    this.tdProjectStore.unsavedFiles = await getAllUnsavedFiles(this.kernel);
   }
 }

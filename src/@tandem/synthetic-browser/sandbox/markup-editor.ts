@@ -149,11 +149,11 @@ export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
     if (!matchingTextNode.parentNode) return super.handleUnknownMutation(mutation);
 
     const element = matchingTextNode.parentNode as parse5.AST.Default.Element;
-    const contentMimeType = ElementTextContentMimeTypeProvider.lookup(element, this.injector);
+    const contentMimeType = ElementTextContentMimeTypeProvider.lookup(element, this.kernel);
   
     if (!contentMimeType) return super.handleUnknownMutation(mutation);
 
-    const editorProvider = ContentEditorFactoryProvider.find(contentMimeType, this.injector);
+    const editorProvider = ContentEditorFactoryProvider.find(contentMimeType, this.kernel);
     if (!editorProvider) {
       return this.logger.error(`Cannot edit ${element.nodeName}:${contentMimeType} element text content.`);
     }

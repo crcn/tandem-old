@@ -1,6 +1,6 @@
 import { HTMLExtensionStore } from "../stores";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
-import { createSingletonProviderClass, Injector, IProvider, StoreProvider } from "@tandem/common"; 
+import { createSingletonProviderClass, Kernel, IProvider, StoreProvider } from "@tandem/common"; 
 
 
 export class HTMLExtensionStoreProvider extends StoreProvider {
@@ -22,7 +22,7 @@ export class ElementLayerLabelProvider extends ReactComponentFactoryProvider {
     return [this.NS, name].join("/");
   }
 
-  static find(tagName: string, injector: Injector) {
-    return injector.query<ElementLayerLabelProvider>(this.getId(tagName));
+  static find(tagName: string, kernel: Kernel) {
+    return kernel.query<ElementLayerLabelProvider>(this.getId(tagName));
   }
 }

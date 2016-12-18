@@ -1,10 +1,10 @@
-import { Injector } from "@tandem/common/ioc";
+import { Kernel } from "@tandem/common/ioc";
 
 export type SerializedContentType<T> = [string, T];
 
 export interface ISerializer<T, U> {
   serialize(value: T): U;
-  deserialize(value: U, injector: Injector, ctor?: any): T;
+  deserialize(value: U, kernel: Kernel, ctor?: any): T;
 }
 
 export interface ISerializable<T> {
@@ -19,8 +19,8 @@ export function createSerializer(ctor: { new(...rest:any[]): any }): ISerializer
       serialize(value: ISerializable<any>) {
         return value.serialize();
       },
-      deserialize(value, injector, ctor): ISerializable<any> {
-        const instance: ISerializable<any> = injector && injector.create(ctor, []) || new ctor();
+      deserialize(value, kernel, ctor): ISerializable<any> {
+        const instance: ISerializable<any> = kernel && kernel.create(ctor, []) || new ctor();
         instance.deserialize(value);
         return instance;
       }
@@ -31,7 +31,7 @@ export function createSerializer(ctor: { new(...rest:any[]): any }): ISerializer
     serialize(value): any {
       return JSON.parse(JSON.stringify(value));
     },
-    deserialize(value, injector, ctor) {
+    deserialize(value, kernel, ctor) {
       const instance = new ctor();
       return Object.assign(instance, value);
     }
@@ -42,8 +42,8 @@ const defaultSerializer: ISerializer<any, any> = {
   serialize(value): any {
     return value.serialize ? value.serialize() : JSON.parse(JSON.stringify(value));
   },
-  deserialize(value, injector, ctor) {
-    const instance = injector && injector.create(ctor, []) || new ctor();
+  deserialize(value, kernel, ctor) {
+    const instance = kernel && kernel.create(ctor, []) || new ctor();
     return instance.deserialize ? instance.deserialize(value) : Object.assign(instance, value);
   }
 }
@@ -54,7 +54,7 @@ class LiteralSerializer implements ISerializer<any, any> {
   serialize(value) {
     return value;
   }
-  deserialize(value, ctor, injector) {
+  deserialize(value, ctor, kernel) {
     return value;
   }
 }
@@ -74,8 +74,8 @@ const _serializers   = {
         // cast value as an array if it's not (might be a sub class)
         return ([].concat(value)).map(serialize)
       },
-      deserialize(value: any[], injector) {
-        return value.map(item => deserialize(item, injector));
+      deserialize(value: any[], kernel) {
+        return value.map(item => deserialize(item, kernel));
       }
     }
   },
@@ -154,12 +154,12 @@ export function serialize(value: any): SerializedContentType<any> {
   return [ type, (<ISerializer<any, any>>_serializers[type].serializer).serialize(value)]
 }
 
-export function deserialize(content: SerializedContentType<any>, injector: Injector): any {
+export function deserialize(content: SerializedContentType<any>, kernel: Kernel): any {
   const info: ISerializerInfo = _serializers[content[0]];
 
   if (!info) {
     throw new Error(`Trying to deserialize non serialized object:` + content);
   }
 
-  return info.serializer.deserialize(content[1], injector, info.ctor);
+  return info.serializer.deserialize(content[1], kernel, info.ctor);
 }

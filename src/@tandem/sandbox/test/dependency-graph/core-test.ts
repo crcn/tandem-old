@@ -1,6 +1,6 @@
 import sinon =  require("sinon");
 import { expect } from "chai";
-import { Injector, IProvider, MimeTypeProvider, Status } from "@tandem/common";
+import { Kernel, IProvider, MimeTypeProvider, Status } from "@tandem/common";
 import {
   Sandbox,
   DependencyGraph,
@@ -17,7 +17,7 @@ import {
   IMockFiles,
   evaluateDependency,
   createTestDependencyGraph,
-  createSandboxTestInjector,
+  createSandboxTestKernel,
   ISandboxTestProviderOptions,
 } from "@tandem/sandbox/test";
 
@@ -84,7 +84,7 @@ describe(__filename + "#", () => {
   xit("can return the dependency info of a dependency based on the relative path");
   xit("can return the dependency info of a dependency based on the absolute path");
 
-  it("can use a custom loader & evaluator registered in the global injector", async () => {
+  it("can use a custom loader & evaluator registered in the global kernel", async () => {
     const graph = createDefaultDependencyGraph({
       'entry.mu': `import(a.mu); import(b.mu);`,
       'a.mu': 'import(c.mu);',

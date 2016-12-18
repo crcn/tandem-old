@@ -47,7 +47,7 @@
 //   }
 
 //   export abstract class Bus {
-//     execute(action);
+//     execute(message);
 //   }
 
 //   export class LimitBus extends Bus {
@@ -82,10 +82,10 @@
 
 //   export class CallbackDispatcher extends Bus {
 //     constructor(
-//       value: ((action, next) => void) | ((action) => Promise<any>|Response|any) | Bus
+//       value: ((message, next) => void) | ((message) => Promise<any>|Response|any) | Bus
 //     );
 //     static create(
-//       value: ((action, next) => void) | ((action) => Promise<any>|Response|any) | Bus
+//       value: ((message, next) => void) | ((message) => Promise<any>|Response|any) | Bus
 //     ):CallbackDispatcher;
 //   }
 // }

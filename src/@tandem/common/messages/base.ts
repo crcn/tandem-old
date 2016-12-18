@@ -2,8 +2,8 @@
 
 /*
 TODOS:
-- cancelable actions
-- bubbleable actions
+- cancelable messages
+- bubbleable messages
 */
 
 export class CoreEvent {
@@ -17,7 +17,7 @@ export class CoreEvent {
 
   set currentTarget(value) {
 
-    // always maintain the initial target so that actions
+    // always maintain the initial target so that messages
     // can be tracked back to their origin
     if (!this._target) {
       this._target = value;
@@ -27,7 +27,7 @@ export class CoreEvent {
   }
 
   // TODO - target is not an appropriate name in some cases since
-  // the term refers to the current dispatcher dispatching *this* action. And in some cases,
+  // the term refers to the current dispatcher dispatching *this* message. And in some cases,
   // the target may not exist
   get target() {
     return this._target;

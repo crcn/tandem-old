@@ -5,7 +5,7 @@ import { ApplicationServiceProvider } from "./providers";
 import { LoadApplicationRequest, InitializeApplicationRequest, ApplicationReadyMessage } from "../messages";
 import {
   Provider,
-  Injector,
+  Kernel,
   PrivateBusProvider,
 } from '../ioc';
 
@@ -17,8 +17,8 @@ export class Application {
   readonly bus: IBrokerBus;
   private _initialized: boolean;
 
-  constructor(readonly injector: Injector) {
-    this.bus = PrivateBusProvider.getInstance(injector);
+  constructor(readonly kernel: Kernel) {
+    this.bus = PrivateBusProvider.getInstance(kernel);
   }
 
   /**
@@ -34,8 +34,8 @@ export class Application {
     this._initialized = true;
     this.willLoad();
 
-    // Prepare the application for initialization. Injector that
-    // need to be loaded before being used by other injector should listen on this action
+    // Prepare the application for initialization. Kernel that
+    // need to be loaded before being used by other kernel should listen on this message
     // here.
 
     await this.bus.dispatch(new LoadApplicationRequest());
@@ -86,7 +86,7 @@ export class ServiceApplication extends Application {
 
     // create the services before loading so that they can hook themselves into the application
     // context.
-    for (const serviceProvider of ApplicationServiceProvider.findAll(this.injector)) {
+    for (const serviceProvider of ApplicationServiceProvider.findAll(this.kernel)) {
       serviceProvider.create();
     }
   }

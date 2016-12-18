@@ -3,16 +3,16 @@ import { URIProtocol } from "../uri";
 import { ReadableStream } from "@tandem/mesh";
 import { 
   inject, 
-  Injector, 
+  Kernel, 
   IDisposable, 
-  InjectorProvider, 
+  KernelProvider, 
   MimeTypeProvider, 
 } from "@tandem/common";
 
 export class FileURIProtocol extends URIProtocol {
 
-  @inject(InjectorProvider.ID)
-  protected readonly injector: Injector;
+  @inject(KernelProvider.ID)
+  protected readonly kernel: Kernel;
 
   async read(uri: string) {
     const filePath = this.removeProtocol(uri);
@@ -21,7 +21,7 @@ export class FileURIProtocol extends URIProtocol {
       fs.readFile(filePath, (err, data) => {
         if (err) return reject(err);
         resolve({
-          type: MimeTypeProvider.lookup(uri, this.injector),
+          type: MimeTypeProvider.lookup(uri, this.kernel),
           content: data
         });
       });

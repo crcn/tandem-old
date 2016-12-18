@@ -2,17 +2,17 @@ import React =  require("react");
 import { TextEditorToken } from "../models/token";
 import TextEditorLine from "../models/line";
 import TextEditor from "../models/text-editor";
-import { Injector } from "@tandem/common";
+import { Kernel } from "@tandem/common";
 import { TokenComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
-class TokenComponent extends React.Component<{ token: TextEditorToken, editor: TextEditor, line: TextEditorLine, injector: Injector }, any> {
+class TokenComponent extends React.Component<{ token: TextEditorToken, editor: TextEditor, line: TextEditorLine, kernel: Kernel }, any> {
 
   render() {
-    const { token, injector } = this.props;
+    const { token, kernel } = this.props;
 
     const props: any = {};
 
-    const tokenFactory = injector && TokenComponentFactoryProvider.find(token.type, injector);
+    const tokenFactory = kernel && TokenComponentFactoryProvider.find(token.type, kernel);
 
     if (tokenFactory) {
       props.children = tokenFactory.create(this.props);

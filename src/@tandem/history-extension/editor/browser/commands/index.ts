@@ -15,7 +15,7 @@ export class InitializeHistoryCommand implements ICommand {
 
   }
 
-  execute(action: IMessage) {
+  execute(message: IMessage) {
     return this._history.initialize();
   }
 }
@@ -27,7 +27,7 @@ export class UndoComand implements ICommand {
 
   }
 
-  execute(action: IMessage) {
+  execute(message: IMessage) {
     this._history.position--;
   }
 }
@@ -39,7 +39,7 @@ export class RedoCommand implements ICommand {
 
   }
 
-  execute(action: IMessage) {
+  execute(message: IMessage) {
     this._history.position++;
   }
 }

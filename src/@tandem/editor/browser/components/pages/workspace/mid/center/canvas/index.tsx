@@ -7,7 +7,7 @@ import { MetadataKeys } from "@tandem/editor/browser/constants";
 import ToolsLayerComponent from "./tools";
 import { IsolateComponent }  from "@tandem/editor/browser/components/common";
 import PreviewLayerComponent from "./preview";
-import { Injector, PrivateBusProvider } from "@tandem/common";
+import { Kernel, PrivateBusProvider } from "@tandem/common";
 import { SyntheticDOMElement, SyntheticRendererEvent }  from "@tandem/synthetic-browser";
 import { BoundingRect, IPoint, BaseApplicationComponent } from "@tandem/common";
 import {

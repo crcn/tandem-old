@@ -11,7 +11,7 @@ import { DragSource, DropTarget, DndComponent } from "react-dnd";
 import { SyntheticDOMNode, SyntheticDOMContainer } from "@tandem/synthetic-browser";
 import {
   CoreEvent,
-  Injector,
+  Kernel,
   flattenTree,
   traverseTree,
   findTreeNode,
@@ -23,7 +23,7 @@ import {
 
 interface ILayerLabelProps {
   paddingLeft?: number;
-  injector: Injector;
+  kernel: Kernel;
   app: any;
   node: SyntheticDOMNode;
   connectDragSource: Function;
@@ -138,14 +138,14 @@ class LayerLabelComponent extends BaseApplicationComponent<ILayerLabelProps, any
   }
 
   render() {
-    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, node, injector, app } = this.props;
+    const { connectDragSource, isDragging, connectDropTarget, isOver, canDrop, node, kernel, app } = this.props;
 
     const expanded   = false; //node.metadata.get(MetadataKeys.LAYER_EXPANDED);
 
     const selection = app.workspace.selection;
     const layerName = null;// node.metadata.get(MetadataKeys.LAYER_DEPENDENCY_NAME); // || node.source.constructor.name;
 
-    const labelProvider = LayerLabelComponentFactoryProvider.find(layerName, injector) || LayerLabelComponentFactoryProvider.find(node.constructor.name, injector) || LayerLabelComponentFactoryProvider.find(node.source.constructor.name, injector);
+    const labelProvider = LayerLabelComponentFactoryProvider.find(layerName, kernel) || LayerLabelComponentFactoryProvider.find(node.constructor.name, kernel) || LayerLabelComponentFactoryProvider.find(node.source.constructor.name, kernel);
 
     let labelSection;
 
@@ -331,11 +331,11 @@ export default class LayerComponent extends BaseApplicationComponent<{ node: Syn
     // this.props.entity.observe(this._entityObserver);
   }
 
-  dispatch(action: CoreEvent) {
-    // // when the select action is dispatchd, take all items
+  dispatch(message: CoreEvent) {
+    // // when the select message is dispatchd, take all items
     // // and ensure that the parent is expanded. Not pretty, encapsulated, and works.
-    // if (action.type === SelectRequest.SELECT) {
-    //   (action as SelectRequest).items.forEach((item: SyntheticDOMNode) => {
+    // if (message.type === SelectRequest.SELECT) {
+    //   (message as SelectRequest).items.forEach((item: SyntheticDOMNode) => {
     //     let p = item.parent as SyntheticDOMContainer;
     //     while (p) {
     //       // p.metadata.set(MetadataKeys.LAYER_EXPANDED, true);

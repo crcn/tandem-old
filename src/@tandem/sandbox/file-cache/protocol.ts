@@ -1,4 +1,4 @@
-import { inject, Injector, InjectorProvider } from "@tandem/common";
+import { inject, Kernel, KernelProvider } from "@tandem/common";
 import { URIProtocol, IURIProtocolReadResult, URIProtocolProvider } from "../uri";
 import { FileCacheProvider } from "../providers";
 import { FileCacheItem } from "./item";
@@ -10,8 +10,8 @@ export class FileCacheProtocol extends URIProtocol {
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   async read(uri: string) {
     const item = await this._find(uri);
@@ -37,7 +37,7 @@ export class FileCacheProtocol extends URIProtocol {
     // as the source URI -- which can only (currently) be fetched by reading the doc.
     // Might be good to implement a separate protocol.readContentType() method instead.
     try {
-      type = (await URIProtocolProvider.lookup(uri, this._injector).read(uri)).type;
+      type = (await URIProtocolProvider.lookup(uri, this._kernel).read(uri)).type;
     } catch(e) {
       // eat it -- file cache will provide content type
     }

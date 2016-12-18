@@ -1,8 +1,8 @@
 /**
- * Used for actors that need to filter for particular actions. Usage:
+ * Used for actors that need to filter for particular messages. Usage:
  *
  * @filterMessage(sift({ $type: DSEvent }))
- * update(action:UpdateEvent) { }
+ * update(message:UpdateEvent) { }
  */
 
 export function filterMessage (filter: Function) {

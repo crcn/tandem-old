@@ -5,7 +5,7 @@ import { ReactComponentFactoryProvider, PageFactoryProvider, EditorStoreProvider
 
 export class RegisteredComponent extends BaseApplicationComponent<{ ns: string, providers?: ReactComponentFactoryProvider[] } & any, any> {
   render() {
-    return <span> { (this.props.providers || ((this.injector && this.injector.queryAll<ReactComponentFactoryProvider>(this.props.ns)) || []).map((dependency, i) => {
+    return <span> { (this.props.providers || ((this.kernel && this.kernel.queryAll<ReactComponentFactoryProvider>(this.props.ns)) || []).map((dependency, i) => {
       return dependency.create(Object.assign({ key: i }, this.props));
     }))} </span>;
   }
@@ -18,7 +18,7 @@ export class PageOutletComponent extends BaseApplicationComponent<{ pageName: st
   render() {
     const pageName: string = this._store.router.state[this.props.routeName];
     if (!pageName) return null;
-    return <span> { this.injector.queryAll<ReactComponentFactoryProvider>(PageFactoryProvider.getId(pageName)).map((dependency, i) => {
+    return <span> { this.kernel.queryAll<ReactComponentFactoryProvider>(PageFactoryProvider.getId(pageName)).map((dependency, i) => {
       return dependency.create(Object.assign({ key: i }, this.props));
     })} </span>;
   }

@@ -17,9 +17,9 @@ import {
   Logger,
   inject,
   loggable,
-  Injector,
+  Kernel,
   Observable,
-  InjectorProvider,
+  KernelProvider,
   ActiveRecordCollection,
 } from "@tandem/common";
 
@@ -53,8 +53,8 @@ export class DependencyGraph extends Observable implements IDependencyGraph {
   private _collection: ActiveRecordCollection<Dependency, IDependencyData>;
   public $strategy: IDependencyGraphStrategy;
 
-  @inject(InjectorProvider.ID)
-  public $injector: Injector;
+  @inject(KernelProvider.ID)
+  public $kernel: Kernel;
 
   constructor(private _strategy: IDependencyGraphStrategy) {
     super();
@@ -64,8 +64,8 @@ export class DependencyGraph extends Observable implements IDependencyGraph {
 
     // temporary - this should be passed into the constructor
     this.$strategy = this._strategy;
-    this._collection = ActiveRecordCollection.create(this.collectionName, this.$injector, (source: IDependencyData) => {
-      return this.$injector.inject(new Dependency(source, this.collectionName, this));
+    this._collection = ActiveRecordCollection.create(this.collectionName, this.$kernel, (source: IDependencyData) => {
+      return this.$kernel.inject(new Dependency(source, this.collectionName, this));
     });
 
     this.logger.generatePrefix = () => `(~${this.$strategy.constructor.name}~) `;

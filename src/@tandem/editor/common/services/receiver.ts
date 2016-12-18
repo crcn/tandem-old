@@ -1,8 +1,8 @@
 import {
   inject,
-  Injector,
+  Kernel,
   LogAction,
-  InjectorProvider,
+  KernelProvider,
   BaseApplicationService,
   CommandFactoryProvider,
   ApplicationServiceProvider,
@@ -13,17 +13,17 @@ import { SequenceBus, DuplexStream, CallbackDispatcher, IMessage } from "@tandem
 // Command pattern receiver
 export class ReceiverService extends BaseApplicationService {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
-  dispatch(action: IMessage) {
-    const commands = CommandFactoryProvider.findAllByAction(action, this._injector).map((dep) => {
+  dispatch(message: IMessage) {
+    const commands = CommandFactoryProvider.findAllByMessage(message, this._kernel).map((dep) => {
       return new CallbackDispatcher((message: IMessage) => {
         return dep.create().execute(message);
       });
     });
 
-    return new SequenceBus(commands).dispatch(action);
+    return new SequenceBus(commands).dispatch(message);
   }
 
   testMessage(message) {

@@ -1,7 +1,7 @@
 import sinon =  require("sinon");
 import { expect } from "chai";
-import { Injector, Status } from "@tandem/common";
-import { MockFileResolver, createSandboxTestInjector } from "@tandem/sandbox/test/helpers";
+import { Kernel, Status } from "@tandem/common";
+import { MockFileResolver, createSandboxTestKernel } from "@tandem/sandbox/test/helpers";
 import {
   Dependency,
   IDependencyGraph,
@@ -19,7 +19,7 @@ class MockDependencyGraph implements IDependencyGraph {
 
   private _deps = {};
 
-  constructor(readonly injector: Injector) {
+  constructor(readonly kernel: Kernel) {
 
   }
 
@@ -32,11 +32,11 @@ class MockDependencyGraph implements IDependencyGraph {
     return Promise.resolve({
       hash: uri,
       uri: origin + uri
-      // uri: await FileResolverProvider.getInstance(this.injector).resolve(uri, origin)
+      // uri: await FileResolverProvider.getInstance(this.kernel).resolve(uri, origin)
     });
   }
   getDependency(info: IResolvedDependencyInfo) {
-    return this._deps[info.hash] || (this._deps[info.hash] = this.injector.inject(new Dependency(info, "collection", this)));
+    return this._deps[info.hash] || (this._deps[info.hash] = this.kernel.inject(new Dependency(info, "collection", this)));
   }
   loadDependency() {
     return Promise.resolve(null);
@@ -59,9 +59,9 @@ class MockDependencyGraph implements IDependencyGraph {
 
 describe(__filename + "#", () => {
   const createMockDependency = (data, mockFiles) => {
-    const injector = createSandboxTestInjector({ mockFiles });
-    const dependency = new Dependency(data, "collection", new MockDependencyGraph(injector));
-    injector.inject(dependency);
+    const kernel = createSandboxTestKernel({ mockFiles });
+    const dependency = new Dependency(data, "collection", new MockDependencyGraph(kernel));
+    kernel.inject(dependency);
     return dependency;
   }
   it("Can load a dependency", async () => {
@@ -146,13 +146,13 @@ describe(__filename + "#", () => {
     expect(dep.content).to.equal("aa");
   });
 
-  it("emits a DEPENDENCY_LOADED action even when load() is called multiple times", async () => {
+  it("emits a DEPENDENCY_LOADED message even when load() is called multiple times", async () => {
     let i = 0;
     const dep = createMockDependency({
       uri: "a"
     }, { a: { content: "aa" }});
     dep.observe({
-      dispatch: (action) => action.type === DependencyEvent.DEPENDENCY_LOADED ? i++ : 0
+      dispatch: (message) => message.type === DependencyEvent.DEPENDENCY_LOADED ? i++ : 0
     });
     await dep.load();
     await dep.load();

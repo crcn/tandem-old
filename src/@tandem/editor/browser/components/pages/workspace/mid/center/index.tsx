@@ -5,7 +5,7 @@ import FooterComponent from "./footer";
 import CanvasComponent from "./canvas";
 import PreviewComponent from "./canvas/preview";
 import { Workspace } from "@tandem/editor/browser/stores";
-import { Injector } from "@tandem/common";
+import { Kernel } from "@tandem/common";
 import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 

@@ -8,7 +8,7 @@ import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { GutterComponent } from "@tandem/uikit";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
 import { DocumentPaneComponentFactoryProvider, EntityPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
-import { Injector, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
+import { Kernel, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
 
 export class WorkspaceMidComponent extends BaseApplicationComponent<{}, {}> {
 

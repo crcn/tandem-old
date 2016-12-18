@@ -4,15 +4,15 @@ import { IBus, DuplexStream, ReadableStream, WritableStream } from "@tandem/mesh
 
 // TODO - remove me - use LimitBus from mesh instead
 export class LimitBus implements IBus<any> {
-  private _queue: Array<{ action: any, input: ReadableStream<any>, output: WritableStream<any> }> = [];
+  private _queue: Array<{ message: any, input: ReadableStream<any>, output: WritableStream<any> }> = [];
   private _running: number = 0;
 
   constructor(readonly max: number, readonly actor: IBus<any>) { }
 
-  dispatch(action: CoreEvent) {
+  dispatch(message: CoreEvent) {
     return new DuplexStream((input, output) => {
       if (this._running > this.max) {
-        this._queue.push({ action, input, output });
+        this._queue.push({ message, input, output });
         return;
       }
       this._running++;
@@ -20,12 +20,12 @@ export class LimitBus implements IBus<any> {
       const complete = () => {
         this._running--;
         if (this._queue.length) {
-          const { action, input, output } = this._queue.shift();
-          input.pipeThrough(this.dispatch(action)).pipeTo(output);
+          const { message, input, output } = this._queue.shift();
+          input.pipeThrough(this.dispatch(message)).pipeTo(output);
         }
       };
 
-      input.pipeThrough(this.actor.dispatch(action)).pipeTo(output).then(complete, complete);
+      input.pipeThrough(this.actor.dispatch(message)).pipeTo(output).then(complete, complete);
     });
   }
 }

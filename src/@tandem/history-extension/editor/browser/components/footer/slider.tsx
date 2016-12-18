@@ -9,7 +9,7 @@ export class HistorySliderComponent extends React.Component<{ app: any }, any> {
 
   get history(): any {
     return {};
-    // return HistorySingletonProvider.getInstance(this.props.app.injector);
+    // return HistorySingletonProvider.getInstance(this.props.app.kernel);
   }
 
   onSliderChange(value) {

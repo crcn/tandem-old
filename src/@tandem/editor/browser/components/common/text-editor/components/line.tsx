@@ -1,10 +1,10 @@
 import TextEditorLine from "../models/line";
 import React =  require("react");
 import TextEditor from "../models/text-editor";
-import { Injector } from "@tandem/common";
+import { Kernel } from "@tandem/common";
 import TokenComponent from "./token";
 
-class LineComponent extends React.Component<{ injector: Injector, line: TextEditorLine, editor: TextEditor }, any> {
+class LineComponent extends React.Component<{ kernel: Kernel, line: TextEditorLine, editor: TextEditor }, any> {
 
   render() {
 
@@ -18,7 +18,7 @@ class LineComponent extends React.Component<{ injector: Injector, line: TextEdit
         line.tokens.length ? line.tokens.map((token, i) => {
           return <TokenComponent
             editor={this.props.editor}
-            injector={this.props.injector}
+            kernel={this.props.kernel}
             token={token}
             line={line}
             key={token.type + i} />;

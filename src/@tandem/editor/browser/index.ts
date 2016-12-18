@@ -5,7 +5,7 @@ import { IEditorBrowserConfig } from "./config";
 import { IFileResolver, URIProtocolProvider } from "@tandem/sandbox";
 
 import { 
-  Injector, 
+  Kernel, 
   IProvider,
   LoadApplicationRequest,
   CommandFactoryProvider, 

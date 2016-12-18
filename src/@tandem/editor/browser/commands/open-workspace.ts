@@ -14,8 +14,8 @@ import {
 
 export class OpenWorkspaceCommand extends BaseEditorBrowserCommand {
   async execute({ uri }: OpenWorkspaceRequest) {
-    const workspace = this.injector.inject(new Workspace());
-    const browser = workspace.browser = new RemoteSyntheticBrowser(this.injector, new CanvasRenderer(workspace, this.injector.inject(new SyntheticDOMRenderer())));
+    const workspace = this.kernel.inject(new Workspace());
+    const browser = workspace.browser = new RemoteSyntheticBrowser(this.kernel, new CanvasRenderer(workspace, this.kernel.inject(new SyntheticDOMRenderer())));
     await browser.open({ uri: uri });
     this.editorStore.workspace = workspace;
   }

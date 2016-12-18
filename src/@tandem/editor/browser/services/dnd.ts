@@ -6,6 +6,6 @@ import {
 } from "@tandem/common";
 
 export class DNDService extends CoreApplicationService<IEditorBrowserConfig> {
-  [InitializeApplicationRequest.INITIALIZE](action: CoreEvent) {
+  [InitializeApplicationRequest.INITIALIZE](message: CoreEvent) {
   }
 }

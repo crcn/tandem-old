@@ -1,6 +1,6 @@
 import {
   Provider,
-  Injector,
+  Kernel,
   ClassFactoryProvider,
 } from "../ioc";
 import { IDispatcher } from "@tandem/mesh";
@@ -21,8 +21,8 @@ export class ApplicationServiceProvider<T extends  IDispatcher<any, any>> exten
     return super.create();
   }
 
-  static findAll(injector: Injector) {
-    return injector.queryAll<ApplicationServiceProvider<any>>(this.getId("**"));
+  static findAll(kernel: Kernel) {
+    return kernel.queryAll<ApplicationServiceProvider<any>>(this.getId("**"));
   }
 }
 

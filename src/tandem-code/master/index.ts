@@ -52,7 +52,7 @@ import {
 import { TandemStudioMasterStore } from "./stores";
 
 import {
-   Injector,
+   Kernel,
    LogLevel,
    serialize,
    IBrokerBus,
@@ -103,7 +103,7 @@ export const initializeMaster = async () => {
     hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost")
   };
 
-  const injector = new Injector(
+  const kernel = new Kernel(
     createCommonEditorProviders(config),
 
     // services
@@ -176,6 +176,6 @@ export const initializeMaster = async () => {
     }, function(){} as any)
   );
 
-  const app = new ServiceApplication(injector);
+  const app = new ServiceApplication(kernel);
   await app.initialize();
 }

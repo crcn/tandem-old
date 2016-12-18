@@ -56,9 +56,9 @@ describe(__filename + "#", () => {
 
       expect(edit.mutations.length).not.to.equal(0);
       
-      edit.applyMutationsTo(a, (target, action) => {
+      edit.applyMutationsTo(a, (target, message) => {
         // for debugging
-        // console.log("applied %s:\n%s", chalk.magenta(action.toString()), chalk.green(removeWhitespace(a.cssText)));
+        // console.log("applied %s:\n%s", chalk.magenta(message.toString()), chalk.green(removeWhitespace(a.cssText)));
       });
       expect(removeWhitespace(a.cssText)).to.equal(removeWhitespace(b.cssText));
       if (mutationTypes) {
@@ -96,7 +96,7 @@ describe(__filename + "#", () => {
         ${chalk.magenta(removeWhitespace(curr.cssText))}
 
 
-        Trying to apply edit.changes from a stylesheet that should be identical: ${mutations.map(action => action.type)}
+        Trying to apply edit.changes from a stylesheet that should be identical: ${mutations.map(message => message.type)}
       `);
     }
   });

@@ -15,7 +15,7 @@ import {
   Status,
   loggable,
   bindable,
-  Injector,
+  Kernel,
   Observable,
   IObservable,
   IDisposable,
@@ -69,11 +69,11 @@ export class Sandbox extends Observable {
   @bindable(true)
   public status: Status;
 
-  constructor(private _injector: Injector, private createGlobal: () => any = () => {}) {
+  constructor(private _kernel: Kernel, private createGlobal: () => any = () => {}) {
     super();
 
     // for logging
-    this._injector.inject(this);
+    this._kernel.inject(this);
     this._modules = {};
   }
 
@@ -139,7 +139,7 @@ export class Sandbox extends Observable {
     const module = this._modules[hash] = new SandboxModule(this, dependency);
 
     // TODO - cache evaluator here
-    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(dependency.type, this._injector);
+    const evaluatorFactoryDepedency = SandboxModuleEvaluatorFactoryProvider.find(dependency.type, this._kernel);
 
     if (!evaluatorFactoryDepedency) {
       throw new Error(`Cannot evaluate ${dependency.uri}:${dependency.type} in sandbox.`);

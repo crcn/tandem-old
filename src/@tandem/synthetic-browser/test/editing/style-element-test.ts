@@ -7,7 +7,7 @@ import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 // TODO - media queries, keyframes 
 describe(__filename + "#", () => {
   xit("Can returns the proper line & column information for style sheets in style elements", async () => {
-    const { injector, window } = await loadTestBrowser({
+    const { kernel, window } = await loadTestBrowser({
       "index.html": `
         <style>
           .container {
@@ -39,7 +39,7 @@ describe(__filename + "#", () => {
     const edit = rule.createEdit();
     edit.setDeclaration("color", "blue");
 
-    await FileEditorProvider.getInstance(browser.injector).applyMutations(edit.mutations);
+    await FileEditorProvider.getInstance(browser.kernel).applyMutations(edit.mutations);
     await timeout();
 
     expect(browser.window.document.styleSheets[0].cssText).to.equal(`.container {\n\tcolor: blue;\n}\n`);

@@ -3,9 +3,9 @@ import { FileCache, getAllUnsavedFiles, URIProtocolProvider } from "@tandem/sand
 
 export class SaveAllFilesCommand extends BaseStudioMasterCommand {
   async execute() {
-    for (const item of (await getAllUnsavedFiles(this.injector))) {
+    for (const item of (await getAllUnsavedFiles(this.kernel))) {
       const { content } = await item.read();
-      const protocol = URIProtocolProvider.lookup(item.sourceUri, this.injector);
+      const protocol = URIProtocolProvider.lookup(item.sourceUri, this.kernel);
       await protocol.write(item.sourceUri, content);
     }
   }

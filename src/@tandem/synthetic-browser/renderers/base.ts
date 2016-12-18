@@ -294,12 +294,12 @@ export class BaseDecoratorRenderer extends Observable implements ISyntheticDocum
     return this._renderer.requestRender();
   }
 
-  protected onTargetRendererEvent(action: CoreEvent) {
-    if (action.type === SyntheticRendererEvent.UPDATE_RECTANGLES) {
+  protected onTargetRendererEvent(message: CoreEvent) {
+    if (message.type === SyntheticRendererEvent.UPDATE_RECTANGLES) {
       this.onTargetRendererSetRectangles();
     }
     // bubble up
-    this.notify(action);
+    this.notify(message);
   }
 
   protected onTargetRendererSetRectangles() {

@@ -1,9 +1,9 @@
 import { IDispatcher } from "@tandem/mesh";
 import {
-  Injector,
+  Kernel,
   PrivateBusProvider,
   MimeTypeProvider,
-  InjectorProvider,
+  KernelProvider,
 } from "@tandem/common/ioc";
 import { IDisposable } from "@tandem/common/object";
 
@@ -26,8 +26,8 @@ export class File extends Observable {
 
   private _watcher: IDisposable;
 
-  @inject(InjectorProvider.ID)
-  protected _injector: Injector;
+  @inject(KernelProvider.ID)
+  protected _kernel: Kernel;
 
   @inject(PrivateBusProvider.ID)
   protected _bus: IDispatcher<any, any>;

@@ -9,7 +9,7 @@ import {
 import { IBus, IDispatcher, IMessageTester, testDispatcherMessage } from "./base";
 
 /**
- * proxies a target bus, and queues actions
+ * proxies a target bus, and queues messages
  * if there is none until there is
  */
 
@@ -27,7 +27,7 @@ export class ProxyBus implements IBus<any>, IMessageTester<any> {
 
   dispatch(message) {
 
-    // no target? put the action in a queue until there is
+    // no target? put the message in a queue until there is
     if (this.paused) {
       return new DuplexStream((input, output) => {
         this._queue.push({ message, input, output });

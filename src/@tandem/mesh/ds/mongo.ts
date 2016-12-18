@@ -20,10 +20,10 @@ export class MongoDataStore extends  BaseDataStore {
     });
   }
 
-  dsInsert(action: DSInsertRequest<any>) {
+  dsInsert(message: DSInsertRequest<any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
-      this._db.collection(action.collectionName).insert(action.data).then((result) => {
+      this._db.collection(message.collectionName).insert(message.data).then((result) => {
         (result.ops || []).forEach((op) => {
           writer.write(op);
         });
@@ -32,10 +32,10 @@ export class MongoDataStore extends  BaseDataStore {
     });
   }
 
-  dsRemove(action: DSRemoveRequest<any>) {
+  dsRemove(message: DSRemoveRequest<any>) {
     return new DuplexStream((input, output) => {
       const writer = output.getWriter();
-      this._db.collection(action.collectionName).remove(action.query).then((result) => {
+      this._db.collection(message.collectionName).remove(message.query).then((result) => {
         (result.ops || []).forEach((op) => {
           writer.write(op);
         });
@@ -44,20 +44,20 @@ export class MongoDataStore extends  BaseDataStore {
     });
   }
 
-  dsUpdate(action: DSUpdateRequest<any, any>) {
+  dsUpdate(message: DSUpdateRequest<any, any>) {
     return new DuplexStream((input, output) => {
-      this._db.collection(action.collectionName).update(action.query, { $set: action.data }).then((result) => {
-        return this.dsFind(new DSFindRequest(action.collectionName, action.query, true)).readable.pipeTo(output);
+      this._db.collection(message.collectionName).update(message.query, { $set: message.data }).then((result) => {
+        return this.dsFind(new DSFindRequest(message.collectionName, message.query, true)).readable.pipeTo(output);
       }).catch((e) => {
         output.getWriter().abort(e);
       });
     });
   }
 
-  // TODO - bundle query actions together
-  dsFind(action: DSFindRequest<any>) {
+  // TODO - bundle query messages together
+  dsFind(message: DSFindRequest<any>) {
     return new DuplexStream((input, output) => {
-      this.pump(this._db.collection(action.collectionName).find(action.query), output.getWriter());
+      this.pump(this._db.collection(message.collectionName).find(message.query), output.getWriter());
     });
   }
 

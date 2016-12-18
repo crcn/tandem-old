@@ -3,7 +3,7 @@
 Kitchen sink example:
 
 ```typescript
-import { Injector } from "@tandem/common";
+import { Kernel } from "@tandem/common";
 import { SyntheticWindow, SyntheticDocument } from "@tandem/synthetic-browser";
 import {
   Sandbox,
@@ -22,7 +22,7 @@ import {
 } from "@tandem/sandbox";
 
 
-const deps = new Injector(
+const deps = new Kernel(
   new DependencyGraphProvider(),
   new FileEditorProvider(),
   new FileSystemProvider(new LocalFileSystem()),
@@ -86,7 +86,7 @@ import {
   DependencyGraphProvider
 } from "@tandem/sandbox";
 
-const dependencies = new Injector(
+const dependencies = new Kernel(
   new DependencyGraphStrategyProvider("webpack", new WebpackDependencyGraphStrategy(webpackConfig)),
   new DependencyGraphStrategyProvider("webpack2", new WebpackDependencyGraphStrategy(webpackConfig)),
   new DependencyGraphStrategyProvider("rollup", new RollupBundleStrategy(webpackConfig)),

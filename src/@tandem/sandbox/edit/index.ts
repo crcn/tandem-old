@@ -9,7 +9,7 @@ import {
   inject,
   Logger,
   Mutation,
-  Injector,
+  Kernel,
   loggable,
   serialize,
   CoreEvent,
@@ -21,7 +21,7 @@ import {
   MutationEvent,
   getSerializeType,
   MimeTypeProvider,
-  InjectorProvider,
+  KernelProvider,
   SetValueMutation,
   SerializedContentType,
   PropertyMutation,
@@ -48,8 +48,8 @@ export abstract class BaseContentEditor<T> implements IEditor {
 
   readonly logger: Logger;
 
-  @inject(InjectorProvider.ID)
-  protected injector: Injector;
+  @inject(KernelProvider.ID)
+  protected kernel: Kernel;
 
   protected _rootASTNode: T;
 
@@ -185,8 +185,8 @@ export class FileEditor {
 
   private _promise: Promise<any>;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   applyMutations(mutations: Mutation<ISyntheticObject>[]): Promise<any> {
 
@@ -227,7 +227,7 @@ export class FileEditor {
 
       const targetSource = target.source;
 
-      const targetUri = await ProtocolURLResolverProvider.resolve(targetSource.uri, this._injector);
+      const targetUri = await ProtocolURLResolverProvider.resolve(targetSource.uri, this._kernel);
 
       const fileMutations: Mutation<ISyntheticObject>[] = mutationsByUri[targetUri] || (mutationsByUri[targetUri] = []);
       fileMutations.push(mutation);
@@ -237,10 +237,10 @@ export class FileEditor {
 
     for (const uri in mutationsByUri) {
 
-      const fileCache  = await FileCacheProvider.getInstance(this._injector).findOrInsert(uri);
+      const fileCache  = await FileCacheProvider.getInstance(this._kernel).findOrInsert(uri);
       const { type, content } = await fileCache.read();
 
-      const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(type, this._injector);
+      const contentEditorFactoryProvider = ContentEditorFactoryProvider.find(type, this._kernel);
 
       if (!contentEditorFactoryProvider) {
         this.logger.error(`No synthetic edit consumer exists for ${uri}:${type}.`);
@@ -266,7 +266,7 @@ export class FileEditor {
           fileCache.setDataUrlContent(newContent);
           promises.push(fileCache.save());
           if (autoSave) {
-            promises.push(URIProtocolProvider.lookup(fileCache.sourceUri, this._injector).write(fileCache.sourceUri, newContent));
+            promises.push(URIProtocolProvider.lookup(fileCache.sourceUri, this._kernel).write(fileCache.sourceUri, newContent));
           }
         } else {
           this.logger.debug(`No changes to ${uri}`);

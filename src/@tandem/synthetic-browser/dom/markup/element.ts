@@ -145,19 +145,19 @@ export class SyntheticDOMElementSerializer implements ISerializer<SyntheticDOMEl
       childNodes: [].concat(childNodes).map(serialize)
     };
   }
-  deserialize({ nodeName, shadowRoot, namespaceURI, attributes, childNodes }, injector, ctor) {
+  deserialize({ nodeName, shadowRoot, namespaceURI, attributes, childNodes }, kernel, ctor) {
     const element = new ctor(namespaceURI, nodeName) as SyntheticDOMElement;
 
     for (let i = 0, n = attributes.length; i < n; i++) {
-      element.attributes.push(<SyntheticDOMAttribute>deserialize(attributes[i], injector));
+      element.attributes.push(<SyntheticDOMAttribute>deserialize(attributes[i], kernel));
     }
 
     for (let i = 0, n = childNodes.length; i < n; i++) {
-      const child = <SyntheticDOMNode>deserialize(childNodes[i], injector);
+      const child = <SyntheticDOMNode>deserialize(childNodes[i], kernel);
       element.appendChild(child);
     }
 
-    const shadowRootFragment = deserialize(shadowRoot, injector);
+    const shadowRootFragment = deserialize(shadowRoot, kernel);
     if (shadowRootFragment) {
       element.attachShadow({ mode: "open" }).appendChild(shadowRootFragment);
     }
@@ -183,7 +183,7 @@ export class SyntheticDOMElementEdit extends SyntheticDOMContainerEdit<Synthetic
   }
 
   /**
-   * Adds diff actions from the new element
+   * Adds diff messages from the new element
    *
    * @param {SyntheticDOMElement} newElement
    */

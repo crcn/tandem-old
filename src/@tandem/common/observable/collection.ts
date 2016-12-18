@@ -24,8 +24,8 @@ export class ObservableCollection<T> extends Array<T> implements IObservable {
     this._observable.unobserve(actor);
   }
 
-  notify(action: CoreEvent) {
-    return this._observable.notify(action);
+  notify(message: CoreEvent) {
+    return this._observable.notify(message);
   }
 
   push(...items: Array<T>) {

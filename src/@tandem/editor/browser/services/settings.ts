@@ -12,7 +12,7 @@ export class SettingsService extends CoreApplicationService<IEditorBrowserConfig
   @inject(EditorStoreProvider.ID)
   private _store: EditorStore;
 
-  [LoadApplicationRequest.LOAD](action: LoadApplicationRequest) {
+  [LoadApplicationRequest.LOAD](message: LoadApplicationRequest) {
 
     this.logger.debug("loading settings");
 
@@ -22,7 +22,7 @@ export class SettingsService extends CoreApplicationService<IEditorBrowserConfig
     this._store.settings.observe(this.bus, new CallbackDispatcher(this._onSettingsChange));
   }
 
-  _onSettingsChange = (action: MetadataChangeEvent) => {
+  _onSettingsChange = (message: MetadataChangeEvent) => {
       store.set("settings", this._store.settings.data);
   }
 }

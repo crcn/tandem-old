@@ -21,8 +21,8 @@ class SyntheticCSSFontFaceSerializer implements ISerializer<SyntheticCSSFontFace
   serialize({ style }: SyntheticCSSFontFace) {
     return serialize(style);
   }
-  deserialize(style, injector) {
-    return new SyntheticCSSFontFace(deserialize(style, injector));
+  deserialize(style, kernel) {
+    return new SyntheticCSSFontFace(deserialize(style, kernel));
   }
 }
 

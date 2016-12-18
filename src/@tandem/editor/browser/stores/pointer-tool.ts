@@ -16,11 +16,11 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
   @inject(PrivateBusProvider.ID)
   readonly bus: IDispatcher<any, any>;
 
-  canvasMouseDown(action: MouseAction) {
+  canvasMouseDown(message: MouseAction) {
     this.bus.dispatch(new SelectRequest());
   }
 
-  canvasKeyDown(action: KeyboardAction) {
+  canvasKeyDown(message: KeyboardAction) {
 
     // const selection = new VisibleDOMEntityCollection(...this.editor.selection);
     // if (selection.length) return;
@@ -32,25 +32,25 @@ export class PointerTool extends BaseEditorTool implements IInjectable {
     // let left = bounds.left;
     // let top  = bounds.top;
 
-    // if (action.keyCode === 38) {
+    // if (message.keyCode === 38) {
     //   top--;
-    // } else if (action.keyCode === 40) {
+    // } else if (message.keyCode === 40) {
     //   top++;
-    // } else if (action.keyCode === 37) {
+    // } else if (message.keyCode === 37) {
     //   left--;
-    // } else if (action.keyCode === 39) {
+    // } else if (message.keyCode === 39) {
     //   left++;
     // } else {
 
     //   // deselect all when escape key is hit
-    //   if (action.keyCode === 27) {
+    //   if (message.keyCode === 27) {
     //     this.bus.dispatch(new SelectRequest());
     //   }
 
     //   return;
     // }
 
-    // action.preventDefault();
+    // message.preventDefault();
 
     // selection.display.position = { left, top };
   }

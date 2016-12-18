@@ -31,16 +31,16 @@ describe(__filename + "#", () => {
     [`<div id="b"></div>`, `<div id="c"></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]],
     [`<div id="b"></div>`, `<div></div>`, [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT]],
 
-  ].forEach(([oldSource, newSource, actionNames]) => {
+  ].forEach(([oldSource, newSource, messageNames]) => {
 
-    it(`diffs & patches ${oldSource} to ${newSource} with ${(actionNames as any).join(" ")} ops`, () => {
+    it(`diffs & patches ${oldSource} to ${newSource} with ${(messageNames as any).join(" ")} ops`, () => {
       const { document } = new SyntheticWindow(null);
       const anode = document.createElement("div") as SyntheticHTMLElement;
       anode.innerHTML = oldSource as string;
       const bnode = document.createElement("div") as SyntheticHTMLElement;
       bnode.innerHTML = newSource as string;
       const edit  = anode.createEdit().fromDiff(bnode);
-      expect(edit.mutations.map(action => action.type)).to.eql(actionNames);
+      expect(edit.mutations.map(message => message.type)).to.eql(messageNames);
       edit.applyMutationsTo(anode);
       expect(anode.innerHTML).to.equal(newSource);
     });
@@ -73,7 +73,7 @@ describe(__filename + "#", () => {
 
         ${chalk.magenta(a.innerHTML)} -> ${chalk.green(b.innerHTML)}
 
-        Trying to apply edit.mutations from node that should be identical: ${mutations.map(action => action.type)}
+        Trying to apply edit.mutations from node that should be identical: ${mutations.map(message => message.type)}
       `);
     }
   });

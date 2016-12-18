@@ -1,7 +1,7 @@
 import { SyntheticWindow } from "../window";
 import { URIProtocolProvider } from "@tandem/sandbox";
 import { IStreamableDispatcher, DuplexStream } from "@tandem/mesh";
-import { inject, Injector, InjectorProvider, loggable, Logger } from "@tandem/common";
+import { inject, Kernel, KernelProvider, loggable, Logger } from "@tandem/common";
 import { IHTTPHeaders, HTTPRequest, HTTPResponse, HTTPStatusType } from "./messages";
 
 @loggable()
@@ -9,8 +9,8 @@ export class XHRServer implements IStreamableDispatcher<HTTPRequest> {
   
   protected readonly logger: Logger;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   constructor(window: SyntheticWindow) {
     
@@ -24,7 +24,7 @@ export class XHRServer implements IStreamableDispatcher<HTTPRequest> {
 
       this.logger.info(`XHR ${request.method} ${request.url}`);
 
-      URIProtocolProvider.lookup(request.url, this._injector).read(request.url).catch((e) => {
+      URIProtocolProvider.lookup(request.url, this._kernel).read(request.url).catch((e) => {
         writer.abort(e);
       }).then((data) => {
 

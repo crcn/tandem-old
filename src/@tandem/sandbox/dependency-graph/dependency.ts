@@ -26,7 +26,7 @@ import {
   Logger,
   Status,
   loggable,
-  Injector,
+  Kernel,
   bindable,
   LogLevel,
   IWalkable,
@@ -37,7 +37,7 @@ import {
   watchProperty,
   MimeTypeProvider,
   BaseActiveRecord,
-  InjectorProvider,
+  KernelProvider,
   PropertyMutation,
   MutationEvent,
   PLAIN_TEXT_MIME_TYPE,
@@ -88,8 +88,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   private _loadedDependencies: boolean;
   private _sourceUpdatedAt: number;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   constructor(source: IDependencyData, collectionName: string, private _graph: IDependencyGraph) {
     super(source, collectionName);
@@ -317,7 +317,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     }
 
     // watch for changes now prevent cyclical dependencies from cyclically
-    // listening and emitting the same "done" actions
+    // listening and emitting the same "done" messages
     await this.watchForChanges();
 
     return this;
@@ -399,7 +399,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   protected async getInitialSourceContent(): Promise<IDependencyLoaderResult> {
     const readResult = this.uri && await (await this.getSourceFileCacheItem()).read();
     return {
-      type: readResult && readResult.type || MimeTypeProvider.lookup(this.uri, this._injector) || PLAIN_TEXT_MIME_TYPE,
+      type: readResult && readResult.type || MimeTypeProvider.lookup(this.uri, this._kernel) || PLAIN_TEXT_MIME_TYPE,
       content: readResult && readResult.content
     };
   }

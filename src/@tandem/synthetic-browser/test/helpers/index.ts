@@ -1,4 +1,4 @@
-import { Injector, LogLevel } from "@tandem/common";
+import { Kernel, LogLevel } from "@tandem/common";
 import { sample, sampleSize, random } from "lodash";
 import { createTestMasterApplication } from "@tandem/editor/test";
 import { createSandboxProviders, IFileResolver } from "@tandem/sandbox";
@@ -19,7 +19,7 @@ import {
 
 export function createMockBrowser() {
   const deps = createSandboxProviders();
-  return new SyntheticBrowser(new Injector(deps));
+  return new SyntheticBrowser(new Kernel(deps));
 }
 
 const CHARS = "abcdefghijkl".split("");
@@ -131,7 +131,7 @@ export const loadTestBrowser = async (mockFiles: any, entryFilePath: string) => 
     }
   });
 
-  const browser = new SyntheticBrowser(app.injector);
+  const browser = new SyntheticBrowser(app.kernel);
 
   await browser.open({
     uri: entryFilePath

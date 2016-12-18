@@ -89,7 +89,7 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
     if (this._browser) return;
 
     const documentRenderer = new SyntheticDOMRenderer();
-    this._browser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.injector, new SyntheticRemoteBrowserRenderer(this, documentRenderer), this.browser);
+    this._browser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.kernel, new SyntheticRemoteBrowserRenderer(this, documentRenderer), this.browser);
     bindProperty(this._browser, "status", this, "status").trigger();
     this._contentDocumentObserver = new CallbackDispatcher(this.onContentDocumentEvent.bind(this));
     watchProperty(this._browser, "window", this.onBrowserWindowChange.bind(this));

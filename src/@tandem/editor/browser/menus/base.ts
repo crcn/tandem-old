@@ -2,20 +2,20 @@ import { WebMenuItemFactoryProvider } from "../providers";
 import { IMessage } from "@tandem/mesh";
 import { 
   inject, 
-  Injector, 
+  Kernel, 
   ICommand,
   TreeNode, 
   ITreeNode,
   IBrokerBus,
   IInjectable, 
-  InjectorProvider, 
+  KernelProvider, 
   PrivateBusProvider, 
 } from "@tandem/common";
 
 export class WebMenuItem extends TreeNode<WebMenuItem> {
 
-  @inject(InjectorProvider.ID)
-  protected injector: Injector;
+  @inject(KernelProvider.ID)
+  protected kernel: Kernel;
 
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
@@ -26,7 +26,7 @@ export class WebMenuItem extends TreeNode<WebMenuItem> {
   }
   
   initialize() {
-    for (const child of WebMenuItemFactoryProvider.createSubWebMenuItems(this, this.injector)) {
+    for (const child of WebMenuItemFactoryProvider.createSubWebMenuItems(this, this.kernel)) {
       this.appendChild(child);
       child.initialize();
     }

@@ -183,19 +183,19 @@ class ReadableStream {
         rethrowAssertionErrorRejection(err);
       });
 
-      function isOrBecomesErrored(stream, promise, action) {
+      function isOrBecomesErrored(stream, promise, message) {
         if (stream._state === 'errored') {
-          action(stream._storedError);
+          message(stream._storedError);
         } else {
-          promise.catch(action).catch(rethrowAssertionErrorRejection);
+          promise.catch(message).catch(rethrowAssertionErrorRejection);
         }
       }
 
-      function isOrBecomesClosed(stream, promise, action) {
+      function isOrBecomesClosed(stream, promise, message) {
         if (stream._state === 'closed') {
-          action();
+          message();
         } else {
-          promise.then(action).catch(rethrowAssertionErrorRejection);
+          promise.then(message).catch(rethrowAssertionErrorRejection);
         }
       }
 
@@ -203,14 +203,14 @@ class ReadableStream {
         return currentWrite.catch(() => {});
       }
 
-      function shutdownWithAction(action, originalIsError, originalError) {
+      function shutdownWithAction(message, originalIsError, originalError) {
         if (shuttingDown === true) {
           return;
         }
         shuttingDown = true;
 
         waitForCurrentWrite().then(() => {
-          return action().then(
+          return message().then(
             () => finalize(originalIsError, originalError),
             newError => finalize(true, newError)
           );

@@ -29,7 +29,7 @@ export interface IProvider extends ICloneable {
    * The collection that this dependency belongs to
    */
 
-  owner: Injector;
+  owner: Kernel;
 
   /**
    * Clones the dependency. Required in case the dependency
@@ -45,7 +45,7 @@ export interface IProvider extends ICloneable {
 }
 
 export class Provider<T> implements IProvider {
-  public owner: Injector;
+  public owner: Kernel;
   constructor(readonly id: string, public value: T, readonly overridable: boolean = true, readonly priority?: number) { }
 
   /**
@@ -98,13 +98,13 @@ export class ClassFactoryProvider extends Provider<{ new(...rest): any}> impleme
   }
 }
 
-export type registerableProviderType = Array<IProvider|Injector|any[]>;
+export type registerableProviderType = Array<IProvider|Kernel|any[]>;
 
 /**
- * Contains a collection of Injector
+ * Contains a collection of Kernel
  */
 
-export class Injector implements ICloneable {
+export class Kernel implements ICloneable {
 
   private _providersByNs: any = {};
 
@@ -129,7 +129,7 @@ export class Injector implements ICloneable {
   }
 
   /**
-   * queries for all Injector with the given namespace
+   * queries for all Kernel with the given namespace
    */
 
   queryAll<T extends IProvider>(ns: string) {
@@ -148,7 +148,7 @@ export class Injector implements ICloneable {
    */
 
   clone() {
-    return new Injector(...this.queryAll<any>("/**"));
+    return new Kernel(...this.queryAll<any>("/**"));
   }
 
   /**
@@ -185,15 +185,15 @@ export class Injector implements ICloneable {
   /**
    */
 
-  register(...providers: registerableProviderType): Injector {
+  register(...providers: registerableProviderType): Kernel {
 
     const flattenedProviders: Array<IProvider> = flattenDeep(providers);
 
     for (let dependency of flattenedProviders) {
 
-      // Injector collection? Merge it into this one.
-      if (dependency instanceof Injector) {
-        this.register(...(<Injector>dependency).queryAll("/**"));
+      // Kernel collection? Merge it into this one.
+      if (dependency instanceof Kernel) {
+        this.register(...(<Kernel>dependency).queryAll("/**"));
         continue;
       }
 

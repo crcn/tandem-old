@@ -15,8 +15,8 @@ export const createHTMLEditorWorkerProviders = () => {
   return [
     ...createHTMLCoreProviders(),
     ...createHTMLSandboxProviders(),
-    new PreviewLoaderProvider("htmlPreview", (uri, injector) => {
-      return MimeTypeProvider.lookup(uri, injector) === HTML_MIME_TYPE;
+    new PreviewLoaderProvider("htmlPreview", (uri, kernel) => {
+      return MimeTypeProvider.lookup(uri, kernel) === HTML_MIME_TYPE;
     }, SelfPreviewLoader)
   ];
 }

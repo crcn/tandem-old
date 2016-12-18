@@ -2,10 +2,10 @@ import React =  require("react");
 import { IDispatcher, IBus } from "@tandem/mesh";
 import { inject, loggable } from "@tandem/common/decorators";
 import {
-  Injector,
+  Kernel,
   IInjectable,
   PrivateBusProvider,
-  InjectorProvider,
+  KernelProvider,
 } from "@tandem/common/ioc";
 import {
   Logger
@@ -13,12 +13,12 @@ import {
 
 export interface IApplicationComponentContext {
   bus: IBus<any>;
-  injector: Injector;
+  kernel: Kernel;
 }
 
 export const appComponentContextTypes = {
   bus: React.PropTypes.object,
-  injector: React.PropTypes.object
+  kernel: React.PropTypes.object
 };
 
 @loggable()
@@ -31,14 +31,14 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> implem
   @inject(PrivateBusProvider.ID)
   protected readonly bus: IBus<any>;
 
-  @inject(InjectorProvider.ID)
-  protected readonly injector: Injector
+  @inject(KernelProvider.ID)
+  protected readonly kernel: Kernel
 
   constructor(props: T, context: IApplicationComponentContext, callbacks: any) {
     super(props, context, callbacks);
 
-    if (context.injector) {
-      context.injector.inject(this);
+    if (context.kernel) {
+      context.kernel.inject(this);
     } else {
       console.warn(`Failed to inject properties into `, this.constructor.name);
     }
@@ -56,7 +56,7 @@ export class RootApplicationComponent extends React.Component<IApplicationCompon
   getChildContext() {
     return {
       bus: this.props.bus,
-      injector: this.props.injector
+      kernel: this.props.kernel
     };
   }
 

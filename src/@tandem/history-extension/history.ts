@@ -101,12 +101,12 @@ export class ModuleHistory implements IInjectable {
 
   $didInject() { }
 
-  protected onAction(action: CoreEvent) {
+  protected onAction(message: CoreEvent) {
 
     // target may be comming from an embedded browser instance
     // i
-    // } else if (action.type === UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT) {
-    //   const contentAction = (<UpdateTemporaryFileContentAction>action);
+    // } else if (message.type === UpdateTemporaryFileContentAction.UPDATE_TEMP_FILE_CONTENT) {
+    //   const contentAction = (<UpdateTemporaryFileContentAction>message);
     //   if (contentAction.mtime > this._mtime) {
     //     this._history.push({
     //       [contentAction.path]: {

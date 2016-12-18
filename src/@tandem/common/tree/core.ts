@@ -153,8 +153,8 @@ export class TreeNode<T extends TreeNode<any>> extends Observable implements ITr
     return <T>new TreeNode<T>();
   }
 
-  protected onChildAction(action: CoreEvent) {
-    this.notify(action);
+  protected onChildAction(message: CoreEvent) {
+    this.notify(message);
   }
 
   visitWalker(walker: ITreeWalker) {

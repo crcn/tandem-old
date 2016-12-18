@@ -21,8 +21,8 @@ export class CreateTempWorkspaceCommand extends BaseStudioMasterCommand {
     let content;
     let type;
 
-    if (uri && MimeTypeProvider.lookup(uri, this.injector) === TDPROJECT_MIME_TYPE) {
-      const result = await URIProtocolProvider.lookup(uri, this.injector).read(uri);
+    if (uri && MimeTypeProvider.lookup(uri, this.kernel) === TDPROJECT_MIME_TYPE) {
+      const result = await URIProtocolProvider.lookup(uri, this.kernel).read(uri);
       content = result.content;
       type    = result.type;
     } else {

@@ -3,7 +3,7 @@ import { IBrokerBus } from "../dispatchers";
 import { loggable, inject } from "../decorators";
 import { ApplicationConfigurationProvider } from "./providers";
 import {  IDispatcher, IMessageTester, IMessage } from "@tandem/mesh";
-import { Injector, IInjectable, InjectorProvider,  PrivateBusProvider } from "../ioc";
+import { Kernel, IInjectable, KernelProvider,  PrivateBusProvider } from "../ioc";
 
 /**
  * Application services create the combined functionality of the
@@ -17,8 +17,8 @@ export abstract class BaseApplicationService implements  IDispatcher<any, any>,
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
 
-  @inject(InjectorProvider.ID)
-  protected injector: Injector;
+  @inject(KernelProvider.ID)
+  protected kernel: Kernel;
 
   private _acceptedMessageTypes: string[];
 

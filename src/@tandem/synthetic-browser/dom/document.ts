@@ -28,7 +28,7 @@ import {
 
 import {
   bindable,
-  Injector,
+  Kernel,
   Mutation,
   diffArray,
   serialize,
@@ -64,11 +64,11 @@ class SyntheticDocumentSerializer implements ISerializer<SyntheticDocument, any[
       document.childNodes.map(serialize),
     ];
   }
-  deserialize([defaultNamespaceURI, styleSheets, childNodes], injector) {
+  deserialize([defaultNamespaceURI, styleSheets, childNodes], kernel) {
     const document = new SyntheticDocument(defaultNamespaceURI);
-    document.styleSheets.push(...styleSheets.map(raw => deserialize(raw, injector)));
+    document.styleSheets.push(...styleSheets.map(raw => deserialize(raw, kernel)));
     for (let i = 0, n = childNodes.length; i < n; i++) {
-      document.appendChild(deserialize(childNodes[i], injector));
+      document.appendChild(deserialize(childNodes[i], kernel));
     }
     return document;
   }
@@ -87,9 +87,9 @@ export namespace SyntheticDocumentMutationTypes {
       mutations: mutations.map(serialize)
     };
   },
-  deserialize({ mutations }, injector, ctor: { new(): SyntheticDocumentEdit }) {
+  deserialize({ mutations }, kernel, ctor: { new(): SyntheticDocumentEdit }) {
     const edit = new ctor();
-    edit.mutations.push(...mutations.map(mutation => deserialize(mutation, injector)));
+    edit.mutations.push(...mutations.map(mutation => deserialize(mutation, kernel)));
     return edit;
   }
 })

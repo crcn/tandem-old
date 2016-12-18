@@ -11,7 +11,7 @@ import {
   IProvider,
   ICommand,
   Provider,
-  Injector,
+  Kernel,
   StoreProvider,
   ClassFactoryProvider,
   createSingletonProviderClass,
@@ -32,8 +32,8 @@ export class GlobalKeyBindingProvider extends ClassFactoryProvider {
   clone() {
     return new GlobalKeyBindingProvider(this.keys, this.commandClass);
   }
-  static findAll(injector: Injector) {
-    return injector.queryAll<GlobalKeyBindingProvider>(`${GlobalKeyBindingProvider.NS}/**`);
+  static findAll(kernel: Kernel) {
+    return kernel.queryAll<GlobalKeyBindingProvider>(`${GlobalKeyBindingProvider.NS}/**`);
   }
 }
 
@@ -51,12 +51,12 @@ export class WorkspaceToolFactoryProvider extends ClassFactoryProvider {
     return super.create(editor);
   }
 
-  static findAll(editorType: string, injector: Injector) {
-    return injector.queryAll<WorkspaceToolFactoryProvider>([WorkspaceToolFactoryProvider.NS, editorType, "**"].join("/"));
+  static findAll(editorType: string, kernel: Kernel) {
+    return kernel.queryAll<WorkspaceToolFactoryProvider>([WorkspaceToolFactoryProvider.NS, editorType, "**"].join("/"));
   }
 
-  static find(id: string, editorType: string, injector: Injector) {
-    return injector.query<WorkspaceToolFactoryProvider>([WorkspaceToolFactoryProvider.NS, editorType, id].join("/"));
+  static find(id: string, editorType: string, kernel: Kernel) {
+    return kernel.query<WorkspaceToolFactoryProvider>([WorkspaceToolFactoryProvider.NS, editorType, id].join("/"));
   }
 }
 
@@ -105,8 +105,8 @@ export class LayerLabelComponentFactoryProvider extends ReactComponentFactoryPro
   constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>, readonly childrenProperty: string = "children") {
     super([LayerLabelComponentFactoryProvider.NS, displayType].join("/"), componentClass);
   }
-  static find(displayType: string, injector: Injector) {
-    return injector.query<LayerLabelComponentFactoryProvider>([LayerLabelComponentFactoryProvider.NS, displayType].join("/"));
+  static find(displayType: string, kernel: Kernel) {
+    return kernel.query<LayerLabelComponentFactoryProvider>([LayerLabelComponentFactoryProvider.NS, displayType].join("/"));
   }
   clone() {
     return new LayerLabelComponentFactoryProvider(this.displayType, this.componentClass);
@@ -126,8 +126,8 @@ export class TokenComponentFactoryProvider extends ReactComponentFactoryProvider
     return [TokenComponentFactoryProvider.NS, tokenType].join("/");
   }
 
-  static find(tokenType: string, injector: Injector) {
-    return injector.query<TokenComponentFactoryProvider>(this.getNamespace(tokenType));
+  static find(tokenType: string, kernel: Kernel) {
+    return kernel.query<TokenComponentFactoryProvider>(this.getNamespace(tokenType));
   }
   clone() {
     return new TokenComponentFactoryProvider(this.tokenType, this.componentClass);
@@ -142,8 +142,8 @@ export class FooterComponentFactoryProvider extends ReactComponentFactoryProvide
   static getNamespace(name: string) {
     return [FooterComponentFactoryProvider.NS, name].join("/");
   }
-  static find(name: string, injector: Injector) {
-    return injector.query<FooterComponentFactoryProvider>(this.getNamespace(name));
+  static find(name: string, kernel: Kernel) {
+    return kernel.query<FooterComponentFactoryProvider>(this.getNamespace(name));
   }
   clone() {
     return new FooterComponentFactoryProvider(this.name, this.componentClass);
@@ -183,8 +183,8 @@ export class RouteFactoryProvider extends ClassFactoryProvider {
     return this.path === path || this.name === path;
   }
 
-  static findByPath(path: string, injector: Injector) {  
-    return injector.queryAll<RouteFactoryProvider>(this.getId("**")).find((provider) => {
+  static findByPath(path: string, kernel: Kernel) {  
+    return kernel.queryAll<RouteFactoryProvider>(this.getId("**")).find((provider) => {
       return provider.testPath(path);
     })
   }
@@ -234,8 +234,8 @@ export class WebMenuItemFactoryProvider extends ClassFactoryProvider {
     return [this.NS, name].join("/");
   }
 
-  static createSubWebMenuItems(parent: WebMenuItem, injector: Injector): WebMenuItem[] {
-    return injector.queryAll<WebMenuItemFactoryProvider>(this.getId("**")).filter((provider) => {
+  static createSubWebMenuItems(parent: WebMenuItem, kernel: Kernel): WebMenuItem[] {
+    return kernel.queryAll<WebMenuItemFactoryProvider>(this.getId("**")).filter((provider) => {
       return provider.testParent(parent);
     }).map((provider) => {
       return provider.create();

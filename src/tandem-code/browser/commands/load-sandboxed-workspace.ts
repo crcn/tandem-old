@@ -1,5 +1,5 @@
 import { BaseStudioEditorBrowserCommand } from "./base";
-import { Injector } from "@tandem/common";
+import { Kernel } from "@tandem/common";
 import { SyntheticBrowser, SyntheticWindow, SyntheticDOMRenderer } from "@tandem/synthetic-browser";
 import { Workspace } from "@tandem/editor/browser/stores";
 import {createWorkspaceRedirectRequest } from "@tandem/editor/browser/messages";
@@ -10,7 +10,7 @@ export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserComman
 
     if (!window["$synthetic"]) return;
 
-    const browser = new SyntheticBrowser(new Injector(this.injector, createTestSandboxProviders({
+    const browser = new SyntheticBrowser(new Kernel(this.kernel, createTestSandboxProviders({
       mockFiles: {
         "index.html": `
           <html>

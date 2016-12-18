@@ -1,4 +1,4 @@
-import { Injector } from "@tandem/common/ioc";
+import { Kernel } from "@tandem/common/ioc";
 
 export class System {
   constructor() {

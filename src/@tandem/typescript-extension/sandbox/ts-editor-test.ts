@@ -43,11 +43,11 @@ describe(__filename + "#", () => {
   });
 
   const loadJSX = async (jsx: string) => {
-    const { injector } = app;
+    const { kernel } = app;
 
     const entryFilePath = createRandomFileName("tsx");
 
-    await URIProtocolProvider.lookup(entryFilePath, injector).write(entryFilePath, `
+    await URIProtocolProvider.lookup(entryFilePath, kernel).write(entryFilePath, `
       import React =  require("react");
       import ReactDOM = require("react-dom");
       const element = document.createElement("div");
@@ -55,7 +55,7 @@ describe(__filename + "#", () => {
       exports.documentElement = element;
     `);
 
-    const browser = new SyntheticBrowser(injector);
+    const browser = new SyntheticBrowser(kernel);
     await browser.open({
       uri: entryFilePath,
       dependencyGraphStrategyOptions: {
@@ -70,8 +70,8 @@ describe(__filename + "#", () => {
     return {
       entryFilePath: entryFilePath,
       element: getElement(),
-      editor: FileEditorProvider.getInstance(injector),
-      fileCache: FileCacheProvider.getInstance(injector),
+      editor: FileEditorProvider.getInstance(kernel),
+      fileCache: FileCacheProvider.getInstance(kernel),
       reloadElement: async () => {
         await waitForPropertyChange(browser.sandbox, "exports");
         return getElement();

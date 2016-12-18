@@ -1,7 +1,7 @@
 import { CallbackDispatcher } from "@tandem/mesh";
 import { FileCache } from "./file-cache";
 import { IURIWatcher, URIProtocolProvider } from "@tandem/sandbox";
-import { IBrokerBus, diffArray, inject, loggable, Logger, Injector, InjectorProvider } from "@tandem/common";
+import { IBrokerBus, diffArray, inject, loggable, Logger, Kernel, KernelProvider } from "@tandem/common";
 
 // TODO - need to check if file cache is up to date with local
 // TODO - needs to support other protocols such as http, and in-app
@@ -10,8 +10,8 @@ export class FileCacheSynchronizer {
 
   protected logger: Logger;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   private _watchers: any;
   private _updating: boolean;
@@ -37,7 +37,7 @@ export class FileCacheSynchronizer {
 
         if (!value) return;
 
-        const protocol = URIProtocolProvider.lookup(value, this._injector);
+        const protocol = URIProtocolProvider.lookup(value, this._kernel);
 
         try {
           if (await protocol.fileExists(value)) {

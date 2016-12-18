@@ -8,7 +8,7 @@ import { IDispatcher, IMessage } from "@tandem/mesh";
 import {
   IFactory,
   Provider,
-  Injector,
+  Kernel,
   IProvider,
   ClassFactoryProvider,
  } from "./base";
@@ -20,7 +20,7 @@ export * from "./base";
 /**
  */
 
-export function createSingletonBusProviderClass(name: string): { getInstance(providers:Injector): IBrokerBus, ID: string, new(bus: IBrokerBus): Provider<IBrokerBus> } {
+export function createSingletonBusProviderClass(name: string): { getInstance(providers:Kernel): IBrokerBus, ID: string, new(bus: IBrokerBus): Provider<IBrokerBus> } {
 
   const id = ["bus", name].join("/");
 
@@ -32,7 +32,7 @@ export function createSingletonBusProviderClass(name: string): { getInstance(pro
       super(id, bus);
     }
 
-    static getInstance(providers: Injector): IBrokerBus {
+    static getInstance(providers: Kernel): IBrokerBus {
       return providers.query<any>(id).value;
     }
   };
@@ -51,21 +51,21 @@ export const PrivateBusProvider   = createSingletonBusProviderClass("private");
 /**
  */
 
-export class InjectorProvider extends Provider<Injector> {
+export class KernelProvider extends Provider<Kernel> {
   static ID = "providers";
   constructor() {
-    super(InjectorProvider.ID, null);
+    super(KernelProvider.ID, null);
   }
 
   clone() {
-    return new InjectorProvider();
+    return new KernelProvider();
   }
 
-  get owner(): Injector {
+  get owner(): Kernel {
     return this.value;
   }
 
-  set owner(value: Injector) {
+  set owner(value: Kernel) {
     this.value = value;
   }
 }
@@ -77,28 +77,28 @@ let i = 0;
 
 export class CommandFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "commands";
-  readonly actionFilter: Function;
-  constructor(actionFilter: string|Function, readonly clazz: { new(...rest: any[]): ICommand }) {
+  readonly messageFilter: Function;
+  constructor(messageFilter: string|Function, readonly clazz: { new(...rest: any[]): ICommand }) {
     super([CommandFactoryProvider.NS, i++].join("/"), clazz);
-    if (typeof actionFilter === "string") {
-      this.actionFilter = (action: IMessage) => action.type === actionFilter;
+    if (typeof messageFilter === "string") {
+      this.messageFilter = (message: IMessage) => message.type === messageFilter;
     } else {
-      this.actionFilter = actionFilter;
+      this.messageFilter = messageFilter;
     }
   }
   create(): ICommand {
     return super.create();
   }
-  static findAll(providers: Injector) {
+  static findAll(providers: Kernel) {
     return providers.queryAll<CommandFactoryProvider>([CommandFactoryProvider.NS, "**"].join("/"));
   }
 
-  static findAllByAction(action: IMessage, providers: Injector): CommandFactoryProvider[] {
-    return this.findAll(providers).filter((dep) => dep.actionFilter(action));
+  static findAllByMessage(message: IMessage, providers: Kernel): CommandFactoryProvider[] {
+    return this.findAll(providers).filter((dep) => dep.messageFilter(message));
   }
 
   clone() {
-    return new CommandFactoryProvider(this.actionFilter, this.clazz);
+    return new CommandFactoryProvider(this.messageFilter, this.clazz);
   }
 }
 
@@ -113,10 +113,10 @@ export class MimeTypeProvider extends Provider<string> {
   clone() {
     return new MimeTypeProvider(this.fileExtension, this.mimeType);
   }
-  static findAll(providers: Injector) {
+  static findAll(providers: Kernel) {
     return providers.queryAll<MimeTypeProvider>([MimeTypeProvider.NS, "**"].join("/"));
   }
-  static lookup(uri: string, providers: Injector): string {
+  static lookup(uri: string, providers: Kernel): string {
     const extension = uri.split(".").pop();
     const dep = providers.query<MimeTypeProvider>([MimeTypeProvider.NS, extension].join("/"));
     return dep ? dep.value : undefined;
@@ -134,7 +134,7 @@ export class MimeTypeAliasProvider extends Provider<string> {
   static getNamespace(mimeType: string) {
     return [MimeTypeAliasProvider.NS, mimeType].join("/");
   }
-  static lookup(uriOrMimeType: string, providers: Injector): string {
+  static lookup(uriOrMimeType: string, providers: Kernel): string {
     const mimeType = MimeTypeProvider.lookup(uriOrMimeType, providers);
     const dep = (mimeType && providers.query<MimeTypeAliasProvider>(this.getNamespace(mimeType))) || providers.query<MimeTypeAliasProvider>(this.getNamespace(uriOrMimeType));
     return (dep && dep.value) || mimeType || uriOrMimeType;
@@ -147,7 +147,7 @@ export class StoreProvider implements IProvider {
   private _value: Observable;
   readonly overridable = false;
   readonly id: string;
-  public owner: Injector;
+  public owner: Kernel;
 
   constructor(readonly name: string, private _clazz:{ new(): Observable }) {
     this.id = StoreProvider.getId(name);
@@ -166,14 +166,14 @@ export class StoreProvider implements IProvider {
   }
 }
 
-export function createSingletonProviderClass<T>(id: string): { getInstance(providers: Injector): T, ID: string, new(clazz: { new(...rest): T }): IProvider } {
+export function createSingletonProviderClass<T>(id: string): { getInstance(providers: Kernel): T, ID: string, new(clazz: { new(...rest): T }): IProvider } {
   return class SingletonProvider implements IProvider {
     static readonly ID: string = id;
     private _value: T;
     private _clazz: { new(...rest): T };
     readonly overridable = true;
     readonly id = id;
-    public owner: Injector;
+    public owner: Kernel;
 
     constructor(clazz: { new(...rest): T }) { this._clazz = clazz; }
 
@@ -183,7 +183,7 @@ export function createSingletonProviderClass<T>(id: string): { getInstance(provi
     clone() {
       return new SingletonProvider(this._clazz);
     }
-    static getInstance(providers: Injector): T {
+    static getInstance(providers: Kernel): T {
       const dep = providers.query<SingletonProvider>(id);
       return dep ? dep.value : undefined;
     }

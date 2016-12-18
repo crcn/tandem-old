@@ -1,5 +1,5 @@
 import {
-  Injector,
+  Kernel,
   Provider,
   MimeTypeProvider,
   ClassFactoryProvider,
@@ -28,8 +28,8 @@ export class DependencyLoaderFactoryProvider extends ClassFactoryProvider {
   create(strategy: IDependencyGraphStrategy): IDependencyLoader {
     return super.create(strategy);
   }
-  static find(mimeType: string, injector: Injector): DependencyLoaderFactoryProvider {
-    return injector.query<DependencyLoaderFactoryProvider>(this.getNamespace(mimeType));
+  static find(mimeType: string, kernel: Kernel): DependencyLoaderFactoryProvider {
+    return kernel.query<DependencyLoaderFactoryProvider>(this.getNamespace(mimeType));
   }
   clone() {
     return new DependencyLoaderFactoryProvider(this.mimeType, this.value);
@@ -46,9 +46,9 @@ export class DependencyGraphStrategyProvider extends ClassFactoryProvider {
     return [DependencyGraphStrategyProvider.ID, name].join("/");
   }
 
-  static create(strategyName: string, options: any, injector: Injector): IDependencyGraphStrategy {
-    const dependency = injector.query<DependencyGraphStrategyProvider>(this.getNamespace(strategyName));
-    return dependency ? dependency.create(options) : injector.inject(new DefaultDependencyGraphStrategy(options));
+  static create(strategyName: string, options: any, kernel: Kernel): IDependencyGraphStrategy {
+    const dependency = kernel.query<DependencyGraphStrategyProvider>(this.getNamespace(strategyName));
+    return dependency ? dependency.create(options) : kernel.inject(new DefaultDependencyGraphStrategy(options));
   }
 }
 
@@ -68,8 +68,8 @@ export class DependencyGraphProvider extends Provider<any> {
     if (this._instances[hash]) return this._instances[hash];
     return this._instances[hash] = this.owner.inject(new this.clazz(DependencyGraphStrategyProvider.create(strategyName, options, this.owner)));
   }
-  static getInstance(options: IDependencyGraphStrategyOptions, injector: Injector): DependencyGraph {
-    return injector.query<DependencyGraphProvider>(this.ID).getInstance(options);
+  static getInstance(options: IDependencyGraphStrategyOptions, kernel: Kernel): DependencyGraph {
+    return kernel.query<DependencyGraphProvider>(this.ID).getInstance(options);
   }
 }
 
@@ -84,8 +84,8 @@ export class DependencyGraphStrategyOptionsProvider extends Provider<IDependency
   clone() {
     return new DependencyGraphStrategyOptionsProvider(this.name, this.test, this.options);
   }
-  static find(uri: string, injector: Injector): IDependencyGraphStrategyOptions {
-    const provider = injector.queryAll<DependencyGraphStrategyOptionsProvider>(this.getId("**")).find(provider => provider.test(uri));
+  static find(uri: string, kernel: Kernel): IDependencyGraphStrategyOptions {
+    const provider = kernel.queryAll<DependencyGraphStrategyOptionsProvider>(this.getId("**")).find(provider => provider.test(uri));
     return provider && provider.value;
   }
 }

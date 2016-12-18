@@ -5,7 +5,7 @@ import { EditorStore } from "@tandem/editor/browser/stores";
 import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { PageOutletComponent } from "@tandem/editor/browser/components/common";
-import { Injector, RootApplicationComponent, BaseApplicationComponent, inject, Status } from "@tandem/common";
+import { Kernel, RootApplicationComponent, BaseApplicationComponent, inject, Status } from "@tandem/common";
 
 export class MainComponent extends BaseApplicationComponent<{}, {}> {
 

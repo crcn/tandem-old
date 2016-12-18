@@ -4,9 +4,9 @@ import {
   inject,
   Logger,
   loggable,
-  Injector,
+  Kernel,
   JS_MIME_TYPE,
-  InjectorProvider,
+  KernelProvider,
   ApplicationConfigurationProvider,
 } from "@tandem/common";
 
@@ -190,7 +190,7 @@ class WebpackLoaderContext {
     const uri = "webpack://" + fileName;
     // this.addDependency(uri);
     this.logger.debug(`Emitting asset ${fileName}`);
-    const fileCache = FileCacheProvider.getInstance(this.strategy.injector);
+    const fileCache = FileCacheProvider.getInstance(this.strategy.kernel);
     await fileCache.save(uri, { content });
   }
 
@@ -257,7 +257,7 @@ class WebpackDependencyLoader implements IDependencyLoader {
     const includedDependencyUris = [];
 
     const contexts = moduleLoaders.map((loader) => {
-      return this.strategy.injector.inject(new WebpackLoaderContext(
+      return this.strategy.kernel.inject(new WebpackLoaderContext(
         moduleLoaders,
         loader,
         this.strategy,
@@ -373,8 +373,8 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
 
   protected readonly logger: Logger;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   private _resolver: NodeModuleResolver;
 
@@ -410,8 +410,8 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
     });
   }
 
-  get injector() {
-    return this._injector;
+  get kernel() {
+    return this._kernel;
   }
 
   createGlobalContext() {
@@ -446,7 +446,7 @@ export class WebpackDependencyGraphStrategy implements IDependencyGraphStrategy 
    */
 
   getLoader(options: IWebpackLoaderOptions): IDependencyLoader {
-    return this._injector.inject(new WebpackDependencyLoader(this, options));
+    return this._kernel.inject(new WebpackDependencyLoader(this, options));
   }
 
   async resolve(moduleInfo: string, cwd: string): Promise<IResolvedDependencyInfo> {

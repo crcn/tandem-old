@@ -27,8 +27,8 @@ class SyntheticCSSKeyframesRuleSerializer implements ISerializer<SyntheticCSSKey
       cssRules: cssRules.map(serialize)
     };
   }
-  deserialize({ name, cssRules }: ISerializedSyntheticCSSKeyframesRule, injector) {
-    return new SyntheticCSSKeyframesRule(name, cssRules.map((cs) => deserialize(cs, injector)));
+  deserialize({ name, cssRules }: ISerializedSyntheticCSSKeyframesRule, kernel) {
+    return new SyntheticCSSKeyframesRule(name, cssRules.map((cs) => deserialize(cs, kernel)));
   }
 }
 

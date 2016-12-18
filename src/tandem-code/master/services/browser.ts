@@ -15,7 +15,7 @@ import { IOService } from "@tandem/editor/common";
 import { loggable, inject } from "@tandem/common/decorators";
 import { IStudioEditorServerConfig } from "tandem-code/master/config";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
-import { Injector, CoreApplicationService } from "@tandem/common";
+import { Kernel, CoreApplicationService } from "@tandem/common";
 import { DSUpsertRequest, LoadApplicationRequest, InitializeApplicationRequest } from "@tandem/common/messages";
 
 // TODO - split this out into separate files -- turning into a god object.
@@ -33,7 +33,7 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
 
   $didInject() {
     super.$didInject();
-    this.bus.register(this._ioService = this.injector.create(IOService, []));
+    this.bus.register(this._ioService = this.kernel.create(IOService, []));
   }
 
   async [InitializeApplicationRequest.INITIALIZE]() {

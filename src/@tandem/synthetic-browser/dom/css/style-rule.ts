@@ -169,8 +169,8 @@ class SyntheticCSSElementStyleRuleSerializer implements ISerializer<SyntheticCSS
   serialize(value: SyntheticCSSElementStyleRule) {
     return [value.selector, serialize(value.style)];
   }
-  deserialize([ selector, style ], injector): SyntheticCSSElementStyleRule {
-    return new SyntheticCSSElementStyleRule(selector, deserialize(style, injector));
+  deserialize([ selector, style ], kernel): SyntheticCSSElementStyleRule {
+    return new SyntheticCSSElementStyleRule(selector, deserialize(style, kernel));
   }
 }
 

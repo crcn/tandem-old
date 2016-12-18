@@ -7,7 +7,7 @@ import CaretComponent from "./caret";
 import {
   BrokerBus,
   startDrag,
-  Injector,
+  Kernel,
   ITokenizer,
   stringTokenizer,
   translateAbsoluteToRelativePoint
@@ -17,7 +17,7 @@ import HighlightComponent from "./highlight";
 
 export interface ITextEditorComponentProps {
   value: string;
-  injector: Injector;
+  kernel: Kernel;
   onFocus?: Function;
   onKeyDown?: Function;
   onChange?: (value: string) => any;
@@ -324,7 +324,7 @@ export class TextEditorComponent extends React.Component<ITextEditorComponentPro
 
         {
           editor.lines.map((line, i) => {
-            return <LineComponent editor={editor} line={line} key={i} injector={this.props.injector} />;
+            return <LineComponent editor={editor} line={line} key={i} kernel={this.props.kernel} />;
           })
         }
 

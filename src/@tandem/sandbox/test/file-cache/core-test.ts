@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { createSandboxTestInjector } from "@tandem/sandbox/test/helpers";
+import { createSandboxTestKernel } from "@tandem/sandbox/test/helpers";
 import {
   FileCache,
   FileCacheProvider,
@@ -11,10 +11,10 @@ import { PropertyMutation, MutationEvent } from "@tandem/common";
 describe(__filename + "#", () => {
 
   const createSandboxSingletons = (mockFiles) => {
-    const injector = createSandboxTestInjector({ mockFiles });
+    const kernel = createSandboxTestKernel({ mockFiles });
     return {
-      fileCache: FileCacheProvider.getInstance(injector),
-      fileProtocol: URIProtocolProvider.lookup("file://", injector),
+      fileCache: FileCacheProvider.getInstance(kernel),
+      fileProtocol: URIProtocolProvider.lookup("file://", kernel),
     }
   }
 

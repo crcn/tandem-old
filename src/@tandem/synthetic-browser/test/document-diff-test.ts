@@ -135,7 +135,7 @@ describe(__filename + "#", () => {
       // simulate sending diff over the network
       const watcher = new SyntheticObjectChangeWatcher<SyntheticDocument>((mutations:  Mutation<any>[]) => {
         new SyntheticObjectTreeEditor(clone).applyMutations(mutations.map((mutation) => {
-          return deserialize(JSON.parse(JSON.stringify(serialize(mutation))), browser.injector);
+          return deserialize(JSON.parse(JSON.stringify(serialize(mutation))), browser.kernel);
         }));
       }, (c) => {
         clone = c.cloneNode(true);
@@ -157,7 +157,7 @@ describe(__filename + "#", () => {
       while (changes.length) {
         const fileChanges = changes.shift() as any;
         for (const fileName in fileChanges) {
-          await URIProtocolProvider.lookup(fileName, browser.injector).write(fileName, fileChanges[fileName]);
+          await URIProtocolProvider.lookup(fileName, browser.kernel).write(fileName, fileChanges[fileName]);
         }
         await timeout();
         testClone();

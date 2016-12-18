@@ -1,4 +1,4 @@
-import { ICommand, inject, Injector, InjectorProvider } from "@tandem/common";
+import { ICommand, inject, Kernel, KernelProvider } from "@tandem/common";
 
 import { EditorStore } from "@tandem/editor/browser/stores";
 // import { DirectoryModel } from "@tandem/editor/common";
@@ -15,11 +15,11 @@ export class OpenCWDCommand implements ICommand {
   @inject(ApplicationConfigurationProvider.ID)
   private _config: IEditorBrowserConfig;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
-  async execute(action: IMessage) {
-    // this._store.cwd = this._injector.inject(new DirectoryModel(this._config.server.cwd));
+  async execute(message: IMessage) {
+    // this._store.cwd = this._kernel.inject(new DirectoryModel(this._config.server.cwd));
     // this._store.cwd.load();
   }
 }

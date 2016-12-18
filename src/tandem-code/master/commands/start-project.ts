@@ -10,7 +10,7 @@ export class StartProjectCommand extends BaseCommand {
   async execute(request: StartNewProjectRequest) {
     this.logger.info(`Starting new ${request.option.label} project in ${request.directoryPath}`);
     
-    const starter = ProjectStarterFactoryProvider.create(request.option, this.injector);
+    const starter = ProjectStarterFactoryProvider.create(request.option, this.kernel);
     const { workspaceFilePath } = await starter.start(request.directoryPath);
 
     return workspaceFilePath; 

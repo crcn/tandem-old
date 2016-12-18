@@ -2,10 +2,10 @@ import { IFileResolver } from "@tandem/sandbox";
 import { ConsoleLogService, ReceiverService } from "./services";
 import { createSandboxProviders, URIProtocolProvider } from "@tandem/sandbox";
 import { 
-  Injector, 
+  Kernel, 
   BrokerBus, 
   IProvider,
-  InjectorProvider, 
+  KernelProvider, 
   PrivateBusProvider, 
   ApplicationServiceProvider,
   ApplicationConfigurationProvider,
@@ -14,7 +14,7 @@ import { 
 export const createCommonEditorProviders = (config?: any, fileResolverClass?: { new(): IFileResolver }) => {
   return [
     new PrivateBusProvider(new BrokerBus()),
-    new InjectorProvider(),
+    new KernelProvider(),
     new ApplicationConfigurationProvider(config),
     createSandboxProviders(fileResolverClass),
     new ApplicationServiceProvider("console", ConsoleLogService),

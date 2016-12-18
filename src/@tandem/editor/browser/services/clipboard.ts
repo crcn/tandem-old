@@ -44,7 +44,7 @@ export class ClipboardService extends BaseEditorApplicationService<IEditorBrowse
   [PasteRequest.getRequestType(SYNTHETIC_OBJECT_MIME_TYPE)](request: PasteRequest) {
     request.item.getAsString((value) => {
       JSON.parse(value).forEach((serializedSyntheticObject) => {
-        const item = deserialize(serializedSyntheticObject, this.injector);
+        const item = deserialize(serializedSyntheticObject, this.kernel);
         this.bus.dispatch(new AddSyntheticObjectRequest(item));
       });
     });

@@ -10,10 +10,10 @@ class SyntheticDocumentFragmentSerializer implements ISerializer<SyntheticDocume
   serialize({ childNodes }) {
     return childNodes.map(serialize);
   }
-  deserialize(childNodes, injector) {
+  deserialize(childNodes, kernel) {
     const fragment = new SyntheticDocumentFragment();
     for (let i = 0, n = childNodes.length; i < n; i++) {
-      fragment.appendChild(deserialize(childNodes[i], injector));
+      fragment.appendChild(deserialize(childNodes[i], kernel));
     }
     return fragment;
   }

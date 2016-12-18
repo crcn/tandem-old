@@ -5,7 +5,7 @@ import { IFileResolver } from "./resolver";
 
 import {
   Provider,
-  Injector,
+  Kernel,
   FactoryProvider,
   MimeTypeProvider,
   ClassFactoryProvider,
@@ -31,8 +31,8 @@ export class ContentEditorFactoryProvider extends ClassFactoryProvider {
     return super.create(uri, content);
   }
 
-  static find(mimeType: string, injector: Injector) {
-    return injector.query<ContentEditorFactoryProvider>(this.getNamespace(mimeType));
+  static find(mimeType: string, kernel: Kernel) {
+    return kernel.query<ContentEditorFactoryProvider>(this.getNamespace(mimeType));
   }
 }
 
@@ -55,12 +55,12 @@ export class ProtocolURLResolverProvider extends ClassFactoryProvider {
   static getId(name) {
     return [this.NS, name].join("/");
   }
-  static find(url: string, injector: Injector): ProtocolURLResolverProvider {
-    const provider = injector.query<ProtocolURLResolverProvider>(this.getId(url.split(":").shift()));
+  static find(url: string, kernel: Kernel): ProtocolURLResolverProvider {
+    const provider = kernel.query<ProtocolURLResolverProvider>(this.getId(url.split(":").shift()));
     return provider;
   }
-  static resolve(url: string, injector: Injector) {
-    const provider = this.find(url, injector);
+  static resolve(url: string, kernel: Kernel) {
+    const provider = this.find(url, kernel);
     return (provider && provider.create().resolve(url)) || url;
   }
 }

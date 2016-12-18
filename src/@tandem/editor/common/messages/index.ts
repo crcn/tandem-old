@@ -90,7 +90,7 @@ addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.BROWSER, EditorFamil
   serialize({ uri, selection }: OpenFileRequest) {
     return { uri, selection };
   },
-  deserialize({ uri, selection }, injector) {
+  deserialize({ uri, selection }, kernel) {
     return new OpenFileRequest(uri, selection);
   }
 })
@@ -121,7 +121,7 @@ export class SaveAllRequest extends CoreEvent {
   serialize({ uri, selection }: SetCurrentFileRequest) {
     return { uri, selection };
   },
-  deserialize({ uri, selection }, injector) {
+  deserialize({ uri, selection }, kernel) {
     return new SetCurrentFileRequest(uri, selection);
   }
 })
@@ -173,8 +173,8 @@ export class OpenNewWorkspaceRequest implements IMessage {
   serialize({ uri, bounds, targetObject }: ImportFileRequest) {
     return [ uri, bounds, serialize(targetObject && targetObject.clone(false)) ];
   },
-  deserialize([ uri, bounds, targetObject ], injector) {
-    return new ImportFileRequest(uri, bounds, deserialize(targetObject, injector));
+  deserialize([ uri, bounds, targetObject ], kernel) {
+    return new ImportFileRequest(uri, bounds, deserialize(targetObject, kernel));
   }
 })
 export class ImportFileRequest extends CoreEvent {

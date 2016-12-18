@@ -1,5 +1,5 @@
 import { RemoteBrowserService } from "./remote-browser";
-import { Injector, ApplicationServiceProvider } from "@tandem/common";
+import { Kernel, ApplicationServiceProvider } from "@tandem/common";
 
 export function createSyntheticBrowserWorkerProviders() {
   return [

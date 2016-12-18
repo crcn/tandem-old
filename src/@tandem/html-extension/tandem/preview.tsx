@@ -17,9 +17,9 @@ import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/htm
 import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { 
-  Injector, 
+  Kernel, 
   BrokerBus, 
-  InjectorProvider, 
+  KernelProvider, 
   PrivateBusProvider, 
   ServiceApplication, 
   RootApplicationComponent, 
@@ -37,8 +37,8 @@ import {
 export const createBodyElement = reactEditorPreview(async () => {
 
   const bus = new BrokerBus();
-  const injector = new Injector(
-    new InjectorProvider(),
+  const kernel = new Kernel(
+    new KernelProvider(),
     new PrivateBusProvider(bus),
     createHTMLSandboxProviders(),
     createHTMLEditorBrowserProviders(),
@@ -111,11 +111,11 @@ export const createBodyElement = reactEditorPreview(async () => {
     })
   );
 
-  const app = new ServiceApplication(injector);
+  const app = new ServiceApplication(kernel);
   await app.initialize();
 
-  const workspace = injector.inject(new Workspace());
-  const browser = workspace.browser = new SyntheticBrowser(injector, new NoopRenderer());
+  const workspace = kernel.inject(new Workspace());
+  const browser = workspace.browser = new SyntheticBrowser(kernel, new NoopRenderer());
   await browser.open({ uri: "index.html" });
 
   const document = browser.document;
@@ -125,7 +125,7 @@ export const createBodyElement = reactEditorPreview(async () => {
   workspace.select([document.querySelector(".container")]);
 
 
-  return <RootApplicationComponent bus={bus} injector={injector}>
+  return <RootApplicationComponent bus={bus} kernel={kernel}>
     <div className="td-workspace">
       <WorkspaceTitlebarComponent />
       <div className="td-workspace-mid">

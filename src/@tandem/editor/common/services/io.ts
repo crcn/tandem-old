@@ -28,10 +28,10 @@ export class IOService<T extends  IEditorCommonConfig> extends CoreApplicationS
     this.logger.info("Client connected");
 
     // setup the bus which wil facilitate in all
-    // transactions between the remote service
+    // transmessages between the remote service
     const remoteBus = new SocketIOBus({ family: this.config.family, connection, testMessage: filterFamilyMessage }, {
       dispatch: (message: IMessage) => {
-        // attach a flag so that the action does not get dispatched again
+        // attach a flag so that the message does not get dispatched again
         return this.bus.dispatch(Object.assign(message, { $$remote: true }));
       }
     }, { serialize, deserialize });

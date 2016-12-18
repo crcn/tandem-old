@@ -24,7 +24,7 @@ export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrows
 
   [InitializeApplicationRequest.INITIALIZE]() {
     this._manager = new KeyBindingManager(this.bus, document.body);
-    for (const keyBindingProvider of GlobalKeyBindingProvider.findAll(this.injector)) {
+    for (const keyBindingProvider of GlobalKeyBindingProvider.findAll(this.kernel)) {
       this._addKeyBinding(keyBindingProvider);
     }
   }

@@ -1,5 +1,5 @@
 import { ISandboxDependencyEvaluator, sandboxDependencyEvaluatorType } from "./index";
-import { ClassFactoryProvider, Injector } from "@tandem/common";
+import { ClassFactoryProvider, Kernel } from "@tandem/common";
 
 export class SandboxModuleEvaluatorFactoryProvider extends ClassFactoryProvider {
   static readonly ID = "sandboxModuleEvaluator";
@@ -19,7 +19,7 @@ export class SandboxModuleEvaluatorFactoryProvider extends ClassFactoryProvider 
     return super.create();
   }
 
-  static find(mimeType: string, injector: Injector) {
-    return injector.query<SandboxModuleEvaluatorFactoryProvider>(this.getNamespace(mimeType));
+  static find(mimeType: string, kernel: Kernel) {
+    return kernel.query<SandboxModuleEvaluatorFactoryProvider>(this.getNamespace(mimeType));
   }
 }

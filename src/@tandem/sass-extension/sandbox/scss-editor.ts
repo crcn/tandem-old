@@ -3,10 +3,10 @@ import syntax = require("postcss-scss");
 import {
   inject,
   Mutation,
-  Injector,
+  Kernel,
   PropertyMutation,
   SetValueMutation,
-  InjectorProvider,
+  KernelProvider,
   MimeTypeProvider,
   MoveChildMutation,
   sourcePositionEquals,

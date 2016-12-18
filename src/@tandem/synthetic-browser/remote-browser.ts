@@ -11,7 +11,7 @@ import {
   loggable,
   Mutation,
   bindable,
-  Injector,
+  Kernel,
   CoreEvent,
   serialize,
   flattenTree,
@@ -44,8 +44,8 @@ import {
       data: serialize(data)
     }
   },
-  deserialize({ type, data }: RemoteBrowserDocumentMessage, injector: Injector) {
-    return new RemoteBrowserDocumentMessage(type, deserialize(data, injector));
+  deserialize({ type, data }: RemoteBrowserDocumentMessage, kernel: Kernel) {
+    return new RemoteBrowserDocumentMessage(type, deserialize(data, kernel));
   }
 })
 export class RemoteBrowserDocumentMessage extends CoreEvent {
@@ -69,9 +69,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   @bindable(true)
   public status: Status = new Status(Status.IDLE);
 
-  constructor(injector: Injector, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
-    super(injector, renderer, parent);
-    this._bus = PrivateBusProvider.getInstance(injector);
+  constructor(kernel: Kernel, renderer?: ISyntheticDocumentRenderer, parent?: ISyntheticBrowser) {
+    super(kernel, renderer, parent);
+    this._bus = PrivateBusProvider.getInstance(kernel);
   }
 
   async open2(options: ISyntheticBrowserOpenOptions) {
@@ -88,7 +88,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   onRemoteBrowserEvent({ payload }) {
 
-    const event = deserialize(payload, this.injector) as CoreEvent;
+    const event = deserialize(payload, this.kernel) as CoreEvent;
 
     this.logger.debug(`Received event: ${event.type}`);
 
@@ -150,7 +150,7 @@ export class RemoteBrowserService extends BaseApplicationService {
       const id = JSON.stringify(event.options);
 
       // TODO - memoize opened browser if same session is up
-      const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.injector, new NoopRenderer()));
+      const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.kernel, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
 
       const logger = this.logger.createChild(`${event.options.uri} `);

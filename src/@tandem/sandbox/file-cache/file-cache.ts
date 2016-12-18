@@ -3,11 +3,11 @@ import { FileCacheSynchronizer } from "./synchronizer";
 
 import {
   inject,
-  Injector,
+  Kernel,
   IBrokerBus,
   Observable,
   MimeTypeProvider,
-  InjectorProvider,
+  KernelProvider,
   PrivateBusProvider,
   ActiveRecordCollection,
 } from "@tandem/common";
@@ -18,15 +18,15 @@ import { FileCacheItem, IFileCacheItemData, createDataUrl } from "./item";
 
 export const FILE_CACHE_COLLECTION_NAME = "fileCache";
 
-export const getAllUnsavedFiles = (injector: Injector) => {
+export const getAllUnsavedFiles = (kernel: Kernel) => {
   return new Promise<FileCacheItem[]>((resolve, reject) => {
     const chunks: IFileCacheItemData[] = [];
-    PrivateBusProvider.getInstance(injector).dispatch(new DSFindRequest(FILE_CACHE_COLLECTION_NAME, { synchronized: false }, true)).readable.pipeTo(new WritableStream<IFileCacheItemData>({
+    PrivateBusProvider.getInstance(kernel).dispatch(new DSFindRequest(FILE_CACHE_COLLECTION_NAME, { synchronized: false }, true)).readable.pipeTo(new WritableStream<IFileCacheItemData>({
       write(chunk) {
         chunks.push(chunk);
       },
       close() {
-        resolve(chunks.map((item) => injector.inject(new FileCacheItem(item, FILE_CACHE_COLLECTION_NAME))))
+        resolve(chunks.map((item) => kernel.inject(new FileCacheItem(item, FILE_CACHE_COLLECTION_NAME))))
       },
       abort: reject
     }));
@@ -37,8 +37,8 @@ export const getAllUnsavedFiles = (injector: Injector) => {
 // TODO - remove files here after TTL
 export class FileCache extends Observable {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
@@ -51,8 +51,8 @@ export class FileCache extends Observable {
   }
 
   public $didInject() {
-    this._collection = ActiveRecordCollection.create(this.collectionName, this._injector, (source: IFileCacheItemData) => {
-      return this._injector.inject(new FileCacheItem(source, this.collectionName));
+    this._collection = ActiveRecordCollection.create(this.collectionName, this._kernel, (source: IFileCacheItemData) => {
+      return this._kernel.inject(new FileCacheItem(source, this.collectionName));
     });
     this._collection.load();
     this._collection.sync();
@@ -79,7 +79,7 @@ export class FileCache extends Observable {
     
 
     if (!fileCache) {
-      const type = data && data.type || MimeTypeProvider.lookup(sourceUri, this._injector);;
+      const type = data && data.type || MimeTypeProvider.lookup(sourceUri, this._kernel);;
       return this.collection.create({
         type: type,
         sourceUri: sourceUri,
@@ -120,6 +120,6 @@ export class FileCache extends Observable {
    */
 
   syncWithLocalFiles() {
-    return this._synchronizer || (this._synchronizer = this._injector.inject(new FileCacheSynchronizer(this, this._bus)));
+    return this._synchronizer || (this._synchronizer = this._kernel.inject(new FileCacheSynchronizer(this, this._bus)));
   }
 }

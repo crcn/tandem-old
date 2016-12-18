@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Injector } from "@tandem/common";
+import { Kernel } from "@tandem/common";
 import {
   Sandbox,
   DependencyGraph,
@@ -11,7 +11,7 @@ import {
   IMockFiles,
   evaluateDependency,
   createTestDependencyGraph,
-  createSandboxTestInjector,
+  createSandboxTestKernel,
   ISandboxTestProviderOptions,
 } from "@tandem/sandbox/test";
 

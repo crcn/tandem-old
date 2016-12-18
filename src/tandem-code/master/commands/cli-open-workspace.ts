@@ -13,7 +13,7 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
   async execute() {
     let uri = this.config.argv._[0];
 
-    const protocol = uri && URIProtocolProvider.lookup(uri, this.injector);
+    const protocol = uri && URIProtocolProvider.lookup(uri, this.kernel);
 
     // scan the CWD for any tandem files
     if (uri != null && !(await protocol.fileExists(uri))) {

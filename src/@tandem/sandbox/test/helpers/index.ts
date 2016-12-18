@@ -1,14 +1,14 @@
 import path =  require("path");
 import { 
   inject,
-  Injector,
+  Kernel,
   Provider,
   IProvider,
   UpsertBus,
   BrokerBus,
   IDisposable,
   MimeTypeProvider,
-  InjectorProvider,
+  KernelProvider,
   PrivateBusProvider,
 } from "@tandem/common";
 import { MemoryDataStore, ReadableStream } from "@tandem/mesh";
@@ -58,8 +58,8 @@ export class MockFileURIProtocol extends URIProtocol {
   @inject(MockFilesProvider.ID)
   private _mockFiles: IMockFiles;
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   private _watchers2: any;
 
@@ -83,7 +83,7 @@ export class MockFileURIProtocol extends URIProtocol {
       // simulated latency
       setTimeout(() => {
         if (content) {
-          resolve({ type: MimeTypeProvider.lookup(uri, this._injector), content: content });
+          resolve({ type: MimeTypeProvider.lookup(uri, this._kernel), content: content });
         } else {
           reject(new Error(`Mock file ${uri} not found.`));
         }
@@ -140,14 +140,14 @@ export const createTestSandboxProviders = (options: ISandboxTestProviderOptions 
   ];
 }
 
-export const createSandboxTestInjector = (options: ISandboxTestProviderOptions = {}) => {
-  const injector = new Injector();
+export const createSandboxTestKernel = (options: ISandboxTestProviderOptions = {}) => {
+  const kernel = new Kernel();
   const bus = new BrokerBus();
   bus.register(new UpsertBus(new MemoryDataStore()));
 
-  injector.register(
+  kernel.register(
     options.providers || [],
-    new InjectorProvider(),
+    new KernelProvider(),
     new PrivateBusProvider(bus),
     createJavaScriptSandboxProviders(),
     createTestSandboxProviders(options),
@@ -156,19 +156,19 @@ export const createSandboxTestInjector = (options: ISandboxTestProviderOptions =
   );
 
   if (options.fileCacheSync !== false) {
-    FileCacheProvider.getInstance(injector).syncWithLocalFiles();
+    FileCacheProvider.getInstance(kernel).syncWithLocalFiles();
   }
 
-  return injector;
+  return kernel;
 }
 
-export const createTestDependencyGraph = (graphOptions: IDependencyGraphStrategyOptions, injectorOptions: ISandboxTestProviderOptions) => {
-  const injector = createSandboxTestInjector(injectorOptions);
-  return DependencyGraphProvider.getInstance(graphOptions, injector);
+export const createTestDependencyGraph = (graphOptions: IDependencyGraphStrategyOptions, kernelOptions: ISandboxTestProviderOptions) => {
+  const kernel = createSandboxTestKernel(kernelOptions);
+  return DependencyGraphProvider.getInstance(graphOptions, kernel);
 }
 
 export const evaluateDependency = async (dependency: Dependency) => {
-  const sandbox = new Sandbox(dependency["_injector"]);
+  const sandbox = new Sandbox(dependency["_kernel"]);
   await sandbox.open(dependency);
   return sandbox.exports;
 }

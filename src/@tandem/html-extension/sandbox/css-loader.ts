@@ -9,7 +9,7 @@ import * as path from "path";
 import sm = require("source-map");
 import postcss = require("postcss");
 import { URIProtocolProvider } from "@tandem/sandbox"; 
-import { CSS_MIME_TYPE, inject, Injector, InjectorProvider } from "@tandem/common";
+import { CSS_MIME_TYPE, inject, Kernel, KernelProvider } from "@tandem/common";
 
 import {
   parseCSS,
@@ -19,8 +19,8 @@ const hasProtocol = (value) => /^\w+:\/\//.test(value);
 
 export class CSSDependencyLoader extends BaseDependencyLoader {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
   
   
   async load(dependency: Dependency, { type, content, map }): Promise<IDependencyLoaderResult> {
@@ -33,7 +33,7 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
 
     if (!map && sourceMappingUrl) {
       const resolveSourceMappingUrl = (await this.strategy.resolve(sourceMappingUrl, uri)).uri;
-      const protocol = URIProtocolProvider.lookup(resolveSourceMappingUrl, this._injector);
+      const protocol = URIProtocolProvider.lookup(resolveSourceMappingUrl, this._kernel);
       const result = await protocol.read(resolveSourceMappingUrl);
       map = JSON.parse(String(result.content));
     }

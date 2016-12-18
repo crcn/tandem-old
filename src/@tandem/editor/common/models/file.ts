@@ -4,11 +4,11 @@
 //   inject,
 //   bubble,
 //   bindable,
-//   Injector,
+//   Kernel,
 //   TreeNode,
 //   IInjectable,
 //   BubbleDispatcher,
-//   InjectorProvider,
+//   KernelProvider,
 //   ObservableCollection,
 // } from "@tandem/common";
 // import { WritableStream } from "@tandem/mesh";
@@ -18,8 +18,8 @@
 //   @inject(FileSystemProvider.ID)
 //   protected _fileSystem: IFileSystem;
 
-//   @inject(InjectorProvider.ID)
-//   protected _injector: Injector;
+//   @inject(KernelProvider.ID)
+//   protected _kernel: Kernel;
 
 //   constructor(readonly path: string) {
 //     super();
@@ -31,7 +31,7 @@
 
 //   onChildAdded(child: BaseFSModel, index: number) {
 //     super.onChildAdded(child, index);
-//     if (this._injector) this._injector.inject(child);
+//     if (this._kernel) this._kernel.inject(child);
 //     child.observe(new BubbleDispatcher(this));
 //   }
 // }

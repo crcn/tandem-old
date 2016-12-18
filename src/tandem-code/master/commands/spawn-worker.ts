@@ -7,7 +7,7 @@ import PACKAGE =  require("tandem-code/package")
 declare const __root: any;
 
 export class SpawnWorkerCommand extends  BaseStudioMasterCommand {
-  execute(action: IMessage) {
+  execute(message: IMessage) {
 
     const root = (typeof __root === "undefined" ? __dirname + "/../../" : __root);
 

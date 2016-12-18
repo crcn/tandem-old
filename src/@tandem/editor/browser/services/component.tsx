@@ -27,7 +27,7 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
     }
   }
 
-  onRootModelAction(action: CoreEvent) {
+  onRootModelAction(message: CoreEvent) {
     this.requestRender();
   }
 
@@ -43,7 +43,7 @@ export class ComponentService extends CoreApplicationService<IEditorBrowserConfi
 
   render = () => {
     this._rendering = false;
-    ReactDOM.render(<RootComponent bus={this.bus} injector={this.injector} />, this.config.element);
+    ReactDOM.render(<RootComponent bus={this.bus} kernel={this.kernel} />, this.config.element);
     if (this._shouldRenderAgain) this.requestRender();
   }
 }

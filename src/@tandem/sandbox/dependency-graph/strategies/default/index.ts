@@ -20,9 +20,9 @@ import {
 
 import {
   inject,
-  Injector,
+  Kernel,
   hasURIProtocol,
-  InjectorProvider,
+  KernelProvider,
   MimeTypeAliasProvider,
 } from "@tandem/common";
 
@@ -35,8 +35,8 @@ export abstract class BaseDependencyLoader implements IDependencyLoader {
 }
 
 export class DefaultDependencyLoader implements IDependencyLoader {
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   constructor(readonly stragegy: DefaultDependencyGraphStrategy, readonly options: any) { }
 
@@ -51,7 +51,7 @@ export class DefaultDependencyLoader implements IDependencyLoader {
     // This ensures that they don't get re-used.
     const used = {};
 
-    while(current.type && (loaderProvider = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._injector), this._injector)) && !used[loaderProvider.id]) {
+    while(current.type && (loaderProvider = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._kernel), this._kernel)) && !used[loaderProvider.id]) {
       used[loaderProvider.id] = true;
       current = await loaderProvider.create(this.stragegy).load(dependency, current);
       if (current.importedDependencyUris) {
@@ -70,14 +70,14 @@ export class DefaultDependencyLoader implements IDependencyLoader {
 
 export class DefaultDependencyGraphStrategy implements IDependencyGraphStrategy {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   constructor(readonly options: IDependencyGraphStrategyOptions) {
   }
 
   getLoader(loaderOptions: any): IDependencyLoader {
-    return this._injector.inject(new DefaultDependencyLoader(this, loaderOptions));
+    return this._kernel.inject(new DefaultDependencyLoader(this, loaderOptions));
   }
 
   createGlobalContext() {

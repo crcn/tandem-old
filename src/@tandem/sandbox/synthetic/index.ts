@@ -134,8 +134,8 @@ export class SyntheticObjectSerializer implements ISerializer<ISyntheticObject, 
     ] || [];
     return [this.childSerializer.serialize(value), source, value.$uid];
   }
-  deserialize([child, [uri, kind, sline, scolumn, eline, ecolumn], uid], injector, ctor) {
-    const obj = this.childSerializer.deserialize(child, injector, ctor);
+  deserialize([child, [uri, kind, sline, scolumn, eline, ecolumn], uid], kernel, ctor) {
+    const obj = this.childSerializer.deserialize(child, kernel, ctor);
     obj.$source = sline && {
       uri: uri,
       kind: kind,

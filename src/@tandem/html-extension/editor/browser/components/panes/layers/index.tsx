@@ -92,7 +92,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
 
     if (attributes["data-td-hide-layer"]) return null;
     
-    const layerLabelProvider = ElementLayerLabelProvider.find(tagName, this.injector);
+    const layerLabelProvider = ElementLayerLabelProvider.find(tagName, this.kernel);
     
     if (layerLabelProvider) {
       return layerLabelProvider.create({ element, renderOuterLabel });

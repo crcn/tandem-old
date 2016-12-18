@@ -1,4 +1,4 @@
-import { ICommand, inject, InjectorProvider, Injector } from "@tandem/common";
+import { ICommand, inject, KernelProvider, Kernel } from "@tandem/common";
 import { IMessage } from "@tandem/mesh";
 import { SyntheticDOMNode, DOMNodeType, SyntheticDocument, SVG_XMLNS, HTML_XMLNS } from "@tandem/synthetic-browser";
 import { EditorStore } from "@tandem/editor/browser/stores";
@@ -15,8 +15,8 @@ export class UpdateMergedRuleCommand implements ICommand {
   private _htmlStore: HTMLExtensionStore;
 
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   execute(message: IMessage) {
     if (this._htmlStore.mergedStyleRule) {
@@ -29,7 +29,7 @@ export class UpdateMergedRuleCommand implements ICommand {
       const item = selection[0] as SyntheticDOMNode;
       if ([SVG_XMLNS, HTML_XMLNS].indexOf(item.namespaceURI) !== -1) {
         try {
-          this._htmlStore.mergedStyleRule = this._injector.inject(new MergedCSSStyleRule(item as any));
+          this._htmlStore.mergedStyleRule = this._kernel.inject(new MergedCSSStyleRule(item as any));
         } catch(e) {
           console.error(e.stack);
         }

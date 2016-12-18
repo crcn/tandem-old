@@ -3,7 +3,7 @@ import { IInjectable } from "@tandem/common";
 
 export const editorComponentContextTypes = {
   bus: React.PropTypes.object.isRequired,
-  injector: React.PropTypes.object.isRequired
+  kernel: React.PropTypes.object.isRequired
 };
 
 export class BaseEditorComponent<T, U> extends React.Component<T, U> {

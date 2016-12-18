@@ -13,7 +13,7 @@ import {
   bindable,
   loggable,
   isMaster,
-  Injector,
+  Kernel,
   Observable,
   IInjectable,
   IObservable,
@@ -25,7 +25,7 @@ import {
   BubbleDispatcher,
   PropertyMutation,
   MimeTypeProvider,
-  InjectorProvider,
+  KernelProvider,
   PrivateBusProvider,
   MetadataChangeEvent,
   waitForPropertyChange,
@@ -62,7 +62,7 @@ export interface ISyntheticBrowser extends IObservable {
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
   document: SyntheticDocument;
-  injector: Injector;
+  kernel: Kernel;
   location: SyntheticLocation;
 }
 
@@ -92,11 +92,11 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   
   readonly uid = generateSyntheticUID();
 
-  constructor(protected _injector: Injector, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
+  constructor(protected _kernel: Kernel, renderer?: ISyntheticDocumentRenderer, readonly parent?: ISyntheticBrowser) {
     super();
-    _injector.inject(this);
+    _kernel.inject(this);
 
-    this._renderer = _injector.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
+    this._renderer = _kernel.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
     this._renderer.observe(new BubbleDispatcher(this));
     this._documentObserver = new BubbleDispatcher(this);
   }
@@ -107,8 +107,8 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     return this.window && this.window.document;
   }
 
-  get injector() {
-    return this._injector;
+  get kernel() {
+    return this._kernel;
   }
 
   get location() {
@@ -165,7 +165,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   $didInject() {
     super.$didInject();
-    this._sandbox    = new Sandbox(this._injector, this.createSandboxGlobals.bind(this));
+    this._sandbox    = new Sandbox(this._kernel, this.createSandboxGlobals.bind(this));
     watchProperty(this._sandbox, "status", this.onSandboxStatusChange.bind(this));
     watchProperty(this._sandbox, "exports", this.onSandboxExportsChange.bind(this));
     watchProperty(this._sandbox, "global", this.setWindow.bind(this));
@@ -187,7 +187,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
     const uriParts = Url.parse(uri);
     const dirname = uriParts.pathname && path.dirname(uriParts.pathname) || ".";
     strategyOptions.rootDirectoryUri = strategyOptions.rootDirectoryUri || (uriParts.protocol || "file:") + "//" + (uriParts.host || (dirname === "." ? "/" : dirname));
-    const graph = this._graph = DependencyGraphProvider.getInstance(strategyOptions, this._injector);
+    const graph = this._graph = DependencyGraphProvider.getInstance(strategyOptions, this._kernel);
     this._entry = await graph.getDependency(await graph.resolve(uri));
     await this._sandbox.open(this._entry);
     timerLogger.stop(`Loaded ${uri}`);
@@ -219,7 +219,7 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
   }
 
   private _registerElementClasses(document: SyntheticDocument) {
-    for (const dependency of SyntheticDOMElementClassProvider.findAll(this._injector)) {
+    for (const dependency of SyntheticDOMElementClassProvider.findAll(this._kernel)) {
       document.registerElementNS(dependency.xmlns, dependency.tagName, dependency.value);
     }
   }

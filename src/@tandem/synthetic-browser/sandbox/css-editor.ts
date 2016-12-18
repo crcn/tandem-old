@@ -3,8 +3,8 @@ import { kebabCase } from "lodash";
 import {
   CoreEvent,
   inject,
-  Injector,
-  InjectorProvider,
+  Kernel,
+  KernelProvider,
   sourcePositionEquals,
   MimeTypeProvider,
   Mutation,
@@ -40,8 +40,8 @@ import {
 // to SASS
 export class CSSEditor extends BaseContentEditor<postcss.Node> {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   [SyntheticCSSElementStyleRuleMutationTypes.SET_RULE_SELECTOR](node: postcss.Rule, { target, newValue }: SetValueMutation<any>) {
     const source = target.source;

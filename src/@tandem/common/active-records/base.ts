@@ -7,7 +7,7 @@ import { ISerializable } from "@tandem/common/serialize";
 import { IBrokerBus } from "@tandem/common/dispatchers";
 import { Observable, IObservable } from "@tandem/common/observable";
 import { CallbackDispatcher, ParallelBus, readOneChunk, DSFindRequest, DSInsertRequest, DSUpdateRequest, DSRemoveRequest, IMessage } from "@tandem/mesh";
-import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
+import { Kernel, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   PostDSMessage,
   DisposeEvent,

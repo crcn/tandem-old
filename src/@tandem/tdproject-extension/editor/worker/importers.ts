@@ -3,7 +3,7 @@ import path =  require("path");
 import { SyntheticDOMElement, SyntheticWindow } from "@tandem/synthetic-browser";
 import { URIProtocolProvider, ApplyFileEditRequest } from "@tandem/sandbox";
 import { IFileImporter, ImportFileRequest, PreviewLoaderProvider, OpenFileRequest } from "@tandem/editor/worker";
-import { Injector, InjectorProvider, PrivateBusProvider, IBrokerBus, inject, BoundingRect } from "@tandem/common";
+import { Kernel, KernelProvider, PrivateBusProvider, IBrokerBus, inject, BoundingRect } from "@tandem/common";
 
 export interface IPreviewConfig {
   renderFunction: string;
@@ -16,8 +16,8 @@ export interface IPreviewConfig {
 // TODO - open new workspace if dnd file is .tdm mime type
 export class TDRootFileImporter implements IFileImporter {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
@@ -28,7 +28,7 @@ export class TDRootFileImporter implements IFileImporter {
     // TODO: temporary fix for DNDd files
     uri = uri.replace(/^file:\/\//g, "");
 
-    let { type, content } = await URIProtocolProvider.lookup(uri, this._injector).read(uri);
+    let { type, content } = await URIProtocolProvider.lookup(uri, this._kernel).read(uri);
 
     content = String(content);
 
@@ -38,7 +38,7 @@ export class TDRootFileImporter implements IFileImporter {
       return this.importPreview(uri, element, bounds);
     }
 
-    const previewLoader = PreviewLoaderProvider.find(uri, this._injector);
+    const previewLoader = PreviewLoaderProvider.find(uri, this._kernel);
 
     if (!previewLoader) {
       throw new Error(`Cannot create preview file`);
@@ -46,7 +46,7 @@ export class TDRootFileImporter implements IFileImporter {
 
     const preview = await previewLoader.loadFilePreview(request);
 
-    const previewURIProtocol = URIProtocolProvider.lookup(preview.uri, this._injector);
+    const previewURIProtocol = URIProtocolProvider.lookup(preview.uri, this._kernel);
 
     if (!(await previewURIProtocol.fileExists(preview.uri))) {
       await previewURIProtocol.write(preview.uri, preview.content);

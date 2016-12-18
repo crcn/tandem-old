@@ -5,8 +5,8 @@ import { serializable, serialize, deserialize } from "../serialize";
   serialize({ type, data }: Status) {
     return { type, data: serialize(data) };
   },
-  deserialize({ type, data }, injector): Status {
-    return new Status(type, deserialize(data, injector));
+  deserialize({ type, data }, kernel): Status {
+    return new Status(type, deserialize(data, kernel));
   }
 })
 export class Status {

@@ -78,8 +78,8 @@ class SyntheticCSSUnknownAtRuleSerializer implements ISerializer<SyntheticCSSUnk
   serialize({ atRuleName, params, cssRules }: SyntheticCSSUnknownGroupAtRule) {
     return [atRuleName, params, cssRules.map(serialize)]
   }
-  deserialize([ atRuleName, params, cssRules ], injector) {
-    return new SyntheticCSSUnknownGroupAtRule(atRuleName, params, cssRules.map((cs) => deserialize(cs, injector)));
+  deserialize([ atRuleName, params, cssRules ], kernel) {
+    return new SyntheticCSSUnknownGroupAtRule(atRuleName, params, cssRules.map((cs) => deserialize(cs, kernel)));
   }
 }
 

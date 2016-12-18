@@ -11,7 +11,7 @@ export class SetMenuCommand extends BaseStudioEditorBrowserCommand {
     const { remote } = require("electron");
     const { Menu } = remote;
 
-    const root = this.injector.inject(new WebMenuItem(state[EditorRouteNames.ROOT]));
+    const root = this.kernel.inject(new WebMenuItem(state[EditorRouteNames.ROOT]));
     root.initialize();
 
     Menu.setApplicationMenu(Menu.buildFromTemplate(root.toMenuTemplate().submenu));

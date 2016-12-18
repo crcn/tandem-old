@@ -1,6 +1,6 @@
 import { inject } from "./inject";
 import { expect } from "chai";
-import { Injector, ClassFactoryProvider, Provider, IInjectable } from "../ioc";
+import { Kernel, ClassFactoryProvider, Provider, IInjectable } from "../ioc";
 
 describe(__filename + "#", () => {
   it("can inject a simple string into a name prop", () => {
@@ -9,12 +9,12 @@ describe(__filename + "#", () => {
       public name: string;
     }
 
-    const injector = new Injector(
+    const kernel = new Kernel(
       new Provider<string>("name", "bob"),
       new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = injector.query<ClassFactoryProvider>("person");
+    const personDep = kernel.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("bob");
   });
 
@@ -25,12 +25,12 @@ describe(__filename + "#", () => {
       public name: string;
     }
 
-    const injector = new Injector(
+    const kernel = new Kernel(
       new Provider<string>("name", "bob"),
       new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = injector.query<ClassFactoryProvider>("person");
+    const personDep = kernel.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("BOB");
   });
 
@@ -42,12 +42,12 @@ describe(__filename + "#", () => {
 
       }
     }
-    const injector = new Injector(
+    const kernel = new Kernel(
       new Provider<string>("name", "joe"),
       new ClassFactoryProvider("person", Person)
     );
 
-    const personDep = injector.query<ClassFactoryProvider>("person");
+    const personDep = kernel.query<ClassFactoryProvider>("person");
     expect(personDep.create().name).to.equal("joe");
   });
 });

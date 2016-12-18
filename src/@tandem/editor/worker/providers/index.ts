@@ -1,7 +1,7 @@
 import { IDispatcher } from "@tandem/mesh";
 import { ImportFileRequest } from "@tandem/editor/common/messages";
 import { ISyntheticObject, IDependencyLoader } from "@tandem/sandbox";
-import { ClassFactoryProvider, Injector, Provider } from "@tandem/common";
+import { ClassFactoryProvider, Kernel, Provider } from "@tandem/common";
 
 export interface IFileImporter {
   importFile(request: ImportFileRequest): Promise<any>;
@@ -22,8 +22,8 @@ export class FileImporterProvider extends ClassFactoryProvider {
     return new FileImporterProvider(this.name, this.test, this.importerClass);
   }
 
-  static findByDropTarget(request: ImportFileRequest, injector: Injector) {
-    const importers = injector.queryAll<FileImporterProvider>(this.getId("**"));
+  static findByDropTarget(request: ImportFileRequest, kernel: Kernel) {
+    const importers = kernel.queryAll<FileImporterProvider>(this.getId("**"));
     const importer = importers.find(importer => importer.test(request));
     return importer;
   }
@@ -49,7 +49,7 @@ export class SelfPreviewLoader implements IFilePreviewLoader {
 export class PreviewLoaderProvider extends ClassFactoryProvider {
   static readonly NS = "filePreviewLoaders";
 
-  constructor(readonly name: string, readonly test: (uri: string, injector?: Injector) => boolean, readonly loaderClass: { new(): IFilePreviewLoader }) {
+  constructor(readonly name: string, readonly test: (uri: string, kernel?: Kernel) => boolean, readonly loaderClass: { new(): IFilePreviewLoader }) {
     super(PreviewLoaderProvider.getId(name), loaderClass);
   }
 
@@ -65,9 +65,9 @@ export class PreviewLoaderProvider extends ClassFactoryProvider {
     return new PreviewLoaderProvider(this.name, this.test, this.loaderClass);
   }
 
-  static find(uri: string, injector: Injector) {
-    const providers = injector.queryAll<PreviewLoaderProvider>(this.getId("**"));
-    const provider = providers.find(provider => provider.test(uri, injector));
+  static find(uri: string, kernel: Kernel) {
+    const providers = kernel.queryAll<PreviewLoaderProvider>(this.getId("**"));
+    const provider = providers.find(provider => provider.test(uri, kernel));
     return provider && provider.create();
   }
 }

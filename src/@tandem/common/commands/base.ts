@@ -2,9 +2,9 @@ import { inject, loggable } from "@tandem/common/decorators";
 import { IBus, IMessage } from "@tandem/mesh";
 import { IBrokerBus } from "../dispatchers";
 import {
-  Injector,
+  Kernel,
   IInjectable,
-  InjectorProvider,
+  KernelProvider,
   PrivateBusProvider,
 } from "@tandem/common/ioc";
 
@@ -22,8 +22,8 @@ export abstract class BaseCommand implements ICommand, IInjectable {
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
 
-  @inject(InjectorProvider.ID)
-  protected injector: Injector;
+  @inject(KernelProvider.ID)
+  protected kernel: Kernel;
 
   abstract execute(message: IMessage);
 }

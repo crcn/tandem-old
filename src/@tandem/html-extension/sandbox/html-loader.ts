@@ -14,11 +14,11 @@ import {
 
 import {
   inject,
-  Injector,
+  Kernel,
   HTML_MIME_TYPE,
   ISourceLocation,
   ISourcePosition,
-  InjectorProvider,
+  KernelProvider,
 } from "@tandem/common";
 
 import {
@@ -33,8 +33,8 @@ const hasProtocol = (value) => !!/\w+:\/\//.test(value);
 // if there's a manipulated href / src attribute that shares the same line with another one.
 export class HTMLDependencyLoader extends BaseDependencyLoader {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   async load(dependency: Dependency, { type, content }): Promise<IDependencyLoaderResult> {
 
@@ -104,8 +104,8 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
       ];
 
 
-      const textMimeType = ElementTextContentMimeTypeProvider.lookup(expression, self._injector);
-      const textLoaderProvider = textMimeType && DependencyLoaderFactoryProvider.find(textMimeType, self._injector);
+      const textMimeType = ElementTextContentMimeTypeProvider.lookup(expression, self._kernel);
+      const textLoaderProvider = textMimeType && DependencyLoaderFactoryProvider.find(textMimeType, self._kernel);
 
 
       if (textLoaderProvider && elementExpression.childNodes.length) {

@@ -120,7 +120,7 @@ describe(__filename + "#", () => {
     expect(p1.lastChild).to.equal(c2);
   });
 
-  it("can remove a child in the removing action without removing other parent children", () => {
+  it("can remove a child in the removing message without removing other parent children", () => {
     const p1 = new TreeNode();
     const c1 = new TreeNode();
     const c2 = new TreeNode();

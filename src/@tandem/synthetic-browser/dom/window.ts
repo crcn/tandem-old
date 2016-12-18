@@ -53,7 +53,7 @@ export class SyntheticConsole {
   }
 }
 
-// TODO - register element types from injector
+// TODO - register element types from kernel
 export class SyntheticDOMImplementation {
   constructor(private _window: SyntheticWindow) {
 
@@ -134,10 +134,10 @@ export class SyntheticWindow extends Observable {
   constructor(location?: SyntheticLocation, readonly browser?: ISyntheticBrowser, document?: SyntheticDocument) {
     super();
 
-    const injector = browser && browser.injector;
+    const kernel = browser && browser.kernel;
 
 
-    const bus = injector && PrivateBusProvider.getInstance(injector) || noopDispatcherInstance;
+    const bus = kernel && PrivateBusProvider.getInstance(kernel) || noopDispatcherInstance;
     
     // in case proto gets set - don't want the original to get fudged
     // but doesn't work -- element instanceof HTMLElement 
@@ -148,7 +148,7 @@ export class SyntheticWindow extends Observable {
 
     this.WebSocket = class WebSocket { }
 
-    if (injector) injector.inject(xhrServer);
+    if (kernel) kernel.inject(xhrServer);
 
     this.XMLHttpRequest = class extends SyntheticXMLHttpRequest { 
       constructor() {

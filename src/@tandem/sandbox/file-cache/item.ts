@@ -6,13 +6,13 @@ import { URIProtocolProvider, URIProtocol, IURIProtocolReadResult  } from "../ur
 import {
   Metadata,
   bindable,
-  Injector,
+  Kernel,
   inject,
   ENV_IS_NODE,
   MutationEvent,
   MimeTypeProvider,
   BaseActiveRecord,
-  InjectorProvider,
+  KernelProvider,
   PropertyMutation,
 } from "@tandem/common";
 
@@ -43,8 +43,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   readonly idProperty = "sourceUri";
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   @bindable(true)
   public type: string;
@@ -105,7 +105,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   read = memoize(async () => {
-    const protocol = URIProtocolProvider.lookup(this.contentUri, this._injector);
+    const protocol = URIProtocolProvider.lookup(this.contentUri, this._kernel);
     return await protocol.read(this.contentUri);
   }, { promise: true, length: 0 }) as (() => Promise<IURIProtocolReadResult>);
 

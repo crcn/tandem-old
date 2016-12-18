@@ -3,7 +3,7 @@ import fs = require("fs");
 import assert = require("assert");
 import { PROJECT_CONFIG_FILE_NAME } from "../constants";
 import { ProjectConfig, ProjectFileHandler } from "tandem-code/common/stores";
-import { inject, ICommand, loggable, Logger, InjectorProvider, Injector } from "@tandem/common";
+import { inject, ICommand, loggable, Logger, KernelProvider, Kernel } from "@tandem/common";
 import { IFileResolver, IDependencyLoader, DependencyGraphStrategyOptionsProvider } from "@tandem/sandbox";
 import { PreviewLoaderProvider, IFileImporter, ImportFileRequest, IFilePreviewLoader, IPreviewLoaderResult } from "@tandem/editor/worker";
 
@@ -18,8 +18,8 @@ export class LoadProjectConfigCommand implements ICommand {
   protected logger: Logger;
 
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   execute() {
     const configPath = path.join(process.cwd(),  PROJECT_CONFIG_FILE_NAME);
@@ -30,7 +30,7 @@ export class LoadProjectConfigCommand implements ICommand {
 
     const { fileHandlers } = new ProjectConfig(require(configPath));
 
-    this._injector.register(
+    this._kernel.register(
       fileHandlers.map((handler, i) => {
         return [
           new PreviewLoaderProvider("projectPreviewLoader" + i, handler.test.bind(handler), createProjectPreviewLoader(handler)),

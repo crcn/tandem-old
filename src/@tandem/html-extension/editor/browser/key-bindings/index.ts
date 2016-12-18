@@ -7,13 +7,13 @@ import { textToolProvider } from "../stores";
 import { TEXT_TOOL_KEY_CODE } from "@tandem/html-extension/constants";
 import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { evaluateMarkup, SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { ClassFactoryProvider, InjectorProvider, Injector } from "@tandem/common";
+import { ClassFactoryProvider, KernelProvider, Kernel } from "@tandem/common";
 import { WorkspaceToolFactoryProvider, GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
 
 abstract class BaseInsertElementTool extends InsertTool {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   constructor(readonly options: any, editor: any) {
     super(editor);
@@ -21,7 +21,7 @@ abstract class BaseInsertElementTool extends InsertTool {
   }
 
   get displayEntityToolFactory() {
-    return this._injector.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id);
+    return this._kernel.query<WorkspaceToolFactoryProvider>(pointerToolProvider.id);
   }
 
   createSyntheticDOMElement() {
@@ -42,8 +42,8 @@ function createElementInsertToolClass(options) {
 
 export const keyBindingProvider = [
   new GlobalKeyBindingProvider(TEXT_TOOL_KEY_CODE, class SetPointerToolCommand extends BaseCommand {
-    execute(action: CoreEvent) {
-      // this.bus.dispatch(new SetToolRequest(this.injector.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
+    execute(message: CoreEvent) {
+      // this.bus.dispatch(new SetToolRequest(this.kernel.query<WorkspaceToolFactoryProvider>(textToolProvider.id)));
     }
   })
 ];
@@ -59,8 +59,8 @@ for (const key in insertElementKeyBindings) {
 
 function addElementKeyBinding(key: string, options: { nodeName: string, attributes: string }) {
   keyBindingProvider.push(new GlobalKeyBindingProvider(key, class SetPointerToolCommand extends BaseCommand {
-    execute(action: CoreEvent) {
-      this.bus.dispatch(new SetToolRequest(<ClassFactoryProvider>this.injector.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
+    execute(message: CoreEvent) {
+      this.bus.dispatch(new SetToolRequest(<ClassFactoryProvider>this.kernel.link(new ClassFactoryProvider(null, createElementInsertToolClass(options)))));
     }
   }));
 }

@@ -1,6 +1,6 @@
 import React =  require("react");
 import { FocusComponent, TextEditorComponent } from "@tandem/editor/browser/components/common";
-import { ITokenizer, inject, InjectorProvider, Injector, BaseApplicationComponent } from "@tandem/common";
+import { ITokenizer, inject, KernelProvider, Kernel, BaseApplicationComponent } from "@tandem/common";
 
 export interface IKeyValueItem {
   name: string;

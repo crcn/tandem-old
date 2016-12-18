@@ -6,10 +6,10 @@ import { serializable, serialize, deserialize } from "../serialize";
   serialize({ type, target }: Mutation<any>) {
     return [type, serialize(target && (target.clone ? target.clone(false) : target))];
   },
-  deserialize([ type, target ], injector): Mutation<any> {
+  deserialize([ type, target ], kernel): Mutation<any> {
     return new Mutation(
       type,
-      deserialize(target, injector)
+      deserialize(target, kernel)
     );
   }
 })
@@ -42,10 +42,10 @@ export class MutationEvent<T> extends CoreEvent {
   serialize({ type, target, newValue }: SetValueMutation<any>) {
     return [type, serialize(target.clone(false)), newValue];
   },
-  deserialize([ type, target, newValue ], injector): SetValueMutation<any> {
+  deserialize([ type, target, newValue ], kernel): SetValueMutation<any> {
     return new SetValueMutation(
       type,
-      deserialize(target, injector),
+      deserialize(target, kernel),
       newValue
     );
   }
@@ -74,11 +74,11 @@ export abstract class ChildMutation<T, U extends ICloneable> extends Mutation<T>
   serialize({ type, target, child, index }: InsertChildMutation<ICloneable, any>) {
     return [type, serialize(target.clone(false)), serialize(child), index]
   },
-  deserialize([ type, target, child, index ], injector): InsertChildMutation<any, any> {
+  deserialize([ type, target, child, index ], kernel): InsertChildMutation<any, any> {
     return new InsertChildMutation(
       type,
-      deserialize(target, injector),
-      deserialize(child, injector),
+      deserialize(target, kernel),
+      deserialize(child, kernel),
       index
     );
   }
@@ -96,11 +96,11 @@ export class InsertChildMutation<T extends ICloneable, U extends ICloneable> ext
   serialize({ type, target, child, index }: RemoveChildMutation<ICloneable, any>) {
     return [type, serialize(target.clone(false)), serialize(child.clone(false)), index];
   },
-  deserialize([ type, target, child, index ], injector): RemoveChildMutation<any, any> {
+  deserialize([ type, target, child, index ], kernel): RemoveChildMutation<any, any> {
     return new RemoveChildMutation(
       type,
-      deserialize(target, injector),
-      deserialize(child, injector),
+      deserialize(target, kernel),
+      deserialize(child, kernel),
       index
     );
   }
@@ -122,13 +122,13 @@ export class RemoveChildMutation<T extends ICloneable, U extends ICloneable> ext
       oldName, 
     index];    
   },
-  deserialize([ type, target, name, newValue, oldValue, oldName, index ], injector): PropertyMutation<any> {
+  deserialize([ type, target, name, newValue, oldValue, oldName, index ], kernel): PropertyMutation<any> {
     return new PropertyMutation(
       type,
-      deserialize(target, injector),
+      deserialize(target, kernel),
       name,
-      deserialize(newValue, injector),
-      deserialize(oldValue, injector),
+      deserialize(newValue, kernel),
+      deserialize(oldValue, kernel),
       oldName,
       index
     );
@@ -166,11 +166,11 @@ export class RemoveMutation<T> extends Mutation<T> {
   serialize({ type, target, child, index, oldIndex }: MoveChildMutation<any, any>) {
     return [type, serialize(target), serialize(child.clone(false)), oldIndex, index];
   },
-  deserialize([ type, target, child, index, oldIndex ], injector): MoveChildMutation<any, any> {
+  deserialize([ type, target, child, index, oldIndex ], kernel): MoveChildMutation<any, any> {
     return new MoveChildMutation(
       type,
-      deserialize(target, injector),
-      deserialize(child, injector),
+      deserialize(target, kernel),
+      deserialize(child, kernel),
       oldIndex,
       index
     );

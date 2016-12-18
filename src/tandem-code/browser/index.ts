@@ -33,7 +33,7 @@ import { TandemStudioBrowserStoreProvider } from "./providers";
 import { OpenRequest } from "./messages";
 
 import { 
-  Injector, 
+  Kernel, 
   LogLevel, 
   ServiceApplication,
   LoadApplicationRequest, 
@@ -149,7 +149,7 @@ function createWelcomeMenuProviders() {
   ];
 }
 
-const injector = new Injector(
+const kernel = new Kernel(
 
   // Commands
   new CommandFactoryProvider(OpenRequest.OPEN, OpenCommand),
@@ -178,6 +178,6 @@ const injector = new Injector(
 
 );
 
-const app = window["app"] = new ServiceApplication(injector);
+const app = window["app"] = new ServiceApplication(kernel);
 
 app.initialize();

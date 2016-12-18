@@ -4,12 +4,12 @@ import { RouteFactoryProvider } from "@tandem/editor/browser/providers";
 import { RedirectRequest, DidRedirectMessage } from "@tandem/editor/browser/messages";
 import { IMessage } from "@tandem/mesh";
 import { 
-  Injector, 
+  Kernel, 
   inject, 
   bindable, 
   Observable, 
   PropertyMutation, 
-  InjectorProvider, 
+  KernelProvider, 
   PropertyWatcher,
   IBrokerBus,
   PrivateBusProvider,
@@ -37,8 +37,8 @@ export abstract class BaseRouteHandler implements IRouteHandler {
 
 export class Router extends Observable {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   @inject(PrivateBusProvider.ID)
   private _bus: IBrokerBus;
@@ -77,7 +77,7 @@ export class Router extends Observable {
 
     let path: string = request.routeNameOrPath;
 
-    const routeProvider = RouteFactoryProvider.findByPath(request.routeNameOrPath, this._injector);
+    const routeProvider = RouteFactoryProvider.findByPath(request.routeNameOrPath, this._kernel);
     if (!routeProvider) throw new Error(`Route ${request.routeNameOrPath} does not exist`);
     
     const route = routeProvider.create();

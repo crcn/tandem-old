@@ -7,7 +7,7 @@ import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
 import { ObservableCollection } from "@tandem/common/observable";
 import { PostDSMessage } from "@tandem/common/messages";
-import { Injector, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
+import { Kernel, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   FilterBus,
   readOneChunk,
@@ -31,16 +31,16 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     super();
   }
 
-  static create<T extends IActiveRecord<any>, U>(collectionName: string, injector: Injector, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
-    return new (this as any)().setup(collectionName, injector, createActiveRecord, query);
+  static create<T extends IActiveRecord<any>, U>(collectionName: string, kernel: Kernel, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
+    return new (this as any)().setup(collectionName, kernel, createActiveRecord, query);
   }
 
-  setup(collectionName: string, injector: Injector, createActiveRecord: (source: U) => T, query?: Object) {
+  setup(collectionName: string, kernel: Kernel, createActiveRecord: (source: U) => T, query?: Object) {
     this.collectionName = collectionName;
-    this._bus = PrivateBusProvider.getInstance(injector);
+    this._bus = PrivateBusProvider.getInstance(kernel);
     this.createActiveRecord = createActiveRecord;
-    this._globalMessageObserver = new FilterBus((action: PostDSMessage) => {
-      return (action.type === DSUpdateRequest.DS_UPDATE || action.type === DSInsertRequest.DS_INSERT || action.type === PostDSMessage.DS_DID_UPDATE || action.type === PostDSMessage.DS_DID_INSERT) && action.collectionName === this.collectionName && sift(this.query)(action.data);
+    this._globalMessageObserver = new FilterBus((message: PostDSMessage) => {
+      return (message.type === DSUpdateRequest.DS_UPDATE || message.type === DSInsertRequest.DS_INSERT || message.type === PostDSMessage.DS_DID_UPDATE || message.type === PostDSMessage.DS_DID_INSERT) && message.collectionName === this.collectionName && sift(this.query)(message.data);
     }, new CallbackDispatcher(this.onPostDSMessage.bind(this)));
     this.query = query || {};
     return this;
@@ -64,7 +64,7 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
 
     // TODO - this is very smelly. Collections should not be registering themselves
     // to the global message bus. Instead they should be registering themselves to a DS manager
-    // which handles all incomming and outgoing DS actions from the message bus.
+    // which handles all incomming and outgoing DS messages from the message bus.
     this._bus.register(this._globalMessageObserver);
 
 
@@ -119,8 +119,8 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
     return record;
   }
 
-  private onPostDSMessage(action: PostDSMessage) {
-    this._updateActiveRecord(action.data);
+  private onPostDSMessage(message: PostDSMessage) {
+    this._updateActiveRecord(message.data);
   }
 
   private _updateActiveRecord(source: U) {

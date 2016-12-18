@@ -159,7 +159,7 @@ export class Workspace extends Observable {
     this.updatePropertiesFromBrowser();
   }
 
-  private onBrowserAction(action: CoreEvent) {
+  private onBrowserAction(message: CoreEvent) {
     this.updatePropertiesFromBrowser();
   }
 

@@ -28,21 +28,21 @@ import {
   Logger,
   inject,
   loggable,
-  Injector,
+  Kernel,
   IDisposable,
   easeOutCubic,
   flattenTree,
   BoundingRect,
   watchProperty,
   InitializeApplicationRequest,
-  InjectorProvider,
+  KernelProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
 
 
 import { SelectSourceRequest } from "@tandem/editor/common";
 
-// TODO - defer various actions to project file controller.
+// TODO - defer various messages to project file controller.
 
 const normalizeZoom = (zoom) => {
   return (zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom));
@@ -59,11 +59,11 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
   private _tweener: IDisposable;
   private _zoomTimeout: any;
   
-  [ZoomRequest.ZOOM](action: ZoomRequest) {
+  [ZoomRequest.ZOOM](message: ZoomRequest) {
     if (this._tweener) this._tweener.dispose();
-    const delta = action.delta * this._store.workspace.zoom;
+    const delta = message.delta * this._store.workspace.zoom;
 
-    if (!action.ease) {
+    if (!message.ease) {
       this._store.workspace.zoom += delta;
       return;
     }
@@ -81,11 +81,11 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     this._store.workspace.zoom = normalizeZoom(this._store.workspace.zoom) / 2;
   }
 
-  [ZoomRequest.ZOOM](action: ZoomRequest) {
+  [ZoomRequest.ZOOM](message: ZoomRequest) {
     if (this._tweener) this._tweener.dispose();
-    const delta = action.delta * this._store.workspace.zoom;
+    const delta = message.delta * this._store.workspace.zoom;
 
-    if (!action.ease) {
+    if (!message.ease) {
       this._store.workspace.zoom += delta;
       return;
     }
@@ -95,12 +95,12 @@ export class WorkspaceService extends CoreApplicationService<IEditorBrowserConfi
     }, easeOutCubic);
   }
 
-  [SetZoomRequest.SET_ZOOM](action: SetZoomRequest) {
-    this._store.workspace.zoom = action.value;
+  [SetZoomRequest.SET_ZOOM](message: SetZoomRequest) {
+    this._store.workspace.zoom = message.value;
   }
 
-  [SetToolRequest.SET_TOOL](action: SetToolRequest) {
-    // this._store.workspace.currentTool = action.toolFactory.create(this._store.workspace);
+  [SetToolRequest.SET_TOOL](message: SetToolRequest) {
+    // this._store.workspace.currentTool = message.toolFactory.create(this._store.workspace);
   }
 
   [SelectSourceRequest.SELECT_SOURCE]({ ranges, uri }: SelectSourceRequest) {

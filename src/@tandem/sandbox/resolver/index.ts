@@ -8,9 +8,9 @@ import { IDispatcher, readOneChunk } from "@tandem/mesh";
 import {
   inject,
   Logger,
-  Injector,
+  Kernel,
   loggable,
-  InjectorProvider,
+  KernelProvider,
   MimeTypeProvider,
   PrivateBusProvider,
 } from "@tandem/common";
@@ -25,8 +25,8 @@ export interface IFileResolver {
 
 export class NodeModuleResolver  {
 
-  @inject(InjectorProvider.ID)
-  private _injector: Injector;
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
 
   constructor(readonly options: { extensions: string[], directories: string[] }) {
 

@@ -11,7 +11,7 @@ describe(__filename + "#", () => {
       }
     });
 
-    const browser = new SyntheticBrowser(app.injector);
+    const browser = new SyntheticBrowser(app.kernel);
     await browser.open({
       uri: "index.html"
     });

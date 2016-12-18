@@ -1,9 +1,9 @@
-import { Provider, IProvider, Injector, IInjectable } from "../ioc";
+import { Provider, IProvider, Kernel, IInjectable } from "../ioc";
 
-// TODO - more injector helpers here.
+// TODO - more kernel helpers here.
 
 /**
- * inject decorator for properties of classes that live in a Injector object
+ * inject decorator for properties of classes that live in a Kernel object
  */
 
 // TODO - change this to injectProviderValue

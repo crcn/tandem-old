@@ -4,7 +4,7 @@ import { MetadataKeys } from "@tandem/editor/browser/constants";
 import React =  require("react");
 
 import { SyntheticBrowser, BaseRenderer, getMatchingCSSStyleRules, MatchedCSSStyleRule, SyntheticCSSStyle } from "@tandem/synthetic-browser";
-import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, BoundingRect } from "@tandem/common";
+import { Kernel, KernelProvider, PrivateBusProvider, BrokerBus, BoundingRect } from "@tandem/common";
 import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
 import { createTestMasterApplication } from "@tandem/editor/test";
@@ -81,9 +81,9 @@ export const createBodyElement = reactEditorPreview(async () => {
 
   const bus = new BrokerBus();
 
-  const injector = new Injector(
+  const kernel = new Kernel(
     new PrivateBusProvider(bus),
-    new InjectorProvider(),
+    new KernelProvider(),
     createHTMLCoreProviders(),
     createHTMLSandboxProviders(),
     createTestSandboxProviders({
@@ -164,7 +164,7 @@ export const createBodyElement = reactEditorPreview(async () => {
 
   const renderer = new MockRenderer();
   renderer.start();
-  const browser = new SyntheticBrowser(injector, renderer);
+  const browser = new SyntheticBrowser(kernel, renderer);
   const workspace = new Workspace();
   workspace.browser = browser;
 

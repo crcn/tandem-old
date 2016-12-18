@@ -1,11 +1,11 @@
 import { URIProtocol } from "./protocol";
-import { Injector, createSingletonProviderClass, IProvider } from "@tandem/common";
+import { Kernel, createSingletonProviderClass, IProvider } from "@tandem/common";
 
 export class URIProtocolProvider implements IProvider {
 
   private _value: URIProtocol;
   readonly id: string;
-  public owner: Injector;
+  public owner: Kernel;
   readonly overridable: boolean = true;
 
   constructor(readonly name: string, readonly clazz: { new(): URIProtocol }) {
@@ -24,7 +24,7 @@ export class URIProtocolProvider implements IProvider {
     return this._value || (this._value = this.owner.inject(new this.clazz())); 
   }
 
-  static lookup(uri: string, injector: Injector) {
+  static lookup(uri: string, kernel: Kernel) {
 
     // no protocol - it's a file
     if (uri.indexOf(":") === -1) {
@@ -33,7 +33,7 @@ export class URIProtocolProvider implements IProvider {
 
     const protocol = uri.split(":")[0];
 
-    const provider = injector.query<URIProtocolProvider>(this.getId(protocol));
+    const provider = kernel.query<URIProtocolProvider>(this.getId(protocol));
     return provider && provider.value;
   }
 }

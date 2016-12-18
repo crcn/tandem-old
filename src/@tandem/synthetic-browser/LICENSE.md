@@ -102,7 +102,7 @@ distribution (with or without modification), making available to the
 public, and in some countries other activities as well.
 
 To "convey" a work means any kind of propagation that enables other
-parties to make or receive copies. Mere interaction with a user
+parties to make or receive copies. Mere intermessage with a user
 through a computer network, with no transfer of a copy, is not
 conveying.
 
@@ -317,9 +317,9 @@ solely because modification has been made.
 
 If you convey an object code work under this section in, or with, or
 specifically for use in, a User Product, and the conveying occurs as
-part of a transaction in which the right of possession and use of the
+part of a transmessage in which the right of possession and use of the
 User Product is transferred to the recipient in perpetuity or for a
-fixed term (regardless of how the transaction is characterized), the
+fixed term (regardless of how the transmessage is characterized), the
 Corresponding Source conveyed under this section must be accompanied
 by the Installation Information. But this requirement does not apply
 if neither you nor any third party retains the ability to install
@@ -435,7 +435,7 @@ a copy of the Program. Ancillary propagation of a covered work
 occurring solely as a consequence of using peer-to-peer transmission
 to receive a copy likewise does not require acceptance. However,
 nothing other than this License grants you permission to propagate or
-modify any covered work. These actions infringe copyright if you do
+modify any covered work. These messages infringe copyright if you do
 not accept this License. Therefore, by modifying or propagating a
 covered work, you indicate your acceptance of this License to do so.
 
@@ -446,11 +446,11 @@ receives a license from the original licensors, to run, modify and
 propagate that work, subject to this License. You are not responsible
 for enforcing compliance by third parties with this License.
 
-An "entity transaction" is a transaction transferring control of an
+An "entity transmessage" is a transmessage transferring control of an
 organization, or substantially all assets of one, or subdividing an
 organization, or merging organizations. If propagation of a covered
-work results from an entity transaction, each party to that
-transaction who receives a copy of the work also receives whatever
+work results from an entity transmessage, each party to that
+transmessage who receives a copy of the work also receives whatever
 licenses to the work the party's predecessor in interest had or could
 give under the previous paragraph, plus a right to possession of the
 Corresponding Source of the work from the predecessor in interest, if
@@ -506,7 +506,7 @@ covered work in a country, or your recipient's use of the covered work
 in a country, would infringe one or more identifiable patents in that
 country that you have reason to believe are valid.
 
-If, pursuant to or in connection with a single transaction or
+If, pursuant to or in connection with a single transmessage or
 arrangement, you convey, or propagate by procuring conveyance of, a
 covered work, and grant a patent license to some of the parties
 receiving the covered work authorizing them to use, propagate, modify
@@ -554,7 +554,7 @@ under version 3 of the GNU Affero General Public License into a single
 combined work, and to convey the resulting work. The terms of this
 License will continue to apply to the part which is the covered work,
 but the special requirements of the GNU Affero General Public License,
-section 13, concerning interaction through a network will apply to the
+section 13, concerning intermessage through a network will apply to the
 combination as such.
 
 #### 14. Revised Versions of this License.
@@ -649,7 +649,7 @@ the exclusion of warranty; and each file should have at least the
 Also add information on how to contact you by electronic and paper
 mail.
 
-If the program does terminal interaction, make it output a short
+If the program does terminal intermessage, make it output a short
 notice like this when it starts in an interactive mode:
 
         <program>  Copyright (C) <year>  <name of author>

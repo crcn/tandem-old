@@ -21,12 +21,12 @@ describe(__filename + "#", () => {
 
 
   const loadHTML = async (source: string) => {
-    const { injector } = app;
+    const { kernel } = app;
     const entryFilePath = createRandomFileName("html");
-    const protocol = URIProtocolProvider.lookup(entryFilePath, injector);
+    const protocol = URIProtocolProvider.lookup(entryFilePath, kernel);
     await protocol.write(entryFilePath, `<div>${source}</div>`);
 
-    const browser = new SyntheticBrowser(injector);
+    const browser = new SyntheticBrowser(kernel);
     await browser.open({
       uri: "file://" + entryFilePath
     });
@@ -75,7 +75,7 @@ describe(__filename + "#", () => {
       expect(oldResult.documentElement.source).not.to.be.undefined;
       const edit    = oldResult.documentElement.createEdit().fromDiff(newResult.documentElement);
       expect(edit.mutations.length).not.to.equal(0);
-      await FileEditorProvider.getInstance(app.injector).applyMutations(edit.mutations);
+      await FileEditorProvider.getInstance(app.kernel).applyMutations(edit.mutations);
       expect((await oldResult.reloadDocumentElement()).innerHTML.replace(/\n\s*/g, "")).to.equal(newResult.documentElement.innerHTML);
     });
   });

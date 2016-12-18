@@ -1,19 +1,19 @@
 import { expect } from "chai";
 import sinon =  require("sinon");
 import { Sandbox, DependencyGraphProvider } from "@tandem/sandbox";
-import { createSandboxTestInjector, timeout } from "@tandem/sandbox/test/helpers";
+import { createSandboxTestKernel, timeout } from "@tandem/sandbox/test/helpers";
 
 describe(__filename + "#", () => {
   xit("can evaluate an entry", async () => {
-    const injector = createSandboxTestInjector({
+    const kernel = createSandboxTestKernel({
       mockFiles: {
         "a.js": "module.exports = require('./b.js')",
         "b.js": "module.exports = 'bb';"
       }
     });
 
-    const sandbox = new Sandbox(injector);
-    const graph = DependencyGraphProvider.getInstance({ name: "webpack" }, injector);
+    const sandbox = new Sandbox(kernel);
+    const graph = DependencyGraphProvider.getInstance({ name: "webpack" }, kernel);
     const dep = await graph.getDependency(await graph.resolve("a.js",""));
     await sandbox.open(dep);
     expect(sandbox.exports).to.equal("bb");
@@ -21,15 +21,15 @@ describe(__filename + "#", () => {
 
 
   xit("re-evaluates a dependency if it changes", async () => {
-    const injector = createSandboxTestInjector({
+    const kernel = createSandboxTestKernel({
       mockFiles: {
         "a.js": "module.exports = require('./b.js')",
         "b.js": "module.exports = 'bb';"
       }
     })
 
-    const sandbox = new Sandbox(injector);
-    const graph = DependencyGraphProvider.getInstance({ name: "webpack" }, injector);
+    const sandbox = new Sandbox(kernel);
+    const graph = DependencyGraphProvider.getInstance({ name: "webpack" }, kernel);
     const dep = await graph.getDependency(await graph.resolve("a.js",""));
     await sandbox.open(dep);
     expect(sandbox.exports).to.equal("bb");
@@ -39,7 +39,7 @@ describe(__filename + "#", () => {
   });
 
   xit("re-evaluates once if multiple dependencies change at the same time", async () => {
-    const injector = createSandboxTestInjector({
+    const kernel = createSandboxTestKernel({
       mockFiles: {
         "a.js": "module.exports = require('./b.js')",
         "b.js": "module.exports = require('./c.js');",
@@ -47,9 +47,9 @@ describe(__filename + "#", () => {
       }
     });
 
-    const sandbox = new Sandbox(injector);
+    const sandbox = new Sandbox(kernel);
     const spy = sinon.spy(sandbox, "reset");
-    const graph = DependencyGraphProvider.getInstance({ name: "webpack" }, injector);
+    const graph = DependencyGraphProvider.getInstance({ name: "webpack" }, kernel);
     const dep = await graph.getDependency(await graph.resolve("a.js",""));
     await sandbox.open(dep);
     expect(sandbox.exports).to.equal("cc");

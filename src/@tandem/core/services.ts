@@ -1,11 +1,11 @@
 import {
   inject,
   Logger,
-  Injector,
+  Kernel,
   loggable,
   IBrokerBus,
   IInjectable,
-  InjectorProvider,
+  KernelProvider,
   PrivateBusProvider,
 } from "@tandem/common";
 
@@ -24,8 +24,8 @@ export abstract class BaseApplicationService implements  IDispatcher<any, any>,
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
 
-  @inject(InjectorProvider.ID)
-  protected injector: Injector;
+  @inject(KernelProvider.ID)
+  protected kernel: Kernel;
 
   private _acceptedMessageTypes: string[];
 

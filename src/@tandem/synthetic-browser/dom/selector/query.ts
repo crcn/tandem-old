@@ -231,9 +231,9 @@ export class SyntheticElementQuerier<T extends SyntheticDOMElement> extends Base
     return new ChildElementQuerier<U>(this, selector, filter);
   }
 
-  private onRootEvent(action: CoreEvent) {
+  private onRootEvent(message: CoreEvent) {
 
-    // reset on ALL actions -- there are cases where Nodes may contain state that
+    // reset on ALL messages -- there are cases where Nodes may contain state that
     // parts of the app using this querier needs to access (metadata for example). Debounce so
     // the app doesn't get clobbered with expensive querySelectorAll requests.
     this.debounceReset();

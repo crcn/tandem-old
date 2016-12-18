@@ -27,8 +27,8 @@ import { 
       mutations: mutations.map(serialize)
     }
   },
-  deserialize({ mutations }, injector) {
-    return new ApplyFileEditRequest(mutations.map(action => deserialize(action, injector)));
+  deserialize({ mutations }, kernel) {
+    return new ApplyFileEditRequest(mutations.map(message => deserialize(message, kernel)));
   }
 })
 export class ApplyFileEditRequest extends Message {

@@ -31,14 +31,14 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
 
   private _replacements: ITSReplacement[] = [];
 
-  [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT](target: ts.JsxElement, action: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
-    const child = this.findTargetASTNode(target, action.child as SyntheticDOMNode);
+  [SyntheticDOMContainerMutationTypes.MOVE_CHILD_NODE_EDIT](target: ts.JsxElement, message: MoveChildMutation<SyntheticDOMElement, SyntheticDOMNode>) {
+    const child = this.findTargetASTNode(target, message.child as SyntheticDOMNode);
     this._replacements.push({
       start: child.getStart(),
       end: child.getEnd(),
       value: ""
     });
-    const beforeChild = target.children[action.index];
+    const beforeChild = target.children[message.index];
     this._replacements.push({
       start: beforeChild.getStart(),
       end: beforeChild.getStart(),

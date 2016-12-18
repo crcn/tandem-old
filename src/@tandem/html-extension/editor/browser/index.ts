@@ -1,6 +1,6 @@
 import { keyBindingProvider } from "./key-bindings";
 import { createHTMLCoreProviders } from "../../core";
-import { Injector, CommandFactoryProvider } from "@tandem/common";
+import { Kernel, CommandFactoryProvider } from "@tandem/common";
 import { textToolProvider, editInnerHTMLProvider, HTMLExtensionStore } from "./stores";
 
 import {
@@ -51,7 +51,7 @@ import {
 
 export function createHTMLEditorBrowserProviders() {
 
-  return new Injector(
+  return new Kernel(
     createHTMLCoreProviders(),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, UpdateMergedRuleCommand),

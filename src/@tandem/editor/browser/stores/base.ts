@@ -12,9 +12,9 @@ import {
   IObservable,
   bindProperty,
   IInjectable,
-  Injector,
+  Kernel,
   watchProperty,
-  InjectorProvider,
+  KernelProvider,
 } from "@tandem/common";
 
 import { IDispatcher } from "@tandem/mesh";
@@ -38,9 +38,9 @@ export abstract class BaseEditorTool implements IWorkspaceTool, IInjectable {
 
   dispose() { }
 
-  dispatch(action: CoreEvent) {
-    if (this[action.type]) {
-      return this[action.type](action);
+  dispatch(message: CoreEvent) {
+    if (this[message.type]) {
+      return this[message.type](message);
     }
   }
 }

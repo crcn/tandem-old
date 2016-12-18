@@ -20,7 +20,7 @@ import {
 // export default class SelectorService extends BaseApplicationService<any> {
 
 
-//   [SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET](action: SelectEntitiesAtSourceOffsetAction) {
+//   [SelectEntitiesAtSourceOffsetAction.SELECT_ENTITIES_AT_SOURCE_OFFSET](message: SelectEntitiesAtSourceOffsetAction) {
 
 //     // if (!this.app.workspace) return;
 
@@ -29,7 +29,7 @@ import {
 //     // });
 
 //     // const selectableEntities = this.app.workspace.file.entity.flatten().filter((entity: IEntity) => {
-//     //   return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(action.uri) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
+//     //   return entity.source.source ? String((<DocumentFile<any>>entity.source.source).path).indexOf(message.uri) !== -1 && entity.metadata.get(MetadataKeys.SELECTABLE) !== false : false;
 //     // });
 
 //     // const selection = [];
@@ -39,7 +39,7 @@ import {
 
 //     //   const source = <BaseASTNode<any>>entity.source;
 
-//     //   for (const cursor of action.data) {
+//     //   for (const cursor of message.data) {
 //     //     if (source.inRange(cursor)) {
 
 //     //       const parentIndex = selection.indexOf(entity.parent);
@@ -65,7 +65,7 @@ import {
 
 //   async [RemoveSelectionRequest.REMOVE_SELECTION]() {
 
-//     // await FileEditorProvider.getInstance(this.app.injector).applyMutations(...this.app.workspace.selection.map((selection) => {
+//     // await FileEditorProvider.getInstance(this.app.kernel).applyMutations(...this.app.workspace.selection.map((selection) => {
 //     //   return new RemoveMutation(selection);
 //     // }));
 

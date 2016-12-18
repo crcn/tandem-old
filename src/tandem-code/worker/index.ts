@@ -22,7 +22,7 @@ import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest } 
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider, ElementTextContentMimeTypeProvider } from "@tandem/synthetic-browser";
 import {
   hook,
-  Injector,
+  Kernel,
   LogLevel,
   serialize,
   deserialize,
@@ -86,7 +86,7 @@ export const initializeWorker = async () => {
     }
   };
 
-  const injector = new Injector(
+  const kernel = new Kernel(
     createCommonEditorProviders(config),
     createCoreStudioWorkerProviders(),
     new DSProvider(new MemoryDataStore()),
@@ -101,7 +101,7 @@ export const initializeWorker = async () => {
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, StartMasterPingCommand),
   );
 
-  const app = new ServiceApplication(injector);
+  const app = new ServiceApplication(kernel);
 
   // hook with the master process
   app.bus.register(hook(config.family, app.bus));

@@ -5,7 +5,7 @@ import { BaseEditorBrowserCommand } from "./base";
 
 export class LoadRouterCommand extends BaseEditorBrowserCommand {
   execute() {
-    const router = this.editorStore.router = this.injector.inject(new Router());
+    const router = this.editorStore.router = this.kernel.inject(new Router());
 
     router.currentPathWatcher.connect((newPath) => {
       window.location.hash = newPath;

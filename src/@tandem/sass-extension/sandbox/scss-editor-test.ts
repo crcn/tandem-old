@@ -34,18 +34,18 @@ describe(__filename + "#", () => {
 
   const loadCSS = async (content: string) => {
 
-    const { injector } = app;
+    const { kernel } = app;
 
     const entryCSSFilePath = createRandomFileName("scss");
     const entryJSFilePath  = createRandomFileName("js");
-    const protocol = URIProtocolProvider.lookup(entryCSSFilePath, injector);
+    const protocol = URIProtocolProvider.lookup(entryCSSFilePath, kernel);
 
     await protocol.write(entryCSSFilePath, content);
     await protocol.write(entryJSFilePath, `
       require("${entryCSSFilePath}");
     `);
 
-    const browser = new SyntheticBrowser(injector);
+    const browser = new SyntheticBrowser(kernel);
     await browser.open({
       uri: entryJSFilePath,
       dependencyGraphStrategyOptions: {
@@ -55,7 +55,7 @@ describe(__filename + "#", () => {
 
     return {
       styleSheet: browser.document.styleSheets[0],
-      fileEditor: FileEditorProvider.getInstance(injector),
+      fileEditor: FileEditorProvider.getInstance(kernel),
       reloadStylesheet: async () => {
         await waitForPropertyChange(browser.sandbox, "exports");
         return browser.document.styleSheets[0]

@@ -29,7 +29,7 @@ export class SockService extends CoreApplicationService<IEditorCommonConfig> {
   /**
    */
 
-  [LoadApplicationRequest.LOAD](action: LoadApplicationRequest) {
+  [LoadApplicationRequest.LOAD](message: LoadApplicationRequest) {
 
     return new Promise((resolve, reject) => {
       let bus: IDispatcher<any, any>;

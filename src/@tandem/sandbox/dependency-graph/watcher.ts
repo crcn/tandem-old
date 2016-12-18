@@ -24,7 +24,7 @@ import {
   inject,
   Logger,
   loggable,
-  Injector,
+  Kernel,
   LogLevel,
   IWalkable,
   Observable,
@@ -39,7 +39,7 @@ import {
   watchProperty,
   MimeTypeProvider,
   BaseActiveRecord,
-  InjectorProvider,
+  KernelProvider,
   PLAIN_TEXT_MIME_TYPE,
   DisposableCollection,
 } from "@tandem/common";
@@ -122,7 +122,7 @@ export class DependencyGraphWatcher extends Observable {
   }
 
 
-  private onDependencyEvent(action: CoreEvent) {
+  private onDependencyEvent(message: CoreEvent) {
     if (this.status && this.status.type === Status.LOADING) return;
     this.waitForAllDependencies["clear"]();
     this.waitForAllDependencies();
