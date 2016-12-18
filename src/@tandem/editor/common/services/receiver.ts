@@ -3,11 +3,11 @@ import {
   Injector,
   LogAction,
   InjectorProvider,
+  BaseApplicationService,
   CommandFactoryProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";
 
-import { BaseApplicationService } from "@tandem/core";
 import { SequenceBus, DuplexStream, CallbackDispatcher, IMessage } from "@tandem/mesh";
 
 // Command pattern receiver

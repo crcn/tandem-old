@@ -1,7 +1,14 @@
 import { IDispatcher, readAllChunks, IStreamableDispatcher, FilterBus, filterFamilyMessage, setMessageTarget } from "@tandem/mesh";
-import { CoreApplicationService } from "@tandem/core";
 import { isMaster } from "cluster";
-import { LoadApplicationRequest, InitializeApplicationRequest, SockBus, CoreEvent, serialize, deserialize } from "@tandem/common";
+import { 
+  SockBus, 
+  CoreEvent, 
+  serialize, 
+  deserialize, 
+  CoreApplicationService, 
+  LoadApplicationRequest, 
+  InitializeApplicationRequest, 
+} from "@tandem/common";
 import { EditorFamilyType, IEditorCommonConfig } from "@tandem/editor/common";
 import os =  require("os");
 import path =  require("path");

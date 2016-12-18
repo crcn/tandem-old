@@ -4,10 +4,10 @@ import { ParallelBus, IMessage, CallbackDispatcher, FilterBus, SocketIOBus, filt
 import {
   Logger,
   loggable,
+  CoreApplicationService,
   InitializeApplicationRequest,
 } from "@tandem/common";
 import { IEditorCommonConfig } from "@tandem/editor/common/config";
-import { CoreApplicationService } from "@tandem/core";
 
 @loggable()
 export class IOService<T extends  IEditorCommonConfig> extends CoreApplicationService<T> {

@@ -5,20 +5,19 @@ import "./messages";
 
 import { MemoryDataStore } from "@tandem/mesh";
 import { ImportFileRequest } from "@tandem/editor/browser/messages";
+import { IStudioWorkerConfig } from "./config";
+import { FileImporterProvider } from "@tandem/editor/worker";
 import { PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
 import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/server";
-import { createCoreMarkdownExtensionProviders } from "@tandem/markdown-extension";
 import { isMaster, fork, addListener, emit } from "cluster";
+import { createCoreMarkdownExtensionProviders } from "@tandem/markdown-extension";
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
 import { EditorFamilyType, createCommonEditorProviders } from "@tandem/editor/common";
-import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest } from "tandem-code/common";
-import { FileImporterProvider } from "@tandem/editor/worker";
-import { IStudioWorkerConfig } from "./config";
 
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider, ElementTextContentMimeTypeProvider } from "@tandem/synthetic-browser";
 import {
@@ -28,10 +27,12 @@ import {
   serialize,
   deserialize,
   MimeTypeProvider,
+  ServiceApplication, 
   PrivateBusProvider,
   MimeTypeAliasProvider,
   CommandFactoryProvider,
   LoadApplicationRequest,
+  ApplicationServiceProvider,
   InitializeApplicationRequest,
 } from "@tandem/common";
 

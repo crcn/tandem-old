@@ -5,7 +5,7 @@ import { EditorStore } from "@tandem/editor/browser/stores";
 import { IMessage } from "@tandem/mesh";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { ApplicationConfigurationProvider } from "@tandem/core";
+import { ApplicationConfigurationProvider } from "@tandem/common";
 
 export class OpenCWDCommand implements ICommand {
 

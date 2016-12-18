@@ -1,11 +1,19 @@
 import Mousetrap =  require("mousetrap");
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
+import { IDispatcher } from "@tandem/mesh";
 import { KeyCommandEvent } from "../messages";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { CoreApplicationService } from "@tandem/core";
-import { IDispatcher } from "@tandem/mesh";
 import { GlobalKeyBindingProvider } from "@tandem/editor/browser/providers";
-import { CoreEvent, IFactory, toArray, InitializeApplicationRequest, loggable, Logger, ICommand } from "@tandem/common";
+import { 
+  Logger, 
+  toArray, 
+  IFactory, 
+  loggable, 
+  ICommand, 
+  CoreEvent, 
+  CoreApplicationService, 
+  InitializeApplicationRequest, 
+} from "@tandem/common";
 
 @loggable()
 export class GlobalKeyBindingService extends CoreApplicationService<IEditorBrowserConfig> {

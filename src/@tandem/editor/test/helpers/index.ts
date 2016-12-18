@@ -12,8 +12,21 @@ import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
 import { createHTMLCoreProviders, createHTMLSandboxProviders } from "@tandem/html-extension";
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test/helpers";
-import { ServiceApplication, ApplicationConfigurationProvider, ApplicationServiceProvider } from "@tandem/core";
-import { Injector, InjectorProvider, PrivateBusProvider, BrokerBus, Application, HTML_MIME_TYPE, LogLevel, LogAction } from "@tandem/common";
+
+import { 
+  Injector, 
+  LogLevel, 
+  LogAction, 
+  BrokerBus, 
+  Application, 
+  HTML_MIME_TYPE, 
+  InjectorProvider, 
+  PrivateBusProvider, 
+  ServiceApplication,
+  ApplicationServiceProvider,
+  ApplicationConfigurationProvider,
+} from "@tandem/common";
+
 import { WebpackDependencyGraphStrategy, DependencyGraphStrategyProvider, ProtocolURLResolverProvider, WebpackProtocolResolver, FileCacheProvider, ContentEditorFactoryProvider } from "@tandem/sandbox";
 
 /**

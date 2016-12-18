@@ -20,25 +20,6 @@ export * from "./base";
 /**
  */
 
-export class ApplicationServiceProvider extends ClassFactoryProvider implements IFactory {
-  static readonly NS = "application/services";
-
-  constructor(id: string, clazz: { new(): IDispatcher<any, any> }) {
-    super(`${ApplicationServiceProvider.NS}/${id}`, clazz);
-  }
-
-  create(): IDispatcher<any, any> {
-    return super.create();
-  }
-
-  static findAll(Injector: Injector): Array<ApplicationServiceProvider> {
-    return Injector.queryAll<ApplicationServiceProvider>(`${ApplicationServiceProvider.NS}/**`);
-  }
-}
-
-/**
- */
-
 export function createSingletonBusProviderClass(name: string): { getInstance(providers:Injector): IBrokerBus, ID: string, new(bus: IBrokerBus): Provider<IBrokerBus> } {
 
   const id = ["bus", name].join("/");

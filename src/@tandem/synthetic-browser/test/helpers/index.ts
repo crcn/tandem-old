@@ -1,7 +1,6 @@
 import { Injector, LogLevel } from "@tandem/common";
 import { sample, sampleSize, random } from "lodash";
 import { createTestMasterApplication } from "@tandem/editor/test";
-import { createCoreApplicationProviders } from "@tandem/core";
 import { createSandboxProviders, IFileResolver } from "@tandem/sandbox";
 import parse5 = require("parse5");
 import {

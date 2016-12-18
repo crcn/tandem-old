@@ -1,11 +1,22 @@
-import { Injector } from "@tandem/common";
 import { IFileResolver } from "@tandem/sandbox";
 import { ConsoleLogService, ReceiverService } from "./services";
-import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
+import { createSandboxProviders, URIProtocolProvider } from "@tandem/sandbox";
+import { 
+  Injector, 
+  BrokerBus, 
+  IProvider,
+  InjectorProvider, 
+  PrivateBusProvider, 
+  ApplicationServiceProvider,
+  ApplicationConfigurationProvider,
+} from "@tandem/common";
 
 export const createCommonEditorProviders = (config?: any, fileResolverClass?: { new(): IFileResolver }) => {
   return [
-    createCoreApplicationProviders(config),
+    new PrivateBusProvider(new BrokerBus()),
+    new InjectorProvider(),
+    new ApplicationConfigurationProvider(config),
+    createSandboxProviders(fileResolverClass),
     new ApplicationServiceProvider("console", ConsoleLogService),
     new ApplicationServiceProvider("receiver", ReceiverService)
   ];

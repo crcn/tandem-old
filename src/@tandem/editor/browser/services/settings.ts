@@ -3,8 +3,7 @@ import { EditorStore } from "@tandem/editor/browser/stores";
 import { CallbackDispatcher } from "@tandem/mesh";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { CoreApplicationService } from "@tandem/core";
-import { ApplicationServiceProvider } from "@tandem/common";
+import { ApplicationServiceProvider, CoreApplicationService } from "@tandem/common";
 import { MetadataChangeEvent, LoadApplicationRequest, Metadata, inject, loggable, Logger } from "@tandem/common";
 
 @loggable()

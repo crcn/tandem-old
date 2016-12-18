@@ -8,10 +8,9 @@ __webpack_public_path__ = `${location.protocol}//${path.dirname(location.pathnam
 
 
 import Url =  require("url");
-import { ServiceApplication } from "@tandem/core";
-import { EditorFamilyType } from "@tandem/editor/common";
 import { TandemStudioBrowserStore } from "./stores";
 import { InstallCommandLineToolsRequest } from "tandem-code/common";
+import { EditorFamilyType } from "@tandem/editor/common";
 
 import { 
   SettingKeys,
@@ -36,6 +35,7 @@ import { OpenRequest } from "./messages";
 import { 
   Injector, 
   LogLevel, 
+  ServiceApplication,
   LoadApplicationRequest, 
   CommandFactoryProvider, 
   ApplicationReadyMessage,

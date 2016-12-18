@@ -14,9 +14,8 @@ import { exec } from "child_process";
 import { IOService } from "@tandem/editor/common";
 import { loggable, inject } from "@tandem/common/decorators";
 import { IStudioEditorServerConfig } from "tandem-code/master/config";
-import { CoreApplicationService } from "@tandem/core";
-import { Injector } from "@tandem/common";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
+import { Injector, CoreApplicationService } from "@tandem/common";
 import { DSUpsertRequest, LoadApplicationRequest, InitializeApplicationRequest } from "@tandem/common/messages";
 
 // TODO - split this out into separate files -- turning into a god object.

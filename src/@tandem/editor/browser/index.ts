@@ -1,9 +1,8 @@
 import "./styles";
 
-import { IFileResolver } from "@tandem/sandbox";
 import { EditorRouteNames } from "./constants";
 import { IEditorBrowserConfig } from "./config";
-import { createCoreApplicationProviders, ApplicationServiceProvider } from "@tandem/core";
+import { IFileResolver, URIProtocolProvider } from "@tandem/sandbox";
 
 import { 
   Injector, 
@@ -11,7 +10,9 @@ import {
   LoadApplicationRequest,
   CommandFactoryProvider, 
   ApplicationReadyMessage,
+  ApplicationServiceProvider,
   InitializeApplicationRequest, 
+  ApplicationConfigurationProvider,
 } from "@tandem/common";
 
 import { 

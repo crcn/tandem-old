@@ -16,8 +16,12 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
+- [ ] test suite
+
 - [ ] fix vscode extension
 - [ ] CTA blog
+- [ ] more dev tools
+  - [ ] right click inspect element
 
 - [ ] check messaging around firefox & chrome dev tools
 - [ ] Getting started video popup
@@ -27,7 +31,6 @@ NEW TARGET: Dev tools - qa testing. Develop
 - [ ] bark for unsaved changes
 - [ ] Logo
 - [ ] make it open source
-
 
 - test
   - https://github.com/facebookincubator/create-react-app

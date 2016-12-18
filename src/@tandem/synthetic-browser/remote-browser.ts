@@ -21,9 +21,9 @@ import {
   serializable,
   watchProperty,
   PrivateBusProvider,
+  BaseApplicationService,
 } from "@tandem/common";
 
-import { BaseApplicationService } from "@tandem/core/services";
 import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
 import {
   Dependency,

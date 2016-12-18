@@ -1,6 +1,7 @@
-import { SequenceBus } from "@tandem/mesh";
 import { IBus } from "@tandem/mesh";
+import { SequenceBus } from "@tandem/mesh";
 import { IBrokerBus, BrokerBus } from "@tandem/common/dispatchers";
+import { ApplicationServiceProvider } from "./providers";
 import { LoadApplicationRequest, InitializeApplicationRequest, ApplicationReadyMessage } from "../messages";
 import {
   Provider,
@@ -75,5 +76,18 @@ export class Application {
 
   protected didInitialize() {
     // OVERRIDE ME
+  }
+}
+
+
+export class ServiceApplication extends Application {
+  willLoad() {
+    super.willLoad();
+
+    // create the services before loading so that they can hook themselves into the application
+    // context.
+    for (const serviceProvider of ApplicationServiceProvider.findAll(this.injector)) {
+      serviceProvider.create();
+    }
   }
 }

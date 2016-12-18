@@ -1,12 +1,12 @@
 import sift = require("sift");
 import { flatten } from "lodash";
-import { HTML_MIME_TYPE } from "@tandem/common";
 import { filterMessage } from "@tandem/common/decorators";
+import { HTML_MIME_TYPE } from "@tandem/common";
 import { PasteHTMLEntityAction } from "@tandem/html-extension/messages";
-import { CoreApplicationService } from "@tandem/core";
 import { PasteRequest, SelectRequest } from "@tandem/editor/browser/messages";
 import {
   IInjectable,
+  CoreApplicationService,
   CommandFactoryProvider,
   ApplicationServiceProvider,
 } from "@tandem/common";

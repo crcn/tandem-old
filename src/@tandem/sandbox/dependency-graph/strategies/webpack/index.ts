@@ -7,6 +7,7 @@ import {
   Injector,
   JS_MIME_TYPE,
   InjectorProvider,
+  ApplicationConfigurationProvider,
 } from "@tandem/common";
 
 import md5 =  require("md5");
@@ -28,7 +29,6 @@ import {
 import { IModule } from "@tandem/sandbox/sandbox";
 import { Dependency } from "@tandem/sandbox/dependency-graph/dependency";
 import { NodeModuleResolver } from "@tandem/sandbox/resolver";
-import { ApplicationConfigurationProvider } from "@tandem/core/providers";
 import { FileCacheProvider } from "@tandem/sandbox/providers";
 
 import path =  require("path");

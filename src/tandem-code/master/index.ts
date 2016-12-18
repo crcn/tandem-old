@@ -3,13 +3,12 @@ import fs = require("fs");
 import path =  require("path");
 import electron =  require("electron");
 import getPort =  require("get-port");
-import { EditorFamilyType } from "@tandem/editor/common";
-import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
-import { createCoreStudioWorkerProviders } from "../worker";
-import { createCommonEditorProviders, IEditorCommonConfig, SaveAllRequest } from "@tandem/editor/common";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension/core";
+import { createCoreStudioWorkerProviders } from "../worker";
+import { ServiceApplication, ApplicationServiceProvider } from "@tandem/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
+import { EditorFamilyType, createCommonEditorProviders, IEditorCommonConfig, SaveAllRequest } from "@tandem/editor/common";
 
 import { IStudioEditorServerConfig } from "./config";
 import { 

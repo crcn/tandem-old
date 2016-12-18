@@ -1,12 +1,16 @@
 import React =  require("react");
 import ReactDOM = require("react-dom");
 
-import { CallbackDispatcher } from "@tandem/mesh";
 import { EditorStore } from "@tandem/editor/browser/stores";
-import { inject, CoreEvent, StoreProvider } from "@tandem/common";
 import { RootComponent } from "@tandem/editor/browser/components";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { CoreApplicationService } from "@tandem/core";
+import { 
+  inject, 
+  CoreEvent, 
+  StoreProvider, 
+  CoreApplicationService,
+} from "@tandem/common";
 
 export class ComponentService extends CoreApplicationService<IEditorBrowserConfig> {
 

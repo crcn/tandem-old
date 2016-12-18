@@ -1,8 +1,13 @@
-import { IStudioEditorServerConfig } from "tandem-code/master/config";
-import { ApplicationConfigurationProvider } from "@tandem/core";
-import { BaseCommand, Logger, loggable, inject } from "@tandem/common";
 import { TandemStudioMasterStore } from "tandem-code/master/stores";
+import { IStudioEditorServerConfig } from "tandem-code/master/config";
 import { TandemMasterStudioStoreProvider } from "tandem-code/master/providers";
+import { 
+  Logger, 
+  inject, 
+  loggable, 
+  BaseCommand, 
+  ApplicationConfigurationProvider,
+} from "@tandem/common";
 
 export abstract class  BaseStudioMasterCommand extends BaseCommand {
   

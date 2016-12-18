@@ -1,6 +1,5 @@
 import chalk =  require("chalk");
 import path =  require("path");
-import { CoreApplicationService } from "@tandem/core";
 import { titleize } from "inflection";
 import moment =  require("moment");
 import { ansi_to_html } from "ansi_up";
@@ -15,6 +14,7 @@ import {
   serialize,
   LogAction,
   serializable,
+  CoreApplicationService,
 } from "@tandem/common";
 
 export class ConsoleLogServiceAction extends CoreEvent {

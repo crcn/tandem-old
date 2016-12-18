@@ -1,11 +1,11 @@
 import * as SocketIOClient from "socket.io-client";
-import { CoreApplicationService } from "@tandem/core";
-import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { IOService } from "@tandem/editor/common";
+import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import {
   Logger,
   loggable,
   LoadApplicationRequest,
+  CoreApplicationService,
   ApplicationServiceProvider,
 } from "@tandem/common";
 

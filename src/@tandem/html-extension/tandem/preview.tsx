@@ -13,11 +13,18 @@ import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
 import { createTestMasterApplication } from "@tandem/editor/test";
 import { SyntheticBrowser, NoopRenderer, SyntheticHTMLElement } from "@tandem/synthetic-browser";
-import { ServiceApplication, ApplicationServiceProvider } from "@tandem/core";
 import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
 import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
-import { Injector, PrivateBusProvider, BrokerBus, InjectorProvider, RootApplicationComponent } from "@tandem/common";
+import { 
+  Injector, 
+  BrokerBus, 
+  InjectorProvider, 
+  PrivateBusProvider, 
+  ServiceApplication, 
+  RootApplicationComponent, 
+  ApplicationServiceProvider,
+} from "@tandem/common";
 import {
   LayersPaneComponent,
   HTMLStylePaneComponent,
