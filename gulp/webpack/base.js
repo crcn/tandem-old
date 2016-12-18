@@ -55,7 +55,7 @@ if (MINIFY) {
     })
   )
 
-  const traceurLoader = 'traceur-loader';
+  const traceurLoader = 'traceur?runtime';
 
   pegLoaders.push(traceurLoader);
 
