@@ -2,6 +2,13 @@ import { SyntheticBrowser } from "./browser";
 import { RemoteBrowserService } from "./remote-browser";
 import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
 import parse5 = require("parse5");
+
+import { 
+  ContentEditorFactoryProvider, 
+  DependencyLoaderFactoryProvider,
+  SandboxModuleEvaluatorFactoryProvider,
+} from "@tandem/sandbox";
+
 import { 
   Kernel, 
   Provider, 
@@ -16,14 +23,23 @@ import { 
   SVG_XMLNS,
   SVG_TAG_NAMES,
   HTML_TAG_NAMES,
+  SyntheticHTMLElement,
   SyntheticHTMLIframeElement, 
   SyntheticHTMLAnchorElement, 
   SyntheticHTMLLinkElement, 
   SyntheticHTMLStyleElement, 
   SyntheticHTMLScriptElement, 
   SyntheticHTMLCanvasElement, 
-  SyntheticHTMLElement,
 } from "./dom";
+
+import {
+  CSSEditor,
+  MarkupEditor,
+  CSSDependencyEvaluator,
+  HTMLDependencyEvaluator,
+  CSSDependencyLoader,
+  HTMLDependencyLoader,
+ } from "./sandbox";
 
 export class SyntheticDOMElementClassProvider extends Provider<syntheticElementClassType> {
   static readonly SYNTHETIC_ELEMENT_CLASS_NS = "syntheticMarkupElementClass";
@@ -83,6 +99,13 @@ export const createSyntheticHTMLProviders = () => {
   return [
     ...HTML_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(HTML_XMLNS, tagName, SyntheticHTMLElement)),
     ...SVG_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(SVG_XMLNS, tagName, SyntheticHTMLElement)),
+
+    new ContentEditorFactoryProvider(CSS_MIME_TYPE, CSSEditor),
+    new ContentEditorFactoryProvider(HTML_MIME_TYPE, MarkupEditor),
+    new SandboxModuleEvaluatorFactoryProvider(CSS_MIME_TYPE, CSSDependencyEvaluator),
+    new SandboxModuleEvaluatorFactoryProvider(HTML_MIME_TYPE, HTMLDependencyEvaluator),
+    new DependencyLoaderFactoryProvider(CSS_MIME_TYPE, CSSDependencyLoader),
+    new DependencyLoaderFactoryProvider(HTML_MIME_TYPE, HTMLDependencyLoader),
 
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "canvas", SyntheticHTMLCanvasElement),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLinkElement),

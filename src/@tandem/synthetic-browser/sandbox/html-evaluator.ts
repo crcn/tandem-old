@@ -6,12 +6,13 @@ import {
 import {
   evaluateMarkup,
   SyntheticWindow,
-  MarkupMimeTypeXMLNSProvider,
-} from "@tandem/synthetic-browser";
+} from "../dom";
+
+import { MarkupMimeTypeXMLNSProvider } from "../providers";
 
 import parse5 = require("parse5");
 
-export class HTMLASTEvaluator implements ISandboxDependencyEvaluator {
+export class HTMLDependencyEvaluator implements ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule) {
 
     const window = <SyntheticWindow>module.sandbox.global;
@@ -20,7 +21,7 @@ export class HTMLASTEvaluator implements ISandboxDependencyEvaluator {
 
     
     // documentElement must be this -- handled by browser instance. Also note
-    // that we're not manually setting document element here to ensure that HTMLASTEvaluator works for imported docs
+    // that we're not manually setting document element here to ensure that HTMLDependencyEvaluator works for imported docs
     // which is (slowly) being implemented in real browsers.
     evaluateMarkup(parse5.parse(module.source.content, { locationInfo: true }) as any, window.document, MarkupMimeTypeXMLNSProvider.lookup(module.source.uri, window.browser.kernel), module, window.document);
   }

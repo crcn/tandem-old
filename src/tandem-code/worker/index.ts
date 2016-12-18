@@ -9,7 +9,7 @@ import { IStudioWorkerConfig } from "./config";
 import { FileImporterProvider } from "@tandem/editor/worker";
 import { PreviewLoaderProvider } from "@tandem/editor/worker/providers";
 import { MarkupMimeTypeXMLNSProvider } from "@tandem/synthetic-browser";
-import { createJavaScriptWorkerProviders } from "@tandem/javascript-extension/editor/server";
+import { createCommonjsWorkerProviders } from "@tandem/commonjs-extension/editor/server";
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/server";
 import { isMaster, fork, addListener, emit } from "cluster";
@@ -60,7 +60,7 @@ export const createCoreStudioWorkerProviders = () => {
   return [
     createHTMLEditorWorkerProviders(),
     createSASSEditorWorkerProviders(),
-    createJavaScriptWorkerProviders(),
+    createCommonjsWorkerProviders(),
     createCoreMarkdownExtensionProviders(),
     createTDProjectEditorWorkerProviders(),
     // createTypescriptEditorWorkerProviders(),

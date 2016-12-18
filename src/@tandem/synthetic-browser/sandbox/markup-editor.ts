@@ -15,23 +15,23 @@ import {
 } from "@tandem/sandbox";
 
 import parse5 = require("parse5");
+import { ElementTextContentMimeTypeProvider } from "../providers";
 
 import {
   SyntheticDOMNode,
   SyntheticDOMElement,
-  getHTMLASTNodeLocation,
   SyntheticHTMLElement,
   findDOMNodeExpression,
-  filterDOMNodeExpressions,
   formatMarkupExpression,
+  getHTMLASTNodeLocation,
   SyntheticDOMElementEdit,
+  filterDOMNodeExpressions,
   SyntheticDOMValueNodeEdit,
   SyntheticDOMContainerEdit,
   SyntheticDOMElementMutationTypes,
   SyntheticDOMContainerMutationTypes,
   SyntheticDOMValueNodeMutationTypes,
-  ElementTextContentMimeTypeProvider,
-} from "@tandem/synthetic-browser";
+} from "../dom";
 
 // TODO - replace text instead of modifying the AST
 export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {

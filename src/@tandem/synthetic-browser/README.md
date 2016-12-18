@@ -1,7 +1,18 @@
-"Fake" browser for running code in a controlled environment. Works in most JavaScript
-runtime environments.
+Browser VM that can run in any JavaScript environment. The primary motivation behind this library is to have complete
+control over application environment to enable certain features that not possible in regular browsers. Features include:
 
-#### Example:
+#### Ability to hotswap application state in a live environment
+
+The browser VM hotswaps parts of loaded application as its being modified by the user. This means that the user is not interupted whenever the application
+reloads internally. 
+
+#### Deffered rendering
+
+The browser VM deffers HTML & CSS rendering to *real* browsers, and it can be any browser. 
+
+
+
+### Kitchen sink example:
 
 ```typescript
 import { Kernel } from "@tandem/common";
@@ -12,11 +23,11 @@ import {
   LocalFileSystem,
   RemoteFileSystem,
   LocalFileResolver,
-  DependencyGraphProvider,
   RemoveFileResolver,
   ResolverProvider,
   FileCacheProvider,
   FileSystemProvider,
+  DependencyGraphProvider,
 } from "@tandem/sandbox";
 
 

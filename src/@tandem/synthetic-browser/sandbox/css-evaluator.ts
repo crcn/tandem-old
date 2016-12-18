@@ -5,7 +5,7 @@ import {
 
 import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser";
 
-export class CSSASTEvaluator implements ISandboxDependencyEvaluator {
+export class CSSDependencyEvaluator implements ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule) {
     module.exports = evaluateCSS(parseCSS(module.source.content), module.source.map, module);
   }

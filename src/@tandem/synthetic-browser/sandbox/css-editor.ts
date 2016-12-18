@@ -14,6 +14,7 @@ import {
   RemoveChildMutation,
   MoveChildMutation,
 } from "@tandem/common";
+
 import {
   parseCSS,
   SyntheticCSSElementStyleRule,
@@ -24,7 +25,8 @@ import {
   CSSGroupingRuleMutationTypes,
   SyntheticCSSKeyframesRuleEdit,
   SyntheticCSSElementStyleRuleEdit,
-} from "@tandem/synthetic-browser";
+} from "../dom";
+
 import {
   Dependency,
   IContentEdit,

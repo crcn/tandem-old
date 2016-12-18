@@ -6,8 +6,7 @@
 
 import path =  require("path");
 import { createSASSSandboxProviders } from "@tandem/sass-extension";
-import { createHTMLSandboxProviders } from "@tandem/html-extension";
-import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension";
+import { createJavaScriptSandboxProviders } from "@tandem/commonjs-extension";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
 import { MarkupEditor, createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test/helpers";
@@ -50,7 +49,6 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
     new KernelProvider(),
     new PrivateBusProvider(bus),
     createSASSSandboxProviders(),
-    createHTMLSandboxProviders(),
     createSyntheticHTMLProviders(),
     new ApplicationServiceProvider("console", ConsoleLogService),
     new ApplicationServiceProvider("receiver", ReceiverService),

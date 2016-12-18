@@ -12,7 +12,7 @@ import { 
   PrivateBusProvider,
 } from "@tandem/common";
 import { MemoryDataStore, ReadableStream } from "@tandem/mesh";
-import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension/sandbox";
+import { createJavaScriptSandboxProviders } from "@tandem/commonjs-extension/sandbox";
 
 import {
   Sandbox,
