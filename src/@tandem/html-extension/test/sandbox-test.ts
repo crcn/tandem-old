@@ -72,7 +72,7 @@ describe(__filename + "#", () => {
     });
     
 
-    expect(stripNewLines(document.body.textContent)).to.contain(`Hello World Hello World`);
+    expect(stripNewLines(document.body.textContent)).to.contain(`Hello WorldHello World`);
   });
 
   it(`script can reference itself when executed`, async () => {

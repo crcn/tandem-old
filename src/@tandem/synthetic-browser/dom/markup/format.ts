@@ -23,6 +23,9 @@ export function formatMarkupExpression(node: parse5.AST.Default.Node, defaultInd
       return `<!DOCTYPE ${doctype.name}>`;
     } else if (current.nodeName === "#text") {
       const text = current as parse5.AST.Default.TextNode;
+
+      // only ws?
+      if (/^[\s\r\n\t]$/.test(text.value)) return "";
       return indent() + text.value.trim();
     } else if (current.nodeName === "#comment") {
       const comment = current as parse5.AST.Default.CommentNode;

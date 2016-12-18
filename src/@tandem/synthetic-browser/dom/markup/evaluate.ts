@@ -41,7 +41,7 @@ export function evaluateMarkup(expression: parse5.AST.Default.Node, doc: Synthet
       euri  = org.source;
     }
 
-    synthetic.$source     = {
+    synthetic.$source  = {
       uri: euri,
       start: start
     };
@@ -78,6 +78,7 @@ export function evaluateMarkup(expression: parse5.AST.Default.Node, doc: Synthet
       const isWS = /^[\n\r\t ]+$/.test(value);
       const node = doc.createTextNode((expression as parse5.AST.Default.TextNode).value);
       if (!isWS) {
+        linkSourceInfo(expression, node);
         parentContainer.appendChild(node);
       }
       return node;
