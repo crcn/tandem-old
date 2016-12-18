@@ -287,9 +287,7 @@ export class FileEditor {
 
 export abstract class BaseEditor<T> {
 
-  constructor(readonly target: T) {
-
-  }
+  constructor(readonly target: T) { }
 
   applyMutations(mutations: Mutation<T>[]) {
     if (mutations.length === 1) {
@@ -301,9 +299,7 @@ export abstract class BaseEditor<T> {
     }
   }
 
-  protected applySingleMutation(mutation: Mutation<T>) {
-
-  }
+  protected applySingleMutation(mutation: Mutation<T>) { }
 }
 
 export class GroupEditor implements IEditor {
