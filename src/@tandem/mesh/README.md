@@ -4,27 +4,19 @@ Mesh is a utility belt library for complex data flows. Here until the lib mature
 a bit before moving over to the main repository.
 
 
-TODOS:
-
-- [ ] use [Streams](https://streams.spec.whatwg.org/) spec.
-- [ ] replace Action terminology for Message terminolgy
-- [ ] `Observable` class
-- [ ] add duplex streams
-
 
 ## Terminology
 
-#### Bus
-
-Respnsible for organizing and dispatching a message to *one* or *many* endpoints.
-
 #### Dispatcher
 
-Responsible for transmitting data to *one* endpoint .
+Responsible for dispatching a message to one or many listeners. Examples include `Observables`, and `Busses`.
 
 #### Message
 
 The object that is sent to the dispatcher handlers
+
+#### Request
+
 
 #### Features
 

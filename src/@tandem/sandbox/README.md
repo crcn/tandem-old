@@ -1,4 +1,4 @@
-Sandboxed environment for running code.
+
 
 Kitchen sink example:
 
@@ -6,19 +6,19 @@ Kitchen sink example:
 import { Injector } from "@tandem/common";
 import { SyntheticWindow, SyntheticDocument } from "@tandem/synthetic-browser";
 import {
-  Dependency,
   Sandbox,
-  DependencyGraph,
+  Dependency,
   FileCacheItem,
   LocalFileSystem,
-  LocalFileResolver,
-  DependencyGraphProvider,
+  DependencyGraph,
   ISyntheticObject,
-  FileEditorProvider,
+  LocalFileResolver,
   FileSystemProvider,
+  FileEditorProvider,
   FileResolverProvider,
-  DependencyLoaderFactoryProvider,
+  DependencyGraphProvider,
   ContentEditorFactoryProvider,
+  DependencyLoaderFactoryProvider,
 } from "@tandem/sandbox";
 
 
