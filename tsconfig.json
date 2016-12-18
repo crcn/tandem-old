@@ -1,8 +1,13 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "sourceMap": true,
+    "lib": [
+      "es2015.promise",
+      "dom",
+      "es6"
+    ],
     "module": "commonjs",
     "outDir": "out",
     "baseUrl": "src",

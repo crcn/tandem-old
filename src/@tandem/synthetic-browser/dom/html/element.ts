@@ -1,7 +1,7 @@
 import { SyntheticDocument } from "../document";
 import { SyntheticCSSStyle } from "../css";
 import { DOMEventListenerFunction } from "../events";
-import { BoundingRect, serializable, IPoint, bindable } from "@tandem/common";
+import { BoundingRect, serializable, IPoint, bindable, ArrayCollection } from "@tandem/common";
 
 import {
   evaluateMarkup,
@@ -13,8 +13,8 @@ import {
 
 import parse5 = require("parse5");
 
-class ElementClassList extends Array<string> {
-  constructor(readonly target: SyntheticDOMElement) {
+class ElementClassList extends ArrayCollection<string> {
+  protected constructor(readonly target: SyntheticDOMElement) {
     super(...String(target.getAttribute("class") || "").split(" "));
   }
   add(value: string) {
@@ -105,7 +105,7 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
     if (name === "style") {
       this._resetStyleFromAttribute();
     } else if (name === "class") {
-      this._classList = new ElementClassList(this);
+      this._classList = ElementClassList.create(this) as any as ElementClassList;
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }

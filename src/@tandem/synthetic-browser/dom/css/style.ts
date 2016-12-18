@@ -524,7 +524,7 @@ export class SyntheticCSSStyle implements ISyntheticObject {
     }
 
     for (const key in this) {
-      if (!isValidCSSDeclarationProperty(key)) continue;
+      if (!this.hasOwnProperty(key) || !isValidCSSDeclarationProperty(key)) continue;
       if (this[key] == null) continue;
       model[key + ""] = this[key];
     }
@@ -557,8 +557,8 @@ export class SyntheticCSSStyle implements ISyntheticObject {
   get cssText() {
     const buffer = [];
 
-    for (const key in this) {
-      if (!isValidCSSDeclarationProperty(key)) continue;
+    for (let i = 0, n = this.length; i < n; i++) {
+      const key = this[i];
       const value = this[key];
       if (value) {
         buffer.push("\t", kebabCase(key), ": ", value, ";\n");
@@ -616,8 +616,8 @@ export class SyntheticCSSStyle implements ISyntheticObject {
 
   toObject() {
     const obj = {};
-    for (const key in this) {
-      if (!isValidCSSDeclarationProperty(key)) continue;
+    for (let i = 0, n = this.length; i < n; i++) {
+      const key = this[i];
       if (this[key] == null) continue;
       obj[key + ""] = this[key];
     }

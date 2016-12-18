@@ -246,7 +246,7 @@ class ResizerComponent extends BaseApplicationComponent<{
 
     const { selection } = this.props;
 
-    const elements = this._visibleElements = new VisibleSyntheticElementCollection(...selection);
+    const elements = this._visibleElements = VisibleSyntheticElementCollection.create(...selection) as VisibleSyntheticElementCollection<any>;
 
     const pointRadius = (this.props.pointRadius || POINT_RADIUS);
     const strokeWidth = (this.props.strokeWidth || POINT_STROKE_WIDTH);

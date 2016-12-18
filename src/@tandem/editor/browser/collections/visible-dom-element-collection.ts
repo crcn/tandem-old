@@ -1,14 +1,14 @@
-import { BoundingRect, IPoint, Mutation } from "@tandem/common";
 import {
   DOMNodeType,
   SyntheticHTMLElement,
   VisibleSyntheticDOMElement,
   VisibleDOMNodeCapabilities,
 } from "@tandem/synthetic-browser";
+import { BoundingRect, IPoint, Mutation, ArrayCollection } from "@tandem/common";
 
-export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElement<any>> extends Array<T> {
+export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElement<any>> extends ArrayCollection<T> {
 
-  constructor(...elements: any[]) {
+  protected constructor(...elements: any[]) {
     super(
 
       // dirty check - might be better to use reflection here instead to check

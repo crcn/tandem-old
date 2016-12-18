@@ -1,5 +1,5 @@
 import { flatten } from "lodash";
-import { IWalkable, ITreeWalker, TreeWalker } from "@tandem/common";
+import { IWalkable, ITreeWalker, TreeWalker, ArrayCollection } from "@tandem/common";
 import {
   DOMNodeType,
   SyntheticDOMNode,
@@ -20,7 +20,7 @@ export class MatchedStyleRule {
 }
 
 
-export class DOMElements<T extends SyntheticDOMElement> extends Array<T>  implements IWalkable {
+export class DOMElements<T extends SyntheticDOMElement> extends ArrayCollection<T>  implements IWalkable {
 
   setAttribute(name: string, value: string) {
     for (const element of this) {
@@ -43,7 +43,7 @@ export class DOMElements<T extends SyntheticDOMElement> extends Array<T>  implem
   }
 
   get attributes(): SyntheticDOMAttributes {
-    const attributes = new SyntheticDOMAttributes();
+    const attributes =  SyntheticDOMAttributes.create() as SyntheticDOMAttributes;
     for (const element of this) {
       for (const attribute of element.attributes) {
         if (!attributes.hasOwnProperty(attribute.name)) {

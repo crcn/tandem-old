@@ -12,7 +12,7 @@ import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collec
 class RulerToolComponent extends React.Component<{ selection: Array<any> }, any> {
 
   render() {
-    const entities = new VisibleSyntheticElementCollection(...this.props.selection);
+    const entities = VisibleSyntheticElementCollection.create(...this.props.selection);
     return null;
     // const selectionDisplay = entities.display;
 

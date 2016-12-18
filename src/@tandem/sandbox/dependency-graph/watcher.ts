@@ -111,7 +111,7 @@ export class DependencyGraphWatcher extends Observable {
       this._dependencyObservers.dispose();
     }
 
-    this._dependencyObservers = new DisposableCollection();
+    this._dependencyObservers = DisposableCollection.create() as DisposableCollection;
 
     for (const dep of flattenDependencies(this.entry)) {
       dep.observe(this._dependencyObserver);

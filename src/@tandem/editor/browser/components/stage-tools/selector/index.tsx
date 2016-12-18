@@ -16,6 +16,7 @@ export class SelectorStageToolComponent extends React.Component<{ workspace: Wor
     this.state = {};
   }
 
+
   onResizing = (event) => {
     this.setState({ resizing: true, mouseLeft: (event.pageX - this.props.workspace.transform.left) / this.props.zoom, mouseTop: (event.pageY - this.props.workspace.transform.top) / this.props.zoom });
   }
@@ -37,7 +38,7 @@ export class SelectorStageToolComponent extends React.Component<{ workspace: Wor
     const { workspace } = this.props;
     if (!workspace.showStageTools) return null;
 
-    const selection = new VisibleSyntheticElementCollection(...(workspace.selection as any));
+    const selection = VisibleSyntheticElementCollection.create(...(workspace.selection as any)) as VisibleSyntheticElementCollection<any>;
 
 
     // simple check to see if the selection array

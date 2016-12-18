@@ -1,6 +1,7 @@
 import { IObservable } from "../observable";
+import { ArrayCollection } from "../array-collection";
 
-export class ObservableCollection<T> extends Array<T> {
+export class ObservableCollection<T> extends ArrayCollection<T> {
   push(...items: Array<T>) {
     return this.splice(this.length, 0, ...items).length;
   }

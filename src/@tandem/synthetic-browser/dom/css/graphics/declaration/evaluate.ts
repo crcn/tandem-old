@@ -424,7 +424,7 @@ export class SyntheticCSSLinearGradient extends SyntheticCSSValue {
   constructor(angle: number, colorStops: SyntheticCSSGradientColorStop[]) {
     super();
     this.angle = angle;
-    this.colorStops = new ObservableCollection(...colorStops);
+    this.colorStops = ObservableCollection.create(...colorStops) as ObservableCollection<SyntheticCSSGradientColorStop>;
   }
   clone() {
     return new SyntheticCSSLinearGradient(this.angle, this.colorStops.map(colorStop => colorStop.clone()));

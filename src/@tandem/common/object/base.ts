@@ -1,13 +1,11 @@
+import { ArrayCollection } from "../array-collection";
 
 // performs cleanup of object for GC
 export interface IDisposable {
   dispose(): void;
 }
 
-export class DisposableCollection extends Array<IDisposable> implements IDisposable {
-  constructor(...items: IDisposable[]) {
-    super(...items);
-  }
+export class DisposableCollection extends  ArrayCollection<IDisposable> implements IDisposable {
   dispose() {
     for (const disposable of this) disposable.dispose();
   }

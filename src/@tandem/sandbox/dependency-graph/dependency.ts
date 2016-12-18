@@ -331,8 +331,9 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
   }
 
   private async getSourceFiles() {
+    const cacheItem = await this.getSourceFileCacheItem();
     return [
-      await this.getSourceFileCacheItem(),
+      cacheItem,
       ...(await Promise.all(this._includedDependencyInfo.map(info => this._fileCache.findOrInsert(info.uri))))
     ];
   }
@@ -414,7 +415,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this._changeWatchers.dispose();
     }
 
-    const changeWatchers = this._changeWatchers = new DisposableCollection();
+    const changeWatchers = this._changeWatchers = DisposableCollection.create() as DisposableCollection;
 
     // included dependencies aren't self contained, so they don't get a Dependency object. For
     // that we'll need to watch their file cache active record and watch it for any changes. Since

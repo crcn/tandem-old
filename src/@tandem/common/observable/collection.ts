@@ -1,15 +1,16 @@
 import { Observable } from "./index";
 import { IObservable } from "../observable";
+import { ArrayCollection } from "../array-collection";
 import { BubbleDispatcher } from "@tandem/common/dispatchers";
 import { CoreEvent, MetadataChangeEvent } from "@tandem/common/messages";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { ArrayMutation, ArrayInsertMutation, ArrayRemoveMutation, ArrayUpdateMutation } from "@tandem/common/utils";
 
-export class ObservableCollection<T> extends Array<T> implements IObservable {
+export class ObservableCollection<T> extends ArrayCollection<T> implements IObservable {
   private _observable: Observable;
   private _itemObserver: IDispatcher<any, any>;
 
-  constructor(...items: T[]) {
+  protected constructor(...items: T[]) {
     super(...items);
     this._observable = new Observable(this);
     this._itemObserver = new BubbleDispatcher(this);

@@ -19,8 +19,8 @@ export class HTMLDOMElements extends DOMElements<SyntheticHTMLElement> {
   }
 
   static fromArray(items: any): HTMLDOMElements {
-    return new HTMLDOMElements(...items.filter((item) => {
+    return HTMLDOMElements.create(...items.filter((item) => {
       return item.nodeType === DOMNodeType.ELEMENT &&  !!(<SyntheticHTMLElement>item.style);
-    }))
+    })) as HTMLDOMElements;
   }
 }

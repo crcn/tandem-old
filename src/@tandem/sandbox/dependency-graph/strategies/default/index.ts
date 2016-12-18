@@ -50,7 +50,6 @@ export class DefaultDependencyLoader implements IDependencyLoader {
     // Some loaders may return the same mime type (such as html-loader, and css-loader which simply return an AST node).
     // This ensures that they don't get re-used.
     const used = {};
-
     while(current.type && (loaderProvider = DependencyLoaderFactoryProvider.find(MimeTypeAliasProvider.lookup(current.type, this._kernel), this._kernel)) && !used[loaderProvider.id]) {
       used[loaderProvider.id] = true;
       current = await loaderProvider.create(this.stragegy).load(dependency, current);

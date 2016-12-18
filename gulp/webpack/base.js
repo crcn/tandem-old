@@ -49,26 +49,25 @@ if (SOURCE_MAPS) {
 
 // does not work
 if (MINIFY) {
-  // plugins.push(
-  //   new webpack.optimize.UglifyJsPlugin({
-  //     compress: true
-  //   })
-  // )
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      compress: true
+    })
+  )
 
-  // const traceurLoader = 'traceur-loader?runtime';
+  const traceurLoader = 'traceur-loader';
 
-  // tsLoaders.push(traceurLoader);
-  // pegLoaders.push(traceurLoader);
+  pegLoaders.push(traceurLoader);
 
-  // loaders.push(
-  //   {
-  //     test: /\.js?$/,
+  loaders.push(
+    {
+      test: /\.js?$/,
 
-  //     // TODO - add jsx dataSource loader here
-  //     loader: traceurLoader,
-  //     exclude:  /node_modules/
-  //   }
-  // )
+      // TODO - add jsx dataSource loader here
+      loader: traceurLoader,
+      exclude:  /node_modules/
+    }
+  )
 }
 
 

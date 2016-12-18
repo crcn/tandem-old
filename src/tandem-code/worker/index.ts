@@ -19,7 +19,12 @@ import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extens
 import { EditorFamilyType, createCommonEditorProviders } from "@tandem/editor/common";
 import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest } from "tandem-code/common";
 
-import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider, ElementTextContentMimeTypeProvider } from "@tandem/synthetic-browser";
+import { 
+  createSyntheticHTMLProviders,
+  SyntheticDOMElementClassProvider, 
+  ElementTextContentMimeTypeProvider,
+  createSyntheticBrowserWorkerProviders, 
+} from "@tandem/synthetic-browser";
 import {
   hook,
   Kernel,
@@ -58,12 +63,12 @@ import {
 
 export const createCoreStudioWorkerProviders = () => {
   return [
+    createSyntheticHTMLProviders(),
     createHTMLEditorWorkerProviders(),
     createSASSEditorWorkerProviders(),
     createCommonjsWorkerProviders(),
     createCoreMarkdownExtensionProviders(),
     createTDProjectEditorWorkerProviders(),
-    // createTypescriptEditorWorkerProviders(),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadProjectConfigCommand),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),

@@ -17,6 +17,7 @@ resolve UX. May want to optimize experience around writing code.
 NEW TARGET: Dev tools - qa testing. Develop
 
 - [ ] test suite
+- [ ] make collections es5 compatible
 
 - [ ] fix vscode extension
 - [ ] CTA blog

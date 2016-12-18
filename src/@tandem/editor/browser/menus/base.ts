@@ -20,7 +20,6 @@ export class WebMenuItem extends TreeNode<WebMenuItem> {
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
   
-
   constructor(readonly name: string, public type?: string, public label?: string, public role?: string, public keyCombo?: string, public click?: () => any) {
     super();
   }
@@ -68,9 +67,8 @@ export function createMenuSeparatorClass(): { new(name: string): WebMenuItem } {
 export function createKeyCommandMenuItemClass(label: string, keyCombo: string, requestClass: { new(): IMessage } ): { new(name: string): WebMenuItem } {
   return class extends WebMenuItem {
     constructor(name: string) {
-      super(name, undefined, label, undefined, keyCombo, () => {
-        this.bus.dispatch(new requestClass());
-      });
+      super(name, undefined, label, undefined, keyCombo);
+      this.click = () => this.bus.dispatch(new requestClass());
     }
   }
 }

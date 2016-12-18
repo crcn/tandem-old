@@ -1,4 +1,5 @@
 require('reflect-metadata');
+require('ts-helpers');
 const fs            = require('fs');
 const fsa           = require('fs-extra');
 const exec          = require('child_process').exec;

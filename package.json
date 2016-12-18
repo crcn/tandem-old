@@ -12,6 +12,7 @@
   },
   "scripts": {
     "test": "SOURCE_MAPS=1 gulp test --coverage=50 --timeout=20000 --bail",
+    "start-playground": "node ./out/playground",
     "postinstall": "gulp build:dist",
     "code": "DEV=1 SANDBOXED=1 electron dist/index.bundle.js"
   },
@@ -132,6 +133,7 @@
     "strip-indent": "^2.0.0",
     "style-loader": "^0.13.1",
     "tap": "^8.0.1",
+    "ts-helpers": "^1.1.2",
     "ts-loader": "^0.9.4",
     "tslint": "^3.13.0",
     "tslint-loader": "^2.1.5",

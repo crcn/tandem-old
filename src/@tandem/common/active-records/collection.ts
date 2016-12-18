@@ -5,8 +5,8 @@ import { isMaster } from "@tandem/common/workers";
 import { IBrokerBus } from "@tandem/common/dispatchers";
 import { IDisposable } from "@tandem/common/object";
 import { IActiveRecord } from "./base";
-import { ObservableCollection } from "@tandem/common/observable";
 import { PostDSMessage } from "@tandem/common/messages";
+import { ObservableCollection } from "@tandem/common/observable";
 import { Kernel, PrivateBusProvider, IInjectable } from "@tandem/common/ioc";
 import {
   FilterBus,
@@ -27,12 +27,8 @@ export class ActiveRecordCollection<T extends IActiveRecord<any>, U> extends Obs
   private _bus: IBrokerBus;
   private _globalMessageObserver: IDispatcher<any, any>;
 
-  private constructor(...items: T[]) {
-    super();
-  }
-
   static create<T extends IActiveRecord<any>, U>(collectionName: string, kernel: Kernel, createActiveRecord: (source: U) => T, query: any = {}): ActiveRecordCollection<T, U> {
-    return new (this as any)().setup(collectionName, kernel, createActiveRecord, query);
+    return (ObservableCollection.create.call(this) as ActiveRecordCollection<any, any>).setup(collectionName, kernel, createActiveRecord, query);
   }
 
   setup(collectionName: string, kernel: Kernel, createActiveRecord: (source: U) => T, query?: Object) {

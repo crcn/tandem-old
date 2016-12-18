@@ -27,7 +27,7 @@ export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ w
   }
 
   get items(): DOMElements<any> {
-    if (!this.props.workspace) return new DOMElements();
+    if (!this.props.workspace) return DOMElements.create() as DOMElements<any>;
     const { selection } = this.props.workspace;
     return DOMElements.fromArray(selection);
   }

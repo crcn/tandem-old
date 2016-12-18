@@ -1,4 +1,4 @@
-import { BoundingRect, IPoint } from "@tandem/common";
+import { BoundingRect, IPoint, ArrayCollection } from "@tandem/common";
 import {
   DOMNodeType,
   SyntheticHTMLElement,
@@ -6,7 +6,7 @@ import {
   VisibleDOMNodeCapabilities,
 } from "@tandem/synthetic-browser";
 
-export class VisibleSyntheticElements<T extends VisibleSyntheticDOMElement<any>> extends Array<T> {
+export class VisibleSyntheticElements<T extends VisibleSyntheticDOMElement<any>> extends ArrayCollection<T> {
 
   get editable() {
     return this.find((entity) => entity.source == null) == null;
