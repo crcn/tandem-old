@@ -1,7 +1,6 @@
 import { expect } from "chai";
-import { SyntheticHTMLStyle } from "@tandem/html-extension/synthetic";
 import { SyntheticDOMRenderer } from "./index";
-import { SyntheticWindow, SyntheticDocument } from "@tandem/synthetic-browser";
+import { SyntheticWindow, SyntheticDocument, SyntheticHTMLStyleElement } from "@tandem/synthetic-browser";
 import { generateRandomSyntheticHTMLElementSource, generateRandomStyleSheet } from "@tandem/synthetic-browser/test/helpers";
 
 describe(__filename + "#", () => {
@@ -10,7 +9,7 @@ describe(__filename + "#", () => {
 
   const createDocument = (html = "") => {
     const document  = new SyntheticWindow().document;
-    document.registerElement("style", SyntheticHTMLStyle);
+    document.registerElement("style", SyntheticHTMLStyleElement);
     document.body.innerHTML = html;
     return document;
   }

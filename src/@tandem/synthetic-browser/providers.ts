@@ -2,7 +2,28 @@ import { SyntheticBrowser } from "./browser";
 import { RemoteBrowserService } from "./remote-browser";
 import { syntheticElementClassType, SyntheticDOMNode } from "./dom";
 import parse5 = require("parse5");
-import { Provider, Kernel, MimeTypeProvider, ApplicationServiceProvider } from "@tandem/common";
+import { 
+  Kernel, 
+  Provider, 
+  CSS_MIME_TYPE,
+  HTML_MIME_TYPE,
+  MimeTypeProvider, 
+  ApplicationServiceProvider,
+} from "@tandem/common";
+
+import { 
+  HTML_XMLNS, 
+  SVG_XMLNS,
+  SVG_TAG_NAMES,
+  HTML_TAG_NAMES,
+  SyntheticHTMLIframeElement, 
+  SyntheticHTMLAnchorElement, 
+  SyntheticHTMLLinkElement, 
+  SyntheticHTMLStyleElement, 
+  SyntheticHTMLScriptElement, 
+  SyntheticHTMLCanvasElement, 
+  SyntheticHTMLElement,
+} from "./dom";
 
 export class SyntheticDOMElementClassProvider extends Provider<syntheticElementClassType> {
   static readonly SYNTHETIC_ELEMENT_CLASS_NS = "syntheticMarkupElementClass";
@@ -56,4 +77,25 @@ export class ElementTextContentMimeTypeProvider extends Provider<ElementTextCont
     const provider = kernel.query<ElementTextContentMimeTypeProvider>(this.getId(element.nodeName.toLowerCase()));
     return provider && provider.getter(element);
   }
+}
+
+export const createSyntheticHTMLProviders = () => {
+  return [
+    ...HTML_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(HTML_XMLNS, tagName, SyntheticHTMLElement)),
+    ...SVG_TAG_NAMES.map((tagName) => new SyntheticDOMElementClassProvider(SVG_XMLNS, tagName, SyntheticHTMLElement)),
+
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "canvas", SyntheticHTMLCanvasElement),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLinkElement),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "a", SyntheticHTMLAnchorElement),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "script", SyntheticHTMLScriptElement),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "style", SyntheticHTMLStyleElement),
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "iframe", SyntheticHTMLIframeElement),
+    new ElementTextContentMimeTypeProvider("style", () => "text/css"),
+
+    // TODO - move these to htmlCoreProviders
+    // mime types
+    new MimeTypeProvider("css", CSS_MIME_TYPE),
+    new MimeTypeProvider("htm", HTML_MIME_TYPE),
+    new MimeTypeProvider("html", HTML_MIME_TYPE),
+  ];
 }

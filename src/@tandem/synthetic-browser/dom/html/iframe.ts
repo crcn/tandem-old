@@ -1,7 +1,8 @@
-import { SyntheticHTMLElement, SyntheticWindow } from "@tandem/synthetic-browser";
+import { SyntheticWindow } from "../window";
+import { SyntheticHTMLElement } from "./element";
 
 
-export class SyntheticIframe extends SyntheticHTMLElement  {
+export class SyntheticHTMLIframeElement extends SyntheticHTMLElement  {
   private _contentWindow: SyntheticWindow;
   createdCallback() {
     super.createdCallback();

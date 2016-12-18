@@ -3,11 +3,18 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
 import React =  require("react");
 
-import { SyntheticBrowser, BaseRenderer, getMatchingCSSStyleRules, MatchedCSSStyleRule, SyntheticCSSStyle } from "@tandem/synthetic-browser";
-import { Kernel, KernelProvider, PrivateBusProvider, BrokerBus, BoundingRect } from "@tandem/common";
-import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
+import { createHTMLSandboxProviders } from "@tandem/html-extension";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
 import { createTestMasterApplication } from "@tandem/editor/test";
+import { Kernel, KernelProvider, PrivateBusProvider, BrokerBus, BoundingRect } from "@tandem/common";
+import { 
+  BaseRenderer, 
+  SyntheticBrowser, 
+  SyntheticCSSStyle, 
+  MatchedCSSStyleRule, 
+  getMatchingCSSStyleRules, 
+  createSyntheticHTMLProviders, 
+} from "@tandem/synthetic-browser";
 
 import { MeasurementStageToolComponent } from "./index";
 
@@ -84,7 +91,7 @@ export const createBodyElement = reactEditorPreview(async () => {
   const kernel = new Kernel(
     new PrivateBusProvider(bus),
     new KernelProvider(),
-    createHTMLCoreProviders(),
+    createSyntheticHTMLProviders(),
     createHTMLSandboxProviders(),
     createTestSandboxProviders({
       mockFiles: {

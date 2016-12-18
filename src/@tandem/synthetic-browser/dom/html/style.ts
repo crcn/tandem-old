@@ -4,15 +4,10 @@ import { CSS_MIME_TYPE } from "@tandem/common";
 import sm = require("source-map");
 import postcss = require("postcss");
 
-import {
-  parseCSS,
-  evaluateCSS,
-  SyntheticDOMText,
-  SyntheticDOMElement,
-  SyntheticCSSStyleSheet,
-} from "@tandem/synthetic-browser";
+import { SyntheticDOMElement } from "../markup/element";
+import { parseCSS, evaluateCSS, SyntheticCSSStyleSheet } from "../css";
 
-export class SyntheticHTMLStyle extends SyntheticDOMElement {
+export class SyntheticHTMLStyleElement extends SyntheticDOMElement {
 
   private _styleSheet: SyntheticCSSStyleSheet;
 

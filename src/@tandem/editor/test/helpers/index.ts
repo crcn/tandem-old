@@ -5,13 +5,13 @@
 // such as typescript, and sass.
 
 import path =  require("path");
-import { MarkupEditor } from "@tandem/synthetic-browser";
 import { createSASSSandboxProviders } from "@tandem/sass-extension";
-import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "@tandem/editor/common";
+import { createHTMLSandboxProviders } from "@tandem/html-extension";
 import { createJavaScriptSandboxProviders } from "@tandem/javascript-extension";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/worker";
-import { createHTMLCoreProviders, createHTMLSandboxProviders } from "@tandem/html-extension";
+import { MarkupEditor, createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
 import { createTestSandboxProviders, ISandboxTestProviderOptions } from "@tandem/sandbox/test/helpers";
+import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from "@tandem/editor/common";
 
 import { 
   Kernel, 
@@ -48,10 +48,10 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
 
   const kernel = new Kernel(
     new KernelProvider(),
-    createHTMLCoreProviders(),
     new PrivateBusProvider(bus),
     createSASSSandboxProviders(),
     createHTMLSandboxProviders(),
+    createSyntheticHTMLProviders(),
     new ApplicationServiceProvider("console", ConsoleLogService),
     new ApplicationServiceProvider("receiver", ReceiverService),
     createJavaScriptSandboxProviders(),

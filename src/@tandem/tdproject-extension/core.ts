@@ -13,16 +13,13 @@ import {
 import {
   HTML_XMLNS,
   MarkupEditor,
+  SyntheticHTMLLinkElement,
+  SyntheticHTMLStyleElement,
+  SyntheticHTMLScriptElement,
   SyntheticHTMLElement,
   MarkupMimeTypeXMLNSProvider,
   SyntheticDOMElementClassProvider,
 } from "@tandem/synthetic-browser";
-
-import {
-  SyntheticHTMLLink,
-  SyntheticHTMLStyle,
-  SyntheticHTMLScript,
-} from "@tandem/html-extension";
 
 export function createTDProjectCoreProviders() {
   return [
@@ -33,10 +30,10 @@ export function createTDProjectCoreProviders() {
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "ruler", SyntheticTDRulerElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "ruler-line", SyntheticTDRulerLineElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "remote-browser", SyntheticRemoteBrowserElement),
-    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "link", SyntheticHTMLLink),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "link", SyntheticHTMLLinkElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
-    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "script", SyntheticHTMLScript),
-    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "style", SyntheticHTMLStyle),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "script", SyntheticHTMLScriptElement),
+    new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "style", SyntheticHTMLStyleElement),
 
     // mime types
     new MimeTypeAliasProvider(TDPROJECT_MIME_TYPE, HTML_MIME_TYPE),

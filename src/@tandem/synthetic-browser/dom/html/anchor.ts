@@ -1,8 +1,9 @@
 import Url =  require("url");
-import { SyntheticHTMLElement, SyntheticLocation } from "@tandem/synthetic-browser";
 import { bindable, PropertyWatcher } from "@tandem/common";
+import { SyntheticHTMLElement } from "./element";
+import { SyntheticLocation } from "../../location";
 
-export class SyntheticAnchor extends SyntheticHTMLElement {
+export class SyntheticHTMLAnchorElement extends SyntheticHTMLElement {
 
   private _location: SyntheticLocation;
 

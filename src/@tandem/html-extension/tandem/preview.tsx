@@ -12,10 +12,10 @@ import { WorkspaceTitlebarComponent } from "@tandem/editor/browser/components/pa
 import { reactEditorPreview } from "@tandem/editor/browser/preview";
 import { createTestSandboxProviders } from "@tandem/sandbox/test";
 import { createTestMasterApplication } from "@tandem/editor/test";
-import { SyntheticBrowser, NoopRenderer, SyntheticHTMLElement } from "@tandem/synthetic-browser";
-import { createHTMLSandboxProviders, createHTMLCoreProviders } from "@tandem/html-extension";
+import { createHTMLSandboxProviders } from "@tandem/html-extension";
 import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
+import { SyntheticBrowser, NoopRenderer, SyntheticHTMLElement } from "@tandem/synthetic-browser";
 import { 
   Kernel, 
   BrokerBus, 
@@ -27,11 +27,11 @@ import {
 } from "@tandem/common";
 import {
   LayersPaneComponent,
+  CSSAnimationComponent,
   HTMLStylePaneComponent,
   ElementCSSPaneComponent,
   ElementCSSInspectorComponent,
   ElementAttributesPaneComponent,
-  CSSAnimationComponent,
 } from "@tandem/html-extension/editor/browser/components";
 
 export const createBodyElement = reactEditorPreview(async () => {

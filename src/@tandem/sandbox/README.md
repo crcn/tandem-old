@@ -22,7 +22,7 @@ import {
 } from "@tandem/sandbox";
 
 
-const deps = new Kernel(
+const kernel = new Kernel(
   new DependencyGraphProvider(),
   new FileEditorProvider(),
   new FileSystemProvider(new LocalFileSystem()),
@@ -32,7 +32,7 @@ const deps = new Kernel(
 );
 
 // fetch the dependency graph singleton
-const dependencyGraph: DependencyGraph = DependencyGraphProvider.getInstance("webpack", deps);
+const dependencyGraph: DependencyGraph = DependencyGraphProvider.getInstance("webpack", kernel);
 
 const sandbox = new Sandbox(deps, function createGlobal() {
 

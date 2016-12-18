@@ -1,7 +1,7 @@
 // import Canvas = require("canvas-prebuilt");
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement } from "./element";
 
-export class SyntheticHTMLCanvas extends SyntheticHTMLElement {
+export class SyntheticHTMLCanvasElement extends SyntheticHTMLElement {
   private _canvas: any; // HTMLCanvasElement
 
   createdCallback() {

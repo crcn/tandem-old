@@ -1,5 +1,4 @@
 import { keyBindingProvider } from "./key-bindings";
-import { createHTMLCoreProviders } from "../../core";
 import { Kernel, CommandFactoryProvider } from "@tandem/common";
 import { textToolProvider, editInnerHTMLProvider, HTMLExtensionStore } from "./stores";
 
@@ -31,12 +30,6 @@ import {
 } from "./commands";
 
 import {
-  SyntheticHTMLLink,
-  SyntheticHTMLStyle,
-  SyntheticHTMLScript,
-} from "@tandem/html-extension/synthetic";
-
-import {
   NumberTokenInput,
   ColorTokenInput,
   UnitTokenInput,
@@ -52,16 +45,13 @@ import {
 export function createHTMLEditorBrowserProviders() {
 
   return new Kernel(
-    createHTMLCoreProviders(),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, UpdateMergedRuleCommand),
     new CommandFactoryProvider(AddSyntheticObjectRequest.ADD_SYNTHETIC_OBJECT, AddSyntheticElementCommand),
 
     // entity panes
     new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent),
-    // new EntityPaneComponentFactoryProvider("htmlStyle", HTMLStylePaneComponent),
     new EntityPaneComponentFactoryProvider("cssInspector", ElementCSSInspectorComponent),
-    // new EntityPaneComponentFactoryProvider("htmlCSSRules", ElementCSSPaneComponent),
     new DocumentPaneComponentFactoryProvider("htmlLayers", LayersPaneComponent),
 
     // stage tool components

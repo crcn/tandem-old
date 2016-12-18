@@ -5,16 +5,15 @@ import {
   HTML_MIME_TYPE,
 } from "@tandem/common";
 
-import {
-  SyntheticHTMLElement,
-  SyntheticCSSStyleSheet
-} from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement } from "./element";
+import { SyntheticCSSStyleSheet } from "../css";
+
 import path =  require("path");
 
 const _cache = {};
 
 // TODO - implement imports
-export class SyntheticHTMLLink extends SyntheticHTMLElement {
+export class SyntheticHTMLLinkElement extends SyntheticHTMLElement {
 
   public stylesheet: SyntheticCSSStyleSheet;
   public import: SyntheticHTMLElement;

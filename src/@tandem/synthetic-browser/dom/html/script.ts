@@ -1,10 +1,9 @@
 import path =  require("path");
 import { JS_MIME_TYPE } from "@tandem/common";
-import { SyntheticDOMElement } from "@tandem/synthetic-browser";
-import { SyntheticHTMLElement } from "@tandem/synthetic-browser";
+import { SyntheticHTMLElement } from "./element";
 import {compileGlobalSandboxScript, runGlobalSandboxScript } from "@tandem/sandbox";
 
-export class SyntheticHTMLScript extends SyntheticHTMLElement {
+export class SyntheticHTMLScriptElement extends SyntheticHTMLElement {
   private _executed: boolean;
 
   get src() {

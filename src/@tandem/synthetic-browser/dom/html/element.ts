@@ -1,7 +1,7 @@
 import { SyntheticDocument } from "../document";
 import { SyntheticCSSStyle } from "../css";
-import { BoundingRect, serializable, IPoint, bindable } from "@tandem/common";
 import { DOMEventListenerFunction } from "../events";
+import { BoundingRect, serializable, IPoint, bindable } from "@tandem/common";
 
 import {
   evaluateMarkup,
