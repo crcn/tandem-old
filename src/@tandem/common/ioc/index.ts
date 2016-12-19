@@ -189,3 +189,11 @@ export function createSingletonProviderClass<T>(id: string): { getInstance(provi
     }
   }
 }
+
+
+export class DSProvider extends Provider<IDispatcher<any, any>> {
+  static readonly ID: string = "ds";
+  constructor(value: IDispatcher<any, any>) {
+    super(DSProvider.ID, value);
+  }
+}

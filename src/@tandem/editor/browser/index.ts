@@ -83,6 +83,8 @@ import {
 export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileResolverClass?: { new(): IFileResolver }) {
   return [
 
+    ...keyBindingsProviders,
+
     createCommonEditorProviders(config, fileResolverClass),
     
     // routes
@@ -111,7 +113,6 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     new ApplicationServiceProvider("clipboard", ClipboardService),
     new ApplicationServiceProvider("component", ComponentService),
     new ApplicationServiceProvider("workspace", WorkspaceService),
-    // new ApplicationServiceProvider("keyBindings", GlobalKeyBindingService),
 
     // stage tool components
     new StageToolComponentFactoryProvider("selector", "pointer", SelectorStageToolComponent),

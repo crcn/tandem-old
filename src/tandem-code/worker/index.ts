@@ -1,6 +1,6 @@
 import { argv } from "yargs";
 import getPort = require("get-port");
-import { SockService, DSService } from "./services";
+import { SockService } from "./services";
 import "./messages";
 
 import { MemoryDataStore } from "@tandem/mesh";
@@ -30,6 +30,8 @@ import {
   Kernel,
   LogLevel,
   serialize,
+  DSService,
+  DSProvider,
   deserialize,
   MimeTypeProvider,
   ServiceApplication, 
@@ -40,8 +42,6 @@ import {
   ApplicationServiceProvider,
   InitializeApplicationRequest,
 } from "@tandem/common";
-
-import { DSProvider } from "./providers";
 import { 
   ApplyFileEditCommand, 
   SyncFileCacheCommand, 

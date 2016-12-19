@@ -59,7 +59,8 @@ const buildTasks = [
   'build:peg',
   'build:typescript',
   'build:symlinks',
-  'build:electron'
+  'build:electron',
+  'build:playground'
 ];
 
 gulp.task('build', WATCH ? gulpSequence('prepare', buildTasks) : gulpSequence('prepare', ...buildTasks));
@@ -88,6 +89,16 @@ gulp.task('build:symlinks', () => {
   return gulp
   .src(join(OUT_DIR, '*'))
   .pipe(vfs.symlink(NODE_MODULES_DIR));
+});
+
+gulp.task('build:playground', gulpSequence([
+  ['build:playground:browser']
+]));
+
+
+gulp.task('build:playground:browser', (done) => {
+  const pkg = getPlaygroundPackage();
+  bundlePlayground(join(SRC_DIR, pkg.name, pkg.entries.browser), require('./webpack/browser'), done);
 });
 
 gulp.task('build:electron', gulpSequence(
@@ -399,6 +410,14 @@ function bundleElectron(entry, config, done) {
   }), done);
 }
 
+function bundlePlayground(entry, config, done) {
+  bundle(entry, Object.assign({}, config, {
+    output: {
+      path: dirname(entry.replace(SRC_DIR, OUT_DIR))
+    }
+  }), done);
+}
+
 function getElectronInfo() {
 
   const electronPackage = getElectronPackage();
@@ -444,6 +463,9 @@ function getElectronPackage() {
   return PACKAGES.find(sift({ 'electronVersion': { $exists: true }}));
 }
 
+function getPlaygroundPackage() {
+  return PACKAGES.find(sift({ name: 'tandem-playground' }));
+}
 
 gulp.on('stop', () => {
   if (!WATCH) process.exit();

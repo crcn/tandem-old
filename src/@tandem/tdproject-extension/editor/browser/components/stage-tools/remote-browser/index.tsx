@@ -197,7 +197,6 @@ export class RemoteBrowserStageToolComponent extends React.Component<{ workspace
 
     if (!remoteBrowsers.length) return null;
     
-
     const backgroundStyle = {
       backgroundColor: "rgba(0,0,0,0.05)",
       transform: `translate(${-transform.left / transform.scale}px, ${-transform.top / transform.scale}px) scale(${1 / transform.scale}) translateZ(0)`,

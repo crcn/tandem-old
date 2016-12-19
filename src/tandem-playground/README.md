@@ -1,3 +1,8 @@
+TODOS:
+
+- [ ] limit number of people who can use service
+- [ ] loggly
+
 Motivation:
 
 - To gauge interest in this kind of application
@@ -11,7 +16,6 @@ Features:
 - [ ] launch web worker for each session
 - [ ] code mirror
 - [ ] 1 click bookmarklet
-
 
 Paid:
 

@@ -285,6 +285,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     const rects  = {};
     const styles = {};
 
+
     for (let uid in this._elementDictionary) {
       const [native, synthetic] = this._elementDictionary[uid] || [undefined, undefined];
 

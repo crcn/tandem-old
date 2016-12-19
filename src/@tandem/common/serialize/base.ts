@@ -112,6 +112,25 @@ const _serializers   = {
       }
     }
   },
+  Object: {
+    ctor: undefined,
+    serializer: {
+      serialize(value: Object) {
+        const v = {};
+        for (const k in value) {
+          v[k] = serialize(value[k]);
+        }
+        return v;
+      },
+      deserialize(value, kernel) {
+        const v = {};
+        for (const k in value) {
+          v[k] = deserialize(value[k], kernel);
+        }
+        return v;;
+      }
+    }
+  }
 };
 
 export function getSerializeType(value: any) {
@@ -125,6 +144,7 @@ function getNativeSerializeType(value: any) {
   if (value instanceof Date) return "Date";
   if (value instanceof RegExp) return "RegExp";
   if (value instanceof Error) return "Error";
+  if (value && value.constructor.name === "Object") return "Object";
 
   return undefined;
 }

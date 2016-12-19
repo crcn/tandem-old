@@ -8,16 +8,15 @@ import { 
   DSRemoveRequest, 
   DSUpdateRequest,
 } from "@tandem/mesh";
-import { DSProvider } from "tandem-code/worker/providers";
 import {
-  inject,
-  UpsertBus,
-  PostDSMessage,
-  DSUpsertRequest,
-  PostDsNotifierBus,
   BaseApplicationService,
   ApplicationServiceProvider,
-} from "@tandem/common";
+} from "../application";
+
+import { UpsertBus  } from "../dispatchers";
+import { DSUpsertRequest } from "../messages";
+import { DSProvider } from "../ioc";
+import { inject } from "../decorators";
 
 export class DSService extends BaseApplicationService {
 

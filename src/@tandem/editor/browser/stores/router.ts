@@ -32,6 +32,10 @@ export interface IRouteHandler {
 export abstract class BaseRouteHandler implements IRouteHandler {
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;
+
+  @inject(KernelProvider.ID)
+  protected kernel: Kernel;
+  
   abstract load(request: RedirectRequest): Promise<IRouteHandlerLoadResult>;
 }
 
@@ -82,7 +86,7 @@ export class Router extends Observable {
     
     const route = routeProvider.create();
 
-    if (request.query) path += "?" + qs.stringify(request.query);
+    if (request.query && Object.keys(request.query).length) path += "?" + qs.stringify(request.query);
 
     const result = await route.load(request);
 

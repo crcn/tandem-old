@@ -1,7 +1,11 @@
 {
   "name": "tandem-playground",
+  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server/index.js",
+  "entries": {
+    "browser": "./browser/index.ts"
+  },
   "scripts": {
     "start": "node server/index.js"
   },
@@ -14,6 +18,8 @@
     "@tandem/sandbox": "^1.0.18",
     "@tandem/synthetic-browser": "^1.0.18",
     "express": "^4.14.0",
+    "get-port": "^2.1.0",
+    "mongodb": "^2.2.16",
     "yargs": "^6.5.0"
   }
 }

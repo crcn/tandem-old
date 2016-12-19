@@ -188,6 +188,7 @@ class ResizerComponent extends BaseApplicationComponent<{
 
     const sx2 = bounds.left;
     const sy2 = bounds.top;
+    
     const translateLeft = this.props.workspace.transform.left;
     const translateTop  = this.props.workspace.transform.top;
     const guider = this.createGuider();
@@ -196,6 +197,7 @@ class ResizerComponent extends BaseApplicationComponent<{
     this.props.workspace.metadata.set(MetadataKeys.MOVING, true);
 
     this._dragger = startDrag(event, (event2, { delta }) => {
+
 
       const nx = (sx2 + (delta.x - (this.props.workspace.transform.left - translateLeft)) / this.props.zoom);
       const ny = (sy2 + (delta.y - (this.props.workspace.transform.top - translateTop)) / this.props.zoom);

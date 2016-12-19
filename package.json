@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "SOURCE_MAPS=1 gulp test --coverage=50 --timeout=20000 --bail",
-    "start-playground": "node ./out/playground",
+    "playground": "node ./out/tandem-playground",
     "postinstall": "gulp build:dist",
     "code": "DEV=1 SANDBOXED=1 electron dist/index.bundle.js"
   },

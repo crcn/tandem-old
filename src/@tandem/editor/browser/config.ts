@@ -31,5 +31,6 @@ export interface IEditorBrowserConfig extends IEditorCommonConfig {
     port?: number;
     hostname: string;
     protocol: string;
+    href?: string;
   },
 }
