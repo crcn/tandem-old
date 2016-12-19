@@ -26,6 +26,7 @@ export * from "./services";
 // export * from "./models";
 export * from "./config";
 export * from "./messages";
+export * from "./stores";
 
 // export external modules that contain requests & other
 // assets that will need to be wired up by some backend

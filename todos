@@ -16,15 +16,16 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
+- [ ] authentication on opening remote browser
 - [ ] test suite
 - [ ] make collections es5 compatible
+- [ ] right click - open link in new window
 
 - [ ] fix vscode extension
 - [ ] CTA blog
 - [ ] more dev tools
   - [ ] right click inspect element
 
-- [ ] check messaging around firefox & chrome dev tools
 - [ ] Getting started video popup
 
 - [ ] launch checklist

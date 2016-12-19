@@ -41,6 +41,8 @@ import { 
   IStreamableDispatcher,
 } from "@tandem/mesh";
 
+import { Project } from "../stores";
+
 export namespace EditorFamilyType {
 
   /**
@@ -135,19 +137,45 @@ export class SetCurrentFileRequest extends CoreEvent {
   }
 }
 
-
-
 // opens the given workspace in this session
 @setMessageTarget(EditorFamilyType.BROWSER)
 @serializable("OpenWorkspaceRequest")
 export class OpenWorkspaceRequest extends CoreEvent {
   static readonly OPEN_WORKSPACE = "openWorkspace";
-  constructor(readonly uri: string) {
+  constructor(readonly project: Project) {
     super(OpenWorkspaceRequest.OPEN_WORKSPACE);
   }
 
-  static async dispatch(uri: string, bus: IStreamableDispatcher<any>): Promise<boolean> {
-    return (await readOneChunk(bus.dispatch(new OpenWorkspaceRequest(uri)))).value;
+  static async dispatch(project: Project, bus: IStreamableDispatcher<any>): Promise<boolean> {
+    return (await readOneChunk(bus.dispatch(new OpenWorkspaceRequest(project)))).value;
+  }
+}
+
+// opens the given workspace in this session
+@setMessageTarget(EditorFamilyType.MASTER)
+@serializable("CreateNewProjectRequest")
+export class CreateNewProjectRequest extends CoreEvent {
+  static readonly CREATE_NEW_PROJECT = "createNewProject";
+  constructor(readonly owner: string, readonly uri: string) {
+    super(CreateNewProjectRequest.CREATE_NEW_PROJECT);
+  }
+
+  static async dispatch(owner: string, uri: string, bus: IStreamableDispatcher<any>): Promise<Project> {
+    return (await readOneChunk(bus.dispatch(new CreateNewProjectRequest(owner, uri)))).value;
+  }
+}
+
+// opens the given workspace in this session
+@setMessageTarget(EditorFamilyType.MASTER)
+@serializable("GetProjectRequest")
+export class GetProjectRequest extends CoreEvent {
+  static readonly GET_PROJECT = "getProject";
+  constructor(readonly projectId: string) {
+    super(GetProjectRequest.GET_PROJECT);
+  }
+
+  static async dispatch(projectId: string, bus: IStreamableDispatcher<any>): Promise<Project> {
+    return (await readOneChunk(bus.dispatch(new GetProjectRequest(projectId)))).value;
   }
 }
 
@@ -162,9 +190,32 @@ export interface INewWorkspaceOptions {
 export class OpenNewWorkspaceRequest implements IMessage {
   static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
   readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
-  constructor(readonly uri: string, options: INewWorkspaceOptions = {}) { }
+  constructor(readonly project: Project, options: INewWorkspaceOptions = {}) { }
 }
 
+@setMessageTarget(EditorFamilyType.MASTER)
+export class ResolveWorkspaceURIRequest implements IMessage {
+  static readonly RESOLVE_WORKSPACE_URI: string = "resolveWorkspaceUri";
+  readonly type = ResolveWorkspaceURIRequest.RESOLVE_WORKSPACE_URI;
+  constructor(readonly uri: string) {
+
+  }
+
+  static async dispatch(uri: string, bus: IStreamableDispatcher<any>): Promise<string> {
+    return (await readOneChunk(bus.dispatch(new ResolveWorkspaceURIRequest(uri)))).value;
+  }
+}
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class CreateTemporaryWorkspaceRequest implements IMessage {
+  static readonly CREATE_TEMPORARY_WORKSPACE: string = "createTemporaryWorkspace";
+  readonly type = CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE;
+  constructor(readonly uri: string) { }
+
+  static async dispatch(uri: string, bus: IStreamableDispatcher<any>):Promise<string> {
+    return (await readOneChunk<string>(bus.dispatch(new CreateTemporaryWorkspaceRequest(uri)))).value;
+  }
+}
 
 @addMessageVisitor(EditorFamilyType.BROWSER)
 @addMessageVisitor(EditorFamilyType.MASTER)

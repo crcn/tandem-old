@@ -13,10 +13,12 @@ import {
 } from "@tandem/synthetic-browser";
 
 export class OpenWorkspaceCommand extends BaseEditorBrowserCommand {
-  async execute({ uri }: OpenWorkspaceRequest) {
+  async execute({ project }: OpenWorkspaceRequest) {
+
+    // TODO - create new channel based in project
     const workspace = this.kernel.inject(new Workspace());
     const browser = workspace.browser = new RemoteSyntheticBrowser(this.kernel, new CanvasRenderer(workspace, this.kernel.inject(new SyntheticDOMRenderer())));
-    await browser.open({ uri: uri });
+    await browser.open({ uri: project.uri });
     this.editorStore.workspace = workspace;
   }
 }

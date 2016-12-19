@@ -4,20 +4,20 @@ import { SelectionChangeEvent } from "@tandem/editor/browser/messages";
 import { ParallelBus, CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 
 import {
-  CoreEvent,
   inject,
   IPoint,
-  bindable,
   bubble,
+  bindable,
   Metadata,
   TreeNode,
   Transform,
+  CoreEvent,
   Observable,
   flattenTree,
   IInjectable,
   watchProperty,
-  PrivateBusProvider,
   PropertyMutation,
+  PrivateBusProvider,
 } from "@tandem/common";
 
 import { ISyntheticObject } from "@tandem/sandbox";
@@ -128,7 +128,6 @@ export class Workspace extends Observable {
         newSelection.push(item);
       }
     }
-    
 
     this.selection = newSelection;
 

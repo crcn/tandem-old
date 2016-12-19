@@ -62,6 +62,7 @@ import {
   AlertCommand, 
   OpenCWDCommand, 
   RedirectCommand,
+  LoadAnonSession,
   LoadRouterCommand,
   ToggleSettingCommand,
   OpenWorkspaceCommand,
@@ -88,7 +89,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     createCommonEditorProviders(config, fileResolverClass),
     
     // routes
-    new RouteFactoryProvider(EditorRouteNames.WORKSPACE, "/workspace", WorkspaceRouteHandler),
+    new RouteFactoryProvider(EditorRouteNames.WORKSPACE, "/workspace/:projectId", WorkspaceRouteHandler),
 
     // pages
     new PageFactoryProvider(EditorRouteNames.WORKSPACE, WorkspaceComponent),
@@ -101,9 +102,8 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
     new CommandFactoryProvider(OpenWorkspaceRequest.OPEN_WORKSPACE, OpenWorkspaceCommand),
     new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),
-    
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadAnonSession),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadRouterCommand),
-
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
 
     // services

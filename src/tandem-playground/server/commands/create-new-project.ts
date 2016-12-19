@@ -1,11 +1,25 @@
+import { ConsoleLogService, ResolveWorkspaceURIRequest } from "@tandem/editor/common";
+import { createSandboxProviders } from "@tandem/sandbox";
 import { BasePlaygroundServerCommand } from "./base";
+import { createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
+import { 
+  Kernel, 
+  BrokerBus, 
+  DSService,
+  KernelProvider, 
+  PrivateBusProvider, 
+  ServiceApplication,
+  ApplicationServiceProvider,
+  ApplicationConfigurationProvider,
+} from "@tandem/common";
+
 import { 
   Project,
   IProjectData, 
   CreateNewProjectRequest, 
 } from "tandem-playground/common";
 
-import { GetWorkerHostRequest } from "../messages";
+// import { GetWorkerHostRequest } from "../messages";
 
 export class CreateNewProjectCommand extends BasePlaygroundServerCommand {
   async execute(): Promise<Project> {
@@ -17,11 +31,23 @@ export class CreateNewProjectCommand extends BasePlaygroundServerCommand {
         <tandem>
           <remote-browser />
         </tandem>
-      `,
-      host: await GetWorkerHostRequest.dispatch(this.bus) 
+      `
     }));
-    
-    await project.insert();
+
+    await project.save();
+
+    // create an isolated environment for all interactions in the workspace
+    const kernel = new Kernel(
+      new KernelProvider(),
+      new PrivateBusProvider(new BrokerBus()),
+      createSandboxProviders(),
+      createSyntheticHTMLProviders(),
+      new ApplicationServiceProvider("ds", DSService),
+      new ApplicationServiceProvider("console", ConsoleLogService),
+    );
+
+    const app = new ServiceApplication(kernel);
+    await app.initialize();
 
     return project;
   }

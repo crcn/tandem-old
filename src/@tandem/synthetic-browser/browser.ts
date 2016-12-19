@@ -49,8 +49,14 @@ import {
 import { CallbackDispatcher } from "@tandem/mesh";
 
 export interface ISyntheticBrowserOpenOptions {
+
+  // URI to load
   uri: string;
+
+  // script to inject into the page
   injectScript?: string;
+
+  // additional dependency graph options such as strategies -- webpack, commonjs, amd, etc.
   dependencyGraphStrategyOptions?: IDependencyGraphStrategyOptions;
 }
 
@@ -177,7 +183,6 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
 
   protected async open2({ uri, dependencyGraphStrategyOptions, injectScript }: ISyntheticBrowserOpenOptions) {
     
-
     // TODO - setup file protocol specific to this CWD
 
     this._script = injectScript;

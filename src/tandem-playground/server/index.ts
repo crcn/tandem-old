@@ -26,11 +26,11 @@ import {
 
 
 // import { ProjectProtocol } from "./protocols";
-import { GetWorkerHostRequest } from "./messages";
+// import { GetWorkerHostRequest } from "./messages";
 import { CreateNewProjectRequest, GetProjectRequest } from "tandem-playground/common";
 
 import { HTTPServerProvider } from "./providers";
-import { BrowserService, ProjectsService } from "./services";
+import { BrowserService, ProjectsService, WorkersService } from "./services";
 
 const start = async () => {
 
@@ -58,10 +58,11 @@ const start = async () => {
     new ApplicationServiceProvider("browser", BrowserService),
     new ApplicationServiceProvider("projects", ProjectsService),
     new ApplicationServiceProvider("ds", DSService),
+    new ApplicationServiceProvider("workers", WorkersService),
     
     // commands
     new CommandFactoryProvider(CreateNewProjectRequest.CREATE_NEW_PROJECT, CreateNewProjectCommand),
-    new CommandFactoryProvider(GetWorkerHostRequest.GET_WORKER_HOST, GetWorkerHostCommand),
+    // new CommandFactoryProvider(GetWorkerHostRequest.GET_WORKER_HOST, GetWorkerHostCommand),
     new CommandFactoryProvider(GetProjectRequest.GET_PROJECT, GetProjectCommand),
     new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand)
   );

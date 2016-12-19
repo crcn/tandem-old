@@ -6,11 +6,16 @@ import {
   Observable
 } from "@tandem/common";
 
+import { IUser } from "@tandem/editor/common";
 import { Router } from "./router";
 import { Workspace } from "./workspace";
 
 // TODO: add workspaces
 export class EditorStore extends Observable {
+
+  @bindable(true)
+  @bubble()
+  public user: IUser;
 
   @bindable(true)
   @bubble()

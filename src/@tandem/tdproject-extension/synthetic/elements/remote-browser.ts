@@ -1,7 +1,8 @@
 import path =  require("path");
 
-import { CallbackDispatcher, IDispatcher, IMessage } from "@tandem/mesh";
 import { debounce } from "lodash";
+import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { CallbackDispatcher, IDispatcher, IMessage } from "@tandem/mesh";
 
 import {
   Status,

@@ -2,6 +2,7 @@ import sift = require("sift");
 import { BaseDataStore } from "./base";
 import { ReadableStream, DuplexStream } from "@tandem/mesh/core";
 import { DSFindRequest, DSFindAllRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "./messages";
+import mongoid = require("mongoid-js");
 
 export class MemoryDataStore extends BaseDataStore {
 
@@ -21,6 +22,7 @@ export class MemoryDataStore extends BaseDataStore {
 
   dsInsert({ type, collectionName, data }: DSInsertRequest<any>) {
     let ret = JSON.parse(JSON.stringify(data));
+    if (!ret._id) ret._id = mongoid();
     ret = Array.isArray(ret) ? ret : [ret];
     this.getCollection(collectionName).push(...ret);
     return DuplexStream.fromArray(ret);

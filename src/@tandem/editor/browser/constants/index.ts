@@ -23,6 +23,7 @@ export namespace MetadataKeys {
   export const EDIT_LAYER = "editLayer";
   export const LAYER_EXPANDED = "layerExpanded";
   export const CHILD_LAYER_PROPERTY = "childLayerProperty";
+  export const WORKSPACE_KEY = "workspaceKey";
 }
 
 export namespace EditorRouteNames {

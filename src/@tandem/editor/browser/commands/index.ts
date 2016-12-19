@@ -8,3 +8,4 @@ export * from "./open-workspace";
 export * from "./redirect";
 export * from "./toggle-tools-layer";
 export * from "./toggle-setting";
+export * from "./load-anon-session";

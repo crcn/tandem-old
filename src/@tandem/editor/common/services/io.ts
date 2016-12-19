@@ -29,12 +29,7 @@ export class IOService<T extends  IEditorCommonConfig> extends CoreApplicationS
 
     // setup the bus which wil facilitate in all
     // transmessages between the remote service
-    const remoteBus = new SocketIOBus({ family: this.config.family, connection, testMessage: filterFamilyMessage }, {
-      dispatch: (message: IMessage) => {
-        // attach a flag so that the message does not get dispatched again
-        return this.bus.dispatch(Object.assign(message, { $$remote: true }));
-      }
-    }, { serialize, deserialize });
+    const remoteBus = new SocketIOBus({ family: this.config.family, connection, testMessage: filterFamilyMessage }, this.bus, { serialize, deserialize });
 
     this.bus.register(remoteBus);
 

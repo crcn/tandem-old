@@ -3,10 +3,12 @@ import fs = require("fs");
 import path =  require("path");
 import electron =  require("electron");
 import getPort =  require("get-port");
+import { MemoryDataStore } from "@tandem/mesh";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension/core";
 import { createCoreStudioWorkerProviders } from "../worker";
-import { ServiceApplication, ApplicationServiceProvider } from "@tandem/common";
+import { createEditorMasterProviders } from "@tandem/editor/master";
+import { ServiceApplication, ApplicationServiceProvider, DSService, DSProvider } from "@tandem/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 import { EditorFamilyType, createCommonEditorProviders, IEditorCommonConfig, SaveAllRequest } from "@tandem/editor/common";
 
@@ -24,8 +26,6 @@ import {
   SelectDirectoryCommand,
   OpenNewWorkspaceCommand,
   CLIOpenWorkspaceCommand,
-  ResolveWorkspaceURICommand,
-  CreateTempWorkspaceCommand,
   InstallShellCommandsCommand,
   InitSettingsDirectoryCommand,
   GetProjectStarterOptionsCommand,
@@ -104,16 +104,14 @@ export const initializeMaster = async () => {
   };
 
   const kernel = new Kernel(
-    createCommonEditorProviders(config),
+    createEditorMasterProviders(config),
 
     // services
     new ApplicationServiceProvider("browser", BrowserService),
     
     // commands
-    new CommandFactoryProvider(ResolveWorkspaceURIRequest.RESOLVE_WORKSPACE_URI, ResolveWorkspaceURICommand),
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
     new CommandFactoryProvider(SaveAllRequest.SAVE_ALL, SaveAllFilesCommand),
-    new CommandFactoryProvider(CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE, CreateTempWorkspaceCommand),
     new CommandFactoryProvider(InstallCommandLineToolsRequest.INSTALL_COMMAND_LINE_TOOLS, InstallShellCommandsCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsDirectoryCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsCommand),
@@ -127,6 +125,8 @@ export const initializeMaster = async () => {
     new CommandFactoryProvider(ApplicationReadyMessage.READY, AutoUpdateCommand),
     new CommandFactoryProvider(GetProjectStartOptionsRequest.GET_PROJECT_STARTER_OPTIONS, GetProjectStarterOptionsCommand),
     new CommandFactoryProvider(StartNewProjectRequest.START_NEW_PROJECT, StartProjectCommand),
+    new DSProvider(new MemoryDataStore()),
+    new ApplicationServiceProvider("ds", DSService),
 
     new TandemMasterStudioStoreProvider(TandemStudioMasterStore),
     createTDProjectCoreProviders(),

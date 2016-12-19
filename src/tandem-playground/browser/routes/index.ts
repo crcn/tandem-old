@@ -17,7 +17,7 @@ export class HomeRouteHandler extends BaseRouteHandler {
 
   async load({ query }: RedirectRequest) {
 
-    const project = await CreateNewProjectRequest.dispatch(this.bus);
+    // const project = await CreateNewProjectRequest.dispatch(this.bus);
 
 
 
@@ -25,7 +25,7 @@ export class HomeRouteHandler extends BaseRouteHandler {
 
   
     return {
-      redirect: new RedirectRequest(`/workspace/${project._id}`)
+      // redirect: new RedirectRequest(`/workspace/${project._id}`)
     };
   }
 }
@@ -37,19 +37,19 @@ export class ProjectRouteHandler extends BaseRouteHandler {
 
   async load({ query, params }: RedirectRequest) {
 
-    const project = await GetProjectRequest.dispatch(params.id, this.bus);
+    // const project = await GetProjectRequest.dispatch(params.id, this.bus);
 
-    const connection = createSocketIOClient(project.host);
+    // // const connection = createSocketIOClient(project.host);
 
-    const bus = new SocketIOBus({
-      family: this._config.family,
-      connection: connection as any,
-      testMessage: filterFamilyMessage
-    }, this.bus, { serialize, deserialize });
-    this.bus.register(bus);
+    // const bus = new SocketIOBus({
+    //   family: this._config.family,
+    //   connection: connection as any,
+    //   testMessage: filterFamilyMessage
+    // }, this.bus, { serialize, deserialize });
+    // this.bus.register(bus);
 
 
-    await OpenWorkspaceRequest.dispatch(this._config.server.href + "/projects/" + params.id + ".tandem", this.bus);
+    // await OpenWorkspaceRequest.dispatch(this._config.server.href + "/projects/" + params.id + ".tandem", this.bus);
 
     return {
       state: {
