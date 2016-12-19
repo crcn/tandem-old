@@ -1,7 +1,16 @@
 TODOS:
 
+- [ ] codemirror
 - [ ] limit number of people who can use service
 - [ ] loggly
+- [ ] limit collaborators to 2
+- [ ] show collaboratores in 
+- [ ] limit # windows to 3
+- [ ] unwatch urls
+- [ ] close workers
+- [ ] aws workers
+- [ ] show user cursors
+- [ ] share workspace button
 
 Motivation:
 
