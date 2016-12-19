@@ -37,6 +37,7 @@ const start = async () => {
   const config: IPlaygroundServerConfig = {
     family: process.env.WORKER ? EditorFamilyType.WORKER : EditorFamilyType.MASTER,
     port: Number(process.env.PORT || 8090),
+    hostname: process.env.HOSTNAME || "localhost",
     browserDirectory: path.join(__dirname, "..", "browser"),
     mongoUrl: process.env.MONGO_URL || "mongodb://localhost:27017"
   };

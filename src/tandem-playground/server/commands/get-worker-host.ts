@@ -16,6 +16,6 @@ export class GetWorkerHostCommand extends BasePlaygroundServerCommand {
       WORKER: true
     }));
 
-    return `http://localhost:${childPort}`;
+    return `http://${this.config.hostname}:${childPort}`;
   }
 }

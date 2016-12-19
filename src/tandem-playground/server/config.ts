@@ -3,4 +3,5 @@ export interface IPlaygroundServerConfig {
   port?: number;
   browserDirectory: string;
   mongoUrl: string;
+  hostname: string;
 }
