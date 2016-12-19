@@ -160,9 +160,13 @@ export class EditorStoreProvider extends StoreProvider {
 
 export class RouteFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "routeFactories";
+  private _pathRegexp: RegExp;
+  private _paramNames: string[];
 
   constructor(readonly name: string, readonly path: string, readonly routeClass: { new(): IRouteHandler }) {
     super(RouteFactoryProvider.getId(name), routeClass);
+    this._pathRegexp = new RegExp("^" + path.replace(/:\w+/g, "([^\\/]+)") + "$");
+    this._paramNames = (path.match(this._pathRegexp) || []).slice(1);
   }
 
   static getId(name: string) {
@@ -180,7 +184,15 @@ export class RouteFactoryProvider extends ClassFactoryProvider {
   testPath(path: string) {
 
     // exact for now
-    return this.path === path || this.name === path;
+    return this._pathRegexp.test(path) || this.name === path;
+  }
+
+  getParams(path: string) {
+    const p = {};
+    (path.match(this._pathRegexp) || []).slice(1).forEach((param, i) => {
+      p[this._paramNames[i].substr(1)] = param;
+    });
+    return p;
   }
 
   static findByPath(path: string, kernel: Kernel) {  

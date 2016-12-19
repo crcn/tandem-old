@@ -1,8 +1,7 @@
-import { BaseStudioWorkerCommand } from "./base";
-import { inject } from "@tandem/common";
+import { inject, BaseCommand } from "@tandem/common";
 import { ApplyFileEditRequest, FileEditorProvider, FileEditor } from "@tandem/sandbox";
 
-export class ApplyFileEditCommand extends BaseStudioWorkerCommand { 
+export class ApplyFileEditCommand extends BaseCommand { 
 
   @inject(FileEditorProvider.ID)
   private _fileEditor: FileEditor;

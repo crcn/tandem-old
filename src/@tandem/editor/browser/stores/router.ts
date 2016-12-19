@@ -85,10 +85,16 @@ export class Router extends Observable {
     if (!routeProvider) throw new Error(`Route ${request.routeNameOrPath} does not exist`);
     
     const route = routeProvider.create();
+    const params = routeProvider.getParams(path);
+
+    if (Object.keys(params).length) {
+      request.params = params;
+    }
 
     if (request.query && Object.keys(request.query).length) path += "?" + qs.stringify(request.query);
 
     const result = await route.load(request);
+    if (result.redirect) return this.redirect(result.redirect);
 
     this.setState(path, result.state);
 

@@ -6,12 +6,12 @@ import { MemoryDataStore } from "@tandem/mesh/ds";
 import { MongoDataStore } from "@tandem/mesh/ds/mongo";
 import { IPlaygroundServerConfig } from "./config";
 import { createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
+import { createTDProjectCoreProviders } from "@tandem/tdproject-extension";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
 import { createSyntheticBrowserWorkerProviders } from "@tandem/editor/worker";
-import { createSandboxProviders, URIProtocolProvider } from "@tandem/sandbox";
 import { createCommonEditorProviders, EditorFamilyType } from "@tandem/editor/common";
-import { CreateNewProjectCommand, GetWorkerHostCommand } from "./commands";
-import { createTDProjectCoreProviders } from "@tandem/tdproject-extension";
+import { CreateNewProjectCommand, GetWorkerHostCommand, GetProjectCommand } from "./commands";
+import { createSandboxProviders, URIProtocolProvider, ApplyFileEditRequest, ApplyFileEditCommand } from "@tandem/sandbox";
 
 import { 
   Kernel, 
@@ -27,7 +27,7 @@ import {
 
 // import { ProjectProtocol } from "./protocols";
 import { GetWorkerHostRequest } from "./messages";
-import { CreateNewProjectRequest } from "tandem-playground/common";
+import { CreateNewProjectRequest, GetProjectRequest } from "tandem-playground/common";
 
 import { HTTPServerProvider } from "./providers";
 import { BrowserService, ProjectsService } from "./services";
@@ -61,6 +61,8 @@ const start = async () => {
     // commands
     new CommandFactoryProvider(CreateNewProjectRequest.CREATE_NEW_PROJECT, CreateNewProjectCommand),
     new CommandFactoryProvider(GetWorkerHostRequest.GET_WORKER_HOST, GetWorkerHostCommand),
+    new CommandFactoryProvider(GetProjectRequest.GET_PROJECT, GetProjectCommand),
+    new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand)
   );
   
   const app = new ServiceApplication(kernel);

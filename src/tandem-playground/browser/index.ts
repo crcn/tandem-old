@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { merge } from "lodash";
-import { HomeRouteHandler } from "./routes";
+import { HomeRouteHandler, ProjectRouteHandler } from "./routes";
 import { IPlaygroundBrowserConfig } from "./config";
 import { Kernel, ServiceApplication, ApplicationServiceProvider } from "@tandem/common";
 import { createEditorBrowserProviders, EditorFamilyType, RouteFactoryProvider, GlobalKeyBindingService } from "@tandem/editor/browser";
@@ -27,6 +27,7 @@ const start = async () => {
     createEditorBrowserProviders(config),
     createTDProjectEditorBrowserProviders(),
     new RouteFactoryProvider("home", "/", HomeRouteHandler),
+    new RouteFactoryProvider("home", "/workspace/:id", ProjectRouteHandler),
     new ApplicationServiceProvider("key-bindings", GlobalKeyBindingService)
   );
 

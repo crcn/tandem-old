@@ -9,3 +9,4 @@ export * from "./sandbox";
 export * from "./edit";
 export * from "./core";
 export * from "./uri";
+export * from "./commands";

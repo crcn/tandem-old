@@ -81,7 +81,7 @@ export class SelectRequest extends CoreEvent {
 export class RedirectRequest implements IMessage {
   static readonly REDIRECT = "redirect";
   readonly type = RedirectRequest.REDIRECT;
-  constructor(readonly routeNameOrPath: string, readonly params?: any, readonly query?: any) {
+  constructor(readonly routeNameOrPath: string, public params?: any, readonly query?: any) {
 
   }
 

@@ -43,13 +43,13 @@ import {
   InitializeApplicationRequest,
 } from "@tandem/common";
 import { 
-  ApplyFileEditCommand, 
   SyncFileCacheCommand, 
   ImportFileCommand, 
   StartMasterPingCommand, 
 } from "./commands";
 
 import {
+  ApplyFileEditCommand, 
   ApplyFileEditRequest,
   createSandboxProviders,
   WebpackProtocolResolver,

@@ -3,7 +3,7 @@ import createSocketIOClient = require("socket.io-client");
 import { BaseRouteHandler } from "@tandem/editor/browser/stores";
 import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { RemoteSyntheticBrowser } from "@tandem/synthetic-browser";
-import { CreateNewProjectRequest } from "tandem-playground/common";
+import { CreateNewProjectRequest, GetProjectRequest } from "tandem-playground/common";
 import { IPlaygroundBrowserConfig } from "tandem-playground/browser/config";
 import { RedirectRequest, OpenWorkspaceRequest } from "@tandem/editor/browser/messages";
 import { inject, ApplicationConfigurationProvider, serialize, deserialize } from "@tandem/common";
@@ -14,13 +14,30 @@ export class HomeRouteHandler extends BaseRouteHandler {
   @inject(EditorStoreProvider.ID)
   private _store: EditorStore;
 
-  @inject(ApplicationConfigurationProvider.ID)
-  private _config: IPlaygroundBrowserConfig;
 
   async load({ query }: RedirectRequest) {
 
     const project = await CreateNewProjectRequest.dispatch(this.bus);
 
+
+
+    // await OpenWorkspaceRequest.dispatch(this._config.server.href + "/projects/" + project._id + ".tandem", this.bus);
+
+  
+    return {
+      redirect: new RedirectRequest(`/workspace/${project._id}`)
+    };
+  }
+}
+
+export class ProjectRouteHandler extends BaseRouteHandler {
+
+  @inject(ApplicationConfigurationProvider.ID)
+  private _config: IPlaygroundBrowserConfig;
+
+  async load({ query, params }: RedirectRequest) {
+
+    const project = await GetProjectRequest.dispatch(params.id, this.bus);
 
     const connection = createSocketIOClient(project.host);
 
@@ -32,9 +49,8 @@ export class HomeRouteHandler extends BaseRouteHandler {
     this.bus.register(bus);
 
 
-    await OpenWorkspaceRequest.dispatch(this._config.server.href + "/projects/" + project._id + ".tandem", this.bus);
+    await OpenWorkspaceRequest.dispatch(this._config.server.href + "/projects/" + params.id + ".tandem", this.bus);
 
-  
     return {
       state: {
         [EditorRouteNames.ROOT]: EditorRouteNames.WORKSPACE
@@ -42,16 +58,3 @@ export class HomeRouteHandler extends BaseRouteHandler {
     };
   }
 }
-
-// export class ProjectRouteHandler extends BaseRouteHandler {
-//   async load({ query }: RedirectRequest) {
-
-//     const url = `project://`;
-
-//     return {
-//       state: {
-//         [EditorRouteNames.ROOT]: EditorRouteNames.WORKSPACE
-//       }
-//     };
-//   }
-// }
