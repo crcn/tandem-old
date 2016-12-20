@@ -14,6 +14,7 @@ export class CreateProjectFileCommand extends BaseEditorMasterCommand {
   
   async execute({ uri }: CreateTemporaryWorkspaceRequest) {
 
+    // TODO - use HTTP instead here
     // temp name must share the same path as the file to ensure that all relative assets
     // are loaded in.
     const tmpName = `cache://` + path.join(uri && path.dirname(removeURIProtocol(uri)) || "/", `unsaved${i++}.${TD_PRIMARY_FILE_EXTENSION}`);

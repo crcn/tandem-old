@@ -1,8 +1,8 @@
 import { IMessage } from "@tandem/mesh";
 import { IStarterOption } from "tandem-code/common/stores";
-import { EditorFamilyType } from "@tandem/editor/common";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
+import { EditorFamilyType, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/common";
 import { 
   setMessageTarget, 
   addMessageVisitor, 
@@ -17,6 +17,7 @@ import { IHelpOption } from "tandem-code/common/stores";
 // scoping here
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest));
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenProjectEnvironmentChannelRequest));
 
 @setMessageTarget(EditorFamilyType.MASTER)
 export class PingRequest implements IMessage {

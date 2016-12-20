@@ -1,4 +1,14 @@
-import { BaseActiveRecord, serializable, ISerializable } from "@tandem/common";
+import { URIProtocolProvider } from "@tandem/sandbox";
+import { 
+  inject,
+  Kernel, 
+  serializable, 
+  ISerializable, 
+  KernelProvider,
+  BaseActiveRecord, 
+  ApplicationConfigurationProvider
+} from "@tandem/common";
+import { IEditorCommonConfig } from "../config";
 
 export const PROJECT_COLLECTION_NAME = "projects";
 
@@ -21,6 +31,12 @@ export interface IProjectData {
 @serializable("Project")
 export class Project implements ISerializable<IProjectData> {
 
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
+
+  @inject(ApplicationConfigurationProvider.ID)
+  private _config: IEditorCommonConfig;
+
   public owner: string;
   public createdAt: Date;
   public updatedAt: Date;
@@ -39,6 +55,15 @@ export class Project implements ISerializable<IProjectData> {
       _id: this._id,
       uri: this.uri
     }
+  }
+
+  get httpUrl() {
+    return `${this._config.server.protocol}//${this._config.server.hostname}:${this._config.server.port}/projects/${this._id}.tandem`;
+  }
+
+  async read() {
+    const protocol = URIProtocolProvider.lookup(this.uri, this._kernel);
+    return protocol.read(this.uri);
   }
 
   deserialize({ owner, createdAt, updatedAt, _id, uri }: IProjectData) {

@@ -38,7 +38,7 @@ export interface IRemoteBusOptions {
   /**
    */
 
-  testMessage: RemoteBusMessageTester<any>;
+  testMessage?: RemoteBusMessageTester<any>;
 }
 
 const PASSED_THROUGH_KEY = "$$passedThrough";

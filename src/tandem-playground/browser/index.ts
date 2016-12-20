@@ -14,11 +14,9 @@ const start = async () => {
     element: document.getElementById("application"),
     family: EditorFamilyType.BROWSER,
     server: {
-      cwd: "",
       port: Number(location.port) || 80,
       hostname: location.hostname,
-      protocol: location.protocol,
-      href: location.protocol + "//" + location.host
+      protocol: location.protocol === "https:" ? "https:" : "http:"
     }
   };
 

@@ -28,11 +28,10 @@ export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserComman
 
     await browser.open({ uri: "file:///index.html" });
 
-    const workspace = this.editorStore.workspace = new Workspace();
+    const workspace = this.editorStore.workspace = new Workspace(null);
     workspace.browser = browser;
     workspace.select(browser.document.querySelector("div"));
 
-    
     await this.bus.dispatch(createWorkspaceRedirectRequest(null));
   }
 }

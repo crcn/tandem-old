@@ -78,7 +78,6 @@ const config: IEditorBrowserConfig = {
   server: {
     protocol: "http:",
     hostname: "localhost",
-    cwd: process.cwd(),
     port: Number(Url.parse(window.location.toString(), true).query.backendPort)
   }
 };

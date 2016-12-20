@@ -12,10 +12,11 @@ import createSocketIOServer = require("socket.io");
 
 import { exec } from "child_process";
 import { IOService } from "@tandem/editor/common";
-import { loggable, inject } from "@tandem/common/decorators";
+import { ExpressServerProvider } from "@tandem/editor/master";
 import { IStudioEditorServerConfig } from "tandem-code/master/config";
 import { FileCacheProvider, FileCache } from "@tandem/sandbox";
 import { Kernel, CoreApplicationService } from "@tandem/common";
+import { loggable, inject, injectProvider } from "@tandem/common/decorators";
 import { DSUpsertRequest, LoadApplicationRequest, InitializeApplicationRequest } from "@tandem/common/messages";
 
 // TODO - split this out into separate files -- turning into a god object.
@@ -23,13 +24,14 @@ import { DSUpsertRequest, LoadApplicationRequest, InitializeApplicationRequest }
 @loggable()
 export class BrowserService extends CoreApplicationService<IStudioEditorServerConfig> {
 
-  private _server: express.Express;
-  private _ioService:IOService<IStudioEditorServerConfig>;
+  private _ioService: IOService<IStudioEditorServerConfig>;
   private _port:number;
-  private _socket:any;
 
   @inject(FileCacheProvider.ID)
   private _fileCache: FileCache;
+
+  @injectProvider(ExpressServerProvider.ID)
+  private _serverProvider: ExpressServerProvider;
 
   $didInject() {
     super.$didInject();
@@ -37,28 +39,17 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
   }
 
   async [InitializeApplicationRequest.INITIALIZE]() {
-    this._port = Number(this.config.port);
-    await this._loadHttpServer();
     await this._loadStaticRoutes();
     await this._loadFileCacheRoutes();
     await this._loadSocketServer();
-
-    if (this.config.argv.open) {
-      exec(`open http://localhost:${this._port}/editor#/workspace`);
-    }
-  }
-
-  async _loadHttpServer() {
-    this.logger.info(`Listening on port ${this._port}`);
-
-    this._server = express();
-    this._socket = this._server.listen(this._port);
   }
 
   async _loadStaticRoutes() {
 
-    this._server.use(cors());
-    this._server.use(compression());
+    const server = this._serverProvider.value;
+
+    server.use(cors());
+    server.use(compression());
 
     for (const entryName in this.config.entries) {
       var entryPath = this.config.entries[entryName];
@@ -69,18 +60,18 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
 
       // this should be part of the config
       const entryDirectory = path.dirname(entryPath);
-      this._server.use(prefix, express.static(entryDirectory));
+      server.use(prefix, express.static(entryDirectory));
 
       const staticFileNames = fs.readdirSync(entryDirectory);
 
-      this._server.use(prefix, (req, res) => {
+      server.use(prefix, (req, res) => {
         res.send(this.getIndexHtmlContent(staticFileNames));
       });
     }
   }
 
   async _loadFileCacheRoutes() {
-    this._server.use("/file-cache/", async (req, res) => {
+    this._serverProvider.value.use("/file-cache/", async (req, res) => {
       const uri = decodeURIComponent(req.path.substr(1));
       const item = this._fileCache.eagerFindByFilePath(uri);
       const { content, type } = await item.read();
@@ -92,7 +83,7 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
   // TODO - deprecate this
 
   getIndexHtmlContent(staticFileNames) {
-    const host = `http://localhost:${this._port}`;
+    const host = `http://localhost:${this.config.server.port}`;
 
     return `
       <!DOCTYPE html>
@@ -138,6 +129,6 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
     const io = createSocketIOServer();
     io["set"]("origins", "*domain.com*:*");
     io.on("connection", this._ioService.addConnection);
-    io.listen(this._socket);
+    io.listen(this._serverProvider.target);
   }
 }

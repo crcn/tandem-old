@@ -13,11 +13,12 @@ import { createCommonjsWorkerProviders } from "@tandem/commonjs-extension/editor
 import { createSASSEditorWorkerProviders } from "@tandem/sass-extension/editor/server";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/server";
 import { isMaster, fork, addListener, emit } from "cluster";
+import { OpenProjectEnvironmentChannelCommand } from "@tandem/editor/master";
 import { createCoreMarkdownExtensionProviders } from "@tandem/markdown-extension";
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
-import { EditorFamilyType, createCommonEditorProviders } from "@tandem/editor/common";
 import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest } from "tandem-code/common";
+import { EditorFamilyType, createCommonEditorProviders, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/common";
 
 import { 
   createSyntheticHTMLProviders,
@@ -77,14 +78,15 @@ export const createCoreStudioWorkerProviders = () => {
 
 export const initializeWorker = async () => {
 
-  process.chdir(process.cwd());
-
   const config: IStudioWorkerConfig = {
     family: EditorFamilyType.WORKER,
     cwd: process.cwd(),
     experimental: !!process.env.EXPERIMENTAL,
-    port: process.env.PORT,
-    hostname: process.env.HOSTNAME,
+    server: {
+      protocol: "http:",
+      port: process.env.PORT,
+      hostname: process.env.HOSTNAME,
+    },
     log: {
       level: Number(process.env.LOG_LEVEL),
       prefix: "worker "
@@ -104,6 +106,7 @@ export const initializeWorker = async () => {
     new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, SyncFileCacheCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, StartMasterPingCommand),
+    new CommandFactoryProvider(OpenProjectEnvironmentChannelRequest.OPEN_PROJECT_ENVIRONMENT_CHANNEL, OpenProjectEnvironmentChannelCommand),
   );
 
   const app = new ServiceApplication(kernel);

@@ -3,6 +3,7 @@ import fs = require("fs");
 import path =  require("path");
 import electron =  require("electron");
 import getPort =  require("get-port");
+import PACKAGE =  require("tandem-code/package")
 import { MemoryDataStore } from "@tandem/mesh";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension/core";
@@ -16,7 +17,6 @@ import { IStudioEditorServerConfig } from "./config";
 import { 
   HandlePingCommand,
   AutoUpdateCommand,
-  SpawnWorkerCommand, 
   SaveAllFilesCommand,
   InitSettingsCommand,
   OpenTextFileCommand,
@@ -77,9 +77,16 @@ const ASSETS_DIR         = `${ROOT_DIR}/assets`;
 const HOME               = process.env.HOME || process.env.USERPROFILE;
 
 export const initializeMaster = async () => {
-
   const config: IStudioEditorServerConfig = {
     projectFileExtensions: TD_FILE_EXTENSIONS,
+    worker: {
+      mainPath: path.join(ROOT_DIR, PACKAGE.main),
+      env: {
+        ELECTRON_RUN_AS_NODE: true,
+        WORKER: true,
+      }
+    
+    },
     family: EditorFamilyType.MASTER,
     appDirectory: ROOT_DIR,
     settingsDirectory: HOME + "/.tandem",
@@ -98,9 +105,12 @@ export const initializeMaster = async () => {
     log: {
       level: Number(process.env.LOG_LEVEL)
     },
-    experimental: argv.experimental ? (process.env.EXPERIMENTAL = true) : null,
-    port: process.env.PORT || (process.env.PORT = await getPort()),
-    hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost")
+    server: {
+      protocol: "http:",
+      port: process.env.PORT || (process.env.PORT = await getPort()),
+      hostname: process.env.HOSTNAME || (process.env.HOSTNAME = "localhost")
+    },
+    experimental: argv.experimental ? (process.env.EXPERIMENTAL = true) : null
   };
 
   const kernel = new Kernel(
@@ -117,7 +127,6 @@ export const initializeMaster = async () => {
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsCommand),
     new CommandFactoryProvider(GetHelpOptionsRequest.GET_HELP_OPTIONS, GetHelpOptionsCommand),
     new CommandFactoryProvider(OpenHelpOptionRequest.OPEN_HELP_OPTION, OpenHelpOptionCommand),
-    new CommandFactoryProvider(LoadApplicationRequest.LOAD, SpawnWorkerCommand),
     new CommandFactoryProvider(OpenFileRequest.OPEN_FILE, OpenTextFileCommand),
     new CommandFactoryProvider(OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE, OpenNewWorkspaceCommand),
     new CommandFactoryProvider(SelectDirectoryRequest.SELECT_DIRECTORY_REQUEST, SelectDirectoryCommand),

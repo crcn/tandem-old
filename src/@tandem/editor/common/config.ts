@@ -8,4 +8,9 @@ export interface ILogConfig {
 export interface IEditorCommonConfig {
   family: string;
   log?: ILogConfig;
+  server: {
+    protocol: "http:" | "https:",
+    hostname: string,
+    port: number
+  }
 }

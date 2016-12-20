@@ -13,6 +13,6 @@ export class CreateNewProjectCommand extends BaseEditorMasterCommand {
       uri: await ResolveWorkspaceURIRequest.dispatch(request.uri, this.bus),
     }).serialize(), this.bus))[0];
 
-    return new Project(data);
+    return this.kernel.inject(new Project(data));
   }
 }

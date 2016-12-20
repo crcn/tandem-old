@@ -1,6 +1,6 @@
-import { IEditorCommonConfig } from "@tandem/editor/common";
+import { IEditorMasterConfig } from "@tandem/editor/master";
 
-export interface IStudioEditorServerConfig extends IEditorCommonConfig {
+export interface IStudioEditorServerConfig extends IEditorMasterConfig {
   projectFileExtensions: string[],
   appDirectory: string,
   settingsDirectory: string, // ~/.tandem
@@ -16,8 +16,6 @@ export interface IStudioEditorServerConfig extends IEditorCommonConfig {
   }
   cwd: string;
   experimental?: boolean,
-  port: number,
-  hostname: string,
   argv: {
     _: any[],
 

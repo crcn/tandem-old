@@ -17,7 +17,7 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
       let frame = true;
 
       const query = {
-        backendPort: this.config.port
+        backendPort: this.config.server.port
       } as any;
 
       width = 1024;
@@ -26,7 +26,7 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
 
       const win = new BrowserWindow({ width: width, height: height, frame: frame, titleBarStyle: frame ? "hidden-inset" : undefined });
 
-      win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.port}${hash}`);
+      win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.server.port}${hash}`);
 
       if (this.config.argv["dev-tools"]) {
         win["toggleDevTools"]();

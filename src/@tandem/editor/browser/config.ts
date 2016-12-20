@@ -22,15 +22,15 @@ export interface IEditorBrowserConfig extends IEditorCommonConfig {
 
   element: HTMLElement;
 
-  /**
-   * The configuration for the master server
-   */
+  // /**
+  //  * The configuration for the master server
+  //  */
 
-  server: {
-    cwd: string;
-    port?: number;
-    hostname: string;
-    protocol: string;
-    href?: string;
-  },
+  // server: {
+  //   cwd: string;
+  //   port?: number;
+  //   hostname: string;
+  //   protocol: string;
+  //   href?: string;
+  // },
 }

@@ -1,30 +1,41 @@
 import { flatten } from "lodash";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
-import { SelectionChangeEvent } from "@tandem/editor/browser/messages";
-import { ParallelBus, CallbackDispatcher, IDispatcher } from "@tandem/mesh";
+import { Project } from "@tandem/editor/common";
+import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
+import { ParallelBus, CallbackDispatcher, IDispatcher, ChannelBus, readAllChunks } from "@tandem/mesh";
+import { SelectionChangeEvent, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/browser/messages";
 
 import {
   inject,
   IPoint,
   bubble,
+  Kernel,
   bindable,
   Metadata,
   TreeNode,
   Transform,
   CoreEvent,
+  BrokerBus,
   Observable,
   flattenTree,
   IInjectable,
+  BoundingRect,
   watchProperty,
+  KernelProvider,
   PropertyMutation,
   PrivateBusProvider,
+  ApplicationConfigurationProvider,
 } from "@tandem/common";
 
 import { ISyntheticObject } from "@tandem/sandbox";
 import { 
+  BaseRenderer,
   SyntheticBrowser,
   SyntheticDocument,
   ISyntheticBrowser,
+  SyntheticDOMRenderer,
+  BaseDecoratorRenderer,
+  RemoteSyntheticBrowser,
   SyntheticElementQuerier,
 } from "@tandem/synthetic-browser";
 
@@ -41,6 +52,12 @@ export class Workspace extends Observable {
 
   @inject(PrivateBusProvider.ID)
   private _bus: IDispatcher<any, any>;
+
+  @inject(KernelProvider.ID)
+  private _kernel: Kernel;
+
+  @inject(KernelProvider.ID)
+  private _envKernel: Kernel;
 
   /**
    */
@@ -86,16 +103,29 @@ export class Workspace extends Observable {
   readonly type = "display";
   public cursor = null;
 
-  constructor() {
+  constructor(readonly project: Project) {
     super();
     this._browserObserver = new CallbackDispatcher(this.onBrowserAction.bind(this));
     this.documentQuerier  = new SyntheticElementQuerier(undefined, "*");
-
     watchProperty(this, "browser", this.onBrowserChange.bind(this));
   }
 
   get document(): SyntheticDocument {
     return this.browser && this.browser.document;
+  }
+
+  async openBrowser() {
+    const envBus = new BrokerBus(undefined, ChannelBus.createFromStream(this._bus.dispatch(new OpenProjectEnvironmentChannelRequest(this.project._id))));
+
+    const envKernel = this._envKernel = new Kernel(
+      this._kernel,
+      new PrivateBusProvider(envBus)
+    );
+
+    // TODO - create a new pipeline for communicating with worker
+    if (this.browser) return this.browser;
+    const browser = this.browser = new RemoteSyntheticBrowser(envKernel, new CanvasRenderer(this, this._envKernel.inject(new SyntheticDOMRenderer())));
+    return await browser.open({ uri: this.project.httpUrl });
   }
 
   /**
@@ -164,5 +194,36 @@ export class Workspace extends Observable {
 
   private updatePropertiesFromBrowser() {
     this.documentQuerier.target = this.browser && this.browser.document;
+  }
+}
+
+
+/**
+ * Offset the transform skewing that happens with the editor
+ */
+
+class CanvasRenderer extends BaseDecoratorRenderer {
+  private _rects: any;
+
+  constructor(readonly workspace: Workspace, _renderer: BaseRenderer) {
+    super(_renderer);
+    this._rects = {};
+  }
+
+  getBoundingRect(uid: string) {
+    return this._rects[uid] || BoundingRect.zeros();
+  }
+
+  protected onTargetRendererSetRectangles() {
+    const offsetRects = {};
+    const { transform } = this.workspace;
+    const rects = (<BaseRenderer>this._renderer).$rects;
+    for (const uid in rects) {
+      offsetRects[uid] = (<BoundingRect>rects[uid]).move({
+        left: -transform.left,
+        top: -transform.top
+      }).zoom(1 / transform.scale);
+    }
+    this._rects = offsetRects;
   }
 }

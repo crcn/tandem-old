@@ -24,6 +24,7 @@ export class BrowserService extends CoreApplicationService<IPlaygroundServerConf
     io.on("connection", (connection) => {
       service.addConnection(connection);
     });
+    
     io.listen(this._serverProvider.target);
   }
 }

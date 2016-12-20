@@ -166,6 +166,17 @@ export class CreateNewProjectRequest extends CoreEvent {
 }
 
 // opens the given workspace in this session
+@addMessageVisitor(EditorFamilyType.MASTER)
+@setMessageTarget(EditorFamilyType.WORKER)
+@serializable("OpenProjectEnvironmentChannelRequest")
+export class OpenProjectEnvironmentChannelRequest extends CoreEvent {
+  static readonly OPEN_PROJECT_ENVIRONMENT_CHANNEL = "openProjectEnvironmentChannel";
+  constructor(readonly projectId: string) {
+    super(OpenProjectEnvironmentChannelRequest.OPEN_PROJECT_ENVIRONMENT_CHANNEL);
+  }
+}
+
+// opens the given workspace in this session
 @setMessageTarget(EditorFamilyType.MASTER)
 @serializable("GetProjectRequest")
 export class GetProjectRequest extends CoreEvent {
