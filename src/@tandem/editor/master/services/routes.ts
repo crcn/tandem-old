@@ -10,15 +10,16 @@ export class HTTPRouteService extends BaseEditorMasterService {
   [LoadApplicationRequest.LOAD]() {
     for (const provider of HTTPRouteProvider.findAll(this.kernel)) {
       const handler = provider.create();
+      const middleware = handler.middleware || [];
       const handle = handler.handle.bind(handler);
       if (provider.method === "get") {
-        this._server.get(provider.path, handle);
+        this._server.get(provider.path, ...middleware, handle);
       } else if (provider.method === "put") {
-        this._server.put(provider.path, handle);
+        this._server.put(provider.path, ...middleware, handle);
       } else if (provider.method === "delete") {
-        this._server.delete(provider.path, handle);
+        this._server.delete(provider.path, ...middleware, handle);
       } else if (provider.method === "post") {
-        this._server.post(provider.path, handle);
+        this._server.post(provider.path, ...middleware, handle);
       }
     }
   }

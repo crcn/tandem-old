@@ -4,6 +4,7 @@ import express = require("express");
 import { 
   GetProjectCommand,
   SpawnWorkerCommand,
+  UpdateProjectCommand,
   CreateNewProjectCommand, 
   CreateProjectFileCommand,
   ResolveProjectFileURICommand,
@@ -27,6 +28,7 @@ import { EditorMasterStoreProvider, HTTPRouteProvider } from "./providers";
 
 import { 
   GetProjectRequest,
+  UpdateProjectRequest,
   CreateNewProjectRequest, 
   ResolveWorkspaceURIRequest,
   createCommonEditorProviders, 
@@ -42,6 +44,7 @@ export const createEditorMasterProviders = (config: IEditorMasterConfig) => {
     ...createHTTPRouteProviders(),
     createCommonEditorProviders(config),
     new ExpressServerProvider(server, server.listen(config.server.port)),
+    new CommandFactoryProvider(UpdateProjectRequest.UPDATE_PROJECT, UpdateProjectCommand),
     new CommandFactoryProvider(ResolveWorkspaceURIRequest.RESOLVE_WORKSPACE_URI, ResolveProjectFileURICommand),
     new CommandFactoryProvider(CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE, CreateProjectFileCommand),
     new CommandFactoryProvider(GetProjectRequest.GET_PROJECT, GetProjectCommand),

@@ -10,6 +10,7 @@ import {
   inject,
   ENV_IS_NODE,
   MutationEvent,
+  createDataUrl,
   MimeTypeProvider,
   BaseActiveRecord,
   KernelProvider,
@@ -25,15 +26,6 @@ export interface IFileCacheItemData {
   sourceModifiedAt?: number;
   updatedAt?: number;
   metadata?: Object;
-}
-
-export function createDataUrl(content: Buffer|string, mimeType: string = "text/plain") {
-  
-  if (!(content instanceof Buffer)) {
-    content = new Buffer(content, "utf8");
-  }
-
-  return `data:${mimeType},${content.toString("base64")}`;
 }
 
 let _i = 0;

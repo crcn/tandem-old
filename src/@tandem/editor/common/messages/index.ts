@@ -42,7 +42,7 @@ import { 
   IStreamableDispatcher,
 } from "@tandem/mesh";
 
-import { Project } from "../stores";
+import { Project, IProjectData } from "../stores";
 
 export namespace EditorFamilyType {
 
@@ -189,6 +189,16 @@ export class GetProjectRequest extends CoreEvent {
 
   static async dispatch(projectId: string, bus: IStreamableDispatcher<any>): Promise<Project> {
     return (await readOneChunk(bus.dispatch(new GetProjectRequest(projectId)))).value;
+  }
+}
+
+// opens the given workspace in this session
+@setMessageTarget(EditorFamilyType.MASTER)
+@serializable("UpdateProjectRequest")
+export class UpdateProjectRequest extends CoreEvent {
+  static readonly UPDATE_PROJECT = "updateProject";
+  constructor(readonly projectId: string, readonly data: IProjectData) {
+    super(UpdateProjectRequest.UPDATE_PROJECT);
   }
 }
 

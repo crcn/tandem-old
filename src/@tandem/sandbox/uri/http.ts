@@ -60,10 +60,11 @@ export class HTTPURIProtocol extends URIProtocol {
   }
   async write(uri: string, content: string) {
     return new Promise((resolve, reject) => {
-      console.log("POST", uri, content);
       request.post(uri, {
         body: content
       });
+
+      resolve();
     })
   }
   async fileExists(uri: string) {

@@ -1,6 +1,6 @@
 import * as path from "path";
 import { BaseEditorMasterCommand } from "./base";
-import { MimeTypeProvider, inject, removeURIProtocol } from "@tandem/common";
+import { MimeTypeProvider, inject, removeURIProtocol, createDataUrl } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE, TD_PRIMARY_FILE_EXTENSION } from "@tandem/tdproject-extension/constants";
 import { CreateTemporaryWorkspaceRequest } from "tandem-code/common";
 import { FileCacheProvider, FileCache, URIProtocolProvider } from "@tandem/sandbox"; 
@@ -8,16 +8,12 @@ import { FileCacheProvider, FileCache, URIProtocolProvider } from "@tandem/sandb
 let i = 0;
 
 export class CreateProjectFileCommand extends BaseEditorMasterCommand {
-
-  @inject(FileCacheProvider.ID)
-  private _fileCache: FileCache;
   
   async execute({ uri }: CreateTemporaryWorkspaceRequest) {
 
     // TODO - use HTTP instead here
     // temp name must share the same path as the file to ensure that all relative assets
     // are loaded in.
-    const tmpName = `cache://` + path.join(uri && path.dirname(removeURIProtocol(uri)) || "/", `unsaved${i++}.${TD_PRIMARY_FILE_EXTENSION}`);
 
     let content;
     let type;
@@ -32,9 +28,6 @@ export class CreateProjectFileCommand extends BaseEditorMasterCommand {
       </tandem>` : `<tandem><remote-browser /></tandem>`;
     }
 
-
-    await this._fileCache.save(tmpName, { type, content });
-    
-    return tmpName;
+    return createDataUrl(content, TDPROJECT_MIME_TYPE);
   }
 } 

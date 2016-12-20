@@ -197,6 +197,10 @@ export class FileEditor {
 
     this._mutations.push(...mutations);
 
+    if (!!this._promise) {
+      this.logger.info("Waiting for previous edit to finish...");
+    }
+
     return this._promise || (this._promise = new Promise((resolve, reject) => {
       setImmediate(() => {
         let done = () => this._promise = undefined;
@@ -226,7 +230,6 @@ export class FileEditor {
       }
 
       const targetSource = target.source;
-
       const targetUri = await ProtocolURLResolverProvider.resolve(targetSource.uri, this._kernel);
 
       const fileMutations: Mutation<ISyntheticObject>[] = mutationsByUri[targetUri] || (mutationsByUri[targetUri] = []);

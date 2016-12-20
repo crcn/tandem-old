@@ -2,14 +2,19 @@ import { URIProtocolProvider, IURIProtocolReadResult } from "@tandem/sandbox";
 import { 
   inject,
   Kernel, 
+  IBrokerBus,
   serializable, 
+  createDataUrl,
+  getProtocol,
   ISerializable, 
   KernelProvider,
   BaseActiveRecord, 
+  PrivateBusProvider,
   ApplicationConfigurationProvider
 } from "@tandem/common";
 
 import { IEditorCommonConfig } from "../config";
+import { UpdateProjectRequest } from "../messages";
 
 export const PROJECT_COLLECTION_NAME = "projects";
 
@@ -34,6 +39,9 @@ export class Project implements ISerializable<IProjectData> {
 
   @inject(KernelProvider.ID)
   private _kernel: Kernel;
+
+  @inject(PrivateBusProvider.ID)
+  private _bus: IBrokerBus;
 
   @inject(ApplicationConfigurationProvider.ID)
   private _config: IEditorCommonConfig;
@@ -60,6 +68,24 @@ export class Project implements ISerializable<IProjectData> {
 
   get httpUrl() {
     return `${this._config.server.protocol}//${this._config.server.hostname}:${this._config.server.port}/projects/${this._id}.tandem`;
+  }
+
+  async writeSourceURI(content: string) {
+    const protocolId = getProtocol(this.uri);
+    const protocol   = URIProtocolProvider.lookup(this.uri, this._kernel);
+    if (protocolId === "data:") {
+      const previous = await protocol.read(this.uri);
+      this.uri = createDataUrl(content, previous.type);
+      await this.save();
+    } else {
+      await protocol.write(this.uri, content);
+    }
+    return this;
+  }
+
+  async save() {
+    this._bus.dispatch(new UpdateProjectRequest(this._id, this.serialize()));
+    return this;
   }
 
   async read() {

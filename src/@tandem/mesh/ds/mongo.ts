@@ -46,7 +46,14 @@ export class MongoDataStore extends  BaseDataStore {
 
   dsUpdate(message: DSUpdateRequest<any, any>) {
     return new DuplexStream((input, output) => {
-      this._db.collection(message.collectionName).update(message.query, { $set: message.data }).then((result) => {
+
+      const q = JSON.parse(JSON.stringify(message.query));
+      if (q._id) q._id = new ObjectID(String(q._id));
+
+      const data = JSON.parse(JSON.stringify(message.data));
+      delete data._id;
+
+      this._db.collection(message.collectionName).update(q, { $set: data }).then((result) => {
         return this.dsFind(new DSFindRequest(message.collectionName, message.query, true)).readable.pipeTo(output);
       }).catch((e) => {
         output.getWriter().abort(e);

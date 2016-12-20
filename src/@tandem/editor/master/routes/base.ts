@@ -25,5 +25,7 @@ export abstract class BaseHTTPRouteHandler implements IHTTPRouteHandler {
   @inject(ApplicationConfigurationProvider.ID)
   protected readonly config: IEditorMasterConfig;
 
+  public middleware?: any[];
+
   abstract handle(req: express.Request, res: express.Response, next?: () => any);
 }

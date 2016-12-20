@@ -13,7 +13,13 @@ import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor
 import { createSyntheticBrowserWorkerProviders } from "@tandem/editor/worker";
 import { createCommonEditorProviders, EditorFamilyType } from "@tandem/editor/common";
 // import { CreateNewProjectCommand GetProjectCommand } from "./commands";
-import { createSandboxProviders, URIProtocolProvider, ApplyFileEditRequest, ApplyFileEditCommand } from "@tandem/sandbox";
+import { 
+  createSandboxProviders, 
+  URIProtocolProvider, 
+  ApplyFileEditRequest, 
+  ApplyFileEditCommand,
+  FileCacheProvider
+} from "@tandem/sandbox";
 
 import { 
   hook,
@@ -65,14 +71,17 @@ const start = async () => {
     createHTMLEditorWorkerProviders(),
     createSyntheticBrowserWorkerProviders(),
     new DSProvider(process.env.WORKER ? new MemoryDataStore() : new MongoDataStore(config.mongoUrl)),
-    new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
     new ApplicationServiceProvider("ds", DSService),
   )
 
   if (process.env.WORKER) {
     kernel.register(
+      new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
       createCommonEditorProviders(config)
     );
+
+    // FileCacheProvider.getInstance(kernel).syncWithLocalFiles();
+
   } else {
     kernel.register(
       createEditorMasterProviders(config),
