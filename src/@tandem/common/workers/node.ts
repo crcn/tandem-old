@@ -6,6 +6,7 @@ import {
   RemoteBus, 
   FilterBus, 
   IDispatcher, 
+  NoopDispatcher,
   filterFamilyMessage, 
   noopDispatcherInstance,
 } from "@tandem/mesh";
