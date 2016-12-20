@@ -26,7 +26,6 @@ export class ProxyBus implements IBus<any>, IMessageTester<any> {
   }
 
   dispatch(message) {
-
     // no target? put the message in a queue until there is
     if (this.paused) {
       return new DuplexStream((input, output) => {

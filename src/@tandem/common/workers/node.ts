@@ -1,7 +1,14 @@
 import { isMaster, Worker, fork as clusterFork } from "cluster";
 import { fork as forkChild, ChildProcess } from "child_process";
-import { IDispatcher, RemoteBus, FilterBus, ProxyBus, filterFamilyMessage } from "@tandem/mesh";
 import { serialize, deserialize } from "@tandem/common";
+import { 
+  ProxyBus, 
+  RemoteBus, 
+  FilterBus, 
+  IDispatcher, 
+  filterFamilyMessage, 
+  noopDispatcherInstance,
+} from "@tandem/mesh";
 
 export { isMaster };
 
@@ -44,5 +51,6 @@ export const createProcessBus = (family: string, proc: Worker | ChildProcess | N
 }
 
 export const hook = (family: string, localBus: IDispatcher<any, any>) => {
+  if (!process.send) return noopDispatcherInstance;
   return createProcessBus(family, process, localBus);
 }

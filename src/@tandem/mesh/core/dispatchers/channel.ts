@@ -2,6 +2,7 @@ import { IMessage } from "../messages";
 import { RemoteBus } from "./remote";
 import { IBus, IDispatcher } from "./base";
 import { noopDispatcherInstance } from "./noop";
+import { CallbackDispatcher } from "./callback";
 import { 
   pump,
   DuplexStream,

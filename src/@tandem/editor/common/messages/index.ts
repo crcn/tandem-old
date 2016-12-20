@@ -13,6 +13,7 @@ import {
   DSUpsertRequest,
   ISourceLocation,
   MoveChildMutation,
+  ApplicationReadyMessage,
 } from "@tandem/common";
 
 import {
@@ -84,7 +85,7 @@ setMessageTarget(EditorFamilyType.WORKER)(DSFindAllRequest);
 
 addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.BROWSER, EditorFamilyType.TEXT_EDITOR)(PostDSMessage);
 addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.BROWSER, EditorFamilyType.TEXT_EDITOR)(setMessageTarget(EditorFamilyType.WORKER)(DSTailRequest));
-
+addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.WORKER, EditorFamilyType.WORKER)(ApplicationReadyMessage);
 @addMessageVisitor(EditorFamilyType.BROWSER)
 @addMessageVisitor(EditorFamilyType.WORKER)
 @setMessageTarget(EditorFamilyType.MASTER)
@@ -150,6 +151,7 @@ export class OpenWorkspaceRequest extends CoreEvent {
     return (await readOneChunk(bus.dispatch(new OpenWorkspaceRequest(project)))).value;
   }
 }
+
 
 // opens the given workspace in this session
 @setMessageTarget(EditorFamilyType.MASTER)

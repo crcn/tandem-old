@@ -29,7 +29,7 @@ export class InitializeApplicationRequest extends Message {
   }
 }
 
-
+@serializable("ApplicationReadyMessage")
 export class ApplicationReadyMessage extends Message {
   static readonly READY = "applicationReady";
   constructor() {

@@ -35,3 +35,4 @@ const start = async () => {
 }
 
 start();
+export * from "../common";

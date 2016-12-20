@@ -3,7 +3,7 @@ import createSocketIOClient = require("socket.io-client");
 import { BaseRouteHandler } from "@tandem/editor/browser/stores";
 import { EditorRouteNames } from "@tandem/editor/browser/constants";
 import { RemoteSyntheticBrowser } from "@tandem/synthetic-browser";
-import { CreateNewProjectRequest, GetProjectRequest } from "tandem-playground/common";
+import { CreateNewProjectRequest } from "@tandem/editor/browser";
 import { IPlaygroundBrowserConfig } from "tandem-playground/browser/config";
 import { RedirectRequest, OpenWorkspaceRequest } from "@tandem/editor/browser/messages";
 import { inject, ApplicationConfigurationProvider, serialize, deserialize } from "@tandem/common";
@@ -17,15 +17,10 @@ export class HomeRouteHandler extends BaseRouteHandler {
 
   async load({ query }: RedirectRequest) {
 
-    // const project = await CreateNewProjectRequest.dispatch(this.bus);
+    const project = await CreateNewProjectRequest.dispatch(undefined, undefined, this.bus);
 
-
-
-    // await OpenWorkspaceRequest.dispatch(this._config.server.href + "/projects/" + project._id + ".tandem", this.bus);
-
-  
     return {
-      // redirect: new RedirectRequest(`/workspace/${project._id}`)
+      redirect: new RedirectRequest(`/workspace/${project._id}`)
     };
   }
 }

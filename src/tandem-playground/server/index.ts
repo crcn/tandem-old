@@ -1,20 +1,24 @@
 import "reflect-metadata";
 import express = require("express");
 import path = require("path");
+import { argv } from "yargs";
 
 import { MemoryDataStore } from "@tandem/mesh/ds";
 import { MongoDataStore } from "@tandem/mesh/ds/mongo";
 import { IPlaygroundServerConfig } from "./config";
 import { createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
+import { createEditorMasterProviders } from "@tandem/editor/master";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
 import { createSyntheticBrowserWorkerProviders } from "@tandem/editor/worker";
 import { createCommonEditorProviders, EditorFamilyType } from "@tandem/editor/common";
-import { CreateNewProjectCommand, GetWorkerHostCommand, GetProjectCommand } from "./commands";
+// import { CreateNewProjectCommand GetProjectCommand } from "./commands";
 import { createSandboxProviders, URIProtocolProvider, ApplyFileEditRequest, ApplyFileEditCommand } from "@tandem/sandbox";
 
 import { 
+  hook,
   Kernel, 
+  LogLevel,
   DSService,
   DSProvider,
   ServiceApplication, 
@@ -25,19 +29,29 @@ import {
 } from "@tandem/common";
 
 
-// import { ProjectProtocol } from "./protocols";
-// import { GetWorkerHostRequest } from "./messages";
-import { CreateNewProjectRequest, GetProjectRequest } from "tandem-playground/common";
+// import { HTTPServerProvider } from "./providers";
+import { BrowserService, WorkersService } from "./services";
 
-import { HTTPServerProvider } from "./providers";
-import { BrowserService, ProjectsService, WorkersService } from "./services";
+process.env.LOG_LEVEL = process.env.LOG_LEVEL || (argv.logLevel ? LogLevel[argv.logLevel] : argv.verbose ? LogLevel.VERBOSE : undefined) || LogLevel.DEFAULT;
 
 const start = async () => {
 
   const config: IPlaygroundServerConfig = {
     family: process.env.WORKER ? EditorFamilyType.WORKER : EditorFamilyType.MASTER,
-    port: Number(process.env.PORT || 8090),
-    hostname: process.env.HOSTNAME || "localhost",
+    log: {
+      level: Number(process.env.LOG_LEVEL)
+    },
+    server: {
+      port: Number(process.env.PORT || 8090),
+      hostname: process.env.HOSTNAME || "localhost",
+      protocol: "http:"
+    },
+    worker: {
+      mainPath: __dirname + "/index.js",
+      env: {
+        WORKER: true
+      }
+    },
     browserDirectory: path.join(__dirname, "..", "browser"),
     mongoUrl: process.env.MONGO_URL || "mongodb://localhost:27017"
   };
@@ -45,31 +59,36 @@ const start = async () => {
   const httpServer = express();
 
   const kernel = new Kernel(
+    createSandboxProviders(),
     createSyntheticHTMLProviders(),
-     createTDProjectCoreProviders(),
+    createTDProjectCoreProviders(),
     createHTMLEditorWorkerProviders(),
-    createCommonEditorProviders(config),
     createSyntheticBrowserWorkerProviders(),
-    new HTTPServerProvider(httpServer, httpServer.listen(config.port)),
     new DSProvider(process.env.WORKER ? new MemoryDataStore() : new MongoDataStore(config.mongoUrl)),
-    // new URIProtocolProvider("project", ProjectProtocol),
-    
-    // services
-    new ApplicationServiceProvider("browser", BrowserService),
-    new ApplicationServiceProvider("projects", ProjectsService),
+    new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
     new ApplicationServiceProvider("ds", DSService),
-    new ApplicationServiceProvider("workers", WorkersService),
-    
-    // commands
-    new CommandFactoryProvider(CreateNewProjectRequest.CREATE_NEW_PROJECT, CreateNewProjectCommand),
-    // new CommandFactoryProvider(GetWorkerHostRequest.GET_WORKER_HOST, GetWorkerHostCommand),
-    new CommandFactoryProvider(GetProjectRequest.GET_PROJECT, GetProjectCommand),
-    new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand)
-  );
+  )
+
+  if (process.env.WORKER) {
+    kernel.register(
+      createCommonEditorProviders(config)
+    );
+  } else {
+    kernel.register(
+      createEditorMasterProviders(config),
+      new ApplicationServiceProvider("browser", BrowserService),
+    );
+  }
   
   const app = new ServiceApplication(kernel);
+  
+  // hook with the master process
+  app.bus.register(hook(config.family, app.bus));
 
   await app.initialize();
+  
 }
 
 start();
+
+export * from "../common";

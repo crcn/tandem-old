@@ -1,31 +1,15 @@
-import { Project } from "../stores";
+// import { Project } from "../stores";
 import { EditorFamilyType } from "@tandem/editor/common";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
-import { IMessage, IStreamableDispatcher, readOneChunk, setMessageTarget } from "@tandem/mesh";
+import { IMessage, IStreamableDispatcher, readOneChunk, setMessageTarget, addMessageVisitor } from "@tandem/mesh";
 
 import { OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
 
-setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest);
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenRemoteBrowserRequest));
 setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
 
-@setMessageTarget(EditorFamilyType.MASTER)
-export class CreateNewProjectRequest implements IMessage {
-  static CREATE_NEW_PROJECT = "createNewProject";
-  readonly type = CreateNewProjectRequest.CREATE_NEW_PROJECT;
-  constructor()  { }
-  static async dispatch(dispatcher: IStreamableDispatcher<any>): Promise<Project> {
-    const result = (await readOneChunk(dispatcher.dispatch(new CreateNewProjectRequest()))).value;
-    return result;
-  }
-}
+// yuck yuck -- need to export a dud in order for message
+// visitors and stuff above to be properly registered
+export class TestMessage {
 
-@setMessageTarget(EditorFamilyType.MASTER)
-export class GetProjectRequest implements IMessage {
-  static GET_PROJECT = "getProjectRequest";
-  readonly type = GetProjectRequest.GET_PROJECT;
-  constructor(readonly id: string)  { }
-  static async dispatch(id: string, dispatcher: IStreamableDispatcher<any>): Promise<Project> {
-    const result = (await readOneChunk(dispatcher.dispatch(new GetProjectRequest(id)))).value;
-    return result;
-  }
 }

@@ -1,6 +1,8 @@
 TODOS:
 
 - [ ] codemirror
+- [ ] redis
+- [ ] jenkins
 - [ ] limit number of people who can use service
 - [ ] loggly
 - [ ] unwatch urls

@@ -1,6 +1,6 @@
-import { MongoClient, Db, Cursor } from "mongodb";
-import { DuplexStream, IStreamableDispatcher, WritableStreamDefaultWriter } from "@tandem/mesh/core";
 import { BaseDataStore } from "./base";
+import { MongoClient, Db, Cursor, ObjectID } from "mongodb";
+import { DuplexStream, IStreamableDispatcher, WritableStreamDefaultWriter } from "@tandem/mesh/core";
 import { DSInsertRequest, DSFindRequest, DSFindAllRequest, DSRemoveRequest, DSMessage, DSUpdateRequest } from "./messages";
 
 export class MongoDataStore extends  BaseDataStore {
@@ -57,7 +57,11 @@ export class MongoDataStore extends  BaseDataStore {
   // TODO - bundle query messages together
   dsFind(message: DSFindRequest<any>) {
     return new DuplexStream((input, output) => {
-      this.pump(this._db.collection(message.collectionName).find(message.query), output.getWriter());
+
+      // ishy - fixes immediate problem. These needs to be part of a schema instead
+      const q = JSON.parse(JSON.stringify(message.query));
+      if (q._id) q._id = new ObjectID(String(q._id));
+      this.pump(this._db.collection(message.collectionName).find(q), output.getWriter());
     });
   }
 

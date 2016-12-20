@@ -1,4 +1,4 @@
-import { HTTPServerProvider } from "tandem-playground/server/providers";
+import { ExpressServerProvider } from "@tandem/editor/master";
 import { IPlaygroundServerConfig } from "tandem-playground/server/config";
 import { IOService } from "@tandem/editor/common";
 import socketio = require("socket.io");
@@ -7,8 +7,8 @@ import express = require("express");
 
 export class BrowserService extends CoreApplicationService<IPlaygroundServerConfig> {
 
-  @injectProvider(HTTPServerProvider.ID)
-  private _serverProvider: HTTPServerProvider;
+  @injectProvider(ExpressServerProvider.ID)
+  private _serverProvider: ExpressServerProvider;
 
   [InitializeApplicationRequest.INITIALIZE]() {
     const server = this._serverProvider.value;

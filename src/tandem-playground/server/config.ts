@@ -1,7 +1,7 @@
-export interface IPlaygroundServerConfig {
+import { IEditorMasterConfig } from "@tandem/editor/master/config";
+
+export interface IPlaygroundServerConfig extends IEditorMasterConfig {
   family: string;
-  port?: number;
   browserDirectory: string;
   mongoUrl: string;
-  hostname: string;
 }
