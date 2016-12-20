@@ -91,9 +91,7 @@ gulp.task('build:symlinks', () => {
   .pipe(vfs.symlink(NODE_MODULES_DIR));
 });
 
-gulp.task('build:playground', gulpSequence([
-  ['build:playground:browser']
-]));
+gulp.task('build:playground', ['build:playground:browser']);
 
 
 gulp.task('build:playground:browser', (done) => {
