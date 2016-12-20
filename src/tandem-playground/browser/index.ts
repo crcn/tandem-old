@@ -14,9 +14,9 @@ const start = async () => {
     element: document.getElementById("application"),
     family: EditorFamilyType.BROWSER,
     server: {
-      port: Number(location.port) || 80,
-      hostname: location.hostname,
-      protocol: location.protocol === "https:" ? "https:" : "http:"
+      port: process.env.API_PORT || Number(location.port) || 80,
+      hostname: process.env.API_HOSTNAME || location.hostname,
+      protocol: process.env.API_PROTOCOL || (location.protocol === "https:" ? "https:" : "http:")
     }
   };
 

@@ -28,7 +28,10 @@ const plugins = [
 
     // required for mongoid-js plugin particularly
     'process.pid': process.pid,
-    'process.env.DEV': process.env.DEV
+    'process.env.DEV': process.env.DEV,
+    'process.env.API_PORT': process.env.API_PORT,
+    'process.env.API_HOSTNAME': process.env.API_HOSTNAME,
+    'process.env.API_PROTOCOL': process.env.API_PROTOCOL
   }),
   new WebpackNotifierPlugin({
     excludeWarnings: true,
@@ -118,6 +121,7 @@ loaders.push(
 exports.config = {
     output: {
       filename: '[name].js',
+      path: process.env.PUBLIC_PATH
     },
     sassLoader: {
       includePaths: [SRC_DIR],
