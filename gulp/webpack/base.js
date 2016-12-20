@@ -29,9 +29,9 @@ const plugins = [
     // required for mongoid-js plugin particularly
     'process.pid': process.pid,
     'process.env.DEV': process.env.DEV,
-    'process.env.API_PORT': process.env.API_PORT,
-    'process.env.API_HOSTNAME': process.env.API_HOSTNAME,
-    'process.env.API_PROTOCOL': process.env.API_PROTOCOL
+    'process.env.API_PORT': process.env.API_PORT && JSON.stringify(process.env.API_PORT),
+    'process.env.API_HOSTNAME': process.env.API_HOSTNAME && JSON.stringify(process.env.API_HOSTNAME),
+    'process.env.API_PROTOCOL': process.env.API_PROTOCOL && JSON.stringify(process.env.API_PROTOCOL)
   }),
   new WebpackNotifierPlugin({
     excludeWarnings: true,
