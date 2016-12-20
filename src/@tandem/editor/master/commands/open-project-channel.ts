@@ -22,7 +22,9 @@ export class OpenProjectEnvironmentChannelCommand extends BaseEditorMasterComman
       })));
 
 
-      return new ChannelBus(input, output, channelBus);
+      return new ChannelBus(input, output, channelBus, () => {
+        channelBus.dispose();
+      });
 
       
       // const envBus = new BrokerBus();

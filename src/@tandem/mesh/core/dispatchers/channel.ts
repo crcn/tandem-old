@@ -27,8 +27,9 @@ const stream = channel.dispatch()
 
 export class ChannelBus implements IBus<any> {
   private _remoteBus: RemoteBus<any>;
-  constructor(input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus: IDispatcher<any, any> = noopDispatcherInstance, onClose?: () => any) {
-    const writer = output.getWriter();
+  private _writer: WritableStreamDefaultWriter<any>;
+  constructor(input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus: IDispatcher<any, any> = noopDispatcherInstance, private _onClose?: () => any) {
+    const writer = this._writer = output.getWriter();
     this._remoteBus = new RemoteBus({
       adapter: {
         send(message: any) {
@@ -39,12 +40,16 @@ export class ChannelBus implements IBus<any> {
             write: (message) => {
               listener(message);
             },
-            close: onClose,
-            abort: onClose
+            close: _onClose,
+            abort: _onClose
           }))
         }
       }
     }, localBus);
+  }
+
+  dispose() {
+    this._writer.close();
   }
 
   dispatch(message: any) {
