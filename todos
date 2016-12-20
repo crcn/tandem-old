@@ -16,6 +16,7 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
+- [ ] move watchers to synthetic browser
 - [ ] authentication on opening remote browser
 - [ ] test suite
 - [ ] make collections es5 compatible

@@ -7,7 +7,6 @@ import { MetadataKeys } from "@tandem/editor/browser/constants";
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
 import { SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { CallbackDispatcher } from "@tandem/mesh";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { CSSStyleHashInputComponent } from "../css";
 import { IKeyValueNameComponentProps } from "@tandem/html-extension/editor/browser/components/common";
 import { CSSPrettyInspectorComponent } from "./pretty";

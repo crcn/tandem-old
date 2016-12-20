@@ -2,7 +2,7 @@ import  "./index.scss";
 import React =  require("react");
 import { TextInputComponent } from "@tandem/uikit";
 import { BaseApplicationComponent } from "@tandem/common";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
+import { Workspace } from "@tandem/editor/browser";
 import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic";
 
 export interface IRemoteBrowserPreset {
@@ -91,7 +91,7 @@ const PRESET_GROUPS = [
   }
 ];
 
-export class RemoteBrowserPaneSizeComponent extends BaseApplicationComponent<{ workspace, remoteBrowser: SyntheticRemoteBrowserElement }, any> {
+export class RemoteBrowserPaneSizeComponent extends BaseApplicationComponent<{ workspace: Workspace, remoteBrowser: SyntheticRemoteBrowserElement }, any> {
 
   get selectedRemoteBrowser() {
     return this.props.remoteBrowser;
@@ -102,7 +102,7 @@ export class RemoteBrowserPaneSizeComponent extends BaseApplicationComponent<{ w
     remoteBrowser.style[name] = value;
     const edit = remoteBrowser.createEdit();
     edit.setAttribute("style", remoteBrowser.getAttribute("style"));
-    this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    this.props.workspace.applyFileMutations(edit.mutations);
   }
 
   usePreset = (preset: IRemoteBrowserPreset) => {
@@ -111,7 +111,7 @@ export class RemoteBrowserPaneSizeComponent extends BaseApplicationComponent<{ w
     remoteBrowser.style.height = String(preset.height) + "px";
     const edit = remoteBrowser.createEdit();
     edit.setAttribute("style", remoteBrowser.getAttribute("style"));
-    this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    this.props.workspace.applyFileMutations(edit.mutations);
   }
 
   render() {

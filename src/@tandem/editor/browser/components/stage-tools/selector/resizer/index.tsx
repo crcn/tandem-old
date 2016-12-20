@@ -3,7 +3,6 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { ApplyFileEditRequest  } from "@tandem/sandbox";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
@@ -217,8 +216,7 @@ class ResizerComponent extends BaseApplicationComponent<{
       this.setState({ guideLines: guideLines });
 
     }, () => {
-
-      this.bus.dispatch(new ApplyFileEditRequest(this._visibleElements.createStyleEditChanges()));
+      this.props.workspace.applyFileMutations(this._visibleElements.createStyleEditChanges());
 
       this._dragger = void 0;
       this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
@@ -233,7 +231,7 @@ class ResizerComponent extends BaseApplicationComponent<{
   }
 
   onPointMouseUp = () => {
-    this.bus.dispatch(new ApplyFileEditRequest(this._visibleElements.createStyleEditChanges()));
+    this.props.workspace.applyFileMutations(this._visibleElements.createStyleEditChanges());
     this.props.workspace.metadata.set(MetadataKeys.MOVING, false);
     this.setState({ guideLines: undefined });
     this.props.onStopResizing();

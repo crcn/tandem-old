@@ -14,6 +14,7 @@ import { SpawnWorkerRequest } from "./messages";
 import { IEditorMasterConfig } from "./config";
 import { createHTTPRouteProviders } from "./routes";
 import { HTTPRouteService } from "./services";
+import { EditorMasterStore } from "./stores";
 
 import { 
   IProvider, 
@@ -21,6 +22,8 @@ import {
   ApplicationServiceProvider,
   ApplicationConfigurationProvider,
 } from "@tandem/common";
+
+import { EditorMasterStoreProvider, HTTPRouteProvider } from "./providers";
 
 import { 
   GetProjectRequest,
@@ -45,7 +48,8 @@ export const createEditorMasterProviders = (config: IEditorMasterConfig) => {
     new CommandFactoryProvider(CreateNewProjectRequest.CREATE_NEW_PROJECT, CreateNewProjectCommand),
     new CommandFactoryProvider(OpenProjectEnvironmentChannelRequest.OPEN_PROJECT_ENVIRONMENT_CHANNEL, OpenProjectEnvironmentChannelCommand),
     new CommandFactoryProvider(SpawnWorkerRequest.SPAWN_WORKER, SpawnWorkerCommand),
-    new ApplicationServiceProvider("httpRoutes", HTTPRouteService)
+    new ApplicationServiceProvider("httpRoutes", HTTPRouteService),
+    new EditorMasterStoreProvider(EditorMasterStore)
   ];
 }
 

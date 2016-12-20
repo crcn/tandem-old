@@ -2,7 +2,7 @@ import { flatten } from "lodash";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { Project } from "@tandem/editor/common";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { ParallelBus, CallbackDispatcher, IDispatcher, ChannelBus, readAllChunks } from "@tandem/mesh";
+import { ParallelBus, CallbackDispatcher, IDispatcher, ChannelBus, readAllChunks, TransformStream } from "@tandem/mesh";
 import { SelectionChangeEvent, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/browser/messages";
 
 import {
@@ -13,6 +13,7 @@ import {
   bindable,
   Metadata,
   TreeNode,
+  Mutation,
   Transform,
   CoreEvent,
   BrokerBus,
@@ -27,7 +28,7 @@ import {
   ApplicationConfigurationProvider,
 } from "@tandem/common";
 
-import { ISyntheticObject } from "@tandem/sandbox";
+import { ISyntheticObject, ApplyFileEditRequest } from "@tandem/sandbox";
 import { 
   BaseRenderer,
   SyntheticBrowser,
@@ -180,6 +181,10 @@ export class Workspace extends Observable {
     );
 
     this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "zoom", this.zoom, oldZoom).toEvent(true));
+  }
+
+  async applyFileMutations(mutations: Mutation<any>[]) {
+    return PrivateBusProvider.getInstance(this._envKernel).dispatch(new ApplyFileEditRequest(mutations));
   }
 
   private onBrowserChange(newBrowser: ISyntheticBrowser) {

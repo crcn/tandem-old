@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { loadTestBrowser, timeout } from "@tandem/synthetic-browser/test";
+import { FileEditorProvider } from "@tandem/sandbox";
 import { SyntheticCSSStyleRule } from "@tandem/synthetic-browser";
+import { loadTestBrowser, timeout } from "@tandem/synthetic-browser/test";
 import { PrivateBusProvider, LogLevel } from "@tandem/common";
-import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 
 // TODO - media queries, keyframes 
 describe(__filename + "#", () => {

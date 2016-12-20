@@ -1,15 +1,15 @@
 import React =  require("react");
-import { ApplyFileEditRequest } from "@tandem/sandbox";
+import { Workspace } from "@tandem/editor/browser";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic"; 
 import { TextInputComponent } from "@tandem/uikit";
 
-export class InjectComponent extends  BaseApplicationComponent<{ remoteBrowser: SyntheticRemoteBrowserElement }, any> {
+export class InjectComponent extends  BaseApplicationComponent<{ remoteBrowser: SyntheticRemoteBrowserElement, workspace: Workspace }, any> {
 
   onChange = (newValue: any) => {
     const edit = this.props.remoteBrowser.createEdit();
     edit.setAttribute("inject-script", encodeURIComponent(newValue));
-    this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    this.props.workspace.applyFileMutations(edit.mutations);
   }
   
   render() {

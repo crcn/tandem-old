@@ -1,8 +1,8 @@
 import { EditorStore } from "@tandem/editor/browser/stores";
-import { IEditable, ISyntheticObject, ApplyFileEditRequest } from "@tandem/sandbox";
 import { EditorStoreProvider } from "@tandem/editor/browser/providers";
-import { ICommand, inject, PrivateBusProvider, IBrokerBus, RemoveMutation } from "@tandem/common";
 import { RemoveSelectionRequest } from "@tandem/editor/browser/messages";
+import { IEditable, ISyntheticObject } from "@tandem/sandbox";
+import { ICommand, inject, PrivateBusProvider, IBrokerBus, RemoveMutation } from "@tandem/common";
 
 export class RemoveSelectionCommand implements ICommand {
 
@@ -21,7 +21,7 @@ export class RemoveSelectionCommand implements ICommand {
       mutations.push(new RemoveMutation(selection));
     }
 
-    await this._bus.dispatch(new ApplyFileEditRequest(mutations));
+    await this._store.workspace.applyFileMutations(mutations);
   }
 }
 

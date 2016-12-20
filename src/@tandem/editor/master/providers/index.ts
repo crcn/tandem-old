@@ -1,9 +1,11 @@
 import http = require("http");
 import express = require("express");
+import { EditorMasterStore } from "../stores";
 import {
   Kernel, 
   ICommand,
   IProvider, 
+  StoreProvider,
   ClassFactoryProvider,
 } from "@tandem/common";
 
@@ -38,5 +40,12 @@ export class HTTPRouteProvider extends ClassFactoryProvider {
 
   static findAll(kernel: Kernel): HTTPRouteProvider[] {
     return kernel.queryAll<HTTPRouteProvider>([this.NS, "**"].join("/"));
+  }
+}
+
+export class EditorMasterStoreProvider extends StoreProvider {
+  static readonly ID = StoreProvider.getId("editorMaster");
+  constructor(clazz: { new(): EditorMasterStore }) {
+    super("editorMaster", clazz);
   }
 }

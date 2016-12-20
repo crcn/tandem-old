@@ -4,7 +4,6 @@ import AutosizeInput = require("react-input-autosize");
 
 import tc =  require("tinycolor2");
 import { Status } from "@tandem/common/status";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
@@ -56,7 +55,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
     // the change immediately
     this.state.edit.applyMutationsTo(remoteBrowser);
 
-    await this.bus.dispatch(new ApplyFileEditRequest(this.state.edit.mutations));
+    await this.props.workspace.applyFileMutations(this.state.edit.mutations);
     this.doneEditing();
   }
 
@@ -83,7 +82,8 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
     }, () => {
       const edit = browser.createEdit();
       edit.setAttribute("style", browser.getAttribute("style"));
-      this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+      this.props.workspace.applyFileMutations(edit.mutations);
+    
     });
   }
 
@@ -110,7 +110,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
       if (!hasURIProtocol(value)) value = "http://" + value;
       this.props.remoteBrowser.src = value;
       edit.setAttribute("src", value);
-      this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+      this.props.workspace.applyFileMutations(edit.mutations);
     }
   }
   
@@ -128,7 +128,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
     const parentEdit = remoteBrowser.parentElement.createEdit();
     parentEdit.appendChild(clone);
 
-    this.bus.dispatch(new ApplyFileEditRequest(parentEdit.mutations));
+    this.props.workspace.applyFileMutations(parentEdit.mutations);
   }
 
   selectSearch = (event: React.MouseEvent<any>) => {

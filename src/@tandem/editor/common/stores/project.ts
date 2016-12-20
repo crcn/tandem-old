@@ -1,4 +1,4 @@
-import { URIProtocolProvider } from "@tandem/sandbox";
+import { URIProtocolProvider, IURIProtocolReadResult } from "@tandem/sandbox";
 import { 
   inject,
   Kernel, 
@@ -8,6 +8,7 @@ import {
   BaseActiveRecord, 
   ApplicationConfigurationProvider
 } from "@tandem/common";
+
 import { IEditorCommonConfig } from "../config";
 
 export const PROJECT_COLLECTION_NAME = "projects";

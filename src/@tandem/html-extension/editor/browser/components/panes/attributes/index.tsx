@@ -1,8 +1,8 @@
 import React =  require("react");
 import { Workspace } from "@tandem/editor/browser";
 import { DOMElements } from "@tandem/html-extension/collections";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
+import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMAttribute, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
@@ -21,8 +21,7 @@ export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ w
     for (const item of this.items) {
       const edit = item.createEdit() as SyntheticDOMElementEdit;
       edit.setAttribute(name, value, oldName);
-
-      this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+      this.props.workspace.applyFileMutations(edit.mutations);
     }
   }
 

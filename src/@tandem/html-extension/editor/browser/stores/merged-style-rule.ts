@@ -1,3 +1,4 @@
+import { Workspace } from "@tandem/editor/browser";
 import { uniq, values, camelCase, debounce } from "lodash";
 import { SyntheticCSSStyleGraphics, SyntheticCSSElementStyleRuleMutationTypes } from "@tandem/synthetic-browser";
 import { MutationEvent, bindable, bubble, Observable, PropertyMutation, PrivateBusProvider, IBrokerBus, inject, diffArray, Mutation } from "@tandem/common";
@@ -43,8 +44,7 @@ export class MergedCSSStyleRule extends Observable {
     [Identifier: string]: Array<MatchedCSSStyleRuleType>
   };
 
-
-  constructor(readonly target: SyntheticHTMLElement) {
+  constructor(readonly workspace:  Workspace, readonly target: SyntheticHTMLElement) {
     super();
     this._queuedEditMutations = [];
     this._style = new SyntheticCSSStyle();
@@ -187,8 +187,8 @@ export class MergedCSSStyleRule extends Observable {
     }
 
     this._queuedEditMutations = [];
-    
-    this._bus.dispatch(new ApplyFileEditRequest(mutations));
+
+    this.workspace.applyFileMutations(mutations);
   }, 500) 
 
   computeStyle() {

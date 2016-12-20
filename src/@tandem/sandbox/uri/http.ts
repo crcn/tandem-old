@@ -59,9 +59,12 @@ export class HTTPURIProtocol extends URIProtocol {
     }
   }
   async write(uri: string, content: string) {
-    // if (this._watchers[uri]) {
-    //   this._watchers[uri]();
-    // }
+    return new Promise((resolve, reject) => {
+      console.log("POST", uri, content);
+      request.post(uri, {
+        body: content
+      });
+    })
   }
   async fileExists(uri: string) {
     // this.logger.info(`Cannot currenty check http 404s`);

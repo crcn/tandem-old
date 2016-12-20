@@ -1,10 +1,11 @@
 import React =  require("react");
+import { Workspace } from "@tandem/editor/browser";
+import { MergedCSSStyleRule } from "@tandem/html-extension/editor/browser/stores";
 import { ApplyFileEditRequest } from "@tandem/sandbox"
 import { BaseApplicationComponent, Mutation } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticCSSElementStyleRule } from "@tandem/synthetic-browser";
-import { MergedCSSStyleRule,  } from "@tandem/html-extension/editor/browser/stores";
 
-export abstract class BaseCSSInputComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, propertyName: string }, any> {
+export abstract class BaseCSSInputComponent extends BaseApplicationComponent<{ rule: MergedCSSStyleRule, propertyName: string, workspace: Workspace }, any> {
 
   onChange = (newValue: any) => {
     const { rule, propertyName } = this.props;
@@ -20,7 +21,7 @@ export abstract class BaseCSSInputComponent extends BaseApplicationComponent<{ r
       mutations.push(...edit.mutations);
     }
 
-    this.bus.dispatch(new ApplyFileEditRequest(mutations));
+    this.props.workspace.applyFileMutations(mutations);
   }
 
   render() {

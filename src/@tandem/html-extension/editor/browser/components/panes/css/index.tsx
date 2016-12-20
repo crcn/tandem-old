@@ -116,7 +116,7 @@ class MatchedCSSStyleRuleComponent extends BaseApplicationComponent<{ result: Ma
       edit.setDeclaration(name, value, oldName);
     }
 
-    this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    this.props.workspace.applyFileMutations(edit.mutations);
   }
   render() {
     const { result } = this.props;

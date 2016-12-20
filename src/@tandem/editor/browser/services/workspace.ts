@@ -14,11 +14,11 @@ import {
   SyntheticRendererEvent,
   RemoteBrowserDocumentMessage,
 } from "@tandem/synthetic-browser";
+import { FileEditorProvider } from "@tandem/sandbox";
 import { pointerToolProvider } from "@tandem/editor/browser/stores/pointer-tool";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 import { EditorStore, Workspace } from "@tandem/editor/browser/stores";
 import { CoreApplicationService } from "@tandem/common";
-import { ApplyFileEditRequest, FileEditorProvider } from "@tandem/sandbox";
 import { WorkspaceToolFactoryProvider, EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { SetToolRequest, ZoomRequest, ZoomOutRequest, ZoomInRequest, SetZoomRequest } from "@tandem/editor/browser/messages";
 

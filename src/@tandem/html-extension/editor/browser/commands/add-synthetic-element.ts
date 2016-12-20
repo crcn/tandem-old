@@ -1,7 +1,6 @@
 import { HTMLExtensionBaseCommand } from "./base";
 import { SyntheticDOMElement, SyntheticDOMNode } from "@tandem/synthetic-browser";
 import { AddSyntheticObjectRequest, SelectRequest } from "@tandem/editor/browser/messages";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
 
 
 // TODO - do not assume that the selection is a DOM element -- okay for 
@@ -16,6 +15,6 @@ export class AddSyntheticElementCommand extends HTMLExtensionBaseCommand {
     const edit = (highest ? highest.parentNode : this.editorStore.workspace.document.body.firstChild as SyntheticDOMElement).createEdit();
     edit.appendChild(item as SyntheticDOMNode);
 
-    this.bus.dispatch(new ApplyFileEditRequest(edit.mutations));
+    this.editorStore.workspace.applyFileMutations(edit.mutations);
   }
 }

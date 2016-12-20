@@ -1,7 +1,8 @@
+import { IInjectable } from "@tandem/common";
 import { URIProtocolProvider } from "@tandem/sandbox";
 import { BaseEditorMasterCommand } from "./base";
-import { GetProjectRequest, PROJECT_COLLECTION_NAME, Project } from "@tandem/editor/common";
 import { DSFindRequest, DSInsertRequest } from "@tandem/mesh";
+import { GetProjectRequest, PROJECT_COLLECTION_NAME, Project } from "@tandem/editor/common";
 
 export class GetProjectCommand extends BaseEditorMasterCommand {
   async execute(request: GetProjectRequest) {

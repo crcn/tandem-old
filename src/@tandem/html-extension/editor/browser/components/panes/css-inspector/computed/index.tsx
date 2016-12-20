@@ -1,7 +1,6 @@
 import "./index.scss";
 import React = require("react");
 import { HTMLDOMElements } from "@tandem/html-extension/collections";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
 import {  SyntheticSourceLink } from "@tandem/editor/browser/components/common";
 import { CSSStyleHashInputComponent, CSSStylePropertyComponent } from "../../css";
 import { IKeyValueNameComponentProps, IKeyValueInputComponentProps } from "@tandem/html-extension/editor/browser/components/common";
