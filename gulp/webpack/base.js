@@ -51,7 +51,10 @@ if (SOURCE_MAPS) {
 if (MINIFY) {
   plugins.push(
     new webpack.optimize.UglifyJsPlugin({
-      compress: true
+      compress: true,
+      output: {
+        ascii_only: true
+      }
     })
   )
 
