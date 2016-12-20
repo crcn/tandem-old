@@ -1,7 +1,12 @@
 TODOS:
 
+- [ ] sign up to save project
 - [ ] codemirror
 - [ ] redis
+- [ ] copy & paste urls
+- [ ] s3
+- [ ] proxy assets through HTTP server
+- [ ] websockets must be SSL
 - [ ] jenkins
 - [ ] limit number of people who can use service
 - [ ] loggly
@@ -10,6 +15,10 @@ TODOS:
 - [ ] aws workers
 - [ ] show user cursors
 - [ ] share workspace button
+
+domains:
+
+- [ ] 
 
 Motivation:
 
