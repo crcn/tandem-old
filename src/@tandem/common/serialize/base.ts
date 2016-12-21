@@ -130,6 +130,17 @@ const _serializers   = {
         return v;;
       }
     }
+  },
+  Buffer: {
+    ctor: undefined,
+    serializer: {
+      serialize(value: Buffer) {
+        return value.toString("base64");
+      },
+      deserialize(value, kernel) {
+        return new Buffer(value, "base64");
+      }
+    }
   }
 };
 
@@ -144,6 +155,7 @@ function getNativeSerializeType(value: any) {
   if (value instanceof Date) return "Date";
   if (value instanceof RegExp) return "RegExp";
   if (value instanceof Error) return "Error";
+  if (value instanceof Buffer) return "Buffer";
   if (value && value.constructor.name === "Object") return "Object";
 
   return undefined;

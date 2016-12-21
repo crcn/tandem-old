@@ -60,6 +60,10 @@ export class Workspace extends Observable {
   @inject(KernelProvider.ID)
   private _envKernel: Kernel;
 
+  get envKernel() {
+    return this._envKernel;
+  }
+
   /**
    */
 

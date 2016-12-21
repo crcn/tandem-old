@@ -1,5 +1,7 @@
+import { FileEditor } from "../edit";
+import { FileEditorProvider } from "../providers";
 import { inject, BaseCommand } from "@tandem/common";
-import { ApplyFileEditRequest, FileEditorProvider, FileEditor } from "@tandem/sandbox";
+import { ApplyFileEditRequest } from "../messages";
 
 export class ApplyFileEditCommand extends BaseCommand { 
 

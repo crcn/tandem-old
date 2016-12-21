@@ -22,6 +22,7 @@ import {
   WatchFileRequest,
   DependencyEvent,
   ISyntheticObject,
+  WriteFileRequest,
   ApplyFileEditRequest,
   // ReadDirectoryRequest,
   SandboxModuleAction,
@@ -74,6 +75,7 @@ export namespace EditorFamilyType {
 
 setMessageTarget(EditorFamilyType.WORKER)(WatchFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest);
+setMessageTarget(EditorFamilyType.WORKER)(WriteFileRequest);
 setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
 
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(DSFindRequest))
@@ -278,3 +280,4 @@ export class SelectSourceRequest extends CoreEvent {
     super(SelectSourceRequest.SELECT_SOURCE);
   }
 }
+

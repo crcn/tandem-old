@@ -80,7 +80,7 @@ export class FileCache extends Observable {
     
 
     if (!fileCache) {
-      const type = data && data.type || MimeTypeProvider.lookup(sourceUri, this._kernel);;
+      const type = data && data.type || MimeTypeProvider.lookup(sourceUri, this._kernel);
       return this.collection.create({
         type: type,
         sourceUri: sourceUri,
@@ -89,6 +89,7 @@ export class FileCache extends Observable {
       }).insert();
     } else {
       if (data && data.content) {
+        if (data.type) fileCache.type = data.type;
         fileCache.setDataUrlContent(data.content);
       }
       return fileCache.save();

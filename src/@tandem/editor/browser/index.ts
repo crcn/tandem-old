@@ -48,7 +48,7 @@ import {
   SelectableStageToolComponent,
 } from "./components";
 
-import { HTTPProxyProtocol } from "./protocols";
+import { StreamProxyProtocol } from "./protocols";
 
 import { EditorStore } from "./stores";
 import { WorkspaceRouteHandler } from "./routes";
@@ -86,7 +86,7 @@ import {
 export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileResolverClass?: { new(): IFileResolver }) {
   return [
 
-    new URIProtocolProvider(() => true, HTTPProxyProtocol),
+    new URIProtocolProvider(() => true, StreamProxyProtocol),
 
     ...keyBindingsProviders,
 

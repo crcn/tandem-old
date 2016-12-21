@@ -9,6 +9,7 @@ import {
   FactoryProvider,
   MimeTypeProvider,
   ClassFactoryProvider,
+  CommandFactoryProvider,
   createSingletonProviderClass,
 } from "@tandem/common";
 

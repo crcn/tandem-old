@@ -31,9 +31,7 @@ export const createHTTPRouteProviders = () => {
       }
     }),
 
-    // TODO - this stuff should go into @tandem/sandbox
-
-    new HTTPRouteProvider("get", "/proxy/read/:base64URI", class extends BaseHTTPRouteHandler {
+    new HTTPRouteProvider("get", "/proxy/:base64URI", class extends BaseHTTPRouteHandler {
       async handle(req: express.Request, res: express.Response, next) {
         const uri = new Buffer(req.params.base64URI, "base64").toString("utf8");
         const protocol = URIProtocolProvider.lookup(uri, this.kernel);
@@ -43,26 +41,26 @@ export const createHTTPRouteProviders = () => {
       }
     }),
 
-    new HTTPRouteProvider("post", "/proxy/write/:base64URI", class extends BaseHTTPRouteHandler {
-      async handle(req: express.Request, res: express.Response, next) {
-        const uri = new Buffer(req.params.base64URI, "base64").toString("utf8");
-        const protocol = URIProtocolProvider.lookup(uri, this.kernel);
-        const buffer = [];
-        req.on("data", buffer.push.bind(buffer));
-        req.on("end", () => {
-          protocol.write(uri, buffer.join(""));
-          res.end();
-        });
-      }
-    }),
+    // new HTTPRouteProvider("post", "/proxy/write/:base64URI", class extends BaseHTTPRouteHandler {
+    //   async handle(req: express.Request, res: express.Response, next) {
+    //     const uri = new Buffer(req.params.base64URI, "base64").toString("utf8");
+    //     const protocol = URIProtocolProvider.lookup(uri, this.kernel);
+    //     const buffer = [];
+    //     req.on("data", buffer.push.bind(buffer));
+    //     req.on("end", () => {
+    //       protocol.write(uri, buffer.join(""));
+    //       res.end();
+    //     });
+    //   }
+    // }),
 
-    new HTTPRouteProvider("get", "/proxy/file-exists/:base64URI", class extends BaseHTTPRouteHandler {
-      async handle(req: express.Request, res: express.Response, next) {
-        const uri = new Buffer(req.params.base64URI, "base64").toString("utf8");
-        const protocol = URIProtocolProvider.lookup(uri, this.kernel);
-        res.send(await protocol.fileExists(uri));
-      }
-    }),
+    // new HTTPRouteProvider("get", "/proxy/file-exists/:base64URI", class extends BaseHTTPRouteHandler {
+    //   async handle(req: express.Request, res: express.Response, next) {
+    //     const uri = new Buffer(req.params.base64URI, "base64").toString("utf8");
+    //     const protocol = URIProtocolProvider.lookup(uri, this.kernel);
+    //     res.send(await protocol.fileExists(uri));
+    //   }
+    // }),
   ];
   
 }

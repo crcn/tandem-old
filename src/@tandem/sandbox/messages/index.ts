@@ -20,6 +20,8 @@ import { 
   WritableStream,
 } from "@tandem/mesh";
 
+import { IURIProtocolReadResult } from "../uri";
+
 
 @serializable("ApplyFileEditRequest", {
   serialize({ mutations }: ApplyFileEditRequest) {
@@ -61,8 +63,20 @@ export class ReadFileRequest extends Message {
     super(ReadFileRequest.READ_FILE);
   }
 
-  static async dispatch(uri: string, bus: IStreamableDispatcher<any>): Promise<Buffer> {
-    return new Buffer((await readOneChunk(bus.dispatch(new ReadFileRequest(uri)))).value, "base64");
+  static async dispatch(uri: string, bus: IStreamableDispatcher<any>): Promise<IURIProtocolReadResult> {
+    return (await readOneChunk(bus.dispatch(new ReadFileRequest(uri)))).value;
+  }
+}
+
+@serializable("WriteFileRequest")
+export class WriteFileRequest extends Message {
+  static readonly WRITE_FILE = "writeFile";
+  constructor(readonly uri: string, readonly content: string) {
+    super(WriteFileRequest.WRITE_FILE);
+  }
+
+  static async dispatch(uri: string, content: string, bus: IStreamableDispatcher<any>): Promise<any> {
+    return bus.dispatch(new WriteFileRequest(uri, content));
   }
 }
 

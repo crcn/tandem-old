@@ -5,6 +5,10 @@ import { FileCacheItem } from "./item";
 
 import { FileCache } from "./file-cache";
 
+export const getCacheUri = (uri) => {
+  return `cache://${new Buffer(uri).toString("base64")}`;
+}
+
 export class FileCacheProtocol extends URIProtocol {
 
   @inject(FileCacheProvider.ID)
@@ -14,7 +18,6 @@ export class FileCacheProtocol extends URIProtocol {
   private _kernel: Kernel;
 
   async read(uri: string) {
-    console.log(uri, this.decode(uri));
     const item = await this._find(uri);
     return item && await item.read();
   }
@@ -44,7 +47,7 @@ export class FileCacheProtocol extends URIProtocol {
     // as the source URI -- which can only (currently) be fetched by reading the doc.
     // Might be good to implement a separate protocol.readContentType() method instead.
     try {
-      type = (await URIProtocolProvider.lookup(decodedUri, this._kernel).read(uri)).type;
+      type = (await URIProtocolProvider.lookup(decodedUri, this._kernel).read(decodedUri)).type;
     } catch(e) {
       // eat it -- file cache will provide content type
     }

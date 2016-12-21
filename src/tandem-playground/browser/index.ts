@@ -43,7 +43,7 @@ const start = async () => {
     new ApplicationServiceProvider("key-bindings", GlobalKeyBindingService),
     new EditorComponentFactoryProvider("textEditor", TextEditorComponent as any),
     new CommandFactoryProvider(OpenFileRequest.OPEN_FILE, OpenFileCommand),
-    new CommandFactoryProvider( UpdateFileCacheRequest.UPDATE_FILE_CACHE, UpdateFileCommand),
+    new CommandFactoryProvider(UpdateFileCacheRequest.UPDATE_FILE_CACHE, UpdateFileCommand),
   );
 
   const app = global["app"] = new ServiceApplication(kernel);

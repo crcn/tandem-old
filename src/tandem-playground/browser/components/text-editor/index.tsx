@@ -14,7 +14,6 @@ export class TextEditorComponent extends BaseApplicationComponent<any, any> {
   private _updating: boolean;
   private _shouldUpdateAgainContent: string;
 
-
   state = {
     showTextEditor: undefined
   };
@@ -31,7 +30,8 @@ export class TextEditorComponent extends BaseApplicationComponent<any, any> {
     await this.bus.dispatch(new UpdateFileCacheRequest(uri, value));
     this._updating = false;
     if (this._shouldUpdateAgainContent) {
-      this.onChange(this._shouldUpdateAgainContent);
+      const content = this._shouldUpdateAgainContent;
+      this._shouldUpdateAgainContent = undefined;
     }
   }
 
