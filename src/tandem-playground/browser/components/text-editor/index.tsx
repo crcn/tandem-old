@@ -32,6 +32,7 @@ export class TextEditorComponent extends BaseApplicationComponent<any, any> {
     if (this._shouldUpdateAgainContent) {
       const content = this._shouldUpdateAgainContent;
       this._shouldUpdateAgainContent = undefined;
+      this.onChange(content);
     }
   }
 
