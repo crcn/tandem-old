@@ -6,6 +6,7 @@ import { argv } from "yargs";
 import { MemoryDataStore } from "@tandem/mesh/ds";
 import { MongoDataStore } from "@tandem/mesh/ds/mongo";
 import { IPlaygroundServerConfig } from "./config";
+import { createHTTPRouteProviders } from "./routes";
 import { createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
 import { createEditorMasterProviders } from "@tandem/editor/master";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension";
@@ -86,6 +87,7 @@ const start = async () => {
 
   } else {
     kernel.register(
+      createHTTPRouteProviders(),
       createEditorMasterProviders(config),
       new ApplicationServiceProvider("browser", BrowserService),
     );

@@ -60,3 +60,4 @@ export * from "./commands";
 export * from "./messages";
 export * from "./config";
 export * from "./providers";
+export * from "./routes/base";
