@@ -1,0 +1,11 @@
+
+
+- [ ] text editor (not limited to text -- can be for images as well)
+  - [ ] open files
+  - [ ] write URI when text changes
+  - [ ] show entire dependency graph (like a navigator)
+  - [ ] ability to download changes
+
+
+- [ ] bugs
+  - [ ] make it faster

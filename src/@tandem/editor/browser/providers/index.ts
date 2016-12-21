@@ -88,6 +88,7 @@ export class DocumentPaneComponentFactoryProvider extends ReactComponentFactoryP
 
 export class StageToolComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS = "components/tools";
+  
   constructor(readonly name: string, readonly toolType: string, readonly componentClass: React.ComponentClass<any>) {
     super(StageToolComponentFactoryProvider.getNamespace(name, toolType), componentClass);
   }
@@ -100,6 +101,24 @@ export class StageToolComponentFactoryProvider extends ReactComponentFactoryProv
     return new StageToolComponentFactoryProvider(this.name, this.toolType, this.componentClass);
   }
 }
+
+export class EditorComponentFactoryProvider extends ReactComponentFactoryProvider {
+  static readonly NS = "components/editors";
+  
+
+  constructor(readonly name: string, readonly componentClass: React.ComponentClass<any>) {
+    super(EditorComponentFactoryProvider.getId(name), componentClass);
+  }
+
+  static getId(name: string) {
+    return [this.NS, name].join("/");
+  }
+
+  clone() {
+    return new EditorComponentFactoryProvider(this.name, this.componentClass);
+  }
+}
+
 export class LayerLabelComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS = "layerLabelComponent";
   constructor(readonly displayType: string, readonly componentClass: React.ComponentClass<any>, readonly childrenProperty: string = "children") {

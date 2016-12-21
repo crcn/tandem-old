@@ -1,15 +1,19 @@
 import { URIProtocol } from "./protocol";
 import { Kernel, createSingletonProviderClass, IProvider } from "@tandem/common";
 
+let _i = 0;
+
 export class URIProtocolProvider implements IProvider {
 
   private _value: URIProtocol;
   readonly id: string;
   public owner: Kernel;
   readonly overridable: boolean = true;
+  readonly test: (name:string) => boolean;
 
-  constructor(readonly name: string, readonly clazz: { new(): URIProtocol }) {
-    this.id = URIProtocolProvider.getId(name);
+  constructor(test: string|((name:string) => boolean), readonly clazz: { new(): URIProtocol }) {
+    this.test = typeof test === "string" ? ((name) => name === test) : test;
+    this.id = URIProtocolProvider.getId(String(_i++));
   }
 
   static getId(name: string) {
@@ -17,7 +21,7 @@ export class URIProtocolProvider implements IProvider {
   }
 
   clone() {
-    return new URIProtocolProvider(this.name, this.clazz);
+    return new URIProtocolProvider(this.test, this.clazz);
   }
 
   get value() {
@@ -31,9 +35,12 @@ export class URIProtocolProvider implements IProvider {
       uri = "file://" + uri;
     }
 
-    const protocol = uri.split(":")[0];
+    const protocolId = uri.split(":")[0];
 
-    const provider = kernel.query<URIProtocolProvider>(this.getId(protocol));
+    const provider = kernel.queryAll<URIProtocolProvider>(this.getId("**")).find((provider) => {
+      return provider.test(protocolId);
+    });
+
     return provider && provider.value;
   }
 }

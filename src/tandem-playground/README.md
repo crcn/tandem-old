@@ -1,5 +1,6 @@
 TODOS:
 
+- [ ] http proxy
 - [ ] sign up to save project
 - [ ] codemirror
 - [ ] redis
@@ -15,6 +16,7 @@ TODOS:
 - [ ] aws workers
 - [ ] show user cursors
 - [ ] share workspace button
+- [ ] change navigator
 
 domains:
 
