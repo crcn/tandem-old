@@ -19,12 +19,17 @@ export class TextEditorComponent extends BaseApplicationComponent<any, any> {
   };
 
   onChange = async (value: string) => {
+    this._store.textEditor.currentFile.content = value;
+
     if (this._updating) {
       this._shouldUpdateAgainContent = value;
       return;
     }
+
     const uri = this._store.textEditor.currentFile.uri;
-    if (!uri || this._store.textEditor.currentFile.content === value) return;
+    if (!uri) {
+      return;
+    }
 
     this._updating = true;
     await this.bus.dispatch(new UpdateFileCacheRequest(uri, value));

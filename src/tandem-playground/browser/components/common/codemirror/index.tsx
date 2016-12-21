@@ -21,6 +21,7 @@ export interface ICodeMirrorComponentProps {
 export class CodeMirrorComponent extends React.Component<ICodeMirrorComponentProps, any> {
 
   private _instance: CodeMirror.Editor;
+  private _prevValue: string;
 
   componentDidMount() {
     this._instance = CodeMirror.fromTextArea((this.refs as any).textarea, {
@@ -30,14 +31,17 @@ export class CodeMirrorComponent extends React.Component<ICodeMirrorComponentPro
     });
 
     this._instance.on("change", () => {
-      this.props.onChange(this._instance.getValue());
+      const value = this._instance.getValue();
+      if (value === this._prevValue) return;
+      this.props.onChange(this._prevValue = value);
     })
   } 
 
   componentWillReceiveProps(props: ICodeMirrorComponentProps) {
 
-    if (this.props.value !== props.value) {
-      this._instance.setValue(props.value);
+    if (props.value !== this._instance.getValue()) {
+    
+      this._instance.setValue(this._prevValue = props.value);
     }
 
     if (this.props.contentType !== props.contentType) {
