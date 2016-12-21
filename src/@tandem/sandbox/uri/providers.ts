@@ -11,7 +11,7 @@ export class URIProtocolProvider implements IProvider {
   readonly overridable: boolean = true;
   readonly test: (name:string) => boolean;
 
-  constructor(test: string|((name:string) => boolean), readonly clazz: { new(): URIProtocol }) {
+  constructor(test: string|((name:string) => boolean), readonly clazz: { new(): URIProtocol }, readonly priority?: number) {
     this.test = typeof test === "string" ? ((name) => name === test) : test;
     this.id = URIProtocolProvider.getId(String(_i++));
   }
@@ -21,7 +21,7 @@ export class URIProtocolProvider implements IProvider {
   }
 
   clone() {
-    return new URIProtocolProvider(this.test, this.clazz);
+    return new URIProtocolProvider(this.test, this.clazz, this.priority);
   }
 
   get value() {

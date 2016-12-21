@@ -270,7 +270,12 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
       this.load2().then(() => {
         this.status = new Status(Status.COMPLETED);
         this.notify(new DependencyEvent(DependencyEvent.DEPENDENCY_LOADED));
-        resolve(this);
+        if (this._shouldLoadAgain) {
+          this._shouldLoadAgain = false;
+          this.load().then(resolve, reject);
+        } else {
+          resolve(this);
+        }
       }, (err) => {
         this.status = new Status(Status.ERROR);
         reject(err);
@@ -451,10 +456,13 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
 
   private onFileCacheAction({ mutation }: MutationEvent<any>) {
     // reload the dependency if file cache item changes -- could be the data uri, source file, etc.
-    if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE && this.status.type !== Status.LOADING) {
-      this.logger.info("Source file changed ");
-
-      this.reload();
+    if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
+      if (this.status.type !== Status.LOADING) {
+        this.logger.info("Source file changed ");
+        this.reload();
+      } else {
+        this._shouldLoadAgain = true;
+      }
     }
   }
 }

@@ -46,6 +46,7 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
   const bus = new BrokerBus();
 
   const kernel = new Kernel(
+    createTestSandboxProviders(options.sandboxOptions),
     new KernelProvider(),
     new PrivateBusProvider(bus),
     createSASSSandboxProviders(),
@@ -55,7 +56,6 @@ export const createTestMasterApplication = (options: IMasterTestAppicationOption
     createJavaScriptSandboxProviders(),
     options.typescript !== false ? createTypescriptEditorWorkerProviders() : [],
     new ApplicationConfigurationProvider(options),
-    createTestSandboxProviders(options.sandboxOptions),
     new ContentEditorFactoryProvider(HTML_MIME_TYPE, MarkupEditor),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),

@@ -136,7 +136,7 @@ export const createTestSandboxProviders = (options: ISandboxTestProviderOptions 
   return [
     new MockFilesProvider(options.mockFiles || {}),
     createSandboxProviders(MockFileResolver),
-    new URIProtocolProvider("file", MockFileURIProtocol)
+    new URIProtocolProvider("file", MockFileURIProtocol, Infinity)
   ];
 }
 

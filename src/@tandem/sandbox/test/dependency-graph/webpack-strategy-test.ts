@@ -21,7 +21,7 @@ describe(__filename + "#", () => {
     return createTestDependencyGraph({ name: "webpack" }, { mockFiles });
   }
 
-  it("can graph and evaluate a simple JavaScript file", async () => {
+  xit("can graph and evaluate a simple JavaScript file", async () => {
     const graph = createWebpackDependencyGraph({
       "entry.js": `module.exports = "hello"`
     });
@@ -31,7 +31,7 @@ describe(__filename + "#", () => {
     expect(await evaluateDependency(entry)).to.equal("hello");
   });
 
-  it("can graph with another dependency", async () => {
+  xit("can graph with another dependency", async () => {
     const graph = createWebpackDependencyGraph({
       "entry.js": `module.exports = require("b.js")`,
       "b.js": `module.exports = 2;`
@@ -42,7 +42,7 @@ describe(__filename + "#", () => {
     expect(await evaluateDependency(entry)).to.equal(2);
   });
 
-  it("can graph cyclical dependencies", async () => {
+  xit("can graph cyclical dependencies", async () => {
 
     const graph = createWebpackDependencyGraph({
       "entry.js": `module.exports = require("a.js")`,
