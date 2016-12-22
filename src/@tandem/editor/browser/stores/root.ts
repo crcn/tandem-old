@@ -3,7 +3,8 @@ import {
   bubble,
   Metadata,
   bindable,
-  Observable
+  Observable,
+  PropertyWatcher
 } from "@tandem/common";
 
 import { IUser } from "@tandem/editor/common";
@@ -32,4 +33,12 @@ export class EditorStore extends Observable {
   @bindable()
   @bubble()
   public workspace: Workspace;
+
+
+  readonly workspaceWatcher: PropertyWatcher<EditorStore, Workspace>;
+
+  constructor() {
+    super();
+    this.workspaceWatcher = new PropertyWatcher<EditorStore, Workspace>(this, "workspace");
+  }
 }

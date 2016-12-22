@@ -77,7 +77,6 @@ export class FileCache extends Observable {
 
   async save(sourceUri: string, data?: { type?: string, content?: string|Buffer }): Promise<FileCacheItem> {
     const fileCache = await this.collection.loadItem({ sourceUri });
-    
 
     if (!fileCache) {
       const type = data && data.type || MimeTypeProvider.lookup(sourceUri, this._kernel);
@@ -90,7 +89,7 @@ export class FileCache extends Observable {
     } else {
       if (data && data.content) {
         if (data.type) fileCache.type = data.type;
-        fileCache.setDataUrlContent(data.content);
+        await fileCache.setDataUrlContent(data.content);
       }
       return fileCache.save();
     }

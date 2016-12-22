@@ -23,6 +23,7 @@ import {
   BoundingRect,
   watchProperty,
   KernelProvider,
+  PropertyWatcher,
   PropertyMutation,
   PrivateBusProvider,
   ApplicationConfigurationProvider,
@@ -105,6 +106,8 @@ export class Workspace extends Observable {
 
   readonly documentQuerier: SyntheticElementQuerier<any>;
 
+  readonly envKernelWatcher: PropertyWatcher<Workspace, Kernel>;
+
   readonly type = "display";
   public cursor = null;
 
@@ -113,6 +116,7 @@ export class Workspace extends Observable {
     this._browserObserver = new CallbackDispatcher(this.onBrowserAction.bind(this));
     this.documentQuerier  = new SyntheticElementQuerier(undefined, "*");
     watchProperty(this, "browser", this.onBrowserChange.bind(this));
+    this.envKernelWatcher = new PropertyWatcher<Workspace, Kernel>(this, "envKernel");
   }
 
   get document(): SyntheticDocument {
@@ -127,9 +131,12 @@ export class Workspace extends Observable {
       new PrivateBusProvider(envBus)
     );
 
+    this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "envKernel", envKernel).toEvent());
+
     // TODO - create a new pipeline for communicating with worker
     if (this.browser) return this.browser;
     const browser = this.browser = new RemoteSyntheticBrowser(envKernel, new CanvasRenderer(this, this._envKernel.inject(new SyntheticDOMRenderer())));
+
     return await browser.open({ uri: this.project.httpUrl });
   }
 

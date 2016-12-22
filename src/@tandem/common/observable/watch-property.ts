@@ -24,18 +24,23 @@ export class PropertyWatcher<T extends IObservable, U> extends Observable {
   connect(listener: (newValue: U, oldValue?: U) => any) {
 
     if (!this._listening) {
+      this._currentValue = this.target[this.propertyName];
       this._listening = true;
       this.target.observe(this._observer = { dispatch: this.onEvent });
     }
 
     let currentValue = this.currentValue;
+    let previousTrigger: {
+      dispose?: () => any
+    }
 
     const observer = { 
       dispatch: (event: MutationEvent<any>) => {
         if (this.currentValue !== currentValue) {
+          if (previousTrigger && previousTrigger.dispose) previousTrigger.dispose();
           const oldValue = currentValue;
           currentValue = this.currentValue;
-          listener(this.currentValue, oldValue);
+          previousTrigger = listener(this.currentValue, oldValue);
         }
       }
     };

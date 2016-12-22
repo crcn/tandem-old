@@ -57,7 +57,8 @@ describe(__filename + "#", () => {
     const dependency = await graph.loadDependency(await graph.resolve('entry.js', ''));
 
     const fileCacheItem = await dependency.getSourceFileCacheItem();
-    await fileCacheItem.setDataUrlContent("b").save();
+    await fileCacheItem.setDataUrlContent("b");
+    await fileCacheItem.save();
     await dependency.load();
     expect(dependency.content.toString()).to.equal("b");
   });
@@ -70,9 +71,11 @@ describe(__filename + "#", () => {
     const dependency = await graph.loadDependency(await graph.resolve('entry.js', ''));
 
     const fileCacheItem = await dependency.getSourceFileCacheItem();
-    await fileCacheItem.setDataUrlContent("b").save();
+    await fileCacheItem.setDataUrlContent("b");
+    await fileCacheItem.save();
     dependency.load();
-    fileCacheItem.setDataUrlContent("c").save()
+    await fileCacheItem.setDataUrlContent("c");
+    fileCacheItem.save()
     expect(dependency.status.type).to.equal(Status.LOADING);
 
     // wait on the current load request

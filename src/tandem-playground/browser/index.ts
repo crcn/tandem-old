@@ -6,12 +6,12 @@ import { IPlaygroundBrowserConfig } from "./config";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { HomeRouteHandler, ProjectRouteHandler } from "./routes";
 import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
-import { Kernel, ServiceApplication, ApplicationServiceProvider, CommandFactoryProvider } from "@tandem/common";
+import { Kernel, ServiceApplication, ApplicationServiceProvider, CommandFactoryProvider, LoadApplicationRequest } from "@tandem/common";
 import { PlaygroundBrowserStoreProvider } from "./providers";
 import { RootPlaygroundBrowserStore } from "./stores";
-import { OpenFileCommand, UpdateFileCommand } from "./commands";
+import { OpenFileCommand, UpdateFileCommand, WatchFilesCommand, UpdateTextEditorContentCommand } from "./commands";
 import { URIProtocolProvider } from "@tandem/sandbox";
-import { UpdateFileCacheRequest } from "./messages";
+import { UpdateFileCacheRequest, FileCacheItemUpdatedMessage } from "./messages";
 import { 
   OpenFileRequest,
   EditorFamilyType, 
@@ -44,6 +44,9 @@ const start = async () => {
     new EditorComponentFactoryProvider("textEditor", TextEditorComponent as any),
     new CommandFactoryProvider(OpenFileRequest.OPEN_FILE, OpenFileCommand),
     new CommandFactoryProvider(UpdateFileCacheRequest.UPDATE_FILE_CACHE, UpdateFileCommand),
+    new CommandFactoryProvider(UpdateFileCacheRequest.UPDATE_FILE_CACHE, UpdateFileCommand),
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, WatchFilesCommand),
+    new CommandFactoryProvider(FileCacheItemUpdatedMessage.FILE_CACHE_ITEM_UPDATED, UpdateTextEditorContentCommand),
   );
 
   const app = global["app"] = new ServiceApplication(kernel);

@@ -60,7 +60,6 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
 
   constructor(source: IFileCacheItemData, collectionName: string) {
     super(source, collectionName);
-    this.observe(new CallbackDispatcher(this.onAction.bind(this)));
   }
   
   get synchronized() {
@@ -87,8 +86,8 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     this.updatedAt = Date.now();
   }
 
-  setDataUrlContent(content: string|Buffer) {
-    return this.setContentUri(createDataUrl(content, this.type));
+  async setDataUrlContent(content: string|Buffer) {
+    return this.setContentUri(createDataUrl(content, (await this.read()).type));
   }
 
   setContentUri(uri: string) {
@@ -96,10 +95,10 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return this;
   }
 
-  read = memoize(async () => {
+  async read() {
     const protocol = URIProtocolProvider.lookup(this.contentUri, this._kernel);
     return await protocol.read(this.contentUri);
-  }, { promise: true, length: 0 }) as (() => Promise<IURIProtocolReadResult>);
+  }
 
   shouldDeserialize(b: IFileCacheItemData) {
     return this.updatedAt < b.updatedAt;
@@ -112,16 +111,6 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     this.updatedAt           = updatedAt;
     this.metadata            = new Metadata(metadata);
     this.sourceModifiedAt = sourceModifiedAt;
-  }
-
-  private onAction({ mutation }: MutationEvent<any>) {
-    if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
-      this.clearCache();
-    }
-  }
-
-  private clearCache() {
-    this.read["clear"]();
   }
 }
 

@@ -1,9 +1,11 @@
 
-
 - [ ] text editor (not limited to text -- can be for images as well)
-  - [ ] show entire dependency graph (like a navigator)
   - [ ] ability to download file changes
-  - [ ] listen for change in current text file
+  - [ ] file navigator
+    - [ ] from dependency graph
+    - [ ] ability to add file
+  - [ ] default index.html file
+  
 
 - [ ] no code reformatting
 

@@ -46,10 +46,10 @@ describe(__filename + "#", () => {
   });
 
   [
-    [`<div id="a" />`, `<div id="b"></div>`],
-    [`<div id="a" />`, `<div></div>`],
-    [`<div />`, `<div id="b"></div>`],
-    [`<div id="a" class="b" />`, `<div class="c" id="a"></div>`],
+    [`<div id="a"></div>`, `<div id="b"></div>`],
+    [`<div id="a"></div>`, `<div></div>`],
+    [`<div></div>`, `<div id="b"></div>`],
+    [`<div id="a" class="b"></div>`, `<div class="c" id="a"></div>`],
     [`<div>a</div>`, `<div>b</div>`],
     [`<div>a</div>`, `<div><!--b--></div>`],
     [`<div>a<!--b--><c /></div>`, `<div><!--b--><c />a</div>`],

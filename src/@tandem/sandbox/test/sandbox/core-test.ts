@@ -33,7 +33,7 @@ describe(__filename + "#", () => {
     const dep = await graph.getDependency(await graph.resolve("a.js",""));
     await sandbox.open(dep);
     expect(sandbox.exports).to.equal("bb");
-    await (await dep.getSourceFileCacheItem()).setDataUrlContent("module.exports = 'aa'").save();
+    await (await (await dep.getSourceFileCacheItem()).setDataUrlContent("module.exports = 'aa'")).save();
     await timeout(10);
     expect(sandbox.exports).to.equal("aa");
   });
@@ -58,8 +58,8 @@ describe(__filename + "#", () => {
     const cdep = bdep.eagerGetDependency("c.js");
 
     await Promise.all([
-      (await bdep.getSourceFileCacheItem()).setDataUrlContent("module.exports = require('./c.js') + 'b'").save(),
-      (await cdep.getSourceFileCacheItem()).setDataUrlContent("module.exports = 'ccc'").save()
+      (await (await bdep.getSourceFileCacheItem()).setDataUrlContent("module.exports = require('./c.js') + 'b'")).save(),
+      (await ((await cdep.getSourceFileCacheItem()).setDataUrlContent("module.exports = 'ccc'"))).save()
     ]);
 
     await timeout(10);

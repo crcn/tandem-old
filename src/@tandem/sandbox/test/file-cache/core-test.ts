@@ -53,7 +53,7 @@ describe(__filename + "#", () => {
       });
       const item = await fileCache.findOrInsert("entry.js");
 
-      return new Promise((resolve) => {
+      return new Promise(async (resolve) => {
         item.observe({
           dispatch({ mutation }: MutationEvent<any>) {
             if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
@@ -63,7 +63,7 @@ describe(__filename + "#", () => {
           }
         });
 
-        item.setDataUrlContent("hello");
+        await item.setDataUrlContent("hello");
         item.save();
       });
     });

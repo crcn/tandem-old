@@ -266,7 +266,7 @@ export class FileEditor {
         // Note that checking WS changes won't cut it since formatters may swap certain characters. E.g: HTML may change single quotes
         // to double quotes for attributes.
         if (content !== newContent) {
-          fileCache.setDataUrlContent(newContent);
+          await fileCache.setDataUrlContent(newContent);
           promises.push(fileCache.save());
           if (autoSave) {
             promises.push(URIProtocolProvider.lookup(fileCache.sourceUri, this._kernel).write(fileCache.sourceUri, newContent));
