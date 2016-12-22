@@ -44,7 +44,6 @@ const start = async () => {
     new EditorComponentFactoryProvider("textEditor", TextEditorComponent as any),
     new CommandFactoryProvider(OpenFileRequest.OPEN_FILE, OpenFileCommand),
     new CommandFactoryProvider(UpdateFileCacheRequest.UPDATE_FILE_CACHE, UpdateFileCommand),
-    new CommandFactoryProvider(UpdateFileCacheRequest.UPDATE_FILE_CACHE, UpdateFileCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, WatchFilesCommand),
     new CommandFactoryProvider(FileCacheItemUpdatedMessage.FILE_CACHE_ITEM_UPDATED, UpdateTextEditorContentCommand),
   );

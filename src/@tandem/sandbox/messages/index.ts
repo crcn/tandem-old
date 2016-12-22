@@ -71,12 +71,12 @@ export class ReadFileRequest extends Message {
 @serializable("WriteFileRequest")
 export class WriteFileRequest extends Message {
   static readonly WRITE_FILE = "writeFile";
-  constructor(readonly uri: string, readonly content: string) {
+  constructor(readonly uri: string, readonly content: string, readonly options?: any) {
     super(WriteFileRequest.WRITE_FILE);
   }
 
-  static async dispatch(uri: string, content: string, bus: IStreamableDispatcher<any>): Promise<any> {
-    return bus.dispatch(new WriteFileRequest(uri, content));
+  static async dispatch(uri: string, content: string, options: any, bus: IStreamableDispatcher<any>): Promise<any> {
+    return (await readOneChunk(bus.dispatch(new WriteFileRequest(uri, content, options)))).value;
   }
 }
 

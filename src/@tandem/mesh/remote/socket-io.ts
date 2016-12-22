@@ -18,7 +18,7 @@ export class SocketIOBus<T> implements IBus<T>, IMessageTester<T> {
       testMessage: testMessage,
       adapter: {
         send(message) {
-          connection.emit(channel, message);
+          connection.compress(true).emit(channel, message);
         },
         addListener(listener) {
           connection.on(channel, listener);

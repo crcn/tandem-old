@@ -17,8 +17,8 @@ export class StreamProxyProtocol extends URIProtocol {
     return await ReadFileRequest.dispatch(uri, this._bus);
   }
 
-  async write(uri: string, content: string|Buffer) {
-    return await WriteFileRequest.dispatch(uri, String(content), this._bus);
+  async write(uri: string, content: string|Buffer, options?: any) {
+    return await WriteFileRequest.dispatch(uri, String(content), options, this._bus);
   }
 
   protected watch2(uri: string, callback: () => any) {

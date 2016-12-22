@@ -19,7 +19,6 @@ export class TextEditorComponent extends BaseApplicationComponent<any, any> {
   };
 
   onChange = async (value: string) => {
-    this._store.textEditor.currentMtime        = Date.now();
     this._store.textEditor.currentFile.content = value;
 
     if (this._updating) {

@@ -25,7 +25,7 @@ export abstract class URIProtocol {
 
   // TODO - this must return { type: mimeType, content: any }
   abstract read(uri: string): Promise<IURIProtocolReadResult>;
-  abstract write(uri: string, content: any): Promise<any>;
+  abstract write(uri: string, content: any, options?: any): Promise<any>;
   abstract fileExists(uri: string): Promise<boolean>;
 
   watch(uri: string, onChange: () => any) {
