@@ -25,7 +25,7 @@ export class CreateProjectFileCommand extends BaseEditorMasterCommand {
     } else {
       content = uri ? `<tandem>
         <remote-browser src="${uri}" />
-      </tandem>` : `<tandem><remote-browser /></tandem>`;
+      </tandem>` : `<tandem><remote-browser></remote-browser></tandem>`;
     }
 
     return createDataUrl(content, TDPROJECT_MIME_TYPE);

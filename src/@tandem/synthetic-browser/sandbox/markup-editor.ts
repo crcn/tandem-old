@@ -119,6 +119,7 @@ export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
     const diff = formatMarkupExpression(node);
     const change = (parse5.parseFragment(diff, { locationInfo: true }) as parse5.AST.Default.DocumentFragment).childNodes[0] as parse5.AST.Default.Element;
 
+    // does not work for /> end tags
 
     // console.log(diff, diff.substr(change.__location.startTag.startOffset, change.__location.startTag.endOffset));
     // console.log(this.content.substr(start, end - start))
@@ -143,6 +144,7 @@ export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
       const end   = node.__location.startTag.endOffset;
 
       node.childNodes.splice(index, 0, childExpression);
+
       this._replacements.push({
         start: node.__location.startTag.startOffset,
         end: node.__location.startTag.endOffset,
@@ -273,6 +275,7 @@ export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
       
       result = result.substr(0, start) + value + result.substr(end);
     });
+
 
     return result;
   }
