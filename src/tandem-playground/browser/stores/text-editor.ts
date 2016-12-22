@@ -11,6 +11,8 @@ export class TextEditorStore extends Observable {
   @bindable(true)
   public show;
 
+  public currentMtime: number;
+
   @bindable(true)
   currentFile: ITextEditorFile = { 
     uri: undefined, 

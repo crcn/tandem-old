@@ -41,7 +41,9 @@ export class CodeMirrorComponent extends React.Component<ICodeMirrorComponentPro
 
     if (props.value !== this._instance.getValue()) {
       var prevScrollPosition = this._instance.getScrollInfo();
+      const cursor = this._instance.getDoc().getCursor();
       this._instance.setValue(this._prevValue = props.value);
+      this._instance.getDoc().setCursor(cursor);
       this._instance.scrollTo(prevScrollPosition.left, prevScrollPosition.top);
     }
 
