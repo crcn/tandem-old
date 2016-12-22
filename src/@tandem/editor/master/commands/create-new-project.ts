@@ -7,7 +7,6 @@ import { CreateNewProjectRequest, PROJECT_COLLECTION_NAME, Project, ResolveWorks
 
 export class CreateNewProjectCommand extends BaseEditorMasterCommand {
   async execute(request: CreateNewProjectRequest) {
-    
     this.logger.info("Creating new project");
 
     const data = (await DSInsertRequest.dispatch(PROJECT_COLLECTION_NAME, new Project({

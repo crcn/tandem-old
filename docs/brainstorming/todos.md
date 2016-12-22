@@ -1,6 +1,0 @@
-- patreon page 
-- governence system
-	- https://docs.google.com/forms/d/1SgDgKZqyivEf5xl0EOWNfs68Xy3f4oBzLXIlwlS0BIs/viewform
-	- get other people to accept PRs except self 
-- checkout vue.js - inspiration
-	- https://hashnode.com/ama/with-evan-you-cilauq0uu0027tl53gsjkhbmd

@@ -59,8 +59,8 @@ const buildTasks = [
   'build:peg',
   'build:typescript',
   'build:symlinks',
-  'build:electron',
-  'build:playground'
+  'build:electron'
+  // 'build:playground'
 ];
 
 gulp.task('build', WATCH ? gulpSequence('prepare', buildTasks) : gulpSequence('prepare', ...buildTasks));
@@ -91,13 +91,12 @@ gulp.task('build:symlinks', () => {
   .pipe(vfs.symlink(NODE_MODULES_DIR));
 });
 
-gulp.task('build:playground', ['build:playground:browser']);
+// gulp.task('build:playground', ['build:playground:browser']);
 
-
-gulp.task('build:playground:browser', (done) => {
-  const pkg = getPlaygroundPackage();
-  bundlePlayground(join(SRC_DIR, pkg.name, pkg.entries.browser), require('./webpack/browser'), done);
-});
+// gulp.task('build:playground:browser', (done) => {
+//   const pkg = getPlaygroundPackage();
+//   bundlePlayground(join(SRC_DIR, pkg.name, pkg.entries.browser), require('./webpack/browser'), done);
+// });
 
 gulp.task('build:electron', gulpSequence(
   'prepare:electron', 

@@ -7,7 +7,6 @@ import { OpenNewWorkspaceRequest } from "tandem-code/common";
 import { CreateNewProjectRequest } from "@tandem/editor/common";
 import {  BaseStudioMasterCommand } from "./base";
 
-
 export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
 
   async execute() {
