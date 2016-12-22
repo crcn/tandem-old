@@ -24,6 +24,7 @@ import {
   createToggleSettingRequestClass,
 } from "@tandem/editor/browser";
 
+import { createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
 import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
@@ -149,7 +150,7 @@ function createWelcomeMenuProviders() {
 }
 
 const kernel = new Kernel(
-
+  
   // Commands
   new CommandFactoryProvider(OpenRequest.OPEN, OpenCommand),
   new CommandFactoryProvider(ApplicationReadyMessage.READY, InitializeWelcomePageCommand),
@@ -161,6 +162,7 @@ const kernel = new Kernel(
   new CommandFactoryProvider(ApplicationReadyMessage.READY, LoadSandboxedWorkspaceCommand),
   createHTMLEditorWorkerProviders(),
   createTDProjectEditorWorkerProviders(),
+  createSyntheticHTMLProviders(),
 
   // menus
   ...createMenuProviders(),

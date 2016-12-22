@@ -3,6 +3,7 @@ import { RemoteBus } from "./remote";
 import { IBus, IDispatcher } from "./base";
 import { noopDispatcherInstance } from "./noop";
 import { CallbackDispatcher } from "./callback";
+import { filterFamilyMessage } from "../messages";
 import { 
   pump,
   DuplexStream,
@@ -29,9 +30,11 @@ const stream = channel.dispatch()
 export class ChannelBus implements IBus<any> {
   private _remoteBus: RemoteBus<any>;
   private _writer: WritableStreamDefaultWriter<any>;
-  constructor(input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus: IDispatcher<any, any> = noopDispatcherInstance, private _onClose?: () => any) {
+  constructor(family: string, input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus: IDispatcher<any, any> = noopDispatcherInstance, private _onClose?: () => any) {
     const writer = this._writer = output.getWriter();
     this._remoteBus = new RemoteBus({
+      testMessage: filterFamilyMessage,
+      family: family, 
       adapter: {
         send(message: any) {
           writer.write(message);
@@ -57,7 +60,7 @@ export class ChannelBus implements IBus<any> {
     return this._remoteBus.dispatch(message);
   }
 
-  static createFromStream(stream: TransformStream<any, IMessage>) {
-    return new ChannelBus(stream.readable, stream.writable);
+  static createFromStream(family: string, stream: TransformStream<any, IMessage>) {
+    return new ChannelBus(family, stream.readable, stream.writable);
   }
 }

@@ -38,7 +38,7 @@ export class SpawnWorkerCommand extends BaseEditorMasterCommand {
         return globalBus.dispatch(message);
       }));
 
-      const cb = new ChannelBus(input, output, proxy, () => {
+      const cb = new ChannelBus(this.config.family, input, output, proxy, () => {
         proc.kill();
       });
     });

@@ -17,13 +17,13 @@ export class OpenProjectEnvironmentChannelCommand extends BaseEditorMasterComman
   execute(request: OpenProjectEnvironmentChannelRequest) {
     return new DuplexStream(async (input, output) => {
 
-      const channelBus = (this.store.channels[request.projectId] || (this.store.channels[request.projectId] = ChannelBus.createFromStream(this.bus.dispatch(new SpawnWorkerRequest({
+      const channelBus = (this.store.channels[request.projectId] || (this.store.channels[request.projectId] = ChannelBus.createFromStream(this.config.family, this.bus.dispatch(new SpawnWorkerRequest({
         ENV_ID: request.projectId
       }))))) as ChannelBus;
 
       channelBus["connectionCount"] = (channelBus["connectionCount"] || 0) + 1;
 
-      return new ChannelBus(input, output, channelBus, () => {
+      return new ChannelBus(this.config.family, input, output, channelBus, () => {
         if (!(--channelBus["connectionCount"])) {
           this.store.channels[request.projectId] = undefined;
           channelBus.dispose();

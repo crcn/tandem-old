@@ -8,11 +8,17 @@ back to your text editor in the supported languages you're writing in.
 
 ### Installation
 
-TODO
 
 ### Development
 
-Here are various commands you can run:
+To get started, run `npm install && npm run build`. After that, go ahead and run `npm run code dist/browser/index.html`, which will open Tandem *in* Tandem:
+
+![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/21441581/679e80ba-c85e-11e6-8989-67c7220be905.png)
+
+After you've booted up Tandem in Tandem, go ahead and run `WATCH=1 npm run build`, which will re-execute the build tasks, and re-run them whenever a `src/**` file changes. From here, you
+can go ahead and open up your text editor and start hacking away.
+
+Here's a list of other commands you can run:
 
 ```
 # builds the source files in out/

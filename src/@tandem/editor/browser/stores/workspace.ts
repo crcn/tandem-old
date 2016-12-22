@@ -2,8 +2,8 @@ import { flatten } from "lodash";
 import { KeyBinding } from "@tandem/editor/browser/key-bindings";
 import { Project } from "@tandem/editor/common";
 import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
-import { ParallelBus, CallbackDispatcher, IDispatcher, ChannelBus, readAllChunks, TransformStream } from "@tandem/mesh";
-import { SelectionChangeEvent, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/browser/messages";
+import { ParallelBus, CallbackDispatcher, IDispatcher, ChannelBus, readAllChunks, TransformStream, filterFamilyMessage, FilterBus } from "@tandem/mesh";
+import { SelectionChangeEvent, OpenProjectEnvironmentChannelRequest, EditorFamilyType } from "@tandem/editor/browser/messages";
 
 import {
   inject,
@@ -124,7 +124,7 @@ export class Workspace extends Observable {
   }
 
   async openBrowser() {
-    const envBus = new BrokerBus(undefined, ChannelBus.createFromStream(this._bus.dispatch(new OpenProjectEnvironmentChannelRequest(this.project._id))));
+    const envBus = new BrokerBus(undefined, ChannelBus.createFromStream(EditorFamilyType.BROWSER, this._bus.dispatch(new OpenProjectEnvironmentChannelRequest(this.project._id))));
 
     const envKernel = this._envKernel = new Kernel(
       this._kernel,
