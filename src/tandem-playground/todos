@@ -1,3 +1,4 @@
+- [ ] socket hangup
 
 - [ ] text editor (not limited to text -- can be for images as well)
   - [ ] ability to download file changes
@@ -5,6 +6,7 @@
     - [ ] from dependency graph
     - [ ] ability to add file
   - [ ] default index.html file
+  - [ ] move worker to front-end?
   
 
 - [ ] no code reformatting

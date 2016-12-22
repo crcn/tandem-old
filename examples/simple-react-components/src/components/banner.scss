@@ -1,0 +1,41 @@
+@import "scss/main";
+
+.banner {
+  background: #C0392B;
+  padding: $space-small $space-large;
+  color: white;
+
+  &:before {
+    font-family: 'Ionicons';
+    margin-right: 8px;
+    font-size: 0.8em;
+  }
+
+  &.notice {
+    background: #4183D7;
+    &:before {
+      content: "\f149";
+    }
+  }
+
+  &.success {
+    background: #4DAF7C;
+    &:before {
+      content: "\f120";
+    }
+  }
+
+  &.warning {
+    color: #90810F;
+    background: #E9D460;
+    &:before {
+      content: "\f100";
+    }
+  }
+
+  &.failure {
+    &:before {
+      content: "\f100";
+    }
+  }
+}

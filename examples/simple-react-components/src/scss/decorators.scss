@@ -1,0 +1,9 @@
+@import "./vars";
+
+/**
+ * classes that can be added onto any element
+ */
+
+.space-children > * {
+  margin: $space-large;
+}

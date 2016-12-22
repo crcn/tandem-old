@@ -3,6 +3,12 @@ Notes about this doc:
 - Checklist items are ordered by importance.
 - Remove a checklist item when it's completed.
 
+----------------------------------
+OPEN SOURCING
+----------------------------------
+
+- [ ] deprecate gulp - use pure JS instead
+
 
 
 ----------------------------------

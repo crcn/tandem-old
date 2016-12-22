@@ -21,8 +21,13 @@ export default class PreviewComponent extends React.Component<{ renderer: ISynth
     // shadow root to ensure that any imported CSS doesn't foo with the rest
     // of the application
     const div = document.createElement("div") as any;
-    div.createShadowRoot();
-    div.shadowRoot.appendChild(this.props.renderer.element);
+    // if (div.createShadowRoot) {
+    //   div.createShadowRoot();
+    // } else if (div.attachShadow) {
+    //   div.attachShadow({ mode: "open" });
+    // }
+
+    div.appendChild(this.props.renderer.element);
     this.props.renderer.start();
     container.appendChild(div);
   }

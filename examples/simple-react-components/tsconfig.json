@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "outDir": "out",
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "baseUrl": "src",
+        "jsx": "react"
+    },
+
+    "exclude": [
+        "node_modules",
+        "*-test",
+        "old",
+        "out",
+        "integrations",
+        "examples"
+    ],
+    "filesGlob": [
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
+    ]
+}

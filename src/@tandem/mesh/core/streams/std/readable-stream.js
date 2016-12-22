@@ -496,7 +496,7 @@ function ReadableStreamClose(stream) {
   }
 
   if (IsReadableStreamDefaultReader(reader) === true) {
-    for (const { _resolve } of reader._readRequests) {
+    for (var { _resolve } of reader._readRequests) {
       _resolve(CreateIterResultObject(undefined, true));
     }
     reader._readRequests = [];

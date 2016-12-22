@@ -61,21 +61,22 @@ if (MINIFY) {
     })
   )
 
-  const traceurLoader = 'traceur?runtime';
-
-  pegLoaders.push(traceurLoader);
-
-  loaders.push(
-    {
-      test: /\.js?$/,
-
-      // TODO - add jsx dataSource loader here
-      loader: traceurLoader,
-      exclude:  /node_modules/
-    }
-  )
 }
 
+
+const traceurLoader = 'traceur?runtime';
+
+pegLoaders.push(traceurLoader);
+
+loaders.push(
+  {
+    test: /\.js?$/,
+
+    // TODO - add jsx dataSource loader here
+    loader: traceurLoader,
+    exclude:  /node_modules/
+  }
+);
 
 tsLoaders.push('ts-loader' + SM_QUERY_PARAM);
 pegLoaders.push('pegjs-loader');

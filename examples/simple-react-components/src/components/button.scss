@@ -1,0 +1,33 @@
+@import "scss/main";
+
+.button {
+  border: 1px solid #999;
+  color: #555;
+  background: #F3F3F3;
+  display: inline-block;
+  border-radius: 2px;
+  padding: $space-small $space-large;
+
+  &.disabled {
+    opacity: 0.5;
+  }
+
+  &.primary {
+    color: white;
+    background: #4183D7;
+    border: 1px #4183D7;
+  }
+
+  &.warning {
+    color: #90810F;
+    background: #E9D460;
+    border: 1px #E9D460;
+  }
+
+  &.failure {
+    color: white;
+    background: #C0392B;
+    border: 1px #C0392B;
+  }
+}
+

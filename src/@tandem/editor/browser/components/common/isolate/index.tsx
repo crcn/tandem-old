@@ -17,6 +17,8 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
       return;
     }
 
+    
+
     if (this.props.inheritCSS) {
       const head    = this.head;
 
@@ -64,6 +66,11 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
     return (this.refs as any).container;
   }
 
+  onLoad = () => {
+    if (this.props.onLoad) this.props.onLoad();
+    console.log("LOAD IFRAME");
+  }
+
   _render() {
     if (window["$synthetic"]) return;
     ReactDOM.render(<RootApplicationComponent bus={this.bus} kernel={this.kernel}>{this.props.children}</RootApplicationComponent>, this._mountElement);
@@ -91,6 +98,6 @@ export class IsolateComponent extends BaseApplicationComponent<any, any> {
       return <span>{this.props.children}</span>;
     }
 
-    return <iframe ref="container" scrolling={this.props.scrolling} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.props.onWheel} onScroll={this.onScroll} onLoad={this.props.onLoad} className={this.props.className} style={this.props.style} />;
+    return <iframe ref="container" scrolling={this.props.scrolling} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.props.onWheel} onScroll={this.onScroll} onLoad={this.onLoad} className={this.props.className} style={this.props.style} />;
   }
 }
