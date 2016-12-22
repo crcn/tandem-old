@@ -3,6 +3,7 @@ yarn*
 node_modules
 lib
 out
+.vscode
 dist
 all-tests.js
 coverage/

@@ -1,7 +1,20 @@
-[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) [![CircleCI](https://circleci.com/gh/crcn/tandem.svg?style=svg)](https://circleci.com/gh/crcn/tandem)
+[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem)
 
-Tandem is a hackable visual programming environment for building web applications. It works by 
+Tandem is a hackable visual editor for web applications that gives you tools similar to what you'd find in apps such as Sketch, and Photoshop. 
+
+Tandem works with most languages & frameworks. Just open up any `index.html` file or url in Tandem and start writing code in your text editor. Tandem will
+pickup changes in realtime & provide a preview of your application that you can manipulate visually. Changes made in Tandem are automatically sent
+back to your text editor in the supported languages you're writing in.
+
+
+#### Getting started
+
 
 
 #### Features
+
+
+
+### Development
+
 

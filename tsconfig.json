@@ -9,8 +9,8 @@
       "es6"
     ],
     "module": "commonjs",
-    "outDir": "out",
-    "baseUrl": "src",
+    "outDir": "dist",
+    "baseUrl": "packages",
     "experimentalDecorators": true,
     "jsx": "react"
   },
@@ -28,11 +28,11 @@
     "examples"
   ],
   "filesGlob": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
+    "./packages/**/*.ts",
+    "./packages/**/*.tsx"
   ],
   "rootDirs": [
-    "src",
+    "packages",
     "node_modules"
   ]
 }
