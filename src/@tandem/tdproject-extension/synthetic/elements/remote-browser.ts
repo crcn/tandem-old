@@ -123,12 +123,9 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
     super.attachNative(node);
     this.createBrowser();
     const iframe = this._iframe = node.querySelector("iframe") as HTMLIFrameElement;
-    // bubbleHTMLIframeEvents(iframe);
-
-    console.log("LOADING");
+    bubbleHTMLIframeEvents(iframe);
 
     const onload = async () => {
-      console.log("ONLOAD");
       iframe.contentDocument.body.appendChild(this._browser.renderer.element);
       this._browser.renderer.start();
     };

@@ -14,7 +14,6 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
       let hash: string = "";
       let width: number = 600;
       let height: number = 400;
-      let frame = true;
 
       const query = {
         backendPort: this.config.server.port
@@ -24,7 +23,7 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
       height = 768;
       hash = `#/workspace/${project._id}`;
 
-      const win = new BrowserWindow({ width: width, height: height, frame: frame, titleBarStyle: frame ? "hidden-inset" : undefined });
+      const win = new BrowserWindow({ width: width, height: height });
 
       win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.server.port}${hash}`);
 

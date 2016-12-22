@@ -24,6 +24,7 @@ import { 
   SVG_TAG_NAMES,
   HTML_TAG_NAMES,
   SyntheticHTMLElement,
+  SyntheticHTMLBodyElement,
   SyntheticHTMLIframeElement, 
   SyntheticHTMLAnchorElement, 
   SyntheticHTMLLinkElement, 
@@ -107,6 +108,7 @@ export const createSyntheticHTMLProviders = () => {
     new DependencyLoaderFactoryProvider(CSS_MIME_TYPE, CSSDependencyLoader),
     new DependencyLoaderFactoryProvider(HTML_MIME_TYPE, HTMLDependencyLoader),
 
+    new SyntheticDOMElementClassProvider(HTML_XMLNS, "body", SyntheticHTMLBodyElement),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "canvas", SyntheticHTMLCanvasElement),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "link", SyntheticHTMLLinkElement),
     new SyntheticDOMElementClassProvider(HTML_XMLNS, "a", SyntheticHTMLAnchorElement),

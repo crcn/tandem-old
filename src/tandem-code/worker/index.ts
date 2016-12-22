@@ -17,8 +17,8 @@ import { OpenProjectEnvironmentChannelCommand } from "@tandem/editor/master";
 import { createCoreMarkdownExtensionProviders } from "@tandem/markdown-extension";
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
-import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest } from "tandem-code/common";
 import { EditorFamilyType, createCommonEditorProviders, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/common";
+import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest, createRemoteProtocolProviders } from "tandem-code/common";
 
 import { 
   createSyntheticHTMLProviders,
@@ -44,8 +44,8 @@ import {
   InitializeApplicationRequest,
 } from "@tandem/common";
 import { 
-  SyncFileCacheCommand, 
   ImportFileCommand, 
+  SyncFileCacheCommand, 
   StartMasterPingCommand, 
 } from "./commands";
 
@@ -94,6 +94,7 @@ export const initializeWorker = async () => {
   };
 
   const kernel = new Kernel(
+    createRemoteProtocolProviders(),
     createCommonEditorProviders(config),
     createCoreStudioWorkerProviders(),
     new DSProvider(new MemoryDataStore()),

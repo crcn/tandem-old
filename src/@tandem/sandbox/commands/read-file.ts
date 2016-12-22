@@ -1,6 +1,6 @@
+import { ReadFileRequest } from "../messages";
 import { inject, BaseCommand } from "@tandem/common";
 import { URIProtocolProvider, IURIProtocolReadResult } from "../uri";
-import { ReadFileRequest } from "../messages";
 
 export class ReadFileCommand extends BaseCommand { 
   execute({ uri }: ReadFileRequest) {

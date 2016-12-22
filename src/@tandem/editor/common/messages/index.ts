@@ -73,9 +73,9 @@ export namespace EditorFamilyType {
 }
 
 
-setMessageTarget(EditorFamilyType.WORKER)(WatchFileRequest);
-setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest);
-setMessageTarget(EditorFamilyType.WORKER)(WriteFileRequest);
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(WatchFileRequest));
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest));
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(WriteFileRequest));
 setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
 
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(DSFindRequest))

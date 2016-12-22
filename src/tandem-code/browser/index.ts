@@ -8,9 +8,10 @@ __webpack_public_path__ = `${location.protocol}//${path.dirname(location.pathnam
 
 
 import Url =  require("url");
+import { EditorFamilyType } from "@tandem/editor/common";
 import { TandemStudioBrowserStore } from "./stores";
 import { InstallCommandLineToolsRequest } from "tandem-code/common";
-import { EditorFamilyType } from "@tandem/editor/common";
+import { createTextEditorProviders } from "@tandem/text-editor-extension/browser";
 
 import { 
   SettingKeys,
@@ -157,6 +158,8 @@ const kernel = new Kernel(
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadHelpOptionsCommad),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadStartOptionsCommand),
   new CommandFactoryProvider(DidRedirectMessage.DID_REDIRECT, SetMenuCommand),
+
+  // createTextEditorProviders(),
 
   // for DEV
   new CommandFactoryProvider(ApplicationReadyMessage.READY, LoadSandboxedWorkspaceCommand),

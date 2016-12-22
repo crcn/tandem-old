@@ -1,10 +1,10 @@
 import "./index.scss";
 import React = require("react");
 import cx = require("classnames");
-import { CodeMirrorComponent } from "tandem-playground/browser/components/common";
-import { UpdateFileCacheRequest } from "tandem-playground/browser/messages";
-import { RootPlaygroundBrowserStore } from "tandem-playground/browser/stores";
-import { PlaygroundBrowserStoreProvider } from "tandem-playground/browser/providers";
+import { CodeMirrorComponent } from "@tandem/text-editor-extension/browser/components/common";
+import { UpdateFileCacheRequest } from "@tandem/text-editor-extension/browser/messages";
+import { RootPlaygroundBrowserStore } from "@tandem/text-editor-extension//browser/stores";
+import { PlaygroundBrowserStoreProvider } from "@tandem/text-editor-extension/browser/providers";
 import { BaseApplicationComponent, inject } from "@tandem/common";
 
 export class TextEditorComponent extends BaseApplicationComponent<any, any> {
