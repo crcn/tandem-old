@@ -24,7 +24,7 @@ export class CreateProjectFileCommand extends BaseEditorMasterCommand {
       type    = result.type;
     } else {
       content = uri ? `<tandem>
-        <remote-browser src="${uri}" />
+        <remote-browser src="${uri}"></remote-browser>
       </tandem>` : `<tandem><remote-browser></remote-browser></tandem>`;
     }
 

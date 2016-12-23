@@ -127,6 +127,7 @@ function createWorkspaceMenuProviders() {
     // new WebMenuItemFactoryProvider("redo", "edit", createKeyCommandMenuItemClass("Zoom In", "CmdOrCtrl+plus", ZoomInRequest)),
     new WebMenuItemFactoryProvider("delete", "edit", createKeyCommandMenuItemClass("Delete", "backspace", RemoveSelectionRequest)),
     new WebMenuItemFactoryProvider("deleteSep", "edit", createMenuSeparatorClass()),
+    new WebMenuItemFactoryProvider("cut", "edit", createWebMenuItemClass(undefined, "cut")),
     new WebMenuItemFactoryProvider("copy", "edit", createWebMenuItemClass(undefined, "copy")),
     new WebMenuItemFactoryProvider("paste", "edit", createWebMenuItemClass(undefined, "paste")),
     new WebMenuItemFactoryProvider("selectAll", "edit", createWebMenuItemClass(undefined, "selectall")),

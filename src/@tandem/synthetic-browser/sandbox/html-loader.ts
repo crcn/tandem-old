@@ -52,11 +52,16 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
     const mapAttribute = async (parent: parse5.AST.Default.Element, { name, value }: parse5.AST.Default.Attribute) => {
 
-      let shouldGraph = false;
+      let shouldGraph  = false;
+      let shouldImport = false;
       
       // must be white listed here to presetn certain elements such as remote browser & anchor tags from loading resources. Even
       // better to have a provider for loadable elements, but that's a little overkill for now.
-      if (/^(link|script|img)$/.test(parent.nodeName) && value && value.substr(0, 5) !== "data:") {     
+      if (/^(link|script|img)$/.test(parent.nodeName) && value && value.substr(0, 5) !== "data:") {
+
+        // do not add these to the dependency graph
+        shouldImport = !/^(img)$/.test(parent.nodeName);
+
         if (parent.nodeName === "link") {
           const rel = getAttr(parent, "rel");
           shouldGraph = rel && /(stylesheet|import)/.test(rel.value);

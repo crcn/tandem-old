@@ -23,8 +23,8 @@ export interface IFileCacheItemData {
   sourceUri: string;
   contentUri: string;
   synchronized?: boolean
-  sourceModifiedAt?: number;
   updatedAt?: number;
+  contentUpdatedAt?: number;
   metadata?: Object;
 }
 
@@ -45,7 +45,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   public updatedAt: number;
 
   @bindable(true)
-  public sourceModifiedAt: number;
+  public contentUpdatedAt: number;
 
   @bindable(true)
   public contentUri: string;
@@ -71,7 +71,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
       type       : this.type,
       updatedAt  : this.updatedAt,
       sourceUri  : this.sourceUri,
-      sourceModifiedAt: this.sourceModifiedAt,
+      contentUpdatedAt: this.contentUpdatedAt,
       contentUri  : this.contentUri,
       synchronized : this.synchronized, 
       metadata    : this.metadata.data
@@ -79,7 +79,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   shouldUpdate() {
-    return this.source.contentUri !== this.contentUri || this.sourceModifiedAt !== this.source.sourceModifiedAt;
+    return this.source.contentUri !== this.contentUri || this.contentUpdatedAt !== this.source.contentUpdatedAt;
   }
 
   willSave() {
@@ -87,6 +87,7 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   async setDataUrlContent(content: string|Buffer) {
+    this.contentUpdatedAt = Date.now();
     return this.setContentUri(createDataUrl(content, (await this.read()).type));
   }
 
@@ -104,13 +105,13 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
     return this.updatedAt < b.updatedAt;
   }
 
-  setPropertiesFromSource({ sourceUri, type, updatedAt, contentUri, metadata, sourceModifiedAt }: IFileCacheItemData) {
-    this.sourceUri           = sourceUri;
-    this.contentUri          = contentUri;
-    this.type                = type;
-    this.updatedAt           = updatedAt;
-    this.metadata            = new Metadata(metadata);
-    this.sourceModifiedAt = sourceModifiedAt;
+  setPropertiesFromSource({ sourceUri, type, updatedAt, contentUri, metadata, contentUpdatedAt }: IFileCacheItemData) {
+    this.sourceUri        = sourceUri;
+    this.contentUri       = contentUri;
+    this.type             = type;
+    this.updatedAt        = updatedAt;
+    this.metadata         = new Metadata(metadata);
+    this.contentUpdatedAt = contentUpdatedAt;
   }
 }
 

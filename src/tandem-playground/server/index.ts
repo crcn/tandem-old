@@ -20,7 +20,7 @@ import {
   ApplyFileEditRequest, 
   ApplyFileEditCommand,
   FileCacheProvider,
-  createRemoteProtocolProviders
+  createCommandProviders
 } from "@tandem/sandbox";
 
 import { 
@@ -78,7 +78,7 @@ const start = async () => {
 
   if (process.env.WORKER) {
     kernel.register(
-      createRemoteProtocolProviders(),
+      createCommandProviders(),
       new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
       createCommonEditorProviders(config)
     );

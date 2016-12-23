@@ -1,8 +1,8 @@
-import { SpawnWorkerRequest } from "../messages";
 import { ApplicationReadyMessage } from "@tandem/common";
 import { BaseEditorMasterCommand } from "./base";
 import { spawn, fork, ChildProcess } from "child_process";
 import { createProcessBus, fork as forkElectron } from "@tandem/common/workers/node";
+import { SpawnWorkerRequest, SpawnedWorkerMessage } from "../messages";
 import { 
   ProxyBus,
   IMessage, 
@@ -12,6 +12,7 @@ import { 
   DuplexStream,
   CallbackDispatcher,
 } from "@tandem/mesh";
+
 
 export class SpawnWorkerCommand extends BaseEditorMasterCommand {
   execute({ env }: SpawnWorkerRequest) {
@@ -38,14 +39,11 @@ export class SpawnWorkerCommand extends BaseEditorMasterCommand {
         return globalBus.dispatch(message);
       }));
 
-      this.bus.register(procBus);
-
-      const dispose = () => {
-        this.bus.unregister(procBus);
+      const cb = new ChannelBus(this.config.family, input, output, proxy, () => {
         proc.kill();
-      }
+      });
 
-      const cb = new ChannelBus(this.config.family, input, output, proxy, dispose);
+      this.bus.dispatch(new SpawnedWorkerMessage(cb, proc));
     });
   }
 }

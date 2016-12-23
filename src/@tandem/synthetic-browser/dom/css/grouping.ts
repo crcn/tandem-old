@@ -118,6 +118,14 @@ export abstract class SyntheticCSSGroupingRule<T extends syntheticCSSRuleType> e
     return new SyntheticCSSGroupingRuleEditor<SyntheticCSSGroupingRule<any>>(this);
   }
 
+  regenerateUID() {
+    super.regenerateUID();
+    for (const rule of this.rules) {
+      rule.regenerateUID();
+    }
+    return this;
+  }
+
   createEdit() {
     return new SyntheticCSSGroupingRuleEdit<SyntheticCSSGroupingRule<any>>(this);
   }

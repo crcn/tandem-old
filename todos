@@ -4,6 +4,12 @@ Notes about this doc:
 - Remove a checklist item when it's completed.
 
 
+----
+IMMEDIATE 2
+----
+
+- [ ] copy paste busted
+
 
 ----------------------------------
 IMMEDIATE
@@ -17,8 +23,6 @@ TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
-
-- [ ] simulate slow connection
 
 - [ ] copy and paste http url needs to work
 - [ ] move watchers to synthetic browser

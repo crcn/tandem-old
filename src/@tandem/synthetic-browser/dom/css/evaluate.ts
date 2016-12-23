@@ -1,5 +1,6 @@
 import sm = require("source-map");
 import postcss =  require("postcss");
+import { parseCSS } from "./parsers";
 
 import { without } from "lodash";
 import { camelCase } from "lodash";
@@ -14,7 +15,38 @@ import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticCSSStyle } from "./style";
 import { ISourceLocation } from "@tandem/common";
 
+
+let _smcache = {};
+function parseSourceMaps(value) {
+  if (String(value).indexOf("sourceMappingURL=data") == -1) return undefined;
+  if (_smcache[value]) return _smcache[value];
+
+  const sourceMappingURL = String(value).match(/sourceMappingURL=(data\:[^\s]+)/)[1];
+  
+
+  // assuming that it's inlined here... shouldn't.
+  return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));
+}
+
+
+let _cache: {
+  [Identifier: string]: SyntheticCSSStyleSheet
+} = {};
+
+export function evaluateCSSSource(source: string, map?: sm.RawSourceMap, module?: SandboxModule) {
+  if (_cache[source]) return _cache[source].clone(true).regenerateUID();
+  if (!map) map = parseSourceMaps(source);
+  const ast = parseCSS(source, map);
+  const styleSheet = _cache[source] = evaluateCSS(ast, map, module);
+
+  // re-exec to ensure that the cached version doesn't get mutated
+  return evaluateCSSSource(source, map, module);
+}
+
+setInterval(() => _cache = {}, 1000 * 60);
+
 export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, module?: SandboxModule): SyntheticCSSStyleSheet {
+
 
   const dependency = module && module.source;
 

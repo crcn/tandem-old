@@ -27,19 +27,23 @@ const channel = ChannelBus.createFromStream(bus.dispatch())
 const stream = channel.dispatch()
 */
 
+// TODO - remove "family" parameter. Doesn't fit this class since
+// "family" implies that the we're communicating with another remote application. 
+
 export class ChannelBus implements IBus<any> {
   private _remoteBus: RemoteBus<any>;
   private _writer: WritableStreamDefaultWriter<any>;
   constructor(family: string, input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus: IDispatcher<any, any> = noopDispatcherInstance, private _onClose?: () => any) {
     const writer = this._writer = output.getWriter();
+    
     this._remoteBus = new RemoteBus({
-      testMessage: filterFamilyMessage,
+      testMessage: family && filterFamilyMessage,
       family: family, 
       adapter: {
         send(message: any) {
           writer.write(message);
         },
-        async addListener(listener: any) {
+        addListener(listener: any) {
           input.pipeTo(new WritableStream({
             write: (message) => {
               listener(message);
@@ -60,7 +64,7 @@ export class ChannelBus implements IBus<any> {
     return this._remoteBus.dispatch(message);
   }
 
-  static createFromStream(family: string, stream: TransformStream<any, IMessage>) {
-    return new ChannelBus(family, stream.readable, stream.writable);
+  static createFromStream(family: string, stream: TransformStream<any, IMessage>, localBus?: IDispatcher<any, any>) {
+    return new ChannelBus(family, stream.readable, stream.writable, localBus);
   }
 }

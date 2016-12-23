@@ -84,7 +84,7 @@ export class FileCache extends Observable {
         type: type,
         sourceUri: sourceUri,
         contentUri: data ? createDataUrl(data.content, type) : sourceUri,
-        sourceModifiedAt: -1,
+        contentUpdatedAt: 0,
       }).insert();
     } else {
       if (data && data.content) {

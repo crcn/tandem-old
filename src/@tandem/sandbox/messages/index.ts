@@ -12,6 +12,7 @@ import {
 
 import { 
   Message,
+  IMessage,
   IDispatcher,
   IStreamableDispatcher,
   readAllChunks,
@@ -22,6 +23,15 @@ import { 
 
 import { IURIProtocolReadResult } from "../uri";
 
+
+@serializable("UpdateFileCacheRequest")
+export class UpdateFileCacheRequest implements IMessage {
+  static readonly UPDATE_FILE_CACHE = "updateFileCache";
+  readonly type = UpdateFileCacheRequest.UPDATE_FILE_CACHE;
+  constructor(readonly uri: string, readonly content: string, readonly updatedAt = Date.now()) {
+
+  }
+}
 
 @serializable("ApplyFileEditRequest", {
   serialize({ mutations }: ApplyFileEditRequest) {

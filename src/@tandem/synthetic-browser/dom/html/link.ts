@@ -70,7 +70,6 @@ export class SyntheticHTMLLinkElement extends SyntheticHTMLElement {
       this.stylesheet.cssText = content || "";
     }
 
-
     this.stylesheet.$ownerNode = this;
     this.attachStylesheet();
 

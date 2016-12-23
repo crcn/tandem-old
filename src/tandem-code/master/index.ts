@@ -8,7 +8,7 @@ import { MemoryDataStore } from "@tandem/mesh";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension/core";
 import { createCoreStudioWorkerProviders } from "../worker";
-import { createEditorMasterProviders } from "@tandem/editor/master";
+import { createEditorMasterProviders, SpawnedWorkerMessage } from "@tandem/editor/master";
 import { ServiceApplication, ApplicationServiceProvider, DSService, DSProvider } from "@tandem/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
 import { EditorFamilyType, createCommonEditorProviders, IEditorCommonConfig, SaveAllRequest } from "@tandem/editor/common";
@@ -26,6 +26,7 @@ import {
   SelectDirectoryCommand,
   OpenNewWorkspaceCommand,
   CLIOpenWorkspaceCommand,
+  // HookSpawnedWorkerCommand,
   InstallShellCommandsCommand,
   InitSettingsDirectoryCommand,
   GetProjectStarterOptionsCommand,
@@ -132,6 +133,7 @@ export const initializeMaster = async () => {
     new CommandFactoryProvider(SelectDirectoryRequest.SELECT_DIRECTORY_REQUEST, SelectDirectoryCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, CLIOpenWorkspaceCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, AutoUpdateCommand),
+    // new CommandFactoryProvider(SpawnedWorkerMessage.SPAWNED_WORKER, HookSpawnedWorkerCommand)
     new CommandFactoryProvider(GetProjectStartOptionsRequest.GET_PROJECT_STARTER_OPTIONS, GetProjectStarterOptionsCommand),
     new CommandFactoryProvider(StartNewProjectRequest.START_NEW_PROJECT, StartProjectCommand),
     new DSProvider(new MemoryDataStore()),

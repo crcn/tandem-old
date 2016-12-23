@@ -24,6 +24,7 @@ import {
   ISyntheticObject,
   WriteFileRequest,
   ApplyFileEditRequest,
+  UpdateFileCacheRequest,
   // ReadDirectoryRequest,
   SandboxModuleAction,
 } from "@tandem/sandbox";
@@ -76,9 +77,11 @@ export namespace EditorFamilyType {
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(WatchFileRequest));
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(ReadFileRequest));
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(WriteFileRequest));
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(UpdateFileCacheRequest));
 setMessageTarget(EditorFamilyType.WORKER)(ApplyFileEditRequest);
 
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(DSFindRequest))
+addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(DSUpdateRequest))
 setMessageTarget(EditorFamilyType.WORKER)(DSUpsertRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSInsertRequest);
 setMessageTarget(EditorFamilyType.WORKER)(DSRemoveRequest);

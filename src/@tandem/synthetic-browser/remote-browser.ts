@@ -65,6 +65,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _bus: IStreamableDispatcher<any>;
   private _documentEditor: SyntheticObjectTreeEditor;
   private _remoteStreamReader: ReadableStreamDefaultReader<any>;
+  private _writer: WritableStreamDefaultWriter;
 
   @bindable(true)
   public status: Status = new Status(Status.IDLE);
@@ -79,6 +80,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     if (this._remoteStreamReader) this._remoteStreamReader.cancel("Re-opened");
 
     const remoteBrowserStream = this._bus.dispatch(new OpenRemoteBrowserRequest(options));
+    this._writer = remoteBrowserStream.writable.getWriter();
     const reader = this._remoteStreamReader = remoteBrowserStream.readable.getReader();
 
     let value, done;
@@ -149,6 +151,7 @@ export class RemoteBrowserService extends BaseApplicationService {
       const writer = output.getWriter();
       const id = JSON.stringify(event.options);
 
+
       // TODO - memoize opened browser if same session is up
       const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.kernel, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
@@ -158,8 +161,10 @@ export class RemoteBrowserService extends BaseApplicationService {
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (mutations: Mutation<any>[]) => {
 
         logger.info("Sending diffs: <<", mutations.map(event => event.type).join(", "));
+        browser.sandbox.pause();
         await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, mutations)) });
 
+        browser.sandbox.resume();
       }, (clone: SyntheticDocument) => {
         logger.info("Sending <<new document");
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.NEW_DOCUMENT, clone)) });

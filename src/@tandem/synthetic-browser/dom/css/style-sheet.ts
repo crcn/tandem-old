@@ -1,7 +1,7 @@
 import { atob } from "abab";
 import { RawSourceMap } from "source-map";
 import { SyntheticCSSFontFace } from "./font-face";
-import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser/dom/css";
+import { evaluateCSS, parseCSS, evaluateCSSSource } from "@tandem/synthetic-browser/dom/css";
 import { SyntheticCSSMediaRule } from "./media-rule";
 import { SyntheticCSSKeyframesRule } from "./keyframes-rule";
 import { SyntheticObjectChangeTypes, BaseEditor } from "@tandem/sandbox";
@@ -44,19 +44,19 @@ class SyntheticCSSStyleSheetSerializer implements ISerializer<SyntheticCSSStyleS
 export class CSSStyleSheetEditor<T extends SyntheticCSSStyleSheet> extends SyntheticCSSGroupingRuleEditor<T> {
 }
 
-let _smcache = {};
-function parseSourceMaps(value) {
-  if (String(value).indexOf("sourceMappingURL=data") == -1) return undefined;
-  if (_smcache[value]) return _smcache[value];
+// let _smcache = {};
+// function parseSourceMaps(value) {
+//   if (String(value).indexOf("sourceMappingURL=data") == -1) return undefined;
+//   if (_smcache[value]) return _smcache[value];
 
-  const sourceMappingURL = String(value).match(/sourceMappingURL=(data\:[^\s]+)/)[1];
+//   const sourceMappingURL = String(value).match(/sourceMappingURL=(data\:[^\s]+)/)[1];
   
 
-  // assuming that it's inlined here... shouldn't.
-  return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));
-}
+//   // assuming that it's inlined here... shouldn't.
+//   return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));
+// }
 
-setInterval(() => _smcache = {}, 1000 * 60);
+// setInterval(() => _smcache = {}, 1000 * 60);
 
 @serializable("SyntheticCSSStyleSheet", new SyntheticCSSObjectSerializer(new SyntheticCSSStyleSheetSerializer()))
 export class SyntheticCSSStyleSheet extends SyntheticCSSGroupingRule<syntheticCSSRuleType> {
@@ -71,11 +71,18 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSGroupingRule<syntheticCS
   }
 
   set cssText(value: string) {
-    let map: RawSourceMap = parseSourceMaps(value);
+    // let map: RawSourceMap = parseSourceMaps(value);
     this
     .createEdit()
-    .fromDiff(evaluateCSS(parseCSS(value, map), map))
-    .applyMutationsTo(this);
+    .fromDiff(evaluateCSSSource(value))
+  }
+
+  regenerateUID() {
+    super.regenerateUID();
+    for (const rule of this.rules) {
+      rule.regenerateUID();
+    }
+    return this;
   }
 
   addImport(bstrURL: string, lIndex?: number): number {

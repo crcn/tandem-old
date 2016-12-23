@@ -73,14 +73,14 @@ describe(__filename + "#", () => {
         "entry.js": "a"
       });
       const item = await fileCache.findOrInsert("file://entry.js");
-      const mtime = item.sourceModifiedAt;
+      const mtime = item.contentUpdatedAt;
 
       return new Promise((resolve) => {
         item.observe({
           dispatch({ mutation }: MutationEvent<any>) {
             if (mutation.type === PropertyMutation.PROPERTY_CHANGE) {
               expect(item.contentUri).to.equal("file://entry.js");
-              expect(item.sourceModifiedAt).to.not.equal(mtime);
+              expect(item.contentUpdatedAt).to.not.equal(mtime);
               resolve();
             }
           }

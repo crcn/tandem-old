@@ -12,3 +12,4 @@ export * from "./init-settings";
 export * from "./auto-update";
 export * from "./install-shell-commands";
 export * from "./save-all-files";
+export * from "./hook-spawned-worker";

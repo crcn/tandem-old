@@ -138,6 +138,7 @@ export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
 
     const afterChild = (node.childNodes[index] || node.childNodes[node.childNodes.length - 1]) as parse5.AST.Default.Element;
 
+    console.log("INSERTING CHILD", !!afterChild);
     if (!afterChild) {
 
       const start = node.__location.startTag.startOffset;
@@ -275,7 +276,6 @@ export class MarkupEditor extends BaseContentEditor<parse5.AST.Default.Node> {
       
       result = result.substr(0, start) + value + result.substr(end);
     });
-
 
     return result;
   }

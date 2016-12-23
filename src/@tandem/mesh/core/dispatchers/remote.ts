@@ -271,7 +271,9 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
   }
 
   private onChunk({ messageId, source, dest, payload }: RemoteBusMessage) {
-    this._getConnection(dest, (con, uid) => this.respond(con.write(payload), messageId, uid, source));
+    this._getConnection(dest, (con, uid) => {
+      this.respond(con.write(payload), messageId, uid, source);
+    });
   }
 
   private onClose({ messageId, source, dest, payload }: RemoteBusMessage) {

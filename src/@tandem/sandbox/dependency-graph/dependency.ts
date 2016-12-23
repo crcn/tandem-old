@@ -458,7 +458,7 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     // reload the dependency if file cache item changes -- could be the data uri, source file, etc.
     if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE) {
       if (this.status.type !== Status.LOADING) {
-        this.logger.info("Source file changed ");
+        this.logger.info("Source file changed");
         this.reload();
       } else {
         this._shouldLoadAgain = true;

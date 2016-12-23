@@ -3,10 +3,10 @@ import {
  ISandboxDependencyEvaluator,
 } from "@tandem/sandbox";
 
-import { evaluateCSS, parseCSS } from "@tandem/synthetic-browser";
+import { evaluateCSS, parseCSS, evaluateCSSSource } from "@tandem/synthetic-browser";
 
 export class CSSDependencyEvaluator implements ISandboxDependencyEvaluator {
   evaluate(module: SandboxModule) {
-    module.exports = evaluateCSS(parseCSS(module.source.content), module.source.map, module);
+    module.exports = evaluateCSSSource(module.source.content, module.source.map, module);
   }
 }

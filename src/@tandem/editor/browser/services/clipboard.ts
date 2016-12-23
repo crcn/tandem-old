@@ -11,8 +11,8 @@ import {
   ApplicationServiceProvider,
 } from "@tandem/common";
 
-function targetIsInput(event) {
-  return /input|textarea/i.test(event.target.nodeName);
+function targetIsInput(element: HTMLElement) {
+  return /input|textarea/i.test(element.tagName);
 }
 
 const SYNTHETIC_OBJECT_MIME_TYPE = "text/x-synthetic-object";
@@ -24,7 +24,16 @@ export class ClipboardService extends BaseEditorApplicationService<IEditorBrowse
   [InitializeApplicationRequest.INITIALIZE]() {
     document.addEventListener("copy", (event: ClipboardEvent) => {
 
-      if (targetIsInput(event)) return;
+      // event target may come from iframe. event target in this case will always be iframe, so
+      // inspect the active element's (which is the iframe in this case again) active element to 
+      // ensure that it isn't an input.
+      if (document.activeElement && document.activeElement.tagName === "IFRAME") {
+        if (targetIsInput((document.activeElement as HTMLIFrameElement).contentDocument.activeElement as HTMLElement)) {
+          return;
+        }
+      }
+
+      if (targetIsInput(event.target as HTMLElement)) return;
 
       const content = JSON.stringify(this.editorStore.workspace.selection.map((item) => {
         return serialize(item); 

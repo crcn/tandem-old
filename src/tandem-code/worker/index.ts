@@ -18,7 +18,7 @@ import { createCoreMarkdownExtensionProviders } from "@tandem/markdown-extension
 import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/server";
 import { createTypescriptEditorWorkerProviders } from "@tandem/typescript-extension/editor/server";
 import { EditorFamilyType, createCommonEditorProviders, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/common";
-import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest, createRemoteProtocolProviders } from "tandem-code/common";
+import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest, createCommandProviders } from "tandem-code/common";
 
 import { 
   createSyntheticHTMLProviders,
@@ -71,6 +71,7 @@ export const createCoreStudioWorkerProviders = () => {
     createCoreMarkdownExtensionProviders(),
     createTDProjectEditorWorkerProviders(),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadProjectConfigCommand),
+    new ApplicationServiceProvider("sock", SockService),
     new ProtocolURLResolverProvider("webpack", WebpackProtocolResolver),
     new DependencyGraphStrategyProvider("webpack", WebpackDependencyGraphStrategy),
   ];
@@ -94,11 +95,10 @@ export const initializeWorker = async () => {
   };
 
   const kernel = new Kernel(
-    createRemoteProtocolProviders(),
+    createCommandProviders(),
     createCommonEditorProviders(config),
     createCoreStudioWorkerProviders(),
     new DSProvider(new MemoryDataStore()),
-    new ApplicationServiceProvider("sock", SockService),
     new ApplicationServiceProvider("ds", DSService),
     createSyntheticBrowserWorkerProviders(),
     

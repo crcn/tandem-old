@@ -1,13 +1,16 @@
 import { CommandFactoryProvider } from "@tandem/common";
-import { WriteFileCommand, ReadFileCommand } from "./commands";
-import { ReadFileRequest, WriteFileRequest } from "./messages";
+import { ReadFileRequest, WriteFileRequest, UpdateFileCacheRequest } from "./messages";
+import { WriteFileCommand, ReadFileCommand, UpdateFileCacheCommand } from "./commands";
 
-export const createRemoteProtocolProviders = () => {
+export const createCommandProviders = () => {
   return [
     new CommandFactoryProvider(ReadFileRequest.READ_FILE, ReadFileCommand),
-    new CommandFactoryProvider(WriteFileRequest.WRITE_FILE, WriteFileCommand)
+    new CommandFactoryProvider(WriteFileRequest.WRITE_FILE, WriteFileCommand),
+    new CommandFactoryProvider(UpdateFileCacheRequest.UPDATE_FILE_CACHE, UpdateFileCacheCommand)
   ];
 }
+
+
 
 export * from "./providers";
 export * from "./messages";

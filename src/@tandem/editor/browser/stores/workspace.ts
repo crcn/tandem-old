@@ -21,6 +21,8 @@ import {
   flattenTree,
   IInjectable,
   BoundingRect,
+  serialize,
+  deserialize,
   watchProperty,
   KernelProvider,
   PropertyWatcher,
@@ -124,7 +126,7 @@ export class Workspace extends Observable {
   }
 
   async openBrowser() {
-    const envBus = new BrokerBus(undefined, ChannelBus.createFromStream(EditorFamilyType.BROWSER, this._bus.dispatch(new OpenProjectEnvironmentChannelRequest(this.project._id))));
+    const envBus = new BrokerBus(undefined, ChannelBus.createFromStream(EditorFamilyType.BROWSER, this._bus.dispatch(new OpenProjectEnvironmentChannelRequest(this.project._id)), undefined));
 
     const envKernel = this._envKernel = new Kernel(
       this._kernel,

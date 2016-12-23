@@ -424,6 +424,7 @@ export class SyntheticObjectChangeWatcher<T extends ISyntheticObject & IEditable
 
     this._diffing = true;
     const edit = (<BaseContentEdit<any>>this._clone.createEdit()).fromDiff(this._target);
+
     if (edit.mutations.length) {
       try {
         await this.onChange(edit.mutations);

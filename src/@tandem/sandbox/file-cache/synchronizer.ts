@@ -67,7 +67,7 @@ export class FileCacheSynchronizer {
 
     // just set the timestamp instead of checking lstat -- primarily
     // to ensure that this class works in other environments.
-    entity.sourceModifiedAt = Date.now();
+    entity.contentUpdatedAt = Date.now();
 
     // override any data urls that might be stored on the entity
     entity.setContentUri(uri).save();

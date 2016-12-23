@@ -68,6 +68,11 @@ export abstract class SyntheticCSSObject implements ISyntheticObject, IEditable 
     return this.$linkClone(this.cloneShallow());
   }
 
+  regenerateUID(deep?: boolean) {
+    this.$uid = generateSyntheticUID();
+    return this;
+  }
+
   public $linkClone(clone: SyntheticCSSObject) {
     clone.$source = this.$source;
     clone.$uid    = this.$uid;
