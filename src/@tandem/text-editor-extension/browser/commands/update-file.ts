@@ -1,6 +1,6 @@
 import { OpenFileRequest } from "@tandem/editor/common";
 import { URIProtocolProvider, getCacheUri } from "@tandem/sandbox";
-import { UpdateFileCacheRequest } from "tandem-playground/browser/messages";
+import { UpdateFileCacheRequest } from "../messages";
 import { BaseEditorPlaygroundBrowserCommand } from "./base";
 
 export class UpdateFileCommand extends BaseEditorPlaygroundBrowserCommand {

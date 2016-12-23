@@ -55,6 +55,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
       let shouldGraph  = false;
       let shouldImport = false;
       
+      
       // must be white listed here to presetn certain elements such as remote browser & anchor tags from loading resources. Even
       // better to have a provider for loadable elements, but that's a little overkill for now.
       if (/^(link|script|img)$/.test(parent.nodeName) && value && value.substr(0, 5) !== "data:") {
@@ -143,8 +144,10 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
     }
 
     const sourceNode = await map(expression);
-
-    const result = sourceNode.toStringWithSourceMap();
+    
+    const result = sourceNode.toStringWithSourceMap({
+      file: uri
+    });
     
     return {
       content: result.code,

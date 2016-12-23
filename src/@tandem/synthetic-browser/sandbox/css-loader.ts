@@ -102,7 +102,9 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
     }
 
     let result;
-    result = (await compile(parseCSS(content, map))).toStringWithSourceMap();
+    result = (await compile(parseCSS(content, map))).toStringWithSourceMap({
+      file: uri
+    });
 
     return {
       type: CSS_MIME_TYPE,
