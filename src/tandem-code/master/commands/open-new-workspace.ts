@@ -23,7 +23,7 @@ export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
       height = 768;
       hash = `#/workspace/${project._id}`;
 
-      const win = new BrowserWindow({ width: width, height: height });
+      const win = new BrowserWindow({ width: width, height: height, titleBarStyle: "hidden-inset" });
 
       win.loadURL(`${this.config.browser.indexUrl}?backendPort=${this.config.server.port}${hash}`);
 

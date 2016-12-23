@@ -3,13 +3,16 @@ Notes about this doc:
 - Checklist items are ordered by importance.
 - Remove a checklist item when it's completed.
 
+Focus:
+
+- more on visual tools - writing CSS tools 
+
 
 ----
 IMMEDIATE 2
 ----
 
 - [ ] open two instances of tandem -- cannot use text editor
-- [ ] cannot open new tandem window
 
 
 ----------------------------------
@@ -28,7 +31,6 @@ NEW TARGET: Dev tools - qa testing. Develop
 - [ ] right click - open link in new window
 
 - [ ] fix vscode extension
-- [ ] CTA blog
 - [ ] more dev tools
   - [ ] right click inspect element
 
