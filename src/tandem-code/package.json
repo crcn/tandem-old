@@ -1,7 +1,7 @@
 {
   "name": "tandem-code",
   "productName": "Tandem",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "private": true,
   "main": "./index.bundle.js",
   "electronVersion": "1.4.6",
@@ -16,7 +16,9 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "devDependencies": {},
+  "devDependencies": {
+		"vscode": "^0.11.x"
+  },
   "dependencies": {
     "auto-updater": "^1.0.2",
     "cors": "^2.8.1",
