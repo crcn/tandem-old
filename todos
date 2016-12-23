@@ -8,7 +8,8 @@ Notes about this doc:
 IMMEDIATE 2
 ----
 
-- [ ] copy paste busted
+- [ ] open two instances of tandem -- cannot use text editor
+- [ ] cannot open new tandem window
 
 
 ----------------------------------
@@ -24,12 +25,6 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-- [ ] copy and paste http url needs to work
-- [ ] move watchers to synthetic browser
-  - [ ] prep for dynamic watching
-- [ ] authentication on opening remote browser
-- [ ] test suite
-- [ ] make collections es5 compatible
 - [ ] right click - open link in new window
 
 - [ ] fix vscode extension
