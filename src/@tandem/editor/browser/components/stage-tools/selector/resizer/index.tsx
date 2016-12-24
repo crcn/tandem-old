@@ -2,7 +2,8 @@ import React =  require("react");
 import { Workspace } from "@tandem/editor/browser/stores";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
-import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { OpenContextMenuRequest } from "@tandem/editor/browser/messages";
+import { MetadataKeys, ContextMenuTypes } from "@tandem/editor/browser/constants";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 import { IntersectingPointComponent } from "./intersecting-point";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
@@ -173,7 +174,12 @@ class ResizerComponent extends BaseApplicationComponent<{
     this.props.onResizing(event);
   }
 
-  startDragging = (event) => {
+  startDragging = (event: React.MouseEvent<any>) => {
+
+    if (event.ctrlKey) {
+      this.bus.dispatch(new OpenContextMenuRequest(ContextMenuTypes.SYNTHETIC_ELEMENT, event.clientX, event.clientY));
+    }
+
     event.stopPropagation();
 
     if (!this._visibleElements.getCapabilities().movable) return;

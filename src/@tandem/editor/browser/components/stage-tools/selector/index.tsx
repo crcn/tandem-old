@@ -4,16 +4,18 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { flatten } from "lodash";
 import RulerComponent from "./ruler";
 import ResizerComponent from "./resizer";
+import { ContextMenuTypes } from "@tandem/editor/browser/constants";
+import { OpenContextMenuRequest } from "@tandem/editor/browser/messages";
 import { SelectionSizeComponent } from "@tandem/editor/browser/components/common";
 import { BoundingRect, flattenTree } from "@tandem/common";
+import { BaseApplicationComponent } from "@tandem/common";
 import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
 
-export class SelectorStageToolComponent extends React.Component<{ workspace: Workspace, app: any, zoom: number  }, any> {
+export class SelectorStageToolComponent extends BaseApplicationComponent<{ workspace: Workspace, app: any, zoom: number  }, any> {
 
-  constructor(props) {
-    super(props);
-    this.state = {};
+  state: any = {
+
   }
 
 
@@ -32,6 +34,12 @@ export class SelectorStageToolComponent extends React.Component<{ workspace: Wor
   onStopMoving = () => {
     this.setState({ moving: false });
   }
+
+  // onMouseDown = (event: React.MouseEvent<any>) => {
+  //   if (event.ctrlKey) {
+  //     this.bus.dispatch(new OpenContextMenuRequest(ContextMenuTypes.SYNTHETIC_ELEMENT, event.clientX, event.clientY));
+  //   }
+  // }
 
   render() {
 

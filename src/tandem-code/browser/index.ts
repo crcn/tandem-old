@@ -17,6 +17,7 @@ import {
   SettingKeys,
   WebMenuItem, 
   SaveAllRequest,
+  ContextMenuTypes,
   createWebMenuItemClass, 
   ToggleStageToolsRequest,
   createMenuSeparatorClass, 
@@ -55,6 +56,7 @@ import {
   IEditorBrowserConfig, 
   RouteFactoryProvider,
   RemoveSelectionRequest,
+  OpenContextMenuRequest,
   createCommonEditorProviders, 
   createEditorBrowserProviders, 
 } from "@tandem/editor/browser";
@@ -65,9 +67,10 @@ import {
   OpenCommand,
   SetMenuCommand,
   LoadHelpOptionsCommad,
+  OpenContextMenuCommand,
   LoadStartOptionsCommand, 
-  LoadSandboxedWorkspaceCommand,
   InitializeWelcomePageCommand, 
+  LoadSandboxedWorkspaceCommand,
 } from "./commands";
 
 
@@ -90,7 +93,7 @@ const createSepName = () => `sep${i++}`;
 function createMenuProviders() {
   return [
 
-    new WebMenuItemFactoryProvider("app", (parent: WebMenuItem) => parent.root === parent, createWebMenuItemClass("Tandem")),
+    new WebMenuItemFactoryProvider("app", (parent: WebMenuItem) => parent.type === "menubar", createWebMenuItemClass("Tandem")),
     new WebMenuItemFactoryProvider("appAbout", "app", createWebMenuItemClass(undefined, "about")),
     WebMenuItemFactoryProvider.createSeparatorProvider("app"),
     new WebMenuItemFactoryProvider("installShellCommands", "app", createKeyCommandMenuItemClass("Install Shell Commands", undefined, InstallCommandLineToolsRequest)),
@@ -100,8 +103,7 @@ function createMenuProviders() {
     ...createWorkspaceMenuProviders(),
     ...createWelcomeMenuProviders(),
 
-    new WebMenuItemFactoryProvider("help", (parent: WebMenuItem) => parent.root === parent, createWebMenuItemClass(undefined, "help")),
-
+    new WebMenuItemFactoryProvider("help", (parent: WebMenuItem) => parent.type === "menubar", createWebMenuItemClass(undefined, "help")),
  ];
 }
 
@@ -155,6 +157,7 @@ const kernel = new Kernel(
   
   // Commands
   new CommandFactoryProvider(OpenRequest.OPEN, OpenCommand),
+  new CommandFactoryProvider(OpenContextMenuRequest.OPEN_CONTEXT_MENU, OpenContextMenuCommand),
   new CommandFactoryProvider(ApplicationReadyMessage.READY, InitializeWelcomePageCommand),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadHelpOptionsCommad),
   new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadStartOptionsCommand),

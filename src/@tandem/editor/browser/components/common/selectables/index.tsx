@@ -5,18 +5,18 @@ import "./index.scss";
 import cx =  require("classnames");
 import React =  require("react");
 import { inject } from "@tandem/common/decorators";
-import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { Workspace } from "@tandem/editor/browser/stores";
-import { SelectRequest } from "@tandem/editor/browser/messages";
-import { AltInputComponent } from "@tandem/editor/browser/components";
-import { MetadataKeys } from "@tandem/editor/browser/constants";
-import { OpenFileRequest } from "@tandem/editor/common/messages";
-import { intersection, flatten } from "lodash";
 import { IInjectable } from "@tandem/common";
-import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
-import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
-import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
+import { OpenFileRequest } from "@tandem/editor/common/messages";
+import { AltInputComponent } from "@tandem/editor/browser/components";
 import { fitBoundsInDocument } from "@tandem/editor/browser/utils";
+import { intersection, flatten } from "lodash";
+import { ReactComponentFactoryProvider } from "@tandem/editor/browser/providers";
+import { MetadataKeys, ContextMenuTypes } from "@tandem/editor/browser/constants";
+import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
+import { BoundingRect, BaseApplicationComponent } from "@tandem/common";
+import { SelectRequest, OpenContextMenuRequest } from "@tandem/editor/browser/messages";
+import { SyntheticHTMLElement, SyntheticDOMElement, ChildElementQuerier } from "@tandem/synthetic-browser";
 
 class SelectableComponent extends BaseApplicationComponent<{
   element: SyntheticHTMLElement,
@@ -32,10 +32,17 @@ class SelectableComponent extends BaseApplicationComponent<{
   private _elementObserver: IDispatcher<any, any>;
 
   onMouseDown = (event: React.MouseEvent<any>): any => {
-    if ((event.metaKey || event.ctrlKey) && this.props.element.source) {
+
+    if (event.metaKey && this.props.element.source) {
       return OpenFileRequest.dispatch(this.props.element.source.uri, this.props.element.source, this.bus);
     }
+    
     this.props.onSyntheticMouseDown(this.props.element, event);
+
+    if (event.ctrlKey) {
+      this.bus.dispatch(new OpenContextMenuRequest(ContextMenuTypes.SYNTHETIC_ELEMENT, event.clientX, event.clientY));
+    }
+    
     event.stopPropagation();
     this.onMouseOut(event);
   }

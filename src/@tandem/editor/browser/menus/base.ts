@@ -15,7 +15,7 @@ import { 
 export class WebMenuItem extends TreeNode<WebMenuItem> {
 
   @inject(KernelProvider.ID)
-  protected kernel: Kernel;
+  readonly kernel: Kernel;
 
   @inject(PrivateBusProvider.ID)
   protected bus: IBrokerBus;

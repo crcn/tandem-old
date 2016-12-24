@@ -51,7 +51,6 @@ NEW TARGET: Dev tools - qa testing. Develop
   - [ ] ensure that location changes are observable
 
 - [ ] UX
-  - [ ] open tandem from text editor
   - [ ] ability to define location
   - [ ] server config that maps where files are
   

@@ -31,6 +31,10 @@ export namespace EditorRouteNames {
   export const WORKSPACE = "workspace";
 }
 
+export namespace ContextMenuTypes {
+  export const SYNTHETIC_ELEMENT = "syntheticElement";
+}
+
 export namespace ToolFamily {
   export const INTERACT = "interact";
 }

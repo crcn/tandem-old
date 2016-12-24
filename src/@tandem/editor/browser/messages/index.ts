@@ -99,6 +99,23 @@ export class DidRedirectMessage implements IMessage {
   }
 }
 
+export class OpenContextMenuRequest extends CoreEvent {
+  static readonly OPEN_CONTEXT_MENU = "openContextMenu";
+  constructor(readonly name: string, readonly x: number, readonly y: number) {
+    super(OpenContextMenuRequest.OPEN_CONTEXT_MENU);
+  }
+}
+
+
+
+export class OpenLinkInNewWindowRequest extends CoreEvent {
+  static readonly OPEN_LINK_IN_NEW_WINDOW = "openLinkInNewWindow";
+  constructor() {
+    super(OpenLinkInNewWindowRequest.OPEN_LINK_IN_NEW_WINDOW);
+  }
+}
+
+
 export function createWorkspaceRedirectRequest(projectId: string) {
   return new RedirectRequest("/workspace/" + projectId, {});
 }

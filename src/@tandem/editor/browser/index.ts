@@ -1,8 +1,9 @@
 import "./styles";
 
-import { EditorRouteNames } from "./constants";
 import { IEditorBrowserConfig } from "./config";
+import { EditorRouteNames, ContextMenuTypes } from "./constants";
 import { IFileResolver, URIProtocolProvider } from "@tandem/sandbox";
+import { createWebMenuItemClass, WebMenuItem, createKeyCommandMenuItemClass } from "./menus";
 
 import { 
   Kernel, 
@@ -15,6 +16,9 @@ import {
   ApplicationConfigurationProvider,
 } from "@tandem/common";
 
+import { Workspace } from "./stores";
+
+
 import { 
   AlertMessage, 
   RedirectRequest, 
@@ -22,6 +26,7 @@ import { 
   RemoveSelectionRequest, 
   ToggleStageToolsRequest,
   AddSyntheticObjectRequest, 
+  OpenLinkInNewWindowRequest,
 } from "./messages";
 
 import {
@@ -29,6 +34,7 @@ import {
   EditorStoreProvider,
   RouteFactoryProvider,
   GlobalKeyBindingProvider,
+  WebMenuItemFactoryProvider,
   ReactComponentFactoryProvider,
   StageToolComponentFactoryProvider,
   LayerLabelComponentFactoryProvider,
@@ -71,6 +77,7 @@ import {
   SetReadyStatusCommand,
   RemoveSelectionCommand, 
   toggleStageToolsCommand,
+  OpenLinkInNewWindowCommand,
 } from "./commands";
 
 import {
@@ -82,6 +89,8 @@ import {
   WorkspaceService,
   GlobalKeyBindingService,
 } from "./services";
+
+
 
 export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileResolverClass?: { new(): IFileResolver }) {
   return [
@@ -109,6 +118,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadAnonSession),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadRouterCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
+    new CommandFactoryProvider(OpenLinkInNewWindowRequest.OPEN_LINK_IN_NEW_WINDOW, OpenLinkInNewWindowCommand),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),
@@ -119,7 +129,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     new ApplicationServiceProvider("workspace", WorkspaceService),
 
     // stage tool components
-    new StageToolComponentFactoryProvider("selector", "pointer", SelectorStageToolComponent),
+    new StageToolComponentFactoryProvider("selector", "pointer", SelectorStageToolComponent as any),
     new ReactComponentFactoryProvider("components/tools/pointer/drag-select", DragSelectStageToolComponent as any),
     new ReactComponentFactoryProvider("components/tools/pointer/grid", GridStageToolComponent),
     new ReactComponentFactoryProvider("components/tools/insert/size", InsertStageToolComponent),
@@ -130,7 +140,14 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
 
     new EditorStoreProvider(EditorStore),
 
-    // pointerToolProvider
+    // menu items
+    new WebMenuItemFactoryProvider(ContextMenuTypes.SYNTHETIC_ELEMENT, "contextRoot", createWebMenuItemClass("rootsie")),
+    
+    new WebMenuItemFactoryProvider("openElementInNewWindow", (parent: WebMenuItem) => {
+      if (parent.name !== ContextMenuTypes.SYNTHETIC_ELEMENT) return false;
+      const workspace = parent.kernel.query(EditorStoreProvider.ID).value.workspace as Workspace;
+      return workspace.selection.length && /^(a)$/i.test(workspace.selection[0].tagName);
+    }, createKeyCommandMenuItemClass("Open Link in New Window", undefined, OpenLinkInNewWindowRequest))
   ];
 }
 
