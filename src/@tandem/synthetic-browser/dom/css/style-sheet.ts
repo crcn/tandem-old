@@ -75,6 +75,7 @@ export class SyntheticCSSStyleSheet extends SyntheticCSSGroupingRule<syntheticCS
     this
     .createEdit()
     .fromDiff(evaluateCSSSource(value))
+    .applyMutationsTo(this);
   }
 
   regenerateUID() {

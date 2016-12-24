@@ -25,7 +25,7 @@ function parseSourceMaps(value) {
   
 
   // assuming that it's inlined here... shouldn't.
-  return _smcache[value] = JSON.parse(atob(sourceMappingURL.split(",").pop()));
+  return _smcache[value] = JSON.parse(new Buffer(sourceMappingURL.split(",").pop(), "base64").toString("utf8"));
 }
 
 

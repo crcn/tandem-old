@@ -6,6 +6,7 @@ Notes about this doc:
 Focus:
 
 - more on visual tools - writing CSS tools 
+- look for top Css tools - implement those
 
 
 ----
@@ -28,15 +29,12 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-- [ ] right click - open link in new window
-
-- [ ] fix vscode extension
-- [ ] more dev tools
+- [ ] context menu
+  - [ ] right click - open link in new window
   - [ ] right click inspect element
 
 - [ ] Getting started video popup
 
-- [ ] launch checklist
 - [ ] ability to select unsaved files
 - [ ] bark for unsaved changes
 - [ ] Logo

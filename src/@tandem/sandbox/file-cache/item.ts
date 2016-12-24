@@ -87,12 +87,12 @@ export class FileCacheItem extends BaseActiveRecord<IFileCacheItemData> {
   }
 
   async setDataUrlContent(content: string|Buffer) {
-    this.contentUpdatedAt = Date.now();
     return this.setContentUri(createDataUrl(content, (await this.read()).type));
   }
 
   setContentUri(uri: string) {
     this.contentUri = uri;
+    this.contentUpdatedAt = Date.now();
     return this;
   }
 
