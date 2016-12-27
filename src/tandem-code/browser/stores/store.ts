@@ -1,6 +1,11 @@
-import { ObservableCollection, Observable, bindable, bubble, ActiveRecordCollection } from "@tandem/common";
-
 import { IStarterOption, IHelpOption } from "tandem-code/common";
+import { 
+  bubble, 
+  bindable, 
+  Observable, 
+  ObservableCollection, 
+  ActiveRecordCollection, 
+} from "@tandem/common";
 
 export class TandemStudioBrowserStore extends Observable {
 

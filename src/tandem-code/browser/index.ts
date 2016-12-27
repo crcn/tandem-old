@@ -6,7 +6,6 @@ declare let __webpack_public_path__: any;
 
 __webpack_public_path__ = `${location.protocol}//${path.dirname(location.pathname)}/`;
 
-
 import Url =  require("url");
 import { EditorFamilyType } from "@tandem/editor/common";
 import { TandemStudioBrowserStore } from "./stores";
@@ -125,8 +124,6 @@ function createWorkspaceMenuProviders() {
     new WebMenuItemFactoryProvider("saveAll", "file", createKeyCommandMenuItemClass("Save All", "Alt+CmdOrCtrl+s", SaveAllRequest)),
 
     new WebMenuItemFactoryProvider("edit", EditorRouteNames.WORKSPACE, createWebMenuItemClass("Edit")),
-    // new WebMenuItemFactoryProvider("undo", "edit", createKeyCommandMenuItemClass("Zoom In", "CmdOrCtrl+plus", ZoomInRequest)),
-    // new WebMenuItemFactoryProvider("redo", "edit", createKeyCommandMenuItemClass("Zoom In", "CmdOrCtrl+plus", ZoomInRequest)),
     new WebMenuItemFactoryProvider("delete", "edit", createKeyCommandMenuItemClass("Delete", "backspace", RemoveSelectionRequest)),
     new WebMenuItemFactoryProvider("deleteSep", "edit", createMenuSeparatorClass()),
     new WebMenuItemFactoryProvider("cut", "edit", createWebMenuItemClass(undefined, "cut")),
