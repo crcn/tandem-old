@@ -156,6 +156,7 @@ let _client: TandemClient;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
+    console.log("Activating Tandem client");
 
     const client = _client = new TandemClient();
 
@@ -175,7 +176,6 @@ export async function activate(context: vscode.ExtensionContext) {
     async function setEditorContent({ content, filePath, mtime }) {
 
         const editor = vscode.window.activeTextEditor;
-        console.log(mtime);
         if (mtime < mtimes[filePath]) return;
 
         if (editor.document.fileName !== filePath || editor.document.getText() === content) return;
@@ -230,7 +230,9 @@ export async function activate(context: vscode.ExtensionContext) {
     async function onTextChange(e:vscode.TextDocumentChangeEvent) {
         if (_editing) return;
         const doc  = e.document;
-        updateFileCacheItem(doc);
+        if (doc.isDirty) {
+            updateFileCacheItem(doc);
+        }
     }
 
     const setEditorContentFromCache = async (item: FileCacheItem) => {
@@ -329,8 +331,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 	
 	context.subscriptions.push(disposable);
-
-    // this needs to be a config setting
     vscode.workspace.onDidChangeTextDocument(onTextChange);
     vscode.window.onDidChangeActiveTextEditor(onActiveTextEditorChange);
 }
