@@ -58,10 +58,10 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
       
       // must be white listed here to presetn certain elements such as remote browser & anchor tags from loading resources. Even
       // better to have a provider for loadable elements, but that's a little overkill for now.
-      if (/^(link|script|img)$/.test(parent.nodeName) && value && value.substr(0, 5) !== "data:") {
+      if (/^(link|script|img|source)$/.test(parent.nodeName) && value && value.substr(0, 5) !== "data:") {
 
         // do not add these to the dependency graph
-        shouldImport = !/^(img)$/.test(parent.nodeName);
+        shouldImport = !/^(img|source)$/.test(parent.nodeName);
 
         if (parent.nodeName === "link") {
           const rel = getAttr(parent, "rel");
@@ -80,7 +80,9 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
         if (/src|href/.test(name)) {
           value = (await self.strategy.resolve(value, uri)).uri;
-          imports.push(value);
+          if (shouldImport) {
+            imports.push(value);
+          }
         }
       }
       
