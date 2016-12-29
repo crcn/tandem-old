@@ -40,7 +40,7 @@ export class LayersPaneComponent extends BaseApplicationComponent<{ workspace: W
 
     return <div className="html-layers-pane">
       <div className="header">
-        Layers
+        HTML Layers
       </div>
       <TreeComponent
         nodes={this.filterChildren(document.body.childNodes)}

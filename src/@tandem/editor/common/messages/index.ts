@@ -122,7 +122,6 @@ export class SaveAllRequest extends CoreEvent {
   }
 }
 
-@addMessageVisitor(EditorFamilyType.WORKER)
 @addMessageVisitor(EditorFamilyType.MASTER)
 @setMessageTarget(EditorFamilyType.TEXT_EDITOR)
 @serializable("SetCurrentFileRequest", {

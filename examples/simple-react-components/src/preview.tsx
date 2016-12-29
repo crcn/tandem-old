@@ -29,14 +29,15 @@ class ComponentsPreview extends React.Component<any, any> {
         <Button disabled={true}>disabled button</Button>
         <Button className="primary">primary button</Button>
         <Button className="warning">warning button</Button>
-        <Button className="failure">failure button</Button>
+        <Button className="error">error button</Button>
       </div>
        <div className="group">
         <div className="title">
           Banners
         </div>
+        
+        <Banner>Banner</Banner>
         <Banner className="notice">Notice</Banner>
-        <Banner className="success">Success</Banner>
         <Banner className="warning">Warning</Banner>
         <Banner className="failure">Failure</Banner>
       </div>

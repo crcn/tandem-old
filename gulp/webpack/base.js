@@ -4,8 +4,8 @@ const webpack               = require('webpack');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const cssnext               = require('cssnext');
-const { join, dirname }     = require('path');
 const { FileCacheProvider } = require('../../out/@tandem/sandbox');
+const { join, dirname, normalize }     = require('path');
 
 const {
   WATCH,
@@ -40,7 +40,21 @@ const plugins = [
   extractCSS,
 ];
 
-const SM_QUERY_PARAM = SOURCE_MAPS ? "?sourceMap" : "";
+if (SOURCE_MAPS) {
+  plugins.push(
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map',
+      cheap: true,
+      moduleFilenameTemplate: "file://" + normalize(join(__dirname, "..", "..")) + '[resourcePath]'
+    })
+  )
+}
+
+console.log(normalize(join(__dirname, "..", "..")));
+
+const SM_QUERY_PARAM = SOURCE_MAPS ? `?sourceMap&sourceRoot=${encodeURIComponent(normalize(__dirname + "/../../"))}` : "";
+
+console.log(SM_QUERY_PARAM);
 
 const tsLoaders = [];
 const pegLoaders = [];
@@ -128,7 +142,7 @@ exports.config = {
       includePaths: [SRC_DIR],
       outputStyle: "expanded"
     },
-    // devtool: 'eval-source-map',
+    // devtool: SOURCE_MAPS ? 'inline-source-map' : undefined,
     stats: {
       hash: false,
       version: false,

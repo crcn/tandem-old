@@ -29,7 +29,9 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
     });*/
 
     const { uri } = dependency;
-    const sourceMappingUrl = (String(content).match(/sourceMappingURL=([^\s]+)/) || [])[1];
+    const sourceMappingUrl = (String(content).match(/sourceMappingURL=([^\s\*]+)/) || [])[1];
+
+    console.log(sourceMappingUrl);
 
     if (!map && sourceMappingUrl) {
       const resolveSourceMappingUrl = (await this.strategy.resolve(sourceMappingUrl, uri)).uri;
