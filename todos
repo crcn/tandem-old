@@ -23,17 +23,16 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-- word press
-
-- [ ] context menu
-  - [ ] right click open element in this window
-  - [ ] right click inspect element
-  
+- [ ] DEV tools
+  - [ ] javascript console
+  - [ ] HTML inspector
+  - [ ] CSS inspector
 
 - [ ] Getting started video popup
 - [ ] bark for unsaved changes
 
 - [ ] BUGS
+  - [ ] important tags must work
   - [ ] canvas still misalaigned
   - [ ] fix bounding rects not updating when zooming in or out
   - [ ] bounding rect is misaligned for crcn.codes

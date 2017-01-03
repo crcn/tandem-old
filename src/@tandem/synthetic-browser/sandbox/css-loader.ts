@@ -74,7 +74,7 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
         }
       } else if (node.type === "decl") {
 
-        let { prop, value } = <postcss.Declaration>node;
+        let { prop, value, important } = <postcss.Declaration>node;
 
         if (/url\(.*?\)/.test(value)) {
 
@@ -95,6 +95,11 @@ export class CSSDependencyLoader extends BaseDependencyLoader {
             value = value.replace(url, `"${repl}"`);
           }
         }
+        
+        if (important) {
+          value += " !important";
+        }
+
         buffer = [prop, ':', value, ';'];
       }
 
