@@ -15,6 +15,9 @@ export class MainComponent extends BaseApplicationComponent<{}, {}> {
   render() {
     return <div className="td-main">  
       { this.renderPage() }
+      { this._store.popups.map((render, i) => {
+        return render({ key: i });
+      })}
     </div>;
   }
 

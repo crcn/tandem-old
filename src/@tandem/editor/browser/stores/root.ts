@@ -4,7 +4,8 @@ import {
   Metadata,
   bindable,
   Observable,
-  PropertyWatcher
+  PropertyWatcher,
+  ObservableCollection
 } from "@tandem/common";
 
 import { IUser } from "@tandem/editor/common";
@@ -35,10 +36,16 @@ export class EditorStore extends Observable {
   public workspace: Workspace;
 
 
+  @bindable()
+  @bubble()
+  readonly popups: ObservableCollection<any>;
+
+
   readonly workspaceWatcher: PropertyWatcher<EditorStore, Workspace>;
 
   constructor() {
     super();
     this.workspaceWatcher = new PropertyWatcher<EditorStore, Workspace>(this, "workspace");
+    this.popups = ObservableCollection.create<any>() as any;
   }
 }

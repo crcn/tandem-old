@@ -6,7 +6,7 @@ import { ReactComponentFactoryProvider, PageFactoryProvider, EditorStoreProvider
 export class RegisteredComponent extends BaseApplicationComponent<{ ns: string, providers?: ReactComponentFactoryProvider[] } & any, any> {
   render() {
     return <span> { (this.props.providers || ((this.kernel && this.kernel.queryAll<ReactComponentFactoryProvider>(this.props.ns)) || []).map((dependency, i) => {
-      return dependency.create(Object.assign({ key: i }, this.props));
+      return dependency.create(Object.assign({ key: dependency.id }, this.props));
     }))} </span>;
   }
 }

@@ -9,8 +9,8 @@ __webpack_public_path__ = `${location.protocol}//${path.dirname(location.pathnam
 import Url =  require("url");
 import { EditorFamilyType } from "@tandem/editor/common";
 import { TandemStudioBrowserStore } from "./stores";
-import { InstallCommandLineToolsRequest } from "tandem-code/common";
 import { createTextEditorProviders } from "@tandem/text-editor-extension/browser";
+import { InstallCommandLineToolsRequest } from "tandem-code/common";
 
 import { 
   SettingKeys,
@@ -26,11 +26,12 @@ import {
 } from "@tandem/editor/browser";
 
 import { createSyntheticHTMLProviders } from "@tandem/synthetic-browser";
-import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { createHTMLEditorWorkerProviders } from "@tandem/html-extension/editor/worker";
-import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
-import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/worker";
 import { TandemStudioBrowserStoreProvider } from "./providers";
+import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
+import { createTDProjectEditorWorkerProviders } from "@tandem/tdproject-extension/editor/worker";
+import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
+import { createCollaborateExtensionBrowserProviders } from "@tandem/collaborate-extension/editor/browser";
 
 import { OpenRequest } from "./messages";
 
@@ -179,8 +180,7 @@ const kernel = new Kernel(
   createEditorBrowserProviders(config),
   createHTMLEditorBrowserProviders(),
   createTDProjectEditorBrowserProviders(),
-
-
+  createCollaborateExtensionBrowserProviders(),
 );
 
 const app = window["app"] = new ServiceApplication(kernel);

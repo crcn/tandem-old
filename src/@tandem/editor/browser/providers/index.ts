@@ -86,6 +86,21 @@ export class DocumentPaneComponentFactoryProvider extends ReactComponentFactoryP
   }
 }
 
+
+
+export class HeaderComponentFactoryProvider extends ReactComponentFactoryProvider {
+  static readonly NS = "components/headers/document";
+  constructor(readonly name: string, readonly componentClass: any, readonly priority?: number) {
+    super(HeaderComponentFactoryProvider.getId(name), componentClass, priority);
+  }
+  clone() {
+    return new HeaderComponentFactoryProvider(this.name, this.componentClass, this.priority);
+  }
+  static getId(name) {
+    return [HeaderComponentFactoryProvider.NS, name].join("/");
+  }
+}
+
 export class StageToolComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS = "components/tools";
   

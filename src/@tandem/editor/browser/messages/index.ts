@@ -43,6 +43,14 @@ export class AlertMessage extends CoreEvent {
   }
 }
 
+
+export class ShowPromptRequest extends CoreEvent {
+  static readonly PROMPT = "prompt";
+  constructor(type: string, readonly render: (props: any) => any, readonly closeable: boolean = false, readonly buttons?) {
+    super(type);
+  }
+}
+
 export class KeyboardAction extends CoreEvent {
 
   static readonly CANVAS_KEY_DOWN = "canvasKeyDown";

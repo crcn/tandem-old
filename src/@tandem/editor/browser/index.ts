@@ -20,8 +20,9 @@ import { Workspace } from "./stores";
 
 
 import { 
-  AlertMessage, 
+  AlertMessage,
   RedirectRequest, 
+  ShowPromptRequest, 
   ToggleSettingRequest,
   RemoveSelectionRequest, 
   ToggleStageToolsRequest,
@@ -72,6 +73,7 @@ import {
   OpenCWDCommand, 
   RedirectCommand,
   LoadAnonSession,
+  ShowPromptCommand,
   LoadRouterCommand,
   ToggleSettingCommand,
   OpenWorkspaceCommand,
@@ -116,6 +118,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
 
     // commands
     new CommandFactoryProvider(AlertMessage.ALERT, AlertCommand),
+    new CommandFactoryProvider(ShowPromptRequest.PROMPT, ShowPromptCommand),
     new CommandFactoryProvider(ToggleSettingRequest.TOGGLE_SETTING, ToggleSettingCommand),
     new CommandFactoryProvider(ToggleStageToolsRequest.TOGGLE_STAGE_TOOLS, toggleStageToolsCommand),
     new CommandFactoryProvider(RedirectRequest.REDIRECT, RedirectCommand),

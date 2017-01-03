@@ -13,3 +13,4 @@ export * from "./synthetic-source-link";
 export * from "./draggable";
 export * from "./number-slider-input";
 export * from "./alt-input";
+export * from "./prompt";
