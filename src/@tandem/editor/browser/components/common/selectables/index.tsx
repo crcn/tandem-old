@@ -39,7 +39,7 @@ class SelectableComponent extends BaseApplicationComponent<{
     
     this.props.onSyntheticMouseDown(this.props.element, event);
 
-    if (event.ctrlKey) {
+    if (event.ctrlKey || event.nativeEvent["which"] === 3) {
       this.bus.dispatch(new OpenContextMenuRequest(ContextMenuTypes.SYNTHETIC_ELEMENT, event.clientX, event.clientY));
     }
     

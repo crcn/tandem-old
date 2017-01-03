@@ -10,11 +10,15 @@ export class OpenLinkInNewWindowCommand extends BaseEditorBrowserCommand {
     let newLocation;
 
     const location = link.ownerDocument.defaultView.location;
-    console.log(location);
+    console.log(href, location, location.protocol);
     if (hasURIProtocol(href)) {
       newLocation = href;
     } else if (href.charAt(0) === "/") {
-      newLocation = location.protocol + "//" + location.host + href;
+      if (href.substr(0, 2) === "//") {
+        newLocation = location.protocol + href;
+      } else {
+        newLocation = location.protocol + "//" + location.host + href;
+      }
     } else {
       newLocation = location.protocol + "//" + location.host + location.pathname + href;
     }

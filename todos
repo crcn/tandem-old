@@ -32,25 +32,12 @@ NEW TARGET: Dev tools - qa testing. Develop
 - [ ] Getting started video popup
 - [ ] bark for unsaved changes
 
-- test
-  - https://github.com/facebookincubator/create-react-app
-
-- [ ] Show unsaved files
-- [ ] result style css urls
-- [ ] proper source mapping for html loader
-
-- [ ] Core
-  - [ ] ensure that location changes are observable
-
-- [ ] UX
-  - [ ] ability to define location
-  - [ ] server config that maps where files are
-  
 - [ ] BUGS
   - [ ] canvas still misalaigned
+  - [ ] fix bounding rects not updating when zooming in or out
+  - [ ] bounding rect is misaligned for crcn.codes
   - [ ] height seems to be inherited
     child class must contain parent class - e.g: .header .title, where .header contains the height prop 
-  - [ ] source maps not working with React
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
   - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
@@ -61,9 +48,6 @@ NEW TARGET: Dev tools - qa testing. Develop
   - [ ] unsaved files pane
   - [ ] install CLI tools menu option
   - [ ] react starter project
-
-- [ ] Getting Started page
-  - [ ] big header explaining how to zoom & use tools
 
 - [ ] Stability
   - [ ] analytics on usage
@@ -104,7 +88,6 @@ UX
   - [ ] *"LIVE" button that loads the application up in an iframe in the client
 
   - [ ] launch tandem from vscode
-  - [ ] display title of document (if present)
   - [ ] VM developer console
   - [ ] gutters need to be resizable
   - [ ] input focus border
