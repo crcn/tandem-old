@@ -82,7 +82,10 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
     super.attributeChangedCallback(key, oldValue, newValue);
     if (/src|strategy|inject/.test(key)) {
       this.loadBrowser();
-    }
+    } 
+
+    // request update incase the size has changed.
+    if (this._browser) this._browser.renderer.requestRender();
   }
 
   async createBrowser() {

@@ -23,31 +23,27 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
+
 - [ ] BUGS
-  - [ ] fix bounding rects not updating when zooming in or out
-  - [ ] bounding rect is misaligned for crcn.codes
   - [ ] height seems to be inherited
     child class must contain parent class - e.g: .header .title, where .header contains the height prop 
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
-  - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
-  - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
   - [ ] artboards do not show up if there's an error in the load
   - [ ] canvas still misalaigned
+
+- [ ] Collaborating
 
 - [ ] DEV tools
   - [ ] javascript console
   - [ ] HTML inspector
   - [ ] CSS inspector
 
-- [ ] Getting started video popup
 - [ ] bark for unsaved changes
 
 
 - [ ] Editor
   - [ ] History
   - [ ] unsaved files pane
-  - [ ] install CLI tools menu option
-  - [ ] react starter project
 
 - [ ] Stability
   - [ ] analytics on usage
@@ -174,12 +170,6 @@ CORE
   - [ ] move core html-extension files to synthetic-browser
   - [ ] tests are coupled to webpack config
   
-- [ ] Optimizations
-  - [ ] store workspaces in data store
-  - [ ] tree shaking dependencies
-  - [ ] run VM code in a new worker for speed and to prevent mem leaks
-  - [ ] connect studio with git repo of extensions
-  - [ ] sync dropbox account with service for computing code online and sending diffs back
 
 - [ ] a/b testing framework
 
