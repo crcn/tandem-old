@@ -23,17 +23,7 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-- [ ] DEV tools
-  - [ ] javascript console
-  - [ ] HTML inspector
-  - [ ] CSS inspector
-
-- [ ] Getting started video popup
-- [ ] bark for unsaved changes
-
 - [ ] BUGS
-  - [ ] important tags must work
-  - [ ] canvas still misalaigned
   - [ ] fix bounding rects not updating when zooming in or out
   - [ ] bounding rect is misaligned for crcn.codes
   - [ ] height seems to be inherited
@@ -42,6 +32,16 @@ NEW TARGET: Dev tools - qa testing. Develop
   - [ ] cannot dynamically add <script /> tags since dependency graph doesn't load that stuff in 
   - [ ] need to unwatch sources that have been deleted. Try removing an artboard, then deleting the source linked to it.
   - [ ] artboards do not show up if there's an error in the load
+  - [ ] canvas still misalaigned
+
+- [ ] DEV tools
+  - [ ] javascript console
+  - [ ] HTML inspector
+  - [ ] CSS inspector
+
+- [ ] Getting started video popup
+- [ ] bark for unsaved changes
+
 
 - [ ] Editor
   - [ ] History

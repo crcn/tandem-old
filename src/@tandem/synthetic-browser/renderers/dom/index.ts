@@ -134,7 +134,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       const [nativeNode, syntheticNode] = this.getElementDictItem(mutation.target);
 
       const insertChild = (syntheticNode) => {
-        return renderHTMLNode(this.nodeFactory, syntheticNode, this._elementDictionary);
+        return renderHTMLNode(this.nodeFactory, syntheticNode, this._elementDictionary, this.onElementChange);
       };
 
       if (nativeNode) {
@@ -245,13 +245,17 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       await Promise.all(document.styleSheets.map((styleSheet) => {
         return this._registerStyleSheet(styleSheet);
       }).concat((new Promise(resolve => {
-        this._documentElement = renderHTMLNode(this.nodeFactory, document, this._elementDictionary = {});
+        this._documentElement = renderHTMLNode(this.nodeFactory, document, this._elementDictionary = {}, this.onElementChange);
         element.lastChild.appendChild(this._documentElement);
         resolve();
       }))));
     }
 
     this.updateRects();
+  }
+
+  private onElementChange = () => {
+    this.requestRender();
   }
 
   private getCSSDictItem(target: SyntheticCSSObject): [CSSStyleSheet, syntheticCSSRuleType] {
@@ -312,7 +316,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 }
 
-function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, dict: HTMLElementDictionaryType): any {
+function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, dict: HTMLElementDictionaryType, onChange: () => any): any {
   switch(syntheticNode.nodeType) {
 
     case DOMNodeType.TEXT:
@@ -331,7 +335,8 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
       
       if(/^(style|link|script)$/.test(syntheticElement.nodeName)) return nodeFactory.createTextNode("");
       
-      const element = renderHTMLElement(nodeFactory, syntheticElement.nodeName, syntheticElement, dict);
+      const element = renderHTMLElement(nodeFactory, syntheticElement.nodeName, syntheticElement, dict, onChange);
+      element.onload = onChange;
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
         const syntheticAttribute = syntheticElement.attributes[i];
         if (syntheticAttribute.name === "class") {
@@ -348,28 +353,28 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
           }
         }
       }
-      return appendChildNodes(nodeFactory, element, syntheticElement.childNodes, dict);
+      return appendChildNodes(nodeFactory, element, syntheticElement.childNodes, dict, onChange);
     case DOMNodeType.DOCUMENT:
     case DOMNodeType.DOCUMENT_FRAGMENT:
       const syntheticContainer = <SyntheticDOMContainer>syntheticNode;
-      const containerElement = renderHTMLElement(nodeFactory, "span", syntheticContainer as SyntheticDOMElement, dict);
-      return appendChildNodes(nodeFactory, containerElement, syntheticContainer.childNodes, dict);
+      const containerElement = renderHTMLElement(nodeFactory, "span", syntheticContainer as SyntheticDOMElement, dict, onChange);
+      return appendChildNodes(nodeFactory, containerElement, syntheticContainer.childNodes, dict, onChange);
   }
 }
 
-function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMElement, dict: HTMLElementDictionaryType): HTMLElement {
+function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMElement, dict: HTMLElementDictionaryType, onChange: () => any): HTMLElement {
   if (/^(html|body|head)$/.test(tagName)) tagName = "div";
   const element = nodeFactory.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName) as HTMLElement;
   if (source.shadowRoot) {
-    appendChildNodes(nodeFactory, element.attachShadow({ mode: "open" }), source.shadowRoot.childNodes, dict);
+    appendChildNodes(nodeFactory, element.attachShadow({ mode: "open" }), source.shadowRoot.childNodes, dict, onChange);
   }
   dict[source.uid] = [element, source];
   return element as any;
 }
 
-function appendChildNodes(nodeFactory: Document, container: HTMLElement|DocumentFragment, syntheticChildNodes: SyntheticDOMNode[], dict: HTMLElementDictionaryType) {
+function appendChildNodes(nodeFactory: Document, container: HTMLElement|DocumentFragment, syntheticChildNodes: SyntheticDOMNode[], dict: HTMLElementDictionaryType, onChange: () => any) {
   for (let i = 0, n = syntheticChildNodes.length; i < n; i++) {
-    const childNode = renderHTMLNode(nodeFactory, syntheticChildNodes[i], dict);
+    const childNode = renderHTMLNode(nodeFactory, syntheticChildNodes[i], dict, onChange);
 
     // ignored
     if (childNode == null) continue;
