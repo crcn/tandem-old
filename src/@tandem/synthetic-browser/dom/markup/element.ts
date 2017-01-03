@@ -243,7 +243,14 @@ export class DOMElementEditor<T extends SyntheticDOMElement|HTMLElement> extends
       if (newValue == null) {
         this.target.removeAttribute(name);
       } else {
-        this.target.setAttribute(name, newValue);
+
+        // An error will be thrown by the DOM if the name is invalid. Need to ignore
+        // native exceptions so that other parts of the app do not break.
+        try {
+          this.target.setAttribute(name, newValue);
+        } catch(e) {
+          console.warn(e);
+        }
       }
 
       if (oldName) {

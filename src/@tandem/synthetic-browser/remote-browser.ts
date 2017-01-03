@@ -131,7 +131,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   }
 }
 
-
 @loggable()
 export class RemoteBrowserService extends BaseApplicationService {
 
@@ -151,7 +150,6 @@ export class RemoteBrowserService extends BaseApplicationService {
       const writer = output.getWriter();
       const id = JSON.stringify(event.options);
 
-
       // TODO - memoize opened browser if same session is up
       const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.kernel, new NoopRenderer()));
       let currentDocument: SyntheticDocument;
@@ -161,6 +159,7 @@ export class RemoteBrowserService extends BaseApplicationService {
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (mutations: Mutation<any>[]) => {
 
         logger.info("Sending diffs: <<", mutations.map(event => event.type).join(", "));
+
         browser.sandbox.pause();
         await writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, mutations)) });
 

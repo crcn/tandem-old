@@ -13,6 +13,7 @@ Focus:
 IMMEDIATE
 ----------------------------------
 
+
 Start working on UX around getting started with Tandem and projects.
 
 Messaging:
@@ -22,16 +23,14 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
+- word press
+
 - [ ] context menu
   - [ ] right click - open link in new window
   - [ ] right click inspect element
 
 - [ ] Getting started video popup
-
-- [ ] ability to select unsaved files
 - [ ] bark for unsaved changes
-- [ ] Logo
-- [ ] make it open source
 
 - test
   - https://github.com/facebookincubator/create-react-app

@@ -145,17 +145,17 @@ export class SyntheticDOMRenderer extends BaseRenderer {
         } else if(isDOMValueNodeMutation(mutation)) {
           new DOMValueNodeEditor(<Text>nativeNode).applyMutations([mutation]);
         }
-      }
 
-      if (isDOMDocumentMutation(mutation)) {
-        if (mutation.type === SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT) {
-          this.removeCSSRules((<RemoveChildMutation<any, any>>mutation).child);      
-        } else if (mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
-          const moveMutation = <MoveChildMutation<any, any>>mutation;
+        if (isDOMDocumentMutation(mutation)) {
+          if (mutation.type === SyntheticDocumentMutationTypes.REMOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+            this.removeCSSRules((<RemoveChildMutation<any, any>>mutation).child);      
+          } else if (mutation.type === SyntheticDocumentMutationTypes.MOVE_DOCUMENT_STYLE_SHEET_EDIT) {
+            const moveMutation = <MoveChildMutation<any, any>>mutation;
 
-        } else if (mutation.type === SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT) {
-          const insertMutation = <InsertChildMutation<any, any>>mutation;
-          this._registerStyleSheet(insertMutation.child, insertMutation.index);
+          } else if (mutation.type === SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT) {
+            const insertMutation = <InsertChildMutation<any, any>>mutation;
+            this._registerStyleSheet(insertMutation.child, insertMutation.index);
+          }
         }
       }
     }
@@ -337,7 +337,15 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
         if (syntheticAttribute.name === "class") {
           element.className = syntheticAttribute.value;
         } else {
-          element.setAttribute(syntheticAttribute.name, syntheticAttribute.value);
+
+          // some cases where the attribute name may be invalid - especially as the app is updating
+          // as the user is typing. E.g: <i </body> will be parsed, but will thrown an error since "<" will be
+          // defined as an attribute of <i>
+          try {
+            element.setAttribute(syntheticAttribute.name, syntheticAttribute.value);
+          } catch(e) {
+            console.warn(e.stack);
+          }
         }
       }
       return appendChildNodes(nodeFactory, element, syntheticElement.childNodes, dict);

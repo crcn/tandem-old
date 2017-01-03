@@ -600,7 +600,7 @@ export class SyntheticDocument extends SyntheticDOMContainer {
           if (!value.$ownerNode) {
             value.$ownerNode = this;
           }
-          this.notify(new RemoveChildMutation(SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT, this, value, index).toEvent());
+          this.notify(new InsertChildMutation(SyntheticDocumentMutationTypes.ADD_DOCUMENT_STYLE_SHEET_EDIT, this, value, index).toEvent());
         },
         visitRemove: ({ value, index }) => {
           value.$ownerNode = undefined;
