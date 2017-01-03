@@ -7,6 +7,7 @@ import { Status } from "@tandem/common/status";
 import { SyntheticRemoteBrowserElement } from "@tandem/tdproject-extension/synthetic";
 import { Workspace, SelectRequest, StatusComponent } from "@tandem/editor/browser";
 import { SyntheticHTMLElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
+import { TextInputComponent } from "@tandem/uikit";
 import { BoundingRect, BaseApplicationComponent, PropertyMutation, startDrag, hasURIProtocol } from "@tandem/common";
 
 export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteBrowser: SyntheticRemoteBrowserElement, workspace: Workspace, backgroundColor: string }, {
@@ -163,7 +164,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
           </div>
         </div>
         <div className="searchbar">
-          <input ref="src" type="text" defaultValue={remoteBrowser.src} placeholder="enter address" onKeyDown={this.onSrcKeyDown} onClick={this.selectSearch} onMouseDown={(event) => event.stopPropagation()} />
+          <TextInputComponent ref="src" value={remoteBrowser.src} placeholder="enter address" onKeyDown={this.onSrcKeyDown} onClick={this.selectSearch} onMouseDown={(event) => event.stopPropagation()} />
           <StatusComponent status={window["$synthetic"] ? new Status(Status.LOADING) : remoteBrowser.status} />
         </div>
       </div>

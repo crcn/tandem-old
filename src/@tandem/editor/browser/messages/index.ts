@@ -106,8 +106,6 @@ export class OpenContextMenuRequest extends CoreEvent {
   }
 }
 
-
-
 export class OpenLinkInNewWindowRequest extends CoreEvent {
   static readonly OPEN_LINK_IN_NEW_WINDOW = "openLinkInNewWindow";
   constructor() {
@@ -115,6 +113,12 @@ export class OpenLinkInNewWindowRequest extends CoreEvent {
   }
 }
 
+export class OpenLinkInThisWindowRequest extends CoreEvent {
+  static readonly OPEN_LINK_IN_THIS_WINDOW = "openLinkInThisWindow";
+  constructor() {
+    super(OpenLinkInThisWindowRequest.OPEN_LINK_IN_THIS_WINDOW);
+  }
+}
 
 export function createWorkspaceRedirectRequest(projectId: string) {
   return new RedirectRequest("/workspace/" + projectId, {});

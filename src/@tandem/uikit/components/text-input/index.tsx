@@ -1,6 +1,17 @@
 import React =  require("react");
 
-export class TextInputComponent extends React.Component<{ onChange?(newValue): any, value?: any, placeholder?: string, rows?: number }, { currentValue }> {
+export interface ITextInputComponentProps { 
+  onChange?(newValue): any; 
+  value?: any; 
+  placeholder?: string;
+  rows?: number;
+  onKeyDown?(event: React.KeyboardEvent<any>): any;
+  onKeyUp?(event: React.KeyboardEvent<any>): any;
+  onClick?(event: React.MouseEvent<any>): any;
+  onMouseDown?(event: React.MouseEvent<any>): any;
+}
+
+export class TextInputComponent extends React.Component<ITextInputComponentProps, { currentValue }> {
   state = {
     currentValue: undefined
   }
@@ -19,7 +30,11 @@ export class TextInputComponent extends React.Component<{ onChange?(newValue): a
       onBlur: this.onBlur,
       onChange: this.onChange,
       placeholder: this.props.placeholder,
-      rows: this.props.rows
+      rows: this.props.rows,
+      onMouseDown: this.props.onMouseDown,
+      onClick: this.props.onClick,
+      onKeyDown: this.props.onKeyDown,
+      onKeyUp: this.props.onKeyUp
     } as any;
 
     if (this.state.currentValue == null && this.props.value != null) {

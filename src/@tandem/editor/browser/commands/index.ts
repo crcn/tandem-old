@@ -10,3 +10,4 @@ export * from "./toggle-tools-layer";
 export * from "./toggle-setting";
 export * from "./load-anon-session";
 export * from "./open-link-in-new-window";
+export * from "./open-link-in-this-window";

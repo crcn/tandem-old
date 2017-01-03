@@ -27,6 +27,7 @@ import { 
   ToggleStageToolsRequest,
   AddSyntheticObjectRequest, 
   OpenLinkInNewWindowRequest,
+  OpenLinkInThisWindowRequest,
 } from "./messages";
 
 import {
@@ -78,6 +79,7 @@ import {
   RemoveSelectionCommand, 
   toggleStageToolsCommand,
   OpenLinkInNewWindowCommand,
+  OpenLinkInThisWindowCommand,
 } from "./commands";
 
 import {
@@ -90,6 +92,11 @@ import {
   GlobalKeyBindingService,
 } from "./services";
 
+const testContextMenuLink = (parent: WebMenuItem) => {
+  if (parent.name !== ContextMenuTypes.SYNTHETIC_ELEMENT) return false;
+  const workspace = parent.kernel.query(EditorStoreProvider.ID).value.workspace as Workspace;
+  return workspace.selection.length && /^(a)$/i.test(workspace.selection[0].tagName);
+};
 
 
 export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileResolverClass?: { new(): IFileResolver }) {
@@ -119,6 +126,7 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadRouterCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
     new CommandFactoryProvider(OpenLinkInNewWindowRequest.OPEN_LINK_IN_NEW_WINDOW, OpenLinkInNewWindowCommand),
+    new CommandFactoryProvider(OpenLinkInThisWindowRequest.OPEN_LINK_IN_THIS_WINDOW, OpenLinkInThisWindowCommand),
 
     // services
     new ApplicationServiceProvider("dnd", DNDService),
@@ -143,11 +151,8 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     // menu items
     new WebMenuItemFactoryProvider(ContextMenuTypes.SYNTHETIC_ELEMENT, "contextRoot", createWebMenuItemClass("rootsie")),
     
-    new WebMenuItemFactoryProvider("openElementInNewWindow", (parent: WebMenuItem) => {
-      if (parent.name !== ContextMenuTypes.SYNTHETIC_ELEMENT) return false;
-      const workspace = parent.kernel.query(EditorStoreProvider.ID).value.workspace as Workspace;
-      return workspace.selection.length && /^(a)$/i.test(workspace.selection[0].tagName);
-    }, createKeyCommandMenuItemClass("Open Link in New Window", undefined, OpenLinkInNewWindowRequest))
+    new WebMenuItemFactoryProvider("openElementInNewWindow", testContextMenuLink, createKeyCommandMenuItemClass("Open Link in New Window", undefined, OpenLinkInNewWindowRequest)),
+    new WebMenuItemFactoryProvider("openElementInThisWindow", testContextMenuLink, createKeyCommandMenuItemClass("Open Link in This Window", undefined, OpenLinkInThisWindowRequest))
   ];
 }
 
