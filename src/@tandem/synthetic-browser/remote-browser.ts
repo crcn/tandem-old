@@ -184,9 +184,9 @@ export class RemoteBrowserService extends BaseApplicationService {
 
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.STATUS_CHANGE, status)) });
       };
-
+      
       const watcher = watchProperty(browser, "status", onStatusChange);
-      onStatusChange(browser.sandbox.status);
+      onStatusChange(browser.status);
 
       browser.open(event.options);
 

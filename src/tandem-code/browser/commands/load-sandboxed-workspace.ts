@@ -26,6 +26,7 @@ export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserComman
     })), new SyntheticDOMRenderer());
 
 
+
     await browser.open({ uri: "file:///index.html" });
 
     const workspace = this.editorStore.workspace = new Workspace(null);

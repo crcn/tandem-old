@@ -2,6 +2,7 @@ import { Sandbox } from "@tandem/sandbox";
 import { bindable } from "@tandem/common/decorators";
 import { btoa, atob } from "abab"
 import { HTML_XMLNS } from "./constants";
+import memoize = require("memoizee");
 import { URL, FakeURL } from "./url";
 import nwmatcher = require("nwmatcher");
 import { Blob, FakeBlob } from "./blob";
@@ -236,6 +237,7 @@ export class SyntheticWindow extends Observable {
     style.$updatePropertyIndices();
     return style;
   }
+  
 
   addEventListener(type: string, listener: DOMEventListenerFunction) {
     this._eventListeners.add(type, listener);
@@ -267,8 +269,20 @@ export class SyntheticWindow extends Observable {
     return this.browser.parent && this.browser.parent.window && this.browser.parent.window;
   }
 
+  /**
+   * overridable method that forces the window to wait for any async 
+   * processing by the loaded application. Useful to ensure that the app is properly
+   * hotswapped.
+   */
+
+  public syntheticDOMReadyCallback = () => {
+
+  }
+
   // ugly method invoked by browser to fire load events
-  public $doneLoading() {
+  public whenLoaded = memoize(async () => {
+
+    await this.syntheticDOMReadyCallback();
 
     // always comes before load event since DOM_CONTENT_LOADED assumes that assets
     // such as stylesheets have not yet been loaded in
@@ -277,5 +291,5 @@ export class SyntheticWindow extends Observable {
     // sandbox has already mapped & loaded external dependencies, so go ahead and fire
     // the DOM events
     this.notify(new SyntheticDOMEvent(DOMEventTypes.LOAD));
-  }
+  }, { length: 0, async: true })
 }

@@ -85,7 +85,7 @@ export interface IMainEntryExports {
 export abstract class BaseSyntheticBrowser extends Observable implements ISyntheticBrowser, IInjectable {
 
   @bindable()
-  public status: Status = new Status(null);
+  public status: Status = new Status(Status.IDLE);
 
   protected readonly logger: Logger;
 
@@ -254,7 +254,8 @@ export class SyntheticBrowser extends BaseSyntheticBrowser {
       throw e;
     }
 
-    window.$doneLoading();
+    // there still maybe async ops that need to be loaded in
+    await window.whenLoaded();
     
     // quick fix to get synthetic window to fire load events
     this.status = new Status(Status.COMPLETED);

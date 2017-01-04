@@ -15,6 +15,9 @@ export class TextInputComponent extends React.Component<ITextInputComponentProps
   state = {
     currentValue: undefined
   }
+  focus() {
+    (this.refs as any).input.focus();
+  }
   onChange = (event: React.KeyboardEvent<any>) => {
     if (this.props.onChange) this.props.onChange(this.state.currentValue = event.currentTarget.value);
   }
@@ -45,6 +48,6 @@ export class TextInputComponent extends React.Component<ITextInputComponentProps
       return <textarea {...props} />
     }
 
-    return <input type="text" {...props} />;
+    return <input ref="input" type="text" {...props} />;
   }
 }

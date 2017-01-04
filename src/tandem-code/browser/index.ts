@@ -164,7 +164,7 @@ const kernel = new Kernel(
   // createTextEditorProviders(),
 
   // for DEV
-  new CommandFactoryProvider(ApplicationReadyMessage.READY, LoadSandboxedWorkspaceCommand),
+  new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadSandboxedWorkspaceCommand, -Infinity),
   createHTMLEditorWorkerProviders(),
   createTDProjectEditorWorkerProviders(),
   createSyntheticHTMLProviders(),
@@ -185,4 +185,19 @@ const kernel = new Kernel(
 
 const app = window["app"] = new ServiceApplication(kernel);
 
-app.initialize();
+const _readyCallbacks = [];
+
+// for synthetic DOM
+window["syntheticDOMReadyCallback"] = () => {
+  return new Promise((resolve) => {
+    _readyCallbacks.push(resolve);
+  });
+}
+
+app.initialize().then(() => {
+
+  // give time for rAF
+  setTimeout(() => {
+    _readyCallbacks.forEach(resolve => resolve());
+  }, 300);
+});

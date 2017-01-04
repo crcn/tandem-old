@@ -25,6 +25,7 @@ NEW TARGET: Dev tools - qa testing. Develop
 
 
 - [ ] BUGS
+  - [ ] need to reconnect if network drops 
   - [ ] height seems to be inherited
     child class must contain parent class - e.g: .header .title, where .header contains the height prop 
   - [ ] elements with padding & margin jump around when dragging assuming that the element pos is absolute
@@ -34,9 +35,10 @@ NEW TARGET: Dev tools - qa testing. Develop
 - [ ] Collaborating
 
 - [ ] DEV tools
-  - [ ] javascript console
+  - [ ] *javascript console
   - [ ] HTML inspector
-  - [ ] CSS inspector
+
+- right click - edit text
 
 - [ ] bark for unsaved changes
 
@@ -150,7 +152,6 @@ CORE
 
   - [ ] top bar
     - [ ] paint bucket tool
-    - [ ] share workspace
     - [ ] artboard tool
     - [ ] share session tool
     
@@ -165,11 +166,6 @@ CORE
 
   - [ ] unsaved files
     - [ ] show diff of unsaved drafts
-
-- [ ] Tech Debt
-  - [ ] move core html-extension files to synthetic-browser
-  - [ ] tests are coupled to webpack config
-  
 
 - [ ] a/b testing framework
 

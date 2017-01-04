@@ -1,5 +1,5 @@
-import { CallbackDispatcher } from "@tandem/mesh";
 import { FileCache } from "./file-cache";
+import { CallbackDispatcher } from "@tandem/mesh";
 import { IURIWatcher, URIProtocolProvider } from "@tandem/sandbox";
 import { IBrokerBus, diffArray, inject, loggable, Logger, Kernel, KernelProvider } from "@tandem/common";
 

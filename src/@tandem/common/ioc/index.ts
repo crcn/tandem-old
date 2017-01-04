@@ -78,8 +78,8 @@ let i = 0;
 export class CommandFactoryProvider extends ClassFactoryProvider {
   static readonly NS = "commands";
   readonly messageFilter: Function;
-  constructor(messageFilter: string|Function, readonly clazz: { new(...rest: any[]): ICommand }) {
-    super([CommandFactoryProvider.NS, i++].join("/"), clazz);
+  constructor(messageFilter: string|Function, readonly clazz: { new(...rest: any[]): ICommand }, priority?: number) {
+    super([CommandFactoryProvider.NS, i++].join("/"), clazz, priority);
     if (typeof messageFilter === "string") {
       this.messageFilter = (message: IMessage) => message.type === messageFilter;
     } else {
@@ -98,7 +98,7 @@ export class CommandFactoryProvider extends ClassFactoryProvider {
   }
 
   clone() {
-    return new CommandFactoryProvider(this.messageFilter, this.clazz);
+    return new CommandFactoryProvider(this.messageFilter, this.clazz, this.priority);
   }
 }
 

@@ -37,7 +37,7 @@ const plugins = [
     excludeWarnings: true,
     alwaysNotify: true
   }),
-  extractCSS,
+  // extractCSS,
 ];
 
 if (SOURCE_MAPS) {
@@ -119,16 +119,23 @@ loaders.push(
   },
   {
     test: /\.scss$/,
-    loader: extractCSS.extract([
+    // loader: extractCSS.extract([
+    //   'css-loader' + SM_QUERY_PARAM,
+    //   'sass-loader' + SM_QUERY_PARAM
+    // ]),
+    loader: [
+      'style-loader',
       'css-loader' + SM_QUERY_PARAM,
       'sass-loader' + SM_QUERY_PARAM
-    ])
+    ].join("!")
   },
   {
     test: /\.css$/,
-    loader: extractCSS.extract([
-      'css-loader'
-    ])
+    // loader: extractCSS.extract([
+    //   'css-loader'
+    // ])
+
+    loader: 'style-loader!css-loader'
   }
 );
 

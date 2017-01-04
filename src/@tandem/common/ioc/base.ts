@@ -89,7 +89,7 @@ export class FactoryProvider extends Provider<IFactory> implements IFactory {
 
 
 export class ClassFactoryProvider extends Provider<{ new(...rest): any}> implements IFactory {
-  constructor(id: string, readonly clazz: { new(...rest): any }) {
+  constructor(id: string, readonly clazz: { new(...rest): any }, readonly priority?: number) {
     super(id, clazz);
     assert(clazz, `Class must be defined for ${id}.`);
   }

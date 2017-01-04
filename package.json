@@ -171,6 +171,7 @@
     "figlet": "^1.2.0",
     "fs-extra": "^0.30.0",
     "get-port": "^2.1.0",
+    "localtunnel": "^1.8.2",
     "marked": "^0.3.6",
     "md5": "^2.2.1",
     "memoizee": "^0.4.1",
