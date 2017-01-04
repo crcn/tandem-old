@@ -194,7 +194,9 @@ export class RemoteBrowserStageToolComponent extends React.Component<{ workspace
     const { document, transform } = workspace;
 
     const tandem    = document.querySelector("tandem") as SyntheticHTMLElement;
-    const remoteBrowsers = document.querySelectorAll("remote-browser") as SyntheticRemoteBrowserElement[];
+
+    // ensure that there are no nested remote-browser instances. This happens especially when designing Tandem in Tandem.
+    const remoteBrowsers = (document.querySelectorAll("remote-browser") as SyntheticRemoteBrowserElement[]).filter((element) => element.ownerDocument === document);
 
     if (!remoteBrowsers.length) return null;
     
