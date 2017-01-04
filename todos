@@ -23,6 +23,7 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
+- [ ] minimap
 
 - [ ] BUGS
   - [ ] need to reconnect if network drops 
