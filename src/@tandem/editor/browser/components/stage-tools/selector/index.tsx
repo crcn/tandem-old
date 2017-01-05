@@ -14,10 +14,7 @@ import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collec
 
 export class SelectorStageToolComponent extends BaseApplicationComponent<{ workspace: Workspace, app: any, zoom: number  }, any> {
 
-  state: any = {
-
-  }
-
+  state: any = { }
 
   onResizing = (event) => {
     this.setState({ resizing: true, mouseLeft: (event.pageX - this.props.workspace.transform.left) / this.props.zoom, mouseTop: (event.pageY - this.props.workspace.transform.top) / this.props.zoom });

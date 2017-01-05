@@ -104,7 +104,7 @@ export class HeaderComponentFactoryProvider extends ReactComponentFactoryProvide
 export class StageToolComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS = "components/tools";
   
-  constructor(readonly name: string, readonly toolType: string, readonly componentClass: React.ComponentClass<any>) {
+  constructor(readonly name: string, readonly toolType: string, readonly componentClass: any) {
     super(StageToolComponentFactoryProvider.getNamespace(name, toolType), componentClass);
   }
 

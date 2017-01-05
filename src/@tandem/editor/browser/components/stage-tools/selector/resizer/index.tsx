@@ -3,16 +3,15 @@ import { Workspace } from "@tandem/editor/browser/stores";
 import { startDrag } from "@tandem/common/utils/component";
 import PathComponent from "./path";
 import { OpenContextMenuRequest } from "@tandem/editor/browser/messages";
+import { IntersectingPointComponent } from "./intersecting-point";
 import { MetadataKeys, ContextMenuTypes } from "@tandem/editor/browser/constants";
 import { VisibleSyntheticElementCollection } from "@tandem/editor/browser/collections";
-import { IntersectingPointComponent } from "./intersecting-point";
 import { Guider, GuideLine, createBoundingRectPoints, BoundingRectPoint } from "../guider";
 import { BoundingRect, IPoint, Point, traverseTree, findTreeNode, BaseApplicationComponent } from "@tandem/common";
 import { SyntheticDOMElement, SyntheticDOMNode, VisibleSyntheticDOMElement, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 
 const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
-
 
 function resize(oldBounds: BoundingRect, delta: IPoint, anchor: IPoint, keepAspectRatio: boolean, keepCenter: boolean) {
 
@@ -120,6 +119,8 @@ class ResizerComponent extends BaseApplicationComponent<{
         // or the source is the same. The source will be the same in certain cases -
         // registered components for example.
         if (node === item || node.source === item.source) return;
+
+        if ((item as VisibleSyntheticDOMElement<any>).contains && (item as VisibleSyntheticDOMElement<any>).contains(node)) return;
       }
 
       const displayNode = node as any as VisibleSyntheticDOMElement<any>;

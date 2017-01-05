@@ -110,11 +110,6 @@ BUGS
   - [ ] pseudo elements (::before) fooing with override flags
   - [ ] css changes don't immediately get reflected in text editor
   - [ ] rebundle when file name changes. App locks up when file not found
-  - [ ] Kill remotely dispatched messages if there are no responses.
-
-ARCHITECTURE
-  - [ ] db oplog tailing
-  - [ ] artboard should define window size
 
 CLEANUP
   - [ ] do not use absolute paths for dependency graphs

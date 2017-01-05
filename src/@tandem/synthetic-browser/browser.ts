@@ -125,6 +125,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     return this._window;
   }
 
+
   protected setWindow(value: SyntheticWindow) {
     if (this._window) {
       this._window.document.unobserve(this._documentObserver);
@@ -159,8 +160,6 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 
   protected abstract async open2(options: ISyntheticBrowserOpenOptions);
 }
-
-
 
 export class SyntheticBrowser extends BaseSyntheticBrowser {
 

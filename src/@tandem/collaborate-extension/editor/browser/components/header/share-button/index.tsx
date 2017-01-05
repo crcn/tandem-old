@@ -1,4 +1,4 @@
-import "./share-button.scss";
+import "./index.scss";
 import * as React from "react";
 import { BaseApplicationComponent } from "@tandem/common";
 import { ShareWorkspaceRequest } from "@tandem/collaborate-extension/editor/common";

@@ -1,2 +1,3 @@
-export * from "./header/share-button";
+export * from "./header";
 export * from "./prompts";
+export * from "./stage-tools";
