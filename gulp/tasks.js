@@ -31,6 +31,7 @@ const { join, dirname, basename } = require('path');
 
 const {
   GREP,
+  HARD,
   argv,
   WATCH,
   SRC_DIR,
@@ -288,7 +289,7 @@ gulp.task('clean:javascript', function() {
 });
 
 gulp.task('clean:electron', function() {
-  fsa.removeSync(getElectronBundleDir());
+  if (HARD) fsa.removeSync(getElectronBundleDir());
 });
 
 

@@ -20,10 +20,13 @@ const PACKAGES           = PACKAGE_FILE_PATHS.map((path) => {
 });
 const PACKAGE_NAMES      = PACKAGES.map(({name}) => name).filter((name) => !!name);
 
+const HARD = process.env.HARD;
+
 // argvDIST_DIR
 const WATCH = argv.watch;
 
 module.exports = {
+  HARD,
   argv,
   WATCH,
   GREP,

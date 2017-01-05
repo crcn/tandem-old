@@ -1,5 +1,12 @@
-import { ISerializer } from "@tandem/common";
-import { IBus, RemoteBus, RemoteBusMessageTester, DuplexStream, IMessageTester, TransformStream } from "@tandem/mesh/core";
+import { ISerializer, IDisposable } from "@tandem/common";
+import { 
+  IBus, 
+  RemoteBus, 
+  DuplexStream, 
+  IMessageTester, 
+  TransformStream,
+  RemoteBusMessageTester, 
+} from "@tandem/mesh/core";
 
 export interface ISocketIOBusOptions {
   family: string;
@@ -10,8 +17,10 @@ export interface ISocketIOBusOptions {
 
 export class SocketIOBus<T> implements IBus<T>, IMessageTester<T> {
   private _target: RemoteBus<T>;
+  private _disposables: IDisposable[];
   constructor({ family, channel, connection, testMessage }: ISocketIOBusOptions, localBus: IBus<any>, serializer?: ISerializer<any, any>) {
     if (!channel) channel = "o";
+    this._disposables = [];
 
     this._target = new RemoteBus({
       family: family,
@@ -27,6 +36,10 @@ export class SocketIOBus<T> implements IBus<T>, IMessageTester<T> {
     }, localBus, serializer);
   }
 
+  addDisposable(disposable: IDisposable) {
+    this._disposables.push(disposable);
+  }
+
   testMessage(message: any) {
     return this._target.testMessage(message);
   }
@@ -36,6 +49,7 @@ export class SocketIOBus<T> implements IBus<T>, IMessageTester<T> {
   }
 
   dispose() {
+    for (const disposable of this._disposables) disposable.dispose();
     this._target.dispose();
   }
 }

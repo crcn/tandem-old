@@ -32,6 +32,7 @@ import {
 import { 
   IMessage,
   readOneChunk,
+  SocketIOBus,
   DSFindRequest,
   DSTailRequest,
   DSInsertRequest,
@@ -168,6 +169,14 @@ export class CreateNewProjectRequest extends CoreEvent {
 
   static async dispatch(owner: string, uri: string, bus: IStreamableDispatcher<any>): Promise<Project> {
     return (await readOneChunk(bus.dispatch(new CreateNewProjectRequest(owner, uri)))).value;
+  }
+}
+
+
+export class IOClientConnectedMessage extends CoreEvent {
+  static readonly IO_CLIENT_CONNECTED = "ioClientConnected";
+  constructor(readonly bus: SocketIOBus<any>) {
+    super(IOClientConnectedMessage.IO_CLIENT_CONNECTED);
   }
 }
 

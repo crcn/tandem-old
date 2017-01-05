@@ -338,7 +338,10 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   hasAttribute(name: string) {
-    return this.attributes[name] != null;
+
+    // better than checking property since prop check may
+    // be prototype of array
+    return !!this.attributes.find((attrib) => attrib.name === name);
   }
 
   accept(visitor: IMarkupNodeVisitor) {
@@ -378,7 +381,6 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   set id(value: string) {
-    
     this.setAttribute("id", value);
   }
 
@@ -387,6 +389,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
   }
 
   setAttribute(name: string, value: string) {
+
 
     // attributes that are not editable by the editor
     if (name === "data-td-readonly") {
@@ -402,7 +405,7 @@ export class SyntheticDOMElement extends SyntheticDOMContainer {
     }
 
     let oldValue;
-    const attribute = this.attributes[name];
+    const attribute = this.getAttributeNode(name);
     if (attribute) {
       attribute.value = value;
     } else {

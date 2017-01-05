@@ -13,7 +13,6 @@ Focus:
 IMMEDIATE
 ----------------------------------
 
-
 Start working on UX around getting started with Tandem and projects.
 
 Messaging:
@@ -98,7 +97,6 @@ BUGS
   - [ ] css class selectors are case insensitive
   - [ ] disable attributes that are dynamically created (React for instance)
   - [ ] fix absolute bounds for elements
-  - [ ] cannot change source of artboard
   - [ ] cannot rapidly change .tsx? documents
   - [ ] pseudo elements (::before) fooing with override flags
   - [ ] css changes don't immediately get reflected in text editor
@@ -118,7 +116,6 @@ CORE
     - [ ] edit text
     - [ ] inspect element (necessary to see rendered output)
   - [ ] send all mutations back to server, but don't save
-  - [ ] *wait for all XHR requests to be completed before sending diff - (flickering otherwise)
   - [ ] config for scanning application for components
   - [ ] support css imports
   - [ ] Style declaration should use CWD in urls when stringifying

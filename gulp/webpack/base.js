@@ -70,9 +70,7 @@ if (MINIFY) {
       }
     })
   )
-
 }
-
 
 const traceurLoader = 'traceur?runtime';
 
