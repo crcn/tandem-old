@@ -50,11 +50,7 @@ if (SOURCE_MAPS) {
   )
 }
 
-console.log(normalize(join(__dirname, "..", "..")));
-
 const SM_QUERY_PARAM = SOURCE_MAPS ? `?sourceMap&sourceRoot=${encodeURIComponent(normalize(__dirname + "/../../"))}` : "";
-
-console.log(SM_QUERY_PARAM);
 
 const tsLoaders = [];
 const pegLoaders = [];

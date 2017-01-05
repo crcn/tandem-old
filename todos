@@ -43,7 +43,6 @@ NEW TARGET: Dev tools - qa testing. Develop
 
 - [ ] bark for unsaved changes
 
-
 - [ ] Editor
   - [ ] History
   - [ ] unsaved files pane
@@ -53,12 +52,8 @@ NEW TARGET: Dev tools - qa testing. Develop
   - [ ] auto updater
   - [ ] account for infinite loops in code
 
-- [ ] top bar
 - [ ] rotate artboard button
 - [ ] scrolling artboards (alt key?) 
-  - [ ] need usage report prompt
-  - [ ] extensions
-
 
 ----------------------------------
 NOTES
@@ -73,8 +68,6 @@ LAUNCHING
 WEBSITE
   - [ ] cross-browser testing demo (show same browser window with different icons
 
-CORE
-  - [ ] wire up auto updater
 
 ----------------------------------
 STABILITY
