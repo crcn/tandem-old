@@ -11,6 +11,7 @@ export interface IStudioEditorServerConfig extends IEditorMasterConfig {
     directory: string,
   },
   browser: {
+    directory: string,
     assetUrl: string,
     indexUrl: string
   }

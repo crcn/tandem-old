@@ -4,6 +4,7 @@ import { BaseHTTPRouteHandler } from "./base";
 import { URIProtocolProvider } from "@tandem/sandbox";
 import express = require("express");
 import bodyParser = require("body-parser");
+import mime = require("mime");
 
 export const createHTTPRouteProviders = () => {
   return [
@@ -34,10 +35,12 @@ export const createHTTPRouteProviders = () => {
     new HTTPRouteProvider("get", "/proxy/:base64URI", class extends BaseHTTPRouteHandler {
       async handle(req: express.Request, res: express.Response, next) {
         const uri = new Buffer(req.params.base64URI, "base64").toString("utf8");
+        console.log(uri);
         const protocol = URIProtocolProvider.lookup(uri, this.kernel);
         const { type, content } = await protocol.read(uri);
-        res.contentType(type);
-        res.send(content);
+        res.contentType(type || mime.lookup(uri));
+        res.write(content);
+        res.end();
       }
     }),
 

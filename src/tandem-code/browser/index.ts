@@ -4,7 +4,8 @@ import path =  require("path");
 
 declare let __webpack_public_path__: any;
 
-__webpack_public_path__ = `${location.protocol}//${path.dirname(location.pathname)}/`;
+
+__webpack_public_path__ = `${location.protocol}//${location.host ? location.host + "/" : ""}${path.dirname(location.pathname)}/`;
 
 import Url =  require("url");
 import { EditorFamilyType } from "@tandem/editor/common";
@@ -74,6 +75,9 @@ import {
 } from "./commands";
 
 
+const hostInfo = Url.parse(window.location.toString(), true);
+
+
 const config: IEditorBrowserConfig = {
   family: EditorFamilyType.BROWSER,
   log: {
@@ -83,7 +87,7 @@ const config: IEditorBrowserConfig = {
   server: {
     protocol: "http:",
     hostname: "localhost",
-    port: Number(Url.parse(window.location.toString(), true).query.backendPort)
+    port: Number(hostInfo.query.backendPort || hostInfo.port)
   }
 };
 

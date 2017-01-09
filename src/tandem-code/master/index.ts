@@ -7,6 +7,7 @@ import PACKAGE =  require("tandem-code/package")
 import { MemoryDataStore } from "@tandem/mesh";
 import { TD_FILE_EXTENSIONS } from "@tandem/tdproject-extension/constants";
 import { createTDProjectCoreProviders } from "@tandem/tdproject-extension/core";
+import {createCollaborateMasterExtensionProviders } from "@tandem/collaborate-extension/editor/master";
 import { createCoreStudioWorkerProviders, SockService } from "../worker";
 import { createEditorMasterProviders, SpawnedWorkerMessage } from "@tandem/editor/master";
 import { ServiceApplication, ApplicationServiceProvider, DSService, DSProvider } from "@tandem/common";
@@ -98,6 +99,7 @@ export const initializeMaster = async () => {
       directory: ASSETS_DIR + "/help"
     },
     browser: {
+      directory: BROWSER_BASE_PATH,
       assetUrl: `file://${BROWSER_BASE_PATH}/path`,
       indexUrl: `file://${BROWSER_BASE_PATH}/index.html`
     },
@@ -120,6 +122,8 @@ export const initializeMaster = async () => {
     // services
     new ApplicationServiceProvider("browser", BrowserService),
     new ApplicationServiceProvider("sock", SockService),
+
+    createCollaborateMasterExtensionProviders(),
     
     // commands
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),

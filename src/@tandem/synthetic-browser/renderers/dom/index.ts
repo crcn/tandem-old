@@ -103,6 +103,12 @@ const calculateSyntheticBoundingRect = (style: SyntheticCSSStyle) => {
   return new BoundingRect(lp, tp, rp, bp);
 }
 
+export interface ISyntheticDOMRendererOptions {
+  nodeFactory?: Document;
+  getComputedStyle?: (node: Node) => CSSStyleDeclaration;
+  createProxyUrl?: (url: string) => string;
+}
+
 export class SyntheticDOMRenderer extends BaseRenderer {
 
   private _currentCSSText: string;
@@ -111,9 +117,11 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   private _elementDictionary: HTMLElementDictionaryType;
   private _cssRuleDictionary: CSSRuleDictionaryType;
   private _getComputedStyle: (node: Node) => CSSStyleDeclaration|SyntheticCSSStyle;
+  private _createProxyUrl: (url: string) => string;
 
-  constructor(nodeFactory?: Document, getComputedStyle?: (node: Node) => CSSStyleDeclaration) {
+  constructor({ nodeFactory, getComputedStyle, createProxyUrl }: ISyntheticDOMRendererOptions = {}) {
     super(nodeFactory);
+    this._createProxyUrl = createProxyUrl;
     this._getComputedStyle = getComputedStyle || (typeof window !== "undefined" ? window.getComputedStyle.bind(window) : () => { });
   }
 
@@ -134,7 +142,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       const [nativeNode, syntheticNode] = this.getElementDictItem(mutation.target);
 
       const insertChild = (syntheticNode) => {
-        return renderHTMLNode(this.nodeFactory, syntheticNode, this._elementDictionary, this.onElementChange);
+        return renderHTMLNode(this.nodeFactory, syntheticNode, this._elementDictionary, this.onElementChange, this._createProxyUrl);
       };
 
       if (nativeNode) {
@@ -181,7 +189,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
 
     for (const rule of syntheticStyleSheet.cssRules) {
       try {
-        staleStyleSheet.insertRule(rule.cssText, staleStyleSheet.cssRules.length);
+        staleStyleSheet.insertRule(this.proxyCSSUrls(rule.cssText), staleStyleSheet.cssRules.length);
       } catch(e) {
         // browser may throw errors if it cannot parse the rule -- this will
         // happen unsupported vendor prefixes.
@@ -189,6 +197,11 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     }
   }
 
+  private proxyCSSUrls(text: string) {
+    return this._createProxyUrl ? text.replace(/url\((.*?)\)/g, (match, url) => {
+      return `url("${this._createProxyUrl(url).replace(/["']/g, "")}")`;
+    }): text;
+  }
 
   private removeCSSRules(syntheticStyleSheet: SyntheticCSSStyleSheet) {
     const [nativeRule, syntheticRule] = this.getCSSDictItem(syntheticStyleSheet);
@@ -245,7 +258,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
       await Promise.all(document.styleSheets.map((styleSheet) => {
         return this._registerStyleSheet(styleSheet);
       }).concat((new Promise(resolve => {
-        this._documentElement = renderHTMLNode(this.nodeFactory, document, this._elementDictionary = {}, this.onElementChange);
+        this._documentElement = renderHTMLNode(this.nodeFactory, document, this._elementDictionary = {}, this.onElementChange, this._createProxyUrl);
         element.lastChild.appendChild(this._documentElement);
         resolve();
       }))));
@@ -316,7 +329,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
   }
 }
 
-function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, dict: HTMLElementDictionaryType, onChange: () => any): any {
+function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, dict: HTMLElementDictionaryType, onChange: () => any, createProxyUrl: (string) => string): any {
   switch(syntheticNode.nodeType) {
 
     case DOMNodeType.TEXT:
@@ -335,7 +348,7 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
       
       if(/^(style|link|script)$/.test(syntheticElement.nodeName)) return nodeFactory.createTextNode("");
       
-      const element = renderHTMLElement(nodeFactory, syntheticElement.nodeName, syntheticElement, dict, onChange);
+      const element = renderHTMLElement(nodeFactory, syntheticElement.nodeName, syntheticElement, dict, onChange, createProxyUrl);
       element.onload = onChange;
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
         const syntheticAttribute = syntheticElement.attributes[i];
@@ -347,34 +360,41 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
           // as the user is typing. E.g: <i </body> will be parsed, but will thrown an error since "<" will be
           // defined as an attribute of <i>
           try {
-            element.setAttribute(syntheticAttribute.name, syntheticAttribute.value);
+            let value = syntheticAttribute.value;
+
+            if (createProxyUrl && /src/.test(syntheticAttribute.name)) {
+              value = createProxyUrl(value);
+            }
+
+            element.setAttribute(syntheticAttribute.name, value);
           } catch(e) {
             console.warn(e.stack);
           }
         }
       }
-      return appendChildNodes(nodeFactory, element, syntheticElement.childNodes, dict, onChange);
+      return appendChildNodes(nodeFactory, element, syntheticElement.childNodes, dict, onChange, createProxyUrl);
     case DOMNodeType.DOCUMENT:
     case DOMNodeType.DOCUMENT_FRAGMENT:
       const syntheticContainer = <SyntheticDOMContainer>syntheticNode;
-      const containerElement = renderHTMLElement(nodeFactory, "span", syntheticContainer as SyntheticDOMElement, dict, onChange);
-      return appendChildNodes(nodeFactory, containerElement, syntheticContainer.childNodes, dict, onChange);
+      const containerElement = renderHTMLElement(nodeFactory, "span", syntheticContainer as SyntheticDOMElement, dict, onChange, createProxyUrl);
+      return appendChildNodes(nodeFactory, containerElement, syntheticContainer.childNodes, dict, onChange, createProxyUrl);
   }
 }
 
-function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMElement, dict: HTMLElementDictionaryType, onChange: () => any): HTMLElement {
+function renderHTMLElement(nodeFactory: Document, tagName: string, source: SyntheticDOMElement, dict: HTMLElementDictionaryType, onChange: () => any, createProxyUrl: (string) => string): HTMLElement {
   if (/^(html|body|head)$/.test(tagName)) tagName = "div";
   const element = nodeFactory.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName) as HTMLElement;
+  
   if (source.shadowRoot) {
-    appendChildNodes(nodeFactory, element.attachShadow({ mode: "open" }), source.shadowRoot.childNodes, dict, onChange);
+    appendChildNodes(nodeFactory, element.attachShadow({ mode: "open" }), source.shadowRoot.childNodes, dict, onChange, createProxyUrl);
   }
   dict[source.uid] = [element, source];
   return element as any;
 }
 
-function appendChildNodes(nodeFactory: Document, container: HTMLElement|DocumentFragment, syntheticChildNodes: SyntheticDOMNode[], dict: HTMLElementDictionaryType, onChange: () => any) {
+function appendChildNodes(nodeFactory: Document, container: HTMLElement|DocumentFragment, syntheticChildNodes: SyntheticDOMNode[], dict: HTMLElementDictionaryType, onChange: () => any, createProxyUrl: (string) => string) {
   for (let i = 0, n = syntheticChildNodes.length; i < n; i++) {
-    const childNode = renderHTMLNode(nodeFactory, syntheticChildNodes[i], dict, onChange);
+    const childNode = renderHTMLNode(nodeFactory, syntheticChildNodes[i], dict, onChange, createProxyUrl);
 
     // ignored
     if (childNode == null) continue;

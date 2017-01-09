@@ -14,7 +14,7 @@ import {
 import { SpawnWorkerRequest } from "./messages";
 import { IEditorMasterConfig } from "./config";
 import { createHTTPRouteProviders } from "./routes";
-import { HTTPRouteService } from "./services";
+import { HTTPRouteService, HTTProxyService } from "./services";
 import { EditorMasterStore } from "./stores";
 
 import { 

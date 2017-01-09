@@ -54,7 +54,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
       let shouldGraph  = false;
       let shouldImport = false;
-      
+
       
       // must be white listed here to presetn certain elements such as remote browser & anchor tags from loading resources. Even
       // better to have a provider for loadable elements, but that's a little overkill for now.
@@ -111,10 +111,8 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
         `>`
       ];
 
-
       const textMimeType = ElementTextContentMimeTypeProvider.lookup(expression, self._kernel);
       const textLoaderProvider = textMimeType && DependencyLoaderFactoryProvider.find(textMimeType, self._kernel);
-
 
       if (textLoaderProvider && elementExpression.childNodes.length) {
         const textLoader = textLoaderProvider.create(self.strategy);

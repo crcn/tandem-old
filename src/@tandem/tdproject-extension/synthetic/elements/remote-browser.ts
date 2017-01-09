@@ -91,7 +91,11 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
   async createBrowser() {
     if (this._browser) return;
 
-    const documentRenderer = new SyntheticDOMRenderer();
+    const documentRenderer = new SyntheticDOMRenderer({ createProxyUrl: (url) => {
+        return location.protocol !== "file:" ? location.protocol + "//" + location.host + "/proxy/" + new Buffer(url).toString("base64") : url;
+      }
+    });
+
     this._browser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.kernel, new SyntheticRemoteBrowserRenderer(this, documentRenderer), this.browser);
     bindProperty(this._browser, "status", this, "status").trigger();
     this._contentDocumentObserver = new CallbackDispatcher(this.onContentDocumentEvent.bind(this));

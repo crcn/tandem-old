@@ -50,24 +50,8 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
 
     server.use(cors());
     server.use(compression());
-
-    for (const entryName in this.config.entries) {
-      var entryPath = this.config.entries[entryName];
-
-      var scriptName = path.basename(entryPath);
-
-      const prefix = "/" + entryName;
-
-      // this should be part of the config
-      const entryDirectory = path.dirname(entryPath);
-      server.use(prefix, express.static(entryDirectory));
-
-      const staticFileNames = fs.readdirSync(entryDirectory);
-
-      server.use(prefix, (req, res) => {
-        res.send(this.getIndexHtmlContent(staticFileNames));
-      });
-    }
+    
+    server.use("/", express.static(this.config.browser.directory));
   }
 
   async _loadFileCacheRoutes() {
@@ -78,51 +62,6 @@ export class BrowserService extends CoreApplicationService<IStudioEditorServerCo
       res.type(type || mime.lookup(uri));
       res.end(content);
     });
-  }
-
-  // TODO - deprecate this
-
-  getIndexHtmlContent(staticFileNames) {
-    const host = `http://localhost:${this.config.server.port}`;
-
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset='utf-8' />
-          <style>
-            html, body {
-              width: 100%;
-              height: 100%;
-            }
-          </style>
-          <script type="text/javascript">
-            var config = {
-              server: {
-                hostname: window.location.hostname,
-                port: Number(window.location.port || 80),
-                cwd: "${process.cwd()}"
-              },
-              log: {
-                level: ${this.config.log && this.config.log.level}
-              }
-            };
-          </script>
-        </head>
-        <body>
-          <div id="app"></div>
-          ${
-            staticFileNames.sort((a, b) => /css$/.test(a) ? -1 : 1).map((basename) => {
-              if (/css$/.test(basename)) {
-                return `<link rel="stylesheet" type="text/css" href="${basename}">`;
-              } else if (/js$/.test(basename)) {
-                return `<script src="${basename}"></script>`;
-              }
-            }).filter((str) => !!str).join("\n")
-          }
-        </body>
-      </html>
-    `;
   }
 
   async _loadSocketServer() {
