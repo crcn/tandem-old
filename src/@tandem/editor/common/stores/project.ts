@@ -14,7 +14,7 @@ import {
 } from "@tandem/common";
 
 import { IEditorCommonConfig } from "../config";
-import { UpdateProjectRequest } from "../messages";
+import { UpdateProjectRequest, WatchProjectRequest } from "../messages";
 
 export const PROJECT_COLLECTION_NAME = "projects";
 
@@ -91,6 +91,10 @@ export class Project implements ISerializable<IProjectData> {
   async read() {
     const protocol = URIProtocolProvider.lookup(this.uri, this._kernel);
     return protocol.read(this.uri);
+  }
+
+  watch(onChange?: () => any) {
+    return WatchProjectRequest.dispatch(this._id, this._bus, onChange);
   }
 
   deserialize({ owner, createdAt, updatedAt, _id, uri }: IProjectData) {

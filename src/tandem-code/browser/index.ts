@@ -86,8 +86,8 @@ const config: IEditorBrowserConfig = {
   element: document.querySelector("#mount") as HTMLElement,
   server: {
     protocol: "http:",
-    hostname: "localhost",
-    port: Number(hostInfo.query.backendPort || hostInfo.port)
+    hostname: location.hostname || "localhost",
+    port: Number(hostInfo.query.backendPort || hostInfo.port || 80)
   }
 };
 

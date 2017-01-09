@@ -22,8 +22,6 @@ resolve UX. May want to optimize experience around writing code.
 
 NEW TARGET: Dev tools - qa testing. Develop
 
-- [ ] minimap
-
 - [ ] BUGS
   - [ ] need to reconnect if network drops 
   - [ ] height seems to be inherited
@@ -33,6 +31,13 @@ NEW TARGET: Dev tools - qa testing. Develop
   - [ ] canvas still misalaigned
 
 - [ ] Collaborating
+  - [ ] turn off share button for clients
+  - [ ] show text editor for clients
+  - [ ] setup ngrok tunnel (or similar -- tunnel.tandemcode.com maybe)
+  - [ ] show cursor
+  - [ ] turn off save button for clients
+  - [ ] introduction prompt
+  - [ ] key commands must work
 
 - [ ] DEV tools
   - [ ] *javascript console

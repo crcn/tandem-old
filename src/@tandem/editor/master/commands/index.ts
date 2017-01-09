@@ -5,3 +5,4 @@ export * from "./create-project-file";
 export * from "./open-project-channel";
 export * from "./spawn-worker";
 export * from "./update-project";
+export * from "./watch-project";

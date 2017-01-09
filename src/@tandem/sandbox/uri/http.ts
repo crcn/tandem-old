@@ -7,9 +7,6 @@ import request = require("request");
 
 export class HTTPURIProtocol extends URIProtocol {
 
-  // private _watchers: any = {};
-  // private _writes: any = {};
-
   private _responses: {
     [Identifier: string]: {
       etag: string,
@@ -22,7 +19,6 @@ export class HTTPURIProtocol extends URIProtocol {
 
     return new Promise<IURIProtocolReadResult>((resolve, reject) => {
       
-
       request({ 
         url: uri, 
         followAllRedirects: true, 
@@ -72,32 +68,32 @@ export class HTTPURIProtocol extends URIProtocol {
     return true;
   }
   watch2(uri: string, onChange: () => any) {
-    // this._watchers[uri] = onChange;
     let _disposed: boolean;
 
 
     // TODO - actually check for content change from server
     const check = () => {
       if (_disposed) return;
-      // const prevResponse = this._responses[uri] || { modifiedAt: undefined, etag: undefined };
+      const prevResponse = this._responses[uri] || { modifiedAt: undefined, etag: undefined };
 
-      // this.logger.debug(`check for change: ${uri}`);
-      // request.get({ 
-      //   uri: uri,
-      //   headers: {
-      //     "if-modified-since": prevResponse.modifiedAt,
-      //     "if-none-match": prevResponse.etag,
-      //   }
-      // }).on("response", (response) => {
-      //   response.destroy();
+      this.logger.debug(`check for change: ${uri}`);
+      request.get({ 
+        uri: uri,
+        headers: {
+          "x-wait-for-change": 1,
+          "if-modified-since": prevResponse.modifiedAt,
+          "if-none-match": prevResponse.etag,
+        }
+      }).on("response", (response) => {
+        checkTimeout();
+        response.destroy();
 
-      //   if (/^20/.test(String(response.statusCode))) {
-      //     this._storeResponseInfo(uri, response);
-      //     onChange();
-      //   }
-      // });
+        if (/^20/.test(String(response.statusCode))) {
+          this._storeResponseInfo(uri, response);
+          onChange();
+        }
+      });
 
-      // checkTimeout();
     };
     
     const checkTimeout = setTimeout.bind(this, check, 1000 * 3);

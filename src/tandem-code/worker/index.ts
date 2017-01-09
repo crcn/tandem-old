@@ -107,7 +107,7 @@ export const initializeWorker = async () => {
     new CommandFactoryProvider(ApplyFileEditRequest.APPLY_EDITS, ApplyFileEditCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, SyncFileCacheCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, StartMasterPingCommand),
-    new CommandFactoryProvider(OpenProjectEnvironmentChannelRequest.OPEN_PROJECT_ENVIRONMENT_CHANNEL, OpenProjectEnvironmentChannelCommand),
+    // new CommandFactoryProvider(OpenProjectEnvironmentChannelRequest.OPEN_PROJECT_ENVIRONMENT_CHANNEL, OpenProjectEnvironmentChannelCommand),
   );
 
   const app = new ServiceApplication(kernel);

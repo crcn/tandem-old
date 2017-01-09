@@ -10,12 +10,25 @@ export const createHTTPRouteProviders = () => {
   return [
     
     new HTTPRouteProvider("get", "/projects/:id.tandem", class extends BaseHTTPRouteHandler {
-      async handle(req, res: express.Response, next) {
+      async handle(req: express.Request, res: express.Response, next) {
         const project = await GetProjectRequest.dispatch(req.params.id, this.bus);
         if (!project) return next();
-        const { type, content } = await project.read();
-        res.contentType(type);
-        res.send(content);
+
+        const sendContent = async () => {
+          const { type, content } = await project.read();
+          res.contentType(type);
+          res.send(content);
+        }
+
+        if (req.headers["x-wait-for-change"]) {
+          const disposable = project.watch(() => {
+            console.log("CHANGE");
+            disposable.dispose();
+            sendContent();
+          });
+        } else {
+          return sendContent();
+        }
       }
     }),
 
@@ -35,7 +48,6 @@ export const createHTTPRouteProviders = () => {
     new HTTPRouteProvider("get", "/proxy/:base64URI", class extends BaseHTTPRouteHandler {
       async handle(req: express.Request, res: express.Response, next) {
         const uri = new Buffer(req.params.base64URI, "base64").toString("utf8");
-        console.log(uri);
         const protocol = URIProtocolProvider.lookup(uri, this.kernel);
         const { type, content } = await protocol.read(uri);
         res.contentType(type || mime.lookup(uri));

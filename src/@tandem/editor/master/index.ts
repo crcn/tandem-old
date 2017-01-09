@@ -4,6 +4,7 @@ import express = require("express");
 import { 
   GetProjectCommand,
   SpawnWorkerCommand,
+  WatchProjectCommand,
   UpdateProjectCommand,
   CreateNewProjectCommand, 
   CreateProjectFileCommand,
@@ -11,11 +12,11 @@ import {
   OpenProjectEnvironmentChannelCommand,
 } from "./commands";
 
+import { HTTPRouteService } from "./services";
+import { EditorMasterStore } from "./stores";
 import { SpawnWorkerRequest } from "./messages";
 import { IEditorMasterConfig } from "./config";
 import { createHTTPRouteProviders } from "./routes";
-import { HTTPRouteService, HTTProxyService } from "./services";
-import { EditorMasterStore } from "./stores";
 
 import { 
   IProvider, 
@@ -29,6 +30,7 @@ import { EditorMasterStoreProvider, HTTPRouteProvider } from "./providers";
 import { 
   GetProjectRequest,
   UpdateProjectRequest,
+  WatchProjectRequest,
   CreateNewProjectRequest, 
   ResolveWorkspaceURIRequest,
   createCommonEditorProviders, 
@@ -45,6 +47,7 @@ export const createEditorMasterProviders = (config: IEditorMasterConfig) => {
     createCommonEditorProviders(config),
     new ExpressServerProvider(server, server.listen(config.server.port)),
     new CommandFactoryProvider(UpdateProjectRequest.UPDATE_PROJECT, UpdateProjectCommand),
+    new CommandFactoryProvider(WatchProjectRequest.WATCH_PROJECT, WatchProjectCommand),
     new CommandFactoryProvider(ResolveWorkspaceURIRequest.RESOLVE_WORKSPACE_URI, ResolveProjectFileURICommand),
     new CommandFactoryProvider(CreateTemporaryWorkspaceRequest.CREATE_TEMPORARY_WORKSPACE, CreateProjectFileCommand),
     new CommandFactoryProvider(GetProjectRequest.GET_PROJECT, GetProjectCommand),

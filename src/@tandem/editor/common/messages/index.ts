@@ -34,6 +34,7 @@ import { 
   readOneChunk,
   SocketIOBus,
   DSFindRequest,
+  WritableStream,
   DSTailRequest,
   DSInsertRequest,
   DSRemoveRequest,
@@ -202,6 +203,31 @@ export class GetProjectRequest extends CoreEvent {
 
   static async dispatch(projectId: string, bus: IStreamableDispatcher<any>): Promise<Project> {
     return (await readOneChunk(bus.dispatch(new GetProjectRequest(projectId)))).value;
+  }
+}
+
+
+// opens the given workspace in this session
+@setMessageTarget(EditorFamilyType.MASTER)
+@serializable("WatchProjectRequest")
+export class WatchProjectRequest extends CoreEvent {
+  static readonly WATCH_PROJECT = "watchProject";
+  constructor(readonly projectId: string) {
+    super(WatchProjectRequest.WATCH_PROJECT);
+  }
+
+  static dispatch(projectId: string, bus: IStreamableDispatcher<any>, onChange?: () => any): { dispose(): any } {
+    const { readable, writable } = (bus.dispatch(new WatchProjectRequest(projectId)));
+
+    readable.pipeTo(new WritableStream({
+      write: () => onChange()
+    }));
+
+    return {
+      dispose() {
+        writable.getWriter().close();
+      }
+    }
   }
 }
 
