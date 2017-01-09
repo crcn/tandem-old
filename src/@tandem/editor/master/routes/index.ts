@@ -22,7 +22,6 @@ export const createHTTPRouteProviders = () => {
 
         if (req.headers["x-wait-for-change"]) {
           const disposable = project.watch(() => {
-            console.log("CHANGE");
             disposable.dispose();
             sendContent();
           });
