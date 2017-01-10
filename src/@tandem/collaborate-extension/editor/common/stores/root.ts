@@ -3,10 +3,14 @@ import {
   bubble, 
   bindable, 
   Observable, 
-  ObservableCollection 
+  ObservableCollection,
+  Status
 } from "@tandem/common"
 
 export class CollaborateRootStore extends Observable {
+  
+  @bindable(true)
+  public sharingStatus: Status = new Status(Status.IDLE);
 
   @bindable(true)
   @bubble()

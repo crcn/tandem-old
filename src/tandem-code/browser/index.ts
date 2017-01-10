@@ -79,6 +79,7 @@ const hostInfo = Url.parse(window.location.toString(), true);
 
 
 const config: IEditorBrowserConfig = {
+  isPeer: location.protocol === "http:",
   family: EditorFamilyType.BROWSER,
   log: {
     level: LogLevel.ALL

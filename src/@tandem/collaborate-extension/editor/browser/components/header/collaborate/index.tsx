@@ -1,13 +1,22 @@
 import "./index.scss";
 import * as React from "react";
-import { BaseApplicationComponent, inject } from "@tandem/common";
+import { BaseApplicationComponent, inject, ApplicationConfigurationProvider, Status } from "@tandem/common";
 import ColorHash = require("color-hash");
-import { ShareWorkspaceRequest, RootCollaboratorStoreProvider, CollaborateRootStore } from "@tandem/collaborate-extension/editor/common";
+import cx = require("classnames");
+import { 
+  ShareWorkspaceRequest, 
+  RootCollaboratorStoreProvider, 
+  CollaborateRootStore 
+} from "@tandem/collaborate-extension/editor/common";
+import { IEditorBrowserConfig } from "@tandem/editor/browser/config";
 
 export class CollaborateHeaderComponent extends BaseApplicationComponent<any, any> {
 
   @inject(RootCollaboratorStoreProvider.ID)
   private _root: CollaborateRootStore;
+
+  @inject(ApplicationConfigurationProvider.ID)
+  private _config: IEditorBrowserConfig;
 
   share = (event?: React.MouseEvent<any>) => {
     if (event) {
@@ -27,6 +36,7 @@ export class CollaborateHeaderComponent extends BaseApplicationComponent<any, an
   render() {
 
     const ca = new ColorHash();
+    const disabled = this._root.sharingStatus.type === Status.LOADING;
     return <div className="collaborate-header">
       <ul className="peers">
         {
@@ -35,9 +45,9 @@ export class CollaborateHeaderComponent extends BaseApplicationComponent<any, an
           })
         }
       </ul>
-      <a href="#" className="share-button" onClick={this.share}>
-        Share
-      </a>
+      { this._config.isPeer ? null : <a href="#" className={cx({ "share-button": true, disabled: disabled})} onClick={disabled ? undefined : this.share}>
+        Share 
+      </a> }
     </div>
   }
 }
