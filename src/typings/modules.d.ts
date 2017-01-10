@@ -99,6 +99,27 @@ declare module "sass.js" {
   export = sass;
 }
 
+declare module "color-hash" {
+
+  interface IColorHashOptions {
+    lightness?: number;
+    saturation?: number;
+  }
+
+  class ColorHash {
+    constructor(options?: IColorHashOptions);
+    hsl(string): [number, number, number];
+    rgb(string): [number, number, number];
+    hex(string): string;
+  }
+
+  namespace ColorHash {
+
+  }
+
+  export = ColorHash;
+}
+
 declare module "rasterizehtml" {
   namespace rasterizeHTML {
     export function drawDocument(document: HTMLDocument, canvas: HTMLCanvasElement): Promise<any>;

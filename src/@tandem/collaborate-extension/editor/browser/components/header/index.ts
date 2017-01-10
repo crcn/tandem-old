@@ -1,1 +1,1 @@
-export * from "./share-button";
+export * from "./collaborate";

@@ -43,7 +43,7 @@ $sides: left, right, top, bottom;
 }
 
 .hide {
-  display: none;
+  display: none !important;
 }
 
 .dim {

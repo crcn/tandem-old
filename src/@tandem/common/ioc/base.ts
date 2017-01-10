@@ -270,7 +270,7 @@ export class Kernel implements ICloneable {
           properties[property] = value;
         }
 
-        if (!process.env.TESTING && (value == null || value.length === 0)) {
+        if (process.env.DEBUG && (value == null || value.length === 0)) {
           console.warn(`Cannot inject ${ns} into ${target.name || target.constructor.name}.${property} property.`);
         }
       }

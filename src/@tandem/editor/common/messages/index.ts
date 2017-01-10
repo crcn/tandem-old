@@ -180,6 +180,13 @@ export class IOClientConnectedMessage extends CoreEvent {
     super(IOClientConnectedMessage.IO_CLIENT_CONNECTED);
   }
 }
+@addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.BROWSER, EditorFamilyType.WORKER)
+export class IOClientDisconnectedMessage extends CoreEvent {
+  static readonly IO_CLIENT_DISCONNECTED = "ioClientDisonnected";
+  constructor() {
+    super(IOClientDisconnectedMessage.IO_CLIENT_DISCONNECTED);
+  }
+}
 
 // opens the given workspace in this session
 @addMessageVisitor(EditorFamilyType.MASTER)

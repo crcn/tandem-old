@@ -1,13 +1,15 @@
-import { ShareWorkspaceRequest } from "../common";
-import { ShareWorkspaceCommand } from "./commands";
-import { CommandFactoryProvider } from "@tandem/common";
-import { ShareButtonComponent, CursorsStageToolComponent } from "./components";
+import { CollaborateHeaderComponent, CursorsStageToolComponent } from "./components";
+import { ShareWorkspaceCommand, TrackMousePositionCommand } from "./commands";
+import { CommandFactoryProvider, InitializeApplicationRequest } from "@tandem/common";
+import { ShareWorkspaceRequest, createCommonCollaboratorProviders } from "../common";
 import { HeaderComponentFactoryProvider, StageToolComponentFactoryProvider } from "@tandem/editor/browser";
 
 export const createCollaborateExtensionBrowserProviders = () => {
   return [
-    new HeaderComponentFactoryProvider("shareButton", ShareButtonComponent),
+    createCommonCollaboratorProviders(),
+    new HeaderComponentFactoryProvider("shareButton", CollaborateHeaderComponent),
     new StageToolComponentFactoryProvider("cursors", null, CursorsStageToolComponent),
-    new CommandFactoryProvider(ShareWorkspaceRequest.SHARE_WORKSPACE, ShareWorkspaceCommand)
+    new CommandFactoryProvider(ShareWorkspaceRequest.SHARE_WORKSPACE, ShareWorkspaceCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, TrackMousePositionCommand)
   ]
 }

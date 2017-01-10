@@ -2,11 +2,11 @@ import * as React from "react";
 import { AlertMessage } from "@tandem/editor/browser/messages";
 import { ShowPromptRequest } from "@tandem/editor/browser/messages";
 import { ShareWorkspacePromptComponent } from "../components";
-import { BaseCollaborateExtensionCommand } from "./base";
+import { BaseCollaborateExtensionBrowserCommand } from "./base";
 import { StartWorkspaceTunnelRequest } from "../../common";
 
 
-export class ShareWorkspaceCommand extends BaseCollaborateExtensionCommand {
+export class ShareWorkspaceCommand extends BaseCollaborateExtensionBrowserCommand {
   async execute() {
     // TODO - open tunnel
     const result = await StartWorkspaceTunnelRequest.dispatch(this.bus);

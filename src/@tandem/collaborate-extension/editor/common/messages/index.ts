@@ -1,5 +1,6 @@
-import { Message, IStreamableDispatcher, readOneChunk, setMessageTarget } from "@tandem/mesh";
+import { IPoint, serializable } from "@tandem/common";
 import { EditorFamilyType } from "@tandem/editor/common";
+import { Message, IStreamableDispatcher, readOneChunk, setMessageTarget, addMessageVisitor } from "@tandem/mesh";
 
 
 export class ShareWorkspaceRequest extends Message {
@@ -25,5 +26,14 @@ export class StartWorkspaceTunnelRequest extends Message {
 
   static async dispatch(bus: IStreamableDispatcher<any>): Promise<{ url: string }> {
     return (await readOneChunk(bus.dispatch(new StartWorkspaceTunnelRequest()))).value;
+  }
+}
+
+@addMessageVisitor(EditorFamilyType.MASTER, EditorFamilyType.BROWSER)
+@serializable("SetMousePositionRequest")
+export class SetMousePositionRequest extends Message {
+  static readonly SET_MOUSE_POSITION = "setMousePosition";
+  constructor(readonly position: IPoint) {
+    super(SetMousePositionRequest.SET_MOUSE_POSITION);
   }
 }

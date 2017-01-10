@@ -11,7 +11,5 @@ export const filterFamilyMessage = (message: any, fromFamily: string, toFamily: 
   // 3. If the target family is equal to the destination family, then return true.
   // 4. If the message is only visiting the target family (meaning that there's another remote bus through the visitor), then return true.
   const passes = !!((targetFamily || visitorFamilies.length) && targetFamily !== fromFamily && (targetFamily === toFamily || visitorFamilies.indexOf(toFamily) !== -1));
-
-  // console.log(message.type, fromFamily, toFamily, targetFamily, visitorFamilies, passes);
   return passes;
 }

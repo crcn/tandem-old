@@ -1,6 +1,6 @@
 import { Kernel } from "@tandem/common/ioc";
 
-export type SerializedContentType<T> = [string, T];
+export type SerializedContentType<T> = any[];
 
 export interface ISerializer<T, U> {
   serialize(value: T): U;
@@ -72,7 +72,7 @@ const _serializers   = {
       serialize(value: any[]) {
 
         // cast value as an array if it's not (might be a sub class)
-        return ([].concat(value)).map(serialize)
+        return ([].concat(value)).map(serialize);
       },
       deserialize(value: any[], kernel) {
         return value.map(item => deserialize(item, kernel));
@@ -183,7 +183,16 @@ export function isSerializable(value: Object) {
 
 export function serialize(value: any): SerializedContentType<any> {
   const type = getSerializeType(value) || LITERAL_TYPE;
-  return [ type, (<ISerializer<any, any>>_serializers[type].serializer).serialize(value)]
+  const data = [type, (<ISerializer<any, any>>_serializers[type].serializer).serialize(value)];
+  
+  if (typeof value === "object" && value) {
+    const metadataKeys = Reflect.getMetadataKeys(value);
+    for (let i = 0, n = metadataKeys.length; i < n; i++) {
+      data.push(metadataKeys[i], Reflect.getMetadata(metadataKeys[i], value));
+    }
+  }
+  
+  return data;
 }
 
 export function deserialize(content: SerializedContentType<any>, kernel: Kernel): any {
@@ -193,5 +202,12 @@ export function deserialize(content: SerializedContentType<any>, kernel: Kernel)
     throw new Error(`Trying to deserialize non serialized object:` + content);
   }
 
-  return info.serializer.deserialize(content[1], kernel, info.ctor);
+  const result = info.serializer.deserialize(content[1], kernel, info.ctor);
+
+  const metadata = content.length > 2 ? content.slice(2) : [];
+  for (let i = 0, n = metadata.length; i < n; i += 2) {
+    Reflect.defineMetadata(metadata[i], metadata[i + 1], result);
+  }
+
+  return result;
 }

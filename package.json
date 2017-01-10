@@ -158,6 +158,7 @@
     "babel-preset-es2015": "^6.16.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.22.0",
+    "color-hash": "^1.0.3",
     "compression": "^1.6.2",
     "cors": "^2.7.1",
     "detect-font": "^0.1.3",
