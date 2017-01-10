@@ -1,5 +1,6 @@
 import * as React from "react";
 import { AlertMessage } from "@tandem/editor/browser/messages";
+import { GetTunnelUrlRequest } from "@tandem/editor/common";
 import { ShowPromptRequest } from "@tandem/editor/browser/messages";
 import { ShareWorkspacePromptComponent } from "../components";
 import { BaseCollaborateExtensionBrowserCommand } from "./base";

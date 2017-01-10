@@ -325,3 +325,13 @@ export class SelectSourceRequest extends CoreEvent {
   }
 }
 
+export class GetTunnelUrlRequest extends CoreEvent {
+  static readonly GET_TUNNEL_URL = "getTunnelUrl";
+  constructor() {
+    super(GetTunnelUrlRequest.GET_TUNNEL_URL);
+  }
+  static async dispatch(bus: IStreamableDispatcher<any>): Promise<string> {
+    return (await readOneChunk(bus.dispatch(new GetTunnelUrlRequest()))).value;
+  }
+}
+

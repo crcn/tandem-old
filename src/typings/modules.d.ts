@@ -120,6 +120,17 @@ declare module "color-hash" {
   export = ColorHash;
 }
 
+declare module "ngrok" {
+  interface IConnectOptions {
+    proto: "tcp"|"http";
+    addr: number;
+    authtoken?: string;
+    subdomain?: string;
+    auth?: string;
+  }
+  export function connect(options: IConnectOptions, callback: (err, url) => any);
+}
+
 declare module "rasterizehtml" {
   namespace rasterizeHTML {
     export function drawDocument(document: HTMLDocument, canvas: HTMLCanvasElement): Promise<any>;

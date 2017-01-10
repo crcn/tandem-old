@@ -12,7 +12,7 @@ import { createCoreStudioWorkerProviders, SockService } from "../worker";
 import { createEditorMasterProviders, SpawnedWorkerMessage } from "@tandem/editor/master";
 import { ServiceApplication, ApplicationServiceProvider, DSService, DSProvider } from "@tandem/common";
 import { createSyntheticBrowserWorkerProviders, SyntheticDOMElementClassProvider } from "@tandem/synthetic-browser";
-import { EditorFamilyType, createCommonEditorProviders, IEditorCommonConfig, SaveAllRequest } from "@tandem/editor/common";
+import { EditorFamilyType, createCommonEditorProviders, IEditorCommonConfig, SaveAllRequest, GetTunnelUrlRequest } from "@tandem/editor/common";
 
 import { IStudioEditorServerConfig } from "./config";
 import { 
@@ -22,6 +22,7 @@ import {
   InitSettingsCommand,
   OpenTextFileCommand,
   StartProjectCommand,
+  GetTunnelUrlCommand,
   GetHelpOptionsCommand,
   OpenHelpOptionCommand,
   SelectDirectoryCommand,
@@ -127,6 +128,7 @@ export const initializeMaster = async () => {
     
     // commands
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
+    new CommandFactoryProvider(GetTunnelUrlRequest.GET_TUNNEL_URL, GetTunnelUrlCommand),
     new CommandFactoryProvider(SaveAllRequest.SAVE_ALL, SaveAllFilesCommand),
     new CommandFactoryProvider(InstallCommandLineToolsRequest.INSTALL_COMMAND_LINE_TOOLS, InstallShellCommandsCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, InitSettingsDirectoryCommand),

@@ -11,4 +11,7 @@ export interface IUserSettings {
 export class TandemStudioMasterStore extends Observable {
   @bindable(true)
   public userSettings: IUserSettings;
+
+  @bindable(true)
+  public tunnelUrl: string;
 }
