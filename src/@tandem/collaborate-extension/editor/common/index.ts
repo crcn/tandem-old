@@ -3,12 +3,13 @@ import { CommandFactoryProvider } from "@tandem/common";
 import { IOClientDisconnectedMessage } from "@tandem/editor/common";
 import { RootCollaboratorStoreProvider } from "./providers";
 import { SetMousePositionRequest, SetDisplayNameRequest } from "./messages";
-import { SetMousePositionCommand, RemoveCollaboratorCommand } from "./commands";
+import { SetMousePositionCommand, RemoveCollaboratorCommand, SyncSelectedCommand } from "./commands";
 
 export const createCommonCollaboratorProviders = () => {
   return [
     new RootCollaboratorStoreProvider(CollaborateRootStore),
     new CommandFactoryProvider(SetMousePositionRequest.SET_MOUSE_POSITION, SetMousePositionCommand),
+    new CommandFactoryProvider(IOClientDisconnectedMessage.IO_CLIENT_DISCONNECTED, RemoveCollaboratorCommand),
     new CommandFactoryProvider(IOClientDisconnectedMessage.IO_CLIENT_DISCONNECTED, RemoveCollaboratorCommand),
   ]
 }

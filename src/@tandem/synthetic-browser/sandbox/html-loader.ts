@@ -23,6 +23,7 @@ import {
 
 import {
   getHTMLASTNodeLocation,
+  HTML_VOID_ELEMENTS,
   ElementTextContentMimeTypeProvider,
 } from "@tandem/synthetic-browser";
 
@@ -139,7 +140,10 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
         buffer.push(...(await Promise.all(childNodes.map(child => map(child)))));
       }
 
-      buffer.push(`</${nodeName}>`);
+      if (HTML_VOID_ELEMENTS.indexOf(nodeName.toLowerCase()) === -1) {
+        buffer.push(`</${nodeName}>`);
+      }
+      
       return new sm.SourceNode(location.line, location.column, uri, buffer);
     }
 

@@ -20,9 +20,15 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-NEW TARGET: Dev tools - qa testing. Develop
+- [ ] UX
+  - [ ] loader for app (especially for ngrok tunnel)
+  - [ ] better feedback for code that cannot be edited
+    - [ ] ideally show a banner that says that an edit could not be made
 
 - [ ] BUGS
+  - [ ] http timerickson img link broken
+  - [ ] Cannot modify tandem css
+  - [ ] ngrok too many requests
   - [ ] need to reconnect if network drops 
   - [ ] height seems to be inherited
     child class must contain parent class - e.g: .header .title, where .header contains the height prop 
@@ -52,7 +58,6 @@ NEW TARGET: Dev tools - qa testing. Develop
   - [ ] auto updater
   - [ ] account for infinite loops in code
 
-- [ ] rotate artboard button
 - [ ] scrolling artboards (alt key?) 
 
 ----------------------------------
