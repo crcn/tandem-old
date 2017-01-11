@@ -158,8 +158,8 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
 
   protected computeCapabilities(style: SyntheticCSSStyle): VisibleDOMNodeCapabilities {
     return new VisibleDOMNodeCapabilities(
-      /fixed|absolute/.test(style.position),
-      /fixed|absolute/.test(style.position)
+      /fixed|absolute|relative/.test(style.position),
+      /fixed|absolute|relative/.test(style.position)
     );
   }
 
