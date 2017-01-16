@@ -1,6 +1,7 @@
 import { SyntheticDocument } from "../document";
 import { SyntheticCSSStyle } from "../css";
 import { DOMEventListenerFunction } from "../events";
+import { localizeFixedPosition } from "./utils";
 import { BoundingRect, serializable, IPoint, bindable, ArrayCollection } from "@tandem/common";
 
 import {
@@ -168,12 +169,8 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   }
 
   public setAbsolutePosition({ left, top }: IPoint) {
-    // const oldBounds = this.getAbsoluteBounds();
-
-    Object.assign(this.style, {
-      left: left,
-      top: top
-    });
+    const localizedPoint = localizeFixedPosition({ left, top }, this);
+    Object.assign(this.style, localizedPoint);
   }
 
   public setAbsoluteBounds(newBounds: BoundingRect) {

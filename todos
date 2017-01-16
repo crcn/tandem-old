@@ -13,12 +13,13 @@ Focus:
 IMMEDIATE
 ----------------------------------
 
-Start working on UX around getting started with Tandem and projects.
-
 Messaging:
 
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
+
+- [ ] resizer
+  - [ ] arrow keys for moving elements on stage
 
 - [ ] UX
   - [ ] loader for app (especially for ngrok tunnel)
@@ -45,7 +46,8 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] *javascript console
   - [ ] HTML inspector
 
-- right click - edit text
+- right click 
+  - go to definition
 
 - [ ] bark for unsaved changes
 

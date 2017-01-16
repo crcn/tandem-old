@@ -317,7 +317,6 @@ export class SyntheticDOMRenderer extends BaseRenderer {
           rects[uid] = rect;
         }
 
-
         // just attach whatever's returned by the DOM -- don't wrap this in a synthetic, or else
         // there'll be massive performance penalties.
         styles[uid] = nativeStyle;
