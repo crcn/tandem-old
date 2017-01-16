@@ -18,6 +18,10 @@ export class VisibleDOMNodeCapabilities {
     return new VisibleDOMNodeCapabilities(false, false);
   }
 
+  equalTo(capabilities: VisibleDOMNodeCapabilities) {
+    return capabilities.movable === this.movable && capabilities.resizable === this.resizable;
+  }
+
   static merge(...capabilities: VisibleDOMNodeCapabilities[]) {
     return capabilities.reduce((a, b) => (
       new VisibleDOMNodeCapabilities(
@@ -68,9 +72,8 @@ export abstract class VisibleSyntheticDOMElement<T extends { uid: string }> exte
 
   private computeVisibility() {
 
-
-    const newStyle = this.getComputedStyle();
-    const newBounds = this.getBoundingClientRect();
+    const newStyle        = this.getComputedStyle();
+    const newBounds       = this.getBoundingClientRect();
 
     if (!newStyle || !newBounds.visible) {
       this._computedStyle = undefined;
@@ -78,17 +81,19 @@ export abstract class VisibleSyntheticDOMElement<T extends { uid: string }> exte
       return this._computedVisibility = false;
     }
 
+    const newCapabilities = this.computeCapabilities(newStyle);
+
     if (this._computedVisibility) {
-      if (this._currentBounds.equalTo(newBounds) && this._computedStyle.uid === newStyle.uid) {
+      if (this._computedStyle.uid === newStyle.uid  && this._currentBounds.equalTo(newBounds) && this._capabilities.equalTo(newCapabilities)) {
         return true;
       }
     }
 
     this._computedStyle  = newStyle;
     this._currentBounds  = newBounds;
+    this._capabilities   = newCapabilities;
 
     this._absoluteBounds = this.computeAbsoluteBounds(this._computedStyle, this._currentBounds);
-    this._capabilities   = this.computeCapabilities(this._computedStyle);
 
     return this._computedVisibility = true;
   }

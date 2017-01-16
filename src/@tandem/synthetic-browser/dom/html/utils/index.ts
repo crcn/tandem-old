@@ -11,7 +11,7 @@ import { SyntheticHTMLElement } from "../element";
 export const localizeFixedPosition = (point: IPoint, element: SyntheticHTMLElement) => {
 
   // get the initial position (0, 0) of the element -- this is according to the position style - absolute, relative, or fixed
-  const initialPosition = getInitialPosition(element);
+  const initialPosition = getInitialFixedPosition(element);
 
   // next, chop off the initial position from the fixed point passed in to ensure that the returned
   // value is localized according to the element's position style property.
@@ -37,7 +37,7 @@ export const convertComputedStylePositionToPixels = (element: SyntheticHTMLEleme
   }
 }
 
-const getInitialPosition = (element: SyntheticHTMLElement): IPoint => {
+const getInitialFixedPosition = (element: SyntheticHTMLElement): IPoint => {
 
   const parentElement = element.parentElement as SyntheticHTMLElement;
   const parentRect   = parentElement.getBoundingClientRect();
@@ -49,19 +49,10 @@ const getInitialPosition = (element: SyntheticHTMLElement): IPoint => {
   if (positionType === "absolute") {
     return { left: parentRect.left, top: parentRect.top };
   } else if (positionType === "relative") {
-
     const targetStylePosition = convertComputedStylePositionToPixels(element);
-    const marginLeft = convertMeasurementToPixels(targetStyle.marginLeft, element);
-    const marginTop  = convertMeasurementToPixels(targetStyle.marginTop, element);
-    const paddingLeft = convertMeasurementToPixels(parentStyle.paddingLeft, parentElement);
-    const paddingTop = convertMeasurementToPixels(parentStyle.paddingTop, parentElement);
-
-    console.log(parentRect.left, targetRect.left, targetStylePosition.left, targetRect.left - (targetStylePosition.left || 0) - marginLeft);
     return { 
       left: targetRect.left - (targetStylePosition.left || 0),
       top: targetRect.top  - (targetStylePosition.top || 0)
-      // left: parentRect.left + paddingLeft, // + (parentRect.left - targetRect.left) - (targetStylePosition.left || 0) - marginLeft, 
-      // top: parentRect.top + paddingTop, // + (parentRect.top - targetRect.top) - (targetStylePosition.top || 0) - marginTop, 
     };
   } else if (positionType === "fixed") {
     return { left: 0, top: 0 };
