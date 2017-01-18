@@ -266,7 +266,7 @@ export interface INewWorkspaceOptions {
 export class OpenNewWorkspaceRequest implements IMessage {
   static readonly OPEN_NEW_WORKSPACE: string = "openNewWorkspace";
   readonly type = OpenNewWorkspaceRequest.OPEN_NEW_WORKSPACE;
-  constructor(readonly project: Project, options: INewWorkspaceOptions = {}) { }
+  constructor(readonly projectOrFilePath: Project|string, options: INewWorkspaceOptions = {}) { }
 }
 
 @setMessageTarget(EditorFamilyType.MASTER)

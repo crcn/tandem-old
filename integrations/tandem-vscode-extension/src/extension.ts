@@ -187,6 +187,8 @@ class TextEditorClient extends Observable {
 
     private async setTextEditorContentFromFileCache(item: FileCacheItem) {
         const currentTextDocumentInfo = this.adapter.getCurrentDocumentInfo();
+
+        console.log(item.sourceUri, currentTextDocumentInfo.uri);
         if (item.sourceUri !== currentTextDocumentInfo.uri || (this._mtimes[item.sourceUri] || 0) >= item.contentUpdatedAt) {
             return;
         }
@@ -224,7 +226,6 @@ class TextEditorClient extends Observable {
 
             const filePath = removeFileProtocolId(uri);
 
-
             try {
                 await this.bus.dispatch(new UpdateFileCacheRequest(uri, fs.readFileSync(filePath, "utf8") === content ? undefined : content, mtime))
             } catch(e) {
@@ -247,17 +248,15 @@ class TextEditorClient extends Observable {
     }
 
     public async openNewWorkspace(filePath: string) {
+        if (!/\.html$/.test(filePath)) {
+            throw new Error("Only HTML files can be loaded in Tandem.");
+        }
 
-        return new Promise((resolve, reject) => {
+        if (this.remote.status.type !== Status.COMPLETED) {
+            throw new Error("Tandem must be running to open files.");
+        }
 
-            if (!/\.html$/.test(filePath)) {
-                return reject(new Error("Only HTML files can be loaded in Tandem."));
-            }
-
-            if (this.remote.status.type !== Status.COMPLETED) {
-                return reject(new Error("Tandem must be running to open files."));
-            }
-        });
+        await this.bus.dispatch(new OpenNewWorkspaceRequest(filePath));
     }
 }
 

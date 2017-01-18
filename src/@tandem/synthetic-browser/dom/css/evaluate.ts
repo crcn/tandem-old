@@ -93,7 +93,7 @@ export function evaluateCSS(expression: postcss.Root, map?: sm.RawSourceMap, mod
 
       // source-map will automatically prefix with file:// if root / is present, so replace file:// with the actual
       // source root. This MAY not be a bug, but I'm treating it as one for now.
-      uri = originalPosition.source && originalPosition.source.replace("file:///", sourceRoot + "/"); 
+      uri = originalPosition.source; // && originalPosition.source.replace("file:///", sourceRoot + "/"); 
       end = undefined;
     }
 

@@ -3,10 +3,20 @@ import { BrowserWindow } from "electron";
 import { MimeTypeProvider } from "@tandem/common";
 import { TDPROJECT_MIME_TYPE } from "@tandem/tdproject-extension/constants";
 import { BaseStudioMasterCommand } from "./base";
+import { Project, CreateNewProjectRequest } from "@tandem/editor/common"
 import { OpenNewWorkspaceRequest, CreateTemporaryWorkspaceRequest, ResolveWorkspaceURIRequest } from "tandem-code/common";
 
 export class OpenNewWorkspaceCommand extends  BaseStudioMasterCommand {
-  async execute({ project }: OpenNewWorkspaceRequest) {
+  async execute({ projectOrFilePath }: OpenNewWorkspaceRequest) {
+
+    let project: Project;
+
+    if (projectOrFilePath instanceof Project) {
+      project = projectOrFilePath;
+    } else {
+      project = await CreateNewProjectRequest.dispatch(null, projectOrFilePath, this.bus);
+    }
+    
     this.logger.info(`Opening workspace: ${project._id}`);
 
     try {
