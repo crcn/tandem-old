@@ -5,8 +5,9 @@ Notes about this doc:
 
 Focus:
 
-- more on visual tools - writing CSS tools 
+- more on the coding aspect
 - look for top Css tools - implement those
+- measurement tools
 
 
 ----------------------------------
@@ -18,8 +19,19 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] resizer
-  - [ ] arrow keys for moving elements on stage
+- [ ] code first
+  - [ ] ensure that it works with Aurelia 
+  - [ ] transmit user events
+  - [ ] atom extension
+  - [ ] open file from text editor
+  - [ ] ensure that tools work under all cases
+  - [ ] text editor extension must work completely
+  - [ ] atom extension
+  - [ ] hello wizard
+    - [ ] prompt to install IDE extension
+  - [ ] right click inspect element
+  - [ ] css inspector
+  - [ ] ensure that systemjs & jspm work
 
 - [ ] UX
   - [ ] loader for app (especially for ngrok tunnel)
@@ -27,6 +39,7 @@ resolve UX. May want to optimize experience around writing code.
     - [ ] ideally show a banner that says that an edit could not be made
 
 - [ ] BUGS
+  - [ ] apply FE edits to backend instance
   - [ ] http timerickson img link broken
   - [ ] Cannot modify tandem css
   - [ ] ngrok too many requests

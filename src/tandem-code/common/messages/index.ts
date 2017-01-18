@@ -20,13 +20,6 @@ addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WOR
 addMessageVisitor(EditorFamilyType.MASTER)(setMessageTarget(EditorFamilyType.WORKER)(OpenProjectEnvironmentChannelRequest));
 
 @setMessageTarget(EditorFamilyType.MASTER)
-export class PingRequest implements IMessage {
-  static readonly PING: string = "ping";
-  readonly type = PingRequest.PING;
-}
-
-
-@setMessageTarget(EditorFamilyType.MASTER)
 export class OpenGettingStartedProjectRequest implements IMessage {
   static readonly OPEN_GETTING_STARTED: string = "openGettingStarted";
   readonly type = OpenGettingStartedProjectRequest.OPEN_GETTING_STARTED;

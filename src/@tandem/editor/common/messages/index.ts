@@ -188,6 +188,13 @@ export class IOClientDisconnectedMessage extends CoreEvent {
   }
 }
 
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class PingRequest implements IMessage {
+  static readonly PING: string = "ping";
+  readonly type = PingRequest.PING;
+}
+
 // opens the given workspace in this session
 @addMessageVisitor(EditorFamilyType.MASTER)
 @setMessageTarget(EditorFamilyType.WORKER)

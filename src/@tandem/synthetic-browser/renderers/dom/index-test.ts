@@ -18,7 +18,7 @@ describe(__filename + "#", () => {
 
     const fakeDocument = createDocument();
 
-    const renderer = new SyntheticDOMRenderer(fakeDocument as any);
+    const renderer = new SyntheticDOMRenderer({ nodeFactory: fakeDocument as any });
     fakeDocument.body.appendChild(renderer.element as any);
     renderer.start();
     renderer.document = sourceDocument;

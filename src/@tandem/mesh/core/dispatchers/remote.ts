@@ -225,7 +225,17 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
   }
 
   private onMessage(data: any[]) {
-    const message = RemoteBusMessage.deserialize(data, this._serializer);
+    let message: RemoteBusMessage;
+
+    // some cases where the message is not deserializable - not always an issue, but
+    // may break the remote bus.
+    try {
+      message = RemoteBusMessage.deserialize(data, this._serializer);
+    } catch(e) {
+      console.error(e.stack);
+      return;
+    }
+
     // TODO - check if origin is coming from self. Need to update tests for this
     if (message.type === RemoteBusMessage.DISPATCH) {
       this.onDispatch(message);

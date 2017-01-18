@@ -1,6 +1,6 @@
 
 // TODOS:
-// - load file cache when changing 
+// - load file cache when changing
 // - connected notification
 // - disconnected notification
 
@@ -8,6 +8,7 @@
 // The module "vscode" contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import "reflect-metadata";
+
 
 import { exec, spawn, ChildProcess } from "child_process";
 import net =  require("net");
@@ -18,25 +19,29 @@ import vscode = require("vscode");
 import through =  require("through2");
 import getPort =  require("get-port");
 import createServer =  require("express");
-import { 
+import { TandemSockClient } from "tandem-client";
+
+import {
     WritableStream,
-    CallbackDispatcher, 
-    NoopDispatcher, 
-    filterFamilyMessage, 
-    setMessageTarget, 
-    DSUpdateRequest, 
+    CallbackDispatcher,
+    NoopDispatcher,
+    filterFamilyMessage,
+    setMessageTarget,
+    DSUpdateRequest,
     DSTailRequest,
     DSTailedOperation,
-    DSFindRequest, 
-    DSInsertRequest, 
+    DSFindRequest,
+    DSInsertRequest,
     DSRemoveRequest,
 } from "@tandem/mesh";
 
-import { 
-    SelectSourceRequest, 
-    OpenFileRequest, 
-    OpenNewWorkspaceRequest, 
-    SetCurrentFileRequest, EditorFamilyType } from "@tandem/editor/common";
+import {
+    OpenFileRequest,
+    EditorFamilyType,
+    SelectSourceRequest,
+    SetCurrentFileRequest,
+    OpenNewWorkspaceRequest,
+} from "@tandem/editor/common";
 
 import {
     FileCache,
@@ -54,11 +59,14 @@ import { 
     SockBus,
     BrokerBus,
     Kernel,
+    bindable,
     serialize,
+    ISourceLocation,
     IBrokerBus,
     KernelProvider,
     Observable,
     deserialize,
+    Status,
     PostDSMessage,
     PrivateBusProvider,
     MutationEvent,
@@ -80,187 +88,92 @@ function removeFileProtocolId(value: string) {
     return value.replace(/file:\/\//, "");
 }
 
-class TandemClient extends Observable {
+class TextEditorClientAdapterEvent extends CoreEvent {
+    static readonly TEXT_CHANGE = "textChange";
+}
 
-    readonly bus: IBrokerBus;
-    private _process: ChildProcess;
-    private _sockConnection: net.Socket;
-    private _connected: boolean;
-    private _sockFilePath: string;
-    readonly kernel: Kernel;
-
+ abstract class TextEditorClientAdapter extends Observable {
     constructor() {
         super();
-        this._connected = false;
-        const deps = this.kernel = new Kernel(
-            new PrivateBusProvider(new BrokerBus()),
-            new KernelProvider(),
-            createSandboxProviders(),
-        );
-
-        this.bus       = PrivateBusProvider.getInstance(deps);
-
     }
 
-    async disconnect() {
-        this._connected = false;
-        console.log("Disconnecting");
-        if (this._process) {
-            this._process.kill();
-        }
-        if (this._sockConnection) {
-            this._sockConnection.end();
+    abstract openFile(filename: string, selection: ISourceLocation);
+    abstract setTextEditorContent(content: string);
+    abstract onDidChangeTextDocument(callback: any);
+    abstract getCurrentDocumentInfo(): { uri: string, content: string, dirty: boolean };
+    abstract onActiveTextEditorChange(callback: any);
+}
+
+class TextEditorClient extends Observable {
+
+    private _fileCachePromise: Promise<any>;
+    private _settingTextContent: boolean;
+    private _mtimes: {
+        [Identifier: string]: number
+    };
+
+    constructor(readonly remote: TandemSockClient, readonly adapter: TextEditorClientAdapter) {
+        super();
+        this._mtimes = {};
+        remote.bus.register(new CallbackDispatcher(this.onRemoteMessage.bind(this)));
+        adapter.onDidChangeTextDocument(this.onDidChangeTextDocument.bind(this));
+        adapter.onActiveTextEditorChange(this.onActiveTextEditorChange.bind(this));
+
+        remote.statusPropertyWatcher.connect(this.onRemoteStatusChange.bind(this));
+    }
+
+    get kernel() {
+        return this.remote.kernel;
+    }
+
+    get bus() {
+        return this.remote.bus;
+    }
+
+    public dispose() {
+        this.remote.dispose();
+    }
+
+    private onRemoteStatusChange(status: Status) {
+        if (status.type === Status.COMPLETED) {
+            this.watchFileCache();
         }
     }
 
-    connect() {
-        if (this._connected) return;
-        this._connected = true;
-
-        const sockFilePath = TD_SOCK_FILE;
-
-        console.log("Connecting to the server");
-        const client = this._sockConnection = net.connect({ path: sockFilePath } as any);
-
-        const reconnect = () => {
-            console.log("Socket closed");
-            if (!this._connected) return;
-            this._connected = false;
-            this.bus.unregister(sockBus);
-            setTimeout(this.connect.bind(this), 1000 * 5);
+    private onRemoteMessage(message: any) {
+        if (message.type === SetCurrentFileRequest.SET_CURRENT_FILE) {
+            const { uri, selection } = <SetCurrentFileRequest><any>message;
+            let filePath = removeFileProtocolId(uri);
+            filePath = fs.existsSync(filePath) ? filePath : process.cwd() + filePath;
+            this.adapter.openFile(filePath, selection);
+            return true;
         }
-
-        client.once("close", reconnect).once("error", reconnect);
-
-         const sockBus = new SockBus({ family: EditorFamilyType.TEXT_EDITOR, connection: client, testMessage: filterFamilyMessage }, this.bus, {
-            serialize, deserialize
-        });
-
-        this.bus.register(sockBus);
-
-        this.watchFileCache();
     }
 
     private watchFileCache() {
         DSTailRequest.dispatch(FILE_CACHE_COLLECTION_NAME, { }, this.bus).readable.pipeTo(new WritableStream({
-            write: ({ data }: DSTailedOperation) => {
-                this.notify(new FileCacheChangeEvent(this.kernel.inject(new FileCacheItem(data, FILE_CACHE_COLLECTION_NAME))));
+            write: async ({ data }: DSTailedOperation) => {
+                const item = new FileCacheItem(data, FILE_CACHE_COLLECTION_NAME);
+                this.kernel.inject(item);
+                this.setTextEditorContentFromFileCache(item);
             }
         }));
     }
 
-}
-
-let _client: TandemClient;
-
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export async function activate(context: vscode.ExtensionContext) {
-    console.log("Activating Tandem client");
-
-    const client = _client = new TandemClient();
-
-    await client.connect();
-
-    client.observe(new CallbackDispatcher((action: CoreEvent) => {
-        if (action.type === FileCacheChangeEvent.FILE_CACHE_CHANGE) {
-            setEditorContentFromCache((<FileCacheChangeEvent>action).item);
-        }
-    }));
-
-    var _content;
-    var _documentUri:vscode.Uri;
-    var mtimes = {};
-    let _editing: boolean;
-
-    async function setEditorContent({ content, filePath, mtime }) {
-
-        const editor = vscode.window.activeTextEditor;
-        if (mtime < mtimes[filePath]) return;
-
-        if (editor.document.fileName !== filePath || editor.document.getText() === content) return;
-
-        let oldText = editor.document.getText();
-        var newContent = _content = content;
-
-        _editing = true;
-
-        await editor.edit(function(edit) {
-            edit.replace(
-                new vscode.Range(
-                    editor.document.positionAt(0),
-                    editor.document.positionAt(oldText.length)
-                ),
-                newContent
-            );
-        });
-
-        _editing = false;
+    private onDidChangeTextDocument() {
+        const { uri, content, dirty } = this.adapter.getCurrentDocumentInfo();
+        if (this._settingTextContent || !dirty) return;
+        this.updateFileCache(uri, content);
     }
 
-    let _savingFileCache: boolean;
-    let _shouldSaveFileCacheAgain: boolean;
+    private async onActiveTextEditorChange() {
 
-    const updateFileCacheItem = async (document:vscode.TextDocument) => {
-
-        const mtime = setCurrentMtime();
-
-        if (_savingFileCache) {
-            _shouldSaveFileCacheAgain = true;
-            return;
-        }
-
-        _savingFileCache = true;
-
-        _documentUri = document.uri;
-        const editorContent = document.getText();
-        const filePath = document.fileName;
-        let uri = "file://" + filePath;
-
-        await client.bus.dispatch(new UpdateFileCacheRequest(uri, fs.readFileSync(filePath, "utf8") === editorContent ? undefined : editorContent, mtime));
-        _savingFileCache = false;
-
-        if (_shouldSaveFileCacheAgain) {
-            _shouldSaveFileCacheAgain = false;
-            updateFileCacheItem(document);
-        }
-    };
-
-    async function onTextChange(e:vscode.TextDocumentChangeEvent) {
-        if (_editing) return;
-        const doc  = e.document;
-        if (doc.isDirty) {
-            updateFileCacheItem(doc);
-        }
-    }
-
-    const setEditorContentFromCache = async (item: FileCacheItem) => {
-        await setEditorContent({
-            filePath: removeFileProtocolId(item.sourceUri),
-            content: String((await item.read()).content),
-            mtime: item.contentUpdatedAt
-        });
-    }
-
-    const setCurrentMtime = () => {
-        return mtimes[vscode.window.activeTextEditor.document.fileName] = Date.now();
-    }
-
-    const openFileCacheTextDocument = async (item: FileCacheItem)  => {
-        const filePath = removeFileProtocolId(item.sourceUri);
-        if (vscode.window.activeTextEditor.document.fileName === filePath) return;
-        await vscode.workspace.openTextDocument(filePath);
-    }
-
-    async function onActiveTextEditorChange(e:vscode.TextEditor) {
-
-        const doc      = e.document;
-        const filePath = doc.fileName;
+        const { uri, content } = this.adapter.getCurrentDocumentInfo();
 
         // must be loaded in
         const data = await DSFindRequest.findOne(FILE_CACHE_COLLECTION_NAME, {
-            sourceUri: "file://" + filePath
-        }, client.bus);
+            sourceUri: uri
+        }, this.bus);
 
         if (!data) return;
 
@@ -268,74 +181,208 @@ export async function activate(context: vscode.ExtensionContext) {
         setTimeout(() => {
             // visual editor may have modified file content. Ensure that the editor
             // content is in sync with the latest stuff. TODO - need to match mtime here
-            setEditorContentFromCache(client.kernel.inject(new FileCacheItem(data, FILE_CACHE_COLLECTION_NAME)));
+            this.setTextEditorContentFromFileCache(this.kernel.inject(new FileCacheItem(data, FILE_CACHE_COLLECTION_NAME)));
         }, 100);
     }
 
-    client.bus.register({
-        dispatch({ uri, selection, type }: SetCurrentFileRequest) {
-            console.log(type);
-            if (type === SetCurrentFileRequest.SET_CURRENT_FILE) {
-                
-                const setSelection = () => {
-                    let { start, end } = selection || { start: undefined, end: undefined };
-                    if (!end) end = start;
-                    if (start) {
-                        const range = new vscode.Range(
-                            new vscode.Position(start.line - 1, start.column - 1), 
-                            new vscode.Position(end.line - 1, end.column)
-                        );
-                        
-                        vscode.window.activeTextEditor.selection = new vscode.Selection(
-                            range.start,
-                            range.end
-                        );
-                        
-                        vscode.window.activeTextEditor.revealRange(range);
-                    }
-                }
+    private async setTextEditorContentFromFileCache(item: FileCacheItem) {
+        const currentTextDocumentInfo = this.adapter.getCurrentDocumentInfo();
+        if (item.sourceUri !== currentTextDocumentInfo.uri || (this._mtimes[item.sourceUri] || 0) >= item.contentUpdatedAt) {
+            return;
+        }
 
-                let filePath = removeFileProtocolId(uri);
+        this._settingTextContent = true;
+        
+        try {
 
-                filePath = fs.existsSync(filePath) ? filePath : process.cwd() + filePath;
+            const content = String((await item.read()).content);
 
-                vscode.workspace.openTextDocument(filePath).then(async (doc) => {
-                    await vscode.window.showTextDocument(doc);
-                    setSelection();
-                }, (e) => {
-                    console.error(e);
-                })
+            if (currentTextDocumentInfo.content !== content) {
+                await this.adapter.setTextEditorContent(content);
+            }
 
-                return true;
+        // must not block boolean flag
+        } catch(e) {
+            console.error(e.stack);
+        }
+
+        this._settingTextContent = false;
+    }
+
+    public updateFileCache(uri: string, content: string, mtime: number = Date.now()) {
+        console.log(`updating file cache for ${uri}`);
+
+        this._mtimes[uri] = mtime;
+
+        if (this._fileCachePromise) {
+            return this._fileCachePromise.then(() => {
+                return this.updateFileCache(uri, content);
+            });
+        }
+
+        return this._fileCachePromise = new Promise(async (resolve, reject) => {
+
+            const filePath = removeFileProtocolId(uri);
+
+
+            try {
+                await this.bus.dispatch(new UpdateFileCacheRequest(uri, fs.readFileSync(filePath, "utf8") === content ? undefined : content, mtime))
+            } catch(e) {
+                console.error(e);
+                reject(e);
+            }
+
+            this._fileCachePromise = undefined;
+            resolve();
+
+        });
+    }
+
+    get updatingTextEditorContent() {
+        return this._settingTextContent;
+    }
+
+    public selectBySourceLocation(uri: string, ranges: ISourceLocation[]) {
+        return this.bus.dispatch(new SelectSourceRequest(uri, ranges));
+    }
+
+    public async openNewWorkspace(filePath: string) {
+
+        return new Promise((resolve, reject) => {
+
+            if (!/\.html$/.test(filePath)) {
+                return reject(new Error("Only HTML files can be loaded in Tandem."));
+            }
+
+            if (this.remote.status.type !== Status.COMPLETED) {
+                return reject(new Error("Tandem must be running to open files."));
+            }
+        });
+    }
+}
+
+class VSCodeTextEditorAdapter extends TextEditorClientAdapter {
+    openFile(filePath: string, selection: ISourceLocation) {
+        const setSelection = () => {
+            let { start, end } = selection || { start: undefined, end: undefined };
+            if (!end) end = start;
+            if (start) {
+                const range = new vscode.Range(
+                    new vscode.Position(start.line - 1, start.column - 1),
+                    new vscode.Position(end.line - 1, end.column)
+                );
+
+                vscode.window.activeTextEditor.selection = new vscode.Selection(
+                    range.start,
+                    range.end
+                );
+
+                vscode.window.activeTextEditor.revealRange(range);
             }
         }
-    })
+
+        vscode.workspace.openTextDocument(filePath).then(async (doc) => {
+            await vscode.window.showTextDocument(doc);
+            setSelection();
+        }, (e) => {
+            console.error(e);
+        })
+    }
+
+    getCurrentDocumentInfo() {
+        const editor = vscode.window.activeTextEditor;
+        const document = editor.document;
+        return {
+            uri: document.uri.toString(),
+            content: document.getText(),
+            dirty: document.isDirty
+        }
+    }
+
+    onDidChangeTextDocument(callback: any) {
+        vscode.workspace.onDidChangeTextDocument(callback);
+    }
+
+    onActiveTextEditorChange(callback: any) {
+        vscode.window.onDidChangeActiveTextEditor(callback);
+    }
+
+    async setTextEditorContent(content: string) {
+
+        const editor = vscode.window.activeTextEditor;
+        const oldText = editor.document.getText();
+
+        await editor.edit(function(edit) {
+            edit.replace(
+                new vscode.Range(
+                    editor.document.positionAt(0),
+                    editor.document.positionAt(oldText.length)
+                ),
+                content
+            );
+        });
+    }
+}
+
+let _textClient: TextEditorClient;
+
+// this method is called when your extension is activated
+// your extension is activated the very first time the command is executed
+export async function activate(context: vscode.ExtensionContext) {
+    console.log("Activating Tandem client");
+
+    const remoteClient = new TandemSockClient(EditorFamilyType.TEXT_EDITOR);
+
+    const textClient = _textClient = new TextEditorClient(remoteClient, new VSCodeTextEditorAdapter());
 
     vscode.window.onDidChangeTextEditorSelection(function(e:vscode.TextEditorSelectionChangeEvent) {
 
         // ignore for now since this is fooing with selections when
         // using the visual editor. Need to figure out how to ignore selections when
         // not currently focused on visual studio.
-        if (_editing || 1 + 1) return;
+        if (textClient.updatingTextEditorContent || 1 + 1) return;
 
-        client.bus.dispatch(new SelectSourceRequest(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
+        textClient.selectBySourceLocation(e.textEditor.document.fileName, e.selections.map(({ start, end }) => {
             return {
                 start: { line: start.line + 1, column: start.character },
                 end  : { line: end.line + 1, column: end.character }
             };
-        })));
+        }));
     });
 
-    var disposable = vscode.commands.registerCommand('tandem.openNewWindow', () => {
-        client.bus.dispatch(new OpenNewWorkspaceRequest(vscode.window.activeTextEditor.document.fileName));
+    const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+
+    statusBar.show();
+
+    let spinTimer: NodeJS.Timer;
+    let spinTick = 0;
+
+    remoteClient.statusPropertyWatcher.connect((newStatus, oldStatus) => {
+        clearInterval(spinTimer);
+        spinTick = 0;
+
+        if (newStatus.type === Status.LOADING) {
+            spinTimer = setInterval(() => {
+                const loaderParts = ["|", "/", "-", "\\"];
+                statusBar.text = `${loaderParts[spinTick++ % loaderParts.length]} Tandem`;
+            }, 100);
+
+        } else if (newStatus.type === Status.COMPLETED) {
+            statusBar.text = "$(zap) Tandem";
+        }
+    }).trigger();
+
+    var disposable = vscode.commands.registerCommand('extension.openNewWindow', () => {
+        const fileName = vscode.window.activeTextEditor.document.fileName;
+        textClient.openNewWorkspace(fileName).catch((e) => {
+            return vscode.window.showWarningMessage(e.message);
+        });
 	});
-	
+
 	context.subscriptions.push(disposable);
-    vscode.workspace.onDidChangeTextDocument(onTextChange);
-    vscode.window.onDidChangeActiveTextEditor(onActiveTextEditorChange);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-    _client.disconnect();
+    _textClient.dispose();
 }

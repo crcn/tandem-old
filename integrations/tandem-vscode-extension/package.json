@@ -2,7 +2,7 @@
   "name": "tandem-vscode-extension",
   "displayName": "Tandem sync",
   "description": "Synchronizes realtime changes between Tandem and VSCode",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "publisher": "tandemcode",
   "engines": {
     "vscode": "^1.0.0"
@@ -17,7 +17,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "tandem.openNewWindow",
+        "command": "extension.openNewWindow",
         "title": "Open current file in new Tandem window"
       }
     ]
@@ -30,7 +30,8 @@
   "devDependencies": {
     "@types/reflect-metadata": "0.0.5",
     "@types/through2": "^2.0.31",
-    "typescript": "^2.1.4"
+    "typescript": "^2.1.4",
+    "vscode": "0.11.x"
   },
   "dependencies": {
     "@tandem/common": "1.0.x",
@@ -44,6 +45,7 @@
     "lodash": "^4.15.0",
     "mesh": "^6.0.26",
     "reflect-metadata": "^0.1.8",
+    "tandem-client": "^1.0.0",
     "through2": "^2.0.1"
   },
   "author": "",
