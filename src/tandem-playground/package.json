@@ -1,7 +1,7 @@
 {
   "name": "tandem-playground",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.8",
   "main": "server/index.js",
   "entries": {
     "browser": "./browser/index.ts"
