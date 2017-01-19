@@ -1,6 +1,6 @@
 {
   "name": "tandem-client",
-  "version": "1.0.2",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "@tandem/common": "^1.0.x",
     "@tandem/editor": "^1.0.21",
     "@tandem/mesh": "^1.0.x",
-    "@tandem/sandbox": "^1.0.x"
+    "@tandem/sandbox": "^1.0.x",
+    "@tandem/synthetic-browser": "^1.0.22"
   }
 }
