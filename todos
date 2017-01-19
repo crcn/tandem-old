@@ -26,7 +26,7 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] welcome page
+- [ ] wizard
 	- [ ] good things to know
 		- [ ] adding more frames
 		- [ ] CSS inspector
@@ -36,6 +36,7 @@ resolve UX. May want to optimize experience around writing code.
 
 
 - [ ] today
+
   - [ ] home page footer
     - [ ] email contact
     - [ ] about

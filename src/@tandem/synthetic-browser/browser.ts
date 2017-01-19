@@ -14,6 +14,7 @@ import {
   loggable,
   isMaster,
   Kernel,
+  CoreEvent,
   Observable,
   IInjectable,
   IObservable,
@@ -104,7 +105,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
 
     this._renderer = _kernel.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
     this._renderer.observe(new BubbleDispatcher(this));
-    this._documentObserver = new BubbleDispatcher(this);
+    this._documentObserver = new CallbackDispatcher(this.onDocumentEvent.bind(this));
   }
 
   $didInject() { }
@@ -159,6 +160,10 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   }
 
   protected abstract async open2(options: ISyntheticBrowserOpenOptions);
+
+  protected onDocumentEvent(event: CoreEvent) {
+    this.notify(event);
+  }
 }
 
 export class SyntheticBrowser extends BaseSyntheticBrowser {

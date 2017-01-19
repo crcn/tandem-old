@@ -14,6 +14,7 @@ import {
   Kernel,
   CoreEvent,
   serialize,
+  MutationEvent,
   flattenTree,
   deserialize,
   IInjectable,
@@ -114,7 +115,12 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       const mutations: Mutation<any>[] = data;
       this.logger.debug("Received document diffs: >>", mutations.map(event => event.type).join(", "));
       try {
+
+        // dirty, but ensures that changes from the back-end are not re-sent
+        // to the back-end.
+        this._ignoreMutations = true;
         this._documentEditor.applyMutations(mutations);
+        this._ignoreMutations = false;
 
       // catch for now to ensure that applying edits doesn't break the stream
       } catch(e) {
@@ -129,6 +135,28 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
     // a render event in some cases.
     this.renderer.requestRender();
   }
+
+  private _mutations: Mutation<any>[] = [];
+  private _ignoreMutations = false;
+
+  protected onDocumentEvent(event: CoreEvent) {
+    super.onDocumentEvent(event);
+    
+    if (event instanceof MutationEvent && !this._ignoreMutations) {
+      this._mutations.push(event.mutation);
+      this.sendDiffs();
+    }
+  }
+
+  /**
+   * Send ALL changes to the back-end to ensure that everything is in sync.
+   */
+
+  private sendDiffs = debounce(() => {
+    const mutations = this._mutations;
+    this._mutations = [];
+    this._writer.write(serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOCUMENT_DIFF, mutations)));
+  }, 100);
 }
 
 @loggable()
@@ -152,9 +180,9 @@ export class RemoteBrowserService extends BaseApplicationService {
 
       // TODO - memoize opened browser if same session is up
       const browser: SyntheticBrowser = this._openBrowsers[id] || (this._openBrowsers[id] = new SyntheticBrowser(this.kernel, new NoopRenderer()));
-      let currentDocument: SyntheticDocument;
 
       const logger = this.logger.createChild(`${event.options.uri} `);
+      let editor: SyntheticObjectTreeEditor;
 
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (mutations: Mutation<any>[]) => {
 
@@ -165,6 +193,7 @@ export class RemoteBrowserService extends BaseApplicationService {
 
         browser.sandbox.resume();
       }, (clone: SyntheticDocument) => {
+        editor = new SyntheticObjectTreeEditor(clone);
         logger.info("Sending <<new document");
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.NEW_DOCUMENT, clone)) });
       });
@@ -172,6 +201,13 @@ export class RemoteBrowserService extends BaseApplicationService {
       if (browser.document) {
         changeWatcher.target = browser.document;
       }
+
+      pump(input.getReader(), (payload) => {
+        const message = deserialize(payload, this.kernel) as RemoteBrowserDocumentMessage;
+        if (message.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
+          editor.applyMutations(message.data as Mutation<any>[]);
+        }
+      });
 
       const onStatusChange = (status: Status) => {
         if (status) {

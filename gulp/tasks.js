@@ -144,7 +144,16 @@ gulp.task('build:electron:package', () => {
   console.log(`electron version: ${productVersion}; platform: ${platform}; arch: ${arch}`);
 
   let stream = gulp.src(join(getElectronBundleDir(), "**"))
-  .pipe(electron({ version: electronVersion, platform, arch, token, productName }));
+  .pipe(electron({ 
+    version: electronVersion, 
+    platform, 
+    arch, 
+    token, 
+    productName, 
+    winIcon: join(__dirname, "..", "out", "tandem-code", "assets", "icons", "logo.ico"),
+    darwinIcon: join(__dirname, "..", "out", "tandem-code", "assets", "icons", "logo.icns"),
+    companyName: "Bureau of Minds"
+  }));
 
   if (process.env.SYMDEST) {
     return stream.pipe(symdest(join(getElectronBundleDir(), "app")))

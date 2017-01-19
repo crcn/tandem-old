@@ -265,7 +265,7 @@ export class TextEditorClient {
 
     private async setTextEditorContentFromFileCache(item: FileCacheItem) {
         const currentTextDocumentInfo = this.adapter.getCurrentDocumentInfo();
-        console.log("Setting text editor content from file cache: ", item.sourceUri, currentTextDocumentInfo.uri);
+        console.log("Setting text editor content from file cache: ", item.sourceUri, currentTextDocumentInfo.uri, this._mtimes[item.sourceUri], item.contentUpdatedAt);
         if (item.sourceUri !== currentTextDocumentInfo.uri || (this._mtimes[item.sourceUri] || 0) >= item.contentUpdatedAt) {
             return;
         }
@@ -273,11 +273,14 @@ export class TextEditorClient {
         this._settingTextContent = true;
         
         try {
+            console.log("checking text content match")
 
             const content = String((await item.read()).content);
 
             if (currentTextDocumentInfo.content !== content) {
                 await this.adapter.setTextEditorContent(content);
+            } else {
+                console.log("Content is the same -- not setting text");
             }
 
         // must not block boolean flag
