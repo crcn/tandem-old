@@ -38,6 +38,8 @@ import {
   IDependencyGraphStrategyOptions
 } from "@tandem/sandbox";
 
+
+// TODO - add user event stuff here
 @serializable("RemoteBrowserDocumentMessage", {
   serialize({ type, data }: RemoteBrowserDocumentMessage) {
     return {
