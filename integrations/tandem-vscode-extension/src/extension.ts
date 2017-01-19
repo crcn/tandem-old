@@ -103,22 +103,13 @@ export async function activate(context: vscode.ExtensionContext) {
     const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
 
     statusBar.show();
-
-    let spinTimer: NodeJS.Timer;
-    let spinTick = 0;
-
     textClient.statusPropertyWatcher.connect((newStatus, oldStatus) => {
-        clearInterval(spinTimer);
-        spinTick = 0;
-
         if (newStatus.type === Status.LOADING) {
-            spinTimer = setInterval(() => {
-                const loaderParts = ["|", "/", "-", "\\"];
-                statusBar.text = `${loaderParts[spinTick++ % loaderParts.length]} Tandem`;
-            }, 100);
-
+            statusBar.text = `$(alert) Tandem`;
+            statusBar.tooltip = "Tandem is not currently connected.";
         } else if (newStatus.type === Status.COMPLETED) {
             statusBar.text = "$(zap) Tandem";
+            statusBar.tooltip = "Tandem is connected.";
         }
     }).trigger();
 
