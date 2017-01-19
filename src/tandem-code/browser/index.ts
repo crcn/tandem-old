@@ -185,7 +185,7 @@ const kernel = new Kernel(
   createEditorBrowserProviders(config),
   createHTMLEditorBrowserProviders(),
   createTDProjectEditorBrowserProviders(),
-  createCollaborateExtensionBrowserProviders(),
+  // createCollaborateExtensionBrowserProviders(),
 );
 
 const app = window["app"] = new ServiceApplication(kernel);

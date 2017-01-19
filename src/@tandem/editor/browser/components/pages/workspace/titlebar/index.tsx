@@ -9,6 +9,7 @@ import { HeaderComponentFactoryProvider } from "@tandem/editor/browser/providers
 export class WorkspaceTitlebarComponent extends BaseApplicationComponent<any, any> {
   render() {
     return <div className="td-workspace-titlebar">
+      &nbsp;
       <RegisteredComponent ns={HeaderComponentFactoryProvider.getId("**")} />
     </div>;
   }

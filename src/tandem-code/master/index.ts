@@ -124,7 +124,7 @@ export const initializeMaster = async () => {
     new ApplicationServiceProvider("browser", BrowserService),
     new ApplicationServiceProvider("sock", SockService),
 
-    createCollaborateMasterExtensionProviders(),
+    // createCollaborateMasterExtensionProviders(),
     
     // commands
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
