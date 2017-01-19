@@ -1,6 +1,6 @@
 {
   "name": "@tandem/sandbox",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "```javascript import { Sandbox } from \"@tandem/sandbox\"; import { Kernel } from \"@tandem/providers\";",
   "main": "index.js",
   "scripts": {

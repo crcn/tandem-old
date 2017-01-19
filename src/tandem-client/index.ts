@@ -1,18 +1,35 @@
 import net = require("net");
 import os = require("os");
 import path = require("path");
+import fs = require("fs");
 
 
-import { EditorFamilyType, PingRequest } from "@tandem/editor/common";
+import { 
+  PingRequest, 
+  EditorFamilyType, 
+  SelectSourceRequest,
+  SetCurrentFileRequest,
+  OpenNewWorkspaceRequest, 
+} from "@tandem/editor/common";
 
 import { 
   IDispatcher, 
   readOneChunk, 
+  WritableStream,
+  DSTailRequest,
+  DSFindRequest,
   TransformStream,
+  DSTailedOperation,
+  CallbackDispatcher,
   filterFamilyMessage, 
 } from "@tandem/mesh";
 
-import { createSandboxProviders } from "@tandem/sandbox";
+import { 
+  FileCacheItem,
+  createSandboxProviders,
+  UpdateFileCacheRequest, 
+  FILE_CACHE_COLLECTION_NAME,
+} from "@tandem/sandbox";
 
 import {
   Kernel,
@@ -23,10 +40,11 @@ import {
   serialize, 
   CoreEvent,
   Observable,
-  PropertyWatcher,
   deserialize,
   IDisposable,
   KernelProvider,
+  ISourceLocation,
+  PropertyWatcher,
   PrivateBusProvider,
 } from "@tandem/common";
 
@@ -78,7 +96,7 @@ export abstract class BaseTandemClient extends Observable implements IDisposable
     // ping the remote tandem app to ensure that we have a connection here -- this information
     // is typically displayed to the user.
     const ping = async () => {
-      const value = await readOneChunk(this.bus.dispatch(new PingRequest()));
+      const { value, done } = await readOneChunk(this.bus.dispatch(new PingRequest()));
       if (!value) return setTimeout(ping, 1000);
       this.status = new Status(Status.COMPLETED);
     }
@@ -133,21 +151,185 @@ export class TandemSockClient extends BaseTandemClient {
 }
 
 
-// /**
-//  * client for communicat
-//  */
+function removeFileProtocolId(value: string) {
+    return value.replace(/file:\/\//, "");
+}
 
-// export class TandemRemoteClient extends BaseTandemClient {
-//   constructor(readonly host: string) {
-//     super();
-//     throw new Error(`Not implemented yet`); 
-//   }
+ export abstract class TextEditorClientAdapter extends Observable {
+    constructor() {
+        super();
+    }
 
-//   _connect2() {
+    abstract openFile(filename: string, selection: ISourceLocation);
+    abstract setTextEditorContent(content: string);
+    abstract onDidChangeTextDocument(callback: any);
+    abstract getCurrentDocumentInfo(): { uri: string, content: string, dirty: boolean };
+    abstract onActiveTextEditorChange(callback: any);
+}
 
-//   }
+export class TextEditorClient {
 
-//   dispose() {
+    private _fileCachePromise: Promise<any>;
+    private _settingTextContent: boolean;
+    private _remote: BaseTandemClient;
 
-//   }
-// }
+    private _mtimes: {
+        [Identifier: string]: number
+    };
+
+    constructor(readonly adapter: TextEditorClientAdapter, createTandemClient = (family: string) => new TandemSockClient(family)) {
+        this._mtimes = {};
+        const remote = this._remote = createTandemClient(EditorFamilyType.TEXT_EDITOR);
+
+        remote.bus.register(new CallbackDispatcher(this.onRemoteMessage.bind(this)));
+        adapter.onDidChangeTextDocument(this.onDidChangeTextDocument.bind(this));
+        adapter.onActiveTextEditorChange(this.onActiveTextEditorChange.bind(this));
+
+        remote.statusPropertyWatcher.connect(this.onRemoteStatusChange.bind(this));
+    }
+
+    get status() {
+      return this._remote.status;
+    }
+    
+    get statusPropertyWatcher() {
+      return this._remote.statusPropertyWatcher;
+    }
+
+    get kernel() {
+        return this._remote.kernel;
+    }
+
+    get bus() {
+        return this._remote.bus;
+    }
+
+    public dispose() {
+        this._remote.dispose();
+    }
+
+    private onRemoteStatusChange(status: Status) {
+        if (status.type === Status.COMPLETED) {
+            this.watchFileCache();
+        }
+    }
+
+    private onRemoteMessage(message: any) {
+        if (message.type === SetCurrentFileRequest.SET_CURRENT_FILE) {
+            const { uri, selection } = <SetCurrentFileRequest><any>message;
+            let filePath = removeFileProtocolId(uri);
+            filePath = fs.existsSync(filePath) ? filePath : process.cwd() + filePath;
+            this.adapter.openFile(filePath, selection);
+            return true;
+        }
+    }
+
+    private watchFileCache() {
+        DSTailRequest.dispatch(FILE_CACHE_COLLECTION_NAME, { }, this.bus).readable.pipeTo(new WritableStream({
+            write: async ({ data }: DSTailedOperation) => {
+                const item = new FileCacheItem(data, FILE_CACHE_COLLECTION_NAME);
+                this.kernel.inject(item);
+                this.setTextEditorContentFromFileCache(item);
+            }
+        }));
+    }
+
+    private onDidChangeTextDocument() {
+        const { uri, content, dirty } = this.adapter.getCurrentDocumentInfo();
+        if (this._settingTextContent || !dirty) return;
+        this.updateFileCache(uri, content);
+    }
+
+    private async onActiveTextEditorChange() {
+
+        const { uri, content } = this.adapter.getCurrentDocumentInfo();
+
+        // must be loaded inx
+        const data = await DSFindRequest.findOne(FILE_CACHE_COLLECTION_NAME, {
+            sourceUri: uri
+        }, this.bus);
+
+        if (!data) return;
+
+        // timeout to give the editor some time to load up
+        setTimeout(() => {
+            // visual editor may have modified file content. Ensure that the editor
+            // content is in sync with the latest stuff. TODO - need to match mtime here
+            this.setTextEditorContentFromFileCache(this.kernel.inject(new FileCacheItem(data, FILE_CACHE_COLLECTION_NAME)));
+        }, 100);
+    }
+
+    private async setTextEditorContentFromFileCache(item: FileCacheItem) {
+        const currentTextDocumentInfo = this.adapter.getCurrentDocumentInfo();
+
+        console.log(item.sourceUri, currentTextDocumentInfo.uri);
+        if (item.sourceUri !== currentTextDocumentInfo.uri || (this._mtimes[item.sourceUri] || 0) >= item.contentUpdatedAt) {
+            return;
+        }
+
+        this._settingTextContent = true;
+        
+        try {
+
+            const content = String((await item.read()).content);
+
+            if (currentTextDocumentInfo.content !== content) {
+                await this.adapter.setTextEditorContent(content);
+            }
+
+        // must not block boolean flag
+        } catch(e) {
+            console.error(e.stack);
+        }
+
+        this._settingTextContent = false;
+    }
+
+    public updateFileCache(uri: string, content: string, mtime: number = Date.now()) {
+        console.log(`updating file cache for ${uri}`);
+
+        this._mtimes[uri] = mtime;
+
+        if (this._fileCachePromise) {
+            return this._fileCachePromise.then(() => {
+                return this.updateFileCache(uri, content);
+            });
+        }
+
+        return this._fileCachePromise = new Promise(async (resolve, reject) => {
+
+            const filePath = removeFileProtocolId(uri);
+
+            try {
+                await this.bus.dispatch(new UpdateFileCacheRequest(uri, fs.readFileSync(filePath, "utf8") === content ? undefined : content, mtime))
+            } catch(e) {
+                console.error(e);
+                reject(e);
+            }
+
+            this._fileCachePromise = undefined;
+            resolve();
+
+        });
+    }
+
+    get updatingTextEditorContent() {
+        return this._settingTextContent;
+    }
+
+    public selectBySourceLocation(uri: string, ranges: ISourceLocation[]) {
+        return this.bus.dispatch(new SelectSourceRequest(uri, ranges));
+    }
+
+    public async openNewWorkspace(filePath: string) {
+        if (!/\.html$/.test(filePath)) {
+            throw new Error("Only HTML files can be loaded in Tandem.");
+        }
+
+        if (this._remote.status.type !== Status.COMPLETED) {
+            throw new Error("Tandem must be running to open files.");
+        }
+
+        await this.bus.dispatch(new OpenNewWorkspaceRequest(filePath));
+    }
+}

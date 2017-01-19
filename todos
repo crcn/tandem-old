@@ -9,6 +9,13 @@ Focus:
 - look for top Css tools - implement those
 - measurement tools
 
+QUESTIONS
+
+#### What would keep people from using this?
+
+- lack of debugging tools
+- inability to interact with app
+
 
 ----------------------------------
 IMMEDIATE
@@ -19,16 +26,31 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
+- [ ] welcome page
+	- [ ] good things to know
+		- [ ] adding more frames
+		- [ ] CSS inspector
+	- [ ] install IDE extension (auto-detect)
+		- [ ] what it does
+	- [ ] Disclaimer about alpha code - more coming. Vote features.
+
+
+- [ ] today
+  - [ ] home page footer
+    - [ ] email contact
+    - [ ] about
+  - [ ] extension
+    - [ ] fix sync bug with multiple tandem instances
+    - [ ] publish package online
+    - [ ] fix bug where changes aren't picked up immediately (especially with css)
+
 - [ ] code first
+  - [ ] hello wizard
+    - [ ] prompt to install IDE extension
   - [ ] ensure that it works with Aurelia 
   - [ ] transmit user events
   - [ ] atom extension
-  - [ ] open file from text editor
   - [ ] ensure that tools work under all cases
-  - [ ] text editor extension must work completely
-  - [ ] atom extension
-  - [ ] hello wizard
-    - [ ] prompt to install IDE extension
   - [ ] right click inspect element
   - [ ] css inspector
   - [ ] ensure that systemjs & jspm work
