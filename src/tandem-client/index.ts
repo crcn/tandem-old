@@ -3,6 +3,8 @@ import os = require("os");
 import path = require("path");
 import fs = require("fs");
 
+import { debounce } from "lodash";
+
 
 import { 
   PingRequest, 
@@ -234,11 +236,13 @@ export class TextEditorClient {
         }));
     }
 
-    private onDidChangeTextDocument() {
+    // debounced to give the text editor to set dirty flag to true -- required
+    // in vscode specifically.
+    private onDidChangeTextDocument = debounce(() => {
         const { uri, content, dirty } = this.adapter.getCurrentDocumentInfo();
         if (this._settingTextContent || !dirty) return;
         this.updateFileCache(uri, content);
-    }
+    }, 50)
 
     private async onActiveTextEditorChange() {
 
@@ -261,8 +265,7 @@ export class TextEditorClient {
 
     private async setTextEditorContentFromFileCache(item: FileCacheItem) {
         const currentTextDocumentInfo = this.adapter.getCurrentDocumentInfo();
-
-        console.log(item.sourceUri, currentTextDocumentInfo.uri);
+        console.log("Setting text editor content from file cache: ", item.sourceUri, currentTextDocumentInfo.uri);
         if (item.sourceUri !== currentTextDocumentInfo.uri || (this._mtimes[item.sourceUri] || 0) >= item.contentUpdatedAt) {
             return;
         }

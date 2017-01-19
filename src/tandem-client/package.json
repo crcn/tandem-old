@@ -13,6 +13,7 @@
     "@tandem/editor": "^1.0.21",
     "@tandem/mesh": "^1.0.x",
     "@tandem/sandbox": "^1.0.x",
-    "@tandem/synthetic-browser": "^1.0.22"
+    "@tandem/synthetic-browser": "^1.0.22",
+    "lodash": "^4.17.4"
   }
 }

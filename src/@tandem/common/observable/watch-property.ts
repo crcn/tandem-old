@@ -22,9 +22,6 @@ export class PropertyWatcher<T extends IObservable, U> extends Observable {
   }
 
   connect(listener: (newValue: U, oldValue?: U) => any) {
-
-    console.log("CONNECTING");
-
     if (!this._listening) {
       this._currentValue = this.target[this.propertyName];
       this._listening = true;
@@ -42,7 +39,6 @@ export class PropertyWatcher<T extends IObservable, U> extends Observable {
           if (previousTrigger && previousTrigger.dispose) previousTrigger.dispose();
           const oldValue = currentValue;
           currentValue = this.currentValue;
-          console.log("TRIGGERING", this.currentValue, listener.toString());
           previousTrigger = listener(this.currentValue, oldValue);
         }
       }
@@ -62,7 +58,6 @@ export class PropertyWatcher<T extends IObservable, U> extends Observable {
   }
 
   connectToProperty(target: any, property: string) {
-    console.log("CONNECT TO PROP");
     return this.connect((newValue) => {
       target[property] = newValue;
     });
@@ -72,7 +67,6 @@ export class PropertyWatcher<T extends IObservable, U> extends Observable {
     if (mutation && mutation.type === PropertyMutation.PROPERTY_CHANGE && (<PropertyMutation<any>>mutation).name === this.propertyName && mutation.target === this.target) {
       const oldValue = this._currentValue;
       this._currentValue = (<PropertyMutation<any>>mutation).newValue;
-      console.log("CHANGEDDD");
       this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "currentValue", this._currentValue, oldValue).toEvent());
     }
   }
