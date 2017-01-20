@@ -3,6 +3,7 @@ import "./index.scss";
 import React = require("react");
 import cx = require("classnames");
 import { BaseApplicationComponent } from "@tandem/common";
+import { OpenNewWorkspaceRequest } from "@tandem/editor/common";
 import { ExecuteCommandRequest, UpdateUserSettingsRequest, IUserSettings } from "tandem-code/common";
 
 // MVP getting started page. Fugly as hell.
@@ -36,24 +37,25 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
   ]
   
   nextPage = async (load, ended) => {
-    this.setState({ page: this.state.page, selectedExtensionIndex: this.state.selectedExtensionIndex, loading: true });
+    this.setState(Object.assign({}, this.state, { loading: true }));
 
     try {
       if (load) await load();
     } catch(e) {
-      this.setState({ page: this.state.page, selectedExtensionIndex: this.state.selectedExtensionIndex, loading: false });
+      this.setState(Object.assign({}, this.state,  { loading: false }));
       return alert(e.message);
     }
 
     if (ended) {
       return this.complete();
     }
-    this.setState({ page: this.state.page + 1, selectedExtensionIndex: this.state.selectedExtensionIndex, loading: false });
+    this.setState(Object.assign({}, this.state, { page: this.state.page + 1, loading: false }));
   }
 
   prevPage = async (ended) => {
-    this.setState({ page: this.state.page - 1, selectedExtensionIndex: this.state.selectedExtensionIndex, loading: this.state.loading });
+    this.setState(Object.assign({}, this.state, { page: this.state.page - 1 }));
   }
+
 
   complete = async () => {
 
@@ -65,10 +67,20 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
       }
     }
 
-    // SAVE USER SETTINGS HERE
+    // save settings so that the getting started prompt does not come up again
     await this.bus.dispatch(new UpdateUserSettingsRequest(userSettings)).readable.getReader().read();
 
-    window.close();
+
+    const { dialog } = require("electron").remote;
+
+    dialog.showOpenDialog({
+      filters: [
+        {name: "HTML Files", extensions: ["html"] }
+      ],
+    }, async ([filePath]) => {
+      await this.bus.dispatch(new OpenNewWorkspaceRequest("file://" + filePath));
+      window.close();
+    });
   }
 
   selectExtension = (index) => {
@@ -92,19 +104,19 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
   render() {
 
     const pages = [
-      [this.renderHello],
-      [this.renderInstallExtensions, this.installSelectedExtension],
+      ["Next", this.renderHello],
+      ["Install and continue", this.renderInstallExtensions, this.installSelectedExtension],
+      // ["Next", this.selectOptions],
       // this.howToUse,
-      [this.done]
+      ["Open HTML file", this.done]
     ];
 
     const ended = this.state.page === pages.length -1;
-
-    const [currentPage, load] = pages[Math.min(this.state.page, pages.length - 1)];
+    const [label, currentPage, load] = pages[Math.min(this.state.page, pages.length - 1)];
 
     return <div className="getting-started-component">
       <div className="content container">
-        {currentPage()}
+        {(currentPage as Function)()}
       </div>
       <div className="footer container">
         <div className="row">
@@ -113,7 +125,7 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
               { "Back" }
             </a> : undefined }
             <a href="#" className={cx({ disabled: this.state.loading }, "button pull-right")} onClick={this.state.loading ? undefined : this.nextPage.bind(this, load, ended)}>
-              { ended ? "Start using tandem" : this.state.loading ? "Loading..." : "Next" }
+              { this.state.loading ? "Loading..." : label }
             </a>
           </div>
         </div>
@@ -128,7 +140,6 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
           <div className="logo">
             <img src={require("./icon_black.png")} />
             Tandem
-
           </div>
           <div className="description">
             Welcome to Tandem! This brief guide will help you get started.
@@ -148,7 +159,7 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
       <div className="row">
         <div className="col-12">
           <div className="title">
-            Install a text editor extension
+            Install the text editor extension
           </div>
           <div className="description">
             This extension enables Tandem to synchronize changes with your text editor. You can always install it later on.
@@ -178,8 +189,35 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
     </div>
   }
 
-  captureUsage = () => {
+  selectOptions = () => {
+    return <div>
+      <div className="row">
+        <div className="col-12">
+          <div className="title">
+            Prepare your project
+          </div>
+          <div className="description">
 
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+
+  prepareProject = () => {
+    return <div>
+      <div className="row">
+        <div className="col-12">
+          <div className="title">
+            2. Prepare your project
+          </div>
+          <div className="description">
+
+          </div>
+        </div>
+      </div>
+    </div>
   }
 
   done = () => {
@@ -187,9 +225,10 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
       <div className="row">
         <div className="col-12">
           <div className="title">
-            
-            All done! You can now start using Tandem.
-
+            All done! 
+          </div>
+          <div className="description">
+            You're ready to start using Tandem.
           </div>
         </div>
       </div>

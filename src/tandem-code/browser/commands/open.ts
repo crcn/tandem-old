@@ -13,7 +13,7 @@ export class OpenCommand extends BaseEditorBrowserCommand {
 
     }, async (fileNames: string[]) => {
       // TODO - change to ResolveProjectRequest instead
-      const project = await CreateNewProjectRequest.dispatch(null, fileNames[0], this.bus);
+      const project = await CreateNewProjectRequest.dispatch(null, "file://" + fileNames[0], this.bus);
       await this.bus.dispatch(createWorkspaceRedirectRequest(project._id));
     });
   }
