@@ -1,7 +1,7 @@
-import { IMessage } from "@tandem/mesh";
-import { IStarterOption } from "tandem-code/common/stores";
+import { IStarterOption, IUserSettings } from "tandem-code/common/stores";
 import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { OpenRemoteBrowserRequest } from "@tandem/synthetic-browser";
+import { IMessage, IStreamableDispatcher } from "@tandem/mesh";
 import { EditorFamilyType, OpenProjectEnvironmentChannelRequest } from "@tandem/editor/common";
 import { 
   setMessageTarget, 
@@ -108,6 +108,26 @@ export class OpenBrowserWindowRequest implements IMessage {
   constructor(readonly hash: string, readonly width?: number, readonly height?: number) {
 
   }
+}
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class ExecuteCommandRequest implements IMessage {
+  static readonly EXECUTE_COMMAND = "executeCommand";
+  readonly type = ExecuteCommandRequest.EXECUTE_COMMAND;
+  constructor(readonly command: string) {
+
+  }
+
+  static async dispatch(command: string, bus: IStreamableDispatcher<any>) {
+    return (await readOneChunk(bus.dispatch(new ExecuteCommandRequest(command)))).value;
+  }
+}
+
+@setMessageTarget(EditorFamilyType.MASTER)
+export class UpdateUserSettingsRequest implements IMessage {
+  static readonly UPDATE_USER_SETTINGS = "updateUserSettings";
+  readonly type = UpdateUserSettingsRequest.UPDATE_USER_SETTINGS;
+  constructor(readonly data: IUserSettings) { }
 }
 
 export * from "@tandem/editor/common/messages";

@@ -8,3 +8,4 @@ export interface IHelpOption {
 
 export * from "./starter-option";
 export * from "./project-config";
+export * from "./user-settings";

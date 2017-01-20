@@ -3,13 +3,7 @@ import { SyntheticDOMElement } from "@tandem/synthetic-browser";
 import { IStudioEditorServerConfig } from "../config";
 import fs = require("fs");
 import path = require("path");
-
-export interface IUserSettings {
-  textEditor: {
-    bin: string,
-    args?: any[]
-  }
-}
+import { IUserSettings } from "tandem-code/common";
 
 export class UserSettings implements IUserSettings {
 
@@ -27,6 +21,7 @@ export class UserSettings implements IUserSettings {
 
   deserialize({ textEditor }: IUserSettings) {
     this.textEditor = textEditor;
+    return this;
   }
 
   serialize(): IUserSettings {

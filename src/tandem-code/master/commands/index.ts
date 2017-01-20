@@ -15,3 +15,5 @@ export * from "./save-all-files";
 export * from "./hook-spawned-worker";
 export * from "./get-tunnel-url";
 export * from "./open-browser-window";
+export * from "./execute-command";
+export * from "./update-user-settings";
