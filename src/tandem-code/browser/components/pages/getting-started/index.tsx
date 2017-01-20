@@ -71,6 +71,7 @@ export class GettingStartedComponent extends React.Component<any, any> {
       {
         label: "None",
         iconUrl: require("./icon_blue.png"),
+        
         selected: false
       }
     ];
@@ -114,8 +115,9 @@ export class GettingStartedComponent extends React.Component<any, any> {
       <div className="row">
         <div className="col-12">
           <div className="title">
-            All done! You can now start using Tandem.
             
+            All done! You can now start using Tandem.
+
           </div>
         </div>
       </div>
