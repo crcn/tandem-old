@@ -17,6 +17,13 @@
     height: 100%;
   }
 
+  ul {
+    li {
+      display: block;
+      margin: 16px 0px;
+    }
+  }
+
   .install-text-editor-extension {
     .options {
       margin-top: 32px;

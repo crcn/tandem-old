@@ -106,7 +106,7 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
     const pages = [
       ["Next", this.renderHello],
       ["Install and continue", this.renderInstallExtensions, this.installSelectedExtension],
-      // ["Next", this.selectOptions],
+      ["Next", this.prepareProject],
       // this.howToUse,
       ["Open HTML file", this.done]
     ];
@@ -139,7 +139,7 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
         <div className="col-12">
           <div className="logo">
             <img src={require("./icon_black.png")} />
-            Tandem
+            Tandem (Alpha)
           </div>
           <div className="description">
             Welcome to Tandem! This brief guide will help you get started.
@@ -189,36 +189,40 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
     </div>
   }
 
-  selectOptions = () => {
-    return <div>
-      <div className="row">
-        <div className="col-12">
-          <div className="title">
-            Prepare your project
-          </div>
-          <div className="description">
+  // selectOptions = () => {
+  //   return <div>
+  //     <div className="row">
+  //       <div className="col-12">
+  //         <div className="title">
+  //           Prepare your project
+  //         </div>
+  //         <div className="description">
 
-          </div>
-        </div>
-      </div>
-    </div>
-  }
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // }
 
-
+  // TODO - 
   prepareProject = () => {
-    return <div>
+    return <div className="prepare">
       <div className="row">
         <div className="col-12">
           <div className="title">
-            2. Prepare your project
+            Prepare your web application
           </div>
           <div className="description">
-
+            <ul>
+              <li>- Turn on <strong>source maps</strong> if you're using a bundler. Tandem needs this information in order to properly map, and write code. </li>
+              <li>- Install <strong><code>webpack-tandem-jsx-loader</code></strong> if you're using Webpack and JSX. This enable Tandem to properly map JSX.</li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
   }
+
 
   done = () => {
     return <div className="done">
@@ -228,7 +232,13 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
             All done! 
           </div>
           <div className="description">
-            You're ready to start using Tandem.
+            You're ready to start using Tandem. Here are a just a few tips:
+
+            <ul>
+              <li>- <strong>cmd+click</strong> any visible element to open its source code in your text editor.</li>
+              <li>- You can open any HTML file from your text editor by executing the "<strong>Open current file in Tandem</strong>" command.</li>
+              <li>- If you're using vanilla HTML & CSS, Tandem will automatically reload your application preview <i>as you're typing</i>.</li>
+            </ul>
           </div>
         </div>
       </div>
