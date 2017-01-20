@@ -23,7 +23,7 @@ import {
 } from "./components";
 
 import { ElementLayerLabelProvider } from "@tandem/html-extension/editor/browser";
-import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider} from "@tandem/synthetic-browser";
+import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider, LoadableElementProvider } from "@tandem/synthetic-browser";
 import { 
   ReactComponentFactoryProvider, 
   FooterComponentFactoryProvider, 

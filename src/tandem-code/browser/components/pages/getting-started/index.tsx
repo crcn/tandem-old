@@ -19,14 +19,14 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
     {
       label: "Atom",
       iconUrl: require("./atom.png"),
-      installCommand: "apm install atom-tandem-extension",
-      openBin: "atom"
+      installCommand: "/usr/local/bin/apm install atom-tandem-extension",
+      openBin: "/usr/local/bin/atom"
     },
     {
       label: "VSCode",
       iconUrl: require("./vscode.png"),
-      installCommand: "code --install-extension tandemcode.tandem-vscode-extension",
-      openBin: "code"
+      installCommand: "/usr/local/bin/code --install-extension tandemcode.tandem-vscode-extension",
+      openBin: "/usr/local/bin/code"
     },
     {
       label: "None",

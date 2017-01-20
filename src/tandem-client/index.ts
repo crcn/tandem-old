@@ -328,8 +328,8 @@ export class TextEditorClient {
     }
 
     public async openNewWorkspace(filePath: string) {
-        if (!/\.html$/.test(filePath)) {
-            throw new Error("Only HTML files can be loaded in Tandem.");
+        if (!/\.(html|tandem)$/.test(filePath)) {
+            throw new Error("Only .html & .tandem files can be loaded in Tandem.");
         }
 
         if (this._remote.status.type !== Status.COMPLETED) {

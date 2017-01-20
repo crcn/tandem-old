@@ -26,15 +26,6 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] wizard
-	- [ ] good things to know
-		- [ ] adding more frames
-		- [ ] CSS inspector
-	- [ ] install IDE extension (auto-detect)
-		- [ ] what it does
-	- [ ] Disclaimer about alpha code - more coming. Vote features.
-
-
 - [ ] today
   - [ ] home page footer
     - [ ] email contact
