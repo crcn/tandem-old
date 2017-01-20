@@ -26,14 +26,7 @@ Messaging:
 TODO - strip of all functionality that does not work all the time - need to
 resolve UX. May want to optimize experience around writing code.
 
-- [ ] today
-  - [ ] home page footer
-    - [ ] email contact
-    - [ ] about
-  - [ ] extension
-    - [ ] fix sync bug with multiple tandem instances
-    - [ ] publish package online
-    - [ ] fix bug where changes aren't picked up immediately (especially with css)
+- [ ] polish
 
 - [ ] code first
   - [ ] hello wizard

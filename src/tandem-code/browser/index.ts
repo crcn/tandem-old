@@ -23,6 +23,7 @@ import {
   createMenuSeparatorClass, 
   WebMenuItemFactoryProvider, 
   createKeyCommandMenuItemClass, 
+  HeaderComponentFactoryProvider,
   createToggleSettingRequestClass,
 } from "@tandem/editor/browser";
 
@@ -63,7 +64,7 @@ import {
 } from "@tandem/editor/browser";
 
 import { StudioRouteNames } from "./constants";
-import { WelcomeComponent, GettingStartedComponent } from "./components";
+import { WelcomeComponent, GettingStartedComponent, BugButtonComponent } from "./components";
 import { 
   OpenCommand,
   SetMenuCommand,
@@ -175,12 +176,15 @@ const kernel = new Kernel(
 
   // menus
   ...createMenuProviders(),
+  
 
   // Pages
   new PageFactoryProvider(StudioRouteNames.WELCOME, WelcomeComponent),
   new RouteFactoryProvider(StudioRouteNames.WELCOME, "/welcome", WelcomeRouteHandler),
   new PageFactoryProvider(StudioRouteNames.GET_STARTED, GettingStartedComponent),
   new RouteFactoryProvider(StudioRouteNames.GET_STARTED, "/get-started", GetStartedRouteHandler),
+
+  new HeaderComponentFactoryProvider("bug-button", BugButtonComponent),
   
   new TandemStudioBrowserStoreProvider(TandemStudioBrowserStore),
   createEditorBrowserProviders(config),
