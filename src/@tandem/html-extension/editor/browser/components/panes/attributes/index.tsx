@@ -48,8 +48,6 @@ export class ElementAttributesPaneComponent extends BaseApplicationComponent<{ w
   }
 
   renderAddButton() {
-
-    // TODO: temporary - make this prettier.
     return <div className="container">
     </div>;
   }

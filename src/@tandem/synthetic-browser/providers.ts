@@ -80,7 +80,7 @@ export class MarkupMimeTypeXMLNSProvider extends Provider<string> {
 export type ElementTextContentMimeTypeGetter = (element: parse5.AST.Default.Node) => string;
 
 export class ElementTextContentMimeTypeProvider extends Provider<ElementTextContentMimeTypeGetter> {
-  static readonly NS = "elementTetContentMimeTypes";
+  static readonly NS = "elementTextContentMimeTypes";
   constructor(readonly tagName: string, readonly getter: ElementTextContentMimeTypeGetter) {
     super(ElementTextContentMimeTypeProvider.getId(tagName.toLowerCase()), getter);
   }
@@ -93,6 +93,19 @@ export class ElementTextContentMimeTypeProvider extends Provider<ElementTextCont
   static lookup(element: parse5.AST.Default.Node, kernel: Kernel) {
     const provider = kernel.query<ElementTextContentMimeTypeProvider>(this.getId(element.nodeName.toLowerCase()));
     return provider && provider.getter(element);
+  }
+}
+
+export class LoadableElementProvider extends Provider<boolean> {
+  static readonly NS = "loadableElements";
+  constructor(readonly tagName: string) {
+    super(LoadableElementProvider.getId(tagName), true);
+  }
+  static getId(tagName: string) {
+    return [this.NS, tagName].join("/");
+  }
+  clone() {
+    return new LoadableElementProvider(this.tagName);
   }
 }
 

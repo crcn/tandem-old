@@ -21,6 +21,7 @@ import { EditorFamilyType, createCommonEditorProviders, OpenProjectEnvironmentCh
 import { GetProjectStartOptionsRequest, LoadProjectConfigCommand, PingRequest, createCommandProviders } from "tandem-code/common";
 
 import { 
+  LoadableElementProvider,
   createSyntheticHTMLProviders,
   SyntheticDOMElementClassProvider, 
   ElementTextContentMimeTypeProvider,

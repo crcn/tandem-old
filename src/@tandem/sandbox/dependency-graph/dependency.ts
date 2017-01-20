@@ -353,7 +353,8 @@ export class Dependency extends BaseActiveRecord<IDependencyData> implements IIn
     const loader = this._graph.getLoader(this._loaderOptions);
     const transformResult: IDependencyLoaderResult = await loader.load(this, await this.getInitialSourceContent());
 
-    this._content = transformResult.content;
+    // must be casted since the content could be a buffer
+    this._content = String(transformResult.content);
     this._map     = transformResult.map;
     this._type    = transformResult.type;
 

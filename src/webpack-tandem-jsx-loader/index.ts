@@ -17,7 +17,8 @@ import {
 declare var module;
 
 // TODO - consider other prefixes here instead of react
-module.exports = (content, contentMap) => {
+module.exports = function(content, contentMap) {
+  this.cacheable();
   if (!contentMap) return content;
 
   const lines = content.split("\n");

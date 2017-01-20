@@ -36,7 +36,6 @@ resolve UX. May want to optimize experience around writing code.
 
 
 - [ ] today
-
   - [ ] home page footer
     - [ ] email contact
     - [ ] about
@@ -57,13 +56,10 @@ resolve UX. May want to optimize experience around writing code.
   - [ ] ensure that systemjs & jspm work
 
 - [ ] UX
-  - [ ] loader for app (especially for ngrok tunnel)
   - [ ] better feedback for code that cannot be edited
     - [ ] ideally show a banner that says that an edit could not be made
 
 - [ ] BUGS
-  - [ ] apply FE edits to backend instance
-  - [ ] http timerickson img link broken
   - [ ] Cannot modify tandem css
   - [ ] ngrok too many requests
   - [ ] need to reconnect if network drops 

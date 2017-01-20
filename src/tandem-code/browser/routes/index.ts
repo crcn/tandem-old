@@ -12,3 +12,13 @@ export class WelcomeRouteHandler extends BaseRouteHandler {
     };
   }
 }
+
+export class GetStartedRouteHandler extends BaseRouteHandler {
+  async load(request: RedirectRequest) {
+    return {
+      state: {
+        [EditorRouteNames.ROOT]: StudioRouteNames.GET_STARTED
+      }
+    };
+  }
+}

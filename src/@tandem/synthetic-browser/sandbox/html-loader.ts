@@ -15,6 +15,7 @@ import {
 import {
   inject,
   Kernel,
+  injectProvider,
   HTML_MIME_TYPE,
   ISourceLocation,
   ISourcePosition,
@@ -24,6 +25,7 @@ import {
 import {
   getHTMLASTNodeLocation,
   HTML_VOID_ELEMENTS,
+  LoadableElementProvider,
   ElementTextContentMimeTypeProvider,
 } from "@tandem/synthetic-browser";
 
@@ -43,6 +45,9 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
     const { uri, hash } = dependency;
 
+    // fetch all custom tag names that need to be loaded when scanning the dependency graph.
+    const loadableTagNames = this._kernel.queryAll<LoadableElementProvider>(LoadableElementProvider.getId("**")).map(provider => provider.tagName);
+
     const expression = parse5.parse(String(content), { locationInfo: true }) as parse5.AST.Default.Document;
     const imports: string[] = [];
     const dirname = path.dirname(uri);
@@ -55,11 +60,9 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
 
       let shouldGraph  = false;
       let shouldImport = false;
-
       
-      // must be white listed here to presetn certain elements such as remote browser & anchor tags from loading resources. Even
-      // better to have a provider for loadable elements, but that's a little overkill for now.
-      if (/^(link|script|img|source)$/.test(parent.nodeName) && value && value.substr(0, 5) !== "data:") {
+      // must be white listed here to present certain elements such as remote browser & anchor tags from loading resources. 
+      if ((/^(link|script|img|source)$/.test(parent.nodeName) || loadableTagNames.indexOf(parent.nodeName) !== -1) && value && value.substr(0, 5) !== "data:") {
 
         // do not add these to the dependency graph
         shouldImport = !/^(img|source)$/.test(parent.nodeName);
@@ -79,7 +82,7 @@ export class HTMLDependencyLoader extends BaseDependencyLoader {
           value = "http:" + value;
         }
 
-        if (/src|href/.test(name)) {
+        if (/^(src|href)$/.test(name)) {
           value = (await self.strategy.resolve(value, uri)).uri;
           if (shouldImport) {
             imports.push(value);

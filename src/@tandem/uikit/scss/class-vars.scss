@@ -42,6 +42,14 @@ $sides: left, right, top, bottom;
   }
 }
 
+.pull-right {
+  float: right; 
+}
+
+.pull-left {
+  float: left;
+}
+
 .hide {
   display: none !important;
 }

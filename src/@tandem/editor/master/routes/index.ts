@@ -5,6 +5,7 @@ import { URIProtocolProvider } from "@tandem/sandbox";
 import express = require("express");
 import bodyParser = require("body-parser");
 import mime = require("mime");
+import { getProtocol } from "@tandem/common";
 
 export const createHTTPRouteProviders = () => {
   return [
@@ -15,6 +16,8 @@ export const createHTTPRouteProviders = () => {
         if (!project) return next();
 
         const sendContent = async () => {
+          const protocol = getProtocol(project.uri);
+
           const { type, content } = await project.read();
           res.contentType(type);
           res.send(content);

@@ -33,6 +33,8 @@ export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserComman
     workspace.browser = browser;
     workspace.select(browser.document.querySelector("div"));
 
-    await this.bus.dispatch(createWorkspaceRedirectRequest(null));
+    if(!location.hash) {
+      await this.bus.dispatch(createWorkspaceRedirectRequest(null));
+    }
   }
 }

@@ -21,14 +21,17 @@ export class HTTPURIProtocol extends URIProtocol {
       
       request({ 
         url: uri, 
-        followAllRedirects: true, 
+        followAllRedirects: false, 
         gzip: true,
         headers: {
           "cache-control": "max-age=3600"
         }
       }, (err, response, body) => {
-
         if (err) return reject(err);
+
+        if (/^30/.test(String(response.statusCode))) {
+          console.log(response.headers.location);
+        }
 
         this._storeResponseInfo(uri, response);
 

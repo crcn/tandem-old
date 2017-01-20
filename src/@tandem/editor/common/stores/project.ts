@@ -66,6 +66,10 @@ export class Project implements ISerializable<IProjectData> {
     }
   }
 
+  get sourceUri() {
+    return this.uri && getProtocol(this.uri) !== "data:" ? this.uri : this.httpUrl;
+  }
+
   get httpUrl() {
     return `${this._config.server.protocol}//${this._config.server.hostname}:${this._config.server.port}/projects/${this._id}.tandem`;
   }

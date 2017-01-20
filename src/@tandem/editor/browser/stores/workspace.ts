@@ -139,7 +139,7 @@ export class Workspace extends Observable {
     if (this.browser) return this.browser;
     const browser = this.browser = new RemoteSyntheticBrowser(envKernel, new CanvasRenderer(this, this._envKernel.inject(new SyntheticDOMRenderer())));
 
-    return await browser.open({ uri: this.project.httpUrl });
+    return await browser.open({ uri: this.project.sourceUri });
   }
 
   /**

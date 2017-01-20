@@ -17,6 +17,7 @@ import {
   SyntheticHTMLStyleElement,
   SyntheticHTMLScriptElement,
   SyntheticHTMLElement,
+  LoadableElementProvider,
   MarkupMimeTypeXMLNSProvider,
   SyntheticDOMElementClassProvider,
 } from "@tandem/synthetic-browser";
@@ -34,6 +35,8 @@ export function createTDProjectCoreProviders() {
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "default", SyntheticHTMLElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "script", SyntheticHTMLScriptElement),
     new SyntheticDOMElementClassProvider(TDPROJECT_XMLNS, "style", SyntheticHTMLStyleElement),
+
+    new LoadableElementProvider("remote-browser"),
 
     // mime types
     new MimeTypeAliasProvider(TDPROJECT_MIME_TYPE, HTML_MIME_TYPE),

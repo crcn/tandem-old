@@ -3,7 +3,7 @@ import { createTDProjectCoreProviders } from "../../core";
 import { MimeTypeProvider, MimeTypeAliasProvider } from "@tandem/common";
 import { TDRootFileImporter } from "./importers";
 import { FileImporterProvider } from "@tandem/editor/worker";
-import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider, SyntheticDOMElement } from "@tandem/synthetic-browser";
+import { MarkupMimeTypeXMLNSProvider, SyntheticDOMElementClassProvider, SyntheticDOMElement, LoadableElementProvider } from "@tandem/synthetic-browser";
 
 export const createTDProjectEditorWorkerProviders = () => {
   return [

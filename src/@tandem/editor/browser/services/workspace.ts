@@ -1,6 +1,5 @@
-
-import { CallbackDispatcher } from "@tandem/mesh";
 import { MetadataKeys } from "@tandem/editor/browser/constants";
+import { CallbackDispatcher } from "@tandem/mesh";
 import {
   DOMNodeType,
   BaseRenderer,

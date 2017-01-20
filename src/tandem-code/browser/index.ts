@@ -46,7 +46,7 @@ import {
   InitializeApplicationRequest, 
 } from "@tandem/common";
 
-import { WelcomeRouteHandler } from "./routes";
+import { WelcomeRouteHandler, GetStartedRouteHandler } from "./routes";
 
 import { 
   ZoomInRequest,
@@ -62,8 +62,8 @@ import {
   createEditorBrowserProviders, 
 } from "@tandem/editor/browser";
 
-import {StudioRouteNames } from "./constants";
-import { WelcomeComponent } from "./components";
+import { StudioRouteNames } from "./constants";
+import { WelcomeComponent, GettingStartedComponent } from "./components";
 import { 
   OpenCommand,
   SetMenuCommand,
@@ -76,7 +76,6 @@ import {
 
 
 const hostInfo = Url.parse(window.location.toString(), true);
-
 
 const config: IEditorBrowserConfig = {
   isPeer: location.protocol === "http:",
@@ -180,6 +179,8 @@ const kernel = new Kernel(
   // Pages
   new PageFactoryProvider(StudioRouteNames.WELCOME, WelcomeComponent),
   new RouteFactoryProvider(StudioRouteNames.WELCOME, "/welcome", WelcomeRouteHandler),
+  new PageFactoryProvider(StudioRouteNames.GET_STARTED, GettingStartedComponent),
+  new RouteFactoryProvider(StudioRouteNames.GET_STARTED, "/get-started", GetStartedRouteHandler),
   
   new TandemStudioBrowserStoreProvider(TandemStudioBrowserStore),
   createEditorBrowserProviders(config),
