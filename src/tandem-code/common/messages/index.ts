@@ -102,4 +102,12 @@ export class OpenHelpOptionRequest implements IMessage {
   }
 }
 
+export class OpenBrowserWindowRequest implements IMessage {
+  static readonly OPEN_BROWSER_WINDOW = "openBrowserWindow";
+  readonly type = OpenBrowserWindowRequest.OPEN_BROWSER_WINDOW;
+  constructor(readonly hash: string, readonly width?: number, readonly height?: number) {
+
+  }
+}
+
 export * from "@tandem/editor/common/messages";

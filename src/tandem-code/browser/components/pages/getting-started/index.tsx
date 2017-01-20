@@ -3,12 +3,31 @@ import "./index.scss";
 import React = require("react");
 import cx = require("classnames");
 
-export class GettingStartedComponent extends React.Component<any, any> {
+export class GettingStartedComponent extends React.Component<any, { page: number, selectedExtensionIndex: number }> {
 
-  private _page: number = window["GET_STARTED_PAGE"] || 0;
+  state = {
+    page: window["GET_STARTED_PAGE"] || 0,
+    selectedExtensionIndex: 0
+  }
   
-  nextPage = () => {
+  nextPage = async (ended) => {
+    if (ended) {
+      await this.openWorkspace();
+      window.close();
+    }
+    this.setState({ page: this.state.page + 1, selectedExtensionIndex: this.state.selectedExtensionIndex});
+  }
 
+  prevPage = async (ended) => {
+    this.setState({ page: this.state.page - 1, selectedExtensionIndex: this.state.selectedExtensionIndex });
+  }
+
+  openWorkspace = async () => {
+    // TODO - prompt to open file
+  }
+
+  selectExtension = (index) => {
+    this.setState({ page: this.state.page, selectedExtensionIndex: index });
   }
 
   render() {
@@ -20,15 +39,20 @@ export class GettingStartedComponent extends React.Component<any, any> {
       this.done
     ];
 
+    const ended = this.state.page === pages.length -1;
+
     return <div className="getting-started-component">
       <div className="content container">
-        {pages[Math.min(this._page, pages.length - 1)]()}
+        {pages[Math.min(this.state.page, pages.length - 1)]()}
       </div>
       <div className="footer container">
         <div className="row">
           <div className="col-12">
-            <a href="#" className="button pull-right" onClick={this.nextPage.bind(this)}>
-              { this._page === pages.length -1 ? "Start using tandem" : "Next" }
+            { this.state.page !== 0 ? <a href="#" className="button pull-left" onClick={this.prevPage.bind(this, ended)}>
+              { "Back" }
+            </a> : undefined }
+            <a href="#" className="button pull-right" onClick={this.nextPage.bind(this, ended)}>
+              { ended ? "Start using tandem" : "Next" }
             </a>
           </div>
         </div>
@@ -60,19 +84,15 @@ export class GettingStartedComponent extends React.Component<any, any> {
     const options = [
       {
         label: "Atom",
-        iconUrl: require("./atom.png"),
-        selected: true
+        iconUrl: require("./atom.png")
       },
       {
         label: "VSCode",
-        iconUrl: require("./vscode.png"),
-        selected: false
+        iconUrl: require("./vscode.png")
       },
       {
         label: "None",
-        iconUrl: require("./icon_blue.png"),
-        
-        selected: false
+        iconUrl: require("./icon_blue.png")
       }
     ];
 
@@ -83,7 +103,7 @@ export class GettingStartedComponent extends React.Component<any, any> {
             Install a text editor extension
           </div>
           <div className="description">
-            Tandem works best with your text editor to synchronize code changes as you're building your application. 
+            This extension enables Tandem to synchronize changes with your text editor. You can always install it later on.
           </div>
         </div>
       </div>
@@ -91,8 +111,8 @@ export class GettingStartedComponent extends React.Component<any, any> {
         <div className="col-12">
           <ul className="options">
             {
-              options.map(({ label, iconUrl, selected }) => {
-                return <li className={cx({ selected: selected }, "fill-text")}>
+              options.map(({ label, iconUrl, }, index) => {
+                return <li className={cx({ selected: this.state.selectedExtensionIndex === index }, "fill-text")} onClick={this.selectExtension.bind(this, index)}>
                 <img src={iconUrl} />
                 <label>{label}</label>
               </li>

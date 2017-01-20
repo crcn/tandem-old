@@ -28,7 +28,7 @@ import {
   SelectDirectoryCommand,
   OpenNewWorkspaceCommand,
   CLIOpenWorkspaceCommand,
-  // HookSpawnedWorkerCommand,
+  OpenBrowserWindowCommand,
   InstallShellCommandsCommand,
   InitSettingsDirectoryCommand,
   GetProjectStarterOptionsCommand,
@@ -46,6 +46,7 @@ import {
   StartNewProjectRequest,
   SelectDirectoryRequest,
   OpenNewWorkspaceRequest,
+  OpenBrowserWindowRequest,
   ResolveWorkspaceURIRequest,
   GetProjectStartOptionsRequest,
   InstallCommandLineToolsRequest,
@@ -128,6 +129,7 @@ export const initializeMaster = async () => {
     
     // commands
     new CommandFactoryProvider(PingRequest.PING, HandlePingCommand),
+    new CommandFactoryProvider(OpenBrowserWindowRequest.OPEN_BROWSER_WINDOW, OpenBrowserWindowCommand),
     new CommandFactoryProvider(GetTunnelUrlRequest.GET_TUNNEL_URL, GetTunnelUrlCommand),
     new CommandFactoryProvider(SaveAllRequest.SAVE_ALL, SaveAllFilesCommand),
     new CommandFactoryProvider(InstallCommandLineToolsRequest.INSTALL_COMMAND_LINE_TOOLS, InstallShellCommandsCommand),

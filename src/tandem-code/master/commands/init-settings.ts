@@ -1,7 +1,7 @@
 import fs =  require("fs");
 import path =  require("path");
 import { merge } from "lodash";
-import { IUserSettings } from "../stores";
+import { IUserSettings, UserSettings } from "../stores";
 import { BaseStudioMasterCommand } from "./base";
 
 function getTextEditor() {
@@ -30,7 +30,8 @@ export class InitSettingsCommand extends BaseStudioMasterCommand {
       config = JSON.parse(fs.readFileSync(configPath, "utf8"))
     }
 
-    this.masterStore.userSettings = addDefaults(config || {} as any);
-    this.logger.info("Using settings: " + JSON.stringify(this.masterStore.userSettings, null, 2));
+    this.masterStore.userSettings = this.kernel.inject(new UserSettings(addDefaults(config || {} as any)));
+
+    this.logger.info("Using settings: " + JSON.stringify(this.masterStore.userSettings.sourceData, null, 2));
   }
 }

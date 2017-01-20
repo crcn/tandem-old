@@ -1,12 +1,14 @@
 import path =  require("path");
 import glob =  require("glob");
+import fs = require("fs");
 import { TransformStream } from "@tandem/mesh";
 import { URIProtocolProvider } from "@tandem/sandbox";
 import { inject, hasURIProtocol } from "@tandem/common";
-import { OpenNewWorkspaceRequest } from "tandem-code/common";
 import { CreateNewProjectRequest } from "@tandem/editor/common";
 import {  BaseStudioMasterCommand } from "./base";
+import { OpenNewWorkspaceRequest, OpenBrowserWindowRequest } from "tandem-code/common";
 
+// TODO - change this name to something more generic such as CLIOpen command
 export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
 
   async execute() {
@@ -43,6 +45,12 @@ export class CLIOpenWorkspaceCommand extends  BaseStudioMasterCommand {
 
       if (!hasURIProtocol(uri)) {
         uri = "file://" + uri;
+      }
+    }
+
+    if (!uri) {
+      if (!(await this.masterStore.userSettings.exists())) {
+        return this.bus.dispatch(new OpenBrowserWindowRequest("#/get-started"));
       }
     }
 
