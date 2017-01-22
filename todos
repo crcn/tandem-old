@@ -23,10 +23,8 @@ IMMEDIATE
 
 Messaging:
 
-TODO - strip of all functionality that does not work all the time - need to
-resolve UX. May want to optimize experience around writing code.
-
 - [ ] polish
+  - [ ] must work with systemjs
 
 - [ ] code first
   - [ ] hello wizard
@@ -85,19 +83,8 @@ NOTES
 - [ ] tandem must have full UI editing capabilities. Too much context switching between code & design
 
 ----------------------------------
-LAUNCHING
-----------------------------------
-
-WEBSITE
-  - [ ] cross-browser testing demo (show same browser window with different icons
-
-
-----------------------------------
 STABILITY
 ----------------------------------
-
-DOCS
-  - [ ] browser compatibility table (what you can & cannot currently do in Tandem)
 
 UX
   - [ ] *"LIVE" button that loads the application up in an iframe in the client
@@ -106,7 +93,6 @@ UX
   - [ ] VM developer console
   - [ ] gutters need to be resizable
   - [ ] input focus border
-  - [ ] multi drag
   - [ ] minimap (can also be done by opening up a new window of tandem)
   - [ ] incompatible browser notification
 
