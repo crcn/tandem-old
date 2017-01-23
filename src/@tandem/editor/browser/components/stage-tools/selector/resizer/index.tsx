@@ -183,7 +183,7 @@ class ResizerComponent extends BaseApplicationComponent<{
 
     event.stopPropagation();
 
-    if (!this._visibleElements.getCapabilities().movable) return;
+    if (!this._visibleElements.getCapabilities().movable || !this._visibleElements.editable) return;
 
     this.props.onMoving();
     const selection = this.props.selection;

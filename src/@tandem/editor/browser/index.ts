@@ -124,10 +124,10 @@ export function createEditorBrowserProviders(config: IEditorBrowserConfig,fileRe
     new CommandFactoryProvider(RedirectRequest.REDIRECT, RedirectCommand),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, SetReadyStatusCommand),
     new CommandFactoryProvider(OpenWorkspaceRequest.OPEN_WORKSPACE, OpenWorkspaceCommand),
-    new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),
     new CommandFactoryProvider(LoadApplicationRequest.LOAD, LoadAnonSession),
-    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadRouterCommand),
     new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, OpenCWDCommand),
+    new CommandFactoryProvider(InitializeApplicationRequest.INITIALIZE, LoadRouterCommand),
+    new CommandFactoryProvider(RemoveSelectionRequest.REMOVE_SELECTION, RemoveSelectionCommand),    
     new CommandFactoryProvider(OpenLinkInNewWindowRequest.OPEN_LINK_IN_NEW_WINDOW, OpenLinkInNewWindowCommand),
     new CommandFactoryProvider(OpenLinkInThisWindowRequest.OPEN_LINK_IN_THIS_WINDOW, OpenLinkInThisWindowCommand),
 

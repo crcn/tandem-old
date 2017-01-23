@@ -9,6 +9,6 @@ export class ApplyFileEditCommand extends BaseCommand {
   private _fileEditor: FileEditor;
 
   execute(request: ApplyFileEditRequest) {
-    this._fileEditor.applyMutations(request.mutations);
+    return this._fileEditor.applyMutations(request.mutations);
   }
 }

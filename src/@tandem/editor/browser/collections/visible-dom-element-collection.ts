@@ -18,7 +18,7 @@ export class VisibleSyntheticElementCollection<T extends VisibleSyntheticDOMElem
   }
 
   get editable() {
-    return this.find((entity) => entity.source == null) == null;
+    return this.find((entity) => Boolean(entity.source && entity.source.uri)) != null;
   }
 
   getAbsoluteBounds(): BoundingRect {

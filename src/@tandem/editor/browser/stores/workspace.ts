@@ -197,7 +197,14 @@ export class Workspace extends Observable {
   }
 
   async applyFileMutations(mutations: Mutation<any>[]) {
-    return PrivateBusProvider.getInstance(this._envKernel).dispatch(new ApplyFileEditRequest(mutations));
+    try {
+      await  PrivateBusProvider.getInstance(this._envKernel).dispatch(new ApplyFileEditRequest(mutations));
+
+    // not appropriate to put view information here -- works for now. Probably better to dispatch
+    // a global message instead.
+    } catch(e) {
+      alert("Unable to apply file edit. Target object likely does not have a source map.");
+    }
   }
 
   private onBrowserChange(newBrowser: ISyntheticBrowser) {

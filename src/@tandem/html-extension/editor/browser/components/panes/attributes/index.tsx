@@ -2,7 +2,6 @@ import React =  require("react");
 import { Workspace } from "@tandem/editor/browser";
 import { DOMElements } from "@tandem/html-extension/collections";
 import { HashInputComponent } from "@tandem/html-extension/editor/browser/components/common";
-import { ApplyFileEditRequest } from "@tandem/sandbox";
 import { BaseApplicationComponent } from "@tandem/common";
 import { SyntheticHTMLElement, SyntheticDOMAttribute, SyntheticDOMElementEdit } from "@tandem/synthetic-browser";
 

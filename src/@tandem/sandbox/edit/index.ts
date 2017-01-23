@@ -223,10 +223,12 @@ export class FileEditor {
       const target = mutation.target;
 
       // This may happen if edits are being applied to synthetic objects that
-      // do not have the proper mappings
+      // do not have the proper mappings. This WILL happen especially with dynamic javascript. In that
+      // case, we need to short-cert
       if (!target.source || !target.source.uri) {
-        this.logger.error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
-        continue;
+        const error = new Error(`Cannot edit file, source property is mising from ${target.clone(false).toString()}.`);
+        this.logger.error(error.message);
+        return Promise.reject(error);
       }
 
       const targetSource = target.source;
