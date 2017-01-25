@@ -9,9 +9,16 @@ import { SyntheticDocumentFragment } from "./document-fragment";
 import { CallbackDispatcher, IDispatcher } from "@tandem/mesh";
 import { SyntheticDOMNode, SyntheticDOMNodeSerializer } from "./node";
 import { DOMEventListenerFunction } from "../events";
-import { SyntheticDOMContainer, SyntheticDOMContainerEdit, DOMContainerEditor, isDOMContainerMutation, SyntheticDOMContainerMutationTypes, SyntheticDOMContainerEditor } from "./container";
+import { 
+  DOMContainerEditor, 
+  SyntheticDOMContainer, 
+  isDOMContainerMutation, 
+  SyntheticDOMContainerEdit, 
+  SyntheticDOMContainerEditor,
+  SyntheticDOMContainerMutationTypes, 
+} from "./container";
 import {
-  BubbleDispatcher,
+  Mutation,
   serialize,
   diffArray,
   Observable,
@@ -20,15 +27,15 @@ import {
   ISerializer,
   BoundingRect,
   serializable,
-  SerializedContentType,
-  Mutation,
   ArrayMutation,
   MutationEvent,
+  PropertyMutation,
+  BubbleDispatcher,
   SetValueMutation,
   MoveChildMutation,
   InsertChildMutation,
-  PropertyMutation,
   ObservableCollection,
+  SerializedContentType,
 } from "@tandem/common";
 
 

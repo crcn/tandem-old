@@ -148,6 +148,8 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this._mutations.push(event.mutation);
       this.sendDiffs();
     }
+
+    console.log(event);
   }
 
   /**

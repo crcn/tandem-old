@@ -9,6 +9,22 @@ export class SyntheticDOMEvent<T> extends CoreEvent {
   }
 }
 
+export class SyntheticMouseEvent<T> extends SyntheticDOMEvent<T> {
+  static readonly MOUSE_UP    = "mouseUp";
+  static readonly MOUSE_DOWN  = "mouseDown";
+  static readonly CLICK       = "click";
+  static readonly MOUSE_OVER  = "mouseOver";
+  static readonly MOUSE_MOVE  = "mouseMove";
+  static readonly MOUSE_ENTER = "mouseEnter";
+  static readonly MOUSE_LEAVE = "mouseLeave";
+}
+
+export class SyntheticKeyboardEvent<T> extends SyntheticDOMEvent<T> {
+  static readonly KEY_DOWN  = "keyDown";
+  static readonly KEY_UP    = "keyUp";
+  static readonly KEY_PRESS = "keyPress";
+}
+
 export namespace DOMEventTypes {
 
   /**

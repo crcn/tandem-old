@@ -22,19 +22,21 @@ import {
  } from "@tandem/sandbox";
 
 import { ISyntheticBrowser } from "../../browser";
+import { DOMEventDispatcherMap } from "../events";
 
 import {
   Mutation,
   TreeNode,
   Metadata,
-  BubbleDispatcher,
   serialize,
+  CoreEvent,
   ITreeWalker,
   deserialize,
   ISerializer,
   IComparable,
   findTreeNode,
   serializable,
+  BubbleDispatcher,
 } from "@tandem/common";
 
 export interface ISerializedSyntheticDOMNode {
@@ -94,12 +96,18 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   public $module: SandboxModule;
 
+  private _eventDispatcher: DOMEventDispatcherMap;
+
 
   constructor(readonly nodeName: string) {
     super();
     this.regenerateUID();
     this.metadata = new Metadata(this.getInitialMetadata());
     this.metadata.observe(new BubbleDispatcher(this));
+  }
+
+  protected get eventDispatcher() {
+    return this._eventDispatcher || (this._eventDispatcher = new DOMEventDispatcherMap(this));
   }
 
   // necessary after cloning
@@ -149,8 +157,16 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
     return this.parent as SyntheticDOMContainer;
   }
 
-  addEventListener(type: string) {
-    // TODO
+  addEventListener(type: string, listener: (event: CoreEvent) => any) {
+    this.eventDispatcher.add(type, listener);
+  }
+
+  removeEventListener(type: string, listener: (event: CoreEvent) => any) {
+    this.eventDispatcher.remove(type, listener);
+  }
+
+  dispatchEvent(event: CoreEvent) {
+    this.notify(event);
   }
 
   contains(node: SyntheticDOMNode) {
@@ -166,10 +182,6 @@ export abstract class SyntheticDOMNode extends TreeNode<SyntheticDOMNode> implem
 
   compare(source: SyntheticDOMNode) {
     return Number(source.constructor === this.constructor && this.nodeName === source.nodeName);
-  }
-
-  removeEventListener() {
-    // TODO
   }
 
   isEqualNode(node: SyntheticDOMNode) {

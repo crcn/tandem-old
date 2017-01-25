@@ -1,29 +1,29 @@
 import postcss =  require("postcss");
 import { kebabCase } from "lodash";
 import {
-  CoreEvent,
   inject,
   Kernel,
-  KernelProvider,
-  sourcePositionEquals,
-  MimeTypeProvider,
   Mutation,
+  CoreEvent,
+  KernelProvider,
+  MimeTypeProvider,
   SetValueMutation,
   PropertyMutation,
+  MoveChildMutation,
   InsertChildMutation,
   RemoveChildMutation,
-  MoveChildMutation,
+  sourcePositionEquals,
 } from "@tandem/common";
 
 import {
   parseCSS,
-  SyntheticCSSElementStyleRule,
   syntheticCSSRuleType,
-  SyntheticCSSGroupAtRuleEdit,
-  SyntheticCSSElementStyleRuleMutationTypes,
   SyntheticCSSGroupAtRule,
+  SyntheticCSSGroupAtRuleEdit,
   CSSGroupingRuleMutationTypes,
+  SyntheticCSSElementStyleRule,
   SyntheticCSSKeyframesRuleEdit,
+  SyntheticCSSElementStyleRuleMutationTypes,
   SyntheticCSSElementStyleRuleEdit,
 } from "../dom";
 
