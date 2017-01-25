@@ -1,7 +1,8 @@
 import { SyntheticDocument } from "../document";
 import { SyntheticCSSStyle } from "../css";
-import { DOMEventListenerFunction } from "../events";
+import { bindDOMEventMethods } from "../utils";
 import { localizeFixedPosition } from "./utils";
+import { DOMEventListenerFunction } from "../events";
 import { BoundingRect, serializable, IPoint, bindable, ArrayCollection } from "@tandem/common";
 
 import {
@@ -11,6 +12,7 @@ import {
   VisibleSyntheticDOMElement,
   VisibleDOMNodeCapabilities,
 } from "../markup";
+
 
 import parse5 = require("parse5");
 
@@ -33,6 +35,7 @@ class ElementClassList extends ArrayCollection<string> {
   }
 }
 
+// http://www.w3schools.com/jsref/dom_obj_event.asp
 // TODO - proxy dataset
 @serializable("SyntheticHTMLElement")
 export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCSSStyle> {
@@ -42,10 +45,56 @@ export class SyntheticHTMLElement extends VisibleSyntheticDOMElement<SyntheticCS
   private _classList: string[];
   protected _native: HTMLElement;
 
+  @bindable()
+  public onclick: (event?) => any;
+
+  @bindable()
+  public ondblclick: (event?) => any;
+
+  @bindable()
+  public onmousedown: (event?) => any;
+
+  @bindable()
+  public onmouseenter: (event?) => any;
+
+  @bindable()
+  public onmouseleave: (event?) => any;
+
+  @bindable()
+  public onmousemove: (event?) => any;
+
+  @bindable()
+  public onmouseover: (event?) => any;
+
+  @bindable()
+  public onmouseup: (event?) => any;
+
+  @bindable()
+  public onkeydown: (event?) => any;
+
+  @bindable()
+  public onkeypress: (event?) => any;
+
+  @bindable()
+  public onkeyup: (event?) => any;
 
   constructor(ns: string, tagName: string) {
     super(ns, tagName);
     this._style = new SyntheticCSSStyle();
+    bindDOMEventMethods([
+      "click", 
+      "dblClick",
+      "mouseDown", 
+      "mouseEnter", 
+      "mouseLeave", 
+      "mouseMove",  
+      "mouseOver",  
+      "mouseOut", 
+      "mouseUp",
+      "keyUp",
+      "keyPress",
+      "keyDown",
+    ], this);
   }
 
   getClientRects() {

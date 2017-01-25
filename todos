@@ -23,8 +23,8 @@ IMMEDIATE
 
 TODAY
   - [ ] User events
+    - [ ] send value state of input
   - [ ] Get it working with dynamically loaded scripts
-  - [ ] Tandem -> text editor changes still not synchronizing
 
 Messaging:
 

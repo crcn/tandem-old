@@ -2,7 +2,17 @@ import { debounce } from "lodash";
 import { OpenRemoteBrowserRequest } from "./messages";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
-import { CallbackDispatcher, IDispatcher, IStreamableDispatcher, WritableStream, DuplexStream, ReadableStream, ReadableStreamDefaultReader, pump, IMessage } from "@tandem/mesh";
+import { 
+  pump, 
+  IMessage,
+  IDispatcher, 
+  DuplexStream, 
+  WritableStream, 
+  ReadableStream, 
+  CallbackDispatcher, 
+  IStreamableDispatcher, 
+  ReadableStreamDefaultReader, 
+} from "@tandem/mesh";
 import {
   fork,
   Logger,
@@ -16,6 +26,7 @@ import {
   serialize,
   MutationEvent,
   flattenTree,
+  findTreeNode,
   deserialize,
   IInjectable,
   IDisposable,
@@ -25,12 +36,21 @@ import {
   BaseApplicationService,
 } from "@tandem/common";
 
-import { SyntheticWindow, SyntheticDocument, SyntheticDocumentEdit } from "./dom";
+import { 
+  getNodePath,
+  getNodeByPath,
+  SyntheticWindow, 
+  SyntheticDOMNode,
+  SyntheticDocument, 
+  SyntheticDocumentEdit 
+} from "./dom";
+
 import {
   Dependency,
   BaseContentEdit,
   DependencyGraph,
   ApplyFileEditRequest,
+  ISyntheticObject,
   SyntheticObjectTreeEditor,
   DependencyGraphWatcher,
   DependencyGraphProvider,
@@ -54,11 +74,13 @@ import {
 export class RemoteBrowserDocumentMessage extends CoreEvent {
   static readonly NEW_DOCUMENT  = "newDocument";
   static readonly DOCUMENT_DIFF = "documentDiff";
+  static readonly DOM_EVENT     = "domEvent";
   static readonly STATUS_CHANGE = "statusChange";
   constructor(type: string, readonly data: any) {
     super(type);
   }
 }
+
 
 @loggable()
 export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
@@ -144,12 +166,19 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   protected onDocumentEvent(event: CoreEvent) {
     super.onDocumentEvent(event);
     
-    if (event instanceof MutationEvent && !this._ignoreMutations) {
-      this._mutations.push(event.mutation);
-      this.sendDiffs();
+    if (event instanceof MutationEvent) {
+      if (!this._ignoreMutations) {
+        this._mutations.push(event.mutation);
+        this.sendDiffs();
+      }
+      return;
     }
 
-    console.log(event);
+    // TODO - check if this is a user event
+    if (event.target && event.target.clone) {
+      console.log(event);
+      this._writer.write(serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOM_EVENT, [getNodePath(event.target), event])));
+    }
   }
 
   /**
@@ -210,6 +239,12 @@ export class RemoteBrowserService extends BaseApplicationService {
         const message = deserialize(payload, this.kernel) as RemoteBrowserDocumentMessage;
         if (message.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
           editor.applyMutations(message.data as Mutation<any>[]);
+        } else if (message.type === RemoteBrowserDocumentMessage.DOM_EVENT) {
+          const [nodePath, event] = message.data;
+          const found = getNodeByPath(browser.document, nodePath);
+          if (found) {
+            found.dispatchEvent(event);
+          }
         }
       });
 

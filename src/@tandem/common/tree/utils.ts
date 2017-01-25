@@ -17,7 +17,7 @@ export function flattenTree<T extends IWalkable>(node: T): T[] {
   return filterTree(node, child => true);
 };
 
-export function findTreeNode<T extends IWalkable>(node: T, filter: (node: T) => boolean): T {
+export function findTreeNode<T extends IWalkable>(node: T, filter: (node: any) => boolean): T {
   let found;
 
   const walker = new TreeWalker((node) => {

@@ -1,5 +1,5 @@
 import { IMessage, IDispatcher } from "@tandem/mesh";
-import { CoreEvent, Observable } from "@tandem/common";
+import { CoreEvent, Observable, serializable } from "@tandem/common";
 import { SyntheticDOMNode } from "../markup";
 
 export class SyntheticDOMEvent<T> extends CoreEvent {
@@ -9,20 +9,43 @@ export class SyntheticDOMEvent<T> extends CoreEvent {
   }
 }
 
+// http://www.w3schools.com/jsref/dom_obj_event.asp
+@serializable("SyntheticMouseEvent", {
+  serialize({ type }: SyntheticMouseEvent<any>) {
+    return [type];
+  },
+  deserialize([type]) {
+    return new SyntheticMouseEvent<any>(type);
+  }
+})
 export class SyntheticMouseEvent<T> extends SyntheticDOMEvent<T> {
-  static readonly MOUSE_UP    = "mouseUp";
-  static readonly MOUSE_DOWN  = "mouseDown";
   static readonly CLICK       = "click";
-  static readonly MOUSE_OVER  = "mouseOver";
-  static readonly MOUSE_MOVE  = "mouseMove";
+  static readonly dblclick    = "dblclick";
+  static readonly MOUSE_DOWN  = "mouseDown";
   static readonly MOUSE_ENTER = "mouseEnter";
   static readonly MOUSE_LEAVE = "mouseLeave";
+  static readonly MOUSE_MOVE  = "mouseMove";
+  static readonly MOUSE_OVER  = "mouseOver";
+  static readonly MOUSE_OUT   = "mouseOut";
+  static readonly MOUSE_UP    = "mouseUp";
 }
 
+
+// for testing in chrome console -- remove this eventually
+global["SyntheticMouseEvent"] = SyntheticMouseEvent;
+
+@serializable("SyntheticKeyboardEvent", {
+  serialize({ type }: SyntheticKeyboardEvent<any>) {
+    return [type];
+  },
+  deserialize([type]) {
+    return new SyntheticKeyboardEvent<any>(type);
+  }
+})
 export class SyntheticKeyboardEvent<T> extends SyntheticDOMEvent<T> {
   static readonly KEY_DOWN  = "keyDown";
-  static readonly KEY_UP    = "keyUp";
   static readonly KEY_PRESS = "keyPress";
+  static readonly KEY_UP    = "keyUp";
 }
 
 export namespace DOMEventTypes {
