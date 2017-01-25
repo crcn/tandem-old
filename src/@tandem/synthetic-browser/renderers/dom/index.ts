@@ -43,6 +43,7 @@ import {
   SyntheticCSSObject,
   DOMValueNodeEditor,
   DOMContainerEditor,
+  SyntheticMouseEvent,
   CSSStyleRuleEditor,
   isCSSAtRuleMutaton,
   SyntheticDOMElement,
@@ -57,6 +58,7 @@ import {
   isDOMDocumentMutation,
   isDOMValueNodeMutation,
   isCSSStyleRuleMutation,
+  SyntheticKeyboardEvent,
   SyntheticCSSGroupAtRule,
   SyntheticCSSStyleSheet,
   SyntheticCSSGroupingRule,
@@ -294,7 +296,40 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     this._documentElement = undefined;
     this._cssRuleDictionary = {};
     this._elementDictionary = {};
-    if (this.element) this.element.innerHTML = this.createElementInnerHTML();
+    const { element } = this;
+    if (element) {
+      element.innerHTML = this.createElementInnerHTML();
+      element.onclick = 
+      element.ondblclick = 
+      element.onmousedown =
+      element.onmouseenter = 
+      element.onmouseleave = 
+      element.onmousemove  = 
+      element.onmouseout = 
+      element.onmouseover = 
+      element.onmouseup =
+      element.onmousewheel = 
+      element.onkeydown = 
+      element.onkeypress = 
+      element.onkeyup = (event: any) => {
+        for (let uid in this._elementDictionary) {
+          const [native, synthetic] = this._elementDictionary[uid];
+          if (native === event.target) {
+            this.onDOMEvent(synthetic as SyntheticDOMElement, event);
+          }
+        }
+      }
+    }
+  }
+
+  private onDOMEvent (element: SyntheticDOMElement, event: any) {
+
+    // TODO - add more data here
+    if (event.constructor.name === "MouseEvent") {
+      element.dispatchEvent(new SyntheticMouseEvent(event.type));
+    } else if (event.constructor.name === "KeyboardEvent") {
+      element.dispatchEvent(new SyntheticKeyboardEvent(event.type));
+    }
   }
 
   private updateRects() {
@@ -348,6 +383,7 @@ function renderHTMLNode(nodeFactory: Document, syntheticNode: SyntheticDOMNode, 
       if(/^(style|link|script)$/.test(syntheticElement.nodeName)) return nodeFactory.createTextNode("");
       
       const element = renderHTMLElement(nodeFactory, syntheticElement.nodeName, syntheticElement, dict, onChange, createProxyUrl);
+
       element.onload = onChange;
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
         const syntheticAttribute = syntheticElement.attributes[i];

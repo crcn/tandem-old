@@ -4,10 +4,12 @@
 .remote-browser-stage-tool {
   .remote-browser-window {
     position: absolute;
+    pointer-events: none;
 
     filter: none;
 
     .header {
+      pointer-events: all;
       transform: translateY(-100%);
       width: 100%;
       position: relative;

@@ -4,6 +4,7 @@ import { SyntheticCSSStyle } from "@tandem/synthetic-browser/dom/css";
 import {
   isDOMNodeMutation,
   isCSSMutation,
+  SyntheticDOMElement,
   CSSGroupingRuleMutationTypes,
   SyntheticDocumentMutationTypes,
   SyntheticDOMElementMutationTypes,
@@ -16,8 +17,18 @@ export class DOMNodeEvent extends CoreEvent {
   static readonly DOM_NODE_LOADED = "domNodeLoaded";
 }
 
+export class SyntheticRendererNodeEvent extends CoreEvent {
+  static readonly NODE_EVENT = "nodeEvent";
+  constructor(readonly element: SyntheticDOMElement, event: any) {
+    super(SyntheticRendererNodeEvent.NODE_EVENT);
+  }
+}
+
 export class SyntheticRendererEvent extends CoreEvent {
   static readonly UPDATE_RECTANGLES = "updateRectangles";
+  constructor(type: string) {
+    super(type);
+  }
 }
 
 @serializable("OpenRemoteBrowserRequest")

@@ -104,7 +104,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     _kernel.inject(this);
 
     this._renderer = _kernel.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
-    this._renderer.observe(new BubbleDispatcher(this));
+    this._renderer.observe(new CallbackDispatcher(this.onRendererEvent.bind(this)));
     this._documentObserver = new CallbackDispatcher(this.onDocumentEvent.bind(this));
   }
 
@@ -126,6 +126,13 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     return this._window;
   }
 
+  protected onRendererEvent(event: SyntheticRendererEvent) {
+    this.notify(event); // bubble
+  }
+
+  protected onRendererNodeEvent(event: SyntheticRendererEvent) {
+    // OVERRIDE ME
+  }
 
   protected setWindow(value: SyntheticWindow) {
     if (this._window) {

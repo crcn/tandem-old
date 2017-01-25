@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import { OpenRemoteBrowserRequest } from "./messages";
+import { OpenRemoteBrowserRequest, SyntheticRendererEvent } from "./messages";
 import { NoopRenderer, ISyntheticDocumentRenderer } from "./renderers";
 import { ISyntheticBrowser, SyntheticBrowser, BaseSyntheticBrowser, ISyntheticBrowserOpenOptions } from "./browser";
 import { 
@@ -165,6 +165,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   protected onDocumentEvent(event: CoreEvent) {
     super.onDocumentEvent(event);
+
     
     if (event instanceof MutationEvent) {
       if (!this._ignoreMutations) {
@@ -176,7 +177,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     // TODO - check if this is a user event
     if (event.target && event.target.clone) {
-      console.log(event);
       this._writer.write(serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOM_EVENT, [getNodePath(event.target), event])));
     }
   }
