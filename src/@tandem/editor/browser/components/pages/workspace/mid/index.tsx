@@ -19,14 +19,20 @@ export class WorkspaceMidComponent extends BaseApplicationComponent<{}, {}> {
     const { workspace, settings } = this._store;
     const selection = workspace && workspace.selection || [];
 
-    const hideLeftGutter = this._store.settings.get(SettingKeys.HIDE_LEFT_SIDEBAR);
-    const hideRightGutter = this._store.settings.get(SettingKeys.HIDE_RIGHT_SIDEBAR);
+    const hideLeftGutter   = this._store.settings.get(SettingKeys.HIDE_LEFT_SIDEBAR);
+    const hideRightGutter  = this._store.settings.get(SettingKeys.HIDE_RIGHT_SIDEBAR);
+    const hideBottomGutter = this._store.settings.get(SettingKeys.HIDE_BOTTOM_GUTTER);
     
     return <div className="td-workspace-mid">
       { hideLeftGutter ? null : <GutterComponent className="left" style={{width:350, display: "block" }}>
         <RegisteredComponent workspace={workspace} ns={DocumentPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent> }
-      <CenterComponent workspace={workspace} />
+      <div className="td-workspace-mid-cent">
+        <CenterComponent workspace={workspace} />
+        { hideBottomGutter ? null : <GutterComponent className="bottom" style={{ height: 350, display: "block" }}>
+          <div> GUTTERRR </div>
+        </GutterComponent>}
+      </div>
       { hideRightGutter ? null : <GutterComponent className="right" style={{width:350, display: "block"  }}>
         <RegisteredComponent workspace={workspace} ns={EntityPaneComponentFactoryProvider.getId("**")} />
       </GutterComponent> }

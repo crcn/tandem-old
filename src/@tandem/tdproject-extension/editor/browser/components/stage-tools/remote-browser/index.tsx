@@ -158,6 +158,7 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
     return <div className="remote-browser-window platform desktop" style={chromeStyle}>
       <div className="header" onClick={this.select} onMouseDown={this.startDrag}>
         <div className="tabbar">
+        
           <div className="tab">{ remoteBrowser.title || "Untitled" }</div>
           <div className="controls">
             <i className="ion-plus-round" onClick={this.clone} />

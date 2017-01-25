@@ -6,6 +6,7 @@ export const POINTER_TOOL_KEY_CODE = "p";
 export namespace SettingKeys {
   export const HIDE_LEFT_SIDEBAR = "hideLeftSidebar";
   export const HIDE_RIGHT_SIDEBAR = "hideRightSidebar";
+  export const HIDE_BOTTOM_GUTTER = "hideBottomGutter";
 }
 
 export namespace MetadataKeys {

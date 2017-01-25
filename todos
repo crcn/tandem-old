@@ -25,6 +25,10 @@ NOW
   - [ ] relative urls resolve as root. See http://todomvc.com/examples/react/#/
   - [ ] pass input state from browser to node
   - [ ] Get it working with dynamically loaded scripts
+  - [ ] developer panel
+    - [ ] console window
+    - [ ] media queries
+    - [ ] animations
 
 
 
@@ -35,7 +39,6 @@ Messaging:
 
 - [ ] code first
   - [ ] ensure that it works with Aurelia 
-  - [ ] transmit user events
   - [ ] ensure that tools work under all cases
   - [ ] right click inspect element
 
