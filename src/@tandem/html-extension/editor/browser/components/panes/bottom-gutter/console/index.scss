@@ -7,6 +7,18 @@
     li {
       padding: 8px 16px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+      &.error {
+        background:#FDD6D6;
+      }
+
+      &.warning {
+        background: #FDFDCF;
+      }
+
+      &.notice {
+        background: #DBEFFD;
+      }
     }
   }
 }
