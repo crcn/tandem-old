@@ -21,7 +21,12 @@ QUESTIONS
 IMMEDIATE
 ----------------------------------
 
+DAILY TASK LIST
+  - [ ] 1hr fix bugs
+  - [ ] 
+
 NOW
+  - [ ] 
   - [ ] relative urls resolve as root. See http://todomvc.com/examples/react/#/
   - [ ] pass input state from browser to node
   - [ ] Get it working with dynamically loaded scripts

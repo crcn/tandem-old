@@ -2,9 +2,9 @@ import "./index.scss";
 
 import React =  require("react");
 import { WorkspaceMidComponent } from "./mid";
-import { WorkspaceTitlebarComponent } from "./titlebar";
-import { BaseApplicationComponent } from "@tandem/common";
 import { RegisteredComponent  } from "@tandem/editor/browser/components/common";
+import { BaseApplicationComponent } from "@tandem/common";
+import { WorkspaceTitlebarComponent } from "./titlebar";
 import { EditorComponentFactoryProvider } from "@tandem/editor/browser/providers";
 
 export class WorkspaceComponent extends BaseApplicationComponent<{}, {}> {

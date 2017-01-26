@@ -12,6 +12,7 @@
     position: relative;
     .m-editor-stage {
       flex: 1;
+      
       flex-shrink: 0;
       height: calc(100% - 200px);
     }

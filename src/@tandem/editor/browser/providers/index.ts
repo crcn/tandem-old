@@ -86,6 +86,18 @@ export class DocumentPaneComponentFactoryProvider extends ReactComponentFactoryP
   }
 }
 
+export class BottomGutterTabComponentProvider extends ReactComponentFactoryProvider {
+  static readonly NS = "components/panes/bottomGutter";
+  constructor(readonly name: string, readonly label: string, readonly componentClass: any) {
+    super(BottomGutterTabComponentProvider.getId(name), componentClass);
+  }
+  clone() {
+    return new BottomGutterTabComponentProvider(this.name, this.label, this.componentClass);
+  }
+  static getId(name: string) {
+    return [this.NS, name].join("/");
+  }
+}
 
 
 export class HeaderComponentFactoryProvider extends ReactComponentFactoryProvider {

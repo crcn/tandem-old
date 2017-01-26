@@ -4,9 +4,10 @@ import React =  require("react");
 import { EditorStore } from "@tandem/editor/browser/stores";
 import { SettingKeys } from "@tandem/editor/browser/constants";
 import CenterComponent from "./center";
-import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { GutterComponent } from "@tandem/uikit";
+import { EditorStoreProvider } from "@tandem/editor/browser/providers";
 import { RegisteredComponent } from "@tandem/editor/browser/components/common";
+import { BottomWorkspaceGutterComponent } from "./bottom";
 import { DocumentPaneComponentFactoryProvider, EntityPaneComponentFactoryProvider } from "@tandem/editor/browser/providers";
 import { Kernel, RootApplicationComponent, BaseApplicationComponent, inject } from "@tandem/common";
 
@@ -29,9 +30,9 @@ export class WorkspaceMidComponent extends BaseApplicationComponent<{}, {}> {
       </GutterComponent> }
       <div className="td-workspace-mid-cent">
         <CenterComponent workspace={workspace} />
-        { hideBottomGutter ? null : <GutterComponent className="bottom" style={{ height: 350, display: "block" }}>
-          <div> GUTTERRR </div>
-        </GutterComponent>}
+        { hideBottomGutter ? null : <BottomWorkspaceGutterComponent className="bottom" style={{ height: 350, display: "block" }}>
+          
+        </BottomWorkspaceGutterComponent>}
       </div>
       { hideRightGutter ? null : <GutterComponent className="right" style={{width:350, display: "block"  }}>
         <RegisteredComponent workspace={workspace} ns={EntityPaneComponentFactoryProvider.getId("**")} />

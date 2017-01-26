@@ -17,6 +17,7 @@ import {
   AddSyntheticObjectRequest,
   TokenComponentFactoryProvider,
   FooterComponentFactoryProvider,
+  BottomGutterTabComponentProvider,
   StageToolComponentFactoryProvider,
   LayerLabelComponentFactoryProvider,
   EntityPaneComponentFactoryProvider,
@@ -30,14 +31,17 @@ import {
 } from "./commands";
 
 import {
-  NumberTokenInput,
-  ColorTokenInput,
   UnitTokenInput,
+  ColorTokenInput,
+  ConsoleComponent,
+  NumberTokenInput,
+  AnimationsComponent,
   ReferenceTokenInput,
   LayersPaneComponent,
-  ElementCSSInspectorComponent,
+  MediaQueriesComponent,
   HTMLStylePaneComponent,
   ElementCSSPaneComponent,
+  ElementCSSInspectorComponent,
   ElementInfoStageToolComponent,
   ElementAttributesPaneComponent,
 } from "./components";
@@ -56,7 +60,11 @@ export function createHTMLEditorBrowserProviders() {
 
     // stage tool components
     new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),
-
+    
+    new BottomGutterTabComponentProvider("animations", "Animations", AnimationsComponent),
+    new BottomGutterTabComponentProvider("mediaQueries", "Media queries", MediaQueriesComponent),
+    new BottomGutterTabComponentProvider("console", "Console", ConsoleComponent),
+    
     // mini text editor token inputs
     new TokenComponentFactoryProvider(CSSTokenTypes.COLOR, ColorTokenInput),
     new TokenComponentFactoryProvider(CSSTokenTypes.UNIT, UnitTokenInput),

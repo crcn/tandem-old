@@ -1,0 +1,18 @@
+.bottom-workspace-gutter-component {
+  flex-grow: 0;
+  // border-top: none;
+  .tabs {
+    // background: rgba(0, 0, 0, 0.05);
+    li {
+      cursor: pointer;
+      display: inline-block;
+      padding: 8px 16px;
+      border-right: 2px solid rgba(0, 0, 0, 0.05);
+    }
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .current-tab {
+    
+  }
+}
