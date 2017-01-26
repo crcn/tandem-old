@@ -1,5 +1,7 @@
 .bottom-workspace-gutter-component {
   flex-grow: 0;
+  display: flex;
+  flex-direction: column;
   // border-top: none;
   .tabs {
     // background: rgba(0, 0, 0, 0.05);
@@ -11,8 +13,13 @@
     }
     border-bottom: 2px solid rgba(0, 0, 0, 0.05);
   }
+  width: 100%;
+  height: 100%;
+  position: relative;
 
   .current-tab {
-    
+    height: 100%;
+    width: 100%;
+    position: relative;
   }
 }
