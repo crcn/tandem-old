@@ -26,10 +26,28 @@ export async function readOneChunk<T>(value: any): Promise<IChunkReadResult<T>> 
  * await pump(stream, this.onChunk)
  */
 
-export const pump = async (reader: ReadableStreamDefaultReader<any>, each: (value: any) => any) => {
-  let value, done;
-  while({ value, done } = await reader.read()) {
-    if (done) break;
-    await each(value);
+export const pump = async (reader: ReadableStreamDefaultReader<any>, each: (value: any) => any, eachError?: (error: any) => boolean|void) => {
+
+  if (!eachError) {
+    eachError = () => false
   }
+
+  let value, done;
+  return new Promise((resolve, reject) => {
+    const next = () => {
+      reader.read().then(({ value, done }) => {
+        if (done) {
+          resolve();
+        } else {          
+          each(value);
+          next();
+        }
+      }, (error) => {
+        if (eachError(error) === false) return reject(error);
+        next();
+      });
+    };
+
+    next();
+  })
 }

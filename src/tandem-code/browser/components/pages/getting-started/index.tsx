@@ -70,7 +70,6 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
     // save settings so that the getting started prompt does not come up again
     await this.bus.dispatch(new UpdateUserSettingsRequest(userSettings)).readable.getReader().read();
 
-
     const { dialog } = require("electron").remote;
 
     dialog.showOpenDialog({
@@ -171,7 +170,7 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
           <ul className="options">
             {
               options.map(({ label, iconUrl, }, index) => {
-                return <li className={cx({ selected: this.state.selectedExtensionIndex === index }, "fill-text")} onClick={this.selectExtension.bind(this, index)}>
+                return <li key={index} className={cx({ selected: this.state.selectedExtensionIndex === index }, "fill-text")} onClick={this.selectExtension.bind(this, index)}>
                 <img src={iconUrl} />
                 <label>{label}</label>
               </li>

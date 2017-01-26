@@ -22,16 +22,15 @@ IMMEDIATE
 ----------------------------------
 
 DAILY TASK LIST
-  - [ ] 1hr fix bugs
-  - [ ] 
+  - [ ] 1hr fix BUGS
+  - [ ] 1hr 
 
 NOW
   - [ ] 
   - [ ] relative urls resolve as root. See http://todomvc.com/examples/react/#/
-  - [ ] pass input state from browser to node
   - [ ] Get it working with dynamically loaded scripts
   - [ ] developer panel
-    - [ ] console window
+    - [ ] console window*
     - [ ] media queries
     - [ ] animations
 

@@ -110,7 +110,12 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     let value, done;
 
-    pump(reader, event => this.onRemoteBrowserEvent(event));
+    pump(reader, event => this.onRemoteBrowserEvent(event)).catch((e) => {
+      this.logger.warn("Remote browser connection closed. Re-opening");
+      setTimeout(() => {
+        this.open(options);
+      }, 1000);
+    });
   }
 
   onRemoteBrowserEvent({ payload }) {
@@ -165,7 +170,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   protected onDocumentEvent(event: CoreEvent) {
     super.onDocumentEvent(event);
-
     
     if (event instanceof MutationEvent) {
       if (!this._ignoreMutations) {
@@ -177,6 +181,8 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     // TODO - check if this is a user event
     if (event.target && event.target.clone) {
+      this.logger.debug(`Passing synthetic event to server: ${event.type}`);
+
       this._writer.write(serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.DOM_EVENT, [getNodePath(event.target), event])));
     }
   }
@@ -235,18 +241,23 @@ export class RemoteBrowserService extends BaseApplicationService {
         changeWatcher.target = browser.document;
       }
 
-      pump(input.getReader(), (payload) => {
-        const message = deserialize(payload, this.kernel) as RemoteBrowserDocumentMessage;
-        if (message.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
-          editor.applyMutations(message.data as Mutation<any>[]);
-        } else if (message.type === RemoteBrowserDocumentMessage.DOM_EVENT) {
-          const [nodePath, event] = message.data;
-          const found = getNodeByPath(browser.document, nodePath);
-          if (found) {
-            found.dispatchEvent(event);
+      input.pipeTo(new WritableStream({
+        write: (payload: any) => {
+          const message = deserialize(payload, this.kernel) as RemoteBrowserDocumentMessage;
+          if (message.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
+            editor.applyMutations(message.data as Mutation<any>[]);
+          } else if (message.type === RemoteBrowserDocumentMessage.DOM_EVENT) {
+            const [nodePath, event] = message.data;
+            const found = getNodeByPath(browser.document, nodePath);
+            if (found) {
+              found.dispatchEvent(event);
+            }
           }
+        },
+        close: () => {
+          this.logger.warn("Closed remote browser connection");
         }
-      });
+      }));
 
       const onStatusChange = (status: Status) => {
         if (status) {

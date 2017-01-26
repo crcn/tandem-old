@@ -297,6 +297,7 @@ export class SyntheticDOMRenderer extends BaseRenderer {
     this._cssRuleDictionary = {};
     this._elementDictionary = {};
     const { element } = this;
+
     if (element) {
       element.innerHTML = this.createElementInnerHTML();
       element.onclick = 

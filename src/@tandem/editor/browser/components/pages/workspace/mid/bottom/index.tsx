@@ -26,7 +26,7 @@ export class BottomWorkspaceGutterComponent extends BaseApplicationComponent<{ c
       <ul className="tabs">
         {
           providers.map((provider, index) => {
-            return <li className={cx({ selected: provider === currentProvider })} onClick={this.selectTabIndex.bind(this, index)}>{ provider.label }</li>;
+            return <li key={index} className={cx({ selected: provider === currentProvider })} onClick={this.selectTabIndex.bind(this, index)}>{ provider.label }</li>;
           })
         }
       </ul>

@@ -38,6 +38,7 @@ export const getNodeByPath = (root: SyntheticDOMContainer, path: number[]) => {
   let current = root;
   for (let i = 0, n = path.length; i < n; i++) {
     current = current.childNodes[path[i]] as SyntheticDOMContainer;
+    if (!current) break;
   }
 
   return current;
