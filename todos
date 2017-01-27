@@ -30,7 +30,12 @@ NOW
   - [ ] relative urls resolve as root. See http://todomvc.com/examples/react/#/
   - [ ] Get it working with dynamically loaded scripts
   - [ ] developer panel
+    - [ ] icons for tabs
     - [ ] console window*
+      - [ ] VM should have its own tab / drop menu
+    ` - [ ] ability to clear
+      - [ ] ability to inject JS
+      - [ ] proper source maps
     - [ ] media queries
     - [ ] animations
 

@@ -1,10 +1,10 @@
 .bottom-workspace-gutter-component {
   flex-grow: 0;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
-  // border-top: none;
+  overflow: hidden;
+
   .tabs {
-    // background: rgba(0, 0, 0, 0.05);
     li {
       cursor: pointer;
       display: inline-block;
@@ -20,6 +20,7 @@
   .current-tab {
     height: 100%;
     width: 100%;
+    overflow: scroll;
     position: relative;
   }
 }

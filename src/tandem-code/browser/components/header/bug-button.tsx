@@ -9,6 +9,6 @@ export class BugButtonComponent extends BaseApplicationComponent<any, any> {
     ExecuteCommandRequest.dispatch(`open https://github.com/tandemcode/support/issues/new`, this.bus);
   }
   render() {
-      return <a href="#" style={{ marginRight: 8 }} className="pull-right" onClick={this.open}><i className="ion-bug" /></a>
+      return <a href="#" style={{ marginRight: 8 }} alt="Report a bug" className="pull-right" onClick={this.open}><i className="ion-bug" /></a>
   }
 }

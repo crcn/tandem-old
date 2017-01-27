@@ -15,7 +15,7 @@ import { createCommonEditorProviders, ConsoleLogService, ReceiverService } from 
 import { 
   Kernel, 
   LogLevel, 
-  LogAction, 
+  LogEvent, 
   BrokerBus, 
   Application, 
   HTML_MIME_TYPE, 

@@ -187,22 +187,7 @@ export class GettingStartedComponent extends BaseApplicationComponent<any, { pag
       How to use
     </div>
   }
-
-  // selectOptions = () => {
-  //   return <div>
-  //     <div className="row">
-  //       <div className="col-12">
-  //         <div className="title">
-  //           Prepare your project
-  //         </div>
-  //         <div className="description">
-
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // }
-
+  
   // TODO - 
   prepareProject = () => {
     return <div className="prepare">

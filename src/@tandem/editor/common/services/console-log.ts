@@ -12,7 +12,7 @@ import {
   CoreEvent,
   LogLevel,
   serialize,
-  LogAction,
+  LogEvent,
   serializable,
   CoreApplicationService,
 } from "@tandem/common";
@@ -97,7 +97,7 @@ const PREFIXES = {
 
 export class ConsoleLogService extends CoreApplicationService<any> {
 
-  [LogAction.LOG]({ level, text, filterable }: LogAction) {
+  [LogEvent.LOG]({ level, text, filterable }: LogEvent) {
 
     const logOptions = this.config.log || {};
     const logLevel   = logOptions.level == null ? LogLevel.ALL : logOptions.level;

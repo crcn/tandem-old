@@ -10,10 +10,10 @@ import {
   inject,
   Logger,
   Status,
+  Kernel,
   bindable,
   loggable,
   isMaster,
-  Kernel,
   CoreEvent,
   Observable,
   IInjectable,
@@ -23,10 +23,11 @@ import {
   watchProperty,
   HTML_MIME_TYPE,
   hasURIProtocol,
+  KernelProvider,
   BubbleDispatcher,
   PropertyMutation,
+  PropertyWatcher,
   MimeTypeProvider,
-  KernelProvider,
   PrivateBusProvider,
   MetadataChangeEvent,
   waitForPropertyChange,
@@ -93,9 +94,12 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   private _url: string;
   private _window: SyntheticWindow;
   private _documentObserver: IDispatcher<any, any>;
+  private _windowObserver: IDispatcher<any, any>;
   private _location: SyntheticLocation;
   private _openOptions: ISyntheticBrowserOpenOptions;
   private _renderer: ISyntheticDocumentRenderer;
+
+  readonly statusWatcher: PropertyWatcher<BaseSyntheticBrowser, Status>;
   
   readonly uid = generateSyntheticUID();
 
@@ -103,9 +107,12 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     super();
     _kernel.inject(this);
 
+    this.statusWatcher = new PropertyWatcher<BaseSyntheticBrowser, Status>(this, "status");
+
     this._renderer = _kernel.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
     this._renderer.observe(new CallbackDispatcher(this.onRendererEvent.bind(this)));
     this._documentObserver = new CallbackDispatcher(this.onDocumentEvent.bind(this));
+    this._windowObserver = new CallbackDispatcher(this.onWindowEvent.bind(this));
   }
 
   $didInject() { }
@@ -140,6 +147,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     }
     const oldWindow = this._window;
     this._window = value;
+    this._window.observe(this._windowObserver);
     this._renderer.document = value.document;
     this._window.document.observe(this._documentObserver);
     this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "window", value, oldWindow).toEvent());
@@ -169,6 +177,10 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   protected abstract async open2(options: ISyntheticBrowserOpenOptions);
 
   protected onDocumentEvent(event: CoreEvent) {
+    this.notify(event);
+  }
+
+  protected onWindowEvent(event: CoreEvent) {
     this.notify(event);
   }
 }

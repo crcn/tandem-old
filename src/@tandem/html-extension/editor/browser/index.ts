@@ -1,5 +1,5 @@
 import { keyBindingProvider } from "./key-bindings";
-import { Kernel, CommandFactoryProvider } from "@tandem/common";
+import { Kernel, CommandFactoryProvider, LoadApplicationRequest } from "@tandem/common";
 import { textToolProvider, editInnerHTMLProvider, HTMLExtensionStore } from "./stores";
 
 import {
@@ -25,6 +25,7 @@ import {
 } from "@tandem/editor/browser";
 
 import {
+  WatchVMLogsCommand,
   ExpandSelectedCommand,
   UpdateMergedRuleCommand,
   AddSyntheticElementCommand,
@@ -49,6 +50,8 @@ import {
 export function createHTMLEditorBrowserProviders() {
 
   return new Kernel(
+    new CommandFactoryProvider(LoadApplicationRequest.LOAD, WatchVMLogsCommand),
+    new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, UpdateMergedRuleCommand),
     new CommandFactoryProvider(AddSyntheticObjectRequest.ADD_SYNTHETIC_OBJECT, AddSyntheticElementCommand),
@@ -61,9 +64,9 @@ export function createHTMLEditorBrowserProviders() {
     // stage tool components
     new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),
     
-    new BottomGutterTabComponentProvider("animations", "Animations", AnimationsComponent),
-    new BottomGutterTabComponentProvider("mediaQueries", "Media queries", MediaQueriesComponent),
-    new BottomGutterTabComponentProvider("console", "Console", ConsoleComponent),
+    new BottomGutterTabComponentProvider("animations", "Animations", AnimationsComponent, 0),
+    new BottomGutterTabComponentProvider("mediaQueries", "Media queries", MediaQueriesComponent, 0),
+    new BottomGutterTabComponentProvider("console", "Console", ConsoleComponent, Infinity),
     
     // mini text editor token inputs
     new TokenComponentFactoryProvider(CSSTokenTypes.COLOR, ColorTokenInput),

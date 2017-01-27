@@ -1,7 +1,7 @@
 import {
   inject,
   Kernel,
-  LogAction,
+  LogEvent,
   KernelProvider,
   BaseApplicationService,
   CommandFactoryProvider,
@@ -30,6 +30,6 @@ export class ReceiverService extends BaseApplicationService {
 
     // TODO - probably shouldn't do this -- slight optimization since
     // there are currently no commands that handle logs
-    return message.type !== LogAction.LOG;
+    return message.type !== LogEvent.LOG;
   }
 }

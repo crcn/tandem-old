@@ -30,6 +30,7 @@ import {
   deserialize,
   IInjectable,
   IDisposable,
+  LogEvent,
   serializable,
   watchProperty,
   PrivateBusProvider,
@@ -74,6 +75,7 @@ import {
 export class RemoteBrowserDocumentMessage extends CoreEvent {
   static readonly NEW_DOCUMENT  = "newDocument";
   static readonly DOCUMENT_DIFF = "documentDiff";
+  static readonly VM_LOG        = "vmLog";
   static readonly DOM_EVENT     = "domEvent";
   static readonly STATUS_CHANGE = "statusChange";
   constructor(type: string, readonly data: any) {
@@ -120,7 +122,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   onRemoteBrowserEvent({ payload }) {
 
-    const event = deserialize(payload, this.kernel) as CoreEvent;
+    const event = deserialize(payload, this.kernel) as RemoteBrowserDocumentMessage;
 
     this.logger.debug(`Received event: ${event.type}`);
 
@@ -156,6 +158,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
         console.error(e.stack);
       }
       this.status = new Status(Status.COMPLETED);
+    } else if (event.type === RemoteBrowserDocumentMessage.VM_LOG) {
+      const [level, text] = event.data;
+      this.notify(new LogEvent(level, text)); 
     }
 
     this.notify(event);
@@ -271,6 +276,16 @@ export class RemoteBrowserService extends BaseApplicationService {
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.STATUS_CHANGE, status)) });
       };
       
+
+      const browserObserver = new CallbackDispatcher((event: CoreEvent) => {
+        if (event.type === LogEvent.LOG) {
+          const logEvent = event as LogEvent;
+          writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.VM_LOG, [logEvent.level, logEvent.text])) });
+        }
+      });
+
+      browser.observe(browserObserver);
+      
       const watcher = watchProperty(browser, "status", onStatusChange);
       onStatusChange(browser.status);
 
@@ -279,9 +294,9 @@ export class RemoteBrowserService extends BaseApplicationService {
       return {
         close() {
 
-          // TODO - possibly shutdown here -- need to have increment counter.
           watcher.dispose();
           changeWatcher.dispose();
+          browser.unobserve(browserObserver)
         }
       }
     });

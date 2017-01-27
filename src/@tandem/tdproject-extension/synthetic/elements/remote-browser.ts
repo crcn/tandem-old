@@ -7,6 +7,7 @@ import {
   Status,
   isMaster,
   bindable,
+  LogEvent,
   CoreEvent,
   ITreeWalker,
   serializable,
@@ -91,16 +92,25 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
   async createBrowser() {
     if (this._browser) return;
 
+    this._browserObserver = new CallbackDispatcher(this.onBrowserEvent.bind(this));
+
     const documentRenderer = new SyntheticDOMRenderer({ createProxyUrl: (url) => {
         return location.protocol !== "file:" ? location.protocol + "//" + location.host + "/proxy/" + new Buffer(url).toString("base64") : url;
       }
     });
 
     this._browser = new RemoteSyntheticBrowser(this.ownerDocument.defaultView.browser.kernel, new SyntheticRemoteBrowserRenderer(this, documentRenderer), this.browser);
+    this._browser.observe(this._browserObserver);
     bindProperty(this._browser, "status", this, "status").trigger();
     this._contentDocumentObserver = new CallbackDispatcher(this.onContentDocumentEvent.bind(this));
     watchProperty(this._browser, "window", this.onBrowserWindowChange.bind(this));
     await this.loadBrowser();
+  }
+
+  private onBrowserEvent(event: CoreEvent) {
+    if (event.type === LogEvent.LOG) {
+      this.notify(event);
+    }
   }
 
   protected computeCapabilities() {

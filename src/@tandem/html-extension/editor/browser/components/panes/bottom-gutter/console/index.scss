@@ -10,14 +10,17 @@
 
       &.error {
         background:#FDD6D6;
+        color: #F15757;
       }
 
       &.warning {
         background: #FDFDCF;
+        color: #BFB10D;
       }
 
-      &.notice {
+      &.info {
         background: #DBEFFD;
+        color: #226BD6;
       }
     }
   }

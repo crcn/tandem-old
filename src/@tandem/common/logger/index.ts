@@ -2,10 +2,10 @@ import { IDispatcher } from "@tandem/mesh";
 import { LogLevel } from "./levels";
 import { CoreEvent } from "../messages";
 
-export class LogAction extends CoreEvent {
+export class LogEvent extends CoreEvent {
   static readonly LOG        = "log";
   constructor(readonly level: number, readonly text: string, readonly filterable?: boolean) {
-    super(LogAction.LOG);
+    super(LogEvent.LOG);
   }
 }
 
@@ -110,7 +110,7 @@ export class Logger {
       `${this.getPrefix()}${text}`,
       ...sprintfParams.map(stringify)
     ), ...restParams].join(" ");
-    this.bus.dispatch(new LogAction(level, message, this.filterable));
+    this.bus.dispatch(new LogEvent(level, message, this.filterable));
   }
 
 }

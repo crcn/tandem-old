@@ -101,6 +101,8 @@ export class Workspace extends Observable {
   @bubble()
   public browser: ISyntheticBrowser;
 
+  readonly browserWatcher: PropertyWatcher<Workspace, ISyntheticBrowser>;
+
   /**
    * singleton document querier for the editor so that view components
    * aren't calling the expensive querySelector function individually
@@ -118,6 +120,7 @@ export class Workspace extends Observable {
     this._browserObserver = new CallbackDispatcher(this.onBrowserAction.bind(this));
     this.documentQuerier  = new SyntheticElementQuerier(undefined, "*");
     watchProperty(this, "browser", this.onBrowserChange.bind(this));
+    this.browserWatcher = new PropertyWatcher<Workspace, ISyntheticBrowser>(this, "browser");
     this.envKernelWatcher = new PropertyWatcher<Workspace, Kernel>(this, "envKernel");
   }
 

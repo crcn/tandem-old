@@ -17,7 +17,7 @@ import { bindDOMNodeEventMethods } from "./utils";
 import { SyntheticDOMElement, DOMNodeType } from "./markup";
 import { SyntheticXMLHttpRequest, XHRServer } from "./xhr";
 import { SyntheticCSSStyle, SyntheticCSSElementStyleRule } from "./css";
-import { Logger, Observable, PrivateBusProvider, PropertyWatcher, MutationEvent } from "@tandem/common";
+import { Logger, LogEvent, Observable, PrivateBusProvider, PropertyWatcher, MutationEvent } from "@tandem/common";
 import { noopDispatcherInstance, IStreamableDispatcher, CallbackDispatcher } from "@tandem/mesh";
 import { 
   DOMEventTypes,
@@ -181,7 +181,7 @@ export class SyntheticWindow extends Observable {
     
     this.window   = this;
     this.console  = new SyntheticConsole(
-      new Logger(bus, "**VM** ")
+      new Logger(new CallbackDispatcher(this.onVMLog.bind(this)))
     );
 
     const windowTimers  = this._windowTimers = new SyntheticWindowTimers();
@@ -277,6 +277,10 @@ export class SyntheticWindow extends Observable {
 
   public syntheticDOMReadyCallback = () => {
 
+  }
+
+  private onVMLog = (log: LogEvent) => {
+    this.notify(log);
   }
 
   // ugly method invoked by browser to fire load events

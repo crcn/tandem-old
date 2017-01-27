@@ -88,11 +88,11 @@ export class DocumentPaneComponentFactoryProvider extends ReactComponentFactoryP
 
 export class BottomGutterTabComponentProvider extends ReactComponentFactoryProvider {
   static readonly NS = "components/panes/bottomGutter";
-  constructor(readonly name: string, readonly label: string, readonly componentClass: any) {
-    super(BottomGutterTabComponentProvider.getId(name), componentClass);
+  constructor(readonly name: string, readonly label: string, readonly componentClass: any, priority?: number) {
+    super(BottomGutterTabComponentProvider.getId(name), componentClass, priority);
   }
   clone() {
-    return new BottomGutterTabComponentProvider(this.name, this.label, this.componentClass);
+    return new BottomGutterTabComponentProvider(this.name, this.label, this.componentClass, this.priority);
   }
   static getId(name: string) {
     return [this.NS, name].join("/");
