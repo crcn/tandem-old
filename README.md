@@ -18,7 +18,7 @@ https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0
 
 To get started, run `npm install && npm run build`. After that, go ahead and run `npm run code dist/browser/index.html`, which will open Tandem *in* Tandem:
 
-![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/21441581/679e80ba-c85e-11e6-8989-67c7220be905.png)
+![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
 After you've booted up Tandem in Tandem, go ahead and run `WATCH=1 npm run build`, which will re-execute the build tasks, and re-run them whenever a `src/**` file changes. From here, you
 can go ahead and open up your text editor and start hacking away.
