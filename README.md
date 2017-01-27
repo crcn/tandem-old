@@ -10,20 +10,27 @@ back to your text editor in the supported languages you're writing in (assuming 
 
 #### Installation
 
-Tandem is still very alpha, but you can play around with the most recent version here: 
+Tandem is still very buggy, but you can play around with the most recent version here: 
 
 https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0
 
-### Development
+Also, be sure to install either the [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension), or [Atom](https://atom.io/packages/atom-tandem-extension) extension.
 
-To get started, run `npm install && npm run build`. After that, go ahead and run `npm run code dist/browser/index.html`, which will open Tandem *in* Tandem:
+#### Features
+
+- Writes code in the languages you're using. Currently supported languages include `Sass`, `HTML`, and `CSS`.
+
+# Development
+
+To get started, run `npm install && WATCH=1 npm run build`. After that, go ahead and run `npm run code workspace.tandem` which will open Tandem *in* Tandem:
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
-After you've booted up Tandem in Tandem, go ahead and run `WATCH=1 npm run build`, which will re-execute the build tasks, and re-run them whenever a `src/**` file changes. From here, you
-can go ahead and open up your text editor and start hacking away.
+After you've booted up Tandem in Tandem, open up the `src/**` directory and start hacking away.
 
-Here's a list of other commands you can run:
+#### CLI commands
+
+Other CLI commands that may help with the dev process
 
 ```
 # builds the source files in out/
@@ -38,3 +45,15 @@ npm run code;
 # runs tests
 npm test; 
 ```
+
+#### Directory structure
+
+- `src/` - source files for main `Tandem` application, and packages
+  - `@tandem/` - tandem packages (core modules & extensions)
+   - `tandem-client/` - client library communicating with tandem app - used in vscode, and atom extensions.
+   - `tandem-code/` - tandem desktop application sources
+   - `webpack-tandem-jsx-loader/` - [Webpack](//webpack.js.org) JSX loader for Tandem
+
+
+## Extending Tandem
+
