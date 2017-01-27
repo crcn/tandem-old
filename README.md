@@ -19,6 +19,15 @@ Also, be sure to install either the [VSCode](https://marketplace.visualstudio.co
 #### Features
 
 - Writes code in the languages you're using. Currently supported languages include `Sass`, `HTML`, and `CSS`.
+- Changes in Tandem are sent to your text editor in real time.
+- Tandem automatically reloads a preview of your application *
+
+#### Roadmap
+
+Short list of cool features that are in the pipeline for Tandem. Cast your vote with  👍 or 👎 for each of these ideas.
+
+- [Support more browser rendering engines, and real devices (Chrome, Internet Explorer, Firefox, IPhone, etc. )](https://github.com/tandemcode/tandem/issues/386)
+- [Webpack dependency graph strategy](https://github.com/tandemcode/tandem/issues/387)
 
 # Development
 
