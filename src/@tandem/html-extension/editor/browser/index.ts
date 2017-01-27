@@ -25,7 +25,6 @@ import {
 } from "@tandem/editor/browser";
 
 import {
-  WatchVMLogsCommand,
   ExpandSelectedCommand,
   UpdateMergedRuleCommand,
   AddSyntheticElementCommand,
@@ -50,15 +49,14 @@ import {
 export function createHTMLEditorBrowserProviders() {
 
   return new Kernel(
-    new CommandFactoryProvider(LoadApplicationRequest.LOAD, WatchVMLogsCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, ExpandSelectedCommand),
     new CommandFactoryProvider(SelectionChangeEvent.SELECTION_CHANGE, UpdateMergedRuleCommand),
     new CommandFactoryProvider(AddSyntheticObjectRequest.ADD_SYNTHETIC_OBJECT, AddSyntheticElementCommand),
 
     // entity panes
-    new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent),
-    new EntityPaneComponentFactoryProvider("cssInspector", ElementCSSInspectorComponent),
+    new EntityPaneComponentFactoryProvider("htmlAttributes", ElementAttributesPaneComponent, Infinity),
+    new EntityPaneComponentFactoryProvider("cssInspector", ElementCSSInspectorComponent, 0),
     new DocumentPaneComponentFactoryProvider("htmlLayers", LayersPaneComponent),
 
     // stage tool components

@@ -104,6 +104,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
   async open2(options: ISyntheticBrowserOpenOptions) {
     this.status = new Status(Status.LOADING);
+    this.clearLogs();
     if (this._remoteStreamReader) this._remoteStreamReader.cancel("Re-opened");
 
     const remoteBrowserStream = this._bus.dispatch(new OpenRemoteBrowserRequest(options));
@@ -128,6 +129,9 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
 
     if (event.type === RemoteBrowserDocumentMessage.STATUS_CHANGE) {
       this.status = (<RemoteBrowserDocumentMessage>event).data;
+      if (this.status.type === Status.LOADING) {
+        this.clearLogs();
+      }
     }
 
     if (event.type === RemoteBrowserDocumentMessage.NEW_DOCUMENT) {
@@ -139,7 +143,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       this._documentEditor   = new SyntheticObjectTreeEditor(newDocument);
 
       const window = new SyntheticWindow(this.location, this, newDocument);
-      this.setWindow(window);
+      this.setWindow(window, false);
       this.status = new Status(Status.COMPLETED);
     } else if (event.type === RemoteBrowserDocumentMessage.DOCUMENT_DIFF) {
       const { data } = <RemoteBrowserDocumentMessage>event;
@@ -159,8 +163,10 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       }
       this.status = new Status(Status.COMPLETED);
     } else if (event.type === RemoteBrowserDocumentMessage.VM_LOG) {
-      const [level, text] = event.data;
-      this.notify(new LogEvent(level, text)); 
+      console.log("VM LOG");
+      for (const [level, text] of event.data) {
+        this.addLog(new LogEvent(level, text)); 
+      }
     }
 
     this.notify(event);
@@ -228,6 +234,11 @@ export class RemoteBrowserService extends BaseApplicationService {
       const logger = this.logger.createChild(`${event.options.uri} `);
       let editor: SyntheticObjectTreeEditor;
 
+      // return the current logs of the VM in case the front-end reloads
+      if (browser.logs.length) {
+        writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.VM_LOG, browser.logs.map((log) => [log.level, log.text]))) });
+      }
+
       const changeWatcher = new SyntheticObjectChangeWatcher<SyntheticDocument>(async (mutations: Mutation<any>[]) => {
 
         logger.info("Sending diffs: <<", mutations.map(event => event.type).join(", "));
@@ -275,17 +286,16 @@ export class RemoteBrowserService extends BaseApplicationService {
 
         writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.STATUS_CHANGE, status)) });
       };
-      
 
       const browserObserver = new CallbackDispatcher((event: CoreEvent) => {
         if (event.type === LogEvent.LOG) {
           const logEvent = event as LogEvent;
-          writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.VM_LOG, [logEvent.level, logEvent.text])) });
+          console.log("EMITTING LOG", logEvent.text);
+          writer.write({ payload: serialize(new RemoteBrowserDocumentMessage(RemoteBrowserDocumentMessage.VM_LOG, [[logEvent.level, logEvent.text]])) });
         }
       });
 
       browser.observe(browserObserver);
-      
       const watcher = watchProperty(browser, "status", onStatusChange);
       onStatusChange(browser.status);
 

@@ -22,14 +22,25 @@ IMMEDIATE
 ----------------------------------
 
 DAILY TASK LIST
+  - [ ] 30m apply for jobs
   - [ ] 1hr fix BUGS
   - [ ] 1hr 
+
+PROMOTION
+  - [ ] React UI Kit - could sell
+
+WOW
+- [ ] browsertap
+- [ ] media queries
+- [ ] animations
 
 NOW
   - [ ] 
   - [ ] relative urls resolve as root. See http://todomvc.com/examples/react/#/
   - [ ] Get it working with dynamically loaded scripts
   - [ ] developer panel
+    - [ ] must be contextual -- show dev info based on selected browser window
+    - [ ] store logs on browser object
     - [ ] icons for tabs
     - [ ] console window*
       - [ ] VM should have its own tab / drop menu

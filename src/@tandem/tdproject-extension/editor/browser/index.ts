@@ -44,7 +44,7 @@ export function createTDProjectEditorBrowserProviders() {
     new DocumentPaneComponentFactoryProvider("unsavedFiles", UnsavedFilesPaneComponent, 999),
     new StageToolComponentFactoryProvider("altDistances", "pointer", MeasurementStageToolComponent),
     new FooterComponentFactoryProvider("artboardLoader", RemoteBrowserLoaderComponent),
-    new EntityPaneComponentFactoryProvider("remote-browser", RemoteBrowserPaneComponent),
+    new EntityPaneComponentFactoryProvider("remote-browser", RemoteBrowserPaneComponent, 0),
     new CommandFactoryProvider(ApplicationReadyMessage.READY, LoadUnsavedFileCommand),
     new CommandFactoryProvider(PostDSMessage.DS_DID_UPDATE, LoadUnsavedFileCommand),
     new CommandFactoryProvider(PostDSMessage.DS_DID_INSERT, LoadUnsavedFileCommand),

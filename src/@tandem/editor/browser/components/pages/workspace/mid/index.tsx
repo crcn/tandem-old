@@ -30,7 +30,7 @@ export class WorkspaceMidComponent extends BaseApplicationComponent<{}, {}> {
       </GutterComponent> }
       <div className="td-workspace-mid-cent">
         <CenterComponent workspace={workspace} />
-        { hideBottomGutter ? null : <BottomWorkspaceGutterComponent className="bottom" style={{ height: 350, display: "block" }}>
+        { hideBottomGutter ? null : <BottomWorkspaceGutterComponent workspace={workspace} className="bottom" style={{ height: 350, display: "block" }}>
           
         </BottomWorkspaceGutterComponent>}
       </div>

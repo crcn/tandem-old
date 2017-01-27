@@ -183,7 +183,6 @@ export class TDRemoteBrowserComponent extends BaseApplicationComponent<{ remoteB
           </div>
         </div>
       </div>
-
       { workspace.showStageTools ? <div className="overlay" /> : undefined } 
     </div>
   }

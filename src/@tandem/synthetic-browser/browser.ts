@@ -14,6 +14,7 @@ import {
   bindable,
   loggable,
   isMaster,
+  LogEvent,
   CoreEvent,
   Observable,
   IInjectable,
@@ -30,6 +31,7 @@ import {
   MimeTypeProvider,
   PrivateBusProvider,
   MetadataChangeEvent,
+  ObservableCollection,
   waitForPropertyChange,
 } from "@tandem/common";
 
@@ -66,6 +68,7 @@ export interface ISyntheticBrowser extends IObservable {
   open(options: ISyntheticBrowserOpenOptions): Promise<any>;
   window: SyntheticWindow;
   uid: any;
+  logs: ObservableCollection<LogEvent>;
   sandbox?: Sandbox;
   parent?: ISyntheticBrowser;
   renderer: ISyntheticDocumentRenderer;
@@ -98,6 +101,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   private _location: SyntheticLocation;
   private _openOptions: ISyntheticBrowserOpenOptions;
   private _renderer: ISyntheticDocumentRenderer;
+  readonly logs: ObservableCollection<LogEvent>;
 
   readonly statusWatcher: PropertyWatcher<BaseSyntheticBrowser, Status>;
   
@@ -108,7 +112,7 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     _kernel.inject(this);
 
     this.statusWatcher = new PropertyWatcher<BaseSyntheticBrowser, Status>(this, "status");
-
+    this.logs = ObservableCollection.create<LogEvent>() as ObservableCollection<LogEvent>;
     this._renderer = _kernel.inject(isMaster ? renderer || new SyntheticDOMRenderer() : new NoopRenderer());
     this._renderer.observe(new CallbackDispatcher(this.onRendererEvent.bind(this)));
     this._documentObserver = new CallbackDispatcher(this.onDocumentEvent.bind(this));
@@ -137,13 +141,24 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     this.notify(event); // bubble
   }
 
+  /**
+   * 
+   */
+
+  public clearLogs() {
+    this.logs.splice(0, this.logs.length);
+  }
+
   protected onRendererNodeEvent(event: SyntheticRendererEvent) {
     // OVERRIDE ME
   }
 
-  protected setWindow(value: SyntheticWindow) {
+  protected setWindow(value: SyntheticWindow, clearLogs?: boolean) {
     if (this._window) {
       this._window.document.unobserve(this._documentObserver);
+    }
+    if (clearLogs !== false) {
+      this.clearLogs();
     }
     const oldWindow = this._window;
     this._window = value;
@@ -151,6 +166,15 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
     this._renderer.document = value.document;
     this._window.document.observe(this._documentObserver);
     this.notify(new PropertyMutation(PropertyMutation.PROPERTY_CHANGE, this, "window", value, oldWindow).toEvent());
+  }
+
+  /**
+   * Adds a log from the current VM. Used particularly for debugging.
+   */
+
+  protected addLog(log: LogEvent) {
+    this.logs.push(log);
+    this.notify(log);
   }
 
   get renderer(): ISyntheticDocumentRenderer {
@@ -181,7 +205,11 @@ export abstract class BaseSyntheticBrowser extends Observable implements ISynthe
   }
 
   protected onWindowEvent(event: CoreEvent) {
-    this.notify(event);
+    if (event.type === LogEvent.LOG) {
+      this.addLog(event as LogEvent);
+    } else {
+      this.notify(event);
+    }
   }
 }
 

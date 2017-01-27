@@ -62,11 +62,11 @@ export class WorkspaceToolFactoryProvider extends ClassFactoryProvider {
 
 export class EntityPaneComponentFactoryProvider extends ReactComponentFactoryProvider {
   static readonly NS = "components/panes/entity";
-  constructor(readonly name: string, readonly componentClass: any) {
-    super(EntityPaneComponentFactoryProvider.getId(name), componentClass);
+  constructor(readonly name: string, readonly componentClass: any, priority?: number) {
+    super(EntityPaneComponentFactoryProvider.getId(name), componentClass, priority);
   }
   clone() {
-    return new EntityPaneComponentFactoryProvider(this.name, this.componentClass);
+    return new EntityPaneComponentFactoryProvider(this.name, this.componentClass, this.priority);
   }
   static getId(name) {
     return [EntityPaneComponentFactoryProvider.NS, name].join("/");

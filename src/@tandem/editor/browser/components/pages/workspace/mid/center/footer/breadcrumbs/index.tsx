@@ -45,7 +45,8 @@ export class BreadcrumbsComponent extends React.Component<{ workspace: Workspace
           return <li 
             className={cx({
               hovering: node.metadata.get(MetadataKeys.HOVERING),
-              selected: element === node
+              selected: element === node,
+              "no-select-text": true
             })} style={{  }} key={node.uid} onClick={this.select.bind(this, node)} onMouseEnter={this.onMouseEnter.bind(this, node)} onMouseLeave={this.onMouseLeave.bind(this, node)}>
               <SyntheticSourceLink target={node}>
                 { label }

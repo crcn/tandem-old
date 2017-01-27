@@ -42,6 +42,11 @@ $sides: left, right, top, bottom;
   }
 }
 
+.no-select-text {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .pull-right {
   float: right; 
 }

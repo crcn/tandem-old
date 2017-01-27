@@ -1,9 +1,10 @@
-import { BaseStudioEditorBrowserCommand } from "./base";
 import { Kernel } from "@tandem/common";
-import { SyntheticBrowser, SyntheticWindow, SyntheticDOMRenderer } from "@tandem/synthetic-browser";
+import { LogEvent } from "@tandem/common";
 import { Workspace } from "@tandem/editor/browser/stores";
-import {createWorkspaceRedirectRequest } from "@tandem/editor/browser/messages";
 import { createTestSandboxProviders } from "@tandem/sandbox/test/helpers";
+import {createWorkspaceRedirectRequest } from "@tandem/editor/browser/messages";
+import { BaseStudioEditorBrowserCommand } from "./base";
+import { SyntheticBrowser, SyntheticWindow, SyntheticDOMRenderer } from "@tandem/synthetic-browser";
 
 export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserCommand {
   async execute() {
@@ -25,12 +26,14 @@ export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserComman
       }
     })), new SyntheticDOMRenderer());
 
-
-
     await browser.open({ uri: "file:///index.html" });
 
     const workspace = this.editorStore.workspace = new Workspace(null);
     workspace.browser = browser;
+    browser.window.console.log("debug");
+    browser.window.console.warn("Warning");
+    browser.window.console.error("Error");
+    browser.window.console.info("Info");
     workspace.select(browser.document.querySelector("div"));
 
     if(!location.hash) {
