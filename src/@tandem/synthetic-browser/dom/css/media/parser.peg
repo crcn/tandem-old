@@ -21,14 +21,24 @@ MediaQueryListRest =
   }
 
 MediaQuery =
-  operator:Operator? _ type: Identifier features: AndFeature* {
-    return new CSSMediaQueryExpression(operator, type, features, location());
+  operator:Operator? _ rule: (MediaQueryRuleWithType/MediaQueryRuleWithoutType) {
+    return new CSSMediaQueryExpression(operator, rule.type, rule.features, location());
+  }
+
+MediaQueryRuleWithType =
+  type: Identifier features: AndFeature* {
+    return { type: type, features: features };
+  }
+
+MediaQueryRuleWithoutType =
+  features: AndFeature+ {
+    return { features: features };
   }
 
 Operator = "not" { return text(); }
 
 AndFeature =
-  _ "and" _ feature:Feature { return feature; }
+  _ "and"? _ feature:Feature { return feature; }
 
 Feature = 
   "(" _ name: Identifier _ ":" _ value: Identifier ")" {
