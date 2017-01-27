@@ -1,3 +1,3 @@
-import { CSSDeclValueExpression } from "./ast";
+import { CSSMediaQueryListExpression } from "./ast";
 
-declare function parse(source: string): CSSDeclValueExpression;
+declare function parse(source: string): CSSMediaQueryListExpression;
