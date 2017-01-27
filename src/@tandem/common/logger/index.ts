@@ -74,7 +74,7 @@ export class Logger {
   }
 
   error(text: string, ...rest) {
-    this._log(LogLevel.ERROR, text, text, ...rest);
+    this._log(LogLevel.ERROR, text, ...rest);
   }
 
   startTimer(timeoutMessage?: string, interval: number = 5000, logLevel?: LogLevel) {
