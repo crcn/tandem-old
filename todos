@@ -38,6 +38,8 @@ NOW
 - [ ] Console window
   - [ ] clear console
   - [ ] VM vs browser diff
+  - [ ] highlight corresponding VMs when hovering over log item
+  - [ ] proper stack traces
 
 
 

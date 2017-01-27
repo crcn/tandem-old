@@ -148,6 +148,7 @@ function createWorkspaceMenuProviders() {
     new WebMenuItemFactoryProvider("toggleTools", "view", createKeyCommandMenuItemClass("Toggle Stage Tools", "Ctrl+CmdOrCtrl+T", ToggleStageToolsRequest)),
     new WebMenuItemFactoryProvider("toggleLeftGutter", "view", createKeyCommandMenuItemClass("Toggle Left Gutter", "Alt+\\", createToggleSettingRequestClass(SettingKeys.HIDE_LEFT_SIDEBAR))),
     new WebMenuItemFactoryProvider("toggleRightGutter", "view", createKeyCommandMenuItemClass("Toggle Right Gutter", "Alt+/", createToggleSettingRequestClass(SettingKeys.HIDE_RIGHT_SIDEBAR))),
+    new WebMenuItemFactoryProvider("toggleBottomGutter", "view", createKeyCommandMenuItemClass("Toggle Bottom Gutter", "Alt+b", createToggleSettingRequestClass(SettingKeys.HIDE_BOTTOM_GUTTER))),
   ]
 }
 
