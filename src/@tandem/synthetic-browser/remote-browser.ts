@@ -163,7 +163,6 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
       }
       this.status = new Status(Status.COMPLETED);
     } else if (event.type === RemoteBrowserDocumentMessage.VM_LOG) {
-      console.log("VM LOG");
       for (const [level, text] of event.data) {
         this.addLog(new LogEvent(level, text)); 
       }

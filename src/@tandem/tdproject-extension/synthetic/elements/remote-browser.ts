@@ -128,6 +128,13 @@ export class SyntheticRemoteBrowserElement extends SyntheticHTMLElement {
     }
   }, 0)
 
+  protected onUpdateComputedVisibility() {
+    if (!this._browser || !this._browser.window) return;
+    const { width, height } = this.getBoundingClientRect();
+    this._browser.window.innerWidth  = width;
+    this._browser.window.innerHeight = height;
+  }
+
   attachNative(node: HTMLElement) {
     if (this._native === node) return;
     super.attachNative(node);

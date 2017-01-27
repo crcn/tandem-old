@@ -62,9 +62,9 @@ export function createHTMLEditorBrowserProviders() {
     // stage tool components
     new StageToolComponentFactoryProvider("elementInfo", "pointer", ElementInfoStageToolComponent),
     
-    new BottomGutterTabComponentProvider("animations", "Animations", AnimationsComponent, 0),
-    new BottomGutterTabComponentProvider("mediaQueries", "Media queries", MediaQueriesComponent, 0),
-    new BottomGutterTabComponentProvider("console", "Console", ConsoleComponent, Infinity),
+    // new BottomGutterTabComponentProvider("animations", "Animations", AnimationsComponent, 0),
+    new BottomGutterTabComponentProvider("mediaQueries", "Media queries", MediaQueriesComponent, Infinity),
+    new BottomGutterTabComponentProvider("console", "Console", ConsoleComponent, 0),
     
     // mini text editor token inputs
     new TokenComponentFactoryProvider(CSSTokenTypes.COLOR, ColorTokenInput),

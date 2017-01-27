@@ -118,6 +118,12 @@ export class SyntheticWindow extends Observable {
   readonly Element;
   readonly WebSocket: { new(): any };
 
+  @bindable(true)
+  public innerWidth: number = 0;
+
+  @bindable(true)
+  public innerHeight: number = 0;
+
   private _windowTimers: SyntheticWindowTimers;
   private _eventListeners: DOMEventDispatcherMap;
   private _server: XHRServer;

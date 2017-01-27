@@ -16,7 +16,6 @@ QUESTIONS
 - lack of debugging tools
 - inability to interact with app
 
-
 ----------------------------------
 IMMEDIATE
 ----------------------------------
@@ -34,30 +33,17 @@ WOW
 - [ ] media queries
 - [ ] animations
 
+
 NOW
-  - [ ] 
+  - [ ] Media queries
+    - [ ] cmd+click media rule
+    - [ ] show matching media rules in css pane
   - [ ] relative urls resolve as root. See http://todomvc.com/examples/react/#/
   - [ ] Get it working with dynamically loaded scripts
   - [ ] developer panel
     - [ ] must be contextual -- show dev info based on selected browser window
-    - [ ] store logs on browser object
-    - [ ] icons for tabs
-    - [ ] console window*
-      - [ ] VM should have its own tab / drop menu
-    ` - [ ] ability to clear
-      - [ ] ability to inject JS
-      - [ ] proper source maps
     - [ ] media queries
     - [ ] animations
-
-
-- [ ] Console window
-  - [ ] clear console
-  - [ ] VM vs browser diff
-  - [ ] highlight corresponding VMs when hovering over log item
-  - [ ] proper stack traces
-
-
 
 Messaging:
 

@@ -95,7 +95,13 @@ export abstract class VisibleSyntheticDOMElement<T extends { uid: string }> exte
 
     this._absoluteBounds = this.computeAbsoluteBounds(this._computedStyle, this._currentBounds);
 
+    this.onUpdateComputedVisibility();
+
     return this._computedVisibility = true;
+  }
+  
+  protected onUpdateComputedVisibility() {
+
   }
 
   protected abstract computeAbsoluteBounds(style: any, computedBounds: BoundingRect): BoundingRect;

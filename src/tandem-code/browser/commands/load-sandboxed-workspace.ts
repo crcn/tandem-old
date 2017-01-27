@@ -10,12 +10,20 @@ export class LoadSandboxedWorkspaceCommand extends BaseStudioEditorBrowserComman
   async execute() {
 
     if (!window["$synthetic"]) return;
+    
 
     const browser = new SyntheticBrowser(new Kernel(this.kernel, createTestSandboxProviders({
       mockFiles: {
         "index.html": `
           <html>
             <head>
+              <style>
+                @media screen and (max-width: 200px) {
+                  .container {
+                    color: red;
+                  }
+                }
+              </style>
             </head>
             <body>
               <remote-browser title="Something" style="width: 600px; height: 400px; left: 100px; top: 100px; position: absolute;"></remote-browser>

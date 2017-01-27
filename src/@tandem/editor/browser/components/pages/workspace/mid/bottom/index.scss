@@ -9,7 +9,7 @@
     width: 100%;
     position: relative;
   }
-  
+
   .tabs {
     li {
       cursor: pointer;
@@ -26,6 +26,7 @@
   .current-tab {
     height: 100%;
     width: 100%;
+    flex-shrink: 1;
     overflow: scroll;
     position: relative;
   }
