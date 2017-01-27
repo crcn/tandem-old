@@ -1,6 +1,6 @@
 {
   "name": "webpack-tandem-jsx-loader",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "JSX loader to help map JSX elements to their original source expression",
   "main": "index.js",
   "author": "",

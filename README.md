@@ -4,7 +4,7 @@ Tandem is a hackable visual editor for web applications that is similar to what 
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
-Tandem works with most languages & frameworks. Just open up any `index.html` file or url in Tandem and start writing code in your text editor. Tandem will
+Tandem works with most languages & frameworks including ReactJS, AngularJS, JavaScript, TypeScript, Sass, Less, HTML, CSS, and more. Just open up any `index.html` file or url in Tandem and start writing code in your text editor. Tandem will
 pickup changes in realtime & provide a preview of your application that you can manipulate visually. Changes made in Tandem are automatically sent
 back to your text editor in the supported languages you're writing in (assuming that you have source maps turned on).
 
