@@ -12,7 +12,7 @@ Tandem displays a *live preview* of your application that you can manipulate vis
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
 Tandem is unoppinionated about how you structure your code. Just open any `index.html` file, and Tandem will automatically run your application & display a preview that you can edit. When you make changes in Tandem, the application
-will use source maps (assuming you have them turned on) to identify *where* to write code, and what languages to write code in. If you've installed the text editor extension, changes in Tandem will automatically be sent back to your text editor that you can
+will use source maps (assuming you have them turned on) to identify *where* to write code, and what languages to write code in. If you've installed the text editor extension, Tandem will send code changes back to your text editor that you can
 then adjust to fit your coding style.
 
 #### Motivation
