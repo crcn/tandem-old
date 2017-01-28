@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) [![Support on Patreon](https://cloud.githubusercontent.com/assets/757408/22400123/b691c13a-e57a-11e6-8af5-007b0a5848c6.png)](https://www.patreon.com/crcn)
+[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) [![Support on Patreon](https://cloud.githubusercontent.com/assets/757408/22400142/2821f59a-e57b-11e6-9869-49282c888364.png)](https://www.patreon.com/crcn)
 
 
 Tandem is a code-first & hackable visual editor for web development.
