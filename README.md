@@ -2,12 +2,14 @@
 
 Tandem is a code-first & hackable visual editor for web development.
 
-You can play with the current builds [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0). **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
+You can play with the current build [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0). **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
 to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
 Tandem displays a *live preview* of your application that you can manipulate visually - this is possible by a custom browser VM that runs your application in the background. It's intended to work with *all* programming languages, and frameworks, so you should be able to start using it *immediately* with your existing codebase. As part of a litmus test for Tandem, it was actually used to build itself.
+
+![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
 Tandem is code-first, and unoppinionated about how you structure your code. The application synchronizes changes with your text editor in realtime.
 
@@ -32,8 +34,6 @@ Short list of cool features that are in the pipeline for Tandem. Cast your vote 
 # Development
 
 To get started, run `npm install && WATCH=1 npm run build`. After that, go ahead and run `npm run code workspace.tandem` which will open Tandem *in* Tandem:
-
-![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
 After you've booted up Tandem in Tandem, open up the `src/**` directory and start hacking away.
 
