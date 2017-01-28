@@ -81,3 +81,11 @@ npm test;
 
 ## Extending Tandem
 
+- developing a custom dependency graph strategy
+- creating a custom code writer
+- adding visual features
+- working with the kernel
+
+
+TODOS
+  - [ ] links
