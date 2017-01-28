@@ -1,16 +1,20 @@
 [![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem)
 
-Tandem is a hackable visual editor for web applications that is similar to what you'd find in apps such as [Sketch](https://www.sketchapp.com/), and [Photoshop](http://www.adobe.com/products/photoshop.html). 
+Tandem is a hackable visual editor for web applications that is similar to what you'd find in apps such as [Sketch](https://www.sketchapp.com/), and [Photoshop](http://www.adobe.com/products/photoshop.html).
+
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
-Tandem works with most languages & frameworks including ReactJS, AngularJS, JavaScript, TypeScript, Sass, Less, HTML, CSS, and more. Just open up any `index.html` file or url in Tandem and start writing code in your text editor. Tandem will
-pickup changes in realtime & provide a preview of your application that you can manipulate visually. Changes made in Tandem are automatically sent
-back to your text editor in the supported languages you're writing in (assuming that you have source maps turned on).
+Tandem provides a *live preview* of your application that you can manipulate visually. It's intended to work with *all* programming languages, and frameworks, so you should be able to start using it *immediately* with your existing codebase. As part of a litmus test for Tandem, it
+was actually used to build itself.
+
+Tandem is code-first, and unoppinionated about how you structure your code. The application synchronizes changes with your text editor in realtime.
+
+Currently, Tandem works well with **ReactJS**, **Sass**, **Less*, **HTML**, **CSS**, and other frameworks and languages.
 
 #### Installation
 
-Tandem is still very buggy, but you can play around with the most recent version here: 
+Tandem is still very buggy, but you can play around with the most recent version here:
 
 https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0
 
@@ -43,16 +47,16 @@ Other CLI commands that may help with the dev process
 
 ```
 # builds the source files in out/
-npm run build;  
+npm run build;
 
 # builds the distributable app in dist/zip/[app].zip
-npm run build:dist 
+npm run build:dist
 
 # runs the desktop application
-npm run code;  
+npm run code;
 
 # runs tests
-npm test; 
+npm test;
 ```
 
 #### Directory structure
