@@ -22,6 +22,7 @@ TODO
 - build a platform that provides tooling for frameworks
 - eventually have an editor that allows for most editing in the UI
 - completely transparent
+- why open source?
 
 <!--I've found that developing UI application feels a bit backwards, and I sought to develop tooling that was a bit more intuitive. There are already countless HTML editors on the web. However, most I've found to-->
 
