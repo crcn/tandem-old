@@ -7,7 +7,7 @@ to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCod
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
-Tandem displays a *live preview* of your application that you can manipulate visually - this is possible by a custom browser VM that runs your application in the background. It's intended to work with *all* programming languages, and frameworks, so you should be able to start using it *immediately* with your existing codebase. As part of a litmus test for Tandem, it was actually used to build itself.
+Tandem displays a *live preview* of your application that you can manipulate visually - this is possible by a custom browser VM that runs your application in the background. It's intended to work with *all* programming languages, and frameworks, so you should be able to start using it *immediately* with your existing codebase. As part of a litmus test for Tandem, **it was actually used to build itself**.
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
