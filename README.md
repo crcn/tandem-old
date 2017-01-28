@@ -11,9 +11,9 @@ Tandem displays a *live preview* of your application that you can manipulate vis
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
-Tandem is unoppinionated about how you structure your code. Just open any `index.html` file, and tandem will automatically run your application & display a preview that you can edit. When you make changes in Tandem, the application
-will use source maps (assuming you have them turned on) to identify *where* to write code, and what languages to write code in. If you've installed the text editor extension, changes in Tandem will automatically by sent back to your text editor that you can
-then adjust to fit your code style guidlines.
+Tandem is unoppinionated about how you structure your code. Just open any `index.html` file, and Tandem will automatically run your application & display a preview that you can edit. When you make changes in Tandem, the application
+will use source maps (assuming you have them turned on) to identify *where* to write code, and what languages to write code in. If you've installed the text editor extension, changes in Tandem will automatically be sent back to your text editor that you can
+then adjust to fit your coding style.
 
 #### Motivation
 
@@ -23,21 +23,27 @@ TODO
 - eventually have an editor that allows for most editing in the UI
 - completely transparent
 - why open source?
+- provide
 
 <!--I've found that developing UI application feels a bit backwards, and I sought to develop tooling that was a bit more intuitive. There are already countless HTML editors on the web. However, most I've found to-->
 
 #### Features
 
 - Writes code in the languages you're using. Currently supported languages include `Sass`, `HTML`, and `CSS`.
-- Changes in Tandem are sent to your text editor in real time.
-- Tandem automatically reloads a preview of your application *
+- Can run local files, and urls
+- Responsive testing
+
 
 #### Roadmap
 
 Short list of cool features that are in the pipeline for Tandem. Cast your vote with  👍 or 👎 for each of these ideas.
 
-- [Support more browser rendering engines, and real devices (Chrome, Internet Explorer, Firefox, IPhone, etc. )](https://github.com/tandemcode/tandem/issues/386)
+- [Ability to change browser rendering engine: Chrome, Firefox, Safari, iOS, Opera, Internet Explorerer, etc.](https://github.com/tandemcode/tandem/issues/386)
 - [Webpack dependency graph strategy](https://github.com/tandemcode/tandem/issues/387)
+- Collaboration extension
+- Ability to edit SVG graphics
+-
+
 
 # Development
 
