@@ -1,16 +1,23 @@
 Browser VM that can run in any JavaScript environment. The primary motivation behind this library is to have complete
 control over application environment to enable certain features that not possible in regular browsers. Features include:
 
-#### Ability to hotswap application state in a live environment
+#### Ability to hot swap application state in a live environment
 
 The browser VM hotswaps parts of loaded application as its being modified by the user. This means that the user is not interupted whenever the application
 reloads internally. 
 
-#### Deffered rendering
+#### Defered rendering
 
-The browser VM deffers HTML & CSS rendering to *real* browsers, and it can be any browser. 
+The synthetic browser is built to support native rendering engines over WebRTC including Firefox, Chrome, Safari, along with mobile devices
 
+#### Custom URI protocols
 
+`file:`, `data:`, and `http:` protocols are supported out of the box, but you can register your own as well.
+
+#### Custom languages
+
+The synthetic browser uses the DOM api, but it's not limited to the DOM specification. You can easily extend the synthetic browser to suite
+whatever visual editing functionality you need. 
 
 ### Kitchen sink example:
 

@@ -75,26 +75,3 @@ new SyntheticObjectTreeEditor(document).applyMutations(...edit.mutations);
 // this also works
 // edit.applyMutationsTo(document);
 ```
-
-
-UPDATE:
-
-```typescript
-import {
-  WebpackDependencyGraphStrategy,
-  DependencyGraphStrategyProvider,
-  DependencyGraphProvider
-} from "@tandem/sandbox";
-
-const dependencies = new Kernel(
-  new DependencyGraphStrategyProvider("webpack", new WebpackDependencyGraphStrategy(webpackConfig)),
-  new DependencyGraphStrategyProvider("webpack2", new WebpackDependencyGraphStrategy(webpackConfig)),
-  new DependencyGraphStrategyProvider("rollup", new RollupBundleStrategy(webpackConfig)),
-  new DependencyGraphProvider()
-);
-
-const dependencyGraph = DependencyGraphProvider.getInstance("webpack"); // webpack strategy
-
-const sandbox = new Sandbox();
-sandbox.open(await dependencyGraph.loadDependency(await dependencyGraph.resolve("./file.js", process.cwd()));
-```
