@@ -76,7 +76,7 @@ Collaborative editing will enable you to share your workspace with designers, an
 - **Animations tools** with an iMovie-like interface for intuitively creating motion in your application.
 - **3D tooling**
 - **Dependency graph strategies** for Webpack, SystemJS, and Rollup, would speed up preview hot swapping, and unlock live reloads as you're writing code in your text editor.
-- **Visual tooling specific to frameworks** such as VueJS, ReactJS, AngularJS, MotionJS, and Javascript, and non-JavaScript libraries.
+- **Visual tooling specific to frameworks** such as VueJS, ReactJS, AngularJS, AureliaJS, MotionJS, and Javascript, and non-JavaScript libraries.
 
 ### Future
 
