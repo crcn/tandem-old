@@ -22,7 +22,7 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a screensh
 
 ### Goals and Motivation
 
-These general principles were used in the creation of Tandem. 
+The following principles were (and are) used in creating of Tandem. 
 
 - Provide tooling that enables you to most of your application development visually, and without needing to write code.
 - Transparent tooling that make it clear how Tandem is writing code.
