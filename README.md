@@ -25,7 +25,7 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a screensh
 The following principles were (and are) used in creating of Tandem. 
 
 - Provide tooling that enables you to most of your application development visually, and without needing to write code.
-- Transparent tooling that make it clear how Tandem is writing code.
+- Transparent tooling that doesn't hide how Tandem writes code.
 - Speed up development process with a more intuitive approach to building applications.
 - Increase understanding of CSS & HTML with built-in documentation, suggestions, and tools (like intellisense).
 - Speed up development cycles by including design, prototyping, and development into one application.
