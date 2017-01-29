@@ -1,3 +1,6 @@
+The documentation here is still very much a work in progress. I'll continue to develop this stuff out as questions come in about
+how to build on top of tandem.
+
 #### Extension Disclaimer
 
 Tandem is *very* new, so expect APIs to change over time. All core libraries follow semantic versioning (`major.minor.patch`). **Major** updates are breaking.
