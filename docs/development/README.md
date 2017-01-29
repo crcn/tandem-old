@@ -7,6 +7,7 @@ If you're developing extensions for Tandem, be sure to *always* install core lib
 
 #### Links
 
+- [Getting started](./getting-started.md)
 - [Architecture](./architecture.md) - Understand core libraries that power tandem. 
 - [Building your own visual editor](./integrating-core.md) - Understand how to integrate Tandem's core into your own visual editor.
 - [Extending Tandem](./creating-extensions) - Learn how to create Tandem extensions.
@@ -20,3 +21,5 @@ If you're developing extensions for Tandem, be sure to *always* install core lib
 - [Videos][link-to-youtube-channel-here]
   - [Creating a simple UI tool](TODO)
   - []
+
+
