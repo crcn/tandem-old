@@ -10,16 +10,14 @@ If you're developing extensions for Tandem, be sure to *always* install core lib
 - [Getting started](./getting-started.md)
 - [Architecture](./architecture.md) - Understand core libraries that power tandem. 
 - [Understanding how the visual editor works](./integrating-core.md) - Understand how to integrate Tandem's core into your own visual editor.
-- [Extending Tandem](./creating-extensions) - Learn how to create Tandem extensions.
+<!--- [Extending Tandem](./creating-extensions - Learn how to create Tandem extensions.
   - [Building UI tools](./creating-extensions/ui-tools.md)
   - [Integrating with other editors](./creating-extensions/integrating-with-editors.md)
-  - [Creating a custom renderer](link-to-dom-renderer-canvas-renderer)
+  - [Creating a custom renderer](link-to-dom-renderer-canvas-renderer)-->
 - Core library documentation
   - [Synthetic Browser](../../src/@tandem/synthetic-browser) - Fake browser used to run application code
   - [Mesh](../../src/@tandem/mesh) - Used to handle messaging throughout application
   - [Sandbox](../../src/@tandem/sandbox) - Runs application code in an environment
-- [Videos][link-to-youtube-channel-here]
-  - [Creating a simple UI tool](TODO)
-  - []
+- Videos - TODO
 
 

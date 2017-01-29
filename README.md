@@ -12,13 +12,11 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a screensh
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
-
 ### Links
 
 - [Patreon page](https://www.patreon.com/crcn)
 - [Videos](youtube-channel-here) - TODO
-- [Development](./docs/development) - Docs on how to hack on Tandem.
-
+- [Development](./docs/development) - Docs for anyone that wants to extend Tandem.
 
 ### Goals and Motivation
 
@@ -32,7 +30,6 @@ The following principles were (and are) used in creating of Tandem.
 - Reduce barrier for non-coders who want to create applications.
 - Provide CSS tooling for animations, 3D, and other features that are hard to code by hand.
 - Include all cross-browser testing, development, and debugging into one application.
-
 
 ### Installation
 
