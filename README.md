@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem)
 
-Tandem is a hackable visual editor for web applications that is similar to what you'd find in apps such as [Sketch](https://www.sketchapp.com/), and [Photoshop](http://www.adobe.com/products/photoshop.html). 
+Tandem is a completely free, open source, and hackable visual editor for web applications that is similar to what you'd find in apps such as [Sketch](https://www.sketchapp.com/), and [Photoshop](http://www.adobe.com/products/photoshop.html). 
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
@@ -28,6 +28,23 @@ Short list of cool features that are in the pipeline for Tandem. Cast your vote 
 
 - [Support more browser rendering engines, and real devices (Chrome, Internet Explorer, Firefox, IPhone, etc. )](https://github.com/tandemcode/tandem/issues/386)
 - [Webpack dependency graph strategy](https://github.com/tandemcode/tandem/issues/387)
+
+#### How it works
+
+TODO
+- [ ] diagram
+
+## Goals
+
+The eventual goal for Tandem is to provide tooling that enables you to do *most* of your development visually. Currently, the application doesn't support enough tooling to facilitate this yet, 
+but everything is setup to eventually reach that goal.
+
+#### All cross-browser development in one platform
+
+Tandem will eventually support multiple rendering 
+
+#### 
+
 
 # Development
 
@@ -59,10 +76,10 @@ npm test;
 
 - `src/` - source files for main `Tandem` application, and packages
   - `@tandem/` - tandem packages (core modules & extensions)
-   - `tandem-client/` - client library communicating with tandem app - used in vscode, and atom extensions.
-   - `tandem-code/` - tandem desktop application sources
-   - `webpack-tandem-jsx-loader/` - [Webpack](//webpack.js.org) JSX loader for Tandem
-
+  - `tandem-client/` - client library communicating with tandem app - used in vscode, and atom extensions.
+  - `tandem-code/` - tandem desktop application sources
+  - `webpack-tandem-jsx-loader/` - [Webpack](//webpack.js.org) JSX loader for Tandem
 
 ## Extending Tandem
 
+Tandem is customizable, to so you can easily to 

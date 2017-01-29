@@ -7,6 +7,10 @@ export class SyntheticDOMEvent<T> extends CoreEvent {
   constructor(readonly type: string) {
     super(type);
   }
+
+  preventDefault() {
+    // TODO
+  }
 }
 
 // http://www.w3schools.com/jsref/dom_obj_event.asp
