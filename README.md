@@ -75,7 +75,7 @@ Collaborative editing will enable you to share your workspace with designers, an
 - **Intellisense-like suggestions for HTML & CSS** would help you pick the right HTML & CSS features for your application.
 - **Animations tools** with an iMovie-like interface for intuitively creating motion in your application.
 - **3D tooling**
-- **Dependency graph** strategies for Webpack, SystemJS, and Rollup, would speed up preview hot swapping, and unlock live reloads as you're writing code in your text editor.
+- **Dependency graph strategies** for Webpack, SystemJS, and Rollup, would speed up preview hot swapping, and unlock live reloads as you're writing code in your text editor.
 - **Visual tooling specific to frameworks** such as VueJS, ReactJS, AngularJS, MotionJS, and Javascript, and non-JavaScript libraries.
 
 #### Future
