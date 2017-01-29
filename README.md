@@ -12,12 +12,6 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a of Tande
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
-You can structure your code however you want. Tandem leverages `source maps` to automatically figure out where to write code. 
-
-Tandem is unoppinionated about how you structure your code. Just open any `index.html` file, and Tandem will automatically run your application & display a preview that you can edit. When you make changes in Tandem, the application
-will use source maps (assuming you have them turned on) to identify where to write code, and what languages to write code in. If you've installed the text editor extension, Tandem will send code changes back to your text editor that you can
-then adjust to fit your coding style.
-
 #### Installation
 
 You can play with the current build [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0) for Mac OSX. **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
@@ -36,6 +30,7 @@ to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCod
 
 #### Links
 
+- [Patreon page](https://www.patreon.com/crcn)
 - [Videos](youtube-channel-here) - TODO
 - [Development](./docs/development) - Docs on how to hack on Tandem.
 
