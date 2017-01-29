@@ -1,26 +1,27 @@
 <!--[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) -->
 
+> **If you find this software useful, please consider [becoming a backer](https://www.patreon.com/crcn) to help fund for the development of more features.** 
+
 Tandem is a code-first & extensible visual editor for web development that is intended to work with all programming languages and frameworks (JavaScript, ReactJS, AngularJS, PHP, Ruby, Sass, CSS, HTML, and others). You can use Tandem with your existing codebase to visually create features without risk, or lock-in. 
 
-You can play with the current build [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0) for Mac OSX. **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
-to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
-
-**If you find this software useful, please consider [becoming a backer](https://www.patreon.com/crcn) to help fund for the development of more features.** 
+Tandem integrates with your existing text editor by synchronizing code changes. Tandem automatically reloads a live preview of your app when you write code. When you make visual edits, Tandem sends code back to your text editor in the languages you're using (Sass, TypeScript, JSX, HTML, and CSS are currently supported). If you don't like the code that Tandem writes, you can easily change it.
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
-Tandem displays a *live preview* of your application that you can manipulate visually - this is possible by a custom browser VM that runs your application in the background. It's intended to work with *all* programming languages, and frameworks, so you should be able to start using it *immediately* with your existing codebase. As part of a litmus test, **Tandem was actually used to build itself**.
+As part of a litmus test, **Tandem was used to build itself**. Here's a of Tandem running *in* Tandem:
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
+
+You can structure your code however you want. Tandem leverages `source maps` to automatically figure out where to write code. 
 
 Tandem is unoppinionated about how you structure your code. Just open any `index.html` file, and Tandem will automatically run your application & display a preview that you can edit. When you make changes in Tandem, the application
 will use source maps (assuming you have them turned on) to identify where to write code, and what languages to write code in. If you've installed the text editor extension, Tandem will send code changes back to your text editor that you can
 then adjust to fit your coding style.
 
-#### Links
+#### Installation
 
-- [Videos](youtube-channel-here) - TODO
-- [Development](./docs/development) - Docs on how to hack on Tandem.
+You can play with the current build [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0) for Mac OSX. **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
+to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
 
 #### Goals and Motivation
 
@@ -32,6 +33,11 @@ then adjust to fit your coding style.
 - Reduce barrier for non-coders who want to create applications.
 - Provide CSS tooling for animations, 3D, and other features that are hard to code by hand.
 - Include all cross-browser testing, development, and debugging into one application.
+
+#### Links
+
+- [Videos](youtube-channel-here) - TODO
+- [Development](./docs/development) - Docs on how to hack on Tandem.
 
 #### Who's this application intended for?
 
