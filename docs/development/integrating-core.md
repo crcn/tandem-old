@@ -5,10 +5,10 @@ Tandem's core is also flexible enough that you can use non-standard HTML & CSS A
 
 The core libraries you'll need are:
 
-- [Synthetic Browser](./synthetic-browser.md) - browser VM that runs application code. Also has hot swapping capabilities.
-- [Sandbox](./sandbox.md) - runs application code in an isolated JavaScript environment.
-- [Kernel](./kernel.md) - Provides dependencies throughout the application.
-- [Bus](./bus.md) - Messaging channel for the application.
+- [Synthetic Browser](../../src/@tandem/synthetic-browser) - browser VM that runs application code. Also has hot swapping capabilities.
+- [Sandbox](../../@tandem/sandbox) - runs application code in an isolated JavaScript environment.
+- [Kernel](../../src/@tandem/common/ioc) - Provides dependencies throughout the application.
+- [Bus](../../src/@tanden/mesh) - Messaging channel for the application.
 
 The libraries above provide the *minimal* functionality required for Tandem to run properly. With these, you can build visual editors
 that are flexible enough to run most web applications.
