@@ -10,7 +10,7 @@ The core libraries you'll need are:
 - [Kernel](./kernel.md) - Provides dependencies throughout the application.
 - [Bus](./bus.md) - Messaging channel for the application.
 
-The libraries abov e provide the *minimal* functionality required for Tandem to run properly. With these, you can build visual editors
+The libraries above provide the *minimal* functionality required for Tandem to run properly. With these, you can build visual editors
 that are flexible enough to run most web applications.
 
 #### Installation

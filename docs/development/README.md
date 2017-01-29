@@ -9,7 +9,7 @@ If you're developing extensions for Tandem, be sure to *always* install core lib
 
 - [Getting started](./getting-started.md)
 - [Architecture](./architecture.md) - Understand core libraries that power tandem. 
-- [Building your own visual editor](./integrating-core.md) - Understand how to integrate Tandem's core into your own visual editor.
+- [Understanding how the visual editor works](./integrating-core.md) - Understand how to integrate Tandem's core into your own visual editor.
 - [Extending Tandem](./creating-extensions) - Learn how to create Tandem extensions.
   - [Building UI tools](./creating-extensions/ui-tools.md)
   - [Integrating with other editors](./creating-extensions/integrating-with-editors.md)
