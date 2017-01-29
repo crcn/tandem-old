@@ -44,7 +44,7 @@ to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCod
 
 - Professional web developers 
 - Teams that want to reduce the barrier for contributing to the development of web applications
-  - Collaboration (see features below) would enable developers to invite designers, and other teammates to co-develop web applications.
+  - Collaboration (see features below) functionality enables developers to invite designers, and other teammates to co-develop web applications.
   - Tandem is extensible, meaning that teams can add features that fit their application needs (kind of like a CMS), and team workflow.
   - Tandem will be integratabtle with other systems such as Jenkins (for visual QA testing), Optimizely (for a/b testing), and Launch darkly (for feature flagging).
 - Individuals who are starting to learn how to code.
