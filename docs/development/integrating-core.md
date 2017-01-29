@@ -15,7 +15,7 @@ that are flexible enough to run most web applications.
 
 #### Installation
 
-In your application code, you'll need to run:
+For you're application, you'll need to run:
 
 ```
 npm install @tandem/synthetic-browser @tandem/sandbox @tandem/common --save

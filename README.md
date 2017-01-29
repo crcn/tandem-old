@@ -12,10 +12,20 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a of Tande
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
+
+#### Links
+
+- [Patreon page](https://www.patreon.com/crcn)
+- [Videos](youtube-channel-here) - TODO
+- [Development](./docs/development) - Docs on how to hack on Tandem.
+
+
 #### Goals and Motivation
 
+These general principles were used in the creation of Tandem. 
+
 - Provide tooling that enables you to most of your application development visually, and without needing to write code.
-- Provide tooling that augments the development of web applications, not abstract it.
+- Transparent tooling that make it clear how Tandem is writing code.
 - Speed up development process with a more intuitive approach to building applications.
 - Increase understanding of CSS & HTML with built-in documentation, suggestions, and tools (like intellisense).
 - Speed up development cycles by including design, prototyping, and development into one application.
@@ -23,11 +33,6 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a of Tande
 - Provide CSS tooling for animations, 3D, and other features that are hard to code by hand.
 - Include all cross-browser testing, development, and debugging into one application.
 
-#### Links
-
-- [Patreon page](https://www.patreon.com/crcn)
-- [Videos](youtube-channel-here) - TODO
-- [Development](./docs/development) - Docs on how to hack on Tandem.
 
 #### Installation
 
