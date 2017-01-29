@@ -1,5 +1,5 @@
 <!--[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) -->
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/tandemcode/tandem/Lobby)
+[![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/tandemcode-tandem/Lobby)
 
 > **If you find this software useful, please consider [becoming a backer](https://www.patreon.com/crcn) to help fund for the development of features, documentation, videos, tutorials, examples, and bug fixes.** 
 
