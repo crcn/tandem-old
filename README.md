@@ -1,33 +1,50 @@
-[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem)
+[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) [![Support on Patreon](https://cloud.githubusercontent.com/assets/757408/22400142/2821f59a-e57b-11e6-9869-49282c888364.png)](https://www.patreon.com/crcn)
 
-Tandem is a completely free, open source, and hackable visual editor for web applications that is similar to what you'd find in apps such as [Sketch](https://www.sketchapp.com/), and [Photoshop](http://www.adobe.com/products/photoshop.html). 
+Tandem is a code-first & hackable visual editor for web development.
+
+You can play with the current build [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0) for Mac OSX. **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
+to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
-Tandem works with most languages & frameworks including ReactJS, AngularJS, JavaScript, TypeScript, Sass, Less, HTML, CSS, and more. Just open up any `index.html` file or url in Tandem and start writing code in your text editor. Tandem will
-pickup changes in realtime & provide a preview of your application that you can manipulate visually. Changes made in Tandem are automatically sent
-back to your text editor in the supported languages you're writing in (assuming that you have source maps turned on).
+Tandem displays a *live preview* of your application that you can manipulate visually - this is possible by a custom browser VM that runs your application in the background. It's intended to work with *all* programming languages, and frameworks, so you should be able to start using it *immediately* with your existing codebase. As part of a litmus test, **Tandem was actually used to build itself**.
 
-#### Installation
+![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
-Tandem is still very buggy, but you can play around with the most recent version here: 
+Tandem is unoppinionated about how you structure your code. Just open any `index.html` file, and Tandem will automatically run your application & display a preview that you can edit. When you make changes in Tandem, the application
+will use source maps (assuming you have them turned on) to identify where to write code, and what languages to write code in. If you've installed the text editor extension, Tandem will send code changes back to your text editor that you can
+then adjust to fit your coding style.
 
-https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0
+#### Motivation
 
-Also, be sure to install either the [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension), or [Atom](https://atom.io/packages/atom-tandem-extension) extension.
+TODO
+
+- build a platform that provides tooling for frameworks
+- eventually have an editor that allows for most editing in the UI
+- completely transparent
+- why open source?
+- provide
+- realization that there are many flavors of web apps. Open source to allow people to build UI tools according to their needs.
+
+<!--I've found that developing UI application feels a bit backwards, and I sought to develop tooling that was a bit more intuitive. There are already countless HTML editors on the web. However, most I've found to-->
 
 #### Features
 
 - Writes code in the languages you're using. Currently supported languages include `Sass`, `HTML`, and `CSS`.
-- Changes in Tandem are sent to your text editor in real time.
-- Tandem automatically reloads a preview of your application *
+- Can run local files, and urls
+- Responsive testing
+
 
 #### Roadmap
 
 Short list of cool features that are in the pipeline for Tandem. Cast your vote with  👍 or 👎 for each of these ideas.
 
-- [Support more browser rendering engines, and real devices (Chrome, Internet Explorer, Firefox, IPhone, etc. )](https://github.com/tandemcode/tandem/issues/386)
+- [Ability to change browser rendering engine: Chrome, Firefox, Safari, iOS, Opera, Internet Explorerer, etc.](https://github.com/tandemcode/tandem/issues/386)
 - [Webpack dependency graph strategy](https://github.com/tandemcode/tandem/issues/387)
+- Collaboration extension
+- Ability to edit SVG graphics
+-
+
 
 #### How it works
 
@@ -45,8 +62,6 @@ Tandem will eventually support multiple rendering
 
 To get started, run `npm install && WATCH=1 npm run build`. After that, go ahead and run `npm run code workspace.tandem` which will open Tandem *in* Tandem:
 
-![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
-
 After you've booted up Tandem in Tandem, open up the `src/**` directory and start hacking away.
 
 #### CLI commands
@@ -55,16 +70,16 @@ Other CLI commands that may help with the dev process
 
 ```
 # builds the source files in out/
-npm run build;  
+npm run build;
 
 # builds the distributable app in dist/zip/[app].zip
-npm run build:dist 
+npm run build:dist
 
 # runs the desktop application
-npm run code;  
+npm run code;
 
 # runs tests
-npm test; 
+npm test;
 ```
 
 #### Directory structure
@@ -77,4 +92,15 @@ npm test;
 
 ## Extending Tandem
 
+<<<<<<< HEAD
 Tandem is customizable, to so you can easily to 
+=======
+- developing a custom dependency graph strategy
+- creating a custom code writer
+- adding visual features
+- working with the kernel
+
+
+TODOS
+  - [ ] links
+>>>>>>> 5c3e9c9dcd4bed9ceca90b94896fd7c68eacbcf3
