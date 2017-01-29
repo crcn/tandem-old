@@ -81,5 +81,5 @@ Collaborative editing will enable you to share your workspace with designers, an
 #### Future
 
 Eventually, I hope to build Tandem into a platform that enables developers to do most (or even all) of their UI development visually (as I think it should be). There isn't an ecosystem
-yet to support this, but there is a possibility to have a hibridization of web frameworks that are designed to be used visually for editors such as Tandem, that can also be written by hand. 
+yet to support this, but there is a possibility to have a hibridization of web frameworks that are designed to be coded visually by editors such as Tandem, and that can also be written by hand. 
 To support this idea, I plan to continue developing Tandem in Tandem until the entire application UI is re-built with components that are created in the application itself. 
