@@ -34,11 +34,6 @@ Short list of cool features that are in the pipeline for Tandem. Cast your vote 
 TODO
 - [ ] diagram
 
-## Goals
-
-The eventual goal for Tandem is to provide tooling that enables you to do *most* of your development visually. Currently, the application doesn't support enough tooling to facilitate this yet, 
-but everything is setup to eventually reach that goal.
-
 #### All cross-browser development in one platform
 
 Tandem will eventually support multiple rendering 

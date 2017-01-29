@@ -1,0 +1,1 @@
+Before you start writing extensions, be sure to checkout the [architecture](../architecture.md) to garner an understanding of how Tandem works under the hood.
