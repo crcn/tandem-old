@@ -1,9 +1,11 @@
-[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) [![Support on Patreon](https://cloud.githubusercontent.com/assets/757408/22400142/2821f59a-e57b-11e6-9869-49282c888364.png)](https://www.patreon.com/crcn)
+[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) 
 
 Tandem is a code-first & hackable visual editor for web development.
 
 You can play with the current build [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0) for Mac OSX. **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
 to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
+
+**Tandem is completely free and open source. Your contributions to the [Patreon](https://www.patreon.com/crcn) page will help keep this project alive.**
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
@@ -15,37 +17,56 @@ Tandem is unoppinionated about how you structure your code. Just open any `index
 will use source maps (assuming you have them turned on) to identify where to write code, and what languages to write code in. If you've installed the text editor extension, Tandem will send code changes back to your text editor that you can
 then adjust to fit your coding style.
 
-#### Motivation
-
-TODO
-
-- build a platform that provides tooling for frameworks
-- eventually have an editor that allows for most editing in the UI
-- completely transparent
-- why open source?
-- provide
-- realization that there are many flavors of web apps. Open source to allow people to build UI tools according to their needs.
-
-<!--I've found that developing UI application feels a bit backwards, and I sought to develop tooling that was a bit more intuitive. There are already countless HTML editors on the web. However, most I've found to-->
-
-#### Features
-
-- Writes code in the languages you're using. Currently supported languages include `Sass`, `HTML`, and `CSS`.
-- Can run local files, and urls
-- Responsive testing
-
-
-#### Roadmap
-
-Short list of cool features that are in the pipeline for Tandem. Cast your vote with  👍 or 👎 for each of these ideas.
-
-- [Ability to change browser rendering engine: Chrome, Firefox, Safari, iOS, Opera, Internet Explorerer, etc.](https://github.com/tandemcode/tandem/issues/386)
-- [Webpack dependency graph strategy](https://github.com/tandemcode/tandem/issues/387)
-- Collaboration extension
-- Ability to edit SVG graphics
--
-
 #### Links
 
 - [Videos](youtube-channel-here) - TODO
 - [Development](./docs/development) - Docs on how to hack on Tandem.
+
+#### Goals and Motivation
+
+- Provide tooling that enables you to most of your application development visually, and without needing to write code.
+- Provide tooling that augments the development of web applications, not abstract it.
+- Speed up development process with a more intuitive approach to building applications.
+- Increase understanding of CSS & HTML with built-in documentation, suggestions, and tools (like intellisense).
+- Speed up development cycles by including design, prototyping, and development into one application.
+- Reduce barrier for non-coders who want to create applications.
+- Provide CSS tooling for animations, 3D, and other features that are hard to code by hand.
+- Include all cross-browser testing, development, and debugging into one application.
+
+#### Who's this application intended for?
+
+- Professional web developers 
+- Teams that want to reduce the barrier for contributing to the development of web applications
+  - Collaboration (see features below) would enable developers to invite designers, and other teammates to co-develop web applications.
+  - Tandem is extensible, meaning that teams can add features that fit their application needs (kind of like a CMS), and team workflow.
+  - Tandem will be integratabtle with other systems such as Jenkins (for visual QA testing), Optimizely (for a/b testing), and Launch darkly (for feature flagging).
+- Individuals who are starting to learn how to code.
+- Educators
+- Companies that want to integrate Tandem into their own product. 
+- Tandem's core is modular enough to be usable in other visual editing contexts.
+
+#### Features
+
+- Writes code in HTML, CSS, Sass, TypeScript, and JSX.
+- Integrates with Atom, and Visual Studio Code.
+- Visual tools for media queries, filters, gradients, fonts, css flexbox, measuring, dragging items, responsive testing, and more.
+- Multiple live previews allows you to see how code changes affect your application in different states, pages, and sizes.
+- Hot swapping HTML & CSS ensures that your visual editing is fluid, and never interrupted.
+- Interact with previews like a normal web browser. 
+- Interactions (clicks, keyboard inputs) synchronize with other previews in different device sizes, and browser rendering engines.
+
+
+#### Roadmap
+
+Below are a few highlighted features planned for Tandem. Cast your vote with  👍 or 👎 for features in [issues tab](tandemcode/tandem/issues?q=is%3Aopen+is%3Aissue+label%3AFeature).
+
+- **More native rendering engines** (Firefox, Safari, iOS, Android) will enable you to do all of you visual testing directly within Tandem. You will also be able to interact with these previews visually, and launch multiple browsers in parallel to design & debug HTML & CSS as you're coding.
+Collaborative editing will enable you to share your workspace with designers, and other team members who can work with you to create pixel perfect applications.
+- **More developer tools & documentations** to help make it easier for developers to create their own Tandem extensions to fit their own, or team workflow.
+- **Community extensions** page that enables people to customize Tandem.
+- **Test builder** would enable you to visually create Selenium tests directly within Tandem.
+- **Intellisense-like suggestions for HTML & CSS** would help you pick the right HTML & CSS features for your application.
+- **Animations tools** with an iMovie-like interface for intuitively creating motion in your application.
+- **3D tooling**
+- **Dependency graph** strategies for Webpack, SystemJS, and Rollup, would speed up preview hot swapping, and unlock live reloads as you're writing code in your text editor.
+- **Visual tooling specific to frameworks** such as VueJS, ReactJS, AngularJS, MotionJS, and Javascript, and non-JavaScript libraries.
