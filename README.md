@@ -13,14 +13,14 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a screensh
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
 
-#### Links
+### Links
 
 - [Patreon page](https://www.patreon.com/crcn)
 - [Videos](youtube-channel-here) - TODO
 - [Development](./docs/development) - Docs on how to hack on Tandem.
 
 
-#### Goals and Motivation
+### Goals and Motivation
 
 These general principles were used in the creation of Tandem. 
 
@@ -34,13 +34,13 @@ These general principles were used in the creation of Tandem.
 - Include all cross-browser testing, development, and debugging into one application.
 
 
-#### Installation
+### Installation
 
 You can play with the most recent OSX builds [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0). **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
 to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
 
 
-#### Who's this application intended for?
+### Who's this application intended for?
 
 - Professional web developers 
 - Teams that want to reduce the barrier for contributing to the development of web applications
@@ -52,7 +52,7 @@ to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCod
 - Companies that want to integrate Tandem into their own product. 
 - Tandem's core is modular enough to be usable in other visual editing contexts.
 
-#### Features
+### Features
 
 - Writes code in HTML, CSS, Sass, TypeScript, and JSX.
 - Integrates with Atom, and Visual Studio Code.
@@ -63,7 +63,7 @@ to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCod
 - Interactions (clicks, keyboard inputs) synchronize with other previews in different device sizes, and browser rendering engines.
 
 
-#### Roadmap
+### Roadmap
 
 Below are a few highlighted features planned for Tandem. Cast your vote with  👍 or 👎 for features in [issues tab](tandemcode/tandem/issues?q=is%3Aopen+is%3Aissue+label%3AFeature).
 
@@ -78,7 +78,7 @@ Collaborative editing will enable you to share your workspace with designers, an
 - **Dependency graph strategies** for Webpack, SystemJS, and Rollup, would speed up preview hot swapping, and unlock live reloads as you're writing code in your text editor.
 - **Visual tooling specific to frameworks** such as VueJS, ReactJS, AngularJS, MotionJS, and Javascript, and non-JavaScript libraries.
 
-#### Future
+### Future
 
 Eventually, I hope to build Tandem into a platform that enables developers to do most (or even all) of their UI development visually (as I think it should be). There isn't an ecosystem
 yet to support this, but there is a possibility to have a hibridization of web frameworks that are designed to be coded visually by editors such as Tandem, and that can also be written by hand. 
