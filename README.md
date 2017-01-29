@@ -13,6 +13,11 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a screensh
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
+### Installation
+
+You can play with the most recent OSX builds [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0). **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
+to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
+
 ### Links
 
 - [Patreon page](https://www.patreon.com/crcn)
@@ -34,11 +39,6 @@ The following principles were (and are) used in creating of Tandem.
 - Reduce barrier for non-coders who want to create applications.
 - Provide CSS tooling for animations, 3D, and other features that are hard to code by hand.
 - Include all cross-browser testing, development, and debugging into one application.
-
-### Installation
-
-You can play with the most recent OSX builds [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0). **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
-to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
 
 ### Who's this application intended for?
 
