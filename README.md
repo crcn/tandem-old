@@ -1,6 +1,6 @@
 <!--[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) -->
 
-> **If you find this software useful, please consider [becoming a backer](https://www.patreon.com/crcn) to help fund for the development of more features.** 
+> **If you find this software useful, please consider [becoming a backer](https://www.patreon.com/crcn) to help fund for the development of features, documentation, videos, tutorials, examples, and bug fixes.** 
 
 Tandem is a code-first & extensible visual editor for web development that is intended to work with all programming languages and frameworks (JavaScript, ReactJS, AngularJS, PHP, Ruby, Sass, CSS, HTML, and others). You can use Tandem with your existing codebase to visually create features without risk, or lock-in. 
 
