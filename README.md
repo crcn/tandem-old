@@ -8,7 +8,7 @@ Tandem integrates with your existing text editor by synchronizing code changes. 
 
 ![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
 
-As part of a litmus test, **Tandem was used to build itself**. Here's a of Tandem running *in* Tandem:
+As part of a litmus test, **Tandem was used to build itself**. Here's a screenshot of Tandem running *in* Tandem:
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
