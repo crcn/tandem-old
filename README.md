@@ -46,7 +46,7 @@ to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCod
 - Teams that want to reduce the barrier for contributing to the development of web applications
   - Collaboration (see features below) functionality enables developers to invite designers, and other teammates to co-develop web applications.
   - Tandem is extensible, meaning that teams can add features that fit their application needs (kind of like a CMS), and team workflow.
-  - Tandem will be integratable with other systems such as Jenkins (for visual QA testing), Optimizely (for a/b testing), and Launch darkly (for feature flagging).
+  - Tandem will be integratable,  with other systems such as Jenkins (for visual QA testing), Optimizely (for a/b testing), and Launch darkly (for feature flagging).
 - Individuals who are starting to learn how to code.
 - Educators
 - Companies that want to integrate Tandem into their own product. 
@@ -81,5 +81,5 @@ Collaborative editing will enable you to share your workspace with designers, an
 ### Future
 
 Eventually, I hope to build Tandem into a platform that enables developers to do most (or even all) of their UI development visually (as I think it should be). There isn't an ecosystem
-yet to support this, but there is a possibility to have a hibridization of web frameworks that are designed to be coded visually by editors such as Tandem, and that can also be written by hand. 
+yet to support this, but there is a possibility to have a hibridization of web frameworks that are designed to be coded visually by editors such as Tandem and that can also be written by hand. 
 To support this idea, I plan to continue developing Tandem in Tandem until the entire application UI is re-built with components that are created in the application itself. 
