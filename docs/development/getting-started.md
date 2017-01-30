@@ -1,7 +1,9 @@
 
-# Development
+#### Installing
 
-To get started, run `git clone git@github.com:tandemcode/tandem.git; cd tandem; npm install; WATCH=1 npm run build`. After that, go ahead and run `npm run code workspace.tandem` which will open Tandem *in* Tandem:
+Before you begin, ensure that you have `Node@7.4.0` or newer installed.
+
+Assuming that you're running on `OSX`, or `Linux`, go ahead and run `git clone git@github.com:tandemcode/tandem.git; cd tandem; npm install; WATCH=1 npm run build`. After that, go ahead and run `npm run code workspace.tandem` which will open Tandem *in* Tandem:
 
 After you've booted up Tandem in Tandem, open up the `src/**` directory and start hacking away.
 
