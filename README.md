@@ -15,7 +15,7 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a screensh
 
 ### Installation
 
-You'll need to build Tandem locally in order to run it. Check out the [Getting Started](./docs/development/getting-started.md) development on how to do this.
+You'll need to build Tandem locally in order to run it. Check out the [Getting Started](./docs/development/getting-started.md) development page on how to do this.
 
 ### Links
 
