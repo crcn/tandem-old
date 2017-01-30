@@ -15,8 +15,7 @@ As part of a litmus test, **Tandem was used to build itself**. Here's a screensh
 
 ### Installation
 
-You can play with the most recent OSX builds [here](https://www.dropbox.com/sh/k9eqwmksv0655ss/AABQyfP5xWf4nbynRm0-OxKJa?dl=0). **Please note that the current application is a *preview* of what's to come. Expect bugs, and missing features**. Aso be sure
-to install the [Atom](https://atom.io/packages/atom-tandem-extension), or [VSCode](https://marketplace.visualstudio.com/items?itemName=tandemcode.tandem-vscode-extension) extensions for the best experience.
+You'll need to build Tandem locally in order to run it. Check out the [Getting Started](./docs/development/getting-started.md) development on how to do this.
 
 ### Links
 
