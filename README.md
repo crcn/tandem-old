@@ -64,7 +64,7 @@ The following principles were (and are) used in creating of Tandem.
 
 ### Roadmap
 
-Below are a few highlighted features planned for Tandem. Cast your vote with  👍 or 👎 for features in [issues tab](tandemcode/tandem/issues?q=is%3Aopen+is%3Aissue+label%3AFeature).
+Below are a few highlighted features planned for Tandem. Cast your vote with  👍 or 👎 for features in [issues tab](https://github.com/tandemcode/tandem/issues?q=is%3Aopen+is%3Aissue+label%3AFeature).
 
 - **More native rendering engines** (Firefox, Safari, iOS, Android) will enable you to do all of you visual testing directly within Tandem. You will also be able to interact with these previews visually, and launch multiple browsers in parallel to design & debug HTML & CSS as you're coding.
 Collaborative editing will enable you to share your workspace with designers, and other team members who can work with you to create pixel perfect applications.
