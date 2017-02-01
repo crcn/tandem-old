@@ -20,9 +20,7 @@ You'll need to build Tandem locally in order to run it. Check out the [Getting S
 ### Links
 
 - [Patreon page](https://www.patreon.com/crcn)
-- [Videos](youtube-channel-here)
-  - [Getting started](TODO)
-  - [Using Tandem with React](TODO)
+- Videos - TODO 
 - [Development](./docs/development) - Docs for anyone that wants to extend Tandem.
 - [Example projects](https://github.com/tandemcode/examples) - example projects that integrate well with Tandem.
 
