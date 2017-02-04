@@ -43,6 +43,7 @@ WOW
 - [ ] animations
 
 NOW
+  - [ ] copy raw HTML & CSS changes.
   - [ ] Media queries
     - [ ] cmd+click media rule
     - [ ] show matching media rules in css pane

@@ -1,6 +1,6 @@
 {
-  "name": "@tandem/text-editor-extension",
-  "version": "1.0.0",
+  "name": "text-editor-extension",
+  "version": "1.0.11",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "monaco-editor": "^0.8.1"
+    "codemirror": "^5.21.0"
   }
 }
