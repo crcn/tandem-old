@@ -1,7 +1,7 @@
 <!--[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) -->
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/tandemcode-tandem/Lobby)
 
-> **If you like this app, please consider [becoming a backer](https://www.patreon.com/crcn) for further development.** 
+> **If you like this app, please consider [becoming a backer](https://www.patreon.com/crcn) for [further development](#roadmap).** 
 
 Tandem is a code-first & extensible visual editor for web development that is intended to work with all programming languages and frameworks (JavaScript, ReactJS, AngularJS, PHP, Ruby, Sass, CSS, HTML, and others). You can use Tandem with your existing codebase to visually create features without risk, or lock-in. 
 
@@ -20,9 +20,7 @@ You'll need to build Tandem locally in order to run it. Check out the [Getting S
 ### Links
 
 - [Patreon page](https://www.patreon.com/crcn)
-- [Videos](youtube-channel-here)
-  - [Getting started](TODO)
-  - [Using Tandem with React](TODO)
+- Videos - TODO 
 - [Development](./docs/development) - Docs for anyone that wants to extend Tandem.
 - [Example projects](https://github.com/tandemcode/examples) - example projects that integrate well with Tandem.
 
@@ -64,7 +62,7 @@ The following principles were (and are) used in creating of Tandem.
 
 ### Roadmap
 
-Below are a few highlighted features planned for Tandem. Cast your vote with  👍 or 👎 for features in [issues tab](tandemcode/tandem/issues?q=is%3Aopen+is%3Aissue+label%3AFeature).
+Below are a few highlighted features planned for Tandem. Cast your vote with  👍 or 👎 for features in [issues tab](https://github.com/tandemcode/tandem/issues?q=is%3Aopen+is%3Aissue+label%3AFeature).
 
 - **More native rendering engines** (Firefox, Safari, iOS, Android) will enable you to do all of you visual testing directly within Tandem. You will also be able to interact with these previews visually, and launch multiple browsers in parallel to design & debug HTML & CSS as you're coding.
 Collaborative editing will enable you to share your workspace with designers, and other team members who can work with you to create pixel perfect applications.
