@@ -1,15 +1,15 @@
 
 import { merge } from "lodash";
 import { TextEditorComponent } from "./components";
+import { URIProtocolProvider } from "@tandem/sandbox";
+import { RootPlaygroundBrowserStore } from "./stores";
+import { PlaygroundBrowserStoreProvider } from "./providers";
 import { createHTMLEditorBrowserProviders } from "@tandem/html-extension/editor/browser";
 import { HomeRouteHandler, ProjectRouteHandler } from "./routes";
 import { createTDProjectEditorBrowserProviders } from "@tandem/tdproject-extension/editor/browser";
-import { Kernel, ServiceApplication, ApplicationServiceProvider, CommandFactoryProvider, LoadApplicationRequest } from "@tandem/common";
-import { PlaygroundBrowserStoreProvider } from "./providers";
-import { RootPlaygroundBrowserStore } from "./stores";
-import { OpenFileCommand, UpdateFileCommand, WatchFilesCommand, UpdateTextEditorContentCommand } from "./commands";
-import { URIProtocolProvider } from "@tandem/sandbox";
 import { UpdateFileCacheRequest, FileCacheItemUpdatedMessage } from "./messages";
+import { OpenFileCommand, UpdateFileCommand, WatchFilesCommand, UpdateTextEditorContentCommand } from "./commands";
+import { Kernel, ServiceApplication, ApplicationServiceProvider, CommandFactoryProvider, LoadApplicationRequest } from "@tandem/common";
 import { 
   OpenFileRequest,
   EditorFamilyType, 
@@ -18,8 +18,6 @@ import {
   createEditorBrowserProviders, 
   EditorComponentFactoryProvider,
 } from "@tandem/editor/browser";
-
-
 
 export const createTextEditorProviders = () => {
   return [

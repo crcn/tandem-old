@@ -16,6 +16,14 @@ QUESTIONS
 - lack of debugging tools
 - inability to interact with app
 
+STRATEGY
+
+- implement core features where the implementation is absolutely certain
+- implement features that can only be used in a Tandem-like application
+  - cross-browser testing
+  - test-builder
+- documentation
+
 ----------------------------------
 IMMEDIATE
 ----------------------------------
@@ -25,18 +33,6 @@ DOCUMENTATION
   - [ ] user youtube channel
   - [ ] videos
     - [ ] how to use
-      
-
-DAILY TASK LIST
-  - [ ] 30m apply for jobs
-  - [ ] 1hr fix BUGS
-  - [ ] 1hr 
-
-README
-  - [ ] patreon
-
-PROMOTION
-  - [ ] React UI Kit - could sell
 
 WOW
 - [ ] browsertap

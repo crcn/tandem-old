@@ -34,8 +34,8 @@ export class BaseApplicationComponent<T, U> extends React.Component<T, U> implem
   @inject(KernelProvider.ID)
   protected readonly kernel: Kernel
 
-  constructor(props: T, context: IApplicationComponentContext, callbacks: any) {
-    super(props, context, callbacks);
+  constructor(props: T, context: IApplicationComponentContext) {
+    super(props, context);
 
     if (context.kernel) {
       context.kernel.inject(this);

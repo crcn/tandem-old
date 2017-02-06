@@ -8,7 +8,7 @@ export const editorComponentContextTypes = {
 
 export class BaseEditorComponent<T, U> extends React.Component<T, U> {
   static contextTypes = editorComponentContextTypes;
-  constructor(args: any[]) {
-    super(...args);
+  constructor(props: T, context: any) {
+    super(props, context);
   }
 }

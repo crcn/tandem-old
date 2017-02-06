@@ -1,8 +1,8 @@
 import "./index.scss";
 import React = require("react");
 import cx = require("classnames");
-import { CodeMirrorComponent } from "@tandem/text-editor-extension/browser/components/common";
 import { UpdateFileCacheRequest } from "@tandem/text-editor-extension/browser/messages";
+import { MonacoTextEditorComponent } from "@tandem/text-editor-extension/browser/components/common";
 import { RootPlaygroundBrowserStore } from "@tandem/text-editor-extension//browser/stores";
 import { PlaygroundBrowserStoreProvider } from "@tandem/text-editor-extension/browser/providers";
 import { BaseApplicationComponent, inject } from "@tandem/common";
@@ -58,7 +58,7 @@ export class TextEditorComponent extends BaseApplicationComponent<any, any> {
       </div>
       <div className="text">
         <div className="mute-overlay" style={{ display: show ? "none" : "block" }} onClick={this.toggleTextEditor} />
-        <CodeMirrorComponent onChange={this.onChange} value={String(currentFile.content)} contentType={currentFile.type} />
+        <MonacoTextEditorComponent onChange={this.onChange} value={String(currentFile.content)} contentType={currentFile.type} />
       </div>
 
       <div className="footer">

@@ -124,7 +124,7 @@ export class KeyValueInputComponent extends BaseApplicationComponent<IKeyValueIn
         {...(this.state.currentValue != undefined ? {} : { value: value })}
         style={{textDecoration: overridden ? "line-through" : undefined }}
         onKeyDown={this.onValueKeyDown}
-        onChange={this.onValueChange}
+        onChange={this.onValueChange as any}
         onFocus={this.onValueFocus}
         onBlur={this.onValueBlur}
         />
