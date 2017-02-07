@@ -1,4 +1,4 @@
-#### Mesh is a messsage routing library based on the [stream standard](https://streams.spec.whatwg.org/).
+## Mesh is a messsage routing library based on the [stream standard](https://streams.spec.whatwg.org/).
 
 **This is updated version of [Mesh.js](http://mesh.js.org/). This library will eventually be moved [here](https://github.com/crcn/mesh.js) after it becomes a bit more stable.**
 
