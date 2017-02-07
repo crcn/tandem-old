@@ -2,7 +2,7 @@
 
 **This library will eventually be moved [here](https://github.com/crcn/mesh.js) after it becomes a bit more stable.**
 
-This library is intented to be more of a utility belt (like underscore, or lodash) for creating your *own* messaging routers. The docs here (still WIP) serve as a guide to help you come up with messaging APIs, and patterns that are consistent across your codebase. 
+This library is intented to be more of a utility belt (like underscore, or lodash) for creating your *own* messaging routers. The docs here (still WIP) also serve as a guide to help you come up with messaging APIs, and patterns that are consistent across your codebase. 
 
 #### Motivation
 
