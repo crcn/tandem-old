@@ -28,6 +28,12 @@ STRATEGY
 IMMEDIATE
 ----------------------------------
 
+BROWSERTAP
+  - [ ] need to resize remote browser windows according to the preview
+  - [ ] needs to work on AWS
+  - [ ] needs to transmit user events
+  - [ ] remote previews should contain minimal amount of code in order to run app code
+
 DOCUMENTATION
   - [ ] developer youtube channel
   - [ ] user youtube channel

@@ -171,7 +171,6 @@ function removeFileProtocolId(value: string) {
 
 export class TextEditorClient {
 
-    private _fileCachePromise: Promise<any>;
     private _settingTextContent: boolean;
     private _remote: BaseTandemClient;
 
@@ -179,8 +178,18 @@ export class TextEditorClient {
         [Identifier: string]: number
     };
 
+    private _fileCachePromises: {
+        [Identifier: string]: Promise<any>
+    }
+
+    private _saveAgainFileCachePromiseData: {
+        [Identifier: string]: { content: string, mtime: number }
+    }
+
     constructor(readonly adapter: TextEditorClientAdapter, createTandemClient = (family: string) => new TandemSockClient(family)) {
         this._mtimes = {};
+        this._fileCachePromises = {};
+        this._saveAgainFileCachePromiseData = {};
         const remote = this._remote = createTandemClient(EditorFamilyType.TEXT_EDITOR);
 
         remote.bus.register(new CallbackDispatcher(this.onRemoteMessage.bind(this)));
@@ -238,7 +247,7 @@ export class TextEditorClient {
 
     // debounced to give the text editor to set dirty flag to true -- required
     // in vscode specifically.
-    private onDidChangeTextDocument = debounce(() => {
+    private onDidChangeTextDocument = debounce(async () => {
         const { uri, content, dirty } = this.adapter.getCurrentDocumentInfo();
         if (this._settingTextContent || !dirty) return;
         this.updateFileCache(uri, content);
@@ -296,13 +305,25 @@ export class TextEditorClient {
 
         this._mtimes[uri] = mtime;
 
-        if (this._fileCachePromise) {
-            return this._fileCachePromise.then(() => {
-                return this.updateFileCache(uri, content);
+        if (this._fileCachePromises[uri]) {
+
+            this._saveAgainFileCachePromiseData[uri] = { content, mtime };
+            
+            return this._fileCachePromises[uri].then(() => {
+                this._fileCachePromises[uri] = undefined;
+
+                // save only the most recently updated data
+                if (this._saveAgainFileCachePromiseData[uri]) {
+                    const { content, mtime } = this._saveAgainFileCachePromiseData[uri];
+                    this._saveAgainFileCachePromiseData[uri] = undefined;
+                    return this.updateFileCache(uri, content, mtime);
+                } else {
+                    return Promise.resolve();
+                }
             });
         }
 
-        return this._fileCachePromise = new Promise(async (resolve, reject) => {
+        return this._fileCachePromises[uri] = new Promise(async (resolve, reject) => {
 
             const filePath = removeFileProtocolId(uri);
 
@@ -313,7 +334,7 @@ export class TextEditorClient {
                 reject(e);
             }
 
-            this._fileCachePromise = undefined;
+            this._fileCachePromises[uri] = undefined;
             resolve();
 
         });
