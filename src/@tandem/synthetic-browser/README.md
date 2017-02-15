@@ -280,7 +280,7 @@ Example:
 
 #### Custom dependency graph strategy
 
-* Still a work in progress *
+*Still a work in progress*
 
 Tandem will come with (core currently supports it) custom dependency graph strategies for Webpack, Rollup, Browserify, and other bundling systems. For example:
 
