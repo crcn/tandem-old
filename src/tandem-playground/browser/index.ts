@@ -1,4 +1,39 @@
-// import "reflect-metadata";
+import "reflect-metadata";
+import { 
+  Kernel, 
+  ServiceApplication, 
+  ApplicationConfigurationProvider 
+} from "@tandem/common";
+
+import { EditorFamilyType } from "@tandem/editor";
+
+import { 
+  IEditorBrowserConfig,
+  createEditorBrowserProviders,
+} from "@tandem/editor/browser";
+
+const initialize = async () => {
+
+  const config: IEditorBrowserConfig = {
+    isPeer: false,
+    element: document.getElementById("application"),
+    family: EditorFamilyType.BROWSER,
+     server: {
+      port: process.env.API_PORT || Number(location.port) || 80,
+      hostname: process.env.API_HOSTNAME || location.hostname,
+      protocol: process.env.API_PROTOCOL || (location.protocol === "https:" ? "https:" : "http:")
+    }
+  };
+
+  const kernel = new Kernel(
+    createEditorBrowserProviders(config)
+  );
+  
+  const app = new ServiceApplication(kernel);
+  await app.initialize();
+};
+
+window.onload = initialize;
 
 // import { merge } from "lodash";
 // import { TextEditorComponent } from "./components";
