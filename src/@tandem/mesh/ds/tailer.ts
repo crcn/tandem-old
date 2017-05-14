@@ -1,4 +1,4 @@
-import * as sift from "sift";
+import sift from "sift";
 
 import { 
   IMessage,

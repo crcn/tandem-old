@@ -1,7 +1,7 @@
 {
   "name": "tandem-code",
   "productName": "Tandem",
-  "version": "1.0.34",
+  "version": "1.0.36",
   "private": true,
   "main": "./index.bundle.js",
   "electronVersion": "1.4.6",

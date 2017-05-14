@@ -1,5 +1,5 @@
 import { IMessage, IStreamableDispatcher, readAllChunks, readOneChunk, DuplexStream } from "@tandem/mesh/core";
-import sift = require("sift");
+import sift from "sift";
 import { serializable } from "@tandem/common/serialize";
 
 export class DSMessage implements IMessage {
@@ -38,7 +38,7 @@ export class DSFindRequest<T> extends DSMessage {
     super(DSFindRequest.DS_FIND, collectionName);
   }
   static createFilter(collectionName: string) {
-    return sift({ collectionName: collectionName });
+    return sift({ collectionName: collectionName } as any);
   }
   static async findOne(collectionName: string, query: Object, dispatcher: IStreamableDispatcher<any>): Promise<any> {
     return (await readOneChunk<any>(dispatcher.dispatch(new DSFindRequest(collectionName, query, true)))).value;

@@ -1,6 +1,6 @@
 {
   "name": "@tandem/mesh",
-  "version": "1.0.29",
+  "version": "1.0.31",
   "description": "Temporary directory for the updated version of [Mesh](http://mesh.js.org/).",
   "main": "index.js",
   "directories": {
@@ -12,5 +12,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {},
-  "peerDependencies": {}
+  "peerDependencies": {},
+  "dependencies": {
+    "sift": "^3.3.7",
+    "socket.io": "^2.0.1"
+  }
 }

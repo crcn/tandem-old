@@ -64,8 +64,8 @@ export class SelectorStageToolComponent extends BaseApplicationComponent<{ works
     };
 
     const sections: any = {
-      bounds: <div className="m-selector-component--bounds" style={boundsStyle} />,
-      resizer: <ResizerComponent {...this.props} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} />
+      bounds: <div className="m-selector-component--bounds" style={boundsStyle as any} />,
+      resizer: <ResizerComponent workspace={this.props.workspace} zoom={this.props.zoom} strokeWidth={2} selection={selection} onResizing={this.onResizing} onStopResizing={this.onStopResizing} onMoving={this.onMoving} onStopMoving={this.onStopMoving} />
     };
 
     if (this.state.resizing) {

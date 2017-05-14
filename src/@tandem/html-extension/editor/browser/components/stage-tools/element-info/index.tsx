@@ -84,9 +84,9 @@ class ElementInfoComponent extends React.Component<{ element: SyntheticHTMLEleme
       display: this.props.hoverCount < MAX_TOOLTIP_COUNT ? "block" : "none"
     }
 
-    return <div className="td-html-element-info-item" style={style}>
+    return <div className="td-html-element-info-item" style={style as any}>
       <div className="td-html-tag-info selected" style={tagInfoStyle}>{tagInfo} &brvbar; { Math.round(rect.width) }  &times; { Math.round(rect.height) }</div>
-      <div style={styleInner}>
+      <div style={styleInner as any}>
         <div className="td-html-padding-info" style={paddingStyle}></div>
         <div className="td-html-margin-info" style={marginStyle}></div>
       </div>

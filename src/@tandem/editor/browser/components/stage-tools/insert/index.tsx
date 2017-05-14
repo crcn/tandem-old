@@ -93,9 +93,10 @@ export class InsertStageToolComponent extends BaseApplicationComponent<{ workspa
       height: "100%"
     };
 
+// { workspace: Workspace, allElements: SyntheticDOMElement[], zoom: number, tool: InsertTool }
     return <div className="m-insert-tool">
-      <div onMouseDown={this.onRootMouseDown} style={bgstyle} />
-      { !tool.entityIsRoot ? <SelectablesComponent {...this.props} show={true} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} zoom={this.props.zoom} /> : null }
+      <div onMouseDown={this.onRootMouseDown} style={bgstyle as any} />
+      { !tool.entityIsRoot ? <SelectablesComponent workspace={this.props.workspace} allElements={this.props.allElements} show={true} canvasRootSelectable={true} onSyntheticMouseDown={this.onSyntheticMouseDown} zoom={this.props.zoom} /> : null }
     </div>;
   }
 }

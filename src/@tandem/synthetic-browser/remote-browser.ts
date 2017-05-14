@@ -92,7 +92,7 @@ export class RemoteSyntheticBrowser extends BaseSyntheticBrowser {
   private _bus: IStreamableDispatcher<any>;
   private _documentEditor: SyntheticObjectTreeEditor;
   private _remoteStreamReader: ReadableStreamDefaultReader<any>;
-  private _writer: WritableStreamDefaultWriter;
+  private _writer: any;
 
   @bindable(true)
   public status: Status = new Status(Status.IDLE);

@@ -300,7 +300,7 @@ class ResizerComponent extends BaseApplicationComponent<{
       <div
         ref="selection"
         className="m-selector-component--selection"
-        style={resizerStyle}
+        style={resizerStyle as any}
         onMouseDown={this.startDragging}
       >
         <PathComponent

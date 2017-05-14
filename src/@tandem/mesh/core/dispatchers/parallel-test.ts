@@ -60,7 +60,7 @@ describe(__filename + "#", () => {
     ]);
 
     const { readable } = bus.dispatch({});
-    const reader = readable.getReader() as ReadableStreamDefaultReader;
+    const reader = readable.getReader();
     expect(await reader.read()).to.eql({ value: 0, done: false });
     await reader.cancel("no reason");
     expect(i).to.equal(5);

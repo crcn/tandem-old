@@ -300,7 +300,7 @@ export default class EditorStageLayersComponent extends BaseApplicationComponent
         className={cx({ "m-editor-stage-canvas": true, "fade-in": this.state.show })}
         style={style}>
           <div className="m-editor-stage-loading" style={{display: this.state.show ? "none" : "block" }} />
-          <div style={innerStyle} className="noselect preview-root" data-previewroot>
+          <div style={innerStyle as any} className="noselect preview-root" data-previewroot>
             <PreviewLayerComponent renderer={this.props.workspace.browser.renderer} />
             { workspace.document ? <ToolsLayerComponent workspace={workspace} zoom={workspace.zoom} zooming={this.state.zooming} allElements={workspace.documentQuerier.queriedElements} /> : undefined }
           </div>

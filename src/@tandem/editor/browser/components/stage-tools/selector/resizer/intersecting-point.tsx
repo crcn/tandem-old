@@ -34,7 +34,7 @@ export class IntersectingPointComponent extends React.Component<{ guideLine: Gui
       line = <line x1={width * anchor.left} y1={0} x2={width * anchor.left} y2={height} strokeWidth={borderWidth} />;
     }
 
-    return <div style={style} className="m-intersecting-point">
+    return <div style={style as any} className="m-intersecting-point">
       <svg width={width + borderWidth} height={height + borderWidth} viewBox={[-halfBorderWidth, -halfBorderWidth, width + borderWidth, height + borderWidth].join(" ")}>
         { line }
       </svg>

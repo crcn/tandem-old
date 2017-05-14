@@ -106,7 +106,7 @@ class SelectableComponent extends BaseApplicationComponent<{
     return (
       <AltInputComponent getAltProps={getAltProps}>
         <div
-          style={style}
+          style={style as any}
           className={classNames}
           onMouseLeave={this.onMouseOut}
           onMouseMove={this.onMouseOver}
