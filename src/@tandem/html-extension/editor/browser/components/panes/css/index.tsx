@@ -99,7 +99,7 @@ export class CSSStylePaneComponent extends BaseApplicationComponent<ICSSStylePan
           <span onClick={() => setDeclaration("", "")}>+</span>
         </div>
       </div>
-      { pretty ? <CSSPrettyPaneComponent style={style} /> : <CSSStyleHashInputComponent {...this.props} /> }
+      { pretty ? <CSSPrettyPaneComponent style={style} /> : <CSSStyleHashInputComponent setDeclaration={this.props.setDeclaration} style={this.props.style} /> }
     </div>
   }
 }

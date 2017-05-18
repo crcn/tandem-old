@@ -17,7 +17,7 @@ export class HTTPProxyProtocol extends URIProtocol {
 
   async write(uri: string, content: string|Buffer) {
     const data = new FormData();
-    data.append("text", content);
+    data.append("text", content as any);
     // console.log(content)
     return await this.post("write", uri, content);
   }

@@ -13,7 +13,7 @@ export class SelectableStageToolComponent extends React.Component<{selection: an
   }
 
   render() {
-    return <SelectablesComponent {...this.props} show={!this.props.zooming && this.props.workspace.showStageTools} onSyntheticMouseDown={this.onSyntheticMouseDown} />;
+    return <SelectablesComponent allElements={this.props.allElements} zoom={this.props.zoom} workspace={this.props.workspace} show={!this.props.zooming && this.props.workspace.showStageTools} onSyntheticMouseDown={this.onSyntheticMouseDown} />;
   }
 }
 

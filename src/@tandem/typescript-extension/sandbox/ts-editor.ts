@@ -95,8 +95,9 @@ export class TSEditor extends BaseContentEditor<ts.Node> {
     const modify = (target: ts.JsxOpeningElement | ts.JsxSelfClosingElement) => {
 
       let found;
+      target.attributes
 
-      for (const attribute of target.attributes) {
+      for (const attribute of target.attributes.properties) {
 
         // TODO - need to consider spreads
         const attr = attribute as ts.JsxAttribute;
