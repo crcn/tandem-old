@@ -1,3 +1,5 @@
+** I'm currently focusing my efforts on [generalizing Tandem's core libraries](https://github.com/crcn/aerial) so that it can be used in other contexts. Once they mature a bit, they'll be integrated back into this repository.  **
+
 <!--[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) -->
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/tandemcode-tandem/Lobby)
 
