@@ -1,0 +1,9 @@
+
+.visual-tools-node-overlay {
+  position: absolute;
+  opacity: 0;
+  background: transparent;
+  &.hovering {
+    opacity: 1;
+  }
+}

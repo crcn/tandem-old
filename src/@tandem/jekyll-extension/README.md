@@ -1,3 +1,0 @@
-- [ ] TODOs
-  - [ ] bundle strategy
-  - [ ] automatically create remote browsers

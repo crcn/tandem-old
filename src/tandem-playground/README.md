@@ -1,1 +1,0 @@
-Online version of Tandem - shelved until the desktop [application](../tandem-code) and [core](../@tandem) is stable.

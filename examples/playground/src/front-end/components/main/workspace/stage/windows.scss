@@ -1,0 +1,12 @@
+
+.preview-component {
+  background: #EFEFEF;
+  .preview-window-component {
+    position: absolute;
+    > iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

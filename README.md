@@ -1,81 +1,57 @@
-**I'm currently focusing my efforts on [generalizing Tandem's core libraries](https://github.com/crcn/aerial) so that it can be used in other contexts. Once they mature a bit, they'll be integrated back into this repository.**
+[![Build Status](https://secure.travis-ci.org/crcn/aerial.png)](https://secure.travis-ci.org/crcn/aerial)
 
-<!--[![Build Status](https://travis-ci.com/crcn/tandem.svg?token=36W5GEcyRPyiCuMVDHBJ&branch=master)](https://travis-ci.com/crcn/tandem) -->
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/tandemcode-tandem/Lobby)
+Aerial is a visual programming engine for testing, debugging, and developing _all_ web applications (JavaScript, React, PHP, CSS). 
 
-Tandem is a code-first & extensible visual editor for web development that is intended to work with all programming languages and frameworks (JavaScript, ReactJS, AngularJS, PHP, Ruby, Sass, CSS, HTML, and others). You can use Tandem with your existing codebase to visually create features without risk, or lock-in. 
+#### Motivation
 
-Tandem integrates with your existing text editor by synchronizing code changes. Tandem automatically reloads a live preview of your app when you write code. When you make visual edits, Tandem sends code back to your text editor in the languages you're using (Sass, TypeScript, JSX, HTML, and CSS are currently supported). If you don't like the code that Tandem writes, you can easily change it.
+Aerial was originally created for [Tandem](http://tandemcode.com) to aid in the realtime development of web applications. With Tandem, users can write code, and immediately see visual elements appear in an editable interface. Users also have the ability to use Sketch-like UI tools for editing visual elements that produces code in any language that supports source maps (HTML, CSS, SASS, SCSS, React). All of this is powered by Aerial. 
 
-![syncing](https://cloud.githubusercontent.com/assets/757408/21443430/c412ff9a-c86a-11e6-9e36-71df05a94ea0.gif)
-
-As part of a litmus test, **Tandem was used to build itself**. Here's a screenshot of Tandem running *in* Tandem:
-
-![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
-
-### Installation
-
-You'll need to build Tandem locally in order to run it. Check out the [Getting Started](./docs/development/getting-started.md) development page on how to do this.
-
-### Links
-
-- Videos - TODO 
-- [Development](./docs/development) - Docs for anyone that wants to extend Tandem.
-- [Example projects](https://github.com/tandemcode/examples) - example projects that integrate well with Tandem.
-
-### Goals and Motivation
-
-The following principles were (and are) used in creating of Tandem. 
-
-- Provide tooling that enables you to most of your application development visually, and without needing to write code.
-- Transparent tooling that doesn't hide or abstract how Tandem represents your application code.
-- Speed up development process with a more intuitive approach to building applications.
-- Increase understanding of CSS & HTML with built-in documentation, suggestions, and tools (like intellisense).
-- Speed up development cycles by including design, prototyping, and development into one application.
-- Reduce barrier for non-coders who want to create applications.
-- Provide CSS tooling for animations, 3D, and other features that are hard to code by hand.
-- Include all cross-browser testing, development, and debugging into one application.
-
-### Who's this application intended for?
-
-- Professional web developers 
-- Teams that want to reduce the barrier for contributing to the development of web applications
-  - Collaboration (see features below) functionality enables developers to invite designers, and other teammates to co-develop web applications.
-  - Tandem is extensible, meaning that teams can add features that fit their application needs (kind of like a CMS), and team workflow.
-  - Tandem will be integratable,  with other systems such as Jenkins (for visual QA testing), Optimizely (for a/b testing), and Launch darkly (for feature flagging).
-- Individuals who are starting to learn how to code.
-- Educators
-- Companies that want to integrate Tandem into their own product. 
-- Tandem's core is modular enough to be usable in other visual editing contexts.
-
-### Features
-
-- Writes code in HTML, CSS, Sass, TypeScript, and JSX.
-- Integrates with Atom, and Visual Studio Code.
-- Visual tools for media queries, filters, gradients, fonts, css flexbox, measuring, dragging items, responsive testing, and more.
-- Multiple live previews allows you to see how code changes affect your application in different states, pages, and sizes.
-- Hot swapping HTML & CSS ensures that your visual editing is fluid, and never interrupted.
-- Interact with previews like a normal web browser. 
-- Interactions (clicks, keyboard inputs) synchronize with other previews in different device sizes, and browser rendering engines.
+![ezgif-2-7c518ea713](https://user-images.githubusercontent.com/757408/26987589-215d52ca-4d1a-11e7-828e-6db361086a83.gif)
 
 
-### Roadmap
+The library takes inspiration from many ideas, more notabily Bret Victor's presentation on [the future of programming](https://vimeo.com/36579366). Aerial is an attempt to provide
+the APIs necessary for creating realtime programming environments (like Sketch + coding). 
 
-Below are a few highlighted features planned for Tandem. Cast your vote with  👍 or 👎 for features in [issues tab](https://github.com/tandemcode/tandem/issues?q=is%3Aopen+is%3Aissue+label%3AFeature).
+#### How does Aerial work?
 
-- **More native rendering engines** (Firefox, Safari, iOS, Android) will enable you to do all of you visual testing directly within Tandem. You will also be able to interact with these previews visually, and launch multiple browsers in parallel to design & debug HTML & CSS as you're coding.
-Collaborative editing will enable you to share your workspace with designers, and other team members who can work with you to create pixel perfect applications.
-- **More developer tools & documentations** to help make it easier for developers to create their own Tandem extensions to fit their own, or team workflow.
-- **Community extensions** page that enables people to customize Tandem.
-- **Test builder** would enable you to visually create Selenium tests directly within Tandem.
-- **Intellisense-like suggestions for HTML & CSS** would help you pick the right HTML & CSS features for your application.
-- **Animations tools** with an iMovie-like interface for intuitively creating motion in your application.
-- **3D tooling**
-- **Dependency graph strategies** for Webpack, SystemJS, and Rollup, would speed up preview hot swapping, and unlock live reloads as you're writing code in your text editor.
-- **Visual tooling specific to frameworks** such as VueJS, ReactJS, AngularJS, AureliaJS, MotionJS, and Javascript, and non-JavaScript libraries.
+Aerial runs your application code in a sandboxed environment that emulates native JavaScript APIs -- currently just for the browser (DOM, navigator, history). All emulated APIs can be inspected so you can test how your application interacts with them. You can also define environment parameters such as browser type, network information (offline, throttled), and even the rendering engine to see how your application looks & behaves in different environments. 
 
-### Future
+The browser VM supports _native_ rendering, meaning that the HTML & CSS that your application produces can be rendered out to the actual DOM. Native DOM APIs such as `element.getBoundingClientRect`, and `window.getComputedStyle(element)` work the same. The rendering engine is interchangable, and will eventually support _remote_ browsers so that you can run your application code in one local environment (Node for instance), and have its HTML & CSS rendered out to as many native browsers as you want via [Browsertap](browsertap.com).
 
-Eventually, I hope to build Tandem into a platform that enables developers to do most (or even all) of their UI development visually (as I think it should be). There isn't an ecosystem
-yet to support this, but there is a possibility to have a hibridization of web frameworks that are designed to be coded visually by editors such as Tandem and that can also be written by hand. 
-To support this idea, I plan to continue developing Tandem in Tandem until the entire application UI is re-built with components that are created in the application itself. 
+<!-- example here -->
+
+The renderer can also be customized to target other platforms such as Canvas, WebGL, or just plain strings if you plan on running synthetic browser instances in a headless environment (Server-side rendering via node, or unit testing for instance). This enables you to use Aerial in other ways -- perhaps integrating it with Sketch so that you can code & design your application in realtime (similar to [Airbnb's React-sketchapp](https://github.com/airbnb/react-sketchapp), but with Aerial it may be possible for Sketch to write code, and not limited to React). 
+
+Many of the emulated APIs are enhanced. The DOM & CSSOM for instance both support diffing & patching (just like React). This means that as your application produces new HTML & CSS, only the DOM / CSSOM objects that change get updated. This hot-swapping was originally introduced to allow users to visually edit applications regardless of their technical stack (Ruby, Java, PHP, Angular, anything that produces HTML & CSS).
+
+Aerial uses a dependency graph that can be adapted to any bundling library including SystemJS, CommonJS, Webpack, and Rollup. The environment that uses the dependency graph can be set to re-execute whenever a source file changes. This paired with hot-swapping capabilities allows developers to write code, and see how their application visualy changes in realtime. Manipulating the emulated DOM / CSSOM (programatically, or visually) will write code back to the dependency graph (this mainly leverages source maps). The dependency graph can also be shared across _multiple_ browser instances which _automatically_ reload whenever a shared file changes. Here's an example of that:
+
+![ezgif-2-7e5a33fa16](https://user-images.githubusercontent.com/757408/27011517-0c27d188-4e8b-11e7-8bf1-811b07bce87d.gif)
+
+Aerial can also defer application execution to remote processes using the `RemoteBrowser` object that pairs with the diffing & patching algorithms. This enables you to offload some of the heavy work - possibly to a NodeJS thread, or even remotely (AWS, lamda), for a smooth user experience if you're building a visual editor. 
+
+#### Who is Aerial for?
+
+<!-- There were a few guiding principles when developing Aerial out:
+
+- 
+- Cross-browser, and platform testing (mobile, tablet, desktop), should 
+-->
+
+This library was designed for developers that want to create tooling for catching visual bugs in web applications. Here are some examples of what you can do with Aeiral:
+
+- Unit testing CSS (this is probably the most general use case) across any browser (Safari, Firefox, Chrome, Mobile) via browsertap.com, and across any application state. 
+- Visually QA test every state of your application. Ability to manipulate file resources and see how those changes manifest across all visual states.
+- Hook Aerial up to a code editor & build applications visually in realtime (basically Tandem).
+
+#### App examples
+
+- [Tandem](http://tandemcode.com) - visually create web applications. 
+- [Code Playground](https://github.com/crcn/aerial/tree/master/examples/playground) - small visual editor. 
+- [Crawler](https://github.com/crcn/aerial/tree/master/examples/crawler) - crawls a website (up to 20 pages), and displays editable pages. 
+
+#### Code examples
+
+- [Unit testing](./examples/unit-testing) - example of how you can use Tandem for unit testing.
+- Custom dependency graph - TODO
+- Custom rendering engine - TODO

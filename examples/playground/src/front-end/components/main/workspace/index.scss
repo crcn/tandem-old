@@ -1,0 +1,9 @@
+.workspace-component {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  .workspace-editors {
+    width: 100%;
+    display: flex;
+  }
+}

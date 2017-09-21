@@ -1,0 +1,17 @@
+@import "front-end/scss/variables.scss";
+
+.pane-component {
+  min-width: 200px;
+
+  .header {
+    padding: $padding-base * 4 $padding-base * 8;
+    text-transform: uppercase;
+    .controls {
+      float: right;
+    }
+    background: #F0F0F0;
+  }
+  .body {
+    padding: $padding-base * 4 $padding-base * 8;
+  } 
+}

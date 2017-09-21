@@ -1,0 +1,65 @@
+import { expect } from "chai";
+import { 
+  wrapHTML,
+  openTestWindow,
+  stripWhitespace, 
+  waitForDocumentComplete, 
+} from "./utils";
+import { 
+  diffWindow,
+  patchWindow,
+  SEnvWindowInterface,
+  SyntheticDOMRenderer,
+  openSyntheticEnvironmentWindow, 
+  createSyntheticDOMRendererFactory,
+} from "../../environment";
+
+describe(__filename + "#", () => {
+  const createTestSyntheticDOMRendererFactory = async () => {
+    const targetWindow = openTestWindow(wrapHTML());
+    await waitForDocumentComplete(targetWindow);
+    return createSyntheticDOMRendererFactory(targetWindow.window.document);
+  };
+
+  it("can render text to the dom renderer", async () => {
+    const createSyntheticDOMRenderer = await createTestSyntheticDOMRendererFactory();
+    const window = openTestWindow(wrapHTML(`hello world`), {
+      getRenderer: createSyntheticDOMRenderer
+    });
+    await waitForDocumentComplete(window);
+    const domRenderer = window.renderer as SyntheticDOMRenderer;
+
+    expect(stripWhitespace(domRenderer.mount.innerHTML)).to.eql("<style></style><span><span><span></span><span>hello world</span></span></span>");
+  });
+
+
+  [
+    [`a`, `b`],
+    [`<!--c-->`, `<!--d-->`],
+    [`<div></div>`, `<div a="b"></div>`],
+    [`<div a="b"></div>`, `<div></div>`],
+    [`<div a="b"></div>`, `<div a="c"></div>`],
+  ].forEach((variants) => {
+    it(`properly renders ${variants.join(" -> ")}`, async () => {
+      const createSyntheticDOMRenderer = await createTestSyntheticDOMRendererFactory();
+
+      let primaryWindow: SEnvWindowInterface;
+
+      for (const variant of variants) {
+        const newWindow = openTestWindow(wrapHTML(variant), {
+          getRenderer: createSyntheticDOMRenderer
+        });
+
+        await waitForDocumentComplete(newWindow);
+
+        if (primaryWindow) {
+          patchWindow(primaryWindow, diffWindow(primaryWindow, newWindow));
+          const domRenderer = primaryWindow.renderer as SyntheticDOMRenderer;
+          expect(stripWhitespace(domRenderer.mount.innerHTML)).to.eql(`<style></style><span><span><span></span><span>${newWindow.document.body.innerHTML}</span></span></span>`);
+        } else {
+          primaryWindow = newWindow;
+        }
+      }
+    });
+  });
+});

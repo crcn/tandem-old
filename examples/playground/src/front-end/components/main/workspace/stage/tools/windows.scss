@@ -1,0 +1,31 @@
+.m-windows-stage-tool {
+
+  &-item {
+    position: absolute;
+    background: white;
+    z-index: -1;
+    &-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateY(calc(-100% - 10px));
+      user-select: none;
+    }
+    &-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: white;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  &-background {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+}

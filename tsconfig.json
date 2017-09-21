@@ -6,30 +6,21 @@
     "lib": [
       "es2015.promise",
       "dom",
-      "es6"
+      "es5"
     ],
     "module": "commonjs",
-    "outDir": "out",
-    "baseUrl": "src",
-    "experimentalDecorators": true,
-    "jsx": "react"
+    "outDir": "lib",
+    "baseUrl": "src/packages",
+    "experimentalDecorators": true
   },
-  "types": [
-    "sift",
-    "get-port"
-  ],
   "exclude": [
     "node_modules",
     "*-test",
-    "old",
-    "out",
-    "dist",
-    "integrations",
-    "examples"
+    "lib",
+    "index.ts"
   ],
   "filesGlob": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
+    "./src/**/*.ts"
   ],
   "rootDirs": [
     "src",

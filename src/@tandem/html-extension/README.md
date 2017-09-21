@@ -1,1 +1,0 @@
-HTML Extension for bundling, editing, and running HTML code.
