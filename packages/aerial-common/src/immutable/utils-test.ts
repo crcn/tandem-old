@@ -71,10 +71,10 @@ describe(__filename + "#", () => {
 
     mapImmutable({ name: 'string' }, a => ({ name: 'jeff' }));
 
-    it("can map an immutable array", () => {
-      const obj = mapImmutable(immutable([1, 2, 3, 4]), v => v.filter(v => v !== 3));
-      expect(obj.length).to.eql(3);
-    });
+    // it("can map an immutable array", () => {
+    //   const obj = mapImmutable(immutable([1, 2, 3, 4]), v => v.filter(v => v !== 3));
+    //   expect(obj.length).to.eql(3);
+    // });
 
     it("can map an immutable array's value based on an object", () => {
       const target = immutable([1, 2, 3]);

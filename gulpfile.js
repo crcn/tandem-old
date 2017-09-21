@@ -13,8 +13,7 @@ const {keys, intersection} = require('lodash');
 gulp.task('default', ['build']);
 
 const PACKAGE_DIRS         = [
-  ...glob.sync('./packages/*'),
-  ...glob.sync('./examples/*')
+  ...glob.sync('./packages/*')
 ];
 
 const PACKAGE_NAMES = PACKAGE_DIRS.map(dir => dir.split('/').pop());
@@ -75,7 +74,10 @@ gulp.task('link', gsequence('yarn:link:criss', 'yarn:link:cross'));
  * Link packages globally
  */
 
+
+gulp.task('yarn:unlink', createPackageSpawnTask(YARN_BIN, 'unlink'));
 gulp.task('yarn:link:criss', createPackageSpawnTask(YARN_BIN, 'link'));
+
 
 /**
  * Link package dependencies
