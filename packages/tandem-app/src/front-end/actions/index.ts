@@ -9,6 +9,7 @@ export const PROMPTED_NEW_WINDOW_URL     = "PROMPTED_NEW_WINDOW_URL";
 export const KEYBOARD_SHORTCUT_ADDED     = "KEYBOARD_SHORTCUT_ADDED";
 export const DELETE_SHORCUT_PRESSED      = "DELETE_SHORCUT_PRESSED";
 export const FULL_SCREEN_SHORTCUT_PRESSED = "FULL_SCREEN_SHORTCUT_PRESSED";
+export const EMPTY_WINDOWS_URL_ADDED = "EMPTY_WINDOWS_URL_ADDED";
 export const ZOOM_IN_SHORTCUT_PRESSED = "ZOOM_IN_SHORTCUT_PRESSED";
 export const ZOOM_OUT_SHORTCUT_PRESSED = "ZOOM_OUT_SHORTCUT_PRESSED";
 export const OPEN_NEW_WINDOW_SHORTCUT_PRESSED = "OPEN_NEW_WINDOW_SHORTCUT_PRESSED";
@@ -205,6 +206,10 @@ export type TextEditorChanged = {
   value: string
 } & BaseEvent;
 
+export type EmptyWindowsUrlAdded = {
+  url: string;
+} & BaseEvent;
+
 /**
  * Factories
  */
@@ -352,6 +357,11 @@ export const deleteShortcutPressed = (): BaseEvent => ({
 
 export const fullScreenShortcutPressed = (): BaseEvent => ({
   type: FULL_SCREEN_SHORTCUT_PRESSED,
+});
+
+export const emptyWindowsUrlAdded = (url: string): EmptyWindowsUrlAdded => ({
+  type: EMPTY_WINDOWS_URL_ADDED,
+  url,
 });
 
 export const zoomInShortcutPressed = (): BaseEvent => ({

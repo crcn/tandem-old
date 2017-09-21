@@ -21,7 +21,7 @@ import {
 } from "./nodes";
 import { getSEnvCustomElementRegistry } from "./custom-element-registry";
 import nwmatcher = require("nwmatcher");
-import { SEnvNodeTypes } from "./constants";
+import { SEnvNodeTypes, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH } from "./constants";
 
 type OpenTarget = "_self" | "_blank";
 
@@ -151,9 +151,6 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
   // register default HTML tag names
   const TAG_NAME_MAP = getSEnvHTMLElementClasses(context);
-
-  const DEFAULT_WINDOW_WIDTH = 1366;
-  const DEFAULT_WINDOW_HEIGHT = 768;
 
   return class SEnvWindow extends SEnvEventTarget implements SEnvWindowInterface {
 

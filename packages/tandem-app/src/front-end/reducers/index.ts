@@ -92,6 +92,7 @@ import {
   ESCAPE_SHORTCUT_PRESSED,
   NEXT_WINDOW_SHORTCUT_PRESSED,
   PREV_WINDOW_SHORTCUT_PRESSED,
+  EMPTY_WINDOWS_URL_ADDED,
   RESIZER_STOPPED_MOVING,
   SELECTOR_DOUBLE_CLICKED,
   StageToolOverlayClicked,
@@ -139,6 +140,8 @@ import {
   SYNTHETIC_WINDOW,
   getSyntheticWindow, 
   getSyntheticBrowser,
+  DEFAULT_WINDOW_WIDTH,
+  DEFAULT_WINDOW_HEIGHT,
   getSyntheticNodeById,
   SyntheticWindowOpened,
   getSyntheticNodeWindow,
@@ -340,6 +343,16 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       });
 
       return state;
+    }
+
+    case EMPTY_WINDOWS_URL_ADDED: {
+      const workspaceId = state.selectedWorkspaceId;
+      return centerStage(state, workspaceId, {
+        left: 0,
+        top: 0,
+        right: DEFAULT_WINDOW_WIDTH,
+        bottom: DEFAULT_WINDOW_HEIGHT
+      }, false, true);
     }
 
     case STAGE_MOUNTED: {

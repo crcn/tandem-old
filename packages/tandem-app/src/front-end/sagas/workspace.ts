@@ -86,7 +86,7 @@ function* openDefaultWindow() {
     
     // yield put(openSyntheticWindowRequest(`http://localhost:8083/`, workspace.browserId));
     // yield put(openSyntheticWindowRequest("http://browsertap.com/", workspace.browserId));
-    yield put(openSyntheticWindowRequest("https://wordpress.com/", workspace.browserId));
+    // yield put(openSyntheticWindowRequest("https://wordpress.com/", workspace.browserId));
     // yield put(openSyntheticWindowRequest("http://localhost:8080/index.html", workspace.browserId));
     return true;
   });

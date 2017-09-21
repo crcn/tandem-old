@@ -35,3 +35,7 @@ export enum CSSRuleType {
   REGION_STYLE_RULE,
   UNKNOWN_RULE
 };
+
+
+export const DEFAULT_WINDOW_WIDTH = 1366;
+export const DEFAULT_WINDOW_HEIGHT = 768;

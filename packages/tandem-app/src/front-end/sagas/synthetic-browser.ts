@@ -5,6 +5,7 @@ import { Point, shiftPoint, watch, resized, Bounds } from "aerial-common2";
 import { 
   SYNTHETIC_WINDOW,
   syntheticWindowScroll,
+  openSyntheticWindowRequest,
   getSyntheticNodeWindow, 
   SYNTHETIC_WINDOW_PROXY_OPENED,
   syntheticNodeTextContentChanged, 
@@ -20,6 +21,8 @@ import {
   getSyntheticWindowWorkspace,
 } from "front-end/state";
 import { 
+  EMPTY_WINDOWS_URL_ADDED,
+  EmptyWindowsUrlAdded,
   StageToolEditTextBlur,
   DELETE_SHORCUT_PRESSED, 
   StageToolEditTextChanged, 
@@ -46,6 +49,15 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleFullScreenWindow);
   yield fork(handleScrollInFullScreenMode);
   yield fork(handleTextEditorEscaped);
+  yield fork(handleEmptyWindowsUrlAdded);
+}
+
+function* handleEmptyWindowsUrlAdded() {
+  while(true) {
+    const {url}: EmptyWindowsUrlAdded = yield take(EMPTY_WINDOWS_URL_ADDED);
+    const state: ApplicationState = yield select();
+    yield put(openSyntheticWindowRequest(url, getSelectedWorkspace(state).browserId));
+  }
 }
 
 

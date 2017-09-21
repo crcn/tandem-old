@@ -7,6 +7,7 @@ import * as cx from "classnames";
 import { ToolsLayer } from "./tools";
 import { Windows } from "./windows";
 import { Isolate } from "front-end/components/isolated";
+import { EmptyWindows } from "./empty-windows";
 import { Motion, spring } from "react-motion";
 import { SyntheticBrowser, getSyntheticWindow } from "aerial-browser-sandbox";
 import { Dispatcher, BaseEvent, Point } from "aerial-common2";
@@ -90,6 +91,7 @@ export const StageBase = ({
   // instead of here so that other parts of the app can access this info
 
   const motionTranslate = translate;
+  const hasWindows = Boolean(browser.windows && browser.windows.length);
 
   return <div className="stage-component" ref={setStageContainer}>
     <Isolate 
@@ -120,10 +122,9 @@ export const StageBase = ({
           style={outerStyle}>
             <Motion defaultStyle={{left:0, top: 0, zoom: 0}} style={{ left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }}>
               {(translate) => {
-                  return <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})` }} className={cx({"stage-inner": true })}>
-
-                  <Windows browser={browser} smooth={smooth} dispatch={dispatch} fullScreenWindowId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} />
-                  <ToolsLayer workspace={workspace} translate={translate} dispatch={dispatch} browser={browser} />
+                return <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})` }} className={cx({"stage-inner": true })}>
+                  { hasWindows ? <Windows browser={browser} smooth={smooth} dispatch={dispatch} fullScreenWindowId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} /> : <EmptyWindows dispatch={dispatch} />}
+                  { hasWindows ? <ToolsLayer workspace={workspace} translate={translate} dispatch={dispatch} browser={browser} /> : null }
                 </div>
               }}
             </Motion>

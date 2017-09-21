@@ -1,0 +1,14 @@
+.m-empty-windows {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  input[type='text'] {
+    width: 100px;
+  }
+  input {
+    float: left;
+    margin-left: 8px;
+    height: 20px;
+  }
+}
