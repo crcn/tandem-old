@@ -718,7 +718,7 @@ export const upsertSyntheticWindow = <TState extends SyntheticBrowserRootState>(
 }
 
 export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: SyntheticWindow) => {
-  let current = window.allNodes[node.parentId];
+  let current = window.allNodes && window.allNodes[node.parentId];
   const ancestors: SyntheticNode[] = [];
   while(current) {
     ancestors.push(current);
@@ -728,7 +728,7 @@ export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: 
 });
 
 
-export const getSyntheticParentNode = (node: SyntheticNode, window: SyntheticWindow) => window.allNodes[node.parentId];
+export const getSyntheticParentNode = (node: SyntheticNode, window: SyntheticWindow) => window.allNodes && window.allNodes[node.parentId];
 
 export const removeSyntheticWindow = <TState extends SyntheticBrowserRootState>(root: TState, windowId: string): TState => {
   const browser = getSyntheticWindowBrowser(root, windowId);
@@ -749,7 +749,8 @@ export const getSyntheticWindowBrowser = weakMemo((root: SyntheticBrowserRootSta
 export function getSyntheticNodeById(root: SyntheticBrowserRootState, id: string);
 export function getSyntheticNodeById(root: SyntheticBrowser, id: string);
 export function getSyntheticNodeById (root: any, id: string): SyntheticNode {
-  return getSyntheticNodeWindow(root, id).allNodes[id];
+  const window = getSyntheticNodeWindow(root, id);
+  return window && window.allNodes && window.allNodes[id];
 };
 
 export const getSyntheticNodeTextContent = weakMemo((node: SyntheticNode): string => {
@@ -777,12 +778,12 @@ export const getSyntheticNodeWindow = weakMemo((root: SyntheticBrowserRootState|
 });
 
 export const syntheticWindowContainsNode = weakMemo((window: SyntheticWindow, nodeId: string): boolean => {
-  return Boolean(window.allNodes[nodeId]);
+  return Boolean(window.allNodes && window.allNodes[nodeId]);
 });
 
 export const syntheticNodeIsRelative = weakMemo((window: SyntheticWindow, nodeId: string, refNodeId: string): boolean => {
-  const node = window.allNodes[nodeId];
-  const refNode = window.allNodes[refNodeId];
+  const node = window.allNodes && window.allNodes[nodeId];
+  const refNode = window.allNodes && window.allNodes[refNodeId];
   if (!node || !refNode) {
     return false;
   }
