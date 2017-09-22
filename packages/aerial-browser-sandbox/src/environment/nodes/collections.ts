@@ -44,13 +44,54 @@ export const getSEnvHTMLCollectionClasses = weakMemo((context: any) => {
     }
   }
 
+  class SEnvDOMTokenList extends _Collection<string> implements DOMTokenList {
+
+    constructor(value: string, private _onChange: Function) {
+      super(...value.split(" "));
+    }
+
+    add(...token: string[]): void {
+      this.push(...token);
+      this._onChange(this.toString());
+    }
+    contains(token: string): boolean {
+      return this.indexOf(token) !== -1;
+    }
+    item(index: number): string {
+      return this[index];
+    }
+    remove(...token: string[]): void {
+      for (let i = token.length; i--;) {
+        const i2 = this.indexOf(token[i]);
+        if (i2 !== -1) {
+          this.splice(i, 1);
+        }
+      }
+      this._onChange();
+    }
+    toggle(token: string, force?: boolean): boolean {
+      if (this.indexOf(token) === -1) {
+        this.add(token);
+        return true;
+      } else {
+        this.remove(token);
+        return false;
+      }
+    }
+    toString(): string {
+      return this.join(" ");
+    }
+
+    [index: number]: string;
+  }
+
   class SEnvHTMLCollection extends _Collection<Element> implements HTMLCollection {
     private _target: Node & ParentNode;
     private _stale: boolean;
     $init(target: Node & ParentNode) {
       this._target = target;
       this._stale = true;
-      target.addEventListener(SEnvMutationEvent.MUTATION, this._onChildMutation);
+      target.addEventListener(SEnvMutationEvent.MUTATION, this.__onChildMutation.bind(this));
       return this;
     }
     update() {
@@ -83,7 +124,7 @@ export const getSEnvHTMLCollectionClasses = weakMemo((context: any) => {
     item(index: number) {
       return this[index];
     }
-    private _onChildMutation = (event: SEnvMutationEventInterface) => {
+    private __onChildMutation(event: SEnvMutationEventInterface) {
       if (event.target !== this._target) {
         return;
       }
@@ -134,6 +175,7 @@ export const getSEnvHTMLCollectionClasses = weakMemo((context: any) => {
 
   return {
     SEnvNodeList,
+    SEnvDOMTokenList,
     SEnvNamedNodeMap,
     SEnvDOMStringMap,
     SEnvHTMLCollection,

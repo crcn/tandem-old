@@ -5,7 +5,7 @@ import { SEnvNodeTypes } from "../constants";
 import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation } from "aerial-common2";
 import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, parentNodeMutators } from "./parent-node";
 import { getSEnvEventClasses } from "../events";
-import { evaluateHTMLDocumentFragment, constructNode } from "./utils";
+import { evaluateHTMLDocumentFragment, constructNode, matchesSelector } from "./utils";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collections";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SyntheticElement, SYNTHETIC_ELEMENT, SyntheticAttribute, SyntheticNode, SyntheticTextNode, SyntheticComment, BasicNode, BasicElement, BasicAttribute, BasicValueNode, BasicComment, BasicTextNode } from "../../state";
@@ -43,7 +43,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 
   return class SEnvElement extends SEnvParentNode implements SEnvElementInterface {
 
-    readonly classList: DOMTokenList;
+    classList: DOMTokenList;
     className: string;
     readonly clientHeight: number;
     readonly clientLeft: number;
@@ -143,14 +143,17 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
 
     getAttributeNode(name: string): Attr { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     getAttributeNodeNS(namespaceURI: string, localName: string): Attr { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     getAttributeNS(namespaceURI: string, localName: string): string { 
+      this._throwUnsupportedMethod();
       return null;
     }
     
@@ -159,6 +162,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
     
     getClientRects(): ClientRectList { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -195,48 +199,46 @@ export const getSEnvElementClass = weakMemo((context: any) => {
       };
     }
     
-    getElementsByTagName<K extends keyof ElementListTagNameMap>(name: K): ElementListTagNameMap[K];
-    getElementsByTagName(name: string): NodeListOf<Element>{ 
-      return null;
-    }
-    
-    getElementsByTagNameNS(namespaceURI: string, localName: string): HTMLCollectionOf<any> { 
-      return null;
-    }
-    
     hasAttribute(name: string): boolean { 
       return this.attributes[name] != null;
     }
     
     hasAttributeNS(namespaceURI: string, localName: string): boolean{ 
+      this._throwUnsupportedMethod();
       return null;
     }
     
     msGetRegionContent(): MSRangeCollection { 
+      this._throwUnsupportedMethod();
       return null;
     }
     
     msGetUntransformedBounds(): ClientRect { 
+      this._throwUnsupportedMethod();
       return null;
     }
     
     msMatchesSelector(selectors: string): boolean { 
-      return null;
+      return this.matches(selectors);
     }
 
     msReleasePointerCapture(pointerId: number): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     msSetPointerCapture(pointerId: number): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     msZoomTo(args: MsZoomToOptions): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     releasePointerCapture(pointerId: number): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -245,18 +247,22 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
 
     removeAttributeNode(oldAttr: Attr): Attr { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
-    removeAttributeNS(namespaceURI: string, localName: string): void { 
+    removeAttributeNS(namespaceURI: string, localName: string): void {
+      this._throwUnsupportedMethod(); 
       return null;
     }
 
     requestFullscreen(): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     requestPointerLock(): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -264,76 +270,87 @@ export const getSEnvElementClass = weakMemo((context: any) => {
       this.attributes[name] = value;
     }
 
-    setAttributeNode(newAttr: Attr): Attr { 
+    setAttributeNode(newAttr: Attr): Attr {
+      this._throwUnsupportedMethod(); 
       return null;
     }
 
     setAttributeNodeNS(newAttr: Attr): Attr { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     setAttributeNS(namespaceURI: string, qualifiedName: string, value: string): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     setPointerCapture(pointerId: number): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     webkitMatchesSelector(selectors: string): boolean { 
-      return null;
+      return this.matches(selectors);
     }
 
     webkitRequestFullscreen(): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     webkitRequestFullScreen(): void { 
-      return null;
-    }
-
-    getElementsByClassName(classNames: string): NodeListOf<Element> { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     matches(selector: string): boolean { 
-      return null;
+      return matchesSelector(this, selector);
     }
 
     closest(selector: string): Element | null { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     scrollIntoView(arg?: boolean | ScrollIntoViewOptions): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     scroll(...args): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
 
     scrollTo(...args): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     scrollBy(...args): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     insertAdjacentElement(position: InsertPosition, insertedElement: Element): Element | null { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     insertAdjacentHTML(where: InsertPosition, html: string): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     insertAdjacentText(where: InsertPosition, text: string): void { 
+      this._throwUnsupportedMethod();
       return null;
     }
 
     attachShadow(shadowRootInitDict: ShadowRootInit): ShadowRoot { 
+      this._throwUnsupportedMethod();
       return null;
     }
 

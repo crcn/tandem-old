@@ -140,6 +140,11 @@ const querySelectorFilter = weakMemo((selector: string) => (node: Node) => {
    && (node.ownerDocument.defaultView as SEnvWindowInterface).$selector.match(node, selector);
 });
 
+export const matchesSelector = (node: Node, selector: string) => {
+  return node.nodeType === SEnvNodeTypes.ELEMENT
+   && (node.ownerDocument.defaultView as SEnvWindowInterface).$selector.match(node, selector);
+};
+
 export const querySelector = (node: Node, selector: string) => {
   return findNode(node, querySelectorFilter(selector));
 };

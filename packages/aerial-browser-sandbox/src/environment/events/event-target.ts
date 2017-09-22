@@ -2,15 +2,21 @@ import { weakMemo } from "aerial-common2";
 import { EventTargetInterface } from "./event";
 
 
-const callEventListener = (listener: EventListenerOrEventListenerObject, event: Event) => (
-  typeof listener === "function" ? listener(event) : listener.handleEvent(event)
-);
+const callEventListener = (listener: EventListenerOrEventListenerObject, event: Event) => {
+  if (typeof listener === "function") {
+    listener(event);
+  } else { 
+    listener.handleEvent(event);
+  };
+}
 
 export const getSEnvEventTargetClass = weakMemo((context?: any) => {
-  return class SEnvEventTarget implements EventTarget {
-    private _eventListeners: {
+
+  class SEnvEventTarget implements EventTarget {
+    private ___eventListeners: {
       [identifier: string]: EventListenerOrEventListenerObject | EventListenerOrEventListenerObject[]
     }
+    
 
     private _preconstructed: boolean;
     readonly constructed: boolean;
@@ -24,16 +30,16 @@ export const getSEnvEventTargetClass = weakMemo((context?: any) => {
 
     $$preconstruct() {
       this._preconstructed = true;
-      this._eventListeners = {};
+      this.___eventListeners = {};
     }
 
     addEventListener(type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions) {
-      if (!this._eventListeners[type]) {
-        this._eventListeners[type] = listener;
-      } else if (!Array.isArray(this._eventListeners[type])) {
-        this._eventListeners[type] = [this._eventListeners[type] as EventListenerOrEventListenerObject, listener];
+      if (!this.___eventListeners[type]) {
+        this.___eventListeners[type] = listener;
+      } else if (!Array.isArray(this.___eventListeners[type])) {
+        this.___eventListeners[type] = [this.___eventListeners[type] as EventListenerOrEventListenerObject, listener];
       } else {
-        (this._eventListeners[type] as EventListenerOrEventListenerObject[]).push(listener);
+        (this.___eventListeners[type] as EventListenerOrEventListenerObject[]).push(listener);
       }
     }
 
@@ -43,11 +49,10 @@ export const getSEnvEventTargetClass = weakMemo((context?: any) => {
       if (!eva.$target) {
         eva.$target = this;
       }
-      const listeners = this._eventListeners[event.type];
+      const listeners = this.___eventListeners[event.type];
       if (!listeners) return false;
       if (Array.isArray(listeners)) {
         for (const listener of listeners) {
-
           // -- TODO -- check for stopImmediatePropagation
           callEventListener(listener, event);
         }
@@ -58,17 +63,21 @@ export const getSEnvEventTargetClass = weakMemo((context?: any) => {
     }
 
     removeEventListener(type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) {
-      const listeners = this._eventListeners[type];
+      const listeners = this.___eventListeners[type];
       if (!listeners) return;
       if (listeners === listener) {
-        this._eventListeners[type] = undefined;
+        this.___eventListeners[type] = undefined;
       } else if (Array.isArray(listeners)) {
         const index = listeners.indexOf(listener);
         (listeners as EventListenerOrEventListenerObject[]).splice(index, 1);
         if (listeners.length === 1) {
-          this._eventListeners[type] = listeners[0];
+          this.___eventListeners[type] = listeners[0];
         }
       } 
     }
   }
+
+  SEnvEventTarget.prototype["___eventListeners"] = {};
+
+  return SEnvEventTarget;
 });

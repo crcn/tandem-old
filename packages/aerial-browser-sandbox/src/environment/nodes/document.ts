@@ -87,7 +87,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     charset: string;
     
     readonly compatMode: string;
-    cookie: string;
+    cookie: string = "";
     readonly currentScript: HTMLScriptElement | SVGScriptElement;
     
     designMode: string;
@@ -120,7 +120,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     
     links: HTMLCollectionOf<HTMLAnchorElement | HTMLAreaElement>;
     
-    readonly location: Location;
     msCapsLockWarningOff: boolean;
     msCSSOMElementFloatMetrics: boolean;
 
@@ -129,6 +128,10 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     constructor(readonly defaultView: SEnvWindowInterface) {
       super();
       this.addEventListener("readystatechange", e => this.onreadystatechange && this.onreadystatechange(e));
+    }
+
+    get location() {
+      return this.defaultView.location;
     }
 
     get stylesheets(): StyleSheetList {
@@ -210,6 +213,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     $$update() {
     }
     elementsFromPoint(x: number, y: number) {
+      this._throwUnsupportedMethod();
       return null;
     }
     
@@ -386,12 +390,14 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     xmlVersion: string | null;
 
     adoptNode<T extends Node>(source: T): T {
+      this._throwUnsupportedMethod();
       return null;
     }
     captureEvents(): void {
 
     }
     caretRangeFromPoint(x: number, y: number): Range {
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -404,6 +410,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     createAttribute(name: string): Attr {
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -434,10 +441,12 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     createAttributeNS(namespaceURI: string | null, qualifiedName: string): Attr {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     createCDATASection(data: string): CDATASection {
+      this._throwUnsupportedMethod();
       return null;
     }
     
@@ -607,25 +616,31 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: "view"): SVGViewElement;
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: string): SVGElement;
     createElementNS(namespaceURI: string | null, qualifiedName: string): Element {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     createExpression(expression: string, resolver: XPathNSResolver): XPathExpression {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     createNodeIterator(root: Node, whatToShowe?: number, filter?: NodeFilter, entityReferenceExpansion?: boolean): NodeIterator {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     createNSResolver(nodeResolver: Node): XPathNSResolver {
+      this._throwUnsupportedMethod();
       return null;
     }
     createProcessingInstruction(target: string, data: string): ProcessingInstruction {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     createRange(): Range {
+      this._throwUnsupportedMethod();
       return null;
     }
     
@@ -634,28 +649,35 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     createTouch(view: Window, target: EventTarget, identifier: number, pageX: number, pageY: number, screenX: number, screenY: number): Touch {
+      this._throwUnsupportedMethod();
       return null;
     }
     createTouchList(...touches: Touch[]): TouchList {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     createTreeWalker(root: Node, whatToShow?: number, filter?: NodeFilter, entityReferenceExpansion?: boolean): TreeWalker {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     elementFromPoint(x: number, y: number): Element {
+      this._throwUnsupportedMethod();
       return null;
     }
     evaluate(expression: string, contextNode: Node, resolver: XPathNSResolver | null, type: number, result: XPathResult | null): XPathResult {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     execCommand(commandId: string, showUI?: boolean, value?: any): boolean {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     execCommandShowHelp(commandId: string): boolean {
+      this._throwUnsupportedMethod();
       return false;
     }
     exitFullscreen(): void {
@@ -678,27 +700,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     getElementById(elementId: string): HTMLElement | null {
       return this.querySelector(`#${elementId}`) as HTMLElement;
     }
-
-    getElementsByClassName(classNames: string): HTMLCollectionOf<Element> {
-      this._throwUnsupportedMethod();
-      return null;
-    }
-    
-    getElementsByName(elementName: string): NodeListOf<HTMLElement> {
-      this._throwUnsupportedMethod();
-      return null;
-    }
-    
-    getElementsByTagName<K extends keyof ElementListTagNameMap>(tagname: K): ElementListTagNameMap[K];
-    getElementsByTagName(tagName: string): NodeListOf<Element> {
-      return this.querySelectorAll(tagName);
-    }
-    getElementsByTagNameNS(namespaceURI: "http://www.w3.org/1999/xhtml", localName: string): HTMLCollectionOf<HTMLElement>;
-    getElementsByTagNameNS(namespaceURI: "http://www.w3.org/2000/svg", localName: string): HTMLCollectionOf<SVGElement>;
-    getElementsByTagNameNS(namespaceURI: string, localName: string): HTMLCollectionOf<Element> {
-      this._throwUnsupportedMethod();
-      return null;
-    }
     
     getSelection(): Selection {
       this._throwUnsupportedMethod();
@@ -718,34 +719,42 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       return null;
     }
     msElementsFromRect(left: number, top: number, width: number, height: number): NodeListOf<Element> {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     open(url?: string, name?: string, features?: string, replace?: boolean): Document {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     queryCommandEnabled(commandId: string): boolean {
+      this._throwUnsupportedMethod();
       return false;
     }
     
     queryCommandIndeterm(commandId: string): boolean {
+      this._throwUnsupportedMethod();
       return false;
     }
     
     queryCommandState(commandId: string): boolean {
+      this._throwUnsupportedMethod();
       return false;
     }
     
     queryCommandSupported(commandId: string): boolean {
+      this._throwUnsupportedMethod();
       return false;
     }
     
     queryCommandText(commandId: string): string {
+      this._throwUnsupportedMethod();
       return null;
     }
     
     queryCommandValue(commandId: string): string {
+      this._throwUnsupportedMethod();
       return null;
     }
     releaseEvents(): void {

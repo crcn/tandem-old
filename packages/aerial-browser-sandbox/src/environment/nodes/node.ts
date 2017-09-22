@@ -253,10 +253,12 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     }
 
     lookupNamespaceURI(prefix: string | null): string | null {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     lookupPrefix(namespaceURI: string | null): string | null {
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -280,7 +282,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     }
 
     protected _throwUnsupportedMethod() {
-      throw new SEnvDOMException("This node type does not support this method.");
+      throw new SEnvDOMException("This node (" + this["constructor"].name + ") type does not support this method.");
     }
 
     $$addedToDocument(deep?: boolean) {
@@ -376,7 +378,7 @@ export const diffNodeBase = (oldNode: Partial<SEnvNodeInterface>, newNode: Parti
 
 export const nodeMutators = {
   [SET_SYNTHETIC_SOURCE_CHANGE](oldNode: SEnvNodeInterface, {newValue}: SetPropertyMutation<any>) {
-    oldNode.setSource(JSON.parse(JSON.stringify(newValue)) as ExpressionLocation);
+    oldNode.setSource(newValue && JSON.parse(JSON.stringify(newValue)) as ExpressionLocation);
   }
 };
 

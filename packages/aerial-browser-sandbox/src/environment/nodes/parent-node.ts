@@ -115,6 +115,28 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
       return querySelector(this, selectors);
     }
 
+    getElementsByName(elementName: string): NodeListOf<HTMLElement> {
+      this._throwUnsupportedMethod();
+      return null;
+    }
+
+    getElementsByClassName(classNames: string): HTMLCollectionOf<Element> {
+      // TODO - need to allow for multiple class names
+      return this.querySelectorAll(classNames.split(/\s+/g).map(className => `.${className}`).join(",")) as HTMLCollectionOf<Element>;
+    }
+    
+    getElementsByTagName<K extends keyof ElementListTagNameMap>(tagname: K): ElementListTagNameMap[K];
+    getElementsByTagName(tagName: string): NodeListOf<Element> {
+      return this.querySelectorAll(tagName);
+    }
+
+    getElementsByTagNameNS(namespaceURI: "http://www.w3.org/1999/xhtml", localName: string): HTMLCollectionOf<HTMLElement>;
+    getElementsByTagNameNS(namespaceURI: "http://www.w3.org/2000/svg", localName: string): HTMLCollectionOf<SVGElement>;
+    getElementsByTagNameNS(namespaceURI: string, localName: string): HTMLCollectionOf<Element> {
+      this._throwUnsupportedMethod();
+      return null;
+    }
+
     querySelectorAll(selectors: string): NodeListOf<Element> {
 
       // TODO - not actually an array here

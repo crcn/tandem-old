@@ -9,5 +9,9 @@ export const getSEnvDocumentFragment = weakMemo((context: any) => {
     getElementById(elementId: string): HTMLElement | null {
       return null;
     }
+    cloneShallow() {
+      const clone = this.ownerDocument.createDocumentFragment();
+      return clone;
+    }
   };
 });

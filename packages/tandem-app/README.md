@@ -44,6 +44,7 @@ COOL TO HAVE:
 IMMEDIATE:
 
 - [ ] finish synthetic browser
+  - [ ] battle test with 
 - [ ] synthetic browser tests
 - [ ] connect with browser sync
 - [ ] properly reload CSS

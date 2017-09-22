@@ -27,7 +27,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
   const SEnvNode = getSEnvNodeClass(context);
   const SEnvElement = getSEnvElementClass(context);
   const SEnvCSSStyleDeclaration = getSEnvCSSStyleDeclarationClass(context);
-  const { SEnvDOMStringMap } = getSEnvHTMLCollectionClasses(context);
+  const { SEnvDOMStringMap, SEnvDOMTokenList } = getSEnvHTMLCollectionClasses(context);
   
   return class SEnvHTMLElement extends SEnvElement implements SEnvHTMLElementInterface {
 
@@ -150,7 +150,14 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
         this.style.cssText = newValue || "";
       } else if (propertyName.substr(0, 5) === "data-") {
         this.dataset[propertyName.substr(5).toLowerCase()] = newValue;
-      } 
+      } else if (propertyName === "class") {
+        this.className = newValue;
+        this.classList = new SEnvDOMTokenList(newValue, this._onClassListChange);
+      }
+    }
+
+    private _onClassListChange = (value) => {
+      this.setAttribute("class", value);
     }
 
     protected dataChangedCallback(propertyName: string, oldValue: string, newValue: string) {
@@ -178,10 +185,12 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     }
 
     dragDrop(): boolean {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     focus(): void {
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -665,9 +674,11 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       readonly videoTracks: VideoTrackList;
       volume: number;
       addTextTrack(kind: string, label?: string, language?: string): TextTrack {
+        this._throwUnsupportedMethod();
         return null;
       }
       canPlayType(type: string): string {
+        this._throwUnsupportedMethod();
         return null;
       }
       load(): void {
@@ -692,9 +703,11 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
 
       }
       play(): Promise<void> {
+        this._throwUnsupportedMethod();
         return null;
       }
       setMediaKeys(mediaKeys: MediaKeys | null): Promise<void> {
+        this._throwUnsupportedMethod();
         return null;
       }
       readonly HAVE_CURRENT_DATA: number;
@@ -769,6 +782,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       value: string;
       readonly willValidate: boolean;
       checkValidity(): boolean {
+        this._throwUnsupportedMethod();
         return null;
       }
       setCustomValidity(error: string): void {
@@ -781,12 +795,15 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       getContext(contextId: "2d", contextAttributes?: Canvas2DContextAttributes): CanvasRenderingContext2D | null;
       getContext(contextId: "webgl" | "experimental-webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
       getContext(contextId: string, contextAttributes?: {}): CanvasRenderingContext2D | WebGLRenderingContext | null {
+        this._throwUnsupportedMethod();
         return null;
       }
       msToBlob(): Blob {
+        this._throwUnsupportedMethod();
         return null;
       }
       toDataURL(type?: string, ...args: any[]): string {
+        this._throwUnsupportedMethod();
         return null;
       }
       toBlob(callback: (result: Blob | null) => void, type?: string, ...args): void {
@@ -848,6 +865,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       units: string;
       width: string;
       getSVGDocument(): Document {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -907,6 +925,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       src: string;
       width: string | number;
       getSVGDocument(): Document {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -994,6 +1013,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       width: string;
 
       getSVGDocument(): Document {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -1192,6 +1212,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       setCustomValidity(error: string): void { }
 
       getSVGDocument(): Document {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -1329,15 +1350,19 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       tHead: HTMLTableSectionElement;
       width: string;
       createCaption(): HTMLTableCaptionElement {
+        this._throwUnsupportedMethod();
         return null;
       }
       createTBody(): HTMLTableSectionElement {
+        this._throwUnsupportedMethod();
         return null;
       }
       createTFoot(): HTMLTableSectionElement {
+        this._throwUnsupportedMethod();
         return null;
       }
       createTHead(): HTMLTableSectionElement {
+        this._throwUnsupportedMethod();
         return null;
       }
       deleteCaption(): void { }
@@ -1345,6 +1370,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       deleteTFoot(): void { }
       deleteTHead(): void { }
       insertRow(index?: number): HTMLTableRowElement {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -1356,6 +1382,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
       deleteRow(index?: number): void { }
       insertRow(index?: number): HTMLTableRowElement {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -1416,6 +1443,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
       deleteRow(index?: number): void { }
       insertRow(index?: number): HTMLTableRowElement {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -1444,6 +1472,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
       deleteRow(index?: number): void { }
       insertRow(index?: number): HTMLTableRowElement {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -1465,6 +1494,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       readonly sectionRowIndex: number;
       deleteCell(index?: number): void { }
       insertCell(index?: number): HTMLTableDataCellElement {
+        this._throwUnsupportedMethod();
         return null;
       }
     },
@@ -1525,9 +1555,11 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       readonly videoTracks: VideoTrackList;
       volume: number;
       addTextTrack(kind: string, label?: string, language?: string): TextTrack {
+        this._throwUnsupportedMethod();
         return null;
       }
       canPlayType(type: string): string {
+        this._throwUnsupportedMethod();
         return null;
       }
       load(): void { }
@@ -1540,9 +1572,11 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       }
       pause(): void { }
       play(): Promise<void>{
+        this._throwUnsupportedMethod();
         return null;
       }
       setMediaKeys(mediaKeys: MediaKeys | null): Promise<void> {
+        this._throwUnsupportedMethod();
         return null;
       }
       readonly audioTracks: AudioTrackList;
@@ -1572,6 +1606,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       readonly webkitSupportsFullscreen: boolean;
       width: number;
       getVideoPlaybackQuality(): VideoPlaybackQuality {
+        this._throwUnsupportedMethod();
         return null;
       }
       msFrameStep(forward: boolean): void { }

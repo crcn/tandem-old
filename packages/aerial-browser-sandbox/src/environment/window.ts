@@ -343,7 +343,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       this.childObjects = new Map();
       this.location = new SEnvLocation(origin, context.reload);
       this.document = new SEnvDocument(this);
-      this.window   = this;
+      this.window   = this.top = this.self = this;
       this.renderer = (getRenderer || createNoopRenderer)(this);
       this.innerWidth = DEFAULT_WINDOW_WIDTH;
       this.innerHeight = DEFAULT_WINDOW_HEIGHT;
@@ -441,10 +441,12 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     atob(encodedString: string): string {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     btoa(rawString: string): string {
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -461,14 +463,17 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     getMatchedCSSRules(elt: Element, pseudoElt?: string): CSSRuleList {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     getSelection(): Selection {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     matchMedia(mediaQuery: string): MediaQueryList {
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -559,6 +564,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     prompt(message?: string, _default?: string): string | null {
+      this._throwUnsupportedMethod();
       return null;
     }
 
@@ -593,6 +599,10 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
     scrollBy(...args): void {
 
+    }
+
+    protected _throwUnsupportedMethod() {
+      throw new Error("This node type does not support this method.");
     }
 
     scrollTo(...args): void {
@@ -637,14 +647,17 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     webkitConvertPointFromNodeToPage(node: Node, pt: WebKitPoint): WebKitPoint {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     webkitConvertPointFromPageToNode(node: Node, pt: WebKitPoint): WebKitPoint {
+      this._throwUnsupportedMethod();
       return null;
     }
 
     webkitRequestAnimationFrame(callback: FrameRequestCallback): number {
+      this._throwUnsupportedMethod();
       return -1;
     }
 
