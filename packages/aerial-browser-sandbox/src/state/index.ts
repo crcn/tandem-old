@@ -16,10 +16,12 @@ import {
   createDataStore,
   StructReference,
   arrayRemoveItem,
-
+  serializableKeys,
   ExpressionLocation,
   ExpressionPosition,
+  createZeroBounds,
   createStructFactory, 
+  nonSerializableFactory,
 } from "aerial-common2";
 
 import { FileCacheRootState, createFileCacheStore } from "aerial-sandbox2";
@@ -560,10 +562,10 @@ export type SyntheticBrowserRootState = {
 
 export const createSyntheticBrowserStore = (syntheticBrowsers?: SyntheticBrowser[]) => dsIndex(createDataStore(syntheticBrowsers), "$id");
 
-export const createSyntheticWindow = createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
+export const createSyntheticWindow = serializableKeys(["scrollPosition", "bounds", "location", "$id"], createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
   externalResourceUris: [],
   allNodes: {}
-});
+}));
 
 export const createSyntheticBrowser = createStructFactory<SyntheticBrowser>(SYNTHETIC_BROWSER, {
   windows: []
@@ -639,10 +641,11 @@ export const createSyntheticCSSUnknownGroupingRule = createStructFactory<Synthet
 
 export const createSyntheticCSSStyleDeclaration = createStructFactory<SyntheticCSSStyleDeclaration>(SYNTHETIC_CSS_STYLE_DECLARATION);
 
-export const createSyntheticDocument = createStructFactory<SyntheticDocument>(SYNTHETIC_DOCUMENT, {
+export const createSyntheticDocument = nonSerializableFactory(createStructFactory<SyntheticDocument>(SYNTHETIC_DOCUMENT, {
   nodeName: "#document",
   nodeType: SEnvNodeTypes.DOCUMENT
-});
+}));
+
 export const createSyntheticElement  = createStructFactory<SyntheticElement>(SYNTHETIC_ELEMENT, {
   nodeType: SEnvNodeTypes.ELEMENT
 });
@@ -671,12 +674,12 @@ export const getSyntheticWindow = (root: SyntheticBrowserRootState|SyntheticBrow
   return (root as SyntheticBrowserRootState).browserStore ? eachSyntheticWindow(root as SyntheticBrowserRootState, filter) : (root as SyntheticBrowser).windows.find(filter);
 };
 
-export const getSyntheticBrowserBounds = (browser: SyntheticBrowser) => browser.windows.map(window => window.bounds).reduce((a, b) => ({
+export const getSyntheticBrowserBounds = (browser: SyntheticBrowser) => browser.windows.length ? browser.windows.map(window => window.bounds).reduce((a, b) => ({
     left: Math.min(a.left, b.left),
     top: Math.min(a.top, b.top),
     right: Math.max(a.right, b.right),
     bottom: Math.max(a.bottom, b.bottom)
-  }), { left: 0, top: 0, right: 0, bottom: 0 });
+  }), { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity }) : createZeroBounds();
 
 export const updateSyntheticBrowser = <TState extends SyntheticBrowserRootState>(root: TState, browserId: string, properties: Partial<SyntheticBrowser>): TState => {
   const browser = getSyntheticBrowser(root, browserId);
@@ -698,6 +701,20 @@ export const updateSyntheticWindow = <TState extends SyntheticBrowserRootState>(
       ...properties
     })
   });
+}
+export const upsertSyntheticWindow = <TState extends SyntheticBrowserRootState>(root: TState, browserId: string, newWindow: SyntheticWindow): TState => {
+  const browser = getSyntheticBrowser(root, browserId);
+  const window = getSyntheticWindow(browser, newWindow.$id);
+  if (window) {
+    return updateSyntheticWindow(root, window.$id, newWindow);
+  }
+
+  return updateSyntheticBrowser(root, browser.$id, {
+    windows: [
+      ...browser.windows,
+      {...newWindow}
+    ]
+  })
 }
 
 export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: SyntheticWindow) => {
@@ -781,3 +798,22 @@ export const isSyntheticBrowserItemMovable = (root: SyntheticBrowserRootState, i
   }
   return false;
 }
+
+/*
+
+  allNodes: {
+    [identifier: string]: SyntheticNode
+  }
+  scrollPosition: Point;
+  renderContainer: HTMLElement;
+  location: string;
+  document: SyntheticDocument;
+  bounds: Bounds;
+  allComputedBounds: {
+    [identifier: string]: Bounds;
+  };
+  externalResourceUris: string[],
+  allComputedStyles: {
+    [identifier: string]: CSSStyleDeclaration
+  }
+*/

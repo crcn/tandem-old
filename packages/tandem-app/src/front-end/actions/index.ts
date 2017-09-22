@@ -1,7 +1,9 @@
 import { FileCacheItem } from "aerial-sandbox2";
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct } from "aerial-common2";
+import { ApplicationState } from "../state";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
+export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
 export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
 export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
 export const WINDOW_PANE_ROW_CLICKED     = "WINDOW_PANE_ROW_CLICKED";
@@ -120,6 +122,10 @@ export type ResizerPathMoved = {
   anchor: Point;
   workspaceId: string;
 } & WrappedEvent<MouseEvent>;
+
+export type LoadedSavedState = {
+  state: ApplicationState;
+} & BaseEvent;
 
 export type ResizerPathStoppedMoving = {
   workspaceId: string;
@@ -281,6 +287,11 @@ export const stageToolOverlayMousePanEnd = (windowId: string): StageToolOverlayM
 export const fullScreenTargetDeleted = () => ({
   type: FULL_SCREEN_TARGET_DELETED
 });
+
+export const loadedSavedState = (state: ApplicationState): LoadedSavedState => ({
+  type: LOADED_SAVED_STATE,
+  state
+})
 
 export const stageToolOverlayMouseDoubleClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): StageToolOverlayClicked => ({
   windowId,

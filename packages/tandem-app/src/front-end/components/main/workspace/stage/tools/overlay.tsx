@@ -66,6 +66,10 @@ const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
 
 const WindowOverlayToolsBase = ({ dispatch, window, hoveringNodes, zoom, onPanStart, onPan, onPanEnd }: WindowOverlayToolsInnerProps) => {
 
+  if (!window.allComputedBounds) {
+    return null;
+  }
+
   const style = {
     position: "absolute",
     left: window.bounds.left,
@@ -120,7 +124,7 @@ const getSyntheticNodes = weakMemo((refs: StructReference[], allNodes: any) => {
 });
 
 
-const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, { allNodes }: SyntheticWindow) => {
+const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, { allNodes = {} }: SyntheticWindow) => {
   return difference(
     getSyntheticNodes(workspace.hoveringRefs, allNodes),
     getSyntheticNodes(workspace.selectionRefs, allNodes)

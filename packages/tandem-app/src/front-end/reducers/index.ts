@@ -73,6 +73,8 @@ import {
   ResizerMouseDown,
   ResizerPathMoved,
   STAGE_MOUSE_MOVED,
+  LoadedSavedState,
+  LOADED_SAVED_STATE,
   RESIZER_MOUSE_DOWN,
   STAGE_MOUSE_CLICKED,
   VISUAL_EDITOR_WHEEL,
@@ -154,6 +156,12 @@ import reduceReducers = require("reduce-reducers");
 
 export const applicationReducer = (state: ApplicationState = createApplicationState(), event: BaseEvent) => {
   switch(event.type) {
+    
+    case LOADED_SAVED_STATE: {
+      const { state: newState } = event as LoadedSavedState;
+      return JSON.parse(JSON.stringify(newState));
+    }
+    
     case TREE_NODE_LABEL_CLICKED: {
       const { node } = event as TreeNodeLabelClicked;
       return updateWorkspace(state, state.selectedWorkspaceId, {
@@ -182,7 +190,6 @@ const INITIAL_ZOOM_PADDING = 50;
 
 const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {
-
     case TOGGLE_LEFT_GUTTER_PRESSED: {
       const workspace = getSelectedWorkspace(state);
       return updateWorkspaceStage(state, workspace.$id, {

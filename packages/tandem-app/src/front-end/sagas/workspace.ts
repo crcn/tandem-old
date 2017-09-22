@@ -119,10 +119,12 @@ function* openNewWindow(state: ApplicationState, href: string, origin: Synthetic
   const uri = getUri(href, origin.location);
   const windowBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalWindowBounds : origin.bounds;
   const browserBounds = getSyntheticBrowserBounds(getSyntheticWindowBrowser(state, origin.$id));
-  yield put(openSyntheticWindowRequest(uri, workspace.browserId, {
+  yield put(openSyntheticWindowRequest({ location: uri, bounds: {
     left: Math.max(browserBounds.right, windowBounds.right) + WINDOW_PADDING,
-    top: 0
-  }));
+    top: 0,
+    right: undefined,
+    bottom: undefined
+  }}, workspace.browserId));
 }
 
 function* handleDeleteKeyPressed() {
@@ -195,7 +197,7 @@ function* handleOpenNewWindowShortcut() {
     if (!uri) continue;
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
-    yield put(openSyntheticWindowRequest(uri, workspace.browserId));
+    yield put(openSyntheticWindowRequest({ location: uri }, workspace.browserId));
 
   }
 }
@@ -211,17 +213,17 @@ function* handleCloneSelectedWindowShortcut() {
 
     const originalWindowBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalWindowBounds : window.bounds; 
 
-    const clonedWindow = yield yield request(openSyntheticWindowRequest(window.location, getSyntheticWindowBrowser(state, window.$id).$id, moveBounds(originalWindowBounds, {
+    const clonedWindow = yield yield request(openSyntheticWindowRequest({ location: window.location, bounds: moveBounds(originalWindowBounds, {
       left: originalWindowBounds.left,
       top: originalWindowBounds.bottom + WINDOW_PADDING
-    })));
+    }) }, getSyntheticWindowBrowser(state, window.$id).$id));
   }
 }
 
 function* handleNewLocationPrompt() {
   while(true) {
     const { workspaceId, location } = (yield take(PROMPTED_NEW_WINDOW_URL)) as PromptedNewWindowUrl;
-    yield put(openSyntheticWindowRequest(location, getWorkspaceById(yield select(), workspaceId).browserId))
+    yield put(openSyntheticWindowRequest({ location }, getWorkspaceById(yield select(), workspaceId).browserId))
   }
 }
 

@@ -19,8 +19,10 @@ import {
   getSelectedWorkspace, 
   getSyntheticNodeWorkspace, 
   getSyntheticWindowWorkspace,
+  getSyntheticBrowser
 } from "front-end/state";
 import { 
+  LOADED_SAVED_STATE,
   EMPTY_WINDOWS_URL_ADDED,
   EmptyWindowsUrlAdded,
   StageToolEditTextBlur,
@@ -50,16 +52,16 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleScrollInFullScreenMode);
   yield fork(handleTextEditorEscaped);
   yield fork(handleEmptyWindowsUrlAdded);
+  yield fork(handleLoadedSavedState);
 }
 
 function* handleEmptyWindowsUrlAdded() {
   while(true) {
     const {url}: EmptyWindowsUrlAdded = yield take(EMPTY_WINDOWS_URL_ADDED);
     const state: ApplicationState = yield select();
-    yield put(openSyntheticWindowRequest(url, getSelectedWorkspace(state).browserId));
+    yield put(openSyntheticWindowRequest({ location: url }, getSelectedWorkspace(state).browserId));
   }
 }
-
 
 function* handleTextEditorEscaped() {
   while(true) {
@@ -90,7 +92,6 @@ function* handleTextEditBlur() {
   }
 }
 
-
 function* nodeValueStoppedEditing(nodeId: string) {
   const state = yield select();
   const window = getSyntheticNodeWindow(state, nodeId);
@@ -117,6 +118,18 @@ function* handleScrollInFullScreenMode() {
       left: 0,
       top: deltaY
     })));
+  }
+}
+
+function* handleLoadedSavedState() {
+  while(true) {
+    yield take(LOADED_SAVED_STATE);
+    const state: ApplicationState = yield select();
+    const workspace = getSelectedWorkspace(state);
+    const browser = getSyntheticBrowser(state, workspace.browserId);
+    for (const window of browser.windows) {
+      yield put(openSyntheticWindowRequest(window, browser.$id));
+    }
   }
 }
 

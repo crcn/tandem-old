@@ -1,5 +1,5 @@
 // import { SEnvWindowInterface } from "../environment";
-import { SyntheticDocument, SyntheticNode } from "../state";
+import { SyntheticDocument, SyntheticNode, SyntheticWindow } from "../state";
 import { Request, BaseEvent, generateDefaultId, Mutation, Bounds, Point, Action } from "aerial-common2";
 import { RenderedClientRects, RenderedComputedStyleDeclarations, SEnvWindowInterface } from "../environment";
 
@@ -35,8 +35,7 @@ export type SyntheticWindowSourceChanged = {
 } & BaseEvent;
 
 export type OpenSyntheticBrowserWindow = {
-  uri: string;
-  bounds: Point|Bounds;
+  state: Partial<SyntheticWindow>;
   syntheticBrowserId: string;
 } & Request;
 
@@ -216,9 +215,8 @@ export const fetchRequest = (info: RequestInfo): FetchRequest => ({
   $id: generateDefaultId()
 });
 
-export const openSyntheticWindowRequest = (uri: string, syntheticBrowserId?: string, bounds?: Bounds|Point): OpenSyntheticBrowserWindow => ({
-  uri,
-  bounds,
+export const openSyntheticWindowRequest = (state: Partial<SyntheticWindow>, syntheticBrowserId?: string): OpenSyntheticBrowserWindow => ({
+  state,
   syntheticBrowserId,
   type: OPEN_SYNTHETIC_WINDOW,
   $id: generateDefaultId()

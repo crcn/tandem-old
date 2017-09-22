@@ -48,6 +48,7 @@ import {
   updateSyntheticBrowser,
   createSyntheticBrowserRootState, 
   SyntheticBrowserRootState, 
+  upsertSyntheticWindow,
   SyntheticBrowser, 
   addSyntheticBrowser, 
   getSyntheticBrowser, 
@@ -76,22 +77,18 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
       const { instance, parentWindowId, browserId } = event as SyntheticWindowOpened;
       let syntheticBrowser: SyntheticBrowser;
       syntheticBrowser = getSyntheticBrowser(root, browserId);
-      return updateSyntheticBrowser(root, syntheticBrowser.$id, {
-        windows: [
-          ...syntheticBrowser.windows,
-          createSyntheticWindow({
-            $id: instance.$id,
-            location: instance.location.toString(),
-            renderContainer: instance.renderer.container,
-            bounds: {
-              left: instance.screenLeft,
-              top: instance.screenTop,
-              right: instance.screenLeft + instance.innerWidth,
-              bottom: instance.screenTop + instance.innerHeight,
-            }
-          })
-        ]
-      });
+
+      return upsertSyntheticWindow(root, syntheticBrowser.$id, createSyntheticWindow({
+        $id: instance.$id,
+        location: instance.location.toString(),
+        renderContainer: instance.renderer.container,
+        bounds: {
+          left: instance.screenLeft,
+          top: instance.screenTop,
+          right: instance.screenLeft + instance.innerWidth,
+          bottom: instance.screenTop + instance.innerHeight,
+        }
+      }));
     }
     
     case SYNTHETIC_WINDOW_SCROLLED: {

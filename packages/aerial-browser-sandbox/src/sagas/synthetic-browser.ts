@@ -177,15 +177,14 @@ function* handleSyntheticBrowserSession(syntheticBrowserId: string) {
 function* handleOpenSyntheticWindow(browserId: string) {
   while(true) {
     const request = (yield take((action: OpenSyntheticBrowserWindow) => action.type === OPEN_SYNTHETIC_WINDOW && action.syntheticBrowserId === browserId)) as OpenSyntheticBrowserWindow;
-    const instance = (yield call(openSyntheticWindowEnvironment, request.uri, browserId, request.bounds)) as SEnvWindowInterface;
+    const instance = (yield call(openSyntheticWindowEnvironment, request.state, browserId)) as SEnvWindowInterface;
     yield put(createRequestResponse(request.$id, instance));
   }
 }
 
-function* openSyntheticWindowEnvironment(location: string, browserId: string, bounds?: Bounds) {
+function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), location, bounds, scrollPosition }: SyntheticWindow, browserId: string) {
 
   let main: SEnvWindowInterface;
-  const windowId = generateDefaultId();
   const documentId = generateDefaultId();
   const fetch = yield getFetch();
 

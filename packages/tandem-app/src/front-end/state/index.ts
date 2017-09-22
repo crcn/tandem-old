@@ -406,5 +406,6 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
   return [SYNTHETIC_ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [string, string];
 }
 
+
 export * from "./shortcuts";
 export * from "aerial-browser-sandbox/src/state";

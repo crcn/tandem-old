@@ -10,7 +10,7 @@ import { Isolate } from "front-end/components/isolated";
 import { EmptyWindows } from "./empty-windows";
 import { Motion, spring } from "react-motion";
 import { SyntheticBrowser, getSyntheticWindow } from "aerial-browser-sandbox";
-import { Dispatcher, BaseEvent, Point } from "aerial-common2";
+import { Dispatcher, BaseEvent, Point, Translate } from "aerial-common2";
 import { stageWheel, stageContainerMounted, stageMouseMoved, stageMouseClicked } from "front-end/actions";
 import { lifecycle, compose, withState, withHandlers, pure, withProps } from "recompose";
 
@@ -90,8 +90,8 @@ export const StageBase = ({
   // TODO - motionTranslate must come from fullScreen.translate
   // instead of here so that other parts of the app can access this info
 
-  const motionTranslate = translate;
   const hasWindows = Boolean(browser.windows && browser.windows.length);
+  const motionTranslate: Translate = hasWindows ? translate : { left: 0, top: 0, zoom: 1 }
 
   return <div className="stage-component" ref={setStageContainer}>
     <Isolate 
