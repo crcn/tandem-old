@@ -154,6 +154,12 @@ function* handleSelectionMoved() {
     const selectionBounds = getWorkspaceSelectionBounds(state, workspace);
     for (const item of getBoundedWorkspaceSelection(state, workspace)) {
       const itemBounds = getSyntheticBrowserItemBounds(state, item);
+
+      // skip moving window if in full screen mode
+      if (workspace.stage.fullScreen && workspace.stage.fullScreen.windowId === item.$id) {
+        continue;
+      }
+
       yield put(moved(item.$id, item.$type, scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint))));
     }
   }
@@ -271,6 +277,12 @@ function* handleSelectionStoppedMoving() {
     const state = (yield select()) as ApplicationState;
     const workspace = getWorkspaceById(state, workspaceId);
     for (const item of getBoundedWorkspaceSelection(state, workspace)) {
+
+      // skip moving window if in full screen mode
+      if (workspace.stage.fullScreen && workspace.stage.fullScreen.windowId === item.$id) {
+        continue;
+      }
+      
       const bounds = getSyntheticBrowserItemBounds(state, item);
       yield put(stoppedMoving(item.$id, item.$type));
     }

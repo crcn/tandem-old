@@ -405,6 +405,10 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
           location: this.location.toString(),
           document: this.document.struct,
           renderContainer: this.renderer.container,
+          scrollPosition: {
+            left: this.scrollX,
+            top: this.scrollY,
+          },
           bounds: {
             left: this.screenLeft,
             top: this.screenTop,
