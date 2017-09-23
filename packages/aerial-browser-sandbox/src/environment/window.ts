@@ -4,7 +4,8 @@ import { Dispatcher, weakMemo, Mutation, Mutator, generateDefaultId, mergeBounds
 import { clamp } from "lodash";
 import { getSEnvEventTargetClass, getSEnvEventClasses, SEnvMutationEventInterface } from "./events";
 import { SyntheticWindowRendererInterface, createNoopRenderer, SyntheticDOMRendererFactory, SyntheticWindowRendererEvent, SyntheticMirrorRenderer } from "./renderers";
-import { getNodeByPath, getNodePath } from "../utils/node-utils"
+import { getNodeByPath, getNodePath } from "../utils/node-utils";
+import { getSEnvTimerClasses, SEnvTimersInterface } from "./timers";
 import { 
   SEnvElementInterface,
   getSEnvHTMLElementClasses, 
@@ -159,6 +160,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
   const SEnvCustomElementRegistry = getSEnvCustomElementRegistry(context);
   const SEnvElement     = getSEnvElementClass(context);
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
+  const { SEnvTimers } = getSEnvTimerClasses(context);
   const { SEnvEvent, SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent } = getSEnvEventClasses(context);
 
   // register default HTML tag names
@@ -342,12 +344,20 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly HTMLElement: typeof HTMLElement = SEnvHTMLElement;
     fetch: Fetch;
     private _childWindowCount: number = 0;
+    private _timers: SEnvTimersInterface;
     public $id: string;
     
     constructor(origin: string) {
       super();
 
       this._onRendererPainted = this._onRendererPainted.bind(this);
+      this.clearImmediate = this.clearImmediate.bind(this);
+      this.clearTimeout = this.clearTimeout.bind(this);
+      this.clearInterval = this.clearInterval.bind(this);
+      this.setImmediate = this.setImmediate.bind(this);
+      this.setTimeout = this.setTimeout.bind(this);
+      this.setInterval = this.setInterval.bind(this);
+      this._timers = new SEnvTimers();
 
       this.URIChangedEvent = SEnvURIChangedEvent;
       this.uid = this.$id = generateDefaultId();
@@ -422,6 +432,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
     dispose() {
       this.renderer.dispose();
+      this._timers.dispose();
     }
 
     get $selector(): any {
@@ -488,15 +499,15 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     clearInterval(handle: number): void {
-
+      return this._timers.clearInterval(handle);
     }
 
     clearTimeout(handle: number): void {
-
+      return this._timers.clearTimeout(handle);
     }
 
     setInterval(handler, ms: number, ...args): number {
-      return setInterval(handler, ms, ...args);
+      return this._timers.setInterval(handler, ms, ...args);
     }
 
     clone(deep?: boolean) {
@@ -510,16 +521,16 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
 
-    setTimeout(...args): number {
-      return 0;
+    setTimeout(handler, ms, ...args): number {
+      return this._timers.setTimeout(handler, ms, ...args);
     }
 
     clearImmediate(handle: number): void {
-
+      return this._timers.clearImmediate(handle);
     }
 
-    setImmediate(): number {
-      return -1;
+    setImmediate(handler): number {
+      return this._timers.setImmediate(handler);
     }
 
     moveBy(x?: number, y?: number): void {

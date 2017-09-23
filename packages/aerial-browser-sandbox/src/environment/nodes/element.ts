@@ -143,8 +143,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
 
     getAttributeNode(name: string): Attr { 
-      this._throwUnsupportedMethod();
-      return null;
+      return this.attributes[name];
     }
 
     getAttributeNodeNS(namespaceURI: string, localName: string): Attr { 
