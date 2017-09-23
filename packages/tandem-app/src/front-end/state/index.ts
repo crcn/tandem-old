@@ -13,6 +13,8 @@ import {
   getSmallestBounds,
   ImmutableArray, 
   Point,
+  serializableKeys,
+  serializableKeysFactory,
   StructReference,
   arrayReplaceIndex,
   ImmutableObject,
@@ -341,6 +343,7 @@ export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, 
   selectionRefs: [],
   hoveringRefs: []
 });
+
 
 export const createApplicationState = createStructFactory<ApplicationState>(APPLICATION_STATE, {
   workspaces: [],

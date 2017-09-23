@@ -367,7 +367,14 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       const { width, height } = element.getBoundingClientRect();
       const workspaceId = state.selectedWorkspaceId;
       const workspace = getSelectedWorkspace(state);
+
       state = updateWorkspaceStage(state, workspaceId, { container: element });
+
+      // do not center if in full screen mode
+      if (workspace.stage.fullScreen) {
+        return state;
+      }
+
       const innerBounds = getSyntheticBrowserBounds(getSyntheticBrowser(state, workspace.browserId));
 
       // no windows loaded

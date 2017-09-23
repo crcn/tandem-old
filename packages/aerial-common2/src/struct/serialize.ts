@@ -18,12 +18,12 @@ export const serialize = (object: any) => {
     if (Array.isArray(object)) {
       return object.map(child => serialize(child));
     } else {
-      const serializableKeys: string[] = object["$serializableKeys"];
+      const serializableKeysFactory: string[] = object["$serializableKeysFactory"];
 
       const clone = {};
-      if (serializableKeys) {
-        for (let i = serializableKeys.length; i--;) {
-          const key = serializableKeys[i];
+      if (serializableKeysFactory) {
+        for (let i = serializableKeysFactory.length; i--;) {
+          const key = serializableKeysFactory[i];
           clone[key] = serialize(object[key]);
         }
       } else {
@@ -38,7 +38,9 @@ export const serialize = (object: any) => {
   }
 }
 
-export const serializableKeys = <TFactory extends Function>(keys: string[], factory: TFactory) => ((...args) => ({ $serializableKeys: keys, ...factory(...args)})) as any as TFactory;
+export const serializableKeys = <TObject extends Object>(keys: string[], object: TObject) => ({ $serializableKeysFactory: keys, ...(object as any) }) as TObject;
+
+export const serializableKeysFactory = <TFactory extends Function>(keys: string[], factory: TFactory) => ((...args) => serializableKeys(keys, factory(...args))) as any as TFactory;
 
 export const nonSerializable = <T extends Object>(object: T) => ({ $noSerialize: true, ...(object as any) }) as T;
 

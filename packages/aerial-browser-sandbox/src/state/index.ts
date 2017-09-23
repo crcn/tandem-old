@@ -16,7 +16,7 @@ import {
   createDataStore,
   StructReference,
   arrayRemoveItem,
-  serializableKeys,
+  serializableKeysFactory,
   ExpressionLocation,
   ExpressionPosition,
   createZeroBounds,
@@ -560,7 +560,7 @@ export type SyntheticBrowserRootState = {
 
 export const createSyntheticBrowserStore = (syntheticBrowsers?: SyntheticBrowser[]) => dsIndex(createDataStore(syntheticBrowsers), "$id");
 
-export const createSyntheticWindow = serializableKeys(["scrollPosition", "bounds", "location", "$id"], createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
+export const createSyntheticWindow = serializableKeysFactory(["scrollPosition", "bounds", "location", "$id"], createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
   externalResourceUris: []
 }));
 
