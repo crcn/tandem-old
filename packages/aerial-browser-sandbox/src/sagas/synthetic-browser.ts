@@ -179,7 +179,6 @@ function* handleOpenSyntheticWindow(browserId: string) {
   while(true) {
     const request = (yield take((action: OpenSyntheticBrowserWindow) => action.type === OPEN_SYNTHETIC_WINDOW && action.syntheticBrowserId === browserId)) as OpenSyntheticBrowserWindow;
     const instance = (yield call(openSyntheticWindowEnvironment, request.state, browserId)) as SEnvWindowInterface;
-    yield put(createRequestResponse(request.$id, instance));
   }
 }
 
@@ -223,12 +222,14 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
     return () => { };
   });
 
-  while(true) {
-    yield watchWindowExternalResourceUris(currentWindow, () => currentWindow.location.reload());
-    currentWindow.$load();
-    yield put(syntheticWindowOpened(currentWindow, browserId));
-    yield take(reloadChan);
-  }
+  yield spawn(function*() {
+    while(true) {
+      yield watchWindowExternalResourceUris(currentWindow, () => currentWindow.location.reload());
+      currentWindow.$load();
+      yield put(syntheticWindowOpened(currentWindow, browserId));
+      yield take(reloadChan);
+    }
+  });
 }
 
 const PADDING = 10;
