@@ -51,11 +51,7 @@ export type SyntheticWindowRectsUpdated = {
 } & BaseEvent;
 
 export type SyntheticWindowLoaded = {
-  allNodes: {
-    [identifier: string]: SyntheticNode
-  };
-  document: SyntheticDocument;
-  syntheticWindowId: string;
+  instance: SEnvWindowInterface
 } & BaseEvent;
 
 export type SyntheticNodeValueStoppedEditing = {
@@ -242,9 +238,7 @@ export const syntheticWindowResourceLoaded = (syntheticWindowId: string, uri: st
   type: SYNTHETIC_WINDOW_RESOURCE_LOADED,
 });
 
-export const syntheticWindowLoaded = (syntheticWindowId: string, document: SyntheticDocument, allNodes: { [identifier: string]: SyntheticNode }): SyntheticWindowLoaded => ({
-  allNodes,
-  document,
-  syntheticWindowId,
+export const syntheticWindowLoaded = (instance: SEnvWindowInterface): SyntheticWindowLoaded => ({
+  instance,
   type: SYNTHETIC_WINDOW_LOADED,
 });

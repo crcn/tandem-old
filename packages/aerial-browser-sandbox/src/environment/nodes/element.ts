@@ -162,6 +162,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
     
     getClientRects(): ClientRectList { 
+      console.log("GET CLIENT RECTS");
       this._throwUnsupportedMethod();
       return null;
     }

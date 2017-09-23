@@ -6,7 +6,7 @@ import { Workspace } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import { compose, pure, withHandlers } from "recompose";
-import { SyntheticNode, SyntheticWindow, SyntheticBrowser } from "aerial-browser-sandbox";
+import { SyntheticNode, SyntheticWindow, SyntheticBrowser, getSyntheticWindowChildStructs } from "aerial-browser-sandbox";
 import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { 
   stageToolOverlayMouseLeave,
@@ -124,7 +124,8 @@ const getSyntheticNodes = weakMemo((refs: StructReference[], allNodes: any) => {
 });
 
 
-const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, { allNodes = {} }: SyntheticWindow) => {
+const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, window: SyntheticWindow) => {
+  const allNodes = getSyntheticWindowChildStructs(window);
   return difference(
     getSyntheticNodes(workspace.hoveringRefs, allNodes),
     getSyntheticNodes(workspace.selectionRefs, allNodes)

@@ -34,6 +34,7 @@ import {
 import {
   SEnvCSSStyleSheetInterface,
   SEnvCSSObjectInterface,
+  flattenWindowObjectSources,
   SEnvCSSRuleInterface,
   SEnvWindowInterface,
   SEnvNodeInterface,
@@ -534,9 +535,6 @@ export const isSyntheticNodeType = (value: string) => {
 }
 
 export type SyntheticWindow = {
-  allNodes: {
-    [identifier: string]: SyntheticNode
-  }
   scrollPosition: Point;
   renderContainer: HTMLElement;
   location: string;
@@ -563,8 +561,7 @@ export type SyntheticBrowserRootState = {
 export const createSyntheticBrowserStore = (syntheticBrowsers?: SyntheticBrowser[]) => dsIndex(createDataStore(syntheticBrowsers), "$id");
 
 export const createSyntheticWindow = serializableKeys(["scrollPosition", "bounds", "location", "$id"], createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
-  externalResourceUris: [],
-  allNodes: {}
+  externalResourceUris: []
 }));
 
 export const createSyntheticBrowser = createStructFactory<SyntheticBrowser>(SYNTHETIC_BROWSER, {
@@ -717,18 +714,30 @@ export const upsertSyntheticWindow = <TState extends SyntheticBrowserRootState>(
   })
 }
 
+export const getSyntheticWindowChildStructs = weakMemo((window: SyntheticWindow) => {
+  const instances = flattenWindowObjectSources(window);
+  const children = {};
+  for (const $id in instances) {
+    children[$id] = instances[$id].struct;
+  }
+
+  return children;
+});
+
+export const getSyntheticWindowChild = (window: SyntheticWindow, id: string) => getSyntheticWindowChildStructs(window)[id];
+
 export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: SyntheticWindow) => {
-  let current = window.allNodes && window.allNodes[node.parentId];
+  let current = getSyntheticWindowChild(window, node.parentId);
   const ancestors: SyntheticNode[] = [];
   while(current) {
     ancestors.push(current);
-    current = window.allNodes[current.parentId];
+    current = getSyntheticWindowChild(window, current.parentId);
   }
   return ancestors;
 });
 
 
-export const getSyntheticParentNode = (node: SyntheticNode, window: SyntheticWindow) => window.allNodes && window.allNodes[node.parentId];
+export const getSyntheticParentNode = (node: SyntheticNode, window: SyntheticWindow) => getSyntheticWindowChild(window, node.parentId);
 
 export const removeSyntheticWindow = <TState extends SyntheticBrowserRootState>(root: TState, windowId: string): TState => {
   const browser = getSyntheticWindowBrowser(root, windowId);
@@ -750,7 +759,7 @@ export function getSyntheticNodeById(root: SyntheticBrowserRootState, id: string
 export function getSyntheticNodeById(root: SyntheticBrowser, id: string);
 export function getSyntheticNodeById (root: any, id: string): SyntheticNode {
   const window = getSyntheticNodeWindow(root, id);
-  return window && window.allNodes && window.allNodes[id];
+  return window && getSyntheticWindowChild(window, id);
 };
 
 export const getSyntheticNodeTextContent = weakMemo((node: SyntheticNode): string => {
@@ -778,12 +787,12 @@ export const getSyntheticNodeWindow = weakMemo((root: SyntheticBrowserRootState|
 });
 
 export const syntheticWindowContainsNode = weakMemo((window: SyntheticWindow, nodeId: string): boolean => {
-  return Boolean(window.allNodes && window.allNodes[nodeId]);
+  return Boolean(getSyntheticWindowChild(window, nodeId));
 });
 
 export const syntheticNodeIsRelative = weakMemo((window: SyntheticWindow, nodeId: string, refNodeId: string): boolean => {
-  const node = window.allNodes && window.allNodes[nodeId];
-  const refNode = window.allNodes && window.allNodes[refNodeId];
+  const node = getSyntheticWindowChild(window, nodeId);
+  const refNode = getSyntheticWindowChild(window, refNodeId);
   if (!node || !refNode) {
     return false;
   }
@@ -799,22 +808,3 @@ export const isSyntheticBrowserItemMovable = (root: SyntheticBrowserRootState, i
   }
   return false;
 }
-
-/*
-
-  allNodes: {
-    [identifier: string]: SyntheticNode
-  }
-  scrollPosition: Point;
-  renderContainer: HTMLElement;
-  location: string;
-  document: SyntheticDocument;
-  bounds: Bounds;
-  allComputedBounds: {
-    [identifier: string]: Bounds;
-  };
-  externalResourceUris: string[],
-  allComputedStyles: {
-    [identifier: string]: CSSStyleDeclaration
-  }
-*/

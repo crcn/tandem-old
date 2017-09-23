@@ -143,12 +143,19 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
       this._struct = undefined;
     }
 
+    get offsetParent(): Element {
+
+      // TODO - read the docs: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
+      // Impl here is partial.
+      return this.parentNode as any as Element;
+    }
+
     get parentNode() {
       return this.$$parentNode;
     }
 
     get parentElement() {
-      return this.$$parentElement;
+      return this.$$parentNode as any as HTMLElement;
     }
 
     get firstChild() {

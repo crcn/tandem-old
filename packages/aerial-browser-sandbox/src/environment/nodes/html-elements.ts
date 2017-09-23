@@ -43,7 +43,6 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     lang: string;
     readonly offsetHeight: number;
     readonly offsetLeft: number;
-    readonly offsetParent: Element;
     readonly offsetTop: number;
     readonly offsetWidth: number;
     onabort: (this: HTMLElement, ev: UIEvent) => any;
@@ -525,6 +524,12 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: any) => {
 
         // temp for now. Needs to call reject if error is caught
         this._resolveContentLoaded();
+      }
+
+      cloneShallow() {
+        const clone = super.cloneShallow();
+        clone["_loaded"] = this._loaded;
+        return clone;
       }
     }
 }); 

@@ -3,7 +3,7 @@ import { getSEnvLocationClass } from "./location";
 import { Dispatcher, weakMemo, Mutation, Mutator, generateDefaultId, mergeBounds, Rectangle } from "aerial-common2";
 import { clamp } from "lodash";
 import { getSEnvEventTargetClass, getSEnvEventClasses, SEnvMutationEventInterface } from "./events";
-import { SyntheticWindowRendererInterface, createNoopRenderer, SyntheticDOMRendererFactory, SyntheticWindowRendererEvent } from "./renderers";
+import { SyntheticWindowRendererInterface, createNoopRenderer, SyntheticDOMRendererFactory, SyntheticWindowRendererEvent, SyntheticMirrorRenderer } from "./renderers";
 import { getNodeByPath, getNodePath } from "../utils/node-utils"
 import { 
   SEnvElementInterface,
@@ -34,6 +34,7 @@ export interface SEnvWindowInterface extends Window {
   struct: SyntheticWindow;
   externalResourceUris: string[];
   document: SEnvDocumentInterface;
+  dispose();
 
   // overridable by loaded window. Used
   // particularly to point generated source map URIs to 
@@ -50,14 +51,15 @@ export type SEnvWindowContext = {
   fetch?: Fetch;
   reload?: () => {};
   proxyHost?: string;
-  getRenderer?: (window: SEnvWindowInterface) => SyntheticWindowRendererInterface;
+  createRenderer?: (window: SEnvWindowInterface) => SyntheticWindowRendererInterface;
   console?: Console;
 };
-
 
 export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInterface) => {
   const { SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent } = getSEnvEventClasses();
 
+  (source.renderer as SyntheticMirrorRenderer).source = target.renderer;
+ 
   if (target.$id !== source.$id) {
     throw new Error(`target must be a previous clone of the source.`);
   }
@@ -65,11 +67,21 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
   const sync = () => {
     patchWindow(target, diffWindow(target, source));
   };
+
+  // TODO - need to sync mutations from target to source since
+  // the editor mutates the target -- changes need to be reflected in the source
+  // so that incomming source mutations are properly mapped back to the target. 
   
   // happens with dynamic content.
-  const onMutation = (event: SEnvMutationEventInterface) => {
-    // element IDS do not line up properly, so we need to sync on each mutation
-    sync();
+  const onMutation = ({ mutation }: SEnvMutationEventInterface) => {
+    const childObjects = flattenWindowObjectSources(target.struct);
+
+    // likely a full window reload. In that case, need to diff & patch
+    if (!childObjects[mutation.target.$id]) {
+      sync();
+    } else {
+      patchWindow(target, [mutation]);
+    }
   };
 
   const mirrorEvent = (event: Event) => {
@@ -138,7 +150,7 @@ const defaultFetch = ((info) => {
 }) as any;
 
 export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
-  const { getRenderer, fetch = defaultFetch } = context;
+  const { createRenderer, fetch = defaultFetch } = context;
 
 
   const SEnvEventTarget = getSEnvEventTargetClass(context);
@@ -157,7 +169,6 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly location: Location;
     private _selector: any;
     private _renderer: SyntheticWindowRendererInterface;
-    childObjects: Map<string, any>;
 
     readonly sessionStorage: Storage;
     readonly localStorage: Storage;
@@ -340,11 +351,10 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
       this.URIChangedEvent = SEnvURIChangedEvent;
       this.uid = this.$id = generateDefaultId();
-      this.childObjects = new Map();
       this.location = new SEnvLocation(origin, context.reload);
       this.document = new SEnvDocument(this);
       this.window   = this.top = this.self = this;
-      this.renderer = (getRenderer || createNoopRenderer)(this);
+      this.renderer = (createRenderer || createNoopRenderer)(this);
       this.innerWidth = DEFAULT_WINDOW_WIDTH;
       this.innerHeight = DEFAULT_WINDOW_HEIGHT;
       this.moveTo(0, 0);
@@ -371,15 +381,6 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     getSourceUri(uri: string) {
       return uri;
     }
-
-    resetChildObjects() {
-      this.childObjects = new Map();
-      this.childObjects.set(this.document.$id, document);
-      filterNodes(this.document, (child: Node) => {
-        this.childObjects.set((child as any).$id, child);
-        return false;
-      });
-    }
     
     didChange() {
       this._struct = undefined;
@@ -403,6 +404,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
           $id: this.$id,
           location: this.location.toString(),
           document: this.document.struct,
+          renderContainer: this.renderer.container,
           bounds: {
             left: this.screenLeft,
             top: this.screenTop,
@@ -412,6 +414,10 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
         });
       }
       return this._struct;
+    }
+
+    dispose() {
+      this.renderer.dispose();
     }
 
     get $selector(): any {
@@ -524,6 +530,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       }
       this.screenLeft = this.screenY = x;
       this.screenTop  = this.screenX = y;
+      this.didChange();
       const e = new SEnvEvent();
       e.initEvent("move", true, true);
       this.dispatchEvent(e);
@@ -588,6 +595,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       }
       this.innerWidth = x;
       this.innerHeight = y;
+      this.didChange();
       const event = new SEnvEvent();
       event.initEvent("resize", true, true);
       this.dispatchEvent(event);
@@ -713,6 +721,7 @@ export const patchWindow = (oldWindow: SEnvWindowInterface, mutations: Mutation<
     if (!target) {
       throw new Error(`Unable to find target for mutation ${mutation.$type}`);
     }
+
     const mutate = windowMutators[mutation.$type] as Mutator<any, any>;
 
     if (!mutate) {

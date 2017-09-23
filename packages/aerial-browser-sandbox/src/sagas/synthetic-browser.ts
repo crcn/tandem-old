@@ -129,6 +129,7 @@ import {
   SyntheticDOMRenderer,
   SEnvDocumentInterface,
   waitForDocumentComplete,
+  SyntheticMirrorRenderer,
   SEnvHTMLElementInterface,
   flattenWindowObjectSources,
   SyntheticWindowRendererEvent,
@@ -193,15 +194,17 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
   const reloadChan = yield eventChannel((emit) => {
 
     const reload = (bounds?: Bounds) => {
+      if (currentWindow) {
+        currentWindow.dispose();
+      }
       const SEnvWindow = getSEnvWindowClass({ console: getSEnvWindowConsole(), fetch, reload: () => {
         return reload();
-      }});
+      }, createRenderer: (window: SEnvWindowInterface) => new SyntheticMirrorRenderer(window) });
       const window = currentWindow = new SEnvWindow(location);
   
       // ick. Better to use seed function instead to generate UIDs <- TODO.
       window.$id = windowId;
       window.document.$id = documentId;
-      window.resetChildObjects();
   
       if (bounds) {
         window.moveTo(bounds.left, bounds.top);
@@ -308,6 +311,7 @@ function* handleOpenedSyntheticWindow(browserId: string) {
     if (!containsProxy) {
       proxy = window.clone();
       const position = window.screenLeft || window.screenTop ? { left: window.screenLeft, top: window.screenTop } : (yield call(getBestWindowPosition, browserId));
+      
       proxy.moveTo(position.left, position.top);
       proxy.resizeTo(window.innerWidth, window.innerHeight);
       proxy.renderer = createRenderer(proxy);
@@ -361,7 +365,7 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
     });
     
     const emitStructChange = debounce(() => {
-      emit(syntheticWindowLoaded(window.$id, window.document.struct, getAllWindowObjects(window)));
+      emit(syntheticWindowLoaded(window));
     }, 0);
 
     window.addEventListener(SEnvMutationEvent.MUTATION, (event) => {
@@ -408,7 +412,7 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
 
     const triggerLoaded = () => {
       if (window.document.readyState !== "complete") return;
-      emit(syntheticWindowLoaded(window.$id, window.document.struct, getAllWindowObjects(window)));
+      emit(syntheticWindowLoaded(window));
     };
 
     window.document.addEventListener("readystatechange", triggerLoaded);

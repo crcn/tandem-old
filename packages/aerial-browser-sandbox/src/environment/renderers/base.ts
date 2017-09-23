@@ -6,16 +6,6 @@ import { Rectangle, Point } from "aerial-common2";
 const EventTarget = getSEnvEventTargetClass();
 const { SEnvEvent, SEnvMutationEvent } = getSEnvEventClasses();
 
-export interface SyntheticWindowRendererInterface extends EventTarget {
-  container: HTMLElement;
-  sourceWindow: Window;
-  readonly allBoundingClientRects: RenderedClientRects;
-  getBoundingClientRect(element: SEnvElementInterface): ClientRect;
-  getComputedStyle(element: SEnvElementInterface, pseudoElement?: SEnvElementInterface): CSSStyleDeclaration;
-}
-
-export type SyntheticDOMRendererFactory = (window: Window) => SyntheticWindowRendererInterface;
-
 export interface RenderedClientRects {
   [identifier: string]: ClientRect
 };
@@ -24,6 +14,22 @@ export interface RenderedClientRects {
 export interface RenderedComputedStyleDeclarations {
   [identifier: string]: CSSStyleDeclaration
 };
+
+export interface SyntheticWindowRendererInterface extends EventTarget {
+  container: HTMLElement;
+  sourceWindow: Window;
+  computedStyles: RenderedComputedStyleDeclarations;
+  clientRects: RenderedClientRects;
+  scrollPosition: Point;
+  scrollRect: Rectangle;
+  dispose();
+  readonly allBoundingClientRects: RenderedClientRects;
+  getBoundingClientRect(element: SEnvElementInterface): ClientRect;
+  getComputedStyle(element: SEnvElementInterface, pseudoElement?: SEnvElementInterface): CSSStyleDeclaration;
+}
+
+export type SyntheticDOMRendererFactory = (window: Window) => SyntheticWindowRendererInterface;
+
 
 export class SyntheticWindowRendererEvent extends SEnvEvent {
 
@@ -48,6 +54,8 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   private _rects: RenderedClientRects;
   private _scrollWidth: number;
   private _scrollHeight: number;
+  private _scrollRect: Rectangle;
+  private _scrollPosition: Point;
   private _styles: RenderedComputedStyleDeclarations;
 
   constructor(protected _sourceWindow: SEnvWindowInterface) {
@@ -64,8 +72,20 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
     return this._rects;
   }
 
-  get clientRects(): RenderedClientRects {
+  get clientRects() {
     return this._rects;
+  }
+  
+  get computedStyles() {
+    return this._styles;
+  }
+  
+  get scrollRect() {
+    return this._scrollRect;
+  }
+
+  get scrollPosition() {
+    return this._scrollPosition;
   }
 
   get sourceWindow(): SEnvWindowInterface {
@@ -81,6 +101,10 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   }
 
   protected _removeTargetListeners() {
+
+  }
+
+  dispose() {
 
   }
 
@@ -119,6 +143,8 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   protected setPaintedInfo(rects: RenderedClientRects, styles: RenderedComputedStyleDeclarations, scrollRect: Rectangle, scrollPosition: Point) {
     this._rects = rects;
     this._styles = styles;
+    this._scrollRect = scrollRect;
+    this._scrollPosition = scrollPosition;
     const event = new SyntheticWindowRendererEvent();
     event.initRendererEvent(SyntheticWindowRendererEvent.PAINTED, rects, styles, scrollRect, scrollPosition);
     this.dispatchEvent(event);

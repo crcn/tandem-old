@@ -259,7 +259,7 @@ const insertChildNodeAt = (parent: Node, child: Node, index: number) => {
 
 export const parentNodeMutators = {
   ...baseNodeMutators,
-  [SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index}: RemoveChildMutation<any, any>) {
+  [SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index, child}: RemoveChildMutation<any, any>) {
     (oldNode as any as Element).removeChild(oldNode.childNodes[index] as any);
   },
   [SEnvParentNodeMutationTypes.MOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {oldIndex, index}: MoveChildMutation<any, any>) {
