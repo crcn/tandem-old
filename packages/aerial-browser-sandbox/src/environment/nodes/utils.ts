@@ -135,10 +135,10 @@ export const whenLoaded = async (node: SEnvNodeInterface) => {
   );
 }
 
-const querySelectorFilter = weakMemo((selector: string) => (node: Node) => {
+const querySelectorFilter = (selector: string) => (node: Node) => {
   return node.nodeType === SEnvNodeTypes.ELEMENT
    && (node.ownerDocument.defaultView as SEnvWindowInterface).$selector.match(node, selector);
-});
+};
 
 export const matchesSelector = (node: Node, selector: string) => {
   return node.nodeType === SEnvNodeTypes.ELEMENT

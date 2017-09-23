@@ -1,4 +1,4 @@
-import { serialize } from "aerial-common2";
+import { serialize, logDebugAction } from "aerial-common2";
 import { loadedSavedState } from "../actions";
 import { put, take, fork, call, select } from "redux-saga/effects";
 
@@ -33,15 +33,12 @@ function* persistState() {
     // a POJO with very few exceptions. For cases where data cannot be converted into a plain object, the application will need to re-hydrate the non-serializable data on startup. 
     const pojoState = serialize(state);
     localStorage.setItem(SAVE_KEY, JSON.stringify(pojoState));
+    console.debug(`Saving app state`);
   }
 }
 
 const whenIdle = () => new Promise((resolve) => {
   setTimeout(() => {
-    if (typeof requestIdleCallback !== "undefined") {
-      requestIdleCallback(resolve);
-    } else {
-      resolve();
-    }
+    resolve();
   }, PERSIST_DELAY_TIMEOUT);
 });

@@ -1,0 +1,1 @@
+import { weakMemo } from "aerial-common2";

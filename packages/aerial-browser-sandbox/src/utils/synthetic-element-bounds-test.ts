@@ -102,17 +102,17 @@ describe(__filename + "#", () => {
     }
   })
 
-  SYNTHETIC_WINDOW_FIXTURE_1.allNodes = allNodes;
+  // SYNTHETIC_WINDOW_FIXTURE_1.allNodes = allNodes;
 
-  describe("convertAbsoluteBoundsToRelative#", () => {
-    [
-      ["n21", createSquareBounds(600, 600), createSquareBounds(600, 600)],
-      ["n211", createSquareBounds(600, 600), createSquareBounds(100, 100)],
-      ["n212", createSquareBounds(600, 600), createSquareBounds(600, 600)]
-    ].forEach(([id, absoluteBounds, relativeBounds]: [string, Bounds, Bounds]) => {
-      it(`for fixture n2, converts absolute boudns of ${JSON.stringify(absoluteBounds)} to ${JSON.stringify(relativeBounds)}`, () => {
-        expect(convertAbsoluteBoundsToRelative(absoluteBounds, SYNTHETIC_WINDOW_FIXTURE_1.allNodes[id] as SyntheticElement, SYNTHETIC_WINDOW_FIXTURE_1)).to.eql(relativeBounds);
-      });
-    }); 
-  });
+  // describe("convertAbsoluteBoundsToRelative#", () => {
+  //   [
+  //     ["n21", createSquareBounds(600, 600), createSquareBounds(600, 600)],
+  //     ["n211", createSquareBounds(600, 600), createSquareBounds(100, 100)],
+  //     ["n212", createSquareBounds(600, 600), createSquareBounds(600, 600)]
+  //   ].forEach(([id, absoluteBounds, relativeBounds]: [string, Bounds, Bounds]) => {
+  //     it(`for fixture n2, converts absolute boudns of ${JSON.stringify(absoluteBounds)} to ${JSON.stringify(relativeBounds)}`, () => {
+  //       expect(convertAbsoluteBoundsToRelative(absoluteBounds, SYNTHETIC_WINDOW_FIXTURE_1.allNodes[id] as SyntheticElement, SYNTHETIC_WINDOW_FIXTURE_1)).to.eql(relativeBounds);
+  //     });
+  //   }); 
+  // });
 });

@@ -43,5 +43,32 @@ describe(__filename + "#", () => {
       expect(calls).to.eql(1);
     });
 
+
+    it("can take multiple arguments2", () => {
+      let calls = 0;
+      const add = weakMemo((a, b, c) => {
+        calls++;
+        return a.count + b.count;
+      });
+
+      const a = { count: 1 };
+      const b = { count: 2 };
+      expect(add(a, b, 1)).to.eql(3);
+      expect(add(a, b, 1)).to.eql(3);
+      expect(calls).to.eql(1);
+    });
+
+
+    it("can take multiple arguments3", () => {
+      let calls = 0;
+      const add = weakMemo((c) => {
+        calls++;
+        return c;
+      });
+
+      expect(add(1)).to.eql(1);
+      expect(add(1)).to.eql(1);
+      expect(calls).to.eql(1);
+    });
   });
 });

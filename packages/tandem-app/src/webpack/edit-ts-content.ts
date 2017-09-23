@@ -17,7 +17,6 @@ module.exports = (content: string, mutation: Mutation<any>, filePath: string) =>
   const source = mutation.target.source;
   const ast = ts.createSourceFile(filePath, content, ts.ScriptTarget.ES2016, true);
   const targetNode = findTargetASTNode(ast, mutation);
-  console.log(mutation.$type);
 
   switch(mutation.$type) {
     case SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT: {

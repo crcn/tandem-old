@@ -711,6 +711,9 @@ export const diffWindow = (oldWindow: SEnvWindowInterface, newWindow: SEnvWindow
 };
 
 export const flattenWindowObjectSources = weakMemo((window: SyntheticWindow) => {
+  if (!window.document) {
+    return {};
+  }
   return flattenDocumentSources(window.document);
 });
 

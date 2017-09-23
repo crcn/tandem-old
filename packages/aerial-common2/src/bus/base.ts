@@ -72,7 +72,7 @@ export const reuseRequest = (request: Request): Request => ({
 
 export const takeRequest = (test: string | ((action: Action) => boolean), handleRequest: (request: Request) => any) => call(function*() {
   const request = (yield take(test)) as Request;
-  yield fork(function*() {
+  yield spawn(function*() {
     yield put(createRequestResponse(request.$id, yield call(handleRequest, request)));
   });
 });

@@ -45,11 +45,10 @@ IMMEDIATE:
 
 - [ ] finish synthetic browser
   - [ ] battle test with 
-  - [ ] ensure that BT.com works (with animations)
 - [ ] synthetic browser tests
-- [ ] connect with browser sync
 - [ ] properly reload CSS
 - [ ] cleanup socket.io connections
+- [ ] timers
 
 NON-GOALS:
 
