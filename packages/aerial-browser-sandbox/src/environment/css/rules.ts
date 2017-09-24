@@ -61,9 +61,16 @@ export interface CSSParentObject {
 }
 
 export const cssInsertRule = (parent: CSSStyleSheet|CSSGroupingRule, child: string|CSSRule, index: number, context: any) => {
-  const styleSheet = parent.type != null ? (parent as CSSGroupingRule).parentStyleSheet : parent as CSSStyleSheet;
+  const isStyleRule = parent.type != null;
+  const styleSheet = isStyleRule ? (parent as CSSGroupingRule).parentStyleSheet : parent as CSSStyleSheet;
   if (typeof child === "string") {
-    child = evaluateCSS(child, styleSheet.href, context);
+    const childObject = evaluateCSS(child, styleSheet.href, context) as any;
+    if (isStyleRule) {
+      childObject.$parentRule = parent;
+    } else {
+      childObject.$parentStyleSheet = parent;
+    }
+    child = childObject;
   }
   Array.prototype.splice.call(parent.cssRules, index, 0, child);
   parent["didChange"]();
@@ -183,9 +190,12 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
   
   abstract class SEnvCSSGroupingRule extends SEnvCSSStyleParentRule implements CSSGroupingRule {
     readonly cssRules: CSSRuleList;
-    constructor(rules: CSSRule[] = []) {
+    constructor(rules: SEnvCSSRule[] = []) {
       super();
       this.cssRules = new SEnvCSSRuleList(...rules);
+      for (let i = rules.length; i--;) {
+        rules[i].$parentRule = this;
+      }
     }
     getCSSText() {
       return null;
@@ -204,7 +214,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
   class SEnvCSSMediaRule extends SEnvCSSGroupingRule implements CSSMediaRule {
     readonly type = CSSRuleType.MEDIA_RULE;
     readonly media: MediaList;
-    constructor(private _conditionText: string, rules: CSSRule[]) {
+    constructor(private _conditionText: string, rules: SEnvCSSRule[]) {
       super(rules);
     }
 

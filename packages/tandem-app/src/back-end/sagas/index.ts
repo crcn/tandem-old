@@ -31,6 +31,7 @@ function* frontEndService() {
 
   expressServer.use("/proxy/:uri", (req, res, next) => {
     const { uri } = req.params;
+    req.url = uri;
     req.pipe(request({
       uri: uri
     })).pipe(res);
