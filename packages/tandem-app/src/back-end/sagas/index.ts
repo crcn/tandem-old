@@ -31,11 +31,9 @@ function* frontEndService() {
 
   expressServer.use("/proxy/:uri", (req, res, next) => {
     const { uri } = req.params;
-    request({
-      method: req.method,
-      uri: uri,
-      gzip: true
-    }).pipe(res);
+    req.pipe(request({
+      uri: uri
+    })).pipe(res);
   });
 }
 
