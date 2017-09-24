@@ -554,6 +554,7 @@ export type SyntheticBrowser = {
 } & Struct;
 
 export type SyntheticBrowserRootState = {
+  proxy?: string;
   browserStore: DataStore<SyntheticBrowser>;
   windowStore?: DataStore<SyntheticWindow>;
 } & FileCacheRootState;

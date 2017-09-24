@@ -1,11 +1,12 @@
 import { debounce, throttle, values } from "lodash";
 import { SEnvNodeTypes } from "../constants";
 import { SEnvNodeInterface } from "../nodes";
+import { SEnvCSSStyleSheetInterface } from "../css";
 import { SEnvWindowInterface, patchWindow, windowMutators, flattenWindowObjectSources } from "../window";
 import { SEnvParentNodeMutationTypes, createParentNodeInsertChildMutation, SEnvParentNodeInterface, SEnvCommentInterface, SEnvElementInterface, SEnvTextInterface, createParentNodeRemoveChildMutation } from "../nodes";
 import { SEnvMutationEventInterface } from "../events";
 import { BaseSyntheticWindowRenderer } from "./base";
-import { InsertChildMutation, RemoveChildMutation, MoveChildMutation, Mutation, Mutator } from "aerial-common2";
+import { InsertChildMutation, RemoveChildMutation, MoveChildMutation, Mutation, Mutator, weakMemo } from "aerial-common2";
 import { SET_SYNTHETIC_SOURCE_CHANGE } from "../nodes";
 import { getNodeByPath, getNodePath } from "../../utils";
 
@@ -68,8 +69,8 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
   }
 
   private _getSourceCSSText() {
-    return Array.prototype.map.call(this.sourceWindow.document.stylesheets, (ss: CSSStyleSheet) => (
-      ss.cssText
+    return Array.prototype.map.call(this.sourceWindow.document.stylesheets, (ss: SEnvCSSStyleSheetInterface) => (
+      ss.previewCSSText
     )).join("\n");
   }
 

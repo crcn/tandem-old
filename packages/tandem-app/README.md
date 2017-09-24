@@ -43,8 +43,6 @@ COOL TO HAVE:
 
 IMMEDIATE:
 
-- [ ] finish synthetic browser
-  - [ ] battle test with 
 - [ ] synthetic browser tests
 - [ ] properly reload CSS
 - [ ] cleanup socket.io connections
@@ -85,11 +83,8 @@ NON-GOALS:
 
 CLEANUP:
 
-- [ ] remove file caching. Source of truth needs to be a dev server
 - [ ] file cache namespaced to workspace
-- [ ] normalize urls - http://site.com/ -> http://site.com
 - [ ] use old DOM rendering code
-- [ ] synthetic window timers
 - [ ] keep measurements when resizing
 - [ ] XHR handler for server
 

@@ -1,7 +1,7 @@
 import { parseCSS, evaluateCSS } from "./utils";
 import { SyntheticCSSStyleSheet, createSyntheticCSSStyleSheet, SYNTHETIC_CSS_STYLE_SHEET } from "../../state";
 import { CSSRuleType } from "../constants";
-import { compareCSSRule, diffCSSRule, flattenCSSRuleSources, cssRuleMutators, diffCSSParentObject, cssParentMutators, cssInsertRule, cssDeleteRule } from "./rules";
+import { SEnvCSSRuleInterface, compareCSSRule, diffCSSRule, flattenCSSRuleSources, cssRuleMutators, diffCSSParentObject, cssParentMutators, cssInsertRule, cssDeleteRule } from "./rules";
 import { 
   weakMemo, 
   Mutation, 
@@ -24,10 +24,10 @@ export interface SEnvCSSStyleSheetInterface extends CSSStyleSheet, SEnvCSSObject
 export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
   const { SEnvCSSRuleList } =  getSEnvCSSCollectionClasses(context);
   const SEnvCSSBaseObject = getSEnvCSSBaseObjectClass(context);
-  return class SEnvCSSSytyleSheet extends SEnvCSSBaseObject implements SEnvCSSStyleSheetInterface {
+  return class SEnvCSSStyleSheet extends SEnvCSSBaseObject implements SEnvCSSStyleSheetInterface {
     disabled: boolean;
     private _rules: CSSRuleList;
-    readonly href: string;
+    href: string;
     readonly media: MediaList;
     readonly ownerNode: Node;
     readonly parentStyleSheet: StyleSheet;
@@ -43,13 +43,17 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
     readonly readOnly: boolean;
     struct: SyntheticCSSStyleSheet;
 
-    constructor(rules: CSSRule[] = []) {
+    constructor(rules: SEnvCSSRuleInterface[] = []) {
       super();
       this._reset(rules);
     }
 
     get cssText() {
       return Array.prototype.map.call(this.cssRules, rule => rule.cssText).join(" \n");
+    }
+
+    get previewCSSText() {
+      return Array.prototype.map.call(this.cssRules, rule => rule.previewCSSText).join(" \n");
     }
 
     get rules(): CSSRuleList {
@@ -77,8 +81,13 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
       this._reset(styleSheet.cssRules);
     }
 
-    private _reset(rules: CSSRule[] = []) {
+    
+
+    private _reset(rules: SEnvCSSRuleInterface[] = []) {
       this._rules = new SEnvCSSRuleList(...rules);
+      for (let i = rules.length; i--;) {
+        rules[i].$parentStyleSheet = this;
+      }
     }
     
     addImport(bstrURL: string, lIndex?: number): number {

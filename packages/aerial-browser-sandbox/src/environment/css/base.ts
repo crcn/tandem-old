@@ -4,6 +4,7 @@ export interface SEnvCSSObjectInterface {
   $id: string;
   $source: ExpressionLocation;
   struct: Struct;
+  previewCSSText: string;
 }
 
 export interface SEnvCSSObjectParentInterface extends SEnvCSSObjectInterface {
@@ -15,6 +16,7 @@ export const getSEnvCSSBaseObjectClass = weakMemo((context: any) => {
 
     protected _struct: Struct;
     readonly $id: string;
+    abstract previewCSSText: string;
     public $source: ExpressionLocation;
 
     constructor() {

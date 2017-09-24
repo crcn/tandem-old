@@ -2,6 +2,7 @@ import * as path from "path";
 import { delay } from "redux-saga";
 import * as request from "request";
 import * as express from "express";
+import * as Url from "url";
 const cors = require("cors");
 import { logInfoAction } from "aerial-common2";
 import { httpServerStarted, log } from "../actions";
@@ -34,17 +35,7 @@ function* frontEndService() {
       method: req.method,
       uri: uri,
       gzip: true
-    }, (err, response, body) => {
-
-      if (err) {
-        return next(err);
-      }
-
-      res.set({
-        "content-type": response.headers["content-type"]
-      });
-      res.send(body);
-    });
+    }).pipe(res);
   });
 }
 

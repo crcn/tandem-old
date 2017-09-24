@@ -1,6 +1,8 @@
 import { weakMemo, diffArray, eachArrayValueMutation, createPropertyMutation, generateDefaultId, Struct, SetPropertyMutation } from "aerial-common2";
-import { kebabCase, camelCase } from "lodash";
+import { kebabCase, camelCase, identity } from "lodash";
 import { SEnvCSSObjectInterface } from "./base";
+import { SEnvWindowContext } from "../window";
+import { getUri } from "../utils";
 import { createSyntheticCSSStyleDeclaration } from "../../state";
 
 export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && property !== "uid" && property !== "$id" && property !== "struct" && property !== "parentRule";
@@ -8,9 +10,10 @@ export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+
 export interface SEnvCSSStyleDeclaration extends CSSStyleDeclaration {
   parentRule: CSSRule;
   readonly struct: Struct;
+  previewCSSText: string;
 }
 
-export const getSEnvCSSStyleDeclarationClass = weakMemo((context) => {
+export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identity }: SEnvWindowContext) => {
   return class SEnvCSSStyleDeclaration implements SEnvCSSStyleDeclaration {
 
     alignContent: string | null;
@@ -380,6 +383,28 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo((context) => {
         const key = this[i];
         const value = this[key];
         if (value) {
+          buffer.push(kebabCase(key), ": ", value, ";");
+        }
+      }
+
+      return buffer.join("");
+    }
+
+    get previewCSSText() {
+      const buffer = [];
+
+      for (let i = 0, n = this.length; i < n; i++) {
+        const key = this[i];
+        let value = this[key];
+        if (value) {
+          if (/url\(.*\)/.test(value)) {
+            const styleSheetHref = this.parentRule.parentStyleSheet.href;
+            value = value.replace(/url\(.*?\)/g, (token) => {
+              const href = token.match(/url\(["']?(.*?)["']?\)/)[1];
+              const url =  getUri(href, styleSheetHref);
+              return `url(${getProxyUrl(url)})`;
+            });
+          }
           buffer.push(kebabCase(key), ": ", value, ";");
         }
       }

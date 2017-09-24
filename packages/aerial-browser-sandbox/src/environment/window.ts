@@ -1,7 +1,7 @@
 import { SyntheticWindow, createSyntheticWindow } from "../state";
 import { getSEnvLocationClass } from "./location";
 import { Dispatcher, weakMemo, Mutation, Mutator, generateDefaultId, mergeBounds, Rectangle } from "aerial-common2";
-import { clamp } from "lodash";
+import { clamp, identity } from "lodash";
 import { getSEnvEventTargetClass, getSEnvEventClasses, SEnvMutationEventInterface } from "./events";
 import { SyntheticWindowRendererInterface, createNoopRenderer, SyntheticDOMRendererFactory, SyntheticWindowRendererEvent, SyntheticMirrorRenderer } from "./renderers";
 import { getNodeByPath, getNodePath } from "../utils/node-utils";
@@ -51,7 +51,7 @@ export type Fetch = (input: RequestInfo, init?: RequestInit) => Promise<Response
 export type SEnvWindowContext = {
   fetch?: Fetch;
   reload?: () => {};
-  proxyHost?: string;
+  getProxyUrl?: (url: string) => string;
   createRenderer?: (window: SEnvWindowInterface) => SyntheticWindowRendererInterface;
   console?: Console;
 };
@@ -151,7 +151,7 @@ const defaultFetch = ((info) => {
 }) as any;
 
 export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
-  const { createRenderer, fetch = defaultFetch } = context;
+  const { createRenderer, fetch = defaultFetch, getProxyUrl = identity } = context;
 
 
   const SEnvEventTarget = getSEnvEventTargetClass(context);
@@ -330,6 +330,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly toolbar: BarProp;
     readonly top: Window;
     readonly window: Window;
+    readonly getProxyUrl: (url: string) => string;
     URL: typeof URL;
     URLSearchParams: typeof URLSearchParams;
     Blob: typeof Blob;

@@ -269,6 +269,8 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
     cloneShallow() {
       const clone = super.cloneShallow();
       const styleSheet = new SEnvCSSStyleSheet();
+      const window = this.ownerDocument.defaultView;
+      styleSheet.href = String(window.location);
       styleSheet.cssText = this.sheet.cssText;
       (clone as SEnvHTMLStyledElementInterface).$$setSheet(styleSheet);
       return clone;
@@ -353,6 +355,8 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
         // TODO: clean this up -- clone stylesheet instead of using
         // cssText which will run the parser again (we don't want that because it's sloowwwwwww). (CC)
         const sheet = new SEnvCSSStyleSheet();
+        const window = this.ownerDocument.defaultView;
+        sheet.href = getUri(this.href, String(window.location));
         sheet.cssText = (this.sheet as CSSStyleSheet).cssText;
         (clone as any as SEnvHTMLStyledElementInterface).$$setSheet(sheet);
       }
@@ -366,7 +370,6 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
         const uri = getUri(href, String(window.location));
         const response = await window.fetch(uri);
         const text = await response.text();
-
         this._parseStylesheet(text);
         const event = new SEnvEvent();
         event.initEvent("load", true, true);
@@ -380,10 +383,7 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
     private _parseStylesheet(text: string) {
       const sheet = this.sheet = new SEnvCSSStyleSheet();
       const location = this.ownerDocument.defaultView.location;
-      sheet.cssText = text.replace(/url\(.*?\)/g, (url) => {
-        const url2 = url.replace(/(^url\(["']?)/g, "").replace(/(['"]?\)$)/, "");
-        return `url(${getUri(url2, String(location))})`;
-      });
+      sheet.cssText = text;
     }
   };
 });

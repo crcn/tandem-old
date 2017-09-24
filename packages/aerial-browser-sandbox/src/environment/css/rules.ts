@@ -42,6 +42,8 @@ import { evaluateCSS } from "./utils";
 
 export interface SEnvCSSRuleInterface extends CSSRule, SEnvCSSObjectInterface {
   struct: SyntheticCSSRule;
+  $parentRule: SEnvCSSRuleInterface;
+  $parentStyleSheet: SEnvCSSStyleSheetInterface;
 }
 
 export interface SEnvCSSParentRuleInterface extends SEnvCSSRuleInterface, SEnvCSSObjectParentInterface {
@@ -117,7 +119,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
 
     get parentStyleSheet() {
-      return this.$parentStyleSheet;
+      return this.$parentStyleSheet || (this.$parentRule && this.$parentRule.parentStyleSheet) as SEnvCSSStyleSheetInterface;
     }
 
     protected didChange() {
@@ -170,6 +172,9 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     getCSSText() {
       return `${this.selectorText} { ${this.style.cssText} }`;
     }
+    get previewCSSText() {
+      return `${this.selectorText} { ${this.style.previewCSSText} }`;
+    }
 
     protected setCSSText(value: string) {
       // NOTHING FOR NOW
@@ -203,6 +208,10 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       super(rules);
     }
 
+    get previewCSSText() {
+      return `@media ${this.conditionText} { ${Array.prototype.map.call(this.cssRules, rule => rule.previewCSSText).join(" ")} }`;
+    }
+
     getCSSText() {
       return `@media ${this.conditionText} { ${Array.prototype.map.call(this.cssRules, rule => rule.cssText).join(" ")} }`;
     }
@@ -228,11 +237,17 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
 
   class SEnvCSSFontFace extends SEnvCSSRule implements CSSFontFaceRule {
     readonly type = CSSRuleType.FONT_FACE_RULE;
-    constructor(readonly style: SEnvCSSStyleDeclaration) {
+    public style: SEnvCSSStyleDeclaration;
+    constructor(style: SEnvCSSStyleDeclaration) {
       super();
+      this.style = style;
+      style.parentRule = this;
+    }
+    get previewCSSText() {
+      return `@font-face { ${this.style.previewCSSText} }`;
     }
     getCSSText() {
-      return `@font-face {}`
+      return `@font-face { ${this.style.cssText} }`
     }
     $createStruct() {
       return createSyntheticCSSFontFaceRule({
@@ -241,7 +256,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
         style: this.style.struct,
       });
     }
-    protected setCSSText(value: string) {
+    protected setCSSText(value: string) {   
 
     }
   }
@@ -271,6 +286,10 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       });
     }
 
+    get previewCSSText() {
+      return `${this.keyText} { ${this.style.previewCSSText} }`;
+    }
+
     getCSSText() {
       return `${this.keyText} { ${this.style.cssText} }`;
     }
@@ -296,6 +315,10 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       });
     }
 
+    get previewCSSText() {
+      return `@keyframes ${this.name} { }`;
+    }
+
     protected getCSSText() {
       return `@keyframes ${this.name} { }`;
     }
@@ -318,6 +341,9 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
   class SEnvUnknownGroupingRule extends SEnvCSSGroupingRule {
     readonly type = CSSRuleType.UNKNOWN_RULE;
     getCSSText() {
+      return ``;
+    }
+    get previewCSSText() {
       return ``;
     }
     $createStruct() {

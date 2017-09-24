@@ -189,6 +189,7 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
   let main: SEnvWindowInterface;
   const documentId = generateDefaultId();
   const fetch = yield getFetch();
+  const { proxy }: SyntheticBrowserRootState = yield select();
 
   let currentWindow: SEnvWindowInterface;
 
@@ -198,9 +199,16 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
       if (currentWindow) {
         currentWindow.dispose();
       }
-      const SEnvWindow = getSEnvWindowClass({ console: getSEnvWindowConsole(), fetch, reload: () => {
-        return reload();
-      }, createRenderer: (window: SEnvWindowInterface) => new SyntheticMirrorRenderer(window) });
+      const SEnvWindow = getSEnvWindowClass({ 
+        console: getSEnvWindowConsole(), 
+        fetch, 
+        reload: () => reload(),
+        getProxyUrl: (url: string) => {
+          console.log(proxy + encodeURIComponent(url));
+          return proxy ? proxy + encodeURIComponent(url) : url;
+        },
+        createRenderer: (window: SEnvWindowInterface) => new SyntheticMirrorRenderer(window) 
+      });
       const window = currentWindow = new SEnvWindow(location);
   
       // ick. Better to use seed function instead to generate UIDs <- TODO.
