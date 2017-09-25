@@ -221,7 +221,7 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
       const workspace = getSelectedWorkspace(state);
       const selection = workspace.selectionRefs[0];
 
-      const windowId = selection ? selection[0] === SYNTHETIC_WINDOW ? selection[1] : getSyntheticNodeWindow(state, selection[1]).$id : null;
+      const windowId = selection ? selection[0] === SYNTHETIC_WINDOW ? selection[1] : getSyntheticNodeWindow(state, selection[1]) && getSyntheticNodeWindow(state, selection[1]).$id : null;
 
       if (windowId && !workspace.stage.fullScreen) {
         const window = getSyntheticWindow(state, windowId);

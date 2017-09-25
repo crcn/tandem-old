@@ -3,7 +3,7 @@ import { hasURIProtocol } from "aerial-sandbox2";
 import { getSEnvEventClasses } from "../events";
 import path = require("path");
 import { getUri } from "../utils";
-import { SEnvWindowInterface } from "../window";
+import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SEnvNodeListInterface, getSEnvHTMLCollectionClasses } from "./collections";
 import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyleSheet, patchCSSStyleSheet, flattenSyntheticCSSStyleSheetSources, SEnvCSSStyleSheetInterface, cssStyleSheetMutators } from "../css";
@@ -114,6 +114,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     onwaiting: (this: HTMLElement, ev: Event) => any;
     outerText: string;
     spellcheck: boolean;
+    private _loaded: boolean;
     private _style: CSSStyleDeclaration;
     private _styleProxy: CSSStyleDeclaration;
     tabIndex: number;
@@ -141,6 +142,36 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
           return true;
         }
       }))
+    }
+
+    initialize() {
+      super.initialize();
+      this._tryLoading();
+    }
+    
+
+
+    $setOwnerDocument(document: SEnvDocumentInterface) {
+      super.$setOwnerDocument(document);
+
+      // load the script once it's been added to a parent
+      // element
+      this._tryLoading();
+    }
+
+    protected canLoad() {
+      return false;
+    }
+
+    private _tryLoading() {
+      if (!this._loaded && this.canLoad()) {
+        this._loaded = true;
+        this._load();
+      }
+    }
+
+    protected _load() {
+
     }
 
     protected attributeChangedCallback(propertyName: string, oldValue: string, newValue: string) {
@@ -228,6 +259,12 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
       });
     }
 
+    cloneShallow() {
+      const clone = super.cloneShallow();
+      clone["_loaded"] = this._loaded;
+      return clone;
+    }
+
     protected onStyleChange() {
       this.setAttribute("style", this._getStyleString());
     }
@@ -249,11 +286,11 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
     media: string;
     type: string;
 
-    initialize() {
-      this._load();
+    canLoad() {
+      return !!this.textContent;
     }
 
-    private _load() {
+    protected _load() {
       this.sheet = new SEnvCSSStyleSheet();
       const source = this.textContent;
       this.sheet.cssText = source;
@@ -301,12 +338,15 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
     private _rejectLoaded: (value?) => any;
 
     initialize() {
-      super.initialize();
       this.interactiveLoaded = new Promise((resolve, reject) => {
         this._resolveLoaded = resolve;
         this._rejectLoaded  = reject;
       });
-      this._load();
+      super.initialize();
+    }
+
+    canLoad() {
+      return !!this.href && !!this._resolveLoaded;
     }
 
     get rel() {
@@ -335,7 +375,7 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
       this._load();
     }
 
-    private _load() {
+    protected _load() {
       const { rel } = this;
       if (rel === "stylesheet") {
         return this._loadStylesheet();
@@ -436,7 +476,8 @@ const declarePropertiesFromScript = <T extends any>(context: T, script): T => {
   return context;
 }
 
-export const getSenvHTMLScriptElementClass = weakMemo((context: any) => {
+export const getSenvHTMLScriptElementClass = weakMemo((context: SEnvWindowContext) => {
+  const { getProxyUrl } = context;
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
   return class SEnvHTMLScriptElement extends SEnvHTMLElement implements HTMLScriptElement { async: boolean;
       charset: string;
@@ -452,7 +493,6 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: any) => {
       private _filename: string;
       private _resolveContentLoaded: () => any;
       private _rejectContentLoaded: () => any;
-      private _loaded: boolean;
 
       get src() {
         return this.getAttribute("src");
@@ -462,31 +502,11 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: any) => {
         this.setAttribute("src", value);
       }
 
-      initialize() {
-        super.initialize();
-        
-        this._load();
+      canLoad() {
+        return Boolean(this.src || this.textContent);
       }
 
-      $setOwnerDocument(document: SEnvDocumentInterface) {
-        super.$setOwnerDocument(document);
-
-        // load the script once it's been added to a parent
-        // element
-        this._load();
-      }
-
-      private async _load() {
-        if (this._loaded) {
-          return;
-        }
-
-        // do not load if there is no script
-        if (!this.src && !this.textContent) {
-          return;
-        }
-        
-        this._loaded = true;
+      protected async _load() {
         const { src } = this;
         if (src) {
           const window = this.ownerDocument.defaultView;
@@ -528,14 +548,14 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: any) => {
 
       cloneShallow() {
         const clone = super.cloneShallow();
-        clone["_loaded"] = this._loaded;
         return clone;
       }
     }
 }); 
 
 
-export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
+export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) => {
+  const { getProxyUrl } = context;
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
 
   /*
@@ -1042,7 +1062,15 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       readonly naturalHeight: number;
       readonly naturalWidth: number;
       sizes: string;
-      src: string;
+
+      get src() {
+        return this.getAttribute("src");
+      }
+
+      set src(value: string) {
+        this.setAttribute("src", value);
+      }
+
       srcset: string;
       useMap: string;
       vspace: number;
@@ -1050,6 +1078,15 @@ export const getSEnvHTMLElementClasses = weakMemo((context: any) => {
       readonly x: number;
       readonly y: number;
       msGetAsCastingSource(): any { }
+
+      getPreviewAttribute(name: string) {
+        if (name === "src") {
+          const { src } = this;
+          return getProxyUrl(getUri(src, this.ownerDocument.defaultView.location.toString()));
+        }
+
+        return super.getPreviewAttribute(name);
+      }
     },
     "input": class SEnvHTMLInputElement extends SEnvHTMLElement implements HTMLInputElement { 
       accept: string;

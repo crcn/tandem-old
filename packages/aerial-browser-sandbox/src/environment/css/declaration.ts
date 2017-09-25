@@ -402,7 +402,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
             value = value.replace(/url\(.*?\)/g, (token) => {
               const href = token.match(/url\(["']?(.*?)["']?\)/)[1];
               const url =  getUri(href, styleSheetHref);
-              return `url(${getProxyUrl(url)})`;
+              return `url("${getProxyUrl(url)}")`;
             });
           }
           buffer.push(kebabCase(key), ": ", value, ";");

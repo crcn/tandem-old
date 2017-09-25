@@ -32,6 +32,7 @@ export interface SEnvElementInterface extends SEnvParentNodeInterface, Element {
   $$preconstruct();
   childNodes: SEnvNodeListInterface;
   addEventListener(type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+  getPreviewAttribute(name: string): string | null;
 }
 
 export const getSEnvElementClass = weakMemo((context: any) => {
@@ -140,6 +141,10 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 
     getAttribute(name: string): string | null { 
       return this.hasAttribute(name) ? this.attributes[name].value : null;
+    }
+    
+    getPreviewAttribute(name: string) {
+      return this.getAttribute(name);
     }
 
     getAttributeNode(name: string): Attr { 

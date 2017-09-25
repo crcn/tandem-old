@@ -9,6 +9,10 @@ export class SyntheticMirrorRenderer extends BaseSyntheticWindowRenderer {
     super(window);
   }
 
+  async render() {
+    
+  }
+
   set source(source: SyntheticWindowRendererInterface) {
     this._disposeSourceListeners();
     this._source = source;

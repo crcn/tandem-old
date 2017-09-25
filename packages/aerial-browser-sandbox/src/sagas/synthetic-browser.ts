@@ -204,8 +204,7 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
         fetch, 
         reload: () => reload(),
         getProxyUrl: (url: string) => {
-          console.log(proxy + encodeURIComponent(url));
-          return proxy ? proxy + encodeURIComponent(url) : url;
+          return proxy && url.substr(0, 5) !== "data:" ? proxy + encodeURIComponent(url) : url;
         },
         createRenderer: (window: SEnvWindowInterface) => new SyntheticMirrorRenderer(window) 
       });

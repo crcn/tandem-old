@@ -49,11 +49,11 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
     }
 
     get cssText() {
-      return Array.prototype.map.call(this.cssRules, rule => rule.cssText).join(" \n");
+      return Array.prototype.map.call(this.cssRules, rule => rule.cssText).join(" ");
     }
 
     get previewCSSText() {
-      return Array.prototype.map.call(this.cssRules, rule => rule.previewCSSText).join(" \n");
+      return Array.prototype.map.call(this.cssRules, rule => rule.previewCSSText).join(" ");
     }
 
     get rules(): CSSRuleList {

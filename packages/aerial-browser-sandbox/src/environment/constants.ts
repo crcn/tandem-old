@@ -39,3 +39,6 @@ export enum CSSRuleType {
 
 export const DEFAULT_WINDOW_WIDTH = 1366;
 export const DEFAULT_WINDOW_HEIGHT = 768;
+
+export const SVG_XMLNS  = "http://www.w3.org/2000/svg";
+export const HTML_XMLNS = "http://www.w3.org/1999/xhtml";
