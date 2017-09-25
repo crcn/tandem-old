@@ -101,6 +101,7 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
       }
 
       // needs to come after so that 
+      this._unlinkChild(child as any as SEnvNodeInterface);
       this.childNodesArray.splice(index, 1);
 
       const event2 = new SEnvMutationEvent2();

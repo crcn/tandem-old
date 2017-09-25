@@ -150,6 +150,10 @@ const defaultFetch = ((info) => {
   throw new Error(`Fetch not provided for ${info}`);
 }) as any;
 
+const throwUnsupportedMethod = () => {
+  throw new Error(`Unsupported`);
+}
+
 export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
   const { createRenderer, fetch = defaultFetch, getProxyUrl = identity } = context;
 
@@ -165,6 +169,89 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
   // register default HTML tag names
   const TAG_NAME_MAP = getSEnvHTMLElementClasses(context);
+
+  class SEnvNavigator implements Navigator {
+    readonly appCodeName: string = "Tandem";
+    readonly appName: string = "Tandem";
+    readonly appVersion: string = "1.0";
+    readonly platform: string = "Tandem";
+    readonly product: string = "Tandem";
+    readonly productSub: string = "tandem";
+    readonly userAgent: string = "Tandem";
+    readonly vendor: string = "Tandem";
+    readonly vendorSub: string = "Tandem";
+    readonly authentication: WebAuthentication;
+    readonly cookieEnabled: boolean = true;
+    readonly onLine: boolean = true;
+    readonly geolocation: Geolocation;
+    gamepadInputEmulation: GamepadInputEmulationType;
+    readonly language: string = "en/us";
+    readonly maxTouchPoints: number = 0;
+    readonly mimeTypes: MimeTypeArray;
+    readonly msManipulationViewsEnabled: boolean;
+    readonly msMaxTouchPoints: number;
+    readonly msPointerEnabled: boolean;
+    readonly plugins: PluginArray = [] as any;
+    readonly pointerEnabled: boolean;
+    readonly serviceWorker: ServiceWorkerContainer;
+    readonly webdriver: boolean;
+    readonly hardwareConcurrency: number;
+    readonly languages: string[] = ["en/us"];
+    readonly mediaDevices: MediaDevices;
+    getUserMedia(constraints: MediaStreamConstraints, successCallback: NavigatorUserMediaSuccessCallback, errorCallback: NavigatorUserMediaErrorCallback): void {
+      throwUnsupportedMethod();
+    }
+    sendBeacon(url: USVString, data?: BodyInit): boolean {
+      throwUnsupportedMethod();
+      return false;
+    }
+    msSaveBlob(blob: any, defaultName?: string): boolean {
+      throwUnsupportedMethod();
+      return false;
+    }
+    msSaveOrOpenBlob(blob: any, defaultName?: string): boolean {
+      throwUnsupportedMethod();
+      return false;
+    }
+    getGamepads(): Gamepad[] {
+      throwUnsupportedMethod();
+      return [];
+    }
+    javaEnabled(): boolean {
+      return false;
+    }
+    msLaunchUri(uri: string, successCallback?: MSLaunchUriCallback, noHandlerCallback?: MSLaunchUriCallback): void {
+      
+      throwUnsupportedMethod();
+    }
+    requestMediaKeySystemAccess(keySystem: string, supportedConfigurations: MediaKeySystemConfiguration[]): Promise<MediaKeySystemAccess> {
+      return null;
+    }
+    vibrate(pattern: number | number[]): boolean {
+      throwUnsupportedMethod();
+      return false;
+    }
+    confirmSiteSpecificTrackingException(args: ConfirmSiteSpecificExceptionsInformation): boolean {
+      throwUnsupportedMethod();
+      return false;
+    }
+    confirmWebWideTrackingException(args: ExceptionInformation): boolean {
+      throwUnsupportedMethod();
+      return false;
+    }
+    removeSiteSpecificTrackingException(args: ExceptionInformation): void {
+      throwUnsupportedMethod();
+    }
+    removeWebWideTrackingException(args: ExceptionInformation): void {
+      throwUnsupportedMethod();
+    }
+    storeSiteSpecificTrackingException(args: StoreSiteSpecificExceptionsInformation): void {
+      throwUnsupportedMethod();
+    }
+    storeWebWideTrackingException(args: StoreExceptionsInformation): void {
+      throwUnsupportedMethod();
+    }
+  }
 
   return class SEnvWindow extends SEnvEventTarget implements SEnvWindowInterface {
 
@@ -371,9 +458,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       this.moveTo(0, 0);
       this.externalResourceUris = [];
 
-      this.navigator = {
-        userAgent: "Aerial"
-      } as Navigator;
+      this.navigator = new SEnvNavigator();
       
       this.fetch = async (info) => {
         const ret = await fetch(info);

@@ -13,6 +13,17 @@ export interface SEnvCSSStyleDeclaration extends CSSStyleDeclaration {
   previewCSSText: string;
 }
 
+const cssPropNameToKebabCase = (propName: string) => {
+  propName = kebabCase(propName);
+
+  // vendor prefix
+  if (/^(webkit|moz|ms|o)-/.test(propName)) {
+    propName = "-" + propName;
+  }
+
+  return propName;
+}
+
 export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identity }: SEnvWindowContext) => {
   return class SEnvCSSStyleDeclaration implements SEnvCSSStyleDeclaration {
 
@@ -383,7 +394,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
         const key = this[i];
         const value = this[key];
         if (value) {
-          buffer.push(kebabCase(key), ": ", value, ";");
+          buffer.push(cssPropNameToKebabCase(key), ": ", value, ";");
         }
       }
 
@@ -405,7 +416,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
               return `url("${getProxyUrl(url)}")`;
             });
           }
-          buffer.push(kebabCase(key), ": ", value, ";");
+          buffer.push(cssPropNameToKebabCase(key), ": ", value, ";");
         }
       }
 

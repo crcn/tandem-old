@@ -111,6 +111,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 
     $$preconstruct() {
       super.$$preconstruct();
+      this.className = "";
       this.constructClone = true;
       this.nodeType = SEnvNodeTypes.ELEMENT;
 
@@ -369,6 +370,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 
     cloneShallow() {
       const clone = this.ownerDocument.$createElementWithoutConstruct(this.tagName);
+      clone["" + "tagName"] = this.tagName;
       for (let i = 0, n = this.attributes.length; i < n; i++) {
         const attr = this.attributes[i];
         clone.setAttribute(attr.name, attr.value);

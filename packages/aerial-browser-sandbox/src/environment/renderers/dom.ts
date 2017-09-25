@@ -200,6 +200,10 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
           });
 
           (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, mutation);
+        } else if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT) {
+          const insertMutation = mutation as RemoveChildMutation<any, SEnvNodeInterface>;
+          const child = renderHTMLNode(insertMutation.child, this._elementDictionary, this.onElementChange, this.targetDocument);
+          (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, createParentNodeInsertChildMutation(nativeNode, child, insertMutation.index, false));
         } else {
           (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, mutation);
         }
@@ -354,7 +358,8 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
   switch(node.nodeType) {
 
     case SEnvNodeTypes.TEXT:
-      const textNode = document.createTextNode(node.textContent);
+      const value = node.textContent;
+      const textNode = document.createTextNode(/^[\s\r\n\t]+$/.test(value) ? "" : value);
       dict[node.$id] = [textNode, node];
       return textNode;
 

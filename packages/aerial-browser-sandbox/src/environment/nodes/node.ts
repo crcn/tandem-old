@@ -70,7 +70,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     childNodes: SEnvNodeListInterface;
     readonly localName: string | null;
     readonly namespaceURI: string | null;
-    readonly nodeName: string;
+    nodeName: string;
     readonly nodeType: number;
     nodeValue: string | null;
     private _ownerDocument: SEnvDocumentInterface;
@@ -201,6 +201,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
 
     cloneNode(deep?: boolean): Node {
       const clone = this.cloneShallow();
+      clone["" + "nodeName"] = this.nodeName;
       clone.cloned = true;
       clone.source = this.source;
       clone.$id    = this.$id;

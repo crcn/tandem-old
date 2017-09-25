@@ -468,7 +468,15 @@ export const diffHTMLLinkElement = (oldElement: HTMLLinkElement, newElement: HTM
 
 const _scriptCache = {};
 
-const compileScript = (source) => _scriptCache[source] || (_scriptCache[source] = new Function("__context", `with(__context) {\n${source}\n}`));
+const compileScript = (source) => {
+  if (_scriptCache[source]) {
+    return _scriptCache[source];
+  }
+
+  const f = _scriptCache[source] = new Function("__context", `with(__context) {${source}}`);
+
+  return f;
+}
 
 const declarePropertiesFromScript = <T extends any>(context: T, script): T => {
 
@@ -544,11 +552,6 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: SEnvWindowContex
 
         // temp for now. Needs to call reject if error is caught
         this._resolveContentLoaded();
-      }
-
-      cloneShallow() {
-        const clone = super.cloneShallow();
-        return clone;
       }
     }
 }); 
@@ -1046,6 +1049,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) =
       align: string;
       alt: string;
       border: string;
+      readonly nodeName = "img";
       readonly complete: boolean;
       crossOrigin: string | null;
       readonly currentSrc: string;

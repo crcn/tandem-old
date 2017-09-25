@@ -63,7 +63,30 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     MutationEvent:  SEnvMutationEvent
   };
 
-  return class SEnvDocument extends SEnvParentNode implements SEnvDocumentInterface {
+
+  class SEnvDOMImplementation implements DOMImplementation {
+    constructor(private _view: SEnvWindowInterface) {
+      
+    }
+    createDocument(namespaceURI: string | null, qualifiedName: string | null, doctype: DocumentType | null): Document {
+      throw new Error(`Unsupported`);
+    }
+    createDocumentType(qualifiedName: string, publicId: string, systemId: string): DocumentType {
+      throw new Error(`Unsupported`);
+    }
+    createHTMLDocument(title: string): Document {
+      const document = new SEnvDocument(this._view);
+      document.appendChild(document.createElement("html"));
+      document.documentElement.appendChild(document.createElement("head"));
+      document.documentElement.appendChild(document.createElement("body"));
+      return document;
+    }
+    hasFeature(feature: string | null, version: string | null): boolean {
+      return false;
+    }
+  }
+
+  class SEnvDocument extends SEnvParentNode implements SEnvDocumentInterface {
     
     readonly activeElement: Element;
     private _readyState: string;
@@ -118,7 +141,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     
     linkColor: string;
     
-    links: HTMLCollectionOf<HTMLAnchorElement | HTMLAreaElement>;
     
     msCapsLockWarningOff: boolean;
     msCSSOMElementFloatMetrics: boolean;
@@ -127,7 +149,12 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
 
     constructor(readonly defaultView: SEnvWindowInterface) {
       super();
+      this.implementation = new SEnvDOMImplementation(defaultView);
       this.addEventListener("readystatechange", e => this.onreadystatechange && this.onreadystatechange(e));
+    }
+
+    get links() {
+      return this.querySelectorAll("a,area") as HTMLCollectionOf<HTMLAnchorElement | HTMLAreaElement>;
     }
 
     get location() {
@@ -788,6 +815,8 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       }
     }
   };
+
+  return SEnvDocument;
 });
 
 export const READY_STATE_CHANGE = "READY_STATE_CHANGE";
