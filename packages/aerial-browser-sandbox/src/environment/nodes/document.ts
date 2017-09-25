@@ -31,6 +31,7 @@ import parse5 = require("parse5");
 
 export interface SEnvDocumentInterface extends SEnvParentNodeInterface, Document {
   readonly struct: SyntheticDocument;
+  ownerDocument: SEnvDocumentInterface;
   defaultView: SEnvWindowInterface;
   childNodes: SEnvNodeListInterface;
   $load(content: string): void;

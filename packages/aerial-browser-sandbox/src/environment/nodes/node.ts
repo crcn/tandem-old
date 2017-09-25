@@ -30,6 +30,7 @@ export interface SEnvNodeInterface extends Node {
   struct: SyntheticNode;
   source: ExpressionLocation;
   contentLoaded: Promise<any>;
+  ownerDocument: SEnvDocumentInterface;
   didChange();
   interactiveLoaded: Promise<any>;
   connectedToDocument: boolean;

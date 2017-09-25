@@ -1,6 +1,6 @@
 import "front-end/scss/index.scss";
 import * as React from "react";
-import { CSSICSSInspector } from "./index";
+import { CSSInspector } from "./index";
 import { createWorkspace, createSyntheticWindow, createSyntheticDocument, createSyntheticElement, SYNTHETIC_ELEMENT } from "front-end/state";
 
 
@@ -22,5 +22,5 @@ export const Preview = () => {
   const workspace = createWorkspace({
     selectionRefs: [[SYNTHETIC_ELEMENT, "e1"]]
   });
-  return <CSSICSSInspector window={window} workspace={workspace} />;
+  return <CSSInspector browser={null} workspace={workspace} />;
 }

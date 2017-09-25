@@ -5,6 +5,7 @@ import { SEnvNodeTypes } from "../constants";
 import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation } from "aerial-common2";
 import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, parentNodeMutators } from "./parent-node";
 import { getSEnvEventClasses } from "../events";
+import { SEnvDocumentInterface } from "./document";
 import { evaluateHTMLDocumentFragment, constructNode, matchesSelector } from "./utils";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collections";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
@@ -30,6 +31,7 @@ export const getSEnvAttr = weakMemo((context: any) => {
 
 export interface SEnvElementInterface extends SEnvParentNodeInterface, Element {
   $$preconstruct();
+  ownerDocument: SEnvDocumentInterface;
   childNodes: SEnvNodeListInterface;
   addEventListener(type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
   getPreviewAttribute(name: string): string | null;

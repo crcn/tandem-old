@@ -51,7 +51,7 @@ export interface SEnvCSSParentRuleInterface extends SEnvCSSRuleInterface, SEnvCS
 }
 
 export interface SEnvCSSStyleRuleInterface extends CSSStyleRule, SEnvCSSParentRuleInterface {
-
+  struct: SyntheticCSSStyleRule;
 }
 
 export interface CSSParentObject {
@@ -152,6 +152,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
 
   class SEnvCSSStyleRule extends SEnvCSSStyleParentRule implements SEnvCSSStyleRuleInterface {
     readonly readOnly: boolean;
+    struct: SyntheticCSSStyleRule;
     private _selectorText: string;
     get selectorText() {
       return this._selectorText;
@@ -172,6 +173,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       return createSyntheticCSSStyleRule({
         $id: this.$id,
         instance: this,
+        selectorText: this.selectorText,
         style: this.style.struct
       });
     }

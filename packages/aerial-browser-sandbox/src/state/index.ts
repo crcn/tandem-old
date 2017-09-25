@@ -36,9 +36,12 @@ import {
   SEnvCSSObjectInterface,
   flattenWindowObjectSources,
   SEnvCSSRuleInterface,
+  SEnvElementInterface,
   SEnvWindowInterface,
+  SEnvCSSStyleRuleInterface,
   SEnvNodeInterface,
   SEnvCSSStyleDeclaration,
+  SEnvDocumentInterface
 } from "../environment";
 
 export const SYNTHETIC_BROWSER_STORE = "SYNTHETIC_BROWSER_STORE";
@@ -72,7 +75,8 @@ export type SyntheticCSSRule = {
 } & Struct;
 
 export type SyntheticCSSStyleRule = {
-  instance: SEnvCSSObjectInterface;
+  selectorText: string;
+  instance: SEnvCSSStyleRuleInterface;
   style: SyntheticCSSStyleDeclaration;
 } & SyntheticCSSRule;
 
@@ -510,12 +514,14 @@ export type SyntheticParentNode = {
 } & BasicParentNode & SyntheticNode;
 
 export type SyntheticDocument = {
+  instance: SEnvDocumentInterface;
 } & SyntheticParentNode & BasicDocument;
 
 export type SyntheticAttribute = {
 } & BasicAttribute & SyntheticNode;
 
 export type SyntheticElement = {
+  instance: SEnvElementInterface;
   attributes: SyntheticAttribute[];
 } & BasicElement & SyntheticParentNode;
 

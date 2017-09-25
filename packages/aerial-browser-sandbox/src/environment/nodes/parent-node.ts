@@ -21,6 +21,7 @@ import { querySelector, querySelectorAll } from "./utils";
 import { SyntheticNode, SyntheticParentNode, BasicParentNode, BasicNode } from "../../state";
 
 export interface SEnvParentNodeInterface extends SEnvNodeInterface, ParentNode, Node {
+  ownerDocument: SEnvDocumentInterface;
   readonly struct: SyntheticNode;
   insertChildAt<T extends Node>(child: T, index: number);
 }
@@ -223,7 +224,7 @@ export const createParentNodeMoveChildMutation = (oldNode: BasicParentNode, chil
 
 export const diffParentNode = (oldNode: ParentNode & Node, newNode: ParentNode & Node, diffChildNode: (oldChild: BasicNode, newChild: BasicNode) => Mutation<any>[]) => {
 
-  const mutations = [...diffNodeBase(oldNode, newNode)];
+  const mutations = [...diffNodeBase(oldNode as any as SEnvNodeInterface, newNode as any as SEnvNodeInterface)];
 
   const diff = diffArray(Array.from(oldNode.childNodes), Array.from(newNode.childNodes), (oldNode, newNode) => {
     if (oldNode.nodeName !== newNode.nodeName || oldNode.namespaceURI !== newNode.namespaceURI) return -1;

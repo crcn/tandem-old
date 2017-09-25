@@ -1,8 +1,20 @@
 import * as React from "react";
+import { compose, pure } from "recompose";
 import { Gutter } from "front-end/components/gutter";
+import {CSSInspector } from "./css-inspector";
+import { SyntheticBrowser, Workspace } from "front-end/state";
 
-export const VisualGutterBase = () => <Gutter>
-  styles
+export type ElementGutterOuterProps = {
+  workspace: Workspace;
+  browser: SyntheticBrowser;
+};
+
+export const ElementGutterBase = ({ browser, workspace }: ElementGutterOuterProps) => <Gutter>
+  <CSSInspector browser={browser} workspace={workspace} />
 </Gutter>;
 
-export const VisualGutter = VisualGutterBase;
+const enhanceElementGutter = compose<ElementGutterOuterProps, ElementGutterOuterProps>(
+  pure
+);
+
+export const ElementGutter = enhanceElementGutter(ElementGutterBase);

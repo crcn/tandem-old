@@ -14,6 +14,7 @@ import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNod
 
 export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterface {
   $$preconstruct();
+  ownerDocument: SEnvDocumentInterface;
   childNodes: SEnvNodeListInterface;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
