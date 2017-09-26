@@ -33,7 +33,7 @@ import {
   createSyntheticCSSKeyframesRule,
   createSyntheticCSSUnknownGroupingRule,
 } from "../../state";
-import { diffCSStyleDeclaration, SEnvCSSStyleDeclaration, cssStyleDeclarationMutators } from "./declaration";
+import { diffCSStyleDeclaration, SEnvCSSStyleDeclarationInterface, cssStyleDeclarationMutators } from "./declaration";
 import { SEnvCSSObjectInterface, getSEnvCSSBaseObjectClass, SEnvCSSObjectParentInterface } from "./base";
 import { SEnvCSSStyleSheetInterface } from "./style-sheet";
 import { getSEnvCSSCollectionClasses } from "./collections";
@@ -42,6 +42,7 @@ import { evaluateCSS } from "./utils";
 
 export interface SEnvCSSRuleInterface extends CSSRule, SEnvCSSObjectInterface {
   struct: SyntheticCSSRule;
+  didChange();
   $parentRule: SEnvCSSRuleInterface;
   $parentStyleSheet: SEnvCSSStyleSheetInterface;
 }
@@ -129,25 +130,21 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       return this.$parentStyleSheet || (this.$parentRule && this.$parentRule.parentStyleSheet) as SEnvCSSStyleSheetInterface;
     }
 
-    protected didChange() {
-
+    public didChange() {
       // cache already cleared -- stop bubbling
       if (!this._struct) {
         return;
       }
 
       if (this.parentRule) {
-        this.parentRule.childDidChange();
+        this.parentRule.didChange();
       } else if (this.parentStyleSheet) {
-        this.parentStyleSheet.childDidChange();
+        this.parentStyleSheet.didChange();
       }
     }
   }
 
   abstract class SEnvCSSStyleParentRule extends SEnvCSSRule implements SEnvCSSParentRuleInterface {
-    childDidChange() {
-      this.didChange(); // bubble it
-    }
   }
 
   class SEnvCSSStyleRule extends SEnvCSSStyleParentRule implements SEnvCSSStyleRuleInterface {
@@ -161,9 +158,9 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       this._selectorText = value;
       this.didChange();
     }
-    readonly style: SEnvCSSStyleDeclaration;
+    readonly style: SEnvCSSStyleDeclarationInterface;
     readonly type = CSSRuleType.STYLE_RULE;
-    constructor(selectorText: string, style: SEnvCSSStyleDeclaration) {
+    constructor(selectorText: string, style: SEnvCSSStyleDeclarationInterface) {
       super();
       this.selectorText = selectorText;
       this.style = style;
@@ -249,8 +246,8 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
 
   class SEnvCSSFontFace extends SEnvCSSRule implements CSSFontFaceRule {
     readonly type = CSSRuleType.FONT_FACE_RULE;
-    public style: SEnvCSSStyleDeclaration;
-    constructor(style: SEnvCSSStyleDeclaration) {
+    public style: SEnvCSSStyleDeclarationInterface;
+    constructor(style: SEnvCSSStyleDeclarationInterface) {
       super();
       this.style = style;
       style.parentRule = this;
@@ -275,9 +272,9 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
 
   class SEnvCSSKeyframeRule extends SEnvCSSRule implements CSSKeyframeRule {
     readonly type = CSSRuleType.KEYFRAME_RULE;
-    public style: SEnvCSSStyleDeclaration;
+    public style: SEnvCSSStyleDeclarationInterface;
 
-    constructor(private _keyText: string, style: SEnvCSSStyleDeclaration) {
+    constructor(private _keyText: string, style: SEnvCSSStyleDeclarationInterface) {
       super();
       this.style = style;
     }

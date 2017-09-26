@@ -18,7 +18,8 @@ import { SEnvCSSObjectInterface, getSEnvCSSBaseObjectClass } from "./base";
 
 export interface SEnvCSSStyleSheetInterface extends CSSStyleSheet, SEnvCSSObjectInterface {
   struct: SyntheticCSSStyleSheet;
-  childDidChange();
+  ownerNode: Node;
+  didChange();
 }
 
 export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
@@ -72,10 +73,6 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
       });
     }
 
-    childDidChange() {
-      this._struct = undefined;
-    }
-
     set cssText(value: string) {
       const styleSheet = evaluateCSS(value, this.href, context);
       this._reset(styleSheet.cssRules);
@@ -112,7 +109,7 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
       return cssDeleteRule(this, lIndex);
     }
     didChange() {
-
+      this._struct = undefined;
     }
   }
 });

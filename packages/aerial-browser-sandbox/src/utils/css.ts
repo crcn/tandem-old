@@ -1,22 +1,62 @@
 import { weakMemo } from "aerial-common2";
-import { getSyntheticNodeWindow, SyntheticCSSRule, SyntheticBrowser, SyntheticElement, SyntheticDocument, SyntheticCSSStyleSheet, SyntheticWindow, getSyntheticNodeById, getSyntheticWindowChild, SyntheticCSSStyleRule } from "../state";
-import { flattenWindowObjectSources, matchesSelector, SEnvDocumentInterface, SEnvCSSStyleSheetInterface, SEnvCSSObjectInterface, CSSRuleType, SEnvCSSRuleInterface, flattenDocumentSources, SEnvCSSStyleRuleInterface } from "../environment";
 
+import { 
+  SyntheticWindow, 
+  SyntheticCSSRule, 
+  SyntheticBrowser, 
+  SyntheticElement, 
+  SyntheticDocument, 
+  getSyntheticNodeById, 
+  SyntheticCSSStyleRule,
+  getSyntheticNodeWindow, 
+  SyntheticCSSStyleSheet, 
+  getSyntheticWindowChild, 
+  getSyntheticNodeAncestors,
+  SyntheticCSSStyleDeclaration,
+} from "../state";
+
+import { 
+  CSSRuleType, 
+  matchesSelector, 
+  SEnvCSSRuleInterface, 
+  SEnvDocumentInterface, 
+  SEnvCSSObjectInterface, 
+  flattenDocumentSources,
+  SEnvCSSStyleRuleInterface,
+  flattenWindowObjectSources,
+  SEnvCSSStyleSheetInterface, 
+} from "../environment";
+
+import {
+  INHERITED_CSS_STYLE_PROPERTIES
+} from "../constants";
 
 // TODO - media query information here
-export type MatchingCSSRuleResult = {
+export type AppliedCSSRuleResult = {
+
+  inherited?: boolean;
+
   rule: SyntheticCSSStyleRule;
 
-  // properties that are inherited (color, font face)
-  inheritedProperties?: {
-    [identifier: string]: string
+  // property rules that are 
+  ignoredPropertyNames?: {
+    [identifier: string]: boolean
   }
 
-  // properties that cannot be applied because of syntax errors
-  invalidProperties?: {
-    [identifier: string]: string
+  // properties overridden by a style rule with a higher priority
+  overriddenPropertyNames?: {
+    [identifier: string]: boolean
   }
 }
+
+export const containsInheritableStyleProperty = (style: SyntheticCSSStyleDeclaration) => {
+  for (const propertyName in style) {
+    if (INHERITED_CSS_STYLE_PROPERTIES[propertyName]) {
+      return true;
+    }
+  }
+  return false;
+};
 
 const getDocumentCSSStyleRules = weakMemo((document: SyntheticDocument) => {
   const allRules: SEnvCSSStyleRuleInterface[] = [];
@@ -38,9 +78,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
   const document = element.instance.ownerDocument;
   const allRules = getDocumentCSSStyleRules(document.struct);
   
-  const matchingRules: MatchingCSSRuleResult[] = [];
-
-  console.log("RECOMPUTE");
+  const matchingRules: SyntheticCSSStyleRule[] = [];
 
   for (let i = 0, n = allRules.length; i < n; i++) {
     const rule = allRules[i];
@@ -48,9 +86,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
     // no parent rule -- check
     if (!rule.parentRule) {
       if (element.instance.matches(rule.selectorText)) {
-        matchingRules.push({
-          rule: rule.struct
-        });
+        matchingRules.push(rule.struct);
       }
     // else - check if media rule
     } else {
@@ -59,6 +95,97 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
   }
 
   return matchingRules;
+});
+
+const getSyntheticInheritableCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
+  const matchingCSSRules = getSyntheticMatchingCSSRules(window, elementId);
+  
+  const inheritableCSSRules: SyntheticCSSStyleRule[] = [];
+
+  for (let i = 0, n = matchingCSSRules.length; i < n; i++) {
+    const rule = matchingCSSRules[i];
+    if (containsInheritableStyleProperty(rule.style)) {
+      inheritableCSSRules.push(rule);
+    }
+  }
+
+  return inheritableCSSRules;
+});
+
+export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
+  const element = getSyntheticWindowChild(window, elementId) as any as SyntheticElement;
+  const document = element.instance.ownerDocument;
+  const allRules = getDocumentCSSStyleRules(document.struct);
+
+  // first grab the rules that are applied directly to the element
+  const matchingRules = getSyntheticMatchingCSSRules(window, elementId);
+
+  const appliedPropertNames = {};
+  const appliedStyleRules = {};
+
+  const appliedRules: AppliedCSSRuleResult[] = [];
+
+  for (let i = 0, n = matchingRules.length; i < n; i++) {
+    const matchingRule = matchingRules[i];
+
+    appliedStyleRules[matchingRule.$id] = true;
+
+    const overriddenPropertyNames = {};
+
+    for (const propertyName in matchingRule.style) {
+      if (appliedPropertNames[propertyName]) {
+        overriddenPropertyNames[propertyName] = true;
+      } else {
+        appliedPropertNames[propertyName] = true;
+      }
+    }
+
+    appliedRules.push({
+      inherited: false,
+      rule: matchingRule,
+      overriddenPropertyNames,
+    });
+  }
+
+  // next, fetch the style rules that have inheritable properties such as font-size, color, etc. 
+  const ancestors = getSyntheticNodeAncestors(element, window);
+
+  // reduce by 1 to omit #document
+  for (let i = 0, n = ancestors.length - 1; i < n; i++) {
+    const ancestor = ancestors[i];
+    const inheritedRules = getSyntheticInheritableCSSRules(window, ancestor.$id);
+
+    for (let j = 0, n2 = inheritedRules.length; j < n2; j++) {
+      const ancestorRule = inheritedRules[j];
+      
+      if (appliedStyleRules[ancestorRule.$id]) {
+        continue;
+      }
+      
+      appliedStyleRules[ancestorRule.$id] = true;
+
+      const overriddenPropertyNames = {};
+      const ignoredPropertyNames   = {};
+      for (const propertyName in ancestorRule.style) {
+        if (!INHERITED_CSS_STYLE_PROPERTIES[propertyName]) {
+          ignoredPropertyNames[propertyName] = true;
+        } else if (appliedPropertNames[propertyName]) {
+          overriddenPropertyNames[propertyName] = true;
+        } else {
+          appliedPropertNames[propertyName] = true;
+        }
+      }
+
+      appliedRules.push({
+        inherited: true,
+        rule: ancestorRule,
+        ignoredPropertyNames,
+        overriddenPropertyNames,
+      });
+    }
+  }
+
+  return appliedRules;
 });
 
 

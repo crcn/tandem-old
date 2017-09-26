@@ -25,7 +25,7 @@ export const WorkspaceBase = ({ state, workspace, browser, dispatch }: Workspace
       { stage.showTextEditor ? <TextEditor file={getSelectedWorkspaceFile(state, workspace)} cursorPosition={workspace.textEditor.cursorPosition} dispatch={dispatch} /> : null }
       <Stage workspace={workspace} dispatch={dispatch} browser={browser} />
     </div>
-    { stage.showRightGutter ? <ElementGutter browser={browser} workspace={workspace} /> : null }
+    { stage.showRightGutter ? <ElementGutter browser={browser} workspace={workspace} dispatch={dispatch} /> : null }
   </div>
 };
 

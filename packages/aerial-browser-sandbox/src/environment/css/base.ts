@@ -8,7 +8,6 @@ export interface SEnvCSSObjectInterface {
 }
 
 export interface SEnvCSSObjectParentInterface extends SEnvCSSObjectInterface {
-  childDidChange();
 }
 
 export const getSEnvCSSBaseObjectClass = weakMemo((context: any) => {

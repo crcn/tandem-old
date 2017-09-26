@@ -1,5 +1,6 @@
 import * as React from "react";
 import { compose, pure } from "recompose";
+import { Dispatcher } from "aerial-common2";
 import { Gutter } from "front-end/components/gutter";
 import {CSSInspector } from "./css-inspector";
 import { SyntheticBrowser, Workspace } from "front-end/state";
@@ -7,10 +8,11 @@ import { SyntheticBrowser, Workspace } from "front-end/state";
 export type ElementGutterOuterProps = {
   workspace: Workspace;
   browser: SyntheticBrowser;
+  dispatch: Dispatcher<any>;
 };
 
-export const ElementGutterBase = ({ browser, workspace }: ElementGutterOuterProps) => <Gutter>
-  <CSSInspector browser={browser} workspace={workspace} />
+export const ElementGutterBase = ({ browser, workspace, dispatch }: ElementGutterOuterProps) => <Gutter>
+  <CSSInspector browser={browser} workspace={workspace} dispatch={dispatch} />
 </Gutter>;
 
 const enhanceElementGutter = compose<ElementGutterOuterProps, ElementGutterOuterProps>(

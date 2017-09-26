@@ -3,17 +3,19 @@ import { kebabCase, camelCase, identity } from "lodash";
 import { SEnvCSSObjectInterface } from "./base";
 import { SEnvWindowContext } from "../window";
 import { getUri } from "../utils";
-import { createSyntheticCSSStyleDeclaration } from "../../state";
+import { SEnvCSSRuleInterface } from "./rules";
+import { createSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "../../state";
 
-export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && property !== "uid" && property !== "$id" && property !== "struct" && property !== "parentRule";
+export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|parentRule|disabledProperties)$/.test(property);
 
-export interface SEnvCSSStyleDeclaration extends CSSStyleDeclaration {
-  parentRule: CSSRule;
+export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
+  parentRule: SEnvCSSRuleInterface;
   readonly struct: Struct;
   previewCSSText: string;
+  toggle(propertyName: string);
 }
 
-const cssPropNameToKebabCase = (propName: string) => {
+export const cssPropNameToKebabCase = (propName: string) => {
   propName = kebabCase(propName);
 
   // vendor prefix
@@ -25,7 +27,7 @@ const cssPropNameToKebabCase = (propName: string) => {
 }
 
 export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identity }: SEnvWindowContext) => {
-  return class SEnvCSSStyleDeclaration implements SEnvCSSStyleDeclaration {
+  return class SEnvCSSStyleDeclaration implements SEnvCSSStyleDeclarationInterface {
 
     alignContent: string | null;
     alignItems: string | null;
@@ -241,7 +243,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
     pageBreakAfter: string | null;
     pageBreakBefore: string | null;
     pageBreakInside: string | null;
-    parentRule: CSSRule;
+    parentRule:  SEnvCSSRuleInterface;
     perspective: string | null;
     perspectiveOrigin: string | null;
     pointerEvents: string | null;
@@ -375,15 +377,51 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
     [index: number]: string;
     $length;
     $id: string;
-    struct: Struct;
+    private _struct: SyntheticCSSStyleDeclaration;
+
+    disabledProperties?: {
+      [identifier: string]: string
+    }
 
     constructor() {
       this.$id = generateDefaultId();
-      this.resetStruct();
+    }
+    
+    get struct() {
+      if (this._struct) {
+        return this._struct;
+      }
+
+      const props = {};
+      for (let i = 0; i < this.length; i++) {
+        props[i] = this[i];
+        props[this[i]] = this[this[i]];
+      }
+      return this._struct = createSyntheticCSSStyleDeclaration({ 
+        $id: this.$id, 
+        instance: this,
+        length: this.length,
+        disabledPropertyNames: this.disabledProperties && {...this.disabledProperties},
+        ...props
+      });
     }
 
     get length() {
       return this.$length || 0;
+    }
+    
+    public toggle(propertyName: string) {
+      if (!this.disabledProperties) {
+        this.disabledProperties = { };
+      }
+      
+      if (this.disabledProperties[propertyName]) {
+        this.setProperty(propertyName, this.disabledProperties[propertyName]);
+        this.disabledProperties[propertyName] = undefined;
+      } else {
+        this.disabledProperties[propertyName] = this[propertyName];
+        this.setProperty(propertyName, "");
+      }
     }
 
     get cssText() {
@@ -424,15 +462,12 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
     }
 
     set cssText(value: string) {
-      const obj = {};
       value.split(";").forEach((decl) => {
         const [key, value] = decl.split(":");
-        obj[key] = value;
+        this[camelCase(key.trim())] = value;
       });
-
-      Object.assign(this, obj);
       this.$updatePropertyIndices();
-      this.resetStruct();
+      this.didChange();
     }
 
     static fromString(source: string) {
@@ -457,15 +492,19 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
         }
         decl.$updatePropertyIndices();
       } else {
-        Object.assign(decl, declaration);
+        for (const key in declaration) {
+          decl[camelCase(key)] = declaration[key];
+        }
         decl.$updatePropertyIndices();
       }
       return decl;
     }
 
-    protected resetStruct(notifyOwnerNode?: boolean) {
-      this.struct = createSyntheticCSSStyleDeclaration({ $id: this.$id, instance: this });
-      Object.assign(this.struct, this);
+    public didChange(notifyOwnerNode?: boolean) {
+      this._struct = undefined;
+      if (this.parentRule) {
+        this.parentRule.didChange();
+      }
     }
     
     getPropertyPriority(propertyName: string): string {
@@ -517,7 +556,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       }
 
       this.$updatePropertyIndices();
-      this.resetStruct(notifyOwnerNode);
+      this.didChange(notifyOwnerNode);
     }
 
     public $updatePropertyIndices() {

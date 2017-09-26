@@ -1,0 +1,43 @@
+@import "front-end/scss/variables";
+
+.m-css-inspector {
+  .style-rule-info {
+    width: 250px;
+    overflow: hidden;
+    > .title {
+      width: 100%;
+      padding: $padding-base * 4 $padding-base * 4;
+      background: $color-grey-10;
+    } 
+    > .declaration {
+      width: 100%;
+      > .property {
+        position: relative;
+        padding: $padding-base * 4 $padding-base * 2;
+        border-bottom: 1px solid $color-grey-10;
+        &:last {
+          border-bottom: none;
+        }
+        > .name {
+          padding-right: $padding-base * 4;
+          display: inline-block;
+        }
+        > .value {
+          display: inline-block;
+          // width: 60%;
+        }
+        > .controls {
+          display: none;
+          padding: $padding-base * 4 $padding-base * 2;
+          position: absolute;
+          right: 0;
+          top: 0;
+          height: 100%;
+        }
+        &:hover > .controls {
+          display: block;
+        }
+      }
+    }
+  }
+}

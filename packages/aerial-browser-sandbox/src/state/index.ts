@@ -40,7 +40,7 @@ import {
   SEnvWindowInterface,
   SEnvCSSStyleRuleInterface,
   SEnvNodeInterface,
-  SEnvCSSStyleDeclaration,
+  SEnvCSSStyleDeclarationInterface,
   SEnvDocumentInterface
 } from "../environment";
 
@@ -111,7 +111,9 @@ export type SyntheticCSSUnknownGroupingRule = {
 } & SyntheticCSSGroupingRule;
 
 export type SyntheticCSSStyleDeclaration = {
-  instance: SEnvCSSStyleDeclaration;
+  instance: SEnvCSSStyleDeclarationInterface;
+  length: number;
+  [identifier: number]: string;
   alignContent: string | null;
   alignItems: string | null;
   alignmentBaseline: string | null;
@@ -457,6 +459,9 @@ export type SyntheticCSSStyleDeclaration = {
   zoom: string | null;
   resize: string | null;
   userSelect: string | null;
+  disabledProperties?: {
+    [identifier: string]: string
+  }
 } & Struct;
 
 /**

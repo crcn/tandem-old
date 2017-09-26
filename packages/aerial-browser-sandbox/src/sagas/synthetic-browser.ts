@@ -56,6 +56,8 @@ import {
   syntheticWindowLoaded,
   syntheticWindowRectsUpdated,
   OpenSyntheticBrowserWindow,
+  ToggleCSSDeclarationProperty,
+  TOGGLE_CSS_DECLARATION_PROPERTY,
   SyntheticWindowOpened,
   syntheticWindowResized,
   syntheticWindowResourceChanged,
@@ -98,6 +100,8 @@ import {
   SyntheticParentNode,
   SyntheticElement,
   SyntheticTextNode,
+  SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyleRule,
   SyntheticBrowserRootState,
   isSyntheticNodeType,
   getSyntheticBrowserBounds,
@@ -137,6 +141,7 @@ import {
   SEnvWindowOpenedEventInterface,
   openSyntheticEnvironmentWindow,
   createSetElementAttributeMutation,
+  SEnvCSSStyleDeclarationInterface,
   createSyntheticDOMRendererFactory,
   calculateUntransformedBoundingRect,
   createSetElementTextContentMutation,
@@ -148,6 +153,7 @@ export function* syntheticBrowserSaga() {
   yield fork(handleFetchRequests);
   yield fork(htmlContentEditorSaga);
   yield fork(fileEditorSaga);
+  yield fork(handleToggleCSSProperty);
 }
 
 function* handleFetchRequests() {
@@ -240,6 +246,17 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
     }
   });
 }
+
+function* handleToggleCSSProperty() {
+  while(true) {
+    const { cssDeclarationId, propertyName, windowId }: ToggleCSSDeclarationProperty = yield take(TOGGLE_CSS_DECLARATION_PROPERTY);
+    const state: SyntheticBrowserRootState = yield select();
+    const window: SyntheticWindow = getSyntheticWindow(state, windowId);
+    const childObjects = flattenWindowObjectSources(window);
+    const cssDeclaration = childObjects[cssDeclarationId] as SEnvCSSStyleDeclarationInterface;
+    cssDeclaration.toggle(propertyName);
+  }
+};
 
 const PADDING = 10;
 

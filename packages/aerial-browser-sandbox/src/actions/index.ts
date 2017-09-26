@@ -4,6 +4,7 @@ import { Request, BaseEvent, generateDefaultId, Mutation, Bounds, Point, Action 
 import { RenderedClientRects, RenderedComputedStyleDeclarations, SEnvWindowInterface } from "../environment";
 
 export const OPEN_SYNTHETIC_WINDOW               = "OPEN_SYNTHETIC_WINDOW";
+export const TOGGLE_CSS_DECLARATION_PROPERTY     = "TOGGLE_CSS_DECLARATION_PROPERTY";
 export const SYNTHETIC_WINDOW_RESOURCE_LOADED    = "SYNTHETIC_WINDOW_RESOURCE_LOADED";
 export const NEW_SYNTHETIC_WINDOW_ENTRY_RESOLVED = "NEW_SYNTHETIC_WINDOW_ENTRY_RESOLVED";
 export const FETCH_REQUEST                       = "FETCH_REQUEST";
@@ -33,6 +34,12 @@ export type SyntheticWindowSourceChanged = {
   syntheticWindowId: string;
   window: any;
 } & BaseEvent;
+
+export type ToggleCSSDeclarationProperty = {
+  cssDeclarationId: string;
+  windowId: string;
+  propertyName: string;
+} & Action;
 
 export type OpenSyntheticBrowserWindow = {
   state: Partial<SyntheticWindow>;
@@ -122,6 +129,13 @@ export const mutateSourceContentRequest = (content: string, contentType: string,
   contentType,
   $id: generateDefaultId(),
   type: EDIT_SOURCE_CONTENT,
+});
+
+export const toggleCSSDeclarationProperty = (propertyName: string, cssDeclarationId: string, windowId: string): ToggleCSSDeclarationProperty => ({
+  cssDeclarationId,
+  windowId,
+  propertyName,
+  type: TOGGLE_CSS_DECLARATION_PROPERTY
 });
 
 export const mutateSourceContentRequest2 = (mutations: Mutation<any>[]): MutateSourceContentRequest2<any> => ({

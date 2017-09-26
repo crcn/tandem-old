@@ -1,6 +1,8 @@
 import "./index.scss";
 import * as React from "react";
-import { pure, compose } from "recompose";
+import { mapValues } from "lodash";
+import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
+import { pure, compose, withHandlers } from "recompose";
 import { Pane } from "front-end/components/pane";
 import { 
   Workspace,
@@ -10,24 +12,75 @@ import {
   getSyntheticNodeWindow,
   getSyntheticNodeById
 } from "front-end/state";
-import { getSyntheticMatchingCSSRules, MatchingCSSRuleResult } from "aerial-browser-sandbox";
+
+import { 
+  AppliedCSSRuleResult,
+  cssPropNameToKebabCase,
+  toggleCSSDeclarationProperty,
+  getSyntheticAppliedCSSRules,
+  getSyntheticMatchingCSSRules, 
+} from "aerial-browser-sandbox";
 
 export type CSSInspectorOuterProps = {
   workspace: Workspace;
   browser: SyntheticBrowser;
+  dispatch: Dispatcher<any>;
 }
 
-export type MatchingCSSRuleResultProps = {
-  matchingRule: MatchingCSSRuleResult;
+export type AppliedCSSRuleResultProps = {
+  window: SyntheticWindow;
+  appliedRule: AppliedCSSRuleResult;
+  dispatch: Dispatcher<any>;
 };
 
-const MatchingCSSRuleResult = ({ matchingRule }: MatchingCSSRuleResultProps) => {
-  return <div>
-      { matchingRule.rule.selectorText }
-  </div>;
-}
+export type StylePropertyOuterProps = {
+  appliedRule: AppliedCSSRuleResult;
+  window: SyntheticWindow;
+  name: string;
+  value: string;
+  dispatch: Dispatcher<any>;
+};
 
-const CSSInspectorBase = ({ browser, workspace }: CSSInspectorOuterProps) => {
+const StyleProperty = ({ window, appliedRule, name, value, dispatch }: StylePropertyOuterProps) => {
+  return <div className="property">
+      <div className="name">
+        {cssPropNameToKebabCase(name)}:
+      </div>
+      <div className="value">
+        {value}
+      </div>
+      <div className="controls">
+        <i className="ion-eye-disabled" onClick={wrapEventToDispatch(dispatch, () => toggleCSSDeclarationProperty(name, appliedRule.rule.style.$id, window.$id))} />
+      </div>
+  </div>;
+};
+
+const AppliedCSSRuleInfo = ({ window, appliedRule, dispatch }: AppliedCSSRuleResultProps) => {
+
+  const properties = [];
+
+  const declaration = appliedRule.rule.style;
+  
+  for (let i = 0, n = declaration.length; i < n; i++) {
+    const name = declaration[i];
+    const value = declaration[name];
+    properties.push(
+      <StyleProperty window={window} key={name} name={name} value={value} appliedRule={appliedRule} dispatch={dispatch} />
+    );
+  }
+
+  return <div className="style-rule-info">
+      <div className="title">
+        { appliedRule.rule.selectorText }
+      </div>
+      <div className="declaration">
+        { properties }
+      </div>
+  </div>;
+};
+
+
+const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterProps) => {
   if (!workspace.selectionRefs.length || workspace.selectionRefs[0][0] !== SYNTHETIC_ELEMENT)  return null;
   const targetElementId = workspace.selectionRefs[0][1];
   const element = getSyntheticNodeById(browser, targetElementId);
@@ -37,12 +90,12 @@ const CSSInspectorBase = ({ browser, workspace }: CSSInspectorOuterProps) => {
     return null;
   }
 
-  const rules = getSyntheticMatchingCSSRules(window, targetElementId);
+  const rules = getSyntheticAppliedCSSRules(window, targetElementId);
 
-  return <Pane title="CSS">
+  return <Pane title="CSS" className="m-css-inspector">
     {
       rules.map((rule) => {
-        return <MatchingCSSRuleResult key={rule.rule.$id}  matchingRule={rule} />
+        return <AppliedCSSRuleInfo window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} />
       })
     }
   </Pane>;

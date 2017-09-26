@@ -282,7 +282,7 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
   const { SEnvEvent } = getSEnvEventClasses(context);
 
   return class SEnvHTMLStyleElement extends SEnvHTMLElement implements HTMLStyleElement, SEnvHTMLStyledElementInterface { 
-    sheet: CSSStyleSheet;
+    sheet: SEnvCSSStyleSheetInterface;
     disabled: boolean;
     media: string;
     type: string;
@@ -293,6 +293,7 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
 
     protected _load() {
       this.sheet = new SEnvCSSStyleSheet();
+      this.sheet.ownerNode = this;
       const source = this.textContent;
       this.sheet.cssText = source;
       const e = new SEnvEvent();
@@ -300,8 +301,9 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
       this.dispatchEvent(e);
     }
 
-    $$setSheet(sheet: CSSStyleSheet) {
+    $$setSheet(sheet: SEnvCSSStyleSheetInterface) {
       this.sheet = sheet;
+      this.sheet.ownerNode = this;
     }
 
     cloneShallow() {
@@ -326,7 +328,7 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
 
   return class SEnvHTMLLinkElement extends SEnvHTMLElement implements HTMLLinkElement, SEnvHTMLStyledElementInterface {
 
-    sheet: StyleSheet;
+    sheet: SEnvCSSStyleSheetInterface;
     disabled: boolean;
     hreflang: string;
     media: string;
@@ -385,8 +387,9 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
       this._resolveLoaded();
     }
 
-    $$setSheet(sheet: CSSStyleSheet) {
+    $$setSheet(sheet: SEnvCSSStyleSheetInterface) {
       this.sheet = sheet;
+      this.sheet.ownerNode = this;
     }
 
     cloneShallow() {
@@ -422,7 +425,8 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
     }
 
     private _parseStylesheet(text: string) {
-      const sheet = this.sheet = new SEnvCSSStyleSheet();
+      const sheet: SEnvCSSStyleSheetInterface = this.sheet = new SEnvCSSStyleSheet();
+      sheet.ownerNode = this;
       const location = this.ownerDocument.defaultView.location;
       sheet.cssText = text;
     }
