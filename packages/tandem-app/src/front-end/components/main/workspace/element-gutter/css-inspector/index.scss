@@ -12,6 +12,13 @@
     > .declaration {
       width: 100%;
       > .property {
+
+        &.disabled {
+          opacity: 1;
+          .name, .value {
+            text-decoration: line-through;
+          }
+        }
         position: relative;
         padding: $padding-base * 4 $padding-base * 2;
         border-bottom: 1px solid $color-grey-10;
@@ -27,15 +34,18 @@
           // width: 60%;
         }
         > .controls {
-          display: none;
           padding: $padding-base * 4 $padding-base * 2;
           position: absolute;
           right: 0;
           top: 0;
           height: 100%;
         }
-        &:hover > .controls {
-          display: block;
+        .ion-eye {
+          display: none;
+        }
+
+        &:hover .ion-eye {
+          display: inline-block;
         }
       }
     }

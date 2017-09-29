@@ -42,7 +42,7 @@ import { evaluateCSS } from "./utils";
 
 export interface SEnvCSSRuleInterface extends CSSRule, SEnvCSSObjectInterface {
   struct: SyntheticCSSRule;
-  didChange();
+  didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean);
   $parentRule: SEnvCSSRuleInterface;
   $parentStyleSheet: SEnvCSSStyleSheetInterface;
 }
@@ -130,16 +130,18 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       return this.$parentStyleSheet || (this.$parentRule && this.$parentRule.parentStyleSheet) as SEnvCSSStyleSheetInterface;
     }
 
-    public didChange() {
+    public didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean) {
       // cache already cleared -- stop bubbling
       if (!this._struct) {
         return;
       }
 
+      this._struct = undefined;
+
       if (this.parentRule) {
-        this.parentRule.didChange();
+        this.parentRule.didChange(mutation, notifyOwnerNode);
       } else if (this.parentStyleSheet) {
-        this.parentStyleSheet.didChange();
+        this.parentStyleSheet.didChange(mutation, notifyOwnerNode);
       }
     }
   }
@@ -156,7 +158,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
     set selectorText(value: string) {
       this._selectorText = value;
-      this.didChange();
+      this.didChange(styleRuleSetSelectorText(this, value), true);
     }
     readonly style: SEnvCSSStyleDeclarationInterface;
     readonly type = CSSRuleType.STYLE_RULE;
@@ -240,7 +242,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
 
     set conditionText(value: string) {
       this._conditionText = value;
-      this.didChange();
+      this.didChange(mediaRuleSetConditionText(this, value));
     }
   }
 
@@ -285,7 +287,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
 
     set keyText(value: string) {
       this._keyText = value;
-      this.didChange();
+      // this.didChange();
     }
 
     $createStruct() {

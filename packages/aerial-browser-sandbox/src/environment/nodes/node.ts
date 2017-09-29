@@ -41,6 +41,7 @@ export interface SEnvNodeInterface extends Node {
   $$addedToDocument(deep?: boolean);
   $$removedFromDocument();
   $$preconstruct();
+  dispatchMutationEvent(mutation: Mutation<any>);
 };
 
 export const getSEnvNodeClass = weakMemo((context: any) => {

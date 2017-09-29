@@ -1,8 +1,9 @@
-import { weakMemo, diffArray, eachArrayValueMutation, createPropertyMutation, generateDefaultId, Struct, SetPropertyMutation } from "aerial-common2";
+import { weakMemo, diffArray, eachArrayValueMutation, createPropertyMutation, createSetValueMutation, generateDefaultId, Struct, SetPropertyMutation, SetValueMutation } from "aerial-common2";
 import { kebabCase, camelCase, identity } from "lodash";
 import { SEnvCSSObjectInterface } from "./base";
 import { SEnvWindowContext } from "../window";
 import { getUri } from "../utils";
+import { Mutation } from "aerial-common2";
 import { SEnvCSSRuleInterface } from "./rules";
 import { createSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "../../state";
 
@@ -13,6 +14,8 @@ export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
   readonly struct: Struct;
   previewCSSText: string;
   toggle(propertyName: string);
+  setProperty(name: string, value: string, priority?: string, oldName?: string, notifyOwnerNode?: boolean);
+  $updatePropertyIndices();
 }
 
 export const cssPropNameToKebabCase = (propName: string) => {
@@ -397,6 +400,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
         props[i] = this[i];
         props[this[i]] = this[this[i]];
       }
+
       return this._struct = createSyntheticCSSStyleDeclaration({ 
         $id: this.$id, 
         instance: this,
@@ -462,12 +466,16 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
     }
 
     set cssText(value: string) {
+
+      const props = {};
+      
       value.split(";").forEach((decl) => {
         const [key, value] = decl.split(":");
-        this[camelCase(key.trim())] = value;
+        const ccKey = camelCase(key.trim());
+        props[ccKey] = this[ccKey] = value;
       });
       this.$updatePropertyIndices();
-      this.didChange();
+      this.didChange(cssStyleDeclarationSetProperties(this, props), true);
     }
 
     static fromString(source: string) {
@@ -500,10 +508,10 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       return decl;
     }
 
-    public didChange(notifyOwnerNode?: boolean) {
+    public didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean) {
       this._struct = undefined;
       if (this.parentRule) {
-        this.parentRule.didChange();
+        this.parentRule.didChange(mutation, notifyOwnerNode);
       }
     }
     
@@ -517,6 +525,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       return null;
     }
     removeProperty(propertyName: string): string {
+      this.setProperty(propertyName, null, null);
       return null;
     }
 
@@ -556,7 +565,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       }
 
       this.$updatePropertyIndices();
-      this.didChange(notifyOwnerNode);
+      this.didChange(cssStyleDeclarationSetProperty(this, name, newValue), notifyOwnerNode);
     }
 
     public $updatePropertyIndices() {
@@ -592,14 +601,32 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
 });
 
 export const CSS_STYLE_DECLARATION_SET_PROPERTY = "CSS_STYLE_DECLARATION_SET_PROPERTY"; 
+export const CSS_STYLE_DECLARATION_RESET_PROPERTIES = "CSS_STYLE_DECLARATION_RESET_PROPERTIES"; 
 
 export const cssStyleDeclarationMutators = {
-  [CSS_STYLE_DECLARATION_SET_PROPERTY](target: CSSStyleDeclaration, mutation: SetPropertyMutation<any>) {
-    target.setProperty(mutation.name, mutation.newValue);
+  [CSS_STYLE_DECLARATION_SET_PROPERTY](target: SEnvCSSStyleDeclarationInterface, mutation: SetPropertyMutation<any>) {
+    if (!mutation.newValue) {
+      target.removeProperty(cssPropNameToKebabCase(mutation.name));
+    } else {
+      target.setProperty(cssPropNameToKebabCase(mutation.name), mutation.newValue, null, null, false);
+    }
+  },
+  [CSS_STYLE_DECLARATION_RESET_PROPERTIES](target: SEnvCSSStyleDeclarationInterface, mutation: SetValueMutation<any>) {
+    for (const property in target) {
+      if (isValidCSSDeclarationProperty(property)) {
+        target[property] = undefined;
+      }
+    }
+    for (const propery in mutation.newValue) {
+      target[propery] = mutation.newValue[propery];
+    }
+    target.$updatePropertyIndices();
   }
 }
 
 export const cssStyleDeclarationSetProperty = (target: CSSStyleDeclaration, key: string, value: string) => createPropertyMutation(CSS_STYLE_DECLARATION_SET_PROPERTY, target, key, value);
+
+export const cssStyleDeclarationSetProperties = (target: CSSStyleDeclaration, properties: any) => createSetValueMutation(CSS_STYLE_DECLARATION_RESET_PROPERTIES, target, properties);
 
 export const diffCSStyleDeclaration = (oldStyle: CSSStyleDeclaration, newStyle: CSSStyleDeclaration) => {
   const oldKeys = Object.keys(oldStyle).filter(isValidCSSDeclarationProperty);

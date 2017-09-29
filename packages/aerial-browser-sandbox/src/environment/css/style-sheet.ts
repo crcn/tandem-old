@@ -15,11 +15,12 @@ import {
 } from "aerial-common2";
 import {  getSEnvCSSCollectionClasses } from "./collections";
 import { SEnvCSSObjectInterface, getSEnvCSSBaseObjectClass } from "./base";
+import { SEnvNodeInterface } from "../";
 
 export interface SEnvCSSStyleSheetInterface extends CSSStyleSheet, SEnvCSSObjectInterface {
   struct: SyntheticCSSStyleSheet;
   ownerNode: Node;
-  didChange();
+  didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean);
 }
 
 export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
@@ -30,7 +31,7 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
     private _rules: CSSRuleList;
     href: string;
     readonly media: MediaList;
-    readonly ownerNode: Node;
+    readonly ownerNode: SEnvNodeInterface;
     readonly parentStyleSheet: StyleSheet;
     readonly title: string;
     readonly type: string;
@@ -108,8 +109,11 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
     removeRule(lIndex: number): void {
       return cssDeleteRule(this, lIndex);
     }
-    didChange() {
+    didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean) {
       this._struct = undefined;
+      if (notifyOwnerNode !== false && this.ownerNode) {
+        this.ownerNode.dispatchMutationEvent(mutation);
+      }
     }
   }
 });

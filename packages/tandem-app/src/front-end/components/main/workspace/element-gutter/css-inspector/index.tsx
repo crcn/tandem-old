@@ -3,6 +3,7 @@ import * as React from "react";
 import { mapValues } from "lodash";
 import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
 import { pure, compose, withHandlers } from "recompose";
+import * as cx from "classnames";
 import { Pane } from "front-end/components/pane";
 import { 
   Workspace,
@@ -42,15 +43,18 @@ export type StylePropertyOuterProps = {
 };
 
 const StyleProperty = ({ window, appliedRule, name, value, dispatch }: StylePropertyOuterProps) => {
-  return <div className="property">
+  const origValue = appliedRule.rule.style.disabledPropertyNames && appliedRule.rule.style.disabledPropertyNames[name];
+  const disabled = Boolean(origValue);
+
+  return <div className={cx("property", { disabled })}>
       <div className="name">
         {cssPropNameToKebabCase(name)}:
       </div>
       <div className="value">
-        {value}
+        {value || origValue}
       </div>
       <div className="controls">
-        <i className="ion-eye-disabled" onClick={wrapEventToDispatch(dispatch, () => toggleCSSDeclarationProperty(name, appliedRule.rule.style.$id, window.$id))} />
+        <i className={cx({ "ion-eye-disabled": disabled, "ion-eye": !disabled })} onClick={wrapEventToDispatch(dispatch, () => toggleCSSDeclarationProperty(name, appliedRule.rule.style.$id, window.$id))} />
       </div>
   </div>;
 };

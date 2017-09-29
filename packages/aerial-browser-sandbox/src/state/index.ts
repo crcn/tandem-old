@@ -459,7 +459,7 @@ export type SyntheticCSSStyleDeclaration = {
   zoom: string | null;
   resize: string | null;
   userSelect: string | null;
-  disabledProperties?: {
+  disabledPropertyNames?: {
     [identifier: string]: string
   }
 } & Struct;

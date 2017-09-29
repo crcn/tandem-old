@@ -253,7 +253,7 @@ function* handleToggleCSSProperty() {
     const state: SyntheticBrowserRootState = yield select();
     const window: SyntheticWindow = getSyntheticWindow(state, windowId);
     const childObjects = flattenWindowObjectSources(window);
-    const cssDeclaration = childObjects[cssDeclarationId] as SEnvCSSStyleDeclarationInterface;
+    const cssDeclaration = childObjects[cssDeclarationId] as any as SEnvCSSStyleDeclarationInterface;
     cssDeclaration.toggle(propertyName);
   }
 };
