@@ -51,6 +51,8 @@ export const STAGE_TOOL_EDIT_TEXT_CHANGED = "STAGE_TOOL_EDIT_TEXT_CHANGED";
 export const STAGE_TOOL_EDIT_TEXT_KEY_DOWN = "STAGE_TOOL_EDIT_TEXT_KEY_DOWN";
 export const STAGE_TOOL_EDIT_TEXT_BLUR = "STAGE_TOOL_EDIT_TEXT_BLUR";
 export const STAGE_MOUNTED = "STAGE_MOUNTED";
+export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
+export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
 
 /**
  * Types
@@ -216,6 +218,13 @@ export type EmptyWindowsUrlAdded = {
   url: string;
 } & BaseEvent;
 
+export type CSSDeclarationChanged = {
+  windowId: string;
+  name: string;
+  declarationId: string;
+  value: string;
+} & BaseEvent;
+
 /**
  * Factories
  */
@@ -240,6 +249,22 @@ export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved =>
   workspaceId,
   point,
   type: RESIZER_MOVED,
+});
+
+export const cssDeclarationNameChanged = (name: string, value: string, declarationId: string, windowId: string): CSSDeclarationChanged => ({
+  declarationId,
+  windowId,
+  name,
+  value,
+  type: CSS_DECLARATION_NAME_CHANGED
+});
+
+export const cssDeclarationValueChanged = (name: string, value: string, declarationId: string, windowId: string): CSSDeclarationChanged => ({
+  declarationId,
+  windowId,
+  name,
+  value,
+  type: CSS_DECLARATION_VALUE_CHANGED
 });
 
 export const resizerStoppedMoving = (workspaceId: string, point: Point): ResizerMoved => ({

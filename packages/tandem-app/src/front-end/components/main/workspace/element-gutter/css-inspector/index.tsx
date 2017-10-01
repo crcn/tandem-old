@@ -2,9 +2,11 @@ import "./index.scss";
 import * as React from "react";
 import { mapValues } from "lodash";
 import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
-import { pure, compose, withHandlers } from "recompose";
+import { pure, compose, withHandlers, withState } from "recompose";
 import * as cx from "classnames";
 import { Pane } from "front-end/components/pane";
+import { Autofocus } from "front-end/components/autofocus";
+import { cssDeclarationNameChanged, cssDeclarationValueChanged } from "front-end/actions";
 import { 
   Workspace,
   SyntheticWindow, 
@@ -45,24 +47,86 @@ export type StylePropertyOuterProps = {
   name: string;
   value: string;
   dispatch: Dispatcher<any>;
+  onValueChange?: (value: string) => any;
+  onNameChange?: (value: string) => any;
 };
 
-const StylePropertyBase = ({ windowId, declarationId, name, value, dispatch, disabled, overridden, ignored, origValue }: StylePropertyOuterProps) => {
+type TextInputOuterProps = {
+  value: string;
+  children: any;
+  className?: string;
+  onChange?: (value: string) => any;
+};
 
+type TextInputInnerProps = {
+  value: string;
+  children: any;
+  className?: string;
+  onClick?: () => any;
+  onFocus?: () => any;
+  onBlur?: () => any;
+  onKeyPress?: () => any;
+  showInput?: boolean;
+} & TextInputOuterProps;
+
+const TextInputBase = ({ value, children, showInput, className, onClick, onFocus, onBlur, onKeyPress }: TextInputInnerProps) => {
+  return <div className={className} tabIndex={-1} onClick={onClick}>
+    { showInput ? <Autofocus><input defaultValue={value} onFocus={onFocus} onBlur={onBlur} onKeyPress={onKeyPress} /></Autofocus> : children }
+  </div>;
+};
+
+export const enhanceTextInput = compose<TextInputOuterProps, TextInputInnerProps>(
+  pure,
+  withState("showInput", "setShowInput", false),
+  withHandlers({
+    onClick: ({ setShowInput }) => (event: React.MouseEvent<any>) => {
+      setShowInput(true);
+    },
+    onFocus: ({ setShowInput }) => (event: React.FocusEvent<any>) => {
+      (event.target as HTMLInputElement).select();
+    },
+    onBlur: ({ setShowInput }) => () => {
+      setShowInput(false);
+    },
+    onKeyPress: ({ setShowInput, onChange }) => (event: React.KeyboardEvent<any>) => {
+      if (event.key === "Enter") {
+        if (onChange) {
+          onChange((event.target as HTMLInputElement).value);
+        }
+        setShowInput(false);
+      }
+    }
+  })
+);
+
+const TextInput = enhanceTextInput(TextInputBase);
+
+const StylePropertyBase = ({ windowId, declarationId, name, value, dispatch, disabled, overridden, ignored, origValue, onValueChange, onNameChange }: StylePropertyOuterProps) => {
   return <div className={cx("property", { disabled, ignored, overridden })}>
-      <div className="name">
+      <TextInput className="name" value={name} onChange={onNameChange}>
         {cssPropNameToKebabCase(name)}:
-      </div>
-      <div className="value">
+      </TextInput>
+      
+      <TextInput className="value" value={value || origValue} onChange={onValueChange}>
         {value || origValue}
-      </div>
+      </TextInput>
       <div className="controls">
         <i className={cx({ "ion-eye-disabled": disabled, "ion-eye": !disabled })} onClick={wrapEventToDispatch(dispatch, () => toggleCSSDeclarationProperty(name, declarationId, windowId))} />
       </div>
   </div>;
 };
 
-const StyleProperty = compose<StylePropertyOuterProps, StylePropertyOuterProps>(pure)(StylePropertyBase);
+const StyleProperty = compose<StylePropertyOuterProps, StylePropertyOuterProps>(
+  pure,
+  withHandlers({
+    onNameChange: ({ name, windowId, declarationId, dispatch }) => (value: string) => {
+      dispatch(cssDeclarationNameChanged(name, value, declarationId, windowId));
+    },
+    onValueChange: ({ name, windowId, declarationId, dispatch }) => (value: string) => {
+      dispatch(cssDeclarationValueChanged(name, value, declarationId, windowId));
+    }
+  })
+)(StylePropertyBase);
 
 const AppliedCSSRuleInfo = ({ window, appliedRule, dispatch }: AppliedCSSRuleResultProps) => {
 
@@ -93,7 +157,6 @@ const AppliedCSSRuleInfo = ({ window, appliedRule, dispatch }: AppliedCSSRuleRes
       </div>
   </div>;
 };
-
 
 const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterProps) => {
   if (!workspace.selectionRefs.length || workspace.selectionRefs[0][0] !== SYNTHETIC_ELEMENT)  return null;

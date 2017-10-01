@@ -6,6 +6,9 @@ import {
   SYNTHETIC_WINDOW,
   syntheticWindowScroll,
   openSyntheticWindowRequest,
+  SEnvCSSStyleDeclarationInterface,  
+  SyntheticCSSStyleDeclaration,
+  getSyntheticWindowChild,
   getSyntheticNodeWindow, 
   SYNTHETIC_WINDOW_PROXY_OPENED,
   syntheticNodeTextContentChanged, 
@@ -39,6 +42,9 @@ import {
   FULL_SCREEN_TARGET_DELETED,
   VISUAL_EDITOR_WHEEL,
   StageWheel,
+  CSS_DECLARATION_NAME_CHANGED,
+  CSSDeclarationChanged,
+  CSS_DECLARATION_VALUE_CHANGED,
   WINDOW_SELECTION_SHIFTED,
   STAGE_TOOL_OVERLAY_MOUSE_PANNING,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
@@ -53,6 +59,7 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleTextEditorEscaped);
   yield fork(handleEmptyWindowsUrlAdded);
   yield fork(handleLoadedSavedState);
+  yield fork(handleCSSDeclarationChanges);
 }
 
 function* handleEmptyWindowsUrlAdded() {
@@ -131,6 +138,28 @@ function* handleLoadedSavedState() {
       yield put(openSyntheticWindowRequest(window, browser.$id));
     }
   }
+}
+
+// TODO - move this to synthetic browser
+function* handleCSSDeclarationChanges() {
+  yield fork(function* handleNameChanges() {
+    while(true) {
+      const { value, windowId, declarationId } = yield take(CSS_DECLARATION_NAME_CHANGED);
+      const state: ApplicationState = yield select();
+      const window = getSyntheticWindow(state, windowId);
+    }
+  });
+  yield fork(function* handleValueChanges() {
+
+    // TODO - consider disabled properties here
+    while(true) {
+      const { name, value, windowId, declarationId } = yield take(CSS_DECLARATION_VALUE_CHANGED);
+      const state: ApplicationState = yield select();
+      const window = getSyntheticWindow(state, windowId);
+      const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
+      declaration.setProperty(name, value);
+    }
+  });
 }
 
 // fugly quick momentum scrolling implementation
