@@ -92,14 +92,6 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
 
   const elementStyle = (element.instance as any as SEnvHTMLElementInterface).style as SEnvCSSStyleDeclarationInterface;
 
-  if (elementStyle && elementStyle.length) {
-    matchingRules.push({
-      label: `${element.nodeName.toLowerCase()} style`,
-      $id: element.$id,
-      style: elementStyle.struct
-    });
-  }
-
   for (let i = 0, n = allRules.length; i < n; i++) {
     const rule = allRules[i];
 
@@ -112,6 +104,14 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
     } else {
 
     }
+  }
+
+  if (elementStyle && elementStyle.length) {
+    matchingRules.push({
+      label: `${element.nodeName.toLowerCase()} style`,
+      $id: element.$id,
+      style: elementStyle.struct
+    });
   }
 
   return matchingRules;
