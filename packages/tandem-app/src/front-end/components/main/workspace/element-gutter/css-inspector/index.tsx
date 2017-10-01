@@ -33,6 +33,10 @@ import {
   getSyntheticMatchingCSSRules, 
 } from "aerial-browser-sandbox";
 
+const MIN_INPUT_WIDTH = 50;
+const CHAR_WIDTH = 8;
+
+
 export type CSSInspectorOuterProps = {
   workspace: Workspace;
   browser: SyntheticBrowser;
@@ -105,7 +109,7 @@ type TextInputInnerProps = {
 
 const TextInputBase = ({ autoFocus = false, value, children, showInput, className, placeholder, onClick, onFocus, onBlur, onKeyPress }: TextInputInnerProps) => {
   return <Autofocus focus={autoFocus}><span className={className} tabIndex={0} onFocus={onFocus} onClick={onClick}>
-    { showInput ? <Autofocus><input defaultValue={value} onFocus={onFocus} placeholder={placeholder} onBlur={onBlur} onKeyPress={onKeyPress} /></Autofocus> : children }
+    { showInput ? <Autofocus><input style={{ width: value ? value.length * CHAR_WIDTH : MIN_INPUT_WIDTH }} defaultValue={value} onFocus={onFocus} placeholder={placeholder} onBlur={onBlur} onKeyPress={onKeyPress} /></Autofocus> : children }
   </span></Autofocus>
 };
 

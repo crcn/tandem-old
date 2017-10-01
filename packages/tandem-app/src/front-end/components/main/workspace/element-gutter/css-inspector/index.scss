@@ -53,6 +53,11 @@
           }
         }
 
+        & input {
+          background: transparent;
+          border: none;
+        }
+
         position: relative;
         padding: $padding-base * 4 $padding-base * 2;
         border-bottom: 1px solid $color-grey-10;
