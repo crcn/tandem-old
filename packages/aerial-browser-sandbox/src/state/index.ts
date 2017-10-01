@@ -611,7 +611,7 @@ export const getSyntheticBrowserItemBounds = weakMemo((root: SyntheticBrowserRoo
   if (!item) return null;
   if (item.bounds) return item.bounds;
   const window = getSyntheticNodeWindow(root, item.$id);
-  return window && shiftBounds(window.allComputedBounds[item.$id], window.bounds);
+  return window && window.allComputedBounds[item.$id] && shiftBounds(window.allComputedBounds[item.$id], window.bounds);
 });
 
 export const getSyntheticBrowserStoreItemByReference = weakMemo((root: SyntheticBrowserRootState|SyntheticBrowser, [type, id]: StructReference) => {
@@ -767,8 +767,8 @@ export const getSyntheticWindowBrowser = weakMemo((root: SyntheticBrowserRootSta
   return null;
 });
 
-export function getSyntheticNodeById(root: SyntheticBrowserRootState, id: string);
-export function getSyntheticNodeById(root: SyntheticBrowser, id: string);
+export function getSyntheticNodeById(root: SyntheticBrowserRootState, id: string): SyntheticNode;
+export function getSyntheticNodeById(root: SyntheticBrowser, id: string): SyntheticNode;
 export function getSyntheticNodeById (root: any, id: string): SyntheticNode {
   const window = getSyntheticNodeWindow(root, id);
   return window && getSyntheticWindowChild(window, id);
@@ -819,4 +819,25 @@ export const isSyntheticBrowserItemMovable = (root: SyntheticBrowserRootState, i
     const element = item as SyntheticElement;
   }
   return false;
+}
+
+
+// TODO - use getElementLabel instead
+export const getSyntheticElementAttribute = (name: string, element: SyntheticElement) => {
+  const attr = element.attributes.find((attribute) => attribute.name === name);
+  return attr && attr.value;
+}
+
+export const getSyntheticElementLabel = (element: SyntheticElement) => {
+  let label = String(element.nodeName).toLowerCase();
+  const className = getSyntheticElementAttribute("class", element);
+  const id = getSyntheticElementAttribute("id", element);
+
+  if (id) {
+    label += "#" + id;
+  } else if (className) {
+    label += "." + className;
+  }
+
+  return label;
 }

@@ -60,6 +60,7 @@ import {
   getWorkspaceSelectionBounds,
   getSyntheticWindowWorkspace,
   getBoundedWorkspaceSelection,
+  getSyntheticWindowBrowser,
   getSyntheticBrowserItemBounds,
   getStageToolMouseNodeTargetReference,
 } from "front-end/state";
@@ -76,6 +77,8 @@ import {
   LoadedSavedState,
   LOADED_SAVED_STATE,
   RESIZER_MOUSE_DOWN,
+  BreadcrumbItemClicked,
+  BREADCRUMB_ITEM_CLICKED,
   STAGE_MOUSE_CLICKED,
   VISUAL_EDITOR_WHEEL,
   PromptedNewWindowUrl,
@@ -350,6 +353,15 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       });
 
       return state;
+    }
+
+    case BREADCRUMB_ITEM_CLICKED: {
+      const { windowId, nodeId } = event as BreadcrumbItemClicked;
+      const window = getSyntheticWindow(state, windowId);
+      const browser = getSyntheticWindowBrowser(state, window.$id);
+      const node = getSyntheticNodeById(browser, nodeId);
+      const workspace = getSyntheticWindowWorkspace(state, window.$id);
+      return setWorkspaceSelection(state, workspace.$id, [node.$type, node.$id]);
     }
 
     case EMPTY_WINDOWS_URL_ADDED: {

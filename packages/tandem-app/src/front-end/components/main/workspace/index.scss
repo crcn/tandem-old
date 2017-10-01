@@ -6,4 +6,11 @@
     width: 100%;
     display: flex;
   }
+
+  .workspace-stage {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
 }

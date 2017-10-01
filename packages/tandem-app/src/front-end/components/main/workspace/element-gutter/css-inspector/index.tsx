@@ -6,6 +6,7 @@
 // - [ ] autocomplete value props based on name
 // - [ ] warning when css properties are not applied (possibly use renderer)
 // - [ ] autocomplete fonts (native vs loaded separators)
+// - [ ] media props
 
 import "./index.scss";
 import * as cx from "classnames";

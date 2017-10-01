@@ -1,6 +1,6 @@
 import { FileCacheItem } from "aerial-sandbox2";
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct } from "aerial-common2";
-import { ApplicationState } from "../state";
+import { ApplicationState, SyntheticElement } from "../state";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
@@ -30,6 +30,7 @@ export const TEXT_EDITOR_CHANGED      = "TEXT_EDITOR_CHANGED";
 export const CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED = "CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED";
 export const TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
 export const FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED   = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
+export const BREADCRUMB_ITEM_CLICKED   = "BREADCRUMB_ITEM_CLICKED";
 export const FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED = "FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED";
 export const STAGE_MOUSE_MOVED = "STAGE_MOUSE_MOVED";
 export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
@@ -169,6 +170,11 @@ export type StageToolEditTextBlur = {
   nodeId: string;
 } & WrappedEvent<React.FocusEvent<any>>;
 
+export type BreadcrumbItemClicked = {
+  nodeId: string;
+  windowId: string;
+} & BaseEvent;
+
 export type StageToolNodeOverlayHoverOut = {
   windowId: string;
   nodeId: string;
@@ -281,6 +287,12 @@ export const resizerStoppedMoving = (workspaceId: string, point: Point): Resizer
   point,
   type: RESIZER_STOPPED_MOVING,
 });
+
+export const breadcrumbItemClicked = (nodeId: string, windowId: string): BreadcrumbItemClicked => ({
+  nodeId,
+  windowId,
+  type: BREADCRUMB_ITEM_CLICKED
+})
 
 export const windowSelectionShifted = (windowId: string): WindowSelectionShifted => ({
   windowId,

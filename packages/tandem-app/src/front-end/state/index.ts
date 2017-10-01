@@ -301,7 +301,7 @@ export const getSyntheticNodeWorkspace = weakMemo((root: ApplicationState, nodeI
   return getSyntheticWindowWorkspace(root, getSyntheticNodeWindow(root, nodeId).$id);
 });
 
-export const getBoundedWorkspaceSelection = weakMemo((state: ApplicationState|SyntheticBrowser, workspace: Workspace): Array<Bounded & Struct> => workspace.selectionRefs.map((ref) => getFrontEndItemByReference(state, ref)).filter(item => getSyntheticBrowserItemBounds(state, item)));
+export const getBoundedWorkspaceSelection = weakMemo((state: ApplicationState|SyntheticBrowser, workspace: Workspace): Array<Bounded & Struct> => workspace.selectionRefs.map((ref) => getFrontEndItemByReference(state, ref)).filter(item => getSyntheticBrowserItemBounds(state, item)) as any);
 export const getWorkspaceSelectionBounds = weakMemo((state: ApplicationState|SyntheticBrowser, workspace: Workspace) => mergeBounds(...getBoundedWorkspaceSelection(state, workspace).map(boxed => getSyntheticBrowserItemBounds(state, boxed))));
 
 export const getStageZoom = (stage: Stage) => getStageTranslate(stage).zoom;
@@ -311,13 +311,22 @@ export const getStageTranslate = (stage: Stage) => stage.translate;
 export const getWorkspaceById = (state: ApplicationState, id: string): Workspace => state.workspaces.find((workspace) => workspace.$id === id);
 export const getSelectedWorkspace = (state: ApplicationState) => state.selectedWorkspaceId && getWorkspaceById(state, state.selectedWorkspaceId);
 
+
 export const getWorkspaceLastSelectionOwnerWindow = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);
   if (workspace.selectionRefs.length === 0) {
     return null;
   }
   const lastSelectionRef = workspace.selectionRefs[workspace.selectionRefs.length - 1];
-  return lastSelectionRef[0] === SYNTHETIC_WINDOW ? getSyntheticWindow(state, lastSelectionRef[1]) : getSyntheticNodeWindow(state, lastSelectionRef[1]);
+  return getWorkspaceLastSelectionOwnerWindow2(workspace, getSyntheticBrowser(state, workspace.browserId));
+};
+
+export const getWorkspaceLastSelectionOwnerWindow2 = (workspace: Workspace, browser: SyntheticBrowser) => {
+  if (workspace.selectionRefs.length === 0) {
+    return null;
+  }
+  const lastSelectionRef = workspace.selectionRefs[workspace.selectionRefs.length - 1];
+  return lastSelectionRef[0] === SYNTHETIC_WINDOW ? getSyntheticWindow(browser, lastSelectionRef[1]) : getSyntheticNodeWindow(browser, lastSelectionRef[1]);
 };
 
 export const getWorkspaceWindow = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId, index?: number) => {

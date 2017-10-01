@@ -1,0 +1,9 @@
+@import "front-end/scss/variables.scss";
+
+.m-html-breadcrumbs {
+  .breadcrumb {
+    display: inline-block;
+    padding: $padding-base * 4 $padding-base * 8;
+    cursor: pointer;
+  }
+}
