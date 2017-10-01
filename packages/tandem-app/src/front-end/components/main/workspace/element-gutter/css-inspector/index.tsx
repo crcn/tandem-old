@@ -231,7 +231,7 @@ const AppliedCSSRuleInfoBase = ({
 
   return <div className="style-rule-info">
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
-        { appliedRule.rule.selectorText || "style" }
+        { appliedRule.rule.label || appliedRule.rule.selectorText }
         <span className="add-declaration-button" onClick={onAddDeclaration}>+</span>
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
       </div>
