@@ -155,7 +155,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
     for (const propertyName in matchingRule.style) {
       if (appliedPropertNames[propertyName]) {
         overriddenPropertyNames[propertyName] = true;
-      } else {
+      } else if(!matchingRule.style.disabledPropertyNames || !matchingRule.style.disabledPropertyNames[propertyName]) {
         appliedPropertNames[propertyName] = true;
       }
     }
@@ -191,7 +191,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
           ignoredPropertyNames[propertyName] = true;
         } else if (appliedPropertNames[propertyName]) {
           overriddenPropertyNames[propertyName] = true;
-        } else {
+        } else if(!ancestorRule.style.disabledPropertyNames || !ancestorRule.style.disabledPropertyNames[propertyName]) {
           appliedPropertNames[propertyName] = true;
         }
       }

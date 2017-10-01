@@ -1,9 +1,7 @@
 // TODOS:
 // - [ ] Tokenize declaration value to include BG colors and interactive props
 // - [ ] highlight elements in stage when hovering over selectors
-// - [ ] show style properties
-// - [ ] target style declaration
-// - [ ] reac dnd properties
+// - [ ] react dnd properties
 // - [ ] autocomplete for css props
 // - [ ] autocomplete value props based on name
 // - [ ] warning when css properties are not applied (possibly use renderer)
@@ -219,7 +217,7 @@ const AppliedCSSRuleInfoBase = ({
     const overridden = Boolean(appliedRule.overriddenPropertyNames && appliedRule.overriddenPropertyNames[name]);
 
     properties.push(
-      <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={disabled} origValue={origValue} />
+      <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
     );
   }
 
