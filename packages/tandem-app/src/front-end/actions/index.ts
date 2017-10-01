@@ -53,6 +53,7 @@ export const STAGE_TOOL_EDIT_TEXT_BLUR = "STAGE_TOOL_EDIT_TEXT_BLUR";
 export const STAGE_MOUNTED = "STAGE_MOUNTED";
 export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
 export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
+export const CSS_DECLARATION_CREATED   = "CSS_DECLARATION_CREATED";
 
 /**
  * Types
@@ -265,6 +266,14 @@ export const cssDeclarationValueChanged = (name: string, value: string, declarat
   name,
   value,
   type: CSS_DECLARATION_VALUE_CHANGED
+});
+
+export const cssDeclarationCreated = (name: string, value: string, declarationId: string, windowId: string): CSSDeclarationChanged => ({
+  windowId,
+  name,
+  value,
+  declarationId,
+  type: CSS_DECLARATION_CREATED
 });
 
 export const resizerStoppedMoving = (workspaceId: string, point: Point): ResizerMoved => ({

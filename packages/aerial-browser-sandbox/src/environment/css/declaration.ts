@@ -7,11 +7,12 @@ import { Mutation } from "aerial-common2";
 import { SEnvCSSRuleInterface } from "./rules";
 import { createSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "../../state";
 
-export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|parentRule|disabledProperties)$/.test(property);
+export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|parentRule|disabledProperties|_onChange)$/.test(property);
 
 export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
   parentRule: SEnvCSSRuleInterface;
-  readonly struct: Struct;
+  $id: string;
+  readonly struct: SyntheticCSSStyleDeclaration;
   previewCSSText: string;
   toggle(propertyName: string);
   setProperty(name: string, value: string, priority?: string, oldName?: string, notifyOwnerNode?: boolean);
@@ -386,7 +387,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       [identifier: string]: string
     }
 
-    constructor() {
+    constructor(private _onChange?: () => any) {
       this.$id = generateDefaultId();
     }
     
@@ -512,6 +513,9 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       this._struct = undefined;
       if (this.parentRule) {
         this.parentRule.didChange(mutation, notifyOwnerNode);
+      }
+      if (this._onChange) {
+        this._onChange();
       }
     }
     

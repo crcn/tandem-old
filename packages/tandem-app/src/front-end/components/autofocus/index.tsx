@@ -4,15 +4,18 @@ import { compose, pure, lifecycle } from "recompose";
 
 export type AutofocusProps = {
   children: any;
+  focus?: boolean;
 }
 
-const AutofocusBase = ({ children }) => (<span>{children}</span>);
+const AutofocusBase = ({ children }) => children;
 
 const enhanceAutofocus = compose<AutofocusProps, AutofocusProps>(
   pure,
-  lifecycle({
+  lifecycle<AutofocusProps, any>({
     componentDidMount() {
-      ReactDOM.findDOMNode(this as any).querySelector("input").focus();
+      if (this.props.focus !== false) {
+        (ReactDOM.findDOMNode(this as any) as HTMLInputElement).focus();
+      }
     }
   })
 );

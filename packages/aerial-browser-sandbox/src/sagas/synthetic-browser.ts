@@ -538,7 +538,7 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
       yield spawn(function*() {
         const target = flattenWindowObjectSources(window.struct)[itemId] as any as HTMLElement;
 
-        target.style.transition = "";
+        target.style.removeProperty("transition");
         // TODO - prompt where to persist style
         const mutation = createSetElementAttributeMutation(target, "style", target.getAttribute("style"));
         yield yield request(deferApplyFileMutationsRequest(mutation));

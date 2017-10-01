@@ -21,22 +21,30 @@ import { 
   SEnvCSSRuleInterface, 
   SEnvDocumentInterface, 
   SEnvCSSObjectInterface, 
+  SEnvHTMLElementInterface,
   flattenDocumentSources,
   SEnvCSSStyleRuleInterface,
   flattenWindowObjectSources,
   SEnvCSSStyleSheetInterface, 
+  SEnvCSSStyleDeclarationInterface,
 } from "../environment";
 
 import {
   INHERITED_CSS_STYLE_PROPERTIES
 } from "../constants";
 
+type StyledObject = {
+  selectorText?: string;
+  style: SyntheticCSSStyleDeclaration;
+  $id: string;
+};
+
 // TODO - media query information here
 export type AppliedCSSRuleResult = {
 
   inherited?: boolean;
 
-  rule: SyntheticCSSStyleRule;
+  rule: StyledObject;
 
   // property rules that are 
   ignoredPropertyNames?: {
@@ -48,6 +56,7 @@ export type AppliedCSSRuleResult = {
     [identifier: string]: boolean
   }
 }
+
 
 export const containsInheritableStyleProperty = (style: SyntheticCSSStyleDeclaration) => {
   for (const propertyName in style) {
@@ -78,7 +87,16 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
   const document = element.instance.ownerDocument;
   const allRules = getDocumentCSSStyleRules(document.struct);
   
-  const matchingRules: SyntheticCSSStyleRule[] = [];
+  const matchingRules: StyledObject[] = [];
+
+  const elementStyle = (element.instance as any as SEnvHTMLElementInterface).style as SEnvCSSStyleDeclarationInterface;
+
+  if (elementStyle && elementStyle.length) {
+    matchingRules.push({
+      $id: element.$id,
+      style: elementStyle.struct
+    });
+  }
 
   for (let i = 0, n = allRules.length; i < n; i++) {
     const rule = allRules[i];
@@ -100,7 +118,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
 const getSyntheticInheritableCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
   const matchingCSSRules = getSyntheticMatchingCSSRules(window, elementId);
   
-  const inheritableCSSRules: SyntheticCSSStyleRule[] = [];
+  const inheritableCSSRules: StyledObject[] = [];
 
   for (let i = 0, n = matchingCSSRules.length; i < n; i++) {
     const rule = matchingCSSRules[i];

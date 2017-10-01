@@ -8,15 +8,28 @@
       width: 100%;
       padding: $padding-base * 4 $padding-base * 4;
       background: $color-grey-10;
+      &:hover {
+        > .add-declaration-button {
+          visibility: visible;
+        }
+      }
 
       > .inherited {
         text-transform: uppercase;
-        float: right;
+        margin-left: $padding-base * 2;
         font-size: 0.8em;
         background: rgba(0,0,0,0.05);
         padding: $padding-base $padding-base * 4;
       }
+
+      > .add-declaration-button {
+        float: right;
+        visibility: hidden;
+        cursor: pointer;
+        padding: 0 $padding-base;
+      }
     } 
+
     > .declaration {
       width: 100%;
       > .property {

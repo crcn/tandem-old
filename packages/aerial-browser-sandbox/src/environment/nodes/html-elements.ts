@@ -6,14 +6,16 @@ import { getUri } from "../utils";
 import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SEnvNodeListInterface, getSEnvHTMLCollectionClasses } from "./collections";
-import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyleSheet, patchCSSStyleSheet, flattenSyntheticCSSStyleSheetSources, SEnvCSSStyleSheetInterface, cssStyleSheetMutators } from "../css";
+import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyleSheet, patchCSSStyleSheet, flattenSyntheticCSSStyleSheetSources, SEnvCSSStyleSheetInterface, cssStyleSheetMutators, SEnvCSSStyleDeclarationInterface } from "../css";
 import { SEnvDocumentInterface } from "./document";
 import { SyntheticNode } from "../../state";
+import { SEnvNodeTypes } from "../constants";
 import { weakMemo, SetValueMutation, createSetValueMutation, Mutation } from "aerial-common2";
 import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNode, baseElementMutators } from "./element";
 
 export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterface {
   $$preconstruct();
+  style: SEnvCSSStyleDeclarationInterface;
   ownerDocument: SEnvDocumentInterface;
   childNodes: SEnvNodeListInterface;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
@@ -116,8 +118,8 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     outerText: string;
     spellcheck: boolean;
     private _loaded: boolean;
-    private _style: CSSStyleDeclaration;
-    private _styleProxy: CSSStyleDeclaration;
+    private _style: SEnvCSSStyleDeclarationInterface;
+    private _styleProxy: SEnvCSSStyleDeclarationInterface;
     tabIndex: number;
     title: string;
 
@@ -127,9 +129,10 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
       
     }
 
-    get style(): CSSStyleDeclaration {
+    get style(): SEnvCSSStyleDeclarationInterface {
       return this._styleProxy || this._resetStyleProxy();
     }
+    
 
     get dataset(): DOMStringMap {
       return this._dataset || (this._dataset = new Proxy(new SEnvDOMStringMap(), {
@@ -202,7 +205,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
       }
     }
 
-    set style(value: CSSStyleDeclaration) {
+    set style(value: SEnvCSSStyleDeclarationInterface) {
       Object.assign(this.style, value);
       this.onStyleChange();
     }
@@ -236,7 +239,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     private _resetStyleProxy() {
 
       if (!this._style) {
-        this._style = new SEnvCSSStyleDeclaration();
+        this._style = new SEnvCSSStyleDeclaration(() => this.onStyleChange());
       }
 
       // Proxy the style here so that any changes get synchronized back
@@ -254,7 +257,6 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
           }
 
           target.setProperty(propertyName.toString(), value);
-          this.onStyleChange();
           return true;
         }
       });
@@ -447,11 +449,16 @@ export const diffHTMLStyledElement = (oldElement: HTMLStyledElement, newElement:
 }
 
 export const flattenNodeSources = weakMemo((node: SyntheticNode) => {
-  const flattened = { [node.$id]: node.instance };
+  const flattened: any = { [node.$id]: node.instance };
 
   // TODO - use callback here
   if ((node.nodeName === "STYLE" || node.nodeName === "LINK") && (node.instance as any as HTMLStyleElement).sheet) {
     Object.assign(flattened, flattenSyntheticCSSStyleSheetSources(((node.instance as any as HTMLStyleElement).sheet as SEnvCSSStyleSheetInterface).struct));
+  }
+
+  if (node.nodeType === SEnvNodeTypes.ELEMENT && (node.instance as SEnvHTMLElementInterface).hasAttribute("style")) {
+    const element = node.instance as SEnvHTMLElementInterface;
+    flattened[element.style.$id] = element.style.struct.instance;
   }
 
   if (node.childNodes) {

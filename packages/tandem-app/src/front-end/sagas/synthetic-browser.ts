@@ -9,6 +9,7 @@ import {
   SEnvCSSStyleDeclarationInterface,  
   SyntheticCSSStyleDeclaration,
   getSyntheticWindowChild,
+  getSyntheticWindowChildStructs,
   getSyntheticNodeWindow, 
   SYNTHETIC_WINDOW_PROXY_OPENED,
   syntheticNodeTextContentChanged, 
@@ -45,6 +46,7 @@ import {
   CSS_DECLARATION_NAME_CHANGED,
   CSSDeclarationChanged,
   CSS_DECLARATION_VALUE_CHANGED,
+  CSS_DECLARATION_CREATED,
   WINDOW_SELECTION_SHIFTED,
   STAGE_TOOL_OVERLAY_MOUSE_PANNING,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
@@ -144,16 +146,33 @@ function* handleLoadedSavedState() {
 function* handleCSSDeclarationChanges() {
   yield fork(function* handleNameChanges() {
     while(true) {
-      const { value, windowId, declarationId } = yield take(CSS_DECLARATION_NAME_CHANGED);
+      const { value, windowId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
       const state: ApplicationState = yield select();
       const window = getSyntheticWindow(state, windowId);
     }
   });
+  
   yield fork(function* handleValueChanges() {
 
     // TODO - consider disabled properties here
     while(true) {
-      const { name, value, windowId, declarationId } = yield take(CSS_DECLARATION_VALUE_CHANGED);
+      const { name, value, windowId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
+      const state: ApplicationState = yield select();
+      const window = getSyntheticWindow(state, windowId);
+      const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
+
+      // null or ""
+      if (!value) {
+        declaration.removeProperty(name);
+      } else {
+        declaration.setProperty(name, value);
+      }
+    }
+  });
+  
+  yield fork(function* handleNewDeclaration() {
+    while(true) {
+      const { name, value, windowId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_CREATED);
       const state: ApplicationState = yield select();
       const window = getSyntheticWindow(state, windowId);
       const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
