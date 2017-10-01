@@ -37,7 +37,7 @@
         &.disabled {
           opacity: 1;
           .name, .value {
-            text-decoration: line-through;
+            opacity: 0.2;
           }
         }
         
