@@ -8,6 +8,14 @@
       width: 100%;
       padding: $padding-base * 4 $padding-base * 4;
       background: $color-grey-10;
+
+      > .inherited {
+        text-transform: uppercase;
+        float: right;
+        font-size: 0.8em;
+        background: rgba(0,0,0,0.05);
+        padding: $padding-base $padding-base * 4;
+      }
     } 
     > .declaration {
       width: 100%;
@@ -19,6 +27,19 @@
             text-decoration: line-through;
           }
         }
+        
+        &.ignored {
+          .name, .value {
+            opacity: 0.2;
+          }
+        }
+
+        &.overridden {
+          .name, .value {
+            text-decoration: line-through;
+          }
+        }
+
         position: relative;
         padding: $padding-base * 4 $padding-base * 2;
         border-bottom: 1px solid $color-grey-10;
