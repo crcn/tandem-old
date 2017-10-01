@@ -145,7 +145,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
 
   const appliedRules: AppliedCSSRuleResult[] = [];
 
-  for (let i = 0, n = matchingRules.length; i < n; i++) {
+  for (let i = matchingRules.length; i--;) {
     const matchingRule = matchingRules[i];
 
     appliedStyleRules[matchingRule.$id] = true;
@@ -175,7 +175,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
     const ancestor = ancestors[i];
     const inheritedRules = getSyntheticInheritableCSSRules(window, ancestor.$id);
 
-    for (let j = 0, n2 = inheritedRules.length; j < n2; j++) {
+    for (let j = inheritedRules.length; j--;) {
       const ancestorRule = inheritedRules[j];
       
       if (appliedStyleRules[ancestorRule.$id]) {
