@@ -87,8 +87,6 @@ import {
   WindowPaneRowClicked,
   SelectorDoubleClicked,
   DeleteShortcutPressed,
-  KeyboardShortcutAdded,
-  keyboardShortcutAdded,
   StageWillWindowKeyDown,
   BREADCRUMB_ITEM_MOUSE_ENTER,
   BREADCRUMB_ITEM_MOUSE_LEAVE,
@@ -115,8 +113,6 @@ import {
   ZOOM_IN_SHORTCUT_PRESSED,
   WorkspaceSelectionDeleted,
   ZOOM_OUT_SHORTCUT_PRESSED,
-  StageToolSelectionKeyDown,
-  STAGE_TOOL_WINDOW_KEY_DOWN,
   FULL_SCREEN_TARGET_DELETED,
   TOGGLE_LEFT_GUTTER_PRESSED,
   StageToolOverlayMouseMoved,
@@ -131,7 +127,6 @@ import {
   STAGE_TOOL_EDIT_TEXT_CHANGED,
   StageToolNodeOverlayHoverOver,
   STAGE_TOOL_EDIT_TEXT_KEY_DOWN,
-  STAGE_TOOL_SELECTION_KEY_DOWN,
   StageToolOverlayMousePanStart,
   STAGE_TOOL_OVERLAY_MOUSE_LEAVE,
   STAGE_TOOL_WINDOW_TITLE_CLICKED,
@@ -190,7 +185,6 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   state = syntheticBrowserReducer(state, event);
   state = stageReducer(state, event);
   state = windowPaneReducer(state, event);
-  state = shortcutServiceReducer(state, event);
   state = fileCacheReducer(state, event);
   state = shortcutReducer(state, event);
 
@@ -691,15 +685,6 @@ const setSelectedFileFromNodeId = (state: ApplicationState, workspaceId: string,
       cursorPosition: start
     });
     return showWorkspaceTextEditor(state, workspaceId);
-  }
-  return state;
-}
-const shortcutServiceReducer = <T extends ShortcutServiceState>(state: ApplicationState, event: BaseEvent) => {
-  switch(event.type) {
-    case KEYBOARD_SHORTCUT_ADDED: {
-      const { keyCombo, action } = event as KeyboardShortcutAdded;
-      return update(state, "shortcuts", [...(state.shortcuts || []), { keyCombo, action }]);
-    }
   }
   return state;
 }

@@ -38,15 +38,21 @@ export const STAGE_MOUSE_MOVED = "STAGE_MOUSE_MOVED";
 export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
 export const VISUAL_EDITOR_WHEEL = "VISUAL_EDITOR_WHEEL";
 export const STAGE_TOOL_WINDOW_TITLE_CLICKED = "STAGE_TOOL_WINDOW_TITLE_CLICKED";
-export const STAGE_TOOL_WINDOW_KEY_DOWN = "STAGE_TOOL_WINDOW_KEY_DOWN";
-export const STAGE_TOOL_SELECTION_KEY_DOWN = "STAGE_TOOL_SELECTION_KEY_DOWN";
-export const STAGE_TOOL_SELECTION_KEY_UP = "STAGE_TOOL_SELECTION_KEY_UP";
+export const DOWN_KEY_DOWN = "DOWN_KEY_DOWN";
+export const DOWN_KEY_UP = "DOWN_KEY_UP";
+export const UP_KEY_DOWN = "UP_KEY_DOWN";
+export const UP_KEY_UP = "UP_KEY_UP";
+export const LEFT_KEY_DOWN = "LEFT_KEY_DOWN";
+export const LEFT_KEY_UP = "LEFT_KEY_UP";
+export const RIGHT_KEY_DOWN = "RIGHT_KEY_DOWN";
+export const RIGHT_KEY_UP = "RIGHT_KEY_UP";
 export const STAGE_TOOL_WINDOW_BACKGROUND_CLICKED = "STAGE_TOOL_WINDOW_BACKGROUND_CLICKED";
 export const DISPLAY_SOURCE_CODE_REQUESTED = "DISPLAY_SOURCE_CODE_REQUESTED";
 export const STAGE_TOOL_OVERLAY_MOUSE_LEAVE = "STAGE_TOOL_OVERLAY_MOUSE_LEAVE";
 export const STAGE_TOOL_OVERLAY_MOUSE_PAN_START = "STAGE_TOOL_OVERLAY_MOUSE_PAN_START";
 export const STAGE_TOOL_OVERLAY_MOUSE_PANNING = "STAGE_TOOL_OVERLAY_MOUSE_PANNING";
 export const STAGE_TOOL_OVERLAY_MOUSE_PAN_END = "STAGE_TOOL_OVERLAY_MOUSE_PAN_END";
+export const STAGE_TOOL_WINDOW_KEY_DOWN = "STAGE_TOOL_WINDOW_KEY_DOWN";
 export const WORKSPACE_DELETION_SELECTED = "WORKSPACE_DELETION_SELECTED";
 export const STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED = "STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED";
 export const SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
@@ -119,11 +125,6 @@ export type ShortcutEvent = {
   type: string
 } & BaseKeyboardEvent<KeyboardEvent>;
 
-export type KeyboardShortcutAdded = {
-  keyCombo: string,
-  action: Action;
-} & BaseEvent;
-
 export type ResizerPathMoved = {
   originalBounds: Bounds;
   newBounds: Bounds;
@@ -145,10 +146,6 @@ export type StageWillWindowTitleClicked = {
 
 export type StageWillWindowKeyDown = {
   windowId: string;
-} & WrappedEvent<React.KeyboardEvent<any>>;
-
-export type StageToolSelectionKeyDown = {
-  workspaceId: string;
 } & WrappedEvent<React.KeyboardEvent<any>>;
 
 export type StageToolNodeOverlayClicked = {
@@ -261,9 +258,6 @@ export const canvasElementsComputedPropsChanged = (syntheticWindowId: string, al
 export const treeNodeLabelClicked = (node: TreeNode<any>): TreeNodeLabelClicked => ({ type: TREE_NODE_LABEL_CLICKED, node });
 export const stageToolWindowTitleClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): StageWillWindowTitleClicked => ({ type: STAGE_TOOL_WINDOW_TITLE_CLICKED, windowId, sourceEvent });
 export const stageToolWindowKeyDown = (windowId: string, sourceEvent: React.KeyboardEvent<any>): StageWillWindowKeyDown => ({ type: STAGE_TOOL_WINDOW_KEY_DOWN, windowId, sourceEvent });
-
-export const stageToolSelectionKeyDown = (workspaceId, sourceEvent: React.KeyboardEvent<any>): StageToolSelectionKeyDown => ({ type: STAGE_TOOL_SELECTION_KEY_DOWN, workspaceId, sourceEvent });
-export const stageToolSelectionKeyUp = (workspaceId, sourceEvent: React.KeyboardEvent<any>): StageToolSelectionKeyDown => ({ type: STAGE_TOOL_SELECTION_KEY_UP, workspaceId, sourceEvent });
 
 export const stageToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: STAGE_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });
 
@@ -441,12 +435,6 @@ export const stageToolEditTextBlur = (nodeId: string, sourceEvent: React.FocusEv
   nodeId,
   type: STAGE_TOOL_EDIT_TEXT_BLUR,
   sourceEvent
-});
-
-export const keyboardShortcutAdded = (keyCombo: string, action: Action): KeyboardShortcutAdded => ({
-  type: KEYBOARD_SHORTCUT_ADDED,
-  keyCombo,
-  action
 });
 
 export const deleteShortcutPressed = (): BaseEvent => ({

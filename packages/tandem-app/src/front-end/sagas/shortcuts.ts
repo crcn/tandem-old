@@ -8,11 +8,12 @@ export function* shortcutsService() {
   const state: ShortcutServiceState = yield select();
   const mt = Mousetrap();
   const chan = eventChannel((emit) => {
-    for (const { keyCombo, action } of state.shortcuts) {
+    for (const { keyCombo, action, options } of state.shortcuts) {
       mt.bind(keyCombo, (event) => {
         event.preventDefault();
         emit({...action});
-      });
+      }, options.keyup ? "keyup" : "keydown");
+      
     }
     return () => {
 

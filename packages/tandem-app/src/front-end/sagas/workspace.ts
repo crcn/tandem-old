@@ -1,14 +1,19 @@
 import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBounds, resized, keepBoundsAspectRatio, request, shiftBounds } from "aerial-common2";
-import { take, select, call, put, fork } from "redux-saga/effects";
+import { take, select, call, put, fork, spawn, cancel } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import { 
   RESIZER_MOVED,
   RESIZER_STOPPED_MOVING,
   ResizerMoved,
   resizerStoppedMoving,
-  STAGE_TOOL_SELECTION_KEY_DOWN,
-  STAGE_TOOL_SELECTION_KEY_UP,
-  StageToolSelectionKeyDown,
+  LEFT_KEY_DOWN,
+  LEFT_KEY_UP,
+  RIGHT_KEY_DOWN,
+  RIGHT_KEY_UP,
+  UP_KEY_DOWN,
+  UP_KEY_UP,
+  DOWN_KEY_DOWN,
+  DOWN_KEY_UP,
   ResizerPathMoved,
   resizerMoved,
   TEXT_EDITOR_CHANGED,
@@ -234,26 +239,29 @@ function* handleNewLocationPrompt() {
 }
 
 function* handleSelectionKeyDown() {
-  while(true) {
-    const { workspaceId, sourceEvent } = (yield take(STAGE_TOOL_SELECTION_KEY_DOWN)) as StageToolSelectionKeyDown;
-    const state = yield select();
 
-    const workspace = getWorkspaceById(state, workspaceId);
+  while(true) {
+    const { type } = yield take([LEFT_KEY_DOWN, RIGHT_KEY_DOWN, UP_KEY_DOWN, DOWN_KEY_DOWN]);
+    const state: ApplicationState = yield select();
+    const workspace: Workspace = getSelectedWorkspace(state);
+    if (workspace.selectionRefs.length === 0) continue;
+    const workspaceId = workspace.$id;
     const bounds = getWorkspaceSelectionBounds(state, workspace);
-    switch(sourceEvent.key) {
-      case "ArrowDown": {
+
+    switch(type) {
+      case DOWN_KEY_DOWN: {
         yield put(resizerMoved(workspaceId, { left: bounds.left, top: bounds.top + 1 }));
         break;
       }
-      case "ArrowUp": {
+      case UP_KEY_DOWN: {
         yield put(resizerMoved(workspaceId, { left: bounds.left, top: bounds.top - 1 }));
         break;
       }
-      case "ArrowLeft": {
+      case LEFT_KEY_DOWN: {
         yield put(resizerMoved(workspaceId, { left: bounds.left - 1, top: bounds.top }));
         break;
       }
-      case "ArrowRight": {
+      case RIGHT_KEY_DOWN: {
         yield put(resizerMoved(workspaceId, { left: bounds.left + 1, top: bounds.top }));
         break;
       }
@@ -263,11 +271,10 @@ function* handleSelectionKeyDown() {
 
 function* handleSelectionKeyUp() {
   while(true) {
-    const { workspaceId, sourceEvent } = (yield take(STAGE_TOOL_SELECTION_KEY_UP)) as StageToolSelectionKeyDown;
-    const isArrowKey = /Arrow(Down|Up|Left|Right)/.test(sourceEvent.key);
-    if (isArrowKey) {
-      yield put(resizerStoppedMoving(workspaceId, null));
-    }
+    yield take([LEFT_KEY_UP, RIGHT_KEY_UP, UP_KEY_UP, DOWN_KEY_UP]);
+    const state: ApplicationState = yield select();
+    const workspace: Workspace = getSelectedWorkspace(state);
+    yield put(resizerStoppedMoving(workspace.$id, null));
   }
 }
 
