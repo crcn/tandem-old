@@ -1,9 +1,15 @@
 @import "front-end/scss/variables.scss";
 
 .m-html-breadcrumbs {
+  background: #FCFCFC;
   .breadcrumb {
     display: inline-block;
-    padding: $padding-base * 4 $padding-base * 8;
+    padding: $padding-base * 4 $padding-base * 4;
     cursor: pointer;
+    padding-right: 0;
+    .arrow {
+      padding-left: $padding-base * 4;
+      position: relative;
+    }
   }
 }

@@ -29,6 +29,7 @@ export type BreadcrumbsInnerProps = {
 } & BreadcrumbsOuterProps;
 
 type BreadcrumbOuterProps = {
+  selected: boolean;
   element: SyntheticElement;
   windowId: string;
   dispatch: Dispatcher<any>;  
@@ -62,9 +63,12 @@ const getBreadcrumbNodes = weakMemo((workspace: Workspace, browser: SyntheticBro
   return [...ancestors, node] as SyntheticElement[];
 });
 
-const BreadcrumbBase = ({ element, onClick }: BreadcrumbInnerProps) => {
+const BreadcrumbBase = ({ element, onClick, selected }: BreadcrumbInnerProps) => {
   return <div className="breadcrumb" onClick={onClick}>
-    { getSyntheticElementLabel(element) }
+    { getSyntheticElementLabel(element) } 
+    { selected ? null : <span className="arrow">
+      <i className="ion-ios-arrow-right" />
+    </span> }
   </div>;
 };
 
@@ -85,8 +89,8 @@ const BreadcrumbsBase = ({ workspace, browser, dispatch }: BreadcrumbsInnerProps
 
   return <div className="m-html-breadcrumbs">
     {
-      breadcrumbNodes.map((node) => {
-        return <Breadcrumb key={node.$id} dispatch={dispatch} element={node as SyntheticElement} windowId={getSyntheticNodeWindow(browser, node.$id).$id} />
+      breadcrumbNodes.map((node, i) => {
+        return <Breadcrumb key={node.$id} dispatch={dispatch} element={node as SyntheticElement} windowId={getSyntheticNodeWindow(browser, node.$id).$id} selected={i === breadcrumbNodes.length - 1} />
       })
     }
   </div>;
