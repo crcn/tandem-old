@@ -66,6 +66,7 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
       height: "100%"
     });
 
+
     this._onContainerResize = this._onContainerResize.bind(this);
     this.mount = targetDocument.createElement("div");
     this.mount.innerHTML = this.createMountInnerHTML();

@@ -5,7 +5,7 @@ import { findDOMNode } from "react-dom";
 import { Motion, spring } from "react-motion";
 import { weakMemo, Dispatcher, Bounds, BaseEvent, calculateAbsoluteBounds, shiftBounds} from "aerial-common2";
 import { lifecycle, compose, withState, pure, onlyUpdateForKeys, withHandlers } from "recompose";
-import { canvasElementsComputedPropsChanged } from "front-end/actions";
+import { canvasElementsComputedPropsChanged, canvasMotionRested } from "front-end/actions";
 import { 
   SEnvNodeTypes,
   SyntheticNode,
@@ -88,7 +88,7 @@ const WindowBase = ({ window, fullScreenWindowId, dispatch, smooth }: WindowProp
     height: stiffSpring(style.height)
   } : style;
 
-  return <Motion defaultStyle={style} style={smoothStyle}>
+  return <Motion defaultStyle={style} style={smoothStyle} onRest={() => dispatch(canvasMotionRested())}>
     {
       style => {
         return <div className="preview-window-component" style={{...style, ...defaultStyle}}>

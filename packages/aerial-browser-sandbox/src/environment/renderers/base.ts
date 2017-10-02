@@ -149,6 +149,7 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   }
 
   protected _onDocumentLoad(event: Event) {
+    this.reset();
     this.requestRender();
 
     // document load is when the page is visible to the user, so only listen for 

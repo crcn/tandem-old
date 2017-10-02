@@ -28,6 +28,7 @@ export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
 export const RESIZER_PATH_MOUSE_STOPPED_MOVING = "RESIZER_PATH_MOUSE_STOPPED_MOVING";
 export const TEXT_EDITOR_CHANGED      = "TEXT_EDITOR_CHANGED";
 export const CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED = "CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED";
+export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
 export const FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED   = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
 export const BREADCRUMB_ITEM_CLICKED   = "BREADCRUMB_ITEM_CLICKED";
@@ -158,7 +159,6 @@ export type StageToolNodeOverlayHoverOver = {
   nodeId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
-
 export type StageToolEditTextKeyDown = {
   nodeId: string;
 } & WrappedEvent<React.KeyboardEvent<any>>;
@@ -175,7 +175,6 @@ export type BreadcrumbItemClicked = {
   nodeId: string;
   windowId: string;
 } & BaseEvent;
-
 
 export type BreadcrumbItemMouseEnterLeave = {
   nodeId: string;
@@ -255,6 +254,10 @@ export const canvasElementsComputedPropsChanged = (syntheticWindowId: string, al
   allComputedStyles
 });
 
+export const canvasMotionRested = () => ({
+  type: CANVAS_MOTION_RESTED
+});
+
 export const treeNodeLabelClicked = (node: TreeNode<any>): TreeNodeLabelClicked => ({ type: TREE_NODE_LABEL_CLICKED, node });
 export const stageToolWindowTitleClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): StageWillWindowTitleClicked => ({ type: STAGE_TOOL_WINDOW_TITLE_CLICKED, windowId, sourceEvent });
 export const stageToolWindowKeyDown = (windowId: string, sourceEvent: React.KeyboardEvent<any>): StageWillWindowKeyDown => ({ type: STAGE_TOOL_WINDOW_KEY_DOWN, windowId, sourceEvent });
@@ -315,13 +318,11 @@ export const breadcrumbItemClicked = (nodeId: string, windowId: string): Breadcr
   type: BREADCRUMB_ITEM_CLICKED
 })
 
-
 export const breadcrumbItemMouseEnter = (nodeId: string, windowId: string): BreadcrumbItemMouseEnterLeave => ({
   nodeId,
   windowId,
   type: BREADCRUMB_ITEM_MOUSE_ENTER
 })
-
 
 export const breadcrumbItemMouseLeave = (nodeId: string, windowId: string): BreadcrumbItemMouseEnterLeave => ({
   nodeId,
@@ -394,7 +395,6 @@ export const resizerPathMoved = (workspaceId: string, anchor: Point, originalBou
   newBounds,
   sourceEvent,
 });
-
 
 export const resizerPathStoppedMoving = (workspaceId: string, sourceEvent): ResizerPathStoppedMoving => ({
   type: RESIZER_PATH_MOUSE_STOPPED_MOVING,
@@ -506,16 +506,12 @@ export const stageContainerMounted = (element: HTMLDivElement): StageMounted => 
   type: STAGE_MOUNTED,
 })
 
-
 export const stageMouseMoved = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
   sourceEvent,
   type: STAGE_MOUSE_MOVED,
 });
 
-
-
 export const stageMouseClicked = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
   sourceEvent,
   type: STAGE_MOUSE_CLICKED,
 })
-

@@ -99,6 +99,7 @@ import {
   WindowSelectionShifted,
   WINDOW_SELECTION_SHIFTED,
   ESCAPE_SHORTCUT_PRESSED,
+  CANVAS_MOTION_RESTED,
   NEXT_WINDOW_SHORTCUT_PRESSED,
   PREV_WINDOW_SHORTCUT_PRESSED,
   EMPTY_WINDOWS_URL_ADDED,
@@ -254,6 +255,13 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
         return state;
       }
     }
+
+    case CANVAS_MOTION_RESTED: {
+      const workspace = getSelectedWorkspace(state);
+      return updateWorkspaceStage(state, workspace.$id, {
+        smooth: false
+      });
+    }
     
     case TOGGLE_TEXT_EDITOR_PRESSED: {
       const workspace = getSelectedWorkspace(state);
@@ -317,7 +325,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     case RESIZER_MOVED: {
       const workspace = getSelectedWorkspace(state);
       state = updateWorkspaceStage(state, workspace.$id, {
-        smooth: false,
         movingOrResizing: true
       });
       return state;
@@ -327,7 +334,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     case RESIZER_STOPPED_MOVING: {
       const workspace = getSelectedWorkspace(state);
       state = updateWorkspaceStage(state, workspace.$id, {
-        smooth: false,
         movingOrResizing: false
       });
       return state;
@@ -372,10 +378,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       if (metaKey && workspace.selectionRefs.length === 1) {
         state = setSelectedFileFromNodeId(state, workspace.$id, workspace.selectionRefs[0][1]);
       }
-
-      state = updateWorkspaceStage(state, workspace.$id, {
-        smooth: false
-      });
 
       return state;
     }
