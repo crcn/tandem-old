@@ -257,7 +257,8 @@ const AppliedCSSRuleInfoBase = ({
   return <div className="style-rule-info">
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
         { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
-        <span className="add-declaration-button" onClick={onAddDeclaration}>+</span>
+        <i className="ion-plus add-declaration-button" onClick={onAddDeclaration} />
+        <i className="ion-star" />
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
       </div>
       <div className="declaration">
