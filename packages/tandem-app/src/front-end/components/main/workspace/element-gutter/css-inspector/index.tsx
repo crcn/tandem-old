@@ -99,8 +99,10 @@ type TextInputOuterProps = {
   children: any;
   autoFocus?: boolean;
   className?: string;
+  syncOnKeypress?: boolean;
   placeholder?: string;
   onChange?: (value: string) => any;
+  onFinished?: () => any;
 };
 
 type TextInputInnerProps = {
@@ -133,7 +135,7 @@ export const enhanceTextInput = compose<TextInputOuterProps, TextInputInnerProps
       } 
       setShowInput(true);
     },
-    onBlur: ({ setShowInput, onChange, onBlur }) => (event: React.FocusEvent<any>) => {
+    onBlur: ({ setShowInput, onChange, onBlur, onFinished }) => (event: React.FocusEvent<any>) => {
       setShowInput(false);
       if (onChange) {
         onChange((event.target as HTMLInputElement).value);
@@ -141,14 +143,25 @@ export const enhanceTextInput = compose<TextInputOuterProps, TextInputInnerProps
 
       if (onBlur) {
         onBlur(event);
+        if (onFinished) {
+          onFinished();
+        }
       }
     },
-    onKeyPress: ({ setShowInput, onChange }) => (event: React.KeyboardEvent<any>) => {
-      if (event.key === "Enter") {
+    onKeyPress: ({ setShowInput, onChange, onFinished, syncOnKeypress }) => (event: React.KeyboardEvent<any>) => {
+
+      const entered = event.key === "Enter";
+      if (syncOnKeypress || entered) {
         if (onChange) {
           onChange((event.target as HTMLInputElement).value);
         }
-        setShowInput(false);
+
+        if (entered) {
+          setShowInput(false);
+          if (onFinished) {
+            onFinished();
+          }
+        }
       }
     }
   })
@@ -165,7 +178,7 @@ const StylePropertyBase = ({ windowId, declarationId, name, value, dispatch, dis
       :
     </span>
     
-    <TextInput className="value" value={value || origValue} onChange={onValueChange} onBlur={onValueBlur ? (event) => onValueBlur(name, event.target.value) : null}>
+    <TextInput className="value" syncOnKeypress value={value || origValue} onChange={onValueChange} onBlur={onValueBlur ? (event) => onValueBlur(name, event.target.value) : null}>
       {value || origValue}
     </TextInput>
     <div className="controls">
