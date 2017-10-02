@@ -43,6 +43,7 @@ import {
   SyntheticWindow,
   getStageTranslate,
   ShortcutServiceState,
+  toggleWorkspaceTargetCSSSelector,
   updateWorkspaceStage,
   getSelectedWorkspace,
   addWorkspaceSelection,
@@ -102,6 +103,8 @@ import {
   CANVAS_MOTION_RESTED,
   NEXT_WINDOW_SHORTCUT_PRESSED,
   PREV_WINDOW_SHORTCUT_PRESSED,
+  TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED,
+  ToggleCSSTargetSelectorClicked,
   EMPTY_WINDOWS_URL_ADDED,
   RESIZER_STOPPED_MOVING,
   SELECTOR_DOUBLE_CLICKED,
@@ -178,6 +181,12 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
       return updateWorkspace(state, state.selectedWorkspaceId, {
         selectedFileId: node.$id
       });
+    }
+
+    case TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED: {
+      const { selectorText, workspaceId } = event as ToggleCSSTargetSelectorClicked;
+      state = toggleWorkspaceTargetCSSSelector(state, workspaceId, selectorText);
+      return state;
     }
   }
   

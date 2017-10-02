@@ -32,6 +32,10 @@ import {
 } from "./file-editor";
 
 import { 
+  getSyntheticAppliedCSSRules,
+} from "../utils";
+
+import { 
   FetchRequest,
   FETCH_REQUEST,
   fetchRequest,
@@ -458,6 +462,29 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
   });
 }
 
+const getTargetStyleOwners = (element: SEnvElementInterface, targetSelectors: string[]) => {
+
+  // find all applied rules
+  const appliedRules = getSyntheticAppliedCSSRules(element.ownerDocument.defaultView.struct, element.$id).map(({ rule }) => rule.instance);
+
+  // cascade down style rule list until targets are found (defined in css inspector)
+  let targetRules  = appliedRules.filter((rule) => targetSelectors.indexOf(rule["selectorText"] || null) !== -1);
+
+  if (!targetRules.length) {
+    targetRules = [appliedRules[0]];
+  }
+
+  const positionOwner = targetRules.find((rule) => Boolean(rule.style.position)) || targetRules[0];
+  const leftOwner = targetRules.find((rule) => Boolean(rule.style.left)) || targetRules[0];
+  const topOwner  = targetRules.find((rule) => Boolean(rule.style.top)) || targetRules[0];
+
+  return {
+    positionOwner,
+    leftOwner,
+    topOwner
+  };
+}
+
 function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
 
   const takeWindowAction = (type, test = (action) => action.syntheticWindowId === window.$id) => take((action) => action.type === type && test(action));
@@ -477,7 +504,7 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
 
   yield fork(function* handleMoveNode() {
     while(true) {
-      const {itemType, itemId, point}: Moved = (yield take((action: Moved) => action.type === MOVED && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
+      const { itemType, itemId, point, targetSelectors }: Moved = (yield take((action: Moved) => action.type === MOVED && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
 
       // compute based on the data currently in the store
       const syntheticWindow = getSyntheticWindow(yield select(), window.$id);
@@ -496,18 +523,19 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
         top: -syntheticWindow.bounds.top
       }));
 
-      const envElement = flattenWindowObjectSources(window.struct)[syntheticNode.$id] as any as HTMLElement;
+      const envElement = flattenWindowObjectSources(window.struct)[syntheticNode.$id] as any as SEnvHTMLElementInterface;
+      const { positionOwner, leftOwner, topOwner } = getTargetStyleOwners(envElement, targetSelectors);
 
       // TODO - get best CSS style
       if (computedStyle.position === "static") {
-        envElement.style.position = "relative";
+        positionOwner.style.setProperty("position", "relative");
       }
 
       // transitions will foo with dragging, so temporarily
       // disable them
-      envElement.style.transition = "none";
-      envElement.style.left = `${relativeRect.left}px`;
-      envElement.style.top  = `${relativeRect.top}px`;
+      envElement.style.setProperty("transition", "none");
+      leftOwner.style.setProperty("left", `${relativeRect.left}px`);
+      topOwner.style.setProperty("top", `${relativeRect.top}px`);
     }
   });
 
@@ -533,7 +561,7 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
 
   yield fork(function* handleMoveNodeStopped() {
     while(true) {
-      const {itemType, itemId}: Moved = (yield take((action: Moved) => action.type === STOPPED_MOVING && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
+      const {itemType, itemId, targetSelectors}: Moved = (yield take((action: Moved) => action.type === STOPPED_MOVING && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
 
       yield spawn(function*() {
         const target = flattenWindowObjectSources(window.struct)[itemId] as any as HTMLElement;

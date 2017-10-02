@@ -35,6 +35,7 @@ import {
 
 type StyledObject = {
   label?: string;
+  instance: SEnvHTMLElementInterface | SEnvCSSStyleRuleInterface;
   selectorText?: string;
   style: SyntheticCSSStyleDeclaration;
   $id: string;
@@ -105,13 +106,12 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
     }
   }
 
-  if (elementStyle && elementStyle.length) {
-    matchingRules.push({
-      label: `${element.nodeName.toLowerCase()} style`,
-      $id: element.$id,
-      style: elementStyle.struct
-    });
-  }
+  matchingRules.push({
+    label: `${element.nodeName.toLowerCase()} style`,
+    $id: element.$id,
+    instance: element.instance as SEnvHTMLElementInterface,
+    style: elementStyle.struct
+  });
 
   return matchingRules;
 });

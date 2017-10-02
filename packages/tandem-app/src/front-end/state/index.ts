@@ -17,6 +17,7 @@ import {
   serializableKeysFactory,
   StructReference,
   arrayReplaceIndex,
+  arraySplice,
   ImmutableObject,
   getStructReference,
   ExpressionPosition,
@@ -117,6 +118,7 @@ export type TextEditor = {
 };
 
 export type Workspace = {
+  targetCSSSelectors: string[];
   selectionRefs: StructReference[]; // $type:$id;
   browserId: string;
   hoveringRefs: StructReference[];
@@ -294,6 +296,15 @@ export const updateWorkspace = (root: ApplicationState, workspaceId: string, new
   }
 };
 
+export const toggleWorkspaceTargetCSSSelector = (root: ApplicationState, workspaceId: string, selector: string) => {
+  const workspace = getWorkspaceById(root, workspaceId);
+  const cssSelectors = (workspace.targetCSSSelectors || []);
+  const index = cssSelectors.indexOf(selector || null);
+  return updateWorkspace(root, workspaceId, {
+    targetCSSSelectors: index === -1 ? [...cssSelectors, selector || null] : arraySplice(cssSelectors, index, 1)
+  });
+};
+
 export const addWorkspace = (root: ApplicationState, workspace: Workspace) => {
   return {
     ...root,
@@ -347,6 +358,9 @@ export const getWorkspaceWindow = (state: ApplicationState, workspaceId: string 
  */
 
 export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, {
+
+  // null to denote style attribute
+  targetCSSSelectors: [null],
   stage: {
     panning: false,
     secondarySelection: false,

@@ -66,6 +66,7 @@ export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
 export const CSS_DECLARATION_CREATED   = "CSS_DECLARATION_CREATED";
 export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_ENTER";
 export const CSS_DECLARATION_TITLE_MOUSE_LEAVE   = "CSS_DECLARATION_TITLE_MOUSE_LEAVE";
+export const TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED   = "TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED";
 
 /**
  * Types
@@ -243,6 +244,11 @@ export type CSSDeclarationTitleMouseLeaveEnter = {
   ruleId: string;
 } & BaseEvent;
 
+export type ToggleCSSTargetSelectorClicked = {
+  selectorText: string;
+  workspaceId: string;
+} & BaseEvent;
+
 /**
  * Factories
  */
@@ -263,6 +269,13 @@ export const stageToolWindowTitleClicked = (windowId: string, sourceEvent: React
 export const stageToolWindowKeyDown = (windowId: string, sourceEvent: React.KeyboardEvent<any>): StageWillWindowKeyDown => ({ type: STAGE_TOOL_WINDOW_KEY_DOWN, windowId, sourceEvent });
 
 export const stageToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: STAGE_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });
+
+// TODO - possible include CSS url, or windowId
+export const toggleCSSTargetSelectorClicked = (selectorText: string, workspaceId: string): ToggleCSSTargetSelectorClicked => ({
+  type: TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED,
+  workspaceId,
+  selectorText,
+});
 
 export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved => ({
   workspaceId,

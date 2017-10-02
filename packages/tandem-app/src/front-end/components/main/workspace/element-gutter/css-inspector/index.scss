@@ -4,6 +4,7 @@
   .style-rule-info {
     width: 250px;
     overflow: hidden;
+
     > .title {
       width: 100%;
       padding: $padding-base * 4 $padding-base * 4;
@@ -42,6 +43,14 @@
         font-size: 0.9em;
       }
     } 
+
+    &.is-target {
+      .ion-star {
+        visibility: visible;
+        color: $color-orange-7;
+      }
+    }
+
 
     > .declaration {
       width: 100%;

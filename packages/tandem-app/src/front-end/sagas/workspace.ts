@@ -164,8 +164,9 @@ function* handleSelectionMoved() {
       if (workspace.stage.fullScreen && workspace.stage.fullScreen.windowId === item.$id) {
         continue;
       }
+      
 
-      yield put(moved(item.$id, item.$type, scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint))));
+      yield put(moved(item.$id, item.$type, scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)), workspace.targetCSSSelectors));
     }
   }
 }
@@ -196,7 +197,7 @@ function* handleSelectionResized() {
     for (const item of getBoundedWorkspaceSelection(state, workspace)) {
       const innerBounds = getSyntheticBrowserItemBounds(state, item);
       const scaledBounds = scaleInnerBounds(currentBounds, currentBounds, newBounds);
-      yield put(resized(item.$id, item.$type, scaleInnerBounds(innerBounds, currentBounds, newBounds)));
+      yield put(resized(item.$id, item.$type, scaleInnerBounds(innerBounds, currentBounds, newBounds), workspace.targetCSSSelectors));
     }
   }
 }
@@ -291,7 +292,7 @@ function* handleSelectionStoppedMoving() {
       }
       
       const bounds = getSyntheticBrowserItemBounds(state, item);
-      yield put(stoppedMoving(item.$id, item.$type));
+      yield put(stoppedMoving(item.$id, item.$type, workspace.targetCSSSelectors));
     }
   }
 }

@@ -23,6 +23,7 @@ import {
   cssDeclarationCreated,
   cssDeclarationTitleMouseEnter,
   cssDeclarationTitleMouseLeave,
+  toggleCSSTargetSelectorClicked,
 } from "front-end/actions";
 
 import { 
@@ -52,13 +53,16 @@ export type CSSInspectorOuterProps = {
 }
 
 export type AppliedCSSRuleResultOuterProps = {
+  workspaceId: string;
   window: SyntheticWindow;
   appliedRule: AppliedCSSRuleResult;
+  isTarget: boolean;
   dispatch: Dispatcher<any>;
 };
 
 type AppliedCSSRuleResultInnerProps = {
   onAddDeclaration?: () => any;
+  onToggleAsTarget?: () => any;
   showNewDeclarationInput: boolean;
   onValueBlur: (name: string, value: string) => any;
   onDeclarationCreated: (name: string, value: string) => any;
@@ -221,14 +225,16 @@ const NewStyleProperty = compose<StylePropertyInnerProps, NewStylePropertyOuterP
 
 const AppliedCSSRuleInfoBase = ({ 
   window, 
+  isTarget,
   dispatch,
   appliedRule, 
   onValueBlur, 
+  onToggleAsTarget,
   onAddDeclaration, 
+  onTitleMouseEnter,
+  onTitleMouseLeave,
   onDeclarationCreated, 
   showNewDeclarationInput, 
-  onTitleMouseEnter,
-  onTitleMouseLeave
 }: AppliedCSSRuleResultInnerProps) => {
 
   const properties = [];
@@ -254,11 +260,11 @@ const AppliedCSSRuleInfoBase = ({
     );
   }
 
-  return <div className="style-rule-info">
+  return <div className={cx("style-rule-info", { "is-target": isTarget })}>
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
         { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
         <i className="ion-plus add-declaration-button" onClick={onAddDeclaration} />
-        <i className="ion-star" />
+        <i className="ion-star" onClick={onToggleAsTarget} />
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
       </div>
       <div className="declaration">
@@ -273,6 +279,9 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
   withHandlers({
     onAddDeclaration: ({ setShowNewDeclarationInput }) => () => {
       setShowNewDeclarationInput(true);
+    },
+    onToggleAsTarget: ({ dispatch, appliedRule, workspaceId }) => () => {
+      dispatch(toggleCSSTargetSelectorClicked(appliedRule.rule.selectorText, workspaceId));
     },
     onDeclarationCreated: ({ setShowNewDeclarationInput, dispatch, window, appliedRule }: AppliedCSSRuleResultInnerProps) => (name: string, value: string) => {
       setShowNewDeclarationInput(false);
@@ -304,6 +313,7 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
   const targetElementId = workspace.selectionRefs[0][1];
   const element = getSyntheticNodeById(browser, targetElementId);
   const window = getSyntheticNodeWindow(browser, targetElementId);
+  const targetSelectors = workspace.targetCSSSelectors || [];
 
   if (!element || !window) {
     return null;
@@ -314,7 +324,7 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
   return <Pane title="CSS" className="m-css-inspector">
     {
       rules.map((rule) => {
-        return <AppliedCSSRuleInfo window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} />
+        return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={targetSelectors.indexOf(rule.rule.selectorText || null) !== -1} />
       })
     }
   </Pane>;
