@@ -18,6 +18,7 @@ import { SEnvCSSObjectInterface, getSEnvCSSBaseObjectClass } from "./base";
 import { SEnvNodeInterface } from "../";
 
 export interface SEnvCSSStyleSheetInterface extends CSSStyleSheet, SEnvCSSObjectInterface {
+  $id: string;
   struct: SyntheticCSSStyleSheet;
   ownerNode: Node;
   didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean);
