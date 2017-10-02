@@ -56,8 +56,7 @@ export type AppliedCSSRuleResult = {
   overriddenPropertyNames?: {
     [identifier: string]: boolean
   }
-}
-
+};
 
 export const containsInheritableStyleProperty = (style: SyntheticCSSStyleDeclaration) => {
   for (const propertyName in style) {

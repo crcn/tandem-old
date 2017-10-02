@@ -16,6 +16,7 @@ import { Autofocus } from "front-end/components/autofocus";
 import { mapValues } from "lodash";
 import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
 import { pure, compose, withHandlers, withState } from "recompose";
+
 import { 
   cssDeclarationNameChanged, 
   cssDeclarationValueChanged, 
@@ -23,6 +24,7 @@ import {
   cssDeclarationTitleMouseEnter,
   cssDeclarationTitleMouseLeave,
 } from "front-end/actions";
+
 import { 
   Workspace,
   SyntheticWindow, 
@@ -42,7 +44,6 @@ import {
 
 const MIN_INPUT_WIDTH = 50;
 const CHAR_WIDTH = 8;
-
 
 export type CSSInspectorOuterProps = {
   workspace: Workspace;
@@ -82,7 +83,6 @@ export type StylePropertyInnerProps = {
   onNameChange?: (value: string) => any;
 };
 
-
 export type NewStylePropertyOuterProps = {
   windowId: string;
   origValue?: string;
@@ -115,6 +115,10 @@ type TextInputInnerProps = {
   onKeyPress?: () => any;
   showInput?: boolean;
 } & TextInputOuterProps;
+
+const beautifyLabel = (label: string) => {
+return label.replace(/\s*,\s*/g, ", ");
+}
 
 const TextInputBase = ({ autoFocus = false, value, children, showInput, className, placeholder, onClick, onFocus, onBlur, onKeyPress }: TextInputInnerProps) => {
   return <Autofocus focus={autoFocus}><span className={className} tabIndex={0} onFocus={onFocus} onClick={onClick}>
@@ -178,7 +182,7 @@ const StylePropertyBase = ({ windowId, declarationId, name, value, dispatch, dis
       :
     </span>
     
-    <TextInput className="value" syncOnKeypress value={value || origValue} onChange={onValueChange} onBlur={onValueBlur ? (event) => onValueBlur(name, event.target.value) : null}>
+    <TextInput className="value" value={value || origValue} onChange={onValueChange} onBlur={onValueBlur ? (event) => onValueBlur(name, event.target.value) : null}>
       {value || origValue}
     </TextInput>
     <div className="controls">
@@ -198,7 +202,6 @@ const StyleProperty = compose<StylePropertyInnerProps, StylePropertyInnerProps>(
     }
   })
 )(StylePropertyBase);
-
 
 const NewStyleProperty = compose<StylePropertyInnerProps, NewStylePropertyOuterProps>(
   pure,
@@ -253,7 +256,7 @@ const AppliedCSSRuleInfoBase = ({
 
   return <div className="style-rule-info">
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
-        { appliedRule.rule.label || appliedRule.rule.selectorText }
+        { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
         <span className="add-declaration-button" onClick={onAddDeclaration}>+</span>
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
       </div>
@@ -295,7 +298,6 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
   })
 )(AppliedCSSRuleInfoBase);
 
-
 const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterProps) => {
   if (!workspace.selectionRefs.length || workspace.selectionRefs[0][0] !== SYNTHETIC_ELEMENT)  return null;
   const targetElementId = workspace.selectionRefs[0][1];
@@ -322,5 +324,3 @@ const enhanceCSSInspector = compose<CSSInspectorOuterProps, CSSInspectorOuterPro
 );
 
 export const CSSInspector = enhanceCSSInspector(CSSInspectorBase);
-
-
