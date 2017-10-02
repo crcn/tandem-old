@@ -47,6 +47,10 @@ type NodeOverlayProps = {
 
 const NodeOverlayBase = ({ windowId, zoom, bounds, node, dispatch, hovering }: NodeOverlayProps) => {
 
+  if (!bounds) {
+    return null;
+  }
+
   const borderWidth = 2 / zoom;
 
   const style = {

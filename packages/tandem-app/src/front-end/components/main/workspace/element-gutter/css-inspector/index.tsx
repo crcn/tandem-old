@@ -16,14 +16,20 @@ import { Autofocus } from "front-end/components/autofocus";
 import { mapValues } from "lodash";
 import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
 import { pure, compose, withHandlers, withState } from "recompose";
-import { cssDeclarationNameChanged, cssDeclarationValueChanged, cssDeclarationCreated } from "front-end/actions";
+import { 
+  cssDeclarationNameChanged, 
+  cssDeclarationValueChanged, 
+  cssDeclarationCreated,
+  cssDeclarationTitleMouseEnter,
+  cssDeclarationTitleMouseLeave,
+} from "front-end/actions";
 import { 
   Workspace,
   SyntheticWindow, 
   SyntheticBrowser, 
   SYNTHETIC_ELEMENT,
   getSyntheticNodeWindow,
-  getSyntheticNodeById
+  getSyntheticNodeById,
 } from "front-end/state";
 
 import { 
@@ -263,11 +269,15 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
         setShowNewDeclarationInput(true);
       }
     },
-    onTitleMouseEnter: ({ dispatch, appliedRule }) => () => {
-      // TODO
+    onTitleMouseEnter: ({ dispatch, appliedRule, window }) => () => {
+      if (appliedRule.rule.selectorText) {
+        dispatch(cssDeclarationTitleMouseEnter(appliedRule.rule.$id, window.$id));
+      }
     },
-    onTitleMouseLeave: ({ dispatch, appliedRule }) => () => {
-      // TODO
+    onTitleMouseLeave: ({ dispatch, appliedRule, window }) => () => {
+      if (appliedRule.rule.selectorText) {
+        dispatch(cssDeclarationTitleMouseLeave(appliedRule.rule.$id, window.$id));
+      }
     }
   })
 )(AppliedCSSRuleInfoBase);

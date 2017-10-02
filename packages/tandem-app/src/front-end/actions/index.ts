@@ -31,6 +31,8 @@ export const CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED = "CANVAS_ELEMENTS_COMPUTED_
 export const TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
 export const FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED   = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
 export const BREADCRUMB_ITEM_CLICKED   = "BREADCRUMB_ITEM_CLICKED";
+export const BREADCRUMB_ITEM_MOUSE_ENTER   = "BREADCRUMB_ITEM_MOUSE_ENTER";
+export const BREADCRUMB_ITEM_MOUSE_LEAVE   = "BREADCRUMB_ITEM_MOUSE_LEAVE";
 export const FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED = "FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED";
 export const STAGE_MOUSE_MOVED = "STAGE_MOUSE_MOVED";
 export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
@@ -55,6 +57,8 @@ export const STAGE_MOUNTED = "STAGE_MOUNTED";
 export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
 export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
 export const CSS_DECLARATION_CREATED   = "CSS_DECLARATION_CREATED";
+export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_ENTER";
+export const CSS_DECLARATION_TITLE_MOUSE_LEAVE   = "CSS_DECLARATION_TITLE_MOUSE_LEAVE";
 
 /**
  * Types
@@ -175,6 +179,12 @@ export type BreadcrumbItemClicked = {
   windowId: string;
 } & BaseEvent;
 
+
+export type BreadcrumbItemMouseEnterLeave = {
+  nodeId: string;
+  windowId: string;
+} & BaseEvent;
+
 export type StageToolNodeOverlayHoverOut = {
   windowId: string;
   nodeId: string;
@@ -232,6 +242,11 @@ export type CSSDeclarationChanged = {
   value: string;
 } & BaseEvent;
 
+export type CSSDeclarationTitleMouseLeaveEnter = {
+  windowId: string;
+  ruleId: string;
+} & BaseEvent;
+
 /**
  * Factories
  */
@@ -282,6 +297,18 @@ export const cssDeclarationCreated = (name: string, value: string, declarationId
   type: CSS_DECLARATION_CREATED
 });
 
+export const cssDeclarationTitleMouseEnter = (ruleId: string, windowId: string): CSSDeclarationTitleMouseLeaveEnter => ({
+  windowId,
+  ruleId,
+  type: CSS_DECLARATION_TITLE_MOUSE_ENTER
+});
+
+export const cssDeclarationTitleMouseLeave = (ruleId: string, windowId: string): CSSDeclarationTitleMouseLeaveEnter => ({
+  windowId,
+  ruleId,
+  type: CSS_DECLARATION_TITLE_MOUSE_LEAVE
+});
+
 export const resizerStoppedMoving = (workspaceId: string, point: Point): ResizerMoved => ({
   workspaceId,
   point,
@@ -292,6 +319,20 @@ export const breadcrumbItemClicked = (nodeId: string, windowId: string): Breadcr
   nodeId,
   windowId,
   type: BREADCRUMB_ITEM_CLICKED
+})
+
+
+export const breadcrumbItemMouseEnter = (nodeId: string, windowId: string): BreadcrumbItemMouseEnterLeave => ({
+  nodeId,
+  windowId,
+  type: BREADCRUMB_ITEM_MOUSE_ENTER
+})
+
+
+export const breadcrumbItemMouseLeave = (nodeId: string, windowId: string): BreadcrumbItemMouseEnterLeave => ({
+  nodeId,
+  windowId,
+  type: BREADCRUMB_ITEM_MOUSE_LEAVE
 })
 
 export const windowSelectionShifted = (windowId: string): WindowSelectionShifted => ({

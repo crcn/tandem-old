@@ -78,6 +78,7 @@ import {
   LOADED_SAVED_STATE,
   RESIZER_MOUSE_DOWN,
   BreadcrumbItemClicked,
+  BreadcrumbItemMouseEnterLeave,
   BREADCRUMB_ITEM_CLICKED,
   STAGE_MOUSE_CLICKED,
   VISUAL_EDITOR_WHEEL,
@@ -89,6 +90,11 @@ import {
   KeyboardShortcutAdded,
   keyboardShortcutAdded,
   StageWillWindowKeyDown,
+  BREADCRUMB_ITEM_MOUSE_ENTER,
+  BREADCRUMB_ITEM_MOUSE_LEAVE,
+  CSS_DECLARATION_TITLE_MOUSE_ENTER,
+  CSS_DECLARATION_TITLE_MOUSE_LEAVE,
+  CSSDeclarationTitleMouseLeaveEnter,
   DELETE_SHORCUT_PRESSED,
   PROMPTED_NEW_WINDOW_URL,
   KEYBOARD_SHORTCUT_ADDED,
@@ -145,6 +151,8 @@ import {
   SYNTHETIC_WINDOW,
   getSyntheticWindow, 
   getSyntheticBrowser,
+  SYNTHETIC_ELEMENT,
+  getMatchingElements,
   DEFAULT_WINDOW_WIDTH,
   DEFAULT_WINDOW_HEIGHT,
   getSyntheticNodeById,
@@ -152,7 +160,11 @@ import {
   getSyntheticNodeWindow,
   syntheticBrowserReducer, 
   openSyntheticWindowRequest,
+  getSyntheticWindowChild,
+  SEnvCSSStyleRuleInterface,
   SYNTHETIC_WINDOW_PROXY_OPENED,
+  SyntheticCSSStyleDeclaration,
+  SEnvCSSStyleDeclarationInterface,
 } from "aerial-browser-sandbox";
 
 import reduceReducers = require("reduce-reducers");
@@ -339,6 +351,25 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
+    case CSS_DECLARATION_TITLE_MOUSE_ENTER: {
+      const { windowId, ruleId } = event as CSSDeclarationTitleMouseLeaveEnter;
+      const window = getSyntheticWindow(state, windowId);
+      const { selectorText }: SEnvCSSStyleRuleInterface = getSyntheticWindowChild(window, ruleId);
+      return updateWorkspace(state, state.selectedWorkspaceId, {
+        hoveringRefs: getMatchingElements(window, selectorText).map((element) => [
+          element.$type,
+          element.$id
+        ]) as [[string, string]]
+      });
+    }
+
+    case CSS_DECLARATION_TITLE_MOUSE_LEAVE: {
+      const { windowId, ruleId } = event as CSSDeclarationTitleMouseLeaveEnter;
+      return updateWorkspace(state, state.selectedWorkspaceId, {
+        hoveringRefs: []
+      });
+    }
+
     case RESIZER_MOUSE_DOWN: {
       const { sourceEvent, workspaceId } = event as ResizerMouseDown;
       const metaKey = sourceEvent.metaKey || sourceEvent.ctrlKey;
@@ -362,6 +393,20 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       const node = getSyntheticNodeById(browser, nodeId);
       const workspace = getSyntheticWindowWorkspace(state, window.$id);
       return setWorkspaceSelection(state, workspace.$id, [node.$type, node.$id]);
+    }
+
+    case BREADCRUMB_ITEM_MOUSE_ENTER: {
+      const { windowId, nodeId }  = event as BreadcrumbItemMouseEnterLeave;
+      return updateWorkspace(state, state.selectedWorkspaceId, {
+        hoveringRefs: [[SYNTHETIC_ELEMENT, nodeId]]
+      });
+    }
+
+    case BREADCRUMB_ITEM_MOUSE_LEAVE: {
+      const { windowId, nodeId }  = event as BreadcrumbItemMouseEnterLeave;
+      return updateWorkspace(state, state.selectedWorkspaceId, {
+        hoveringRefs: []
+      });
     }
 
     case EMPTY_WINDOWS_URL_ADDED: {

@@ -18,6 +18,8 @@ import { 
 
 import {
   breadcrumbItemClicked,
+  breadcrumbItemMouseEnter,
+  breadcrumbItemMouseLeave,
 } from "front-end/actions";
 
 export type BreadcrumbsOuterProps = {
@@ -38,6 +40,8 @@ type BreadcrumbOuterProps = {
 
 type BreadcrumbInnerProps = {
   onClick: () => any;
+  onMouseEnter: () => any;
+  onMouseLeave: () => any;
 } & BreadcrumbOuterProps;
 
 
@@ -64,8 +68,8 @@ const getBreadcrumbNodes = weakMemo((workspace: Workspace, browser: SyntheticBro
   return [...ancestors, node] as SyntheticElement[];
 });
 
-const BreadcrumbBase = ({ element, onClick, selected }: BreadcrumbInnerProps) => {
-  return <div className={cx("breadcrumb fill-text", { selected })} onClick={onClick}>
+const BreadcrumbBase = ({ element, onClick, selected, onMouseEnter, onMouseLeave }: BreadcrumbInnerProps) => {
+  return <div className={cx("breadcrumb fill-text", { selected })} onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
     { getSyntheticElementLabel(element) } 
     { selected ? null : <span className="arrow">
       <i className="ion-ios-arrow-right" />
@@ -78,6 +82,12 @@ const enhanceBreadcrumb = compose<BreadcrumbInnerProps, BreadcrumbOuterProps>(
   withHandlers({
     onClick: ({ dispatch, element, windowId }) => () => {
       dispatch(breadcrumbItemClicked(element.$id, windowId));
+    },
+    onMouseEnter: ({ dispatch, element, windowId }) => () => {
+      dispatch(breadcrumbItemMouseEnter(element.$id, windowId));
+    },
+    onMouseLeave: ({ dispatch, element, windowId }) => () => {
+      dispatch(breadcrumbItemMouseEnter(element.$id, windowId));
     }
   })
 );
