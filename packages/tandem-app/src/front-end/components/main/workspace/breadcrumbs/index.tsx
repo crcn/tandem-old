@@ -1,5 +1,6 @@
 import "./index.scss";
 import * as React from "react";
+import * as cx from "classnames";
 import {compose, pure, withHandlers } from "recompose";
 import { weakMemo, Dispatcher } from "aerial-common2";
 import { 
@@ -64,7 +65,7 @@ const getBreadcrumbNodes = weakMemo((workspace: Workspace, browser: SyntheticBro
 });
 
 const BreadcrumbBase = ({ element, onClick, selected }: BreadcrumbInnerProps) => {
-  return <div className="breadcrumb" onClick={onClick}>
+  return <div className={cx("breadcrumb fill-text", { selected })} onClick={onClick}>
     { getSyntheticElementLabel(element) } 
     { selected ? null : <span className="arrow">
       <i className="ion-ios-arrow-right" />

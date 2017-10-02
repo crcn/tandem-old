@@ -11,5 +11,8 @@
       padding-left: $padding-base * 4;
       position: relative;
     }
+
+    &.selected {
+    }
   }
 }
