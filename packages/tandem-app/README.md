@@ -24,14 +24,6 @@ COMPONENTS TO START VISUAL DEV QUICKLY:
   - [ ] 
 - [ ] Move style properties to CSS declaration
 
-ROADMAP:
-
-- [ ] 1-1 map of code + visual representation. I.e: CSS & HTML Inspector
-- [ ] Augment CSS & HTML inspector
-- [ ] ...
-- [ ] DSL for visual programming
-- [ ] 100% visually editable
-
 LITMUS:
 
 - [ ] rebuild mesh.js.org (as async await iterator library)

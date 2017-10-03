@@ -11,6 +11,7 @@ import { GridStageTool } from "./grid";
 import { WindowsStageTool } from "./windows";
 import { NodeOverlaysTool } from "./overlay";
 import { SelectionStageTool } from "./selection";
+import { AffectedNodesTool } from "./affected-nodes";
 
 export type ToolsProps = {
   translate: Translate;
@@ -25,6 +26,7 @@ export const ToolsLayerBase = (({ workspace, browser, dispatch, translate }: Too
   <SelectionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
   <WindowsStageTool workspace={workspace} browser={browser} dispatch={dispatch} translate={translate} />
   <EditTextTool zoom={translate.zoom} workspace={workspace}  browser={browser} dispatch={dispatch} />
+  <AffectedNodesTool zoom={translate.zoom} workspace={workspace} browser={browser} />
 </div>);
 
 export const ToolsLayer = compose<ToolsProps, ToolsProps>(

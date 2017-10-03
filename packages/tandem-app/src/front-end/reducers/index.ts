@@ -163,6 +163,7 @@ import {
   SEnvCSSStyleRuleInterface,
   SYNTHETIC_WINDOW_PROXY_OPENED,
   SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyleRule,
   SEnvCSSStyleDeclarationInterface,
 } from "aerial-browser-sandbox";
 
@@ -184,8 +185,11 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     }
 
     case TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED: {
-      const { selectorText, workspaceId } = event as ToggleCSSTargetSelectorClicked;
-      state = toggleWorkspaceTargetCSSSelector(state, workspaceId, selectorText);
+      const { itemId, windowId } = event as ToggleCSSTargetSelectorClicked;
+      const window = getSyntheticWindow(state, windowId);
+      const item = getSyntheticWindowChild(window, itemId);
+      const workspace = getSyntheticWindowWorkspace(state, window.$id);
+      state = toggleWorkspaceTargetCSSSelector(state, workspace.$id, item.source.uri, (item as SyntheticCSSStyleRule).selectorText);
       return state;
     }
   }

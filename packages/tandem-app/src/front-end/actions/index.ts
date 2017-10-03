@@ -251,8 +251,8 @@ export type SourceClicked = {
 } & BaseEvent;
 
 export type ToggleCSSTargetSelectorClicked = {
-  selectorText: string;
-  workspaceId: string;
+  itemId: string;
+  windowId: string;
 } & BaseEvent;
 
 /**
@@ -277,10 +277,10 @@ export const stageToolWindowKeyDown = (windowId: string, sourceEvent: React.Keyb
 export const stageToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: STAGE_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });
 
 // TODO - possible include CSS url, or windowId
-export const toggleCSSTargetSelectorClicked = (selectorText: string, workspaceId: string): ToggleCSSTargetSelectorClicked => ({
+export const toggleCSSTargetSelectorClicked = (itemId: string, windowId: string): ToggleCSSTargetSelectorClicked => ({
   type: TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED,
-  workspaceId,
-  selectorText,
+  windowId,
+  itemId,
 });
 
 export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved => ({

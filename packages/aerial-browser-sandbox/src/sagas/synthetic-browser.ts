@@ -88,6 +88,7 @@ import {
   Moved,
   Bounds,
   Point,
+  TargetSelector,
   generateDefaultId,
   pointToBounds,
   MOVED,
@@ -467,7 +468,7 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
   });
 }
 
-const getTargetStyleOwners = (element: SEnvElementInterface, propertyNames: string[], targetSelectors: string[]): {
+const getTargetStyleOwners = (element: SEnvElementInterface, propertyNames: string[], targetSelectors: TargetSelector[]): {
   [identifier: string]: SEnvHTMLElementInterface | SEnvCSSStyleRuleInterface
 } => {
 
@@ -475,7 +476,9 @@ const getTargetStyleOwners = (element: SEnvElementInterface, propertyNames: stri
   const appliedRules = getSyntheticAppliedCSSRules(element.ownerDocument.defaultView.struct, element.$id).map(({ rule }) => rule.instance);
 
   // cascade down style rule list until targets are found (defined in css inspector)
-  let targetRules  = appliedRules.filter((rule) => targetSelectors.indexOf(rule["selectorText"] || null) !== -1);
+  let targetRules  = appliedRules.filter((rule) => Boolean(targetSelectors.find(({uri, value}) => {
+    return rule.source.uri === uri && rule["selectorText"] == value;
+  })));
 
   if (!targetRules.length) {
     targetRules = [appliedRules[0]];
@@ -581,6 +584,7 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
         const target = flattenWindowObjectSources(window.struct)[itemId] as any as SEnvHTMLElementInterface;
         target.style.removeProperty("transition");
 
+        // TODO - clear non targets
         const { top, left, position } = getTargetStyleOwners(target, ["top", "left", "position"], targetSelectors);
         const mutations = uniq([top, left, position]).map(createStyleMutation);
 

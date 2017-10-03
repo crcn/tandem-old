@@ -6,18 +6,23 @@ export const MOVED   = "MOVED";
 export const STOPPED_MOVING   = "STOPPED_MOVING";
 export const REMOVED = "REMOVED";
 
+export type TargetSelector = {
+  uri: string;
+  value: string;
+}
+
 export type Resized = {
   itemId: string;
   itemType: string;
   bounds: Bounds;
-  targetSelectors?: string[];
+  targetSelectors?: TargetSelector[];
 } & BaseEvent;
 
 export type Moved = {
   itemId: string;
   itemType: string;
   point: Point;
-  targetSelectors?: string[];
+  targetSelectors?: TargetSelector[];
 } & BaseEvent;
 
 export type Removed = {
@@ -25,7 +30,7 @@ export type Removed = {
   itemType: string;
 } & BaseEvent;
 
-export const resized = (itemId: string, itemType: string, bounds: Bounds, targetSelectors?: string[]): Resized => ({
+export const resized = (itemId: string, itemType: string, bounds: Bounds, targetSelectors?: TargetSelector[]): Resized => ({
   itemId,
   itemType,
   bounds,
@@ -33,7 +38,7 @@ export const resized = (itemId: string, itemType: string, bounds: Bounds, target
   type: RESIZED
 });
 
-export const moved = (itemId: string, itemType: string, point: Point, targetSelectors?: string[]): Moved => ({
+export const moved = (itemId: string, itemType: string, point: Point, targetSelectors?: TargetSelector[]): Moved => ({
   itemId,
   itemType,
   point,
@@ -41,7 +46,7 @@ export const moved = (itemId: string, itemType: string, point: Point, targetSele
   type: MOVED
 });
 
-export const stoppedMoving = (itemId: string, itemType: string, targetSelectors?: string[]): Moved => ({
+export const stoppedMoving = (itemId: string, itemType: string, targetSelectors?: TargetSelector[]): Moved => ({
   itemId,
   itemType,
   point: null,

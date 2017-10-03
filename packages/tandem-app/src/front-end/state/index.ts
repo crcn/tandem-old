@@ -11,6 +11,7 @@ import {
   mergeBounds,
   filterBounded,
   getSmallestBounds,
+  TargetSelector,
   ImmutableArray, 
   Point,
   serializableKeys,
@@ -118,7 +119,7 @@ export type TextEditor = {
 };
 
 export type Workspace = {
-  targetCSSSelectors: string[];
+  targetCSSSelectors: TargetSelector[];
   selectionRefs: StructReference[]; // $type:$id;
   browserId: string;
   hoveringRefs: StructReference[];
@@ -296,12 +297,19 @@ export const updateWorkspace = (root: ApplicationState, workspaceId: string, new
   }
 };
 
-export const toggleWorkspaceTargetCSSSelector = (root: ApplicationState, workspaceId: string, selector: string) => {
+export const createTargetSelector = (uri: string, value: string): TargetSelector => ({
+  uri,
+  value
+});
+
+export const toggleWorkspaceTargetCSSSelector = (root: ApplicationState, workspaceId: string, uri: string, selectorText: string) => {
   const workspace = getWorkspaceById(root, workspaceId);
   const cssSelectors = (workspace.targetCSSSelectors || []);
-  const index = cssSelectors.indexOf(selector || null);
+  const index = cssSelectors.findIndex((targetSelector) => {
+    return targetSelector.uri === uri && targetSelector.value == selectorText;
+  });
   return updateWorkspace(root, workspaceId, {
-    targetCSSSelectors: index === -1 ? [...cssSelectors, selector || null] : arraySplice(cssSelectors, index, 1)
+    targetCSSSelectors: index === -1 ? [...cssSelectors, createTargetSelector(uri, selectorText)] : arraySplice(cssSelectors, index, 1)
   });
 };
 
@@ -311,6 +319,10 @@ export const addWorkspace = (root: ApplicationState, workspace: Workspace) => {
     workspaces: [...root.workspaces, workspace]
   };
 }
+
+export const getWorkspaceTargetCSSRules = weakMemo((workspace: Workspace, browser: SyntheticBrowser) => {
+  
+});
 
 export const getFrontEndItemByReference = (root: ApplicationState|SyntheticBrowser, ref: StructReference) => {
   return getSyntheticBrowserStoreItemByReference(root, ref);
@@ -360,7 +372,7 @@ export const getWorkspaceWindow = (state: ApplicationState, workspaceId: string 
 export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, {
 
   // null to denote style attribute
-  targetCSSSelectors: [null],
+  targetCSSSelectors: [],
   stage: {
     panning: false,
     secondarySelection: false,

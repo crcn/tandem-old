@@ -287,8 +287,8 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
     onAddDeclaration: ({ setShowNewDeclarationInput }) => () => {
       setShowNewDeclarationInput(true);
     },
-    onToggleAsTarget: ({ dispatch, appliedRule, workspaceId }) => () => {
-      dispatch(toggleCSSTargetSelectorClicked(appliedRule.rule.selectorText, workspaceId));
+    onToggleAsTarget: ({ dispatch, appliedRule, window }: AppliedCSSRuleResultInnerProps) => () => {
+      dispatch(toggleCSSTargetSelectorClicked(appliedRule.rule.$id, window.$id));
     },
     onDeclarationCreated: ({ setShowNewDeclarationInput, dispatch, window, appliedRule }: AppliedCSSRuleResultInnerProps) => (name: string, value: string) => {
       setShowNewDeclarationInput(false);
@@ -334,7 +334,7 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
   return <Pane title="CSS" className="m-css-inspector">
     {
       rules.map((rule) => {
-        return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={targetSelectors.indexOf(rule.rule.selectorText || null) !== -1} />
+        return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source.uri === uri && rule.rule.selectorText == value)) || (targetSelectors.length === 0 && !rule.rule.selectorText)} />
       })
     }
   </Pane>;
