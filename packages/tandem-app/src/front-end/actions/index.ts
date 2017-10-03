@@ -65,6 +65,7 @@ export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
 export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
 export const CSS_DECLARATION_CREATED   = "CSS_DECLARATION_CREATED";
 export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_ENTER";
+export const SOURCE_CLICKED   = "SOURCE_CLICKED";
 export const CSS_DECLARATION_TITLE_MOUSE_LEAVE   = "CSS_DECLARATION_TITLE_MOUSE_LEAVE";
 export const TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED   = "TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED";
 
@@ -244,6 +245,11 @@ export type CSSDeclarationTitleMouseLeaveEnter = {
   ruleId: string;
 } & BaseEvent;
 
+export type SourceClicked = {
+  windowId: string;
+  itemId: string;
+} & BaseEvent;
+
 export type ToggleCSSTargetSelectorClicked = {
   selectorText: string;
   workspaceId: string;
@@ -311,6 +317,12 @@ export const cssDeclarationTitleMouseEnter = (ruleId: string, windowId: string):
   windowId,
   ruleId,
   type: CSS_DECLARATION_TITLE_MOUSE_ENTER
+});
+
+export const sourceClicked = (itemId: string, windowId: string): SourceClicked => ({
+  windowId,
+  itemId,
+  type: SOURCE_CLICKED
 });
 
 export const cssDeclarationTitleMouseLeave = (ruleId: string, windowId: string): CSSDeclarationTitleMouseLeaveEnter => ({

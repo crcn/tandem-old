@@ -22,6 +22,8 @@ import {
   TextEditorChanged,
   RESIZER_PATH_MOUSE_MOVED,
   DeleteShortcutPressed, 
+  SOURCE_CLICKED,
+  SourceClicked,
   OPEN_NEW_WINDOW_SHORTCUT_PRESSED,
   windowSelectionShifted,
   WINDOW_SELECTION_SHIFTED,
@@ -82,6 +84,7 @@ export function* mainWorkspaceSaga() {
   yield fork(handleNewLocationPrompt);
   yield fork(handleOpenNewWindowShortcut);
   yield fork(handleCloneSelectedWindowShortcut);
+  yield fork(handleSourceClicked);
 }
 
 function* openDefaultWindow() {
@@ -276,6 +279,13 @@ function* handleSelectionKeyUp() {
     const state: ApplicationState = yield select();
     const workspace: Workspace = getSelectedWorkspace(state);
     yield put(resizerStoppedMoving(workspace.$id, null));
+  }
+}
+
+function* handleSourceClicked() {
+  while(true) {
+    const { itemId, windowId } = (yield take(SOURCE_CLICKED)) as SourceClicked;
+    console.log("SOURCE CLICKED", itemId, windowId);
   }
 }
 

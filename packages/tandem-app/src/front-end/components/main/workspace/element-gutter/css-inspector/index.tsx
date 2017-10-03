@@ -19,9 +19,10 @@ import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
 import { pure, compose, withHandlers, withState } from "recompose";
 
 import { 
+  sourceClicked,
+  cssDeclarationCreated,
   cssDeclarationNameChanged, 
   cssDeclarationValueChanged, 
-  cssDeclarationCreated,
   cssDeclarationTitleMouseEnter,
   cssDeclarationTitleMouseLeave,
   toggleCSSTargetSelectorClicked,
@@ -64,6 +65,7 @@ export type AppliedCSSRuleResultOuterProps = {
 type AppliedCSSRuleResultInnerProps = {
   onAddDeclaration?: () => any;
   onToggleAsTarget?: () => any;
+  onSourceClicked?: () => any;
   showNewDeclarationInput: boolean;
   onValueBlur: (name: string, value: string) => any;
   onDeclarationCreated: (name: string, value: string) => any;
@@ -230,6 +232,7 @@ const AppliedCSSRuleInfoBase = ({
   dispatch,
   appliedRule, 
   onValueBlur, 
+  onSourceClicked,
   onToggleAsTarget,
   onAddDeclaration, 
   onTitleMouseEnter,
@@ -264,7 +267,7 @@ const AppliedCSSRuleInfoBase = ({
   return <div className={cx("style-rule-info", { "is-target": isTarget })}>
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
         { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
-        <span className="source">
+        <span className="source" onClick={onSourceClicked}>
           { appliedRule.rule.source && `${path.basename(appliedRule.rule.source.uri)}:${appliedRule.rule.source.start.line}` }
         </span>
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
@@ -298,6 +301,9 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
       if ((lastPropName === name || !appliedRule.rule.style[name]) && name && value) {
         setShowNewDeclarationInput(true);
       }
+    },
+    onSourceClicked: ({ dispatch, appliedRule, window }) => () => {
+      dispatch(sourceClicked(appliedRule.rule.$id, window.$id))
     },
     onTitleMouseEnter: ({ dispatch, appliedRule, window }) => () => {
       if (appliedRule.rule.selectorText) {
