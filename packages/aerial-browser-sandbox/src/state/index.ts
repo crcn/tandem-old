@@ -803,6 +803,8 @@ export const getSyntheticNodeWindow = weakMemo((root: SyntheticBrowserRootState|
 
 export const getMatchingElements = weakMemo((window: SyntheticWindow, selectorText: string): SyntheticElement[] => Array.prototype.map.call(window.document.instance.querySelectorAll(selectorText), (element) => element.struct));
 
+export const elementMatches = weakMemo((selectorText: string, element: SyntheticElement, window: SyntheticWindow): boolean => element.instance.matches(selectorText));
+
 export const syntheticWindowContainsNode = weakMemo((window: SyntheticWindow, nodeId: string): boolean => {
   return Boolean(getSyntheticWindowChild(window, nodeId));
 });

@@ -5,7 +5,7 @@ import {
   SyntheticCSSRule, 
   SyntheticBrowser, 
   SyntheticElement, 
-  SyntheticDocument, 
+  SyntheticDocument,
   getSyntheticNodeById, 
   SyntheticCSSStyleRule,
   getSyntheticNodeWindow, 

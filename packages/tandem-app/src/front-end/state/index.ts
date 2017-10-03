@@ -63,14 +63,20 @@ import {
   SyntheticBrowser,
   SYNTHETIC_WINDOW,
   SYNTHETIC_ELEMENT,
+  SyntheticElement,
   getSyntheticWindow,
+  SyntheticCSSStyleRule,
   getSyntheticNodeById,
   getSyntheticNodeWindow,
   getSyntheticBrowser,
+  getMatchingElements,
+  elementMatches,
   SyntheticWindow,
+  getSyntheticWindowChildStructs,
   syntheticNodeIsRelative,
   getSyntheticBrowserItemBounds,
   getSyntheticWindowBrowser,
+  SYNTHETIC_CSS_STYLE_RULE,
   SyntheticBrowserRootState,
   createSyntheticBrowserStore,
   syntheticWindowContainsNode,
@@ -320,8 +326,51 @@ export const addWorkspace = (root: ApplicationState, workspace: Workspace) => {
   };
 }
 
-export const getWorkspaceTargetCSSRules = weakMemo((workspace: Workspace, browser: SyntheticBrowser) => {
-  
+export const filterMatchingTargetSelectors = weakMemo((targetCSSSelectors: TargetSelector[], element: SyntheticElement, window: SyntheticWindow) => filterApplicableTargetSelectors(targetCSSSelectors, window).filter((rule) => elementMatches(rule.value, element, window)));
+
+const filterApplicableTargetSelectors = weakMemo((selectors: TargetSelector[], window: SyntheticWindow): TargetSelector[] => {
+  const map = {};
+  for (const selector of selectors) {
+    map[selector.uri + selector.value] = selector;
+  }
+
+  const rules = [];
+
+  const children = getSyntheticWindowChildStructs(window);
+  for (const $id in children) {
+    const child = children[$id] as SyntheticCSSStyleRule;
+    if (child.$type === SYNTHETIC_CSS_STYLE_RULE && map[child.source.uri + child.selectorText]) {
+      rules.push(map[child.source.uri + child.selectorText]);
+    }
+  }
+
+  return uniq(rules);
+});
+
+const getSelectorAffectedWindows = weakMemo((targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser): SyntheticWindow[] => {
+  const affectedWindows: SyntheticWindow[] = [];
+
+  for (const window of browser.windows) {
+    if (filterApplicableTargetSelectors(targetCSSSelectors, window).length) {
+      affectedWindows.push(window);
+    }
+  }
+
+  return affectedWindows;
+});
+
+export const getSelectorAffectedElements = weakMemo((targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser): SyntheticElement[] => {
+  const targetCSSRules: SyntheticCSSStyleRule[] = [];
+  const affectedWindows = getSelectorAffectedWindows(targetCSSSelectors, browser);
+  const affectedElements: SyntheticElement[] = [];
+
+  for (const window of affectedWindows) {
+    for (const { value: selectorText } of targetCSSSelectors) {
+      affectedElements.push(...getMatchingElements(window, selectorText));
+    }
+  }
+
+  return uniq(affectedElements);
 });
 
 export const getFrontEndItemByReference = (root: ApplicationState|SyntheticBrowser, ref: StructReference) => {
