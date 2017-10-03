@@ -14,6 +14,7 @@ GOALS:
 COMPONENTS TO START VISUAL DEV QUICKLY:
 
 - [ ] CSS Inspector*
+- [ ] on canvas visual tools
 - [ ] HTML inspector* (show source code)
 - [ ] rich visual tools for CSS properties
   - [ ] color picker

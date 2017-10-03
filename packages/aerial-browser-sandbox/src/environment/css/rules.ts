@@ -173,6 +173,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     $createStruct() {
       return createSyntheticCSSStyleRule({
         $id: this.$id,
+        source: this.source,
         instance: this,
         selectorText: this.selectorText,
         style: this.style.struct
@@ -233,6 +234,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       return createSyntheticCSSMediaRule({
         $id: this.$id,
         instance: this,
+        source: this.source,
         conditionText: this.conditionText,
         rules: Array.prototype.map.call(this.cssRules, rule => rule.struct)
       });
@@ -266,6 +268,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       return createSyntheticCSSFontFaceRule({
         $id: this.$id,
         instance: this,
+        source: this.source,
         style: this.style.struct,
       });
     }
@@ -295,7 +298,8 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     $createStruct() {
       return createSyntheticCSSKeyframeRule({
         $id: this.$id,
-        instance: this
+        instance: this,
+        source: this.source
       });
     }
 
@@ -324,6 +328,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       return createSyntheticCSSKeyframesRule({
         $id: this.$id,
         instance: this,
+        source: this.source,
         rules: Array.prototype.map.call(this.cssRules, rule => rule.struct)
       });
     }
@@ -363,6 +368,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       return createSyntheticCSSUnknownGroupingRule({
         $id: this.$id,
         instance: this,
+        source: this.source,
         rules: []
       })
     }

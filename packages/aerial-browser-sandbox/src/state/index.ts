@@ -67,11 +67,13 @@ export const SYNTHETIC_CSS_STYLE_DECLARATION = "SYNTHETIC_CSS_STYLE_DECLARATION"
 export type SyntheticCSSStyleSheet = {
   instance: SEnvCSSStyleSheetInterface;
   cssRules: SyntheticCSSRule[];
+  source: ExpressionLocation;
 } & Struct;
 
 export type SyntheticCSSRule = {
   instance: SEnvCSSRuleInterface;
   type: CSSRuleType;
+  source: ExpressionLocation;
 } & Struct;
 
 export type SyntheticCSSStyleRule = {
@@ -510,6 +512,7 @@ export type SyntheticBaseNode = {
 } & BasicNode & Struct;
 
 export type SyntheticNode = {
+  source: ExpressionLocation;
   instance: SEnvNodeInterface;
   childNodes?: ArrayLike<SyntheticNode>;
 } & SyntheticBaseNode;

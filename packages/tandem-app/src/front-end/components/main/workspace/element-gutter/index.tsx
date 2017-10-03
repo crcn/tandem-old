@@ -11,7 +11,7 @@ export type ElementGutterOuterProps = {
   dispatch: Dispatcher<any>;
 };
 
-export const ElementGutterBase = ({ browser, workspace, dispatch }: ElementGutterOuterProps) => <Gutter>
+export const ElementGutterBase = ({ browser, workspace, dispatch }: ElementGutterOuterProps) => <Gutter className="right">
   <CSSInspector browser={browser} workspace={workspace} dispatch={dispatch} />
 </Gutter>;
 

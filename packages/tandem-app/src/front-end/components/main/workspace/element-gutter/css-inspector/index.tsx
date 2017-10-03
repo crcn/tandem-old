@@ -12,6 +12,7 @@ import "./index.scss";
 import * as cx from "classnames";
 import { Pane } from "front-end/components/pane";
 import * as React from "react";
+import * as path from "path";
 import { Autofocus } from "front-end/components/autofocus";
 import { mapValues } from "lodash";
 import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
@@ -263,9 +264,12 @@ const AppliedCSSRuleInfoBase = ({
   return <div className={cx("style-rule-info", { "is-target": isTarget })}>
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
         { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
-        <i className="ion-plus add-declaration-button" onClick={onAddDeclaration} />
-        <i className="ion-star" onClick={onToggleAsTarget} />
+        <span className="source">
+          { appliedRule.rule.source && `${path.basename(appliedRule.rule.source.uri)}:${appliedRule.rule.source.start.line}` }
+        </span>
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
+        <i className="ion-star" onClick={onToggleAsTarget} />
+        <i className="ion-plus add-declaration-button" onClick={onAddDeclaration} />
       </div>
       <div className="declaration">
         { properties }

@@ -2,13 +2,20 @@
 
 .m-css-inspector {
   .style-rule-info {
-    width: 250px;
+    width: 100%;
     overflow: hidden;
 
     > .title {
       width: 100%;
       padding: $padding-base * 4 $padding-base * 4;
       background: $color-grey-10;
+
+      .source {
+        opacity: 0.5;
+        float: right;
+        text-decoration: underline;
+        cursor: pointer;
+      }
       &:hover {
         > .add-declaration-button {
           visibility: visible;
@@ -29,14 +36,13 @@
 
       > .ion-plus {
         font-size: 0.9em;
-        float: right;
         visibility: hidden;
         cursor: pointer;
         padding: 0 $padding-base;
       }
 
       > .ion-star {
-        float: right;
+        padding-left: $padding-base * 4;
         cursor: pointer;
         visibility: hidden;
         padding: 0 $padding-base;

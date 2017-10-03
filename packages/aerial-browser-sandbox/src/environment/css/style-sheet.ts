@@ -71,6 +71,7 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
       return createSyntheticCSSStyleSheet({ 
         $id: this.$id,
         instance: this,
+        source: this.source,
         cssRules: Array.prototype.map.call(this.cssRules, ((rule: SEnvCSSObjectInterface) => rule.struct))
       });
     }

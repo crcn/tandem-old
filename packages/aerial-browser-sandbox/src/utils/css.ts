@@ -1,4 +1,4 @@
-import { weakMemo } from "aerial-common2";
+import { weakMemo, ExpressionLocation } from "aerial-common2";
 
 import { 
   SyntheticWindow, 
@@ -35,6 +35,7 @@ import {
 
 type StyledObject = {
   label?: string;
+  source: ExpressionLocation;
   instance: SEnvHTMLElementInterface | SEnvCSSStyleRuleInterface;
   selectorText?: string;
   style: SyntheticCSSStyleDeclaration;
@@ -109,6 +110,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
   matchingRules.push({
     label: `${element.nodeName.toLowerCase()} style`,
     $id: element.$id,
+    source: element.source,
     instance: element.instance as SEnvHTMLElementInterface,
     style: elementStyle.struct
   });
