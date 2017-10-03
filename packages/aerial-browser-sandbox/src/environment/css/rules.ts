@@ -34,7 +34,7 @@ import {
   createSyntheticCSSKeyframesRule,
   createSyntheticCSSUnknownGroupingRule,
 } from "../../state";
-import { diffCSStyleDeclaration, SEnvCSSStyleDeclarationInterface, cssStyleDeclarationMutators } from "./declaration";
+import { diffCSStyleDeclaration, SEnvCSSStyleDeclarationInterface, cssStyleDeclarationMutators, parseStyleSource } from "./declaration";
 import { SEnvCSSObjectInterface, getSEnvCSSBaseObjectClass, SEnvCSSObjectParentInterface } from "./base";
 import { SEnvCSSStyleSheetInterface } from "./style-sheet";
 import { getSEnvCSSCollectionClasses } from "./collections";
@@ -385,7 +385,7 @@ export const CSS_STYLE_RULE_SET_STYLE = "CSS_STYLE_RULE_SET_STYLE";
 export const CSS_STYLE_RULE_SET_STYLE_PROPERTY = "CSS_STYLE_RULE_SET_STYLE_PROPERTY"; 
 
 export const cssStyleRuleSetSelectorText = (rule: CSSStyleRule, selectorText: string) => createSetValueMutation(CSS_STYLE_RULE_SET_SELECTOR_TEXT, rule, selectorText);
-export const cssStyleRuleSetStyle = (rule: CSSStyleRule, style: SEnvCSSStyleDeclarationInterface) => createSetValueMutation(CSS_STYLE_RULE_SET_STYLE, rule, style);
+export const cssStyleRuleSetStyle = (rule: CSSStyleRule, style: SEnvCSSStyleDeclarationInterface) => createSetValueMutation(CSS_STYLE_RULE_SET_STYLE, rule, style.cssText);
 export const cssStyleRuleSetStyleProperty = (rule: CSSStyleRule, name: string, value: string) => createPropertyMutation(CSS_STYLE_RULE_SET_STYLE_PROPERTY, rule, name, value);
 
 const diffStyleRule = (oldRule: CSSStyleRule, newRule: CSSStyleRule) => {
@@ -464,12 +464,15 @@ export const cssStyleRuleMutators = {
   [CSS_STYLE_RULE_SET_SELECTOR_TEXT]: (target: CSSStyleRule, mutation: SetValueMutation<any>) => {
     target.selectorText = mutation.newValue;
   },
-  [CSS_STYLE_RULE_SET_STYLE]: (target: CSSStyleRule, { newValue: style }: SetValueMutation<CSSStyleDeclaration>) => {
+  [CSS_STYLE_RULE_SET_STYLE]: (target: CSSStyleRule, { newValue: style }: SetValueMutation<string>) => {
     while(target.style.length) {
       target.style.removeProperty(target.style[0]);
     }
-    for (let i = 0, n = style.length; i < n; i++) {
-      target.style.setProperty(style[i], style[style[i]]);
+    
+    const props = parseStyleSource(style);
+
+    for (const prop in props) {
+      target.style.setProperty(prop, props[prop]);
     }
   },
   [CSS_STYLE_RULE_SET_STYLE_PROPERTY]: (target: CSSStyleRule, { name, newValue }: SetPropertyMutation<any>) => {

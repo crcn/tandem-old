@@ -2,7 +2,7 @@ import { weakMemo, Struct, generateDefaultId, ExpressionLocation } from "aerial-
 
 export interface SEnvCSSObjectInterface {
   $id: string;
-  $source: ExpressionLocation;
+  source: ExpressionLocation;
   struct: Struct;
   previewCSSText: string;
 }
@@ -16,7 +16,7 @@ export const getSEnvCSSBaseObjectClass = weakMemo((context: any) => {
     protected _struct: Struct;
     readonly $id: string;
     abstract previewCSSText: string;
-    public $source: ExpressionLocation;
+    public source: ExpressionLocation;
 
     constructor() {
       this.$id = generateDefaultId();

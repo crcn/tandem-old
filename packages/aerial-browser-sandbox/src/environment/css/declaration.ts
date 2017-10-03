@@ -30,6 +30,20 @@ export const cssPropNameToKebabCase = (propName: string) => {
   return propName;
 }
 
+
+export const parseStyleSource = (source: string) => {
+
+  const props = {};
+  
+  source.split(";").forEach((decl) => {
+    const [key, value] = decl.split(":");
+    if (!key || !value) return;
+    const ccKey = camelCase(key.trim());
+    props[ccKey] = value.trim();
+  });
+
+  return props;
+}
 export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identity }: SEnvWindowContext) => {
   return class SEnvCSSStyleDeclaration implements SEnvCSSStyleDeclarationInterface {
 
@@ -468,26 +482,15 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
 
     set cssText(value: string) {
 
-      const props = {};
-      
-      value.split(";").forEach((decl) => {
-        const [key, value] = decl.split(":");
-        const ccKey = camelCase(key.trim());
-        props[ccKey] = this[ccKey] = value;
-      });
+      const props = parseStyleSource(value);
+      Object.assign(this, props);
       this.$updatePropertyIndices();
       this.didChange(cssStyleDeclarationSetProperties(this, props), true);
     }
 
     static fromString(source: string) {
       const decl = new SEnvCSSStyleDeclaration();
-      const items = source.split(";");
-      for (let i = 0, n = items.length; i < n; i++) {
-        const expr = items[i];
-        const [name, value] = expr.split(":");
-        if (!name || !value) continue;
-        decl[camelCase(name.trim())] = value.trim();
-      }
+      Object.assign(decl, parseStyleSource(source));
       decl.$updatePropertyIndices();
       return decl;
     }

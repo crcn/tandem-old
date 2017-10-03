@@ -73,7 +73,7 @@ export const evaluateCSS = (source: string, sourceURI: string, context: any, map
       end = undefined;
     }
 
-    synthetic.$source = {
+    synthetic.source = {
       kind: expression.type,
 
       // todo - this may not be correct.
