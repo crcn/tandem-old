@@ -1,6 +1,6 @@
 import { cancel, fork, take, put, call, spawn, actionChannel, select } from "redux-saga/effects";
 import { eventChannel, delay } from "redux-saga";
-import { difference, debounce, values } from "lodash";
+import { difference, debounce, values, uniq } from "lodash";
 import { createQueue } from "mesh";
 
 import { 
@@ -108,6 +108,8 @@ import {
   SyntheticCSSStyleRule,
   SyntheticBrowserRootState,
   isSyntheticNodeType,
+  SYNTHETIC_ELEMENT,
+  SYNTHETIC_CSS_STYLE_RULE,
   getSyntheticBrowserBounds,
   SyntheticComment,
   getSyntheticNodeById,
@@ -135,10 +137,13 @@ import {
   SEnvElementInterface,
   SEnvCommentInterface,
   SyntheticDOMRenderer,
+  cssStyleRuleSetStyle,
+  cssStyleRuleSetStyleProperty,
   SEnvDocumentInterface,
   waitForDocumentComplete,
   SyntheticMirrorRenderer,
   SEnvHTMLElementInterface,
+  SEnvCSSStyleRuleInterface,
   flattenWindowObjectSources,
   SyntheticWindowRendererEvent,
   createUpdateValueNodeMutation,
@@ -462,7 +467,9 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
   });
 }
 
-const getTargetStyleOwners = (element: SEnvElementInterface, targetSelectors: string[]) => {
+const getTargetStyleOwners = (element: SEnvElementInterface, propertyNames: string[], targetSelectors: string[]): {
+  [identifier: string]: SEnvHTMLElementInterface | SEnvCSSStyleRuleInterface
+} => {
 
   // find all applied rules
   const appliedRules = getSyntheticAppliedCSSRules(element.ownerDocument.defaultView.struct, element.$id).map(({ rule }) => rule.instance);
@@ -474,16 +481,23 @@ const getTargetStyleOwners = (element: SEnvElementInterface, targetSelectors: st
     targetRules = [appliedRules[0]];
   }
 
-  const positionOwner = targetRules.find((rule) => Boolean(rule.style.position)) || targetRules[0];
-  const leftOwner = targetRules.find((rule) => Boolean(rule.style.left)) || targetRules[0];
-  const topOwner  = targetRules.find((rule) => Boolean(rule.style.top)) || targetRules[0];
+  const ret = {};
+  for (const propName of propertyNames) {
+    ret[propName] = targetRules.find((rule) => Boolean(rule.style[propName])) || targetRules[0]
+  }
 
-  return {
-    positionOwner,
-    leftOwner,
-    topOwner
-  };
-}
+  return ret;
+};
+
+const createStyleMutation = (target: SEnvElementInterface | SEnvCSSStyleRuleInterface) => {
+  if (target.struct.$type === SYNTHETIC_ELEMENT) {
+    const element = target as SEnvElementInterface;
+    return createSetElementAttributeMutation(element, "style", element.getAttribute("style"));
+  } else if (target.struct.$type === SYNTHETIC_CSS_STYLE_RULE) {
+    const rule = target as SEnvCSSStyleRuleInterface;
+    return cssStyleRuleSetStyle(rule, rule.style);
+  }
+};
 
 function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
 
@@ -524,18 +538,18 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
       }));
 
       const envElement = flattenWindowObjectSources(window.struct)[syntheticNode.$id] as any as SEnvHTMLElementInterface;
-      const { positionOwner, leftOwner, topOwner } = getTargetStyleOwners(envElement, targetSelectors);
+      const { top, left, position } = getTargetStyleOwners(envElement, ["top", "left", "position"], targetSelectors);
 
       // TODO - get best CSS style
       if (computedStyle.position === "static") {
-        positionOwner.style.setProperty("position", "relative");
+        position.style.setProperty("position", "relative");
       }
 
       // transitions will foo with dragging, so temporarily
       // disable them
       envElement.style.setProperty("transition", "none");
-      leftOwner.style.setProperty("left", `${relativeRect.left}px`);
-      topOwner.style.setProperty("top", `${relativeRect.top}px`);
+      left.style.setProperty("left", `${relativeRect.left}px`);
+      top.style.setProperty("top", `${relativeRect.top}px`);
     }
   });
 
@@ -564,12 +578,13 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
       const {itemType, itemId, targetSelectors}: Moved = (yield take((action: Moved) => action.type === STOPPED_MOVING && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
 
       yield spawn(function*() {
-        const target = flattenWindowObjectSources(window.struct)[itemId] as any as HTMLElement;
-
+        const target = flattenWindowObjectSources(window.struct)[itemId] as any as SEnvHTMLElementInterface;
         target.style.removeProperty("transition");
-        // TODO - prompt where to persist style
-        const mutation = createSetElementAttributeMutation(target, "style", target.getAttribute("style"));
-        yield yield request(deferApplyFileMutationsRequest(mutation));
+
+        const { top, left, position } = getTargetStyleOwners(target, ["top", "left", "position"], targetSelectors);
+        const mutations = uniq([top, left, position]).map(createStyleMutation);
+
+        yield yield request(deferApplyFileMutationsRequest(...mutations));
       });
     }
   });

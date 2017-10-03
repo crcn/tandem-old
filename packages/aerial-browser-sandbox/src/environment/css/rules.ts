@@ -3,6 +3,7 @@ import {
   Mutation,
   diffArray,
   SetValueMutation,
+  SetPropertyMutation,
   MoveChildMutation,
   InsertChildMutation,
   RemoveChildMutation,
@@ -53,6 +54,7 @@ export interface SEnvCSSParentRuleInterface extends SEnvCSSRuleInterface, SEnvCS
 
 export interface SEnvCSSStyleRuleInterface extends CSSStyleRule, SEnvCSSParentRuleInterface {
   struct: SyntheticCSSStyleRule;
+  style: SEnvCSSStyleDeclarationInterface;
 }
 
 export interface CSSParentObject {
@@ -158,7 +160,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
     set selectorText(value: string) {
       this._selectorText = value;
-      this.didChange(styleRuleSetSelectorText(this, value), true);
+      this.didChange(cssStyleRuleSetSelectorText(this, value), true);
     }
     readonly style: SEnvCSSStyleDeclarationInterface;
     readonly type = CSSRuleType.STYLE_RULE;
@@ -378,15 +380,19 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
   };
 });
 
-export const CSS_STYLE_RULE_SET_SELECTOR_TEXT = "STYLE_RULE_SET_SELECTOR_TEXT"; 
+export const CSS_STYLE_RULE_SET_SELECTOR_TEXT = "CSS_STYLE_RULE_SET_SELECTOR_TEXT"; 
+export const CSS_STYLE_RULE_SET_STYLE = "CSS_STYLE_RULE_SET_STYLE"; 
+export const CSS_STYLE_RULE_SET_STYLE_PROPERTY = "CSS_STYLE_RULE_SET_STYLE_PROPERTY"; 
 
-const styleRuleSetSelectorText = (rule: CSSStyleRule, selectorText: string) => createSetValueMutation(CSS_STYLE_RULE_SET_SELECTOR_TEXT, rule, selectorText);
+export const cssStyleRuleSetSelectorText = (rule: CSSStyleRule, selectorText: string) => createSetValueMutation(CSS_STYLE_RULE_SET_SELECTOR_TEXT, rule, selectorText);
+export const cssStyleRuleSetStyle = (rule: CSSStyleRule, style: SEnvCSSStyleDeclarationInterface) => createSetValueMutation(CSS_STYLE_RULE_SET_STYLE, rule, style);
+export const cssStyleRuleSetStyleProperty = (rule: CSSStyleRule, name: string, value: string) => createPropertyMutation(CSS_STYLE_RULE_SET_STYLE_PROPERTY, rule, name, value);
 
 const diffStyleRule = (oldRule: CSSStyleRule, newRule: CSSStyleRule) => {
   const mutations = [];
 
   if (oldRule.selectorText !== newRule.selectorText) {
-    mutations.push(styleRuleSetSelectorText(oldRule, newRule.selectorText));
+    mutations.push(cssStyleRuleSetSelectorText(oldRule, newRule.selectorText));
   }
 
   mutations.push(...diffCSStyleDeclaration(oldRule.style, newRule.style));
@@ -457,6 +463,17 @@ export const cssStyleRuleMutators = {
   ...cssStyleDeclarationMutators,
   [CSS_STYLE_RULE_SET_SELECTOR_TEXT]: (target: CSSStyleRule, mutation: SetValueMutation<any>) => {
     target.selectorText = mutation.newValue;
+  },
+  [CSS_STYLE_RULE_SET_STYLE]: (target: CSSStyleRule, { newValue: style }: SetValueMutation<CSSStyleDeclaration>) => {
+    while(target.style.length) {
+      target.style.removeProperty(target.style[0]);
+    }
+    for (let i = 0, n = style.length; i < n; i++) {
+      target.style.setProperty(style[i], style[style[i]]);
+    }
+  },
+  [CSS_STYLE_RULE_SET_STYLE_PROPERTY]: (target: CSSStyleRule, { name, newValue }: SetPropertyMutation<any>) => {
+    target.style.setProperty(name, newValue);
   }
 }
 
