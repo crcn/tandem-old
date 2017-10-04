@@ -50,6 +50,15 @@
       }
     } 
 
+
+    &.is-default {
+      .ion-star {
+        visibility: visible;
+        opacity: 0.5;
+        color: $color-orange-7;
+      }
+    }
+
     &.is-target {
       .ion-star {
         visibility: visible;

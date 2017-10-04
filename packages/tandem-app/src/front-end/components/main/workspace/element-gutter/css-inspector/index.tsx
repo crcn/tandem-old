@@ -55,6 +55,7 @@ export type CSSInspectorOuterProps = {
 }
 
 export type AppliedCSSRuleResultOuterProps = {
+  isDefault?: boolean;
   workspaceId: string;
   window: SyntheticWindow;
   appliedRule: AppliedCSSRuleResult;
@@ -228,6 +229,7 @@ const NewStyleProperty = compose<StylePropertyInnerProps, NewStylePropertyOuterP
 
 const AppliedCSSRuleInfoBase = ({ 
   window, 
+  isDefault,
   isTarget,
   dispatch,
   appliedRule, 
@@ -264,7 +266,7 @@ const AppliedCSSRuleInfoBase = ({
     );
   }
 
-  return <div className={cx("style-rule-info", { "is-target": isTarget })}>
+  return <div className={cx("style-rule-info", { "is-target": isTarget, "is-default": isDefault })}>
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
         { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
         <span className="source" onClick={onSourceClicked}>
@@ -334,7 +336,7 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
   return <Pane title="CSS" className="m-css-inspector">
     {
       rules.map((rule) => {
-        return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source.uri === uri && rule.rule.selectorText == value)) || (targetSelectors.length === 0 && !rule.rule.selectorText)} />
+        return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />
       })
     }
   </Pane>;

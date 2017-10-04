@@ -48,16 +48,18 @@ const AffectedElement = compose<AffectedElementOuterProps, AffectedElementOuterP
 
 const AffectedNodesToolBase = ({ workspace, browser, zoom }: AffectedNodesToolOuterProps) => {
   const targetElementRef = workspace.selectionRefs.reverse().find(([$type]) => $type === SYNTHETIC_ELEMENT);
+
   if (!targetElementRef) {
     return null;
   }
 
   const targetElement = getSyntheticNodeById(browser, targetElementRef[1]) as SyntheticElement;
+
   if (!targetElement) {
     return null;
   }
   const targetWindow = getSyntheticNodeWindow(browser, targetElement.$id);
-  const affectedElements = getSelectorAffectedElements(filterMatchingTargetSelectors(workspace.targetCSSSelectors, targetElement, targetWindow), browser) as SyntheticElement[];
+  const affectedElements = getSelectorAffectedElements(targetElement.$id, filterMatchingTargetSelectors(workspace.targetCSSSelectors, targetElement, targetWindow), browser) as SyntheticElement[];
 
   return <div className="m-affected-nodes">
     {

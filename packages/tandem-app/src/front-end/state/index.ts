@@ -30,6 +30,7 @@ import {
   createImmutableObject,
   ImmutableArrayIdentity,
   ImmutableObjectIdentity,
+  expressionLocationEquals,
   createImmutableStructFactory,
 } from "aerial-common2";
 import { createFileCacheStore, FileCacheRootState, FileCacheItem, getFileCacheItemById } from "aerial-sandbox2";
@@ -359,14 +360,34 @@ const getSelectorAffectedWindows = weakMemo((targetCSSSelectors: TargetSelector[
   return affectedWindows;
 });
 
-export const getSelectorAffectedElements = weakMemo((targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser): SyntheticElement[] => {
+export const getObjectsWithSameSource = weakMemo((itemId: string, browser: SyntheticBrowser): any[] => {
+  const target = getSyntheticNodeById(browser, itemId);
+  const objects = {};
+  const objectsWithSameSource = [];
+  for (const window of browser.windows) {
+    const windowsObjects = getSyntheticWindowChildStructs(window);
+    for (const $id in windowsObjects) {
+      const child = windowsObjects[$id];
+      if (expressionLocationEquals(child.source, target.source)) {
+        objectsWithSameSource.push(child);
+      }
+    }
+  }
+  return objectsWithSameSource;
+});
+
+export const getSelectorAffectedElements = weakMemo((elementId: string, targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser): SyntheticElement[] => {
   const targetCSSRules: SyntheticCSSStyleRule[] = [];
-  const affectedWindows = getSelectorAffectedWindows(targetCSSSelectors, browser);
+  const affectedWindows = targetCSSSelectors.length ? getSelectorAffectedWindows(targetCSSSelectors, browser) : browser.windows;
   const affectedElements: SyntheticElement[] = [];
 
   for (const window of affectedWindows) {
-    for (const { value: selectorText } of targetCSSSelectors) {
-      affectedElements.push(...getMatchingElements(window, selectorText));
+    if (!targetCSSSelectors.length) {
+      affectedElements.push(...getObjectsWithSameSource(elementId, browser));
+    } else {
+      for (const { value: selectorText } of targetCSSSelectors) {
+        affectedElements.push(...getMatchingElements(window, selectorText));
+      }
     }
   }
 
