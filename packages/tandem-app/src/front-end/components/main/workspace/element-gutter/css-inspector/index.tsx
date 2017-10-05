@@ -270,7 +270,9 @@ const AppliedCSSRuleInfoBase = ({
 
   return <div className={cx("style-rule-info", { "is-target": isTarget, "is-default": isDefault })}>
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
-        { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
+        <span className="selector">
+          { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
+        </span>
         <span className="source" onClick={onSourceClicked}>
           { appliedRule.rule.source && `${path.basename(appliedRule.rule.source.uri)}:${appliedRule.rule.source.start.line}` }
         </span>

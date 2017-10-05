@@ -16,9 +16,11 @@
   .style-rule-info {
     width: 100%;
     overflow: hidden;
+    line-height: 1.8em;
 
     > .title {
       width: 100%;
+      display: inline-block;
       padding: $padding-base * 4 $padding-base * 4;
       background: $color-grey-10;
 
