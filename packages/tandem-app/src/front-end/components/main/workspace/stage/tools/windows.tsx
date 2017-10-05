@@ -53,6 +53,8 @@ const WindowItemBase = ({ window, translate, dispatch, fullScreenWindowId }: Win
     onKeyDown={wrapEventToDispatch(dispatch, stageToolWindowKeyDown.bind(this, window.$id))} 
     onClick={wrapEventToDispatch(dispatch, stageToolWindowTitleClicked.bind(this, window.$id))}>
       { window.document && window.document.title || window.location }
+
+      {/* TODO: eventually this should point to browserstack -- whatever the navigator agent is of the window */}
       <i className="ion-share" onClick={wrapEventToDispatch(dispatch, openExternalWindowButtonClicked.bind(this, window.$id))} />
     </div>
     <div className="m-windows-stage-tool-item-content" style={contentStyle}>
