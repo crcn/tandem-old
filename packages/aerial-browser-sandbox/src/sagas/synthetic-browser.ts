@@ -550,7 +550,9 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
 
       // transitions will foo with dragging, so temporarily
       // disable them
-      envElement.style.setProperty("transition", "none");
+
+      // TODO - need to fix this -- causes jumpy CSS inspector
+      // envElement.style.setProperty("transition", "none");
       left.style.setProperty("left", `${relativeRect.left}px`);
       top.style.setProperty("top", `${relativeRect.top}px`);
     }
@@ -582,7 +584,7 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
 
       yield spawn(function*() {
         const target = flattenWindowObjectSources(window.struct)[itemId] as any as SEnvHTMLElementInterface;
-        target.style.removeProperty("transition");
+        // target.style.removeProperty("transition");
 
         // TODO - clear non targets
         const { top, left, position } = getTargetStyleOwners(target, ["top", "left", "position"], targetSelectors);
