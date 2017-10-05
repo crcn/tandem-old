@@ -2,6 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import { compose, pure, lifecycle, withHandlers } from "recompose";
 import { Resizer } from "./resizer";
+import { SelectionLabel } from "./label";
 import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { Dispatcher, mergeBounds, Bounded, wrapEventToDispatch } from "aerial-common2";
 import { Workspace, getBoundedWorkspaceSelection, getSyntheticBrowserItemBounds } from "front-end/state";

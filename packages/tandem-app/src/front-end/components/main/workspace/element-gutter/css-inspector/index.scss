@@ -1,6 +1,18 @@
 @import "front-end/scss/variables";
 
 .m-css-inspector {
+
+  > .header > .pane-title {
+    .selected-element {
+      color: $color-aqua-1;
+    }
+  }
+
+  .too-many-selected {
+    padding: $padding-base * 8;
+    font-size: $font-size-md;
+    display: block;
+  }
   .style-rule-info {
     width: 100%;
     overflow: hidden;

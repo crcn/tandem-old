@@ -9,7 +9,7 @@ const cx = require("classnames");
 const enhancePane = pure;
 
 export type PaneProps = {
-  title: string | Component<any>;
+  title: any;
   controls?: any;
   children: any;
   className?: string;

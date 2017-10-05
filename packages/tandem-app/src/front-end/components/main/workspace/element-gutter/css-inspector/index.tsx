@@ -15,7 +15,7 @@ import * as React from "react";
 import * as path from "path";
 import { Autofocus } from "front-end/components/autofocus";
 import { mapValues } from "lodash";
-import { wrapEventToDispatch, Dispatcher } from "aerial-common2";
+import { wrapEventToDispatch, Dispatcher, TargetSelector } from "aerial-common2";
 import { pure, compose, withHandlers, withState } from "recompose";
 
 import { 
@@ -32,9 +32,11 @@ import {
   Workspace,
   SyntheticWindow, 
   SyntheticBrowser, 
+  SyntheticElement,
   SYNTHETIC_ELEMENT,
-  getSyntheticNodeWindow,
   getSyntheticNodeById,
+  getSyntheticNodeWindow,
+  getSyntheticElementLabel,
 } from "front-end/state";
 
 import { 
@@ -321,25 +323,33 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
 )(AppliedCSSRuleInfoBase);
 
 const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterProps) => {
-  if (!workspace.selectionRefs.length || workspace.selectionRefs[0][0] !== SYNTHETIC_ELEMENT)  return null;
-  const targetElementId = workspace.selectionRefs[0][1];
-  const element = getSyntheticNodeById(browser, targetElementId);
-  const window = getSyntheticNodeWindow(browser, targetElementId);
-  const targetSelectors = workspace.targetCSSSelectors || [];
 
-  if (!element || !window) {
+  const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SYNTHETIC_ELEMENT);
+
+  if (!selectedElementRefs.length) {
     return null;
   }
 
-  const rules = getSyntheticAppliedCSSRules(window, targetElementId);
+  const targetSelectors = workspace.targetCSSSelectors || [];
 
-  return <Pane title="CSS" className="m-css-inspector">
-    {
-      rules.map((rule) => {
-        return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />
-      })
-    }
-  </Pane>;
+  return <div>
+    { selectedElementRefs.sort((a, b) => a[1] > b[1] ? -1 : 1).map(([type, targetElementId]) => {
+      const element = getSyntheticNodeById(browser, targetElementId) as SyntheticElement;
+      const window = getSyntheticNodeWindow(browser, targetElementId);
+      if (!element || !window) {
+        return null;
+      }
+      const rules = getSyntheticAppliedCSSRules(window, targetElementId);
+      const title = <span className="pane-title"><span className="selected-element">{getSyntheticElementLabel(element)}</span> CSS</span>;
+      return <Pane title={title} className="m-css-inspector">
+        {
+          rules.map((rule) => {
+            return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />
+          })
+        }
+      </Pane>
+    }) }
+  </div>
 };
 
 const enhanceCSSInspector = compose<CSSInspectorOuterProps, CSSInspectorOuterProps>(

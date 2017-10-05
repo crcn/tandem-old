@@ -5,7 +5,6 @@ import { getWorkspaceById, Workspace } from "front-end/state";
 import { resizerPathMoved, resizerPathStoppedMoving } from "front-end/actions";
 import { Dispatcher, startDOMDrag, Point, BaseEvent, WrappedEvent, Bounds } from "aerial-common2";
 
-
 export type PathOuterProps = {
   points: Point[];
   zoom: number;
