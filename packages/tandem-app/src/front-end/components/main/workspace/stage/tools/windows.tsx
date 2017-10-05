@@ -4,7 +4,7 @@ import { compose, pure } from "recompose";
 import { Workspace } from "front-end/state";
 import { SyntheticWindow, SyntheticBrowser } from "aerial-browser-sandbox";
 import { Dispatcher, getBoundsSize, Translate, wrapEventToDispatch } from "aerial-common2";
-import { stageToolWindowTitleClicked, stageToolWindowKeyDown, stageToolWindowBackgroundClicked } from "front-end/actions";
+import { stageToolWindowTitleClicked, stageToolWindowKeyDown, stageToolWindowBackgroundClicked, openExternalWindowButtonClicked } from "front-end/actions";
 
 type WindowItemInnerProps = {
   window: SyntheticWindow;
@@ -53,6 +53,7 @@ const WindowItemBase = ({ window, translate, dispatch, fullScreenWindowId }: Win
     onKeyDown={wrapEventToDispatch(dispatch, stageToolWindowKeyDown.bind(this, window.$id))} 
     onClick={wrapEventToDispatch(dispatch, stageToolWindowTitleClicked.bind(this, window.$id))}>
       { window.document && window.document.title || window.location }
+      <i className="ion-share" onClick={wrapEventToDispatch(dispatch, openExternalWindowButtonClicked.bind(this, window.$id))} />
     </div>
     <div className="m-windows-stage-tool-item-content" style={contentStyle}>
 

@@ -28,6 +28,8 @@ import {
   windowSelectionShifted,
   WINDOW_SELECTION_SHIFTED,
   CLONE_WINDOW_SHORTCUT_PRESSED,
+  OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED,
+  OpenExternalWindowButtonClicked,
   PROMPTED_NEW_WINDOW_URL,
   PromptedNewWindowUrl,
   DELETE_SHORCUT_PRESSED, 
@@ -85,6 +87,7 @@ export function* mainWorkspaceSaga() {
   yield fork(handleOpenNewWindowShortcut);
   yield fork(handleCloneSelectedWindowShortcut);
   yield fork(handleSourceClicked);
+  yield fork(handleOpenExternalWindowButtonClicked);
 }
 
 function* openDefaultWindow() {
@@ -98,6 +101,14 @@ function* openDefaultWindow() {
     // yield put(openSyntheticWindowRequest("http://localhost:8080/index.html", workspace.browserId));
     return true;
   });
+}
+
+function* handleOpenExternalWindowButtonClicked() {
+  while(true) {
+    const { windowId }: OpenExternalWindowButtonClicked = yield take(OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED);
+    const syntheticWindow = getSyntheticWindow(yield select(), windowId);
+    window.open(syntheticWindow.location, "_blank");
+  }
 }
 
 function* handleAltClickElement() {

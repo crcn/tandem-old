@@ -1,3 +1,5 @@
+@import "front-end/scss/variables";
+
 .m-windows-stage-tool {
 
   &-item {
@@ -10,7 +12,23 @@
       left: 0;
       transform: translateY(calc(-100% - 10px));
       user-select: none;
+
+      &:hover {
+        .ion-share {
+          display: inline-block;
+        }
+      }
+      & .ion-share {
+        display: none;
+        cursor: pointer;
+        padding-left: $padding-base * 4;
+        font-size: 1.2em;
+        position: relative;
+        top: 1;
+      }
     }
+
+
     &-content {
       position: absolute;
       top: 0;

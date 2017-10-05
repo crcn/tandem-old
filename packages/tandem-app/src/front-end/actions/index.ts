@@ -54,6 +54,7 @@ export const STAGE_TOOL_OVERLAY_MOUSE_PAN_START = "STAGE_TOOL_OVERLAY_MOUSE_PAN_
 export const STAGE_TOOL_OVERLAY_MOUSE_PANNING = "STAGE_TOOL_OVERLAY_MOUSE_PANNING";
 export const STAGE_TOOL_OVERLAY_MOUSE_PAN_END = "STAGE_TOOL_OVERLAY_MOUSE_PAN_END";
 export const STAGE_TOOL_WINDOW_KEY_DOWN = "STAGE_TOOL_WINDOW_KEY_DOWN";
+export const OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED = "OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED";
 export const WORKSPACE_DELETION_SELECTED = "WORKSPACE_DELETION_SELECTED";
 export const STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED = "STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED";
 export const SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
@@ -148,6 +149,10 @@ export type StageWillWindowTitleClicked = {
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type StageWillWindowKeyDown = {
+  windowId: string;
+} & WrappedEvent<React.KeyboardEvent<any>>;
+
+export type OpenExternalWindowButtonClicked = {
   windowId: string;
 } & WrappedEvent<React.KeyboardEvent<any>>;
 
@@ -273,6 +278,7 @@ export const canvasMotionRested = () => ({
 export const treeNodeLabelClicked = (node: TreeNode<any>): TreeNodeLabelClicked => ({ type: TREE_NODE_LABEL_CLICKED, node });
 export const stageToolWindowTitleClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): StageWillWindowTitleClicked => ({ type: STAGE_TOOL_WINDOW_TITLE_CLICKED, windowId, sourceEvent });
 export const stageToolWindowKeyDown = (windowId: string, sourceEvent: React.KeyboardEvent<any>): StageWillWindowKeyDown => ({ type: STAGE_TOOL_WINDOW_KEY_DOWN, windowId, sourceEvent });
+export const openExternalWindowButtonClicked = (windowId: string, sourceEvent: React.KeyboardEvent<any>): OpenExternalWindowButtonClicked => ({ type: OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED, windowId, sourceEvent });
 
 export const stageToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: STAGE_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });
 
