@@ -215,11 +215,30 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
   }
 
+  class SEnvMediaList implements MediaList {
+    readonly length = 0;
+    [identifier: number]: string;
+    constructor(public mediaText: string) {
+      
+    }
+    item(index: number) {
+      // throw new Error(`not implemented`);
+      return null;
+    }
+    appendMedium(value: string) {
+      throw new Error(`not implemented`);
+    }
+    deleteMedium(value: string) {
+      throw new Error(`not implemented`);
+    }
+  }
+
   class SEnvCSSMediaRule extends SEnvCSSGroupingRule implements CSSMediaRule {
     readonly type = CSSRuleType.MEDIA_RULE;
     readonly media: MediaList;
     constructor(private _conditionText: string, rules: SEnvCSSRule[]) {
       super(rules);
+      this.media = new SEnvMediaList(this._conditionText);
     }
 
     get previewCSSText() {

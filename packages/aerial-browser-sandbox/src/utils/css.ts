@@ -49,6 +49,8 @@ export type AppliedCSSRuleResult = {
 
   rule: StyledObject;
 
+  media?: string;
+
   // property rules that are 
   ignoredPropertyNames?: {
     [identifier: string]: boolean
@@ -82,6 +84,10 @@ const getDocumentCSSStyleRules = weakMemo((document: SyntheticDocument) => {
   return allRules;
 });
 
+export const windowMatchesMedia = weakMemo((window: SyntheticWindow, conditionText: string) => {
+  return window.instance.matchMedia(conditionText).matches;
+});
+
 // TODO - consider media screen here too
 
 export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
@@ -102,8 +108,8 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
         matchingRules.push(rule.struct);
       }
     // else - check if media rule
-    } else {
-
+    } else if ((rule.parentRule as any as CSSMediaRule).conditionText && windowMatchesMedia(window, (rule.parentRule as any as CSSMediaRule).conditionText)) {
+      matchingRules.push(rule.struct);
     }
   }
 
@@ -132,6 +138,8 @@ const getSyntheticInheritableCSSRules = weakMemo((window: SyntheticWindow, eleme
 
   return inheritableCSSRules;
 });
+
+const getParentMediaText = (rule: any) => (rule as SEnvCSSRuleInterface).parentRule && ((rule as SEnvCSSRuleInterface).parentRule as CSSMediaRule).conditionText;
 
 export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
   const element = getSyntheticWindowChild(window, elementId) as any as SyntheticElement;
@@ -163,6 +171,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
 
     appliedRules.push({
       inherited: false,
+      media: getParentMediaText(matchingRule.instance),
       rule: matchingRule,
       overriddenPropertyNames,
     });
@@ -199,6 +208,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
 
       appliedRules.push({
         inherited: true,
+        media: getParentMediaText(ancestorRule.instance),
         rule: ancestorRule,
         ignoredPropertyNames,
         overriddenPropertyNames,

@@ -6,6 +6,7 @@ import { getSEnvEventTargetClass, getSEnvEventClasses, SEnvMutationEventInterfac
 import { SyntheticWindowRendererInterface, createNoopRenderer, SyntheticDOMRendererFactory, SyntheticWindowRendererEvent, SyntheticMirrorRenderer } from "./renderers";
 import { getNodeByPath, getNodePath } from "../utils/node-utils";
 import { getSEnvTimerClasses, SEnvTimersInterface } from "./timers";
+import { createMediaMatcher } from "./media-match";
 import { 
   SEnvElementInterface,
   getSEnvHTMLElementClasses, 
@@ -433,6 +434,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     fetch: Fetch;
     private _childWindowCount: number = 0;
     private _timers: SEnvTimersInterface;
+    private _matchMedia: any;
     public $id: string;
     
     constructor(origin: string) {
@@ -470,6 +472,8 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       for (const tagName in TAG_NAME_MAP) {
         customElements.define(tagName, TAG_NAME_MAP[tagName]);
       }
+      
+      this._matchMedia =  createMediaMatcher(this);
 
       this.document.addEventListener(SEnvMutationEvent.MUTATION, this._onDocumentMutation.bind(this));
     }
@@ -500,6 +504,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
           $id: this.$id,
           location: this.location.toString(),
           document: this.document.struct,
+          instance: this,
           renderContainer: this.renderer.container,
           scrollPosition: {
             left: this.scrollX,
@@ -580,8 +585,12 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     matchMedia(mediaQuery: string): MediaQueryList {
-      this._throwUnsupportedMethod();
-      return null;
+      return {
+        matches: this._matchMedia(mediaQuery),
+        media: mediaQuery,
+        addListener: null,
+        removeListener: null,
+      };
     }
 
     clearInterval(handle: number): void {

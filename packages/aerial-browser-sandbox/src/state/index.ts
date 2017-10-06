@@ -551,6 +551,7 @@ export const isSyntheticNodeType = (value: string) => {
 export type SyntheticWindow = {
   scrollPosition: Point;
   renderContainer: HTMLElement;
+  instance: SEnvWindowInterface;
   location: string;
   document: SyntheticDocument;
   bounds: Bounds;

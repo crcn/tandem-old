@@ -277,6 +277,7 @@ const AppliedCSSRuleInfoBase = ({
           { appliedRule.rule.source && `${path.basename(appliedRule.rule.source.uri)}:${appliedRule.rule.source.start.line}` }
         </span>
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
+        { appliedRule.media ? <span className="media">@media { appliedRule.media }</span> : null }
         <i className="ion-star" onClick={onToggleAsTarget} />
         <i className="ion-plus add-declaration-button" onClick={onAddDeclaration} />
       </div>
@@ -343,7 +344,7 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
       }
       const rules = getSyntheticAppliedCSSRules(window, targetElementId);
       const title = <span className="pane-title"><span className="selected-element">{getSyntheticElementLabel(element)}</span> CSS</span>;
-      return <Pane title={title} className="m-css-inspector">
+      return <Pane key={element.$id} title={title} className="m-css-inspector">
         {
           rules.map((rule) => {
             return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />

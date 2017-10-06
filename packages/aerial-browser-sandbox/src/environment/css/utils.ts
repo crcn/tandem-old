@@ -90,7 +90,6 @@ export const evaluateCSS = (source: string, sourceURI: string, context: any, map
   };
 
   const mapAtRule = (atRule: postcss.AtRule): any => {
-
     if (atRule.name === "keyframes") {
       return link(atRule, new SEnvCSSKeyframesRule(atRule.params, acceptAll(atRule.nodes)));
     } else if (atRule.name === "media") {

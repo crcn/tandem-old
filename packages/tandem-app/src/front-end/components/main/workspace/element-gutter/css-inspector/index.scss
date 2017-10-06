@@ -48,6 +48,12 @@
         padding: $padding-base $padding-base * 4;
       }
 
+      > .media {
+        margin-left: $padding-base * 2;
+        background: rgba(0,0,0,0.05);
+        padding: $padding-base $padding-base * 4;
+      }
+
       > .ion-plus {
         font-size: 0.9em;
         visibility: hidden;
