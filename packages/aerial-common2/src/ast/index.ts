@@ -6,6 +6,9 @@ export type ExpressionPosition = {
 export type ExpressionLocation = {
   uri: string;
 
+  // unique identifier for expression source file 
+  fingerprint?: string;
+
   // the expression kind - attr element name, text, comment, etc.
   kind?: any;
 

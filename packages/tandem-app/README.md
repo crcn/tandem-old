@@ -60,7 +60,7 @@ NON-GOALS:
 - [ ] AWS lambda for rendering
 - [ ] persisting to local storage needs to reload sibling windows
 - [ ] POST needs to reload sibling windows (not self)
-- [ ] 
+
 
 - COMPATIBILITY CHECKLIST:
 

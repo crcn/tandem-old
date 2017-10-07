@@ -76,7 +76,7 @@ export const cssInsertRule = (parent: CSSStyleSheet|CSSGroupingRule, child: stri
     child = childObject;
   }
   Array.prototype.splice.call(parent.cssRules, index, 0, child);
-  parent["didChange"]();
+  parent["didChange"](cssParentInsertRule(parent, child as CSSRule, index));
   return index;
 }
 
@@ -84,7 +84,7 @@ export const cssInsertRule = (parent: CSSStyleSheet|CSSGroupingRule, child: stri
 export const cssDeleteRule = (parent: CSSStyleSheet|CSSGroupingRule, index: number) => {
   const child = parent.cssRules[index];
   Array.prototype.splice.call(parent.cssRules, index, 1);
-  parent["didChange"]();
+  parent["didChange"](cssParentDeleteRule(parent, child, index));
 }
 
 export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
@@ -432,7 +432,7 @@ export const CSS_PARENT_MOVE_RULE   = "CSS_PARENT_MOVE_RULE";
 
 export const cssParentInsertRule = (parent: CSSParentObject, rule: CSSRule, newIndex: number) => createInsertChildMutation(CSS_PARENT_INSERT_RULE, parent, rule, newIndex);
 
-export const cssParentDeleteRule = (parent: CSSParentObject, rule: CSSRule, newIndex: number, index?: number) => createRemoveChildMutation(CSS_PARENT_DELETE_RULE, parent, rule, index);
+export const cssParentDeleteRule = (parent: CSSParentObject, rule: CSSRule, index?: number) => createRemoveChildMutation(CSS_PARENT_DELETE_RULE, parent, rule, index);
 
 export const cssParentMoveRule = (parent: CSSParentObject, rule: CSSRule, newIndex: number, oldIndex: number) => createMoveChildMutation(CSS_PARENT_MOVE_RULE, parent, rule, newIndex, oldIndex);
 

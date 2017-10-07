@@ -321,6 +321,7 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
 
     case SEnvNodeTypes.COMMENT:
       const comment = document.createComment((<SEnvCommentInterface>node).nodeValue);
+      dict[node.$id] = [comment, node];
       return comment;
 
     case SEnvNodeTypes.ELEMENT:

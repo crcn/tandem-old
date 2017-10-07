@@ -23,8 +23,9 @@ import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collectio
 import { getSEnvTextClass, SEnvTextInterface } from "./text";
 import { getSEnvCommentClass, SEnvCommentInterface } from "./comment";
 import { SEnvHTMLElementInterface, getSEnvHTMLElementClass, diffHTMLNode, baseHTMLElementMutators, flattenNodeSources } from "./html-elements";
-import { SEnvNodeTypes } from "../constants";
+import { SEnvNodeTypes, SVG_XMLNS, HTML_XMLNS } from "../constants";
 import { parseHTMLDocument, constructNodeTree, whenLoaded, mapExpressionToNode } from "./utils";
+import { generateSourceHash } from "../../utils/source";
 import { getSEnvDocumentFragment } from "./fragment";
 import { SyntheticDocument, SYNTHETIC_DOCUMENT, SyntheticNode, SyntheticParentNode, BasicDocument } from "../../state";
 import parse5 = require("parse5");
@@ -201,7 +202,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       this.$$setReadyState("loading");
 
       const expression = parseHTMLDocument(content);
-      await mapExpressionToNode(expression, this, this, true);
+      await mapExpressionToNode(expression, generateSourceHash(content), this, this, true);
 
       this.$$setReadyState("interactive");
 
@@ -564,14 +565,19 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     
     createElement<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K];
     createElement(tagName: string): SEnvHTMLElementInterface {
-      return constructNodeTree(this.$createElementWithoutConstruct(tagName)) as SEnvHTMLElementInterface;
+      return constructNodeTree(this.$createElementWithoutConstructNS(tagName, HTML_XMLNS)) as SEnvHTMLElementInterface;
     }
 
     $createElementWithoutConstruct(tagName: string): SEnvHTMLElementInterface {
+      return this.$createElementWithoutConstructNS(tagName, HTML_XMLNS);
+    }
+
+    $createElementWithoutConstructNS(tagName: string, namespaceURI: string): SEnvHTMLElementInterface {
       const elementClass = this.defaultView.customElements.get(tagName) || SENvHTMLElement;
       const instance = this._linkNode(Object.create(elementClass.prototype));
       instance["" + "tagName"] = tagName.toUpperCase();
       instance["" + "nodeName"] = tagName.toUpperCase();
+      instance["" + "namespaceURI"] = namespaceURI;
       instance.$$preconstruct();
       return instance;
     }
@@ -580,6 +586,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       node["" + "_ownerDocument"] = this;
       return node;
     }
+
     createElementNS(namespaceURI: "http://www.w3.org/1999/xhtml", qualifiedName: string): HTMLElement;
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: "a"): SVGAElement;
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: "circle"): SVGCircleElement;
@@ -644,8 +651,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: "view"): SVGViewElement;
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: string): SVGElement;
     createElementNS(namespaceURI: string | null, qualifiedName: string): Element {
-      this._throwUnsupportedMethod();
-      return null;
+      return this.$createElementWithoutConstructNS(qualifiedName, namespaceURI);
     }
     
     createExpression(expression: string, resolver: XPathNSResolver): XPathExpression {
@@ -808,7 +814,9 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     protected _onMutation(event: SEnvMutationEventInterface) {
-      super._onMutation(event);
+      if (!event.mutation) {
+        console.log(event.target);
+      }
       const { mutation } = event;
 
       if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT || mutation.$type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {

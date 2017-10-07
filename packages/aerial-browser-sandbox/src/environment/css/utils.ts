@@ -5,6 +5,7 @@ import { getSEnvCSSStyleSheetClass } from "./style-sheet";
 import { getSEnvCSSRuleClasses } from "./rules";
 import { SEnvCSSObjectInterface } from "./base";
 import { getSEnvCSSStyleDeclarationClass } from "./declaration";
+import { generateSourceHash } from "../../utils/source";
 
 
 // TODO - memoize this
@@ -17,6 +18,7 @@ export const parseCSS = (source: string) => {
 export const evaluateCSS = (source: string, sourceURI: string, context: any, map?: sm.RawSourceMap) => {
 
   const expression = parseCSS(source);
+  const fingerprint =  generateSourceHash(source);
   const sourceMapConsumer = map && new sm.SourceMapConsumer(map);
   const sourceRoot = map && map.sourceRoot || "";
   const SEnvCSSStyleSheet = getSEnvCSSStyleSheetClass(context);
@@ -75,11 +77,12 @@ export const evaluateCSS = (source: string, sourceURI: string, context: any, map
 
     synthetic.source = {
       kind: expression.type,
-
+      
       // todo - this may not be correct.
-      uri: uri,
-      start: start,
-      end: end
+      fingerprint,
+      uri,
+      start,
+      end,
     }
     return synthetic;
   }

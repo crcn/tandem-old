@@ -85,6 +85,8 @@ const enhanceEditTextTool = compose<EditTextToolInnerProps, EditTextToolOuterPro
     componentWillUpdate({ textarea }) {
       if (textarea && this.props.textarea !== textarea) {
         textarea.focus();
+
+        // TODO - set selection
       }
     }
   })
