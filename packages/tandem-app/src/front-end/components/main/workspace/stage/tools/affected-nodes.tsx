@@ -59,7 +59,7 @@ const AffectedNodesToolBase = ({ workspace, browser, zoom }: AffectedNodesToolOu
     return null;
   }
   const targetWindow = getSyntheticNodeWindow(browser, targetElement.$id);
-  const affectedElements = getSelectorAffectedElements(targetElement.$id, filterMatchingTargetSelectors(workspace.targetCSSSelectors, targetElement, targetWindow), browser) as SyntheticElement[];
+  const affectedElements = getSelectorAffectedElements(targetElement.$id, filterMatchingTargetSelectors(workspace.targetCSSSelectors, targetElement, targetWindow), browser, !!workspace.stage.fullScreen) as SyntheticElement[];
 
   return <div className="m-affected-nodes">
     {

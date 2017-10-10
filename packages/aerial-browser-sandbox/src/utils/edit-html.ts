@@ -26,12 +26,12 @@ export const createHTMLStringMutation = (content: string, mutation: Mutation<any
   switch(mutation.$type) {
     case UPDATE_VALUE_NODE: {
       const targetNode = findMutationTargetExpression(mutation.target, parseHTML(content)) as any;
-      return createStringMutation(targetNode.__location.startOffset, targetNode.__location.startOffset + targetNode.value.trim().length, mutation.newValue);
+      // return createStringMutation(targetNode.__location.startOffset, targetNode.__location.startOffset + targetNode.value.trim().length, mutation.newValue);
     }
 
     case SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT: {
-      const targetNode = findMutationTargetExpression(mutation.child, parseHTML(content)) as any;
-      return createStringMutation(targetNode.__location.startOffset, targetNode.__location.endOffset, "");
+      // const targetNode = findMutationTargetExpression(mutation.child, parseHTML(content)) as any;
+      // return createStringMutation(targetNode.__location.startOffset, targetNode.__location.endOffset, "");
     }
 
   }

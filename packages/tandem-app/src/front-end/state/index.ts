@@ -360,11 +360,12 @@ const getSelectorAffectedWindows = weakMemo((targetCSSSelectors: TargetSelector[
   return affectedWindows;
 });
 
-export const getObjectsWithSameSource = weakMemo((itemId: string, browser: SyntheticBrowser): any[] => {
+export const getObjectsWithSameSource = weakMemo((itemId: string, browser: SyntheticBrowser, limitToElementWindow?: boolean): any[] => {
   const target = getSyntheticNodeById(browser, itemId);
   const objects = {};
   const objectsWithSameSource = [];
-  for (const window of browser.windows) {
+  const windows = limitToElementWindow ? [getSyntheticNodeWindow(browser, itemId)] : browser.windows;
+  for (const window of windows) {
     const windowsObjects = getSyntheticWindowChildStructs(window);
     for (const $id in windowsObjects) {
       const child = windowsObjects[$id];
@@ -376,15 +377,16 @@ export const getObjectsWithSameSource = weakMemo((itemId: string, browser: Synth
   return objectsWithSameSource;
 });
 
-export const getSelectorAffectedElements = weakMemo((elementId: string, targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser): SyntheticElement[] => {
-  const targetCSSRules: SyntheticCSSStyleRule[] = [];
-  const affectedWindows = targetCSSSelectors.length ? getSelectorAffectedWindows(targetCSSSelectors, browser) : browser.windows;
+export const getSelectorAffectedElements = weakMemo((elementId: string, targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser, limitToElementWindow?: boolean): SyntheticElement[] => {
   const affectedElements: SyntheticElement[] = [];
-
-  for (const window of affectedWindows) {
-    if (!targetCSSSelectors.length) {
-      affectedElements.push(...getObjectsWithSameSource(elementId, browser));
-    } else {
+  if (!targetCSSSelectors.length) {
+    affectedElements.push(...getObjectsWithSameSource(elementId, browser, limitToElementWindow));
+  } else {
+    let affectedWindows = targetCSSSelectors.length ? getSelectorAffectedWindows(targetCSSSelectors, browser) : browser.windows;
+    if (limitToElementWindow) {
+      affectedWindows = [getSyntheticNodeWindow(browser, elementId)];
+    }
+    for (const window of affectedWindows) {
       for (const { value: selectorText } of targetCSSSelectors) {
         affectedElements.push(...getMatchingElements(window, selectorText));
       }

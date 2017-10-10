@@ -4,6 +4,10 @@ html, body {
   font-family: Helvetica;
 }
 
+* {
+  font-weight: bold;
+}
+
 @keyframes test-keyframes {
   0% {
     opacity: 0;
