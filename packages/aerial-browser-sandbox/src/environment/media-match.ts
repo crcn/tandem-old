@@ -29,6 +29,19 @@ const getMediaTextTokens = (mediaText: string) => {
 // only support pixels for now
 const calcMeasurement = (value: string, window: SEnvWindowInterface) => value.replace("px", "");
 
+const MEDIA_PROP_CONVERSION = {
+  "min-width": ["context.innerWidth", ">"],
+  "max-width": ["context.innerWidth", "<"],
+  "min-height": ["context.innerHeight", ">"],
+  "max-height": ["context.innerHeight", "<"],
+
+  "-webkit-min-device-pixel-ratio": ["false", "&&"],
+  "min--moz-device-pixel-ratio": ["false", "&&"],
+  "-o-min-device-pixel-ratio": ["false", "&&"],
+  "min-device-pixel-ratio": ["false", "&&"],
+  "min-resolution": ["false", "&&"]
+};
+
 const getMediaJSExpression = (cursor, tokens: string[], until?: string) => {
   const buffer = [];
   while (cursor < tokens.length) {
@@ -38,28 +51,22 @@ const getMediaJSExpression = (cursor, tokens: string[], until?: string) => {
     }
     cursor++;
 
-    if (token === "(" || token === ")") {
+    // eat these
+    if (/^(only|\(\))$/.test(token)) {
+      continue;
+    }
+
+    // unsupported media types for now
+    if (/^(print)$/.test(token)) {
+      buffer.push("false");
     } else if (token === "screen") {
 
       // for now -- later we can do context.type === "screen"
       buffer.push("true");
-    } else if (token === "min-width") {
-      const chunk = getMediaJSExpression(cursor, tokens, ")");
+    } else if (MEDIA_PROP_CONVERSION[token]) {
+      const chunk = getMediaJSExpression(++cursor, tokens, ")");
       cursor += chunk.length;
-      console.log(tokens.slice(cursor));
-      buffer.push("context.innerWidth", ">", `calcMeasurement("${chunk}"`,", context)");
-    } else if (token === "max-width") {
-      const chunk = getMediaJSExpression(cursor, tokens, ")");
-      cursor += chunk.length;
-      buffer.push("context.innerWidth", "<", `calcMeasurement("${chunk}"`,", context)");
-    } else if (token === "min-height") {
-      const chunk = getMediaJSExpression(cursor, tokens, ")");
-      cursor += chunk.length;
-      buffer.push("context.innerHeight", ">", `calcMeasurement("${chunk}"`,", context)");
-    } else if (token === "max-height") {
-      const chunk = getMediaJSExpression(cursor, tokens, ")");
-      cursor += chunk.length;
-      buffer.push("context.innerHeight", "<", `calcMeasurement("${chunk}"`,", context)");
+      buffer.push(...MEDIA_PROP_CONVERSION[token], `calcMeasurement("${chunk.join(" ")}"`,", context)");
     } else if (token === "and") {
       buffer.push("&&");
     } else if (token === "or" || token === ",") {
@@ -69,12 +76,11 @@ const getMediaJSExpression = (cursor, tokens: string[], until?: string) => {
     }
   }
 
-  return buffer.join(" ");
+  return buffer;
 }
 
 const translateMediaText = (mediaText: string) => {
-  console.log(mediaText, getMediaJSExpression(0, getMediaTextTokens(mediaText)));
-  return getMediaJSExpression(0, getMediaTextTokens(mediaText));
+  return getMediaJSExpression(0, getMediaTextTokens(mediaText)).join(" ");
 };
 
 const compileMediaText = weakMemo((mediaText: string) => new Function("context", "calcMeasurement", `return ${translateMediaText(mediaText)}`));

@@ -63,8 +63,9 @@ export type AppliedCSSRuleResult = {
 };
 
 export const containsInheritableStyleProperty = (style: SyntheticCSSStyleDeclaration) => {
-  for (const propertyName in style) {
-    if (INHERITED_CSS_STYLE_PROPERTIES[propertyName]) {
+  for (let i = 0; i < style.length; i++) {
+    const propertyName = style[i];
+    if (INHERITED_CSS_STYLE_PROPERTIES[propertyName] && style[propertyName]) {
       return true;
     }
   }
@@ -108,7 +109,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
         matchingRules.push(rule.struct);
       }
     // else - check if media rule
-    } else if ((rule.parentRule as any as CSSMediaRule).conditionText && windowMatchesMedia(window, (rule.parentRule as any as CSSMediaRule).conditionText)) {
+    } else if ((rule.parentRule as any as CSSMediaRule).conditionText && windowMatchesMedia(window, (rule.parentRule as any as CSSMediaRule).conditionText) && element.instance.matches(rule.selectorText)) {
       matchingRules.push(rule.struct);
     }
   }
@@ -135,6 +136,7 @@ const getSyntheticInheritableCSSRules = weakMemo((window: SyntheticWindow, eleme
       inheritableCSSRules.push(rule);
     }
   }
+
 
   return inheritableCSSRules;
 });
