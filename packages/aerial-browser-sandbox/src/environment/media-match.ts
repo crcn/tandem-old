@@ -9,7 +9,7 @@ const getMediaTextTokens = (mediaText: string) => {
     let c = mediaText.charAt(cursor);
     const rest = mediaText.substr(cursor);
 
-    const match = rest.match(/^([a-zA-Z0-9-]+|\(|\)|\:|\s|\t|\,|\/|\+|\-)/);
+    const match = rest.match(/^([a-zA-Z0-9-\.\-\\]+|\(|\)|\:|\s|\t|\,|\/|\+|\-)/);
 
     if (!match) {
       throw new Error(`Syntax error, unexpected token ${c} in ${mediaText}.`);
