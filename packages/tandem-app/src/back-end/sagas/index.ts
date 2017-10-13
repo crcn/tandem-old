@@ -34,7 +34,7 @@ function* frontEndService() {
     req.url = uri;
     req.pipe(request({
       uri: uri
-    })).pipe(res);
+    }).on("error", next)).pipe(res);
   });
 }
 
