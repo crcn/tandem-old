@@ -96,10 +96,9 @@ import { Kernel } from "aerial-common";
  * Types
  */
 
-export const FILE              = "FILE";
-export const DIRECTORY         = "DIRECTORY";
 export const WORKSPACE         = "WORKSPACE";
 export const APPLICATION_STATE = "APPLICATION_STATE";
+export const LIBRARY_COMPONENT = "LIBRARY_COMPONENT";
 
 export type Stage = {
   secondarySelection?: boolean;
@@ -125,6 +124,23 @@ export type TextEditor = {
   cursorPosition?: ExpressionPosition;
 };
 
+// library from the project manifest.json file. Provides
+// a set of re-usable items that can be used in the codebase
+export type LibraryItem = {
+
+  // display name of the library item
+  name: string;
+  icon?: string;
+
+  // deterministic hash generated usually by file path to help
+  // file writer (when library item is dropped to the stage) identify the origin of the library item. 
+  hash: string;
+};
+
+export type LibraryComponent = {
+  
+} & LibraryItem;
+
 export type Workspace = {
   targetCSSSelectors: TargetSelector[];
   selectionRefs: StructReference[]; // $type:$id;
@@ -133,6 +149,7 @@ export type Workspace = {
   selectedFileId?: string;
   stage: Stage;
   textEditor: TextEditor;
+  library: LibraryItem[];
 } & Struct;
 
 export type ApplicationState = {
@@ -455,7 +472,8 @@ export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, 
   },
   textEditor: {},
   selectionRefs: [],
-  hoveringRefs: []
+  hoveringRefs: [],
+  library: []
 });
 
 

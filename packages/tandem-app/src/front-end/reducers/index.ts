@@ -600,7 +600,6 @@ const selectAndCenterSyntheticWindow = (state: ApplicationState, window: Synthet
   workspace = getSelectedWorkspace(state);
 
   if (workspace.stage.fullScreen) {
-
     state = updateWorkspaceStage(state, workspace.$id, {
       smooth: true,
       fullScreen: {
