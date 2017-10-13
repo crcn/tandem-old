@@ -86,7 +86,10 @@ export const convertElementMeasurements = weakMemo((element: SyntheticElement, u
   }
 });
 
-export const convertElementMeasurementToNumber = weakMemo((element: SyntheticElement, measurement, axis: Axis.HORIZONTAL, window: SyntheticWindow): 0 => {
+export const convertElementMeasurementToNumber = weakMemo((element: SyntheticElement, measurement, axis: Axis.HORIZONTAL, window: SyntheticWindow): number => {
+  if (measurement.indexOf("px") !== -1) {
+    return Number(measurement.replace("px", ""));
+  }
   return 0;
 });
 

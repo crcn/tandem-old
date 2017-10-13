@@ -10,7 +10,7 @@ import {
   RESIZED,
   BaseEvent, 
 } from "aerial-common2";
-import { uniq } from "lodash";
+import { uniq, map } from "lodash";
 import { removeFileCacheItemByUri, getFileCacheItemByUri } from "aerial-sandbox2";
 import { 
   SyntheticWindowLoaded,

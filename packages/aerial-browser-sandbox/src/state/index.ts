@@ -755,6 +755,9 @@ export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: 
   return ancestors;
 });
 
+export const getComputedStyle = weakMemo((elementId: string, window: SyntheticWindow): CSSStyleDeclaration => {
+  return window.allComputedStyles[elementId];
+});
 
 export const getSyntheticParentNode = (node: SyntheticNode, window: SyntheticWindow) => getSyntheticWindowChild(window, node.parentId);
 
@@ -776,8 +779,9 @@ export const getSyntheticWindowBrowser = weakMemo((root: SyntheticBrowserRootSta
 
 export function getSyntheticNodeById(root: SyntheticBrowserRootState, id: string): SyntheticNode;
 export function getSyntheticNodeById(root: SyntheticBrowser, id: string): SyntheticNode;
+export function getSyntheticNodeById(root: SyntheticWindow, id: string): SyntheticNode;
 export function getSyntheticNodeById (root: any, id: string): SyntheticNode {
-  const window = getSyntheticNodeWindow(root, id);
+  const window = root.$type === SYNTHETIC_WINDOW ? root : getSyntheticNodeWindow(root, id);
   return window && getSyntheticWindowChild(window, id);
 };
 
