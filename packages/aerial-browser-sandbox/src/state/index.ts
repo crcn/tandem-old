@@ -687,12 +687,15 @@ export const getSyntheticWindow = (root: SyntheticBrowserRootState|SyntheticBrow
   return (root as SyntheticBrowserRootState).browserStore ? eachSyntheticWindow(root as SyntheticBrowserRootState, filter) : (root as SyntheticBrowser).windows.find(filter);
 };
 
-export const getSyntheticBrowserBounds = (browser: SyntheticBrowser) => browser.windows.length ? browser.windows.map(window => window.bounds).reduce((a, b) => ({
+export const getSyntheticBrowserBounds = (browser: SyntheticBrowser, filter = (window: SyntheticWindow) => true) => {
+  const availWindows = browser.windows.filter(filter);
+  return availWindows.length ? availWindows.map(window => window.bounds).reduce((a, b) => ({
     left: Math.min(a.left, b.left),
     top: Math.min(a.top, b.top),
     right: Math.max(a.right, b.right),
     bottom: Math.max(a.bottom, b.bottom)
   }), { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity }) : createZeroBounds();
+};
 
 export const updateSyntheticBrowser = <TState extends SyntheticBrowserRootState>(root: TState, browserId: string, properties: Partial<SyntheticBrowser>): TState => {
   const browser = getSyntheticBrowser(root, browserId);

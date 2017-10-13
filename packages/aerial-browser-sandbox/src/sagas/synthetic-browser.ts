@@ -270,10 +270,10 @@ function* handleToggleCSSProperty() {
 
 const PADDING = 10;
 
-function* getBestWindowPosition(browserId: string) {
+function* getBestWindowPosition(browserId: string, filter?: (window: SyntheticWindow) => boolean) {
   const state: SyntheticBrowserRootState = yield select();
   const browser = getSyntheticBrowser(state, browserId);
-  const entireBounds = getSyntheticBrowserBounds(browser);
+  const entireBounds = getSyntheticBrowserBounds(browser, filter);
   return {
     left: entireBounds.right ? entireBounds.right + PADDING : 0,
     top: entireBounds.top
@@ -347,8 +347,8 @@ function* handleOpenedSyntheticWindow(browserId: string) {
     let disposeMirror: () => any;
     if (!containsProxy) {
       proxy = window.clone();
-      const position = window.screenLeft || window.screenTop ? { left: window.screenLeft, top: window.screenTop } : (yield call(getBestWindowPosition, browserId));
-      
+      const position = window.screenLeft || window.screenTop ? { left: window.screenLeft, top: window.screenTop } : (yield call(getBestWindowPosition, browserId, (existingWindow: SyntheticWindow) => window.$id !== window.$id));
+
       proxy.moveTo(position.left, position.top);
       proxy.resizeTo(window.innerWidth, window.innerHeight);
       proxy.renderer = createRenderer(proxy);
@@ -584,7 +584,6 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
 
       yield spawn(function*() {
         const target = flattenWindowObjectSources(window.struct)[itemId] as any as SEnvHTMLElementInterface;
-        // target.style.removeProperty("transition");
 
         // TODO - clear non targets
         const { top, left, position } = getTargetStyleOwners(target, ["top", "left", "position"], targetSelectors);
