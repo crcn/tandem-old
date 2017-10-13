@@ -12,6 +12,7 @@ import { WindowsStageTool } from "./windows";
 import { NodeOverlaysTool } from "./overlay";
 import { AffectedNodesTool } from "./affected-nodes";
 import { SelectionStageTool } from "./selection";
+import { BoxModelStageTool } from "./box-model";
 import { StaticPositionStageTool } from "./static-position";
 
 export type ToolsProps = {
@@ -24,6 +25,7 @@ export type ToolsProps = {
 export const ToolsLayerBase = (({ workspace, browser, dispatch, translate }: ToolsProps) => <div className="m-stage-tools">
   <GridStageTool translate={translate} />
   <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
+  <BoxModelStageTool zoom={translate.zoom} workspace={workspace} browser={browser} />
   <SelectionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
 
   <WindowsStageTool workspace={workspace} browser={browser} dispatch={dispatch} translate={translate} />

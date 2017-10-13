@@ -1,0 +1,10 @@
+.m-box-model-tool {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+
+  .element-box-model {
+    position: absolute;
+  }
+}

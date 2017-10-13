@@ -55,7 +55,8 @@ const ElementStaticPositionInfo = compose<ElementStaticPositionOuterProps, Eleme
 export const StaticPositionStageToolBase = ({ zoom, workspace, browser }: StaticPositionStageToolOuterProps) => {
 
 
-  // do nothing for now. Need to wire this up with a hotkey flag
+  // do nothing for now. Need to wire this up with a hotkey flag, 
+  // and need to show when CSS properties are mutated.
   return null;
 
   // const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SYNTHETIC_ELEMENT);
