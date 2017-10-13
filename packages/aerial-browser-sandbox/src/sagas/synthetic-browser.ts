@@ -347,7 +347,7 @@ function* handleOpenedSyntheticWindow(browserId: string) {
     let disposeMirror: () => any;
     if (!containsProxy) {
       proxy = window.clone();
-      const position = window.screenLeft || window.screenTop ? { left: window.screenLeft, top: window.screenTop } : (yield call(getBestWindowPosition, browserId, (existingWindow: SyntheticWindow) => window.$id !== window.$id));
+      const position = window.screenLeft || window.screenTop ? { left: window.screenLeft, top: window.screenTop } : (yield call(getBestWindowPosition, browserId, (existingWindow: SyntheticWindow) => existingWindow.$id !== window.$id));
 
       proxy.moveTo(position.left, position.top);
       proxy.resizeTo(window.innerWidth, window.innerHeight);
