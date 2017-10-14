@@ -347,7 +347,7 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
       return <Pane key={element.$id} title={title} className="m-css-inspector">
         {
           rules.map((rule) => {
-            return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />
+            return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source && rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />
           })
         }
       </Pane>
