@@ -33,6 +33,7 @@ export interface SEnvWindowInterface extends Window {
   uid: string;
   $id: string;
   didChange();
+  $synthetic: boolean;
   $load();
   implementation: DOMImplementation;
   fetch: Fetch;
@@ -270,6 +271,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly console: Console = context.console;
     readonly indexedDB: IDBFactory;
     readonly applicationCache: ApplicationCache;
+    readonly $synthetic = true;
     readonly caches: CacheStorage;
     readonly clientInformation: Navigator;
     readonly externalResourceUris: string[];
@@ -701,7 +703,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     requestAnimationFrame(callback: FrameRequestCallback): number {
-      return requestAnimationFrame(callback);
+      return this.setTimeout(callback, 0);
     }
 
     resizeBy(x?: number, y?: number): void {

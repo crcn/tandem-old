@@ -121,7 +121,7 @@ export const StageBase = ({
           onDragExit={onDragExit}
           className="stage-inner"
           style={outerStyle}>
-            <Motion defaultStyle={{left:0, top: 0, zoom: 0}} style={{ left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }}>
+            <Motion defaultStyle={{left:0, top: 0, zoom: 1}} style={{ left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }}>
               {(translate) => {
                 return <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})` }} className={cx({"stage-inner": true })}>
                   { hasWindows ? <Windows browser={browser} smooth={smooth} dispatch={dispatch} fullScreenWindowId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} /> : <EmptyWindows dispatch={dispatch} />}
