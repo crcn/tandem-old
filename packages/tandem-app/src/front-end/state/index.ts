@@ -69,6 +69,7 @@ import {
   SyntheticCSSStyleRule,
   getSyntheticNodeById,
   getSyntheticNodeWindow,
+  SyntheticNode,
   getSyntheticBrowser,
   getMatchingElements,
   elementMatches,
@@ -138,7 +139,10 @@ export type LibraryItem = {
 };
 
 export type LibraryComponent = {
-  
+  defaultAttributes: {
+    [identifier: string]: string
+  };
+  defaultChildren?: SyntheticNode[];
 } & LibraryItem;
 
 export type Workspace = {
@@ -431,7 +435,6 @@ export const getStageTranslate = (stage: Stage) => stage.translate;
 export const getWorkspaceById = (state: ApplicationState, id: string): Workspace => state.workspaces.find((workspace) => workspace.$id === id);
 export const getSelectedWorkspace = (state: ApplicationState) => state.selectedWorkspaceId && getWorkspaceById(state, state.selectedWorkspaceId);
 
-
 export const getWorkspaceLastSelectionOwnerWindow = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);
   if (workspace.selectionRefs.length === 0) {
@@ -475,7 +478,6 @@ export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, 
   hoveringRefs: [],
   library: []
 });
-
 
 export const createApplicationState = createStructFactory<ApplicationState>(APPLICATION_STATE, {
   workspaces: [],

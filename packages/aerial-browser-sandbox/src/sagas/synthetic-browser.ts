@@ -222,7 +222,9 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
         getProxyUrl: (url: string) => {
           return proxy && url.substr(0, 5) !== "data:" ? proxy + encodeURIComponent(url) : url;
         },
-        createRenderer: (window: SEnvWindowInterface) => new SyntheticMirrorRenderer(window) 
+        createRenderer: (window: SEnvWindowInterface) => {
+          return window.top === window ? new SyntheticMirrorRenderer(window) : new SyntheticDOMRenderer(window, document)
+        }
       });
       const window = currentWindow = new SEnvWindow(location);
   
@@ -290,6 +292,9 @@ const getSEnvWindowConsole = () => ({
   error(...args) {
     console.error('VM ', ...args);
   },
+  debug(...args) {
+    console.debug('VM ', ...args);
+  },
   info(...args) {
     console.info('VM ', ...args);
   }
@@ -352,6 +357,7 @@ function* handleOpenedSyntheticWindow(browserId: string) {
       proxy.moveTo(position.left, position.top);
       proxy.resizeTo(window.innerWidth, window.innerHeight);
       proxy.renderer = createRenderer(proxy);
+      proxy.renderer.start();
       disposeMirror = () => {};
       yield put(syntheticWindowProxyOpened(proxy, browserId));
     } else {

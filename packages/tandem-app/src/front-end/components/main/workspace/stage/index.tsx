@@ -93,6 +93,7 @@ export const StageBase = ({
   const hasWindows = Boolean(browser.windows && browser.windows.length);
   const motionTranslate: Translate = hasWindows ? translate : { left: 0, top: 0, zoom: 1 };
 
+  
   return <div className="stage-component" ref={setStageContainer}>
     <Isolate 
     inheritCSS 

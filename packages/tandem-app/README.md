@@ -2,11 +2,19 @@ very simple online playground for visually creating web applications
 
 TODOS:
 
-- [ ] show box model (margins & padding)
-- [ ] show static position of element
 - [ ] show measurements between elements (hotkey)
 - [ ] snap to element DND
 - [ ] ruler tool
+
+- [ ] CSS Inspector
+  - [ ] flag invalid properties
+  - [ ] autocomplete
+
+PAPERCLIP DSL TODOS:
+
+- [ ] manifest.json
+- [ ] repeat component
+- [ ] 
 
 GOALS:
 
@@ -18,7 +26,6 @@ GOALS:
 - [ ] appeal to developers first
   - [ ] similar to chrome inspector for now - evolve later on
 - [ ] low barrier to entry. Install text editor dev tools, start using with project
-
 
 
 COMPONENTS TO START VISUAL DEV QUICKLY:

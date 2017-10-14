@@ -7,10 +7,12 @@ import { SyntheticWindowRendererInterface, createNoopRenderer, SyntheticDOMRend
 import { getNodeByPath, getNodePath } from "../utils/node-utils";
 import { getSEnvTimerClasses, SEnvTimersInterface } from "./timers";
 import { createMediaMatcher } from "./media-match";
+import { getSEnvLocalStorageClass } from "./local-storage";
 import { 
   SEnvElementInterface,
   getSEnvHTMLElementClasses, 
   getSEnvDocumentClass, 
+  getSEnvDOMImplementationClass,
   getSEnvElementClass, 
   getSEnvHTMLElementClass, 
   SEnvDocumentInterface, 
@@ -23,7 +25,7 @@ import {
 } from "./nodes";
 import { getSEnvCustomElementRegistry } from "./custom-element-registry";
 import nwmatcher = require("nwmatcher");
-import { SEnvNodeTypes, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH } from "./constants";
+import { SEnvNodeTypes, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH, HTML_XMLNS } from "./constants";
 
 type OpenTarget = "_self" | "_blank";
 
@@ -32,6 +34,7 @@ export interface SEnvWindowInterface extends Window {
   $id: string;
   didChange();
   $load();
+  implementation: DOMImplementation;
   fetch: Fetch;
   struct: SyntheticWindow;
   externalResourceUris: string[];
@@ -44,7 +47,7 @@ export interface SEnvWindowInterface extends Window {
   getSourceUri(uri: string);
   renderer:  SyntheticWindowRendererInterface;
   $selector: any;
-  clone(): SEnvWindowInterface;
+  clone(deep?: boolean): SEnvWindowInterface;
 };
 
 export type Fetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
@@ -165,6 +168,8 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
   const SEnvCustomElementRegistry = getSEnvCustomElementRegistry(context);
   const SEnvElement     = getSEnvElementClass(context);
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
+  const SEnvLocalStorage = getSEnvLocalStorageClass(context);
+  const SEnvDOMImplementation = getSEnvDOMImplementationClass(context);
   const { SEnvTimers } = getSEnvTimerClasses(context);
   const { SEnvEvent, SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent } = getSEnvEventClasses(context);
 
@@ -268,6 +273,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly caches: CacheStorage;
     readonly clientInformation: Navigator;
     readonly externalResourceUris: string[];
+    readonly implementation: DOMImplementation;
     uid: string;
     closed: boolean;
     readonly crypto: Crypto;
@@ -416,8 +422,8 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly CustomEvent: typeof Event = SEnvEvent as any as typeof Event;
     readonly styleMedia: StyleMedia;
     readonly toolbar: BarProp;
-    readonly top: Window;
-    readonly window: Window;
+    readonly top: SEnvWindowInterface;
+    readonly window: SEnvWindowInterface;
     readonly getProxyUrl: (url: string) => string;
     URL: typeof URL;
     URLSearchParams: typeof URLSearchParams;
@@ -437,7 +443,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     private _matchMedia: any;
     public $id: string;
     
-    constructor(origin: string) {
+    constructor(origin: string, top?: SEnvWindowInterface) {
       super();
 
       this._onRendererPainted = this._onRendererPainted.bind(this);
@@ -449,12 +455,14 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       this.setInterval = this.setInterval.bind(this);
       this._timers = new SEnvTimers();
 
+      this.implementation = new SEnvDOMImplementation(this);
+
       this.URIChangedEvent = SEnvURIChangedEvent;
       this.uid = this.$id = generateDefaultId();
       this.location = new SEnvLocation(origin, context.reload);
-      this.document = new SEnvDocument(this);
-      this.window   = this.top = this.self = this;
-      this.renderer = (createRenderer || createNoopRenderer)(this);
+      this.window   = this.self = this;
+      this.top = top || this;
+      this.localStorage = new SEnvLocalStorage([]);
       this.innerWidth = DEFAULT_WINDOW_WIDTH;
       this.innerHeight = DEFAULT_WINDOW_HEIGHT;
       this.moveTo(0, 0);
@@ -474,6 +482,8 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       }
       
       this._matchMedia =  createMediaMatcher(this);
+      this.document = this.implementation.createHTMLDocument(null) as SEnvDocumentInterface;
+      this.renderer = (createRenderer || createNoopRenderer)(this);
 
       this.document.addEventListener(SEnvMutationEvent.MUTATION, this._onDocumentMutation.bind(this));
     }
@@ -606,12 +616,13 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     clone(deep?: boolean) {
-      const window = new SEnvWindow(this.location.toString());
+      const window = new SEnvWindow(this.location.toString(), this.top === this ? null : this.top);
       window.$id = this.$id;
       if (deep !== false) {
         window.document.$id = this.document.$id;
         patchWindow(window, diffWindow(window, this));
       }
+      window.renderer.start();
       return window;
     }
 
@@ -690,7 +701,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     requestAnimationFrame(callback: FrameRequestCallback): number {
-      return -1;
+      return requestAnimationFrame(callback);
     }
 
     resizeBy(x?: number, y?: number): void {
@@ -784,9 +795,15 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     async $load() {
-      const response = await this.fetch(this.location.toString());
-      const content  = await response.text();
-      this.document.$load(content);
+      const location = this.location.toString();
+      this.renderer.start();
+      if (location) {
+        const response = await this.fetch(location);
+        const content  = await response.text();
+        await this.document.$load(content);
+      } else {
+        await this.document.$load("");
+      }
     }
 
     private _onDocumentMutation(event: SEnvMutationEventInterface) {

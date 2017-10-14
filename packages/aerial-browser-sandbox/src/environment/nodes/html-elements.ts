@@ -3,7 +3,6 @@ import { hasURIProtocol } from "aerial-sandbox2";
 import { getSEnvEventClasses } from "../events";
 import path = require("path");
 import { getUri } from "../utils";
-import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SEnvNodeListInterface, getSEnvHTMLCollectionClasses } from "./collections";
 import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyleSheet, patchCSSStyleSheet, flattenSyntheticCSSStyleSheetSources, SEnvCSSStyleSheetInterface, cssStyleSheetMutators, SEnvCSSStyleDeclarationInterface } from "../css";
@@ -12,6 +11,7 @@ import { SyntheticNode } from "../../state";
 import { SEnvNodeTypes } from "../constants";
 import { weakMemo, SetValueMutation, createSetValueMutation, Mutation } from "aerial-common2";
 import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNode, baseElementMutators } from "./element";
+import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 
 export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterface {
   $$preconstruct();
@@ -499,7 +499,8 @@ const declarePropertiesFromScript = <T extends any>(context: T, script): T => {
 export const getSenvHTMLScriptElementClass = weakMemo((context: SEnvWindowContext) => {
   const { getProxyUrl } = context;
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
-  return class SEnvHTMLScriptElement extends SEnvHTMLElement implements HTMLScriptElement { async: boolean;
+  return class SEnvHTMLScriptElement extends SEnvHTMLElement implements HTMLScriptElement { 
+      async: boolean;
       charset: string;
       crossOrigin: string | null;
       defer: boolean;
@@ -568,6 +569,151 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: SEnvWindowContex
     }
 }); 
 
+const getSEnvHTMLInputElementClass = weakMemo((context: SEnvWindowContext) => {
+  const SEnvHTMLElement = getSEnvHTMLElementClass(context);
+  class SEnvHTMLInputElement extends SEnvHTMLElement implements HTMLInputElement { 
+    accept: string;
+    align: string;
+    alt: string;
+    autocomplete: string;
+    autofocus: boolean;
+    border: string;
+    readonly complete: boolean;
+    defaultChecked: boolean;
+    defaultValue: string;
+    disabled: boolean;
+    readonly files: FileList | null;
+    readonly form: HTMLFormElement;
+    formAction: string;
+    formEnctype: string;
+    formMethod: string;
+    formNoValidate: string;
+    formTarget: string;
+    height: string;
+    hspace: number;
+    indeterminate: boolean;
+    readonly list: HTMLElement;
+    max: string;
+    maxLength: number;
+    min: string;
+    multiple: boolean;
+    name: string;
+    pattern: string;
+    placeholder: string;
+    readOnly: boolean;
+    required: boolean;
+    selectionDirection: string;
+    selectionEnd: number;
+    selectionStart: number;
+    size: number;
+    src: string;
+    status: boolean;
+    step: string;
+    type: string;
+    useMap: string;
+    readonly validationMessage: string;
+    readonly validity: ValidityState;
+    valueAsDate: Date;
+    valueAsNumber: number;
+    vspace: number;
+    webkitdirectory: boolean;
+    width: string;
+    readonly willValidate: boolean;
+    minLength: number;
+    checkValidity(): boolean {
+      return false;
+    }
+
+    get checked() {
+      return false;
+    }
+
+    set checked(value: boolean) {
+
+    }
+
+    get value() {
+      return this.getAttribute("value");
+    }
+
+    set value(value: string) {
+      this.setAttribute("value", value);
+    }
+
+    select(): void { }
+    setCustomValidity(error: string): void { }
+    setSelectionRange(start?: number, end?: number, direction?: string): void { }
+    stepDown(n?: number): void { }
+    stepUp(n?: number): void { }
+  }
+
+  return SEnvHTMLInputElement;
+});
+
+export interface SEnvHTMLIFrameElementInterface extends HTMLIFrameElement {
+  contentWindow: SEnvWindowInterface;
+}
+
+const getSEnvHTMLIFrameElementClass = weakMemo((context: SEnvWindowContext) => {
+  const SEnvHTMLElement = getSEnvHTMLElementClass(context);
+  class SEnvHTMLIFrameElement extends SEnvHTMLElement implements SEnvHTMLIFrameElementInterface {
+    align: string;
+    allowFullscreen: boolean;
+    allowPaymentRequest: boolean;
+    border: string;
+    contentWindow: SEnvWindowInterface;
+    frameBorder: string;
+    frameSpacing: any;
+    height: string;
+    hspace: number;
+    longDesc: string;
+    marginHeight: string;
+    marginWidth: string;
+    name: string;
+    noResize: boolean;
+    onload: (this: HTMLIFrameElement, ev: Event) => any;
+    readonly sandbox: DOMSettableTokenList;
+    scrolling: string;
+    src: string;
+    vspace: number;
+    width: string;
+
+    private _resolveContentLoaded: any;
+    private _rejectContentLoaded: any;
+
+    canLoad() {
+      return false;
+    }
+
+    initialize() {
+      super.initialize();
+      const { getSEnvWindowClass } = require("../window");
+      const SEnvWindow = getSEnvWindowClass(context);
+      this.contentWindow = new SEnvWindow("", this.ownerDocument.defaultView);
+      this.contentWindow.renderer.start();
+    }
+
+    _load() {
+    }
+
+    get contentDocument(): Document {
+      return this.contentWindow.document;
+    }
+
+    getSVGDocument(): Document {
+      this._throwUnsupportedMethod();
+      return null;
+    }
+
+    cloneShallow() {
+      const clone = super.cloneShallow() as any as SEnvHTMLIFrameElementInterface;
+      clone.contentWindow = this.contentWindow.clone(true);
+      return clone as any;
+    }
+  }
+
+  return SEnvHTMLIFrameElement;
+});
 
 export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) => {
   const { getProxyUrl } = context;
@@ -1029,34 +1175,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) =
     "html": class SEnvHTMLHtmlElement extends SEnvHTMLElement implements HTMLHtmlElement { 
       version: string;
     },
-    "iframe": class SEnvHTMLIFrameElement extends SEnvHTMLElement implements HTMLIFrameElement {
-      align: string;
-      allowFullscreen: boolean;
-      allowPaymentRequest: boolean;
-      border: string;
-      readonly contentDocument: Document;
-      readonly contentWindow: Window;
-      frameBorder: string;
-      frameSpacing: any;
-      height: string;
-      hspace: number;
-      longDesc: string;
-      marginHeight: string;
-      marginWidth: string;
-      name: string;
-      noResize: boolean;
-      onload: (this: HTMLIFrameElement, ev: Event) => any;
-      readonly sandbox: DOMSettableTokenList;
-      scrolling: string;
-      src: string;
-      vspace: number;
-      width: string;
-
-      getSVGDocument(): Document {
-        this._throwUnsupportedMethod();
-        return null;
-      }
-    },
+    "iframe": getSEnvHTMLIFrameElementClass(context),
     "img": class SEnvHTMLImageElement extends SEnvHTMLElement implements HTMLImageElement {
       align: string;
       alt: string;
@@ -1104,66 +1223,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) =
         return super.getPreviewAttribute(name);
       }
     },
-    "input": class SEnvHTMLInputElement extends SEnvHTMLElement implements HTMLInputElement { 
-      accept: string;
-      align: string;
-      alt: string;
-      autocomplete: string;
-      autofocus: boolean;
-      border: string;
-      checked: boolean;
-      readonly complete: boolean;
-      defaultChecked: boolean;
-      defaultValue: string;
-      disabled: boolean;
-      readonly files: FileList | null;
-      readonly form: HTMLFormElement;
-      formAction: string;
-      formEnctype: string;
-      formMethod: string;
-      formNoValidate: string;
-      formTarget: string;
-      height: string;
-      hspace: number;
-      indeterminate: boolean;
-      readonly list: HTMLElement;
-      max: string;
-      maxLength: number;
-      min: string;
-      multiple: boolean;
-      name: string;
-      pattern: string;
-      placeholder: string;
-      readOnly: boolean;
-      required: boolean;
-      selectionDirection: string;
-      selectionEnd: number;
-      selectionStart: number;
-      size: number;
-      src: string;
-      status: boolean;
-      step: string;
-      type: string;
-      useMap: string;
-      readonly validationMessage: string;
-      readonly validity: ValidityState;
-      value: string;
-      valueAsDate: Date;
-      valueAsNumber: number;
-      vspace: number;
-      webkitdirectory: boolean;
-      width: string;
-      readonly willValidate: boolean;
-      minLength: number;
-      checkValidity(): boolean {
-        return false;
-      }
-      select(): void { }
-      setCustomValidity(error: string): void { }
-      setSelectionRange(start?: number, end?: number, direction?: string): void { }
-      stepDown(n?: number): void { }
-      stepUp(n?: number): void { }
-    },
+    "input": getSEnvHTMLInputElementClass(context),
     "ins": class SEnvHTMLModElement extends SEnvHTMLElement implements HTMLModElement { 
 
       cite: string;

@@ -18,6 +18,7 @@ export interface RenderedComputedStyleDeclarations {
 export interface SyntheticWindowRendererInterface extends EventTarget {
   container: HTMLElement;
   sourceWindow: Window;
+  start();
   computedStyles: RenderedComputedStyleDeclarations;
   clientRects: RenderedClientRects;
   scrollPosition: Point;
@@ -62,6 +63,7 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   private _currentRenderPromise: Promise<any>;
   private _shouldRenderAgain: boolean;
   private _runningPromise: Promise<any>;
+  private _started: boolean;
   private _resolveRunningPromise: () => any;
 
   constructor(protected _sourceWindow: SEnvWindowInterface) {
@@ -75,6 +77,7 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
     this._addTargetListeners();
     this.reset();
   }
+  
 
   get allBoundingClientRects() {
     return this._rects;
@@ -122,6 +125,19 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
     this._sourceWindow.addEventListener("scroll", this._onWindowScroll);
   }
 
+  start() {
+    if (this._started) {
+      return;
+    }
+    this._started = true;
+
+    this.requestRender();
+
+    // document load is when the page is visible to the user, so only listen for 
+    // mutations after stuff is loaded in (They'll be fired as the document is loaded in) (CC)
+    this._sourceWindow.addEventListener(SEnvMutationEvent.MUTATION, this._onWindowMutation);
+  }
+
   protected _onDocumentReadyStateChange(event: Event) {
     if (this._sourceWindow.document.readyState === "complete") {
       this._onDocumentLoad(event);
@@ -151,10 +167,6 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   protected _onDocumentLoad(event: Event) {
     this.reset();
     this.requestRender();
-
-    // document load is when the page is visible to the user, so only listen for 
-    // mutations after stuff is loaded in (They'll be fired as the document is loaded in) (CC)
-    this._sourceWindow.addEventListener(SEnvMutationEvent.MUTATION, this._onWindowMutation);
   }
 
   public requestRender() {

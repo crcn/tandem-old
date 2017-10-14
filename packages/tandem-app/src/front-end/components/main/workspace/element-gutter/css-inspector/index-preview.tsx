@@ -3,10 +3,7 @@ import * as React from "react";
 import { CSSInspector } from "./index";
 import { createWorkspace, createSyntheticWindow, createSyntheticDocument, createSyntheticElement, SYNTHETIC_ELEMENT } from "front-end/state";
 
-
-
 export const Preview = () => {
-
   const window = createSyntheticWindow({
     document: createSyntheticDocument({
       childNodes: [

@@ -50,21 +50,9 @@ export interface SEnvDocumentInterface extends SEnvParentNodeInterface, Document
 
 const CONSUME_TIMEOUT = 10;
 
-export const getSEnvDocumentClass = weakMemo((context: any) => {
-  const SEnvNode = getSEnvNodeClass(context);
-  const SEnvParentNode = getSEnvParentNodeClass(context);
-  const SEnvText = getSEnvTextClass(context);
-  const SEnvComment = getSEnvCommentClass(context);
-  const { SEnvMutationEvent } = getL3EventClasses(context);
-  const { SEnvEvent, SEnvMutationEvent: SEnvMutationEvent2 } = getSEnvEventClasses(context);
-  const SEnvDocumentFragment = getSEnvDocumentFragment(context);
-  const SENvHTMLElement = getSEnvHTMLElementClass(context);
-  const { SEnvStyleSheetList, SEnvHTMLAllCollection } = getSEnvHTMLCollectionClasses(context);
+export const getSEnvDOMImplementationClass = weakMemo((context: any) => {
 
-  const eventMap = {
-    MutationEvent:  SEnvMutationEvent
-  };
-
+  const SEnvDocument = getSEnvDocumentClass(context);
 
   class SEnvDOMImplementation implements DOMImplementation {
     constructor(private _view: SEnvWindowInterface) {
@@ -87,6 +75,25 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       return false;
     }
   }
+
+  return SEnvDOMImplementation;
+});
+
+export const getSEnvDocumentClass = weakMemo((context: any) => {
+  const SEnvNode = getSEnvNodeClass(context);
+  const SEnvParentNode = getSEnvParentNodeClass(context);
+  const SEnvText = getSEnvTextClass(context);
+  const SEnvComment = getSEnvCommentClass(context);
+  const { SEnvMutationEvent } = getL3EventClasses(context);
+  const { SEnvEvent, SEnvMutationEvent: SEnvMutationEvent2 } = getSEnvEventClasses(context);
+  const SEnvDocumentFragment = getSEnvDocumentFragment(context);
+  const SENvHTMLElement = getSEnvHTMLElementClass(context);
+  const { SEnvStyleSheetList, SEnvHTMLAllCollection } = getSEnvHTMLCollectionClasses(context);
+
+  const eventMap = {
+    MutationEvent:  SEnvMutationEvent
+  };
+
 
   class SEnvDocument extends SEnvParentNode implements SEnvDocumentInterface {
     
@@ -151,7 +158,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
 
     constructor(readonly defaultView: SEnvWindowInterface) {
       super();
-      this.implementation = new SEnvDOMImplementation(defaultView);
+      this.implementation = defaultView.implementation;
       this.addEventListener("readystatechange", e => this.onreadystatechange && this.onreadystatechange(e));
     }
 
@@ -197,6 +204,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     async $load(content: string) {
+      this.removeAllChildren();
 
       // TODO - use sax parsing here instead
       this.$$setReadyState("loading");
@@ -814,9 +822,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     protected _onMutation(event: SEnvMutationEventInterface) {
-      if (!event.mutation) {
-        console.log(event.target);
-      }
       const { mutation } = event;
 
       if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT || mutation.$type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
@@ -885,7 +890,9 @@ export const documentMutators = {
   ...parentNodeMutators,
   ...baseHTMLElementMutators,
   [READY_STATE_CHANGE](target: SEnvDocumentInterface, mutation: SetValueMutation<SEnvDocumentInterface>) {
-    target.$$setReadyState((mutation as SetValueMutation<SEnvDocumentInterface>).newValue);
+    if (target.$$setReadyState) {
+      target.$$setReadyState((mutation as SetValueMutation<SEnvDocumentInterface>).newValue);
+    }
   }
 };
 

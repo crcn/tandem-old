@@ -388,7 +388,11 @@ export const diffNodeBase = (oldNode: Partial<SEnvNodeInterface>, newNode: Parti
 
 export const nodeMutators = {
   [SET_SYNTHETIC_SOURCE_CHANGE](oldNode: SEnvNodeInterface, {newValue}: SetPropertyMutation<any>) {
-    oldNode.setSource(newValue && JSON.parse(JSON.stringify(newValue)) as ExpressionLocation);
+
+    // may not exist if oldNode is a DOM node
+    if (oldNode.setSource) {
+      oldNode.setSource(newValue && JSON.parse(JSON.stringify(newValue)) as ExpressionLocation);
+    }
   }
 };
 

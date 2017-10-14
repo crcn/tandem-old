@@ -430,7 +430,8 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
     case STAGE_MOUNTED: {
       const { element } = event as StageMounted;
-      const { width, height } = element.getBoundingClientRect();
+
+      const { width = 400, height = 300 } = element.getBoundingClientRect() || {};
       const workspaceId = state.selectedWorkspaceId;
       const workspace = getSelectedWorkspace(state);
 

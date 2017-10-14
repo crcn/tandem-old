@@ -12,7 +12,16 @@ import {
   flattenSyntheticCSSStyleSheetSources
 } from "../css";
 import { SEnvWindowInterface, patchWindow, windowMutators, flattenWindowObjectSources } from "../window";
-import { SEnvParentNodeMutationTypes, createParentNodeInsertChildMutation, SEnvParentNodeInterface, SEnvCommentInterface, SEnvElementInterface, SEnvTextInterface, createParentNodeRemoveChildMutation } from "../nodes";
+import { 
+  SEnvParentNodeMutationTypes, 
+  createParentNodeInsertChildMutation, 
+  SEnvParentNodeInterface, 
+  SEnvCommentInterface, 
+  SEnvElementInterface, 
+  SEnvTextInterface, 
+  createParentNodeRemoveChildMutation, 
+  SEnvHTMLIFrameElementInterface 
+} from "../nodes";
 import { SEnvMutationEventInterface } from "../events";
 import { BaseSyntheticWindowRenderer } from "./base";
 import { InsertChildMutation, RemoveChildMutation, MoveChildMutation, Mutation, Mutator, weakMemo } from "aerial-common2";
@@ -26,6 +35,7 @@ const NODE_NAME_MAP = {
   body: "span",
   link: "span",
   script: "span",
+  iframe: "span"
 };
 
 type CSSRuleDictionaryType = {
@@ -66,13 +76,13 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
       height: "100%"
     });
 
-
     this._onContainerResize = this._onContainerResize.bind(this);
     this.mount = targetDocument.createElement("div");
     this.mount.innerHTML = this.createMountInnerHTML();
     this.container.onload = () => {
       this.container.contentWindow.document.body.appendChild(this.mount);
       this.container.contentWindow.addEventListener("resize", this._onContainerResize);
+      this.requestRender();
     };
   }
 
@@ -81,6 +91,7 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
   }
 
   protected async render() {
+
     if (!this._documentElement) {
       await Promise.all(Array.prototype.map.call(this.sourceWindow.document.styleSheets, (styleSheet) => {
         return this._registerStyleSheet(styleSheet);
@@ -165,6 +176,7 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
     super._onWindowMutation(event);
 
     const { mutation } = event;
+
 
     if (documentMutators[mutation.$type]) {
       const [nativeNode, syntheticObject] = this.getElementDictItem(mutation.target);
@@ -327,8 +339,10 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
     case SEnvNodeTypes.ELEMENT:
       const syntheticElement = <SEnvElementInterface>node;
 
+      const tagNameLower = syntheticElement.tagName.toLowerCase();
+
       // add a placeholder for these blacklisted elements so that diffing & patching work properly
-      if(/^(style|link|script|head)$/.test(syntheticElement.tagName.toLowerCase())) {
+      if(/^(style|link|script|head)$/.test(tagNameLower)) {
         return document.createTextNode("");
       }
       
@@ -354,6 +368,12 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
           }
         }
       }
+
+      if (tagNameLower === "iframe") {
+        const iframe = syntheticElement as any as SEnvHTMLIFrameElementInterface;
+        element.appendChild(iframe.contentWindow.renderer.container);
+      }
+
       return appendChildNodes(element, syntheticElement.childNodes, dict, onChange, document);
     case SEnvNodeTypes.DOCUMENT:
     case SEnvNodeTypes.DOCUMENT_FRAGMENT:
@@ -364,9 +384,9 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
 }
 
 const renderHTMLElement = (tagName: string, source: SEnvElementInterface, dict: HTMLElementDictionaryType, onChange: () => any, document: Document): HTMLElement =>  {
-  tagName = NODE_NAME_MAP[tagName.toLowerCase()] || tagName;
-  const element = document.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, tagName.toLowerCase()) as HTMLElement;
-  
+  const mappedTagName = NODE_NAME_MAP[tagName.toLowerCase()] || tagName;
+  const element = document.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, mappedTagName.toLowerCase()) as HTMLElement;
+
   if (source.shadowRoot) {
     appendChildNodes(element.attachShadow({ mode: "open" }), source.shadowRoot.childNodes as any as SEnvNodeInterface[], dict, onChange, document);
   }
