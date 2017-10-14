@@ -126,7 +126,6 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     protected _linkChild(child: SEnvNodeInterface) {
       super._linkChild(child);
       child.$$parentElement = this;
-      
     }
 
     get style(): SEnvCSSStyleDeclarationInterface {

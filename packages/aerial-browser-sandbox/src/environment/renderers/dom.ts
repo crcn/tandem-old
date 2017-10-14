@@ -22,8 +22,8 @@ import {
   createParentNodeRemoveChildMutation, 
   SEnvHTMLIFrameElementInterface 
 } from "../nodes";
-import { SEnvMutationEventInterface } from "../events";
-import { BaseSyntheticWindowRenderer } from "./base";
+import { SEnvMutationEventInterface, getSEnvEventClasses } from "../events";
+import { BaseSyntheticWindowRenderer, SyntheticWindowRendererNativeEvent } from "./base";
 import { InsertChildMutation, RemoveChildMutation, MoveChildMutation, Mutation, Mutator, weakMemo } from "aerial-common2";
 import { SET_SYNTHETIC_SOURCE_CHANGE, flattenNodeSources } from "../nodes";
 import { getNodeByPath, getNodePath } from "../../utils";
@@ -37,6 +37,8 @@ const NODE_NAME_MAP = {
   script: "span",
   iframe: "span"
 };
+
+const { SEnvWrapperEvent } = getSEnvEventClasses();
 
 type CSSRuleDictionaryType = {
   [IDentifier: string]: [CSSGroupingRule|CSSRule|CSSStyleSheet, any]
@@ -282,6 +284,7 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
       mount.innerHTML = this.createMountInnerHTML();
       mount.onclick = 
       mount.ondblclick = 
+      mount.onsubmit = 
       mount.onmousedown =
       mount.onmouseenter = 
       mount.onmouseleave = 
@@ -305,13 +308,20 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
   
 
   private onDOMEvent (element: SEnvElementInterface, event: any) {
-    
-    // TODO - add more data here
-    // if (event.constructor.name === "MouseEvent") {
-    //   element.dispatchEvent(new SyntheticMouseEvent(event.type));
-    // } else if (event.constructor.name === "KeyboardEvent") {
-    //   element.dispatchEvent(new SyntheticKeyboardEvent(event.type));
-    // }
+
+    // need to cast as synthetic event. This is fine for now though.
+    const e = new SEnvWrapperEvent();
+    e.init(event);
+    element.dispatchEvent(e);
+    event.stopPropagation();
+    if (/submit/.test(event.type)) {
+      event.preventDefault();
+    }
+
+    const ne = new SyntheticWindowRendererNativeEvent();
+    ne.init(SyntheticWindowRendererNativeEvent.NATIVE_EVENT, element.$id, e);
+
+    this.dispatchEvent(ne);
   }
 }
 

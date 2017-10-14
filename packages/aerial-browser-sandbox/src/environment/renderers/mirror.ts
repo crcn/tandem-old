@@ -1,5 +1,6 @@
-import { SyntheticWindowRendererInterface, BaseSyntheticWindowRenderer, SyntheticWindowRendererEvent } from "./base";
+import { SyntheticWindowRendererInterface, BaseSyntheticWindowRenderer, SyntheticWindowRendererEvent, SyntheticWindowRendererNativeEvent } from "./base";
 import { SEnvWindowInterface } from "../window";
+import { getSyntheticNodeById } from "../../state";
 
 export class SyntheticMirrorRenderer extends BaseSyntheticWindowRenderer {
   readonly container: HTMLElement = null;
@@ -19,6 +20,7 @@ export class SyntheticMirrorRenderer extends BaseSyntheticWindowRenderer {
 
     if (this._source) {
       this._source.addEventListener(SyntheticWindowRendererEvent.PAINTED, this._onSourcePainted);
+      this._source.addEventListener(SyntheticWindowRendererNativeEvent.NATIVE_EVENT, this._onSourceEvent);
       this._sync();
     }
   }
@@ -30,11 +32,17 @@ export class SyntheticMirrorRenderer extends BaseSyntheticWindowRenderer {
   private _disposeSourceListeners() {
     if (this._source) {
       this._source.removeEventListener(SyntheticWindowRendererEvent.PAINTED, this._onSourcePainted);
+      this._source.removeEventListener(SyntheticWindowRendererNativeEvent.NATIVE_EVENT, this._onSourceEvent);
     }
   }
 
   private _onSourcePainted = (event: SyntheticWindowRendererEvent) => {
     this._sync();
+  }
+
+  private _onSourceEvent = ({ nativeEvent, targetNodeId }: SyntheticWindowRendererNativeEvent) => {
+    const target = getSyntheticNodeById(this._sourceWindow.struct, targetNodeId);
+    target.instance.dispatchEvent(nativeEvent);
   }
 
   private _sync() {

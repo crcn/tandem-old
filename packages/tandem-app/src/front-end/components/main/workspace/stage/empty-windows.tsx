@@ -26,6 +26,7 @@ const enhanceEmptyWindows = compose<EmptyWindowsPropsInner, EmptyWindowsPropsOut
   pure,
   withHandlers({
     onSubmit: ({ dispatch }) => (event: React.SyntheticEvent<any>) => {
+      console.log("SUBMIT", event);
       dispatch(emptyWindowsUrlAdded((event.target as any).url.value));
       event.preventDefault();
     }

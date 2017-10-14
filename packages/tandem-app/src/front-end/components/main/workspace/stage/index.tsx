@@ -125,7 +125,7 @@ export const StageBase = ({
               {(translate) => {
                 return <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})` }} className={cx({"stage-inner": true })}>
                   { hasWindows ? <Windows browser={browser} smooth={smooth} dispatch={dispatch} fullScreenWindowId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} /> : <EmptyWindows dispatch={dispatch} />}
-                  { hasWindows ? <ToolsLayer workspace={workspace} translate={translate} dispatch={dispatch} browser={browser} /> : null }
+                  { hasWindows && workspace.stage.showTools !== false ? <ToolsLayer workspace={workspace} translate={translate} dispatch={dispatch} browser={browser} /> : null }
                 </div>
               }}
             </Motion>

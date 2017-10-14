@@ -48,6 +48,7 @@ import {
   fullScreenShortcutPressed,
   nextWindowShortcutPressed,
   prevWindowShortcutPressed,
+  toggleToolsShortcutPressed,
   cloneWindowShortcutPressed,
   LEFT_KEY_DOWN,
   LEFT_KEY_UP,
@@ -108,6 +109,7 @@ export type Stage = {
     originalTranslate: Translate;
     originalWindowBounds: Bounds,
   },
+  showTools?: boolean;
   panning: boolean;
   movingOrResizing?: boolean;
   mousePosition?: Point;
@@ -496,6 +498,7 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
     createKeyboardShortcut("escape", escapeShortcutPressed()),
     createKeyboardShortcut("ctrl+shift+]", nextWindowShortcutPressed()),
     createKeyboardShortcut("ctrl+shift+[", prevWindowShortcutPressed()),
+    createKeyboardShortcut("ctrl+meta+t", toggleToolsShortcutPressed()),
     createKeyboardShortcut("up", { type: UP_KEY_DOWN }, { keyup: false }),
     createKeyboardShortcut("up", { type: UP_KEY_UP }, { keyup: true }),
     createKeyboardShortcut("down", { type: DOWN_KEY_DOWN }, { keyup: false }),

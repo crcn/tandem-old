@@ -70,6 +70,7 @@ import {
   StageWheel,
   StageMounted,
   ResizerMoved,
+  TOGGLE_TOOLS_SHORTCUT_PRESSED,
   RESIZER_MOVED,
   STAGE_MOUNTED,
   ResizerMouseDown,
@@ -320,6 +321,13 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       }
 
       return updateWorkspaceStage(state, workspace.$id, { smooth: false, translate });
+    }
+
+    case TOGGLE_TOOLS_SHORTCUT_PRESSED: {
+      const workspace = getSelectedWorkspace(state);
+      return updateWorkspaceStage(state, workspace.$id, {
+        showTools: workspace.stage.showTools == null ? false : !workspace.stage.showTools
+      })
     }
 
     case STAGE_TOOL_EDIT_TEXT_KEY_DOWN: {

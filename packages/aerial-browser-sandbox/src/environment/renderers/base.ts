@@ -33,20 +33,34 @@ export type SyntheticDOMRendererFactory = (window: Window) => SyntheticWindowRen
 
 
 export class SyntheticWindowRendererEvent extends SEnvEvent {
+  
+    static readonly PAINTED = "PAINTED";
+  
+    rects: RenderedClientRects;
+    styles: RenderedComputedStyleDeclarations;
+    scrollPosition: Point;
+    scrollRect: Rectangle;
+  
+    initRendererEvent(type: string, rects: RenderedClientRects, styles: RenderedComputedStyleDeclarations, scrollRect: Rectangle, scrollPosition) {
+      super.initEvent(type, true, true);
+      this.rects = rects;
+      this.styles = styles;
+      this.scrollRect = scrollRect;
+      this.scrollPosition = scrollPosition;
+    }
+  }
 
-  static readonly PAINTED = "PAINTED";
+export class SyntheticWindowRendererNativeEvent extends SEnvEvent {
+  
+  static readonly NATIVE_EVENT = "NATIVE_EVENT";
 
-  rects: RenderedClientRects;
-  styles: RenderedComputedStyleDeclarations;
-  scrollPosition: Point;
-  scrollRect: Rectangle;
+  targetNodeId: string;
+  nativeEvent: Event;
 
-  initRendererEvent(type: string, rects: RenderedClientRects, styles: RenderedComputedStyleDeclarations, scrollRect: Rectangle, scrollPosition) {
+  init(type: string, targetNodeId: string, event: Event) {
     super.initEvent(type, true, true);
-    this.rects = rects;
-    this.styles = styles;
-    this.scrollRect = scrollRect;
-    this.scrollPosition = scrollPosition;
+    this.targetNodeId = targetNodeId;
+    this.nativeEvent  = event;
   }
 }
 

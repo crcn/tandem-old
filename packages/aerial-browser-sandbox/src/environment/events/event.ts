@@ -72,6 +72,13 @@ export const getSEnvEventClasses = weakMemo((context: any = {}) => {
     readonly CAPTURING_PHASE: number;
   }
 
+  class SEnvWrapperEvent extends SEnvEvent {
+    init(source: Event) {
+      Object.assign(this, source);
+      super.initEvent(source.type, true, true);
+    }
+  }
+
   class SEnvMutationEvent extends SEnvEvent {
     static readonly MUTATION = "MUTATION";
     public mutation: Mutation<any>;
@@ -100,6 +107,7 @@ export const getSEnvEventClasses = weakMemo((context: any = {}) => {
 
   return {
     SEnvEvent,
+    SEnvWrapperEvent,
     SEnvURIChangedEvent,
     SEnvMutationEvent,
     SEnvWindowOpenedEvent

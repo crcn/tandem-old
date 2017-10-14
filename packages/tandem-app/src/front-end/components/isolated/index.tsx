@@ -69,7 +69,7 @@ export class Isolate extends React.Component<{
   }
 
   get window(): Window {
-    return (this.refs as any).container.contentWindow;
+    return (this.refs as any).container && (this.refs as any).container.contentWindow;
   }
 
   get head() {
