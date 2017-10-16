@@ -91,8 +91,11 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
   const { SEnvStyleSheetList, SEnvHTMLAllCollection } = getSEnvHTMLCollectionClasses(context);
 
   const eventMap = {
-    MutationEvent:  SEnvMutationEvent
+    MutationEvent:  SEnvMutationEvent,
+    Event: SEnvEvent,
+    MouseEvent: SEnvEvent
   };
+
 
 
   class SEnvDocument extends SEnvParentNode implements SEnvDocumentInterface {
@@ -568,6 +571,9 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     createEvent(eventInterface: "WheelEvent"): WheelEvent;
     createEvent(eventInterface: string): Event {
       const eventClass = eventMap[eventInterface];
+      if (!eventClass) {
+        throw new Error(`Unable to create new event for ${eventInterface}`);
+      }
       return eventClass && Object.create(eventClass.prototype);
     }
     

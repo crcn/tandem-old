@@ -25,17 +25,20 @@ export const getSEnvEventClasses = weakMemo((context: any = {}) => {
     private _cancelable: boolean;
 
     cancelBubble: boolean;
-    readonly defaultPrevented: boolean;
+    readonly defaultPrevented: boolean = false;
     readonly eventPhase: number;
-    readonly isTrusted: boolean;
+    readonly isTrusted: boolean = true;
     returnValue: boolean;
-    readonly srcElement: Element | null;
-    readonly timeStamp: number;
-    readonly scoped: boolean;
+    readonly timeStamp: number = Date.now();
+    readonly scoped: boolean = false;
     initEvent(eventTypeArg: string, canBubbleArg: boolean, cancelableArg: boolean): void {
       this._type = eventTypeArg;
       this._bubbles = canBubbleArg;
       this._cancelable = cancelableArg;
+    }
+
+    get srcElement() {
+      return this.$target;
     }
 
     get target() {
@@ -65,6 +68,7 @@ export const getSEnvEventClasses = weakMemo((context: any = {}) => {
 
     }
     deepPath(): EventTarget[] {
+      console.log("DEEP TARGET");
       return []
     };
     readonly AT_TARGET: number;
@@ -74,8 +78,10 @@ export const getSEnvEventClasses = weakMemo((context: any = {}) => {
 
   class SEnvWrapperEvent extends SEnvEvent {
     init(source: Event) {
-      Object.assign(this, source);
       super.initEvent(source.type, true, true);
+      Object.assign(this, source);
+      this.$currentTarget = null;
+      this.$target = null;
     }
   }
 

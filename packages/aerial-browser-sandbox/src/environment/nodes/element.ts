@@ -363,9 +363,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 
 
     protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-      const e = new SEnvMutationEvent();
-      e.initMutationEvent(createPropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
-      this.dispatchEvent(e);
+      this.dispatchMutationEvent(createPropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
       this.didChange();
     }
 

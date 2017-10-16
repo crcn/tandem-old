@@ -22,17 +22,28 @@ export type ToolsProps = {
   dispatch: Dispatcher<any>;
 };
 
-export const ToolsLayerBase = (({ workspace, browser, dispatch, translate }: ToolsProps) => <div className="m-stage-tools">
-  <GridStageTool translate={translate} />
-  <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
-  <BoxModelStageTool zoom={translate.zoom} workspace={workspace} browser={browser} />
-  <SelectionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
+export const ToolsLayerBase = ({ workspace, browser, dispatch, translate }: ToolsProps) => {
+  const showTools = workspace.stage.showTools !== false;
 
-  <WindowsStageTool workspace={workspace} browser={browser} dispatch={dispatch} translate={translate} />
-  <StaticPositionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} />
-  <EditTextTool zoom={translate.zoom} workspace={workspace}  browser={browser} dispatch={dispatch} />
-  <AffectedNodesTool zoom={translate.zoom} workspace={workspace} browser={browser} />
-</div>);
+  const windowElement = <WindowsStageTool workspace={workspace} browser={browser} dispatch={dispatch} translate={translate} />;
+
+  if (showTools === false) {
+    return <div className="m-stage-tools">
+      { windowElement }
+    </div>;
+  }
+  return <div className="m-stage-tools">
+    <GridStageTool translate={translate} />
+    <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
+    <BoxModelStageTool zoom={translate.zoom} workspace={workspace} browser={browser} />
+    <SelectionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
+
+    { windowElement }
+    <StaticPositionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} />
+    <EditTextTool zoom={translate.zoom} workspace={workspace}  browser={browser} dispatch={dispatch} />
+    <AffectedNodesTool zoom={translate.zoom} workspace={workspace} browser={browser} />
+  </div>;
+}
 
 export const ToolsLayer = compose<ToolsProps, ToolsProps>(
   pure

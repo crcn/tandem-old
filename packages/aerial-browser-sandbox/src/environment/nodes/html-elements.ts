@@ -1,6 +1,6 @@
 import * as vm from "vm";
 import { hasURIProtocol } from "aerial-sandbox2";
-import { getSEnvEventClasses } from "../events";
+import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
 import path = require("path");
 import { getUri } from "../utils";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
@@ -568,6 +568,46 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: SEnvWindowContex
     }
 }); 
 
+export const getSEnvHTMLFormElementClass = weakMemo((context: any) => {
+  const SEnvHTMLElement = getSEnvHTMLElementClass(context);
+  const { SEnvMutationEvent } = getSEnvEventClasses(context);
+  class SEnvHTMLFormElement extends SEnvHTMLElement implements HTMLFormElement { 
+    acceptCharset: string;
+    action: string;
+    autocomplete: string;
+    readonly elements: HTMLFormControlsCollection;
+    encoding: string;
+    enctype: string;
+    readonly length: number;
+    method: string;
+    name: string;
+    noValidate: boolean;
+    target: string;
+    checkValidity(): boolean {
+      return false;
+    }
+    initialize() {
+      super.initialize();
+      this.addEventListener(SEnvMutationEvent.MUTATION, this._onMutation2.bind(this));
+    }
+    item(name?: any, index?: any): any { }
+    namedItem(name: string): any { }
+    reset(): void { }
+    submit(): void { }
+
+    private _onMutation2(event: SEnvMutationEventInterface) {
+
+      // TODO - *[name] does not work -- this is a quick fix
+      const formItems = Array.from(this.querySelectorAll(`*`)).filter((element) => element.hasAttribute("name"));
+      for (const formItem of formItems) {
+        this[formItem.getAttribute("name")] = formItem;
+      }
+    }
+  };
+
+  return SEnvHTMLFormElement;
+});
+
 const getSEnvHTMLInputElementClass = weakMemo((context: SEnvWindowContext) => {
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
   class SEnvHTMLInputElement extends SEnvHTMLElement implements HTMLInputElement { 
@@ -596,7 +636,6 @@ const getSEnvHTMLInputElementClass = weakMemo((context: SEnvWindowContext) => {
     maxLength: number;
     min: string;
     multiple: boolean;
-    name: string;
     pattern: string;
     placeholder: string;
     readOnly: boolean;
@@ -619,6 +658,15 @@ const getSEnvHTMLInputElementClass = weakMemo((context: SEnvWindowContext) => {
     width: string;
     readonly willValidate: boolean;
     minLength: number;
+
+    get name() {
+      return this.getAttribute("name");
+    }
+
+    set name(value: string) {
+      this.setAttribute("name", value);
+    }
+
     checkValidity(): boolean {
       return false;
     }
@@ -1072,26 +1120,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) =
       size: number;
       face: string;
     },
-    "form": class SEnvHTMLFormElement extends SEnvHTMLElement implements HTMLFormElement { 
-      acceptCharset: string;
-      action: string;
-      autocomplete: string;
-      readonly elements: HTMLFormControlsCollection;
-      encoding: string;
-      enctype: string;
-      readonly length: number;
-      method: string;
-      name: string;
-      noValidate: boolean;
-      target: string;
-      checkValidity(): boolean {
-        return false;
-      }
-      item(name?: any, index?: any): any { }
-      namedItem(name: string): any { }
-      reset(): void { }
-      submit(): void { }
-    },
+    "form": getSEnvHTMLFormElementClass(context),
     "frame": class SEnvHTMLFrameElement extends SEnvHTMLElement implements HTMLFrameElement { 
       border: string;
       borderColor: any;

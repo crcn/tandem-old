@@ -11,9 +11,20 @@
   <body style="color: orange;">
 	  <div class="head">
       HEAD THIS!!!
+      <a href="#" id="button">click me</a>
+      <form>
+        <input type="text"></input>
+        <input type="submit"></input>
+      </form>
     </div>
 	  <div class="head">
       HEAD THAT!!!
     </div>
   </body>
+
+  <script>
+    document.addEventListener('submit', (event) => {
+      console.log('submit', event.target);
+    });
+  </script>
 </html>

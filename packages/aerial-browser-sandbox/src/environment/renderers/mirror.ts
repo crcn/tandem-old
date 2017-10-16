@@ -1,6 +1,13 @@
-import { SyntheticWindowRendererInterface, BaseSyntheticWindowRenderer, SyntheticWindowRendererEvent, SyntheticWindowRendererNativeEvent } from "./base";
+import { 
+  SyntheticWindowRendererInterface, 
+  BaseSyntheticWindowRenderer, 
+  SyntheticWindowRendererEvent, 
+  SyntheticWindowRendererNativeEvent,  
+} from "./base";
+import {getSEnvEventClasses } from "../events";
 import { SEnvWindowInterface } from "../window";
 import { getSyntheticNodeById } from "../../state";
+const { SEnvWrapperEvent } = getSEnvEventClasses();
 
 export class SyntheticMirrorRenderer extends BaseSyntheticWindowRenderer {
   readonly container: HTMLElement = null;
@@ -42,7 +49,17 @@ export class SyntheticMirrorRenderer extends BaseSyntheticWindowRenderer {
 
   private _onSourceEvent = ({ nativeEvent, targetNodeId }: SyntheticWindowRendererNativeEvent) => {
     const target = getSyntheticNodeById(this._sourceWindow.struct, targetNodeId);
-    target.instance.dispatchEvent(nativeEvent);
+
+    if (target) {
+
+      // TODO - need syncElement function
+      (target.instance as any).value = (nativeEvent.target as any).value;
+      const wrapperEvent = new SEnvWrapperEvent();
+      wrapperEvent.init(nativeEvent);
+      target.instance.dispatchEvent(wrapperEvent);
+    } else {
+      console.warn(`Cannot dispatch synthetic event ${nativeEvent.type} on element ${targetNodeId}.`);
+    }
   }
 
   private _sync() {

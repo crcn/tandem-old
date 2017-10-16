@@ -5,7 +5,7 @@ import { EventTargetInterface } from "./event";
 const callEventListener = (listener: EventListenerOrEventListenerObject, event: Event) => {
   if (typeof listener === "function") {
     listener(event);
-  } else { 
+  } else if (listener) { 
     listener.handleEvent(event);
   };
 }

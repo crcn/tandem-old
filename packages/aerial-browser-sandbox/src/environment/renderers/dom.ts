@@ -24,7 +24,7 @@ import {
 } from "../nodes";
 import { SEnvMutationEventInterface, getSEnvEventClasses } from "../events";
 import { BaseSyntheticWindowRenderer, SyntheticWindowRendererNativeEvent } from "./base";
-import { InsertChildMutation, RemoveChildMutation, MoveChildMutation, Mutation, Mutator, weakMemo } from "aerial-common2";
+import { InsertChildMutation, RemoveChildMutation, MoveChildMutation, Mutation, Mutator, weakMemo, createZeroBounds } from "aerial-common2";
 import { SET_SYNTHETIC_SOURCE_CHANGE, flattenNodeSources } from "../nodes";
 import { getNodeByPath, getNodePath } from "../../utils";
 
@@ -251,7 +251,7 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
 
       if (synthetic && synthetic.nodeType === SEnvNodeTypes.ELEMENT) {
 
-        const rect = (native as Element).getBoundingClientRect();
+        const rect = (native as Element).getBoundingClientRect() || { width: 0, height: 0, left: 0, top: 0 };
         
         if (rect.width || rect.height || rect.left || rect.top) {
           rects[$id] = rect;
@@ -306,7 +306,6 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
     }
   }
   
-
   private onDOMEvent (element: SEnvElementInterface, event: any) {
 
     // need to cast as synthetic event. This is fine for now though.
@@ -320,6 +319,10 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
 
     const ne = new SyntheticWindowRendererNativeEvent();
     ne.init(SyntheticWindowRendererNativeEvent.NATIVE_EVENT, element.$id, e);
+
+    if (element.tagName.toLowerCase() === "input") {
+      (element as any as HTMLInputElement).value = event.target.value;
+    }
 
     this.dispatchEvent(ne);
   }
