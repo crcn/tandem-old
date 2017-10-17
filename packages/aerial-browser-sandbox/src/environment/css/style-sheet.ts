@@ -81,8 +81,6 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
       this._reset(styleSheet.cssRules);
     }
 
-    
-
     private _reset(rules: SEnvCSSRuleInterface[] = []) {
       this._rules = new SEnvCSSRuleList(...rules);
       for (let i = rules.length; i--;) {

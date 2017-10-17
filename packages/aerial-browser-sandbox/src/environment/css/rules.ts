@@ -66,8 +66,11 @@ export interface CSSParentObject {
 export const cssInsertRule = (parent: CSSStyleSheet|CSSGroupingRule, child: string|CSSRule, index: number, context: any) => {
   const isStyleRule = parent.type != null;
   const styleSheet = isStyleRule ? (parent as CSSGroupingRule).parentStyleSheet : parent as CSSStyleSheet;
+  if (!child) {
+    return -1;
+  }
   if (typeof child === "string") {
-    const childObject = evaluateCSS(child, styleSheet.href, context) as any;
+    const childObject = evaluateCSS(child, styleSheet.href, context).cssRules[0];
     if (isStyleRule) {
       childObject.$parentRule = parent;
     } else {
