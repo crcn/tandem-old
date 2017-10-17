@@ -4,11 +4,20 @@ TODOS:
 
 - [ ] show measurements between elements (hotkey)
 - [ ] snap to element DND
-- [ ] ruler tool
+- [ ] css inspector components
+
 
 - [ ] CSS Inspector
   - [ ] flag invalid properties
   - [ ] autocomplete
+
+CSS INSPECTOR COMPONENT STRATEGY:
+
+- use component DND for each element
+- code should be vanilla HTML & CSS with dynamic blocks (paperclip)
+- registered components for DND
+- identify where children should be dropped to
+
 
 PAPERCLIP DSL TODOS:
 
