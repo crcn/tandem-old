@@ -17,10 +17,13 @@ export const createStringMutation = (startIndex: number, endIndex: number, value
   $type: REPLACE
 });
 
-export const editString = (input: string, mutations: StringMutation[]) => {
+export const editString = (input: string, mutations: StringMutation[], offsetMutations: StringMutation[] = []) => {
   let output = input;
 
   const computedReplacements: Array<[number, number, string]> = [];
+  const offsetMutationCount = offsetMutations.length;
+
+  const allMutations = [...offsetMutations, ...mutations];
 
   for (let i = 0, n = mutations.length; i < n; i++) {
     const {startIndex, endIndex, value} = mutations[i];
@@ -30,9 +33,11 @@ export const editString = (input: string, mutations: StringMutation[]) => {
     let invalid          = false;
     const insertion      = startIndex === endIndex;
 
+    const n2 = i + offsetMutationCount;
+
     // based on all of the previous edits, calculate where this edit is
-    for (let j = 0; j < i; j++) {
-      const {startIndex: previousStartIndex, endIndex: previousEndIndex, value: previousNewValue} = mutations[j];
+    for (let j = 0; j < n2; j++) {
+      const {startIndex: previousStartIndex, endIndex: previousEndIndex, value: previousNewValue} = allMutations[j];
 
       const prevInsertion     = previousStartIndex === previousEndIndex;
       const startIndicesMatch = startIndex === previousStartIndex;

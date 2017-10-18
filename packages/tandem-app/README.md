@@ -6,6 +6,21 @@ TODOS:
 - [ ] snap to element DND
 - [ ] css inspector components
 
+Steps to visual dev:
+
+- create new window tool
+- DND components to canvas tool
+- add new style rule button (scoped)
+- define where children go
+- registered components based on scanned files (from manifest.json)
+- manifest defined outside of window -- dev server should be attached to workspace
+- windows can have path which puts them in a nested structure (for navigating)
+
+
+Questions:
+
+- what sketch-like ui tools can be used that won't break the editor?
+
 
 - [ ] CSS Inspector
   - [ ] flag invalid properties
@@ -17,6 +32,7 @@ CSS INSPECTOR COMPONENT STRATEGY:
 - code should be vanilla HTML & CSS with dynamic blocks (paperclip)
 - registered components for DND
 - identify where children should be dropped to
+- color picker should contain pallete for manifest.json
 
 
 PAPERCLIP DSL TODOS:

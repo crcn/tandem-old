@@ -5,11 +5,13 @@ import { openSyntheticEnvironmentWindow, SEnvWindowContext } from "../../environ
 export const openTestWindow = (htmlOrFiles: any = "", context: Partial<SEnvWindowContext> = {}) => {
   const files = typeof htmlOrFiles === "string" ? { "local://index.html": htmlOrFiles } : htmlOrFiles;
   
+  const fetchFile = typeof files === "function" ? files : (info) => Promise.resolve(files[info]);
+
   return openSyntheticEnvironmentWindow("local://index.html", {
     fetch(info: string) {
       return Promise.resolve({
         text() {
-          return Promise.resolve(files[info]);
+          return fetchFile(info);
         }
       } as any);
     },

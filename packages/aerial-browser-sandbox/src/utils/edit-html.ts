@@ -30,18 +30,38 @@ const maintinWhitespaceTrimmings = (oldContent: string, newContent: string) => {
   return wsParts[0] + newContent.trim() + wsParts[1];
 };
 
+const parseHTML = weakMemo((content) => {
+  return parse5.parse(content, { locationInfo: true }) as parse5.AST.Default.Node;
+});
+
+const findMutationTargetExpression = (target: SEnvNodeInterface, root: parse5.AST.Default.Node) => {
+  return findDOMNodeExpression(root, (expression: parse5.AST.Default.Node) => {
+    const location = getHTMLASTNodeLocation(expression);
+    return expression.nodeName === target.nodeName.toLowerCase() && expressionPositionEquals(location, target.source.start)
+  });
+};
+
+const eatUntil = (content: string, startIndex: number, regexp: RegExp) => {
+  let index = startIndex;
+  while(~index) {
+    if (regexp.test(content.charAt(--index))) break;
+  }
+  return ~index ? index : startIndex;
+}
 
 export const createHTMLStringMutation = (content: string, mutation: Mutation<any>) => {
+  
+  const ast = parseHTML(content);
 
   switch(mutation.$type) {
     case UPDATE_VALUE_NODE: {
-      const targetNode = findMutationTargetExpression(mutation.target, parseHTML(content)) as any;
+      const targetNode = findMutationTargetExpression(mutation.target, ast) as any;
 
       return createStringMutation(targetNode.__location.startOffset, targetNode.__location.startOffset + targetNode.value.trim().length, (mutation as SetValueMutation<any>).newValue);
     }
 
     case SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT: {
-      const node = findMutationTargetExpression(mutation.target, parseHTML(content)) as any;
+      const node = findMutationTargetExpression(mutation.target, ast) as any;
       const { target, name, newValue, oldName, index } = mutation as SetPropertyMutation<any>;
   
       const syntheticElement = <SEnvElementInterface>target;
@@ -107,8 +127,45 @@ export const createHTMLStringMutation = (content: string, mutation: Mutation<any
     }
 
     case SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT: {
-      // const targetNode = findMutationTargetExpression(mutation.child, parseHTML(content)) as any;
-      // return createStringMutation(targetNode.__location.startOffset, targetNode.__location.endOffset, "");
+      const { child } = mutation as RemoveChildMutation<any, any>;
+      const targetNode = findMutationTargetExpression(child, ast) as any;
+      return createStringMutation(targetNode.__location.startOffset, targetNode.__location.endOffset, "");
+    }
+
+    case SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT: {
+      const { index, child, target } = mutation as InsertChildMutation<any, any>;
+      const targetNode = findMutationTargetExpression(target, ast) as any;
+    
+      let startIndex;
+      let endIndex;
+      let childBuffer = child.outerHTML || child.nodeValue;
+
+      if (targetNode.__location.endTag) {
+
+        // has children
+        if (targetNode.childNodes.length && index < target.childNodes.length) {
+          const beforeChild = targetNode.childNodes[index];
+
+          startIndex = endIndex = beforeChild.__location.startTag ? beforeChild.__location.startTag.startOffset : beforeChild.__location.startOffset;
+        } else {
+          startIndex = endIndex = targetNode.__location.endTag.startOffset;
+        }
+        
+      } else {
+
+        // eat /> plus whitespace
+        startIndex = eatUntil(
+          content,
+          targetNode.__location.startTag.endOffset - 2,
+          /\s/
+        );
+
+        endIndex   = startIndex +(targetNode.__location.startTag.endOffset - startIndex);
+        childBuffer = `>${childBuffer}</${targetNode.tagName}>`;
+      }
+
+      return createStringMutation(startIndex, endIndex, childBuffer);
+
     }
   }
 
@@ -131,14 +188,3 @@ export function* htmlContentEditorSaga(contentType: string = "text/html") {
     }
   });
 }
-
-const parseHTML = weakMemo((content) => {
-  return parse5.parse(content, { locationInfo: true }) as parse5.AST.Default.Node;
-});
-
-const findMutationTargetExpression = (target: SEnvNodeInterface, root: parse5.AST.Default.Node) => {
-  return findDOMNodeExpression(root, (expression: parse5.AST.Default.Node) => {
-    const location = getHTMLASTNodeLocation(expression);
-    return expression.nodeName === target.nodeName.toLowerCase() && expressionPositionEquals(location, target.source.start)
-  });
-};

@@ -1,87 +1,92 @@
 import { flatten } from "lodash";
 import { generateSourceHash } from "./source";
-import { Mutation, StringMutation, editString, weakMemo, arraySplice } from "aerial-common2";
+import { Mutation, StringMutation, editString, weakMemo, arraySplice, arrayReplaceIndex } from "aerial-common2";
 
 export type ContentEditor = (content: string, mutation: Mutation<any>) => StringMutation | StringMutation[];
 
+export type EditHistoryCommit = {
+  fingerprint: string;
+  mutations: Mutation<any>[];
+  lateMutations: Mutation<any>[];
+}
+
 export type EditHistory = {
   content: string;
-  mutations: Mutation<any>[];
+  commits: EditHistoryCommit[];
 };
 
-const getMutationInsertionIndex = weakMemo((fingerprint: string, { content, mutations }: EditHistory) => {
-
-  if (mutations.length === 0) {
-    return 0;
+const getHistoryCommitIndex = weakMemo((fingerprint: string, { content, commits }: EditHistory) => {
+  for (let i = commits.length; i--;) {
+    const commit = commits[i];
+    if (commit.fingerprint === fingerprint) return i;
   }
 
-  for (let i = mutations.length; i--;) {
-    const mutation = mutations[i];
-    if (getMutationFingerprint(mutation) === fingerprint) {
-      return i;
-    }
-  }
-
-  // this might happen if the fingerprint is holder than the edit history
-  throw new Error(`Unable to find matching fingerprint for edit history`);  
+  return -1;
 }); 
 
 const getMutationFingerprint = mutation => mutation.target.source.fingerprint;
 
-export const getComputedEditHistoryContent  = weakMemo(({ content, mutations }: EditHistory, edit: ContentEditor) => {
+export const getComputedEditHistoryContent  = weakMemo(({ content, commits }: EditHistory, edit: ContentEditor) => {
 
   let currentContent = content;
-  let batchFingerprint = mutations.length && getMutationFingerprint(mutations[0]);
-  let currentMutationBatch: Mutation<any>[] = [];
+  const lateMutations: StringMutation[] = [];
 
-  let i = 0;
-  const n = mutations.length;
+  for (const commit of commits) {
+    const editCurrentContent = edit.bind(this, currentContent);
+    const lateCommitStringMutations = flatten(commit.lateMutations.map(editCurrentContent)) as StringMutation[];
+    currentContent = editString(currentContent, flatten([
+      ...commit.mutations.map(editCurrentContent),
+      ...lateMutations,
+      ...lateCommitStringMutations
+    ]));
 
-  while(true) {
-    const isLast = i === n;
-    let commitChanges = isLast;
-
-    if (!isLast) {
-      const currentMutation = mutations[i];
-      const currentMutationFingerprint = getMutationFingerprint(currentMutation);
-
-      commitChanges = currentMutationFingerprint !== batchFingerprint;
-      batchFingerprint = currentMutationFingerprint;
-
-      if (!commitChanges) {
-        currentMutationBatch.push(currentMutation);
-      }
-    }
-    
-    if (commitChanges) {
-      currentContent = editString(currentContent, flatten(currentMutationBatch.map(edit.bind(this, currentContent))));
-      currentMutationBatch = [];
-    }
-
-    if (isLast) {
-      break;
-    }
-
-    i++;
+    lateMutations.push(...lateCommitStringMutations);
   }
 
   return currentContent;
 
+  // let currentContent = content;
+  // let batchFingerprint = mutations.length && getMutationFingerprint(mutations[0]);
+  // let currentMutationBatch: Mutation<any>[] = [];
+
+  // let i = 0;
+  // const n = mutations.length;
+
+  // while(true) {
+  //   const isLast = i === n;
+  //   let commitChanges = isLast;
+
+  //   if (!isLast) {
+  //     const currentMutation = mutations[i];
+  //     const currentMutationFingerprint = getMutationFingerprint(currentMutation);
+
+  //     commitChanges = currentMutationFingerprint !== batchFingerprint;
+  //     batchFingerprint = currentMutationFingerprint;
+
+  //     if (!commitChanges) {
+  //       currentMutationBatch.push(currentMutation);
+  //     }
+  //   }
+    
+  //   if (commitChanges) {
+  //     currentContent = editString(currentContent, flatten(currentMutationBatch.map(edit.bind(this, currentContent))));
+  //     currentMutationBatch = [];
+  //   }
+
+  //   if (isLast) {
+  //     break;
+  //   }
+
+  //   i++;
+  // }
+
+  // return currentContent;
+
 }); 
 
-export const getEditHistoryFromFingerprint = weakMemo((fingerprint: string, { content, mutations }: EditHistory) => {
-  return {
-    content,
-    mutations: mutations.slice(
-      0, 
-      getMutationInsertionIndex(fingerprint, { content, mutations })
-    )
-  }
-});
+export const updateContent = (mutation: Mutation<any>, history: EditHistory, edit: ContentEditor): EditHistory => {
 
-export const insertContentMutation = (mutation: Mutation<any>, history: EditHistory, edit: ContentEditor) => {
-
-  const { content, mutations } = history;
+  const { content, commits } = history;
 
   if (!mutation.target || !mutation.target.source.fingerprint || !mutation.target.source.fingerprint) {
     throw new Error(`mutation.target.source.fingerprint property is missing`);
@@ -89,15 +94,48 @@ export const insertContentMutation = (mutation: Mutation<any>, history: EditHist
 
   const fingerprint = mutation.target.source.fingerprint;
 
-  const insertionIndex = getMutationInsertionIndex(fingerprint, { content, mutations });
+  const commitIndex = getHistoryCommitIndex(fingerprint, { content, commits });
 
-  return {
-    content,
-    mutations: arraySplice(
-      mutations,
-      getMutationInsertionIndex(mutation.target.source.fingerprint, { content, mutations }),
-      0,
-      mutation
-    )
-  };
+  if (~commitIndex) {
+    const commit = commits[commitIndex];
+    
+    
+    return {
+      content,
+      commits: arrayReplaceIndex(
+        commits,
+        commitIndex,
+
+        // if the commit is the last one in the history, then just append the edit
+        commitIndex === commits.length - 1 ? {
+          ...commit,
+          mutations: [
+            ...commit.mutations,
+            mutation
+          ]
+
+        // otherwise register the commit as late so that future commits can make edits
+        // accordingly
+        } : {
+          ...commit,
+          lateMutations: [
+            ...commit.lateMutations,
+            mutation
+          ]
+        }
+      ) as EditHistoryCommit[]
+    }
+  } else {
+    return {
+      content,
+      commits: [
+        ...commits,
+        {
+          fingerprint: fingerprint,
+          mutations: [mutation],
+          lateMutations: []
+        }
+      ]
+    }
+  }
 };
