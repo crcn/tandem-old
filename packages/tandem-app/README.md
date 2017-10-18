@@ -1,10 +1,22 @@
 very simple online playground for visually creating web applications
 
+LAUNCHING:
+
+- [ ] Alpha will support paperclip DSL only -- future platforms later on
+
 TODOS:
 
 - [ ] show measurements between elements (hotkey)
 - [ ] snap to element DND
 - [ ] css inspector components
+
+IMMEDIATE:
+
+- [ ] return manifest.json from tandem server
+- [ ] components populated based on scanned files
+- [ ] dropping element to stage creates a _new_ component with 3 files: style sheet, preview file (constaints mocks, stubs, and states), and component file
+- [ ] map of how each window is evaluated - map needs to be loaded in the window
+- [ ] surce objects must contain additional information such as context if bound to data - { context: 
 
 Steps to visual dev:
 

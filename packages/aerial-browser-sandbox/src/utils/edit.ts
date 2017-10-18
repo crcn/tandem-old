@@ -99,7 +99,6 @@ export const updateContent = (mutation: Mutation<any>, history: EditHistory, edi
   if (~commitIndex) {
     const commit = commits[commitIndex];
     
-    
     return {
       content,
       commits: arrayReplaceIndex(

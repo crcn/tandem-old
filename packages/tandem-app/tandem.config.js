@@ -1,16 +1,23 @@
 
 
 module.exports = {
-
   port: Number(process.env.PORT || 8080),
-
   vscode: {
     devServerScript: ["node", "../dev-tools2/lib/back-end/entry.js"] 
   },
 
+  getComponents: () => {
+    return [
+      { 
+        label: "Repeat",
+        id: "repeat"
+      }
+    ]
+  },
+
   // TODO - possible
-  editSourceContent: require("./lib/webpack/edit-ts-content"),
-  sourceFilePattern: __dirname + "/src/**/*-preview.tsx",
+  editSourceContent: require("./lib/webpack/edit-pc-content"),
+  sourceFilePattern: __dirname + "/src/**/*-preview.pc",
   webpackConfigPath: __dirname + "/webpack-dev.config.js",
   getEntryIndexHTML: ({ entryName, filePath }) => `
     <html>

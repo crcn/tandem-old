@@ -114,7 +114,9 @@ function* startExpressServer() {
     
     const webpackConfig = yield call(generateWebpackConfig, state.config);
 
-    yield put(logInfoAction(`Bundling ${Object.keys(webpackConfig.entry).length} entries`));
+    const componentCount = Object.keys(webpackConfig.entry).length;
+
+    yield put(logInfoAction(`Bundling ${componentCount} entries`));
     
     compiler = webpack(webpackConfig);
     yield watchCompilation(compiler);

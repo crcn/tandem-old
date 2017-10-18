@@ -50,3 +50,4 @@ export function* mainSaga() {
   yield fork(httpService);
   yield fork(frontEndService);
 };
+
