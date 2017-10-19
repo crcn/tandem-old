@@ -11,21 +11,21 @@ import { expect } from "chai";
 
 describe(__filename + "#", () => {
   it("can parse a self closing element", () => {
-    const ast = parse("<a />") as PCSelfClosingElement;
+    const ast = parse("<a />").children[0] as PCSelfClosingElement;
     expect(ast.type).to.eql(PCExpressionType.SELF_CLOSING_ELEMENT);
     expect(ast.name).to.eql("a");
     expect(ast.attributes.length).to.eql(0);
   });
 
   it("can parse an element with a start and end tag", () => {
-    const ast = parse("<a></a>") as PCElement;
+    const ast = parse("<a></a>").children[0] as PCElement;
     expect(ast.type).to.eql(PCExpressionType.ELEMENT);
     expect(ast.startTag.name).to.eql("a");
     expect(ast.endTag.name).to.eql("a");
   });
 
   it("can parse a self closing element with one attribute", () => {
-    const ast = parse("<a b='c' />") as PCSelfClosingElement;
+    const ast = parse("<a b='c' />").children[0] as PCSelfClosingElement;
     expect(ast.type).to.eql(PCExpressionType.SELF_CLOSING_ELEMENT);
     expect(ast.name).to.eql("a");
     expect(ast.attributes.length).to.eql(1);
@@ -37,9 +37,15 @@ describe(__filename + "#", () => {
   });
 
   it("can parse a text node", () => {
-    const ast: PCString = parse("a b") as PCString;
+    const ast: PCString = parse("a b").children[0] as PCString;
     expect(ast.type).to.eql(PCExpressionType.STRING);
     expect(ast.value).to.eql("a b");
+  });
+  
+  it("can parse a fragment", () => {
+    const ast = parse("a b <a />");
+    expect(ast.children[0].type).to.eql(PCExpressionType.STRING);
+    expect(ast.children[1].type).to.eql(PCExpressionType.SELF_CLOSING_ELEMENT);
   });
 
   // smoke

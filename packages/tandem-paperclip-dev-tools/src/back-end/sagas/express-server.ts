@@ -9,7 +9,6 @@ import { select, fork, spawn, take, put, call } from "redux-saga/effects";
 
 export function* expresssServerSaga() {
   yield fork(handleVisualDevConfigLoaded);
-  
 }
 
 function* handleVisualDevConfigLoaded() {

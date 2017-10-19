@@ -1,1 +1,6 @@
-GUTTER ME THIS
+<import prefix="import1_" src="./test.pc" />
+
+<component name="test" export>
+  <import1_name />
+</component>
+

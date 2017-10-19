@@ -16,6 +16,7 @@ export type Component = {
 }
 
 
-// export const createComponentFromFilePath = (filePath: string): Component => ({
-//   // $id: md5(filePath)
-// })
+export const createComponentFromFilePath = (filePath: string): Component => ({
+  $id: md5(filePath),
+  label: "nada"
+})

@@ -5,6 +5,7 @@ import {
   PCEndTag,
   PCBlock, 
   PCAttribute, 
+  PCFragment,
   PCExpressionType, 
   PCExpression,
   PCSelfClosingElement
@@ -118,7 +119,7 @@ const tokenize = (source: string) => {
     } else if (/[\s\r\n\t]/.test(cchar)) {
       token = createToken(TokenType.WHITESPACE, scanner.pos, scanner.scan(/[\s\r\n\t]/));
     } else {
-      token = createToken(TokenType.STRING, scanner.pos, scanner.scan(/[^<>='"\s\r\n\t]/));
+      token = createToken(TokenType.STRING, scanner.pos, scanner.scan(/[^<>='"{}\s\r\n\t]/));
     }
 
     tokens.push(token);
@@ -133,7 +134,7 @@ const getLocation = (start:  Token | number, end: Token | number) => ({
 });
 
 export const parse = (source: string) => {
-  return createExpression(tokenize(source));
+  return createFragment(tokenize(source));
 }
 
 const throwUnexpectedToken = (source: string, token: Token, expected: string[]) => {
@@ -147,17 +148,27 @@ function assertCurrTokenType(scanner: TokenScanner, type: TokenType, expected: s
   }
 }
   
-
-function createExpression(scanner: TokenScanner): PCExpression  {
+function createFragment(scanner: TokenScanner): PCFragment  {
+  const children = [];
   while(!scanner.ended()) {
-    const token = scanner.curr();
-    if (token.type === TokenType.LESS_THAN) {
-      return createTag(scanner);
-    } else {
-      return createText(scanner);
-    }
+    children.push(createNode(scanner));
   }
-  return null;
+  return {
+    type: PCExpressionType.FRAGMENT,
+    location: children.length ? getLocation(children[0].location.start, children[children.length - 1].location.end) : { start: 0, end: 0 },
+    children,
+  }
+}
+
+function createNode(scanner: TokenScanner): PCExpression  {
+  const token = scanner.curr();
+  if (token.type === TokenType.LESS_THAN) {
+    return createTag(scanner);
+  } else if (token.type === TokenType.BLOCK_START) {
+    return createBlock(scanner);
+  } else {
+    return createText(scanner);
+  }
 }
 
 function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingElement {
@@ -175,7 +186,7 @@ function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingE
 
   while(1) {
 
-    const childOrEndTag = createExpression(scanner);
+    const childOrEndTag = createNode(scanner);
 
     // eof
     if (!childOrEndTag) {
@@ -304,7 +315,7 @@ function createBlock(scanner: TokenScanner): PCString {
 
   while(1) {
     curr = scanner.curr();
-    if (!curr || curr.type === TokenType.BLOCK_START) {
+    if (!curr || curr.type === TokenType.BLOCK_END) {
       break;
     }
 
@@ -349,7 +360,7 @@ function createText(scanner: TokenScanner): PCString {
   let endToken: Token;
   while(1) {
     const currToken = scanner.curr();
-    if (!currToken || currToken.type === TokenType.LESS_THAN) {
+    if (!currToken || currToken.type === TokenType.LESS_THAN || currToken.type === TokenType.BLOCK_START) {
       break;
     }
     endToken = currToken;

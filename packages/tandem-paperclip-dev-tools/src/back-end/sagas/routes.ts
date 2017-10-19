@@ -1,5 +1,5 @@
 import { fork, take, select } from "redux-saga/effects";
-import { ApplicationState } from "../state";
+import { ApplicationState, createComponentFromFilePath } from "../state";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest } from "../utils";
 import * as express from "express";
@@ -61,10 +61,9 @@ function* createComponent(req: express.Request, res: express.Response) {
 function* getComponents(req: express.Request, res: express.Response) {
   const state: ApplicationState = yield select();
   
-  const filePaths = getComponentFilePaths(state);
-  console.log(filePaths);
+  const components = getComponentFilePaths(state).map(createComponentFromFilePath);
 
-  res.send(filePaths);
+  res.send(components);
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 
