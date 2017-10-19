@@ -15,6 +15,10 @@ module.exports = {
     ]
   },
 
+  paperclip: {
+    componentsDirectory: __dirname + "/src/front-end/components"
+  },
+
   // TODO - possible
   editSourceContent: require("./lib/webpack/edit-pc-content"),
   sourceFilePattern: __dirname + "/src/**/*-preview.pc",

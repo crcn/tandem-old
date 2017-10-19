@@ -12,6 +12,7 @@ TODOS:
 
 IMMEDIATE:
 
+- [ ] Tandem app should detect paperclip ASTs. Other languages should be limited.
 - [ ] return manifest.json from tandem server
 - [ ] components populated based on scanned files
 - [ ] dropping element to stage creates a _new_ component with 3 files: style sheet, preview file (constaints mocks, stubs, and states), and component file

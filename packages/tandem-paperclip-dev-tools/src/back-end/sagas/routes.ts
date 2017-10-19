@@ -1,7 +1,13 @@
-import { fork, take } from "redux-saga/effects";
+import { fork, take, select } from "redux-saga/effects";
+import { ApplicationState } from "../state";
+import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest } from "../utils";
 import * as express from "express";
+import * as path from "path";
+import * as glob from "glob";
 import { expresssServerSaga } from "./express-server";
+
+const getComponentFilePaths = ({ cwd, config: { componentsDirectory }}: ApplicationState) => glob.sync(path.join(componentsDirectory || cwd, "**", PAPERCLIP_FILE_PATTERN));
 
 export function* routesSaga() {
   yield routeHTTPRequest(
@@ -25,8 +31,10 @@ function getCapabilities() {
   ];
 }
 
-function createComponent(req: express.Request, res: express.Response) {
-  res.send("OK");
+function* createComponent(req: express.Request, res: express.Response) {
+
+
+  
   // TODO - create global style if it doesn't already exist
   // check if component name is already taken (must be unique)
   // create style based on component name
@@ -50,7 +58,13 @@ function createComponent(req: express.Request, res: express.Response) {
   */
 }
 
-function getComponents() {
+function* getComponents(req: express.Request, res: express.Response) {
+  const state: ApplicationState = yield select();
+  
+  const filePaths = getComponentFilePaths(state);
+  console.log(filePaths);
+
+  res.send(filePaths);
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 

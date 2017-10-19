@@ -1,4 +1,5 @@
 import * as express from "express";
+import { ApplicationState } from "../state";
 import * as getPort from "get-port";
 import * as http from "http";
 import * as multiparty from "connect-multiparty";
@@ -18,7 +19,7 @@ function* handleVisualDevConfigLoaded() {
     httpServer.close();
   }
 
-  const port = Number(process.env.PORT);
+  const { port }: ApplicationState = yield select();
 
   server = express();
   
