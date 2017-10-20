@@ -74,7 +74,7 @@ const BUILTIN_COMPONENTS: Component[] = [
 function* getAvailableComponents() {
   const state: ApplicationState = yield select();
   
-  return [...BUILTIN_COMPONENTS, getComponentFilePaths(state).map(filePath => (
+  return [...BUILTIN_COMPONENTS, ...getComponentFilePaths(state).map(filePath => (
     createComponentFromFilePath(fs.readFileSync(filePath, "utf8"), filePath)
   ))];
 }
