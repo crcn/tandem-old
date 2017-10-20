@@ -146,7 +146,7 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
 
   const declaration = declareNode(`document.createElement("style")`, context);
 
-  // TODO - call CSSOM, don't set textContent
+  // TODO - call CSSOM, don't set textContent. Also need to define CSS AST in the scope
   
   const css = context.source.substr(node.startTag.location.end, node.endTag.location.start - node.startTag.location.end);
 
