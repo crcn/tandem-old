@@ -9,9 +9,11 @@ import {
   PCElement, 
   PCBlock,
   PCExpressionType,
+} from "./ast";
+import {
   getPCStartTagAttribute,
   hasPCStartTagAttribute,
-} from "./ast";
+} from "./utils";
 import { parse } from "./parser";
 
 const transpileNode = (ast: PCExpression) => {
@@ -30,7 +32,10 @@ const transpileText = (text: PCString) => !/^[\s\r\n\t]+$/.test(text.value) ? `b
 
 const transpileElement = (element: PCElement) => {
   const tagName = element.startTag.name;
-  if (tagName === "template") {
+
+  if (tagName === "meta") {
+    return "";
+  } else if (tagName === "template") {
     return transpileTemplateElement(element);
   } else if (tagName === "repeat") {
     return transpileRepeatElement(element);

@@ -90,6 +90,9 @@ class TokenScanner extends Scanner<Token[]> {
   constructor(readonly source: string, tokens: Token[]) {
     super(tokens);
   } 
+  peekNext() {
+    return this._target[this.pos + 1];
+  }
 }
 
 const tokenize = (source: string) => {
@@ -119,7 +122,7 @@ const tokenize = (source: string) => {
     } else if (/[\s\r\n\t]/.test(cchar)) {
       token = createToken(TokenType.WHITESPACE, scanner.pos, scanner.scan(/[\s\r\n\t]/));
     } else {
-      token = createToken(TokenType.STRING, scanner.pos, scanner.scan(/[^<>='"{}\s\r\n\t]/));
+      token = createToken(TokenType.STRING, scanner.pos, scanner.scan(/[^<>='"{}\s\r\n\t]/) || scanner.next());
     }
 
     tokens.push(token);
@@ -172,10 +175,9 @@ function createNode(scanner: TokenScanner): PCExpression  {
 }
 
 function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingElement {
-  if (scanner.next().type === TokenType.BACKSLASH) {
+  if (scanner.peekNext().type === TokenType.BACKSLASH) {
     return createEndTag(scanner);
   }
-  scanner.prev();
   const startTag = createStartTag(scanner);
   if (startTag.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
     return startTag;
@@ -258,6 +260,16 @@ function createAttribute(scanner: TokenScanner): PCAttribute {
   const name = scanner.curr();
   assertCurrTokenType(scanner, TokenType.STRING, ["string"]);
   scanner.next(); // eat name
+
+  // only attribute name is present
+  if(scanner.curr().value !== "=") {
+    return {
+      type: PCExpressionType.ATTRIBUTE,
+      location: getLocation(name, name.pos + name.value.length),
+      name: name.value
+    };
+  }
+
   assertCurrTokenType(scanner, TokenType.EQUALS, ["="]);
   scanner.next(); // eat =
   const value = createAttributeValue(scanner);
@@ -342,13 +354,15 @@ function createAttributeValue(scanner: TokenScanner): PCString | PCBlock {
 }
 
 function createEndTag(scanner: TokenScanner): PCEndTag {
+  const start = scanner.curr();
+  scanner.next(); 
   const nameToken = scanner.next();
   const closeToken = scanner.next();
   assertCurrTokenType(scanner, TokenType.GREATER_THAN, [">"]);
   scanner.next(); // eat >
   return {
     type: PCExpressionType.END_TAG,
-    location: getLocation(nameToken, closeToken),
+    location: getLocation(start, closeToken),
     name: nameToken.value
   };
 }

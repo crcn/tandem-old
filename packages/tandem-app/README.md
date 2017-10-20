@@ -3,6 +3,7 @@ very simple online playground for visually creating web applications
 LAUNCHING:
 
 - [ ] Alpha will support paperclip DSL only -- future platforms later on
+- [ ] *needs to be labeled as experimental
 
 TODOS:
 

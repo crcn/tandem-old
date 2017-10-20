@@ -40,7 +40,7 @@ export type VSAttributeValue = {
 export type PCAttribute = {
   location: ExpressionLocation;
   name: string;
-  value: PCExpression;
+  value?: PCExpression;
 } & PCExpression;
 
 export type PCStartTag = {
@@ -58,22 +58,14 @@ export type PCSelfClosingElement = {
 
 type Children = Array<PCElement | PCSelfClosingElement | PCBlock | PCString>;
 
-export type PCFragment = {
+export type PCParent = {
   children: Children;
 } & PCExpression;
+
+export type PCFragment = {
+} & PCParent;
 
 export type PCElement = {
   startTag: PCStartTag;
   endTag: PCEndTag;
-  children: Children;
-} & PCExpression;
-
-
-export const getPCStartTagAttribute = (startTag: PCStartTag, name: string) => {
-  const attr = startTag.attributes.find((attr) => attr.name === name);
-  return attr && (attr.value as PCString).value;
-}
-
-export const hasPCStartTagAttribute = (startTag: PCStartTag, name: string) => {
-  return Boolean(startTag.attributes.find((attr) => attr.name === name));
-}
+} & PCParent;
