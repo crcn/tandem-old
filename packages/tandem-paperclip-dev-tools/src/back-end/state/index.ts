@@ -16,7 +16,7 @@ export type ApplicationState = {
 export type Component = {
   label: string;
   $id: string;
-  filePath: string;
+  filePath?: string;
 }
 
 

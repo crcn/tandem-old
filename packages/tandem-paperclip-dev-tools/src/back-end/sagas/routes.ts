@@ -60,12 +60,23 @@ function* createComponent(req: express.Request, res: express.Response) {
   */
 }
 
+const NATIVE_COMPONENTS: Component[] = [
+  {
+    $id: "repeat",
+    label: "List"
+  },
+  {
+    $id: "text-block",
+    label: "Dynamic Text"
+  }
+]
+
 function* getAvailableComponents() {
   const state: ApplicationState = yield select();
   
-  return getComponentFilePaths(state).map(filePath => (
+  return [...NATIVE_COMPONENTS, getComponentFilePaths(state).map(filePath => (
     createComponentFromFilePath(fs.readFileSync(filePath, "utf8"), filePath)
-  ));
+  ))];
 }
 
 function* getComponents(req: express.Request, res: express.Response) {
@@ -83,7 +94,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
 
   const targetComponent = components.find(component => component.$id === $id);
 
-  if (!targetComponent) {
+  if (!targetComponent || !targetComponent.filePath) {
     res.status(404);
     return res.send(`Component not found`);
   }
