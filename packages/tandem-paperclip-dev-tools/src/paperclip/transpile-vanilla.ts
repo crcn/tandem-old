@@ -142,18 +142,20 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
     var ${varName} = document.createElement("style");
     ${varName}.setAttribute("data-style-id", "${varName}");
   `
+  let css = context.source.substr(node.startTag.location.end, node.endTag.location.start - node.startTag.location.end);
 
-  const cssRulePrefixes = [`[data-style-id=${varName}] ~ `, `[data-style-id=${varName}] ~ * `];
+  if (scoped) { 
 
-  const declaration = declareNode(`document.createElement("style")`, context);
+    const cssRulePrefixes = [`[data-style-id=${varName}] ~ `, `[data-style-id=${varName}] ~ * `];
 
-  // TODO - call CSSOM, don't set textContent. Also need to define CSS AST in the scope
+    const declaration = declareNode(`document.createElement("style")`, context);
+
+    // TODO - call CSSOM, don't set textContent. Also need to define CSS AST in the scope
   
-  const css = context.source.substr(node.startTag.location.end, node.endTag.location.start - node.startTag.location.end);
+    css = postcss().use(prefixCSSRules(cssRulePrefixes)).process(css).css;
+  }
 
-  const transformedCSS = postcss().use(prefixCSSRules(cssRulePrefixes)).process(css).css;
-
-  buffer += `${varName}.textContent = "${transformedCSS.replace(/[\n\r\s\t]+/g, " ")}";\n`
+  buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
 
   return {
     varName: varName,
