@@ -133,6 +133,8 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
 
 const uid = () => md5(Date.now() + "_" + Math.random());
 
+// TODO - eventually need to put these style elements within the global context, or check if they've already
+// been registered. Otherwise they'll pollute the CSSOM when used repeatedly. 
 const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   const scoped = hasPCStartTagAttribute(node, "scoped");
 
