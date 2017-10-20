@@ -9,6 +9,7 @@ import { Dispatcher, diffArray, eachArrayValueMutation } from "aerial-common2";
 import { createUrlProxyProtocolSaga } from "./protocol";
 import { frontEndSyntheticBrowserSaga } from "./synthetic-browser";
 import { persistStateSaga } from "./persist-state";
+import { apiSaga } from "./api";
 
 export function* mainSaga() {
   yield fork(yield call(createUrlProxyProtocolSaga));
@@ -17,4 +18,5 @@ export function* mainSaga() {
   yield fork(shortcutsService);
   yield fork(frontEndSyntheticBrowserSaga);
   yield fork(persistStateSaga);
+  yield fork(apiSaga);
 }

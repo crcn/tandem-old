@@ -13,7 +13,7 @@ import {
 } from "./index";
 
 let state = createApplicationState({
-  apiHost: `localhost:8084`,
+  apiHost: ((location.hash || "").match(/api=([^&]+)/) ||[null, `localhost:8084`])[1],
   proxy: `http://localhost:8084/proxy/`,
   element: typeof document !== "undefined" ? document.getElementById("application") : undefined,
   log: {

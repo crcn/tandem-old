@@ -43,7 +43,6 @@ import {
   SyntheticWindow,
   getStageTranslate,
   ShortcutServiceState,
-  toggleWorkspaceTargetCSSSelector,
   updateWorkspaceStage,
   getSelectedWorkspace,
   addWorkspaceSelection,
@@ -55,16 +54,21 @@ import {
   toggleWorkspaceSelection,
   getSelectedWorkspaceFile,
   getSyntheticNodeWorkspace,
+  getSyntheticWindowBrowser,
   updateWorkspaceTextEditor,
   getSyntheticBrowserBounds,
   getFrontEndItemByReference,
   getWorkspaceSelectionBounds,
   getSyntheticWindowWorkspace,
   getBoundedWorkspaceSelection,
-  getSyntheticWindowBrowser,
   getSyntheticBrowserItemBounds,
+  toggleWorkspaceTargetCSSSelector,
   getStageToolMouseNodeTargetReference,
 } from "front-end/state";
+
+import {
+  NATIVE_COMPONENTS
+} from "../constants";
 
 import {
   StageWheel,
@@ -133,6 +137,8 @@ import {
   StageToolNodeOverlayHoverOver,
   STAGE_TOOL_EDIT_TEXT_KEY_DOWN,
   StageToolOverlayMousePanStart,
+  API_COMPONENTS_LOADED,
+  APIComponentsLoaded,
   STAGE_TOOL_OVERLAY_MOUSE_LEAVE,
   STAGE_TOOL_WINDOW_TITLE_CLICKED,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
@@ -156,15 +162,15 @@ import {
   DEFAULT_WINDOW_WIDTH,
   DEFAULT_WINDOW_HEIGHT,
   getSyntheticNodeById,
+  SyntheticCSSStyleRule,
   SyntheticWindowOpened,
   getSyntheticNodeWindow,
   syntheticBrowserReducer, 
-  openSyntheticWindowRequest,
   getSyntheticWindowChild,
   SEnvCSSStyleRuleInterface,
-  SYNTHETIC_WINDOW_PROXY_OPENED,
+  openSyntheticWindowRequest,
   SyntheticCSSStyleDeclaration,
-  SyntheticCSSStyleRule,
+  SYNTHETIC_WINDOW_PROXY_OPENED,
   SEnvCSSStyleDeclarationInterface,
 } from "aerial-browser-sandbox";
 
@@ -202,6 +208,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   state = windowPaneReducer(state, event);
   state = fileCacheReducer(state, event);
   state = shortcutReducer(state, event);
+  state = apiReducer(state, event);
 
   return state;
 };
@@ -211,6 +218,21 @@ const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 6400 / 100;
 const INITIAL_ZOOM_PADDING = 50;
+
+const apiReducer = (state: ApplicationState, event: BaseEvent) => {
+  switch(event.type) {
+    case API_COMPONENTS_LOADED: {
+      const { components } = event as APIComponentsLoaded;
+      return updateWorkspace(state, state.selectedWorkspaceId, {
+        availableComponents: [
+          ...NATIVE_COMPONENTS,
+          ...components
+        ]
+      });
+    }
+  }
+  return state;
+};
 
 const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {

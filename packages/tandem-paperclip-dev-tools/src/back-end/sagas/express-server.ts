@@ -1,6 +1,7 @@
 import * as express from "express";
 import { ApplicationState } from "../state";
 import * as getPort from "get-port";
+import * as cors from "cors";
 import * as http from "http";
 import * as multiparty from "connect-multiparty";
 import { eventChannel } from "redux-saga";
@@ -21,6 +22,7 @@ function* handleVisualDevConfigLoaded() {
   const { port }: ApplicationState = yield select();
 
   server = express();
+  server.use(cors());
   
   // start taking requests and dispatching them to other sagas
   yield fork(function*() {

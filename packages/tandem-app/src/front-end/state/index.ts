@@ -33,6 +33,11 @@ import {
   expressionLocationEquals,
   createImmutableStructFactory,
 } from "aerial-common2";
+
+import {
+ AvalaibleComponent
+} from "./api";
+
 import { createFileCacheStore, FileCacheRootState, FileCacheItem, getFileCacheItemById } from "aerial-sandbox2";
 
 import { StageToolOverlayMouseMoved, StageToolOverlayClicked } from "../actions";
@@ -156,6 +161,7 @@ export type Workspace = {
   stage: Stage;
   textEditor: TextEditor;
   library: LibraryItem[];
+  availableComponents: AvalaibleComponent[];
 } & Struct;
 
 export type ApplicationState = {
@@ -478,7 +484,8 @@ export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, 
   textEditor: {},
   selectionRefs: [],
   hoveringRefs: [],
-  library: []
+  library: [],
+  availableComponents: []
 });
 
 export const createApplicationState = createStructFactory<ApplicationState>(APPLICATION_STATE, {
@@ -557,3 +564,4 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
 
 export * from "./shortcuts";
 export * from "aerial-browser-sandbox/src/state";
+export * from "./api";

@@ -296,8 +296,6 @@ const transpileChildBlock = (node: PCBlock, context: TranspileContext) => {
       ${fragmentDeclaration.varName}.appendChild(${node.value}[${iDeclaration.varName}]);
     }
   `;
-
-
   
   fragmentDeclaration.content += buffer;
 
@@ -348,5 +346,5 @@ const addDeclarationSourceReference = (declaration: Declaration, expression: PCE
       buffer += `.${part}`;
     }
   }
-  addDeclarationProperty(declaration, "$source", buffer, context);
+  addDeclarationProperty(declaration, "source", buffer, context);
 }

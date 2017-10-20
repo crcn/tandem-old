@@ -1,6 +1,6 @@
 import { FileCacheItem } from "aerial-sandbox2";
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct } from "aerial-common2";
-import { ApplicationState, SyntheticElement } from "../state";
+import { ApplicationState, SyntheticElement, AvalaibleComponent } from "../state";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
@@ -70,6 +70,7 @@ export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_
 export const SOURCE_CLICKED   = "SOURCE_CLICKED";
 export const CSS_DECLARATION_TITLE_MOUSE_LEAVE   = "CSS_DECLARATION_TITLE_MOUSE_LEAVE";
 export const TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED   = "TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED";
+export const API_COMPONENTS_LOADED = "API_COMPONENTS_LOADED";
 
 /**
  * Types
@@ -259,6 +260,10 @@ export type SourceClicked = {
 export type ToggleCSSTargetSelectorClicked = {
   itemId: string;
   windowId: string;
+} & BaseEvent;
+
+export type APIComponentsLoaded = {
+  components: AvalaibleComponent[];
 } & BaseEvent;
 
 /**
@@ -550,4 +555,9 @@ export const stageMouseMoved = (sourceEvent: React.MouseEvent<any>): WrappedEven
 export const stageMouseClicked = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
   sourceEvent,
   type: STAGE_MOUSE_CLICKED,
+});
+
+export const apiComponentsLoaded = (components: AvalaibleComponent[]): APIComponentsLoaded => ({
+  type: API_COMPONENTS_LOADED,
+  components
 })
