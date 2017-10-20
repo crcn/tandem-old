@@ -58,7 +58,7 @@ const transpileModule = (root: PCFragment, source: string) => {
 
   let buffer = "(function(module, document) {\n";
   buffer += `var ${EXPORTS_VAR} = {};\n`;
-  buffer += `var ${SOURCE_AST_VAR} = ${JSON.stringify(root, null, 2)};\n`;
+  buffer += `var ${SOURCE_AST_VAR} = ${JSON.stringify(root)};\n`;
   buffer += transpileChildren(root, context);
 
   buffer += `module.exports = ${EXPORTS_VAR};\n`;

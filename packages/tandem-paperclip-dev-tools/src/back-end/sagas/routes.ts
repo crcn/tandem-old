@@ -1,5 +1,6 @@
-import { fork, take, select } from "redux-saga/effects";
-import { ApplicationState, createComponentFromFilePath } from "../state";
+import { fork, take, select, call } from "redux-saga/effects";
+import {transpilePCASTToVanillaJS } from "../../paperclip";
+import { ApplicationState, createComponentFromFilePath, Component } from "../state";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest } from "../utils";
 import * as express from "express";
@@ -21,7 +22,7 @@ export function* routesSaga() {
 
     // creates a new component
     [ { test: /^\/components/, method: 'POST' }, createComponent],
-    [ { test: /^\/preview\/[^\/]+/ }, getComponentPreview]
+    [ { test: /^\/preview\/[^\/]+/, method: 'GET' }, getComponentPreview]
   );
 }
 
@@ -59,21 +60,57 @@ function* createComponent(req: express.Request, res: express.Response) {
   */
 }
 
-function* getComponents(req: express.Request, res: express.Response) {
+function* getAvailableComponents() {
   const state: ApplicationState = yield select();
   
-  const components = getComponentFilePaths(state).map(filePath => (
+  return getComponentFilePaths(state).map(filePath => (
     createComponentFromFilePath(fs.readFileSync(filePath, "utf8"), filePath)
   ));
+}
 
-  res.send(components);
+function* getComponents(req: express.Request, res: express.Response) {
+  res.send(yield call(getAvailableComponents));
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 
-function getComponentPreview(req: express.Request, res: express.Response) {
+function* getComponentPreview(req: express.Request, res: express.Response) {
 
   // TODO - evaluate PC code IN THE BROWSER -- need to attach data information to element
   // nodes
-  const [match, name] = req.path.match(/preview\/(\w+)/);
-  res.send("PREVIEW" +  name);
+  const [match, $id] = req.path.match(/preview\/(\w+)/);
+
+  const components = (yield call(getAvailableComponents)) as Component[];
+
+  const targetComponent = components.find(component => component.$id === $id);
+
+  if (!targetComponent) {
+    res.status(404);
+    return res.send(`Component not found`);
+  }
+
+  const html = `
+  <html>
+    <head>
+      <title>${targetComponent.label}</title>
+    </head>
+    <body>
+      <script>
+        var module = {
+          exports: {}
+        };
+        ${transpilePCASTToVanillaJS(fs.readFileSync(targetComponent.filePath, "utf8"))}
+        var preview = module.exports.preview;
+        if (!preview) {
+          document.body.appendChild(
+            document.createTextNode('"preview" template not found')
+          );
+        } else {
+          document.body.appendChild(preview({}));
+        }
+      </script>
+    </body>
+  </html>
+  `;
+
+  res.send(html);
 }

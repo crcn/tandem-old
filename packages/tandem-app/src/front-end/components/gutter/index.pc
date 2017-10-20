@@ -4,8 +4,18 @@
   {{children}}
 </template>
 
+<template name="test">
+  <span>{{typeof text !== "undefined" ? text : "does not exist"}}</span>
+</template>
+
 <template name="preview" export dev>
   <gutter>
-    Gutter me this
+    <style scoped>
+      span {
+        color: red;
+      }
+    </style>
+    <test text="a b c" />
   </gutter>
+  <span>Gatter</span>
 </template>
