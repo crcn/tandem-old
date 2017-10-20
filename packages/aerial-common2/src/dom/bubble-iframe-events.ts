@@ -56,6 +56,7 @@ export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: { tra
     "copy",
     "dragenter",
     "dragexit",
+    "dragover",
     "drop",
     "paste",
     "mousemove",

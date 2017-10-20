@@ -2,7 +2,7 @@
 
 import "./index.scss";
 import * as React from "react";
-import { Workspace } from "front-end/state";
+import { Workspace, AVAILABLE_COMPONENT } from "front-end/state";
 import * as cx from "classnames";
 import { ToolsLayer } from "./tools";
 import { Windows } from "./windows";
@@ -35,10 +35,11 @@ export type StageInnerProps = {
   onDrop: (event: React.SyntheticEvent<any>) => any;
   onMouseEvent: (event: React.SyntheticEvent<any>) => any;
   onMouseClick: (event: React.SyntheticEvent<any>) => any;
-  onDragEnter: (event: React.SyntheticEvent<any>) => any;
+  onDragOver: (event: React.SyntheticEvent<any>) => any;
   onDragExit: (event: React.SyntheticEvent<any>) => any;
   setCanvasOuter: (element: HTMLElement) => any;
 } & StageOuterProps;
+
 
 const enhanceStage = compose<StageInnerProps, StageOuterProps>(
   pure,
@@ -46,6 +47,9 @@ const enhanceStage = compose<StageInnerProps, StageOuterProps>(
   withState('stageContainer', 'setStageContainer', null),
   withHandlers({
     onMouseEvent: ({ dispatch }) => (event: React.MouseEvent<any>) => {
+      dispatch(stageMouseMoved(event));
+    },
+    onDragOver: ({ dispatch }) => (event) => {
       dispatch(stageMouseMoved(event));
     },
     onMouseClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
@@ -73,7 +77,7 @@ export const StageBase = ({
   onDrop,
   onMouseEvent,
   shouldTransitionZoom,
-  onDragEnter,
+  onDragOver,
   onMouseClick,
   onDragExit
 }: StageInnerProps) => {
@@ -92,7 +96,6 @@ export const StageBase = ({
 
   const hasWindows = Boolean(browser.windows && browser.windows.length);
   const motionTranslate: Translate = hasWindows ? translate : { left: 0, top: 0, zoom: 1 };
-
   
   return <div className="stage-component" ref={setStageContainer}>
     <Isolate 
@@ -114,7 +117,7 @@ export const StageBase = ({
         <div
           ref={setCanvasOuter}
           onMouseMove={onMouseEvent}
-          onDragOver={onDragEnter}
+          onDragOver={onDragOver}
           onDrop={onDrop}
           onClick={onMouseClick}
           tabIndex={-1}

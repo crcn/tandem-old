@@ -1,8 +1,8 @@
 import * as React from "react";
-import { pure, compose } from "recompose";
 import { Pane } from "front-end/components/pane";
 import { Dispatcher } from "aerial-common2";
-import { Workspace, AvalaibleComponent } from "front-end/state";
+import { pure, compose } from "recompose";
+import { Workspace, AvalaibleComponent, AVAILABLE_COMPONENT } from "front-end/state";
 
 export type ComponentsPaneInnerProps = {
   workspace: Workspace;
@@ -13,14 +13,27 @@ type AvailableComponentPaneRowProps = {
   component: AvalaibleComponent;
 }
 
-const AvailableComponentBase = ({ component }: AvailableComponentPaneRowProps) => {
-  return <div>
+
+type AvailableComponentPaneRowInnerProps = {
+  component: AvalaibleComponent;
+} & AvailableComponentPaneRowProps;
+
+const AvailableComponentBase = ({ component }: AvailableComponentPaneRowInnerProps) => {
+  return <div draggable>
     {component.label}
   </div>;
 }
 
-const AvailableComponent = compose<AvailableComponentPaneRowProps, AvailableComponentPaneRowProps>(
-  pure
+const availableComponentSource = {
+  beginDrag(props: AvailableComponentPaneRowProps) {
+    return {
+      text: props.component
+    };
+  }
+}
+
+const AvailableComponent = compose<AvailableComponentPaneRowInnerProps, AvailableComponentPaneRowProps>(
+  pure,
 )(AvailableComponentBase);
 
 export const ComponentsPaneBase = ({ workspace }: ComponentsPaneInnerProps) => {

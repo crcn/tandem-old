@@ -2,7 +2,7 @@ import "./overlay.scss";
 const cx = require("classnames");
 import * as React from "react";
 import * as Hammer from "react-hammerjs";
-import { Workspace } from "front-end/state";
+import { Workspace, AVAILABLE_COMPONENT, AvalaibleComponent } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import { compose, pure, withHandlers } from "recompose";
@@ -106,13 +106,13 @@ const enhanceWindowOverlayTools = compose<WindowOverlayToolsInnerProps, WindowOv
   pure,
   withHandlers({
     onPanStart: ({ dispatch, window }: WindowOverlayToolsOuterProps) => (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+      // event.preventDefault();
+      // event.stopPropagation();
       dispatch(stageToolOverlayMousePanStart(window.$id));
     },
     onPan: ({ dispatch, window }: WindowOverlayToolsOuterProps) => (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+      // event.preventDefault();
+      // event.stopPropagation();
       dispatch(stageToolOverlayMousePanning(window.$id, { left: event.center.x, top: event.center.y }, event.deltaY, event.velocityY));
     },
     onPanEnd: ({ dispatch, window }: WindowOverlayToolsOuterProps) => (event) => {
@@ -131,7 +131,6 @@ const getSyntheticNodes = weakMemo((refs: StructReference[], allNodes: any) => {
   return refs.map(([type, id]) => allNodes[id]).filter((id) => !!id);
 });
 
-
 const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, window: SyntheticWindow) => {
   const allNodes = getSyntheticWindowChildStructs(window);
   return difference(
@@ -139,7 +138,6 @@ const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, window: Synthe
     getSyntheticNodes(workspace.selectionRefs, allNodes)
   );
 });
-
 
 export const  NodeOverlaysToolBase = ({ workspace, browser, dispatch, zoom }: VisualToolsProps) => {
   return <div className="visual-tools-layer-component">

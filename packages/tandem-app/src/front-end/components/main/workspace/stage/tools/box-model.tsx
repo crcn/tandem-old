@@ -43,8 +43,8 @@ const ElementBoxModel = compose<ElementBoxModelOuterProps, ElementBoxModelOuterP
     boxShadow: [
       paddingBoxShadow(-pxToNumber(computedStyle.paddingLeft), 0),
       paddingBoxShadow(pxToNumber(computedStyle.paddingRight), 0),
-      paddingBoxShadow(0, -pxToNumber(computedStyle.paddingTop)),
-      paddingBoxShadow(0, pxToNumber(computedStyle.paddingBottom))
+      paddingBoxShadow(0, pxToNumber(computedStyle.paddingTop)),
+      paddingBoxShadow(0, -pxToNumber(computedStyle.paddingBottom))
     ].join(", ")    
   };
 
