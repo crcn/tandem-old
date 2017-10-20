@@ -60,7 +60,7 @@ function* createComponent(req: express.Request, res: express.Response) {
   */
 }
 
-const NATIVE_COMPONENTS: Component[] = [
+const BUILTIN_COMPONENTS: Component[] = [
   {
     $id: "repeat",
     label: "List"
@@ -74,7 +74,7 @@ const NATIVE_COMPONENTS: Component[] = [
 function* getAvailableComponents() {
   const state: ApplicationState = yield select();
   
-  return [...NATIVE_COMPONENTS, getComponentFilePaths(state).map(filePath => (
+  return [...BUILTIN_COMPONENTS, getComponentFilePaths(state).map(filePath => (
     createComponentFromFilePath(fs.readFileSync(filePath, "utf8"), filePath)
   ))];
 }
