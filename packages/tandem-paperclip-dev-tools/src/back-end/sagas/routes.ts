@@ -4,6 +4,7 @@ import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest } from "../utils";
 import * as express from "express";
 import * as path from "path";
+import * as fs from "fs";
 import * as glob from "glob";
 import { expresssServerSaga } from "./express-server";
 
@@ -61,7 +62,9 @@ function* createComponent(req: express.Request, res: express.Response) {
 function* getComponents(req: express.Request, res: express.Response) {
   const state: ApplicationState = yield select();
   
-  const components = getComponentFilePaths(state).map(createComponentFromFilePath);
+  const components = getComponentFilePaths(state).map(filePath => (
+    createComponentFromFilePath(fs.readFileSync(filePath, "utf8"), filePath)
+  ));
 
   res.send(components);
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it

@@ -56,6 +56,19 @@ describe(__filename + "#", () => {
       </span>
       <h1>a</h1>
       
+    `,
+    `
+    <meta name="name" content="Gutter" />
+    
+    <template name="gutter" export>
+      {{children}}
+    </template>
+    
+    <template name="preview" export dev>
+      <gutter>
+        Gutter me this
+      </gutter>
+    </template>
     `
   ].forEach((source) => {
     it(`can transpile ${source} to vanilla JS`, () => {

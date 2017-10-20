@@ -11,6 +11,8 @@ import {
   PCSelfClosingElement
 } from "./ast";
 
+import { weakMemo } from "../utils";
+
 enum TokenType {
   LESS_THAN,
   GREATER_THAN,
@@ -136,9 +138,9 @@ const getLocation = (start:  Token | number, end: Token | number) => ({
   end: typeof end === "number" ? end : end.pos,
 });
 
-export const parse = (source: string) => {
+export const parse = weakMemo((source: string) => {
   return createFragment(tokenize(source));
-}
+});
 
 const throwUnexpectedToken = (source: string, token: Token, expected: string[]) => {
   throw new Error(`Unexpected token "${token.value}" at ${token.pos}, expected ${expected.join(", ")}`);

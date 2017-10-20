@@ -3,6 +3,7 @@ import * as md5 from "md5";
 import { parse } from "./parser";
 import { flatten } from "lodash";
 import * as postcss from "postcss";
+import { weakMemo } from "../utils";
 import { 
   traversePCAST, 
   getExpressionPath,
@@ -44,7 +45,7 @@ type Declaration = {
  * transpiles the PC AST to vanilla javascript with no frills
  */
 
-export const transpilePCASTToVanillaJS = (source: string) => transpileModule(parse(source), source);
+export const transpilePCASTToVanillaJS = weakMemo((source: string) => transpileModule(parse(source), source));
 
 const transpileModule = (root: PCFragment, source: string) => {
   
@@ -206,7 +207,7 @@ const tryExportingDeclaration = (declaration: Declaration, node: PCElement, cont
   const shouldExport = hasPCStartTagAttribute(node, "export");
 
   if (shouldExport) {
-    declaration.content = `${EXPORTS_VAR}.${name || declaration.varName} = ${declaration.varName}`;
+    declaration.content += `${EXPORTS_VAR}.${name || declaration.varName} = ${declaration.varName};\n`;
   }
 }
 

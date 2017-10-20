@@ -1,6 +1,11 @@
-<import prefix="import1_" src="./test.pc" />
+<meta name="name" content="Gutter" />
 
-<component name="test" export>
-  <import1_name />
-</component>
+<template name="gutter" export>
+  {{children}}
+</template>
 
+<template name="preview" export dev>
+  <gutter>
+    Gutter me this
+  </gutter>
+</template>
