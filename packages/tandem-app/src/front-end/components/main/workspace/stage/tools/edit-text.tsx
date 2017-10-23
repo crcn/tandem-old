@@ -85,8 +85,13 @@ const enhanceEditTextTool = compose<EditTextToolInnerProps, EditTextToolOuterPro
     componentWillUpdate({ textarea }) {
       if (textarea && this.props.textarea !== textarea) {
         textarea.focus();
-
-        // TODO - set selection
+        setTimeout(() => {
+          const range = textarea.ownerDocument.createRange();
+          range.selectNodeContents(textarea);
+          const sel = textarea.ownerDocument.defaultView.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }, 1);
       }
     }
   })
