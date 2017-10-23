@@ -34,6 +34,7 @@
   height: 100%;
   overflow: visible;
   transform-origin: top left;
+  will-change: transform;
 }
 
 .translate {

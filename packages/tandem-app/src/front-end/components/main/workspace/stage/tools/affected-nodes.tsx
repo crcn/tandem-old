@@ -58,6 +58,7 @@ const AffectedNodesToolBase = ({ workspace, browser, zoom }: AffectedNodesToolOu
   if (!targetElement) {
     return null;
   }
+
   const targetWindow = getSyntheticNodeWindow(browser, targetElement.$id);
   const affectedElements = getSelectorAffectedElements(targetElement.$id, filterMatchingTargetSelectors(workspace.targetCSSSelectors, targetElement, targetWindow), browser, !!workspace.stage.fullScreen) as SyntheticElement[];
 

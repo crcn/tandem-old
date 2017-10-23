@@ -1,6 +1,7 @@
-import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBounds, resized, keepBoundsAspectRatio, request, shiftBounds } from "aerial-common2";
+import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBounds, resized, keepBoundsAspectRatio, request, shiftBounds, StructReference } from "aerial-common2";
 import { take, select, call, put, fork, spawn, cancel } from "redux-saga/effects";
 import { delay } from "redux-saga";
+import { apiGetComponentPreviewURI } from "../utils";
 import { 
   RESIZER_MOVED,
   RESIZER_STOPPED_MOVING,
@@ -28,6 +29,9 @@ import {
   windowSelectionShifted,
   WINDOW_SELECTION_SHIFTED,
   CLONE_WINDOW_SHORTCUT_PRESSED,
+  DND_ENDED,
+  dndHandled,
+  DNDEvent,
   OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED,
   OpenExternalWindowButtonClicked,
   PROMPTED_NEW_WINDOW_URL,
@@ -64,6 +68,7 @@ import {
   ApplicationState, 
   getWorkspaceWindow,
   getSelectedWorkspace, 
+  getScaledMouseStagePosition,
   getWorkspaceSelectionBounds,
   getBoundedWorkspaceSelection,
   getWorkspaceLastSelectionOwnerWindow,
@@ -88,6 +93,7 @@ export function* mainWorkspaceSaga() {
   yield fork(handleCloneSelectedWindowShortcut);
   yield fork(handleSourceClicked);
   yield fork(handleOpenExternalWindowButtonClicked);
+  yield fork(handleDNDEnded);
 }
 
 function* openDefaultWindow() {
@@ -183,6 +189,43 @@ function* handleSelectionMoved() {
       yield put(moved(item.$id, item.$type, scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)), workspace.targetCSSSelectors));
     }
   }
+}
+
+function* handleDNDEnded() {
+  while(true) {
+    const event = yield take(DND_ENDED);
+    const state: ApplicationState = yield select();
+    const workspace = getSelectedWorkspace(state);
+    const dropRef = getStageToolMouseNodeTargetReference(state, event as DNDEvent);
+
+    if (dropRef) {
+      yield call(handleDroppedOnElement, dropRef, event);
+    } else {
+      yield call(handleDroppedOnEmptySpace, event);
+    }
+
+    yield put(dndHandled());
+  }
+}
+
+function* handleDroppedOnElement(ref: StructReference, event: DNDEvent) {
+  console.log(ref, event);
+}
+
+function* handleDroppedOnEmptySpace(event: DNDEvent) {
+
+  const { sourceEvent: { pageX, pageY }} = event;
+  const state = yield select();
+  const uri = apiGetComponentPreviewURI(event.ref[1], state);
+
+  const workspace = getSelectedWorkspace(state);
+  const mousePosition = getScaledMouseStagePosition(state, event);
+
+  yield put(openSyntheticWindowRequest({ location: uri, bounds: {
+    ...mousePosition,
+    right: undefined,
+    bottom: undefined
+  }}, workspace.browserId));
 }
 
 function* handleSelectionResized() {
@@ -296,7 +339,6 @@ function* handleSelectionKeyUp() {
 function* handleSourceClicked() {
   while(true) {
     const { itemId, windowId } = (yield take(SOURCE_CLICKED)) as SourceClicked;
-    console.log("SOURCE CLICKED", itemId, windowId);
   }
 }
 

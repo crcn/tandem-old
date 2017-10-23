@@ -78,6 +78,10 @@ import {
   RESIZER_MOVED,
   STAGE_MOUNTED,
   ResizerMouseDown,
+  DND_STARTED,
+  DND_ENDED,
+  DND_HANDLED,
+  DNDEvent,
   ResizerPathMoved,
   STAGE_MOUSE_MOVED,
   LoadedSavedState,
@@ -209,6 +213,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   state = fileCacheReducer(state, event);
   state = shortcutReducer(state, event);
   state = apiReducer(state, event);
+  state = dndReducer(state, event);
 
   return state;
 };
@@ -310,6 +315,23 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
       const workspace = getSelectedWorkspace(state);
       return updateWorkspaceStage(state, workspace.$id, {
         showRightGutter: !workspace.stage.showRightGutter
+      });
+    }
+  }
+  return state;
+}
+
+const dndReducer = (state: ApplicationState, event: BaseEvent) => {
+  switch(event.type) {
+    case DND_STARTED: {
+      const { ref }  = event as DNDEvent;
+      return updateWorkspace(state, state.selectedWorkspaceId, {
+        draggingRefs: [ref]
+      })
+    }
+    case DND_HANDLED: {
+      return updateWorkspace(state, state.selectedWorkspaceId, {
+        draggingRefs: []
       });
     }
   }

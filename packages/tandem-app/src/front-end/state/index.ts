@@ -38,6 +38,8 @@ import {
  AvalaibleComponent
 } from "./api";
 
+import { DNDState } from "./dnd";
+
 import { createFileCacheStore, FileCacheRootState, FileCacheItem, getFileCacheItemById } from "aerial-sandbox2";
 
 import { StageToolOverlayMouseMoved, StageToolOverlayClicked } from "../actions";
@@ -162,7 +164,7 @@ export type Workspace = {
   textEditor: TextEditor;
   library: LibraryItem[];
   availableComponents: AvalaibleComponent[];
-} & Struct;
+} & DNDState & Struct;
 
 export type ApplicationState = {
   kernel: Kernel;
@@ -484,6 +486,7 @@ export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, 
   textEditor: {},
   selectionRefs: [],
   hoveringRefs: [],
+  draggingRefs: [],
   library: [],
   availableComponents: []
 });
@@ -524,9 +527,8 @@ export const selectWorkspace = (state: ApplicationState, selectedWorkspaceId: st
   selectedWorkspaceId,
 });
 
-export const getStageToolMouseNodeTargetReference = (state: ApplicationState, event: StageToolOverlayMouseMoved|StageToolOverlayClicked) => {
+export const getScaledMouseStagePosition = (state: ApplicationState, event: StageToolOverlayMouseMoved|StageToolOverlayClicked) => {
   const { sourceEvent: { pageX, pageY, nativeEvent } } = event as StageToolOverlayMouseMoved;
-  
 
   const workspace = getSelectedWorkspace(state);
   const stage     = workspace.stage;
@@ -535,6 +537,19 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
   
   const scaledPageX = ((pageX - translate.left) / translate.zoom);
   const scaledPageY = ((pageY - translate.top) / translate.zoom);
+  return { left: scaledPageX, top: scaledPageY };
+
+}
+
+export const getStageToolMouseNodeTargetReference = (state: ApplicationState, event: StageToolOverlayMouseMoved|StageToolOverlayClicked) => {
+  
+
+  const workspace = getSelectedWorkspace(state);
+  const stage     = workspace.stage;
+
+  const translate = getStageTranslate(stage);
+
+  const {left: scaledPageX, top: scaledPageY } = getScaledMouseStagePosition(state, event);
 
   const browser  = getSyntheticBrowser(state, workspace.browserId);
   const window = stage.fullScreen ? getSyntheticWindow(state, stage.fullScreen.windowId) : browser.windows.find((window) => (
@@ -565,3 +580,4 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
 export * from "./shortcuts";
 export * from "aerial-browser-sandbox/src/state";
 export * from "./api";
+export * from "./dnd";

@@ -1,5 +1,5 @@
 import { FileCacheItem } from "aerial-sandbox2";
-import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct } from "aerial-common2";
+import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
 import { ApplicationState, SyntheticElement, AvalaibleComponent } from "../state";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
@@ -71,6 +71,9 @@ export const SOURCE_CLICKED   = "SOURCE_CLICKED";
 export const CSS_DECLARATION_TITLE_MOUSE_LEAVE   = "CSS_DECLARATION_TITLE_MOUSE_LEAVE";
 export const TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED   = "TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED";
 export const API_COMPONENTS_LOADED = "API_COMPONENTS_LOADED";
+export const DND_STARTED = "DND_STARTED";
+export const DND_ENDED = "DND_ENDED";
+export const DND_HANDLED = "DND_HANDLED";
 
 /**
  * Types
@@ -266,6 +269,11 @@ export type APIComponentsLoaded = {
   components: AvalaibleComponent[];
 } & BaseEvent;
 
+export type DNDEvent = {
+  ref: StructReference;
+} & WrappedEvent<React.DragEvent<any>>;
+
+
 /**
  * Factories
  */
@@ -299,6 +307,22 @@ export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved =>
   workspaceId,
   point,
   type: RESIZER_MOVED,
+});
+
+export const dndStarted = (ref: StructReference, sourceEvent: React.DragEvent<any>): DNDEvent => ({
+  type: DND_STARTED,
+  sourceEvent,
+  ref
+});
+
+export const dndEnded = (ref: StructReference, sourceEvent: React.DragEvent<any>): DNDEvent => ({
+  type: DND_ENDED,
+  sourceEvent,
+  ref
+});
+
+export const dndHandled = (): BaseEvent => ({
+  type: DND_HANDLED
 });
 
 export const cssDeclarationNameChanged = (name: string, value: string, declarationId: string, windowId: string): CSSDeclarationChanged => ({

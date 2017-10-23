@@ -3,7 +3,7 @@ import { ApplicationState } from "../state";
 import { apiComponentsLoaded } from "../actions";
 
 export function* apiSaga() {
-  yield fork(getComponents);
+  // yield fork(getComponents);
 }
 
 

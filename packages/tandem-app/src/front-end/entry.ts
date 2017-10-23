@@ -20,6 +20,7 @@ let state = createApplicationState({
     level: LogLevel.VERBOSE
   }
 });
+
 const browser = createSyntheticBrowser();
 state = addSyntheticBrowser(state, browser);
 const workspace = createWorkspace({ 
