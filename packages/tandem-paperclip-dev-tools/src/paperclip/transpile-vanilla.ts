@@ -243,13 +243,8 @@ const transpileTemplate = (node: PCElement, context: TranspileContext) => {
     return ${fragmentDeclaration.varName};
   }\n`;
 
-
-  if (shouldExport) {
-    buffer += `${EXPORTS_VAR}.${name} = ${name};\n;`
-  }
-
   return {
-    varName: name,
+    varName: jsFriendlyName,
     content: buffer
   };
 }

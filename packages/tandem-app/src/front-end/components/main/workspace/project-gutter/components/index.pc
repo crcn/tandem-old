@@ -1,6 +1,6 @@
 <meta name="name" content="Components pane" />
 
-<template name="components-pane">
+<template name="components-pane" export>
   Component!
 </template>
 
