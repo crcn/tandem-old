@@ -8,8 +8,9 @@ TODOS:
 
 VANILLA TRANSPILER TODOS:
 
+- [ ] allow for "-" in name
+- [ ] <import /> 
 - [ ] <style />
 - [ ] <if /> conditions
 - [ ] event registering
-- [ ] <import /> 
 - [ ] <repeat /> 

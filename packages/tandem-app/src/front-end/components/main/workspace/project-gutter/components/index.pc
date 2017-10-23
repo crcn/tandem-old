@@ -1,0 +1,9 @@
+<meta name="name" content="Components pane" />
+
+<template name="components-pane">
+  Component!
+</template>
+
+<template name="preview" export>
+  <components-pane />
+</template>

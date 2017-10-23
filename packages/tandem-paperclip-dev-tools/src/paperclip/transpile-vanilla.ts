@@ -32,7 +32,7 @@ type TranspileContext = {
   varCount: number;
   root: PCFragment;
   templateNames: {
-    [identifier: string]: boolean
+    [identifier: string]: string
   }
 }
 
@@ -193,7 +193,7 @@ const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, elem
     )
   }
 
-  const decl = declareNode(`${node.name}({${attributeBuffer.join(",")}})`, context);
+  const decl = declareNode(`${context.templateNames[node.name]}({${attributeBuffer.join(",")}})`, context);
   decl.content = buffer + decl.content;
   return decl;
 }
@@ -211,7 +211,7 @@ const tryExportingDeclaration = (declaration: Declaration, node: PCElement, cont
   const shouldExport = hasPCStartTagAttribute(node, "export");
 
   if (shouldExport) {
-    declaration.content += `${EXPORTS_VAR}.${name || declaration.varName} = ${declaration.varName};\n`;
+    declaration.content += `${EXPORTS_VAR}["${name || declaration.varName}"] = ${declaration.varName};\n`;
   }
 }
 
@@ -220,13 +220,16 @@ const transpileImport = (node: PCElement, context: TranspileContext) => {
   assertAttributeExists(node, "src", context);
 };
 
+const getJSFriendlyVarName = (name: string) => name.replace(/\-/g, "_");
+
 const transpileTemplate = (node: PCElement, context: TranspileContext) => {
   const name    = getPCStartTagAttribute(node, "name");
   const shouldExport = hasPCStartTagAttribute(node, "export");
 
   assertAttributeExists(node, "name", context);
+  const jsFriendlyName = getJSFriendlyVarName(name);
 
-  context.templateNames[name] = true;
+  context.templateNames[name] = jsFriendlyName;
 
   let newContext = { ...context, varCount: 0 };
   const fragmentDeclaration = declareNode(`document.createDocumentFragment()`, newContext);
@@ -235,7 +238,7 @@ const transpileTemplate = (node: PCElement, context: TranspileContext) => {
   addNodeDeclarationChildren(fragmentDeclaration, node, newContext);
   fragmentDeclaration.content += "}";
 
-  let buffer = `function ${name}(context) {
+  let buffer = `function ${jsFriendlyName}(context) {
     ${fragmentDeclaration.content}
     return ${fragmentDeclaration.varName};
   }\n`;
