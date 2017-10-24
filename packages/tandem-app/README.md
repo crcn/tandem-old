@@ -13,11 +13,13 @@ TODOS:
 
 IMMEDIATE:
 
-- [ ] HMR when file changes
+- [ ] buffer memory
+- [ ] save style to memory
+- [ ] vscode integration
+- [ ] DND for components to existing elements
 - [ ] create new component when _native_ element is dropped onto the canvas
 - [ ] create a new window when a _custom_ component is dropped onto the canvas
 - [ ] add dropped component to existing element
-- [ ] persist changes
 - [ ] re-wire up vscode extension
 - [ ] adding new style in right pane
 - [ ] adding new rule in right pane
