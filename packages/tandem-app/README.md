@@ -13,6 +13,10 @@ TODOS:
 
 IMMEDIATE:
 
+- [ ] import external components into paperclip files
+- [ ] watch all loaded resources
+- [ ] create CSS rules manually
+
 - [ ] Tandem app should detect paperclip ASTs. Other languages should be limited.
 - [ ] ability to create new component files in left panel
 - [ ] change empty state to drag element from left to stage

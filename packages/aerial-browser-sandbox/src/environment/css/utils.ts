@@ -7,18 +7,30 @@ import { SEnvCSSObjectInterface } from "./base";
 import { getSEnvCSSStyleDeclarationClass } from "./declaration";
 import { generateSourceHash } from "../../utils/source";
 
-
 // TODO - memoize this
-export const parseCSS = (source: string) => {
-  const expression = postcss.parse(source);
+export const parseCSS = (source: string, map?: any) => {
+  const expression = postcss.parse(source, {
+    map
+  });
   return expression;
-}
+};
+
+const getInlineSourceMap = (source: string) => {
+  const contentMatch = source.match(/sourceMappingURL=data:application\/json;base64,([^\s+])/g);
+  console.log(source);
+  if (!contentMatch) return null;
+  return JSON.parse(new Buffer(contentMatch[1], "base64").toString("utf8"));
+};
 
 // TODO - memoize this
-export const evaluateCSS = (source: string, sourceURI: string, context: any, map?: sm.RawSourceMap) => {
+export const evaluateCSS = (source: string, sourceURI: string, context: any, fingerprint?: string, map?: sm.RawSourceMap) => {
 
-  const expression = parseCSS(source);
-  const fingerprint =  generateSourceHash(source);
+  const expression = parseCSS(source, map || getInlineSourceMap(source));
+
+  // todo - fingerprint must be passed in in certain cases
+  if (!fingerprint) {
+    fingerprint = generateSourceHash(source);
+  }
   const sourceMapConsumer = map && new sm.SourceMapConsumer(map);
   const sourceRoot = map && map.sourceRoot || "";
   const SEnvCSSStyleSheet = getSEnvCSSStyleSheetClass(context);

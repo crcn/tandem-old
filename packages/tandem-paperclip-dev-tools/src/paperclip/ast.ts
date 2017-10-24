@@ -11,9 +11,15 @@ export enum PCExpressionType {
   END_TAG
 };
 
+export type ExpressionPosition = {
+  line: number;
+  column: number;
+  pos: number;
+};
+
 export type ExpressionLocation = {
-  start: number;
-  end: number;
+  start: ExpressionPosition;
+  end: ExpressionPosition;
 };
 
 export type PCExpression = {

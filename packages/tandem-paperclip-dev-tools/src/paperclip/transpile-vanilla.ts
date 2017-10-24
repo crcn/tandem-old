@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as md5 from "md5";
 import { parse } from "./parser";
-import { flatten } from "lodash";
+import { flatten, repeat } from "lodash";
 import * as postcss from "postcss";
 import { weakMemo } from "../utils";
 import { 
@@ -13,6 +13,7 @@ import {
 import {
   PCFragment,
   PCExpression,
+  ExpressionPosition,
   PCExpressionType,
   PCSelfClosingElement,
   PCElement,
@@ -24,10 +25,11 @@ import {
   PCBlock,
 } from "./ast";
 
-const SOURCE_AST_VAR = "$$sourceAST";
+// const SOURCE_AST_VAR = "$$sourceAST";
 const EXPORTS_VAR = "$$exports";
 
 type TranspileContext = {
+  uri: string;
   source: string;
   varCount: number;
   root: PCFragment;
@@ -45,12 +47,13 @@ type Declaration = {
  * transpiles the PC AST to vanilla javascript with no frills
  */
 
-export const transpilePCASTToVanillaJS = weakMemo((source: string) => transpileModule(parse(source), source));
+export const transpilePCASTToVanillaJS = weakMemo((source: string, uri: string) => transpileModule(parse(source), source, uri));
 
-const transpileModule = (root: PCFragment, source: string) => {
+const transpileModule = (root: PCFragment, source: string, uri: string) => {
   
   const context: TranspileContext = {
     varCount: 0,
+    uri,
     source,
     root,
     templateNames: {}
@@ -58,7 +61,6 @@ const transpileModule = (root: PCFragment, source: string) => {
 
   let buffer = "(function(module, document) {\n";
   buffer += `var ${EXPORTS_VAR} = {};\n`;
-  buffer += `var ${SOURCE_AST_VAR} = ${JSON.stringify(root)};\n`;
   buffer += transpileChildren(root, context);
 
   buffer += `module.exports = ${EXPORTS_VAR};\n`;
@@ -143,8 +145,10 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   let buffer = `
     var ${varName} = document.createElement("style");
     ${varName}.setAttribute("data-style-id", "${varName}");
-  `
-  let css = context.source.substr(node.startTag.location.end, node.endTag.location.start - node.startTag.location.end);
+  `;
+
+  // add lines so that source maps point to the correct location
+  let css = repeat("\n", node.location.start.line) + context.source.substr(node.startTag.location.end.pos, node.endTag.location.start.pos - node.startTag.location.end.pos);
 
   if (scoped) { 
 
@@ -153,8 +157,14 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
     const declaration = declareNode(`document.createElement("style")`, context);
 
     // TODO - call CSSOM, don't set textContent. Also need to define CSS AST in the scope
-  
-    css = postcss().use(prefixCSSRules(cssRulePrefixes)).process(css).css;
+    const result = postcss().use(prefixCSSRules(cssRulePrefixes)).process(css, {
+      map: {
+        inline: true
+      }
+    });
+
+    css = result.css;
+    console.log(css);
   }
 
   buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
@@ -163,7 +173,7 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
     varName: varName,
     content: buffer
   };
-}
+};
 
 const prefixCSSRules = (prefixes: string[]) => (root: postcss.Root) => {
   // from https://github.com/RadValentin/postcss-prefix-selector/blob/master/index.js
@@ -334,15 +344,22 @@ const callDeclarationProperty = (declaration: Declaration, propertyName: string,
 };
 
 const addDeclarationSourceReference = (declaration: Declaration, expression: PCExpression, context: TranspileContext) => {
-  const nodePath = getExpressionPath(expression, context.root);
-  let buffer = `${SOURCE_AST_VAR}`;
+  // const nodePath = getExpressionPath(expression, context.root);
 
-  for (const part of nodePath) {
-    if (typeof part === "number") {
-      buffer += `[${part}]`;
-    } else if (typeof part === "string") {
-      buffer += `.${part}`;
-    }
-  }
+  const buffer = JSON.stringify({
+    uri: context.uri,
+    fingerprint: md5(context.source),
+    ...expression
+  });
+
+  // let buffer = `${SOURCE_AST_VAR}`;
+
+  // for (const part of nodePath) {
+  //   if (typeof part === "number") {
+  //     buffer += `[${part}]`;
+  //   } else if (typeof part === "string") {
+  //     buffer += `.${part}`;
+  //   }
+  // }
   addDeclarationProperty(declaration, "source", buffer, context);
 }

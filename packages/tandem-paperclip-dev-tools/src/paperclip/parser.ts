@@ -6,7 +6,9 @@ import {
   PCBlock, 
   PCAttribute, 
   PCFragment,
+  ExpressionPosition,
   PCExpressionType, 
+  ExpressionLocation,
   PCExpression,
   PCSelfClosingElement
 } from "./ast";
@@ -31,6 +33,17 @@ type Token = {
   pos: number;
   value?: string;
 };
+
+const NO_POSITION = {
+  line: 0,
+  column: 0,
+  pos: 0
+}
+
+const NO_LOCATION = {
+  start: NO_POSITION,
+  end: NO_POSITION
+}
 
 const createToken = (type: TokenType, pos: number, value?: string) => ({ type, pos, value });
 
@@ -133,9 +146,33 @@ const tokenize = (source: string) => {
   return new TokenScanner(source, tokens);
 }
 
-const getLocation = (start:  Token | number, end: Token | number) => ({ 
-  start: typeof start === "number" ? start : start.pos, 
-  end: typeof end === "number" ? end : end.pos,
+const computePosLines = weakMemo((source: string): { [identifier: number]: [number, number] } => {
+  let cline: number = 1;
+  let ccol: number = 0;
+
+  const posLines = {};
+
+  source.split("").forEach((c, p) => {
+    posLines[p] = [ccol, cline];
+    if (c === "\n") {
+      ccol = 0;
+      cline++;
+    }
+    ccol++;
+  });
+
+  return posLines;
+});
+
+const getPosition = (start: Token | number, source: string) => {
+  const pos = typeof start === "number" ? start : start.pos;
+  const [column, line] = computePosLines(source)[pos];
+  return { column, line, pos };
+}
+
+const getLocation = (start:  ExpressionPosition | Token | number, end: ExpressionPosition | Token | number, source: string): ExpressionLocation  => ({ 
+  start: (start as ExpressionPosition).line ? start as ExpressionPosition : getPosition(start as any, source), 
+  end: (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(end as any, source),
 });
 
 export const parse = weakMemo((source: string) => {
@@ -160,7 +197,7 @@ function createFragment(scanner: TokenScanner): PCFragment  {
   }
   return {
     type: PCExpressionType.FRAGMENT,
-    location: children.length ? getLocation(children[0].location.start, children[children.length - 1].location.end) : { start: 0, end: 0 },
+    location: children.length ? getLocation(children[0].location.start, children[children.length - 1].location.end, scanner.source) : NO_LOCATION,
     children,
   }
 }
@@ -212,7 +249,7 @@ function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingE
 
   return {
     type: PCExpressionType.ELEMENT,
-    location: getLocation(startTag.location.start, endTag.location.end),
+    location: getLocation(startTag.location.start, endTag.location.end, scanner.source),
     startTag,
     children,
     endTag
@@ -242,7 +279,7 @@ function createStartTag(scanner: TokenScanner): PCStartTag | PCSelfClosingElemen
 
   return {
     type,
-    location: getLocation(startToken, endToken),
+    location: getLocation(startToken, endToken, scanner.source),
     name: nameToken.value,
     attributes,
   };
@@ -267,7 +304,7 @@ function createAttribute(scanner: TokenScanner): PCAttribute {
   if(scanner.curr().value !== "=") {
     return {
       type: PCExpressionType.ATTRIBUTE,
-      location: getLocation(name, name.pos + name.value.length),
+      location: getLocation(name, name.pos + name.value.length, scanner.source),
       name: name.value
     };
   }
@@ -277,7 +314,7 @@ function createAttribute(scanner: TokenScanner): PCAttribute {
   const value = createAttributeValue(scanner);
   return {
     type: PCExpressionType.ATTRIBUTE,
-    location: getLocation(name, value.location.end),
+    location: getLocation(name, value.location.end, scanner.source),
     name: name.value,
     value,
   }
@@ -317,7 +354,7 @@ function createString(scanner: TokenScanner): PCString {
 
   return {
     type: PCExpressionType.STRING,
-    location: getLocation(start, curr),
+    location: getLocation(start, curr, scanner.source),
     value: buffer
   };
 }
@@ -341,7 +378,7 @@ function createBlock(scanner: TokenScanner): PCString {
 
   return {
     type: PCExpressionType.BLOCK,
-    location: getLocation(start, curr),
+    location: getLocation(start, curr, scanner.source),
     value: buffer
   };
 }
@@ -364,7 +401,7 @@ function createEndTag(scanner: TokenScanner): PCEndTag {
   scanner.next(); // eat >
   return {
     type: PCExpressionType.END_TAG,
-    location: getLocation(start, closeToken),
+    location: getLocation(start, closeToken, scanner.source),
     name: nameToken.value
   };
 }
@@ -386,7 +423,7 @@ function createText(scanner: TokenScanner): PCString {
 
   return {
     type: PCExpressionType.STRING,
-    location: getLocation(startToken, endToken),
+    location: getLocation(startToken, endToken, scanner.source),
     value: buffer,
   };
 }

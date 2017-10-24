@@ -109,7 +109,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
         var module = {
           exports: {}
         };
-        ${transpilePCASTToVanillaJS(fs.readFileSync(targetComponent.filePath, "utf8"))}
+        ${transpilePCASTToVanillaJS(fs.readFileSync(targetComponent.filePath, "utf8"), `file://${targetComponent.filePath}`)}
         var preview = module.exports.preview;
         if (!preview) {
           document.body.appendChild(

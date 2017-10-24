@@ -5,7 +5,7 @@ import { expect } from "chai";
 
 describe(__filename + "#", () => {
   it("can transpile a text node", () => {
-    const newSource = transpilePCASTToVanillaJS(`a`);
+    const newSource = transpilePCASTToVanillaJS(`a`, "abc");
   });
 
   // smoke
@@ -72,7 +72,7 @@ describe(__filename + "#", () => {
     `
   ].forEach((source) => {
     it(`can transpile ${source} to vanilla JS`, () => {
-      const result = transpilePCASTToVanillaJS(source);
+      const result = transpilePCASTToVanillaJS(source, "abc");
       console.log(result);
     });
   });
