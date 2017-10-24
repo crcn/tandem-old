@@ -11,6 +11,7 @@ export type ApplicationState = {
   cwd: string;
   port: number;
   config: Config;
+  watchUris: string[];
 };
 
 export type Component = {
@@ -23,5 +24,11 @@ export type Component = {
 export const createComponentFromFilePath = (content: string, filePath: string): Component => ({
   $id: md5(filePath),
   filePath: filePath,
-  label: getPCMetaName(parse(content)) || path.basename(filePath)
+  label: getPCMetaName(parse(content)) || path.basename(filePath),
+  watchUris: []
 });
+
+export const updateApplicationState = (state: ApplicationState, properties: Partial<ApplicationState>) => ({
+  ...state,
+  ...properties
+})

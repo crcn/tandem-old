@@ -1,7 +1,9 @@
+import { uniq } from "lodash";
 import { delay } from "redux-saga";
 import { createDeferredPromise } from "mesh";
+import { apiWatchUris } from "../utils";
 import { take, fork, select, put, call } from "redux-saga/effects";
-import { Point, shiftPoint, watch, resized, Bounds } from "aerial-common2";
+import { Point, shiftPoint, watch, resized, Bounds, REMOVED } from "aerial-common2";
 import { 
   SYNTHETIC_WINDOW,
   syntheticWindowScroll,
@@ -11,6 +13,9 @@ import {
   getSyntheticWindowChild,
   getSyntheticWindowChildStructs,
   getSyntheticNodeWindow, 
+  SYNTHETIC_WINDOW_OPENED,
+  SYNTHETIC_WINDOW_CLOSED,
+  SYNTHETIC_WINDOW_LOADED,
   SYNTHETIC_WINDOW_PROXY_OPENED,
   syntheticNodeTextContentChanged, 
   syntheticNodeValueStoppedEditing,
@@ -46,6 +51,8 @@ import {
   CSS_DECLARATION_NAME_CHANGED,
   CSSDeclarationChanged,
   CSS_DECLARATION_VALUE_CHANGED,
+  FILE_CHANGED,
+  FileChanged,
   CSS_DECLARATION_CREATED,
   WINDOW_SELECTION_SHIFTED,
   STAGE_TOOL_OVERLAY_MOUSE_PANNING,
@@ -62,6 +69,8 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleEmptyWindowsUrlAdded);
   yield fork(handleLoadedSavedState);
   yield fork(handleCSSDeclarationChanges);
+  yield fork(handleWatchWindowResource);
+  yield fork(handleFileChanged);
 }
 
 function* handleEmptyWindowsUrlAdded() {
@@ -69,6 +78,22 @@ function* handleEmptyWindowsUrlAdded() {
     const {url}: EmptyWindowsUrlAdded = yield take(EMPTY_WINDOWS_URL_ADDED);
     const state: ApplicationState = yield select();
     yield put(openSyntheticWindowRequest({ location: url }, getSelectedWorkspace(state).browserId));
+  }
+}
+
+function* handleWatchWindowResource() {
+  while(true) {
+    yield take([
+      SYNTHETIC_WINDOW_LOADED,
+      SYNTHETIC_WINDOW_CLOSED,
+      REMOVED
+    ]);
+    const state: ApplicationState = yield select();
+    const allUris = uniq(state.browserStore.records.reduce((a, b) => (
+      [...a, ...b.windows.reduce((a2, b2) => [ ...a2, ...b2.externalResourceUris ], [])]
+    ), []));
+
+    yield call(apiWatchUris, allUris, state);
   }
 }
 
@@ -127,6 +152,26 @@ function* handleScrollInFullScreenMode() {
       left: 0,
       top: deltaY
     })));
+  }
+}
+
+function* handleFileChanged() {
+  while(true) {
+    const { filePath }: FileChanged = yield take(FILE_CHANGED);
+    const state: ApplicationState = yield select();
+    const workspace = getSelectedWorkspace(state);
+    const windows = getSyntheticBrowser(state, workspace.browserId).windows;
+
+    for (const window of windows) {
+      const shouldReload = window.externalResourceUris.find((uri) => (
+        uri.indexOf(filePath) !== -1
+      ));
+
+      if (shouldReload) {
+        console.debug("Reloading window ", window.location);
+        window.instance.location.reload();
+      }
+    }
   }
 }
 

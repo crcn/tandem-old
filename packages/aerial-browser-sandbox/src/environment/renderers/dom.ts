@@ -53,7 +53,6 @@ const RECOMPUTE_TIMEOUT = 1;
 function getHostStylesheets(node: Node) {
   let p = node.parentNode;
   while(p.parentNode) p = p.parentNode;
-
   return (<Document>p).styleSheets || [];
 }
 
@@ -206,7 +205,6 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
         // MUST replace the entire CSS text here since vendor prefixes get stripped out
         // depending on the browser. This is the simplest method for syncing changes.
         const parentStyleSheet = (((mutation.target as CSSStyleDeclaration).parentRule && (mutation.target as CSSStyleDeclaration).parentRule.parentStyleSheet) || (mutation.target as CSSStyleRule).parentStyleSheet) as SEnvCSSStyleSheetInterface;
-
         if (parentStyleSheet) {
           const [nativeStyleSheet, syntheticStyleSheet] = this._cssRuleDictionary[parentStyleSheet.$id];
           this._updateCSSRules(nativeStyleSheet as CSSStyleSheet, syntheticStyleSheet);

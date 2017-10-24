@@ -1,7 +1,7 @@
 <meta name="name" content="Components pane" />
 
 <template name="components-pane" export>
-  Component!
+  Component!!!!!
 </template>
 
 <template name="preview" export>

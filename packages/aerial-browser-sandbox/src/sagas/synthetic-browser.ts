@@ -1,7 +1,7 @@
-import { cancel, fork, take, put, call, spawn, actionChannel, select } from "redux-saga/effects";
+import { createQueue } from "mesh";
 import { eventChannel, delay } from "redux-saga";
 import { difference, debounce, values, uniq } from "lodash";
-import { createQueue } from "mesh";
+import { cancel, fork, take, put, call, spawn, actionChannel, select } from "redux-saga/effects";
 
 import { 
   FileCacheItem,
@@ -24,6 +24,7 @@ import {
 } from "./html-content-editor";
 
 import {
+  getSyntheticAppliedCSSRules,
   convertAbsoluteBoundsToRelative,
 } from "../utils";
 
@@ -31,9 +32,6 @@ import {
   fileEditorSaga
 } from "./file-editor";
 
-import { 
-  getSyntheticAppliedCSSRules,
-} from "../utils";
 
 import { 
   FetchRequest,
@@ -166,7 +164,6 @@ export function* syntheticBrowserSaga() {
   yield fork(htmlContentEditorSaga);
   yield fork(fileEditorSaga);
   yield fork(handleToggleCSSProperty);
-  yield fork(handleWatchWindowResource);
 }
 
 function* handleFetchRequests() {
@@ -260,20 +257,6 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
       yield take(reloadChan);
     }
   });
-}
-
-function* handleWatchWindowResource() {
-  while(true) {
-    yield take([
-      SYNTHETIC_WINDOW_LOADED,
-      SYNTHETIC_WINDOW_CLOSED,
-      REMOVED
-    ]);
-    const state: SyntheticBrowserRootState = yield select();
-    const allUris = uniq(state.browserStore.records.reduce((a, b) => (
-      [...a, ...b.windows.reduce((a2, b2) => [ ...a2, ...b2.externalResourceUris ], [])]
-    ), []));
-  }
 }
 
 function* handleToggleCSSProperty() {

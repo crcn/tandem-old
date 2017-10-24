@@ -3,15 +3,21 @@
 
 <template name="gutter" export>
   <style scoped>
-    .outer {
+    .container {
       background: #FCFCFC;
+    }
+
+    .content {
+      padding: 10px;
     }
     
     .header {
-      color: blue;
+      color: #666;
+      text-transform: uppercase;
+      padding: 4px;
     }
   </style>
-  <div class="outer">
+  <div class="container">
     {{children}}
   </div>
 </template>
@@ -22,6 +28,11 @@
 
 <template name="preview" export dev>
   <gutter>
-    Gutter
+    <div class="header">
+      Gutter
+    </div>
+    <div class="content">
+      Content this
+    </div>
   </gutter>
 </template>

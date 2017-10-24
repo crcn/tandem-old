@@ -1,0 +1,6 @@
+<meta name="name" content="File navigator" />
+
+<template name="preview" export>
+  Dat tang!
+</template>
+

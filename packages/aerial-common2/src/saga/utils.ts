@@ -1,6 +1,8 @@
-import { delay } from "redux-saga";
+import { delay, eventChannel } from "redux-saga";
+import { isPublicAction } from "../actions";
 import { Selector, createSelector } from "reselect";
-import { call, select, fork, take } from "redux-saga/effects";
+import { call, select, fork, take, spawn, put } from "redux-saga/effects";
+import * as io from "socket.io";
 
 const WATCH_DELAY = 100;
 
@@ -25,4 +27,32 @@ export function* waitUntil<T, U>(test: (root) => boolean) {
     if (test(yield select())) break;
     yield call(delay, WATCH_DELAY);
   }
+}
+
+export const createSocketIOSaga = (socket) => {
+  return function*() {
+    yield fork(function*() {
+      while(true) {
+        const action = yield take(isPublicAction);
+        socket.emit("action", action);
+      }
+    });
+
+    yield bubbleEventChannel((emit) => {
+      socket.on("action", emit);
+      return () => {};
+    })
+  }
+}
+
+function* bubbleEventChannel(subscribe: (emit: any) => () => any) {
+  yield spawn(function*() {
+    const chan = eventChannel(subscribe);
+    while(true) {
+      const event = yield take(chan);
+      yield fork(function*() {
+        yield put(event);
+      });
+    }
+  });
 }

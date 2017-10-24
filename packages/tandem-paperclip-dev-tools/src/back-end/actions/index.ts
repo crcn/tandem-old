@@ -1,5 +1,6 @@
 import { Action } from "redux";
 import { Request, Response } from "express";
+import { publicActionFactory } from "aerial-common2";
 
 export const ALERT = "ALERT";
 export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
@@ -11,6 +12,7 @@ export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const START_DEV_SERVER_EXECUTED = "START_DEV_SERVER_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
 export const FILE_CHANGED = "FILE_CHANGED";
+export const WATCH_URIS_REQUESTED = "WATCH_URIS_REQUESTED";
 
 export type HTTPRequest = {
   request: Request;
@@ -37,6 +39,10 @@ export type MutateSourceContentRequest = {
   mutations: Mutation[];
 } & FileAction;
 
+export type WatchUrisRequested = {
+  uris: string[]
+} & Action;
+
 export enum AlertLevel {
   NOTICE,
   ERROR,
@@ -52,10 +58,15 @@ export type ChildDevServerStarted = {
   port: number
 } & Action;
 
-export const fileChanged = (filePath: string) => ({
+export const watchUrisRequested = (uris: string[]): WatchUrisRequested => ({
+  uris,
+  type: WATCH_URIS_REQUESTED
+})
+
+export const fileChanged = publicActionFactory((filePath: string) => ({
   type: FILE_CHANGED,
   filePath
-});
+}));
 
 export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED

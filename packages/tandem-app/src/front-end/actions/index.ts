@@ -32,6 +32,7 @@ export const CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED = "CANVAS_ELEMENTS_COMPUTED_
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
 export const FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED   = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
+export const FILE_CHANGED = "FILE_CHANGED";
 export const BREADCRUMB_ITEM_CLICKED   = "BREADCRUMB_ITEM_CLICKED";
 export const BREADCRUMB_ITEM_MOUSE_ENTER   = "BREADCRUMB_ITEM_MOUSE_ENTER";
 export const BREADCRUMB_ITEM_MOUSE_LEAVE   = "BREADCRUMB_ITEM_MOUSE_LEAVE";
@@ -152,6 +153,10 @@ export type ResizerPathStoppedMoving = {
 export type StageWillWindowTitleClicked = {
   windowId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type FileChanged = {
+  filePath: string;
+} & BaseEvent;
 
 export type StageWillWindowKeyDown = {
   windowId: string;

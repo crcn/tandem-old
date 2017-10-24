@@ -1,7 +1,6 @@
 <style>
   body, html {
     font-family: Helvetica;
-    color: blue;
     margin: 0;
     padding: 0;
   }

@@ -612,10 +612,11 @@ export const CSS_STYLE_DECLARATION_RESET_PROPERTIES = "CSS_STYLE_DECLARATION_RES
 
 export const cssStyleDeclarationMutators = {
   [CSS_STYLE_DECLARATION_SET_PROPERTY](target: SEnvCSSStyleDeclarationInterface, mutation: SetPropertyMutation<any>) {
+    console.log(mutation.newValue);
     if (!mutation.newValue) {
       target.removeProperty(cssPropNameToKebabCase(mutation.name));
     } else {
-      target.setProperty(cssPropNameToKebabCase(mutation.name), mutation.newValue, null, null, false);
+      target.setProperty(cssPropNameToKebabCase(mutation.name), mutation.newValue, null, null, true);
     }
   },
   [CSS_STYLE_DECLARATION_RESET_PROPERTIES](target: SEnvCSSStyleDeclarationInterface, mutation: SetValueMutation<any>) {
@@ -637,7 +638,7 @@ export const cssStyleDeclarationSetProperties = (target: CSSStyleDeclaration, pr
 
 export const diffCSStyleDeclaration = (oldStyle: CSSStyleDeclaration, newStyle: CSSStyleDeclaration) => {
   const oldKeys = Object.keys(oldStyle).filter(isValidCSSDeclarationProperty);
-  const newKeys = Object.keys(oldStyle).filter(isValidCSSDeclarationProperty);
+  const newKeys = Object.keys(newStyle).filter(isValidCSSDeclarationProperty);
 
   const diffs = diffArray(oldKeys, newKeys, (a, b) => a === b ? 0 : -1);
   

@@ -3,8 +3,10 @@ import { ApplicationState } from "../state";
 import * as getPort from "get-port";
 import * as cors from "cors";
 import * as http from "http";
+import * as io from "socket.io";
 import * as multiparty from "connect-multiparty";
 import { eventChannel } from "redux-saga";
+import { createSocketIOSaga } from "aerial-common2";
 import { httpRequest, VISUAL_DEV_CONFIG_LOADED } from "../actions";
 import { select, fork, spawn, take, put, call } from "redux-saga/effects";
 
@@ -42,5 +44,6 @@ function* handleVisualDevConfigLoaded() {
 
   // TODO - dispatch express server initialized
   httpServer = server.listen(port);
+  yield fork(createSocketIOSaga(io(httpServer)));
   console.log(`HTTP server listening on port ${port}`);  
 }

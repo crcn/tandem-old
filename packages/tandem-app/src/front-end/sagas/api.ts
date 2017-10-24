@@ -1,9 +1,13 @@
+import * as io from "socket.io-client";
 import { take, call, fork, select, put } from "redux-saga/effects";
 import { ApplicationState } from "../state";
-import { apiComponentsLoaded } from "../actions";
+import { apiComponentsLoaded, FILE_CHANGED } from "../actions";
+import { createSocketIOSaga } from "aerial-common2";
 
 export function* apiSaga() {
+  const { apiHost }: ApplicationState = yield select();
   yield fork(getComponents);
+  yield fork(createSocketIOSaga(io(apiHost)));
 }
 
 function* getComponents() {

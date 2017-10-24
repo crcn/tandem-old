@@ -1,8 +1,10 @@
-import { fork, take, select, call } from "redux-saga/effects";
+import { fork, take, select, call, put } from "redux-saga/effects";
+import { eventChannel } from "redux-saga";
 import {transpilePCASTToVanillaJS } from "../../paperclip";
 import { ApplicationState, createComponentFromFilePath, Component } from "../state";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest } from "../utils";
+import { watchUrisRequested } from "../actions";
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
@@ -15,29 +17,28 @@ export function* routesSaga() {
   yield routeHTTPRequest(
 
     // returns capabilities to front-end so that it can turn features on or off
-    [ { test: /^\/capabilities/, method: 'GET' }, getCapabilities],
+    [ { test: /^\/capabilities/, method: "GET" }, getCapabilities],
 
     // returns the available components in the CWD
-    [ { test: /^\/components/, method: 'GET' }, getComponents],
+    [ { test: /^\/components/, method: "GET" }, getComponents],
 
     // creates a new component
-    [ { test: /^\/components/, method: 'POST' }, createComponent],
-    [ { test: /^\/preview\/[^\/]+/, method: 'GET' }, getComponentPreview]
+    [ { test: /^\/components/, method: "POST" }, createComponent],
+    [ { test: /^\/preview\/[^\/]+/, method: "GET" }, getComponentPreview],
+    [ { test: /^\/watch/, method: "POST" }, watchUris],
   );
 }
 
 function getCapabilities() {
   return [
-    'CREATE_COMPONENTS',
-    'GET_COMPONENTS'
+    "CREATE_COMPONENTS",
+    "GET_COMPONENTS"
   ];
 }
 
 function* createComponent(req: express.Request, res: express.Response) {
 
-
-  
-  // TODO - create global style if it doesn't already exist
+  // TODO - create global style if it doesn"t already exist
   // check if component name is already taken (must be unique)
   // create style based on component name
   // create component based on WPC spec (or something like that), basically this:
@@ -82,6 +83,23 @@ function* getAvailableComponents() {
 function* getComponents(req: express.Request, res: express.Response) {
   res.send(yield call(getAvailableComponents));
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
+}
+
+function* watchUris(req: express.Request, res: express.Response) {
+
+  const chan = eventChannel((emit) => {
+    let buffer = [];
+    req.on("data", chunk => buffer.push(chunk));
+    req.on("end", () => emit(JSON.parse(buffer.join(""))));
+    return () => {
+
+    }
+  });
+  
+  
+  yield put(watchUrisRequested(yield take(chan)));
+  
+  res.send([]);
 }
 
 function* getComponentPreview(req: express.Request, res: express.Response) {
