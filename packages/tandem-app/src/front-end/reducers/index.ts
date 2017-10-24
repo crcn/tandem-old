@@ -27,7 +27,7 @@ import {
   keepBoundsAspectRatio,
 } from "aerial-common2";
 
-import { clamp } from "lodash";
+import { clamp, merge } from "lodash";
 import { 
   FileCacheItem, 
   fileCacheReducer,
@@ -185,7 +185,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     
     case LOADED_SAVED_STATE: {
       const { state: newState } = event as LoadedSavedState;
-      return JSON.parse(JSON.stringify(newState));
+      return merge({}, state, JSON.parse(JSON.stringify(newState)));
     }
     
     case TREE_NODE_LABEL_CLICKED: {

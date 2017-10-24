@@ -21,6 +21,7 @@ import {
   arraySplice,
   ImmutableObject,
   getStructReference,
+  serialize,
   ExpressionPosition,
   pointIntersectsBounds,
   createStructFactory,
@@ -576,6 +577,15 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
   return [SYNTHETIC_ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [string, string];
 }
 
+
+export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, windowStore, browserStore }: ApplicationState) => ({
+  workspaces: workspaces.map(serializeWorkspace),
+  selectedWorkspaceId,
+  windowStore: serialize(windowStore),
+  browserStore: serialize(browserStore)
+});
+
+export const serializeWorkspace = (workspace: Workspace) => serialize(workspace);
 
 export * from "./shortcuts";
 export * from "aerial-browser-sandbox/src/state";
