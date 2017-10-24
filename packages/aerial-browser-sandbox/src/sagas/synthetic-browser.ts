@@ -48,6 +48,8 @@ import {
   SYNTHETIC_WINDOW_SCROLLED,
   deferApplyFileMutationsRequest,
   NODE_VALUE_STOPPED_EDITING,
+  SYNTHETIC_WINDOW_LOADED,
+  SYNTHETIC_WINDOW_CLOSED,
   SYNTHETIC_WINDOW_PROXY_OPENED,
   syntheticWindowMoved,
   syntheticWindowClosed,
@@ -164,6 +166,7 @@ export function* syntheticBrowserSaga() {
   yield fork(htmlContentEditorSaga);
   yield fork(fileEditorSaga);
   yield fork(handleToggleCSSProperty);
+  yield fork(handleWatchWindowResource);
 }
 
 function* handleFetchRequests() {
@@ -257,6 +260,20 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
       yield take(reloadChan);
     }
   });
+}
+
+function* handleWatchWindowResource() {
+  while(true) {
+    yield take([
+      SYNTHETIC_WINDOW_LOADED,
+      SYNTHETIC_WINDOW_CLOSED,
+      REMOVED
+    ]);
+    const state: SyntheticBrowserRootState = yield select();
+    const allUris = uniq(state.browserStore.records.reduce((a, b) => (
+      [...a, ...b.windows.reduce((a2, b2) => [ ...a2, ...b2.externalResourceUris ], [])]
+    ), []));
+  }
 }
 
 function* handleToggleCSSProperty() {
@@ -390,15 +407,6 @@ function* handleSyntheticWindowInstance(window: SEnvWindowInterface, browserId: 
   yield fork(handleSyntheticWindowMutations, window);
 }
 
-const getAllWindowObjects = (window: SEnvWindowInterface) => {
-  const allChildStructs = {};
-  const childObjects = flattenWindowObjectSources(window.struct);
-  for (const key in childObjects) {
-    allChildStructs[key] = childObjects[key].struct;
-  }
-  return allChildStructs;
-}
-
 function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: string) {
   const { SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent } = getSEnvEventClasses(window);
 
@@ -413,7 +421,6 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
 
     window.addEventListener(SEnvMutationEvent.MUTATION, (event) => {
       if (window.document.readyState !== "complete") return;
-      // multiple mutations may be fired, so batch everything in one go
       emitStructChange();
     });
 

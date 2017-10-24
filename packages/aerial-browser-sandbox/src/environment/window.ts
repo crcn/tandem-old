@@ -40,6 +40,7 @@ export interface SEnvWindowInterface extends Window {
   struct: SyntheticWindow;
   externalResourceUris: string[];
   document: SEnvDocumentInterface;
+  $setExternalUris(uris: string[]);
   dispose();
 
   // overridable by loaded window. Used
@@ -62,7 +63,7 @@ export type SEnvWindowContext = {
 };
 
 export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInterface) => {
-  const { SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent } = getSEnvEventClasses();
+  const { SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent, SEnvWindowEvent } = getSEnvEventClasses();
 
   (source.renderer as SyntheticMirrorRenderer).source = target.renderer;
  
@@ -123,6 +124,10 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
     target.close();
   };
 
+  const onResourceChanged = (event: Event) => {
+    target.$setExternalUris(source.externalResourceUris);
+  };
+
   const onUriChanged = (event) => target.dispatchEvent(event);
 
   source.resizeTo(target.innerWidth, target.innerHeight);
@@ -136,6 +141,7 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
   target.addEventListener("move", onTargetMove);
   target.addEventListener("resize", onTargetResize);
   source.document.addEventListener("readystatechange", tryPatching);
+  source.addEventListener(SEnvWindowEvent.EXTERNAL_URIS_CHANGED, onResourceChanged);
 
   tryPatching();
 
@@ -149,6 +155,7 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
     target.removeEventListener("move", onTargetMove);
     target.removeEventListener("resize", onTargetResize);
     target.removeEventListener("readystatechange", tryPatching);
+    source.removeEventListener(SEnvWindowEvent.EXTERNAL_URIS_CHANGED, onResourceChanged);
   };
 }
 const defaultFetch = ((info) => {
@@ -172,7 +179,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
   const SEnvLocalStorage = getSEnvLocalStorageClass(context);
   const SEnvDOMImplementation = getSEnvDOMImplementationClass(context);
   const { SEnvTimers } = getSEnvTimerClasses(context);
-  const { SEnvEvent, SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent } = getSEnvEventClasses(context);
+  const { SEnvEvent, SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent, SEnvWindowEvent } = getSEnvEventClasses(context);
 
   // register default HTML tag names
   const TAG_NAME_MAP = getSEnvHTMLElementClasses(context);
@@ -274,7 +281,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly $synthetic = true;
     readonly caches: CacheStorage;
     readonly clientInformation: Navigator;
-    readonly externalResourceUris: string[];
+    public externalResourceUris: string[];
     readonly implementation: DOMImplementation;
     uid: string;
     closed: boolean;
@@ -474,7 +481,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       
       this.fetch = async (info) => {
         const ret = await fetch(info);
-        this.externalResourceUris.push(info as string);
+        this.$setExternalUris([...this.externalResourceUris, info as string]);
         return ret;
       }
 
@@ -510,6 +517,12 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       this._renderer.addEventListener(SyntheticWindowRendererEvent.PAINTED, this._onRendererPainted);
     }
 
+    $setExternalUris (uris: string[]) {
+      this.externalResourceUris = [...uris];
+      this._struct = undefined;
+      this.dispatchEvent(new SEnvWindowEvent(SEnvWindowEvent.EXTERNAL_URIS_CHANGED));
+    }
+
     get struct() {
       if (!this._struct) {
         this._struct = createSyntheticWindow({
@@ -518,6 +531,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
           document: this.document.struct,
           instance: this,
           renderContainer: this.renderer.container,
+          externalResourceUris: [...this.externalResourceUris],
           scrollPosition: {
             left: this.scrollX,
             top: this.scrollY,
@@ -550,7 +564,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     reloadWhenUrisChange(uris: string[]) {
-      console.warn('WATCHING RESOURCES - TODO: ', uris);
+      this.$setExternalUris([ ...this.externalResourceUris, ...uris]);
     }
 
     alert(message?: any): void { }
