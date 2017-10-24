@@ -164,7 +164,6 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
     });
 
     css = result.css;
-    console.log(css);
   }
 
   buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
@@ -349,7 +348,8 @@ const addDeclarationSourceReference = (declaration: Declaration, expression: PCE
   const buffer = JSON.stringify({
     uri: context.uri,
     fingerprint: md5(context.source),
-    ...expression
+    type: expression.type,
+    ...expression.location,
   });
 
   // let buffer = `${SOURCE_AST_VAR}`;

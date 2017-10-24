@@ -353,13 +353,7 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
       const syntheticElement = <SEnvElementInterface>node;
 
       const tagNameLower = syntheticElement.tagName.toLowerCase();
-
-      // add a placeholder for these blacklisted elements so that diffing & patching work properly
-      if(/^(style|link|script|head)$/.test(tagNameLower)) {
-        return document.createTextNode("");
-      }
-      
-      const element = renderHTMLElement(syntheticElement.tagName, syntheticElement, dict, onChange, document);
+      const element = renderHTMLElement(tagNameLower, syntheticElement, dict, onChange, document);
 
       element.onload = onChange;
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
@@ -385,6 +379,12 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
       if (tagNameLower === "iframe") {
         const iframe = syntheticElement as any as SEnvHTMLIFrameElementInterface;
         element.appendChild(iframe.contentWindow.renderer.container);
+      }
+
+      // add a placeholder for these blacklisted elements so that diffing & patching work properly
+      if(/^(style|link|script|head)$/.test(tagNameLower)) {
+        element.style.display = "none";
+        return element;
       }
 
       return appendChildNodes(element, syntheticElement.childNodes, dict, onChange, document);

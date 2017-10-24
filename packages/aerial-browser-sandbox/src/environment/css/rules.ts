@@ -14,6 +14,7 @@ import {
   createSetValueMutation,
   createPropertyMutation,
 } from "aerial-common2";
+
 import { 
   SyntheticCSSRule, 
   SyntheticCSSStyleRule, 
@@ -34,6 +35,7 @@ import {
   createSyntheticCSSKeyframesRule,
   createSyntheticCSSUnknownGroupingRule,
 } from "../../state";
+
 import { diffCSStyleDeclaration, SEnvCSSStyleDeclarationInterface, cssStyleDeclarationMutators, parseStyleSource } from "./declaration";
 import { SEnvCSSObjectInterface, getSEnvCSSBaseObjectClass, SEnvCSSObjectParentInterface } from "./base";
 import { SEnvCSSStyleSheetInterface } from "./style-sheet";
@@ -70,7 +72,7 @@ export const cssInsertRule = (parent: CSSStyleSheet|CSSGroupingRule, child: stri
     return -1;
   }
   if (typeof child === "string") {
-    const childObject = evaluateCSS(child, styleSheet.href, context).cssRules[0];
+    const childObject = evaluateCSS(child, styleSheet.href, context, null).cssRules[0];
     if (isStyleRule) {
       childObject.$parentRule = parent;
     } else {

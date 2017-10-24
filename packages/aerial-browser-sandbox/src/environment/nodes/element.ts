@@ -15,7 +15,7 @@ export const getSEnvAttr = weakMemo((context: any) => {
   const SEnvNode = getSEnvNodeClass(context);
   return class SEnvAttr extends SEnvNode implements Attr {
     readonly prefix: string | null;
-    readonly specified: boolean;
+    readonly specified: boolean = true;
     constructor(readonly name: string, public value: string, readonly ownerElement: Element) {
       super();
     }
@@ -62,8 +62,6 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     readonly addedNodes: NodeList;
     readonly oldValue: string | null;
     readonly removedNodes: NodeList;
-    readonly nextElementSibling: Element | null;
-    readonly previousElementSibling: Element | null;
     readonly type: string;
     onpointercancel: (this: GlobalEventHandlers, ev: PointerEvent) => any;
     onpointerdown: (this: GlobalEventHandlers, ev: PointerEvent) => any;
@@ -132,6 +130,24 @@ export const getSEnvElementClass = weakMemo((context: any) => {
           return true;
         }
       });
+    }
+
+    get previousElementSibling() {
+      for (let i = Array.prototype.indexOf.call(this.parentNode.childNodes, this); i--;) {
+        if (this.parentNode.childNodes[i].nodeType === SEnvNodeTypes.ELEMENT) {
+          return this.parentNode.childNodes[i] as Element;
+        }
+      }
+      return null;
+    }
+    
+    get nextElementSibling() {
+      for (let i = Array.prototype.indexOf.call(this.parentNode.childNodes, this) + 1, {length} = this.parentNode.childNodes; i < length; i++) {
+        if (this.parentNode.childNodes[i].nodeType === SEnvNodeTypes.ELEMENT) {
+          return this.parentNode.childNodes[i] as Element;
+        }
+      }
+      return null;
     }
 
     get id() {

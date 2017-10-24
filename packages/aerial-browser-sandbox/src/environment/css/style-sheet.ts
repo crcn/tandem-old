@@ -77,7 +77,8 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
     }
 
     set cssText(value: string) {
-      const styleSheet = evaluateCSS(value, this.href, this.ownerNode && this.ownerNode.source && this.ownerNode.source.fingerprint, context);
+      const styleSheet = evaluateCSS(value, this.href, context, this.ownerNode && this.ownerNode.source && this.ownerNode.source.fingerprint);
+      this.source = styleSheet.source;
       this._reset(styleSheet.cssRules);
     }
 

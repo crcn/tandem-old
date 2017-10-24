@@ -16,8 +16,7 @@ export const parseCSS = (source: string, map?: any) => {
 };
 
 const getInlineSourceMap = (source: string) => {
-  const contentMatch = source.match(/sourceMappingURL=data:application\/json;base64,([^\s+])/g);
-  console.log(source);
+  const contentMatch = source.match(/sourceMappingURL=data:application\/json;base64,([^\s]+)/);
   if (!contentMatch) return null;
   return JSON.parse(new Buffer(contentMatch[1], "base64").toString("utf8"));
 };

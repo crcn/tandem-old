@@ -2,6 +2,7 @@ import * as vm from "vm";
 import { hasURIProtocol } from "aerial-sandbox2";
 import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
 import path = require("path");
+import { camelCase } from "lodash";
 import { getUri } from "../utils";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SEnvNodeListInterface, getSEnvHTMLCollectionClasses } from "./collections";
@@ -141,7 +142,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
         set: (target, key: string, value: string, handler) => {
           const attrName = key.toLowerCase();
           this.dataChangedCallback(attrName, target[attrName], value);
-          target[attrName] = value;
+          target[camelCase(attrName)] = value;
           return true;
         }
       }))
@@ -450,8 +451,10 @@ export const diffHTMLStyledElement = (oldElement: HTMLStyledElement, newElement:
 export const flattenNodeSources = weakMemo((node: SyntheticNode) => {
   const flattened: any = { [node.$id]: node.instance };
 
+  const nameLower = node.nodeName.toLowerCase();
+
   // TODO - use callback here
-  if ((node.nodeName === "STYLE" || node.nodeName === "LINK") && (node.instance as any as HTMLStyleElement).sheet) {
+  if ((nameLower === "style" || nameLower === "link") && (node.instance as any as HTMLStyleElement).sheet) {
     Object.assign(flattened, flattenSyntheticCSSStyleSheetSources(((node.instance as any as HTMLStyleElement).sheet as SEnvCSSStyleSheetInterface).struct));
   }
 
@@ -1770,9 +1773,9 @@ export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) =
 });
 
 export const diffHTMLNode = (oldElement: Node, newElement: Node) => {
-  if (oldElement.nodeName === "LINK") {
+  if (oldElement.nodeName.toLowerCase() === "link") {
     return diffHTMLLinkElement(oldElement as HTMLLinkElement, newElement as HTMLLinkElement);
-  } else if (oldElement.nodeName === "STYLE") {
+  } else if (oldElement.nodeName.toLowerCase() === "style") {
     return diffHTMLStyleElement(oldElement as HTMLLinkElement, newElement as HTMLLinkElement);
   }
 

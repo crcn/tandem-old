@@ -589,8 +589,8 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     $createElementWithoutConstructNS(tagName: string, namespaceURI: string): SEnvHTMLElementInterface {
       const elementClass = this.defaultView.customElements.get(tagName) || SENvHTMLElement;
       const instance = this._linkNode(Object.create(elementClass.prototype));
-      instance["" + "tagName"] = tagName.toUpperCase();
-      instance["" + "nodeName"] = tagName.toUpperCase();
+      instance["" + "tagName"] = tagName;
+      instance["" + "nodeName"] = tagName;
       instance["" + "namespaceURI"] = namespaceURI;
       instance.$$preconstruct();
       return instance;
