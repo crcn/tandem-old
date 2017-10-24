@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as md5 from "md5";
+import * as path from "path";
 import { parse } from "./parser";
 import { flatten, repeat } from "lodash";
 import * as postcss from "postcss";
@@ -9,6 +10,7 @@ import {
   getExpressionPath,
   getPCStartTagAttribute,
   hasPCStartTagAttribute,
+  getPCASTElementsByTagName,
 } from "./utils";
 import {
   PCFragment,
@@ -27,12 +29,17 @@ import {
 
 // const SOURCE_AST_VAR = "$$sourceAST";
 const EXPORTS_VAR = "$$exports";
+const STYLES_VAR  = "$$styles";
+const IMPORTS_VAR  = "$$imports";
 
 type TranspileContext = {
   uri: string;
   source: string;
   varCount: number;
   root: PCFragment;
+  imports: {
+    [identifier: string]: string
+  },
   templateNames: {
     [identifier: string]: string
   }
@@ -43,31 +50,105 @@ type Declaration = {
   content: string;
 };
 
+type Bundle = {
+  [identifier: string]: {
+    content: string
+  }
+}
+
 /**
  * transpiles the PC AST to vanilla javascript with no frills
  */
 
-export const transpilePCASTToVanillaJS = weakMemo((source: string, uri: string) => transpileModule(parse(source), source, uri));
+export const transpilePCASTToVanillaJS = (source: string, uri: string, assignTo?: string) => {
+  return transpileBundle(source, uri, assignTo);
+};
 
-const transpileModule = (root: PCFragment, source: string, uri: string) => {
+export const transpileBundle = (source: string, uri: string, assignTo?: string) => {
+  
+  let buffer = `(function(document) {
+    function module(fn) {
+    var exports;
+    return function(modules) {
+      return exports || (exports = fn(function(path) {
+        return modules[path]();
+      }));
+    };
+  }\n`;
+  
+  buffer += `var modules = {\n`;
+
+  const modules = bundle(source, uri);
+  
+  for (const uri in modules) {
+    buffer += `"${uri}": ${modules[uri].content},`
+  };
+
+  buffer += "}\n";
+  buffer += `return {
+    entry: modules["${uri}"](modules),
+    modules: modules
+  }`;
+  buffer += `})(document);`
+
+  if (assignTo) {
+    buffer = `${assignTo} = ${buffer}`;
+  }
+
+  return buffer;
+};
+
+const bundle = (source: string, uri: string, modules: any = {}): Bundle => {
+  const ast = parse(source);
+  const imports = getPCASTElementsByTagName(ast, "import");
+  const importMap = {};
+  for (const _import of imports) {
+    const src = getPCStartTagAttribute(_import, "src");
+    if (!src) continue;
+    const importFullPath = "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src);
+    importMap[src] = importFullPath;
+    if (!modules[importFullPath]) {
+
+      // define to prevent recursion
+      modules[importFullPath] = {};
+      bundle(
+        fs.readFileSync(importFullPath.replace("file://", ""), "utf8"),
+        importFullPath,
+        modules
+      )
+    }
+  }
+
+  modules[uri] = {
+    content: transpileModule(ast, source, uri, importMap)
+  }
+
+  return modules;
+};
+
+const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, importsMap: any = {}) => {
   
   const context: TranspileContext = {
     varCount: 0,
     uri,
     source,
     root,
+    imports: importsMap,
     templateNames: {}
   };
 
-  let buffer = "(function(module, document) {\n";
+  let buffer = "module(function(require) {\n";
   buffer += `var ${EXPORTS_VAR} = {};\n`;
+  buffer += `var ${STYLES_VAR} = [];\n`;
+  buffer += `var ${IMPORTS_VAR} = ${JSON.stringify(importsMap)};\n`;
   buffer += transpileChildren(root, context);
 
-  buffer += `module.exports = ${EXPORTS_VAR};\n`;
-  buffer += `})(typeof module !== "undefined" ? module : {}, document);\n`
+  buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
+  buffer += `return ${EXPORTS_VAR};\n`;
+  buffer += `})\n`
 
   return buffer;
-};
+});
 
 const transpileChildren = (parent: PCParent, context: TranspileContext) => parent.children.map((child) => getTranspileContent(transpileNode(child, context))).join("\n");
 
@@ -77,7 +158,7 @@ const transpileNode = (node: PCExpression, context: TranspileContext): Declarati
   } else if (node.type === PCExpressionType.BLOCK) {
     return transpileTextBlock(node as PCBlock, context);
   } else if (node.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
-    return transpileStartTag(node as PCSelfClosingElement, context);
+    return transpileSelfClosingElement(node as PCSelfClosingElement, context);
   } else if (node.type === PCExpressionType.ELEMENT) {
     return transpileElement(node as PCElement, context);
   }
@@ -96,6 +177,13 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
   
   return declaration;
 };
+
+const transpileSelfClosingElement = (element: PCSelfClosingElement, context: TranspileContext) => {
+  if (element.name === "import") {
+    return transpileImport(element, context);
+  }
+  return transpileStartTag(element, context);
+}
 
 const transpileAttributeValue = (attribute: PCAttribute) => {
   if (!attribute.value) {
@@ -116,8 +204,7 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
   if (node.startTag.name === "template") {
     declaration = transpileTemplate(node, context);
   } else if (node.startTag.name === "import") {
-    // TODO
-    // declaration = transpileImport(node, context);
+    declaration = transpileImport(node.startTag, context);
   } else if (node.startTag.name === "repeat") {
     // TODO
   } else if (node.startTag.name === "style") {
@@ -133,14 +220,13 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
   return declaration;
 };
 
-const uid = () => md5(Date.now() + "_" + Math.random());
-
 // TODO - eventually need to put these style elements within the global context, or check if they've already
 // been registered. Otherwise they'll pollute the CSSOM when used repeatedly. 
 const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   const scoped = hasPCStartTagAttribute(node, "scoped");
+  const path = getExpressionPath(node, context.root);
 
-  const varName = `style_${uid()}`;
+  const varName = `style_${context.varCount++}_${md5(context.uri)}`;
 
   let buffer = `
     var ${varName} = document.createElement("style");
@@ -167,6 +253,11 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   }
 
   buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
+
+  // in the root scope, so export as a global style
+  if (path.length === 2) {
+    buffer += `${STYLES_VAR}.push(${varName});\n`;
+  }
 
   return {
     varName: varName,
@@ -207,8 +298,8 @@ const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, elem
   return decl;
 }
 
-const assertAttributeExists = (node: PCElement, name: string, context: TranspileContext) => {
-  if (!getPCStartTagAttribute(node, "name")) {
+const assertAttributeExists = (node: PCElement|PCSelfClosingElement, name: string, context: TranspileContext) => {
+  if (!getPCStartTagAttribute(node, name)) {
 
     // TODO - show actual source code here
     throw new Error(`Missing "${name}" element attribute at ${node.location.start}`);
@@ -224,9 +315,15 @@ const tryExportingDeclaration = (declaration: Declaration, node: PCElement, cont
   }
 }
 
-const transpileImport = (node: PCElement, context: TranspileContext) => {
+const transpileImport = (node: PCStartTag, context: TranspileContext) => {
   const src    = getPCStartTagAttribute(node, "src");
   assertAttributeExists(node, "src", context);
+  
+  const imports = declare("imports", `require("${context.imports[src]}");`, context);
+
+  imports.content += `${STYLES_VAR} = ${STYLES_VAR}.concat(${imports.varName}.${STYLES_VAR});`
+
+  return imports;
 };
 
 const getJSFriendlyVarName = (name: string) => name.replace(/\-/g, "_");

@@ -1,7 +1,19 @@
 <meta name="name" content="Gutter" />
+<import src="./styles.pc" />
 
 <template name="gutter" export>
-  {{children}}
+  <style scoped>
+    .outer {
+      background: #FCFCFC;
+    }
+    
+    .header {
+      color: blue;
+    }
+  </style>
+  <div class="outer">
+    {{children}}
+  </div>
 </template>
 
 <template name="test">
@@ -10,12 +22,6 @@
 
 <template name="preview" export dev>
   <gutter>
-    <style scoped>
-      span {
-        color: red;
-      }
-    </style>
-    <test text="a b c" />
+    Gutter
   </gutter>
-  <span>Gatter</span>
 </template>

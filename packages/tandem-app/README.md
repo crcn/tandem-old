@@ -13,17 +13,14 @@ TODOS:
 
 IMMEDIATE:
 
-- [ ] import external components into paperclip files
-- [ ] watch all loaded resources
-- [ ] create CSS rules manually
-
-- [ ] Tandem app should detect paperclip ASTs. Other languages should be limited.
-- [ ] ability to create new component files in left panel
-- [ ] change empty state to drag element from left to stage
-- [ ] components populated based on scanned files
-- [ ] dropping element to stage creates a _new_ component with 3 files: style sheet, preview file (constaints mocks, stubs, and states), and component file
-- [ ] map of how each window is evaluated - map needs to be loaded in the window
-- [ ] surce objects must contain additional information such as context if bound to data - { context: 
+- [ ] HMR when file changes
+- [ ] create new component when _native_ element is dropped onto the canvas
+- [ ] create a new window when a _custom_ component is dropped onto the canvas
+- [ ] add dropped component to existing element
+- [ ] persist changes
+- [ ] re-wire up vscode extension
+- [ ] adding new style in right pane
+- [ ] adding new rule in right pane
 
 Steps to visual dev:
 

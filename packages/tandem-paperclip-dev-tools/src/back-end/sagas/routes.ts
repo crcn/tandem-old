@@ -106,17 +106,24 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     </head>
     <body>
       <script>
-        var module = {
-          exports: {}
-        };
-        ${transpilePCASTToVanillaJS(fs.readFileSync(targetComponent.filePath, "utf8"), `file://${targetComponent.filePath}`)}
-        var preview = module.exports.preview;
+        var bundle = {};
+        ${transpilePCASTToVanillaJS(fs.readFileSync(targetComponent.filePath, "utf8"), `file://${targetComponent.filePath}`, `bundle`)}
+        var preview  = bundle.entry.preview;
+        var styles   = bundle.entry.$$styles || [];
+        var allFiles = Object.keys(bundle.modules);
         if (!preview) {
           document.body.appendChild(
             document.createTextNode('"preview" template not found')
           );
         } else {
+          styles.forEach(function(style) {
+            document.body.appendChild(style);
+          });
           document.body.appendChild(preview({}));
+
+          if (window.reloadWhenUrisChange) {
+            window.reloadWhenUrisChange(allFiles);
+          }
         }
       </script>
     </body>

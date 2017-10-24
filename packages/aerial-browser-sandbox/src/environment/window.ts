@@ -549,6 +549,10 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       return this._selector;
     }
 
+    reloadWhenUrisChange(uris: string[]) {
+      console.warn('WATCHING RESOURCES - TODO: ', uris);
+    }
+
     alert(message?: any): void { }
     blur(): void { }
     cancelAnimationFrame(handle: number): void { }

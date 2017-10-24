@@ -1,0 +1,6 @@
+<style>
+  body, html {
+    font-family: Helvetica;
+    color: blue;
+  }
+</style>
