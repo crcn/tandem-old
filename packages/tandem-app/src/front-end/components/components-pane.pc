@@ -2,11 +2,36 @@
   <meta name="name" content="Components Pane" />
 
   <template name="components-pane" export>
+
+    <style scoped>
+      .cell {
+        width: 33.33%;
+        height: 100px;
+        text-align: center;
+        border-right: 1px solid #F60;
+        border-bottom: 1px solid #F60;
+        float: left;
+      }
+    </style>
     <gutter:gutter>
       <div class="header">
         Components
         <div class="controls">
           +
+        </div>
+        <div class="content">
+          <div class="cell">
+            div
+          </div>
+          <div class="cell">
+            div
+          </div>
+          <div class="cell">
+            div
+          </div>
+          <div class="cell">
+            div
+          </div>
         </div>
       </div>
     </gutter:gutter>

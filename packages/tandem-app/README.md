@@ -17,6 +17,7 @@ IMMEDIATE:
 - [ ] ability to edit embedded style rules
 - [ ] wire up edit text content
 - [ ] vscode integration
+- [ ] allow multiple <preview /> tags -- toggle within editor
 - [ ] DND for components to existing elements
 - [ ] create new component when _native_ element is dropped onto the canvas
 - [ ] create a new window when a _custom_ component is dropped onto the canvas
