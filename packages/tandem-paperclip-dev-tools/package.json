@@ -13,7 +13,7 @@
     "@types/glob": "^5.0.32",
     "@types/socket.io": "^1.4.30",
     "@types/socket.io-client": "^1.4.30",
-    "aerial-common2": "^0.0.1",
+    "aerial-common2": "0.x.x",
     "body-parser": "^1.17.2",
     "chokidar": "^1.7.0",
     "connect-multiparty": "^2.0.0",

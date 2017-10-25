@@ -3,13 +3,14 @@ import {
   createUpdateValueNodeMutation, 
   createParentNodeInsertChildMutation,
   createParentNodeRemoveChildMutation,
-  updateContent, 
   patchWindow,
   diffWindow,
   createHTMLStringMutation, 
-  getComputedEditHistoryContent,
   createSetElementAttributeMutation
 } from "../index";
+
+import { updateContent, getComputedEditHistoryContent } from "aerial-common2";
+
 import { openTestWindow, wrapHTML, waitForDocumentComplete } from "./env/utils";
 import { expect } from "chai";
 

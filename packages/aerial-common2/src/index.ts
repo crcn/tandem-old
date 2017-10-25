@@ -1,4 +1,5 @@
 export * from "./struct";
+export * from "./content-edit";
 export * from "./actions";
 export * from "./application";
 export * from "./immutable";
