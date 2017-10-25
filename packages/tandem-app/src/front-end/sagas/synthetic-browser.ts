@@ -2,7 +2,7 @@ import { uniq } from "lodash";
 import { delay } from "redux-saga";
 import { createDeferredPromise } from "mesh";
 import { apiWatchUris } from "../utils";
-import { take, fork, select, put, call } from "redux-saga/effects";
+import { take, fork, select, put, call, spawn } from "redux-saga/effects";
 import { Point, shiftPoint, watch, resized, Bounds, REMOVED, diffArray, ARRAY_UPDATE } from "aerial-common2";
 import { 
   SYNTHETIC_WINDOW,
@@ -100,9 +100,12 @@ function* handleWatchWindowResource() {
       REMOVED
     ]);
     const state: ApplicationState = yield select();
-    const allUris = uniq(state.browserStore.records.reduce((a, b) => (
-      [...a, ...b.windows.reduce((a2, b2) => [ ...a2, ...b2.externalResourceUris ], [])]
-    ), []));
+    const allUris = uniq(state.browserStore.records.reduce((a, b) => {
+      return [...a, ...b.windows.reduce((a2, b2) => {
+        return [...a2, ...b2.externalResourceUris ];
+      }, [])];
+    }, [])) as string[];
+    
 
     const updates = diffArray(allUris, watchingUris, (a, b) => a === b ? 0 : -1).mutations.filter((mutation) => mutation.$type === ARRAY_UPDATE);
 
@@ -111,7 +114,9 @@ function* handleWatchWindowResource() {
       continue;
     }
 
-    yield call(apiWatchUris, watchingUris = allUris, state);
+    yield spawn(function*() {
+      yield call(apiWatchUris, watchingUris = allUris, state);
+    });
   }
 }
 

@@ -1,0 +1,45 @@
+<module xmlns:global="./global.pc">
+  <meta name="name" content="Gutter" />
+
+  <template name="gutter" export>
+    <style scoped>
+      .container {
+        background: #FCFCFC;
+      }
+
+      .content {
+        padding: 10px;
+      }
+      
+      .header {
+        color: #666;
+        text-transform: uppercase;
+        padding: 4px;
+        font-size: 0.9em;
+      }
+
+      .controls {
+        float: right;
+        padding-right: 4px;
+      }
+    </style>
+    <div class="container">
+      {{children}}
+    </div>
+  </template>
+
+  <template name="test">
+    <span>{{typeof text !== "undefined" ? text : "does not exist"}}</span>
+  </template>
+
+  <template name="preview" export dev>
+    <gutter>
+      <div class="header">
+        Gutter
+      </div>
+      <div class="content">
+        Content
+      </div>
+    </gutter>
+  </template>
+</module>

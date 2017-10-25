@@ -134,6 +134,7 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
       break;
     }
 
+    case SYNTHETIC_WINDOW_LOADED:
     case SYNTHETIC_WINDOW_CHANGED: {
       const { instance } = event as SyntheticWindowLoaded;
       return updateSyntheticWindow(root, instance.$id, instance.struct);

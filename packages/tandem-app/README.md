@@ -13,8 +13,9 @@ TODOS:
 
 IMMEDIATE:
 
-- [ ] buffer memory
-- [ ] save style to memory
+- [ ] ability to delete CSS rules
+- [ ] ability to edit embedded style rules
+- [ ] wire up edit text content
 - [ ] vscode integration
 - [ ] DND for components to existing elements
 - [ ] create new component when _native_ element is dropped onto the canvas

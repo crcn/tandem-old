@@ -392,7 +392,7 @@ function* handleSyntheticWindowInstance(window: SEnvWindowInterface, browserId: 
 }
 
 function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: string) {
-  const { SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent } = getSEnvEventClasses(window);
+  const { SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent, SEnvWindowEvent } = getSEnvEventClasses(window);
 
   const chan = eventChannel(function(emit) {
     window.renderer.addEventListener(SyntheticWindowRendererEvent.PAINTED, ({ rects, styles }: SyntheticWindowRendererEvent) => {
@@ -432,6 +432,11 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
     window.addEventListener("resize", (event) => {
       emit(syntheticWindowResized(window));
     });
+
+    window.addEventListener(SEnvWindowEvent.EXTERNAL_URIS_CHANGED, () => {
+      emitStructChange();
+    });
+    
 
     window.addEventListener(SEnvWindowOpenedEvent.WINDOW_OPENED, (event: SEnvWindowOpenedEventInterface) => {
       emit(syntheticWindowOpened(event.window, browserId, window.$id));

@@ -1,0 +1,18 @@
+<module xmlns:gutter="./gutter.pc">
+  <meta name="name" content="Components Pane" />
+
+  <template name="components-pane" export>
+    <gutter:gutter>
+      <div class="header">
+        Components
+        <div class="controls">
+          +
+        </div>
+      </div>
+    </gutter:gutter>
+  </template>
+
+  <template name="preview" export>
+    <components-pane />
+  </template>
+</module>

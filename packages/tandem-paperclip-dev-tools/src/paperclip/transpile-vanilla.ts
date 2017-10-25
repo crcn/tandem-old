@@ -6,6 +6,7 @@ import { flatten, repeat } from "lodash";
 import * as postcss from "postcss";
 import { weakMemo } from "../utils";
 import { 
+  getPCImports,
   traversePCAST, 
   getExpressionPath,
   getPCStartTagAttribute,
@@ -30,7 +31,6 @@ import {
 // const SOURCE_AST_VAR = "$$sourceAST";
 const EXPORTS_VAR = "$$exports";
 const STYLES_VAR  = "$$styles";
-const IMPORTS_VAR  = "$$imports";
 
 type TranspileOptions = {
   assignTo?: string;
@@ -79,7 +79,7 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
     var exports;
     return function(modules) {
       return exports || (exports = fn(function(path) {
-        return modules[path]();
+        return modules[path](modules);
       }));
     };
   }\n`;
@@ -108,13 +108,12 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
 
 const bundle = (source: string, uri: string, modules: any = {}, options: TranspileOptions): Bundle => {
   const ast = parse(source);
-  const imports = getPCASTElementsByTagName(ast, "import");
+  const imports = getPCImports(ast);
   const importMap = {};
-  for (const _import of imports) {
-    const src = getPCStartTagAttribute(_import, "src");
-    if (!src) continue;
+  for (const ns in imports) {
+    const src = imports[ns];
     const importFullPath = "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src);
-    importMap[src] = importFullPath;
+    importMap[ns] = importFullPath;
     if (!modules[importFullPath]) {
 
       // define to prevent recursion
@@ -149,7 +148,11 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
   let buffer = "module(function(require) {\n";
   buffer += `var ${EXPORTS_VAR} = {};\n`;
   buffer += `var ${STYLES_VAR} = [];\n`;
-  buffer += `var ${IMPORTS_VAR} = ${JSON.stringify(importsMap)};\n`;
+  for (const ns in importsMap) {
+    const path = importsMap[ns];
+    buffer += `var $$ns$$${ns} = require("${path}");\n`
+    buffer += `${STYLES_VAR} = ${STYLES_VAR}.concat($$ns$$${ns}.${STYLES_VAR});\n`;
+  }
   buffer += transpileChildren(root, context);
 
   buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
@@ -173,7 +176,13 @@ const transpileNode = (node: PCExpression, context: TranspileContext): Declarati
   }
 };
 
+
 const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context: TranspileContext, element?: PCElement) => {
+
+  if (hasImportedXMLNSTagName(startTag.name, context)) {
+    return transpileXMLNSImportedTag(startTag, context, element);
+  }
+
   if (context.templateNames[startTag.name]) {
     return transpileTemplateCall(startTag, context, element);
   }
@@ -188,9 +197,6 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
 };
 
 const transpileSelfClosingElement = (element: PCSelfClosingElement, context: TranspileContext) => {
-  if (element.name === "import") {
-    return transpileImport(element, context);
-  }
   return transpileStartTag(element, context);
 }
 
@@ -209,20 +215,33 @@ const transpileAttributeValue = (attribute: PCAttribute) => {
 const transpileElement = (node: PCElement, context: TranspileContext) => {
 
   let declaration: Declaration;
-
-  if (node.startTag.name === "template") {
-    declaration = transpileTemplate(node, context);
-  } else if (node.startTag.name === "import") {
-    declaration = transpileImport(node.startTag, context);
-  } else if (node.startTag.name === "repeat") {
-    // TODO
-  } else if (node.startTag.name === "style") {
-    // TODO
-    declaration = transpileStyleElement(node, context);
-    
-  } else {
-    declaration = transpileBasicElement(node, context);
-  } 
+  switch(node.startTag.name) {
+    case "paperclip": 
+    case "root":
+    case "module": {
+      declaration = {
+        varName: null,
+        content: transpileChildren(node, context)
+      };
+      break;
+    }
+    case "template": {
+      declaration = transpileTemplate(node, context);
+      break;
+    }
+    case "repeat": {
+      // TODO
+      break;
+    }
+    case "style": {
+      declaration = transpileStyleElement(node, context);
+      break;
+    }
+    default: {
+      declaration = transpileBasicElement(node, context);
+      break;
+    }
+  }
 
   tryExportingDeclaration(declaration, node, context);
 
@@ -283,7 +302,13 @@ const prefixCSSRules = (prefixes: string[]) => (root: postcss.Root) => {
   });
 }
 
-const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, element?: PCElement) => {
+const transpileXMLNSImportedTag = (node: PCStartTag, context: TranspileContext, element?: PCElement) => {
+  const [ns, templateName] = node.name.split(":");
+
+  return transpileTemplateCall(node, context, element, `$$ns$$${ns}.${templateName}`);
+}
+
+const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, element?: PCElement, fnName?: string) => {
 
   let buffer = '';
 
@@ -302,7 +327,7 @@ const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, elem
     )
   }
 
-  const decl = declareNode(`${context.templateNames[node.name]}({${attributeBuffer.join(",")}})`, context);
+  const decl = declareNode(`${fnName || context.templateNames[node.name]}({${attributeBuffer.join(",")}})`, context);
   decl.content = buffer + decl.content;
   return decl;
 }
@@ -323,17 +348,6 @@ const tryExportingDeclaration = (declaration: Declaration, node: PCElement, cont
     declaration.content += `${EXPORTS_VAR}["${name || declaration.varName}"] = ${declaration.varName};\n`;
   }
 }
-
-const transpileImport = (node: PCStartTag, context: TranspileContext) => {
-  const src    = getPCStartTagAttribute(node, "src");
-  assertAttributeExists(node, "src", context);
-  
-  const imports = declare("imports", `require("${context.imports[src]}");`, context);
-
-  imports.content += `${STYLES_VAR} = ${STYLES_VAR}.concat(${imports.varName}.${STYLES_VAR});`
-
-  return imports;
-};
 
 const getJSFriendlyVarName = (name: string) => name.replace(/\-/g, "_");
 
@@ -364,11 +378,19 @@ const transpileTemplate = (node: PCElement, context: TranspileContext) => {
   };
 }
 
+const getXMLNSTagNameParts = (name: string, context: TranspileContext) => {
+  return name.split(":");
+}
+
+const hasImportedXMLNSTagName = (name: string, context: TranspileContext) => {
+  return Boolean(name.indexOf(":") !== -1 && context.imports[name.split(":")[0]]);
+}
+
 const transpileBasicElement = (node: PCElement, context: TranspileContext) => {
   const declaration = transpileStartTag(node.startTag, context, node);
 
   // do not include -- already part of attributes
-  if (!context.templateNames[node.startTag.name]) {
+  if (!context.templateNames[node.startTag.name] && !hasImportedXMLNSTagName(node.startTag.name, context)) {
     addNodeDeclarationChildren(declaration, node, context);
   }
   return declaration;

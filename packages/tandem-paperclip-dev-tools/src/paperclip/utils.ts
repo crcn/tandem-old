@@ -80,3 +80,24 @@ export const filterPCASTTree = (ast: PCExpression, filter: (ast: PCExpression) =
 };
 
 export const getPCASTElementsByTagName = (ast: PCExpression, tagName: string) => filterPCElementsByStartTag(ast, (tag) => tag.name === tagName) as Array<PCElement | PCSelfClosingElement>;
+
+export const getPCImports = (ast: PCExpression) => {
+  const imports = {};
+  traversePCAST(ast, (ast) => {
+    if (ast.type === PCExpressionType.START_TAG || ast.type === PCExpressionType.SELF_CLOSING_ELEMENT || ast.type === PCExpressionType.ELEMENT) {
+
+      if (ast.type === PCExpressionType.ELEMENT) {
+        ast = (ast as PCElement).startTag;
+      }
+      
+      for (const attr of (ast as PCSelfClosingElement).attributes) {
+        if (attr.name.substr(0, 6) === "xmlns:") {
+          imports[attr.name.substr(6)] = (attr.value as PCString).value;
+        }
+      }
+    }
+  });
+  
+
+  return imports;
+}
