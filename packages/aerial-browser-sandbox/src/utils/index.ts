@@ -4,3 +4,4 @@ export * from "./css";
 export * from "./source";
 export * from "./edit";
 export * from "./edit-html";
+export * from "./api";

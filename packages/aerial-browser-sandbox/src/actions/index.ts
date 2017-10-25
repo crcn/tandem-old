@@ -10,6 +10,7 @@ export const NEW_SYNTHETIC_WINDOW_ENTRY_RESOLVED = "NEW_SYNTHETIC_WINDOW_ENTRY_R
 export const FETCH_REQUEST                       = "FETCH_REQUEST";
 export const SYNTHETIC_WINDOW_RECTS_UPDATED      = "SYNTHETIC_WINDOW_RECTS_UPDATED";
 export const SYNTHETIC_WINDOW_LOADED             = "SYNTHETIC_WINDOW_LOADED";
+export const SYNTHETIC_WINDOW_CHANGED            = "SYNTHETIC_WINDOW_CHANGED";
 export const SYNTHETIC_NODE_TEXT_CONTENT_CHANGED = "SYNTHETIC_NODE_TEXT_CONTENT_CHANGED";
 export const NODE_VALUE_STOPPED_EDITING          = "NODE_VALUE_STOPPED_EDITING";
 export const EDIT_SOURCE_CONTENT                 = "EDIT_SOURCE_CONTENT";
@@ -255,4 +256,10 @@ export const syntheticWindowResourceLoaded = (syntheticWindowId: string, uri: st
 export const syntheticWindowLoaded = (instance: SEnvWindowInterface): SyntheticWindowLoaded => ({
   instance,
   type: SYNTHETIC_WINDOW_LOADED,
+});
+
+
+export const syntheticWindowChanged = (instance: SEnvWindowInterface): SyntheticWindowLoaded => ({
+  instance,
+  type: SYNTHETIC_WINDOW_CHANGED,
 });

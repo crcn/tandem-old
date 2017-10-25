@@ -1,10 +1,10 @@
 import { fork, take, select, call, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import {transpilePCASTToVanillaJS } from "../../paperclip";
+import { transpilePCASTToVanillaJS, editPCContent } from "../../paperclip";
 import { ApplicationState, createComponentFromFilePath, Component } from "../state";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest } from "../utils";
-import { watchUrisRequested } from "../actions";
+import { watchUrisRequested, fileContentChanged, fileChanged } from "../actions";
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
@@ -26,6 +26,7 @@ export function* routesSaga() {
     [ { test: /^\/components/, method: "POST" }, createComponent],
     [ { test: /^\/preview\/[^\/]+/, method: "GET" }, getComponentPreview],
     [ { test: /^\/watch/, method: "POST" }, watchUris],
+    [ { test: /^\/edit/, method: "POST" }, editFiles],
   );
 }
 
@@ -85,20 +86,20 @@ function* getComponents(req: express.Request, res: express.Response) {
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 
-function* watchUris(req: express.Request, res: express.Response) {
+function* getPostData (req: express.Request) {
 
   const chan = eventChannel((emit) => {
     let buffer = [];
     req.on("data", chunk => buffer.push(chunk));
     req.on("end", () => emit(JSON.parse(buffer.join(""))));
-    return () => {
-
-    }
+    return () => { };
   });
-  
-  
-  yield put(watchUrisRequested(yield take(chan)));
-  
+
+  return yield take(chan)
+}
+
+function* watchUris(req: express.Request, res: express.Response) {
+  yield put(watchUrisRequested(yield call(getPostData, req)));
   res.send([]);
 }
 
@@ -116,6 +117,13 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     res.status(404);
     return res.send(`Component not found`);
   }
+  
+  const state: ApplicationState = yield select();
+
+  const readFileSync = (filePath: string) => {
+    const fileCache = state.fileCache.find((item) => item.filePath === filePath);
+    return fileCache ? fileCache.content.toString("utf8") : fs.readFileSync(filePath, "utf8")
+  }
 
   const html = `
   <html>
@@ -125,7 +133,10 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     <body>
       <script>
         var bundle = {};
-        ${transpilePCASTToVanillaJS(fs.readFileSync(targetComponent.filePath, "utf8"), `file://${targetComponent.filePath}`, `bundle`)}
+        ${transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, {
+          assignTo: "bundle",
+          readFileSync,
+        })}
         var preview  = bundle.entry.preview;
         var styles   = bundle.entry.$$styles || [];
         var allFiles = Object.keys(bundle.modules);
@@ -149,4 +160,31 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   `;
 
   res.send(html);
+}
+
+
+function* editFiles(req: express.Request, res: express.Response) {
+  const mutationsByUri = yield call(getPostData, req);
+  const state: ApplicationState = yield select();
+
+  for (const uri in mutationsByUri) {
+    if (uri.substr(0, 5) !== "file:") continue;
+    const filePath = path.normalize(uri.substr(7));
+    const fileCacheItem = state.fileCache.find((item) => item.filePath === filePath);
+    if (!fileCacheItem) {
+      console.warn(`${filePath} was not found in cache, cannot edit!`);
+      continue;
+    }
+    const mutations = mutationsByUri[uri];
+    const newContent = editPCContent(fileCacheItem.content.toString("utf8"), mutations);
+
+    console.log(newContent);
+
+    yield put(fileContentChanged(filePath, new Buffer(newContent, "utf8"), new Date()));
+
+    yield put(fileChanged(filePath)); // dispatch public change -- causes reload
+  }
+
+  console.log(mutationsByUri);
+  res.send([]);
 }

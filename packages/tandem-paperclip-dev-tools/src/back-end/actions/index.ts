@@ -1,4 +1,5 @@
 import { Action } from "redux";
+import { FileCacheItem } from "../state";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
 
@@ -13,6 +14,7 @@ export const START_DEV_SERVER_EXECUTED = "START_DEV_SERVER_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
 export const FILE_CHANGED = "FILE_CHANGED";
 export const WATCH_URIS_REQUESTED = "WATCH_URIS_REQUESTED";
+export const WATCHING_FILES = "WATCHING_FILES";
 
 export type HTTPRequest = {
   request: Request;
@@ -28,7 +30,8 @@ export type Mutation =  {
 
 export type FileContentChanged =  {
   filePath: string;
-  content: string;
+  content: Buffer;
+  mtime: Date;
 } & Action;
 
 export type FileAction = {
@@ -41,6 +44,10 @@ export type MutateSourceContentRequest = {
 
 export type WatchUrisRequested = {
   uris: string[]
+} & Action;
+
+export type WatchingFiles = {
+  initialFileCache: FileCacheItem[]
 } & Action;
 
 export enum AlertLevel {
@@ -72,10 +79,11 @@ export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const fileContentChanged = (filePath: string, content: string): FileContentChanged  => ({
+export const fileContentChanged = (filePath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
   type: FILE_CONTENT_CHANGED,
   content,
-  filePath
+  filePath,
+  mtime
 });
 
 export const childDevServerStarted = (port: number): ChildDevServerStarted => ({
@@ -89,6 +97,10 @@ export const httpRequest = (request: Request, response: Response): HTTPRequest =
   response,
 });
 
+export const watchingFiles = (initialFileCache: FileCacheItem[]): WatchingFiles => ({
+  type: WATCHING_FILES,
+  initialFileCache
+})
 export const startDevServerExecuted = () => ({ 
   type: START_DEV_SERVER_EXECUTED
 });

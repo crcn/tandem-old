@@ -32,6 +32,11 @@ const EXPORTS_VAR = "$$exports";
 const STYLES_VAR  = "$$styles";
 const IMPORTS_VAR  = "$$imports";
 
+type TranspileOptions = {
+  assignTo?: string;
+  readFileSync?: (filePath: string) => string;
+};
+
 type TranspileContext = {
   uri: string;
   source: string;
@@ -43,7 +48,7 @@ type TranspileContext = {
   templateNames: {
     [identifier: string]: string
   }
-}
+} & TranspileOptions;
 
 type Declaration = {
   varName: string;
@@ -60,11 +65,14 @@ type Bundle = {
  * transpiles the PC AST to vanilla javascript with no frills
  */
 
-export const transpilePCASTToVanillaJS = (source: string, uri: string, assignTo?: string) => {
-  return transpileBundle(source, uri, assignTo);
+export const transpilePCASTToVanillaJS = (source: string, uri: string, options: TranspileOptions = {}) => {
+  return transpileBundle(source, uri, {
+    ...options,
+    readFileSync: (filePath) => fs.readFileSync(filePath, "utf8")
+  });
 };
 
-export const transpileBundle = (source: string, uri: string, assignTo?: string) => {
+export const transpileBundle = (source: string, uri: string, options: TranspileOptions) => {
   
   let buffer = `(function(document) {
     function module(fn) {
@@ -78,7 +86,7 @@ export const transpileBundle = (source: string, uri: string, assignTo?: string) 
   
   buffer += `var modules = {\n`;
 
-  const modules = bundle(source, uri);
+  const modules = bundle(source, uri, {}, options);
   
   for (const uri in modules) {
     buffer += `"${uri}": ${modules[uri].content},`
@@ -91,14 +99,14 @@ export const transpileBundle = (source: string, uri: string, assignTo?: string) 
   }`;
   buffer += `})(document);`
 
-  if (assignTo) {
-    buffer = `${assignTo} = ${buffer}`;
+  if (options.assignTo) {
+    buffer = `${options.assignTo} = ${buffer}`;
   }
 
   return buffer;
 };
 
-const bundle = (source: string, uri: string, modules: any = {}): Bundle => {
+const bundle = (source: string, uri: string, modules: any = {}, options: TranspileOptions): Bundle => {
   const ast = parse(source);
   const imports = getPCASTElementsByTagName(ast, "import");
   const importMap = {};
@@ -112,9 +120,10 @@ const bundle = (source: string, uri: string, modules: any = {}): Bundle => {
       // define to prevent recursion
       modules[importFullPath] = {};
       bundle(
-        fs.readFileSync(importFullPath.replace("file://", ""), "utf8"),
+        options.readFileSync(importFullPath.replace("file://", "")),
         importFullPath,
-        modules
+        modules,
+        options
       )
     }
   }

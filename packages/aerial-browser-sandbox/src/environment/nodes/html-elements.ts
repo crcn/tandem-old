@@ -197,10 +197,6 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     protected dataChangedCallback(propertyName: string, oldValue: string, newValue: string) {
       if (propertyName === "_source") {
         const source = JSON.parse(newValue);
-
-        // transform uri in case it needs to go through a proxy
-        source.uri = (this.ownerDocument.defaultView as SEnvWindowInterface).getSourceUri(source.uri);
-
         this.source = source;
       }
     }

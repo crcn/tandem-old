@@ -1,10 +1,17 @@
 import * as md5 from "md5";
 import * as fs from "fs";
 import * as path from "path";
+import { arrayReplaceIndex, arraySplice } from "aerial-common2";
 import { getPCMetaName, parse } from "../../paperclip";
 
 export type Config = {
   componentsDirectory?: string;
+};
+
+export type FileCacheItem = {
+  filePath: string;
+  mtime: Date;
+  content: Buffer;
 };
 
 export type ApplicationState = {
@@ -12,6 +19,7 @@ export type ApplicationState = {
   port: number;
   config: Config;
   watchUris: string[];
+  fileCache: FileCacheItem[];
 };
 
 export type Component = {
@@ -20,15 +28,22 @@ export type Component = {
   filePath?: string;
 }
 
-
 export const createComponentFromFilePath = (content: string, filePath: string): Component => ({
   $id: md5(filePath),
   filePath: filePath,
-  label: getPCMetaName(parse(content)) || path.basename(filePath),
-  watchUris: []
+  label: getPCMetaName(parse(content)) || path.basename(filePath)
 });
 
 export const updateApplicationState = (state: ApplicationState, properties: Partial<ApplicationState>) => ({
   ...state,
   ...properties
-})
+});
+
+export const updateFileCacheItem = (state: ApplicationState, item: FileCacheItem) => {
+
+  const index = state.fileCache.findIndex((v) => v.filePath === item.filePath);
+
+  return updateApplicationState(state, {
+    fileCache: index > -1 ? arraySplice(state.fileCache, index, 1, item) : arraySplice(state.fileCache, 0, 0, item)
+  });
+}

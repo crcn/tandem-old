@@ -17,4 +17,3 @@ function* getComponents() {
   const json = yield call(response.json.bind(response));
   yield put(apiComponentsLoaded(json));
 }
-

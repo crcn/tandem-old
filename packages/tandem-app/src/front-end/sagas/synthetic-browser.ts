@@ -83,7 +83,7 @@ function* handleEmptyWindowsUrlAdded() {
 
 function* handleWatchWindowResource() {
   while(true) {
-    yield take([
+    const action = yield take([
       SYNTHETIC_WINDOW_LOADED,
       SYNTHETIC_WINDOW_CLOSED,
       REMOVED

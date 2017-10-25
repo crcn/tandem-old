@@ -8,6 +8,8 @@ import {
   createReadUriRequest,
   createWriteUriRequest
 } from "aerial-sandbox2";
+import { SyntheticBrowserRootState } from "../state";
+import { apiEditFile } from "../utils";
 import { Mutation, editString, StringMutation, request, createRequestResponse } from "aerial-common2";
 import { 
   ApplyFileMutations, 
@@ -48,6 +50,7 @@ export function* fileEditorSaga() {
   yield fork(function* handleFileEditRequest() {
     while(true) {
       const req: ApplyFileMutations = yield take(APPLY_FILE_MUTATIONS);
+      const { apiHost }: SyntheticBrowserRootState = yield select();
       const { mutations } = req;
       const state = yield select();
       const mutationsByUri: {
@@ -56,6 +59,7 @@ export function* fileEditorSaga() {
 
       for (const mutation of mutations) {
         const source = (mutation.target as SEnvNodeInterface).source;
+        console.log(source);
         if (!mutationsByUri[source.uri]) {
           mutationsByUri[source.uri] = [];
         }
@@ -65,24 +69,9 @@ export function* fileEditorSaga() {
 
       const stringMutations: StringMutation[] = [];
 
-      for (const uri in mutationsByUri) {
-        const mutations = mutationsByUri[uri];
-
-        const data = JSON.stringify(mutateSourceContentRequest2(mutations));
-
-        yield spawn(function*() {
-
-          // post edit back to the source of truth
-          yield call(fetch, uri, {
-            method: "POST",
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: data
-          });
-        });
-      }
+      yield spawn(function*() {
+        yield call(apiEditFile, mutationsByUri, yield select());
+      });
     }
   }); 
 }

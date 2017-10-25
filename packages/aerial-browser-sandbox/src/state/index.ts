@@ -570,6 +570,7 @@ export type SyntheticBrowser = {
 
 export type SyntheticBrowserRootState = {
   proxy?: string;
+  apiHost?: string;
   browserStore: DataStore<SyntheticBrowser>;
   windowStore?: DataStore<SyntheticWindow>;
 } & FileCacheRootState;

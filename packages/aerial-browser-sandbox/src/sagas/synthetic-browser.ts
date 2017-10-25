@@ -58,6 +58,7 @@ import {
   syntheticWindowOpened,
   SyntheticWindowSourceChanged,
   syntheticWindowLoaded,
+  syntheticWindowChanged,
   syntheticWindowRectsUpdated,
   OpenSyntheticBrowserWindow,
   ToggleCSSDeclarationProperty,
@@ -399,7 +400,7 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
     });
     
     const emitStructChange = debounce(() => {
-      emit(syntheticWindowLoaded(window));
+      emit(syntheticWindowChanged(window));
     }, 0);
 
     window.addEventListener(SEnvMutationEvent.MUTATION, (event) => {
