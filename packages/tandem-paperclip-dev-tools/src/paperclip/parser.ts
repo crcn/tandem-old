@@ -354,7 +354,7 @@ function createString(scanner: TokenScanner): PCString {
 
   return {
     type: PCExpressionType.STRING,
-    location: getLocation(start, curr, scanner.source),
+    location: getLocation(start, curr.pos + 1, scanner.source),
     value: buffer
   };
 }

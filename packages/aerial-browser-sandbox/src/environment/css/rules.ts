@@ -281,6 +281,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       super();
       this.style = style;
       style.parentRule = this;
+      style.$owner = this;
     }
     get previewCSSText() {
       return `@font-face { ${this.style.previewCSSText} }`;

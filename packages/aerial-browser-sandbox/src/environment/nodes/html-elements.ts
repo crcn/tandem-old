@@ -236,6 +236,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
 
       if (!this._style) {
         this._style = new SEnvCSSStyleDeclaration(() => this.onStyleChange());
+        this._style.$owner = this;
       }
 
       // Proxy the style here so that any changes get synchronized back

@@ -5,6 +5,7 @@ import { SEnvWindowContext } from "../window";
 import { getUri } from "../utils";
 import { Mutation } from "aerial-common2";
 import { SEnvCSSRuleInterface } from "./rules";
+import { SEnvHTMLElementInterface } from "../../";
 import { createSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "../../state";
 
 export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|parentRule|disabledProperties|_onChange)$/.test(property);
@@ -12,6 +13,7 @@ export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+
 export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
   parentRule: SEnvCSSRuleInterface;
   $id: string;
+  $owner: SEnvHTMLElementInterface |  SEnvCSSRuleInterface;
   readonly struct: SyntheticCSSStyleDeclaration;
   previewCSSText: string;
   toggle(propertyName: string);
@@ -47,6 +49,7 @@ export const parseStyleSource = (source: string) => {
 export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identity }: SEnvWindowContext) => {
   return class SEnvCSSStyleDeclaration implements SEnvCSSStyleDeclarationInterface {
 
+    $owner: SEnvHTMLElementInterface | SEnvCSSRuleInterface;
     alignContent: string | null;
     alignItems: string | null;
     alignmentBaseline: string | null;

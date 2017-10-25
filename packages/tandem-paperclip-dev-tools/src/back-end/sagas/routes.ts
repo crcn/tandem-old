@@ -2,6 +2,7 @@ import { fork, take, select, call, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { transpilePCASTToVanillaJS, editPCContent } from "../../paperclip";
 import { ApplicationState, createComponentFromFilePath, Component } from "../state";
+import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest } from "../utils";
 import { watchUrisRequested, fileContentChanged, fileChanged } from "../actions";
@@ -9,6 +10,7 @@ import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
 import * as glob from "glob";
+import { editString, StringMutation } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
 
 const getComponentFilePaths = ({ cwd, config: { componentsDirectory }}: ApplicationState) => glob.sync(path.join(componentsDirectory || cwd, "**", PAPERCLIP_FILE_PATTERN));
@@ -95,11 +97,12 @@ function* getPostData (req: express.Request) {
     return () => { };
   });
 
-  return yield take(chan)
+  return yield take(chan);
 }
 
 function* watchUris(req: express.Request, res: express.Response) {
-  yield put(watchUrisRequested(yield call(getPostData, req)));
+  const data = yield call(getPostData, req);
+  yield put(watchUrisRequested(data));
   res.send([]);
 }
 
@@ -175,16 +178,20 @@ function* editFiles(req: express.Request, res: express.Response) {
       console.warn(`${filePath} was not found in cache, cannot edit!`);
       continue;
     }
+
+    // TODO - add history here
     const mutations = mutationsByUri[uri];
-    const newContent = editPCContent(fileCacheItem.content.toString("utf8"), mutations);
+    const oldContent = fileCacheItem.content.toString("utf8");
+    const stringMutations = flatten(mutations.map(editPCContent.bind(this, oldContent))) as StringMutation[];
 
+    const newContent = editString(oldContent, stringMutations);
+    
     console.log(newContent);
-
+    
     yield put(fileContentChanged(filePath, new Buffer(newContent, "utf8"), new Date()));
 
     yield put(fileChanged(filePath)); // dispatch public change -- causes reload
   }
 
-  console.log(mutationsByUri);
   res.send([]);
 }

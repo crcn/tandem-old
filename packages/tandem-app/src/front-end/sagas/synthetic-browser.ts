@@ -3,7 +3,7 @@ import { delay } from "redux-saga";
 import { createDeferredPromise } from "mesh";
 import { apiWatchUris } from "../utils";
 import { take, fork, select, put, call } from "redux-saga/effects";
-import { Point, shiftPoint, watch, resized, Bounds, REMOVED } from "aerial-common2";
+import { Point, shiftPoint, watch, resized, Bounds, REMOVED, diffArray, ARRAY_UPDATE } from "aerial-common2";
 import { 
   SYNTHETIC_WINDOW,
   syntheticWindowScroll,
@@ -12,10 +12,18 @@ import {
   SyntheticCSSStyleDeclaration,
   getSyntheticWindowChild,
   getSyntheticWindowChildStructs,
+  SEnvHTMLElementInterface,
+  createSetElementAttributeMutation,
+  SEnvCSSStyleRuleInterface,
+  cssStyleDeclarationSetProperty,
+  SEnvCSSRuleInterface,
+  deferApplyFileMutationsRequest,
   getSyntheticNodeWindow, 
   SYNTHETIC_WINDOW_OPENED,
+  SEnvNodeTypes,
   SYNTHETIC_WINDOW_CLOSED,
   SYNTHETIC_WINDOW_LOADED,
+  SYNTHETIC_WINDOW_CHANGED,
   SYNTHETIC_WINDOW_PROXY_OPENED,
   syntheticNodeTextContentChanged, 
   syntheticNodeValueStoppedEditing,
@@ -82,8 +90,11 @@ function* handleEmptyWindowsUrlAdded() {
 }
 
 function* handleWatchWindowResource() {
+  let watchingUris: string[] = [];
+
   while(true) {
     const action = yield take([
+      SYNTHETIC_WINDOW_CHANGED,
       SYNTHETIC_WINDOW_LOADED,
       SYNTHETIC_WINDOW_CLOSED,
       REMOVED
@@ -93,7 +104,14 @@ function* handleWatchWindowResource() {
       [...a, ...b.windows.reduce((a2, b2) => [ ...a2, ...b2.externalResourceUris ], [])]
     ), []));
 
-    yield call(apiWatchUris, allUris, state);
+    const updates = diffArray(allUris, watchingUris, (a, b) => a === b ? 0 : -1).mutations.filter((mutation) => mutation.$type === ARRAY_UPDATE);
+
+    // no changes, so just continue
+    if (updates.length === allUris.length) {
+      continue;
+    }
+
+    yield call(apiWatchUris, watchingUris = allUris, state);
   }
 }
 
@@ -187,6 +205,21 @@ function* handleLoadedSavedState() {
   }
 }
 
+function* persistDeclarationChange (declaration: SEnvCSSStyleDeclarationInterface, name: string, value: string) {
+
+  const owner = declaration.$owner;
+  
+  // persist it
+  if ((owner as SEnvHTMLElementInterface).nodeType === SEnvNodeTypes.ELEMENT) {
+    const element = owner as SEnvHTMLElementInterface;
+    const mutation = createSetElementAttributeMutation(element, "style", element.getAttribute("style"));
+    yield put(deferApplyFileMutationsRequest(mutation));
+  } else {
+    const mutation = cssStyleDeclarationSetProperty(declaration, name, value);
+    yield put(deferApplyFileMutationsRequest(mutation));
+  }
+}
+
 // TODO - move this to synthetic browser
 function* handleCSSDeclarationChanges() {
   yield fork(function* handleNameChanges() {
@@ -205,6 +238,7 @@ function* handleCSSDeclarationChanges() {
       const state: ApplicationState = yield select();
       const window = getSyntheticWindow(state, windowId);
       const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
+      declaration
 
       // null or ""
       if (!value) {
@@ -212,6 +246,8 @@ function* handleCSSDeclarationChanges() {
       } else {
         declaration.setProperty(name, value);
       }
+
+      yield call(persistDeclarationChange, declaration, name, value);
     }
   });
   
@@ -222,6 +258,8 @@ function* handleCSSDeclarationChanges() {
       const window = getSyntheticWindow(state, windowId);
       const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
       declaration.setProperty(name, value);
+
+      yield call(persistDeclarationChange, declaration, name, value);
     }
   });
 }
