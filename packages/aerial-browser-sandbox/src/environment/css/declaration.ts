@@ -8,7 +8,7 @@ import { SEnvCSSRuleInterface } from "./rules";
 import { SEnvHTMLElementInterface } from "../../";
 import { createSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "../../state";
 
-export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|parentRule|disabledProperties|_onChange)$/.test(property);
+export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|struct|parentRule|disabledProperties|_onChange)$/.test(property);
 
 export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
   parentRule: SEnvCSSRuleInterface;
@@ -452,7 +452,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
 
       for (let i = 0, n = this.length; i < n; i++) {
         const key = this[i];
-        const value = this[key];
+        const value = this[key] || this.disabledProperties[key];
         if (value) {
           buffer.push(cssPropNameToKebabCase(key), ": ", value, ";");
         }
@@ -486,6 +486,10 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
     set cssText(value: string) {
 
       const props = parseStyleSource(value);
+      this.disabledProperties = {};
+      for (let i = 0, n = this.length; i < n; i++) {
+        this[this[i]] = undefined;
+      }
       Object.assign(this, props);
       this.$updatePropertyIndices();
       this.didChange(cssStyleDeclarationSetProperties(this, props), true);

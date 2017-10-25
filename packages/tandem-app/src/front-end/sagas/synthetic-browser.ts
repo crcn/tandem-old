@@ -212,7 +212,7 @@ function* persistDeclarationChange (declaration: SEnvCSSStyleDeclarationInterfac
   // persist it
   if ((owner as SEnvHTMLElementInterface).nodeType === SEnvNodeTypes.ELEMENT) {
     const element = owner as SEnvHTMLElementInterface;
-    const mutation = createSetElementAttributeMutation(element, "style", element.getAttribute("style"));
+    const mutation = createSetElementAttributeMutation(element as any, "style", element.getAttribute("style"));
     yield put(deferApplyFileMutationsRequest(mutation));
   } else {
     const mutation = cssStyleDeclarationSetProperty(declaration, name, value);

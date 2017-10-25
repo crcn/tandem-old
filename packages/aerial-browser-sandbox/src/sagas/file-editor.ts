@@ -59,7 +59,6 @@ export function* fileEditorSaga() {
 
       for (const mutation of mutations) {
         const source = (mutation.target as SEnvNodeInterface).source;
-        console.log(source);
         if (!mutationsByUri[source.uri]) {
           mutationsByUri[source.uri] = [];
         }

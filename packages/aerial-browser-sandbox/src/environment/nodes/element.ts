@@ -451,7 +451,7 @@ export const baseElementMutators = {
   [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](oldElement: Element, mutation: Mutation<any>) {
     
     const { name, oldName, newValue } = <SetPropertyMutation<any>>mutation;
-
+    
     // need to set the current value (property), and the default value (attribute)
     // TODO - this may need to be separated later on.
     if (oldElement.constructor.prototype.hasOwnProperty(name)) {
@@ -466,7 +466,6 @@ export const baseElementMutators = {
       // An error will be thrown by the DOM if the name is invalid. Need to ignore
       // native exceptions so that other parts of the app do not break.
       try {
-
         oldElement.setAttribute(name, newValue);
       } catch(e) {
         console.warn(e);

@@ -185,9 +185,7 @@ function* editFiles(req: express.Request, res: express.Response) {
     const stringMutations = flatten(mutations.map(editPCContent.bind(this, oldContent))) as StringMutation[];
 
     const newContent = editString(oldContent, stringMutations);
-    
-    console.log(newContent);
-    
+
     yield put(fileContentChanged(filePath, new Buffer(newContent, "utf8"), new Date()));
 
     yield put(fileChanged(filePath)); // dispatch public change -- causes reload
