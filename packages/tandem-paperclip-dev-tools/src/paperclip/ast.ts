@@ -11,6 +11,12 @@ export enum PCExpressionType {
   END_TAG
 };
 
+export type Token = {
+  type: number;
+  pos: number;
+  value?: string;
+};
+
 export type ExpressionPosition = {
   line: number;
   column: number;

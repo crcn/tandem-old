@@ -58,5 +58,5 @@ describe(__filename + "#", () => {
     it(`can parse ${source}`, () => {
       parse(source);
     });
-  })
+  });
 });

@@ -13,6 +13,12 @@ TODOS:
 
 IMMEDIATE:
 
+high-level -- use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
+
+- [ ] css 
+- [ ] safe way to perform computations that can be run backwards - allow for things like $var * 3, but not $var * $var2
+- [ ] create new components
+- [ ] dnd elements to existing components
 - [ ] ability to delete CSS rules
 - [ ] ability to edit embedded style rules
 - [ ] wire up edit text content
@@ -153,3 +159,12 @@ MVP:
 After validating:
 
 - remote renderer
+
+
+REV:
+
+$var: 5
+$var2: $var * 3;
+$var3: $var2 * 5;
+
+

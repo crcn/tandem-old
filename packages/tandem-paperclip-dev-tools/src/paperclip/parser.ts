@@ -1,4 +1,5 @@
 import { 
+  Token,
   PCElement, 
   PCString, 
   PCStartTag,
@@ -14,6 +15,7 @@ import {
 } from "./ast";
 
 import { weakMemo } from "../utils";
+import { StringScanner, Scanner, TokenScanner, createToken } from "./scanners";
 
 enum TokenType {
   LESS_THAN,
@@ -28,12 +30,6 @@ enum TokenType {
   WHITESPACE
 };
 
-type Token = {
-  type: TokenType;
-  pos: number;
-  value?: string;
-};
-
 const NO_POSITION = {
   line: 0,
   column: 0,
@@ -43,71 +39,6 @@ const NO_POSITION = {
 const NO_LOCATION = {
   start: NO_POSITION,
   end: NO_POSITION
-}
-
-const createToken = (type: TokenType, pos: number, value?: string) => ({ type, pos, value });
-
-class Scanner<T extends string|any[]> {
-  public pos: number;
-  readonly length: number;
-  constructor(protected _target: T) {
-    this.pos = 0;
-    this.length = _target.length;
-  }
-
-  curr() {
-    return this._target[this.pos];
-  }
-
-  shift() {
-    const char = this._target[this.pos];
-    this.next();  
-    return char;
-  }
-  
-  next() {
-    return this._target[Math.min(this.pos = this.pos + 1, this.length)];
-  }
-
-  prev() {
-    return this._target[Math.max(this.pos = this.pos - 1, 0)];
-  }
-
-  ended() {
-    return this.pos >= this.length;
-  }
-}
-
-class StringScanner extends Scanner<string> {
-  scan(until: RegExp) {
-    let buffer = "";
-    while(this.pos < this.length) {
-      const cchar = this._target[this.pos];
-      if (!cchar.match(until)) break;
-      buffer += cchar;
-      this.pos++;
-    }
-    return buffer;
-  }
-  
-  peek(length: number) {
-    return this._target.substr(this.pos, length);
-  }
-
-  take(length: number) {
-    const buffer = this._target.substr(this.pos, length);
-    this.pos += length;
-    return buffer;
-  }
-}
-
-class TokenScanner extends Scanner<Token[]> {
-  constructor(readonly source: string, tokens: Token[]) {
-    super(tokens);
-  } 
-  peekNext() {
-    return this._target[this.pos + 1];
-  }
 }
 
 const tokenize = (source: string) => {
