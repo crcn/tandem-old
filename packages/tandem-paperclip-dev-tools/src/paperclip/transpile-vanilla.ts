@@ -9,6 +9,7 @@ import {
   PCSheet, 
   PCAtRule,
   PCStyleRule, 
+  PCGroupingRule,
   PCStyleDeclaration, 
   PCStyleExpressionType, 
 } from "./style-ast";
@@ -271,7 +272,8 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   const cssSource = context.source.substr(node.startTag.location.end.pos, node.endTag.location.start.pos - node.startTag.location.end.pos);
 
   
-  // transpileStyleSheet(parsePCStyle(cssSource))
+  const ss = transpileStyleSheetRules(parsePCStyle(cssSource), context);
+  console.log(ss);
   if (scoped) { 
 
     // const cssRulePrefixes = [`[data-style-id=${varName}] ~ `, `[data-style-id=${varName}] ~ * `];
@@ -301,8 +303,18 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   };
 };
 
-const transpileStyleSheet = (ast: PCSheet) => {
+const transpileStyleSheetRules = (ast: PCSheet, context: TranspileContext) => {
+  return ast.children.map((child) => transpileGroupingRule(child, context));
+};
 
+const transpileGroupingRule = (ast: PCGroupingRule, context: TranspileContext) => {
+  if (ast.type === PCStyleExpressionType.STYLE_RULE) {
+    return transpileStyleRule(ast as PCStyleRule, context);
+  }
+}
+
+const transpileStyleRule = (ast: PCStyleRule, context: TranspileContext) => {
+  // const declaration = declareRule()
 }
 
 // const prefixCSSRules = (prefixes: string[]) => (root: postcss.Root) => {
@@ -343,6 +355,8 @@ const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, elem
   decl.content = buffer + decl.content;
   return decl;
 }
+
+const declareRule = (assignment: string, context: TranspileContext) => declare("rule", assignment, context);
 
 const assertAttributeExists = (node: PCElement|PCSelfClosingElement, name: string, context: TranspileContext) => {
   if (!getPCStartTagAttribute(node, name)) {

@@ -73,14 +73,14 @@ describe(__filename + "#", () => {
     `
       <style>
           .container {
-            
+
           }
       </style>
     `
   ].forEach((source) => {
     it(`can transpile ${source} to vanilla JS`, () => {
       const result = transpilePCASTToVanillaJS(source, "abc");
-      console.log(result);
+      // console.log(result);
     });
   });
 });
