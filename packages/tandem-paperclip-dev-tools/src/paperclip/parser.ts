@@ -10,6 +10,7 @@ import {
   ExpressionPosition,
   PCExpressionType, 
   ExpressionLocation,
+  getLocation,
   PCExpression,
   PCSelfClosingElement
 } from "./ast";
@@ -77,34 +78,6 @@ const tokenize = (source: string) => {
   return new TokenScanner(source, tokens);
 }
 
-const computePosLines = weakMemo((source: string): { [identifier: number]: [number, number] } => {
-  let cline: number = 1;
-  let ccol: number = 0;
-
-  const posLines = {};
-
-  source.split("").forEach((c, p) => {
-    posLines[p] = [ccol, cline];
-    if (c === "\n") {
-      ccol = 0;
-      cline++;
-    }
-    ccol++;
-  });
-
-  return posLines;
-});
-
-const getPosition = (start: Token | number, source: string) => {
-  const pos = typeof start === "number" ? start : start.pos;
-  const [column, line] = computePosLines(source)[pos];
-  return { column, line, pos };
-}
-
-const getLocation = (start:  ExpressionPosition | Token | number, end: ExpressionPosition | Token | number, source: string): ExpressionLocation  => ({ 
-  start: (start as ExpressionPosition).line ? start as ExpressionPosition : getPosition(start as any, source), 
-  end: (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(end as any, source),
-});
 
 export const parse = weakMemo((source: string) => {
   return createFragment(tokenize(source));

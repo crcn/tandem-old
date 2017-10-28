@@ -3,6 +3,9 @@ import { expect } from "chai";
 
 describe(__filename + "#", () => {
   [
+    ":root { --color: red; }",
+    ":root { --color: red; } a { color: var(--color); }",
+    ".a { .b { }} ",
     "@media { }",
     ".selector { }",
     ".a { .b { }}",
@@ -10,10 +13,14 @@ describe(__filename + "#", () => {
     ".a { .b { color: $blue; }}",
     ".a { .b { width: calc($var - 4px); }}",
     ".a { .b { width: calc($var - -44.4px); }}",
-    "@media screen { } .b { }"
+    "@media screen { } .b { }",
+    ".a  { } .b { }",
+    "@keyframes a { 0% { color: red; }} ",
+    ".test, .b { background-image: url('test.png'); }"
   ].forEach((source) => {
     it(`can parse ${source}`, () => {
-      parsePCStyle(source);
+      const ast = parsePCStyle(source);
+      // console.log(ast);
     }); 
   })
 });

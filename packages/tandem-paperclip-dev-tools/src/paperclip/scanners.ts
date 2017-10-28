@@ -17,6 +17,10 @@ export class Scanner<T extends string|any[]> {
     this.next();  
     return char;
   }
+
+  hasNext() {
+    return this.pos < this.length - 1;
+  }
   
   next() {
     return this._target[Math.min(this.pos = this.pos + 1, this.length)];
@@ -60,6 +64,13 @@ export class TokenScanner extends Scanner<Token[]> {
   } 
   peekNext() {
     return this._target[this.pos + 1];
+  }
+
+  curr(): Token {
+    return super.curr();
+  }
+  next(): Token {
+    return super.next();
   }
 }
 

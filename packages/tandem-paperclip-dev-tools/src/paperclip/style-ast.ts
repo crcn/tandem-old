@@ -3,23 +3,30 @@ import { PCExpression, PCParent } from "./ast";
 export enum PCStyleExpressionType {
   STYLE_SHEET,
   STYLE_RULE,
-  RULE
+  RULE,
+  AT_RULE,
+  DECLARATION
 };
+
+export type PCGroupingRule = {
+  children: Array<PCGroupingRule|PCStyleRule>;
+} & PCExpression;
 
 export type PCSheet = {
 
-} & PCParent;
+} & PCGroupingRule;
 
 export type PCAtRule = {
-
-} & PCParent;
+  name: string;
+  params: string[];
+} & PCGroupingRule;
 
 export type PCStyleDeclaration = {
-  properties: {
-    [identifier: string]: PCExpression
-  }
-}
+  name: string;
+  value: string;
+} & PCExpression;
 
 export type PCStyleRule = {
-  style: PCStyleDeclaration;
-} & PCParent;
+  selectorText: string;
+  declarations: PCStyleDeclaration[];
+} & PCGroupingRule;

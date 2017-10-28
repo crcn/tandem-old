@@ -3,8 +3,15 @@ import * as md5 from "md5";
 import * as path from "path";
 import { parse } from "./parser";
 import { flatten, repeat } from "lodash";
-import * as postcss from "postcss";
 import { weakMemo } from "../utils";
+import { parsePCStyle } from "./style-parser";
+import { 
+  PCSheet, 
+  PCAtRule,
+  PCStyleRule, 
+  PCStyleDeclaration, 
+  PCStyleExpressionType, 
+} from "./style-ast";
 import { 
   getPCImports,
   traversePCAST, 
@@ -261,30 +268,31 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
     ${varName}.setAttribute("data-style-id", "${varName}");
   `;
 
-  // add lines so that source maps point to the correct location
-  let css = repeat("\n", node.location.start.line) + context.source.substr(node.startTag.location.end.pos, node.endTag.location.start.pos - node.startTag.location.end.pos);
+  const cssSource = context.source.substr(node.startTag.location.end.pos, node.endTag.location.start.pos - node.startTag.location.end.pos);
 
+  
+  // transpileStyleSheet(parsePCStyle(cssSource))
   if (scoped) { 
 
-    const cssRulePrefixes = [`[data-style-id=${varName}] ~ `, `[data-style-id=${varName}] ~ * `];
+    // const cssRulePrefixes = [`[data-style-id=${varName}] ~ `, `[data-style-id=${varName}] ~ * `];
 
-    const declaration = declareNode(`document.createElement("style")`, context);
+    
 
-    // TODO - call CSSOM, don't set textContent. Also need to define CSS AST in the scope
-    const result = postcss().use(prefixCSSRules(cssRulePrefixes)).process(css, {
-      map: {
-        inline: true
-      }
-    });
+    // // TODO - call CSSOM, don't set textContent. Also need to define CSS AST in the scope
+    // const result = postcss().use(prefixCSSRules(cssRulePrefixes)).process(css, {
+    //   map: {
+    //     inline: true
+    //   }
+    // });
 
-    css = result.css;
+    // css = result.css;
   }
 
-  buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
+  // buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
 
   // in the root scope, so export as a global style
   if (path.length === 2) {
-    buffer += `${STYLES_VAR}.push(${varName});\n`;
+    // buffer += `${STYLES_VAR}.push(${varName});\n`;
   }
 
   return {
@@ -293,14 +301,18 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   };
 };
 
-const prefixCSSRules = (prefixes: string[]) => (root: postcss.Root) => {
-  // from https://github.com/RadValentin/postcss-prefix-selector/blob/master/index.js
-  root.walkRules(rule => {
-    rule.selectors = flatten(rule.selectors.map((selector) => {
-      return prefixes.map((prefix) => prefix + selector);
-    }));
-  });
+const transpileStyleSheet = (ast: PCSheet) => {
+
 }
+
+// const prefixCSSRules = (prefixes: string[]) => (root: postcss.Root) => {
+//   // from https://github.com/RadValentin/postcss-prefix-selector/blob/master/index.js
+//   root.walkRules(rule => {
+//     rule.selectors = flatten(rule.selectors.map((selector) => {
+//       return prefixes.map((prefix) => prefix + selector);
+//     }));
+//   });
+// }
 
 const transpileXMLNSImportedTag = (node: PCStartTag, context: TranspileContext, element?: PCElement) => {
   const [ns, templateName] = node.name.split(":");
