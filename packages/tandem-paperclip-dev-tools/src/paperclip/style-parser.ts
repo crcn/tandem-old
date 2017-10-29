@@ -191,7 +191,7 @@ const getDeclaration = (scanner: TokenScanner): PCStyleDeclarationProperty => {
     type: PCStyleExpressionType.DECLARATION,
     location: getLocation(startToken, endToken, scanner.source),
     name: nameBuffer.join(" "),
-    value: valueBuffer.join(" ")
+    value: valueBuffer.join("")
   };
 }
 
@@ -200,7 +200,6 @@ const getBuffer = (scanner: TokenScanner, until = () => scanner.next().type === 
   const buffer = [scanner.curr().value];
   
   while(!scanner.ended() && !until()) {
-    if (scanner.curr().type === TokenType.WHITESPACE) continue;
     buffer.push(scanner.curr().value);
   }   
 
