@@ -69,7 +69,7 @@ const tokenize = (source: string) => {
     } else if (/[\s\r\n\t]/.test(cchar)) {
       token = createToken(TokenType.WHITESPACE, scanner.pos, scanner.scan(/[\s\r\n\t]/));
     } else {
-      token = createToken(TokenType.STRING, scanner.pos, scanner.scan(/[^<>='"{}\s\r\n\t]/) || scanner.next());
+      token = createToken(TokenType.STRING, scanner.pos, scanner.scan(/[^<>='"{}\s\r\n\t]/) || scanner.shift());
     }
 
     tokens.push(token);

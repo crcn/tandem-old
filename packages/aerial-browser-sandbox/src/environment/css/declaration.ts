@@ -19,6 +19,7 @@ export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
   toggle(propertyName: string);
   setProperty(name: string, value: string, priority?: string, oldName?: string, notifyOwnerNode?: boolean);
   $updatePropertyIndices();
+  clone(): SEnvCSSStyleDeclarationInterface;
 }
 
 export const cssPropNameToKebabCase = (propName: string) => {
@@ -611,6 +612,10 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
 
       this.$length = Object.keys(model).length;
     }
+
+    clone() {
+      return SEnvCSSStyleDeclaration.fromObject(this);
+    }
   }
 });
 
@@ -619,7 +624,6 @@ export const CSS_STYLE_DECLARATION_RESET_PROPERTIES = "CSS_STYLE_DECLARATION_RES
 
 export const cssStyleDeclarationMutators = {
   [CSS_STYLE_DECLARATION_SET_PROPERTY](target: SEnvCSSStyleDeclarationInterface, mutation: SetPropertyMutation<any>) {
-    console.log(mutation.newValue);
     if (!mutation.newValue) {
       target.removeProperty(cssPropNameToKebabCase(mutation.name));
     } else {

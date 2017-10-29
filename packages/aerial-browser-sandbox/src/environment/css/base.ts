@@ -31,6 +31,14 @@ export const getSEnvCSSBaseObjectClass = weakMemo((context: any) => {
     protected resetStruct() {
       return this._struct = this.$createStruct();
     }
+    clone() {
+      const clone: SEnvCSSObjectInterface = this.cloneDeep();
+      clone.source = this.source;
+      clone["$id"] = this.$id;
+      return clone;
+    }
+
+    abstract cloneDeep();
   }
 
   return SEnvCSSBaseObject;

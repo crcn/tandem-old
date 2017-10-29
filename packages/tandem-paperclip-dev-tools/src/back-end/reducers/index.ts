@@ -9,7 +9,10 @@ export function mainReducer(state: ApplicationState, event: Action) {
     case WATCHING_FILES: {
       const { initialFileCache } = event as WatchingFiles; 
       return updateApplicationState(state, {
-        fileCache: initialFileCache
+        fileCache: [
+          ...(state.fileCache || []),
+          ...initialFileCache
+        ]
       });
     }
     

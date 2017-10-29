@@ -307,11 +307,8 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
 
     cloneShallow() {
       const clone = super.cloneShallow();
-      const styleSheet = new SEnvCSSStyleSheet();
       const window = this.ownerDocument.defaultView;
-      styleSheet.href = String(window.location);
-      styleSheet.cssText = this.sheet.cssText;
-      (clone as SEnvHTMLStyledElementInterface).$$setSheet(styleSheet);
+      (clone as SEnvHTMLStyledElementInterface).$$setSheet(this.sheet.clone());
       return clone;
     }
   };
@@ -397,11 +394,8 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
 
         // TODO: clean this up -- clone stylesheet instead of using
         // cssText which will run the parser again (we don't want that because it's sloowwwwwww). (CC)
-        const sheet = new SEnvCSSStyleSheet();
         const window = this.ownerDocument.defaultView;
-        sheet.href = getUri(this.href, String(window.location));
-        sheet.cssText = (this.sheet as CSSStyleSheet).cssText;
-        (clone as any as SEnvHTMLStyledElementInterface).$$setSheet(sheet);
+        (clone as any as SEnvHTMLStyledElementInterface).$$setSheet(this.sheet.clone());
       }
       return clone as any;
     }

@@ -46,12 +46,19 @@ function* handleWatchUrisRequest() {
       };
     });
 
-    const initialFileCache = urisByFilePath.map((filePath) => (
-      fileCache.find((item) => item.filePath === filePath) || ({
+    const filesByUri = fileCache.map((item) => item.filePath);
+
+    const readFile = filePath => {
+      return ({
         filePath: filePath,
+        a: Math.random(),
         content: fs.readFileSync(filePath),
         mtime: fs.lstatSync(filePath).mtime
-      })
+      });
+    }
+
+    const initialFileCache = urisByFilePath.map((filePath) => (
+      fileCache.find((item) => item.filePath === filePath) || readFile(filePath)
     ));
 
     yield put(watchingFiles(initialFileCache));

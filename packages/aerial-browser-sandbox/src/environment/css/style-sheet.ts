@@ -22,6 +22,7 @@ export interface SEnvCSSStyleSheetInterface extends CSSStyleSheet, SEnvCSSObject
   struct: SyntheticCSSStyleSheet;
   ownerNode: Node;
   didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean);
+  clone(): SEnvCSSStyleSheetInterface;
 }
 
 export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
@@ -115,6 +116,14 @@ export const getSEnvCSSStyleSheetClass = weakMemo((context: any) => {
       if (notifyOwnerNode !== false && this.ownerNode) {
         this.ownerNode.dispatchMutationEvent(mutation);
       }
+    }
+    clone(): SEnvCSSStyleSheetInterface {
+      return super.clone() as SEnvCSSStyleSheetInterface;
+    }
+    cloneDeep() {
+      const clone = new SEnvCSSStyleSheet(Array.prototype.map.call(this.rules, (rule => rule.clone())));
+      clone.href = this.href;
+      return clone;
     }
   }
 });

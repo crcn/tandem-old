@@ -182,12 +182,12 @@ function* editFiles(req: express.Request, res: express.Response) {
     // TODO - add history here
     const mutations = mutationsByUri[uri];
     const oldContent = fileCacheItem.content.toString("utf8");
+
     const stringMutations = flatten(mutations.map(editPCContent.bind(this, oldContent))) as StringMutation[];
 
     const newContent = editString(oldContent, stringMutations);
 
     yield put(fileContentChanged(filePath, new Buffer(newContent, "utf8"), new Date()));
-
     yield put(fileChanged(filePath)); // dispatch public change -- causes reload
   }
 

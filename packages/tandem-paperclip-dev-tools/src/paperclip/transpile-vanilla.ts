@@ -266,15 +266,15 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   const scoped = hasPCStartTagAttribute(node, "scoped");
   const path = getExpressionPath(node, context.root);
 
-  const varName = `style_${context.varCount++}_${md5(context.uri)}`;
+  const varName = `style_${context.varCount++}`;
 
   let buffer = `
     var ${varName} = document.createElement("style");
     ${varName}.setAttribute("data-style-id", "${varName}");
   `;
 
-  let cssSource = context.source.substr(node.startTag.location.end.pos, node.endTag.location.start.pos - node.startTag.location.end.pos);
-
+  const textChild = node.children[0] as PCString;
+  let cssSource = repeat("\n", textChild.location.start.line - 1) + context.source.substr(textChild.location.start.pos, textChild.value.length);
   
   // if synthetic, then we're running FE code in tandem, so so we can
   // instantiate otherwise illegal constructors & attach useful information about them 

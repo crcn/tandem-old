@@ -199,6 +199,13 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     protected setCSSText(value: string) {
       // NOTHING FOR NOW
     }
+
+    cloneDeep() {
+      return new SEnvCSSStyleRule(
+        this.selectorText,
+        this.style.clone()
+      );
+    }
   }
   
   abstract class SEnvCSSGroupingRule extends SEnvCSSStyleParentRule implements CSSGroupingRule {
@@ -276,6 +283,13 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
       this._conditionText = value;
       this.didChange(mediaRuleSetConditionText(this, value));
     }
+
+    cloneDeep() {
+      return new SEnvCSSMediaRule(
+        this.conditionText,
+        Array.prototype.map.call(this.cssRules, rule => rule.clone())
+      );
+    }
   }
 
   class SEnvCSSFontFace extends SEnvCSSRule implements CSSFontFaceRule {
@@ -303,6 +317,11 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
     protected setCSSText(value: string) {   
 
+    }
+    cloneDeep() {
+      return new SEnvCSSFontFace(
+        this.style.clone()
+      );
     }
   }
 
@@ -342,6 +361,12 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     
     setCSSText(value: string) {
       throw new Error(`Not implemented`);
+    }
+    cloneDeep() {
+      return new SEnvCSSKeyframeRule(
+        this._keyText,
+        this.style.clone()
+      );
     }
   }
 
@@ -383,6 +408,12 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     findRule(rule: string) {
       return null;
     }
+    cloneDeep() {
+      return new SEnvCSSKeyframesRule(
+        this.name,
+        Array.prototype.map.call(this.cssRules, rule => rule.clone())
+      );
+    }
   }
 
   class SEnvUnknownGroupingRule extends SEnvCSSGroupingRule {
@@ -403,6 +434,9 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
     protected setCSSText(value: string) {
 
+    }
+    cloneDeep() {
+      return new SEnvUnknownGroupingRule();
     }
   }
 
