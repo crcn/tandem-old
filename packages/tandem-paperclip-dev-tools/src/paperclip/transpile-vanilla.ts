@@ -10,7 +10,7 @@ import {
   PCAtRule,
   PCStyleRule, 
   PCGroupingRule,
-  PCStyleDeclaration, 
+  PCStyleDeclarationProperty, 
   PCStyleExpressionType, 
 } from "./style-ast";
 import { 
@@ -57,6 +57,10 @@ type TranspileContext = {
     [identifier: string]: string
   }
 } & TranspileOptions;
+
+type TranspileStyleContext = {
+  scope: string;
+} & TranspileContext;
 
 type Declaration = {
   varName: string;
@@ -269,32 +273,27 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
     ${varName}.setAttribute("data-style-id", "${varName}");
   `;
 
-  const cssSource = context.source.substr(node.startTag.location.end.pos, node.endTag.location.start.pos - node.startTag.location.end.pos);
+  let cssSource = context.source.substr(node.startTag.location.end.pos, node.endTag.location.start.pos - node.startTag.location.end.pos);
 
   
-  const ss = transpileStyleSheetRules(parsePCStyle(cssSource), context);
-  console.log(ss);
-  if (scoped) { 
+  // if synthetic, then we're running FE code in tandem, so so we can
+  // instantiate otherwise illegal constructors & attach useful information about them 
+  buffer += `if (window.$synthetic) { \n`;
 
-    // const cssRulePrefixes = [`[data-style-id=${varName}] ~ `, `[data-style-id=${varName}] ~ * `];
+  const styleSheet = transpileStyleSheet(parsePCStyle(cssSource), { ...context, scope: scoped ? varName : null });
+  buffer += styleSheet.content;
 
-    
+  buffer += `${varName}.$$setSheet(${styleSheet.varName});\n`;
 
-    // // TODO - call CSSOM, don't set textContent. Also need to define CSS AST in the scope
-    // const result = postcss().use(prefixCSSRules(cssRulePrefixes)).process(css, {
-    //   map: {
-    //     inline: true
-    //   }
-    // });
-
-    // css = result.css;
-  }
+  buffer += `} else { \n`;
+  buffer += `${varName}.textContent = "${cssSource.replace('"', '\\"').replace(/[\n\r\s\t]+/g, " ")}";\n`;
+  buffer += `}\n`;
 
   // buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
 
   // in the root scope, so export as a global style
   if (path.length === 2) {
-    // buffer += `${STYLES_VAR}.push(${varName});\n`;
+    buffer += `${STYLES_VAR}.push(${varName});\n`;
   }
 
   return {
@@ -303,18 +302,60 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   };
 };
 
-const transpileStyleSheetRules = (ast: PCSheet, context: TranspileContext) => {
-  return ast.children.map((child) => transpileGroupingRule(child, context));
-};
-
-const transpileGroupingRule = (ast: PCGroupingRule, context: TranspileContext) => {
-  if (ast.type === PCStyleExpressionType.STYLE_RULE) {
-    return transpileStyleRule(ast as PCStyleRule, context);
-  }
+const transpileStyleSheet = (ast: PCSheet, context: TranspileStyleContext) => {
+  const children = transpileGroupingRuleChildren(ast, context);
+  const declaration = declareRule(`new CSSStyleSheet([${children.map(child => child.varName).join(", ")}])`, context);
+  addDeclarationSourceReference(declaration, ast, context);
+  declaration.content = children.map(child => child.content).join("") + declaration.content;
+  return declaration;
 }
 
-const transpileStyleRule = (ast: PCStyleRule, context: TranspileContext) => {
-  // const declaration = declareRule()
+const transpileGroupingRuleChildren = (ast: PCGroupingRule, context: TranspileStyleContext) => ast.children.map((rule) => transpileGroupingRule(rule, context));
+
+
+const transpileGroupingRule = (ast: PCGroupingRule, context: TranspileStyleContext): Declaration => {
+  if (ast.type === PCStyleExpressionType.STYLE_RULE) {
+    const styleRule = ast as PCStyleRule;
+
+    const selectorText = context.scope ? `[data-style-id=${context.scope}] ~ ${styleRule.selectorText}, [data-style-id=${context.scope}] ~ * ${styleRule.selectorText}` : styleRule.selectorText;
+
+    return addDeclarationSourceReference(declareRule(`new CSSStyleRule("${selectorText.replace('"', '\\"')}", ${transpileStyleDeclaration(styleRule, context)})`, context), ast, context);
+  } else if (ast.type === PCStyleExpressionType.AT_RULE) {
+    const atRule = ast as PCAtRule;
+    let declaration: Declaration;
+
+    if (atRule.name === "media" || atRule.name === "keyframes") {
+      const childDeclarations = atRule.name === "keyframes" ? atRule.children.map(child => transpileKeyframe(child as PCStyleRule, context)) : atRule.children.map(child => transpileGroupingRule(child, context))
+      const childVarBuffer = `[${childDeclarations.map(child => child.varName).join(", ")}]`;
+      const constructorName = atRule.name === "media" ? "CSSMediaRule" : "CSSKeyframesRule";
+      declaration = declareRule(`new ${constructorName}(${atRule.params.join(", ")}, ${childVarBuffer})`, context);
+      declaration.content = childDeclarations.map((child) => child.content).join("") + declaration.content;
+    } else if (atRule.name === "font-face") {
+    } else {
+      declaration = declareRule(`new UnknownGroupingRule()`, context);
+    }
+
+    return addDeclarationSourceReference(declaration, ast, context);
+  }
+
+  throw new Error(`Unknown CSS expression ${JSON.stringify(ast)} at ${ast.location.start.pos}`);
+}
+
+const transpileKeyframe = (styleRule: PCStyleRule, context: TranspileStyleContext) => {
+  return addDeclarationSourceReference(declareRule(`new CSSKeyframeRule("${styleRule.selectorText.replace(/[\s\r\n\t]+/g, "")}", ${transpileStyleDeclaration(styleRule, context)})`, context), styleRule, context);
+}
+
+const transpileStyleDeclaration = (ast: PCStyleRule, context: TranspileStyleContext) => {
+
+  let objectBuffer = `{`;
+
+  for (const property of ast.declarationProperties) {
+    objectBuffer += `"${property.name}": "${property.value.replace('"', '\\"')}", `;
+  }
+  
+  objectBuffer += `}`;
+
+  return `CSSStyleDeclaration.fromObject(${objectBuffer})`;
 }
 
 // const prefixCSSRules = (prefixes: string[]) => (root: postcss.Root) => {
@@ -482,7 +523,7 @@ const declare = (baseName: string, assignment: string, context: TranspileContext
   const varName = `${baseName}_${context.varCount++}`;
   return {
     varName,
-    content: assignment ? `var ${varName} = ${assignment};\n` : `var ${varName};`
+    content: assignment ? `var ${varName} = ${assignment};\n` : `var ${varName};\n`
   };
 };
 
@@ -516,4 +557,6 @@ const addDeclarationSourceReference = (declaration: Declaration, expression: PCE
   //   }
   // }
   addDeclarationProperty(declaration, "source", buffer, context);
+
+  return declaration;
 }

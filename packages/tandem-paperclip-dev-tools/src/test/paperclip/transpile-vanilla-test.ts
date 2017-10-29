@@ -76,6 +76,36 @@ describe(__filename + "#", () => {
 
           }
       </style>
+    `,
+    `
+      <style scoped>
+          .container {
+
+          }
+      </style>
+    `,
+    `
+      <style>
+          .container {
+            color: red;
+          }
+
+          @keyframes a {
+            0% {
+              color: red;
+            }
+          }
+
+          @media screen {
+            .container {
+              color: red;
+              font-size: 5;
+            }
+            .content {
+              color: blue;
+            }
+          }
+      </style>
     `
   ].forEach((source) => {
     it(`can transpile ${source} to vanilla JS`, () => {

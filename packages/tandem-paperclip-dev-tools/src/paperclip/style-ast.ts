@@ -21,12 +21,12 @@ export type PCAtRule = {
   params: string[];
 } & PCGroupingRule;
 
-export type PCStyleDeclaration = {
+export type PCStyleDeclarationProperty = {
   name: string;
   value: string;
 } & PCExpression;
 
 export type PCStyleRule = {
   selectorText: string;
-  declarations: PCStyleDeclaration[];
+  declarationProperties: PCStyleDeclarationProperty[];
 } & PCGroupingRule;

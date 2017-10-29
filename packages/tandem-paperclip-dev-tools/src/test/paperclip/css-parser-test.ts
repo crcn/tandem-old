@@ -16,7 +16,8 @@ describe(__filename + "#", () => {
     "@media screen { } .b { }",
     ".a  { } .b { }",
     "@keyframes a { 0% { color: red; }} ",
-    ".test, .b { background-image: url('test.png'); }"
+    ".test, .b { background-image: url('test.png'); }",
+    ".container { color: red; } @keyframes a { 0% { color: red; }} ",
   ].forEach((source) => {
     it(`can parse ${source}`, () => {
       const ast = parsePCStyle(source);

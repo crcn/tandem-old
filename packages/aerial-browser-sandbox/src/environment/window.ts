@@ -8,6 +8,7 @@ import { getNodeByPath, getNodePath } from "../utils/node-utils";
 import { getSEnvTimerClasses, SEnvTimersInterface } from "./timers";
 import { createMediaMatcher } from "./media-match";
 import { getSEnvLocalStorageClass } from "./local-storage";
+import { getSEnvCSSRuleClasses, getSEnvCSSStyleDeclarationClass, getSEnvCSSStyleSheetClass } from "./css";
 import { 
   SEnvElementInterface,
   getSEnvHTMLElementClasses, 
@@ -180,6 +181,11 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
   const SEnvDOMImplementation = getSEnvDOMImplementationClass(context);
   const { SEnvTimers } = getSEnvTimerClasses(context);
   const { SEnvEvent, SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent, SEnvWindowEvent } = getSEnvEventClasses(context);
+
+  const { SEnvCSSFontFace, SEnvCSSKeyframesRule, SEnvCSSMediaRule, SEnvCSSStyleRule, SEnvUnknownGroupingRule } = getSEnvCSSRuleClasses(context);
+
+  const SEnvCSSStyleDeclaration = getSEnvCSSStyleDeclarationClass(context);
+  const SEnvCSSStyleSheet = getSEnvCSSStyleSheetClass(context);
 
   // register default HTML tag names
   const TAG_NAME_MAP = getSEnvHTMLElementClasses(context);
@@ -451,6 +457,14 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     private _timers: SEnvTimersInterface;
     private _matchMedia: any;
     public $id: string;
+
+    readonly CSSFontFaceRule: typeof CSSFontFaceRule;
+    readonly CSSKeyframesRule: typeof CSSKeyframesRule;
+    readonly CSSMediaRule: typeof CSSMediaRule;
+    readonly CSSStyleRule: typeof CSSStyleRule;
+    readonly UnknownGroupingRule: typeof CSSGroupingRule;
+    readonly CSSStyleDeclaration: typeof CSSStyleDeclaration;
+    readonly CSSStyleSheet: typeof CSSStyleSheet;
     
     constructor(origin: string, top?: SEnvWindowInterface) {
       super();
@@ -463,6 +477,14 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       this.setTimeout = this.setTimeout.bind(this);
       this.setInterval = this.setInterval.bind(this);
       this._timers = new SEnvTimers();
+      
+      this.CSSFontFaceRule = SEnvCSSFontFace as any;
+      this.CSSKeyframesRule = SEnvCSSKeyframesRule as any;
+      this.CSSMediaRule = SEnvCSSMediaRule as any;
+      this.CSSStyleRule = SEnvCSSStyleRule as any;
+      this.UnknownGroupingRule = SEnvUnknownGroupingRule as any;
+      this.CSSStyleDeclaration = SEnvCSSStyleDeclaration as any;
+      this.CSSStyleSheet = SEnvCSSStyleSheet as any;
 
       this.implementation = new SEnvDOMImplementation(this);
 

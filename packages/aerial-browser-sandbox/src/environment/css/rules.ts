@@ -80,6 +80,10 @@ export const cssInsertRule = (parent: CSSStyleSheet|CSSGroupingRule, child: stri
     }
     child = childObject;
   }
+  if (index == null) {
+    index = parent.cssRules.length;
+  }
+  
   Array.prototype.splice.call(parent.cssRules, index, 0, child);
   parent["didChange"](cssParentInsertRule(parent, child as CSSRule, index));
   return index;

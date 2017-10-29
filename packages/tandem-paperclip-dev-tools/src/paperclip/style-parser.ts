@@ -1,4 +1,4 @@
-import { PCSheet, PCStyleDeclaration, PCAtRule, PCStyleExpressionType, PCStyleRule, PCGroupingRule } from "./style-ast";
+import { PCSheet, PCStyleDeclarationProperty, PCAtRule, PCStyleExpressionType, PCStyleRule, PCGroupingRule } from "./style-ast";
 import { Token, getLocation } from "./ast";
 import { createToken, TokenScanner, StringScanner } from "./scanners";
 import { weakMemo } from "aerial-common2";
@@ -85,7 +85,7 @@ const tokenize = (source: string) => {
 }
 
 function eatWhitespace(scanner: TokenScanner) {
-  while(1) {
+  while(!scanner.ended()) {
     const curr = scanner.curr();
     if (curr.type !== TokenType.WHITESPACE) {
       break;
@@ -113,10 +113,6 @@ const getRuleChildren = (scanner: TokenScanner, until = () => false): Array<PCGr
   while(eatWhitespace(scanner) && !until()) {
     const child = getRuleChild(scanner);
     children.push(child);
-
-    if (!until()) {
-      break;
-    }
   }
 
   return children;
@@ -176,12 +172,12 @@ const getStyleRule = (scanner: TokenScanner): PCStyleRule => {
     location: getLocation(startToken, closeBracket, scanner.source),
     selectorText: selectorTextBuffer.join(" "),
     children: childrenAndDeclarations.filter((child) => child.type !== PCStyleExpressionType.DECLARATION),
-    declarations: childrenAndDeclarations.filter((child) => child.type === PCStyleExpressionType.DECLARATION) as any as  PCStyleDeclaration[]
+    declarationProperties: childrenAndDeclarations.filter((child) => child.type === PCStyleExpressionType.DECLARATION) as any as  PCStyleDeclarationProperty[]
     
   }
 }
 
-const getDeclaration = (scanner: TokenScanner): PCStyleDeclaration => {
+const getDeclaration = (scanner: TokenScanner): PCStyleDeclarationProperty => {
   const startToken = scanner.curr();
   eatWhitespace(scanner);
   const nameBuffer = getBuffer(scanner, () => scanner.next().type === TokenType.COLON);
