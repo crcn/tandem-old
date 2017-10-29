@@ -190,7 +190,7 @@ const getDeclaration = (scanner: TokenScanner): PCStyleDeclarationProperty => {
   return {
     type: PCStyleExpressionType.DECLARATION,
     location: getLocation(startToken, endToken, scanner.source),
-    name: nameBuffer.join(" "),
+    name: nameBuffer.join(""),
     value: valueBuffer.join("")
   };
 }
