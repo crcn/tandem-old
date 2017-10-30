@@ -12,9 +12,13 @@ import {
   createApplicationState, 
 } from "./index";
 
-let state = createApplicationState({
+const baseConfig = Object.assign({}, {
   apiHost: ((location.hash || "").match(/api=([^&]+)/) ||[null, `localhost:8084`])[1],
   proxy: `http://localhost:8084/proxy/`,
+}, window["config"] || {});
+
+let state = createApplicationState({
+  ...baseConfig,
   element: typeof document !== "undefined" ? document.getElementById("application") : undefined,
   log: {
     level: LogLevel.VERBOSE
@@ -33,7 +37,7 @@ const workspace = createWorkspace({
     showTextEditor: false
   }
 });
+
 state = addWorkspace(state, workspace);
 state = selectWorkspace(state, workspace.$id);
-
 initApplication(state);

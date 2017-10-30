@@ -3,7 +3,8 @@
 module.exports = {
   port: Number(process.env.PORT || 8080),
   vscode: {
-    devServerScript: ["node", "../dev-tools2/lib/back-end/entry.js"] 
+    tandemcodeDirectory: __dirname,
+    devServerScript: ["node", "../tandem-paperclip-dev-tools"] 
   },
 
   getComponents: () => {

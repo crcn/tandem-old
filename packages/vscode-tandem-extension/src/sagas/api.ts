@@ -8,7 +8,7 @@ import { take, fork, call, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { routeHTTPRequest } from "../utils";
 
-const FILES_PATTERN = /^\/file\/[^\/]+$/;
+const FILES_PATTERN = /^\/edit\/[^\/]+$/;
 
 export function* apiSaga() {
   yield take(CHILD_DEV_SERVER_STARTED);
@@ -21,7 +21,6 @@ export function* apiSaga() {
   });
   
   yield routeHTTPRequest(
-    [{ method: "GET", test: FILES_PATTERN }, proxyToDevServer(proxy, handleGETFile)],
     [{ method: "POST", test: FILES_PATTERN }, proxyToDevServer(proxy, handlePOSTFile)],
     [{ test: /.*/ }, proxyToDevServer(proxy)]
   );
@@ -35,10 +34,6 @@ function proxyToDevServer(proxy: HttpProxy, onRequest: (req: Request) => any = (
     proxy.web(req, res, { target: host });
     yield call(onRequest, req);
   };
-}
-
-function* handleGETFile(req: Request) {
-  return "DONE";
 }
 
 function* handlePOSTFile(req: Request) {

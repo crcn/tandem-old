@@ -3,7 +3,8 @@ export type VisualDevConfig = {
   editSourceContent: (content: string, mutation: any, filePath: string) => any;
   sourceFilePattern: string;
   vscode: {
-    devServerScript: string[]
+    devServerScript: string[],
+    tandemcodeDirectory
   };
 }
 

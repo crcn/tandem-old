@@ -10,8 +10,8 @@ const SAVE_KEY = "state";
 declare function requestIdleCallback(callback: any): any;
 
 export function* persistStateSaga() {
-  yield fork(loadState);
-  yield fork(persistState);
+  // yield fork(loadState);
+  // yield fork(persistState);
 }
 
 function* loadState() {

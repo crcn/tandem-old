@@ -13,17 +13,23 @@ TODOS:
 
 IMMEDIATE:
 
-high-level -- use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
+high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
 
 - [ ] CSS vars, duh.
-- [ ] ability to edit embedded style rules
+- [ ] vscode integration
+  - [ ] override tandem server
+  - [ ] new components should refresh components pane
+  - [ ] update buffer when string changes
+  - [ ] local storage based on CWD
+  - [ ] Open current file in Tandem (should open new window)
+  - [ ] show component pane on initial load
+  - [ ] empty state should instruct to drag file from pane
 - [ ] ability to delete CSS rules
 - [ ] adding new style in right pane
 - [ ] visual stack traces about how results are computed -- allow for any kind of black box expression.
 - [ ] create new components
 - [ ] dnd elements to existing components
 - [ ] wire up edit text content
-- [ ] vscode integration
 - [ ] allow multiple <preview /> tags -- toggle within editor
 - [ ] DND for components to existing elements
 - [ ] create new component when _native_ element is dropped onto the canvas

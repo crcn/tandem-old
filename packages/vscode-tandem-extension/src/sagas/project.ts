@@ -49,6 +49,7 @@ function* handleDevConfigLoaded() {
     const [bin, ...args] = devServerScript;
 
     const childServerPort = yield call(getPort);
+
     console.log(`spawning dev server command "${bin} ${args.join("")}" with env PORT ${childServerPort}`);
 
     devServerProcess = spawn(bin, args, {

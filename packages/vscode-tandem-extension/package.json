@@ -1,7 +1,7 @@
 {
   "name": "tandem-vscode-extension",
-  "displayName": "Tandem sync",
-  "description": "Synchronizes realtime changes between Tandem and VSCode",
+  "displayName": "Tandem",
+  "description": "Visual programming for web applications",
   "version": "0.0.21",
   "icon": "assets/logo.png",
   "publisher": "tandemcode",
@@ -19,7 +19,7 @@
     "commands": [
       {
         "command": "extension.startVisualDevServer",
-        "title": "Open current project in Aerial"
+        "title": "Open current project in Tandem"
       }
     ]
   },
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "aerial-common2": "^0.0.1",
-    "aerial-playground": "^1.0.0",
+    "tandemcode": "2.x.x",
     "body-parser": "^1.17.2",
     "chokidar": "^1.7.0",
     "connect-multiparty": "^2.0.0",

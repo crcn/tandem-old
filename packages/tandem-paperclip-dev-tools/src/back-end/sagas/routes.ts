@@ -1,6 +1,7 @@
 import { fork, take, select, call, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { transpilePCASTToVanillaJS, editPCContent } from "../../paperclip";
+import * as request from "request";
 import { ApplicationState, createComponentFromFilePath, Component } from "../state";
 import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
@@ -17,6 +18,8 @@ const getComponentFilePaths = ({ cwd, config: { componentsDirectory }}: Applicat
 
 export function* routesSaga() {
   yield routeHTTPRequest(
+
+    [ { test: /^\/proxy\/.*/ }, proxy],
 
     // returns capabilities to front-end so that it can turn features on or off
     [ { test: /^\/capabilities/, method: "GET" }, getCapabilities],
@@ -83,6 +86,18 @@ function* getAvailableComponents() {
   ))];
 }
 
+function* proxy(req, res: express.Response) {
+  let [match, uri] = req.path.match(/proxy\/(.+)/);
+  console.log(uri);
+  uri = decodeURIComponent(uri);
+  req.url = uri;
+  req.pipe(request({
+    uri: uri
+  }).on("error", (err) => {
+    res.statusCode = 500;
+    res.send(err.stack);
+  })).pipe(res);
+}
 function* getComponents(req: express.Request, res: express.Response) {
   res.send(yield call(getAvailableComponents));
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it

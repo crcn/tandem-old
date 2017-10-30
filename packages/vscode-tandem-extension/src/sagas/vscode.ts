@@ -1,11 +1,10 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { editString, StringMutation } from "aerial-common2";
-import { eventChannel } from "redux-saga";
+import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call } from "redux-saga/effects";
 import { Alert, ALERT, AlertLevel, MUTATE_SOURCE_CONTENT, FILE_CONTENT_CHANGED, MutateSourceContentRequest, fileContentChanged, FileContentChanged, startDevServerExecuted, START_DEV_SERVER_EXECUTED, CHILD_DEV_SERVER_STARTED } from "../actions";
 import { ExtensionState, getFileCacheContent } from "../state";
-import { getEntryHTML } from "aerial-playground";
 
 export function* vscodeSaga() {
   yield fork(handleAlerts);
@@ -114,34 +113,43 @@ function* handleCommands() {
   }
 }
 
-const AERIAL_PREVIEW_NAME = `aerial-preview`;
+const PREVIEW_NAME = `tandem-preview`;
 
-const PREVIEW_URI = vscode.Uri.parse(`${AERIAL_PREVIEW_NAME}://authority/${AERIAL_PREVIEW_NAME}`);
+const PREVIEW_URI = vscode.Uri.parse(`${PREVIEW_NAME}://authority/${PREVIEW_NAME}`);
 
 function* handleStarted() {
 
-  const state: ExtensionState = yield select();
+  // waiy for the first
+  yield take(CHILD_DEV_SERVER_STARTED);
+  yield call(delay, 1000);
 
+  
+  const state: ExtensionState = yield select();
+  const { getEntryHTML } = require(state.visualDevConfig.vscode.tandemcodeDirectory || "tandemcode");
+  ;
+  
   var textDocumentContentProvider = {
-    provideTextDocumentContent(uri/*: vscode.Uri*/)/*: string*/ {
-      return getEntryHTML({});
+    provideTextDocumentContent(uri) {
+      return getEntryHTML({
+        apiHost: `http://localhost:${state.visualDevConfig.port}`,
+        proxy: `http://localhost:${state.visualDevConfig.port}/proxy/`,
+      });
     },
   };
 
-  
   state.context.subscriptions.push(
     vscode.workspace.registerTextDocumentContentProvider(
-      AERIAL_PREVIEW_NAME,
+      PREVIEW_NAME,
       textDocumentContentProvider)
   );
   while(true) {
-    yield take(CHILD_DEV_SERVER_STARTED);
-
     yield call(vscode.commands.executeCommand,
       "vscode.previewHtml",
       PREVIEW_URI,
       vscode.ViewColumn.Two,
-      "Aerial view"
+      "Tandem"
     );
+
+    yield take(CHILD_DEV_SERVER_STARTED);
   }
 }

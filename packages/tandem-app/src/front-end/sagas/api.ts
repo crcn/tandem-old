@@ -12,8 +12,7 @@ export function* apiSaga() {
 
 function* getComponents() {
   const { apiHost }: ApplicationState = yield select();
-  const response: Response = yield call(fetch, location.protocol + "//" + apiHost + "/components");
-
+  const response: Response = yield call(fetch, apiHost + "/components");
   const json = yield call(response.json.bind(response));
   yield put(apiComponentsLoaded(json));
 }
