@@ -1,17 +1,19 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
+import * as request from "request";
 import { editString, StringMutation } from "aerial-common2";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, MUTATE_SOURCE_CONTENT, FILE_CONTENT_CHANGED, MutateSourceContentRequest, fileContentChanged, FileContentChanged, startDevServerExecuted, START_DEV_SERVER_EXECUTED, CHILD_DEV_SERVER_STARTED } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, fileContentChanged, FileContentChanged, startDevServerExecuted, START_DEV_SERVER_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED } from "../actions";
 import { ExtensionState, getFileCacheContent } from "../state";
 
 export function* vscodeSaga() {
   yield fork(handleAlerts);
-  yield fork(handleMutateSourceContent);
   yield fork(handleFileContentChanged);
   yield fork(handleCommands);
+  yield fork(handleTextEditorChange);
   yield fork(handleStarted);
+  yield fork(handleTextEditorChanges);
 }
 
 function* handleAlerts() {
@@ -31,37 +33,6 @@ function* handleAlerts() {
         break;
       }
     }
-  }
-}
-
-function* handleMutateSourceContent() {
-
-  // TODO -- this code is copy pasted from dev tools server. Need
-  // to use from common config.
-  while(true) {
-    const { filePath, mutations }: MutateSourceContentRequest = yield take(MUTATE_SOURCE_CONTENT);
-
-    const state: ExtensionState = yield select();
-
-    const editSourceContent = state.visualDevConfig.editSourceContent;
-
-    let content = getFileCacheContent(filePath, state) || fs.readFileSync(filePath, "utf8");
-    
-    let stringMutations: StringMutation[] = [];
-    
-    for (const mutation of mutations) {
-      if (!editSourceContent) {
-        console.warn(`Cannot apply "${mutation.$type}" since "editSourceContent" does not exist in config`);
-        continue;
-      }
-
-      const result = editSourceContent(content, mutation, filePath);
-      stringMutations.push(...(Array.isArray(result) ? result : [result]));
-    }  
-
-    content = editString(content, stringMutations);
-
-    yield put(fileContentChanged(filePath, content));
   }
 }
 
@@ -96,8 +67,44 @@ function* handleFileContentChanged() {
         onOpenTextEditor(vscode.window.activeTextEditor);
       });
     }
-
   }
+}
+
+function* handleTextEditorChange() {
+  const chan = eventChannel((emit) => {
+    vscode.workspace.onDidChangeTextDocument((e) => {
+      setTimeout(() => {
+        if (e.document.isDirty) {
+          const document = e.document as vscode.TextDocument;
+          emit(textContentChanged(document.uri.fsPath, document.getText()));
+        }
+      });
+    })
+    return () => {};
+  });
+  
+  let _ignoreChange: boolean;
+
+  yield fork(function*() {
+    while(true) {
+      const action = yield take(chan);
+      if (_ignoreChange) continue;
+      yield put(action);
+    }
+  });
+
+  yield fork(function*() {
+    while(true) {
+
+      // if incomming changes, then ignore text editor change for a sdecond
+      yield take(FILE_CONTENT_CHANGED);
+      _ignoreChange = true;
+      yield call(delay, 100);
+      _ignoreChange = false;
+    }
+  }); 
+
+
 }
 
 function* handleCommands() {
@@ -114,19 +121,18 @@ function* handleCommands() {
 }
 
 const PREVIEW_NAME = `tandem-preview`;
-
 const PREVIEW_URI = vscode.Uri.parse(`${PREVIEW_NAME}://authority/${PREVIEW_NAME}`);
 
 function* handleStarted() {
 
   // waiy for the first
   yield take(CHILD_DEV_SERVER_STARTED);
+
+  // wait until dev server starts (TODO - this is just a bandaid and needs a real fix)
   yield call(delay, 1000);
 
-  
   const state: ExtensionState = yield select();
   const { getEntryHTML } = require(state.visualDevConfig.vscode.tandemcodeDirectory || "tandemcode");
-  ;
   
   var textDocumentContentProvider = {
     provideTextDocumentContent(uri) {
@@ -152,5 +158,19 @@ function* handleStarted() {
     );
 
     yield take(CHILD_DEV_SERVER_STARTED);
+  }
+}
+
+function* handleTextEditorChanges() {
+  while(true) {
+    const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
+    const state: ExtensionState = yield select();
+
+    yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
+      json: {
+        filePath,
+        content
+      }
+    });
   }
 }

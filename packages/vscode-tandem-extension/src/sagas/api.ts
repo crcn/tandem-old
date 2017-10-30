@@ -3,12 +3,12 @@ import * as request from "request";
 import { logErrorAction } from "aerial-common2";
 import { ExtensionState } from "../state";
 import * as HttpProxy from "http-proxy";
-import { CHILD_DEV_SERVER_STARTED } from "../actions";
+import { CHILD_DEV_SERVER_STARTED, fileContentChanged } from "../actions";
 import { take, fork, call, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { routeHTTPRequest } from "../utils";
 
-const FILES_PATTERN = /^\/edit\/[^\/]+$/;
+const FILES_PATTERN = /^\/edit$/;
 
 export function* apiSaga() {
   yield take(CHILD_DEV_SERVER_STARTED);
@@ -37,8 +37,6 @@ function proxyToDevServer(proxy: HttpProxy, onRequest: (req: Request) => any = (
 }
 
 function* handleEditFile(req: Request, res: Response) {
-  console.log("EDIT");
-
   const state: ExtensionState = yield select();
   const devPort = state.childDevServerInfo.port;
   const host = `http://127.0.0.1:${devPort}`;
@@ -54,9 +52,9 @@ function* handleEditFile(req: Request, res: Response) {
   });
 
   const body = yield take(chan);
-
-  console.log(body);
-
   res.send(body);
 
+  for (const uri in body) {
+    yield put(fileContentChanged(uri.replace("file://", ""), body[uri]));
+  }
 }

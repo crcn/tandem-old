@@ -40,22 +40,3 @@ export const updateExtensionState = (state: ExtensionState, properties: Partial<
 export const getFileCacheContent = (filePath: string, state: ExtensionState) => {
   return state.fileCache[filePath] && state.fileCache[filePath].content;
 }
-
-export const setFileCache = (state: ExtensionState, filePath: string, content: string) => {
-  return updateExtensionState(state, {
-    fileCache: {
-      ...state.fileCache,
-      [filePath]: {
-        content,
-        mtime: new Date()
-      }
-    }
-  })
-}
-
-export const removeFileCache = (state: ExtensionState, filePath: string) => updateExtensionState(state, {
-  fileCache: {
-    ...state.fileCache,
-    [filePath]: undefined
-  }
-})

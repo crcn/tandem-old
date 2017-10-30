@@ -4,7 +4,6 @@ import { projectSaga } from "./project";
 import { START_DEV_SERVER_EXECUTED, STOP_DEV_SERVER_EXECUTED } from "../actions";
 import { expresssServerSaga } from "./express-server";
 import { take, fork, spawn, call, cancel } from "redux-saga/effects";
-import { fileWatcherSaga } from "./file-watcher";
 
 export function* mainSaga() {
   yield fork(vscodeSaga);
@@ -17,7 +16,6 @@ export function* mainSaga() {
       yield fork(apiSaga);
       yield fork(projectSaga);
       yield fork(expresssServerSaga);
-      yield fork(fileWatcherSaga);
     });
 
     yield take(STOP_DEV_SERVER_EXECUTED);

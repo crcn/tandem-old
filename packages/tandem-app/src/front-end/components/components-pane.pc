@@ -8,7 +8,7 @@
         width: 33.33%;
         height: 100px;
         text-align: center;
-        border-right: 1px solid #F60;
+        border-right: 1px solid red;
         border-bottom: 1px solid #F60;
         float: left;
       }

@@ -17,10 +17,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 
 - [ ] CSS vars, duh.
 - [ ] vscode integration
-  - [ ] override tandem server
   - [ ] new components should refresh components pane
-  - [ ] update buffer when string changes
-  - [ ] local storage based on CWD
   - [ ] Open current file in Tandem (should open new window)
   - [ ] show component pane on initial load
   - [ ] empty state should instruct to drag file from pane

@@ -7,8 +7,8 @@ export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
 export const HTTP_REQUEST = "HTTP_REQUEST";
 export const VISUAL_DEV_CONFIG_LOADED = "VISUAL_DEV_CONFIG_LOADED";
 export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
-export const MUTATE_SOURCE_CONTENT = "MUTATE_SOURCE_CONTENT";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
+export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
 export const START_DEV_SERVER_EXECUTED = "START_DEV_SERVER_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
 export const FILE_CHANGED = "FILE_CHANGED";
@@ -22,13 +22,6 @@ export type VisualDevConfigLoaded = {
   config:  VisualDevConfig;
 } & Action;
 
-export type Mutation =  {
-  $type: string;
-  source: {
-    uri: string
-  }
-};
-
 export type FileContentChanged =  {
   filePath: string;
   content: string;
@@ -37,10 +30,6 @@ export type FileContentChanged =  {
 export type FileAction = {
   filePath: string
 } & Action;
-
-export type MutateSourceContentRequest = {
-  mutations: Mutation[];
-} & FileAction;
 
 export enum AlertLevel {
   NOTICE,
@@ -68,6 +57,12 @@ export const extensionActivated = () => ({
 
 export const fileContentChanged = (filePath: string, content: string): FileContentChanged  => ({
   type: FILE_CONTENT_CHANGED,
+  content,
+  filePath
+});
+
+export const textContentChanged = (filePath: string, content: string): FileContentChanged  => ({
+  type: TEXT_CONTENT_CHANGED,
   content,
   filePath
 });

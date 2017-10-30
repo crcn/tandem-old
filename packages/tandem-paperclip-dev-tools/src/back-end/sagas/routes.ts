@@ -20,6 +20,7 @@ export function* routesSaga() {
   yield routeHTTPRequest(
 
     [ { test: /^\/proxy\/.*/ }, proxy],
+    [ { test: /^\/file/, method: "POST" }, setFile],
 
     // returns capabilities to front-end so that it can turn features on or off
     [ { test: /^\/capabilities/, method: "GET" }, getCapabilities],
@@ -210,4 +211,11 @@ function* editFiles(req: express.Request, res: express.Response) {
   }
 
   res.send(result);
+}
+
+function* setFile(req: express.Request, res: express.Response) { 
+  const { filePath, content } = yield call(getPostData, req);
+  yield put(fileContentChanged(filePath, new Buffer(content, "utf8"), new Date()));
+  yield put(fileChanged(filePath)); // dispatch public change -- causes reload
+  res.send([]);
 }
