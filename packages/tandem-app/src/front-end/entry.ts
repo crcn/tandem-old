@@ -13,6 +13,7 @@ import {
 } from "./index";
 
 const baseConfig = Object.assign({}, {
+  localStorageNamespace: "tandem",
   apiHost: ((location.hash || "").match(/api=([^&]+)/) ||[null, `localhost:8084`])[1],
   proxy: `http://localhost:8084/proxy/`,
 }, window["config"] || {});

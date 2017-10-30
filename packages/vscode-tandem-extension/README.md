@@ -1,5 +1,6 @@
 TODOS: 
 
+- [ ] wire up socket.io 
 - [ ] meta click to show source in VSCode
 - [ ] open dev server command
 - [ ] open current file in Aerial (whitelisted by dev config, or HTML by default)

@@ -1,7 +1,7 @@
 // used for code editor extensions
 
 
-exports.getEntryHTML = function({ useFileProtocol = true, apiHost, proxy }) {
+exports.getEntryHTML = function({ useFileProtocol = true, apiHost, proxy, localStorageNamespace }) {
   const filePrefix = useFileProtocol ? `file://${__dirname}` : "";
   return `
 <!DOCTYPE html>
@@ -17,6 +17,7 @@ exports.getEntryHTML = function({ useFileProtocol = true, apiHost, proxy }) {
       var config = {
         apiHost: "${apiHost}",
         proxy: "${proxy}",
+        localStorageNamespace: "${localStorageNamespace}"
       }
     </script>
     <script src="${filePrefix}/lib/front-end/entry.bundle.js"></script>

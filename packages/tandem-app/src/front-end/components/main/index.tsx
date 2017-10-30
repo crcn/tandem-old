@@ -3,6 +3,7 @@ import * as React from "react";
 import { pure, compose } from "recompose";
 import { Workspace } from "./workspace";
 import { connect } from "react-redux";
+import { Isolate } from "../isolated";
 import { ImmutableObject, Dispatcher } from "aerial-common2";
 import { ApplicationState, getSelectedWorkspace } from "front-end/state";
 import { getSyntheticBrowser } from "aerial-browser-sandbox";

@@ -1,5 +1,5 @@
 import { serialize, logDebugAction } from "aerial-common2";
-import { serializeApplicationState } from "front-end/state";
+import { serializeApplicationState, ApplicationState } from "front-end/state";
 import { loadedSavedState } from "../actions";
 import { put, take, fork, call, select } from "redux-saga/effects";
 
@@ -10,12 +10,13 @@ const SAVE_KEY = "state";
 declare function requestIdleCallback(callback: any): any;
 
 export function* persistStateSaga() {
-  // yield fork(loadState);
-  // yield fork(persistState);
+  yield fork(loadState);
+  yield fork(persistState);
 }
 
 function* loadState() {
-  const savedStateString = localStorage.getItem(SAVE_KEY);
+  const state: ApplicationState = yield select();
+  const savedStateString = localStorage.getItem(state.localStorageNamespace + "/" + SAVE_KEY);
   if (!savedStateString) {
     return;
   }
@@ -27,13 +28,13 @@ function* persistState() {
   while(true) {
     yield take();
     yield call(whenIdle);
-    const state = yield select();
+    const state: ApplicationState = yield select();
 
     // convert to a POJO object in case there are non serializable
     // object somehow in the application store. For the most part -- everything should be
     // a POJO with very few exceptions. For cases where data cannot be converted into a plain object, the application will need to re-hydrate the non-serializable data on startup. 
     const pojoState =  serializeApplicationState(state);
-    localStorage.setItem(SAVE_KEY, JSON.stringify(pojoState));
+    localStorage.setItem(state.localStorageNamespace + "/" + SAVE_KEY, JSON.stringify(pojoState));
     console.debug(`Saving app state`);
   }
 }

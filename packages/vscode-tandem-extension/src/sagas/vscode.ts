@@ -133,6 +133,7 @@ function* handleStarted() {
       return getEntryHTML({
         apiHost: `http://localhost:${state.visualDevConfig.port}`,
         proxy: `http://localhost:${state.visualDevConfig.port}/proxy/`,
+        localStorageNamespace: state.rootPath
       });
     },
   };

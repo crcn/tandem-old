@@ -180,10 +180,11 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   res.send(html);
 }
 
-
 function* editFiles(req: express.Request, res: express.Response) {
   const mutationsByUri = yield call(getPostData, req);
   const state: ApplicationState = yield select();
+
+  const result: any = {};
 
   for (const uri in mutationsByUri) {
     if (uri.substr(0, 5) !== "file:") continue;
@@ -202,9 +203,11 @@ function* editFiles(req: express.Request, res: express.Response) {
 
     const newContent = editString(oldContent, stringMutations);
 
+    result[uri] = newContent;
+
     yield put(fileContentChanged(filePath, new Buffer(newContent, "utf8"), new Date()));
     yield put(fileChanged(filePath)); // dispatch public change -- causes reload
   }
 
-  res.send([]);
+  res.send(result);
 }

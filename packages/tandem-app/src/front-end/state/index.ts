@@ -170,6 +170,7 @@ export type Workspace = {
 export type ApplicationState = {
   kernel: Kernel;
   workspaces: Workspace[];
+  localStorageNamespace: string;
   selectedWorkspaceId?: string;
   element: HTMLElement;
   apiHost: string;

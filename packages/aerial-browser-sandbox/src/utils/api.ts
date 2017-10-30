@@ -9,7 +9,7 @@ export const apiEditFile = async (mutationsByUri: { [identifier: string]: Mutati
     serializedMutationsByUri[uri] = mutationsByUri[uri].map((mutation => ({...mutation, target: { source: mutation.target.source }, child: (mutation as any).child && { source: (mutation as any).child.source } })))
   }
 
-  const response = await fetch(`${window.location.protocol}//${apiHost}/edit`, {
+  const response = await fetch(`${apiHost}/edit`, {
     method: "POST",
     headers: {
       'Accept': 'application/json',

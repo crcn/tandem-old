@@ -21,7 +21,7 @@ export function* apiSaga() {
   });
   
   yield routeHTTPRequest(
-    [{ method: "POST", test: FILES_PATTERN }, proxyToDevServer(proxy, handlePOSTFile)],
+    [{ method: "POST", test: FILES_PATTERN }, handleEditFile],
     [{ test: /.*/ }, proxyToDevServer(proxy)]
   );
 }
@@ -36,20 +36,27 @@ function proxyToDevServer(proxy: HttpProxy, onRequest: (req: Request) => any = (
   };
 }
 
-function* handlePOSTFile(req: Request) {
+function* handleEditFile(req: Request, res: Response) {
+  console.log("EDIT");
+
+  const state: ExtensionState = yield select();
+  const devPort = state.childDevServerInfo.port;
+  const host = `http://127.0.0.1:${devPort}`;
+  
   const chan = yield eventChannel((emit) => {
+    const req2 = req.pipe(request(host + "/edit"));
     const chunks = [];
-    req.on("data", (chunk) => chunks.push(chunk));
-    req.on("end", () => {
+    req2.on("data", chunk => chunks.push(chunk));
+    req2.on("end", () => {
       emit(JSON.parse(chunks.join("")));
     });
-    return () => {};
+    return () => {}
   });
-  const action = yield take(chan);
-  const filePath = decodeURIComponent(req.path.match(/file\/([^\/]+)/)[1]).replace("file://", "");
-  
-  yield put({
-    filePath,
-    ...action
-  });
+
+  const body = yield take(chan);
+
+  console.log(body);
+
+  res.send(body);
+
 }
