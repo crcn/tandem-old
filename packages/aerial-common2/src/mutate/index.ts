@@ -21,6 +21,7 @@ export type SetValueMutation<T> = {
 export type ChildMutation<T, U> = {
   child: U;
   index: number;
+  clone?: boolean;
 } & Mutation<T>;
 
 export type RemoveMutation<T> = Mutation<T>;
@@ -49,10 +50,11 @@ export const createSetValueMutation = <T>(type: string, target: T, newValue: any
   newValue
 });
 
-export const createInsertChildMutation = <T, U>(type: string, target: T, child: U, index: number = Number.MAX_SAFE_INTEGER): InsertChildMutation<T, U> => struct(type, {
+export const createInsertChildMutation = <T, U>(type: string, target: T, child: U, index: number = Number.MAX_SAFE_INTEGER, clone?: boolean): InsertChildMutation<T, U> => struct(type, {
   target,
   child,
-  index
+  index,
+  clone
 });
 
 export const createRemoveChildMutation = <T, U>(type: string, target: T, child: U, index?: number): RemoveChildMutation<T, U> => struct(type, {

@@ -147,7 +147,9 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
       ...parentResult.modules,
 
       // register content so that URI gets picked up in allFiles
-      [uri]: ""
+      [uri]: {
+        content: ""
+      }
     }
   };
   
@@ -155,16 +157,6 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
     const ast = parse(source);
     const imports = getPCImports(ast);
     const importMap = {};
-
-    result = {
-      ...result,
-      modules: {
-        ...parentResult.modules,
-        [uri]: {    
-          content: transpileModule(ast, source, uri, importMap)
-        }
-      }
-    };
 
     for (const ns in imports) {
       const src = imports[ns];
@@ -179,6 +171,16 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
         );
       }
     }
+
+    result = {
+      ...result,
+      modules: {
+        ...result.modules,
+        [uri]: {    
+          content: transpileModule(ast, source, uri, importMap)
+        }
+      }
+    };
   } catch(e) {
     result = {
       ...result,

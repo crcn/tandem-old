@@ -142,10 +142,6 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
 
     public didChange(mutation: Mutation<any>, notifyOwnerNode?: boolean) {
-      // cache already cleared -- stop bubbling
-      if (!this._struct) {
-        return;
-      }
 
       this._struct = undefined;
 

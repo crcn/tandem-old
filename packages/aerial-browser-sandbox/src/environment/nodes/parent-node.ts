@@ -211,7 +211,7 @@ export const cloneNode = (node: BasicNode, deep?: boolean) => {
 }
 
 export const createParentNodeInsertChildMutation = (parent: BasicParentNode, child: BasicNode, index: number, cloneChild: boolean = true) => {
-  return createInsertChildMutation(SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT, parent, cloneChild ? cloneNode(child, true) : child, index);
+  return createInsertChildMutation(SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT, parent, cloneChild ? cloneNode(child, true) : child, index, cloneChild);
 };
 
 export const createParentNodeRemoveChildMutation = (parent: BasicParentNode, child: BasicNode, index?: number) => {
@@ -267,7 +267,7 @@ export const parentNodeMutators = {
   [SEnvParentNodeMutationTypes.MOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {oldIndex, index}: MoveChildMutation<any, any>) {
     insertChildNodeAt(oldNode, oldNode.childNodes[oldIndex] as any, index)
   },
-  [SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index, child}: InsertChildMutation<any, any>) {
-    insertChildNodeAt(oldNode, cloneNode(child, true), index);
+  [SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index, child, clone}: InsertChildMutation<any, any>) {
+    insertChildNodeAt(oldNode, clone !== false ? cloneNode(child, true) : child, index);
   }
 }

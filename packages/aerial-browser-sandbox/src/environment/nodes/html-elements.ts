@@ -24,6 +24,7 @@ export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterf
 }
 
 export interface SEnvHTMLStyledElementInterface extends SEnvHTMLElementInterface {
+  sheet: SEnvCSSStyleSheetInterface;
   $$setSheet(sheet: CSSStyleSheet);
 }
 
@@ -286,13 +287,17 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
     media: string;
     type: string;
 
+    initialize() {
+      super.initialize();
+      this.sheet = new SEnvCSSStyleSheet();
+      this.sheet.ownerNode = this;
+    }
+
     canLoad() {
       return !!this.textContent;
     }
 
     protected _load() {
-      this.sheet = new SEnvCSSStyleSheet();
-      this.sheet.ownerNode = this;
       const source = this.textContent;
       this.sheet.cssText = source;
       const e = new SEnvEvent();
