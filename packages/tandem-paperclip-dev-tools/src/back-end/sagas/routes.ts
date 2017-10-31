@@ -1,6 +1,6 @@
 import { fork, take, select, call, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { transpilePCASTToVanillaJS, editPCContent } from "../../paperclip";
+import { transpilePCASTToVanillaJS, editPCContent, TranspileResult } from "../../paperclip";
 import * as request from "request";
 import { ApplicationState, createComponentFromFilePath, Component } from "../state";
 import { flatten } from "lodash";
@@ -89,7 +89,6 @@ function* getAvailableComponents() {
 
 function* proxy(req, res: express.Response) {
   let [match, uri] = req.path.match(/proxy\/(.+)/);
-  console.log(uri);
   uri = decodeURIComponent(uri);
   req.url = uri;
   req.pipe(request({
@@ -144,6 +143,11 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     return fileCache ? fileCache.content.toString("utf8") : fs.readFileSync(filePath, "utf8")
   }
 
+  const transpileResult: TranspileResult = transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, {
+    assignTo: "bundle",
+    readFileSync,
+  });
+
   const html = `
   <html>
     <head>
@@ -152,10 +156,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     <body>
       <script>
         var bundle = {};
-        ${transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, {
-          assignTo: "bundle",
-          readFileSync,
-        })}
+        ${transpileResult.content}
         var preview  = bundle.entry.preview;
         var styles   = bundle.entry.$$styles || [];
         var allFiles = Object.keys(bundle.modules);

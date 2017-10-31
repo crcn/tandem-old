@@ -15,6 +15,7 @@ IMMEDIATE:
 
 high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
 
+- [ ] why PC? compile time speed.
 - [ ] CSS vars, duh.
 - [ ] vscode integration
   - [ ] new components should refresh components pane
@@ -33,6 +34,12 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] create a new window when a _custom_ component is dropped onto the canvas
 - [ ] add dropped component to existing element
 - [ ] re-wire up vscode extension
+
+
+UX:
+
+- [ ] Print paperclip syntax error in window
+- [ ] Explicit reload function for windows
 
 Steps to visual dev:
 

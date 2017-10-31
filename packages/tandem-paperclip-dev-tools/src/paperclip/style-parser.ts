@@ -1,6 +1,7 @@
 import { PCSheet, PCStyleDeclarationProperty, PCAtRule, PCStyleExpressionType, PCStyleRule, PCGroupingRule } from "./style-ast";
 import { Token, getLocation } from "./ast";
-import { createToken, TokenScanner, StringScanner } from "./scanners";
+import { throwUnexpectedToken, assertCurrTokenType } from "./utils";
+import { createToken, TokenScanner, StringScanner, eatUntil } from "./scanners";
 import { weakMemo } from "aerial-common2";
 
 enum TokenType {
@@ -26,10 +27,6 @@ enum TokenType {
   DOUBLE_QUOTE,
   COMMA
 }
-
-const throwUnexpectedToken = (source: string, token: Token, expected: string[]) => {
-  throw new Error(`Unexpected token "${token.value}" at ${token.pos}, expected ${expected.join(", ")}`);
-};
 
 const tokenize = (source: string) => {
   const scanner = new StringScanner(source);
@@ -84,17 +81,6 @@ const tokenize = (source: string) => {
   return new TokenScanner(source, tokens);
 }
 
-function eatWhitespace(scanner: TokenScanner) {
-  while(!scanner.ended()) {
-    const curr = scanner.curr();
-    if (curr.type !== TokenType.WHITESPACE) {
-      break;
-    }
-    scanner.next();
-  }
-  return !scanner.ended();
-}
-
 export const parsePCStyle = weakMemo((style: string) => {
   return createSheet(tokenize(style));
 });
@@ -107,10 +93,12 @@ const createSheet = (scanner: TokenScanner): PCSheet => {
   }
 };
 
-const getRuleChildren = (scanner: TokenScanner, until = () => false): Array<PCGroupingRule|PCStyleRule> => {
+const eatWhitespace = (scanner: TokenScanner) => eatUntil(scanner, TokenType.WHITESPACE);
+
+const getRuleChildren = (scanner: TokenScanner, test = () => true): Array<PCGroupingRule|PCStyleRule> => {
 
   const children = [];
-  while(eatWhitespace(scanner) && !until()) {
+  while(eatWhitespace(scanner) && test()) {
     const child = getRuleChild(scanner);
     children.push(child);
   }
@@ -155,14 +143,19 @@ const getAtRule = (scanner: TokenScanner): PCAtRule => {
   };
 };
 
-const getGroupingRuleChildren = (scanner: TokenScanner) => getRuleChildren(scanner, () => {
-  return scanner.curr().type === TokenType.CLOSE_CURLY_BRACKET;
-});
+const getGroupingRuleChildren = (scanner: TokenScanner) => {
+  const children = getRuleChildren(scanner, () => {
+    return scanner.curr().type !== TokenType.CLOSE_CURLY_BRACKET;
+  });
+  assertCurrTokenType(scanner, TokenType.CLOSE_CURLY_BRACKET);
+  return children;
+}
 
 const getStyleRule = (scanner: TokenScanner): PCStyleRule => {
   const startToken = scanner.curr();
   const selectorTextBuffer = getBuffer(scanner);
   eatWhitespace(scanner); 
+  assertCurrTokenType(scanner, TokenType.OPEN_CURLY_BRACKET);
   scanner.next(); // eat {
   const childrenAndDeclarations = getGroupingRuleChildren(scanner);
   const closeBracket = scanner.curr();
@@ -173,18 +166,19 @@ const getStyleRule = (scanner: TokenScanner): PCStyleRule => {
     selectorText: selectorTextBuffer.join(" "),
     children: childrenAndDeclarations.filter((child) => child.type !== PCStyleExpressionType.DECLARATION),
     declarationProperties: childrenAndDeclarations.filter((child) => child.type === PCStyleExpressionType.DECLARATION) as any as  PCStyleDeclarationProperty[]
-    
   }
 }
 
 const getDeclaration = (scanner: TokenScanner): PCStyleDeclarationProperty => {
   const startToken = scanner.curr();
   eatWhitespace(scanner);
-  const nameBuffer = getBuffer(scanner, () => scanner.next().type === TokenType.COLON);
+  const nameBuffer = getBuffer(scanner, () => scanner.next().type !== TokenType.COLON);
+  assertCurrTokenType(scanner, TokenType.COLON);
   scanner.next(); // eat :
   eatWhitespace(scanner);
-  const valueBuffer = getBuffer(scanner, () => scanner.next().type === TokenType.SEMICOLON);
+  const valueBuffer = getBuffer(scanner, () => scanner.next().type !== TokenType.SEMICOLON);
   const endToken = scanner.curr();
+  assertCurrTokenType(scanner, TokenType.SEMICOLON);
   scanner.next(); // eat ;
 
   return {
@@ -195,11 +189,11 @@ const getDeclaration = (scanner: TokenScanner): PCStyleDeclarationProperty => {
   };
 }
 
-const getBuffer = (scanner: TokenScanner, until = () => scanner.next().type === TokenType.OPEN_CURLY_BRACKET) => { 
+const getBuffer = (scanner: TokenScanner, next = () => scanner.next().type !== TokenType.OPEN_CURLY_BRACKET) => { 
 
   const buffer = [scanner.curr().value];
   
-  while(!scanner.ended() && !until()) {
+  while(!scanner.ended() && scanner.hasNext() && next()) {
     buffer.push(scanner.curr().value);
   }   
 

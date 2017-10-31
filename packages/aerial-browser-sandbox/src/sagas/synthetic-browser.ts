@@ -206,7 +206,7 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
   let main: SEnvWindowInterface;
   const documentId = generateDefaultId();
   const fetch = yield getFetch();
-  const { proxy }: SyntheticBrowserRootState = yield select();
+  const { apiHost }: SyntheticBrowserRootState = yield select();
 
   let currentWindow: SEnvWindowInterface;
 
@@ -221,7 +221,7 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
         fetch, 
         reload: () => reload(),
         getProxyUrl: (url: string) => {
-          return proxy && url.substr(0, 5) !== "data:" ? proxy + encodeURIComponent(url) : url;
+          return apiHost && url.substr(0, 5) !== "data:" ? apiHost + "/proxy/" + encodeURIComponent(url) : url;
         },
         createRenderer: (window: SEnvWindowInterface) => {
           return window.top === window ? new SyntheticMirrorRenderer(window) : new SyntheticDOMRenderer(window, document)

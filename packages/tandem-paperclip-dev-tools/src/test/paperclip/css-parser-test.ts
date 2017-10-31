@@ -23,5 +23,25 @@ describe(__filename + "#", () => {
       const ast = parsePCStyle(source);
       // console.log(ast);
     }); 
-  })
+  });
+
+  // syntax error test
+
+  [
+    ".container { color: red }",
+    ".container { color }",
+    ".container {",
+    ".container { } @media",
+  ].forEach((source) => {
+    it(`throws an error when parsing ${source}`, () => {
+      expect(() => {
+        try {
+          const ast = parsePCStyle(source);
+        } catch(e) {
+          throw e;
+        }
+      }).to.throw();
+
+    });
+  });
 });

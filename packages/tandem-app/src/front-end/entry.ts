@@ -14,8 +14,7 @@ import {
 
 const baseConfig = Object.assign({}, {
   localStorageNamespace: "tandem",
-  apiHost: ((location.hash || "").match(/api=([^&]+)/) ||[null, `localhost:8084`])[1],
-  proxy: `http://localhost:8084/proxy/`,
+  apiHost: ((location.hash || "").match(/api=([^&]+)/) ||[null, `http://localhost:8082`])[1],
 }, window["config"] || {});
 
 let state = createApplicationState({

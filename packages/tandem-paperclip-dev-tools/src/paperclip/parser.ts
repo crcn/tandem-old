@@ -16,7 +16,8 @@ import {
 } from "./ast";
 
 import { weakMemo } from "../utils";
-import { StringScanner, Scanner, TokenScanner, createToken } from "./scanners";
+import { throwUnexpectedToken, assertCurrTokenType, assertCurrTokenExists } from "./utils";
+import { StringScanner, Scanner, TokenScanner, createToken, eatUntil } from "./scanners";
 
 enum TokenType {
   LESS_THAN,
@@ -78,22 +79,11 @@ const tokenize = (source: string) => {
   return new TokenScanner(source, tokens);
 }
 
-
+// TODO - change to parsePC
 export const parse = weakMemo((source: string) => {
   return createFragment(tokenize(source));
 });
 
-const throwUnexpectedToken = (source: string, token: Token, expected: string[]) => {
-  throw new Error(`Unexpected token "${token.value}" at ${token.pos}, expected ${expected.join(", ")}`);
-};
-
-function assertCurrTokenType(scanner: TokenScanner, type: TokenType, expected: string[]) {
-  const token = scanner.curr();
-  if (!token || token.type !== type) {
-    throwUnexpectedToken(scanner.source, scanner.curr(), expected);
-  }
-}
-  
 function createFragment(scanner: TokenScanner): PCFragment  {
   const children = [];
   while(!scanner.ended()) {
@@ -129,7 +119,7 @@ function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingE
   const children: PCExpression[] = [];
   let endTag: PCEndTag;
 
-  while(1) {
+  while(!scanner.ended()) {
 
     const childOrEndTag = createNode(scanner);
 
@@ -151,6 +141,10 @@ function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingE
     throw new Error(`Unclosed tag ${startTag.name} found at pos ${startTag.location.start}`);
   }
 
+  if (endTag.name !== startTag.name) {
+    throw new Error(`Closing tag found without an open tag.`);
+  }
+
   return {
     type: PCExpressionType.ELEMENT,
     location: getLocation(startTag.location.start, endTag.location.end, scanner.source),
@@ -163,7 +157,7 @@ function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingE
 function createStartTag(scanner: TokenScanner): PCStartTag | PCSelfClosingElement {
   const startToken = scanner.curr(); // <
   const nameToken = scanner.next();
-  assertCurrTokenType(scanner, TokenType.STRING, []);
+  assertCurrTokenType(scanner, TokenType.STRING);
   
   scanner.next();
   const attributes = createAttributes(scanner);
@@ -172,12 +166,16 @@ function createStartTag(scanner: TokenScanner): PCStartTag | PCSelfClosingElemen
   let type: PCExpressionType;
   let endToken: Token;
 
+  assertCurrTokenExists(scanner);
+
   if (curr.type === TokenType.BACKSLASH) {
     endToken = scanner.next(); // take >
     scanner.next(); // eat >
     type = PCExpressionType.SELF_CLOSING_ELEMENT;
   } else {
-    endToken = scanner.next(); // eat >
+    endToken = scanner.curr();
+    assertCurrTokenType(scanner, TokenType.GREATER_THAN);
+    scanner.next(); // eat >
     type = PCExpressionType.START_TAG;
   }
 
@@ -189,19 +187,11 @@ function createStartTag(scanner: TokenScanner): PCStartTag | PCSelfClosingElemen
   };
 }
 
-function eatWhitespace(scanner: TokenScanner) {
-  while(1) {
-    const curr = scanner.curr();
-    if (curr.type !== TokenType.WHITESPACE) {
-      break;
-    }
-    scanner.next();
-  }
-}
+const eatWhitespace = (scanner: TokenScanner) => eatUntil(scanner, TokenType.WHITESPACE);
 
 function createAttribute(scanner: TokenScanner): PCAttribute {
   const name = scanner.curr();
-  assertCurrTokenType(scanner, TokenType.STRING, ["string"]);
+  assertCurrTokenType(scanner, TokenType.STRING);
   scanner.next(); // eat name
 
   // only attribute name is present
@@ -213,7 +203,7 @@ function createAttribute(scanner: TokenScanner): PCAttribute {
     };
   }
 
-  assertCurrTokenType(scanner, TokenType.EQUALS, ["="]);
+  assertCurrTokenType(scanner, TokenType.EQUALS);
   scanner.next(); // eat =
   const value = createAttributeValue(scanner);
   return {
@@ -225,6 +215,7 @@ function createAttribute(scanner: TokenScanner): PCAttribute {
 }
 
 function createAttributes(scanner: TokenScanner): PCAttribute[] {
+  assertCurrTokenExists(scanner);
 
   const attributes: PCAttribute[] = [];
   
@@ -244,7 +235,7 @@ function createString(scanner: TokenScanner): PCString {
   let buffer: string = "";
   let curr: Token;
 
-  while(1) {
+  while(!scanner.ended()) {
     curr = scanner.curr();
     if (curr.type === start.type) {
       break;
@@ -253,6 +244,8 @@ function createString(scanner: TokenScanner): PCString {
     buffer += curr.value;
     scanner.next();
   }
+
+  assertCurrTokenType(scanner, start.type);
 
   scanner.next(); // eat ' ""
 
@@ -291,8 +284,10 @@ function createAttributeValue(scanner: TokenScanner): PCString | PCBlock {
   const curr = scanner.curr();
   if (curr.type === TokenType.SINGLE_QUOTE || curr.type === TokenType.DOUBLE_QUOTE) {
     return createString(scanner);
-  } else {
+  } else if (curr.type === TokenType.BLOCK_START) {
     return createBlock(scanner);
+  } else {
+    throwUnexpectedToken(scanner.source, scanner.curr());
   }
 }
 
@@ -301,7 +296,7 @@ function createEndTag(scanner: TokenScanner): PCEndTag {
   scanner.next(); 
   const nameToken = scanner.next();
   const closeToken = scanner.next();
-  assertCurrTokenType(scanner, TokenType.GREATER_THAN, [">"]);
+  assertCurrTokenType(scanner, TokenType.GREATER_THAN);
   scanner.next(); // eat >
   return {
     type: PCExpressionType.END_TAG,

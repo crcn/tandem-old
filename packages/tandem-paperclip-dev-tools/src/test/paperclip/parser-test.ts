@@ -52,11 +52,34 @@ describe(__filename + "#", () => {
   [
     'a',
     '<a b="c" d="e" />',
+    '<a></a>',
+    '<a />',
+    '<a b c d="e" />',
     '<a b="c" d="e"><f h="i" j="k"></f></a>',
     '<a b="c" d="e">1<f h="i" j="k"></f>2</a>',
   ].forEach((source) => {
     it(`can parse ${source}`, () => {
       parse(source);
+    });
+  });
+
+  // smoke error test
+  [
+    `<a`,
+    `<a>`,
+    `<a b="c />`,
+    `<a b=c />`,
+    `<a></b>`
+  ].forEach((source) => {
+    it(`throws an error when parsing ${source}`, () => {
+      expect(() => {
+        try {
+          const ast = parse(source);
+        } catch(e) {
+          throw e;
+        }
+      }).to.throw();
+
     });
   });
 });

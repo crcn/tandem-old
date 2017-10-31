@@ -67,11 +67,23 @@ type Declaration = {
   content: string;
 };
 
-type Bundle = {
+type Modules = {
   [identifier: string]: {
     content: string
   }
+};
+
+export type BundleResult = {
+  errors: Error[];
+  warnings: Error[];
+  modules: Modules;
 }
+
+export type TranspileResult = {
+  errors: Error[],
+  warnings: Error[]
+  content: string;
+};
 
 /**
  * transpiles the PC AST to vanilla javascript with no frills
@@ -84,7 +96,7 @@ export const transpilePCASTToVanillaJS = (source: string, uri: string, options: 
   });
 };
 
-export const transpileBundle = (source: string, uri: string, options: TranspileOptions) => {
+export const transpileBundle = (source: string, uri: string, options: TranspileOptions): TranspileResult => {
   
   let buffer = `(function(document) {
     function module(fn) {
@@ -98,7 +110,8 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
   
   buffer += `var modules = {\n`;
 
-  const modules = bundle(source, uri, {}, options);
+  const { warnings, errors, modules } = bundle(source, uri, undefined, options);
+
   
   for (const uri in modules) {
     buffer += `"${uri}": ${modules[uri].content},`
@@ -115,35 +128,44 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
     buffer = `${options.assignTo} = ${buffer}`;
   }
 
-  return buffer;
+  return {
+    warnings,
+    errors,
+    content: buffer
+  };
 };
 
-const bundle = (source: string, uri: string, modules: any = {}, options: TranspileOptions): Bundle => {
+const bundle = (source: string, uri: string, parentResult: BundleResult = { modules: {}, errors: [], warnings: []}, options: TranspileOptions): BundleResult => {
   const ast = parse(source);
   const imports = getPCImports(ast);
   const importMap = {};
+
+  let result: BundleResult = {
+    errors: [...parentResult.errors],
+    warnings: [...parentResult.warnings],
+    modules: {
+      ...parentResult.modules,
+      [uri]: {    
+        content: transpileModule(ast, source, uri, importMap)
+      }
+    }
+  };
+
   for (const ns in imports) {
     const src = imports[ns];
     const importFullPath = "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src);
     importMap[ns] = importFullPath;
-    if (!modules[importFullPath]) {
-
-      // define to prevent recursion
-      modules[importFullPath] = {};
-      bundle(
+    if (!result.modules[importFullPath]) {
+      result = bundle(
         options.readFileSync(importFullPath.replace("file://", "")),
         importFullPath,
-        modules,
+        result,
         options
-      )
+      );
     }
   }
 
-  modules[uri] = {
-    content: transpileModule(ast, source, uri, importMap)
-  }
-
-  return modules;
+  return result;
 };
 
 const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, importsMap: any = {}) => {
@@ -274,12 +296,11 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   `;
 
   const textChild = node.children[0] as PCString;
-  let cssSource = repeat("\n", textChild.location.start.line - 1) + context.source.substr(textChild.location.start.pos, textChild.value.length);
+  let cssSource = repeat("\n", textChild.location.start.line - 1) + context.source.substr(textChild.location.start.pos, textChild.location.end.pos - textChild.location.start.pos);
   
   // if synthetic, then we're running FE code in tandem, so so we can
   // instantiate otherwise illegal constructors & attach useful information about them 
   buffer += `if (window.$synthetic) { \n`;
-
   const styleSheet = transpileStyleSheet(parsePCStyle(cssSource), { ...context, scope: scoped ? varName : null });
   buffer += styleSheet.content;
 
@@ -350,7 +371,7 @@ const transpileStyleDeclaration = (ast: PCStyleRule, context: TranspileStyleCont
   let objectBuffer = `{`;
 
   for (const property of ast.declarationProperties) {
-    objectBuffer += `"${property.name}": "${property.value.replace('"', '\\"')}", `;
+    objectBuffer += `"${property.name}": "${property.value.replace('"', '\\"').replace(/[\s\r\n\t]+/g, " ")}", `;
   }
   
   objectBuffer += `}`;

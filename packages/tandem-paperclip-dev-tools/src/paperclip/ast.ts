@@ -91,7 +91,7 @@ const computePosLines = weakMemo((source: string): { [identifier: number]: [numb
 
   const posLines = {};
 
-  source.split("").forEach((c, p) => {
+  (source + " ").split("").forEach((c, p) => {
     posLines[p] = [ccol, cline];
     if (c === "\n") {
       ccol = 0;
@@ -103,13 +103,14 @@ const computePosLines = weakMemo((source: string): { [identifier: number]: [numb
   return posLines;
 });
 
-export const getPosition = (start: Token | number, source: string) => {
-  const pos = typeof start === "number" ? start : start.pos;
+export const getPosition = (start: Token | number, source: string, isEnd?: boolean) => {
+  const pos = typeof start === "number" ? start : start.pos + (start.value ? start.value.length : 0);
+
   const [column, line] = computePosLines(source)[pos];
   return { column, line, pos };
 }
 
 export const getLocation = (start:  ExpressionPosition | Token | number, end: ExpressionPosition | Token | number, source: string): ExpressionLocation  => ({ 
   start: (start as ExpressionPosition).line ? start as ExpressionPosition : getPosition(start as any, source), 
-  end: (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(end as any, source),
+  end: (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(end as any, source, true),
 });

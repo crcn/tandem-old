@@ -1,4 +1,5 @@
 import { 
+  Token,
   PCParent,
   PCString,
   PCElement,
@@ -6,8 +7,13 @@ import {
   PCStartTag,
   PCExpression,
   PCExpressionType,
+  getPosition,
   PCSelfClosingElement,
 } from "./ast";
+
+import {
+  TokenScanner,
+} from "./scanners";
 
 export const filterPCElementsByStartTag = (ast: PCExpression, filter: (ast: PCStartTag | PCSelfClosingElement) => boolean) => filterPCASTTree(ast, (expression) => (expression.type === PCExpressionType.SELF_CLOSING_ELEMENT ? filter(expression as PCSelfClosingElement): expression.type === PCExpressionType.ELEMENT ? filter((expression as PCElement).startTag) : false));
 
@@ -66,6 +72,28 @@ export const getExpressionPath = (expression: PCExpression, root: PCExpression) 
   });
 
   return _path;
+}
+
+export const throwUnexpectedToken = (source: string, token: Token) => {
+  if (!token) {
+    throw new Error(`Unexpected end of file (missing closing expression).`);
+  }
+
+  const location = getPosition(token, source);
+  throw new Error(`Unexpected token "${token.value}" at ${location.line}:${location.column}`);
+};
+
+export const assertCurrTokenType = (scanner: TokenScanner, type: number) => {
+  const token = scanner.curr();
+  if (!token || token.type !== type) {
+    throwUnexpectedToken(scanner.source, scanner.curr());
+  }
+};
+
+export const assertCurrTokenExists = (scanner: TokenScanner) => {
+  if (!scanner.curr()) {
+    throwUnexpectedToken(scanner.source, scanner.curr());
+  }
 }
 
 export const filterPCASTTree = (ast: PCExpression, filter: (ast: PCExpression) => boolean) => {

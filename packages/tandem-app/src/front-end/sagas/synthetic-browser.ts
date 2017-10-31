@@ -210,7 +210,7 @@ function* handleLoadedSavedState() {
   }
 }
 
-function* persistDeclarationChange (declaration: SEnvCSSStyleDeclarationInterface, name: string, value: string) {
+function* persistDeclarationChange(declaration: SEnvCSSStyleDeclarationInterface, name: string, value: string) {
 
   const owner = declaration.$owner;
   

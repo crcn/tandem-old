@@ -1,5 +1,6 @@
 import { Token } from "./ast";
 
+
 export class Scanner<T extends string|any[]> {
   public pos: number;
   readonly length: number;
@@ -75,3 +76,15 @@ export class TokenScanner extends Scanner<Token[]> {
 }
 
 export const createToken = (type: number, pos: number, value?: string) => ({ type, pos, value });
+
+
+export const eatUntil = (scanner: TokenScanner, type: number) => {
+  while(!scanner.ended()) {
+    const curr = scanner.curr();
+    if (curr.type !== type) {
+      break;
+    }
+    scanner.next();
+  }
+  return !scanner.ended();
+}
