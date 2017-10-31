@@ -62,6 +62,7 @@ const enhanceStage = compose<StageInnerProps, StageOuterProps>(
     onWheel: ({ workspace, dispatch, canvasOuter }: StageInnerProps) => (event: React.WheelEvent<any>) => {
       const rect = canvasOuter.getBoundingClientRect();
       event.preventDefault();
+      event.stopPropagation();
       dispatch(stageWheel(workspace.$id, rect.width, rect.height, event));
     }
   })

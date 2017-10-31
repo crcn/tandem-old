@@ -20,6 +20,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] BUGS
   - [ ] cannot add / remove selector
   - [ ] CSS vars are trimmed
+  - [ ] nodes are not selectable sometimes
 - [ ] vscode integration
   - [ ] new components should refresh components pane
   - [ ] Open current file in Tandem (should open new window)
