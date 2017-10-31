@@ -3,23 +3,25 @@
 
   <template name="gutter" export>
     <style scoped>
+
       .container {
         background: #FCFCFC;
       }
 
       .content {
-        padding: 10px;
       }
       
       .header {
         color: #666;
         text-transform: uppercase;
-        padding: 4px;
+        padding: 8px;
         font-size: 0.9em;
+        border-bottom: 1px solid #F0F0F0;
       }
 
       .controls {
         float: right;
+        display: inline-block;
         padding-right: 4px;
       }
     </style>

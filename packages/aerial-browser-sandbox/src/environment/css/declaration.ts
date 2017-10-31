@@ -8,7 +8,7 @@ import { SEnvCSSRuleInterface } from "./rules";
 import { SEnvHTMLElementInterface } from "../../";
 import { createSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "../../state";
 
-export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|struct|parentRule|disabledProperties|_onChange)$/.test(property);
+export const isValidCSSDeclarationProperty = (property: string) => !/^([\$_]|\d+$)/.test(property.charAt(0)) && !/^(uid|\$id|_struct|struct|parentRule|disabledProperties|_onChange|length)$/.test(property);
 
 export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
   parentRule: SEnvCSSRuleInterface;
@@ -505,7 +505,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
 
     static fromObject(declaration: any) {
       const decl = new SEnvCSSStyleDeclaration();
-      if (declaration.length) {
+      if (declaration.length != null) {
         for (let i = 0, n = declaration.length; i < n; i++) {
           const key = declaration[i];
           decl[key] = declaration[key];
@@ -513,7 +513,9 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
         decl.$updatePropertyIndices();
       } else {
         for (const key in declaration) {
-          decl[camelCase(key)] = declaration[key];
+          if (isValidCSSDeclarationProperty(key)) {
+            decl[camelCase(key)] = declaration[key];
+          }
         }
         decl.$updatePropertyIndices();
       }

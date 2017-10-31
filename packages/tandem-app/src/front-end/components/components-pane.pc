@@ -10,29 +10,19 @@
         text-align: center;
         border-right: 1px solid red;
         border-bottom: 1px solid #F60;
-        float: left;
         
       }
     </style>
     <gutter:gutter>
       <div class="header">
-        Components!
+        Components
         <div class="controls">
           +
         </div>
-        <div class="content">
-          <div class="cell">
-            div!!!
-          </div>
-          <div class="cell">
-            div
-          </div>
-          <div class="cell">
-            div
-          </div>
-          <div class="cell">
-            div
-          </div>
+      </div>
+      <div class="content">
+        <div class="cell">
+          DIV
         </div>
       </div>
     </gutter:gutter>
