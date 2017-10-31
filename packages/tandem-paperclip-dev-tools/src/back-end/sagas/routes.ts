@@ -148,6 +148,24 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     readFileSync,
   });
 
+  const allFiles = Object.keys(transpileResult.content);
+
+  let content: string;
+
+  if (transpileResult.errors.length) {
+    content = `
+      bundle = {
+        entry: {
+          preview: function() {
+            return document.createTextNode(${JSON.stringify("Error: " + transpileResult.errors[0].message)})
+          }
+        } 
+      }
+    `;
+  } else {
+    content = transpileResult.content;
+  }
+
   const html = `
   <html>
     <head>
@@ -156,10 +174,10 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     <body>
       <script>
         var bundle = {};
-        ${transpileResult.content}
+        ${content}
         var preview  = bundle.entry.preview;
         var styles   = bundle.entry.$$styles || [];
-        var allFiles = Object.keys(bundle.modules);
+        var allFiles = ${JSON.stringify(transpileResult.allFiles)};
         if (!preview) {
           document.body.appendChild(
             document.createTextNode('"preview" template not found')

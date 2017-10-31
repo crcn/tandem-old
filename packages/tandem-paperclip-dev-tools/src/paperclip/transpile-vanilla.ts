@@ -83,6 +83,7 @@ export type TranspileResult = {
   errors: Error[],
   warnings: Error[]
   content: string;
+  allFiles: string[];
 };
 
 /**
@@ -131,39 +132,57 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
   return {
     warnings,
     errors,
-    content: buffer
+    content: buffer,
+    allFiles: Object.keys(modules)
   };
 };
 
 const bundle = (source: string, uri: string, parentResult: BundleResult = { modules: {}, errors: [], warnings: []}, options: TranspileOptions): BundleResult => {
-  const ast = parse(source);
-  const imports = getPCImports(ast);
-  const importMap = {};
+  let ast;
 
   let result: BundleResult = {
     errors: [...parentResult.errors],
     warnings: [...parentResult.warnings],
     modules: {
-      ...parentResult.modules,
-      [uri]: {    
-        content: transpileModule(ast, source, uri, importMap)
-      }
+      ...parentResult.modules
     }
   };
+  
+  try {
+    const ast = parse(source);
+    const imports = getPCImports(ast);
+    const importMap = {};
 
-  for (const ns in imports) {
-    const src = imports[ns];
-    const importFullPath = "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src);
-    importMap[ns] = importFullPath;
-    if (!result.modules[importFullPath]) {
-      result = bundle(
-        options.readFileSync(importFullPath.replace("file://", "")),
-        importFullPath,
-        result,
-        options
-      );
+    result = {
+      ...result,
+      modules: {
+        ...parentResult.modules,
+        [uri]: {    
+          content: transpileModule(ast, source, uri, importMap)
+        }
+      }
+    };
+
+    for (const ns in imports) {
+      const src = imports[ns];
+      const importFullPath = "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src);
+      importMap[ns] = importFullPath;
+      if (!result.modules[importFullPath]) {
+        result = bundle(
+          options.readFileSync(importFullPath.replace("file://", "")),
+          importFullPath,
+          result,
+          options
+        );
+      }
+    }
+  } catch(e) {
+    result = {
+      ...result,
+      errors: [...result.errors, e]
     }
   }
+  
 
   return result;
 };

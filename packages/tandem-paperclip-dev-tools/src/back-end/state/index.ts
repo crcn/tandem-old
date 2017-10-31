@@ -28,11 +28,21 @@ export type Component = {
   filePath?: string;
 }
 
-export const createComponentFromFilePath = (content: string, filePath: string): Component => ({
-  $id: md5(filePath),
-  filePath: filePath,
-  label: getPCMetaName(parse(content)) || path.basename(filePath)
-});
+export const createComponentFromFilePath = (content: string, filePath: string): Component => {
+  let info = {
+    $id: md5(filePath),
+    filePath: filePath,
+    label: path.basename(filePath)
+  };
+  
+  try {
+    info.label = getPCMetaName(parse(content));
+  } catch(e) {
+    info.label += ":<syntax error>";
+  }
+
+  return info;
+}
 
 export const updateApplicationState = (state: ApplicationState, properties: Partial<ApplicationState>) => ({
   ...state,

@@ -18,7 +18,6 @@
         Components
         <div class="controls">
           +
-        </div>
         <div class="content">
           <div class="cell">
             div!
