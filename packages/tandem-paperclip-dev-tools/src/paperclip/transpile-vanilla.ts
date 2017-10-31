@@ -144,7 +144,10 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
     errors: [...parentResult.errors],
     warnings: [...parentResult.warnings],
     modules: {
-      ...parentResult.modules
+      ...parentResult.modules,
+
+      // register content so that URI gets picked up in allFiles
+      [uri]: ""
     }
   };
   
