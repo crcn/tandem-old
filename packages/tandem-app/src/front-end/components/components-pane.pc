@@ -4,14 +4,29 @@
   <template name="components-pane" export>
 
     <style scoped>
-      .cell {
-        width: 33.33%;
-        height: 100px;
-        text-align: center;
-        border-right: 1px solid red;
-        border-bottom: 1px solid #F60;
-        
+      .content {
       }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .cell {
+        width: 33.3333%;
+        box-sizing: border-box;
+        height: 100px;
+        position: relative;
+        text-align: center;
+        border-right: 1px solid #F0F0F0;
+        border-bottom: 1px solid #F0F0F0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .cell:first-child {
+        border-left: 1px solid #F0F0F0;
+      }
+
     </style>
     <gutter:gutter>
       <div class="header">
@@ -21,8 +36,71 @@
         </div>
       </div>
       <div class="content">
-        <div class="cell">
-          DIV
+        <div class="row">
+          <div class="cell">
+            div
+          </div>
+          <div class="cell">
+            span
+          </div>
+          <div class="cell">
+            h1
+          </div>
+        </div>
+        <div class="row">
+          <div class="cell">
+            h3
+          </div>
+          <div class="cell">
+            pre
+          </div>
+          <div class="cell">
+            form
+          </div>
+        </div>
+        <div class="row">
+          <div class="cell">
+            h3
+          </div>
+          <div class="cell">
+            pre
+          </div>
+          <div class="cell">
+            form
+          </div>
+        </div>
+        <div class="row">
+          <div class="cell">
+            h3
+          </div>
+          <div class="cell">
+            pre
+          </div>
+          <div class="cell">
+            form
+          </div>
+        </div>
+        <div class="row">
+          <div class="cell">
+            h3
+          </div>
+          <div class="cell">
+            pre
+          </div>
+          <div class="cell">
+            form
+          </div>
+        </div>
+        <div class="row">
+          <div class="cell">
+            h3
+          </div>
+          <div class="cell">
+            pre
+          </div>
+          <div class="cell">
+            form
+          </div>
         </div>
       </div>
     </gutter:gutter>

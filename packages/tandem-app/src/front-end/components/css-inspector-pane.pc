@@ -1,0 +1,47 @@
+<module xmlns:gutter="./gutter.pc">
+  <meta name="name" content="CSS Inspector" />
+
+  <template name="css-inspector" export>
+
+    <style scoped>
+      .content {
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .cell {
+        width: 33.3333%;
+        box-sizing: border-box;
+        height: 100px;
+        position: relative;
+        text-align: center;
+        border-right: 1px solid #F0F0F0;
+        border-bottom: 1px solid #F0F0F0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .cell:first-child {
+        border-left: 1px solid #F0F0F0;
+      }
+
+    </style>
+    <gutter:gutter>
+      <div class="header">
+        CSS Inspector
+        <div class="controls">
+          +
+        </div>
+      </div>
+      <div class="content">
+        TODO
+      </div>
+    </gutter:gutter>
+  </template>
+
+  <template name="preview" export>
+    <css-inspector />
+  </template>
+</module>

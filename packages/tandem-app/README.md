@@ -17,6 +17,9 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 
 - [ ] why PC? compile time speed.
 - [ ] CSS vars, duh.
+- [ ] BUGS
+  - [ ] cannot add / remove selector
+  - [ ] CSS vars are trimmed
 - [ ] vscode integration
   - [ ] new components should refresh components pane
   - [ ] Open current file in Tandem (should open new window)

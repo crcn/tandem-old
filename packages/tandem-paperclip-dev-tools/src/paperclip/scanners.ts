@@ -63,8 +63,18 @@ export class TokenScanner extends Scanner<Token[]> {
   constructor(readonly source: string, tokens: Token[]) {
     super(tokens);
   } 
-  peekNext() {
-    return this._target[this.pos + 1];
+
+  peek(count: number = 1) {
+    return this._target[this.pos + count];
+  }
+
+  peekUntil(until: (token: Token) => boolean) {
+    let i = this.pos;
+    while(i < this.length - 1) {
+      if (until(this._target[++i])) {
+        return this._target[i];
+      }
+    }
   }
 
   curr(): Token {

@@ -108,7 +108,7 @@ function createNode(scanner: TokenScanner): PCExpression  {
 }
 
 function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingElement {
-  if (scanner.peekNext().type === TokenType.BACKSLASH) {
+  if (scanner.peek().type === TokenType.BACKSLASH) {
     return createEndTag(scanner);
   }
   const startTag = createStartTag(scanner);

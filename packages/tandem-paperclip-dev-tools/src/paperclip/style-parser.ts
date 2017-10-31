@@ -110,7 +110,7 @@ const getRuleChild = (scanner: TokenScanner) => {
 
   const curr = scanner.curr();
 
-  if (scanner.hasNext() && (scanner.peekNext().type === TokenType.COLON || scanner.peekNext().type === TokenType.MINUS)) {
+  if (scanner.hasNext() && (scanner.peek().type === TokenType.COLON || scanner.peek().type === TokenType.MINUS) && scanner.peekUntil((token) => token.type === TokenType.SEMICOLON || token.type === TokenType.OPEN_CURLY_BRACKET).type === TokenType.SEMICOLON) {
     return getDeclaration(scanner);
   } else if (curr.type === TokenType.NAME || curr.type == TokenType.NUMBER || curr.type === TokenType.COLON) {
     return getRule(scanner);
@@ -163,7 +163,7 @@ const getStyleRule = (scanner: TokenScanner): PCStyleRule => {
   return {
     type: PCStyleExpressionType.STYLE_RULE,
     location: getLocation(startToken, closeBracket, scanner.source),
-    selectorText: selectorTextBuffer.join(" "),
+    selectorText: selectorTextBuffer.join(""),
     children: childrenAndDeclarations.filter((child) => child.type !== PCStyleExpressionType.DECLARATION),
     declarationProperties: childrenAndDeclarations.filter((child) => child.type === PCStyleExpressionType.DECLARATION) as any as  PCStyleDeclarationProperty[]
   }
