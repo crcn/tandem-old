@@ -732,11 +732,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
 
     }
 
-    didChange() {
-      super.didChange();
-      (this.defaultView as SEnvWindowInterface).didChange();
-    }
-
     exitPointerLock(): void {
 
     }
@@ -828,6 +823,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     protected _onMutation(event: SEnvMutationEventInterface) {
+      super._onMutation(event);
       const { mutation } = event;
 
       if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT || mutation.$type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
@@ -902,9 +898,9 @@ export const documentMutators = {
   }
 };
 
-export const flattenDocumentSources = weakMemo((document: SyntheticDocument) => {
+export const flattenDocumentSources = (document: SyntheticDocument) => {
   return flattenNodeSources(document);
-});
+};
 
 // export const patchDocument = (oldDocument: SEnvDocumentInterface, mutation: Mutation<any>) => {
 //   patchParentNode(oldDocument, mutation);

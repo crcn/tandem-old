@@ -31,7 +31,6 @@ export interface SEnvNodeInterface extends Node {
   source: ExpressionLocation;
   contentLoaded: Promise<any>;
   ownerDocument: SEnvDocumentInterface;
-  didChange();
   interactiveLoaded: Promise<any>;
   connectedToDocument: boolean;
   $setOwnerDocument(document: SEnvDocumentInterface);
@@ -136,13 +135,6 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
 
     get previousSibling() {
       return this.parentNode.childNodes[Array.prototype.indexOf.call(this.parentNode.childNodes, this) - 1];
-    }
-
-    didChange() {
-      if (this.parentNode && this._struct) {
-        (this.parentNode as SEnvNodeInterface).didChange();
-      }
-      this._struct = undefined;
     }
 
     get offsetParent(): Element {
@@ -284,6 +276,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     }
 
     protected _onMutation(event: SEnvMutationEventInterface) {
+      this._struct = undefined;
     }
 
     replaceChild<T extends Node>(newChild: Node, oldChild: T): T {
@@ -369,7 +362,6 @@ export const getSEnvValueNode = weakMemo((context) => {
     set nodeValue(value: string) {
       this._nodeValue = value;
       this.dispatchMutationEvent(createPropertyMutation(UPDATE_VALUE_NODE, this, "nodeValue", value, undefined));
-      this.didChange();
     }
   }
 });

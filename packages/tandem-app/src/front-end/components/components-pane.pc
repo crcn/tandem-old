@@ -4,8 +4,6 @@
   <template name="components-pane" export>
 
     <style scoped>
-      .content {
-      }
       .row {
         display: flex;
         flex-wrap: wrap;

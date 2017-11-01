@@ -73,6 +73,7 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
   }
 
   const sync = () => {
+    const children = flattenWindowObjectSources(target.struct);
     patchWindow(target, diffWindow(target, source));
   };
 
@@ -875,12 +876,12 @@ export const diffWindow = (oldWindow: SEnvWindowInterface, newWindow: SEnvWindow
   return diffDocument(oldWindow.document, newWindow.document);
 };
 
-export const flattenWindowObjectSources = weakMemo((window: SyntheticWindow) => {
+export const flattenWindowObjectSources = (window: SyntheticWindow) => {
   if (!window.document) {
     return {};
   }
   return flattenDocumentSources(window.document);
-});
+};
 
 export const windowMutators = {
   ...documentMutators

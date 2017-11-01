@@ -90,8 +90,6 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
       event2.initMutationEvent(createParentNodeInsertChildMutation(this, child, index, false));
       this.dispatchEvent(event2);
 
-      this.didChange();
-
       return child;
     }
 
@@ -108,7 +106,6 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
       const event2 = new SEnvMutationEvent2();
       event2.initMutationEvent(createParentNodeRemoveChildMutation(this, child, index));
       this.dispatchEvent(event2);
-      this.didChange();
 
       return child;
     }
