@@ -186,11 +186,15 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
           styles.forEach(function(style) {
             document.body.appendChild(style);
           });
-          document.body.appendChild(preview({}));
-
-          if (window.reloadWhenUrisChange) {
-            window.reloadWhenUrisChange(allFiles);
+          try {
+            document.body.appendChild(preview({}));
+          } catch(e) {
+            document.body.appendChild(document.createTextNode(e.stack));
           }
+        }
+
+        if (window.reloadWhenUrisChange) {
+          window.reloadWhenUrisChange(allFiles);
         }
       </script>
     </body>

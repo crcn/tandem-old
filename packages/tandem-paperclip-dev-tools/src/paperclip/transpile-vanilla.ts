@@ -192,6 +192,8 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
   return result;
 };
 
+const getNsVarName = (ns: string) => `$$ns$$${ns.replace(/\-/g, "_")}`;
+
 const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, importsMap: any = {}) => {
   
   const context: TranspileContext = {
@@ -208,8 +210,8 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
   buffer += `var ${STYLES_VAR} = [];\n`;
   for (const ns in importsMap) {
     const path = importsMap[ns];
-    buffer += `var $$ns$$${ns} = require("${path}");\n`
-    buffer += `${STYLES_VAR} = ${STYLES_VAR}.concat($$ns$$${ns}.${STYLES_VAR});\n`;
+    buffer += `var ${getNsVarName(ns)} = require("${path}");\n`
+    buffer += `${STYLES_VAR} = ${STYLES_VAR}.concat(${getNsVarName(ns)}.${STYLES_VAR});\n`;
   }
   buffer += transpileChildren(root, context);
 
@@ -415,7 +417,7 @@ const transpileStyleDeclaration = (ast: PCStyleRule, context: TranspileStyleCont
 const transpileXMLNSImportedTag = (node: PCStartTag, context: TranspileContext, element?: PCElement) => {
   const [ns, templateName] = node.name.split(":");
 
-  return transpileTemplateCall(node, context, element, `$$ns$$${ns}.${templateName}`);
+  return transpileTemplateCall(node, context, element, `${getNsVarName(ns)}.${templateName}`);
 }
 
 const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, element?: PCElement, fnName?: string) => {

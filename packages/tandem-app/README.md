@@ -39,6 +39,11 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] add dropped component to existing element
 - [ ] re-wire up vscode extension
 
+- [ ] components
+  - [ ] color picker
+  - [ ] pretty pane
+  - [ ] CSS inspector (in paperclip)
+
 
 UX:
 

@@ -187,7 +187,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
         this.dataset[propertyName.substr(5).toLowerCase()] = newValue;
       } else if (propertyName === "class") {
         this.className = newValue;
-        this.classList = new SEnvDOMTokenList(newValue, this._onClassListChange);
+        this.classList = new SEnvDOMTokenList(newValue || "", this._onClassListChange);
       }
     }
 

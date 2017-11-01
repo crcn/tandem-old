@@ -1,5 +1,6 @@
 TODOS: 
 
+- [ ] open tandem in external window
 - [ ] fix brittleness
 - [ ] meta click to show source in VSCode
 - [ ] open dev server command

@@ -1,7 +1,7 @@
 <module xmlns:gutter="./gutter.pc">
   <meta name="name" content="CSS Inspector" />
 
-  <template name="css-inspector" export>
+  <template name="main" export>
 
     <style scoped>
       .content {
@@ -28,20 +28,20 @@
       }
 
     </style>
-    <gutter:gutter>
-      <div class="header">
-        CSS Inspector
-        <div class="controls">
-          +
-        </div>
+    <div class="header">
+      CSS Inspector
+      <div class="controls">
+        +
       </div>
-      <div class="content">
-        TODO
-      </div>
-    </gutter:gutter>
+    </div>
+    <div class="content">
+      TODO
+    </div>
   </template>
 
   <template name="preview" export>
-    <css-inspector />
+    <gutter:gutter>
+      <main />
+    </gutter:gutter>
   </template>
 </module>

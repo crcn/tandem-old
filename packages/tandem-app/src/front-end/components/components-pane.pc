@@ -1,13 +1,14 @@
 <module xmlns:gutter="./gutter.pc">
   <meta name="name" content="Components Pane" />
 
-  <template name="components-pane" export>
+  <template name="main" export>
 
     <style scoped>
       .row {
         display: flex;
         flex-wrap: wrap;
       }
+
       .cell {
         width: 33.3333%;
         box-sizing: border-box;
@@ -21,12 +22,14 @@
         justify-content: center;
       }
 
+      .content {
+      }
+
       .cell:first-child {
         border-left: 1px solid #F0F0F0;
       }
 
     </style>
-    <gutter:gutter>
       <div class="header">
         Components
         <div class="controls">
@@ -100,11 +103,12 @@
             form
           </div>
         </div>
-      </div>
-    </gutter:gutter>
+    </div>
   </template>
 
   <template name="preview" export>
-    <components-pane />
+    <gutter:gutter>
+      <main />
+    </gutter:gutter>
   </template>
 </module>

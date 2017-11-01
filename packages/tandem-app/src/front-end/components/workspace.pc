@@ -1,0 +1,27 @@
+<module xmlns:components-pane="./components-pane.pc" xmlns:gutter="./gutter.pc" xmlns:css-inspector-pane="./css-inspector-pane.pc" xmlns:windows-pane="./windows-pane.pc">
+  <meta name="name" content="Workspace" />
+  <template name="workspace" export>
+    <style scoped>
+      .workspace {
+        display: flex;
+      }
+      .stage {
+        width: 100%;
+      }
+    </style>
+    <div class="workspace">
+      <gutter:gutter>
+        <windows-pane:main />
+        <components-pane:main />
+      </gutter:gutter>
+      <div class="stage">
+      </div>
+      <gutter:gutter>
+        <css-inspector-pane:main />
+      </gutter:gutter>
+    </div>
+  </template>
+  <template name="preview" export>
+    <workspace />
+  </template>
+</module>

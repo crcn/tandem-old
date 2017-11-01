@@ -1,0 +1,23 @@
+<module xmlns:gutter="./gutter.pc">
+  <meta name="name" content="Windows Pane" />
+
+  <template name="main" export>
+    <style scoped>
+    </style>
+    <div class="header">
+      Windows
+      <div class="controls">
+        +
+      </div>
+    </div>
+    <div class="content">
+      Window
+    </div>
+  </template>
+
+  <template name="preview" export>
+    <gutter:gutter>
+      <main />
+    </gutter:gutter>
+  </template>
+</module>
