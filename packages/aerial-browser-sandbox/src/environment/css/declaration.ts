@@ -22,8 +22,14 @@ export interface SEnvCSSStyleDeclarationInterface extends CSSStyleDeclaration {
   clone(): SEnvCSSStyleDeclarationInterface;
 }
 
+const getJSPropName = (name: string) => {
+
+  // if --, then it's a var, or vendor prefix
+  return name.substr(0, 2) === "--" ? name : camelCase(name);
+}
+
 export const cssPropNameToKebabCase = (propName: string) => {
-  propName = kebabCase(propName);
+  propName = propName.substr(0, 2) === "--" ? propName : kebabCase(propName);
 
   // vendor prefix
   if (/^(webkit|moz|ms|o)-/.test(propName)) {
@@ -41,7 +47,7 @@ export const parseStyleSource = (source: string) => {
   source.split(";").forEach((decl) => {
     const [key, value] = decl.split(":");
     if (!key || !value) return;
-    const ccKey = camelCase(key.trim());
+    const ccKey = getJSPropName(key.trim());
     props[ccKey] = value.trim();
   });
 
@@ -514,7 +520,7 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       } else {
         for (const key in declaration) {
           if (isValidCSSDeclarationProperty(key)) {
-            decl[camelCase(key)] = declaration[key];
+            decl[getJSPropName(key)] = declaration[key];
           }
         }
         decl.$updatePropertyIndices();
@@ -563,8 +569,8 @@ export const getSEnvCSSStyleDeclarationClass = weakMemo(({ getProxyUrl = identit
       if (!isValidCSSDeclarationProperty(name)) return false;
 
       // fix in case they"re kebab case
-      name    = camelCase(name);
-      oldName = oldName != null ? camelCase(oldName) : oldName;
+      name    = getJSPropName(name);
+      oldName = oldName != null ? getJSPropName(oldName) : oldName;
 
       let index = oldName ? this.getPropertyIndex(oldName) : this.getPropertyIndex(name);
 

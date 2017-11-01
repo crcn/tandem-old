@@ -9,8 +9,8 @@
         height: 100px;
         position: relative;
         text-align: center;
-        border-right: 1px solid #F0F0F0;
-        border-bottom: 1px solid #F0F0F0;
+        border-right: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -26,7 +26,7 @@
       }
 
       .cell:nth-child(3n+1) {
-        border-left: 1px solid #F0F0F0;
+        border-left: 1px solid var(--border-color);
       }
 
     </style>

@@ -183,6 +183,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
             document.createTextNode('"preview" template not found')
           );
         } else {
+          console.log(...styles);
           styles.forEach(function(style) {
             document.body.appendChild(style);
           });

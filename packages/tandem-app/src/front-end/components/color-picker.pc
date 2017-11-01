@@ -2,21 +2,75 @@
   <meta name="name" content="Color Picker" />
   <template name="main" export>
     <style scoped>
-      .pallete {
-        background: #F0F0F0;
-        
+
+      .color-picker {
+        padding: var(--base4);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+
       }
+
+      .pallete {
+        flex: 1;
+        flex-grow: 2;
+        border-radius: 2px;
+        background: red;
+        margin-bottom: 8px;
+      }
+
+      .dropper {
+        border: 1px solid white;
+        position: absolute;
+        width: var(--base4);
+        height: var(--base4);
+        border-radius: var(--base4);
+      }
+      
+      .controls {
+        flex: 1;
+      }
+
+      .presets {
+        flex-grow: 0;
+        height: 20px;
+      }
+
+      .preset {
+        border-radius: 2px;
+        width: var(--base4);
+        height: var(--base4);
+        display: inline-block;
+        margin: var(--base2);
+        margin-left: 0px;
+      }
+      
+
     </style>
     <div class="color-picker">
       <div class="pallete">
-        color picker
+        <div class="dropper" style="left:30%;top:20%;" />
       </div>
-      <div class="slider">
-        <slider:main value={{0}} />
+      <div class="controls">
+        <div class="slider">
+          <slider:main value={{0}} />
+        </div>
+      </div>
+      <div class="presets">
+        <repeat each={{presetColors}} as="presetColor">
+          <div class="preset" style={{ "background: " + presetColor + ";" }}></div>
+        </repeat>
       </div>
     </div>
   </template>
   <template name="preview" export>
-    <main />
+    <main presetColors={{[
+      "red",
+      "green",
+      "blue",
+      "yellow",
+      "orange"
+    ]}} />
   </template>
 </module>

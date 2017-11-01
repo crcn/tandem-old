@@ -18,9 +18,9 @@
       
       .knob {
         background: rgba(0,0,0,0.2);
-        width: 10px;
+        width: 8px;
         border-radius: 50%;
-        height: 10px;
+        height: 8px;
         position: relative;
         box-sizing: border-box;
         transform: translateX(10px);

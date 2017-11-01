@@ -1,3 +1,5 @@
+// TODO - scan for all styles and shove in global namespace. 
+
 import * as fs from "fs";
 import * as md5 from "md5";
 import * as path from "path";
@@ -35,6 +37,7 @@ import {
   PCString,
   PCBlock,
 } from "./ast";
+
 
 // const SOURCE_AST_VAR = "$$sourceAST";
 const EXPORTS_VAR = "$$exports";
@@ -324,10 +327,11 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   const textChild = node.children[0] as PCString;
   let cssSource = repeat("\n", textChild.location.start.line - 1) + context.source.substr(textChild.location.start.pos, textChild.location.end.pos - textChild.location.start.pos);
   
+  const styleSheet = transpileStyleSheet(parsePCStyle(cssSource), { ...context, scope: scoped ? varName : null });
+  
   // if synthetic, then we're running FE code in tandem, so so we can
   // instantiate otherwise illegal constructors & attach useful information about them 
   buffer += `if (window.$synthetic) { \n`;
-  const styleSheet = transpileStyleSheet(parsePCStyle(cssSource), { ...context, scope: scoped ? varName : null });
   buffer += styleSheet.content;
 
   buffer += `${varName}.$$setSheet(${styleSheet.varName});\n`;

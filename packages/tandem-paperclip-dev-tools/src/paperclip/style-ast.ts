@@ -30,3 +30,7 @@ export type PCStyleRule = {
   selectorText: string;
   declarationProperties: PCStyleDeclarationProperty[];
 } & PCGroupingRule;
+
+export const stringifyStyleAST = (ast: PCAtRule) => {
+  return null;
+}

@@ -16,13 +16,13 @@ IMMEDIATE:
 high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
 
 - [ ] why PC? compile time speed.
-- [ ] CSS vars, duh.
 - [ ] Canvas support
 - [ ] editing content from UI still breaks (drag cell)
 - [ ] enable javascript - needed to play with components
 - [ ] BUGS
   - [ ] CSS vars are trimmed
   - [ ] nodes are not selectable sometimes
+  - [ ] CSS in web is not scoped
 - [ ] vscode integration
   - [ ] new components should refresh components pane
   - [ ] Open current file in Tandem (should open new window)
@@ -34,12 +34,14 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] create new components
 - [ ] dnd elements to existing components
 - [ ] wire up edit text content
-- [ ] allow multiple <preview /> tags -- toggle within editor
+- [ ] allow multiple <preview /> tags -- toggle within 
+editor
 - [ ] DND for components to existing elements
 - [ ] create new component when _native_ element is dropped onto the canvas
 - [ ] create a new window when a _custom_ component is dropped onto the canvas
 - [ ] add dropped component to existing element
 - [ ] re-wire up vscode extension
+- [ ] * color presets should be picked from :root vars
 
 - [ ] components
   - [ ] color picker

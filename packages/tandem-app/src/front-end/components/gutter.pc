@@ -5,7 +5,7 @@
     <style scoped>
 
       .gutter {
-        background: #FCFCFC;
+        background: var(--background);
         min-width: 225px;
         height: 100%;
         display: flex;
@@ -20,16 +20,15 @@
       .header {
         color: #666;
         text-transform: uppercase;
-        padding: 8px;
-        background: #F4F4F4;
+        padding: var(--base4) var(--base8);
+        background: var(--background-accent);
         font-size: 0.9em;
-        border-bottom: 1px solid #F0F0F0;
+        border-bottom: 1px solid var(--border-color);
       }
 
       .controls {
         float: right;
         display: inline-block;
-        padding-right: 4px;
       }
     </style>
     <div class="gutter">

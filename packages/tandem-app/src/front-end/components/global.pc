@@ -1,9 +1,24 @@
 <style>
+  :root {
+    --base: 2;
+    --base2: 4;
+    --base3: 6;
+    --base4: 8;
+    --base6: 10;
+    --base8: 12;
+    --font-size-rg: 12px;
+    --font-size-sm: 8px;
+    --font-color: #444;
+    --background: #FCFCFC;
+    --border-color: #F0F0F0;
+    --background-accent: #F4F4F4;
+  }
+
   body, html {
     font-family: Helvetica;
     margin: 0;
     padding: 0;
-    font-size: 12px;
-    color: #333;
+    font-size: var(--font-size-rg);
+    color: var(--font-color);
   }
 </style>
