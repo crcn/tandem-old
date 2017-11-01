@@ -19,7 +19,6 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] CSS vars, duh.
 - [ ] Canvas support
 - [ ] BUGS
-  - [ ] cannot add / remove selector
   - [ ] CSS vars are trimmed
   - [ ] nodes are not selectable sometimes
 - [ ] vscode integration

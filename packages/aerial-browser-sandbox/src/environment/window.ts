@@ -850,6 +850,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     private _onDocumentMutation(event: SEnvMutationEventInterface) {
+      this.didChange();
       const eventClone = new SEnvMutationEvent();
       eventClone.initMutationEvent(event.mutation);
       this.dispatchEvent(eventClone);

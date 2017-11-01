@@ -580,7 +580,6 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
   return [SYNTHETIC_ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [string, string];
 }
 
-
 export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, windowStore, browserStore }: ApplicationState) => ({
   workspaces: workspaces.map(serializeWorkspace),
   selectedWorkspaceId,
@@ -588,7 +587,26 @@ export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, win
   browserStore: serialize(browserStore)
 });
 
-export const serializeWorkspace = (workspace: Workspace) => serialize(workspace);
+export const serializeWorkspace = (workspace: Workspace): Partial<Workspace> => ({
+  $id: workspace.$id,
+  $type: workspace.$type,
+  targetCSSSelectors: workspace.targetCSSSelectors,
+  selectionRefs: [],
+  browserId: workspace.browserId,
+  stage: serializeStage(workspace.stage),
+  textEditor: workspace.textEditor,
+  library: [],
+  availableComponents: []
+});
+
+const serializeStage = ({ showTextEditor, showRightGutter, showLeftGutter, showTools }: Stage): Stage => ({
+  panning: false,
+  translate: { left: 0, top: 0, zoom: 1 },
+  showTextEditor,
+  showRightGutter,
+  showLeftGutter,
+  showTools: true
+});
 
 export * from "./shortcuts";
 export * from "aerial-browser-sandbox/src/state";
