@@ -25,7 +25,7 @@
         position: absolute;
         width: var(--base4);
         height: var(--base4);
-        border-radius: var(--base4);
+        border-radius: 50%;
       }
       
       .controls {

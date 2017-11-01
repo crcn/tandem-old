@@ -1,0 +1,15 @@
+<module xmlns:global="./global.pc">
+  <meta name="name" content="Box Shadow Input" />
+  <template name="main" export>
+    <style scoped>
+      .filters-input {
+      }
+    </style>
+    <div class="box-shadows-input">
+      BOX SHADOW INPUT HERE (TODO)
+    </div>
+  </template>
+  <template name="preview" export>
+    <main />
+  </template>
+</module>

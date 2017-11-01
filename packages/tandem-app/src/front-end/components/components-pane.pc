@@ -52,28 +52,28 @@
           label: "div"
         },
         {
-          label: "div"
+          label: "ul"
         },
         {
-          label: "div"
+          label: "li"
         },
         {
-          label: "div"
+          label: "custom-component"
         },
         {
-          label: "div"
+          label: "h1"
         },
         {
-          label: "div"
+          label: "h2"
         },
         {
-          label: "div"
+          label: "h4"
         },
         {
-          label: "div"
+          label: "h5"
         },
         {
-          label: "div"
+          label: "span"
         }
       ]}} />
     </gutter:gutter>

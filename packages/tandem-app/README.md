@@ -1,10 +1,5 @@
 very simple online playground for visually creating web applications
 
-LAUNCHING:
-
-- [ ] Alpha will support paperclip DSL only -- future platforms later on
-- [ ] *needs to be labeled as experimental
-
 TODOS:
 
 - [ ] show measurements between elements (hotkey)
@@ -15,16 +10,34 @@ IMMEDIATE:
 
 high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
 
-- [ ] why PC? compile time speed.
-- [ ] Canvas support
-- [ ] editing content from UI still breaks (drag cell)
+- [ ] Components
+  - [ ] color picker
+  - [ ] slider
+
+- [ ] features supporting component development
+  - [ ] javascript execution
+  - [ ] canvas support
+
+- [ ] allow comments in PC file
+
+- [ ] Bugs
+  - [ ] CSS in web is not scoped
+  - [ ] multi drag windows doesn't work properly
+  - [ ] editing content from UI still breaks (drag cell)
+
+AFTER INITIAL COMPONENTS:
+
+- [ ] Components pane
+  - [ ] refresh when local source change
+  - [ ] 
+
+- [ ] VSCode integration
+
 - [ ] enable javascript - needed to play with components
 - [ ] BUGS
-  - [ ] CSS vars are trimmed
-  - [ ] nodes are not selectable sometimes
-  - [ ] CSS in web is not scoped
 - [ ] vscode integration
-  - [ ] new components should refresh components pane
+  - [ ] new components should refresh 
+  components pane
   - [ ] Open current file in Tandem (should open new window)
   - [ ] show component pane on initial load
   - [ ] empty state should instruct to drag file from pane
@@ -36,7 +49,6 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] wire up edit text content
 - [ ] allow multiple <preview /> tags -- toggle within 
 editor
-- [ ] DND for components to existing elements
 - [ ] create new component when _native_ element is dropped onto the canvas
 - [ ] create a new window when a _custom_ component is dropped onto the canvas
 - [ ] add dropped component to existing element
@@ -47,7 +59,6 @@ editor
   - [ ] color picker
   - [ ] pretty pane
   - [ ] CSS inspector (in paperclip)
-
 
 UX:
 
@@ -82,12 +93,6 @@ CSS INSPECTOR COMPONENT STRATEGY:
 - identify where children should be dropped to
 - color picker should contain pallete for manifest.json
 
-
-PAPERCLIP DSL TODOS:
-
-- [ ] manifest.json
-- [ ] repeat component
-- [ ] 
 
 GOALS:
 
