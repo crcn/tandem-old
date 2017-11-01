@@ -1,4 +1,4 @@
-<module>
+<module xmlns:global="./global.pc">
   <meta name="name" content="Slider" />
   <template name="main" export>
     <style scoped>
@@ -6,17 +6,42 @@
         background: #F0F0F0;
         
       }
+      .slider {
+        
+      }
+
+      .guide {
+        background: rgba(0,0,0,0.1);
+        border-radius: 5px;
+        position: relative;
+      }
+      
+      .knob {
+        background: rgba(0,0,0,0.2);
+        width: 10px;
+        border-radius: 50%;
+        height: 10px;
+        position: relative;
+        box-sizing: border-box;
+        transform: translateX(10px);
+      }
     </style>
-    <div class="color-picker">
-      <div class="pallete">
-        color picker
-      </div>
-      <div class="slider">
-        color picker
+    <div class="slider">
+      <div class="guide">
+        <div class="knob" style={{"left:calc(" + (value * 100) + "% - 10px);"}}></div>
       </div>
     </div>
   </template>
   <template name="preview" export>
-    <main />
+    <style scoped>
+      .slider {
+        margin: 10px;
+      }
+    </style>
+    <div class="container">
+      <main value={{1}} />
+      <main value={{0.5}} />
+      <main value={{0}} />
+    </div>
   </template>
 </module>

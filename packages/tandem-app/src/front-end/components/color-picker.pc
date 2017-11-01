@@ -1,4 +1,4 @@
-<module>
+<module xmlns:global="./global.pc" xmlns:slider="./slider.pc">
   <meta name="name" content="Color Picker" />
   <template name="main" export>
     <style scoped>
@@ -12,7 +12,7 @@
         color picker
       </div>
       <div class="slider">
-        color picker
+        <slider:main value={{0}} />
       </div>
     </div>
   </template>

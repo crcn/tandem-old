@@ -698,7 +698,7 @@ const centerStage = (state: ApplicationState, workspaceId: string, innerBounds: 
       zoom: 1
     }, { left: 0, top: 0, right: width, bottom: height }, scale)
   });
-})
+};
 
 const handleWindowSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any>, windowId }>(state: ApplicationState, ref: StructReference, event: T) => {
   const { sourceEvent } = event;
