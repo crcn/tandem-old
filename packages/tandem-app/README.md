@@ -18,6 +18,8 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] why PC? compile time speed.
 - [ ] CSS vars, duh.
 - [ ] Canvas support
+- [ ] editing content from UI still breaks (drag cell)
+- [ ] enable javascript
 - [ ] BUGS
   - [ ] CSS vars are trimmed
   - [ ] nodes are not selectable sometimes

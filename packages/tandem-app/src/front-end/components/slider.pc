@@ -1,0 +1,22 @@
+<module>
+  <meta name="name" content="Slider" />
+  <template name="main" export>
+    <style scoped>
+      .pallete {
+        background: #F0F0F0;
+        
+      }
+    </style>
+    <div class="color-picker">
+      <div class="pallete">
+        color picker
+      </div>
+      <div class="slider">
+        color picker
+      </div>
+    </div>
+  </template>
+  <template name="preview" export>
+    <main />
+  </template>
+</module>

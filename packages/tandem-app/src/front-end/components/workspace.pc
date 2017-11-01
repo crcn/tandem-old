@@ -12,7 +12,13 @@
     <div class="workspace">
       <gutter:gutter>
         <windows-pane:main />
-        <components-pane:main />
+        <components-pane:main onComponentStartDrag={{noop}} components={{[
+          { label: "div" },
+          { label: "h1" },
+          { label: "h2" },
+          { label: "h3" },
+          { label: "h4" }
+        ]}} />
       </gutter:gutter>
       <div class="stage">
       </div>

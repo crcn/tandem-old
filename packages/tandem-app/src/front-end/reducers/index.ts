@@ -647,7 +647,7 @@ const selectAndCenterSyntheticWindow = (state: ApplicationState, window: Synthet
 
   const { width, height } = workspace.stage.container.getBoundingClientRect();
 
-  state = centerStage(state, state.selectedWorkspaceId, window.bounds, true, workspace.stage.fullScreen && workspace.stage.fullScreen.originalTranslate.zoom);
+  state = centerStage(state, state.selectedWorkspaceId, window.bounds, true, workspace.stage.fullScreen ? workspace.stage.fullScreen.originalTranslate.zoom : true);
 
   // update translate
   workspace = getSelectedWorkspace(state);
@@ -698,7 +698,7 @@ const centerStage = (state: ApplicationState, workspaceId: string, innerBounds: 
       zoom: 1
     }, { left: 0, top: 0, right: width, bottom: height }, scale)
   });
-}
+})
 
 const handleWindowSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any>, windowId }>(state: ApplicationState, ref: StructReference, event: T) => {
   const { sourceEvent } = event;
