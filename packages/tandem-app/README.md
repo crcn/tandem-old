@@ -14,6 +14,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] color picker
   - [ ] slider
 
+- [ ] transpile to web components (need for state changes, and to reflect in UI)
 - [ ] features supporting component development
   - [ ] javascript execution
   - [ ] canvas support

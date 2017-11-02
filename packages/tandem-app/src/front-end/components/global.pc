@@ -1,24 +1,77 @@
-<style>
-  :root {
-    --base: 2;
-    --base2: 4;
-    --base3: 6;
-    --base4: 8;
-    --base6: 10;
-    --base8: 12;
-    --font-size-rg: 12px;
-    --font-size-sm: 8px;
-    --font-color: #444;
-    --background: #FCFCFC;
-    --border-color: #F0F0F0;
-    --background-accent: #F4F4F4;
-  }
+<module>
+  <meta name="name" content="Global" />
+  <style>
+    :root {
+      --base: 2;
+      --base2: 4;
+      --base3: 6;
+      --base4: 8;
+      --base6: 10;
+      --base8: 12;
+      --font-size-rg: 12px;
+      --font-size-md: 18px;
+      --font-size-lg: 24px;
+      --font-size-sm: 8px;
+      --font-color: #444;
+      --background: #FCFCFC;
+      --background-alt: #F9F9F9;
+      --border-color: #F0F0F0;
+      --background-accent: #F4F4F4;
+    }
 
-  body, html {
-    font-family: Helvetica;
-    margin: 0;
-    padding: 0;
-    font-size: var(--font-size-rg);
-    color: var(--font-color);
-  }
-</style>
+    body, html {
+      font-family: Helvetica;
+      margin: 0;
+      padding: 0;
+      font-size: var(--font-size-rg);
+      color: var(--font-color);
+    }
+
+    .list {
+      list-decoration-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .list > .row, .list > li {
+      background: var(--background);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--base2) var(--base6);
+    }
+
+    .list > .row:nth-child(2n), .list > li:nth-child(2n) {
+      background: var(--background-alt);
+    }
+  </style>
+
+  <template name="preview" export>
+    <style scoped>
+      .component {
+        padding: var(--base6);
+        display: inline-block;
+      }
+
+      .component .title {
+        font-size: var(--font-size-md);
+        margin-bottom: var(--base6);
+      }
+    </style>
+    <div class="component">
+      <div class="title">List Component</div>
+      <div>
+        <ul class="list" style="width: 225px;">
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+        </ul>
+      </div>
+    </div>
+  </template>
+</module>
