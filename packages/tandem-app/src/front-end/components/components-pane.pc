@@ -25,6 +25,10 @@
         grid-auto-rows: minmax(100px, auto);
       }
 
+      .header {
+        /*border-bottom: 1px solid var(--border-color); */
+      }
+
       .cell:nth-child(3n) {
         border-right: none;
       }

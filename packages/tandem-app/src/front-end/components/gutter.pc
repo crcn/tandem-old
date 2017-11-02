@@ -32,16 +32,24 @@
       
       .header {
         color: #666;
+        background: var(--background-bold);
         text-transform: uppercase;
         padding: var(--base8) var(--base8);
         font-size: 0.9em;
-        border-bottom: 1px solid var(--border-color);
+      }
+
+      .header:first-child {
       }
       
       .header.sub {
         padding: var(--base4) var(--base8);
         margin: 0;
+        border-top: 2px solid var(--border-color);
+        border-bottom: 2px solid var(--border-color);
         background: var(--background-accent);
+      }
+
+      .header.sub:first-child {
       }
 
       .controls {
@@ -74,13 +82,13 @@
         </ul>
       </div>
       <div class="header">
-        Gutter
+        another pane
       </div>
       <div class="content padded">
         Content
       </div>
       <div class="header">
-        Gutter
+        pane
       </div>
       <div class="content padded">
         Content

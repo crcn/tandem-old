@@ -22,6 +22,7 @@
       --background-alt: #F9F9F9;
       --border-color: #ECECEC;
       --background-accent: #F4F4F4;
+      --background-bold: #EFEFEF;
       --background-overlay: rgba(255, 255, 255, 0.7);
     }
 
@@ -53,6 +54,9 @@
       background: var(--background-alt);
     }
 
+    .list > .row:last-child, .list > li:last-child {
+      border-bottom: none;
+    }
 
     .banner {
       padding: var(--base4);

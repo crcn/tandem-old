@@ -10,8 +10,15 @@
         +
       </div>
     </div>
-    <div class="content padded">
-      Window
+    <div class="content">
+      <ul class="list">
+        <li>Window 1</li>
+        <li>Window 1</li>
+        <li>Window 1</li>
+        <li>Window 1</li>
+        <li>Window 1</li>
+        <li>Window 1</li>
+      </ul>
     </div>
   </template>
 
