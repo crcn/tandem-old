@@ -31,6 +31,9 @@ AFTER INITIAL COMPONENTS:
   - [ ] refresh when local source change
   - [ ] 
 
+- [ ] Color picker
+  - [ ] pick presets from :root
+
 - [ ] VSCode integration
 
 - [ ] enable javascript - needed to play with components

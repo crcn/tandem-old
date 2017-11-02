@@ -5,7 +5,7 @@ import * as request from "request";
 import { ApplicationState, createComponentFromFilePath, Component } from "../state";
 import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
-import { routeHTTPRequest } from "../utils";
+import { routeHTTPRequest, getComponentFilePaths } from "../utils";
 import { watchUrisRequested, fileContentChanged, fileChanged } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -13,8 +13,6 @@ import * as fs from "fs";
 import * as glob from "glob";
 import { editString, StringMutation } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
-
-const getComponentFilePaths = ({ cwd, config: { componentsDirectory }}: ApplicationState) => glob.sync(path.join(componentsDirectory || cwd, "**", PAPERCLIP_FILE_PATTERN));
 
 export function* routesSaga() {
   yield routeHTTPRequest(

@@ -1,7 +1,7 @@
 import * as io from "socket.io-client";
 import { take, call, fork, select, put } from "redux-saga/effects";
 import { ApplicationState } from "../state";
-import { apiComponentsLoaded, FILE_CHANGED } from "../actions";
+import { apiComponentsLoaded, FILE_CHANGED, FileChanged } from "../actions";
 import { createSocketIOSaga } from "aerial-common2";
 
 export function* apiSaga() {
@@ -11,8 +11,14 @@ export function* apiSaga() {
 }
 
 function* getComponents() {
-  const { apiHost }: ApplicationState = yield select();
-  const response: Response = yield call(fetch, apiHost + "/components");
-  const json = yield call(response.json.bind(response));
-  yield put(apiComponentsLoaded(json));
+
+  while(true) {
+    const { apiHost }: ApplicationState = yield select();
+    const response: Response = yield call(fetch, apiHost + "/components");
+    const json = yield call(response.json.bind(response));
+    yield put(apiComponentsLoaded(json));
+
+    // just refresh whenever a file has changed
+    yield take(FILE_CHANGED);
+  } 
 }
