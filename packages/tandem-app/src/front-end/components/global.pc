@@ -14,10 +14,12 @@
       --font-size-sm: 8px;
       --font-color: #444;
       --font-color-dim: #CCC;
+      --font-color-light: rgba(255, 255, 255, 0.9);
       --background: #FCFCFC;
       --background-alt: #F9F9F9;
       --border-color: #ECECEC;
       --background-accent: #F4F4F4;
+      --background-overlay: rgba(255, 255, 255, 0.7);
     }
 
     body, html {
@@ -47,22 +49,45 @@
     .list > .row:nth-child(2n), .list > li:nth-child(2n) {
       background: var(--background-alt);
     }
+
+
+    .banner {
+      padding: var(--base4);
+    }
+
+    .banner.warning {
+      background: yellow;
+    }
+
+    .banner.error {
+      color: var(--font-color-light);
+      background: red;
+    }
+
+    .banner.success {
+      color: var(--font-color-light);
+      background: blue;
+    }
   </style>
 
   <template name="preview" export>
     <style scoped>
       .component {
         padding: var(--base6);
-        display: inline-block;
+        float: left;
       }
 
       .component .title {
         font-size: var(--font-size-md);
         margin-bottom: var(--base6);
       }
+
+      .pad {
+        margin: var(--base4) 0;
+      }
     </style>
     <div class="component">
-      <div class="title">List Component</div>
+      <div class="title">List</div>
       <div>
         <ul class="list" style="width: 225px;">
           <li>Item</li>
@@ -76,6 +101,18 @@
           <li>Item</li>
           <li>Item</li>
         </ul>
+      </div>
+    </div>
+    <div class="component">
+      <div class="title">Banner (todo when color picker is done)</div>
+      <div class="banner warning pad">
+        Warning
+      </div>
+      <div class="banner error pad">
+        Banner
+      </div>
+      <div class="banner success pad">
+        Success
       </div>
     </div>
   </template>

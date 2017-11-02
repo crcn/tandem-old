@@ -1,0 +1,41 @@
+<module xmlns:global="./global.pc" xmlns:workspace="./workspace.pc">
+  <meta name="name" content="Modal" />
+  <template name="main" export>
+    <style scoped>
+      .modal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: var(--background-overlay);
+      }
+
+      .content-outer {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+
+        /* Rule of thirds -- 666 */
+        transform: translate(-50%, -66.6666%);
+      }
+
+      .content {
+        
+      }
+    </style>
+    <div class="modal">
+      <div class="content-outer">
+        {{props.children}}
+      </div>
+    </div>
+  </template>
+  <template name="preview" export>
+    <workspace:preview />
+    <main>
+      <div class="content">
+        Child
+      </div>
+    </main>
+  </template>
+</module>

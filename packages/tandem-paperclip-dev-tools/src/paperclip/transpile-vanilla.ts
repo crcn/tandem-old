@@ -618,8 +618,10 @@ const transpileChildBlock = (node: PCBlock, context: TranspileContext) => {
   const nDeclaration = declare("n", undefined, context);
 
   let buffer = `
-    for (var ${iDeclaration.varName} = 0, ${nDeclaration.varName} = ${node.value}.length; ${iDeclaration.varName} < ${nDeclaration.varName}; ${iDeclaration.varName}++) {
-      ${fragmentDeclaration.varName}.appendChild(${node.value}[${iDeclaration.varName}]);
+    if (typeof ${node.value} !== "undefined") {
+      for (var ${iDeclaration.varName} = 0, ${nDeclaration.varName} = ${node.value}.length; ${iDeclaration.varName} < ${nDeclaration.varName}; ${iDeclaration.varName}++) {
+        ${fragmentDeclaration.varName}.appendChild(${node.value}[${iDeclaration.varName}]);
+      }
     }
   `;
   
