@@ -1,0 +1,7 @@
+<module xmlns:gutter="./global.pc">
+  <meta name="name" content="Tree" />
+
+  <template name="preview" export>
+    Tree TODO
+  </template>
+</module>

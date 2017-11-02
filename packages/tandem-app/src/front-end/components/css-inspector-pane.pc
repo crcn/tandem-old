@@ -4,6 +4,7 @@ TODOS:
 - [ ] inherited flag
 - [ ] priority flag
 - [ ] toggle visibility button
+- [ ] pretty editor for values
 -->
 
 <module xmlns:gutter="./gutter.pc">

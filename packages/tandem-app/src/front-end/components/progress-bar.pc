@@ -1,0 +1,7 @@
+<module xmlns:gutter="./global.pc">
+  <meta name="name" content="Progress Bar" />
+
+  <template name="preview" export>
+    Progress bar TODO
+  </template>
+</module>
