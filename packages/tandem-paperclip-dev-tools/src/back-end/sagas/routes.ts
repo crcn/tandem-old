@@ -79,9 +79,10 @@ const BUILTIN_COMPONENTS: Component[] = [
 
 function* getAvailableComponents() {
   const state: ApplicationState = yield select();
+  const readFileSync = getReadFile(state);
   
   return [...BUILTIN_COMPONENTS, ...getComponentFilePaths(state).map(filePath => (
-    createComponentFromFilePath(fs.readFileSync(filePath, "utf8"), filePath)
+    createComponentFromFilePath(readFileSync(filePath), filePath)
   ))];
 }
 
@@ -119,6 +120,11 @@ function* watchUris(req: express.Request, res: express.Response) {
   res.send([]);
 }
 
+const getReadFile = (state: ApplicationState) => (filePath: string) => {
+  const fileCache = state.fileCache.find((item) => item.filePath === filePath);
+  return fileCache ? fileCache.content.toString("utf8") : fs.readFileSync(filePath, "utf8")
+};
+
 function* getComponentPreview(req: express.Request, res: express.Response) {
 
   // TODO - evaluate PC code IN THE BROWSER -- need to attach data information to element
@@ -136,10 +142,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   
   const state: ApplicationState = yield select();
 
-  const readFileSync = (filePath: string) => {
-    const fileCache = state.fileCache.find((item) => item.filePath === filePath);
-    return fileCache ? fileCache.content.toString("utf8") : fs.readFileSync(filePath, "utf8")
-  }
+  const readFileSync = getReadFile(state);
 
   const transpileResult: TranspileResult = transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, {
     assignTo: "bundle",
@@ -181,7 +184,6 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
             document.createTextNode('"preview" template not found')
           );
         } else {
-          console.log(...styles);
           styles.forEach(function(style) {
             document.body.appendChild(style);
           });

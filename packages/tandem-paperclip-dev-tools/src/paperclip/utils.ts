@@ -1,3 +1,4 @@
+import * as md5 from "md5";
 import { 
   Token,
   PCParent,
@@ -26,6 +27,13 @@ export const getPCStartTagAttribute = (element: PCElement | PCSelfClosingElement
 
 export const hasPCStartTagAttribute = (element: PCElement | PCSelfClosingElement, name: string) => {
   return Boolean(getElementStartTag(element).attributes.find((attr) => attr.name === name));
+}
+
+export const getPCStyleElements = (parent: PCParent) => filterPCASTTree(parent, (expression) => expression.type === PCExpressionType.ELEMENT && (expression as PCElement).startTag.name === "style");
+
+export const getPCStyleID = (element: PCElement) => {
+  const textChild = element.children[0];
+  return `style_` + md5((textChild && textChild.type === PCExpressionType.STRING && (textChild as PCString).value) || "");
 }
 
 /**

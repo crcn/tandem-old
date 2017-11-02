@@ -12,12 +12,15 @@ import {
   PCAtRule,
   PCStyleRule, 
   PCGroupingRule,
+  stringifyStyleAST,
   PCStyleDeclarationProperty, 
   PCStyleExpressionType, 
 } from "./style-ast";
 import { 
   getPCImports,
+  getPCStyleID,
   traversePCAST, 
+  getPCStyleElements,
   getExpressionPath,
   getPCStartTagAttribute,
   hasPCStartTagAttribute,
@@ -216,6 +219,14 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
     buffer += `var ${getNsVarName(ns)} = require("${path}");\n`
     buffer += `${STYLES_VAR} = ${STYLES_VAR}.concat(${getNsVarName(ns)}.${STYLES_VAR});\n`;
   }
+
+  const styleElements = getPCStyleElements(root) as PCElement[];
+  for (const style of styleElements) {
+    const styleDecl = transpileStyleElement(style, context);
+    buffer += styleDecl.content;
+    buffer += `${STYLES_VAR}.push(${styleDecl.varName});\n`;
+  }
+
   buffer += transpileChildren(root, context);
 
   buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
@@ -297,7 +308,7 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       break;
     }
     case "style": {
-      declaration = transpileStyleElement(node, context);
+      declaration = transpileStyleElementPlaceholder(node, context);
       break;
     }
     default: {
@@ -317,27 +328,28 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   const scoped = hasPCStartTagAttribute(node, "scoped");
   const path = getExpressionPath(node, context.root);
 
-  const varName = `style_${md5(context.uri)}`;
+  const varName = getPCStyleID(node);
 
   let buffer = `
     var ${varName} = document.createElement("style");
-    ${varName}.setAttribute("data-style-id", "${varName}");
   `;
 
   const textChild = node.children[0] as PCString;
   let cssSource = repeat("\n", textChild.location.start.line - 1) + context.source.substr(textChild.location.start.pos, textChild.location.end.pos - textChild.location.start.pos);
   
-  const styleSheet = transpileStyleSheet(parsePCStyle(cssSource), { ...context, scope: scoped ? varName : null });
+  const styleAST = parsePCStyle(cssSource);
+  const scope = scoped ? varName : null;
   
   // if synthetic, then we're running FE code in tandem, so so we can
   // instantiate otherwise illegal constructors & attach useful information about them 
   buffer += `if (window.$synthetic) { \n`;
+  const styleSheet = transpileStyleSheet(styleAST, { ...context, scope: scope });
   buffer += styleSheet.content;
-
   buffer += `${varName}.$$setSheet(${styleSheet.varName});\n`;
 
   buffer += `} else { \n`;
-  buffer += `${varName}.textContent = "${cssSource.replace('"', '\\"').replace(/[\n\r\s\t]+/g, " ")}";\n`;
+  const prefixedCSS = stringifyStyleASTWithScope(styleAST, scope);
+  buffer += `${varName}.textContent = "${prefixedCSS.replace('"', '\\"').replace(/[\n\r\s\t]+/g, " ")}";\n`;
   buffer += `}\n`;
 
   // buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
@@ -353,6 +365,26 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   };
 };
 
+const stringifyStyleASTWithScope = (ast: PCExpression, scope: string) => stringifyStyleAST(ast, (expr: PCExpression) => {
+  if (scope && expr.type === PCStyleExpressionType.STYLE_RULE) {
+    const rule = expr as PCStyleRule;
+    return `${prefixSelectorText(rule, scope)} {
+      ${rule.declarationProperties.map(child => stringifyStyleASTWithScope(child, scope)).join("\n")}
+    }`;
+  }
+})
+
+// TODO - eventually need to put these style elements within the global context, or check if they've already
+// been registered. Otherwise they'll pollute the CSSOM when used repeatedly. 
+const transpileStyleElementPlaceholder = (node: PCElement, context: TranspileContext) => {
+  const scoped = hasPCStartTagAttribute(node, "scoped");
+  const path = getExpressionPath(node, context.root);
+  const styleId = getPCStyleID(node);
+  const span = declareNode(`document.createElement("span")`, context);
+  span.content += `${span.varName}.setAttribute("data-style-id", "${styleId}");\n`;
+  return span;
+};
+
 const transpileStyleSheet = (ast: PCSheet, context: TranspileStyleContext) => {
   const children = transpileGroupingRuleChildren(ast, context);
   const declaration = declareRule(`new CSSStyleSheet([${children.map(child => child.varName).join(", ")}])`, context);
@@ -363,12 +395,13 @@ const transpileStyleSheet = (ast: PCSheet, context: TranspileStyleContext) => {
 
 const transpileGroupingRuleChildren = (ast: PCGroupingRule, context: TranspileStyleContext) => ast.children.map((rule) => transpileGroupingRule(rule, context));
 
+const prefixSelectorText = (rule: PCStyleRule, scope: string) => `[data-style-id=${scope}] ~ ${rule.selectorText.trim()}, [data-style-id=${scope}] ~ * ${rule.selectorText.trim()}`;
 
 const transpileGroupingRule = (ast: PCGroupingRule, context: TranspileStyleContext): Declaration => {
   if (ast.type === PCStyleExpressionType.STYLE_RULE) {
     const styleRule = ast as PCStyleRule;
 
-    const selectorText = context.scope ? `[data-style-id=${context.scope}] ~ ${styleRule.selectorText}, [data-style-id=${context.scope}] ~ * ${styleRule.selectorText}` : styleRule.selectorText;
+    const selectorText = context.scope ? prefixSelectorText(styleRule, context.scope) : styleRule.selectorText;
 
     return addDeclarationSourceReference(declareRule(`new CSSStyleRule("${selectorText.replace('"', '\\"')}", ${transpileStyleDeclaration(styleRule, context)})`, context), ast, context);
   } else if (ast.type === PCStyleExpressionType.AT_RULE) {
