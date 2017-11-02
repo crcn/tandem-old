@@ -32,7 +32,7 @@
       
       .header {
         color: #666;
-        background: var(--background-bold);
+        background: var(--background-accent);
         text-transform: uppercase;
         padding: var(--base8) var(--base8);
         font-size: 0.9em;

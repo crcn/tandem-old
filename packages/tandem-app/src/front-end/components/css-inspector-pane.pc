@@ -11,21 +11,6 @@ TODOS:
   <meta name="name" content="CSS Inspector" />
 
   <template name="style-declaration">
-    <style scoped>
-      .name {
-        color: var(--font-color-dim);
-        padding-right: var(--base4);
-      }
-      .name:after {
-        content: ":";
-      }
-      .value {
-        color: var(--font-color-alt);
-      }
-
-      .value:after {
-      }
-    </style>
     <li class="style-declaration">
       <span class="name">{{props.name}}</span>
       <span class="value">{{props.value}}</span>
@@ -39,6 +24,19 @@ TODOS:
         float: right;
         text-decoration: underline;
         color: var(--font-color-dim);
+      }
+      .name {
+        color: var(--font-color-dim);
+        padding-right: var(--base4);
+      }
+      .name:after {
+        content: ":";
+      }
+      .value {
+        color: var(--font-color-alt);
+      }
+
+      .value:after {
       }
     </style>
 
