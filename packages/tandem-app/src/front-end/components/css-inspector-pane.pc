@@ -1,6 +1,39 @@
 <module xmlns:gutter="./gutter.pc">
   <meta name="name" content="CSS Inspector" />
 
+  <template name="style-declaration">
+    <li>Item</li>
+  </template>
+
+  <template name="style-rule">
+
+    <style scoped>
+      .source {
+        float: right;
+        text-decoration: underline;
+        color: var(--font-color-dim);
+      }
+    </style>
+
+    <div class="style-rule">
+      <div class="header sub lowercase">
+        {{props.selectorText}}
+        <span class="source">
+          {{props.sourceUri}}
+        </span>
+      </div>
+
+      <ul class="list">
+        <style-declaration />
+        <style-declaration />
+        <style-declaration />
+        <style-declaration />
+        <style-declaration />
+        <style-declaration />
+      </ul>
+    </div>
+  </template>
+
   <template name="main" export>
 
     <style scoped>
@@ -35,7 +68,8 @@
       </div>
     </div>
     <div class="content">
-      TODO
+      <style-rule selectorText=".container" sourceUri="global.pc" />
+      <style-rule selectorText=".body" sourceUri="global.pc" />
     </div>
   </template>
 

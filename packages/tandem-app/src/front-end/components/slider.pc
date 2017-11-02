@@ -28,7 +28,7 @@
     </style>
     <div class="slider">
       <div class="guide">
-        <div class="knob" style={{"left:calc(" + (value * 100) + "% - 10px);"}}></div>
+        <div class="knob" style={{"left:calc(" + (props.value * 100) + "% - 10px);"}}></div>
       </div>
     </div>
   </template>

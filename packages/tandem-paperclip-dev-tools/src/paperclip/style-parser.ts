@@ -1,5 +1,5 @@
 import { PCSheet, PCStyleDeclarationProperty, PCAtRule, PCStyleExpressionType, PCStyleRule, PCGroupingRule } from "./style-ast";
-import { Token, getLocation } from "./ast";
+import { Token, getLocation, PCComment } from "./ast";
 import { throwUnexpectedToken, assertCurrTokenType } from "./utils";
 import { createToken, TokenScanner, StringScanner, eatUntil } from "./scanners";
 import { weakMemo } from "aerial-common2";
@@ -11,6 +11,8 @@ enum TokenType {
   NAME,
   SELECTOR,
   CHAR,
+  COMMENT_START,
+  COMMENT_END,
   WHITESPACE,
   VARIABLE,
   COLON,
@@ -46,7 +48,11 @@ const tokenize = (source: string) => {
     } else if (char === ":") {
       token = createToken(TokenType.COLON, scanner.pos, scanner.shift()); 
     } else if (char === "*") {
-      token = createToken(TokenType.STAR, scanner.pos, scanner.shift());
+      if (scanner.peek(2) === "*/") {
+        token = createToken(TokenType.COMMENT_END, scanner.pos, scanner.take(2));
+      } else {
+        token = createToken(TokenType.STAR, scanner.pos, scanner.shift());
+      }
     } else if (char === ",") {
       token = createToken(TokenType.COMMA, scanner.pos, scanner.shift());
     } else if (char === "'") {
@@ -58,7 +64,11 @@ const tokenize = (source: string) => {
     } else if (char === ")") {
       token = createToken(TokenType.RIGHT_PAREN, scanner.pos, scanner.shift());
     } else if (char === "/") {
-      token = createToken(TokenType.BACKSLASH, scanner.pos, scanner.shift());
+      if (scanner.peek(2) === "/*") {
+        token = createToken(TokenType.COMMENT_START, scanner.pos, scanner.take(2));
+      } else {
+        token = createToken(TokenType.BACKSLASH, scanner.pos, scanner.shift());
+      }
     } else if (char === "+") {
       token = createToken(TokenType.PLUS, scanner.pos, scanner.shift());
     } else if (char === "-") {
@@ -110,7 +120,9 @@ const getRuleChild = (scanner: TokenScanner) => {
 
   const curr = scanner.curr();
 
-  if (scanner.hasNext() && (scanner.peek().type === TokenType.COLON || scanner.peek().type === TokenType.MINUS) && scanner.peekUntil((token) => token.type === TokenType.SEMICOLON || token.type === TokenType.OPEN_CURLY_BRACKET).type === TokenType.SEMICOLON) {
+  if (curr.type === TokenType.COMMENT_START) {
+    return getComment(scanner);
+  } else if (scanner.hasNext() && (scanner.peek().type === TokenType.COLON || scanner.peek().type === TokenType.MINUS) && scanner.peekUntil((token) => token.type === TokenType.SEMICOLON || token.type === TokenType.OPEN_CURLY_BRACKET).type === TokenType.SEMICOLON) {
     return getDeclaration(scanner);
   } else if (curr.type === TokenType.NAME || curr.type == TokenType.NUMBER || curr.type === TokenType.COLON) {
     return getRule(scanner);
@@ -118,6 +130,29 @@ const getRuleChild = (scanner: TokenScanner) => {
 
   throw new Error(`Unexpected token ${curr.value} (${curr.type}) at ${curr.pos}`);
 };
+
+const getComment = (scanner: TokenScanner): PCComment => {
+  const start = scanner.curr();
+  scanner.next(); // eat /*
+  let curr = start;
+  let end: Token;
+  let buffer = "";
+  while(1) {
+    if (!curr || curr.type === TokenType.COMMENT_END) {
+      break;
+    }
+    end = curr;
+    buffer += curr.value;
+    curr = scanner.next();
+  }
+  
+  scanner.next(); // eat */
+  return {
+    type: PCStyleExpressionType.COMMENT,
+    location: getLocation(start, end, scanner.source),
+    value: buffer
+  }
+}
 
 const getRule = (scanner: TokenScanner) => {
   if (scanner.curr().value.charAt(0) === "@") {

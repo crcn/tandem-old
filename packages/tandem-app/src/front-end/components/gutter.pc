@@ -6,24 +6,42 @@
 
       .gutter {
         background: var(--background);
-        min-width: 225px;
+        min-width: 250px;
         height: 100%;
         display: flex;
         flex-direction: column;
+        overflow: scroll;
+      }
+
+      .gutter.left {
+        border-right: 1px solid var(--border-color);
+      }
+
+      .gutter.right {
+        border-left: 1px solid var(--border-color);
       }
 
       .content {
         flex: 1;
         overflow: scroll;
       }
+
+      .content.padded {
+        padding: var(--base8);
+      }
       
       .header {
         color: #666;
         text-transform: uppercase;
-        padding: var(--base4) var(--base8);
-        background: var(--background-accent);
+        padding: var(--base8) var(--base8);
         font-size: 0.9em;
         border-bottom: 1px solid var(--border-color);
+      }
+      
+      .header.sub {
+        padding: var(--base4) var(--base8);
+        margin: 0;
+        background: var(--background-accent);
       }
 
       .controls {
@@ -31,8 +49,8 @@
         display: inline-block;
       }
     </style>
-    <div class="gutter">
-      {{children}}
+    <div class={{"gutter " + props.class}}>
+      {{props.children}}
     </div>
   </template>
 
@@ -43,9 +61,28 @@
   <template name="preview" export dev>
     <gutter>
       <div class="header">
-        Gutter
+        Styles
       </div>
       <div class="content">
+        <ul class="list">
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+          <li>Item</li>
+        </ul>
+      </div>
+      <div class="header">
+        Gutter
+      </div>
+      <div class="content padded">
+        Content
+      </div>
+      <div class="header">
+        Gutter
+      </div>
+      <div class="content padded">
         Content
       </div>
     </gutter>

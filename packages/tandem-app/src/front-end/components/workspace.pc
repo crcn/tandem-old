@@ -10,7 +10,7 @@
       }
     </style>
     <div class="workspace">
-      <gutter:gutter>
+      <gutter:gutter class="left">
         <windows-pane:main />
         <components-pane:main onComponentStartDrag={{noop}} components={{[
           { label: "div" },
@@ -22,7 +22,7 @@
       </gutter:gutter>
       <div class="stage">
       </div>
-      <gutter:gutter>
+      <gutter:gutter class="right">
         <css-inspector-pane:main />
       </gutter:gutter>
     </div>

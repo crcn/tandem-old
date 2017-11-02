@@ -13,9 +13,10 @@
       --font-size-lg: 24px;
       --font-size-sm: 8px;
       --font-color: #444;
+      --font-color-dim: #CCC;
       --background: #FCFCFC;
       --background-alt: #F9F9F9;
-      --border-color: #F0F0F0;
+      --border-color: #ECECEC;
       --background-accent: #F4F4F4;
     }
 
@@ -27,8 +28,12 @@
       color: var(--font-color);
     }
 
+    .lowercase {
+      text-transform: lowercase !important;
+    }
+
     .list {
-      list-decoration-type: none;
+      list-style-type: none;
       padding: 0;
       margin: 0;
     }

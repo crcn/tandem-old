@@ -10,7 +10,7 @@
         +
       </div>
     </div>
-    <div class="content">
+    <div class="content padded">
       Window
     </div>
   </template>

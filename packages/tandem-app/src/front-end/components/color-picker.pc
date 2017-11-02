@@ -9,7 +9,6 @@
         flex-direction: column;
         height: 100%;
         position: relative;
-
       }
 
       .pallete {
@@ -58,7 +57,7 @@
         </div>
       </div>
       <div class="presets">
-        <repeat each={{presetColors}} as="presetColor">
+        <repeat each={{props.presetColors}} as="presetColor">
           <div class="preset" style={{ "background: " + presetColor + ";" }}></div>
         </repeat>
       </div>

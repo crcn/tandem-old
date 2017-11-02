@@ -546,9 +546,9 @@ const transpileTemplate = (node: PCElement, context: TranspileContext) => {
 
   ;
 
-  let buffer = `function ${jsFriendlyName}(context) {
+  let buffer = `function ${jsFriendlyName}(props) {
     ${fragmentDeclaration.content}
-    ${transpileScopedChildNodes(fragmentDeclaration, node, "context", newContext)}
+    ${addNodeDeclarationChildren(fragmentDeclaration, node, newContext)}
     return ${fragmentDeclaration.varName};
   }\n`;
 
@@ -602,7 +602,7 @@ const transpileText = (node: PCString, context: TranspileContext) => createTextN
 const transpileTextBlock = (node: PCBlock, context: TranspileContext) => {
 
   // reserved
-  if (node.value === "children") {
+  if (node.value === "props.children") {
     return transpileChildBlock(node, context);
   }
 

@@ -32,6 +32,7 @@ describe(__filename + "#", () => {
     ".container { color }",
     ".container {",
     ".container { } @media",
+    ".container { } /* a */ @media",
   ].forEach((source) => {
     it(`throws an error when parsing ${source}`, () => {
       expect(() => {

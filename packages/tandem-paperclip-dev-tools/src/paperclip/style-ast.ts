@@ -5,7 +5,8 @@ export enum PCStyleExpressionType {
   STYLE_RULE,
   RULE,
   AT_RULE,
-  DECLARATION
+  DECLARATION,
+  COMMENT
 };
 
 export type PCGroupingRule = {

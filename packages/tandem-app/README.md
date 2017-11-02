@@ -25,6 +25,8 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] CSS in web is not scoped
   - [ ] multi drag windows doesn't work properly
   - [ ] editing content from UI still breaks (drag cell)
+  - [ ] !important flags show up as overridden in style pane
+  - [ ] cannot change element attribute (see gutter.pc -- class={{"gutter " + props.class}})
 
 AFTER INITIAL COMPONENTS:
 
