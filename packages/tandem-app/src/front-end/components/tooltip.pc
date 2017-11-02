@@ -1,0 +1,6 @@
+<module>
+  <meta name="name" content="Tooltip" />
+  <template name="preview" export>
+    TOOLTIP TODO
+  </template>
+</module>
