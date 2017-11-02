@@ -1,8 +1,34 @@
+<!-- 
+
+TODOS:
+- [ ] inherited flag
+- [ ] priority flag
+- [ ] toggle visibility button
+-->
+
 <module xmlns:gutter="./gutter.pc">
   <meta name="name" content="CSS Inspector" />
 
   <template name="style-declaration">
-    <li>Item</li>
+    <style scoped>
+      .name {
+        color: var(--font-color-dim);
+        padding-right: var(--base4);
+      }
+      .name:after {
+        content: ":";
+      }
+      .value {
+        color: var(--font-color-alt);
+      }
+
+      .value:after {
+      }
+    </style>
+    <li class="style-declaration">
+      <span class="name">{{props.name}}</span>
+      <span class="value">{{props.value}}</span>
+    </li>
   </template>
 
   <template name="style-rule">
@@ -24,43 +50,17 @@
       </div>
 
       <ul class="list">
-        <style-declaration />
-        <style-declaration />
-        <style-declaration />
-        <style-declaration />
-        <style-declaration />
-        <style-declaration />
+        <style-declaration name="background-color" value="red" />
+        <style-declaration name="color" value="rgba(255, 255, 255, 0)"/>
+        <style-declaration name="text-transform" value="uppercase" />
+        <style-declaration name="float" value="left" />
+        <style-declaration name="padding" value="var(--base6) var(--base7)"  />
+        <style-declaration name="position" value="relative" />
       </ul>
     </div>
   </template>
 
   <template name="main" export>
-
-    <style scoped>
-      .content {
-      }
-      .row {
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .cell {
-        width: 33.3333%;
-        box-sizing: border-box;
-        height: 100px;
-        position: relative;
-        text-align: center;
-        border-right: 1px solid #F0F0F0;
-        border-bottom: 1px solid #F0F0F0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .cell:first-child {
-        border-left: 1px solid #F0F0F0;
-      }
-
-    </style>
     <div class="header">
       CSS Inspector
       <div class="controls">

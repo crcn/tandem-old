@@ -8,11 +8,14 @@
       --base4: 8;
       --base6: 10;
       --base8: 12;
+      --base10: 14;
+      --base11: 16;
       --font-size-rg: 12px;
       --font-size-md: 18px;
       --font-size-lg: 24px;
       --font-size-sm: 8px;
       --font-color: #444;
+      --font-color-alt: #999;
       --font-color-dim: #CCC;
       --font-color-light: rgba(255, 255, 255, 0.9);
       --background: #FCFCFC;
@@ -43,7 +46,7 @@
     .list > .row, .list > li {
       background: var(--background);
       border-bottom: 1px solid var(--border-color);
-      padding: var(--base2) var(--base6);
+      padding: var(--base6) var(--base8);
     }
 
     .list > .row:nth-child(2n), .list > li:nth-child(2n) {

@@ -1,0 +1,13 @@
+<module>
+  <meta name="name" content="Breadcrumbs" />
+  <template name="main" export>
+    <style scoped>
+      .breadcrumbs {
+        
+      }
+    </style>
+  </template>
+  <template name="preview" export>
+    TODO
+  </template>
+</module>

@@ -351,7 +351,7 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
 
   buffer += `} else { \n`;
   const prefixedCSS = stringifyStyleASTWithScope(styleAST, scope);
-  buffer += `${varName}.textContent = "${prefixedCSS.replace('"', '\\"').replace(/[\n\r\s\t]+/g, " ")}";\n`;
+  buffer += `${varName}.textContent = ${JSON.stringify(prefixedCSS)};\n`;
   buffer += `}\n`;
 
   // buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
@@ -436,7 +436,7 @@ const transpileStyleDeclaration = (ast: PCStyleRule, context: TranspileStyleCont
   let objectBuffer = `{`;
 
   for (const property of ast.declarationProperties) {
-    objectBuffer += `"${property.name}": "${property.value.replace('"', '\\"').replace(/[\s\r\n\t]+/g, " ")}", `;
+    objectBuffer += `"${property.name}": "${property.value.replace(/"/g, '\\"').replace(/[\s\r\n\t]+/g, " ")}", `;
   }
   
   objectBuffer += `}`;

@@ -16,17 +16,17 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 
 - [ ] transpile to web components (need for state changes, and to reflect in UI)
 - [ ] features supporting component development
-  - [ ] javascript execution
+  - [ ] javascript execution (via web components)
   - [ ] canvas support
 
 - [ ] allow comments in PC file
 
 - [ ] Bugs
-  - [ ] CSS in web is not scoped
   - [ ] multi drag windows doesn't work properly
   - [ ] editing content from UI still breaks (drag cell)
   - [ ] !important flags show up as overridden in style pane
   - [ ] cannot change element attribute (see gutter.pc -- class={{"gutter " + props.class}})
+  - [ ] cannot parse semicolon within CSS string ("; ")
 
 AFTER INITIAL COMPONENTS:
 
@@ -162,42 +162,9 @@ NON-GOALS:
 - [ ] persisting to local storage needs to reload sibling windows
 - [ ] POST needs to reload sibling windows (not self)
 
-
-- COMPATIBILITY CHECKLIST:
-
-- [ ] works with browser sync
-- [ ] works with webpack HMR
-
 - UX
 
 - [ ] notify user when window doesn't have source maps
   - [ ] possibly dim or overlay elements that are not editable
   - [ ] use popdown
 - [ ] identify non-editable elements
-
-CLEANUP:
-
-- [ ] file cache namespaced to workspace
-- [ ] use old DOM rendering code
-- [ ] keep measurements when resizing
-- [ ] XHR handler for server
-
-BUGS:
-
-
-MVP:
-
-- save workspace online
-
-After validating:
-
-- remote renderer
-
-
-REV:
-
-$var: 5
-$var2: $var * 3;
-$var3: $var2 * 5;
-
-
