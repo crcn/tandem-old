@@ -55,6 +55,8 @@ describe(__filename + "#", () => {
     '<a></a>',
     '<a />',
     '<a b c d="e" />',
+    '<!--a b c d="e" -->',
+    '<a b="c" d="e"><f h="i" j="k"></f></a>',
     '<a b="c" d="e"><f h="i" j="k"></f></a>',
     '<a b="c" d="e">1<f h="i" j="k"></f>2</a>',
   ].forEach((source) => {

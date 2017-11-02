@@ -4,6 +4,7 @@ import {
   PCString, 
   PCStartTag,
   PCEndTag,
+  PCComment,
   PCBlock, 
   PCAttribute, 
   PCFragment,
@@ -23,6 +24,8 @@ enum TokenType {
   LESS_THAN,
   GREATER_THAN,
   BLOCK_START,
+  COMMENT_START,
+  COMMENT_END,
   BLOCK_END,
   BACKSLASH,
   EQUALS,
@@ -52,7 +55,13 @@ const tokenize = (source: string) => {
     let token: Token;
 
     if (cchar === "<") {
-      token = createToken(TokenType.LESS_THAN, scanner.pos, scanner.shift());
+      if (scanner.peek(4) === "<!--") {
+        token = createToken(TokenType.COMMENT_START, scanner.pos, scanner.take(4));
+      } else {
+        token = createToken(TokenType.LESS_THAN, scanner.pos, scanner.shift());
+      }
+    } else if (cchar === "-" && scanner.peek(3) === "-->") {
+      token = createToken(TokenType.COMMENT_END, scanner.pos, scanner.take(3));
     } else if (cchar === ">") {
       token = createToken(TokenType.GREATER_THAN, scanner.pos, scanner.shift());
     } else if (cchar === "=") {
@@ -98,13 +107,42 @@ function createFragment(scanner: TokenScanner): PCFragment  {
 
 function createNode(scanner: TokenScanner): PCExpression  {
   const token = scanner.curr();
-  if (token.type === TokenType.LESS_THAN) {
+  if (token.type === TokenType.COMMENT_START) {
+    return createComment(scanner);
+  } else if (token.type === TokenType.LESS_THAN) {
     return createTag(scanner);
   } else if (token.type === TokenType.BLOCK_START) {
     return createBlock(scanner);
   } else {
     return createText(scanner);
   }
+}
+
+function createComment(scanner: TokenScanner): PCComment {
+  let buffer = "";
+  const startToken = scanner.curr();
+  scanner.next(); // eat <!--
+  let endToken: Token;
+  while(1) {
+    const currToken = scanner.curr();
+    if (!currToken) {
+      break;
+    }
+    endToken = currToken;
+    if (!currToken || currToken.type === TokenType.COMMENT_END) {
+      break;
+    }
+    buffer += currToken.value;
+    scanner.next();
+  }
+
+  scanner.next(); // eat -->
+
+  return {
+    type: PCExpressionType.COMMENT,
+    location: getLocation(startToken, endToken, scanner.source),
+    value: buffer
+  };
 }
 
 function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingElement {
@@ -312,7 +350,7 @@ function createText(scanner: TokenScanner): PCString {
   let endToken: Token;
   while(1) {
     const currToken = scanner.curr();
-    if (!currToken || currToken.type === TokenType.LESS_THAN || currToken.type === TokenType.BLOCK_START) {
+    if (!currToken || currToken.type === TokenType.LESS_THAN || currToken.type === TokenType.BLOCK_START || currToken.type === TokenType.COMMENT_START) {
       break;
     }
     endToken = currToken;

@@ -33,6 +33,7 @@ import {
   PCExpressionType,
   PCSelfClosingElement,
   PCElement,
+  PCComment,
   PCStartTag,
   PCEndTag,
   PCAttribute,
@@ -236,7 +237,9 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
   return buffer;
 });
 
-const transpileChildren = (parent: PCParent, context: TranspileContext) => parent.children.map((child) => getTranspileContent(transpileNode(child, context))).join("\n");
+const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(getTranspileContent).join("\n");
+
+const getTranspiledChildren = (parent: PCParent, context: TranspileContext) => parent.children.map((child) => transpileNode(child, context)).filter(child => Boolean(child));
 
 const transpileNode = (node: PCExpression, context: TranspileContext): Declaration => {
   if (node.type === PCExpressionType.STRING) {
@@ -249,7 +252,6 @@ const transpileNode = (node: PCExpression, context: TranspileContext): Declarati
     return transpileElement(node as PCElement, context);
   }
 };
-
 
 const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context: TranspileContext, element?: PCElement) => {
 
@@ -466,7 +468,7 @@ const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, elem
   ));
 
   if (element && element.children.length > 0) {
-    const childDeclarations = element.children.map((child) => transpileNode(child, context));
+    const childDeclarations = getTranspiledChildren(element, context);
     buffer += childDeclarations.map((decl) => decl.content).join("");
 
     attributeBuffer.push(
@@ -588,6 +590,7 @@ const addNodeDeclarationChildren = (declaration: Declaration, node: PCElement, c
   for (let i = 0, {length} = node.children; i < length; i++) {
     const child = node.children[i];
     const childDeclaration = transpileNode(child, context);
+    if (!childDeclaration) continue;
     content += childDeclaration.content;
     content += callDeclarationProperty(declaration, "appendChild", childDeclaration.varName, context);
   }

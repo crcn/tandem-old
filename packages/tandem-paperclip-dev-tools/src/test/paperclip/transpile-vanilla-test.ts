@@ -84,6 +84,7 @@ describe(__filename + "#", () => {
           }
       </style>
     `,
+    `<!-- ab -->c`,
     `
       <style>
           .container {
