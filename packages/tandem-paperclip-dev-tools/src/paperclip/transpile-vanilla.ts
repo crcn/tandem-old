@@ -21,6 +21,7 @@ import {
   getPCStyleID,
   traversePCAST, 
   getPCStyleElements,
+  getPCLinkStyleElements,
   getExpressionPath,
   getPCStartTagAttribute,
   hasPCStartTagAttribute,
@@ -228,6 +229,14 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
     buffer += `${STYLES_VAR}.push(${styleDecl.varName});\n`;
   }
 
+  const linkElements = getPCLinkStyleElements(root) as PCSelfClosingElement[];
+  for (const link of linkElements) {
+    const decl = transpileStartTag(link, context)
+    buffer += decl.content;
+    buffer += `${STYLES_VAR}.push(${decl.varName});\n`;
+
+  }
+
   buffer += transpileChildren(root, context);
 
   buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
@@ -273,6 +282,9 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
 };
 
 const transpileSelfClosingElement = (element: PCSelfClosingElement, context: TranspileContext) => {
+  if (element.name === "link") {
+    return null;
+  }
   return transpileStartTag(element, context);
 }
 
@@ -304,6 +316,11 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
     case "template": {
       declaration = transpileTemplate(node, context);
       break;
+    }
+    case "link": {
+      
+      // transpiled above
+      return null;
     }
     case "repeat": {
       declaration = transpileRepeat(node, context);

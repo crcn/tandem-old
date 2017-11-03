@@ -37,7 +37,7 @@
       <div class="header">
         Components
         <div class="controls">
-          +
+          <i class="ion-more" />
         </div>
       </div>
       <div class="content">

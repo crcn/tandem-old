@@ -63,7 +63,7 @@ TODOS:
     <div class="header">
       CSS Inspector
       <div class="controls">
-        +
+        <i class="ion-more" />
       </div>
     </div>
     <div class="content">

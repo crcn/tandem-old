@@ -55,6 +55,9 @@
       .controls {
         float: right;
         display: inline-block;
+        font-size: 1.5em;
+        position: relative;
+        top: -2px;
       }
     </style>
     <div class={{"gutter " + props.class}}>

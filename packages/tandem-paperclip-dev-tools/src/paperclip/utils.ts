@@ -31,6 +31,13 @@ export const hasPCStartTagAttribute = (element: PCElement | PCSelfClosingElement
 
 export const getPCStyleElements = (parent: PCParent) => filterPCASTTree(parent, (expression) => expression.type === PCExpressionType.ELEMENT && (expression as PCElement).startTag.name === "style");
 
+export const getPCLinkStyleElements = (parent: PCParent) => filterPCASTTree(parent, (expression) => expression.type === PCExpressionType.SELF_CLOSING_ELEMENT && (expression as PCSelfClosingElement).name === "link");
+
+export const getPCCSSElements = (parent: PCParent) => [
+  ...getPCStyleElements(parent),
+  ...getPCLinkStyleElements(parent)
+];
+
 export const getPCStyleID = (element: PCElement) => {
   const textChild = element.children[0];
   return `style_` + md5((textChild && textChild.type === PCExpressionType.STRING && (textChild as PCString).value) || "");

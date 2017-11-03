@@ -424,6 +424,7 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
 
     private _parseStylesheet(text: string) {
       const sheet: SEnvCSSStyleSheetInterface = this.sheet = new SEnvCSSStyleSheet();
+      sheet.href = this.href;
       sheet.ownerNode = this;
       const location = this.ownerDocument.defaultView.location;
       sheet.cssText = text;
