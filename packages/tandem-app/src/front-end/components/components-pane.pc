@@ -12,14 +12,19 @@
         text-align: center;
         border-right: 1px solid var(--border-color);
         border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
 
       .cell:hover {
         color: var(--font-color-light);
         background: var(--background-highlight);
+      }
+
+      .cell > .inner {
+        width: 100%;
+        height:100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .content {
@@ -49,7 +54,9 @@
       <div class="content">
         <repeat each={{props.components}} as="component">
           <div class="cell" onstartdrag={{props.onComponentStartDrag.bind(component)}}>
-            {{component.label}}
+            <div class="inner" draggable>
+              {{component.label}}
+            </div>
           </div>
         </repeat>
     </div>
