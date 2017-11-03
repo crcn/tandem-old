@@ -1,6 +1,7 @@
 import { Action } from "redux";
 import { VisualDevConfig } from "../state";
 import { Request, Response } from "express";
+import { ExpressionLocation } from "aerial-common2";
 
 export const ALERT = "ALERT";
 export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
@@ -32,6 +33,10 @@ export type FileContentChanged =  {
 
 export type FileAction = {
   filePath: string
+} & Action;
+
+export type OpenFileRequested = {
+  source: ExpressionLocation
 } & Action;
 
 export enum AlertLevel {
@@ -85,9 +90,9 @@ export const startDevServerRequest = () => ({
   type: START_DEV_SERVER_REQUESTED
 });
 
-export const openFileRequested = (filePath): FileAction => ({ 
+export const openFileRequested = (source: ExpressionLocation): OpenFileRequested => ({ 
   type: OPEN_FILE_REQUESTED,
-  filePath
+  source
 });
 
 export const openTandemExecuted = () => ({ 

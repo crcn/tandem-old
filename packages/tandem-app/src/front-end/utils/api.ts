@@ -1,4 +1,5 @@
 import { ApplicationState } from "../state";
+import { ExpressionLocation } from "aerial-common2";
 export const getAPIProxyUrl = (uri: string, state: ApplicationState) => (
   `${state.apiHost}/proxy/${encodeURIComponent(uri)}`
 );
@@ -20,14 +21,14 @@ export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
   return await response.json();
 }
 
-export const apiOpenSourceFile = async (uri: string, state: ApplicationState) => { 
+export const apiOpenSourceFile = async (source: ExpressionLocation, state: ApplicationState) => { 
   const response = await fetch(`${state.apiHost}/open`, {
     method: "POST",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(uri)
+    body: JSON.stringify(source)
   });
 
   return await response.json();

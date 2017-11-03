@@ -158,7 +158,7 @@ function* handleMetaClickElement() {
 
     // TODO - display error if source URI does not exist, or URI is not a file
     if (node.source && node.source.uri) {
-      yield call(apiOpenSourceFile, node.source.uri, state);
+      yield call(apiOpenSourceFile, node.source, state);
     }
   }
 }

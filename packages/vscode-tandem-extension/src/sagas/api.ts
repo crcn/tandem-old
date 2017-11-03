@@ -94,5 +94,5 @@ function* getTandemFile(req: Request, res: Response) {
 function* handleOpenFile(req: Request, res: Response) {
   const body = yield getPostData(req);
   res.send(`"ok"`);
-  yield put(openFileRequested(body.replace("file://", "")));
+  yield put(openFileRequested(body));
 }

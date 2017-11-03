@@ -4,7 +4,7 @@ import * as request from "request";
 import { editString, StringMutation } from "aerial-common2";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, fileContentChanged, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, VISUAL_DEV_CONFIG_LOADED, FileAction, OPEN_FILE_REQUESTED } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, fileContentChanged, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, VISUAL_DEV_CONFIG_LOADED, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested } from "../actions";
 import { ExtensionState, getFileCacheContent } from "../state";
 
 export function* vscodeSaga() {
@@ -37,6 +37,7 @@ function* handleAlerts() {
     }
   }
 }
+
 
 function* handleFileContentChanged() {
   while(true) {
@@ -194,9 +195,14 @@ function* handleOpenExternalWindow() {
 
 function* handleOpenFileRequested() {
   while(true) {
-    const { filePath }: FileAction = yield take(OPEN_FILE_REQUESTED);
-    vscode.workspace.openTextDocument(filePath).then(doc => {
-      vscode.window.showTextDocument(doc);
+    const { source: { uri, start } }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+    vscode.workspace.openTextDocument(uri.replace("file://", "")).then(doc => {
+      vscode.window.showTextDocument(doc).then(() => {
+        const activeTextEditor = vscode.window.activeTextEditor;
+        const range = activeTextEditor.document.lineAt(start.line - 1).range;
+        activeTextEditor.selection = new vscode.Selection(range.start, range.end);
+        activeTextEditor.revealRange(range);
+      });
     });
   }
 }

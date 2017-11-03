@@ -9,7 +9,7 @@
       }
     </style>
     <div class="workspace-footer">
-      FOOTER
+      FOOTER!
     </div>
   </template>
 </module>
