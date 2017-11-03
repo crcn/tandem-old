@@ -12,14 +12,14 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "workspaceContains:**/tandem.config.js"
   ],
   "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.startVisualDevServer",
-        "title": "Open current project in Tandem"
+        "command": "extension.openExternalWindow",
+        "title": "Open Tandem in external window"
       }
     ]
   },

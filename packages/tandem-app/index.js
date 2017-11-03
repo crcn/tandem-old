@@ -1,8 +1,10 @@
 // used for code editor extensions
 
 
-exports.getEntryHTML = function({ useFileProtocol = true, apiHost, proxy, localStorageNamespace }) {
-  const filePrefix = useFileProtocol ? `file://${__dirname}` : "";
+exports.getEntryHTML = function({ filePrefix, apiHost, proxy, localStorageNamespace }) {
+  if(!filePrefix) {
+    filePrefix = `file://${__dirname}`;
+  }
   return `
 <!DOCTYPE html>
 <html>

@@ -61,8 +61,10 @@ function* handleDevConfigLoaded() {
       }
     });
 
-    yield put(childDevServerStarted(childServerPort));
 
-    // TODO - dispatch child satarted
+    // wait for the server to start
+    yield call(delay, 1000);
+
+    yield put(childDevServerStarted(childServerPort));
   }
 }

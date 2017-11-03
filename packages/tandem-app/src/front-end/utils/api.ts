@@ -19,3 +19,16 @@ export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
 
   return await response.json();
 }
+
+export const apiOpenSourceFile = async (uri: string, state: ApplicationState) => { 
+  const response = await fetch(`${state.apiHost}/open`, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(uri)
+  });
+
+  return await response.json();
+}

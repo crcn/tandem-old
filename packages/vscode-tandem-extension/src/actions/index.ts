@@ -9,7 +9,10 @@ export const VISUAL_DEV_CONFIG_LOADED = "VISUAL_DEV_CONFIG_LOADED";
 export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
-export const START_DEV_SERVER_EXECUTED = "START_DEV_SERVER_EXECUTED";
+export const START_DEV_SERVER_REQUESTED = "START_DEV_SERVER_REQUESTED";
+export const OPEN_FILE_REQUESTED = "OPEN_FILE_REQUESTED";
+export const OPEN_TANDEM_EXECUTED = "OPEN_TANDEM_EXECUTED";
+export const OPEN_EXTERNAL_WINDOW_EXECUTED = "OPEN_EXTERNAL_WINDOW_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
 export const FILE_CHANGED = "FILE_CHANGED";
 
@@ -78,8 +81,21 @@ export const httpRequest = (request: Request, response: Response): HTTPRequest =
   response,
 });
 
-export const startDevServerExecuted = () => ({ 
-  type: START_DEV_SERVER_EXECUTED
+export const startDevServerRequest = () => ({ 
+  type: START_DEV_SERVER_REQUESTED
+});
+
+export const openFileRequested = (filePath): FileAction => ({ 
+  type: OPEN_FILE_REQUESTED,
+  filePath
+});
+
+export const openTandemExecuted = () => ({ 
+  type: OPEN_TANDEM_EXECUTED
+});
+
+export const openExternalWindowExecuted = () => ({ 
+  type: OPEN_EXTERNAL_WINDOW_EXECUTED
 });
 
 export const visualDevConfigLoaded = (config: VisualDevConfig) => ({

@@ -1,7 +1,7 @@
 import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBounds, resized, keepBoundsAspectRatio, request, shiftBounds, StructReference } from "aerial-common2";
 import { take, select, call, put, fork, spawn, cancel } from "redux-saga/effects";
 import { delay } from "redux-saga";
-import { apiGetComponentPreviewURI } from "../utils";
+import { apiGetComponentPreviewURI, apiOpenSourceFile } from "../utils";
 import { 
   RESIZER_MOVED,
   RESIZER_STOPPED_MOVING,
@@ -79,6 +79,7 @@ import {
 export function* mainWorkspaceSaga() {
   yield fork(openDefaultWindow);
   yield fork(handleAltClickElement);
+  yield fork(handleMetaClickElement);
   yield fork(handleDeleteKeyPressed);
   yield fork(handleNextWindowPressed);
   yield fork(handlePrevWindowPressed);
@@ -136,6 +137,28 @@ function* handleAltClickElement() {
           yield openNewWindow(state, href.value, window, workspace);
         }
       }
+    }
+  }
+}
+
+function* handleMetaClickElement() {
+  while(true) {
+    const event: StageToolOverlayClicked = yield take((action: StageToolOverlayClicked) => action.type === STAGE_MOUSE_CLICKED && action.sourceEvent.metaKey);
+    const state = yield select();
+    const targetRef = getStageToolMouseNodeTargetReference(state, event);
+    const workspace = getSelectedWorkspace(state);
+
+    // not items should be selected for meta clicks
+    if (workspace.selectionRefs.length) {
+      continue;
+    }
+
+    if (!targetRef) continue;
+    const node = getSyntheticNodeById(state, targetRef[1]);
+
+    // TODO - display error if source URI does not exist, or URI is not a file
+    if (node.source && node.source.uri) {
+      yield call(apiOpenSourceFile, node.source.uri, state);
     }
   }
 }

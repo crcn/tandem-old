@@ -4,7 +4,7 @@ import * as request from "request";
 import { editString, StringMutation } from "aerial-common2";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, fileContentChanged, FileContentChanged, startDevServerExecuted, START_DEV_SERVER_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, fileContentChanged, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, VISUAL_DEV_CONFIG_LOADED, FileAction, OPEN_FILE_REQUESTED } from "../actions";
 import { ExtensionState, getFileCacheContent } from "../state";
 
 export function* vscodeSaga() {
@@ -12,8 +12,10 @@ export function* vscodeSaga() {
   yield fork(handleFileContentChanged);
   yield fork(handleCommands);
   yield fork(handleTextEditorChange);
-  yield fork(handleStarted);
+  yield fork(handleOpenTandem);
+  yield fork(handleOpenExternalWindow);
   yield fork(handleTextEditorChanges);
+  yield fork(handleOpenFileRequested);
 }
 
 function* handleAlerts() {
@@ -109,8 +111,13 @@ function* handleTextEditorChange() {
 
 function* handleCommands() {
   const chan = eventChannel((emit) => {
-    vscode.commands.registerCommand("extension.startVisualDevServer", () => {
-      emit(startDevServerExecuted());
+
+    // TODO - vscode styling is foobar, so this command is not available in package.json for now. Need to open a GH ticket for styling issues.
+    vscode.commands.registerCommand("extension.openTandem", () => {
+      emit(openTandemExecuted());
+    });
+    vscode.commands.registerCommand("extension.openExternalWindow", () => {
+      emit(openExternalWindowExecuted());
     });
     return () => {};
   });
@@ -123,24 +130,24 @@ function* handleCommands() {
 const PREVIEW_NAME = `tandem-preview`;
 const PREVIEW_URI = vscode.Uri.parse(`${PREVIEW_NAME}://authority/${PREVIEW_NAME}`);
 
-function* handleStarted() {
+const getIndexUrl = (state: ExtensionState) => `http://localhost:${state.visualDevConfig.port}/index.html`;
 
-  // waiy for the first
-  yield take(CHILD_DEV_SERVER_STARTED);
+function* handleOpenTandem() {
+  yield take(OPEN_TANDEM_EXECUTED);
 
-  // wait until dev server starts (TODO - this is just a bandaid and needs a real fix)
-  yield call(delay, 1000);
-
-  const state: ExtensionState = yield select();
-  const { getEntryHTML } = require(state.visualDevConfig.vscode.tandemcodeDirectory || "tandemcode");
-  
+  let state: ExtensionState = yield select();
   var textDocumentContentProvider = {
     provideTextDocumentContent(uri) {
-      return getEntryHTML({
-        apiHost: `http://localhost:${state.visualDevConfig.port}`,
-        proxy: `http://localhost:${state.visualDevConfig.port}/proxy/`,
-        localStorageNamespace: state.rootPath
-      });
+      return `
+        <html>
+          <head>
+            <title>Tandem</title>
+          </head>
+          <body>
+            <iframe src="${getIndexUrl(state)}" style="position:absolute;left:0;top:0;width:100vw; height: 100%; border: none;"></iframe>
+          </body>
+        </html>
+      `;
     },
   };
 
@@ -149,6 +156,7 @@ function* handleStarted() {
       PREVIEW_NAME,
       textDocumentContentProvider)
   );
+
   while(true) {
     yield call(vscode.commands.executeCommand,
       "vscode.previewHtml",
@@ -156,8 +164,7 @@ function* handleStarted() {
       vscode.ViewColumn.Two,
       "Tandem"
     );
-
-    yield take(CHILD_DEV_SERVER_STARTED);
+    yield take(OPEN_TANDEM_EXECUTED);
   }
 }
 
@@ -166,11 +173,30 @@ function* handleTextEditorChanges() {
     const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
     const state: ExtensionState = yield select();
 
-    yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
+    yield call(request.post as any, `http://localhost:${state.visualDevConfig.port}/file`, {
       json: {
         filePath,
         content
       }
+    });
+  }
+}
+
+
+function* handleOpenExternalWindow() {
+  while(true) {
+    yield take(OPEN_EXTERNAL_WINDOW_EXECUTED);
+    const state: ExtensionState = yield select();
+    console.log(state);
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(getIndexUrl(state)));
+  }
+}
+
+function* handleOpenFileRequested() {
+  while(true) {
+    const { filePath }: FileAction = yield take(OPEN_FILE_REQUESTED);
+    vscode.workspace.openTextDocument(filePath).then(doc => {
+      vscode.window.showTextDocument(doc);
     });
   }
 }
