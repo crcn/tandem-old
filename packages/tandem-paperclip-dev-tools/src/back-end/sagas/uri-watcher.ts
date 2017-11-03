@@ -5,6 +5,7 @@ import { ApplicationState } from "../state";
 import { WATCH_URIS_REQUESTED, fileChanged, fileContentChanged, watchingFiles } from "../actions";
 import * as chokidar from "chokidar";
 import * as fs from "fs";
+import * as glob from "glob";
 
 export function* uriWatcherSaga() {
   yield fork(handleWatchUrisRequest);
@@ -70,7 +71,7 @@ function* handleWatchUrisRequest() {
       });
     }
 
-    const initialFileCache = urisByFilePath.map((filePath) => (
+    const initialFileCache = glob.sync(getComponentsFilePattern(state)).map((filePath) => (
       fileCache.find((item) => item.filePath === filePath) || readFile(filePath)
     ));
 

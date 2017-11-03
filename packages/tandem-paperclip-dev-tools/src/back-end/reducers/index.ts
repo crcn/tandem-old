@@ -30,7 +30,7 @@ export function mainReducer(state: ApplicationState, event: Action) {
         filePath,
         mtime,
         content,
-      })
+      });
     }
   }
  

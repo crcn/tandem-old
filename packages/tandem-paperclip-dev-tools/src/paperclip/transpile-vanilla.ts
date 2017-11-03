@@ -5,7 +5,6 @@ import * as md5 from "md5";
 import * as path from "path";
 import { parse } from "./parser";
 import { flatten, repeat } from "lodash";
-import { weakMemo } from "../utils";
 import { parsePCStyle } from "./style-parser";
 import { 
   PCSheet, 
@@ -100,8 +99,8 @@ export type TranspileResult = {
 
 export const transpilePCASTToVanillaJS = (source: string, uri: string, options: TranspileOptions = {}) => {
   return transpileBundle(source, uri, {
+    readFileSync: (filePath) => fs.readFileSync(filePath, "utf8"),
     ...options,
-    readFileSync: (filePath) => fs.readFileSync(filePath, "utf8")
   });
 };
 
@@ -202,7 +201,7 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
 
 const getNsVarName = (ns: string) => `$$ns$$${ns.replace(/\-/g, "_")}`;
 
-const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, importsMap: any = {}) => {
+const transpileModule = (root: PCFragment, source: string, uri: string, importsMap: any = {}) => {
   
   const context: TranspileContext = {
     varCount: 0,
@@ -244,7 +243,7 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
   buffer += `})\n`
 
   return buffer;
-});
+};
 
 const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(getTranspileContent).join("\n");
 

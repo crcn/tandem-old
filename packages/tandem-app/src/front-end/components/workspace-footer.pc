@@ -15,15 +15,3 @@
     </div>
   </template>
 </module>
-<!--
-<style scoped>
-  .workspace-footer {
-    border-top: 2px solid var(--border-color-deep);
-    background: var(--background);
-    padding: var(--base8) var(--base11);
-  }
-</style>
-
-const template = () => <style>
-</style>;
--->
