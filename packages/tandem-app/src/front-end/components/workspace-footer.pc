@@ -9,6 +9,8 @@
       }
     </style>
     <div class="workspace-footer">
+
+      <!-- TODO: <editable-input><template><label /></template></editable-input> -->
       {{props.workspace.zoom * 100}}%
     </div>
   </template>

@@ -10,14 +10,14 @@ IMMEDIATE:
 
 high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
 
-- [ ] Components
-  - [ ] color picker
-  - [ ] slider
-
 - [ ] transpile to web components (need for state changes, and to reflect in UI)
 - [ ] features supporting component development
   - [ ] javascript execution (via web components)
   - [ ] canvas support
+
+- [ ] Components
+  - [ ] color picker
+  - [ ] slider
 
 - [ ] allow comments in PC file
 
@@ -27,6 +27,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] !important flags show up as overridden in style pane
   - [ ] cannot change element attribute (see gutter.pc -- class={{"gutter " + props.class}})
   - [ ] cannot parse semicolon within CSS string ("; ")
+  - [ ] enable javascript expressions in blocks
 
 AFTER INITIAL COMPONENTS:
 

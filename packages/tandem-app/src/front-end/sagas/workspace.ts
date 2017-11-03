@@ -362,6 +362,15 @@ function* handleSelectionKeyUp() {
 function* handleSourceClicked() {
   while(true) {
     const { itemId, windowId } = (yield take(SOURCE_CLICKED)) as SourceClicked;
+
+    const state = yield select();
+
+    const item = getSyntheticNodeById(state, itemId);
+
+    // TODO - display error if source URI does not exist, or URI is not a file
+    if (item.source && item.source.uri) {
+      yield call(apiOpenSourceFile, item.source, state);
+    }
   }
 }
 
