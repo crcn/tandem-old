@@ -15,6 +15,9 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] javascript execution (via web components)
   - [ ] canvas support
 
+- [ ] VSCode
+  - [ ] update content from cache if switching to new doc
+
 - [ ] Components
   - [ ] color picker
   - [ ] slider

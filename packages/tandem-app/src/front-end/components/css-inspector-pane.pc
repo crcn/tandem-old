@@ -42,6 +42,7 @@ TODOS:
 
     <div class="style-rule">
       <div class="header sub lowercase">
+      
         {{props.selectorText}}
         <span class="source">
           {{props.sourceUri}}

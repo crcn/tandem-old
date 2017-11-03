@@ -14,8 +14,8 @@ export function* vscodeSaga() {
   yield fork(handleTextEditorChange);
   yield fork(handleOpenTandem);
   yield fork(handleOpenExternalWindow);
-  yield fork(handleTextEditorChanges);
   yield fork(handleOpenFileRequested);
+  yield fork(handleTextEditorClosed);
 }
 
 function* handleAlerts() {
@@ -169,20 +169,19 @@ function* handleOpenTandem() {
   }
 }
 
-function* handleTextEditorChanges() {
-  while(true) {
-    const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
-    const state: ExtensionState = yield select();
 
-    yield call(request.post as any, `http://localhost:${state.visualDevConfig.port}/file`, {
-      json: {
-        filePath,
-        content
-      }
+function* handleTextEditorClosed() {
+  const chan = eventChannel((emit) => {
+    vscode.workspace.onDidCloseTextDocument((doc) => {
+      emit(textContentChanged(doc.uri.fsPath, fs.readFileSync(doc.uri.fsPath, "utf8")));
     });
+    return () => {};
+  });
+
+  while(true) {
+    yield put(yield take(chan));
   }
 }
-
 
 function* handleOpenExternalWindow() {
   while(true) {

@@ -2,15 +2,17 @@ import { ExtensionState } from "../state";
 import * as path from "path";
 import * as fs from "fs";
 import * as getPort from "get-port";
+import * as request from "request";
 import { spawn, ChildProcess } from "child_process";
 import { take, fork, select, put, call } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import { VISUAL_TOOLS_CONFIG_FILE_NAME } from "../constants";
-import { alert, AlertLevel, visualDevConfigLoaded, VISUAL_DEV_CONFIG_LOADED, childDevServerStarted } from "../actions";
+import { alert, AlertLevel, visualDevConfigLoaded, VISUAL_DEV_CONFIG_LOADED, childDevServerStarted, FileContentChanged, TEXT_CONTENT_CHANGED } from "../actions";
 
 export function* projectSaga() {
   yield fork(startDevServer);
   yield fork(handleDevConfigLoaded);
+  yield fork(handleTextEditorChanges);
 }
 
 function* startDevServer() {
@@ -66,5 +68,19 @@ function* handleDevConfigLoaded() {
     yield call(delay, 1000);
 
     yield put(childDevServerStarted(childServerPort));
+  }
+}
+
+function* handleTextEditorChanges() {
+  while(true) {
+    const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
+    const state: ExtensionState = yield select();
+
+    yield call(request.post as any, `http://localhost:${state.visualDevConfig.port}/file`, {
+      json: {
+        filePath,
+        content
+      }
+    });
   }
 }
