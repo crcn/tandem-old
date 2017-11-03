@@ -63,7 +63,6 @@ function* handleDevConfigLoaded() {
       }
     });
 
-
     // wait for the server to start
     yield call(delay, 1000);
 
@@ -75,6 +74,7 @@ function* handleTextEditorChanges() {
   while(true) {
     const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
     const state: ExtensionState = yield select();
+    console.log("FILE", filePath, content);
 
     yield call(request.post as any, `http://localhost:${state.visualDevConfig.port}/file`, {
       json: {

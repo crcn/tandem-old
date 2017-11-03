@@ -173,7 +173,7 @@ function* handleOpenTandem() {
 function* handleTextEditorClosed() {
   const chan = eventChannel((emit) => {
     vscode.workspace.onDidCloseTextDocument((doc) => {
-      emit(textContentChanged(doc.uri.fsPath, fs.readFileSync(doc.uri.fsPath, "utf8")));
+      emit(textContentChanged(doc.uri.fsPath.replace(".git", ""), fs.readFileSync(doc.uri.fsPath.replace(".git", ""), "utf8")));
     });
     return () => {};
   });

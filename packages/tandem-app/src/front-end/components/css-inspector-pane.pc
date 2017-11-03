@@ -12,6 +12,7 @@ TODOS:
 
   <template name="style-declaration">
     <li class="style-declaration">
+    
       <span class="name">{{props.name}}</span>
       <span class="value">{{props.value}}</span>
     </li>
@@ -42,7 +43,6 @@ TODOS:
 
     <div class="style-rule">
       <div class="header sub lowercase">
-      
         {{props.selectorText}}
         <span class="source">
           {{props.sourceUri}}
