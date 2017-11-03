@@ -6,14 +6,13 @@ import * as HttpProxy from "http-proxy";
 import * as fs from "fs";
 import * as path from "path";
 import { CHILD_DEV_SERVER_STARTED, fileContentChanged, startDevServerRequest, openFileRequested } from "../actions";
-import { take, fork, call, select, put } from "redux-saga/effects";
+import { take, fork, call, select, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { routeHTTPRequest } from "../utils";
 
 const FILES_PATTERN = /^\/edit$/;
 
 export function* apiSaga() {
-  yield take(CHILD_DEV_SERVER_STARTED);
   const proxy = HttpProxy.createProxyServer();
   proxy.on("error", (err, req, res) => {
     res.writeHead(500, {
