@@ -22,7 +22,9 @@
       --background: #FCFCFC;
       --background-alt: #F9F9F9;
       --border-color: #ECECEC;
+      --border-color-deep: #D9D9D9;
       --background-accent: #F4F4F4;
+      --background-deep: #E9E9E9;
       --background-bold: #EFEFEF;
       --background-overlay: rgba(255, 255, 255, 0.7);
     }

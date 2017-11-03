@@ -14,11 +14,11 @@
       }
 
       .gutter.left {
-        border-right: 1px solid var(--border-color);
+        border-right: 2px solid var(--border-color-deep);
       }
 
       .gutter.right {
-        border-left: 1px solid var(--border-color);
+        border-left: 2px solid var(--border-color-deep);
       }
 
       .content {

@@ -14,6 +14,7 @@ xmlns:footer="./workspace-footer.pc"
         flex-direction: column;
       }
       .stage {
+        background: var(--background-deep);
         flex: 1;
         width: 100%;
         height: 100%;
@@ -38,7 +39,7 @@ xmlns:footer="./workspace-footer.pc"
       <div class="center">
         <div class="stage">
         </div>
-        <footer:main />
+        <footer:main workspace={{props.workspace}} />
       </div>
       <gutter:gutter class="right">
         <css-inspector-pane:main />
@@ -46,6 +47,6 @@ xmlns:footer="./workspace-footer.pc"
     </div>
   </template>
   <template name="preview" export>
-    <workspace />
+    <workspace workspace={{[1]}} />
   </template>
 </module>

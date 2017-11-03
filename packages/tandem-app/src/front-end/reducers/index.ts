@@ -248,6 +248,13 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
+    case ESCAPE_SHORTCUT_PRESSED: {
+      const workspace = getSelectedWorkspace(state);
+      return updateWorkspace(state, workspace.$id, {
+        selectionRefs: []
+      });
+    }
+
     case ZOOM_IN_SHORTCUT_PRESSED: {
       const workspace = getSelectedWorkspace(state);
       if (workspace.stage.fullScreen) return state;
