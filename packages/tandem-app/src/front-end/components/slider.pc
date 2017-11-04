@@ -29,6 +29,7 @@
       
       this.onChange(this.value = relativeLeft / guideRect.width);
     }
+
   </script>
   <template>
     <div id="guide">

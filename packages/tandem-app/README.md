@@ -13,6 +13,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] Paperclip
   - [ ] import via <link /> attributes
   - [ ] watch all attributes
+  - [ ] import external scripts
   - [ ] figure out how to pass objects to attributes - (set as prop) (possibly check for <props>)
 
 - [ ] features supporting component development
@@ -23,6 +24,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] Components
   - [ ] color picker
   - [ ] slider
+  - [ ] progress
 
 - [ ] Bugs
   - [ ] allow refresh when script busts
