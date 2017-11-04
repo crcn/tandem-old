@@ -17,6 +17,7 @@ import {
 
 import { 
   CSSRuleType, 
+  SEnvNodeTypes,
   matchesSelector, 
   SEnvCSSRuleInterface, 
   SEnvDocumentInterface, 
@@ -91,7 +92,7 @@ export const windowMatchesMedia = weakMemo((window: SyntheticWindow, conditionTe
 
 // TODO - consider media screen here too
 
-export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
+export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, elementId: string, breakPastHost?: boolean) => {
   const element = getSyntheticWindowChild(window, elementId) as any as SyntheticElement;
   const document = element.instance.ownerDocument;
   const allRules = getDocumentCSSStyleRules(document.struct);
@@ -126,7 +127,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
 });
 
 const getSyntheticInheritableCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
-  const matchingCSSRules = getSyntheticMatchingCSSRules(window, elementId);
+  const matchingCSSRules = getSyntheticMatchingCSSRules(window, elementId, true);
   
   const inheritableCSSRules: StyledObject[] = [];
 
@@ -185,6 +186,9 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
   // reduce by 1 to omit #document
   for (let i = 0, n = ancestors.length - 1; i < n; i++) {
     const ancestor = ancestors[i];
+    if (ancestor.nodeType !== SEnvNodeTypes.ELEMENT) {
+      continue;
+    }
     const inheritedRules = getSyntheticInheritableCSSRules(window, ancestor.$id);
 
     for (let j = inheritedRules.length; j--;) {

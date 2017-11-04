@@ -485,13 +485,17 @@ export type BasicDocument = {
   title: string;
 } & BasicParentNode;
 
+export type BasicDocumentFragment = {
+  host?: BasicElement;
+} & BasicParentNode;
+
 export type BasicAttribute = {
   name: string;
   value: string; 
 }
 
 export type BasicElement = {
-  title: string;
+  shadowRoot?: BasicParentNode;
   attributes: ArrayLike<BasicAttribute>;
 } & BasicParentNode;
 
@@ -524,6 +528,10 @@ export type SyntheticParentNode = {
 export type SyntheticDocument = {
   instance: SEnvDocumentInterface;
 } & SyntheticParentNode & BasicDocument;
+
+export type SyntheticDocumentFragment = {
+  hostId?: string;
+} & SyntheticParentNode & BasicDocumentFragment;
 
 export type SyntheticAttribute = {
 } & BasicAttribute & SyntheticNode;
@@ -746,11 +754,11 @@ export const getSyntheticWindowChildStructs = weakMemo((window: SyntheticWindow)
 export const getSyntheticWindowChild = (window: SyntheticWindow, id: string) => getSyntheticWindowChildStructs(window)[id];
 
 export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: SyntheticWindow) => {
-  let current = getSyntheticWindowChild(window, node.parentId);
+  let current = getSyntheticWindowChild(window, node.parentId || (node as SyntheticDocumentFragment).hostId);
   const ancestors: SyntheticNode[] = [];
   while(current) {
     ancestors.push(current);
-    current = getSyntheticWindowChild(window, current.parentId);
+    current = getSyntheticWindowChild(window, current.parentId || (current as SyntheticDocumentFragment).hostId);
   }
   return ancestors;
 });

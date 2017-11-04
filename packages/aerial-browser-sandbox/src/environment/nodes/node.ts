@@ -1,5 +1,4 @@
 import { SEnvNodeTypes } from "../constants";
-import { constructNode } from "./utils";
 import { getSEnvEventClasses } from "../events";
 import { SEnvWindowInterface } from "../window";
 import { SEnvDocumentInterface } from "./document";
@@ -22,9 +21,7 @@ import { SEnvParentNodeInterface } from "./parent-node";
 import { SyntheticNode, SyntheticValueNode, BasicValueNode, BasicNode } from "../../state";
 
 export interface SEnvNodeInterface extends Node {
-  readonly constructed: boolean;
   uid: string;
-  cloned: boolean;
   $id: string;
   structType: string;
   struct: SyntheticNode;
@@ -33,13 +30,12 @@ export interface SEnvNodeInterface extends Node {
   ownerDocument: SEnvDocumentInterface;
   interactiveLoaded: Promise<any>;
   connectedToDocument: boolean;
-  $setOwnerDocument(document: SEnvDocumentInterface);
+  $$setOwnerDocument(document: SEnvDocumentInterface);
   $$parentNode: Node;
   setSource(source: ExpressionLocation): any;
   $$parentElement: HTMLElement;
-  $$addedToDocument(deep?: boolean);
+  $$setConnectedToDocument(value: boolean);
   $$removedFromDocument();
-  $$preconstruct();
   dispatchMutationEvent(mutation: Mutation<any>);
 };
 
@@ -63,7 +59,6 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     public source: ExpressionLocation;
     private _struct: SyntheticNode;
     private _constructed: boolean;
-    readonly constructClone: boolean;
     readonly structType: string;
 
     readonly attributes: NamedNodeMap;
@@ -76,6 +71,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     nodeValue: string | null;
     private _ownerDocument: SEnvDocumentInterface;
     textContent: string | null;
+    private _initialized: boolean;
     readonly ATTRIBUTE_NODE: number;
     readonly CDATA_SECTION_NODE: number;
     readonly COMMENT_NODE: number;
@@ -102,6 +98,8 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
 
     constructor() {
       super();
+      this.uid = this.$id = generateDefaultId();
+      this.childNodes = this.childNodesArray = new SEnvNodeList();
 
       // called specifically for elements
       if (this._constructed) {
@@ -109,22 +107,12 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
       }
       this._constructed = true;
       this.addEventListener(SEnvMutationEvent.MUTATION, this._onMutation.bind(this));
-
-      if (!this.cloned) {
-        this.initialize();
-      }
     }
 
     initialize() {
 
     }
 
-    $$preconstruct() {
-      super.$$preconstruct();
-      this.uid = this.$id = generateDefaultId();
-      this.childNodes = this.childNodesArray = new SEnvNodeList();
-    }
-    
     get ownerDocument() {
       return this._ownerDocument;
     }
@@ -173,12 +161,12 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     }
 
     protected updateStruct() {
-      this._struct = this.createStruct(this.parentNode);
+      this._struct = this.createStruct();
     }
 
-    protected createStruct(parentNode?: SEnvNodeInterface): SyntheticNode {
+    protected createStruct(): SyntheticNode {
       return {
-        parentId: parentNode ? parentNode.$id : null,
+        parentId: this.parentNode ? this.parentNode.$id : null,
         nodeType: this.nodeType,
         nodeName: this.nodeName,
         source: this.source,
@@ -196,7 +184,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     cloneNode(deep?: boolean): Node {
       const clone = this.cloneShallow();
       clone["" + "nodeName"] = this.nodeName;
-      clone.cloned = true;
+      clone["" + "_initialized"] = this._initialized;
       clone.source = this.source;
       clone.$id    = this.$id;
 
@@ -204,9 +192,6 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
         for (let i = 0, n = this.childNodes.length; i < n; i++) {
           clone.appendChild(this.childNodes[i].cloneNode(true));
         }
-      }
-      if (this.constructClone) {
-        constructNode(clone);
       }
       return clone;
     }
@@ -272,6 +257,12 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     }
 
     protected connectedCallback() {
+      if (this._initialized) {
+        this.initialize();
+      }
+    }
+
+    protected disconnectedCallback() {
 
     }
 
@@ -288,14 +279,19 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
       throw new SEnvDOMException("This node (" + this["constructor"].name + ") type does not support this method.");
     }
 
-    $$addedToDocument(deep?: boolean) {
-      this.connectedToDocument = true;
-      this.connectedCallback();
+    $$setConnectedToDocument(value: boolean) {
+      if (this.connectedToDocument === value) {
+        return;
+      }
+      this.connectedToDocument = value;
+      if (value) {
+        this.connectedCallback();
+      } else {
+        this.disconnectedCallback();
+      }
 
-      if (deep !== false) {
-        for (const child of this.childNodes) {
-          child.$$addedToDocument();
-        }
+      for (const child of this.childNodes) {
+        child.$$setConnectedToDocument(value);
       }
     }
 
@@ -303,15 +299,15 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
       return this.nodeType === SEnvNodeTypes.DOCUMENT ? (this as any as SEnvDocumentInterface).defaultView : this.ownerDocument.defaultView as SEnvWindowInterface;
     }
 
-    $setOwnerDocument(document: SEnvDocumentInterface) {
+    $$setOwnerDocument(document: SEnvDocumentInterface) {
       if (this.ownerDocument === document) {
         return;
       }
       this._ownerDocument = document;
-      this.$$addedToDocument(false);
+      
       if (this.childNodes) {
         for (const child of this.childNodes) {
-          (child as SEnvNodeInterface).$setOwnerDocument(document);
+          (child as SEnvNodeInterface).$$setOwnerDocument(document);
         }
       }
     }
@@ -324,7 +320,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
       super.dispatchEvent(event);
 
       // do not bubble if still constructing
-      if (event.bubbles && this.$$parentNode && !(event.type === SEnvMutationEvent.MUTATION && !this.$$parentNode.constructed)) {
+      if (event.bubbles && this.$$parentNode) {
         this.$$parentNode.dispatchEvent(event);
       }
       return true;

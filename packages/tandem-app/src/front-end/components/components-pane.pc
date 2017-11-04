@@ -1,50 +1,73 @@
-<module xmlns:gutter="./gutter.pc">
+<link rel="import" href="./global.pc" />
+<link rel="import" href="./pane.pc" />
+
+<component id="td-components-pane">
+  <property name="onComponentStartDrag" default={{noop}} />
+  
+  <template>
+    <td-pane>
+      <style>
+        .cell {
+          cursor: pointer;
+          box-sizing: border-box;
+          height: 100px;
+          position: relative;
+          text-align: center;
+          border-right: 1px solid var(--border-color);
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        .cell:hover {
+          color: var(--font-color-light);
+          background: var(--background-highlight);
+        }
+
+        .cell > .inner {
+          width: 100%;
+          height:100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .content {
+          position: relative;
+          display: grid;
+          grid-template-areas: inherit;
+          grid-template-columns: repeat(3, 1fr);
+          grid-gap: 0px;
+          grid-auto-rows: minmax(100px, auto);
+        }
+
+        .header {
+          /*border-bottom: 1px solid var(--border-color); */
+        }
+
+        .cell:nth-child(3n) {
+          border-right: none;
+        }
+
+      </style>
+      <span slot="header">Components</span>
+      <span slot="content" class="content">
+        <repeat each={{this.components || []}} as="component">
+          <div class="cell" onstartdrag={{this.onComponentStartDrag.bind(component)}}>
+            <div class="inner" draggable>
+              {{component.label}}
+            </div>
+          </div>
+        </repeat>
+      </span>
+    </td-pane>
+  </template>
+</component>
+
+<!--module xmlns:gutter="./gutter.pc">
   <meta name="name" content="Components Pane" />
 
   <template name="main" export>
 
-    <style scoped>
-      .cell {
-        cursor: pointer;
-        box-sizing: border-box;
-        height: 100px;
-        position: relative;
-        text-align: center;
-        border-right: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      .cell:hover {
-        color: var(--font-color-light);
-        background: var(--background-highlight);
-      }
-
-      .cell > .inner {
-        width: 100%;
-        height:100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .content {
-        position: relative;
-        display: grid;
-        grid-template-areas: inherit;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 0px;
-        grid-auto-rows: minmax(100px, auto);
-      }
-
-      .header {
-        /*border-bottom: 1px solid var(--border-color); */
-      }
-
-      .cell:nth-child(3n) {
-        border-right: none;
-      }
-
-    </style>
+    
       <div class="header">
         Components
         <div class="controls">
@@ -95,4 +118,4 @@
       ]}} />
     </gutter:gutter>
   </template>
-</module>
+</module-->

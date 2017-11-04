@@ -1,4 +1,61 @@
-<module xmlns:global="./global.pc">
+<link rel="import" href="./global.pc" />
+<component id="td-slider">
+  <property id="value" default={{0}} />
+  <property id="onChange" default={{noop}} />
+  <style>
+    #guide {
+      background: rgba(0,0,0,0.1);
+      border-radius: 5px;
+      padding-right: 8px;
+      position: relative;
+    }
+    
+    #knob {
+      background: rgba(0,0,0,0.2);
+      width: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      height: 8px;
+      position: relative;
+      box-sizing: border-box;
+    }
+    
+  </style>
+  <script>  
+    const onKnobDrag = (event) => {
+      const guideRect = this.guide.getBoundingClientRect();
+      const relativeLeft = Math.max(0, Math.min(guideRect.width, event.clientX - guideRect.left));
+      const relativeTop = Math.max(0, Math.min(guideRect.height, event.clientX - guideRect.top));
+      
+      this.onChange(this.value = relativeLeft / guideRect.width);
+    }
+  </script>
+  <template>
+    <div id="guide">
+      <td-draggable onDrag={{onKnobDrag}}>
+        <div id="knob" style={{"left:" + (this.value * 100) + "%;"}}></div>
+      </td-draggable>
+    </div>
+  </template>
+</component>
+
+<td-preview>
+  <style>
+    td-slider {
+      display: block;
+      margin: var(--base6);
+    }
+  </style>
+  <script>
+    const onChange = (value) => {
+      console.log("value change", value);
+    }
+  </script>
+  <td-slider value={{0}} />
+  <td-slider value={{0.5}} onChange={{e => console.log(e)}} />
+  <td-slider value={{1}} />
+</td-preview>
+<!--module xmlns:global="./global.pc">
   <meta name="name" content="Slider" />
   <template name="main" export>
     <style scoped>
@@ -8,22 +65,6 @@
       }
       .slider {
         
-      }
-
-      .guide {
-        background: rgba(0,0,0,0.1);
-        border-radius: 5px;
-        position: relative;
-      }
-      
-      .knob {
-        background: rgba(0,0,0,0.2);
-        width: 8px;
-        border-radius: 50%;
-        height: 8px;
-        position: relative;
-        box-sizing: border-box;
-        transform: translateX(10px);
       }
     </style>
     <div class="slider">
@@ -44,4 +85,4 @@
       <main value={{0}} />
     </div>
   </template>
-</module>
+</module-->

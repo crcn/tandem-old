@@ -30,7 +30,7 @@ describe(__filename + "#", () => {
     const domRenderer = window.renderer as SyntheticDOMRenderer;
     await domRenderer.requestRender();
 
-    expect(stripWhitespace(domRenderer.mount.innerHTML)).to.eql("<span></span><div><span><span><span>hello world</span></span></span></div>");
+    expect(stripWhitespace(domRenderer.mount.innerHTML)).to.eql(`<span></span><div><span><span><span style="display: none;"></span><span>hello world</span></span></span></div>`);
   });
 
 
@@ -57,7 +57,7 @@ describe(__filename + "#", () => {
           patchWindow(primaryWindow, diffWindow(primaryWindow, newWindow));
           const domRenderer = primaryWindow.renderer as SyntheticDOMRenderer;
           await domRenderer.requestRender();
-          expect(stripWhitespace(domRenderer.mount.innerHTML)).to.eql(`<span></span><div><span><span><span>${newWindow.document.body.innerHTML}</span></span></span></div>`);
+          expect(stripWhitespace(domRenderer.mount.innerHTML)).to.eql(`<span></span><div><span><span><span style="display: none;"></span><span>${newWindow.document.body.innerHTML}</span></span></span></div>`);
         } else {
           primaryWindow = newWindow;
         }

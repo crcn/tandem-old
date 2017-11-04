@@ -21,20 +21,6 @@ export const parseHTMLDocumentFragment = weakMemo((content: string) => {
   return ast as parse5.AST.Default.DocumentFragment;
 });
 
-export const constructNode = <T extends Node>(node: T) => {
-  if (node.nodeType ===  SEnvNodeTypes.ELEMENT) {
-    node.constructor.call(node);
-  }
-  return node;
-}
-
-export const constructNodeTree = <T extends Node>(parentNode: T) => {
-  for (const child of Array.prototype.slice.call(parentNode.childNodes)) {
-    constructNodeTree(child);
-  }
-  return constructNode(parentNode);
-}
-
 export const evaluateHTMLDocumentFragment = (source: string, document: SEnvDocumentInterface, parentNode: SEnvParentNodeInterface) => mapExpressionToNode(parseHTMLDocumentFragment(source), generateSourceHash(source), document, parentNode);
 
 export const getHTMLASTNodeLocation = (expression: parse5.AST.Default.CommentNode|parse5.AST.Default.Element|parse5.AST.Default.TextNode|any) => {
@@ -109,20 +95,20 @@ export const mapExpressionToNode = (expression: parse5.AST.Default.Node, fingerp
     }
     default: {
       const elementExpression = expression as parse5.AST.Default.Element;
-      const element = document.$createElementWithoutConstruct(elementExpression.nodeName);
+      const element = document.createElement(elementExpression.nodeName);
       for (const attr of elementExpression.attrs) {
         element.setAttribute(attr.name, attr.value);
       }
       addNodeSource(element as any as SEnvHTMLElementInterface, fingerprint, expression);
-      parentNode.appendChild(element);
       promise = mapChildExpressionsToNodes(promise, elementExpression.childNodes, fingerprint, document, element, async);
       if (async) {
         promise = promise.then(() => {
-          constructNode(element);
           return element.contentLoaded;
-        });
+        }).then(() => {
+          parentNode.appendChild(element);
+        })
       } else {
-        constructNode(element);
+        parentNode.appendChild(element);
       }
     }
   }

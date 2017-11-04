@@ -2,6 +2,42 @@
   <meta name="name" content="Tree" />
 
   <template name="preview" export>
-    Tree TODO
+    <script>
+      let count = props.count;
+      const onClick = () => {
+        count++;
+      }
+    </script>
+    <div onclick={{onClick}}>
+      {{count}}
+    </div>
   </template>
 </module>
+
+<!-- 
+
+transpiled to:
+
+const createStatefulComponent = (props, wrapEventHandler) => {
+  let count = props.count;
+  const onClick = () => {
+    count++;
+  };
+  return () => <div onclick={wrapEventHandler(onClick)}>
+    {count}
+  </div>;
+}
+
+class Component extends React.Component {
+  componentDidMount() {
+    this.initial = createStatefulComponent(this.props, (fn) => {
+      this.forceUpdate()   ;
+    });
+  }
+  render() {
+    return this.initial();
+  }
+}
+
+
+-->

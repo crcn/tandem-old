@@ -1,27 +1,20 @@
-<module xmlns:gutter="./gutter.pc">
-  <meta name="name" content="Windows Pane" />
+<link rel="import" href="./global.pc" />
+<link rel="import" href="./pane.pc" />
 
-  <template name="main" export>
-    <style scoped>
-    </style>
-    <div class="header">
-      Windows
-    </div>
-    <div class="content">
-      <ul class="list selectable">
-        <li>Window 1</li>
-        <li>Window 1</li>
-        <li>Window 1</li>
-        <li>Window 1</li>
-        <li>Window 1</li>
-        <li>Window 1</li>
-      </ul>
-    </div>
+<component id="td-windows-pane">
+  <template>
+    <td-pane>
+      <span slot="header">Windows</span>
+      <span slot="content">
+        <td-list>
+          <td-list-item>Window 1</td-list-item>
+          <td-list-item>Window 2</td-list-item>
+          <td-list-item>Window 3</td-list-item>
+          <td-list-item>Window 4</td-list-item>
+          <td-list-item>Window 5</td-list-item>
+          <td-list-item>Window 6</td-list-item>
+        </td-list>
+      </span>
+    </td-pane>
   </template>
-
-  <template name="preview" export>
-    <gutter:gutter>
-      <main />
-    </gutter:gutter>
-  </template>
-</module>
+</component>

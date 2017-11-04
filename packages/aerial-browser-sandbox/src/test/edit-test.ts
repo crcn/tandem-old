@@ -138,7 +138,6 @@ describe(__filename + "#", () => {
     await waitForDocumentComplete(window2);
 
     patchWindow(window, diffWindow(window, window2));
-
     
     history = updateContent(mutation2, history, createHTMLStringMutation);
     const newSource2 = getComputedEditHistoryContent(history, createHTMLStringMutation);

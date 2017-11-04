@@ -1,7 +1,8 @@
 export const AVAILABLE_COMPONENT = "AVAILABLE_COMPONENT";
 
 export type AvalaibleComponent = {
-  $id: string;
+  tagName: string;
   label: string;
-  category?: string;
+  hash: string;
+  filePath: string;
 };

@@ -37,8 +37,8 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
   return class SEnvParentNode extends SEnvNode implements ParentNode {
     private _children: SEnvHTMLAllCollectionInterface;
 
-    $$preconstruct() {
-      super.$$preconstruct();
+    constructor() {
+      super();
       this._children = new SEnvHTMLCollection().$init(this);
     }
 
@@ -68,7 +68,7 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
 
     createStruct(parentNode?: SEnvNodeInterface): SyntheticParentNode {
       return {
-        ...(super.createStruct(parentNode) as any),
+        ...(super.createStruct() as any),
         childNodes: Array.prototype.map.call(this.childNodes, child => child.struct)
       };
     }
@@ -80,15 +80,15 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
         }
         return child;
       }
-      this._linkChild(child as any as SEnvNodeInterface);
-      this.childNodesArray.splice(index, 0, child as any);
-      if (this.connectedToDocument) {
-        (child as any as SEnvNodeInterface).$$addedToDocument();
+      const c = child as any as SEnvNodeInterface;
+      if (c.$$parentNode) {
+        c.$$parentNode.removeChild(child);
       }
-
+      this.childNodesArray.splice(index, 0, child as any);
       const event2 = new SEnvMutationEvent2();
       event2.initMutationEvent(createParentNodeInsertChildMutation(this, child, index, false));
       this.dispatchEvent(event2);
+      this._linkChild(c);
 
       return child;
     }
@@ -100,12 +100,12 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
       }
 
       // needs to come after so that 
-      this._unlinkChild(child as any as SEnvNodeInterface);
       this.childNodesArray.splice(index, 1);
 
       const event2 = new SEnvMutationEvent2();
       event2.initMutationEvent(createParentNodeRemoveChildMutation(this, child, index));
       this.dispatchEvent(event2);
+      this._unlinkChild(child as any as SEnvNodeInterface);
 
       return child;
     }
@@ -180,15 +180,14 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
     }
 
     protected _linkChild(child: SEnvNodeInterface) {
-      if (child.$$parentNode) {
-        child.$$parentNode.removeChild(child);
-      }
       child.$$parentNode = this;
-      child.$setOwnerDocument(this.nodeType === SEnvNodeTypes.DOCUMENT ? this as any as SEnvDocumentInterface : this.ownerDocument);
+      child.$$setOwnerDocument(this.nodeType === SEnvNodeTypes.DOCUMENT ? this as any as SEnvDocumentInterface : this.ownerDocument);
+      child.$$setConnectedToDocument(this.nodeType === SEnvNodeTypes.DOCUMENT ? true : this.connectedToDocument);
     }
 
     protected _unlinkChild(child: SEnvNodeInterface) {
       child.$$parentNode = null;
+      child.$$setConnectedToDocument(this.nodeType === SEnvNodeTypes.DOCUMENT ? false : this.connectedToDocument);
       if (child.connectedToDocument) {
         child.$$removedFromDocument();
       }
@@ -219,7 +218,7 @@ export const createParentNodeMoveChildMutation = (oldNode: BasicParentNode, chil
   return createMoveChildMutation(SEnvParentNodeMutationTypes.MOVE_CHILD_NODE_EDIT, oldNode, child, patchedOldIndex || Array.from(oldNode.childNodes).indexOf(child), index);
 };
 
-export const diffParentNode = (oldNode: ParentNode & Node, newNode: ParentNode & Node, diffChildNode: (oldChild: BasicNode, newChild: BasicNode) => Mutation<any>[]) => {
+export const diffParentNode = (oldNode: BasicParentNode, newNode: BasicParentNode, diffChildNode: (oldChild: BasicNode, newChild: BasicNode) => Mutation<any>[]) => {
 
   const mutations = [...diffNodeBase(oldNode as any as SEnvNodeInterface, newNode as any as SEnvNodeInterface)];
 

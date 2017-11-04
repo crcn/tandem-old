@@ -11,7 +11,9 @@ export function* vscodeSaga() {
   yield fork(handleAlerts);
   yield fork(handleFileContentChanged);
   yield fork(handleCommands);
-  yield fork(handleTextEditorChange);
+  
+  // do not do this until flickering is fixed
+  // yield fork(handleTextEditorChange);
   yield fork(handleOpenTandem);
   yield fork(handleOpenExternalWindow);
   yield fork(handleOpenFileRequested);

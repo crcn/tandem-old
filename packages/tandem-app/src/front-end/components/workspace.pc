@@ -1,29 +1,51 @@
-<module xmlns:components-pane="./components-pane.pc" xmlns:gutter="./gutter.pc" xmlns:css-inspector-pane="./css-inspector-pane.pc" xmlns:windows-pane="./windows-pane.pc"
-xmlns:footer="./workspace-footer.pc"
->
-  <meta name="name" content="Workspace" />
-  <template name="workspace" export>
-    <style scoped>
-      .workspace {
-        display: flex;
-      }
-      .center {
-        display: flex;
-        width: 100%;
-        height: 100%;
-        flex-direction: column;
-      }
-      .stage {
-        background: var(--background-deep);
-        flex: 1;
-        width: 100%;
-        height: 100%;
-      }
-    </style>
+<link rel="import" href="./global.pc" />
+<link rel="import" href="./gutter.pc" />
+<link rel="import" href="./windows-pane.pc" />
+<link rel="import" href="./components-pane.pc" />
+<link rel="import" href="./css-inspector-pane.pc" />
+
+<component id="td-workspace-footer">
+  <property name="workspace" />
+  <style>
+    .workspace-footer {
+      border-top: 2px solid var(--border-color-deep);
+      background: var(--background);
+      padding: var(--base8) var(--base11);
+    }
+  </style>
+  <template>
+    <div class="workspace-footer">
+
+      <!-- TODO: <editable-input><template><label /></template></editable-input> -->
+      {{this.workspace * 100}}%
+    </div>
+  </template>
+</component>
+
+
+<component id="td-workspace">
+  <style>
+    .workspace {
+      display: flex;
+    }
+    .center {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+    }
+    .stage {
+      background: var(--background-deep);
+      flex: 1;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <template>
     <div class="workspace">
-      <gutter:gutter class="left">
-        <windows-pane:main />
-        <components-pane:main onComponentStartDrag={{noop}} components={{[
+      <td-gutter left>
+        <td-windows-pane />
+        <td-components-pane components={{[
           { label: "div" },
           { label: "h1" },
           { label: "h2" },
@@ -35,18 +57,19 @@ xmlns:footer="./workspace-footer.pc"
           { label: "ul" },
           { label: "li" }
         ]}} />
-      </gutter:gutter>
+      </td-gutter>
       <div class="center">
         <div class="stage">
         </div>
-        <footer:main workspace={{props.workspace}} />
+        <td-workspace-footer workspace={{this.workspace}} />
       </div>
-      <gutter:gutter class="right">
-        <css-inspector-pane:main />
-      </gutter:gutter>
+      <td-gutter right>
+        <td-css-inspector-pane />
+      </td-gutter>
     </div>
   </template>
-  <template name="preview" export>
-    <workspace workspace={{[1]}} />
-  </template>
-</module>
+</component>
+
+<td-preview>
+  <td-workspace />
+</td-preview>

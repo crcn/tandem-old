@@ -1,70 +1,73 @@
-<module xmlns:global="./global.pc">
+<link rel="import" href="./global.pc" />
+
+<component id="td-gutter-subheader">
+  <style>
+    :host {
+      color: var(--font-color-alt);
+      font-size: 0.9em;
+      padding: var(--base4) var(--base8);
+      margin: 0;
+      display: inline-block;
+      width: 100%;
+      box-sizing: border-box;
+      border-top: 2px solid var(--border-color);
+      border-bottom: 2px solid var(--border-color);
+      background: var(--background-accent);
+    }
+  </style>
+  <template>
+    <slot></slot>
+  </template>
+</component>
+
+<component id="td-gutter">
+  <style>
+    .gutter {
+      background: var(--background);
+      min-width: 250px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: scroll;
+    }
+
+    :host([left]) {
+      border-right: 2px solid var(--border-color-deep);
+    }
+
+    :host([right]) {
+      border-left: 2px solid var(--border-color-deep);
+    }
+
+    .content {
+      flex: 1;
+      overflow: scroll;
+    }
+
+    .content.padded {
+      padding: var(--base8);
+    }
+    
+    .controls {
+      cursor: pointer;
+      float: right;
+      display: inline-block;
+      font-size: 1.5em;
+      position: relative;
+      top: -2px;
+    }
+  </style>
+  <template>
+    <div class="gutter">
+      <slot></slot>
+    </div>
+  </template>
+</component>
+
+<!--module xmlns:global="./global.pc">
   <meta name="name" content="Gutter" />
 
   <template name="gutter" export>
-    <style scoped>
-
-      .gutter {
-        background: var(--background);
-        min-width: 250px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: scroll;
-      }
-
-      .gutter.left {
-        border-right: 2px solid var(--border-color-deep);
-      }
-
-      .gutter.right {
-        border-left: 2px solid var(--border-color-deep);
-      }
-
-      .content {
-        flex: 1;
-        overflow: scroll;
-      }
-
-      .content.padded {
-        padding: var(--base8);
-      }
-      
-      .header {
-        color: #666;
-        user-select: none;
-        background: var(--background-accent);
-        text-transform: uppercase;
-        padding: var(--base8) var(--base8);
-        font-size: 0.9em;
-      }
-
-      .header:first-child {
-      }
-      
-      .header.sub {
-        padding: var(--base4) var(--base8);
-        margin: 0;
-        border-top: 2px solid var(--border-color);
-        border-bottom: 2px solid var(--border-color);
-        background: var(--background-accent);
-      }
-
-      .header.sub:first-child {
-      }
-
-      .controls {
-        cursor: pointer;
-        float: right;
-        display: inline-block;
-        font-size: 1.5em;
-        position: relative;
-        top: -2px;
-      }
-    </style>
-    <div class={{"gutter " + props.class}}>
-      {{props.children}}
-    </div>
   </template>
 
   <template name="test">
@@ -100,4 +103,4 @@
       </div>
     </gutter>
   </template>
-</module>
+</module-->

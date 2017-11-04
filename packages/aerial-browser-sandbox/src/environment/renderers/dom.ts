@@ -14,6 +14,7 @@ import {
 import { SEnvWindowInterface, patchWindow, windowMutators, flattenWindowObjectSources } from "../window";
 import { 
   SEnvParentNodeMutationTypes, 
+  SyntheticDOMElementMutationTypes,
   createParentNodeInsertChildMutation, 
   SEnvParentNodeInterface, 
   SEnvCommentInterface, 
@@ -31,7 +32,6 @@ import { SET_SYNTHETIC_SOURCE_CHANGE, flattenNodeSources } from "../nodes";
 import { getNodeByPath, getNodePath } from "../../utils";
 
 const NODE_NAME_MAP = {
-  style: "span",
   head: "span",
   html: "span",
   body: "span",
@@ -43,11 +43,16 @@ const NODE_NAME_MAP = {
 const { SEnvWrapperEvent } = getSEnvEventClasses();
 
 type CSSRuleDictionaryType = {
-  [IDentifier: string]: [CSSGroupingRule|CSSRule|CSSStyleSheet, any]
+  [IDentifier: string]: [() => CSSGroupingRule|CSSRule|CSSStyleSheet, any]
 }
 
 type HTMLElementDictionaryType = {
   [IDentifier: string]: [Node, SEnvNodeInterface]
+}
+
+type DOMRendererDicts = {
+  nodes: HTMLElementDictionaryType,
+  sheets: CSSRuleDictionaryType,
 }
 
 const RECOMPUTE_TIMEOUT = 1;
@@ -81,7 +86,6 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
 
     this._onContainerResize = this._onContainerResize.bind(this);
     this.mount = targetDocument.createElement("div");
-    this.mount.innerHTML = this.createMountInnerHTML();
     this.container.onload = () => {
       this.container.contentWindow.document.body.appendChild(this.mount);
       this.container.contentWindow.addEventListener("resize", this._onContainerResize);
@@ -89,53 +93,16 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
     };
   }
 
-  createMountInnerHTML() {
-    return "<span></span><div></div>";
-  }
-
   protected async render() {
     if (!this._documentElement) {
-      Array.prototype.forEach.call(this.sourceWindow.document.styleSheets, (styleSheet) => {
-        this._registerStyleSheet(styleSheet);
-      });
-
-      this._documentElement = renderHTMLNode(this.sourceWindow.document, this._elementDictionary = {}, this.onElementChange, this.targetDocument);
-      this.mount.lastChild.appendChild(this._documentElement);
+      this._documentElement = renderHTMLNode(this.sourceWindow.document, {
+        nodes: this._elementDictionary = {},
+        sheets: this._cssRuleDictionary = {}
+      }, this.onElementChange, this.targetDocument);
+      this.mount.appendChild(this._documentElement);
     }
 
     this._resetComputedInfo();
-  }
-
-  private _remoteStylesheet(syntheticStyleSheet: SEnvCSSStyleSheetInterface) {
-    const [nativeStyleSheet] = this.getCSSObjectDictItem(syntheticStyleSheet);
-
-    if (nativeStyleSheet) {
-      (nativeStyleSheet.ownerNode as Element).remove();
-      this._cssRuleDictionary[syntheticStyleSheet.$id] = undefined;
-    }
-  }
-
-  private _registerStyleSheet(syntheticStyleSheet: SEnvCSSStyleSheetInterface, index?: number) {
-    if (this._cssRuleDictionary[syntheticStyleSheet.$id]) {
-      return;
-    }
-
-    if (index == null) {
-      index = Array.prototype.indexOf.call(this.sourceWindow.document.styleSheets, syntheticStyleSheet);
-    }
-    
-    const styleElement = this.targetDocument.createElement("style") as HTMLStyleElement;
-    styleElement.type = "text/css";
-    styleElement.appendChild(document.createTextNode(syntheticStyleSheet.previewCSSText));
-    const styleContainer = this.mount.firstChild;
-
-    if (index >= styleContainer.childNodes.length) {
-      styleContainer.appendChild(styleElement);
-    } else {
-      styleContainer.insertBefore(styleElement, styleContainer.childNodes[index]);
-    }
-
-    this._cssRuleDictionary[syntheticStyleSheet.$id] = [styleElement.sheet as CSSStyleSheet, syntheticStyleSheet];
   }
 
   private onElementChange = () => {
@@ -173,37 +140,31 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
 
     const { mutation } = event;
 
-
+    
     if (documentMutators[mutation.$type]) {
       const [nativeNode, syntheticObject] = this.getElementDictItem(mutation.target);
-      
-      if (nativeNode) {
 
+      // if(!nativeNode) {
+      //   console.warn(`Unable to find DOM node for mutation ${mutation.$type}`);
+      //   console.log(mutation.target);
+      //   console.log(Object.assign({}, this._elementDictionary));
+      // }
+
+      if (nativeNode) {
         if (mutation.$type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
           const removeMutation = mutation as RemoveChildMutation<any, SEnvNodeInterface>;
-
-          const nestedChildren = flattenNodeSources(removeMutation.child.struct);
-
-          for (const $id in nestedChildren) {
-            const child = nestedChildren[$id];
-            if (child.sheet) {
-              this._remoteStylesheet(child.sheet);
-            }
-            this._elementDictionary[$id] = undefined;
-          }
-
           (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, mutation);
         } else if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT) {
           const insertMutation = mutation as RemoveChildMutation<any, SEnvNodeInterface>;
-          const child = renderHTMLNode(insertMutation.child, this._elementDictionary, this.onElementChange, this.targetDocument);
-
-
-          const styleElements = filterNodes(insertMutation.child, child => Boolean((child as any as HTMLStyleElement).sheet)) as any as SEnvHTMLStyledElementInterface[];
-          styleElements.forEach((styleElement) => {
-            this._registerStyleSheet(styleElement.sheet);
-          });
+          const child = renderHTMLNode(insertMutation.child, { 
+            nodes: this._elementDictionary,
+            sheets: this._cssRuleDictionary
+          }, this.onElementChange, this.targetDocument);
 
           (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, createParentNodeInsertChildMutation(nativeNode, child, insertMutation.index, false));
+        } else if (mutation.$type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {
+          const shadow = (nativeNode as HTMLElement).attachShadow({ mode: "open" });
+          this._elementDictionary[(mutation.target as SEnvElementInterface).shadowRoot.$id] = [shadow, (mutation.target as SEnvElementInterface).shadowRoot];
         } else {
           (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, mutation);
         }
@@ -213,8 +174,8 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
         // depending on the browser. This is the simplest method for syncing changes.
         const parentStyleSheet = (((mutation.target as CSSStyleDeclaration).parentRule && (mutation.target as CSSStyleDeclaration).parentRule.parentStyleSheet) || (mutation.target as CSSStyleRule).parentStyleSheet) as SEnvCSSStyleSheetInterface;
         if (parentStyleSheet) {
-          const [nativeStyleSheet, syntheticStyleSheet] = this.getCSSObjectDictItem(parentStyleSheet);
-          this._updateCSSRules(nativeStyleSheet as CSSStyleSheet, syntheticStyleSheet);
+          const [getNativeStyleSheet, syntheticStyleSheet] = this.getCSSObjectDictItem(parentStyleSheet);
+          this._updateCSSRules(getNativeStyleSheet(), syntheticStyleSheet);
         }
       }
     }
@@ -286,7 +247,7 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
     const { mount } = this;
 
     if (mount) {
-      mount.innerHTML = this.createMountInnerHTML();
+      mount.innerHTML = "";
       mount.onclick = 
       mount.ondblclick = 
       mount.onsubmit = 
@@ -340,25 +301,25 @@ const eachMatchingElement = (a: SEnvNodeInterface, b: Node, each: (a: SEnvNodeIn
   });
 };
 
-const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType, onChange: () => any, document: Document): any =>  {
+const renderHTMLNode = (node: SEnvNodeInterface, dicts: DOMRendererDicts, onChange: () => any, document: Document): any =>  {
   switch(node.nodeType) {
 
     case SEnvNodeTypes.TEXT:
       const value = node.textContent;
       const textNode = document.createTextNode(/^[\s\r\n\t]+$/.test(value) ? "" : value);
-      dict[node.$id] = [textNode, node];
+      dicts.nodes[node.$id] = [textNode, node];
       return textNode;
 
     case SEnvNodeTypes.COMMENT:
       const comment = document.createComment((<SEnvCommentInterface>node).nodeValue);
-      dict[node.$id] = [comment, node];
+      dicts.nodes[node.$id] = [comment, node];
       return comment;
 
     case SEnvNodeTypes.ELEMENT:
       const syntheticElement = <SEnvElementInterface>node;
 
       const tagNameLower = syntheticElement.tagName.toLowerCase();
-      const element = renderHTMLElement(tagNameLower, syntheticElement, dict, onChange, document);
+      const element = renderHTMLElement(tagNameLower, syntheticElement, dicts, onChange, document);
 
       element.onload = onChange;
       for (let i = 0, n = syntheticElement.attributes.length; i < n; i++) {
@@ -386,35 +347,48 @@ const renderHTMLNode = (node: SEnvNodeInterface, dict: HTMLElementDictionaryType
         element.appendChild(iframe.contentWindow.renderer.container);
       }
 
+      if (tagNameLower === "style") {
+        const el = (syntheticElement as SEnvHTMLStyledElementInterface);
+        (element as HTMLStyleElement).type = "text/css";
+        
+        element.appendChild(document.createTextNode(el.sheet.previewCSSText));
+
+        // define function since sheet is not set until it's added to the document
+        dicts.sheets[el.sheet.$id] = [() => (element as HTMLStyleElement).sheet as CSSStyleSheet, el.sheet];
+      }
+
       // add a placeholder for these blacklisted elements so that diffing & patching work properly
-      if(/^(style|link|script|head)$/.test(tagNameLower)) {
+      if(/^(link|script|head)$/.test(tagNameLower)) {
         element.style.display = "none";
         return element;
       }
 
-      return appendChildNodes(element, syntheticElement.childNodes, dict, onChange, document);
+      return appendChildNodes(element, syntheticElement.childNodes, dicts, onChange, document);
     case SEnvNodeTypes.DOCUMENT:
     case SEnvNodeTypes.DOCUMENT_FRAGMENT:
       const syntheticContainer = <SEnvParentNodeInterface>node;
-      const containerElement = renderHTMLElement("span", syntheticContainer as SEnvElementInterface, dict, onChange, document);
-      return appendChildNodes(containerElement, syntheticContainer.childNodes as any as SEnvNodeInterface[], dict, onChange, document);
+      const containerElement = renderHTMLElement("span", syntheticContainer as SEnvElementInterface, dicts, onChange, document);
+      return appendChildNodes(containerElement, syntheticContainer.childNodes as any as SEnvNodeInterface[], dicts, onChange, document);
   }
 }
 
-const renderHTMLElement = (tagName: string, source: SEnvElementInterface, dict: HTMLElementDictionaryType, onChange: () => any, document: Document): HTMLElement =>  {
+const renderHTMLElement = (tagName: string, source: SEnvElementInterface, dicts: DOMRendererDicts, onChange: () => any, document: Document): HTMLElement =>  {
   const mappedTagName = NODE_NAME_MAP[tagName.toLowerCase()] || tagName;
   const element = document.createElementNS(source.namespaceURI === SVG_XMLNS ? SVG_XMLNS : HTML_XMLNS, mappedTagName.toLowerCase()) as HTMLElement;
 
   if (source.shadowRoot) {
-    appendChildNodes(element.attachShadow({ mode: "open" }), source.shadowRoot.childNodes as any as SEnvNodeInterface[], dict, onChange, document);
+    const shadowRoot = element.attachShadow({ mode: "open" });
+    dicts.nodes[source.shadowRoot.$id] = [shadowRoot, source.shadowRoot];
+    appendChildNodes(shadowRoot, source.shadowRoot.childNodes, dicts, onChange, document);
   }
-  dict[source.$id] = [element, source];
+  dicts.nodes[source.$id] = [element, source];
   return element as any;
 }
 
-const appendChildNodes = (container: HTMLElement|DocumentFragment, syntheticChildNodes: SEnvNodeInterface[], dict: HTMLElementDictionaryType, onChange: () => any, document: Document) => {
+const appendChildNodes = (container: HTMLElement|DocumentFragment, syntheticChildNodes: SEnvNodeInterface[], dicts: DOMRendererDicts, onChange: () => any, document: Document) => {
+  
   for (let i = 0, n = syntheticChildNodes.length; i < n; i++) {
-    const childNode = renderHTMLNode(syntheticChildNodes[i], dict, onChange, document);
+    const childNode = renderHTMLNode(syntheticChildNodes[i], dicts, onChange, document);
 
     // ignored
     if (childNode == null) continue;

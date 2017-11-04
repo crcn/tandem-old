@@ -10,21 +10,23 @@ IMMEDIATE:
 
 high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
 
-- [ ] transpile to web components (need for state changes, and to reflect in UI)
+- [ ] Paperclip
+  - [ ] import via <link /> attributes
+  - [ ] watch all attributes
+  - [ ] figure out how to pass objects to attributes - (set as prop) (possibly check for <props>)
+
 - [ ] features supporting component development
-  - [ ] javascript execution (via web components)
   - [ ] canvas support
 
-- [ ] VSCode
-  - [ ] update content from cache if switching to new doc
+
 
 - [ ] Components
   - [ ] color picker
   - [ ] slider
 
-- [ ] allow comments in PC file
-
 - [ ] Bugs
+  - [ ] allow refresh when script busts
+  - [ ] matching styles must also consider slots**
   - [ ] multi drag windows doesn't work properly
   - [ ] editing content from UI still breaks (drag cell)
   - [ ] !important flags show up as overridden in style pane

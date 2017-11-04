@@ -24,7 +24,7 @@ import { getSEnvTextClass, SEnvTextInterface } from "./text";
 import { getSEnvCommentClass, SEnvCommentInterface } from "./comment";
 import { SEnvHTMLElementInterface, getSEnvHTMLElementClass, diffHTMLNode, baseHTMLElementMutators, flattenNodeSources } from "./html-elements";
 import { SEnvNodeTypes, SVG_XMLNS, HTML_XMLNS } from "../constants";
-import { parseHTMLDocument, constructNodeTree, whenLoaded, mapExpressionToNode } from "./utils";
+import { parseHTMLDocument, whenLoaded, mapExpressionToNode } from "./utils";
 import { generateSourceHash } from "../../utils/source";
 import { getSEnvDocumentFragment } from "./fragment";
 import { SyntheticDocument, SYNTHETIC_DOCUMENT, SyntheticNode, SyntheticParentNode, BasicDocument } from "../../state";
@@ -38,7 +38,6 @@ export interface SEnvDocumentInterface extends SEnvParentNodeInterface, Document
   $load(content: string): void;
   $$update();
   $$setReadyState(readyState: string): any;
-  $createElementWithoutConstruct(tagName: string): SEnvHTMLElementInterface;
   createDocumentFragment(): DocumentFragment & SEnvNodeInterface;
   createElement<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K];
   createElement(tagName: string): SEnvHTMLElementInterface;
@@ -47,6 +46,15 @@ export interface SEnvDocumentInterface extends SEnvParentNodeInterface, Document
   addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, useCapture?: boolean): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
 }
+
+export interface SEnvShadowRoot extends SEnvDocumentInterface, ShadowRoot {
+  host: SEnvHTMLElementInterface;
+  childNodes: SEnvNodeListInterface;
+  ownerDocument: SEnvDocumentInterface;
+  addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, useCapture?: boolean): void;
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
 
 const CONSUME_TIMEOUT = 10;
 
@@ -142,6 +150,8 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     readonly fullscreenElement: Element | null;
     readonly fullscreenEnabled: boolean;
     readonly hidden: boolean;
+    host: SEnvHTMLElementInterface;
+    classList: any;
     
     images: HTMLCollectionOf<HTMLImageElement>;
     
@@ -163,6 +173,14 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       super();
       this.implementation = defaultView.implementation;
       this.addEventListener("readystatechange", e => this.onreadystatechange && this.onreadystatechange(e));
+    }
+
+    get innerHTML() {
+      return "";
+    }
+
+    set innerHTML(value) {
+      this._throwUnsupportedMethod();
     }
 
     get links() {
@@ -199,11 +217,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
 
     get body() {
       return this.documentElement.children[1] as HTMLBodyElement;
-    }
-
-    protected _linkChild(child: SEnvNodeInterface) {
-      super._linkChild(child);
-      child.$$addedToDocument(true);
     }
 
     async $load(content: string) {
@@ -579,21 +592,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     
     createElement<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K];
     createElement(tagName: string): SEnvHTMLElementInterface {
-      return constructNodeTree(this.$createElementWithoutConstructNS(tagName, HTML_XMLNS)) as SEnvHTMLElementInterface;
-    }
-
-    $createElementWithoutConstruct(tagName: string): SEnvHTMLElementInterface {
-      return this.$createElementWithoutConstructNS(tagName, HTML_XMLNS);
-    }
-
-    $createElementWithoutConstructNS(tagName: string, namespaceURI: string): SEnvHTMLElementInterface {
-      const elementClass = this.defaultView.customElements.get(tagName) || SENvHTMLElement;
-      const instance = this._linkNode(Object.create(elementClass.prototype));
-      instance["" + "tagName"] = tagName;
-      instance["" + "nodeName"] = tagName;
-      instance["" + "namespaceURI"] = namespaceURI;
-      instance.$$preconstruct();
-      return instance;
+      return this.createElementNS(HTML_XMLNS, tagName) as SEnvHTMLElementInterface;
     }
 
     private _linkNode<T extends Node>(node: T): T {
@@ -665,7 +664,12 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: "view"): SVGViewElement;
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: string): SVGElement;
     createElementNS(namespaceURI: string | null, qualifiedName: string): Element {
-      return this.$createElementWithoutConstructNS(qualifiedName, namespaceURI);
+      const elementClass = this.defaultView.customElements.get(qualifiedName) || SENvHTMLElement;
+      const instance = this._linkNode(new elementClass());
+      instance["" + "tagName"] = qualifiedName;
+      instance["" + "nodeName"] = qualifiedName;
+      instance["" + "namespaceURI"] = namespaceURI;
+      return instance;
     }
     
     createExpression(expression: string, resolver: XPathNSResolver): XPathExpression {

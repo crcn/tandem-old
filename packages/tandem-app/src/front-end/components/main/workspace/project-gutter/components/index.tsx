@@ -35,7 +35,7 @@ const availableComponentSource = {
 const AvailableComponent = compose<AvailableComponentPaneRowInnerProps, AvailableComponentPaneRowProps>(
   pure,
   withDragSource({
-    getData: ({ component }: AvailableComponentPaneRowProps) => [AVAILABLE_COMPONENT, component.$id]
+    getData: ({ component }: AvailableComponentPaneRowProps) => [AVAILABLE_COMPONENT, component.tagName]
   }),
 )(AvailableComponentBase);
 
@@ -44,7 +44,7 @@ export const ComponentsPaneBase = ({ workspace, dispatch }: ComponentsPaneInnerP
   return <Pane title="Components">
     { 
       workspace.availableComponents.map((availableComponent) => {
-        return <AvailableComponent key={availableComponent.$id} component={availableComponent} dispatch={dispatch} />
+        return <AvailableComponent key={availableComponent.tagName} component={availableComponent} dispatch={dispatch} />
       })
     }
   </Pane>;

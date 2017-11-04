@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as md5 from "md5";
 import * as path from "path";
 import { parse } from "./parser";
-import { flatten, repeat } from "lodash";
+import { flatten, repeat, camelCase, snakeCase } from "lodash";
 import { parsePCStyle } from "./style-parser";
 import { 
   PCSheet, 
@@ -21,6 +21,7 @@ import {
   traversePCAST, 
   getPCStyleElements,
   getPCLinkStyleElements,
+  filterPCASTTree,
   getExpressionPath,
   getPCStartTagAttribute,
   hasPCStartTagAttribute,
@@ -44,8 +45,10 @@ import {
 
 
 // const SOURCE_AST_VAR = "$$sourceAST";
-const EXPORTS_VAR = "$$exports";
-const STYLES_VAR  = "$$styles";
+const EXPORTS_VAR  = "$$exports";
+const STYLES_VAR   = "$$styles";
+const BINDINGS_VAR   = "$$bindings";
+const PREVIEWS_VAR = "$$previews";
 
 type TranspileOptions = {
   assignTo?: string;
@@ -57,9 +60,7 @@ type TranspileContext = {
   source: string;
   varCount: number;
   root: PCFragment;
-  imports: {
-    [identifier: string]: string
-  },
+  imports: string[],
   templateNames: {
     [identifier: string]: string
   }
@@ -108,13 +109,35 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
   
   let buffer = `(function(document) {
     function module(fn) {
-    var exports;
-    return function(modules) {
-      return exports || (exports = fn(function(path) {
-        return modules[path](modules);
-      }));
-    };
-  }\n`;
+      var exports;
+      return function(modules) {
+        return exports || (exports = fn(function(path) {
+          return modules[path](modules);
+        }));
+      };
+    }\n
+
+    var updating = false;
+    var toUpdate = [];
+
+    function $$requestUpdate(object) {
+      if (toUpdate.indexOf(object) === -1) {
+        toUpdate.push(object);
+      }
+      if (updating) {
+        return;
+      }
+
+      updating = true;
+      requestAnimationFrame(function() {
+        for(var i = 0; i < toUpdate.length; i++) {
+          toUpdate[i].update();
+        }
+        toUpdate = [];
+        updating = false;
+      });
+    }
+  `;
   buffer += `var noop = function(){}\n;`;
   buffer += `var modules = {\n`;
 
@@ -163,12 +186,11 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
   try {
     const ast = parse(source);
     const imports = getPCImports(ast);
-    const importMap = {};
+    const resolvedImports = [];
 
-    for (const ns in imports) {
-      const src = imports[ns];
+    for (const src of imports) {
       const importFullPath = "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src);
-      importMap[ns] = importFullPath;
+      resolvedImports.push(importFullPath);
       if (!result.modules[importFullPath]) {
         result = bundle(
           options.readFileSync(importFullPath.replace("file://", "")),
@@ -184,7 +206,7 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
       modules: {
         ...result.modules,
         [uri]: {    
-          content: transpileModule(ast, source, uri, importMap)
+          content: transpileModule(ast, source, uri, resolvedImports)
         }
       }
     };
@@ -199,33 +221,30 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
   return result;
 };
 
-const getNsVarName = (ns: string) => `$$ns$$${ns.replace(/\-/g, "_")}`;
+const getNsPrefix = (ns: string) => `ns-${ns.replace(/\-/g, "_")}`;
 
-const transpileModule = (root: PCFragment, source: string, uri: string, importsMap: any = {}) => {
+const transpileModule = (root: PCFragment, source: string, uri: string, imports) => {
   
   const context: TranspileContext = {
     varCount: 0,
     uri,
     source,
     root,
-    imports: importsMap,
+    imports,
     templateNames: {}
   };
 
   let buffer = "module(function(require) {\n";
   buffer += `var ${EXPORTS_VAR} = {};\n`;
   buffer += `var ${STYLES_VAR} = [];\n`;
-  for (const ns in importsMap) {
-    const path = importsMap[ns];
-    buffer += `var ${getNsVarName(ns)} = require("${path}");\n`
-    buffer += `${STYLES_VAR} = ${STYLES_VAR}.concat(${getNsVarName(ns)}.${STYLES_VAR});\n`;
-  }
+  buffer += `var ${PREVIEWS_VAR} = {};\n`;
+  buffer += `var ${BINDINGS_VAR} = [];\n`;
 
-  const styleElements = getPCStyleElements(root) as PCElement[];
-  for (const style of styleElements) {
-    const styleDecl = transpileStyleElement(style, context);
-    buffer += styleDecl.content;
-    buffer += `${STYLES_VAR}.push(${styleDecl.varName});\n`;
+  for (const src of imports) {
+    const path = imports[src];
+    const srcDecl = declare("dep", `require("${src}")`, context);
+    buffer += srcDecl.content;
+    buffer += `${STYLES_VAR} = ${STYLES_VAR}.concat(${srcDecl.varName}.${STYLES_VAR});\n`;
   }
 
   const linkElements = getPCLinkStyleElements(root) as PCSelfClosingElement[];
@@ -233,12 +252,12 @@ const transpileModule = (root: PCFragment, source: string, uri: string, importsM
     const decl = transpileStartTag(link, context)
     buffer += decl.content;
     buffer += `${STYLES_VAR}.push(${decl.varName});\n`;
-
   }
 
   buffer += transpileChildren(root, context);
 
   buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
+  buffer += `${EXPORTS_VAR}.${PREVIEWS_VAR} = ${PREVIEWS_VAR};\n`;
   buffer += `return ${EXPORTS_VAR};\n`;
   buffer += `})\n`
 
@@ -263,18 +282,32 @@ const transpileNode = (node: PCExpression, context: TranspileContext): Declarati
 
 const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context: TranspileContext, element?: PCElement) => {
 
-  if (hasImportedXMLNSTagName(startTag.name, context)) {
-    return transpileXMLNSImportedTag(startTag, context, element);
+  let tagName: string = startTag.name;
+
+  if (hasImportedXMLNSTagName(startTag.name, context)) {  
+    const [ns, templateName] = startTag.name.split(":");
+    tagName = getNsPrefix(ns) + '-' + templateName;
   }
 
   if (context.templateNames[startTag.name]) {
-    return transpileTemplateCall(startTag, context, element);
+    tagName = context.templateNames[startTag.name];
   }
-  const declaration = createNodeDeclaration(`document.createElement("${startTag.name}")`, element || startTag, context);
+
+  const declaration = createNodeDeclaration(`document.createElement("${tagName}")`, element || startTag, context);
 
   for (let i = 0, {length} = startTag.attributes; i < length; i++) {
     const attribute = startTag.attributes[i];
-    declaration.content += callDeclarationProperty(declaration, "setAttribute", `"${attribute.name}", ${transpileAttributeValue(attribute)}`, context);
+
+    const value = attribute.value;
+
+    if (value && value.type === PCExpressionType.BLOCK) {
+      declaration.content += `${declaration.varName}.${camelCase(attribute.name)} = ${(value as PCBlock).value};\n;`
+      declaration.content += transpileBinding(value as PCBlock, context, (statement) => `${declaration.varName}.${camelCase(attribute.name)} = ${statement}`)
+    } else if (attribute.name.substr(0, 2) === "on") {
+      declaration.content += `${declaration.varName}.${attribute.name.toLowerCase()} = ${(attribute.value as PCString).value};\n`
+    } else {
+      declaration.content += `${declaration.varName}.setAttribute("${attribute.name}", ${transpileAttributeValue(attribute)});\n`;
+    }
   }
   
   return declaration;
@@ -312,10 +345,16 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       };
       break;
     }
-    case "template": {
-      declaration = transpileTemplate(node, context);
+    case "component": {
+      declaration = transpileComponent(node, context);
       break;
     }
+
+    case "td-preview": {
+      declaration = transpileTDPreview(node, context);
+      break;
+    }
+
     case "link": {
       
       // transpiled above
@@ -326,7 +365,7 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       break;
     }
     case "style": {
-      declaration = transpileStyleElementPlaceholder(node, context);
+      declaration = transpileStyleElement(node, context);
       break;
     }
     default: {
@@ -343,7 +382,6 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
 // TODO - eventually need to put these style elements within the global context, or check if they've already
 // been registered. Otherwise they'll pollute the CSSOM when used repeatedly. 
 const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
-  const scoped = hasPCStartTagAttribute(node, "scoped");
   const path = getExpressionPath(node, context.root);
 
   const varName = getPCStyleID(node);
@@ -356,18 +394,16 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   let cssSource = repeat("\n", textChild.location.start.line - 1) + context.source.substr(textChild.location.start.pos, textChild.location.end.pos - textChild.location.start.pos);
   
   const styleAST = parsePCStyle(cssSource);
-  const scope = scoped ? varName : null;
   
   // if synthetic, then we're running FE code in tandem, so so we can
   // instantiate otherwise illegal constructors & attach useful information about them 
   buffer += `if (window.$synthetic) { \n`;
-  const styleSheet = transpileStyleSheet(styleAST, { ...context, scope: scope });
+  const styleSheet = transpileStyleSheet(styleAST, { ...context, scope: undefined });
   buffer += styleSheet.content;
   buffer += `${varName}.$$setSheet(${styleSheet.varName});\n`;
 
   buffer += `} else { \n`;
-  const prefixedCSS = stringifyStyleASTWithScope(styleAST, scope);
-  buffer += `${varName}.textContent = ${JSON.stringify(prefixedCSS)};\n`;
+  buffer += `${varName}.textContent = ${JSON.stringify(cssSource.trim())};\n`;
   buffer += `}\n`;
 
   // buffer += `${varName}.textContent = "${css.replace(/[\n\r\s\t]+/g, " ")}";\n`
@@ -381,26 +417,6 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
     varName: varName,
     content: buffer
   };
-};
-
-const stringifyStyleASTWithScope = (ast: PCExpression, scope: string) => stringifyStyleAST(ast, (expr: PCExpression) => {
-  if (scope && expr.type === PCStyleExpressionType.STYLE_RULE) {
-    const rule = expr as PCStyleRule;
-    return `${prefixSelectorText(rule, scope)} {
-      ${rule.declarationProperties.map(child => stringifyStyleASTWithScope(child, scope)).join("\n")}
-    }`;
-  }
-})
-
-// TODO - eventually need to put these style elements within the global context, or check if they've already
-// been registered. Otherwise they'll pollute the CSSOM when used repeatedly. 
-const transpileStyleElementPlaceholder = (node: PCElement, context: TranspileContext) => {
-  const scoped = hasPCStartTagAttribute(node, "scoped");
-  const path = getExpressionPath(node, context.root);
-  const styleId = getPCStyleID(node);
-  const span = declareNode(`document.createElement("span")`, context);
-  span.content += `${span.varName}.setAttribute("data-style-id", "${styleId}");\n`;
-  return span;
 };
 
 const transpileStyleSheet = (ast: PCSheet, context: TranspileStyleContext) => {
@@ -458,21 +474,6 @@ const transpileStyleDeclaration = (ast: PCStyleRule, context: TranspileStyleCont
   objectBuffer += `}`;
 
   return `CSSStyleDeclaration.fromObject(${objectBuffer})`;
-}
-
-// const prefixCSSRules = (prefixes: string[]) => (root: postcss.Root) => {
-//   // from https://github.com/RadValentin/postcss-prefix-selector/blob/master/index.js
-//   root.walkRules(rule => {
-//     rule.selectors = flatten(rule.selectors.map((selector) => {
-//       return prefixes.map((prefix) => prefix + selector);
-//     }));
-//   });
-// }
-
-const transpileXMLNSImportedTag = (node: PCStartTag, context: TranspileContext, element?: PCElement) => {
-  const [ns, templateName] = node.name.split(":");
-
-  return transpileTemplateCall(node, context, element, `${getNsVarName(ns)}.${templateName}`);
 }
 
 const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, element?: PCElement, fnName?: string) => {
@@ -535,9 +536,9 @@ const transpileRepeat = (node: PCElement, context: TranspileContext) => {
   buffer += documentFragment.content,
   buffer += eachVarContent;
   buffer += nContent;
-  buffer += `for (${iVarName} = 0; ${iVarName} < ${nVarName}; ${iVarName}++) {
+  buffer += `for (var ${iVarName} = 0; ${iVarName} < ${nVarName}; ${iVarName}++) {
     var ${_as} = ${eachVarName}[${iVarName}];
-    ${transpileScopedChildNodes(documentFragment, node, _as, context)}
+    ${addNodeDeclarationChildren(documentFragment, node, context)}
   }`;
 
   documentFragment.content += buffer;
@@ -548,40 +549,135 @@ const transpileRepeat = (node: PCElement, context: TranspileContext) => {
   };
 }
 
-const transpileTemplate = (node: PCElement, context: TranspileContext) => {
-  let newContext = { ...context, varCount: 0 };
-  const name    = getPCStartTagAttribute(node, "name");
-  const shouldExport = hasPCStartTagAttribute(node, "export");
+const transpileTDPreview = (node: PCElement, context: TranspileContext) => {
+  const id = getPCStartTagAttribute(node, "id");
+  const fragment = declareNode(`document.createDocumentFragment()`, context);
+  fragment.content += addNodeDeclarationChildren(fragment, node, context);
+  fragment.content += `${PREVIEWS_VAR}["${id || fragment.varName}"] = ${fragment.varName};\n`;
+  return fragment;
+};
 
-  assertAttributeExists(node, "name", context);
-  const jsFriendlyName = getJSFriendlyVarName(name);
+const getPropertyId = (property: PCElement|PCSelfClosingElement) => {
+  return getPCStartTagAttribute(property, "name") || getPCStartTagAttribute(property, "id");
+};
 
-  context.templateNames[name] = jsFriendlyName;
 
-  const fragmentDeclaration = declareNode(`document.createDocumentFragment()`, newContext);
+const transpileComponent = (node: PCElement, context: TranspileContext) => {
+  const id = getPCStartTagAttribute(node, "id");
 
-  ;
+  // TODO - unsafe code below -- assumes PC elements -- need to _cast_ as element type here
+  const template = getPCASTElementsByTagName(node, "template")[0] as PCElement;
+  const style = getPCASTElementsByTagName(node, "style")[0] as PCElement;
+  const script = getPCASTElementsByTagName(node, "script")[0] as PCElement;
 
-  let buffer = `function ${jsFriendlyName}(props) {
-    ${fragmentDeclaration.content}
-    ${addNodeDeclarationChildren(fragmentDeclaration, node, newContext)}
-    return ${fragmentDeclaration.varName};
-  }\n`;
+  const childrenWithIds = template && filterPCASTTree(template, (element) => {
+    return (element.type === PCExpressionType.SELF_CLOSING_ELEMENT || element.type === PCExpressionType.ELEMENT) && hasPCStartTagAttribute(element as PCElement, "id");
+  }) as PCElement[] || [];
 
+  // TODO - use getPCASTStartTagsByTagName for safety
+  const properties = getPCASTElementsByTagName(node, "property") as PCSelfClosingElement[];
+  const shadowStartIndex = Boolean(style) ? 1 : 0;
+  const jsFriendlyName = getJSFriendlyVarName(id);
+  const className = getJSFriendlyVarName(id) + "_" + context.varCount++;
+
+  const styleDeclaration = style && transpileStyleElement(style, { ...context, varCount: 0 });
+
+  let buffer = `
+    class ${className} extends HTMLElement {
+      constructor() {
+        super();
+      }
+    
+      connectedCallback() {
+        this.render();
+      }
+
+      ${
+        childrenWithIds.map((child) => {
+          const id = getPCStartTagAttribute(child, "id");
+          const camelCaseId = camelCase(id);
+          return `
+            get ${camelCaseId}() {
+              return this.shadowRoot.getElementById("${id}");
+            }
+          `
+        }).join("")
+      }
+
+      ${
+        properties.map((property) => {
+          const name = getPropertyId(property);
+          const camelCaseName = camelCase(name);
+          return `
+            get ${camelCaseName}() {
+              return this.$$${camelCaseName};
+            }
+            set ${camelCaseName}(value) {
+              this.$$${camelCaseName} = value;
+              $$requestUpdate(this);
+            }
+          `;
+        }).join("\n")
+      }
+
+      render() {
+        if (this._rendered) {
+          return;
+        }
+        this._rendered = true;
+        const shadow = this.attachShadow({ mode: "open" });;
+        ${style ? `${styleDeclaration.content}shadow.appendChild(${styleDeclaration.varName})` : ""}
+        ${
+          properties.map((property) => {
+            const defaultValue = getPCStartTagAttribute(property, "default");
+            const name = camelCase(getPropertyId(property));
+            return `
+              if (this.$$${name} == null) {
+                this.$$${name} = ${defaultValue ? defaultValue : `this.getAttribute("${name}");`}
+              }
+            `;
+          }).join("\n")
+        }
+
+        var ${BINDINGS_VAR} = this.${BINDINGS_VAR} = [];
+        ${script ? (script.children[0] as PCString).value : "" }
+        ${template ? addNodeDeclarationChildren({ varName: "shadow", content: "" }, template, {
+          ...context,
+          varCount: 0
+        }) : ""}
+      
+      }
+
+      static get observedAttributes() {
+        return ${JSON.stringify(properties.map((property) => {
+          return getPropertyId(property);
+        }))};
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        this[name] = newValue;
+      }
+
+      update() {
+        if (!this._rendered) {
+          return;
+        }
+        
+        var bindings = this.${BINDINGS_VAR};
+        for (var i = 0, n = bindings.length; i < n; i++) {
+          bindings[i]();
+        }
+      }
+    }
+
+    customElements.define("${id}", ${className});
+  `
+  
   return {
-    varName: jsFriendlyName,
+    varName: className,
     content: buffer
   };
-}
-
-const transpileScopedChildNodes = (fragmentDeclaration: Declaration, node: PCElement, contextName: string, context: TranspileContext) => {
-  let content = "";
-  content += `with(${contextName}) {\n`;
-  content += addNodeDeclarationChildren(fragmentDeclaration, node, context);
-  content += "}";
-
-  return content;
-}
+};
 
 const getXMLNSTagNameParts = (name: string, context: TranspileContext) => {
   return name.split(":");
@@ -615,14 +711,23 @@ const addNodeDeclarationChildren = (declaration: Declaration, node: PCElement, c
 
 const transpileText = (node: PCString, context: TranspileContext) => createTextNodeDeclaration(`"${node.value.replace(/\n/g, "\\n").replace(/"/g, '\\"')}"`, node, context);
 
+const transpileBinding = (block: PCBlock, context: TranspileContext, createStatment: (assignment: string) => string) => {
+  const blockDecl = declareBlock(block.value, context);
+  return `
+  ${blockDecl.content}
+  ${BINDINGS_VAR}.push(() => {
+    var newValue = ${block.value};
+    if (newValue !== ${blockDecl.varName}) {
+      ${createStatment(`(${blockDecl.varName} = newValue)`)};
+    }
+  });\n`
+};
+
 const transpileTextBlock = (node: PCBlock, context: TranspileContext) => {
-
-  // reserved
-  if (node.value === "props.children") {
-    return transpileChildBlock(node, context);
-  }
-
-  return createTextNodeDeclaration(`${node.value}`, node, context);
+  const declaration = createTextNodeDeclaration(node.value, node, context);
+  declaration.content = declaration.content;
+  declaration.content += transpileBinding(node, context, (value) => `${declaration.varName}.nodeValue = ${value}`);
+  return declaration;
 }
 
 const transpileChildBlock = (node: PCBlock, context: TranspileContext) => {
@@ -660,6 +765,7 @@ const createNodeDeclaration = (statement: string, expr: PCExpression, context: T
 const getTranspileContent = (result: Declaration | string) => typeof result === "string" ? result : result.content;
 
 const declareNode = (assignment: string, context: TranspileContext) => declare("node", assignment, context);
+const declareBlock = (assignment: string, context: TranspileContext) => declare("blockValue", assignment, context);
 
 const declare = (baseName: string, assignment: string, context: TranspileContext): Declaration => {
   const varName = `${baseName}_${context.varCount++}`;
@@ -679,7 +785,6 @@ const callDeclarationProperty = (declaration: Declaration, propertyName: string,
 };
 
 const addDeclarationSourceReference = (declaration: Declaration, expression: PCExpression, context: TranspileContext) => {
-  // const nodePath = getExpressionPath(expression, context.root);
 
   const buffer = JSON.stringify({
     uri: context.uri,
@@ -688,15 +793,6 @@ const addDeclarationSourceReference = (declaration: Declaration, expression: PCE
     ...expression.location,
   });
 
-  // let buffer = `${SOURCE_AST_VAR}`;
-
-  // for (const part of nodePath) {
-  //   if (typeof part === "number") {
-  //     buffer += `[${part}]`;
-  //   } else if (typeof part === "string") {
-  //     buffer += `.${part}`;
-  //   }
-  // }
   addDeclarationProperty(declaration, "source", buffer, context);
 
   return declaration;

@@ -22,7 +22,6 @@ export const getSEnvCustomElementRegistry = weakMemo((options) => {
     }
 
     define(name: string, constructor: Function, options?: ElementDefinitionOptions) {
-
       // TODO - throw error if already registered
       this._registry[name] = constructor;
       if (this._definedPromiseResolvers[name]) {

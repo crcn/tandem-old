@@ -1,51 +1,161 @@
-<!-- 
 
-TODOS:
-- [ ] inherited flag
-- [ ] priority flag
-- [ ] toggle visibility button
-- [ ] pretty editor for values
--->
+<link rel="import" href="./global.pc" />
+<link rel="import" href="./pane.pc" />
+<link rel="import" href="./gutter.pc" />
 
-<module xmlns:gutter="./gutter.pc">
+<component id="td-color-property-input">
+  <property name="value" default="1" />
+  <style>
+    .input-box {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+    }
+  </style>
+  <template>
+    <div class="input-box" /> 
+    <span>{{this.value}}</span>
+  </template>
+</component>
+
+
+<component id="td-style-declaration">
+  <property name="name" />
+  <property name="value" />
+  <style>
+    .name {
+      color: var(--font-color-dim);
+    }
+    .name:after {
+      content: ": ";
+    }
+
+    td-color-property-input {
+      color: var(--font-color-alt);
+    }
+  </style>
+  <template>
+    <span class="name">{{this.name}}</span>
+    <td-color-property-input value={{this.value}} />
+  </template>
+</component>
+
+<component id="td-style-rule">
+  <property name="selectorText" />
+  <property name="sourceUri" />
+  <style>
+    .source {
+      float: right;
+      text-decoration: underline;
+      color: var(--font-color-dim);
+    }
+    .name {
+      color: var(--font-color-dim);
+      padding-right: var(--base4);
+    }
+    .name:after {
+      content: ":";
+    }
+    .value {
+      color: var(--font-color-alt);
+    }
+
+    .value:after {
+    }
+  </style>
+  <template>
+    <td-gutter-subheader>
+      {{this.selectorText}}
+      <span class="source">
+        {{this.sourceUri}}
+      </span>
+    </td-gutter-subheader>
+
+    <td-list>
+      <td-list-item>
+        <td-style-declaration name="background-color" value="red" />
+      </td-list-item>
+      <td-list-item>
+        <td-style-declaration name="background-color" value="red" />
+      </td-list-item>
+      <td-list-item>
+        <td-style-declaration name="color" value="rgba(255, 255, 255, 0)"/>
+      </td-list-item>
+      <td-list-item>
+        <td-style-declaration name="text-transform" value="uppercase" />
+      </td-list-item>
+      <td-list-item>
+        <td-style-declaration name="float" value="left" />
+      </td-list-item>
+      <td-list-item>
+        <td-style-declaration name="padding" value="var(--base6) var(--base7)"  />
+      </td-list-item>
+      <td-list-item>
+        <td-style-declaration name="position" value="relative" />
+      </td-list-item>
+    </td-list>
+  </template>
+</component>
+
+<component id="td-css-inspector-pane">
+  <template>
+    <td-pane>
+      <span slot="header">
+        CSS Inspector
+        <div class="controls">
+          <i class="ion-more" />
+        </div>
+      </span>
+      <span slot="content">
+        <td-style-rule selectorText=".container" sourceUri="global.pc" />
+        <td-style-rule selectorText=".body" sourceUri="global.pc" />
+      </span>
+    </td-pane>
+  </template>
+</component>
+
+<!--module xmlns:gutter="./gutter.pc">
   <meta name="name" content="CSS Inspector" />
+
+  <template name="color-property-input">
+    <style scoped>
+      .input-box {
+        width: var(--base4);
+        height: var(--base4);
+        margin-left: var(--base2);
+        background: red;
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        border-radius: 2px;
+      }
+    </style>
+    <div class="input-box" /> {{props.value}} 
+  </template>
 
   <template name="style-declaration">
     <li class="style-declaration">
     
       <span class="name">{{props.name}}</span>
-      <span class="value">{{props.value}}</span>
+      <span class="value">
+        {{this.value}}
+      </span>
     </li>
   </template>
 
   <template name="style-rule">
 
-    <style scoped>
-      .source {
-        float: right;
-        text-decoration: underline;
-        color: var(--font-color-dim);
-      }
-      .name {
-        color: var(--font-color-dim);
-        padding-right: var(--base4);
-      }
-      .name:after {
-        content: ":";
-      }
-      .value {
-        color: var(--font-color-alt);
-      }
-
-      .value:after {
-      }
-    </style>
 
     <div class="style-rule">
       <div class="header sub lowercase">
-        {{props.selectorText}}
+        {{this.selectorText}}
         <span class="source">
-          {{props.sourceUri}}
+          {{this.sourceUri}}
         </span>
       </div>
 
@@ -78,4 +188,4 @@ TODOS:
       <main />
     </gutter:gutter>
   </template>
-</module>
+</module-->

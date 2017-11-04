@@ -2,11 +2,11 @@ import { diffComment } from "./comment";
 import { difference } from "lodash";
 import { diffTextNode } from "./text";
 import { SEnvNodeTypes } from "../constants";
-import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation } from "aerial-common2";
+import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation, createSetValueMutation } from "aerial-common2";
 import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, parentNodeMutators } from "./parent-node";
 import { getSEnvEventClasses } from "../events";
-import { SEnvDocumentInterface } from "./document";
-import { evaluateHTMLDocumentFragment, constructNode, matchesSelector } from "./utils";
+import { SEnvDocumentInterface, getSEnvDocumentClass, SEnvShadowRoot } from "./document";
+import { evaluateHTMLDocumentFragment, matchesSelector } from "./utils";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collections";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SyntheticElement, SYNTHETIC_ELEMENT, SyntheticAttribute, SyntheticNode, SyntheticTextNode, SyntheticComment, BasicNode, BasicElement, BasicAttribute, BasicValueNode, BasicComment, BasicTextNode } from "../../state";
@@ -30,8 +30,8 @@ export const getSEnvAttr = weakMemo((context: any) => {
 });
 
 export interface SEnvElementInterface extends SEnvParentNodeInterface, Element {
-  $$preconstruct();
   ownerDocument: SEnvDocumentInterface;
+  shadowRoot: SEnvShadowRoot|null;
   childNodes: SEnvNodeListInterface;
   addEventListener(type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
   getPreviewAttribute(name: string): string | null;
@@ -52,7 +52,6 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     readonly clientLeft: number;
     readonly clientTop: number;
     readonly clientWidth: number;
-    constructClone: boolean;
     readonly structType: string = SYNTHETIC_ELEMENT;
     attributes: NamedNodeMap;
     nodeType: number = SEnvNodeTypes.ELEMENT;
@@ -107,12 +106,11 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     readonly tagName: string;
     readonly assignedSlot: HTMLSlotElement | null;
     slot: string;
-    readonly shadowRoot: ShadowRoot | null;
+    shadowRoot: SEnvShadowRoot | null;
 
-    $$preconstruct() {
-      super.$$preconstruct();
+    constructor() {
+      super();
       this.className = "";
-      this.constructClone = true;
       this.nodeType = SEnvNodeTypes.ELEMENT;
 
       this.attributes = new Proxy(new SEnvNamedNodeMap(), {
@@ -372,19 +370,44 @@ export const getSEnvElementClass = weakMemo((context: any) => {
       return null;
     }
 
-    attachShadow(shadowRootInitDict: ShadowRootInit): ShadowRoot { 
-      this._throwUnsupportedMethod();
-      return null;
+    attachShadow(shadowRootInitDict: ShadowRootInit): SEnvShadowRoot { 
+
+      if (this.shadowRoot) {
+        return this.shadowRoot;
+      }
+
+      const SEnvDocument = getSEnvDocumentClass(context)
+
+      this.shadowRoot = this.ownerDocument.createDocumentFragment() as SEnvShadowRoot;
+      if (this.connectedToDocument) {
+        this.shadowRoot.$$setConnectedToDocument(true);
+      }
+      this.shadowRoot["" + "host"] = this;
+      this.dispatchMutationEvent(attachShadowRootMutation(this));
+      this.shadowRoot.addEventListener(SEnvMutationEvent.MUTATION, this._onShadowMutation.bind(this));
+
+      return this.shadowRoot;
     }
 
+    private _onShadowMutation(event) {
+      this._onMutation(event);
+      this.dispatchEvent(event);
+    }
 
     protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
       this.dispatchMutationEvent(createPropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
     }
 
+    clone(deep?: boolean) {
+      const clone = super.cloneNode(deep) as SEnvElementInterface;
+      if (deep !== false && this.shadowRoot) {
+        clone.attachShadow({ mode: "open" }).appendChild(this.shadowRoot.cloneNode(true));
+      }
+      return clone;
+    }
 
     cloneShallow() {
-      const clone = this.ownerDocument.$createElementWithoutConstruct(this.tagName);
+      const clone = this.ownerDocument.createElement(this.tagName);
       clone["" + "tagName"] = this.tagName;
       for (let i = 0, n = this.attributes.length; i < n; i++) {
         const attr = this.attributes[i];
@@ -398,6 +421,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 export const diffBaseNode = (oldChild: Node, newChild: Node, diffChildNode = diffBaseNode) => {
   switch(oldChild.nodeType) {
     case SEnvNodeTypes.ELEMENT: return diffBaseElement(oldChild as Element, newChild as Element, diffChildNode);
+    case SEnvNodeTypes.DOCUMENT_FRAGMENT: return diffParentNode(oldChild as DocumentFragment, newChild as DocumentFragment, diffChildNode);
     case SEnvNodeTypes.TEXT: return diffTextNode(oldChild as Text, newChild as Text);
     case SEnvNodeTypes.COMMENT: return diffComment(oldChild as Comment, newChild as Comment);
   }
@@ -412,6 +436,10 @@ export namespace SyntheticDOMElementMutationTypes {
 
 export const createSetElementTextContentMutation = (target: BasicElement, value: string) => {
   return createPropertyMutation(SyntheticDOMElementMutationTypes.SET_TEXT_CONTENT, target, "textContent", value);
+}
+
+export const attachShadowRootMutation = (target: BasicElement) => {
+  return createSetValueMutation(SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT, target, true);
 }
 
 export const createSetElementAttributeMutation = (target: Element, name: string, value: string, oldName?: string, index?: number) => {
@@ -442,11 +470,19 @@ export const diffBaseElement = (oldElement: Element, newElement: Element, diffCh
   });
 
   mutations.push(...diffParentNode(oldElement, newElement, diffChildNode));
+
+  // TODO - open / close shadow root
+  if (oldElement.shadowRoot && newElement.shadowRoot) {
+    mutations.push(...diffChildNode(oldElement.shadowRoot, newElement.shadowRoot));
+  }
   return mutations;
 };
 
 export const baseElementMutators = {
   ...parentNodeMutators,
+  [SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT](oldElement: Element) {
+    oldElement.attachShadow({ mode: "open" });
+  },  
   [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](oldElement: Element, mutation: Mutation<any>) {
     
     const { name, oldName, newValue } = <SetPropertyMutation<any>>mutation;
@@ -480,41 +516,3 @@ export const baseElementMutators = {
     }
   }
 }
-
-// export const patchBaseElement = (oldElement: Element, mutation: Mutation<any>) => {
-//   if (mutation.$type === SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT) {
-    
-//     const { name, oldName, newValue } = <SetPropertyMutation<any>>mutation;
-
-//     // need to set the current value (property), and the default value (attribute)
-//     // TODO - this may need to be separated later on.
-//     if (oldElement.constructor.prototype.hasOwnProperty(name)) {
-
-//       oldElement[name] = newValue == null ? "" : newValue;
-//     }
-
-//     if (newValue == null) {
-//       oldElement.removeAttribute(name);
-//     } else {
-
-//       // An error will be thrown by the DOM if the name is invalid. Need to ignore
-//       // native exceptions so that other parts of the app do not break.
-//       try {
-
-//         oldElement.setAttribute(name, newValue);
-//       } catch(e) {
-//         console.warn(e);
-//       }
-//     }
-
-//     if (oldName) {
-//       if (oldElement.hasOwnProperty(oldName)) {
-//         oldElement[oldName] = undefined;
-//       }
-
-//       oldElement.removeAttribute(oldName);
-//     }
-//   } else {
-//     patchParentNode(oldElement, mutation);
-//   }
-// };

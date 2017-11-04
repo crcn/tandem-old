@@ -6,8 +6,8 @@ import { camelCase } from "lodash";
 import { getUri } from "../utils";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SEnvNodeListInterface, getSEnvHTMLCollectionClasses } from "./collections";
-import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyleSheet, patchCSSStyleSheet, flattenSyntheticCSSStyleSheetSources, SEnvCSSStyleSheetInterface, cssStyleSheetMutators, SEnvCSSStyleDeclarationInterface } from "../css";
-import { SEnvDocumentInterface } from "./document";
+import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyleSheet, patchCSSStyleSheet, flattenSyntheticCSSStyleSheetSources, SEnvCSSStyleSheetInterface, cssStyleSheetMutators, SEnvCSSStyleDeclarationInterface, parseStyleSource } from "../css";
+import { SEnvDocumentInterface, SEnvShadowRoot } from "./document";
 import { SyntheticNode } from "../../state";
 import { SEnvNodeTypes } from "../constants";
 import { weakMemo, SetValueMutation, createSetValueMutation, Mutation } from "aerial-common2";
@@ -15,9 +15,9 @@ import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNod
 import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 
 export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterface {
-  $$preconstruct();
   style: SEnvCSSStyleDeclarationInterface;
   ownerDocument: SEnvDocumentInterface;
+  shadowRoot: SEnvShadowRoot|null;
   childNodes: SEnvNodeListInterface;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
@@ -134,7 +134,6 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
       return this._styleProxy || this._resetStyleProxy();
     }
     
-
     get dataset(): DOMStringMap {
       return this._dataset || (this._dataset = new Proxy(new SEnvDOMStringMap(), {
         get(target, key) {
@@ -149,21 +148,11 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
       }))
     }
 
-    initialize() {
-      super.initialize();
+    connectedCallback() {
+      super.connectedCallback();
       this._tryLoading();
     }
-    
-
-
-    $setOwnerDocument(document: SEnvDocumentInterface) {
-      super.$setOwnerDocument(document);
-
-      // load the script once it's been added to a parent
-      // element
-      this._tryLoading();
-    }
-
+  
     protected canLoad() {
       return false;
     }
@@ -203,6 +192,9 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     }
 
     set style(value: SEnvCSSStyleDeclarationInterface) {
+      if (typeof value === "string") {
+        value = parseStyleSource(value) as any;
+      }
       Object.assign(this.style, value);
       this.onStyleChange();
     }
@@ -287,8 +279,8 @@ export const getSEnvHTMLStyleElementClass = weakMemo((context: any) => {
     media: string;
     type: string;
 
-    initialize() {
-      super.initialize();
+    constructor() {
+      super();
       this.sheet = new SEnvCSSStyleSheet();
       this.sheet.ownerNode = this;
     }
@@ -341,14 +333,14 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
     private _resolveLoaded: (value?) => any;
     private _rejectLoaded: (value?) => any;
 
-    initialize() {
+    constructor() {
+      super();
       this.interactiveLoaded = new Promise((resolve, reject) => {
         this._resolveLoaded = resolve;
         this._rejectLoaded  = reject;
       });
-      super.initialize();
     }
-
+  
     canLoad() {
       return !!this.href && !!this._resolveLoaded;
     }
@@ -464,6 +456,10 @@ export const flattenNodeSources = weakMemo((node: SyntheticNode) => {
     for (let i = 0, n = node.childNodes.length; i < n; i++) {
       Object.assign(flattened, flattenNodeSources(node.childNodes[i]));
     }
+  }
+
+  if (node.nodeType === SEnvNodeTypes.ELEMENT && (node.instance as SEnvHTMLElementInterface).shadowRoot) {
+    Object.assign(flattened, flattenNodeSources((node.instance as SEnvHTMLElementInterface).shadowRoot.struct));
   }
 
   return flattened;
@@ -586,10 +582,11 @@ export const getSEnvHTMLFormElementClass = weakMemo((context: any) => {
     checkValidity(): boolean {
       return false;
     }
-    initialize() {
-      super.initialize();
+    constructor() {
+      super();
       this.addEventListener(SEnvMutationEvent.MUTATION, this._onMutation2.bind(this));
     }
+
     item(name?: any, index?: any): any { }
     namedItem(name: string): any { }
     reset(): void { }
@@ -727,13 +724,18 @@ const getSEnvHTMLIFrameElementClass = weakMemo((context: SEnvWindowContext) => {
 
     private _resolveContentLoaded: any;
     private _rejectContentLoaded: any;
+    private _startedIframe: boolean;
 
     canLoad() {
       return false;
     }
 
-    initialize() {
-      super.initialize();
+    connectedCallback() {
+      super.connectedCallback();
+      if (this._startedIframe) {
+        return;
+      }
+      this._startedIframe = true;
       const { getSEnvWindowClass } = require("../window");
       const SEnvWindow = getSEnvWindowClass(context);
       this.contentWindow = new SEnvWindow("", this.ownerDocument.defaultView);

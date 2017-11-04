@@ -2,7 +2,7 @@ import { fork, take, select, call, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { transpilePCASTToVanillaJS, editPCContent, TranspileResult } from "../../paperclip";
 import * as request from "request";
-import { ApplicationState, createComponentFromFilePath, Component } from "../state";
+import { ApplicationState, getComponentsFromSourceContent, Component } from "../state";
 import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
 import { routeHTTPRequest, getComponentFilePaths } from "../utils";
@@ -67,23 +67,15 @@ function* createComponent(req: express.Request, res: express.Response) {
 }
 
 const BUILTIN_COMPONENTS: Component[] = [
-  {
-    $id: "repeat",
-    label: "List"
-  },
-  {
-    $id: "text-block",
-    label: "Dynamic Text"
-  }
 ]
 
 function* getAvailableComponents() {
   const state: ApplicationState = yield select();
   const readFileSync = getReadFile(state);
   
-  return [...BUILTIN_COMPONENTS, ...getComponentFilePaths(state).map(filePath => (
-    createComponentFromFilePath(readFileSync(filePath), filePath)
-  ))];
+  return [...BUILTIN_COMPONENTS, ...getComponentFilePaths(state).reduce((components, filePath) => (
+    [...components, ...getComponentsFromSourceContent(readFileSync(filePath), filePath)]
+  ), [])];
 }
 
 function* proxy(req, res: express.Response) {
@@ -129,11 +121,12 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
 
   // TODO - evaluate PC code IN THE BROWSER -- need to attach data information to element
   // nodes
-  const [match, $id] = req.path.match(/preview\/(\w+)/);
+  const [match, tagNameOrHash] = req.path.match(/preview\/([^\/]+)/);
 
   const components = (yield call(getAvailableComponents)) as Component[];
 
-  const targetComponent = components.find(component => component.$id === $id);
+  const targetComponent = components.find(component => component.tagName === tagNameOrHash || component.hash === tagNameOrHash);
+
 
   if (!targetComponent || !targetComponent.filePath) {
     res.status(404);
@@ -174,24 +167,28 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     </head>
     <body>
       <script>
-        var bundle = {};
-        ${content}
-        var preview  = bundle.entry.preview;
-        var styles   = bundle.entry.$$styles || [];
         var allFiles = ${JSON.stringify(transpileResult.allFiles)};
-        if (!preview) {
-          document.body.appendChild(
-            document.createTextNode('"preview" template not found')
-          );
-        } else {
-          styles.forEach(function(style) {
-            document.body.appendChild(style);
-          });
-          try {
-            document.body.appendChild(preview({}));
-          } catch(e) {
-            document.body.appendChild(document.createTextNode(e.stack));
+        
+        try {
+          var bundle = {};
+          ${content}
+          var previews  = bundle.entry.$$previews || {};
+
+          var styles   = bundle.entry.$$styles || [];
+          if (!Object.keys(previews).length) {
+            document.body.appendChild(
+              document.createTextNode('no preview found in file')
+            );
+          } else {
+            const mainPreview = previews[Object.keys(previews)[0]];
+            styles.forEach(function(style) {
+              document.body.appendChild(style);
+            });
+            document.body.appendChild(mainPreview);
           }
+        } catch(e) {
+          console.log(e.stack);
+          document.body.appendChild(document.createTextNode(e.stack));
         }
 
         if (window.reloadWhenUrisChange) {

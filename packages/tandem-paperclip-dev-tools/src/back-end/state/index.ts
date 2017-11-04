@@ -2,7 +2,7 @@ import * as md5 from "md5";
 import * as fs from "fs";
 import * as path from "path";
 import { arrayReplaceIndex, arraySplice } from "aerial-common2";
-import { getPCMetaName, parse } from "../../paperclip";
+import { getPCMetaName, parse, getPCASTElementsByTagName, getPCStartTagAttribute } from "../../paperclip";
 
 export type Config = {
   componentsDirectory?: string;
@@ -24,25 +24,49 @@ export type ApplicationState = {
 
 export type Component = {
   label: string;
-  $id: string;
+  tagName?: string;
   filePath?: string;
+  hash?: string;
 }
 
-export const createComponentFromFilePath = (content: string, filePath: string): Component => {
-  let info = {
-    $id: md5(filePath),
-    filePath: filePath,
-    label: path.basename(filePath)
-  };
-  
+export const getComponentsFromSourceContent = (content: string, filePath: string): Component[] => {
+  const hash = md5(filePath);
   try {
-    info.label = getPCMetaName(parse(content));
-  } catch(e) {
-    info.label += ":<syntax error>";
-  }
+    const ast = parse(content);
+    return getPCASTElementsByTagName(ast, "component").map((component) => {
+      const id = getPCStartTagAttribute(component, "id");
+      return {
+        tagName: id,
+        hash,
+        filePath,
+        label: id
+      }
+    });
 
-  return info;
-}
+  } catch(e) {
+    return [{
+      label: path.basename(filePath) + ":<syntax error>" ,
+      filePath,
+      hash,
+    }];
+  }
+};
+
+// export const createComponentFromFilePath = (content: string, filePath: string): Component => {
+//   let info = {
+//     $id: md5(filePath),
+//     filePath: filePath,
+//     label: path.basename(filePath)
+//   };
+  
+//   try {
+//     info.label = getPCMetaName(parse(content));
+//   } catch(e) {
+//     info.label += ":<syntax error>";
+//   }
+
+//   return info;
+// }
 
 export const updateApplicationState = (state: ApplicationState, properties: Partial<ApplicationState>) => ({
   ...state,

@@ -31,7 +31,7 @@ export const hasPCStartTagAttribute = (element: PCElement | PCSelfClosingElement
 
 export const getPCStyleElements = (parent: PCParent) => filterPCASTTree(parent, (expression) => expression.type === PCExpressionType.ELEMENT && (expression as PCElement).startTag.name === "style");
 
-export const getPCLinkStyleElements = (parent: PCParent) => filterPCASTTree(parent, (expression) => expression.type === PCExpressionType.SELF_CLOSING_ELEMENT && (expression as PCSelfClosingElement).name === "link");
+export const getPCLinkStyleElements = (parent: PCParent) => filterPCASTTree(parent, (expression) => expression.type === PCExpressionType.SELF_CLOSING_ELEMENT && (expression as PCSelfClosingElement).name === "link" && getPCStartTagAttribute(expression as PCSelfClosingElement, "rel") === "stylesheet");
 
 export const getPCCSSElements = (parent: PCParent) => [
   ...getPCStyleElements(parent),
@@ -125,19 +125,12 @@ export const filterPCASTTree = (ast: PCExpression, filter: (ast: PCExpression) =
 export const getPCASTElementsByTagName = (ast: PCExpression, tagName: string) => filterPCElementsByStartTag(ast, (tag) => tag.name === tagName) as Array<PCElement | PCSelfClosingElement>;
 
 export const getPCImports = (ast: PCExpression) => {
-  const imports = {};
+  const imports = [];
   traversePCAST(ast, (ast) => {
-    if (ast.type === PCExpressionType.START_TAG || ast.type === PCExpressionType.SELF_CLOSING_ELEMENT || ast.type === PCExpressionType.ELEMENT) {
+    if ((ast.type === PCExpressionType.START_TAG || ast.type === PCExpressionType.SELF_CLOSING_ELEMENT) && (ast as PCSelfClosingElement).name === "link" && getPCStartTagAttribute(ast as PCSelfClosingElement, "rel") === "import") {
 
-      if (ast.type === PCExpressionType.ELEMENT) {
-        ast = (ast as PCElement).startTag;
-      }
-      
-      for (const attr of (ast as PCSelfClosingElement).attributes) {
-        if (attr.name.substr(0, 6) === "xmlns:") {
-          imports[attr.name.substr(6)] = (attr.value as PCString).value;
-        }
-      }
+      const startTag = ast as PCSelfClosingElement;
+      imports.push(getPCStartTagAttribute(ast as PCSelfClosingElement, "href"));
     }
   });
   
