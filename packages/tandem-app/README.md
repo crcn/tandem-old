@@ -22,6 +22,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] progress
 
 - [ ] Bugs
+  - [ ] styles aren't updating on initial load
   - [ ] allow refresh when script busts
   - [ ] external links are broken
   - [ ] matching styles must also consider slots**
@@ -31,7 +32,6 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] cannot change element attribute (see gutter.pc -- class={{"gutter " + props.class}})
   - [ ] cannot parse semicolon within CSS string ("; ")
   - [ ] enable javascript expressions in blocks
-  
 
 AFTER INITIAL COMPONENTS:
 

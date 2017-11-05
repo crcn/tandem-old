@@ -116,8 +116,39 @@
 </component>
 
 <component id="td-progress">
+  <property name="value" default={{0}} />
+  <style>
+    :host {
+      display: block;
+    }
+    .fill {
+      height: 20px;
+      background: red;
+      border-radius: 100px;
+      position: relative;
+    }
+    .background {
+      width: 100%;
+      display: inline-block;
+      background: blue;
+      border-radius: 100px;
+      position: relative;
+    }
+
+    span {
+      color: var(--font-color-light);
+      position: absolute;
+      left: var(--base4);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  </style>
   <template>
-    TODO
+    <div class="background">
+      <div class="fill" style={{ "width: " + (this.value * 100) + "%"}}>
+      </div>
+      <span><slot></slot></span>
+    </div>
   </template>
 </component>
 
@@ -162,8 +193,8 @@
       } : {
         deltaX: draggableRect.left - event.clientX,
         deltaY: draggableRect.top - event.clientY
-      }
-
+      };
+      
       const onMouseUp = (event) => {
         document.removeEventListener("mouseup", onMouseUp, true);
         document.removeEventListener("mousemove", onMouseMove);
@@ -194,9 +225,36 @@
     }
   </script>
   <template>
-      <slot onmousedown={{onMouseDown}}></slot>
+    <slot onmousedown={{onMouseDown}}></slot>
   </template>
 </component>
+
+  <component id="td-progress-example">
+    <property name="value" default={{0}} />
+    <style>
+      td-progress {
+        margin: var(--base4);
+      }
+    </style>
+    <script>
+      let interval;
+      this.didMount = () => {
+        if (this.live) {
+          interval = setInterval(() => {
+            this.value = (this.value + 0.01) % 1;
+          }, 500);
+        }
+      }
+
+      this.willUnmount = () => {
+        clearInterval(interval);
+      }
+    </script>
+    <property name="value" default={{0}} />
+    <template>
+      <td-progress value={{this.value}}>{{Math.round(this.value * 100)}}%</td-progress>
+    </template>
+  </component>
 
 <td-preview>
   <td-preview-component-example label="List">
@@ -218,5 +276,14 @@
     <td-banner warning>Warning</td-banner>
     <td-banner error>Error</td-banner>
   </td-preview-component-example>
+
+  <td-preview-component-example label="Progress">
+    <td-progress-example value={{0}} />
+    <td-progress-example value={{0.5}} />
+    <td-progress-example value={{1}} />
+  </td-preview-component-example>
 </td-preview>
+
+</td-preview>
+
 
