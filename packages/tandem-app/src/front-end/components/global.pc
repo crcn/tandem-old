@@ -1,4 +1,7 @@
-<link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+<!-- TODOS:
+
+-->
+<!--link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" /-->
 
 <style>
   :root {
@@ -90,9 +93,6 @@
   </template>
 </component>
 
-<!--type id="workspace">
-</type-->
-
 <component id="td-list-item" label="List Item">
   <property name="count" type="number" default={{0}} />
   <property name="mouseOver" type="number" default={{false}} />
@@ -112,6 +112,12 @@
   </style>
   <template>
     <slot></slot>
+  </template>
+</component>
+
+<component id="td-progress">
+  <template>
+    TODO
   </template>
 </component>
 
@@ -143,25 +149,52 @@
 
 <component id="td-draggable">
   <property name="onDrag" default={{noop}} />
+  <property name="restrict" />
   <script>
-    const onMouseDown = () => {
+    const onMouseDown = (event) => {
+
+      const draggableRect = this.children[0].getBoundingClientRect();
+      const { restrict = "viewport" } = this;
+
+      const { deltaX, deltaY } = restrict === "self" ? {
+        deltaX: 0,
+        deltaY: 0
+      } : {
+        deltaX: draggableRect.left - event.clientX,
+        deltaY: draggableRect.top - event.clientY
+      }
+
       const onMouseUp = (event) => {
         document.removeEventListener("mouseup", onMouseUp, true);
         document.removeEventListener("mousemove", onMouseMove);
       };
 
       const onMouseMove = (event) => {
-        this.onDrag(event);
+
+        const bounds = restrict === "parent" ? this.parentElement.getBoundingClientRect() : restrict === "self" ? draggableRect : {
+          left: 0,
+          top: 0,
+          width: window.innerWidth,
+          height: window.innerHeight
+        };
+
+        const relativeLeft = Math.max(0, Math.min(bounds.width, event.clientX - bounds.left + deltaX));
+        const relativeTop = Math.max(0, Math.min(bounds.height, event.clientY - bounds.top + deltaY));
+
+        this.onDrag(event, {
+          left: relativeLeft,
+          top: relativeTop
+        }, bounds);
       };
+
+      onMouseMove(event);
 
       document.addEventListener("mouseup", onMouseUp, true);
       document.addEventListener("mousemove", onMouseMove);
     }
   </script>
   <template>
-    <span onmousedown={{onMouseDown}}>
-      <slot></slot>
-    </span>
+      <slot onmousedown={{onMouseDown}}></slot>
   </template>
 </component>
 

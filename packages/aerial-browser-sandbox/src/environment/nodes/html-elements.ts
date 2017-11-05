@@ -2,7 +2,7 @@ import * as vm from "vm";
 import { hasURIProtocol } from "aerial-sandbox2";
 import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
 import path = require("path");
-import { camelCase } from "lodash";
+import { camelCase, debounce } from "lodash";
 import { getUri } from "../utils";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SEnvNodeListInterface, getSEnvHTMLCollectionClasses } from "./collections";
@@ -605,6 +605,101 @@ export const getSEnvHTMLFormElementClass = weakMemo((context: any) => {
   return SEnvHTMLFormElement;
 });
 
+export const SET_CANVAS_DATA_URL = "SET_CANVAS_DATA_URL";
+
+const createSetCanvasDataUrlMutation = (target: SEnvHTMLElementInterface, uri: string, width: number, height: number) => createSetValueMutation(SET_CANVAS_DATA_URL, target, { uri, width, height });
+
+const canvasMutators = {
+  [SET_CANVAS_DATA_URL](canvas: HTMLCanvasElement, { newValue: { uri, width, height }}: SetValueMutation<any>) {
+    const image = new Image();
+    image.onload = () => {
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext("2d").drawImage(image, 0, 0);
+    };
+    image.src = uri;
+  }
+}
+
+const difHTMLCanvasElement = (oldElement: HTMLCanvasElement, newElement: HTMLCanvasElement) => {
+  const mutations = diffBaseNode(oldElement, newElement, diffHTMLNode);
+  const newDataUrl = newElement.toDataURL();
+
+  // TODO - fix me - this is slow.
+  if (oldElement.toDataURL() !== newDataUrl) {
+    mutations.push(createSetCanvasDataUrlMutation(oldElement as any, newDataUrl, oldElement.width, oldElement.height));
+  }
+
+  return mutations;
+}
+
+export const getSEnvHTMLCanvasElementClass = weakMemo((context: SEnvWindowContext) => {
+  const SEnvHTMLElement = getSEnvHTMLElementClass(context);
+  class SEnvHTMLCanvasElement extends SEnvHTMLElement implements HTMLCanvasElement {
+    private _canvas: HTMLCanvasElement;
+    private _canvasNoProxy: HTMLCanvasElement;
+
+    constructor() {
+      super();
+      this.$$setCanvas(document.createElement("canvas"));
+    }
+
+    get width() {
+      return Number(this.getAttribute("width"));
+    }
+
+    get height() {
+      return Number(this.getAttribute("height"));
+    }
+
+    set width(value: number) {
+      this.setAttribute("width", String(value));
+    }
+
+    set height(value: number) {
+      this.setAttribute("height", String(value));
+    }
+
+    $$setCanvas(canvas: HTMLCanvasElement) {
+      // proxy canvas element for now -- API is too complicated -- should be okay diff / patching buffer. Node should use cairo for this.
+      this._canvas = proxyOnChange(this._canvasNoProxy = canvas, debounce(this._onCanvasDraw.bind(this), 20));
+    }
+
+    attributeChangedCallback(propertyName, oldValue, newValue) {
+      super.attributeChangedCallback(propertyName, oldValue, newValue);
+      this._canvas.setAttribute(propertyName, newValue);
+    }
+    getContext(contextId: "2d", contextAttributes?: Canvas2DContextAttributes): CanvasRenderingContext2D | null;
+    getContext(contextId: "webgl" | "experimental-webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
+    getContext(contextId: string, contextAttributes?: {}): CanvasRenderingContext2D | WebGLRenderingContext | null {
+      return this._canvas.getContext(contextId, contextAttributes);
+    }
+    msToBlob(): Blob {
+      this._throwUnsupportedMethod();
+      return null;
+    }
+    toDataURL(type?: string, ...args: any[]): string {
+      return this._canvasNoProxy.toDataURL(type, ...args);
+    }
+    toBlob(callback: (result: Blob | null) => void, type?: string, ...args): void {
+      this._canvasNoProxy.toBlob(callback, type, ...args);
+    }
+
+    private _onCanvasDraw() {
+      const dataUrl = this._canvasNoProxy.toDataURL();
+      this.dispatchMutationEvent(createSetCanvasDataUrlMutation(this, dataUrl, this._canvas.width, this._canvas.height));
+    }
+
+    cloneShallow() {
+      const clone = super.cloneShallow() as any as HTMLCanvasElement;
+      clone["" + "$$setCanvas"](this._canvasNoProxy.cloneNode(true));
+      return clone as any;
+    }
+  }
+
+  return SEnvHTMLCanvasElement;
+});
+
 const getSEnvHTMLInputElementClass = weakMemo((context: SEnvWindowContext) => {
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
   class SEnvHTMLInputElement extends SEnvHTMLElement implements HTMLInputElement { 
@@ -763,6 +858,34 @@ const getSEnvHTMLIFrameElementClass = weakMemo((context: SEnvWindowContext) => {
 
   return SEnvHTMLIFrameElement;
 });
+
+
+const proxyOnChange = <T extends any>(target: T, onChange: (name, args: any[]) => any) => {
+
+  const maybeProxy = (v) => {
+    if (typeof v === "function") {
+      return proxyOnChange(v.bind(target), onChange);
+    } else if (typeof v === "object") {
+      // return proxyOnChange(v, onChange);
+      return v;
+    }
+    return v;
+  }
+  return new Proxy(target, {
+    get(target: T, p: PropertyKey, receiver: any): any {
+      return maybeProxy(target[p]);
+    },
+    apply(target, thisArg: any, argArray?: any): any {
+      onChange(target.name, argArray);
+      return maybeProxy(target.apply(thisArg, argArray));
+    },
+    set(target: T, p: PropertyKey, value: any, receiver: any): boolean {
+      onChange(p, [value]);
+      target[p] = value;
+      return true;
+    }
+  })
+}
 
 export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) => {
   const { getProxyUrl } = context;
@@ -1024,27 +1147,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) =
 
       }
     },
-    "canvas": class SEnvHTMLCanvasElement extends SEnvHTMLElement implements HTMLCanvasElement {
-      height: number;
-      width: number;
-      getContext(contextId: "2d", contextAttributes?: Canvas2DContextAttributes): CanvasRenderingContext2D | null;
-      getContext(contextId: "webgl" | "experimental-webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
-      getContext(contextId: string, contextAttributes?: {}): CanvasRenderingContext2D | WebGLRenderingContext | null {
-        this._throwUnsupportedMethod();
-        return null;
-      }
-      msToBlob(): Blob {
-        this._throwUnsupportedMethod();
-        return null;
-      }
-      toDataURL(type?: string, ...args: any[]): string {
-        this._throwUnsupportedMethod();
-        return null;
-      }
-      toBlob(callback: (result: Blob | null) => void, type?: string, ...args): void {
-
-      }
-    },
+    "canvas": getSEnvHTMLCanvasElementClass(context),
     "caption": class SEnvHTMLTableCaptionElement extends SEnvHTMLElement implements HTMLTableCaptionElement {
       align: string;
       vAlign: string;
@@ -1776,6 +1879,8 @@ export const diffHTMLNode = (oldElement: Node, newElement: Node) => {
     return diffHTMLLinkElement(oldElement as HTMLLinkElement, newElement as HTMLLinkElement);
   } else if (oldElement.nodeName.toLowerCase() === "style") {
     return diffHTMLStyleElement(oldElement as HTMLLinkElement, newElement as HTMLLinkElement);
+  } else if (oldElement.nodeName.toLowerCase() === "canvas") {
+    return difHTMLCanvasElement(oldElement as HTMLCanvasElement, newElement as HTMLCanvasElement);
   }
 
   return diffBaseNode(oldElement, newElement, diffHTMLNode);
@@ -1783,5 +1888,6 @@ export const diffHTMLNode = (oldElement: Node, newElement: Node) => {
 
 export const baseHTMLElementMutators = {
   ...baseElementMutators,
-  ...cssStyleSheetMutators
+  ...cssStyleSheetMutators,
+  ...canvasMutators
 };

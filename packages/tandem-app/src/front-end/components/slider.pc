@@ -12,10 +12,10 @@
     
     #knob {
       background: rgba(0,0,0,0.2);
-      width: 8px;
+      width: 10px;
       border-radius: 50%;
       cursor: pointer;
-      height: 8px;
+      height: 10px;
       position: relative;
       box-sizing: border-box;
     }
@@ -33,6 +33,7 @@
   </script>
   <template>
     <div id="guide">
+      <slot name="guide"></slot>
       <td-draggable onDrag={{onKnobDrag}}>
         <div id="knob" style={{"left:" + (this.value * 100) + "%;"}}></div>
       </td-draggable>
@@ -56,34 +57,3 @@
   <td-slider value={{0.5}} onChange={{e => console.log(e)}} />
   <td-slider value={{1}} />
 </td-preview>
-<!--module xmlns:global="./global.pc">
-  <meta name="name" content="Slider" />
-  <template name="main" export>
-    <style scoped>
-      .pallete {
-        background: #F0F0F0;
-        
-      }
-      .slider {
-        
-      }
-    </style>
-    <div class="slider">
-      <div class="guide">
-        <div class="knob" style={{"left:calc(" + (props.value * 100) + "% - 10px);"}}></div>
-      </div>
-    </div>
-  </template>
-  <template name="preview" export>
-    <style scoped>
-      .slider {
-        margin: 10px;
-      }
-    </style>
-    <div class="container">
-      <main value={{1}} />
-      <main value={{0.5}} />
-      <main value={{0}} />
-    </div>
-  </template>
-</module-->

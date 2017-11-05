@@ -22,6 +22,7 @@ import { StringScanner, Scanner, TokenScanner, createToken, eatUntil } from "./
 
 enum TokenType {
   LESS_THAN,
+  CLOSE_TAG,
   GREATER_THAN,
   BLOCK_START,
   COMMENT_START,
@@ -55,7 +56,9 @@ const tokenize = (source: string) => {
     let token: Token;
 
     if (cchar === "<") {
-      if (scanner.peek(4) === "<!--") {
+      if (scanner.peek(2) === "</") {
+        token = createToken(TokenType.CLOSE_TAG, scanner.pos, scanner.take(2));
+      } else if (scanner.peek(4) === "<!--") {
         token = createToken(TokenType.COMMENT_START, scanner.pos, scanner.take(4));
       } else {
         token = createToken(TokenType.LESS_THAN, scanner.pos, scanner.shift());
@@ -111,6 +114,8 @@ function createNode(scanner: TokenScanner): PCExpression  {
     return createComment(scanner);
   } else if (token.type === TokenType.LESS_THAN) {
     return createTag(scanner);
+  } else if (token.type === TokenType.CLOSE_TAG) {
+    return createEndTag(scanner);
   } else if (token.type === TokenType.BLOCK_START) {
     return createBlock(scanner);
   } else {
@@ -146,31 +151,53 @@ function createComment(scanner: TokenScanner): PCComment {
 }
 
 function createTag(scanner: TokenScanner): PCElement | PCEndTag | PCSelfClosingElement {
-  if (scanner.peek().type === TokenType.BACKSLASH) {
-    return createEndTag(scanner);
-  }
   const startTag = createStartTag(scanner);
   if (startTag.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
     return startTag;
   }
 
   const children: PCExpression[] = [];
-  let endTag: PCEndTag;
+  let endTag: PCEndTag; 
 
-  while(!scanner.ended()) {
+  // TODO - special tags here -- speed it up
+  if (/^(script|style)$/.test(startTag.name)) {
 
-    const childOrEndTag = createNode(scanner);
+    let textContent = "";
 
-    // eof
-    if (!childOrEndTag) {
-      break;
+    const start = scanner.curr();
+
+    while(!scanner.ended()) {
+      const token = scanner.curr();
+      if (token.type === TokenType.CLOSE_TAG && scanner.hasNext() && scanner.peek(1).type === TokenType.STRING && scanner.peek(1).value === startTag.name) {
+        endTag = createNode(scanner) as PCEndTag;
+        break;
+      }
+      textContent += token.value;
+      scanner.next();
     }
-    if (childOrEndTag.type === PCExpressionType.END_TAG) {
-      // TODO -- assert that the name is the same
-      endTag = childOrEndTag as PCEndTag;
-      break;
-    } else {
-      children.push(childOrEndTag);
+
+    children.push({
+      type: PCExpressionType.STRING,
+      location: getLocation(start, start.pos + textContent.length, scanner.source),
+      value: textContent
+    } as PCString);
+
+  } else {
+    while(!scanner.ended()) {
+
+      const childOrEndTag = createNode(scanner);
+
+      // eof
+      if (!childOrEndTag) {
+        break;
+      }
+      if (childOrEndTag.type === PCExpressionType.END_TAG) {
+        // TODO -- assert that the name is the same
+        endTag = childOrEndTag as PCEndTag;
+        break;
+      } else {
+        children.push(childOrEndTag);
+      }
     }
   }
 
@@ -337,9 +364,8 @@ function createAttributeValue(scanner: TokenScanner): PCString | PCBlock {
 }
 
 function createEndTag(scanner: TokenScanner): PCEndTag {
-  const start = scanner.curr(); // <
-  scanner.next(); // eat <
-  scanner.next(); // eat /
+  const start = scanner.curr(); // </
+  scanner.next(); // eat </
   const name = getTagName(scanner);
   const closeToken = scanner.curr();
   assertCurrTokenType(scanner, TokenType.GREATER_THAN);
@@ -358,7 +384,7 @@ function createText(scanner: TokenScanner): PCString {
   let endToken: Token;
   while(1) {
     const currToken = scanner.curr();
-    if (!currToken || currToken.type === TokenType.LESS_THAN || currToken.type === TokenType.BLOCK_START || currToken.type === TokenType.COMMENT_START) {
+    if (!currToken || currToken.type === TokenType.LESS_THAN || currToken.type === TokenType.CLOSE_TAG || currToken.type === TokenType.BLOCK_START || currToken.type === TokenType.COMMENT_START) {
       break;
     }
     endToken = currToken;

@@ -13,7 +13,7 @@ export const getSEnvDocumentFragment = weakMemo((context: any) => {
       this.nodeName = "#document-fragment";
     }
     getElementById(elementId: string): HTMLElement | null {
-      return null;
+      return this.querySelector("#" + elementId) as HTMLElement;
     }
     createStruct() {
       return {

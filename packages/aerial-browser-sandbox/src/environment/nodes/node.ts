@@ -185,6 +185,7 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
       const clone = this.cloneShallow();
       clone["" + "nodeName"] = this.nodeName;
       clone["" + "_initialized"] = this._initialized;
+      // clone["" + "connectedToDocument"] = this.connectedToDocument;
       clone.source = this.source;
       clone.$id    = this.$id;
 

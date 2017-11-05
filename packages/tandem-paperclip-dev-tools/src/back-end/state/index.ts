@@ -44,6 +44,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
     });
 
   } catch(e) {
+    console.log(JSON.stringify(e.stack, null, 2));
     return [{
       label: path.basename(filePath) + ":<syntax error>" ,
       filePath,

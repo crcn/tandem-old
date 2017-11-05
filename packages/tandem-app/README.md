@@ -14,15 +14,12 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] import external scripts
   - [ ] transpile TS to JS 
   - [ ] figure out how to pass objects to attributes - (set as prop) (possibly check for <props>)
-
-- [ ] VM
-  - [ ] canvas support
+  - [ ] support object styles
 
 - [ ] Components
   - [ ] color picker
   - [ ] slider
   - [ ] progress
-  
 
 - [ ] Bugs
   - [ ] allow refresh when script busts
@@ -34,6 +31,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] cannot change element attribute (see gutter.pc -- class={{"gutter " + props.class}})
   - [ ] cannot parse semicolon within CSS string ("; ")
   - [ ] enable javascript expressions in blocks
+  
 
 AFTER INITIAL COMPONENTS:
 

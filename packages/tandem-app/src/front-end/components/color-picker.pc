@@ -1,6 +1,10 @@
 <link rel="import" href="./global.pc" />
+<link rel="import" href="./slider.pc" />
 
 <component id="td-color-picker">
+  <property name="dropperPoint" />
+  <property name="pickerWidth" default={{400}} />
+  <property name="pickerHeight" default={{300}} />
   <style>
     .color-picker {
       padding: var(--base4);
@@ -11,19 +15,23 @@
     }
 
     .pallete {
-      flex: 1;
-      flex-grow: 2;
-      border-radius: 2px;
-      background: red;
-      margin-bottom: 8px;
+      position: relative;
+      box-sizing: border-box;
     }
 
     .dropper {
+      left: 0;
+      top: 0;
+      display: inline-block;
+      box-shadow: 0px 0px 0px 1px #000;
+      cursor: pointer;
+      box-sizing: border-box;
       border: 1px solid white;
       position: absolute;
-      width: var(--base4);
-      height: var(--base4);
+      width: var(--base6);
+      height: var(--base6);
       border-radius: 50%;
+      transform: translate(-50%, -50%);
     }
     
     .controls {
@@ -43,11 +51,80 @@
       margin: var(--base2);
       margin-left: 0px;
     }
+
+    td-draggable {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    td-slider canvas {
+      height: 20px;
+    }
     
 
   </style>
+  <script>
+    const onPalleteDrag = (event, point, bounds) => {
+      this.dropperPoint = {
+        left: (point.left / bounds.width) * 100,
+        top: (point.top / bounds.height) * 100,
+      };
+    };
+
+
+    const drawHSL = (hue) => {
+      var ctx = this.hslPicker.getContext('2d');
+      for(var row = 0; row < 200; row++) {
+        var grad = ctx.createLinearGradient(0, 0, 200, 0);
+        grad.addColorStop(0, 'hsl('+hue+', 100%, '+(200-row)+'%)');
+        grad.addColorStop(1, 'hsl('+hue+', 0%, '+(200-row)+'%)');
+        ctx.fillStyle=grad;
+        ctx.fillRect(0, row, 200, 1);
+      }
+    };
+
+    const drawGuide = () => {
+
+    };
+
+    const draw = () => {
+      drawHSL(300);
+    };
+
+    this.didMount = () => {
+      draw();
+    };
+
+    this.willUnmount = () => {
+      console.log("UNMOUNTED");
+    }
+
+    this.didUpdate = () => {
+      console.log("UPDATED");
+    }
+  </script>
   <template>
-    <span>TPL</span>
+    <div class="color-picker" style={{"width: " + this.pickerWidth }}>
+      <td-draggable restrict="self" onDrag={{onPalleteDrag}}>
+        <div class="pallete" id="pallete">
+          <canvas id="hslPicker" width={{this.pickerWidth}} height={{this.pickerHeight}} />
+          <div class="dropper" style={{ this.dropperPoint && ("left: " + this.dropperPoint.left + "%; top: " + this.dropperPoint.top + "%;") }} />
+        </div>
+      </td-draggable>
+      <div class="controls">
+        <div class="slider">
+          <td-slider value={{0}}>
+            <canvas id="guide" slot="guide" width={{this.pickerWidth}}></canvas>
+          </td-slider>
+        </div>
+      </div>
+      <div class="presets">
+        <repeat each={{(this.presetColors || [])}} as="presetColor">
+          <div class="preset" style={{ "background: " + presetColor + ";" }}></div>
+        </repeat>
+      </div>
+    </div>
   </template>
 </component>
 

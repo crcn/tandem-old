@@ -108,7 +108,7 @@ export const transpilePCASTToVanillaJS = (source: string, uri: string, options: 
 
 export const transpileBundle = (source: string, uri: string, options: TranspileOptions): TranspileResult => {
   
-  let buffer = `(function(document) {
+  let content = `(function(document) {
     function module(fn) {
       var exports;
       return function(modules) {
@@ -139,31 +139,31 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
       });
     }
   `;
-  buffer += `var noop = function(){}\n;`;
-  buffer += `var modules = {\n`;
+  content += `var noop = function(){}\n;`;
+  content += `var modules = {\n`;
 
   const { warnings, errors, modules } = bundle(source, uri, undefined, options);
 
   
   for (const uri in modules) {
-    buffer += `"${uri}": ${modules[uri].content},`
+    content += `"${uri}": ${modules[uri].content},`
   };
 
-  buffer += "}\n";
-  buffer += `return {
+  content += "}\n";
+  content += `return {
     entry: modules["${uri}"](modules),
     modules: modules
   }`;
-  buffer += `})(document);`
+  content += `})(document);`
 
   if (options.assignTo) {
-    buffer = `${options.assignTo} = ${buffer}`;
+    content = `${options.assignTo} = ${content}`;
   }
 
   return {
-    warnings,
     errors,
-    content: buffer,
+    content,
+    warnings,
     allFiles: Object.keys(modules)
   };
 };
@@ -223,8 +223,7 @@ const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult
 
 const getNsPrefix = (ns: string) => `ns-${ns.replace(/\-/g, "_")}`;
 
-const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, imports) => {
-  
+const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, imports) => {  
   const context: TranspileContext = {
     varCount: 0,
     uri,
@@ -364,6 +363,10 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       declaration = transpileRepeat(node, context);
       break;
     }
+    case "script": {
+      declaration = transpileScriptElement(node, context);
+      break;
+    }
     case "style": {
       declaration = transpileStyleElement(node, context);
       break;
@@ -378,6 +381,18 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
 
   return declaration;
 };
+
+const transpileScriptElement = (node: PCElement, context: TranspileContext) => {
+
+  // TODO - support reading files here
+  const textChild = node.children[0] as PCString;
+  const jsSource = context.source.substr(textChild.location.start.pos, textChild.location.end.pos - textChild.location.start.pos);
+
+  const scriptDecl = createNodeDeclaration(`document.createElement("script")`, node, context);
+  scriptDecl.content += `${scriptDecl.varName}.appendChild(document.createTextNode(${JSON.stringify(jsSource)}));\n`;
+  
+  return scriptDecl;
+}
 
 // TODO - eventually need to put these style elements within the global context, or check if they've already
 // been registered. Otherwise they'll pollute the CSSOM when used repeatedly. 
@@ -590,6 +605,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
     
       connectedCallback() {
         this.render();
+        this.didMount();
       }
 
       ${
@@ -626,7 +642,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
         }
         this._rendered = true;
         const shadow = this.attachShadow({ mode: "open" });;
-        ${style ? `${styleDeclaration.content}shadow.appendChild(${styleDeclaration.varName})` : ""}
+        ${style ? `${styleDeclaration.content}shadow.appendChild(${styleDeclaration.varName});` : ""}
         ${
           properties.map((property) => {
             const defaultValue = getPCStartTagAttribute(property, "default");
@@ -658,15 +674,25 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
         this[name] = newValue;
       }
 
+      didMount() {
+        // override me
+      }
+
+      didUpdate() {
+        // override me
+      }
+
       update() {
         if (!this._rendered) {
           return;
         }
         
-        var bindings = this.${BINDINGS_VAR};
+        var bindings = this.${BINDINGS_VAR} || [];
         for (var i = 0, n = bindings.length; i < n; i++) {
           bindings[i]();
         }
+
+        this.didUpdate();
       }
     }
 
