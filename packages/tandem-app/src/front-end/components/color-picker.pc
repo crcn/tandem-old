@@ -1,22 +1,70 @@
+<!-- TODOS
+alpha picker
+rgba text input
+spectrum slider
+-->
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./slider.pc" />
 
 <component id="td-color-picker">
+
   <property name="dropperPoint" />
-  <property name="pickerWidth" default={{400}} />
-  <property name="pickerHeight" default={{300}} />
+  <property name="width" default={{300}} />
+  <property name="height" default={{150}} />
+  <property name="color" default={{"#FFF"}} />
+  <property name="onChange" default={{noop}} />
+
   <style>
     .color-picker {
       padding: var(--base4);
+      border: 2px solid var(--border-color);
+      border-radius: 4px;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       height: 100%;
       position: relative;
+      display: inline-block;
+      box-sizing: border-box;
     }
 
-    .pallete {
+    .top {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #previewColor {
+      width: 40px;
+      height: 30px;
+      margin-right: 10px;
+      border-radius: 2px;
+      border: 1px solid var(--border-color);
+      box-sizing: border-box;
+    }
+
+    #pallete {
       position: relative;
       box-sizing: border-box;
+      display: inline-block;
+    }
+
+    #spectrum {
+      display: inline-block;
+    }
+    canvas {
+      border-radius: 2px;
+    }
+
+    .inputs {
+      display: flex;
+      width: 100%;
+    }
+
+    input {
+      border: 1px solid var(--border-color);
+      border-radius: 2px;
+      height: 30px;
+      padding: 0px 8px;
+      width: 100%;
     }
 
     .dropper {
@@ -54,8 +102,8 @@
 
     td-draggable {
       position: relative;
-      display: inline-block;
       margin-bottom: 8px;
+      float: left;
     }
 
     td-slider canvas {
@@ -65,31 +113,43 @@
 
   </style>
   <script>
+    const rgbToHex = (rgb) => "#" + ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]).toString(16);
+
     const onPalleteDrag = (event, point, bounds) => {
       this.dropperPoint = {
         left: (point.left / bounds.width) * 100,
         top: (point.top / bounds.height) * 100,
       };
+      const canvas = this.hslPicker.getContext('2d');
+      const p = canvas.getImageData(point.left, point.top, 1, 1).data;
+      this.onChange(this.color = rgbToHex(p));
     };
-
 
     const drawHSL = (hue) => {
       var ctx = this.hslPicker.getContext('2d');
-      for(var row = 0; row < 200; row++) {
-        var grad = ctx.createLinearGradient(0, 0, 200, 0);
-        grad.addColorStop(0, 'hsl('+hue+', 100%, '+(200-row)+'%)');
-        grad.addColorStop(1, 'hsl('+hue+', 0%, '+(200-row)+'%)');
-        ctx.fillStyle=grad;
-        ctx.fillRect(0, row, 200, 1);
+      const { width, height } = this;
+      
+      for(var row = 0; row < height; row++) {
+        var grad = ctx.createLinearGradient(0, 0, width, 0);
+        grad.addColorStop(1, `hsl(${hue}, 100%, ${((height - row) / height) * 50}%)`);
+        grad.addColorStop(0, `hsl(${hue}, 0%, ${((height - row) / height) * 100}%)`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, row, width, 1);
       }
     };
-
-    const drawGuide = () => {
-
-    };
+    
+    const drawSpectrum = () => {
+      var ctx = this.spectrumPicker.getContext('2d');
+      const { width } = this;
+      for (var row = 0; row <= width; row++) {
+        ctx.fillStyle = `hsl(${((row - width) / width) * 360}, 100%, 50%)`;
+        ctx.fillRect(row, 0, 1,  this.spectrumPicker.height);
+      }
+    }
 
     const draw = () => {
-      drawHSL(300);
+      drawHSL(36);
+      drawSpectrum();
     };
 
     this.didMount = () => {
@@ -97,33 +157,41 @@
     };
 
     this.willUnmount = () => {
-      console.log("UNMOUNTED");
     }
 
     this.didUpdate = () => {
-      console.log("UPDATED");
     }
   </script>
   <template>
-    <div class="color-picker" style={{"width: " + this.pickerWidth }}>
-      <td-draggable restrict="self" onDrag={{onPalleteDrag}}>
-        <div class="pallete" id="pallete">
-          <canvas id="hslPicker" width={{this.pickerWidth}} height={{this.pickerHeight}} />
-          <div class="dropper" style={{ this.dropperPoint && ("left: " + this.dropperPoint.left + "%; top: " + this.dropperPoint.top + "%;") }} />
-        </div>
-      </td-draggable>
-      <div class="controls">
-        <div class="slider">
-          <td-slider value={{0}}>
-            <canvas id="guide" slot="guide" width={{this.pickerWidth}}></canvas>
-          </td-slider>
+    <div class="color-picker">
+
+      <div class="top">
+        <td-draggable restrict="self" onDrag={{onPalleteDrag}}>
+          <div id="pallete">
+            <canvas id="hslPicker" width={{this.width}} height={{this.height}} />
+            <div class="dropper" style={{ this.dropperPoint && ("left: " + this.dropperPoint.left + "%; top: " + this.dropperPoint.top + "%;") }} />
+          </div>
+        </td-draggable>
+
+        <td-draggable restrict="self">
+          <div id="spectrum">
+            <canvas id="spectrumPicker" width={{this.width}} height="30" />
+          </div>
+        </td-draggable>
+
+        <div class="inputs">
+          <div id="previewColor" style={{{background: this.color}}}>
+          </div>
+          <input type="text" value={{this.color}} />
         </div>
       </div>
-      <div class="presets">
+      
+
+      <!--div class="presets">
         <repeat each={{(this.presetColors || [])}} as="presetColor">
           <div class="preset" style={{ "background: " + presetColor + ";" }}></div>
         </repeat>
-      </div>
+      </div-->
     </div>
   </template>
 </component>
@@ -137,33 +205,3 @@
     "orange"
   ]}} />
 </td-preview>
-
-<!--module xmlns:global="./global.pc" xmlns:slider="./slider.pc">
-  <meta name="name" content="Color Picker" />
-  <template name="main" export>
-    <div class="color-picker">
-      <div class="pallete">
-        <div class="dropper" style="left:30%;top:20%;" />
-      </div>
-      <div class="controls">
-        <div class="slider">
-          <slider:main value={{0}} />
-        </div>
-      </div>
-      <div class="presets">
-        <repeat each={{props.presetColors}} as="presetColor">
-          <div class="preset" style={{ "background: " + presetColor + ";" }}></div>
-        </repeat>
-      </div>
-    </div>
-  </template>
-  <template name="preview" export>
-    <main presetColors={{[
-      "red",
-      "green",
-      "blue",
-      "yellow",
-      "orange"
-    ]}} />
-  </template>
-</module-->

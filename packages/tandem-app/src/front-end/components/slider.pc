@@ -33,7 +33,6 @@
   </script>
   <template>
     <div id="guide">
-      <slot name="guide"></slot>
       <td-draggable onDrag={{onKnobDrag}}>
         <div id="knob" style={{"left:" + (this.value * 100) + "%;"}}></div>
       </td-draggable>

@@ -24,11 +24,11 @@ enum TokenType {
   LESS_THAN,
   CLOSE_TAG,
   GREATER_THAN,
-  BLOCK_START,
   COMMENT_START,
   COMMENT_END,
-  BLOCK_END,
   BACKSLASH,
+  CURLY_BRACKET_OPEN,
+  CURLY_BRACKET_CLOSE,
   EQUALS,
   SINGLE_QUOTE,
   DOUBLE_QUOTE,
@@ -75,10 +75,10 @@ const tokenize = (source: string) => {
       token = createToken(TokenType.BACKSLASH, scanner.pos, scanner.shift());
     } else if (cchar === "\"") {
       token = createToken(TokenType.DOUBLE_QUOTE, scanner.pos, scanner.shift());
-    } else if (scanner.peek(2) === "{{") {
-      token = createToken(TokenType.BLOCK_START, scanner.pos, scanner.take(2));
-    } else if (scanner.peek(2) === "}}") {
-      token = createToken(TokenType.BLOCK_END, scanner.pos, scanner.take(2));
+    } else if (cchar === "{") {
+      token = createToken(TokenType.CURLY_BRACKET_OPEN, scanner.pos, scanner.shift());
+    } else if (cchar === "}") {
+      token = createToken(TokenType.CURLY_BRACKET_CLOSE, scanner.pos, scanner.shift());
     } else if (/[\s\r\n\t]/.test(cchar)) {
       token = createToken(TokenType.WHITESPACE, scanner.pos, scanner.scan(/[\s\r\n\t]/));
     } else {
@@ -116,7 +116,7 @@ function createNode(scanner: TokenScanner): PCExpression  {
     return createTag(scanner);
   } else if (token.type === TokenType.CLOSE_TAG) {
     return createEndTag(scanner);
-  } else if (token.type === TokenType.BLOCK_START) {
+  } else if (blockIsStarting(scanner)) {
     return createBlock(scanner);
   } else {
     return createText(scanner);
@@ -329,13 +329,37 @@ function createString(scanner: TokenScanner): PCString {
 }
 
 function createBlock(scanner: TokenScanner): PCString {
-  const start = scanner.next(); // eat {{
+  const start = scanner.curr(); // eat {
+  scanner.next(); // eat {
+  scanner.next(); // eat {
   let buffer: string = "";
   let curr: Token;
 
   while(1) {
     curr = scanner.curr();
-    if (!curr || curr.type === TokenType.BLOCK_END) {
+    if (!curr) {
+      break;
+    }
+
+    // nested block
+    if (curr.type === TokenType.CURLY_BRACKET_OPEN) {
+      
+      buffer += curr.value;
+      scanner.next();
+      while(!scanner.ended()) {
+        curr = scanner.curr();
+        buffer += curr.value;
+        if (curr.type === TokenType.CURLY_BRACKET_CLOSE) {
+          break;
+        }
+        scanner.next();
+      }
+      
+      curr = scanner.next();
+    }
+
+    if (!curr || curr.type === TokenType.CURLY_BRACKET_CLOSE && scanner.peek(1).type === TokenType.CURLY_BRACKET_CLOSE) {
+      scanner.next(); // eat }
       break;
     }
 
@@ -356,7 +380,7 @@ function createAttributeValue(scanner: TokenScanner): PCString | PCBlock {
   const curr = scanner.curr();
   if (curr.type === TokenType.SINGLE_QUOTE || curr.type === TokenType.DOUBLE_QUOTE) {
     return createString(scanner);
-  } else if (curr.type === TokenType.BLOCK_START) {
+  } else if (blockIsStarting(scanner)) {
     return createBlock(scanner);
   } else {
     throwUnexpectedToken(scanner.source, scanner.curr());
@@ -377,6 +401,10 @@ function createEndTag(scanner: TokenScanner): PCEndTag {
   };
 }
 
+const blockIsStarting = (scanner: TokenScanner) => {
+  return scanner.curr().type === TokenType.CURLY_BRACKET_OPEN && scanner.peek(1).type === TokenType.CURLY_BRACKET_OPEN;
+}
+
 function createText(scanner: TokenScanner): PCString {
 
   let buffer = "";
@@ -384,7 +412,7 @@ function createText(scanner: TokenScanner): PCString {
   let endToken: Token;
   while(1) {
     const currToken = scanner.curr();
-    if (!currToken || currToken.type === TokenType.LESS_THAN || currToken.type === TokenType.CLOSE_TAG || currToken.type === TokenType.BLOCK_START || currToken.type === TokenType.COMMENT_START) {
+    if (!currToken || currToken.type === TokenType.LESS_THAN || currToken.type === TokenType.CLOSE_TAG || blockIsStarting(scanner) || currToken.type === TokenType.COMMENT_START) {
       break;
     }
     endToken = currToken;

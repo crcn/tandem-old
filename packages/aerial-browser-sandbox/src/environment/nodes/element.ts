@@ -398,7 +398,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
       this.dispatchMutationEvent(createPropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
     }
 
-    clone(deep?: boolean) {
+    cloneNode(deep?: boolean) {
       const clone = super.cloneNode(deep) as SEnvElementInterface;
       if (deep !== false && this.shadowRoot) {
         clone.attachShadow({ mode: "open" }).appendChild(this.shadowRoot.cloneNode(true));

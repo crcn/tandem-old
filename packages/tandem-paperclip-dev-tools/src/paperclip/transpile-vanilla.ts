@@ -121,6 +121,20 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
     var updating = false;
     var toUpdate = [];
 
+    function stringifyStyle(style) {
+      if (typeof style === "string") return style;
+      var buffer = [];
+      for (var key in style) {
+        buffer.push(key + ":" + style[key] + ";");
+      }
+      return buffer.join("");
+    }
+
+    function setElementProperty(element, property, value) {
+      if (property === "style") value = stringifyStyle(value);
+      element[property] = value;
+    }
+
     function $$requestUpdate(object) {
       if (toUpdate.indexOf(object) === -1) {
         toUpdate.push(object);
@@ -300,8 +314,8 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
     const value = attribute.value;
 
     if (value && value.type === PCExpressionType.BLOCK) {
-      declaration.content += `${declaration.varName}.${camelCase(attribute.name)} = ${(value as PCBlock).value};\n;`
-      declaration.content += transpileBinding(value as PCBlock, context, (statement) => `${declaration.varName}.${camelCase(attribute.name)} = ${statement}`)
+      declaration.content += `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${(value as PCBlock).value});\n`
+      declaration.content += transpileBinding(value as PCBlock, context, (statement) => `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${statement})`)
     } else if (attribute.name.substr(0, 2) === "on") {
       declaration.content += `${declaration.varName}.${attribute.name.toLowerCase()} = ${(attribute.value as PCString).value};\n`
     } else {
@@ -641,7 +655,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
           return;
         }
         this._rendered = true;
-        const shadow = this.attachShadow({ mode: "open" });;
+        const shadow = this.attachShadow({ mode: "open" });
         ${style ? `${styleDeclaration.content}shadow.appendChild(${styleDeclaration.varName});` : ""}
         ${
           properties.map((property) => {
@@ -661,7 +675,14 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
           ...context,
           varCount: 0
         }) : ""}
-      
+      }
+
+      cloneShallow() {
+        const clone = super.cloneShallow();
+
+        // for tandem only
+        clone._rendered = true;
+        return clone;
       }
 
       static get observedAttributes() {

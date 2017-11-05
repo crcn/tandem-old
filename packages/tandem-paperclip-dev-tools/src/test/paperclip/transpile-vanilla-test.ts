@@ -19,10 +19,12 @@ describe(__filename + "#", () => {
     `<span><h1>ab</h1></span>`,
     `<template name="test" export>a</template>`,
     `
-      <template name="test">
-        <h1 style={{style}}>Header</h1>
-      </template>
-      <test style="color: red;" />
+      <component id="test">
+        <template name="test">
+          <h1 style={{style}}>Header</h1>
+        </template>
+      </component>
+      <div />
     `,
     `
       <template name="default" export>
@@ -70,6 +72,7 @@ describe(__filename + "#", () => {
       </gutter>
     </template>
     `,
+    `{{{color:red}}}`,
     `
       <style>
           .container {
@@ -110,8 +113,9 @@ describe(__filename + "#", () => {
     `
   ].forEach((source) => {
     it(`can transpile ${source} to vanilla JS`, () => {
-      const result = transpilePCASTToVanillaJS(source, "abc");
-      // console.log(result);
+      const result = transpilePCASTToVanillaJS(source, "abs");
+      // console.log(result.content);
+      new Function(result.content);
     });
   });
   

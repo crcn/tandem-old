@@ -52,6 +52,7 @@ describe(__filename + "#", () => {
   [
     'a',
     '<a b="c" d="e" />',
+    '<a b={{{color: red}}} />',
     '<a></a>',
     '<a />',
     '<a b c d="e" />',

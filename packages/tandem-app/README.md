@@ -19,9 +19,14 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] Components
   - [ ] color picker
   - [ ] slider
-  - [ ] progress
+  - [ ] CSS Inspector
+    - [ ] color picker
+    - [ ] editable properties
+    - [ ] shadow editor
+    - [ ] margin editor
 
 - [ ] Bugs
+  - [ ] * CSS selector busts
   - [ ] styles aren't updating on initial load
   - [ ] allow refresh when script busts
   - [ ] external links are broken

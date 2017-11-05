@@ -4,6 +4,9 @@
 <!--link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" /-->
 
 <style>
+  html * {
+    box-sizing: border-box;
+  }
   :root {
     --base: 2;
     --base2: 4;
@@ -38,30 +41,6 @@
     padding: 0;
     font-size: var(--font-size-rg);
     color: var(--font-color);
-  }
-
-  .lowercase {
-    text-transform: lowercase !important;
-  }
-
-  .list.selectable > .row:hover, .list.selectable > li:hover {
-    cursor: pointer;
-    color: var(--font-color-light);
-    background: var(--background-highlight);
-  }
-
-  .list > .row, .list > li {
-    background: var(--background);
-    border-bottom: 1px solid var(--border-color);
-    padding: var(--base6) var(--base8);
-  }
-
-  .list > .row:nth-child(2n), .list > li:nth-child(2n) {
-    background: var(--background-alt);
-  }
-
-  .list > .row:last-child, .list > li:last-child {
-    border-bottom: none;
   }
 </style>
 
@@ -121,11 +100,13 @@
     :host {
       display: block;
     }
+    
     .fill {
       height: 20px;
       background: red;
-      border-radius: 100px;
+      border-radius: 10px;
       position: relative;
+      transition: all 0.2s ease;
     }
     .background {
       width: 100%;
@@ -134,6 +115,7 @@
       border-radius: 100px;
       position: relative;
     }
+    
 
     span {
       color: var(--font-color-light);
@@ -145,7 +127,7 @@
   </style>
   <template>
     <div class="background">
-      <div class="fill" style={{ "width: " + (this.value * 100) + "%"}}>
+      <div class="fill" style={{{width: (this.value * 100) + "%" }}}>
       </div>
       <span><slot></slot></span>
     </div>
@@ -242,7 +224,7 @@
         if (this.live) {
           interval = setInterval(() => {
             this.value = (this.value + 0.01) % 1;
-          }, 500);
+          }, 100);
         }
       }
 
