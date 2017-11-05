@@ -1,4 +1,5 @@
 import * as md5 from "md5";
+import { weakMemo } from "aerial-common2";
 import { 
   Token,
   PCParent,
@@ -124,7 +125,7 @@ export const filterPCASTTree = (ast: PCExpression, filter: (ast: PCExpression) =
 
 export const getPCASTElementsByTagName = (ast: PCExpression, tagName: string) => filterPCElementsByStartTag(ast, (tag) => tag.name === tagName) as Array<PCElement | PCSelfClosingElement>;
 
-export const getPCImports = (ast: PCExpression) => {
+export const getPCImports = weakMemo((ast: PCExpression) => {
   const imports = [];
   traversePCAST(ast, (ast) => {
     if ((ast.type === PCExpressionType.START_TAG || ast.type === PCExpressionType.SELF_CLOSING_ELEMENT) && (ast as PCSelfClosingElement).name === "link" && getPCStartTagAttribute(ast as PCSelfClosingElement, "rel") === "import") {
@@ -136,4 +137,4 @@ export const getPCImports = (ast: PCExpression) => {
   
 
   return imports;
-}
+});

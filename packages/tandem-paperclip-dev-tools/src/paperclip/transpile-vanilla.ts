@@ -42,6 +42,7 @@ import {
   PCString,
   PCBlock,
 } from "./ast";
+import { weakMemo } from "aerial-common2";
 
 
 // const SOURCE_AST_VAR = "$$sourceAST";
@@ -167,7 +168,9 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
   };
 };
 
-const bundle = (source: string, uri: string, parentResult: BundleResult = { modules: {}, errors: [], warnings: []}, options: TranspileOptions): BundleResult => {
+const getResolvedPCImports = weakMemo((ast: PCExpression, uri: string) => getPCImports(ast).map((src) =>  "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src)));
+
+const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult = { modules: {}, errors: [], warnings: []}, options: TranspileOptions): BundleResult => {
   let ast;
 
   let result: BundleResult = {
@@ -185,12 +188,9 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
   
   try {
     const ast = parse(source);
-    const imports = getPCImports(ast);
-    const resolvedImports = [];
+    const resolvedImports = getResolvedPCImports(ast, uri);
 
-    for (const src of imports) {
-      const importFullPath = "file://" + path.resolve(path.dirname(uri.replace("file://", "")), src);
-      resolvedImports.push(importFullPath);
+    for (const importFullPath of resolvedImports) {
       if (!result.modules[importFullPath]) {
         result = bundle(
           options.readFileSync(importFullPath.replace("file://", "")),
@@ -219,11 +219,11 @@ const bundle = (source: string, uri: string, parentResult: BundleResult = { modu
   
 
   return result;
-};
+});
 
 const getNsPrefix = (ns: string) => `ns-${ns.replace(/\-/g, "_")}`;
 
-const transpileModule = (root: PCFragment, source: string, uri: string, imports) => {
+const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, imports) => {
   
   const context: TranspileContext = {
     varCount: 0,
@@ -262,7 +262,7 @@ const transpileModule = (root: PCFragment, source: string, uri: string, imports)
   buffer += `})\n`
 
   return buffer;
-};
+});
 
 const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(getTranspileContent).join("\n");
 

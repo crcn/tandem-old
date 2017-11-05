@@ -1,52 +1,69 @@
-<module xmlns:global="./global.pc" xmlns:slider="./slider.pc">
+<link rel="import" href="./global.pc" />
+
+<component id="td-color-picker">
+  <style>
+    .color-picker {
+      padding: var(--base4);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+    }
+
+    .pallete {
+      flex: 1;
+      flex-grow: 2;
+      border-radius: 2px;
+      background: red;
+      margin-bottom: 8px;
+    }
+
+    .dropper {
+      border: 1px solid white;
+      position: absolute;
+      width: var(--base4);
+      height: var(--base4);
+      border-radius: 50%;
+    }
+    
+    .controls {
+      flex: 1;
+    }
+
+    .presets {
+      flex-grow: 0;
+      height: 20px;
+    }
+
+    .preset {
+      border-radius: 2px;
+      width: var(--base4);
+      height: var(--base4);
+      display: inline-block;
+      margin: var(--base2);
+      margin-left: 0px;
+    }
+    
+
+  </style>
+  <template>
+    <span>TPL</span>
+  </template>
+</component>
+
+<td-preview>
+  <td-color-picker presetColors={{[
+    "red",
+    "green",
+    "blue",
+    "yellow",
+    "orange"
+  ]}} />
+</td-preview>
+
+<!--module xmlns:global="./global.pc" xmlns:slider="./slider.pc">
   <meta name="name" content="Color Picker" />
   <template name="main" export>
-    <style scoped>
-
-      .color-picker {
-        padding: var(--base4);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        position: relative;
-      }
-
-      .pallete {
-        flex: 1;
-        flex-grow: 2;
-        border-radius: 2px;
-        background: red;
-        margin-bottom: 8px;
-      }
-
-      .dropper {
-        border: 1px solid white;
-        position: absolute;
-        width: var(--base4);
-        height: var(--base4);
-        border-radius: 50%;
-      }
-      
-      .controls {
-        flex: 1;
-      }
-
-      .presets {
-        flex-grow: 0;
-        height: 20px;
-      }
-
-      .preset {
-        border-radius: 2px;
-        width: var(--base4);
-        height: var(--base4);
-        display: inline-block;
-        margin: var(--base2);
-        margin-left: 0px;
-      }
-      
-
-    </style>
     <div class="color-picker">
       <div class="pallete">
         <div class="dropper" style="left:30%;top:20%;" />
@@ -72,4 +89,4 @@
       "orange"
     ]}} />
   </template>
-</module>
+</module-->
