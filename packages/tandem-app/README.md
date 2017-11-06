@@ -6,37 +6,50 @@ TODOS:
 - [ ] snap to element DND
 - [ ] css inspector components
 
+LITMUS:
+
+- [ ] should be able to build sites without writing much code
+
 IMMEDIATE:
 
 high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
 
 - [ ] Paperclip
-  - [ ] import external scripts
+  - [ ] import external JS scripts
+  - [ ] import external CSS scripts
   - [ ] transpile TS to JS 
   - [ ] figure out how to pass objects to attributes - (set as prop) (possibly check for <props>)
-  - [ ] support object styles
 
 - [ ] Components
   - [ ] color picker
-  - [ ] slider
   - [ ] CSS Inspector
     - [ ] color picker
     - [ ] editable properties
+    - [ ] var() inspector
+    - [ ] :root editor
     - [ ] shadow editor
     - [ ] margin editor
 
+- [ ] paperclip HMR needs to work outside of editor
+
+- [ ] styling
+  - [ ] :focus border
+
 - [ ] Bugs
-  - [ ] * CSS selector busts
-  - [ ] styles aren't updating on initial load
   - [ ] allow refresh when script busts
   - [ ] external links are broken
-  - [ ] matching styles must also consider slots**
+  - [ ] matching styles must also consider slots** - (used assignedSlot for this)
   - [ ] multi drag windows doesn't work properly
   - [ ] editing content from UI still breaks (drag cell)
   - [ ] !important flags show up as overridden in style pane
-  - [ ] cannot change element attribute (see gutter.pc -- class={{"gutter " + props.class}})
   - [ ] cannot parse semicolon within CSS string ("; ")
   - [ ] enable javascript expressions in blocks
+
+- [ ] Assist
+  - [ ] best guess for CSS selector
+
+- [ ] Window pane
+  - [ ] Fit to content
 
 AFTER INITIAL COMPONENTS:
 

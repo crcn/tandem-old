@@ -335,6 +335,7 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
 
     constructor() {
       super();
+      const sheet: SEnvCSSStyleSheetInterface = this.sheet = new SEnvCSSStyleSheet();
       this.interactiveLoaded = new Promise((resolve, reject) => {
         this._resolveLoaded = resolve;
         this._rejectLoaded  = reject;
@@ -415,7 +416,7 @@ export const getSEnvHTMLLinkElementClass = weakMemo((context: any) => {
     }
 
     private _parseStylesheet(text: string) {
-      const sheet: SEnvCSSStyleSheetInterface = this.sheet = new SEnvCSSStyleSheet();
+      const sheet = this.sheet;
       sheet.href = this.href;
       sheet.ownerNode = this;
       const location = this.ownerDocument.defaultView.location;

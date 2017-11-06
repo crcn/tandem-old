@@ -4,7 +4,7 @@
 <!--link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" /-->
 
 <style>
-  html * {
+  * {
     box-sizing: border-box;
   }
   :root {
@@ -116,7 +116,6 @@
       position: relative;
     }
     
-
     span {
       color: var(--font-color-light);
       position: absolute;
@@ -211,32 +210,32 @@
   </template>
 </component>
 
-  <component id="td-progress-example">
-    <property name="value" default={{0}} />
-    <style>
-      td-progress {
-        margin: var(--base4);
+<component id="td-progress-example">
+  <property name="value" default={{0}} />
+  <style>
+    td-progress {
+      margin: var(--base4);
+    }
+  </style>
+  <script>
+    let interval;
+    this.didMount = () => {
+      if (this.live) {
+        interval = setInterval(() => {
+          this.value = (this.value + 0.01) % 1;
+        }, 100);
       }
-    </style>
-    <script>
-      let interval;
-      this.didMount = () => {
-        if (this.live) {
-          interval = setInterval(() => {
-            this.value = (this.value + 0.01) % 1;
-          }, 100);
-        }
-      }
+    }
 
-      this.willUnmount = () => {
-        clearInterval(interval);
-      }
-    </script>
-    <property name="value" default={{0}} />
-    <template>
-      <td-progress value={{this.value}}>{{Math.round(this.value * 100)}}%</td-progress>
-    </template>
-  </component>
+    this.willUnmount = () => {
+      clearInterval(interval);
+    }
+  </script>
+  <property name="value" default={{0}} />
+  <template>
+    <td-progress value={{this.value}}>{{Math.round(this.value * 100)}}%</td-progress>
+  </template>
+</component>
 
 <td-preview>
   <td-preview-component-example label="List">

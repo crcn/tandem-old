@@ -104,8 +104,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     MouseEvent: SEnvEvent
   };
 
-
-
   class SEnvDocument extends SEnvParentNode implements SEnvDocumentInterface {
     
     readonly activeElement: Element;

@@ -35,7 +35,7 @@ const NODE_NAME_MAP = {
   head: "span",
   html: "span",
   body: "span",
-  link: "span",
+  link: "style",
   script: "span",
   iframe: "span"
 };
@@ -347,7 +347,7 @@ const renderHTMLNode = (node: SEnvNodeInterface, dicts: DOMRendererDicts, onChan
         element.appendChild(iframe.contentWindow.renderer.container);
       }
 
-      if (tagNameLower === "style") {
+      if (tagNameLower === "style" || tagNameLower === "link") {
         const el = (syntheticElement as SEnvHTMLStyledElementInterface);
         (element as HTMLStyleElement).type = "text/css";
         
@@ -358,7 +358,7 @@ const renderHTMLNode = (node: SEnvNodeInterface, dicts: DOMRendererDicts, onChan
       }
 
       // add a placeholder for these blacklisted elements so that diffing & patching work properly
-      if(/^(link|script|head)$/.test(tagNameLower)) {
+      if(/^(script|head)$/.test(tagNameLower)) {
         element.style.display = "none";
         return element;
       }

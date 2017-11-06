@@ -124,7 +124,7 @@ const getRuleChild = (scanner: TokenScanner) => {
     return getComment(scanner);
   } else if (scanner.hasNext() && (scanner.peek().type === TokenType.COLON || scanner.peek().type === TokenType.MINUS) && scanner.peekUntil((token) => token.type === TokenType.SEMICOLON || token.type === TokenType.OPEN_CURLY_BRACKET).type === TokenType.SEMICOLON) {
     return getDeclaration(scanner);
-  } else if (curr.type === TokenType.NAME || curr.type == TokenType.NUMBER || curr.type === TokenType.COLON) {
+  } else if (curr.type === TokenType.NAME || curr.type == TokenType.NUMBER || curr.type === TokenType.COLON || curr.type === TokenType.STAR) {
     return getRule(scanner);
   }
 

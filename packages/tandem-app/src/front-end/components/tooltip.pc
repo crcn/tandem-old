@@ -1,6 +1,34 @@
-<module>
-  <meta name="name" content="Tooltip" />
-  <template name="preview" export>
-    TOOLTIP TODO
+<link rel="import" href="./global.pc" />
+<link rel="import" href="./color-picker.pc" />
+
+<component id="td-tooltip">
+  <property name="show" />
+  <style>
+    :host {
+      padding: var(--base4);
+    }
+  </style>
+  <script>
+    const onButtonClick = () => {
+      this.show = !this.show;
+    };
+  </script>
+  <template>  
+    <slot name="button" onclick={{onButtonClick}}>
+    </slot>
+    <span style={{{ display: this.show ? "block" : "none" }}}>
+      <slot style={{{display: "none"}}}></slot>
+    </span>
   </template>
-</module>
+</component>
+
+<td-preview>
+  <td-tooltip show>
+    <span slot="button">
+      click me
+    </span>
+
+    <!-- TODO - need to wrap this in a template -->
+    <td-color-picker color="#FF00FF" />
+  </td-tooltip>
+</td-preview>

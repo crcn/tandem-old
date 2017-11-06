@@ -15,6 +15,7 @@
       top: 1px;
       display: inline-block;
       border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
     }
   </style>
   <template>
@@ -39,9 +40,29 @@
       color: var(--font-color-alt);
     }
   </style>
+  <script>
+    const parseDeclarationValue = (value) => {
+      return [value];
+    };
+  </script>
   <template>
     <span class="name">{{this.name}}</span>
-    <td-color-property-input value={{this.value}} />
+    <repeat each={{parseDeclarationValue(this.value)}} as="token">
+      <!--
+        {{if expr.type === ExpressionType.CALL }}
+          {{#if expr.name === "rgba" }}
+
+          {{/elseif expr.name === "calc"}}
+
+          {{/}}
+        {{/elseif expr.type === ExpressionType.MEASUREMENT }}
+          measurement input
+        {{/else}}
+          KEYWORD
+        {{/}}
+      -->
+      <td-color-property-input value={{token}} />
+    </repeat>
   </template>
 </component>
 
