@@ -329,9 +329,14 @@ function createString(scanner: TokenScanner): PCString {
 }
 
 function createBlock(scanner: TokenScanner): PCString {
+  return createBlockExpression(scanner);
+}
+
+function createBlockExpression(scanner: TokenScanner) {
   const start = scanner.curr(); // eat {
   scanner.next(); // eat {
   scanner.next(); // eat {
+  
   let buffer: string = "";
   let curr: Token;
 

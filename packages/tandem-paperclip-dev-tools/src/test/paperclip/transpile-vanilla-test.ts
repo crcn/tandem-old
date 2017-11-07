@@ -87,6 +87,13 @@ describe(__filename + "#", () => {
           }
       </style>
     `,
+    `
+      <div pc-if={{true}}>
+          .container {
+
+          }
+      </div>
+    `,
     `<!-- ab -->c`,
     `
       <style>
@@ -115,7 +122,6 @@ describe(__filename + "#", () => {
     it(`can transpile ${source} to vanilla JS`, () => {
       const result = transpilePCASTToVanillaJS(source, "abs");
       // console.log(result.content);
-      new Function(result.content);
     });
   });
   

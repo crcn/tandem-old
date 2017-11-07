@@ -30,10 +30,11 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
     - [ ] shadow editor
     - [ ] margin editor
 
-- [ ] paperclip HMR needs to work outside of editor
+- [ ] Awesome features
+   - [ ] live view (switch to iframe) in editor
+   - [ ] 
 
-- [ ] styling
-  - [ ] :focus border
+- [ ] paperclip HMR needs to work outside of editor
 
 - [ ] Bugs
   - [ ] allow refresh when script busts

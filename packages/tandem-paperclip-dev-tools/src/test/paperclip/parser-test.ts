@@ -60,6 +60,8 @@ describe(__filename + "#", () => {
     '<a b="c" d="e"><f h="i" j="k"></f></a>',
     '<a b="c" d="e"><f h="i" j="k"></f></a>',
     '<a b="c" d="e">1<f h="i" j="k"></f>2</a>',
+    `<a pc-if={{a === b}}></a>`,
+    `<a pc-repeat={{{each:items, as:100}}}></a>`
   ].forEach((source) => {
     it(`can parse ${source}`, () => {
       parse(source);

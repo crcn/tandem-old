@@ -3,7 +3,8 @@
 <link rel="import" href="./pane.pc" />
 <link rel="import" href="./gutter.pc" />
 
-<component id="td-color-property-input">
+
+<component id="td-css-color-expr-input">
   <property name="value" default="1" />
   <style>
     .input-box {
@@ -19,7 +20,52 @@
     }
   </style>
   <template>
-    <div class="input-box" /> 
+    <div class="input-box" style={{{background: this.value}}} /> 
+    <span>{{this.value}}</span>
+  </template>
+</component>
+
+<component id="td-css-var-expr-input">
+  <property name="value" default="1" />
+  <style>
+    .keyword {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+
+    .varname {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+
+    .token {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+  </style>
+  <template>
+
     <span>{{this.value}}</span>
   </template>
 </component>
@@ -35,10 +81,6 @@
     .name:after {
       content: ": ";
     }
-
-    td-color-property-input {
-      color: var(--font-color-alt);
-    }
   </style>
   <script>
     const parseDeclarationValue = (value) => {
@@ -47,22 +89,8 @@
   </script>
   <template>
     <span class="name">{{this.name}}</span>
-    <repeat each={{parseDeclarationValue(this.value)}} as="token">
-      <!--
-        {{if expr.type === ExpressionType.CALL }}
-          {{#if expr.name === "rgba" }}
-
-          {{/elseif expr.name === "calc"}}
-
-          {{/}}
-        {{/elseif expr.type === ExpressionType.MEASUREMENT }}
-          measurement input
-        {{/else}}
-          KEYWORD
-        {{/}}
-      -->
-      <td-color-property-input value={{token}} />
-    </repeat>
+    <td-css-color-expr-input value={{this.value}} />
+    <!--td-css-var-expr-input value={{this.value}} /-->
   </template>
 </component>
 
@@ -99,13 +127,13 @@
 
     <td-list>
       <td-list-item>
-        <td-style-declaration name="background-color" value="red" />
+        <td-style-declaration name="background-color" value="rgba(203, 52, 188, 0.66)" />
       </td-list-item>
       <td-list-item>
-        <td-style-declaration name="background-color" value="red" />
+        <td-style-declaration name="background-color" value="rgba(52, 191, 203, 0.66)" />
       </td-list-item>
       <td-list-item>
-        <td-style-declaration name="color" value="rgba(255, 255, 255, 0)"/>
+        <td-style-declaration name="color" value="rgba(52, 52, 203, 0.5)"/>
       </td-list-item>
       <td-list-item>
         <td-style-declaration name="text-transform" value="uppercase" />
@@ -139,74 +167,3 @@
     </td-pane>
   </template>
 </component>
-
-<!--module xmlns:gutter="./gutter.pc">
-  <meta name="name" content="CSS Inspector" />
-
-  <template name="color-property-input">
-    <style scoped>
-      .input-box {
-        width: var(--base4);
-        height: var(--base4);
-        margin-left: var(--base2);
-        background: red;
-        position: relative;
-        top: 1px;
-        display: inline-block;
-        border-radius: 2px;
-      }
-    </style>
-    <div class="input-box" /> {{props.value}} 
-  </template>
-
-  <template name="style-declaration">
-    <li class="style-declaration">
-    
-      <span class="name">{{props.name}}</span>
-      <span class="value">
-        {{this.value}}
-      </span>
-    </li>
-  </template>
-
-  <template name="style-rule">
-
-
-    <div class="style-rule">
-      <div class="header sub lowercase">
-        {{this.selectorText}}
-        <span class="source">
-          {{this.sourceUri}}
-        </span>
-      </div>
-
-      <ul class="list">
-        <style-declaration name="background-color" value="red" />
-        <style-declaration name="color" value="rgba(255, 255, 255, 0)"/>
-        <style-declaration name="text-transform" value="uppercase" />
-        <style-declaration name="float" value="left" />
-        <style-declaration name="padding" value="var(--base6) var(--base7)"  />
-        <style-declaration name="position" value="relative" />
-      </ul>
-    </div>
-  </template>
-
-  <template name="main" export>
-    <div class="header">
-      CSS Inspector
-      <div class="controls">
-        <i class="ion-more" />
-      </div>
-    </div>
-    <div class="content">
-      <style-rule selectorText=".container" sourceUri="global.pc" />
-      <style-rule selectorText=".body" sourceUri="global.pc" />
-    </div>
-  </template>
-
-  <template name="preview" export>
-    <gutter:gutter>
-      <main />
-    </gutter:gutter>
-  </template>
-</module-->

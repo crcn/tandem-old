@@ -104,7 +104,8 @@
     .fill {
       height: 20px;
       background: red;
-      border-radius: 10px;
+      border-radius: 100px;
+      min-width: 20px;
       position: relative;
       transition: all 0.2s ease;
     }
@@ -260,7 +261,7 @@
 
   <td-preview-component-example label="Progress">
     <td-progress-example value={{0}} />
-    <td-progress-example value={{0.5}} />
+    <td-progress-example value={{0.5}} live />
     <td-progress-example value={{1}} />
   </td-preview-component-example>
 </td-preview>

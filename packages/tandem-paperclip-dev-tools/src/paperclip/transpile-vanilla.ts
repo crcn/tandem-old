@@ -277,6 +277,10 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
   return buffer;
 });
 
+const hasSpecialAttribute = (startTag: PCStartTag) => {
+  return hasPCStartTagAttribute(startTag, "pc-if") || hasPCStartTagAttribute(startTag, "pc-else-if") || hasPCStartTagAttribute(startTag, "pc-else") || hasPCStartTagAttribute(startTag, "pc-repeat");
+};
+
 const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(getTranspileContent).join("\n");
 
 const getTranspiledChildren = (parent: PCParent, context: TranspileContext) => parent.children.map((child) => transpileNode(child, context)).filter(child => Boolean(child));
@@ -312,8 +316,10 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
     const attribute = startTag.attributes[i];
 
     const value = attribute.value;
+    const name = attribute.name;
 
     if (value && value.type === PCExpressionType.BLOCK) {
+
       declaration.content += `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${(value as PCBlock).value});\n`
       declaration.content += transpileBinding(value as PCBlock, context, (statement) => `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${statement})`)
     } else if (attribute.name.substr(0, 2) === "on") {
@@ -330,8 +336,69 @@ const transpileSelfClosingElement = (element: PCSelfClosingElement, context: Tra
   if (element.name === "link") {
     return null;
   }
-  return transpileStartTag(element, context);
+
+  const declaration = transpileStartTag(element, context);
+
+  return hasSpecialAttribute(element) ? transpileSpecialTags(element, declaration, context) : declaration;
 }
+
+const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, context: TranspileContext) => {
+
+  let buffer = '';
+
+  let newDeclaration: Declaration;
+
+  const repeatOptions = getPCStartTagAttribute(startTag, "pc-repeat");
+  if (repeatOptions) {
+    newDeclaration = declareNode(`document.createTextNode("")`, context);
+    const varName = `repeat_` + context.varCount++;
+    buffer += `
+      ${varName} = (function () {
+        var pops = { each: [] };
+        var $$childBindings = [];
+        return function() {
+          var ops = ${repeatOptions};
+          if (ops.each === pops.each && ops.as === pops.as) {
+            return;
+          }
+
+          var ${BINDINGS_VAR} = [];
+          var parent = ${newDeclaration.varName}.parentNode;
+          var anchorIndex = parent.childNodes.indexOf(${newDeclaration.varName});
+
+          // first update exiting
+          for (var $$i = 0; i < Math.min(ops.each.length, pops.each.length); i++) {
+            var $$cb = $$childBindings[$$i];
+            for (var $$j = 0, j < $$cb.length; $$j++) {
+              $$cb[$$j]();
+            }
+          }
+
+          if (ops.each.length > pops.each.length) {
+            var ${BINDINGS_VAR} = [];
+            for (var $$i = pops.length; $$j < ops.length; $$i++) {
+              ${declaration.content}
+              parent.appendChild(parent.childNodes[ai + ops.length]);
+            }
+          } else if (ops.each.length < pops.each.length) {
+            for(var $$i = pops.length; $$j >= ops.length; $$j--) {
+              parent.removeChild(parent.childNodes[ai + ops.length]);
+            }
+
+            // remove bindings
+            $$childBindings.splice(pops.length, ops.length);
+          }
+        };
+      })();
+
+      ${varName}();
+
+      ${BINDINGS_VAR}.push(${varName});
+    `;
+  }
+
+  return declaration;
+};
 
 const transpileAttributeValue = (attribute: PCAttribute) => {
   if (!attribute.value) {
@@ -373,6 +440,8 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       // transpiled above
       return null;
     }
+
+    // DEPRECATED 
     case "repeat": {
       declaration = transpileRepeat(node, context);
       break;
@@ -393,7 +462,7 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
 
   tryExportingDeclaration(declaration, node, context);
 
-  return declaration;
+  return hasSpecialAttribute(node.startTag) ? transpileSpecialTags(node.startTag, declaration, context) : declaration;
 };
 
 const transpileScriptElement = (node: PCElement, context: TranspileContext) => {
