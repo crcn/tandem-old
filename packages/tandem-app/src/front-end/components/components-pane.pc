@@ -50,13 +50,11 @@
       </style>
       <span slot="header">Components</span>
       <span slot="content" class="content">
-        <repeat each={{this.components || []}} as="component">
-          <div class="cell" onstartdrag={{this.onComponentStartDrag.bind(component)}}>
-            <div class="inner" draggable>
-              {{component.label}}
-            </div>
+        <div pc-repeat="this.components as component" class="cell" onstartdrag={{this.onComponentStartDrag.bind(component)}}>
+          <div class="inner" draggable>
+            {{component.label}}
           </div>
-        </repeat>
+        </div>
       </span>
     </td-pane>
   </template>

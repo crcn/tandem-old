@@ -74,6 +74,7 @@ type TranspileStyleContext = {
 type Declaration = {
   varName: string;
   content: string;
+  bindings: any[];
 };
 
 type Modules = {
@@ -110,7 +111,7 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
   
   let content = `(function(document) {
     function module(fn) {
-      var exports;
+      let exports;
       return function(modules) {
         return exports || (exports = fn(function(path) {
           return modules[path](modules);
@@ -118,13 +119,13 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
       };
     }\n
 
-    var updating = false;
-    var toUpdate = [];
+    let updating = false;
+    let toUpdate = [];
 
     function stringifyStyle(style) {
       if (typeof style === "string") return style;
-      var buffer = [];
-      for (var key in style) {
+      let buffer = [];
+      for (let key in style) {
         buffer.push(key + ":" + style[key] + ";");
       }
       return buffer.join("");
@@ -145,7 +146,7 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
 
       updating = true;
       requestAnimationFrame(function() {
-        for(var i = 0; i < toUpdate.length; i++) {
+        for(let i = 0; i < toUpdate.length; i++) {
           toUpdate[i].update();
         }
         toUpdate = [];
@@ -153,8 +154,8 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
       });
     }
   `;
-  content += `var noop = function(){}\n;`;
-  content += `var modules = {\n`;
+  content += `let noop = function(){}\n;`;
+  content += `let modules = {\n`;
 
   const { warnings, errors, modules } = bundle(source, uri, undefined, options);
 
@@ -248,10 +249,10 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
   };
 
   let buffer = "module(function(require) {\n";
-  buffer += `var ${EXPORTS_VAR} = {};\n`;
-  buffer += `var ${STYLES_VAR} = [];\n`;
-  buffer += `var ${PREVIEWS_VAR} = {};\n`;
-  buffer += `var ${BINDINGS_VAR} = [];\n`;
+  buffer += `let ${EXPORTS_VAR} = {};\n`;
+  buffer += `let ${STYLES_VAR} = [];\n`;
+  buffer += `let ${PREVIEWS_VAR} = {};\n`;
+  buffer += `let ${BINDINGS_VAR} = [];\n`;
 
   for (const src of imports) {
     const path = imports[src];
@@ -282,6 +283,7 @@ const hasSpecialAttribute = (startTag: PCStartTag) => {
 };
 
 const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(getTranspileContent).join("\n");
+
 
 const getTranspiledChildren = (parent: PCParent, context: TranspileContext) => parent.children.map((child) => transpileNode(child, context)).filter(child => Boolean(child));
 
@@ -319,9 +321,8 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
     const name = attribute.name;
 
     if (value && value.type === PCExpressionType.BLOCK) {
-
       declaration.content += `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${(value as PCBlock).value});\n`
-      declaration.content += transpileBinding(value as PCBlock, context, (statement) => `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${statement})`)
+      declaration.bindings.push(transpileBinding(value as PCBlock, context, (statement) => `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${statement})`));
     } else if (attribute.name.substr(0, 2) === "on") {
       declaration.content += `${declaration.varName}.${attribute.name.toLowerCase()} = ${(attribute.value as PCString).value};\n`
     } else {
@@ -344,60 +345,64 @@ const transpileSelfClosingElement = (element: PCSelfClosingElement, context: Tra
 
 const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, context: TranspileContext) => {
 
-  let buffer = '';
+  let content = ``;
 
-  let newDeclaration: Declaration;
-
-  const repeatOptions = getPCStartTagAttribute(startTag, "pc-repeat");
-  if (repeatOptions) {
+  let newDeclaration: Declaration = declaration;
+  
+  if (hasPCStartTagAttribute(startTag, "pc-repeat")) {
+    const [each, token, eachAs] = getPCStartTagAttribute(startTag, "pc-repeat").split(/\s+/g);
+    
     newDeclaration = declareNode(`document.createTextNode("")`, context);
-    const varName = `repeat_` + context.varCount++;
-    buffer += `
-      ${varName} = (function () {
-        var pops = { each: [] };
-        var $$childBindings = [];
-        return function() {
-          var ops = ${repeatOptions};
-          if (ops.each === pops.each && ops.as === pops.as) {
-            return;
-          }
 
-          var ${BINDINGS_VAR} = [];
-          var parent = ${newDeclaration.varName}.parentNode;
-          var anchorIndex = parent.childNodes.indexOf(${newDeclaration.varName});
+    newDeclaration.bindings.push(`(() => {
+      let currentValue = [];
+      let childBindings = [];
+      var binding = () => {
+        let newValue = ${each};
+        if (newValue === currentValue) {
+          return;
+        }
+      
 
-          // first update exiting
-          for (var $$i = 0; i < Math.min(ops.each.length, pops.each.length); i++) {
-            var $$cb = $$childBindings[$$i];
-            for (var $$j = 0, j < $$cb.length; $$j++) {
-              $$cb[$$j]();
+        for (let i = 0, n = Math.min(currentValue.length, newValue.length); i < n; i++) {
+          childBindings[i](newValue[i]);
+        }
+
+        const parent = ${newDeclaration.varName}.parentNode;
+        const startIndex = Array.prototype.indexOf.call(parent.childNodes, ${newDeclaration.varName});
+
+        if (newValue.length > currentValue.length) {
+          for (let i = currentValue.length; i < newValue.length; i++) {
+            const ${eachAs} = newValue[i];
+            const ni = startIndex + i;
+            ${declaration.content}
+            console.log(ni, parent.childNodes.length);
+            if (ni >= parent.childNodes.length) {
+              parent.appendChild(${declaration.varName});
+            } else {
+              parent.insertBefore(${declaration.varName}, parent.childNodes[ni]);
             }
+            const bindings = [${declaration.bindings.map((binding) => (`(${eachAs}) => {
+              ${binding}
+            }`)).join(",")}];
+            childBindings.push((newValue) => {
+              for (let i = bindings.length; i--;) {
+                binidngs[i](newValue);
+              }
+            });
           }
+        } else if (currentValue.length < newValue.length) {
+          // TODO
+        }
+      };
 
-          if (ops.each.length > pops.each.length) {
-            var ${BINDINGS_VAR} = [];
-            for (var $$i = pops.length; $$j < ops.length; $$i++) {
-              ${declaration.content}
-              parent.appendChild(parent.childNodes[ai + ops.length]);
-            }
-          } else if (ops.each.length < pops.each.length) {
-            for(var $$i = pops.length; $$j >= ops.length; $$j--) {
-              parent.removeChild(parent.childNodes[ai + ops.length]);
-            }
+      binding();
 
-            // remove bindings
-            $$childBindings.splice(pops.length, ops.length);
-          }
-        };
-      })();
-
-      ${varName}();
-
-      ${BINDINGS_VAR}.push(${varName});
-    `;
+      return binding;
+    })()`);
   }
 
-  return declaration;
+  return newDeclaration;
 };
 
 const transpileAttributeValue = (attribute: PCAttribute) => {
@@ -410,7 +415,7 @@ const transpileAttributeValue = (attribute: PCAttribute) => {
   } else if (attribute.value.type === PCExpressionType.BLOCK) {
     return `${(attribute.value as PCBlock).value}`;
   }
-}
+};
 
 const transpileElement = (node: PCElement, context: TranspileContext) => {
 
@@ -421,6 +426,7 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
     case "module": {
       declaration = {
         varName: null,
+        bindings: [],
         content: transpileChildren(node, context)
       };
       break;
@@ -441,11 +447,6 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       return null;
     }
 
-    // DEPRECATED 
-    case "repeat": {
-      declaration = transpileRepeat(node, context);
-      break;
-    }
     case "script": {
       declaration = transpileScriptElement(node, context);
       break;
@@ -459,8 +460,6 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       break;
     }
   }
-
-  tryExportingDeclaration(declaration, node, context);
 
   return hasSpecialAttribute(node.startTag) ? transpileSpecialTags(node.startTag, declaration, context) : declaration;
 };
@@ -482,10 +481,10 @@ const transpileScriptElement = (node: PCElement, context: TranspileContext) => {
 const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
   const path = getExpressionPath(node, context.root);
 
-  const varName = getPCStyleID(node);
+  const varName = getPCStyleID(node) + "_" + context.varCount++;
 
   let buffer = `
-    var ${varName} = document.createElement("style");
+    let ${varName} = document.createElement("style");
   `;
 
   const textChild = node.children[0] as PCString;
@@ -513,6 +512,7 @@ const transpileStyleElement = (node: PCElement, context: TranspileContext) => {
 
   return {
     varName: varName,
+    bindings: [],
     content: buffer
   };
 };
@@ -619,38 +619,39 @@ const tryExportingDeclaration = (declaration: Declaration, node: PCElement, cont
 
 const getJSFriendlyVarName = (name: string) => name.replace(/\-/g, "_");
 
-const transpileRepeat = (node: PCElement, context: TranspileContext) => {
-  const _each = getPCStartTagAttribute(node.startTag, "each");
-  const _as = getPCStartTagAttribute(node.startTag, "as");
+// const transpileRepeat = (node: PCElement, context: TranspileContext) => {
+//   const _each = getPCStartTagAttribute(node.startTag, "each");
+//   const _as = getPCStartTagAttribute(node.startTag, "as");
 
-  const documentFragment = declareNode(`document.createDocumentFragment()`, context);
+//   const documentFragment = declareNode(`document.createDocumentFragment()`, context);
 
-  const { varName: iVarName } = declare(`i`, undefined, context);
-  const { varName: eachVarName, content: eachVarContent } = declare(`each`, _each, context);
+//   const { varName: iVarName } = declare(`i`, undefined, context);
+//   const { varName: eachVarName, content: eachVarContent } = declare(`each`, _each, context);
 
-  const { varName: nVarName, content: nContent } = declare(`n`, `${eachVarName}.length`, context);
+//   const { varName: nVarName, content: nContent } = declare(`n`, `${eachVarName}.length`, context);
 
-  let buffer = "";
-  buffer += documentFragment.content,
-  buffer += eachVarContent;
-  buffer += nContent;
-  buffer += `for (var ${iVarName} = 0; ${iVarName} < ${nVarName}; ${iVarName}++) {
-    var ${_as} = ${eachVarName}[${iVarName}];
-    ${addNodeDeclarationChildren(documentFragment, node, context)}
-  }`;
+//   let buffer = "";
+//   buffer += documentFragment.content,
+//   buffer += eachVarContent;
+//   buffer += nContent;
+//   buffer += `for (var ${iVarName} = 0; ${iVarName} < ${nVarName}; ${iVarName}++) {
+//     var ${_as} = ${eachVarName}[${iVarName}];
+//     ${addNodeDeclarationChildren(documentFragment, node, context)}
+//   }`;
 
-  documentFragment.content += buffer;
+//   documentFragment.content += buffer;
   
-  return {
-    varName: documentFragment.varName,
-    content: buffer
-  };
-}
+//   return {
+//     varName: documentFragment.varName,
+//     content: buffer
+//   };
+// }
+
 
 const transpileTDPreview = (node: PCElement, context: TranspileContext) => {
   const id = getPCStartTagAttribute(node, "id");
   const fragment = declareNode(`document.createDocumentFragment()`, context);
-  fragment.content += addNodeDeclarationChildren(fragment, node, context);
+  fragment.content += addNodeDeclarationChildren(fragment, node, context).map((decl) => decl.content).join("\n");
   fragment.content += `${PREVIEWS_VAR}["${id || fragment.varName}"] = ${fragment.varName};\n`;
   return fragment;
 };
@@ -738,12 +739,12 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
           }).join("\n")
         }
 
-        var ${BINDINGS_VAR} = this.${BINDINGS_VAR} = [];
+        let ${BINDINGS_VAR} = this.${BINDINGS_VAR} = [];
         ${script ? (script.children[0] as PCString).value : "" }
         ${template ? addNodeDeclarationChildren({ varName: "shadow", content: "" }, template, {
           ...context,
           varCount: 0
-        }) : ""}
+        }).map(getTranspileContent).join("\n") : ""}
       }
 
       cloneShallow() {
@@ -777,8 +778,8 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
           return;
         }
         
-        var bindings = this.${BINDINGS_VAR} || [];
-        for (var i = 0, n = bindings.length; i < n; i++) {
+        let bindings = this.${BINDINGS_VAR} || [];
+        for (let i = 0, n = bindings.length; i < n; i++) {
           bindings[i]();
         }
 
@@ -791,6 +792,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
   
   return {
     varName: className,
+    bindings: [],
     content: buffer
   };
 };
@@ -808,41 +810,50 @@ const transpileBasicElement = (node: PCElement, context: TranspileContext) => {
 
   // do not include -- already part of attributes
   if (!context.templateNames[node.startTag.name] && !hasImportedXMLNSTagName(node.startTag.name, context)) {
-    declaration.content += addNodeDeclarationChildren(declaration, node, context);
+    for(const decl of addNodeDeclarationChildren(declaration, node, context)) {
+      declaration.content += decl.content;
+      declaration.bindings.push(...decl.bindings);
+    }
   }
+
   return declaration;
 };
 
-const addNodeDeclarationChildren = (declaration: Declaration, node: PCElement, context: TranspileContext) => {
-  let content = "";
+const addNodeDeclarationChildren = (declaration: Declaration, node: PCElement, context: TranspileContext): Declaration[] => {
+  const declarations = [];
+  
   for (let i = 0, {length} = node.children; i < length; i++) {
     const child = node.children[i];
     const childDeclaration = transpileNode(child, context);
     if (!childDeclaration) continue;
-    content += childDeclaration.content;
-    content += callDeclarationProperty(declaration, "appendChild", childDeclaration.varName, context);
+    childDeclaration.content += callDeclarationProperty(declaration, "appendChild", childDeclaration.varName, context);
+    declarations.push(childDeclaration);
   }
-  return content;
+  
+  return declarations;
 };
 
 const transpileText = (node: PCString, context: TranspileContext) => createTextNodeDeclaration(`"${node.value.replace(/\n/g, "\\n").replace(/"/g, '\\"')}"`, node, context);
 
 const transpileBinding = (block: PCBlock, context: TranspileContext, createStatment: (assignment: string) => string) => {
-  const blockDecl = declareBlock(block.value, context);
-  return `
-  ${blockDecl.content}
-  ${BINDINGS_VAR}.push(() => {
-    var newValue = ${block.value};
-    if (newValue !== ${blockDecl.varName}) {
-      ${createStatment(`(${blockDecl.varName} = newValue)`)};
+
+  return `(() => {
+    let $$currentValue = ${block.value};
+    return () => {
+      let $$newValue = ${block.value};
+      if ($$newValue !== $$currentValue) {
+        ${createStatment(`$$currentValue = $$newValue`)}
+      }
     }
-  });\n`
+  })()`;
 };
 
 const transpileTextBlock = (node: PCBlock, context: TranspileContext) => {
   const declaration = createTextNodeDeclaration(node.value, node, context);
   declaration.content = declaration.content;
-  declaration.content += transpileBinding(node, context, (value) => `${declaration.varName}.nodeValue = ${value}`);
+  declaration.bindings = [
+    transpileBinding(node, context, (value) => `${declaration.varName}.nodeValue = ${value}`)
+  ];
   return declaration;
 }
 
@@ -856,7 +867,7 @@ const transpileChildBlock = (node: PCBlock, context: TranspileContext) => {
 
   let buffer = `
     if (typeof ${node.value} !== "undefined") {
-      for (var ${iDeclaration.varName} = 0, ${nDeclaration.varName} = ${node.value}.length; ${iDeclaration.varName} < ${nDeclaration.varName}; ${iDeclaration.varName}++) {
+      for (let ${iDeclaration.varName} = 0, ${nDeclaration.varName} = ${node.value}.length; ${iDeclaration.varName} < ${nDeclaration.varName}; ${iDeclaration.varName}++) {
         ${fragmentDeclaration.varName}.appendChild(${node.value}[${iDeclaration.varName}]);
       }
     }
@@ -878,7 +889,9 @@ const createNodeDeclaration = (statement: string, expr: PCExpression, context: T
   return declaration;
 };
 
-const getTranspileContent = (result: Declaration | string) => typeof result === "string" ? result : result.content;
+const getTranspileContent = (result: Declaration | string) => typeof result === "string" ? result : [result.content, ...result.bindings.map((binding) => (
+  `${BINDINGS_VAR}.push(${binding});`
+))].join("\n");
 
 const declareNode = (assignment: string, context: TranspileContext) => declare("node", assignment, context);
 const declareBlock = (assignment: string, context: TranspileContext) => declare("blockValue", assignment, context);
@@ -887,7 +900,8 @@ const declare = (baseName: string, assignment: string, context: TranspileContext
   const varName = `${baseName}_${context.varCount++}`;
   return {
     varName,
-    content: assignment ? `var ${varName} = ${assignment};\n` : `var ${varName};\n`
+    bindings: [],
+    content: assignment ? `let ${varName} = ${assignment};\n` : `let ${varName};\n`
   };
 };
 
