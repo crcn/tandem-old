@@ -51,6 +51,13 @@ const STYLES_VAR   = "$$styles";
 const BINDINGS_VAR   = "$$bindings";
 const PREVIEWS_VAR = "$$previews";
 
+export enum SpecialPCTag {
+  IF = "pc-if",
+  ELSEIF = "pc-elseif",
+  ELSE = "pc-else",
+  REPEAT = "pc-repeat",
+}
+
 type TranspileOptions = {
   assignTo?: string;
   readFileSync?: (filePath: string) => string;
@@ -279,7 +286,7 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
 });
 
 const hasSpecialAttribute = (startTag: PCStartTag) => {
-  return hasPCStartTagAttribute(startTag, "pc-if") || hasPCStartTagAttribute(startTag, "pc-else-if") || hasPCStartTagAttribute(startTag, "pc-else") || hasPCStartTagAttribute(startTag, "pc-repeat");
+  return hasPCStartTagAttribute(startTag, SpecialPCTag.IF) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSEIF) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSE) || hasPCStartTagAttribute(startTag, SpecialPCTag.REPEAT);
 };
 
 const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(getTranspileContent).join("\n");
@@ -348,22 +355,21 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
   let content = ``;
 
   let newDeclaration: Declaration = declaration;
-  
-  if (hasPCStartTagAttribute(startTag, "pc-repeat")) {
-    const [each, token, eachAs] = getPCStartTagAttribute(startTag, "pc-repeat").split(/\s+/g);
+
+  if (hasPCStartTagAttribute(startTag, SpecialPCTag.REPEAT)) {
+    const [each, token, eachAs] = getPCStartTagAttribute(startTag, SpecialPCTag.REPEAT).split(/\s+/g);
     
     newDeclaration = declareNode(`document.createTextNode("")`, context);
 
     newDeclaration.bindings.push(`(() => {
       let currentValue = [];
       let childBindings = [];
-      var binding = () => {
+      const binding = () => {
         let newValue = ${each};
         if (newValue === currentValue) {
           return;
         }
       
-
         for (let i = 0, n = Math.min(currentValue.length, newValue.length); i < n; i++) {
           childBindings[i](newValue[i]);
         }
@@ -376,7 +382,6 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
             const ${eachAs} = newValue[i];
             const ni = startIndex + i;
             ${declaration.content}
-            console.log(ni, parent.childNodes.length);
             if (ni >= parent.childNodes.length) {
               parent.appendChild(${declaration.varName});
             } else {
@@ -400,10 +405,79 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
 
       return binding;
     })()`);
+
+    declaration = newDeclaration;
+  }
+
+  if (hasPCStartTagAttribute(startTag, SpecialPCTag.IF)) {
+    const condition = getPCStartTagAttribute(startTag, SpecialPCTag.IF);
+    const { fragment, start, end } = declareVirtualFragment(context);
+    newDeclaration = fragment;
+
+    newDeclaration.bindings.push(`(() => {
+      
+      let currentValue = false;
+      let ${BINDINGS_VAR} = [];
+
+      const binding = () => {
+        const newValue = Boolean(${condition});
+        if (newValue === currentValue) {
+          if (currentValue) {
+            for (let i = ${BINDINGS_VAR}.length; i--;) {
+              ${BINDINGS_VAR}[i]();
+            }
+          }
+          return;
+        }
+
+        currentValue = newValue;
+        ${BINDINGS_VAR} = [];
+
+        if (newValue) {
+          const elementFragment = document.createDocumentFragment();
+          ${getTranspileContent(declaration)}
+          elementFragment.appendChild(${declaration.varName});
+          ${end.varName}.parentNode.insertBefore(elementFragment, ${end.varName});
+        } else {
+          let curr = ${start.varName}.nextSibling;
+          while(curr !== ${end.varName}) {
+            curr.parentNode.removeChild(curr);
+            curr = ${start.varName}.nextSibling;
+          }
+        }
+      };
+
+
+      binding();
+
+      return binding;
+    })()`);
+
+
+    // TODO - scan for elseif and else statements
   }
 
   return newDeclaration;
 };
+
+const declareVirtualFragment = (context: TranspileContext) => {
+  const fragment = declareNode(`document.createDocumentFragment("")`, context);
+  const start = declareNode(`document.createTextNode("")`, context);
+  const end = declareNode(`document.createTextNode("")`, context);
+
+  fragment.content += `
+  ${start.content}
+  ${end.content}
+  ${fragment.varName}.appendChild(${start.varName});
+  ${fragment.varName}.appendChild(${end.varName});
+  `;
+
+  return {
+    fragment,
+    start, 
+    end
+  };
+}
 
 const transpileAttributeValue = (attribute: PCAttribute) => {
   if (!attribute.value) {
@@ -660,7 +734,6 @@ const getPropertyId = (property: PCElement|PCSelfClosingElement) => {
   return getPCStartTagAttribute(property, "name") || getPCStartTagAttribute(property, "id");
 };
 
-
 const transpileComponent = (node: PCElement, context: TranspileContext) => {
   const id = getPCStartTagAttribute(node, "id");
 
@@ -741,7 +814,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
 
         let ${BINDINGS_VAR} = this.${BINDINGS_VAR} = [];
         ${script ? (script.children[0] as PCString).value : "" }
-        ${template ? addNodeDeclarationChildren({ varName: "shadow", content: "" }, template, {
+        ${template ? addNodeDeclarationChildren({ varName: "shadow", content: "", bindings: [] }, template, {
           ...context,
           varCount: 0
         }).map(getTranspileContent).join("\n") : ""}

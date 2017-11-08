@@ -3,6 +3,7 @@
 
 <component id="td-components-pane">
   <property name="onComponentStartDrag" default={{noop}} />
+  <property name="show" default={{false}} />
   
   <template>
     <td-pane>
@@ -48,8 +49,23 @@
         }
 
       </style>
+      <script>
+        const toggle = () => {
+          this.show = !this.show;
+        }
+      </script>
       <span slot="header">Components</span>
       <span slot="content" class="content">
+
+        <div onclick={{toggle}} pc-if="this.show">
+          HIDE
+        </div>
+        
+        <div onclick={{toggle}} pc-if="!this.show">
+          SHOW
+        </div>
+        
+
         <div pc-repeat="this.components as component" class="cell" onstartdrag={{this.onComponentStartDrag.bind(component)}}>
           <div class="inner" draggable>
             {{component.label}}
@@ -59,61 +75,3 @@
     </td-pane>
   </template>
 </component>
-
-<!--module xmlns:gutter="./gutter.pc">
-  <meta name="name" content="Components Pane" />
-
-  <template name="main" export>
-
-    
-      <div class="header">
-        Components
-        <div class="controls">
-          <i class="ion-more" />
-        </div>
-      </div>
-      <div class="content">
-        <repeat each={{props.components}} as="component">
-          <div class="cell" onstartdrag={{props.onComponentStartDrag.bind(component)}}>
-            <div class="inner" draggable>
-              {{component.label}}
-            </div>
-          </div>
-        </repeat>
-    </div>
-  </template>
-
-  <template name="preview" export>
-    <gutter:gutter>
-      <main onComponentStartDrag={{noop}} components={{[
-        {
-          label: "div"
-        },
-        {
-          label: "ul"
-        },
-        {
-          label: "li"
-        },
-        {
-          label: "custom-component"
-        },
-        {
-          label: "h1"
-        },
-        {
-          label: "h2"
-        },
-        {
-          label: "h4"
-        },
-        {
-          label: "h5"
-        },
-        {
-          label: "span"
-        }
-      ]}} />
-    </gutter:gutter>
-  </template>
-</module-->
