@@ -19,6 +19,7 @@ export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterf
   ownerDocument: SEnvDocumentInterface;
   shadowRoot: SEnvShadowRoot|null;
   childNodes: SEnvNodeListInterface;
+  attachShadow(mode: ShadowRootInit): SEnvShadowRoot;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
 }

@@ -87,6 +87,7 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
 
     // likely a full window reload. In that case, need to diff & patch
     if (!childObjects[mutation.target.$id]) {
+      console.warn(`Could not find matching mutation target, slowly syncing windows.`, mutation);
       sync();
     } else {
       patchWindow(target, [mutation]);

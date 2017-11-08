@@ -261,7 +261,7 @@
 
   <td-preview-component-example label="Progress">
     <td-progress-example value={{0}} />
-    <td-progress-example value={{0.5}} live />
+    <td-progress-example value={{0.5}} />
     <td-progress-example value={{1}} />
   </td-preview-component-example>
 </td-preview>

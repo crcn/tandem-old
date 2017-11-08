@@ -2,7 +2,7 @@ import { diffComment } from "./comment";
 import { difference } from "lodash";
 import { diffTextNode } from "./text";
 import { SEnvNodeTypes } from "../constants";
-import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation, createSetValueMutation } from "aerial-common2";
+import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation, createSetValueMutation, SetValueMutation } from "aerial-common2";
 import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, parentNodeMutators } from "./parent-node";
 import { getSEnvEventClasses } from "../events";
 import { SEnvDocumentInterface, getSEnvDocumentClass, SEnvShadowRoot } from "./document";
@@ -35,6 +35,8 @@ export interface SEnvElementInterface extends SEnvParentNodeInterface, Element {
   childNodes: SEnvNodeListInterface;
   addEventListener(type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
   getPreviewAttribute(name: string): string | null;
+  $$setShadowRoot(shadowRoot: SEnvShadowRoot): SEnvShadowRoot;
+  attachShadow(mode: ShadowRootInit): SEnvShadowRoot;
 }
 
 export const getSEnvElementClass = weakMemo((context: any) => {
@@ -376,9 +378,13 @@ export const getSEnvElementClass = weakMemo((context: any) => {
         return this.shadowRoot;
       }
 
-      const SEnvDocument = getSEnvDocumentClass(context)
+      // const SEnvDocument = getSEnvDocumentClass(context)
+      return this.$$setShadowRoot(this.ownerDocument.createDocumentFragment() as SEnvShadowRoot);
+    }
 
-      this.shadowRoot = this.ownerDocument.createDocumentFragment() as SEnvShadowRoot;
+
+    $$setShadowRoot(shadowRoot: SEnvShadowRoot): SEnvShadowRoot { 
+      this.shadowRoot = shadowRoot;
       if (this.connectedToDocument) {
         this.shadowRoot.$$setConnectedToDocument(true);
       }
@@ -388,6 +394,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 
       return this.shadowRoot;
     }
+
 
     private _onShadowMutation(event) {
       this._onMutation(event);
@@ -439,7 +446,7 @@ export const createSetElementTextContentMutation = (target: BasicElement, value:
 }
 
 export const attachShadowRootMutation = (target: BasicElement) => {
-  return createSetValueMutation(SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT, target, true);
+  return createSetValueMutation(SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT, target, target.shadowRoot);
 }
 
 export const createSetElementAttributeMutation = (target: Element, name: string, value: string, oldName?: string, index?: number) => {
@@ -480,8 +487,12 @@ export const diffBaseElement = (oldElement: Element, newElement: Element, diffCh
 
 export const baseElementMutators = {
   ...parentNodeMutators,
-  [SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT](oldElement: Element) {
-    oldElement.attachShadow({ mode: "open" });
+  [SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT](oldElement: SEnvElementInterface, mutation: SetValueMutation<any>) {
+    if (oldElement.$$setShadowRoot) {
+      oldElement.$$setShadowRoot(mutation.newValue.cloneNode(true));
+    } else {
+      oldElement.attachShadow({ mode: "open" });
+    }
   },  
   [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](oldElement: Element, mutation: Mutation<any>) {
     

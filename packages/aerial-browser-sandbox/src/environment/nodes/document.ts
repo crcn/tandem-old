@@ -594,7 +594,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     private _linkNode<T extends Node>(node: T): T {
-      node["" + "_ownerDocument"] = this;
+      node["" + "$$setOwnerDocument"](this);
       return node;
     }
 

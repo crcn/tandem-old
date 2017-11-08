@@ -22,12 +22,13 @@ export const filterPCElementsByStartTag = (ast: PCExpression, filter: (ast: PCSt
 export const getElementStartTag = (element: PCSelfClosingElement | PCElement): PCStartTag => element.type === PCExpressionType.SELF_CLOSING_ELEMENT || element.type == PCExpressionType.START_TAG ? element as PCSelfClosingElement : (element as PCElement).startTag;
 
 export const getPCStartTagAttribute = (element: PCElement | PCSelfClosingElement, name: string) => {
+  if (!hasPCStartTagAttribute(element, name)) return;
   const attr = getElementStartTag(element).attributes.find((attr) => attr.name === name);
-  return attr && (attr.value as PCString).value;
+  return attr && attr.value && (attr.value as PCString).value;
 }
 
 export const hasPCStartTagAttribute = (element: PCElement | PCSelfClosingElement, name: string) => {
-  return Boolean(getElementStartTag(element).attributes.find((attr) => attr.name === name));
+  return (element.type === PCExpressionType.ELEMENT || element.type === PCExpressionType.SELF_CLOSING_ELEMENT || element.type === PCExpressionType.START_TAG) && Boolean(getElementStartTag(element).attributes.find((attr) => attr.name === name));
 }
 
 export const getPCStyleElements = (parent: PCParent) => filterPCASTTree(parent, (expression) => expression.type === PCExpressionType.ELEMENT && (expression as PCElement).startTag.name === "style");
@@ -138,3 +139,7 @@ export const getPCImports = weakMemo((ast: PCExpression) => {
 
   return imports;
 });
+
+export const getPCParent = (root: PCParent, tagOrChild: PCExpression) => filterPCASTTree(root, expr => expr["children"] && expr["children"].find((child) => {
+  return child === tagOrChild || (tagOrChild.type === PCExpressionType.START_TAG && child.type === PCExpressionType.ELEMENT && (child as PCElement).startTag === tagOrChild) 
+}))[0] as PCParent;

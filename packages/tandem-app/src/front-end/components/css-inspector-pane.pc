@@ -2,7 +2,12 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 <link rel="import" href="./gutter.pc" />
+<link rel="import" href="./tooltip.pc" />
+<link rel="import" href="./color-picker.pc" />
 
+<!--
+  TODO
+-->
 
 <component id="td-css-color-expr-input">
   <property name="value" default="1" />
@@ -20,11 +25,21 @@
     }
   </style>
   <template>
-    <div class="input-box" style={{{background: this.value}}} /> 
+    <td-tooltip>
+      <div slot="button" class="input-box" style={{{background: this.value}}} /> 
+
+      <!-- TODO - fix me - super slow -->
+      <!-- need to not render this until slot is present -->
+      <td-color-picker color="#FF6600" />
+    </td-tooltip>
     <span>{{this.value}}</span>
   </template>
 </component>
 
+<!-- 
+  TODOS:
+  - dropdown with root options
+-->
 <component id="td-css-var-expr-input">
   <property name="value" default="1" />
   <style>
@@ -63,6 +78,14 @@
       border-radius: 2px;
       border: 1px solid rgba(0,0,0,0.3);
     }
+
+    span::before {
+      content: "var(";
+    }
+
+    span::after {
+      content: ")";
+    }
   </style>
   <template>
 
@@ -70,6 +93,12 @@
   </template>
 </component>
 
+<component id="td-css-call-expr-input">
+  <template>
+    <span>{{this.name}}</span>
+    <span>{{this.args.join(",")}}</span>
+  </template>
+</component>
 
 <component id="td-style-declaration">
   <property name="name" />
@@ -83,14 +112,32 @@
     }
   </style>
   <script>
+
+    const COLOR_TYPE = "color";
+    const VAR_TYPE = "var";
+    const VAR_CALL = "var";
+
     const parseDeclarationValue = (value) => {
-      return [value];
+      return [{
+        type: COLOR_TYPE,
+        value: value
+      }, {
+        type: VAR_TYPE,
+        value: "--color"
+      }];
     };
   </script>
   <template>
     <span class="name">{{this.name}}</span>
-    <td-css-color-expr-input value={{this.value}} />
-    <!--td-css-var-expr-input value={{this.value}} /-->
+
+    <span pc-repeat="parseDeclarationValue(this.value) as expr">
+
+      <td-css-color-expr-input pc-if="expr.type === COLOR_TYPE" value={{expr.value}} />
+      <td-css-var-expr-input pc-elseif="expr.type === VAR_TYPE" value={{expr.value}} />
+      <span pc-else>
+        {{expr.value}}
+      </span>
+    </span>
   </template>
 </component>
 

@@ -16,6 +16,7 @@
   <template>
     <div class="workspace-footer">
       {{this.workspace * 100}}%
+      
     </div>
   </template>
 </component>

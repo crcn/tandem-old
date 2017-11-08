@@ -63,6 +63,10 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
         throw new SEnvDOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
       }
 
+      if (Array.prototype.indexOf.call(this.childNodes, newChild) !== -1) {
+        throw new Error(`Inserting child that already exists`);
+      }
+
       return this.insertChildAt(newChild, index);
     }
 
@@ -86,9 +90,15 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
       }
       this.childNodesArray.splice(index, 0, child as any);
       const event2 = new SEnvMutationEvent2();
-      event2.initMutationEvent(createParentNodeInsertChildMutation(this, child, index, false));
-      this.dispatchEvent(event2);
+
+      // need to link child _now_ in case connectedCallback triggers additional
+      // children to be created (web components). We do _not_ want those mutations
+      // to dispatch a mutation that causes a patch to the DOM renderer
       this._linkChild(c);
+
+      // dispatch insertion now after it's completely linked
+      event2.initMutationEvent(createParentNodeInsertChildMutation(this, child, index));
+      this.dispatchEvent(event2);
 
       return child;
     }
@@ -183,9 +193,12 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
       child.$$parentNode = this;
       child.$$setOwnerDocument(this.nodeType === SEnvNodeTypes.DOCUMENT ? this as any as SEnvDocumentInterface : this.ownerDocument);
       child.$$setConnectedToDocument(this.nodeType === SEnvNodeTypes.DOCUMENT ? true : this.connectedToDocument);
+      child.$$canBubbleParent = true;
+
     }
 
     protected _unlinkChild(child: SEnvNodeInterface) {
+      child.$$canBubbleParent = false;
       child.$$parentNode = null;
       child.$$setConnectedToDocument(this.nodeType === SEnvNodeTypes.DOCUMENT ? false : this.connectedToDocument);
       if (child.connectedToDocument) {
@@ -207,7 +220,7 @@ export const cloneNode = (node: BasicNode, deep?: boolean) => {
 }
 
 export const createParentNodeInsertChildMutation = (parent: BasicParentNode, child: BasicNode, index: number, cloneChild: boolean = true) => {
-  return createInsertChildMutation(SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT, parent, cloneChild ? cloneNode(child, true) : child, index, cloneChild);
+  return createInsertChildMutation(SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT, parent, child, index, cloneChild);
 };
 
 export const createParentNodeRemoveChildMutation = (parent: BasicParentNode, child: BasicNode, index?: number) => {

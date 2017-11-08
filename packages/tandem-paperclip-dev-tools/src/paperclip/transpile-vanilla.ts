@@ -16,6 +16,7 @@ import {
   PCStyleExpressionType, 
 } from "./style-ast";
 import { 
+  getPCParent,
   getPCImports,
   getPCStyleID,
   traversePCAST, 
@@ -350,6 +351,12 @@ const transpileSelfClosingElement = (element: PCSelfClosingElement, context: Tra
   return hasSpecialAttribute(element) ? transpileSpecialTags(element, declaration, context) : declaration;
 }
 
+const transpileBindingsCall = (bindingsVarName, args: string = '') => `
+  for (let i = 0, n = ${bindingsVarName}.length; i < n; i++) {
+    ${bindingsVarName}[i](${args});
+  }
+`
+
 const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, context: TranspileContext) => {
 
   let content = ``;
@@ -365,20 +372,22 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
       let currentValue = [];
       let childBindings = [];
       const binding = () => {
-        let newValue = ${each};
+        let newValue = (${each}) || [];
         if (newValue === currentValue) {
           return;
         }
+        const oldValue = currentValue;
+        currentValue = newValue;
       
-        for (let i = 0, n = Math.min(currentValue.length, newValue.length); i < n; i++) {
+        for (let i = 0, n = Math.min(oldValue.length, newValue.length); i < n; i++) {
           childBindings[i](newValue[i]);
         }
 
         const parent = ${newDeclaration.varName}.parentNode;
         const startIndex = Array.prototype.indexOf.call(parent.childNodes, ${newDeclaration.varName});
 
-        if (newValue.length > currentValue.length) {
-          for (let i = currentValue.length; i < newValue.length; i++) {
+        if (newValue.length > oldValue.length) {
+          for (let i = oldValue.length; i < newValue.length; i++) {
             const ${eachAs} = newValue[i];
             const ni = startIndex + i;
             ${declaration.content}
@@ -391,12 +400,10 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
               ${binding}
             }`)).join(",")}];
             childBindings.push((newValue) => {
-              for (let i = bindings.length; i--;) {
-                binidngs[i](newValue);
-              }
+              ${transpileBindingsCall("bindings", "newValue")}
             });
           }
-        } else if (currentValue.length < newValue.length) {
+        } else if (oldValue.length < newValue.length) {
           // TODO
         }
       };
@@ -409,23 +416,56 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
     declaration = newDeclaration;
   }
 
-  if (hasPCStartTagAttribute(startTag, SpecialPCTag.IF)) {
-    const condition = getPCStartTagAttribute(startTag, SpecialPCTag.IF);
+  if (hasPCStartTagAttribute(startTag, SpecialPCTag.IF) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSE) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSEIF)) {
+  
+    
+    const siblings = getPCParent(context.root, startTag).children;
+    
+    const index = siblings.findIndex((sibling) => {
+      return sibling === startTag || (startTag.type === PCExpressionType.START_TAG && sibling.type === PCExpressionType.ELEMENT && (sibling as PCElement).startTag === startTag)
+    });
+
+    let conditionBlockVarName;
+
+    for (let i = index + 1; i--;) {
+      const sibling = siblings[i] as PCElement;
+      if (getPCStartTagAttribute(sibling, SpecialPCTag.IF)) {
+        conditionBlockVarName = "condition_" + md5(getExpressionPath(sibling, context.root).join(""));
+        break;
+      }
+    }
+
+    const condition = getPCStartTagAttribute(startTag, SpecialPCTag.IF) || getPCStartTagAttribute(startTag, SpecialPCTag.ELSE) || getPCStartTagAttribute(startTag, SpecialPCTag.ELSEIF);
+
     const { fragment, start, end } = declareVirtualFragment(context);
     newDeclaration = fragment;
+
+    if (hasPCStartTagAttribute(startTag, SpecialPCTag.IF)) {
+      fragment.content += `
+        let ${conditionBlockVarName} = Infinity;
+      `;
+    }
 
     newDeclaration.bindings.push(`(() => {
       
       let currentValue = false;
       let ${BINDINGS_VAR} = [];
+      const _index = ${index};
 
       const binding = () => {
-        const newValue = Boolean(${condition});
-        if (newValue === currentValue) {
+        const newValue = Boolean(${condition || "true"}) && _index <= ${conditionBlockVarName};
+
+        if (newValue) {
+          ${conditionBlockVarName} = _index;
+
+        // give it up for other conditions
+        } else if (${conditionBlockVarName} === _index) {
+          ${conditionBlockVarName} = Infinity;
+        }
+          
+        if (newValue && newValue === currentValue) {
           if (currentValue) {
-            for (let i = ${BINDINGS_VAR}.length; i--;) {
-              ${BINDINGS_VAR}[i]();
-            }
+            ${transpileBindingsCall(BINDINGS_VAR)}
           }
           return;
         }
@@ -447,14 +487,10 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
         }
       };
 
-
       binding();
-
       return binding;
     })()`);
 
-
-    // TODO - scan for elseif and else statements
   }
 
   return newDeclaration;
@@ -758,6 +794,15 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
     class ${className} extends HTMLElement {
       constructor() {
         super();
+        this.${BINDINGS_VAR} = [];
+        if (!window.$synthetic) {
+          //this.render();
+        }
+      }
+
+      $$setOwnerDocument(value) {
+        super.$$setOwnerDocument(value);
+        //this.render();
       }
     
       connectedCallback() {
@@ -835,6 +880,9 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
       }
 
       attributeChangedCallback(name, oldValue, newValue) {
+        if (super.attributeChangedCallback) {
+          super.attributeChangedCallback(name, oldValue, newValue);
+        }
         this[name] = newValue;
       }
 
@@ -852,9 +900,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
         }
         
         let bindings = this.${BINDINGS_VAR} || [];
-        for (let i = 0, n = bindings.length; i < n; i++) {
-          bindings[i]();
-        }
+        ${transpileBindingsCall("bindings")}
 
         this.didUpdate();
       }
@@ -913,7 +959,7 @@ const transpileBinding = (block: PCBlock, context: TranspileContext, createStatm
   return `(() => {
     let $$currentValue = ${block.value};
     return () => {
-      let $$newValue = ${block.value};
+      let $$newValue = ${block.value} || [];
       if ($$newValue !== $$currentValue) {
         ${createStatment(`$$currentValue = $$newValue`)}
       }

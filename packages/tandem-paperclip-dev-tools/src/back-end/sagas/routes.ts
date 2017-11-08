@@ -160,6 +160,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     content = transpileResult.content;
   }
 
+  const now = Date.now();
   const html = `
   <html>
     <head>
@@ -198,6 +199,8 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     </body>
   </html>
   `;
+
+  console.log("rendered %s in %s ms", tagNameOrHash, Date.now() - now);
 
   res.send(html);
 }

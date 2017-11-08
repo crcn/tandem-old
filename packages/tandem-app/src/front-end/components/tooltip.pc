@@ -1,28 +1,98 @@
+
+
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./color-picker.pc" />
 
 <component id="td-tooltip">
   <property name="show" />
+  <property name="anchor" />
   <style>
     :host {
-      padding: var(--base4);
+      position: relative;
     }
+
+    #overlay {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 1024;
+    }
+
+    #card {
+      position: absolute;
+      transform: translate(-50%);
+      display: inline-block;
+      position: absolute;
+      z-index: 1024;
+      transform: translateX(-50%);
+      border-radius: 4px;
+      padding: 10px;
+      box-shadow: 0 0 1px 1px rgba(0,0,0,0.8);
+      background: var(--background);
+      top: 4px;
+    }
+
   </style>
   <script>
     const onButtonClick = () => {
       this.show = !this.show;
     };
+    this.didUpdate = () => {
+    };
+
+    let ignoreHide = false;
+
+    const onOverlayClick = () => {
+      this.show = !this.show;
+    }
+
+    this.didUpdate = () => {
+      document.removeEventListener("mousedown", onDocumentClick);
+      if (this.show) {
+      document.addEventListener("mousedown", onDocumentClick);
+      }
+    }
+
+    const getAnchorPosition = () => {
+      const buttonRect = this.button.getBoundingClientRect();
+      if (!buttonRect) {
+        return {};
+      }
+      return {
+        left: buttonRect.left + buttonRect.width / 2,
+        top: buttonRect.bottom + 20
+      };
+    }
+
+    const onCardClick = (event) => {
+      event.stopPropagation();
+    }
+
+    const onDocumentClick = (event) => {
+      if (ignoreHide) {
+        return;
+      }
+      this.show = false;
+    }
   </script>
   <template>  
-    <slot name="button" onclick={{onButtonClick}}>
-    </slot>
-    <span style={{{ display: this.show ? "block" : "none" }}}>
-      <slot style={{{display: "none"}}}></slot>
+    <span id="button">
+      <slot name="button" onmousedown={{onButtonClick}}></slot>
     </span>
+    <div id="overlay" pc-if="this.show" onmousedown={{onOverlayClick}}>
+      <div id="card" style={{getAnchorPosition()}} onmousedown={{onCardClick}}>
+        <slot></slot>
+      </div>
+    </div>
   </template>
 </component>
 
 <td-preview>
+  <style>
+    td-tooltip {
+      margin: 20px;
+    }
+  </style>
   <td-tooltip show>
     <span slot="button">
       click me
@@ -31,4 +101,5 @@
     <!-- TODO - need to wrap this in a template -->
     <td-color-picker color="#FF00FF" />
   </td-tooltip>
+
 </td-preview>

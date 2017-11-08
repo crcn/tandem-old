@@ -19,6 +19,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
   - [ ] import external CSS scripts
   - [ ] transpile TS to JS 
   - [ ] figure out how to pass objects to attributes - (set as prop) (possibly check for <props>)
+  - [ ] script types (text/typescript)
 
 - [ ] Components
   - [ ] color picker
@@ -26,6 +27,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
     - [ ] color picker
     - [ ] editable properties
     - [ ] var() inspector
+      - [ ] show var options
     - [ ] :root editor
     - [ ] shadow editor
     - [ ] margin editor
@@ -51,6 +53,12 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 
 - [ ] Window pane
   - [ ] Fit to content
+
+- [ ] VM
+  - [ ] optimizations
+    - [ ] fix flickering
+    - [ ] do not render children if parent has document fragment
+
 
 AFTER INITIAL COMPONENTS:
 
