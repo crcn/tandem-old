@@ -56,8 +56,10 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 
 - [ ] VM
   - [ ] optimizations
-    - [ ] fix flickering
-    - [ ] do not render children if parent has document fragment
+    - [ ] run on back-end -- serve diffs to front-end (should be MUCH faster. Also tees tandem up for AWS lambda)
+
+- [ ] Paperclip
+  - [ ] Lambda offloading
 
 
 AFTER INITIAL COMPONENTS:

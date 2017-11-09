@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as md5 from "md5";
 import * as path from "path";
 import { parse } from "./parser";
-import { flatten, repeat, camelCase, snakeCase } from "lodash";
+import { flatten, repeat, camelCase, snakeCase, uniq } from "lodash";
 import { parsePCStyle } from "./style-parser";
 import { 
   PCSheet, 
@@ -145,6 +145,10 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
     }
 
     function $$requestUpdate(object) {
+      if (window.$synthetic || true) {
+        return object.update();
+      }
+
       if (toUpdate.indexOf(object) === -1) {
         toUpdate.push(object);
       }
@@ -290,7 +294,7 @@ const hasSpecialAttribute = (startTag: PCStartTag) => {
   return hasPCStartTagAttribute(startTag, SpecialPCTag.IF) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSEIF) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSE) || hasPCStartTagAttribute(startTag, SpecialPCTag.REPEAT);
 };
 
-const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(getTranspileContent).join("\n");
+const transpileChildren = (parent: PCParent, context: TranspileContext) => getTranspiledChildren(parent, context).map(content => getTranspileContent(content)).join("\n");
 
 
 const getTranspiledChildren = (parent: PCParent, context: TranspileContext) => parent.children.map((child) => transpileNode(child, context)).filter(child => Boolean(child));
@@ -329,8 +333,12 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
     const name = attribute.name;
 
     if (value && value.type === PCExpressionType.BLOCK) {
-      declaration.content += `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${(value as PCBlock).value});\n`
-      declaration.bindings.push(transpileBinding(value as PCBlock, context, (statement) => `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${statement})`));
+      const attrName = camelCase(attribute.name);
+      const bindingVarName = `${declaration.varName}$$${attrName}$$currentValue`;
+      declaration.content += `
+        let ${bindingVarName};
+      `;
+      declaration.bindings.push(transpileBinding(bindingVarName, value as PCBlock, context, (statement) => `setElementProperty(${declaration.varName}, "${camelCase(attribute.name)}", ${statement})`));
     } else if (attribute.name.substr(0, 2) === "on") {
       declaration.content += `${declaration.varName}.${attribute.name.toLowerCase()} = ${(attribute.value as PCString).value};\n`
     } else {
@@ -367,51 +375,54 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
     const [each, token, eachAs] = getPCStartTagAttribute(startTag, SpecialPCTag.REPEAT).split(/\s+/g);
     
     newDeclaration = declareNode(`document.createTextNode("")`, context);
+    const currentValueVarName = newDeclaration.varName + "$$currentValue";
+    const childBindingsVarName = newDeclaration.varName + "$$childBindings";
+    newDeclaration.content += `
+      let ${currentValueVarName} = [];
+      let ${childBindingsVarName} = [];
+    `;
 
-    newDeclaration.bindings.push(`(() => {
-      let currentValue = [];
-      let childBindings = [];
-      const binding = () => {
-        let newValue = (${each}) || [];
-        if (newValue === currentValue) {
-          return;
-        }
-        const oldValue = currentValue;
-        currentValue = newValue;
-      
-        for (let i = 0, n = Math.min(oldValue.length, newValue.length); i < n; i++) {
-          childBindings[i](newValue[i]);
-        }
+    newDeclaration.bindings.push(`
+      let newValue = (${each}) || [];
+      if (newValue === ${currentValueVarName}) {
+        return;
+      }
+      const oldValue = ${currentValueVarName};
+      ${currentValueVarName} = newValue;
+    
+      for (let i = 0, n = Math.min(oldValue.length, newValue.length); i < n; i++) {
+        ${childBindingsVarName}[i](newValue[i]);
+      }
 
-        const parent = ${newDeclaration.varName}.parentNode;
-        const startIndex = Array.prototype.indexOf.call(parent.childNodes, ${newDeclaration.varName});
+      const parent = ${newDeclaration.varName}.parentNode;
+      const startIndex = Array.prototype.indexOf.call(parent.childNodes, ${newDeclaration.varName});
 
-        if (newValue.length > oldValue.length) {
-          for (let i = oldValue.length; i < newValue.length; i++) {
-            const ${eachAs} = newValue[i];
-            const ni = startIndex + i;
-            ${declaration.content}
-            if (ni >= parent.childNodes.length) {
-              parent.appendChild(${declaration.varName});
-            } else {
-              parent.insertBefore(${declaration.varName}, parent.childNodes[ni]);
-            }
-            const bindings = [${declaration.bindings.map((binding) => (`(${eachAs}) => {
-              ${binding}
-            }`)).join(",")}];
-            childBindings.push((newValue) => {
-              ${transpileBindingsCall("bindings", "newValue")}
-            });
+      if (newValue.length > oldValue.length) {
+        for (let i = oldValue.length; i < newValue.length; i++) {
+          const ${eachAs} = newValue[i];
+          const ni = startIndex + i;
+          ${declaration.content}
+          if (ni >= parent.childNodes.length) {
+            parent.appendChild(${declaration.varName});
+          } else {
+            parent.insertBefore(${declaration.varName}, parent.childNodes[ni]);
           }
-        } else if (oldValue.length < newValue.length) {
-          // TODO
+          
+          const bindings = [${declaration.bindings.map((binding) => (`(${eachAs}) => {
+            ${binding}
+          }`)).join(",")}];
+
+          // initial trigger
+          bindings.forEach((binding) => binding(${eachAs}));
+
+          ${childBindingsVarName}.push((newValue) => {
+            ${transpileBindingsCall("bindings", "newValue")}
+          });
         }
-      };
-
-      binding();
-
-      return binding;
-    })()`);
+      } else if (oldValue.length < newValue.length) {
+        // TODO
+      }
+    `);
 
     declaration = newDeclaration;
   }
@@ -439,6 +450,14 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
 
     const { fragment, start, end } = declareVirtualFragment(context);
     newDeclaration = fragment;
+    const bindingsVarName = newDeclaration.varName + "$$bindings";
+    const currentValueVarName = newDeclaration.varName + "$$currentValue";
+
+    fragment.content += `
+      let ${bindingsVarName} = [];
+      let ${currentValueVarName} = false;
+
+    `;
 
     if (hasPCStartTagAttribute(startTag, SpecialPCTag.IF)) {
       fragment.content += `
@@ -446,50 +465,40 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
       `;
     }
 
-    newDeclaration.bindings.push(`(() => {
-      
-      let currentValue = false;
-      let ${BINDINGS_VAR} = [];
-      const _index = ${index};
+    newDeclaration.bindings.push(`
+      const newValue = Boolean(${condition || "true"}) && ${conditionBlockVarName} >= ${index};
 
-      const binding = () => {
-        const newValue = Boolean(${condition || "true"}) && _index <= ${conditionBlockVarName};
+      if (newValue) {
+        ${conditionBlockVarName} = ${index};
 
-        if (newValue) {
-          ${conditionBlockVarName} = _index;
-
-        // give it up for other conditions
-        } else if (${conditionBlockVarName} === _index) {
-          ${conditionBlockVarName} = Infinity;
+      // give it up for other conditions
+      } else if (${conditionBlockVarName} === ${index}) {
+        ${conditionBlockVarName} = Infinity;
+      }
+        
+      if (newValue && newValue === ${currentValueVarName}) {
+        if (${currentValueVarName}) {
+          ${transpileBindingsCall(bindingsVarName)}
         }
-          
-        if (newValue && newValue === currentValue) {
-          if (currentValue) {
-            ${transpileBindingsCall(BINDINGS_VAR)}
-          }
-          return;
+        return;
+      }
+
+      ${currentValueVarName} = newValue;
+      ${bindingsVarName} = [];
+
+      if (newValue) {
+        const elementFragment = document.createDocumentFragment();
+        ${getTranspileContent(declaration, bindingsVarName)}
+        elementFragment.appendChild(${declaration.varName});
+        ${end.varName}.parentNode.insertBefore(elementFragment, ${end.varName});
+      } else {
+        let curr = ${start.varName}.nextSibling;
+        while(curr !== ${end.varName}) {
+          curr.parentNode.removeChild(curr);
+          curr = ${start.varName}.nextSibling;
         }
-
-        currentValue = newValue;
-        ${BINDINGS_VAR} = [];
-
-        if (newValue) {
-          const elementFragment = document.createDocumentFragment();
-          ${getTranspileContent(declaration)}
-          elementFragment.appendChild(${declaration.varName});
-          ${end.varName}.parentNode.insertBefore(elementFragment, ${end.varName});
-        } else {
-          let curr = ${start.varName}.nextSibling;
-          while(curr !== ${end.varName}) {
-            curr.parentNode.removeChild(curr);
-            curr = ${start.varName}.nextSibling;
-          }
-        }
-      };
-
-      binding();
-      return binding;
-    })()`);
+      }
+    `);
 
   }
 
@@ -684,30 +693,6 @@ const transpileStyleDeclaration = (ast: PCStyleRule, context: TranspileStyleCont
   return `CSSStyleDeclaration.fromObject(${objectBuffer})`;
 }
 
-const transpileTemplateCall = (node: PCStartTag, context: TranspileContext, element?: PCElement, fnName?: string) => {
-
-  let buffer = '';
-
-  const attributeBuffer = node.attributes.map((attr) => (
-    `"${attr.name}": ${transpileAttributeValue(attr)}`
-  ));
-
-  if (element && element.children.length > 0) {
-    const childDeclarations = getTranspiledChildren(element, context);
-    buffer += childDeclarations.map((decl) => decl.content).join("");
-
-    attributeBuffer.push(
-      `"children":[` +
-      childDeclarations.map((decl) => decl.varName).join(",") + 
-      `]`
-    )
-  }
-
-  const decl = declareNode(`${fnName || context.templateNames[node.name]}({${attributeBuffer.join(",")}})`, context);
-  decl.content = buffer + decl.content;
-  return decl;
-}
-
 const declareRule = (assignment: string, context: TranspileContext) => declare("rule", assignment, context);
 
 const assertAttributeExists = (node: PCElement|PCSelfClosingElement, name: string, context: TranspileContext) => {
@@ -729,39 +714,10 @@ const tryExportingDeclaration = (declaration: Declaration, node: PCElement, cont
 
 const getJSFriendlyVarName = (name: string) => name.replace(/\-/g, "_");
 
-// const transpileRepeat = (node: PCElement, context: TranspileContext) => {
-//   const _each = getPCStartTagAttribute(node.startTag, "each");
-//   const _as = getPCStartTagAttribute(node.startTag, "as");
-
-//   const documentFragment = declareNode(`document.createDocumentFragment()`, context);
-
-//   const { varName: iVarName } = declare(`i`, undefined, context);
-//   const { varName: eachVarName, content: eachVarContent } = declare(`each`, _each, context);
-
-//   const { varName: nVarName, content: nContent } = declare(`n`, `${eachVarName}.length`, context);
-
-//   let buffer = "";
-//   buffer += documentFragment.content,
-//   buffer += eachVarContent;
-//   buffer += nContent;
-//   buffer += `for (var ${iVarName} = 0; ${iVarName} < ${nVarName}; ${iVarName}++) {
-//     var ${_as} = ${eachVarName}[${iVarName}];
-//     ${addNodeDeclarationChildren(documentFragment, node, context)}
-//   }`;
-
-//   documentFragment.content += buffer;
-  
-//   return {
-//     varName: documentFragment.varName,
-//     content: buffer
-//   };
-// }
-
-
 const transpileTDPreview = (node: PCElement, context: TranspileContext) => {
   const id = getPCStartTagAttribute(node, "id");
   const fragment = declareNode(`document.createDocumentFragment()`, context);
-  fragment.content += addNodeDeclarationChildren(fragment, node, context).map((decl) => decl.content).join("\n");
+  fragment.content += addNodeDeclarationChildren(fragment, node, context).map((decl) => getTranspileContent(decl)).join("\n");
   fragment.content += `${PREVIEWS_VAR}["${id || fragment.varName}"] = ${fragment.varName};\n`;
   return fragment;
 };
@@ -832,7 +788,9 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
             }
             set ${camelCaseName}(value) {
               this.$$${camelCaseName} = value;
-              $$requestUpdate(this);
+              if (this._rendered) {
+                $$requestUpdate(this);
+              }
             }
           `;
         }).join("\n")
@@ -862,7 +820,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
         ${template ? addNodeDeclarationChildren({ varName: "shadow", content: "", bindings: [] }, template, {
           ...context,
           varCount: 0
-        }).map(getTranspileContent).join("\n") : ""}
+        }).map(content => getTranspileContent(content, BINDINGS_VAR)).join("\n") : ""}
       }
 
       cloneShallow() {
@@ -874,9 +832,9 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
       }
 
       static get observedAttributes() {
-        return ${JSON.stringify(properties.map((property) => {
+        return ${JSON.stringify(uniq(properties.map((property) => {
           return getPropertyId(property);
-        }))};
+        })))};
       }
 
       attributeChangedCallback(name, oldValue, newValue) {
@@ -954,24 +912,24 @@ const addNodeDeclarationChildren = (declaration: Declaration, node: PCElement, c
 
 const transpileText = (node: PCString, context: TranspileContext) => createTextNodeDeclaration(`"${node.value.replace(/\n/g, "\\n").replace(/"/g, '\\"')}"`, node, context);
 
-const transpileBinding = (block: PCBlock, context: TranspileContext, createStatment: (assignment: string) => string) => {
+const transpileBinding = (bindingVarName: string, block: PCBlock, context: TranspileContext, createStatment: (assignment: string) => string) => {
 
-  return `(() => {
-    let $$currentValue = ${block.value};
-    return () => {
-      let $$newValue = ${block.value} || [];
-      if ($$newValue !== $$currentValue) {
-        ${createStatment(`$$currentValue = $$newValue`)}
-      }
+  return `
+    let $$newValue = ${block.value};
+    if ($$newValue !== ${bindingVarName}) {
+      ${createStatment(`${bindingVarName} = $$newValue`)}
     }
-  })()`;
+  `;
 };
 
 const transpileTextBlock = (node: PCBlock, context: TranspileContext) => {
   const declaration = createTextNodeDeclaration(node.value, node, context);
-  declaration.content = declaration.content;
+  const bindingVarName = declaration.varName + "$$currentValue";
+  declaration.content += `
+    let ${bindingVarName} = ${node.value};
+  `
   declaration.bindings = [
-    transpileBinding(node, context, (value) => `${declaration.varName}.nodeValue = ${value}`)
+    transpileBinding(bindingVarName, node, context, (value) => `${declaration.varName}.nodeValue = ${value}`)
   ];
   return declaration;
 }
@@ -1008,8 +966,8 @@ const createNodeDeclaration = (statement: string, expr: PCExpression, context: T
   return declaration;
 };
 
-const getTranspileContent = (result: Declaration | string) => typeof result === "string" ? result : [result.content, ...result.bindings.map((binding) => (
-  `${BINDINGS_VAR}.push(${binding});`
+const getTranspileContent = (result: Declaration | string, bindingsVarName = BINDINGS_VAR) => typeof result === "string" ? result : [result.content, ...result.bindings.map((binding) => (
+  `${bindingsVarName}.push((() => { const binding = () => { ${binding} }; binding(); return binding; })());`
 ))].join("\n");
 
 const declareNode = (assignment: string, context: TranspileContext) => declare("node", assignment, context);

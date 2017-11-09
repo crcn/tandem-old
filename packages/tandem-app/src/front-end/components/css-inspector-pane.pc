@@ -30,7 +30,7 @@
 
       <!-- TODO - fix me - super slow -->
       <!-- need to not render this until slot is present -->
-      <td-color-picker color="#FF6600" />
+      <!--td-color-picker color="#FF6600" /-->
     </td-tooltip>
     <span>{{this.value}}</span>
   </template>
@@ -121,9 +121,6 @@
       return [{
         type: COLOR_TYPE,
         value: value
-      }, {
-        type: VAR_TYPE,
-        value: "--color"
       }];
     };
   </script>
@@ -131,9 +128,8 @@
     <span class="name">{{this.name}}</span>
 
     <span pc-repeat="parseDeclarationValue(this.value) as expr">
-
       <td-css-color-expr-input pc-if="expr.type === COLOR_TYPE" value={{expr.value}} />
-      <td-css-var-expr-input pc-elseif="expr.type === VAR_TYPE" value={{expr.value}} />
+      <td-css-var-expr-input pc-elseif="expr.type === false" value={{expr.value}} />
       <span pc-else>
         {{expr.value}}
       </span>

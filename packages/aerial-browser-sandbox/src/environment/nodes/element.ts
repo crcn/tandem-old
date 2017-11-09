@@ -475,13 +475,14 @@ export const diffBaseElement = (oldElement: Element, newElement: Element, diffCh
       }
     }
   });
-
-  mutations.push(...diffParentNode(oldElement, newElement, diffChildNode));
-
+  
   // TODO - open / close shadow root
   if (oldElement.shadowRoot && newElement.shadowRoot) {
     mutations.push(...diffChildNode(oldElement.shadowRoot, newElement.shadowRoot));
   }
+
+  mutations.push(...diffParentNode(oldElement, newElement, diffChildNode));
+
   return mutations;
 };
 

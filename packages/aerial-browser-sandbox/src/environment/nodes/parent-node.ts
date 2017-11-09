@@ -233,7 +233,7 @@ export const createParentNodeMoveChildMutation = (oldNode: BasicParentNode, chil
 
 export const diffParentNode = (oldNode: BasicParentNode, newNode: BasicParentNode, diffChildNode: (oldChild: BasicNode, newChild: BasicNode) => Mutation<any>[]) => {
 
-  const mutations = [...diffNodeBase(oldNode as any as SEnvNodeInterface, newNode as any as SEnvNodeInterface)];
+  const mutations = [];
 
   const diff = diffArray(Array.from(oldNode.childNodes), Array.from(newNode.childNodes), (oldNode, newNode) => {
     if (oldNode.nodeName !== newNode.nodeName || oldNode.namespaceURI !== newNode.namespaceURI) return -1;
@@ -255,6 +255,8 @@ export const diffParentNode = (oldNode: BasicParentNode, newNode: BasicParentNod
       mutations.push(...diffChildNode(oldValue, newValue));
     }
   });
+
+  mutations.push(...diffNodeBase(oldNode as any as SEnvNodeInterface, newNode as any as SEnvNodeInterface));
 
   return mutations;
 };

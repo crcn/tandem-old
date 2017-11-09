@@ -14,12 +14,19 @@ export const getSEnvCSSBaseObjectClass = weakMemo((context: any) => {
   abstract class SEnvCSSBaseObject implements SEnvCSSObjectInterface {
 
     protected _struct: Struct;
-    readonly $id: string;
+    private _$id: string;
+    get $id() {
+      return this._$id;
+    }
+    set $id(value: string) {
+      this._$id = value;
+      this._struct = undefined;
+    }
     abstract previewCSSText: string;
     public source: ExpressionLocation;
 
     constructor() {
-      this.$id = generateDefaultId();
+      this._$id = generateDefaultId();
     }
 
     get struct(): Struct {

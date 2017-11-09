@@ -21,7 +21,6 @@ import { SEnvParentNodeInterface } from "./parent-node";
 import { SyntheticNode, SyntheticValueNode, BasicValueNode, BasicNode } from "../../state";
 
 export interface SEnvNodeInterface extends Node {
-  uid: string;
   $id: string;
   structType: string;
   struct: SyntheticNode;
@@ -99,17 +98,18 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
 
     set $id(value: string) {
       this._$id = value;
-      this.dispatchMutationEvent(createSyntheticNodeIdMutation(this, value));
+
+      // TODO - probably want to dispatch a mutation change
+      this._struct = undefined;
     }
 
-    uid: string;
     childNodesArray: Node[];
 
     connectedToDocument: boolean;
 
     constructor() {
       super();
-      this.uid = this.$id = generateDefaultId();
+      this.$id = generateDefaultId();
       this.childNodes = this.childNodesArray = new SEnvNodeList();
 
       // called specifically for elements
@@ -382,20 +382,12 @@ export const getSEnvValueNode = weakMemo((context) => {
   }
 });
 
-export const SET_NODE_ID_CHANGE = "SET_NODE_ID_CHANGE";
-export const createSyntheticNodeIdMutation = (target: any, value: string) => createPropertyMutation(SET_NODE_ID_CHANGE, target, "id", value);
 
 export const SET_SYNTHETIC_SOURCE_CHANGE = "SET_SYNTHETIC_SOURCE_CHANGE";
 export const createSyntheticSourceChangeMutation = (target: any, value: ExpressionLocation) => createPropertyMutation(SET_SYNTHETIC_SOURCE_CHANGE, target, "source", value);
 
 export const diffNodeBase = (oldNode: Partial<SEnvNodeInterface>, newNode: Partial<SEnvNodeInterface>) => {
   const mutations = [];
-
-  // necessary for window refreshes to ensure diffing & patching don't happen everytime
-  // if (oldNode.$id !== newNode.$id) {
-  //   // console.log("NOMUT", newNode.$id);
-  //   // mutations.push(createSyntheticNodeIdMutation(oldNode, newNode.$id));
-  // }
 
   if (!expressionLocationEquals(oldNode.source, newNode.source)) {
     mutations.push(createSyntheticSourceChangeMutation(oldNode, newNode.source));
@@ -411,9 +403,6 @@ export const nodeMutators = {
     if (oldNode.setSource) {
       oldNode.setSource(newValue && JSON.parse(JSON.stringify(newValue)) as ExpressionLocation);
     }
-  },
-  [SET_NODE_ID_CHANGE](oldNode: SEnvNodeInterface, {newValue}: SetPropertyMutation<any>) {
-    oldNode.$id = newValue;
   }
 };
 

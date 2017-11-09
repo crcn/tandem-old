@@ -73,8 +73,10 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
   }
 
   const sync = () => {
-    const children = flattenWindowObjectSources(target.struct);
     patchWindow(target, diffWindow(target, source));
+
+    // sync window Ids to ensure future mutation events
+    syncWindowIds(target, source);
   };
 
   // TODO - need to sync mutations from target to source since
@@ -905,4 +907,40 @@ export const patchWindow = (oldWindow: SEnvWindowInterface, mutations: Mutation<
 
     mutate(target, mutation);
   }
+}
+
+/**
+ * Synchronizes IDs between two windows to ensure that future mutations sync 
+ * properly - seen window mirror impl.
+ */
+
+export const syncWindowIds = (sourceWindow: SEnvWindowInterface, targetWindow: SEnvWindowInterface) => {
+  const sourceChildObjects = flattenWindowObjectSources(sourceWindow.struct);
+  const targetChildObjects = flattenWindowObjectSources(targetWindow.struct);
+
+  const sids = Object.keys(sourceChildObjects);
+  const tids = Object.keys(targetChildObjects);
+
+  if (sids.length !== tids.length) {
+    throw new Error(`child object count missmatch. Cannot synchronize ids`);
+  }
+
+  // source & target windows should be synchronized, so it should
+  // okay to just copy IDs over
+  for (let i = 0, n = sids.length; i < n; i++) {
+    const sco = sourceChildObjects[sids[i]];
+    const nco = targetChildObjects[tids[i]];
+
+    if (sco.$id === nco.$id) {
+      continue;
+    }
+
+    if (sco.struct.type !== nco.struct.type) {
+      throw new Error(`Cannot set $id from type ${sco.struct.type} to type ${nco.struct.type}.`);
+    }
+    
+    // TODO - assert the type here --- should be identical
+    nco.$id = sco.$id;
+  }
+
 }
