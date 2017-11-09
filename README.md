@@ -1,3 +1,6 @@
+### Tandem is no longer in active development since I've shifted my focus to bring a lot of the app's functionality into [Webflow](http://webflow.com/). 
+
+
 [![Build Status](https://secure.travis-ci.org/crcn/Tandem.png)](https://secure.travis-ci.org/crcn/Tandem)
 
 Tandem is a visual editor for web applications. 
