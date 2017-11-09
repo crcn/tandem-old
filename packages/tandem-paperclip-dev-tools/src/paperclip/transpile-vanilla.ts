@@ -57,7 +57,7 @@ export enum SpecialPCTag {
   REPEAT = "pc-repeat",
 }
 
-export type Transpiler = (source: string, uri: string, options: TranspileOptions) => TranspileModuleResult;
+export type Transpiler = (source: string, uri: string, transpilers: { [identifier: string]: Transpiler }) => TranspileModuleResult;
 
 type TranspileOptions = {
   assignTo?: string;
@@ -73,7 +73,9 @@ type TranspileContext = {
   varCount: number;
   uri: string;
   root: PCFragment;
-  options: TranspileOptions;
+  transpilers: {
+    [identifier: string]: Transpiler
+  }
   imports: string[];
   templateNames: {
     [identifier: string]: string
@@ -119,16 +121,18 @@ export type TranspileModuleResult = {
  * transpiles the PC AST to vanilla javascript with no frills
  */
 
+ const getDefaultTranspilers = weakMemo((transpilers) => ({
+    ...(transpilers || {}),
+    pc: transpilePaperclipSource,
+    js: transpileJSSource,
+    "text/javascript": transpileJSSource
+ }));
+
 const getDefaultOptions = weakMemo((options): TranspileOptions => ({
   ...options,
   readFileSync: options.readFileSync || ((filePath) => fs.readFileSync(filePath, "utf8")),
   resolveFileSync: options.resolveFileSync || ((relativePath, base) => "file://" + path.resolve(path.dirname(base.replace("file://", "")), relativePath)),
-  transpilers: {
-    ...(options.transpilers || {}),
-    pc: transpilePaperclipSource,
-    js: transpileJSSource,
-    "text/javascript": transpileJSSource
-  }
+  transpilers: getDefaultTranspilers(options.transpilers)
 }))
 
 export const transpilePCASTToVanillaJS = (source: string, uri: string, options: TranspileOptions = {}) => {
@@ -235,7 +239,7 @@ const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult
   };
   
   try {
-    const context = transpileModuleFn(source, uri, options);
+    const context = transpileModuleFn(source, uri, options.transpilers);
     const resolvedImports = {};
 
     for (const href of context.imports) {
@@ -278,7 +282,7 @@ const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult
 
 const getNsPrefix = (ns: string) => `ns-${ns.replace(/\-/g, "_")}`;
 
-const transpileModuleFn = weakMemo((source: string, uri: string, options: TranspileOptions): TranspileModuleResult => {  
+const transpileModuleFn = weakMemo((source: string, uri: string, transpilers: { [identifier: string]: Transpiler }): TranspileModuleResult => {
 
   let buffer = "function(require) {\n";
   buffer += `let ${EXPORTS_VAR} = {};\n`;
@@ -290,13 +294,13 @@ const transpileModuleFn = weakMemo((source: string, uri: string, options: Transp
   const imports = [];
 
   
-  const transpile = options.transpilers[extension];
+  const transpile = transpilers[extension];
 
   if (!transpile) {
     throw new Error(`Unable to find transpiler for ${extension}`);
   }
 
-  const result = transpile(source, uri, options);
+  const result = transpile(source, uri, transpilers);
   buffer += result.content;
 
   buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
@@ -310,7 +314,7 @@ const transpileModuleFn = weakMemo((source: string, uri: string, options: Transp
   };
 });
 
-const transpilePaperclipSource = (source: string, uri: string, options: TranspileOptions) => {
+const transpilePaperclipSource = (source: string, uri: string, transpilers: any) => {
 
   const root = parse(source);
 
@@ -318,7 +322,7 @@ const transpilePaperclipSource = (source: string, uri: string, options: Transpil
     varCount: 0,
     source,
     uri,
-    options,
+    transpilers,
     root,
     imports: [],
     templateNames: {}
@@ -849,7 +853,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
   const style = getPCASTElementsByTagName(node, "style")[0] as PCElement;
   const script = getPCASTElementsByTagName(node, "script")[0] as PCElement;
   
-  const scriptTranspiler = script && context.options.transpilers[getPCStartTagAttribute(script, "type")  || "text/javascript"];
+  const scriptTranspiler = script && context.transpilers[getPCStartTagAttribute(script, "type")  || "text/javascript"];
 
   if (script && !scriptTranspiler) {
     throw new Error(`Unable to find script transpiler for ${getPCStartTagAttribute(script, "type")}`);

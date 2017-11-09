@@ -1,0 +1,148 @@
+<link rel="import" href="./global.pc" />
+<link rel="import" href="./pane.pc" />
+<link rel="import" href="./gutter.pc" />
+<link rel="import" href="./tooltip.pc" />
+<link rel="import" href="./color-picker.pc" />
+
+<component id="td-css-color-expr-input">
+  <property name="value" default="1" />
+  <style>
+    .input-box {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+  </style>
+  <template>
+    <td-color-mini-input value={{this.expr.value}} />
+    <span>{{this.expr.value}}</span>
+  </template>
+</component>
+
+<component id="td-keyword-expr-input">
+  <property name="expr" />
+  <style>
+    
+  </style>
+  <template>
+    <span>{{this.expr && this.expr.name}}</span>
+  </template>
+</component>
+
+<component id="td-css-number-expr-input">
+  <property name="expr" />
+  <style>
+    .input-box {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+  </style>
+  <template>
+    <span>{{this.expr && this.expr.value}}</span>
+  </template>
+</component>
+
+<component id="td-color-mini-input">
+  <property name="value" default="1" />
+  <style>
+    .input-box {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+  </style>
+  <template>
+    <td-tooltip>
+      <div slot="button" class="input-box" style={{{background: this.value}}} /> 
+
+      <!-- TODO - fix me - super slow -->
+      <!-- need to not render this until slot is present -->
+      <td-color-picker color={{this.value}} />
+    </td-tooltip>
+  </template>
+</component>
+
+<component id="td-css-call-expr-input">
+  <property name="expr" />
+  <style>
+    td-css-expr-input::after {
+      content: ", ";
+    }
+
+    td-css-expr-input:last-of-type::after {
+      content: "";
+    }
+  </style>
+  <script>
+    import { stringifyCSSExpression } from "./utils/css.ts";
+  </script>
+  <template>
+    
+    <!-- mini inputs for function -->
+    <td-color-mini-input pc-if={{this.expr.name === "rgb" || this.expr.name === "rgba"}} value={{stringifyCSSExpression(this.expr)}} /> 
+
+    <span>{{this.expr.name}}(</span>
+      <td-css-expr-input pc-repeat="this.expr.params as param" context={{this.expr}} expr={{param}} />
+    <span>)</span>
+  </template>
+</component>
+
+<component id="td-css-expr-input">
+  <property name="expr" />
+  <property name="context" />
+  <style>
+    :host {
+      display: inline;
+    }
+    span {
+      color: red;
+    }
+  </style>
+  <script type="text/typescript"> 
+    import { CSSDeclarationExpressionType } from "./utils/css.ts";
+    const { COLOR, CALL, NUMBER, KEYWORD } = CSSDeclarationExpressionType;
+  </script>
+  <template> 
+    <td-css-call-expr-input pc-if={{this.expr && this.expr.type === CALL}} expr={{this.expr}} />
+    <td-css-color-expr-input pc-elseif={{this.expr && this.expr.type === COLOR}} expr={{this.expr}} />
+    <td-css-number-expr-input pc-elseif={{this.expr && this.expr.type === NUMBER}} expr={{this.expr}} />
+    <td-keyword-expr-input pc-elseif={{this.expr && this.expr.type === KEYWORD}} context={{this.context}} expr={{this.expr}} />
+    <span pc-else>
+      {{this.expr && this.expr.value}}
+    </span>
+  </template>
+</component>
+
+
+<component id="td-css-expr-input-example">
+
+  <script>
+    import { parseDeclarationValue } from "./utils/css.ts";
+  </script>
+  <template>
+    <td-css-expr-input expr={{this.value && parseDeclarationValue(this.value)}} />
+  </template>
+</component>
+
+<td-preview>
+  <td-css-expr-input-example value="rgba(0,0,0,0.6)" />
+</td-preview>

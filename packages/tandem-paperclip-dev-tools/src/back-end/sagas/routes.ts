@@ -113,10 +113,16 @@ function* watchUris(req: express.Request, res: express.Response) {
   res.send([]);
 }
 
-const getReadFile = (state: ApplicationState) => (filePath: string) => {
+const getReadFile = weakMemo((state: ApplicationState) => (filePath: string) => {
   const fileCache = state.fileCache.find((item) => item.filePath === filePath);
   return fileCache ? fileCache.content.toString("utf8") : fs.readFileSync(filePath, "utf8")
-};
+});
+
+const getTranspileOptions = weakMemo((state: ApplicationState) => ({
+  assignTo: "bundle",
+  readFileSync: getReadFile(state),
+  transpilers: state.config.transpilers
+}));
 
 function* getComponentPreview(req: express.Request, res: express.Response) {
 
@@ -138,11 +144,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
 
   const readFileSync = getReadFile(state);
 
-  const transpileResult: TranspileResult = transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, {
-    assignTo: "bundle",
-    readFileSync,
-    transpilers: state.config.transpilers
-  });
+  const transpileResult: TranspileResult = transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, getTranspileOptions(state));
 
   const allFiles = Object.keys(transpileResult.content);
 
