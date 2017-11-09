@@ -352,6 +352,7 @@ english words for colors
 
     this.didMount = update;
     this.didUpdate = update;
+    
   </script>
   <template>
     <div class="color-picker">

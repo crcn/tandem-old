@@ -7,7 +7,7 @@ LITMUS:
 TODAY (11/10): 
 
 - [ ] do not render tooltip if not open (template child)
-
+- [ ]
 
 IMMEDIATE:
 
