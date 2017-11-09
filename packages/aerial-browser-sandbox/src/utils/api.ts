@@ -14,7 +14,7 @@ export const apiEditFile = async (mutationsByUri: { [identifier: string]: Mutati
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
-    },
+    } as any,
     body: JSON.stringify(serializedMutationsByUri)
   });
 

@@ -1,5 +1,4 @@
-// TODO - scan for all styles and shove in global namespace. 
-
+// TODO - respect script & style types (allow for different languages)
 import * as fs from "fs";
 import * as md5 from "md5";
 import * as path from "path";
@@ -45,9 +44,8 @@ import {
 } from "./ast";
 import { weakMemo } from "aerial-common2";
 
-
 // const SOURCE_AST_VAR = "$$sourceAST";
-const EXPORTS_VAR  = "$$exports";
+const EXPORTS_VAR  = "exports";
 const STYLES_VAR   = "$$styles";
 const BINDINGS_VAR   = "$$bindings";
 const PREVIEWS_VAR = "$$previews";
@@ -59,17 +57,24 @@ export enum SpecialPCTag {
   REPEAT = "pc-repeat",
 }
 
+export type Transpiler = (source: string, uri: string, options: TranspileOptions) => TranspileModuleResult;
+
 type TranspileOptions = {
   assignTo?: string;
   readFileSync?: (filePath: string) => string;
+  resolveFileSync?: (relativePath: string, base: string) => string;
+  transpilers?: {
+    [identifier: string]: Transpiler
+  }
 };
 
 type TranspileContext = {
-  uri: string;
   source: string;
   varCount: number;
+  uri: string;
   root: PCFragment;
-  imports: string[],
+  options: TranspileOptions;
+  imports: string[];
   templateNames: {
     [identifier: string]: string
   }
@@ -104,25 +109,40 @@ export type TranspileResult = {
   allFiles: string[];
 };
 
+
+export type TranspileModuleResult = {
+  content: string;
+  imports: string[];
+};
+
 /**
  * transpiles the PC AST to vanilla javascript with no frills
  */
 
+const getDefaultOptions = weakMemo((options): TranspileOptions => ({
+  ...options,
+  readFileSync: options.readFileSync || ((filePath) => fs.readFileSync(filePath, "utf8")),
+  resolveFileSync: options.resolveFileSync || ((relativePath, base) => "file://" + path.resolve(path.dirname(base.replace("file://", "")), relativePath)),
+  transpilers: {
+    ...(options.transpilers || {}),
+    pc: transpilePaperclipSource,
+    js: transpileJSSource,
+    "text/javascript": transpileJSSource
+  }
+}))
+
 export const transpilePCASTToVanillaJS = (source: string, uri: string, options: TranspileOptions = {}) => {
-  return transpileBundle(source, uri, {
-    readFileSync: (filePath) => fs.readFileSync(filePath, "utf8"),
-    ...options,
-  });
+  return transpileBundle(source, uri, getDefaultOptions(options));
 };
 
 export const transpileBundle = (source: string, uri: string, options: TranspileOptions): TranspileResult => {
   
   let content = `(function(document) {
-    function module(fn) {
+    function module(moduleImports, fn) {
       let exports;
       return function(modules) {
         return exports || (exports = fn(function(path) {
-          return modules[path](modules);
+          return modules[moduleImports[path]](modules);
         }));
       };
     }\n
@@ -187,6 +207,7 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
     content = `${options.assignTo} = ${content}`;
   }
 
+
   return {
     errors,
     content,
@@ -214,10 +235,25 @@ const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult
   };
   
   try {
-    const ast = parse(source);
-    const resolvedImports = getResolvedPCImports(ast, uri);
+    const context = transpileModuleFn(source, uri, options);
+    const resolvedImports = {};
 
-    for (const importFullPath of resolvedImports) {
+    for (const href of context.imports) {
+      resolvedImports[href] =  options.resolveFileSync(href, uri);
+    }
+
+    result = {
+      ...result,
+      modules: {
+        ...result.modules,
+        [uri]: {    
+          content: `module(${JSON.stringify(resolvedImports)}, ${context.content})`
+        }
+      }
+    };
+
+    for (const relativePath in resolvedImports) {
+      const importFullPath = resolvedImports[relativePath];
       if (!result.modules[importFullPath]) {
         result = bundle(
           options.readFileSync(importFullPath.replace("file://", "")),
@@ -228,15 +264,7 @@ const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult
       }
     }
 
-    result = {
-      ...result,
-      modules: {
-        ...result.modules,
-        [uri]: {    
-          content: transpileModule(ast, source, uri, resolvedImports)
-        }
-      }
-    };
+
   } catch(e) {
     result = {
       ...result,
@@ -250,28 +278,54 @@ const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult
 
 const getNsPrefix = (ns: string) => `ns-${ns.replace(/\-/g, "_")}`;
 
-const transpileModule = weakMemo((root: PCFragment, source: string, uri: string, imports) => {  
-  const context: TranspileContext = {
-    varCount: 0,
-    uri,
-    source,
-    root,
-    imports,
-    templateNames: {}
-  };
+const transpileModuleFn = weakMemo((source: string, uri: string, options: TranspileOptions): TranspileModuleResult => {  
 
-  let buffer = "module(function(require) {\n";
+  let buffer = "function(require) {\n";
   buffer += `let ${EXPORTS_VAR} = {};\n`;
   buffer += `let ${STYLES_VAR} = [];\n`;
   buffer += `let ${PREVIEWS_VAR} = {};\n`;
   buffer += `let ${BINDINGS_VAR} = [];\n`;
 
-  for (const src of imports) {
-    const path = imports[src];
-    const srcDecl = declare("dep", `require("${src}")`, context);
-    buffer += srcDecl.content;
-    buffer += `${STYLES_VAR} = ${STYLES_VAR}.concat(${srcDecl.varName}.${STYLES_VAR});\n`;
+  const extension = uri.split(".").pop();
+  const imports = [];
+
+  
+  const transpile = options.transpilers[extension];
+
+  if (!transpile) {
+    throw new Error(`Unable to find transpiler for ${extension}`);
   }
+
+  const result = transpile(source, uri, options);
+  buffer += result.content;
+
+  buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
+  buffer += `${EXPORTS_VAR}.${PREVIEWS_VAR} = ${PREVIEWS_VAR};\n`;
+  buffer += `return ${EXPORTS_VAR};\n`;
+  buffer += `}\n`
+
+  return {
+    imports: result.imports, 
+    content: buffer
+  };
+});
+
+const transpilePaperclipSource = (source: string, uri: string, options: TranspileOptions) => {
+
+  const root = parse(source);
+
+  const context: TranspileContext = {
+    varCount: 0,
+    source,
+    uri,
+    options,
+    root,
+    imports: [],
+    templateNames: {}
+  };
+
+
+  let buffer = '';
 
   const linkElements = getPCLinkStyleElements(root) as PCSelfClosingElement[];
   for (const link of linkElements) {
@@ -279,16 +333,68 @@ const transpileModule = weakMemo((root: PCFragment, source: string, uri: string,
     buffer += decl.content;
     buffer += `${STYLES_VAR}.push(${decl.varName});\n`;
   }
-
+  
   buffer += transpileChildren(root, context);
 
-  buffer += `${EXPORTS_VAR}.${STYLES_VAR} = ${STYLES_VAR};\n`;
-  buffer += `${EXPORTS_VAR}.${PREVIEWS_VAR} = ${PREVIEWS_VAR};\n`;
-  buffer += `return ${EXPORTS_VAR};\n`;
-  buffer += `})\n`
+  return {
+    content: buffer,
+    imports: context.imports
+  };
+};
 
-  return buffer;
-});
+export const transpileJSSource = (source: string) => {
+  const imports = [];
+  source = transpileJSImports(source, imports);
+  source = transpileJSExports(source);
+  return {
+    content: source,
+    imports,
+  };
+};  
+
+const transpileJSImports = (source: string, allImports: string[]) => {
+
+  const imports = source.match(/import.*?from.*?;/g) || [];
+  
+  for (const _import of imports) {
+    const [match, decls, src] = source.match(/import.*?\{(.*?)\}.*?from.*?['"](.*?)['"]/);
+    allImports.push(src);
+    source = source.replace(_import, `
+      const { ${decls.replace(/\s+as\s+/g, ":")} } = require("${src}");
+    `);
+  }
+
+  return source;
+}
+
+const transpileJSExports = (source: string) => {
+  const exports = source.match(/(export\s+\{.*?\})|(export\s*\w+\s*\w+)/g) || [];
+
+  const exportVarRegexp = /export\s*\w+\s+(\w+)/;
+  const exportDeclRegexp = /export\s+\{(.*?)\};?/;
+
+  const _exports: string[] = [];
+
+  for (const _export of exports) {
+    if (exportDeclRegexp.test(_export)) {
+      const [match, name] = _export.match(exportDeclRegexp);
+      _exports.push(name.trim());
+      source = source.replace(_export, "");
+    } else if (exportVarRegexp.test(_export)) {
+      const [match, name] = _export.match(exportVarRegexp);
+      _exports.push(name.trim());
+      source = source.replace(_export, _export.replace(/^export/, ""));
+    }
+  }
+
+  for (const _name of _exports) {
+    source += `
+      ${EXPORTS_VAR}.${_name} = ${_name}
+    `;
+  }
+
+  return source;
+};
 
 const hasSpecialAttribute = (startTag: PCStartTag) => {
   return hasPCStartTagAttribute(startTag, SpecialPCTag.IF) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSEIF) || hasPCStartTagAttribute(startTag, SpecialPCTag.ELSE) || hasPCStartTagAttribute(startTag, SpecialPCTag.REPEAT);
@@ -351,7 +457,7 @@ const transpileStartTag = (startTag: PCSelfClosingElement | PCStartTag, context:
 
 const transpileSelfClosingElement = (element: PCSelfClosingElement, context: TranspileContext) => {
   if (element.name === "link") {
-    return null;
+    return transpileLinkElement(element, context);
   }
 
   const declaration = transpileStartTag(element, context);
@@ -560,12 +666,6 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       break;
     }
 
-    case "link": {
-      
-      // transpiled above
-      return null;
-    }
-
     case "script": {
       declaration = transpileScriptElement(node, context);
       break;
@@ -587,13 +687,28 @@ const transpileScriptElement = (node: PCElement, context: TranspileContext) => {
 
   // TODO - support reading files here
   const textChild = node.children[0] as PCString;
-  const jsSource = context.source.substr(textChild.location.start.pos, textChild.location.end.pos - textChild.location.start.pos);
+  const jsSource = transpileScript(context.source.substr(textChild.location.start.pos, textChild.location.end.pos - textChild.location.start.pos), context);
 
   const scriptDecl = createNodeDeclaration(`document.createElement("script")`, node, context);
   scriptDecl.content += `${scriptDecl.varName}.appendChild(document.createTextNode(${JSON.stringify(jsSource)}));\n`;
   
   return scriptDecl;
 }
+
+const transpileScript = (source: string, context: TranspileContext) => {
+  const result = transpileJSSource(source);
+  context.imports.push(...result.imports);
+  return result.content;
+};
+
+
+const transpileLinkElement = (node: PCSelfClosingElement, context: TranspileContext) => {
+  const href = getPCStartTagAttribute(node, "href");
+  context.imports.push(href);
+  const srcDecl = declare("dep", `require("${href}")`, context);
+  srcDecl.content += `${STYLES_VAR} = ${STYLES_VAR}.concat(${srcDecl.varName}.${STYLES_VAR});\n`;
+  return srcDecl;
+};
 
 // TODO - eventually need to put these style elements within the global context, or check if they've already
 // been registered. Otherwise they'll pollute the CSSOM when used repeatedly. 
@@ -733,6 +848,12 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
   const template = getPCASTElementsByTagName(node, "template")[0] as PCElement;
   const style = getPCASTElementsByTagName(node, "style")[0] as PCElement;
   const script = getPCASTElementsByTagName(node, "script")[0] as PCElement;
+  
+  const scriptTranspiler = script && context.options.transpilers[getPCStartTagAttribute(script, "type")  || "text/javascript"];
+
+  if (script && !scriptTranspiler) {
+    throw new Error(`Unable to find script transpiler for ${getPCStartTagAttribute(script, "type")}`);
+  }
 
   const childrenWithIds = template && filterPCASTTree(template, (element) => {
     return (element.type === PCExpressionType.SELF_CLOSING_ELEMENT || element.type === PCExpressionType.ELEMENT) && hasPCStartTagAttribute(element as PCElement, "id");
@@ -816,7 +937,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
         }
 
         let ${BINDINGS_VAR} = this.${BINDINGS_VAR} = [];
-        ${script ? (script.children[0] as PCString).value : "" }
+        ${script ? transpileScript((script.children[0] as PCString).value, context) : "" }
         ${template ? addNodeDeclarationChildren({ varName: "shadow", content: "", bindings: [] }, template, {
           ...context,
           varCount: 0

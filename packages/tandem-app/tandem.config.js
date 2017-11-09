@@ -1,4 +1,11 @@
+const ts = require("typescript");
+const { weakMemo } = require("aerial-common2");
+const { transpileJSSource } = require("../tandem-paperclip-dev-tools/index");
 
+const transpileTypescript = weakMemo((source, uri) => {
+  const output = ts.transpileModule(source, {}).outputText;
+  return transpileJSSource(output);
+});
 
 module.exports = {
   port: Number(process.env.PORT || 8080),
@@ -17,7 +24,11 @@ module.exports = {
   },
 
   paperclip: {
-    componentsDirectory: __dirname + "/src/front-end/components"
+    componentsDirectory: __dirname + "/src/front-end/components",
+    transpilers: {
+      "text/typescript": transpileTypescript,
+      "ts": transpileTypescript
+    }
   },
 
   // TODO - possible

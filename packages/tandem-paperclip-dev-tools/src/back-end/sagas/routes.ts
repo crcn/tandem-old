@@ -1,6 +1,6 @@
 import { fork, take, select, call, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { transpilePCASTToVanillaJS, editPCContent, TranspileResult } from "../../paperclip";
+import { transpilePCASTToVanillaJS, transpileJSSource, editPCContent, TranspileResult } from "../../paperclip";
 import * as request from "request";
 import { ApplicationState, getComponentsFromSourceContent, Component } from "../state";
 import { flatten } from "lodash";
@@ -10,8 +10,9 @@ import { watchUrisRequested, fileContentChanged, fileChanged } from "../actions"
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
+import * as ts from "typescript";
 import * as glob from "glob";
-import { editString, StringMutation } from "aerial-common2";
+import { editString, StringMutation, weakMemo } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
 
 export function* routesSaga() {
@@ -140,6 +141,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   const transpileResult: TranspileResult = transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, {
     assignTo: "bundle",
     readFileSync,
+    transpilers: state.config.transpilers
   });
 
   const allFiles = Object.keys(transpileResult.content);
@@ -147,6 +149,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   let content: string;
 
   if (transpileResult.errors.length) {
+    console.error(transpileResult.errors[0].stack);
     content = `
       bundle = {
         entry: {

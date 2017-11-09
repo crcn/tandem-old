@@ -4,6 +4,7 @@
 <component id="td-components-pane">
   <property name="onComponentStartDrag" default={{noop}} />
   <property name="inc" default={{0}} />
+  <property name="components" default={{[]}} />
   
   <template>
     <td-pane>

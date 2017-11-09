@@ -224,6 +224,3 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, el
 
   return appliedRules;
 });
-
-
-

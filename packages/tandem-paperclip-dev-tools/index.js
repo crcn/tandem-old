@@ -1,1 +1,1 @@
-require("./lib/back-end/entry");
+module.exports = require("./lib");

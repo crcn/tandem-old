@@ -2,10 +2,13 @@ import * as md5 from "md5";
 import * as fs from "fs";
 import * as path from "path";
 import { arrayReplaceIndex, arraySplice } from "aerial-common2";
-import { getPCMetaName, parse, getPCASTElementsByTagName, getPCStartTagAttribute } from "../../paperclip";
+import { getPCMetaName, parse, getPCASTElementsByTagName, getPCStartTagAttribute, transpilePCASTToVanillaJS, Transpiler } from "../../paperclip";
 
 export type Config = {
   componentsDirectory?: string;
+  transpilers?: {
+    [identifier: string]: Transpiler
+  }
 };
 
 export type FileCacheItem = {

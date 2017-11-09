@@ -6,7 +6,7 @@ import * as path from "path";
 export const getComponentsFilePattern = ({ cwd, config: { componentsDirectory }}: ApplicationState) => path.join(componentsDirectory || cwd, "**", PAPERCLIP_FILE_PATTERN);
 
 export const getComponentsFileTester = (state: ApplicationState) => {
-  return filePath => /\*\.pc$/.test;
+  return filePath => /\.pc$/.test(filePath);
 }
 
 export const getComponentFilePaths = (state: ApplicationState) => glob.sync(getComponentsFilePattern(state));

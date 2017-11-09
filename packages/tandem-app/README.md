@@ -1,14 +1,13 @@
 very simple online playground for visually creating web applications
 
-TODOS:
-
-- [ ] show measurements between elements (hotkey)
-- [ ] snap to element DND
-- [ ] css inspector components
-
 LITMUS:
 
 - [ ] should be able to build sites without writing much code
+
+TODAY (11/10): 
+
+- [ ] do not render tooltip if not open (template child)
+
 
 IMMEDIATE:
 
@@ -39,6 +38,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] paperclip HMR needs to work outside of editor
 
 - [ ] Bugs
+  - [ ] 
   - [ ] allow refresh when script busts
   - [ ] external links are broken
   - [ ] matching styles must also consider slots** - (used assignedSlot for this)
@@ -60,6 +60,7 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 
 - [ ] Paperclip
   - [ ] Lambda offloading
+  - [ ] make components more functional (use reducers)
 
 
 AFTER INITIAL COMPONENTS:

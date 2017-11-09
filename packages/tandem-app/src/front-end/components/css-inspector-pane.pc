@@ -36,14 +36,20 @@
   </template>
 </component>
 
-<!-- 
-  TODOS:
-  - dropdown with root options
--->
-<component id="td-css-var-expr-input">
-  <property name="value" default="1" />
+<component id="td-keyword-expr-input">
+  <property name="expr" />
   <style>
-    .keyword {
+    
+  </style>
+  <template>
+    <span>{{this.expr && this.expr.name}}</span>
+  </template>
+</component>
+
+<component id="td-css-number-expr-input">
+  <property name="expr" />
+  <style>
+    .input-box {
       width: var(--base4);
       height: var(--base4);
       margin: 0px var(--base2);
@@ -53,50 +59,87 @@
       display: inline-block;
       border-radius: 2px;
       border: 1px solid rgba(0,0,0,0.3);
-    }
-
-    .varname {
-      width: var(--base4);
-      height: var(--base4);
-      margin: 0px var(--base2);
-      background: red;
-      position: relative;
-      top: 1px;
-      display: inline-block;
-      border-radius: 2px;
-      border: 1px solid rgba(0,0,0,0.3);
-    }
-
-    .token {
-      width: var(--base4);
-      height: var(--base4);
-      margin: 0px var(--base2);
-      background: red;
-      position: relative;
-      top: 1px;
-      display: inline-block;
-      border-radius: 2px;
-      border: 1px solid rgba(0,0,0,0.3);
-    }
-
-    span::before {
-      content: "var(";
-    }
-
-    span::after {
-      content: ")";
     }
   </style>
   <template>
+    <span>{{this.expr && this.expr.value}}</span>
+  </template>
+</component>
 
-    <span>{{this.value}}</span>
+<component id="td-color-mini-input">
+  <property name="value" default="1" />
+  <style>
+    .input-box {
+      width: var(--base4);
+      height: var(--base4);
+      margin: 0px var(--base2);
+      background: red;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+  </style>
+  <template>
+    <td-tooltip>
+      <div slot="button" class="input-box" style={{{background: this.value}}} /> 
+
+      <!-- TODO - fix me - super slow -->
+      <!-- need to not render this until slot is present -->
+      <td-color-picker color={{this.value}} />
+    </td-tooltip>
   </template>
 </component>
 
 <component id="td-css-call-expr-input">
+  <property name="expr" />
+  <style>
+    td-css-expr-input::after {
+      content: ", ";
+    }
+
+    td-css-expr-input:last-of-type::after {
+      content: "";
+    }
+  </style>
+  <script>
+    import { stringifyCSSExpression } from "./utils/css.ts";
+  </script>
   <template>
-    <span>{{this.name}}</span>
-    <span>{{this.args.join(",")}}</span>
+    
+    <!-- mini inputs for function -->
+    <td-color-mini-input pc-if={{this.expr.name === "rgb" || this.expr.name === "rgba"}} value={{stringifyCSSExpression(this.expr)}} /> 
+
+    <span>{{this.expr.name}}(</span>
+      <td-css-expr-input pc-repeat="this.expr.params as param" context={{this.expr}} expr={{param}} />
+    <span>)</span>
+  </template>
+</component>
+
+<component id="td-css-expr-input">
+  <property name="expr" />
+  <property name="context" />
+  <style>
+    :host {
+      display: inline;
+    }
+    span {
+      color: red;
+    }
+  </style>
+  <script type="text/typescript"> 
+    import { CSSDeclarationExpressionType } from "./utils/css.ts";
+    const { COLOR, CALL, NUMBER, KEYWORD } = CSSDeclarationExpressionType;
+  </script>
+  <template> 
+    <td-css-call-expr-input pc-if={{this.expr && this.expr.type === CALL}} expr={{this.expr}} />
+    <td-css-color-expr-input pc-elseif={{this.expr && this.expr.type === COLOR}} expr={{this.expr}} />
+    <td-css-number-expr-input pc-elseif={{this.expr && this.expr.type === NUMBER}} expr={{this.expr}} />
+    <td-keyword-expr-input pc-elseif={{this.expr && this.expr.type === KEYWORD}} context={{this.context}} expr={{this.expr}} />
+    <span pc-else>
+      {{this.expr && this.expr.value}}
+    </span>
   </template>
 </component>
 
@@ -111,29 +154,12 @@
       content: ": ";
     }
   </style>
-  <script>
-
-    const COLOR_TYPE = "color";
-    const VAR_TYPE = "var";
-    const VAR_CALL = "var";
-
-    const parseDeclarationValue = (value) => {
-      return [{
-        type: COLOR_TYPE,
-        value: value
-      }];
-    };
+  <script type="text/typescript"> 
+    import { CSSDeclarationExpressionType, parseDeclarationValue } from "./utils/css.ts";
   </script>
   <template>
     <span class="name">{{this.name}}</span>
-
-    <span pc-repeat="parseDeclarationValue(this.value) as expr">
-      <td-css-color-expr-input pc-if="expr.type === COLOR_TYPE" value={{expr.value}} />
-      <td-css-var-expr-input pc-elseif="expr.type === false" value={{expr.value}} />
-      <span pc-else>
-        {{expr.value}}
-      </span>
-    </span>
+    <td-css-expr-input expr={{parseDeclarationValue(this.value)}} />
   </template>
 </component>
 

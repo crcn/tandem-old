@@ -15,7 +15,7 @@ english words for colors
   <property name="hue" default={{0}} />
   <property name="width" default={{300}} />
   <property name="height" default={{150}} />
-  <property name="color" default={{"#FFF"}} />
+  <property name="color" default={{"#000000"}} />
   <property name="onChange" default={{noop}} />
 
   <style>
@@ -322,7 +322,15 @@ english words for colors
       });
     }
 
+    let color;
+
     const update = () => {
+      if (color !== this.color) {
+        color = this.color;
+        if (color) {
+          resetInputs();
+        }
+      }
       draw();
     };
 
@@ -342,11 +350,7 @@ english words for colors
       }
     }
 
-    this.didMount = () => {
-      resetInputs();
-      update();
-    };
-
+    this.didMount = update;
     this.didUpdate = update;
   </script>
   <template>
