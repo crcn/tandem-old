@@ -106,8 +106,6 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     scrollTop: number;
     readonly scrollWidth: number;
     readonly tagName: string;
-    readonly assignedSlot: HTMLSlotElement | null;
-    slot: string;
     shadowRoot: SEnvShadowRoot | null;
 
     constructor() {
@@ -130,6 +128,14 @@ export const getSEnvElementClass = weakMemo((context: any) => {
           return true;
         }
       });
+    }
+
+    get slot() {
+      return this.getAttribute("slot");
+    }
+
+    set slot(value: string) {
+      this.setAttribute("slot", value);
     }
 
     get previousElementSibling() {
@@ -290,7 +296,9 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
 
     setAttribute(name: string, value: string): void {
-      this.attributes[name] = value;
+      if (this.getAttribute(name) !== value) {
+        this.attributes[name] = value;
+      }
     }
 
     setAttributeNode(newAttr: Attr): Attr {
@@ -382,7 +390,6 @@ export const getSEnvElementClass = weakMemo((context: any) => {
       return this.$$setShadowRoot(this.ownerDocument.createDocumentFragment() as SEnvShadowRoot);
     }
 
-
     $$setShadowRoot(shadowRoot: SEnvShadowRoot): SEnvShadowRoot { 
       this.shadowRoot = shadowRoot;
       if (this.connectedToDocument) {
@@ -394,7 +401,6 @@ export const getSEnvElementClass = weakMemo((context: any) => {
 
       return this.shadowRoot;
     }
-
 
     private _onShadowMutation(event) {
       this._onMutation(event);

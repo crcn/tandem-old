@@ -6,19 +6,15 @@ LITMUS:
 
 TODAY (11/10): 
 
-- [ ] do not render tooltip if not open (template child)
-- [ ]
+- [ ] get external websites to work again
+  - [ ] webflow is busted
+
 
 IMMEDIATE:
 
-high-level - use tandem as an inspector for PC files. Still need to hand-write components, but slowly integrate writing from tandem side.
-
 - [ ] Paperclip
-  - [ ] import external JS scripts
   - [ ] import external CSS scripts
   - [ ] transpile TS to JS 
-  - [ ] figure out how to pass objects to attributes - (set as prop) (possibly check for <props>)
-  - [ ] script types (text/typescript)
 
 - [ ] Components
   - [ ] color picker
@@ -38,7 +34,6 @@ high-level - use tandem as an inspector for PC files. Still need to hand-write c
 - [ ] paperclip HMR needs to work outside of editor
 
 - [ ] Bugs
-  - [ ] 
   - [ ] allow refresh when script busts
   - [ ] external links are broken
   - [ ] matching styles must also consider slots** - (used assignedSlot for this)

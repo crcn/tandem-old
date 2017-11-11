@@ -10,8 +10,9 @@ import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyl
 import { SEnvDocumentInterface, SEnvShadowRoot } from "./document";
 import { SyntheticNode } from "../../state";
 import { SEnvNodeTypes } from "../constants";
-import { weakMemo, SetValueMutation, createSetValueMutation, Mutation } from "aerial-common2";
-import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNode, baseElementMutators } from "./element";
+import { weakMemo, SetValueMutation, createSetValueMutation, Mutation, diffArray, eachArrayValueMutation } from "aerial-common2";
+import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNode, baseElementMutators, SyntheticDOMElementMutationTypes } from "./element";
+import { SEnvParentNodeMutationTypes } from "./parent-node";
 import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 
 export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterface {
@@ -22,6 +23,14 @@ export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterf
   attachShadow(mode: ShadowRootInit): SEnvShadowRoot;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+const getShadowRoot = (node: SEnvNodeInterface): SEnvShadowRoot => {
+  while(node.nodeName !== "#document" && node.nodeName !== "#shadow-root" && node.nodeName !== "#document-fragment") {
+    node = node.parentNode as SEnvNodeInterface;
+  }
+
+  return node as SEnvShadowRoot;
 }
 
 export interface SEnvHTMLStyledElementInterface extends SEnvHTMLElementInterface {
@@ -889,6 +898,73 @@ const proxyOnChange = <T extends any>(target: T, onChange: (name, args: any[]) =
   })
 }
 
+const getSEnvHTMLSlotElementClass = weakMemo((context: SEnvWindowContext) => {
+  const SEnvHTMLElement = getSEnvHTMLElementClass(context);
+  const { SEnvMutationEvent } = getSEnvEventClasses(context);
+  class SEnvHTMLSlotELement extends SEnvHTMLElement implements HTMLSlotElement {
+    private _parentShadow: SEnvShadowRoot;
+    private _assignedNodes: SEnvNodeInterface[];
+
+    get name() {
+      return this.getAttribute("name");
+    }
+
+    set name(value: string) {
+      this.setAttribute("name", value);
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      this._assignedNodes = [];
+      const shadow = this._parentShadow = getShadowRoot(this);
+      shadow.addEventListener(SEnvMutationEvent.MUTATION, this._onParentShadowMutation.bind(this));
+      this._updateSlots();
+    }
+    disconnectedCallback() {
+      this._parentShadow = getShadowRoot(this);
+      this._parentShadow.removeEventListener(SEnvMutationEvent.MUTATION, this._onParentShadowMutation.bind(this));
+    }
+    assignedNodes(options?: AssignedNodesOptions): SEnvNodeInterface[] {
+      const shadowParent = this._parentShadow.host;
+      if (!shadowParent) return [];
+      return Array.prototype.filter.call(shadowParent.childNodes, (child) => {
+        return child.slot == this.name;
+      });
+    }
+    private _onParentShadowMutation = (event: SEnvMutationEventInterface) => {
+      
+      if (event.type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT) {
+        this._updateSlots();
+
+      } else if (event.type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
+        this._updateSlots();
+      }
+    }
+
+    private _updateSlots() {
+      const shadowParent = this._parentShadow.host;
+      if (!shadowParent) return;
+      const assignedNodes = this.assignedNodes();
+      const diffs = diffArray(this._assignedNodes, assignedNodes, (a, b) => a === b ? 0 : -1);
+      this._assignedNodes = assignedNodes;
+
+      eachArrayValueMutation(diffs, {
+        insert({ value, index }) {
+          value.$$setAssignedSlot(this);
+        },
+        delete({ value }) {
+          value.$$setAssignedSlot(null);
+        },
+        update({ }) {
+
+        }
+      });
+    }
+  }
+
+  return SEnvHTMLSlotELement;
+});
+
 export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) => {
   const { getProxyUrl } = context;
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
@@ -1092,6 +1168,7 @@ export const getSEnvHTMLElementClasses = weakMemo((context: SEnvWindowContext) =
     "blockquote": class SEnvHTMLQuoteElement extends SEnvHTMLElement implements HTMLQuoteElement {
       cite: string;
     },
+    "slot": getSEnvHTMLSlotElementClass(context),
     "body": class SEnvHTMLBodyElement extends SEnvHTMLElement implements HTMLBodyElement {
       aLink: any;
       background: string;

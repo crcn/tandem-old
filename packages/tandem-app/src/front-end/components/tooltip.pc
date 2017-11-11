@@ -20,11 +20,9 @@
 
     #card {
       position: absolute;
-      transform: translate(-50%);
       display: inline-block;
       position: absolute;
       z-index: 1024;
-      transform: translateX(-50%);
       border-radius: 4px;
       padding: 10px;
       box-shadow: 0 0 1px 1px rgba(0,0,0,0.8);
@@ -37,8 +35,6 @@
     const onButtonClick = () => {
       this.show = !this.show;
     };
-    this.didUpdate = () => {
-    };
 
     let ignoreHide = false;
 
@@ -46,23 +42,27 @@
       this.show = !this.show;
     }
 
-    this.didUpdate = () => {
+    const updateCardVisibility = () => {
       document.removeEventListener("mousedown", onDocumentClick);
       if (this.show) {
-      document.addEventListener("mousedown", onDocumentClick);
+        document.addEventListener("mousedown", onDocumentClick);
+        const buttonRect = this.button.getBoundingClientRect();
+        const cardRect = this.card.getBoundingClientRect();
+        
+
+        this.anchor = {
+          left: Math.max(0, (buttonRect.left + buttonRect.width / 2) - (cardRect.width / 2)),
+          top: buttonRect.bottom + 20
+        };
       }
     }
 
-    const getAnchorPosition = () => {
-      const buttonRect = this.button.getBoundingClientRect();
-      if (!buttonRect) {
-        return {};
-      }
-      return {
-        left: buttonRect.left + buttonRect.width / 2,
-        top: buttonRect.bottom + 20
-      };
-    }
+    this.didUpdate = () => {
+      updateCardVisibility();
+    };
+    this.didMount = () => {
+      updateCardVisibility();
+    };
 
     const onCardClick = (event) => {
       event.stopPropagation();
@@ -80,7 +80,7 @@
       <slot name="button" onmousedown={{onButtonClick}}></slot>
     </span>
     <div id="overlay" pc-if="this.show" onmousedown={{onOverlayClick}}>
-      <div id="card" style={{getAnchorPosition()}} onmousedown={{onCardClick}}>
+      <div id="card" style={{this.anchor}} onmousedown={{onCardClick}}>
         <slot></slot>
       </div>
     </div>

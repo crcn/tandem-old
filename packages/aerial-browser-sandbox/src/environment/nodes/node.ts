@@ -29,9 +29,12 @@ export interface SEnvNodeInterface extends Node {
   ownerDocument: SEnvDocumentInterface;
   interactiveLoaded: Promise<any>;
   connectedToDocument: boolean;
+  slottedCallback();
+  unslottedCallback();
   $$setOwnerDocument(document: SEnvDocumentInterface);
   $$parentNode: Node;
   $$canBubbleParent: boolean;
+  $$setAssignedSlot(value: HTMLSlotElement);
   setSource(source: ExpressionLocation): any;
   $$parentElement: HTMLElement;
   $$setConnectedToDocument(value: boolean);
@@ -91,6 +94,20 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     readonly NOTATION_NODE: number;
     readonly PROCESSING_INSTRUCTION_NODE: number;
     readonly TEXT_NODE: number;
+    private _assignedSlot: HTMLSlotElement | null;
+
+    get assignedSlot() {
+      return this._assignedSlot;
+    }
+    
+    $$setAssignedSlot(value: HTMLSlotElement) {
+      this._assignedSlot = value;
+      if (value) {
+        this.slottedCallback();
+      } else {
+        this.unslottedCallback();
+      }
+    }
 
     get $id() {
       return this._$id;
@@ -174,6 +191,8 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
     protected updateStruct() {
       this._struct = this.createStruct();
     }
+
+    
 
     protected createStruct(): SyntheticNode {
       return {
@@ -286,10 +305,26 @@ export const getSEnvNodeClass = weakMemo((context: any) => {
 
     }
 
+    protected paintedCallback() {
+      // override me
+    }
+
     protected _onMutation(event: SEnvMutationEventInterface) {
       this._struct = undefined;
     }
 
+    // non-standard
+    slottedCallback() {
+      for (let i = 0, {length} = this.childNodes; i < length; i++) {
+        (this.childNodes[i] as SEnvNodeInterface).slottedCallback();
+      }
+    }
+
+    unslottedCallback() {
+      for (let i = 0, {length} = this.childNodes; i < length; i++) {
+        (this.childNodes[i] as SEnvNodeInterface).unslottedCallback();
+      }
+    }
     replaceChild<T extends Node>(newChild: Node, oldChild: T): T {
       this._throwUnsupportedMethod();
       return null;

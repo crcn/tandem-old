@@ -6,6 +6,7 @@
 
 <component id="td-css-color-expr-input">
   <property name="value" default="1" />
+  <property name="open" default={{true}} />
   <style>
     .input-box {
       width: var(--base4);
@@ -20,7 +21,7 @@
     }
   </style>
   <template>
-    <td-color-mini-input value={{this.expr.value}} />
+    <td-color-mini-input value={{this.expr.value}} open={{this.open}} />
     <span>{{this.expr.value}}</span>
   </template>
 </component>
@@ -57,6 +58,7 @@
 
 <component id="td-color-mini-input">
   <property name="value" default="1" />
+  <property name="open" default={{false}} />
   <style>
     .input-box {
       width: var(--base4);
@@ -71,7 +73,7 @@
     }
   </style>
   <template>
-    <td-tooltip>
+    <td-tooltip show={{this.open}}>
       <div slot="button" class="input-box" style={{{background: this.value}}} /> 
 
       <!-- TODO - fix me - super slow -->
@@ -83,6 +85,7 @@
 
 <component id="td-css-call-expr-input">
   <property name="expr" />
+  <property name="open" default={{false}} />
   <style>
     td-css-expr-input::after {
       content: ", ";
@@ -98,7 +101,7 @@
   <template>
     
     <!-- mini inputs for function -->
-    <td-color-mini-input pc-if={{this.expr.name === "rgb" || this.expr.name === "rgba"}} value={{stringifyCSSExpression(this.expr)}} /> 
+    <td-color-mini-input pc-if={{this.expr.name === "rgb" || this.expr.name === "rgba"}} open={{this.open}} value={{stringifyCSSExpression(this.expr)}} /> 
 
     <span>{{this.expr.name}}(</span>
       <td-css-expr-input pc-repeat="this.expr.params as param" context={{this.expr}} expr={{param}} />
@@ -109,6 +112,7 @@
 <component id="td-css-expr-input">
   <property name="expr" />
   <property name="context" />
+  <property name="open" />
   <style>
     :host {
       display: inline;
@@ -122,9 +126,9 @@
     const { COLOR, CALL, NUMBER, KEYWORD } = CSSDeclarationExpressionType;
   </script>
   <template> 
-    <td-css-call-expr-input pc-if={{this.expr && this.expr.type === CALL}} expr={{this.expr}} />
-    <td-css-color-expr-input pc-elseif={{this.expr && this.expr.type === COLOR}} expr={{this.expr}} />
-    <td-css-number-expr-input pc-elseif={{this.expr && this.expr.type === NUMBER}} expr={{this.expr}} />
+    <td-css-call-expr-input pc-if={{this.expr && this.expr.type === CALL}} expr={{this.expr}} open={{this.open}} />
+    <td-css-color-expr-input pc-elseif={{this.expr && this.expr.type === COLOR}} expr={{this.expr}} open={{this.open}}  />
+    <td-css-number-expr-input pc-elseif={{this.expr && this.expr.type === NUMBER}} expr={{this.expr}} open={{this.open}}  />
     <td-keyword-expr-input pc-elseif={{this.expr && this.expr.type === KEYWORD}} context={{this.context}} expr={{this.expr}} />
     <span pc-else>
       {{this.expr && this.expr.value}}
@@ -132,17 +136,17 @@
   </template>
 </component>
 
-
 <component id="td-css-expr-input-example">
-
+  <property name="value" />
+  <property name="open" default={{true}} />
   <script>
     import { parseDeclarationValue } from "./utils/css.ts";
   </script>
   <template>
-    <td-css-expr-input expr={{this.value && parseDeclarationValue(this.value)}} />
+    <td-css-expr-input open={{this.open}} expr={{this.value && parseDeclarationValue(this.value)}} />
   </template>
 </component>
 
 <td-preview>
-  <td-css-expr-input-example value="rgba(0,0,0,0.6)" />
+  <td-css-expr-input-example value="rgba(84, 172, 88, 0.60)" open />
 </td-preview>

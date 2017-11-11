@@ -361,7 +361,7 @@ english words for colors
         <td-draggable restrict="self" onDrag={{onPalleteDrag}}>
           <div id="pallete">
             <canvas id="hslPicker" width={{this.width}} height={{this.height}} />
-            <div class="dropper" style={{{...this.dropperPoint, background: this.color}}} />
+            <div class="dropper" style={{{...this.dropperPoint, background: rgbToHex(colorToRgba(this.color)) }}} />
           </div>
         </td-draggable>
 

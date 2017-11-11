@@ -39,7 +39,6 @@ export const cssPropNameToKebabCase = (propName: string) => {
   return propName;
 }
 
-
 export const parseStyleSource = (source: string) => {
 
   const props = {};

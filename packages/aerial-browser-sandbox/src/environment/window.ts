@@ -282,6 +282,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly location: Location;
     private _selector: any;
     private _renderer: SyntheticWindowRendererInterface;
+    private _animationFrameRequests: Function[];
 
     readonly sessionStorage: Storage;
     readonly localStorage: Storage;
@@ -747,7 +748,13 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     requestAnimationFrame(callback: FrameRequestCallback): number {
-      return this.setTimeout(callback, 0);
+      if (!this._animationFrameRequests) {
+        this._animationFrameRequests = [];
+      }
+
+      this._animationFrameRequests.push(callback);
+
+      return -1;
     }
 
     resizeBy(x?: number, y?: number): void {
@@ -865,6 +872,14 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       // sync scroll position that may have changed
       // during window resize, otherwise 
       this.scrollTo(event.scrollPosition.left, event.scrollPosition.top);
+
+      if (this._animationFrameRequests) {
+        const animationFrameRequests = this._animationFrameRequests;
+        this._animationFrameRequests = [];
+        for (let i = 0, n = animationFrameRequests.length; i < n; i++) {
+          animationFrameRequests[i]();
+        }
+      }
     }
   }
 });

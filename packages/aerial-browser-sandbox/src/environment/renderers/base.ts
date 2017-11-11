@@ -1,5 +1,6 @@
 import { getSEnvEventTargetClass, getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
-import { SEnvWindowInterface } from "../window";
+import { SEnvWindowInterface, flattenWindowObjectSources } from "../window";
+import { SEnvNodeInterface } from "../nodes/node";
 import { SEnvElementInterface } from "../nodes/element";
 import { Rectangle, Point } from "aerial-common2";
 
@@ -64,7 +65,7 @@ export class SyntheticWindowRendererNativeEvent extends SEnvEvent {
   }
 }
 
-const REQUEST_UPDATE_TIMEOUT = 5;
+const REQUEST_UPDATE_TIMEOUT = 50;
 
 export abstract class BaseSyntheticWindowRenderer extends EventTarget implements SyntheticWindowRendererInterface {
   abstract readonly container: HTMLElement;
@@ -203,6 +204,7 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
         if (!this._sourceWindow) return;
         await this.whenRunning();
         this._shouldRenderAgain = false;
+        await new Promise((resolve) => setTimeout(resolve, this.getRequestUpdateTimeout()));
         await this.render();
         if (this._shouldRenderAgain) {
           this._shouldRenderAgain = false;

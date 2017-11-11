@@ -86,10 +86,16 @@ type TranspileStyleContext = {
   scope: string;
 } & TranspileContext;
 
+enum DeclarationType {
+  TEMPLATE = "TEMPLATE",
+  NODE = "NODE"
+};
+
 type Declaration = {
   varName: string;
   content: string;
-  bindings: any[];
+  bindings: string[];
+  type?: DeclarationType
 };
 
 type Modules = {
@@ -168,11 +174,18 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
       element[property] = value;
     }
 
-    function $$requestUpdate(object) {
-      if (window.$synthetic || true) {
-        return object.update();
-      }
+    function $$waitUntilMounted(element) {
+      return new Promise((resolve, reject) => {
+        if (!window.$synthetic) return resolve();
+        requestAnimationFrame(() => {
+          if (window.renderer.clientRects[element.$id]) return resolve();
+          $$waitUntilMounted(element).then(resolve);
+        }); 
+      })
+    }
+    
 
+    function $$requestUpdate(object) {
       if (toUpdate.indexOf(object) === -1) {
         toUpdate.push(object);
       }
@@ -182,11 +195,25 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
 
       updating = true;
       requestAnimationFrame(function() {
+        const rafLater = [];
         for(let i = 0; i < toUpdate.length; i++) {
-          toUpdate[i].update();
+          const target = toUpdate[i];
+
+          // tiny check in the VM to see if bounding rect exists for target. If it doesn't
+          // then rAF again until the target is visible
+          if (target.nodeType != null && window.$synthetic && !window.renderer._rects[target.$id]) {
+            rafLater.push(target);
+            continue;
+          }
+
+          target.update();
         }
         toUpdate = [];
         updating = false;
+
+        // request update again for elements that 
+        // are not yet visible
+        rafLater.forEach($$requestUpdate);
       });
     }
   `;
@@ -484,7 +511,9 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
   if (hasPCStartTagAttribute(startTag, SpecialPCTag.REPEAT)) {
     const [each, token, eachAs] = getPCStartTagAttribute(startTag, SpecialPCTag.REPEAT).split(/\s+/g);
     
-    newDeclaration = declareNode(`document.createTextNode("")`, context);
+    // newDeclaration = declareNode(`document.createTextNode("")`, context);
+    const { fragment, start, end } = declareVirtualFragment(context);
+    newDeclaration = fragment;
     const currentValueVarName = newDeclaration.varName + "$$currentValue";
     const childBindingsVarName = newDeclaration.varName + "$$childBindings";
     newDeclaration.content += `
@@ -504,8 +533,8 @@ const transpileSpecialTags = (startTag: PCStartTag, declaration: Declaration, co
         ${childBindingsVarName}[i](newValue[i]);
       }
 
-      const parent = ${newDeclaration.varName}.parentNode;
-      const startIndex = Array.prototype.indexOf.call(parent.childNodes, ${newDeclaration.varName});
+      const parent = ${start.varName}.parentNode;
+      const startIndex = Array.prototype.indexOf.call(parent.childNodes, ${start.varName});
 
       if (newValue.length > oldValue.length) {
         for (let i = oldValue.length; i < newValue.length; i++) {
@@ -660,6 +689,7 @@ const transpileElement = (node: PCElement, context: TranspileContext) => {
       };
       break;
     }
+
     case "component": {
       declaration = transpileComponent(node, context);
       break;
@@ -836,7 +866,10 @@ const getJSFriendlyVarName = (name: string) => name.replace(/\-/g, "_");
 const transpileTDPreview = (node: PCElement, context: TranspileContext) => {
   const id = getPCStartTagAttribute(node, "id");
   const fragment = declareNode(`document.createDocumentFragment()`, context);
-  fragment.content += addNodeDeclarationChildren(fragment, node, context).map((decl) => getTranspileContent(decl)).join("\n");
+  fragment.content += getTranspiledChildren(node, context).map((decl) => (`
+    ${getTranspileContent(decl)}
+    ${fragment.varName}.appendChild(${decl.varName});
+  `)).join("");
   fragment.content += `${PREVIEWS_VAR}["${id || fragment.varName}"] = ${fragment.varName};\n`;
   return fragment;
 };
@@ -876,19 +909,14 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
       constructor() {
         super();
         this.${BINDINGS_VAR} = [];
-        if (!window.$synthetic) {
-          //this.render();
-        }
       }
 
-      $$setOwnerDocument(value) {
-        super.$$setOwnerDocument(value);
-        //this.render();
-      }
-    
       connectedCallback() {
         this.render();
-        this.didMount();
+        
+        $$waitUntilMounted(this).then(() => {
+          this.didMount();
+        });
       }
 
       ${
@@ -942,10 +970,13 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
 
         let ${BINDINGS_VAR} = this.${BINDINGS_VAR} = [];
         ${script ? transpileScript((script.children[0] as PCString).value, context) : "" }
-        ${template ? addNodeDeclarationChildren({ varName: "shadow", content: "", bindings: [] }, template, {
+        ${template ? getTranspiledChildren(template, {
           ...context,
           varCount: 0
-        }).map(content => getTranspileContent(content, BINDINGS_VAR)).join("\n") : ""}
+        }).map(decl => (`
+          ${getTranspileContent(decl, BINDINGS_VAR)}
+          shadow.appendChild(${decl.varName});
+        `)).join("") : ""}
       }
 
       cloneShallow() {

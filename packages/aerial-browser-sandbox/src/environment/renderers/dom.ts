@@ -101,7 +101,6 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
       }, this.onElementChange, this.targetDocument);
       this.mount.appendChild(this._documentElement);
     }
-
     this._resetComputedInfo();
   }
 
