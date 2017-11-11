@@ -21,7 +21,7 @@
     }
   </style>
   <template>
-    <td-color-mini-input value={{this.expr.value}} open={{this.open}} />
+    <td-color-mini-input value={{this.expr.value}} onChange={{this.onChange}} open={{this.open}} />
     <span>{{this.expr.value}}</span>
   </template>
 </component>

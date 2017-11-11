@@ -49,7 +49,6 @@
         const buttonRect = this.button.getBoundingClientRect();
         const cardRect = this.card.getBoundingClientRect();
         
-
         this.anchor = {
           left: Math.max(0, (buttonRect.left + buttonRect.width / 2) - (cardRect.width / 2)),
           top: buttonRect.bottom + 20
