@@ -6,7 +6,7 @@ Tandem is a visual designer for creating web components. The editor comes with m
 
 By default, web components built in Tandem are written in a simple to read & write format, called Paperclip. Paperclip web components are intented to be light weight, and compileable to many target frameworks (React for starters).
 
-### Goals
+### Tandem Goals
 
 - Visual editing of _most_ web components (like 90% of code) like buttons & lists.
 - Visual tooling will be a 1-1 map of HTML & CSS. This means that people will need knowledge of HTML & CSS in order to use Tandem.
@@ -17,7 +17,7 @@ By default, web components built in Tandem are written in a simple to read & wri
 - To provide visual aid around web features with tooltips & suggestions on web design. 
 - To reduce vendor lock-in. You shouldn't be stuck using Tandem if you don't want to use it anymore.
 
-### Non-goals
+### Tandem Non-goals
 
 - To support languages that are not designed for visual editing. SASS, LESS, and JSX, and other frameworks are optimized for good developer experience, but do a poor job producing code that is visually editable (things like `1 + 1`, and other computed properties are hard to change visually). 
 - To suport very sophisticated web components. Tandem will be designed to support web components with _simple_ behavior. Complicated components will need to be written by hand in a language such as JSX that's more expressive (which is probably the best option anways). Developer tooling will also be provided so that engineers can inject behavior into a web component created in Tandem (either as a higher order function, or view controller). 
@@ -140,7 +140,7 @@ The format above is similar to other template languages such as Handlebars, and 
 
 > Simplicity also offers some neat benefits around performance. Since Paperclip is declarative and bindings are identified at compile time, the compiled output of Paperclip can be optimized to the _bare minimum_ amount of operations required to update a dynamic UI. This is similar to how [Glimmer](#TODO-LINK) works.
 
-#### Goals
+#### Paperclip Goals
 
 - To provide a syntax that is close to web standards. 
 - Provide a syntax that can be compiled to other languages, and frameworks. 
@@ -148,7 +148,7 @@ The format above is similar to other template languages such as Handlebars, and 
 - Type safety to ensure breaking changes to UI can be traced to other web components.
 - Provide syntaxes that augment the user experience of Tandem.
 
-#### Non-goals
+#### Paperclip Non-goals
 
 - Support complicated behavior that cannot be backtraced. 
 - Support for multiple languages. It's just HTML, CSS, and Paperclip-specific syntax. 
