@@ -8,7 +8,7 @@ Web components built in Tandem are written in a simple to read & write format, c
 
 ## Planned features
 
-Below are some planned v1 features for Tandem. For the most part, it will contain a similar experience to Chrome's web inspector.
+Below are some planned MVP, and future features for Tandem. 
 
 #### (v1) Artboards
 
