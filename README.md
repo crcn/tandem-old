@@ -22,6 +22,8 @@ The stage, as in, the artboard that you edit directly. The stage will contain to
 
 ![ezgif-4-47f92ab768](https://user-images.githubusercontent.com/757408/32700619-6b6da732-c7bf-11e7-82de-b15f4d3101e4.gif)
 
+> When dragging elements around, `left`, `top`, and `position` styles are defined on the element by default. You can however have the dragger target a selector by using the CSS pane. You will also be able to easily drag & drop CSS properties to other style rules in case you need to re-organize CSS (which should make Tandem's default targeting of style attributes less of an issue)
+
 Other features include:
 
 - pixel grid (when zoomed in)
