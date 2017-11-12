@@ -366,7 +366,7 @@ Paperclip types will also be compilable to other type systems such as TypeScript
 </component>
 ```
 
-In terms of _upgrading_ to typed paperclip components from non-typed, the visual editor, or CLI terminal may emit warnings about untyped properties in a paperclip file, so that designers, or enginers can add the appropriate types.
+In terms of _upgrading_ to from non-typed paperclip components, the visual editor will contain functionality that emits warnings (assuming that types are turned on) for templates that don't have them. Designers or engineers can simply add them manually when this feature comes out.
 
 #### More compile targers
 
