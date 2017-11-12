@@ -174,7 +174,7 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
     <ul>
       <li [[repeat people as person]]>
         [[echo person.name]]
-        <a href="#" [[on click onRemovePersonClicked(person) ]]>
+        <a id="remove-person-button" href="#" [[emit click]]>
           x
         </a>
       </li>
@@ -195,8 +195,10 @@ export const { "people-list": PeopleList } = hydrateComponents({
   "people-list": compose(
     withState("people", "setPeople", [{ name: "Drake" }, { name: "50c" }])),
     withHandlers({
-      onRemovePersonClicked: ({ people, setPeople }) => (personToRemove) => {
-        setPeople(people.filter((person) => person !== personToRemove));
+      dispatch: ({ people, setPeople }) => ({ event, context }) => {
+        if (event.target.id === "remove-person-button" && event.type === "click") {
+          setPeople(people.filter((person) => person !== context.person));
+        }
       } 
     })
   )
@@ -292,6 +294,16 @@ Properties are _required_ for a number of reasons:
 ```
 
 Note that `[[property]]` must be defined.
+
+#### [[emit click]] block
+
+Attaches an event listener to an element.
+
+```html
+<a id="some-button" href="#" [[emit click]]>
+  click me!
+</a>
+```
 
 #### <style /> elements
 
