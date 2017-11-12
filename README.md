@@ -6,22 +6,6 @@ Tandem is a visual designer for creating web components.
 
 By default, web components built in Tandem are written in a simple to read & write format, called Paperclip. Paperclip web components are intented to be light weight, and compileable to many frameworks (React for starters).
 
-### Tandem Goals
-
-- Visual editing of _most_ web components (like 90% of code) like buttons & lists.
-- Visual tooling will be a 1-1 map of HTML & CSS. This means that people will need knowledge of HTML & CSS in order to use Tandem.
-- To lower the barrier for web development. Designers, and non-coders should be able to design web components without too much knowledge of coding. 
-- To provide tools that educates the user of web features (hints, tooltips, warnings, tools that augment). 
-- To reduce the amount of tooling required to build a web application. Tandem will give users the option to build their _entire_ web application with a click of a button. 
-- To integrate with languages that are 100% editable in Tandem. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
-- To provide visual aid around web features with tooltips & suggestions on web design. 
-- To reduce vendor lock-in. You shouldn't be stuck using Tandem if you don't want to use it anymore.
-
-### Tandem Non-goals
-
-- To support languages that are not designed for visual editing. SASS, LESS, and JSX, and other frameworks are optimized for good developer experience, but do a poor job producing code that is visually editable (things like `1 + 1`, and other computed properties are hard to change visually). 
-- To suport very sophisticated web components. Tandem will be designed to support web components with _simple_ behavior. Complicated components will need to be written by hand in a language such as JSX that's more expressive (which is probably the best option anways). Developer tooling will also be provided so that engineers can inject behavior into a web component created in Tandem (either as a higher order function, or view controller). 
-
 ## Planned features
 
 Below are some planned MVP, and future features for Tandem. 
@@ -81,6 +65,23 @@ The next bunch of stage tools will offer more visual helpers & guides to help wi
 #### (v2) Build button
 
 Eventually, Tandem will come with a build button for projects that will work out of the box, along with a command line option for bundling apps for deployment (`tandem build`, or something like that). This feature is planned to make it easier for less technical people to make UI changes, and preview their UIs in a production application. The build step will likely use `webpack` in the background, but may be configured to support other bundlers as well. 
+
+### Tandem Goals
+
+- Visual editing of _most_ web components (like 90% of code) like buttons & lists.
+- Visual tooling will be a 1-1 map of HTML & CSS. This means that people will need knowledge of HTML & CSS in order to use Tandem.
+- To lower the barrier for web development. Designers, and non-coders should be able to design web components without too much knowledge of coding. 
+- To provide tools that educates the user of web features (hints, tooltips, warnings, tools that augment). 
+- To reduce the amount of tooling required to build a web application. Tandem will give users the option to build their _entire_ web application with a click of a button. 
+- To integrate with languages that are 100% editable in Tandem. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
+- To provide visual aid around web features with tooltips & suggestions on web design. 
+- To reduce vendor lock-in. You shouldn't be stuck using Tandem if you don't want to use it anymore.
+
+### Tandem Non-goals
+
+- To support languages that are not designed for visual editing. SASS, LESS, and JSX, and other frameworks are optimized for good developer experience, but do a poor job producing code that is visually editable (things like `1 + 1`, and other computed properties are hard to change visually). 
+- To suport very sophisticated web components. Tandem will be designed to support web components with _simple_ behavior. Complicated components will need to be written by hand in a language such as JSX that's more expressive (which is probably the best option anways). Developer tooling will also be provided so that engineers can inject behavior into a web component created in Tandem (either as a higher order function, or view controller). 
+
 
 ## Technical details
 
