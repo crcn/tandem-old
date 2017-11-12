@@ -1,4 +1,4 @@
-Paperclip is a tiny DSL for building web components that is optimized for visual editors. Here's a basic 
+Paperclip is a tiny DSL for building web components that is optimized for visual editors. Here's a basic example of code that could run within an artboard VM:
 
 ````typescript
 import { paperclipToVanilla, PaperclipTargetType } from "paperclip";
@@ -8,7 +8,7 @@ const source = `
   <component id="x-button">
     [[property count]]
     <a id="clicker-button" href="#" [[emit click]]>
-      click me! [[echo count]]
+      click me! [[bind count]]
     </a>
   </component>
 `;
@@ -23,9 +23,9 @@ paperclipToVanilla(source, {
   resolveFile: (relativePath, fromPath) => {
     return path.join(path.dirname(fromPath), relativePath);
   }
-}).then(({ code, dependencies }) => {
+}).then(({ code }) => {
 
-  // run within context of this window
+  // run within context of this window. 
   new Function(code)(window);
   
   const button = document.body.createElement("x-button");

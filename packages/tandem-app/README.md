@@ -1,7 +1,16 @@
+TOMORROW:
+
+- [ ] repeat block
+- [ ] condition blocks
+- [ ] strong types
+
 #### V1
 
 - [ ] Paperclip
   - [ ] runtime engine (runs in the browser - loads & parses templates)
+  - [ ] strong types
+  - [ ] react transpilers
+  - [ ] react bindings
 - [ ] Stage tools
   - [ ]
 - [ ] CSS Editor

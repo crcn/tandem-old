@@ -1,14 +1,26 @@
 export enum PCExpressionType {
   STRING,
   BLOCK,
+  STRING_BLOCK,
   ELEMENT,
   SELF_CLOSING_ELEMENT,
   TEXT_NODE,
   COMMENT,
   ATTRIBUTE,
   START_TAG,
+  BLOCK_STRING,
   FRAGMENT,
   END_TAG
+};
+
+export enum BKExpressionType {
+  TYPE,
+  ECHO,
+  IF,
+  ELSEIF,
+  REFERENCE,
+  ELSE,
+  REPEAT
 };
 
 export type Token = {
@@ -33,7 +45,7 @@ export type PCExpression = {
   location: ExpressionLocation;
 };
 
-export type PCString = {
+export type PCTextNode = {
   value: string;
 } & PCExpression;
 
@@ -41,12 +53,45 @@ export type PCComment = {
   value: string;
 } & PCExpression;
 
-export type PCBlock = {
+export type PCString = {
   value: string;
 } & PCExpression;
 
-export type VSAttributeValue = {
+export type PCReference = {
+
+} & PCExpression;
+
+export type BKExpression = {
   
+  } & PCExpression;
+
+export type PCBlock = {
+  value: BKExpression;
+} & PCExpression;
+
+export type BKEcho = {
+  value: BKExpression;
+} & PCExpression;
+
+export type BKReference = {
+  value: string;
+} & BKExpression;
+
+export type BKRepeat = {
+  each: PCExpression;
+  asKey: PCExpression;
+  asValue: PCExpression;
+} & BKExpression;
+
+export type BKIf = {
+  condition: BKExpression;
+} & BKExpression;
+
+export type BKElseIf = BKIf;
+export type BKElse = BKExpression;
+
+export type PCStringBlock = {
+  values: Array<PCString|PCBlock>;
 } & PCExpression;
 
 export type PCAttribute = {
@@ -68,10 +113,10 @@ export type PCSelfClosingElement = {
 
 } & PCStartTag;
 
-type Children = Array<PCElement | PCSelfClosingElement | PCBlock | PCString>;
+type ChildNodes = Array<PCElement | PCSelfClosingElement | PCBlock | PCTextNode>;
 
 export type PCParent = {
-  children: Children;
+  childNodes: ChildNodes;
 } & PCExpression;
 
 export type PCFragment = {

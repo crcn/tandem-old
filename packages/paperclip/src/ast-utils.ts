@@ -19,14 +19,13 @@ const computePosLines = (source: string): { [identifier: number]: [number, numbe
   return posLines;
 };
 
-export const getPosition = (start: Token | number, source: string, isEnd?: boolean) => {
-  const pos = typeof start === "number" ? start : start.pos + (start.value ? start.value.length : 0);
-
+export const getPosition = (start: Token | number, source: string) => {
+  const pos = typeof start === "number" ? start : start.pos;
   const [column, line] = computePosLines(source)[pos];
   return { column, line, pos };
 }
 
 export const getLocation = (start:  ExpressionPosition | Token | number, end: ExpressionPosition | Token | number, source: string): ExpressionLocation  => ({ 
   start: (start as ExpressionPosition).line ? start as ExpressionPosition : getPosition(start as any, source), 
-  end: (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(end as any, source, true),
+  end: end && (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(source.length, source),
 });
