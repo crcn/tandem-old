@@ -195,8 +195,8 @@ export const { "people-list": PeopleList } = hydrateComponents({
   "people-list": compose(
     withState("people", "setPeople", [{ name: "Drake" }, { name: "50c" }])),
     withHandlers({
-      dispatch: ({ people, setPeople }) => ({ event, context }) => {
-        if (event.target.id === "remove-person-button" && event.type === "click") {
+      handleEvent: ({ people, setPeople }) => ({ triggerEvent, context }) => {
+        if (triggerEvent.target.id === "remove-person-button" && triggerEvent.type === "click") {
           setPeople(people.filter((person) => person !== context.person));
         }
       } 
@@ -297,13 +297,22 @@ Note that `[[property]]` must be defined.
 
 #### [[emit click]] block
 
-Attaches an event listener to an element.
+Attaches an event listener to an element. Events that are dispatched by the element also contains the context of the element.  For example:
 
 ```html
-<a id="some-button" href="#" [[emit click]]>
-  click me!
-</a>
+<component id="x-clicker">
+  [[property count]]
+
+  <template>
+    <a id="some-button" href="#" [[emit click]]>
+      current count: [[echo count]]
+    </a>
+  </template>
+</component>
 ```
+
+The `a` button in the above component emits a plain javascript object of `{ type: "EVENT", payload: { triggerEvent: sourceMouseEvent, context: { count: 0 }}}`, which should be handled by a higher order component that defines a `handleEvent` property. If a `handleEvent` is _not_ present, then event will bubble up until it reaches one. `handleEvents` that _are_ defined must call a higher order `handleEvent` function in order for bubbling to occur.  Here's an example:
+
 
 #### <style /> elements
 
