@@ -2,6 +2,9 @@
 import * as fs from "fs";
 import * as md5 from "md5";
 import * as path from "path";
+import * as acorn from "acorn";
+import * as estree from "estree";
+import * as escodegen from "escodegen";
 import { parse } from "./parser";
 import { flatten, repeat, camelCase, snakeCase, uniq } from "lodash";
 import { parsePCStyle } from "./style-parser";
@@ -65,7 +68,9 @@ type TranspileOptions = {
   resolveFileSync?: (relativePath: string, base: string) => string;
   transpilers?: {
     [identifier: string]: Transpiler
-  }
+  },
+  moduleDirectories?: string[];
+  extensions?: string[]
 };
 
 type TranspileContext = {
@@ -137,7 +142,25 @@ export type TranspileModuleResult = {
 const getDefaultOptions = weakMemo((options): TranspileOptions => ({
   ...options,
   readFileSync: options.readFileSync || ((filePath) => fs.readFileSync(filePath, "utf8")),
-  resolveFileSync: options.resolveFileSync || ((relativePath, base) => "file://" + path.resolve(path.dirname(base.replace("file://", "")), relativePath)),
+  resolveFileSync: options.resolveFileSync || ((relativePath, base) => {
+    const dirname = path.dirname(base.replace("file://", ""));
+    const possibleModuleDirs = [dirname, ...(options.moduleDirectories || [])];
+    const possibleBaseNames  = [relativePath, ...(options.extensions || []).map(ext => relativePath + ext)];
+
+    const possiblePaths = possibleModuleDirs.reduce((a, b) => {
+      return [...a, ...possibleBaseNames.map((baseName) => path.resolve(b, baseName))];
+    }, []);
+
+    for (const possiblePath of possiblePaths) {
+      if (fs.existsSync(possiblePath) && fs.lstatSync(possiblePath).isFile()) {
+        return "file://" + possiblePath;
+      } else if (fs.existsSync(possiblePath + "/package.json")) {
+        return path.resolve(possiblePath, JSON.parse(fs.readFileSync(possiblePath + "/package.json", "utf8")).main || "index.js");
+      }
+    }
+
+    throw new Error(`Unable to resolve ${relativePath} from ${base}`);
+  }),
   transpilers: getDefaultTranspilers(options.transpilers)
 }))
 
@@ -184,7 +207,6 @@ export const transpileBundle = (source: string, uri: string, options: TranspileO
       })
     }
     
-
     function $$requestUpdate(object) {
       if (toUpdate.indexOf(object) === -1) {
         toUpdate.push(object);
@@ -286,8 +308,15 @@ const bundle = weakMemo((source: string, uri: string, parentResult: BundleResult
     for (const relativePath in resolvedImports) {
       const importFullPath = resolvedImports[relativePath];
       if (!result.modules[importFullPath]) {
+        let content: string;
+        try {
+          content = options.readFileSync(importFullPath.replace("file://", ""));
+        } catch(e) {
+          throw new Error(`Unable to read file ${importFullPath}`);
+        }
+          
         result = bundle(
-          options.readFileSync(importFullPath.replace("file://", "")),
+          content,
           importFullPath,
           result,
           options
@@ -374,6 +403,9 @@ const transpilePaperclipSource = (source: string, uri: string, transpilers: any)
 };
 
 export const transpileJSSource = (source: string) => {
+  // const ast = acorn.parse(source, {
+  //   sourceType: "module"
+  // });
   const imports = [];
   source = transpileJSImports(source, imports);
   source = transpileJSExports(source);
@@ -385,15 +417,41 @@ export const transpileJSSource = (source: string) => {
 
 const transpileJSImports = (source: string, allImports: string[]) => {
 
-  const imports = source.match(/import.*?from.*?;/g) || [];
+  // ast.body.forEach((expr) => {
+  //   console.log(expr.type);
+  //   // if (expr.type === "CallExpression") {
+  //   // }
+  //   // if (expr.type ===  "ImportDeclaration") {
+  //   //   console.log("IMPP!");
+  //   // }
+  // });
+
+  // TODO - need to use JS parser for this instead of regexp. This will break in cases
+  // like strings, and comments
+  const saferImportSource = source.replace(/\/\*[\s\S]*\*\//g, "");
+  const imports = saferImportSource.match(/import.*?from.*?;/g) || [];
   
   for (const _import of imports) {
-    const [match, decls, src] = source.match(/import.*?\{(.*?)\}.*?from.*?['"](.*?)['"]/);
+    const [match, decls, src] = _import.match(/import.*?\{(.*?)\}.*?from.*?['"](.*?)['"]/) || [null, null, null];
+    if (!match) {
+      continue;
+    }
+
+    if (src.indexOf("\\") !== -1) continue;
+
     allImports.push(src);
-    source = source.replace(_import, `
+    source = _import.replace(_import, `
       const { ${decls.replace(/\s+as\s+/g, ":")} } = require("${src}");
     `);
   }
+
+  const _requires = saferImportSource.match(/require\(.*?\)/g) || [];
+
+  for (const _require of _requires) {
+    const [match, src] = _require.match(/require\(['"](.*?)["']\)/);
+    allImports.push(src);
+  }
+  
 
   return source;
 }
@@ -885,12 +943,20 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
   const template = getPCASTElementsByTagName(node, "template")[0] as PCElement;
   const style = getPCASTElementsByTagName(node, "style")[0] as PCElement;
   const script = getPCASTElementsByTagName(node, "script")[0] as PCElement;
-  
-  const scriptTranspiler = script && context.transpilers[getPCStartTagAttribute(script, "type")  || "text/javascript"];
 
-  if (script && !scriptTranspiler) {
-    throw new Error(`Unable to find script transpiler for ${getPCStartTagAttribute(script, "type")}`);
+  let scriptContent: string = "";
+
+  if (script) {
+    const scriptTranspiler = context.transpilers[getPCStartTagAttribute(script, "type")] || context.transpilers["text/javascript"];
+    if (!scriptTranspiler) {
+      throw new Error(`Unable to find script transpiler for ${getPCStartTagAttribute(script, "type")}`);
+    }
+    const result = scriptTranspiler((script.children[0] as PCString).value, context.uri, context.transpilers);
+    context.imports.push(...result.imports);
+    scriptContent = result.content;
   }
+  
+
 
   const childrenWithIds = template && filterPCASTTree(template, (element) => {
     return (element.type === PCExpressionType.SELF_CLOSING_ELEMENT || element.type === PCExpressionType.ELEMENT) && hasPCStartTagAttribute(element as PCElement, "id");
@@ -940,13 +1006,22 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
               return this.$$${camelCaseName};
             }
             set ${camelCaseName}(value) {
+              if (this.$$${camelCaseName} === value) {
+                return;
+              }
+              const oldValue = this.$${camelCaseName};
               this.$$${camelCaseName} = value;
+              this.propertyChangedCallback("${camelCaseName}", oldValue, value);
               if (this._rendered) {
                 $$requestUpdate(this);
               }
             }
           `;
         }).join("\n")
+      }
+
+      propertyChangedCallback(name, oldValue, newValue) {
+
       }
 
       render() {
@@ -969,7 +1044,7 @@ const transpileComponent = (node: PCElement, context: TranspileContext) => {
         }
 
         let ${BINDINGS_VAR} = this.${BINDINGS_VAR} = [];
-        ${script ? transpileScript((script.children[0] as PCString).value, context) : "" }
+        ${scriptContent}
         ${template ? getTranspiledChildren(template, {
           ...context,
           varCount: 0
@@ -1066,7 +1141,12 @@ const addNodeDeclarationChildren = (declaration: Declaration, node: PCElement, c
   return declarations;
 };
 
-const transpileText = (node: PCString, context: TranspileContext) => createTextNodeDeclaration(`"${node.value.replace(/\n/g, "\\n").replace(/"/g, '\\"')}"`, node, context);
+const transpileText = (node: PCString, context: TranspileContext) => {
+  if (/^[\s\r\n\t]+$/.test(node.value)) {
+    return null;
+  }
+  return createTextNodeDeclaration(`"${node.value.replace(/\n/g, "\\n").replace(/"/g, '\\"')}"`, node, context);
+}
 
 const transpileBinding = (bindingVarName: string, block: PCBlock, context: TranspileContext, createStatment: (assignment: string) => string) => {
 

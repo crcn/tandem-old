@@ -1,21 +1,23 @@
 very simple online playground for visually creating web applications
 
+
 LITMUS:
 
 - [ ] should be able to build sites without writing much code
 
 TODAY (11/10): 
 
-- [ ] get external websites to work again
-  - [ ] webflow is busted
+- [ ] generate d.ts files
+- [ ] pc -> jsx compiler
 
+- [ ] Paperclip
+  - [ ] 
 
 IMMEDIATE:
 
 - [ ] Paperclip
   - [ ] import external CSS scripts
-  - [ ] transpile TS to JS 
-
+  - [ ] transpile TS to JS
 - [ ] Components
   - [ ] color picker
   - [ ] CSS Inspector

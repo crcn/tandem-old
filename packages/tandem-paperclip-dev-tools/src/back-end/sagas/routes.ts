@@ -121,7 +121,9 @@ const getReadFile = weakMemo((state: ApplicationState) => (filePath: string) => 
 const getTranspileOptions = weakMemo((state: ApplicationState) => ({
   assignTo: "bundle",
   readFileSync: getReadFile(state),
-  transpilers: state.config.transpilers
+  transpilers: state.config.transpilers,
+  extensions: state.config.extensions,
+  moduleDirectories: state.config.moduleDirectories
 }));
 
 function* getComponentPreview(req: express.Request, res: express.Response) {

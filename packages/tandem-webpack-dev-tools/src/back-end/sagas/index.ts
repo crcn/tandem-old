@@ -11,6 +11,7 @@ import * as chokidar from "chokidar";
 import * as glob from "glob";
 import * as http from "http";
 import * as path from "path";
+import * as webpackHotMiddleware from "webpack-hot-middleware";
 import * as webpack from "webpack";
 import * as multipart from "connect-multiparty";
 import * as bodyParser from "body-parser";
@@ -19,7 +20,7 @@ import * as ExpressRouter from "express/lib/router";
 import * as webpackDevMiddleware from "webpack-dev-middleware";
 import * as WebpackDevServer from "webpack-dev-server";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
-import { ApplicationState, DevConfig, BundleEntryInfo } from "../state";
+import { ApplicationState, DevConfig, BundleEntryInfo } from "../state"; 
 import { bubbleEventChannel, createSocketIOSaga, getFilePathHash } from "../../common";
 import { fileEditorSaga } from "./file-editor";
 import { 
@@ -34,6 +35,7 @@ import {
   expressServerStarted, 
   EXPRESS_SERVER_STARTED,
   fileAction,
+  fileContentMutated,
   fileAdded,
   fileRemoved,
   fileChanged,
@@ -67,7 +69,9 @@ const BASE_WEBPACK_CONFIG: webpack.Configuration = {
 		// no real path is required, just pass "/"
 		// but it will work with other paths too.
   }
-};  
+}; 
+
+const TD_ENTRY_FILE_PATH = process.env.HOME + "/.__td-entry.js";
 
 export function* mainSaga() {
 
@@ -92,50 +96,40 @@ function* startExpressServer() {
   const httpServer = server.listen(port);
   yield fork(createSocketIOSaga(io(httpServer)));
 
-  let router: express.Router;
-
-  server.use((req, res, next) => {
-    router(req, res, next);
-  });
-
   yield put(logInfoAction(`dev server is now available at *http://localhost:${port}*`));
   
   let compiler: webpack.Compiler;
-  
-  while(true) {
-    if (compiler) {
-      compiler["watchFileSystem"].watcher.close();
+
+  yield writePreviewEntryFile();
+  yield spawn(function*() {
+    while(true) {
+      yield writePreviewEntryFile();
+      yield take([FILE_ADDED, FILE_REMOVED]);
     }
+  });
 
-    router = express.Router();
+  const webpackConfig = yield call(generateWebpackConfig, state.config);
 
-    const state: ApplicationState = yield select();
-    const port = state.config.port;
-    
-    const webpackConfig = yield call(generateWebpackConfig, state.config);
+  const componentCount = Object.keys(webpackConfig.entry).length;
 
-    const componentCount = Object.keys(webpackConfig.entry).length;
+  
+  compiler = webpack(webpackConfig);
+  yield watchCompilation(compiler);
 
-    yield put(logInfoAction(`Bundling ${componentCount} entries`));
-    
-    compiler = webpack(webpackConfig);
-    yield watchCompilation(compiler);
+  server.use(bodyParser.json());
+  server.use(cors());
+  server.use(webpackDevMiddleware(compiler, {
+    publicPath: "/",
+    stats: webpackConfig.stats
+  }));
+  server.use(webpackHotMiddleware(compiler));
 
-    router.use(bodyParser.json());
-    router.use(cors());
-    router.use(webpackDevMiddleware(compiler, {
-      publicPath: "/",
-      stats: webpackConfig.stats
-    }));
+  yield fork(handleFileCache, server, state.config, webpackConfig);
+  yield fork(addPreviewRoute, server, state.config, webpackConfig);
+  // yield fork(addEntryIndexRoutes, router, state.config, webpackConfig);
 
-    addMainIndexRoute(router, webpackConfig);
-    yield fork(handleFileCache, router, state.config, webpackConfig);
-    yield fork(addEntryIndexRoutes, router, state.config, webpackConfig);
 
-    server.use(express.static(__dirname + "/../../front-end"));
-    
-    yield take([FILE_ADDED, FILE_REMOVED]);
-  }
+  server.use(express.static(__dirname + "/../../front-end"));
 
 }
 
@@ -160,13 +154,13 @@ const takeAllRequests = (route: Function, handler: (req: express.Request, res: e
   }
 });
 
-function* addEntryIndexRoutes(server: express.Router, { getEntryIndexHTML }: DevConfig, webpackConfig: webpack.Configuration) {
+function* addPreviewRoute(server: express.Router, { getEntryIndexHTML }: DevConfig, webpackConfig: webpack.Configuration) {
   yield takeAllRequests(server.use.bind(server, `/:hash.html`), function*(req, res) {
     const { hash } = req.params;
     const state: ApplicationState = yield select();
     const filePathMap = yield call(getPreviewFilePathMap);
     const info = state.bundleInfo && state.bundleInfo[hash];
-    const html = injectPreviewBundle(hash, info, getEntryIndexHTML({ entryName: hash, filePath: filePathMap[hash] }));
+    const html = injectPreviewBundle(hash, info, getEntryIndexHTML({ entryName: "all-previews", filePath: filePathMap[hash] }));
     res.send(html);
   });
 };
@@ -209,29 +203,12 @@ const uriIsInCWD = (uri: string) => {
 
 const injectPreviewBundle = (hash: string, info: BundleEntryInfo, html) => {
   return html.replace('<head>', `<head>
-    <script type="text/javascript" src="/preview.bundle.js"></script>
+    <script type="text/javascript" src="/all-previews.js"></script>
     <script>
-      startPreview("${hash}", ${JSON.stringify(info)});
+      var entry = modules["${hash}"];
+      console.log(entry, modules);
     </script>
   `);
-};
-
-const addMainIndexRoute = (server: express.Router, webpackConfig: webpack.Configuration) => {
-  const entryHashes = Object.keys(webpackConfig.entry);
-  server.all(/^(\/|\/index.html)$/, (req, res) => {
-    res.send(`
-      <html>
-        <head>
-          <script type="text/javascript" src="master.bundle.js"></script>
-          <script>
-            startMaster(${JSON.stringify(entryHashes)});
-          </script>
-        </head>
-        <body>
-        </body>
-      </html>
-    `);
-  });
 };
 
 function* getPreviewFilePaths() {
@@ -248,8 +225,25 @@ function* getPreviewFilePathMap() {
   return map;
 }
 
-function* generateWebpackConfig(config: DevConfig) {
+function* writePreviewEntryFile() {
   const componentFilePaths = yield call(getPreviewFilePaths);
+
+  let content = `
+    var modules = window.modules = {
+  `;
+  
+  componentFilePaths.forEach((filePath) => {
+    const hash: string = getFilePathHash(filePath);
+    content += `"${hash}": require("${filePath}"),\n`
+  });
+
+  content += `};\n`;
+
+  fs.writeFileSync(TD_ENTRY_FILE_PATH, content);
+}
+  
+
+function* generateWebpackConfig(config: DevConfig) {
 
   const externWebpackConfig = config.webpackConfigPath ? require(config.webpackConfigPath) : {};
 
@@ -257,13 +251,16 @@ function* generateWebpackConfig(config: DevConfig) {
     plugins: [],
   }, externWebpackConfig, {
     plugins: [
+      new webpack.HotModuleReplacementPlugin(),
       ...(externWebpackConfig.plugins || []),
       yield call(createFileCacheUpdaterPlugin)
     ]
   }, BASE_WEBPACK_CONFIG);
 
   extend(webpackConfig, {
-    entry: {},
+    entry: {
+      "all-previews": [require.resolve("webpack-hot-middleware/client"), TD_ENTRY_FILE_PATH],
+    },
     output: {
       path: "/",
       library: "entry",
@@ -271,11 +268,6 @@ function* generateWebpackConfig(config: DevConfig) {
     }
   });
   
-  componentFilePaths.forEach((filePath) => {
-    const hash: string = getFilePathHash(filePath);
-    webpackConfig.entry[hash] = filePath;
-  });
-
   return webpackConfig;
 }
 
@@ -283,8 +275,8 @@ function* createFileCacheUpdaterPlugin() {
   const fileCacheUpdater = new FileCacheUpdaterPlugin();
   yield spawn(function*() {
     while(true) {
-      yield take();
       fileCacheUpdater.setRootState(yield select());
+      yield take();
     }
   });
 

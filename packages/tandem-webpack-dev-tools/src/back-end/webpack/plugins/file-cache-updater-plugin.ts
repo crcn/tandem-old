@@ -32,6 +32,7 @@ export class FileCacheUpdaterPlugin implements Plugin {
         return cb();
       }
 
+
       const fs = this.fileSystem;
 
       // check file cache AND make sure that it is not older than the file system
@@ -39,7 +40,7 @@ export class FileCacheUpdaterPlugin implements Plugin {
       const fileCache = getFileCacheItem(filePath, self._appState);
 
       if (fileCache) {
-        fs._readFileStorage.data.set(filePath, [null, fileCache[filePath].content]);
+        fs._readFileStorage.data.set(filePath, [null, fileCache.content]);
       }
       cb();
     }

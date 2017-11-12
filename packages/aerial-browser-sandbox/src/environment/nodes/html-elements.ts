@@ -202,10 +202,14 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     }
 
     set style(value: SEnvCSSStyleDeclarationInterface) {
-      if (typeof value === "string") {
-        value = parseStyleSource(value) as any;
+      const buffer = [];
+      if (typeof value === "object") {
+        for (const key in value) {
+          buffer.push(key, ":", value[key]);
+        }
+        value = buffer.join(";") as any;
       }
-      Object.assign(this.style, value);
+      this.style.cssText = String(value);
       this.onStyleChange();
     }
 

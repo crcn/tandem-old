@@ -5,8 +5,7 @@
 <link rel="import" href="./color-picker.pc" />
 
 <component id="td-css-color-expr-input">
-  <property name="value" default="1" />
-  <property name="open" default={{true}} />
+  <property name="dispatch" default={{this.dispatch}} />
   <style>
     .input-box {
       width: var(--base4);
@@ -21,7 +20,7 @@
     }
   </style>
   <template>
-    <td-color-mini-input value={{this.expr.value}} onChange={{this.onChange}} open={{this.open}} />
+    <td-color-mini-input value={{this.expr.value}} dispatch={{this.dispatch}} />
     <span>{{this.expr.value}}</span>
   </template>
 </component>
@@ -59,6 +58,7 @@
 <component id="td-color-mini-input">
   <property name="value" default="1" />
   <property name="open" default={{false}} />
+  <property name="dispatch" default={{noop}} />
   <style>
     .input-box {
       width: var(--base4);
@@ -78,7 +78,7 @@
 
       <!-- TODO - fix me - super slow -->
       <!-- need to not render this until slot is present -->
-      <td-color-picker color={{this.value}} />
+      <td-color-picker value={{this.value}} dispatch={{this.dispatch}} />
     </td-tooltip>
   </template>
 </component>
@@ -86,6 +86,7 @@
 <component id="td-css-call-expr-input">
   <property name="expr" />
   <property name="open" default={{false}} />
+  <property name="dispatch" default={{noop}} />
   <style>
     td-css-expr-input::after {
       content: ", ";
@@ -95,16 +96,16 @@
       content: "";
     }
   </style>
-  <script>
-    import { stringifyCSSExpression } from "./utils/css.ts";
+  <script type="text/typescript">
+    const { stringifyCSSExpression } = require("./utils/css.ts");
   </script>
   <template>
     
     <!-- mini inputs for function -->
-    <td-color-mini-input pc-if={{this.expr.name === "rgb" || this.expr.name === "rgba"}} open={{this.open}} value={{stringifyCSSExpression(this.expr)}} /> 
+    <td-color-mini-input pc-if={{this.expr.name === "rgb" || this.expr.name === "rgba"}} open={{this.open}} value={{stringifyCSSExpression(this.expr)}} dispatch={{this.dispatch}} /> 
 
     <span>{{this.expr.name}}(</span>
-      <td-css-expr-input pc-repeat="this.expr.params as param" context={{this.expr}} expr={{param}} />
+      <td-css-expr-input pc-repeat="this.expr.params as param" context={{this.expr}} expr={{param}} dispatch={{this.dispatch}} />
     <span>)</span>
   </template>
 </component>
@@ -113,6 +114,7 @@
   <property name="expr" />
   <property name="context" />
   <property name="open" />
+  <property name="dispatch" default={{noop}} />
   <style>
     :host {
       display: inline;
@@ -124,12 +126,20 @@
   <script type="text/typescript"> 
     import { CSSDeclarationExpressionType } from "./utils/css.ts";
     const { COLOR, CALL, NUMBER, KEYWORD } = CSSDeclarationExpressionType;
+
+    const dispatch = (event) => {
+      if (event.type === "VALUE_CHANGED") {      
+        this.dispatch({ type: "EXPR_CHANGED", value: event.value, location: this.expr.location });
+      } else {
+        this.dispatch(event);
+      }
+    }
   </script>
   <template> 
-    <td-css-call-expr-input pc-if={{this.expr && this.expr.type === CALL}} expr={{this.expr}} open={{this.open}} />
-    <td-css-color-expr-input pc-elseif={{this.expr && this.expr.type === COLOR}} expr={{this.expr}} open={{this.open}}  />
-    <td-css-number-expr-input pc-elseif={{this.expr && this.expr.type === NUMBER}} expr={{this.expr}} open={{this.open}}  />
-    <td-keyword-expr-input pc-elseif={{this.expr && this.expr.type === KEYWORD}} context={{this.context}} expr={{this.expr}} />
+    <td-css-call-expr-input pc-if={{this.expr && this.expr.type === CALL}} expr={{this.expr}} open={{this.open}} dispatch={{dispatch}} />
+    <td-css-color-expr-input pc-elseif={{this.expr && this.expr.type === COLOR}} expr={{this.expr}} open={{this.open}} dispatch={{dispatch}}  />
+    <td-css-number-expr-input pc-elseif={{this.expr && this.expr.type === NUMBER}} expr={{this.expr}} open={{this.open}} dispatch={{dispatch}}  />
+    <td-keyword-expr-input pc-elseif={{this.expr && this.expr.type === KEYWORD}} context={{this.context}} expr={{this.expr}} dispatch={{dispatch}} />
     <span pc-else>
       {{this.expr && this.expr.value}}
     </span>
@@ -139,14 +149,17 @@
 <component id="td-css-expr-input-example">
   <property name="value" />
   <property name="open" default={{true}} />
-  <script>
-    import { parseDeclarationValue } from "./utils/css.ts";
+  <script type="text/typescript">
+    const { parseDeclarationValue } = require("./utils/css.ts");
+    const dispatch = ({ type, value }) => {
+      this.value = value;
+    };
   </script>
   <template>
-    <td-css-expr-input open={{this.open}} expr={{this.value && parseDeclarationValue(this.value)}} />
+    <td-css-expr-input open={{this.open}} expr={{this.value && parseDeclarationValue(this.value)}} dispatch={{dispatch}} />
   </template>
 </component>
 
 <td-preview>
-  <td-css-expr-input-example value="rgba(84, 172, 88, 0.60)" open />
+  <td-css-expr-input-example value="rgba(84, 172, 88, 0.60)" />
 </td-preview>

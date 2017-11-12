@@ -16,6 +16,7 @@ export type FileCache = {
 export type DevConfig = {
   port: number;
   sourceFilePattern: string;
+  getComponents(sourceFile: string); 
   webpackConfigPath?: string;
   getEntryIndexHTML: (options: GetEntryIndexHTMLOptions) => string;
   editSourceContent?(content: string, mutation: Mutation<any>, filePath?: string): StringMutation|StringMutation[];

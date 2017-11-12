@@ -5,7 +5,7 @@ import { put, take, fork, call, select } from "redux-saga/effects";
 
 const PERSIST_DELAY_TIMEOUT = 1000;
 
-const SAVE_KEY = "state3";
+const SAVE_KEY = "state99a9";
 
 declare function requestIdleCallback(callback: any): any;
 

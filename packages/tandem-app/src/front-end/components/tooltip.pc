@@ -46,13 +46,15 @@
       document.removeEventListener("mousedown", onDocumentClick);
       if (this.show) {
         document.addEventListener("mousedown", onDocumentClick);
-        const buttonRect = this.button.getBoundingClientRect();
-        const cardRect = this.card.getBoundingClientRect();
-        
-        this.anchor = {
-          left: Math.max(0, (buttonRect.left + buttonRect.width / 2) - (cardRect.width / 2)),
-          top: buttonRect.bottom + 20
-        };
+        requestAnimationFrame(() => {
+          const buttonRect = this.button.getBoundingClientRect();
+          const cardRect = this.card.getBoundingClientRect();
+          
+          this.anchor = {
+            left: Math.min(Math.max(0, (buttonRect.left + buttonRect.width / 2) - (cardRect.width / 2)), window.innerWidth - cardRect.width),
+            top: buttonRect.bottom + 20
+          };
+        });
       }
     }
 
@@ -79,7 +81,7 @@
       <slot name="button" onmousedown={{onButtonClick}}></slot>
     </span>
     <div id="overlay" pc-if="this.show" onmousedown={{onOverlayClick}}>
-      <div id="card" style={{this.anchor}} onmousedown={{onCardClick}}>
+      <div id="card" style={{ this.anchor ? this.anchor : { visibility: "hidden" }}} onmousedown={{onCardClick}}>
         <slot></slot>
       </div>
     </div>

@@ -62,7 +62,9 @@
         <td-workspace-footer workspace={{this.workspace}} />
       </div>
       <td-gutter right>
-        <td-css-inspector-pane />
+        <slot name="right-gutter-content">
+          <td-css-inspector-pane />
+        </slot>
       </td-gutter>
     </div>
   </template>

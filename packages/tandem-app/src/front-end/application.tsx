@@ -6,6 +6,7 @@ import * as ReactDOM from "react-dom";
 import { circular, parallel } from "mesh";
 import { flowRight } from "lodash";
 import { Main } from "./components";
+import { AppContainer } from "react-hot-loader";
 import { applicationReducer } from "./reducers";
 import { createApplicationState, ApplicationState } from "./state";
 import { mainSaga } from "./sagas";
@@ -32,7 +33,19 @@ export const initApplication = (initialState: ApplicationState) => {
     mainSaga,
     createWorkerMiddleware()
   );
-  ReactDOM.render(<Provider store={store}>
-    <Main dispatch={action => store.dispatch(action)} />
-  </Provider>, initialState.element);
+
+  const render = (Main) => {
+    ReactDOM.render(<Provider store={store}>
+      <Main dispatch={action => store.dispatch(action)} />
+    </Provider>, initialState.element)
+  }
+  
+  render(Main);
+
+  // if (module["hot"]) {
+  //   module["hot"].accept(() => {
+  //     render(Main);
+  //     debugger;
+  //   });
+  // }
 }

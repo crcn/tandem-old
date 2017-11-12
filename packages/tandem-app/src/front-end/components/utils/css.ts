@@ -1,5 +1,6 @@
 // TODO - measurements
 
+
 export enum CSSDeclarationExpressionType {
   COLOR,
   VAR,
@@ -9,7 +10,11 @@ export enum CSSDeclarationExpressionType {
 };
 
 export type CSSDeclarationExpression = {
-  type: CSSDeclarationExpressionType
+  type: CSSDeclarationExpressionType;
+  location: {
+    start: number;
+    end: number;
+  }
 };
 
 export type CSSDeclarationCall = {
@@ -37,16 +42,18 @@ export enum CSSDeclarationTokenType {
 
 export type Token = {
   type: CSSDeclarationTokenType,
-  value: string
+  value: string,
+  position: number
 };
 
 type TokenCursor = {
   position: number;
 }
 
-const token = (type, value) => ({
-  type: type,
-  value: value
+const token = (type, value, position) => ({
+  type,
+  value,
+  position
 });
 
 const tokenize = (source: string) => {
@@ -57,18 +64,18 @@ const tokenize = (source: string) => {
     const char = source.charAt(position);
     if (/\d/.test(char) || ((char === "-" || char === ".") && /\d+/.test(source.charAt(position + 1)))) {
       const value = source.substr(position).match(/^(-?[\d\.]+)/)[1];
+      tokens.push(token(CSSDeclarationTokenType.NUMBER, value, position));
       position += value.length - 1;
-      tokens.push(token(CSSDeclarationTokenType.NUMBER, value));
     } else if (/\w+/.test(char) || (char === "-" && /[\w-]+/.test(source.charAt(position + 1)))) {
       const value = source.substr(position).match(/^([\w-]+)/)[1];
+      tokens.push(token(CSSDeclarationTokenType.WORD, value, position));
       position += value.length - 1;
-      tokens.push(token(CSSDeclarationTokenType.WORD, value));
     } else if(/[\s\t]/.test(char)) {
       const value = source.substr(position).match(/^([\s\r\n\t]+)/)[1];
+      tokens.push(token(CSSDeclarationTokenType.WS, char, position));
       position += value.length - 1;
-      tokens.push(token(CSSDeclarationTokenType.WS, char));
     } else {
-      tokens.push(token(CSSDeclarationTokenType.CHAR, char));
+      tokens.push(token(CSSDeclarationTokenType.CHAR, char, position));
     }
 
     position++;
@@ -91,13 +98,16 @@ const getTokenValue = (tokens, position) => {
   return tokens[position] && tokens[position].value;
 };
 
+const getTokenPosition = (tokens, position) => {
+  return tokens[position] ? tokens[position].position  : tokens[tokens.length - 1].position + tokens[tokens.length - 1].value.length;
+};
+
 export const parseDeclarationValue = (value: string) => {
   if (_memos[value]) {
     return _memos[value];
   }
   return _memos[value] = getExpression(tokenize(value).filter(token => token.type !== CSSDeclarationTokenType.WS), { position: 0 });
 };
-
 
 const getExpression = (tokens: Token[], cursor: TokenCursor) => {
   const currentType = getTokenType(tokens, cursor.position);
@@ -115,11 +125,15 @@ const getExpression = (tokens: Token[], cursor: TokenCursor) => {
 };
 
 const getCall = (tokens: Token[], cursor: TokenCursor): CSSDeclarationCall => {
+  const startToken = tokens[cursor.position];
   cursor.position++; // eat word
+  const params = getParams(tokens, cursor);
+
   return {
-    name: getTokenValue(tokens, cursor.position - 1),
+    name: startToken.value,
     type: CSSDeclarationExpressionType.CALL,
-    params: getParams(tokens, cursor),
+    params,
+    location: { start: startToken.position, end: getTokenPosition(tokens, cursor.position) }
   };
 };
 
@@ -127,7 +141,8 @@ const getKeyword = (tokens: Token[], cursor: TokenCursor): CSSDeclarationKeyword
   cursor.position++; // eat word
   return {
     name: getTokenValue(tokens, cursor.position - 1),
-    type: CSSDeclarationExpressionType.KEYWORD
+    type: CSSDeclarationExpressionType.KEYWORD,
+    location: { start: tokens[cursor.position - 1].position, end: getTokenPosition(tokens, cursor.position) }
   };
 };
 
@@ -135,7 +150,8 @@ const getNumber = (tokens: Token[], cursor: TokenCursor): CSSDeclarationNumber =
   cursor.position++;
   return {
     value: getTokenValue(tokens, cursor.position - 1),
-    type: CSSDeclarationExpressionType.NUMBER
+    type: CSSDeclarationExpressionType.NUMBER,
+    location: { start: tokens[cursor.position - 1].position, end: getTokenPosition(tokens, cursor.position) }
   };
 };
 
@@ -152,8 +168,9 @@ const getParams = (tokens: Token[], cursor: TokenCursor) => {
       break;
     }
     params.push(getExpression(tokens, cursor));
-
   }
+
+  cursor.position++; // eat )
   return params;
 }
 

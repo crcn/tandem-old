@@ -8,7 +8,9 @@ export type Config = {
   componentsDirectory?: string;
   transpilers?: {
     [identifier: string]: Transpiler
-  }
+  },
+  extensions?: string[];
+  moduleDirectories?: string[];
 };
 
 export type FileCacheItem = {

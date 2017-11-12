@@ -8,16 +8,18 @@ const base = require("./webpack-base.config.js");
 
 module.exports = merge({}, base, {
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('[name].bundle.css'),
     new HtmlWebpackPlugin({
       title: "Aerial Playground",
       template: __dirname + '/src/index.html'
     }),
+    new webpack.NamedModulesPlugin()
   ],
   module: {
     rules: [
       ...base.module.rules,
-      { test: /\.tsx?$/, use: 'ts-loader' },
+      { test: /\.tsx?$/, use: ['react-hot-loader/webpack', 'ts-loader'] },
     ]
   }
 });

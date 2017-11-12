@@ -6,8 +6,7 @@
 <link rel="import" href="./css-declaration-input.pc" />
 
 <component id="td-style-declaration">
-  <property name="name" />
-  <property name="value" />
+  <property name="declaration" />
   <style>
     .name {
       color: var(--font-color-dim);
@@ -17,17 +16,23 @@
     }
   </style>
   <script type="text/typescript"> 
-    import { CSSDeclarationExpressionType, parseDeclarationValue } from "./utils/css.ts";
+    const { CSSDeclarationExpressionType, parseDeclarationValue } = require("./utils/css.ts");
+    const dispatch = (event) => {
+      if (event.type === "EXPR_CHANGED") {
+        const { location: { start, end }, value: newExprValue } = event;
+        const newValue = this.declaration.value.substr(0, start) + newExprValue + this.declaration.value.substr(end);
+        dispatch({ type: "DECLARATION_CHANGED", name: this.declaration.name, value: newValue });
+      }
+    }
   </script>
   <template>
-    <span class="name">{{this.name}}</span>
-    <td-css-expr-input expr={{parseDeclarationValue(this.value)}} />
+    <span class="name">{{this.declaration.name}}</span>
+    <td-css-expr-input expr={{parseDeclarationValue(this.declaration.value)}} dispatch={{dispatch}} />
   </template>
 </component>
 
 <component id="td-style-rule">
-  <property name="selectorText" />
-  <property name="sourceUri" />
+  <property name="styleRule" />
   <style>
     .source {
       float: right;
@@ -48,41 +53,33 @@
     .value:after {
     }
   </style>
+  <script>
+    const dispatch = (event) => {
+      console.log("CHANGED");
+    }
+  </script>
   <template>
     <td-gutter-subheader>
-      {{this.selectorText}}
+      {{this.styleRule && this.styleRule.selectorText}}
       <span class="source">
-        {{this.sourceUri}}
+        {{this.styleRule && this.styleRule.source && this.styleRule.source.uri}}
       </span>
     </td-gutter-subheader>
 
     <td-list>
-      <td-list-item>
-        <td-style-declaration name="background-color" value="rgba(203, 52, 188, 0.66)" />
-      </td-list-item>
-      <td-list-item>
-        <td-style-declaration name="background-color" value="rgba(52, 191, 203, 0.66)" />
-      </td-list-item>
-      <td-list-item>
-        <td-style-declaration name="color" value="rgba(52, 52, 203, 0.5)"/>
-      </td-list-item>
-      <td-list-item>
-        <td-style-declaration name="text-transform" value="uppercase" />
-      </td-list-item>
-      <td-list-item>
-        <td-style-declaration name="float" value="left" />
-      </td-list-item>
-      <td-list-item>
-        <td-style-declaration name="padding" value="var(--base6) var(--base7)"  />
-      </td-list-item>
-      <td-list-item>
-        <td-style-declaration name="position" value="relative" />
+      <td-list-item pc-if={{this.styleRule}} pc-repeat="this.styleRule.declarations as declaration">
+        <td-style-declaration name="background-color" declaration={{declaration}} dispatch={{dispatch}} />
       </td-list-item>
     </td-list>
   </template>
 </component>
 
+<schema id=">
+
+</schema>
+
 <component id="td-css-inspector-pane">
+  <property name="styleRules" schema="style-rule" />
   <template>
     <td-pane>
       <span slot="header">
@@ -92,9 +89,33 @@
         </div>
       </span>
       <span slot="content">
-        <td-style-rule selectorText=".container" sourceUri="global.pc" />
-        <td-style-rule selectorText=".body" sourceUri="global.pc" />
+        <td-style-rule pc-if={{this.styleRules}} pc-repeat="this.styleRules as styleRule" styleRule={{styleRule}} />
       </span>
     </td-pane>
   </template>
 </component>
+
+<component id="td-css-inspector-pane-example">
+  <script>
+    const styleRules = [
+      {
+        selectorText: ".test",
+        source: {
+          uri: "global.pc"
+        },
+        declarations: [
+          { name: "color", value: "rgba(0,0,0,0.5)" },
+          { name: "transform", value: "var(--root)" },
+          { name: "transform", value: "blue" }
+        ]
+      }
+    ];
+  </script>
+  <template>
+    <td-css-inspector-pane styleRules={{styleRules}} />
+  </template>
+</component>
+
+<td-preview>
+  <td-css-inspector-pane-example />
+</td-preview>

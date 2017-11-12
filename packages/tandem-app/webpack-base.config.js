@@ -7,11 +7,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    entry: __dirname + '/src/front-end/entry.ts'
+    entry: ['react-hot-loader/patch', __dirname + '/src/front-end/entry.ts']
   },
   output: {
     path: resolve(__dirname, 'lib', 'front-end'),
     filename: 'entry.bundle.js'
+  },
+  devServer: {
+    hot: true
   },
   resolve: {
     extensions: ['.ts', '.js', '.tsx'],
@@ -33,7 +36,7 @@ module.exports = {
     rules: [
       {
         test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
-        loader: 'url-loader?limit=1000'
+        use: 'url-loader?limit=1000'
       },
       { 
         test: /\.scss$/, 

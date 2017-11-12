@@ -11,11 +11,11 @@ english words for colors
 
 <component id="td-color-picker">
 
-  <property name="dropperPoint" default={{{left:0, top: 0}}} />
-  <property name="hue" default={{0}} />
   <property name="width" default={{300}} />
+  <property name="state" />
   <property name="height" default={{150}} />
-  <property name="color" default={{"#000000"}} />
+  <property name="dispatch" default={{noop}} />
+  <property name="value" default={{"#000000"}} />
   <property name="onChange" default={{noop}} />
 
   <style>
@@ -123,14 +123,122 @@ english words for colors
     
 
   </style>
-  <script>
+  <script type="text/typescript">
+
+    const dispatch = (event) => {
+      const { color, dragging } = this.state;
+      this.state = reduceState(this.state, event);
+      if (dragging && !this.state.dragging) {
+        this.dispatch({ type: "VALUE_CHANGED", value: color });
+      }
+    }
+
+    const reduceState = (state = {}, event) => {
+      switch(event.type) {
+        case "HSL_PICKER_EVENT": {
+          return hslPickerReducer(state, event.event);
+        }
+        case "HUE_PICKER_EVENT": {
+          return huePickerReducer(state, event.event);
+        }
+        case "OPACITY_PICKER_EVENT": {
+          return opacityPickerReducer(state, event.event);
+        }
+        case "INPUT_CHANGED": {
+          const { color } = event;
+          return updateColor(color, state, colorToRgba(color)[3]);
+        }
+        case "PROP_CHANGED": {
+          const { name, value } = event;
+          if (name === "color") {
+            return {
+              ...state,
+              ...updateColor(value, state, colorToRgba(value)[3])
+            };
+          }
+        }
+      }
+      return state;
+    };
+
+    const hslPickerReducer = (state, event) => {
+      switch(event.type) {
+        case "DRAG": {
+          const { color, hue } = state;
+          const { point, bounds, nativeEvent } = event;
+          const canvas = this.hslPicker.getContext('2d');
+          const p = canvas.getImageData(Math.min(point.left, this.hslPicker.width - 1), point.top, 1, 1).data;
+          const hsl = rgbToHsl(...p);
+          return {
+            ...state,
+            ...updateColor(rgbToHex(hslToRgb(hue, hsl[1], hsl[2])), state),
+            dropperPoint: point,
+            hue,
+            dragging: true
+          }
+        }
+        case "DRAG_STOP": {
+          return {
+            ...state,
+            dragging: false
+          }
+        }
+      }
+      return state;
+    }
+
+    const huePickerReducer = (state, event) => {
+      switch(event.type) {
+        case "DRAG": {
+          const { color } = state;
+          const { point, bounds, nativeEvent } = event;
+          const hue = point.left / bounds.width;
+          const hsl = getColorHSL(color);
+          return {
+            ...state,
+            ...updateColor(rgbToHex(hslToRgb(hue, hsl[1], hsl[2])), state),
+            hue,
+            dragging: true
+          }
+        }
+        case "DRAG_STOP": {
+          return {
+            ...state,
+            dragging: false
+          }
+        }
+      }
+      return state;
+    }
+
+    const opacityPickerReducer = (state, event) => {
+      switch(event.type) {
+        case "DRAG": {
+          const { color } = state;
+          const { point, bounds, nativeEvent } = event;
+          return {
+            ...state,
+            ...updateColor(color, state, point.left / bounds.width),
+            dragging: true
+          };
+        }
+        case "DRAG_STOP": {
+          return {
+            ...state,
+            dragging: false
+          }
+        }
+      }
+      return state;
+    }
+
     const rgbToHex = (rgb) => {
       var v = rgb[2] | (rgb[1] << 8) | (rgb[0] << 16);
       return '#' + (0x1000000 + v).toString(16).slice(1)
     }
     const colorToRgba = (color) => {
       if (color.indexOf("rgba") !== -1) {
-        return color.match(/[\d\.]+/g).map(Number);
+        return (color.match(/[\d\.]+/g) || [0, 0, 0, 1]).map(Number);
       }
       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
       return result ? [
@@ -138,7 +246,7 @@ english words for colors
         parseInt(result[2], 16),
         parseInt(result[3], 16),
         1
-       ] : null;
+       ] : [0, 0, 0, 1];
     };
 
     const rgbToHsl = (r, g, b) => {
@@ -186,19 +294,12 @@ english words for colors
         return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
     }
 
-    const onPalleteDrag = (event, point, bounds) => {
-      const canvas = this.hslPicker.getContext('2d');
-      this.dropperPoint = point;
-      const p = canvas.getImageData(Math.min(point.left, this.hslPicker.width - 1), point.top, 1, 1).data;
-      const hsl = rgbToHsl(...p);
-      updateColor(rgbToHex(hslToRgb(this.hue, hsl[1], hsl[2])));
-    };
-
-    const updateColor = (hex, opacity) => {
+    const updateColor = (hex, state, opacity) => {
 
       let newColor;
+
       if (!opacity) {
-        opacity = colorToRgba(this.color)[3];
+        opacity = colorToRgba(state.color)[3];
       }
 
       if (opacity === 1) {
@@ -208,24 +309,17 @@ english words for colors
         newColor = `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${opacity && opacity.toFixed(2)})`;
       }
 
-      this.onChange(this.color = newColor);
+      return {
+        ...state,
+        color: newColor,
+        hue: getColorHSL(newColor)[0]
+      }
     }
 
-    const getColorHSL = () => rgbToHsl(...colorToRgba(this.color));
-
-    const onHueDrag = (event, point, bounds) => {
-      const hsl = getColorHSL();
-      const hue = point.left / bounds.width;
-      updateColor(rgbToHex(hslToRgb(hue, hsl[1], hsl[2])));
-      this.hue = hue;
-    };
-
-    const opOpacityDrag = (event, point, bounds) => {
-      updateColor(this.color, point.left / bounds.width);
-    }
+    const getColorHSL = (color) => rgbToHsl(...colorToRgba(color));
 
     const getOpacity = () => {
-      return this.color.indexOf("rgba") !== -1 ? this.color.match(/[\.\d]+/g)[3] : 1;
+      return colorToRgba(this.state.color)[3];
     }
 
     const drawHSL = (hue) => {
@@ -254,7 +348,7 @@ english words for colors
       var ctx = this.opacityPicker.getContext('2d');
       const { width } = this;
       for (var row = 0; row <= width; row++) {
-        ctx.fillStyle = `hsl(${this.hue * 360}, 100%, ${((width - row)/width) * 50 + 50}%)`;
+        ctx.fillStyle = `hsl(${this.state.hue * 360}, 100%, ${((width - row)/width) * 50 + 50}%)`;
         ctx.fillRect(row, 0, 1,  this.spectrumPicker.height);
       }
     }
@@ -300,7 +394,7 @@ english words for colors
     }
 
     const draw = () => {
-      drawHSL(this.hue * 360);
+      drawHSL(this.state.hue * 360);
       drawSpectrum();
       drawOpacity();
     };
@@ -317,32 +411,25 @@ english words for colors
           return;
         }
 
-        updateColor(color);
-        resetInputs();
+        dispatch({ type: "INPUT_CHANGED", color });
       });
     }
 
     let color;
 
     const update = () => {
-      if (color !== this.color) {
-        color = this.color;
-        if (color) {
-          resetInputs();
-        }
-      }
       draw();
     };
 
     const resetInputs = () => {
       updateColorPoint();
-      this.hue = getColorHSL()[0];
+      //this.hue = getColorHSL()[0];
     };
 
     // TODO
     const updateColorPoint = () => {
-      if (this.color) {
-        const [h, s, v] = rgbToHsv(...colorToRgba(this.color));
+      if (this.state.color) {
+        const [h, s, v] = rgbToHsv(...colorToRgba(this.state.color));
         this.dropperPoint = {
           left: (1 - s) * 100 + "%",
           top: (1 - v) * 100 + "%"
@@ -350,42 +437,51 @@ english words for colors
       }
     }
 
+    this.propertyChangedCallback = (name, oldValue, value) => {
+      dispatch({ type: "PROP_CHANGED", name, value });
+    }
+
     this.didMount = update;
     this.didUpdate = update;
+    
+    this.state = {
+      dropperPoint: {},
+      color: this.value,
+      hue: getColorHSL(this.value)[0]
+    };
     
   </script>
   <template>
     <div class="color-picker">
 
       <div class="top">
-        <td-draggable restrict="self" onDrag={{onPalleteDrag}}>
+        <td-draggable restrict="self" dispatch={{(event) => dispatch({ type: "HSL_PICKER_EVENT", event })}}>
           <div id="pallete">
             <canvas id="hslPicker" width={{this.width}} height={{this.height}} />
-            <div class="dropper" style={{{...this.dropperPoint, background: rgbToHex(colorToRgba(this.color)) }}} />
+            <div class="dropper" style={{{...this.state.dropperPoint, background: rgbToHex(colorToRgba(this.state.color)) }}} />
           </div>
         </td-draggable>
 
-        <td-draggable restrict="self" onDrag={{onHueDrag}}>
+        <td-draggable restrict="self" dispatch={{(event) => dispatch({ type: "HUE_PICKER_EVENT", event })}}>
           <div id="spectrum">
             <canvas id="spectrumPicker" width={{this.width}} height="30" />
-            <div class="hue needle" style={{{left: (this.hue * 100) + "%", background: rgbToHex(hslToRgb(this.hue, 1, 0.5)) }}}>
+            <div class="hue needle" style={{{left: (this.state.hue * 100) + "%", background: rgbToHex(hslToRgb(this.state.hue, 1, 0.5)) }}}>
             </div>
           </div>
         </td-draggable>
 
-        <td-draggable restrict="self" onDrag={{opOpacityDrag}}>
+        <td-draggable restrict="self" dispatch={{(event) => dispatch({ type: "OPACITY_PICKER_EVENT", event })}}>
           <div id="spectrum">
             <canvas id="opacityPicker" width={{this.width}} height="30" />
-            <div class="opacity needle" style={{{left: (getOpacity() * 100) + "%", background: "rgba(" + hslToRgb(this.hue, 1, 0.5).concat(getOpacity()) + ")" }}}>
+            <div class="opacity needle" style={{{left: (getOpacity() * 100) + "%", background: "rgba(" + hslToRgb(this.state.hue, 1, 0.5).concat(getOpacity()) + ")" }}}>
             </div>
           </div>
         </td-draggable>
 
         <div class="inputs">
-          <input type="text" value={{this.color}} onfocus={{onInputFocus}} onkeypress={{onInputChange}} />
+          <input type="text" value={{this.state.color}} onfocus={{onInputFocus}} onkeypress={{onInputChange}} />
         </div>
       </div>
-      
 
       <!--div class="presets">
         <repeat each={{(this.presetColors || [])}} as="presetColor">

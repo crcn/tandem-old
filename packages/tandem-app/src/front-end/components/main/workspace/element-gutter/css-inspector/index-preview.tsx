@@ -19,5 +19,8 @@ export const Preview = () => {
   const workspace = createWorkspace({
     selectionRefs: [[SYNTHETIC_ELEMENT, "e1"]]
   });
+
   return <CSSInspector browser={null} workspace={workspace} dispatch={null} />;
 }
+
+console.log(module["hot"]);

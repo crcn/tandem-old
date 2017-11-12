@@ -161,9 +161,15 @@
 </component>
 
 <component id="td-draggable">
-  <property name="onDrag" default={{noop}} />
+  <property name="dispatch" default={{noop}} />
+  <property name="state" />
   <property name="restrict" />
   <script>
+
+    this.state = {
+      dragging: false
+    };
+
     const onMouseDown = (event) => {
 
       const draggableRect = this.children[0].getBoundingClientRect();
@@ -177,12 +183,13 @@
         deltaY: draggableRect.top - event.clientY
       };
       
-      const onMouseUp = (event) => {
+      const onMouseUp = (nativeEvent) => {
         document.removeEventListener("mouseup", onMouseUp, true);
         document.removeEventListener("mousemove", onMouseMove);
+        this.dispatch({ type: "DRAG_STOP", nativeEvent });
       };
 
-      const onMouseMove = (event) => {
+      const onMouseMove = (nativeEvent) => {
 
         const bounds = restrict === "parent" ? this.parentElement.getBoundingClientRect() : restrict === "self" ? draggableRect : {
           left: 0,
@@ -191,13 +198,20 @@
           height: window.innerHeight
         };
 
-        const relativeLeft = Math.max(0, Math.min(bounds.width, event.clientX - bounds.left + deltaX));
-        const relativeTop = Math.max(0, Math.min(bounds.height, event.clientY - bounds.top + deltaY));
+        const relativeLeft = Math.max(0, Math.min(bounds.width, nativeEvent.clientX - bounds.left + deltaX));
+        const relativeTop = Math.max(0, Math.min(bounds.height, nativeEvent.clientY - bounds.top + deltaY));
 
-        this.onDrag(event, {
-          left: relativeLeft,
-          top: relativeTop
-        }, bounds);
+        const event = {
+          type: "DRAG",
+          nativeEvent,
+          point: {
+            left: relativeLeft,
+            top: relativeTop
+          },
+          bounds
+        };
+
+        this.dispatch(event);
       };
 
       onMouseMove(event);

@@ -3,7 +3,7 @@ import { LogLevel } from "aerial-common2";
 import { argv } from "yargs";
 import * as path from "path";
 import { applicationStarted } from "./actions";
-import { VISUAL_TOOLS_CONFIG_FILE_NAME } from "./constants";
+import { VISUAL_TOOLS_CONFIG_FILE_NAME, WEBPACK_CONFIG_NAMESPACE } from "./constants";
 
 const configPath = path.join(process.cwd(), VISUAL_TOOLS_CONFIG_FILE_NAME);
 

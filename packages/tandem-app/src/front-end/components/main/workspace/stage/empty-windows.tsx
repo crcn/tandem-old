@@ -17,7 +17,7 @@ const EmptyWindowsBase = ({ onSubmit }: EmptyWindowsPropsInner) => {
   return <div className="m-empty-windows">
     <form onSubmit={onSubmit}>
       <input name="url" type="text" placeholder="URL"></input>
-      <input type="submit" value="Add window"></input>
+      <input type="submit" value="Add window!"></input>
     </form>
   </div>;
 }
