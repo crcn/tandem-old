@@ -369,7 +369,7 @@ Additionally, you can define global variables that _can_ be used in components l
 
 ### Paperclip Roadmap 💫
 
-Some planned features for Paperclip. Everything about Paperclip is being designed now so that these ideas will be possible.
+Paperclip is designed for the future to make the following ideas possible.
 
 #### Strong types
 
