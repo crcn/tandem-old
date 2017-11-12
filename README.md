@@ -1,4 +1,4 @@
-> Note that Tandem was intented to be a visual editor that runs any kind of application out of the box (assuming that source maps was turned on). This big audatious hairy goal has since been scaled back to something that's a bit more feasible (with the amount of time I have) for a version 1 of the application. 
+> Note that Tandem was intented to be a visual editor that runs any kind of application out of the box. This big audatious hairy goal has since been scaled back to something that's a bit more feasible (with the amount of time I have) for a version 1 of the application. 
 
 Tandem is a visual designer for creating web components. The editor comes with many of the visual tools you might find in something like Sketch such as artboards, measurement tools, along with additional tooling for responsive design, CSS tooling, and the likes. 
 
@@ -14,7 +14,7 @@ Below are some of the technical details, ideas, whys, and motivations about some
 
 ## Paperclip
 
-Paperclip is a design language that's optimized for visual editing. Think of it like a `.xib` file format for the web, but human readable, and writable by hand. 
+Paperclip is a design language that is optimized for visual editing. Think of it like a `.xib` file format for the web, but human readable, and writable by hand. 
 
 #### Motiviation
 
