@@ -75,7 +75,7 @@ Eventually, Tandem will come with a build button for projects that will work out
 - To reduce the amount of tooling required to build a web application. Tandem will give users the option to build their _entire_ web application with a click of a button. 
 - To integrate with languages that are 100% editable in Tandem. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
 - To provide visual aid around web features with tooltips & suggestions on web design. 
-- To reduce vendor lock-in. You shouldn't be stuck using Tandem if you don't want to use it anymore.
+- To reduce vendor lock-in. You shouldn't be stuck using Tandem if you don't want to use it.
 
 ### Tandem Non-goals
 
