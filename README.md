@@ -44,7 +44,7 @@ The CSS editor provides you with a 1-1 map of the visual styles of your applicat
 
 <img width="278" alt="screenshot 2017-11-12 15 17 05" src="https://user-images.githubusercontent.com/757408/32700419-ddb57ef8-c7bc-11e7-8603-989eff2904fe.png">
 
-> The CSS editor is similar to Chrome's web inspector, except that the css editor actually writes to the paperclip file.
+> The CSS editor is similar to Chrome's web inspector, except that the css editor actually writes to the source code.
 
 #### (v1) Webpack React loader
 
