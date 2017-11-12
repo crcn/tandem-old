@@ -311,7 +311,7 @@ Attaches an event listener to an element. Events that are dispatched by the elem
 </component>
 ```
 
-The `a` button in the above component emits a plain javascript object of `{ type: "EVENT", payload: { triggerEvent: sourceMouseEvent, context: { count: 0 }}}`, which should be handled by a higher order component that defines a `handleEvent` property. If a `handleEvent` is _not_ present, then event will bubble up until it reaches one. `handleEvents` that _are_ defined must call a higher order `handleEvent` function in order for bubbling to occur.  Here's an example:
+The `a` button in the above component emits a plain javascript object of `{ type: "EVENT", payload: { triggerEvent: sourceMouseEvent, context: { count: 0 }}}`, which should be handled by a higher order component that defines a `handleEvent` property. If a `handleEvent` is _not_ present, then event will bubble up until it reaches one. `handleEvents` that _are_ defined must call a higher order `handleEvent` function in order for bubbling to occur.  
 
 
 #### <style /> elements
