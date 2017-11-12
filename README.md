@@ -132,9 +132,9 @@ Paperclip is an open file format that allows for somewhat expressive behavior to
 </component>
 ```
 
-The format above is similar to other template languages such as Handlebars, and Mustache, but the syntax is carefully designed to ensure that _every part_ of Paperclip can be written visually. Though Paperclip files _can_ be written by hand, that's not what Paperclip is designed for. Paperclip's file format provides yet another UI to help developers inspect how a web component is written so that they can integrate Paperclip files into their main application. 
+The format above is similar to other template languages such as Handlebars, and Mustache, but the syntax is carefully designed to ensure that _every part_ of Paperclip can be written visually. Though Paperclip files _can_ be written by hand, that's not what the format is designed for. Paperclip's file format provides yet another UI to help developers inspect how a web component is written so that they can integrate Paperclip files into their main application. 
 
-> Also note that Paperclip's limited expressiveness is also a means to it _light_ (Only HTML, CSS, and built-in expressions are allowed), since overly complex Paperclip files that use import statements _could_ amount to very heavy web components that would result in a very _slow_, and possibly unusable visual editing experience (especially with many artboards that share the same components).
+> Also note that Paperclip's limited expressiveness is to ensure that paperclip files are _lightweight_ (Only HTML, CSS, and built-in expressions are allowed), since overly complex Paperclip files that import lots of code _could_ amount to very heavy web components that would result in a very _slow_, and possibly unusable visual editing experience (especially with many artboards that share the same components).
 
 > Paperclip's limited expressiveness is also intended for people less code-savvy. Certain types such as functions, and objects must be computed _outside_ of a Paperclip template file in a higher order component that contains complex behavior. 
 
