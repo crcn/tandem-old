@@ -8,8 +8,6 @@ By default, web components built in Tandem are written in a simple to read & wri
 
 ## Planned features
 
-Below are some planned MVP, and future features for Tandem. 
-
 #### (v1) Artboards
 
 Artboards are similar to Sketch, and provide you aerial view of all of your web components. Artboard changes also affect one another, so a CSS color change for example may affect another artboard that shares the same CSS property. For example:
