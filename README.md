@@ -373,7 +373,7 @@ Paperclip is designed for the future to make the following ideas possible.
 
 #### Strong types
 
-Future versions of Paperclip will likely contain strong types that will integrate with the visual editor. Ideally, the visual editor would emit "compile errors" that would be displayed to the user when changes are made to a UI that breaks other parts of the application.
+Future versions of Paperclip will likely contain strong types that will integrate with the visual editor. Ideally, the visual editor would emit compile errors that would be displayed to the user when changes are made to a UI that breaks other parts of the application. So basically, with types, if a Paperclip file builds, it should work.
 
 Paperclip types will also be compilable to other type systems such as TypeScript, and Flow.  The basic syntax for this may look like:
 
