@@ -2,11 +2,69 @@
 
 Tandem is a visual designer for creating web components. The editor comes with many of the visual tools you might find in something like Sketch such as artboards, measurement tools, along with additional tooling for responsive design, CSS tooling, and the likes. 
 
-[DEMO]
+![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
 Web components built in Tandem are written in a simple to read & write format, called Paperclip. Paperclip web components are intented to be light weight, and compileable to many target frameworks (React for starters).
 
-## Planned Features
+## Planned features
+
+Below are some planned v1 features for Tandem. For the most part, it will contain a similar experience to Chrome's web inspector.
+
+#### (v1) Artboards
+
+Artboards are similar to Sketch, and provide you aerial view of all of your web components. Artboard changes also affect one another, so a CSS color change for example may affect another artboard that shares the same CSS property. For example:
+
+![ezgif-1-e0c05e0cbf](https://user-images.githubusercontent.com/757408/32658161-a855af7e-c610-11e7-9129-769a112e0031.gif)
+
+> Artboards in Tandem are _actually_ individual browser VMs that run application code. 
+
+#### (v1) Stage tools
+
+The stage, as in, the artboard that you edit directly. The stage will contain tools similar to what you'd find in sketch, like moving elements around:
+
+![ezgif-4-47f92ab768](https://user-images.githubusercontent.com/757408/32700619-6b6da732-c7bf-11e7-82de-b15f4d3101e4.gif)
+
+Other features include:
+
+- pixel grid (when zoomed in)
+- text editing
+- multi selection
+
+#### (v1) Components pane
+
+The components pane will display native elements (`div`, `span`, `h1`), along with custom components from your file system. 
+
+#### Text editor (VSCode) integration
+
+Tandem will be installable as an extension of your visual editor -- currently for VSCode. 
+
+#### (v1) CSS editor
+
+The CSS editor provides you with a 1-1 map of the visual styles of your application. The inspector also comes with a set of other helper utilities such as a color picker, box shadow editor, filter editor, and other tools to help style components. Here's the current design of the css editor:
+
+<img width="278" alt="screenshot 2017-11-12 15 17 05" src="https://user-images.githubusercontent.com/757408/32700419-ddb57ef8-c7bc-11e7-8603-989eff2904fe.png">
+
+> The CSS editor is similar to Chrome's web inspector, except that the css editor actually writes to the paperclip file.
+
+#### (v1) Webpack React loader
+
+The webpack react loader allows you to compile paperclip files to react components, and import them in your application.
+
+#### (v2) More text editor integrations
+
+Atom will be support, along with Sublime, and possibly other text editors.
+
+#### (v2) Stage tools
+
+The next bunch of stage tools will offer more visual helpers & guides to help with pixel perfect designs. They will include:
+
+- Measurement tools
+- Snap-to-place tools (when dragging elements)
+
+
+#### (v2) Build button
+
+Eventually, Tandem will come with a build button for projects that will work out of the box, along with a command line option for bundling apps for deployment (`tandem build`, or something like that). This feature is planned to make it easier for less technical people to make UI changes, and preview their UIs in a production application. The build step will likely use `webpack` in the background, but may be configured to support other bundlers as well. 
 
 ## Technical details
 

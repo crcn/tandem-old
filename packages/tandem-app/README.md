@@ -1,99 +1,29 @@
-very simple online playground for visually creating web applications
-
-
-LITMUS:
-
-- [ ] should be able to build sites without writing much code
-
-TODAY (11/10): 
-
-- [ ] generate d.ts files
-- [ ] pc -> jsx compiler
+#### V1
 
 - [ ] Paperclip
-  - [ ] 
-
-IMMEDIATE:
-
-- [ ] Paperclip
-  - [ ] import external CSS scripts
-  - [ ] transpile TS to JS
-- [ ] Components
-  - [ ] color picker
-  - [ ] CSS Inspector
-    - [ ] color picker
-    - [ ] editable properties
-    - [ ] var() inspector
-      - [ ] show var options
-    - [ ] :root editor
-    - [ ] shadow editor
-    - [ ] margin editor
-
-- [ ] Awesome features
-   - [ ] live view (switch to iframe) in editor
-   - [ ] 
-
-- [ ] paperclip HMR needs to work outside of editor
-
-- [ ] Bugs
-  - [ ] allow refresh when script busts
-  - [ ] external links are broken
-  - [ ] matching styles must also consider slots** - (used assignedSlot for this)
-  - [ ] multi drag windows doesn't work properly
-  - [ ] editing content from UI still breaks (drag cell)
-  - [ ] !important flags show up as overridden in style pane
-  - [ ] cannot parse semicolon within CSS string ("; ")
-  - [ ] enable javascript expressions in blocks
-
-- [ ] Assist
-  - [ ] best guess for CSS selector
-
-- [ ] Window pane
-  - [ ] Fit to content
-
-- [ ] VM
-  - [ ] optimizations
-    - [ ] run on back-end -- serve diffs to front-end (should be MUCH faster. Also tees tandem up for AWS lambda)
-
-- [ ] Paperclip
-  - [ ] Lambda offloading
-  - [ ] make components more functional (use reducers)
-
-
-AFTER INITIAL COMPONENTS:
-
+  - [ ] runtime engine (runs in the browser - loads & parses templates)
+- [ ] Stage tools
+  - [ ]
+- [ ] CSS Editor
+  - [ ] add new style rule
+  - [ ] add new style declaration
+  - [ ] box shadow editor
+  - [ ] background color editor
+  - [ ] filter editor
+  - [ ] measurement converter (px <-> %)
+  - [ ] :root editor
+  - [ ] var() editor
+- [ ] text editor integration
+  - [ ] vscode
+    - [ ] 
 - [ ] Components pane
-  - [ ] refresh when local source change
-  - [ ] 
 
-- [ ] Color picker
-  - [ ] pick presets from :root
+#### V2
 
-- [ ] VSCode integration
+- [ ] Paperclip 
+  - [ ] strong types
 
-- [ ] enable javascript - needed to play with components
-- [ ] BUGS
-- [ ] vscode integration
-  - [ ] new components should refresh 
-  components pane
-  - [ ] Open current file in Tandem (should open new window)
-  - [ ] show component pane on initial load
-  - [ ] empty state should instruct to drag file from pane
-- [ ] ability to delete CSS rules
-- [ ] adding new style in right pane
-- [ ] visual stack traces about how results are computed -- allow for any kind of black box expression.
-- [ ] create new components
-- [ ] dnd elements to existing components
-- [ ] wire up edit text content
-- [ ] allow multiple <preview /> tags -- toggle within 
-editor
-- [ ] create new component when _native_ element is dropped onto the canvas
-- [ ] create a new window when a _custom_ component is dropped onto the canvas
-- [ ] add dropped component to existing element
-- [ ] re-wire up vscode extension
-- [ ] * color presets should be picked from :root vars
+#### V3
 
-- [ ] components
-  - [ ] color picker
-  - [ ] pretty pane
-  - [ ] CSS inspector (in paperclip)
+- [ ] Notes
+- [ ] Git integration

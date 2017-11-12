@@ -4,7 +4,7 @@
 <component id="td-windows-pane">
   <template>
     <td-pane>
-      <span slot="header">Windows</span>
+      <span slot="header">Artboards</span>
       <span slot="content">
         <td-list>
           <td-list-item>Window 1</td-list-item>

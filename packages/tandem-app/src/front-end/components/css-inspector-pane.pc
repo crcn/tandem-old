@@ -74,12 +74,8 @@
   </template>
 </component>
 
-<schema id=">
-
-</schema>
-
 <component id="td-css-inspector-pane">
-  <property name="styleRules" schema="style-rule" />
+  <property name="styleRules" />
   <template>
     <td-pane>
       <span slot="header">

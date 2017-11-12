@@ -63,7 +63,7 @@
       </div>
       <td-gutter right>
         <slot name="right-gutter-content">
-          <td-css-inspector-pane />
+          <td-css-inspector-pane-example />
         </slot>
       </td-gutter>
     </div>
