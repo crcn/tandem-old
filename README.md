@@ -1,10 +1,10 @@
 > Note that Tandem was intented to be a visual editor that runs any kind of application out of the box. This big audatious hairy goal has since been scaled back to something that's a bit more feasible (with the amount of time I have) for a version 1 of the application. 
 
-Tandem is a visual designer for creating web components. The editor comes with many of the visual tools you might find in something like Sketch such as artboards, measurement tools, along with additional tooling for responsive design, CSS tooling, and the likes. 
+Tandem is a visual designer for creating web components.
 
 ![screenshot 2016-12-22 15 48 03](https://cloud.githubusercontent.com/assets/757408/22388273/ce17a5e0-e4ad-11e6-9327-7d7ba3dc95bf.png)
 
-By default, web components built in Tandem are written in a simple to read & write format, called Paperclip. Paperclip web components are intented to be light weight, and compileable to many target frameworks (React for starters).
+By default, web components built in Tandem are written in a simple to read & write format, called Paperclip. Paperclip web components are intented to be light weight, and compileable to many frameworks (React for starters).
 
 ### Tandem Goals
 
