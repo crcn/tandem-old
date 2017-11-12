@@ -313,7 +313,6 @@ Attaches an event listener to an element. Events that are dispatched by the elem
 
 The `a` button in the above component emits a plain javascript object of `{ type: "EVENT", payload: { triggerEvent: sourceMouseEvent, context: { count: 0 }}}`, which should be handled by a higher order component that defines a `handleEvent` property. If a `handleEvent` is _not_ present, then event will bubble up until it reaches one. `handleEvents` that _are_ defined must call a higher order `handleEvent` function in order for bubbling to occur.  
 
-
 #### <style /> elements
 
 Styles are scoped to the components they're defined in (this is similar to the web component spec -- and you can read more about some of the patterns around it on MDN). This means that they only cascade to the immediate elements that are defined within the component's template. For example:
