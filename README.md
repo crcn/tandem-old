@@ -6,6 +6,20 @@ Tandem is a visual designer for creating web components. The editor comes with m
 
 Web components built in Tandem are written in a simple to read & write format, called Paperclip. Paperclip web components are intented to be light weight, and compileable to many target frameworks (React for starters).
 
+### Goals
+
+- Visual editing of _most_ web components (like 90% of code) like buttons & lists.
+- Visual tooling will be a 1-1 map of HTML & CSS. This means that people will need knowledge of HTML & CSS in order to use Tandem.
+- To lower the barrier for web development. Designers, and non-coders should be able to design web components without too much knowledge of coding. 
+- To provide tools that educates the user of web features (hints, tooltips, warnings, tools that augment). 
+- To reduce the amount of tooling required to build a web application. Tandem will give users the option to build their _entire_ web application with a click of a button. 
+- To integrate with languages that are 100% editable in Tandem. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
+
+### Non-goals
+
+- To support languages that are not designed for visual editing. SASS, LESS, and JSX, and other frameworks are optimized for good developer experience, but do a poor job producing code that is visually editable (things like `1 + 1`, and other computed properties are hard to change visually). 
+- To suport very sophisticated web components. Tandem will be designed to support web components with _simple_ behavior. Complicated components will need to be written by hand in a language such as JSX that's more expressive (which is probably the best option anways). Developer tooling will also be provided so that engineers can inject behavior into a web component created in Tandem (either as a higher order function, or view controller). 
+
 ## Planned features
 
 Below are some planned MVP, and future features for Tandem. 
@@ -16,7 +30,7 @@ Artboards are similar to Sketch, and provide you aerial view of all of your web 
 
 ![ezgif-1-e0c05e0cbf](https://user-images.githubusercontent.com/757408/32658161-a855af7e-c610-11e7-9129-769a112e0031.gif)
 
-> Artboards in Tandem are _actually_ individual browser VMs that run application code. 
+> Artboards in Tandem are _actually_ individual browser VMs that are _almost_ to spec with web APIs, which means that they can run fairly complex applications.
 
 #### (v1) Stage tools
 
@@ -32,7 +46,7 @@ Other features include:
 
 #### (v1) Components pane
 
-The components pane will display native elements (`div`, `span`, `h1`), along with custom components from your file system. 
+The components pane will display native elements (`div`, `span`, `h1`), along with custom components from your file system. Items in the components pane will be draggable to any element or component on stage (where the artboards are).
 
 #### Text editor (VSCode) integration
 
@@ -72,7 +86,7 @@ Below are some of the technical details, ideas, whys, and motivations about some
 
 ## Paperclip
 
-Paperclip is a design language that is optimized for visual editing. Think of it like a `.xib` file format for the web, but human readable, and writable by hand. 
+Paperclip is a design language that is optimized for visual editing. Think of it like a `.xib` file format for the web, but human readable, and writable by hand.
 
 #### Motiviation
 
@@ -124,11 +138,25 @@ The format above is similar to other template languages such as Handlebars, and 
 
 > Simplicity also offers some neat benefits around performance. Since Paperclip is declarative and bindings are identified at compile time, the compiled output of Paperclip can be optimized to the _bare minimum_ amount of operations required to update a dynamic UI. This is similar to how [Glimmer](#TODO-LINK) works.
 
+#### Goals
+
+- To provide a syntax that is close to web standards. 
+- Provide a syntax that can be compiled to other languages, and frameworks. 
+- Provide a syntax that's designed for visual editing, but human readable.
+- Type safety to ensure breaking changes to UI can be traced to other web components.
+- Provide syntaxes that augment the user experience of Tandem.
+
+#### Non-goals
+
+- Support complicated behavior that cannot be backtraced. 
+- Support for multiple languages. It's just HTML, CSS, and Paperclip-specific syntax. 
+- Support for inline scripts. This behavior must be injected into the web component. 
+
 #### Targeting multiple platforms
 
 Paperclip is designed to be compiled to _other_ frameworks. Version 1 of Paperclip will come with a React target. Future versions of Paperclip with likely have targets for other things like `Vue`, `Angular`, `PHP`, `Ruby`, among other languages and frameworks.
 
-Code-wise, all you need to do to integrate Paperclip into your web application is to import it like a normal module. Assuming that you have a paperclip file named `people-list.pc` that looks like this this:
+Code-wise, all you need to do to integrate Paperclip into your web application is to import it like a normal module. Assuming that you have a paperclip file named `people-list.pc` that looks like this:
 
 ```html
 [[
@@ -150,28 +178,50 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
       </li>
     </ul>
   </template>
-</coponent>
+</component>
 ```
 
-You can integrate the above button in a corresponding `button.tsx` React component that might look something like this:
+Components that use behavior take a `controller` parameter which should 
 
-```
-import { components } from "./button.pc";
+```typescript
+import { hydrateComponents } from "./button.pc";
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 
-const enhancePeopleList = compose(
-  withState("people", "setPeople", [{ name: "Drake" }, { name: "50c" }])),
-  withHandlers({
-    onRemovePersonClicked: ({ people, setPeople }) => (personToRemove) => {
-      setPeople(people.filter((person) => person !== personToRemove));
-    } 
-  })
-);
-
 // Note that components exported are as-is to avoid confusion. 
-export const PeopleList = enhancePeopleList(components["people-list"]);
+export const { "people-list": PeopleList } = hydrateComponents({
+  "people-list": compose(
+    withState("people", "setPeople", [{ name: "Drake" }, { name: "50c" }])),
+    withHandlers({
+      onRemovePersonClicked: ({ people, setPeople }) => (personToRemove) => {
+        setPeople(people.filter((person) => person !== personToRemove));
+      } 
+    })
+  )
+});
 ```
+
+`hydrateComponents` takes a set of higher order functions that wrap around all of the exported web components emitted by the paperclip file. This API is to ensure that behavior may be injected into _nested_ components. 
+
+For the sake of simplicity, and this is my own preference, I think it's a good idea have a single paperclip file that exports _all_ web components of the application, and then have a single component _enhancement_ file that binds paperclip components, and their heavy logic (controllers, or higher order components) together. Here's a psuedocode example:
+
+```typescript
+import { hydrateComponents } from "./all-components.pc";
+import { compose, pure, withHandlers } from "recompose";
+
+export const enhancedComponents = hydrateComponents({
+  "people-list": compose(/* HOF code */),
+
+  // reflect people-list-item -- not enhanced
+  "people-list-item": BaseComponent => BaseComponent,
+  
+  "app": compose(/* HOF code */)
+});
+```
+
+You can take a look at Tandem's source code to see how this kind of code organization looks. 
+
+<!-- TODO - look into storing state to a global place -->
 
 ### Paperclip syntax
 
@@ -345,6 +395,10 @@ Paperclip will eventually have features that are specific for visual editing, bu
 #### `[[fixture]]` block
 
 TODO
+
+#### `[[i8n]]` block
+
+The i18n, or internationalization block  will be used for translations. Translations will be visible directly within the visual editor. 
 
 #### GIT conflict support
 
