@@ -184,7 +184,7 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
 </component>
 ```
 
-Paperclip components that are compiled must be created in a factory which injects controller code. Something like:
+Compiled paperclip files emit a `hydrateComponents` function which can be used as such:
 
 ```typescript
 import { hydrateComponents } from "./button.pc";
