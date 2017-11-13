@@ -7,7 +7,7 @@ const source = `
   <link rel="import" href="./another-component.pc">
   <component id="x-button">
     [[property count]]
-    <a id="clicker-button" href="#" [[emit click]]>
+    <a id="clicker-button" href="#">
       click me! [[bind count]]
     </a>
   </component>
@@ -34,7 +34,7 @@ paperclipToVanilla(source, {
   document.body.appendChild(button);
 
   button.addEventListener("event", (event) => {
-    if (event.triggerEvent.type === "click" && event.target.id === "clicker-button") {
+    if (event.type === "click" && event.target.id === "clicker-button") {
       button.count++;
     }
   });
