@@ -79,7 +79,7 @@ Eventually, Tandem will come with a build button for projects that will work out
 
 ### Tandem Non-goals
 
-- To build tooling that allows non-programmers (or people that don't want to) to build web components. Tandem's user experience will always be for Designers, and developers. 
+- To build tooling that allows non-programmers (or people that don't want to) to build web components. Tandem's user experience will always be for designers, and developers. 
 - To replace writing code by hand. Tandem will only cover UI cases where it _makes sense_ to create visually. 
 - To replace web debugging tools such as Chrome's web inspector. Tandem will be used in conjunction with those tools. 
 - To support languages that are not designed for visual editing. SASS, LESS, and JSX, and other frameworks are optimized for good developer experience, but do a poor job producing code that is visually editable (things like `1 + 1`, and other computed properties are hard to change visually). 
