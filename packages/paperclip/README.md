@@ -1,4 +1,4 @@
-Paperclip is a tiny DSL for building web components that is optimized for visual editors. Here's a basic example of code that could run within an artboard VM:
+Paperclip is a tiny DSL for building web components that are optimized for visual editors. Here's a basic example of code that could run within an Tandem artboard VM:
 
 ````typescript
 import { paperclipToVanilla, PaperclipTargetType } from "paperclip";
