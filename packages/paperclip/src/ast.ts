@@ -69,7 +69,7 @@ export type PCBlock = {
   value: BKExpression;
 } & PCExpression;
 
-export type BKEcho = {
+export type BKBind = {
   value: BKExpression;
 } & PCExpression;
 

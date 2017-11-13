@@ -1,8 +1,9 @@
 TOMORROW:
 
-- [ ] repeat block
+- [ ] repeat block - cloneNode for repeated elements
 - [ ] condition blocks
 - [ ] strong types
+- [ ] another layer after parsing AST that loads AST into component tree (loads deps, defines components), that gets transpiled into languages
 
 #### V1
 
@@ -26,6 +27,8 @@ TOMORROW:
   - [ ] vscode
     - [ ] 
 - [ ] Components pane
+- [ ] promo
+  - [ ] ui kit 
 
 #### V2
 

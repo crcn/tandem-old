@@ -1,4 +1,4 @@
-import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKEcho, BKExpressionType, BKReference } from "./ast";
+import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKExpressionType, BKReference } from "./ast";
 import { getLocation } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
@@ -62,16 +62,16 @@ const createBlock = (scanner: TokenScanner): PCBlock => {
 
 const createBlockExpression = (scanner: TokenScanner) => {
   switch(scanner.curr().value) {
-    case "echo": return createEchoBlock(scanner);
+    case "bind": return createBindBlock(scanner);
     default: {
       throw new Error(`Unknown block type ${scanner.curr().value}`);
     }
   }
 };
 
-const createEchoBlock = (scanner: TokenScanner): BKEcho => {
+const createBindBlock = (scanner: TokenScanner): BKBind => {
   const start = scanner.curr();
-  scanner.next(); // eat echo
+  scanner.next(); // eat bind
   scanner.next(); // eat WS
   return ({
     type: BKExpressionType.ECHO,
@@ -82,7 +82,7 @@ const createEchoBlock = (scanner: TokenScanner): BKEcho => {
 
 const createReference = (scanner: TokenScanner): BKReference => {
   const start = scanner.curr();
-  scanner.next(); // eat echo
+  scanner.next(); // eat bind
   return ({
     type: BKExpressionType.REFERENCE,
     value: start.value,
