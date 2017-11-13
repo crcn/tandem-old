@@ -68,20 +68,20 @@ Eventually, Tandem will come with a build button for projects that will work out
 
 ### Tandem Goals
 
-- Visual editing of _most_ web components (like 90% of code) like buttons & lists.
-- Visual tooling will be a 1-1 map of HTML & CSS. This means that people will need knowledge of HTML & CSS in order to use Tandem.
-- To lower the barrier for web development. Designers, and non-coders should be able to design web components without too much knowledge of coding. 
-- To provide tools that educates the user of web features (hints, tooltips, warnings, tools that augment). 
-- To reduce the amount of tooling required to build a web application. Tandem will give users the option to build their _entire_ web application with a click of a button. 
-- To integrate with languages that are 100% editable in Tandem. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
-- To provide visual aid around web features with tooltips & suggestions on web design. 
-- To reduce vendor lock-in. You shouldn't be stuck using Tandem if you don't want to use it.
+- To help make code the single source of truth for UI design (PSD, sketch, and other files should not be the single source of truth). This means coming up with a set of tools that designers feel comfortable with.
+- Cover _all_ UI cases of a web application.
+- To augment web development, not abstract it. This means that UI tools will always reflect HTML & CSS. 
+- Reduce amount of tooling required to build a web application. Tandem should work out of the box, and without needing any configuration. 
+- To integrate with developers' tools, languages, and frameworks. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
+- To reduce vendor lock-in. You shouldn't be stuck using Tandem.
+- To encourage developers & designers to work out of the same environment.
 
 ### Tandem Non-goals
 
 - To build tooling that allows non-programmers (or people that don't want to) to build web components. Tandem's user experience will always be for designers, and developers. 
+- To be _completely_ visual. Tandem will never hide code from you. 
 - To replace writing code by hand. Tandem will only cover UI, and simple logic (dynamic text, repeated elements, and conditional elements).
-- To replace web debugging tools such as Chrome's web inspector. Tandem will be used in conjunction with those tools. 
+- To replace web debugging tools such as Chrome's web inspector. Tandem be designed to compliment those tools. 
 - To support languages that are not designed for visual editing. SASS, LESS, and JSX, and other frameworks are optimized for good developer experience, but do a poor job producing code that is visually editable (things like `1 + 1`, and other computed properties are hard to change visually). 
 - To suport very sophisticated web components. Tandem will be designed to support web components with _simple_ behavior. Complicated components will need to be written by hand in a language such as JSX that's more expressive (which is probably the best option anways). Developer tooling will also be provided so that engineers can inject behavior into a web component created in Tandem (either as a higher order function, or view controller). 
 
