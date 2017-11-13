@@ -3,6 +3,8 @@ TOMORROW:
 - [ ] update paperclip dev server to use new lib
   - [ ] http cahing on front-end
   - [ ] string diffs should be pushed to clients (not the entire file)
+- [ ] parse CSS AST
+- [ ] wire up paperclip-react-loader into Tandem
 
 - [ ] mutations lib (needed in paperclip)
 

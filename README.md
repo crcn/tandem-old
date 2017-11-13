@@ -91,7 +91,7 @@ Below are some of the technical details, ideas, whys, and motivations about some
 
 ## Paperclip
 
-Paperclip is a design language that is optimized for visual editing. Think of it like a `.xib` file format for the web, but human readable, and writable by hand.
+Paperclip is a design language that is optimized for visual editing. Think of it like a `.xib` file format for the web.
 
 #### Motiviation
 
@@ -100,8 +100,7 @@ Paperclip is an open file format that allows for somewhat expressive behavior to
 ```html
 
 <!-- ID should come with a prefix -- something web component friendly  that wouldn't conflict with native elements -->
-<component id="x-people">
-  [[ property people ]]
+<component id="x-people" [[property people]]>
 
   <!-- styles are scoped to the component, just like web components -->
   <style> 
@@ -117,7 +116,6 @@ Paperclip is an open file format that allows for somewhat expressive behavior to
   <template>
     <ul>
       <li [[repeat people as person]]>
-
         Hello [[bind person.name]]
 
         <!-- basic expressions are okay -->
@@ -135,17 +133,13 @@ Paperclip is an open file format that allows for somewhat expressive behavior to
 </component>
 ```
 
-The format above is similar to other template languages such as Handlebars, and Mustache, but the syntax is carefully designed to ensure that _every part_ of Paperclip can be written visually. Though Paperclip files _can_ be written by hand, that's not what the format is designed for. Paperclip's file format provides yet another UI to help developers inspect how a web component is written so that they can integrate Paperclip files into their main application. 
+The format above is similar to other template languages such as Handlebars, and Mustache, but the syntax is designed for visual editing (Certain features augment tooling in Tandem). Paperclip is intentially limited to ensure that it's lightweight, and performant within Tandem (Only HTML, CSS, and built-in expressions are allowed). Complex behavior can be added by wrapping Paperclip components with higher order components. 
 
-> Also note that Paperclip's limited expressiveness is to ensure that paperclip files are _lightweight_ (Only HTML, CSS, and built-in expressions are allowed), since overly complex Paperclip files that import lots of code _could_ amount to very heavy web components that would result in a very _slow_, and possibly unusable visual editing experience (especially with many artboards that share the same components).
-
-> Paperclip's limited expressiveness is also intended for people less code-savvy. Certain types such as functions, and objects must be computed _outside_ of a Paperclip template file in a higher order component that contains complex behavior. 
-
-> Simplicity also offers some neat benefits around performance. Since Paperclip is declarative and bindings are identified at compile time, the compiled output of Paperclip can be optimized to the _bare minimum_ amount of operations required to update a dynamic UI. This is similar to how [Glimmer](#TODO-LINK) works.
+> Simplicity also offers some neat benefits around performance. Since Paperclip is declarative and bindings are identified at compile time, the compiled output of Paperclip can be optimized to the _bare minimum_ amount of operations required to update a dynamic UI.
 
 #### Paperclip Goals
 
-- To provide a syntax that is close to web standards. 
+- To provide a syntax that is relatively close to web standards. 
 - Provide a syntax that can be compiled to other languages, and frameworks. 
 - Provide a syntax that's designed for visual editing, but human readable.
 - Type safety to ensure breaking changes to UI can be traced to other web components.
