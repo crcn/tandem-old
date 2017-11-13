@@ -1,7 +1,7 @@
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation } from "./ast";
 import { loadModuleAST, Module, Template, Style, Import, Component } from "./loader";
 import { PaperclipTargetType } from "./constants";
-import { parseModule } from "./parser";
+import { parseModuleSource } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
 
 export type IO = {
@@ -9,7 +9,7 @@ export type IO = {
   resolveFile: (relativePath, fromPath) => Promise<any>
 };
 
-export type transpileToVanillaOptions = {
+export type bundleVanillaOptions = {
   target: PaperclipTargetType,
   io?: IO
 };
@@ -30,7 +30,8 @@ export type TranspileDeclaration = {
   bindings: string[];
 };
 
-export const transpileToVanilla = (uri: string, options: transpileToVanillaOptions): Promise<PaperclipTranspileResult> => resolveModules(uri, options).then((modules) => ({
+
+export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promise<PaperclipTranspileResult> => resolveModules(uri, options).then((modules) => ({
   code: transpileBundle(uri, modules)
 }));
 
@@ -57,11 +58,11 @@ export const transpileBlockExpression = (expr: BKExpression, contextName?: strin
   }
 };
 
-const resolveModules = (uri: string, options: transpileToVanillaOptions, modules: Modules = {}): Promise<Modules> => {
+const resolveModules = (uri: string, options: bundleVanillaOptions, modules: Modules = {}): Promise<Modules> => {
 
   // TODO - scan for deps 
   return options.io.readFile(uri)
-  .then(parseModule)
+  .then(parseModuleSource)
   .then(loadModuleAST)
   .then((module) => {
     modules[uri] = module;

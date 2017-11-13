@@ -1,0 +1,17 @@
+{
+  "name": "paperclip-react-transpiler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "paperclip": "8.0.x"
+  },
+  "devDependencies": {
+    "react": "^16.1.1"
+  }
+}

@@ -39,7 +39,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
   const hash = md5(filePath);
   try {
     const now = Date.now();
-    const ast = pc.parseModule(content);
+    const ast = pc.parseModuleSource(content);
     const module = pc.loadModuleAST(ast);
     return module.components.map(({id}) => ({
       tagName: id,

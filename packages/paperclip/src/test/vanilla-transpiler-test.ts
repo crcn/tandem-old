@@ -1,7 +1,7 @@
 // TODO - need to test dynamic updates
 
 import { expect } from "chai";
-import { transpileToVanilla, PaperclipTargetType } from "..";
+import { bundleVanilla, PaperclipTargetType } from "..";
 import { getSEnvWindowClass } from "aerial-browser-sandbox";
 
 describe(__filename + "#", () => {
@@ -79,7 +79,7 @@ describe(__filename + "#", () => {
     ]
   ].forEach(([context, input, output]: [any, string, string]) => {
     it(`renders ${input} as ${output} with ${JSON.stringify(context)}`, async () => {
-      const { code } = await transpileToVanilla(null, {
+      const { code } = await bundleVanilla(null, {
         target: PaperclipTargetType.TANDEM,
         io: {
           readFile: async () => input,

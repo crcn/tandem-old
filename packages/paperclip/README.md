@@ -1,22 +1,26 @@
 Paperclip is a tiny DSL for building web components that are optimized for visual editors. Here's a basic example of code that could run within an Tandem artboard VM:
 
+component.pc:
+
+```html
+<link rel="import" href="./another-component.pc">
+
+<component id="x-button" [[property count]]>
+  <a id="clicker-button" href="#">
+    click me! [[bind count]]
+  </a>
+</component>
+```
+
+bundler:
+
 ````typescript
-import { paperclipToVanilla, PaperclipTargetType } from "paperclip";
+import * as paperclip from "paperclip";
 
-const source = `
-  <link rel="import" href="./another-component.pc">
-  <component id="x-button">
-    [[property count]]
-    <a id="clicker-button" href="#">
-      click me! [[bind count]]
-    </a>
-  </component>
-`;
-
-paperclipToVanilla(source, {
+paperclip.bundleVanilla("component.pc", {
 
   // attaches additional information to the window object, and elements
-  target: PaperclipTargetType.TANDEM,
+  target: paperclip.PaperclipTargetType.TANDEM,
   readFile: async (resolvedPath) => {
     return await (await fetch(resolvedPath)).text()
   },

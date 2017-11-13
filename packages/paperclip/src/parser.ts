@@ -5,7 +5,7 @@ import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 
 const _memos: any = {};
 
-export const parseModule = (source: string) => {
+export const parseModuleSource = (source: string) => {
 
   // should be fine since returned value is immutable
   if (_memos[source]) return _memos[source];
