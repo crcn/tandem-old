@@ -72,7 +72,7 @@ Eventually, Tandem will come with a build button for projects that will work out
 - Cover _all_ UI cases of a web application.
 - To augment web development, not abstract it. This means that UI tools will always reflect HTML & CSS. 
 - Reduce amount of tooling required to build a web application. Tandem should work out of the box, and without needing any configuration. 
-- To integrate with developers' tools, languages, and frameworks. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
+- To integrate with developer tools, languages, and frameworks. Paperclip will be supported for starters, but other languages such as Vue, and Angular may be supported in the future.
 - To reduce vendor lock-in. You shouldn't be stuck using Tandem.
 - To encourage developers & designers to work out of the same environment.
 
