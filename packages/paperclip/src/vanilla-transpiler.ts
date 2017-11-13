@@ -1,5 +1,5 @@
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation } from "./ast";
-import { loadAST, Module, Template, Style, Import, Component } from "./loader";
+import { loadModuleAST, Module, Template, Style, Import, Component } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModule } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
@@ -62,7 +62,7 @@ const resolveModules = (uri: string, options: transpileToVanillaOptions, modules
   // TODO - scan for deps 
   return options.io.readFile(uri)
   .then(parseModule)
-  .then(loadAST)
+  .then(loadModuleAST)
   .then((module) => {
     modules[uri] = module;
     return modules;

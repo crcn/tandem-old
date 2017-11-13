@@ -1,5 +1,5 @@
 import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKProperty } from "./ast";
-import { getLocation } from "./ast-utils";
+import { getLocation, getPosition } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 
@@ -12,10 +12,11 @@ export const parseModule = (source: string) => {
 
   const tokenScanner = tokenizePaperclipSource(source);
 
-  return creatreFragment(tokenScanner);
+  return _memos[source] = creatreFragment(tokenScanner);
 }
 
 const creatreFragment = (scanner: TokenScanner) => {
+  const now = Date.now();
   const childNodes = [];
   while(!scanner.ended()) {
     childNodes.push(createExpression(scanner));
@@ -35,7 +36,7 @@ const createExpression = (scanner: TokenScanner) => {
     case PCTokenType.DOUBLE_QUOTE: return createString(scanner);
     case PCTokenType.LESS_THAN: return createTag(scanner);
     case PCTokenType.CLOSE_TAG: return createCloseTag(scanner);
-    case PCTokenType.COMMENT_START: return createComment(scanner);
+    case PCTokenType.COMMENT: return createComment(scanner);
     default: {
       if (isBlockStarting(scanner)) {
         return createBlock(scanner);
@@ -233,21 +234,13 @@ const createNotExpression = (scanner: TokenScanner): BKNot => {
 
 const createComment = (scanner: TokenScanner): PCComment => {
   const start = scanner.curr();
+  scanner.next();
   let curr: Token;
   let value = '';
-  scanner.next(); // eat <!-- 
-  while(!scanner.ended()) {
-    curr = scanner.curr();
-    scanner.next(); // eat -->
-    if (curr.type === PCTokenType.COMMENT_END) {
-      break;
-    }
-    value += curr.value;
-  }
 
   return {
     type: PCExpressionType.COMMENT,
-    value: value,
+    value: start.value.substr(4, start.value.length - 7),
     location: getLocation(start, scanner.curr(), scanner.source)
   };
 };
@@ -264,18 +257,20 @@ const isBlockEnding = (scanner: TokenScanner) => {
 
 const createCloseTag = (scanner: TokenScanner) => {
   const start = scanner.curr();
-  const nameToken = scanner.next();
-  scanner.next(); // eat name
+  scanner.next();
+  const name = getTagName(scanner);
+  assertCurrTokenType(scanner, PCTokenType.GREATER_THAN);
   scanner.next(); // eat >
   return ({
     type: PCExpressionType.END_TAG,
-    name: nameToken.value,
+    name: name,
     location: getLocation(start, scanner.curr(), scanner.source),    
   })
 };
 
 const createTag = (scanner: TokenScanner) => {
   const start = scanner.curr();
+  assertCurrTokenType(scanner, PCTokenType.LESS_THAN);
   scanner.next(); // eat <
   const tagName = getTagName(scanner);
   const attributes = [];
@@ -326,7 +321,35 @@ const createTag = (scanner: TokenScanner) => {
 
 const getElementChildNodes = (tagName: string, scanner: TokenScanner): [any[], PCEndTag]  => {
   const childNodes = [];
+
+  // special tags
+  if (tagName === "style" || tagName === "script") {
+
+    let buffer = "";
+    const start = scanner.curr();
+    while(!scanner.ended()) {
+      const token = scanner.curr();
+      if (token.type === PCTokenType.CLOSE_TAG) {
+        break;
+      }
+      buffer += scanner.curr().value;
+      scanner.next();
+    }
+
+    return [
+      [
+        {
+          type: PCExpressionType.TEXT_NODE,
+          value: buffer,
+          location: getLocation(start, scanner.curr(), scanner.source),
+        } as PCTextNode
+      ],
+      createExpression(scanner) as PCEndTag
+    ]
+  }
+
   let endTag: PCExpression;
+  const now = Date.now();
   while(!scanner.ended()) {
     const child = createExpression(scanner);
     if (child.type === PCExpressionType.END_TAG) {
@@ -336,6 +359,7 @@ const getElementChildNodes = (tagName: string, scanner: TokenScanner): [any[], P
     }
     childNodes.push(child);
   }
+
   return [childNodes, endTag as PCEndTag];
 };
 
@@ -359,9 +383,11 @@ const createAttribute = (scanner: TokenScanner): PCAttribute  => {
 const createString = (scanner: TokenScanner): PCString|PCStringBlock => {
   const start = scanner.curr();
   const values: Array<PCString|PCBlock> = [];
+  let buffer = "";
   let hasBlocks = false;
   scanner.next(); // eat "
 
+  const now = Date.now();
   while(!scanner.ended()) {
     const curr = scanner.curr();
     if (curr.type === start.type) {
@@ -404,7 +430,7 @@ const createTextNode = (scanner: TokenScanner): PCTextNode => {
   let value = start.value;
   while(!scanner.ended()) {
     const curr = scanner.curr();
-    if (curr.type === PCTokenType.LESS_THAN || curr.type == PCTokenType.CLOSE_TAG || isBlockStarting(scanner)) {
+    if (curr.type === PCTokenType.COMMENT || curr.type === PCTokenType.LESS_THAN || curr.type == PCTokenType.CLOSE_TAG || isBlockStarting(scanner)) {
       break;
     }
     scanner.next();
@@ -433,3 +459,26 @@ const getTagName = (scanner: TokenScanner) => {
   }
   return name;
 };
+
+
+export const throwUnexpectedToken = (source: string, token: Token) => {
+  if (!token) {
+    throw new Error(`Unexpected end of file (missing closing expression).`);
+  }
+
+  const location = getPosition(token, source);
+  throw new Error(`Unexpected token "${token.value}" at ${location.line}:${location.column}`);
+};
+
+export const assertCurrTokenType = (scanner: TokenScanner, type: number) => {
+  const token = scanner.curr();
+  if (!token || token.type !== type) {
+    throwUnexpectedToken(scanner.source, scanner.curr());
+  }
+};
+
+export const assertCurrTokenExists = (scanner: TokenScanner) => {
+  if (!scanner.curr()) {
+    throwUnexpectedToken(scanner.source, scanner.curr());
+  }
+}

@@ -1,6 +1,6 @@
 import { fork, take, select, call, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { transpilePCASTToVanillaJS, transpileJSSource, editPCContent, TranspileResult } from "../../paperclip";
+import { transpilePCASTToVanillaJS, transpileJSSource, editPCContent, TranspileResult } from "../../paperclip2";
 import * as request from "request";
 import { ApplicationState, getComponentsFromSourceContent, Component } from "../state";
 import { flatten } from "lodash";

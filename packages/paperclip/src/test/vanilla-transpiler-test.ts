@@ -13,7 +13,8 @@ describe(__filename + "#", () => {
     [{}, `<span>a</span>`, `<span>a</span>`],
     [{}, `<span><h1 />1</span>`, `<span><h1></h1>1</span>`],
     [{}, `<span>a</span><!-- a -->`, `<span>a</span>`],
-    [{}, `<span b="c">!bang</span>`, `<span b="c">!bang</span>`],
+    [{}, `<style>.container { }</style>`, ``],
+    [{}, `<span b="c">!sbang</span>`, `<span b="c">!sbang</span>`],
     [{}, `<span b="c">bang!</span>`, `<span b="c">bang!</span>`],
     [{}, `<span b="c"></span>`, `<span b="c"></span>`],
 

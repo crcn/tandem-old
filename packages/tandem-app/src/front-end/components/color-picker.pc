@@ -9,16 +9,9 @@ english words for colors
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./slider.pc" />
 
-<component id="td-color-picker">
+<component id="td-color-picker" [[property hue]] [[property hsl]] [[property color]] [[property width]] [[property height]]>
 
-  <property name="width" default={{300}} />
-  <property name="state" />
-  <property name="height" default={{150}} />
-  <property name="dispatch" default={{noop}} />
-  <property name="value" default={{"#000000"}} />
-  <property name="onChange" default={{noop}} />
-
-  <style>
+  <!--style>
     .color-picker {
       border-radius: 4px;
       display: flex;
@@ -450,44 +443,10 @@ english words for colors
       hue: getColorHSL(this.value)[0]
     };
     
-  </script>
+  </script-->
   <template>
-    <div class="color-picker">
+    <div class="color-picker" class="color-picker" class="color-picker" class="color-picker" class="color-picker">
 
-      <div class="top">
-        <td-draggable restrict="self" dispatch={{(event) => dispatch({ type: "HSL_PICKER_EVENT", event })}}>
-          <div id="pallete">
-            <canvas id="hslPicker" width={{this.width}} height={{this.height}} />
-            <div class="dropper" style={{{...this.state.dropperPoint, background: rgbToHex(colorToRgba(this.state.color)) }}} />
-          </div>
-        </td-draggable>
-
-        <td-draggable restrict="self" dispatch={{(event) => dispatch({ type: "HUE_PICKER_EVENT", event })}}>
-          <div id="spectrum">
-            <canvas id="spectrumPicker" width={{this.width}} height="30" />
-            <div class="hue needle" style={{{left: (this.state.hue * 100) + "%", background: rgbToHex(hslToRgb(this.state.hue, 1, 0.5)) }}}>
-            </div>
-          </div>
-        </td-draggable>
-
-        <td-draggable restrict="self" dispatch={{(event) => dispatch({ type: "OPACITY_PICKER_EVENT", event })}}>
-          <div id="spectrum">
-            <canvas id="opacityPicker" width={{this.width}} height="30" />
-            <div class="opacity needle" style={{{left: (getOpacity() * 100) + "%", background: "rgba(" + hslToRgb(this.state.hue, 1, 0.5).concat(getOpacity()) + ")" }}}>
-            </div>
-          </div>
-        </td-draggable>
-
-        <div class="inputs">
-          <input type="text" value={{this.state.color}} onfocus={{onInputFocus}} onkeypress={{onInputChange}} />
-        </div>
-      </div>
-
-      <!--div class="presets">
-        <repeat each={{(this.presetColors || [])}} as="presetColor">
-          <div class="preset" style={{ "background: " + presetColor + ";" }}></div>
-        </repeat>
-      </div-->
     </div>
   </template>
 </component>
@@ -498,11 +457,5 @@ english words for colors
       padding: var(--base11);
     }
   </style>
-  <td-color-picker color="rgba(203, 128, 52, 0.28)" presetColors={{[
-    "red",
-    "green",
-    "blue",
-    "yellow",
-    "orange"
-  ]}} />
+  <td-color-picker color="rgba(203, 128, 52, 0.28)" />
 </td-preview>

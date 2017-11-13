@@ -25,7 +25,6 @@
     "./src/**/*.ts"
   ],
   "rootDirs": [
-    "src",
     "node_modules"
   ]
 }

@@ -1,6 +1,6 @@
 import { 
   transpilePaperclipToStringRenderer
-} from "../../paperclip";
+} from "../../paperclip2";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {

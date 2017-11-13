@@ -1,4 +1,4 @@
-import { parsePCStyle } from "../../paperclip";
+import { parsePCStyle } from "../../paperclip2";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {

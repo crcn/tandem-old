@@ -1,7 +1,10 @@
 import { ExpressionPosition, Token, ExpressionLocation } from "./ast";
 export const createToken = (type: number, pos: number, value?: string) => ({ type, pos, value });
 
+const _computePosLinesMemos = {};
+
 const computePosLines = (source: string): { [identifier: number]: [number, number] } => {
+  if (_computePosLinesMemos[source]) return _computePosLinesMemos[source];
   let cline: number = 1;
   let ccol: number = 0;
 
@@ -16,7 +19,7 @@ const computePosLines = (source: string): { [identifier: number]: [number, numbe
     ccol++;
   });
 
-  return posLines;
+  return _computePosLinesMemos[source] = posLines;
 };
 
 export const getPosition = (start: Token | number, source: string) => {

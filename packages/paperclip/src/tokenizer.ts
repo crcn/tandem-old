@@ -8,8 +8,7 @@ export enum PCTokenType {
   CLOSE_TAG,
   GREATER_THAN,
   GREATER_THAN_OR_EQUAL,
-  COMMENT_START,
-  COMMENT_END,
+  COMMENT,
   BACKSLASH,
   BANG,
   AND,
@@ -57,14 +56,23 @@ export const tokenizePaperclipSource = (source: string) => {
       if (scanner.peek(2) === "</") {
         token = createToken(PCTokenType.CLOSE_TAG, scanner.pos, scanner.take(2));
       } else if (scanner.peek(4) === "<!--") {
-        token = createToken(PCTokenType.COMMENT_START, scanner.pos, scanner.take(4));
+        let buffer = scanner.take(4);
+        while(!scanner.ended()) {
+          const cchar = scanner.curr();
+          if (cchar === "-" && scanner.peek(3) === "-->") {
+            buffer += scanner.take(3);
+            break;
+          }
+          scanner.next();
+          buffer += cchar;
+        }
+
+        token = createToken(PCTokenType.COMMENT, scanner.pos, buffer);
       } else if (scanner.peek(2) === "<=") {
         token = createToken(PCTokenType.LESS_THAN_OR_EQUAL, scanner.pos, scanner.take(2));
       } else {
         token = createToken(PCTokenType.LESS_THAN, scanner.pos, scanner.shift());
       }
-    } else if (cchar === "-" && scanner.peek(3) === "-->") {
-      token = createToken(PCTokenType.COMMENT_END, scanner.pos, scanner.take(3));
     } else if (cchar === "&" && scanner.peek(2) === "&&") {
       token = createToken(PCTokenType.AND, scanner.pos, scanner.take(2));
     } else if (cchar === "|" && scanner.peek(2) === "||") {

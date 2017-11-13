@@ -1,8 +1,9 @@
 TOMORROW:
 
 - [ ] paperclip
-  - [ ] bundle into dist that runs in browser
 - [ ] another layer after parsing AST that loads AST into component tree (loads deps, defines components), that gets transpiled into languages
+
+- [ ] mutations lib (needed in paperclip)
 
 #### V1
 
