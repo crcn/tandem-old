@@ -1,6 +1,6 @@
 const fs = require("fs");
-const { transpile } = require("..");
+const {transpileToReactComponents, transpileToTypeScriptDefinition } = require("..");
 const arg = process.argv[2];
 
 // paperclip-react-transpiler [path] > out
-console.log(transpile(fs.readFileSync(arg, "utf8")));
+console.log(transpileToReactComponents(fs.readFileSync(arg, "utf8")));

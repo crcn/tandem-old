@@ -1,2 +1,2 @@
 export * from "./module";
-export * from "./typescript";
+export * from "./typescript-def";

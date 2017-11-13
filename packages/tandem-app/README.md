@@ -1,17 +1,17 @@
 TOMORROW:
 
-- [ ] paperclip
-- [ ] another layer after parsing AST that loads AST into component tree (loads deps, defines components), that gets transpiled into languages
+- [ ] update paperclip dev server to use new lib
+  - [ ] http cahing on front-end
+  - [ ] string diffs should be pushed to clients (not the entire file)
 
 - [ ] mutations lib (needed in paperclip)
 
 #### V1
 
 - [ ] Paperclip
-  - [ ] runtime engine (runs in the browser - loads & parses templates)
-  - [ ] strong types
   - [ ] react transpilers
   - [ ] react bindings
+  - [ ] content editor (need mutations lib)
 - [ ] Stage tools
   - [ ]
 - [ ] CSS Editor
