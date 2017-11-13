@@ -1,13 +1,9 @@
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation } from "./ast";
-import { loadModuleAST, Module, Template, Style, Import, Component } from "./loader";
+import { loadModuleAST, Module, Template, Style, Import, Component, IO, loadModuleDependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModuleSource } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
 
-export type IO = {
-  readFile: (path) => Promise<any>
-  resolveFile: (relativePath, fromPath) => Promise<any>
-};
 
 export type bundleVanillaOptions = {
   target: PaperclipTargetType,
@@ -31,7 +27,7 @@ export type TranspileDeclaration = {
 };
 
 
-export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promise<PaperclipTranspileResult> => resolveModules(uri, options).then((modules) => ({
+export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then((modules) => ({
   code: transpileBundle(uri, modules)
 }));
 
@@ -56,18 +52,6 @@ export const transpileBlockExpression = (expr: BKExpression, contextName?: strin
       throw new Error(`Unable to transpile BK block ${expr.type}`);
     }
   }
-};
-
-const resolveModules = (uri: string, options: bundleVanillaOptions, modules: Modules = {}): Promise<Modules> => {
-
-  // TODO - scan for deps 
-  return options.io.readFile(uri)
-  .then(parseModuleSource)
-  .then(loadModuleAST)
-  .then((module) => {
-    modules[uri] = module;
-    return modules;
-  });
 };
 
 const getJSFriendlyName = (name: string) => name.replace(/[\d-]+/g, "_");

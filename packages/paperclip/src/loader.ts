@@ -18,9 +18,12 @@ import {
   getAttributeStringValue,
 } from "./ast";
 
-import {
-  
-} from "./parser-utils";
+import { parseModuleSource } from "./parser";
+
+export type IO = {
+  readFile: (path) => Promise<any>
+  resolveFile: (relativePath, fromPath) => Promise<any>
+};
 
 export type Import = {
   type: string;
@@ -57,7 +60,11 @@ export type Module = {
 
   // nodes that are defined in the root document
   unhandledExpressions: PCExpression[];
-}
+};
+
+export type Modules = {
+  [identifier: string]: Module
+};
 
 const LOADED_SYMBOL = Symbol();
 
@@ -72,6 +79,30 @@ export const loadModuleAST = (ast: PCExpression): Module => {
 
   return module;
 };
+
+export const loadModuleDependencyGraph = (uri: string, io: IO, modules: Modules = {}): Promise<Modules> => {
+
+  // beat circular dep
+  if (modules[uri]) {
+    return Promise.resolve(modules);
+  }
+
+  return io.readFile(uri)
+  .then(parseModuleSource)
+  .then(loadModuleAST)
+  .then((module) => {
+    modules[uri] = module;
+
+    return Promise.all(module.imports.map(_import => {
+      return io.resolveFile(_import.href, uri)
+      .then((resolvedUri) => {
+        return loadModuleDependencyGraph(resolvedUri, io, modules);
+      })
+    }));
+  }).then(() => {
+    return modules;
+  })
+}
 
 const createModule = (ast: PCExpression): Module => {
   const childNodes = ast.type === PCExpressionType.FRAGMENT ? (ast as PCFragment).childNodes : [ast];
