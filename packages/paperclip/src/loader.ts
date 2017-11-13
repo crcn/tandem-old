@@ -4,10 +4,14 @@ import {
   PCFragment, 
   PCTextNode,
   PCAttribute,
+  BKProperty,
+  PCBlock,
   BKExpression,
   PCExpression, 
+  BKExpressionType,
   PCExpressionType, 
   PCSelfClosingElement,
+  getElementModifiers,
   getElementChildNodes,
   getElementAttributes,
   getElementTagName,
@@ -23,12 +27,6 @@ export type Import = {
   href: string;
 };
 
-export type Property = {
-  name: string;
-  defaultValue?: BKExpression;
-  // type: Type; TODO
-};
-
 export type Style = {
   // TODO - this needs to be parsed out.
   content: string;
@@ -40,7 +38,7 @@ export type Template = {
 
 export type Component = {
   id: string;
-  properties: Property[];
+  properties: BKProperty[];
   style: Style;
   template: Template;
 };
@@ -90,9 +88,10 @@ const createModule = (ast: PCExpression): Module => {
       const tagName = getElementTagName(element);
       const childNodes = getElementChildNodes(element);
       const attributes = getElementAttributes(element);
+      const modifiers = getElementModifiers(element);
 
       if (tagName === "component") {
-        components.push(createComponent(attributes, childNodes));
+        components.push(createComponent(modifiers, attributes, childNodes));
         continue;
       } else if (tagName === "link") {
         imports.push(createImport(attributes));
@@ -115,11 +114,11 @@ const createModule = (ast: PCExpression): Module => {
   };
 };
 
-const createComponent = (attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
+const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
   let id: string;
   let style: Style;
   let template: Template;
-  let properties: Property[] = [];
+  let properties: BKProperty[] = modifiers.map(({value}) => value).filter(modifier => modifier.type === BKExpressionType.PROPERTY) as BKProperty[];
 
   for (let i = 0, {length} = attributes; i < length; i++) {
     const attr = attributes[i];

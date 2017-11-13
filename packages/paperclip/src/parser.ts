@@ -1,4 +1,4 @@
-import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup } from "./ast";
+import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKProperty } from "./ast";
 import { getLocation } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
@@ -69,6 +69,7 @@ const createBKStatement = (scanner: TokenScanner) => {
     case "if": return createConditionBlock(scanner, BKExpressionType.IF);
     case "elseif": return createConditionBlock(scanner, BKExpressionType.ELSEIF);
     case "else": return createConditionBlock(scanner, BKExpressionType.ELSE);
+    case "property": return createPropertyBlock(scanner, BKExpressionType.PROPERTY);
     default: {
       throw new Error(`Unknown block type ${scanner.curr().value}`);
     }
@@ -150,7 +151,19 @@ const createBindBlock = (scanner: TokenScanner): BKBind => {
   })
 };
 
-const createConditionBlock = (scanner: TokenScanner, type: BKExpressionType): BKIf => {
+const createPropertyBlock = (scanner: TokenScanner, type: BKExpressionType): BKProperty => {
+  const start = scanner.curr();
+  scanner.next(); // eat property
+  scanner.next(); // eat ws
+  const name = createReference(scanner);
+  return ({
+    type,
+    name: name.value,
+    location: getLocation(start, scanner.curr(), scanner.source)
+  });
+}
+
+const createConditionBlock = (scanner: TokenScanner, type: BKExpressionType): BKIf  => {
   const start = scanner.curr();
   scanner.next(); // eat name
   scanner.next(); // eat ws

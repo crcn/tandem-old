@@ -18,6 +18,7 @@ export enum BKExpressionType {
   ECHO,
   IF,
   NUMBER,
+  PROPERTY,
   RESERVED_KEYWORD,
   ELSEIF,
   NOT,
@@ -106,6 +107,11 @@ export type BKIf = {
   condition: BKExpression;
 } & BKExpression;
 
+export type BKProperty = {
+  name: string;
+  defaultValue?: string;
+} & BKExpression;
+
 export type BKNot = {
   value: BKExpression;
 } & BKExpression;
@@ -158,7 +164,9 @@ export const getElementTagName = (ast: PCSelfClosingElement | PCElement) => ast.
 // TODO - assert string value
 export const getAttributeStringValue = (attr: PCAttribute) => (attr.value as PCString).value;
 
-export const getElementAttributes = (ast: PCSelfClosingElement | PCElement) => ast.type == PCExpressionType.SELF_CLOSING_ELEMENT ? (ast as PCSelfClosingElement).attributes : (ast as PCElement).startTag.attributes;
+export const getElementAttributes = (ast: PCSelfClosingElement | PCElement) => getStartTag(ast).attributes;
+
+export const getElementModifiers = (ast: PCSelfClosingElement | PCElement) => getStartTag(ast).modifiers;
 
 export const isTag = (ast: PCExpression) => ast.type === PCExpressionType.ELEMENT || ast.type === PCExpressionType.ELEMENT || ast.type === PCExpressionType.START_TAG || ast.type === PCExpressionType.END_TAG;
 

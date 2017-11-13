@@ -122,7 +122,6 @@ export type TranspileResult = {
   allFiles: string[];
 };
 
-
 export type TranspileModuleResult = {
   content: string;
   imports: string[];

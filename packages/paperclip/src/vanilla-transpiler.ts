@@ -15,6 +15,7 @@ export type transpileToVanillaOptions = {
 };
 
 type TranspileContext = {
+  contextName?: string;
   varCount: number;
   root: PCExpression;
 };
@@ -29,20 +30,26 @@ export type TranspileDeclaration = {
   bindings: string[];
 };
 
-export const transpileToVanilla = async (uri: string, options: transpileToVanillaOptions): Promise<PaperclipTranspileResult> => ({
-  code: transpileBundle(uri, await resolveModules(uri, options))
-});
+export const transpileToVanilla = (uri: string, options: transpileToVanillaOptions): Promise<PaperclipTranspileResult> => resolveModules(uri, options).then((modules) => ({
+  code: transpileBundle(uri, modules)
+}));
 
 // usable in other transpilers
-export const transpileBlockExpression = (expr: BKExpression) => {
+export const transpileBlockExpression = (expr: BKExpression, contextName?: string) => {
   switch(expr.type) {
-    case BKExpressionType.NOT: return "!" + transpileBlockExpression((expr as BKNot).value);
-    case BKExpressionType.REFERENCE: return (expr as BKReference).value;
-    case BKExpressionType.GROUP: return `(${transpileBlockExpression((expr as BKGroup).value)})`;
+    case BKExpressionType.NOT: return "!" + transpileBlockExpression((expr as BKNot).value, contextName);
+    case BKExpressionType.REFERENCE: {
+      const name = (expr as BKReference).value;
+      if (contextName) {
+        return `${contextName}.${name}`;
+      }
+      return name;
+    }
+    case BKExpressionType.GROUP: return `(${transpileBlockExpression((expr as BKGroup).value, contextName)})`;
     case BKExpressionType.RESERVED_KEYWORD: return (expr as BKReservedKeyword).value;
     case BKExpressionType.OPERATION: {
       const { left, operator, right } = expr as BKOperation;
-      return `${transpileBlockExpression(left)} ${operator} ${transpileBlockExpression(right)}`
+      return `${transpileBlockExpression(left, contextName)} ${operator} ${transpileBlockExpression(right, contextName)}`
     }
     default: {
       throw new Error(`Unable to transpile BK block ${expr.type}`);
@@ -50,13 +57,16 @@ export const transpileBlockExpression = (expr: BKExpression) => {
   }
 };
 
-const resolveModules = async (uri: string, options: transpileToVanillaOptions, modules: Modules = {}) => {
+const resolveModules = (uri: string, options: transpileToVanillaOptions, modules: Modules = {}): Promise<Modules> => {
+
   // TODO - scan for deps 
-  const module = loadAST(parseModule(await options.io.readFile(uri)));
-
-  modules[uri] = module;
-
-  return modules;
+  return options.io.readFile(uri)
+  .then(parseModule)
+  .then(loadAST)
+  .then((module) => {
+    modules[uri] = module;
+    return modules;
+  });
 };
 
 const getJSFriendlyName = (name: string) => name.replace(/[\d-]+/g, "_");
@@ -67,71 +77,69 @@ const transpileBundle = (entryUri: string, modules: Modules) => {
 
   let content = `((window) => {`;
 
-  content += `
+  content += `` +
 
-    const document = window.document;
+    `const document = window.document;` +
 
-    const $$each = (object, iterator) => {
-      if (Array.isArray(object)) {
-        object.forEach(iterator);
-      } else {
-        for (const key in object) {
-          iterator(object[key], key);
-        }
-      }
-    };
+    `const $$each = (object, iterator) => {` +
+      `if (Array.isArray(object)) {` +
+        `object.forEach(iterator);` +
+      `} else {` +
+        `for (const key in object) {` +
+          `iterator(object[key], key);` +
+        `}` +
+      `}` +
+    `};` +
 
-    const $$count = (object) => {
-      return Array.isArray(object) ? object.length : Object.keys(object).length;
-    }
+    `const $$count = (object) => {` +
+      `return Array.isArray(object) ? object.length : Object.keys(object).length;` +
+    `};` +
 
-    const $$defineModule = (deps, run) => {
-      let exports;
-      return () => {
-        if (exports) return exports;
+    `const $$defineModule = (deps, run) => {` +
+      `let exports;` +
+      `return () => {` +
+        `if (exports) return exports;` +
 
         // guard from recursive dependencies
-        exports = {};
-        return exports = run((dep) => $$modules[deps[dep]]());
-      }
-    };
+        `exports = {};` +
+        `return exports = run((dep) => $$modules[deps[dep]]());` +
+      `}` +
+    `};` +
 
-    let updating = false;
-    let toUpdate = [];
+    `let updating = false;` +
+    `let toUpdate = [];` +
     
-    const $$requestUpdate = (object) => {
-      if (toUpdate.indexOf(object) === -1) {
-        toUpdate.push(object);
-      }
-      if (updating) {
-        return;
-      }
+    `const $$requestUpdate = (object) => {` +
+      `if (toUpdate.indexOf(object) === -1) {` +
+        `toUpdate.push(object);` +
+      `}` +
+      `if (updating) {` +
+        `return;` +
+      `}` +
 
-      updating = true;
-      requestAnimationFrame(function() {
-        for(let i = 0; i < toUpdate.length; i++) {
-          const target = toUpdate[i];
-          target.update();
-        }
-        toUpdate = [];
-        updating = false;
-      });
-    }
-  `;
+      `updating = true;` +
+      `requestAnimationFrame(function() {` +
+        `for(let i = 0; i < toUpdate.length; i++) {` +
+          `const target = toUpdate[i];` +
+          `target.update();` +
+        `}` +
+        `toUpdate = [];` +
+        `updating = false;` +
+      `});` +
+    `};`;
 
-  content += "$$modules = {};\n";
+
+  content += "$$modules = {};";
 
   for (const uri in modules) {
-    content += `$$modules["${uri}"] = ${transpileModule(modules[uri])};\n`;
+    content += `$$modules["${uri}"] = ${transpileModule(modules[uri])};`;
   }
 
-  content += ` return {
-    entryPath: "${entryUri}",
-    modules: $$modules
-  };
-  `
-  
-  content += `})(window)`;
+  content += `return {` +
+      `entryPath: "${entryUri}",` +
+      `modules: $$modules` +
+    `};` +  
+  `})(window)`;
 
   // console.log(content);
 
@@ -146,8 +154,8 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
   };
 
   // TODO - include deps here
-  let content = `$$defineModule({}, (require) => {\n`;
-  content += `$$strays = [];\n`;
+  let content = `$$defineModule({}, (require) => {`;
+  content += `$$strays = [];`;
 
   const childDecls = transpileChildNodes(unhandledExpressions, context);
   
@@ -164,9 +172,9 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
     content += tranpsileComponent(components[i], context).content;
   }
 
-  content += `return {
-    strays: $$strays
-  };`;
+  content += `return {` +
+    `strays: $$strays` +
+  `};`;
     
   content += `})`;
 
@@ -174,113 +182,111 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
 }
 
 const wrapTranspiledStatement = (statement) => `(() => {${statement}} )();\n`;
-const wrapAndCallBinding = (binding) => `() => { const binding = () => { ${binding} }; binding(); return binding; })()`;
+const wrapAndCallBinding = (binding) => `(() => { const binding = () => { ${binding} }; binding(); return binding; })()`;
 
 const tranpsileComponent = ({ id, style, template, properties }: Component, context: TranspileContext) => {
   const varName = createVarName(getJSFriendlyName(id), context);
 
-  let content = `
-    class ${varName} extends HTMLElement {
-      constructor() {
-        super();
-        this.$$bidings = [];
-      }
+  const templateContext: TranspileContext = {
+    ...context,
+    varCount: 0,
+    contextName: "this"
+  };
 
-      connectedCallback() {
-        this.render();
-      }
 
-      ${
-        properties.map(({ name }) => {
+  let content = `` +
+    `class ${varName} extends HTMLElement {` +
+      `constructor() {` +
+        `super();` +
+        `this.$$bindings = [];` +
+      `}` +
+
+      `connectedCallback() {` +
+        `this.render();` +
+      `}` +
+
+      properties.map(({ name }) => {
+        return `` +
+          `get ${name}() {` +
+            `return this.$$${name};` +
+          `}` +
+          `set ${name}(value) {` +
+            `if (this.$$${name} === value) {` +
+              `return;` +
+            `}` +
+            `const oldValue = this.$${name};` +
+            `this.$$${name} = value;` +
+            `if (this._rendered) {` +
+              `$$requestUpdate(this);` +
+            `}` +
+          `}`
+
+      }).join("\n") +
+
+      `render() {` +
+        `if (this._rendered) {` +
+          `return;` +
+        `}` +
+        `this._rendered = true;` +
+        `const shadow = this.attachShadow({ mode: "open" });` +
+
+        properties.map(({name, defaultValue}) => {
           return `
-            get ${name}() {
-              return this.$$${name};
-            }
-            set ${name}(value) {
-              if (this.$$${name} === value) {
-                return;
-              }
-              const oldValue = this.$${name};
-              this.$$${name} = value;
-              this.propertyChangedCallback("${name}", oldValue, value);
-              if (this._rendered) {
-                $$requestUpdate(this);
-              }
+            if (this.$$${name} == null) {
+              this.$$${name} = ${defaultValue ? defaultValue : `this.getAttribute("${name}");`}
             }
           `;
-        }).join("\n")
-      }
+        }).join("\n") +
 
-      propertyChangedCallback(name, oldValue, newValue) {
 
-      }
-
-      render() {
-        if (this._rendered) {
-          return;
-        }
-        this._rendered = true;
-        const shadow = this.attachShadow({ mode: "open" });
-        ${
-          properties.map(({name, defaultValue}) => {
-            return `
-              if (this.$$${name} == null) {
-                this.$$${name} = ${defaultValue ? defaultValue : `this.getAttribute("${name}");`}
-              }
-            `;
-          }).join("\n")
-        }
-
-        let $$bindings = [];
-        ${template ? template.content.map(node => {
-          const decl = transpileExpression(node, context);
+        `let $$bindings = [];` +
+        
+        (template ? template.content.map(node => {
+          const decl = transpileExpression(node, templateContext);
           if (!node) {
             return "";
           }
 
-          return `
-            ${decl.content}
-            ${decl.bindings.length ? `$$bindings = $$bindings.concat(${decl.bindings.map(wrapAndCallBinding)});` : ``}
-            shadow.appendChild(${decl.varName});
-          `;
-        }) : ""}
+          return (
+            `${decl.content}` +
+            (decl.bindings.length ? `$$bindings = $$bindings.concat(${decl.bindings.map(wrapAndCallBinding)});` : ``) +
+            `shadow.appendChild(${decl.varName});`
+          );
+        }).join("") : "") +
 
-        this.$$bindings = [];
-      }
+        `this.$$bindings = $$bindings;` +
+      `}` +
 
-      cloneShallow() {
-        const clone = super.cloneShallow();
+      `cloneShallow() {` +
+        `const clone = super.cloneShallow();` +
 
         // for tandem only
-        clone._rendered = true;
-        return clone;
-      }
+        `clone._rendered = true;` +
+        `return clone;` +
+      `}` +
 
-      static get observedAttributes() {
-        return ${JSON.stringify(properties.map(({name}) => name))};
-      }
+      `static get observedAttributes() {` +
+        `return ${JSON.stringify(properties.map(({name}) => name))};` +
+      `}` +
 
-      attributeChangedCallback(name, oldValue, newValue) {
-        if (super.attributeChangedCallback) {
-          super.attributeChangedCallback(name, oldValue, newValue);
-        }
-        this[name] = newValue;
-      }
+      `attributeChangedCallback(name, oldValue, newValue) {` +
+        `if (super.attributeChangedCallback) {` +
+          `super.attributeChangedCallback(name, oldValue, newValue);` +
+        `}` +
+        `this[name] = newValue;` +
+      `}` +
 
-      update() {
-        if (!this._rendered) {
-          return;
-        }
+      `update() {` +
+        `if (!this._rendered) {` +
+          `return;` +
+        `}` +
         
-        let bindings = this.$$bindings || [];
-        ${transpileBindingsCall("bindings")}
+        `let bindings = this.$$bindings || [];` +
+        transpileBindingsCall("bindings") +
+      `}` +
+    `}` +
 
-        this.didUpdate();
-      }
-    }
-
-    customElements.define("${id}", ${varName});
-  `;
+    `customElements.define("${id}", ${varName});`
   
   return {
     varName,
@@ -318,7 +324,7 @@ const transpileTextBlock = (ast: PCBlock, context: TranspileContext) => {
   const node = declareNode(`document.createTextNode("")`, context);
   const bindingVarName = `${node.varName}$$currentValue`;
   node.content += `let ${bindingVarName};`;
-  node.bindings.push(transpileBinding(bindingVarName, transpileBlockExpression(((ast as PCBlock).value as BKBind).value), assignment => `${node.varName}.nodeValue = ${assignment}`, context));
+  node.bindings.push(transpileBinding(bindingVarName, transpileBlockExpression(((ast as PCBlock).value as BKBind).value, context.contextName), assignment => `${node.varName}.nodeValue = ${assignment}`, context));
   return node;
 };
 
@@ -368,45 +374,45 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
       let ${childBindingsVarName} = [];
     `;
 
-    newDeclaration.bindings.push(`
-      let $$newValue = (${each}) || [];
-      if ($$newValue === ${currentValueVarName}) {
-        return;
-      }
-      const $$oldValue = ${currentValueVarName};
-      ${currentValueVarName} = $$newValue;
+    newDeclaration.bindings.push(`` +
+      `let $$newValue = (${each}) || [];` +
+      `if ($$newValue === ${currentValueVarName}) {` +
+        `return;` +
+      `}` +
+      `const $$oldValue = ${currentValueVarName};` +
+      `${currentValueVarName} = $$newValue;` +
 
-      const $$parent = ${start.varName}.parentNode;
-      const $$startIndex = Array.prototype.indexOf.call($$parent.childNodes, ${start.varName});
+      `const $$parent = ${start.varName}.parentNode;` +
+      `const $$startIndex = Array.prototype.indexOf.call($$parent.childNodes, ${start.varName}); ` +
 
       // insert
-      const $$newValueCount = $$count($$newValue);
-      const $$oldValueCount = $$count($$oldValue);
+      `const $$newValueCount = $$count($$newValue);` +
+      `const $$oldValueCount = $$count($$oldValue);` +
 
-      if ($$newValueCount > $$oldValueCount) {
-        for (let $$i = $$newValueCount - $$oldValueCount; $$i--;) {
-          ${decl.content}
-          $$parent.insertBefore(${decl.varName}, ${end.varName});
-          const $$bindings = [${decl.bindings.map((binding) => (`(${asValue}, ${asKey}) => {
-            ${binding}
-          }`)).join(",")}];
+      `if ($$newValueCount > $$oldValueCount) {` +
+        `for (let $$i = $$newValueCount - $$oldValueCount; $$i--;) {` +
+          decl.content +
+          `$$parent.insertBefore(${decl.varName}, ${end.varName});` +
+          `const $$bindings = [${decl.bindings.map((binding) => (`(${asValue}, ${asKey}) => { ` +
+            binding +
+          `}`)).join(",")}];` + 
 
-          ${childBindingsVarName}.push(($$newValue, $$newKey) => {
-            ${transpileBindingsCall("$$bindings", "$$newValue, $$newKey")}
-          });
-        }
+          `${childBindingsVarName}.push(($$newValue, $$newKey) => {` +
+            `${transpileBindingsCall("$$bindings", "$$newValue, $$newKey")}` +
+          `});` +
+        `}` +
 
       // delete
-      } else if ($$oldValue.length < $$newValue.length) {
+      `} else if ($$oldValue.length < $$newValue.length) {` +
         // TODO
-      }
+      `}` +
 
-      let i = 0;
+      `let i = 0;` +
       // update
-      $$each($$newValue, (value, k) => {
-        ${childBindingsVarName}[i++](value, k);
-      });
-    `);
+      `$$each($$newValue, (value, k) => {` +
+        `${childBindingsVarName}[i++](value, k);` +
+      `});`
+    );
 
     decl = newDeclaration;
   } 
@@ -437,53 +443,49 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
     const bindingsVarName = newDeclaration.varName + "$$bindings";
     const currentValueVarName = newDeclaration.varName + "$$currentValue";
 
-    fragment.content += `
-      let ${bindingsVarName} = [];
-      let ${currentValueVarName} = false;
-
-    `;
+    fragment.content += `` +
+      `let ${bindingsVarName} = [];` +
+      `let ${currentValueVarName} = false;` 
 
     if (_if) {
-      fragment.content += `
-        let ${conditionBlockVarName} = Infinity;
-      `;
+      fragment.content += `let ${conditionBlockVarName} = Infinity;`;
     }
 
-    newDeclaration.bindings.push(`
-      const newValue = Boolean(${condition ? transpileBlockExpression(condition) : "true"}) && ${conditionBlockVarName} >= ${index};
+    newDeclaration.bindings.push(`` +
+      `const newValue = Boolean(${condition ? transpileBlockExpression(condition) : "true"}) && ${conditionBlockVarName} >= ${index};` +
 
-      if (newValue) {
-        ${conditionBlockVarName} = ${index};
+      `if (newValue) {` +
+        `${conditionBlockVarName} = ${index};` +
 
       // give it up for other conditions
-      } else if (${conditionBlockVarName} === ${index}) {
-        ${conditionBlockVarName} = Infinity;
-      }
+      `} else if (${conditionBlockVarName} === ${index}) {` +
+        `${conditionBlockVarName} = Infinity;` +
+      `}` +
         
-      if (newValue && newValue === ${currentValueVarName}) {
-        if (${currentValueVarName}) {
-          ${transpileBindingsCall(bindingsVarName)}
-        }
-        return;
-      }
+      `if (newValue && newValue === ${currentValueVarName}) {` +
+        `if (${currentValueVarName}) {` +
+          `${transpileBindingsCall(bindingsVarName)}` +
+        `}` +
+        `return;` +
+      `}` +
 
-      ${currentValueVarName} = newValue;
-      ${bindingsVarName} = [];
+      `${currentValueVarName} = newValue;` +
+      `${bindingsVarName} = [];` +
 
-      if (newValue) {
-        const elementFragment = document.createDocumentFragment();
-        ${decl.content}
-        ${ decl.bindings.length ? `${bindingsVarName} = ${bindingsVarName}.concat(${decl.bindings.map(wrapAndCallBinding)})` : `` }
-        elementFragment.appendChild(${decl.varName});
-        ${end.varName}.parentNode.insertBefore(elementFragment, ${end.varName});
-      } else {
-        let curr = ${start.varName}.nextSibling;
-        while(curr !== ${end.varName}) {
-          curr.parentNode.removeChild(curr);
-          curr = ${start.varName}.nextSibling;
-        }
-      }
-    `);
+      `if (newValue) {` +
+        `const elementFragment = document.createDocumentFragment();` +
+        `${decl.content}` +
+        (decl.bindings.length ? `${bindingsVarName} = ${bindingsVarName}.concat(${decl.bindings.map(wrapAndCallBinding)})` : `` ) +
+        `elementFragment.appendChild(${decl.varName});` +
+        `${end.varName}.parentNode.insertBefore(elementFragment, ${end.varName});` +
+      `} else {` +
+        `let curr = ${start.varName}.nextSibling;` +
+        `while(curr !== ${end.varName}) {` +
+          `curr.parentNode.removeChild(curr);` +
+          `curr = ${start.varName}.nextSibling;` +
+        `}` +
+      `}`
+    );
   }
 
   return newDeclaration;
@@ -516,7 +518,7 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
           if (value.type === PCExpressionType.BLOCK) {
 
             // todo - assert echo here
-            return transpileBlockExpression(((value as PCBlock).value as BKBind).value);
+            return transpileBlockExpression(((value as PCBlock).value as BKBind).value, context.contextName);
           } else {
             return JSON.stringify((value as PCString).value);
           }
@@ -524,7 +526,7 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
           `${element.varName}.setAttribute("${name}", ${assignment})`
         ), context);
       } else {
-        binding = transpileBinding(bindingVarName, transpileBlockExpression(((value as PCBlock).value as BKBind).value), (assignment) => `${element.varName}.${propName} = ${assignment}`, context);
+        binding = transpileBinding(bindingVarName, transpileBlockExpression(((value as PCBlock).value as BKBind).value, context.contextName), (assignment) => `${element.varName}.${propName} = ${assignment}`, context);
       }
 
       element.bindings.push(binding);
@@ -536,19 +538,19 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
 
 const transpileBinding = (bindingVarName: string, assignment: string, createStatment: (assignment: string) => string, context: TranspileContext) => {
   
-  return `
-    let $$newValue = ${assignment};
-    if ($$newValue !== ${bindingVarName}) {
-      ${createStatment(`${bindingVarName} = $$newValue`)}
-    }
-  `;
+  return (
+    `let $$newValue = ${assignment};` +
+    `if ($$newValue !== ${bindingVarName}) {` +
+      `${createStatment(`${bindingVarName} = $$newValue`)}` +
+    `}`
+  );
 };
 
-const transpileBindingsCall = (bindingsVarName, args: string = '') => `
-  for (let i = 0, n = ${bindingsVarName}.length; i < n; i++) {
-    ${bindingsVarName}[i](${args});
-  }
-`;
+const transpileBindingsCall = (bindingsVarName, args: string = '') => (
+  `for (let i = 0, n = ${bindingsVarName}.length; i < n; i++) {` +
+    `${bindingsVarName}[i](${args});` +
+  `}`
+);
 
 const transpileElement = (ast: PCElement, context: TranspileContext) => {
   switch(ast.startTag.name) {
@@ -614,12 +616,12 @@ const declareVirtualFragment = (context: TranspileContext) => {
   const start = declareNode(`document.createTextNode("")`, context);
   const end = declareNode(`document.createTextNode("")`, context);
 
-  fragment.content += `
-  ${start.content}
-  ${end.content}
-  ${fragment.varName}.appendChild(${start.varName});
-  ${fragment.varName}.appendChild(${end.varName});
-  `;
+  fragment.content += (
+    `${start.content}` +
+    `${end.content}` +
+    `${fragment.varName}.appendChild(${start.varName});` +
+    `${fragment.varName}.appendChild(${end.varName});`
+  );
 
   return {
     fragment,

@@ -62,6 +62,19 @@ describe(__filename + "#", () => {
         <x-test />
       `,
       `<x-test></x-test>`
+    ],
+    [
+      {},
+      `
+        <component id="x-test" [[property text]]>
+          <template>  
+            Hello [[bind text]]
+          </template>
+        </component>
+
+        <x-test />
+      `,
+      `<x-test></x-test>`
     ]
   ].forEach(([context, input, output]: [any, string, string]) => {
     it(`renders ${input} as ${output} with ${JSON.stringify(context)}`, async () => {
