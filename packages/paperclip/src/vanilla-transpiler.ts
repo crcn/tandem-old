@@ -230,13 +230,11 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
         `this._rendered = true;` +
         `const shadow = this.attachShadow({ mode: "open" });` +
 
-        properties.map(({name, defaultValue}) => {
-          return `
-            if (this.$$${name} == null) {
-              this.$$${name} = ${defaultValue ? defaultValue : `this.getAttribute("${name}");`}
-            }
-          `;
-        }).join("\n") +
+        properties.map(({name, defaultValue}) => (
+          `if (this.$$${name} == null) {` +
+            `this.$$${name} = ${defaultValue ? defaultValue : `this.getAttribute("${name}");`}` +
+          `}`
+        )).join("\n") +
 
 
         `let $$bindings = [];` +
@@ -369,10 +367,10 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
     newDeclaration = fragment;
     const currentValueVarName = newDeclaration.varName + "$$currentValue";
     const childBindingsVarName = newDeclaration.varName + "$$childBindings";
-    newDeclaration.content += `
-      let ${currentValueVarName} = [];
-      let ${childBindingsVarName} = [];
-    `;
+    newDeclaration.content += (
+      `let ${currentValueVarName} = [];` +
+      `let ${childBindingsVarName} = [];` 
+    );
 
     newDeclaration.bindings.push(`` +
       `let $$newValue = (${each}) || [];` +
