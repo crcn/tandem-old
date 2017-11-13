@@ -32,21 +32,18 @@ export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promi
 }));
 
 // usable in other transpilers
-export const transpileBlockExpression = (expr: BKExpression, contextName?: string) => {
+export const transpileBlockExpression = (expr: BKExpression) => {
   switch(expr.type) {
-    case BKExpressionType.NOT: return "!" + transpileBlockExpression((expr as BKNot).value, contextName);
+    case BKExpressionType.NOT: return "!" + transpileBlockExpression((expr as BKNot).value);
     case BKExpressionType.REFERENCE: {
       const name = (expr as BKReference).value;
-      if (contextName) {
-        return `${contextName}.${name}`;
-      }
       return name;
     }
-    case BKExpressionType.GROUP: return `(${transpileBlockExpression((expr as BKGroup).value, contextName)})`;
+    case BKExpressionType.GROUP: return `(${transpileBlockExpression((expr as BKGroup).value)})`;
     case BKExpressionType.RESERVED_KEYWORD: return (expr as BKReservedKeyword).value;
     case BKExpressionType.OPERATION: {
       const { left, operator, right } = expr as BKOperation;
-      return `${transpileBlockExpression(left, contextName)} ${operator} ${transpileBlockExpression(right, contextName)}`
+      return `${transpileBlockExpression(left)} ${operator} ${transpileBlockExpression(right)}`
     }
     default: {
       throw new Error(`Unable to transpile BK block ${expr.type}`);
@@ -120,8 +117,10 @@ const transpileBundle = (entryUri: string, modules: Modules) => {
     content += `$$modules["${uri}"] = ${transpileModule(modules[uri])};`;
   }
 
+  content += `const entry = $$modules["${entryUri}"]();`
+
   content += `return {` +
-      `entryPath: "${entryUri}",` +
+      `entry,` + 
       `modules: $$modules` +
     `};` +  
   `})(window)`;
@@ -229,10 +228,15 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
           if (!node) {
             return "";
           }
-
           return (
             `${decl.content}` +
-            (decl.bindings.length ? `$$bindings = $$bindings.concat(${decl.bindings.map(wrapAndCallBinding)});` : ``) +
+            (decl.bindings.length ? `$$bindings = $$bindings.concat(${decl.bindings.map(binding => `(() => {` + 
+              `const $$binding = () => {` +
+                `const { ${ properties.map(({name}) => name).join(",") } } = this;` +
+                binding + 
+              `};` +
+              `return $$binding;` +
+            `})()`)});` : ``) +
             `shadow.appendChild(${decl.varName});`
           );
         }).join("") : "") +
@@ -307,7 +311,7 @@ const transpileTextBlock = (ast: PCBlock, context: TranspileContext) => {
   const node = declareNode(`document.createTextNode("")`, context);
   const bindingVarName = `${node.varName}$$currentValue`;
   node.content += `let ${bindingVarName};`;
-  node.bindings.push(transpileBinding(bindingVarName, transpileBlockExpression(((ast as PCBlock).value as BKBind).value, context.contextName), assignment => `${node.varName}.nodeValue = ${assignment}`, context));
+  node.bindings.push(transpileBinding(bindingVarName, transpileBlockExpression(((ast as PCBlock).value as BKBind).value), assignment => `${node.varName}.nodeValue = ${assignment}`, context));
   return node;
 };
 
@@ -501,7 +505,7 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
           if (value.type === PCExpressionType.BLOCK) {
 
             // todo - assert echo here
-            return transpileBlockExpression(((value as PCBlock).value as BKBind).value, context.contextName);
+            return transpileBlockExpression(((value as PCBlock).value as BKBind).value);
           } else {
             return JSON.stringify((value as PCString).value);
           }
@@ -509,7 +513,7 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
           `${element.varName}.setAttribute("${name}", ${assignment})`
         ), context);
       } else {
-        binding = transpileBinding(bindingVarName, transpileBlockExpression(((value as PCBlock).value as BKBind).value, context.contextName), (assignment) => `${element.varName}.${propName} = ${assignment}`, context);
+        binding = transpileBinding(bindingVarName, transpileBlockExpression(((value as PCBlock).value as BKBind).value), (assignment) => `${element.varName}.${propName} = ${assignment}`, context);
       }
 
       element.bindings.push(binding);

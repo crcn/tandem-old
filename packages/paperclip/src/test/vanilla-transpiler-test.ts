@@ -92,8 +92,7 @@ describe(__filename + "#", () => {
         // need access to native tags
         with(window) {
           with(context) {
-            const result = ${code}
-            const entry = result.modules[result.entryPath]();
+            const { entry } = ${code}
 
             // append stray nodes randomly created in the doc first
             for (const node of entry.strays) {
