@@ -1,3 +1,5 @@
+// TODO - hydration func here, scan for all modules
+
 import { loadModuleAST, parseModuleSource, Module, Component } from "paperclip";
 import { upperFirst, camelCase } from "lodash";
 
@@ -9,14 +11,25 @@ export const transpileToTypeScriptDefinition = (source: string) => {
 const transpileModule = (module: Module) => {
   let content = ``;
 
+  const importNames = [];
+
   for (let i = 0, {length} = module.imports; i < length; i++) {
     const _import = module.imports[i];
-    content += `export * from "${_import.href}.d.ts"\n;`;
+    const _importName = "import_" + i;
+    importNames.push(_importName);
+    content += `import * as ${_importName} from "${_import.href}.d.ts"\n;`;
   }
 
   for (let i = 0, {length} = module.components; i < length; i++) {
     content += transpileComponent(module.components[i]);
   }
+
+  // TODO - add components in this file
+  content += `export type HigherOrderComponentFactories = ${importNames.map(importName => `${importName}.HigherOrderComponentFactories`).join(" & ")}`;
+
+  content += `export type HydratedComponents = ${importNames.map(importName => `${importName}.HydratedComponents`).join(" & ")}`;
+
+  content += `export const hydrateComponents = (hocfs: HigherOrderComponentFactories) => HydratedComponents;`
 
   return content;
 }

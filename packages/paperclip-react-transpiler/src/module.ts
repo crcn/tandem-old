@@ -1,4 +1,4 @@
-// TODO - conditionals, repeats
+// TODO - conditionals, repeats, and hydrating with HOC
 import { 
   loadModuleAST, 
   parseModuleSource, 
@@ -17,6 +17,19 @@ import { 
   PCBlock
 } from "paperclip";
 import { camelCase, upperFirst } from "lodash";
+
+type A = {
+  a: 1
+};
+
+type B = {
+  b: 2
+}
+
+type C = A & B;
+
+let a: C ;
+
 
 export type TranspileOptions = {
 }
