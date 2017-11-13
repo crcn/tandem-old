@@ -63,7 +63,7 @@ export type Module = {
 
 const LOADED_SYMBOL = Symbol();
 
-export const loadPaperclipAST = (ast: PCExpression): Module => {
+export const loadAST = (ast: PCExpression): Module => {
   
   // weak memoization
   if (ast[LOADED_SYMBOL] && ast[LOADED_SYMBOL][0] === ast) return ast[LOADED_SYMBOL][1];
