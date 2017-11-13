@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./lib/test"
+    "test": "mocha ./lib/test",
+    "bundle": "mkdir -p dist; rollup -c rollup.config.js --format=iife --name=paperclip > dist/paperclip.min.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,7 +15,11 @@
     "@types/reflect-metadata": "^0.0.5",
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
-    "reflect-metadata": "^0.1.10"
+    "reflect-metadata": "^0.1.10",
+    "rollup": "^0.51.5",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-plugin-uglify-es": "^0.0.1",
+    "typescript": "^2.6.1"
   },
   "dependencies": {
     "@types/node": "^8.0.51"

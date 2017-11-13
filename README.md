@@ -85,7 +85,6 @@ Eventually, Tandem will come with a build button for projects that will work out
 - To support languages that are not designed for visual editing. SASS, LESS, and JSX, and other frameworks are optimized for good developer experience, but do a poor job producing code that is visually editable (things like `1 + 1`, and other computed properties are hard to change visually). 
 - To suport very sophisticated web components. Tandem will be designed to support web components with _simple_ behavior. Complicated components will need to be written by hand in a language such as JSX that's more expressive (which is probably the best option anways). Developer tooling will also be provided so that engineers can inject behavior into a web component created in Tandem (either as a higher order function, or view controller). 
 
-
 ## Technical details
 
 Below are some of the technical details, ideas, whys, and motivations about some of the grittier things around Tandem.
@@ -178,7 +177,7 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
     <ul>
       <li [[repeat people as person]]>
         [[bind person.name]]
-        <a id="remove-person-button" href="#" [[emit click]]>
+        <a id="remove-person-button" href="#" [[on click onRemovePersonClicked]]>
           x
         </a>
       </li>

@@ -1,8 +1,7 @@
 TOMORROW:
 
-- [ ] repeat block - cloneNode for repeated elements
-- [ ] condition blocks
-- [ ] strong types
+- [ ] paperclip
+  - [ ] bundle into dist that runs in browser
 - [ ] another layer after parsing AST that loads AST into component tree (loads deps, defines components), that gets transpiled into languages
 
 #### V1
