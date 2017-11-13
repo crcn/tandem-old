@@ -116,7 +116,7 @@ Paperclip is an open file format that allows for somewhat expressive behavior to
     <ul>
       <li [[repeat people as person]]>
 
-        Hello [[echo person.name]]
+        Hello [[bind person.name]]
 
         <!-- basic expressions are okay -->
         <span [[if person.age > 10]]>
@@ -174,7 +174,7 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
   <template>
     <ul>
       <li [[repeat people as person]]>
-        [[echo person.name]]
+        [[bind person.name]]
         <a id="remove-person-button" href="#" [[emit click]]>
           x
         </a>
@@ -232,27 +232,27 @@ You can take a look at Tandem's source code to see how this kind of code organiz
 
 Paperclip currently implements a limited set of operations, more planned in the future. The format is inspired by web components, and will continue to support features that are relatively close to web standards (so long as they do not conflict with the editing experience). 
 
-##### `[[echo]]` block
+##### `[[bind]]` block
 
-Prints the statement following `echo`. Example:
+Prints the statement following `bind`. Example:
 
 ```html
-<li style=[[echo style]]>
-  [[echo text]]
+<li style=[[bind style]]>
+  [[bind text]]
 </li>
 ```
 
 Note the `style` binding above doesn't have wrapping quotes, which provides different behavior. For example:
 
 ```html
-<li class="[[echo class]]">
+<li class="[[bind class]]">
 </li>
 ```
 
 Defines an _attribute_ on the element, which can only be a `string`, whereas ommitting the quotes defines a _property_ on the target element, which can be any type. If we want to define a class to a property for example, we'll have to do this:
 
 ```html
-<li className=[[echo className]]>
+<li className=[[bind className]]>
 </li>
 ```
 
@@ -267,7 +267,7 @@ the element you're dealing with.
 <component id="x-button">
   [[property text]]
   <template>
-    [[echo text]]
+    [[bind text]]
   </template>
 </component>
 ```
@@ -287,7 +287,7 @@ Properties are _required_ for a number of reasons:
   <template>
     <ul>
       <li [[repeat people as person]]>
-        [[echo person]]
+        [[bind person]]
       </li>
     </ul>
   </component>
@@ -306,7 +306,7 @@ Attaches an event listener to an element. Events that are dispatched by the elem
 
   <template>
     <a id="some-button" href="#" [[emit click]]>
-      current count: [[echo count]]
+      current count: [[bind count]]
     </a>
   </template>
 </component>
