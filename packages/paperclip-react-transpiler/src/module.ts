@@ -1,4 +1,41 @@
-// TODO - conditionals, repeats, and hydrating with HOC
+// TODO - conditionals, repeats, hydrating HOC, scoped styles (use ideas from https://github.com/css-modules/css-modules) - may need to attach scope to each rendered element, export css for SS rendering, 
+
+/*
+
+* {
+
+}
+
+.ScopedComponent {
+
+}
+
+.ScopedComponent.div {
+
+}
+
+.ScopedComponent.div > .ScopedComponent.span {
+
+}
+
+.AnotherComponent.host {
+
+}
+
+class ScopedComponent extends React.Component {
+  render() {
+    return <div className="ScopedComponent host">
+      <span className="ScopedComponent">
+
+        <!-- ignored style_1 never reaches following component --->
+        <AnotherComponent />
+      </span>
+    </div>
+  }
+}
+
+*/
+
 import { 
   loadModuleAST, 
   parseModuleSource, 
@@ -88,7 +125,7 @@ const transpileComponent = (component: Component) => {
 
 const transpileFragment = (nodes: PCExpression[]) => {
   let content = `` +
-  `React.createElement("span", null, [\n` + 
+  `React.createElement("span", { className: "host" }, [\n` + 
   `  ${nodes.map(transpileNode).filter(Boolean).join(",")}\n` +
   `])\n`;
 
@@ -126,6 +163,8 @@ const transpileAttributes = ({ attributes }: PCStartTag) => {
     for (let i = 0, {length} = attributes; i < length; i++) {
       const attr = attributes[i];
       let name = attr.name;
+
+      // TODO - need to 
       if (name === "class") {
         name = "className";
       }
