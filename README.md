@@ -164,9 +164,7 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
   }
 ]]
 
-<component id="people-list">
-  [[ property people ]]
-  [[ property onRemovePersonClicked ]]
+<component id="people-list" [[property people]] [[property onRemovePersonClicked]]>
   <template>
     <ul>
       <li [[repeat people as person]]>
@@ -260,8 +258,7 @@ the element you're dealing with.
 `[[property]]` blocks define properties that expected in a component. Example:
 
 ```html
-<component id="x-button">
-  [[property text]]
+<component id="x-button" [[property text]]>
   <template>
     [[bind text]]
   </template>
@@ -278,8 +275,7 @@ Properties are _required_ for a number of reasons:
 `[[repeat]]` blocks `repeat` the element that they're attached to. Example:
 
 ```html
-<component>
-  [[property people]]
+<component [[property people]]>  
   <template>
     <ul>
       <li [[repeat people as person]]>
@@ -297,9 +293,7 @@ Note that `[[property]]` must be defined.
 Attaches an event listener to an element. Events that are dispatched by the element also contains the context of the element.  For example:
 
 ```html
-<component id="x-clicker">
-  [[property count]]
-
+<component id="x-clicker" [[property count]]>
   <template>
     <a id="some-button" href="#" [[emit click]]>
       current count: [[bind count]]
@@ -378,8 +372,7 @@ Future versions of Paperclip will likely contain strong types that will integrat
   name: string
 }]]
 
-<component id="people-list">
-  [[property person: Person[] ]]
+<component id="people-list" [[property person: Person[] ]]>
 </component>
 ```
 
@@ -400,10 +393,7 @@ Paperclip will eventually have features that are specific for visual editing, bu
 ```html
 <component id="people-list">
   <template>  
-    <span>
-
-      <!-- this note applies to the span above -->
-      [[note AUTOMATICALLY_GENERATED_ID]]
+    <span [[note AUTOMATICALLY_GENERATED_ID]]>
 
     </span>
   </template>
