@@ -1,4 +1,6 @@
 // TODO - assert modifiers (cannot have else, elseif, and else in the same block)
+// TODO - throw error if var found out of context
+
 import { 
   PCElement, 
   PCFragment, 

@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "lodash": "^4.17.4",
     "paperclip": "8.0.x"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.85",
     "react": "^16.1.1"
   }
 }

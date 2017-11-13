@@ -1,0 +1,5 @@
+<component id="hello" [[property message]]>
+	<template>
+		hello [[bind message]]
+	</template>
+</component>
