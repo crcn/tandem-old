@@ -1,3 +1,5 @@
+// TODO - emit warnings for elements that have invalid IDs
+
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation } from "./ast";
 import { loadModuleAST, Module, Template, Style, Import, Component, IO, loadModuleDependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
@@ -235,6 +237,7 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
                 `const { ${ properties.map(({name}) => name).join(",") } } = this;` +
                 binding + 
               `};` +
+              `$$binding();` + 
               `return $$binding;` +
             `})()`)});` : ``) +
             `shadow.appendChild(${decl.varName});`
