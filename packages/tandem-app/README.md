@@ -14,6 +14,7 @@ TOMORROW:
   - [ ] react transpilers
   - [ ] react bindings
   - [ ] content editor (need mutations lib)
+  - [ ] warn when component id overriden
 - [ ] Stage tools
   - [ ]
 - [ ] CSS Editor
