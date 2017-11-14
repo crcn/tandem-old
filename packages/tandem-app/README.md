@@ -1,8 +1,8 @@
 TOMORROW:
 
 - [ ] update paperclip dev server to use new lib
-  - [ ] http cahing on front-end
-  - [ ] string diffs should be pushed to clients (not the entire file)
+  - [ ] http caching on front-end (master loader that loads resources for all windows)
+  - [ ] push file changes to master loader that updates sibling windows
 - [ ] parse CSS AST
 - [ ] wire up paperclip-react-loader into Tandem
 

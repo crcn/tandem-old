@@ -52,7 +52,7 @@
   </template>
 </component>
 
-<component id="td-preview-component-example" hidden>
+<component id="td-preview-component-example" [[property label]]>
   <property name="label" />
   <style>
     :host {
@@ -67,14 +67,12 @@
     }
   </style>
   <template>
-    <h3>{{this.label}}</h3>
+    <h3>[[bind label]]</h3>
     <slot></slot>
   </template>
 </component>
 
 <component id="td-list-item" label="List Item">
-  <property name="count" type="number" default={{0}} />
-  <property name="mouseOver" type="number" default={{false}} />
   <style>
     :host {
       background: var(--background);
@@ -94,8 +92,7 @@
   </template>
 </component>
 
-<component id="td-progress">
-  <property name="value" default={{0}} />
+<component id="td-progress" [[property value]]>
   <style>
     :host {
       display: block;
@@ -127,7 +124,7 @@
   </style>
   <template>
     <div class="background">
-      <div class="fill" style={{{width: (this.value * 100) + "%" }}}>
+      <div class="file" style=[[bind { width: value * 100 + "%" } ]] />
       </div>
       <span><slot></slot></span>
     </div>

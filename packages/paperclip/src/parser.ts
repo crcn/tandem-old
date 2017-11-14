@@ -1,4 +1,7 @@
-import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKProperty } from "./ast";
+// Note that JS, and styles are parsed so that we can do analysis on the
+// AST and provide warnings, hints, and errors.
+
+import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKKeyValuePair, BKArray, BKVarReference } from "./ast";
 import { getLocation, getPosition } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
@@ -11,12 +14,11 @@ export const parseModuleSource = (source: string) => {
   if (_memos[source]) return _memos[source];
 
   const tokenScanner = tokenizePaperclipSource(source);
-
-  return _memos[source] = creatreFragment(tokenScanner);
+  return _memos[source] = createFragment(tokenScanner);
 }
 
-const creatreFragment = (scanner: TokenScanner) => {
-  const now = Date.now();
+const createFragment = (scanner: TokenScanner) => {
+
   const childNodes = [];
   while(!scanner.ended()) {
     childNodes.push(createExpression(scanner));
@@ -108,16 +110,104 @@ const createBKOperation = (scanner: TokenScanner): BKExpression => {
 };
 
 const createBKExpression = (scanner: TokenScanner) => {
+  eatWhitespace(scanner);
   switch(scanner.curr().type) {
     case PCTokenType.BANG: return createNotExpression(scanner);
+    case PCTokenType.CURLY_BRACKET_OPEN: return createObject(scanner);
+    case PCTokenType.BRACKET_OPEN: return createArray(scanner);
     case PCTokenType.PAREN_OPEN: return createGroup(scanner);
-    case PCTokenType.TEXT: return createReference(scanner);
+    case PCTokenType.TEXT: return createPropReference(scanner);
     case PCTokenType.RESERVED_KEYWORD: return createReservedKeyword(scanner);
     default: {
       throw new Error(`Unknown block type ${scanner.curr().value}`);
     }
   }
 };
+
+const createObject = (scanner: TokenScanner): BKObject => {
+  const start = scanner.curr();
+  scanner.next(); // eat {
+
+  const properties: BKKeyValuePair[] = [];
+
+  while(!scanner.ended()) {
+    eatWhitespace(scanner);
+    if (scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
+      break;
+    }
+
+    properties.push(createKeyValuePair(scanner));
+    eatWhitespace(scanner);
+
+    const curr = scanner.curr();
+
+    // will break in next loop
+    if (curr.type === PCTokenType.CURLY_BRACKET_CLOSE) {
+      continue;
+    }
+
+    if (curr.type !== PCTokenType.COMMA && curr) {
+      throwUnexpectedToken(scanner.source, curr);
+    }
+
+    scanner.next(); 
+  }
+
+  assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_CLOSE);
+
+  scanner.next(); // eat }
+
+  return {
+    type: BKExpressionType.OBJECT,
+    location: getLocation(start, scanner.curr(), scanner.source),
+    properties,
+  };
+};
+
+const createArray = (scanner: TokenScanner): BKArray => {
+  const start = scanner.curr();
+  scanner.next(); 
+  eatWhitespace(scanner);
+  const values: BKExpression[] = [];
+  const curr = scanner.curr();
+  if (curr.type !== PCTokenType.BRACKET_CLOSE) {
+    while(1) {
+      values.push(createBKExpression(scanner));
+      eatWhitespace(scanner);
+      const curr = scanner.curr();
+      if (curr.type === PCTokenType.BRACKET_CLOSE) {
+        break;
+      }
+      assertCurrTokenType(scanner, PCTokenType.COMMA);
+      scanner.next();
+    }
+  }
+
+  assertCurrTokenType(scanner, PCTokenType.BRACKET_CLOSE);
+  scanner.next();
+
+  return {
+    type: BKExpressionType.ARRAY,
+    location: getLocation(start, scanner.curr(), scanner.source),
+    values,
+  }
+}
+
+const createKeyValuePair = (scanner: TokenScanner): BKKeyValuePair => {
+  const key = createVarReference(scanner);
+  eatWhitespace(scanner);
+  assertCurrTokenType(scanner, PCTokenType.COLON);
+  scanner.next(); // eat :
+  eatWhitespace(scanner);
+  const value = createBKExpressionStatement(scanner);
+
+  return {
+    type: BKExpressionType.KEY_VALUE_PAIR,
+    location: getLocation(key.location.start, value.location.end, scanner.source),
+    key: key.name,
+    value,
+  }
+}
 
 const createGroup = (scanner: TokenScanner): BKGroup => {
   const start = scanner.curr();
@@ -156,10 +246,10 @@ const createPropertyBlock = (scanner: TokenScanner, type: BKExpressionType): BKP
   const start = scanner.curr();
   scanner.next(); // eat property
   scanner.next(); // eat ws
-  const name = createReference(scanner);
+  const ref = createVarReference(scanner);
   return ({
     type,
-    name: name.value,
+    name: ref.name,
     location: getLocation(start, scanner.curr(), scanner.source)
   });
 }
@@ -180,13 +270,14 @@ const createConditionBlock = (scanner: TokenScanner, type: BKExpressionType): BK
 const createRepeatBlock = (scanner: TokenScanner): BKRepeat => {
   const start = scanner.curr();
   scanner.next(); // eat repeat
-  const each = createReference(scanner);
+  const each = createVarReference(scanner);
+  eatWhitespace(scanner);
   scanner.next(); // eat as
-  const asValue = createReference(scanner);  // eat WS
-  let asKey: BKReference;
+  const asValue = createVarReference(scanner);  // eat WS
+  let asKey: BKVarReference;
   if (scanner.curr().value === ",") {
     scanner.next(); // eat
-    asKey = createReference(scanner);
+    asKey = createVarReference(scanner);
   }
 
   return ({
@@ -198,26 +289,33 @@ const createRepeatBlock = (scanner: TokenScanner): BKRepeat => {
   })
 };
 
-const createAnd = (scanner: TokenScanner): BKReference => {
-  eatWhitespace(scanner);
-  const start = scanner.curr();
-  scanner.next(); // ref
-  eatWhitespace(scanner);
+const createPropReference = (scanner: TokenScanner): BKVarReference|BKPropertyReference => {
+  const start = createVarReference(scanner);
+  const path = [start];
+  while(!scanner.ended() && scanner.curr().type === PCTokenType.PERIOD) {
+    scanner.next(); // eat .
+    assertCurrTokenType(scanner, PCTokenType.TEXT);
+    path.push(createVarReference(scanner));
+  }
+
+  if (path.length === 1) {
+    return path[0];
+  }
+
   return ({
-    type: BKExpressionType.REFERENCE,
-    value: start.value,
-    location: getLocation(start, scanner.curr(), scanner.source)
+    type: BKExpressionType.PROP_REFERENCE,
+    path,
+    location: getLocation(start.location.start, scanner.curr(), scanner.source)
   });
 };
 
-const createReference = (scanner: TokenScanner): BKReference => {
+const createVarReference = (scanner: TokenScanner): BKVarReference => {
   eatWhitespace(scanner);
   const start = scanner.curr();
-  scanner.next(); // ref
-  eatWhitespace(scanner);
+  scanner.next(); // eat name
   return ({
-    type: BKExpressionType.REFERENCE,
-    value: start.value,
+    type: BKExpressionType.VAR_REFERENCE,
+    name: start.value,
     location: getLocation(start, scanner.curr(), scanner.source)
   });
 };
@@ -349,7 +447,6 @@ const getElementChildNodes = (tagName: string, scanner: TokenScanner): [any[], P
   }
 
   let endTag: PCExpression;
-  const now = Date.now();
   while(!scanner.ended()) {
     const child = createExpression(scanner);
     if (child.type === PCExpressionType.END_TAG) {
@@ -387,7 +484,6 @@ const createString = (scanner: TokenScanner): PCString|PCStringBlock => {
   let hasBlocks = false;
   scanner.next(); // eat "
 
-  const now = Date.now();
   while(!scanner.ended()) {
     const curr = scanner.curr();
     if (curr.type === start.type) {

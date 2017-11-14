@@ -17,6 +17,9 @@ export enum BKExpressionType {
   TYPE,
   ECHO,
   IF,
+  OBJECT,
+  ARRAY,
+  KEY_VALUE_PAIR,
   NUMBER,
   PROPERTY,
   RESERVED_KEYWORD,
@@ -24,7 +27,8 @@ export enum BKExpressionType {
   NOT,
   OPERATION,
   GROUP,
-  REFERENCE,
+  VAR_REFERENCE,
+  PROP_REFERENCE,
   ELSE,
   REPEAT
 };
@@ -83,18 +87,36 @@ export type BKReservedKeyword = {
   value: string;
 } & PCExpression;
 
-export type BKReference = {
-  value: string;
+
+export type BKPropertyReference = {
+  path: BKVarReference[];
+} & BKExpression;
+
+export type BKVarReference = {
+  name: string;
 } & BKExpression;
 
 export type BKGroup = {
   value: BKExpression;
 } & BKExpression;
 
+export type BKObject = {
+  properties: BKKeyValuePair[];
+} & BKExpression;
+
+export type BKKeyValuePair = {
+  key: string;
+  value: BKExpression;
+} & BKExpression;
+
+export type BKArray = {
+  values: BKExpression[];
+} & BKExpression;
+
 export type BKRepeat = {
-  each: BKReference;
-  asKey: BKReference;
-  asValue: BKReference;
+  each: BKVarReference;
+  asKey: BKVarReference;
+  asValue: BKVarReference;
 } & BKExpression;
 
 export type BKOperation = {

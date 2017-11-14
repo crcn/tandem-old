@@ -7,7 +7,7 @@ import * as io from "socket.io";
 import * as multiparty from "connect-multiparty";
 import { eventChannel } from "redux-saga";
 import { createSocketIOSaga } from "aerial-common2";
-import { httpRequest, VISUAL_DEV_CONFIG_LOADED } from "../actions";
+import { VISUAL_DEV_CONFIG_LOADED, expressServerStarted } from "../actions";
 import { select, fork, spawn, take, put, call } from "redux-saga/effects";
 
 export function* expresssServerSaga() {
@@ -26,24 +26,10 @@ function* handleVisualDevConfigLoaded() {
   server = express();
   server.use(cors());
   
-  // start taking requests and dispatching them to other sagas
-  yield fork(function*() {
-    const chan = eventChannel((emit) => {
-      server.use((req, res) => {
-        emit(httpRequest(req, res));
-      });
-      return () => {
-
-      };
-    });
-
-    while(true) {
-      yield put(yield take(chan));
-    }
-  });
 
   // TODO - dispatch express server initialized
   httpServer = server.listen(port);
+  yield put(expressServerStarted(server));
   yield fork(createSocketIOSaga(io(httpServer)));
   console.log(`HTTP server listening on port ${port}`);  
 }

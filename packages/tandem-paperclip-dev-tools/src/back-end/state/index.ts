@@ -1,15 +1,11 @@
-import * as md5 from "md5";
 import * as fs from "fs";
 import * as path from "path";
 import { arrayReplaceIndex, arraySplice } from "aerial-common2";
-import { getPCMetaName, parse, getPCASTElementsByTagName, getPCStartTagAttribute, transpilePCASTToVanillaJS, Transpiler } from "../../paperclip2";
+import { getModuleId } from "../utils";
 import * as pc from "paperclip";
 
 export type Config = {
-  componentsDirectory?: string;
-  transpilers?: {
-    [identifier: string]: Transpiler
-  },
+  sourceDirectory?: string;
   extensions?: string[];
   moduleDirectories?: string[];
 };
@@ -28,24 +24,24 @@ export type ApplicationState = {
   fileCache: FileCacheItem[];
 };
 
-export type Component = {
+export type RegisteredComponent = {
+  filePath: string;
   label: string;
   tagName?: string;
-  filePath?: string;
-  hash?: string;
+  moduleId?: string;
 }
 
-export const getComponentsFromSourceContent = (content: string, filePath: string): Component[] => {
-  const hash = md5(filePath);
+export const getComponentsFromSourceContent = (content: string, filePath: string): RegisteredComponent[] => {
+  const moduleId = getModuleId(filePath);
   try {
     const now = Date.now();
     const ast = pc.parseModuleSource(content);
     const module = pc.loadModuleAST(ast);
     return module.components.map(({id}) => ({
-      tagName: id,
-      hash,
       filePath,
-      label: id
+      label: id,
+      tagName: id,
+      moduleId: moduleId,
     }));
 
   } catch(e) {
@@ -53,7 +49,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
     return [{
       label: path.basename(filePath) + ":<syntax error>" ,
       filePath,
-      hash,
+      moduleId,
     }];
   }
 };

@@ -1,6 +1,6 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { getComponentsFileTester, getComponentsFilePattern } from "../utils";
+import { getModulesFileTester, getModulesFilePattern } from "../utils";
 import { ApplicationState } from "../state";
 import { WATCH_URIS_REQUESTED, fileChanged, fileContentChanged, watchingFiles } from "../actions";
 import * as chokidar from "chokidar";
@@ -18,7 +18,7 @@ function* handleWatchUrisRequest() {
     const state: ApplicationState = yield select();
     const { watchUris = [], fileCache } = state;
 
-    const componentFileTester = getComponentsFileTester(state);
+    const componentFileTester = getModulesFileTester(state);
 
     // remove file path and ensure that it doesn't exist in component pattern.
     const urisByFilePath = watchUris.filter(((uri) => uri.substr(0, 5) === "file:")).map((uri) => (
@@ -26,7 +26,7 @@ function* handleWatchUrisRequest() {
     )).filter(filePath => !componentFileTester(filePath));
 
     const allUris = [
-      getComponentsFilePattern(state),
+      getModulesFilePattern(state),
       ...urisByFilePath
     ];
 
@@ -71,7 +71,7 @@ function* handleWatchUrisRequest() {
       });
     }
 
-    const initialFileCache = glob.sync(getComponentsFilePattern(state)).map((filePath) => (
+    const initialFileCache = glob.sync(getModulesFilePattern(state)).map((filePath) => (
       fileCache.find((item) => item.filePath === filePath) || readFile(filePath)
     ));
 

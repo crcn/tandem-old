@@ -16,7 +16,7 @@ module.exports = {
 
   paperclip: {
     entry: __dirname + "./src/index.ts",
-    componentsDirectory: __dirname + "/src/front-end/components",
+    sourceDirectory: __dirname + "/src/front-end/components",
     transpilers: {
       "text/typescript": transpileTypescript,
       "ts": transpileTypescript

@@ -1,2 +1,2 @@
 export * from "./saga";
-export * from "./components";
+export * from "./modules";

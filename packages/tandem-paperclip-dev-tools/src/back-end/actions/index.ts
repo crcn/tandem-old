@@ -2,10 +2,10 @@ import { Action } from "redux";
 import { FileCacheItem } from "../state";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
+import * as express from "express";
 
 export const ALERT = "ALERT";
 export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
-export const HTTP_REQUEST = "HTTP_REQUEST";
 export const VISUAL_DEV_CONFIG_LOADED = "VISUAL_DEV_CONFIG_LOADED";
 export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const MUTATE_SOURCE_CONTENT = "MUTATE_SOURCE_CONTENT";
@@ -15,11 +15,17 @@ export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
 export const FILE_CHANGED = "FILE_CHANGED";
 export const WATCH_URIS_REQUESTED = "WATCH_URIS_REQUESTED";
 export const WATCHING_FILES = "WATCHING_FILES";
+export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 
 export type HTTPRequest = {
   request: Request;
   response: Response;
 } & Action;
+
+export type ExpressServerStarted = {
+  type: string;
+  server: express.Express;
+}
 
 export type Mutation =  {
   $type: string;
@@ -91,12 +97,6 @@ export const childDevServerStarted = (port: number): ChildDevServerStarted => ({
   type: CHILD_DEV_SERVER_STARTED
 });
 
-export const httpRequest = (request: Request, response: Response): HTTPRequest => ({
-  type: HTTP_REQUEST,
-  request,
-  response,
-});
-
 export const watchingFiles = (initialFileCache: FileCacheItem[]): WatchingFiles => ({
   type: WATCHING_FILES,
   initialFileCache
@@ -105,3 +105,7 @@ export const startDevServerExecuted = () => ({
   type: START_DEV_SERVER_EXECUTED
 });
 
+export const expressServerStarted = (server: express.Express): ExpressServerStarted => ({
+  type: EXPRESS_SERVER_STARTED,
+  server
+});

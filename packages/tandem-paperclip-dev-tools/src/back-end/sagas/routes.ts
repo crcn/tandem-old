@@ -1,12 +1,11 @@
-import { fork, take, select, call, put } from "redux-saga/effects";
+import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { transpilePCASTToVanillaJS, transpileJSSource, editPCContent, TranspileResult } from "../../paperclip2";
 import * as request from "request";
-import { ApplicationState, getComponentsFromSourceContent, Component } from "../state";
+import { ApplicationState, getComponentsFromSourceContent, RegisteredComponent } from "../state";
 import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
-import { routeHTTPRequest, getComponentFilePaths } from "../utils";
-import { watchUrisRequested, fileContentChanged, fileChanged } from "../actions";
+import { getModuleFilePaths, getModuleId } from "../utils";
+import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
@@ -16,23 +15,68 @@ import { editString, StringMutation, weakMemo } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
 
 export function* routesSaga() {
-  yield routeHTTPRequest(
+  yield fork(handleExpressServerStarted);
+}
 
-    [ { test: /^\/proxy\/.*/ }, proxy],
-    [ { test: /^\/file/, method: "POST" }, setFile],
+function* handleExpressServerStarted() {
+  while(true) {
+    const { server }: ExpressServerStarted = yield take(EXPRESS_SERVER_STARTED);
+    yield addRoutes(server);
+  }
+}
 
-    // returns capabilities to front-end so that it can turn features on or off
-    [ { test: /^\/capabilities/, method: "GET" }, getCapabilities],
+function* addRoutes(server: express.Express) {
 
-    // returns the available components in the CWD
-    [ { test: /^\/components/, method: "GET" }, getComponents],
+  const state: ApplicationState = yield select();
 
-    // creates a new component
-    [ { test: /^\/components/, method: "POST" }, createComponent],
-    [ { test: /^\/preview\/[^\/]+/, method: "GET" }, getComponentPreview],
-    [ { test: /^\/watch/, method: "POST" }, watchUris],
-    [ { test: /^\/edit/, method: "POST" }, editFiles],
-  );
+  server.use("/src", express.static(state.config.sourceDirectory));
+  server.use(express.static(path.join(path.dirname(require.resolve("paperclip")), "dist")));
+  console.log("serving paperclip dist/ folder");
+
+  server.all(/^\/proxy\/.*/, yield wrapRoute(proxy));
+  server.post("/src", yield wrapRoute(setFile));
+
+  // return all components
+  server.get("/components", yield wrapRoute(getComponents));
+
+  // return the module file
+  server.get("/modules/:moduleId", yield wrapRoute(getModuleFileContent));
+
+  // return a module preview
+  server.get("/modules/:moduleId/preview", yield wrapRoute(getComponentPreview));
+
+  // create a new component (creates a new module with a single component)
+  server.post("/components", yield wrapRoute(createComponent));
+
+  // 
+  server.post("/watch", yield wrapRoute(watchUris));
+
+  // edits a file
+  server.post("/edit", yield wrapRoute(editFiles));
+  
+}
+
+function* wrapRoute(route) {
+
+  let handle;
+
+  const chan = eventChannel((emit) => {
+    handle = (req, res, next) => {
+      emit([req, res, next]);
+    }
+
+    return () => {};
+  });
+
+  yield spawn(function*() {
+    while(true) {
+      yield route(...(yield take(chan)));
+    }
+  });
+
+  return function(req: express.Request, res: express.Response, next) {
+    handle(req, res, next);
+  }
 }
 
 function getCapabilities() {
@@ -40,6 +84,14 @@ function getCapabilities() {
     "CREATE_COMPONENTS",
     "GET_COMPONENTS"
   ];
+}
+
+function* getModuleFileContent(req: express.Request, res: express.Response, next) {
+  const { moduleId } = req.params;
+  const state: ApplicationState = yield select();
+  const targetModuleFilePath = getModuleFilePaths(state).find((filePath) => getModuleId(filePath) === moduleId);
+  if (!targetModuleFilePath) next();
+  res.sendFile(targetModuleFilePath);
 }
 
 function* createComponent(req: express.Request, res: express.Response) {
@@ -67,16 +119,14 @@ function* createComponent(req: express.Request, res: express.Response) {
   */
 }
 
-const BUILTIN_COMPONENTS: Component[] = [
-]
 
 function* getAvailableComponents() {
   const state: ApplicationState = yield select();
   const readFileSync = getReadFile(state);
   
-  return [...BUILTIN_COMPONENTS, ...getComponentFilePaths(state).reduce((components, filePath) => (
+  return getModuleFilePaths(state).reduce((components, filePath) => (
     [...components, ...getComponentsFromSourceContent(readFileSync(filePath), filePath)]
-  ), [])];
+  ), []);
 }
 
 function* proxy(req, res: express.Response) {
@@ -90,10 +140,12 @@ function* proxy(req, res: express.Response) {
     res.send(err.stack);
   })).pipe(res);
 }
+
 function* getComponents(req: express.Request, res: express.Response) {
   res.send(yield call(getAvailableComponents));
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
+
 
 function* getPostData (req: express.Request) {
 
@@ -121,7 +173,6 @@ const getReadFile = weakMemo((state: ApplicationState) => (filePath: string) => 
 const getTranspileOptions = weakMemo((state: ApplicationState) => ({
   assignTo: "bundle",
   readFileSync: getReadFile(state),
-  transpilers: state.config.transpilers,
   extensions: state.config.extensions,
   moduleDirectories: state.config.moduleDirectories
 }));
@@ -130,118 +181,114 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
 
   // TODO - evaluate PC code IN THE BROWSER -- need to attach data information to element
   // nodes
-  const [match, tagNameOrHash] = req.path.match(/preview\/([^\/]+)/);
+  const state: ApplicationState = yield select();
+  const { moduleId } = req.params;
 
-  const components = (yield call(getAvailableComponents)) as Component[];
+  const components = (yield call(getAvailableComponents)) as RegisteredComponent[];
 
-  const targetComponent = components.find(component => component.tagName === tagNameOrHash || component.hash === tagNameOrHash);
+  const targetComponent = components.find(component => component.moduleId === moduleId || component.tagName === moduleId);
 
 
   if (!targetComponent || !targetComponent.filePath) {
     res.status(404);
     return res.send(`Component not found`);
   }
-  
-  const state: ApplicationState = yield select();
 
-  const readFileSync = getReadFile(state);
-
-  const transpileResult: TranspileResult = transpilePCASTToVanillaJS(readFileSync(targetComponent.filePath), `file://${targetComponent.filePath}`, getTranspileOptions(state));
-
-  const allFiles = Object.keys(transpileResult.content);
+  const relativeModuleFilePath = targetComponent.filePath.replace(state.config.sourceDirectory, "");
 
   let content: string;
 
-  if (transpileResult.errors.length) {
-    console.error(transpileResult.errors[0].stack);
-    content = `
-      bundle = {
-        entry: {
-          preview: function() {
-            return document.createTextNode(${JSON.stringify("Error: " + transpileResult.errors[0].message)})
-          }
-        } 
-      }
-    `;
-  } else {
-    content = transpileResult.content;
-  }
-
-  const now = Date.now();
   const html = `
   <html>
     <head>
       <title>${targetComponent.label}</title>
+
+      <!-- paperclip used to compile templates in the browser -- primarily to reduce latency of 
+      sending bundled files over a network, especially when there are many canvases. -->
+      <script type="text/javascript" src="/paperclip.min.js"></script>
     </head>
     <body>
       <script>
-        var allFiles = ${JSON.stringify(transpileResult.allFiles)};
-        
-        try {
-          var bundle = {};
-          ${content}
-          var previews  = bundle.entry.$$previews || {};
-
-          var styles   = bundle.entry.$$styles || [];
-          if (!Object.keys(previews).length) {
-            document.body.appendChild(
-              document.createTextNode('no preview found in file')
-            );
-          } else {
-            const mainPreview = previews[Object.keys(previews)[0]];
-            styles.forEach(function(style) {
-              document.body.appendChild(style);
-            });
-            document.body.appendChild(mainPreview);
+        paperclip.bundleVanilla("/src/${relativeModuleFilePath}", {
+          io: {
+            readFile(uri) {
+              return fetch(uri).then((response) => response.text());
+            },
+            resolveFile(relative, base) {
+              const dirname = base.split("/");
+              dirname.pop();
+              return Promise.resolve(dirname.join("/") + relative);
+            }
           }
-        } catch(e) {
-          console.log(e.stack);
-          document.body.appendChild(document.createTextNode(e.stack));
-        }
+        }).then(({ code, warnings }) => {
+          const { entry, modules } = new Function(code)(window);
+        });
+        
+        // try {
+        //   var bundle = {};
+        //   ${content}
+        //   var previews  = bundle.entry.$$previews || {};
 
-        if (window.reloadWhenUrisChange) {
-          window.reloadWhenUrisChange(allFiles);
-        }
+        //   var styles   = bundle.entry.$$styles || [];
+        //   if (!Object.keys(previews).length) {
+        //     document.body.appendChild(
+        //       document.createTextNode('no preview found in file')
+        //     );
+        //   } else {
+        //     const mainPreview = previews[Object.keys(previews)[0]];
+        //     styles.forEach(function(style) {
+        //       document.body.appendChild(style);
+        //     });
+        //     document.body.appendChild(mainPreview);
+        //   }
+        // } catch(e) {
+        //   console.log(e.stack);
+        //   document.body.appendChild(document.createTextNode(e.stack));
+        // }
+
+        // if (window.reloadWhenUrisChange) {
+        //   window.reloadWhenUrisChange(allFiles);
+        // }
       </script>
     </body>
   </html>
   `;
 
-  console.log("rendered %s in %s ms", tagNameOrHash, Date.now() - now);
-
   res.send(html);
 }
 
-function* editFiles(req: express.Request, res: express.Response) {
-  const mutationsByUri = yield call(getPostData, req);
-  const state: ApplicationState = yield select();
+function* editFiles(req: express.Request, res: express.Response, next) {
+  // const mutationsByUri = yield call(getPostData, req);
+  // const state: ApplicationState = yield select();
 
-  const result: any = {};
+  // const result: any = {};
 
-  for (const uri in mutationsByUri) {
-    if (uri.substr(0, 5) !== "file:") continue;
-    const filePath = path.normalize(uri.substr(7));
-    const fileCacheItem = state.fileCache.find((item) => item.filePath === filePath);
-    if (!fileCacheItem) {
-      console.warn(`${filePath} was not found in cache, cannot edit!`);
-      continue;
-    }
+  // for (const uri in mutationsByUri) {
+  //   if (uri.substr(0, 5) !== "file:") continue;
+  //   const filePath = path.normalize(uri.substr(7));
+  //   const fileCacheItem = state.fileCache.find((item) => item.filePath === filePath);
+  //   if (!fileCacheItem) {
+  //     console.warn(`${filePath} was not found in cache, cannot edit!`);
+  //     continue;
+  //   }
 
-    // TODO - add history here
-    const mutations = mutationsByUri[uri];
-    const oldContent = fileCacheItem.content.toString("utf8");
+  //   // TODO - add history here
+  //   const mutations = mutationsByUri[uri];
+  //   const oldContent = fileCacheItem.content.toString("utf8");
 
-    const stringMutations = flatten(mutations.map(editPCContent.bind(this, oldContent))) as StringMutation[];
+  //   const stringMutations = flatten(mutations.map(editPCContent.bind(this, oldContent))) as StringMutation[];
 
-    const newContent = editString(oldContent, stringMutations);
+  //   const newContent = editString(oldContent, stringMutations);
 
-    result[uri] = newContent;
+  //   result[uri] = newContent;
 
-    yield put(fileContentChanged(filePath, new Buffer(newContent, "utf8"), new Date()));
-    yield put(fileChanged(filePath)); // dispatch public change -- causes reload
-  }
+  //   yield put(fileContentChanged(filePath, new Buffer(newContent, "utf8"), new Date()));
+  //   yield put(fileChanged(filePath)); // dispatch public change -- causes reload
+  // }
 
-  res.send(result);
+  // res.send(result);
+
+  next();
 }
 
 function* setFile(req: express.Request, res: express.Response) { 

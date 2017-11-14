@@ -1,6 +1,6 @@
-// TODO - emit warnings for elements that have invalid IDs
+// TODO - emit warnings for elements that have invalid IDs, emit errors
 
-import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation } from "./ast";
+import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKArray } from "./ast";
 import { loadModuleAST, Module, Template, Style, Import, Component, IO, loadModuleDependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModuleSource } from "./parser";
@@ -36,10 +36,28 @@ export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promi
 // usable in other transpilers
 export const transpileBlockExpression = (expr: BKExpression) => {
   switch(expr.type) {
-    case BKExpressionType.NOT: return "!" + transpileBlockExpression((expr as BKNot).value);
-    case BKExpressionType.REFERENCE: {
-      const name = (expr as BKReference).value;
-      return name;
+    case BKExpressionType.NOT: return `!${transpileBlockExpression((expr as BKNot).value)}`;
+    case BKExpressionType.PROP_REFERENCE: {
+      const ref = expr as BKPropertyReference;
+      return ref.path.map(transpileBlockExpression).join(".");
+    }
+    case BKExpressionType.VAR_REFERENCE: {
+      const ref = expr as BKVarReference;
+      return ref.name;
+    }
+    case BKExpressionType.ARRAY: {
+      const array = expr as BKArray;
+      return `[${array.values.map(transpileBlockExpression)}]`;
+    }
+    case BKExpressionType.OBJECT: {
+      const object = expr as BKObject;
+      let content = `{`;
+      for (let i = 0, {length} = object.properties; i < length; i++) {
+        const property = object.properties[i];
+        content += `${property.key}:${transpileBlockExpression(property.value)}, `;
+      }
+      content += `}`;
+      return content;
     }
     case BKExpressionType.GROUP: return `(${transpileBlockExpression((expr as BKGroup).value)})`;
     case BKExpressionType.RESERVED_KEYWORD: return (expr as BKReservedKeyword).value;
@@ -352,7 +370,11 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
   // todo - eventually want to get TYPE of each declaration
   // here so that transpiling can be done for objects, or arrays.
   if (_repeat) {
-    const {each: { value: each }, asKey: { value: asKey } = { value: "index" }, asValue: { value: asValue }} = _repeat;
+    const {each, asKey, asValue} = _repeat;
+
+    const _each = transpileBlockExpression(each);
+    const _asKey = asKey ? transpileBlockExpression(asKey) : "index";
+    const _asValue = transpileBlockExpression(asValue);
 
     // newDeclaration = declareNode(`document.createTextNode("")`, context);
     const { fragment, start, end } = declareVirtualFragment(context);
@@ -365,7 +387,7 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
     );
 
     newDeclaration.bindings.push(`` +
-      `let $$newValue = (${each}) || [];` +
+      `let $$newValue = (${_each}) || [];` +
       `if ($$newValue === ${currentValueVarName}) {` +
         `return;` +
       `}` +
@@ -383,7 +405,7 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
         `for (let $$i = $$newValueCount - $$oldValueCount; $$i--;) {` +
           decl.content +
           `$$parent.insertBefore(${decl.varName}, ${end.varName});` +
-          `const $$bindings = [${decl.bindings.map((binding) => (`(${asValue}, ${asKey}) => { ` +
+          `const $$bindings = [${decl.bindings.map((binding) => (`(${_asValue}, ${_asKey}) => { ` +
             binding +
           `}`)).join(",")}];` + 
 
