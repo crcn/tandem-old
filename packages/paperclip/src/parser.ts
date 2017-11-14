@@ -1,7 +1,7 @@
 // Note that JS, and styles are parsed so that we can do analysis on the
 // AST and provide warnings, hints, and errors.
 
-import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference } from "./ast";
+import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference, CSSExpression, CSSExpressionType, CSSStyleRule, CSSRule, CSSGroupingRule, CSSAtRule, CSSDeclarationProperty, CSSSheet } from "./ast";
 import { getLocation, getPosition } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
@@ -9,13 +9,18 @@ import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 const _memos: any = {};
 
 export const parseModuleSource = (source: string) => {
-
-  // should be fine since returned value is immutable
-  if (_memos[source]) return _memos[source];
+  if (_memos[source]) return _memos[source]; // result should be immutable, so this is okay 
 
   const tokenScanner = tokenizePaperclipSource(source);
   return _memos[source] = createFragment(tokenScanner);
-}
+};
+
+export const parseStyleSource = (source: string) => {
+  if (_memos[source]) return _memos[source];
+
+  const tokenScanner = tokenizePaperclipSource(source);
+  return _memos[source] = createStyleSheet(tokenScanner);
+};
 
 const createFragment = (scanner: TokenScanner) => {
 
@@ -408,6 +413,129 @@ const isBlockEnding = (scanner: TokenScanner) => {
   return scanner.curr().type === PCTokenType.BRACKET_CLOSE && scanner.peek(1).type === PCTokenType.BRACKET_CLOSE;
 };
 
+const createStyleSheet = (scanner: TokenScanner): CSSSheet => {
+  const start = scanner.curr();
+  const children = [];
+  while(!scanner.ended() && scanner.curr().type !== PCTokenType.CLOSE_TAG) {
+    children.push(createCSSRule(scanner));
+    eatWhitespace(scanner);
+  }
+  return {
+    type: CSSExpressionType.SHEET,
+    children,
+    location: getLocation(start, scanner.curr(), scanner.source)
+  };
+};
+
+const createCSSRule = (scanner: TokenScanner) => {
+  eatWhitespace(scanner);
+  switch(scanner.curr().type) {
+    case PCTokenType.AT: return createCSSAtRule(scanner);
+    default: return createCSSStyleRuleOrDeclarationProperty(scanner);
+  }
+};
+
+const createCSSAtRule = (scanner: TokenScanner): CSSAtRule => {
+  const start = scanner.curr();
+  scanner.next();
+  let name: string = "";
+
+  while(scanner.curr().type !== PCTokenType.WHITESPACE && scanner.curr().type !== PCTokenType.CURLY_BRACKET_OPEN) {
+    name += scanner.curr().value;
+    scanner.next();
+  }
+  scanner.next(); // eat name
+  const params: string[] = [];
+  const children: CSSRule[] = [];
+  eatWhitespace(scanner);
+  while(!scanner.ended()) {
+    eatWhitespace(scanner);
+    if (scanner.curr().type === PCTokenType.CURLY_BRACKET_OPEN || scanner.curr().type === PCTokenType.SEMICOLON) {
+      break;
+    }
+    if (scanner.curr().type === PCTokenType.SINGLE_QUOTE || scanner.curr().type === PCTokenType.DOUBLE_QUOTE) {
+      params.push(createString(scanner).value);
+    } else {
+      params.push(scanner.curr().value);
+      scanner.next();
+    }
+  }
+
+  const curr = scanner.curr();
+  scanner.next(); // eat ; or {
+
+  if (curr.type === PCTokenType.CURLY_BRACKET_OPEN) {
+    while(!scanner.ended()) {
+      eatWhitespace(scanner);
+      if (scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
+        break;
+      }
+      children.push(createCSSRule(scanner));
+    }
+
+    assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_CLOSE);
+
+    scanner.next();
+  }
+
+  return {
+    type: CSSExpressionType.AT_RULE,
+    name,
+    params,
+    children,
+    location: getLocation(start, scanner.curr(), scanner.source)
+  };
+}
+
+
+const createCSSStyleRuleOrDeclarationProperty = (scanner: TokenScanner): CSSStyleRule|CSSDeclarationProperty => {
+  const start = scanner.curr();
+  let selectorText = "";
+  while(!scanner.ended() && scanner.curr().type !== PCTokenType.CURLY_BRACKET_OPEN && scanner.curr().type !== PCTokenType.SEMICOLON && scanner.curr().type !== PCTokenType.CURLY_BRACKET_CLOSE) {
+    selectorText += scanner.curr().value;
+    scanner.next();
+  }
+
+  // it's a declaration
+  if (scanner.curr().type === PCTokenType.SEMICOLON || scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
+    const [name, value] = selectorText.split(":");
+
+    if (scanner.curr().type === PCTokenType.SEMICOLON) {
+      scanner.next(); // eat ;
+    }
+    return {
+      type: CSSExpressionType.DECLARATION_PROPERTY,
+      location: getLocation(start, scanner.curr(), scanner.source),
+      name,
+      value
+    } as CSSDeclarationProperty;
+  }
+
+  assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_OPEN);
+  scanner.next(); 
+
+  const children: CSSExpression[] = [];
+  eatWhitespace(scanner);
+  while(!scanner.ended() && scanner.curr().type !== PCTokenType.CURLY_BRACKET_CLOSE) {
+
+    // todo - allow for nesteded
+    children.push(createCSSStyleRuleOrDeclarationProperty(scanner) as CSSDeclarationProperty);
+    eatWhitespace(scanner);
+  }
+
+  assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_CLOSE);
+  scanner.next();
+
+  selectorText = selectorText.trim();
+
+  return {
+    type: CSSExpressionType.STYLE_RULE,
+    children,
+    selectorText,
+    location: getLocation(start, scanner.curr(), scanner.source)
+  };
+}
+
 const createCloseTag = (scanner: TokenScanner) => {
   const start = scanner.curr();
   scanner.next();
@@ -476,6 +604,13 @@ const getElementChildNodes = (tagName: string, scanner: TokenScanner): [any[], P
   const childNodes = [];
 
   // special tags
+  if (tagName === "style") {
+    const styleSheet = createStyleSheet(scanner);
+    eatWhitespace(scanner);
+    assertCurrTokenType(scanner, PCTokenType.CLOSE_TAG);
+    return [[styleSheet], createCloseTag(scanner)];
+  }
+
   if (tagName === "style" || tagName === "script") {
 
     let buffer = "";
@@ -610,7 +745,6 @@ const getTagName = (scanner: TokenScanner) => {
   }
   return name;
 };
-
 
 export const throwUnexpectedToken = (source: string, token: Token) => {
   if (!token) {

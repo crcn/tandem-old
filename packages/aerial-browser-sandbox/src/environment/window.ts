@@ -465,6 +465,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
     readonly CSSFontFaceRule: typeof CSSFontFaceRule;
     readonly CSSKeyframesRule: typeof CSSKeyframesRule;
+    readonly CSSKeyframeRule: typeof CSSKeyframeRule;
     readonly CSSMediaRule: typeof CSSMediaRule;
     readonly CSSStyleRule: typeof CSSStyleRule;
     readonly UnknownGroupingRule: typeof CSSGroupingRule;
@@ -485,6 +486,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       
       this.CSSFontFaceRule = SEnvCSSFontFace as any;
       this.CSSKeyframesRule = SEnvCSSKeyframesRule as any;
+      this.CSSKeyframeRule = SEnvCSSStyleRule as any;
       this.CSSMediaRule = SEnvCSSMediaRule as any;
       this.CSSStyleRule = SEnvCSSStyleRule as any;
       this.UnknownGroupingRule = SEnvUnknownGroupingRule as any;

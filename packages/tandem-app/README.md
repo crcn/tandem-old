@@ -3,7 +3,7 @@ TOMORROW:
 - [ ] update paperclip dev server to use new lib
   - [ ] http caching on front-end (master loader that loads resources for all windows)
   - [ ] push file changes to master loader that updates sibling windows
-- [ ] parse CSS AST
+- [ ] style piercing
 - [ ] wire up paperclip-react-loader into Tandem
 
 - [ ] mutations lib (needed in paperclip)

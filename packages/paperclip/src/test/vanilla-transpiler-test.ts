@@ -6,6 +6,46 @@ import { getSEnvWindowClass } from "aerial-browser-sandbox";
 
 describe(__filename + "#", () => {
 
+  const runCode = async (context: any, input: string, wrap: (value: string) => string = (value) => value) => {
+    const { code } = await bundleVanilla(null, {
+      target: PaperclipTargetType.TANDEM,
+      io: {
+        readFile: async () => wrap(input),
+        resolveFile: async (a, b) => null
+      }
+    });
+
+    let outerCode = `
+
+      // need access to native tags
+      with(window) {
+        with(context) {
+          const { entry } = ${code}
+
+          // append stray nodes randomly created in the doc first
+          for (const node of entry.globalStyles) {
+            window.document.body.appendChild(node);
+          }
+
+          // append stray nodes randomly created in the doc first
+          for (const node of entry.strays) {
+            window.document.body.appendChild(node);
+          }
+        }
+      }
+    `;
+    
+    const SEnvWindow = getSEnvWindowClass({
+      fetch: async (uri) => ({
+        text: async () => input
+      }) as any
+    });
+    const window = new SEnvWindow("index.html");
+    new Function("window", "context", "console", outerCode)(window, context, console);
+
+    return window.document;
+  };
+
   [
     [{}, `a`, `a`],
     [{}, `<span />`, `<span></span>`],
@@ -13,7 +53,7 @@ describe(__filename + "#", () => {
     [{}, `<span>a</span>`, `<span>a</span>`],
     [{}, `<span><h1 />1</span>`, `<span><h1></h1>1</span>`],
     [{}, `<span>a</span><!-- a -->`, `<span>a</span>`],
-    [{}, `<style>.container { }</style>`, ``],
+    [{}, `<style>.container { }</style>`, `<style></style>`],
     [{}, `<span b="c">!sbang</span>`, `<span b="c">!sbang</span>`],
     [{}, `<span b="c">bang!</span>`, `<span b="c">bang!</span>`],
     [{}, `<span b="c"></span>`, `<span b="c"></span>`],
@@ -95,40 +135,29 @@ describe(__filename + "#", () => {
     ]
   ].forEach(([context, input, output]: [any, string, string]) => {
     it(`renders ${input} as ${output} with ${JSON.stringify(context)}`, async () => {
-      const { code } = await bundleVanilla(null, {
-        target: PaperclipTargetType.TANDEM,
-        io: {
-          readFile: async () => input,
-          resolveFile: async (a, b) => null
-        }
-      });
-
-      let outerCode = `
-
-        // need access to native tags
-        with(window) {
-          with(context) {
-            const { entry } = ${code}
-
-            // append stray nodes randomly created in the doc first
-            for (const node of entry.strays) {
-              window.document.body.appendChild(node);
-            }
-          }
-        }
-      `;
-      
-      const SEnvWindow = getSEnvWindowClass({
-        fetch: async (uri) => ({
-          text: async () => input
-        }) as any
-      });
-      const window = new SEnvWindow("index.html");
-      new Function("window", "context", "console", outerCode)(window, context, console);
-
-      expect(window.document.body.innerHTML.trim()).to.eql(output.trim());
+      const document = await runCode(context, input);
+      expect(document.body.innerHTML.trim()).to.eql(output.trim());
     });
   });
 
+  // styles
+
+  [
+    [`.container {}`, `.container { }`],
+    [`  .container {\na:b;}  `, `.container { a: b; }`],
+    [`.container {a:b;c:d}`, `.container { a: b;c: d; }`],
+    [`@media screen { .container { color: red; } }`, `@media screen { .container { color: red; } }`],
+    [`@unknown screen { .container { color: red; } }`, ``],
+    [`@charset "utf8";`, ``],
+    [`@keyframes bab { 0% { color: red; }}`, `@keyframes bab { 0% { color: red; } }`],
+    [`@font-face { color: red; }`, `@font-face { color: red; }`]
+  ].forEach(([input, output]) => {
+    it(`can parse ${input} to ${output}`, async () => {
+      const wrap = (input) => `<style>${input.trim()}</style>`;
+      const document = await runCode({}, input, wrap);
+      const cssText = Array.prototype.map.call(document.styleSheets, sheet => sheet.cssText).join("").replace(/[\s\r\n\t]+/g, " ");
+      expect(cssText.trim()).to.eql(output);
+    });
+  });
   
 });

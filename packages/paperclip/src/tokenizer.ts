@@ -17,8 +17,10 @@ export enum PCTokenType {
   OR,
   PLUS,
   COLON,
+  SEMICOLON,
   MINUS,
   NUMBER,
+  AT,
   STAR,
   PERCENT,
   PAREN_OPEN,
@@ -86,6 +88,10 @@ export const tokenizePaperclipSource = (source: string) => {
       }
     } else if (cchar === ":") {
       token = createToken(PCTokenType.COLON, scanner.pos, scanner.shift());
+    }  else if (cchar === ";") {
+      token = createToken(PCTokenType.SEMICOLON, scanner.pos, scanner.shift());
+    } else if (cchar === "@") {
+      token = createToken(PCTokenType.AT, scanner.pos, scanner.shift());
     } else if (cchar === ",") {
       token = createToken(PCTokenType.COMMA, scanner.pos, scanner.shift());
     } else if (cchar === "'") {
@@ -132,7 +138,7 @@ export const tokenizePaperclipSource = (source: string) => {
       token = createToken(PCTokenType.WHITESPACE, scanner.pos, scanner.scan(/[\s\r\n\t]/));
     } else {
       
-      const text = scanner.scan(/[^-<>,='":\./\\(){}\[\]\s\r\n\t]/) || scanner.shift();
+      const text = scanner.scan(/[^-<>,='":@;\./\\(){}\[\]\s\r\n\t]/) || scanner.shift();
 
       // null intentionally left out
       token = createToken(text === "undefined" ? PCTokenType.RESERVED_KEYWORD : PCTokenType.TEXT, scanner.pos, text);

@@ -32,11 +32,6 @@ export type Import = {
   href: string;
 };
 
-export type Style = {
-  // TODO - this needs to be parsed out.
-  content: string;
-};
-
 export type Template = {
   content: PCExpression[];
 };
@@ -44,7 +39,7 @@ export type Template = {
 export type Component = {
   id: string;
   properties: BKProperty[];
-  style: Style;
+  style: PCElement;
   template: Template;
 };
 
@@ -52,7 +47,7 @@ export type Module = {
 
   source: PCExpression;
 
-  globalStyles: Style[];
+  globalStyles: PCElement[];
 
   // import statements that are defined at the top.
   imports: Import[];
@@ -104,7 +99,8 @@ export const loadModuleDependencyGraph = (uri: string, io: IO, modules: Modules 
   }).then(() => {
     return modules;
   }).catch((e) => {
-    throw new Error(`${e.message} in ${uri}`);
+    console.error(`Error in ${uri}`);
+    throw e;
   });
 }
 
@@ -113,7 +109,7 @@ const createModule = (ast: PCExpression): Module => {
 
   const imports: Import[] = [];
   const components: Component[] = [];
-  const globalStyles: Style[] = [];
+  const globalStyles: PCElement[] = [];
   const unhandledExpressions: PCExpression[] = [];
 
   for (let i = 0, {length} = childNodes; i < length; i++) {
@@ -133,7 +129,7 @@ const createModule = (ast: PCExpression): Module => {
         imports.push(createImport(attributes));
         continue;
       } else if (tagName === "style") {
-        globalStyles.push(createStyle(attributes, childNodes));
+        globalStyles.push(element as any as PCElement);
         continue;
       }
     }
@@ -152,7 +148,7 @@ const createModule = (ast: PCExpression): Module => {
 
 const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
   let id: string;
-  let style: Style;
+  let style: PCElement;
   let template: Template;
   let properties: BKProperty[] = modifiers.map(({value}) => value).filter(modifier => modifier.type === BKExpressionType.PROPERTY) as BKProperty[];
 
@@ -171,7 +167,7 @@ const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childN
       const attributes = getElementAttributes(element);
       const childNodes = getElementChildNodes(element);
       if (tagName === "style") {
-        style = createStyle(attributes, childNodes);
+        style = element as any as PCElement;
       } else if (tagName === "template") {
         template = createTemplate(attributes, childNodes);
       }
@@ -209,12 +205,5 @@ const createImport = (attributes: PCAttribute[]): Import => {
   return {
     type,
     href,
-  };
-};
-
-const createStyle = (attributes: PCAttribute[], childNodes: PCExpression[]): Style => {
-  const content = (childNodes[0] as PCTextNode).value;
-  return {
-    content
   };
 };

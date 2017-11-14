@@ -34,6 +34,15 @@ export enum BKExpressionType {
   REPEAT
 };
 
+export enum CSSExpressionType {
+  SHEET,
+  DECLARATION_PROPERTY,
+  STYLE_RULE,
+  AT_RULE,
+  IMPORT,
+  CHARSET
+};
+
 export type Token = {
   type: number;
   pos: number;
@@ -72,9 +81,7 @@ export type PCReference = {
 
 } & PCExpression;
 
-export type BKExpression = {
-  
-  } & PCExpression;
+export type BKExpression = PCExpression;
 
 export type PCBlock = {
   value: BKExpression;
@@ -149,6 +156,29 @@ export type BKNot = {
 
 export type BKElseIf = BKIf;
 export type BKElse = BKExpression;
+
+export type CSSExpression = PCExpression;
+export type CSSRule = CSSExpression;
+
+export type CSSGroupingRule = {
+  children: (CSSRule|CSSDeclarationProperty)[];
+} & CSSExpression;
+
+export type CSSStyleRule = {
+  selectorText: string;
+} & CSSGroupingRule;
+
+export type CSSDeclarationProperty = {
+  name: string;
+  value: string;
+} & CSSExpression;
+
+export type CSSAtRule = {
+  name: string;
+  params: string[];
+} & CSSGroupingRule;
+
+export type CSSSheet = CSSGroupingRule;
 
 export type PCStringBlock = {
   values: Array<PCString|PCBlock>;

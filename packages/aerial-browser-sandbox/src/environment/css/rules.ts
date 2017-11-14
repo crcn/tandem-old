@@ -388,7 +388,7 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
     }
 
     protected getCSSText() {
-      return `@keyframes ${this.name} { }`;
+      return `@keyframes ${this.name} { ${Array.prototype.map.call(this.cssRules, rule => rule.cssText).join(" ")} }`;
     }
 
     protected setCSSText(value: string) {

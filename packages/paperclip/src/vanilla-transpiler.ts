@@ -1,7 +1,7 @@
 // TODO - emit warnings for elements that have invalid IDs, emit errors
 
-import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString } from "./ast";
-import { loadModuleAST, Module, Template, Style, Import, Component, IO, loadModuleDependencyGraph } from "./loader";
+import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule } from "./ast";
+import { loadModuleAST, Module, Template, Import, Component, IO, loadModuleDependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModuleSource } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
@@ -153,8 +153,6 @@ const transpileBundle = (entryUri: string, modules: Modules) => {
     `};` +  
   `})(window)`;
 
-  // console.log(content);
-
   return content;
 };
 
@@ -168,6 +166,15 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
   // TODO - include deps here
   let content = `$$defineModule({}, (require) => {`;
   content += `$$strays = [];`;
+  content += "$$globalStyles = [];";
+
+  const styleDecls = transpileChildNodes(globalStyles, context);
+
+  for (let i = 0, {length} = styleDecls; i < length; i++) {
+    const decl = styleDecls[i];
+    content += decl.content;
+    content += `$$globalStyles.push(${decl.varName});`;
+  }
 
   const childDecls = transpileChildNodes(unhandledExpressions, context);
   
@@ -185,7 +192,8 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
   }
 
   content += `return {` +
-    `strays: $$strays` +
+    `strays: $$strays,` +
+    `globalStyles: $$globalStyles` +
   `};`;
     
   content += `})`;
@@ -196,8 +204,10 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
 const wrapTranspiledStatement = (statement) => `(() => {${statement}} )();\n`;
 const wrapAndCallBinding = (binding) => `(() => { const binding = () => { ${binding} }; binding(); return binding; })()`;
 
+
 const tranpsileComponent = ({ id, style, template, properties }: Component, context: TranspileContext) => {
   const varName = createVarName(getJSFriendlyName(id), context);
+  const styleDecl = style && transpileStyleElement(style, context);
 
   const templateContext: TranspileContext = {
     ...context,
@@ -241,6 +251,8 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
         `}` +
         `this._rendered = true;` +
         `const shadow = this.attachShadow({ mode: "open" });` +
+
+        (styleDecl ? styleDecl.content + `shadow.appendChild(${styleDecl.varName});`: ``) +
 
         properties.map(({name, defaultValue}) => (
           `if (this.$$${name} == null) {` +
@@ -518,7 +530,7 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
     const { name, value } = ast.attributes[i];
     const propName = getJSFriendlyName(name);
     if (!value) {
-      element.content += `${element.varName}.${name} = true;\n`;
+      element.content += `${element.varName}.setAttribute("${name}", "true");`;
     } else if (value.type === PCExpressionType.STRING) {
       const string = value as PCString;
       element.content += `${element.varName}.setAttribute("${name}", ${JSON.stringify(string.value)});\n`;
@@ -574,12 +586,137 @@ const transpileBindingsCall = (bindingsVarName, args: string = '') => (
 
 const transpileElement = (ast: PCElement, context: TranspileContext) => {
   switch(ast.startTag.name) {
-
-    // TODO
-    case "component": return null;
+    case "style": return transpileStyleElement(ast, context);
     default: return transpileElementModifiers(ast.startTag, transpileNativeElement(ast, context), context);
   }
 };
+
+export const transpileStyleElement = (ast: PCElement, context: TranspileContext) => {
+  const decl = declareNode(`document.createElement("style")`, context);
+  decl.content += `` +
+    `if (window.$synthetic) {`;
+
+      const sheetDecl = transpileNewCSSSheet(ast.childNodes[0] as any as CSSSheet, context);
+
+      decl.content += sheetDecl.content +
+      `${decl.varName}.$$setSheet(${sheetDecl.varName});`
+      // todo - need to create style rules
+  decl.content += `` +
+    `} else {` + 
+
+      // todo - need to stringify css
+      `${decl.varName}.textContent = ${JSON.stringify(transpileCSSSheet(ast.childNodes[0] as any as CSSSheet))};` +
+    `}`
+  return decl;
+};
+
+const transpileNewCSSSheet = (sheet: CSSSheet, context: TranspileContext) => {
+  const childDecls = transpileNewCSSRules(sheet.children, context);
+  const decl = declareRule(`new CSSStyleSheet([${childDecls.map((decl) => decl.varName).join(",")}])`, context);
+  decl.content = childDecls.map((decl) => decl.content).join("\n") + decl.content;
+  return decl;
+}
+
+const transpileNewCSSRules = (rules: CSSRule[], context: TranspileContext) => rules.map(rule => transpileNewCSSRule(rule, context)).filter(Boolean);
+
+const transpileNewCSSRule = (rule: CSSRule, context: TranspileContext) => {
+  switch(rule.type) {
+    case CSSExpressionType.AT_RULE: return transpileNewCSSAtRule(rule as CSSAtRule, context);
+    case CSSExpressionType.STYLE_RULE: return transpileNewCSSStyleRule(rule as CSSStyleRule, context);
+  }
+  throw new Error(`Unexpected rule ${rule.type}`);
+};
+
+const transpileNewCSSAtRule = (rule: CSSAtRule, context: TranspileContext) => {
+  switch(rule.name) {
+    case "media": return transpileNewMediaRule(rule, context);
+    case "keyframes": return transpileNewKeyframesRule(rule, context);
+    case "font-face": return transpileNewFontFaceRule(rule, context);
+    case "import": return transpileNewImportRule(rule, context);
+    case "charset": return transpileNewCharsetRule(rule, context);
+  }
+};
+
+const transpileNewMediaRule = (rule: CSSAtRule, context: TranspileContext) => transpileNewAtGroupingRule(rule, context, `CSSMediaRule`, transpileNewCSSStyleRule);
+
+const transpileNewFontFaceRule = (rule: CSSAtRule, context: TranspileContext) => {
+  return declareRule(`new CSSFontFaceRule(${transpileStyleDeclaration(getCSSDeclarationProperties(rule), context)})`, context);
+};
+
+const getCSSDeclarationProperties = (rule: CSSGroupingRule) => rule.children.filter(child => child.type === CSSExpressionType.DECLARATION_PROPERTY) as CSSDeclarationProperty[];
+
+const transpileNewKeyframesRule = (rule: CSSAtRule, context: TranspileContext) => transpileNewAtGroupingRule(rule, context, `CSSKeyframesRule`, transpileKeyframe);
+
+const transpileNewAtGroupingRule = (rule: CSSAtRule, context: TranspileContext, constructorName: string, transpileChild: any) => {
+  const childDecls = rule.children.map(rule => transpileChild(rule, context)).filter(Boolean);
+  const decl = declareRule(`new ${constructorName}(${JSON.stringify(rule.params.join(" "))}, [${childDecls.map((decl) => decl.varName).join(",")}])`, context);
+  decl.content = childDecls.map((decl) => decl.content).join("\n") + decl.content;
+  return decl;
+};
+
+const transpileKeyframes = (rules: CSSRule[], context: TranspileContext) =>  rules.map(rule => transpileKeyframe(rule as CSSStyleRule, context)).filter(Boolean);
+
+const transpileKeyframe = (styleRule: CSSStyleRule, context: TranspileContext) => transpileNewCSSStyledRule(styleRule, "CSSKeyframeRule", context);
+
+
+const transpileNewImportRule = (rule: CSSAtRule, context: TranspileContext) => {
+
+  // imported up top
+  return null; 
+};
+
+const transpileNewCharsetRule = (rule: CSSAtRule, context: TranspileContext) => {
+  return null; // for now
+};
+
+const transpileNewCSSStyledRule = (rule: CSSStyleRule, constructorName: string, context: TranspileContext) => {
+  return declareRule(`new ${constructorName}(${JSON.stringify(rule.selectorText)}, ${transpileStyleDeclaration(getCSSDeclarationProperties(rule), context)})`, context);
+}
+
+const transpileNewCSSStyleRule = (rule: CSSStyleRule, context: TranspileContext) => transpileNewCSSStyledRule(rule, "CSSStyleRule", context);
+
+const transpileStyleDeclaration = (declarationProperties: CSSDeclarationProperty[], context: TranspileContext) => {
+  
+  let content = `{`;
+
+  for (const property of declarationProperties) {
+    content += `"${property.name}": "${property.value.replace(/"/g, '\\"').replace(/[\s\r\n\t]+/g, " ")}", `;
+  }
+  
+  content += `}`;
+
+  return `CSSStyleDeclaration.fromObject(${content})`;
+};
+
+const transpileCSSSheet = (sheet: CSSSheet) => sheet.children.map(rule => transpileCSSRule(rule)).filter(Boolean).join(" ");
+
+const transpileCSSRule = (rule: CSSRule) => {
+
+  // TODO - prefix here for scoped styling
+  switch(rule.type) {
+    case CSSExpressionType.AT_RULE: {
+      const atRule = rule as CSSAtRule;
+      if (atRule.name === "charset" || atRule.name === "import") return null;
+      let content = `@${atRule.name} ${atRule.params} {`;
+      content += atRule.children.map(transpileCSSRule).filter(Boolean).join(" ");
+      content += `}`;
+      return content;
+    }
+    case CSSExpressionType.DECLARATION_PROPERTY: {
+      const prop = rule as CSSDeclarationProperty;
+      return `${prop.name}: ${prop.value};`;
+    }
+    case CSSExpressionType.STYLE_RULE: {
+      const styleRule = rule as CSSStyleRule;
+      let content = `${styleRule.selectorText} {`;
+        content += styleRule.children.map(transpileCSSRule).filter(Boolean).join("")
+      content += `}`;
+      return content;
+    }
+  }
+};
+
+
 
 const transpileChildNodes = (childNodes: PCExpression[], context): TranspileDeclaration[] => {
   const childDecls = [];
@@ -629,7 +766,7 @@ const declare = (baseName: string, assignment: string, context: TranspileContext
 
 const createVarName = (baseName: string, context: TranspileContext) => `${baseName}_${context.varCount++}`;
 const declareNode = (assignment: string, context: TranspileContext) => declare("node", assignment, context);
-
+const declareRule = (assignment: string, context: TranspileContext) => declare("rule", assignment, context);
 
 const declareVirtualFragment = (context: TranspileContext) => {
   const fragment = declareNode(`document.createDocumentFragment("")`, context);
