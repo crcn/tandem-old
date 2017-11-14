@@ -69,12 +69,13 @@ Eventually, Tandem will come with a build button for projects that will work out
 ### Tandem Goals
 
 - To help make code the single source of truth for UI design (PSD, sketch, and other files should not be the single source of truth). This means coming up with a set of tools that designers feel comfortable with.
-- Cover _most_ UI cases for the web (the relatively simple parts), and offer tooling that makes it easy to write UIs that must be written by hand. 
+- Cover _most_ UI cases for the web (the relatively simple parts), and offer tooling that makes it easier to create UIs that must be written by hand. 
 - To augment web UI development. This means that UI tools will always reflect HTML & CSS. 
 - Reduce amount of tooling required to build web UIs. Tandem should work out of the box, and without needing any configuration. 
 - To integrate with existing tools, languages, and frameworks. Tandem should work with your existing stack, not the other way around.
 - To reduce vendor lock-in. You shouldn't be stuck using Tandem.
 - To create an environment where developers & designers can work out of the same environment.
+
 
 ### Tandem Non-goals
 
