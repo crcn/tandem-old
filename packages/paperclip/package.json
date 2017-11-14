@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./lib/test",
-    "bundle": "mkdir -p dist; rollup -c rollup.config.js --format=iife --name=paperclip > dist/paperclip.min.js"
+    "bundle": "mkdir -p dist; rollup -c rollup.config.js --format=iife --name=paperclip | sed 's/var paperclip/window.paperclip/g' > dist/paperclip.min.js"
   },
   "author": "",
   "license": "ISC",

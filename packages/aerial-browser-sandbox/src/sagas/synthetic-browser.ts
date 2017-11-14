@@ -318,6 +318,8 @@ function* watchWindowExternalResourceUris(instance: SEnvWindowInterface, reload:
 function* getFetch() {
   const externalResources: string[] = [];
   const fetchQueue = createQueue();
+  const state: SyntheticBrowserRootState = yield select();
+
   yield spawn(function*() {
     while(true) {
       const { value: [info, resolve] } = yield call(fetchQueue.next);
@@ -327,19 +329,21 @@ function* getFetch() {
     }
   });
 
+
   return (info: RequestInfo) => {
-    return new Promise((resolve) => {
-      fetchQueue.unshift([info, ({ content, type }) => {
-        resolve({
-          text() {
-            return Promise.resolve(String(content));
-          },
-          json() {
-            return Promise.resolve(JSON.parse(String(content)));
-          }
-        } as any);
-      }]);
-    });
+    return fetch(`${state.apiHost}/proxy/${encodeURIComponent(String(info))}`);
+    // return new Promise((resolve) => {
+    //   fetchQueue.unshift([info, ({ content, type }) => {
+    //     resolve({
+    //       text() {
+    //         return Promise.resolve(String(content));
+    //       },
+    //       json() {
+    //         return Promise.resolve(JSON.parse(String(content)));
+    //       }
+    //     } as any);
+    //   }]);
+    // });
   };
 }
 

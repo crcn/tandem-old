@@ -89,7 +89,7 @@ const transpileBundle = (entryUri: string, modules: Modules) => {
 
   content += `` +
 
-    `const document = window.document;` +
+    `var document = window.document;` +
 
     `const $$each = (object, iterator) => {` +
       `if (Array.isArray(object)) {` +

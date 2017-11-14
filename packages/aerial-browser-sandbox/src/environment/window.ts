@@ -509,7 +509,16 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       this.navigator = new SEnvNavigator();
       
       this.fetch = async (info) => {
-        const ret = await fetch(info);
+        let inf = String(info);
+        if (!/http/.test(inf)) {
+          if (inf.charAt(0) !== "/") {
+            const dir = this.location.pathname.split("/");
+            dir.pop();
+            inf = dir.join("/") + inf;
+          }
+          inf = this.location.protocol + "//" + this.location.host + inf;
+        }
+        const ret = await fetch(inf);
         this.$setExternalUris([...this.externalResourceUris, info as string]);
         return ret;
       }

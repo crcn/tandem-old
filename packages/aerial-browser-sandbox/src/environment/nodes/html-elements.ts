@@ -137,6 +137,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
 
     protected _linkChild(child: SEnvNodeInterface) {
       super._linkChild(child);
+      this._tryLoading(); // maybe text node
       child.$$parentElement = this;
     }
 
@@ -193,6 +194,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
     private _onClassListChange = (value) => {
       this.setAttribute("class", value);
     }
+
 
     protected dataChangedCallback(propertyName: string, oldValue: string, newValue: string) {
       if (propertyName === "_source") {
@@ -268,7 +270,7 @@ export const getSEnvHTMLElementClass = weakMemo((context: any) => {
 
     cloneShallow() {
       const clone = super.cloneShallow();
-      clone["_loaded"] = this._loaded;
+      clone["_loaded"] = true;
       return clone;
     }
 
@@ -564,8 +566,7 @@ export const getSenvHTMLScriptElementClass = weakMemo((context: SEnvWindowContex
       private _evaluate() {
         try {
           const run = compileScript(this._scriptSource);
-
-          run.call(this.ownerDocument.defaultView, (declarePropertiesFromScript(this.ownerDocument.defaultView, this._scriptSource)));
+          run.call(this.ownerDocument.defaultView, declarePropertiesFromScript(this.ownerDocument.defaultView, this._scriptSource));
           // TODO - need to grab existing VM object
           // script.runInNewContext(vm.createContext({ __context: this.ownerDocument.defaultView }));
           

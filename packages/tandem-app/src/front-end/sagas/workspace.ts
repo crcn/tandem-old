@@ -1,7 +1,7 @@
 import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBounds, resized, keepBoundsAspectRatio, request, shiftBounds, StructReference } from "aerial-common2";
 import { take, select, call, put, fork, spawn, cancel } from "redux-saga/effects";
 import { delay } from "redux-saga";
-import { apiGetComponentPreviewURI, apiOpenSourceFile } from "../utils";
+import { apiGetModulePreviewURI, apiOpenSourceFile } from "../utils";
 import { 
   RESIZER_MOVED,
   RESIZER_STOPPED_MOVING,
@@ -239,7 +239,7 @@ function* handleDroppedOnEmptySpace(event: DNDEvent) {
 
   const { sourceEvent: { pageX, pageY }} = event;
   const state = yield select();
-  const uri = apiGetComponentPreviewURI(event.ref[1], state);
+  const uri = apiGetModulePreviewURI(event.ref[1], state);
 
   const workspace = getSelectedWorkspace(state);
   const mousePosition = getScaledMouseStagePosition(state, event);

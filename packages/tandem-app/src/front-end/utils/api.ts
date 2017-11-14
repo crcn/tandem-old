@@ -4,8 +4,8 @@ export const getAPIProxyUrl = (uri: string, state: ApplicationState) => (
   `${state.apiHost}/proxy/${encodeURIComponent(uri)}`
 );
 
-export const apiGetComponentPreviewURI = (componentId: string, state: ApplicationState) => { 
-  return `${state.apiHost}/preview/${componentId}`;
+export const apiGetModulePreviewURI = (moduleId: string, state: ApplicationState) => { 
+  return `${state.apiHost}/modules/${moduleId}/preview`;
 }
 
 export const apiWatchUris = async (uris: string[], state: ApplicationState) => {

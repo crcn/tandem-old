@@ -225,7 +225,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
             }
           }
         }).then(({ code, warnings }) => {
-          const { entry, globalStyles, modules } = new Function("return " + code)(window);
+          const { entry, globalStyles, modules } = new Function("window", "with (window) { return " + code + "}")(window);
 
           for (let i = 0, {length} = entry.globalStyles; i < length; i++) {
             document.body.appendChild(entry.globalStyles[i]);

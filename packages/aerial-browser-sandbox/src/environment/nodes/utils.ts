@@ -102,11 +102,12 @@ export const mapExpressionToNode = (expression: parse5.AST.Default.Node, fingerp
       addNodeSource(element as any as SEnvHTMLElementInterface, fingerprint, expression);
       promise = mapChildExpressionsToNodes(promise, elementExpression.childNodes, fingerprint, document, element, async);
       if (async) {
+
+        // append to document so that connectedCallback called, triggering a load
+        parentNode.appendChild(element);
         promise = promise.then(() => {
           return element.contentLoaded;
-        }).then(() => {
-          parentNode.appendChild(element);
-        })
+        });
       } else {
         parentNode.appendChild(element);
       }
