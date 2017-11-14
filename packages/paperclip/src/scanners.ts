@@ -47,6 +47,18 @@ export class StringScanner extends Scanner<string> {
     }
     return buffer;
   }
+
+  match(regex: RegExp) {
+    let buffer = "";
+    const start = this._target.substr(this.pos);
+    const result = start.match(regex);
+    if (result) {
+      const content = result[0];
+      this.pos += start.indexOf(content) + content.length;
+      return content;
+    }
+    return null;
+  }
   
   peek(length: number) {
     return this._target.substr(this.pos, length);

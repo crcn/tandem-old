@@ -18,6 +18,7 @@ export enum PCTokenType {
   PLUS,
   COLON,
   MINUS,
+  NUMBER,
   STAR,
   PERCENT,
   PAREN_OPEN,
@@ -35,17 +36,6 @@ export enum PCTokenType {
   RESERVED_KEYWORD,
   WHITESPACE
 };
-
-export const NO_POSITION = {
-  line: 0,
-  column: 0,
-  pos: 0
-}
-
-export const NO_LOCATION = {
-  start: NO_POSITION,
-  end: NO_POSITION
-}
 
 export const tokenizePaperclipSource = (source: string) => {
   const scanner = new StringScanner(source);
@@ -105,13 +95,21 @@ export const tokenizePaperclipSource = (source: string) => {
     } else if (cchar === "/") {
       token = createToken(PCTokenType.BACKSLASH, scanner.pos, scanner.shift());
     } else if (cchar === ".") {
-      token = createToken(PCTokenType.PERIOD, scanner.pos, scanner.shift());
+      if (/\.\d/.test(scanner.peek(2))) {
+        token = getNumberToken(scanner);
+      } else {
+        token = createToken(PCTokenType.PERIOD, scanner.pos, scanner.shift());
+      }
     } else if (cchar === "\"") {
       token = createToken(PCTokenType.DOUBLE_QUOTE, scanner.pos, scanner.shift());
     } else if (cchar === "+") {
       token = createToken(PCTokenType.PLUS, scanner.pos, scanner.shift());
     } else if (cchar === "-") {
-      token = createToken(PCTokenType.MINUS, scanner.pos, scanner.shift());
+      if (/\-\d/.test(scanner.peek(2))) {
+        token = getNumberToken(scanner);
+      } else {
+        token = createToken(PCTokenType.MINUS, scanner.pos, scanner.shift());
+      }
     } else if (cchar === "*") {
       token = createToken(PCTokenType.STAR, scanner.pos, scanner.shift());
     } else if (cchar === "%") {
@@ -128,11 +126,13 @@ export const tokenizePaperclipSource = (source: string) => {
       token = createToken(PCTokenType.CURLY_BRACKET_OPEN, scanner.pos, scanner.shift());
     } else if (cchar === "}") {
       token = createToken(PCTokenType.CURLY_BRACKET_CLOSE, scanner.pos, scanner.shift());
+    } else if (/\d/.test(cchar)) {
+      token = getNumberToken(scanner);
     } else if (/[\s\r\n\t]/.test(cchar)) {
       token = createToken(PCTokenType.WHITESPACE, scanner.pos, scanner.scan(/[\s\r\n\t]/));
     } else {
       
-      const text = scanner.scan(/[^-<>,='":\.(){}\[\]\s\r\n\t]/) || scanner.shift();
+      const text = scanner.scan(/[^-<>,='":\./\\(){}\[\]\s\r\n\t]/) || scanner.shift();
 
       // null intentionally left out
       token = createToken(text === "undefined" ? PCTokenType.RESERVED_KEYWORD : PCTokenType.TEXT, scanner.pos, text);
@@ -142,4 +142,8 @@ export const tokenizePaperclipSource = (source: string) => {
   }
 
   return new TokenScanner(source, tokens);
-}
+};
+
+const getNumberToken = (scanner: StringScanner) => {
+  return createToken(PCTokenType.NUMBER, scanner.pos, scanner.match(/^\-?(\d+(\.\d+)?|\.\d+)/));
+};

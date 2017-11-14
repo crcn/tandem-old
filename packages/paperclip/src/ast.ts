@@ -17,6 +17,7 @@ export enum BKExpressionType {
   TYPE,
   ECHO,
   IF,
+  STRING,
   OBJECT,
   ARRAY,
   KEY_VALUE_PAIR,
@@ -104,6 +105,10 @@ export type BKObject = {
   properties: BKKeyValuePair[];
 } & BKExpression;
 
+export type BKString = {
+  value: string;
+} & BKExpression;
+
 export type BKKeyValuePair = {
   key: string;
   value: BKExpression;
@@ -132,6 +137,10 @@ export type BKIf = {
 export type BKProperty = {
   name: string;
   defaultValue?: string;
+} & BKExpression;
+
+export type BKNumber = {
+  value: string;
 } & BKExpression;
 
 export type BKNot = {

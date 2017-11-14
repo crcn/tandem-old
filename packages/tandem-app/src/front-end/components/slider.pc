@@ -1,7 +1,5 @@
 <link rel="import" href="./global.pc" />
-<component id="td-slider">
-  <property id="value" default={{0}} />
-  <property id="onChange" default={{noop}} />
+<component id="td-slider" [[property value]]>
   <style>
     #guide {
       background: rgba(0,0,0,0.1);
@@ -21,21 +19,9 @@
     }
     
   </style>
-  <script>  
-    const onKnobDrag = (event) => {
-      const guideRect = this.guide.getBoundingClientRect();
-      const relativeLeft = Math.max(0, Math.min(guideRect.width, event.clientX - guideRect.left));
-      const relativeTop = Math.max(0, Math.min(guideRect.height, event.clientX - guideRect.top));
-      
-      this.onChange(this.value = relativeLeft / guideRect.width);
-    }
-
-  </script>
   <template>
     <div id="guide">
-      <td-draggable onDrag={{onKnobDrag}}>
-        <div id="knob" style={{"left:" + (this.value * 100) + "%;"}}></div>
-      </td-draggable>
+        <div id="knob" style=[[ bind { left: this.value * 100 + "%" } ]]></div>
     </div>
   </template>
 </component>
@@ -52,7 +38,7 @@
       console.log("value change", value);
     }
   </script>
-  <td-slider value={{0}} />
-  <td-slider value={{0.5}} onChange={{e => console.log(e)}} />
-  <td-slider value={{1}} />
+  <td-slider value=[[bind 0]] />
+  <td-slider value=[[bind 0.5]] />
+  <td-slider value=[[bind 1]] />
 </td-preview>

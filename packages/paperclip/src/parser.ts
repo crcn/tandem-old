@@ -1,7 +1,7 @@
 // Note that JS, and styles are parsed so that we can do analysis on the
 // AST and provide warnings, hints, and errors.
 
-import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKKeyValuePair, BKArray, BKVarReference } from "./ast";
+import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference } from "./ast";
 import { getLocation, getPosition } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
@@ -34,8 +34,8 @@ const createFragment = (scanner: TokenScanner) => {
 const createExpression = (scanner: TokenScanner) => {
   switch(scanner.curr().type) {
     case PCTokenType.WHITESPACE: return createTextNode(scanner);
-    case PCTokenType.SINGLE_QUOTE: return createString(scanner);
-    case PCTokenType.DOUBLE_QUOTE: return createString(scanner);
+    case PCTokenType.SINGLE_QUOTE: 
+    case PCTokenType.DOUBLE_QUOTE: return createAttributeString(scanner);
     case PCTokenType.LESS_THAN: return createTag(scanner);
     case PCTokenType.CLOSE_TAG: return createCloseTag(scanner);
     case PCTokenType.COMMENT: return createComment(scanner);
@@ -74,7 +74,7 @@ const createBKStatement = (scanner: TokenScanner) => {
     case "else": return createConditionBlock(scanner, BKExpressionType.ELSE);
     case "property": return createPropertyBlock(scanner, BKExpressionType.PROPERTY);
     default: {
-      throw new Error(`Unknown block type ${scanner.curr().value}`);
+      throwUnexpectedToken(scanner.source, scanner.curr());
     }
   }
 };
@@ -113,15 +113,60 @@ const createBKExpression = (scanner: TokenScanner) => {
   eatWhitespace(scanner);
   switch(scanner.curr().type) {
     case PCTokenType.BANG: return createNotExpression(scanner);
+    case PCTokenType.SINGLE_QUOTE: 
+    case PCTokenType.DOUBLE_QUOTE: return createString(scanner);
+    case PCTokenType.NUMBER: return createNumber(scanner);
     case PCTokenType.CURLY_BRACKET_OPEN: return createObject(scanner);
     case PCTokenType.BRACKET_OPEN: return createArray(scanner);
     case PCTokenType.PAREN_OPEN: return createGroup(scanner);
     case PCTokenType.TEXT: return createPropReference(scanner);
     case PCTokenType.RESERVED_KEYWORD: return createReservedKeyword(scanner);
     default: {
-      throw new Error(`Unknown block type ${scanner.curr().value}`);
+      throwUnexpectedToken(scanner.source, scanner.curr());
     }
   }
+};
+
+const createString = (scanner: TokenScanner): BKString => {
+  const start = scanner.curr();
+  scanner.next(); // eat '
+  let value = "";
+  while(!scanner.ended()) {
+    const curr = scanner.curr();
+    if (curr.value === start.value) {
+      break;
+    }
+
+    // escape
+    if (curr.value === "\\") {
+      value += scanner.next().value;
+      scanner.next();
+      continue;
+    }
+
+    value += curr.value;
+
+    scanner.next();
+  }
+
+  scanner.next(); // eat quote
+
+
+  return {
+    type: BKExpressionType.STRING,
+    location: getLocation(start, scanner.curr(), scanner.source),
+    value,
+  };
+};
+
+const createNumber = (scanner: TokenScanner): BKNumber => {
+  const start = scanner.curr();
+  scanner.next();
+  return ({
+    type: BKExpressionType.NUMBER,
+    value: start.value,
+    location: getLocation(start, scanner.curr(), scanner.source)
+  })
 };
 
 const createObject = (scanner: TokenScanner): BKObject => {
@@ -194,7 +239,17 @@ const createArray = (scanner: TokenScanner): BKArray => {
 }
 
 const createKeyValuePair = (scanner: TokenScanner): BKKeyValuePair => {
-  const key = createVarReference(scanner);
+  let key;
+  switch(scanner.curr().type) {
+    case PCTokenType.SINGLE_QUOTE: 
+    case PCTokenType.DOUBLE_QUOTE: {
+      key = createString(scanner);
+      break;
+    }
+    default: {
+      key = createVarReference(scanner);
+    }
+  }
   eatWhitespace(scanner);
   assertCurrTokenType(scanner, PCTokenType.COLON);
   scanner.next(); // eat :
@@ -477,7 +532,7 @@ const createAttribute = (scanner: TokenScanner): PCAttribute  => {
   }
 };
 
-const createString = (scanner: TokenScanner): PCString|PCStringBlock => {
+const createAttributeString = (scanner: TokenScanner): PCString|PCStringBlock => {
   const start = scanner.curr();
   const values: Array<PCString|PCBlock> = [];
   let buffer = "";

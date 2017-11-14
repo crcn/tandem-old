@@ -1,6 +1,6 @@
 // TODO - emit warnings for elements that have invalid IDs, emit errors
 
-import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKArray } from "./ast";
+import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString } from "./ast";
 import { loadModuleAST, Module, Template, Style, Import, Component, IO, loadModuleDependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModuleSource } from "./parser";
@@ -40,6 +40,14 @@ export const transpileBlockExpression = (expr: BKExpression) => {
     case BKExpressionType.PROP_REFERENCE: {
       const ref = expr as BKPropertyReference;
       return ref.path.map(transpileBlockExpression).join(".");
+    }
+    case BKExpressionType.STRING: {
+      const string = expr as BKString;
+      return JSON.stringify(string.value);
+    }
+    case BKExpressionType.NUMBER: {
+      const number = expr as BKNumber;
+      return number.value;
     }
     case BKExpressionType.VAR_REFERENCE: {
       const ref = expr as BKVarReference;

@@ -103,7 +103,9 @@ export const loadModuleDependencyGraph = (uri: string, io: IO, modules: Modules 
     }));
   }).then(() => {
     return modules;
-  })
+  }).catch((e) => {
+    throw new Error(`${e.message} in ${uri}`);
+  });
 }
 
 const createModule = (ast: PCExpression): Module => {

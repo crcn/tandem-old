@@ -209,7 +209,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     </head>
     <body>
       <script>
-        paperclip.bundleVanilla("/src/${relativeModuleFilePath}", {
+        paperclip.bundleVanilla("/src${relativeModuleFilePath}", {
           io: {
             readFile(uri) {
               return fetch(uri).then((response) => response.text());
@@ -217,11 +217,19 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
             resolveFile(relative, base) {
               const dirname = base.split("/");
               dirname.pop();
-              return Promise.resolve(dirname.join("/") + relative);
+              relative = relative.replace("./", "");
+              const parentDirs = relative.split("../");
+              const baseName = parentDirs.pop();
+              dirname.splice(dirname.length - parentDirs.length, dirname.length);
+              return Promise.resolve(dirname.join("/") + "/" + baseName);
             }
           }
         }).then(({ code, warnings }) => {
-          const { entry, modules } = new Function(code)(window);
+          const { entry, modules } = new Function("return " + code)(window);
+
+          for (let i = 0, {length} = entry.strays; i < length; i++) {
+            document.body.appendChild(entry.strays[i]);
+          }
         });
         
         // try {

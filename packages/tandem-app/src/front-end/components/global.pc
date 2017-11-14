@@ -157,73 +157,7 @@
   </template>
 </component>
 
-<component id="td-draggable">
-  <property name="dispatch" default={{noop}} />
-  <property name="state" />
-  <property name="restrict" />
-  <script>
-
-    this.state = {
-      dragging: false
-    };
-
-    const onMouseDown = (event) => {
-
-      const draggableRect = this.children[0].getBoundingClientRect();
-      const { restrict = "viewport" } = this;
-
-      const { deltaX, deltaY } = restrict === "self" ? {
-        deltaX: 0,
-        deltaY: 0
-      } : {
-        deltaX: draggableRect.left - event.clientX,
-        deltaY: draggableRect.top - event.clientY
-      };
-      
-      const onMouseUp = (nativeEvent) => {
-        document.removeEventListener("mouseup", onMouseUp, true);
-        document.removeEventListener("mousemove", onMouseMove);
-        this.dispatch({ type: "DRAG_STOP", nativeEvent });
-      };
-
-      const onMouseMove = (nativeEvent) => {
-
-        const bounds = restrict === "parent" ? this.parentElement.getBoundingClientRect() : restrict === "self" ? draggableRect : {
-          left: 0,
-          top: 0,
-          width: window.innerWidth,
-          height: window.innerHeight
-        };
-
-        const relativeLeft = Math.max(0, Math.min(bounds.width, nativeEvent.clientX - bounds.left + deltaX));
-        const relativeTop = Math.max(0, Math.min(bounds.height, nativeEvent.clientY - bounds.top + deltaY));
-
-        const event = {
-          type: "DRAG",
-          nativeEvent,
-          point: {
-            left: relativeLeft,
-            top: relativeTop
-          },
-          bounds
-        };
-
-        this.dispatch(event);
-      };
-
-      onMouseMove(event);
-
-      document.addEventListener("mouseup", onMouseUp, true);
-      document.addEventListener("mousemove", onMouseMove);
-    }
-  </script>
-  <template>
-    <slot onmousedown={{onMouseDown}}></slot>
-  </template>
-</component>
-
-<component id="td-progress-example">
-  <property name="value" default={{0}} />
+<component id="td-progress-example" [[property value]]>
   <style>
     td-progress {
       margin: var(--base4);
@@ -243,9 +177,8 @@
       clearInterval(interval);
     }
   </script>
-  <property name="value" default={{0}} />
   <template>
-    <td-progress value={{this.value}}>{{Math.round(this.value * 100)}}%</td-progress>
+    <td-progress value=[[bind value]]>[[bind value * 100]]%</td-progress>
   </template>
 </component>
 
@@ -271,9 +204,9 @@
   </td-preview-component-example>
 
   <td-preview-component-example label="Progress">
-    <td-progress-example value={{0}} />
-    <td-progress-example value={{0.5}} />
-    <td-progress-example value={{1}} />
+    <td-progress-example value=[[bind 0]] />
+    <td-progress-example value=[[bind 0.5]] />
+    <td-progress-example value=[[bind 1]] />
   </td-preview-component-example>
 </td-preview>
 
