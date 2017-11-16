@@ -187,6 +187,7 @@ const createObject = (scanner: TokenScanner): BKObject => {
     }
 
     properties.push(createKeyValuePair(scanner));
+    console.log(properties);
     eatWhitespace(scanner);
 
     const curr = scanner.curr();

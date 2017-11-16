@@ -5,7 +5,7 @@
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
 
-<component id="td-style-declaration" [[property declaration]]>
+<component id="td-style-declaration" [[property name]] [[property valueExpr]] [[property dispatch]]>
   <style>
     .name {
       color: var(--font-color-dim);
@@ -14,19 +14,9 @@
       content: ": ";
     }
   </style>
-  <!--script type="text/typescript"> 
-    const { CSSDeclarationExpressionType, parseDeclarationValue } = require("./utils/css.ts");
-    const dispatch = (event) => {
-      if (event.type === "EXPR_CHANGED") {
-        const { location: { start, end }, value: newExprValue } = event;
-        const newValue = declaration.value.substr(0, start) + newExprValue + this.declaration.value.substr(end);
-        dispatch({ type: "DECLARATION_CHANGED", name: declaration.name, value: newValue });
-      }
-    }
-  </script-->
   <template>
-    <span class="name">[[bind declaration.name]]</span>
-    <td-css-expr-input expr=[[bind declaration]] dispatch=[[bind dispatch]] />
+    <span class="name">[[bind name]]</span>
+    <td-css-expr-input expr=[[bind valueExpr]] dispatch=[[bind dispatch]] />
   </template>
 </component>
 
@@ -81,7 +71,7 @@
 
     <td-list>
       <td-list-item [[if styleRule]] [[repeat styleRule.declarations as declaration]]>
-        <td-style-declaration name="background-color" declaration=[[bind declaration]] />
+        <td-style-declaration name="background-color" name=[[bind declaration.name]] valueExpr=[[bind declaration.valueExpr]] />
       </td-list-item>
     </td-list>
   </template>
@@ -107,9 +97,17 @@
   <template>
     <td-css-inspector-pane styleRules=[[bind [
       {
-        selectorText: ".container",
+        selectorText: ".container!",
         source: { uri: "my-component.pc" },
-        declarations: []
+        declarations: [
+          {
+            name: "color",
+            valueExpr: {
+              type: "COLOR",
+              value: "#F60
+            }
+          }
+        ]
       },
       {
         selectorText: "*",
@@ -117,7 +115,22 @@
         declarations: []
       },
       {
-        selectorText: ".a-very-long-css-selector-that-should-break-word",
+        selectorText: "some-element, another-element",
+        source: { uri: "style.css" },
+        declarations: []
+      },
+      {
+        selectorText: "div",
+        source: { uri: "style.css" },
+        declarations: []
+      },
+      {
+        selectorText: "#selector",
+        source: { uri: "style.css" },
+        declarations: []
+      },
+      {
+        selectorText: "#container",
         source: { uri: "style.css" },
         declarations: []
       },

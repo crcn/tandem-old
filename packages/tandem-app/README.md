@@ -10,6 +10,9 @@ TOMORROW:
 - [ ] Paperclip
   - [ ] allow CSS comments
   - [ ] attach source of each node
+  - [ ] memoize compiled scripts outside of synthetic browser
+  - [ ] figure out computed properties for css binding
+  - [ ] comments are busted
 
 #### V1
 
