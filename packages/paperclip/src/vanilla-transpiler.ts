@@ -1,7 +1,7 @@
 // TODO - emit warnings for elements that have invalid IDs, emit errors
 
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule } from "./ast";
-import { loadModuleAST, Module, Template, Import, Component, IO, loadModuleDependencyGraph } from "./loader";
+import { loadModuleAST, Module, Template, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModuleSource } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
@@ -18,10 +18,6 @@ type TranspileContext = {
   root: PCExpression;
 };
 
-type Modules = {
-  [identifier: string]: Module
-};
-
 export type TranspileDeclaration = {
   varName: string;
   content: string;
@@ -29,8 +25,8 @@ export type TranspileDeclaration = {
 };
 
 
-export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then((modules) => ({
-  code: transpileBundle(uri, modules)
+export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then((graph) => ({
+  code: transpileBundle(uri, graph)
 }));
 
 // usable in other transpilers
@@ -81,7 +77,7 @@ export const transpileBlockExpression = (expr: BKExpression) => {
 
 const getJSFriendlyName = (name: string) => name.replace(/[\d-]+/g, "_");
 
-const transpileBundle = (entryUri: string, modules: Modules) => {
+const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
   
   // TODO - resolve dependencies
 
@@ -105,14 +101,16 @@ const transpileBundle = (entryUri: string, modules: Modules) => {
       `return Array.isArray(object) ? object.length : Object.keys(object).length;` +
     `};` +
 
-    `const $$defineModule = (deps, run) => {` +
+    `const $$defineModule = (run) => {` +
       `let exports;` +
       `return () => {` +
         `if (exports) return exports;` +
 
         // guard from recursive dependencies
         `exports = {};` +
-        `return exports = run((dep) => $$modules[deps[dep]]());` +
+        `return exports = run((dep) => {` +
+          `return $$modules[dep]()` +
+        `});` +
       `}` +
     `};` +
 
@@ -141,8 +139,8 @@ const transpileBundle = (entryUri: string, modules: Modules) => {
 
   content += "$$modules = {};";
 
-  for (const uri in modules) {
-    content += `$$modules["${uri}"] = ${transpileModule(modules[uri])};`;
+  for (const uri in graph) {
+    content += `$$modules["${uri}"] = ${transpileModule(graph[uri].module, graph[uri].resolvedImportUris)};`;
   }
 
   content += `const entry = $$modules["${entryUri}"]();`
@@ -156,7 +154,7 @@ const transpileBundle = (entryUri: string, modules: Modules) => {
   return content;
 };
 
-const transpileModule = ({ source, imports, globalStyles, components, unhandledExpressions }: Module) => {
+const transpileModule = ({ source, imports, globalStyles, components, unhandledExpressions }: Module, resolvedImportUris: { [identifier: string]: string }) => {
 
   const context: TranspileContext = {
     varCount: 0,
@@ -164,7 +162,7 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
   };
 
   // TODO - include deps here
-  let content = `$$defineModule({}, (require) => {`;
+  let content = `$$defineModule((require) => {`;
   content += `$$strays = [];`;
   content += "$$globalStyles = [];";
 
@@ -174,6 +172,18 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
     const decl = styleDecls[i];
     content += decl.content;
     content += `$$globalStyles.push(${decl.varName});`;
+  }
+
+  for (let i = 0, {length} = imports; i < length; i++) {
+    const _import = imports[i];
+    const decl = declare(`import`, `require(${JSON.stringify(resolvedImportUris[_import.href])})`, context);
+    content += `${decl.content} $$globalStyles.push(...(${decl.varName}.globalStyles || []));`;
+  }
+
+  // define components at the top so that customElements.define 
+  // is called -- required for stray elements below
+  for (let i = 0, {length} = components; i < length; i++) {
+    content += tranpsileComponent(components[i], context).content;
   }
 
   const childDecls = transpileChildNodes(unhandledExpressions, context);
@@ -187,9 +197,6 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
     content += `}\n;`
   }
 
-  for (let i = 0, {length} = components; i < length; i++) {
-    content += tranpsileComponent(components[i], context).content;
-  }
 
   content += `return {` +
     `strays: $$strays,` +
@@ -207,7 +214,6 @@ const wrapAndCallBinding = (binding) => `(() => { const binding = () => { ${bind
 
 const tranpsileComponent = ({ id, style, template, properties }: Component, context: TranspileContext) => {
   const varName = createVarName(getJSFriendlyName(id), context);
-  const styleDecl = style && transpileStyleElement(style, context);
 
   const templateContext: TranspileContext = {
     ...context,
@@ -215,6 +221,7 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
     contextName: "this"
   };
 
+  const styleDecl = style && transpileStyleElement(style, templateContext);
 
   let content = `` +
     `class ${varName} extends HTMLElement {` +
@@ -464,7 +471,7 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
 
     for (let i = index + 1; i--;) {
       const sibling = siblings[i] as PCElement;
-      if (getPCElementModifier(sibling, BKExpressionType.IF)) {
+      if (isTag(sibling) && getPCElementModifier(sibling, BKExpressionType.IF)) {
         conditionBlockVarName = "condition_" + getExpressionPath(sibling, context.root).join("");
         break;
       }
@@ -507,7 +514,7 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
       `if (newValue) {` +
         `const elementFragment = document.createDocumentFragment();` +
         `${decl.content}` +
-        (decl.bindings.length ? `${bindingsVarName} = ${bindingsVarName}.concat(${decl.bindings.map(wrapAndCallBinding)})` : `` ) +
+        (decl.bindings.length ? `${bindingsVarName} = ${bindingsVarName}.concat(${decl.bindings.map(wrapAndCallBinding)});` : `` ) +
         `elementFragment.appendChild(${decl.varName});` +
         `${end.varName}.parentNode.insertBefore(elementFragment, ${end.varName});` +
       `} else {` +
@@ -724,12 +731,12 @@ const transpileChildNodes = (childNodes: PCExpression[], context): TranspileDecl
     const child = childNodes[i];
 
     // ignore whitespace squished between elements
-    if (child.type === PCExpressionType.TEXT_NODE && /^[[\s\r\n\t]$/.test((child as PCTextNode).value) && i > 0 && i < length - 1) {
+    if (child.type === PCExpressionType.TEXT_NODE && /^[\s\r\n\t]+$/.test((child as PCTextNode).value)) {
       const prev = childNodes[i - 1];
       const next = childNodes[i + 1];
 
       // <span><span /> </span>
-      if (isTag(prev) && isTag(next)) {
+      if ((!prev || isTag(prev)) && (!next || isTag(next))){
         continue;
       }
     }

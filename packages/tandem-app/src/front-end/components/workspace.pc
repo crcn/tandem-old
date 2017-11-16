@@ -4,7 +4,7 @@
 <link rel="import" href="./components-pane.pc" />
 <link rel="import" href="./css-inspector-pane.pc" />
 
-<component id="td-workspace-footer">
+<component id="td-workspace-footer" [[property workspace]]>
   <property name="workspace" />
   <style>
     .workspace-footer {
@@ -15,13 +15,12 @@
   </style>
   <template>
     <div class="workspace-footer">
-      {{this.workspace * 100}}%
-      
+      TODO      
     </div>
   </template>
 </component>
 
-<component id="td-workspace">
+<component id="td-workspace" [[property workspace]]>
   <style>
     .workspace {
       display: flex;
@@ -43,7 +42,7 @@
     <div class="workspace">
       <td-gutter left>
         <td-windows-pane />
-        <td-components-pane components={{[
+        <td-components-pane components=[[bind [
           { label: "div" },
           { label: "h1" },
           { label: "h2" },
@@ -54,12 +53,12 @@
           { label: "input" },
           { label: "ul" },
           { label: "li" }
-        ]}} />
+        ]]] />
       </td-gutter>
       <div class="center">
         <div class="stage">
         </div>
-        <td-workspace-footer workspace={{this.workspace}} />
+        <td-workspace-footer workspace=[[bind workspace]] />
       </div>
       <td-gutter right>
         <slot name="right-gutter-content">

@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { FileCacheItem } from "../state";
+import { FileCacheItem, ApplicationState } from "../state";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
 import * as express from "express";
@@ -34,15 +34,17 @@ export type Mutation =  {
   }
 };
 
-export type FileContentChanged =  {
-  filePath: string;
-  content: Buffer;
-  mtime: Date;
-} & Action;
-
 export type FileAction = {
   filePath: string
+  publicPath: string;
 } & Action;
+
+export type FileContentChanged =  {
+  publicPath: string;
+  content: Buffer;
+  mtime: Date;
+} & FileAction;
+
 
 export type MutateSourceContentRequest = {
   mutations: Mutation[];
@@ -74,21 +76,23 @@ export type ChildDevServerStarted = {
 export const watchUrisRequested = (uris: string[]): WatchUrisRequested => ({
   uris,
   type: WATCH_URIS_REQUESTED
-})
+});
 
-export const fileChanged = publicActionFactory((filePath: string) => ({
+export const fileChanged = publicActionFactory((filePath: string, publicPath: string): FileAction => ({
   type: FILE_CHANGED,
-  filePath
+  filePath,
+  publicPath,
 }));
 
 export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const fileContentChanged = (filePath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
+export const fileContentChanged = (filePath: string, publicPath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
   type: FILE_CONTENT_CHANGED,
   content,
   filePath,
+  publicPath,
   mtime
 });
 

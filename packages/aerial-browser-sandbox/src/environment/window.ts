@@ -75,7 +75,8 @@ export const mirrorWindow = (target: SEnvWindowInterface, source: SEnvWindowInte
   const sync = () => {
     patchWindow(target, diffWindow(target, source));
 
-    // sync window Ids to ensure future mutation events
+    // sync window Ids to ensure future mutation events. This
+    // also doubles as a sanity check for patching. 
     syncWindowIds(target, source);
   };
 
@@ -518,7 +519,8 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
           }
           inf = this.location.protocol + "//" + this.location.host + inf;
         }
-        const ret = await fetch(inf);
+        const fetchPromise = fetch(inf);
+        const ret = await fetchPromise;
         this.$setExternalUris([...this.externalResourceUris, info as string]);
         return ret;
       }
@@ -947,7 +949,8 @@ export const syncWindowIds = (sourceWindow: SEnvWindowInterface, targetWindow: S
   const sids = Object.keys(sourceChildObjects);
   const tids = Object.keys(targetChildObjects);
 
-  if (sids.length !== tids.length) {
+
+  if (sids.length !== tids.length) {  
     throw new Error(`child object count missmatch. Cannot synchronize ids`);
   }
 

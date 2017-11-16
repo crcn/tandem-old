@@ -35,6 +35,7 @@ export interface SEnvDocumentInterface extends SEnvParentNodeInterface, Document
   ownerDocument: SEnvDocumentInterface;
   defaultView: SEnvWindowInterface;
   childNodes: SEnvNodeListInterface;
+  $$linkElement(element: SEnvHTMLElementInterface, tagName: string, namespaceURI: string): SEnvHTMLElementInterface;
   $load(content: string): void;
   $$update();
   $$setReadyState(readyState: string): any;
@@ -663,11 +664,15 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     createElementNS(namespaceURI: "http://www.w3.org/2000/svg", qualifiedName: string): SVGElement;
     createElementNS(namespaceURI: string | null, qualifiedName: string): Element {
       const elementClass = this.defaultView.customElements.get(qualifiedName) || SENvHTMLElement;
-      const instance = this._linkNode(new elementClass());
-      instance["" + "tagName"] = qualifiedName;
-      instance["" + "nodeName"] = qualifiedName;
-      instance["" + "namespaceURI"] = namespaceURI;
-      return instance;
+      return this.$$linkElement(new elementClass(), qualifiedName, namespaceURI);
+    }
+
+    $$linkElement(element: SEnvHTMLElementInterface, qualifiedName: string, namespaceURI: string) {
+      this._linkNode(element);
+      element["" + "tagName"] = qualifiedName;
+      element["" + "nodeName"] = qualifiedName;
+      element["" + "namespaceURI"] = namespaceURI;
+      return element;
     }
     
     createExpression(expression: string, resolver: XPathNSResolver): XPathExpression {

@@ -5,8 +5,7 @@
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
 
-<component id="td-style-declaration">
-  <property name="declaration" />
+<component id="td-style-declaration" [[property declaration]]>
   <style>
     .name {
       color: var(--font-color-dim);
@@ -15,29 +14,29 @@
       content: ": ";
     }
   </style>
-  <script type="text/typescript"> 
+  <!--script type="text/typescript"> 
     const { CSSDeclarationExpressionType, parseDeclarationValue } = require("./utils/css.ts");
     const dispatch = (event) => {
       if (event.type === "EXPR_CHANGED") {
         const { location: { start, end }, value: newExprValue } = event;
-        const newValue = this.declaration.value.substr(0, start) + newExprValue + this.declaration.value.substr(end);
-        dispatch({ type: "DECLARATION_CHANGED", name: this.declaration.name, value: newValue });
+        const newValue = declaration.value.substr(0, start) + newExprValue + this.declaration.value.substr(end);
+        dispatch({ type: "DECLARATION_CHANGED", name: declaration.name, value: newValue });
       }
     }
-  </script>
+  </script-->
   <template>
-    <span class="name">{{this.declaration.name}}</span>
-    <td-css-expr-input expr={{parseDeclarationValue(this.declaration.value)}} dispatch={{dispatch}} />
+    <span class="name">[[bind declaration.name]]</span>
+    <td-css-expr-input expr=[[bind declaration]] dispatch=[[bind dispatch]] />
   </template>
 </component>
 
-<component id="td-style-rule">
-  <property name="styleRule" />
+<component id="td-style-rule" [[property styleRule]]>
   <style>
     .source {
       float: right;
       text-decoration: underline;
       color: var(--font-color-dim);
+      white-space: nowrap;
     }
     .name {
       color: var(--font-color-dim);
@@ -50,6 +49,18 @@
       color: var(--font-color-alt);
     }
 
+    .selector-text {
+      width: 100%;
+      word-break: break-word;
+      margin-right: var(--base4);
+      display: inline-block;
+    }
+
+    td-gutter-subheader {
+      display: flex;
+      flex-direction: row;
+    }
+
     .value:after {
     }
   </style>
@@ -60,22 +71,23 @@
   </script>
   <template>
     <td-gutter-subheader>
-      {{this.styleRule && this.styleRule.selectorText}}
+      <span class="selector-text">
+        [[bind styleRule && styleRule.selectorText]]
+      </span>
       <span class="source">
-        {{this.styleRule && this.styleRule.source && this.styleRule.source.uri}}
+        [[bind styleRule && styleRule.source && styleRule.source.uri]]
       </span>
     </td-gutter-subheader>
 
     <td-list>
-      <td-list-item pc-if={{this.styleRule}} pc-repeat="this.styleRule.declarations as declaration">
-        <td-style-declaration name="background-color" declaration={{declaration}} dispatch={{dispatch}} />
+      <td-list-item [[if styleRule]] [[repeat styleRule.declarations as declaration]]>
+        <td-style-declaration name="background-color" declaration=[[bind declaration]] />
       </td-list-item>
     </td-list>
   </template>
 </component>
 
-<component id="td-css-inspector-pane">
-  <property name="styleRules" />
+<component id="td-css-inspector-pane" [[property styleRules]]>
   <template>
     <td-pane>
       <span slot="header">
@@ -85,33 +97,35 @@
         </div>
       </span>
       <span slot="content">
-        <td-style-rule pc-if={{this.styleRules}} pc-repeat="this.styleRules as styleRule" styleRule={{styleRule}} />
+        <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] styleRule=[[bind styleRule]] />
       </span>
     </td-pane>
   </template>
 </component>
 
 <component id="td-css-inspector-pane-example">
-  <script>
-    const styleRules = [
-      {
-        selectorText: ".test",
-        source: {
-          uri: "global.pc"
-        },
-        declarations: [
-          { name: "color", value: "rgba(0,0,0,0.5)" },
-          { name: "transform", value: "var(--root)" },
-          { name: "transform", value: "blue" }
-        ]
-      }
-    ];
-  </script>
   <template>
-    <td-css-inspector-pane styleRules={{styleRules}} />
+    <td-css-inspector-pane styleRules=[[bind [
+      {
+        selectorText: ".container",
+        source: { uri: "my-component.pc" },
+        declarations: []
+      },
+      {
+        selectorText: "*",
+        source: { uri: "style.css" },
+        declarations: []
+      },
+      {
+        selectorText: ".a-very-long-css-selector-that-should-break-word",
+        source: { uri: "style.css" },
+        declarations: []
+      },
+      {
+        selectorText: "html, body",
+        source: { uri: "style.css" },
+        declarations: []
+      }
+    ]]] />
   </template>
 </component>
-
-<td-preview>
-  <td-css-inspector-pane-example />
-</td-preview>

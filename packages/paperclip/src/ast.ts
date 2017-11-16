@@ -126,7 +126,7 @@ export type BKArray = {
 } & BKExpression;
 
 export type BKRepeat = {
-  each: BKVarReference;
+  each: BKExpression;
   asKey: BKVarReference;
   asValue: BKVarReference;
 } & BKExpression;

@@ -156,6 +156,7 @@ export type StageWillWindowTitleClicked = {
 
 export type FileChanged = {
   filePath: string;
+  publicPath: string;
 } & BaseEvent;
 
 export type StageWillWindowKeyDown = {

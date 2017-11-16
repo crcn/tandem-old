@@ -330,7 +330,7 @@ const createConditionBlock = (scanner: TokenScanner, type: BKExpressionType): BK
 const createRepeatBlock = (scanner: TokenScanner): BKRepeat => {
   const start = scanner.curr();
   scanner.next(); // eat repeat
-  const each = createVarReference(scanner);
+  const each = createBKExpressionStatement(scanner);
   eatWhitespace(scanner);
   scanner.next(); // eat as
   const asValue = createVarReference(scanner);  // eat WS
@@ -346,7 +346,7 @@ const createRepeatBlock = (scanner: TokenScanner): BKRepeat => {
     each,
     asKey,
     asValue
-  })
+  });
 };
 
 const createPropReference = (scanner: TokenScanner): BKVarReference|BKPropertyReference => {

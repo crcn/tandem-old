@@ -4,7 +4,7 @@ import * as request from "request";
 import { ApplicationState, getComponentsFromSourceContent, RegisteredComponent } from "../state";
 import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
-import { getModuleFilePaths, getModuleId } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath } from "../utils";
 import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -13,6 +13,7 @@ import * as ts from "typescript";
 import * as glob from "glob";
 import { editString, StringMutation, weakMemo } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
+import { PUBLIC_SRC_DIR_PATH } from "../constants";
 
 export function* routesSaga() {
   yield fork(handleExpressServerStarted);
@@ -29,12 +30,12 @@ function* addRoutes(server: express.Express) {
 
   const state: ApplicationState = yield select();
 
-  server.use("/src", express.static(state.config.sourceDirectory));
+  server.use(PUBLIC_SRC_DIR_PATH, express.static(state.config.sourceDirectory));
   server.use(express.static(path.join(path.dirname(require.resolve("paperclip")), "dist")));
   console.log("serving paperclip dist/ folder");
 
   server.all(/^\/proxy\/.*/, yield wrapRoute(proxy));
-  server.post("/src", yield wrapRoute(setFile));
+  server.post(PUBLIC_SRC_DIR_PATH, yield wrapRoute(setFile));
 
   // return all components
   server.get("/components", yield wrapRoute(getComponents));
@@ -209,6 +210,14 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     </head>
     <body>
       <script>
+        let _loadedDocument;
+
+        // hook into synthetic document's load cycle -- ensure
+        // that it doesn't emit a load event until the paperclip module
+        // preview has been added to the document body
+        document.interactiveLoaded = new Promise((resolve) => {
+          _loadedDocument = resolve;
+        });
         paperclip.bundleVanilla("/src${relativeModuleFilePath}", {
           io: {
             readFile(uri) {
@@ -234,7 +243,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
           for (let i = 0, {length} = entry.strays; i < length; i++) {
             document.body.appendChild(entry.strays[i]);
           }
-        });
+        }).then(_loadedDocument);
         
         // try {
         //   var bundle = {};
@@ -305,7 +314,9 @@ function* editFiles(req: express.Request, res: express.Response, next) {
 
 function* setFile(req: express.Request, res: express.Response) { 
   const { filePath, content } = yield call(getPostData, req);
-  yield put(fileContentChanged(filePath, new Buffer(content, "utf8"), new Date()));
-  yield put(fileChanged(filePath)); // dispatch public change -- causes reload
+  const state: ApplicationState = yield select();
+  const publicPath = getPublicFilePath(filePath, state);
+  yield put(fileContentChanged(filePath, publicPath, new Buffer(content, "utf8"), new Date()));
+  yield put(fileChanged(filePath, publicPath)); // dispatch public change -- causes reload
   res.send([]);
 }

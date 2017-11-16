@@ -420,7 +420,11 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
 
     cloneShallow() {
-      const clone = this.ownerDocument.createElement(this.tagName);
+
+      // note that we're instantiating the constructor here instead
+      // of calling document.createElement since document.createElement
+      // may have a different class registered to this tag name at a different time. 
+      const clone = this.ownerDocument.$$linkElement(new (this.constructor as any)(), this.tagName, this.namespaceURI);
       clone["" + "tagName"] = this.tagName;
       for (let i = 0, n = this.attributes.length; i < n; i++) {
         const attr = this.attributes[i];
@@ -485,6 +489,10 @@ export const diffBaseElement = (oldElement: Element, newElement: Element, diffCh
   // TODO - open / close shadow root
   if (oldElement.shadowRoot && newElement.shadowRoot) {
     mutations.push(...diffChildNode(oldElement.shadowRoot, newElement.shadowRoot));
+  } else if (oldElement.shadowRoot && !newElement.shadowRoot) {
+    console.error("Attempting to diff unimplemented attachment of shadow root")
+  } else if (!oldElement.shadowRoot && newElement.shadowRoot) {
+    console.error("Attempting to diff unimplemented detattachment of shadow root")
   }
 
   mutations.push(...diffParentNode(oldElement, newElement, diffChildNode));

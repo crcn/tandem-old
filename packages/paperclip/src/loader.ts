@@ -59,8 +59,15 @@ export type Module = {
   unhandledExpressions: PCExpression[];
 };
 
-export type Modules = {
-  [identifier: string]: Module
+export type Dependency = {
+  module: Module;
+  resolvedImportUris: {
+    [identifier: string]: string
+  }
+};
+
+export type DependencyGraph = {
+  [identifier: string]: Dependency
 };
 
 const LOADED_SYMBOL = Symbol();
@@ -77,27 +84,32 @@ export const loadModuleAST = (ast: PCExpression): Module => {
   return module;
 };
 
-export const loadModuleDependencyGraph = (uri: string, io: IO, modules: Modules = {}): Promise<Modules> => {
+export const loadModuleDependencyGraph = (uri: string, io: IO, graph: DependencyGraph = {}): Promise<DependencyGraph> => {
 
   // beat circular dep
-  if (modules[uri]) {
-    return Promise.resolve(modules);
+  if (graph[uri]) {
+    return Promise.resolve(graph);
   }
 
   return io.readFile(uri)
   .then(parseModuleSource)
   .then(loadModuleAST)
   .then((module) => {
-    modules[uri] = module;
+    const resolvedImportUris = {};
+
+    // set DG value to prevent getting caught in a loop via
+    // circ dependencies
+    graph[uri] = { module: module, resolvedImportUris };
 
     return Promise.all(module.imports.map(_import => {
       return io.resolveFile(_import.href, uri)
       .then((resolvedUri) => {
-        return loadModuleDependencyGraph(resolvedUri, io, modules);
+        resolvedImportUris[_import.href] = resolvedUri;
+        return loadModuleDependencyGraph(resolvedUri, io, graph);
       })
     }));
   }).then(() => {
-    return modules;
+    return graph;
   }).catch((e) => {
     console.error(`Error in ${uri}`);
     throw e;

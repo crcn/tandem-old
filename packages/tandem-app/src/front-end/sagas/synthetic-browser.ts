@@ -180,18 +180,17 @@ function* handleScrollInFullScreenMode() {
 
 function* handleFileChanged() {
   while(true) {
-    const { filePath }: FileChanged = yield take(FILE_CHANGED);
+    const { filePath, publicPath }: FileChanged = yield take(FILE_CHANGED);
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
     const windows = getSyntheticBrowser(state, workspace.browserId).windows;
-
     for (const window of windows) {
       const shouldReload = window.externalResourceUris.find((uri) => (
-        uri.indexOf(filePath) !== -1
+        (publicPath && uri.indexOf(publicPath) !== -1) || uri.indexOf(filePath) !== -1
       ));
 
       if (shouldReload) {
-        console.debug("Reloading window ", window.location);
+        console.log("Reloading window ", window.location);
         window.instance.location.reload();
       }
     }

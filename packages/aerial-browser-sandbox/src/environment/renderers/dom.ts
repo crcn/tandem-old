@@ -356,10 +356,9 @@ const renderHTMLNode = (node: SEnvNodeInterface, dicts: DOMRendererDicts, onChan
         dicts.sheets[el.sheet.$id] = [() => (element as HTMLStyleElement).sheet as CSSStyleSheet, el.sheet];
       }
 
-      // add a placeholder for these blacklisted elements so that diffing & patching work properly
+      // add a placeholder for these blacklisted elements so that diffing & patching work properly. !!!!Note that we STILL want to append child nodes so that DOM mutations can be synchronized. !!!
       if(/^(script|head)$/.test(tagNameLower)) {
         element.style.display = "none";
-        return element;
       }
 
       return appendChildNodes(element, syntheticElement.childNodes, dicts, onChange, document);

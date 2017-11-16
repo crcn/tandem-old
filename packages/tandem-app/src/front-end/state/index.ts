@@ -373,7 +373,7 @@ const filterApplicableTargetSelectors = weakMemo((selectors: TargetSelector[], w
   const children = getSyntheticWindowChildStructs(window);
   for (const $id in children) {
     const child = children[$id] as SyntheticCSSStyleRule;
-    if (child.$type === SYNTHETIC_CSS_STYLE_RULE && map[child.source.uri + child.selectorText]) {
+    if (child.$type === SYNTHETIC_CSS_STYLE_RULE && child.source && map[child.source.uri + child.selectorText]) {
       rules.push(map[child.source.uri + child.selectorText]);
     }
   }
@@ -506,8 +506,11 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
     createKeyboardShortcut("ctrl+f", fullScreenShortcutPressed()),
     createKeyboardShortcut("meta+=", zoomInShortcutPressed()),
     createKeyboardShortcut("meta+-", zoomOutShortcutPressed()),
-    createKeyboardShortcut("meta+t", openNewWindowShortcutPressed()),
-    createKeyboardShortcut("ctrl+t", openNewWindowShortcutPressed()),
+
+    // ignore for now since project is scoped to Paperclip only. Windows
+    // should be added in via the components pane.
+    // createKeyboardShortcut("meta+t", openNewWindowShortcutPressed()),
+    // createKeyboardShortcut("ctrl+t", openNewWindowShortcutPressed()),
     createKeyboardShortcut("meta+enter", cloneWindowShortcutPressed()),
     createKeyboardShortcut("escape", escapeShortcutPressed()),
     createKeyboardShortcut("ctrl+shift+]", nextWindowShortcutPressed()),

@@ -1,10 +1,7 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 
-<component id="td-components-pane">
-  <property name="onComponentStartDrag" default={{noop}} />
-  <property name="inc" default={{0}} />
-  <property name="components" default={{[]}} />
+<component id="td-components-pane" [[property components]]>
   
   <template>
     <td-pane>
@@ -42,7 +39,6 @@
         }
 
         .header {
-          /*border-bottom: 1px solid var(--border-color); */
         }
 
         .cell:nth-child(3n) {
@@ -52,9 +48,9 @@
       </style>
       <span slot="header">Components</span>
       <span slot="content" class="content">
-        <div pc-repeat="this.components as component" class="cell" onstartdrag={{this.onComponentStartDrag.bind(component)}}>
+        <div [[repeat components as component]] class="cell">
           <div class="inner" draggable>
-            {{component.label}}
+            [[bind component.label]]
           </div>
         </div>
       </span>

@@ -1,12 +1,14 @@
 TOMORROW:
 
-- [ ] update paperclip dev server to use new lib
-  - [ ] http caching on front-end (master loader that loads resources for all windows)
-  - [ ] push file changes to master loader that updates sibling windows
-- [ ] style piercing
+- [ ] Figure out scoped styles
+  - [ ] need to display 1-1 map of CSS
+  - [ ] Shadow percing may be more expensive
+- [ ] react transpiler (with HMR)
 - [ ] wire up paperclip-react-loader into Tandem
-
 - [ ] mutations lib (needed in paperclip)
+
+- [ ] Paperclip
+  - [ ] allow CSS comments
 
 #### V1
 
