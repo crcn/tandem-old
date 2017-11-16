@@ -402,7 +402,7 @@ export const getObjectsWithSameSource = weakMemo((itemId: string, browser: Synth
     const windowsObjects = getSyntheticWindowChildStructs(window);
     for (const $id in windowsObjects) {
       const child = windowsObjects[$id];
-      if (expressionLocationEquals(child.source, target.source)) {
+      if (child.source && target.source && expressionLocationEquals(child.source, target.source)) {
         objectsWithSameSource.push(child);
       }
     }

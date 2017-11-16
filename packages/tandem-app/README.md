@@ -9,6 +9,7 @@ TOMORROW:
 
 - [ ] Paperclip
   - [ ] allow CSS comments
+  - [ ] attach source of each node
 
 #### V1
 
