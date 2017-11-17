@@ -20,7 +20,7 @@ module.exports = merge({}, base, {
   module: {
     rules: [
       ...base.module.rules,
-      { test: /\.pc$/, use: [__dirname + '/../paperclip-react-transpiler/webpack-loader', 'ts-loader' ]},
+      { test: /\.pc$/, use: [__dirname + '/../paperclip-react-transpiler/webpack-loader' ]},
       { test: /\.tsx?$/, use: ['react-hot-loader/webpack', 'ts-loader'] },
     ]
   }

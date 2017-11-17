@@ -49,7 +49,7 @@
       <span slot="header">Components</span>
       <span slot="content" class="content">
         <div [[repeat components as component]] class="cell">
-          <div class="inner" draggable>
+          <div class="inner">
             [[bind component.label]]
           </div>
         </div>

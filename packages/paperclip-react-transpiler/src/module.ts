@@ -54,31 +54,17 @@ import { 
   PCTextNode,
   PCBlock
 } from "paperclip";
-import { camelCase, upperFirst } from "lodash";
+import { getComponentTranspileInfo, ComponentTranspileInfo } from "./utils";
 
-type A = {
-  a: 1
-};
-
-type B = {
-  b: 2
-}
-
-type C = A & B;
-
-let a: C ;
-
-
-export type TranspileOptions = {
-}
-
-export const transpileToReactComponents = (source: string) => {
-  const module = loadModuleAST(parseModuleSource(source));
+export const transpileToReactComponents = (source: string, uri: string) => {
+  const module = loadModuleAST(parseModuleSource(source), uri);
   return transpileModule(module);
 };
 
 const transpileModule = (module: Module) => {
   let content = ``;
+
+  const componentInfo = module.components.map(getComponentTranspileInfo);
 
   content += `const React = require("react");\n\n`;
 
@@ -98,17 +84,17 @@ const transpileModule = (module: Module) => {
   // }
   
   for (let i = 0, {length} = module.components; i < length; i++) {
-    content += transpileComponent(module.components[i]);
+    content += transpileComponent(getComponentTranspileInfo(module.components[i]));
   }
 
   content += `const identity = BaseComponent => BaseComponent;\n`;
   content += `exports.baseComponentFactories = baseComponentFactories;\n`;
   content += `exports.enhanceComponents = (enhancers) => {\n` +
   `  const enhancedComponents = {};\n` +
-  `  for (const componentId in components) {\n` + 
-  `    enhancedComponents[componentId] = components[componentId](enhancedComponents)(enhancers[componentId] || identity);\n` +
+  `  for (const componentId in baseComponentFactories) {\n` + 
+  `    enhancedComponents[componentId] = baseComponentFactories[componentId](enhancedComponents)(enhancers[componentId] || identity);\n` +
   `   }\n` +
-  `  return enhancedComponents;`+
+  `  return enhancedComponents;\n`+
   `};\n`;
 
   return content;
@@ -118,16 +104,15 @@ export type TranspileElementContext = {
   scopeClass?: string;
 }
 
-const transpileComponent = (component: Component) => {
+const transpileComponent = ({ component, className }: ComponentTranspileInfo) => {
   let content = ``;
-  const className = upperFirst(camelCase(component.id));
 
   const context: TranspileElementContext = {
     scopeClass: className
   };
 
   content += `\n` +
-  `baseComponentFactories["${component.id}"] = components => enhanceComponent => enhanceComponent(class ${className} extends React.Component {\n` +
+  `baseComponentFactories.${className} = components => enhanceComponent => enhanceComponent(class ${className} extends React.Component {\n` +
   `  render() {\n` +
 
       (

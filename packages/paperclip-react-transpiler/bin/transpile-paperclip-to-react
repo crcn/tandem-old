@@ -6,4 +6,4 @@ const arg = process.argv[2];
 const transpiler = process.argv.indexOf("--definition") !== -1 ? transpileToTypeScriptDefinition : transpileToReactComponents;
 
 // paperclip-react-transpiler [path] > out
-console.log(transpiler(fs.readFileSync(arg, "utf8")));
+console.log(transpiler(fs.readFileSync(arg, "utf8"), arg));

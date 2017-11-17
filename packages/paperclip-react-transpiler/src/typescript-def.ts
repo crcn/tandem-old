@@ -1,54 +1,84 @@
 // TODO - hydration func here, scan for all modules
 
-import { loadModuleAST, parseModuleSource, Module, Component } from "paperclip";
 import { upperFirst, camelCase } from "lodash";
+import * as path from "path";
+import { loadModuleAST, parseModuleSource, Module, Component } from "paperclip";
+import { basename } from "path";
+import { ComponentTranspileInfo, getComponentTranspileInfo } from "./utils";
 
-export const transpileToTypeScriptDefinition = (source: string) => {
-  const module = loadModuleAST(parseModuleSource(source));
+export const transpileToTypeScriptDefinition = (source: string, uri: string) => {
+  const module = loadModuleAST(parseModuleSource(source), uri);
   return transpileModule(module);
+};
+
+type ImportTranspileInfo = {
+  baseName: string;
+  varName: string;
 };
 
 const transpileModule = (module: Module) => {
   let content = ``;
 
-  const importNames = [];
+  const baseName = getImportBaseName(module.uri);
+  const importTranspileInfo: ImportTranspileInfo[] = [];
 
-  for (let i = 0, {length} = module.imports; i < length; i++) {
-    const _import = module.imports[i];
-    const _importName = "import_" + i;
-    importNames.push(_importName);
-    content += `import * as ${_importName} from "${_import.href}.d.ts"\n;`;
-  }
+  content += `import * as React from "react";\n`;
 
-  for (let i = 0, {length} = module.components; i < length; i++) {
-    content += transpileComponent(module.components[i]);
-  }
+  module.imports.forEach((_import, i) => {
+    const varName = "imports_" + i;
+    importTranspileInfo.push({
+      varName, 
+      baseName: getImportBaseName(_import.href)
+    });
+    content += `import * as ${varName} from "${_import.href}";\n`;
+  });
 
-  // TODO - add components in this file
-  content += `export type HigherOrderComponentFactories = ${importNames.map(importName => `${importName}.HigherOrderComponentFactories`).join(" & ")}`;
+  content += `\n`;
 
-  content += `export type HydratedComponents = ${importNames.map(importName => `${importName}.HydratedComponents`).join(" & ")}`;
+  const componentTranspileInfo = module.components.map(getComponentTranspileInfo);
 
-  content += `export const hydrateComponents = (hocfs: HigherOrderComponentFactories) => HydratedComponents;`
+  componentTranspileInfo.forEach((info) => {
+    content += transpileComponentPropTypes(info);
+  });
+
+  content += `type Enhancer<T> = (BaseComponent: React.ComponentClass<T>) => React.ComponentClass<T>;\n\n`;
+
+  componentTranspileInfo.forEach(({enhancerTypeName, propTypesName}) => {
+    content += `export type ${enhancerTypeName} = Enhancer<${propTypesName}>;\n`;
+  });
+
+  content += `export type ${baseName}Enhancers = {\n`
+  
+  componentTranspileInfo.forEach(({ enhancerName, enhancerTypeName }) => {
+    content += `  ${enhancerName}: ${enhancerTypeName};\n`;
+  });
+
+  content += `} ${importTranspileInfo.map(({varName, baseName}) => `& ${varName}.${baseName}Enhancers`).join(" ")};\n\n`;
+
+  content += `export type Enhanced${baseName}Components = {\n`
+  
+  componentTranspileInfo.forEach(({className, propTypesName}) => {
+    content += `  ${className}: React.ComponentClass<${propTypesName}>;\n`;
+  });
+  content += `} ${importTranspileInfo.map(({varName, baseName}) => `& ${varName}.Enhanced${baseName}Components`).join(" ")};\n\n`;
+
+  content += `export function enhanceComponents(enhancers: ${baseName}Enhancers): Enhanced${baseName}Components;`
 
   return content;
-}
+};
 
-const transpileComponent = (component: Component) => {
+const getImportBaseName = (href: string) => upperFirst(camelCase(path.basename(href).split(".").shift()));
+
+const transpileComponentPropTypes = ({ className, component }: ComponentTranspileInfo) => {
   let content = ``;
-  const className = upperFirst(camelCase(component.id));
   const classPropsName = `${className}Props`;
 
   content += `` +
-  `type ${classPropsName} = {\n` +
+  `export type ${classPropsName} = {\n` +
     component.properties.map(({name}) => (
       `  ${name}: any;\n`
     )).join("") +
-  `};\n\n` +
-
-  `export class ${className} extends React.Component<${classPropsName}, any> {\n` +
-    
-  `}`;
+  `};\n\n`;
 
   return content;
 };

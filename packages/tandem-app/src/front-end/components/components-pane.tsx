@@ -1,11 +1,5 @@
 import { compose, pure } from "recompose";
+import { TdComponentsPaneEnhancer, TdComponentsPaneProps } from "./components-pane.pc";
 
+export const enhanceTdComponentsPane: TdComponentsPaneEnhancer = compose<TdComponentsPaneProps, TdComponentsPaneProps>(pure);
 
-export const enhancers = {
-  "td-component-pane": compose(
-    pure
-  ),
-  "td-component-pane-item": compose(
-    pure
-  )
-};

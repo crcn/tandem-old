@@ -46,6 +46,7 @@ export type Component = {
 export type Module = {
 
   source: PCExpression;
+  uri: string;
 
   globalStyles: PCElement[];
 
@@ -72,13 +73,13 @@ export type DependencyGraph = {
 
 const LOADED_SYMBOL = Symbol();
 
-export const loadModuleAST = (ast: PCExpression): Module => {
+export const loadModuleAST = (ast: PCExpression, uri: string): Module => {
   
   // weak memoization
   if (ast[LOADED_SYMBOL] && ast[LOADED_SYMBOL][0] === ast) return ast[LOADED_SYMBOL][1];
 
 
-  const module = createModule(ast);
+  const module = createModule(ast, uri);
   ast[LOADED_SYMBOL] = [ast, module];
 
   return module;
@@ -93,7 +94,7 @@ export const loadModuleDependencyGraph = (uri: string, io: IO, graph: Dependency
 
   return io.readFile(uri)
   .then(parseModuleSource)
-  .then(loadModuleAST)
+  .then(ast => loadModuleAST(ast, uri))
   .then((module) => {
     const resolvedImportUris = {};
 
@@ -116,7 +117,7 @@ export const loadModuleDependencyGraph = (uri: string, io: IO, graph: Dependency
   });
 }
 
-const createModule = (ast: PCExpression): Module => {
+const createModule = (ast: PCExpression, uri: string): Module => {
   const childNodes = ast.type === PCExpressionType.FRAGMENT ? (ast as PCFragment).childNodes : [ast];
 
   const imports: Import[] = [];
@@ -151,6 +152,7 @@ const createModule = (ast: PCExpression): Module => {
 
   return {
     source: ast,
+    uri,
     imports,
     components,
     globalStyles,
