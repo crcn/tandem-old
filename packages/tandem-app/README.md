@@ -1,3 +1,8 @@
+patterns.
+
+POSSIBLY define "state" for views instead of having them be based off a data model. Use controller to wire up data model. 
+
+
 TOMORROW:
 
 - [ ] Figure out scoped styles
@@ -5,14 +10,14 @@ TOMORROW:
   - [ ] Shadow percing may be more expensive
 - [ ] react transpiler (with HMR)
 - [ ] wire up paperclip-react-loader into Tandem
-- [ ] mutations lib (needed in paperclip)
 
 - [ ] Paperclip
-  - [ ] allow CSS comments
   - [ ] attach source of each node
-  - [ ] memoize compiled scripts outside of synthetic browser
   - [ ] figure out computed properties for css binding
-  - [ ] comments are busted
+  - [ ] need to figure out how to use constants in view - possibly reverse and define "states" that are stored in strong typed def files - mapped in view controller
+
+
+- [ ] possibly look into FSM 
 
 #### V1
 
@@ -48,3 +53,4 @@ TOMORROW:
 
 - [ ] Notes
 - [ ] Git integration
+- [ ] FSM - connecting UIs

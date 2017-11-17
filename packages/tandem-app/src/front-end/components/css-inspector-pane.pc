@@ -54,11 +54,6 @@
     .value:after {
     }
   </style>
-  <script>
-    const dispatch = (event) => {
-      console.log("CHANGED");
-    }
-  </script>
   <template>
     <td-gutter-subheader>
       <span class="selector-text">
@@ -104,7 +99,20 @@
             name: "color",
             valueExpr: {
               type: "COLOR",
-              value: "#F60
+              value: "#F60"
+            }
+          },
+          {
+            name: "background",
+            valueExpr: {
+              type: "CALL",
+              name: "rgba",
+              params: [
+                {
+                  type: "NUMBER",
+                  value: 100
+                }
+              ]
             }
           }
         ]

@@ -99,7 +99,14 @@ export const tokenizePaperclipSource = (source: string) => {
     } else if (cchar === "!") {
       token = createToken(PCTokenType.BANG, scanner.pos, scanner.shift());
     } else if (cchar === "/") {
-      token = createToken(PCTokenType.BACKSLASH, scanner.pos, scanner.shift());
+
+      // eat comments
+      if (scanner.peek(2) === "/*") { 
+        scanner.match(/.*?\*\//);
+        continue;
+      } else {
+        token = createToken(PCTokenType.BACKSLASH, scanner.pos, scanner.shift());
+      }
     } else if (cchar === ".") {
       if (/\.\d/.test(scanner.peek(2))) {
         token = getNumberToken(scanner);

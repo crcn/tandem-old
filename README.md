@@ -414,3 +414,8 @@ The i18n, or internationalization block  will be used for translations. Translat
 #### GIT conflict support
 
 GIT conflicts will be supported in Paperclip, and will allow designers & developers to visually resolve conflicting changes, directly within the visual editor. Assuming that multiple artboards are visible, users will be able to toggle between different versions of a component and observe how their changes affect other UIs. 
+
+#### DFA support
+
+More on this soon, but Paperclip should work with FSMs so that that components and their relationships with
+each other can be represented visually.

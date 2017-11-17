@@ -10,7 +10,6 @@
       width: var(--base4);
       height: var(--base4);
       margin: 0px var(--base2);
-      background: red;
       position: relative;
       top: 1px;
       display: inline-block;
@@ -30,14 +29,12 @@
   </template>
 </component>
 
-<component id="td-css-number-expr-input">
-  <property name="expr" />
+<component id="td-css-number-expr-input" [[property expr]]>
   <style>
     .input-box {
       width: var(--base4);
       height: var(--base4);
       margin: 0px var(--base2);
-      background: red;
       position: relative;
       top: 1px;
       display: inline-block;
@@ -86,9 +83,7 @@
     }
   </style>
   <template>
-    
-    <td-color-mini-input [[if expr.name === "rgb" || expr.name === "rgba"]]  value=[[bind expr.value]] dispatch=[[bind dispatch]] /> 
-
+    <td-color-mini-input [[if expr.name === "rgb" || expr.name === "rgba"]]  expr=[[bind expr]] dispatch=[[bind dispatch]] /> 
     <span>[[bind expr.name]](</span>
       <td-css-expr-input [[repeat expr.params as param]] context=[[bind expr]] expr=[[bind param]] dispatch=[[bind dispatch]] />
     <span>)</span>
@@ -100,16 +95,13 @@
     :host {
       display: inline;
     }
-    span {
-      color: red;
-    }
   </style>
-  <template> 
+  <template>
     <td-css-call-expr-input [[if expr && expr.type === "CALL"]] expr=[[bind expr]]  dispatch=[[bind dispatch]] />
     <td-css-color-expr-input [[elseif expr && expr.type === "COLOR"]] expr=[[bind expr]]  dispatch=[[bind dispatch]]  />
     <td-css-number-expr-input [[elseif expr && expr.type === "NUMBER"]] expr=[[bind expr]]  dispatch=[[bind dispatch]]  />
     <td-keyword-expr-input [[elseif expr && expr.type === "KEYWORD"]] context=[[bind context]] expr=[[bind expr]] dispatch=[[bind dispatch]] />
-    <span pc-else>
+    <span [[else]]>
       [[bind expr && expr.value]]
     </span>
   </template>

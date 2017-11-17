@@ -154,6 +154,8 @@ const createString = (scanner: TokenScanner): BKString => {
     scanner.next();
   }
 
+  assertCurrTokenType(scanner, start.type);
+
   scanner.next(); // eat quote
 
 
@@ -187,7 +189,6 @@ const createObject = (scanner: TokenScanner): BKObject => {
     }
 
     properties.push(createKeyValuePair(scanner));
-    console.log(properties);
     eatWhitespace(scanner);
 
     const curr = scanner.curr();
@@ -318,12 +319,12 @@ const createPropertyBlock = (scanner: TokenScanner, type: BKExpressionType): BKP
 const createConditionBlock = (scanner: TokenScanner, type: BKExpressionType): BKIf  => {
   const start = scanner.curr();
   scanner.next(); // eat name
-  scanner.next(); // eat ws
+  eatWhitespace(scanner);
   return ({
     type,
 
     // only support references for now
-    condition: createBKExpressionStatement(scanner),
+    condition: scanner.curr().type !== PCTokenType.BRACKET_CLOSE ? createBKExpressionStatement(scanner) : null,
     location: getLocation(start, scanner.curr(), scanner.source)
   });
 };
@@ -492,14 +493,26 @@ const createCSSAtRule = (scanner: TokenScanner): CSSAtRule => {
 const createCSSStyleRuleOrDeclarationProperty = (scanner: TokenScanner): CSSStyleRule|CSSDeclarationProperty => {
   const start = scanner.curr();
   let selectorText = "";
-  while(!scanner.ended() && scanner.curr().type !== PCTokenType.CURLY_BRACKET_OPEN && scanner.curr().type !== PCTokenType.SEMICOLON && scanner.curr().type !== PCTokenType.CURLY_BRACKET_CLOSE) {
-    selectorText += scanner.curr().value;
-    scanner.next();
+  while(!scanner.ended()) {
+    const curr = scanner.curr();
+    if (curr.type == PCTokenType.CURLY_BRACKET_OPEN || curr.type === PCTokenType.SEMICOLON || curr.type === PCTokenType.CURLY_BRACKET_CLOSE) {
+      break;
+    }
+
+    // need to check for strings because something such as content: "; "; needs to be possible.
+    if (curr.type === PCTokenType.SINGLE_QUOTE || curr.type === PCTokenType.DOUBLE_QUOTE)  {
+      selectorText += curr.value + createString(scanner).value + curr.value;
+    } else {
+      selectorText += curr.value;
+      scanner.next();
+    }
   }
 
   // it's a declaration
   if (scanner.curr().type === PCTokenType.SEMICOLON || scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
-    const [name, value] = selectorText.split(":");
+
+    // something like this also needs to work: 
+    const [match, name, value] = selectorText.match(/(.+?):(.+)/);
 
     if (scanner.curr().type === PCTokenType.SEMICOLON) {
       scanner.next(); // eat ;
@@ -508,7 +521,7 @@ const createCSSStyleRuleOrDeclarationProperty = (scanner: TokenScanner): CSSStyl
       type: CSSExpressionType.DECLARATION_PROPERTY,
       location: getLocation(start, scanner.curr(), scanner.source),
       name,
-      value
+      value,
     } as CSSDeclarationProperty;
   }
 

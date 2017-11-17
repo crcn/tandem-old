@@ -91,6 +91,7 @@ describe(__filename + "#", () => {
 
     // // if
     [{ a: 1 }, `<span [[if a]]>A</span>`, `<span>A</span>`],
+    [{ a: 1 }, `<span [[if !a]]>A</span><span [[else]]>B</span>`, `<span>B</span>`],
     [{ a: 1 }, `<span [[if !a]]>A</span>b`, `b`],
     [{ a: 1, b: 2 }, `<span [[if a && b]]>A</span>`, `<span>A</span>`],
     [{ a: 1, b: 1 }, `<span [[if a === b]]>A</span>`, `<span>A</span>`],
@@ -164,13 +165,16 @@ describe(__filename + "#", () => {
 
   [
     [`.container {}`, `.container { }`],
+    [`.container {} /*\na comment */ .content {}`, `.container { } .content { }`],
     [`  .container {\na:b;}  `, `.container { a: b; }`],
     [`.container {a:b;c:d}`, `.container { a: b;c: d; }`],
     [`@media screen { .container { color: red; } }`, `@media screen { .container { color: red; } }`],
     [`@unknown screen { .container { color: red; } }`, ``],
     [`@charset "utf8";`, ``],
     [`@keyframes bab { 0% { color: red; }}`, `@keyframes bab { 0% { color: red; } }`],
-    [`@font-face { color: red; }`, `@font-face { color: red; }`]
+    [`@font-face { color: red; }`, `@font-face { color: red; }`],
+    [`.container:after { content: ": "; }`, `.container:after { content: ": "; }`],
+    [`.container:after { content: "; "; }`, `.container:after { content: "; "; }`]
   ].forEach(([input, output]) => {
     it(`can parse ${input} to ${output}`, async () => {
       const wrap = (input) => `<style>${input.trim()}</style>`;
