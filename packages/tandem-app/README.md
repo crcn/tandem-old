@@ -1,26 +1,13 @@
-patterns.
-
-POSSIBLY define "state" for views instead of having them be based off a data model. Use controller to wire up data model. 
-
-
 RESEARCH:
 
 - [ ] FSM
 - [ ] react components - defining props that are needed
 
-
 TOMORROW:
 
-- [ ] Figure out scoped styles
-  - [ ] need to display 1-1 map of CSS
-  - [ ] Shadow percing may be more expensive
 - [ ] react transpiler (with HMR)
 - [ ] wire up paperclip-react-loader into Tandem
-
-- [ ] Paperclip
-  - [ ] attach source of each node
-
-- [ ] possibly look into FSM 
+- [ ] Wire up CSS Preview
 
 #### V1
 
