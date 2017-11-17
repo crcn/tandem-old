@@ -5,8 +5,15 @@
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
 
-<component id="td-style-declaration" [[property name]] [[property value]]>
+<component id="td-style-declaration" [[property name]] [[property value]] [[property applied]] [[property overridden]]>
   <style>
+    :host([applied]) {
+      opacity: 0.4;
+    }
+    :host([overridden]) span {
+      text-decoration: line-through;
+      color: var(--font-color-dim);
+    }
     .name {
       color: var(--font-color-dim);
     }
@@ -16,14 +23,19 @@
   </style>
   <template>
     <span class="name">[[bind name]]</span>
-    <td-css-expr-input value=[[bind value]] />
+    <td-css-expr-input [[if !overridden]] value=[[bind value]] />
+    <span [[else]]>
+      [[bind value.source]]
+    </span>
   </template>
 </component>
 
-<component id="td-style-rule" [[property selectorText]] [[property declarations]] [[property source]]>
+<component id="td-style-rule" [[property selectorText]] [[property declarations]] [[property source]] [[property headerHovering]]>
   <style>
+    :host:hover td-gutter-subheader span, :host([headerHovering]) .controls {
+      /* TODO */
+    }
     .source {
-      float: right;
       text-decoration: underline;
       color: var(--font-color-dim);
       white-space: nowrap;
@@ -66,7 +78,7 @@
 
     <td-list>
       <td-list-item [[if declarations]] [[repeat declarations as declaration]]>
-        <td-style-declaration name=[[bind declaration.name]] value=[[bind declaration.value]] />
+        <td-style-declaration [[bind declaration]] />
       </td-list-item>
     </td-list>
   </template>
@@ -150,30 +162,8 @@
         ]
       },
       {
-        selectorText: "body, html",
-        declarations: [
-          { 
-            name: "padding",
-            value: {
-              type: "SPACED_LIST",
-              values: [
-                {
-                  type: "MEASUREMENT",
-                  value: 10,
-                  unit: "px"
-                },
-                {
-                  type: "MEASUREMENT",
-                  value: 20,
-                  unit: "px"
-                }
-              ]
-            }
-          }
-        ]
-      },
-      {
         selectorText: ".header",
+        headerHovering: true,
         declarations: [
           { 
             name: "background",
@@ -256,16 +246,42 @@
           },
           {
             name: "color",
+            overridden: true,
             value: {
               type: "CALL",
               name: "var",
               open: true,
+              source: "var(---font-color)",
               returnType: "COLOR",
               returnValue: "#CCCCCC",
               params: [
                 {
                   type: "KEYWORD",
                   value: "--font-color"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        selectorText: "body, html",
+        declarations: [
+          { 
+            name: "padding",
+            applied: false,
+            value: {
+              type: "SPACED_LIST",
+              values: [
+                {
+                  type: "MEASUREMENT",
+                  value: 10,
+                  unit: "px"
+                },
+                {
+                  type: "MEASUREMENT",
+                  value: 20,
+                  unit: "px"
                 }
               ]
             }

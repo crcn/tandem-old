@@ -19,9 +19,6 @@ TOMORROW:
 
 - [ ] Paperclip
   - [ ] attach source of each node
-  - [ ] figure out computed properties for css binding
-  - [ ] need to figure out how to use constants in view - possibly reverse and define "states" that are stored in strong typed def files - mapped in view controller
-
 
 - [ ] possibly look into FSM 
 

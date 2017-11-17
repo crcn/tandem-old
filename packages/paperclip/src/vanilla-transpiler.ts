@@ -253,11 +253,12 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
             `return this.$$${name};` +
           `}` +
           `set ${name}(value) {` +
-            `if (this.$$${name} === value) {` +
+            `if (this.$$${name} === value || String(this.$$${name}) === String(value)) {` +
               `return;` +
             `}` +
             `const oldValue = this.$${name};` +
             `this.$$${name} = value;` +
+            `this.setAttribute(${JSON.stringify(name)}, value);` +
             `if (this._rendered) {` +
               `$$requestUpdate(this);` +
             `}` +

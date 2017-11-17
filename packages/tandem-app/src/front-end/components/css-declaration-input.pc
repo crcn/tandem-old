@@ -106,7 +106,6 @@
     .value {
       
     }
-
     .unit {
       color: var(--font-color-alt);
     }

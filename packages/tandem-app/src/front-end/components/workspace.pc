@@ -4,6 +4,27 @@
 <link rel="import" href="./components-pane.pc" />
 <link rel="import" href="./css-inspector-pane.pc" />
 
+<component id="td-zoom" [[property zoom]]>
+  <style>
+    a {
+      background: red;
+      text-decoration: none;
+      border-radius: 50%;
+    }
+  </style>
+  <template>
+    <div class="workspace-footer">
+      50%      
+      <a href="#">
+        -
+      </a>     
+      <a href="#">
+        +
+      </a>
+    </div>
+  </template>
+</component>
+
 <component id="td-workspace-footer" [[property workspace]]>
   <property name="workspace" />
   <style>
@@ -15,7 +36,7 @@
   </style>
   <template>
     <div class="workspace-footer">
-      TODO      
+      <td-zoom value=[[bind 0.5]] />    
     </div>
   </template>
 </component>
