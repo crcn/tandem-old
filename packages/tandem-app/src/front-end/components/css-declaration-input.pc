@@ -4,7 +4,7 @@
 <link rel="import" href="./tooltip.pc" />
 <link rel="import" href="./color-picker.pc" />
 
-<component id="td-css-color-expr-input" [[property expr]] [[property dispatch]]>
+<component id="td-css-color-expr-input" [[property value]]>
   <style>
     .input-box {
       width: var(--base4);
@@ -18,18 +18,18 @@
     }
   </style>
   <template>
-    <td-color-mini-input value=[[bind expr.value]] dispatch=[[bind dispatch]] />
-    <span>[[bind expr.value]]</span>
+    <td-color-mini-input value=[[bind value.value]] />
+    <span>[[bind value.value]]</span>
   </template>
 </component>
 
-<component id="td-keyword-expr-input" [[property expr]]>
+<component id="td-keyword-expr-input" [[property value]]>
   <template>
-    <span>[[bind expr && expr.name]]</span>
+    <span>[[bind value.name]]</span>
   </template>
 </component>
 
-<component id="td-css-number-expr-input" [[property expr]]>
+<component id="td-css-number-expr-input" [[property value]]>
   <style>
     .input-box {
       width: var(--base4);
@@ -47,7 +47,7 @@
   </template>
 </component>
 
-<component id="td-color-mini-input" [[property value]] [[property dispatch]]>
+<component id="td-color-mini-input" [[property value]]>
   <style>
     .input-box {
       width: var(--base4);
@@ -66,12 +66,12 @@
 
       <!-- TODO - fix me - super slow -->
       <!-- need to not render this until slot is present -->
-      <td-color-picker value=[[bind value]] dispatch=[[bind dispatch]] />
+      <td-color-picker value=[[bind value]] />
     </td-tooltip>
   </template>
 </component>
 
-<component id="td-css-call-expr-input" [[property type]] [[property name]] [[property callType]] [[property params]] [[property dispatch]]>
+<component id="td-css-call-expr-input" [[property value]]>
   <style>
     td-css-expr-input::after {
       content: ", ";
@@ -82,32 +82,32 @@
     }
   </style>
   <template>
-    <td-color-mini-input [[if returnType === "COLOR"]] value=[[bind returnValue]] value= dispatch=[[bind dispatch]] /> 
-    <span>[[bind expr.name]](</span>
-      <td-css-expr-input [[repeat params as param]] context=[[bind expr]] expr=[[bind param]] dispatch=[[bind dispatch]] />
+    <td-color-mini-input [[if value.returnType === "COLOR"]] value=[[bind value.returnValue]] /> 
+    <span>[[bind value.name]](</span>
+      <td-css-expr-input [[repeat value.params as param]] context=[[bind value]] value=[[bind value]] />
     <span>)</span>
   </template>
 </component>
 
-<component id="td-css-expr-input" [[property expr]] [[property context]] [[property dispatch]]>
+<component id="td-css-expr-input" [[property value]] [[property context]]>
   <style>
     :host {
       display: inline;
     }
   </style>
   <template>
-    <td-css-call-expr-input [[if expr && expr.type === "CALL"]] expr=[[bind expr]]  dispatch=[[bind dispatch]] />
-    <td-css-color-expr-input [[elseif expr && expr.type === "COLOR"]] expr=[[bind expr]]  dispatch=[[bind dispatch]]  />
-    <td-css-number-expr-input [[elseif expr && expr.type === "NUMBER"]] expr=[[bind expr]]  dispatch=[[bind dispatch]]  />
-    <td-keyword-expr-input [[elseif expr && expr.type === "KEYWORD"]] context=[[bind context]] expr=[[bind expr]] dispatch=[[bind dispatch]] />
+    <td-css-call-expr-input [[if value.type === "CALL"]] value=[[bind value]] />
+    <td-css-color-expr-input [[elseif value.type === "COLOR"]] value=[[bind value]] />
+    <td-css-number-expr-input [[elseif value.type === "NUMBER"]] value=[[bind value]] />
+    <td-keyword-expr-input [[elseif value.type === "KEYWORD"]] context=[[bind context]] value=[[bind value]] />
     <span [[else]]>
-      [[bind expr && expr.value]]
+      [[bind value]]
     </span>
   </template>
 </component>
 
-<component id="td-css-expr-input-example" [[property valueExpr]][[property dispatch]]>
+<component id="td-css-expr-input-example" [[property value]]>
   <template>
-    <td-css-expr-input open=[[bind open]] expr=[[bind valueExpr]] dispatch=[[bind dispatch]] />
+    <td-css-expr-input open=[[bind open]] value=[[bind value]] />
   </template>
 </component>

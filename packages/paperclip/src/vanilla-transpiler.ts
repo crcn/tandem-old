@@ -114,6 +114,20 @@ const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
       `}` +
     `};` +
 
+    `const stringifyStyle = (style) => {` +
+      `if (typeof style === "string") return style;` +
+      `let buffer = [];` +
+      `for (let key in style) {` +
+        `buffer.push(key + ":" + style[key] + ";");` +
+      `}` +
+      `return buffer.join("");` +
+    `};` +
+    
+    `const $$setElementProperty = (element, property, value) => {` +
+      `if (property === "style") { value = stringifyStyle(value); }` +
+      `element[property] = value;` +
+    `};` +
+
     `let updating = false;` +
     `let toUpdate = [];` +
     
@@ -210,7 +224,6 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
 
 const wrapTranspiledStatement = (statement) => `(() => {${statement}} )();\n`;
 const wrapAndCallBinding = (binding) => `(() => { const binding = () => { ${binding} }; binding(); return binding; })()`;
-
 
 const tranpsileComponent = ({ id, style, template, properties }: Component, context: TranspileContext) => {
   const varName = createVarName(getJSFriendlyName(id), context);
@@ -570,7 +583,7 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
           `${element.varName}.setAttribute("${name}", ${assignment})`
         ), context);
       } else {
-        binding = transpileBinding(bindingVarName, transpileBlockExpression(((value as PCBlock).value as BKBind).value), (assignment) => `${element.varName}.${propName} = ${assignment}`, context);
+        binding = transpileBinding(bindingVarName, transpileBlockExpression(((value as PCBlock).value as BKBind).value), (assignment) => `$$setElementProperty(${element.varName}, "${propName}", ${assignment})`, context);
       }
 
       element.bindings.push(binding);

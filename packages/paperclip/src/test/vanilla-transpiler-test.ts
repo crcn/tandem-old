@@ -98,7 +98,7 @@ describe(__filename + "#", () => {
     [{ a: 1, b: 1 }, `<span [[if a === b]]>A</span>`, `<span>A</span>`],
     [{ a: 1, b: 2 }, `<span [[if a === b]]>A</span>b`, `b`],
     [{ a: 1, b: 2 }, `<span [[if a == b]]>A</span>b`, `b`],
-    [{ a: null }, `<span [[if a == undefined]]>A</span>b`, `b`],
+    [{ a: null }, `<span [[if a == undefined]]>A</span>b`, `<span>A</span>b`],
     [{ a: 1 }, `<span [[if a + 1 == 2]]>A</span>b`, `<span>A</span>b`],
     [{ a: 1 }, `<span [[if a > 1]]>A</span>b`, `b`],
     [{ a: 1 }, `<span [[if a >= 1]]>A</span>b`, `<span>A</span>b`],
