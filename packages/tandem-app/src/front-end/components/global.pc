@@ -96,6 +96,7 @@
   <style>
     :host {
       display: block;
+      position: relative;
     }
     
     .fill {
@@ -124,7 +125,7 @@
   </style>
   <template>
     <div class="background">
-      <div class="file" style=[[bind { width: value * 100 + "%" } ]] />
+      <div class="fill" style=[[bind { width: value * 100 + "%" } ]] />
       </div>
       <span><slot></slot></span>
     </div>
@@ -163,20 +164,6 @@
       margin: var(--base4);
     }
   </style>
-  <script>
-    let interval;
-    this.didMount = () => {
-      if (this.live) {
-        interval = setInterval(() => {
-          this.value = (this.value + 0.01) % 1;
-        }, 100);
-      }
-    }
-
-    this.willUnmount = () => {
-      clearInterval(interval);
-    }
-  </script>
   <template>
     <td-progress value=[[bind value]]>[[bind value * 100]]%</td-progress>
   </template>

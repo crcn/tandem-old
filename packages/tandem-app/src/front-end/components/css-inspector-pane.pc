@@ -259,6 +259,7 @@
             value: {
               type: "CALL",
               name: "var",
+              open: true,
               returnType: "COLOR",
               returnValue: "#CCCCCC",
               params: [
