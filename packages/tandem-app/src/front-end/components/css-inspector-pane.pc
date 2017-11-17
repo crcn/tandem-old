@@ -59,8 +59,8 @@
       <span class="selector-text">
         [[bind selectorText]]
       </span>
-      <span class="source">
-        [[bind source && source.uri]]
+      <span class="source" [[if source]]>
+        [[bind source.uri]]
       </span>
     </td-gutter-subheader>
 
@@ -82,7 +82,7 @@
         </div>
       </span>
       <span slot="content">
-        <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] selectorText=[[bind styleRule.selectorText]] declarations=[[bind styleRule.declarations]] />
+        <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] />
       </span>
     </td-pane>
   </template>
@@ -93,12 +93,180 @@
     <td-css-inspector-pane styleRules=[[bind [
       {
         selectorText: ".container",
+        source: { uri: "styles.css" },
         declarations: [
           { 
             name: "color",
             value: {
               type: "COLOR",
               value: "red"
+            }
+          },
+          { 
+            name: "flex",
+            value: {
+              type: "NUMBER",
+              value: 1
+            }
+          },
+          { 
+            name: "flex-direction",
+            value: {
+              type: "KEYWORD",
+              value: "row"
+            }
+          },
+          { 
+            name: "background",
+            value: {
+              type: "CALL",
+              name: "rgb",
+              returnType: "COLOR",
+              returnValue: "rgb(255, 255, 0)",
+              params: [
+                {
+                  type: "NUMBER",
+                  value: 255,
+                },
+                {
+                  type: "NUMBER",
+                  value: 255,
+                },
+                {
+                  type: "NUMBER",
+                  value: 0
+                }
+              ]
+            }
+          },
+          { 
+            name: "margin-top",
+            value: {
+              type: "MEASUREMENT",
+              value: "10",
+              unit: "px"
+            }
+          }
+        ]
+      },
+      {
+        selectorText: "body, html",
+        declarations: [
+          { 
+            name: "padding",
+            value: {
+              type: "SPACED_LIST",
+              values: [
+                {
+                  type: "MEASUREMENT",
+                  value: 10,
+                  unit: "px"
+                },
+                {
+                  type: "MEASUREMENT",
+                  value: 20,
+                  unit: "px"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        selectorText: ".header",
+        declarations: [
+          { 
+            name: "background",
+            value: {
+              type: "COMMA_LIST",
+              values: [
+                {
+                  type: "SPACED_LIST",
+                  values: [
+                    {
+                      type: "CALL",
+                      name: "rgb",
+                      returnType: "COLOR",
+                      returnValue: "rgb(255, 0, 255)",
+                      params: [
+                        {
+                          type: "NUMBER",
+                          value: 255
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 0
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 255
+                        }
+                      ]
+                    },
+                    {
+                      type: "KEYWORD",
+                      value: "no-repeat"
+                    }
+                  ]
+                },
+                {
+                  type: "SPACED_LIST",
+                  values: [
+                    {
+                      type: "CALL",
+                      name: "rgb",
+                      returnType: "COLOR",
+                      returnValue: "rgb(255, 100, 0)",
+                      params: [
+                        {
+                          type: "NUMBER",
+                          value: 255
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 100
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 0
+                        }
+                      ]
+                    },
+                    {
+                      type: "KEYWORD",
+                      value: "no-repeat"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            name: "padding",
+            value: {
+              type: "CALL",
+              name: "var",
+              params: [
+                {
+                  type: "KEYWORD",
+                  value: "--padding"
+                }
+              ]
+            }
+          },
+          {
+            name: "color",
+            value: {
+              type: "CALL",
+              name: "var",
+              returnType: "COLOR",
+              returnValue: "#CCCCCC",
+              params: [
+                {
+                  type: "KEYWORD",
+                  value: "--font-color"
+                }
+              ]
             }
           }
         ]

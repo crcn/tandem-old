@@ -18,14 +18,44 @@
     }
   </style>
   <template>
-    <td-color-mini-input value=[[bind value.value]] />
-    <span>[[bind value.value]]</span>
+    <td-color-mini-input value=[[bind value]] />
+    <span>[[bind value]]</span>
   </template>
 </component>
 
-<component id="td-keyword-expr-input" [[property value]]>
+<component id="td-css-keyword-expr-input" [[property value]]>
+  <style>
+    :host {
+      color: var(--font-color-alt);
+    }
+  </style>
   <template>
-    <span>[[bind value.name]]</span>
+    <span>[[bind value]]</span>
+  </template>
+</component>
+
+<component id="td-css-spaced-list-expr-input" [[property values]]>
+  <style>
+    td-css-expr-input::after {
+      content: " ";
+    }
+  </style>
+  <template>
+    <td-css-expr-input [[repeat values as value]] value=[[bind value]] />
+  </template>
+</component>
+
+<component id="td-css-comma-list-expr-input" [[property values]]>
+  <style>
+    td-css-expr-input::after {
+      content: ", ";
+    }
+    td-css-expr-input:last-child::after {
+      content: " ";
+    }
+  </style>
+  <template>
+    <td-css-expr-input [[repeat values as value]] value=[[bind value]] />
   </template>
 </component>
 
@@ -43,7 +73,7 @@
     }
   </style>
   <template>
-    <span>[[bind expr && expr.value]]</span>
+    <span>[[bind value]]</span>
   </template>
 </component>
 
@@ -71,21 +101,45 @@
   </template>
 </component>
 
-<component id="td-css-call-expr-input" [[property value]]>
+<component id="td-css-measurement-input" [[property value]] [[property unit]]>
+  <style>
+    .value {
+      
+    }
+
+    .unit {
+      color: var(--font-color-alt);
+    }
+  </style>
+  <template>
+    <span class="color">[[bind value]]</span>
+    <span class="unit">[[bind unit]]</span>
+  </template>
+</component>
+
+<component id="td-css-call-expr-input" [[property type]] [[property returnType]] [[property returnValue]] [[property params]] [[property name]]>
   <style>
     td-css-expr-input::after {
       content: ", ";
     }
 
     td-css-expr-input:last-of-type::after {
-      content: "";
+      content: ")";
+      color: var(--font-color-alt);
+    }
+
+    .name {
+      color: var(--font-color-alt);
+    }
+
+    .name:after {
+      content: "(";
     }
   </style>
   <template>
-    <td-color-mini-input [[if value.returnType === "COLOR"]] value=[[bind value.returnValue]] /> 
-    <span>[[bind value.name]](</span>
-      <td-css-expr-input [[repeat value.params as param]] context=[[bind value]] value=[[bind value]] />
-    <span>)</span>
+    <td-color-mini-input [[if returnType === "COLOR"]] value=[[bind returnValue]] /> 
+    <span class="name">[[bind name]]</span>
+      <td-css-expr-input [[repeat params as param]] [[bind param]] />
   </template>
 </component>
 
@@ -96,10 +150,13 @@
     }
   </style>
   <template>
-    <td-css-call-expr-input [[if value.type === "CALL"]] value=[[bind value]] />
-    <td-css-color-expr-input [[elseif value.type === "COLOR"]] value=[[bind value]] />
-    <td-css-number-expr-input [[elseif value.type === "NUMBER"]] value=[[bind value]] />
-    <td-keyword-expr-input [[elseif value.type === "KEYWORD"]] context=[[bind context]] value=[[bind value]] />
+    <td-css-call-expr-input [[if value.type === "CALL"]] [[bind value]] />
+    <td-css-color-expr-input [[elseif value.type === "COLOR"]] [[bind value]] />
+    <td-css-measurement-input [[elseif value.type === "MEASUREMENT"]] [[bind value]] />
+    <td-css-number-expr-input [[elseif value.type === "NUMBER"]] [[bind value]] />
+    <td-css-keyword-expr-input [[elseif value.type === "KEYWORD"]] [[bind value]] />
+    <td-css-spaced-list-expr-input [[elseif value.type === "SPACED_LIST"]] [[bind value]] />
+    <td-css-comma-list-expr-input [[elseif value.type === "COMMA_LIST"]] [[bind value]] />
     <span [[else]]>
       [[bind value]]
     </span>

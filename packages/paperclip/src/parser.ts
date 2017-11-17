@@ -298,7 +298,7 @@ const createBindBlock = (scanner: TokenScanner): BKBind => {
   scanner.next(); // eat bind
   scanner.next(); // eat WS
   return ({
-    type: BKExpressionType.ECHO,
+    type: BKExpressionType.BIND,
     value: createBKExpressionStatement(scanner),
     location: getLocation(start, scanner.curr(), scanner.source)
   })

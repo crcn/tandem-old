@@ -15,7 +15,7 @@ export enum PCExpressionType {
 
 export enum BKExpressionType {
   TYPE,
-  ECHO,
+  BIND,
   IF,
   STRING,
   OBJECT,

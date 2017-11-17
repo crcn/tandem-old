@@ -392,8 +392,8 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
   let _else: BKElse;
   let _elseif: BKElseIf;
   let _repeat: BKRepeat;
+  let _bind: BKBind; // spread op in this case
   
-
   for (let i = 0, {length} = modifiers; i < length; i++) {
     const modifier = modifiers[i].value;
     if (modifier.type === BKExpressionType.IF) {
@@ -404,7 +404,30 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
       _elseif = modifier as BKElseIf;
     } else if (modifier.type === BKExpressionType.REPEAT) {
       _repeat = modifier as BKRepeat;
+    } else if (modifier.type === BKExpressionType.BIND) {
+      _bind = modifier as BKBind;
     }
+  }
+
+  if (_bind) {
+    const {value} = _bind;
+    newDeclaration = {
+      varName: decl.varName,
+      content: decl.content,
+      bindings: [...decl.bindings]
+    };
+
+    const spreadVarName = `${newDeclaration.varName}$$spreadValue`;
+    const assignment = transpileBlockExpression(value);
+    newDeclaration.content += `let ${spreadVarName};`;
+
+    newDeclaration.bindings.push(transpileBinding(spreadVarName, assignment, (assignment) => (`` +
+      `for (const $$key in ${spreadVarName}) {` +
+        `$$setElementProperty(${decl.varName}, $$key, ${spreadVarName}[$$key]);` +
+      `}` +
+    ``), context));
+
+    decl = newDeclaration;
   }
 
   // todo - eventually want to get TYPE of each declaration
@@ -574,7 +597,7 @@ const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
         binding = transpileBinding(bindingVarName, stringBlock.values.map((value) => {
           if (value.type === PCExpressionType.BLOCK) {
 
-            // todo - assert echo here
+            // todo - assert BIND here
             return transpileBlockExpression(((value as PCBlock).value as BKBind).value);
           } else {
             return JSON.stringify((value as PCString).value);
@@ -598,7 +621,8 @@ const transpileBinding = (bindingVarName: string, assignment: string, createStat
   return (
     `let $$newValue = ${assignment};` +
     `if ($$newValue !== ${bindingVarName}) {` +
-      `${createStatment(`${bindingVarName} = $$newValue`)}` +
+      `${bindingVarName} = $$newValue;` +
+      `${createStatment(bindingVarName)}` +
     `}`
   );
 };
