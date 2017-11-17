@@ -3,6 +3,12 @@ patterns.
 POSSIBLY define "state" for views instead of having them be based off a data model. Use controller to wire up data model. 
 
 
+RESEARCH:
+
+- [ ] FSM
+- [ ] react components - defining props that are needed
+
+
 TOMORROW:
 
 - [ ] Figure out scoped styles

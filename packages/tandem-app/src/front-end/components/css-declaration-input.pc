@@ -53,7 +53,6 @@
       width: var(--base4);
       height: var(--base4);
       margin: 0px var(--base2);
-      background: red;
       position: relative;
       top: 1px;
       display: inline-block;
@@ -72,7 +71,7 @@
   </template>
 </component>
 
-<component id="td-css-call-expr-input" [[property expr]] [[property dispatch]]>
+<component id="td-css-call-expr-input" [[property type]] [[property name]] [[property callType]] [[property params]] [[property dispatch]]>
   <style>
     td-css-expr-input::after {
       content: ", ";
@@ -83,9 +82,9 @@
     }
   </style>
   <template>
-    <td-color-mini-input [[if expr.name === "rgb" || expr.name === "rgba"]]  expr=[[bind expr]] dispatch=[[bind dispatch]] /> 
+    <td-color-mini-input [[if returnType === "COLOR"]] value=[[bind returnValue]] value= dispatch=[[bind dispatch]] /> 
     <span>[[bind expr.name]](</span>
-      <td-css-expr-input [[repeat expr.params as param]] context=[[bind expr]] expr=[[bind param]] dispatch=[[bind dispatch]] />
+      <td-css-expr-input [[repeat params as param]] context=[[bind expr]] expr=[[bind param]] dispatch=[[bind dispatch]] />
     <span>)</span>
   </template>
 </component>

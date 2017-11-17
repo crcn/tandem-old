@@ -79,6 +79,7 @@ describe(__filename + "#", () => {
     [{ a: { b: { c: 1}}}, `[[bind a.b.c]]`, `1`],
     [{ }, `[[bind [1, 2, 3]]`, `1,2,3`],
     [{ }, `[[bind []]`, ``],
+    [{ a: { b: 1, d: 2}}, `<span [[bind a]] />`, `<span></span>`],
 
     // repeat
     [{ items: [1, 2, 3]}, `<span [[repeat items as item]]>[[bind item]]</span>`, `<span>1</span><span>2</span><span>3</span>`],

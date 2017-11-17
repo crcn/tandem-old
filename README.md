@@ -251,8 +251,23 @@ Defines an _attribute_ on the element, which can only be a `string`, whereas omm
 </li>
 ```
 
-Since `className` is a property of html elements, wherease `class` is not (it's an attribute). This distinction comes in handy depending on
-the element you're dealing with. 
+Since `className` is a property of html elements, wherease `class` is not (it's an attribute). This distinction comes in handy depending on the element you're dealing with. 
+
+<!-- ##### Spreading properties
+
+Spreading allows you to map an object's properties to the properties of a component. Here's an example:
+
+```html
+<component id="x-full-name-label" [[property firstName]] [[property lastName]]>
+  <template>
+    [[bind firstName]] [[bind lastName]]
+  </template>
+</component>
+
+<x-full-name-label [[bind { firstName: "Joe", lastName: "Shmo" }]]>
+```
+
+Spreading  -->
 
 ##### `[[property]]` block
 

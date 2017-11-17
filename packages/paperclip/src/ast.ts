@@ -229,7 +229,7 @@ export const getElementAttributes = (ast: PCSelfClosingElement | PCElement) => g
 
 export const getElementModifiers = (ast: PCSelfClosingElement | PCElement) => getStartTag(ast).modifiers;
 
-export const isTag = (ast: PCExpression) => ast.type === PCExpressionType.ELEMENT || ast.type === PCExpressionType.ELEMENT || ast.type === PCExpressionType.START_TAG || ast.type === PCExpressionType.END_TAG;
+export const isTag = (ast: PCExpression) => ast.type === PCExpressionType.ELEMENT || ast.type === PCExpressionType.ELEMENT || ast.type === PCExpressionType.START_TAG || ast.type === PCExpressionType.END_TAG || ast.type === PCExpressionType.SELF_CLOSING_ELEMENT;
 
 
 export const filterPCElementsByStartTag = (ast: PCExpression, filter: (ast: PCStartTag | PCSelfClosingElement) => boolean) => filterPCASTTree(ast, (expression) => (expression.type === PCExpressionType.SELF_CLOSING_ELEMENT ? filter(expression as PCSelfClosingElement): expression.type === PCExpressionType.ELEMENT ? filter((expression as PCElement).startTag) : false));
@@ -294,7 +294,7 @@ export const getStartTag = (element: PCElement | PCStartTag) => {
 };
 
 export const getPCElementModifier = (element: PCElement | PCStartTag, type: BKExpressionType) => {
-  return getStartTag(element).modifiers.find((modifier) => modifier.type === type);
+  return getStartTag(element).modifiers.find((modifier) => modifier.value.type === type);
 };
 
 export const getExpressionPath = (expression: PCExpression, root: PCExpression) => {

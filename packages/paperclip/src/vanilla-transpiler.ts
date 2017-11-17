@@ -1,6 +1,6 @@
 // TODO - emit warnings for elements that have invalid IDs, emit errors
 
-import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule } from "./ast";
+import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule, getStartTag } from "./ast";
 import { loadModuleAST, Module, Template, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModuleSource } from "./parser";
@@ -458,8 +458,9 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
   
   // conditions must come after repeat
   if (_if || _elseif || _else) {
-
-    const { condition } = (_if || _elseif || _else) as BKIf;
+    
+    const modifier = (_if || _elseif || _else) as BKIf;
+    const { condition } = modifier;
     
     const siblings = context.root === startTag || (context.root as PCElement).startTag === startTag  ? [context.root] : getPCParent(context.root as PCParent, startTag).childNodes;
     
@@ -475,6 +476,10 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
         conditionBlockVarName = "condition_" + getExpressionPath(sibling, context.root).join("");
         break;
       }
+    }
+    
+    if (!conditionBlockVarName) {
+      throw new Error(`Element condition ${BKExpressionType[modifier.type]} defined without an IF block.`);
     }
 
     const { fragment, start, end } = declareVirtualFragment(context);

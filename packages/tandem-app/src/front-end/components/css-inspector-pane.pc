@@ -5,7 +5,7 @@
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
 
-<component id="td-style-declaration" [[property name]] [[property valueExpr]] [[property dispatch]]>
+<component id="td-style-declaration" [[property name]] [[property value]] [[property dispatch]]>
   <style>
     .name {
       color: var(--font-color-dim);
@@ -16,11 +16,11 @@
   </style>
   <template>
     <span class="name">[[bind name]]</span>
-    <td-css-expr-input expr=[[bind valueExpr]] dispatch=[[bind dispatch]] />
+    <td-css-expr-input value=[[bind value]] dispatch=[[bind dispatch]] />
   </template>
 </component>
 
-<component id="td-style-rule" [[property styleRule]]>
+<component id="td-style-rule" [[property selectorText]] [[property declarations]] [[property source]]>
   <style>
     .source {
       float: right;
@@ -57,16 +57,16 @@
   <template>
     <td-gutter-subheader>
       <span class="selector-text">
-        [[bind styleRule && styleRule.selectorText]]
+        [[bind selectorText]]
       </span>
       <span class="source">
-        [[bind styleRule && styleRule.source && styleRule.source.uri]]
+        [[bind source && source.uri]]
       </span>
     </td-gutter-subheader>
 
     <td-list>
-      <td-list-item [[if styleRule]] [[repeat styleRule.declarations as declaration]]>
-        <td-style-declaration name="background-color" name=[[bind declaration.name]] valueExpr=[[bind declaration.valueExpr]] />
+      <td-list-item [[if declarations]] [[repeat declarations as declaration]]>
+        <td-style-declaration name="background-color" name[[bind declaration.name]] value=[[bind declaration.value]] />
       </td-list-item>
     </td-list>
   </template>
@@ -82,7 +82,7 @@
         </div>
       </span>
       <span slot="content">
-        <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] styleRule=[[bind styleRule]] />
+        <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] selectorText=[[bind styleRule.selectorText]] declarations=[[bind styleRule.declarations]] />
       </span>
     </td-pane>
   </template>
@@ -92,60 +92,14 @@
   <template>
     <td-css-inspector-pane styleRules=[[bind [
       {
-        selectorText: ".container!",
-        source: { uri: "my-component.pc" },
-        declarations: [
+        styleRules: [
           {
-            name: "color",
-            valueExpr: {
-              type: "COLOR",
-              value: "#F60"
-            }
-          },
-          {
-            name: "background",
-            valueExpr: {
-              type: "CALL",
-              name: "rgba",
-              params: [
-                {
-                  type: "NUMBER",
-                  value: 100
-                }
-              ]
-            }
+            selectorText: ".container",
+            declarations: [
+
+            ]
           }
         ]
-      },
-      {
-        selectorText: "*",
-        source: { uri: "style.css" },
-        declarations: []
-      },
-      {
-        selectorText: "some-element, another-element",
-        source: { uri: "style.css" },
-        declarations: []
-      },
-      {
-        selectorText: "div",
-        source: { uri: "style.css" },
-        declarations: []
-      },
-      {
-        selectorText: "#selector",
-        source: { uri: "style.css" },
-        declarations: []
-      },
-      {
-        selectorText: "#container",
-        source: { uri: "style.css" },
-        declarations: []
-      },
-      {
-        selectorText: "html, body",
-        source: { uri: "style.css" },
-        declarations: []
       }
     ]]] />
   </template>
