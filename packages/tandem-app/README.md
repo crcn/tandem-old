@@ -8,6 +8,8 @@ TOMORROW:
 - [ ] react transpiler (with HMR)
 - [ ] wire up paperclip-react-loader into Tandem
 - [ ] Wire up CSS Preview
+- [ ] Allow for components to have any name -- auto prefix for custom elements
+- [ ] allow for `:hover` prop to be defined on component `<div :hover>`
 
 #### V1
 
@@ -43,6 +45,7 @@ TOMORROW:
 
 - [ ] Paperclip 
   - [ ] strong types
+  - [ ] source maps support
 
 #### V3
 

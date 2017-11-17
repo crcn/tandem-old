@@ -8,3 +8,4 @@ yarn.lock
 *.log
 package-lock.json
 packages/*/lib
+*pc.d.ts

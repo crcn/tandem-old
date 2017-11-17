@@ -1,6 +1,7 @@
 const {resolve} = require('path');
 const {merge} = require('lodash');
 const webpack   = require('webpack');
+
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -19,6 +20,7 @@ module.exports = merge({}, base, {
   module: {
     rules: [
       ...base.module.rules,
+      { test: /\.pc$/, use: [__dirname + '/../paperclip-react-transpiler/webpack-loader', 'ts-loader' ]},
       { test: /\.tsx?$/, use: ['react-hot-loader/webpack', 'ts-loader'] },
     ]
   }

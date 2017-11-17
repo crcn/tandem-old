@@ -1,0 +1,1 @@
+export type HigherOrderComponentFactories = export type HydratedComponents = export const hydrateComponents = (hocfs: HigherOrderComponentFactories) => HydratedComponents;

@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+const fs = require("fs");
+const {transpileToReactComponents, transpileToTypeScriptDefinition } = require("..");
+const arg = process.argv[2];
+
+const transpiler = process.argv.indexOf("--definition") !== -1 ? transpileToTypeScriptDefinition : transpileToReactComponents;
+
+// paperclip-react-transpiler [path] > out
+console.log(transpiler(fs.readFileSync(arg, "utf8")));
