@@ -33,6 +33,11 @@ TOMORROW:
 - [ ] Components pane
 - [ ] promo
   - [ ] ui kit 
+- [ ] Type safety
+  - [ ] Display error when component is missing a prop (even with spread operator)
+  - [ ] Display banner error for syntax errors
+- [ ] Website
+  - [ ] Example on site
 
 #### V2
 

@@ -738,7 +738,7 @@ const transpileStyleDeclaration = (declarationProperties: CSSDeclarationProperty
   return `CSSStyleDeclaration.fromObject(${content})`;
 };
 
-const transpileCSSSheet = (sheet: CSSSheet) => sheet.children.map(rule => transpileCSSRule(rule)).filter(Boolean).join(" ");
+export const transpileCSSSheet = (sheet: CSSSheet, scopeName?: string) => sheet.children.map(rule => transpileCSSRule(rule)).filter(Boolean).join(" ");
 
 const transpileCSSRule = (rule: CSSRule) => {
 

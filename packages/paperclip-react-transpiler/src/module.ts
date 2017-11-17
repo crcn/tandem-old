@@ -44,6 +44,7 @@ import { 
   PCExpression,
   PCStringBlock,
   PCExpressionType,
+  transpileCSSSheet,
   PCStartTag,
   PCString,
   PCElement,
@@ -83,7 +84,7 @@ const transpileModule = (module: Module) => {
 
   // link imports are global, so they need to be exported as well
   for (let i = 0, {length} = module.imports; i < length; i++) {
-    content += `Object.assign(exports, require("${module.imports[i]}"));\n`
+    content += `Object.assign(exports, require("${module.imports[i].href}"));\n`
   }
 
   // TODO
@@ -99,12 +100,19 @@ const transpileModule = (module: Module) => {
   return content;
 };
 
+export type TranspileElementContext = {
+  scopeClass?: string;
+}
 
 const transpileComponent = (component: Component) => {
   let content = ``;
   const className = upperFirst(camelCase(component.id));
 
-  content += `` +
+  const context: TranspileElementContext = {
+    scopeClass: className
+  };
+
+  content += `\n` +
   `class ${className} extends React.Component {\n` +
   `  render() {\n` +
 
@@ -113,7 +121,7 @@ const transpileComponent = (component: Component) => {
       `    const { ${component.properties.map(({name}) => name).join(", ")}} = this.props;\n` : ``
       ) +
 
-  `    return ${transpileFragment(component.template.content)}` +
+  `    return ${transpileFragment(component.template.content, context)}` +
   `  }\n` +
   `}\n\n`;
 
@@ -123,19 +131,19 @@ const transpileComponent = (component: Component) => {
 };
 
 
-const transpileFragment = (nodes: PCExpression[]) => {
+const transpileFragment = (nodes: PCExpression[], context: TranspileElementContext) => {
   let content = `` +
-  `React.createElement("span", { className: "host" }, [\n` + 
-  `  ${nodes.map(transpileNode).filter(Boolean).join(",")}\n` +
+  `React.createElement("span", { className: "${context.scopeClass} host" }, [\n` + 
+  `  ${nodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}\n` +
   `])\n`;
 
   return content;
 };
 
-const transpileNode = (node: PCExpression) => {
+const transpileNode = (node: PCExpression, context: TranspileElementContext) => {
   switch(node.type) {
     case PCExpressionType.TEXT_NODE: return transpileTextNode(node as PCTextNode);
-    case PCExpressionType.ELEMENT: return transpileElement(node as PCElement);
+    case PCExpressionType.ELEMENT: return transpileElement(node as PCElement, context);
     case PCExpressionType.BLOCK: return transpileTextBlock(node as PCBlock);
   }
   return ``;
@@ -147,28 +155,30 @@ const transpileTextNode = (node: PCTextNode) => {
   if (value === "") return null;
   return JSON.stringify(value);
 }
-const transpileElement = (element: PCElement) => {
+const transpileElement = (element: PCElement, context: TranspileElementContext) => {
 
   // TODO - need to check if node is component
-  let content = `React.createElement("${element.startTag.name}", ${transpileAttributes(element.startTag)}, [` +
-    element.childNodes.map(transpileNode).filter(Boolean).join(", ") +
+  let content = `React.createElement("${element.startTag.name}", ${transpileAttributes(element.startTag, context)}, [` +
+    element.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(", ") +
   `])`;
   return content;
 }
 
-const transpileAttributes = ({ attributes }: PCStartTag) => {
+const transpileAttributes = ({ attributes }: PCStartTag, context: TranspileElementContext) => {
   
   // TODO - need to check if node is component
   let content = `{`;
     for (let i = 0, {length} = attributes; i < length; i++) {
       const attr = attributes[i];
       let name = attr.name;
+      let value = transpileAttributeValue(attr.value);
 
       // TODO - need to 
       if (name === "class") {
         name = "className";
+        value = `"${context.scopeClass} " + ${value}`;
       }
-      content += `"${name}": ${transpileAttributeValue(attr.value)},`
+      content += `"${name}": ${value},`
     }
   content += `}`;
 
