@@ -286,7 +286,7 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
         
         (template ? template.content.map(node => {
           const decl = transpileExpression(node, templateContext);
-          if (!node) {
+          if (!node || !decl) {
             return "";
           }
           return (

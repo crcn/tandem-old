@@ -82,9 +82,13 @@ const transpileModule = (module: Module) => {
 
   content += `const React = require("react");\n\n`;
 
+  content += `const baseComponentFactories = {};`;
+
   // link imports are global, so they need to be exported as well
   for (let i = 0, {length} = module.imports; i < length; i++) {
-    content += `Object.assign(exports, require("${module.imports[i].href}"));\n`
+    const varName = `import_${i}`;
+    content += `const ${varName} = require("${module.imports[i].href}");\n`;
+    content += `Object.assign(baseComponentFactories, ${varName}.baseComponentFactories);\n`
   }
 
   // TODO
@@ -96,6 +100,16 @@ const transpileModule = (module: Module) => {
   for (let i = 0, {length} = module.components; i < length; i++) {
     content += transpileComponent(module.components[i]);
   }
+
+  content += `const identity = BaseComponent => BaseComponent;\n`;
+  content += `exports.baseComponentFactories = baseComponentFactories;\n`;
+  content += `exports.enhanceComponents = (enhancers) => {\n` +
+  `  const enhancedComponents = {};\n` +
+  `  for (const componentId in components) {\n` + 
+  `    enhancedComponents[componentId] = components[componentId](enhancedComponents)(enhancers[componentId] || identity);\n` +
+  `   }\n` +
+  `  return enhancedComponents;`+
+  `};\n`;
 
   return content;
 };
@@ -113,7 +127,7 @@ const transpileComponent = (component: Component) => {
   };
 
   content += `\n` +
-  `class ${className} extends React.Component {\n` +
+  `baseComponentFactories["${component.id}"] = components => enhanceComponent => enhanceComponent(class ${className} extends React.Component {\n` +
   `  render() {\n` +
 
       (
@@ -123,9 +137,7 @@ const transpileComponent = (component: Component) => {
 
   `    return ${transpileFragment(component.template.content, context)}` +
   `  }\n` +
-  `}\n\n`;
-
-  content += `exports.${className} = ${className};\n`;
+  `})\n\n`;
   
   return content;
 };
@@ -143,7 +155,7 @@ const transpileFragment = (nodes: PCExpression[], context: TranspileElementConte
 const transpileNode = (node: PCExpression, context: TranspileElementContext) => {
   switch(node.type) {
     case PCExpressionType.TEXT_NODE: return transpileTextNode(node as PCTextNode);
-    case PCExpressionType.ELEMENT: return transpileElement(node as PCElement, context);
+    case PCExpressionType.ELEMENT: return transpileElementModifiers(node as PCElement, transpileElement(node as PCElement, context));
     case PCExpressionType.BLOCK: return transpileTextBlock(node as PCBlock);
   }
   return ``;
@@ -161,6 +173,10 @@ const transpileElement = (element: PCElement, context: TranspileElementContext) 
   let content = `React.createElement("${element.startTag.name}", ${transpileAttributes(element.startTag, context)}, [` +
     element.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(", ") +
   `])`;
+  return content;
+};
+
+const transpileElementModifiers = (element: PCElement, content: string) => {
   return content;
 }
 
