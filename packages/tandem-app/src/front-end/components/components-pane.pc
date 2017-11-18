@@ -32,7 +32,7 @@
     }
   </style>
   <template>
-    <div class="inner" title=[[bind label]] style=[[bind { backgroundImage: "url('" + screenshotUrl + "')" }]]>
+    <div class="inner" title=[[bind label]] style=[[bind { backgroundImage: "url('" + screenshotUrl + "')" }]] draggable>
     </div>
   </template>
 </component>

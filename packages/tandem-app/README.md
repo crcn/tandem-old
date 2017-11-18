@@ -14,7 +14,7 @@ HIGH PRIO:
       - [ ] look for components with `preview` attribute
       - [ ] speed up?
       - [ ] fresh /components when screenshot changes
-      - [ ] use sprite sheet for component screenshots
+      - [ ] use sprite sheet for component screenshots - means have a /sprite route
   - [ ] re-implement DND
   - [ ] wire up add component button
   - [ ] filter

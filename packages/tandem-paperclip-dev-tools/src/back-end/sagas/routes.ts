@@ -39,8 +39,12 @@ function* addRoutes(server: express.Express) {
 
   // return all components
   server.get("/components", yield wrapRoute(getComponents));
+
   // return all components
   server.get("/components/:componentId/screenshots/:screenshotId", yield wrapRoute(getComponentScreenshot));
+
+  // return a module preview
+  server.get("/components/*/preview", yield wrapRoute(getAllComponentsPreview));
 
   // return a module preview
   server.get("/components/:moduleId/preview", yield wrapRoute(getComponentPreview));
@@ -99,6 +103,10 @@ function* getModuleFileContent(req: express.Request, res: express.Response, next
   const targetModuleFilePath = getModuleFilePaths(state).find((filePath) => getModuleId(filePath) === moduleId);
   if (!targetModuleFilePath) next();
   res.sendFile(targetModuleFilePath);
+}
+
+function* getAllComponentsPreview(req: express.Request, res: express.Response, next) {
+  res.send("TODO SEND SPRITE OF ALL COMPONENTS");
 }
 
 function* createComponent(req: express.Request, res: express.Response) {
