@@ -1,4 +1,9 @@
-// TODO - hydration func here, scan for all modules
+/*
+
+TODOS:
+
+- [ ] transpile component prop types
+*/
 
 import { upperFirst, camelCase } from "lodash";
 import * as path from "path";

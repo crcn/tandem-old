@@ -738,9 +738,9 @@ const transpileStyleDeclaration = (declarationProperties: CSSDeclarationProperty
   return `CSSStyleDeclaration.fromObject(${content})`;
 };
 
-export const transpileCSSSheet = (sheet: CSSSheet, scopeName?: string) => sheet.children.map(rule => transpileCSSRule(rule)).filter(Boolean).join(" ");
+export const transpileCSSSheet = (sheet: CSSSheet, mapSelectorText: ((value, rule?: CSSRule) => string) = value => value) => sheet.children.map(rule => transpileCSSRule(rule, mapSelectorText)).filter(Boolean).join(" ");
 
-const transpileCSSRule = (rule: CSSRule) => {
+const transpileCSSRule = (rule: CSSRule, mapSelectorText: (value, rule: CSSRule) => string) => {
 
   // TODO - prefix here for scoped styling
   switch(rule.type) {
@@ -748,7 +748,7 @@ const transpileCSSRule = (rule: CSSRule) => {
       const atRule = rule as CSSAtRule;
       if (atRule.name === "charset" || atRule.name === "import") return null;
       let content = `@${atRule.name} ${atRule.params} {`;
-      content += atRule.children.map(transpileCSSRule).filter(Boolean).join(" ");
+      content += atRule.children.map(rule => transpileCSSRule(rule, mapSelectorText)).filter(Boolean).join(" ");
       content += `}`;
       return content;
     }
@@ -758,8 +758,8 @@ const transpileCSSRule = (rule: CSSRule) => {
     }
     case CSSExpressionType.STYLE_RULE: {
       const styleRule = rule as CSSStyleRule;
-      let content = `${styleRule.selectorText} {`;
-        content += styleRule.children.map(transpileCSSRule).filter(Boolean).join("")
+      let content = `${mapSelectorText(styleRule.selectorText, styleRule)} {`;
+        content += styleRule.children.map(rule => transpileCSSRule(rule, mapSelectorText)).filter(Boolean).join("")
       content += `}`;
       return content;
     }

@@ -8,14 +8,14 @@
     box-sizing: border-box;
   }
   :root {
-    --base: 2;
-    --base2: 4;
-    --base3: 6;
-    --base4: 8;
-    --base6: 10;
-    --base8: 12;
-    --base10: 14;
-    --base11: 16;
+    --base: 2px;
+    --base2: 4px;
+    --base3: 6px;
+    --base4: 8px;
+    --base6: 10px;
+    --base8: 12px;
+    --base10: 14px;
+    --base11: 16px;
     --font-size-rg: 12px;
     --font-size-md: 18px;
     --font-size-lg: 24px;

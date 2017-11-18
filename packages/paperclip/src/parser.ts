@@ -1,6 +1,12 @@
 // Note that JS, and styles are parsed so that we can do analysis on the
 // AST and provide warnings, hints, and errors.
 
+/*
+
+TODOS:
+- [ ] Strong types
+*/
+
 import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference, CSSExpression, CSSExpressionType, CSSStyleRule, CSSRule, CSSGroupingRule, CSSAtRule, CSSDeclarationProperty, CSSSheet } from "./ast";
 import { getLocation, getPosition } from "./ast-utils";
 import { TokenScanner } from "./scanners";

@@ -2,9 +2,7 @@
 
 TODOS:
 
-- scoped styles
-- spread operators
-- slots specified as parameters
+- CSS piercing
 
 */
 
@@ -60,7 +58,7 @@ import { 
   transpileBlockExpression,
   PCSelfClosingElement,
   PCTextNode,
-  PCBlock,
+  PCBlock,  
   DependencyGraph,
   Dependency,
   traversePCAST,
@@ -74,7 +72,9 @@ import { 
   BKElse,
   getPCParent,
   getPCStartTagAttribute,
-  hasPCStartTagAttribute
+  hasPCStartTagAttribute,
+  CSSSheet,
+  getElementModifiers
 } from "paperclip";
 import { camelCase, uniq } from "lodash";
 import { getComponentTranspileInfo, ComponentTranspileInfo, getChildComponentInfo, ChildComponentInfo, getComponentIdDependency, getComponentFromModule, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName } from "./utils";
@@ -99,12 +99,29 @@ const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
   const allDeps = getUsedDependencies(entry, graph);
   const allImports: ImportTranspileInfo[] = getImportsInfo(entry, allDeps);
 
-  allImports.forEach(({ varName, relativePath}) => {
+  const imported: any = {};
+
+  allImports.forEach(({ varName, relativePath, dependency }) => {
+    imported[dependency.module.uri] = true;
     content += `import * as ${varName} from "${relativePath}";\n`;
   });
+
+  // include remaining imports that are explicitly defined
+  // so that they can inject content into the page
+  for (const importUri in entry.resolvedImportUris) {
+    const dep = graph[entry.resolvedImportUris[importUri]];
+    if (imported[dep.module.uri]) continue;
+    content += `import "${importUri}";\n`;
+  }
+
   content += `\n`;
 
   content += `const identity = value => value;\n\n`;
+
+  // TODO - inject styles into the document body.
+  for (let i = 0, {length} = module.globalStyles; i < length; i++) {
+    content += transpileStyle(module.globalStyles[i]);
+  }
 
   // TODO - inject styles into the document body.
   for (let i = 0, {length} = module.components; i < length; i++) {
@@ -122,7 +139,6 @@ export type TranspileElementContext = {
   imports: ImportTranspileInfo[];
   childComponentInfo: ChildComponentInfo;
 }
-
 const transpileComponent = ({ component, className }: ComponentTranspileInfo, graph: DependencyGraph, imports: ImportTranspileInfo[]) => {
   let content = ``;
 
@@ -135,6 +151,8 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
     imports,
     childComponentInfo
   };
+
+  content += transpileStyle(component.style, context.scopeClass);
 
   content += `export const hydrate${className} = (enhance, hydratedChildComponentClasses = {}) => {\n`;
 
@@ -179,6 +197,37 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
   
   return content;
 };
+
+const transpileStyle = (style: PCElement, scopeClass?: string) => {
+  if (!style) {
+    return "";
+  }
+
+  const sheet = style.childNodes[0] as any as CSSSheet;
+  if (!sheet) return "";
+
+  let content = `` + 
+  `if (typeof document != "undefined") {\n` + 
+
+  // enclose from colliding with other transpiled sheets
+  `  (() => {\n` +
+  `    const style = document.createElement("style");\n` +
+  `    style.textContent = ${JSON.stringify(transpileCSSSheet(sheet, (selectorText) => {
+        const scopedSelectorText = scopeClass ? selectorText.split(" ").map((part, i) => {
+
+          // ignore ".selector > .selector"
+          if (/[>,]/.test(part)) return part;
+
+          return `.${scopeClass}` + part;
+        }).join(" ") : selectorText;
+        return scopedSelectorText;
+      }))}\n\n` +
+  `    document.body.appendChild(style);\n` +
+  `  })();\n` +
+  `}\n\n`;
+
+  return content;
+}
 
 const conditionMemo = Symbol();
 
@@ -340,7 +389,7 @@ const transpileElementModifiers = (element: PCElement | PCSelfClosingElement, co
 
 const transpileAttributes = (element: PCElement | PCSelfClosingElement, context: TranspileElementContext, isComponent?: boolean) => {
 
-  const { attributes } = getStartTag(element);
+  const { attributes, modifiers } = getStartTag(element);
 
   
   // TODO - need to check if node is component
@@ -382,8 +431,17 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
 
   content += `}`;
 
+  // check for spreads
+  for (let i = 0, {length} = modifiers; i < length; i++) {
+    const modifier = modifiers[i];
+    if (modifier.value.type === BKExpressionType.BIND) {
+      content = `Object.assign(${content}, ${transpileBlockExpression((modifier.value as BKBind).value)})`;
+    }
+  }
+
   return content;
-}
+};
+
 const transpileAttributeValue = (value: PCExpression) => {
   
   if (value.type === PCExpressionType.STRING_BLOCK) {
