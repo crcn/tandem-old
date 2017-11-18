@@ -438,12 +438,7 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
       continue;
     }
 
-    // TODO - need to 
     if (name === "className") {
-      // TODO - possibly skip className altogether to conform to scoped styled.
-
-      // Child component cannot share the same scope -- this conforms to the paperclip syntax,
-      // along with web standards. 
       if (!isComponent) {
         value = `"${context.scopeClass} " + ${value}`;
       }
