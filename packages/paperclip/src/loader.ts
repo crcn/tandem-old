@@ -85,32 +85,47 @@ export const loadModuleAST = (ast: PCExpression, uri: string): Module => {
   return module;
 };
 
-export const loadModuleDependencyGraph = (uri: string, io: IO, graph: DependencyGraph = {}): Promise<DependencyGraph> => {
+const defaultResolveFile = (relative, base) => {
+  const dirname = base.split("/");
+  dirname.pop();
+  relative = relative.replace("./", "");
+  const parentDirs = relative.split("../");
+  const baseName = parentDirs.pop();
+  dirname.splice(dirname.length - parentDirs.length, dirname.length);
+  return Promise.resolve(dirname.join("/") + "/" + baseName);
+};
+
+export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile = defaultResolveFile }: Partial<IO>, graph: DependencyGraph = {}): Promise<DependencyGraph> => {
 
   // beat circular dep
   if (graph[uri]) {
     return Promise.resolve(graph);
   }
-
-  return io.readFile(uri)
+  
+  return readFile(uri)
   .then(parseModuleSource)
   .then(ast => loadModuleAST(ast, uri))
   .then((module) => {
+
     const resolvedImportUris = {};
 
     // set DG value to prevent getting caught in a loop via
     // circ dependencies
     graph[uri] = { module: module, resolvedImportUris };
 
+    if (!module.imports.length) {
+      return Promise.resolve(graph);
+    }
+
     return Promise.all(module.imports.map(_import => {
-      return io.resolveFile(_import.href, uri)
+      return resolveFile(_import.href, uri)
       .then((resolvedUri) => {
         resolvedImportUris[_import.href] = resolvedUri;
-        return loadModuleDependencyGraph(resolvedUri, io, graph);
+        return loadModuleDependencyGraph(resolvedUri, { readFile, resolveFile }, graph);
       })
-    }));
-  }).then(() => {
-    return graph;
+    })).then(() => {
+      return graph;
+    })
   }).catch((e) => {
     console.error(`Error in ${uri}`);
     throw e;

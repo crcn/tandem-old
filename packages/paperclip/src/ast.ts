@@ -287,7 +287,7 @@ export const traversePCAST = (ast: PCExpression, each: (ast: PCExpression, path?
       }
     }
   }
-}
+};
 
 export const getStartTag = (element: PCElement | PCStartTag) => {
   return element.type === PCExpressionType.ELEMENT ? (element as PCElement).startTag : element as PCStartTag;

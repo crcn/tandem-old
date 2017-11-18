@@ -179,10 +179,10 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
 </component>
 ```
 
-Compiled paperclip files emit a `hydrateComponents` function which can be used as such:
+Compiled paperclip files emit a `hydratePeopleList` function which can be used as such:
 
 ```typescript
-import { hydrateComponents } from "./button.pc";
+import { hydratePeopleList } from "./people-list.pc";
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 

@@ -9,6 +9,7 @@ TOMORROW:
   - [ ] repeated elements
   - [ ] conditionals (tricky - possibly store conditionals up top)
   - [ ] scoped styles
+  - [ ] component references - will need to load dependency graph
 
 - [ ] Paperclip
   - [ ] `<div class="inner" draggable>` does not work

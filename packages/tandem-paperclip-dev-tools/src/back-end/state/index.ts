@@ -34,9 +34,8 @@ export type RegisteredComponent = {
 export const getComponentsFromSourceContent = (content: string, filePath: string): RegisteredComponent[] => {
   const moduleId = getModuleId(filePath);
   try {
-    const now = Date.now();
     const ast = pc.parseModuleSource(content);
-    const module = pc.loadModuleAST(ast);
+    const module = pc.loadModuleAST(ast, filePath);
     return module.components.map(({id}) => ({
       filePath,
       label: id,

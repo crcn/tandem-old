@@ -52,77 +52,90 @@ import { 
   transpileBlockExpression,
   PCSelfClosingElement,
   PCTextNode,
-  PCBlock
+  PCBlock,
+  DependencyGraph,
+  Dependency
 } from "paperclip";
-import { getComponentTranspileInfo, ComponentTranspileInfo } from "./utils";
+import { getComponentTranspileInfo, ComponentTranspileInfo, getChildComponentInfo, ChildComponentInfo, getComponentIdDependency, getComponentFromModule, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency } from "./utils";
 
-export const transpileToReactComponents = (source: string, uri: string) => {
-  const module = loadModuleAST(parseModuleSource(source), uri);
-  return transpileModule(module);
+
+export const transpileToReactComponents = (graph: DependencyGraph, entryUri: string) => {
+  return transpileModule(graph[entryUri], graph);
 };
 
-const transpileModule = (module: Module) => {
+const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
   let content = ``;
+  const { module } = entry;
 
   const componentInfo = module.components.map(getComponentTranspileInfo);
 
-  content += `const React = require("react");\n\n`;
+  content += `import * as React from "react";\n`;
 
-  content += `const baseComponentFactories = {};`;
+  const allDeps = getUsedDependencies(entry, graph);
+  const allImports: ImportTranspileInfo[] = getImportsInfo(entry, allDeps);
 
-  // link imports are global, so they need to be exported as well
-  for (let i = 0, {length} = module.imports; i < length; i++) {
-    const varName = `import_${i}`;
-    content += `const ${varName} = require("${module.imports[i].href}");\n`;
-    content += `Object.assign(baseComponentFactories, ${varName}.baseComponentFactories);\n`
-  }
+  allImports.forEach(({ varName, relativePath}) => {
+    content += `import * as ${varName} from "${relativePath}";\n`;
+  });
+  content += `\n`;
 
-  // TODO
-  // for (let i = 0, {length} = module.globalStyles; i < length; i++) {
-  //   const _import = module.imports[i];
-  //   content += `Object.assign(exports, require("${_import.href}"));`
-  // }
-  
+  // TODO - inject styles into the document body.
   for (let i = 0, {length} = module.components; i < length; i++) {
-    content += transpileComponent(getComponentTranspileInfo(module.components[i]));
+    content += transpileComponent(getComponentTranspileInfo(module.components[i]), graph, allImports);
   }
-
-  content += `const identity = BaseComponent => BaseComponent;\n`;
-  content += `exports.baseComponentFactories = baseComponentFactories;\n`;
-  content += `exports.enhanceComponents = (enhancers) => {\n` +
-  `  const enhancedComponents = {};\n` +
-  `  for (const componentId in baseComponentFactories) {\n` + 
-  `    enhancedComponents[componentId] = baseComponentFactories[componentId](enhancedComponents)(enhancers[componentId] || identity);\n` +
-  `   }\n` +
-  `  return enhancedComponents;\n`+
-  `};\n`;
 
   return content;
 };
 
 export type TranspileElementContext = {
   scopeClass?: string;
+  graph: DependencyGraph;
+  imports: ImportTranspileInfo[];
+  childComponentInfo: ChildComponentInfo;
 }
 
-const transpileComponent = ({ component, className }: ComponentTranspileInfo) => {
+const transpileComponent = ({ component, className }: ComponentTranspileInfo, graph: DependencyGraph, imports: ImportTranspileInfo[]) => {
   let content = ``;
 
+  const childComponentInfo = getChildComponentInfo(component.template.content, graph);
   const context: TranspileElementContext = {
-    scopeClass: className
+    scopeClass: className,
+    graph,
+    imports,
+    childComponentInfo
   };
 
-  content += `\n` +
-  `baseComponentFactories.${className} = components => enhanceComponent => enhanceComponent(class ${className} extends React.Component {\n` +
-  `  render() {\n` +
+  content += `exports.hydrate${className} = (enhance, childComponentClasses = {}) => {\n`;
 
-      (
-        component.properties.length ? 
-      `    const { ${component.properties.map(({name}) => name).join(", ")}} = this.props;\n` : ``
-      ) +
+  if (Object.keys(childComponentInfo).length) {
 
-  `    return ${transpileFragment(component.template.content, context)}` +
-  `  }\n` +
-  `})\n\n`;
+    // provide defaults if child components are not provided in the hydration function. This 
+    // here partially to ensure that newer updates don't bust application code. (i.e: if a designer adds a new view, they chould be able to compile the application without needing enhancement code)
+    content += `  childComponentClasses = Object.assign({}, childComponentClasses, {\n`;
+    for (const id in childComponentInfo) {
+      const childDep = childComponentInfo[id];
+      const info = getComponentTranspileInfo(getComponentFromModule(id, childDep.module));
+      const _import = getImportFromDependency(imports, childDep);
+
+      content += `    ${info.className}: ${(_import ? _import.varName + "." : "") + info.className},\n`;
+    }
+
+    content += `  });\n\n`
+  }
+
+  content += `` +
+  `  return enhance(class ${className} extends React.Component {\n` +
+  `    render() {\n` +
+
+        (
+          component.properties.length ? 
+        `      const { ${component.properties.map(({name}) => name).join(", ")} } = this.props;\n` : ``
+        ) +
+
+  `      return ${transpileFragment(component.template.content, context)}` +
+  `    }\n` +
+  `  })` +
+  `};\n\n`;
   
   return content;
 };
@@ -154,10 +167,25 @@ const transpileTextNode = (node: PCTextNode) => {
 }
 const transpileElement = (element: PCElement, context: TranspileElementContext) => {
 
+  const tagName = element.startTag.name;
+  const componentInfo = context.childComponentInfo[tagName];
+
+  let tagContent: string;
+
+  if (componentInfo) {
+    const childDep = componentInfo;
+    const component = getComponentFromModule(tagName, childDep.module);
+    const componentDepInfo = getComponentTranspileInfo(component);
+    tagContent = `childComponentClasses.${componentDepInfo.className}`;
+  } else {
+    tagContent = `"${tagName}"`;
+  }
+
   // TODO - need to check if node is component
-  let content = `React.createElement("${element.startTag.name}", ${transpileAttributes(element.startTag, context)}, [` +
+  let content = `React.createElement(${tagContent}, ${transpileAttributes(element.startTag, context, Boolean(componentInfo))}, [` +
     element.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(", ") +
   `])`;
+
   return content;
 };
 
@@ -165,7 +193,7 @@ const transpileElementModifiers = (element: PCElement, content: string) => {
   return content;
 }
 
-const transpileAttributes = ({ attributes }: PCStartTag, context: TranspileElementContext) => {
+const transpileAttributes = ({ attributes }: PCStartTag, context: TranspileElementContext, isComponent?: boolean) => {
   
   // TODO - need to check if node is component
   let content = `{`;
@@ -177,7 +205,13 @@ const transpileAttributes = ({ attributes }: PCStartTag, context: TranspileEleme
       // TODO - need to 
       if (name === "class") {
         name = "className";
-        value = `"${context.scopeClass} " + ${value}`;
+        // TODO - possibly skip className altogether to conform to scoped styled.
+
+        // Child component cannot share the same scope -- this conforms to the paperclip syntax,
+        // along with web standards. 
+        if (!isComponent) {
+          value = `"${context.scopeClass} " + ${value}`;
+        }
       }
       content += `"${name}": ${value},`
     }

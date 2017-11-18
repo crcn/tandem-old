@@ -43,7 +43,7 @@ const components = [
 export const ProjectGutterBase = ({ workspace, browser, dispatch }: ProjectGutterProps) => <Gutter>
  
   <WindowsPane workspace={workspace} browser={browser} dispatch={dispatch} />
-  <enhanced.TdComponentsPane components={{components}} />
+  {/* <enhanced.TdComponentsPane components={{components}} /> */}
   <ComponentsPane workspace={workspace} dispatch={dispatch} />
 </Gutter>;
 

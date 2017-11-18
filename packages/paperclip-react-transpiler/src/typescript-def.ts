@@ -2,72 +2,81 @@
 
 import { upperFirst, camelCase } from "lodash";
 import * as path from "path";
-import { loadModuleAST, parseModuleSource, Module, Component } from "paperclip";
-import { basename } from "path";
-import { ComponentTranspileInfo, getComponentTranspileInfo } from "./utils";
+import { loadModuleAST, parseModuleSource, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag } from "paperclip";
+import { basename, relative } from "path";
+import { ComponentTranspileInfo, getComponentTranspileInfo, getChildComponentInfo, getComponentClassName, getComponentFromModule, getComponentIdDependency, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency } from "./utils";
 
-export const transpileToTypeScriptDefinition = (source: string, uri: string) => {
-  const module = loadModuleAST(parseModuleSource(source), uri);
-  return transpileModule(module);
+export const transpileToTypeScriptDefinition = (graph: DependencyGraph, uri: string) => {
+  return transpileModule(graph[uri], graph);
 };
 
-type ImportTranspileInfo = {
-  baseName: string;
-  varName: string;
-};
-
-const transpileModule = (module: Module) => {
+const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
   let content = ``;
+  const { module } = entry;
 
   const baseName = getImportBaseName(module.uri);
-  const importTranspileInfo: ImportTranspileInfo[] = [];
+  const allDeps = getUsedDependencies(entry, graph);
+  const importTranspileInfo: ImportTranspileInfo[] = getImportsInfo(entry, allDeps);
 
   content += `import * as React from "react";\n`;
 
-  module.imports.forEach((_import, i) => {
-    const varName = "imports_" + i;
-    importTranspileInfo.push({
-      varName, 
-      baseName: getImportBaseName(_import.href)
-    });
-    content += `import * as ${varName} from "${_import.href}";\n`;
+  importTranspileInfo.forEach(({ varName, relativePath }) => {
+    content += `import * as ${varName} from "${relativePath}";\n`;
   });
 
   content += `\n`;
+  
+  content += `type Enhancer<T> = (BaseComponent: React.ComponentClass<T>) => React.ComponentClass<T>;\n\n`;
 
   const componentTranspileInfo = module.components.map(getComponentTranspileInfo);
 
   componentTranspileInfo.forEach((info) => {
-    content += transpileComponentPropTypes(info);
+    content += transpileComponentTypedInformation(info, importTranspileInfo, graph)
   });
-
-  content += `type Enhancer<T> = (BaseComponent: React.ComponentClass<T>) => React.ComponentClass<T>;\n\n`;
-
-  componentTranspileInfo.forEach(({enhancerTypeName, propTypesName}) => {
-    content += `export type ${enhancerTypeName} = Enhancer<${propTypesName}>;\n`;
-  });
-
-  content += `export type ${baseName}Enhancers = {\n`
-  
-  componentTranspileInfo.forEach(({ enhancerName, enhancerTypeName }) => {
-    content += `  ${enhancerName}: ${enhancerTypeName};\n`;
-  });
-
-  content += `} ${importTranspileInfo.map(({varName, baseName}) => `& ${varName}.${baseName}Enhancers`).join(" ")};\n\n`;
-
-  content += `export type Enhanced${baseName}Components = {\n`
-  
-  componentTranspileInfo.forEach(({className, propTypesName}) => {
-    content += `  ${className}: React.ComponentClass<${propTypesName}>;\n`;
-  });
-  content += `} ${importTranspileInfo.map(({varName, baseName}) => `& ${varName}.Enhanced${baseName}Components`).join(" ")};\n\n`;
-
-  content += `export function enhanceComponents(enhancers: ${baseName}Enhancers): Enhanced${baseName}Components;`
 
   return content;
 };
 
 const getImportBaseName = (href: string) => upperFirst(camelCase(path.basename(href).split(".").shift()));
+
+const transpileComponentTypedInformation = ({ className, component, propTypesName, enhancerName }: ComponentTranspileInfo, importTranspileInfo: ImportTranspileInfo[], graph: DependencyGraph) => {
+
+  // props first
+  let content = ``;
+  const classPropsName = propTypesName;
+
+  content += `` +
+  `export type ${classPropsName} = {\n` +
+    component.properties.map(({name}) => (
+      `  ${name}: any;\n`
+    )).join("") +
+  `};\n\n`;
+
+  content += `` +
+  `export type ${enhancerName} = Enhancer<${propTypesName}>;\n\n`;
+
+  // then hydrator
+  const childComponentDependencies = getChildComponentInfo(component.template.content, graph);
+
+  const childComponentClassesTypeName = `${className}ChildComponentClasses`;
+
+  content += `type ${childComponentClassesTypeName} = {\n`;
+  for (const childComponentTagName in childComponentDependencies) {
+    const childComponentDependency = childComponentDependencies[childComponentTagName];
+    const childComponent = getComponentFromModule(childComponentTagName, childComponentDependency.module);
+    const childComponentInfo = getComponentTranspileInfo(childComponent);
+    const childImport = getImportFromDependency(importTranspileInfo, childComponentDependency);
+    let refPath = childImport ? `${childImport.varName}.${childComponentInfo.propTypesName}` : childComponentInfo.propTypesName;
+    content += `  ${childComponentInfo.className}: React.ComponentClass<${refPath}>;\n`
+  }
+  content += `};\n\n`;
+
+  // _all_ component classes here are required to notify engineers of any changes to PC components. This only
+  // happens when the typed definition file is regenerated. Internally, Paperclip doesn't care if child components are provides, and will provide the default "dumb" version of components.
+  content += `export function hydrate${className}(enhancer: Enhancer<${propTypesName}>, childComponentClasses: ${childComponentClassesTypeName}): React.ComponentClass<${propTypesName}>;\n\n`
+
+  return content;
+}
 
 const transpileComponentPropTypes = ({ className, component }: ComponentTranspileInfo) => {
   let content = ``;

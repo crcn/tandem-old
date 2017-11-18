@@ -1,5 +1,9 @@
 import { compose, pure } from "recompose";
-import { TdComponentsPaneEnhancer, TdComponentsPaneProps } from "./components-pane.pc";
+import { hydrateTdComponentsPane, TdComponentsPaneProps } from "./components-pane.pc";
+import { Pane } from "./pane";
 
-export const enhanceTdComponentsPane: TdComponentsPaneEnhancer = compose<TdComponentsPaneProps, TdComponentsPaneProps>(pure);
+const enhancer = compose<TdComponentsPaneProps, TdComponentsPaneProps>(pure);
 
+export const ComponentsPane = hydrateTdComponentsPane(enhancer, {
+  TdPane: Pane
+});
