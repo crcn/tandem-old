@@ -186,7 +186,7 @@ const enhance =  compose<PeopleListProps, PeopleListProps>(
 export const PeopleList = hydratePeopleList(enhance);
 ```
 
- The `hydratePeopleList` is emitted by the `people-list` component at compile time, and it allows you to extend the functionality of base components written in Paperclip (which is kind of necessary because Paperclip is intentionally "dumb").  The basic API for the hydration function is `hydrateMyCustomComponent(enhancer, childComponentClasses)`. The first parameter wraps around the target component. The second parameter allows you to inject child components. Suppose we have a `todo-list` component:
+ The `hydratePeopleList` function is emitted by the `people-list` component at compile time, and it allows you to extend the functionality of the base component written in Paperclip (which is kind of necessary because Paperclip is intentionally "dumb"). All components defined in paperclip files emit a hydration function. The basic API for the hydration function is `hydrateMyCustomComponent(enhancer, childComponentClasses)`. The first parameter higher order function that wraps around the base Paperclip component. The second parameter allows you to inject child components. Suppose we have a `todo-list` component:
 
 ```html
 <component id="todo-list-item" [[property text]] [[property done]] [[property toggleDone]]>
@@ -244,7 +244,7 @@ export const TodoList = hydrateTodoList(identity, {
 
 ```
 
-The above examples are just a few, but if you want to see how this sort of pattern works in a real codebase, you can checkout the [Tandem component source code](./packages/tandem-app/src/front-end/components). 
+If you want to see how this sort of pattern works in a real codebase, you can checkout the [Tandem component source code](./packages/tandem-app/src/front-end/components). 
 
 ### Paperclip syntax
 
