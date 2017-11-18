@@ -1,43 +1,37 @@
 TOMORROW:
 
+- [ ] Components Pane
+  - [ ] one screenshot for all components
+  - [ ] use sprites for screenshot urls 
+  - [ ] `<meta name="preview" content="width: 100px; height: 200px;" />`
+  - [ ] `PROJECT_SPRITE_CHANGED`
+  - [ ] + button should work
+  - [ ] DND components to stage
+
 - [ ] Paperclip
-  - [ ] property types - transpile to react
-  - [ ] data urls break declarations
-- [ ] Possibly figure out a way to inject projects via HOC - (needed for CSS inspector)
+  - [ ] attach source to elements
+
+- [ ] Mutations lib
+
 
 HIGH PRIO:
 
-- [ ] Components pane 
-  - [ ] screenshot components via API - use for icons instead of text
-      - [ ] tooltip to see screenshot
-      - [ ] scale window to component size
-      - [ ] look for components with `preview` attribute
-      - [ ] speed up?
-      - [ ] fresh /components when screenshot changes
-      - [ ] use sprite sheet for component screenshots - means have a /sprite route
-  - [ ] re-implement DND
-  - [ ] wire up add component button
-  - [ ] filter
-- [ ] Native elements pane
-
 - [ ] CSS Inspector
 
-- [ ] Minimap view (this is now possible)
 
-- [ ] Components
-  - [ ] Tooltip (needed for screenshots)
+- [ ] Native elements pane
 
-- [ ] Bugs
-  - [ ] :host selector
+
+- [ ] Paperclip
+  - [ ] 
 
 
 #### V1
 
 - [ ] Paperclip
-  - [ ] react transpilers
-  - [ ] react bindings
   - [ ] content editor (need mutations lib)
   - [ ] warn when component id overriden
+  - [ ] Linter
 - [ ] Stage tools
   - [ ]
 - [ ] CSS Editor
@@ -66,6 +60,9 @@ HIGH PRIO:
 - [ ] Paperclip 
   - [ ] strong types
   - [ ] source maps support
+
+- [ ] Tandem
+  - [ ] Components filter
 
 #### V3
 
