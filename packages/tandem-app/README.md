@@ -6,8 +6,6 @@ RESEARCH:
 TOMORROW:
 
 - [ ] react-transpiler
-  - [ ] repeated elements
-  - [ ] conditionals (tricky - possibly store conditionals up top)
   - [ ] scoped styles
   - [ ] component references - will need to load dependency graph
 

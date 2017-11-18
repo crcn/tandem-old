@@ -431,7 +431,7 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
   for (let i = 0, {length} = attributes; i < length; i++) {
     const attr = attributes[i];
     let name = ATTRIBUTE_MAP[attr.name.toLocaleLowerCase()] || attr.name;
-    let value = transpileAttributeValue(attr.value);
+    let value = attr.value ? transpileAttributeValue(attr.value) : "true";
 
     // skip slots
     if (name === "slot") {
