@@ -8,4 +8,5 @@ export * from "./gutter";
 export * from "./isolated";
 
 // NEW
-export * from "./enhanced";
+import * as enhanced from "./enhanced";
+export {enhanced};

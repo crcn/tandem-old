@@ -4,7 +4,7 @@ import { upperFirst, camelCase } from "lodash";
 import * as path from "path";
 import { loadModuleAST, parseModuleSource, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag } from "paperclip";
 import { basename, relative } from "path";
-import { ComponentTranspileInfo, getComponentTranspileInfo, getChildComponentInfo, getComponentClassName, getComponentFromModule, getComponentIdDependency, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency } from "./utils";
+import { ComponentTranspileInfo, getComponentTranspileInfo, getChildComponentInfo, getComponentClassName, getComponentFromModule, getComponentIdDependency, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
 
 export const transpileToTypeScriptDefinition = (graph: DependencyGraph, uri: string) => {
   return transpileModule(graph[uri], graph);
@@ -50,13 +50,17 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
     component.properties.map(({name}) => (
       `  ${name}: any;\n`
     )).join("") +
+
+    getTemplateSlotNames(component.template).map((slotName) => (
+      `  ${slotName}: React.Component<any, any>;\n`
+    )).join("") +
   `};\n\n`;
 
   content += `` +
   `export type ${enhancerName} = Enhancer<${propTypesName}>;\n\n`;
 
   // then hydrator
-  const childComponentDependencies = getChildComponentInfo(component.template.content, graph);
+  const childComponentDependencies = getChildComponentInfo(component.template.childNodes, graph);
 
   const childComponentClassesTypeName = `${className}ChildComponentClasses`;
 

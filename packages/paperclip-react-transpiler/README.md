@@ -5,3 +5,7 @@ React transpiler for Paperclip files.
 ```
 paperclip-react-transpiler ./src/component.pc -o ./src/component.d.ts --definition
 ```
+
+#### TODOS:
+
+- [ ] Support other frameworks like preact

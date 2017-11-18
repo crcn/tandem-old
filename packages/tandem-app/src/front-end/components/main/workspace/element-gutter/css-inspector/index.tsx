@@ -10,7 +10,7 @@
 
 import "./index.scss";
 import * as cx from "classnames";
-import { Pane } from "front-end/components/pane";
+import { Pane } from "front-end/components/pane/index";
 import * as React from "react";
 import * as path from "path";
 import { Autofocus } from "front-end/components/autofocus";

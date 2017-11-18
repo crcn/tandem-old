@@ -1,4 +1,4 @@
-import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module, isTag, Dependency, DependencyGraph } from "paperclip";
+import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module, isTag, Dependency, DependencyGraph, getPCStartTagAttribute } from "paperclip";
 import * as path from "path";
 import { upperFirst, camelCase, uniq } from "lodash";
 
@@ -75,11 +75,25 @@ export const getComponentIdDependency = (id: string, graph: DependencyGraph) => 
   }
 };
 
+export const getSlotName = (name: string) => `${camelCase(name.replace(/-/g, "_"))}Slot`;
+
+export const getTemplateSlotNames = (root: PCElement) => {
+  const slotNames = [];
+  traversePCAST(root, (child) => {
+    if (isTag(child) && getStartTag(child as PCElement).name === "slot") {
+      const slotName = getPCStartTagAttribute(child as PCElement, "name");
+      slotNames.push(slotName ? getSlotName(getPCStartTagAttribute(child as PCElement, "name")) : "children");
+    }
+  });
+
+  return uniq(slotNames);
+};
+
 export const getUsedDependencies = ({ module, resolvedImportUris }: Dependency, graph: DependencyGraph) => {
   const allDeps: Dependency[] = [];
 
   module.components.forEach((component) => {
-    const componentTagGraph = getChildComponentInfo(component.template.content, graph);
+    const componentTagGraph = getChildComponentInfo(component.template.childNodes, graph);
     for (const tagName in componentTagGraph) {
       allDeps.push(componentTagGraph[tagName]);
     }

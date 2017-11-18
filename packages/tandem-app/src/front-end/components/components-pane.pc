@@ -3,53 +3,53 @@
 
 <component id="td-components-pane" [[property components]]>
   
+  <style>
+    .cell {
+      cursor: pointer;
+      box-sizing: border-box;
+      height: 100px;
+      position: relative;
+      text-align: center;
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .cell:hover {
+      color: var(--font-color-light);
+      background: var(--background-highlight);
+    }
+
+    .cell > .inner {
+      width: 100%;
+      height:100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content {
+      position: relative;
+      display: grid;
+      grid-template-areas: inherit;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 0px;
+      grid-auto-rows: minmax(100px, auto);
+    }
+
+    .header {
+    }
+
+    .cell:nth-child(3n) {
+      border-right: none;
+    }
+
+  </style>
   <template>
     <td-pane>
-      <style>
-        .cell {
-          cursor: pointer;
-          box-sizing: border-box;
-          height: 100px;
-          position: relative;
-          text-align: center;
-          border-right: 1px solid var(--border-color);
-          border-bottom: 1px solid var(--border-color);
-        }
-
-        .cell:hover {
-          color: var(--font-color-light);
-          background: var(--background-highlight);
-        }
-
-        .cell > .inner {
-          width: 100%;
-          height:100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .content {
-          position: relative;
-          display: grid;
-          grid-template-areas: inherit;
-          grid-template-columns: repeat(3, 1fr);
-          grid-gap: 0px;
-          grid-auto-rows: minmax(100px, auto);
-        }
-
-        .header {
-        }
-
-        .cell:nth-child(3n) {
-          border-right: none;
-        }
-
-      </style>
       <span slot="header">Components</span>
       <span slot="content" class="content">
-        <div [[repeat components as component]] class="cell">
-          <div class="inner">
+        <div [[repeat components as component, i]] class="cell">
+          <div class="inner" key=[[bind i]]>
             [[bind component.label]]
           </div>
         </div>

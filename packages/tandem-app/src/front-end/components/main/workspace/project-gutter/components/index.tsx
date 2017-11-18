@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pane } from "front-end/components/pane";
+import { Pane } from "front-end/components/pane/index";
 import { Dispatcher } from "aerial-common2";
 import { pure, compose } from "recompose";
 import { Workspace, AvalaibleComponent, AVAILABLE_COMPONENT, withDragSource, ConnectDragSource } from "front-end/state";

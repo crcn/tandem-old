@@ -1,7 +1,7 @@
 // TODO - emit warnings for elements that have invalid IDs, emit errors
 
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule, getStartTag } from "./ast";
-import { loadModuleAST, Module, Template, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph } from "./loader";
+import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { parseModuleSource } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
@@ -284,7 +284,7 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
 
         `let $$bindings = [];` +
         
-        (template ? template.content.map(node => {
+        (template ? template.childNodes.map(node => {
           const decl = transpileExpression(node, templateContext);
           if (!node || !decl) {
             return "";

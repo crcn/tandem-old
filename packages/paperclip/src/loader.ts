@@ -32,15 +32,11 @@ export type Import = {
   href: string;
 };
 
-export type Template = {
-  content: PCExpression[];
-};
-
 export type Component = {
   id: string;
   properties: BKProperty[];
   style: PCElement;
-  template: Template;
+  template: PCElement;
 };
 
 export type Module = {
@@ -178,7 +174,7 @@ const createModule = (ast: PCExpression, uri: string): Module => {
 const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
   let id: string;
   let style: PCElement;
-  let template: Template;
+  let template: PCElement;
   let properties: BKProperty[] = modifiers.map(({value}) => value).filter(modifier => modifier.type === BKExpressionType.PROPERTY) as BKProperty[];
 
   for (let i = 0, {length} = attributes; i < length; i++) {
@@ -198,7 +194,7 @@ const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childN
       if (tagName === "style") {
         style = element as any as PCElement;
       } else if (tagName === "template") {
-        template = createTemplate(attributes, childNodes);
+        template = element as any as PCElement;
       }
     }
   }
@@ -210,12 +206,6 @@ const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childN
     template
   };
 };
-
-const createTemplate = (attributes: PCAttribute[], childNodes: PCExpression[]): Template => {
-  return {
-    content: childNodes
-  };
-}
 
 const createImport = (attributes: PCAttribute[]): Import => {
 

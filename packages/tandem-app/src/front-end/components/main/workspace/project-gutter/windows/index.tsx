@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { Workspace, createWorkspace, createSyntheticBrowser, createSyntheticWindow, createSyntheticDocument } from "front-end/state";
-import { Pane } from "front-end/components/pane";
+import { Pane } from "front-end/components/pane/index";
 import { SyntheticWindow } from "aerial-browser-sandbox";
 import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { pure, compose, withHandlers } from "recompose";
