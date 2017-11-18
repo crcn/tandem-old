@@ -6,42 +6,6 @@ TODOS:
 
 */
 
-/*
-
-* {
-
-}
-
-.ScopedComponent {
-
-}
-
-.ScopedComponent.div {
-
-}
-
-.ScopedComponent.div > .ScopedComponent.span {
-
-}
-
-.AnotherComponent.host {
-
-}
-
-class ScopedComponent extends React.Component {
-  render() {
-    return <div className="ScopedComponent host">
-      <span className="ScopedComponent">
-
-        <!-- ignored style_1 never reaches following component --->
-        <AnotherComponent />
-      </span>
-    </div>
-  }
-}
-
-*/
-
 import { 
   loadModuleAST, 
   parseModuleSource, 
@@ -386,6 +350,51 @@ const transpileElementModifiers = (element: PCElement | PCSelfClosingElement, co
   return newContent;
 }
 
+const ATTRIBUTE_MAP = {
+  "class": "className",
+
+  // events - https://developer.mozilla.org/en-US/docs/Web/Events
+
+  // Mouse events
+  "mouseenter": "onMouseEnter",
+  "mouseover": "onMouseOver",
+  "mousemove": "onMouseMove",
+  "onmousedown": "onMouseDown",
+  "onmouseup": "onMouseUp",
+  "auxclick": "onAuxClick",
+  "onclick": "onClick",
+  "ondblclick": "onDoubleClick",
+  "oncontextmenu": "onContextMenu",
+  "onmousewheel": "onMouseWheel",
+  "onmouseleave": "onMouseLeave",
+  "onmouseout": "onMouseOut",
+  "onselect": "onSelect",
+  "pointerlockchange": "onPointerLockChange",
+  "pointerlockerror": "onPointerLockError",
+
+  // DND
+  "ondragstart": "onDragStart",
+  "ondrag": "onDrag",
+  "ondragend": "onDragEnd",
+  "ondragenter": "onDragEnter",
+  "ondragover": "onDragOver",
+  "ondragleave": "onDragLeave",
+  "ondrop": "onDrop",
+
+  // Keyboard
+  "onkeydown": "onKeyDown",
+  "onkeypfress": "onKeyPress",
+  "onkeyup": "onKeyUp",
+
+  // Form
+  "onreset": "onReset",
+  "onsubmit": "onSubmit",
+
+  // Focus
+  "onfocus": "onFocus",
+  "onblur": "onBlur",
+};
+
 
 const transpileAttributes = (element: PCElement | PCSelfClosingElement, context: TranspileElementContext, isComponent?: boolean) => {
 
@@ -397,7 +406,7 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
 
   for (let i = 0, {length} = attributes; i < length; i++) {
     const attr = attributes[i];
-    let name = attr.name;
+    let name = ATTRIBUTE_MAP[attr.name.toLocaleLowerCase()] || attr.name;
     let value = transpileAttributeValue(attr.value);
 
     // skip slots
@@ -406,8 +415,7 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
     }
 
     // TODO - need to 
-    if (name === "class") {
-      name = "className";
+    if (name === "className") {
       // TODO - possibly skip className altogether to conform to scoped styled.
 
       // Child component cannot share the same scope -- this conforms to the paperclip syntax,
