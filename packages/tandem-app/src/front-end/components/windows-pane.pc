@@ -8,7 +8,7 @@
       <span slot="content">
         <td-list>
           <td-list-item [[repeat windows as window]] key=[[bind window.$id]]>
-            [[bind window.document.title]]
+            [[bind window.document.title || window.location]]
           </td-list-item>
         </td-list>
       </span>

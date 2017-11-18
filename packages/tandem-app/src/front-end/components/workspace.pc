@@ -107,9 +107,8 @@
             }
           },
           {
-            document: {
-              title: "Window 2",
-            }
+            location: "http://google.com",
+            document: {}
           },
           {
             document: {
