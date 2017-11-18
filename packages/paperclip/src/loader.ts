@@ -18,13 +18,14 @@ import {
   getElementAttributes,
   getElementTagName,
   getAttributeStringValue,
+  getAllChildElementNames
 } from "./ast";
 
 import { parseModuleSource } from "./parser";
 
 export type IO = {
-  readFile: (path) => Promise<any>
-  resolveFile: (relativePath, fromPath) => Promise<any>
+  readFile: (path) => any
+  resolveFile: (relativePath, fromPath) => any
 };
 
 export type Import = {
@@ -67,6 +68,9 @@ export type DependencyGraph = {
   [identifier: string]: Dependency
 };
 
+// rename to avoid confusion
+export type ChildComponentInfo = {} & DependencyGraph;
+
 const LOADED_SYMBOL = Symbol();
 
 export const loadModuleAST = (ast: PCExpression, uri: string): Module => {
@@ -81,24 +85,84 @@ export const loadModuleAST = (ast: PCExpression, uri: string): Module => {
   return module;
 };
 
-const defaultResolveFile = (relative, base) => {
+export const defaultResolveModulePath = (relative, base) => {
   const dirname = base.split("/");
   dirname.pop();
   relative = relative.replace("./", "");
   const parentDirs = relative.split("../");
   const baseName = parentDirs.pop();
   dirname.splice(dirname.length - parentDirs.length, dirname.length);
-  return Promise.resolve(dirname.join("/") + "/" + baseName);
+  return dirname.join("/") + "/" + baseName;
 };
 
-export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile = defaultResolveFile }: Partial<IO>, graph: DependencyGraph = {}): Promise<DependencyGraph> => {
+export const getChildComponentInfo = (root: PCExpression, graph: DependencyGraph): ChildComponentInfo => {
+  const info = {};
+  getAllChildElementNames(root).forEach((tagName) => {
+    const dependency = getComponentDependency(tagName, graph);
+    if (dependency) {
+      info[tagName] = dependency;
+    }
+  });
+
+  return info;
+};
+
+export const getDependencyChildComponentInfo = ({ module }: Dependency, graph: DependencyGraph): ChildComponentInfo => {
+  const info = {};
+  
+  module.components.forEach((component) => {
+    Object.assign(info, getChildComponentInfo(component.template, graph));
+  });
+
+  return info;
+};
+
+export const getModuleComponent = (id: string, module: Module) => module.components.find((component) => component.id === id);
+
+export const getUsedDependencies = (dep: Dependency, graph: DependencyGraph) => {
+  const allDeps: Dependency[] = [];
+  const info = getDependencyChildComponentInfo(dep, graph)
+  const componentTagGraph = getDependencyChildComponentInfo(dep, graph);
+  for (const tagName in componentTagGraph) {
+    const dep = componentTagGraph[tagName];
+    if (allDeps.indexOf(dep) === -1) {
+      allDeps.push(dep);
+    }
+  }
+  return allDeps;
+};
+
+export const getImportDependencies = ({ resolvedImportUris }: Dependency, graph: DependencyGraph) => {
+  const importDeps: Dependency[] = [];
+
+  for (const relativePath in resolvedImportUris) {
+    importDeps.push(graph[resolvedImportUris[relativePath]]);
+  }
+
+  return importDeps;
+};
+
+
+export const getComponentDependency = (id: string, graph: DependencyGraph) => {
+  for (const uri in graph) {
+    const dep = graph[uri];
+    for (let i = 0, {length} = dep.module.components; i < length; i++) {
+      const component = dep.module.components[i];
+      if (component.id === id) {
+        return dep;
+      }
+    }
+  }
+};
+
+export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile = defaultResolveModulePath }: Partial<IO>, graph: DependencyGraph = {}): Promise<DependencyGraph> => {
 
   // beat circular dep
   if (graph[uri]) {
     return Promise.resolve(graph);
   }
   
-  return readFile(uri)
+  return Promise.resolve(readFile(uri))
   .then(parseModuleSource)
   .then(ast => loadModuleAST(ast, uri))
   .then((module) => {
@@ -114,7 +178,7 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
     }
 
     return Promise.all(module.imports.map(_import => {
-      return resolveFile(_import.href, uri)
+      return Promise.resolve(resolveFile(_import.href, uri))
       .then((resolvedUri) => {
         resolvedImportUris[_import.href] = resolvedUri;
         return loadModuleDependencyGraph(resolvedUri, { readFile, resolveFile }, graph);

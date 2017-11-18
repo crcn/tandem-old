@@ -326,3 +326,16 @@ export const getPCASTElementsByTagName = (ast: PCExpression, tagName: string) =>
 export const getPCParent = (root: PCParent, tagOrChild: PCExpression) => filterPCASTTree(root, expr => expr["childNodes"] && expr["childNodes"].find((child) => {
   return child === tagOrChild || (tagOrChild.type === PCExpressionType.START_TAG && child.type === PCExpressionType.ELEMENT && (child as PCElement).startTag === tagOrChild) 
 }))[0] as PCParent;
+
+
+export const getAllChildElementNames = (root: PCExpression) => {
+  const childElementNames: string[] = [];
+
+  traversePCAST(root, (element) => {
+    if (isTag(element) && childElementNames.indexOf(getStartTag(element as PCElement).name) === -1) {
+      childElementNames.push(getStartTag(element as PCElement).name);
+    }
+  });
+  
+  return childElementNames;
+};

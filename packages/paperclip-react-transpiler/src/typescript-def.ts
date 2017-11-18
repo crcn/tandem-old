@@ -7,9 +7,9 @@ TODOS:
 
 import { upperFirst, camelCase } from "lodash";
 import * as path from "path";
-import { loadModuleAST, parseModuleSource, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag } from "paperclip";
+import { loadModuleAST, parseModuleSource, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies } from "paperclip";
 import { basename, relative } from "path";
-import { ComponentTranspileInfo, getComponentTranspileInfo, getChildComponentInfo, getComponentClassName, getComponentFromModule, getComponentIdDependency, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
+import { ComponentTranspileInfo, getComponentTranspileInfo, getComponentClassName, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
 
 export const transpileToTypeScriptDefinition = (graph: DependencyGraph, uri: string) => {
   return transpileModule(graph[uri], graph);
@@ -65,7 +65,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
   `export type ${enhancerName} = Enhancer<${propTypesName}>;\n\n`;
 
   // then hydrator
-  const childComponentDependencies = getChildComponentInfo(component.template.childNodes, graph);
+  const childComponentDependencies = getChildComponentInfo(component.template, graph);
 
   const childComponentClassesTypeName = `${className}ChildComponentClasses`;
 

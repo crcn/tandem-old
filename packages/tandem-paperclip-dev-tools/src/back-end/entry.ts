@@ -22,7 +22,7 @@ try {
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   mainReducer,
-  { cwd, port, config, fileCache: [], watchUris: [] },
+  { cwd, port, config, fileCache: [], watchUris: [], componentScreenshots: {} , componentScreenshotQueue: [] },
   applyMiddleware(sagaMiddleware)
 );
 

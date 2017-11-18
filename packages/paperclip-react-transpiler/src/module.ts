@@ -40,10 +40,14 @@ import { 
   hasPCStartTagAttribute,
   CSSSheet,
   getElementModifiers,
-  getElementChildNodes
+  getElementChildNodes,
+  getUsedDependencies,
+  ChildComponentInfo,
+  getChildComponentInfo,
+  getComponentDependency
 } from "paperclip";
 import { camelCase, uniq } from "lodash";
-import { getComponentTranspileInfo, ComponentTranspileInfo, getChildComponentInfo, ChildComponentInfo, getComponentIdDependency, getComponentFromModule, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName } from "./utils";
+import { getComponentTranspileInfo, ComponentTranspileInfo, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName } from "./utils";
 
 type ConditionTranspileInfo = {
   modifier: BKIf;
@@ -119,7 +123,7 @@ export type TranspileElementContext = {
 const transpileComponent = ({ component, className }: ComponentTranspileInfo, graph: DependencyGraph, imports: ImportTranspileInfo[]) => {
   let content = ``;
 
-  const childComponentInfo = getChildComponentInfo(component.template.childNodes, graph);
+  const childComponentInfo = getChildComponentInfo(component.template, graph);
   const context: TranspileElementContext = {
     scopeClass: className,
     scope: component.template,
@@ -450,7 +454,6 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
   // those slots as attributes to this element.
   if (element.type === PCExpressionType.ELEMENT) {
     const slottedElements: PCElement[] = (element as PCElement).childNodes.filter((child) => isTag(child) && hasPCStartTagAttribute(child as PCElement, "slot")) as PCElement[];
-
 
     slottedElements.forEach((element) => {
       content += `"${getSlotName(getPCStartTagAttribute(element, "slot"))}": ${transpileModifiedElement(element, context)},`

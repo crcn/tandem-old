@@ -1,10 +1,10 @@
 import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import * as request from "request";
-import { ApplicationState, getComponentsFromSourceContent, RegisteredComponent } from "../state";
+import { ApplicationState, getComponentsFromSourceContent, RegisteredComponent, getAvailableComponents } from "../state";
 import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile } from "../utils";
 import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -14,7 +14,6 @@ import * as glob from "glob";
 import { editString, StringMutation, weakMemo } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
 import { PUBLIC_SRC_DIR_PATH } from "../constants";
-import * as puppeteer from "puppeteer";
 
 export function* routesSaga() {
   yield fork(handleExpressServerStarted);
@@ -41,7 +40,7 @@ function* addRoutes(server: express.Express) {
   // return all components
   server.get("/components", yield wrapRoute(getComponents));
   // return all components
-  server.get("/components/:tagName/screenshot", yield wrapRoute(getComponentScreenshot));
+  server.get("/components/:componentId/screenshots/:screenshotId", yield wrapRoute(getComponentScreenshot));
 
   // return a module preview
   server.get("/components/:moduleId/preview", yield wrapRoute(getComponentPreview));
@@ -128,15 +127,6 @@ function* createComponent(req: express.Request, res: express.Response) {
 }
 
 
-function* getAvailableComponents() {
-  const state: ApplicationState = yield select();
-  const readFileSync = getReadFile(state);
-  
-  return getModuleFilePaths(state).reduce((components, filePath) => (
-    [...components, ...getComponentsFromSourceContent(readFileSync(filePath), filePath, state)]
-  ), []);
-}
-
 function* proxy(req, res: express.Response) {
   let [match, uri] = req.path.match(/proxy\/(.+)/);
   uri = decodeURIComponent(uri);
@@ -150,23 +140,23 @@ function* proxy(req, res: express.Response) {
 }
 
 function* getComponents(req: express.Request, res: express.Response) {
-  res.send(yield call(getAvailableComponents));
+  const state = yield select();
+  res.send(yield call(getAvailableComponents, state, getReadFile(state)));
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 
-function* getComponentScreenshot(req: express.Request, res: express.Response) {
+function* getComponentScreenshot(req: express.Request, res: express.Response, next) {
   const state: ApplicationState = yield select();
-  const previewUrl = `http://localhost:${state.port}/components/${req.params.tagName}/preview`;
+  const componentId = req.params.componentId;
+  const screenshotId = Number(req.params.screenshotId);
 
-  const browser: puppeteer.Browser = yield call(puppeteer.launch.bind(puppeteer));
-  const page: puppeteer.Page = yield call(browser.newPage.bind(browser));
-  yield call(page.goto.bind(page), previewUrl);
-  // page.
-  // await page.screenshot({path: 'example.png'});
-  const buffer = yield call(page.screenshot.bind(page));
-  yield call(browser.close.bind(browser));
-  res.contentType("image/jpeg");
-  res.end(buffer);
+  const uri = (state.componentScreenshots[componentId] || [])[Number(screenshotId)];
+
+  if (!uri) {
+    return next();
+  }
+
+  res.sendFile(uri);
 }
 
 function* getPostData (req: express.Request) {
@@ -187,10 +177,6 @@ function* watchUris(req: express.Request, res: express.Response) {
   res.send([]);
 }
 
-const getReadFile = weakMemo((state: ApplicationState) => (filePath: string) => {
-  const fileCache = state.fileCache.find((item) => item.filePath === filePath);
-  return fileCache ? fileCache.content.toString("utf8") : fs.readFileSync(filePath, "utf8")
-});
 
 const getTranspileOptions = weakMemo((state: ApplicationState) => ({
   assignTo: "bundle",
@@ -206,7 +192,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   const state: ApplicationState = yield select();
   const { moduleId } = req.params;
 
-  const components = (yield call(getAvailableComponents)) as RegisteredComponent[];
+  const components = (yield call(getAvailableComponents, state, getReadFile(state))) as RegisteredComponent[];
 
   const targetComponent = components.find(component => component.moduleId === moduleId || component.tagName === moduleId);
 
@@ -337,7 +323,7 @@ function* setFile(req: express.Request, res: express.Response) {
   const { filePath, content } = yield call(getPostData, req);
   const state: ApplicationState = yield select();
   const publicPath = getPublicFilePath(filePath, state);
-  yield put(fileContentChanged(filePath, publicPath, new Buffer(content, "utf8"), new Date()));
+  yield put(fileContentChanged(filePath, publicPath, new (Buffer as any)(content, "utf8"), new Date()));
   yield put(fileChanged(filePath, publicPath)); // dispatch public change -- causes reload
   res.send([]);
 }

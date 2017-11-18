@@ -9,6 +9,12 @@ HIGH PRIO:
 
 - [ ] Components pane 
   - [ ] screenshot components via API - use for icons instead of text
+      - [ ] tooltip to see screenshot
+      - [ ] scale window to component size
+      - [ ] look for components with `preview` attribute
+      - [ ] speed up?
+      - [ ] fresh /components when screenshot changes
+      - [ ] use sprite sheet for component screenshots
   - [ ] re-implement DND
   - [ ] wire up add component button
   - [ ] filter
@@ -17,6 +23,12 @@ HIGH PRIO:
 - [ ] CSS Inspector
 
 - [ ] Minimap view (this is now possible)
+
+- [ ] Components
+  - [ ] Tooltip (needed for screenshots)
+
+- [ ] Bugs
+  - [ ] :host selector
 
 
 #### V1

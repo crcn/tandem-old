@@ -1,7 +1,7 @@
 // TODO - many useful functions here that should be moved to the paperclip repository
 // when more transpilers are created
 
-import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module, isTag, Dependency, DependencyGraph, getPCStartTagAttribute } from "paperclip";
+import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module, isTag, Dependency, DependencyGraph, getPCStartTagAttribute, getAllChildElementNames, getChildComponentInfo } from "paperclip";
 import * as path from "path";
 import { upperFirst, camelCase, uniq } from "lodash";
 
@@ -20,8 +20,6 @@ export type ImportTranspileInfo = {
   varName: string;
 };
 
-// rename to avoid confusion
-export type ChildComponentInfo = {} & DependencyGraph;
 
 export const getComponentClassName = tagName => upperFirst(camelCase(tagName));
 
@@ -38,45 +36,7 @@ export const getComponentTranspileInfo = (component: Component): ComponentTransp
   };
 };
 
-export const getChildElementNames = (roots: PCExpression[]) => {
-  const childElementNames: string[] = [];
-
-  for (const root of roots) {
-    traversePCAST(root, (element) => {
-      if (isTag(element)) {
-        childElementNames.push(getStartTag(element as PCElement).name);
-      }
-    });
-  }
-  
-  return uniq(childElementNames);
-};
-
 export const getComponentFromModule = (id: string, module: Module) => module.components.find(component => component.id === id);
-
-export const getChildComponentInfo = (roots: PCExpression[], graph: DependencyGraph): ChildComponentInfo => {
-  const info = {};
-  getChildElementNames(roots).forEach((tagName) => {
-    const dependency = getComponentIdDependency(tagName, graph);
-    if (dependency) {
-      info[tagName] = dependency;
-    }
-  });
-
-  return info;
-};
-
-export const getComponentIdDependency = (id: string, graph: DependencyGraph) => {
-  for (const uri in graph) {
-    const dep = graph[uri];
-    for (let i = 0, {length} = dep.module.components; i < length; i++) {
-      const component = dep.module.components[i];
-      if (component.id === id) {
-        return dep;
-      }
-    }
-  }
-};
 
 export const getSlotName = (name: string) => `${camelCase(name.replace(/-/g, "_"))}Slot`;
 
@@ -92,18 +52,6 @@ export const getTemplateSlotNames = (root: PCElement) => {
   return uniq(slotNames);
 };
 
-export const getUsedDependencies = ({ module, resolvedImportUris }: Dependency, graph: DependencyGraph) => {
-  const allDeps: Dependency[] = [];
-
-  module.components.forEach((component) => {
-    const componentTagGraph = getChildComponentInfo(component.template.childNodes, graph);
-    for (const tagName in componentTagGraph) {
-      allDeps.push(componentTagGraph[tagName]);
-    }
-  });
-
-  return uniq(allDeps);
-};
 export const getImportBaseName = href => upperFirst(camelCase(path.basename(href).split(".").shift()));
 export const getImportsInfo = (entry: Dependency, allDeps: Dependency[]) => {
 
