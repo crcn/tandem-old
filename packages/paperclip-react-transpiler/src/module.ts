@@ -424,8 +424,6 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
 
   const { attributes, modifiers } = getStartTag(element);
 
-  
-  // TODO - need to check if node is component
   let content = `{`;
 
   for (let i = 0, {length} = attributes; i < length; i++) {
