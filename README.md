@@ -210,7 +210,7 @@ export const PeopleList = hydratePeopleList(enhance);
 </component>
 ```
 
-In our higher order component code (in regular JSX this time), we can use "hydrate" this module like so:
+In our higher order component code (in regular JSX this time), we can hydrate this module like so:
 
 ```typescript
 import * as React from "react";
