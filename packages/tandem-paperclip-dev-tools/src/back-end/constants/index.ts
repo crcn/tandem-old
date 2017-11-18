@@ -8,3 +8,6 @@ export const DEFAULT_BASE_DIRECTORY = "paperclip";
 export const PUBLIC_SRC_DIR_PATH = "/src";
 export const TMP_DIRECTORY = process.env.HOME + "/.paperclip-dev-server";
 export const SCREENSHOTS_DIRECTORY = path.join(TMP_DIRECTORY, "screenshots");
+
+export const DEFAULT_COMPONENT_PREVIEW_WIDTH = 300;
+export const DEFAULT_COMPONENT_PREVIEW_HEIGHT = 300;
