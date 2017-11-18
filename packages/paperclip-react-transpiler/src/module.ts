@@ -154,9 +154,9 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
     content += `  });\n\n`
   }
 
-  const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host" }, [` + 
+  const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host" }, ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
-  `])`;
+  `)`;
 
   content += ``;
 
@@ -207,29 +207,20 @@ const wrapRenderFunction = (childContent: string, childNodes: PCExpression[], co
 
 const wrapRenderFunctionInner = (childContent: string, childNodes: PCExpression[], context: TranspileElementContext, deconstructScopeNames: string[] = []) => {
   
-    const conditionInfo = getConditionTranspileInfo(context.scope);
-  
-    let content = ``;
-  
-    conditionInfo.forEach((info) => {
-      content += `let ${info.varName};`
-    });
-  
-    content += 
-    `return ${childContent};`;
-  
-  
-    return content;
-  };  
+  const conditionInfo = getConditionTranspileInfo(context.scope);
 
-const transpileFragment = (nodes: PCExpression[], context: TranspileElementContext) => {
-  let content = `` +
-  `${context.elementFactoryName}("span", { className: "${context.scopeClass} host" }, [\n` + 
-  `  ${nodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}\n` +
-  `])\n`;
+  let content = ``;
+
+  conditionInfo.forEach((info) => {
+    content += `let ${info.varName};`
+  });
+
+  content += 
+  `return ${childContent};`;
+
 
   return content;
-};
+};  
 
 const transpileNode = (node: PCExpression, context: TranspileElementContext) => {
   switch(node.type) {
@@ -277,9 +268,9 @@ const transpileElement = (element: PCElement, context: TranspileElementContext) 
   }
 
   // TODO - need to check if node is component
-  let content = `React.createElement(${tagContent}, ${transpileAttributes(element, context, Boolean(componentInfo))}, [` +
+  let content = `React.createElement(${tagContent}, ${transpileAttributes(element, context, Boolean(componentInfo))}, ` +
     element.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(", ") +
-  `])`;
+  `)`;
 
   return content;
 };
@@ -360,6 +351,11 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
     let name = attr.name;
     let value = transpileAttributeValue(attr.value);
 
+    // skip slots
+    if (name === "slot") {
+      continue;
+    }
+
     // TODO - need to 
     if (name === "class") {
       name = "className";
@@ -374,6 +370,8 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
     content += `"${name}": ${value},`
   }
 
+  // check immediate children for slots (slots cannot be nested), and add
+  // those slots as attributes to this element.
   if (element.type === PCExpressionType.ELEMENT) {
     const slottedElements: PCElement[] = (element as PCElement).childNodes.filter((child) => isTag(child) && hasPCStartTagAttribute(child as PCElement, "slot")) as PCElement[];
 

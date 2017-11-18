@@ -1,3 +1,6 @@
+// TODO - many useful functions here that should be moved to the paperclip repository
+// when more transpilers are created
+
 import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module, isTag, Dependency, DependencyGraph, getPCStartTagAttribute } from "paperclip";
 import * as path from "path";
 import { upperFirst, camelCase, uniq } from "lodash";

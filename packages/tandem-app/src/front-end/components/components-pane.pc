@@ -48,8 +48,8 @@
     <td-pane>
       <span slot="header">Components</span>
       <span slot="content" class="content">
-        <div [[repeat components as component, i]] class="cell">
-          <div class="inner" key=[[bind i]]>
+        <div [[repeat components as component, i]] key=[[bind i]] class="cell">
+          <div class="inner">
             [[bind component.label]]
           </div>
         </div>
