@@ -4,6 +4,7 @@ TODOS:
 
 - CSS piercing
 - :host styles
+- style components
 */
 
 import { 
@@ -38,7 +39,8 @@ import { 
   getPCStartTagAttribute,
   hasPCStartTagAttribute,
   CSSSheet,
-  getElementModifiers
+  getElementModifiers,
+  getElementChildNodes
 } from "paperclip";
 import { camelCase, uniq } from "lodash";
 import { getComponentTranspileInfo, ComponentTranspileInfo, getChildComponentInfo, ChildComponentInfo, getComponentIdDependency, getComponentFromModule, getUsedDependencies, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName } from "./utils";
@@ -81,6 +83,17 @@ const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
   content += `\n`;
 
   content += `const identity = value => value;\n\n`;
+  content += `` +
+  `const defaults = (initial, overrides) => {\n` +
+  `  const result = Object.assign({}, initial);\n` +
+  `  for (const key in overrides) {\n` +
+  `    const value = overrides[key];\n` +
+  `    if (value != null) {\n` +
+  `      result[key] = value;\n` +
+  `    }\n` +
+  `  }\n` +
+  `  return result;\n` +
+  `};\n\n`;
 
   // TODO - inject styles into the document body.
   for (let i = 0, {length} = module.globalStyles; i < length; i++) {
@@ -124,7 +137,9 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 
     // provide defaults if child components are not provided in the hydration function. This 
     // here partially to ensure that newer updates don't bust application code. (i.e: if a designer adds a new view, they chould be able to compile the application without needing enhancement code)
-    content += `  const childComponentClasses = Object.assign({}, hydratedChildComponentClasses, {\n`;
+
+    content += `  const baseComponentClasses = {\n`;
+
     for (const id in childComponentInfo) {
       const childDep = childComponentInfo[id];
       const info = getComponentTranspileInfo(getComponentFromModule(id, childDep.module));
@@ -133,7 +148,8 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
       content += `    ${info.className}: ${_import ? _import.varName : "exports"}.Base${info.className},\n`;
     }
 
-    content += `  });\n\n`
+    content += `  };\n\n`;
+    content += `  const childComponentClasses = defaults(baseComponentClasses, hydratedChildComponentClasses);`;
   }
 
   const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host" }, ` + 
@@ -181,6 +197,12 @@ const transpileStyle = (style: PCElement, scopeClass?: string) => {
 
           // ignore ".selector > .selector"
           if (/[>,]/.test(part)) return part;
+
+          if (part.indexOf(":host") !== -1) {
+            const [match, params] = part.match(/\:host\((.*?)\)/) || [null, null];
+
+            return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}.host` + (params ? params : ""));
+          } 
 
           return `.${scopeClass}` + part;
         }).join(" ") : selectorText;
@@ -261,7 +283,9 @@ const transpileModifiedElement = (element: PCElement, context: TranspileElementC
 
 const transpileElement = (element: PCElement, context: TranspileElementContext) => {
 
-  const tagName = element.startTag.name;
+  const startTag = getStartTag(element);
+
+  const tagName = startTag.name;
   const componentInfo = context.childComponentInfo[tagName];
 
   if (tagName === "slot") {
@@ -282,7 +306,7 @@ const transpileElement = (element: PCElement, context: TranspileElementContext) 
 
   // TODO - need to check if node is component
   let content = `React.createElement(${tagContent}, ${transpileAttributes(element, context, Boolean(componentInfo))}, ` +
-    element.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(", ") +
+    getElementChildNodes(element).map(node => transpileNode(node, context)).filter(Boolean).join(", ") +
   `)`;
 
   return content;

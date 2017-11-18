@@ -100,7 +100,33 @@
   <template>
     <div class="workspace">
       <td-gutter left>
-        <td-windows-pane />
+        <td-windows-pane windows=[[bind [
+          {
+            document: {
+              title: "Window 1",
+            }
+          },
+          {
+            document: {
+              title: "Window 2",
+            }
+          },
+          {
+            document: {
+              title: "Window 3",
+            }
+          },
+          {
+            document: {
+              title: "Window 4",
+            }
+          },
+          {
+            document: {
+              title: "Window 5",
+            }
+          }
+        ]]] />
         <td-components-pane components=[[bind [
           { label: "div" },
           { label: "h1" },
