@@ -154,7 +154,7 @@ The format above is similar to other template languages such as Handlebars, and 
 
 #### Targeting multiple platforms
 
-Paperclip is designed to be compiled to _other_ frameworks. Version 1 of Paperclip will come with a React target. Future versions of Paperclip with likely have targets for other things like `Vue`, `Angular`, `PHP`, `Ruby`, among other languages and frameworks.
+Paperclip is designed to be compiled to _other_ frameworks. Version 1 of Paperclip will come with a React target. Future versions of Paperclip with likely have targets for `Vue`, `Preact`, `Angular`, `PHP`, `Ruby`,  among other languages and frameworks.
 
 Code-wise, all you need to do to integrate Paperclip into your web application is to import it like a normal module. Assuming that you have a paperclip file named `people-list.pc` that looks like this:
 
