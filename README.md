@@ -156,7 +156,7 @@ The format above is similar to other template languages such as Handlebars, and 
 
 Paperclip is designed to be compiled to _other_ frameworks. Version 1 of Paperclip will come with a React target. Future versions of Paperclip with likely have targets for `Vue`, `Preact`, `Angular`, `PHP`, `Ruby`,  among other languages and frameworks.
 
-Code-wise, all you need to do to integrate Paperclip into your web application is to import it like a normal module. Assuming that you have a paperclip file named `people-list.pc` that looks like this:
+To integrate Paperclip into your existing JavaScript codebase (assuming you've installed the necessary dependencies), all you need to do to import Paperclip files as regular modules. Assuming that you have a paperclip file named `people-list.pc` that looks like this:
 
 ```html
 <component id="people-list" [[property people]]>
@@ -170,7 +170,8 @@ Code-wise, all you need to do to integrate Paperclip into your web application i
 </component>
 ```
 
-Compiled paperclip files export a special hydration function for each component, along with other typed information (only supporting TypeScript for now). The `people-list` component above for example emits a `hydratePeopleList` function, and `PeopleListProps` props interface (assuming you're using `paperclip-react-transpiler`) that you can use to inject behavior.
+You can import the `people-list.pc` file like so:
+Compiled Paperclip files export a special hydration function for each component.
 
 ```typescript
 import { hydratePeopleList, PeopleListProps } from "./people-list.pc";
@@ -185,7 +186,7 @@ const enhance =  compose<PeopleListProps, PeopleListProps>(
 export const PeopleList = hydratePeopleList(enhance);
 ```
 
-The basic API for the hydration function is `hydrateMyCustomComponent(enhancer, childComponentClasses)`. The first parameter wraps around the target component. The second parameter allows you to inject child components. Suppose we have a `todo-list` component:
+ The `hydratePeopleList` is emitted by the `people-list` component at compile time, and it allows you to extend the functionality of base components written in Paperclip (which is kind of necessary because Paperclip is intentionally "dumb").  The basic API for the hydration function is `hydrateMyCustomComponent(enhancer, childComponentClasses)`. The first parameter wraps around the target component. The second parameter allows you to inject child components. Suppose we have a `todo-list` component:
 
 ```html
 <component id="todo-list-item" [[property text]] [[property done]] [[property toggleDone]]>
