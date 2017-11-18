@@ -1,11 +1,16 @@
-
 TOMORROW:
 
 - [ ] Paperclip
   - [ ] property types - transpile to react
 
+HIGH PRIO:
+
 - [ ] Components gutter 
   - [ ] screenshot components via API - use for icons instead of text
+  - [ ] re-implement DND
+  - [ ] wire up add component button
+
+- [ ] CSS Inspector
 
 #### V1
 
