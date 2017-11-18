@@ -114,18 +114,13 @@ const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
       `}` +
     `};` +
 
-    `const stringifyStyle = (style) => {` +
-      `if (typeof style === "string") return style;` +
-      `let buffer = [];` +
-      `for (let key in style) {` +
-        `buffer.push(key + ":" + style[key] + ";");` +
-      `}` +
-      `return buffer.join("");` +
-    `};` +
-    
     `const $$setElementProperty = (element, property, value) => {` +
-      `if (property === "style") { value = stringifyStyle(value); }` +
-      `element[property] = value;` +
+      `if (property === "style" && typeof value !== "string") {\n` +
+        `element.style = "";\n` +
+        `Object.assign(element.style, value);\n` +
+      `} else {\n` +
+        `element[property] = value;` +
+      `}\n` +
     `};` +
 
     `let updating = false;` +

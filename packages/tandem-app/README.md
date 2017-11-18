@@ -2,15 +2,22 @@ TOMORROW:
 
 - [ ] Paperclip
   - [ ] property types - transpile to react
+  - [ ] data urls break declarations
+- [ ] Possibly figure out a way to inject projects via HOC - (needed for CSS inspector)
 
 HIGH PRIO:
 
-- [ ] Components gutter 
+- [ ] Components pane 
   - [ ] screenshot components via API - use for icons instead of text
   - [ ] re-implement DND
   - [ ] wire up add component button
+  - [ ] filter
+- [ ] Native elements pane
 
 - [ ] CSS Inspector
+
+- [ ] Minimap view (this is now possible)
+
 
 #### V1
 

@@ -145,9 +145,10 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
       const info = getComponentTranspileInfo(getComponentFromModule(id, childDep.module));
       const _import = getImportFromDependency(imports, childDep);
 
-      content += `    ${info.className}: ${_import ? _import.varName : "exports"}.Base${info.className},\n`;
+      content += `    ${info.className}: ${_import ? _import.varName + "." : ""}Base${info.className},\n`;
     }
 
+    
     content += `  };\n\n`;
     content += `  const childComponentClasses = defaults(baseComponentClasses, hydratedChildComponentClasses);`;
   }
@@ -260,6 +261,7 @@ const wrapRenderFunctionInner = (childContent: string, childNodes: PCExpression[
 const transpileNode = (node: PCExpression, context: TranspileElementContext) => {
   switch(node.type) {
     case PCExpressionType.TEXT_NODE: return transpileTextNode(node as PCTextNode);
+    case PCExpressionType.SELF_CLOSING_ELEMENT: return transpileUnslottedElement(node as PCSelfClosingElement, context);
     case PCExpressionType.ELEMENT: return transpileUnslottedElement(node as PCElement, context);
     case PCExpressionType.BLOCK: return transpileTextBlock(node as PCBlock);
   }
@@ -273,15 +275,15 @@ const transpileTextNode = (node: PCTextNode) => {
   return JSON.stringify(value);
 };
 
-const transpileUnslottedElement = (element: PCElement, context: TranspileElementContext) => {
+const transpileUnslottedElement = (element: PCElement | PCSelfClosingElement, context: TranspileElementContext) => {
   return !hasPCStartTagAttribute(element, "slot") ? transpileModifiedElement(element, context) : null;
 };
 
-const transpileModifiedElement = (element: PCElement, context: TranspileElementContext) => {
+const transpileModifiedElement = (element: PCElement | PCSelfClosingElement, context: TranspileElementContext) => {
   return transpileElementModifiers(element, transpileElement(element, context), context);
 };
 
-const transpileElement = (element: PCElement, context: TranspileElementContext) => {
+const transpileElement = (element: PCElement | PCSelfClosingElement, context: TranspileElementContext) => {
 
   const startTag = getStartTag(element);
 
@@ -448,6 +450,7 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
   // those slots as attributes to this element.
   if (element.type === PCExpressionType.ELEMENT) {
     const slottedElements: PCElement[] = (element as PCElement).childNodes.filter((child) => isTag(child) && hasPCStartTagAttribute(child as PCElement, "slot")) as PCElement[];
+
 
     slottedElements.forEach((element) => {
       content += `"${getSlotName(getPCStartTagAttribute(element, "slot"))}": ${transpileModifiedElement(element, context)},`

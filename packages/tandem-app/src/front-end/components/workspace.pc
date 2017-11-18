@@ -127,10 +127,9 @@
           }
         ]]] />
         <td-components-pane components=[[bind [
-          { label: "div" },
-          { label: "h1" },
-          { label: "h2" },
-          { label: "h3" },
+          { label: "div", screenshotUrl:"https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png" },
+          { label: "h2", screenshotUrl: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png" },
+          { label: "h3", screenshotUrl: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png" },
           { label: "h4" },
           { label: "span" },
           { label: "form" },

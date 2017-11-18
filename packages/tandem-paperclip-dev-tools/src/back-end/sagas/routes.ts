@@ -14,6 +14,7 @@ import * as glob from "glob";
 import { editString, StringMutation, weakMemo } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
 import { PUBLIC_SRC_DIR_PATH } from "../constants";
+import * as puppeteer from "puppeteer";
 
 export function* routesSaga() {
   yield fork(handleExpressServerStarted);
@@ -39,11 +40,17 @@ function* addRoutes(server: express.Express) {
 
   // return all components
   server.get("/components", yield wrapRoute(getComponents));
+  // return all components
+  server.get("/components/:tagName/screenshot", yield wrapRoute(getComponentScreenshot));
+
+  // return a module preview
+  server.get("/components/:moduleId/preview", yield wrapRoute(getComponentPreview));
 
   // return the module file
   server.get("/modules/:moduleId", yield wrapRoute(getModuleFileContent));
 
   // return a module preview
+  // TODO - DEPRECATE THIS
   server.get("/modules/:moduleId/preview", yield wrapRoute(getComponentPreview));
 
   // create a new component (creates a new module with a single component)
@@ -126,7 +133,7 @@ function* getAvailableComponents() {
   const readFileSync = getReadFile(state);
   
   return getModuleFilePaths(state).reduce((components, filePath) => (
-    [...components, ...getComponentsFromSourceContent(readFileSync(filePath), filePath)]
+    [...components, ...getComponentsFromSourceContent(readFileSync(filePath), filePath, state)]
   ), []);
 }
 
@@ -147,6 +154,20 @@ function* getComponents(req: express.Request, res: express.Response) {
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 
+function* getComponentScreenshot(req: express.Request, res: express.Response) {
+  const state: ApplicationState = yield select();
+  const previewUrl = `http://localhost:${state.port}/components/${req.params.tagName}/preview`;
+
+  const browser: puppeteer.Browser = yield call(puppeteer.launch.bind(puppeteer));
+  const page: puppeteer.Page = yield call(browser.newPage.bind(browser));
+  yield call(page.goto.bind(page), previewUrl);
+  // page.
+  // await page.screenshot({path: 'example.png'});
+  const buffer = yield call(page.screenshot.bind(page));
+  yield call(browser.close.bind(browser));
+  res.contentType("image/jpeg");
+  res.end(buffer);
+}
 
 function* getPostData (req: express.Request) {
 

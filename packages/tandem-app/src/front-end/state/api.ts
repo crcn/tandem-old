@@ -4,5 +4,6 @@ export type AvalaibleComponent = {
   tagName: string;
   label: string;
   moduleId: string;
+  screenshotUrl: string;
   filePath: string;
 };

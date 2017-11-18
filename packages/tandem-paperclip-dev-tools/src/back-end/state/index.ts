@@ -27,11 +27,12 @@ export type ApplicationState = {
 export type RegisteredComponent = {
   filePath: string;
   label: string;
+  screenshotUrl: string;
   tagName?: string;
   moduleId?: string;
 }
 
-export const getComponentsFromSourceContent = (content: string, filePath: string): RegisteredComponent[] => {
+export const getComponentsFromSourceContent = (content: string, filePath: string, state: ApplicationState): RegisteredComponent[] => {
   const moduleId = getModuleId(filePath);
   try {
     const ast = pc.parseModuleSource(content);
@@ -39,6 +40,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
     return module.components.map(({id}) => ({
       filePath,
       label: id,
+      screenshotUrl: getScreenshotUrl(id, state),
       tagName: id,
       moduleId: moduleId,
     }));
@@ -48,10 +50,15 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
     return [{
       label: path.basename(filePath) + ":<syntax error>" ,
       filePath,
+      screenshotUrl: null,
       moduleId,
     }];
   }
 };
+
+export const getScreenshotUrl = (tagName: string, state: ApplicationState) => {
+  return `http://localhost:${state.port}/components/${tagName}/screenshot`;
+}
 
 export const updateApplicationState = (state: ApplicationState, properties: Partial<ApplicationState>) => ({
   ...state,

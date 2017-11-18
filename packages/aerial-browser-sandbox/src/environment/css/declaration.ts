@@ -39,13 +39,17 @@ export const cssPropNameToKebabCase = (propName: string) => {
   return propName;
 }
 
+const NO_STYLE_MATCH = [null, null, null];
+
 export const parseStyleSource = (source: string) => {
 
   const props = {};
   
   source.split(";").forEach((decl) => {
-    const [key, value] = decl.split(":");
-    if (!key || !value) return;
+
+    // use regexp here to ensure that : that are part of the declaration value stay in tact
+    const [match, key, value] = decl.match(/(.+?):(.+)/) || NO_STYLE_MATCH;
+    if (!key || !value.length) return;
     const ccKey = getJSPropName(key.trim());
     props[ccKey] = value.trim();
   });
