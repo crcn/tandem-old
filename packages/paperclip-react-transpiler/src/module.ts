@@ -3,7 +3,7 @@
 TODOS:
 
 - CSS piercing
-
+- :host styles
 */
 
 import { 

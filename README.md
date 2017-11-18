@@ -159,69 +159,91 @@ Paperclip is designed to be compiled to _other_ frameworks. Version 1 of Papercl
 Code-wise, all you need to do to integrate Paperclip into your web application is to import it like a normal module. Assuming that you have a paperclip file named `people-list.pc` that looks like this:
 
 ```html
-[[
-  type Person {
-    name: string
-  }
-]]
-
-<component id="people-list" [[property people]] [[property onRemovePersonClicked]]>
+<component id="people-list" [[property people]]>
   <template>
     <ul>
       <li [[repeat people as person]]>
         [[bind person.name]]
-        <a id="remove-person-button" href="#" [[on click onRemovePersonClicked]]>
-          x
-        </a>
       </li>
     </ul>
   </template>
 </component>
 ```
 
-Compiled paperclip files emit a `hydratePeopleList` function which can be used as such:
+Compiled paperclip files export a special hydration function for each component, along with other typed information (only supporting TypeScript for now). The `people-list` component above for example emits a `hydratePeopleList` function, and `PeopleListProps` props interface (assuming you're using `paperclip-react-transpiler`) that you can use to inject behavior.
 
 ```typescript
-import { hydratePeopleList } from "./people-list.pc";
+import { hydratePeopleList, PeopleListProps } from "./people-list.pc";
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 
-// Note that components exported are as-is to avoid confusion. 
-export const { "people-list": PeopleList } = hydrateComponents({
-  "people-list": compose(
-    withState("people", "setPeople", [{ name: "Drake" }, { name: "50c" }])),
-    withHandlers({
-      handleEvent: ({ people, setPeople }) => ({ triggerEvent, context }) => {
-        if (triggerEvent.target.id === "remove-person-button" && triggerEvent.type === "click") {
-          setPeople(people.filter((person) => person !== context.person));
-        }
-      } 
-    })
-  )
-});
+const enhance =  compose<PeopleListProps, PeopleListProps>(
+  withState("people", "setPeople", [{ name: "Drake" }, { name: "50c" }])),
+  // more HOC code
+);
+
+export const PeopleList = hydratePeopleList(enhance);
 ```
 
-`hydrateComponents` takes a set of higher order functions that wrap around all of the exported web components emitted by the paperclip file. This API is to ensure that behavior may be injected into _nested_ components. 
+The basic API for the hydration function is `hydrateMyCustomComponent(enhancer, childComponentClasses)`. The first parameter wraps around the target component. The second parameter allows you to inject child components. Suppose we have a `todo-list` component:
 
-For the sake of simplicity, and this is my own preference, I think it's a good idea have a single paperclip file that exports _all_ web components of the application, and then have a single component _enhancement_ file that binds paperclip components, and their heavy logic (controllers, or higher order components) together. Here's a psuedocode example:
+```html
+<component id="todo-list-item" [[property text]] [[property done]] [[property toggleDone]]>
+  <style>
+    :host([done]) {
+      text-decoration: line-through;
+    }
+  </style>
+  <template>
+    <li>
+      <input type="checkbox" checked=[[bind toggleDone]] />
+      [[bind text]]
+    </li>
+  </template>
+</component>
+
+<component id="todo-list" [[property people]]>
+  <template>
+    <people-list-item [[repeat items as item]] [[bind item]] />
+  </template>
+</component>
+```
+
+In our higher order component code (in regular JSX this time), we can use "hydrate" this module like so:
 
 ```typescript
-import { hydrateComponents } from "./all-components.pc";
-import { compose, pure, withHandlers } from "recompose";
+import * as React from "react";
+import { hydrateTodoListItem, hydrateTodoList } from "./todo-list.pc";
 
-export const enhancedComponents = hydrateComponents({
-  "people-list": compose(/* HOF code */),
+// enhances todo-list-item with code that handles toggleDone interactions
+const enhanceTodoListItem = BaseTodoListItem => {
+  return class EnhancedTodoListItem extends React.Component {
+    constructor() {
+      super();
+      this.state = {};
+    }
+    toggleDone() {
+      this.setState({ done: !this.state.done })
+    }
+    render() {
+      return <BaseTodoListItem {...this.props} {...this.state} toggleDone={this.toggleDone} />;
+    }
+  }
+};
 
-  // reflect people-list-item -- not enhanced
-  "people-list-item": BaseComponent => BaseComponent,
-  
-  "app": compose(/* HOF code */)
+export const TodoListItem = hydrateTodoListItem(enhanceTodoListItem);
+
+// used for the the todo list since we don't want to enhance it -- just
+// use the base component defined in the template
+const identity = value => value;
+
+export const TodoList = hydrateTodoList(identity, {
+  TodoListItem: TodoListItem
 });
+
 ```
 
-You can take a look at Tandem's source code to see how this kind of code organization looks. 
-
-<!-- TODO - look into storing state to a global place -->
+The above examples are just a few, but if you want to see how this sort of pattern works in a real codebase, you can checkout the [Tandem component source code](./packages/tandem-app/src/front-end/components). 
 
 ### Paperclip syntax
 
@@ -399,6 +421,7 @@ Paperclip currently compiles to Vanilla JS, and React. In the future, Paperclip 
 #### More features that integrate with visual editor
 
 Paperclip will eventually have features that are specific for visual editing, but are stripped out at compile time. 
+
 
 ##### `[[note]]` block
 
