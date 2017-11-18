@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Dispatcher } from "aerial-common2";
-import { Gutter } from "front-end/components/gutter";
+// import { Gutter } from "front-end/components/gutter/index";
 // import { WindowsPane } from "./windows";
 // import { ComponentsPane } from "./components";
 import { ApplicationState, Workspace, SyntheticBrowser } from "front-end/state";
-import { ComponentsPane, WindowsPane } from "front-end/components/enhanced";
+import { ComponentsPane, WindowsPane, Gutter } from "front-end/components/enhanced";
 
 export type ProjectGutterProps = {
   workspace: Workspace;
@@ -40,11 +40,12 @@ const components = [
   }
 ];
 
-export const ProjectGutterBase = ({ workspace, browser, dispatch }: ProjectGutterProps) => <Gutter>
+export const ProjectGutterBase = ({ workspace, browser, dispatch }: ProjectGutterProps) => <Gutter left right={false}>
  
-  {/* <WindowsPane workspace={workspace} browser={browser} dispatch={dispatch} /> */}
   <WindowsPane windows={browser.windows || []} />
-  <ComponentsPane components={components} />
+  <ComponentsPane components={workspace.availableComponents || []} />
+
+  {/* <WindowsPane workspace={workspace} browser={browser} dispatch={dispatch} /> */}
   {/* <ComponentsPane workspace={workspace} dispatch={dispatch} /> */}
 </Gutter>;
 

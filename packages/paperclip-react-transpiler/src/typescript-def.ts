@@ -57,7 +57,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
     )).join("") +
 
     getTemplateSlotNames(component.template).map((slotName) => (
-      `  ${slotName}: React.Component<any, any>;\n`
+      `  ${slotName}: any;\n`
     )).join("") +
   `};\n\n`;
 

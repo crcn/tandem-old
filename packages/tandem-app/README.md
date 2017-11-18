@@ -1,17 +1,11 @@
-RESEARCH:
-
-- [ ] FSM
-- [ ] react components - defining props that are needed
 
 TOMORROW:
 
-- [ ] react-transpiler
-  - [ ] scoped styles
-  - [ ] component references - will need to load dependency graph
-
 - [ ] Paperclip
-  - [ ] `<div class="inner" draggable>` does not work
-  - [ ] property types
+  - [ ] property types - transpile to react
+
+- [ ] Components gutter 
+  - [ ] screenshot components via API - use for icons instead of text
 
 #### V1
 
