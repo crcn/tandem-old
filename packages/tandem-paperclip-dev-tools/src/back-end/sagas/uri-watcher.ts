@@ -61,7 +61,6 @@ function* handleWatchUrisRequest() {
         watcher.close();
       };
     });
-
     const filesByUri = fileCache.map((item) => item.filePath);
 
     const readFile = filePath => {
@@ -82,7 +81,11 @@ function* handleWatchUrisRequest() {
     child = yield spawn(function*() {
       while(1) {
         const c = yield take(chan);
-        yield put(c);
+        try {
+          yield put(c);
+        } catch(e) {
+          console.warn("warn ", e);
+        }
       }
     });
 

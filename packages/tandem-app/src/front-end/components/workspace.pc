@@ -6,6 +6,9 @@
 
 <component id="td-zoom" [[property zoom]]>
   <style>
+    :host {
+      display: none;
+    }
     a {
       background: red;
       text-decoration: none;
@@ -108,6 +111,7 @@
           },
           {
             location: "http://google.com",
+            hovering: true,
             document: {}
           },
           {
@@ -127,9 +131,31 @@
           }
         ]]] />
         <td-components-pane components=[[bind [
-          { label: "div", screenshotUrl:"https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png" },
-          { label: "h2", screenshotUrl: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png" },
-          { label: "h3", screenshotUrl: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png" },
+          { 
+            label: "div", 
+            screenshot: {
+              uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
+              clip: { left: 0, top: 0, right: 900, bottom: 400 }
+            },
+            screenshotScale: 0.07
+          },
+          { 
+            label: "h2", 
+            screenshot: {
+              uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
+              clip: { left: 0, top: 0, right: 900, bottom: 400 }
+            },
+            screenshotScale: 0.07
+          },
+          { 
+            label: "h3", 
+            hovering: true,
+            screenshot: {
+              uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
+              clip: { left: 0, top: 0, right: 900, bottom: 400 }
+            },
+            screenshotScale: 0.07
+          },
           { label: "h4" },
           { label: "span" },
           { label: "form" },
@@ -144,7 +170,7 @@
       </div>
       <td-gutter right>
         <slot name="right-gutter-content">
-          <td-css-inspector-pane-example />
+          <td-css-inspector-pane-preview />
         </slot>
       </td-gutter>
     </div>

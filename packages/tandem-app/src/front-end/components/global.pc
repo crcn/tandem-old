@@ -52,7 +52,21 @@
   </template>
 </component>
 
+<component id="td-list-preview" label="List">
+  <meta name="preview" content="of=td-list, width=200, height=200" />
+  <template>
+    <td-list> 
+      <td-list-item>Item 1</td-list-item>
+      <td-list-item>Item 2</td-list-item>
+      <td-list-item>Item 3</td-list-item>
+      <td-list-item>Item 4</td-list-item>
+      <td-list-item>Item 5</td-list-item>
+    </td-list>  
+  </template>
+</component>
+
 <component id="td-preview-component-example" [[property label]]>
+  <meta name="internal" content="true" />
   <property name="label" />
   <style>
     :host {
@@ -169,7 +183,7 @@
   </template>
 </component>
 
-<td-preview>
+<div>
   <td-preview-component-example label="List">
     <td-list>
       <td-list-item>List item 1</td-list-item>
@@ -195,6 +209,6 @@
     <td-progress-example value=[[bind 0.5]] />
     <td-progress-example value=[[bind 1]] />
   </td-preview-component-example>
-</td-preview>
+</div>
 
 

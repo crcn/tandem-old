@@ -5,17 +5,15 @@ import * as fsa from "fs-extra";
 import { fork, take, call, put, select, spawn } from "redux-saga/effects";
 import { loadModuleDependencyGraph, defaultResolveModulePath, loadModuleAST, parseModuleSource } from "paperclip";
 import { SCREENSHOTS_DIRECTORY } from "../constants";
-import { ApplicationState, getComponentsFromSourceContent, getAvailableComponents } from "../state";
-import { FILE_CONTENT_CHANGED, FileContentChanged, headlessBrowserLaunched, componentScreenshotTaken, componentScreenshotSaved, ComponentScreenshotRemoved, ComponentScreenshotSaved, componentScreenshotRemoved, ComponentScreenshotTaken, HEADLESS_BROWSER_LAUNCHED, COMPONENT_SCREENSHOT_TAKEN, COMPONENT_SCREENSHOT_SAVED, COMPONENT_SCREENSHOT_REQUESTED, componentScreenshotStarted, componentScreenshotRequested } from "../actions";
-import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents, getComponentPreviewUrl, getAllModuleComponents } from "../utils";
+import { ApplicationState, ScreenshotClippings, AllComponentsPreviewEntry } from "../state";
+import { FILE_CONTENT_CHANGED, FileContentChanged, headlessBrowserLaunched, componentScreenshotTaken, componentScreenshotSaved, ComponentScreenshotRemoved, ComponentScreenshotSaved, componentScreenshotRemoved, ComponentScreenshotTaken, HEADLESS_BROWSER_LAUNCHED, COMPONENT_SCREENSHOT_TAKEN, COMPONENT_SCREENSHOT_SAVED, componentScreenshotStarted } from "../actions";
+import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents, getComponentPreviewUrl, getAllModuleComponents, getComponentsFromSourceContent, getAvailableComponents, getPreviewComponentEntries, getAllComponentsPreviewUrl } from "../utils";
 
 export function* screenshotsSaga() {
-  yield fork(handleComponentScreenshotRequests);
-  yield fork(handleComponentChange);
+  yield fork(handleTakingScreesnshots);
   yield fork(handleNewScreenshot);
   yield fork(handleSavedScreenshot);
   yield fork(cleanupOldScreenshots);
-  yield fork(handleInitialScreenshots);
 
   // last thing to launch
   yield fork(openHeadlessBrowser);
@@ -29,76 +27,71 @@ function* openHeadlessBrowser() {
   yield put(headlessBrowserLaunched(browser))
 }
 
-function* handleComponentChange() {
-  yield take(HEADLESS_BROWSER_LAUNCHED);
-  while(true) {
-    try {
-      const action: FileContentChanged = yield take(FILE_CONTENT_CHANGED);
-      if (isPaperclipFile(action.filePath, yield select())) {
-        yield takeAssocScreenshots(action.filePath);
-      }
-    } catch(e) {
-      console.error(e.stack);
-    }
-  }
-}
-
-function* handleInitialScreenshots() {
-  yield take(HEADLESS_BROWSER_LAUNCHED);
-  const state: ApplicationState = yield select();
-  const allComponents = getAllModuleComponents(state);
-  console.log(`Taking screenshots of ${allComponents.length} components`);
-  for (const component of allComponents) {
-    yield put(componentScreenshotRequested(component.id));
-  }
-}
-
 function* takeAssocScreenshots(filePath: string) {
   const state: ApplicationState = yield select();
   const assocComponents = yield call(getAssocComponents, filePath, state);
-  for (const componentId in assocComponents) {
-    yield put(componentScreenshotRequested(componentId));
-  }
 }
 
-
-function* handleComponentScreenshotRequests() {
+function* handleTakingScreesnshots() {
+  yield take(HEADLESS_BROWSER_LAUNCHED);
   while(true) {
-    yield take(COMPONENT_SCREENSHOT_REQUESTED);
+    
+    yield call(takeComponentScreenshot);
+
     const state: ApplicationState = yield select();
-    for (const componentId of state.componentScreenshotQueue) {
-      yield spawn(takeComponentScreenshot, componentId);
+
+    // happens during a screenshot
+    if (!state.shouldTakeAnotherScreenshot) {
+      yield take(FILE_CONTENT_CHANGED);
     }
   }
 }
 
-function* takeComponentScreenshot(componentId: string) {
-  yield put(componentScreenshotStarted(componentId));
+const getAllComponentsPreviewSize = (entries: AllComponentsPreviewEntry[]) => ({
+  width: entries.reduce((a, b) => Math.max(a, b.bounds.right), 0),
+  height: entries.reduce((a, b) => Math.max(a, b.bounds.bottom), 0)
+});
+
+function* takeComponentScreenshot() {
   const state: ApplicationState = yield select();
-  const previewUrl = getComponentPreviewUrl(componentId, state)
-  const browser = state.headlessBrowser;
 
-  const page: Page = yield call(browser.newPage.bind(browser));
-  yield call(page.goto.bind(page), previewUrl);
-  const buffer = yield call(page.screenshot.bind(page));
+  yield put(componentScreenshotStarted());
+  try {
 
-  yield put(componentScreenshotTaken(componentId, buffer, "image/jpeg"));
+    const entries = getPreviewComponentEntries(state);
 
-  page.close();
+    console.log(`Taking screenshot of ${entries.length} components.`);
+
+    const clippings: ScreenshotClippings = {};
+    for (const entry of entries) {
+      clippings[entry.targetComponentId] = entry.bounds;
+    }
+
+    const previewUrl = getAllComponentsPreviewUrl(state)
+    const browser = state.headlessBrowser;
+    const page: Page = yield call(browser.newPage.bind(browser));
+    yield call(page.goto.bind(page), previewUrl);
+    yield call(page.setViewport.bind(page), getAllComponentsPreviewSize(entries));
+
+    const buffer = yield call(page.screenshot.bind(page, { type: "png" }));
+    yield put(componentScreenshotTaken(buffer, clippings, "image/png"));
+
+    page.close();
+  } catch(e) {
+    console.error(e.stack);
+  }
 }
 
 function* handleNewScreenshot() {
   while(true) {
-    const { contentType, buffer, componentId }: ComponentScreenshotTaken = yield take(COMPONENT_SCREENSHOT_TAKEN);
+    const { contentType, buffer, clippings }: ComponentScreenshotTaken = yield take(COMPONENT_SCREENSHOT_TAKEN);
 
     // for now -- use mime type look up eventually
-    if (contentType !== "image/jpeg") {
+    if (contentType !== "image/png") {
       throw new Error(`Unsupported image type ${contentType}.`);
     }
 
-    const filePath = path.join(SCREENSHOTS_DIRECTORY, `${componentId}-${Date.now()}.jpg`);
-
-    console.log(`Saving component ${componentId} screenshot to tmp directory ${filePath}`);
+    const filePath = path.join(SCREENSHOTS_DIRECTORY, `${Date.now()}.png`);
 
     try {
       yield call(() => new Promise((resolve, reject) => {
@@ -114,20 +107,22 @@ function* handleNewScreenshot() {
       continue;
     }
 
-    yield put(componentScreenshotSaved(componentId, filePath));
+    console.log(`Saved components screenshot ${filePath}`);
+
+    yield put(componentScreenshotSaved(filePath, clippings));
     
   }
 }
 
 function* handleSavedScreenshot() {
   while(true) {
-    const { componentId }: ComponentScreenshotSaved = yield take(COMPONENT_SCREENSHOT_SAVED);
+    yield take(COMPONENT_SCREENSHOT_SAVED);
     const state: ApplicationState = yield select();
-    const screenshots = [...state.componentScreenshots[componentId]];
+    const screenshots = [...state.componentScreenshots];
     if (screenshots.length > MAX_SCREENSHOTS) {
 
       // should always be one, but we use delta just in case
-      const delta = MAX_SCREENSHOTS - screenshots.length;
+      const delta = screenshots.length - MAX_SCREENSHOTS;
 
       // Just in case, show a warning.
       if (delta > 1) {
@@ -135,10 +130,10 @@ function* handleSavedScreenshot() {
       }
 
       for (let i = delta; i--;) {
-        const uri = screenshots.shift();
+        const { uri } = screenshots.shift();
         console.log(`Removing old screenshot ${uri}`);
         fsa.unlinkSync(uri);
-        yield put(componentScreenshotRemoved(componentId, uri));
+        yield put(componentScreenshotRemoved(uri));
       }
     }
   }
@@ -147,9 +142,10 @@ function* handleSavedScreenshot() {
 function* cleanupOldScreenshots() {
   console.log("Cleaning up screenshots directory");
   try {
+    fsa.emptyDirSync(SCREENSHOTS_DIRECTORY);
     fsa.rmdirSync(SCREENSHOTS_DIRECTORY);
   } catch(e) {
-
+    console.warn(`Cannot cleaup directory ${SCREENSHOTS_DIRECTORY}: `, e);
   }
 
   fsa.mkdirpSync(SCREENSHOTS_DIRECTORY);

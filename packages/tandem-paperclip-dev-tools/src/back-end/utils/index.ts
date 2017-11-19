@@ -1,13 +1,18 @@
-import { ApplicationState } from "../state";
+import { ApplicationState, AllComponentsPreviewEntry, RegisteredComponent } from "../state";
 import { PUBLIC_SRC_DIR_PATH } from "../constants";
-import { PAPERCLIP_FILE_PATTERN } from "../constants";
+import { PAPERCLIP_FILE_PATTERN, DEFAULT_COMPONENT_PREVIEW_SIZE } from "../constants";
 import * as glob from "glob";
 import * as path from "path";
 import { uniq } from "lodash";
 import * as md5 from "md5";
 import * as fs from "fs";
-import { weakMemo } from "aerial-common2";
-import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo } from "paperclip";
+import { weakMemo, Bounds } from "aerial-common2";
+import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetaDataItem } from "paperclip";
+
+enum ComponentMetadataName {
+  PREVIEW = "preview",
+  INTERNAL = "internal"
+};
 
 // TODO - will eventually want to use app state to check extension
 export const isPaperclipFile = (filePath: string, state: ApplicationState) => getModulesFileTester(state)(filePath);
@@ -93,3 +98,78 @@ export const getPublicFilePath = (filePath: string, state: ApplicationState) => 
 
 
 export const getComponentPreviewUrl = (componentId: string, state: ApplicationState) => `http://localhost:${state.port}/components/${componentId}/preview`;
+
+export const getAvailableComponents = (state: ApplicationState, readFileSync: (filePath) => string) => {
+  return getModuleFilePaths(state).reduce((components, filePath) => (
+    [...components, ...getComponentsFromSourceContent(readFileSync(filePath), filePath, state)]
+  ), []);
+}
+
+export const getComponentsFromSourceContent = (content: string, filePath: string, state: ApplicationState): RegisteredComponent[] => {
+  const moduleId = getModuleId(filePath);
+  try {
+    const ast = parseModuleSource(content);
+    const module = loadModuleAST(ast, filePath);
+    return module.components.filter(component => !getComponentMetaDataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetaDataItem(component, ComponentMetadataName.INTERNAL)).map(({id}) => ({
+      filePath,
+      label: id,
+      id,
+      screenshot: getComponentScreenshot(id, state),
+      tagName: id,
+      moduleId: moduleId,
+    }));
+
+  } catch(e) {
+    console.log(JSON.stringify(e.stack, null, 2));
+    return [{
+      label: path.basename(filePath) + ":<syntax error>" ,
+      filePath,
+      screenshot: null,
+      moduleId,
+    }];
+  }
+};
+
+export const getComponentScreenshot = (componentId: string, state: ApplicationState) => {
+  const ss = state.componentScreenshots[state.componentScreenshots.length - 1];
+  return ss && ss.clippings[componentId] && {
+    uri: `http://localhost:${state.port}/screenshots/${state.componentScreenshots.length - 1}`,
+    clip: ss.clippings[componentId]
+  };
+};
+
+export const getAllComponentsPreviewUrl = (state: ApplicationState) => {
+  return `http://localhost:${state.port}/components/all/preview`;
+};
+
+export const getPreviewComponentEntries = (state: ApplicationState): AllComponentsPreviewEntry[] => {
+  const allModules = getAllModules(state);
+
+  const entries: AllComponentsPreviewEntry[] = [];
+
+  let currentTop = 0;
+
+  for (const module of allModules) {
+    for (const component of module.components) {
+      // TODO - check for preview meta
+
+      const previewMeta = getComponentMetaDataItem(component, ComponentMetadataName.PREVIEW);
+      if (!previewMeta) continue;
+
+      const bounds = { left: 0, top: currentTop, right: Number(previewMeta.params.width || DEFAULT_COMPONENT_PREVIEW_SIZE.width), bottom: currentTop + Number(previewMeta.params.height || DEFAULT_COMPONENT_PREVIEW_SIZE.height) };
+      
+      entries.push({
+        bounds,
+        targetComponentId: previewMeta.params.of,
+        previewComponentId: component.id,
+        relativeFilePath: getPublicSrcPath(module.uri, state)
+      });
+
+      currentTop = bounds.bottom;
+    }
+  }
+
+  return entries;
+};
+
+export const getPublicSrcPath = (filePath: string, state: ApplicationState) => path.join( PUBLIC_SRC_DIR_PATH, filePath.replace(state.config.sourceDirectory, ""));

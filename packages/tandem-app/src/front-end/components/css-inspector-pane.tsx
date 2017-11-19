@@ -1,8 +1,7 @@
 import * as React from "react";
-import { compose } from "recompose";
-let components: any = {};
-// import { components } from "./css-inspector-pane.pc";
-
+import { compose, pure } from "recompose";
+import {  } from "./pane";
+import { TdCssInspectorPaneProps, hydrateTdCssInspectorPane } from "./css-inspector-pane.pc";
 
 import { 
   AppliedCSSRuleResult,
@@ -12,7 +11,13 @@ import {
   getSyntheticMatchingCSSRules, 
 } from "aerial-browser-sandbox";
 
-export const CSSInpectorPane = () => {
-  return <components.tdCssInspectorPane />;
-}
+
+const enhanceCSSInspectorPane = compose<any, any>(
+  pure
+);
+
+export const CSSInpectorPane = hydrateTdCssInspectorPane(enhanceCSSInspectorPane, {
+  TdPane: null,
+  TdStyleRule: null,
+});
 

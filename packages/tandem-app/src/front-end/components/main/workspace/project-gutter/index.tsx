@@ -12,34 +12,6 @@ export type ProjectGutterProps = {
   dispatch: Dispatcher<any>;
 }
 
-// TEST
-const components = [
-  {
-    label: "a"
-  },
-  {
-    label: "b"
-  },
-  {
-    label: "c"
-  },
-  {
-    label: "d"
-  },
-  {
-    label: "e"
-  },
-  {
-    label: "f"
-  },
-  {
-    label: "g"
-  },
-  {
-    label: "h"
-  }
-];
-
 export const ProjectGutterBase = ({ workspace, browser, dispatch }: ProjectGutterProps) => <Gutter left right={false}>
  
   <WindowsPane windows={browser.windows || []} />

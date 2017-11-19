@@ -1,20 +1,28 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 
-<component id="td-components-pane-cell" [[property screenshotUrl]] [[property label]]>
+<component id="td-components-pane-cell" [[property screenshot]] [[property label]] [[property screenshotScale]] [[property hovering]]>
+  <meta name="internal" content="true" />
   <style>
     :host {
       user-select: none;
       cursor: pointer;
+      overflow: hidden;
       box-sizing: border-box;
-      height: 100px;
+      height: 130px;
       position: relative;
       text-align: center;
       border-right: 1px solid var(--border-color);
       border-bottom: 1px solid var(--border-color);
     }
+    
+    .inner {
+      /*display: flex;
+      width: 100%;
+      height: 100%;*/
+    }
 
-    :host:hover {
+    :host:hover, :host([hovering]) {
       color: var(--font-color-light);
       background: var(--background-highlight);
     }
@@ -22,17 +30,41 @@
     :host > .inner {
       width: 100%;
       height:100%;
+      position: relative;
 
       /* fake padding */
       border: var(--base4) solid transparent;
       box-sizing: border-box;
-      background-position: center;
-      background-size: contain;
-      background-repeat: no-repeat;
     }
+
+    .label {
+      color: var(--font-color-dim);
+      position: relative;
+      top: 10px;
+      overflow: hidden;
+    }
+
+    .screenshot {
+      position: absolute;
+      transform-origin: top left;
+      background-repeat: no-repeat;
+      top: 50%;
+      left: 50%;
+    }
+
   </style>
   <template>
-    <div class="inner" title=[[bind label]] style=[[bind { backgroundImage: "url('" + screenshotUrl + "')" }]] draggable>
+    <div class="inner" title=[[bind label]] draggable alt=[[bind label]]>
+      <span class="label" [[if !screenshot]]> 
+        [[bind label]]
+      </span>
+      <div class="screenshot" [[if screenshot]] src="[[bind screenshot.uri]]" style=[[bind {
+        width: screenshot.clip.right - screenshot.clip.left,
+        height: screenshot.clip.bottom - screenshot.clip.top,
+        transform: "scale(" + screenshotScale + ") translate(-50%, -50%)",
+        backgroundImage: "url('" + screenshot.uri + "')",
+        backgroundPosition: "-"+(screenshot.clip.left)+"px -"+(screenshot.clip.top)+"px"
+      }]] />
     </div>
   </template>
 </component>
@@ -44,7 +76,7 @@
       position: relative;
       display: grid;
       grid-template-areas: inherit;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       grid-gap: 0px;
       grid-auto-rows: minmax(100px, auto);
     }
@@ -64,5 +96,40 @@
         <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] />
       </span>
     </td-pane>
+  </template>
+</component>
+
+<component id="td-components-preview" [[property components]]>
+  <meta name="preview" content="of=td-components-pane, width=200, height=300" />
+  <template>
+    <td-components-pane components=[[bind [
+      {
+        label: "Component1",
+      },
+      {
+        label: "Component1",
+      },
+      {
+        label: "Component1",
+      },
+      {
+        label: "Component1"
+      },
+      {
+        label: "Component1"
+      },
+      {
+        label: "Component1"
+      },
+      {
+        label: "Component1"
+      },
+      {
+        label: "Component1"
+      },
+      {
+        label: "Component1"
+      }
+    ]]] />
   </template>
 </component>

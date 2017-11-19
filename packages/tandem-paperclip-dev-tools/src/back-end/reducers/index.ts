@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import { ApplicationState, updateApplicationState, updateFileCacheItem, addComponentScreenshot, removeComponentScreenshot } from "../state";
-import { WATCH_URIS_REQUESTED, WatchUrisRequested, FileAction, fileContentChanged, FILE_CONTENT_CHANGED, FileContentChanged, WATCHING_FILES, WatchingFiles, HEADLESS_BROWSER_LAUNCHED, HeadlessBrowserLaunched, ComponentScreenshotSaved, ComponentScreenshotRemoved, COMPONENT_SCREENSHOT_SAVED, COMPONENT_SCREENSHOT_REMOVED, ComponentScreenshotTaken, componentScreenshotRemoved, COMPONENT_SCREENSHOT_REQUESTED, ComponentScreenshotRequested, COMPONENT_SCREENSHOT_STARTED, ComponentScreenshotStarted } from "../actions";
+import { WATCH_URIS_REQUESTED, WatchUrisRequested, FileAction, fileContentChanged, FILE_CONTENT_CHANGED, FileContentChanged, WATCHING_FILES, WatchingFiles, HEADLESS_BROWSER_LAUNCHED, HeadlessBrowserLaunched, ComponentScreenshotSaved, ComponentScreenshotRemoved, COMPONENT_SCREENSHOT_SAVED, COMPONENT_SCREENSHOT_REMOVED, ComponentScreenshotTaken, componentScreenshotRemoved, ComponentScreenshotRequested, COMPONENT_SCREENSHOT_STARTED, ComponentScreenshotStarted } from "../actions";
 import { arrayRemoveItem } from "aerial-common2";
 
 export function mainReducer(state: ApplicationState, event: Action) {
@@ -35,41 +35,35 @@ export function mainReducer(state: ApplicationState, event: Action) {
       });
     }
     
-    case COMPONENT_SCREENSHOT_REQUESTED: {
-      const { componentId } = event as ComponentScreenshotRequested;
-
-      // TODO - purge uris that are not in cache
-      return updateApplicationState(state, {
-        componentScreenshotQueue: state.componentScreenshotQueue.indexOf(componentId) === -1 ? [...state.componentScreenshotQueue, componentId] : state.componentScreenshotQueue
-      });
-    }
-
     
     case COMPONENT_SCREENSHOT_STARTED: {
-      const { componentId } = event as ComponentScreenshotStarted;
 
       // TODO - purge uris that are not in cache
       return updateApplicationState(state, {
-        componentScreenshotQueue: arrayRemoveItem(state.componentScreenshotQueue, componentId)
+        shouldTakeAnotherScreenshot: false
       });
     }
     
     case COMPONENT_SCREENSHOT_SAVED: {
-      const { uri, componentId } = event as ComponentScreenshotSaved;
+      const { uri, clippings } = event as ComponentScreenshotSaved;
 
       // TODO - purge uris that are not in cache
-      return addComponentScreenshot(componentId, uri, state);
+      return addComponentScreenshot({ uri, clippings }, state);
     }
     
     case COMPONENT_SCREENSHOT_REMOVED: {
-      const { uri, componentId } = event as ComponentScreenshotRemoved;
+      const { uri } = event as ComponentScreenshotRemoved;
 
       // TODO - purge uris that are not in cache
-      return removeComponentScreenshot(componentId, uri, state);
+      return removeComponentScreenshot(uri, state);
     }
 
     case FILE_CONTENT_CHANGED: {
       const { filePath, mtime, content } = event as FileContentChanged;
+
+      state = updateApplicationState(state, {
+        shouldTakeAnotherScreenshot: true
+      });
       return updateFileCacheItem(state, {
         filePath,
         mtime,

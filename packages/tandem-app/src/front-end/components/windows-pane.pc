@@ -1,14 +1,22 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 
+<component id="td-windows-pane-row" [[property document]] [[property location]]>
+  <template>
+    <span>
+      [[bind document.title || location]]
+    </span>
+  </template>
+</component>
+
 <component id="td-windows-pane" [[property windows]]>
   <template>
     <td-pane>
       <span slot="header">Artboards</span>
       <span slot="content">
         <td-list>
-          <td-list-item [[repeat windows as window]] key=[[bind window.$id]]>
-            [[bind window.document.title || window.location]]
+          <td-list-item [[repeat windows as window]] selectable [[bind window]] key=[[bind window.$id]]>
+            <td-windows-pane-row [[bind window]] />
           </td-list-item>
         </td-list>
       </span>

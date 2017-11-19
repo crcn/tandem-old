@@ -1,10 +1,10 @@
 import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import * as request from "request";
-import { ApplicationState, getComponentsFromSourceContent, RegisteredComponent, getAvailableComponents } from "../state";
+import { ApplicationState, RegisteredComponent } from "../state";
 import { flatten } from "lodash";
 import { PAPERCLIP_FILE_PATTERN } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries } from "../utils";
 import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -13,7 +13,7 @@ import * as ts from "typescript";
 import * as glob from "glob";
 import { editString, StringMutation, weakMemo } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
-import { PUBLIC_SRC_DIR_PATH } from "../constants";
+import { PUBLIC_SRC_DIR_PATH, DEFAULT_COMPONENT_PREVIEW_SIZE } from "../constants";
 
 export function* routesSaga() {
   yield fork(handleExpressServerStarted);
@@ -41,10 +41,11 @@ function* addRoutes(server: express.Express) {
   server.get("/components", yield wrapRoute(getComponents));
 
   // return all components
-  server.get("/components/:componentId/screenshots/:screenshotId", yield wrapRoute(getComponentScreenshot));
+  server.get("/screenshots/:screenshotId", yield wrapRoute(getComponentsScreenshot));
 
   // return a module preview
-  server.get("/components/*/preview", yield wrapRoute(getAllComponentsPreview));
+  // all is OKAY since it's not a valid tag name
+  server.get("/components/all/preview", yield wrapRoute(getAllComponentsPreview));
 
   // return a module preview
   server.get("/components/:moduleId/preview", yield wrapRoute(getComponentPreview));
@@ -105,8 +106,76 @@ function* getModuleFileContent(req: express.Request, res: express.Response, next
   res.sendFile(targetModuleFilePath);
 }
 
-function* getAllComponentsPreview(req: express.Request, res: express.Response, next) {
-  res.send("TODO SEND SPRITE OF ALL COMPONENTS");
+function* getAllComponentsPreview(req: express.Request, res: express.Response, next) {  
+  const state: ApplicationState = yield select();
+
+  const entries = getPreviewComponentEntries(state);
+
+  const html = `
+  <html>
+    <head>
+      <title>All components</title>
+
+      <!-- paperclip used to compile templates in the browser -- primarily to reduce latency of 
+      sending bundled files over a network, especially when there are many canvases. -->
+      <script type="text/javascript" src="/paperclip.min.js"></script>
+    </head>
+    <body>
+      <script>
+        const entries = ${JSON.stringify(entries)};
+        const _cache = {};
+
+        const onPreviewBundle = ({ previewComponentId, bounds }, { code }) => {
+          const { entry, globalStyles, modules } = new Function("window", "with (window) { return " + code + "}")(window);
+
+          for (let i = 0, {length} = entry.globalStyles; i < length; i++) {
+            document.body.appendChild(entry.globalStyles[i]);
+          }
+
+          const container = document.createElement("div");
+          container.appendChild(document.createElement(previewComponentId));
+
+          Object.assign(container.style, { 
+            position: "absolute", 
+            overflow: "hidden",
+            left: bounds.left, 
+            top: bounds.top, 
+            width: bounds.right - bounds.left, 
+            height: bounds.bottom - bounds.top 
+          });
+          
+          document.body.appendChild(container);
+        };
+        
+        const loadNext = (entries, index, graph) => {
+
+          if (index >= entries.length) {
+            return Promise.resolve();
+          }
+
+
+          const entry = entries[index];
+
+          paperclip.bundleVanilla(entry.relativeFilePath, {
+            io: {
+              readFile(uri) {
+                return _cache[uri] ? Promise.resolve(_cache[uri]) : fetch(uri)
+                .then((response) => response.text())
+                .then(text => _cache[uri] = text)
+              }
+            }
+          })
+          .then(onPreviewBundle.bind(this, entry))
+          .then(loadNext.bind(this, entries, index + 1, graph));
+        };
+
+        loadNext(entries, 0, {});
+      </script>
+    </body>
+  </html>
+  `;
+
+  res.send(html);
 }
 
 function* createComponent(req: express.Request, res: express.Response) {
@@ -153,12 +222,9 @@ function* getComponents(req: express.Request, res: express.Response) {
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 
-function* getComponentScreenshot(req: express.Request, res: express.Response, next) {
+function* getComponentsScreenshot(req: express.Request, res: express.Response, next) {
   const state: ApplicationState = yield select();
-  const componentId = req.params.componentId;
-  const screenshotId = Number(req.params.screenshotId);
-
-  const uri = (state.componentScreenshots[componentId] || [])[Number(screenshotId)];
+  const { uri } = state.componentScreenshots[Number(req.params.screenshotId)] || { uri: null };
 
   if (!uri) {
     return next();
@@ -210,7 +276,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     return res.send(`Component not found`);
   }
 
-  const relativeModuleFilePath = targetComponent.filePath.replace(state.config.sourceDirectory, "");
+  const relativeModuleFilePath = getPublicSrcPath(targetComponent.filePath, state);
 
   let content: string;
 
@@ -233,19 +299,10 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
         document.interactiveLoaded = new Promise((resolve) => {
           _loadedDocument = resolve;
         });
-        paperclip.bundleVanilla("/src${relativeModuleFilePath}", {
+        paperclip.bundleVanilla("${relativeModuleFilePath}", {
           io: {
             readFile(uri) {
               return fetch(uri).then((response) => response.text());
-            },
-            resolveFile(relative, base) {
-              const dirname = base.split("/");
-              dirname.pop();
-              relative = relative.replace("./", "");
-              const parentDirs = relative.split("../");
-              const baseName = parentDirs.pop();
-              dirname.splice(dirname.length - parentDirs.length, dirname.length);
-              return Promise.resolve(dirname.join("/") + "/" + baseName);
             }
           }
         }).then(({ code, warnings }) => {
@@ -259,32 +316,6 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
             document.body.appendChild(entry.strays[i]);
           }
         }).then(_loadedDocument);
-        
-        // try {
-        //   var bundle = {};
-        //   ${content}
-        //   var previews  = bundle.entry.$$previews || {};
-
-        //   var styles   = bundle.entry.$$styles || [];
-        //   if (!Object.keys(previews).length) {
-        //     document.body.appendChild(
-        //       document.createTextNode('no preview found in file')
-        //     );
-        //   } else {
-        //     const mainPreview = previews[Object.keys(previews)[0]];
-        //     styles.forEach(function(style) {
-        //       document.body.appendChild(style);
-        //     });
-        //     document.body.appendChild(mainPreview);
-        //   }
-        // } catch(e) {
-        //   console.log(e.stack);
-        //   document.body.appendChild(document.createTextNode(e.stack));
-        // }
-
-        // if (window.reloadWhenUrisChange) {
-        //   window.reloadWhenUrisChange(allFiles);
-        // }
       </script>
     </body>
   </html>

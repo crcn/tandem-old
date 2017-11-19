@@ -6,6 +6,7 @@
 <link rel="import" href="./css-declaration-input.pc" />
 
 <component id="td-style-declaration" [[property name]] [[property value]] [[property applied]] [[property overridden]]>
+  <meta name="internal" content="true" />
   <style>
     :host([applied]) {
       opacity: 0.4;
@@ -31,6 +32,7 @@
 </component>
 
 <component id="td-style-rule" [[property selectorText]] [[property declarations]] [[property source]] [[property headerHovering]]>
+  <meta name="internal" content="true" />
   <style>
     :host:hover td-gutter-subheader span, :host([headerHovering]) .controls {
       /* TODO */
@@ -89,9 +91,6 @@
     <td-pane>
       <span slot="header">
         CSS Inspector
-        <div class="controls">
-          <i class="ion-more" />
-        </div>
       </span>
       <span slot="content">
         <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] />
@@ -100,7 +99,8 @@
   </template>
 </component>
 
-<component id="td-css-inspector-pane-example">
+<component id="td-css-inspector-pane-preview">
+  <meta name="preview" content="of=td-css-inspector-pane, width=200, height=300" />
   <template>
     <td-css-inspector-pane styleRules=[[bind [
       {

@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as pupeteer from "puppeteer";
-import { arrayReplaceIndex, arraySplice, weakMemo, arrayRemoveItem } from "aerial-common2";
+import { arrayReplaceIndex, arraySplice, weakMemo, arrayRemoveItem, Bounds, arrayRemoveIndex } from "aerial-common2";
 import { getModuleId, getModuleFilePaths } from "../utils";
 import * as pc from "paperclip";
 
@@ -17,8 +17,20 @@ export type FileCacheItem = {
   content: Buffer;
 };
 
-export type ComponentScreenshots = {
-  [identifier: string]: string[]
+export type AllComponentsPreviewEntry = {
+  targetComponentId: string;
+  previewComponentId: string;
+  relativeFilePath: string;
+  bounds: Bounds;
+};
+
+export type Screenshot = {
+  uri: string;
+  clippings: ScreenshotClippings
+};
+
+export type ScreenshotClippings = {
+  [identifier: string]: Bounds
 };
 
 export type ApplicationState = {
@@ -27,76 +39,41 @@ export type ApplicationState = {
   config: Config;
   watchUris: string[];
   headlessBrowser?: pupeteer.Browser;
-  componentScreenshotQueue: string[];
-  componentScreenshots: ComponentScreenshots;
+  shouldTakeAnotherScreenshot?: boolean;
+  componentScreenshots: Screenshot[];
   fileCache: FileCacheItem[];
 };
 
 export type RegisteredComponent = {
   filePath: string;
   label: string;
-  screenshotUrl: string;
+  screenshot: {
+    uri: string;
+    clip: Bounds;
+  };
   tagName?: string;
   moduleId?: string;
-}
-
-export const getComponentsFromSourceContent = (content: string, filePath: string, state: ApplicationState): RegisteredComponent[] => {
-  const moduleId = getModuleId(filePath);
-  try {
-    const ast = pc.parseModuleSource(content);
-    const module = pc.loadModuleAST(ast, filePath);
-    return module.components.map(({id}) => ({
-      filePath,
-      label: id,
-      screenshotUrl: getScreenshotUrl(id, state),
-      tagName: id,
-      moduleId: moduleId,
-    }));
-
-  } catch(e) {
-    console.log(JSON.stringify(e.stack, null, 2));
-    return [{
-      label: path.basename(filePath) + ":<syntax error>" ,
-      filePath,
-      screenshotUrl: null,
-      moduleId,
-    }];
-  }
 };
 
-export const getAvailableComponents = (state: ApplicationState, readFileSync: (filePath) => string) => {
-  return getModuleFilePaths(state).reduce((components, filePath) => (
-    [...components, ...getComponentsFromSourceContent(readFileSync(filePath), filePath, state)]
-  ), []);
-}
-
-export const getScreenshotUrl = (tagName: string, state: ApplicationState) => {
-  const ss = state.componentScreenshots[tagName] || [];
-  return ss ? `http://localhost:${state.port}/components/${tagName}/screenshots/${ss.length - 1}` : null;
-}
 
 export const updateApplicationState = (state: ApplicationState, properties: Partial<ApplicationState>) => ({
   ...state,
   ...properties
 });
 
-export const updateComponentScreenshots = (state: ApplicationState, properties: Partial<ComponentScreenshots>) => ({
-  ...state,
-  ...{
-    componentScreenshots: {
-      ...state.componentScreenshots,
-      ...properties
-    }
+export const addComponentScreenshot = (screenshot: Screenshot, state: ApplicationState) => updateApplicationState(state, {
+  componentScreenshots: [...state.componentScreenshots, screenshot]
+});
+
+export const removeComponentScreenshot = (uri: string, state: ApplicationState) => {
+  const index = state.componentScreenshots.findIndex((screenshot) => screenshot.uri === uri);
+  if (index === -1) {
+    return state;
   }
-});
-
-export const addComponentScreenshot = (componentId: string, uri: string, state: ApplicationState) => updateComponentScreenshots(state, {
-  [componentId]: state.componentScreenshots[componentId] ? [...state.componentScreenshots[componentId], uri] : [uri]
-});
-
-export const removeComponentScreenshot = (componentId: string, uri: string, state: ApplicationState) => updateComponentScreenshots(state, {
-  [componentId]: state.componentScreenshots[componentId] ? arrayRemoveItem(state.componentScreenshots[componentId], uri) : []
-});
+  return updateApplicationState(state, {
+    componentScreenshots: arrayRemoveIndex(state.componentScreenshots, index)
+  });
+}
 
 export const updateFileCacheItem = (state: ApplicationState, item: FileCacheItem) => {
 

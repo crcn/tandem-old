@@ -253,7 +253,11 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
             `}` +
             `const oldValue = this.$${name};` +
             `this.$$${name} = value;` +
-            `this.setAttribute(${JSON.stringify(name)}, value);` +
+
+            // primitive data types only
+            `if (typeof value !== "object") {` +
+              `this.setAttribute(${JSON.stringify(name)}, value);` +
+            `}` +
             `if (this._rendered) {` +
               `$$requestUpdate(this);` +
             `}` +
@@ -330,14 +334,22 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
       `}` +
     `}` +
 
-    `customElements.define("${id}", ${varName});`
-  
+    // paperclip linter will catch cases where there is more than one 
+    // registered component in a project. This shouldn't block browsers from loading
+    // paperclip files (especially needed when loading multiple previews in the same window)
+    `if (!customElements.get("${id}")) {` +
+      `customElements.define("${id}", ${varName});` +
+    `} else {` +
+      `console.error("Custom element \\"${id}\\" is already defined, ignoring");` +
+    `}`
+
   return {
     varName,
     bindings: [],
     content
   };
 };
+
 
 const transpileExpression = (ast: PCExpression, context: TranspileContext) => {
   switch(ast.type) {

@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { FileCacheItem, ApplicationState } from "../state";
+import { FileCacheItem, ApplicationState, ScreenshotClippings } from "../state";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
 import * as express from "express";
@@ -13,7 +13,6 @@ export const MUTATE_SOURCE_CONTENT = "MUTATE_SOURCE_CONTENT";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const HEADLESS_BROWSER_LAUNCHED = "HEADLESS_BROWSER_LAUNCHED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
-export const COMPONENT_SCREENSHOT_REQUESTED = "COMPONENT_SCREENSHOT_REQUESTED";
 export const COMPONENT_SCREENSHOT_STARTED = "COMPONENT_SCREENSHOT_STARTED";
 export const COMPONENT_SCREENSHOT_TAKEN = "COMPONENT_SCREENSHOT_TAKEN";
 export const COMPONENT_SCREENSHOT_REMOVED = "COMPONENT_SCREENSHOT_REMOVED";
@@ -69,27 +68,24 @@ export type HeadlessBrowserLaunched = {
 } & Action;
 
 export type ComponentScreenshotTaken = {
-  componentId: string;
   buffer: Buffer;
   contentType: string;
+  clippings: ScreenshotClippings;
 } & Action;
 
 export type ComponentScreenshotSaved = {
-  componentId: string;
+  clippings: ScreenshotClippings;
   uri: string;
 } & Action;
 
 export type ComponentScreenshotRemoved = {
-  componentId: string;
   uri: string;
 } & Action;
 
 export type ComponentScreenshotRequested = {
-  componentId: string;
 } & Action;
 
 export type ComponentScreenshotStarted = {
-  componentId: string;
 } & Action;
 
 export enum AlertLevel {
@@ -130,20 +126,14 @@ export const fileContentChanged = (filePath: string, publicPath: string, content
   mtime
 });
 
-export const componentScreenshotTaken = (componentId: string, buffer: Buffer, contentType: string): ComponentScreenshotTaken => ({
-  componentId,
+export const componentScreenshotTaken = (buffer: Buffer, clippings: ScreenshotClippings, contentType: string): ComponentScreenshotTaken => ({
   buffer, 
   contentType,
+  clippings,
   type: COMPONENT_SCREENSHOT_TAKEN
 });
 
-export const componentScreenshotRequested = (componentId: string): ComponentScreenshotRequested => ({
-  componentId,
-  type: COMPONENT_SCREENSHOT_REQUESTED
-});
-
-export const componentScreenshotStarted = (componentId: string): ComponentScreenshotStarted => ({
-  componentId,
+export const componentScreenshotStarted = (): ComponentScreenshotStarted => ({
   type: COMPONENT_SCREENSHOT_STARTED
 });
 
@@ -152,15 +142,14 @@ export const headlessBrowserLaunched = (browser: puppeteer.Browser): HeadlessBro
   browser
 });
 
-export const componentScreenshotSaved = (componentId: string, uri: string): ComponentScreenshotSaved => ({
+export const componentScreenshotSaved = publicActionFactory((uri: string, clippings: ScreenshotClippings): ComponentScreenshotSaved => ({
   type: COMPONENT_SCREENSHOT_SAVED,
-  componentId,
+  clippings,
   uri
-});
+}));
 
-export const componentScreenshotRemoved = (componentId: string, uri: string): ComponentScreenshotSaved => ({
+export const componentScreenshotRemoved = (uri: string): ComponentScreenshotRemoved => ({
   type: COMPONENT_SCREENSHOT_REMOVED,
-  componentId,
   uri
 });
 

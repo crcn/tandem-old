@@ -16,6 +16,7 @@ import {
   getElementModifiers,
   getElementChildNodes,
   getElementAttributes,
+  getPCStartTagAttribute,
   getElementTagName,
   getAttributeStringValue,
   getAllChildElementNames
@@ -33,8 +34,16 @@ export type Import = {
   href: string;
 };
 
+export type ComponentMetadata = {
+  name: string;
+  params: {
+    [identifier: string]: string
+  }
+}
+
 export type Component = {
   id: string;
+  metadata: ComponentMetadata[];
   properties: BKProperty[];
   style: PCElement;
   template: PCElement;
@@ -235,10 +244,23 @@ const createModule = (ast: PCExpression, uri: string): Module => {
   };
 };
 
+export const parseMetaContent = (content: string) => {
+  const params = {};
+  for (const part of content.split(/,\s+/g)) {
+    const [key, value] = part.split("=");
+    params[key] = value;
+  }
+  return params;
+};
+
+export const getComponentMetaDataItems = (component: Component, name: string) => component.metadata.filter(meta => meta.name === name);
+export const getComponentMetaDataItem = (component: Component, name: string) => getComponentMetaDataItems(component, name).shift();
+
 const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
   let id: string;
   let style: PCElement;
   let template: PCElement;
+  const metadata: ComponentMetadata[] = [];
   let properties: BKProperty[] = modifiers.map(({value}) => value).filter(modifier => modifier.type === BKExpressionType.PROPERTY) as BKProperty[];
 
   for (let i = 0, {length} = attributes; i < length; i++) {
@@ -259,6 +281,11 @@ const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childN
         style = element as any as PCElement;
       } else if (tagName === "template") {
         template = element as any as PCElement;
+      } else if (tagName === "meta") {
+        metadata.push({
+          name: getPCStartTagAttribute(element, "name"),
+          params: parseMetaContent(getPCStartTagAttribute(element, "content") || "")
+        });
       }
     }
   }
@@ -266,6 +293,7 @@ const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childN
   return {
     id,
     style,
+    metadata,
     properties,
     template
   };

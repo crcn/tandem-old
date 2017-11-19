@@ -1,18 +1,7 @@
 TOMORROW:
 
-- [ ] Components Pane
-  - [ ] one screenshot for all components
-  - [ ] use sprites for screenshot urls 
-  - [ ] `<meta name="preview" content="width: 100px; height: 200px;" />`
-  - [ ] `PROJECT_SPRITE_CHANGED`
-  - [ ] + button should work
-  - [ ] DND components to stage
-
-- [ ] Paperclip
-  - [ ] attach source to elements
-
-- [ ] Mutations lib
-
+- [ ] CSS inspector pane
+  - [ ] wire up data model to each prop - figure out 
 
 HIGH PRIO:
 
@@ -54,6 +43,8 @@ HIGH PRIO:
   - [ ] Display banner error for syntax errors
 - [ ] Website
   - [ ] Example on site
+- [ ] Screenshots
+  - [ ] visual difference?
 
 #### V2
 
@@ -69,3 +60,4 @@ HIGH PRIO:
 - [ ] Notes
 - [ ] Git integration
 - [ ] FSM - connecting UIs
+- [ ] Screenshots

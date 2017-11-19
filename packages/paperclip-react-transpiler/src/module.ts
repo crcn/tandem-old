@@ -157,6 +157,8 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
     content += `  const childComponentClasses = defaults(baseComponentClasses, hydratedChildComponentClasses);`;
   }
 
+  const componentPropertyNames = component.properties.map(({name}) => name);
+
   const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host" }, ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
   `)`;
@@ -166,7 +168,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
   const fnInner = wrapRenderFunctionInner(hostContent, component.template.childNodes, context);
 
   const deconstructPropNames = [
-    ...component.properties.map(({name}) => name),
+    ...componentPropertyNames,
     ...getTemplateSlotNames(component.template)
   ];
 
@@ -201,15 +203,24 @@ const transpileStyle = (style: PCElement, scopeClass?: string) => {
         const scopedSelectorText = scopeClass ? selectorText.split(" ").map((part, i) => {
 
           // ignore ".selector > .selector"
-          if (/[>,]/.test(part)) return part;
+          if (/^[>,]$/.test(part)) return part;
 
           if (part.indexOf(":host") !== -1) {
             const [match, params] = part.match(/\:host\((.*?)\)/) || [null, null];
 
             return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}.host` + (params ? params : ""));
-          } 
+          }
 
-          return `.${scopeClass}` + part;
+          // don't want to target spans since the host is one
+          if (part === "span") {
+            return `.${scopeClass}.host span.${scopeClass}`;
+          }
+
+
+          const addedClass = `.${scopeClass}`;
+
+          // part first in case the selector is a tag name
+          return part + addedClass;
         }).join(" ") : selectorText;
         return scopedSelectorText;
       }))}\n\n` +
@@ -351,6 +362,8 @@ const transpileElementModifiers = (element: PCElement | PCSelfClosingElement, co
     })
 
     newContent += "})";
+
+    content = newContent;
   } 
 
   if (_if || _elseif || _else) {
@@ -430,6 +443,7 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
 
   const { attributes, modifiers } = getStartTag(element);
 
+  let addedScopeStyle = false;
   let content = `{`;
 
   for (let i = 0, {length} = attributes; i < length; i++) {
@@ -445,9 +459,14 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
     if (name === "className") {
       if (!isComponent) {
         value = `"${context.scopeClass} " + ${value}`;
+        addedScopeStyle = true;
       }
     }
     content += `"${name}": ${value},`
+  }
+
+  if (!addedScopeStyle && !isComponent) {
+    content += `"className": "${context.scopeClass}",`
   }
 
   // check immediate children for slots (slots cannot be nested), and add

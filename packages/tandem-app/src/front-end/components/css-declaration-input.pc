@@ -5,6 +5,7 @@
 <link rel="import" href="./color-picker.pc" />
 
 <component id="td-css-color-expr-input" [[property value]]>
+  <meta name="internal" content="true" />
   <style>
     .input-box {
       width: var(--base4);
@@ -24,6 +25,7 @@
 </component>
 
 <component id="td-css-keyword-expr-input" [[property value]]>
+  <meta name="internal" content="true" />
   <style>
     :host {
       color: var(--font-color-alt);
@@ -35,6 +37,7 @@
 </component>
 
 <component id="td-css-spaced-list-expr-input" [[property values]]>
+  <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
       content: " ";
@@ -46,6 +49,7 @@
 </component>
 
 <component id="td-css-comma-list-expr-input" [[property values]]>
+  <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
       content: ", ";
@@ -60,6 +64,7 @@
 </component>
 
 <component id="td-css-number-expr-input" [[property value]]>
+  <meta name="internal" content="true" />
   <style>
     .input-box {
       width: var(--base4);
@@ -78,6 +83,7 @@
 </component>
 
 <component id="td-color-mini-input" [[property value]]>
+  <meta name="internal" content="true" />
   <style>
     .input-box {
       width: var(--base4);
@@ -102,6 +108,7 @@
 </component>
 
 <component id="td-css-measurement-input" [[property value]] [[property unit]]>
+  <meta name="internal" content="true" />
   <style>
     .value {
       
@@ -117,6 +124,7 @@
 </component>
 
 <component id="td-css-call-expr-input" [[property type]] [[property returnType]] [[property returnValue]] [[property params]] [[property name]]>
+  <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
       content: ", ";
@@ -162,8 +170,12 @@
   </template>
 </component>
 
-<component id="td-css-expr-input-example" [[property value]]>
+<component id="td-css-expr-input-preview">
+  <meta name="preview" content="of=td-css-expr-input, width=50, height=30" />
   <template>
-    <td-css-expr-input open=[[bind open]] value=[[bind value]] />
+    <td-css-expr-input open=[[bind open]] value=[[bind {
+      type: "COLOR",
+      value: "#F60"
+    }]] />
   </template>
 </component>
