@@ -190,11 +190,10 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
     content += decl.content;
   }
 
-  // define components at the top so that customElements.define 
-  // is called -- required for stray elements below
   for (let i = 0, {length} = components; i < length; i++) {
     content += tranpsileComponent(components[i], context).content;
   }
+
   content += `return {` +
   `};`;
     
