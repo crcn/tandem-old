@@ -4,10 +4,6 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] Paperclip dev server
-  - [ ] find previews based on meta tag
-  - [ ] Just inject CSS into the global NS
-
 - [ ] CSS inspector pane
   - [ ] wire up data model to each prop - figure out 
 

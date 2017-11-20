@@ -66,7 +66,9 @@ const createBlock = (scanner: TokenScanner): PCBlock => {
   eatWhitespace(scanner);
   const value = createBKStatement(scanner);
   eatWhitespace(scanner);
+  assertCurrTokenType(scanner, PCTokenType.BRACKET_CLOSE);
   scanner.next(); // eat ]
+  assertCurrTokenType(scanner, PCTokenType.BRACKET_CLOSE);
   scanner.next(); // eat ]
 
   return ({

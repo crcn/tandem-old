@@ -44,3 +44,10 @@ paperclip.bundleVanilla("component.pc", {
   });
 });
 ````
+
+
+#### TODOS
+
+- [ ] Linter
+  - [ ] Warning when there are unhandled nodes 
+  - [ ] Error when there are type mismatches

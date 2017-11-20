@@ -174,21 +174,20 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
 
   // TODO - include deps here
   let content = `$$defineModule((require) => {`;
-  content += `$$strays = [];`;
-  content += "$$globalStyles = [];";
+
 
   const styleDecls = transpileChildNodes(globalStyles, context);
 
   for (let i = 0, {length} = styleDecls; i < length; i++) {
     const decl = styleDecls[i];
     content += decl.content;
-    content += `$$globalStyles.push(${decl.varName});`;
+    content += `document.body.appendChild(${decl.varName});`;
   }
 
   for (let i = 0, {length} = imports; i < length; i++) {
     const _import = imports[i];
     const decl = declare(`import`, `require(${JSON.stringify(resolvedImportUris[_import.href])})`, context);
-    content += `${decl.content} $$globalStyles.push(...(${decl.varName}.globalStyles || []));`;
+    content += decl.content;
   }
 
   // define components at the top so that customElements.define 
@@ -196,22 +195,7 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
   for (let i = 0, {length} = components; i < length; i++) {
     content += tranpsileComponent(components[i], context).content;
   }
-
-  const childDecls = transpileChildNodes(unhandledExpressions, context);
-  
-  for (let i = 0, {length} = childDecls; i < length; i++) {
-    const decl = childDecls[i];
-    content += decl.content;
-    content += decl.bindings.map(wrapTranspiledStatement).join("\n");
-    content += `if (${decl.varName}.nodeType != null) {\n`;
-    content += `  $$strays.push(${decl.varName});\n`;
-    content += `}\n;`
-  }
-
-
   content += `return {` +
-    `strays: $$strays,` +
-    `globalStyles: $$globalStyles` +
   `};`;
     
   content += `})`;

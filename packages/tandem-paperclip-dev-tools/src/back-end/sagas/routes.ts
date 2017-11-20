@@ -121,10 +121,6 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
         const onPreviewBundle = ({ previewComponentId, bounds }, { code }) => {
           const { entry, globalStyles, modules } = new Function("window", "with (window) { return " + code + "}")(window);
 
-          for (let i = 0, {length} = entry.globalStyles; i < length; i++) {
-            document.body.appendChild(entry.globalStyles[i]);
-          }
-
           const container = document.createElement("div");
           container.appendChild(document.createElement(previewComponentId));
 
@@ -312,10 +308,6 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
 
           if (!previewComponent) {
             return document.body.appendChild(document.createTextNode("Unable to find preview of component " + previewTargetComponentId));
-          }
-
-          for (let i = 0, {length} = entry.globalStyles; i < length; i++) {
-            document.body.appendChild(entry.globalStyles[i]);
           }
 
           document.body.appendChild(document.createElement(previewComponent.id));

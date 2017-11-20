@@ -6,7 +6,7 @@ import { getSEnvWindowClass } from "aerial-browser-sandbox";
 
 describe(__filename + "#", () => {
 
-  const runCode = async (context: any, input: string, wrap: (value: string) => string = (value) => value) => {
+  const runCode = async (context: any, input: string, wrap: (value: string) => string = (value) => value, init: string = "") => {
     const { code } = await bundleVanilla(null, {
       target: PaperclipTargetType.TANDEM,
       io: {
@@ -21,16 +21,7 @@ describe(__filename + "#", () => {
       with(window) {
         with(context) {
           const { entry } = ${code}
-
-          // append stray nodes randomly created in the doc first
-          for (const node of entry.globalStyles) {
-            window.document.body.appendChild(node);
-          }
-
-          // append stray nodes randomly created in the doc first
-          for (const node of entry.strays) {
-            window.document.body.appendChild(node);
-          }
+          ${init}
         }
       }
     `;
@@ -77,8 +68,8 @@ describe(__filename + "#", () => {
     [{ a: 1, b: 2}, `[[bind { a: 1, b: 2 }]]`, `[object Object]`],
     [{ a: 1, b: 2}, `[[bind { a: 1, b: 2, }]]`, `[object Object]`],
     [{ a: { b: { c: 1}}}, `[[bind a.b.c]]`, `1`],
-    [{ }, `[[bind [1, 2, 3]]`, `1,2,3`],
-    [{ }, `[[bind []]`, ``],
+    [{ }, `[[bind [1, 2, 3]]]`, `1,2,3`],
+    [{ }, `[[bind []]]`, ``],
     [{ a: { b: 1, d: 2}}, `<span [[bind a]] />`, `<span></span>`],
 
     // repeat
@@ -106,59 +97,11 @@ describe(__filename + "#", () => {
     [{ a: 1 }, `<span [[if a <= 1]]>A</span>b`, `<span>A</span>b`],
     [{ a: 1, b: 0, c: 1 }, `<span [[if (a || b) && c]]>A</span>b`, `<span>A</span>b`],
     [{ a: 1, b: 0, c: 0 }, `<span [[if (a || b) && c]]>A</span>b`, `b`],
-    [{ a: 1, b: 0 }, `<span [[if a || b]]>A</span>b`, `<span>A</span>b`],
-
-    // components
-    [
-      {},
-      `
-        <component id="x-test">
-          <template>  
-            Hello
-          </template>
-        </component>
-
-        <x-test />
-      `,
-      `<x-test></x-test>`
-    ],
-    [
-      {},
-      `
-        <component id="x-test" [[property text]]>
-          <template>  
-            Hello [[bind text]]
-          </template>
-        </component>
-
-        <x-test />
-      `,
-      `<x-test></x-test>`
-    ],
-    [
-      {},
-      `
-        <component id="x-test">
-          <style>
-            .container { }
-          </style>
-          <template>  
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          </template>
-        </component>
-
-        <x-test />
-      `,
-      `<x-test></x-test>`
-    ]
+    [{ a: 1, b: 0 }, `<span [[if a || b]]>A</span>b`, `<span>A</span>b`]
   ].forEach(([context, input, output]: [any, string, string]) => {
     it(`renders ${input} as ${output} with ${JSON.stringify(context)}`, async () => {
-      const document = await runCode(context, input);
-      expect(document.body.innerHTML.trim()).to.eql(output.trim());
+      const document = await runCode(context, input, (html) => `<component id="x-test"><template>${html}</template></component>`, `window.document.body.appendChild(document.createElement("x-test"));`);
+      expect(Array.prototype.map.call(document.body.querySelector("x-test").shadowRoot.childNodes, (child) => child.outerHTML || child.nodeValue).join("").trim()).to.eql(output.trim());
     });
   });
 
