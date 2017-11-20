@@ -1,4 +1,4 @@
-Paperclip is a tiny DSL for building web components that are optimized for visual editors. Here's a basic example of code that could run within an Tandem artboard VM:
+Paperclip is a document format for visual editors. Here's a basic example of code that could run within an Tandem artboard VM:
 
 component.pc:
 
