@@ -7,6 +7,7 @@ export const WindowsPane = hydrateTdWindowsPane(
   ),
   {
     TdListItem: null,
+    TdWindowsPaneRow: null,
     TdList: null,
     TdPane: null
   }

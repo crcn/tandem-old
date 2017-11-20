@@ -4,8 +4,8 @@ export const getAPIProxyUrl = (uri: string, state: ApplicationState) => (
   `${state.apiHost}/proxy/${encodeURIComponent(uri)}`
 );
 
-export const apiGetModulePreviewURI = (moduleId: string, state: ApplicationState) => { 
-  return `${state.apiHost}/modules/${moduleId}/preview`;
+export const apiGetComponentPreviewURI = (componentId: string, state: ApplicationState) => { 
+  return `${state.apiHost}/components/${componentId}/preview`;
 }
 
 export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
@@ -14,7 +14,7 @@ export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
-    },
+    } as any,
     body: JSON.stringify(uris)
   });
 
@@ -27,7 +27,7 @@ export const apiOpenSourceFile = async (source: ExpressionLocation, state: Appli
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
-    },
+    } as any,
     body: JSON.stringify(source)
   });
 

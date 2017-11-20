@@ -7,7 +7,7 @@ import { parseModuleSource } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
 
 
-export type bundleVanillaOptions = {
+export type BundleVanllaOptions = {
   target: PaperclipTargetType,
   io?: IO
 };
@@ -25,8 +25,10 @@ export type TranspileDeclaration = {
 };
 
 
-export const bundleVanilla = (uri: string, options: bundleVanillaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then((graph) => ({
-  code: transpileBundle(uri, graph)
+export const bundleVanilla = (uri: string, options: BundleVanllaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then((graph) => ({
+  code: transpileBundle(uri, graph),
+  graph,
+  entryDependency: graph[uri]
 }));
 
 // usable in other transpilers

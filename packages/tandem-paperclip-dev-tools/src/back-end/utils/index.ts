@@ -7,7 +7,7 @@ import { uniq } from "lodash";
 import * as md5 from "md5";
 import * as fs from "fs";
 import { weakMemo, Bounds } from "aerial-common2";
-import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetaDataItem } from "paperclip";
+import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem } from "paperclip";
 
 enum ComponentMetadataName {
   PREVIEW = "preview",
@@ -110,7 +110,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
   try {
     const ast = parseModuleSource(content);
     const module = loadModuleAST(ast, filePath);
-    return module.components.filter(component => !getComponentMetaDataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetaDataItem(component, ComponentMetadataName.INTERNAL)).map(({id}) => ({
+    return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id}) => ({
       filePath,
       label: id,
       id,
@@ -153,7 +153,7 @@ export const getPreviewComponentEntries = (state: ApplicationState): AllComponen
     for (const component of module.components) {
       // TODO - check for preview meta
 
-      const previewMeta = getComponentMetaDataItem(component, ComponentMetadataName.PREVIEW);
+      const previewMeta = getComponentMetadataItem(component, ComponentMetadataName.PREVIEW);
       if (!previewMeta) continue;
 
       const bounds = { left: 0, top: currentTop, right: Number(previewMeta.params.width || DEFAULT_COMPONENT_PREVIEW_SIZE.width), bottom: currentTop + Number(previewMeta.params.height || DEFAULT_COMPONENT_PREVIEW_SIZE.height) };

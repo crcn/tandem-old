@@ -253,8 +253,8 @@ export const parseMetaContent = (content: string) => {
   return params;
 };
 
-export const getComponentMetaDataItems = (component: Component, name: string) => component.metadata.filter(meta => meta.name === name);
-export const getComponentMetaDataItem = (component: Component, name: string) => getComponentMetaDataItems(component, name).shift();
+export const getComponentMetadataItems = (component: Component, name: string) => component.metadata.filter(meta => meta.name === name);
+export const getComponentMetadataItem = (component: Component, name: string) => getComponentMetadataItems(component, name).shift();
 
 const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
   let id: string;

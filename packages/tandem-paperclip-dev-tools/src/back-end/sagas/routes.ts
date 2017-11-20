@@ -48,14 +48,7 @@ function* addRoutes(server: express.Express) {
   server.get("/components/all/preview", yield wrapRoute(getAllComponentsPreview));
 
   // return a module preview
-  server.get("/components/:moduleId/preview", yield wrapRoute(getComponentPreview));
-
-  // return the module file
-  server.get("/modules/:moduleId", yield wrapRoute(getModuleFileContent));
-
-  // return a module preview
-  // TODO - DEPRECATE THIS
-  server.get("/modules/:moduleId/preview", yield wrapRoute(getComponentPreview));
+  server.get("/components/:componentId/preview", yield wrapRoute(getComponentPreview));
 
   // create a new component (creates a new module with a single component)
   server.post("/components", yield wrapRoute(createComponent));
@@ -264,11 +257,11 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   // TODO - evaluate PC code IN THE BROWSER -- need to attach data information to element
   // nodes
   const state: ApplicationState = yield select();
-  const { moduleId } = req.params;
+  const { componentId } = req.params;
 
   const components = (yield call(getAvailableComponents, state, getReadFile(state))) as RegisteredComponent[];
 
-  const targetComponent = components.find(component => component.moduleId === moduleId || component.tagName === moduleId);
+  const targetComponent = components.find(component => component.tagName === componentId);
 
 
   if (!targetComponent || !targetComponent.filePath) {
@@ -292,6 +285,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     <body>
       <script>
         let _loadedDocument;
+        const previewTargetComponentId = "${componentId}";
 
         // hook into synthetic document's load cycle -- ensure
         // that it doesn't emit a load event until the paperclip module
@@ -299,22 +293,32 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
         document.interactiveLoaded = new Promise((resolve) => {
           _loadedDocument = resolve;
         });
+
         paperclip.bundleVanilla("${relativeModuleFilePath}", {
           io: {
             readFile(uri) {
               return fetch(uri).then((response) => response.text());
             }
           }
-        }).then(({ code, warnings }) => {
+        }).then(({ code, warnings, entryDependency }) => {
           const { entry, globalStyles, modules } = new Function("window", "with (window) { return " + code + "}")(window);
+
+          const components = entryDependency.module.components;
+          let previewComponent = components.find((component) => {
+            const previewMetadata = paperclip.getComponentMetadataItem(component, "preview");
+            
+            return previewMetadata && previewMetadata.params.of === previewTargetComponentId;
+          });
+
+          if (!previewComponent) {
+            return document.body.appendChild(document.createTextNode("Unable to find preview of component " + previewTargetComponentId));
+          }
 
           for (let i = 0, {length} = entry.globalStyles; i < length; i++) {
             document.body.appendChild(entry.globalStyles[i]);
           }
 
-          for (let i = 0, {length} = entry.strays; i < length; i++) {
-            document.body.appendChild(entry.strays[i]);
-          }
+          document.body.appendChild(document.createElement(previewComponent.id));
         }).then(_loadedDocument);
       </script>
     </body>

@@ -3,11 +3,12 @@
 TODOS:
 
 - [ ] transpile component prop types
+- [ ] infer types based on how they are used in component
 */
 
 import { upperFirst, camelCase } from "lodash";
 import * as path from "path";
-import { loadModuleAST, parseModuleSource, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies } from "paperclip";
+import { loadModuleAST, parseModuleSource, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment } from "paperclip";
 import { basename, relative } from "path";
 import { ComponentTranspileInfo, getComponentTranspileInfo, getComponentClassName, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
 
@@ -31,7 +32,7 @@ const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
 
   content += `\n`;
   
-  content += `type Enhancer<T> = (BaseComponent: React.ComponentClass<T>) => React.ComponentClass<T>;\n\n`;
+  content += `type Enhancer<TInner, TOuter> = (BaseComponent: React.ComponentClass<TInner>) => React.ComponentClass<TOuter>;\n\n`;
 
   const componentTranspileInfo = module.components.map(getComponentTranspileInfo);
 
@@ -61,9 +62,6 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
     )).join("") +
   `};\n\n`;
 
-  content += `` +
-  `export type ${enhancerName} = Enhancer<${propTypesName}>;\n\n`;
-
   // then hydrator
   const childComponentDependencies = getChildComponentInfo(component.template, graph);
 
@@ -76,13 +74,13 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
     const childComponentInfo = getComponentTranspileInfo(childComponent);
     const childImport = getImportFromDependency(importTranspileInfo, childComponentDependency);
     let refPath = childImport ? `${childImport.varName}.${childComponentInfo.propTypesName}` : childComponentInfo.propTypesName;
-    content += `  ${childComponentInfo.className}: React.ComponentClass<${refPath}>;\n`
+    content += `  ${childComponentInfo.className}: React.StatelessComponent<${refPath}> | React.ComponentClass<${refPath}>;\n`
   }
   content += `};\n\n`;
 
   // _all_ component classes here are required to notify engineers of any changes to PC components. This only
   // happens when the typed definition file is regenerated. Internally, Paperclip doesn't care if child components are provides, and will provide the default "dumb" version of components.
-  content += `export function hydrate${className}(enhancer: Enhancer<${propTypesName}>, childComponentClasses: ${childComponentClassesTypeName}): React.ComponentClass<${propTypesName}>;\n\n`
+  content += `export function hydrate${className}<TOuter>(enhancer: Enhancer<${propTypesName}, TOuter>, childComponentClasses: ${childComponentClassesTypeName}): React.ComponentClass<${propTypesName}>;\n\n`
 
   return content;
 }
@@ -99,4 +97,86 @@ const transpileComponentPropTypes = ({ className, component }: ComponentTranspil
   `};\n\n`;
 
   return content;
+};
+
+enum InferredType {
+  OBJECT,
+  ARRAY,
+  STRING,
+  BOOLEAN,
+  NUMBER
+};
+
+type InferredDef = {
+  type: InferredType;
+
+  // inferred based on || found in AST. To implement in the future
+  optional?: boolean;
+}
+
+type InferredObject = {
+  properties: {
+    [property: string]: InferredDef
+  }
+} & InferredDef;
+
+type InferredArray = {
+  items: InferredDef
+} & InferredDef;
+
+type InferredTypeDefinition = {
+
+}
+
+/**
+ * analyzes the component, and infers types based on how data is used, not by the properties defined. This is to ensure that HOCs have more room to define different types that still work with the component.
+ */
+
+const inferComponentTypes = (component: Component) => getInferredNodeTypes(component.template);
+
+const getInferredNodeTypes = (node: PCExpression) => {
+  switch(node.type) {
+    case PCExpressionType.TEXT_NODE: return null;
+    // case PCExpressionType.FRAGMENT: return getInferredChildNodeTypes((node as PCFragment).childNodes);
+  }
+  return null;
+}
+
+const getInferredElementTypes = (element: PCElement) => {
+  const properties = {};
+
+  const startTag = getStartTag(element);
+
+  for (const modifier of getStartTag(element).modifiers)  {
+
+  }
+  
+};
+
+
+const getInferredElementAttributeTypes = (element: PCElement) => {
+  const properties = {};
+
+  const startTag = getStartTag(element);
+
+  for (const modifier of getStartTag(element).modifiers)  {
+
+  }
+  
+};
+
+const getInferredChildTypes = (childNodes: PCExpression[]) => {
+  const properties = {};
+
+  for (const child of childNodes) {
+    const typeInfo = getInferredNodeTypes(child);
+    if (!typeInfo) {
+      continue;
+    }
+  }
+
+  return {
+    type: InferredType.OBJECT,
+    properties
+  }
 };

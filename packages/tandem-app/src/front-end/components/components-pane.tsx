@@ -21,7 +21,7 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellProps, TdComponent
 
     // const larger = Math.max(width, height);
     // const ratio = CELL_SIZE
-    return <Base label={label} screenshot={screenshot} screenshotScale={scale} />
+    return <Base label={label} screenshot={screenshot} screenshotScale={scale} hovering={false} />
   }
 )
 

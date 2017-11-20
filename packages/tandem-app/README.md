@@ -1,11 +1,27 @@
-TOMORROW:
+RESEARCH:
+
+- [ ] spread prop for react. Why? Why not?
+
+IMMEDIATE:
+
+- [ ] Paperclip dev server
+  - [ ] find previews based on meta tag
+  - [ ] Just inject CSS into the global NS
 
 - [ ] CSS inspector pane
   - [ ] wire up data model to each prop - figure out 
 
-HIGH PRIO:
+- [ ] paperclip
+  - [ ] edit lib (need mutations module)
 
-- [ ] CSS Inspector
+- [ ] Components pane
+  - [ ] + button
+  - [ ] DND elements to stage (create new window)
+    - [ ] insert preview for elements that do not have one
+  - [ ] DND elements to other elements
+  - [ ] native elements
+
+HIGH PRIO:
 
 
 - [ ] Native elements pane
