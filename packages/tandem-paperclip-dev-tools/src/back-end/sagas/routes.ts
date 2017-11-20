@@ -119,7 +119,7 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
         const _cache = {};
 
         const onPreviewBundle = ({ previewComponentId, bounds }, { code }) => {
-          const { entry, globalStyles, modules } = new Function("window", "with (window) { return " + code + "}")(window);
+          const { entry, modules } = new Function("window", "with (window) { return " + code + "}")(window);
 
           const container = document.createElement("div");
           container.appendChild(document.createElement(previewComponentId));
@@ -297,7 +297,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
             }
           }
         }).then(({ code, warnings, entryDependency }) => {
-          const { entry, globalStyles, modules } = new Function("window", "with (window) { return " + code + "}")(window);
+          const { entry, modules } = new Function("window", "with (window) { return " + code + "}")(window);
 
           const components = entryDependency.module.components;
           let previewComponent = components.find((component) => {

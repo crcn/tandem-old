@@ -60,7 +60,7 @@ function* takeComponentScreenshot() {
 
     const entries = getPreviewComponentEntries(state);
 
-    console.log(`Taking screenshot of ${entries.length} components.`);
+    console.log(`Taking screenshot of ${entries.length} components...`);
 
     const clippings: ScreenshotClippings = {};
     for (const entry of entries) {

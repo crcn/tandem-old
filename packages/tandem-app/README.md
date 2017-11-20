@@ -4,11 +4,17 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] CSS inspector pane
-  - [ ] wire up data model to each prop - figure out 
+- [ ] react transpiler
+  - [ ] inferred types**
+
+-  [ ] CSS Inspector pane (because it's complex) 
+
+HIGH PRIO:
 
 - [ ] paperclip
   - [ ] edit lib (need mutations module)
+
+- [ ] Native elements pane
 
 - [ ] Components pane
   - [ ] + button
@@ -17,15 +23,24 @@ IMMEDIATE:
   - [ ] DND elements to other elements
   - [ ] native elements
 
-HIGH PRIO:
-
-
-- [ ] Native elements pane
-
+- [ ] CSS Inspector components
+  - [ ] color picker
 
 - [ ] Paperclip
   - [ ] 
 
+
+POSSIBLY:
+
+- [ ] Paperclip
+  - [ ] implement "is" with components
+    - [ ] can do neat diagrams about grouped elements
+    - [ ] ability to inherit styles (assuming it matches spec)
+
+#### FOCUS
+
+- [ ] Warnings & Errors for paperclip
+- [ ] Must be able to code everything visually (conditions as well)
 
 #### V1
 
@@ -34,7 +49,8 @@ HIGH PRIO:
   - [ ] warn when component id overriden
   - [ ] Linter
 - [ ] Stage tools
-  - [ ]
+  - [ ] highlight dynamic bindings
+  - [ ] 
 - [ ] CSS Editor
   - [ ] add new style rule
   - [ ] add new style declaration
