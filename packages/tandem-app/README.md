@@ -29,6 +29,11 @@ HIGH PRIO:
 - [ ] Paperclip
   - [ ] 
 
+PROBLEMS:
+
+- [ ] need to figure out how to visualize conditions & repeated lists (togling between states)
+- [ ] need to figure out how to add fixture data
+- [ ] 
 
 POSSIBLY:
 
@@ -37,6 +42,7 @@ POSSIBLY:
     - [ ] can do neat diagrams about grouped elements
     - [ ] ability to inherit styles (assuming it matches spec)
 
+- [ ] show inferred types for component as they're being coded
 #### FOCUS
 
 - [ ] Warnings & Errors for paperclip
