@@ -16,7 +16,11 @@
     "paperclip": "8.0.x"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.5",
     "@types/lodash": "^4.14.85",
+    "@types/mocha": "^2.2.44",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
     "react": "^16.1.1"
   }
 }

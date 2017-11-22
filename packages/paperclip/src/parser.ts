@@ -100,7 +100,7 @@ const createBKOperation = (scanner: TokenScanner): BKExpression => {
   const operator = scanner.curr();
   const otype = operator.type;
 
-  const isOperator = otype === PCTokenType.AND || otype === PCTokenType.OR || otype == PCTokenType.PLUS || otype === PCTokenType.MINUS || otype === PCTokenType.STAR || otype === PCTokenType.BACKSLASH || otype === PCTokenType.DOUBLE_EQUALS || otype === PCTokenType.TRIPPLE_EQUELS || otype === PCTokenType.GREATER_THAN || otype === PCTokenType.LESS_THAN || otype === PCTokenType.LESS_THAN_OR_EQUAL || otype === PCTokenType.GREATER_THAN_OR_EQUAL;
+  const isOperator = otype === PCTokenType.AND || otype === PCTokenType.OR || otype == PCTokenType.PLUS || otype === PCTokenType.MINUS || otype === PCTokenType.STAR || otype === PCTokenType.BACKSLASH || otype === PCTokenType.DOUBLE_EQUALS || otype === PCTokenType.TRIPPLE_EQUELS || otype === PCTokenType.GREATER_THAN || otype === PCTokenType.LESS_THAN || otype === PCTokenType.LESS_THAN_OR_EQUAL || otype === PCTokenType.GREATER_THAN_OR_EQUAL || otype === PCTokenType.NOT_EQUALS || otype === PCTokenType.NOT_DOUBLE_EQUALS;
 
   if (!isOperator) {
     return lhs;

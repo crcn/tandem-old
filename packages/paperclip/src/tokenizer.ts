@@ -27,6 +27,8 @@ export enum PCTokenType {
   PAREN_CLOSE,
   DOUBLE_EQUALS,
   TRIPPLE_EQUELS,
+  NOT_EQUALS,
+  NOT_DOUBLE_EQUALS,
   BRACKET_OPEN,
   BRACKET_CLOSE,
   CURLY_BRACKET_OPEN,
@@ -97,7 +99,13 @@ export const tokenizePaperclipSource = (source: string) => {
     } else if (cchar === "'") {
       token = createToken(PCTokenType.SINGLE_QUOTE, scanner.pos, scanner.shift());
     } else if (cchar === "!") {
-      token = createToken(PCTokenType.BANG, scanner.pos, scanner.shift());
+      if (scanner.peek(3) === "!==") {
+        token = createToken(PCTokenType.NOT_DOUBLE_EQUALS, scanner.pos, scanner.take(3));
+      } else if (scanner.peek(2) === "!=") {
+        token = createToken(PCTokenType.NOT_EQUALS, scanner.pos, scanner.take(2));
+      } else {
+        token = createToken(PCTokenType.BANG, scanner.pos, scanner.shift());
+      }
     } else if (cchar === "/") {
 
       // eat comments
