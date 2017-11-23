@@ -177,6 +177,9 @@
   </template>
 </component>
 
-<td-preview>
-  <td-workspace />
-</td-preview>
+<component id="td-workspace-preview">
+  <meta name="preview" content="of=td-workspace, width=1024, height=768" />
+  <template>
+    <td-workspace />
+  </template>
+</component>

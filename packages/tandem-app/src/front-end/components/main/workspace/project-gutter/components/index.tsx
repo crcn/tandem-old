@@ -2,7 +2,7 @@ import * as React from "react";
 import { Pane } from "front-end/components/pane/index";
 import { Dispatcher } from "aerial-common2";
 import { pure, compose } from "recompose";
-import { Workspace, AvalaibleComponent, AVAILABLE_COMPONENT, withDragSource, ConnectDragSource } from "front-end/state";
+import { Workspace, AVAILABLE_COMPONENT, withDragSource, ConnectDragSource } from "front-end/state";
 
 export type ComponentsPaneInnerProps = {
   workspace: Workspace;
@@ -11,7 +11,7 @@ export type ComponentsPaneInnerProps = {
 
 type AvailableComponentPaneRowProps = {
   dispatch: Dispatcher<any>;
-  component: AvalaibleComponent;
+  component: any;
 }
 
 type AvailableComponentPaneRowInnerProps = {

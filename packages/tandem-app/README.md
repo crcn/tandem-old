@@ -31,9 +31,7 @@ HIGH PRIO:
 
 PROBLEMS:
 
-- [ ] need to figure out how to visualize conditions & repeated lists (togling between states)
-- [ ] need to figure out how to add fixture data
-- [ ] 
+- [ ] views not need props by react components
 
 POSSIBLY:
 

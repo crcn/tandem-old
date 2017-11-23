@@ -1,7 +1,7 @@
 import { Bounds } from "aerial-common2";
 export const AVAILABLE_COMPONENT = "AVAILABLE_COMPONENT";
 
-export type AvalaibleComponent = {
+export type AvailableComponent = {
   $id: string;
   tagName: string;
   label: string;

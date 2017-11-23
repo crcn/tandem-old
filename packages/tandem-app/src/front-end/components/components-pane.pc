@@ -1,7 +1,7 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 
-<component id="td-components-pane-cell" [[property screenshot]] [[property label]] [[property screenshotScale]] [[property hovering]]>
+<component id="td-components-pane-cell" [[property screenshot]] [[property label]] [[property screenshotScale]] [[property hovering]] [[property onDragStart]] [[property onDragEnd]] [[property dispatch]]>
   <meta name="internal" content="true" />
   <style>
     :host {
@@ -54,7 +54,7 @@
 
   </style>
   <template>
-    <div class="inner" title=[[bind label]] draggable alt=[[bind label]]>
+    <div class="inner" title=[[bind label]] draggable alt=[[bind label]] onDragStart=[[bind onDragStart]] onDragEnd=[[bind onDragEnd]]>
       <span class="label" [[if !screenshot]]> 
         [[bind label]]
       </span>
@@ -69,7 +69,7 @@
   </template>
 </component>
 
-<component id="td-components-pane" [[property components]]>
+<component id="td-components-pane" [[property components]] [[property dispatch]]>
   <style>
     .content {
       position: relative;
@@ -92,7 +92,7 @@
     <td-pane>
       <span slot="header">Components</span>
       <span slot="content" class="content">
-        <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] />
+        <td-components-pane-cell [[repeat components as component]] [[bind component]] dispatch=[[bind dispatch]] key=[[bind component.$id]] />
       </span>
     </td-pane>
   </template>

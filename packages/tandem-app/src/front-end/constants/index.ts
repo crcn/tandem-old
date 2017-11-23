@@ -1,3 +1,3 @@
-import { AvalaibleComponent } from "../state";
+import { AvailableComponent } from "../state";
 
-export const NATIVE_COMPONENTS: AvalaibleComponent[] = [];
+export const NATIVE_COMPONENTS: AvailableComponent[] = [];

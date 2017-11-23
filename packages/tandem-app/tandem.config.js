@@ -25,8 +25,6 @@ module.exports = {
     extensions: ["", ".js", ".ts", ".pc", "/index.ts", "/index.js"]
   },
 
-  // TODO - possible
-  editSourceContent: require("./lib/webpack/edit-pc-content"),
   sourceFilePattern: __dirname + "/src/**/*-preview.tsx",
   webpackConfigPath: __dirname + "/webpack-dev.config.js",
   getEntryIndexHTML: ({ entryName, filePath }) => `

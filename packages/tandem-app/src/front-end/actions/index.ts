@@ -1,6 +1,6 @@
 import { FileCacheItem } from "aerial-sandbox2";
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
-import { ApplicationState, SyntheticElement, AvalaibleComponent } from "../state";
+import { ApplicationState, SyntheticElement, AvailableComponent } from "../state";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
@@ -273,7 +273,7 @@ export type ToggleCSSTargetSelectorClicked = {
 } & BaseEvent;
 
 export type APIComponentsLoaded = {
-  components: AvalaibleComponent[];
+  components: AvailableComponent[];
 } & BaseEvent;
 
 export type DNDEvent = {
@@ -588,7 +588,7 @@ export const stageMouseClicked = (sourceEvent: React.MouseEvent<any>): WrappedEv
   type: STAGE_MOUSE_CLICKED,
 });
 
-export const apiComponentsLoaded = (components: AvalaibleComponent[]): APIComponentsLoaded => ({
+export const apiComponentsLoaded = (components: AvailableComponent[]): APIComponentsLoaded => ({
   type: API_COMPONENTS_LOADED,
   components
 })

@@ -36,7 +36,7 @@ import {
 } from "aerial-common2";
 
 import {
- AvalaibleComponent
+ AvailableComponent
 } from "./api";
 
 import { DNDState } from "./dnd";
@@ -164,7 +164,7 @@ export type Workspace = {
   stage: Stage;
   textEditor: TextEditor;
   library: LibraryItem[];
-  availableComponents: AvalaibleComponent[];
+  availableComponents: AvailableComponent[];
 } & DNDState & Struct;
 
 export type ApplicationState = {

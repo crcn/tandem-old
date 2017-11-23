@@ -16,6 +16,7 @@ try {
     componentsDirectory: path.join(cwd, "paperclip")
   };  
 } catch(e) {
+  console.log(e);
   throw new Error(`tandem.config not found`);
 }
 

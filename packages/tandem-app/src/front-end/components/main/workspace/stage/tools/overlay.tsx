@@ -2,7 +2,7 @@ import "./overlay.scss";
 const cx = require("classnames");
 import * as React from "react";
 import * as Hammer from "react-hammerjs";
-import { Workspace, AVAILABLE_COMPONENT, AvalaibleComponent } from "front-end/state";
+import { Workspace, AVAILABLE_COMPONENT, AvailableComponent } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import { compose, pure, withHandlers } from "recompose";
