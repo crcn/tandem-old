@@ -64,7 +64,6 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
 
   const childComponentDependencies = getChildComponentInfo(component.template, graph);  
 
-  const childComponentClassesTypeName = `${className}ChildComponentClasses`;
 
   const propTypeMap: any = {};
 
@@ -114,7 +113,9 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
     // content += `  ${childComponentInfo.className}: React.StatelessComponent<${refPath}> | React.ComponentClass<${refPath}>;\n`
   }
 
-  content += `type ${childComponentClassesTypeName} = {\n`;
+  const childComponentGettersTypeName = `${className}ChildComponentClasses`;
+  
+  content += `type ${childComponentGettersTypeName} = {\n`;
   for (const childComponentClassName in propTypeMap) {
     const propTypesName = propTypeMap[childComponentClassName];
     content += `  ${childComponentClassName}: React.StatelessComponent<${propTypesName}> | React.ComponentClass<${propTypesName}>;\n`
@@ -123,7 +124,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
 
   // _all_ component classes here are required to notify engineers of any changes to PC components. This only
   // happens when the typed definition file is regenerated. Internally, Paperclip doesn't care if child components are provides, and will provide the default "dumb" version of components.
-  content += `export function hydrate${className}<TOuter>(enhancer: Enhancer<${propTypesName}, TOuter>, childComponentClasses: ${childComponentClassesTypeName}): React.ComponentClass<TOuter>;\n\n`
+  content += `export function hydrate${className}<TOuter>(enhancer: Enhancer<${propTypesName}, TOuter>, childComponentClasses: ${childComponentGettersTypeName}): React.ComponentClass<TOuter>;\n\n`
 
   return content;
 }

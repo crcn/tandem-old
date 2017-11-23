@@ -7,73 +7,15 @@ import { Workspace, withDragSource, ConnectDragSource, AvailableComponent, AVAIL
 
 const ICON_SIZE = 110;
 
-/*
-
-import * as React from "react";
-import { Pane } from "front-end/components/pane/index";
-import { Dispatcher } from "aerial-common2";
-import { pure, compose } from "recompose";
-import { Workspace, AvailableComponent, AVAILABLE_COMPONENT, withDragSource, ConnectDragSource } from "front-end/state";
-
-export type ComponentsPaneInnerProps = {
-  workspace: Workspace;
-  dispatch: Dispatcher<any>;
-};
-
-type AvailableComponentPaneRowProps = {
-  dispatch: Dispatcher<any>;
-  component: AvailableComponent;
-}
-
-type AvailableComponentPaneRowInnerProps = {
-  connectDragSource: ConnectDragSource;
-} & AvailableComponentPaneRowProps;
-
-const AvailableComponentBase = ({ component, connectDragSource }: AvailableComponentPaneRowInnerProps) => {
-  return connectDragSource(<div>
-    {component.label}
-  </div>);
-}
-
-const availableComponentSource = {
-  beginDrag(props: AvailableComponentPaneRowProps) {
-    return {
-      text: props.component
-    };
-  }
-}
-
-const AvailableComponent = compose<AvailableComponentPaneRowInnerProps, AvailableComponentPaneRowProps>(
-  pure,
-  withDragSource({
-    getData: ({ component }: AvailableComponentPaneRowProps) => [AVAILABLE_COMPONENT, component.tagName]
-  }),
-)(AvailableComponentBase);
-
-export const ComponentsPaneBase = ({ workspace, dispatch }: ComponentsPaneInnerProps) => {
-  
-  return <Pane title="Components">
-    { 
-      workspace.availableComponents.map((availableComponent) => {
-        return <AvailableComponent key={availableComponent.tagName} component={availableComponent} dispatch={dispatch} />
-      })
-    }
-  </Pane>;
-};
-
-const enhanceComponentsPane = compose<ComponentsPaneInnerProps, ComponentsPaneInnerProps>(
-  pure
-);
-
-export const ComponentsPane = enhanceComponentsPane(ComponentsPaneBase);
-*/
-
 export type ComponentsPaneOuterProps = {
   workspace: Workspace;
   dispatch: Dispatcher<any>;
 };
 
-type ComponentsPaneCellOuterProps = AvailableComponent;
+type ComponentsPaneCellOuterProps = AvailableComponent & {
+  dispatch: Dispatcher<any>;
+};
+
 type ComponentsPaneCellInnerProps = {
   connectDragSource: ConnectDragSource;
   dispatch: Dispatcher<any>;
@@ -97,7 +39,7 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, Compon
 
     // const larger = Math.max(width, height);
     // const ratio = CELL_SIZE
-    return connectDragSource(<Base label={label} screenshot={screenshot} screenshotScale={scale} hovering={false} />);
+    return connectDragSource(<Base label={label} screenshot={screenshot} screenshotScale={scale} hovering={false} onDragStart={null} onDragEnd={null} />);
   }
 );
 
@@ -106,9 +48,9 @@ const enhanceComponentsPane = compose<TdComponentsPaneInnerProps, ComponentsPane
   (Base: React.ComponentClass<TdComponentsPaneInnerProps>) => ({ workspace, dispatch }: ComponentsPaneOuterProps) => <Base components={workspace.availableComponents || []} dispatch={dispatch} />
 );
 
+const ComponentsPaneCell = hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {});
+
 export const ComponentsPane = hydrateTdComponentsPane(enhanceComponentsPane, {
   TdPane: Pane,
-  TdComponentsPaneCell: hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {
-    
-  })
+  TdComponentsPaneCell: ComponentsPaneCell
 });

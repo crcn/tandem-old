@@ -4,14 +4,11 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] react transpiler
-  - [ ] inferred types**
-
 -  [ ] CSS Inspector pane (because it's complex) 
 
 HIGH PRIO:
 
-- [ ] paperclip
+- [ ] paperclipc
   - [ ] edit lib (need mutations module)
 
 - [ ] Native elements pane
@@ -89,9 +86,11 @@ POSSIBLY:
 - [ ] Paperclip 
   - [ ] strong types
   - [ ] source maps support
+  - [ ] i18n errors
 
 - [ ] Tandem
   - [ ] Components filter
+  - [ ] Themable
 
 #### V3
 

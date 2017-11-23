@@ -151,7 +151,6 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 
       content += `    ${info.className}: ${_import ? _import.varName + "." : ""}Base${info.className},\n`;
     }
-
     
     content += `  };\n\n`;
     content += `  const childComponentClasses = defaults(baseComponentClasses, hydratedChildComponentClasses);`;

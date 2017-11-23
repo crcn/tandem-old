@@ -12,7 +12,7 @@ export type ElementGutterOuterProps = {
 };
 
 export const ElementGutterBase = ({ browser, workspace, dispatch }: ElementGutterOuterProps) => <Gutter left={false} right={true}>
-  <CSSInpectorPane styleRules={[{}, {}]} />
+  <CSSInpectorPane workspace={workspace} browser={browser} dispatch={dispatch} />
   {/* <CSSInspector browser={browser} workspace={workspace} dispatch={dispatch} /> */}
 </Gutter>;
 
