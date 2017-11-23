@@ -18,7 +18,7 @@
     .name {
       color: var(--font-color-dim);
     }
-    .name:after {
+    .name::after {
       content: ": ";
     }
   </style>
@@ -80,7 +80,7 @@
 
     <td-list>
       <td-list-item [[if declarations]] [[repeat declarations as declaration]]>
-        <td-style-declaration [[bind declaration]] />
+        <td-style-declaration [[bind declaration]] key=[[bind declaration.name]] />
       </td-list-item>
     </td-list>
   </template>
@@ -126,7 +126,7 @@
             name: "flex-direction",
             value: {
               type: "KEYWORD",
-              value: "row"
+              name: "row"
             }
           },
           { 
@@ -197,7 +197,7 @@
                     },
                     {
                       type: "KEYWORD",
-                      value: "no-repeat"
+                      name: "no-repeat"
                     }
                   ]
                 },
@@ -226,7 +226,7 @@
                     },
                     {
                       type: "KEYWORD",
-                      value: "no-repeat"
+                      name: "no-repeat"
                     }
                   ]
                 }
@@ -241,7 +241,7 @@
               params: [
                 {
                   type: "KEYWORD",
-                  value: "--padding"
+                  name: "--padding"
                 }
               ]
             }
@@ -259,7 +259,7 @@
               params: [
                 {
                   type: "KEYWORD",
-                  value: "--font-color"
+                  name: "--font-color"
                 }
               ]
             }

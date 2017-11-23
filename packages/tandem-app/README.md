@@ -4,7 +4,8 @@ RESEARCH:
 
 IMMEDIATE:
 
--  [ ] CSS Inspector pane (because it's complex) 
+- [ ] CSS Inspector pane (because it's complex) 
+- [ ] css selectors do not work for component tag names 
 
 HIGH PRIO:
 

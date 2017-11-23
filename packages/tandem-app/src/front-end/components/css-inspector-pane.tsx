@@ -3,7 +3,8 @@ import { Pane } from "./pane";
 import { identity } from "lodash";
 import { compose, pure } from "recompose";
 import { parseDeclarationValue } from "./utils/css";
-import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected } from "./css-inspector-pane.pc";
+import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps } from "./css-declaration-input.pc";
+import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
 import { SyntheticBrowser, Workspace } from "front-end/state";
@@ -20,6 +21,52 @@ import {
   getSyntheticMatchingCSSRules, 
 } from "aerial-browser-sandbox";
 
+
+type StyleDelarationOuterProps = {
+  name: string;
+  ignored: boolean;
+  disabled: boolean;
+  overridden: boolean;
+  value: string;
+};
+
+const enhanceCssCallExprInput = compose<TdCssCallExprInputInnerProps, TdCssCallExprInputInnerProps>(
+  pure,
+  (Base: React.ComponentClass<TdCssCallExprInputInnerProps>) => (props: TdCssCallExprInputInnerProps) => {
+    return <Base {...props} returnValue="#FF6600" returnType="COLOR" />;
+  }
+);
+
+const CssCallExprInput = hydrateTdCssCallExprInput(enhanceCssCallExprInput, {
+  TdColorMiniInput: null,
+  TdCssExprInput: (props) => <CSSExprInput {...props} />
+});
+
+const enhanceCSSCallExprInput = compose<TdCssExprInputInnerProps, TdCssExprInputInnerProps>(
+  pure
+);
+
+const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
+  TdCssCallExprInput: CssCallExprInput,
+  TdCssColorExprInput: null,
+  TdCssCommaListExprInput: null,
+  TdCssKeywordExprInput: null,
+  TdCssMeasurementInput: null,
+  TdCssNumberExprInput: null,
+  TdCssSpacedListExprInput: null
+});
+
+const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDelarationOuterProps>(
+  pure,
+  (Base: React.ComponentClass<StyleDelarationOuterProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
+    return <Base name={name} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclarationValue(value)} />;
+  }
+);
+
+const CSSStyleDeclaration = hydrateTdStyleDeclaration(enhanceCSSStyleDeclaration, {
+  TdCssExprInput: CSSExprInput
+});
+
 export type CSSInspectorOuterProps = {
   workspace: Workspace;
   browser: SyntheticBrowser;
@@ -28,37 +75,45 @@ export type CSSInspectorOuterProps = {
 
 export type CSSStyleRuleOuterProps = AppliedCSSRuleResult
 
+
 const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited }: CSSStyleRuleOuterProps) => {
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames }: CSSStyleRuleOuterProps) => {
+
+    const declarations = rule.style;
+
     // const properties = [];
     
-    //   const declaration = appliedRule.rule.style;
-      
-    //   for (let i = 0, n = declaration.length; i < n; i++) {
-    //     const name = declaration[i];
-    //     const value = declaration[name];
-    //     const origValue = appliedRule.rule.style.disabledPropertyNames && appliedRule.rule.style.disabledPropertyNames[name];
-    //     const disabled = Boolean(origValue);
-    //     const ignored = Boolean(appliedRule.ignoredPropertyNames && appliedRule.ignoredPropertyNames[name]);
-    //     const overridden = Boolean(appliedRule.overriddenPropertyNames && appliedRule.overriddenPropertyNames[name]);
+    const childDeclarations: StyleDelarationOuterProps[] = [];
     
-    //     properties.push(
-    //       <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
-    //     );
-    //   }
-    // console.log(inherited);
-    // return <span>RULE</span>;/
-    // return <Base declarations={rule.style} />;
-    // return <Base selectorText=".test" />;
+    for (let i = 0, n = declarations.length; i < n; i++) {
+      const name = declarations[i];
+      const value = declarations[name];
+      const origValue = rule.style.disabledPropertyNames && rule.style.disabledPropertyNames[name];
+      const disabled = Boolean(origValue);
+      const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
+      const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
 
-    return <Base selectorText={rule.selectorText} source={null} declarations={[]} />;
+      childDeclarations.push({
+        name,
+        ignored,
+        disabled,
+        overridden,
+        value,
+      });
+  
+      // properties.push(
+      //   <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
+      // );
+    }
+    return <Base selectorText={rule.selectorText} source={null} declarations={childDeclarations} />;
   }
 );
 
+
 const CSSStyleRule = hydrateTdStyleRule(enhanceCSSStyleRule, {
   TdGutterSubheader: null,
-  TdStyleDeclaration: null,
+  TdStyleDeclaration: CSSStyleDeclaration,
   TdList: null,
   TdListItem: null
 });

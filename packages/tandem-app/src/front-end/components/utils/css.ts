@@ -2,11 +2,11 @@
 
 
 export enum CSSDeclarationExpressionType {
-  COLOR,
-  VAR,
-  CALL,
-  KEYWORD,
-  NUMBER
+  COLOR = "COLOR",
+  VAR = "VAR",
+  CALL = "CALL",
+  KEYWORD = "KEYWORD",
+  NUMBER = "NUMBER"
 };
 
 export type CSSDeclarationExpression = {

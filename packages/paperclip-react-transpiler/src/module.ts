@@ -44,7 +44,8 @@ import { 
   getUsedDependencies,
   ChildComponentInfo,
   getChildComponentInfo,
-  getComponentDependency
+  getComponentDependency,
+  getModuleComponent
 } from "paperclip";
 import { camelCase, uniq } from "lodash";
 import { getComponentTranspileInfo, ComponentTranspileInfo, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName } from "./utils";
@@ -133,7 +134,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
     childComponentInfo
   };
 
-  content += transpileStyle(component.style, context.scopeClass);
+  content += transpileStyle(component.style, context.scopeClass, childComponentInfo);
 
   content += `export const hydrate${className} = (enhance, hydratedChildComponentClasses = {}) => {\n`;
 
@@ -184,7 +185,13 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
   return content;
 };
 
-const transpileStyle = (style: PCElement, scopeClass?: string) => {
+const transpileStyle = (style: PCElement, scopeClass?: string, childComponentInfo = {}) => {
+  let aliases = {};
+  for (const componentId in childComponentInfo) {
+    const dep: Dependency = childComponentInfo[componentId];
+    aliases[componentId] = "." + getComponentTranspileInfo(getModuleComponent(componentId, dep.module)).className;
+  }
+
   if (!style) {
     return "";
   }
@@ -204,6 +211,15 @@ const transpileStyle = (style: PCElement, scopeClass?: string) => {
           // ignore ".selector > .selector"
           if (/^[>,]$/.test(part)) return part;
 
+          for (const alias in aliases) {
+            if (part.indexOf(alias) !== -1) {
+              // console.log(`.${scopeClass}.host > ${part.replace(alias, aliases[alias])}`);
+              return `.${scopeClass}.host > ${part.replace(alias, aliases[alias] + ".host")}`;
+            }
+          }
+          const [pseudo] = part.match(/::.*/) || [""];
+          part = part.replace(pseudo, "");
+
           if (part.indexOf(":host") !== -1) {
             const [match, params] = part.match(/\:host\((.*?)\)/) || [null, null];
 
@@ -219,7 +235,8 @@ const transpileStyle = (style: PCElement, scopeClass?: string) => {
           const addedClass = `.${scopeClass}`;
 
           // part first in case the selector is a tag name
-          return part + addedClass;
+          // TODO - consider psuedo selectors
+          return part + addedClass + pseudo;
         }).join(" ") : selectorText;
         return scopedSelectorText;
       }))}\n\n` +
@@ -344,7 +361,7 @@ const transpileElementModifiers = (element: PCElement | PCSelfClosingElement, co
     if (value.type == BKExpressionType.IF) {
       _if = value as BKIf;
     } else if (value.type === BKExpressionType.ELSEIF) {
-      _else = value as BKElseIf;
+      _elseif = value as BKElseIf;
     } else if (value.type === BKExpressionType.ELSE) {
       _else = value as BKElse;
     } else if (value.type === BKExpressionType.REPEAT) {

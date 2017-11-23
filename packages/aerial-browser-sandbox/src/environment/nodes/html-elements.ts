@@ -598,6 +598,10 @@ export const getSEnvHTMLFormElementClass = weakMemo((context: any) => {
     checkValidity(): boolean {
       return false;
     }
+    reportValidity() {
+      this._throwUnsupportedMethod();
+      return null;
+    }
     constructor() {
       super();
       this.addEventListener(SEnvMutationEvent.MUTATION, this._onMutation2.bind(this));

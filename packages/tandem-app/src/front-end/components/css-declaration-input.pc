@@ -24,7 +24,7 @@
   </template>
 </component>
 
-<component id="td-css-keyword-expr-input" [[property value]]>
+<component id="td-css-keyword-expr-input" [[property name]]>
   <meta name="internal" content="true" />
   <style>
     :host {
@@ -32,7 +32,7 @@
     }
   </style>
   <template>
-    <span>[[bind value]]</span>
+    <span>[[bind name]]</span>
   </template>
 </component>
 
@@ -139,14 +139,14 @@
       color: var(--font-color-alt);
     }
 
-    .name:after {
+    .name::after {
       content: "(";
     }
   </style>
   <template>
     <td-color-mini-input [[if returnType === "COLOR"]] value=[[bind returnValue]] /> 
     <span class="name">[[bind name]]</span>
-      <td-css-expr-input [[repeat params as param]] [[bind param]] />
+      <td-css-expr-input [[repeat params as param]] value=[[bind param]] />
   </template>
 </component>
 

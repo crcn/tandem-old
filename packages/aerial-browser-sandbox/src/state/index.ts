@@ -513,6 +513,7 @@ export type BasicComment = BasicValueNode;
 export type SyntheticBaseNode = {
   source: ExpressionLocation;
   parentId?: string;
+  ownerDocumentId?: string;
 } & BasicNode & Struct;
 
 export type SyntheticNode = {
