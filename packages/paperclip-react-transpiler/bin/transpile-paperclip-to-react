@@ -16,4 +16,6 @@ loadModuleDependencyGraph(arg, {
   if (!silent) {
     console.log(output);
   }
+}).catch((e) => {
+  console.error(e.stack);
 });

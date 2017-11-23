@@ -90,7 +90,6 @@
   </style>
   <template>
     <td-pane>
-      [[bind a + b]]
       <span slot="header">Components</span>
       <span slot="content" class="content">
         <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] />

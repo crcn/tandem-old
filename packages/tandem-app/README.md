@@ -48,6 +48,12 @@ POSSIBLY:
 - [ ] Warnings & Errors for paperclip
 - [ ] Must be able to code everything visually (conditions as well)
 
+#### V0 (before launch)
+
+- [ ] paperclip
+  - [ ] v1.5 type inferences
+  - [ ] remove component properties -- scan for them.
+
 #### V1
 
 - [ ] Paperclip

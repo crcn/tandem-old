@@ -1,4 +1,4 @@
-import { InferredType, inferredType, InferredTypeKind, inferComponentPropTypes, loadModuleAST, parseModuleSource } from "../";
+import { InferredType, inferredType, InferredTypeKind, inferRootNodeTypes, loadModuleAST, parseModuleSource } from "../";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
@@ -96,12 +96,19 @@ describe(__filename + "#", () => {
           name: inferredType(InferredTypeKind.ANY)
         })
       })
+    })],
+    [`<a [[repeat items as item]] [[bind item]]>[[bind item.name]]</a>`, inferredType(InferredTypeKind.OBJECT, {
+      items: inferredType(InferredTypeKind.OBJECT_OR_ARRAY, {
+        item: inferredType(InferredTypeKind.OBJECT | InferredTypeKind.EXTENDABLE, {
+          name: inferredType(InferredTypeKind.ANY)
+        })
+      })
     })]
 
   ].forEach(([source, expectation]: [string, InferredType]) => {
     it(`can infer types for ${source}`, () => {
       const module = loadModuleAST(parseModuleSource(`<component id="test"><template>${source}</template></component>`), "nada");
-      expect(inferComponentPropTypes(module.components[0])).to.eql(expectation);
+      expect(inferRootNodeTypes(module.components[0].template)).to.eql(expectation);
     });
   });
 });

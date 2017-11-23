@@ -1,15 +1,20 @@
 /*
 
-TODOS:
+V1 TODOS:
+
+- throw away because the data model is shit
+
+V1.5 TODOS:
 
 - check for css props like :host([prop])
 - pretty errors & warnings
 - further inferences based on fixture data
+- flag props as optional when combined with ||
 */
 
 import { getElementChildNodes, PCExpressionType, PCExpression, PCBlock, PCElement, PCFragment, PCSelfClosingElement, getPCElementModifier, BKExpressionType, BKRepeat, BKBind, BKIf, BKElse, BKElseIf, BKOperation, BKExpression, BKPropertyReference, BKVarReference, getStartTag, getElementAttributes } from "./ast";
 import { Component } from "./loader";
-import { BKGroup } from "./index";
+import { BKGroup, BKNot, BKObject, BKArray, getElementModifiers } from "./index";
 
 export enum InferredTypeKind {
   OBJECT = 1,
@@ -18,12 +23,15 @@ export enum InferredTypeKind {
   BOOLEAN = STRING << 1,
   NUMBER = BOOLEAN << 1,
   OPTIONAL = NUMBER << 1,
+  EXTENDABLE = OPTIONAL << 1,
   OBJECT_OR_ARRAY = OBJECT | ARRAY,
   ANY_PRIMITIVE = STRING | NUMBER | BOOLEAN,
-  ANY = OBJECT | ARRAY | ANY_PRIMITIVE,
+  EXTENDABLE_OBJECT = OBJECT | EXTENDABLE,
+  ANY = OBJECT | ARRAY | ANY_PRIMITIVE | EXTENDABLE,
   STRING_OR_NUMBER = STRING | NUMBER
 };
 
+// TODO - add more native element kinds here
 const NATIVE_ELEMENT_TYPE_KINDS = {
   a: {
     href: InferredTypeKind.STRING
@@ -118,9 +126,16 @@ const setNestedType = (root: InferredType, path: string[], type: InferredType, i
   }
 };
 
+export const setSymbolTableEntries = (entries: SymbolTableEntries, table: InferredSymbolTable) => {
+  for (const entry of entries) {
+    table = setSymbolTablePropType(entry[0], entry[1], table);
+  }
+  return table;
+}
+
 const entry = (path: string[] | null, type: InferredType): SymbolTableEntry => [path, type];
 export const inferredType = (type: InferredTypeKind, props: any = null): InferredType => [type, props];
-const symbolTable = (context: InferredType = inferredType(InferredTypeKind.OBJECT, {})) => ({ context, currentScope: {} });
+export const symbolTable = (context: InferredType = inferredType(InferredTypeKind.OBJECT, {})) => ({ context, currentScope: {} });
 
 const getEntryPath = (entry: SymbolTableEntry) => entry[0];
 const getEntryType = (entry: SymbolTableEntry) => entry[1];
@@ -129,11 +144,12 @@ const getEntryType = (entry: SymbolTableEntry) => entry[1];
  * analyzes the component, and infers types based on how data is used, not by the properties defined. This is to ensure that HOCs have more room to define different types that still work with the component.
  */
 
-export const inferComponentPropTypes = (component: Component): InferredType => {
-  return addInferredChildNodeTypes(component.template.childNodes, symbolTable()).context;
+export const inferRootNodeTypes = (root: PCExpression): InferredType => {
+  return inferNodeTypes(root, symbolTable()).context;
 };
 
-const addInferredNodeTypes = (node: PCExpression, table: InferredSymbolTable) => {
+
+export const inferNodeTypes = (node: PCExpression, table: InferredSymbolTable = symbolTable()) => {
   switch(node.type) {
     case PCExpressionType.TEXT_NODE: return table;
     case PCExpressionType.BLOCK: return addInferredTextBlockTypes((node as PCBlock), table);
@@ -233,7 +249,7 @@ const inferExpressionTypes = (block: BKExpression, table: InferredSymbolTable): 
       // a as a string or number since that's valid syntax.
       } else if (operator === "+") {
 
-        return updateEntryTypes(entries, inferredType(InferredTypeKind.STRING_OR_NUMBER), table);
+        return updateEntryTypes(entries, inferredType(InferredTypeKind.ANY), table);
       } else if (operator === "===" || operator === "!==") {
 
         const strippedTypeKind = entries.reduce((a, b) => (
@@ -249,7 +265,6 @@ const inferExpressionTypes = (block: BKExpression, table: InferredSymbolTable): 
     case BKExpressionType.NUMBER: return [[entry(null, inferredType(InferredTypeKind.NUMBER))], table];
     case BKExpressionType.VAR_REFERENCE:
     case BKExpressionType.PROP_REFERENCE: {
-
       const path = block.type === BKExpressionType.VAR_REFERENCE ? [(block as BKVarReference).name] : (block as BKPropertyReference).path.map(part => part.name)
       const scopedPath = getScopedSymbolTablePath(path, table);
 
@@ -264,6 +279,37 @@ const inferExpressionTypes = (block: BKExpression, table: InferredSymbolTable): 
     case BKExpressionType.BIND: {
       const v = block as BKBind;
       return inferExpressionTypes(v.value, table);
+    }
+    case BKExpressionType.OBJECT: {
+      const v = block as BKObject;
+      let allEntries = [];
+      let entries;
+      for (const property of v.properties) {
+        [entries, table] = inferExpressionTypes(property.value, table);
+        allEntries.push(...entries);
+      }
+      return [allEntries, table];
+    }
+    case BKExpressionType.ARRAY: {
+      const v = block as BKArray;
+      let allEntries = [];
+      let entries;
+      for (const value of v.values) {
+        [entries, table] = inferExpressionTypes(value, table);
+        allEntries.push(...entries);
+      }
+      return [allEntries, table];
+    }
+    case BKExpressionType.NOT: {
+      const not = block as BKNot;
+      let entries;
+      [entries, table] = inferExpressionTypes(not.value, table);
+      return [entries, table];
+    }
+    case BKExpressionType.IF:
+    case BKExpressionType.ELSEIF: {
+      const v = block as BKElseIf;
+      return inferExpressionTypes(v.condition, table);
     }
     case BKExpressionType.GROUP: {
       const v = block as BKGroup;
@@ -315,25 +361,31 @@ const addInferredElementStartTagTypes = (element: PCElement|PCSelfClosingElement
     const eachEntryPath = getEntryPath(eachEntries[0]);
     const asEntryKey = getEntryPath(asValueEntries[0])[0];
     table = addSymbolTableScope(asEntryKey, eachEntryPath, table);
-    table = addInferredElementAttributeTypes(element, table);
+    table = inferElementAttributeTypes(element, table)[1];
+    table = inferElementSpreadTypes(element, table)[1];
     table = addInferredChildNodeTypes(getElementChildNodes(element), table);
     table = removeSymbolTableScope(asEntryKey, table);
   } else {
-    table = addInferredElementAttributeTypes(element, table);
+    table = inferElementAttributeTypes(element, table)[1];
+    table = inferElementSpreadTypes(element, table)[1];
   }
 
   return table;
 };
 
-const addInferredElementAttributeTypes = (element: PCElement|PCSelfClosingElement, table: InferredSymbolTable) => {
+export const inferElementAttributeTypes = (element: PCElement|PCSelfClosingElement, table: InferredSymbolTable = symbolTable()): [SymbolTableEntries, InferredSymbolTable] => {
   const tag = getStartTag(element);
   const attributes = getElementAttributes(element);
-  let entries;
+  let allEntries = [];
 
   const attrTypeKinds = NATIVE_ELEMENT_TYPE_KINDS[tag.name] || NO_ATTR_TYPE_KINDS;
 
   for (let i = 0, {length} = attributes; i < length; i++) {
-    const {value, name} = attributes[i];    
+    let entries = [];
+    const {value, name} = attributes[i];   
+    if (!value) {
+      continue;
+    }
     if (value.type === PCExpressionType.BLOCK) {
       [entries, table] = inferExpressionTypes(((value as PCBlock).value as BKBind).value, table);
 
@@ -343,15 +395,44 @@ const addInferredElementAttributeTypes = (element: PCElement|PCSelfClosingElemen
         [entries, table] = stripEntryTypeKinds(entries, kind, table);
       }
     }
+    allEntries.push(...entries);
   }
-  
-  return table;
+
+  return [allEntries, table];
+};
+
+export const inferElementSpreadTypes = (element: PCElement|PCSelfClosingElement, table: InferredSymbolTable = symbolTable()): [SymbolTableEntries, InferredSymbolTable] => {
+  const tag = getStartTag(element);
+  const modifiers = getElementModifiers(element);
+  let allEntries = [];
+
+  for (let i = 0, {length} = modifiers; i < length; i++) {
+    const modifier = modifiers[i];
+    let entries = [];
+    if (modifier.value.type === BKExpressionType.BIND) {
+      [entries, table] = inferExpressionTypes((modifier.value as BKBind).value, table);
+      
+      const newEntries = [];
+      for (const [path, [kind, props]] of entries) {
+
+        const newEntry = [path, [InferredTypeKind.EXTENDABLE_OBJECT, props]];
+        newEntries.push(newEntry);
+
+        table = setSymbolTablePropType(newEntry[0], newEntry[1], table);
+      }
+
+      entries = newEntries;
+    }
+    allEntries.push(...entries);
+  }
+
+  return [allEntries, table];
 };
 
 const addInferredChildNodeTypes = (childNodes: PCExpression[], table: InferredSymbolTable) => {
 
   for (const child of childNodes) {
-    table = addInferredNodeTypes(child, table);
+    table = inferNodeTypes(child, table);
   }
 
   return table;

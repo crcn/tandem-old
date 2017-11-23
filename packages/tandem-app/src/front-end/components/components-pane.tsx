@@ -1,14 +1,23 @@
 import * as React from "react";
 import { compose, pure } from "recompose";
-import { hydrateTdComponentsPane, TdComponentsPaneProps, hydrateTdComponentsPaneCell, TdComponentsPaneCellProps, } from "./components-pane.pc";
+import { hydrateTdComponentsPane, TdComponentsPaneInnerProps, hydrateTdComponentsPaneCell, TdComponentsPaneCellInnerProps, } from "./components-pane.pc";
 import { Pane } from "./pane";
+import { Workspace } from "front-end/state";
 
 const ICON_SIZE = 110;
 
-const enhanceComponentsPane = compose<TdComponentsPaneProps, TdComponentsPaneProps>(pure);
-const enhanceComponentsPaneCell = compose<TdComponentsPaneCellProps, TdComponentsPaneCellProps>(
+export type ComponentsPaneOuterProps = {
+  workspace: Workspace
+};
+
+const enhanceComponentsPane = compose<TdComponentsPaneInnerProps, ComponentsPaneOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdComponentsPaneCellProps>) => ({ label, screenshot }: TdComponentsPaneCellProps) => {
+  (Base: React.ComponentClass<TdComponentsPaneInnerProps>) => ({ workspace }: ComponentsPaneOuterProps) => <Base components={workspace.availableComponents || []} />
+);
+
+const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, TdComponentsPaneCellInnerProps>(
+  pure,
+  (Base: React.ComponentClass<TdComponentsPaneCellInnerProps>) => ({ label, screenshot }: TdComponentsPaneCellInnerProps) => {
     let width = screenshot && screenshot.clip.right - screenshot.clip.left;
     let height = screenshot && screenshot.clip.bottom - screenshot.clip.top;
     let scale = 1;
@@ -27,5 +36,7 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellProps, TdComponent
 
 export const ComponentsPane = hydrateTdComponentsPane(enhanceComponentsPane, {
   TdPane: Pane,
-  TdComponentsPaneCell: hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {})
+  TdComponentsPaneCell: hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {
+    
+  })
 });
