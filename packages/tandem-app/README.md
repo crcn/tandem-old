@@ -6,6 +6,9 @@ IMMEDIATE:
 
 - [ ] Tandem
   - [ ] CSS Inspector pane (because it's complex) 
+    - [ ] toggle eye
+    - [ ] add styles
+    - [ ] delete styles
 
 - [ ] Paperclip
   - [ ] Declaration parser

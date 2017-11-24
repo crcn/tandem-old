@@ -101,7 +101,7 @@ Paperclip is an open file format that allows for somewhat expressive behavior to
 ```html
 
 <!-- ID should come with a prefix -- something web component friendly  that wouldn't conflict with native elements -->
-<component id="x-people" [[property people]]>
+<component id="x-people">
 
   <!-- styles are scoped to the component, just like web components -->
   <style> 
@@ -159,7 +159,7 @@ Paperclip is designed to be compiled to _other_ frameworks. Version 1 of Papercl
 To integrate Paperclip into your existing JavaScript codebase (assuming you've installed the necessary dependencies), all you need to do to import Paperclip files as regular modules. Assuming that you have a paperclip file named `people-list.pc` that looks like this:
 
 ```html
-<component id="people-list" [[property people]]>
+<component id="people-list">
   <template>
     <ul>
       <li [[repeat people as person]]>
@@ -189,7 +189,7 @@ export const PeopleList = hydratePeopleList(enhance);
  The `hydratePeopleList` function is emitted by the `people-list` component at compile time, and it allows you to extend the functionality of the base component written in Paperclip (which is kind of necessary because Paperclip is intentionally "dumb"). All components defined in paperclip files emit a hydration function. The basic API for the hydration function is `hydrateMyCustomComponent(enhancer, childComponentClasses)`. The first parameter is a higher order function that wraps around the base Paperclip component. The second parameter allows you to inject child components. Suppose we have a `todo-list` component:
 
 ```html
-<component id="todo-list-item" [[property text]] [[property done]] [[property toggleDone]]>
+<component id="todo-list-item">
   <style>
     :host([done]) {
       text-decoration: line-through;
@@ -203,7 +203,7 @@ export const PeopleList = hydratePeopleList(enhance);
   </template>
 </component>
 
-<component id="todo-list" [[property people]]>
+<component id="todo-list">
   <template>
     <people-list-item [[repeat items as item]] [[bind item]] />
   </template>
@@ -281,7 +281,7 @@ Since `className` is a property of html elements, wherease `class` is not (it's 
 Spreading allows you to map an object to the properties of a component. Here's an example:
 
 ```html
-<component id="x-full-name-label" [[property firstName]] [[property lastName]]>
+<component id="x-full-name-label">
   <template>
     [[bind firstName]] [[bind lastName]]
   </template>
@@ -289,23 +289,6 @@ Spreading allows you to map an object to the properties of a component. Here's a
 
 <x-full-name-label [[bind { firstName: "Joe", lastName: "Shmo" }]]>
 ```
-
-##### `[[property]]` block
-
-`[[property]]` blocks define properties that expected in a component. Example:
-
-```html
-<component id="x-button" [[property text]]>
-  <template>
-    [[bind text]]
-  </template>
-</component>
-```
-
-Properties are _required_ for a number of reasons:
-
-1. They notify the outside world about what information the component expects (eventually properties will have strong types will be _very_ useful for maintainability).
-2. They flag what parts of the component are changing (this happens at compile time which makes the engine über fast for certain compile targets).
 
 ##### `[[repeat]]` block
 
@@ -330,7 +313,7 @@ Note that `[[property]]` must be defined.
 Attaches an event listener to an element. Events that are dispatched by the element also contains the context of the element.  For example:
 
 ```html
-<component id="x-clicker" [[property count]]>
+<component id="x-clicker">
   <template>
     <a id="some-button" href="#" [[emit click]]>
       current count: [[bind count]]
@@ -398,22 +381,9 @@ Additionally, you can define global variables that _can_ be used in components l
 
 Paperclip is designed for the future to make the following ideas possible.
 
-#### Strong types
+#### Type inferencing
 
-Future versions of Paperclip will likely contain strong types that will integrate with the visual editor. Ideally, the visual editor would emit compile errors that would be displayed to the user when changes are made to a UI that breaks other parts of the application. So basically with types, if a Paperclip file builds, it should work.
-
- Typed definition files will also be generated for languages such as TypeScript, and Flow.
-
-```html
-[[ type Person {
-  name: string
-}]]
-
-<component id="people-list" [[property person: Person[] ]]>
-</component>
-```
-
-In terms of _upgrading_ to from non-typed paperclip components, the visual editor will contain functionality that emits warnings (assuming that types are turned on) for templates that don't have them. Designers or engineers can simply add them manually when this feature comes out.
+TODO
 
 #### More compile targers
 

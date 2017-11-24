@@ -5,11 +5,11 @@
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
 
-<component id="td-style-declaration" [[property name]] [[property value]] [[property applied]] [[property overridden]] [[property sourceValue]]>
+<component id="td-style-declaration" [[property name]] [[property value]] [[property ignored]] [[property overridden]] [[property sourceValue]]>
   <meta name="internal" content="true" />
   <style>
-    :host([applied]) {
-      opacity: 0.4;
+    :host([ignored]) {
+      opacity: 0.2;
     }
     :host([overridden]) span {
       text-decoration: line-through;
@@ -272,7 +272,7 @@
         declarations: [
           { 
             name: "padding",
-            applied: false,
+            ignored: true,
             value: {
               type: "SPACED_LIST",
               values: [
