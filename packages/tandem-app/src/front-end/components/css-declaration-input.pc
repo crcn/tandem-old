@@ -44,7 +44,7 @@
     }
   </style>
   <template>
-    <td-css-expr-input [[repeat values as value]] value=[[bind value]] />
+    <td-css-expr-input [[repeat values as value, i]] value=[[bind value]] key=[[bind i]] />
   </template>
 </component>
 
@@ -59,7 +59,7 @@
     }
   </style>
   <template>
-    <td-css-expr-input [[repeat values as value]] value=[[bind value]] />
+    <td-css-expr-input [[repeat values as value, i]] value=[[bind value]] key=[[bind i]] />
   </template>
 </component>
 
@@ -146,7 +146,7 @@
   <template>
     <td-color-mini-input [[if returnType === "COLOR"]] value=[[bind returnValue]] /> 
     <span class="name">[[bind name]]</span>
-      <td-css-expr-input [[repeat params as param]] value=[[bind param]] />
+      <td-css-expr-input [[repeat params as param, i]] value=[[bind param]] key=[[bind i]] />
   </template>
 </component>
 

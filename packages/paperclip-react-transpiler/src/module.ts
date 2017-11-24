@@ -134,7 +134,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
     childComponentInfo
   };
 
-  content += transpileStyle(component.style, context.scopeClass, childComponentInfo);
+  content += transpileStyle(component.style, context.scopeClass, component, childComponentInfo);
 
   content += `export const hydrate${className} = (enhance, hydratedChildComponentClasses = {}) => {\n`;
 
@@ -159,7 +159,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 
   const componentPropertyNames = component.properties.map(({name}) => name);
 
-  const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host" }, ` + 
+  const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host", ${componentPropertyNames.map(propName => `"data-${propName}": ${propName} ? true : null`).join(", ")} }, ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
   `)`;
 
@@ -185,12 +185,14 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
   return content;
 };
 
-const transpileStyle = (style: PCElement, scopeClass?: string, childComponentInfo = {}) => {
+const transpileStyle = (style: PCElement, scopeClass?: string, component?: Component, childComponentInfo = {}) => {
   let aliases = {};
   for (const componentId in childComponentInfo) {
     const dep: Dependency = childComponentInfo[componentId];
     aliases[componentId] = "." + getComponentTranspileInfo(getModuleComponent(componentId, dep.module)).className;
   }
+
+  let componentProps = component && component.properties.map(prop => prop.name) || [];
 
   if (!style) {
     return "";
@@ -205,8 +207,11 @@ const transpileStyle = (style: PCElement, scopeClass?: string, childComponentInf
   // enclose from colliding with other transpiled sheets
   `  (() => {\n` +
   `    const style = document.createElement("style");\n` +
-  `    style.textContent = ${JSON.stringify(transpileCSSSheet(sheet, (selectorText) => {
+  `    style.textContent = ${JSON.stringify(transpileCSSSheet(sheet, (selectorText, i) => {
         const scopedSelectorText = scopeClass ? selectorText.split(" ").map((part, i) => {
+
+          // TODO - this is all nasty. Need to parse selector as AST, then transform
+          // that.
 
           // ignore ".selector > .selector"
           if (/^[>,]$/.test(part)) return part;
@@ -221,13 +226,17 @@ const transpileStyle = (style: PCElement, scopeClass?: string, childComponentInf
           part = part.replace(pseudo, "");
 
           if (part.indexOf(":host") !== -1) {
-            const [match, params] = part.match(/\:host\((.*?)\)/) || [null, null];
+            let [match, params] = part.match(/\:host\((.*?)\)/) || [null, ""];
+
+            for (const prop of componentProps) {
+              params = params.replace(prop, "data-" + prop);
+            }
 
             return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}.host` + (params ? params : ""));
           }
 
           // don't want to target spans since the host is one
-          if (part === "span") {
+          if (part === "span" && i === 0) {
             return `.${scopeClass}.host span.${scopeClass}`;
           }
 

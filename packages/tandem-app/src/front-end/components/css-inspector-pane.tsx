@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Pane } from "./pane";
-import { identity } from "lodash";
+import { identity, kebabCase } from "lodash";
 import { compose, pure } from "recompose";
 import { parseDeclarationValue } from "./utils/css";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps } from "./css-declaration-input.pc";
@@ -33,13 +33,16 @@ type StyleDelarationOuterProps = {
 const enhanceCssCallExprInput = compose<TdCssCallExprInputInnerProps, TdCssCallExprInputInnerProps>(
   pure,
   (Base: React.ComponentClass<TdCssCallExprInputInnerProps>) => (props: TdCssCallExprInputInnerProps) => {
+
     return <Base {...props} returnValue="#FF6600" returnType="COLOR" />;
   }
 );
 
 const CssCallExprInput = hydrateTdCssCallExprInput(enhanceCssCallExprInput, {
   TdColorMiniInput: null,
-  TdCssExprInput: (props) => <CSSExprInput {...props} />
+  TdCssExprInput: (props) => {
+    return <CSSExprInput {...props} />
+  }
 });
 
 const enhanceCSSCallExprInput = compose<TdCssExprInputInnerProps, TdCssExprInputInnerProps>(
@@ -58,8 +61,8 @@ const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
 
 const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDelarationOuterProps>(
   pure,
-  (Base: React.ComponentClass<StyleDelarationOuterProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
-    return <Base name={name} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclarationValue(value)} />;
+  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
+    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclarationValue(value)} sourceValue={value} />;
   }
 );
 

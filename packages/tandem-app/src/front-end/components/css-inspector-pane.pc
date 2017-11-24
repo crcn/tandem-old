@@ -5,7 +5,7 @@
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
 
-<component id="td-style-declaration" [[property name]] [[property value]] [[property applied]] [[property overridden]]>
+<component id="td-style-declaration" [[property name]] [[property value]] [[property applied]] [[property overridden]] [[property sourceValue]]>
   <meta name="internal" content="true" />
   <style>
     :host([applied]) {
@@ -26,7 +26,7 @@
     <span class="name">[[bind name]]</span>
     <td-css-expr-input [[if !overridden]] value=[[bind value]] />
     <span [[else]]>
-      [[bind value.source]]
+      [[bind sourceValue]]
     </span>
   </template>
 </component>

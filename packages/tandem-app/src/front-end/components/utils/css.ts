@@ -10,7 +10,7 @@ export enum CSSDeclarationExpressionType {
 };
 
 export type CSSDeclarationExpression = {
-  type: CSSDeclarationExpressionType;
+  type: string;
   location: {
     start: number;
     end: number;
