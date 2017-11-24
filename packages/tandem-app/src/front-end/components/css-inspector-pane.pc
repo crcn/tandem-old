@@ -31,7 +31,7 @@
   </template>
 </component>
 
-<component id="td-style-rule" [[property selectorText]] [[property declarations]] [[property source]] [[property headerHovering]]>
+<component id="td-style-rule" [[property label]] [[property declarations]] [[property source]] [[property headerHovering]]>
   <meta name="internal" content="true" />
   <style>
     :host:hover td-gutter-subheader span, :host([headerHovering]) .controls {
@@ -71,7 +71,7 @@
   <template>
     <td-gutter-subheader>
       <span class="selector-text">
-        [[bind selectorText]]
+        [[bind label]]
       </span>
       <span class="source" [[if source]]>
         [[bind source.uri]]
@@ -104,7 +104,7 @@
   <template>
     <td-css-inspector-pane styleRules=[[bind [
       {
-        selectorText: ".container",
+        label: ".container",
         source: { uri: "styles.css" },
         rule: { },
         declarations: [
@@ -163,7 +163,7 @@
         ]
       },
       {
-        selectorText: ".header",
+        label: ".header",
         headerHovering: true,
         rule: { },
         declarations: [
@@ -267,7 +267,7 @@
         ]
       },
       {
-        selectorText: "body, html",
+        label: "body, html",
         rule: { },
         declarations: [
           { 

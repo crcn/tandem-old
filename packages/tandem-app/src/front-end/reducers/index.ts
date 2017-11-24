@@ -709,14 +709,17 @@ const centerStage = (state: ApplicationState, workspaceId: string, innerBounds: 
 const handleWindowSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any>, windowId }>(state: ApplicationState, ref: StructReference, event: T) => {
   const { sourceEvent } = event;
   const workspace = getSelectedWorkspace(state);
-  
+
+  // TODO - may want to allow multi selection once it's confirmed to work on
+  // all scenarios.
   // meta key + no items selected should display source of 
-  if (sourceEvent.metaKey && workspace.selectionRefs.length) {
-    return toggleWorkspaceSelection(state, workspace.$id, ref);
-  } else if(!sourceEvent.metaKey) {
-    return setWorkspaceSelection(state, workspace.$id, ref);
-  }
-  return state;
+  // if (sourceEvent.metaKey && workspace.selectionRefs.length) {
+  //   return toggleWorkspaceSelection(state, workspace.$id, ref);
+  // } else if(!sourceEvent.metaKey) {
+  //   return setWorkspaceSelection(state, workspace.$id, ref);
+  // }
+
+  return setWorkspaceSelection(state, workspace.$id, ref);
 }
 
 const normalizeZoom = (zoom) => {

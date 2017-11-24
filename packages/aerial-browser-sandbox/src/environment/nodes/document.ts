@@ -21,21 +21,23 @@ import { getL3EventClasses } from "../level3";
 import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collections";
 import { getSEnvTextClass, SEnvTextInterface } from "./text";
+import { getSenvLightDocumentClass, SEnvLightDocumentInterface } from "./light-document";
 import { getSEnvCommentClass, SEnvCommentInterface } from "./comment";
 import { SEnvHTMLElementInterface, getSEnvHTMLElementClass, diffHTMLNode, baseHTMLElementMutators, flattenNodeSources } from "./html-elements";
 import { SEnvNodeTypes, SVG_XMLNS, HTML_XMLNS } from "../constants";
 import { parseHTMLDocument, whenLoaded, mapExpressionToNode } from "./utils";
 import { generateSourceHash } from "../../utils/source";
 import { getSEnvDocumentFragment } from "./fragment";
-import { SyntheticDocument, SYNTHETIC_DOCUMENT, SyntheticNode, SyntheticParentNode, BasicDocument } from "../../state";
+import { SyntheticDocument, SyntheticLightDocument, SYNTHETIC_DOCUMENT, SyntheticNode, SyntheticParentNode, BasicDocument } from "../../state";
 import parse5 = require("parse5");
 
-export interface SEnvDocumentInterface extends SEnvParentNodeInterface, Document {
+export interface SEnvDocumentInterface extends SEnvLightDocumentInterface, Document {
   readonly struct: SyntheticDocument;
   ownerDocument: SEnvDocumentInterface;
   defaultView: SEnvWindowInterface;
   childNodes: SEnvNodeListInterface;
   $$linkElement(element: SEnvHTMLElementInterface, tagName: string, namespaceURI: string): SEnvHTMLElementInterface;
+  $$linkNode<T extends SEnvNodeInterface>(node: T): T;
   $load(content: string): void;
   $$update();
   $$setReadyState(readyState: string): any;
@@ -46,14 +48,8 @@ export interface SEnvDocumentInterface extends SEnvParentNodeInterface, Document
   createComment(value: string): SEnvCommentInterface;
   addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, useCapture?: boolean): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
-}
-
-export interface SEnvShadowRoot extends SEnvDocumentInterface, ShadowRoot {
-  host: SEnvHTMLElementInterface;
-  childNodes: SEnvNodeListInterface;
-  ownerDocument: SEnvDocumentInterface;
-  addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, useCapture?: boolean): void;
-  addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+  removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, useCapture?: boolean): void;
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
 }
 
 
@@ -99,15 +95,16 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
   const SENvHTMLElement = getSEnvHTMLElementClass(context);
   const { SEnvStyleSheetList, SEnvHTMLAllCollection } = getSEnvHTMLCollectionClasses(context);
 
+  const LightDocument =  getSenvLightDocumentClass(context);
+
   const eventMap = {
     MutationEvent:  SEnvMutationEvent,
     Event: SEnvEvent,
     MouseEvent: SEnvEvent
   };
 
-  class SEnvDocument extends SEnvParentNode implements SEnvDocumentInterface {
+  class SEnvDocument extends LightDocument implements SEnvDocumentInterface {
     
-    readonly activeElement: Element;
     private _readyState: string;
     readonly struct: SyntheticDocument;
     readonly structType: string = SYNTHETIC_DOCUMENT;
@@ -166,20 +163,11 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     msCapsLockWarningOff: boolean;
     msCSSOMElementFloatMetrics: boolean;
 
-    private _stylesheets: StyleSheetList;
 
     constructor(readonly defaultView: SEnvWindowInterface) {
       super();
       this.implementation = defaultView.implementation;
       this.addEventListener("readystatechange", e => this.onreadystatechange && this.onreadystatechange(e));
-    }
-
-    get innerHTML() {
-      return "";
-    }
-
-    set innerHTML(value) {
-      this._throwUnsupportedMethod();
     }
 
     get links() {
@@ -188,14 +176,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
 
     get location() {
       return this.defaultView.location;
-    }
-
-    get stylesheets(): StyleSheetList {
-      return this._stylesheets || (this._stylesheets = this._createStyleSheetList());
-    }
-
-    get styleSheets(): StyleSheetList {
-      return this.stylesheets;
     }
 
     get all() {
@@ -263,10 +243,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     $$update() {
-    }
-    elementsFromPoint(x: number, y: number) {
-      this._throwUnsupportedMethod();
-      return null;
     }
     
     onabort: (this: Document, ev: UIEvent) => any;
@@ -479,19 +455,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       }
     }
 
-    private _createStyleSheetList() {
-
-      const styleSheets = [];
-      
-      Array.prototype.forEach.call(this.querySelectorAll("*"), (element) => {
-        if (element.nodeType === SEnvNodeTypes.ELEMENT && element["sheet"]) {
-          styleSheets.push(element["sheet"]);
-        }
-      });
-
-      return new SEnvStyleSheetList(...styleSheets);
-    }
-
     createAttributeNS(namespaceURI: string | null, qualifiedName: string): Attr {
       this._throwUnsupportedMethod();
       return null;
@@ -503,11 +466,11 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
     
     createComment(data: string): SEnvCommentInterface {
-      return this._linkNode(new SEnvComment(data));
+      return this.$$linkNode(new SEnvComment(data));
     }
 
     createDocumentFragment(): DocumentFragment & SEnvNodeInterface {
-      return this._linkNode(new SEnvDocumentFragment());
+      return this.$$linkNode(new SEnvDocumentFragment());
     }
 
     createEvent(eventInterface: "AnimationEvent"): AnimationEvent;
@@ -594,7 +557,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
       return this.createElementNS(HTML_XMLNS, tagName) as SEnvHTMLElementInterface;
     }
 
-    private _linkNode<T extends Node>(node: T): T {
+    $$linkNode<T extends Node>(node: T): T {
       node["" + "$$setOwnerDocument"](this);
       return node;
     }
@@ -668,7 +631,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
 
     $$linkElement(element: SEnvHTMLElementInterface, qualifiedName: string, namespaceURI: string) {
-      this._linkNode(element);
+      this.$$linkNode(element);
       element["" + "tagName"] = qualifiedName;
       element["" + "nodeName"] = qualifiedName;
       element["" + "namespaceURI"] = namespaceURI;
@@ -700,7 +663,7 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
     
     createTextNode(data: string): Text & SEnvNodeInterface {
-      return this._linkNode(new SEnvText(data));
+      return this.$$linkNode(new SEnvText(data));
     }
 
     createTouch(view: Window, target: EventTarget, identifier: number, pageX: number, pageY: number, screenX: number, screenY: number): Touch {
@@ -713,11 +676,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     }
     
     createTreeWalker(root: Node, whatToShow?: number, filter?: NodeFilter, entityReferenceExpansion?: boolean): TreeWalker {
-      this._throwUnsupportedMethod();
-      return null;
-    }
-    
-    elementFromPoint(x: number, y: number): Element {
       this._throwUnsupportedMethod();
       return null;
     }
@@ -745,15 +703,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     
     focus(): void {
 
-    }
-    
-    getElementById(elementId: string): HTMLElement | null {
-      return this.querySelector(`#${elementId}`) as HTMLElement;
-    }
-    
-    getSelection(): Selection {
-      this._throwUnsupportedMethod();
-      return null;
     }
     
     hasFocus(): boolean {
@@ -828,15 +777,6 @@ export const getSEnvDocumentClass = weakMemo((context: any) => {
     writeln(...content: string[]): void {
       this._throwUnsupportedMethod();
     }
-
-    protected _onMutation(event: SEnvMutationEventInterface) {
-      super._onMutation(event);
-      const { mutation } = event;
-
-      if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT || mutation.$type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
-        this._stylesheets = null;
-      }
-    }
   };
 
   return SEnvDocument;
@@ -905,7 +845,7 @@ export const documentMutators = {
   }
 };
 
-export const flattenDocumentSources = (document: SyntheticDocument) => {
+export const flattenDocumentSources = (document: SyntheticLightDocument) => {
   return flattenNodeSources(document);
 };
 

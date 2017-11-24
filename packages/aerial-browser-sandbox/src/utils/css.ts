@@ -10,6 +10,7 @@ import {
   SyntheticCSSStyleRule,
   getSyntheticNodeWindow, 
   SyntheticCSSStyleSheet, 
+  SyntheticLightDocument,
   getSyntheticWindowChild, 
   getSyntheticNodeAncestors,
   SyntheticCSSStyleDeclaration,
@@ -19,6 +20,7 @@ import { 
   CSSRuleType, 
   SEnvNodeTypes,
   matchesSelector, 
+  getHostDocument,
   SEnvCSSRuleInterface, 
   SEnvDocumentInterface, 
   SEnvCSSObjectInterface, 
@@ -73,7 +75,7 @@ export const containsInheritableStyleProperty = (style: SyntheticCSSStyleDeclara
   return false;
 };
 
-const getDocumentCSSStyleRules = weakMemo((document: SyntheticDocument) => {
+const getDocumentCSSStyleRules = weakMemo((document: SyntheticLightDocument) => {
   const allRules: SEnvCSSStyleRuleInterface[] = [];
   const styleSheets = document.instance.stylesheets as any as SEnvCSSStyleSheetInterface[];
   const allChildObjects = flattenDocumentSources(document);
@@ -94,8 +96,8 @@ export const windowMatchesMedia = weakMemo((window: SyntheticWindow, conditionTe
 
 export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, elementId: string, breakPastHost?: boolean) => {
   const element = getSyntheticWindowChild(window, elementId) as any as SyntheticElement;
-  const document = element.instance.ownerDocument;
-  const allRules = getDocumentCSSStyleRules(document.struct);
+  const hostDocument = getHostDocument(element.instance);
+  const allRules = getDocumentCSSStyleRules(hostDocument.struct);
   
   const matchingRules: StyledObject[] = [];
 
@@ -116,7 +118,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
   }
 
   matchingRules.push({
-    label: `${element.nodeName.toLowerCase()} style`,
+    label: `style`,
     $id: element.$id,
     source: element.source,
     instance: element.instance as SEnvHTMLElementInterface,
@@ -146,7 +148,7 @@ const getParentMediaText = (rule: any) => (rule as SEnvCSSRuleInterface).parentR
 
 export const getSyntheticAppliedCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
   const element = getSyntheticWindowChild(window, elementId) as any as SyntheticElement;
-  const document = element.instance.ownerDocument;
+  const document = getHostDocument(element.instance);
   const allRules = getDocumentCSSStyleRules(document.struct);
 
   // first grab the rules that are applied directly to the element

@@ -7,7 +7,8 @@ import { getUri } from "../utils";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
 import { SEnvNodeListInterface, getSEnvHTMLCollectionClasses } from "./collections";
 import { getSEnvCSSStyleSheetClass, getSEnvCSSStyleDeclarationClass, diffCSSStyleSheet, patchCSSStyleSheet, flattenSyntheticCSSStyleSheetSources, SEnvCSSStyleSheetInterface, cssStyleSheetMutators, SEnvCSSStyleDeclarationInterface, parseStyleSource } from "../css";
-import { SEnvDocumentInterface, SEnvShadowRoot } from "./document";
+import { SEnvDocumentInterface } from "./document";
+import { SEnvShadowRootInterface, getSEnvShadowRootClass } from "./light-document";
 import { SyntheticNode } from "../../state";
 import { SEnvNodeTypes } from "../constants";
 import { weakMemo, SetValueMutation, createSetValueMutation, Mutation, diffArray, eachArrayValueMutation } from "aerial-common2";
@@ -18,19 +19,21 @@ import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterface {
   style: SEnvCSSStyleDeclarationInterface;
   ownerDocument: SEnvDocumentInterface;
-  shadowRoot: SEnvShadowRoot|null;
+  shadowRoot: SEnvShadowRootInterface|null;
   childNodes: SEnvNodeListInterface;
-  attachShadow(mode: ShadowRootInit): SEnvShadowRoot;
+  attachShadow(mode: ShadowRootInit): SEnvShadowRootInterface;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+  removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, useCapture?: boolean): void;
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
 }
 
-const getShadowRoot = (node: SEnvNodeInterface): SEnvShadowRoot => {
+const getShadowRoot = (node: SEnvNodeInterface): SEnvShadowRootInterface => {
   while(node.nodeName !== "#document" && node.nodeName !== "#shadow-root" && node.nodeName !== "#document-fragment") {
     node = node.parentNode as SEnvNodeInterface;
   }
 
-  return node as SEnvShadowRoot;
+  return node as SEnvShadowRootInterface;
 }
 
 export interface SEnvHTMLStyledElementInterface extends SEnvHTMLElementInterface {
@@ -911,7 +914,7 @@ const getSEnvHTMLSlotElementClass = weakMemo((context: SEnvWindowContext) => {
   const SEnvHTMLElement = getSEnvHTMLElementClass(context);
   const { SEnvMutationEvent } = getSEnvEventClasses(context);
   class SEnvHTMLSlotELement extends SEnvHTMLElement implements HTMLSlotElement {
-    private _parentShadow: SEnvShadowRoot;
+    private _parentShadow: SEnvShadowRootInterface;
     private _assignedNodes: SEnvNodeInterface[];
 
     get name() {

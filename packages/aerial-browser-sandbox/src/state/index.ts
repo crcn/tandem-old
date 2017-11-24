@@ -41,7 +41,8 @@ import {
   SEnvCSSStyleRuleInterface,
   SEnvNodeInterface,
   SEnvCSSStyleDeclarationInterface,
-  SEnvDocumentInterface
+  SEnvDocumentInterface,
+  SEnvLightDocumentInterface,
 } from "../environment";
 
 export const SYNTHETIC_BROWSER_STORE = "SYNTHETIC_BROWSER_STORE";
@@ -526,9 +527,13 @@ export type SyntheticParentNode = {
   childNodes: SyntheticNode[];
 } & BasicParentNode & SyntheticNode;
 
+export type SyntheticLightDocument = {
+  instance: SEnvLightDocumentInterface;
+} & SyntheticParentNode;
+
 export type SyntheticDocument = {
   instance: SEnvDocumentInterface;
-} & SyntheticParentNode & BasicDocument;
+} & SyntheticParentNode & SyntheticLightDocument & BasicDocument;
 
 export type SyntheticDocumentFragment = {
   hostId?: string;

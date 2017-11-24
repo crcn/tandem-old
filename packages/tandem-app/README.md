@@ -4,8 +4,12 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] CSS Inspector pane (because it's complex) 
-- [ ] css selectors do not work for component tag names 
+- [ ] Tandem
+  - [ ] CSS Inspector pane (because it's complex) 
+
+- [ ] Paperclip
+  - [ ] Declaration parser
+  - [ ] :host selector does not work
 
 HIGH PRIO:
 

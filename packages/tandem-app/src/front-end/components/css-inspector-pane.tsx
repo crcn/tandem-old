@@ -93,6 +93,9 @@ export type CSSInspectorOuterProps = {
 
 export type CSSStyleRuleOuterProps = AppliedCSSRuleResult
 
+const beautifyLabel = (label: string) => {
+  return label.replace(/\s*,\s*/g, ", ");
+};
 
 const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProps>(
   pure,
@@ -124,7 +127,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       //   <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
       // );
     }
-    return <Base selectorText={rule.selectorText} source={null} declarations={childDeclarations} />;
+    return <Base label={beautifyLabel(rule.label || rule.selectorText)} source={null} declarations={childDeclarations} />;
   }
 );
 

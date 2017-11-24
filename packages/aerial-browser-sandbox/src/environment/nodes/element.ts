@@ -5,7 +5,8 @@ import { SEnvNodeTypes } from "../constants";
 import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation, createSetValueMutation, SetValueMutation } from "aerial-common2";
 import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, parentNodeMutators } from "./parent-node";
 import { getSEnvEventClasses } from "../events";
-import { SEnvDocumentInterface, getSEnvDocumentClass, SEnvShadowRoot } from "./document";
+import {SEnvShadowRootInterface, getSEnvShadowRootClass, } from "./light-document";
+import { SEnvDocumentInterface, getSEnvDocumentClass } from "./document";
 import { evaluateHTMLDocumentFragment, matchesSelector } from "./utils";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collections";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
@@ -31,12 +32,13 @@ export const getSEnvAttr = weakMemo((context: any) => {
 
 export interface SEnvElementInterface extends SEnvParentNodeInterface, Element {
   ownerDocument: SEnvDocumentInterface;
-  shadowRoot: SEnvShadowRoot|null;
+  shadowRoot: SEnvShadowRootInterface|null;
   childNodes: SEnvNodeListInterface;
   addEventListener(type: string, listener?: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
   getPreviewAttribute(name: string): string | null;
-  $$setShadowRoot(shadowRoot: SEnvShadowRoot): SEnvShadowRoot;
-  attachShadow(mode: ShadowRootInit): SEnvShadowRoot;
+  $$setShadowRoot(shadowRoot: SEnvShadowRootInterface): SEnvShadowRootInterface;
+  attachShadow(mode: ShadowRootInit): SEnvShadowRootInterface;
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
 }
 
 export const getSEnvElementClass = weakMemo((context: any) => {
@@ -45,6 +47,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
   const SEnvParentNode = getSEnvParentNodeClass(context);
   const { SEnvNamedNodeMap } = getSEnvHTMLCollectionClasses(context);
   const { SEnvMutationEvent } = getSEnvEventClasses(context);
+  const SEnvShadowRoot = getSEnvShadowRootClass(context);
 
   return class SEnvElement extends SEnvParentNode implements SEnvElementInterface {
 
@@ -106,7 +109,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     scrollTop: number;
     readonly scrollWidth: number;
     readonly tagName: string;
-    shadowRoot: SEnvShadowRoot | null;
+    shadowRoot: SEnvShadowRootInterface | null;
 
     constructor() {
       super();
@@ -380,17 +383,17 @@ export const getSEnvElementClass = weakMemo((context: any) => {
       return null;
     }
 
-    attachShadow(shadowRootInitDict: ShadowRootInit): SEnvShadowRoot { 
+    attachShadow(shadowRootInitDict: ShadowRootInit): SEnvShadowRootInterface { 
 
       if (this.shadowRoot) {
         return this.shadowRoot;
       }
 
       // const SEnvDocument = getSEnvDocumentClass(context)
-      return this.$$setShadowRoot(this.ownerDocument.createDocumentFragment() as SEnvShadowRoot);
+      return this.$$setShadowRoot(this.ownerDocument.$$linkNode(new SEnvShadowRoot()) as any as SEnvShadowRootInterface);
     }
 
-    $$setShadowRoot(shadowRoot: SEnvShadowRoot): SEnvShadowRoot { 
+    $$setShadowRoot(shadowRoot: SEnvShadowRootInterface): SEnvShadowRootInterface { 
       this.shadowRoot = shadowRoot;
       if (this.connectedToDocument) {
         this.shadowRoot.$$setConnectedToDocument(true);
