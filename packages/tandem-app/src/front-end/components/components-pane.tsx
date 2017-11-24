@@ -1,7 +1,8 @@
 import * as React from "react";
-import { compose, pure } from "recompose";
+import { compose, pure, withHandlers } from "recompose";
 import { hydrateTdComponentsPane, TdComponentsPaneInnerProps, hydrateTdComponentsPaneCell, TdComponentsPaneCellInnerProps, } from "./components-pane.pc";
 import { Pane } from "./pane";
+import { componentsPaneAddComponentClicked } from "../actions";
 import { Dispatcher } from "aerial-common2";
 import { Workspace, withDragSource, ConnectDragSource, AvailableComponent, AVAILABLE_COMPONENT } from "front-end/state";
 
@@ -11,6 +12,10 @@ export type ComponentsPaneOuterProps = {
   workspace: Workspace;
   dispatch: Dispatcher<any>;
 };
+
+export type ComponentsPaneInnerProps = {
+  onAddComponentClick: (event: React.MouseEvent<any>) => any;
+} & ComponentsPaneOuterProps;
 
 type ComponentsPaneCellOuterProps = AvailableComponent & {
   dispatch: Dispatcher<any>;
@@ -45,7 +50,12 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, Compon
 
 const enhanceComponentsPane = compose<TdComponentsPaneInnerProps, ComponentsPaneOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdComponentsPaneInnerProps>) => ({ workspace, dispatch }: ComponentsPaneOuterProps) => <Base components={workspace.availableComponents || []} dispatch={dispatch} />
+  withHandlers({
+    onAddComponentClick: ({ dispatch }: ComponentsPaneOuterProps) => (event: React.MouseEvent<any>) => {
+      dispatch(componentsPaneAddComponentClicked());
+    }
+  }),
+  (Base: React.ComponentClass<TdComponentsPaneInnerProps>) => ({ workspace, dispatch, onAddComponentClick }: ComponentsPaneInnerProps) => <Base components={workspace.availableComponents || []} dispatch={dispatch} onAddComponentClick={onAddComponentClick} />
 );
 
 const ComponentsPaneCell = hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {});

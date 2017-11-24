@@ -70,7 +70,7 @@
   </template>
 </component>
 
-<component id="td-components-pane" [[property components]] [[property dispatch]]>
+<component id="td-components-pane" [[property components]] [[property dispatch]] [[property onAddComponentClick]]>
   <style>
     .content {
       position: relative;
@@ -90,12 +90,13 @@
 
     .controls {
       float: right;
+      cursor: pointer;
     }
 
   </style>
   <template>
     <td-pane>
-      <span slot="header">Components <span class="controls">+</span></span>
+      <span slot="header">Components <span class="controls" onClick=[[bind onAddComponentClick]]>+</span></span>
       <span slot="content" class="content">
         <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] dispatch=[[bind dispatch]] />
       </span>

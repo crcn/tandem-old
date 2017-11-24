@@ -20,6 +20,7 @@ import {
   TEXT_EDITOR_CHANGED,
   NEXT_WINDOW_SHORTCUT_PRESSED,
   PREV_WINDOW_SHORTCUT_PRESSED,
+  COMPONENTS_PANE_ADD_COMPONENT_CLICKED,
   TextEditorChanged,
   RESIZER_PATH_MOUSE_MOVED,
   DeleteShortcutPressed, 
@@ -95,6 +96,7 @@ export function* mainWorkspaceSaga() {
   yield fork(handleSourceClicked);
   yield fork(handleOpenExternalWindowButtonClicked);
   yield fork(handleDNDEnded);
+  yield fork(handleComponentsPaneEvents);
 }
 
 function* openDefaultWindow() {
@@ -427,4 +429,15 @@ function* shiftSelectedWindow(indexDelta: number) {
   // TODO - change index based on window location, not index
   const newIndex = change < 0 ? browser.windows.length - 1 : change >= browser.windows.length ? 0 : change;
   yield put(windowSelectionShifted(browser.windows[newIndex].$id))
+}
+
+function* handleComponentsPaneEvents() {
+  yield fork(handleComponentsPaneAddClicked);
+}
+
+function* handleComponentsPaneAddClicked() {
+  while(true) {
+    yield take(COMPONENTS_PANE_ADD_COMPONENT_CLICKED);
+    console.log("CLACK");
+  }
 }

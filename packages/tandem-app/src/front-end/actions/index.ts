@@ -34,6 +34,7 @@ export const TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
 export const FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED   = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
 export const FILE_CHANGED = "FILE_CHANGED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
+export const COMPONENTS_PANE_ADD_COMPONENT_CLICKED = "COMPONENTS_PANE_ADD_COMPONENT_CLICKED";
 export const BREADCRUMB_ITEM_CLICKED   = "BREADCRUMB_ITEM_CLICKED";
 export const BREADCRUMB_ITEM_MOUSE_ENTER   = "BREADCRUMB_ITEM_MOUSE_ENTER";
 export const BREADCRUMB_ITEM_MOUSE_LEAVE   = "BREADCRUMB_ITEM_MOUSE_LEAVE";
@@ -290,6 +291,10 @@ export const canvasElementsComputedPropsChanged = (syntheticWindowId: string, al
   type: CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED,
   allComputedBounds,
   allComputedStyles
+});
+
+export const componentsPaneAddComponentClicked = () => ({
+  type: COMPONENTS_PANE_ADD_COMPONENT_CLICKED
 });
 
 export const canvasMotionRested = () => ({
