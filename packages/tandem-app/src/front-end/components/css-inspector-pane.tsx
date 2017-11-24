@@ -2,7 +2,7 @@ import * as React from "react";
 import { Pane } from "./pane";
 import { identity, kebabCase } from "lodash";
 import { compose, pure } from "recompose";
-import { parseDeclarationValue } from "./utils/css";
+import { parseDeclarationValue, stringifyCSSExpression, CSSDeclarationCall } from "./utils/css";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps } from "./css-declaration-input.pc";
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
@@ -32,9 +32,24 @@ type StyleDelarationOuterProps = {
 
 const enhanceCssCallExprInput = compose<TdCssCallExprInputInnerProps, TdCssCallExprInputInnerProps>(
   pure,
-  (Base: React.ComponentClass<TdCssCallExprInputInnerProps>) => (props: TdCssCallExprInputInnerProps) => {
+  (Base: React.ComponentClass<TdCssCallExprInputInnerProps>) => ({ name, params, ...rest }: (CSSDeclarationCall & TdCssCallExprInputInnerProps)) => {
+    
+    let returnType;
+    let returnValue = stringifyCSSExpression({
+      name,
+      params,
+      ...rest
+    } as CSSDeclarationCall);
 
-    return <Base {...props} returnValue="#FF6600" returnType="COLOR" />;
+    switch(name) {
+      case "rgb":
+      case "rgba": {
+        returnType = "COLOR";
+        break;
+      }
+    }
+
+    return <Base name={name} params={params} returnValue={returnValue} returnType={returnType} {...rest} />;
   }
 );
 
