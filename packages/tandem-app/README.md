@@ -4,16 +4,21 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] Tandem
-  - [ ] CSS Inspector pane (because it's complex) 
-    - [ ] toggle eye
-    - [ ] add styles
-    - [ ] delete styles
-    - [ ] Color input
-      - [ ] presets from `:root`
+(need to start using tandem to build itself completely)
 
-- [ ] Paperclip
-  - [ ] Declaration parser
+- [ ] Mutations lib
+- [ ] Tandem
+  - [ ] Components Pane
+    - [ ] Delete components
+    - [ ] DND components to existing components
+  - [ ] CSS Inspector
+    - [ ] toggle eye
+    - [ ] add declaration
+    - [ ] delete declaration
+    - [ ] edit declaration
+    - [ ] add style rule (auto add to scoped style element)
+    - [ ] `:root` inspecting
+- [ ] VSCode extension wire up
 
 HIGH PRIO:
 

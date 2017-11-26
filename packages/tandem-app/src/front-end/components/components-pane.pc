@@ -1,7 +1,7 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 
-<component id="td-components-pane-cell" [[property screenshot]] [[property label]] [[property screenshotScale]] [[property hovering]] [[property onDragStart]] [[property onDragEnd]] [[property dispatch]]> 
+<component id="td-components-pane-cell" [[property screenshot]] [[property label]] [[property screenshotScale]] [[property hovering]] [[property onDragStart]] [[property selected]] [[property onClick]] [[property onDragEnd]] [[property dispatch]]> 
 
   <meta name="internal" content="true" />
   <style>
@@ -23,7 +23,7 @@
       height: 100%;*/
     }
 
-    :host:hover, :host([hovering]) {
+    :host:hover, :host([hovering]), :host([selected]) {
       color: var(--font-color-light);
       background: var(--background-highlight);
     }
@@ -55,7 +55,7 @@
 
   </style>
   <template>
-    <div class="inner" title=[[bind label]] draggable alt=[[bind label]] onDragStart=[[bind onDragStart]] onDragEnd=[[bind onDragEnd]]>
+    <div class="inner" title=[[bind label]] draggable alt=[[bind label]] onDragStart=[[bind onDragStart]] onDragEnd=[[bind onDragEnd]] onClick=[[bind onClick]]>
       <span class="label" [[if !screenshot]]> 
         [[bind label]]
       </span>

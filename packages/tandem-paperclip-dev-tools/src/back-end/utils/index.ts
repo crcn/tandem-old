@@ -113,7 +113,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
     return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id}) => ({
       filePath,
       label: id,
-      id,
+      $id: id,
       screenshot: getComponentScreenshot(id, state),
       tagName: id,
       moduleId: moduleId,

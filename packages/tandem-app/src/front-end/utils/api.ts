@@ -52,3 +52,15 @@ export const apiCreateComponent = async (name: string, state: ApplicationState):
 
   return await response.json();
 }
+
+export const apiDeleteComponent = async (componentId: string, state: ApplicationState): Promise<CreateComponentResult> => { 
+  const response = await fetch(`${state.apiHost}/components/${componentId}`, {
+    method: "DELETE",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    } as any
+  });
+
+  return await response.json();
+}

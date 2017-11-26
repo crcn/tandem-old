@@ -1,0 +1,14 @@
+<component id="td-blah">
+  <style>
+  </style>
+  <template>
+    SPAN
+  </template>
+</component>
+
+<component id="td-blah-preview">
+  <meta name="preview" content="of=td-blah, width=400, height=400"></meta>
+  <template>
+    <td-blah />
+  </template>
+</component>

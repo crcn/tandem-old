@@ -2,7 +2,7 @@ import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBo
 import { take, select, call, put, fork, spawn, cancel } from "redux-saga/effects";
 import { kebabCase } from "lodash";
 import { delay } from "redux-saga";
-import { apiGetComponentPreviewURI, apiOpenSourceFile, apiCreateComponent } from "../utils";
+import { apiGetComponentPreviewURI, apiOpenSourceFile, apiCreateComponent, apiDeleteComponent } from "../utils";
 import { 
   RESIZER_MOVED,
   RESIZER_STOPPED_MOVING,
@@ -77,6 +77,7 @@ import {
   getSyntheticWindowWorkspace,
   getStageToolMouseNodeTargetReference,
 } from "../state";
+import { deleteShortcutPressed, AVAILABLE_COMPONENT, apiComponentsLoaded } from "front-end";
 
 export function* mainWorkspaceSaga() {
   yield fork(openDefaultWindow);
@@ -434,6 +435,7 @@ function* shiftSelectedWindow(indexDelta: number) {
 
 function* handleComponentsPaneEvents() {
   yield fork(handleComponentsPaneAddClicked);
+  yield spawn(handleDeleteComponentsPane);
 }
 
 function* handleComponentsPaneAddClicked() {
@@ -441,8 +443,29 @@ function* handleComponentsPaneAddClicked() {
     yield take(COMPONENTS_PANE_ADD_COMPONENT_CLICKED);
     const name = prompt("Unique component name");
     const state: ApplicationState = yield select();
+    const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
     const { componentId } = yield call(apiCreateComponent, name, state);
 
-    yield put(openSyntheticWindowRequest({ location: apiGetComponentPreviewURI(componentId, state) }));
+    yield put(openSyntheticWindowRequest({ location: apiGetComponentPreviewURI(componentId, state)}, workspace.browserId));
   }
+}
+
+function* handleDeleteComponentsPane() {
+  while(true) {
+    yield take(DELETE_SHORCUT_PRESSED);
+    const state: ApplicationState = yield select();
+    const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
+    const componentRefs = workspace.selectionRefs.filter((ref) => ref[0] === AVAILABLE_COMPONENT);
+
+    if (componentRefs.length && confirm("Are you sure you want to delete these components?")) {
+      
+    }
+
+    for (const [type, componentId] of componentRefs) {
+      const result = yield call(apiDeleteComponent, componentId, state);
+      if (result.message) {
+        alert(result.message);
+      }
+    }
+  } 
 }

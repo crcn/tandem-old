@@ -7,3 +7,4 @@ export * from "./loader";
 export * from "./infer-type";
 export * from "./type-loader";
 export * from "./css-declaration-parser";
+export * from "./edit";

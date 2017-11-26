@@ -2,10 +2,12 @@ import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { kebabCase } from "lodash";
 import { eventChannel } from "redux-saga";
 import * as request from "request";
+
 import { ApplicationState, RegisteredComponent } from "../state";
 import { flatten } from "lodash";
+import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem } from "paperclip";
 import { PAPERCLIP_FILE_PATTERN, PAPERCLIP_FILE_EXTENSION } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules } from "../utils";
 import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -54,6 +56,10 @@ function* addRoutes(server: express.Express) {
   // create a new component (creates a new module with a single component)
   server.post("/components", yield wrapRoute(createComponent));
 
+  
+  // create a new component (creates a new module with a single component)
+  server.delete("/components/:componentId", yield wrapRoute(deleteComponent));
+  
   // 
   server.post("/watch", yield wrapRoute(watchUris));
 
@@ -203,8 +209,6 @@ function* createComponent(req: express.Request, res: express.Response) {
     content
   );
 
-  console.log(content);
-
   res.send({ componentId: componentId });
 
   // TODO - create global style if it doesn"t already exist
@@ -230,6 +234,57 @@ function* createComponent(req: express.Request, res: express.Response) {
   */
 }
 
+function* deleteComponent(req: express.Request, res: express.Response, next) {
+  const state: ApplicationState = yield select();
+  const componentId = req.params.componentId;
+  const readFile = getReadFile(state);
+  const allModules = getAllModules(state) as Module[];
+
+  // scan for dependencies of component
+
+  const dependents: Module[] = [];
+  let targetModule: Module;
+  let targetComponent: Component;
+  let previewComponent: Component;
+
+  for (const module of allModules) {
+    for (const component of module.components) {
+      if (!targetModule && component.id === componentId) {
+        targetModule = module;
+        targetComponent = component;
+        continue;
+      }
+      const pmeta = getComponentMetadataItem(component, "preview");
+      if (pmeta && pmeta.params.of === componentId) {
+        previewComponent = component;
+        continue;
+      }
+      const childElementNames = getAllChildElementNames(component.template);
+
+      if (childElementNames.indexOf(componentId) !== -1) {
+        dependents.push(module);
+      }
+    }
+  }
+
+  if (!targetModule) {
+    res.statusCode = 404;
+    return res.send({
+      message: "Could not find component"
+    });
+  };
+
+  if (dependents.length) {
+    res.statusCode = 500;
+    return res.send({
+      message: `Component references in ${dependents.map(dep => dep.uri)} must be removed before deleting ${componentId}`
+    });
+  }
+
+  // content = editString(string, editPaperclipSource(string, mutation), editPaperclipSource(string, mutation))
+
+  res.send({});
+}
 
 function* proxy(req, res: express.Response) {
   let [match, uri] = req.path.match(/proxy\/(.+)/);

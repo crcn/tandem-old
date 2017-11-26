@@ -179,6 +179,7 @@ import {
 } from "aerial-browser-sandbox";
 
 import reduceReducers = require("reduce-reducers");
+import { COMPONENTS_PANE_COMPONENT_CLICKED, ComponentsPaneComponentClicked, AVAILABLE_COMPONENT } from "front-end";
 
 export const applicationReducer = (state: ApplicationState = createApplicationState(), event: BaseEvent) => {
   switch(event.type) {
@@ -210,6 +211,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   state = syntheticBrowserReducer(state, event);
   state = stageReducer(state, event);
   state = windowPaneReducer(state, event);
+  state = componentsPaneReducer(state, event);
   state = fileCacheReducer(state, event);
   state = shortcutReducer(state, event);
   state = apiReducer(state, event);
@@ -238,6 +240,16 @@ const apiReducer = (state: ApplicationState, event: BaseEvent) => {
   }
   return state;
 };
+
+const componentsPaneReducer = (state: ApplicationState, event: BaseEvent) => {
+  switch(event.type) {
+    case COMPONENTS_PANE_COMPONENT_CLICKED: {
+      const { componentId } = event as ComponentsPaneComponentClicked;
+      return setWorkspaceSelection(state, state.selectedWorkspaceId, getStructReference({$id: componentId, $type: AVAILABLE_COMPONENT}));
+    }
+  }
+  return state;
+}
 
 const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {

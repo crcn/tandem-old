@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { hydrateTdComponentsPane, TdComponentsPaneInnerProps, hydrateTdComponentsPaneCell, TdComponentsPaneCellInnerProps, } from "./components-pane.pc";
 import { Pane } from "./pane";
-import { componentsPaneAddComponentClicked } from "../actions";
+import { componentsPaneAddComponentClicked, componentsPaneComponentClicked } from "../actions";
 import { Dispatcher } from "aerial-common2";
 import { Workspace, withDragSource, ConnectDragSource, AvailableComponent, AVAILABLE_COMPONENT } from "front-end/state";
 
@@ -31,7 +31,12 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, Compon
   withDragSource({
     getData: ({ tagName }: ComponentsPaneCellOuterProps) => [AVAILABLE_COMPONENT, tagName]
   }),
-  (Base: React.ComponentClass<TdComponentsPaneCellInnerProps>) => ({ label, screenshot, connectDragSource, dispatch }: ComponentsPaneCellInnerProps) => {
+  withHandlers({
+    onClick: ({ dispatch, tagName }: ComponentsPaneCellOuterProps) => () => {
+      dispatch(componentsPaneComponentClicked(tagName));
+    }
+  }),
+  (Base: React.ComponentClass<TdComponentsPaneCellInnerProps>) => ({ label, selected, screenshot, connectDragSource, onClick, dispatch }: ComponentsPaneCellInnerProps) => {
     let width = screenshot && screenshot.clip.right - screenshot.clip.left;
     let height = screenshot && screenshot.clip.bottom - screenshot.clip.top;
     let scale = 1;
@@ -42,9 +47,7 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, Compon
       scale = ICON_SIZE / height;
     }
 
-    // const larger = Math.max(width, height);
-    // const ratio = CELL_SIZE
-    return connectDragSource(<Base label={label} screenshot={screenshot} screenshotScale={scale} hovering={false} onDragStart={null} onDragEnd={null} />);
+    return connectDragSource(<Base label={label} onClick={onClick} selected={selected} screenshot={screenshot} screenshotScale={scale} hovering={false} onDragStart={null} onDragEnd={null} />);
   }
 );
 
@@ -55,7 +58,14 @@ const enhanceComponentsPane = compose<TdComponentsPaneInnerProps, ComponentsPane
       dispatch(componentsPaneAddComponentClicked());
     }
   }),
-  (Base: React.ComponentClass<TdComponentsPaneInnerProps>) => ({ workspace, dispatch, onAddComponentClick }: ComponentsPaneInnerProps) => <Base components={workspace.availableComponents || []} dispatch={dispatch} onAddComponentClick={onAddComponentClick} />
+  (Base: React.ComponentClass<TdComponentsPaneInnerProps>) => ({ workspace, dispatch, onAddComponentClick }: ComponentsPaneInnerProps) => {
+    const components = (workspace.availableComponents || []).map((component) => ({
+      ...component,
+      selected: workspace.selectionRefs.find((ref) => ref[1] === component.tagName)
+    }));
+
+    return <Base components={components} dispatch={dispatch} onAddComponentClick={onAddComponentClick} />;
+  }
 );
 
 const ComponentsPaneCell = hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {});
