@@ -2,7 +2,8 @@ import { parseModuleSource } from "./parser";
 import { PCExpression, PCParent, PCFragment, PCElement, PCString, PCExpressionType, PCSelfClosingElement, PCStartTag, PCAttribute } from "./ast";
 import { repeat } from "lodash";
 import { ExpressionLocation, CSSGroupingRule, CSSStyleRule, PCTextNode, PCBlock } from "./ast";
-import { CSS_STYLE_RULE_SET_STYLE, SET_ELEMENT_ATTRIBUTE_EDIT, INSERT_CHILD_NODE_EDIT, UPDATE_VALUE_NODE, REMOVE_CHILD_NODE_EDIT } from "aerial-browser-sandbox/constants";
+import { CSS_STYLE_RULE_SET_STYLE, SET_ELEMENT_ATTRIBUTE_EDIT, INSERT_CHILD_NODE_EDIT, UPDATE_VALUE_NODE, REMOVE_CHILD_NODE_EDIT, INSERT_HTML_EDIT, CSS_INSERT_CSS_RULE_TEXT, CSS_PARENT_DELETE_RULE, CSS_STYLE_RULE_SET_STYLE_PROPERTY, CSS_STYLE_RULE_SET_SELECTOR_TEXT } from "aerial-browser-sandbox/constants";
+import { InsertHTMLMutation, createInsertHTMLMutation } from "aerial-browser-sandbox/mutation";
 import { Mutation, SetPropertyMutation, createStringMutation, StringMutation, InsertChildMutation, RemoveChildMutation, SetValueMutation, REMOVE_CHILD_MUTATION, INSERT_CHILD_MUTATION } from "source-mutation";
 
 export const editPaperclipSource = (content: string, mutation: Mutation<any>) => {
@@ -27,6 +28,21 @@ export const editPaperclipSource = (content: string, mutation: Mutation<any>) =>
     }
     case INSERT_CHILD_NODE_EDIT: {
       return insertChild(targetNode as PCParent, mutation as RemoveChildMutation<any, any>, content);
+    }
+    case INSERT_HTML_EDIT: {
+      return insertHTML(targetNode as PCParent, mutation as InsertHTMLMutation<any>, content);
+    }
+    case CSS_INSERT_CSS_RULE_TEXT: {
+      // TODO
+    }
+    case CSS_PARENT_DELETE_RULE: {
+      // TODO
+    }
+    case CSS_STYLE_RULE_SET_SELECTOR_TEXT: {
+      // TODO
+    }
+    case CSS_STYLE_RULE_SET_STYLE_PROPERTY: {
+      // TODO
     }
   }
 
@@ -81,18 +97,21 @@ const removeChild = (parent: PCFragment, { index }: RemoveChildMutation<any, any
   return createStringMutation(child.location.start.pos, child.location.end.pos, ``);
 }
 
-const insertChild = (parent: PCFragment, { index, child }: InsertChildMutation<any, any>, source: string) => {
-  const content = child.outerHTML || child.nodeValue;
+const insertChild = (parent: PCFragment, { target, index, child }: InsertChildMutation<any, any>, source: string) => {
+  return insertHTML(parent, createInsertHTMLMutation(target, index, child.nodeValue || child.outerHTML), source);
+};
+
+const insertHTML = (parent: PCParent, { childIndex, html }: InsertHTMLMutation<any>, source: string) => {
   if (parent.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
     const parentElement = parent as any as PCSelfClosingElement;
-    return createStringMutation(eatWhitespace(parentElement.location.end.pos - 2, source), parentElement.location.end.pos, ">" + content + `</${parentElement.name}>`);
+    return createStringMutation(eatWhitespace(parentElement.location.end.pos - 2, source), parentElement.location.end.pos, ">" + html + `</${parentElement.name}>`);
   }
-  const beforeChild = parent.childNodes[index];
+  const beforeChild = parent.childNodes[childIndex];
   if (!beforeChild) {
     const parentElement = parent as PCElement;
-    return createStringMutation(parentElement.startTag.location.end.pos, parentElement.startTag.location.end.pos, content);
+    return createStringMutation(parentElement.startTag.location.end.pos, parentElement.startTag.location.end.pos, html);
   }
-  return createStringMutation(beforeChild.location.start.pos, beforeChild.location.start.pos, content);
+  return createStringMutation(beforeChild.location.start.pos, beforeChild.location.start.pos, html);
 }
 
 const eatWhitespace = (pos: number, content: string) => {

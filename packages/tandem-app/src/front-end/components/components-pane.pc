@@ -93,10 +93,20 @@
       cursor: pointer;
     }
 
+    input {
+      display: none;
+    }
+
   </style>
   <template>
     <td-pane>
-      <span slot="header">Components <span class="controls" onClick=[[bind onAddComponentClick]]>+</span></span>
+      <span slot="header">
+        Components 
+        <input type="text"></input>
+        <span class="controls" onClick=[[bind onAddComponentClick]]>
+          +
+        </span>
+      </span>
       <span slot="content" class="content">
         <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] dispatch=[[bind dispatch]] />
       </span>
