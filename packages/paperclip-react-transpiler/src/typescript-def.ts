@@ -129,7 +129,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
   return content;
 }
 
-const transpileInferredTypeKinds = ([type, props], path: string[] = []) => {
+const transpileInferredTypeKinds = ([type, props = {}], path: string[] = []) => {
   if (type === InferredTypeKind.ANY) {
     return `any`;
   }  else if (type & InferredTypeKind.OBJECT && type & InferredTypeKind.ARRAY) { 

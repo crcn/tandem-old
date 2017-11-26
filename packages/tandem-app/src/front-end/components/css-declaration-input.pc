@@ -36,7 +36,7 @@
   </template>
 </component>
 
-<component id="td-css-spaced-list-expr-input" [[property values]]>
+<component id="td-css-spaced-list-expr-input" [[property items]]>
   <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
@@ -44,11 +44,11 @@
     }
   </style>
   <template>
-    <td-css-expr-input [[repeat values as value, i]] value=[[bind value]] key=[[bind i]] />
+    <td-css-expr-input [[repeat items as item, i]] value=[[bind item]] key=[[bind i]] />
   </template>
 </component>
 
-<component id="td-css-comma-list-expr-input" [[property values]]>
+<component id="td-css-comma-list-expr-input" [[property items]]>
   <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
@@ -59,7 +59,7 @@
     }
   </style>
   <template>
-    <td-css-expr-input [[repeat values as value, i]] value=[[bind value]] key=[[bind i]] />
+    <td-css-expr-input [[repeat items as item, i]] value=[[bind item]] key=[[bind i]] />
   </template>
 </component>
 

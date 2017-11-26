@@ -1,7 +1,8 @@
 import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBounds, resized, keepBoundsAspectRatio, request, shiftBounds, StructReference } from "aerial-common2";
 import { take, select, call, put, fork, spawn, cancel } from "redux-saga/effects";
+import { kebabCase } from "lodash";
 import { delay } from "redux-saga";
-import { apiGetComponentPreviewURI, apiOpenSourceFile } from "../utils";
+import { apiGetComponentPreviewURI, apiOpenSourceFile, apiCreateComponent } from "../utils";
 import { 
   RESIZER_MOVED,
   RESIZER_STOPPED_MOVING,
@@ -438,6 +439,10 @@ function* handleComponentsPaneEvents() {
 function* handleComponentsPaneAddClicked() {
   while(true) {
     yield take(COMPONENTS_PANE_ADD_COMPONENT_CLICKED);
-    console.log("CLACK");
+    const name = prompt("Unique component name");
+    const state: ApplicationState = yield select();
+    const { componentId } = yield call(apiCreateComponent, name, state);
+
+    yield put(openSyntheticWindowRequest({ location: apiGetComponentPreviewURI(componentId, state) }));
   }
 }

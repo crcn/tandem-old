@@ -21,17 +21,17 @@ describe(__filename + "#", () => {
       b: [InferredTypeKind.NUMBER, null]
     })],
     [`[[bind a + 1]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null]
     })],
     [`[[bind 1 + a]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null]
     })],
     [`[[bind a + ""]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null]
     })],
     [`[[bind (a + b) + 1]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null],
-      b: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null],
+      b: [InferredTypeKind.ANY, null]
     })],
 
     // Boolean operations
@@ -50,24 +50,24 @@ describe(__filename + "#", () => {
 
     // equality
     [`[[bind a + 1]][[bind a == b]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null],
+      a: [InferredTypeKind.ANY, null],
       b: [InferredTypeKind.ANY, null]
     })],
     [`[[bind a + 1]][[bind a != b]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null],
+      a: [InferredTypeKind.ANY, null],
       b: [InferredTypeKind.ANY, null]
     })],
     [`[[bind a + 1]][[bind a === b]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null],
-      b: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null],
+      b: [InferredTypeKind.ANY, null]
     })],
     [`[[bind a + 1]][[bind a !== b]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null],
-      b: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null],
+      b: [InferredTypeKind.ANY, null]
     })],
     [`[[bind a + ""]][[bind b !== a]]`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null],
-      b: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null],
+      b: [InferredTypeKind.ANY, null]
     })],
 
     // elements
@@ -87,8 +87,8 @@ describe(__filename + "#", () => {
       b: [InferredTypeKind.ANY, null]
     })],
     [`[[bind a + 1]]<a [[if a]] /><a [[elseif b === a]] />`, inferredType(InferredTypeKind.OBJECT, {
-      a: [InferredTypeKind.STRING_OR_NUMBER, null],
-      b: [InferredTypeKind.STRING_OR_NUMBER, null]
+      a: [InferredTypeKind.ANY, null],
+      b: [InferredTypeKind.ANY, null]
     })],
     [`<a [[repeat items as item]]>[[bind item.name]]</a>`, inferredType(InferredTypeKind.OBJECT, {
       items: inferredType(InferredTypeKind.OBJECT_OR_ARRAY, {

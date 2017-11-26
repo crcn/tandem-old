@@ -33,3 +33,22 @@ export const apiOpenSourceFile = async (source: ExpressionLocation, state: Appli
 
   return await response.json();
 }
+
+export type CreateComponentResult = {
+  $id: string
+};
+
+export const apiCreateComponent = async (name: string, state: ApplicationState): Promise<CreateComponentResult> => { 
+  const response = await fetch(`${state.apiHost}/components`, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    } as any,
+    body: JSON.stringify({
+      name
+    })
+  });
+
+  return await response.json();
+}

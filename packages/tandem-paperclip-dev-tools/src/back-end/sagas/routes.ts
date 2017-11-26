@@ -1,9 +1,10 @@
 import { fork, take, select, call, put, spawn } from "redux-saga/effects";
+import { kebabCase } from "lodash";
 import { eventChannel } from "redux-saga";
 import * as request from "request";
 import { ApplicationState, RegisteredComponent } from "../state";
 import { flatten } from "lodash";
-import { PAPERCLIP_FILE_PATTERN } from "../constants";
+import { PAPERCLIP_FILE_PATTERN, PAPERCLIP_FILE_EXTENSION } from "../constants";
 import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries } from "../utils";
 import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
 import * as express from "express";
@@ -168,6 +169,43 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
 }
 
 function* createComponent(req: express.Request, res: express.Response) {
+  const { name } = yield getPostData(req);
+
+  const state: ApplicationState = yield select();
+  const componentId = kebabCase(name);
+
+  const content = `` +
+  `<component id="${componentId}">\n` + 
+  `  <style>\n` + 
+  `  </style>\n` +
+  `  <template>\n` + 
+  `  </template>\n` +
+  `</component>\n\n` +
+
+  `<component id="${componentId}-preview">\n` +
+  `  <meta name="preview" content="of=${componentId}, width=400, height=400"></meta>\n` +
+  `  <template>\n` +
+  `    <${componentId} />\n` +
+  `  </template>\n` +
+  `</component>\n`;
+
+  const filePath = path.join(state.config.sourceDirectory, componentId + "." + PAPERCLIP_FILE_EXTENSION);
+
+  if (fs.existsSync(filePath)) {
+    res.statusCode = 500;
+    return res.send({
+      message: "Component exists"
+    });
+  }
+
+  fs.writeFileSync(
+    filePath,
+    content
+  );
+
+  console.log(content);
+
+  res.send({ componentId: componentId });
 
   // TODO - create global style if it doesn"t already exist
   // check if component name is already taken (must be unique)

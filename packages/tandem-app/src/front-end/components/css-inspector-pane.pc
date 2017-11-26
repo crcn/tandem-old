@@ -31,7 +31,7 @@
   </template>
 </component>
 
-<component id="td-style-rule" [[property label]] [[property declarations]] [[property source]] [[property headerHovering]]>
+<component id="td-style-rule" [[property label]] [[property declarations]] [[property source]] [[property headerHovering]] [[property inherited]]>
   <meta name="internal" content="true" />
   <style>
     :host:hover td-gutter-subheader span, :host([headerHovering]) .controls {
@@ -46,6 +46,7 @@
       color: var(--font-color-dim);
       padding-right: var(--base4);
     }
+    .
     .name:after {
       content: ":";
     }
@@ -53,10 +54,23 @@
       color: var(--font-color-alt);
     }
 
+    .inherited {
+      margin-right: var(--base6);
+      padding: var(--base1) var(--base6);
+      background: var(--border-color-deep);
+      color: var(--font-color-invert);
+      border-radius: var(--base1);
+      float: left;
+    }
+
     .selector-text {
       width: 100%;
       word-break: break-word;
       margin-right: var(--base4);
+      display: inline-block;
+    }
+
+    .space {
       display: inline-block;
     }
 
@@ -72,6 +86,14 @@
     <td-gutter-subheader>
       <span class="selector-text">
         [[bind label]]
+      </span>
+      <span class="inherited" [[if inherited]]>
+        inherited
+      </span>
+      <span class="space">
+      </span>
+      <span>
+        +
       </span>
       <span class="source" [[if source]]>
         [[bind source.uri]]
@@ -106,6 +128,9 @@
       {
         label: ".container",
         source: { uri: "styles.css" },
+        element: {
+          tagName: "div"
+        },
         rule: { },
         declarations: [
           { 
@@ -268,6 +293,7 @@
       },
       {
         label: "body, html",
+        inherited: true,
         rule: { },
         declarations: [
           { 

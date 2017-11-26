@@ -140,7 +140,7 @@ const createBKExpression = (scanner: TokenScanner) => {
   }
 };
 
-const createString = (scanner: TokenScanner): BKString => {
+export const createString = (scanner: TokenScanner): BKString => {
   const start = scanner.curr();
   scanner.next(); // eat '
   let value = "";
@@ -426,10 +426,16 @@ const isBlockEnding = (scanner: TokenScanner) => {
 const createStyleSheet = (scanner: TokenScanner): CSSSheet => {
   const start = scanner.curr();
   const children = [];
-  while(!scanner.ended() && scanner.curr().type !== PCTokenType.CLOSE_TAG) {
-    children.push(createCSSRule(scanner));
+  while(1) {
     eatWhitespace(scanner);
+    if (scanner.ended() || scanner.curr().type === PCTokenType.CLOSE_TAG) {
+      break;
+    }
+    children.push(createCSSRule(scanner));    
   }
+  // while(!scanner.ended() && scanner.curr().type !== PCTokenType.CLOSE_TAG) {
+  //   eatWhitespace(scanner);
+  // }
   return {
     type: CSSExpressionType.SHEET,
     children,
@@ -438,7 +444,6 @@ const createStyleSheet = (scanner: TokenScanner): CSSSheet => {
 };
 
 const createCSSRule = (scanner: TokenScanner) => {
-  eatWhitespace(scanner);
   switch(scanner.curr().type) {
     case PCTokenType.AT: return createCSSAtRule(scanner);
     default: return createCSSStyleRuleOrDeclarationProperty(scanner);
@@ -752,7 +757,7 @@ const createTextNode = (scanner: TokenScanner): PCTextNode => {
   });
 };
 
-const eatWhitespace = (scanner: TokenScanner) => {
+export const eatWhitespace = (scanner: TokenScanner) => {
   while(scanner.curr().type === PCTokenType.WHITESPACE) {
     scanner.next();
   }

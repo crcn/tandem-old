@@ -577,7 +577,7 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
   yield fork(function* handleNodeStoppedEditing() {
     while(true) {
       const { nodeId } = (yield takeWindowAction(NODE_VALUE_STOPPED_EDITING)) as SyntheticNodeValueStoppedEditing;
-      const node = flattenWindowObjectSources(window.struct)[nodeId] as any as HTMLElement;
+      const node = flattenWindowObjectSources(window.struct)[nodeId] as any as SEnvHTMLElementInterface;
       const mutation = createSetElementTextContentMutation(node, node.textContent);
 
       yield request(deferApplyFileMutationsRequest(mutation));

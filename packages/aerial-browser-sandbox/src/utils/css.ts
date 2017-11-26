@@ -78,13 +78,20 @@ export const containsInheritableStyleProperty = (style: SyntheticCSSStyleDeclara
 const getDocumentCSSStyleRules = weakMemo((document: SyntheticLightDocument) => {
   const allRules: SEnvCSSStyleRuleInterface[] = [];
   const styleSheets = document.instance.stylesheets as any as SEnvCSSStyleSheetInterface[];
-  const allChildObjects = flattenDocumentSources(document);
-  for (const $id in allChildObjects) {
-    const child = allChildObjects[$id] as any as SEnvCSSRuleInterface;
-    if (child.type === CSSRuleType.STYLE_RULE) {
-      allRules.push(child as SEnvCSSStyleRuleInterface);
+  for (const styleSheet of styleSheets) {
+    for (const rule of (styleSheet.cssRules as any as CSSRule[])) {
+      if (rule.type === CSSRuleType.STYLE_RULE) {
+        allRules.push(rule as SEnvCSSStyleRuleInterface);
+      }
     }
   }
+  // const allChildObjects = flattenDocumentSources(document);
+  // for (const $id in allChildObjects) {
+  //   const child = allChildObjects[$id] as any as SEnvCSSRuleInterface;
+  //   if (child.type === CSSRuleType.STYLE_RULE) {
+  //     allRules.push(child as SEnvCSSStyleRuleInterface);
+  //   }
+  // }
   return allRules;
 });
 
@@ -100,6 +107,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
   const allRules = getDocumentCSSStyleRules(hostDocument.struct);
   
   const matchingRules: StyledObject[] = [];
+
 
   const elementStyle = (element.instance as any as SEnvHTMLElementInterface).style as SEnvCSSStyleDeclarationInterface;
 
@@ -127,6 +135,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SyntheticWindow, e
 
   return matchingRules;
 });
+
 
 const getSyntheticInheritableCSSRules = weakMemo((window: SyntheticWindow, elementId: string) => {
   const matchingCSSRules = getSyntheticMatchingCSSRules(window, elementId, true);

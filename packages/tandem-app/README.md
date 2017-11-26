@@ -9,15 +9,17 @@ IMMEDIATE:
     - [ ] toggle eye
     - [ ] add styles
     - [ ] delete styles
+    - [ ] Color input
+      - [ ] presets from `:root`
 
 - [ ] Paperclip
   - [ ] Declaration parser
-  - [ ] :host selector does not work
 
 HIGH PRIO:
 
 - [ ] paperclipc
   - [ ] edit lib (need mutations module)
+  - [ ] Must work with firefox
 
 - [ ] Native elements pane
 
@@ -27,9 +29,6 @@ HIGH PRIO:
     - [ ] insert preview for elements that do not have one
   - [ ] DND elements to other elements
   - [ ] native elements
-
-- [ ] CSS Inspector components
-  - [ ] color picker
 
 - [ ] Paperclip
   - [ ] 
@@ -48,6 +47,9 @@ POSSIBLY:
 - [ ] show inferred types for component as they're being coded
 #### FOCUS
 
+- [ ] Safety is #1 priority
+  - [ ] type safety
+  - [ ] 
 - [ ] Warnings & Errors for paperclip
 - [ ] Must be able to code everything visually (conditions as well)
 

@@ -35,6 +35,7 @@ export enum PCTokenType {
   CURLY_BRACKET_CLOSE,
   EQUALS,
   SINGLE_QUOTE,
+  HASH,
   DOUBLE_QUOTE,
   TEXT,
   RESERVED_KEYWORD,
@@ -98,6 +99,8 @@ export const tokenizePaperclipSource = (source: string) => {
       token = createToken(PCTokenType.COMMA, scanner.pos, scanner.shift());
     } else if (cchar === "'") {
       token = createToken(PCTokenType.SINGLE_QUOTE, scanner.pos, scanner.shift());
+    } else if (cchar === "#") {
+      token = createToken(PCTokenType.HASH, scanner.pos, scanner.shift());
     } else if (cchar === "!") {
       if (scanner.peek(3) === "!==") {
         token = createToken(PCTokenType.NOT_DOUBLE_EQUALS, scanner.pos, scanner.take(3));

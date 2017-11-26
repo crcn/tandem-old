@@ -6,3 +6,4 @@ export * from "./vanilla-transpiler";
 export * from "./loader";
 export * from "./infer-type";
 export * from "./type-loader";
+export * from "./css-declaration-parser";

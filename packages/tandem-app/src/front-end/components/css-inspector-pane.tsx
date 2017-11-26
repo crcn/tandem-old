@@ -2,8 +2,8 @@ import * as React from "react";
 import { Pane } from "./pane";
 import { identity, kebabCase } from "lodash";
 import { compose, pure } from "recompose";
-import { parseDeclarationValue, stringifyCSSExpression, CSSDeclarationCall } from "./utils/css";
-import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps } from "./css-declaration-input.pc";
+import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
+import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, TdCssSpacedListExprInputBaseInnerProps, TdCssCommaListExprInputBaseInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
@@ -21,7 +21,6 @@ import {
   getSyntheticMatchingCSSRules, 
 } from "aerial-browser-sandbox";
 
-
 type StyleDelarationOuterProps = {
   name: string;
   ignored: boolean;
@@ -32,14 +31,14 @@ type StyleDelarationOuterProps = {
 
 const enhanceCssCallExprInput = compose<TdCssCallExprInputInnerProps, TdCssCallExprInputInnerProps>(
   pure,
-  (Base: React.ComponentClass<TdCssCallExprInputInnerProps>) => ({ name, params, ...rest }: (CSSDeclarationCall & TdCssCallExprInputInnerProps)) => {
+  (Base: React.ComponentClass<TdCssCallExprInputInnerProps>) => ({ name, params, ...rest }: (DcCall & TdCssCallExprInputInnerProps)) => {
     
     let returnType;
-    let returnValue = stringifyCSSExpression({
+    let returnValue = stringifyDeclarationAST({
       name,
       params,
       ...rest
-    } as CSSDeclarationCall);
+    } as DcCall);
 
     switch(name) {
       case "rgb":
@@ -60,24 +59,67 @@ const CssCallExprInput = hydrateTdCssCallExprInput(enhanceCssCallExprInput, {
   }
 });
 
+
+const enhanceCssNumberInput = compose<TdCssNumberExprInputInnerProps, TdCssNumberExprInputInnerProps>(
+  pure
+);
+
+const CssNumberInput = hydrateTdCssNumberExprInput(enhanceCssNumberInput, {
+});
+
+
+const enhanceCssMeasurementInput = compose<TdCssMeasurementInputInnerProps, TdCssMeasurementInputInnerProps>(
+  pure
+);
+
+const CssMeasurementInput = hydrateTdCssMeasurementInput(enhanceCssMeasurementInput, {
+});
+
+const enhanceCssKeywordInput = compose<TdCssKeywordExprInputInnerProps, TdCssKeywordExprInputInnerProps>(
+  pure
+);
+
+const CssKeywordInput = hydrateTdCssKeywordExprInput(enhanceCssKeywordInput, {
+});
+
+const enhanceCssColorInput = compose<TdCssColorExprInputInnerProps, TdCssColorExprInputInnerProps>(
+  pure
+);
+
+const CssColorInput = hydrateTdCssColorExprInput(enhanceCssColorInput, {
+  TdColorMiniInput: null
+})
+
 const enhanceCSSCallExprInput = compose<TdCssExprInputInnerProps, TdCssExprInputInnerProps>(
   pure
 );
 
+const enhanceCSSSpaced = compose<TdCssSpacedListExprInputBaseInnerProps, TdCssSpacedListExprInputBaseInnerProps>(
+  pure
+);
+
+const CssSpacedList = hydrateTdCssSpacedListExprInput(enhanceCSSSpaced, {
+  TdCssExprInput: (props) => <CSSExprInput {...props} />
+});
+
+const CssCommaList = hydrateTdCssCommaListExprInput(enhanceCSSSpaced, {
+  TdCssExprInput: (props) => <CSSExprInput {...props} />
+});
+
 const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
   TdCssCallExprInput: CssCallExprInput,
-  TdCssColorExprInput: null,
-  TdCssCommaListExprInput: null,
-  TdCssKeywordExprInput: null,
-  TdCssMeasurementInput: null,
-  TdCssNumberExprInput: null,
-  TdCssSpacedListExprInput: null
+  TdCssColorExprInput: CssColorInput,
+  TdCssCommaListExprInput: CssCommaList,
+  TdCssKeywordExprInput: CssKeywordInput,
+  TdCssMeasurementInput: CssMeasurementInput,
+  TdCssNumberExprInput: CssNumberInput,
+  TdCssSpacedListExprInput: CssSpacedList
 });
 
 const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDelarationOuterProps>(
   pure,
   (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
-    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclarationValue(value)} sourceValue={value} />;
+    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclaration(value)} sourceValue={value} />;
   }
 );
 
@@ -127,7 +169,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       //   <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
       // );
     }
-    return <Base label={beautifyLabel(rule.label || rule.selectorText)} source={null} declarations={childDeclarations} />;
+    return <Base label={beautifyLabel(rule.label || rule.selectorText)} source={null} declarations={childDeclarations} inherited={inherited} />;
   }
 );
 

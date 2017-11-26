@@ -24,6 +24,7 @@
     --font-color-alt: #999;
     --font-color-dim: #CCC;
     --font-color-light: rgba(255, 255, 255, 0.9);
+    --font-color-invert: rgba(255, 255, 255, 0.9);
     --background: #FCFCFC;
     --background-alt: #F9F9F9;
     --border-color: #ECECEC;

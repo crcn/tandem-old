@@ -11,14 +11,6 @@
       overflow: scroll;
     }
 
-    .gutter(:left) {
-      border-right: 2px solid var(--border-color-deep);
-    }
-
-    :host(:right) {
-      border-left: 2px solid var(--border-color-deep);
-    }
-
     .content {
       flex: 1;
       overflow: scroll;

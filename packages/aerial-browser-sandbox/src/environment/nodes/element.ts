@@ -227,6 +227,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     createStruct(parentNode?: SEnvNodeInterface): SyntheticElement {
       return {
         ...(super.createStruct(parentNode) as any),
+        shadowRoot: this.shadowRoot && this.shadowRoot.struct,
         attributes: Array.prototype.map.call(this.attributes, attr => attr.struct)
       };
     }
@@ -399,7 +400,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
         this.shadowRoot.$$setConnectedToDocument(true);
       }
       this.shadowRoot["" + "host"] = this;
-      this.dispatchMutationEvent(attachShadowRootMutation(this));
+      this.dispatchMutationEvent(attachShadowRootMutation(this as any));
       this.shadowRoot.addEventListener(SEnvMutationEvent.MUTATION, this._onShadowMutation.bind(this));
 
       return this.shadowRoot;

@@ -14,24 +14,24 @@ export enum PCExpressionType {
 };
 
 export enum BKExpressionType {
-  TYPE,
-  BIND,
-  IF,
-  STRING,
-  OBJECT,
-  ARRAY,
-  KEY_VALUE_PAIR,
-  NUMBER,
-  PROPERTY,
-  RESERVED_KEYWORD,
-  ELSEIF,
-  NOT,
-  OPERATION,
-  GROUP,
-  VAR_REFERENCE,
-  PROP_REFERENCE,
-  ELSE,
-  REPEAT
+  TYPE = "TYPE",
+  BIND = "BIND",
+  IF = "IF",
+  STRING = "STRING",
+  OBJECT = "OBJECT",
+  ARRAY = "ARRAY",
+  KEY_VALUE_PAIR = "KEY_VALUE_PAIR",
+  NUMBER = "NUMBER",
+  PROPERTY = "PROPERTY",
+  RESERVED_KEYWORD = "RESERVED_KEYWORD",
+  ELSEIF = "ELSEIF",
+  NOT = "NOT",
+  OPERATION = "OPERATION",
+  GROUP = "GROUP",
+  VAR_REFERENCE = "VAR_REFERENCE",
+  PROP_REFERENCE = "PROP_REFERENCE",
+  ELSE = "ELSE",
+  REPEAT = "REPEAT"
 };
 
 export enum CSSExpressionType {
@@ -41,6 +41,16 @@ export enum CSSExpressionType {
   AT_RULE,
   IMPORT,
   CHARSET
+};
+
+export enum DcExpressionType {
+  COLOR = "COLOR",
+  CALL = "CALL",
+  MEASUREMENT = "MEASUREMENT",
+  SPACED_LIST = "SPACED_LIST",
+  COMMA_LIST = "COMMA_LIST",
+  KEYWORD = "KEYWORD",
+  LIST = "LIST"
 };
 
 export type Token = {
@@ -61,7 +71,7 @@ export type ExpressionLocation = {
 };
 
 export type PCExpression = {
-  type: number;
+  type: number|string;
   location: ExpressionLocation;
 };
 
@@ -179,6 +189,35 @@ export type CSSAtRule = {
 } & CSSGroupingRule;
 
 export type CSSSheet = CSSGroupingRule;
+
+export type DcExpression = CSSExpression;
+
+export type DcCall = {
+  type: DcExpressionType.CALL;
+  name: string;
+  params: DcExpression[];
+} & DcExpression;
+
+export type DcColor = {
+  type: DcExpressionType.COLOR;
+  value: string;
+} & DcExpression;
+
+export type DcList = {
+  type: DcExpressionType.SPACED_LIST | DcExpressionType.COMMA_LIST;
+  items: DcExpression[];
+} & DcExpression;
+
+export type DcMeasurement = {
+  type: DcExpressionType.MEASUREMENT;
+  value: string;
+  unit: string;
+} & DcExpression;
+
+export type DcKeyword = {
+  type: DcExpressionType.KEYWORD;
+  name: string;
+} & DcExpression;
 
 export type PCStringBlock = {
   values: Array<PCString|PCBlock>;

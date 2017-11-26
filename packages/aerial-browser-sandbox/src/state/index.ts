@@ -39,6 +39,7 @@ import {
   SEnvElementInterface,
   SEnvWindowInterface,
   SEnvCSSStyleRuleInterface,
+  SEnvHTMLElementInterface,
   SEnvNodeInterface,
   SEnvCSSStyleDeclarationInterface,
   SEnvDocumentInterface,
@@ -495,8 +496,11 @@ export type BasicAttribute = {
   value: string; 
 }
 
+export type BasicLightDocument = {
+} & BasicParentNode;
+
 export type BasicElement = {
-  shadowRoot?: BasicParentNode;
+  shadowRoot?: BasicLightDocument;
   attributes: ArrayLike<BasicAttribute>;
 } & BasicParentNode;
 
@@ -543,6 +547,7 @@ export type SyntheticAttribute = {
 } & BasicAttribute & SyntheticNode;
 
 export type SyntheticElement = {
+  shadowRoot: SyntheticLightDocument;
   instance: SEnvElementInterface;
   attributes: SyntheticAttribute[];
 } & BasicElement & SyntheticParentNode;
@@ -760,11 +765,42 @@ export const getSyntheticWindowChildStructs = weakMemo((window: SyntheticWindow)
 export const getSyntheticWindowChild = (window: SyntheticWindow, id: string) => getSyntheticWindowChildStructs(window)[id];
 
 export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: SyntheticWindow) => {
-  let current = getSyntheticWindowChild(window, node.parentId || (node as SyntheticDocumentFragment).hostId);
+  let prev = node;
+  let current = node;
   const ancestors: SyntheticNode[] = [];
-  while(current) {
+  const checkedShadowRoots: SyntheticLightDocument[] = [];
+  while(1) {
+    // if (current.nodeType === SEnvNodeTypes.ELEMENT) {
+    //   const element = current as SyntheticElement;
+    //   if (element.shadowRoot && ancestors.indexOf(element.shadowRoot) === -1) {
+
+    //   }
+    // }
+    prev = current;
+    current = getSyntheticWindowChild(window, current.parentId ||  (current as SyntheticDocumentFragment).hostId);
+
+    if (!current) {
+      break;
+    }
+
+    // dive into slots
+    if (current.nodeType === SEnvNodeTypes.ELEMENT) {
+      const element = current as SyntheticElement;
+      if (!(prev as SyntheticDocumentFragment).hostId && element.shadowRoot && checkedShadowRoots.indexOf(element.shadowRoot) === -1) {
+        checkedShadowRoots.push(element.shadowRoot);
+        const slotName = prev.nodeType === SEnvNodeTypes.ELEMENT ? getSyntheticElementAttribute("slot", prev as SyntheticElement) : null;
+
+        const slot = element.shadowRoot.instance.querySelector(slotName ? `slot[name=${slotName}]` : "slot") as SEnvHTMLElementInterface;
+
+        if (!slot) {
+          break;
+        }
+
+        current = slot.struct;
+      }
+    }
+
     ancestors.push(current);
-    current = getSyntheticWindowChild(window, current.parentId || (current as SyntheticDocumentFragment).hostId);
   }
   return ancestors;
 });
