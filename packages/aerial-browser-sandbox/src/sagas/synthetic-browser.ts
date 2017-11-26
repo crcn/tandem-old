@@ -83,8 +83,6 @@ import {
   roundBounds,
   createRequestResponse,
   Resized,
-  Mutation,
-  diffArray,
   takeRequest, 
   Moved,
   Bounds,
@@ -94,8 +92,9 @@ import {
   pointToBounds,
   MOVED,
   RESIZED,
-  eachArrayValueMutation,
 } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation } from "source-mutation";
 
 import {
   createSyntheticComment,

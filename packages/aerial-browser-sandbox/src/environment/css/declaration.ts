@@ -1,9 +1,9 @@
-import { weakMemo, diffArray, eachArrayValueMutation, createPropertyMutation, createSetValueMutation, generateDefaultId, Struct, SetPropertyMutation, SetValueMutation } from "aerial-common2";
+import { weakMemo, generateDefaultId, Struct } from "aerial-common2";
+import { Mutation, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray } from "source-mutation";
 import { kebabCase, camelCase, identity } from "lodash";
 import { SEnvCSSObjectInterface } from "./base";
 import { SEnvWindowContext } from "../window";
 import { getUri } from "../utils";
-import { Mutation } from "aerial-common2";
 import { SEnvCSSRuleInterface } from "./rules";
 import { SEnvHTMLElementInterface } from "../../";
 import { createSyntheticCSSStyleDeclaration, SyntheticCSSStyleDeclaration } from "../../state";

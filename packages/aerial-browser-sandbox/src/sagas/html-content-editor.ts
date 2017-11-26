@@ -1,18 +1,14 @@
 import parse5 = require("parse5");
 import { fork, take } from "redux-saga/effects";
-import { UPDATE_VALUE_NODE, SEnvParentNodeMutationTypes, findDOMNodeExpression, getHTMLASTNodeLocation, SEnvNodeInterface, SyntheticDOMElementMutationTypes, SEnvElementInterface } from "../environment";
+import { UPDATE_VALUE_NODE, findDOMNodeExpression, getHTMLASTNodeLocation, SEnvNodeInterface, SEnvElementInterface, SET_TEXT_CONTENT, REMOVE_CHILD_NODE_EDIT, SET_ELEMENT_ATTRIBUTE_EDIT } from "../environment";
 import { 
-  Mutation, 
   weakMemo,
   takeRequest,
-  SetValueMutation, 
-  MoveChildMutation, 
-  RemoveChildMutation, 
-  SetPropertyMutation,
-  InsertChildMutation, 
-  createStringMutation,
   expressionPositionEquals,
 } from "aerial-common2";
+
+
+import { Mutation, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation } from "source-mutation";
 
 import { MutateSourceContentRequest, EDIT_SOURCE_CONTENT, testMutateContentRequest } from "../actions";
 
@@ -35,7 +31,7 @@ export function* htmlContentEditorSaga(contentType: string = "text/html") {
 
   yield fork(function* handleRemoveNode() {
     while(true) {
-      yield takeRequest(testMutateContentRequest(contentType, SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT), ({ mutation, content }: MutateSourceContentRequest<RemoveChildMutation<any, any>>) => {  
+      yield takeRequest(testMutateContentRequest(contentType, REMOVE_CHILD_NODE_EDIT), ({ mutation, content }: MutateSourceContentRequest<RemoveChildMutation<any, any>>) => {  
         const targetNode = findMutationTargetExpression(mutation.child, parseHTML(content)) as any;
         return createStringMutation(targetNode.__location.startOffset, targetNode.__location.endOffset, "");
       });
@@ -44,7 +40,7 @@ export function* htmlContentEditorSaga(contentType: string = "text/html") {
 
   yield fork(function* handleSetTextContent() {
     while(true) {
-      yield takeRequest(testMutateContentRequest(contentType, SyntheticDOMElementMutationTypes.SET_TEXT_CONTENT), ({ mutation, content }: MutateSourceContentRequest<SetPropertyMutation<any>>) => {  
+      yield takeRequest(testMutateContentRequest(contentType, SET_TEXT_CONTENT), ({ mutation, content }: MutateSourceContentRequest<SetPropertyMutation<any>>) => {  
         const targetNode = findMutationTargetExpression(mutation.target, parseHTML(content)) as parse5.AST.Default.Element;
         const start = targetNode.__location.startTag.endOffset;
         const end = targetNode.__location.endTag ? targetNode.__location.endTag.startOffset : targetNode.__location.endOffset;
@@ -56,7 +52,7 @@ export function* htmlContentEditorSaga(contentType: string = "text/html") {
 
   yield fork(function* handleSetAttributes() {
     while(true) {
-      yield takeRequest(testMutateContentRequest(contentType, SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT), ({ mutation, content }: MutateSourceContentRequest<SetPropertyMutation<any>>) => {  
+      yield takeRequest(testMutateContentRequest(contentType, SET_ELEMENT_ATTRIBUTE_EDIT), ({ mutation, content }: MutateSourceContentRequest<SetPropertyMutation<any>>) => {  
 
         const node = findMutationTargetExpression(mutation.target, parseHTML(content)) as any;
         const { target, name, newValue, oldName, index } = mutation;

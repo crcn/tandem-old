@@ -155,11 +155,13 @@ export const tokenizePaperclipSource = (source: string) => {
     } else if (/[\s\r\n\t]/.test(cchar)) {
       token = createToken(PCTokenType.WHITESPACE, scanner.pos, scanner.scan(/[\s\r\n\t]/));
     } else {
+
+      const pos = scanner.pos;
       
       const text = scanner.scan(/[^-<>,='":@;\./\\(){}\[\]\s\r\n\t]/) || scanner.shift();
 
       // null intentionally left out
-      token = createToken(text === "undefined" ? PCTokenType.RESERVED_KEYWORD : PCTokenType.TEXT, scanner.pos, text);
+      token = createToken(text === "undefined" ? PCTokenType.RESERVED_KEYWORD : PCTokenType.TEXT, pos, text);
     }
 
     tokens.push(token);

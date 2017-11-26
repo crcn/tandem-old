@@ -1,8 +1,9 @@
-import { getSEnvParentNodeClass, SEnvParentNodeMutationTypes, SEnvParentNodeInterface } from "./parent-node";
+import { getSEnvParentNodeClass, SEnvParentNodeInterface } from "./parent-node";
 import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
 import { SEnvHTMLElementInterface } from "./html-elements";
 import { SEnvNodeTypes, SVG_XMLNS, HTML_XMLNS } from "../constants";
 import { SEnvNodeInterface } from "./node";
+import { INSERT_CHILD_NODE_EDIT, REMOVE_CHILD_NODE_EDIT } from "./constants";
 import { SyntheticLightDocument } from "../../state";
 import { SEnvWindowInterface } from "../window";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collections";
@@ -90,7 +91,7 @@ export const getSenvLightDocumentClass = (context) => {
       super._onMutation(event);
       const { mutation } = event;
 
-      if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT || mutation.$type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
+      if (mutation.type === INSERT_CHILD_NODE_EDIT || mutation.type === REMOVE_CHILD_NODE_EDIT) {
         this._stylesheets = null;
       }
     }

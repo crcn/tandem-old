@@ -1,4 +1,5 @@
-import { weakMemo, Mutation } from "aerial-common2";
+import { weakMemo } from "aerial-common2";
+import { Mutation } from "source-mutation";
 import { SEnvWindowInterface } from "../window";
 
 export interface EventTargetInterface extends Event {

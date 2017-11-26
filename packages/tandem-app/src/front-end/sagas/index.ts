@@ -5,7 +5,7 @@ import { shortcutsService } from "./shortcuts";
 import { mainWorkspaceSaga } from "./workspace";
 import { fork, call, select } from "redux-saga/effects";
 import { syntheticBrowserSaga } from "aerial-browser-sandbox";
-import { Dispatcher, diffArray, eachArrayValueMutation } from "aerial-common2";
+import { Dispatcher } from "aerial-common2";
 import { createUrlProxyProtocolSaga } from "./protocol";
 import { frontEndSyntheticBrowserSaga } from "./synthetic-browser";
 import { persistStateSaga } from "./persist-state";

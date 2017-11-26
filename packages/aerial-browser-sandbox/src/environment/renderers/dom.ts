@@ -1,8 +1,9 @@
 import { debounce, throttle, values } from "lodash";
 import { decode } from "ent";
 import { SEnvNodeTypes, SVG_XMLNS, HTML_XMLNS } from "../constants";
-import { SEnvNodeInterface, documentMutators } from "../nodes";
+import { SEnvNodeInterface, documentMutators, SET_ELEMENT_ATTRIBUTE_EDIT, ATTACH_SHADOW_ROOT_EDIT, INSERT_CHILD_NODE_EDIT, REMOVE_CHILD_NODE_EDIT } from "../nodes";
 import { 
+  
   SEnvCSSStyleSheetInterface, 
   SEnvCSSObjectInterface, 
   SEnvCSSParentRuleInterface, 
@@ -13,8 +14,7 @@ import {
 } from "../css";
 import { SEnvWindowInterface, patchWindow, windowMutators, flattenWindowObjectSources } from "../window";
 import { 
-  SEnvParentNodeMutationTypes, 
-  SyntheticDOMElementMutationTypes,
+  
   createParentNodeInsertChildMutation, 
   SEnvParentNodeInterface, 
   SEnvCommentInterface, 
@@ -27,7 +27,10 @@ import {
 } from "../nodes";
 import { SEnvMutationEventInterface, getSEnvEventClasses } from "../events";
 import { BaseSyntheticWindowRenderer, SyntheticWindowRendererNativeEvent } from "./base";
-import { InsertChildMutation, RemoveChildMutation, MoveChildMutation, Mutation, Mutator, weakMemo, createZeroBounds } from "aerial-common2";
+import { weakMemo, createZeroBounds } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation } from "source-mutation";
+
 import { SET_SYNTHETIC_SOURCE_CHANGE, flattenNodeSources } from "../nodes";
 import { getNodeByPath, getNodePath } from "../../utils";
 
@@ -140,7 +143,7 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
     const { mutation } = event;
 
     
-    if (documentMutators[mutation.$type]) {
+    if (documentMutators[mutation.type]) {
       const [nativeNode, syntheticObject] = this.getElementDictItem(mutation.target);
 
       // if(!nativeNode) {
@@ -150,22 +153,22 @@ export class SyntheticDOMRenderer extends BaseSyntheticWindowRenderer {
       // }
 
       if (nativeNode) {
-        if (mutation.$type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
+        if (mutation.type === REMOVE_CHILD_NODE_EDIT) {
           const removeMutation = mutation as RemoveChildMutation<any, SEnvNodeInterface>;
-          (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, mutation);
-        } else if (mutation.$type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT) {
+          (windowMutators[mutation.type] as Mutator<any, any>)(nativeNode, mutation);
+        } else if (mutation.type === INSERT_CHILD_NODE_EDIT) {
           const insertMutation = mutation as RemoveChildMutation<any, SEnvNodeInterface>;
           const child = renderHTMLNode(insertMutation.child, { 
             nodes: this._elementDictionary,
             sheets: this._cssRuleDictionary
           }, this.onElementChange, this.targetDocument);
 
-          (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, createParentNodeInsertChildMutation(nativeNode, child, insertMutation.index, false));
-        } else if (mutation.$type === SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT) {
+          (windowMutators[mutation.type] as Mutator<any, any>)(nativeNode, createParentNodeInsertChildMutation(nativeNode, child, insertMutation.index, false));
+        } else if (mutation.type === ATTACH_SHADOW_ROOT_EDIT) {
           const shadow = (nativeNode as HTMLElement).attachShadow({ mode: "open" });
           this._elementDictionary[(mutation.target as SEnvElementInterface).shadowRoot.$id] = [shadow, (mutation.target as SEnvElementInterface).shadowRoot];
         } else {
-          (windowMutators[mutation.$type] as Mutator<any, any>)(nativeNode, mutation);
+          (windowMutators[mutation.type] as Mutator<any, any>)(nativeNode, mutation);
         }
       } else {
         

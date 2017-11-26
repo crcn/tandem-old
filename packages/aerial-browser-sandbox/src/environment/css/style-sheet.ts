@@ -4,15 +4,9 @@ import { CSSRuleType } from "../constants";
 import { SEnvCSSRuleInterface, compareCSSRule, diffCSSRule, flattenCSSRuleSources, cssRuleMutators, diffCSSParentObject, cssParentMutators, cssInsertRule, cssDeleteRule } from "./rules";
 import { 
   weakMemo, 
-  Mutation, 
-  diffArray, 
-  patchArray, 
-  eachArrayValueMutation,
-  createSetValueMutation,
-  createRemoveChildMutation,
-  createMoveChildMutation,
-  createInsertChildMutation,
 } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, createRemoveChildMutation } from "source-mutation";
 import {  getSEnvCSSCollectionClasses } from "./collections";
 import { SEnvCSSObjectInterface, getSEnvCSSBaseObjectClass } from "./base";
 import { SEnvNodeInterface } from "../";
@@ -157,10 +151,10 @@ export const flattenSyntheticCSSStyleSheetSources = weakMemo((sheet: SyntheticCS
 });
 
 export const patchCSSStyleSheet = (target: SEnvCSSObjectInterface, mutation: Mutation<any>) => {
-  const mutate = cssStyleSheetMutators[mutation.$type] as any as (target: SEnvCSSObjectInterface, mutation: Mutation<any>) => any;
+  const mutate = cssStyleSheetMutators[mutation.type] as any as (target: SEnvCSSObjectInterface, mutation: Mutation<any>) => any;
 
   if (!mutate) {
-    throw new Error(`Cannot apply mutation ${mutation.$type} on CSS object`);
+    throw new Error(`Cannot apply mutation ${mutation.type} on CSS object`);
   }
   return mutate(target, mutation);
 }

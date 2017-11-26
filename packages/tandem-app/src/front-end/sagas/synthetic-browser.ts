@@ -3,7 +3,9 @@ import { delay } from "redux-saga";
 import { createDeferredPromise } from "mesh";
 import { apiWatchUris } from "../utils";
 import { take, fork, select, put, call, spawn } from "redux-saga/effects";
-import { Point, shiftPoint, watch, resized, Bounds, REMOVED, diffArray, ARRAY_UPDATE } from "aerial-common2";
+import { Point, shiftPoint, watch, resized, Bounds, REMOVED } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createRemoveChildMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, ARRAY_UPDATE } from "source-mutation";
 import { 
   SYNTHETIC_WINDOW,
   syntheticWindowScroll,
@@ -107,7 +109,7 @@ function* handleWatchWindowResource() {
     }, [])) as string[];
     
 
-    const updates = diffArray(allUris, watchingUris, (a, b) => a === b ? 0 : -1).mutations.filter((mutation) => mutation.$type === ARRAY_UPDATE);
+    const updates = diffArray(allUris, watchingUris, (a, b) => a === b ? 0 : -1).mutations.filter((mutation) => mutation.type === ARRAY_UPDATE);
 
     // no changes, so just continue
     if (updates.length === allUris.length) {

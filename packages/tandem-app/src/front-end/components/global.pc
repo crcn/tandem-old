@@ -45,6 +45,19 @@
   }
 </style>
 
+
+<component id="td-player" label="List">
+  <style>
+    svg {
+      background: var(--background-actor);
+    }
+  </style>
+  <template>
+    <svg>
+    </svg>
+  </template>
+</component>
+
 <component id="td-list" label="List">
   <template>
     <span>

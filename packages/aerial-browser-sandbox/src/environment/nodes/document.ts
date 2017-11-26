@@ -1,21 +1,10 @@
 import { 
   weakMemo, 
-  Mutation, 
-  diffArray, 
-  SetValueMutation, 
-  SetPropertyMutation, 
-  createPropertyMutation, 
-  InsertChildMutation,
-  RemoveChildMutation,
-  eachArrayValueMutation, 
-  createSetValueMutation,
-  createInsertChildMutation,
-  createMoveChildMutation,
-  createRemoveChildMutation,
 } from "aerial-common2";
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, createRemoveChildMutation } from "source-mutation";
 import { SEnvWindowInterface } from "../window";
 import { getSEnvNodeClass, SEnvNodeInterface } from "./node";
-import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, SEnvParentNodeMutationTypes, parentNodeMutators } from "./parent-node";
+import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, parentNodeMutators } from "./parent-node";
 import { diffBaseNode } from "./element";
 import { getL3EventClasses } from "../level3";
 import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";

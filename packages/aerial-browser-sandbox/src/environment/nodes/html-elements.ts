@@ -11,9 +11,10 @@ import { SEnvDocumentInterface } from "./document";
 import { SEnvShadowRootInterface, getSEnvShadowRootClass } from "./light-document";
 import { SyntheticNode } from "../../state";
 import { SEnvNodeTypes } from "../constants";
-import { weakMemo, SetValueMutation, createSetValueMutation, Mutation, diffArray, eachArrayValueMutation } from "aerial-common2";
-import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNode, baseElementMutators, SyntheticDOMElementMutationTypes } from "./element";
-import { SEnvParentNodeMutationTypes } from "./parent-node";
+import { weakMemo } from "aerial-common2";
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, createRemoveChildMutation } from "source-mutation";
+import { getSEnvElementClass, SEnvElementInterface, diffBaseElement, diffBaseNode, baseElementMutators } from "./element";
+import { INSERT_CHILD_NODE_EDIT, REMOVE_CHILD_NODE_EDIT } from "./constants";
 import { SEnvWindowInterface, SEnvWindowContext } from "../window";
 
 export interface SEnvHTMLElementInterface extends HTMLElement, SEnvElementInterface {
@@ -945,10 +946,10 @@ const getSEnvHTMLSlotElementClass = weakMemo((context: SEnvWindowContext) => {
     }
     private _onParentShadowMutation = (event: SEnvMutationEventInterface) => {
       
-      if (event.type === SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT) {
+      if (event.type === INSERT_CHILD_NODE_EDIT) {
         this._updateSlots();
 
-      } else if (event.type === SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT) {
+      } else if (event.type === REMOVE_CHILD_NODE_EDIT) {
         this._updateSlots();
       }
     }

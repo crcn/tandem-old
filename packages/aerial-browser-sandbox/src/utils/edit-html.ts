@@ -2,26 +2,22 @@ import parse5 = require("parse5");
 import { fork, take } from "redux-saga/effects";
 import { 
   UPDATE_VALUE_NODE, 
-  
-  SEnvParentNodeMutationTypes, 
   findDOMNodeExpression, 
   getHTMLASTNodeLocation, 
   SEnvNodeInterface, 
-  SyntheticDOMElementMutationTypes, 
-  SEnvElementInterface
+  SEnvElementInterface,
+  SET_ELEMENT_ATTRIBUTE_EDIT,
+  REMOVE_CHILD_NODE_EDIT,
+  INSERT_CHILD_NODE_EDIT,
+  SET_TEXT_CONTENT
 } from "../environment";
 import { 
-  Mutation, 
   weakMemo,
   takeRequest,
-  SetValueMutation, 
-  MoveChildMutation, 
-  RemoveChildMutation, 
-  SetPropertyMutation,
-  InsertChildMutation, 
-  createStringMutation,
   expressionPositionEquals,
 } from "aerial-common2";
+
+import { Mutation, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, InsertChildMutation } from "source-mutation";
 
 import { MutateSourceContentRequest, EDIT_SOURCE_CONTENT, testMutateContentRequest } from "../actions";
 
@@ -53,14 +49,14 @@ export const createHTMLStringMutation = (content: string, mutation: Mutation<any
   
   const ast = parseHTML(content);
 
-  switch(mutation.$type) {
+  switch(mutation.type) {
     case UPDATE_VALUE_NODE: {
       const targetNode = findMutationTargetExpression(mutation.target, ast) as any;
 
       return createStringMutation(targetNode.__location.startOffset, targetNode.__location.startOffset + targetNode.value.trim().length, (mutation as SetValueMutation<any>).newValue);
     }
 
-    case SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT: {
+    case SET_ELEMENT_ATTRIBUTE_EDIT: {
       const node = findMutationTargetExpression(mutation.target, ast) as any;
       const { target, name, newValue, oldName, index } = mutation as SetPropertyMutation<any>;
   
@@ -126,13 +122,13 @@ export const createHTMLStringMutation = (content: string, mutation: Mutation<any
       return mutations;
     }
 
-    case SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT: {
+    case REMOVE_CHILD_NODE_EDIT: {
       const { child } = mutation as RemoveChildMutation<any, any>;
       const targetNode = findMutationTargetExpression(child, ast) as any;
       return createStringMutation(targetNode.__location.startOffset, targetNode.__location.endOffset, "");
     }
 
-    case SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT: {
+    case INSERT_CHILD_NODE_EDIT: {
       const { index, child, target } = mutation as InsertChildMutation<any, any>;
       const targetNode = findMutationTargetExpression(target, ast) as any;
     
@@ -178,7 +174,7 @@ export function* htmlContentEditorSaga(contentType: string = "text/html") {
 
   yield fork(function* handleSetTextContent() {
     while(true) {
-      yield takeRequest(testMutateContentRequest(contentType, SyntheticDOMElementMutationTypes.SET_TEXT_CONTENT), ({ mutation, content }: MutateSourceContentRequest<SetPropertyMutation<any>>) => {  
+      yield takeRequest(testMutateContentRequest(contentType, SET_TEXT_CONTENT), ({ mutation, content }: MutateSourceContentRequest<SetPropertyMutation<any>>) => {  
         const targetNode = findMutationTargetExpression(mutation.target, parseHTML(content)) as parse5.AST.Default.Element;
         const start = targetNode.__location.startTag.endOffset;
         const end = targetNode.__location.endTag ? targetNode.__location.endTag.startOffset : targetNode.__location.endOffset;

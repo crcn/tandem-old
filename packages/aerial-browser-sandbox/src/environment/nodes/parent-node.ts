@@ -1,15 +1,9 @@
 import { 
   weakMemo, 
-  Mutation, 
-  diffArray, 
-  eachArrayValueMutation, 
-  createInsertChildMutation,
-  createRemoveChildMutation,
-  createMoveChildMutation,
-  MoveChildMutation,
-  InsertChildMutation,
-  RemoveChildMutation,
 } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createRemoveChildMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation";
+import { INSERT_CHILD_NODE_EDIT, REMOVE_CHILD_NODE_EDIT, MOVE_CHILD_NODE_EDIT } from "./constants";
 import { getSEnvNodeClass, SEnvNodeInterface, diffNodeBase, baseNodeMutators } from "./node";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface, SEnvHTMLAllCollectionInterface } from "./collections";
 import { getDOMExceptionClasses } from "./exceptions";
@@ -208,27 +202,21 @@ export const getSEnvParentNodeClass = weakMemo((context: any) => {
   }
 });
 
-export namespace SEnvParentNodeMutationTypes {
-  export const INSERT_CHILD_NODE_EDIT = "INSERT_CHILD_NODE_EDIT";
-  export const REMOVE_CHILD_NODE_EDIT = "REMOVE_CHILD_NODE_EDIT";
-  export const MOVE_CHILD_NODE_EDIT   = "MOVE_CHILD_NODE_EDIT";
-};
-
 export const cloneNode = (node: BasicNode, deep?: boolean) => {
   if (node.constructor === Object) return JSON.parse(JSON.stringify(node));
   return (node as Node).cloneNode(deep);
 }
 
 export const createParentNodeInsertChildMutation = (parent: BasicParentNode, child: BasicNode, index: number, cloneChild: boolean = true) => {
-  return createInsertChildMutation(SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT, parent, child, index, cloneChild);
+  return createInsertChildMutation(INSERT_CHILD_NODE_EDIT, parent, child, index, cloneChild);
 };
 
 export const createParentNodeRemoveChildMutation = (parent: BasicParentNode, child: BasicNode, index?: number) => {
-  return createRemoveChildMutation(SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT, parent, child, index != null ? index : Array.from(parent.childNodes).indexOf(child));
+  return createRemoveChildMutation(REMOVE_CHILD_NODE_EDIT, parent, child, index != null ? index : Array.from(parent.childNodes).indexOf(child));
 };
 
 export const createParentNodeMoveChildMutation = (oldNode: BasicParentNode, child: BasicNode, index: number, patchedOldIndex?: number) => {
-  return createMoveChildMutation(SEnvParentNodeMutationTypes.MOVE_CHILD_NODE_EDIT, oldNode, child, patchedOldIndex || Array.from(oldNode.childNodes).indexOf(child), index);
+  return createMoveChildMutation(MOVE_CHILD_NODE_EDIT, oldNode, child, patchedOldIndex || Array.from(oldNode.childNodes).indexOf(child), index);
 };
 
 export const diffParentNode = (oldNode: BasicParentNode, newNode: BasicParentNode, diffChildNode: (oldChild: BasicNode, newChild: BasicNode) => Mutation<any>[]) => {
@@ -272,13 +260,13 @@ const insertChildNodeAt = (parent: Node, child: Node, index: number) => {
 
 export const parentNodeMutators = {
   ...baseNodeMutators,
-  [SEnvParentNodeMutationTypes.REMOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index, child}: RemoveChildMutation<any, any>) {
+  [REMOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index, child}: RemoveChildMutation<any, any>) {
     (oldNode as any as Element).removeChild(oldNode.childNodes[index] as any);
   },
-  [SEnvParentNodeMutationTypes.MOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {oldIndex, index}: MoveChildMutation<any, any>) {
+  [MOVE_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {oldIndex, index}: MoveChildMutation<any, any>) {
     insertChildNodeAt(oldNode, oldNode.childNodes[oldIndex] as any, index)
   },
-  [SEnvParentNodeMutationTypes.INSERT_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index, child, clone}: InsertChildMutation<any, any>) {
+  [INSERT_CHILD_NODE_EDIT](oldNode: ParentNode & Node, {index, child, clone}: InsertChildMutation<any, any>) {
     insertChildNodeAt(oldNode, clone !== false ? cloneNode(child, true) : child, index);
   }
 }

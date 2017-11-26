@@ -14,7 +14,8 @@ import * as path from "path";
 import * as fs from "fs";
 import * as ts from "typescript";
 import * as glob from "glob";
-import { editString, StringMutation, weakMemo } from "aerial-common2";
+import { editString, StringMutation } from "source-mutation";
+import { weakMemo } from "aerial-common2";
 import { expresssServerSaga } from "./express-server";
 import { PUBLIC_SRC_DIR_PATH, DEFAULT_COMPONENT_PREVIEW_SIZE } from "../constants";
 

@@ -2,15 +2,14 @@ import ts =  require("typescript");
 import { camelCase } from "lodash";
 
 import { 
-  Mutation, 
-  StringMutation, 
   ExpressionLocation,
-  SetPropertyMutation,
-  createStringMutation,
 } from "aerial-common2";
 
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createRemoveChildMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, StringMutation } from "source-mutation";
+
 import {
-  SyntheticDOMElementMutationTypes
+  SET_ELEMENT_ATTRIBUTE_EDIT,
+  SET_TEXT_CONTENT
 } from "aerial-browser-sandbox";
 
 module.exports = (content: string, mutation: Mutation<any>, filePath: string) => {
@@ -18,11 +17,11 @@ module.exports = (content: string, mutation: Mutation<any>, filePath: string) =>
   const ast = ts.createSourceFile(filePath, content, ts.ScriptTarget.ES2016, true);
   const targetNode = findTargetASTNode(ast, mutation);
 
-  switch(mutation.$type) {
-    case SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT: {
+  switch(mutation.type) {
+    case SET_ELEMENT_ATTRIBUTE_EDIT: {
       return editElementAttribute(targetNode, mutation as SetPropertyMutation<any>);
     }
-    case SyntheticDOMElementMutationTypes.SET_TEXT_CONTENT: {
+    case SET_TEXT_CONTENT: {
       return setElementTextContent(targetNode, mutation as SetPropertyMutation<any>)
     }
   }
@@ -118,7 +117,7 @@ const editElementAttribute = (target: ts.Node, mutation: SetPropertyMutation<any
 };
 
 const isElementMutation = (mutation: Mutation<any>) => {
-  return [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, SyntheticDOMElementMutationTypes.SET_TEXT_CONTENT].indexOf(mutation.$type) !== -1;
+  return [SET_ELEMENT_ATTRIBUTE_EDIT, SET_TEXT_CONTENT].indexOf(mutation.type) !== -1;
 }
 
 const findTargetASTNode = (root: ts.Node, mutation: Mutation<any>) => {

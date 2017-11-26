@@ -1,19 +1,10 @@
 import { 
   weakMemo, 
-  Mutation,
-  diffArray,
-  SetValueMutation,
-  SetPropertyMutation,
-  MoveChildMutation,
-  InsertChildMutation,
-  RemoveChildMutation,
-  createInsertChildMutation,
-  createRemoveChildMutation,
-  createMoveChildMutation,
-  eachArrayValueMutation,
-  createSetValueMutation,
-  createPropertyMutation,
 } from "aerial-common2";
+
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createRemoveChildMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation";
+import { CSS_PARENT_DELETE_RULE, CSS_PARENT_INSERT_RULE, CSS_PARENT_MOVE_RULE, CSS_STYLE_RULE_SET_SELECTOR_TEXT, CSS_STYLE_RULE_SET_STYLE, CSS_STYLE_RULE_SET_STYLE_PROPERTY } from "./constants";
 
 import { 
   SyntheticCSSRule, 
@@ -445,10 +436,6 @@ export const getSEnvCSSRuleClasses = weakMemo((context: any) => {
   };
 });
 
-export const CSS_STYLE_RULE_SET_SELECTOR_TEXT = "CSS_STYLE_RULE_SET_SELECTOR_TEXT"; 
-export const CSS_STYLE_RULE_SET_STYLE = "CSS_STYLE_RULE_SET_STYLE"; 
-export const CSS_STYLE_RULE_SET_STYLE_PROPERTY = "CSS_STYLE_RULE_SET_STYLE_PROPERTY"; 
-
 export const cssStyleRuleSetSelectorText = (rule: CSSStyleRule, selectorText: string) => createSetValueMutation(CSS_STYLE_RULE_SET_SELECTOR_TEXT, rule, selectorText);
 export const cssStyleRuleSetStyle = (rule: CSSStyleRule, style: SEnvCSSStyleDeclarationInterface) => createSetValueMutation(CSS_STYLE_RULE_SET_STYLE, rule, style.cssText);
 export const cssStyleRuleSetStyleProperty = (rule: CSSStyleRule, name: string, value: string) => createPropertyMutation(CSS_STYLE_RULE_SET_STYLE_PROPERTY, rule, name, value);
@@ -464,11 +451,6 @@ const diffStyleRule = (oldRule: CSSStyleRule, newRule: CSSStyleRule) => {
 
   return mutations;
 };
-
-
-export const CSS_PARENT_INSERT_RULE = "CSS_PARENT_INSERT_RULE";
-export const CSS_PARENT_DELETE_RULE = "CSS_PARENT_DELETE_RULE";
-export const CSS_PARENT_MOVE_RULE   = "CSS_PARENT_MOVE_RULE";
 
 export const cssParentInsertRule = (parent: CSSParentObject, rule: CSSRule, newIndex: number) => createInsertChildMutation(CSS_PARENT_INSERT_RULE, parent, rule, newIndex);
 

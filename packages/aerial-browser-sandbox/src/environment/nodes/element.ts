@@ -2,7 +2,10 @@ import { diffComment } from "./comment";
 import { difference } from "lodash";
 import { diffTextNode } from "./text";
 import { SEnvNodeTypes } from "../constants";
-import { weakMemo, diffArray, eachArrayValueMutation, Mutation, createPropertyMutation, SetPropertyMutation, createSetValueMutation, SetValueMutation } from "aerial-common2";
+import { SET_ELEMENT_ATTRIBUTE_EDIT, SET_TEXT_CONTENT, ATTACH_SHADOW_ROOT_EDIT,  } from "./constants";
+import { weakMemo } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation } from "source-mutation";
 import { getSEnvParentNodeClass, diffParentNode, SEnvParentNodeInterface, parentNodeMutators } from "./parent-node";
 import { getSEnvEventClasses } from "../events";
 import {SEnvShadowRootInterface, getSEnvShadowRootClass, } from "./light-document";
@@ -412,7 +415,7 @@ export const getSEnvElementClass = weakMemo((context: any) => {
     }
 
     protected attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-      this.dispatchMutationEvent(createPropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
+      this.dispatchMutationEvent(createPropertyMutation(SET_ELEMENT_ATTRIBUTE_EDIT, this, name, newValue, oldValue));
     }
 
     cloneNode(deep?: boolean) {
@@ -449,22 +452,16 @@ export const diffBaseNode = (oldChild: Node, newChild: Node, diffChildNode = dif
   return [];
 };
 
-export namespace SyntheticDOMElementMutationTypes {
-  export const SET_ELEMENT_ATTRIBUTE_EDIT = "setElementAttributeEdit";
-  export const ATTACH_SHADOW_ROOT_EDIT    = "attachShadowRootEdit";
-  export const SET_TEXT_CONTENT    = "setTextContent";
-}
-
 export const createSetElementTextContentMutation = (target: BasicElement, value: string) => {
-  return createPropertyMutation(SyntheticDOMElementMutationTypes.SET_TEXT_CONTENT, target, "textContent", value);
+  return createPropertyMutation(SET_TEXT_CONTENT, target, "textContent", value);
 }
 
 export const attachShadowRootMutation = (target: BasicElement) => {
-  return createSetValueMutation(SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT, target, target.shadowRoot);
+  return createSetValueMutation(ATTACH_SHADOW_ROOT_EDIT, target, target.shadowRoot);
 }
 
 export const createSetElementAttributeMutation = (target: Element, name: string, value: string, oldName?: string, index?: number) => {
-  return createPropertyMutation(SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT, target, name, value, undefined, oldName, index);
+  return createPropertyMutation(SET_ELEMENT_ATTRIBUTE_EDIT, target, name, value, undefined, oldName, index);
 }
 
 export const diffBaseElement = (oldElement: Element, newElement: Element, diffChildNode = diffBaseNode) => {
@@ -506,14 +503,14 @@ export const diffBaseElement = (oldElement: Element, newElement: Element, diffCh
 
 export const baseElementMutators = {
   ...parentNodeMutators,
-  [SyntheticDOMElementMutationTypes.ATTACH_SHADOW_ROOT_EDIT](oldElement: SEnvElementInterface, mutation: SetValueMutation<any>) {
+  [ATTACH_SHADOW_ROOT_EDIT](oldElement: SEnvElementInterface, mutation: SetValueMutation<any>) {
     if (oldElement.$$setShadowRoot) {
       oldElement.$$setShadowRoot(mutation.newValue.cloneNode(true));
     } else {
       oldElement.attachShadow({ mode: "open" });
     }
   },  
-  [SyntheticDOMElementMutationTypes.SET_ELEMENT_ATTRIBUTE_EDIT](oldElement: Element, mutation: Mutation<any>) {
+  [SET_ELEMENT_ATTRIBUTE_EDIT](oldElement: Element, mutation: Mutation<any>) {
     
     const { name, oldName, newValue } = <SetPropertyMutation<any>>mutation;
     

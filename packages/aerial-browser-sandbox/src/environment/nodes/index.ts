@@ -10,3 +10,4 @@ export * from "./node";
 export * from "./utils";
 export * from "./bound-utils";
 export * from "./light-document";
+export * from "./constants";

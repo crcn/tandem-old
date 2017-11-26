@@ -1,4 +1,4 @@
-import { Mutation } from "aerial-common2";
+import { Mutation } from "source-mutation";
 import { SyntheticBrowserRootState } from "../state";
 
 export const apiEditFile = async (mutationsByUri: { [identifier: string]: Mutation<any>[] }, { apiHost }: SyntheticBrowserRootState) => {

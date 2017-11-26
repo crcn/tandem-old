@@ -4,19 +4,16 @@ import { SEnvWindowInterface } from "../window";
 import { SEnvDocumentInterface } from "./document";
 import { getDOMExceptionClasses } from "./exceptions";
 import { getSEnvEventTargetClass, SEnvMutationEventInterface } from "../events";
+import { UPDATE_VALUE_NODE } from "./constants";
 import { getSEnvNamedNodeMapClass } from "./named-node-map";
 import { getSEnvHTMLCollectionClasses, SEnvNodeListInterface } from "./collections";
 import { 
   weakMemo, 
-  Mutation, 
-  SetValueMutation,
   generateDefaultId, 
-  SetPropertyMutation,
   ExpressionLocation, 
-  createSetValueMutation, 
-  createPropertyMutation,
   expressionLocationEquals,
 } from "aerial-common2";
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, createRemoveChildMutation } from "source-mutation";
 import { SEnvParentNodeInterface } from "./parent-node";
 import { SyntheticNode, SyntheticValueNode, BasicValueNode, BasicNode } from "../../state";
 
@@ -440,8 +437,6 @@ export const nodeMutators = {
     }
   }
 };
-
-export const UPDATE_VALUE_NODE = "UPDATE_VALUE_NODE";
 
 export const createUpdateValueNodeMutation = (oldNode: BasicValueNode, newValue: string) => {
   return createSetValueMutation(UPDATE_VALUE_NODE, oldNode, newValue);

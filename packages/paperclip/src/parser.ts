@@ -749,7 +749,6 @@ const createTextNode = (scanner: TokenScanner): PCTextNode => {
     scanner.next();
     value += curr.value;
   }
-
   return ({
     type: PCExpressionType.TEXT_NODE,
     value,

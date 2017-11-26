@@ -1,7 +1,7 @@
-import { weakMemo, createPropertyMutation } from "aerial-common2";
+import { weakMemo } from "aerial-common2";
 import { SEnvNodeTypes } from "../constants";
 import { SYNTHETIC_TEXT_NODE, SyntheticTextNode, BasicValueNode, BasicTextNode } from "../../state";
-import { getSEnvNodeClass, SEnvNodeInterface, diffValueNode, UPDATE_VALUE_NODE, getSEnvValueNode } from "./node";
+import { getSEnvNodeClass, SEnvNodeInterface, diffValueNode, getSEnvValueNode } from "./node";
 import { SEnvDocumentInterface } from "./document";
 
 export interface SEnvTextInterface extends SEnvNodeInterface, Text {

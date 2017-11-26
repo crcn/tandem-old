@@ -10,7 +10,9 @@ import {
 } from "aerial-sandbox2";
 import { SyntheticBrowserRootState } from "../state";
 import { apiEditFile } from "../utils";
-import { Mutation, editString, StringMutation, request, createRequestResponse } from "aerial-common2";
+import { request, createRequestResponse } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, StringMutation } from "source-mutation";
 import { 
   ApplyFileMutations, 
   APPLY_FILE_MUTATIONS, 

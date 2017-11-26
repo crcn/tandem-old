@@ -13,6 +13,7 @@ export type BundleVanllaOptions = {
 };
 
 type TranspileContext = {
+  uri: string;
   contextName?: string;
   varCount: number;
   root: PCExpression;
@@ -165,9 +166,10 @@ const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
   return content;
 };
 
-const transpileModule = ({ source, imports, globalStyles, components, unhandledExpressions }: Module, resolvedImportUris: { [identifier: string]: string }) => {
+const transpileModule = ({ source, imports, globalStyles, components, unhandledExpressions, uri }: Module, resolvedImportUris: { [identifier: string]: string }) => {
 
   const context: TranspileContext = {
+    uri,
     varCount: 0,
     root: source
   };
@@ -358,11 +360,12 @@ const transpileFragment = (ast: PCExpression, context: TranspileContext) => {
 
 const transpileTextNode = (ast: PCTextNode, context: TranspileContext) => {
   // create text node without excess whitespace (doesn't get rendered)
-  return declareNode(`document.createTextNode(${JSON.stringify(ast.value.replace(/[\s\r\n\t]+/g, " "))})`, context);
+  return attachSource(declareNode(`document.createTextNode(${JSON.stringify(ast.value.replace(/[\s\r\n\t]+/g, " "))})`, context), ast, context);
 };
 
 const transpileTextBlock = (ast: PCBlock, context: TranspileContext) => {
-  const node = declareNode(`document.createTextNode("")`, context);
+  let node = declareNode(`document.createTextNode("")`, context);
+  node = attachSource(node, ast, context);
   const bindingVarName = `${node.varName}$$currentValue`;
   node.content += `let ${bindingVarName};`;
   node.bindings.push(transpileBinding(bindingVarName, transpileBlockExpression(((ast as PCBlock).value as BKBind).value), assignment => `${node.varName}.nodeValue = ${assignment}`, context));
@@ -370,7 +373,7 @@ const transpileTextBlock = (ast: PCBlock, context: TranspileContext) => {
 };
 
 const transpileSelfClosingElement = (ast: PCSelfClosingElement, context: TranspileContext) => {
-  return transpileElementModifiers(ast, transpileStartTag(ast, context), context);
+  return transpileElementModifiers(ast, attachSource(transpileStartTag(ast, context), ast, context), context);
 };
 
 const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclaration, context: TranspileContext) => {
@@ -565,7 +568,7 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
 }
 
 const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
-  const element = declareNode(`document.createElement("${ast.name}")`, context);
+  let element = declareNode(`document.createElement("${ast.name}")`, context);
 
   for (let i = 0, {length} = ast.attributes; i < length; i++) {
     const { name, value } = ast.attributes[i];
@@ -634,7 +637,8 @@ const transpileElement = (ast: PCElement, context: TranspileContext) => {
 };
 
 export const transpileStyleElement = (ast: PCElement, context: TranspileContext) => {
-  const decl = declareNode(`document.createElement("style")`, context);
+  let decl = declareNode(`document.createElement("style")`, context);
+  decl = attachSource(decl, ast, context);
   decl.content += `` +
     `if (window.$synthetic) {`;
 
@@ -654,7 +658,8 @@ export const transpileStyleElement = (ast: PCElement, context: TranspileContext)
 
 const transpileNewCSSSheet = (sheet: CSSSheet, context: TranspileContext) => {
   const childDecls = transpileNewCSSRules(sheet.children, context);
-  const decl = declareRule(`new CSSStyleSheet([${childDecls.map((decl) => decl.varName).join(",")}])`, context);
+  let decl = declareRule(`new CSSStyleSheet([${childDecls.map((decl) => decl.varName).join(",")}])`, context);
+  decl = attachSource(decl, sheet, context);
   decl.content = childDecls.map((decl) => decl.content).join("\n") + decl.content;
   return decl;
 }
@@ -682,7 +687,7 @@ const transpileNewCSSAtRule = (rule: CSSAtRule, context: TranspileContext) => {
 const transpileNewMediaRule = (rule: CSSAtRule, context: TranspileContext) => transpileNewAtGroupingRule(rule, context, `CSSMediaRule`, transpileNewCSSStyleRule);
 
 const transpileNewFontFaceRule = (rule: CSSAtRule, context: TranspileContext) => {
-  return declareRule(`new CSSFontFaceRule(${transpileStyleDeclaration(getCSSDeclarationProperties(rule), context)})`, context);
+  return attachSource(declareRule(`new CSSFontFaceRule(${transpileStyleDeclaration(getCSSDeclarationProperties(rule), context)})`, context), rule, context);
 };
 
 const getCSSDeclarationProperties = (rule: CSSGroupingRule) => rule.children.filter(child => child.type === CSSExpressionType.DECLARATION_PROPERTY) as CSSDeclarationProperty[];
@@ -758,8 +763,6 @@ const transpileCSSRule = (rule: CSSRule, mapSelectorText: (value, rule: CSSRule)
   }
 };
 
-
-
 const transpileChildNodes = (childNodes: PCExpression[], context): TranspileDeclaration[] => {
   const childDecls = [];
   for (let i = 0, {length} = childNodes; i < length; i++) {
@@ -786,7 +789,8 @@ const transpileChildNodes = (childNodes: PCExpression[], context): TranspileDecl
 };
 
 const transpileNativeElement = (ast: PCElement, context: TranspileContext) => {
-  const element = transpileStartTag(ast.startTag, context);
+  let element = transpileStartTag(ast.startTag, context);
+  element = attachSource(element, ast, context);
   const childDecls = transpileChildNodes(ast.childNodes, context);
   for (let i = 0, {length} = childDecls; i < length; i++) {
     const childDecl = childDecls[i];
@@ -828,3 +832,14 @@ const declareVirtualFragment = (context: TranspileContext) => {
     end
   };
 };
+
+const attachSource = (decl: TranspileDeclaration, expr: PCExpression, context: TranspileContext) => {
+  const source = {
+    uri: context,
+    type: expr.type,
+    ...expr.location
+  };
+
+  decl.content += `${decl.varName}.source = ${JSON.stringify(source)};`;
+  return decl;
+}

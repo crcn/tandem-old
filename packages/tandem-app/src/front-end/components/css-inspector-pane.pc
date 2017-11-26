@@ -95,9 +95,6 @@
       <span>
         +
       </span>
-      <span class="source" [[if source]]>
-        [[bind source.uri]]
-      </span>
     </td-gutter-subheader>
 
     <td-list>

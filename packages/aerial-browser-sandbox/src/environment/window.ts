@@ -1,6 +1,8 @@
 import { SyntheticWindow, createSyntheticWindow } from "../state";
 import { getSEnvLocationClass } from "./location";
-import { Dispatcher, weakMemo, Mutation, Mutator, generateDefaultId, mergeBounds, Rectangle } from "aerial-common2";
+import { Dispatcher, weakMemo, generateDefaultId, mergeBounds, Rectangle } from "aerial-common2";
+
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation } from "source-mutation";
 import { clamp, identity } from "lodash";
 import { getSEnvEventTargetClass, getSEnvEventClasses, SEnvMutationEventInterface } from "./events";
 import { SyntheticWindowRendererInterface, createNoopRenderer, SyntheticDOMRendererFactory, SyntheticWindowRendererEvent, SyntheticMirrorRenderer } from "./renderers";
@@ -924,13 +926,13 @@ export const patchWindow = (oldWindow: SEnvWindowInterface, mutations: Mutation<
   for (const mutation of mutations) {
     const target = childObjects[mutation.target.$id];
     if (!target) {
-      throw new Error(`Unable to find target for mutation ${mutation.$type}`);
+      throw new Error(`Unable to find target for mutation ${mutation.type}`);
     }
 
-    const mutate = windowMutators[mutation.$type] as Mutator<any, any>;
+    const mutate = windowMutators[mutation.type] as Mutator<any, any>;
 
     if (!mutate) {
-      throw new Error(`Unable to find window mutator for ${mutation.$type}`);
+      throw new Error(`Unable to find window mutator for ${mutation.type}`);
     }
 
     mutate(target, mutation);

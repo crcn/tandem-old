@@ -2,7 +2,6 @@ import {
   Bounds,
   Moved, 
   MOVED, 
-  Mutation,
   moveBounds,
   Resized, 
   Removed,

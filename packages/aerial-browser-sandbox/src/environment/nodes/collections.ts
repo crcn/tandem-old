@@ -1,9 +1,9 @@
 import { SEnvNodeTypes } from "../constants";
 import { SEnvNodeInterface } from "./node";
 import { SyntheticNode } from "../../state";
-import { SEnvParentNodeMutationTypes } from "./parent-node";
 import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
-import { weakMemo, RemoveChildMutation, InsertChildMutation, diffArray, eachArrayValueMutation } from "aerial-common2";
+import { weakMemo } from "aerial-common2";
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createRemoveChildMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation";
 import {getSEnvCollection } from "../base";
 
 export interface SEnvNodeListInterface extends Array<SEnvNodeInterface>, NodeList {

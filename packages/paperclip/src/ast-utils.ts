@@ -30,5 +30,5 @@ export const getPosition = (start: Token | number, source: string) => {
 
 export const getLocation = (start:  ExpressionPosition | Token | number, end: ExpressionPosition | Token | number, source: string): ExpressionLocation  => ({ 
   start: (start as ExpressionPosition).line ? start as ExpressionPosition : getPosition(start as any, source), 
-  end: end && (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(source.length, source),
+  end: end && (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(end as any || source.length, source),
 });

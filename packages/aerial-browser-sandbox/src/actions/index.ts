@@ -1,7 +1,9 @@
 // import { SEnvWindowInterface } from "../environment";
 import { SyntheticDocument, SyntheticNode, SyntheticWindow } from "../state";
-import { Request, BaseEvent, generateDefaultId, Mutation, Bounds, Point, Action } from "aerial-common2";
+import { Request, BaseEvent, generateDefaultId, Bounds, Point, Action } from "aerial-common2";
 import { RenderedClientRects, RenderedComputedStyleDeclarations, SEnvWindowInterface } from "../environment";
+
+import { Mutation } from "source-mutation";
 
 export const OPEN_SYNTHETIC_WINDOW               = "OPEN_SYNTHETIC_WINDOW";
 export const TOGGLE_CSS_DECLARATION_PROPERTY     = "TOGGLE_CSS_DECLARATION_PROPERTY";
