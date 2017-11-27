@@ -153,9 +153,9 @@ function* handleMetaClickElement() {
     const workspace = getSelectedWorkspace(state);
 
     // not items should be selected for meta clicks
-    if (workspace.selectionRefs.length) {
-      continue;
-    }
+    // if (workspace.selectionRefs.length) {
+    //   continue;
+    // }
 
     if (!targetRef) continue;
     const node = getSyntheticNodeById(state, targetRef[1]);
@@ -163,6 +163,8 @@ function* handleMetaClickElement() {
     // TODO - display error if source URI does not exist, or URI is not a file
     if (node.source && node.source.uri) {
       yield call(apiOpenSourceFile, node.source, state);
+    } else if (!node.source) {
+      console.warn(`source URI does not exist on selected node.`);
     }
   }
 }
@@ -461,13 +463,11 @@ function* handleDeleteComponentsPane() {
     const componentRefs = workspace.selectionRefs.filter((ref) => ref[0] === AVAILABLE_COMPONENT);
 
     if (componentRefs.length && confirm("Are you sure you want to delete these components?")) {
-      
-    }
-
-    for (const [type, componentId] of componentRefs) {
-      const result = yield call(apiDeleteComponent, componentId, state);
-      if (result.message) {
-        alert(result.message);
+      for (const [type, componentId] of componentRefs) {
+        const result = yield call(apiDeleteComponent, componentId, state);
+        if (result.message) {
+          alert(result.message);
+        }
       }
     }
   } 

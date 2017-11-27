@@ -1,8 +1,11 @@
 <component id="td-blah">
   <style>
+    span {
+      color: red;
+    }
   </style>
   <template>
-    SPAN
+    <span>TEST</span>
   </template>
 </component>
 
@@ -12,3 +15,4 @@
     <td-blah />
   </template>
 </component>
+

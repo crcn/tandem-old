@@ -3,7 +3,6 @@ export type VisualDevConfig = {
   editSourceContent: (content: string, mutation: any, filePath: string) => any;
   sourceFilePattern: string;
   vscode: {
-    devServerScript: string[],
     tandemcodeDirectory
   };
 }
@@ -14,7 +13,7 @@ export type ChildDevServerInfo = {
 
 export type FileCache = {
   [identifer: string]: {
-    content: string;
+    content: Buffer;
     mtime: Date;
   }
 }
@@ -39,4 +38,7 @@ export const updateExtensionState = (state: ExtensionState, properties: Partial<
 
 export const getFileCacheContent = (filePath: string, state: ExtensionState) => {
   return state.fileCache[filePath] && state.fileCache[filePath].content;
+}
+export const getFileCacheMtime = (filePath: string, state: ExtensionState) => {
+  return state.fileCache[filePath] && state.fileCache[filePath].mtime;
 }

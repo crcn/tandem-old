@@ -1,7 +1,8 @@
 import { Action } from "redux";
 import { VisualDevConfig } from "../state";
 import { Request, Response } from "express";
-import { ExpressionLocation } from "aerial-common2";
+import * as express from "express";
+import { VMObjectExpressionSource } from "paperclip";
 
 export const ALERT = "ALERT";
 export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
@@ -11,6 +12,7 @@ export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
 export const START_DEV_SERVER_REQUESTED = "START_DEV_SERVER_REQUESTED";
+export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 export const OPEN_FILE_REQUESTED = "OPEN_FILE_REQUESTED";
 export const OPEN_TANDEM_EXECUTED = "OPEN_TANDEM_EXECUTED";
 export const OPEN_EXTERNAL_WINDOW_EXECUTED = "OPEN_EXTERNAL_WINDOW_EXECUTED";
@@ -22,13 +24,19 @@ export type HTTPRequest = {
   response: Response;
 } & Action;
 
+export type ExpressServerStarted = {
+  type: string;
+  server: express.Express;
+};
+
 export type VisualDevConfigLoaded = {
   config:  VisualDevConfig;
 } & Action;
 
 export type FileContentChanged =  {
   filePath: string;
-  content: string;
+  content: Buffer;
+  mtime: Date;
 } & Action;
 
 export type FileAction = {
@@ -36,7 +44,7 @@ export type FileAction = {
 } & Action;
 
 export type OpenFileRequested = {
-  source: ExpressionLocation
+  source: VMObjectExpressionSource
 } & Action;
 
 export enum AlertLevel {
@@ -63,16 +71,11 @@ export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const fileContentChanged = (filePath: string, content: string): FileContentChanged  => ({
-  type: FILE_CONTENT_CHANGED,
-  content,
-  filePath
-});
-
-export const textContentChanged = (filePath: string, content: string): FileContentChanged  => ({
+export const textContentChanged = (filePath: string, content: Buffer): FileContentChanged  => ({
   type: TEXT_CONTENT_CHANGED,
   content,
-  filePath
+  filePath,
+  mtime: new Date()
 });
 
 export const childDevServerStarted = (port: number): ChildDevServerStarted => ({
@@ -90,7 +93,7 @@ export const startDevServerRequest = () => ({
   type: START_DEV_SERVER_REQUESTED
 });
 
-export const openFileRequested = (source: ExpressionLocation): OpenFileRequested => ({ 
+export const openFileRequested = (source: VMObjectExpressionSource): OpenFileRequested => ({ 
   type: OPEN_FILE_REQUESTED,
   source
 });
@@ -113,3 +116,9 @@ export const alert = (text: string, level: AlertLevel = AlertLevel.NOTICE): Aler
   text,
   level
 })
+
+
+export const expressServerStarted = (server: express.Express): ExpressServerStarted => ({
+  type: EXPRESS_SERVER_STARTED,
+  server
+});

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import * as request from "request";
-import { logErrorAction } from "aerial-common2";
 import { ExtensionState } from "../state";
 import * as HttpProxy from "http-proxy";
+import * as express from "express";
 import * as fs from "fs";
 import * as path from "path";
-import { CHILD_DEV_SERVER_STARTED, fileContentChanged, startDevServerRequest, openFileRequested } from "../actions";
+import { CHILD_DEV_SERVER_STARTED, startDevServerRequest, openFileRequested, ExpressServerStarted, EXPRESS_SERVER_STARTED, expressServerStarted } from "../actions";
 import { take, fork, call, select, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { routeHTTPRequest } from "../utils";
@@ -13,6 +13,17 @@ import { routeHTTPRequest } from "../utils";
 const FILES_PATTERN = /^\/edit$/;
 
 export function* apiSaga() {
+  yield fork(handleExpressServerStarted);
+}
+
+function* handleExpressServerStarted() {
+  while(true) {
+    const { server }: ExpressServerStarted = yield take(EXPRESS_SERVER_STARTED);
+    yield addRoutes(server);
+  }
+}
+
+export function* addRoutes(server: express.Express) {
   const proxy = HttpProxy.createProxyServer();
   proxy.on("error", (err, req, res) => {
     res.writeHead(500, {
@@ -20,14 +31,11 @@ export function* apiSaga() {
     });
     res.end(err.message);
   });
-  
-  yield routeHTTPRequest(
-    [{ method: "POST", test: FILES_PATTERN }, handleEditFile],
-    [{ method: "POST", test: /^\/open/ }, handleOpenFile],
-    [{ method: "GET", test: /^\/index.html/ }, getIndex],
-    [{ method: "GET", test: /tandem/ }, getTandemFile],
-    [{ test: /.*/ }, proxyToDevServer(proxy)]
-  );
+
+  server.post("/open", yield wrapRoute(handleOpenFile));
+  server.use("/tandem", express.static(getTandemDirectory(yield select())));
+  server.get("/index.html", yield wrapRoute(getIndex));
+  server.all(/.*/, yield wrapRoute(proxyToDevServer(proxy)));
 }
 function* getPostData (req) {
   
@@ -49,19 +57,6 @@ function proxyToDevServer(proxy: HttpProxy, onRequest: (req: Request) => any = (
     proxy.web(req, res, { target: host });
     yield call(onRequest, req);
   };
-}
-
-function* handleEditFile(req: Request, res: Response) {
-  const state: ExtensionState = yield select();
-  const devPort = state.childDevServerInfo.port;
-  const host = `http://127.0.0.1:${devPort}`;
-  const body = yield getPostData(req.pipe(request(host + "/edit")));
-
-  res.send(body);
-
-  for (const uri in body) {
-    yield put(fileContentChanged(uri.replace("file://", ""), body[uri]));
-  }
 }
 
 const getTandemDirectory = (state: ExtensionState) => path.dirname(require.resolve(state.visualDevConfig.vscode.tandemcodeDirectory || "tandemcode"));
@@ -95,3 +90,28 @@ function* handleOpenFile(req: Request, res: Response) {
   res.send(`"ok"`);
   yield put(openFileRequested(body));
 }
+
+
+function* wrapRoute(route) {
+  
+    let handle;
+  
+    const chan = eventChannel((emit) => {
+      handle = (req, res, next) => {
+        emit([req, res, next]);
+      }
+  
+      return () => {};
+    });
+  
+    yield spawn(function*() {
+      while(true) {
+        yield route(...(yield take(chan)));
+      }
+    });
+  
+    return function(req: express.Request, res: express.Response, next) {
+      handle(req, res, next);
+    }
+  }
+  

@@ -65,6 +65,14 @@ export type ExpressionPosition = {
   pos: number;
 };
 
+// Sourc information that is attached to each rendered object 
+// that describes basic information about the expression that it
+// is representing. Note that only minimal information about the expression is attached here to ensure that the source information body size stays relatively small. The shape of this object may change depending on the behavior of each expression.
+export type VMObjectExpressionSource = {
+  uri: string;
+  location: ExpressionLocation;
+};
+
 export type ExpressionLocation = {
   start: ExpressionPosition;
   end: ExpressionPosition;

@@ -91,7 +91,6 @@ export const getAssocComponents = async (matchFilePath: string, state: Applicati
   return assocComponents;
 };
 
-
 export const getModuleId = (filePath: string) => md5(filePath);
 
 export const getPublicFilePath = (filePath: string, state: ApplicationState) => filePath.indexOf(state.config.sourceDirectory) !== -1 ? filePath.replace(state.config.sourceDirectory, PUBLIC_SRC_DIR_PATH) : null;

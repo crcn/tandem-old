@@ -835,7 +835,7 @@ const declareVirtualFragment = (context: TranspileContext) => {
 
 const attachSource = (decl: TranspileDeclaration, expr: PCExpression, context: TranspileContext) => {
   const source = {
-    uri: context,
+    uri: context.uri,
     type: expr.type,
     ...expr.location
   };

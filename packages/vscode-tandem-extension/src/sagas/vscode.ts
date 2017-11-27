@@ -1,11 +1,10 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as request from "request";
-import { editString, StringMutation } from "aerial-common2";
 import { eventChannel, delay } from "redux-saga";
-import { select, take, put, fork, call } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, fileContentChanged, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, VISUAL_DEV_CONFIG_LOADED, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested } from "../actions";
-import { ExtensionState, getFileCacheContent } from "../state";
+import { select, take, put, fork, call, spawn } from "redux-saga/effects";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, VISUAL_DEV_CONFIG_LOADED, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, fileChanged } from "../actions";
+import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime } from "../state";
 
 export function* vscodeSaga() {
   yield fork(handleAlerts);
@@ -13,7 +12,7 @@ export function* vscodeSaga() {
   yield fork(handleCommands);
   
   // do not do this until flickering is fixed
-  // yield fork(handleTextEditorChange);
+  yield fork(handleTextEditorChange);
   yield fork(handleOpenTandem);
   yield fork(handleOpenExternalWindow);
   yield fork(handleOpenFileRequested);
@@ -42,8 +41,37 @@ function* handleAlerts() {
 
 
 function* handleFileContentChanged() {
+  let mtimes = {};
+  let prevState: ExtensionState = yield select();
+
+  yield fork(function*() {
+    while(true) {
+      yield take(TEXT_CONTENT_CHANGED);
+      prevState = yield select();
+    }
+  });
+
   while(true) {
-    const { filePath, content }: FileContentChanged = yield take(FILE_CONTENT_CHANGED);
+    const { filePath, content, mtime }: FileContentChanged = yield take(FILE_CONTENT_CHANGED);
+
+    if (!content) {
+      continue;
+    }
+
+    const state: ExtensionState = yield select();
+    if (getFileCacheContent(filePath, prevState) && getFileCacheContent(filePath, prevState).toString("utf8") === content.toString("utf8")) {
+      console.info(`No change in store -- skipping file open`);
+      continue;
+    }
+
+    prevState = state;
+
+    console.log(`Opening file ${filePath}`, content);
+
+    if (!fs.existsSync(filePath)) {
+      console.warn(`Cannot open file ${filePath} because it does not exist.`);
+      continue;
+    }
 
     const activeTextEditor = vscode.window.activeTextEditor;
 
@@ -59,7 +87,7 @@ function* handleFileContentChanged() {
             doc.positionAt(0),
             doc.positionAt(doc.getText().length)
           ),
-          content
+          content.toString("utf8")
         )
       });
     }
@@ -81,35 +109,16 @@ function* handleTextEditorChange() {
       setTimeout(() => {
         if (e.document.isDirty) {
           const document = e.document as vscode.TextDocument;
-          emit(textContentChanged(document.uri.fsPath, document.getText()));
+          emit(textContentChanged(document.uri.fsPath, new Buffer(document.getText())));
         }
       });
     })
     return () => {};
   });
-  
-  let _ignoreChange: boolean;
 
-  yield fork(function*() {
-    while(true) {
-      const action = yield take(chan);
-      if (_ignoreChange) continue;
-      yield put(action);
-    }
-  });
-
-  yield fork(function*() {
-    while(true) {
-
-      // if incomming changes, then ignore text editor change for a sdecond
-      yield take(FILE_CONTENT_CHANGED);
-      _ignoreChange = true;
-      yield call(delay, 100);
-      _ignoreChange = false;
-    }
-  }); 
-
-
+  while(true) {
+    yield put(yield take(chan));
+  }
 }
 
 function* handleCommands() {
@@ -175,7 +184,7 @@ function* handleOpenTandem() {
 function* handleTextEditorClosed() {
   const chan = eventChannel((emit) => {
     vscode.workspace.onDidCloseTextDocument((doc) => {
-      emit(textContentChanged(doc.uri.fsPath.replace(".git", ""), fs.readFileSync(doc.uri.fsPath.replace(".git", ""), "utf8")));
+      emit(textContentChanged(doc.uri.fsPath.replace(".git", ""), fs.readFileSync(doc.uri.fsPath.replace(".git", ""))));
     });
     return () => {};
   });
@@ -189,20 +198,22 @@ function* handleOpenExternalWindow() {
   while(true) {
     yield take(OPEN_EXTERNAL_WINDOW_EXECUTED);
     const state: ExtensionState = yield select();
-    console.log(state);
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(getIndexUrl(state)));
   }
 }
 
 function* handleOpenFileRequested() {
   while(true) {
-    const { source: { uri, start } }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+    const { source: { uri, location } }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
     vscode.workspace.openTextDocument(uri.replace("file://", "")).then(doc => {
       vscode.window.showTextDocument(doc).then(() => {
         const activeTextEditor = vscode.window.activeTextEditor;
-        const range = activeTextEditor.document.lineAt(start.line - 1).range;
-        activeTextEditor.selection = new vscode.Selection(range.start, range.end);
-        activeTextEditor.revealRange(range);
+        if (location) {
+          const { start } = location;
+          const range = activeTextEditor.document.lineAt(start.line - 1).range;
+          activeTextEditor.selection = new vscode.Selection(range.start, range.end);
+          activeTextEditor.revealRange(range);
+        }
       });
     });
   }

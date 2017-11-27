@@ -2,9 +2,9 @@ import { parseModuleSource } from "./parser";
 import { PCExpression, PCParent, PCFragment, PCElement, PCString, PCExpressionType, PCSelfClosingElement, PCStartTag, PCAttribute } from "./ast";
 import { repeat } from "lodash";
 import { ExpressionLocation, CSSGroupingRule, CSSStyleRule, PCTextNode, PCBlock } from "./ast";
+import { Mutation, SetPropertyMutation, StringMutation, InsertChildMutation, RemoveChildMutation, SetValueMutation, REMOVE_CHILD_MUTATION, INSERT_CHILD_MUTATION, createStringMutation } from "source-mutation";
 import { CSS_STYLE_RULE_SET_STYLE, SET_ELEMENT_ATTRIBUTE_EDIT, INSERT_CHILD_NODE_EDIT, UPDATE_VALUE_NODE, REMOVE_CHILD_NODE_EDIT, INSERT_HTML_EDIT, CSS_INSERT_CSS_RULE_TEXT, CSS_PARENT_DELETE_RULE, CSS_STYLE_RULE_SET_STYLE_PROPERTY, CSS_STYLE_RULE_SET_SELECTOR_TEXT } from "aerial-browser-sandbox/constants";
 import { InsertHTMLMutation, createInsertHTMLMutation } from "aerial-browser-sandbox/mutation";
-import { Mutation, SetPropertyMutation, createStringMutation, StringMutation, InsertChildMutation, RemoveChildMutation, SetValueMutation, REMOVE_CHILD_MUTATION, INSERT_CHILD_MUTATION } from "source-mutation";
 import { PC_REMOVE_CHILD_NODE, PC_REMOVE_NODE, PCRemoveNodeMutation, PCRemoveChildNodeMutation } from "./mutation";
 
 export const editPaperclipSource = (content: string, mutation: Mutation<PCExpression>): StringMutation[] => {

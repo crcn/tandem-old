@@ -1,11 +1,11 @@
 {
   "name": "paperclip",
-  "version": "8.0.6",
+  "version": "8.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./lib/test",
-    "bundle": "mkdir -p dist; rollup -c rollup.config.js --format=iife --name=paperclip | sed 's/var paperclip/window.paperclip/g' > dist/paperclip.min.js"
+    "bundle": "mkdir -p dist; rollup -c rollup.config.js --name=paperclip | sed 's/var paperclip/window.paperclip/g' > dist/paperclip.min.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,11 +17,14 @@
     "mocha": "^4.0.1",
     "reflect-metadata": "^0.1.10",
     "rollup": "^0.51.5",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify-es": "^0.0.1",
     "typescript": "^2.6.1"
   },
   "dependencies": {
-    "@types/node": "^8.0.51"
+    "@types/node": "^8.0.51",
+    "source-mutation": "^1.0.0"
   }
 }

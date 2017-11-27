@@ -4,12 +4,12 @@ import { eventChannel } from "redux-saga";
 import * as request from "request";
 import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
 
-import { ApplicationState, RegisteredComponent } from "../state";
+import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../state";
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
 import { PAPERCLIP_FILE_PATTERN, PAPERCLIP_FILE_EXTENSION } from "../constants";
 import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules } from "../utils";
-import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged } from "../actions";
+import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged } from "../actions";
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
@@ -35,7 +35,7 @@ function* addRoutes(server: express.Express) {
 
   const state: ApplicationState = yield select();
 
-  server.use(PUBLIC_SRC_DIR_PATH, express.static(state.config.sourceDirectory));
+  server.use(PUBLIC_SRC_DIR_PATH, yield wrapRoute(getFile));
   server.use(express.static(path.join(path.dirname(require.resolve("paperclip")), "dist")));
   console.log("serving paperclip dist/ folder");
 
@@ -67,7 +67,19 @@ function* addRoutes(server: express.Express) {
 
   // edits a file
   server.post("/edit", yield wrapRoute(editFiles));
+
+  // edits a file
+  server.post("/file", yield wrapRoute(setFileContent));
   
+}
+
+function* getFile(req: express.Request, res: express.Response) {
+  const state: ApplicationState = yield select();
+  const filePath = path.join(state.config.sourceDirectory, req.path);
+
+  const content = getFileCacheContent(filePath, state);
+  
+  return content ? res.send(content) : res.sendFile(filePath);
 }
 
 function* wrapRoute(route) {
@@ -157,9 +169,10 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
           paperclip.bundleVanilla(entry.relativeFilePath, {
             io: {
               readFile(uri) {
-                return _cache[uri] ? Promise.resolve(_cache[uri]) : fetch(uri)
+
+                return _cache[uri] ? _cache[uri] : _cache[uri] = fetch(uri)
                 .then((response) => response.text())
-                .then(text => _cache[uri] = text)
+                .then(text => _cache[uri] = Promise.resolve(text))
               }
             }
           })
@@ -392,10 +405,12 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
           _loadedDocument = resolve;
         });
 
-        paperclip.bundleVanilla("${relativeModuleFilePath}", {
+        let _cache = {};
+
+        paperclip.bundleVanilla("${targetComponent.filePath}", {
           io: {
             readFile(uri) {
-              return fetch(uri).then((response) => response.text());
+              return _cache[uri] ? _cache[uri] : _cache[uri] = fetch(uri.replace("${state.config.sourceDirectory}", "${PUBLIC_SRC_DIR_PATH}")).then((response) => response.text()).then((text) => _cache[uri] = Promise.resolve(text));
             }
           }
         }).then(({ code, warnings, entryDependency }) => {
@@ -411,8 +426,11 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
           if (!previewComponent) {
             return document.body.appendChild(document.createTextNode("Unable to find preview of component " + previewTargetComponentId));
           }
+          const element = document.createElement(previewComponent.id);
 
-          document.body.appendChild(document.createElement(previewComponent.id));
+          // attach source so that modules can be meta clicked
+          element.source = { uri: "${targetComponent.filePath}" };
+          document.body.appendChild(element);
         }).then(_loadedDocument);
       </script>
     </body>
@@ -420,6 +438,12 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   `;
 
   res.send(html);
+}
+
+function* setFileContent(req: express.Request, res: express.Response, next) {
+  const { filePath, content, timestamp } = yield getPostData(req);
+  const state = yield select();
+  yield put(fileContentChanged(filePath, getPublicFilePath(filePath, state), new Buffer(content), new Date(timestamp)));
 }
 
 function* editFiles(req: express.Request, res: express.Response, next) {
@@ -461,6 +485,5 @@ function* setFile(req: express.Request, res: express.Response) {
   const state: ApplicationState = yield select();
   const publicPath = getPublicFilePath(filePath, state);
   yield put(fileContentChanged(filePath, publicPath, new (Buffer as any)(content, "utf8"), new Date()));
-  yield put(fileChanged(filePath, publicPath)); // dispatch public change -- causes reload
   res.send([]);
 }

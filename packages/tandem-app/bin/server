@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+require("tandem-paperclip-dev-tools/cli.js");

@@ -8,9 +8,12 @@ IMMEDIATE:
 
 - [ ] Paperclip
 - [ ] VSCode extension wire up 
+  - [ ] Q to setup tandem.config.js
+    - [ ] just use basic template
+    - [ ] wire up with file changes
+    - [ ] clean up extra cruft
 - [ ] Tandem
   - [ ] Components Pane
-    - [ ] Delete components
     - [ ] DND components to existing components
   - [ ] CSS Inspector
     - [ ] toggle eye
