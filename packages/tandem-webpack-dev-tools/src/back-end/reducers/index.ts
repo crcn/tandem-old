@@ -1,5 +1,5 @@
 import { BaseEvent } from "aerial-common2";
-import { Bundled, BUNDLED, FILE_CONTENT_MUTATED, FileContentMutated, FILE_CHANGED, FileChanged } from "../actions";
+import { Bundled, BUNDLED, FILE_CONTENT_MUTATED, FileContentMutated, FILE_CONTENT_CHANGED, FileChanged } from "../actions";
 import { ApplicationState, setBundleInfo, setFileCacheContent, BundleEntryInfo, BundleInfo, removeFileCache, getFileCacheItem } from "../state";
 
 export function mainReducer(state: ApplicationState, event: BaseEvent) {
@@ -34,7 +34,7 @@ export function mainReducer(state: ApplicationState, event: BaseEvent) {
       return setFileCacheContent(state, filePath, content, mtime);
     }
     
-    case FILE_CHANGED: {
+    case FILE_CONTENT_CHANGED: {
       const { filePath, mtime } = event as FileChanged;
       const fileCacheItem = getFileCacheItem(filePath, state);
       if (fileCacheItem && fileCacheItem.mtime.getDate() < mtime.getDate()) {

@@ -42,6 +42,7 @@ export type ComponentMetadata = {
 }
 
 export type Component = {
+  source: PCElement;
   id: string;
   metadata: ComponentMetadata[];
   properties: BKProperty[];
@@ -219,8 +220,8 @@ const createModule = (ast: PCExpression, uri: string): Module => {
       const attributes = getElementAttributes(element);
       const modifiers = getElementModifiers(element);
 
-      if (tagName === "component") {
-        components.push(createComponent(modifiers, attributes, childNodes));
+      if (tagName === "component" && element.type === PCExpressionType.ELEMENT) {
+        components.push(createComponent(element as any as PCElement, modifiers, attributes, childNodes));
         continue;
       } else if (tagName === "link") {
         imports.push(createImport(attributes));
@@ -256,7 +257,7 @@ export const parseMetaContent = (content: string) => {
 export const getComponentMetadataItems = (component: Component, name: string) => component.metadata.filter(meta => meta.name === name);
 export const getComponentMetadataItem = (component: Component, name: string) => getComponentMetadataItems(component, name).shift();
 
-const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
+const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: PCAttribute[], childNodes: PCExpression[]): Component => {
   let id: string;
   let style: PCElement;
   let template: PCElement;
@@ -291,6 +292,7 @@ const createComponent = (modifiers: PCBlock[], attributes: PCAttribute[], childN
   }
 
   return {
+    source: element,
     id,
     style,
     metadata,

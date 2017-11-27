@@ -6,9 +6,8 @@ IMMEDIATE:
 
 (need to start using tandem to build itself completely)
 
-- [ ] Mutations lib
 - [ ] Paperclip
-  - [ ] set inner HTML mutation
+- [ ] VSCode extension wire up 
 - [ ] Tandem
   - [ ] Components Pane
     - [ ] Delete components
@@ -20,7 +19,6 @@ IMMEDIATE:
     - [ ] edit declaration
     - [ ] add style rule (auto add to scoped style element)
     - [ ] `:root` inspecting
-- [ ] VSCode extension wire up 
 
 HIGH PRIO:
 

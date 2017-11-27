@@ -1,5 +1,5 @@
 import { ExtensionState, updateExtensionState } from "../state";
-import { VisualDevConfigLoaded, VISUAL_DEV_CONFIG_LOADED, CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FILE_CHANGED, FileAction } from "../actions";
+import { VisualDevConfigLoaded, VISUAL_DEV_CONFIG_LOADED, CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FileAction } from "../actions";
 import { Action } from "redux";
 
 export function mainReducer(state: ExtensionState, action: Action) {

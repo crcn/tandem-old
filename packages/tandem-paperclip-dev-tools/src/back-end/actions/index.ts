@@ -18,7 +18,6 @@ export const COMPONENT_SCREENSHOT_TAKEN = "COMPONENT_SCREENSHOT_TAKEN";
 export const COMPONENT_SCREENSHOT_REMOVED = "COMPONENT_SCREENSHOT_REMOVED";
 export const START_DEV_SERVER_EXECUTED = "START_DEV_SERVER_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
-export const FILE_CHANGED = "FILE_CHANGED";
 export const WATCH_URIS_REQUESTED = "WATCH_URIS_REQUESTED";
 export const WATCHING_FILES = "WATCHING_FILES";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
@@ -108,23 +107,17 @@ export const watchUrisRequested = (uris: string[]): WatchUrisRequested => ({
   type: WATCH_URIS_REQUESTED
 });
 
-export const fileChanged = publicActionFactory((filePath: string, publicPath: string): FileAction => ({
-  type: FILE_CHANGED,
-  filePath,
-  publicPath,
-}));
-
 export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const fileContentChanged = (filePath: string, publicPath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
+export const fileContentChanged = publicActionFactory((filePath: string, publicPath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
   type: FILE_CONTENT_CHANGED,
   content,
   filePath,
   publicPath,
   mtime
-});
+}));
 
 export const componentScreenshotTaken = (buffer: Buffer, clippings: ScreenshotClippings, contentType: string): ComponentScreenshotTaken => ({
   buffer, 

@@ -24,7 +24,7 @@ import { ApplicationState, DevConfig, BundleEntryInfo } from "../state";
 import { bubbleEventChannel, createSocketIOSaga, getFilePathHash } from "../../common";
 import { fileEditorSaga } from "./file-editor";
 import { 
-  FILE_CHANGED,
+  FILE_CONTENT_CHANGED,
   FILE_ADDED,
   FILE_REMOVED,
   BUNDLED,

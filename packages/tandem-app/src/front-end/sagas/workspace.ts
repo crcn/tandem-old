@@ -442,6 +442,9 @@ function* handleComponentsPaneAddClicked() {
   while(true) {
     yield take(COMPONENTS_PANE_ADD_COMPONENT_CLICKED);
     const name = prompt("Unique component name");
+    if (!name) {
+      continue;
+    }
     const state: ApplicationState = yield select();
     const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
     const { componentId } = yield call(apiCreateComponent, name, state);

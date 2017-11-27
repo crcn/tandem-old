@@ -1,6 +1,6 @@
 // TODO - SET_HTML, INSERT_RULE, 
 import { expect } from "chai";
-import { bundleVanilla, PaperclipTargetType, editPaperclipSource } from "..";
+import { bundleVanilla, PaperclipTargetType, editPaperclipSource, PC_REMOVE_CHILD_NODE, PC_REMOVE_NODE, PCRemoveChildNodeMutation, PCRemoveNodeMutation } from "..";
 import { flatten } from "lodash";
 import { getSEnvWindowClass, diffWindow, patchWindow } from "aerial-browser-sandbox";
 import { editString } from "source-mutation";
@@ -60,7 +60,6 @@ describe(__filename + "#", () => {
       const b = await run(wo);
 
       const mutations = diffWindow(a, b);
-
 
       const result = editString(wi, flatten(mutations.map(mutation => editPaperclipSource(wi, mutation))));
 

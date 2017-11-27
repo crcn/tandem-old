@@ -44,7 +44,6 @@ function* handleWatchUrisRequest() {
 
         const emitChange = (path) => {
           const publicPath = getPublicFilePath(path, state);
-          emit(fileChanged(path, publicPath));
           emit(fileContentChanged(path, publicPath, fs.readFileSync(path), fs.lstatSync(path).mtime));
         }
 
@@ -53,7 +52,7 @@ function* handleWatchUrisRequest() {
 
         watcher.on("unlink", (path) => {
           const publicPath = getPublicFilePath(path, state);
-          emit(fileChanged(path, publicPath));
+          emit(fileContentChanged(path, publicPath, null, new Date()));
         });
       });
 

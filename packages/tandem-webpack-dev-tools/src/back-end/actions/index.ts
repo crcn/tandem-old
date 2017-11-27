@@ -1,4 +1,4 @@
-import { BaseEvent, Mutation, Action } from "aerial-common2";
+import { BaseEvent, Action } from "aerial-common2";
 import { Express } from "express";
 import { BundleInfo } from "../state";
 import { publicActionFactory, FileAction } from "../../common"
@@ -7,11 +7,12 @@ export const APPLICATION_STARTED = "APPLICATION_STARTED";
 export const FILE_CONTENT_MUTATED = "FILE_CONTENT_MUTATED";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 export const BUNDLED = "BUNDLED";
+export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 
 export const MUTATE_SOURCE_CONTENT = "MUTATE_SOURCE_CONTENT";
 
 export type MutateSourceContentRequest = {
-  mutations: Mutation<any>[];
+  // mutations: Mutation<any>[];
 } & FileAction;
 
 export type Bundled = {

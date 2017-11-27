@@ -2,13 +2,14 @@ import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { kebabCase } from "lodash";
 import { eventChannel } from "redux-saga";
 import * as request from "request";
+import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
 
 import { ApplicationState, RegisteredComponent } from "../state";
 import { flatten } from "lodash";
-import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem } from "paperclip";
+import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
 import { PAPERCLIP_FILE_PATTERN, PAPERCLIP_FILE_EXTENSION } from "../constants";
 import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules } from "../utils";
-import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
+import { watchUrisRequested, fileContentChanged, fileChanged, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged } from "../actions";
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
@@ -282,7 +283,14 @@ function* deleteComponent(req: express.Request, res: express.Response, next) {
     });
   }
 
-  // content = editString(string, editPaperclipSource(string, mutation), editPaperclipSource(string, mutation))
+  const oldContent = readFile(targetModule.uri);
+
+  const content = editString(oldContent, [
+    ...editPaperclipSource(oldContent, createPCRemoveNodeMutation(targetComponent.source)),
+    ...(previewComponent ? editPaperclipSource(oldContent, createPCRemoveNodeMutation(previewComponent.source)) : [])
+  ]);
+
+  yield put(fileContentChanged(targetModule.uri, getPublicFilePath(targetModule.uri, state), new Buffer(content), new Date()));
 
   res.send({});
 }
