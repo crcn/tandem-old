@@ -7,11 +7,11 @@ IMMEDIATE:
 (need to start using tandem to build itself completely)
 
 - [ ] Paperclip
-- [ ] VSCode extension wire up 
-  - [ ] Q to setup tandem.config.js
-    - [ ] just use basic template
-    - [ ] wire up with file changes
-    - [ ] clean up extra cruft
+  - [ ] make it resilient to exceptions
+- [ ] VSCode
+  - [ ] port undefined error
+  - [ ] socket hangup
+  - [ ] change do not always show up immediately
 - [ ] Tandem
   - [ ] Components Pane
     - [ ] DND components to existing components

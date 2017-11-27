@@ -56,11 +56,12 @@
 
     .inherited {
       margin-right: var(--base6);
-      padding: var(--base1) var(--base6);
+      padding: var(--base) var(--base3);
+      position: absolute;
+      float: right;
       background: var(--border-color-deep);
       color: var(--font-color-invert);
       border-radius: var(--base1);
-      float: left;
     }
 
     .selector-text {

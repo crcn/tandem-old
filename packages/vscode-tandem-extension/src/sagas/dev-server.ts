@@ -64,6 +64,10 @@ function* handleDevConfigLoaded() {
       }
     });
 
+    devServerProcess.on("close", () => {
+      console.warn("Dev server closed");
+    })
+
     // wait for the server to start
     yield call(delay, 1000);
 

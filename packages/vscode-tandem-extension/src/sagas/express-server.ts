@@ -6,7 +6,7 @@ import * as http from "http";
 import * as io from "socket.io";
 import * as multiparty from "connect-multiparty";
 import { eventChannel } from "redux-saga";
-import { VISUAL_DEV_CONFIG_LOADED, expressServerStarted } from "../actions";
+import { CHILD_DEV_SERVER_STARTED, expressServerStarted } from "../actions";
 import { select, fork, spawn, take, put, call } from "redux-saga/effects";
 
 export function* expresssServerSaga() {
@@ -15,7 +15,7 @@ export function* expresssServerSaga() {
 
 function* handleVisualDevConfigLoaded() {
   while(true) {
-    yield take(VISUAL_DEV_CONFIG_LOADED);
+    yield take(CHILD_DEV_SERVER_STARTED);
     let server: express.Express;
     let httpServer: http.Server;
     if (httpServer) {

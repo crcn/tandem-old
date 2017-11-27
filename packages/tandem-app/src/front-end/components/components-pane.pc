@@ -81,11 +81,11 @@
       grid-auto-rows: minmax(100px, auto);
     }
 
-    .header {
+    td-components-pane-cell:nth-child(2n) {
+      border-right: none;
     }
 
-    .cell:nth-child(3n) {
-      border-right: none;
+    .header {
     }
 
     .controls {
@@ -101,7 +101,7 @@
   <template>
     <td-pane>
       <span slot="header">
-        Components 
+        Components
         <input type="text"></input>
         <span class="controls" onClick=[[bind onAddComponentClick]]>
           +
