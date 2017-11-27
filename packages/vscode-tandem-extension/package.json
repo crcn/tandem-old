@@ -21,6 +21,34 @@
         "command": "extension.openExternalWindow",
         "title": "Open Tandem in external window"
       }
+    ],
+    "languages":[
+      {
+        "id": "paperclip",
+        "aliases": [
+          "Paperclip",
+          "paperclip"
+        ],
+        "extensions": [
+          ".pc",
+          ".paperclip"
+        ],
+        "configuration": "./languages/paperclip-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "paperclip",
+        "scopeName": "source.paperclip",
+        "path": "./syntaxes/paperclip.json",
+        "embeddedLanguages": {
+          "text.html.basic": "html",
+          "text.html.paperclip": "paperclip",
+          "source.css": "css",
+          "source.js": "javascript",
+          "source.json": "json"
+        }
+      }
     ]
   },
   "scripts": {

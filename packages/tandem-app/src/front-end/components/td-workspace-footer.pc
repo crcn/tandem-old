@@ -1,0 +1,13 @@
+<component id="td-workspace-footer">
+  <style>
+  </style>
+  <template>
+  </template>
+</component>
+
+<component id="td-workspace-footer-preview">
+  <meta name="preview" content="of=td-workspace-footer, width=400, height=400"></meta>
+  <template>
+    <td-workspace-footer />
+  </template>
+</component>

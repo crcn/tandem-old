@@ -24,7 +24,7 @@
       color: #666;
       user-select: none;
       background: var(--background-accent);
-      text-transform: uppercase;
+      text-transform: uppercase;      
       padding: var(--base8) var(--base8);
       font-size: 0.9em;
     }
@@ -54,7 +54,7 @@
   </style>
   <template>
     <div class="header">
-      <slot name="header"></slot>
+      <slot name="header"></slot>      
     </div>
     <div class="content">
       <slot name="content"></slot>
