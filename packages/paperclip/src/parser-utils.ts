@@ -4,7 +4,13 @@ import { TokenScanner } from "./scanners";
 import { repeat } from "./str-utils";
 import { Diagnostic } from "./parser-utils";
 
+export enum DiagnosticType {
+  WARNING = "WARNING",
+  ERROR = "ERROR"
+};
+
 export type Diagnostic = {
+  type: DiagnosticType;
   location: ExpressionLocation;
   message: string;
   source: string;

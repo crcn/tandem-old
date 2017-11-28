@@ -8,7 +8,7 @@ TODOS:
 */
 
 import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference, CSSExpression, CSSExpressionType, CSSStyleRule, CSSRule, CSSGroupingRule, CSSAtRule, CSSDeclarationProperty, CSSSheet, ExpressionLocation } from "./ast";
-import { ParseResult, ParseContext } from "./parser-utils";
+import { ParseResult, ParseContext, DiagnosticType } from "./parser-utils";
 import { getLocation, getPosition, getTokenLocation } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
@@ -1102,6 +1102,7 @@ export const addUnexpectedToken = (context: ParseContext, message?: string, refL
     end: getPosition(token ? token.pos + token.value.length : context.scanner.source.length, context.scanner.source)
   };
   context.diagnostics.push({
+    type: DiagnosticType.ERROR,
     location,
     message: message || (token ? `Unexpected token.` : `Unexpected end of file.`),
     source: context.source,
