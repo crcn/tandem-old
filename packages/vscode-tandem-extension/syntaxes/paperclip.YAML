@@ -1,7 +1,7 @@
 # [PackageDev] target_format: json, ext: json
 ---
 name: Paperclip
-scopeName: text.html.paperclip
+scopeName: source.paperclip
 fileTypes: [pc, paperclip]
 uuid: 334b8a1f-1e72-4aaf-bd86-a31a9e47f32d
 
@@ -17,75 +17,11 @@ patterns:
   - name: invalid.illegal.bad-comments-or-CDATA.html
     match: --
 
-# jade / pug
-
-- begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))
+- name: meta.tag.block.style.html
+  begin: (<)(style)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(template)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: text.jade
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</template>)
-    patterns:
-      - include: text.jade
-
-# slm
-
-- begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(template)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: text.jade.slm
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</template>)
-    patterns:
-      - include: text.jade.slm
-
-# html
-
-- begin: (<)(template)
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(template)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: text.html.vue-html
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</template>)
-    patterns:
-      - include: text.html.vue-html
-
-# sass / scss
-
-- begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.block.style.html}
   end: (</)(style)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -93,226 +29,29 @@ patterns:
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
-  - contentName: source.sass
+  - contentName: css
     begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</style>)
-    patterns:
-      - include: source.sass
-
-- begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(style)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: source.css.scss
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</style>)
-    patterns:
-      - include: source.css.scss
-
-# less
-
-- begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(style)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: source.css.less
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</style>)
-    patterns:
-      - include: source.css.less
-
-# stylus
-
-- begin: (<)(style)\b(?=[^>]*lang=('stylus'|"stylus"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(style)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: source.stylus
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</style>)
-    patterns:
-      - include: source.stylus
-
-# postcss
-
-- begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(style)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: source.css.postcss
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</style>)
-    patterns:
-      - include: source.css.postcss
-# css
-
-- begin: (<)(style)
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(style)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: source.css
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</style>)
+    end: (?=</style>)
     patterns:
       - include: source.css
 
-# ts
+- include: '#entities'
 
-- begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))
+- name: meta.tag.block.any.html
+  begin: (</?)((?i:[a-zA-Z0-9-]+)(?!-)\b)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(script)(>)
+    '2': {name: entity.name.tag.block.any.html}
+  end: (/?>)
   endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
+    '1': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
-  - contentName: source.ts
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</script>)
-    patterns:
-      - include: source.ts
 
-# coffee
-
-- begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(script)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: source.coffee
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</script>)
-    patterns:
-      - include: source.coffee
-
-# js
-
-- contentName: source.js.embedded.vue
-  begin: (<)(script)
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(script)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: source.js
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!\s*</script>)
-    patterns:
-      - include: source.js
-
-# Repository
+- include: '#entities'
+- include: '#bind-block'
 
 repository:
-
-  vue-interpolations:
-    patterns:
-    - name: expression.embbeded.vue
-      begin: \{\{\{?
-      beginCaptures:
-        '0': {name: punctuation.definition.generic.begin.html}
-      end: \}\}\}?
-      endCaptures:
-        '0': {name: punctuation.definition.generic.end.html}
-      patterns:
-      - include: source.js
-
-  vue-directives:
-    name: meta.directive.vue
-    begin: (?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*\s*(=)
-    end: (?<='|")
-    captures:
-      '1': {name: entity.other.attribute-name.html}
-      '2': {name: punctuation.separator.key-value.html}
-      '3': {name: entity.other.attribute-name.html}
-      '4': {name: entity.other.attribute-name.html}
-      '5': {name: entity.other.attribute-name.html}
-      '6': {name: punctuation.separator.key-value.html}
-    patterns:
-    - name: source.directive.vue
-      begin: '"'
-      beginCaptures:
-        '0': {name: punctuation.definition.string.begin.html}
-      end: '"'
-      endCaptures:
-        '0': {name: punctuation.definition.string.end.html}
-      patterns:
-      - include: source.js
-    - name: source.directive.vue
-      begin: ''''
-      beginCaptures:
-        '0': {name: punctuation.definition.string.begin.html}
-      end: ''''
-      endCaptures:
-        '0': {name: punctuation.definition.string.end.html}
-      patterns:
-      - include: source.js
 
   entities:
     patterns:
@@ -324,6 +63,80 @@ repository:
     - name: invalid.illegal.bad-ampersand.html
       match: '&'
 
+  # deprecated
+
+  property-block:
+    patterns: 
+    - name: expression.block.property.paperclip
+      begin: (\[\[)(property)\s*([a-zA-Z0-9]+)\s*
+      beginCaptures: 
+        '1': {name: punctuation.definition.tag.begin.html}
+        '2': {name: keyword.operator.js}
+        '3': {name: variable.other.readwrite.js}
+      end: (\]\])
+      endCaptures:
+        '1': {name: punctuation.definition.tag.end.html}
+
+  bind-block:
+    patterns: 
+    - name: expression.block.bind.paperclip
+      begin: (\[\[)(bind)
+      beginCaptures: 
+        '1': {name: punctuation.definition.tag.begin.html}
+        '2': {name: keyword.operator.js}
+      end: (\]\])
+      endCaptures:
+        '1': {name: punctuation.definition.tag.end.html}
+      patterns:
+      - contentName: js
+        begin: (\s)
+        end: (?=]])
+        patterns:
+          - include: source.js
+
+  repeat-block:
+    patterns: 
+    - name: expression.block.repeat.paperclip
+      begin: (\[\[)(repeat)\s*([a-zA-Z0-9]+)\s+(as)\s+([a-zA-Z0-9]+)(,\s*([a-zA-Z0-9]+))?
+      beginCaptures: 
+        '1': {name: punctuation.definition.tag.begin.html}
+        '2': {name: keyword.operator.js}
+        '3': {name: variable.other.readwrite.js}
+        '4': {name: keyword.operator.js}
+        '5': {name: variable.other.readwrite.js}
+        '7': {name: variable.other.readwrite.js}
+      end: (\]\])
+      endCaptures:
+        '1': {name: punctuation.definition.tag.end.html}
+
+  if-block:
+    patterns: 
+    - name: expression.block.if.paperclip
+      begin: (\[\[)(if|elseif)
+      beginCaptures: 
+        '1': {name: punctuation.definition.tag.begin.html}
+        '2': {name: keyword.operator.js}
+      end: (\]\])
+      endCaptures:
+        '1': {name: punctuation.definition.tag.end.html}
+      patterns:
+      - contentName: js
+        begin: (\s)
+        end: (?=]])
+        patterns:
+          - include: source.js
+
+  else-block:
+    patterns: 
+    - name: expression.block.if.paperclip
+      begin: (\[\[)(else)
+      beginCaptures: 
+        '1': {name: punctuation.definition.tag.begin.html}
+        '2': {name: keyword.operator.js}
+      end: (\]\])
+      endCaptures:
+        '1': {name: punctuation.definition.tag.end.html}
+
   string-double-quoted:
     name: string.quoted.double.html
     begin: '"'
@@ -333,8 +146,8 @@ repository:
     endCaptures:
       '0': {name: punctuation.definition.string.end.html}
     patterns:
-    - include: '#vue-interpolations'
-    - include: '#entities'
+    - include: '#bind-block'
+
 
   string-single-quoted:
     name: string.quoted.single.html
@@ -345,48 +158,20 @@ repository:
     endCaptures:
       '0': {name: punctuation.definition.string.end.html}
     patterns:
-    - include: '#vue-interpolations'
+    - inclide: '#bind-block'
     - include: '#entities'
 
   tag-generic-attribute:
     name: entity.other.attribute-name.html
-    match: \b([a-zA-Z\-:]+)
-
-  tag-id-attribute:
-    name: meta.attribute-with-value.id.html
-    begin: \b(id)\b\s*(=)
-    end: (?<='|")
-    captures:
-      '1': {name: entity.other.attribute-name.id.html}
-      '2': {name: punctuation.separator.key-value.html}
-    patterns:
-    - name: string.quoted.double.html
-      contentName: meta.toc-list.id.html
-      begin: '"'
-      beginCaptures:
-        '0': {name: punctuation.definition.string.begin.html}
-      end: '"'
-      endCaptures:
-        '0': {name: punctuation.definition.string.end.html}
-      patterns:
-      - include: '#vue-interpolations'
-      - include: '#entities'
-    - name: string.quoted.single.html
-      contentName: meta.toc-list.id.html
-      begin: ''''
-      beginCaptures:
-        '0': {name: punctuation.definition.string.begin.html}
-      end: ''''
-      endCaptures:
-        '0': {name: punctuation.definition.string.end.html}
-      patterns:
-      - include: '#vue-interpolations'
-      - include: '#entities'
+    match: (?<=[^=])\b([a-zA-Z0-9:-]+)
 
   tag-stuff:
     patterns:
-    - include: '#vue-directives'
-    - include: '#tag-id-attribute'
+    - include: '#property-block'
+    - include: '#bind-block'
+    - include: '#repeat-block'
+    - include: '#if-block'
+    - include: '#else-block'
     - include: '#tag-generic-attribute'
     - include: '#string-double-quoted'
     - include: '#string-single-quoted'

@@ -153,7 +153,7 @@
   </style>
   <template>
     <div class="background">
-      <div class="fill" style=[[bind { width: value * 100 + "%" } ]] />
+      <div class="fill" style=[[bind { width: value * 100 + "%" } ]]>
       </div>
       <span><slot></slot></span>
     </div>
@@ -186,7 +186,7 @@
   </template>
 </component>
 
-<component id="td-progress-example" [[property value]]>
+<component id="td-progress-example [[bind test]]" [[property value]]>
   <style>
     td-progress {
       margin: var(--base4);
