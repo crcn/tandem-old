@@ -3,9 +3,7 @@
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule, getStartTag } from "./ast";
 import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
-import { parseModuleSource } from "./parser";
 import { PaperclipTranspileResult } from "./transpiler";
-
 
 export type BundleVanllaOptions = {
   target: PaperclipTargetType,

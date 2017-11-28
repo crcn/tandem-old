@@ -8,7 +8,7 @@ TODOS:
 
 import { upperFirst, camelCase, repeat } from "lodash";
 import * as path from "path";
-import { loadModuleAST, parseModuleSource, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment, PCSelfClosingElement, getElementModifiers, getPCElementModifier, BKExpressionType, getElementChildNodes, PCBlock, BKExpression, BKOperation, BKPropertyReference, BKVarReference, BKArray, BKBind, BKRepeat, BKIf, BKElse, BKElseIf, getElementAttributes, inferRootNodeTypes, InferredTypeKind, getPCASTElementsByTagName, inferElementAttributeTypes, inferNodeTypes, symbolTable, setSymbolTableEntries } from "paperclip";
+import { loadModuleAST, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment, PCSelfClosingElement, getElementModifiers, getPCElementModifier, BKExpressionType, getElementChildNodes, PCBlock, BKExpression, BKOperation, BKPropertyReference, BKVarReference, BKArray, BKBind, BKRepeat, BKIf, BKElse, BKElseIf, getElementAttributes, inferRootNodeTypes, InferredTypeKind, getPCASTElementsByTagName, inferElementAttributeTypes, inferNodeTypes, symbolTable, setSymbolTableEntries } from "paperclip";
 import { basename, relative } from "path";
 import { ComponentTranspileInfo, getComponentTranspileInfo, getComponentClassName, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
 

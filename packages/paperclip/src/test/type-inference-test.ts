@@ -107,7 +107,7 @@ describe(__filename + "#", () => {
 
   ].forEach(([source, expectation]: [string, InferredType]) => {
     it(`can infer types for ${source}`, () => {
-      const module = loadModuleAST(parseModuleSource(`<component id="test"><template>${source}</template></component>`), "nada");
+      const module = loadModuleAST(parseModuleSource(`<component id="test"><template>${source}</template></component>`).root, "nada");
       expect(inferRootNodeTypes(module.components[0].template)).to.eql(expectation);
     });
   });

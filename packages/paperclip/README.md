@@ -1,3 +1,4 @@
+
 Paperclip is a document format for visual editors. Here's a basic example of code that could run within an Tandem artboard VM:
 
 component.pc:
@@ -48,6 +49,14 @@ paperclip.bundleVanilla("component.pc", {
 
 #### TODOS
 
+- [ ] Source maps*
+
 - [ ] Linter
   - [ ] Warning when there are unhandled nodes 
   - [ ] Error when there are type mismatches
+
+- [ ] <preview /> element for components (better than meta tag -- easier to read)
+- [ ] Inferred typing based on <preview /> attributes
+- [ ] Pretty error handling
+- [ ] i18n strings
+- [ ] warning if unknown tag name is used

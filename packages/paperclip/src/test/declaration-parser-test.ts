@@ -15,7 +15,7 @@ describe(__filename + "#", () => {
     ["10%", "10%"]
   ].forEach(([input, output]) => {
     it(`can parse ${input}`, () => {
-      expect(stringifyDeclarationAST(parseDeclaration(input))).to.eql(output);
+      expect(stringifyDeclarationAST(parseDeclaration(input).root)).to.eql(output);
     }); 
   });
 });

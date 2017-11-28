@@ -10,7 +10,6 @@ IMMEDIATE:
   - [ ] port undefined error
   - [ ] socket hangup
   - [ ] change do not always show up immediately
-  - [ ] syntax highlighting for paperclip
   - [ ] autocomplete
 - [ ] Paperclip
   - [ ] make it resilient to exceptions

@@ -394,15 +394,27 @@ Paperclip currently compiles to Vanilla JS, and React. In the future, Paperclip 
 Paperclip will eventually have features that are specific for visual editing, but are stripped out at compile time. 
 
 
-##### `[[note]]` block
+##### `meta` tag
+
+Meta tags will allow you to attach information about each element that are used for development.
+
+```html
+<component id="people-list">
+  <template>  
+    <span [[meta name "basic JS expression"]]>
+    </span>
+  </template>
+</component>
+```
+
+##### `meta` notes
 
 `Notes` are attachable to any element in the visual editor, where each note contains comments & discussions about each element they're attached to. Threads will also be a part of notes will allow collaborators -- other people on your team -- to leave comments (similar to google docs). Notes will _only_ be addable in the designer, and their contents stored in an API backend. Here's a basic example of what a note block will look like in a paperclip file:
 
 ```html
 <component id="people-list">
   <template>  
-    <span [[note AUTOMATICALLY_GENERATED_ID]]>
-
+    <span [[meta note "AUTO_GENERATED_ID"]]>
     </span>
   </template>
 </component>

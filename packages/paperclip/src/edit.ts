@@ -9,8 +9,14 @@ import { PC_REMOVE_CHILD_NODE, PC_REMOVE_NODE, PCRemoveNodeMutation, PCRemoveChi
 
 export const editPaperclipSource = (content: string, mutation: Mutation<PCExpression>): StringMutation[] => {
 
-  const ast = parseModuleSource(content);
-  const targetNode = findTargetNode(ast, mutation.target.location);
+  const result = parseModuleSource(content);
+
+  // source is deprecated
+  const targetNode = findTargetNode(result.root, mutation.target.location || mutation.target["source"]);
+
+  if (mutation.target["source"]) {
+    console.warn(`Mutation target does not match expected type.`);
+  }
 
   if (!targetNode) {
     return [createStringMutation(0, 0, ``)]

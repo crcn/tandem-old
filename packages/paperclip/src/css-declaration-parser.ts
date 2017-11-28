@@ -1,29 +1,43 @@
 import { DcMeasurement, DcExpressionType, PCExpressionType, DcCall, DcColor, DcExpression, DcKeyword, DcList, Token, BKExpressionType, BKString } from "./ast";
-import { createString, assertCurrTokenType, eatWhitespace, throwUnexpectedToken } from "./parser";
+import { createString, eatWhitespace, throwUnexpectedToken, testCurrTokenType } from "./parser";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 import { TokenScanner } from "./scanners";
 import { getLocation } from "./ast-utils";
+import { ParseContext, ParseResult } from "./parser-utils";
 
 const _memos = {};
 
-export const parseDeclaration = (source: string) => {
+export const parseDeclaration = (source: string, filePath?: string): ParseResult => {
   if (_memos[source]) {
     return _memos[source];
   }
 
-  return _memos[source] = createList(tokenizePaperclipSource(source));
+  const context: ParseContext = {
+    filePath,
+    source,
+    diagnostics: [],
+    scanner: tokenizePaperclipSource(source)
+  };
+
+  return _memos[source] = {
+    root: createList(context),
+    diagnostics: context.diagnostics
+  }
 }
 
-const createList = (scanner: TokenScanner) => {
+const createList = (context: ParseContext) => {
+  const {scanner} = context;
   const start = scanner.curr();
   let items = [];
   let delim: Token;
   while(!scanner.ended()) {
-    items.push(createExpression(scanner));
+    items.push(createExpression(context));
     if (!delim) {
       delim = scanner.curr();
       if (delim && delim.type !== PCTokenType.WHITESPACE && delim.type !== PCTokenType.COMMA) {
-        assertCurrTokenType(scanner, PCTokenType.COMMA);
+        if (!testCurrTokenType(context, [PCTokenType.COMMA])) {
+          return null;
+        }
       }
       scanner.next();
     }
@@ -36,29 +50,30 @@ const createList = (scanner: TokenScanner) => {
   } as DcList;
 };
 
-const createExpression = (scanner: TokenScanner) => {
-  eatWhitespace(scanner);
+const createExpression = (context: ParseContext) => {
+  const {scanner} = context;
+  eatWhitespace(context);
 
   switch(scanner.curr().type) {
     case PCTokenType.SINGLE_QUOTE:
     case PCTokenType.DOUBLE_QUOTE: {
-      return createString(scanner);
+      return createString(context);
     }
     case PCTokenType.HASH: {
-      return createColor(scanner);
+      return createColor(context);
     }
     case PCTokenType.NUMBER: {
-      return createMeasurement(scanner);
+      return createMeasurement(context);
     }
     case PCTokenType.MINUS: {
       if (scanner.hasNext() && scanner.peek(1).type === PCTokenType.NUMBER) {
-        return createMeasurement(scanner);
+        return createMeasurement(context);
       } else {
-        return createReference(scanner);
+        return createReference(context);
       }
     }
     case PCTokenType.TEXT: {
-      return createReference(scanner);
+      return createReference(context);
     }
     default: {
       throwUnexpectedToken(scanner.source, scanner.curr());
@@ -66,7 +81,8 @@ const createExpression = (scanner: TokenScanner) => {
   }
 };
 
-const createColor = (scanner: TokenScanner): DcColor => {
+const createColor = (context: ParseContext): DcColor => {
+  const {scanner} = context;
   const start = scanner.curr();
   let buffer = "";
 
@@ -82,9 +98,10 @@ const createColor = (scanner: TokenScanner): DcColor => {
   };
 };
 
-const createMeasurement = (scanner: TokenScanner): DcMeasurement  => {
+const createMeasurement = (context: ParseContext): DcMeasurement  => {
+  const {scanner} = context;
   const start = scanner.curr();
-  const value = getNumber(scanner);
+  const value = getNumber(context);
   let unit = "";
   if (!scanner.ended() && scanner.curr().type !== PCTokenType.WHITESPACE && scanner.curr().type !== PCTokenType.COMMA && scanner.curr().type !== PCTokenType.PAREN_CLOSE) {
     unit = scanner.curr().value;
@@ -99,7 +116,8 @@ const createMeasurement = (scanner: TokenScanner): DcMeasurement  => {
   };
 };
 
-const getNumber = (scanner: TokenScanner) => {
+const getNumber = (context: ParseContext) => {
+  const {scanner} = context;
   const curr = scanner.curr();
   let buffer = curr.value;
   if (buffer === "-") {
@@ -111,14 +129,15 @@ const getNumber = (scanner: TokenScanner) => {
   return buffer;
 };
 
-const createReference = (scanner: TokenScanner) => {
+const createReference = (context: ParseContext) => {
+  const {scanner} = context;
   const start = scanner.curr();
-  const name = getReferenceName(scanner);
+  const name = getReferenceName(context);
   if (!scanner.ended() && scanner.curr().type === PCTokenType.PAREN_OPEN) {
     return {
       type: DcExpressionType.CALL,
       name,
-      params: getParams(scanner),
+      params: getParams(context),
       location: getLocation(start, scanner.curr(), scanner.source)
     } as DcCall;
   } else {
@@ -129,21 +148,25 @@ const createReference = (scanner: TokenScanner) => {
   }
 };
 
-const getParams = (scanner: TokenScanner) => {
+const getParams = (context: ParseContext) => {
+  const {scanner} = context;
   const params = [];
   while(!scanner.ended() && scanner.curr().type !== PCTokenType.PAREN_CLOSE) {
     scanner.next(); // eat ( , \s
-    eatWhitespace(scanner);
-    params.push(createExpression(scanner));
+    eatWhitespace(context);
+    params.push(createExpression(context));
   }
 
-  assertCurrTokenType(scanner, PCTokenType.PAREN_CLOSE);
+  if (!testCurrTokenType(context, [PCTokenType.PAREN_CLOSE])) {
+    return null;
+  }
   scanner.next(); // eat )
   
   return params;
 };
 
-const getReferenceName = (scanner: TokenScanner) => {
+const getReferenceName = (context: ParseContext) => {
+  const {scanner} = context;
   let buffer = "";
   while(!scanner.ended() && scanner.curr().type !== PCTokenType.WHITESPACE && scanner.curr().type !== PCTokenType.PAREN_OPEN && scanner.curr().type !== PCTokenType.PAREN_CLOSE) {
     buffer += scanner.curr().value;

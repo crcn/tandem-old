@@ -32,3 +32,5 @@ export const getLocation = (start:  ExpressionPosition | Token | number, end: Ex
   start: (start as ExpressionPosition).line ? start as ExpressionPosition : getPosition(start as any, source), 
   end: end && (end as ExpressionPosition).line ? end as ExpressionPosition : getPosition(end as any || source.length, source),
 });
+
+export const getTokenLocation = (token: Token, source: string) => getLocation(token, token.pos + token.value.length, source);

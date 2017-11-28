@@ -7,32 +7,57 @@ TODOS:
 - [ ] Strong types
 */
 
-import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference, CSSExpression, CSSExpressionType, CSSStyleRule, CSSRule, CSSGroupingRule, CSSAtRule, CSSDeclarationProperty, CSSSheet } from "./ast";
-import { getLocation, getPosition } from "./ast-utils";
+import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference, CSSExpression, CSSExpressionType, CSSStyleRule, CSSRule, CSSGroupingRule, CSSAtRule, CSSDeclarationProperty, CSSSheet, ExpressionLocation } from "./ast";
+import { ParseResult, ParseContext } from "./parser-utils";
+import { getLocation, getPosition, getTokenLocation } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 
 const _memos: any = {};
 
-export const parseModuleSource = (source: string) => {
+export const parseModuleSource = (source: string, filePath?: string): ParseResult => {
   if (_memos[source]) return _memos[source]; // result should be immutable, so this is okay 
 
-  const tokenScanner = tokenizePaperclipSource(source);
-  return _memos[source] = createFragment(tokenScanner);
+  const context = {
+    source,
+    filePath,
+    scanner: tokenizePaperclipSource(source),
+    diagnostics: []
+  };
+
+  const root = createFragment(context);
+  return _memos[source] = {
+    root,
+    diagnostics: context.diagnostics
+  };
 };
 
-export const parseStyleSource = (source: string) => {
+export const parseStyleSource = (source: string, filePath?: string): ParseResult => {
   if (_memos[source]) return _memos[source];
-
-  const tokenScanner = tokenizePaperclipSource(source);
-  return _memos[source] = createStyleSheet(tokenScanner);
+  const context = {
+    source,
+    scanner:  tokenizePaperclipSource(source),
+    filePath,
+    diagnostics: []
+  };
+  const root = createStyleSheet(context);
+  return _memos[source] = {
+    root,
+    diagnostics: context.diagnostics
+  };
 };
 
-const createFragment = (scanner: TokenScanner) => {
+const createFragment = (context: ParseContext) => {
+  const {scanner} = context;
 
   const childNodes = [];
+
   while(!scanner.ended()) {
-    childNodes.push(createExpression(scanner));
+    const child = createNodeExpression(context);
+    if (!child) {
+      return null;
+    }
+    childNodes.push(child);
   }
   
   return childNodes.length === 1 ? childNodes[0] : ({
@@ -42,33 +67,69 @@ const createFragment = (scanner: TokenScanner) => {
   })
 }
 
-const createExpression = (scanner: TokenScanner) => {
+// const createExpression = (context: ParseContext) => {
+//   if (!testCurrTokenExists(context)) {
+//     return null;
+//   }
+//   const {scanner} = context;
+//   switch(scanner.curr().type) {
+//     case PCTokenType.WHITESPACE: return createTextNode(context);
+//     case PCTokenType.SINGLE_QUOTE: 
+//     case PCTokenType.DOUBLE_QUOTE: return createAttributeString(context);
+//     case PCTokenType.LESS_THAN: return createTag(context);
+//     case PCTokenType.CLOSE_TAG: return createCloseTag(context);
+//     case PCTokenType.COMMENT: return createComment(context);
+//     default: {
+//       if (isBlockStarting(scanner)) {
+//         return createBlock(context);
+//       }
+//       return createTextNode(context);
+//     }
+//   }
+// };
+
+const createNodeExpression = (context: ParseContext) => {
+  if (!testCurrTokenExists(context)) {
+    return null;
+  }
+  const {scanner} = context;
   switch(scanner.curr().type) {
-    case PCTokenType.WHITESPACE: return createTextNode(scanner);
-    case PCTokenType.SINGLE_QUOTE: 
-    case PCTokenType.DOUBLE_QUOTE: return createAttributeString(scanner);
-    case PCTokenType.LESS_THAN: return createTag(scanner);
-    case PCTokenType.CLOSE_TAG: return createCloseTag(scanner);
-    case PCTokenType.COMMENT: return createComment(scanner);
+    case PCTokenType.WHITESPACE: return createTextNode(context);
+    case PCTokenType.LESS_THAN: return createTag(context);
+    case PCTokenType.CLOSE_TAG: return createCloseTag(context);
+    case PCTokenType.COMMENT: return createComment(context);
     default: {
       if (isBlockStarting(scanner)) {
-        return createBlock(scanner);
+        return createBlock(context, createTextBlockStatement);
       }
-      return createTextNode(scanner);
+      return createTextNode(context);
     }
   }
 };
 
-const createBlock = (scanner: TokenScanner): PCBlock => {
+const createBlock = (context: ParseContext, createStatement: (context: ParseContext) => BKExpression): PCBlock => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat [
   scanner.next(); // eat [
-  eatWhitespace(scanner);
-  const value = createBKStatement(scanner);
-  eatWhitespace(scanner);
-  assertCurrTokenType(scanner, PCTokenType.BRACKET_CLOSE);
+  eatWhitespace(context);
+  const value = createStatement(context);
+
+  if (!value) {
+    return null;
+  }
+
+  eatWhitespace(context);
+
+  if (!testCurrTokenType(context, [PCTokenType.BRACKET_CLOSE], null,getLocation(start, scanner.curr(), context.source))) {
+    return null;
+  }
+
   scanner.next(); // eat ]
-  assertCurrTokenType(scanner, PCTokenType.BRACKET_CLOSE);
+
+  if (!testCurrTokenType(context, [PCTokenType.BRACKET_CLOSE], "Missing closing ] character.", getTokenLocation(start, context.source))) {
+    return null;
+  }
   scanner.next(); // eat ]
 
   return ({
@@ -78,27 +139,80 @@ const createBlock = (scanner: TokenScanner): PCBlock => {
   })
 }
 
-const createBKStatement = (scanner: TokenScanner) => {
+const createElementBlockStatement = (context: ParseContext) => {
+  const {scanner} = context;
   switch(scanner.curr().value) {
-    case "bind": return createBindBlock(scanner);
-    case "repeat": return createRepeatBlock(scanner);
-    case "if": return createConditionBlock(scanner, BKExpressionType.IF);
-    case "elseif": return createConditionBlock(scanner, BKExpressionType.ELSEIF);
-    case "else": return createConditionBlock(scanner, BKExpressionType.ELSE);
-    case "property": return createPropertyBlock(scanner, BKExpressionType.PROPERTY);
+    case "bind": return createBindBlock(context);
+    case "repeat": return createRepeatBlock(context);
+    case "if": return createConditionBlock(context, BKExpressionType.IF);
+    case "elseif": return createConditionBlock(context, BKExpressionType.ELSEIF);
+    case "else": return createConditionBlock(context, BKExpressionType.ELSE);
+    case "property": return createPropertyBlock(context, BKExpressionType.PROPERTY);
     default: {
-      throwUnexpectedToken(scanner.source, scanner.curr());
+      addUnexpectedToken(context, `Unexpected block type ${scanner.curr().value}.`);
+      return null;
     }
   }
 };
 
-const createBKExpressionStatement = (scanner: TokenScanner) => createBKOperation(scanner);
+const createTextBlockStatement = (context: ParseContext) => {
+  const {scanner} = context;
+  switch(scanner.curr().value) {
+    case "bind": return createBindBlock(context);
+    
+    case "elseif":
+    case "else":
+    case "if": {
+      addUnexpectedToken(context, `Condition blocks can only be added to elements, for example: <div [[if condition]]></div>.`);
+      return null;
+    }
 
-const createBKOperation = (scanner: TokenScanner): BKExpression => {
-  const lhs = createBKExpression(scanner);
-  eatWhitespace(scanner);
+    case "repeat": {
+      addUnexpectedToken(context, `Repeat blocks can only be added to elements, for example: <div [[repeat items in item, i]]></div>.`);
+      return null;
+    }
+    default: {
+      addUnexpectedToken(context, `Unexpected block type ${scanner.curr().value}.`);
+      return null;
+    }
+  }
+};
+
+const createTextAttributeBlockStatement = (context: ParseContext) => {
+  const {scanner} = context;
+  switch(scanner.curr().value) {
+    case "bind": return createBindBlock(context);
+    case "elseif":
+    case "else":
+    case "if": {
+      addUnexpectedToken(context, `Condition blocks cannot be assigned to attributes.`);
+      return null;
+    }
+
+    case "repeat": {
+      addUnexpectedToken(context, `Repeat blocks cannot be assigned to attributes.`);
+      return null;
+    }
+    default: {
+      addUnexpectedToken(context, `Unexpected block type ${scanner.curr().value}.`);
+      return null;
+    }
+  }
+}
+
+const createBKExpressionStatement = (context: ParseContext) => createBKOperation(context);
+
+const createBKOperation = (context: ParseContext): BKExpression => {
+  if (!testCurrTokenExists(context)) {
+    return null;
+  }
+
+  const {scanner} = context;
+  const lhs = createBKExpression(context);
+  eatWhitespace(context);
+
   const operator = scanner.curr();
-  const otype = operator.type;
+  const otype = operator ? operator.type : -1;
 
   const isOperator = otype === PCTokenType.AND || otype === PCTokenType.OR || otype == PCTokenType.PLUS || otype === PCTokenType.MINUS || otype === PCTokenType.STAR || otype === PCTokenType.BACKSLASH || otype === PCTokenType.DOUBLE_EQUALS || otype === PCTokenType.TRIPPLE_EQUELS || otype === PCTokenType.GREATER_THAN || otype === PCTokenType.LESS_THAN || otype === PCTokenType.LESS_THAN_OR_EQUAL || otype === PCTokenType.GREATER_THAN_OR_EQUAL || otype === PCTokenType.NOT_EQUALS || otype === PCTokenType.NOT_DOUBLE_EQUALS;
 
@@ -107,9 +221,13 @@ const createBKOperation = (scanner: TokenScanner): BKExpression => {
   }
 
   scanner.next(); // eat operator
-  eatWhitespace(scanner);
+  eatWhitespace(context);
 
-  const rhs = createBKOperation(scanner);
+  const rhs = createBKOperation(context);
+
+  if (!rhs) {
+    return null;
+  }
   
   // NOTE that we don't need to worry about operation weights since paperclip
   // is compiled
@@ -122,25 +240,28 @@ const createBKOperation = (scanner: TokenScanner): BKExpression => {
   } as BKOperation;
 };
 
-const createBKExpression = (scanner: TokenScanner) => {
-  eatWhitespace(scanner);
+const createBKExpression = (context: ParseContext) => {
+  const {scanner} = context;
+  eatWhitespace(context);
   switch(scanner.curr().type) {
-    case PCTokenType.BANG: return createNotExpression(scanner);
+    case PCTokenType.BANG: return createNotExpression(context);
     case PCTokenType.SINGLE_QUOTE: 
-    case PCTokenType.DOUBLE_QUOTE: return createString(scanner);
-    case PCTokenType.NUMBER: return createNumber(scanner);
-    case PCTokenType.CURLY_BRACKET_OPEN: return createObject(scanner);
-    case PCTokenType.BRACKET_OPEN: return createArray(scanner);
-    case PCTokenType.PAREN_OPEN: return createGroup(scanner);
-    case PCTokenType.TEXT: return createPropReference(scanner);
-    case PCTokenType.RESERVED_KEYWORD: return createReservedKeyword(scanner);
+    case PCTokenType.DOUBLE_QUOTE: return createString(context);
+    case PCTokenType.NUMBER: return createNumber(context);
+    case PCTokenType.CURLY_BRACKET_OPEN: return createObject(context);
+    case PCTokenType.BRACKET_OPEN: return createArray(context);
+    case PCTokenType.PAREN_OPEN: return createGroup(context);
+    case PCTokenType.TEXT: return createPropReference(context);
+    case PCTokenType.RESERVED_KEYWORD: return createReservedKeyword(context);
     default: {
-      throwUnexpectedToken(scanner.source, scanner.curr());
+      addUnexpectedToken(context);
+      return null;
     }
   }
 };
 
-export const createString = (scanner: TokenScanner): BKString => {
+export const createString = (context: ParseContext): BKString => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat '
   let value = "";
@@ -162,7 +283,9 @@ export const createString = (scanner: TokenScanner): BKString => {
     scanner.next();
   }
 
-  assertCurrTokenType(scanner, start.type);
+  if (!testClosingToken(context, start)) {
+    return null;
+  }
 
   scanner.next(); // eat quote
 
@@ -174,7 +297,8 @@ export const createString = (scanner: TokenScanner): BKString => {
   };
 };
 
-const createNumber = (scanner: TokenScanner): BKNumber => {
+const createNumber = (context: ParseContext): BKNumber => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next();
   return ({
@@ -184,20 +308,25 @@ const createNumber = (scanner: TokenScanner): BKNumber => {
   })
 };
 
-const createObject = (scanner: TokenScanner): BKObject => {
+const createObject = (context: ParseContext): BKObject => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat {
 
   const properties: BKKeyValuePair[] = [];
 
   while(!scanner.ended()) {
-    eatWhitespace(scanner);
+    eatWhitespace(context);
     if (scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
       break;
     }
-
-    properties.push(createKeyValuePair(scanner));
-    eatWhitespace(scanner);
+    
+    const pair = createKeyValuePair(context);
+    if (!pair) {
+      return null;
+    }
+    properties.push(pair);
+    eatWhitespace(context);
 
     const curr = scanner.curr();
 
@@ -207,15 +336,15 @@ const createObject = (scanner: TokenScanner): BKObject => {
     }
 
     if (curr.type !== PCTokenType.COMMA && curr) {
-      throwUnexpectedToken(scanner.source, curr);
+      addUnexpectedToken(context);
+      return null;
     }
 
     scanner.next(); 
   }
 
-  assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_CLOSE);
 
-  scanner.next(); // eat }
+  scanner.next(); // eat }. Assertion happens in while loop
 
   return {
     type: BKExpressionType.OBJECT,
@@ -224,26 +353,31 @@ const createObject = (scanner: TokenScanner): BKObject => {
   };
 };
 
-const createArray = (scanner: TokenScanner): BKArray => {
+const createArray = (context: ParseContext): BKArray => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); 
-  eatWhitespace(scanner);
+  eatWhitespace(context);
   const values: BKExpression[] = [];
   const curr = scanner.curr();
   if (curr.type !== PCTokenType.BRACKET_CLOSE) {
     while(1) {
-      values.push(createBKExpression(scanner));
-      eatWhitespace(scanner);
+      values.push(createBKExpression(context));
+      eatWhitespace(context);
       const curr = scanner.curr();
       if (curr.type === PCTokenType.BRACKET_CLOSE) {
         break;
       }
-      assertCurrTokenType(scanner, PCTokenType.COMMA);
+      
+      if (!testCurrTokenType(context, [PCTokenType.COMMA], "Missing , delimiter in array.", getLocation(start, scanner.curr(), context.source))) {
+        return null;
+      }
+
       scanner.next();
     }
   }
 
-  assertCurrTokenType(scanner, PCTokenType.BRACKET_CLOSE);
+
   scanner.next();
 
   return {
@@ -253,23 +387,26 @@ const createArray = (scanner: TokenScanner): BKArray => {
   }
 }
 
-const createKeyValuePair = (scanner: TokenScanner): BKKeyValuePair => {
+const createKeyValuePair = (context: ParseContext): BKKeyValuePair => {
+  const {scanner} = context;
   let key;
   switch(scanner.curr().type) {
     case PCTokenType.SINGLE_QUOTE: 
     case PCTokenType.DOUBLE_QUOTE: {
-      key = createString(scanner);
+      key = createString(context);
       break;
     }
     default: {
-      key = createVarReference(scanner);
+      key = createVarReference(context);
     }
   }
-  eatWhitespace(scanner);
-  assertCurrTokenType(scanner, PCTokenType.COLON);
+  eatWhitespace(context);
+  if (!testCurrTokenType(context, [PCTokenType.COLON], "Missing : for object.")) {
+    return null;
+  }
   scanner.next(); // eat :
-  eatWhitespace(scanner);
-  const value = createBKExpressionStatement(scanner);
+  eatWhitespace(context);
+  const value = createBKExpressionStatement(context);
 
   return {
     type: BKExpressionType.KEY_VALUE_PAIR,
@@ -279,10 +416,11 @@ const createKeyValuePair = (scanner: TokenScanner): BKKeyValuePair => {
   }
 }
 
-const createGroup = (scanner: TokenScanner): BKGroup => {
+const createGroup = (context: ParseContext): BKGroup => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat )
-  const value = createBKExpressionStatement(scanner);
+  const value = createBKExpressionStatement(context);
   scanner.next(); // eat )
   return {
     type: BKExpressionType.GROUP,
@@ -291,7 +429,8 @@ const createGroup = (scanner: TokenScanner): BKGroup => {
   }
 }
 
-const createReservedKeyword = (scanner: TokenScanner): BKReservedKeyword => {
+const createReservedKeyword = (context: ParseContext): BKReservedKeyword => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next();
   return {
@@ -301,22 +440,31 @@ const createReservedKeyword = (scanner: TokenScanner): BKReservedKeyword => {
   };
 };
 
-const createBindBlock = (scanner: TokenScanner): BKBind => {
+const createBindBlock = (context: ParseContext): BKBind => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat bind
+  // if (!testCurrTokenType(context, [PCTokenType.WHITESPACE], `Missing whitespace after bind keyword.`, getTokenLocation(start, context.source))) {
+  //   return null;
+  // }
   scanner.next(); // eat WS
+  const value = createBKExpressionStatement(context);
+  if (!value) {
+    return null;
+  }
   return ({
     type: BKExpressionType.BIND,
-    value: createBKExpressionStatement(scanner),
+    value,
     location: getLocation(start, scanner.curr(), scanner.source)
   })
 };
 
-const createPropertyBlock = (scanner: TokenScanner, type: BKExpressionType): BKProperty => {
+const createPropertyBlock = (context: ParseContext, type: BKExpressionType): BKProperty => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat property
   scanner.next(); // eat ws
-  const ref = createVarReference(scanner);
+  const ref = createVarReference(context);
   return ({
     type,
     name: ref.name,
@@ -324,30 +472,63 @@ const createPropertyBlock = (scanner: TokenScanner, type: BKExpressionType): BKP
   });
 }
 
-const createConditionBlock = (scanner: TokenScanner, type: BKExpressionType): BKIf  => {
+const createConditionBlock = (context: ParseContext, type: BKExpressionType): BKIf  => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat name
-  eatWhitespace(scanner);
+  eatWhitespace(context);
   return ({
     type,
 
     // only support references for now
-    condition: scanner.curr().type !== PCTokenType.BRACKET_CLOSE ? createBKExpressionStatement(scanner) : null,
+    condition: scanner.curr().type !== PCTokenType.BRACKET_CLOSE ? createBKExpressionStatement(context) : null,
     location: getLocation(start, scanner.curr(), scanner.source)
   });
 };
 
-const createRepeatBlock = (scanner: TokenScanner): BKRepeat => {
+const createRepeatBlock = (context: ParseContext): BKRepeat => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat repeat
-  const each = createBKExpressionStatement(scanner);
-  eatWhitespace(scanner);
+
+  eatWhitespace(context);
+
+  if (!testCurrTokenType(context, [PCTokenType.TEXT], "Repeat block missing collection parameter.", getTokenLocation(start, context.source))) {
+    return null;
+  }
+
+  const each = createBKExpressionStatement(context);
+
+  eatWhitespace(context);
+
+  if (!testCurrTokenType(context, [PCTokenType.TEXT], null, getLocation(start, scanner.curr(), context.source))) {
+    return null;
+  }
+
+  if (scanner.curr().value !== "as") {
+    addUnexpectedToken(context, `Repeat block missing "as" keyword.`, getLocation(start, scanner.curr(), context.source));
+    return null;
+  }
+
   scanner.next(); // eat as
-  const asValue = createVarReference(scanner);  // eat WS
+
+  eatWhitespace(context);
+
+  if (!testCurrTokenType(context, [PCTokenType.TEXT], null, getLocation(start, scanner.curr(), context.source))) {
+    return null;
+  }
+
+  const asValue = createVarReference(context);  // eat WS
   let asKey: BKVarReference;
+  eatWhitespace(context);
   if (scanner.curr().value === ",") {
     scanner.next(); // eat
-    asKey = createVarReference(scanner);
+    eatWhitespace(context);
+    if (!testCurrTokenType(context, [PCTokenType.TEXT], "Unexpected token. Repeat index parameter should only contain characters a-zA-Z.", getLocation(start, scanner.curr(), context.source))) {
+      return null;
+    }
+
+    asKey = createVarReference(context);
   }
 
   return ({
@@ -359,13 +540,16 @@ const createRepeatBlock = (scanner: TokenScanner): BKRepeat => {
   });
 };
 
-const createPropReference = (scanner: TokenScanner): BKVarReference|BKPropertyReference => {
-  const start = createVarReference(scanner);
+const createPropReference = (context: ParseContext): BKVarReference|BKPropertyReference => {
+  const {scanner} = context;
+  const start = createVarReference(context);
   const path = [start];
   while(!scanner.ended() && scanner.curr().type === PCTokenType.PERIOD) {
     scanner.next(); // eat .
-    assertCurrTokenType(scanner, PCTokenType.TEXT);
-    path.push(createVarReference(scanner));
+    if (!testCurrTokenType(context, [PCTokenType.TEXT])) {
+      return null;
+    }
+    path.push(createVarReference(context));
   }
 
   if (path.length === 1) {
@@ -379,8 +563,9 @@ const createPropReference = (scanner: TokenScanner): BKVarReference|BKPropertyRe
   });
 };
 
-const createVarReference = (scanner: TokenScanner): BKVarReference => {
-  eatWhitespace(scanner);
+const createVarReference = (context: ParseContext): BKVarReference => {
+  const {scanner} = context;
+  eatWhitespace(context);
   const start = scanner.curr();
   scanner.next(); // eat name
   return ({
@@ -390,17 +575,19 @@ const createVarReference = (scanner: TokenScanner): BKVarReference => {
   });
 };
 
-const createNotExpression = (scanner: TokenScanner): BKNot => {
+const createNotExpression = (context: ParseContext): BKNot => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next();
   return ({
     type: BKExpressionType.NOT,
-    value: createBKExpression(scanner),
+    value: createBKExpression(context),
     location: getLocation(start, scanner.curr(), scanner.source),
   });
 }
 
-const createComment = (scanner: TokenScanner): PCComment => {
+const createComment = (context: ParseContext): PCComment => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next();
   let curr: Token;
@@ -423,15 +610,20 @@ const isBlockEnding = (scanner: TokenScanner) => {
   return scanner.curr().type === PCTokenType.BRACKET_CLOSE && scanner.peek(1).type === PCTokenType.BRACKET_CLOSE;
 };
 
-const createStyleSheet = (scanner: TokenScanner): CSSSheet => {
+const createStyleSheet = (context: ParseContext): CSSSheet => {
+  const {scanner} = context;
   const start = scanner.curr();
   const children = [];
   while(1) {
-    eatWhitespace(scanner);
+    eatWhitespace(context);
     if (scanner.ended() || scanner.curr().type === PCTokenType.CLOSE_TAG) {
       break;
     }
-    children.push(createCSSRule(scanner));    
+    const child = createCSSRule(context);
+    if (!child) {
+      return null;
+    }
+    children.push(child);    
   }
   // while(!scanner.ended() && scanner.curr().type !== PCTokenType.CLOSE_TAG) {
   //   eatWhitespace(scanner);
@@ -443,14 +635,16 @@ const createStyleSheet = (scanner: TokenScanner): CSSSheet => {
   };
 };
 
-const createCSSRule = (scanner: TokenScanner) => {
+const createCSSRule = (context: ParseContext) => {
+  const {scanner} = context;
   switch(scanner.curr().type) {
-    case PCTokenType.AT: return createCSSAtRule(scanner);
-    default: return createCSSStyleRuleOrDeclarationProperty(scanner);
+    case PCTokenType.AT: return createCSSAtRule(context);
+    default: return createCSSStyleRuleOrDeclarationProperty(context);
   }
 };
 
-const createCSSAtRule = (scanner: TokenScanner): CSSAtRule => {
+const createCSSAtRule = (context: ParseContext): CSSAtRule => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next();
   let name: string = "";
@@ -462,14 +656,14 @@ const createCSSAtRule = (scanner: TokenScanner): CSSAtRule => {
   scanner.next(); // eat name
   const params: string[] = [];
   const children: CSSRule[] = [];
-  eatWhitespace(scanner);
+  eatWhitespace(context);
   while(!scanner.ended()) {
-    eatWhitespace(scanner);
+    eatWhitespace(context);
     if (scanner.curr().type === PCTokenType.CURLY_BRACKET_OPEN || scanner.curr().type === PCTokenType.SEMICOLON) {
       break;
     }
     if (scanner.curr().type === PCTokenType.SINGLE_QUOTE || scanner.curr().type === PCTokenType.DOUBLE_QUOTE) {
-      params.push(createString(scanner).value);
+      params.push(createString(context).value);
     } else {
       params.push(scanner.curr().value);
       scanner.next();
@@ -481,14 +675,20 @@ const createCSSAtRule = (scanner: TokenScanner): CSSAtRule => {
 
   if (curr.type === PCTokenType.CURLY_BRACKET_OPEN) {
     while(!scanner.ended()) {
-      eatWhitespace(scanner);
+      eatWhitespace(context);
       if (scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
         break;
       }
-      children.push(createCSSRule(scanner));
+      const child = createCSSRule(context);
+      if (!child) {
+        return null;
+      }
+      children.push(child);
     }
 
-    assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_CLOSE);
+    if (!testCurrTokenType(context, [PCTokenType.CURLY_BRACKET_CLOSE], "Missing closing } character.", getTokenLocation(start, context.source))) {
+      return null;
+    }
 
     scanner.next();
   }
@@ -503,22 +703,27 @@ const createCSSAtRule = (scanner: TokenScanner): CSSAtRule => {
 }
 
 
-const createCSSStyleRuleOrDeclarationProperty = (scanner: TokenScanner): CSSStyleRule|CSSDeclarationProperty => {
+const createCSSStyleRuleOrDeclarationProperty = (context: ParseContext): CSSStyleRule|CSSDeclarationProperty => {
+  const {scanner} = context;
   const start = scanner.curr();
   let selectorText = "";
   while(!scanner.ended()) {
     const curr = scanner.curr();
-    if (curr.type == PCTokenType.CURLY_BRACKET_OPEN || curr.type === PCTokenType.SEMICOLON || curr.type === PCTokenType.CURLY_BRACKET_CLOSE) {
+    if (curr.type == PCTokenType.CURLY_BRACKET_OPEN || curr.type === PCTokenType.SEMICOLON || curr.type === PCTokenType.CURLY_BRACKET_CLOSE || curr.type === PCTokenType.CLOSE_TAG) {
       break;
     }
 
     // need to check for strings because something such as content: "; "; needs to be possible.
     if (curr.type === PCTokenType.SINGLE_QUOTE || curr.type === PCTokenType.DOUBLE_QUOTE)  {
-      selectorText += curr.value + createString(scanner).value + curr.value;
+      selectorText += curr.value + createString(context).value + curr.value;
     } else {
       selectorText += curr.value;
       scanner.next();
     }
+  }
+
+  if (!testCurrTokenType(context, [PCTokenType.SEMICOLON, PCTokenType.CURLY_BRACKET_OPEN, PCTokenType.CURLY_BRACKET_CLOSE])) {
+    return null;
   }
 
   // it's a declaration
@@ -538,19 +743,27 @@ const createCSSStyleRuleOrDeclarationProperty = (scanner: TokenScanner): CSSStyl
     } as CSSDeclarationProperty;
   }
 
-  assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_OPEN);
-  scanner.next(); 
+  scanner.next(); // eat {
 
   const children: CSSExpression[] = [];
-  eatWhitespace(scanner);
+  eatWhitespace(context);
   while(!scanner.ended() && scanner.curr().type !== PCTokenType.CURLY_BRACKET_CLOSE) {
 
+    const child = createCSSStyleRuleOrDeclarationProperty(context) as CSSDeclarationProperty;
+
+    if (!child) {
+      return null;
+    }
+
     // todo - allow for nesteded
-    children.push(createCSSStyleRuleOrDeclarationProperty(scanner) as CSSDeclarationProperty);
-    eatWhitespace(scanner);
+    children.push(child);
+    eatWhitespace(context);
   }
 
-  assertCurrTokenType(scanner, PCTokenType.CURLY_BRACKET_CLOSE);
+  if (!testCurrTokenType(context, [PCTokenType.CURLY_BRACKET_CLOSE], "Missing closing } character.", getTokenLocation(start,context.source))) {
+    return null;
+  }
+
   scanner.next();
 
   selectorText = selectorText.trim();
@@ -563,11 +776,19 @@ const createCSSStyleRuleOrDeclarationProperty = (scanner: TokenScanner): CSSStyl
   };
 }
 
-const createCloseTag = (scanner: TokenScanner) => {
+const createCloseTag = (context: ParseContext) => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next();
-  const name = getTagName(scanner);
-  assertCurrTokenType(scanner, PCTokenType.GREATER_THAN);
+  const name = getTagName(context);
+  if (!name) {
+    addUnexpectedToken(context, "Missing close tag name.", getTokenLocation(start, context.source));
+    return null;
+  }
+  if (!testCurrTokenType(context, [PCTokenType.GREATER_THAN], `Missing > character.`, getLocation(start, scanner.curr(), context.source))) {
+    return null;
+  }
+
   scanner.next(); // eat >
   return ({
     type: PCExpressionType.END_TAG,
@@ -576,25 +797,50 @@ const createCloseTag = (scanner: TokenScanner) => {
   })
 };
 
-const createTag = (scanner: TokenScanner) => {
+const createTag = (context: ParseContext) => {
+  const {scanner} = context;
   const start = scanner.curr();
-  assertCurrTokenType(scanner, PCTokenType.LESS_THAN);
   scanner.next(); // eat <
-  const tagName = getTagName(scanner);
+  const tagName = getTagName(context);
+
+  if (!tagName) {
+    addUnexpectedToken(context, "Missing open tag name.", getTokenLocation(start, context.source));
+    return null;
+  }
+  
+  if (!scanner.ended() && !testCurrTokenType(context, [PCTokenType.WHITESPACE, PCTokenType.GREATER_THAN], `Tag name contains a character where " " or > is expected.`, getTokenLocation(start, context.source))) {
+    return null;
+  }
+
   const attributes = [];
   const modifiers = [];
 
   while(!scanner.ended()) {
-    eatWhitespace(scanner);
+    eatWhitespace(context);
     const curr = scanner.curr();
     if (curr.type === PCTokenType.BACKSLASH || curr.type == PCTokenType.GREATER_THAN) {
       break;
     }
     if (isBlockStarting(scanner)) {
-      modifiers.push(createBlock(scanner));
+      const block = createBlock(context, createElementBlockStatement);
+      if (!block) {
+        return null;
+      }
+      modifiers.push(block);
+    } else if (curr.type === PCTokenType.TEXT) {
+      const attr = createAttribute(context);
+      if (!attr) {
+        return null;
+      }
+      attributes.push(attr);
     } else {
-      attributes.push(createAttribute(scanner));
+      addUnexpectedToken(context);
+      return null;
     }
+  }
+
+  if (!testCurrTokenExists(context)) {
+    return null;
   }
 
   if (scanner.curr().type === PCTokenType.BACKSLASH) {
@@ -610,7 +856,18 @@ const createTag = (scanner: TokenScanner) => {
   } else {
     scanner.next(); // eat >
     const endStart = scanner.curr();
-    const [childNodes, endTag] = getElementChildNodes(tagName, scanner);
+    const info = getElementChildNodes(tagName, context);
+
+    // err break
+    if (!info) {
+      return null;
+    }
+    const [childNodes, endTag] = info;
+
+    if (!endTag) {
+      addUnexpectedToken(context, `Close tag is missing.`, getLocation(start, endStart, context.source));
+      return null;
+    }
     return ({
       type: PCExpressionType.ELEMENT,
       startTag: {
@@ -627,15 +884,27 @@ const createTag = (scanner: TokenScanner) => {
   }
 };
 
-const getElementChildNodes = (tagName: string, scanner: TokenScanner): [any[], PCEndTag]  => {
+const getElementChildNodes = (tagName: string, context: ParseContext): [any[], PCEndTag]  => {
+  const {scanner} = context;
   const childNodes = [];
 
   // special tags
   if (tagName === "style") {
-    const styleSheet = createStyleSheet(scanner);
-    eatWhitespace(scanner);
-    assertCurrTokenType(scanner, PCTokenType.CLOSE_TAG);
-    return [[styleSheet], createCloseTag(scanner)];
+    const styleSheet = createStyleSheet(context);
+    if (!styleSheet) {
+      return null;
+    }
+    eatWhitespace(context);
+
+    if (!testCurrTokenType(context, [PCTokenType.CLOSE_TAG])) {
+      return null;
+    }
+    const endTag = createCloseTag(context);
+    if (!endTag) {
+      return null;
+    }
+
+    return [[styleSheet], endTag];
   }
 
   if (tagName === "style" || tagName === "script") {
@@ -659,13 +928,18 @@ const getElementChildNodes = (tagName: string, scanner: TokenScanner): [any[], P
           location: getLocation(start, scanner.curr(), scanner.source),
         } as PCTextNode
       ],
-      createExpression(scanner) as PCEndTag
+      createNodeExpression(context) as PCEndTag
     ]
   }
 
   let endTag: PCExpression;
   while(!scanner.ended()) {
-    const child = createExpression(scanner);
+    const child = createNodeExpression(context);
+
+    // error.
+    if (!child) {
+      return null;
+    }
     if (child.type === PCExpressionType.END_TAG) {
       endTag = child;
       // TODO - assert name is the same
@@ -677,13 +951,17 @@ const getElementChildNodes = (tagName: string, scanner: TokenScanner): [any[], P
   return [childNodes, endTag as PCEndTag];
 };
 
-const createAttribute = (scanner: TokenScanner): PCAttribute  => {
+const createAttribute = (context: ParseContext): PCAttribute  => {
+  const {scanner} = context;
   const start = scanner.curr();
-  const name = getTagName(scanner);
+  const name = getTagName(context);
   let value: PCExpression;
   if (scanner.curr().type === PCTokenType.EQUALS) {
     scanner.next(); // eat =
-    value = createExpression(scanner);
+    value = createAttributeExpression(context);
+    if (!value) {
+      return null;
+    }
   }
 
   return {
@@ -693,12 +971,33 @@ const createAttribute = (scanner: TokenScanner): PCAttribute  => {
     location: getLocation(start, scanner.curr(), scanner.source),
   }
 };
+const createAttributeExpression = (context: ParseContext) => {
+  if (!testCurrTokenExists(context)) {
+    return null;
+  }
+  const {scanner} = context;
+  switch(scanner.curr().type) {
+    case PCTokenType.SINGLE_QUOTE: 
+    case PCTokenType.DOUBLE_QUOTE: return createAttributeString(context);
+    default: {
+      if (isBlockStarting(scanner)) {
+        return createBlock(context, createTextAttributeBlockStatement);
+      }
+      addUnexpectedToken(context);
+      return null;
+    }
+  }
+};
 
-const createAttributeString = (scanner: TokenScanner): PCString|PCStringBlock => {
+const testClosingToken = (context: ParseContext, start: Token) => testCurrTokenType(context, [start.type], `Missing closing ${start.value} character.`, getTokenLocation(start, context.source));
+
+const createAttributeString = (context: ParseContext): PCString|PCStringBlock => {
+  const {scanner} = context;
   const start = scanner.curr();
   const values: Array<PCString|PCBlock> = [];
   let buffer = "";
   let hasBlocks = false;
+
   scanner.next(); // eat "
 
   while(!scanner.ended()) {
@@ -708,7 +1007,11 @@ const createAttributeString = (scanner: TokenScanner): PCString|PCStringBlock =>
     }
     if (isBlockStarting(scanner)) {
       hasBlocks = true;
-      values.push(createBlock(scanner));
+      const block = createBlock(context, createTextAttributeBlockStatement);
+      if (!block) {
+        return null;
+      }
+      values.push(block);
     } else {
       scanner.next();
       values.push(({
@@ -717,6 +1020,10 @@ const createAttributeString = (scanner: TokenScanner): PCString|PCStringBlock =>
         location: getLocation(curr.pos, scanner.curr(), scanner.source)
       }));
     }
+  }
+
+  if (!testClosingToken(context, start)) {
+    return null;
   }
 
   scanner.next(); // eat '
@@ -737,7 +1044,8 @@ const createAttributeString = (scanner: TokenScanner): PCString|PCStringBlock =>
   }
 }
 
-const createTextNode = (scanner: TokenScanner): PCTextNode => {
+const createTextNode = (context: ParseContext): PCTextNode => {
+  const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // char
   let value = start.value;
@@ -756,18 +1064,24 @@ const createTextNode = (scanner: TokenScanner): PCTextNode => {
   });
 };
 
-export const eatWhitespace = (scanner: TokenScanner) => {
-  while(scanner.curr().type === PCTokenType.WHITESPACE) {
+export const eatWhitespace = (context: ParseContext) => {
+  const {scanner} = context;
+  while(!scanner.ended() && scanner.curr().type === PCTokenType.WHITESPACE) {
     scanner.next();
   }
 };
 
-const getTagName = (scanner: TokenScanner) => {
+const getTagName = (context: ParseContext) => {
+  const {scanner} = context;
   let name = "";
 
-  while(scanner.curr().type !== PCTokenType.WHITESPACE && scanner.curr().type !== PCTokenType.GREATER_THAN && scanner.curr().type !== PCTokenType.EQUALS) {
+  while(!scanner.ended() && /[a-zA-Z-][a-zA-Z0-9-]*/.test(scanner.curr().value)) {
     name += scanner.curr().value;
     scanner.next();
+  }
+
+  if (!name) {
+    return null;
   }
   return name;
 };
@@ -781,15 +1095,35 @@ export const throwUnexpectedToken = (source: string, token: Token) => {
   throw new Error(`Unexpected token "${token.value}" at ${location.line}:${location.column}`);
 };
 
-export const assertCurrTokenType = (scanner: TokenScanner, type: number) => {
-  const token = scanner.curr();
-  if (!token || token.type !== type) {
-    throwUnexpectedToken(scanner.source, scanner.curr());
-  }
+export const addUnexpectedToken = (context: ParseContext, message?: string, refLocation?: ExpressionLocation) => {
+  const token =  context.scanner.curr();
+  const location = refLocation || {
+    start: getPosition(token || context.scanner.source.length - 1, context.scanner.source),
+    end: getPosition(token ? token.pos + token.value.length : context.scanner.source.length, context.scanner.source)
+  };
+  context.diagnostics.push({
+    location,
+    message: message || (token ? `Unexpected token.` : `Unexpected end of file.`),
+    source: context.source,
+    filePath: context.filePath,
+  });
+  return true;
 };
 
-export const assertCurrTokenExists = (scanner: TokenScanner) => {
-  if (!scanner.curr()) {
-    throwUnexpectedToken(scanner.source, scanner.curr());
+export const testCurrTokenExists = (context: ParseContext, message?: string, refLocation?: ExpressionLocation) => {
+  const token = context.scanner.curr();
+  if (!token) {
+    addUnexpectedToken(context, message, refLocation);
+    return false;
   }
-}
+  return true;
+};
+
+export const testCurrTokenType = (context: ParseContext, types: number[], message?: string, refLocation?: ExpressionLocation) => {
+  const token = context.scanner.curr();
+  if (!token || types.indexOf(token.type) === -1) {
+    addUnexpectedToken(context, message, refLocation);
+    return false;
+  }
+  return true;
+};

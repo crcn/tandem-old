@@ -36,10 +36,13 @@ export const getAllModules = (state: ApplicationState) => {
   const moduleFilePaths = getModuleFilePaths(state);
   const read = getReadFile(state);
   return moduleFilePaths.map((filePath) => {
-    const ast = parseModuleSource(read(filePath));
-    const module = loadModuleAST(ast, filePath);
+    const result = parseModuleSource(read(filePath));
+    if (!result.root) {
+      return;
+    }
+    const module = loadModuleAST(result.root, filePath);
     return module;
-  });
+  }).filter(Boolean);
 }
 
 export const getAllModuleComponents = (state: ApplicationState) => {
@@ -106,27 +109,18 @@ export const getAvailableComponents = (state: ApplicationState, readFileSync: (f
 
 export const getComponentsFromSourceContent = (content: string, filePath: string, state: ApplicationState): RegisteredComponent[] => {
   const moduleId = getModuleId(filePath);
-  try {
-    const ast = parseModuleSource(content);
-    const module = loadModuleAST(ast, filePath);
-    return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id}) => ({
-      filePath,
-      label: id,
-      $id: id,
-      screenshot: getComponentScreenshot(id, state),
-      tagName: id,
-      moduleId: moduleId,
-    }));
+  const result = parseModuleSource(content);
 
-  } catch(e) {
-    console.log(JSON.stringify(e.stack, null, 2));
-    return [{
-      label: path.basename(filePath) + ":<syntax error>" ,
-      filePath,
-      screenshot: null,
-      moduleId,
-    }];
-  }
+  const module = loadModuleAST(result.root, filePath);
+  
+  return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id}) => ({
+    filePath,
+    label: id,
+    $id: id,
+    screenshot: getComponentScreenshot(id, state),
+    tagName: id,
+    moduleId: moduleId,
+  }));
 };
 
 export const getComponentScreenshot = (componentId: string, state: ApplicationState) => {

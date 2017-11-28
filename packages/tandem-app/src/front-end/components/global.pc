@@ -186,7 +186,7 @@
   </template>
 </component>
 
-<component id="td-progress-example [[bind test]]" [[property value]]>
+<component id="td-progress-example" [[property value]]>
   <style>
     td-progress {
       margin: var(--base4);

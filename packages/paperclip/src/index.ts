@@ -9,3 +9,4 @@ export * from "./type-loader";
 export * from "./css-declaration-parser";
 export * from "./edit";
 export * from "./mutation";
+export * from "./parser-utils";
