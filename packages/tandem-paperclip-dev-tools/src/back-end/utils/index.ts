@@ -7,7 +7,7 @@ import { uniq } from "lodash";
 import * as md5 from "md5";
 import * as fs from "fs";
 import { weakMemo, Bounds } from "aerial-common2";
-import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem } from "paperclip";
+import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage } from "paperclip";
 
 enum ComponentMetadataName {
   PREVIEW = "preview",
@@ -110,6 +110,16 @@ export const getAvailableComponents = (state: ApplicationState, readFileSync: (f
 export const getComponentsFromSourceContent = (content: string, filePath: string, state: ApplicationState): RegisteredComponent[] => {
   const moduleId = getModuleId(filePath);
   const result = parseModuleSource(content);
+
+  if (!result.root) {
+    console.warn(`Syntax error in ${filePath}`);
+
+    result.diagnostics.forEach((diagnostic) => {
+      console.log(generatePrettyErrorMessage(diagnostic));
+    })
+
+    return [];
+  }
 
   const module = loadModuleAST(result.root, filePath);
   
