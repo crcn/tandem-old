@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.0.4",
+    "@types/chalk": "^2.2.0",
     "@types/mocha": "^2.2.44",
     "@types/reflect-metadata": "^0.0.5",
     "chai": "^4.1.2",
@@ -25,6 +26,7 @@
   },
   "dependencies": {
     "@types/node": "^8.0.51",
+    "chalk": "^2.3.0",
     "source-mutation": "^1.0.0"
   }
 }

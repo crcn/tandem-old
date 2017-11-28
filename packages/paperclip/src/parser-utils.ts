@@ -24,19 +24,32 @@ export type ParseResult = {
 
 export type ParseContext = {
   filePath?: string;
+  startToken?: Token;
   source: string;
   scanner: TokenScanner;
   diagnostics: Diagnostic[];
 };
 
 // TODO - possibly colorize
-// export const generatePrettyErrorMessage = ({ location, filePath = "", message, source }:  Diagnostic) => {
-//   let prettyMessage = `${filePath}:${location.start.line}:${location.start.} Error: ${message}\n`;
-//   const lineStr = source.split("\n")[line - 1];
+export const generatePrettyErrorMessage = ({ location, filePath = "", message, source }:  Diagnostic) => {
+  let prettyMessage = `${message}\n\n`;
 
-//   const prefix = `${filePath}:${line}: `;
-//   prettyMessage += prefix + lineStr + "\n";
-//   prettyMessage += `${repeat(" ", prefix.length + column)}^\n`;
+  const sourceLines = source.split("\n");
 
-//   return prettyMessage
-// }
+  const targetLines = sourceLines.slice(location.start.line - 1, location.end.line).map(line => line + "\n");
+  
+  const highlightedLines = [
+    "\x1b[90m" + targetLines[0].substr(0, location.start.column)  + "\x1b[0m" +
+    "\x1b[31m" + targetLines[0].substr(location.start.column) + "\x1b[0m",
+    ...targetLines.slice(1, location.end.line - location.start.line),
+    targetLines[targetLines.length - 1].substr(0, location.end.column) +
+    targetLines[targetLines.length - 1].substr(location.end.column),
+  ];
+
+  for (let i = 0, {length} = highlightedLines; i < length; i++) {
+    prettyMessage += `${location.start.line + i}| ${highlightedLines[i]}`;
+  }
+  
+
+  return prettyMessage;
+}

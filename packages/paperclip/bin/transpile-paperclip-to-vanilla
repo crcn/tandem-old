@@ -1,3 +1,5 @@
+#!/usr/bin/env node 
+
 const fs = require("fs");
 const pc = require("..");
 const path = require("path");
@@ -13,6 +15,18 @@ pc.bundleVanilla(arg, {
       return Promise.resolve(path.resolve(path.dirname(base), uri));
     }
   }
-}).then(({code}) => {
+}).then(({code, diagnostics}) => {
   console.log(code);
+}).catch(errors => {
+
+  // This should't happen. If it doesn, then there's a bug in Paperclip.
+  if (!Array.isArray(errors)) {
+    throw errors;
+  }
+
+  errors.forEach((error) => {
+    console.log(pc.generatePrettyErrorMessage(error));
+  });
+
+  process.exit(1);
 });

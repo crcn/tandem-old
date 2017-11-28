@@ -10,7 +10,7 @@ TODOS:
 import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference, CSSExpression, CSSExpressionType, CSSStyleRule, CSSRule, CSSGroupingRule, CSSAtRule, CSSDeclarationProperty, CSSSheet, ExpressionLocation } from "./ast";
 import { ParseResult, ParseContext, DiagnosticType } from "./parser-utils";
 import { getLocation, getPosition, getTokenLocation } from "./ast-utils";
-import { TokenScanner } from "./scanners";
+import { TokenScanner, Scanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 
 const _memos: any = {};
@@ -66,27 +66,6 @@ const createFragment = (context: ParseContext) => {
     childNodes,
   })
 }
-
-// const createExpression = (context: ParseContext) => {
-//   if (!testCurrTokenExists(context)) {
-//     return null;
-//   }
-//   const {scanner} = context;
-//   switch(scanner.curr().type) {
-//     case PCTokenType.WHITESPACE: return createTextNode(context);
-//     case PCTokenType.SINGLE_QUOTE: 
-//     case PCTokenType.DOUBLE_QUOTE: return createAttributeString(context);
-//     case PCTokenType.LESS_THAN: return createTag(context);
-//     case PCTokenType.CLOSE_TAG: return createCloseTag(context);
-//     case PCTokenType.COMMENT: return createComment(context);
-//     default: {
-//       if (isBlockStarting(scanner)) {
-//         return createBlock(context);
-//       }
-//       return createTextNode(context);
-//     }
-//   }
-// };
 
 const createNodeExpression = (context: ParseContext) => {
   if (!testCurrTokenExists(context)) {
@@ -448,7 +427,9 @@ const createBindBlock = (context: ParseContext): BKBind => {
   //   return null;
   // }
   scanner.next(); // eat WS
+  context.startToken = start;
   const value = createBKExpressionStatement(context);
+  context.startToken = undefined;
   if (!value) {
     return null;
   }
@@ -1097,10 +1078,10 @@ export const throwUnexpectedToken = (source: string, token: Token) => {
 
 export const addUnexpectedToken = (context: ParseContext, message?: string, refLocation?: ExpressionLocation) => {
   const token =  context.scanner.curr();
-  const location = refLocation || {
+  const location = refLocation || (context.startToken ? getLocation(context.startToken, context.scanner.curr(), context.source) : {
     start: getPosition(token || context.scanner.source.length - 1, context.scanner.source),
     end: getPosition(token ? token.pos + token.value.length : context.scanner.source.length, context.scanner.source)
-  };
+  });
   context.diagnostics.push({
     type: DiagnosticType.ERROR,
     location,

@@ -23,6 +23,7 @@ import {
 } from "./ast";
 
 import { parseModuleSource } from "./parser";
+import { DiagnosticType } from "./parser-utils";
 
 export type IO = {
   readFile: (path) => any
@@ -175,8 +176,9 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
   return Promise.resolve(readFile(uri))
   .then(parseModuleSource)
   .then(result => {
-    if (result.diagnostics.length) {
-      console.log(result.diagnostics);
+    const errors = result.diagnostics.filter(({type}) => type === DiagnosticType.ERROR);
+    if (errors.length) {
+      throw errors;
     }
     return loadModuleAST(result.root, uri)
   })
@@ -201,9 +203,6 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
     })).then(() => {
       return graph;
     })
-  }).catch((e) => {
-    console.error(`Error in ${uri}`);
-    throw e;
   });
 }
 
