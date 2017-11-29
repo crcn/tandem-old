@@ -7,10 +7,8 @@
 
 Enough tooling where documentation is somewhat unnecessary for paperclip
 
-#### TODO
+TODOS:
 
-- Error checking
-- Autocomplete
-- Linting errors
-- auto import components based on component id
-- auto complete for text blocks, repeated items
+- Do NOT require tandem.config.js. Config should be provided in extension. 
+- "Open component in tandem" command
+- Source of truth needs to be vscode

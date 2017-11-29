@@ -7,10 +7,10 @@ IMMEDIATE:
 (need to start using tandem to build itself completely)
 
 - [ ] VSCode
+  - [ ] syntax error highlighting
   - [ ] port undefined error
   - [ ] socket hangup
   - [ ] change do not always show up immediately
-  - [ ] autocomplete
 - [ ] Paperclip
   - [ ] make it resilient to exceptions
 - [ ] Tandem

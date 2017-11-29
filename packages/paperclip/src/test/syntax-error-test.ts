@@ -20,6 +20,7 @@ describe(__filename + "#", () => {
     [`<a a=""></a`, [[8, 11, `Missing > character.`]]],
     [`[[abcde`, [[2, 7, `Unexpected block type abcde.`]]],
     [`[[bind`, [[2, 6, `Unexpected end of file.`]]],
+    [`[[bind  `, [[2, 8, `Unexpected end of file.`]]],
     [`[[bind test`, [[0, 11, `Unexpected end of file.`]]],
     [`[[bind test]`, [[0, 1, `Missing closing ] character.`]]],
     [`[[bind test]]`, []],

@@ -1,3 +1,5 @@
+import { ExtensionContext } from "vscode";
+
 export type VisualDevConfig = {
   port: number;
   editSourceContent: (content: string, mutation: any, filePath: string) => any;
@@ -19,7 +21,7 @@ export type FileCache = {
 }
 
 export type ExtensionState = {
-  context: any;
+  context: ExtensionContext;
 
   visualDevConfig?: VisualDevConfig;
 
