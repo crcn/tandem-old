@@ -12,3 +12,6 @@ TODOS:
 - Do NOT require tandem.config.js. Config should be provided in extension. 
 - "Open component in tandem" command
 - Source of truth needs to be vscode
+- "Edit visually" button when viewing paperclip files
+  - Should Tandem electron app
+  
