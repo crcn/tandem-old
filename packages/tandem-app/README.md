@@ -6,17 +6,29 @@ IMMEDIATE:
 
 (need to start using tandem to build itself completely)
 
-- [ ] Tandem
-  - [ ] use /workspace/:hash for state
 - [ ] VSCode
-  - [ ] socket hangup
   - [ ] change do not always show up immediately
   - [ ] Open current file in Tandem
+
+- [ ] Tandem
+  - [ ] use /workspace/:hash for state
+  - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
+  - [ ] breadcrumbs
+    - [ ] cmd click breadcrumb to view source
+    - [ ] scrolling - no line break
+    - [ ] update UI
+  - [ ] Components pane
+    - [ ] filter components
+  - [ ] BUGS
+    -[ ] components pane doesn't load immediately
+  - [ ] OPTIMIZATIONS
+    - [ ] do not reload window if currently editnig
+
+
 - [ ] Paperclip
   - [ ] make it resilient to exceptions
 
 - [ ] Tandem
-  - [ ] accept drop on stage
   - [ ] Components Pane
     - [ ] DND components to existing components
   - [ ] CSS Inspector

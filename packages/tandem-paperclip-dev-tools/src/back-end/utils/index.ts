@@ -29,7 +29,13 @@ export const getModuleFilePaths = (state: ApplicationState) => glob.sync(getModu
 
 export const getModuleSourceDirectory = (state: ApplicationState) => {
   if (state.fileCache.length) {
-    return path.dirname(state.fileCache[0].filePath);
+    const pcFileCacheItem = state.fileCache.find((item) => (
+      minimatch(state.options.projectConfig.sourceFilePattern, item.filePath)
+    ));
+
+    if (pcFileCacheItem) {
+      return path.dirname(pcFileCacheItem.filePath);
+    }
   }
   const sourceFiles = getModuleFilePaths(state);
   if (!sourceFiles.length) {

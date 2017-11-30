@@ -29,9 +29,6 @@
       font-size: 0.9em;
     }
 
-    .header:first-child {
-    }
-    
     .header.sub {
       padding: var(--base4) var(--base8);
       margin: 0;
@@ -40,12 +37,8 @@
       background: var(--background-accent);
     }
 
-    .header.sub:first-child {
-    }
-
     .controls {
       cursor: pointer;
-      float: right;
       display: inline-block;
       font-size: 1.5em;
       position: relative;

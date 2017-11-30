@@ -41,12 +41,17 @@ function* handleTextEditorChanges() {
   while(true) {
     const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
     const state: ExtensionState = yield select();
-    yield call(request.post as any, `http://localhost:${state.port}/file`, {
+    const req: request.Request = yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
       json: {
         filePath,
         content,
         timestamp: Date.now()
       }
     });
+
+    req.on("error", (e) => {
+      console.error(e);
+    });
+    
   }
 }

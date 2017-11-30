@@ -26,6 +26,14 @@ function* handleVisualDevConfigLoaded() {
 
     server = express();
 
+    server.use((req, res, next) => {
+      req.socket.on("error", (e) => {
+        console.warn(e);
+      });
+
+      next();
+    });
+
     // TODO - dispatch express server initialized
     httpServer = server.listen(port);
     yield put(expressServerStarted(server, port));

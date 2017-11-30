@@ -40,17 +40,17 @@ export function* addRoutes(server: express.Express) {
 }
 function* getPostData (req) {
   
-    const chan = eventChannel((emit) => {
-      let buffer = [];
-      req.on("data", chunk => buffer.push(chunk));
-      req.on("end", () => emit(JSON.parse(buffer.join(""))));
-      return () => { };
-    });
-  
-    return yield take(chan);
-  }
+  const chan = eventChannel((emit) => {
+    let buffer = [];
+    req.on("data", chunk => buffer.push(chunk));
+    req.on("end", () => emit(JSON.parse(buffer.join(""))));
+    return () => { };
+  });
 
-function proxyToDevServer(proxy: HttpProxy, onRequest: (req: Request) => any = () => {}) {
+  return yield take(chan);
+}
+
+function proxyToDevServer(proxy: HttpProxy) {
   return function*(req: Request, res: Response) {
     const state: ExtensionState = yield select();
     const devPort = state.childDevServerInfo.port;
@@ -58,7 +58,6 @@ function proxyToDevServer(proxy: HttpProxy, onRequest: (req: Request) => any = (
     proxy.web(req, res, { target: host }, (e) => {
       console.error(e);
     });
-    yield call(onRequest, req);
   };
 }
 

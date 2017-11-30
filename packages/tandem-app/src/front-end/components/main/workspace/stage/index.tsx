@@ -11,7 +11,7 @@ import { EmptyWindows } from "./empty-windows";
 import { Motion, spring } from "react-motion";
 import { SyntheticBrowser, getSyntheticWindow } from "aerial-browser-sandbox";
 import { Dispatcher, BaseEvent, Point, Translate } from "aerial-common2";
-import { stageWheel, stageContainerMounted, stageMouseMoved, stageMouseClicked } from "front-end/actions";
+import { stageWheel, stageContainerMounted, stageMouseMoved, stageMouseClicked, canvasMotionRested } from "front-end/actions";
 import { lifecycle, compose, withState, withHandlers, pure, withProps } from "recompose";
 
 
@@ -32,6 +32,7 @@ export type StageInnerProps = {
   shouldTransitionZoom: boolean;
   stageContainer: HTMLElement;
   setStageContainer(element: HTMLElement);
+  onMotionRest: () => any;
   onDrop: (event: React.SyntheticEvent<any>) => any;
   onMouseEvent: (event: React.SyntheticEvent<any>) => any;
   onMouseClick: (event: React.SyntheticEvent<any>) => any;
@@ -51,6 +52,9 @@ const enhanceStage = compose<StageInnerProps, StageOuterProps>(
     },
     onDragOver: ({ dispatch }) => (event) => {
       dispatch(stageMouseMoved(event));
+    },
+    onMotionRest: ({ dispatch}) => () => {
+      dispatch(canvasMotionRested());
     },
     onMouseClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
       dispatch(stageMouseClicked(event));
@@ -80,6 +84,7 @@ export const StageBase = ({
   shouldTransitionZoom,
   onDragOver,
   onMouseClick,
+  onMotionRest,
   onDragExit
 }: StageInnerProps) => {
   if (!workspace) return null;
@@ -125,7 +130,7 @@ export const StageBase = ({
           onDragExit={onDragExit}
           className="stage-inner"
           style={outerStyle}>
-            <Motion defaultStyle={{left:0, top: 0, zoom: 1}} style={{ left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }}>
+            <Motion defaultStyle={{left:0, top: 0, zoom: 1}} style={{ left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }} onRest={onMotionRest}>
               {(translate) => {
                 return <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})` }} className={cx({"stage-inner": true })}>
                   { hasWindows ? <Windows browser={browser} smooth={smooth} dispatch={dispatch} fullScreenWindowId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} /> : <EmptyWindows dispatch={dispatch} />}
