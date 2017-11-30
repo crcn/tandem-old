@@ -6,7 +6,7 @@ component.pc:
 ```html
 <link rel="import" href="./another-component.pc">
 
-<component id="x-button" [[property count]]>
+<component id="x-button">
   <a id="clicker-button" href="#">
     click me! [[bind count]]
   </a>
@@ -47,7 +47,11 @@ paperclip.bundleVanilla("component.pc", {
 ````
 
 
-#### TODOS
+#### HIGH PRIO TODOS
+
+- [ ] Error handling must be battle tested
+
+#### LOW PRIO CORE TODOS
 
 - [ ] Source maps*
 
@@ -55,8 +59,20 @@ paperclip.bundleVanilla("component.pc", {
   - [ ] Warning when there are unhandled nodes 
   - [ ] Error when there are type mismatches
 
-- [ ] <preview /> element for components (better than meta tag -- easier to read)
+- [ ] <preview /> element for components (better than meta tag -- easier to read) - possibly support use XMLNS tags
 - [ ] Inferred typing based on <preview /> attributes
 - [ ] Pretty error handling
 - [ ] i18n strings
 - [ ] warning if unknown tag name is used
+
+
+#### LOW PRIO EXTENSION TODOS
+
+- [ ] strategy for upgrading paperclip files to newer versions
+- [ ] Vue transpiler
+- [ ] plain HTML transpiler (static site generator)
+
+
+#### Qs
+
+- [ ] may want to decouple from Tandem. Possibly use xmlns namespaces for special tags such as `<preview />`.

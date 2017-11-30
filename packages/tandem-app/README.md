@@ -9,6 +9,7 @@ IMMEDIATE:
 - [ ] VSCode
   - [ ] change do not always show up immediately
   - [ ] Open current file in Tandem
+  - [ ] *syncing issues with code
 
 - [ ] Tandem
   - [ ] use /workspace/:hash for state
