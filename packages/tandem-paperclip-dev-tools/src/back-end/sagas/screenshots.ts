@@ -6,7 +6,7 @@ import { fork, take, call, put, select, spawn } from "redux-saga/effects";
 import { loadModuleDependencyGraph, defaultResolveModulePath, loadModuleAST } from "paperclip";
 import { SCREENSHOTS_DIRECTORY } from "../constants";
 import { ApplicationState, ScreenshotClippings, AllComponentsPreviewEntry } from "../state";
-import { FILE_CONTENT_CHANGED, FileContentChanged, headlessBrowserLaunched, componentScreenshotTaken, componentScreenshotSaved, ComponentScreenshotRemoved, ComponentScreenshotSaved, componentScreenshotRemoved, ComponentScreenshotTaken, HEADLESS_BROWSER_LAUNCHED, COMPONENT_SCREENSHOT_TAKEN, COMPONENT_SCREENSHOT_SAVED, componentScreenshotStarted } from "../actions";
+import { FILE_CONTENT_CHANGED, FileContentChanged, headlessBrowserLaunched, componentScreenshotTaken, componentScreenshotSaved, ComponentScreenshotRemoved, ComponentScreenshotSaved, componentScreenshotRemoved, ComponentScreenshotTaken, HEADLESS_BROWSER_LAUNCHED, COMPONENT_SCREENSHOT_TAKEN, COMPONENT_SCREENSHOT_SAVED, componentScreenshotStarted, INIT_SERVER_REQUESTED } from "../actions";
 import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents, getComponentPreviewUrl, getAllModuleComponents, getComponentsFromSourceContent, getAvailableComponents, getPreviewComponentEntries, getAllComponentsPreviewUrl } from "../utils";
 
 export function* screenshotsSaga() {
@@ -22,6 +22,7 @@ export function* screenshotsSaga() {
 const MAX_SCREENSHOTS = 10;
 
 function* openHeadlessBrowser() {
+  yield take(INIT_SERVER_REQUESTED);
   console.log("Opening headless chrome browser");
   const browser: Browser = yield call(launch);
   yield put(headlessBrowserLaunched(browser))

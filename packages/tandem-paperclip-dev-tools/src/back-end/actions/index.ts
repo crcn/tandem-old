@@ -100,16 +100,18 @@ export type Alert = {
 } & Action;
 
 export type InitServerRequested = {
-  options: InitOptions
+  options: InitOptions;
+  $$public: boolean;
 } & Action;
 
 export type ChildDevServerStarted = {
   port: number
 } & Action;
 
-export const initServerRequested = (options: InitOptions) => ({
+export const initServerRequested = (options: InitOptions): InitServerRequested => ({
   type: INIT_SERVER_REQUESTED,
   options,
+  $$public: true
 });
 
 export const watchUrisRequested = (uris: string[]): WatchUrisRequested => ({

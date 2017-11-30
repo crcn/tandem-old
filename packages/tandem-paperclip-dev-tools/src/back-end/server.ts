@@ -6,7 +6,6 @@ import {extensionActivated } from "./actions";
 import { createStore, applyMiddleware } from "redux";
 import { CONFIG_NAME, CONFIG_NAMESPACE, DEFAULT_BASE_DIRECTORY } from "./constants";
 
-
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   mainReducer,

@@ -20,16 +20,19 @@ function* receiveMessages() {
   while(1) {
     const action = yield take(chan);
     action[TAG] = 1;
-    yield put(yield take(chan));
+    yield put(action);
   }
 }
 
 function* sendMessages() {
   while(1) {
     const action = yield take();
-    console.log(action);
-    if (action[TAG]) continue;
-    // process.send("message", action);
+    if (action[TAG] || !action.$$public) continue;
+    try {
+      process.send(action);
+    } catch(e) {
+      console.warn("Cannot send", action.type);
+    }
   }
 }
 
@@ -37,14 +40,14 @@ function* pingPong() {
   let _ponged = false;
   yield spawn(function*() {
     while(1) {
-      yield take("pong");
+      yield take("$$PONG");
       _ponged = true;
     }
   });
   yield spawn(function*() {
     while(1) {
       _ponged = false;
-      yield put({ type: "ping" });
+      yield put({ type: "$$PING", $$public: true });
       yield call(delay, 1000 * 5);
       if (!_ponged) {
         console.log("Did not receive pong. Closing.");

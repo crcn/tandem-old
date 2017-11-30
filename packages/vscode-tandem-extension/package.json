@@ -49,7 +49,8 @@
           "source.json": "json"
         }
       }
-    ], "configuration": {
+    ],
+    "configuration": {
       "title": "paperclip configuration",
       "properties": {
         "paperclip.colorDecorators.enable": {
@@ -131,6 +132,7 @@
     "redux-saga": "^0.15.6",
     "request": "^2.83.0",
     "socket.io-client": "^2.0.4",
+    "tandem-paperclip-dev-tools": "^1.0.3",
     "tandemapp": "^2.0.2",
     "vscode": "^1.1.5",
     "vscode-languageclient": "^3.5.0"
