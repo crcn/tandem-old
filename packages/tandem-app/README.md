@@ -42,7 +42,6 @@ IMMEDIATE:
 HIGH PRIO:
 
 - [ ] paperclipc
-  - [ ] edit lib (need mutations module)
   - [ ] Must work with firefox
 
 - [ ] Native elements pane

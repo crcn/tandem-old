@@ -55,7 +55,7 @@
       "title": "paperclip configuration",
       "properties": {
         "paperclip.devServer.sourceFilePattern": {
-          "type": "array",
+          "type": "string",
           "default": "{,!(node_modules)/**/}*.pc",
           "description": "Files pattern for paperclip source files."
         },

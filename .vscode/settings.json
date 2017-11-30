@@ -1,0 +1,3 @@
+{
+  "paperclip.devServer.sourceFilePattern": "packages/tandem-app/{,!(node_modules)/**/}*.pc"
+}
