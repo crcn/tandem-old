@@ -6,15 +6,13 @@ import { CONFIG_NAME, CONFIG_NAMESPACE } from "./back-end/constants"
 
 const cwd = process.cwd();
 const port = Number(process.env.PORT || 8082);
-let projectConfig: ProjectConfig;
+const projectConfig: ProjectConfig = {
+  sourceFilePattern: "{,!(node_modules)/**/}*.pc"
+}
 
 try {
-  projectConfig = require(path.join(cwd, CONFIG_NAME))[CONFIG_NAMESPACE] || {
-    componentsDirectory: path.join(cwd, "paperclip")
-  };  
+  Object.assign(projectConfig, require(path.join(cwd, CONFIG_NAME)));
 } catch(e) {
-  console.log(e);
-  throw new Error(`tandem.config not found`);
 }
 
 start({ projectConfig, cwd, port });

@@ -7,8 +7,8 @@ import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRem
 import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../state";
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
-import { PAPERCLIP_FILE_PATTERN, PAPERCLIP_FILE_EXTENSION } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules } from "../utils";
+import { PAPERCLIP_FILE_EXTENSION } from "../constants";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory } from "../utils";
 import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -75,7 +75,7 @@ function* addRoutes(server: express.Express) {
 
 function* getFile(req: express.Request, res: express.Response) {
   const state: ApplicationState = yield select();
-  const filePath = path.join(state.options.projectConfig.sourceDirectory, req.path);
+  const filePath = path.join(getModuleSourceDirectory(state), req.path);
 
   const content = getFileCacheContent(filePath, state);
   
@@ -210,7 +210,7 @@ function* createComponent(req: express.Request, res: express.Response) {
   `  </template>\n` +
   `</component>\n`;
 
-  const filePath = path.join(state.options.projectConfig.sourceDirectory, componentId + "." + PAPERCLIP_FILE_EXTENSION);
+  const filePath = path.join(getModuleSourceDirectory(state), componentId + "." + PAPERCLIP_FILE_EXTENSION);
 
   if (fs.existsSync(filePath)) {
     res.statusCode = 500;
@@ -358,9 +358,7 @@ function* watchUris(req: express.Request, res: express.Response) {
 
 const getTranspileOptions = weakMemo((state: ApplicationState) => ({
   assignTo: "bundle",
-  readFileSync: getReadFile(state),
-  extensions: state.options.projectConfig.extensions,
-  moduleDirectories: state.options.projectConfig.moduleDirectories
+  readFileSync: getReadFile(state)
 }));
 
 function* getComponentPreview(req: express.Request, res: express.Response) {
@@ -410,7 +408,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
         paperclip.bundleVanilla("${targetComponent.filePath}", {
           io: {
             readFile(uri) {
-              return _cache[uri] ? _cache[uri] : _cache[uri] = fetch(uri.replace("${state.options.projectConfig.sourceDirectory}", "${PUBLIC_SRC_DIR_PATH}")).then((response) => response.text()).then((text) => _cache[uri] = Promise.resolve(text));
+              return _cache[uri] ? _cache[uri] : _cache[uri] = fetch(uri.replace("${getModuleSourceDirectory(state)}", "${PUBLIC_SRC_DIR_PATH}")).then((response) => response.text()).then((text) => _cache[uri] = Promise.resolve(text));
             }
           }
         }).then(({ code, warnings, entryDependency }) => {

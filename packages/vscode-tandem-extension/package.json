@@ -12,7 +12,8 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:**/tandem.config.js"
+    "onCommand:extension.openExternalWindow",
+    "onLanguage:paperclip"
   ],
   "main": "./out/src/extension.js",
   "contributes": {
@@ -53,15 +54,20 @@
     "configuration": {
       "title": "paperclip configuration",
       "properties": {
+        "paperclip.devServer.sourceFilePattern": {
+          "type": "array",
+          "default": "{,!(node_modules)/**/}*.pc",
+          "description": "Files pattern for paperclip source files."
+        },
         "paperclip.colorDecorators.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Use color decorators in paperclip"
+          "description": "Use color decorators in paperclip."
         },
         "paperclip.validation.style": {
           "type": "boolean",
           "default": true,
-          "description": "Validate css in <style>"
+          "description": "Validate css in <style>."
         },
         "tandem-vscode-extension.format.defaultFormatter.html": {
           "type": "string",
@@ -74,7 +80,7 @@
             "disable formatting",
             "html formatter of js-beautify"
           ],
-          "description": "Default formatter for <template> region"
+          "description": "Default formatter for <template> region."
         },
         "paperclip.format.defaultFormatter.css": {
           "type": "string",
@@ -94,12 +100,12 @@
           "default": {
             "js-beautify-html": {}
           },
-          "description": "Options for all default formatters"
+          "description": "Options for all default formatters."
         },
         "paperclip.format.styleInitialIndent": {
           "type": "boolean",
           "default": false,
-          "description": "Whether to have initial indent for <style> region"
+          "description": "Whether to have initial indent for <style> region."
         }
       }
     }

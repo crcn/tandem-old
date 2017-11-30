@@ -6,9 +6,7 @@ import { getModuleId, getModuleFilePaths } from "../utils";
 import * as pc from "paperclip";
 
 export type ProjectConfig = {
-  sourceDirectory?: string;
-  extensions?: string[];
-  moduleDirectories?: string[];
+  sourceFilePattern: string;
 };
 
 export type FileCacheItem = {

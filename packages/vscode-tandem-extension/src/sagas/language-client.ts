@@ -20,7 +20,6 @@ function* handleServer() {
 
   const documentSelector = ["paperclip"];
   const config = workspace.getConfiguration();
-  console.log(config);
 
   const clientOptions: LanguageClientOptions = {
     documentSelector,

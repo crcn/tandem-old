@@ -1,8 +1,9 @@
 import { ApplicationState, AllComponentsPreviewEntry, RegisteredComponent } from "../state";
 import { PUBLIC_SRC_DIR_PATH } from "../constants";
-import { PAPERCLIP_FILE_PATTERN, DEFAULT_COMPONENT_PREVIEW_SIZE } from "../constants";
+import { DEFAULT_COMPONENT_PREVIEW_SIZE, DEFAULT_COMPONENT_SOURCE_DIRECTORY } from "../constants";
 import * as glob from "glob";
 import * as path from "path";
+import * as minimatch from "minimatch";
 import { uniq } from "lodash";
 import * as md5 from "md5";
 import * as fs from "fs";
@@ -17,13 +18,39 @@ enum ComponentMetadataName {
 // TODO - will eventually want to use app state to check extension
 export const isPaperclipFile = (filePath: string, state: ApplicationState) => getModulesFileTester(state)(filePath);
 
-export const getModulesFilePattern = ({ options: {cwd, projectConfig: { sourceDirectory }}}: ApplicationState) => path.join(sourceDirectory || cwd, "**", PAPERCLIP_FILE_PATTERN);
+
+export const getModulesFilePattern = ({ options: {cwd, projectConfig: { sourceFilePattern }}}: ApplicationState) => path.join(cwd, sourceFilePattern);
 
 export const getModulesFileTester = (state: ApplicationState) => {
   return filePath => /\.pc$/.test(filePath);
 }
 
 export const getModuleFilePaths = (state: ApplicationState) => glob.sync(getModulesFilePattern(state));
+
+export const getModuleSourceDirectory = (state: ApplicationState) => {
+  if (state.fileCache.length) {
+    return path.dirname(state.fileCache[0].filePath);
+  }
+  const sourceFiles = getModuleFilePaths(state);
+  if (!sourceFiles.length) {
+
+    if (minimatch(state.options.projectConfig.sourceFilePattern, DEFAULT_COMPONENT_SOURCE_DIRECTORY)) {
+      return path.join(state.options.cwd,DEFAULT_COMPONENT_SOURCE_DIRECTORY);
+    } else {
+
+      // scan for ALL files and directories if source directory does not match
+      const allFiles = glob.sync(state.options.projectConfig.sourceFilePattern.replace(/\.*\w+$/, ""));
+
+      for (const file of allFiles) {
+        if (fs.lstatSync(file).isDirectory()) {
+          return file;
+        }
+      }
+    }
+  }
+
+  return path.dirname(sourceFiles[0]);
+}
 
 // side effect code - use in sagas
 export const getReadFile = weakMemo((state: ApplicationState) => (filePath: string) => {
@@ -96,7 +123,13 @@ export const getAssocComponents = async (matchFilePath: string, state: Applicati
 
 export const getModuleId = (filePath: string) => md5(filePath);
 
-export const getPublicFilePath = (filePath: string, state: ApplicationState) => filePath.indexOf(state.options.projectConfig.sourceDirectory) !== -1 ? filePath.replace(state.options.projectConfig.sourceDirectory, PUBLIC_SRC_DIR_PATH) : null;
+export const getPublicFilePath = (filePath: string, state: ApplicationState) => {
+  const sourceDirectory = getModuleSourceDirectory(state);
+  if (filePath.indexOf(sourceDirectory) === 0) {
+    return filePath.replace(sourceDirectory, PUBLIC_SRC_DIR_PATH);
+  }
+  return null;
+}
 
 
 export const getComponentPreviewUrl = (componentId: string, state: ApplicationState) => `http://localhost:${state.options.port}/components/${componentId}/preview`;
@@ -175,4 +208,6 @@ export const getPreviewComponentEntries = (state: ApplicationState): AllComponen
   return entries;
 };
 
-export const getPublicSrcPath = (filePath: string, state: ApplicationState) => path.join( PUBLIC_SRC_DIR_PATH, filePath.replace(state.options.projectConfig.sourceDirectory, ""));
+export const getPublicSrcPath = (filePath: string, state: ApplicationState) => {
+  return getPublicFilePath(filePath, state);
+};

@@ -5,6 +5,7 @@ import { initServerRequested } from "./actions";
 const RESPAWN_TIMEOUT = 1000;
 
 export const start = (options: InitOptions, onMessage: (message) => any = () => {}) => {
+  let _killed = false;
   const child = fork(
     require.resolve("./server"),
     [],
@@ -18,6 +19,9 @@ export const start = (options: InitOptions, onMessage: (message) => any = () => 
   child.stderr.pipe(process.stderr);
 
   child.on("exit", () => {
+    if (_killed) {
+      return;
+    }
     console.error("Child process closed -- respawning");
     setTimeout(() => {
       start(options, onMessage);
@@ -35,4 +39,11 @@ export const start = (options: InitOptions, onMessage: (message) => any = () => 
     onMessage(action);
   });
   child.send(initServerRequested(options));
+
+  return {
+    close() {
+      _killed = true;
+      child.kill();
+    }
+  };
 }

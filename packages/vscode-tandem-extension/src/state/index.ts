@@ -1,12 +1,8 @@
 import { ExtensionContext } from "vscode";
 
 export type VisualDevConfig = {
-  port: number;
   editSourceContent: (content: string, mutation: any, filePath: string) => any;
   sourceFilePattern: string;
-  vscode: {
-    tandemcodeDirectory
-  };
 }
 
 export type ChildDevServerInfo = {
@@ -21,6 +17,7 @@ export type FileCache = {
 }
 
 export type ExtensionState = {
+  port?: number;
   context: ExtensionContext;
 
   visualDevConfig?: VisualDevConfig;

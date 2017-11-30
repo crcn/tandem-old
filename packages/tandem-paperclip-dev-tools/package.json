@@ -27,6 +27,7 @@
     "glob": "^7.1.2",
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
+    "minimatch": "^3.0.4",
     "multiparty": "^4.1.3",
     "postcss": "^6.0.13",
     "puppeteer": "^0.13.0",
@@ -36,8 +37,8 @@
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "source-map": "^0.6.1",
-    "webpack": "^3.5.5",
     "source-mutation": "1.x.x",
+    "webpack": "^3.5.5",
     "webpack-dev-middleware": "^1.12.0",
     "webpack-dev-server": "^2.7.1",
     "yargs": "^8.0.2"

@@ -6,14 +6,17 @@ IMMEDIATE:
 
 (need to start using tandem to build itself completely)
 
+- [ ] Tandem
+  - [ ] use /workspace/:hash for state
 - [ ] VSCode
-  - [ ] syntax error highlighting
-  - [ ] port undefined error
   - [ ] socket hangup
   - [ ] change do not always show up immediately
+  - [ ] Open current file in Tandem
 - [ ] Paperclip
   - [ ] make it resilient to exceptions
+
 - [ ] Tandem
+  - [ ] accept drop on stage
   - [ ] Components Pane
     - [ ] DND components to existing components
   - [ ] CSS Inspector
@@ -41,6 +44,10 @@ HIGH PRIO:
 
 - [ ] Paperclip
   - [ ] 
+
+- [ ] UX
+  - [ ] turn features on / off based on server capabilities
+    - [ ] ability to add or remove components
 
 PROBLEMS:
 

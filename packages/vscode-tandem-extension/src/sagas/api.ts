@@ -5,6 +5,7 @@ import * as HttpProxy from "http-proxy";
 import * as express from "express";
 import * as fs from "fs";
 import * as path from "path";
+import { TANDEM_APP_MODULE_NAME } from "../constants";
 import { CHILD_DEV_SERVER_STARTED, startDevServerRequest, openFileRequested, ExpressServerStarted, EXPRESS_SERVER_STARTED, expressServerStarted } from "../actions";
 import { take, fork, call, select, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
@@ -54,12 +55,14 @@ function proxyToDevServer(proxy: HttpProxy, onRequest: (req: Request) => any = (
     const state: ExtensionState = yield select();
     const devPort = state.childDevServerInfo.port;
     const host = `http://127.0.0.1:${devPort}`;
-    proxy.web(req, res, { target: host });
+    proxy.web(req, res, { target: host }, (e) => {
+      console.error(e);
+    });
     yield call(onRequest, req);
   };
 }
 
-const getTandemDirectory = (state: ExtensionState) => path.dirname(require.resolve(state.visualDevConfig.vscode.tandemcodeDirectory || "tandemcode"));
+const getTandemDirectory = (state: ExtensionState) => path.dirname(require.resolve(TANDEM_APP_MODULE_NAME));
 
 function* getIndex(req: Request, res: Response) {
   let state: ExtensionState = yield select();
@@ -73,8 +76,8 @@ function* getIndex(req: Request, res: Response) {
   const { getEntryHTML } = require(getTandemDirectory(state));
 
   res.send(getEntryHTML({
-    apiHost: `http://localhost:${state.visualDevConfig.port}`,
-    proxy: `http://localhost:${state.visualDevConfig.port}/proxy/`,
+    apiHost: `http://localhost:${state.port}`,
+    proxy: `http://localhost:${state.port}/proxy/`,
     localStorageNamespace: state.rootPath,
     filePrefix: "/tandem"
   }));

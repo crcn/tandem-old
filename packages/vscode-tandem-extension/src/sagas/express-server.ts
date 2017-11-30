@@ -22,14 +22,13 @@ function* handleVisualDevConfigLoaded() {
       httpServer.close();
     }
 
-    const { visualDevConfig: { port } }: ExtensionState = yield select();
+    const port = yield getPort();
 
     server = express();
-    server.use(cors());
 
     // TODO - dispatch express server initialized
     httpServer = server.listen(port);
-    yield put(expressServerStarted(server));
+    yield put(expressServerStarted(server, port));
     console.log(`HTTP server listening on port ${port}`);  
   }
 }

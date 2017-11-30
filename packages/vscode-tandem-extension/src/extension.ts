@@ -6,6 +6,7 @@ import {extensionActivated } from "./actions";
 import { createStore, applyMiddleware } from "redux";
 
 export async function activate(context: vscode.ExtensionContext) {
+  console.log("ACTIVATE");
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(
     mainReducer,

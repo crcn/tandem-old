@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, VISUAL_DEV_CONFIG_LOADED, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, fileChanged } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, fileChanged } from "../actions";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime } from "../state";
 
 export function* vscodeSaga() {
@@ -142,7 +142,7 @@ function* handleCommands() {
 const PREVIEW_NAME = `tandem-preview`;
 const PREVIEW_URI = vscode.Uri.parse(`${PREVIEW_NAME}://authority/${PREVIEW_NAME}`);
 
-const getIndexUrl = (state: ExtensionState) => `http://localhost:${state.visualDevConfig.port}/index.html`;
+const getIndexUrl = (state: ExtensionState) => `http://localhost:${state.port}/index.html`;
 
 function* handleOpenTandem() {
   yield take(OPEN_TANDEM_EXECUTED);

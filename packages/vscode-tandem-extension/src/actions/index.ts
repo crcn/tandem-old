@@ -7,7 +7,6 @@ import { VMObjectExpressionSource } from "paperclip";
 export const ALERT = "ALERT";
 export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
 export const HTTP_REQUEST = "HTTP_REQUEST";
-export const VISUAL_DEV_CONFIG_LOADED = "VISUAL_DEV_CONFIG_LOADED";
 export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
@@ -26,12 +25,9 @@ export type HTTPRequest = {
 
 export type ExpressServerStarted = {
   type: string;
+  port: number;
   server: express.Express;
 };
-
-export type VisualDevConfigLoaded = {
-  config:  VisualDevConfig;
-} & Action;
 
 export type FileContentChanged =  {
   filePath: string;
@@ -106,11 +102,6 @@ export const openExternalWindowExecuted = () => ({
   type: OPEN_EXTERNAL_WINDOW_EXECUTED
 });
 
-export const visualDevConfigLoaded = (config: VisualDevConfig) => ({
-  type: VISUAL_DEV_CONFIG_LOADED,
-  config,
-})
-
 export const alert = (text: string, level: AlertLevel = AlertLevel.NOTICE): Alert => ({
   type: ALERT,
   text,
@@ -118,7 +109,8 @@ export const alert = (text: string, level: AlertLevel = AlertLevel.NOTICE): Aler
 })
 
 
-export const expressServerStarted = (server: express.Express): ExpressServerStarted => ({
+export const expressServerStarted = (server: express.Express, port: number): ExpressServerStarted => ({
   type: EXPRESS_SERVER_STARTED,
+  port,
   server
 });
