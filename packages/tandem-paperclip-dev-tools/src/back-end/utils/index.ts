@@ -17,7 +17,7 @@ enum ComponentMetadataName {
 // TODO - will eventually want to use app state to check extension
 export const isPaperclipFile = (filePath: string, state: ApplicationState) => getModulesFileTester(state)(filePath);
 
-export const getModulesFilePattern = ({ cwd, config: { sourceDirectory }}: ApplicationState) => path.join(sourceDirectory || cwd, "**", PAPERCLIP_FILE_PATTERN);
+export const getModulesFilePattern = ({ options: {cwd, projectConfig: { sourceDirectory }}}: ApplicationState) => path.join(sourceDirectory || cwd, "**", PAPERCLIP_FILE_PATTERN);
 
 export const getModulesFileTester = (state: ApplicationState) => {
   return filePath => /\.pc$/.test(filePath);
@@ -96,10 +96,10 @@ export const getAssocComponents = async (matchFilePath: string, state: Applicati
 
 export const getModuleId = (filePath: string) => md5(filePath);
 
-export const getPublicFilePath = (filePath: string, state: ApplicationState) => filePath.indexOf(state.config.sourceDirectory) !== -1 ? filePath.replace(state.config.sourceDirectory, PUBLIC_SRC_DIR_PATH) : null;
+export const getPublicFilePath = (filePath: string, state: ApplicationState) => filePath.indexOf(state.options.projectConfig.sourceDirectory) !== -1 ? filePath.replace(state.options.projectConfig.sourceDirectory, PUBLIC_SRC_DIR_PATH) : null;
 
 
-export const getComponentPreviewUrl = (componentId: string, state: ApplicationState) => `http://localhost:${state.port}/components/${componentId}/preview`;
+export const getComponentPreviewUrl = (componentId: string, state: ApplicationState) => `http://localhost:${state.options.port}/components/${componentId}/preview`;
 
 export const getAvailableComponents = (state: ApplicationState, readFileSync: (filePath) => string) => {
   return getModuleFilePaths(state).reduce((components, filePath) => (
@@ -136,13 +136,13 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
 export const getComponentScreenshot = (componentId: string, state: ApplicationState) => {
   const ss = state.componentScreenshots[state.componentScreenshots.length - 1];
   return ss && ss.clippings[componentId] && {
-    uri: `http://localhost:${state.port}/screenshots/${state.componentScreenshots.length - 1}`,
+    uri: `http://localhost:${state.options.port}/screenshots/${state.componentScreenshots.length - 1}`,
     clip: ss.clippings[componentId]
   };
 };
 
 export const getAllComponentsPreviewUrl = (state: ApplicationState) => {
-  return `http://localhost:${state.port}/components/all/preview`;
+  return `http://localhost:${state.options.port}/components/all/preview`;
 };
 
 export const getPreviewComponentEntries = (state: ApplicationState): AllComponentsPreviewEntry[] => {
@@ -175,4 +175,4 @@ export const getPreviewComponentEntries = (state: ApplicationState): AllComponen
   return entries;
 };
 
-export const getPublicSrcPath = (filePath: string, state: ApplicationState) => path.join( PUBLIC_SRC_DIR_PATH, filePath.replace(state.config.sourceDirectory, ""));
+export const getPublicSrcPath = (filePath: string, state: ApplicationState) => path.join( PUBLIC_SRC_DIR_PATH, filePath.replace(state.options.projectConfig.sourceDirectory, ""));

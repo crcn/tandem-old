@@ -12,10 +12,10 @@ import { VISUAL_TOOLS_CONFIG_FILE_NAME, DEV_SERVER_BIN_PATH, TANDEM_APP_MODULE_N
 import { alert, AlertLevel, visualDevConfigLoaded, VISUAL_DEV_CONFIG_LOADED, childDevServerStarted, FileContentChanged, TEXT_CONTENT_CHANGED, CHILD_DEV_SERVER_STARTED, ChildDevServerStarted } from "../actions";
 
 export function* devServerSaga() {
-  // yield fork(startDevServer);
-  // yield fork(handleDevConfigLoaded);
-  // yield fork(handleTextEditorChanges);
-  // yield fork(handleDevServerStarted);
+  yield fork(startDevServer);
+  yield fork(handleDevConfigLoaded);
+  yield fork(handleTextEditorChanges);
+  yield fork(handleDevServerStarted);
 }
 
 function* startDevServer() {
@@ -44,7 +44,7 @@ function* handleDevConfigLoaded() {
       rootPath
     }: ExtensionState = yield select();
 
-    const devServerScript = path.join(vscode.tandemcodeDirectory || path.dirname(require.resolve(TANDEM_APP_MODULE_NAME)), DEV_SERVER_BIN_PATH);
+    const devServerScript = require.resolve(vscode.tandemcodeDirectory);
 
     if (!devServerScript) {
       yield put(alert(`vscode.devServerScript not found in ${VISUAL_TOOLS_CONFIG_FILE_NAME}`));

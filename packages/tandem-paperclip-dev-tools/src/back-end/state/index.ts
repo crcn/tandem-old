@@ -5,7 +5,7 @@ import { arrayReplaceIndex, arraySplice, weakMemo, arrayRemoveItem, Bounds, arra
 import { getModuleId, getModuleFilePaths } from "../utils";
 import * as pc from "paperclip";
 
-export type Config = {
+export type ProjectConfig = {
   sourceDirectory?: string;
   extensions?: string[];
   moduleDirectories?: string[];
@@ -33,10 +33,14 @@ export type ScreenshotClippings = {
   [identifier: string]: Bounds
 };
 
-export type ApplicationState = {
+export type InitOptions = {
   cwd: string;
   port: number;
-  config: Config;
+  projectConfig: ProjectConfig;
+}
+
+export type ApplicationState = {
+  options?: InitOptions;
   watchUris: string[];
   headlessBrowser?: pupeteer.Browser;
   shouldTakeAnotherScreenshot?: boolean;

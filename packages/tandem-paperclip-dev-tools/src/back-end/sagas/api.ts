@@ -75,7 +75,7 @@ function* addRoutes(server: express.Express) {
 
 function* getFile(req: express.Request, res: express.Response) {
   const state: ApplicationState = yield select();
-  const filePath = path.join(state.config.sourceDirectory, req.path);
+  const filePath = path.join(state.options.projectConfig.sourceDirectory, req.path);
 
   const content = getFileCacheContent(filePath, state);
   
@@ -210,7 +210,7 @@ function* createComponent(req: express.Request, res: express.Response) {
   `  </template>\n` +
   `</component>\n`;
 
-  const filePath = path.join(state.config.sourceDirectory, componentId + "." + PAPERCLIP_FILE_EXTENSION);
+  const filePath = path.join(state.options.projectConfig.sourceDirectory, componentId + "." + PAPERCLIP_FILE_EXTENSION);
 
   if (fs.existsSync(filePath)) {
     res.statusCode = 500;
@@ -359,8 +359,8 @@ function* watchUris(req: express.Request, res: express.Response) {
 const getTranspileOptions = weakMemo((state: ApplicationState) => ({
   assignTo: "bundle",
   readFileSync: getReadFile(state),
-  extensions: state.config.extensions,
-  moduleDirectories: state.config.moduleDirectories
+  extensions: state.options.projectConfig.extensions,
+  moduleDirectories: state.options.projectConfig.moduleDirectories
 }));
 
 function* getComponentPreview(req: express.Request, res: express.Response) {
@@ -410,7 +410,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
         paperclip.bundleVanilla("${targetComponent.filePath}", {
           io: {
             readFile(uri) {
-              return _cache[uri] ? _cache[uri] : _cache[uri] = fetch(uri.replace("${state.config.sourceDirectory}", "${PUBLIC_SRC_DIR_PATH}")).then((response) => response.text()).then((text) => _cache[uri] = Promise.resolve(text));
+              return _cache[uri] ? _cache[uri] : _cache[uri] = fetch(uri.replace("${state.options.projectConfig.sourceDirectory}", "${PUBLIC_SRC_DIR_PATH}")).then((response) => response.text()).then((text) => _cache[uri] = Promise.resolve(text));
             }
           }
         }).then(({ code, warnings, entryDependency }) => {

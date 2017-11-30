@@ -30,8 +30,3 @@ export function weakMemo<TFunc extends (...args: any[]) => any>(func: TFunc, map
 
   } as any as TFunc;
 };
-
-
-setInterval(() => {
-  DEFAULT_ANCHOR = {};
-}, DUMP_DEFAULT_ANCHOR_INTERVAL);

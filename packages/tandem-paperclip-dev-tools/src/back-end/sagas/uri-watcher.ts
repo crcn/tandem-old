@@ -2,7 +2,7 @@ import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath } from "../utils";
 import { ApplicationState } from "../state";
-import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles } from "../actions";
+import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED } from "../actions";
 import * as chokidar from "chokidar";
 import * as fs from "fs";
 import * as glob from "glob";
@@ -12,6 +12,7 @@ export function* uriWatcherSaga() {
 }
 
 function* handleWatchUrisRequest() {
+  yield take(INIT_SERVER_REQUESTED);
   let child;
   let chan;
   while(true) {

@@ -1,5 +1,5 @@
 const DUMP_DEFAULT_ANCHOR_INTERVAL = 1000 * 60 * 10;
-
+let previousPurgeTime = 0;
 let DEFAULT_ANCHOR = {};
 
 export function weakMemo<TFunc extends (...args: any[]) => any>(func: TFunc, mapMemo: (value?: any) => any = (value => value)): TFunc {
@@ -7,6 +7,10 @@ export function weakMemo<TFunc extends (...args: any[]) => any>(func: TFunc, map
   const memoKey = Symbol();
   const hashKey = Symbol();
   return function() {
+    if (previousPurgeTime && Date.now() - DUMP_DEFAULT_ANCHOR_INTERVAL > previousPurgeTime) {
+      previousPurgeTime = Date.now();
+      DEFAULT_ANCHOR = {};
+    }
     let hash = "";
     let anchor: any = DEFAULT_ANCHOR;
 
@@ -30,10 +34,6 @@ export function weakMemo<TFunc extends (...args: any[]) => any>(func: TFunc, map
 
   } as any as TFunc;
 };
-
-setInterval(() => {
-  DEFAULT_ANCHOR = {};
-}, DUMP_DEFAULT_ANCHOR_INTERVAL);
 
 /**
  * Calls target function once & proxies passed functions

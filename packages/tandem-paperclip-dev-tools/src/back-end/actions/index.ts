@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { FileCacheItem, ApplicationState, ScreenshotClippings } from "../state";
+import { FileCacheItem, ApplicationState, ScreenshotClippings, InitOptions } from "../state";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
 import * as express from "express";
@@ -20,6 +20,7 @@ export const START_DEV_SERVER_EXECUTED = "START_DEV_SERVER_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
 export const WATCH_URIS_REQUESTED = "WATCH_URIS_REQUESTED";
 export const WATCHING_FILES = "WATCHING_FILES";
+export const INIT_SERVER_REQUESTED = "INIT_SERVER_REQUESTED";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 
 export type HTTPRequest = {
@@ -98,9 +99,18 @@ export type Alert = {
   text: string;
 } & Action;
 
+export type InitServerRequested = {
+  options: InitOptions
+} & Action;
+
 export type ChildDevServerStarted = {
   port: number
 } & Action;
+
+export const initServerRequested = (options: InitOptions) => ({
+  type: INIT_SERVER_REQUESTED,
+  options,
+});
 
 export const watchUrisRequested = (uris: string[]): WatchUrisRequested => ({
   uris,
