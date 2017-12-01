@@ -5,6 +5,7 @@ import * as HttpProxy from "http-proxy";
 import * as express from "express";
 import * as fs from "fs";
 import * as path from "path";
+import * as md5 from "md5";
 import { TANDEM_APP_MODULE_NAME } from "../constants";
 import { CHILD_DEV_SERVER_STARTED, startDevServerRequest, openFileRequested, ExpressServerStarted, EXPRESS_SERVER_STARTED, expressServerStarted } from "../actions";
 import { take, fork, call, select, put, spawn } from "redux-saga/effects";
@@ -38,7 +39,7 @@ export function* addRoutes(server: express.Express) {
   server.get("/index.html", yield wrapRoute(getIndex));
   server.all(/.*/, yield wrapRoute(proxyToDevServer(proxy)));
 }
-function* getPostData (req) {
+function* getPostData(req) {
   
   const chan = eventChannel((emit) => {
     let buffer = [];
@@ -77,7 +78,7 @@ function* getIndex(req: Request, res: Response) {
   res.send(getEntryHTML({
     apiHost: `http://localhost:${state.port}`,
     proxy: `http://localhost:${state.port}/proxy/`,
-    localStorageNamespace: state.rootPath,
+    storageNamespace: md5(state.rootPath),
     filePrefix: "/tandem"
   }));
 }
@@ -92,7 +93,6 @@ function* handleOpenFile(req: Request, res: Response) {
   res.send(`"ok"`);
   yield put(openFileRequested(body));
 }
-
 
 function* wrapRoute(route) {
   

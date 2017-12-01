@@ -3,9 +3,9 @@ import { Kernel } from "aerial-common";
 import { LogLevel } from "aerial-common2";
 
 import { 
+  addWorkspace,
   initApplication, 
   createWorkspace,
-  addWorkspace,
   selectWorkspace,
   addSyntheticBrowser,
   createSyntheticBrowser,
@@ -13,7 +13,7 @@ import {
 } from "./index";
 
 const baseConfig = Object.assign({}, {
-  localStorageNamespace: "tandem",
+  storageNamespace: "tandem",
   apiHost: ((location.hash || "").match(/api=([^&]+)/) ||[null, `http://localhost:8082`])[1],
 }, window["config"] || {});
 
@@ -28,14 +28,7 @@ let state = createApplicationState({
 const browser = createSyntheticBrowser();
 state = addSyntheticBrowser(state, browser);
 const workspace = createWorkspace({ 
-  browserId: browser.$id,
-  stage: {
-    panning: false,
-    translate: { left: 0, top: 0, zoom: 1 },
-    showLeftGutter: false,
-    showRightGutter: false,
-    showTextEditor: false
-  }
+  browserId: browser.$id
 });
 
 state = addWorkspace(state, workspace);

@@ -69,7 +69,6 @@ export const getSEnvEventClasses = weakMemo((context: any = {}) => {
 
     }
     deepPath(): EventTarget[] {
-      console.log("DEEP TARGET");
       return []
     };
     readonly AT_TARGET: number;

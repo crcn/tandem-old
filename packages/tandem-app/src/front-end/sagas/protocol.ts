@@ -3,7 +3,6 @@ import { createQueue } from "mesh";
 const blobToBuffer = require("blob-to-buffer");
 import { call, fork, select } from "redux-saga/effects";
 import { ApplicationState } from "front-end/state";
-import { getAPIProxyUrl } from "../utils";
 import { createURIProtocolSaga, fileCacheSaga } from "aerial-sandbox2";
 
 // copy / pasta code since it's throw away. This will be removed once the synthetic browser
@@ -19,7 +18,7 @@ export function* createUrlProxyProtocolSaga() {
   const adapterBase = {
     async read(uri: string): Promise<any> {
 
-      if (apiHost) {
+      if (apiHost && uri.indexOf(window.location.host) === -1) {        
         uri = `${apiHost}/proxy/${encodeURIComponent(uri)}`;
       }
 

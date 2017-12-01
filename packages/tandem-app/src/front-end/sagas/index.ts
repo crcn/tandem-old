@@ -8,7 +8,6 @@ import { syntheticBrowserSaga } from "aerial-browser-sandbox";
 import { Dispatcher } from "aerial-common2";
 import { createUrlProxyProtocolSaga } from "./protocol";
 import { frontEndSyntheticBrowserSaga } from "./synthetic-browser";
-import { persistStateSaga } from "./persist-state";
 import { apiSaga } from "./api";
 
 export function* mainSaga() {
@@ -17,6 +16,5 @@ export function* mainSaga() {
   yield fork(mainWorkspaceSaga);
   yield fork(shortcutsService);
   yield fork(frontEndSyntheticBrowserSaga);
-  yield fork(persistStateSaga);
   yield fork(apiSaga);
 }

@@ -19,14 +19,8 @@ bundler:
 import * as paperclip from "paperclip";
 
 paperclip.bundleVanilla("component.pc", {
-
-  // attaches additional information to the window object, and elements
-  target: paperclip.PaperclipTargetType.TANDEM,
   readFile: async (resolvedPath) => {
     return await (await fetch(resolvedPath)).text()
-  },
-  resolveFile: (relativePath, fromPath) => {
-    return path.join(path.dirname(fromPath), relativePath);
   }
 }).then(({ code }) => {
 
@@ -50,19 +44,22 @@ paperclip.bundleVanilla("component.pc", {
 #### HIGH PRIO TODOS
 
 - [ ] Error handling must be battle tested
+- [ ] Inference types
+- [ ] XMLNS support - necessary to separate production from dev code.
+- [ ] `<design:preview />` section in component
+- [ ] `<design:fixtures id="varId" />`  (possibly) - used to help infer types more
 
 #### LOW PRIO CORE TODOS
 
 - [ ] Source maps*
+- [ ] a11y helpers
 
 - [ ] Linter
   - [ ] Warning when there are unhandled nodes 
   - [ ] Error when there are type mismatches
 
-- [ ] <preview /> element for components (better than meta tag -- easier to read) - possibly support use XMLNS tags
-- [ ] Inferred typing based on <preview /> attributes
 - [ ] Pretty error handling
-- [ ] i18n strings
+- [ ] i18n support (use standard)
 - [ ] warning if unknown tag name is used
 
 
@@ -71,8 +68,3 @@ paperclip.bundleVanilla("component.pc", {
 - [ ] strategy for upgrading paperclip files to newer versions
 - [ ] Vue transpiler
 - [ ] plain HTML transpiler (static site generator)
-
-
-#### Qs
-
-- [ ] may want to decouple from Tandem. Possibly use xmlns namespaces for special tags such as `<preview />`.

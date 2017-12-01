@@ -8,7 +8,7 @@ import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
 import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -70,6 +70,9 @@ function* addRoutes(server: express.Express) {
 
   // edits a file
   server.post("/file", yield wrapRoute(setFileContent));
+
+  server.get("/storage/:key", yield wrapRoute(getStorage));
+  server.post("/storage/:key", yield wrapRoute(setStorage));
   
 }
 
@@ -247,6 +250,20 @@ function* createComponent(req: express.Request, res: express.Response) {
     <test />
   </preview>
   */
+}
+
+function* getStorage(req: express.Request, res: express.Response, next) {
+  const data = getStorageData(req.params.key, yield select());
+  if (!data) {
+    return next();
+  }
+  return res.send(data);
+}
+
+function* setStorage(req: express.Request, res: express.Response) {
+  const body = yield getPostData(req);
+  setStorageData(req.params.key, body, yield select());
+  res.send([]);
 }
 
 function* deleteComponent(req: express.Request, res: express.Response, next) {

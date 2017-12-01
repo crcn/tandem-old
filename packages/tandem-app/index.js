@@ -1,7 +1,7 @@
 // used for code editor extensions
 
 
-exports.getEntryHTML = function({ filePrefix, apiHost, proxy, localStorageNamespace }) {
+exports.getEntryHTML = function({ filePrefix, apiHost, proxy, storageNamespace }) {
   if(!filePrefix) {
     filePrefix = `file://${__dirname}`;
   }
@@ -19,7 +19,7 @@ exports.getEntryHTML = function({ filePrefix, apiHost, proxy, localStorageNamesp
       var config = {
         apiHost: "${apiHost}",
         proxy: "${proxy}",
-        localStorageNamespace: "${localStorageNamespace}"
+        storageNamespace: "${storageNamespace}"
       }
     </script>
     <script src="${filePrefix}/lib/front-end/entry.bundle.js"></script>

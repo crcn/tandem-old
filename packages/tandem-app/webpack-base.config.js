@@ -17,7 +17,7 @@ module.exports = {
     hot: true
   },
   resolve: {
-    extensions: ['.ts', '.js', '.tsx'],
+    extensions: ['.js', '.ts', '.tsx'],
     alias: {
       cluster: 'null-loader?cluster',
       net: 'null-loader?net',

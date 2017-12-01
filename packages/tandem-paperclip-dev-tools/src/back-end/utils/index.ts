@@ -1,12 +1,13 @@
 import { ApplicationState, AllComponentsPreviewEntry, RegisteredComponent } from "../state";
-import { PUBLIC_SRC_DIR_PATH } from "../constants";
-import { DEFAULT_COMPONENT_PREVIEW_SIZE, DEFAULT_COMPONENT_SOURCE_DIRECTORY } from "../constants";
+
+import { DEFAULT_COMPONENT_PREVIEW_SIZE, DEFAULT_COMPONENT_SOURCE_DIRECTORY, PUBLIC_SRC_DIR_PATH, TMP_DIRECTORY } from "../constants";
 import * as glob from "glob";
 import * as path from "path";
 import * as minimatch from "minimatch";
 import { uniq } from "lodash";
 import * as md5 from "md5";
 import * as fs from "fs";
+import * as fsa from "fs-extra";
 import { weakMemo, Bounds } from "aerial-common2";
 import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage } from "paperclip";
 
@@ -216,4 +217,29 @@ export const getPreviewComponentEntries = (state: ApplicationState): AllComponen
 
 export const getPublicSrcPath = (filePath: string, state: ApplicationState) => {
   return getPublicFilePath(filePath, state);
+};
+
+const getStorageFilePath = (workspaceId: string, state: ApplicationState) => {
+  return path.join(TMP_DIRECTORY, "storage", workspaceId + ".json");
+}
+
+export const getStorageData = (key: string, state: ApplicationState) => {
+  const filePath = getStorageFilePath(key, state);
+  if (fs.existsSync(filePath)) {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  }
+  return null;
+}
+
+export const setStorageData = (key: string, data: any, state: ApplicationState) => {
+  const filePath = getStorageFilePath(key, state);
+  if (!fs.existsSync(filePath)) {
+    try {
+      fsa.mkdirpSync(path.dirname(filePath));
+    } catch(e) {
+
+    }
+  }
+
+  fs.writeFileSync(filePath, JSON.stringify(data));
 };

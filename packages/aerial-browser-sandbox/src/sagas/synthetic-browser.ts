@@ -220,7 +220,7 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
         fetch, 
         reload: () => reload(),
         getProxyUrl: (url: string) => {
-          return apiHost && url.substr(0, 5) !== "data:" ? apiHost + "/proxy/" + encodeURIComponent(url) : url;
+          return apiHost && url.substr(0, 5) !== "data:" && url.indexOf(window.location.host) === -1 ? apiHost + "/proxy/" + encodeURIComponent(url) : url;
         },
         createRenderer: (window: SEnvWindowInterface) => {
           return window.top === window ? new SyntheticMirrorRenderer(window) : new SyntheticDOMRenderer(window, document)
@@ -330,7 +330,9 @@ function* getFetch() {
 
 
   return (info: RequestInfo) => {
-    return fetch(`${state.apiHost}/proxy/${encodeURIComponent(String(info))}`);
+    const url = String(info).indexOf(window.location.host) === -1 ? `${state.apiHost}/proxy/${encodeURIComponent(String(info))}` : info;
+
+    return fetch(url);
     // return new Promise((resolve) => {
     //   fetchQueue.unshift([info, ({ content, type }) => {
     //     resolve({
@@ -362,6 +364,7 @@ function* handleOpenedSyntheticWindow(browserId: string) {
       proxy.resizeTo(window.innerWidth, window.innerHeight);
       proxy.renderer = createRenderer(proxy);
       proxy.renderer.start();
+
       disposeMirror = () => {};
       yield put(syntheticWindowProxyOpened(proxy, browserId));
     } else {

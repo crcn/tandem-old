@@ -1,8 +1,5 @@
 import { ApplicationState } from "../state";
 import { ExpressionLocation } from "aerial-common2";
-export const getAPIProxyUrl = (uri: string, state: ApplicationState) => (
-  `${state.apiHost}/proxy/${encodeURIComponent(uri)}`
-);
 
 export const apiGetComponentPreviewURI = (componentId: string, state: ApplicationState) => { 
   return `${state.apiHost}/components/${componentId}/preview`;

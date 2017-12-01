@@ -168,9 +168,8 @@ export type Workspace = {
 } & DNDState & Struct;
 
 export type ApplicationState = {
-  kernel: Kernel;
   workspaces: Workspace[];
-  localStorageNamespace: string;
+  storageNamespace: string;
   selectedWorkspaceId?: string;
   element: HTMLElement;
   apiHost: string;

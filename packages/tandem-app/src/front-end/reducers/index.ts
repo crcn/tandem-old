@@ -186,7 +186,8 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     
     case LOADED_SAVED_STATE: {
       const { state: newState } = event as LoadedSavedState;
-      return merge({}, state, JSON.parse(JSON.stringify(newState)));
+      state = merge({}, state, JSON.parse(JSON.stringify(newState)));
+      return centerSelectedWorkspace(state);
     }
     
     case TREE_NODE_LABEL_CLICKED: {
@@ -513,15 +514,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
         return state;
       }
 
-      const innerBounds = getSyntheticBrowserBounds(getSyntheticBrowser(state, workspace.browserId));
-
-      // no windows loaded
-      if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {
-        console.warn(`Stage mounted before windows have been loaded`);
-        return state;
-      }
-
-      return centerStage(state, workspaceId, innerBounds, false, true);
+      return centerSelectedWorkspace(state);
     };
 
     case STAGE_TOOL_OVERLAY_MOUSE_PAN_START: {
@@ -688,6 +681,19 @@ const selectAndCenterSyntheticWindow = (state: ApplicationState, window: Synthet
 
   state = setWorkspaceSelection(state, workspace.$id, getStructReference(window));
   return state;
+}
+
+const centerSelectedWorkspace = (state: ApplicationState, smooth: boolean = false) => {
+  const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
+  const innerBounds = getSyntheticBrowserBounds(getSyntheticBrowser(state, workspace.browserId));
+  
+  // no windows loaded
+  if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {
+    console.warn(`Stage mounted before windows have been loaded`);
+    return state;
+  }
+
+  return centerStage(state, workspace.$id, innerBounds, smooth, true);
 }
 
 const centerStage = (state: ApplicationState, workspaceId: string, innerBounds: Bounds, smooth?: boolean, zoomOrZoomToFit?: boolean|number) => {
