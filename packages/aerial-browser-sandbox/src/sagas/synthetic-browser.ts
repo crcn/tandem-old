@@ -94,7 +94,7 @@ import {
   RESIZED,
 } from "aerial-common2";
 
-import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation } from "source-mutation";
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, RemoveChildMutation, createStringMutation } from "source-mutation";
 
 import {
   createSyntheticComment,
@@ -328,23 +328,18 @@ function* getFetch() {
     }
   });
 
-
   return (info: RequestInfo) => {
-    const url = String(info).indexOf(window.location.host) === -1 ? `${state.apiHost}/proxy/${encodeURIComponent(String(info))}` : info;
+    let url = String(info);
+
+    if (url.charAt(0) === "/") {
+      url = window.location.protocol + "//" + window.location.host + url;
+    }
+
+    if (url.indexOf(window.location.host) === -1) {
+      url = `${state.apiHost}/proxy/${encodeURIComponent(String(info))}`;
+    }
 
     return fetch(url);
-    // return new Promise((resolve) => {
-    //   fetchQueue.unshift([info, ({ content, type }) => {
-    //     resolve({
-    //       text() {
-    //         return Promise.resolve(String(content));
-    //       },
-    //       json() {
-    //         return Promise.resolve(JSON.parse(String(content)));
-    //       }
-    //     } as any);
-    //   }]);
-    // });
   };
 }
 
@@ -443,7 +438,6 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface, browserId: st
       emitStructChange();
     });
     
-
     window.addEventListener(SEnvWindowOpenedEvent.WINDOW_OPENED, (event: SEnvWindowOpenedEventInterface) => {
       emit(syntheticWindowOpened(event.window, browserId, window.$id));
     })

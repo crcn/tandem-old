@@ -40,6 +40,9 @@ function* handleDevConfigLoaded() {
 function* handleTextEditorChanges() {
   while(true) {
     const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
+    if (!/\.pc$/.test(filePath)) {
+      continue;
+    }
     const state: ExtensionState = yield select();
     const req: request.Request = yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
       json: {

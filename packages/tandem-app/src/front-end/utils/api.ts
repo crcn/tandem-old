@@ -2,7 +2,9 @@ import { ApplicationState } from "../state";
 import { ExpressionLocation } from "aerial-common2";
 
 export const apiGetComponentPreviewURI = (componentId: string, state: ApplicationState) => { 
-  return `${state.apiHost}/components/${componentId}/preview`;
+
+  // NOTE -- host is not defined here because it can be dynamic for local development.
+  return `/components/${componentId}/preview`;
 }
 
 export const apiWatchUris = async (uris: string[], state: ApplicationState) => {

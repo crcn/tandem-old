@@ -228,7 +228,7 @@ export const fetchRequest = (info: RequestInfo): FetchRequest => ({
   $id: generateDefaultId()
 });
 
-export const openSyntheticWindowRequest = (state: Partial<SyntheticWindow>, syntheticBrowserId?: string): OpenSyntheticBrowserWindow => ({
+export const openSyntheticWindowRequest = (state: Partial<SyntheticWindow>, syntheticBrowserId?: string, fromSavedState?: boolean): OpenSyntheticBrowserWindow => ({
   state,
   syntheticBrowserId,
   type: OPEN_SYNTHETIC_WINDOW,

@@ -513,7 +513,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       
       this.fetch = async (info) => {
         let inf = String(info);
-        if (!/http/.test(inf)) {
+        if (!/^http/.test(inf) && /^http/.test(origin)) {
           if (inf.charAt(0) !== "/") {
             const dir = this.location.pathname.split("/");
             dir.pop();

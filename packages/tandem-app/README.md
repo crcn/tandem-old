@@ -10,6 +10,7 @@ IMMEDIATE:
   - [ ] change do not always show up immediately
   - [ ] Open current file in Tandem
   - [ ] *syncing issues with code
+  - [ ] whitelist *.pc files only
 
 - [ ] Tandem
   - [ ] use /workspace/:hash for state

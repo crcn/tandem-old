@@ -187,7 +187,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     case LOADED_SAVED_STATE: {
       const { state: newState } = event as LoadedSavedState;
       state = merge({}, state, JSON.parse(JSON.stringify(newState)));
-      return centerSelectedWorkspace(state);
+      return state;
     }
     
     case TREE_NODE_LABEL_CLICKED: {
@@ -426,6 +426,13 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
     case SYNTHETIC_WINDOW_PROXY_OPENED: {
       const { instance } = event as SyntheticWindowOpened;
+
+      // if a window instance exists in the store, then it's already visible on stage -- could
+      // have been loaded from a saved state.
+      const window = getSyntheticWindow(state, instance.$id);
+      if (window) {
+        return state;
+      }
       return selectAndCenterSyntheticWindow(state, instance.struct);
     }
 

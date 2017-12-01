@@ -9,6 +9,9 @@ import Url = require("url");
 // });
 
 export const getUri = (href: string, locationStr: string) => {
+  if (locationStr.charAt(0) === "/") {
+    return href;
+  }
   return Url.resolve(locationStr, href);
   // const location = Url.parse(locationStr);
   // const origin = location.protocol + "//" + location.host;

@@ -4,6 +4,7 @@ import { ApplicationState, SyntheticElement, AvailableComponent } from "../state
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
+export const TRIED_LOADING_APP_STATE    = "TRIED_LOADING_APP_STATE";
 export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
 export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
 export const WINDOW_PANE_ROW_CLICKED     = "WINDOW_PANE_ROW_CLICKED";
@@ -456,7 +457,11 @@ export const fullScreenTargetDeleted = () => ({
 export const loadedSavedState = (state: ApplicationState): LoadedSavedState => ({
   type: LOADED_SAVED_STATE,
   state
-})
+});
+
+export const triedLoadedSavedState = () => ({
+  type: TRIED_LOADING_APP_STATE,
+});
 
 export const stageToolOverlayMouseDoubleClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): StageToolOverlayClicked => ({
   windowId,

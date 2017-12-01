@@ -44,7 +44,6 @@
   </template>
 </component>
 
-
 <component id="td-window" [[property left]] [[property top]] [[property width]] [[property height]]>
   <style>
     :host {
@@ -176,6 +175,7 @@
     </div>
   </template>
 </component>
+
 
 <component id="td-workspace-preview">
   <meta name="preview" content="of=td-workspace, width=1024, height=768" />
