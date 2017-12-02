@@ -10,12 +10,12 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 #### TODOS
 
 - [ ] see https://github.com/eamodio/vscode-gitlens/tree/master/src
-- [ ] hover preview
 - [ ] <preview /> tag check
 - [ ] history is getting clobbered. 
 - [ ] warning for components that do not have preview elements
 - [ ] make sure component screenshots route checks for existence
   - [ ] "edit live" button 
+- [ ] hover doesn't always work
 - /workspace/:hash endpoing (hash is CWD)
 - "Open component in tandem" command
 - "Edit file visually" button for PC files

@@ -49,7 +49,7 @@ export function doHover(
         // Hack. Must save files to local FS for some reason.
         try {
           await new Promise((resolve, reject) => {
-            request({ url: `http://127.0.0.1:${devToolsPort}/components/${id}/screenshots/latest.png?maxWidth=300&maxHeight=300`, encoding: null }, (err, response, body) => {
+            request({ url: `http://127.0.0.1:${devToolsPort}/components/${id}/screenshots/latest.png?maxWidth=300&maxHeight=200`, encoding: null }, (err, response, body) => {
               if (err) return reject();
               if (response.statusCode !== 200) {
                 return reject(new Error("not found"));
