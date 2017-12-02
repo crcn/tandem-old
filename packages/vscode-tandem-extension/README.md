@@ -16,7 +16,6 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 - [ ] make sure component screenshots route checks for existence
   - [ ] "edit live" button 
 - [ ] hover doesn't always work
-- /workspace/:hash endpoing (hash is CWD)
 - "Open component in tandem" command
 - "Edit file visually" button for PC files
   - [ ] should open new artboard in Tandem

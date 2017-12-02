@@ -65,8 +65,6 @@ export function doHover(
           };
         }
 
-        console.log(hoverFilePath);
-
         return {
           contents: `![component preview](file://${hoverFilePath})`
         };

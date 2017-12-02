@@ -361,12 +361,15 @@ function* getComponents(req: express.Request, res: express.Response) {
 
 function* getComponentsScreenshotFromReq(req: express.Request) {
   const state: ApplicationState = yield select();
+  if (!state.componentScreenshots.length) {
+    return null;
+  }
   return state.componentScreenshots[req.params.screenshotId === "latest" ? state.componentScreenshots.length - 1 : Number(req.params.screenshotId)];
 }
 
 function* getComponentsScreenshot(req: express.Request, res: express.Response, next) {
   const state: ApplicationState = yield select();
-  const { uri } = yield call(getComponentsScreenshotFromReq, req) || { uri: null };
+  const { uri } = (yield call(getComponentsScreenshotFromReq, req)) || { uri: null }
 
   if (!uri) {
     return next();
@@ -378,7 +381,7 @@ function* getComponentsScreenshot(req: express.Request, res: express.Response, n
 function* getTrimmedComponentScreenshot(req: express.Request, res: express.Response, next) {
   const state = yield select();
   const componentId = req.params.componentId;
-  const { uri } = yield call(getComponentsScreenshotFromReq, req) || { uri: null };
+  const { uri } = (yield call(getComponentsScreenshotFromReq, req)) || { uri: null };
 
   const { maxWidth, maxHeight } = req.query;
 
