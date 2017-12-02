@@ -10,11 +10,13 @@ IMMEDIATE:
   - [ ] change do not always show up immediately
   - [ ] Open current file in Tandem
   - [ ] *syncing issues with code
-  - [ ] whitelist *.pc files only
+  - [ ] edit live button hovering over components
+  - [ ] auto complete for components 
 
 - [ ] Tandem
   - [ ] use /workspace/:hash for state
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
+  - [ ] cache files on front-end
   - [ ] breadcrumbs
     - [ ] cmd click breadcrumb to view source
     - [ ] scrolling - no line break

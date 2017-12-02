@@ -35,7 +35,6 @@
     --background-highlight: #00B5FF;
     --background-overlay: rgba(255, 255, 255, 0.7);
   }
-
   body, html {
     font-family: Helvetica;
     margin: 0;

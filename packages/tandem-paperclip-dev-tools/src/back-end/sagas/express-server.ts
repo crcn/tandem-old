@@ -25,6 +25,7 @@ function* handleVisualDevConfigLoaded() {
   const { options: { port } }: ApplicationState = yield select();
 
   server = express();
+  server.use(cors());
 
   // TODO - dispatch express server initialized
   httpServer = server.listen(port);

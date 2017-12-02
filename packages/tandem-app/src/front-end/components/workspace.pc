@@ -92,6 +92,7 @@
       height: 100%;
       flex-direction: column;
     }
+    
     td-stage {
       background: var(--background-deep);
       flex: 1;

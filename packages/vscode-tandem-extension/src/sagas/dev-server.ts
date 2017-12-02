@@ -10,6 +10,7 @@ import { take, fork, select, put, call } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import { VISUAL_TOOLS_CONFIG_FILE_NAME, DEV_SERVER_BIN_PATH, TANDEM_APP_MODULE_NAME } from "../constants";
 import { alert, AlertLevel, childDevServerStarted, FileContentChanged, TEXT_CONTENT_CHANGED, CHILD_DEV_SERVER_STARTED, ChildDevServerStarted } from "../actions";
+import { isPaperclipFile } from "../utils";
 
 export function* devServerSaga() {
   yield fork(handleDevConfigLoaded);
@@ -40,7 +41,7 @@ function* handleDevConfigLoaded() {
 function* handleTextEditorChanges() {
   while(true) {
     const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
-    if (!/\.pc$/.test(filePath)) {
+    if (!isPaperclipFile(filePath)) {
       continue;
     }
     const state: ExtensionState = yield select();

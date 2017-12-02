@@ -29,13 +29,13 @@ export interface DocumentContext {
 }
 
 export interface VLS {
-  initialize(workspacePath: string | null | undefined): void;
+  initialize(workspacePath: string | null | undefined, devToolsPort: number): void;
   configure(config: any): void;
   format(doc: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
   validate(doc: TextDocument): Promise<Diagnostic[]>;
   doComplete(doc: TextDocument, position: Position): CompletionList;
   doResolve(doc: TextDocument, languageId: string, item: CompletionItem): CompletionItem;
-  doHover(doc: TextDocument, position: Position): Hover;
+  doHover(doc: TextDocument, position: Position): Hover | Promise<Hover>;
   doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp;
   findDocumentHighlight(doc: TextDocument, position: Position): DocumentHighlight[];
   findDocumentSymbols(doc: TextDocument): SymbolInformation[];
@@ -61,8 +61,8 @@ export function getVls(): VLS {
   };
 
   return {
-    initialize(workspacePath) {
-      languageModes = getLanguageModes(workspacePath);
+    initialize(workspacePath, devToolsPort) {
+      languageModes = getLanguageModes(workspacePath, devToolsPort);
     },
     configure(config) {
       const pcValidationOptions = config.paperclip.validation;

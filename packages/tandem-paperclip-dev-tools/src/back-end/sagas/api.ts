@@ -1,6 +1,7 @@
 import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { kebabCase } from "lodash";
 import { eventChannel } from "redux-saga";
+import * as sharp from "sharp";
 import * as request from "request";
 import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
 
@@ -8,7 +9,7 @@ import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
 import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -48,12 +49,16 @@ function* addRoutes(server: express.Express) {
   // return all components
   server.get("/screenshots/:screenshotId", yield wrapRoute(getComponentsScreenshot));
 
+
   // return a module preview
   // all is OKAY since it's not a valid tag name
   server.get("/components/all/preview", yield wrapRoute(getAllComponentsPreview));
 
   // return a module preview
   server.get("/components/:componentId/preview", yield wrapRoute(getComponentPreview));
+
+  // return all components
+  server.get("/components/:componentId/screenshots/:screenshotId.png", yield wrapRoute(getTrimmedComponentScreenshot));
 
   // create a new component (creates a new module with a single component)
   server.post("/components", yield wrapRoute(createComponent));
@@ -82,7 +87,13 @@ function* getFile(req: express.Request, res: express.Response) {
 
   const content = getFileCacheContent(filePath, state);
   
-  return content ? res.send(content) : res.sendFile(filePath);
+  if (content) {
+    res.setHeader("Content-Length", content.length);
+    res.setHeader("Cache-Control", "public, max-age=0");
+    res.send(content);
+  } else {
+    return res.sendFile(filePath);
+  }
 }
 
 function* wrapRoute(route) {
@@ -163,6 +174,11 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
         const loadNext = (entries, index, graph) => {
 
           if (index >= entries.length) {
+
+            // selector flag for screenshot service
+            const element = document.createElement("span");
+            element.setAttribute("class", "__ready");
+            document.body.appendChild(element);
             return Promise.resolve();
           }
 
@@ -343,15 +359,75 @@ function* getComponents(req: express.Request, res: express.Response) {
   // TODO - scan for PC files, and ignore files with <meta name="preview" /> in it
 }
 
+function* getComponentsScreenshotFromReq(req: express.Request) {
+  const state: ApplicationState = yield select();
+  return state.componentScreenshots[req.params.screenshotId === "latest" ? state.componentScreenshots.length - 1 : Number(req.params.screenshotId)];
+}
+
 function* getComponentsScreenshot(req: express.Request, res: express.Response, next) {
   const state: ApplicationState = yield select();
-  const { uri } = state.componentScreenshots[Number(req.params.screenshotId)] || { uri: null };
+  const { uri } = yield call(getComponentsScreenshotFromReq, req) || { uri: null };
 
   if (!uri) {
     return next();
   }
 
   res.sendFile(uri);
+}
+
+function* getTrimmedComponentScreenshot(req: express.Request, res: express.Response, next) {
+  const state = yield select();
+  const componentId = req.params.componentId;
+  const { uri } = yield call(getComponentsScreenshotFromReq, req) || { uri: null };
+
+  const { maxWidth, maxHeight } = req.query;
+
+  if (!uri) {
+    return next();
+  }
+
+  const screenshot = getComponentScreenshot(componentId, state);
+
+  if (!screenshot) {
+    return next();
+  }
+
+  const box = {
+    left: screenshot.clip.left,
+    top: screenshot.clip.top,
+    width: screenshot.clip.right - screenshot.clip.left,
+    height: screenshot.clip.bottom - screenshot.clip.top,
+  };
+
+  let cw = box.width;
+  let ch = box.height;
+
+  let stream = sharp(uri).extract(box);
+
+  if (maxWidth && cw > Number(maxWidth)) {
+    const scale = Number(maxWidth) / cw; // 100 / 200 = 0.5
+    cw *= scale;
+    ch *= scale;
+  }
+
+  if (maxHeight && ch > Number(maxHeight)) {
+    const scale = Number(maxHeight) / ch; // 100 / 200 = 0.5
+    cw *= scale;
+    ch *= scale;
+  }
+
+  if (cw !== box.width) {
+    stream = stream.resize(Math.round(cw), Math.round(ch));
+  }
+
+  const buffer = yield call(stream.toBuffer.bind(stream));
+
+  res.setHeader("Content-Length", buffer.length);
+  res.setHeader("Content-Type", "image/png");
+
+  res.end(buffer);
+
+  // stream.pipe(res);
 }
 
 function* getPostData (req: express.Request) {

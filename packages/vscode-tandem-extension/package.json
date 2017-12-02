@@ -59,6 +59,10 @@
           "default": "{,!(node_modules)/**/}*.pc",
           "description": "Files pattern for paperclip source files."
         },
+        "paperclip.devServer.port": {
+          "type": "number",
+          "description": "Port to use for dev server."
+        },
         "paperclip.colorDecorators.enable": {
           "type": "boolean",
           "default": true,

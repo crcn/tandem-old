@@ -1,4 +1,5 @@
-import { ExtensionContext } from "vscode";
+import { ExtensionContext, TextEditor } from "vscode";
+
 
 export type VisualDevConfig = {
   editSourceContent: (content: string, mutation: any, filePath: string) => any;
@@ -18,6 +19,7 @@ export type FileCache = {
 
 export type ExtensionState = {
   port?: number;
+  activeTextEditor: TextEditor;
   context: ExtensionContext;
 
   visualDevConfig?: VisualDevConfig;

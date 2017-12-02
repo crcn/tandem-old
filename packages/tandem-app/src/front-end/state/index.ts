@@ -601,9 +601,10 @@ export const serializeWorkspace = (workspace: Workspace): Partial<Workspace> => 
   availableComponents: []
 });
 
-const serializeStage = ({ showTextEditor, showRightGutter, showLeftGutter, showTools, translate }: Stage): Stage => ({
+const serializeStage = ({ showTextEditor, showRightGutter, showLeftGutter, showTools, translate, fullScreen }: Stage): Stage => ({
   panning: false,
   translate,
+  fullScreen,
   showTextEditor,
   showRightGutter,
   showLeftGutter,

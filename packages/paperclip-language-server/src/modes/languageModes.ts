@@ -33,7 +33,7 @@ export interface LanguageMode {
   doValidation?(document: TextDocument): Diagnostic[];
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
-  doHover?(document: TextDocument, position: Position): Hover;
+  doHover?(document: TextDocument, position: Position): Hover | Promise<Hover>;
   doSignatureHelp?(document: TextDocument, position: Position): SignatureHelp;
   findDocumentHighlight?(document: TextDocument, position: Position): DocumentHighlight[];
   findDocumentSymbols?(document: TextDocument): SymbolInformation[];
@@ -63,14 +63,14 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(workspacePath: string | null | undefined): LanguageModes {
+export function getLanguageModes(workspacePath: string | null | undefined, devToolsPort): LanguageModes {
   const documentRegions = getLanguageModelCache<PaperclipDocumentRegions>(10, 60, document => getDocumentRegions(document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
   let modes: { [k: string]: LanguageMode } = {
-    paperclip: getPaperclipHTMLMode(documentRegions, workspacePath),
+    paperclip: getPaperclipHTMLMode(documentRegions, workspacePath, devToolsPort),
     css: getCSSMode(documentRegions)
   };
 

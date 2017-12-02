@@ -2,12 +2,15 @@ import { Browser, Page, launch } from "puppeteer";
 import * as fs from "fs";
 import * as path from "path";
 import * as fsa from "fs-extra";
+import { delay } from "redux-saga";
 import { fork, take, call, put, select, spawn } from "redux-saga/effects";
 import { loadModuleDependencyGraph, defaultResolveModulePath, loadModuleAST } from "paperclip";
 import { SCREENSHOTS_DIRECTORY } from "../constants";
 import { ApplicationState, ScreenshotClippings, AllComponentsPreviewEntry } from "../state";
 import { FILE_CONTENT_CHANGED, FileContentChanged, headlessBrowserLaunched, componentScreenshotTaken, componentScreenshotSaved, ComponentScreenshotRemoved, ComponentScreenshotSaved, componentScreenshotRemoved, ComponentScreenshotTaken, HEADLESS_BROWSER_LAUNCHED, COMPONENT_SCREENSHOT_TAKEN, COMPONENT_SCREENSHOT_SAVED, componentScreenshotStarted, INIT_SERVER_REQUESTED } from "../actions";
 import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents, getComponentPreviewUrl, getAllModuleComponents, getComponentsFromSourceContent, getAvailableComponents, getPreviewComponentEntries, getAllComponentsPreviewUrl } from "../utils";
+
+const SCREENSHOT_DELAY = 1000;
 
 export function* screenshotsSaga() {
   yield fork(handleTakingScreesnshots);
@@ -73,6 +76,9 @@ function* takeComponentScreenshot() {
     const page: Page = yield call(browser.newPage.bind(browser));
     yield call(page.goto.bind(page), previewUrl);
     yield call(page.setViewport.bind(page), getAllComponentsPreviewSize(entries));
+
+    // wait for a bit for all resources to load
+    yield call(page.waitForSelector.bind(page), ".__ready");
 
     const buffer = yield call(page.screenshot.bind(page, { type: "png" }));
     yield put(componentScreenshotTaken(buffer, clippings, "image/png"));

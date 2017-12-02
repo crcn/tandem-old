@@ -1,5 +1,5 @@
 import { ExtensionState, updateExtensionState, getFileCacheContent } from "../state";
-import { CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FileAction, TEXT_CONTENT_CHANGED, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
+import { CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FileAction, TEXT_CONTENT_CHANGED, EXPRESS_SERVER_STARTED, ExpressServerStarted, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged } from "../actions";
 import { Action } from "redux";
 
 export function mainReducer(state: ExtensionState, action: Action) {
@@ -16,6 +16,12 @@ export function mainReducer(state: ExtensionState, action: Action) {
         childDevServerInfo: { 
           port
         }
+      });
+    }
+    case ACTIVE_TEXT_EDITOR_CHANGED: {
+      const { editor } = action as ActiveTextEditorChanged;
+      return updateExtensionState(state, {
+        activeTextEditor: editor
       });
     }
     case TEXT_CONTENT_CHANGED: 

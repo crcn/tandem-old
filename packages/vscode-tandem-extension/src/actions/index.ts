@@ -3,6 +3,7 @@ import { VisualDevConfig } from "../state";
 import { Request, Response } from "express";
 import * as express from "express";
 import { VMObjectExpressionSource } from "paperclip";
+import { TextEditor } from "vscode";
 
 export const ALERT = "ALERT";
 export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
@@ -11,6 +12,7 @@ export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
 export const START_DEV_SERVER_REQUESTED = "START_DEV_SERVER_REQUESTED";
+export const ACTIVE_TEXT_EDITOR_CHANGED = "ACTIVE_TEXT_EDITOR_CHANGED";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 export const OPEN_FILE_REQUESTED = "OPEN_FILE_REQUESTED";
 export const OPEN_TANDEM_EXECUTED = "OPEN_TANDEM_EXECUTED";
@@ -33,6 +35,10 @@ export type FileContentChanged =  {
   filePath: string;
   content: Buffer;
   mtime: Date;
+} & Action;
+
+export type ActiveTextEditorChanged =  {
+  editor: TextEditor;
 } & Action;
 
 export type FileAction = {
@@ -72,6 +78,11 @@ export const textContentChanged = (filePath: string, content: Buffer): FileConte
   content,
   filePath,
   mtime: new Date()
+});
+
+export const activeTextEditorChange = (editor: TextEditor): ActiveTextEditorChanged  => ({
+  editor,
+  type: ACTIVE_TEXT_EDITOR_CHANGED
 });
 
 export const childDevServerStarted = (port: number): ChildDevServerStarted => ({

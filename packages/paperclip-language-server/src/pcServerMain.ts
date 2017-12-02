@@ -12,6 +12,8 @@ import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
 import * as url from 'url';
 import * as path from 'path';
+import * as fsa from "fs-extra";
+import {TMP_DIRECTORY } from "./constants";
 
 // Create a connection for the server
 const connection =
@@ -40,7 +42,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   const initializationOptions = params.initializationOptions;
 
   workspacePath = params.rootPath;
-  vls.initialize(workspacePath);
+  vls.initialize(workspacePath, initializationOptions.devToolsPort);
 
   documents.onDidClose(e => {
     vls.removeDocument(e.document);
@@ -49,9 +51,18 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
     vls.dispose();
   });
 
-  if (initializationOptions) {
-    config = initializationOptions.config;
+  try {
+    fsa.emptyDirSync(TMP_DIRECTORY);
+  } catch(e) {
+
   }
+
+  try {
+    fsa.mkdirpSync(TMP_DIRECTORY);
+  } catch(e) {
+    
+  }
+
   const capabilities = {
     // Tell the client that the server works in FULL text document sync mode
     textDocumentSync: documents.syncKind,

@@ -27,7 +27,8 @@ type DocumentRegionCache = LanguageModelCache<PaperclipDocumentRegions>;
 
 export function getPaperclipHTMLMode(
   documentRegions: DocumentRegionCache,
-  workspacePath: string | null | undefined
+  workspacePath: string | null | undefined,
+  devToolsPort: number
 ): LanguageMode {
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
@@ -80,10 +81,10 @@ export function getPaperclipHTMLMode(
       return doComplete(embedded, position, pcDocuments.get(embedded), tagProviders);
     },
     doHover(document: TextDocument, position: Position) {
-      const embedded = embeddedDocuments.get(document);
+
       // const components = scriptMode.findComponents(document);
       const tagProviders = enabledTagProviders; //.concat(getComponentTags(components));
-      return doHover(embedded, position, pcDocuments.get(embedded), tagProviders);
+      return doHover(document, position, tagProviders, config, devToolsPort);
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
       return findDocumentHighlights(document, position, pcDocuments.get(document));

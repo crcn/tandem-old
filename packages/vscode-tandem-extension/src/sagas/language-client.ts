@@ -1,7 +1,8 @@
 import { fork, spawn, take, put, select } from "redux-saga/effects";
 import { workspace, languages, ExtensionContext, IndentAction } from "vscode";
-import { EXTENSION_ACTIVATED } from "../actions";
+import { EXTENSION_ACTIVATED, EXPRESS_SERVER_STARTED, CHILD_DEV_SERVER_STARTED } from "../actions";
 import { ExtensionState } from "../state";
+import { merge } from "lodash";
 import { LanguageClient, ServerOptions, LanguageClientOptions, TransportKind } from "vscode-languageclient";
 const SERVER_MODULE_PATH = require.resolve("paperclip-language-server");
 
@@ -10,8 +11,8 @@ export function* languageClientSaga() {
 }
 
 function* handleServer() {
-
-  const { context }: ExtensionState = yield select();
+  yield take(EXPRESS_SERVER_STARTED);
+  const { context, childDevServerInfo: { port } }: ExtensionState = yield select();
 
   const serverOptions: ServerOptions = {
     run: { module: SERVER_MODULE_PATH, transport: TransportKind.ipc },
@@ -20,17 +21,16 @@ function* handleServer() {
 
   const documentSelector = ["paperclip"];
   const config = workspace.getConfiguration();
-
+  
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
       configurationSection: ["html", "paperclip"]
     },
     initializationOptions: {
-      config
+      devToolsPort: port
     }
   }
-
 
   const client = new LanguageClient("paperclip", "Paperclip Language Server", serverOptions, clientOptions);
 

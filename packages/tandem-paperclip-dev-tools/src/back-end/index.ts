@@ -1,4 +1,4 @@
-import { fork } from "child_process";
+import { spawn } from "child_process";
 import { InitOptions } from "./state";
 import { initServerRequested } from "./actions";
 
@@ -6,9 +6,9 @@ const RESPAWN_TIMEOUT = 1000;
 
 export const start = (options: InitOptions, onMessage: (message) => any = () => {}) => {
   let _killed = false;
-  const child = fork(
-    require.resolve("./server"),
-    [],
+  const child = spawn(
+    "node",
+    [require.resolve("./server")],
     {
       stdio: [ 'pipe', 'pipe', 'pipe', 'ipc' ]
     }
