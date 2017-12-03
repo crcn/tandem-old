@@ -70,8 +70,7 @@ export type ExpressionPosition = {
 // is representing. Note that only minimal information about the expression is attached here to ensure that the source information body size stays relatively small. The shape of this object may change depending on the behavior of each expression.
 export type VMObjectExpressionSource = {
   uri: string;
-  location: ExpressionLocation;
-};
+} & ExpressionLocation;
 
 export type ExpressionLocation = {
   start: ExpressionPosition;

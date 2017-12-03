@@ -223,13 +223,14 @@ function* handleOpenExternalWindow() {
 
 function* handleOpenFileRequested() {
   while(true) {
-    const { source: { uri, location } }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+    const { source: { uri, start, end } }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
     vscode.workspace.openTextDocument(uri.replace("file://", "")).then(doc => {
       vscode.window.showTextDocument(doc).then(() => {
         const activeTextEditor = vscode.window.activeTextEditor;
-        if (location) {
-          const { start } = location;
-          const range = activeTextEditor.document.lineAt(start.line - 1).range;
+        
+        if (start && end) {
+          activeTextEditor.document.positionAt(start.pos);
+          const range = new vscode.Range(activeTextEditor.document.positionAt(start.pos), activeTextEditor.document.positionAt(end.pos));
           activeTextEditor.selection = new vscode.Selection(range.start, range.end);
           activeTextEditor.revealRange(range);
         }

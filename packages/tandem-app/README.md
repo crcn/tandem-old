@@ -6,23 +6,16 @@ IMMEDIATE:
 
 (need to start using tandem to build itself completely)
 
-- [ ] Cleanup
-  - [ ] remove aerial-sandbox
-
 - [ ] Bugs
   - [ ] cannot remove CSS selectors (try removing td-stage for workspace)
 
 - [ ] VSCode
-  - [ ] change do not always show up immediately
   - [ ] Open current file in Tandem
-  - [ ] *syncing issues with code
   - [ ] edit live button hovering over components
   - [ ] auto complete for components 
 
 - [ ] Tandem
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
-  - [ ] cache files on front-end
-    - [ ] pool loading resources
   - [ ] breadcrumbs
     - [ ] cmd click breadcrumb to view source
     - [ ] scrolling - no line break

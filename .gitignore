@@ -1,5 +1,6 @@
 .DS_Store
 html-report/
+tmp/
 coverage/
 node_modules
 out
