@@ -41,8 +41,6 @@ import {
 
 import { DNDState } from "./dnd";
 
-import { createFileCacheStore, FileCacheRootState, FileCacheItem, getFileCacheItemById } from "aerial-sandbox2";
-
 import { StageToolOverlayMouseMoved, StageToolOverlayClicked } from "../actions";
 import { Shortcut, ShortcutServiceState, createKeyboardShortcut } from "./shortcuts";
 import { 
@@ -173,17 +171,12 @@ export type ApplicationState = {
   selectedWorkspaceId?: string;
   element: HTMLElement;
   apiHost: string;
-} & BaseApplicationState &  ShortcutServiceState & SyntheticBrowserRootState & FileCacheRootState & Struct;
+} & BaseApplicationState &  ShortcutServiceState & SyntheticBrowserRootState & Struct;
 
 /**
  * Utilities
  */
 
-export const getFileExtension = (file: FileCacheItem) => file.sourceUri.split(".").pop();
-
-export const getSelectedWorkspaceFile = (state: ApplicationState, workspace: Workspace): FileCacheItem => {
-  return workspace.selectedFileId && getFileCacheItemById(state, workspace.selectedFileId);
-}
 
 export const getSyntheticWindowWorkspace = (root: ApplicationState, windowId: string): Workspace => getSyntheticBrowserWorkspace(root, getSyntheticWindowBrowser(root, windowId).$id);
 
@@ -524,7 +517,6 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
     createKeyboardShortcut("right", { type: RIGHT_KEY_DOWN }, { keyup: false }),
     createKeyboardShortcut("right", { type: RIGHT_KEY_UP }, { keyup: true }),
   ],
-  fileCacheStore: createFileCacheStore(),
   browserStore: createSyntheticBrowserStore()
 });
 

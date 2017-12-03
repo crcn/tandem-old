@@ -1,4 +1,3 @@
-import { FileCacheItem } from "aerial-sandbox2";
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
 import { ApplicationState, SyntheticElement, AvailableComponent } from "../state";
 
@@ -245,11 +244,6 @@ export type WorkspaceSelectionDeleted = {
 
 export type DeleteShortcutPressed = ShortcutEvent;
 
-export type TextEditorChanged = {
-  file: FileCacheItem,
-  value: string
-} & BaseEvent;
-
 export type EmptyWindowsUrlAdded = {
   url: string;
 } & BaseEvent;
@@ -425,8 +419,6 @@ export const resizerMouseDown = (workspaceId: string, sourceEvent: React.MouseEv
   sourceEvent,
   type: RESIZER_MOUSE_DOWN,
 });
-
-export const textEditorChanged = (file: FileCacheItem, value: string): TextEditorChanged => ({ type: TEXT_EDITOR_CHANGED, file, value });
 
 export const stageToolOverlayMouseLeave = (sourceEvent: React.MouseEvent<any>): StageToolOverlayMouseMoved => ({
   type: STAGE_TOOL_OVERLAY_MOUSE_LEAVE,

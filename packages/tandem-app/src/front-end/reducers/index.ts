@@ -28,12 +28,6 @@ import {
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
-import { 
-  FileCacheItem, 
-  fileCacheReducer,
-  updateFileCacheItem,
-  getFileCacheItemByUri, 
-} from "aerial-sandbox2";
 
 import { 
   Workspace,
@@ -52,7 +46,6 @@ import {
   clearWorkspaceSelection,
   removeWorkspaceSelection,
   toggleWorkspaceSelection,
-  getSelectedWorkspaceFile,
   getSyntheticNodeWorkspace,
   getSyntheticWindowBrowser,
   updateWorkspaceTextEditor,
@@ -213,7 +206,6 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   state = stageReducer(state, event);
   state = windowPaneReducer(state, event);
   state = componentsPaneReducer(state, event);
-  state = fileCacheReducer(state, event);
   state = shortcutReducer(state, event);
   state = apiReducer(state, event);
   state = dndReducer(state, event);
@@ -462,18 +454,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
-    case RESIZER_MOUSE_DOWN: {
-      const { sourceEvent, workspaceId } = event as ResizerMouseDown;
-      const metaKey = sourceEvent.metaKey || sourceEvent.ctrlKey;
-      const workspace = getWorkspaceById(state, workspaceId);
-
-      if (metaKey && workspace.selectionRefs.length === 1) {
-        state = setSelectedFileFromNodeId(state, workspace.$id, workspace.selectionRefs[0][1]);
-      }
-
-      return state;
-    }
-
     case BREADCRUMB_ITEM_CLICKED: {
       const { windowId, nodeId } = event as BreadcrumbItemClicked;
       const window = getSyntheticWindow(state, windowId);
@@ -577,12 +557,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
         return state;
       }
 
-      if (altKey) {
-        return setSelectedFileFromNodeId(state, workspace.$id, targetRef[1]);
-      
-      // meta key without any selected elements opens source. Already selected elements
-      // = multi-selected
-      } else if (!altKey) {
+      if (!altKey) {
         state = handleWindowSelectionFromAction(state, targetRef, event as StageToolNodeOverlayClicked);
         state = updateWorkspaceStage(state, workspace.$id, {
           secondarySelection: false
@@ -781,18 +756,3 @@ const setStageZoom = (state: ApplicationState, workspaceId: string, zoom: number
     )
   });
 };
-
-const setSelectedFileFromNodeId = (state: ApplicationState, workspaceId: string, nodeId: string) => {
-  const { source: { uri, start } } = getSyntheticNodeById(state, nodeId) as SyntheticNode;
-  const fileCacheItem = getFileCacheItemByUri(state, uri);
-  if (fileCacheItem) {
-    state = updateWorkspace(state, workspaceId, {
-      selectedFileId: fileCacheItem.$id,
-    });
-    state = updateWorkspaceTextEditor(state, workspaceId, {
-      cursorPosition: start
-    });
-    return showWorkspaceTextEditor(state, workspaceId);
-  }
-  return state;
-}

@@ -9,6 +9,9 @@ IMMEDIATE:
 - [ ] Cleanup
   - [ ] remove aerial-sandbox
 
+- [ ] Bugs
+  - [ ] cannot remove CSS selectors (try removing td-stage for workspace)
+
 - [ ] VSCode
   - [ ] change do not always show up immediately
   - [ ] Open current file in Tandem

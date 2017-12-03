@@ -10,7 +10,7 @@ import { TextEditor } from "./text-editor";
 import { Breadcrumbs } from "./breadcrumbs";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-import { Workspace as WorkspaceStruct, getSelectedWorkspaceFile, ApplicationState } from "front-end/state";
+import { Workspace as WorkspaceStruct, ApplicationState } from "front-end/state";
 
 export type WorkspaceProps = {
   workspace: WorkspaceStruct;
@@ -25,7 +25,6 @@ export const WorkspaceBase = ({ state, workspace, browser, dispatch }: Workspace
   return <div className="workspace-component">
     { stage.showLeftGutter ? <ProjectGutter workspace={workspace} browser={browser} dispatch={dispatch} /> : null }
     <div className="workspace-editors">
-      { stage.showTextEditor ? <TextEditor file={getSelectedWorkspaceFile(state, workspace)} cursorPosition={workspace.textEditor.cursorPosition} dispatch={dispatch} /> : null }
       <div className="workspace-stage">
         <Stage workspace={workspace} dispatch={dispatch} browser={browser} />
         <Breadcrumbs workspace={workspace} dispatch={dispatch} browser={browser} />

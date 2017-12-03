@@ -1,6 +1,5 @@
 
 import "./index.scss";
-import { textEditorChanged } from "front-end/actions";
 import { Dispatcher, BaseEvent, publicObject, ExpressionPosition } from "aerial-common2";
 
 if (typeof window !== "undefined") {
@@ -14,7 +13,6 @@ if (typeof window !== "undefined") {
 import * as React from "react";
 import { FileCacheItem } from "aerial-sandbox2";
 import * as CodeMirror from "react-codemirror";
-import { getFileExtension } from "front-end/state";
 import { pure, lifecycle, compose, withState } from "recompose";
 
 export type TextEditorProps = {
@@ -40,7 +38,7 @@ export const TextEditorBase = ({ options, file, dispatch, setCodeMirror }: TextE
     <CodeMirror ref={setCodeMirror} options={{ 
       theme: "dracula",
       mode: file && MODES[file.contentType]
-    }} onChange={value => dispatch(textEditorChanged(file, value))} />
+    }}  />
   </div>
 }
 

@@ -22,7 +22,6 @@ import {
   NEXT_WINDOW_SHORTCUT_PRESSED,
   PREV_WINDOW_SHORTCUT_PRESSED,
   COMPONENTS_PANE_ADD_COMPONENT_CLICKED,
-  TextEditorChanged,
   RESIZER_PATH_MOUSE_MOVED,
   DeleteShortcutPressed, 
   SOURCE_CLICKED,
@@ -45,7 +44,6 @@ import {
   STAGE_MOUSE_CLICKED, 
 } from "../actions";
 
-import { URI_CACHE_BUSTED, uriCacheBusted } from "aerial-sandbox2";
 const WINDOW_PADDING = 10;
 
 import { 
@@ -90,7 +88,6 @@ export function* mainWorkspaceSaga() {
   yield fork(handleSelectionStoppedMoving);
   yield fork(handleSelectionKeyDown);
   yield fork(handleSelectionKeyUp);
-  yield fork(handleTextEditorChange);
   yield fork(handleSelectionResized);
   yield fork(handleNewLocationPrompt);
   yield fork(handleOpenNewWindowShortcut);
@@ -395,13 +392,6 @@ function* handleSelectionStoppedMoving() {
       const bounds = getSyntheticBrowserItemBounds(state, item);
       yield put(stoppedMoving(item.$id, item.$type, workspace.targetCSSSelectors));
     }
-  }
-}
-
-function* handleTextEditorChange() {
-  while(true) {
-    const { value, file } = (yield take(TEXT_EDITOR_CHANGED)) as TextEditorChanged;
-    yield put(uriCacheBusted(file.sourceUri, value, file.contentType));
   }
 }
 
