@@ -62,6 +62,7 @@ import {
   CSSDeclarationChanged,
   CSS_DECLARATION_VALUE_CHANGED,
   FILE_CONTENT_CHANGED,
+  FILE_REMOVED,
   FileChanged,
   CSS_DECLARATION_CREATED,
   WINDOW_SELECTION_SHIFTED,
@@ -182,7 +183,7 @@ function* handleScrollInFullScreenMode() {
 
 function* handleFileChanged() {
   while(true) {
-    const { filePath, publicPath }: FileChanged = yield take(FILE_CONTENT_CHANGED);
+    const { filePath, publicPath }: FileChanged = yield take([FILE_CONTENT_CHANGED, FILE_REMOVED]);
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
     const windows = getSyntheticBrowser(state, workspace.browserId).windows;

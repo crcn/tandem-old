@@ -157,17 +157,13 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
       const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
 
-      childDeclarations.push({
-        name,
-        ignored,
-        disabled,
-        overridden,
-        value,
-      });
-  
-      // properties.push(
-      //   <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
-      // );
+      // childDeclarations.push({
+      //   name,
+      //   ignored,
+      //   disabled,
+      //   overridden,
+      //   value,
+      // });
     }
     return <Base label={beautifyLabel(rule.label || rule.selectorText)} source={null} declarations={childDeclarations} inherited={inherited} />;
   }

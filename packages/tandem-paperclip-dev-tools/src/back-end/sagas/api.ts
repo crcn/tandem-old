@@ -535,9 +535,10 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
 }
 
 function* setFileContent(req: express.Request, res: express.Response, next) {
-  const { filePath, content, timestamp } = yield getPostData(req);
+  const { filePath, content, mtime } = yield getPostData(req);
   const state = yield select();
-  yield put(fileContentChanged(filePath, getPublicFilePath(filePath, state), new Buffer(content), new Date(timestamp)));
+  yield put(fileContentChanged(filePath, getPublicFilePath(filePath, state), new Buffer(content), new Date(mtime)));
+  res.send(`"ok"`);
 }
 
 function* editFiles(req: express.Request, res: express.Response, next) {

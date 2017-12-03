@@ -45,9 +45,12 @@ paperclip.bundleVanilla("component.pc", {
 
 - [ ] Error handling must be battle tested
 - [ ] Inference types
-- [ ] XMLNS support - necessary to separate production from dev code.
-- [ ] `<design:preview />` section in component
-- [ ] `<design:fixtures id="varId" />`  (possibly) - used to help infer types more
+- [ ] `<preview />` section in component
+- [ ] `<fixture></fixture>`  (possibly) - used to help infer types more
+- [ ] Linting
+  - Warning for components that do not have `<preview />` tag
+  
+
 
 #### LOW PRIO CORE TODOS
 

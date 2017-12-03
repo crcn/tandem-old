@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, fileChanged, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged } from "../actions";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime } from "../state";
 import { isPaperclipFile } from "../utils";
 import { TextEditor, DecorationOptions, workspace, languages, DecorationRangeBehavior } from "vscode";
@@ -19,8 +19,6 @@ export function* vscodeSaga() {
   yield fork(handleOpenExternalWindow);
   yield fork(handleOpenFileRequested);
   yield fork(handleTextDocumentClose);
-  // yield fork(handleDecorators);
-  // yield fork(handleHoverProviders);
 }
 
 function* handleAlerts() {
@@ -58,12 +56,8 @@ function* handleFileContentChanged() {
   while(true) {
     const { filePath, content, mtime }: FileContentChanged = yield take(FILE_CONTENT_CHANGED);
 
-    if (!content) {
-      continue;
-    }
-
     const state: ExtensionState = yield select();
-    if (getFileCacheContent(filePath, prevState) && getFileCacheContent(filePath, prevState).toString("utf8") === content.toString("utf8")) {
+    if (getFileCacheMtime(filePath, prevState) && getFileCacheMtime(filePath, prevState).getTime() >= new Date(mtime).getTime() || getFileCacheContent(filePath, prevState) === content) {
       console.info(`No change in store -- skipping file open`);
       continue;
     }
@@ -111,13 +105,22 @@ function* handleTextDocumentChange() {
   const chan = eventChannel((emit) => {
     vscode.workspace.onDidChangeTextDocument((e) => {
       const document = e.document as vscode.TextDocument;
+      
       emit(textContentChanged(document.uri.fsPath, new Buffer(document.getText())));
     })
     return () => {};
   });
 
   while(true) {
-    yield put(yield take(chan));
+    const action = yield take(chan);
+    const state: ExtensionState = yield select();
+
+    // Covers cases where change events are emitted when the content
+    // hasn't changed. 
+    if (getFileCacheContent(action.filePath, state) === action.content) {
+      continue;
+    }
+    yield put(action);
   }
 }
 
@@ -196,20 +199,17 @@ function* handleActiveTextEditorChange() {
 
 function* handleTextDocumentClose() {
   const chan = eventChannel((emit) => {
-    let _timeout;
     vscode.workspace.onDidCloseTextDocument(() => {
-      clearTimeout(_timeout);
-      _timeout = setTimeout(() => {
-        if (!vscode.window.activeTextEditor) return;
-        const doc = vscode.window.activeTextEditor.document;
-        emit(textContentChanged(doc.uri.fsPath.replace(".git", ""), fs.readFileSync(doc.uri.fsPath.replace(".git", ""))))
-      });
+      if (!vscode.window.activeTextEditor) return;
+      const doc = vscode.window.activeTextEditor.document;
+      emit(textContentChanged(doc.uri.fsPath.replace(".git", ""), fs.readFileSync(doc.uri.fsPath.replace(".git", ""))))
     });
     return () => {};
   });
 
   while(true) {
-    yield put(yield take(chan));
+    const action = yield take(chan);
+    yield put(action);
   }
 }
 
@@ -239,46 +239,4 @@ function* handleOpenFileRequested() {
 }
 
 function* handleHoverProviders() {
-}
-
-function* handleDecorators() {
-  let editor: TextEditor;
-
-  const state: ExtensionState = yield select();
-  const componentDecoratorType = vscode.window.createTextEditorDecorationType({
-    gutterIconPath: state.context.asAbsolutePath("assets/paintbucket.svg"),
-    gutterIconSize: "12px 12px"
-  });
-  
-  while(1) {
-    yield take([ACTIVE_TEXT_EDITOR_CHANGED, TEXT_CONTENT_CHANGED]);
-    const state: ExtensionState = yield select();
-    if (!state.activeTextEditor) {
-      continue;
-    }
-
-    const editor = state.activeTextEditor;
-    const document = editor.document;
-    if (!isPaperclipFile(document.fileName)) {
-      continue;
-    }
-
-    const text = document.getText();
-    const componentRegex = /<component.*?>/g;
-    let match: RegExpExecArray;
-
-
-    const componentDecorations: DecorationOptions[] = [];
-    while (match = componentRegex.exec(text)) {
-      const startPos = document.positionAt(match.index);
-      const endPos = document.positionAt(match.index + match[0].length);
-      componentDecorations.push({
-        range: new vscode.Range(startPos.line, 0, endPos.line, 0),
-        hoverMessage: "ABCDE"
-      });
-    }
-
-
-    editor.setDecorations(componentDecoratorType, componentDecorations);
-  }
 }

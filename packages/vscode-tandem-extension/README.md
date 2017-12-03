@@ -12,6 +12,7 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 - [ ] see https://github.com/eamodio/vscode-gitlens/tree/master/src
 - [ ] <preview /> tag check
 - [ ] history is getting clobbered. 
+- [ ] option to turn off live coding
 - [ ] warning for components that do not have preview elements
 - [ ] make sure component screenshots route checks for existence
   - [ ] "edit live" button 

@@ -14,7 +14,6 @@ export const start = (options: InitOptions, onMessage: (message) => any = () => 
     }
   );
 
-
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
 
@@ -41,7 +40,7 @@ export const start = (options: InitOptions, onMessage: (message) => any = () => 
   child.send(initServerRequested(options));
 
   return {
-    close() {
+    dispose() {
       _killed = true;
       child.kill();
     }

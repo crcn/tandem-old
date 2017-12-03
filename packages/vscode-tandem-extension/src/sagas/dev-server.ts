@@ -6,16 +6,18 @@ import * as getPort from "get-port";
 import { start as startPCDevServer } from "tandem-paperclip-dev-tools";
 import { workspace, languages, ExtensionContext, IndentAction } from "vscode";
 import * as request from "request";
-import { take, fork, select, put, call } from "redux-saga/effects";
-import { delay } from "redux-saga";
+import { take, fork, select, put, call, spawn } from "redux-saga/effects";
+import { delay, eventChannel } from "redux-saga";
 import { VISUAL_TOOLS_CONFIG_FILE_NAME, DEV_SERVER_BIN_PATH, TANDEM_APP_MODULE_NAME } from "../constants";
-import { alert, AlertLevel, childDevServerStarted, FileContentChanged, TEXT_CONTENT_CHANGED, CHILD_DEV_SERVER_STARTED, ChildDevServerStarted } from "../actions";
+import { alert, AlertLevel, childDevServerStarted, FileContentChanged, TEXT_CONTENT_CHANGED, CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted } from "../actions";
 import { isPaperclipFile } from "../utils";
 
 export function* devServerSaga() {
   yield fork(handleDevConfigLoaded);
   yield fork(handleTextEditorChanges);
 }
+
+const SAVE_DELAY = 1000;
 
 function* handleDevConfigLoaded() {
   const { 
@@ -29,32 +31,97 @@ function* handleDevConfigLoaded() {
 
   console.log(`spawning Paperclip dev server with env PORT ${childServerPort}`);
 
-  const proc = startPCDevServer({
-    cwd: rootPath,
-    projectConfig: config.devServer,
-    port: childServerPort
+  const chan = eventChannel(emit => {
+    const proc = startPCDevServer({
+      cwd: rootPath,
+      projectConfig: config.devServer,
+      port: childServerPort
+    }, emit);
+    return () => {
+      proc.dispose();
+    };
   });
+
+  yield spawn(function*() {
+    while(1) {
+      const action = yield take(chan);
+      yield spawn(function*() {
+        yield put(action);
+      });
+    }
+  });
+
 
   yield put(childDevServerStarted(childServerPort));
 }
 
 function* handleTextEditorChanges() {
+
+  let nextActions: {
+    [identifier: string]: FileContentChanged
+  } = {};
+
+  let posting: boolean = false;
+  
   while(true) {
-    const { filePath, content }: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
-    if (!isPaperclipFile(filePath)) {
+    const currentAction: FileContentChanged = yield take(TEXT_CONTENT_CHANGED);
+
+    const config =  workspace.getConfiguration();
+    
+
+    if (!config.tandem.liveEditing.enable) {
       continue;
     }
-    const state: ExtensionState = yield select();
-    const req: request.Request = yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
-      json: {
-        filePath,
-        content,
-        timestamp: Date.now()
-      }
-    });
 
-    req.on("error", (e) => {
-      console.error(e);
+    // ignore any file that is not a paperclip file. This may 
+    // need to eventually change to something like `isPaperclipAcceptedFile` for files such as CSS that may be imported
+    if (!isPaperclipFile(currentAction.filePath)) {
+      continue;
+    }
+
+    nextActions[currentAction.filePath] = currentAction;
+
+    if (posting) {
+      continue;
+    }
+
+
+    posting = true;
+    yield spawn(function*() {
+      const state: ExtensionState = yield select();
+
+      // may happen on rare occasions, but it's possible that
+      // text changes may
+      if (!state.childDevServerInfo) {
+        yield take(CHILD_DEV_SERVER_STARTED);
+      }
+      while(Object.keys(nextActions).length) {
+        
+        // some breathing room in case the user is typing
+        // really fast. Don't want to clobber the dev tools server
+        yield call(delay, SAVE_DELAY);
+
+        const batchActions = nextActions;
+        nextActions = {};
+        for (const filePath in batchActions) {
+          console.log("Saving " + filePath);
+          const { content, mtime } = batchActions[filePath];
+          const state: ExtensionState = yield select();
+          const req: request.Request = yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
+            json: {
+              filePath,
+              content,
+              mtime
+            }
+          });
+
+          req.on("error", (e) => {
+            console.error(e);
+          });
+        }
+      }
+
+      posting = false;
     });
     
   }

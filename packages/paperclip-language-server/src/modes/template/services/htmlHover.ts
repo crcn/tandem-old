@@ -66,7 +66,7 @@ export function doHover(
         }
 
         return {
-          contents: `![component preview](file://${hoverFilePath})`
+          contents: `![component preview](file://${hoverFilePath}?${Date.now()})`
         };
       })();
 

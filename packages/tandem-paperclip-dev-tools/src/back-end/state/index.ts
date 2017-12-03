@@ -85,6 +85,16 @@ export const updateFileCacheItem = (state: ApplicationState, item: FileCacheItem
     fileCache: index > -1 ? arraySplice(state.fileCache, index, 1, item) : arraySplice(state.fileCache, 0, 0, item)
   });
 }
+
+export const removeFileCacheItem = (state: ApplicationState, filePath: string) => {
+  
+  const index = state.fileCache.findIndex((v) => v.filePath === filePath);
+
+  return updateApplicationState(state, {
+    fileCache: index > -1 ? arraySplice(state.fileCache, index, 1) : state.fileCache
+  });
+}
+
 export const getFileCacheContent = (filePath: string, state: ApplicationState) => {
   const item = state.fileCache.find((item) => item.filePath === filePath);
   return item && item.content;

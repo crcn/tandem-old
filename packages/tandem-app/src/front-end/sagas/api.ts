@@ -5,7 +5,7 @@ const PERSIST_DELAY_TIMEOUT = 1000;
 import { createSocketIOSaga } from "aerial-common2";
 
 import { take, call, fork, select, put } from "redux-saga/effects";
-import { apiComponentsLoaded, FILE_CONTENT_CHANGED, triedLoadedSavedState, COMPONENT_SCREENSHOT_SAVED, FileChanged, loadedSavedState, LOADED_SAVED_STATE, TRIED_LOADING_APP_STATE } from "../actions";
+import { apiComponentsLoaded, FILE_CONTENT_CHANGED, FILE_REMOVED, triedLoadedSavedState, COMPONENT_SCREENSHOT_SAVED, FileChanged, loadedSavedState, LOADED_SAVED_STATE, TRIED_LOADING_APP_STATE } from "../actions";
 
 const SAVE_KEY = "app-state";
 
@@ -25,7 +25,7 @@ function* getComponents() {
     yield put(apiComponentsLoaded(json));
 
     // just refresh whenever a file has changed
-    yield take([FILE_CONTENT_CHANGED, COMPONENT_SCREENSHOT_SAVED]);
+    yield take([FILE_CONTENT_CHANGED, FILE_REMOVED, COMPONENT_SCREENSHOT_SAVED]);
   } 
 }
 

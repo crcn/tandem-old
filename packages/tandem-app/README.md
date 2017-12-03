@@ -14,34 +14,15 @@ IMMEDIATE:
   - [ ] auto complete for components 
 
 - [ ] Tandem
-  - [ ] use /workspace/:hash for state
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
   - [ ] cache files on front-end
   - [ ] breadcrumbs
     - [ ] cmd click breadcrumb to view source
     - [ ] scrolling - no line break
     - [ ] update UI
-  - [ ] Components pane
-    - [ ] filter components
-  - [ ] BUGS
-    -[ ] components pane doesn't load immediately
-  - [ ] OPTIMIZATIONS
-    - [ ] do not reload window if currently editnig
-
 
 - [ ] Paperclip
   - [ ] make it resilient to exceptions
-
-- [ ] Tandem
-  - [ ] Components Pane
-    - [ ] DND components to existing components
-  - [ ] CSS Inspector
-    - [ ] toggle eye
-    - [ ] add declaration
-    - [ ] delete declaration
-    - [ ] edit declaration
-    - [ ] add style rule (auto add to scoped style element)
-    - [ ] `:root` inspecting
 
 HIGH PRIO:
 
@@ -57,12 +38,21 @@ HIGH PRIO:
   - [ ] DND elements to other elements
   - [ ] native elements
 
-- [ ] Paperclip
-  - [ ] 
-
 - [ ] UX
   - [ ] turn features on / off based on server capabilities
     - [ ] ability to add or remove components
+
+- [ ] Tandem
+  - [ ] Components Pane
+    - [ ] DND components to existing components
+    - [ ] filter
+  - [ ] CSS Inspector
+    - [ ] toggle eye
+    - [ ] add declaration
+    - [ ] delete declaration
+    - [ ] edit declaration
+    - [ ] add style rule (auto add to scoped style element)
+    - [ ] `:root` inspecting
 
 PROBLEMS:
 

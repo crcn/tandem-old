@@ -41,5 +41,5 @@ export const getFileCacheContent = (filePath: string, state: ExtensionState) => 
   return state.fileCache[filePath] && state.fileCache[filePath].content;
 }
 export const getFileCacheMtime = (filePath: string, state: ExtensionState) => {
-  return state.fileCache[filePath] && state.fileCache[filePath].mtime;
+  return state.fileCache[filePath] && state.fileCache[filePath].mtime 
 }

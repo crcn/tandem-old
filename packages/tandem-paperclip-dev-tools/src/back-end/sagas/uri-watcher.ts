@@ -2,7 +2,7 @@ import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath } from "../utils";
 import { ApplicationState } from "../state";
-import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED } from "../actions";
+import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved } from "../actions";
 import * as chokidar from "chokidar";
 import * as fs from "fs";
 import * as glob from "glob";
@@ -75,8 +75,7 @@ function* handleWatchUrisRequest() {
         watcher.on("change", emitChange);
 
         watcher.on("unlink", (path) => {
-          const publicPath = getPublicFilePath(path, state);
-          emit(fileContentChanged(path, publicPath, null, new Date()));
+          emit(fileRemoved(path, getPublicFilePath(path, state)));
         });
       });
 

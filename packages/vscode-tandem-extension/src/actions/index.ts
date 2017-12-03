@@ -10,6 +10,7 @@ export const EXTENSION_ACTIVATED = "EXTENSION_ACTIVATED";
 export const HTTP_REQUEST = "HTTP_REQUEST";
 export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
+export const FILE_REMOVED = "FILE_REMOVED";
 export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
 export const START_DEV_SERVER_REQUESTED = "START_DEV_SERVER_REQUESTED";
 export const ACTIVE_TEXT_EDITOR_CHANGED = "ACTIVE_TEXT_EDITOR_CHANGED";
@@ -18,7 +19,6 @@ export const OPEN_FILE_REQUESTED = "OPEN_FILE_REQUESTED";
 export const OPEN_TANDEM_EXECUTED = "OPEN_TANDEM_EXECUTED";
 export const OPEN_EXTERNAL_WINDOW_EXECUTED = "OPEN_EXTERNAL_WINDOW_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
-export const FILE_CHANGED = "FILE_CHANGED";
 
 export type HTTPRequest = {
   request: Request;
@@ -64,20 +64,15 @@ export type ChildDevServerStarted = {
   port: number
 } & Action;
 
-export const fileChanged = (filePath: string) => ({
-  type: FILE_CHANGED,
-  filePath
-});
-
 export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const textContentChanged = (filePath: string, content: Buffer): FileContentChanged  => ({
+export const textContentChanged = (filePath: string, content: Buffer, mtime: Date = new Date()): FileContentChanged  => ({
   type: TEXT_CONTENT_CHANGED,
   content,
   filePath,
-  mtime: new Date()
+  mtime,
 });
 
 export const activeTextEditorChange = (editor: TextEditor): ActiveTextEditorChanged  => ({

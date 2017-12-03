@@ -11,6 +11,7 @@ export const VISUAL_DEV_CONFIG_LOADED = "VISUAL_DEV_CONFIG_LOADED";
 export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const MUTATE_SOURCE_CONTENT = "MUTATE_SOURCE_CONTENT";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
+export const FILE_REMOVED = "FILE_REMOVED";
 export const HEADLESS_BROWSER_LAUNCHED = "HEADLESS_BROWSER_LAUNCHED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
 export const COMPONENT_SCREENSHOT_STARTED = "COMPONENT_SCREENSHOT_STARTED";
@@ -101,7 +102,7 @@ export type Alert = {
 
 export type InitServerRequested = {
   options: InitOptions;
-  $$public: boolean;
+  $public: boolean;
 } & Action;
 
 export type ChildDevServerStarted = {
@@ -111,7 +112,7 @@ export type ChildDevServerStarted = {
 export const initServerRequested = (options: InitOptions): InitServerRequested => ({
   type: INIT_SERVER_REQUESTED,
   options,
-  $$public: true
+  $public: true
 });
 
 export const watchUrisRequested = (uris: string[]): WatchUrisRequested => ({
@@ -129,6 +130,12 @@ export const fileContentChanged = publicActionFactory((filePath: string, publicP
   filePath,
   publicPath,
   mtime
+}));
+
+export const fileRemoved = publicActionFactory((filePath: string, publicPath: string): FileAction  => ({
+  type: FILE_REMOVED,
+  filePath,
+  publicPath
 }));
 
 export const componentScreenshotTaken = (buffer: Buffer, clippings: ScreenshotClippings, contentType: string): ComponentScreenshotTaken => ({

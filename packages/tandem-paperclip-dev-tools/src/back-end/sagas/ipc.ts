@@ -27,7 +27,7 @@ function* receiveMessages() {
 function* sendMessages() {
   while(1) {
     const action = yield take();
-    if (action[TAG] || !action.$$public) continue;
+    if (action[TAG] || !action.$public) continue;
     try {
       process.send(action);
     } catch(e) {
@@ -47,7 +47,7 @@ function* pingPong() {
   yield spawn(function*() {
     while(1) {
       _ponged = false;
-      yield put({ type: "$$PING", $$public: true });
+      yield put({ type: "$$PING", $public: true });
       yield call(delay, 1000 * 5);
       if (!_ponged) {
         console.log("Did not receive pong. Closing.");

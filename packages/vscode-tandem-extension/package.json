@@ -73,19 +73,6 @@
           "default": true,
           "description": "Validate css in <style>."
         },
-        "tandem-vscode-extension.format.defaultFormatter.html": {
-          "type": "string",
-          "default": "none",
-          "enum": [
-            "none",
-            "js-beautify-html"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "html formatter of js-beautify"
-          ],
-          "description": "Default formatter for <template> region."
-        },
         "paperclip.format.defaultFormatter.css": {
           "type": "string",
           "default": "prettier",
@@ -110,6 +97,24 @@
           "type": "boolean",
           "default": false,
           "description": "Whether to have initial indent for <style> region."
+        },
+        "tandem.defaultFormatter.html": {
+          "type": "string",
+          "default": "none",
+          "enum": [
+            "none",
+            "js-beautify-html"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "html formatter of js-beautify"
+          ],
+          "description": "Default formatter for <template> region."
+        },
+        "tandem.liveEditing.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Synchronizes changes with Tandem as you're writing code."
         }
       }
     }
