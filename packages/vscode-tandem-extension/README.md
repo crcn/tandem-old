@@ -9,7 +9,7 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 
 #### TODOS
 
-- [ ] see https://github.com/eamodio/vscode-gitlens/tree/master/src
+- [ ] *open current component in Tandem
 - [ ] <preview /> tag check
 - [ ] [object Object] is replacing text content
 - [ ] history is getting clobbered. 

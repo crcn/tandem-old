@@ -22,9 +22,7 @@ import {
   createZeroBounds,
   createStructFactory, 
   nonSerializableFactory,
-} from "aerial-common2";
-
-import { FileCacheRootState, createFileCacheStore } from "aerial-sandbox2";
+} from "aerial-common2"
 
 import {
   SEnvNodeTypes,
@@ -588,11 +586,24 @@ export type SyntheticBrowser = {
   windows: SyntheticWindow[];
 } & Struct;
 
+export type FileCacheItem = {
+  uri: string;
+  content: ArrayBuffer;
+  mtime: Date;
+};
+
+export type FileCache = {
+  [identifier: string]: FileCacheItem
+}
+
 export type SyntheticBrowserRootState = {
   apiHost?: string;
   browserStore: DataStore<SyntheticBrowser>;
   windowStore?: DataStore<SyntheticWindow>;
-} & FileCacheRootState;
+
+  // TODO - may want to elevate this to aerial-common2
+  fileCache: FileCache;
+};
 
 export const createSyntheticBrowserStore = (syntheticBrowsers?: SyntheticBrowser[]) => dsIndex(createDataStore(syntheticBrowsers), "$id");
 
@@ -607,7 +618,7 @@ export const createSyntheticBrowser = createStructFactory<SyntheticBrowser>(SYNT
 export const createSyntheticBrowserRootState = (syntheticBrowsers?: SyntheticBrowser[]): SyntheticBrowserRootState => {
   return {
     browserStore: createSyntheticBrowserStore(syntheticBrowsers),
-    fileCacheStore: createFileCacheStore(),
+    fileCache: {},
   };
 }
 
@@ -671,6 +682,24 @@ export const createSyntheticCSSKeyframesRule = createStructFactory<SyntheticCSSK
 export const createSyntheticCSSUnknownGroupingRule = createStructFactory<SyntheticCSSUnknownGroupingRule>(SYNTHETIC_CSS_UNKNOWN_RULE, {
   type: CSSRuleType.UNKNOWN_RULE
 });
+
+export const getFileCacheItem = (uri: string, state: SyntheticBrowserRootState): FileCacheItem => state.fileCache && state.fileCache[uri];
+
+export const setFileCacheItem = <TState extends SyntheticBrowserRootState>(uri: string, content: ArrayBuffer, mtime: Date, state: TState) => {
+  if (getFileCacheItem(uri, state) && getFileCacheItem(uri, state).mtime.getTime() === mtime.getTime()) {
+    return state;
+  }
+  return {
+    ...(state as any),
+    fileCache: {
+      ...(state.fileCache || {}),
+      [uri]: {
+        content,
+        mtime
+      }
+    }
+  }
+}
 
 export const createSyntheticCSSStyleDeclaration = createStructFactory<SyntheticCSSStyleDeclaration>(SYNTHETIC_CSS_STYLE_DECLARATION);
 

@@ -3,21 +3,6 @@ import { eventChannel, delay } from "redux-saga";
 import { difference, debounce, values, uniq } from "lodash";
 import { cancel, fork, take, put, call, spawn, actionChannel, select } from "redux-saga/effects";
 
-import { 
-  FileCacheItem,
-  UriCacheBusted,
-  URI_CACHE_BUSTED,
-  getFileCacheStore,
-  FileCacheRootState,
-  createReadUriRequest,
-  AddDependencyRequest, 
-  AddDependencyResponse, 
-  getFileCacheItemByUri,
-  sandboxEnvironmentSaga,
-  createAddDependencyRequest, 
-  createReadCacheableUriRequest,
-  createEvaluateDependencyRequest,
-} from "aerial-sandbox2";
 
 import {
   htmlContentEditorSaga
@@ -34,9 +19,6 @@ import {
 
 
 import { 
-  FetchRequest,
-  FETCH_REQUEST,
-  fetchRequest,
   SYNTHETIC_WINDOW_SCROLL,
   SyntheticWindowScroll,
   syntheticWindowScroll,
@@ -53,12 +35,15 @@ import {
   syntheticWindowClosed,
   SYNTHETIC_WINDOW_OPENED,
   SyntheticNodeValueStoppedEditing,
+  fetchedContent,
   syntheticWindowProxyOpened,
   SyntheticNodeTextContentChanged,
   syntheticWindowOpened,
   SyntheticWindowSourceChanged,
   syntheticWindowLoaded,
   syntheticWindowChanged,
+  FILE_CONTENT_CHANGED,
+  FileContentChanged,
   syntheticWindowRectsUpdated,
   OpenSyntheticBrowserWindow,
   ToggleCSSDeclarationProperty,
@@ -68,6 +53,9 @@ import {
   syntheticWindowResourceChanged,
   SYNTHETIC_NODE_TEXT_CONTENT_CHANGED,
   NEW_SYNTHETIC_WINDOW_ENTRY_RESOLVED,
+  fetchRequest,
+  FetchRequest,
+  FETCH_REQUEST,
   syntheticWindowResourceLoaded,
   newSyntheticWindowEntryResolved
 } from "../actions";
@@ -159,22 +147,13 @@ import {
 } from "../environment";
 
 export function* syntheticBrowserSaga() {
-  yield fork(handleFetchRequests);
   yield fork(htmlContentEditorSaga);
   yield fork(fileEditorSaga);
   yield fork(handleToggleCSSProperty);
   yield fork(handleOpenSyntheticWindow);
   yield fork(handleOpenedSyntheticWindow);
   yield fork(handleOpenedSyntheticProxyWindow);
-}
-
-function* handleFetchRequests() {
-  while(true) {
-    const req = (yield take(FETCH_REQUEST)) as FetchRequest;
-    yield spawn(function*() {
-      yield put(createRequestResponse(req.$id, (yield yield request(createReadUriRequest(String(req.info)))).payload));
-    });
-  }
+  yield fork(handleFetchRequests);
 }
 
 function* handleOpenSyntheticWindow() {
@@ -289,13 +268,64 @@ function* watchWindowExternalResourceUris(instance: SEnvWindowInterface, reload:
   // watch for changes
   yield spawn(function*() {
     while(true) {
-      const { uri } = (yield take(URI_CACHE_BUSTED)) as UriCacheBusted;
-      if (instance.externalResourceUris.indexOf(uri) !== -1) {
+      const { publicPath } = (yield take(FILE_CONTENT_CHANGED)) as FileContentChanged;
+      if (instance.externalResourceUris.indexOf(publicPath) !== -1) {
         yield call(reload);
         break;
       }
     }
   });
+}
+
+function* handleFetchRequests() {
+  let _pending: any = {};
+  while(1) {
+    const req: FetchRequest = yield take(FETCH_REQUEST);
+    const { info } = req;
+    const uri = String(info);
+    yield spawn(function*() {
+      const state: SyntheticBrowserRootState = yield select();
+
+      let p: Promise<any>;
+      let emitChange: boolean;
+
+      if (_pending[uri]) {
+        p = _pending[uri];
+      } else {
+        if (state.fileCache && state.fileCache[uri]) {
+          p = Promise.resolve(state.fileCache[uri].content);
+        } else {
+          emitChange = true;
+          let curl = uri;
+          if (curl.charAt(0) === "/") {
+            curl = window.location.protocol + "//" + window.location.host + curl;
+          }
+      
+          if (curl.indexOf(window.location.host) === -1) {
+            curl = `${state.apiHost}/proxy/${encodeURIComponent(String(info))}`;
+          }
+          p = _pending[uri] = new Promise(async (resolve) => {
+            const response = await fetch(curl);
+            const blob = await response.blob();
+            const fr = new FileReader();
+            fr.onload = () => {
+              resolve(fr.result);
+            }
+            fr.readAsArrayBuffer(blob);
+          });
+        }
+      }
+
+      const buffer = yield call(p.then.bind(p));
+      if (emitChange) {
+        yield put(fetchedContent(uri, buffer));
+      }
+      _pending[uri] = undefined;
+      yield put(createRequestResponse(req.$id, buffer));
+    });
+  }
+  
+  
 }
 
 function* getFetch() {
@@ -304,27 +334,20 @@ function* getFetch() {
   const state: SyntheticBrowserRootState = yield select();
 
   yield spawn(function*() {
-    while(true) {
+    while(1) {
       const { value: [info, resolve] } = yield call(fetchQueue.next);
-      const body = (yield yield request(fetchRequest(info))).payload;
-      externalResources.push(info);
-      resolve(body);
+      const buffer = (yield yield request(fetchRequest(info))).payload;
+      const text = String.fromCharCode.apply(null, new Uint8Array(buffer));
+
+      resolve({
+        text: () => Promise.resolve(text)
+      });
     }
   });
 
-  return (info: RequestInfo) => {
-    let url = String(info);
-
-    if (url.charAt(0) === "/") {
-      url = window.location.protocol + "//" + window.location.host + url;
-    }
-
-    if (url.indexOf(window.location.host) === -1) {
-      url = `${state.apiHost}/proxy/${encodeURIComponent(String(info))}`;
-    }
-
-    return fetch(url);
-  };
+  return (info: RequestInfo) => new Promise((resolve, reject) => {
+    fetchQueue.unshift([info, resolve]);
+  });
 }
 
 function* handleOpenedSyntheticWindow() {

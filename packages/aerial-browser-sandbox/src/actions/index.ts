@@ -9,7 +9,7 @@ export const OPEN_SYNTHETIC_WINDOW               = "OPEN_SYNTHETIC_WINDOW";
 export const TOGGLE_CSS_DECLARATION_PROPERTY     = "TOGGLE_CSS_DECLARATION_PROPERTY";
 export const SYNTHETIC_WINDOW_RESOURCE_LOADED    = "SYNTHETIC_WINDOW_RESOURCE_LOADED";
 export const NEW_SYNTHETIC_WINDOW_ENTRY_RESOLVED = "NEW_SYNTHETIC_WINDOW_ENTRY_RESOLVED";
-export const FETCH_REQUEST                       = "FETCH_REQUEST";
+export const FETCH_REQUEST = "FETCH_REQUEST";
 export const SYNTHETIC_WINDOW_RECTS_UPDATED      = "SYNTHETIC_WINDOW_RECTS_UPDATED";
 export const SYNTHETIC_WINDOW_LOADED             = "SYNTHETIC_WINDOW_LOADED";
 export const SYNTHETIC_WINDOW_CHANGED            = "SYNTHETIC_WINDOW_CHANGED";
@@ -27,10 +27,8 @@ export const SYNTHETIC_WINDOW_MOVED              = "SYNTHETIC_WINDOW_MOVED";
 export const SYNTHETIC_WINDOW_CLOSED             = "SYNTHETIC_WINDOW_CLOSED";
 export const SYNTHETIC_WINDOW_RESIZED            = "SYNTHETIC_WINDOW_RESIZED";
 export const SYNTHETIC_WINDOW_RESOURCE_CHANGED   = "SYNTHETIC_WINDOW_RESOURCE_CHANGED";
-
-export type FetchRequest = {
-  info: RequestInfo;
-} & Request;
+export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
+export const FETCHED_CONTENT      = "FETCHED_CONTENT";
 
 export type SyntheticWindowSourceChanged = {
   type: string
@@ -48,6 +46,19 @@ export type OpenSyntheticBrowserWindow = {
   state: Partial<SyntheticWindow>;
   syntheticBrowserId: string;
 } & Request;
+
+export type FileContentChanged = {
+  filePath: string;
+  publicPath: string;
+  content: ArrayBuffer;
+  mtime: Date;
+} & BaseEvent;
+
+export type FetchedContent = {
+  publicPath: string;
+  content: ArrayBuffer;
+  mtime: Date;
+} & BaseEvent;
 
 export type NewSyntheticWindowEntryResolved = {
   location: string;
@@ -119,6 +130,10 @@ export type ApplyFileMutations = {
   mutations: Mutation<any>[];
 } & Request;
 
+export type FetchRequest = {
+  info: any;
+} & Request;
+
 export type windowPatched = {
   type: string;
   syntheticWindowId: string;
@@ -158,6 +173,13 @@ export const syntheticWindowProxyOpened = (instance: SEnvWindowInterface, parent
   type: SYNTHETIC_WINDOW_PROXY_OPENED
 });
 
+export const fetchedContent = (publicPath: string, content: ArrayBuffer): FetchedContent => ({
+  type: FETCHED_CONTENT,
+  publicPath,
+  content,
+  mtime: null
+});
+
 export const syntheticWindowMoved = (instance: SEnvWindowInterface): SyntheticWindowChanged => ({
   instance,
   type: SYNTHETIC_WINDOW_MOVED
@@ -182,6 +204,12 @@ export const applyFileMutationsRequest = (...mutations: Mutation<any>[]): ApplyF
   mutations,
   $id: generateDefaultId(),
   type: APPLY_FILE_MUTATIONS,
+});
+
+export const fetchRequest = (info: any): FetchRequest => ({
+  info,
+  type: FETCH_REQUEST,
+  $id: generateDefaultId()
 });
 
 
@@ -217,12 +245,6 @@ export const syntheticNodeTextContentChanged = (syntheticWindowId: string, synth
   syntheticNodeId,
   syntheticWindowId,
   type: SYNTHETIC_NODE_TEXT_CONTENT_CHANGED
-});
-
-export const fetchRequest = (info: RequestInfo): FetchRequest => ({
-  info,
-  type: FETCH_REQUEST,
-  $id: generateDefaultId()
 });
 
 export const openSyntheticWindowRequest = (state: Partial<SyntheticWindow>, syntheticBrowserId?: string, fromSavedState?: boolean): OpenSyntheticBrowserWindow => ({

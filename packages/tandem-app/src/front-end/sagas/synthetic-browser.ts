@@ -193,7 +193,6 @@ function* handleFileChanged() {
       ));
 
       if (shouldReload) {
-        console.log("Reloading window ", window.location);
         window.instance.location.reload();
       }
     }

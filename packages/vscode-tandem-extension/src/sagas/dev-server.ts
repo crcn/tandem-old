@@ -17,7 +17,7 @@ export function* devServerSaga() {
   yield fork(handleTextEditorChanges);
 }
 
-const SAVE_DELAY = 1000;
+const SAVE_DELAY = 250;
 
 function* handleDevConfigLoaded() {
   const { 

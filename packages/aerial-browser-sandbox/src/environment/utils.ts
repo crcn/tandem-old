@@ -1,4 +1,4 @@
-import { hasURIProtocol } from "aerial-sandbox2";
+
 import path = require("path");
 import Url = require("url");
 

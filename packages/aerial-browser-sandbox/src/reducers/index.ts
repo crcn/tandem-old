@@ -10,7 +10,6 @@ import {
   BaseEvent, 
 } from "aerial-common2";
 import { uniq, map } from "lodash";
-import { removeFileCacheItemByUri, getFileCacheItemByUri } from "aerial-sandbox2";
 import { 
   SyntheticWindowLoaded,
   windowPatched,
@@ -23,11 +22,15 @@ import { 
   SYNTHETIC_WINDOW_RECTS_UPDATED,
   SyntheticWindowChanged,
   SYNTHETIC_WINDOW_SCROLLED,
+  FETCHED_CONTENT,
+  FetchedContent,
   SyntheticWindowScrolled,
   syntheticWindowOpened,
   SYNTHETIC_WINDOW_MOVED,
   SYNTHETIC_WINDOW_CLOSED,
+  FILE_CONTENT_CHANGED,
   SYNTHETIC_WINDOW_RESIZED,
+  FileContentChanged,
   SyntheticWindowRectsUpdated,
   SyntheticWindowSourceChanged,
   OPEN_SYNTHETIC_WINDOW, 
@@ -50,6 +53,7 @@ import {
   SyntheticBrowserRootState, 
   upsertSyntheticWindow,
   SyntheticBrowser, 
+  setFileCacheItem,
   addSyntheticBrowser, 
   getSyntheticBrowser, 
   createSyntheticWindow 
@@ -91,9 +95,14 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
       });
     }
 
-    case SYNTHETIC_WINDOW_RESOURCE_CHANGED: {
-      const { uri } = event as SyntheticWindowResourceChanged;
-      return removeFileCacheItemByUri(root, uri);
+    case FETCHED_CONTENT: {
+      const { publicPath, content, mtime } = event as FetchedContent;
+      return setFileCacheItem(publicPath, content, new Date(0), root);
+    }
+
+    case FILE_CONTENT_CHANGED: {
+      const { publicPath, content, mtime } = event as FileContentChanged;
+      return setFileCacheItem(publicPath, content, new Date(mtime), root);
     }
 
     case SYNTHETIC_WINDOW_RESIZED: 

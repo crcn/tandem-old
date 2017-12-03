@@ -868,7 +868,6 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     async $load() {
-      console.log("LOAD WINDOW");
       const location = this.location.toString();
       this.renderer.start();
       if (location) {

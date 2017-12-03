@@ -1,5 +1,4 @@
 import * as vm from "vm";
-import { hasURIProtocol } from "aerial-sandbox2";
 import { getSEnvEventClasses, SEnvMutationEventInterface } from "../events";
 import path = require("path");
 import { camelCase, debounce } from "lodash";

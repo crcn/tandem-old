@@ -6,8 +6,8 @@ IMMEDIATE:
 
 (need to start using tandem to build itself completely)
 
-- [ ] Bugs
-  - [ ] Multiple windows are rendering
+- [ ] Cleanup
+  - [ ] remove aerial-sandbox
 
 - [ ] VSCode
   - [ ] change do not always show up immediately
@@ -19,6 +19,7 @@ IMMEDIATE:
 - [ ] Tandem
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
   - [ ] cache files on front-end
+    - [ ] pool loading resources
   - [ ] breadcrumbs
     - [ ] cmd click breadcrumb to view source
     - [ ] scrolling - no line break
