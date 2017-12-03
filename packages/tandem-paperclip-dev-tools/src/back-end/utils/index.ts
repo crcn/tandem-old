@@ -176,7 +176,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
 export const getComponentScreenshot = (componentId: string, state: ApplicationState) => {
   const ss = state.componentScreenshots[state.componentScreenshots.length - 1];
   return ss && ss.clippings[componentId] && {
-    uri: `http://localhost:${state.options.port}/screenshots/${state.componentScreenshots.length - 1}`,
+    uri: `http://localhost:${state.options.port}/screenshots/${md5(state.componentScreenshots[state.componentScreenshots.length - 1].uri)}`,
     clip: ss.clippings[componentId]
   };
 };

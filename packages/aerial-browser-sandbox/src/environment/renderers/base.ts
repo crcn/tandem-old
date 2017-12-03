@@ -80,6 +80,7 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   private _runningPromise: Promise<any>;
   private _started: boolean;
   private _resolveRunningPromise: () => any;
+  private _disposed: boolean;
 
   constructor(protected _sourceWindow: SEnvWindowInterface) {
     super();
@@ -131,7 +132,11 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   }
 
   dispose() {
-
+    this._disposed = true;
+    this._sourceWindow.document.removeEventListener("readystatechange", this._onDocumentReadyStateChange);
+    this._sourceWindow.removeEventListener("resize", this._onWindowResize);
+    this._sourceWindow.removeEventListener("scroll", this._onWindowScroll);
+    this._sourceWindow.removeEventListener(SEnvMutationEvent.MUTATION, this._onWindowMutation);
   }
 
   protected _addTargetListeners() {
@@ -141,7 +146,7 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
   }
 
   start() {
-    if (this._started) {
+    if (this._started || this._disposed) {
       return;
     }
     this._started = true;
@@ -201,7 +206,7 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
       // doesn't get to interact with visual content. Provide a slowish
       // timeout to ensure that we don't kill CPU from unecessary renders.
       const render = async () => {
-        if (!this._sourceWindow) return;
+        if (!this._sourceWindow || this._disposed) return;
         await this.whenRunning();
         this._shouldRenderAgain = false;
         await new Promise((resolve) => setTimeout(resolve, this.getRequestUpdateTimeout()));
@@ -239,6 +244,8 @@ export abstract class BaseSyntheticWindowRenderer extends EventTarget implements
     // OVERRIDE ME - used for dynamic render throttling
     return REQUEST_UPDATE_TIMEOUT;
   }
+
+  private _id: number = Math.random();
 
   protected setPaintedInfo(rects: RenderedClientRects, styles: RenderedComputedStyleDeclarations, scrollRect: Rectangle, scrollPosition: Point) {
     this._rects = rects;

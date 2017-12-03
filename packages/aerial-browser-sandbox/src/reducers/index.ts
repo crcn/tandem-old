@@ -74,11 +74,11 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
 
   switch(event.type) {
     case SYNTHETIC_WINDOW_PROXY_OPENED: {
-      const { instance, parentWindowId, browserId } = event as SyntheticWindowOpened;
+      const { instance, parentWindowId } = event as SyntheticWindowOpened;
       let syntheticBrowser: SyntheticBrowser;
-      syntheticBrowser = getSyntheticBrowser(root, browserId);
+      syntheticBrowser = getSyntheticBrowser(root, instance.browserId);
       if (!syntheticBrowser) {
-        console.warn(`Unable to find synthetic browser with ID ${browserId}. It's likely that the app state was replaced.`);
+        console.warn(`Unable to find synthetic browser with ID ${instance.browserId}. It's likely that the app state was replaced.`);
         return root;
       }
       return upsertSyntheticWindow(root, syntheticBrowser.$id, instance.struct);

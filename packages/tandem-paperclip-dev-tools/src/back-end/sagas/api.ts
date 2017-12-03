@@ -2,7 +2,8 @@ import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { kebabCase } from "lodash";
 import { eventChannel } from "redux-saga";
 import * as sharp from "sharp";
-import * as request from "request";
+import * as request from "request"; 
+import * as md5 from "md5";
 import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
 
 import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../state";
@@ -47,7 +48,7 @@ function* addRoutes(server: express.Express) {
   server.get("/components", yield wrapRoute(getComponents));
 
   // return all components
-  server.get("/screenshots/:screenshotId", yield wrapRoute(getComponentsScreenshot));
+  server.get("/screenshots/:screenshotHash", yield wrapRoute(getComponentsScreenshot));
 
 
   // return a module preview
@@ -58,7 +59,7 @@ function* addRoutes(server: express.Express) {
   server.get("/components/:componentId/preview", yield wrapRoute(getComponentPreview));
 
   // return all components
-  server.get("/components/:componentId/screenshots/:screenshotId.png", yield wrapRoute(getTrimmedComponentScreenshot));
+  server.get("/components/:componentId/screenshots/:screenshotHash.png", yield wrapRoute(getTrimmedComponentScreenshot));
 
   // create a new component (creates a new module with a single component)
   server.post("/components", yield wrapRoute(createComponent));
@@ -364,7 +365,10 @@ function* getComponentsScreenshotFromReq(req: express.Request) {
   if (!state.componentScreenshots.length) {
     return null;
   }
-  return state.componentScreenshots[req.params.screenshotId === "latest" ? state.componentScreenshots.length - 1 : Number(req.params.screenshotId)];
+  if (req.params.screenshotHash === "latest") {
+    return state.componentScreenshots[state.componentScreenshots.length - 1];
+  }
+  return state.componentScreenshots.find((screenshot) => md5(screenshot.uri) === req.params.screenshotHash);
 }
 
 function* getComponentsScreenshot(req: express.Request, res: express.Response, next) {

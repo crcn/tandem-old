@@ -92,7 +92,6 @@ export type SyntheticWindowScroll = {
 
 export type SyntheticWindowOpened = {
   instance: SEnvWindowInterface;
-  browserId: string;
   parentWindowId: string;
 } & BaseEvent;
 
@@ -147,16 +146,14 @@ export const mutateSourceContentRequest2 = (mutations: Mutation<any>[]): MutateS
   type: MUTATE_SOURCE_CONTENT,
 });
 
-export const syntheticWindowOpened = (instance: SEnvWindowInterface, browserId: string, parentWindowId?: string): SyntheticWindowOpened => ({
+export const syntheticWindowOpened = (instance: SEnvWindowInterface, parentWindowId?: string): SyntheticWindowOpened => ({
   parentWindowId,
-  browserId,
   instance,
   type: SYNTHETIC_WINDOW_OPENED
 });
 
-export const syntheticWindowProxyOpened = (instance: SEnvWindowInterface, browserId: string, parentWindowId?: string): SyntheticWindowOpened => ({
+export const syntheticWindowProxyOpened = (instance: SEnvWindowInterface, parentWindowId?: string): SyntheticWindowOpened => ({
   parentWindowId,
-  browserId,
   instance,
   type: SYNTHETIC_WINDOW_PROXY_OPENED
 });

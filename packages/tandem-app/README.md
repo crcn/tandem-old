@@ -6,6 +6,9 @@ IMMEDIATE:
 
 (need to start using tandem to build itself completely)
 
+- [ ] Bugs
+  - [ ] Multiple windows are rendering
+
 - [ ] VSCode
   - [ ] change do not always show up immediately
   - [ ] Open current file in Tandem

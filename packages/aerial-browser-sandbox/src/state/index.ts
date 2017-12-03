@@ -569,6 +569,7 @@ export const isSyntheticNodeType = (value: string) => {
 
 export type SyntheticWindow = {
   scrollPosition: Point;
+  browserId: string;
   renderContainer: HTMLElement;
   instance: SEnvWindowInterface;
   location: string;
@@ -595,7 +596,7 @@ export type SyntheticBrowserRootState = {
 
 export const createSyntheticBrowserStore = (syntheticBrowsers?: SyntheticBrowser[]) => dsIndex(createDataStore(syntheticBrowsers), "$id");
 
-export const createSyntheticWindow = serializableKeysFactory(["scrollPosition", "bounds", "location", "$id"], createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
+export const createSyntheticWindow = serializableKeysFactory(["scrollPosition", "bounds", "location", "$id", "browserId"], createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
   externalResourceUris: []
 }));
 

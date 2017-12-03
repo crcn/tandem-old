@@ -35,6 +35,7 @@ type OpenTarget = "_self" | "_blank";
 export interface SEnvWindowInterface extends Window {
   uid: string;
   $id: string;
+  browserId: string;
   didChange();
   $synthetic: boolean;
   $load();
@@ -198,6 +199,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
   const TAG_NAME_MAP = getSEnvHTMLElementClasses(context);
 
   class SEnvNavigator implements Navigator {
+    readonly doNotTrack: string = null;
     readonly appCodeName: string = "Tandem";
     readonly appName: string = "Tandem";
     readonly appVersion: string = "1.0";
@@ -475,7 +477,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     readonly CSSStyleDeclaration: typeof CSSStyleDeclaration;
     readonly CSSStyleSheet: typeof CSSStyleSheet;
     
-    constructor(origin: string, top?: SEnvWindowInterface) {
+    constructor(origin: string, readonly browserId: string, top?: SEnvWindowInterface) {
       super();
 
       this._onRendererPainted = this._onRendererPainted.bind(this);
@@ -553,9 +555,11 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
     set renderer(value: SyntheticWindowRendererInterface) {
       if (this._renderer) {
+        this._renderer.dispose();
         this._renderer.removeEventListener(SyntheticWindowRendererEvent.PAINTED, this._onRendererPainted);
       }
-      this._renderer = value;
+      this._renderer = value || createNoopRenderer(this);
+
       this._renderer.addEventListener(SyntheticWindowRendererEvent.PAINTED, this._onRendererPainted);
     }
 
@@ -569,6 +573,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
       if (!this._struct) {
         this._struct = createSyntheticWindow({
           $id: this.$id,
+          browserId: this.browserId,
           location: this.location.toString(),
           document: this.document.struct,
           instance: this,
@@ -678,7 +683,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     clone(deep?: boolean) {
-      const window = new SEnvWindow(this.location.toString(), this.top === this ? null : this.top);
+      const window = new SEnvWindow(this.location.toString(), this.browserId, this.top === this ? null : this.top);
       window.$id = this.$id;
       if (deep !== false) {
         window.document.$id = this.document.$id;
@@ -731,7 +736,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
         const SEnvWindow = getSEnvWindowClass({ console, fetch, reload: open });
         
-        const window = new SEnvWindow(url);
+        const window = new SEnvWindow(url, this.browserId);
         window.$id = windowId;
         window.document.$id = window.$id + "-document";
         window.$load();
@@ -863,6 +868,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
     }
 
     async $load() {
+      console.log("LOAD WINDOW");
       const location = this.location.toString();
       this.renderer.start();
       if (location) {
@@ -901,7 +907,7 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
 export const openSyntheticEnvironmentWindow = (location: string, context: SEnvWindowContext) => {
   const SEnvWindow = getSEnvWindowClass(context);
-  const window = new SEnvWindow(location);
+  const window = new SEnvWindow(location, this.browserId);
   window.$load();
   return window;
 }

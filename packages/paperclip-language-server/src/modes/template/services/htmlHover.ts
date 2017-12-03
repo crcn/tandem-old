@@ -42,8 +42,6 @@ export function doHover(
 
       const hoverFilePath = path.join(TMP_DIRECTORY, `${id.replace(/\-/g, "")}.png`);
 
-      console.log(hoverFilePath);
-
       return (async () => {
 
         // Hack. Must save files to local FS for some reason.
@@ -66,6 +64,8 @@ export function doHover(
         }
 
         return {
+
+          // timestamp for cache buster
           contents: `![component preview](file://${hoverFilePath}?${Date.now()})`
         };
       })();
