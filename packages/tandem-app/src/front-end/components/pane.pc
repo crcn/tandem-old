@@ -48,7 +48,6 @@
   <template>
     <div class="header">
       <slot name="header"></slot>  
-        
     </div>
     <div class="content">
       <slot name="content"></slot>

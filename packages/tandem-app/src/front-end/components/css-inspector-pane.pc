@@ -57,11 +57,12 @@
     .inherited {
       margin-right: var(--base6);
       padding: var(--base) var(--base3);
-      position: absolute;
-      float: right;
+      display: inline;
+      font-size: 0.6em;
+      text-transform: uppercase;
       background: var(--border-color-deep);
       color: var(--font-color-invert);
-      border-radius: var(--base1);
+      border-radius: 1px;
     }
 
     .selector-text {

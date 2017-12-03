@@ -8,6 +8,7 @@ IMMEDIATE:
 
 - [ ] Bugs
   - [ ] cannot remove CSS selectors (try removing td-stage for workspace)
+  - [ ] Source location not always updating in synthetic window (try cmd clicking -- wrong parts of cod selected)
 
 - [ ] VSCode
   - [ ] Open current file in Tandem
@@ -20,6 +21,8 @@ IMMEDIATE:
     - [ ] cmd click breadcrumb to view source
     - [ ] scrolling - no line break
     - [ ] update UI
+  - [ ] UX
+    - [ ] spinner
 
 - [ ] Paperclip
   - [ ] make it resilient to exceptions
