@@ -15,6 +15,7 @@ export const FILE_REMOVED = "FILE_REMOVED";
 export const HEADLESS_BROWSER_LAUNCHED = "HEADLESS_BROWSER_LAUNCHED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
 export const COMPONENT_SCREENSHOT_STARTED = "COMPONENT_SCREENSHOT_STARTED";
+export const MODULE_CREATED = "MODULE_CREATED";
 export const COMPONENT_SCREENSHOT_TAKEN = "COMPONENT_SCREENSHOT_TAKEN";
 export const COMPONENT_SCREENSHOT_REMOVED = "COMPONENT_SCREENSHOT_REMOVED";
 export const START_DEV_SERVER_EXECUTED = "START_DEV_SERVER_EXECUTED";
@@ -50,6 +51,7 @@ export type FileContentChanged =  {
   publicPath: string;
   content: Buffer;
   mtime: Date;
+  $public: true;
 } & FileAction;
 
 export type MutateSourceContentRequest = {
@@ -109,6 +111,21 @@ export type ChildDevServerStarted = {
   port: number
 } & Action;
 
+export type ModuleCreated = {
+  filePath: string;
+  content: Buffer;
+  $public: true;
+} & Action;
+
+export const moduleCreated = (filePath: string, publicPath: string, content: Buffer): FileContentChanged => ({
+  filePath,
+  content,
+  publicPath,
+  mtime: new Date(),
+  $public: true,
+  type: MODULE_CREATED
+}); 
+
 export const initServerRequested = (options: InitOptions): InitServerRequested => ({
   type: INIT_SERVER_REQUESTED,
   options,
@@ -124,12 +141,13 @@ export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const fileContentChanged = publicActionFactory((filePath: string, publicPath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
+export const fileContentChanged = (filePath: string, publicPath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
   type: FILE_CONTENT_CHANGED,
   content,
   filePath,
   publicPath,
-  mtime
+  mtime,
+  $public: true
 }));
 
 export const fileRemoved = publicActionFactory((filePath: string, publicPath: string): FileAction  => ({

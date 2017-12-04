@@ -11,7 +11,7 @@ import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
 import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
-import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged } from "../actions";
+import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged, moduleCreated } from "../actions";
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
@@ -42,7 +42,6 @@ function* addRoutes(server: express.Express) {
   console.log("serving paperclip dist/ folder");
 
   server.all(/^\/proxy\/.*/, yield wrapRoute(proxy));
-  server.post(PUBLIC_SRC_DIR_PATH, yield wrapRoute(setFile));
 
   // return all components
   server.get("/components", yield wrapRoute(getComponents));
@@ -243,6 +242,10 @@ function* createComponent(req: express.Request, res: express.Response) {
     filePath,
     content
   );
+
+  const publicPath = getPublicSrcPath(filePath, state);
+
+  yield put(moduleCreated(filePath, publicPath, new Buffer(content)));
 
   res.send({ componentId: componentId });
 
@@ -583,6 +586,6 @@ function* setFile(req: express.Request, res: express.Response) {
   const { filePath, content } = yield call(getPostData, req);
   const state: ApplicationState = yield select();
   const publicPath = getPublicFilePath(filePath, state);
-  yield put(fileContentChanged(filePath, publicPath, new (Buffer as any)(content, "utf8"), new Date()));
+  yield put(fileContentChanged(filePath, publicPath, new Buffer(content, "utf8"), new Date()));
   res.send([]);
 }

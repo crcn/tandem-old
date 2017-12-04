@@ -16,6 +16,8 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 
 #### TODOS
 
+- [ ] components must load when tandem opens for first time
+- [ ] must be able to open tandem by clicking 
 - [ ] Open tandem window if not connected
 - [ ] Welcome banner in vscode prompting to create 
 - [ ] <preview /> tag check

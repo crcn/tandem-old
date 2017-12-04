@@ -160,7 +160,7 @@ export function* syntheticBrowserSaga() {
 function* handleOpenSyntheticWindow() {
   while(true) {
     const request = (yield take((action: OpenSyntheticBrowserWindow) => action.type === OPEN_SYNTHETIC_WINDOW)) as OpenSyntheticBrowserWindow;
-    const instance = (yield call(openSyntheticWindowEnvironment, request.state, request.syntheticBrowserId) as SEnvWindowInterface;
+    const instance = (yield call(openSyntheticWindowEnvironment, request.state, request.syntheticBrowserId)) as SEnvWindowInterface;
   }
 }
 

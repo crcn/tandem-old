@@ -24,15 +24,11 @@ IMMEDIATE:
     - [ ] scrolling - no line break
     - [ ] update UI
   - [ ] UX
-    - [ ] spinner
-
-- [ ] Paperclip
-  - [ ] make it resilient to exceptions
+    - [ ] spinner 
+  - [ ] meta click component cell to view source
+  - [ ] remove windows associated to components that have been removed
 
 HIGH PRIO:
-
-- [ ] paperclipc
-  - [ ] Must work with firefox
 
 - [ ] Native elements pane
 

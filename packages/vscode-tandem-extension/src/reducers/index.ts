@@ -1,6 +1,6 @@
 import { ExtensionState, updateExtensionState, getFileCacheContent, getFileCacheMtime } from "../state";
 import { isPaperclipFile } from "../utils";
-import { CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FILE_REMOVED, FileAction, TEXT_CONTENT_CHANGED, EXPRESS_SERVER_STARTED, ExpressServerStarted, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged } from "../actions";
+import { CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FILE_REMOVED, FileAction, TEXT_CONTENT_CHANGED, EXPRESS_SERVER_STARTED, ExpressServerStarted, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, MODULE_CREATED } from "../actions";
 import { Action } from "redux";
 
 export function mainReducer(state: ExtensionState, action: Action) {
@@ -34,6 +34,8 @@ export function mainReducer(state: ExtensionState, action: Action) {
         }
       })
     }
+
+    case MODULE_CREATED:
     case TEXT_CONTENT_CHANGED: 
     case FILE_CONTENT_CHANGED: {
       let { filePath, content, mtime } = action as FileContentChanged;

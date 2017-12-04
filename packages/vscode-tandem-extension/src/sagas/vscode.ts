@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED } from "../actions";
 import { parseModuleSource, loadModuleAST } from "paperclip";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime } from "../state";
@@ -23,6 +23,7 @@ export function* vscodeSaga() {
   yield fork(handleTextDocumentClose);
   yield fork(handleInsertComponent);
   yield fork(handleOpenCurrentFileInTandem);
+  yield fork(handleModuleCreated);
 }
 
 function* handleAlerts() {
@@ -51,7 +52,7 @@ function* handleFileContentChanged() {
 
   yield fork(function*() {
     while(true) {
-      yield take(TEXT_CONTENT_CHANGED);
+      yield take([TEXT_CONTENT_CHANGED]);
       prevState = yield select();
     }
   });
@@ -63,11 +64,11 @@ function* handleFileContentChanged() {
     if (getFileCacheMtime(filePath, prevState) && getFileCacheMtime(filePath, prevState).getTime() >= new Date(mtime).getTime() || getFileCacheContent(filePath, prevState) === content) {
       console.info(`No change in store -- skipping file open`);
       continue;
-    }
+    }    
 
     prevState = state;
 
-    console.log(`Opening file ${filePath}`, content);
+    console.log(`Opening file ${filePath}`);
 
     if (!fs.existsSync(filePath)) {
       console.warn(`Cannot open file ${filePath} because it does not exist.`);
@@ -108,7 +109,6 @@ function* handleTextDocumentChange() {
   const chan = eventChannel((emit) => {
     vscode.workspace.onDidChangeTextDocument((e) => {
       const document = e.document as vscode.TextDocument;
-      
       emit(textContentChanged(document.uri.fsPath, new Buffer(document.getText())));
     })
     return () => {};
@@ -120,9 +120,11 @@ function* handleTextDocumentChange() {
 
     // Covers cases where change events are emitted when the content
     // hasn't changed. 
-    if (getFileCacheContent(action.filePath, state) === action.content) {
+    if (getFileCacheContent(action.filePath, state) && getFileCacheContent(action.filePath, state).toString("utf8") === action.content.toString("utf8")) {
       continue;
     }
+
+    console.log("TEXT CHANGED", action.content.toString("utf8"));
     yield put(action);
   }
 }
@@ -208,6 +210,15 @@ function* handleActiveTextEditorChange() {
   }
 }
 
+function* handleModuleCreated() {
+  while(1) {
+    const { filePath }: FileContentChanged = yield take(MODULE_CREATED);
+    console.log("Module created, opening doc", filePath);
+    vscode.workspace.openTextDocument(filePath).then(doc => {
+      vscode.window.showTextDocument(doc);
+    });
+  }
+}
 
 function* handleInsertComponent() {
   while(1) {

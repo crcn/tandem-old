@@ -41,7 +41,7 @@ function* handleWatchUrisRequest() {
       return ({
         filePath: filePath,
         a: Math.random(),
-        content: fs.readFileSync(filePath),
+        content: new Buffer(fs.readFileSync(filePath, "utf8")),
         mtime: fs.lstatSync(filePath).mtime
       });
     };
@@ -65,10 +65,9 @@ function* handleWatchUrisRequest() {
           if (fileCacheItem && fileCacheItem.mtime === mtime) {
             return;
           }
-          const newContent = fs.readFileSync(path);
-
+          const newContent = fs.readFileSync(path, "utf8");
           const publicPath = getPublicFilePath(path, state);
-          emit(fileContentChanged(path, publicPath, newContent, mtime));
+          emit(fileContentChanged(path, publicPath, new Buffer(newContent), mtime));
         }
 
         watcher.on("add", emitChange);

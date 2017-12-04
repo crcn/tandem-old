@@ -122,7 +122,7 @@ function* handleTextEditorChanges() {
           const req: request.Request = yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
             json: {
               filePath,
-              content,
+              content: content.toString("utf8"),
               mtime
             }
           });
