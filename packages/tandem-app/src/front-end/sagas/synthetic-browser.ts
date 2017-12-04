@@ -61,6 +61,7 @@ import {
   CSS_DECLARATION_NAME_CHANGED,
   CSSDeclarationChanged,
   CSS_DECLARATION_VALUE_CHANGED,
+  windowFocused,
   FILE_CONTENT_CHANGED,
   FILE_REMOVED,
   FileChanged,
@@ -210,14 +211,23 @@ function* handleOpenExternalWindowsRequested() {
     const workspace = getSelectedWorkspace(state);
     const browser = getSyntheticBrowser(state, workspace.browserId);
 
+    let openedNewWindow = false;
+    let lastExistingWindow;
+
     for (const uri of uris) {
       const existingWindow = browser.windows.find((window) => window.location === uri);
       if (existingWindow) {
+        lastExistingWindow = existingWindow;
         continue;
       }
+      openedNewWindow = true;
       yield put(openSyntheticWindowRequest({
         location: uri
       }, browser.$id));
+    }
+
+    if (!openedNewWindow && lastExistingWindow) {
+      yield put(windowFocused(lastExistingWindow.$id));
     }
   }
 }

@@ -143,6 +143,8 @@ import {
   STAGE_TOOL_WINDOW_TITLE_CLICKED,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
   RESIZER_PATH_MOUSE_STOPPED_MOVING,
+  WINDOW_FOCUSED,
+  WindowFocused,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
   CanvasElementsComputedPropsChanged,
   STAGE_TOOL_WINDOW_BACKGROUND_CLICKED,
@@ -423,6 +425,12 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
         movingOrResizing: false
       });
       return state;
+    }
+
+    case WINDOW_FOCUSED: {
+      const { windowId } = event as WindowFocused;
+      const window = getSyntheticWindow(state, windowId);
+      return selectAndCenterSyntheticWindow(state, window);
     }
 
     case SYNTHETIC_WINDOW_PROXY_OPENED: {

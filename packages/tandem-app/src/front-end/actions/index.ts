@@ -71,6 +71,7 @@ export const STAGE_TOOL_EDIT_TEXT_BLUR = "STAGE_TOOL_EDIT_TEXT_BLUR";
 export const STAGE_MOUNTED = "STAGE_MOUNTED";
 export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
 export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
+export const WINDOW_FOCUSED   = "WINDOW_FOCUSED";
 export const CSS_DECLARATION_CREATED   = "CSS_DECLARATION_CREATED";
 export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_ENTER";
 export const SOURCE_CLICKED   = "SOURCE_CLICKED";
@@ -149,6 +150,10 @@ export type ResizerPathMoved = {
 
 export type LoadedSavedState = {
   state: ApplicationState;
+} & BaseEvent;
+
+export type WindowFocused = {
+  windowId: string;
 } & BaseEvent;
 
 export type ResizerPathStoppedMoving = {
@@ -434,6 +439,11 @@ export const stageToolOverlayMousePanStart = (windowId: string): StageToolOverla
   windowId,
   type: STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
 });
+
+export const windowFocused = (windowId: string): WindowFocused => ({
+  type: WINDOW_FOCUSED,
+  windowId
+})
 
 export const stageToolOverlayMousePanning = (windowId: string, center: Point, deltaY: number, velocityY: number): StageToolOverlayMousePanning => ({
   windowId,
