@@ -350,7 +350,10 @@ function* handleOpenCurrentFileInTandem() {
 
 function* handleOpenFileRequested() {
   while(true) {
-    const { source: { uri, start, end } }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+    const { source }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+
+    const { uri, start, end }  = typeof source === "object" ? source : { uri: source, start: null, end: null };
+    
     vscode.workspace.openTextDocument(uri.replace("file://", "")).then(doc => {
       vscode.window.showTextDocument(doc).then(() => {
         const activeTextEditor = vscode.window.activeTextEditor;

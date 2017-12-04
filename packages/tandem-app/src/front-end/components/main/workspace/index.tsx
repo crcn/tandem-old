@@ -6,7 +6,7 @@ import { Dispatcher, Message } from "aerial-common2";
 import { ElementGutter } from "./element-gutter";
 import { ProjectGutter } from "./project-gutter";
 import { Stage } from "./stage";
-import { TextEditor } from "./text-editor";
+// import { TextEditor } from "./text-editor";
 import { Breadcrumbs } from "./breadcrumbs";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";

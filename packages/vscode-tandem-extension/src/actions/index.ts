@@ -50,7 +50,7 @@ export type FileAction = {
 } & Action;
 
 export type OpenFileRequested = {
-  source: VMObjectExpressionSource
+  source: VMObjectExpressionSource|string
 } & Action;
 
 export type OpenTandemWindowsRequested = {

@@ -20,7 +20,7 @@ export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
   return await response.json();
 }
 
-export const apiOpenSourceFile = async (source: ExpressionLocation, state: ApplicationState) => { 
+export const apiOpenSourceFile = async (source: ExpressionLocation|string, state: ApplicationState) => { 
   const response = await fetch(`${state.apiHost}/open`, {
     method: "POST",
     headers: {

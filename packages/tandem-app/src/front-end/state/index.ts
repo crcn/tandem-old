@@ -439,6 +439,8 @@ export const getStageTranslate = (stage: Stage) => stage.translate;
 export const getWorkspaceById = (state: ApplicationState, id: string): Workspace => state.workspaces.find((workspace) => workspace.$id === id);
 export const getSelectedWorkspace = (state: ApplicationState) => state.selectedWorkspaceId && getWorkspaceById(state, state.selectedWorkspaceId);
 
+export const getAvailableComponent = (componentId: string, workspace: Workspace) => workspace.availableComponents.find(component => component.$id === componentId);
+
 export const getWorkspaceLastSelectionOwnerWindow = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);
   if (workspace.selectionRefs.length === 0) {

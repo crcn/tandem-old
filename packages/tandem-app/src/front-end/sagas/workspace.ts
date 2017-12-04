@@ -23,6 +23,7 @@ import {
   PREV_WINDOW_SHORTCUT_PRESSED,
   COMPONENTS_PANE_ADD_COMPONENT_CLICKED,
   RESIZER_PATH_MOUSE_MOVED,
+  COMPONENTS_PANE_COMPONENT_CLICKED,
   DeleteShortcutPressed, 
   SOURCE_CLICKED,
   SourceClicked,
@@ -33,10 +34,13 @@ import {
   DND_ENDED,
   dndHandled,
   DNDEvent,
+  deleteShortcutPressed,
+  apiComponentsLoaded ,
   OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED,
   OpenExternalWindowButtonClicked,
   PROMPTED_NEW_WINDOW_URL,
   PromptedNewWindowUrl,
+  ComponentsPaneComponentClicked,
   DELETE_SHORCUT_PRESSED, 
   fullScreenTargetDeleted,
   StageToolOverlayClicked, 
@@ -70,17 +74,20 @@ import {
   getSelectedWorkspace, 
   getScaledMouseStagePosition,
   getWorkspaceSelectionBounds,
+  AVAILABLE_COMPONENT,
   getBoundedWorkspaceSelection,
   getWorkspaceLastSelectionOwnerWindow,
+  getAvailableComponent,
   getSyntheticWindowWorkspace,
   getStageToolMouseNodeTargetReference,
 } from "../state";
-import { deleteShortcutPressed, AVAILABLE_COMPONENT, apiComponentsLoaded } from "front-end";
+// import { deleteShortcutPressed, , apiComponentsLoaded } from "front-end";
 
 export function* mainWorkspaceSaga() {
   yield fork(openDefaultWindow);
   yield fork(handleAltClickElement);
   yield fork(handleMetaClickElement);
+  yield fork(handleMetaClickComponentCell);
   yield fork(handleDeleteKeyPressed);
   yield fork(handleNextWindowPressed);
   yield fork(handlePrevWindowPressed);
@@ -163,6 +170,17 @@ function* handleMetaClickElement() {
     } else if (!node.source) {
       console.warn(`source URI does not exist on selected node.`);
     }
+  }
+}
+
+function* handleMetaClickComponentCell() {
+  while(true) {
+    const { componentId }: ComponentsPaneComponentClicked = yield take((action: StageToolOverlayClicked) => action.type === COMPONENTS_PANE_COMPONENT_CLICKED);
+    const state: ApplicationState = yield select();
+    const workspace = getSelectedWorkspace(state);
+    const component = getAvailableComponent(componentId, workspace);
+
+    yield call(apiOpenSourceFile, component.filePath, state);
   }
 }
 
