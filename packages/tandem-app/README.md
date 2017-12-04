@@ -4,18 +4,15 @@ RESEARCH:
 
 IMMEDIATE:
 
-(need to start using tandem to build itself completely)
-
-- [ ] Bugs
-  - [ ] cannot remove CSS selectors (try removing td-stage for workspace)
-  - [ ] Source location not always updating in synthetic window (try cmd clicking -- wrong parts of cod selected)
-
 - [ ] VSCode
-  - [ ] Open current file in Tandem
-  - [ ] edit live button hovering over components
-  - [ ] auto complete for components 
-  - [ ] button bar 
-  - [ ] app icon
+  - [ ] Components must load when opening Tandem for first time
+  - [ ] Remove windows of files that have been deleted
+  - [ ] Open Tandem when paintbrush is clicked
+
+- [ ] Paperclip
+  - [ ] Use <preview /> tag instead of meta
+
+- [ ] CSS Inspector
 
 - [ ] Tandem
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
@@ -55,10 +52,6 @@ HIGH PRIO:
     - [ ] add style rule (auto add to scoped style element)
     - [ ] `:root` inspecting
 
-PROBLEMS:
-
-- [ ] views not need props by react components
-
 POSSIBLY:
 
 - [ ] Paperclip
@@ -67,6 +60,7 @@ POSSIBLY:
     - [ ] ability to inherit styles (assuming it matches spec)
 
 - [ ] show inferred types for component as they're being coded
+
 #### FOCUS
 
 - [ ] Safety is #1 priority
