@@ -36,6 +36,7 @@ export interface SEnvWindowInterface extends Window {
   uid: string;
   $id: string;
   browserId: string;
+  cache: any;
   didChange();
   $synthetic: boolean;
   $load();
@@ -175,6 +176,8 @@ const throwUnsupportedMethod = () => {
   throw new Error(`Unsupported`);
 }
 
+const CACHE = {};
+
 export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
   const { createRenderer, fetch = defaultFetch, getProxyUrl = identity } = context;
 
@@ -284,6 +287,8 @@ export const getSEnvWindowClass = weakMemo((context: SEnvWindowContext) => {
 
   return class SEnvWindow extends SEnvEventTarget implements SEnvWindowInterface {
 
+    // perf optimization offered for paperclip
+    readonly cache: any = CACHE;  
     readonly location: Location;
     private _selector: any;
     private _renderer: SyntheticWindowRendererInterface;

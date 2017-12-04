@@ -13,7 +13,7 @@ import { getLocation, getPosition, getTokenLocation } from "./ast-utils";
 import { TokenScanner, Scanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 
-const _memos: any = {};
+const _memos: any = typeof window !== "undefined" && window["cache"] ? window["cache"].parseModuleSource || (window["cache"].parseModuleSource = {}) : {};
 
 export const parseModuleSource = (source: string, filePath?: string): ParseResult => {
   if (_memos[source]) return _memos[source]; // result should be immutable, so this is okay 
