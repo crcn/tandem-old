@@ -80,9 +80,10 @@ import {
   pointToBounds,
   MOVED,
   RESIZED,
+
 } from "aerial-common2";
 
-import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, RemoveChildMutation, createStringMutation } from "source-mutation";
+import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, RemoveChildMutation, createStringMutation, diffArray } from "source-mutation";
 
 import {
   createSyntheticComment,
@@ -159,11 +160,11 @@ export function* syntheticBrowserSaga() {
 function* handleOpenSyntheticWindow() {
   while(true) {
     const request = (yield take((action: OpenSyntheticBrowserWindow) => action.type === OPEN_SYNTHETIC_WINDOW)) as OpenSyntheticBrowserWindow;
-    const instance = (yield call(openSyntheticWindowEnvironment, request.state, request.syntheticBrowserId)) as SEnvWindowInterface;
+    const instance = (yield call(openSyntheticWindowEnvironment, request.state, request.syntheticBrowserId) as SEnvWindowInterface;
   }
 }
 
-function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), location, bounds, scrollPosition }: SyntheticWindow, browserId) {
+function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), location, bounds, scrollPosition }: SyntheticWindow, browserId: string) {
 
   let main: SEnvWindowInterface;
   const documentId = generateDefaultId();
@@ -216,7 +217,8 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
     while(true) {
       yield watchWindowExternalResourceUris(currentWindow, () => currentWindow.location.reload());
       currentWindow.$load();
-      yield put(syntheticWindowOpened(currentWindow));
+      const isNew = !getSyntheticWindow(yield select(), currentWindow.$id);
+      yield put(syntheticWindowOpened(currentWindow, null, isNew));
       yield take(reloadChan);
     }
   });
@@ -354,7 +356,7 @@ function* handleOpenedSyntheticWindow() {
   const proxies = new Map<string, [SEnvWindowInterface, () => any]>();
   const createRenderer = createSyntheticDOMRendererFactory(document);
 
-  function* updateProxy(window: SEnvWindowInterface) {
+  function* updateProxy(window: SEnvWindowInterface, isNew: boolean) {
     const containsProxy = proxies.has(window.$id);
     let proxy: SEnvWindowInterface;
     let disposeMirror: () => any;
@@ -368,7 +370,7 @@ function* handleOpenedSyntheticWindow() {
       proxy.renderer.start();
 
       disposeMirror = () => {};
-      yield put(syntheticWindowProxyOpened(proxy));
+      yield put(syntheticWindowProxyOpened(proxy, undefined, isNew));
     } else {
       [proxy, disposeMirror] = proxies.get(window.$id);
     }
@@ -378,8 +380,8 @@ function* handleOpenedSyntheticWindow() {
   };
 
   while(true) {
-    const { instance } = (yield take(SYNTHETIC_WINDOW_OPENED)) as SyntheticWindowOpened;
-    yield call(updateProxy, instance);
+    const { instance, isNew } = (yield take(SYNTHETIC_WINDOW_OPENED)) as SyntheticWindowOpened;
+    yield call(updateProxy, instance, isNew);
   }
 }
 
@@ -446,7 +448,7 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface) {
     });
     
     window.addEventListener(SEnvWindowOpenedEvent.WINDOW_OPENED, (event: SEnvWindowOpenedEventInterface) => {
-      emit(syntheticWindowOpened(event.window, window.$id));
+      emit(syntheticWindowOpened(event.window, window.$id, true));
     })
 
     window.addEventListener("scroll", (event) => {

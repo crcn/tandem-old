@@ -43,6 +43,9 @@ export const start = (options: InitOptions, onMessage: (message) => any = () => 
     dispose() {
       _killed = true;
       child.kill();
+    },
+    send(message) {
+      child.send(message);
     }
   };
 }

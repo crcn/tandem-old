@@ -68,7 +68,9 @@ import {
   WINDOW_SELECTION_SHIFTED,
   STAGE_TOOL_OVERLAY_MOUSE_PANNING,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
-  STAGE_TOOL_OVERLAY_MOUSE_PAN_START
+  STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
+  OpenExternalWindowsRequested,
+  OPEN_EXTERNAL_WINDOWS_REQUESTED
 } from "front-end/actions";
 
 export function* frontEndSyntheticBrowserSaga() {
@@ -82,6 +84,7 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleCSSDeclarationChanges);
   yield fork(handleWatchWindowResource);
   yield fork(handleFileChanged);
+  yield fork(handleOpenExternalWindowsRequested);
 }
 
 function* handleEmptyWindowsUrlAdded() {
@@ -195,6 +198,26 @@ function* handleFileChanged() {
       if (shouldReload) {
         window.instance.location.reload();
       }
+    }
+  }
+}
+
+function* handleOpenExternalWindowsRequested() {
+  while(true) {
+    const { uris }: OpenExternalWindowsRequested = yield take(OPEN_EXTERNAL_WINDOWS_REQUESTED);
+
+    const state: ApplicationState = yield select();
+    const workspace = getSelectedWorkspace(state);
+    const browser = getSyntheticBrowser(state, workspace.browserId);
+
+    for (const uri of uris) {
+      const existingWindow = browser.windows.find((window) => window.location === uri);
+      if (existingWindow) {
+        continue;
+      }
+      yield put(openSyntheticWindowRequest({
+        location: uri
+      }, browser.$id));
     }
   }
 }

@@ -125,6 +125,7 @@
             }
           },
           {
+            selected: true,
             document: {
               title: "Window 5",
             }

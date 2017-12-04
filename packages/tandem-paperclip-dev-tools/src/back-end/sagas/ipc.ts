@@ -27,6 +27,7 @@ function* receiveMessages() {
 function* sendMessages() {
   while(1) {
     const action = yield take();
+    console.log(action);
     if (action[TAG] || !action.$public) continue;
     try {
       process.send(action);

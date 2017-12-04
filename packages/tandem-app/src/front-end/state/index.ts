@@ -574,10 +574,9 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
   return [SYNTHETIC_ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [string, string];
 }
 
-export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, windowStore, browserStore }: ApplicationState) => ({
+export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, browserStore }: ApplicationState) => ({
   workspaces: workspaces.map(serializeWorkspace),
   selectedWorkspaceId,
-  windowStore: serialize(windowStore),
   browserStore: serialize(browserStore)
 });
 

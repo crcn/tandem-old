@@ -1,3 +1,5 @@
+
+
 #### Features
 
 - Syntax highlighting for Paperclip extensions
@@ -7,9 +9,14 @@
 
 Enough tooling where documentation is somewhat unnecessary for paperclip
 
+#### Features
+
+- Commands
+  - `
+
 #### TODOS
 
-- [ ] *open current component in Tandem
+- [ ] Open tandem window if not connected
 - [ ] Welcome banner in vscode prompting to create 
 - [ ] <preview /> tag check
 - [ ] [object Object] is replacing text content
@@ -22,6 +29,11 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 - "Edit file visually" button for PC files
   - [ ] should open new artboard in Tandem
   - [ ] should highlight artboard if already open
+
+
+#### Low priority todos
+
 - [ ] Commands
   - [ ] New static paperclip site project
   - [ ] New react paperclip site project
+

@@ -3,7 +3,9 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED } from "../actions";
+import { parseModuleSource, loadModuleAST } from "paperclip";
+import { NEW_COMPONENT_SNIPPET } from "../constants";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime } from "../state";
 import { isPaperclipFile } from "../utils";
 import { TextEditor, DecorationOptions, workspace, languages, DecorationRangeBehavior } from "vscode";
@@ -19,6 +21,8 @@ export function* vscodeSaga() {
   yield fork(handleOpenExternalWindow);
   yield fork(handleOpenFileRequested);
   yield fork(handleTextDocumentClose);
+  yield fork(handleInsertComponent);
+  yield fork(handleOpenCurrentFileInTandem);
 }
 
 function* handleAlerts() {
@@ -40,7 +44,6 @@ function* handleAlerts() {
     }
   }
 }
-
 
 function* handleFileContentChanged() {
   let mtimes = {};
@@ -131,8 +134,17 @@ function* handleCommands() {
     vscode.commands.registerCommand("tandem.openTandem", () => {
       emit(openTandemExecuted());
     });
+
     vscode.commands.registerCommand("tandem.openExternalWindow", () => {
       emit(openExternalWindowExecuted());
+    });
+
+    vscode.commands.registerCommand("tandem.openCurrentFileInTandem", () => {
+      emit(openCurrentFileInTandemExecuted());
+    });
+
+    vscode.commands.registerCommand("tandem.insertNewComponent", () => {
+      emit(insertNewComponentExecuted());
     });
 
     return () => {};
@@ -197,6 +209,73 @@ function* handleActiveTextEditorChange() {
 }
 
 
+function* handleInsertComponent() {
+  while(1) {
+    yield take(CREATE_INSERT_NEW_COMPONENT_EXECUTED);
+    if (!(yield call(checkCurrentFileIsPaperclip))) {
+      continue;
+    }
+
+    if (!(yield call(insertSnippet, NEW_COMPONENT_SNIPPET))) {
+      vscode.window.showErrorMessage(`Cannot insert component in this part of the document. Please more your caret somewhere else.`);
+      continue;
+    }
+  }
+}
+
+function* insertSnippet(insertText) {
+  const editor = vscode.window.activeTextEditor;
+  const doc = editor.document;
+  const carretOffset = insertText.indexOf("%|");
+  insertText = insertText.replace("%|", "");
+  const docText = doc.getText();
+  const selection = editor.selection.active || doc.positionAt(docText.length);
+
+  const offset = doc.offsetAt(selection);
+
+  // smoke test first to make sure that the 
+  const { diagnostics } = parseModuleSource(docText.substr(0, offset) + insertText + docText.substr(offset));
+
+  // We COULD just insert the snippet to the end of the document, but
+  // but it's probably better to fail here and notify the user so that they can correct _their_ mistake.
+  if (diagnostics.length) {
+    return false;
+  }
+
+  yield call(async () => {
+    return editor.edit((edit) => {
+      edit.insert(
+        selection,
+        insertText
+      );
+    });
+  });
+
+  if (carretOffset > -1) {
+    const newPos = doc.positionAt(offset + carretOffset);
+    editor.selection = new vscode.Selection(newPos, newPos);
+  }
+
+  return true;
+}
+
+function* checkCurrentFileIsPaperclip() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+
+  if (!activeTextEditor) {
+    vscode.window.showErrorMessage("Please open a Paperclip file to edit it visually in Tandem.");
+    return false;
+  }
+  const filePath = activeTextEditor.document.uri.fsPath;
+  if (!isPaperclipFile(filePath)) {
+    vscode.window.showErrorMessage("Only Paperclip (*.pc) files can be opened in Tandem.");
+    return false;
+  }
+
+  return true;
+}
+
+
 function* handleTextDocumentClose() {
   const chan = eventChannel((emit) => {
     vscode.workspace.onDidCloseTextDocument(() => {
@@ -207,17 +286,54 @@ function* handleTextDocumentClose() {
     return () => {};
   });
 
-  while(true) {
+  while(1) {
     const action = yield take(chan);
     yield put(action);
   }
 }
 
 function* handleOpenExternalWindow() {
-  while(true) {
+  while(1) {
     yield take(OPEN_EXTERNAL_WINDOW_EXECUTED);
     const state: ExtensionState = yield select();
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(getIndexUrl(state)));
+  }
+}
+
+function* handleOpenCurrentFileInTandem() {
+  while(true) {
+    yield take(OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED);
+    const state: ExtensionState = yield select();
+    if (!(yield call(checkCurrentFileIsPaperclip))) {
+      continue;
+    }
+    const activeTextEditor = vscode.window.activeTextEditor;
+    const filePath = activeTextEditor.document.uri.fsPath;
+    const { diagnostics, root } = parseModuleSource(activeTextEditor.document.getText(), filePath);
+
+    // just show one error for now
+    if (diagnostics.length) {
+      vscode.window.showErrorMessage(`Paperclip syntax error: ${diagnostics[0].message}`);
+      continue;
+    }
+
+    const module = loadModuleAST(root, filePath);
+    
+    if (!module.components.length) {
+      const pick = yield call(async () => {
+        return await vscode.window.showInformationMessage("Could not find a component to open with in Tandem. Would you like to create one?", "Yes", "No");
+      });
+
+      if (pick === "Yes") {
+        yield put(insertNewComponentExecuted());
+      }
+
+      continue;
+    }
+
+    const uris = module.components.map(({id}) => `/components/${id}/preview`);;
+
+    yield put(openTandemWindowsRequested(uris));    
   }
 }
 
@@ -237,7 +353,4 @@ function* handleOpenFileRequested() {
       });
     });
   }
-}
-
-function* handleHoverProviders() {
 }

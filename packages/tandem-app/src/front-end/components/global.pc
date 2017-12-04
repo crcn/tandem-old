@@ -98,7 +98,7 @@
   </template>
 </component>
 
-<component id="td-list-item" label="List Item">
+<component id="td-list-item" label="List Item" [[property noPadding]]>
   <style>
     :host {
       background: var(--background);
@@ -106,11 +106,18 @@
       padding: var(--base6) var(--base8);
       display: block;
     }
+    :host([noPadding]) {
+      padding: 0;
+    }
+
     :host(:last-child) {
       border-bottom: 0;
     }
     :host(:nth-child(2n)) {
       background: var(--background-alt);
+    }
+    :host([selected]) {
+      background: red;
     }
   </style>
   <template>

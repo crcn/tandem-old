@@ -37,6 +37,7 @@ import {
   SyntheticWindow,
   getStageTranslate,
   ShortcutServiceState,
+  AVAILABLE_COMPONENT,
   updateWorkspaceStage,
   getSelectedWorkspace,
   addWorkspaceSelection,
@@ -89,6 +90,8 @@ import {
   TreeNodeLabelClicked,
   WindowPaneRowClicked,
   SelectorDoubleClicked,
+  OPEN_EXTERNAL_WINDOWS_REQUESTED,
+  OpenExternalWindowsRequested,
   DeleteShortcutPressed,
   StageWillWindowKeyDown,
   BREADCRUMB_ITEM_MOUSE_ENTER,
@@ -143,6 +146,8 @@ import {
   STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
   CanvasElementsComputedPropsChanged,
   STAGE_TOOL_WINDOW_BACKGROUND_CLICKED,
+  COMPONENTS_PANE_COMPONENT_CLICKED,
+  ComponentsPaneComponentClicked,
   CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED,
   FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED,
   STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED,
@@ -155,24 +160,27 @@ import {
   getSyntheticWindow, 
   getSyntheticBrowser,
   SYNTHETIC_ELEMENT,
+  addSyntheticWindow,
   getMatchingElements,
   DEFAULT_WINDOW_WIDTH,
   DEFAULT_WINDOW_HEIGHT,
   getSyntheticNodeById,
+  updateSyntheticBrowser,
   SyntheticCSSStyleRule,
   SyntheticWindowOpened,
   getSyntheticNodeWindow,
   syntheticBrowserReducer, 
   getSyntheticWindowChild,
   SEnvCSSStyleRuleInterface,
+  createSyntheticWindow,
   openSyntheticWindowRequest,
   SyntheticCSSStyleDeclaration,
   SYNTHETIC_WINDOW_PROXY_OPENED,
   SEnvCSSStyleDeclarationInterface,
+  SYNTHETIC_WINDOW_OPENED
 } from "aerial-browser-sandbox";
 
 import reduceReducers = require("reduce-reducers");
-import { COMPONENTS_PANE_COMPONENT_CLICKED, ComponentsPaneComponentClicked, AVAILABLE_COMPONENT } from "front-end";
 
 export const applicationReducer = (state: ApplicationState = createApplicationState(), event: BaseEvent) => {
   switch(event.type) {
@@ -209,6 +217,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   state = shortcutReducer(state, event);
   state = apiReducer(state, event);
   state = dndReducer(state, event);
+  // state = externalReducer(state, event);
 
   return state;
 };
@@ -417,12 +426,11 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     }
 
     case SYNTHETIC_WINDOW_PROXY_OPENED: {
-      const { instance } = event as SyntheticWindowOpened;
+      const { instance, isNew } = event as SyntheticWindowOpened;
 
       // if a window instance exists in the store, then it's already visible on stage -- could
       // have been loaded from a saved state.
-      const window = getSyntheticWindow(state, instance.$id);
-      if (window) {
+      if (!isNew) {
         return state;
       }
       return selectAndCenterSyntheticWindow(state, instance.struct);
@@ -617,6 +625,39 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
   return state;
 }
 
+// const externalReducer = (state: ApplicationState, event: BaseEvent) => {
+//   switch(event.type) {
+//     case OPEN_EXTERNAL_WINDOWS_REQUESTED: {
+//       console.log("REQ");
+//       const { uris }: OpenExternalWindowsRequested = event;
+//       const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
+//       const browser = getSyntheticBrowser(state, workspace.browserId);
+//       const selection = [];
+//       for (const uri of uris) {
+//         let window = browser.windows.find(window => {
+//           return window.location === uri;
+//         });
+
+//         if (!window) {
+//           window = createSyntheticWindow({
+//             location: uri,
+//             bounds: { left: 0, top: 0, right: 100, bottom: 100 }
+//           });
+
+//           state = addSyntheticWindow(state, browser.$id, window);
+//         }
+
+//         selection.push(window);
+//       }
+
+//       console.log(selection);
+
+//       return state;
+//     }
+//   }
+//   return state;
+// };
+  
 const unfullscreen = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);
   const { originalWindowBounds } = workspace.stage.fullScreen;
@@ -729,7 +770,10 @@ const normalizeZoom = (zoom) => {
 const windowPaneReducer = (state: ApplicationState, event: BaseEvent) => {
   switch (event.type) {
     case WINDOW_PANE_ROW_CLICKED: {
-      return handleWindowSelectionFromAction(state, getStructReference(getSyntheticWindow(state, (event as WindowPaneRowClicked).windowId)), event as WindowPaneRowClicked);
+      const { windowId } = event as WindowPaneRowClicked;
+      const window = getSyntheticWindow(state, windowId);
+
+      return selectAndCenterSyntheticWindow(state, window);
     }
   }
   return state;

@@ -17,6 +17,8 @@ export function* devServerSaga() {
   yield fork(handleTextEditorChanges);
 }
 
+const TAG = "$$" + Date.now();
+
 const SAVE_DELAY = 250;
 
 function* handleDevConfigLoaded() {
@@ -31,8 +33,10 @@ function* handleDevConfigLoaded() {
 
   console.log(`spawning Paperclip dev server with env PORT ${childServerPort}`);
 
+  let proc;
+
   const chan = eventChannel(emit => {
-    const proc = startPCDevServer({
+    proc = startPCDevServer({
       cwd: rootPath,
       projectConfig: config.devServer,
       port: childServerPort
@@ -45,12 +49,20 @@ function* handleDevConfigLoaded() {
   yield spawn(function*() {
     while(1) {
       const action = yield take(chan);
+      action[TAG] = 1;
       yield spawn(function*() {
         yield put(action);
       });
     }
   });
 
+  yield spawn(function*() {
+    while(1) {
+      const action = yield take();
+      if (action[TAG] || !action.$public) continue;
+      proc.send(action);
+    }
+  });
 
   yield put(childDevServerStarted(childServerPort));
 }

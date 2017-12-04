@@ -66,7 +66,7 @@ export function doHover(
         return {
 
           // timestamp for cache buster
-          contents: `![component preview](file://${hoverFilePath}?${Date.now()})`
+          contents: `![component preview](file://${hoverFilePath}?${Date.now()}|height=150)`
         };
       })();
 

@@ -3,7 +3,7 @@
 <component id="td-pane">
   <style>
     .gutter {
-      background: var(--background);
+      background: var(--background)
       min-width: 250px;
       height: 100%;
       display: flex;

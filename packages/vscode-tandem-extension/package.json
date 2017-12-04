@@ -13,7 +13,8 @@
   ],
   "activationEvents": [
     "onCommand:tandem.openExternalWindow",
-    "onCommand:tandem.oenCurrentFileInTandem",
+    "onCommand:tandem.openCurrentFileInTandem",
+    "onCommand:tandem.insertNewComponent",
     "onLanguage:paperclip"
   ],
   "main": "./out/src/extension.js",
@@ -25,21 +26,22 @@
       },
       {
         "command": "tandem.openCurrentFileInTandem",
-        "title": "Open file in Tandem",
+        "title": "Open current file in Tandem",
         "category": "Tandem",
         "icon": {
-          "dark": "images/paintbucket.svg",
-          "light": "images/paintbucket.svg"
+          "dark": "assets/paintbrush-light.svg",
+          "light": "assets/paintbrush-dark.svg"
         }
       },
       {
         "command": "tandem.openCurrentComponentInTandem",
-        "title": "Open component in Tandem",
-        "category": "Tandem",
-        "icon": {
-          "dark": "images/paintbucket.svg",
-          "light": "images/paintbucket.svg"
-        }
+        "title": "Open hovered component in Tandem",
+        "category": "Tandem"
+      },
+      {
+        "command": "tandem.insertNewComponent",
+        "title": "Insert new component into document",
+        "category": "Tandem"
       }
     ],
     "languages": [
@@ -146,8 +148,8 @@
       "editor/title": [
         {
           "command": "tandem.openCurrentFileInTandem",
-          "when": "tandem.advanced.menus.editorTitle.editVisuallyButton",
-          "group": "navigation@100"
+          "when": "resourceLangId == paperclip && config.tandem.advanced.menus.editorTitle.editVisuallyButton",
+          "group": "navigation"
       }
       ]
     }

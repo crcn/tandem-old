@@ -10,7 +10,7 @@ export type ProjectGutterProps = {
 }
 
 export const ProjectGutterBase = ({ workspace, browser, dispatch }: ProjectGutterProps) => <Gutter left right={false}>
-  <WindowsPane windows={browser.windows || []} />
+  <WindowsPane windows={browser.windows || []} dispatch={dispatch} workspace={workspace} />
   <ComponentsPane workspace={workspace} dispatch={dispatch} />
 </Gutter>;
 

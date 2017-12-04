@@ -55,7 +55,6 @@ const enhanceWindowMount = compose<WindowMountInnerProps, WindowMountOuterProps>
     componentDidUpdate() {
       const { container, renderContainer } = this.props as WindowMountInnerProps;
       if (container && renderContainer) {
-        console.info(`Resetting synthetic window mount`);
         if (container.firstChild) {
           container.removeChild(container.firstChild);
         }

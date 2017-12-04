@@ -14,10 +14,13 @@ export const FILE_REMOVED = "FILE_REMOVED";
 export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
 export const START_DEV_SERVER_REQUESTED = "START_DEV_SERVER_REQUESTED";
 export const ACTIVE_TEXT_EDITOR_CHANGED = "ACTIVE_TEXT_EDITOR_CHANGED";
+export const OPEN_EXTERNAL_WINDOWS_REQUESTED = "OPEN_EXTERNAL_WINDOWS_REQUESTED";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 export const OPEN_FILE_REQUESTED = "OPEN_FILE_REQUESTED";
 export const OPEN_TANDEM_EXECUTED = "OPEN_TANDEM_EXECUTED";
 export const OPEN_EXTERNAL_WINDOW_EXECUTED = "OPEN_EXTERNAL_WINDOW_EXECUTED";
+export const OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED = "OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED";
+export const CREATE_INSERT_NEW_COMPONENT_EXECUTED = "CREATE_INSERT_NEW_COMPONENT_EXECUTED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
 
 export type HTTPRequest = {
@@ -47,6 +50,12 @@ export type FileAction = {
 
 export type OpenFileRequested = {
   source: VMObjectExpressionSource
+} & Action;
+
+export type OpenTandemWindowsRequested = {
+  uris: string[];
+  type: string;
+  $public: true
 } & Action;
 
 export enum AlertLevel {
@@ -106,6 +115,20 @@ export const openTandemExecuted = () => ({
 
 export const openExternalWindowExecuted = () => ({ 
   type: OPEN_EXTERNAL_WINDOW_EXECUTED
+});
+
+export const openCurrentFileInTandemExecuted = () => ({
+  type: OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED
+});
+
+export const insertNewComponentExecuted = () => ({
+  type: CREATE_INSERT_NEW_COMPONENT_EXECUTED
+});
+
+export const openTandemWindowsRequested = (uris: string[]): OpenTandemWindowsRequested => ({
+  type: OPEN_EXTERNAL_WINDOWS_REQUESTED,
+  uris,
+  $public: true
 });
 
 export const alert = (text: string, level: AlertLevel = AlertLevel.NOTICE): Alert => ({

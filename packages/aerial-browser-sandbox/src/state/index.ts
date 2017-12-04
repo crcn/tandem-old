@@ -599,7 +599,6 @@ export type FileCache = {
 export type SyntheticBrowserRootState = {
   apiHost?: string;
   browserStore: DataStore<SyntheticBrowser>;
-  windowStore?: DataStore<SyntheticWindow>;
 
   // TODO - may want to elevate this to aerial-common2
   fileCache: FileCache;
