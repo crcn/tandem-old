@@ -99,12 +99,12 @@ function getStyleMode(
       return languageService.getColorPresentations(embedded, stylesheets.get(embedded), color, range);
     },
     format(document, currRange, formattingOptions) {
-      if (config.paperclip.format.defaultFormatter[languageId] === 'none') {
+      if (config.tandem.paperclip.format.defaultFormatter[languageId] === 'none') {
         return [];
       }
 
       const { value, range } = getValueAndRange(document, currRange);
-      const needIndent = config.paperclip.format.styleInitialIndent;
+      const needIndent = config.tandem.paperclip.format.styleInitialIndent;
       const parserMap: { [k: string]: ParserOption } = {
         css: 'css'
       };

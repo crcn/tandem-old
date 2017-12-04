@@ -12,15 +12,34 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.openExternalWindow",
+    "onCommand:tandem.openExternalWindow",
+    "onCommand:tandem.oenCurrentFileInTandem",
     "onLanguage:paperclip"
   ],
   "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.openExternalWindow",
+        "command": "tandem.openExternalWindow",
         "title": "Open Tandem in external window"
+      },
+      {
+        "command": "tandem.openCurrentFileInTandem",
+        "title": "Open file in Tandem",
+        "category": "Tandem",
+        "icon": {
+          "dark": "images/paintbucket.svg",
+          "light": "images/paintbucket.svg"
+        }
+      },
+      {
+        "command": "tandem.openCurrentComponentInTandem",
+        "title": "Open component in Tandem",
+        "category": "Tandem",
+        "icon": {
+          "dark": "images/paintbucket.svg",
+          "light": "images/paintbucket.svg"
+        }
       }
     ],
     "languages": [
@@ -54,26 +73,26 @@
     "configuration": {
       "title": "paperclip configuration",
       "properties": {
-        "paperclip.devServer.sourceFilePattern": {
+        "tandem.paperclip.devServer.sourceFilePattern": {
           "type": "string",
           "default": "{,!(node_modules)/**/}*.pc",
           "description": "Files pattern for paperclip source files."
         },
-        "paperclip.devServer.port": {
+        "tandem.paperclip.devServer.port": {
           "type": "number",
           "description": "Port to use for dev server."
         },
-        "paperclip.colorDecorators.enable": {
+        "tandem.paperclip.colorDecorators.enable": {
           "type": "boolean",
           "default": true,
           "description": "Use color decorators in paperclip."
         },
-        "paperclip.validation.style": {
+        "tandem.paperclip.validation.style": {
           "type": "boolean",
           "default": true,
           "description": "Validate css in <style>."
         },
-        "paperclip.format.defaultFormatter.css": {
+        "tandem.paperclip.format.defaultFormatter.css": {
           "type": "string",
           "default": "prettier",
           "enum": [
@@ -86,14 +105,14 @@
           ],
           "description": "Default formatter for <style> region"
         },
-        "paperclip.format.defaultFormatterOptions": {
+        "tandem.paperclip.format.defaultFormatterOptions": {
           "type": "object",
           "default": {
             "js-beautify-html": {}
           },
           "description": "Options for all default formatters."
         },
-        "paperclip.format.styleInitialIndent": {
+        "tandem.paperclip.format.styleInitialIndent": {
           "type": "boolean",
           "default": false,
           "description": "Whether to have initial indent for <style> region."
@@ -115,8 +134,22 @@
           "type": "boolean",
           "default": true,
           "description": "Synchronizes changes with Tandem as you're writing code."
+        },
+        "tandem.advanced.menus.editorTitle.editVisuallyButton": {
+          "type": "boolean",
+          "default": true,
+          "describe": "Show/hide 'edit visually' button for paperclip files."
         }
       }
+    },
+    "menus": {
+      "editor/title": [
+        {
+          "command": "tandem.openCurrentFileInTandem",
+          "when": "tandem.advanced.menus.editorTitle.editVisuallyButton",
+          "group": "navigation@100"
+      }
+      ]
     }
   },
   "scripts": {

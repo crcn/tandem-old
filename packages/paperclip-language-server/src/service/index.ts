@@ -65,7 +65,7 @@ export function getVls(): VLS {
       languageModes = getLanguageModes(workspacePath, devToolsPort);
     },
     configure(config) {
-      const pcValidationOptions = config.paperclip.validation;
+      const pcValidationOptions = config.tandem.paperclip.validation;
       validation.css = pcValidationOptions.style;
       validation.javascript = pcValidationOptions.script;
 

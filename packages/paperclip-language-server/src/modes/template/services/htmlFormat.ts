@@ -18,7 +18,7 @@ export function htmlFormat(
 
   const htmlFormattingOptions = _.assign(
     defaultHtmlOptions,
-    config.paperclip.format.defaultFormatterOptions['js-beautify-html'],
+    config.tandem.paperclip.format.defaultFormatterOptions['js-beautify-html'],
     { end_with_newline: false }
   );
 

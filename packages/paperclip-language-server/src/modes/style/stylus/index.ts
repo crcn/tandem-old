@@ -21,7 +21,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<PaperclipDocum
   return {
     getId: () => 'stylus',
     configure(c) {
-      baseIndentShifted = _.get(c, 'paperclip.format.styleInitialIndent', false);
+      baseIndentShifted = _.get(c, 'tandem.paperclip.format.styleInitialIndent', false);
       config = c;
     },
     onDocumentRemoved() {},
@@ -64,7 +64,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<PaperclipDocum
       return stylusHover(embedded, position);
     },
     format(document, range, formatParams) {
-      if (config.paperclip.format.defaultFormatter.stylus === 'none') {
+      if (config.tandem.paperclip.format.defaultFormatter.stylus === 'none') {
         return [];
       }
 

@@ -25,7 +25,7 @@ function* handleServer() {
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      configurationSection: ["html", "paperclip"]
+      configurationSection: ["html", "paperclip", "tandem"]
     },
     initializationOptions: {
       devToolsPort: port

@@ -96,7 +96,7 @@ export function getPaperclipHTMLMode(
       return findDocumentSymbols(document, pcDocuments.get(document));
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-      if (config.paperclip.format.defaultFormatter.html === 'none') {
+      if (config.tandem.paperclip.format.defaultFormatter.html === 'none') {
         return [];
       }
       return htmlFormat(document, range, formattingOptions, config);

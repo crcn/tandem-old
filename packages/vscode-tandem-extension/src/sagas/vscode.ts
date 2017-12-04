@@ -128,10 +128,10 @@ function* handleCommands() {
   const chan = eventChannel((emit) => {
 
     // TODO - vscode styling is foobar, so this command is not available in package.json for now. Need to open a GH ticket for styling issues.
-    vscode.commands.registerCommand("extension.openTandem", () => {
+    vscode.commands.registerCommand("tandem.openTandem", () => {
       emit(openTandemExecuted());
     });
-    vscode.commands.registerCommand("extension.openExternalWindow", () => {
+    vscode.commands.registerCommand("tandem.openExternalWindow", () => {
       emit(openExternalWindowExecuted());
     });
 

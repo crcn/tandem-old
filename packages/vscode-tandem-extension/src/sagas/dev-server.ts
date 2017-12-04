@@ -25,7 +25,7 @@ function* handleDevConfigLoaded() {
     context
   }: ExtensionState = yield select();
 
-  const config =  workspace.getConfiguration("paperclip");
+  const config =  workspace.getConfiguration("tandem.paperclip");
 
   const childServerPort = yield call(getPort);
 

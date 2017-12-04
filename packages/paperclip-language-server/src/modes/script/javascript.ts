@@ -307,13 +307,13 @@ export function getJavascriptMode(
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
 
-      const defaultFormatter = config.paperclip.format.defaultFormatter.js;
+      const defaultFormatter = config.tandem.paperclip.format.defaultFormatter.js;
 
       if (defaultFormatter === 'none') {
         return [];
       }
 
-      const needIndent = config.paperclip.format.scriptInitialIndent;
+      const needIndent = config.tandem.paperclip.format.scriptInitialIndent;
       const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
       if (defaultFormatter === 'prettier') {
         const code = scriptDoc.getText();

@@ -14,6 +14,8 @@ IMMEDIATE:
   - [ ] Open current file in Tandem
   - [ ] edit live button hovering over components
   - [ ] auto complete for components 
+  - [ ] button bar 
+  - [ ] app icon
 
 - [ ] Tandem
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
