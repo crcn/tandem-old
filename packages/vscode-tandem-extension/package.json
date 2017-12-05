@@ -12,6 +12,7 @@
     "Other"
   ],
   "activationEvents": [
+    "workspaceContains:**/*.pc",
     "onCommand:tandem.openExternalWindow",
     "onCommand:tandem.openCurrentFileInTandem",
     "onCommand:tandem.insertNewComponent",

@@ -394,10 +394,10 @@ function* handleOpenFileRequested() {
 
 function* handleTandemFEStatus() {
   const state: ExtensionState = yield select();
-  const status = window.createStatusBarItem(StatusBarAlignment.Right, 100);
+  const status = window.createStatusBarItem(StatusBarAlignment.Left);
   status.command = "tandem.openTandemIfDisconnectedRequested";
   state.context.subscriptions.push(status);
-  status.text = "Tandem disconnected";
+  status.text = "Tandem";
   status.show();
 
   yield fork(function*() {
@@ -405,11 +405,14 @@ function* handleTandemFEStatus() {
       yield take([OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY]);
       const state: ExtensionState = yield select();
       if (state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTED) {
-        status.text = "Tandem connected";
+        status.text = "$(check) Tandem";
+        status.tooltip = "Connected to Tandem";
       } else if (state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTING) {
-        status.text = "Tandem connecting...";
+        status.text = "$(zap) Tandem";
+        status.tooltip = "Connecting to Tandem";
       } else if (state.tandemEditorStatus === TandemEditorReadyStatus.DISCONNECTED) {
-        status.text = "Tandem disconnected";
+        status.text = "$(alert) Tandem";
+        status.tooltip = "Disconnected from Tandem";
       }
       status.show();
     }
