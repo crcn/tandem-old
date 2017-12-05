@@ -1,6 +1,6 @@
 import * as io from "socket.io-client";
 import { delay } from "redux-saga";
-import { ApplicationState, serializeApplicationState, } from "../state";
+import { ApplicationState, serializeApplicationState } from "../state";
 const PERSIST_DELAY_TIMEOUT = 1000;
 import { createSocketIOSaga } from "aerial-common2";
 
@@ -14,6 +14,7 @@ export function* apiSaga() {
   yield fork(getComponents);
   yield fork(syncWorkspaceState);
   yield fork(createSocketIOSaga(io(apiHost)));
+  yield fork(handlePingPong);
 }
 
 function* getComponents() {
@@ -79,4 +80,11 @@ function* syncWorkspaceState() {
   }
 
   yield put(triedLoadedSavedState());
+}
+
+function* handlePingPong() {
+  while(1) {
+    yield take("$$TANDEM_FE_PING");
+    yield put({ type: "$$TANDEM_FE_PONG", $public: true });
+  }
 }

@@ -14,8 +14,13 @@ export const start = (options: InitOptions, onMessage: (message) => any = () => 
     }
   );
 
-  child.stdout.pipe(process.stdout);
-  child.stderr.pipe(process.stderr);
+  // piping does not work in VSCode debugger, so we do this
+  const logChunk = (chunk) => console.log(String(chunk).replace(/[\r\n\t]/g, ""))
+
+  if (options.pipeStdio !== false) {
+    child.stdout.addListener("data", logChunk);
+    child.stderr.addListener("data", logChunk);
+  }
 
   child.on("exit", () => {
     if (_killed) {

@@ -33,6 +33,7 @@ export type ScreenshotClippings = {
 
 export type InitOptions = {
   cwd: string;
+  pipeStdio?: boolean;
   port: number;
   projectConfig: ProjectConfig;
 }

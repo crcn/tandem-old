@@ -78,7 +78,6 @@ POSSIBLY:
 #### V1
 
 - [ ] Paperclip
-  - [ ] content editor (need mutations lib)
   - [ ] warn when component id overriden
   - [ ] Linter
 - [ ] Stage tools
@@ -123,4 +122,3 @@ POSSIBLY:
 - [ ] Notes
 - [ ] Git integration
 - [ ] FSM - connecting UIs
-- [ ] Screenshots

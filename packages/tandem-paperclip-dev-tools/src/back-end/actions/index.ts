@@ -148,7 +148,7 @@ export const fileContentChanged = (filePath: string, publicPath: string, content
   publicPath,
   mtime,
   $public: true
-}));
+});
 
 export const fileRemoved = publicActionFactory((filePath: string, publicPath: string): FileAction  => ({
   type: FILE_REMOVED,

@@ -13,9 +13,11 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 
 - [ ] components must load when tandem opens for first time
 - [ ] must be able to open tandem by clicking paint brush
+  - [ ] post /workspace/:hash/windows to mutate local state, then open Tandem.
 - [ ] Open tandem window if not connected
 - [ ] <preview /> tag check
 - [ ] hover doesn't always work
+- [ ] Tandem connected status bar item
 
 #### Med priority todos
 

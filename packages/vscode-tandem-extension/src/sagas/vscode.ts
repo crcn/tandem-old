@@ -3,11 +3,11 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED } from "../actions";
 import { parseModuleSource, loadModuleAST } from "paperclip";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime } from "../state";
-import { isPaperclipFile } from "../utils";
+import { isPaperclipFile, waitForFEConnected, requestOpenTandemIfDisconnected } from "../utils";
 import { TextEditor, DecorationOptions, workspace, languages, DecorationRangeBehavior } from "vscode";
 
 export function* vscodeSaga() {
@@ -24,6 +24,7 @@ export function* vscodeSaga() {
   yield fork(handleInsertComponent);
   yield fork(handleOpenCurrentFileInTandem);
   yield fork(handleModuleCreated);
+  yield fork(handleOpenTandemWindowIfDisconnected);
 }
 
 function* handleAlerts() {
@@ -124,7 +125,6 @@ function* handleTextDocumentChange() {
       continue;
     }
 
-    console.log("TEXT CHANGED", action.content.toString("utf8"));
     yield put(action);
   }
 }
@@ -306,8 +306,25 @@ function* handleTextDocumentClose() {
 function* handleOpenExternalWindow() {
   while(1) {
     yield take(OPEN_EXTERNAL_WINDOW_EXECUTED);
+    yield openTandemApp();
+  }
+}
+
+function* openTandemApp() {
+  const state: ExtensionState = yield select();
+  vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(getIndexUrl(state)));
+}
+
+function* handleOpenTandemWindowIfDisconnected() {
+  while(1) {
+    yield take(OPEN_TANDEM_IF_DISCONNECTED_REQUESTED);
+    console.log("CON");
     const state: ExtensionState = yield select();
-    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(getIndexUrl(state)));
+    if (!state.tandemEditorConnected) {
+      yield openTandemApp();
+    }
+    yield call(waitForFEConnected);
+
   }
 }
 
@@ -342,7 +359,9 @@ function* handleOpenCurrentFileInTandem() {
       continue;
     }
 
-    const uris = module.components.map(({id}) => `/components/${id}/preview`);;
+    const uris = module.components.map(({id}) => `/components/${id}/preview`);
+
+    yield call(requestOpenTandemIfDisconnected);
 
     yield put(openTandemWindowsRequested(uris));    
   }

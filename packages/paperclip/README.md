@@ -43,6 +43,7 @@ paperclip.bundleVanilla("component.pc", {
 
 #### HIGH PRIO TODOS
 
+- [ ] Remove `property` section - use type inferencing for this.
 - [ ] Error handling must be battle tested
 - [ ] Inference types
 - [ ] `<preview />` section in component

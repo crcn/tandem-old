@@ -38,18 +38,26 @@ export const createSocketIOSaga = (socket) => {
       }
     });
 
+
     yield bubbleEventChannel((emit) => {
       socket.on("action", emit);
+      socket.on("connection", connection => {
+        connection.on("action", emit);
+      });
       return () => {};
     })
   }
 }
+
+const TAG = "$$" + Date.now() + "." + Math.random();
 
 function* bubbleEventChannel(subscribe: (emit: any) => () => any) {
   yield spawn(function*() {
     const chan = eventChannel(subscribe);
     while(true) {
       const event = yield take(chan);
+      if (event[TAG]) continue;
+      event[TAG] = 1;
       yield fork(function*() {
         yield put(event);
       });

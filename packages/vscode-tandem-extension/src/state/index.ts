@@ -19,6 +19,7 @@ export type FileCache = {
 
 export type ExtensionState = {
   port?: number;
+  tandemEditorConnected: boolean;
   activeTextEditor: TextEditor;
   context: ExtensionContext;
 

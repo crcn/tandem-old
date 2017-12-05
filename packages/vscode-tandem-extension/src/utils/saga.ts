@@ -1,10 +1,26 @@
 import * as express from "express";
-import { fork, take, call } from "redux-saga/effects";
-import { HTTPRequest, HTTP_REQUEST } from "../actions";
+import { fork, take, call, select, put } from "redux-saga/effects";
+import { HTTPRequest, HTTP_REQUEST, TandemFEConnectivity, TANDEM_FE_CONNECTIVITY, openTandemIfDisconnectedRequested } from "../actions";
+import { ExtensionState } from "../state";
 
 export type TakeEveryHTTPRequestOptions = {
   test: RegExp;
   method?: string;
+}
+
+export function* requestOpenTandemIfDisconnected() {
+  const state: ExtensionState = yield select();
+  if (!state.tandemEditorConnected) {
+    yield put(openTandemIfDisconnectedRequested());
+    yield call(waitForFEConnected);
+  }
+}
+
+export function* waitForFEConnected() {
+  const state: ExtensionState = yield select();
+  if (!state.tandemEditorConnected) {
+    yield take((action: TandemFEConnectivity) => action.type === TANDEM_FE_CONNECTIVITY && action.connected);
+  }
 }
 
 const testHTTPRequestAction = ({ test, method }: TakeEveryHTTPRequestOptions) => (action: HTTPRequest) => action.type === HTTP_REQUEST && test.test(action.request.path) && (!method || action.request.method === method);

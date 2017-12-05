@@ -12,6 +12,7 @@ export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const FILE_REMOVED = "FILE_REMOVED";
 export const TEXT_CONTENT_CHANGED = "TEXT_CONTENT_CHANGED";
+export const TANDEM_FE_CONNECTIVITY = "TANDEM_FE_CONNECTIVITY";
 export const START_DEV_SERVER_REQUESTED = "START_DEV_SERVER_REQUESTED";
 export const ACTIVE_TEXT_EDITOR_CHANGED = "ACTIVE_TEXT_EDITOR_CHANGED";
 export const OPEN_EXTERNAL_WINDOWS_REQUESTED = "OPEN_EXTERNAL_WINDOWS_REQUESTED";
@@ -19,6 +20,7 @@ export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 export const OPEN_FILE_REQUESTED = "OPEN_FILE_REQUESTED";
 export const OPEN_TANDEM_EXECUTED = "OPEN_TANDEM_EXECUTED";
 export const OPEN_EXTERNAL_WINDOW_EXECUTED = "OPEN_EXTERNAL_WINDOW_EXECUTED";
+export const OPEN_TANDEM_IF_DISCONNECTED_REQUESTED = "OPEN_TANDEM_IF_DISCONNECTED_REQUESTED";
 export const OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED = "OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED";
 export const CREATE_INSERT_NEW_COMPONENT_EXECUTED = "CREATE_INSERT_NEW_COMPONENT_EXECUTED";
 export const MODULE_CREATED = "MODULE_CREATED";
@@ -65,6 +67,10 @@ export enum AlertLevel {
   WARNING
 };
 
+export type TandemFEConnectivity = {
+  connected: boolean
+} & Action;
+
 export type Alert = {
   level: AlertLevel;
   text: string;
@@ -83,6 +89,10 @@ export const textContentChanged = (filePath: string, content: Buffer, mtime: Dat
   content,
   filePath,
   mtime,
+});
+
+export const openTandemIfDisconnectedRequested = () => ({
+  type: OPEN_TANDEM_IF_DISCONNECTED_REQUESTED
 });
 
 export const activeTextEditorChange = (editor: TextEditor): ActiveTextEditorChanged  => ({
@@ -143,4 +153,9 @@ export const expressServerStarted = (server: express.Express, port: number): Exp
   type: EXPRESS_SERVER_STARTED,
   port,
   server
+});
+
+export const tandemFEConnectivity = (connected: boolean): TandemFEConnectivity => ({
+  connected,
+  type: TANDEM_FE_CONNECTIVITY
 });

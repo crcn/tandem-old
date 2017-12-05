@@ -1,7 +1,7 @@
-import { take, fork, put, spawn, call } from "redux-saga/effects";
 import { eventChannel, delay } from "redux-saga";
+import { take, fork, put, spawn, call } from "redux-saga/effects";
 
-const TAG = "$$" + Date.now();
+const TAG = "$$" + Date.now() + "." + Math.random();
 
 export function* ipcSaga() {
   yield fork(receiveMessages);
@@ -27,7 +27,6 @@ function* receiveMessages() {
 function* sendMessages() {
   while(1) {
     const action = yield take();
-    console.log(action);
     if (action[TAG] || !action.$public) continue;
     try {
       process.send(action);
