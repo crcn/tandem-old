@@ -1,6 +1,6 @@
-import { ExtensionState, updateExtensionState, getFileCacheContent, getFileCacheMtime } from "../state";
+import { ExtensionState, updateExtensionState, getFileCacheContent, getFileCacheMtime, TandemEditorReadyStatus } from "../state";
 import { isPaperclipFile } from "../utils";
-import { CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FILE_REMOVED, FileAction, TEXT_CONTENT_CHANGED, EXPRESS_SERVER_STARTED, ExpressServerStarted, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, MODULE_CREATED, TANDEM_FE_CONNECTIVITY, TandemFEConnectivity } from "../actions";
+import { CHILD_DEV_SERVER_STARTED, ChildDevServerStarted, FileContentChanged, FILE_CONTENT_CHANGED, FILE_REMOVED, FileAction, TEXT_CONTENT_CHANGED, EXPRESS_SERVER_STARTED, ExpressServerStarted, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, MODULE_CREATED, TANDEM_FE_CONNECTIVITY, TandemFEConnectivity, OPENING_TANDEM_APP } from "../actions";
 import { Action } from "redux";
 
 export function mainReducer(state: ExtensionState, action: Action) {
@@ -19,10 +19,15 @@ export function mainReducer(state: ExtensionState, action: Action) {
         }
       });
     }
+    case OPENING_TANDEM_APP: {
+      return updateExtensionState(state, {
+        tandemEditorStatus: state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTED ? state.tandemEditorStatus : TandemEditorReadyStatus.CONNECTING
+      });
+    }
     case TANDEM_FE_CONNECTIVITY: {
       const { connected } = action as TandemFEConnectivity;
       return updateExtensionState(state, {
-        tandemEditorConnected: connected
+        tandemEditorStatus: connected ? TandemEditorReadyStatus.CONNECTED : state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTING ? state.tandemEditorStatus : TandemEditorReadyStatus.DISCONNECTED
       });
     }
     case ACTIVE_TEXT_EDITOR_CHANGED: {

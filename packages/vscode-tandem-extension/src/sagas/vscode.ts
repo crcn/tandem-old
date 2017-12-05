@@ -3,12 +3,12 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp } from "../actions";
 import { parseModuleSource, loadModuleAST } from "paperclip";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
-import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime } from "../state";
+import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime, TandemEditorReadyStatus } from "../state";
 import { isPaperclipFile, waitForFEConnected, requestOpenTandemIfDisconnected } from "../utils";
-import { TextEditor, DecorationOptions, workspace, languages, DecorationRangeBehavior } from "vscode";
+import { TextEditor, DecorationOptions, workspace, languages, DecorationRangeBehavior, window, StatusBarAlignment } from "vscode";
 
 export function* vscodeSaga() {
   yield fork(handleAlerts);
@@ -25,6 +25,7 @@ export function* vscodeSaga() {
   yield fork(handleOpenCurrentFileInTandem);
   yield fork(handleModuleCreated);
   yield fork(handleOpenTandemWindowIfDisconnected);
+  yield fork(handleTandemFEStatus);
 }
 
 function* handleAlerts() {
@@ -147,6 +148,10 @@ function* handleCommands() {
 
     vscode.commands.registerCommand("tandem.insertNewComponent", () => {
       emit(insertNewComponentExecuted());
+    });
+
+    vscode.commands.registerCommand("tandem.openTandemIfDisconnectedRequested", () => {
+      emit(openTandemIfDisconnectedRequested());
     });
 
     return () => {};
@@ -312,19 +317,18 @@ function* handleOpenExternalWindow() {
 
 function* openTandemApp() {
   const state: ExtensionState = yield select();
+  yield put(openingTandemApp());
   vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(getIndexUrl(state)));
+  yield call(waitForFEConnected);
 }
 
 function* handleOpenTandemWindowIfDisconnected() {
   while(1) {
     yield take(OPEN_TANDEM_IF_DISCONNECTED_REQUESTED);
-    console.log("CON");
     const state: ExtensionState = yield select();
-    if (!state.tandemEditorConnected) {
+    if (state.tandemEditorStatus === TandemEditorReadyStatus.DISCONNECTED) {
       yield openTandemApp();
     }
-    yield call(waitForFEConnected);
-
   }
 }
 
@@ -386,4 +390,28 @@ function* handleOpenFileRequested() {
       });
     });
   }
+}
+
+function* handleTandemFEStatus() {
+  const state: ExtensionState = yield select();
+  const status = window.createStatusBarItem(StatusBarAlignment.Right, 100);
+  status.command = "tandem.openTandemIfDisconnectedRequested";
+  state.context.subscriptions.push(status);
+  status.text = "Tandem disconnected";
+  status.show();
+
+  yield fork(function*() {
+    while(1) {
+      yield take([OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY]);
+      const state: ExtensionState = yield select();
+      if (state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTED) {
+        status.text = "Tandem connected";
+      } else if (state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTING) {
+        status.text = "Tandem connecting...";
+      } else if (state.tandemEditorStatus === TandemEditorReadyStatus.DISCONNECTED) {
+        status.text = "Tandem disconnected";
+      }
+      status.show();
+    }
+  });
 }

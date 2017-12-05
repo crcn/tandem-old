@@ -18,6 +18,7 @@ Enough tooling where documentation is somewhat unnecessary for paperclip
 - [ ] <preview /> tag check
 - [ ] hover doesn't always work
 - [ ] Tandem connected status bar item
+- [ ] Spinner for paintbrush when clicked
 
 #### Med priority todos
 

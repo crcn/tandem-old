@@ -163,9 +163,10 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
 
   const module = loadModuleAST(result.root, filePath);
   
-  return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id}) => ({
+  return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id, source}) => ({
     filePath,
     label: id,
+    location: source.location,
     $id: id,
     screenshot: getComponentScreenshot(id, state),
     tagName: id,

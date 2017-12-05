@@ -1,7 +1,7 @@
 import * as express from "express";
 import { fork, take, call, select, put } from "redux-saga/effects";
 import { HTTPRequest, HTTP_REQUEST, TandemFEConnectivity, TANDEM_FE_CONNECTIVITY, openTandemIfDisconnectedRequested } from "../actions";
-import { ExtensionState } from "../state";
+import { ExtensionState, TandemEditorReadyStatus } from "../state";
 
 export type TakeEveryHTTPRequestOptions = {
   test: RegExp;
@@ -10,15 +10,15 @@ export type TakeEveryHTTPRequestOptions = {
 
 export function* requestOpenTandemIfDisconnected() {
   const state: ExtensionState = yield select();
-  if (!state.tandemEditorConnected) {
+  if (state.tandemEditorStatus === TandemEditorReadyStatus.DISCONNECTED) {
     yield put(openTandemIfDisconnectedRequested());
-    yield call(waitForFEConnected);
   }
+  yield call(waitForFEConnected);
 }
 
 export function* waitForFEConnected() {
   const state: ExtensionState = yield select();
-  if (!state.tandemEditorConnected) {
+  if (state.tandemEditorStatus !== TandemEditorReadyStatus.CONNECTED) {
     yield take((action: TandemFEConnectivity) => action.type === TANDEM_FE_CONNECTIVITY && action.connected);
   }
 }

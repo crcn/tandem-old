@@ -1,5 +1,5 @@
 import * as io from "socket.io-client";
-import { delay } from "redux-saga";
+import { delay, eventChannel } from "redux-saga";
 import { ApplicationState, serializeApplicationState } from "../state";
 const PERSIST_DELAY_TIMEOUT = 1000;
 import { createSocketIOSaga } from "aerial-common2";

@@ -1,4 +1,5 @@
 import { Bounds } from "aerial-common2";
+import { ExpressionLocation } from "paperclip";
 export const AVAILABLE_COMPONENT = "AVAILABLE_COMPONENT";
 
 export type AvailableComponent = {
@@ -6,6 +7,7 @@ export type AvailableComponent = {
   tagName: string;
   label: string;
   moduleId: string;
+  location: ExpressionLocation;
   screenshot: {
     uri: string;
     clip: Bounds

@@ -1,5 +1,5 @@
 import { ApplicationState } from "../state";
-import { ExpressionLocation } from "aerial-common2";
+import { VMObjectExpressionSource } from "paperclip";
 
 export const apiGetComponentPreviewURI = (componentId: string, state: ApplicationState) => { 
 
@@ -20,7 +20,7 @@ export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
   return await response.json();
 }
 
-export const apiOpenSourceFile = async (source: ExpressionLocation|string, state: ApplicationState) => { 
+export const apiOpenSourceFile = async (source: VMObjectExpressionSource, state: ApplicationState) => { 
   const response = await fetch(`${state.apiHost}/open`, {
     method: "POST",
     headers: {

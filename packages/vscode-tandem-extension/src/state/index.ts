@@ -17,9 +17,15 @@ export type FileCache = {
   }
 }
 
+export enum TandemEditorReadyStatus {
+  CONNECTING,
+  CONNECTED,
+  DISCONNECTED
+};
+
 export type ExtensionState = {
   port?: number;
-  tandemEditorConnected: boolean;
+  tandemEditorStatus: TandemEditorReadyStatus;
   activeTextEditor: TextEditor;
   context: ExtensionContext;
 

@@ -166,7 +166,7 @@ function* handleMetaClickElement() {
 
     // TODO - display error if source URI does not exist, or URI is not a file
     if (node.source && node.source.uri) {
-      yield call(apiOpenSourceFile, node.source, state);
+      yield call(apiOpenSourceFile, node.source as any, state);
     } else if (!node.source) {
       console.warn(`source URI does not exist on selected node.`);
     }
@@ -180,7 +180,10 @@ function* handleMetaClickComponentCell() {
     const workspace = getSelectedWorkspace(state);
     const component = getAvailableComponent(componentId, workspace);
 
-    yield call(apiOpenSourceFile, component.filePath, state);
+    yield call(apiOpenSourceFile, {
+      uri: component.filePath,
+      ...component.location
+    }, state);
   }
 }
 
@@ -390,7 +393,7 @@ function* handleSourceClicked() {
 
     // TODO - display error if source URI does not exist, or URI is not a file
     if (item.source && item.source.uri) {
-      yield call(apiOpenSourceFile, item.source, state);
+      yield call(apiOpenSourceFile, item.source as any, state);
     }
   }
 }

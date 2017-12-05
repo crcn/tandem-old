@@ -4,6 +4,7 @@ import * as pupeteer from "puppeteer";
 import { arrayReplaceIndex, arraySplice, weakMemo, arrayRemoveItem, Bounds, arrayRemoveIndex } from "aerial-common2";
 import { getModuleId, getModuleFilePaths } from "../utils";
 import * as pc from "paperclip";
+import { ExpressionLocation } from "paperclip";
 
 export type ProjectConfig = {
   sourceFilePattern: string;
@@ -50,6 +51,7 @@ export type ApplicationState = {
 export type RegisteredComponent = {
   filePath: string;
   label: string;
+  location: ExpressionLocation;
   screenshot: {
     uri: string;
     clip: Bounds;
