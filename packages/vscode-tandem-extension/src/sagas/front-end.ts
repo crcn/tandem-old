@@ -5,6 +5,7 @@ import  { waitForFEConnected, requestOpenTandemIfDisconnected } from "../utils";
 import { take, fork, spawn, put, call, select, race } from "redux-saga/effects";
 
 const DISCONNECTED_TIMEOUT = 1000 * 2;
+const PING_TIMEOUT = 1000 * 2;
 
 export function* frontEndSaga() {
   yield fork(pingFrontEnd);
@@ -20,6 +21,7 @@ function* pingFrontEnd() {
         timeout: call(delay, DISCONNECTED_TIMEOUT)
       });
       yield put(tandemFEConnectivity(Boolean(pong)));
+      yield call(delay, PING_TIMEOUT);
     }
   }); 
 }

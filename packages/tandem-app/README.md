@@ -6,6 +6,8 @@ IMMEDIATE:
 
 - [ ] Paperclip
   - [ ] Use <preview /> tag instead of meta
+  - [ ] Remove [[bind property]]
+  - [ ] Type inferencing
 
 - [ ] CSS Inspector
 
