@@ -175,7 +175,8 @@ function* handleMetaClickElement() {
 
 function* handleMetaClickComponentCell() {
   while(true) {
-    const { componentId }: ComponentsPaneComponentClicked = yield take((action: StageToolOverlayClicked) => action.type === COMPONENTS_PANE_COMPONENT_CLICKED);
+    const { componentId, sourceEvent }: ComponentsPaneComponentClicked = yield take((action: StageToolOverlayClicked) => action.type === COMPONENTS_PANE_COMPONENT_CLICKED);
+    if (!sourceEvent.metaKey) continue;
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
     const component = getAvailableComponent(componentId, workspace);

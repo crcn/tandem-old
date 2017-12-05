@@ -290,6 +290,7 @@ export type DNDEvent = {
 
 export type ComponentsPaneComponentClicked = {
   componentId: string;
+  sourceEvent: MouseEvent;
 } & BaseEvent;
 
 
@@ -308,8 +309,9 @@ export const componentsPaneAddComponentClicked = () => ({
   type: COMPONENTS_PANE_ADD_COMPONENT_CLICKED
 });
 
-export const componentsPaneComponentClicked = (componentId): ComponentsPaneComponentClicked => ({
+export const componentsPaneComponentClicked = (componentId, sourceEvent): ComponentsPaneComponentClicked => ({
   type: COMPONENTS_PANE_COMPONENT_CLICKED,
+  sourceEvent,
   componentId
 });
 

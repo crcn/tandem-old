@@ -4,11 +4,6 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] VSCode
-  - [ ] Components must load when opening Tandem for first time
-  - [ ] Remove windows of files that have been deleted
-  - [ ] Open Tandem when paintbrush is clicked
-
 - [ ] Paperclip
   - [ ] Use <preview /> tag instead of meta
 
@@ -22,8 +17,6 @@ IMMEDIATE:
     - [ ] update UI
   - [ ] UX
     - [ ] spinner 
-  - [ ] meta click component cell to view source
-  - [ ] remove windows associated to components that have been removed
 
 HIGH PRIO:
 

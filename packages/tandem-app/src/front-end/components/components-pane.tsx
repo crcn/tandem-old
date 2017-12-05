@@ -32,8 +32,8 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, Compon
     getData: ({ tagName }: ComponentsPaneCellOuterProps) => [AVAILABLE_COMPONENT, tagName]
   }),
   withHandlers({
-    onClick: ({ dispatch, tagName }: ComponentsPaneCellOuterProps) => () => {
-      dispatch(componentsPaneComponentClicked(tagName));
+    onClick: ({ dispatch, tagName }: ComponentsPaneCellOuterProps) => (event) => {
+      dispatch(componentsPaneComponentClicked(tagName, event));
     }
   }),
   (Base: React.ComponentClass<TdComponentsPaneCellInnerProps>) => ({ label, selected, screenshot, connectDragSource, onClick, dispatch }: ComponentsPaneCellInnerProps) => {
