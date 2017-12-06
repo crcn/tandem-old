@@ -86,6 +86,7 @@
     .workspace {
       display: flex;
     }
+
     .center {
       display: flex;
       width: 100%;

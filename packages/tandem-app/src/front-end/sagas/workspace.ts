@@ -109,7 +109,6 @@ export function* mainWorkspaceSaga() {
   yield fork(handleOpenExternalWindowButtonClicked);
   yield fork(handleDNDEnded);
   yield fork(handleComponentsPaneEvents);
-  yield fork(syncWindowsWithAvailableComponents);
 }
 
 function* openDefaultWindow() {
@@ -424,26 +423,27 @@ function* handleSelectionStoppedMoving() {
   }
 }
 
-function* syncWindowsWithAvailableComponents() {
-  while(true) {
-    yield take(API_COMPONENTS_LOADED);
-    const state: ApplicationState = yield select();
+// TODO - this would be great, but doesn't work for live editing. 
+// function* syncWindowsWithAvailableComponents() {
+//   while(true) {
+//     yield take(API_COMPONENTS_LOADED);
+//     const state: ApplicationState = yield select();
 
-    const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
-    const availableComponentUris = workspace.availableComponents.map((component) => apiGetComponentPreviewURI(component.$id, state));
+//     const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
+//     const availableComponentUris = workspace.availableComponents.map((component) => apiGetComponentPreviewURI(component.$id, state));
 
 
-    const browser = getSyntheticBrowser(state, workspace.browserId);
-    const windowUris = browser.windows.map((window) => window.location);
+//     const browser = getSyntheticBrowser(state, workspace.browserId);
+//     const windowUris = browser.windows.map((window) => window.location);
 
-    const deletes = diffArray(windowUris, availableComponentUris, (a, b) => a === b ? 0 : -1).mutations.filter(mutation => mutation.type === ARRAY_DELETE) as any as ArrayDeleteMutation<string>[];
+//     const deletes = diffArray(windowUris, availableComponentUris, (a, b) => a === b ? 0 : -1).mutations.filter(mutation => mutation.type === ARRAY_DELETE) as any as ArrayDeleteMutation<string>[];
 
-    for (const {index} of deletes) {
-      const window = browser.windows[index];
-      window.instance.close();
-    }
-  }
-}
+//     for (const {index} of deletes) {
+//       const window = browser.windows[index];
+//       window.instance.close();
+//     }
+//   }
+// }
 
 function* handleNextWindowPressed() {
   while(true) {
