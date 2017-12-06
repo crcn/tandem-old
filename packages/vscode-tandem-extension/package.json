@@ -145,6 +145,13 @@
         }
       }
     },
+    "keybindings":[
+      {
+        "command": "tandem.openCurrentFileInTandem",
+        "key": "alt+p",
+        "when": "resourceLangId == paperclip"
+      }
+    ],
     "menus": {
       "editor/title": [
         {

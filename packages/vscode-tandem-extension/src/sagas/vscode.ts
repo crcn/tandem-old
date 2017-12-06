@@ -4,7 +4,7 @@ import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
 import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp } from "../actions";
-import { parseModuleSource, loadModuleAST } from "paperclip";
+import { parseModuleSource, loadModuleAST, Module } from "paperclip";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime, TandemEditorReadyStatus } from "../state";
 import { isPaperclipFile, waitForFEConnected, requestOpenTandemIfDisconnected } from "../utils";
@@ -363,12 +363,36 @@ function* handleOpenCurrentFileInTandem() {
       continue;
     }
 
-    const uris = module.components.map(({id}) => `/components/${id}/preview`);
+    const componentIds = yield call(pickComponentIds, module);
+
+    if (!componentIds.length) {
+      continue;
+    }
+
+    const uris = componentIds.map((id) => `/components/${id}/preview`);
 
     yield call(requestOpenTandemIfDisconnected);
 
     yield put(openTandemWindowsRequested(uris));    
   }
+}
+const ALL_COMPONENTS_LABEL = "All components in this file";
+function* pickComponentIds(module: Module) {
+  const componentIds = module.components.map(component => component.id);
+  if (componentIds.length === 1) {
+    return componentIds;
+  }
+  const pick = yield call(async () => {
+    return await vscode.window.showQuickPick([ALL_COMPONENTS_LABEL, ...componentIds]);
+  });
+
+  if (!pick) return [];
+
+  if (pick === ALL_COMPONENTS_LABEL) {
+    return componentIds;
+  }
+
+  return [pick];
 }
 
 function* handleOpenFileRequested() {

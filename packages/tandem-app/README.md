@@ -37,8 +37,6 @@ HIGH PRIO:
 - [ ] Native elements pane
 
 - [ ] Components pane
-  - [ ] + button
-  - [ ] DND elements to stage (create new window)
     - [ ] insert preview for elements that do not have one
   - [ ] DND elements to other elements
   - [ ] native elements
@@ -58,6 +56,8 @@ HIGH PRIO:
     - [ ] edit declaration
     - [ ] add style rule (auto add to scoped style element)
     - [ ] `:root` inspecting
+  - [ ] Guides
+    - [ ] snap DND
 
 POSSIBLY:
 
