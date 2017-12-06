@@ -25,6 +25,13 @@ IMMEDIATE:
   - [ ] UX
     - [ ] spinner 
 
+- [ ] slim-browser-vm - replace browser VM - work on speed
+  - [ ] do not have built-in parser
+  - [ ] only work with CSS & HTML objects
+  - [ ] output immutable objects
+  - [ ] designed to run in separate process
+  - [ ] custom renderers
+
 HIGH PRIO:
 
 - [ ] Native elements pane
