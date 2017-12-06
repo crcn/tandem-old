@@ -74,6 +74,7 @@ function* handleWatchUrisRequest() {
         watcher.on("change", emitChange);
 
         watcher.on("unlink", (path) => {
+          console.log("UNLINK FILE", path);
           emit(fileRemoved(path, getPublicFilePath(path, state)));
         });
       });

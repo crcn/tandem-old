@@ -252,6 +252,11 @@ export type WorkspaceSelectionDeleted = {
   workspaceId: string;
 } & BaseEvent;
 
+export type FileRemoved = {
+  filePath: string;
+  publicPath: string;
+} & BaseEvent;
+
 export type DeleteShortcutPressed = ShortcutEvent;
 
 export type EmptyWindowsUrlAdded = {

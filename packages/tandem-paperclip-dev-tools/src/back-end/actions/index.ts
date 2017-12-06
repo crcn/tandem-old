@@ -45,6 +45,7 @@ export type Mutation =  {
 export type FileAction = {
   filePath: string
   publicPath: string;
+  $public: boolean;
 } & Action;
 
 export type FileContentChanged =  {
@@ -150,11 +151,12 @@ export const fileContentChanged = (filePath: string, publicPath: string, content
   $public: true
 });
 
-export const fileRemoved = publicActionFactory((filePath: string, publicPath: string): FileAction  => ({
+export const fileRemoved = (filePath: string, publicPath: string): FileAction  => ({
   type: FILE_REMOVED,
   filePath,
-  publicPath
-}));
+  publicPath,
+  $public: true
+});
 
 export const componentScreenshotTaken = (buffer: Buffer, clippings: ScreenshotClippings, contentType: string): ComponentScreenshotTaken => ({
   buffer, 

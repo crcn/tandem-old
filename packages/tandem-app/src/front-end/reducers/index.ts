@@ -75,6 +75,8 @@ import {
   DND_STARTED,
   DND_ENDED,
   DND_HANDLED,
+  FILE_REMOVED,
+  FileRemoved,
   DNDEvent,
   ResizerPathMoved,
   STAGE_MOUSE_MOVED,
@@ -169,6 +171,7 @@ import {
   getSyntheticNodeById,
   updateSyntheticBrowser,
   SyntheticCSSStyleRule,
+  removeSyntheticWindow,
   SyntheticWindowOpened,
   getSyntheticNodeWindow,
   syntheticBrowserReducer, 
@@ -632,39 +635,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
   return state;
 }
-
-// const externalReducer = (state: ApplicationState, event: BaseEvent) => {
-//   switch(event.type) {
-//     case OPEN_EXTERNAL_WINDOWS_REQUESTED: {
-//       console.log("REQ");
-//       const { uris }: OpenExternalWindowsRequested = event;
-//       const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
-//       const browser = getSyntheticBrowser(state, workspace.browserId);
-//       const selection = [];
-//       for (const uri of uris) {
-//         let window = browser.windows.find(window => {
-//           return window.location === uri;
-//         });
-
-//         if (!window) {
-//           window = createSyntheticWindow({
-//             location: uri,
-//             bounds: { left: 0, top: 0, right: 100, bottom: 100 }
-//           });
-
-//           state = addSyntheticWindow(state, browser.$id, window);
-//         }
-
-//         selection.push(window);
-//       }
-
-//       console.log(selection);
-
-//       return state;
-//     }
-//   }
-//   return state;
-// };
   
 const unfullscreen = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);

@@ -2,16 +2,21 @@ import { watch, removed, Struct, moved, stoppedMoving, moveBounds, scaleInnerBo
 import { take, select, call, put, fork, spawn, cancel } from "redux-saga/effects";
 import { kebabCase } from "lodash";
 import { delay } from "redux-saga";
+import * as path from "path";
+import { diffArray, eachArrayValueMutation, ArrayDeleteMutation, ARRAY_DELETE } from "source-mutation";
 import { apiGetComponentPreviewURI, apiOpenSourceFile, apiCreateComponent, apiDeleteComponent } from "../utils";
 import { 
   RESIZER_MOVED,
   RESIZER_STOPPED_MOVING,
   ResizerMoved,
   resizerStoppedMoving,
+  FileRemoved,
+  FILE_REMOVED,
   LEFT_KEY_DOWN,
   LEFT_KEY_UP,
   RIGHT_KEY_DOWN,
   RIGHT_KEY_UP,
+  API_COMPONENTS_LOADED,
   UP_KEY_DOWN,
   UP_KEY_UP,
   DOWN_KEY_DOWN,
@@ -57,6 +62,7 @@ import {
   SyntheticElement, 
   SYNTHETIC_WINDOW,
   getSyntheticWindow,
+  getSyntheticBrowser,
   getSyntheticNodeById, 
   getSyntheticNodeWindow,
   getSyntheticWindowBrowser,
@@ -103,6 +109,7 @@ export function* mainWorkspaceSaga() {
   yield fork(handleOpenExternalWindowButtonClicked);
   yield fork(handleDNDEnded);
   yield fork(handleComponentsPaneEvents);
+  yield fork(syncWindowsWithAvailableComponents);
 }
 
 function* openDefaultWindow() {
@@ -413,6 +420,27 @@ function* handleSelectionStoppedMoving() {
       
       const bounds = getSyntheticBrowserItemBounds(state, item);
       yield put(stoppedMoving(item.$id, item.$type, workspace.targetCSSSelectors));
+    }
+  }
+}
+
+function* syncWindowsWithAvailableComponents() {
+  while(true) {
+    yield take(API_COMPONENTS_LOADED);
+    const state: ApplicationState = yield select();
+
+    const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
+    const availableComponentUris = workspace.availableComponents.map((component) => apiGetComponentPreviewURI(component.$id, state));
+
+
+    const browser = getSyntheticBrowser(state, workspace.browserId);
+    const windowUris = browser.windows.map((window) => window.location);
+
+    const deletes = diffArray(windowUris, availableComponentUris, (a, b) => a === b ? 0 : -1).mutations.filter(mutation => mutation.type === ARRAY_DELETE) as any as ArrayDeleteMutation<string>[];
+
+    for (const {index} of deletes) {
+      const window = browser.windows[index];
+      window.instance.close();
     }
   }
 }

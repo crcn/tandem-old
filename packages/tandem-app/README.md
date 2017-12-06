@@ -5,12 +5,17 @@ RESEARCH:
 IMMEDIATE:
 
 - [ ] Paperclip
+  - [ ] Type inferencing
+  - [ ] Linting
   - [ ] Use <preview /> tag instead of meta
   - [ ] Remove [[bind property]]
-  - [ ] Type inferencing
 
 - [ ] CSS Inspector
 
+- [ ] Bugs
+  - [ ] adding & removing windows causes an exception
+  - [ ] dev server stops after a while
+  
 - [ ] Tandem
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
   - [ ] breadcrumbs

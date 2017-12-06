@@ -36,7 +36,7 @@ describe(__filename + "#", () => {
       }
     `;
     
-    const window = new SEnvWindow("index.html");
+    const window = new SEnvWindow("index.html", null);
     new Function("window", "context", "console", outerCode)(window, context, console);
     return window;
   }
