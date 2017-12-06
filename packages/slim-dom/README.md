@@ -18,13 +18,18 @@ const * as pc from "paperclip";
 const document = await pc.loadVMDocument("./entry.pc");
 
 const mount = document.createElement("div");
-sdvm.renderDOM(document, mount);
+let renderResult = sdvm.renderers.dom.render(document, mount);
 
 // later on...
 const document2 = await pc.loadVMDocument("./entry.pc");
 
 const diffs = sdvm.diffDocument(document, document2);
-sdvm.patchDOM(diffs, mount);
+let renderResult = sdvm.renderers.dom.patch(diffs, mount);
+
+const computedInfo = sdvm.renderers.dom.computeInfo(renderResult); // { rects: {}, computedStyles: {} }
+
+const elementRect = getClientRect(element.hash, computedInfo);
+
 
 ```
 
@@ -132,7 +137,7 @@ TODO
 ##### querySelector(element, query);
 ##### querySelectorAll(element, query);
 ##### getStyleSheets(element)
-##### getElementSlots(element);
+##### getElementSlots(element)
 
 #### Reversed tag names
 
