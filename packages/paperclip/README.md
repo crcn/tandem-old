@@ -72,3 +72,8 @@ paperclip.bundleVanilla("component.pc", {
 - [ ] strategy for upgrading paperclip files to newer versions
 - [ ] Vue transpiler
 - [ ] plain HTML transpiler (static site generator)
+
+
+#### Qs
+
+- [ ] possibly provide hash for each expression based on shape of data? May help with memoization.
