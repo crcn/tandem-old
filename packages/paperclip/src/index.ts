@@ -10,4 +10,4 @@ export * from "./css-declaration-parser";
 export * from "./edit";
 export * from "./mutation";
 export * from "./parser-utils";
-export * from "./prop-inference";
+export * from "./inferencing";

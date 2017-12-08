@@ -56,8 +56,8 @@ paperclip.bundleVanilla("component.pc", {
 - [ ] `<fixture></fixture>`  (possibly) - used to help infer types more
 - [ ] Linting
   - Warning for components that do not have `<preview />` tag
+  - Error when element (besides style) defined outside of component
   
-
 
 #### LOW PRIO CORE TODOS
 
@@ -71,6 +71,7 @@ paperclip.bundleVanilla("component.pc", {
 - [ ] Pretty error handling
 - [ ] i18n support (use standard)
 - [ ] warning if unknown tag name is used
+- [ ] vanilla transpiler needs to also bundle assets like images
 
 
 #### LOW PRIO EXTENSION TODOS

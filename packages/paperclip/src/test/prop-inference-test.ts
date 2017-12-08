@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType } from "..";
+import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType, loadModuleDependencyGraph, inferModuleComponentPropTypes, InferredTypeKind } from "..";
 
 describe(__filename + "#", () => {
 
   // smoke
   [
     [`[[bind a]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.ANY,
@@ -15,7 +15,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a]] [[bind b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.ANY, 
@@ -28,13 +28,13 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a.b.c]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.OBJECT_OR_ARRAY, 
           properties: {
             b: {
-              type: InferenceType.ANY, 
+              type: InferenceType.OBJECT_OR_ARRAY, 
               properties: {
                 c: {
                   type: InferenceType.ANY,
@@ -47,7 +47,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a * b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
@@ -60,7 +60,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a / b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
@@ -73,7 +73,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a - b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
@@ -86,7 +86,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a + b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.ANY, 
@@ -99,7 +99,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a * c]] [[bind a + b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
@@ -116,7 +116,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind (a + b) * c]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
@@ -133,10 +133,10 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind (a.b + c) * d]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.OBJECT_OR_ARRAY, 
           properties: {
             b: {
               type: InferenceType.NUMBER,
@@ -155,7 +155,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a + ""]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.ANY, 
@@ -164,7 +164,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a || b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.ANY, 
@@ -177,7 +177,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a && b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.ANY, 
@@ -190,7 +190,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a * c]] [[bind a == b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
@@ -207,7 +207,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`[[bind a * c]][[bind a === b]]`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
@@ -225,7 +225,7 @@ describe(__filename + "#", () => {
     }],
 
     [`<a b=[[bind c]] />`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         c: { 
           type: InferenceType.ANY, 
@@ -234,7 +234,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a b="[[bind c]] [[bind d]]" />`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         c: { 
           type: InferenceType.STRING, 
@@ -252,7 +252,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a>[[bind b]]</a>`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
           type: InferenceType.ANY, 
@@ -263,7 +263,7 @@ describe(__filename + "#", () => {
 
     // reserved attr names
     [`<a href=[[bind b]]>c</a>`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
           type: InferenceType.STRING, 
@@ -272,7 +272,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a class=[[bind b]]>c</a>`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
           type: InferenceType.STRING, 
@@ -281,7 +281,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`<div class=[[bind b]]>c</a>`, { 
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
           type: InferenceType.STRING, 
@@ -292,7 +292,7 @@ describe(__filename + "#", () => {
 
     // special bindings
     [`<a [[if b]]></a>`, {
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
           type: InferenceType.ANY, 
@@ -301,7 +301,7 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a [[elseif b]]></a>`, {
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
           type: InferenceType.ANY, 
@@ -310,10 +310,10 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a [[repeat items as item]] [[bind item]]></a>`, {
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         items: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.OBJECT_OR_ARRAY, 
           properties: {
             $$each: {
               properties: {},
@@ -324,13 +324,13 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a [[repeat items as item]] key[[bind item.key]]></a>`, {
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         items: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.OBJECT_OR_ARRAY, 
           properties: {
             $$each: {
-              type: InferenceType.ANY,
+              type: InferenceType.OBJECT_OR_ARRAY,
               properties: {
                 key: {
                   type: InferenceType.ANY,
@@ -343,16 +343,16 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a [[repeat items as item]] key[[bind item.b.c]]></a>`, {
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         items: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.OBJECT_OR_ARRAY, 
           properties: {
             $$each: {
-              type: InferenceType.ANY,
+              type: InferenceType.OBJECT_OR_ARRAY,
               properties: {
                 b: {
-                  type: InferenceType.ANY,
+                  type: InferenceType.OBJECT_OR_ARRAY,
                   properties: {
                     c: {
                       type: InferenceType.ANY,
@@ -367,10 +367,10 @@ describe(__filename + "#", () => {
       }
     }],
     [`<a [[repeat items as item]] [[bind item]]></a>[[bind item]]`, {
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         items: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.OBJECT_OR_ARRAY, 
           properties: {
             $$each: {
               type: InferenceType.ANY,
@@ -391,20 +391,20 @@ describe(__filename + "#", () => {
     }],
 
     [`<a [[repeat b as c]]><d [[repeat c as f]] g=[[bind c.length]] h=[[bind f.b]] /></a>`, {
-      type: InferenceType.ANY, 
+      type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: {
-          type: InferenceType.ANY,
+          type: InferenceType.OBJECT_OR_ARRAY,
           properties: {
             $$each: {
-              type: InferenceType.ANY,
+              type: InferenceType.OBJECT_OR_ARRAY,
               properties: {
                 length: {
                   type: InferenceType.ANY,
                   properties: {}
                 },
                 $$each: {
-                  type: InferenceType.ANY,
+                  type: InferenceType.OBJECT_OR_ARRAY,
                   properties: {
                     b: {
                       type: InferenceType.ANY,
@@ -445,6 +445,25 @@ describe(__filename + "#", () => {
         message: `Cannot call property "c" on primitive "a"`
       }
     ]],
+    [`[[bind a * "5"]]`, [
+      { 
+        type: DiagnosticType.ERROR,
+        filePath: undefined,
+        location: {
+          start: {
+            column: 11,
+            line: 1,
+            pos: 11
+          },
+          end: {
+            column: 14,
+            line: 1,
+            pos: 14
+          }
+        },
+        message: `The right-hand side of an arithmetic operation must be a number`
+      }
+    ]],
     [`[[bind a.b * c]] [[bind a.b.c]]`, [
       { 
         type: DiagnosticType.ERROR,
@@ -463,11 +482,162 @@ describe(__filename + "#", () => {
         },
         message: `Cannot call property "c" on primitive "a.b"`
       }
+    ]],
+    [`[[bind a.b.c]] [[bind a.b * c]]`, [
+      { 
+        type: DiagnosticType.ERROR,
+        filePath: undefined,
+        location: {
+          start: {
+            column: 22,
+            line: 1,
+            pos: 22
+          },
+          end: {
+            column: 25,
+            line: 1,
+            pos: 25
+          }
+        },
+        message: `The left-hand side of an arithmetic operation must be a number`
+      }
+    ]],
+    [`[[bind a.b.c]] [[bind c * a.b]]`, [
+      { 
+        type: DiagnosticType.ERROR,
+        filePath: undefined,
+        location: {
+          start: {
+            column: 26,
+            line: 1,
+            pos: 26
+          },
+          end: {
+            column: 29,
+            line: 1,
+            pos: 29
+          }
+        },
+        message: `The right-hand side of an arithmetic operation must be a number`
+      }
+    ]],
+    [`[[bind a * 5]] [[bind a.b.c]] [[bind c * a.b]]`, [
+      {
+        filePath: undefined,
+        "type": "ERROR",
+        "location": {
+          "start": {
+            "column": 22,
+            "line": 1,
+            "pos": 22
+          },
+          "end": {
+            "column": 27,
+            "line": 1,
+            "pos": 27
+          }
+        },
+        "message": "Cannot call property \"b.c\" on primitive \"a\""
+      },
+      {
+        filePath: undefined,
+        "type": "ERROR",
+        "location": {
+          "start": {
+            "column": 41,
+            "line": 1,
+            "pos": 41
+          },
+          "end": {
+            "column": 44,
+            "line": 1,
+            "pos": 44
+          }
+        },
+        "message": "The right-hand side of an arithmetic operation must be a number"
+      }
     ]]
   ].forEach(([source, diagnostics]: any) => {
     it(`displays an inference error for ${source}`, () => {
       expect(inferNodeProps(parseModuleSource(source).root).diagnostics).to.eql(diagnostics);
     }); 
   });
-  
+
+  // deep inferencing
+  [
+    [
+      {
+        "entry": `
+          <component id="test">
+            <template>
+              [[bind a]]
+            </template>
+            <preview>
+              <test />
+            </preview>
+          </component>
+        `
+      },
+      {
+        test: {
+          inference: {
+            type: InferenceType.OBJECT_OR_ARRAY,
+            properties: {
+              a: {
+                type: InferenceType.ANY,
+                properties: {}
+              }
+            }
+          },
+          diagnostics: []
+        }
+      }
+    ],
+    [
+      {
+        "entry": `
+          <component id="test">
+            <template>
+              [[bind a * c]]
+            </template>
+            <preview>
+              <test a="b" />
+            </preview>
+          </component>
+        `
+      },
+      {
+        test: {
+          inference: {
+            type: InferenceType.OBJECT_OR_ARRAY,
+            properties: {
+              a: {
+                type: InferenceType.NUMBER,
+                properties: {}
+              },
+              c: {
+                type: InferenceType.NUMBER,
+                properties: {}
+              }
+            }
+          },
+          diagnostics: [
+            {
+              type: DiagnosticType.ERROR,
+            }
+          ]
+        }
+      }
+    ]
+  ].forEach(([sources, inferResult]: any) => {
+    it(`can deeply infer ${sources.entry}`, async () => {
+      const graph = await loadModuleDependencyGraph("entry", {
+        readFile: (uri) => sources[uri]
+      });
+
+      const result = inferModuleComponentPropTypes(graph.entry.module, graph);
+
+      expect(result).to.eql(inferResult);
+    });
+  });
 });

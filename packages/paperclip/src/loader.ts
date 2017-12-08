@@ -50,6 +50,7 @@ export type Component = {
   properties: BKProperty[];
   style: PCElement;
   template: PCElement;
+  previews: PCElement[];
 };
 
 export type Module = {
@@ -269,6 +270,7 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
   let id: string;
   let style: PCElement;
   let template: PCElement;
+  const previews: PCElement[] = [[;]
   const metadata: ComponentMetadata[] = [];
   let properties: BKProperty[] = modifiers.map(({value}) => value).filter(modifier => modifier.type === BKExpressionType.PROPERTY) as BKProperty[];
 
@@ -290,6 +292,8 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
         style = element as any as PCElement;
       } else if (tagName === "template") {
         template = element as any as PCElement;
+      } else if (tagName === "preview") {
+        previews.push(element as any as PCElement);
       } else if (tagName === "meta") {
         metadata.push({
           name: getPCStartTagAttribute(element, "name"),
@@ -305,7 +309,8 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
     style,
     metadata,
     properties,
-    template
+    template,
+    previews
   };
 };
 
