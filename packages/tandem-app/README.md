@@ -5,10 +5,9 @@ RESEARCH:
 IMMEDIATE:
 
 - [ ] Paperclip
-  - [ ] Type inferencing
-  - [ ] Linting
   - [ ] Use <preview /> tag instead of meta
-  - [ ] Remove [[bind property]]
+  - [ ] Remove [[bind property]] - use type inferencing
+  - [ ] error messaging for type inferencing
 
 - [ ] CSS Inspector
 
