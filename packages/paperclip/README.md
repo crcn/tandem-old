@@ -10,6 +10,12 @@ component.pc:
   <a id="clicker-button" href="#">
     click me! [[bind count]]
   </a>
+  <preview>
+    <link rel="context" href="./fixtures.json" />
+
+    <!-- count provided-->
+    <x-button count=[[bind count]] />
+  </preview>
 </component>
 ```
 

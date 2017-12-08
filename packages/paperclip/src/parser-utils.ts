@@ -1,8 +1,9 @@
-import { PCExpression, Token, ExpressionLocation } from "./ast";
+import { PCExpression, Token, ExpressionLocation, PCRootExpression } from "./ast";
 import { getPosition } from "./ast-utils";
 import { TokenScanner } from "./scanners";
 import { repeat } from "./str-utils";
 import { Diagnostic } from "./parser-utils";
+import { DependencyGraph } from "./loader";
 
 export enum DiagnosticType {
   WARNING = "WARNING",
@@ -13,11 +14,15 @@ export type Diagnostic = {
   type: DiagnosticType;
   location: ExpressionLocation;
   message: string;
-  source: string;
   filePath: string;
 };
 
 export type ParseResult = {
+  root: PCRootExpression;
+  diagnostics?: Diagnostic[];
+};
+
+export type ParseSubResult = {
   root: PCExpression;
   diagnostics?: Diagnostic[];
 };
@@ -31,8 +36,9 @@ export type ParseContext = {
 };
 
 // TODO - possibly colorize
-export const generatePrettyErrorMessage = ({ location, filePath = "", message, source }:  Diagnostic) => {
+export const generatePrettyErrorMessage = ({ location, filePath = "", message }:  Diagnostic, graph: DependencyGraph) => {
   let prettyMessage = `${message}\n\n`;
+  const source = graph[filePath].module.source.input;
 
   const sourceLines = source.split("\n");
 

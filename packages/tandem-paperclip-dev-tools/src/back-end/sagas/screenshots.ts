@@ -4,7 +4,7 @@ import * as path from "path";
 import * as fsa from "fs-extra";
 import { delay } from "redux-saga";
 import { fork, take, call, put, select, spawn } from "redux-saga/effects";
-import { loadModuleDependencyGraph, defaultResolveModulePath, loadModuleAST } from "paperclip";
+import { defaultResolveModulePath, loadModuleAST } from "paperclip";
 import { SCREENSHOTS_DIRECTORY } from "../constants";
 import { ApplicationState, ScreenshotClippings, AllComponentsPreviewEntry } from "../state";
 import { FILE_CONTENT_CHANGED, FileContentChanged, headlessBrowserLaunched, componentScreenshotTaken, componentScreenshotSaved, ComponentScreenshotRemoved, ComponentScreenshotSaved, componentScreenshotRemoved, ComponentScreenshotTaken, HEADLESS_BROWSER_LAUNCHED, COMPONENT_SCREENSHOT_TAKEN, COMPONENT_SCREENSHOT_SAVED, componentScreenshotStarted, INIT_SERVER_REQUESTED, FILE_REMOVED } from "../actions";

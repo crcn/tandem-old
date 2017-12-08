@@ -1,0 +1,19 @@
+<link rel="import" href="./global.pc" />
+
+<component id="td-spinner">
+  <style>
+    :host {
+      color: red;
+    }
+  </style>
+  <template>
+    Hello world
+  </template>
+</component>
+
+<component id="td-spinner-preview">
+  <meta name="preview" content="of=td-spinner, width=400, height=400"></meta>
+  <template>
+    <td-spinner />
+  </template>
+</component>

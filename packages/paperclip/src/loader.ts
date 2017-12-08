@@ -14,6 +14,7 @@ import {
   PCExpressionType, 
   PCSelfClosingElement,
   getElementModifiers,
+  PCRootExpression,
   getElementChildNodes,
   getElementAttributes,
   getPCStartTagAttribute,
@@ -53,7 +54,7 @@ export type Component = {
 
 export type Module = {
 
-  source: PCExpression;
+  source: PCRootExpression;
   uri: string;
 
   globalStyles: PCElement[];
@@ -84,7 +85,7 @@ export type ChildComponentInfo = {} & DependencyGraph;
 
 const LOADED_SYMBOL = Symbol();
 
-export const loadModuleAST = (ast: PCExpression, uri: string): Module => {
+export const loadModuleAST = (ast: PCRootExpression, uri: string): Module => {
   
   // weak memoization
   if (ast[LOADED_SYMBOL] && ast[LOADED_SYMBOL][0] === ast) return ast[LOADED_SYMBOL][1];
@@ -178,7 +179,10 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
   .then(result => {
     const errors = result.diagnostics.filter(({type}) => type === DiagnosticType.ERROR);
     if (errors.length) {
-      throw errors;
+      throw {
+        graph,
+        errors
+      };
     }
     return loadModuleAST(result.root, uri)
   })
@@ -206,8 +210,8 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
   });
 }
 
-const createModule = (ast: PCExpression, uri: string): Module => {
-  const childNodes = ast.type === PCExpressionType.FRAGMENT ? (ast as PCFragment).childNodes : [ast];
+const createModule = (ast: PCRootExpression, uri: string): Module => {
+  const childNodes = ast.type === PCExpressionType.FRAGMENT ? (ast as any as PCFragment).childNodes : [ast];
 
   const imports: Import[] = [];
   const components: Component[] = [];

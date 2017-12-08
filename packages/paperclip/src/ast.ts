@@ -82,6 +82,10 @@ export type PCExpression = {
   location: ExpressionLocation;
 };
 
+export type PCRootExpression = {
+  input: string;
+} & PCExpression;
+
 export type PCTextNode = {
   value: string;
 } & PCExpression;
