@@ -1,9 +1,10 @@
 // TODOS:
 // auto inference based on attribute types
 // inference based on fixtures
+// inferring slots
 
 import { PCExpression, PCExpressionType, BKExpression, BKExpressionType, BKOperation, BKNot, BKNumber, BKString, BKBind, BKObject, BKArray, PCBlock, BKVarReference, BKElse, BKElseIf, BKGroup, BKIf, BKKeyValuePair, BKProperty, BKPropertyReference, BKRepeat, BKReservedKeyword, PCAttribute, PCComment, PCElement, PCEndTag, PCFragment, PCParent, PCReference, PCRootExpression, PCSelfClosingElement, PCStartTag, PCString, PCStringBlock, PCTextNode } from "./ast";
-import { DependencyGraph, Module, Component, getComponentDependency, getModuleComponent } from "./loader";
+import { DependencyGraph, Module, Component, getComponentDependency, getModuleComponent, getDependencyGraphComponentsExpressions } from "./loader";
 import { Diagnostic, DiagnosticType } from "./parser-utils";
 
 export enum InferenceType {
@@ -31,9 +32,6 @@ export const ATTR_TYPE_HIGH_WATERMARKS = {
 type InferContext = {
   filePath?: string;
   inference: Inference;
-
-  // for deep inferencing
-  graph?: DependencyGraph;
 
   // current scope where inferred types should be applied do if
   // the path matches. E.g: <div [[repeat each items as item]] /> would
@@ -63,35 +61,28 @@ type InferResult = {
   diagnostics: Diagnostic[]
 };
 
-type InferResults = {
-  [identifier: string]: InferResult
+type DependencyGraphInferenceResult = {
+  componentInferences: {
+    [identifier: string]: Inference
+  },
+  diagnostics: Diagnostic[]
+};
+
+type RegisteredComponents = {
+  [identifier: string]: {
+    filePath: string;
+    component: PCExpression;
+  }
 };
 
 const createAnyInference = (): Inference => ({ type: InferenceType.ANY, properties: {} });
 
-// const ANY_REFERENCE = 
+const ANY_REFERENCE = createAnyInference();
 
-export const inferModuleComponentPropTypes = (module: Module, graph?: DependencyGraph): InferResults => {
-  const result = {};
-  for (const component of module.components) {
-    const result = inferNodeProps(component.template, module.uri, graph);
-    for (const preview of component.previews) {
 
-    }
-    result[component.id] = result;
-  }
-  return result;
-};
-
-export const inferNodeProps = (expr: PCExpression, filePath?: string, graph?: DependencyGraph): InferResult => {
-  const { inference, diagnostics } = inferNode(expr, { 
-    graph,
-    filePath,
-    inference: createAnyInference(),
-    diagnostics: [],
-    currentScopes: {},
-    highWaterMark: InferenceType.ANY
-  });
+// TODO - accept alias here. Also, do not use DependencyGraph - instead use registeredComponents
+export const inferNodeProps = (expr: PCExpression, filePath?: string): InferResult => {
+  const { inference, diagnostics } = inferNode(expr, createInferenceContext(filePath));
 
   return {
     inference,
@@ -99,11 +90,13 @@ export const inferNodeProps = (expr: PCExpression, filePath?: string, graph?: De
   };
 };
 
-export const getElementPropTypes = (tagName: string, graph: DependencyGraph) => {
-  // TODO - check reserved names
-  const dep = getComponentDependency(tagName, graph);
-  if (dep) return 
-}
+const createInferenceContext = (filePath: string): InferContext => ({ 
+  filePath,
+  inference: createAnyInference(),
+  diagnostics: [],
+  currentScopes: {},
+  highWaterMark: InferenceType.ANY
+})
 
 const inferNode = (expr: PCExpression, context: InferContext) => {
   switch(expr.type) {
@@ -118,6 +111,8 @@ const inferNode = (expr: PCExpression, context: InferContext) => {
 
 const inferStartTag = (startTag: PCStartTag, context: InferContext) => {
   const { attributes, name, modifiers } = startTag;
+
+  // TODO - possibly check for unknown properties - define warning
   for (let i = 0, {length} = attributes; i < length; i++) {
     const attrName = attributes[i].name;
     const highWaterMark = ATTR_TYPE_HIGH_WATERMARKS[name] && ATTR_TYPE_HIGH_WATERMARKS[name][attrName] || ATTR_TYPE_HIGH_WATERMARKS.__any[attrName] || InferenceType.ANY;
@@ -165,7 +160,6 @@ const inferAttributeValue = (value: PCExpression, context: InferContext) => {
 };
 
 const inferElement = (element: PCElement|PCSelfClosingElement, context: InferContext) => {
-
   let childNodes: PCExpression[] = [];
   let startTag: PCStartTag;
 

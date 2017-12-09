@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType, loadModuleDependencyGraph, inferModuleComponentPropTypes, InferredTypeKind } from "..";
+import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType, loadModuleDependencyGraph, inferDependencyGraph, InferredTypeKind } from "..";
 
 describe(__filename + "#", () => {
 
@@ -561,83 +561,5 @@ describe(__filename + "#", () => {
     it(`displays an inference error for ${source}`, () => {
       expect(inferNodeProps(parseModuleSource(source).root).diagnostics).to.eql(diagnostics);
     }); 
-  });
-
-  // deep inferencing
-  [
-    [
-      {
-        "entry": `
-          <component id="test">
-            <template>
-              [[bind a]]
-            </template>
-            <preview>
-              <test />
-            </preview>
-          </component>
-        `
-      },
-      {
-        test: {
-          inference: {
-            type: InferenceType.OBJECT_OR_ARRAY,
-            properties: {
-              a: {
-                type: InferenceType.ANY,
-                properties: {}
-              }
-            }
-          },
-          diagnostics: []
-        }
-      }
-    ],
-    [
-      {
-        "entry": `
-          <component id="test">
-            <template>
-              [[bind a * c]]
-            </template>
-            <preview>
-              <test a="b" />
-            </preview>
-          </component>
-        `
-      },
-      {
-        test: {
-          inference: {
-            type: InferenceType.OBJECT_OR_ARRAY,
-            properties: {
-              a: {
-                type: InferenceType.NUMBER,
-                properties: {}
-              },
-              c: {
-                type: InferenceType.NUMBER,
-                properties: {}
-              }
-            }
-          },
-          diagnostics: [
-            {
-              type: DiagnosticType.ERROR,
-            }
-          ]
-        }
-      }
-    ]
-  ].forEach(([sources, inferResult]: any) => {
-    it(`can deeply infer ${sources.entry}`, async () => {
-      const graph = await loadModuleDependencyGraph("entry", {
-        readFile: (uri) => sources[uri]
-      });
-
-      const result = inferModuleComponentPropTypes(graph.entry.module, graph);
-
-      expect(result).to.eql(inferResult);
-    });
   });
 });

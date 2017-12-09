@@ -50,7 +50,14 @@ export type Component = {
   properties: BKProperty[];
   style: PCElement;
   template: PCElement;
-  previews: PCElement[];
+  previews: (PCSelfClosingElement|PCElement)[];
+};
+
+export type ComponentExpressions = {
+  [identifier: string]: {
+    filePath: string;
+    expression: PCExpression;
+  }
 };
 
 export type Module = {
@@ -118,6 +125,21 @@ export const getChildComponentInfo = (root: PCExpression, graph: DependencyGraph
   });
 
   return info;
+};
+
+
+export const getDependencyGraphComponentsExpressions = (graph: DependencyGraph): ComponentExpressions => {
+  const templates: ComponentExpressions = {};
+  for (const filePath in graph) {
+    const { module } = graph[filePath];
+    for (const component of module.components) {
+      templates[component.id] = {
+        filePath,
+        expression: component.source
+      };
+    }
+  }
+  return templates;
 };
 
 export const getDependencyChildComponentInfo = ({ module }: Dependency, graph: DependencyGraph): ChildComponentInfo => {
@@ -270,7 +292,7 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
   let id: string;
   let style: PCElement;
   let template: PCElement;
-  const previews: PCElement[] = [[;]
+  const previews: PCSelfClosingElement[] = [];
   const metadata: ComponentMetadata[] = [];
   let properties: BKProperty[] = modifiers.map(({value}) => value).filter(modifier => modifier.type === BKExpressionType.PROPERTY) as BKProperty[];
 
@@ -293,7 +315,7 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
       } else if (tagName === "template") {
         template = element as any as PCElement;
       } else if (tagName === "preview") {
-        previews.push(element as any as PCElement);
+        previews.push(element as any as PCSelfClosingElement);
       } else if (tagName === "meta") {
         metadata.push({
           name: getPCStartTagAttribute(element, "name"),
