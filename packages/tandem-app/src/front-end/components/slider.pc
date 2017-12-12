@@ -21,7 +21,7 @@
   </style>
   <template>
     <div id="guide">
-        <div id="knob" style=[[ bind { left: this.value * 100 + "%" } ]]></div>
+        <div id="knob" style=[[ bind { left: value * 100 + "%" } ]]></div>
     </div>
   </template>
 </component>

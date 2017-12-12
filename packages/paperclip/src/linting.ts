@@ -112,26 +112,11 @@ const dedupeDiagnostics = (diagnostics: Diagnostic[]): Diagnostic[] => {
 const lintComponent = (component: Component, context: LintContext) => {
 
   context = lintNode(component.template, context);
-  context = {
-    ...context, 
-    components: {
-      ...context.components,
-      preview: context.components[component.id]
-    },
-  };
 
   for (let i = 0, {length} = component.previews; i < length; i++) {
     const preview = component.previews[i];
     context = lintNode(preview, context);
   }
-
-  context = {
-    ...context, 
-    components: {
-      ...context.components,
-      preview: null
-    },
-  };
 
   return context;
 }

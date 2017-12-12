@@ -50,7 +50,7 @@ export type Component = {
   metadata: ComponentMetadata[];
   style: PCElement;
   template: PCElement;
-  previews: (PCSelfClosingElement|PCElement)[];
+  previews: PCElement[];
 };
 
 export type ComponentExpressions = {
@@ -291,7 +291,7 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
   let id: string;
   let style: PCElement;
   let template: PCElement;
-  const previews: PCSelfClosingElement[] = [];
+  const previews: PCElement[] = [];
   const metadata: ComponentMetadata[] = [];
 
   for (let i = 0, {length} = attributes; i < length; i++) {
@@ -313,7 +313,9 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
       } else if (tagName === "template") {
         template = element as any as PCElement;
       } else if (tagName === "preview") {
-        previews.push(element as any as PCSelfClosingElement);
+        if (child.type === PCExpressionType.ELEMENT && (child as PCElement).childNodes.find(child => child.type === PCExpressionType.ELEMENT || child.type === PCExpressionType.SELF_CLOSING_ELEMENT)) {
+          previews.push(element as any as PCElement);
+        }
       } else if (tagName === "meta") {
         metadata.push({
           name: getPCStartTagAttribute(element, "name"),

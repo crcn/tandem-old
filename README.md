@@ -92,7 +92,7 @@ Below are some of the technical details, ideas, whys, and motivations about some
 
 ## Paperclip
 
-Paperclip is a design language that is optimized for visual editing. Think of it like a `.xib` file format for the web.
+Paperclip is a statically typed design language that is optimized for visual editing. Think of it like a `.xib` file format for the web.
 
 #### Motiviation
 
@@ -376,14 +376,13 @@ Additionally, you can define global variables that _can_ be used in components l
   </template>
 </component>
 ```
+#### Static type checking
+
+TODO
 
 ### Paperclip Roadmap 💫
 
 Paperclip is designed for the future to make the following ideas possible.
-
-#### Type inferencing
-
-TODO
 
 #### More compile targers
 
@@ -392,7 +391,6 @@ Paperclip currently compiles to Vanilla JS, and React. In the future, Paperclip 
 #### More features that integrate with visual editor
 
 Paperclip will eventually have features that are specific for visual editing, but are stripped out at compile time. 
-
 
 ##### `meta` tag
 

@@ -9,11 +9,7 @@
   <template>
     Hello world
   </template>
-</component>
-
-<component id="td-spinner-preview">
-  <meta name="preview" content="of=td-spinner, width=400, height=400"></meta>
-  <template>
+  <preview>
     <td-spinner />
-  </template>
+  </preview>
 </component>

@@ -9,7 +9,7 @@ import * as md5 from "md5";
 import * as fs from "fs";
 import * as fsa from "fs-extra";
 import { weakMemo, Bounds } from "aerial-common2";
-import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage, DependencyGraph } from "paperclip";
+import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage, DependencyGraph, getPCStartTagAttribute } from "paperclip";
 
 enum ComponentMetadataName {
   PREVIEW = "preview",
@@ -197,19 +197,22 @@ export const getPreviewComponentEntries = (state: ApplicationState): AllComponen
     for (const component of module.components) {
       // TODO - check for preview meta
 
-      const previewMeta = getComponentMetadataItem(component, ComponentMetadataName.PREVIEW);
-      if (!previewMeta) continue;
+      for (let i = 0, {length} = component.previews; i < length; i++) {
+        const preview = component.previews[i];
+        const width = Number(getPCStartTagAttribute(preview, "width") || DEFAULT_COMPONENT_PREVIEW_SIZE.width);
+        const height = Number(getPCStartTagAttribute(preview, "height") || DEFAULT_COMPONENT_PREVIEW_SIZE.height);
 
-      const bounds = { left: 0, top: currentTop, right: Number(previewMeta.params.width || DEFAULT_COMPONENT_PREVIEW_SIZE.width), bottom: currentTop + Number(previewMeta.params.height || DEFAULT_COMPONENT_PREVIEW_SIZE.height) };
-      
-      entries.push({
-        bounds,
-        targetComponentId: previewMeta.params.of,
-        previewComponentId: component.id,
-        relativeFilePath: getPublicSrcPath(module.uri, state)
-      });
+        const bounds = { left: 0, top: currentTop, right: width, bottom: currentTop + height };
+        
+        entries.push({
+          bounds,
+          componentId: component.id,
+          previewName: getPCStartTagAttribute(preview, "name") || String(i),
+          relativeFilePath: getPublicSrcPath(module.uri, state)
+        });
 
-      currentTop = bounds.bottom;
+        currentTop = bounds.bottom;
+      }
     }
   }
 

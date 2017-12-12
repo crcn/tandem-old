@@ -5,11 +5,10 @@ RESEARCH:
 IMMEDIATE:
 
 - [ ] Paperclip
-  - [ ] transpile previews to functions
   - [ ] preview should take tag name as child
-  - [ ] error messaging for type inferencing
+  - [ ] transpile previews to functions
 
-- [ ] fix outstanding errors in PC componentss
+- [ ] fix outstanding errors in PC components
 - [ ] Remove VSCode bugs (try to break)
 - [ ] slim dom impl
 

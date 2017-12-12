@@ -52,11 +52,7 @@
       <td-crumb class="crumb" [[repeat items as item]] [[bind item]]></td-crumb>
     </div>
   </template>
-</component>
-
-<component id="td-breadcrumbs-preview">
-  <meta name="preview" content="of=td-breadcrumbs, width=1024, height=200" />
-  <template>
+  <preview width="1024" height="200">
     <td-breadcrumbs items=[[bind [
       {label: "html"},
       {label: "body"},
@@ -64,7 +60,10 @@
       {label: "items"},
       {label: "item"}
     ]]] />
-  </template>
+  </preview>
+</component>
+
+<component id="td-breadcrumbs-preview">
 </component>
 
 
@@ -217,11 +216,8 @@
       </td-gutter>
     </div>
   </template>
+  <preview width="1024" height="768">
+    <td-workspace />
+  </preview>
 </component>
 
-<component id="td-workspace-preview">
-  <meta name="preview" content="of=td-workspace, width=1024, height=768" />
-  <template>
-    <td-workspace />
-  </template>
-</component>

@@ -10,7 +10,7 @@ import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
 import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged, moduleCreated } from "../actions";
 import * as express from "express";
 import * as path from "path";
@@ -56,6 +56,7 @@ function* addRoutes(server: express.Express) {
 
   // return a module preview
   server.get("/components/:componentId/preview", yield wrapRoute(getComponentPreview));
+  server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentPreview));
 
   // return all components
   server.get("/components/:componentId/screenshots/:screenshotHash.png", yield wrapRoute(getTrimmedComponentScreenshot));
@@ -153,11 +154,11 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
         const entries = ${JSON.stringify(entries)};
         const _cache = {};
 
-        const onPreviewBundle = ({ previewComponentId, bounds }, { code }) => {
+        const onPreviewBundle = ({ componentId, previewName, bounds }, { code }) => {
           const { entry, modules } = new Function("window", "with (window) { return " + code + "}")(window);
 
           const container = document.createElement("div");
-          container.appendChild(document.createElement(previewComponentId));
+          container.appendChild(entry.previews[componentId][previewName]());
 
           Object.assign(container.style, { 
             position: "absolute", 
@@ -181,7 +182,6 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
             document.body.appendChild(element);
             return Promise.resolve();
           }
-
 
           const entry = entries[index];
 
@@ -469,7 +469,7 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   // TODO - evaluate PC code IN THE BROWSER -- need to attach data information to element
   // nodes
   const state: ApplicationState = yield select();
-  const { componentId } = req.params;
+  const { componentId, previewName } = req.params;
 
   const components = (yield call(getAvailableComponents, state, getReadFile(state))) as RegisteredComponent[];
 
@@ -497,7 +497,8 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
     <body>
       <script>
         let _loadedDocument;
-        const previewTargetComponentId = "${componentId}";
+        const componentId = ${JSON.stringify(componentId)};
+        const previewName = ${JSON.stringify(previewName)};
 
         // hook into synthetic document's load cycle -- ensure
         // that it doesn't emit a load event until the paperclip module
@@ -517,17 +518,13 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
         }).then(({ code, warnings, entryDependency }) => {
           const { entry, modules } = new Function("window", "with (window) { return " + code + "}")(window);
 
-          const components = entryDependency.module.components;
-          let previewComponent = components.find((component) => {
-            const previewMetadata = paperclip.getComponentMetadataItem(component, "preview");
-            
-            return previewMetadata && previewMetadata.params.of === previewTargetComponentId;
-          });
+          const targetComponent = entryDependency.module.components.find(component => component.id == componentId);
+          const preview = previewName ? entry.previews[componentId][previewName] : entry.previews[componentId][Object.keys(entry.previews[componentId])[0]];
 
-          if (!previewComponent) {
+          if (!preview) {
             return document.body.appendChild(document.createTextNode("Unable to find preview of component " + previewTargetComponentId));
           }
-          const element = document.createElement(previewComponent.id);
+          const element = preview();
 
           // attach source so that modules can be meta clicked
           element.source = { uri: "${targetComponent.filePath}" };

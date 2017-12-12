@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType, loadModuleDependencyGraph, InferredTypeKind, RegisteredComponents } from "..";
+import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType, loadModuleDependencyGraph, RegisteredComponents } from "..";
 
 describe(__filename + "#", () => {
 

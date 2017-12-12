@@ -17,8 +17,8 @@ export type FileCacheItem = {
 };
 
 export type AllComponentsPreviewEntry = {
-  targetComponentId: string;
-  previewComponentId: string;
+  componentId: string;
+  previewName: string;
   relativeFilePath: string;
   bounds: Bounds;
 };

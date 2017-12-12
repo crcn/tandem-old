@@ -62,11 +62,7 @@
       <slot>children here</slot>
     </span>
   </template>
-</component>
-
-<component id="td-list-preview" label="List">
-  <meta name="preview" content="of=td-list, width=200, height=200" />
-  <template>
+  <preview width="200" height="200">
     <td-list> 
       <td-list-item>Item 1</td-list-item>
       <td-list-item>Item 2</td-list-item>
@@ -74,7 +70,7 @@
       <td-list-item>Item 4</td-list-item>
       <td-list-item>Item 5</td-list-item>
     </td-list>  
-  </template>
+  </preview>
 </component>
 
 <component id="td-preview-component-example" [[property label]]>

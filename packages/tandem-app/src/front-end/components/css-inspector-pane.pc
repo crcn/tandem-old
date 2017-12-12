@@ -118,11 +118,7 @@
       </span>
     </td-pane>
   </template>
-</component>
-
-<component id="td-css-inspector-pane-preview">
-  <meta name="preview" content="of=td-css-inspector-pane, width=200, height=300" />
-  <template>
+  <preview width="200" height="300">
     <td-css-inspector-pane styleRules=[[bind [
       {
         label: ".container",
@@ -317,7 +313,7 @@
         ]
       }
     ]]] />
-  </template>
+  </preview>
 </component>
 
 <component id="css-inspector-multiple-items-selected">
@@ -337,11 +333,7 @@
       </div>
     </td-pane>
   </template>
-</component>
-
-<component id="css-inspector-multiple-items-selected-preview">
-  <meta name="preview" content="of=css-inspector-multiple-items-selected, width=100, height=100" />
-  <template>
+  <preview width="100" height="100">
     <css-inspector-multiple-items-selected />
-  </template>
+  </preview>
 </component>

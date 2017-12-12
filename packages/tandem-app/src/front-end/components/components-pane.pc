@@ -104,7 +104,8 @@
       </span>
     </td-pane>
   </template>
-  <preview dispatch onAddComponentClick components=[[bind [
+  <preview>
+    <td-components-pane dispatch onAddComponentClick components=[[bind [
     {
       label: "Component1",
       onDragStart: null,
@@ -117,4 +118,5 @@
       }
     }
   ]]] />
+  </preview>
 </component>

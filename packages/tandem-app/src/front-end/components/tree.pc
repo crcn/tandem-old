@@ -30,7 +30,7 @@ const createStatefulComponent = (props, wrapEventHandler) => {
 
 class Component extends React.Component {
   componentDidMount() {
-    this.initial = createStatefulComponent(this.props, (fn) => {
+    this.initial = createStatefulComponent(props, (fn) => {
       this.forceUpdate()   ;
     });
   }

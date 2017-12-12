@@ -44,7 +44,7 @@
     }
   </style>
   <template>
-    <td-css-expr-input [[repeat items as item, i]] value=[[bind item]] key=[[bind i]] />
+    <td-css-expr-input [[repeat items as item]] value=[[bind item]] />
   </template>
 </component>
 
@@ -59,7 +59,7 @@
     }
   </style>
   <template>
-    <td-css-expr-input [[repeat items as item, i]] value=[[bind item]] key=[[bind i]] />
+    <td-css-expr-input [[repeat items as item, j]] value=[[bind item]] key=[[bind j]] />
   </template>
 </component>
 
@@ -146,7 +146,7 @@
   <template>
     <td-color-mini-input [[if returnType === "COLOR"]] value=[[bind returnValue]] /> 
     <span class="name">[[bind name]]</span>
-      <td-css-expr-input [[repeat params as param, i]] value=[[bind param]] key=[[bind i]] />
+      <td-css-expr-input [[repeat params as param]] value=[[bind param]] />
   </template>
 </component>
 
@@ -168,14 +168,10 @@
       [[bind value]]
     </span>
   </template>
-</component>
-
-<component id="td-css-expr-input-preview">
-  <meta name="preview" content="of=td-css-expr-input, width=50, height=30" />
-  <template>
+  <preview width="50" height="30">
     <td-css-expr-input open=[[bind open]] value=[[bind {
       type: "COLOR",
       value: "#F60"
     }]] />
-  </template>
+  </preview>
 </component>
