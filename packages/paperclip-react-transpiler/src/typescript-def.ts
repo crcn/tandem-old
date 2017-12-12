@@ -8,7 +8,7 @@ TODOS:
 
 import { upperFirst, camelCase, repeat } from "lodash";
 import * as path from "path";
-import { loadModuleAST, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment, PCSelfClosingElement, getElementModifiers, getPCElementModifier, BKExpressionType, getElementChildNodes, PCBlock, BKExpression, BKOperation, BKPropertyReference, BKVarReference, BKArray, BKBind, BKRepeat, BKIf, BKElse, BKElseIf, getElementAttributes, inferRootNodeTypes, InferredTypeKind, getPCASTElementsByTagName, inferElementAttributeTypes, inferNodeTypes, symbolTable, setSymbolTableEntries } from "paperclip";
+import { loadModuleAST, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment, PCSelfClosingElement, getElementModifiers, getPCElementModifier, BKExpressionType, getElementChildNodes, PCBlock, BKExpression, BKOperation, BKPropertyReference, BKVarReference, BKArray, BKBind, BKRepeat, BKIf, BKElse, BKElseIf, getElementAttributes, getPCASTElementsByTagName, inferNodeProps, Inference, InferenceType } from "paperclip";
 import { basename, relative } from "path";
 import { ComponentTranspileInfo, getComponentTranspileInfo, getComponentClassName, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
 
@@ -50,7 +50,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
   let content = ``;
   const classPropsName = propTypesName;
 
-  const table = inferNodeTypes(component.template);
+  const { inference } = inferNodeProps(component.source);
 
   content += `` + 
   `export type ${basePropTypesName} = {` +
@@ -60,7 +60,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
   `};\n\n`;
   
   content += `` +
-  `export type ${classPropsName} = ${transpileInferredTypeKinds(table.context)} & ${basePropTypesName};\n\n`;
+  `export type ${classPropsName} = ${transpileInferredProps(inference)} & ${basePropTypesName};\n\n`;
 
   const childComponentDependencies = getChildComponentInfo(component.template, graph);  
 
@@ -102,7 +102,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
 
     // const childTable = setSymbolTableEntries(allEntries, symbolTable());
 
-    // const childPropTypes = transpileInferredTypeKinds(childTable.context);
+    // const childPropTypes = transpileInferredProps(childTable.context);
 
     const childTypeName = `${className}Child${childComponentInfo.propTypesName}`;
 
@@ -129,23 +129,23 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
   return content;
 }
 
-const transpileInferredTypeKinds = ([type, props = {}], path: string[] = []) => {
-  if (type === InferredTypeKind.ANY) {
+const transpileInferredProps = ({ type, properties }: Inference, path: string[] = []) => {
+  if (type === InferenceType.ANY) {
     return `any`;
-  }  else if (type & InferredTypeKind.OBJECT && type & InferredTypeKind.ARRAY) { 
-    let content = transpileInferredTypeKinds(props[Object.keys(props)[0]]);
+  }  else if (type & InferenceType.OBJECT && type & InferenceType.ARRAY) { 
+    let content = transpileInferredProps(properties[Object.keys(properties)[0]]);
     content = `Array<${content}> | { [identifier: string]:${content} }`;
     return content;
-  } else if (type & InferredTypeKind.OBJECT) { 
+  } else if (type & InferenceType.OBJECT) { 
     let content = `{\n`;
-    for (const key in props) {
-      content += repeat(" ", path.length * 2) + `${key}: ${transpileInferredTypeKinds(props[key], [...path, key])};\n`
+    for (const key in properties) {
+      content += repeat(" ", path.length * 2) + `${key}: ${transpileInferredProps(properties[key], [...path, key])};\n`
     }
 
     // allow for any props for now since [[property no longer works]]
-    if (type & InferredTypeKind.EXTENDABLE || true) {
-      content += "[identifier: string]: any;\n"
-    };
+    // if (type & InferenceType. || true) {
+    //   content += "[identifier: string]: any;\n"
+    // };
 
     content += repeat(" ", (path.length - 1) * 2) + `}`;
     return content;
@@ -153,32 +153,18 @@ const transpileInferredTypeKinds = ([type, props = {}], path: string[] = []) => 
     let content = ``;
     const buffer = [];
 
-    if (type & InferredTypeKind.STRING) {
+    if (type & InferenceType.STRING) {
       buffer.push("string");
     } 
 
-    if (type & InferredTypeKind.NUMBER) {
+    if (type & InferenceType.NUMBER) {
       buffer.push("number");
     }
 
-    if (type & InferredTypeKind.BOOLEAN) {
+    if (type & InferenceType.BOOLEAN) {
       buffer.push("boolean");
     }
 
     return buffer.join(" | ");
   }
 }
-
-const transpileComponentPropTypes = ({ className, component }: ComponentTranspileInfo) => {
-  let content = ``;
-  const classPropsName = `${className}Props`;
-
-  content += `` +
-  `export type ${classPropsName} = {\n` +
-    component.properties.map(({name}) => (
-      `  ${name}: any;\n`
-    )).join("") +
-  `};\n\n`;
-
-  return content;
-};

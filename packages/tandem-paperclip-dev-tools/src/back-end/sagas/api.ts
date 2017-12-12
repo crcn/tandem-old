@@ -10,7 +10,7 @@ import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
-import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
+import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
 import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged, moduleCreated } from "../actions";
 import * as express from "express";
 import * as path from "path";

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType, loadModuleDependencyGraph, inferDependencyGraph, InferredTypeKind } from "..";
+import { inferNodeProps, Inference, InferenceType, parseModuleSource, DiagnosticType, loadModuleDependencyGraph, InferredTypeKind, RegisteredComponents } from "..";
 
 describe(__filename + "#", () => {
 
@@ -10,6 +10,7 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.ANY,
+          
           properties: {}
         }
       }
@@ -19,10 +20,12 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.ANY, 
+          
           properties: {}
         }, 
         b: { 
           type: InferenceType.ANY, 
+          
           properties: {}
         }
       }
@@ -38,6 +41,7 @@ describe(__filename + "#", () => {
               properties: {
                 c: {
                   type: InferenceType.ANY,
+                  
                   properties: {}
                 }
               }
@@ -51,10 +55,12 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         }
       }
@@ -64,10 +70,12 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         }
       }
@@ -77,10 +85,12 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         }
       }
@@ -90,10 +100,12 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -103,14 +115,17 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         c: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -120,14 +135,17 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         c: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         }
       }
@@ -140,16 +158,19 @@ describe(__filename + "#", () => {
           properties: {
             b: {
               type: InferenceType.NUMBER,
+              
               properties: {}
             }
           }
         },
         c: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         d: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         }
       }
@@ -159,6 +180,7 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -168,10 +190,12 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -181,10 +205,12 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -194,14 +220,17 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         c: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -211,14 +240,17 @@ describe(__filename + "#", () => {
       properties: { 
         a: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         c: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         },
         b: { 
           type: InferenceType.NUMBER, 
+          
           properties: { }
         }
       }
@@ -228,7 +260,7 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         c: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.ANY,
           properties: { }
         }
       }
@@ -238,10 +270,12 @@ describe(__filename + "#", () => {
       properties: { 
         c: { 
           type: InferenceType.STRING, 
+          
           properties: { }
         },
         d: { 
           type: InferenceType.STRING, 
+          
           properties: { }
         }
       }
@@ -256,6 +290,7 @@ describe(__filename + "#", () => {
       properties: { 
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -266,7 +301,7 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
-          type: InferenceType.STRING, 
+          type: InferenceType.ANY, 
           properties: { }
         }
       }
@@ -275,16 +310,7 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
-          type: InferenceType.STRING, 
-          properties: { }
-        }
-      }
-    }],
-    [`<div class=[[bind b]]>c</a>`, { 
-      type: InferenceType.OBJECT_OR_ARRAY, 
-      properties: { 
-        b: { 
-          type: InferenceType.STRING, 
+          type: InferenceType.ANY, 
           properties: { }
         }
       }
@@ -296,6 +322,7 @@ describe(__filename + "#", () => {
       properties: { 
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -305,6 +332,7 @@ describe(__filename + "#", () => {
       properties: { 
         b: { 
           type: InferenceType.ANY, 
+          
           properties: { }
         }
       }
@@ -314,6 +342,7 @@ describe(__filename + "#", () => {
       properties: { 
         items: { 
           type: InferenceType.OBJECT_OR_ARRAY, 
+          
           properties: {
             $$each: {
               properties: {},
@@ -328,6 +357,7 @@ describe(__filename + "#", () => {
       properties: { 
         items: { 
           type: InferenceType.OBJECT_OR_ARRAY, 
+          
           properties: {
             $$each: {
               type: InferenceType.OBJECT_OR_ARRAY,
@@ -342,11 +372,12 @@ describe(__filename + "#", () => {
         }
       }
     }],
-    [`<a [[repeat items as item]] key[[bind item.b.c]]></a>`, {
+    [`<a [[repeat items as item]] key=[[bind item.b.c]]></a>`, {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         items: { 
           type: InferenceType.OBJECT_OR_ARRAY, 
+          
           properties: {
             $$each: {
               type: InferenceType.OBJECT_OR_ARRAY,
@@ -371,6 +402,7 @@ describe(__filename + "#", () => {
       properties: { 
         items: { 
           type: InferenceType.OBJECT_OR_ARRAY, 
+          
           properties: {
             $$each: {
               type: InferenceType.ANY,
@@ -380,6 +412,7 @@ describe(__filename + "#", () => {
         },
         item: {
           type: InferenceType.ANY,
+          
           properties: { }
         }
       }
@@ -394,14 +427,16 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: {
+          
           type: InferenceType.OBJECT_OR_ARRAY,
           properties: {
             $$each: {
+              
               type: InferenceType.OBJECT_OR_ARRAY,
               properties: {
                 length: {
                   type: InferenceType.ANY,
-                  properties: {}
+                  properties: {},
                 },
                 $$each: {
                   type: InferenceType.OBJECT_OR_ARRAY,
@@ -417,6 +452,15 @@ describe(__filename + "#", () => {
           }
         }
       }
+    }],
+    [`<a style=[[bind { color: color }]]></a>`, {
+      type: InferenceType.OBJECT_OR_ARRAY, 
+      properties: { 
+        color: {
+          type: InferenceType.ANY,
+          properties: {}
+        }
+      }
     }]
   ].forEach(([source, inference]: any) => {
     it(`can get the Inference for ${source}`, () => {
@@ -429,7 +473,7 @@ describe(__filename + "#", () => {
     [`[[bind a * c]] [[bind a.c]]`, [
       { 
         type: DiagnosticType.ERROR,
-        filePath: undefined,
+        filePath: "entry",
         location: {
           start: {
             column: 22,
@@ -448,7 +492,7 @@ describe(__filename + "#", () => {
     [`[[bind a * "5"]]`, [
       { 
         type: DiagnosticType.ERROR,
-        filePath: undefined,
+        filePath: "entry",
         location: {
           start: {
             column: 11,
@@ -467,7 +511,7 @@ describe(__filename + "#", () => {
     [`[[bind a.b * c]] [[bind a.b.c]]`, [
       { 
         type: DiagnosticType.ERROR,
-        filePath: undefined,
+        filePath: "entry",
         location: {
           start: {
             column: 24,
@@ -486,7 +530,7 @@ describe(__filename + "#", () => {
     [`[[bind a.b.c]] [[bind a.b * c]]`, [
       { 
         type: DiagnosticType.ERROR,
-        filePath: undefined,
+        filePath: "entry",
         location: {
           start: {
             column: 22,
@@ -505,7 +549,7 @@ describe(__filename + "#", () => {
     [`[[bind a.b.c]] [[bind c * a.b]]`, [
       { 
         type: DiagnosticType.ERROR,
-        filePath: undefined,
+        filePath: "entry",
         location: {
           start: {
             column: 26,
@@ -523,7 +567,7 @@ describe(__filename + "#", () => {
     ]],
     [`[[bind a * 5]] [[bind a.b.c]] [[bind c * a.b]]`, [
       {
-        filePath: undefined,
+        filePath: "entry",
         "type": "ERROR",
         "location": {
           "start": {
@@ -540,7 +584,7 @@ describe(__filename + "#", () => {
         "message": "Cannot call property \"b.c\" on primitive \"a\""
       },
       {
-        filePath: undefined,
+        filePath: "entry",
         "type": "ERROR",
         "location": {
           "start": {
@@ -559,7 +603,8 @@ describe(__filename + "#", () => {
     ]]
   ].forEach(([source, diagnostics]: any) => {
     it(`displays an inference error for ${source}`, () => {
-      expect(inferNodeProps(parseModuleSource(source).root).diagnostics).to.eql(diagnostics);
+      expect(inferNodeProps(parseModuleSource(source).root, "entry").diagnostics).to.eql(diagnostics);
     }); 
   });
+
 });

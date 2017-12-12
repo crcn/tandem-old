@@ -1,10 +1,11 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import * as fs from 'fs';
 import { DocumentContext } from '../../service';
 import { TextDocument, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { PaperclipDocumentRegions } from '../embeddedSupport';
 
-import { loadModuleDependencyGraph, loadModuleAST, parseModuleSource, DiagnosticType } from "paperclip";
+import { loadModuleDependencyGraph, loadModuleAST, parseModuleSource, DiagnosticType, inferNodeProps, lintDependencyGraph, Diagnostic as PCDiagnostic } from "paperclip";
 import { HTMLDocument } from './parser/htmlParser';
 import { doComplete } from './services/htmlCompletion';
 import { doHover } from './services/htmlHover';
@@ -48,15 +49,31 @@ export function getPaperclipHTMLMode(
       enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
       config = c;
     },
-    doValidation(document) {
+    async doValidation(document, allDocuments) {
       const embedded = embeddedDocuments.get(document);
 
-      // Fetch errors
-      const { diagnostics } = parseModuleSource(document.getText());
+      let allDiagnostics: PCDiagnostic[] = [];
 
-      // TODO  - add warnings about components
+      const { diagnostics: astDiagnostics, graph } = await loadModuleDependencyGraph(document.uri, {
+        readFile: (uri) => {
+          const doc = allDocuments.get(uri);
+          return doc ? doc.getText() : fs.readFileSync(uri.replace("file://",""), "utf8");
+        }
+      });
+     
+      allDiagnostics.push(...astDiagnostics);
 
-      return diagnostics.map(diag => ({
+      const module = graph[document.uri].module;
+      for (const component of module.components) {
+        const { diagnostics: inferDiagnostics } = inferNodeProps(component.source, document.uri);
+        allDiagnostics.push(...inferDiagnostics);
+      }
+
+      const { diagnostics: lintDiagnostics } = lintDependencyGraph(graph);
+
+      allDiagnostics.push(...lintDiagnostics);
+
+      return allDiagnostics.map(diag => ({
         range: {
           start: {
             line: diag.location.start.line - 1,

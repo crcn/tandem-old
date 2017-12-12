@@ -9,7 +9,7 @@ import * as md5 from "md5";
 import * as fs from "fs";
 import * as fsa from "fs-extra";
 import { weakMemo, Bounds } from "aerial-common2";
-import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage } from "paperclip";
+import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage, DependencyGraph } from "paperclip";
 
 enum ComponentMetadataName {
   PREVIEW = "preview",
@@ -94,7 +94,7 @@ export const getAssocComponents = async (matchFilePath: string, state: Applicati
   const readFileSync = getReadFile(state);
 
   for (const moduleFilePath of allFilePaths) {
-    const graph = await loadModuleDependencyGraph(moduleFilePath, {
+    const { graph } = await loadModuleDependencyGraph(moduleFilePath, {
       readFile: readFileSync
     });
 
@@ -155,7 +155,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
     console.warn(`Syntax error in ${filePath}`);
 
     result.diagnostics.forEach((diagnostic) => {
-      console.log(generatePrettyErrorMessage(diagnostic));
+      console.log(diagnostic.message);
     })
 
     return [];

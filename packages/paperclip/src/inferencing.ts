@@ -1,11 +1,12 @@
-// TODOS:
-// auto inference based on attribute types
-// inference based on fixtures
-// inferring slots
+
+// TODO - callstack - infinite loop detection
+// infer based on styles
+// show how each ref extends attribute it's being assigned to
 
 import { PCExpression, PCExpressionType, BKExpression, BKExpressionType, BKOperation, BKNot, BKNumber, BKString, BKBind, BKObject, BKArray, PCBlock, BKVarReference, BKElse, BKElseIf, BKGroup, BKIf, BKKeyValuePair, BKProperty, BKPropertyReference, BKRepeat, BKReservedKeyword, PCAttribute, PCComment, PCElement, PCEndTag, PCFragment, PCParent, PCReference, PCRootExpression, PCSelfClosingElement, PCStartTag, PCString, PCStringBlock, PCTextNode } from "./ast";
 import { DependencyGraph, Module, Component, getComponentDependency, getModuleComponent, getDependencyGraphComponentsExpressions } from "./loader";
 import { Diagnostic, DiagnosticType } from "./parser-utils";
+import { weakMemo } from "./utils";
 
 export enum InferenceType {
   OBJECT = 1,
@@ -18,9 +19,10 @@ export enum InferenceType {
   OBJECT_OR_ARRAY = OBJECT | ARRAY
 };
 
-const EACH_KEY = "$$each";
+export const EACH_KEY = "$$each";
 
-export const ATTR_TYPE_HIGH_WATERMARKS = {
+// TODO - need more of these
+export const ATTR_TYPE_LIMITS = {
   a: {
     href: InferenceType.STRING
   },
@@ -29,9 +31,16 @@ export const ATTR_TYPE_HIGH_WATERMARKS = {
   }
 };
 
+type InferenceExtends = {
+  tagName: string;
+  attributeName: string
+};
+
 type InferContext = {
   filePath?: string;
+  options: InferNodePropOptions;
   inference: Inference;
+  extends?: InferenceExtends;
 
   // current scope where inferred types should be applied do if
   // the path matches. E.g: <div [[repeat each items as item]] /> would
@@ -40,23 +49,24 @@ type InferContext = {
     [identifier: string]: string[]
   }
 
-  highWaterMark: InferenceType;
-  highWaterMarkErrorMessage?: string;
+  typeLimit: InferenceType;
+  typeLimitErrorMessage?: string;
 
   diagnostics: Diagnostic[]
 };
 
-
 export type Inference = {
   type: number;
   optional?: boolean;
+  extends?: InferenceExtends;
   properties: {
     [identifier: string]: Inference;
     $$each?: Inference;
   };
 };
 
-type InferResult = {
+type InferResult
+ = {
   inference: Inference;
   diagnostics: Diagnostic[]
 };
@@ -68,34 +78,34 @@ type DependencyGraphInferenceResult = {
   diagnostics: Diagnostic[]
 };
 
-type RegisteredComponents = {
+export type RegisteredComponents = {
   [identifier: string]: {
     filePath: string;
-    component: PCExpression;
+    expression: PCExpression;
   }
 };
 
 const createAnyInference = (): Inference => ({ type: InferenceType.ANY, properties: {} });
 
-const ANY_REFERENCE = createAnyInference();
+export const ANY_REFERENCE = createAnyInference();
 
-
-// TODO - accept alias here. Also, do not use DependencyGraph - instead use registeredComponents
-export const inferNodeProps = (expr: PCExpression, filePath?: string): InferResult => {
-  const { inference, diagnostics } = inferNode(expr, createInferenceContext(filePath));
-
-  return {
-    inference,
-    diagnostics,
-  };
+type InferNodePropOptions = {
+  ignoreTagNames?: string[]
 };
 
-const createInferenceContext = (filePath: string): InferContext => ({ 
+// TODO - accept alias here. Also, do not use DependencyGraph - instead use registeredComponents
+export const inferNodeProps = weakMemo((element: PCExpression, filePath?: string, options: InferNodePropOptions = {}): InferResult => {
+  const { diagnostics, inference } = inferNode(element, createInferenceContext(filePath, options));
+  return { diagnostics, inference };
+});
+
+const createInferenceContext = (filePath: string, options: InferNodePropOptions): InferContext => ({ 
   filePath,
+  options,
   inference: createAnyInference(),
   diagnostics: [],
   currentScopes: {},
-  highWaterMark: InferenceType.ANY
+  typeLimit: InferenceType.ANY
 })
 
 const inferNode = (expr: PCExpression, context: InferContext) => {
@@ -114,32 +124,33 @@ const inferStartTag = (startTag: PCStartTag, context: InferContext) => {
 
   // TODO - possibly check for unknown properties - define warning
   for (let i = 0, {length} = attributes; i < length; i++) {
-    const attrName = attributes[i].name;
-    const highWaterMark = ATTR_TYPE_HIGH_WATERMARKS[name] && ATTR_TYPE_HIGH_WATERMARKS[name][attrName] || ATTR_TYPE_HIGH_WATERMARKS.__any[attrName] || InferenceType.ANY;
-    context = setHighWaterMark(highWaterMark, `${attrName} must be be a ${getPrettyTypeLabelEnd(highWaterMark)}`, context);
-    context = inferAttribute(attributes[i], context);
+    // const attrName = attributes[i].name;
+    // const typeLimit = ATTR_TYPE_LIMITS[name] && ATTR_TYPE_LIMITS[name][attrName] || ATTR_TYPE_LIMITS.__any[attrName] || InferenceType.ANY;
+    // context = setTypeLimit(typeLimit, `${attrName} must be be a ${getPrettyTypeLabelEnd(typeLimit)}`, context);
+    context = inferAttribute(startTag, attributes[i], setTypeLimit(InferenceType.ANY, null, context));
   }
 
   for (let i = 0, {length} = modifiers; i < length; i++) {
     const modifier = modifiers[i].value;
     if (modifier.type === BKExpressionType.IF || modifier.type === BKExpressionType.ELSEIF || modifier.type === BKExpressionType.BIND) {
-      context = inferExprType(modifier, context);
+
+      context = inferExprType(modifier, setTypeLimit(InferenceType.ANY, null, context));
     }
   }
 
   return context;
 };
 
-const inferAttribute = ({name, value}: PCAttribute, context: InferContext) => {
+const inferAttribute = (startTag: PCStartTag, {name, value}: PCAttribute, context: InferContext) => {
 
   // TODO - check for reserved attribute types like href
   if (value) {
-    context = inferAttributeValue(value, context);
+    context = inferAttributeValue(startTag, value, context);
   }
   return context;
 };
 
-const inferAttributeValue = (value: PCExpression, context: InferContext) => {
+const inferAttributeValue = (startTag: PCStartTag, value: PCExpression, context: InferContext) => {
   switch(value.type) {
     case PCExpressionType.STRING: {
       return context;
@@ -147,7 +158,7 @@ const inferAttributeValue = (value: PCExpression, context: InferContext) => {
     case PCExpressionType.STRING_BLOCK: {
       const block = value as PCStringBlock;
       for (let i = 0, {length} = block.values; i < length; i++) {
-        context = inferAttributeValue(block.values[i], setHighWaterMark(InferenceType.STRING, null, context));
+        context = inferAttributeValue(startTag, block.values[i], setTypeLimit(InferenceType.STRING, null, context));
       }
       return context;
     }
@@ -170,6 +181,10 @@ const inferElement = (element: PCElement|PCSelfClosingElement, context: InferCon
     const el = element as PCElement;
     childNodes = el.childNodes;
     startTag = el.startTag;
+  }
+
+  if (context.options.ignoreTagNames && context.options.ignoreTagNames.indexOf(startTag.name) !== -1)  {
+    return context;
   }
 
   const { modifiers } = startTag;
@@ -201,7 +216,7 @@ const inferElement = (element: PCElement|PCSelfClosingElement, context: InferCon
 
 const isReference = (expr: BKExpression) => expr.type === BKExpressionType.VAR_REFERENCE || expr.type === BKExpressionType.PROP_REFERENCE;
 
-const getReferenceKeyPath = (expr: BKExpression) => expr.type === BKExpressionType.VAR_REFERENCE ? [(expr as BKVarReference).name] : (expr as BKPropertyReference).path.map(ref => ref.name);
+export const getReferenceKeyPath = (expr: BKExpression) => expr.type === BKExpressionType.VAR_REFERENCE ? [(expr as BKVarReference).name] : (expr as BKPropertyReference).path.map(ref => ref.name);
 
 const inferFragment = (expr: PCFragment, context: InferContext) => inferChildNodes(expr.childNodes, context);
 
@@ -213,7 +228,7 @@ const inferChildNodes = (childNodes: PCExpression[], context: InferContext) => {
 };
 
 const inferDynamicTextNode = (expr: PCExpression, context: InferContext) => {
-  return inferExprType((expr as PCBlock).value, setHighWaterMark(InferenceType.ANY, null, context));
+  return inferExprType((expr as PCBlock).value, setTypeLimit(InferenceType.ANY, null, context));
 };
 
 const inferExprType = (expr: BKExpression, context: InferContext) => {
@@ -223,26 +238,26 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
         return addInvalidTypeError(expr, InferenceType.NUMBER, context);
       }
       
-      return setHighWaterMark(InferenceType.NUMBER, null, context);
+      return setTypeLimit(InferenceType.NUMBER, null, context);
     }
     case BKExpressionType.STRING: {
       if (!isValidReturnType(InferenceType.STRING, context)) {
         return addInvalidTypeError(expr, InferenceType.NUMBER, context);
       }
       
-      return setHighWaterMark(InferenceType.STRING, null, context);
+      return setTypeLimit(InferenceType.STRING, null, context);
     }
     case BKExpressionType.OPERATION: {
       const { left, operator, right } = expr as BKOperation;
-      const newHighWaterMark = (/^[\*/\-%]$/.test(operator) ? InferenceType.NUMBER : context.highWaterMark);
+      const newtypeLimit = (/^[\*/\-%]$/.test(operator) ? InferenceType.NUMBER : context.typeLimit);
 
-      if (!isValidReturnType(newHighWaterMark, context)) {
-        return addInvalidTypeError(expr, newHighWaterMark, context);
+      if (!isValidReturnType(newtypeLimit, context)) {
+        return addInvalidTypeError(expr, newtypeLimit, context);
       }
 
-      context = inferExprType(left, setHighWaterMark(newHighWaterMark, `The left-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(newHighWaterMark)}`, context));
+      context = inferExprType(left, setTypeLimit(newtypeLimit, `The left-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(newtypeLimit)}`, context));
 
-      context = inferExprType(right, operator !== "===" ? setHighWaterMark(newHighWaterMark, `The right-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(context.highWaterMark)}`, context) : context);
+      context = inferExprType(right, operator !== "===" ? setTypeLimit(newtypeLimit, `The right-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(context.typeLimit)}`, context) : context);
 
       return context;
     }
@@ -257,6 +272,18 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
     case BKExpressionType.BIND: {
       const { value } = expr as BKBind;
       return inferExprType(value, context);
+    }
+    case BKExpressionType.OBJECT: {
+      const { properties } = expr as BKObject;
+      for (let i = 0, {length} = properties; i < length; i++) {
+        const { key, value } = properties[i];
+        context = inferExprType(value, setTypeLimit(InferenceType.ANY, null, context));
+      }
+      return setTypeLimit(InferenceType.OBJECT, null, context);
+    }
+    case BKExpressionType.NOT: {
+      const { value } = expr as BKNot;
+      return setTypeLimit(InferenceType.BOOLEAN, null, inferExprType(value, setTypeLimit(InferenceType.ANY, null, context)));
     }
     case BKExpressionType.ELSEIF:
     case BKExpressionType.IF: {
@@ -274,11 +301,11 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
 };
 
 const reduceInferenceType = (expr: PCExpression, keyPath: string[], context: InferContext) => {
-  const newHighWaterMark = getContextInferenceType(keyPath, context) & context.highWaterMark;
-  if (!isValidReturnType(newHighWaterMark, context)) {
+  const newTypeLimit = getContextInferenceType(keyPath, context) & context.typeLimit;
+  if (!isValidReturnType(newTypeLimit, context)) {
     return addDiagnosticError(expr, context); 
   }
-  return setHighWaterMark(newHighWaterMark, context.highWaterMarkErrorMessage, setContextInferenceType(expr, keyPath, newHighWaterMark, context));
+  return setTypeLimit(newTypeLimit, context.typeLimitErrorMessage, setContextInferenceType(expr, keyPath, newTypeLimit, context));
 };
 
 const getContextInference = (keyPath: string[], context: InferContext) => {
@@ -314,10 +341,10 @@ const getLowestPropInferenceType = (keyPath: string[], context: InferContext, no
   return inference ? inference.type : notFoundType;
 };
 
-const setHighWaterMark = (highWaterMark: InferenceType, highWaterMarkErrorMessage: string, context: InferContext) => ({
+const setTypeLimit = (typeLimit: InferenceType, typeLimitErrorMessage: string, context: InferContext) => ({
   ...context,
-  highWaterMark,
-  highWaterMarkErrorMessage
+  typeLimit,
+  typeLimitErrorMessage
 });
 
 const updateNestedInference = (keyPath: string[], newProps: Partial<Inference>, target: Inference, keyPathIndex: number = -1) => {
@@ -339,7 +366,7 @@ const updateNestedInference = (keyPath: string[], newProps: Partial<Inference>, 
   }
 };
 
-const getTypeLabels = (type: InferenceType) => {
+export const getTypeLabels = (type: InferenceType) => {
   const labels = [];
   if (type & InferenceType.ARRAY) {
     labels.push("array");
@@ -364,20 +391,20 @@ const getTypeLabels = (type: InferenceType) => {
   return labels;
 };
 
-const getPrettyTypeLabelEnd = (type: InferenceType) => {
+export const getPrettyTypeLabelEnd = (type: InferenceType) => {
   const labels = getTypeLabels(type);
   return labels.length === 1 ? `a ${labels[0]}` : `an ${labels.slice(0, labels.length - 1).join(", ")}, or ${labels[labels.length - 1]}`;
 }
 
 const assertCanSetNestedProperty = (keyPath: string[], expr: PCExpression, context: InferContext) => {
   let current = context.inference;
-  for (let i = 0, {length} = keyPath; i < length; i++) {
+  for (let i = 0, {length} = keyPath; i < length - 1; i++) {
     current = current.properties[keyPath[i]];
     if (!current) {
       return context;
     }
     if (!(current.type & InferenceType.OBJECT_OR_ARRAY)) {
-      context = addDiagnosticError(expr, context, `Cannot call property "${keyPath.slice(i + 1).join(".")}" on primitive "${keyPath.slice(0, i + 1).join(".")}"`);
+      context = addDiagnosticError(expr, setTypeLimit(context.typeLimit, null, context), `Cannot call property "${keyPath.slice(i + 1).join(".")}" on primitive "${keyPath.slice(0, i + 1).join(".")}"`);
     }
   }
   return context;
@@ -419,22 +446,20 @@ const updateContextInference = (inference: Inference, context: InferContext) => 
   inference
 });
 
-export const isValidReturnType = (type: number, { highWaterMark }: InferContext) => Boolean(type & highWaterMark);
+export const isValidReturnType = (type: number, { typeLimit }: InferContext) => Boolean(type & typeLimit);
 
-const addInvalidTypeError = (expr: PCExpression, type: number, context: InferContext): InferContext => addDiagnosticError(expr, context, `Type mismatch ${type} to ${context.highWaterMark}`);
+const addInvalidTypeError = (expr: PCExpression, type: number, context: InferContext): InferContext => addDiagnosticError(expr, context, `Type mismatch ${type} to ${context.typeLimit}`);
 
-export const addDiagnosticError = (expr: PCExpression, context: InferContext, message?: string) => addDiagnostic(expr, DiagnosticType.ERROR, context, message);
+const addDiagnosticError = (expr: PCExpression, context: InferContext, message?: string) => addDiagnostic(expr, DiagnosticType.ERROR, context, message);
 
-export const addDiagnosticWarning = (expr: PCExpression, context: InferContext, message?: string) => addDiagnostic(expr, DiagnosticType.WARNING, context, message);
+const addDiagnosticWarning = (expr: PCExpression, context: InferContext, message?: string) => addDiagnostic(expr, DiagnosticType.WARNING, context, message);
 
 const addDiagnostic = (expr: PCExpression, level: DiagnosticType, context: InferContext, defaultMessage: string) => ({
   ...context,
   diagnostics: [...context.diagnostics, {
     type: DiagnosticType.ERROR,
     location: expr.location,
-
-    // TODO - make this for humans. 
-    message: context.highWaterMarkErrorMessage || defaultMessage,
+    message: context.typeLimitErrorMessage || defaultMessage,
     filePath: context.filePath
   }]
 });

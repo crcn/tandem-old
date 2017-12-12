@@ -120,9 +120,9 @@ function triggerValidation(textDocument: TextDocument): void {
 }
 
 async function validateTextDocument(textDocument: TextDocument) {
-  const diagnostics: Diagnostic[] = await vls.validate(textDocument);
+  const diagnostics: Diagnostic[] = await vls.validate(textDocument, documents);
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
+};
 
 connection.onCompletion(textDocumentPosition => {
   const document = documents.get(textDocumentPosition.textDocument.uri);

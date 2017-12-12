@@ -1,9 +1,7 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 
-<component id="td-components-pane-cell" [[property screenshot]] [[property label]] [[property screenshotScale]] [[property hovering]] [[property onDragStart]] [[property selected]] [[property onClick]] [[property onDragEnd]] [[property dispatch]]> 
-
-  <meta name="internal" content="true" />
+<component id="td-components-pane-cell"> 
   <style>
     :host {
       user-select: none;
@@ -64,7 +62,7 @@
   </template>
 </component>
 
-<component id="td-components-pane" [[property components]] [[property dispatch]] [[property onAddComponentClick]]>
+<component id="td-components-pane">
   <style>
     .content {
       position: relative;
@@ -106,39 +104,17 @@
       </span>
     </td-pane>
   </template>
-</component>
-
-<component id="td-components-preview" [[property components]] [[property dispatch]]>
-  <meta name="preview" content="of=td-components-pane, width=200, height=300" />
-  <template>
-    <td-components-pane components=[[bind [
-      {
-        label: "Component1",
-      },
-      {
-        label: "Component1",
-      },
-      {
-        label: "Component1",
-      },
-      {
-        label: "Component1"
-      },
-      {
-        label: "Component1"
-      },
-      {
-        label: "Component1"
-      },
-      {
-        label: "Component1"
-      },
-      {
-        label: "Component1"
-      },
-      {
-        label: "Component1"
+  <preview dispatch onAddComponentClick components=[[bind [
+    {
+      label: "Component1",
+      onDragStart: null,
+      onDragEnd: null,
+      onClick: null,
+      screenshotScale: 1,
+      screenshot: {
+        clip: null,
+        uri: null
       }
-    ]]] />
-  </template>
+    }
+  ]]] />
 </component>

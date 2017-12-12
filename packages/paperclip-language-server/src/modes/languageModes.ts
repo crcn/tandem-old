@@ -16,6 +16,9 @@ import {
   SymbolInformation
 } from 'vscode-languageserver-types';
 import {
+  TextDocuments,
+} from 'vscode-languageserver';
+import {
   Color, ColorInformation, ColorPresentation
 } from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 import { DocumentContext } from '../service';
@@ -30,7 +33,7 @@ import { getStylusMode } from './style/stylus';
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
-  doValidation?(document: TextDocument): Diagnostic[];
+  doValidation?(document: TextDocument, allDocuments: TextDocuments): Diagnostic[] | Promise<Diagnostic[]>;
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
   doHover?(document: TextDocument, position: Position): Hover | Promise<Hover>;

@@ -11,6 +11,7 @@ import { 
   loadModuleAST, 
   parseModuleSource, 
   Module, 
+  inferNodeProps,
   Component, 
   PCExpression,
   PCStringBlock,
@@ -157,7 +158,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
     content += `  const childComponentClasses = defaults(baseComponentClasses, hydratedChildComponentClasses);`;
   }
 
-  const componentPropertyNames = component.properties.map(({name}) => name);
+  const componentPropertyNames = Object.keys(inferNodeProps(component.source).inference.properties);
 
   const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host", ${componentPropertyNames.map(propName => `"data-${propName}": ${propName} ? true : null`).join(", ")} }, ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
@@ -173,7 +174,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
   ];
 
   content += `  return enhance((props) => {` +
-  `  const { ${deconstructPropNames.join(", ")} } = props;` +
+  (deconstructPropNames.length ? `  const { ${deconstructPropNames.join(", ")} } = props;` : "") +
   `  ${fnInner}` +
   `});\n`;
 
@@ -192,7 +193,7 @@ const transpileStyle = (style: PCElement, scopeClass?: string, component?: Compo
     aliases[componentId] = "." + getComponentTranspileInfo(getModuleComponent(componentId, dep.module)).className;
   }
 
-  let componentProps = component && component.properties.map(prop => prop.name) || [];
+  let componentProps = component && Object.keys(inferNodeProps(component.source).inference.properties) || [];
 
   if (!style) {
     return "";

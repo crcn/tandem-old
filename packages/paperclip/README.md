@@ -50,36 +50,26 @@ paperclip.bundleVanilla("component.pc", {
 #### HIGH PRIO TODOS
 
 - [ ] Remove `property` section - use type inferencing for this.
-- [ ] Error handling must be battle tested
-- [ ] Inference types
-- [ ] `<preview />` section in component
-- [ ] `<fixture></fixture>`  (possibly) - used to help infer types more
+- [ ] transpile preview as function
 - [ ] Linting
   - Warning for components that do not have `<preview />` tag
-  - Error when element (besides style) defined outside of component
-  
+- [ ] linting errors need to be traced back to their source value   
 
 #### LOW PRIO CORE TODOS
 
 - [ ] Source maps*
 - [ ] a11y helpers
 
-- [ ] Linter
-  - [ ] Warning when there are unhandled nodes 
-  - [ ] Error when there are type mismatches
-
-- [ ] Pretty error handling
 - [ ] i18n support (use standard)
 - [ ] warning if unknown tag name is used
 - [ ] vanilla transpiler needs to also bundle assets like images
-
+- Warning when element (besides style) defined outside of component
 
 #### LOW PRIO EXTENSION TODOS
 
 - [ ] strategy for upgrading paperclip files to newer versions
 - [ ] Vue transpiler
 - [ ] plain HTML transpiler (static site generator)
-
 
 #### Qs
 

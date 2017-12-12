@@ -4,6 +4,7 @@ import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSe
 import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { PaperclipTranspileResult } from "./transpiler";
+import { inferNodeProps } from "./inferencing";
 
 export type BundleVanllaOptions = {
   target: PaperclipTargetType,
@@ -14,6 +15,9 @@ type TranspileContext = {
   uri: string;
   contextName?: string;
   varCount: number;
+  aliases: {
+    [identifier: string]: string
+  }
   root: PCExpression;
 };
 
@@ -23,8 +27,7 @@ export type TranspileDeclaration = {
   bindings: string[];
 };
 
-
-export const bundleVanilla = (uri: string, options: BundleVanllaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then((graph) => ({
+export const bundleVanilla = (uri: string, options: BundleVanllaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then(({graph}) => ({
   code: transpileBundle(uri, graph),
   graph,
   entryDependency: graph[uri]
@@ -168,12 +171,15 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
 
   const context: TranspileContext = {
     uri,
+    aliases: {},
     varCount: 0,
     root: source
   };
 
   // TODO - include deps here
   let content = `$$defineModule((require) => {`;
+
+  content += `var $$previews = {}`;
 
 
   const styleDecls = transpileChildNodes(globalStyles, context);
@@ -188,6 +194,7 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
     const _import = imports[i];
     const decl = declare(`import`, `require(${JSON.stringify(resolvedImportUris[_import.href])})`, context);
     content += decl.content;
+    content += `Object.assign($$previews, ${decl.varName}.$$previews || {});`;
   }
 
   for (let i = 0, {length} = components; i < length; i++) {
@@ -195,6 +202,7 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
   }
 
   content += `return {` +
+    `$$previews: $$previews` +
   `};`;
     
   content += `})`;
@@ -205,7 +213,7 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
 const wrapTranspiledStatement = (statement) => `(() => {${statement}} )();\n`;
 const wrapAndCallBinding = (binding) => `(() => { const binding = () => { ${binding} }; binding(); return binding; })()`;
 
-const tranpsileComponent = ({ id, style, template, properties }: Component, context: TranspileContext) => {
+const tranpsileComponent = ({ previews, source, id, style, template }: Component, context: TranspileContext) => {
   const varName = createVarName(getJSFriendlyName(id), context);
 
   const templateContext: TranspileContext = {
@@ -213,6 +221,8 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
     varCount: 0,
     contextName: "this"
   };
+
+  const properties = Object.keys(inferNodeProps(source).inference.properties);
 
   const styleDecl = style && transpileStyleElement(style, templateContext);
 
@@ -227,7 +237,7 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
         `this.render();` +
       `}` +
 
-      properties.map(({ name }) => {
+      properties.map((name) => {
         return `` +
           `get ${name}() {` +
             `return this.$$${name};` +
@@ -259,9 +269,9 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
 
         (styleDecl ? styleDecl.content + `shadow.appendChild(${styleDecl.varName});`: ``) +
 
-        properties.map(({name, defaultValue}) => (
+        properties.map((name) => (
           `if (this.$$${name} == null) {` +
-            `this.$$${name} = ${defaultValue ? defaultValue : `this.getAttribute("${name}");`}` +
+            `this.$$${name} = this.getAttribute("${name}");` +
           `}`
         )).join("\n") +
 
@@ -277,7 +287,7 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
             `${decl.content}` +
             (decl.bindings.length ? `$$bindings = $$bindings.concat(${decl.bindings.map(binding => `(() => {` + 
               `const $$binding = () => {` +
-                `const { ${ properties.map(({name}) => name).join(",") } } = this;` +
+                `const { ${ properties.join(",") } } = this;` +
                 binding + 
               `};` +
               `$$binding();` + 
@@ -299,7 +309,7 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
       `}` +
 
       `static get observedAttributes() {` +
-        `return ${JSON.stringify(properties.map(({name}) => name))};` +
+        `return ${JSON.stringify(properties)};` +
       `}` +
 
       `attributeChangedCallback(name, oldValue, newValue) {` +
@@ -327,6 +337,20 @@ const tranpsileComponent = ({ id, style, template, properties }: Component, cont
     `} else {` +
       `console.error("Custom element \\"${id}\\" is already defined, ignoring");` +
     `}`
+
+  content += `$$previews["${id}"] = ${previews.map((preview) => {
+    const decl = transpileExpression(preview, {
+      ...context,
+      aliases: {
+        ...context.aliases,
+        preview: id
+      }
+    });
+    return `() => {` +
+      decl.content +
+      `return ${decl.varName};` +
+    `}` 
+  })};`
 
   return {
     varName,
@@ -566,7 +590,7 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
 }
 
 const transpileStartTag = (ast: PCStartTag, context: TranspileContext) => {
-  let element = declareNode(`document.createElement("${ast.name}")`, context);
+  let element = declareNode(`document.createElement("${context.aliases[ast.name.toLowerCase()] || ast.name}")`, context);
 
   for (let i = 0, {length} = ast.attributes; i < length; i++) {
     const { name, value } = ast.attributes[i];

@@ -22,9 +22,10 @@ import {
   getAttributeStringValue,
   getAllChildElementNames
 } from "./ast";
+import { weakMemo } from "./utils";
 
 import { parseModuleSource } from "./parser";
-import { DiagnosticType } from "./parser-utils";
+import { DiagnosticType, Diagnostic } from "./parser-utils";
 
 export type IO = {
   readFile: (path) => any
@@ -47,7 +48,6 @@ export type Component = {
   source: PCElement;
   id: string;
   metadata: ComponentMetadata[];
-  properties: BKProperty[];
   style: PCElement;
   template: PCElement;
   previews: (PCSelfClosingElement|PCElement)[];
@@ -58,6 +58,11 @@ export type ComponentExpressions = {
     filePath: string;
     expression: PCExpression;
   }
+};
+
+export type LoadDependencyGraphResult = {
+  diagnostics: Diagnostic[];
+  graph: DependencyGraph;
 };
 
 export type Module = {
@@ -127,7 +132,6 @@ export const getChildComponentInfo = (root: PCExpression, graph: DependencyGraph
   return info;
 };
 
-
 export const getDependencyGraphComponentsExpressions = (graph: DependencyGraph): ComponentExpressions => {
   const templates: ComponentExpressions = {};
   for (const filePath in graph) {
@@ -190,32 +194,26 @@ export const getComponentDependency = (id: string, graph: DependencyGraph) => {
   }
 };
 
-export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile = defaultResolveModulePath }: Partial<IO>, graph: DependencyGraph = {}): Promise<DependencyGraph> => {
+export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile = defaultResolveModulePath }: Partial<IO>, graph: DependencyGraph = {}, diagnostics: Diagnostic[] = []): Promise<LoadDependencyGraphResult> => {
 
   // beat circular dep
   if (graph[uri]) {
-    return Promise.resolve(graph);
+    return Promise.resolve({ diagnostics, graph });
   }
   
   return Promise.resolve(readFile(uri))
   .then(parseModuleSource)
   .then(result => {
-    const errors = result.diagnostics.filter(({type}) => type === DiagnosticType.ERROR);
-    if (errors.length) {
-      throw {
-        graph,
-        errors
-      };
-    }
+    diagnostics.push(...result.diagnostics);
     return loadModuleAST(result.root, uri)
   })
-  .then((module) => {
+  .then((module): any => {
 
     const resolvedImportUris = {};
 
     // set DG value to prevent getting caught in a loop via
     // circ dependencies
-    graph[uri] = { module: module, resolvedImportUris };
+    graph[uri] = { module, resolvedImportUris };
 
     if (!module.imports.length) {
       return Promise.resolve(graph);
@@ -225,12 +223,13 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
       return Promise.resolve(resolveFile(_import.href, uri))
       .then((resolvedUri) => {
         resolvedImportUris[_import.href] = resolvedUri;
-        return loadModuleDependencyGraph(resolvedUri, { readFile, resolveFile }, graph);
+        return loadModuleDependencyGraph(resolvedUri, { readFile, resolveFile }, graph, diagnostics);
       })
-    })).then(() => {
-      return graph;
-    })
-  });
+    }))
+  })
+  .then(() => {
+    return { graph, diagnostics };
+  })
 }
 
 const createModule = (ast: PCRootExpression, uri: string): Module => {
@@ -294,7 +293,6 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
   let template: PCElement;
   const previews: PCSelfClosingElement[] = [];
   const metadata: ComponentMetadata[] = [];
-  let properties: BKProperty[] = modifiers.map(({value}) => value).filter(modifier => modifier.type === BKExpressionType.PROPERTY) as BKProperty[];
 
   for (let i = 0, {length} = attributes; i < length; i++) {
     const attr = attributes[i];
@@ -330,7 +328,6 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
     id,
     style,
     metadata,
-    properties,
     template,
     previews
   };

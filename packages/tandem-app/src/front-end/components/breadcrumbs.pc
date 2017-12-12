@@ -1,13 +1,12 @@
-<module>
-  <meta name="name" content="Breadcrumbs" />
-  <template name="main" export>
-    <style scoped>
-      .breadcrumbs {
-        
-      }
-    </style>
+<component id="test">
+  <template name="main">
+    [[bind a.a * 1]]
   </template>
-  <template name="preview" export>
-    TODO
+  <preview a=[[bind null]] />
+</component>
+
+<component id="test2">
+  <template>
+    [[bind a * 1]]
   </template>
-</module>
+</component>

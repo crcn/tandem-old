@@ -5,9 +5,13 @@ RESEARCH:
 IMMEDIATE:
 
 - [ ] Paperclip
-  - [ ] Use <preview /> tag instead of meta
-  - [ ] Remove [[bind property]] - use type inferencing
+  - [ ] transpile previews to functions
+  - [ ] preview should take tag name as child
   - [ ] error messaging for type inferencing
+
+- [ ] fix outstanding errors in PC componentss
+- [ ] Remove VSCode bugs (try to break)
+- [ ] slim dom impl
 
 - [ ] CSS Inspector
 

@@ -6,7 +6,7 @@ import { getSEnvWindowClass } from "aerial-browser-sandbox";
 
 describe(__filename + "#", () => {
 
-  const runCode = async (context: any, input: string, wrap: (value: string) => string = (value) => value, init: string = "") => {
+  const runCode = async (input: string, wrap: (value: string) => string = (value) => value, init: string = "") => {
     const { code } = await bundleVanilla(null, {
       target: PaperclipTargetType.TANDEM,
       io: {
@@ -19,10 +19,8 @@ describe(__filename + "#", () => {
 
       // need access to native tags
       with(window) {
-        with(context) {
-          const { entry } = ${code}
-          ${init}
-        }
+        const { entry } = ${code}
+        ${init}
       }
     `;
     
@@ -32,7 +30,7 @@ describe(__filename + "#", () => {
       }) as any
     });
     const window = new SEnvWindow("index.html", null, null);
-    new Function("window", "context", "console", outerCode)(window, context, console);
+    new Function("window", "console", outerCode)(window, console);
 
     return window.document;
   };
@@ -100,7 +98,9 @@ describe(__filename + "#", () => {
     [{ a: 1, b: 0 }, `<span [[if a || b]]>A</span>b`, `<span>A</span>b`]
   ].forEach(([context, input, output]: [any, string, string]) => {
     it(`renders ${input} as ${output} with ${JSON.stringify(context)}`, async () => {
-      const document = await runCode(context, input, (html) => `<component id="x-test"><template>${html}</template></component>`, `window.document.body.appendChild(document.createElement("x-test"));`);
+      const document = await runCode(input, (html) => `<component id="x-test"><template>${html}</template></component>`, `const el = document.createElement("x-test"); 
+      Object.assign(el, ${JSON.stringify(context)})
+      window.document.body.appendChild(el);`);
       expect(Array.prototype.map.call(document.body.querySelector("x-test").shadowRoot.childNodes, (child) => child.outerHTML || child.nodeValue).join("").trim()).to.eql(output.trim());
     });
   });
@@ -122,7 +122,7 @@ describe(__filename + "#", () => {
   ].forEach(([input, output]) => {
     it(`can parse ${input} to ${output}`, async () => {
       const wrap = (input) => `<style>${input.trim()}</style>`;
-      const document = await runCode({}, input, wrap);
+      const document = await runCode(input, wrap);
       const cssText = Array.prototype.map.call(document.styleSheets, sheet => sheet.cssText).join("").replace(/[\s\r\n\t]+/g, " ");
       expect(cssText.trim()).to.eql(output);
     });

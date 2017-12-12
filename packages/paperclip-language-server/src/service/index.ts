@@ -16,6 +16,9 @@ import {
   Range
 } from 'vscode-languageserver-types';
 import {
+  TextDocuments
+} from 'vscode-languageserver';
+import {
   Color, ColorInformation, ColorPresentation
 } from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 
@@ -32,7 +35,7 @@ export interface VLS {
   initialize(workspacePath: string | null | undefined, devToolsPort: number): void;
   configure(config: any): void;
   format(doc: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
-  validate(doc: TextDocument): Promise<Diagnostic[]>;
+  validate(doc: TextDocument, allDocuments: TextDocuments): Promise<Diagnostic[]>;
   doComplete(doc: TextDocument, position: Position): CompletionList;
   doResolve(doc: TextDocument, languageId: string, item: CompletionItem): CompletionItem;
   doHover(doc: TextDocument, position: Position): Hover | Promise<Hover>;
@@ -78,12 +81,12 @@ export function getVls(): VLS {
     format(doc, range, formattingOptions) {
       return format(languageModes, doc, range, formattingOptions);
     },
-    async validate(doc): Promise<Diagnostic[]> {
+    async validate(doc, allDocuments: TextDocuments): Promise<Diagnostic[]> {
       const diagnostics: Diagnostic[] = [];
       if (doc.languageId === 'paperclip') {
         for (const mode of languageModes.getAllModesInDocument(doc)) {
           if (mode.doValidation && validation[mode.getId()]) {
-            pushAll(diagnostics, await mode.doValidation(doc));
+            pushAll(diagnostics, await mode.doValidation(doc, allDocuments));
           }
         }
       }
