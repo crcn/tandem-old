@@ -4,7 +4,7 @@
 <link rel="import" href="./tooltip.pc" />
 <link rel="import" href="./color-picker.pc" />
 
-<component id="td-css-color-expr-input" [[property value]]>
+<component id="td-css-color-expr-input">
   <meta name="internal" content="true" />
   <style>
     .input-box {
@@ -24,7 +24,7 @@
   </template>
 </component>
 
-<component id="td-css-keyword-expr-input" [[property name]]>
+<component id="td-css-keyword-expr-input">
   <meta name="internal" content="true" />
   <style>
     :host {
@@ -36,7 +36,7 @@
   </template>
 </component>
 
-<component id="td-css-spaced-list-expr-input" [[property items]]>
+<component id="td-css-spaced-list-expr-input">
   <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
@@ -48,7 +48,7 @@
   </template>
 </component>
 
-<component id="td-css-comma-list-expr-input" [[property items]]>
+<component id="td-css-comma-list-expr-input">
   <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
@@ -63,7 +63,7 @@
   </template>
 </component>
 
-<component id="td-css-number-expr-input" [[property value]]>
+<component id="td-css-number-expr-input">
   <meta name="internal" content="true" />
   <style>
     .input-box {
@@ -82,7 +82,7 @@
   </template>
 </component>
 
-<component id="td-color-mini-input" [[property value]]>
+<component id="td-color-mini-input">
   <meta name="internal" content="true" />
   <style>
     .input-box {
@@ -107,7 +107,7 @@
   </template>
 </component>
 
-<component id="td-css-measurement-input" [[property value]] [[property unit]]>
+<component id="td-css-measurement-input">
   <meta name="internal" content="true" />
   <style>
     .value {
@@ -123,7 +123,7 @@
   </template>
 </component>
 
-<component id="td-css-call-expr-input" [[property type]] [[property returnType]] [[property returnValue]] [[property params]] [[property name]]>
+<component id="td-css-call-expr-input">
   <meta name="internal" content="true" />
   <style>
     td-css-expr-input::after {
@@ -150,7 +150,7 @@
   </template>
 </component>
 
-<component id="td-css-expr-input" [[property value]] [[property context]]>
+<component id="td-css-expr-input">
   <style>
     :host {
       display: inline;
@@ -168,7 +168,7 @@
       [[bind value]]
     </span>
   </template>
-  <preview width="50" height="30">
+  <preview name="main" width="50" height="30">
     <td-css-expr-input open=[[bind open]] value=[[bind {
       type: "COLOR",
       value: "#F60"

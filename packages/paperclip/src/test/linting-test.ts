@@ -50,7 +50,7 @@ describe(__filename + "#", () => {
             <template>
               [[bind a * c]]
             </template>
-            <preview>
+            <preview name="main">
               <test a="b" />
             </preview>
           </component>
@@ -63,12 +63,12 @@ describe(__filename + "#", () => {
             start: {
               column: 15,
               line: 7,
-              pos: 145
+              pos: 157
             },
             end: {
               column: 29,
               line: 7,
-              pos: 159
+              pos: 171
             }
           },
           message: `Type mismatch: attribute "a" expecting a number, string provided.`,
@@ -80,12 +80,12 @@ describe(__filename + "#", () => {
             start: {
               column: 15,
               line: 7,
-              pos: 145
+              pos: 157
             },
             end: {
               column: 29,
               line: 7,
-              pos: 159
+              pos: 171
             }
           },
           message: `Missing attribute "c"`,
@@ -100,7 +100,7 @@ describe(__filename + "#", () => {
             <template>
               [[bind a * c]]
             </template>
-            <preview>
+            <preview name="main">
               <test a=[[bind 1]] c=[[bind 2]] />
             </preview>
           </component>
@@ -115,7 +115,7 @@ describe(__filename + "#", () => {
             <template>
               [[bind a.b.c * 4]]
             </template>
-            <preview>
+            <preview name="main">
               <test a=[[bind {a: {b: 1 }}]] />
             </preview>
           </component>
@@ -128,12 +128,12 @@ describe(__filename + "#", () => {
             end: {
               column: 47,
               line: 7,
-              pos: 181
+              pos: 193
             },
             start: {
               column: 15,
               line: 7,
-              pos: 149
+              pos: 161
             }
           },
           message: `Missing attribute "a.b"`,
@@ -153,7 +153,7 @@ describe(__filename + "#", () => {
             <template>
               <a c=[[bind d]] />
             </template>
-            <preview>
+            <preview name="main">
               <b d="1" />
             </preview>
           </component>
@@ -191,7 +191,7 @@ describe(__filename + "#", () => {
             <template>
               <a c=[[bind d]] />
             </template>
-            <preview>
+            <preview name="main">
               <b [[bind {d: 1}]] />
             </preview>
           </component>
@@ -211,7 +211,7 @@ describe(__filename + "#", () => {
             <template>
               <a c=[[bind d]] />
             </template>
-            <preview>
+            <preview name="main">
               <b [[bind {c: 1}]] />
             </preview>
           </component>
@@ -224,12 +224,12 @@ describe(__filename + "#", () => {
             start: {
               column: 15,
               line: 12,
-              pos: 274
+              pos: 286
             },
             end: {
               column: 36,
               line: 12,
-              pos: 295
+              pos: 307
             }
           },
           message: `Missing attribute "d"`,
@@ -304,7 +304,7 @@ describe(__filename + "#", () => {
               [[bind c]]
               <a [[if a.a]] a=[[bind a.a]] />
             </template>
-            <preview>
+            <preview name="main">
               <a a=[[bind { c: 1, a: { c: 1, a: null } }]] c="1" />
             </preview>
           </component>
@@ -338,7 +338,7 @@ describe(__filename + "#", () => {
               [[bind c]]
               <a [[if a.a]] a=[[bind a.a]] c=[[bind a.c]] />
             </template>
-            <preview>
+            <preview name="main">
               <a a=[[bind { c: 1, a: { c: 1, a: null } }]] c="1" />
             </preview>
           </component>
@@ -353,7 +353,7 @@ describe(__filename + "#", () => {
             <template>
               <a [[repeat a as b]] [[bind b]]></a>
             </template>
-            <preview>
+            <preview name="main">
               <a a=[[bind []]] />
             </preview>
           </component>
@@ -368,7 +368,7 @@ describe(__filename + "#", () => {
             <template>
               <a [[repeat a as b]] [[bind b]]></a>
             </template>
-            <preview>
+            <preview name="main">
               <a a=[[bind [ {} ]]] />
             </preview>
           </component>
@@ -399,10 +399,9 @@ describe(__filename + "#", () => {
         "entry": `
           <component id="a">
             <template>
-            
               <a [[repeat a as b]] a=[[bind b]]></a>
             </template>
-            <preview>
+            <preview name="main">
               <a a=[[bind [ {a: []} ]]] />
             </preview>
           </component>
@@ -417,7 +416,7 @@ describe(__filename + "#", () => {
             <template>
               <a [[repeat a as b]] [[bind b]]></a>
             </template>
-            <preview>
+            <preview name="main">
               <a a=[[bind [ {a: [{a:[]}]} ]]] />
             </preview>
           </component>
@@ -444,7 +443,7 @@ describe(__filename + "#", () => {
                 <c [[repeat i as k]] [[bind k]] />
               </b>
             </template>
-            <preview>
+            <preview name="main">
               <a i=[[bind [{}]]] />
             </preview>
           </component>

@@ -5,6 +5,7 @@ import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph
 import { PaperclipTargetType } from "./constants";
 import { PaperclipTranspileResult } from "./transpiler";
 import { inferNodeProps } from "./inferencing";
+import { lintDependencyGraph } from "./linting";
 
 export type BundleVanllaOptions = {
   target: PaperclipTargetType,
@@ -30,6 +31,7 @@ export type TranspileDeclaration = {
 export const bundleVanilla = (uri: string, options: BundleVanllaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then(({graph}) => ({
   code: transpileBundle(uri, graph),
   graph,
+  diagnostics: lintDependencyGraph(graph),
   entryDependency: graph[uri]
 }));
 
@@ -338,8 +340,8 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
 
   content += `$$previews["${id}"] = {};`;
 
-  previews.forEach((preview, i) => {
-    const name = getPCStartTagAttribute(preview, "name") || i;
+  previews.forEach((preview) => {
+    const name = getPCStartTagAttribute(preview, "name");
     const child = preview.childNodes.find(child => child.type === PCExpressionType.SELF_CLOSING_ELEMENT || child.type === PCExpressionType.ELEMENT);
     if (!child) {
       return;
@@ -351,7 +353,7 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
         preview: id
       }
     });
-    content += `$$previews["${id}"]["${i}"] = () => {` +
+    content += `$$previews["${id}"]["${name}"] = () => {` +
       decl.content +
       `return ${decl.varName};` +
     `};` 

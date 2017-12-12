@@ -17,16 +17,9 @@ pc.bundleVanilla(arg, {
   }
 }).then(({code, diagnostics}) => {
   console.log(code);
-}).catch(({graph, errors}) => {
+}).catch((error) => {
 
-  // This should't happen. If it doesn, then there's a bug in Paperclip.
-  if (!Array.isArray(errors)) {
-    throw errors;
-  }
-
-  errors.forEach((error) => {
-    console.log(pc.generatePrettyErrorMessage(error, graph));
-  });
+  console.error(error);
 
   process.exit(1);
 });

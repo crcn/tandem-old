@@ -52,10 +52,10 @@ export type RegisteredComponent = {
   filePath: string;
   label: string;
   location: ExpressionLocation;
-  screenshot: {
+  screenshots: Array<{
     uri: string;
     clip: Bounds;
-  };
+  }>;
   tagName?: string;
   moduleId?: string;
 };

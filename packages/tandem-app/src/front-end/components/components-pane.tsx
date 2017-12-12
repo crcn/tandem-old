@@ -36,7 +36,8 @@ const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, Compon
       dispatch(componentsPaneComponentClicked(tagName, event));
     }
   }),
-  (Base: React.ComponentClass<TdComponentsPaneCellInnerProps>) => ({ label, selected, screenshot, connectDragSource, onClick, dispatch }: ComponentsPaneCellInnerProps) => {
+  (Base: React.ComponentClass<TdComponentsPaneCellInnerProps>) => ({ label, selected, screenshots, connectDragSource, onClick, dispatch }: ComponentsPaneCellInnerProps) => {
+    const screenshot = screenshots.length ? screenshots[0] : null;
     let width = screenshot && screenshot.clip.right - screenshot.clip.left;
     let height = screenshot && screenshot.clip.bottom - screenshot.clip.top;
     let scale = 1;

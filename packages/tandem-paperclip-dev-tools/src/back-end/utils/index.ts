@@ -147,6 +147,8 @@ export const getAvailableComponents = (state: ApplicationState, readFileSync: (f
   ), []);
 }
 
+export const getPreviewClippingNamespace = (componentId: string, previewName: string) => `${componentId}.${previewName}`;
+
 export const getComponentsFromSourceContent = (content: string, filePath: string, state: ApplicationState): RegisteredComponent[] => {
   const moduleId = getModuleId(filePath);
   const result = parseModuleSource(content);
@@ -163,22 +165,25 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
 
   const module = loadModuleAST(result.root, filePath);
   
-  return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.PREVIEW) && !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id, source}) => ({
+  return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id, source, previews}) => ({
     filePath,
     label: id,
     location: source.location,
     $id: id,
-    screenshot: getComponentScreenshot(id, state),
+    screenshots: previews.map(preview => {
+      return getComponentScreenshot(id, getPCStartTagAttribute(preview, "name"), state)
+    }),
     tagName: id,
     moduleId: moduleId,
   }));
 };
 
-export const getComponentScreenshot = (componentId: string, state: ApplicationState) => {
+export const getComponentScreenshot = (componentId: string, previewName: string, state: ApplicationState) => {
   const ss = state.componentScreenshots[state.componentScreenshots.length - 1];
-  return ss && ss.clippings[componentId] && {
+  const clippingNamespace = getPreviewClippingNamespace(componentId, previewName);
+  return ss && ss.clippings[clippingNamespace] && {
     uri: `http://localhost:${state.options.port}/screenshots/${md5(state.componentScreenshots[state.componentScreenshots.length - 1].uri)}`,
-    clip: ss.clippings[componentId]
+    clip: ss.clippings[clippingNamespace]
   };
 };
 

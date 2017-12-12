@@ -59,6 +59,7 @@ paperclip.bundleVanilla("component.pc", {
 
 - [ ] Source maps*
 - [ ] a11y helpers
+- [ ] remove property attr parsing code
 
 - [ ] i18n support (use standard)
 - [ ] warning if unknown tag name is used

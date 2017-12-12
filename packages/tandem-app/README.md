@@ -4,19 +4,22 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] Paperclip
-  - [ ] preview should take tag name as child
-  - [ ] transpile previews to functions
+- [ ] paperclip optional property
+  - [ ] auto flag for if statement
+- [ ] fix linting & inferencing errors in vscode
+- [ ] make vscode extension rock solid
 
 - [ ] fix outstanding errors in PC components
 - [ ] Remove VSCode bugs (try to break)
 - [ ] slim dom impl
+- [ ] vscode highlight over preview tag instead of component
 
 - [ ] CSS Inspector
 
 - [ ] Bugs
   - [ ] adding & removing windows causes an exception
   - [ ] dev server stops after a while
+  - [ ] making change then saving (quickly) replaces content with `[object Object]`
   
 - [ ] Tandem
   - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.

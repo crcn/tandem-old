@@ -313,7 +313,7 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
       } else if (tagName === "template") {
         template = element as any as PCElement;
       } else if (tagName === "preview") {
-        if (child.type === PCExpressionType.ELEMENT && (child as PCElement).childNodes.find(child => child.type === PCExpressionType.ELEMENT || child.type === PCExpressionType.SELF_CLOSING_ELEMENT)) {
+        if (child.type === PCExpressionType.ELEMENT && (child as PCElement).childNodes.find(child => child.type === PCExpressionType.ELEMENT || child.type === PCExpressionType.SELF_CLOSING_ELEMENT) && Boolean(getPCStartTagAttribute(element as any, "name"))) {
           previews.push(element as any as PCElement);
         }
       } else if (tagName === "meta") {

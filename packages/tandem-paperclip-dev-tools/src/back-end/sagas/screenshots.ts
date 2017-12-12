@@ -8,7 +8,7 @@ import { defaultResolveModulePath, loadModuleAST } from "paperclip";
 import { SCREENSHOTS_DIRECTORY } from "../constants";
 import { ApplicationState, ScreenshotClippings, AllComponentsPreviewEntry } from "../state";
 import { FILE_CONTENT_CHANGED, FileContentChanged, headlessBrowserLaunched, componentScreenshotTaken, componentScreenshotSaved, ComponentScreenshotRemoved, ComponentScreenshotSaved, componentScreenshotRemoved, ComponentScreenshotTaken, HEADLESS_BROWSER_LAUNCHED, COMPONENT_SCREENSHOT_TAKEN, COMPONENT_SCREENSHOT_SAVED, componentScreenshotStarted, INIT_SERVER_REQUESTED, FILE_REMOVED } from "../actions";
-import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents, getComponentPreviewUrl, getAllModuleComponents, getComponentsFromSourceContent, getAvailableComponents, getAllComponentsPreviewUrl, getPreviewComponentEntries } from "../utils";
+import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents, getComponentPreviewUrl, getAllModuleComponents, getComponentsFromSourceContent, getAvailableComponents, getAllComponentsPreviewUrl, getPreviewComponentEntries, getPreviewClippingNamespace } from "../utils";
 
 const SCREENSHOT_DELAY = 1000;
 
@@ -68,7 +68,7 @@ function* takeComponentScreenshot() {
 
     const clippings: ScreenshotClippings = {};
     for (const entry of entries) {
-      clippings[entry.componentId] = entry.bounds;
+      clippings[getPreviewClippingNamespace(entry.componentId, entry.previewName)] = entry.bounds;
     }
 
     const previewUrl = getAllComponentsPreviewUrl(state)

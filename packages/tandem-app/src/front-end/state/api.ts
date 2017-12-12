@@ -8,9 +8,9 @@ export type AvailableComponent = {
   label: string;
   moduleId: string;
   location: ExpressionLocation;
-  screenshot: {
+  screenshots: Array<{
     uri: string;
     clip: Bounds
-  },
+  }>,
   filePath: string;
 };

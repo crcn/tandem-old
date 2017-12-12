@@ -62,7 +62,7 @@
       <slot>children here</slot>
     </span>
   </template>
-  <preview width="200" height="200">
+  <preview name="main" width="200" height="200">
     <td-list> 
       <td-list-item>Item 1</td-list-item>
       <td-list-item>Item 2</td-list-item>

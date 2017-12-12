@@ -59,7 +59,7 @@ function* addRoutes(server: express.Express) {
   server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentPreview));
 
   // return all components
-  server.get("/components/:componentId/screenshots/:screenshotHash.png", yield wrapRoute(getTrimmedComponentScreenshot));
+  server.get("/components/:componentId/screenshots/:previewName/:screenshotHash", yield wrapRoute(getTrimmedComponentScreenshot));
 
   // create a new component (creates a new module with a single component)
   server.post("/components", yield wrapRoute(createComponent));
@@ -387,7 +387,8 @@ function* getComponentsScreenshot(req: express.Request, res: express.Response, n
 
 function* getTrimmedComponentScreenshot(req: express.Request, res: express.Response, next) {
   const state = yield select();
-  const componentId = req.params.componentId;
+  const { componentId, previewName } = req.params;
+  console.log("TRIMMED");
   const { uri } = (yield call(getComponentsScreenshotFromReq, req)) || { uri: null };
 
   const { maxWidth, maxHeight } = req.query;
@@ -396,7 +397,9 @@ function* getTrimmedComponentScreenshot(req: express.Request, res: express.Respo
     return next();
   }
 
-  const screenshot = getComponentScreenshot(componentId, state);
+  const screenshot = getComponentScreenshot(componentId, previewName, state);
+
+  console.log(screenshot, componentId, previewName);
 
   if (!screenshot) {
     return next();

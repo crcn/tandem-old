@@ -1,7 +1,7 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { parseModuleSource, PCExpressionType, PCStartTag, PCElement, PCSelfClosingElement, getPCStartTagAttribute } from "paperclip";
 import * as path from "path";
-import { getExpressionAtPosition, exprLocationToRange } from "../utils";
+import { getExpressionAtPosition, exprLocationToRange, getAncestors } from "../utils";
 import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
 import { IHTMLTagProvider } from '../tagProviders';
@@ -28,13 +28,18 @@ export function doHover(
   if (!expr) {
     return NULL_HOVER;
   }
-  function getTagHover(startTag: PCStartTag, range: Range, open: boolean): Hover | Promise<Hover> {
+  function getTagHover(element: PCSelfClosingElement|PCElement, range: Range, open: boolean): Hover | Promise<Hover> {
+    const startTag = element.type === PCExpressionType.SELF_CLOSING_ELEMENT ? (element as PCSelfClosingElement) : (element as PCElement).startTag;
+
     const { name: tagName } = startTag;
     const tagLower = tagName.toLowerCase();
 
-    if (tagLower === "component") {
+    if (tagLower === "preview") {
+      const ancestors = getAncestors(element, root);
+      const component = ancestors[0];
 
-      const id = getPCStartTagAttribute(startTag, "id");
+      const id = getPCStartTagAttribute(component, "id");
+      const previewName = getPCStartTagAttribute(element, "name") || component.childNodes.indexOf(element);
 
       if (!id) {
         return NULL_HOVER;
@@ -47,7 +52,7 @@ export function doHover(
         // Hack. Must save files to local FS for some reason.
         try {
           await new Promise((resolve, reject) => {
-            request({ url: `http://127.0.0.1:${devToolsPort}/components/${id}/screenshots/latest.png?maxWidth=300&maxHeight=240`, encoding: null }, (err, response, body) => {
+            request({ url: `http://127.0.0.1:${devToolsPort}/components/${id}/screenshots/${previewName}/latest?maxWidth=300&maxHeight=240`, encoding: null }, (err, response, body) => {
               if (err) return reject();
               if (response.statusCode !== 200) {
                 return reject(new Error("not found"));
@@ -66,7 +71,7 @@ export function doHover(
         return {
 
           // timestamp for cache buster
-          contents: `![component preview](file://${hoverFilePath}?${Date.now()}|height=240)`
+          contents: `![component preview](file://${hoverFilePath}?${Date.now()})`
         };
       })();
 
@@ -104,17 +109,10 @@ export function doHover(
     return hover;
   }
 
-  const range = exprLocationToRange(expr.location)
+  const range = exprLocationToRange(expr.location);
   switch (expr.type) {
     case PCExpressionType.SELF_CLOSING_ELEMENT: return getTagHover((expr as PCSelfClosingElement), range, true);
-    case PCExpressionType.ELEMENT: return getTagHover((expr as PCElement).startTag, range, true);
-
-    // case TokenType.EndTag:
-    //   return getTagHover(node.tag, tagRange, false);
-    // case TokenType.AttributeName:
-    //   // TODO: treat : as special bind
-    //   const attribute = scanner.getTokenText().replace(/^:/, '');
-    //   return getAttributeHover(node.tag, attribute, tagRange);
+    case PCExpressionType.ELEMENT: return getTagHover((expr as PCElement), range, true);
   }
 
   return NULL_HOVER;

@@ -42,18 +42,18 @@ export const generatePrettyErrorMessage = ({ location, filePath = "", message }:
 
   const sourceLines = source.split("\n");
 
-  const targetLines = sourceLines.slice(location.start.line - 1, location.end.line + 1).map(line => line + "\n");
+  const targetLines = sourceLines.slice(location.start.line - 1, location.end.line).map(line => line + "\n");
   
-  const highlightedLines = [
-    "\x1b[90m" + targetLines[0].substr(0, location.start.column)  + "\x1b[0m" +
-    "\x1b[31m" + targetLines[0].substr(location.start.column) + "\x1b[0m",
-    ...targetLines.slice(1, location.end.line - location.start.line).map(line => "\x1b[31m" + line + "\x1b[0m"),
-    "\x1b[31m" + targetLines[targetLines.length - 1].substr(0, location.end.column) + "\x1b[0m" +
-    "\x1b[90m" + targetLines[targetLines.length - 1].substr(location.end.column) + "\x1b[0m",
-  ];
+  // const highlightedLines = [
+  //   "\x1b[90m" + targetLines[0].substr(0, location.start.column)  + "\x1b[0m" +
+  //   "\x1b[31m" + targetLines[0].substr(location.start.column) + "\x1b[0m",
+  //   ...targetLines.slice(1, location.end.line - location.start.line).map(line => "\x1b[31m" + line + "\x1b[0m"),
+  //   "\x1b[31m" + targetLines[targetLines.length - 1].substr(0, location.end.column) + "\x1b[0m" +
+  //   "\x1b[90m" + targetLines[targetLines.length - 1].substr(location.end.column) + "\x1b[0m",
+  // ];
 
-  for (let i = 0, {length} = highlightedLines; i < length; i++) {
-    prettyMessage += `${location.start.line + i}| ${highlightedLines[i]}`;
+  for (let i = 0, {length} = targetLines; i < length; i++) {
+    prettyMessage += `${location.start.line + i}| ${targetLines[i]}`;
   }
   
 

@@ -268,11 +268,9 @@ const lintStartTagAttributes = (startTag: PCStartTag, context: LintContext) => {
     }
   }
 
-  context = lintEntry(component.source, setCurrentFilePath(filePath, ignoreTagName("preview", pushCaller(startTag, filePath, props, context))));
-
-  context = popCaller(context);
+  context = lintEntry(component.source, ignoreTagName("preview", pushCaller(startTag, filePath, props, context)));
   
-  return unignoreTagName("preview", setCurrentFilePath(prevFilePath, context));
+  return unignoreTagName("preview", popCaller(context));
 }
 
 const setCurrentFilePath = (filePath: string, context: LintContext): LintContext => ({
@@ -434,7 +432,7 @@ const evalExpr = (expr: BKExpression, context: LintContext): any => {
     }
     case BKExpressionType.NOT: {
       const not = expr as BKNot;
-      return !evalExpr(not, context);
+      return !evalExpr(not.value, context);
     }
   }
 }

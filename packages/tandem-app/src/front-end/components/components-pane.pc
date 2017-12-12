@@ -104,7 +104,7 @@
       </span>
     </td-pane>
   </template>
-  <preview>
+  <preview name="main">
     <td-components-pane dispatch onAddComponentClick components=[[bind [
     {
       label: "Component1",
