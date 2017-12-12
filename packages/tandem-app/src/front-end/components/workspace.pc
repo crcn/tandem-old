@@ -211,7 +211,200 @@
       </div>
       <td-gutter right>
         <slot name="right-gutter-content">
-          <td-css-inspector-pane-preview />
+          <td-css-inspector-pane  styleRules=[[bind [
+      {
+        label: ".container",
+        source: { uri: "styles.css" },
+        element: {
+          tagName: "div"
+        },
+        rule: { },
+        declarations: [
+          { 
+            name: "color",
+            value: {
+              type: "COLOR",
+              value: "red"
+            }
+          },
+          { 
+            name: "flex",
+            value: {
+              type: "NUMBER",
+              value: 1
+            }
+          },
+          { 
+            name: "flex-direction",
+            value: {
+              type: "KEYWORD",
+              name: "row"
+            }
+          },
+          { 
+            name: "background",
+            value: {
+              type: "CALL",
+              name: "rgb",
+              returnType: "COLOR",
+              returnValue: "rgb(255, 255, 0)",
+              params: [
+                {
+                  type: "NUMBER",
+                  value: 255,
+                },
+                {
+                  type: "NUMBER",
+                  value: 255,
+                },
+                {
+                  type: "NUMBER",
+                  value: 0
+                }
+              ]
+            }
+          },
+          { 
+            name: "margin-top",
+            value: {
+              type: "MEASUREMENT",
+              value: "10",
+              unit: "px"
+            }
+          }
+        ]
+      },
+      {
+        label: ".header",
+        headerHovering: true,
+        rule: { },
+        declarations: [
+          { 
+            name: "background",
+            value: {
+              type: "COMMA_LIST",
+              values: [
+                {
+                  type: "SPACED_LIST",
+                  values: [
+                    {
+                      type: "CALL",
+                      name: "rgb",
+                      returnType: "COLOR",
+                      returnValue: "rgb(255, 0, 255)",
+                      params: [
+                        {
+                          type: "NUMBER",
+                          value: 255
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 0
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 255
+                        }
+                      ]
+                    },
+                    {
+                      type: "KEYWORD",
+                      name: "no-repeat"
+                    }
+                  ]
+                },
+                {
+                  type: "SPACED_LIST",
+                  values: [
+                    {
+                      type: "CALL",
+                      name: "rgb",
+                      returnType: "COLOR",
+                      returnValue: "rgb(255, 100, 0)",
+                      params: [
+                        {
+                          type: "NUMBER",
+                          value: 255
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 100
+                        },
+                        {
+                          type: "NUMBER",
+                          value: 0
+                        }
+                      ]
+                    },
+                    {
+                      type: "KEYWORD",
+                      name: "no-repeat"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            name: "padding",
+            value: {
+              type: "CALL",
+              name: "var",
+              params: [
+                {
+                  type: "KEYWORD",
+                  name: "--padding"
+                }
+              ]
+            }
+          },
+          {
+            name: "color",
+            overridden: true,
+            value: {
+              type: "CALL",
+              name: "var",
+              open: true,
+              source: "var(---font-color)",
+              returnType: "COLOR",
+              returnValue: "#CCCCCC",
+              params: [
+                {
+                  type: "KEYWORD",
+                  name: "--font-color"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        label: "body, html",
+        inherited: true,
+        rule: { },
+        declarations: [
+          { 
+            name: "padding",
+            ignored: true,
+            value: {
+              type: "SPACED_LIST",
+              values: [
+                {
+                  type: "MEASUREMENT",
+                  value: 10,
+                  unit: "px"
+                },
+                {
+                  type: "MEASUREMENT",
+                  value: 20,
+                  unit: "px"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]]] />
         </slot>
       </td-gutter>
     </div>
