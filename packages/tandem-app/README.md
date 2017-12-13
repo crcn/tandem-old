@@ -4,11 +4,13 @@ RESEARCH:
 
 IMMEDIATE:
 
+- [ ] d.ts generation is a bit foobar. checkout windows-pane.pc.d.ts
 - [ ] paperclip optional property
 - [ ] display error in callstack
   - [ ] auto flag for if statement
 - [ ] fix linting & inferencing errors in vscode
 - [ ] make vscode extension rock solid
+- [ ] better d.ts generation - need to use templates for child components.
 
 - [ ] fix outstanding errors in PC components
 - [ ] Remove VSCode bugs (try to break)
