@@ -184,6 +184,9 @@ const createTextAttributeBlockStatement = (context: ParseContext) => {
 
 const createBKExpressionStatement = (context: ParseContext) => createBKOperation(context);
 
+const isMultiplicative = (value) => value === "*" || value === "/";
+const isAdditive = (value) => value === "+" || value === "-";
+
 const createBKOperation = (context: ParseContext): BKExpression => {
   if (!testCurrTokenExists(context)) {
     return null;
@@ -210,16 +213,31 @@ const createBKOperation = (context: ParseContext): BKExpression => {
   if (!rhs) {
     return null;
   }
-  
-  // NOTE that we don't need to worry about operation weights since paperclip
-  // is compiled
-  return {
+
+  let op = {
     type: BKExpressionType.OPERATION,
     left: lhs,
     right: rhs,
     operator: operator.value,
     location: getLocation(lhs.location.start, rhs.location.end, scanner.source),
   } as BKOperation;
+
+  // re-order. examples of how this algorithm works (parameters are used to denote binary trees):
+  // 1 * (1 - 2) -> (1 * 1) - 2
+  // 1 * (1 / (3 * 4)) -> 1 * ((1 / 3) * 4) -> (1 * (1 / 3)) * 4
+  // 1 * (5 - (4 / 3)) -> (1 * 5) - (4 / 3)
+  if (rhs.type === BKExpressionType.OPERATION && isMultiplicative(operator.value)) {
+    const rho = rhs as any as BKOperation;
+    op = {
+      ...rho,
+      left: {
+        ...op,
+        right: rho.left
+      }
+    };
+  }
+  
+  return op;
 };
 
 const createBKExpression = (context: ParseContext) => {

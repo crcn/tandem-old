@@ -255,7 +255,19 @@ describe(__filename + "#", () => {
         }
       }
     }],
-
+    [`[[bind a * b + "%"]]`, { 
+      type: InferenceType.OBJECT_OR_ARRAY, 
+      properties: { 
+        a: { 
+          type: InferenceType.NUMBER, 
+          properties: { }
+        },
+        b: { 
+          type: InferenceType.NUMBER, 
+          properties: { }
+        }
+      }
+    }],
     [`<a b=[[bind c]] />`, { 
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
@@ -508,6 +520,7 @@ describe(__filename + "#", () => {
         message: `The right-hand side of an arithmetic operation must be a number`
       }
     ]],
+    [`[[bind a * b + "%"]]`, []],
     [`[[bind a.b * c]] [[bind a.b.c]]`, [
       { 
         type: DiagnosticType.ERROR,

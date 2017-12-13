@@ -14,6 +14,7 @@ export enum InferenceType {
   STRING = ARRAY << 1,
   NUMBER = STRING << 1,
   BOOLEAN = NUMBER << 1,
+  OPTIONAL = BOOLEAN << 1,
   PRIMITIVE = STRING | NUMBER | BOOLEAN,
   ANY = OBJECT | ARRAY | STRING | NUMBER | BOOLEAN,
   OBJECT_OR_ARRAY = OBJECT | ARRAY
@@ -242,7 +243,7 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
     }
     case BKExpressionType.STRING: {
       if (!isValidReturnType(InferenceType.STRING, context)) {
-        return addInvalidTypeError(expr, InferenceType.NUMBER, context);
+        return addInvalidTypeError(expr, InferenceType.STRING, context);
       }
       
       return setTypeLimit(InferenceType.STRING, null, context);
@@ -303,7 +304,7 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
 const reduceInferenceType = (expr: PCExpression, keyPath: string[], context: InferContext) => {
   const newTypeLimit = getContextInferenceType(keyPath, context) & context.typeLimit;
   if (!isValidReturnType(newTypeLimit, context)) {
-    return addDiagnosticError(expr, context); 
+    return addDiagnosticError(expr, context, context.typeLimitErrorMessage); 
   }
   return setTypeLimit(newTypeLimit, context.typeLimitErrorMessage, setContextInferenceType(expr, keyPath, newTypeLimit, context));
 };
@@ -448,18 +449,18 @@ const updateContextInference = (inference: Inference, context: InferContext) => 
 
 export const isValidReturnType = (type: number, { typeLimit }: InferContext) => Boolean(type & typeLimit);
 
-const addInvalidTypeError = (expr: PCExpression, type: number, context: InferContext): InferContext => addDiagnosticError(expr, context, `Type mismatch ${type} to ${context.typeLimit}`);
+const addInvalidTypeError = (expr: PCExpression, type: number, context: InferContext): InferContext => addDiagnosticError(expr, context, context.typeLimitErrorMessage || `Type mismatch ${type} to ${context.typeLimit}`);
 
-const addDiagnosticError = (expr: PCExpression, context: InferContext, message?: string) => addDiagnostic(expr, DiagnosticType.ERROR, context, message);
+const addDiagnosticError = (expr: PCExpression, context: InferContext, message: string) => addDiagnostic(expr, DiagnosticType.ERROR, context, message);
 
-const addDiagnosticWarning = (expr: PCExpression, context: InferContext, message?: string) => addDiagnostic(expr, DiagnosticType.WARNING, context, message);
+const addDiagnosticWarning = (expr: PCExpression, context: InferContext, message: string) => addDiagnostic(expr, DiagnosticType.WARNING, context, message);
 
-const addDiagnostic = (expr: PCExpression, level: DiagnosticType, context: InferContext, defaultMessage: string) => ({
+const addDiagnostic = (expr: PCExpression, level: DiagnosticType, context: InferContext, message: string) => ({
   ...context,
   diagnostics: [...context.diagnostics, {
     type: DiagnosticType.ERROR,
     location: expr.location,
-    message: context.typeLimitErrorMessage || defaultMessage,
+    message,
     filePath: context.filePath
   }]
 });

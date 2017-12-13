@@ -46,7 +46,6 @@ paperclip.bundleVanilla("component.pc", {
 });
 ````
 
-
 #### HIGH PRIO TODOS
 
 - [ ] Remove `property` section - use type inferencing for this.
@@ -60,6 +59,7 @@ paperclip.bundleVanilla("component.pc", {
 - [ ] Source maps*
 - [ ] a11y helpers
 - [ ] remove property attr parsing code
+- [ ] pretty formatter
 
 - [ ] i18n support (use standard)
 - [ ] warning if unknown tag name is used
