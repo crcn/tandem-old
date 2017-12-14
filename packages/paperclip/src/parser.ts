@@ -289,7 +289,6 @@ export const createString = (context: ParseContext): BKString => {
 
   scanner.next(); // eat quote
 
-
   return {
     type: BKExpressionType.STRING,
     location: getLocation(start, scanner.curr(), scanner.source),
@@ -570,9 +569,15 @@ const createVarReference = (context: ParseContext): BKVarReference => {
   eatWhitespace(context);
   const start = scanner.curr();
   scanner.next(); // eat name
+  let optional = false;
+  if (scanner.curr() && scanner.curr().type === PCTokenType.QUESTION_MARK) {
+    optional = true;
+    scanner.next();
+  }
   return ({
     type: BKExpressionType.VAR_REFERENCE,
     name: start.value,
+    optional,
     location: getLocation(start, scanner.curr(), scanner.source)
   });
 };

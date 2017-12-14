@@ -189,7 +189,7 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.ANY | InferenceType.OPTIONAL, 
           
           properties: { }
         },
@@ -204,7 +204,7 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         a: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.ANY | InferenceType.OPTIONAL, 
           
           properties: { }
         },
@@ -333,8 +333,7 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
-          type: InferenceType.ANY, 
-          
+          type: InferenceType.ANY | InferenceType.OPTIONAL,
           properties: { }
         }
       }
@@ -343,7 +342,7 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         b: { 
-          type: InferenceType.ANY, 
+          type: InferenceType.ANY | InferenceType.OPTIONAL, 
           
           properties: { }
         }
@@ -471,6 +470,62 @@ describe(__filename + "#", () => {
         color: {
           type: InferenceType.ANY,
           properties: {}
+        }
+      }
+    }],
+
+    // optional inferencing
+    [`[[bind a || b || ""]]`, {
+      type: InferenceType.OBJECT_OR_ARRAY,
+      properties: {
+        a: {
+          type: InferenceType.ANY | InferenceType.OPTIONAL,
+          properties: {}
+        },
+        b: {
+          type: InferenceType.ANY | InferenceType.OPTIONAL,
+          properties: {},
+        }
+      }
+    }],
+    
+    [`[[bind a.b || c]]`, {
+      type: InferenceType.OBJECT_OR_ARRAY,
+      properties: {
+        a: {
+          type: InferenceType.OBJECT_OR_ARRAY,
+          properties: {
+            b: {
+              type: InferenceType.ANY,
+              properties: {}
+            }
+          }
+        },
+        c: {
+          type: InferenceType.ANY,
+          properties: {},
+        }
+      }
+    }],
+  
+    [`<a [[if a]] [[bind a]]></a>`, {
+      type: InferenceType.OBJECT_OR_ARRAY,
+      properties: {
+        a: {
+          type: InferenceType.ANY | InferenceType.OPTIONAL,
+          properties: {
+          }
+        }
+      }
+    }],
+    
+    [`<a [[if a]]></a>[[bind a]]`, {
+      type: InferenceType.OBJECT_OR_ARRAY,
+      properties: {
+        a: {
+          type: InferenceType.ANY,
+          properties: {
+          }
         }
       }
     }]

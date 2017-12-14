@@ -3,7 +3,7 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./color-picker.pc" />
 
-<component id="td-tooltip" [[property show]] [[property anchor]]>
+<component id="td-tooltip">
   <template>  
     <span id="button">
       <slot name="button"></slot>

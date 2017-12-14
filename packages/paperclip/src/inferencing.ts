@@ -1,5 +1,6 @@
 
-// TODO - callstack - infinite loop detection
+// TODO 
+// optional scopes
 // infer based on styles
 // show how each ref extends attribute it's being assigned to
 
@@ -48,7 +49,11 @@ type InferContext = {
   // define a current scope of { item: ["items"] } for the repeated div element
   currentScopes: {
     [identifier: string]: string[]
-  }
+  };
+
+  optionalScopes: {
+    [identifier: string]: boolean;
+  };
 
   typeLimit: InferenceType;
   typeLimitErrorMessage?: string;
@@ -106,6 +111,7 @@ const createInferenceContext = (filePath: string, options: InferNodePropOptions)
   inference: createAnyInference(),
   diagnostics: [],
   currentScopes: {},
+  optionalScopes: {},
   typeLimit: InferenceType.ANY
 })
 
@@ -250,15 +256,27 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
     }
     case BKExpressionType.OPERATION: {
       const { left, operator, right } = expr as BKOperation;
-      const newtypeLimit = (/^[\*/\-%]$/.test(operator) ? InferenceType.NUMBER : context.typeLimit);
+      let newTypeLimit = (/^[\*/\-%]$/.test(operator) ? InferenceType.NUMBER : context.typeLimit);
 
-      if (!isValidReturnType(newtypeLimit, context)) {
-        return addInvalidTypeError(expr, newtypeLimit, context);
+      if (!isValidReturnType(newTypeLimit, context)) {
+        return addInvalidTypeError(expr, newTypeLimit, context);
       }
 
-      context = inferExprType(left, setTypeLimit(newtypeLimit, `The left-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(newtypeLimit)}`, context));
+      const previousTypeLimit = context.typeLimit;
 
-      context = inferExprType(right, operator !== "===" ? setTypeLimit(newtypeLimit, `The right-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(context.typeLimit)}`, context) : context);
+      let leftTypeLimit = newTypeLimit;
+      let rightTypeLimit = newTypeLimit;
+
+      // existence operator checks:
+      // (!a && b) -> a is optional, b is not since it may be returned. b IS optional if it's within an [[if block]], in which case, optional is defined higher up the call stack
+      // (a || b) -> b is optional
+      if (/^(&&|\|\|)$/.test(operator)) {
+        leftTypeLimit |= InferenceType.OPTIONAL;
+      }
+
+      context = inferExprType(left, setTypeLimit(leftTypeLimit, `The left-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(newTypeLimit)}`, context));
+      
+      context = inferExprType(right, operator !== "===" ? setTypeLimit(rightTypeLimit, `The right-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(context.typeLimit)}`, context) : context);
 
       return context;
     }
@@ -268,7 +286,14 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
     }
     case BKExpressionType.VAR_REFERENCE:
     case BKExpressionType.PROP_REFERENCE: {
-      return reduceInferenceType(expr, getReferenceKeyPath(expr), context);
+      const keypath = getReferenceKeyPath(expr);
+      
+      // nested keypaths cannot be optional -- only top level
+      if (keypath.length > 1) {
+        context = setTypeLimit(context.typeLimit & ~InferenceType.OPTIONAL, context.typeLimitErrorMessage, context);
+      }
+
+      return reduceInferenceType(expr, keypath, context);
     }
     case BKExpressionType.BIND: {
       const { value } = expr as BKBind;
@@ -289,7 +314,7 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
     case BKExpressionType.ELSEIF:
     case BKExpressionType.IF: {
       const { condition } = expr as BKIf|BKElseIf;
-      return inferExprType(condition, context);
+      return inferExprType(condition, setTypeLimit(InferenceType.ANY | InferenceType.OPTIONAL, null, context));
     }
     case BKExpressionType.REPEAT: {
       const { each } = expr as BKRepeat;
@@ -302,7 +327,7 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
 };
 
 const reduceInferenceType = (expr: PCExpression, keyPath: string[], context: InferContext) => {
-  const newTypeLimit = getContextInferenceType(keyPath, context) & context.typeLimit;
+  const newTypeLimit = (getContextInferenceType(keyPath, context) | InferenceType.OPTIONAL) & context.typeLimit;
   if (!isValidReturnType(newTypeLimit, context)) {
     return addDiagnosticError(expr, context, context.typeLimitErrorMessage); 
   }
@@ -337,6 +362,7 @@ const getLowestPropInference = (keyPath: string[], context: InferContext, notFou
   
   return current;
 };
+
 const getLowestPropInferenceType = (keyPath: string[], context: InferContext, notFoundType: InferenceType = InferenceType.ANY) => {
   const inference = getLowestPropInference(keyPath, context)
   return inference ? inference.type : notFoundType;

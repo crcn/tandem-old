@@ -169,7 +169,7 @@
     </span>
   </template>
   <preview name="main" width="50" height="30">
-    <td-css-expr-input open=[[bind open]] value=[[bind {
+    <td-css-expr-input value=[[bind {
       type: "COLOR",
       value: "#F60"
     }]] />

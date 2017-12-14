@@ -5,7 +5,7 @@
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
 
-<component id="td-style-declaration" [[property name]] [[property value]] [[property ignored]] [[property overridden]] [[property sourceValue]]>
+<component id="td-style-declaration">
   <meta name="internal" content="true" />
   <style>
     :host([ignored]) {
@@ -31,7 +31,7 @@
   </template>
 </component>
 
-<component id="td-style-rule" [[property label]] [[property declarations]] [[property source]] [[property headerHovering]] [[property inherited]]>
+<component id="td-style-rule">
   <meta name="internal" content="true" />
   <style>
     :host:hover td-gutter-subheader span, :host([headerHovering]) .controls {
@@ -107,7 +107,7 @@
   </template>
 </component>
 
-<component id="td-css-inspector-pane" [[property styleRules]]>
+<component id="td-css-inspector-pane">
   <template>
     <td-pane>
       <span slot="header">
@@ -258,6 +258,8 @@
             value: {
               type: "CALL",
               name: "var",
+              returnType: null,
+              returnValue: null,
               params: [
                 {
                   type: "KEYWORD",

@@ -123,6 +123,7 @@ export type BKPropertyReference = {
 
 export type BKVarReference = {
   name: string;
+  optional?: boolean;
 } & BKExpression;
 
 export type BKGroup = {
