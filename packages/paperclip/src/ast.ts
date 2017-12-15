@@ -381,7 +381,6 @@ export const getPCParent = (root: PCParent, tagOrChild: PCExpression) => filterP
 
 export const getAllChildElementNames = (root: PCExpression) => {
   const childElementNames: string[] = [];
-
   traversePCAST(root, (element) => {
     if (isTag(element) && childElementNames.indexOf(getStartTag(element as PCElement).name) === -1) {
       childElementNames.push(getStartTag(element as PCElement).name);

@@ -2,11 +2,13 @@
 TODOS:
 
 - *variant testing
+- check for props that don't exist in inference
+- ** check if component template exists
 */
 
 import { Diagnostic, DiagnosticType } from "./parser-utils";
 
-import { InferenceType, inferNodeProps, Inference, ANY_REFERENCE, getPrettyTypeLabelEnd, getTypeLabels, getReferenceKeyPath, EACH_KEY } from "./inferencing";
+import { InferenceType, inferNodeProps, Inference, ANY_REFERENCE, getPrettyTypeLabelEnd, getTypeLabels, getReferenceKeyPath, EACH_KEY, getNestedInference } from "./inferencing";
 import { DependencyGraph, Dependency, Component, getChildComponentInfo } from "./loader";
 import { weakMemo } from "./utils";
 import { PCExpression, PCExpressionType, PCElement, PCSelfClosingElement, PCAttribute, PCBlock, PCComment, PCEndTag, PCFragment, PCParent, PCReference, PCRootExpression, PCStartTag, PCString, PCStringBlock, PCTextNode, BKArray, BKBind, BKElse, BKElseIf, BKExpression, BKExpressionType, BKGroup, BKIf, BKKeyValuePair, BKNot, BKNumber, BKObject, BKOperation, BKProperty, BKPropertyReference, BKRepeat, BKReservedKeyword, BKString, BKVarReference }  from "./ast";
@@ -18,13 +20,14 @@ export type LintingOptions = {};
 type Components = {
   [identifier: string]: {
     filePath: string;
-    component: Component
+    component: Component;
   }
 };
 
-type SoftEvaluationResult = boolean|string|number|{
-  [identifier: string]: any
-}|any[];
+type EvalResult = {
+  value: any;
+  source: PCExpression;
+}
 
 type LintContextVars = {
   [identifier: string]: {
@@ -36,14 +39,19 @@ type LintContextVars = {
 type Caller = {
   source: PCExpression;
   filePath: string;
-  props: SoftEvaluationResult
+  props: {
+    [identifier: string]: EvalResult
+  }
 }
 
 type LintContext = {
+  currentComponentId: string;
   graph: DependencyGraph;
+  optionalVars?: boolean;
   options: LintingOptions;
   currentFilePath: string;
   components: Components;
+  currentExprEvalResult?: EvalResult;
   diagnostics: Diagnostic[];
   ignoreTagNames: {
     [identifier: string]: number
@@ -72,6 +80,7 @@ export const lintDependencyGraph = weakMemo((graph: DependencyGraph, options: Li
 
   let context: LintContext = {
     graph,
+    currentComponentId: null,
     options,
     currentFilePath: null,
     ignoreTagNames: {},
@@ -84,6 +93,7 @@ export const lintDependencyGraph = weakMemo((graph: DependencyGraph, options: Li
     const {filePath, component} = allComponents[componentId];
     context = lintComponent(component, {
       ...context,
+      currentComponentId: componentId,
       currentFilePath: filePath
     });
   }
@@ -110,7 +120,6 @@ const dedupeDiagnostics = (diagnostics: Diagnostic[]): Diagnostic[] => {
 }
 
 const lintComponent = (component: Component, context: LintContext) => {
-
   context = lintNode(component.template, context);
 
   for (let i = 0, {length} = component.previews; i < length; i++) {
@@ -121,33 +130,19 @@ const lintComponent = (component: Component, context: LintContext) => {
   return context;
 }
 
-const lintEntry = (node: PCExpression, context: LintContext) => {
-  const { inference, diagnostics } = inferNodeProps(node, context.currentFilePath);
-  context = lintAttributeShape(context.caller.source, [], inference, context.caller.props, context);
-
-  if (diagnostics.length) {
-    context = {
-      ...context,
-      diagnostics: [
-        ...context.diagnostics,
-        ...diagnostics
-      ]
-    };
-  }
-
-  context = lintNode(node, context);
-
-  return context;
-}
-
 const lintNode = (node: PCExpression, context: LintContext) => {
   switch(node.type) {
     case PCExpressionType.FRAGMENT: return lintFragment(node as PCFragment, context);
     case PCExpressionType.SELF_CLOSING_ELEMENT:
     case PCExpressionType.ELEMENT: return lintElement(node as PCElement, context);
+    case PCExpressionType.BLOCK: return lintTextBlock(node as PCBlock, context);
   }
 
   return context;
+}
+
+const lintTextBlock = (node: PCBlock, context: LintContext) => {
+  return lintExpr(node.value, context);
 }
 
 const lintNodes = (nodes: PCExpression[], context: LintContext) => {
@@ -174,31 +169,12 @@ const lintElement = (element: PCElement|PCSelfClosingElement, context: LintConte
     childNodes = [];
   }
 
-
   const numLoops = context.callstack.filter(caller => caller.source === startTag).length;
 
   if (numLoops > MAX_CALLSTACK_OCCURRENCE) {
     return addDiagnosticError(element, `Maximum callstack exceeded`, context)
   }
   if (context.ignoreTagNames[startTag.name.toLowerCase()]) {
-    return context;
-  }
-  context = lintStartTag(startTag, context);
-  context = lintNodes(childNodes, context);
-  return context;
-};
-
-const EMPTY_OBJECT: any = {};
-
-
-const lintStartTag = (startTag: PCStartTag, context: LintContext) => {
-  const { filePath, component } = context.components[startTag.name.toLowerCase()] || EMPTY_OBJECT;
-  const propInference = {
-    type: InferenceType.ANY,
-    properties: {}
-  };
-
-  if (!component) {
     return context;
   }
 
@@ -216,36 +192,46 @@ const lintStartTag = (startTag: PCStartTag, context: LintContext) => {
   }
 
   if (_if) {
-    if (!evalExpr(_if, context)) {
+    context = lintExpr(_if, context);
+    if (!context.currentExprEvalResult.value) {
       return context;
     } else {
     }
   }
-
-  const currentFilePath: string = context.currentFilePath;
-
+  
   if (_repeat) {
     const { each, asValue, asKey } = _repeat;
     const asValueName = asValue.name;
-    eachValue(evalExpr(each, context), (item, index) => {
-      context = lintStartTagAttributes(startTag, pushCaller(_repeat, currentFilePath, {
-        [asValueName]: item
+    const asKeyName = asKey && asKey.name || undefined;
+    context = lintExpr(each, context);
+    const currentFilePath: string = context.currentFilePath;
+    const eachValueSource = context.currentExprEvalResult.source;
+    eachValue(context.currentExprEvalResult.value, (item: EvalResult, index) => {
+      context = lintStartTagAttributes(startTag, pushCaller(eachValueSource, currentFilePath, {
+
+        // within the same scope, so inherit props
+        ...(context.caller && context.caller.props || {}),
+        [asValueName]: item,
+        [asKeyName]: asKey ? { value: index, source: asKey} : undefined
       }, context));
+      context = lintNodes(childNodes, context);
       context = popCaller(context);
     });
     
   } else {
     context = lintStartTagAttributes(startTag, context);
+    context = lintNodes(childNodes, context);
   }
 
   return context;
-}
+};
+
+const EMPTY_OBJECT: any = {};
 
 const lintStartTagAttributes = (startTag: PCStartTag, context: LintContext) => {
   const props = {};
   let prevFilePath = context.currentFilePath;
   
-  const { filePath, component } = context.components[startTag.name.toLowerCase()] || EMPTY_OBJECT;
   const attributesByKey = {};
 
   for (let i = 0, {length} = startTag.attributes; i < length; i++) {
@@ -256,21 +242,36 @@ const lintStartTagAttributes = (startTag: PCStartTag, context: LintContext) => {
   // required props
   for (const propertyName in attributesByKey) {
     const attribute = attributesByKey[propertyName];
-    const attrValueInference = getAttributeValueInference(attribute, context);
-    props[propertyName] = attrValueInference 
+    context = lintAttributeValue(attribute, context);
+    props[propertyName] = context.currentExprEvalResult;
   }
+
+  let callerSource: PCExpression = startTag;
 
   for (let i = 0, {length} = startTag.modifiers; i < length; i++) {
     const modifier = startTag.modifiers[i].value;
     if (modifier.type === BKExpressionType.BIND) {
       const bind = modifier as BKBind;
-      Object.assign(props, evalExpr(bind, context));
+      context = lintExpr(bind, context);
+
+      // transfer caller ownership to bind since it's a spread. Likely
+      // if there is any problem, it's coming from here. 
+      callerSource = context.currentExprEvalResult.source;
+      Object.assign(props, context.currentExprEvalResult.value);
     }
   }
 
-  context = lintEntry(component.source, ignoreTagName("preview", pushCaller(startTag, filePath, props, context)));
+  const { filePath, component } = context.components[startTag.name.toLowerCase()] || EMPTY_OBJECT; 
+
+  if (!component) {
+    return context;
+  }
+
+  const currentComponentId = context.currentComponentId;
+
+  context = lintNode(component.source, ignoreTagName("preview", pushCaller(callerSource, filePath, props, setCurrentComponentId(startTag.name, context))));
   
-  return unignoreTagName("preview", popCaller(context));
+  return unignoreTagName("preview", popCaller(setCurrentComponentId(currentComponentId, context)));
 }
 
 const setCurrentFilePath = (filePath: string, context: LintContext): LintContext => ({
@@ -295,27 +296,6 @@ const getInferenceTypeFromValue = (value: any) => {
   }
 }
 
-const lintAttributeShape = (expr: PCExpression, keypath: string[], requiredPropInference: Inference, providedValue: any, context: LintContext) => {
-  if (providedValue === undefined) {
-    context = addDiagnosticError(expr, `Missing attribute "${keypath.join(".")}"`, context);
-    return context;
-  }
-
-  const valueType = getInferenceTypeFromValue(providedValue);
-
-  if (!(requiredPropInference.type & valueType)) {
-    context = addDiagnosticError(expr, `Type mismatch: attribute "${keypath.join(".")}" expecting ${getPrettyTypeLabelEnd(requiredPropInference.type)}, ${getTypeLabels(valueType)} provided.`, context);
-  }
-
-  if (requiredPropInference.type !== InferenceType.ANY && providedValue) {
-    for (const key in requiredPropInference.properties) {
-      if (key === EACH_KEY) continue;
-      context = lintAttributeShape(expr, [...keypath, key], requiredPropInference.properties[key], providedValue[key], context);
-    }
-  }
-  return context;
-}
-
 const addDiagnosticError = (expr: PCExpression, message: string, context: LintContext) => addDiagnostic(expr, DiagnosticType.ERROR, message, context);
 
 const addDiagnostic = (expr: PCExpression, type: DiagnosticType, message: string, context: LintContext): LintContext => {
@@ -333,106 +313,169 @@ const addDiagnostic = (expr: PCExpression, type: DiagnosticType, message: string
   }
 }
 
-const getAttributeValueInference = (attribute: PCAttribute, context: LintContext): SoftEvaluationResult => {
+const lintAttributeValue = (attribute: PCAttribute, context: LintContext) => {
   if (!attribute.value) {
-    return true;
-  } else if (attribute.value.type === PCExpressionType.STRING || attribute.value.type === PCExpressionType.STRING_BLOCK) {
-    return "";
+    return setCurrentExprEvalResult(true, attribute, context);
+  } else if (attribute.value.type === PCExpressionType.STRING_BLOCK) {
+    const stringBlock = attribute.value as PCStringBlock;
+    for (let i = 0, {length} = stringBlock.values; i < length; i++) {
+      const block = stringBlock.values[i];
+      if (block.type === PCExpressionType.BLOCK) {
+        context = lintExpr(block, context);
+      }
+    }
+  } else if (attribute.value.type === PCExpressionType.STRING) {
+    context = setCurrentExprEvalResult((attribute.value as PCString).value, attribute.value, context);
+  } else {
+    context = lintExpr((attribute.value as PCBlock).value, context);
   }
-
-  return evalExpr((attribute.value as PCBlock).value, context);
+  return context;
 }
 
-const getNestedInference = (keypath: string[], current: any, index: number = 0) => {
+const getNestedValue = (keypath: string[], current: EvalResult, index: number = 0): EvalResult => {
   if (current == null) {
     return current;
   }
   if (index === keypath.length) {
-    return current;
+    return current.value;
   }
-  return getNestedInference(keypath, current[keypath[index]], index + 1);
+  return getNestedValue(keypath, (current.value && current.value[keypath[index]]), index + 1);
 }
 
-const evalExpr = (expr: BKExpression, context: LintContext): any => {
+const getKeypathOrigin = (keypath: string[], caller: Caller): PCExpression => {
+  const prop = caller.props[keypath[0]];
+  if (prop == null) return caller.source;
+  let current: EvalResult = prop;
+  for (let i = 1, {length} = keypath; i < length; i++) {
+    const newCurrent = current.value && current.value[i];
+    if (!newCurrent) break;
+    current = newCurrent;
+  }
+  return current.source;
+}
+
+const lintExpr = (expr: BKExpression, context: LintContext): any => {
   switch(expr.type) {
     case BKExpressionType.OPERATION: {
       const { left, operator, right } = expr as BKOperation;
-      const lv = evalExpr(left, context);
-      const rv = evalExpr(right, context);
-      switch(operator) {
-        case "+": return lv + rv;
-        case "-": return lv - rv;
-        case "*": return lv * rv;
-        case "/": return lv / rv;
-        case "%": return lv % rv;
-        case "==": return lv == rv;
-        case "===": lv === rv;
-        case "!=": lv !== rv;
-        case "!==": return lv !== rv;
-        case "||": return lv || rv;
-        case "&&": return lv && rv;
-        case ">=": return lv >= rv;
-        case "<=": return lv <= rv;
+
+      const topOptional = context.optionalVars;
+
+      if (operator === "||") {
+        context = setOptionalVars(true, context);
       }
-      return null;
+
+      context = lintExpr(left, context);
+      const lv = context.currentExprEvalResult.value;
+      context = lintExpr(right, setOptionalVars(topOptional, context));
+      const rv = context.currentExprEvalResult.value;
+      switch(operator) {
+        case "+": return setCurrentExprEvalResult(lv + rv, expr, context);
+        case "-": return setCurrentExprEvalResult(lv - rv, expr, context);
+        case "*": return setCurrentExprEvalResult(lv * rv, expr, context);
+        case "/": return setCurrentExprEvalResult(lv / rv, expr, context);
+        case "%": return setCurrentExprEvalResult(lv % rv, expr, context);
+        case "==": return setCurrentExprEvalResult(lv == rv, expr, context);
+        case "===": return setCurrentExprEvalResult(lv === rv, expr, context);
+        case "!=": return setCurrentExprEvalResult(lv !== rv, expr, context);
+        case "!==": return setCurrentExprEvalResult(lv !== rv, expr, context);
+        case "||": return setCurrentExprEvalResult(lv || rv, expr, context);
+        case "&&": return setCurrentExprEvalResult(lv && rv, expr, context);
+        case ">=": return setCurrentExprEvalResult(lv >= rv, expr, context);
+        case "<=": return setCurrentExprEvalResult(lv <= rv, expr, context);
+      }
+      return context;
     }
     case BKExpressionType.PROP_REFERENCE:
     case BKExpressionType.VAR_REFERENCE: {
+      const keypath = getReferenceKeyPath(expr);
       if (context.caller) {
-        return getNestedInference(getReferenceKeyPath(expr), context.caller.props);
+        const { component } = (context.components[context.currentComponentId] || {}) as { component: Component };
+
+        const componentInferenceResult = (component && inferNodeProps(component.source));
+
+        const origin = getKeypathOrigin(keypath, context.caller)
+        
+        const value = getNestedValue(keypath.slice(1), context.caller.props[keypath[0]]);
+        context = setCurrentExprEvalResult(value, origin, context);
+
+        if (value === undefined && (keypath.length > 1 || !context.optionalVars)) {
+          context = addDiagnosticError(origin, `Property "${keypath.join(".")}" is undefined`, context);
+        } else if (componentInferenceResult) {
+          const inference = getNestedInference(keypath, componentInferenceResult.inference) || ANY_REFERENCE;
+          
+          const valueType = getInferenceTypeFromValue(value);
+          if (!(inference.type & valueType)) {
+            context = addDiagnosticError(origin, `Type mismatch: attribute "${keypath.join(".")}" expecting ${getPrettyTypeLabelEnd(inference.type)}, ${getTypeLabels(valueType)} provided.`, context);
+          }
+        }
+      } else {
+        context = setCurrentExprEvalResult(null, expr, context);
       }
-      return null;
+      return context;
     }
-    case BKExpressionType.NUMBER: {
-      const { value } = expr as BKNumber;
-      return Number(value);
-    }
-    case BKExpressionType.STRING: {
-      const { value } = expr as BKString;
-      return String(value);
+    case BKExpressionType.OBJECT: {
+      const object = expr as BKObject;
+      const objValue = {};
+      for (let i = 0, {length} = object.properties; i < length; i++) {
+        const { key, value } = object.properties[i];
+        context = lintExpr(value, context);
+        objValue[key] = context.currentExprEvalResult;
+      }
+      context = setCurrentExprEvalResult(objValue, expr, context);
+      return context;
     }
     case BKExpressionType.ARRAY: {
       const ary = expr as BKArray;
       const values = [];
-      for (const expr of ary.values) {
-        values.push(evalExpr(expr, context));
+      for (let i = 0, {length} = ary.values; i < length; i++) {
+        context = lintExpr(ary.values[i], context);
+        values.push(context.currentExprEvalResult);
       }
-      return values;
+      context = setCurrentExprEvalResult(values, expr, context);
+      return context;
     }
-    case BKExpressionType.OBJECT: {
-      const obj = expr as BKObject;
-      const properties = {};
-      const values = {};
-      for (const {key, value} of obj.properties) {
-        values[key] = evalExpr(value, context);
-      }
-      return values;
+    case BKExpressionType.GROUP: {
+      const group = expr as BKGroup;
+      return lintExpr(group.value, context);
     }
-
+    case BKExpressionType.NUMBER: {
+      const number = expr as BKNumber;
+      return setCurrentExprEvalResult(Number(number.value), expr, context);
+    }
+    case BKExpressionType.STRING: {
+      const string = expr as BKString;
+      return setCurrentExprEvalResult(String(string.value), expr, context);
+    }
     case BKExpressionType.RESERVED_KEYWORD: {
       const { value } = expr as BKReservedKeyword;
       if (value === "undefined") {
-        return undefined;
+        return setCurrentExprEvalResult(undefined, expr, context);
       }
       if (value === "null") {
-        return null;
+        return setCurrentExprEvalResult(null, expr, context);
       }
       if (value === "true" || value == "false") {
-        return value === "true";
+        return setCurrentExprEvalResult(value === "true", expr, context);
       }
-    }
-    case BKExpressionType.BIND: {
-      const bind = expr as BKBind;
-      return evalExpr(bind.value, context);
-    }
-    case BKExpressionType.ELSEIF:
-    case BKExpressionType.IF: {
-      const bind = expr as BKIf;
-      return evalExpr(bind.condition, context);
+      return context;
     }
     case BKExpressionType.NOT: {
       const not = expr as BKNot;
-      return !evalExpr(not.value, context);
+      context = lintExpr(not.value, context);
+      return setCurrentExprEvalResult(!context.currentExprEvalResult.value, expr, context);
+    }
+    case BKExpressionType.BIND: {
+      const bind = expr as BKBind;
+      return lintExpr(bind.value, { ...context, currentExprEvalResult: undefined, optionalVars: false });
+    }
+    case BKExpressionType.IF: 
+    case BKExpressionType.ELSEIF: {
+      const _if = expr as BKIf;
+      return lintExpr(_if.condition, { ...context, currentExprEvalResult: undefined, optionalVars: true });
+    }
+    default: {
+      return context;
     }
   }
 }
@@ -451,6 +494,11 @@ const ignoreTagName = (tagName: string, context: LintContext) => ({
     ...ignoreTagName,
     [tagName]: (context.ignoreTagNames[tagName] || 0) + 1
   }
+});
+
+const setCurrentComponentId = (currentComponentId: string, context: LintContext): LintContext => ({
+  ...context,
+  currentComponentId
 });
 
 const unignoreTagName = (tagName: string, context: LintContext) => ({
@@ -483,3 +531,13 @@ const eachValue = (items: any, each: (value: any, index: string|number) => any) 
     }
   }
 };
+
+const setOptionalVars = (optional: boolean, context: LintContext): LintContext => ({  
+  ...context,
+  optionalVars: optional
+});
+
+const setCurrentExprEvalResult = (value: any, source: PCExpression, context: LintContext): LintContext => ({
+  ...context,
+  currentExprEvalResult: { value, source }
+});

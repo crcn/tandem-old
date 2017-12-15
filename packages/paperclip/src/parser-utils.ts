@@ -36,9 +36,8 @@ export type ParseContext = {
 };
 
 // TODO - possibly colorize
-export const generatePrettyErrorMessage = ({ location, filePath = "", message }:  Diagnostic, graph: DependencyGraph) => {
+export const generatePrettyErrorMessage = ({ location, filePath = "", message }:  Diagnostic, source?: string) => {
   let prettyMessage = `${message}\n\n`;
-  const source = graph[filePath].module.source.input;
 
   const sourceLines = source.split("\n");
 

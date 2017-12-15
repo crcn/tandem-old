@@ -19,7 +19,6 @@ describe(__filename + "#", () => {
             <template>
               <test />
             </template>
-            <preview />
           </component>
         `
       },
@@ -38,7 +37,7 @@ describe(__filename + "#", () => {
               pos: 206
             }
           },
-          message: `Missing attribute "a"`,
+          message: `Property "a" is undefined`,
           type: DiagnosticType.ERROR
         }
       ]
@@ -61,14 +60,14 @@ describe(__filename + "#", () => {
           filePath: "entry",
           location: {
             start: {
-              column: 15,
+              column: 23,
               line: 7,
-              pos: 157
+              pos: 165
             },
             end: {
-              column: 29,
+              column: 26,
               line: 7,
-              pos: 171
+              pos: 168
             }
           },
           message: `Type mismatch: attribute "a" expecting a number, string provided.`,
@@ -88,7 +87,7 @@ describe(__filename + "#", () => {
               pos: 171
             }
           },
-          message: `Missing attribute "c"`,
+          message: `Property "c" is undefined`,
           type: DiagnosticType.ERROR
         }
       ]
@@ -126,17 +125,17 @@ describe(__filename + "#", () => {
           filePath: "entry",
           location: {
             end: {
-              column: 47,
+              column: 42,
               line: 7,
-              pos: 193
+              pos: 188
             },
             start: {
-              column: 15,
+              column: 30,
               line: 7,
-              pos: 161
+              pos: 176
             }
           },
-          message: `Missing attribute "a.b"`,
+          message: `Property "a.b.c" is undefined`,
           type: "ERROR"
         },
       ]
@@ -161,22 +160,22 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
-          location: {
-            end: {
-              column: 33,
-              line: 9,
-              pos: 213
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 20,
+              "line": 12,
+              "pos": 291
             },
-            start: {
-              column: 15,
-              line: 9,
-              pos: 195
+            "end": {
+              "column": 23,
+              "line": 12,
+              "pos": 294
             }
           },
-          message: `Type mismatch: attribute "c" expecting a number, string provided.`,
-          type: "ERROR"
-        },
+          "message": "Type mismatch: attribute \"c\" expecting a number, string provided.",
+          "filePath": "entry"
+        }
       ]
     ],
     [
@@ -219,38 +218,38 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
-          location: {
-            start: {
-              column: 15,
-              line: 12,
-              pos: 286
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 25,
+              "line": 12,
+              "pos": 296
             },
-            end: {
-              column: 36,
-              line: 12,
-              pos: 307
+            "end": {
+              "column": 31,
+              "line": 12,
+              "pos": 302
             }
           },
-          message: `Missing attribute "d"`,
-          type: DiagnosticType.ERROR
+          "message": "Property \"d\" is undefined",
+          "filePath": "entry"
         },
         {
-          filePath: "entry",
-          location: {
-            start: {
-              column: 15,
-              line: 9,
-              pos: 195
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 25,
+              "line": 12,
+              "pos": 296
             },
-            end: {
-              column: 33,
-              line: 9,
-              pos: 213
+            "end": {
+              "column": 31,
+              "line": 12,
+              "pos": 302
             }
           },
-          message: `Missing attribute "c"`,
-          type: DiagnosticType.ERROR
+          "message": "Property \"c\" is undefined",
+          "filePath": "entry"
         }
       ]
     ],
@@ -325,7 +324,7 @@ describe(__filename + "#", () => {
               pos: 123
             }
           },
-          message: `Missing attribute "c"`,
+          message: `Property "c" is undefined`,
           type: DiagnosticType.ERROR
         }
       ]
@@ -376,21 +375,21 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
-          location: {
-            start: {
-              column: 15,
-              line: 4,
-              pos: 67
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 29,
+              "line": 7,
+              "pos": 190
             },
-            end: {
-              column: 47,
-              line: 4,
-              pos: 99
+            "end": {
+              "column": 31,
+              "line": 7,
+              "pos": 192
             }
           },
-          message: `Missing attribute "a"`,
-          type: DiagnosticType.ERROR
+          "message": "Property \"a\" is undefined",
+          "filePath": "entry"
         }
       ]
     ],
@@ -451,20 +450,86 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
-          location: {
-            start: {
-              column: 17,
-              line: 15,
-              pos: 311
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 28,
+              "line": 19,
+              "pos": 450
             },
-            end: {
-              column: 51,
-              line: 15,
-              pos: 345
+            "end": {
+              "column": 30,
+              "line": 19,
+              "pos": 452
             }
           },
-          message: `Missing attribute "d"`,
+          "message": "Property \"d\" is undefined",
+          "filePath": "entry"
+        }
+      ]
+    ],
+
+    // optional testing
+    [
+      {
+        "entry": `
+          <component id="c">
+            <template>
+              <a [[if a]]>[[bind a]]</a>
+            </template>
+            <preview name="main">
+              <c />
+            </preview>
+          </component>          
+        `
+      },
+      []
+    ],
+    [
+      {
+        "entry": `
+          <component id="c">
+            <template>
+              [[bind a || "not defined"]]
+            </template>
+            <preview name="main">
+              <c />
+            </preview>
+          </component>          
+        `
+      },
+      []
+    ],
+    [
+      {
+        "entry": `
+          <component id="c">
+            <template>
+              <a [[if a]]>[[bind a]]</a>
+              [[bind a]]
+            </template>
+            <preview name="main">
+              <c />
+            </preview>
+          </component>          
+        `
+      },
+      [
+        {
+          filePath: "entry",
+          location: {
+            end: {
+              column: 20,
+              line: 8,
+              pos: 196
+            },
+            start: {
+              column: 15,
+              line: 8,
+              pos: 191
+            }
+          },
+          message: `Property "a" is undefined`,
           type: DiagnosticType.ERROR
         }
       ]
@@ -477,6 +542,8 @@ describe(__filename + "#", () => {
 
       const result = lintDependencyGraph(graph);
 
+      // uncomment to update locs
+      // console.log(JSON.stringify(result.diagnostics, null, 2));
       expect(result.diagnostics).to.eql(inferResult);
     });
   });

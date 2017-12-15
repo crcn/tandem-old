@@ -17,8 +17,10 @@ pc.bundleVanilla(arg, {
   }
 }).then(({code, diagnostics, graph}) => {
   if (diagnostics.length) {
-    return diagnostics.forEach(diag => pc.generatePrettyErrorMessage(diag, graph));
+    return diagnostics.forEach(diag => console.log(pc.generatePrettyErrorMessage(diag, fs.readFileSync(diag.filePath, "utf8"))));
   }
 
   console.log(code);
+}).catch(e => {
+  console.error(e.stack);
 });

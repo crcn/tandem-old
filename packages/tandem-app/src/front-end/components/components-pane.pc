@@ -108,6 +108,8 @@
     <td-components-pane dispatch onAddComponentClick components=[[bind [
     {
       label: "Component1",
+      $id: null,
+      dispatch: null,
       onDragStart: null,
       onDragEnd: null,
       onClick: null,

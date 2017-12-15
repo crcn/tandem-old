@@ -63,10 +63,6 @@
   </preview>
 </component>
 
-<component id="td-breadcrumbs-preview">
-</component>
-
-
 <component id="td-workspace-footer" [[property workspace]]>
   <property name="workspace" />
   <style>

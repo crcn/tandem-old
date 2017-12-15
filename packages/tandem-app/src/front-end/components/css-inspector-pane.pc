@@ -126,10 +126,13 @@
         element: {
           tagName: "div"
         },
-        rule: { },
+        rule: {
+          $id: 1
+        },
         declarations: [
           { 
             name: "color",
+            sourceValue: "red",
             value: {
               type: "COLOR",
               value: "red"
@@ -137,6 +140,7 @@
           },
           { 
             name: "flex",
+            sourceValue: "1",
             value: {
               type: "NUMBER",
               value: 1
@@ -144,6 +148,7 @@
           },
           { 
             name: "flex-direction",
+            sourceValue: "row",
             value: {
               type: "KEYWORD",
               name: "row"
@@ -151,6 +156,7 @@
           },
           { 
             name: "background",
+            sourceValue: "background(255, 255, 255 0)",
             value: {
               type: "CALL",
               name: "rgb",
@@ -174,6 +180,7 @@
           },
           { 
             name: "margin-top",
+            sourceValue: "10px",
             value: {
               type: "MEASUREMENT",
               value: "10",
@@ -185,16 +192,19 @@
       {
         label: ".header",
         headerHovering: true,
-        rule: { },
+        rule: {
+          $id: 1
+        },
         declarations: [
           { 
             name: "background",
+            sourceValue: null,
             value: {
               type: "COMMA_LIST",
-              values: [
+              items: [
                 {
                   type: "SPACED_LIST",
-                  values: [
+                  items: [
                     {
                       type: "CALL",
                       name: "rgb",
@@ -223,7 +233,7 @@
                 },
                 {
                   type: "SPACED_LIST",
-                  values: [
+                  items: [
                     {
                       type: "CALL",
                       name: "rgb",
@@ -255,6 +265,7 @@
           },
           {
             name: "padding",
+            sourceValue: null,
             value: {
               type: "CALL",
               name: "var",
@@ -270,6 +281,7 @@
           },
           {
             name: "color",
+            sourceValue: null,
             overridden: true,
             value: {
               type: "CALL",
@@ -291,14 +303,17 @@
       {
         label: "body, html",
         inherited: true,
-        rule: { },
+        rule: {
+          $id: 1
+        },
         declarations: [
           { 
             name: "padding",
             ignored: true,
+            sourceValue: null,
             value: {
               type: "SPACED_LIST",
-              values: [
+              items: [
                 {
                   type: "MEASUREMENT",
                   value: 10,

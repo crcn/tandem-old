@@ -13,10 +13,13 @@ loadModuleDependencyGraph(arg, {
   }
 }).then(({graph, diagnostics}) => {
   if (diagnostics.length) {
-    return diagnostics.forEach((diagnostic) => generatePrettyErrorMessage(diagnostic, graph));
+    return diagnostics.forEach((diagnostic) => 
+    console.error(generatePrettyErrorMessage(diagnostic, fs.readFileSync(diagnostic.filePath, "utf8"))))
   }
   const output = transpiler(graph, arg);
   if (!silent) {
     console.log(output);
   }
-});
+}).catch(e => {
+  console.error(e.stack);
+}) 

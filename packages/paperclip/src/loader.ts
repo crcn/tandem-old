@@ -202,12 +202,19 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
   }
   
   return Promise.resolve(readFile(uri))
-  .then(parseModuleSource)
+  .then(source => parseModuleSource(source, uri))
   .then(result => {
     diagnostics.push(...result.diagnostics);
+    if (!result.root) {
+      return null;
+    }
     return loadModuleAST(result.root, uri)
   })
   .then((module): any => {
+
+    if (!module) {
+      return null;
+    }
 
     const resolvedImportUris = {};
 

@@ -31,7 +31,7 @@ export type TranspileDeclaration = {
 export const bundleVanilla = (uri: string, options: BundleVanllaOptions): Promise<PaperclipTranspileResult> => loadModuleDependencyGraph(uri, options.io).then(({graph}) => ({
   code: transpileBundle(uri, graph),
   graph,
-  diagnostics: lintDependencyGraph(graph),
+  diagnostics: lintDependencyGraph(graph).diagnostics,
   entryDependency: graph[uri]
 }));
 

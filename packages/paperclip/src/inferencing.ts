@@ -1,6 +1,4 @@
 
-// TODO 
-// optional scopes
 // infer based on styles
 // show how each ref extends attribute it's being assigned to
 
@@ -15,23 +13,12 @@ export enum InferenceType {
   STRING = ARRAY << 1,
   NUMBER = STRING << 1,
   BOOLEAN = NUMBER << 1,
-  OPTIONAL = BOOLEAN << 1,
   PRIMITIVE = STRING | NUMBER | BOOLEAN,
   ANY = OBJECT | ARRAY | STRING | NUMBER | BOOLEAN,
   OBJECT_OR_ARRAY = OBJECT | ARRAY
 };
 
 export const EACH_KEY = "$$each";
-
-// TODO - need more of these
-export const ATTR_TYPE_LIMITS = {
-  a: {
-    href: InferenceType.STRING
-  },
-  __any: {
-    class: InferenceType.STRING
-  }
-};
 
 type InferenceExtends = {
   tagName: string;
@@ -49,10 +36,6 @@ type InferContext = {
   // define a current scope of { item: ["items"] } for the repeated div element
   currentScopes: {
     [identifier: string]: string[]
-  };
-
-  optionalScopes: {
-    [identifier: string]: boolean;
   };
 
   typeLimit: InferenceType;
@@ -111,7 +94,6 @@ const createInferenceContext = (filePath: string, options: InferNodePropOptions)
   inference: createAnyInference(),
   diagnostics: [],
   currentScopes: {},
-  optionalScopes: {},
   typeLimit: InferenceType.ANY
 })
 
@@ -129,20 +111,16 @@ const inferNode = (expr: PCExpression, context: InferContext) => {
 const inferStartTag = (startTag: PCStartTag, context: InferContext) => {
   const { attributes, name, modifiers } = startTag;
 
-  // TODO - possibly check for unknown properties - define warning
-  for (let i = 0, {length} = attributes; i < length; i++) {
-    // const attrName = attributes[i].name;
-    // const typeLimit = ATTR_TYPE_LIMITS[name] && ATTR_TYPE_LIMITS[name][attrName] || ATTR_TYPE_LIMITS.__any[attrName] || InferenceType.ANY;
-    // context = setTypeLimit(typeLimit, `${attrName} must be be a ${getPrettyTypeLabelEnd(typeLimit)}`, context);
-    context = inferAttribute(startTag, attributes[i], setTypeLimit(InferenceType.ANY, null, context));
-  }
-
   for (let i = 0, {length} = modifiers; i < length; i++) {
     const modifier = modifiers[i].value;
     if (modifier.type === BKExpressionType.IF || modifier.type === BKExpressionType.ELSEIF || modifier.type === BKExpressionType.BIND) {
 
       context = inferExprType(modifier, setTypeLimit(InferenceType.ANY, null, context));
     }
+  }
+
+  for (let i = 0, {length} = attributes; i < length; i++) {
+    context = inferAttribute(startTag, attributes[i], setTypeLimit(InferenceType.ANY, null, context));
   }
 
   return context;
@@ -267,13 +245,6 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
       let leftTypeLimit = newTypeLimit;
       let rightTypeLimit = newTypeLimit;
 
-      // existence operator checks:
-      // (!a && b) -> a is optional, b is not since it may be returned. b IS optional if it's within an [[if block]], in which case, optional is defined higher up the call stack
-      // (a || b) -> b is optional
-      if (/^(&&|\|\|)$/.test(operator)) {
-        leftTypeLimit |= InferenceType.OPTIONAL;
-      }
-
       context = inferExprType(left, setTypeLimit(leftTypeLimit, `The left-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(newTypeLimit)}`, context));
       
       context = inferExprType(right, operator !== "===" ? setTypeLimit(rightTypeLimit, `The right-hand side of an arithmetic operation must be ${getPrettyTypeLabelEnd(context.typeLimit)}`, context) : context);
@@ -287,13 +258,9 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
     case BKExpressionType.VAR_REFERENCE:
     case BKExpressionType.PROP_REFERENCE: {
       const keypath = getReferenceKeyPath(expr);
-      
-      // nested keypaths cannot be optional -- only top level
-      if (keypath.length > 1) {
-        context = setTypeLimit(context.typeLimit & ~InferenceType.OPTIONAL, context.typeLimitErrorMessage, context);
-      }
+      context = reduceInferenceType(expr, keypath, context);
 
-      return reduceInferenceType(expr, keypath, context);
+      return context;
     }
     case BKExpressionType.BIND: {
       const { value } = expr as BKBind;
@@ -314,7 +281,7 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
     case BKExpressionType.ELSEIF:
     case BKExpressionType.IF: {
       const { condition } = expr as BKIf|BKElseIf;
-      return inferExprType(condition, setTypeLimit(InferenceType.ANY | InferenceType.OPTIONAL, null, context));
+      return inferExprType(condition, setTypeLimit(InferenceType.ANY, null, context));
     }
     case BKExpressionType.REPEAT: {
       const { each } = expr as BKRepeat;
@@ -327,7 +294,7 @@ const inferExprType = (expr: BKExpression, context: InferContext) => {
 };
 
 const reduceInferenceType = (expr: PCExpression, keyPath: string[], context: InferContext) => {
-  const newTypeLimit = (getContextInferenceType(keyPath, context) | InferenceType.OPTIONAL) & context.typeLimit;
+  const newTypeLimit = getContextInferenceType(keyPath, context) & context.typeLimit;
   if (!isValidReturnType(newTypeLimit, context)) {
     return addDiagnosticError(expr, context, context.typeLimitErrorMessage); 
   }
@@ -335,13 +302,19 @@ const reduceInferenceType = (expr: PCExpression, keyPath: string[], context: Inf
 };
 
 const getContextInference = (keyPath: string[], context: InferContext) => {
-  let current = context.inference;
   const scopedKeyPath = getScopedKeyPath(keyPath, context);
+  return getNestedInference(scopedKeyPath, context.inference);
+}
 
-  for (let i = 0, {length} = scopedKeyPath; i < length; i++) {
-    current = current.properties[scopedKeyPath[i]];
+export const getNestedInference = (keypath: string[], context: Inference) => {
+
+  let current = context;
+
+  for (let i = 0, {length} = keypath; i < length; i++) {
+    current = current.properties[keypath[i]];
     if (!current) return null;
   }
+
   return current;
 }
 
@@ -454,6 +427,7 @@ const setContextScope = (name: string, keyPath: string[], context: InferContext)
 const EMPTY_ARRAY = [];
 
 const getContextScope = (name, context: InferContext): string[] => context.currentScopes[name] || EMPTY_ARRAY;
+
 
 const getScopedKeyPath = (keyPath: string[], context: InferContext) => {
   const scope = context.currentScopes[keyPath[0]];

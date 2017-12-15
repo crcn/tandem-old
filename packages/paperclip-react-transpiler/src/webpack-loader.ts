@@ -8,19 +8,21 @@ module.exports = function(source) {
   const callback = this.async();
   const uri = this.resource;
 
+  const readFile = (suri) => {
+    return Promise.resolve(suri === uri ? source : fs.readFileSync(suri, "utf8"))
+  };
+
   loadModuleDependencyGraph(uri, {
-    readFile: (suri) => {
-      return Promise.resolve(suri === uri ? source : fs.readFileSync(suri, "utf8"))
-    }
-  }).then(({graph, diagnostics}) => {
+    readFile
+  }).then(async ({graph, diagnostics}) => {
 
     const allDiagnostics = [...diagnostics, ...lintDependencyGraph(graph).diagnostics];
 
     const error = allDiagnostics.find(diag => diag.type === DiagnosticType.ERROR);
     if (error) {
-      return callback(new Error(generatePrettyErrorMessage(error, graph)));
+      return callback(new Error(generatePrettyErrorMessage(error, await readFile(error.filePath))));
     }
 
     callback(null, transpileToReactComponents(graph, uri));
-  }, callback);
+  }, callback)
 };
