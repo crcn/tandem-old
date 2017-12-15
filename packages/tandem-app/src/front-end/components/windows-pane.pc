@@ -1,7 +1,7 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
 
-<component id="td-windows-pane-row" [[property document]] [[property location]] [[property onClick]] [[property selected]]>
+<component id="td-windows-pane-row">
   <style>
     :host {
       cursor: pointer;
@@ -27,7 +27,7 @@
   </template>
 </component>
 
-<component id="td-windows-pane" [[property windows]] [[property onWindowClicked]]>
+<component id="td-windows-pane">
   <template>
     <td-pane>
       <span slot="header">Artboards</span>

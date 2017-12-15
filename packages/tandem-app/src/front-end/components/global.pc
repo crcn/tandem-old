@@ -73,9 +73,8 @@
   </preview>
 </component>
 
-<component id="td-preview-component-example" [[property label]]>
+<component id="td-preview-component-example">
   <meta name="internal" content="true" />
-  <property name="label" />
   <style>
     :host {
       width: 250px;
@@ -94,7 +93,7 @@
   </template>
 </component>
 
-<component id="td-list-item" label="List Item" [[property noPadding]]>
+<component id="td-list-item" label="List Item">
   <style>
     :host {
       background: var(--background);
@@ -102,7 +101,7 @@
       padding: var(--base6) var(--base8);
       display: block;
     }
-    :host([noPadding]) {
+    :host([nopadding]) {
       padding: 0;
     }
 
@@ -121,7 +120,7 @@
   </template>
 </component>
 
-<component id="td-progress" [[property value]]>
+<component id="td-progress">
   <style>
     :host {
       display: block;
@@ -187,7 +186,7 @@
   </template>
 </component>
 
-<component id="td-progress-example" [[property value]]>
+<component id="td-progress-example">
   <style>
     td-progress {
       margin: var(--base4);

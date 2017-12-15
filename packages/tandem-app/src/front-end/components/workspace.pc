@@ -4,7 +4,7 @@
 <link rel="import" href="./components-pane.pc" />
 <link rel="import" href="./css-inspector-pane.pc" />
 
-<component id="td-zoom" [[property zoom]]>
+<component id="td-zoom">
   <style>
     :host {
       display: none;
@@ -28,7 +28,7 @@
   </template>
 </component>
 
-<component id="td-crumb" [[property label]]>
+<component id="td-crumb">
   <style>
     :host {
       display: inline;
@@ -40,7 +40,7 @@
   </template>
 </component>
 
-<component id="td-breadcrumbs" [[property items]]>
+<component id="td-breadcrumbs">
   <style>
     .breadcrumbs {
       background: var(--background);
@@ -63,8 +63,7 @@
   </preview>
 </component>
 
-<component id="td-workspace-footer" [[property workspace]]>
-  <property name="workspace" />
+<component id="td-workspace-footer">
   <style>
     .workspace-footer {
       border-top: 2px solid var(--border-color-deep);
@@ -79,7 +78,7 @@
   </template>
 </component>
 
-<component id="td-window" [[property left]] [[property top]] [[property width]] [[property height]]>
+<component id="td-window">
   <style>
     :host {
       background: red;
@@ -104,7 +103,7 @@
   </template>
 </component>
 
-<component id="td-stage" [[property workspace]]>
+<component id="td-stage">
   <style>
     :host {
       position: relative;
@@ -116,7 +115,7 @@
   </template>
 </component>
 
-<component id="td-workspace" [[property workspace]]>
+<component id="td-workspace">
   <style>
     .workspace {
       display: flex;
@@ -139,36 +138,47 @@
   <template>
     <div class="workspace">
       <td-gutter left>
-        <td-windows-pane windows=[[bind [
+        <td-windows-pane onWindowClicked windows=[[bind [
           {
+            $id: null,
             document: {
               title: "Window 1",
             }
           },
           {
+            $id: null,
             location: "http://google.com",
             hovering: true,
-            document: {}
+            document: {
+              title: null
+            }
           },
           {
+            $id: null,
             document: {
               title: "Window 3",
             }
           },
           {
+            $id: null,
             document: {
               title: "Window 4",
             }
           },
           {
+            $id: null,
             selected: true,
             document: {
               title: "Window 5",
             }
           }
         ]]] />
-        <td-components-pane components=[[bind [
+        <td-components-pane onAddComponentClick dispatch components=[[bind [
           { 
+            $id: null,
+            onDragStart: null,
+            onDragEnd: null,
+            onClick: null,
             label: "div", 
             screenshot: {
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
@@ -177,6 +187,10 @@
             screenshotScale: 0.07
           },
           { 
+            $id: null,
+            onDragStart: null,
+            onDragEnd: null,
+            onClick: null,
             label: "h2", 
             screenshot: {
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
@@ -185,6 +199,10 @@
             screenshotScale: 0.07
           },
           { 
+            $id: null,
+            onDragStart: null,
+            onDragEnd: null,
+            onClick: null,
             label: "h3", 
             hovering: true,
             screenshot: {
@@ -193,12 +211,12 @@
             },
             screenshotScale: 0.07
           },
-          { label: "h4" },
-          { label: "span" },
-          { label: "form" },
-          { label: "input" },
-          { label: "ul" },
-          { label: "li" }
+          { label: "h4", hovering: true, $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "span", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "form", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "input", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "ul", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null }
         ]]] />
       </td-gutter>
       <div class="center">
@@ -214,10 +232,13 @@
         element: {
           tagName: "div"
         },
-        rule: { },
+        rule: {
+          $id: 1
+        },
         declarations: [
           { 
             name: "color",
+            sourceValue: "red",
             value: {
               type: "COLOR",
               value: "red"
@@ -225,6 +246,7 @@
           },
           { 
             name: "flex",
+            sourceValue: "1",
             value: {
               type: "NUMBER",
               value: 1
@@ -232,6 +254,7 @@
           },
           { 
             name: "flex-direction",
+            sourceValue: "row",
             value: {
               type: "KEYWORD",
               name: "row"
@@ -239,6 +262,7 @@
           },
           { 
             name: "background",
+            sourceValue: "background(255, 255, 255 0)",
             value: {
               type: "CALL",
               name: "rgb",
@@ -262,6 +286,7 @@
           },
           { 
             name: "margin-top",
+            sourceValue: "10px",
             value: {
               type: "MEASUREMENT",
               value: "10",
@@ -273,16 +298,19 @@
       {
         label: ".header",
         headerHovering: true,
-        rule: { },
+        rule: {
+          $id: 1
+        },
         declarations: [
           { 
             name: "background",
+            sourceValue: null,
             value: {
               type: "COMMA_LIST",
-              values: [
+              items: [
                 {
                   type: "SPACED_LIST",
-                  values: [
+                  items: [
                     {
                       type: "CALL",
                       name: "rgb",
@@ -311,7 +339,7 @@
                 },
                 {
                   type: "SPACED_LIST",
-                  values: [
+                  items: [
                     {
                       type: "CALL",
                       name: "rgb",
@@ -343,9 +371,12 @@
           },
           {
             name: "padding",
+            sourceValue: null,
             value: {
               type: "CALL",
               name: "var",
+              returnType: null,
+              returnValue: null,
               params: [
                 {
                   type: "KEYWORD",
@@ -356,6 +387,7 @@
           },
           {
             name: "color",
+            sourceValue: null,
             overridden: true,
             value: {
               type: "CALL",
@@ -377,14 +409,17 @@
       {
         label: "body, html",
         inherited: true,
-        rule: { },
+        rule: {
+          $id: 1
+        },
         declarations: [
           { 
             name: "padding",
             ignored: true,
+            sourceValue: null,
             value: {
               type: "SPACED_LIST",
-              values: [
+              items: [
                 {
                   type: "MEASUREMENT",
                   value: 10,
@@ -406,10 +441,10 @@
     </div>
   </template>
   <preview name="main" width="1024" height="768">
-    <td-workspace />
+    <td-workspace workspace=[[bind null]] />
   </preview>
   <preview name="mini" width="400" height="100">
-    <td-workspace />
+    <td-workspace workspace=[[bind null]] />
   </preview>
 </component>
 

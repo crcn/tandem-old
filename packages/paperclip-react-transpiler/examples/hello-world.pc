@@ -1,4 +1,4 @@
-<component id="hello" [[property message]]>
+<component id="hello">
 	<template>
 		<span>
 			hello [[bind message]]

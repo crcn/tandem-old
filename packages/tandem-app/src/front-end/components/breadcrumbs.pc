@@ -1,8 +1,0 @@
-<component id="td-breadcrumbs">
-  <template>
-    TODO
-  </template>
-  <preview name="main" width="100" height="20">
-    <td-breadcrumbs />
-  </preview>
-</component>

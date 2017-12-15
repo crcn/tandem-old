@@ -100,7 +100,7 @@
         </span>
       </span>
       <span slot="content" class="content">
-        <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] dispatch=[[bind dispatch]] />
+        <td-components-pane-cell [[repeat components as component]] [[bind component]] hovering=[[bind true]] key=[[bind component.$id]] dispatch=[[bind dispatch]] />
       </span>
     </td-pane>
   </template>

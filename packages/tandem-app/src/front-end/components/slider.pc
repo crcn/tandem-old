@@ -1,5 +1,5 @@
 <link rel="import" href="./global.pc" />
-<component id="td-slider" [[property value]]>
+<component id="td-slider">
   <style>
     #guide {
       background: rgba(0,0,0,0.1);

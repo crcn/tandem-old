@@ -295,7 +295,7 @@ Spreading allows you to map an object to the properties of a component. Here's a
 `[[repeat]]` blocks `repeat` the element that they're attached to. Example:
 
 ```html
-<component [[property people]]>  
+<component>  
   <template>
     <ul>
       <li [[repeat people as person]]>
@@ -305,8 +305,6 @@ Spreading allows you to map an object to the properties of a component. Here's a
   </component>
 </component>
 ```
-
-Note that `[[property]]` must be defined.
 
 #### [[emit click]] block
 

@@ -4,9 +4,7 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] display error in callstack
-- [ ] d.ts generation is a bit foobar. checkout windows-pane.pc.d.ts
-- [ ] paperclip optional property
+- [ ] prop inferencing for css styles (needed for things like transpiling)
   - [ ] auto flag for if statement
 - [ ] fix linting & inferencing errors in vscode
 - [ ] make vscode extension rock solid

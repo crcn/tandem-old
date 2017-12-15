@@ -9,7 +9,7 @@ english words for colors
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./slider.pc" />
 
-<component id="td-color-picker" [[property hue]] [[property hsl]] [[property color]] [[property width]] [[property height]]>
+<component id="td-color-picker">
 
   <style>
     .color-picker {

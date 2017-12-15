@@ -20,7 +20,7 @@
   </template>
 </component>
 
-<component id="td-gutter" [[property left]] [[property right]]>
+<component id="td-gutter">
   <style>
     .gutter {
       background: var(--background);

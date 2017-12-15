@@ -132,20 +132,28 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
 const transpileInferredProps = ({ type, properties }: Inference, path: string[] = []) => {
   if (type === InferenceType.ANY) {
     return `any`;
-  }  else if (type & InferenceType.OBJECT && type & InferenceType.ARRAY) { 
-    let content = transpileInferredProps(properties[Object.keys(properties)[0]]);
-    content = `Array<${content}> | { [identifier: string]:${content} }`;
-    return content;
+  }  else if (properties.$$each) { 
+    let content = transpileInferredProps(properties.$$each, [...path, "$$each"]);
+
+    const buffer = [];
+
+    if (type & InferenceType.ARRAY) {
+      buffer.push(`Array<${content}>`);
+    }
+
+    if (type & InferenceType.OBJECT) {
+      buffer.push(`{ [identifier: string]:${content} }`);
+    }
+
+    return buffer.join(" | ");
   } else if (type & InferenceType.OBJECT) { 
     let content = `{\n`;
     for (const key in properties) {
       content += repeat(" ", path.length * 2) + `${key}: ${transpileInferredProps(properties[key], [...path, key])};\n`
     }
 
-    // allow for any props for now since [[property no longer works]]
-    // if (type & InferenceType. || true) {
-    //   content += "[identifier: string]: any;\n"
-    // };
+    // allow for any props for now. Will eventuall want to request for template 
+    content += repeat(" ", (path.length) * 2) + "[identifier: string]: any;\n"
 
     content += repeat(" ", (path.length - 1) * 2) + `}`;
     return content;

@@ -101,6 +101,17 @@ const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
   `  return result;\n` +
   `};\n\n`;
 
+  content += `` +
+  `const __getDataProps = (props) => {\n` +
+  `  const ret = {};\n` +
+  `  for (const key in props) {\n` +
+  `    if (props[key]) {\n` +
+  `      ret["data-" + key] = true;\n` +
+  `    }\n` + 
+  `  }\n` +
+  `  return ret;\n` +
+  `};\n\n`;
+
   // TODO - inject styles into the document body.
   for (let i = 0, {length} = module.globalStyles; i < length; i++) {
     content += transpileStyle(module.globalStyles[i]);
@@ -160,7 +171,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 
   const componentPropertyNames = Object.keys(inferNodeProps(component.source).inference.properties);
 
-  const hostContent = `${context.elementFactoryName}("span", { className: "${context.scopeClass} host", ${componentPropertyNames.map(propName => `"data-${propName}": ${propName} ? true : null`).join(", ")} }, ` + 
+  const hostContent = `${context.elementFactoryName}("span", Object.assign({ className: "${context.scopeClass} host" }, __getDataProps(props)), ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
   `)`;
 
@@ -229,9 +240,10 @@ const transpileStyle = (style: PCElement, scopeClass?: string, component?: Compo
           if (part.indexOf(":host") !== -1) {
             let [match, params] = part.match(/\:host\((.*?)\)/) || [null, ""];
 
-            for (const prop of componentProps) {
-              params = params.replace(prop, "data-" + prop);
-            }
+            params = params.replace(/\[([\w\d\-]+)\]/g, "[data-$1]");
+            // for (const prop of componentProps) {
+            //   params = params.replace(prop, "data-" + prop);
+            // }
 
             return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}.host` + (params ? params : ""));
           }
