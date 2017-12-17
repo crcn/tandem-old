@@ -98,7 +98,6 @@ function* handleTextEditorChanges() {
       continue;
     }
 
-
     posting = true;
     yield spawn(function*() {
       const state: ExtensionState = yield select();

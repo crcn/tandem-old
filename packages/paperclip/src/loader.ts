@@ -110,6 +110,19 @@ export const loadModuleAST = (ast: PCRootExpression, uri: string): Module => {
   return module;
 };
 
+export const getAllComponents = weakMemo((graph: DependencyGraph): {
+  [identifier: string]: Component
+} => {
+  const allComponents = {};
+  for (const filePath in graph) {
+    const { module } = graph[filePath];
+    for (const component of module.components) {
+      allComponents[component.id] = component;
+    }
+  }
+  return allComponents;
+});
+
 export const defaultResolveModulePath = (relative, base) => {
   const dirname = base.split("/");
   dirname.pop();
@@ -341,6 +354,10 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
     previews
   };
 };
+
+export const getComponentPreview = (name: string, component: Component) => {
+  return component.previews.find(preview => getPCStartTagAttribute(preview, "name") === name)
+}
 
 const createImport = (attributes: PCAttribute[]): Import => {
 

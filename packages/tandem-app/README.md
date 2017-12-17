@@ -4,9 +4,11 @@ RESEARCH:
 
 IMMEDIATE:
 
+- [ ] PC VM
+  - [ ] dev server /run, and /diff/:documentHash api
+
 - [ ] prop inferencing for css styles (needed for things like transpiling)
   - [ ] auto flag for if statement
-- [ ] fix linting & inferencing errors in vscode
 - [ ] make vscode extension rock solid
 - [ ] better d.ts generation - need to use templates for child components.
 

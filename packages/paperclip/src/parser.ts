@@ -632,9 +632,6 @@ const createStyleSheet = (context: ParseContext): CSSSheet => {
     }
     children.push(child);    
   }
-  // while(!scanner.ended() && scanner.curr().type !== PCTokenType.CLOSE_TAG) {
-  //   eatWhitespace(scanner);
-  // }
   return {
     type: CSSExpressionType.SHEET,
     children,
@@ -709,7 +706,6 @@ const createCSSAtRule = (context: ParseContext): CSSAtRule => {
   };
 }
 
-
 const createCSSStyleRuleOrDeclarationProperty = (context: ParseContext): CSSStyleRule|CSSDeclarationProperty => {
   const {scanner} = context;
   const start = scanner.curr();
@@ -722,6 +718,8 @@ const createCSSStyleRuleOrDeclarationProperty = (context: ParseContext): CSSStyl
 
     // need to check for strings because something such as content: "; "; needs to be possible.
     if (curr.type === PCTokenType.SINGLE_QUOTE || curr.type === PCTokenType.DOUBLE_QUOTE)  {
+
+      // TODO - define selector that is a selector AST
       selectorText += curr.value + createString(context).value + curr.value;
     } else {
       selectorText += curr.value;

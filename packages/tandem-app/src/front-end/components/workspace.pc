@@ -98,7 +98,6 @@
   </style>
   <template>
     <div class="outer" style=[[bind {left: left, top: top, width: width, height: height }]]>
-      <!--iframe src="http://timerickson.com" /-->
     </div>
   </template>
 </component>
@@ -110,8 +109,6 @@
     }
   </style>
   <template>
-    <!--td-window [[bind {left: 100, top: 100, width: 300, height: 400 }]]>
-    </td-window-->
   </template>
 </component>
 

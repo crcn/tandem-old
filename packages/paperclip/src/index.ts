@@ -11,3 +11,4 @@ export * from "./mutation";
 export * from "./parser-utils";
 export * from "./inferencing";
 export * from "./linting";
+export * from "./vm";

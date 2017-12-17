@@ -58,3 +58,7 @@ export const generatePrettyErrorMessage = ({ location, filePath = "", message }:
 
   return prettyMessage;
 }
+
+export const diagnosticsContainsError = (diagnostics: Diagnostic[]) => {
+  return Boolean(diagnostics.find(diag => diag.type === DiagnosticType.ERROR));
+}
