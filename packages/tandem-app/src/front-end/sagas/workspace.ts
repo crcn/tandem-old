@@ -40,6 +40,7 @@ import {
   dndHandled,
   DNDEvent,
   deleteShortcutPressed,
+  artboardCreated,
   apiComponentsLoaded ,
   OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED,
   OpenExternalWindowButtonClicked,
@@ -67,7 +68,9 @@ import {
   getSyntheticNodeWindow,
   getSyntheticWindowBrowser,
   getSyntheticBrowserBounds,
-  openSyntheticWindowRequest, 
+  openSyntheticWindowRequest,
+  DEFAULT_WINDOW_WIDTH, 
+  DEFAULT_WINDOW_HEIGHT,
 } from "aerial-browser-sandbox";
 
 import { 
@@ -270,16 +273,17 @@ function* handleDroppedOnEmptySpace(event: DNDEvent) {
 
   const { sourceEvent: { pageX, pageY }} = event;
   const state = yield select();
-  const uri = apiGetComponentPreviewURI(event.ref[1], state);
+  const componentId = event.ref[1];
 
   const workspace = getSelectedWorkspace(state);
   const mousePosition = getScaledMouseStagePosition(state, event);
 
-  yield put(openSyntheticWindowRequest({ location: uri, bounds: {
+
+  yield put(artboardCreated(componentId, null, {
     ...mousePosition,
-    right: undefined,
-    bottom: undefined
-  }}, workspace.browserId));
+    right: mousePosition.left + DEFAULT_WINDOW_WIDTH,
+    bottom: mousePosition.top + DEFAULT_WINDOW_HEIGHT
+  }));
 }
 
 function* handleSelectionResized() {

@@ -20,6 +20,14 @@ export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
   return await response.json();
 }
 
+export const getComponentPreview = async (componentId: string, previewName: string, state: ApplicationState) => {
+  const base = `${state.apiHost}/components/${componentId}/preview`;
+
+  const response = await fetch((previewName ? base + "/" + previewName : base) + ".json");
+
+  return await response.json();
+};
+
 export const apiOpenSourceFile = async (source: VMObjectExpressionSource, state: ApplicationState) => { 
   const response = await fetch(`${state.apiHost}/open`, {
     method: "POST",

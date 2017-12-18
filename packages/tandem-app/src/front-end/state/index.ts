@@ -35,6 +35,8 @@ import {
   createImmutableStructFactory,
 } from "aerial-common2";
 
+import { BaseNode, ParentNode } from "slim-dom";
+
 import {
  AvailableComponent
 } from "./api";
@@ -107,6 +109,7 @@ import { Kernel } from "aerial-common";
 export const WORKSPACE         = "WORKSPACE";
 export const APPLICATION_STATE = "APPLICATION_STATE";
 export const LIBRARY_COMPONENT = "LIBRARY_COMPONENT";
+export const ARTBOARD = "ARTBOARD";
 
 export type Stage = {
   secondarySelection?: boolean;
@@ -153,6 +156,14 @@ export type LibraryComponent = {
   defaultChildren?: SyntheticNode[];
 } & LibraryItem;
 
+export type Artboard = {
+  bounds: Bounds;
+  dependencyUris?: string[];
+  componentId: string;
+  previewName: string;
+  document?: BaseNode;
+} & Struct;
+
 export type Workspace = {
   targetCSSSelectors: TargetSelector[];
   selectionRefs: StructReference[]; // $type:$id;
@@ -162,6 +173,7 @@ export type Workspace = {
   stage: Stage;
   textEditor: TextEditor;
   library: LibraryItem[];
+  artboards: Artboard[];
   availableComponents: AvailableComponent[];
 } & DNDState & Struct;
 
@@ -463,6 +475,41 @@ export const getWorkspaceWindow = (state: ApplicationState, workspaceId: string 
   return browser.windows[index == null ? browser.windows.length - 1 : 0];
 };
 
+export const getArtboardById = weakMemo((artboardId: string, state: ApplicationState|Workspace): Artboard => {
+  let workspace;
+  if (state.$type === APPLICATION_STATE) {
+    const appState = state as ApplicationState;
+    workspace = getArtboardWorkspace(artboardId, appState);
+    if (!workspace) {
+      return null;
+    }
+  } else {
+    workspace = state as Workspace;
+  }
+
+  return workspace.artboards.find(artboard => artboard.$id === artboardId);
+});
+
+export const getArtboardWorkspace = weakMemo((artboardId: string, state: ApplicationState) => {
+  const appState = state as ApplicationState;
+  for (const workspace of appState.workspaces) {
+    const artboard = getArtboardById(artboardId, workspace);
+    if (artboard) return workspace;
+  }
+  return null;
+});
+
+export const updateArtboard = (state: ApplicationState, artboardId: string, properties: Partial<Artboard>) => {
+  const workspace = getArtboardWorkspace(artboardId, state);
+  const artboard = getArtboardById(artboardId, workspace);
+  return updateWorkspace(state, workspace.$id, {
+    artboards: arrayReplaceIndex(workspace.artboards, workspace.artboards.indexOf(artboard), {
+      ...artboard,
+      ...properties
+    })
+  })
+};
+
 /**
  * Factories
  */
@@ -471,6 +518,7 @@ export const createWorkspace        = createStructFactory<Workspace>(WORKSPACE, 
 
   // null to denote style attribute
   targetCSSSelectors: [],
+  artboards: [],
   stage: {
     panning: false,
     secondarySelection: false,
@@ -520,6 +568,10 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
     createKeyboardShortcut("right", { type: RIGHT_KEY_UP }, { keyup: true }),
   ],
   browserStore: createSyntheticBrowserStore()
+});
+
+export const createArtboard = createStructFactory<Artboard>(ARTBOARD, {
+
 });
 
 export const selectWorkspace = (state: ApplicationState, selectedWorkspaceId: string) => ({

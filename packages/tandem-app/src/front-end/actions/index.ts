@@ -1,5 +1,6 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
-import { ApplicationState, SyntheticElement, AvailableComponent } from "../state";
+import { ApplicationState, SyntheticElement, AvailableComponent, createArtboard, Artboard } from "../state";
+import { BaseNode } from "slim-dom";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
@@ -46,6 +47,8 @@ export const STAGE_MOUSE_MOVED = "STAGE_MOUSE_MOVED";
 export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
 export const VISUAL_EDITOR_WHEEL = "VISUAL_EDITOR_WHEEL";
 export const STAGE_TOOL_WINDOW_TITLE_CLICKED = "STAGE_TOOL_WINDOW_TITLE_CLICKED";
+export const ARTBOARD_LOADED = "ARTBOARD_LOADED";
+export const ARTBOARD_CREATED = "ARTBOARD_CREATED";
 export const DOWN_KEY_DOWN = "DOWN_KEY_DOWN";
 export const DOWN_KEY_UP = "DOWN_KEY_UP";
 export const UP_KEY_DOWN = "UP_KEY_DOWN";
@@ -280,6 +283,16 @@ export type SourceClicked = {
   itemId: string;
 } & BaseEvent;
 
+export type ArtboardLoaded = {
+  artboardId: string;
+  dependencyUris: string[];
+  document: BaseNode;
+} & BaseEvent;  
+
+export type ArtboardCreated = {
+  artboard: Artboard;
+} & BaseEvent;  
+
 export type ToggleCSSTargetSelectorClicked = {
   itemId: string;
   windowId: string;
@@ -382,6 +395,22 @@ export const cssDeclarationCreated = (name: string, value: string, declarationId
   value,
   declarationId,
   type: CSS_DECLARATION_CREATED
+});
+
+export const artboardLoaded = (artboardId, dependencyUris: string[], document: BaseNode): ArtboardLoaded => ({
+  type: ARTBOARD_LOADED,
+  artboardId,
+  document, 
+  dependencyUris
+});
+
+export const artboardCreated = (componentId: string, previewName: string, bounds: Bounds): ArtboardCreated => ({
+  type: ARTBOARD_CREATED,
+  artboard: createArtboard({
+    componentId,
+    previewName,
+    bounds
+  })
 });
 
 export const cssDeclarationTitleMouseEnter = (ruleId: string, windowId: string): CSSDeclarationTitleMouseLeaveEnter => ({

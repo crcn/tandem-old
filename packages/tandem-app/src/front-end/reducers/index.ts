@@ -25,12 +25,14 @@ import {
   centerTransformZoom,
   pointIntersectsBounds,
   keepBoundsAspectRatio,
+  arraySplice,
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
 
 import { 
   Workspace,
+  updateArtboard,
   updateWorkspace,
   getWorkspaceById,
   ApplicationState,
@@ -146,6 +148,10 @@ import {
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
   RESIZER_PATH_MOUSE_STOPPED_MOVING,
   WINDOW_FOCUSED,
+  ARTBOARD_LOADED,
+  ArtboardCreated,
+  ARTBOARD_CREATED,
+  ArtboardLoaded,
   WindowFocused,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
   CanvasElementsComputedPropsChanged,
@@ -216,6 +222,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   // state = canvasReducer(state, event);
   // state = syntheticBrowserReducer(state, event);
   state = syntheticBrowserReducer(state, event);
+  state = artboardReducer(state, event);
   state = stageReducer(state, event);
   state = windowPaneReducer(state, event);
   state = componentsPaneReducer(state, event);
@@ -681,6 +688,26 @@ const selectAndCenterSyntheticWindow = (state: ApplicationState, window: Synthet
   }
 
   state = setWorkspaceSelection(state, workspace.$id, getStructReference(window));
+  return state;
+}
+
+const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
+  switch(event.type) {
+    case ARTBOARD_LOADED: {
+      const { artboardId, dependencyUris, document } = event as ArtboardLoaded;
+      return updateArtboard(state, artboardId, {
+        dependencyUris,
+        document
+      });
+    }
+    case ARTBOARD_CREATED: {
+      const { artboard } = event as ArtboardCreated;
+      const workspace = getSelectedWorkspace(state);
+      return updateWorkspace(state, workspace.$id, {
+        artboards: [...workspace.artboards, artboard]
+      })
+    }
+  }
   return state;
 }
 

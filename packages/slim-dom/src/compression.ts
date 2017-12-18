@@ -61,7 +61,7 @@ const compressSource = (source: VMObjectSource, sourceUris: string[]) => {
   ];
 }
 
-export const uncompressDocument = ([sources, node]: CompressionResult) => {
+export const uncompressDocument = ([sources, node]: CompressionResult): BaseNode  => {
   return uncompressNode(node, sources);
 }
 

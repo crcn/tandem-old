@@ -18,6 +18,7 @@ export type ComponentsPaneInnerProps = {
 } & ComponentsPaneOuterProps;
 
 type ComponentsPaneCellOuterProps = AvailableComponent & {
+  hovering: boolean;
   dispatch: Dispatcher<any>;
 };
 

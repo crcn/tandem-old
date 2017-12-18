@@ -1,0 +1,43 @@
+<link rel="import" href="./global.pc" />
+<link rel="import" href="./pane.pc" />
+
+<component id="td-artboards-pane-row">
+  <style>
+    :host {
+      cursor: pointer;
+      display: inline-block;
+      width: 100%;
+      padding: var(--base6) var(--base8);
+      box-sizing: border-box;
+    }
+    :host([selected]) {
+      background: var(--background-highlight);
+      color: var(--font-color-invert);
+    }
+    div {
+      display: inline-block;
+      width: 100%;
+      user-select: none;
+    }
+  </style>
+  <template>
+    <div onClick=[[bind onClick]]>
+      [[bind document && document.title || "Loading..."]]
+    </div>
+  </template>
+</component>
+
+<component id="td-artboards-pane">
+  <template>
+    <td-pane>
+      <span slot="header">Artboards</span>
+      <span slot="content">
+        <td-list>
+          <td-list-item [[repeat artboards as artboard]] selectable [[bind artboard]] key=[[bind artboard.$id]] noPadding>
+            <td-artboards-pane-row [[bind artboard]] onClick=[[bind onWindowClicked]] />
+          </td-list-item>
+        </td-list>
+      </span>
+    </td-pane>
+  </template>
+</component>
