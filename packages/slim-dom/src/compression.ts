@@ -6,10 +6,7 @@ export type CompressedAttributes = [string, string];
 export type CompressedElement = [NodeType, CompressedAttributes[], any[], any[]];
 export type CompressedNode = any[];
 
-export type CompressionResult = {
-  sources: string[];
-  node: CompressedNode;
-}
+export type CompressionResult = [string[], any];
 
 const memoKey = Symbol();
 
@@ -18,12 +15,8 @@ export const compressDocument = (root: BaseNode): CompressionResult => {
     return root[memoKey];
   }
   const sources = [];
-  const node = compressNode(root, sources);
-  return root[memoKey] = {
-    sources,
-    node
-  };
-}
+  return root[memoKey] = [sources, compressNode(root, sources)] as any;
+};
 
 const compressNode = (node: BaseNode, sourceUris: string[]) => {
   switch (node.type) {
@@ -68,10 +61,58 @@ const compressSource = (source: VMObjectSource, sourceUris: string[]) => {
   ];
 }
 
-export const uncompressDocument = (result: CompressionResult) => {
-
+export const uncompressDocument = ([sources, node]: CompressionResult) => {
+  return uncompressNode(node, sources);
 }
 
-const uncompressSource = (source: any) => {
+const uncompressNode = (node: any, sources: string[]) => {
+  switch(node[0]) {
+    case NodeType.TEXT: {
+      const [type, source, value] = node;
+      return {
+        type,
+        source: uncompressSource(source, sources),
+        value,
+      } as TextNode
+    }
+    case NodeType.ELEMENT: {
+      const [type, source, tagName, attributes, shadow, childNodes] = node;
+      const atts: ElementAttribute[] = [];
+      for (const [name, value] of attributes) {
+        atts.push({ name, value });
+      }
+      return {
+        type,
+        source: uncompressSource(source, sources),
+        shadow: shadow && uncompressNode(shadow, sources),
+        childNodes: childNodes.map(child => uncompressNode(child, sources))
+      } as Element
+    }
+    case NodeType.DOCUMENT_FRAGMENT: 
+    case NodeType.DOCUMENT: {
+      const [type, source, childNodes] = node;
+      return {
+        type,
+        source: uncompressSource(source, sources),
+        childNodes: childNodes.map(child => uncompressNode(child, sources))
+      } as ParentNode;
+    }
+  }
+};
 
-}
+const uncompressSource = ([type, uriIndex, startLine, startColumn, startPos, endLine, endColumn, endPos]: any, sources: string[]): VMObjectSource => ({
+  type,
+  uri: sources[uriIndex],
+  range: {
+    start: {
+      line: startLine,
+      column: startColumn,
+      pos: startPos,
+    },
+    end: {
+      line: endLine,
+      column: endColumn,
+      pos: endPos
+    }
+  }
+});

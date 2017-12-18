@@ -6,7 +6,9 @@ IMMEDIATE:
 
 - [ ] PC VM
   - [ ] dev server /run, and /diff/:documentHash api
-  - [ ] dev server needs to store dependency graph in global state
+
+- [ ] front-end needs to use saga for virt windows
+- [ ] front-end needs to load assoc ASTs for selected elements
 
 - [ ] prop inferencing for css styles (needed for things like transpiling)
   - [ ] auto flag for if statement
