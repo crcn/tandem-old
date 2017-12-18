@@ -13,6 +13,7 @@ import {
   getSmallestBounds,
   TargetSelector,
   ImmutableArray, 
+  arrayRemoveItem,
   Point,
   serializableKeys,
   serializableKeysFactory,
@@ -35,7 +36,7 @@ import {
   createImmutableStructFactory,
 } from "aerial-common2";
 
-import { BaseNode, ParentNode } from "slim-dom";
+import { BaseNode, ParentNode, CSSStyleDeclaration } from "slim-dom";
 
 import {
  AvailableComponent
@@ -112,9 +113,9 @@ export const ARTBOARD = "ARTBOARD";
 export type Stage = {
   secondarySelection?: boolean;
   fullScreen?: {
-    windowId: string,
+    artboardId: string,
     originalTranslate: Translate;
-    originalWindowBounds: Bounds,
+    originalArtboardBounds: Bounds,
   },
   showTools?: boolean;
   panning: boolean;
@@ -157,6 +158,12 @@ export type LibraryComponent = {
 export type Artboard = {
   bounds: Bounds;
   dependencyUris?: string[];
+  allComputedBounds?: {
+    [identifier: string]: Bounds;
+  }
+  allComputedStyles?: {
+    [identifier: string]: CSSStyleDeclaration
+  }
   componentId: string;
   previewName: string;
   document?: BaseNode;
@@ -432,16 +439,28 @@ export const getSelectorAffectedElements = weakMemo((elementId: string, targetCS
   return uniq(affectedElements);
 });
 
-export const getFrontEndItemByReference = (root: ApplicationState|SyntheticBrowser, ref: StructReference) => {
-  return getSyntheticBrowserStoreItemByReference(root, ref);
+export const getWorkspaceReference = (ref: StructReference, workspace: Workspace) => {
+  if (ref[0] === ARTBOARD) {
+    return getArtboardById(ref[1], workspace);
+  }
+  // TODO - return ref to node
 };
 
 export const getSyntheticNodeWorkspace = weakMemo((root: ApplicationState, nodeId: string): Workspace => {
   return getSyntheticWindowWorkspace(root, getSyntheticNodeWindow(root, nodeId).$id);
 });
 
-export const getBoundedWorkspaceSelection = weakMemo((state: ApplicationState|SyntheticBrowser, workspace: Workspace): Array<Bounded & Struct> => workspace.selectionRefs.map((ref) => getFrontEndItemByReference(state, ref)).filter(item => getSyntheticBrowserItemBounds(state, item)) as any);
-export const getWorkspaceSelectionBounds = weakMemo((state: ApplicationState|SyntheticBrowser, workspace: Workspace) => mergeBounds(...getBoundedWorkspaceSelection(state, workspace).map(boxed => getSyntheticBrowserItemBounds(state, boxed))));
+export const getBoundedWorkspaceSelection = weakMemo((workspace: Workspace): Array<Bounded & Struct> => workspace.selectionRefs.map((ref) => getWorkspaceReference(ref, workspace)).filter(item => getWorkspaceItemBounds(item, workspace)) as any);
+
+export const getWorkspaceSelectionBounds = weakMemo((workspace: Workspace) => mergeBounds(...getBoundedWorkspaceSelection(workspace).map(boxed => getWorkspaceItemBounds(boxed, workspace))));
+
+export const getWorkspaceItemBounds = weakMemo((value: any, workspace: Workspace) => {
+  if ((value as Artboard).$type === ARTBOARD) {
+    return (value as Artboard).bounds;
+  }
+});
+
+export const getArtboardPreviewUri = (artboard: Artboard, state: ApplicationState) => state.apiHost + `/components/${artboard.componentId}/preview` + (artboard.previewName ? `/${artboard.previewName}` : "");
 
 export const getStageZoom = (stage: Stage) => getStageTranslate(stage).zoom;
 
@@ -507,6 +526,14 @@ export const updateArtboard = (state: ApplicationState, artboardId: string, prop
       ...properties
     })
   })
+};
+
+export const removeArtboard = (artboardId: string, state: ApplicationState) => {
+  const workspace = getArtboardWorkspace(artboardId, state);
+  const artboard = getArtboardById(artboardId, workspace);
+  return updateWorkspace(state, workspace.$id, {
+    artboards: arrayRemoveItem(workspace.artboards, artboard)
+  });
 };
 
 /**
@@ -603,7 +630,7 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
   const {left: scaledPageX, top: scaledPageY } = getScaledMouseStagePosition(state, event);
 
   const browser  = getSyntheticBrowser(state, workspace.browserId);
-  const window = stage.fullScreen ? getSyntheticWindow(state, stage.fullScreen.windowId) : browser.windows.find((window) => (
+  const window = stage.fullScreen ? getSyntheticWindow(state, stage.fullScreen.artboardId) : browser.windows.find((window) => (
     pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, window.bounds)
   ));
 

@@ -9,7 +9,6 @@ import { startDOMDrag, Dispatcher, mergeBounds, moveBounds } from "aerial-common
 import { Path } from "./path";
 
 export type ResizerOuterProps = {
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
   workspace: Workspace;
   zoom: number;
@@ -23,9 +22,9 @@ const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
 
 
-export const ResizerBase = ({ workspace, browser, dispatch, onMouseDown, zoom }: ResizerInnerProps) => {
+export const ResizerBase = ({ workspace, dispatch, onMouseDown, zoom }: ResizerInnerProps) => {
 
-  const bounds = getWorkspaceSelectionBounds(browser, workspace);
+  const bounds = getWorkspaceSelectionBounds(workspace);
 
   // offset stroke
   const resizerStyle = {
@@ -71,10 +70,10 @@ export const ResizerBase = ({ workspace, browser, dispatch, onMouseDown, zoom }:
 const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   pure,
   withHandlers({
-    onMouseDown: ({ dispatch, workspace, browser }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
+    onMouseDown: ({ dispatch, workspace }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
       
       const translate = getStageTranslate(workspace.stage);
-      const bounds = getWorkspaceSelectionBounds(browser, workspace);
+      const bounds = getWorkspaceSelectionBounds(workspace);
       const translateLeft = translate.left;
       const translateTop  = translate.top;
       const onStartDrag = (event) => {

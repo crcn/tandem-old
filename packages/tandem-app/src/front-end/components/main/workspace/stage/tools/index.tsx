@@ -33,9 +33,9 @@ export const ToolsLayerBase = ({ workspace, dispatch, translate }: ToolsProps) =
   }
   return <div className="m-stage-tools">
     <GridStageTool translate={translate} />
-    {/* <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} /> */}
-    {/* <BoxModelStageTool zoom={translate.zoom} workspace={workspace} browser={browser} /> */}
-    {/* <SelectionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} /> */}
+    <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} dispatch={dispatch} />
+    {/* <BoxModelStageTool zoom={translate.zoom} workspace={workspace} /> */}
+    <SelectionStageTool zoom={translate.zoom} workspace={workspace}  dispatch={dispatch} />
 
     { windowElement }
     {/* <StaticPositionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} /> */}

@@ -76,7 +76,6 @@ import {
 export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleTextEditBlur);
   yield fork(handleWindowMousePanned);
-  yield fork(handleFullScreenWindow);
   yield fork(handleScrollInFullScreenMode);
   yield fork(handleTextEditorEscaped);
   yield fork(handleEmptyWindowsUrlAdded);
@@ -84,7 +83,7 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleCSSDeclarationChanges);
   yield fork(handleWatchWindowResource);
   yield fork(handleFileChanged);
-  yield fork(handleOpenExternalWindowsRequested);
+  yield fork(handleOpenExternalArtboardsRequested);
 }
 
 function* handleEmptyWindowsUrlAdded() {
@@ -175,7 +174,7 @@ function* handleScrollInFullScreenMode() {
       continue;
     }
     
-    const window = getSyntheticWindow(state, workspace.stage.fullScreen.windowId);
+    const window = getSyntheticWindow(state, workspace.stage.fullScreen.artboardId);
 
     yield put(syntheticWindowScroll(window.$id, shiftPoint(window.scrollPosition || { left: 0, top: 0 }, {
       left: 0,
@@ -202,32 +201,33 @@ function* handleFileChanged() {
   }
 }
 
-function* handleOpenExternalWindowsRequested() {
+function* handleOpenExternalArtboardsRequested() {
   while(true) {
     const { uris }: OpenExternalWindowsRequested = yield take(OPEN_EXTERNAL_WINDOWS_REQUESTED);
 
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
-    const browser = getSyntheticBrowser(state, workspace.browserId);
+    // const browser = getSyntheticBrowser(state, workspace.browserId);
 
     let openedNewWindow = false;
-    let lastExistingWindow;
+    let lastExistingArtboard;
 
-    for (const uri of uris) {
-      const existingWindow = browser.windows.find((window) => window.location === uri);
-      if (existingWindow) {
-        lastExistingWindow = existingWindow;
-        continue;
-      }
-      openedNewWindow = true;
-      yield put(openSyntheticWindowRequest({
-        location: uri
-      }, browser.$id));
-    }
+    // TODO
+    // for (const uri of uris) {
+    //   const existingArtboard = workspace.artboards.find((window) => window.location === uri);
+    //   if (existingArtboard) {
+    //     lastExistingArtboard = existingArtboard;
+    //     continue;
+    //   }
+    //   openedNewWindow = true;
+    //   yield put(openSyntheticWindowRequest({
+    //     location: uri
+    //   }, workspace.$id));
+    // }
 
-    if (!openedNewWindow && lastExistingWindow) {
-      yield put(windowFocused(lastExistingWindow.$id));
-    }
+    // if (!openedNewWindow && lastExistingArtboard) {
+    //   yield put(windowFocused(lastExistingArtboard.$id));
+    // }
   }
 }
 
@@ -365,59 +365,6 @@ const createDeferredPromise = () => {
 }
 
 const WINDOW_SYNC_MS = 1000 / 30;
-
-function* handleFullScreenWindow() {
-
-  let currentFullScreenWindowId: string;
-  let previousWindowBounds: Bounds;
-  let waitForFullScreenMode = createDeferredPromise();
-
-  yield fork(function*() {
-    while(true) {
-
-      // TODO - possibly change to WINDOW_SCOPE_CHANGED
-      yield take([FULL_SCREEN_SHORTCUT_PRESSED, SYNTHETIC_WINDOW_PROXY_OPENED, WINDOW_SELECTION_SHIFTED, FULL_SCREEN_TARGET_DELETED]);
-      const state: ApplicationState = yield select();
-      const workspace = getSelectedWorkspace(state);
-      const windowId = workspace.stage.fullScreen && workspace.stage.fullScreen.windowId;
-
-      if (currentFullScreenWindowId) {
-        yield put(resized(currentFullScreenWindowId, SYNTHETIC_WINDOW, previousWindowBounds));
-        previousWindowBounds = undefined;
-        currentFullScreenWindowId = undefined;
-        // TODO - revert window size
-        waitForFullScreenMode = createDeferredPromise();
-      }
-
-      if (windowId) {
-        const window = getSyntheticWindow(state, windowId);
-        previousWindowBounds = workspace.stage.fullScreen.originalWindowBounds;
-        waitForFullScreenMode.resolve(true);
-      }
-      
-      currentFullScreenWindowId = windowId;
-    }
-  });
-
-  yield fork(function* syncFullScreenWindowSize() {
-    while(true) {
-      yield call(() => waitForFullScreenMode.promise);
-      const state: ApplicationState = yield select();
-      const workspace = getSelectedWorkspace(state);
-      const { container } = workspace.stage;
-      const rect = container.getBoundingClientRect();
-      const window = getSyntheticWindow(state, currentFullScreenWindowId);
-      yield put(resized(currentFullScreenWindowId, SYNTHETIC_WINDOW, {
-        left: window.bounds.left,
-        top: window.bounds.top,
-        right: window.bounds.left + rect.width,
-        bottom: window.bounds.top + rect.height,
-      }));
-      yield call(() => new Promise(resolve => setTimeout(resolve, WINDOW_SYNC_MS)));
-    }
-  });
-}
-
 
 
 function* spring(start: number, velocityY: number, iterate: Function, damp: number = DEFAULT_MOMENTUM_DAMP, complete: Function = () => {}) {

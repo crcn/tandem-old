@@ -4,7 +4,7 @@ import { compose, pure } from "recompose";
 import { Workspace } from "front-end/state";
 import { SyntheticWindow, SyntheticBrowser } from "aerial-browser-sandbox";
 import { Dispatcher, getBoundsSize, Translate, wrapEventToDispatch } from "aerial-common2";
-import { stageToolWindowTitleClicked, stageToolWindowKeyDown, stageToolWindowBackgroundClicked, openExternalWindowButtonClicked } from "front-end/actions";
+import { stageToolArtboardTitleClicked, stageToolWindowKeyDown, stageToolWindowBackgroundClicked, openExternalWindowButtonClicked } from "front-end/actions";
 import { Artboard } from "front-end/state";
 
 type ArtboardItemInnerProps = {
@@ -52,7 +52,7 @@ const ArtboardItemBase = ({ artboard, translate, dispatch, fullScreenArtboardId 
     tabIndex={-1} 
     style={titleStyle as any} 
     onKeyDown={wrapEventToDispatch(dispatch, stageToolWindowKeyDown.bind(this, artboard.$id))} 
-    onClick={wrapEventToDispatch(dispatch, stageToolWindowTitleClicked.bind(this, artboard.$id))}>
+    onClick={wrapEventToDispatch(dispatch, stageToolArtboardTitleClicked.bind(this, artboard.$id))}>
       { artboard.document && artboard.componentId }
 
       {/* TODO: eventually this should point to browserstack -- whatever the navigator agent is of the artboard */}
@@ -83,7 +83,7 @@ export const ArtboardsStageToolBase = ({ workspace, translate, dispatch }: Artbo
   return <div className="m-artboards-stage-tool">
     <div style={backgroundStyle} className="m-artboards-stage-tool-background" onClick={wrapEventToDispatch(dispatch, stageToolWindowBackgroundClicked)} /> 
     {
-      workspace.artboards.map((artboard) => <ArtboardItem key={artboard.$id} artboard={artboard} fullScreenArtboardId={fullScreen && fullScreen.windowId} dispatch={dispatch} translate={translate} />)
+      workspace.artboards.map((artboard) => <ArtboardItem key={artboard.$id} artboard={artboard} fullScreenArtboardId={fullScreen && fullScreen.artboardId} dispatch={dispatch} translate={translate} />)
     }
   </div>;
 }

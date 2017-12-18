@@ -24,7 +24,7 @@ const SelectionLabelBase = ({ workspace, browser, zoom }: SelectionLabelInnerPro
     return null;
   }
 
-  const { left, top } = getWorkspaceSelectionBounds(browser, workspace);
+  const { left, top } = getWorkspaceSelectionBounds(workspace);
 
   const [type, id] = workspace.selectionRefs[workspace.selectionRefs.length - 1];
 

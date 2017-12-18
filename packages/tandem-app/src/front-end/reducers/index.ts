@@ -15,6 +15,8 @@ import {
   mapImmutable, 
   WrappedEvent,
   getBoundsSize,
+  REMOVED,
+  Removed,
   boundsFromRect,
   boundsIntersect,
   StructReference,
@@ -31,14 +33,20 @@ import {
 import { clamp, merge } from "lodash";
 
 import { 
+  Artboard,
+  ARTBOARD,
   Workspace,
   updateArtboard,
   updateWorkspace,
   getWorkspaceById,
   ApplicationState,
+  removeArtboard,
+  getArtboardById,
+  getArtboardWorkspace,
   SyntheticWindow,
   getStageTranslate,
   ShortcutServiceState,
+  getWorkspaceItemBounds,
   AVAILABLE_COMPONENT,
   updateWorkspaceStage,
   getSelectedWorkspace,
@@ -53,7 +61,6 @@ import {
   getSyntheticWindowBrowser,
   updateWorkspaceTextEditor,
   getSyntheticBrowserBounds,
-  getFrontEndItemByReference,
   getWorkspaceSelectionBounds,
   getSyntheticWindowWorkspace,
   getBoundedWorkspaceSelection,
@@ -131,7 +138,7 @@ import {
   StageToolOverlayMouseMoved,
   TOGGLE_TEXT_EDITOR_PRESSED,
   WORKSPACE_DELETION_SELECTED,
-  StageWillWindowTitleClicked,
+  StageWillArtboardTitleClicked,
   TOGGLE_RIGHT_GUTTER_PRESSED,
   StageToolOverlayMousePanEnd,
   StageToolNodeOverlayClicked,
@@ -144,7 +151,7 @@ import {
   API_COMPONENTS_LOADED,
   APIComponentsLoaded,
   STAGE_TOOL_OVERLAY_MOUSE_LEAVE,
-  STAGE_TOOL_WINDOW_TITLE_CLICKED,
+  STAGE_TOOL_ARTBOARD_TITLE_CLICKED,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
   RESIZER_PATH_MOUSE_STOPPED_MOVING,
   WINDOW_FOCUSED,
@@ -305,21 +312,30 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
       const workspace = getSelectedWorkspace(state);
       const selection = workspace.selectionRefs[0];
 
-      const windowId = selection ? selection[0] === SYNTHETIC_WINDOW ? selection[1] : getSyntheticNodeWindow(state, selection[1]) && getSyntheticNodeWindow(state, selection[1]).$id : null;
+      const artboardId = selection ? selection[0] === ARTBOARD ? selection[1] : getSyntheticNodeWindow(state, selection[1]) && getSyntheticNodeWindow(state, selection[1]).$id : null;
 
-      if (windowId && !workspace.stage.fullScreen) {
-        const window = getSyntheticWindow(state, windowId);
+      if (artboardId && !workspace.stage.fullScreen) {
+        const artboard = getArtboardById(artboardId, state);
         state = updateWorkspaceStage(state, workspace.$id, {
           smooth: true,
           fullScreen: {
-            windowId: windowId,
+            artboardId: artboardId,
             originalTranslate: workspace.stage.translate,
-            originalWindowBounds: window.bounds
+            originalArtboardBounds: artboard.bounds
           },
           translate: {
             zoom: 1,
-            left: -window.bounds.left,
-            top: -window.bounds.top
+            left: -artboard.bounds.left,
+            top: -artboard.bounds.top
+          }
+        });
+        const updatedWorkspace = getSelectedWorkspace(state);
+        state = updateArtboard(state, artboardId, {
+          bounds: {
+            left: artboard.bounds.left,
+            top: artboard.bounds.top,
+            right: artboard.bounds.left + workspace.stage.container.getBoundingClientRect().width,
+            bottom: artboard.bounds.top + workspace.stage.container.getBoundingClientRect().height
           }
         });
         return state;
@@ -419,12 +435,68 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-    case RESIZER_PATH_MOUSE_MOVED: 
     case RESIZER_MOVED: {
+      const { point, workspaceId, point: newPoint } = event as ResizerMoved;
       const workspace = getSelectedWorkspace(state);
       state = updateWorkspaceStage(state, workspace.$id, {
         movingOrResizing: true
       });
+
+      const translate = getStageTranslate(workspace.stage);
+
+      const selectionBounds = getWorkspaceSelectionBounds(workspace);
+      for (const item of getBoundedWorkspaceSelection(workspace)) {
+        const itemBounds = getWorkspaceItemBounds(item, workspace);
+
+        // skip moving window if in full screen mode
+        if (workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId === item.$id) {
+          break;
+        }
+
+        const newBounds = scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint))
+
+        if (item.$type === ARTBOARD) {
+          state = updateArtboard(state, item.$id, { bounds: newBounds })
+        }
+      }
+
+      return state;
+
+    }
+
+    case RESIZER_PATH_MOUSE_MOVED: {
+      let { workspaceId, anchor, originalBounds, newBounds, sourceEvent } = event as ResizerPathMoved;
+
+      const workspace = getSelectedWorkspace(state);
+      state = updateWorkspaceStage(state, workspace.$id, {
+        movingOrResizing: true
+      });
+
+      // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
+      const currentBounds = getWorkspaceSelectionBounds(workspace);
+
+
+      const keepAspectRatio = sourceEvent.shiftKey;
+      const keepCenter      = sourceEvent.altKey;
+
+      if (keepCenter) {
+        // newBounds = keepBoundsCenter(newBounds, bounds, anchor);
+      }
+
+      if (keepAspectRatio) {
+        newBounds = keepBoundsAspectRatio(newBounds, originalBounds, anchor, keepCenter ? { left: 0.5, top: 0.5 } : anchor);
+      }
+
+      for (const item of getBoundedWorkspaceSelection(workspace)) {
+        const innerBounds = getSyntheticBrowserItemBounds(state, item);
+        const scaledBounds = scaleInnerBounds(currentBounds, currentBounds, newBounds);
+
+        if (item.$type === ARTBOARD) {
+          state = updateArtboard(state, item.$id, {
+            bounds: scaleInnerBounds(innerBounds, currentBounds, newBounds)
+          })
+        }
+      }
       return state;
     }
 
@@ -440,7 +512,8 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     case WINDOW_FOCUSED: {
       const { windowId } = event as WindowFocused;
       const window = getSyntheticWindow(state, windowId);
-      return selectAndCenterSyntheticWindow(state, window);
+      // return selectAndCenterArtboard(state, window);
+      return state;
     }
 
     case SYNTHETIC_WINDOW_PROXY_OPENED: {
@@ -451,7 +524,8 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       if (!isNew) {
         return state;
       }
-      return selectAndCenterSyntheticWindow(state, instance.struct);
+      // return selectAndCenterArtboard(state, instance.struct);
+      return state;
     }
 
     case STAGE_TOOL_OVERLAY_MOUSE_LEAVE: {
@@ -584,7 +658,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       }
 
       if (!altKey) {
-        state = handleWindowSelectionFromAction(state, targetRef, event as StageToolNodeOverlayClicked);
+        state = handleArtboardSelectionFromAction(state, targetRef, event as StageToolNodeOverlayClicked);
         state = updateWorkspaceStage(state, workspace.$id, {
           secondarySelection: false
         });
@@ -610,7 +684,8 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
     case WINDOW_SELECTION_SHIFTED: {
       const { windowId } = event as WindowSelectionShifted;
-      return selectAndCenterSyntheticWindow(state, getSyntheticWindow(state, windowId));
+      return state;
+      // return selectAndCenterArtboard(state, getSyntheticWindow(state, windowId));
     }
 
     case SELECTOR_DOUBLE_CLICKED: {
@@ -629,9 +704,10 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-    case STAGE_TOOL_WINDOW_TITLE_CLICKED: {
+    case STAGE_TOOL_ARTBOARD_TITLE_CLICKED: {
       state = updateWorkspaceStageSmoothing(state);
-      return handleWindowSelectionFromAction(state, getStructReference(getSyntheticWindow(state, (event as ArtboardPaneRowClicked).windowId)), event as ArtboardPaneRowClicked);
+
+      return handleArtboardSelectionFromAction(state, getStructReference(getArtboardById((event as ArtboardPaneRowClicked).artboardId, state)), event as ArtboardPaneRowClicked);
     }
 
     case STAGE_TOOL_WINDOW_BACKGROUND_CLICKED: {
@@ -645,7 +721,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
   
 const unfullscreen = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);
-  const { originalWindowBounds } = workspace.stage.fullScreen;
+  const { originalArtboardBounds, artboardId } = workspace.stage.fullScreen;
   state = updateWorkspaceStage(state, workspace.$id, {
     smooth: true,
     fullScreen: undefined
@@ -656,17 +732,21 @@ const unfullscreen = (state: ApplicationState, workspaceId: string = state.selec
     smooth: true
   });
   
+  state = updateArtboard(state, artboardId, {
+    bounds: originalArtboardBounds
+  });
+  
   return state;
 }
 
-const selectAndCenterSyntheticWindow = (state: ApplicationState, window: SyntheticWindow) => {
+const selectAndCenterArtboard = (state: ApplicationState, artboard: Artboard) => {
 
   let workspace = getSelectedWorkspace(state);
   if (!workspace.stage.container) return state;
 
   const { width, height } = workspace.stage.container.getBoundingClientRect();
 
-  state = centerStage(state, state.selectedWorkspaceId, window.bounds, true, workspace.stage.fullScreen ? workspace.stage.fullScreen.originalTranslate.zoom : true);
+  state = centerStage(state, state.selectedWorkspaceId, artboard.bounds, true, workspace.stage.fullScreen ? workspace.stage.fullScreen.originalTranslate.zoom : true);
 
   // update translate
   workspace = getSelectedWorkspace(state);
@@ -675,19 +755,19 @@ const selectAndCenterSyntheticWindow = (state: ApplicationState, window: Synthet
     state = updateWorkspaceStage(state, workspace.$id, {
       smooth: true,
       fullScreen: {
-        windowId: window.$id,
+        artboardId: artboard.$id,
         originalTranslate: workspace.stage.translate,
-        originalWindowBounds: window.bounds
+        originalArtboardBounds: artboard.bounds
       },
       translate: {
         zoom: 1,
-        left: -window.bounds.left,
-        top: -window.bounds.top
+        left: -artboard.bounds.left,
+        top: -artboard.bounds.top
       }
     });
   }
 
-  state = setWorkspaceSelection(state, workspace.$id, getStructReference(window));
+  state = setWorkspaceSelection(state, workspace.$id, getStructReference(artboard));
   return state;
 }
 
@@ -701,6 +781,15 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
         mount
       });
     }
+
+    case REMOVED: {
+      const { itemId, itemType } = event as Removed;
+      if (itemType === ARTBOARD) {
+        state = removeArtboard(itemId, state);
+      }
+      return state;
+    }
+    
     case ARTBOARD_CREATED: {
       const { artboard } = event as ArtboardCreated;
       const workspace = getSelectedWorkspace(state);
@@ -753,19 +842,9 @@ const centerStage = (state: ApplicationState, workspaceId: string, innerBounds: 
   });
 };
 
-const handleWindowSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any>, windowId }>(state: ApplicationState, ref: StructReference, event: T) => {
+const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: ApplicationState, ref: StructReference, event: T) => {
   const { sourceEvent } = event;
   const workspace = getSelectedWorkspace(state);
-
-  // TODO - may want to allow multi selection once it's confirmed to work on
-  // all scenarios.
-  // meta key + no items selected should display source of 
-  // if (sourceEvent.metaKey && workspace.selectionRefs.length) {
-  //   return toggleWorkspaceSelection(state, workspace.$id, ref);
-  // } else if(!sourceEvent.metaKey) {
-  //   return setWorkspaceSelection(state, workspace.$id, ref);
-  // }
-
   return setWorkspaceSelection(state, workspace.$id, ref);
 }
 
@@ -776,11 +855,8 @@ const normalizeZoom = (zoom) => {
 const artboardPaneReducer = (state: ApplicationState, event: BaseEvent) => {
   switch (event.type) {
     case ARTBOARD_PANE_ROW_CLICKED: {
-      console.log("TODO");
-      // const { windowId } = event as ArtboardPaneRowClicked;
-      // const window = getSyntheticWindow(state, windowId);
-
-      // return selectAndCenterSyntheticWindow(state, window);
+      const { artboardId } = event as ArtboardPaneRowClicked;
+      return selectAndCenterArtboard(state, getArtboardById(artboardId, state));
     }
   }
   return state;

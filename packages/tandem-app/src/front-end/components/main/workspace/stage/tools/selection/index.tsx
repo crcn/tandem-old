@@ -5,12 +5,11 @@ import { Resizer } from "./resizer";
 import { SelectionLabel } from "./label";
 import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { Dispatcher, mergeBounds, Bounded, wrapEventToDispatch } from "aerial-common2";
-import { Workspace, getBoundedWorkspaceSelection, getSyntheticBrowserItemBounds } from "front-end/state";
+import { Workspace, getBoundedWorkspaceSelection, getSyntheticBrowserItemBounds, getWorkspaceItemBounds } from "front-end/state";
 import { selectorDoubleClicked } from "front-end/actions";
 
 export type SelectionOuterProps = {
   workspace: Workspace;
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
   zoom: number;
 }
@@ -20,9 +19,9 @@ export type SelectionInnerProps = {
   onDoubleClick(event: React.MouseEvent<any>);
 } & SelectionOuterProps;
 
-const  SelectionBounds = ({ workspace, browser, zoom }: { workspace: Workspace, browser: SyntheticBrowser, zoom: number }) => {
-  const selection = getBoundedWorkspaceSelection(browser, workspace);
-  const entireBounds = mergeBounds(...selection.map(value => getSyntheticBrowserItemBounds(browser, value)));
+const  SelectionBounds = ({ workspace, zoom }: { workspace: Workspace, zoom: number }) => {
+  const selection = getBoundedWorkspaceSelection(workspace);
+  const entireBounds = mergeBounds(...selection.map(value => getWorkspaceItemBounds(value, workspace)));
   const style = {};
   const borderWidth = 1 / zoom;
   const boundsStyle = {
@@ -36,21 +35,21 @@ const  SelectionBounds = ({ workspace, browser, zoom }: { workspace: Workspace,
   return <div style={boundsStyle as any}></div>;
 };
 
-export const  SelectionStageToolBase = ({ workspace, browser, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
-  const selection = getBoundedWorkspaceSelection(browser, workspace);      
+export const  SelectionStageToolBase = ({ workspace, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
+  const selection = getBoundedWorkspaceSelection(workspace);      
   if (!selection.length || workspace.stage.secondarySelection) return null;
 
   return <div className="m-stage-selection-tool" tabIndex={-1} onDoubleClick={onDoubleClick}>
-    <SelectionBounds workspace={workspace} browser={browser} zoom={zoom} />
-    <Resizer workspace={workspace} browser={browser} dispatch={dispatch} zoom={zoom} />
+    <SelectionBounds workspace={workspace} zoom={zoom} />
+    <Resizer workspace={workspace} dispatch={dispatch} zoom={zoom} />
   </div>;
 };
 
 const enhanceSelectionStageTool = compose<SelectionInnerProps, SelectionOuterProps>(
   pure,
   withHandlers({
-    onDoubleClick: ({ dispatch, workspace, browser }: SelectionInnerProps) => (event: React.MouseEvent<any>) => {
-      const selection = getBoundedWorkspaceSelection(browser, workspace);      
+    onDoubleClick: ({ dispatch, workspace }: SelectionInnerProps) => (event: React.MouseEvent<any>) => {
+      const selection = getBoundedWorkspaceSelection(workspace);      
       if (selection.length === 1) {
         dispatch(selectorDoubleClicked(selection[0], event));
       }

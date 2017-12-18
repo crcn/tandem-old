@@ -46,7 +46,7 @@ export const FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED = "FILE_NAVIGATOR_ADD_FOLD
 export const STAGE_MOUSE_MOVED = "STAGE_MOUSE_MOVED";
 export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
 export const VISUAL_EDITOR_WHEEL = "VISUAL_EDITOR_WHEEL";
-export const STAGE_TOOL_WINDOW_TITLE_CLICKED = "STAGE_TOOL_WINDOW_TITLE_CLICKED";
+export const STAGE_TOOL_ARTBOARD_TITLE_CLICKED = "STAGE_TOOL_ARTBOARD_TITLE_CLICKED";
 export const ARTBOARD_LOADED = "ARTBOARD_LOADED";
 export const ARTBOARD_CREATED = "ARTBOARD_CREATED";
 export const DOWN_KEY_DOWN = "DOWN_KEY_DOWN";
@@ -128,7 +128,7 @@ export type TreeNodeLabelClicked = {
 } & BaseEvent;
 
 export type ArtboardPaneRowClicked = {
-  windowId: string
+  artboardId: string
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type BaseKeyboardEvent<T> = {
@@ -163,8 +163,8 @@ export type ResizerPathStoppedMoving = {
   workspaceId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
-export type StageWillWindowTitleClicked = {
-  windowId: string;
+export type StageWillArtboardTitleClicked = {
+  artboardId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type FileChanged = {
@@ -208,7 +208,7 @@ export type BreadcrumbItemClicked = {
 } & BaseEvent;
 
 export type OpenExternalWindowsRequested = {
-  uris: string[]
+  uris: string[];
 } & BaseEvent;
 
 export type BreadcrumbItemMouseEnterLeave = {
@@ -339,7 +339,7 @@ export const canvasMotionRested = () => ({
 });
 
 export const treeNodeLabelClicked = (node: TreeNode<any>): TreeNodeLabelClicked => ({ type: TREE_NODE_LABEL_CLICKED, node });
-export const stageToolWindowTitleClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): StageWillWindowTitleClicked => ({ type: STAGE_TOOL_WINDOW_TITLE_CLICKED, windowId, sourceEvent });
+export const stageToolArtboardTitleClicked = (artboardId: string, sourceEvent: React.MouseEvent<any>): StageWillArtboardTitleClicked => ({ type: STAGE_TOOL_ARTBOARD_TITLE_CLICKED, artboardId, sourceEvent });
 export const stageToolWindowKeyDown = (windowId: string, sourceEvent: React.KeyboardEvent<any>): StageWillWindowKeyDown => ({ type: STAGE_TOOL_WINDOW_KEY_DOWN, windowId, sourceEvent });
 export const openExternalWindowButtonClicked = (windowId: string, sourceEvent: React.KeyboardEvent<any>): OpenExternalWindowButtonClicked => ({ type: OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED, windowId, sourceEvent });
 
@@ -532,8 +532,8 @@ export const resizerPathStoppedMoving = (workspaceId: string, sourceEvent): Resi
   sourceEvent: {...sourceEvent}
 });
 
-export const artboardPaneRowClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): ArtboardPaneRowClicked => ({
-  windowId,
+export const artboardPaneRowClicked = (artboardId: string, sourceEvent: React.MouseEvent<any>): ArtboardPaneRowClicked => ({
+  artboardId,
   sourceEvent,
   type: ARTBOARD_PANE_ROW_CLICKED
 });

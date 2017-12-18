@@ -81,8 +81,13 @@ import {
   ApplicationState, 
   getWorkspaceWindow,
   getSelectedWorkspace, 
+  getArtboardById,
+  ARTBOARD,
+  Artboard,
   getScaledMouseStagePosition,
   createArtboard,
+  getWorkspaceItemBounds,
+  getArtboardPreviewUri,
   getWorkspaceSelectionBounds,
   AVAILABLE_COMPONENT,
   getBoundedWorkspaceSelection,
@@ -101,11 +106,11 @@ export function* mainWorkspaceSaga() {
   yield fork(handleDeleteKeyPressed);
   yield fork(handleNextWindowPressed);
   yield fork(handlePrevWindowPressed);
-  yield fork(handleSelectionMoved);
+  // yield fork(handleSelectionMoved);
   yield fork(handleSelectionStoppedMoving);
   yield fork(handleSelectionKeyDown);
   yield fork(handleSelectionKeyUp);
-  yield fork(handleSelectionResized);
+  // yield fork(handleSelectionResized);
   yield fork(handleNewLocationPrompt);
   yield fork(handleOpenNewWindowShortcut);
   yield fork(handleCloneSelectedWindowShortcut);
@@ -131,8 +136,9 @@ function* openDefaultWindow() {
 function* handleOpenExternalWindowButtonClicked() {
   while(true) {
     const { windowId }: OpenExternalWindowButtonClicked = yield take(OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED);
-    const syntheticWindow = getSyntheticWindow(yield select(), windowId);
-    window.open(syntheticWindow.location, "_blank");
+    const state = yield select();
+    const artboard = getArtboardById(windowId, state);
+    window.open(getArtboardPreviewUri(artboard, state), "_blank");
   }
 }
 
@@ -200,7 +206,7 @@ function* handleMetaClickComponentCell() {
 
 function* openNewWindow(state: ApplicationState, href: string, origin: SyntheticWindow, workspace: Workspace) {
   const uri = getUri(href, origin.location);
-  const windowBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalWindowBounds : origin.bounds;
+  const windowBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalArtboardBounds : origin.bounds;
   const browserBounds = getSyntheticBrowserBounds(getSyntheticWindowBrowser(state, origin.$id));
   yield put(openSyntheticWindowRequest({ location: uri, bounds: {
     left: Math.max(browserBounds.right, windowBounds.right) + WINDOW_PADDING,
@@ -217,37 +223,36 @@ function* handleDeleteKeyPressed() {
     const { sourceEvent } = event as DeleteShortcutPressed;
     const workspace = getSelectedWorkspace(state);
     for (const [type, id] of workspace.selectionRefs) {
+      yield put(workspaceSelectionDeleted(workspace.$id));
       yield put(removed(id, type));
 
-      if (workspace.stage.fullScreen && workspace.stage.fullScreen.windowId === id) {
+      if (workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId === id) {
         yield put(fullScreenTargetDeleted());
       }
     }
-    yield put(workspaceSelectionDeleted(workspace.$id));
   }
 }
 
-function* handleSelectionMoved() {
-  while(true) {
-    const { point, workspaceId, point: newPoint } = (yield take(RESIZER_MOVED)) as ResizerMoved;
-    const state = (yield select()) as ApplicationState;
-    const workspace = getWorkspaceById(state, workspaceId);
-    const translate = getStageTranslate(workspace.stage);
+// function* handleSelectionMoved() {
+//   while(true) {
+//     const { point, workspaceId, point: newPoint } = (yield take(RESIZER_MOVED)) as ResizerMoved;
+//     const state = (yield select()) as ApplicationState;
+//     const workspace = getWorkspaceById(state, workspaceId);
+//     const translate = getStageTranslate(workspace.stage);
 
-    const selectionBounds = getWorkspaceSelectionBounds(state, workspace);
-    for (const item of getBoundedWorkspaceSelection(state, workspace)) {
-      const itemBounds = getSyntheticBrowserItemBounds(state, item);
+//     const selectionBounds = getWorkspaceSelectionBounds(workspace);
+//     for (const item of getBoundedWorkspaceSelection(workspace)) {
+//       const itemBounds = getWorkspaceItemBounds(item, workspace);
 
-      // skip moving window if in full screen mode
-      if (workspace.stage.fullScreen && workspace.stage.fullScreen.windowId === item.$id) {
-        continue;
-      }
-      
+//       // skip moving window if in full screen mode
+//       if (workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId === item.$id) {
+//         continue;
+//       }
 
-      yield put(moved(item.$id, item.$type, scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)), workspace.targetCSSSelectors));
-    }
-  }
-}
+//       yield put(moved(item.$id, item.$type, scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)), workspace.targetCSSSelectors));
+//     }
+//   }
+// }
 
 function* handleDNDEnded() {
   while(true) {
@@ -298,7 +303,7 @@ function* handleSelectionResized() {
     const workspace = getWorkspaceById(state, workspaceId);
 
     // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
-    const currentBounds = getWorkspaceSelectionBounds(state, workspace);
+    const currentBounds = getWorkspaceSelectionBounds(workspace);
 
 
     const keepAspectRatio = sourceEvent.shiftKey;
@@ -312,7 +317,7 @@ function* handleSelectionResized() {
       newBounds = keepBoundsAspectRatio(newBounds, originalBounds, anchor, keepCenter ? { left: 0.5, top: 0.5 } : anchor);
     }
 
-    for (const item of getBoundedWorkspaceSelection(state, workspace)) {
+    for (const item of getBoundedWorkspaceSelection(workspace)) {
       const innerBounds = getSyntheticBrowserItemBounds(state, item);
       const scaledBounds = scaleInnerBounds(currentBounds, currentBounds, newBounds);
       yield put(resized(item.$id, item.$type, scaleInnerBounds(innerBounds, currentBounds, newBounds), workspace.targetCSSSelectors));
@@ -341,11 +346,11 @@ function* handleCloneSelectedWindowShortcut() {
     if (!itemRef) continue;
     const window = itemRef[0] === SYNTHETIC_WINDOW ? getSyntheticWindow(state, itemRef[1]) : getSyntheticNodeWindow(state, itemRef[1]);
 
-    const originalWindowBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalWindowBounds : window.bounds; 
+    const originalArtboardBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalArtboardBounds : window.bounds; 
 
-    const clonedWindow = yield yield request(openSyntheticWindowRequest({ location: window.location, bounds: moveBounds(originalWindowBounds, {
-      left: originalWindowBounds.left,
-      top: originalWindowBounds.bottom + WINDOW_PADDING
+    const clonedWindow = yield yield request(openSyntheticWindowRequest({ location: window.location, bounds: moveBounds(originalArtboardBounds, {
+      left: originalArtboardBounds.left,
+      top: originalArtboardBounds.bottom + WINDOW_PADDING
     }) }, getSyntheticWindowBrowser(state, window.$id).$id));
   }
 }
@@ -365,7 +370,7 @@ function* handleSelectionKeyDown() {
     const workspace: Workspace = getSelectedWorkspace(state);
     if (workspace.selectionRefs.length === 0) continue;
     const workspaceId = workspace.$id;
-    const bounds = getWorkspaceSelectionBounds(state, workspace);
+    const bounds = getWorkspaceSelectionBounds(workspace);
 
     switch(type) {
       case DOWN_KEY_DOWN: {
@@ -417,10 +422,10 @@ function* handleSelectionStoppedMoving() {
     const { point, workspaceId } = (yield take(RESIZER_STOPPED_MOVING)) as ResizerMoved;
     const state = (yield select()) as ApplicationState;
     const workspace = getWorkspaceById(state, workspaceId);
-    for (const item of getBoundedWorkspaceSelection(state, workspace)) {
+    for (const item of getBoundedWorkspaceSelection(workspace)) {
 
       // skip moving window if in full screen mode
-      if (workspace.stage.fullScreen && workspace.stage.fullScreen.windowId === item.$id) {
+      if (workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId === item.$id) {
         continue;
       }
       

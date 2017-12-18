@@ -1,13 +1,16 @@
 import { uncompressDocument, renderDOM } from "slim-dom";
 import { take, spawn, fork, select, call, put } from "redux-saga/effects";
+import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
 import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated } from "../actions";
 import { getComponentPreview } from "../utils";
-import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace } from "../state";
+import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD } from "../state";
 
 export function* artboardSaga() {
   yield fork(handleLoadAllArtboards);
   yield fork(handleChangedArtboards);
   yield fork(handleCreatedArtboard);
+  yield fork(handleMoved);
+  yield fork(handleResized);
 }
 
 function* handleLoadAllArtboards() {
@@ -59,4 +62,15 @@ function* handleCreatedArtboard() {
     const { artboard }: ArtboardCreated = yield take(ARTBOARD_CREATED);
     yield call(reloadArtboard, artboard.$id);
   }
+}
+
+function* handleMoved() {
+  while(1) {
+    const { point }: Moved = yield take((action: Moved) => action.type === MOVED && action.itemType === ARTBOARD);
+  }
+}
+
+function* handleResized() {
+  const { bounds }: Resized = yield take((action: Resized) => action.type === RESIZED && action.itemType === ARTBOARD);
+  
 }

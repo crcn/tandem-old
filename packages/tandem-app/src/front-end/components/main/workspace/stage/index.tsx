@@ -88,7 +88,7 @@ export const StageBase = ({
 
   const { translate, cursor, fullScreen, smooth } = workspace.stage;
 
-  const fullScreenArtboard = fullScreen ? getArtboardById(fullScreen.windowId, workspace) : null;
+  const fullScreenArtboard = fullScreen ? getArtboardById(fullScreen.artboardId, workspace) : null;
 
   const outerStyle = {
     cursor: cursor || "default"
@@ -130,7 +130,7 @@ export const StageBase = ({
             <Motion defaultStyle={{left:0, top: 0, zoom: 1}} style={{ left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }} onRest={onMotionRest}>
               {(translate) => {
                 return <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})` }} className={cx({"stage-inner": true })}>
-                  { hasArtboards ? <Artboards workspace={workspace} smooth={smooth} dispatch={dispatch} fullScreenArtboardId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} /> : <EmptyArtboards />}
+                  { hasArtboards ? <Artboards workspace={workspace} smooth={smooth} dispatch={dispatch} fullScreenArtboardId={workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId} /> : <EmptyArtboards />}
                   { hasArtboards ? <ToolsLayer workspace={workspace} translate={translate} dispatch={dispatch} /> : null }
                 </div>
               }}
