@@ -1,14 +1,16 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { getModulesFileTester, getModulesFilePattern, getPublicFilePath } from "../utils";
+import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
 import { ApplicationState } from "../state";
-import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved } from "../actions";
+import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded } from "../actions";
+import { DependencyGraph, loadModuleDependencyGraph } from "paperclip";
 import * as chokidar from "chokidar";
 import * as fs from "fs";
 import * as glob from "glob";
 
 export function* uriWatcherSaga() {
   yield fork(handleWatchUrisRequest);
+  yield fork(handleDependencyGraph);
 }
 
 function* handleWatchUrisRequest() {
@@ -53,6 +55,7 @@ function* handleWatchUrisRequest() {
 
     chan = yield eventChannel((emit) => {
       const watcher = chokidar.watch(allUris);
+      console.log(allUris);
   
       watcher.on("ready", () => {
 
@@ -74,7 +77,6 @@ function* handleWatchUrisRequest() {
         watcher.on("change", emitChange);
 
         watcher.on("unlink", (path) => {
-          console.log("UNLINK FILE", path);
           emit(fileRemoved(path, getPublicFilePath(path, state)));
         });
       });
@@ -99,5 +101,29 @@ function* handleWatchUrisRequest() {
     });
 
     yield take(WATCH_URIS_REQUESTED);    
+  }
+}
+
+function* handleDependencyGraph() {
+  while(true) {
+    yield take([WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED]);
+    const state: ApplicationState = yield select();
+    let graph: DependencyGraph = {};
+    for (const fileCacheItem of state.fileCache) {
+      if (!isPaperclipFile(fileCacheItem.filePath, state)) {
+        continue;
+      }
+      const { diagnostics, graph: newGraph } = yield call(loadModuleDependencyGraph, fileCacheItem.filePath, {
+        readFile: getReadFile(state)
+      }, graph);
+
+
+      if (diagnostics.length) {
+        console.error(`Failed to load dependency graph for ${fileCacheItem.filePath}.`);
+      }
+
+      graph = newGraph;
+    }
+    yield put(dependencyGraphLoaded(graph));
   }
 }

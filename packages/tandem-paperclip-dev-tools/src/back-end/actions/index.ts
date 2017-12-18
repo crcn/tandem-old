@@ -1,5 +1,6 @@
 import { Action } from "redux";
 import { FileCacheItem, ApplicationState, ScreenshotClippings, InitOptions } from "../state";
+import { DependencyGraph } from "paperclip";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
 import * as express from "express";
@@ -12,6 +13,7 @@ export const CHILD_DEV_SERVER_STARTED = "CHILD_DEV_SERVER_STARTED";
 export const MUTATE_SOURCE_CONTENT = "MUTATE_SOURCE_CONTENT";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
 export const FILE_REMOVED = "FILE_REMOVED";
+export const DEPENDENCY_GRAPH_LOADED = "DEPENDENCY_GRAPH_LOADED";
 export const HEADLESS_BROWSER_LAUNCHED = "HEADLESS_BROWSER_LAUNCHED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
 export const COMPONENT_SCREENSHOT_STARTED = "COMPONENT_SCREENSHOT_STARTED";
@@ -80,6 +82,10 @@ export type ComponentScreenshotTaken = {
 export type ComponentScreenshotSaved = {
   clippings: ScreenshotClippings;
   uri: string;
+} & Action;
+
+export type DependencyGraphLoaded = {
+  graph: DependencyGraph;
 } & Action;
 
 export type ComponentScreenshotRemoved = {
@@ -183,6 +189,11 @@ export const componentScreenshotSaved = publicActionFactory((uri: string, clippi
 export const componentScreenshotRemoved = (uri: string): ComponentScreenshotRemoved => ({
   type: COMPONENT_SCREENSHOT_REMOVED,
   uri
+});
+
+export const dependencyGraphLoaded = (graph: DependencyGraph): DependencyGraphLoaded => ({
+  graph,
+  type: DEPENDENCY_GRAPH_LOADED
 });
 
 export const childDevServerStarted = (port: number): ChildDevServerStarted => ({

@@ -8,8 +8,8 @@ const weakMemo = <T extends Function>(fn: T) => {
   }) as any as T;
 };
 
-export const pushChildNode = (parent: ParentNode, child: BaseNode): ParentNode => ({
-  ...parent,
+export const pushChildNode = <TParent extends ParentNode>(parent: TParent, child: BaseNode): TParent => ({
+  ...(parent as any),
   childNodes: [
     ...parent.childNodes,
     child

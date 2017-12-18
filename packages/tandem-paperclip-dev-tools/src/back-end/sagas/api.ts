@@ -5,13 +5,13 @@ import * as sharp from "sharp";
 import * as request from "request"; 
 import * as md5 from "md5";
 import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
-
+import { compressDocument } from "slim-dom";
 import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../state";
 import { flatten } from "lodash";
-import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource } from "paperclip";
+import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource, runPCFile } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
 import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
-import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged, moduleCreated } from "../actions";
+import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged, moduleCreated, DependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED } from "../actions";
 import * as express from "express";
 import * as path from "path";
 import * as fs from "fs";
@@ -55,8 +55,10 @@ function* addRoutes(server: express.Express) {
   server.get("/components/all/preview", yield wrapRoute(getAllComponentsPreview));
 
   // return a module preview
-  server.get("/components/:componentId/preview", yield wrapRoute(getComponentPreview));
-  server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentPreview));
+  server.get("/components/:componentId/preview", yield wrapRoute(getComponentHTMLPreview));
+  server.get("/components/:componentId/preview.json", yield wrapRoute(getComponentJSONPreview));
+  server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentHTMLPreview));
+  server.get("/components/:componentId/preview/:previewName.json", yield wrapRoute(getComponentJSONPreview));
 
   // return all components
   server.get("/components/:componentId/screenshots/:previewName/:screenshotHash", yield wrapRoute(getTrimmedComponentScreenshot));
@@ -64,7 +66,6 @@ function* addRoutes(server: express.Express) {
   // create a new component (creates a new module with a single component)
   server.post("/components", yield wrapRoute(createComponent));
 
-  
   // create a new component (creates a new module with a single component)
   server.delete("/components/:componentId", yield wrapRoute(deleteComponent));
   
@@ -467,7 +468,7 @@ const getTranspileOptions = weakMemo((state: ApplicationState) => ({
   readFileSync: getReadFile(state)
 }));
 
-function* getComponentPreview(req: express.Request, res: express.Response) {
+function* getComponentHTMLPreview(req: express.Request, res: express.Response) {
 
   // TODO - evaluate PC code IN THE BROWSER -- need to attach data information to element
   // nodes
@@ -539,6 +540,30 @@ function* getComponentPreview(req: express.Request, res: express.Response) {
   `;
 
   res.send(html);
+}
+
+function* getComponentJSONPreview(req: express.Request, res: express.Response, next) {
+  let state: ApplicationState = yield select();
+  const { componentId, previewName } = req.params;
+  const components = (yield call(getAvailableComponents, state, getReadFile(state))) as RegisteredComponent[];
+
+  const targetComponent = components.find(component => component.tagName === componentId);
+
+  if (!state.graph) {
+    yield take(DEPENDENCY_GRAPH_LOADED);
+    state = yield select();
+  }
+
+  const { document, diagnostics } = runPCFile({
+    entry: {
+      componentId,
+      previewName,
+      filePath: targetComponent.filePath
+    },
+    graph: state.graph,
+  });
+
+  return res.send(compressDocument(document));
 }
 
 function* setFileContent(req: express.Request, res: express.Response, next) {

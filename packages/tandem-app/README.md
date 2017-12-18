@@ -6,6 +6,7 @@ IMMEDIATE:
 
 - [ ] PC VM
   - [ ] dev server /run, and /diff/:documentHash api
+  - [ ] dev server needs to store dependency graph in global state
 
 - [ ] prop inferencing for css styles (needed for things like transpiling)
   - [ ] auto flag for if statement

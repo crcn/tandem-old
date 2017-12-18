@@ -91,12 +91,15 @@ export const getAssocComponents = async (matchFilePath: string, state: Applicati
   const allFilePaths = getModuleFilePaths(state);
   const assocComponents: ChildComponentInfo = {};
 
-  const readFileSync = getReadFile(state);
 
   for (const moduleFilePath of allFilePaths) {
-    const { graph } = await loadModuleDependencyGraph(moduleFilePath, {
-      readFile: readFileSync
-    });
+    let graph: DependencyGraph = state.graph;
+    if (!graph) {
+      const result = await loadModuleDependencyGraph(moduleFilePath, {
+        readFile: getReadFile(state)
+      });
+      graph = result.graph;
+    }
 
     const entry = graph[moduleFilePath];
 

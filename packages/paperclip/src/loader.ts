@@ -123,6 +123,19 @@ export const getAllComponents = weakMemo((graph: DependencyGraph): {
   return allComponents;
 });
 
+export const getComponentSourceUris = weakMemo((graph: DependencyGraph): {
+  [identifier: string]: string
+} => {
+  const componentUris = {};
+  for (const filePath in graph) {
+    const { module } = graph[filePath];
+    for (const component of module.components) {
+      componentUris[component.id] = filePath;
+    }
+  }
+  return componentUris;
+});
+
 export const defaultResolveModulePath = (relative, base) => {
   const dirname = base.split("/");
   dirname.pop();

@@ -3,8 +3,7 @@ import * as path from "path";
 import * as pupeteer from "puppeteer";
 import { arrayReplaceIndex, arraySplice, weakMemo, arrayRemoveItem, Bounds, arrayRemoveIndex } from "aerial-common2";
 import { getModuleId, getModuleFilePaths } from "../utils";
-import * as pc from "paperclip";
-import { ExpressionLocation } from "paperclip";
+import { ExpressionLocation, DependencyGraph } from "paperclip";
 
 export type ProjectConfig = {
   sourceFilePattern: string;
@@ -41,6 +40,7 @@ export type InitOptions = {
 
 export type ApplicationState = {
   options?: InitOptions;
+  graph: DependencyGraph;
   watchUris: string[];
   headlessBrowser?: pupeteer.Browser;
   shouldTakeAnotherScreenshot?: boolean;

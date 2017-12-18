@@ -10,7 +10,7 @@ import { Diagnostic, DiagnosticType } from "./parser-utils";
 
 import { InferenceType, inferNodeProps, Inference, ANY_REFERENCE, getPrettyTypeLabelEnd, getTypeLabels, getReferenceKeyPath, EACH_KEY, getNestedInference } from "./inferencing";
 import { DependencyGraph, Dependency, Component, getChildComponentInfo } from "./loader";
-import { weakMemo } from "./utils";
+import { weakMemo, eachValue } from "./utils";
 import { PCExpression, PCExpressionType, PCElement, PCSelfClosingElement, PCAttribute, PCBlock, PCComment, PCEndTag, PCFragment, PCParent, PCReference, PCRootExpression, PCStartTag, PCString, PCStringBlock, PCTextNode, BKArray, BKBind, BKElse, BKElseIf, BKExpression, BKExpressionType, BKGroup, BKIf, BKKeyValuePair, BKNot, BKNumber, BKObject, BKOperation, BKProperty, BKPropertyReference, BKRepeat, BKReservedKeyword, BKString, BKVarReference }  from "./ast";
 
 const MAX_CALLSTACK_OCCURRENCE = 10;
@@ -381,7 +381,9 @@ const lintExpr = (expr: BKExpression, context: LintContext): any => {
         case "!==": return setCurrentExprEvalResult(lv !== rv, expr, context);
         case "||": return setCurrentExprEvalResult(lv || rv, expr, context);
         case "&&": return setCurrentExprEvalResult(lv && rv, expr, context);
+        case ">": return setCurrentExprEvalResult(lv > rv, expr, context);
         case ">=": return setCurrentExprEvalResult(lv >= rv, expr, context);
+        case "<": return setCurrentExprEvalResult(lv < rv, expr, context);
         case "<=": return setCurrentExprEvalResult(lv <= rv, expr, context);
       }
       return context;
@@ -521,16 +523,6 @@ const pushCaller = (source: PCExpression, filePath: string, props: any, context:
     caller,
   };
 }
-
-const eachValue = (items: any, each: (value: any, index: string|number) => any) => {
-  if (Array.isArray(items)) {
-    items.forEach(each);
-  } else {
-    for (const key in items) {
-      each(items[key], key);
-    }
-  }
-};
 
 const setOptionalVars = (optional: boolean, context: LintContext): LintContext => ({  
   ...context,

@@ -1,16 +1,32 @@
 export enum NodeType {
   ELEMENT = 1,
-  ATTRIBUTE = 2,
   TEXT= 3,
   DOCUMENT = 9,
   DOCUMENT_FRAGMENT = 11,
 };
 
+export type SourcePosition = {
+  line: number;
+  column: number;
+  pos: number;
+};
+
+export type SourceRange = {
+  start: SourcePosition;
+  end: SourcePosition;
+};
+
+export type VMObjectSource = {
+  type?: string|number;
+  uri: string;
+  range: SourceRange;
+};
+
 export type VMObject = {
 
   // the sourc of the VM Object
-  source: any;
-}
+  source: VMObjectSource;
+};
 
 export type BaseNode = {
   type: NodeType;
@@ -30,13 +46,13 @@ export type Fragment = {
 
 export type ElementAttribute = {
   name: string;
-  value: string;
+  value: any;
 };
 
 export type Element = {
   tagName: string;
   attributes: ElementAttribute[];
-  shadow: Document;
+  shadow: ParentNode;
 } & ParentNode;
 
 
