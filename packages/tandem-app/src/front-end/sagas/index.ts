@@ -1,6 +1,4 @@
 import { delay } from "redux-saga";
-import { Kernel } from "aerial-common";
-import { createQueue } from "mesh";
 import { shortcutsService } from "./shortcuts";
 import { mainWorkspaceSaga } from "./workspace";
 import { fork, call, select } from "redux-saga/effects";

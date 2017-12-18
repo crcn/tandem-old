@@ -8,7 +8,7 @@ import { Dispatcher, Translate } from "aerial-common2";
 import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { EditTextTool } from "./edit-text";
 import { GridStageTool } from "./grid";
-import { WindowsStageTool } from "./windows";
+import { ArtboardsStageTool } from "./artboards";
 import { NodeOverlaysTool } from "./overlay";
 import { AffectedNodesTool } from "./affected-nodes";
 import { SelectionStageTool } from "./selection";
@@ -18,14 +18,13 @@ import { StaticPositionStageTool } from "./static-position";
 export type ToolsProps = {
   translate: Translate;
   workspace: Workspace;
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
 };
 
-export const ToolsLayerBase = ({ workspace, browser, dispatch, translate }: ToolsProps) => {
+export const ToolsLayerBase = ({ workspace, dispatch, translate }: ToolsProps) => {
   const showTools = workspace.stage.showTools !== false;
 
-  const windowElement = <WindowsStageTool workspace={workspace} browser={browser} dispatch={dispatch} translate={translate} />;
+  const windowElement = <ArtboardsStageTool workspace={workspace} dispatch={dispatch} translate={translate} />;
 
   if (showTools === false) {
     return <div className="m-stage-tools">
@@ -34,14 +33,14 @@ export const ToolsLayerBase = ({ workspace, browser, dispatch, translate }: Tool
   }
   return <div className="m-stage-tools">
     <GridStageTool translate={translate} />
-    <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
-    <BoxModelStageTool zoom={translate.zoom} workspace={workspace} browser={browser} />
-    <SelectionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} />
+    {/* <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} /> */}
+    {/* <BoxModelStageTool zoom={translate.zoom} workspace={workspace} browser={browser} /> */}
+    {/* <SelectionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} dispatch={dispatch} /> */}
 
     { windowElement }
-    <StaticPositionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} />
-    <EditTextTool zoom={translate.zoom} workspace={workspace}  browser={browser} dispatch={dispatch} />
-    <AffectedNodesTool zoom={translate.zoom} workspace={workspace} browser={browser} />
+    {/* <StaticPositionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} /> */}
+    {/* <EditTextTool zoom={translate.zoom} workspace={workspace}  browser={browser} dispatch={dispatch} /> */}
+    {/* <AffectedNodesTool zoom={translate.zoom} workspace={workspace} browser={browser} /> */}
   </div>;
 }
 

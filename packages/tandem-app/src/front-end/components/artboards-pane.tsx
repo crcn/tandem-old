@@ -1,7 +1,7 @@
 import * as React from "react";
 import { hydrateTdArtboardsPane, TdArtboardsPaneInnerProps, hydrateTdArtboardsPaneRow, TdArtboardsPaneRowInnerProps } from "./artboards-pane.pc";
 import { Workspace, Artboard } from "front-end/state";
-import { windowPaneRowClicked } from "front-end/actions";
+import { artboardPaneRowClicked } from "front-end/actions";
 import { compose, pure, withHandlers, withProps } from "recompose";
 
 const ArtboardsPaneRow = hydrateTdArtboardsPaneRow(
@@ -24,24 +24,24 @@ export type ArtboardsPaneOuterProps = {
 
 
 export type ArtboardsPaneInnerProps = {
-  onWindowClicked: any;
+  onArtboardClicked: any;
 } & ArtboardsPaneOuterProps;
 
 export const ArtboardsPane = hydrateTdArtboardsPane(
   compose<TdArtboardsPaneInnerProps, ArtboardsPaneOuterProps>(
     pure,
     withHandlers({
-      onWindowClicked: ({dispatch}) => (event, windowId) => {
-        dispatch(windowPaneRowClicked(windowId, event));
+      onArtboardClicked: ({dispatch}) => (event, windowId) => {
+        dispatch(artboardPaneRowClicked(windowId, event));
       }
     }),
-    (Base: React.ComponentClass<TdArtboardsPaneInnerProps>) => ({ workspace, artboards, onWindowClicked }: ArtboardsPaneInnerProps) => {
-      const artboardProps = artboards.map(window => ({
-        ...window,
-        selected: workspace.selectionRefs.find(([$type, $id]) => $id === window.$id)
+    (Base: React.ComponentClass<TdArtboardsPaneInnerProps>) => ({ workspace, artboards, onArtboardClicked }: ArtboardsPaneInnerProps) => {
+      const artboardProps = artboards.map(artboard => ({
+        ...artboard,
+        selected: workspace.selectionRefs.find(([$type, $id]) => $id === artboard.$id)
       }));
 
-      return <Base artboards={artboardProps} onWindowClicked={onWindowClicked}  />
+      return <Base artboards={artboardProps} onArtboardClicked={onArtboardClicked}  />
     }
   ),
   {

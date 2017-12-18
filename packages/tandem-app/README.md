@@ -5,7 +5,11 @@ RESEARCH:
 IMMEDIATE:
 
 - [ ] PC VM
-  - [ ] dev server /run, and /diff/:documentHash api
+   - [ ] render CSSOM
+   
+
+- [ ] slim dom
+  - [ ] render css objects
 
 - [ ] front-end needs to use saga for virt windows
 - [ ] front-end needs to load assoc ASTs for selected elements

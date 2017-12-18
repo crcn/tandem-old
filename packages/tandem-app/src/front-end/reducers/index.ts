@@ -92,7 +92,7 @@ import {
   VISUAL_EDITOR_WHEEL,
   PromptedNewWindowUrl,
   TreeNodeLabelClicked,
-  WindowPaneRowClicked,
+  ArtboardPaneRowClicked,
   SelectorDoubleClicked,
   OPEN_EXTERNAL_WINDOWS_REQUESTED,
   OpenExternalWindowsRequested,
@@ -119,7 +119,7 @@ import {
   SELECTOR_DOUBLE_CLICKED,
   StageToolOverlayClicked,
   TREE_NODE_LABEL_CLICKED,
-  WINDOW_PANE_ROW_CLICKED,
+  ARTBOARD_PANE_ROW_CLICKED,
   RESIZER_PATH_MOUSE_MOVED,
   StageToolEditTextKeyDown,
   StageToolEditTextChanged,
@@ -224,7 +224,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   state = syntheticBrowserReducer(state, event);
   state = artboardReducer(state, event);
   state = stageReducer(state, event);
-  state = windowPaneReducer(state, event);
+  state = artboardPaneReducer(state, event);
   state = componentsPaneReducer(state, event);
   state = shortcutReducer(state, event);
   state = apiReducer(state, event);
@@ -631,7 +631,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
     case STAGE_TOOL_WINDOW_TITLE_CLICKED: {
       state = updateWorkspaceStageSmoothing(state);
-      return handleWindowSelectionFromAction(state, getStructReference(getSyntheticWindow(state, (event as WindowPaneRowClicked).windowId)), event as WindowPaneRowClicked);
+      return handleWindowSelectionFromAction(state, getStructReference(getSyntheticWindow(state, (event as ArtboardPaneRowClicked).windowId)), event as ArtboardPaneRowClicked);
     }
 
     case STAGE_TOOL_WINDOW_BACKGROUND_CLICKED: {
@@ -694,10 +694,11 @@ const selectAndCenterSyntheticWindow = (state: ApplicationState, window: Synthet
 const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {
     case ARTBOARD_LOADED: {
-      const { artboardId, dependencyUris, document } = event as ArtboardLoaded;
+      const { artboardId, dependencyUris, document, mount } = event as ArtboardLoaded;
       return updateArtboard(state, artboardId, {
         dependencyUris,
-        document
+        document,
+        mount
       });
     }
     case ARTBOARD_CREATED: {
@@ -772,13 +773,14 @@ const normalizeZoom = (zoom) => {
   return (zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom));
 };
 
-const windowPaneReducer = (state: ApplicationState, event: BaseEvent) => {
+const artboardPaneReducer = (state: ApplicationState, event: BaseEvent) => {
   switch (event.type) {
-    case WINDOW_PANE_ROW_CLICKED: {
-      const { windowId } = event as WindowPaneRowClicked;
-      const window = getSyntheticWindow(state, windowId);
+    case ARTBOARD_PANE_ROW_CLICKED: {
+      console.log("TODO");
+      // const { windowId } = event as ArtboardPaneRowClicked;
+      // const window = getSyntheticWindow(state, windowId);
 
-      return selectAndCenterSyntheticWindow(state, window);
+      // return selectAndCenterSyntheticWindow(state, window);
     }
   }
   return state;

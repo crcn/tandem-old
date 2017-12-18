@@ -2,14 +2,13 @@
 
 import "./index.scss";
 import * as React from "react";
-import { Workspace, AVAILABLE_COMPONENT } from "front-end/state";
+import { Workspace, AVAILABLE_COMPONENT, getArtboardById } from "front-end/state";
 import * as cx from "classnames";
 import { ToolsLayer } from "./tools";
-import { Windows } from "./windows";
+import { Artboards } from "./artboards";
 import { Isolate } from "front-end/components/isolated";
-import { EmptyWindows } from "./empty-windows";
+import { EmptyArtboards } from "./empty-artboards";
 import { Motion, spring } from "react-motion";
-import { SyntheticBrowser, getSyntheticWindow } from "aerial-browser-sandbox";
 import { Dispatcher, BaseEvent, Point, Translate } from "aerial-common2";
 import { stageWheel, stageContainerMounted, stageMouseMoved, stageMouseClicked, canvasMotionRested } from "front-end/actions";
 import { lifecycle, compose, withState, withHandlers, pure, withProps } from "recompose";
@@ -22,7 +21,6 @@ const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 
 export type StageOuterProps = {
   workspace: Workspace;
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
 };
 
@@ -76,7 +74,6 @@ export const StageBase = ({
   setCanvasOuter,
   setStageContainer,
   workspace, 
-  browser,
   dispatch, 
   onWheel,
   onDrop,
@@ -91,7 +88,7 @@ export const StageBase = ({
 
   const { translate, cursor, fullScreen, smooth } = workspace.stage;
 
-  const fullScreenWindow = fullScreen ? getSyntheticWindow(browser, fullScreen.windowId) : null;
+  const fullScreenArtboard = fullScreen ? getArtboardById(fullScreen.windowId, workspace) : null;
 
   const outerStyle = {
     cursor: cursor || "default"
@@ -100,8 +97,8 @@ export const StageBase = ({
   // TODO - motionTranslate must come from fullScreen.translate
   // instead of here so that other parts of the app can access this info
 
-  const hasWindows = Boolean(browser.windows && browser.windows.length);
-  const motionTranslate: Translate = hasWindows ? translate : { left: 0, top: 0, zoom: 1 };
+  const hasArtboards = Boolean(workspace.artboards.length);
+  const motionTranslate: Translate = hasArtboards ? translate : { left: 0, top: 0, zoom: 1 };
   
   return <div className="stage-component" ref={setStageContainer}>
     <Isolate 
@@ -133,8 +130,8 @@ export const StageBase = ({
             <Motion defaultStyle={{left:0, top: 0, zoom: 1}} style={{ left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }} onRest={onMotionRest}>
               {(translate) => {
                 return <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})` }} className={cx({"stage-inner": true })}>
-                  { hasWindows ? <Windows browser={browser} smooth={smooth} dispatch={dispatch} fullScreenWindowId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} /> : <EmptyWindows dispatch={dispatch} />}
-                  { hasWindows ? <ToolsLayer workspace={workspace} translate={translate} dispatch={dispatch} browser={browser} /> : null }
+                  { hasArtboards ? <Artboards workspace={workspace} smooth={smooth} dispatch={dispatch} fullScreenArtboardId={workspace.stage.fullScreen && workspace.stage.fullScreen.windowId} /> : <EmptyArtboards />}
+                  { hasArtboards ? <ToolsLayer workspace={workspace} translate={translate} dispatch={dispatch} /> : null }
                 </div>
               }}
             </Motion>

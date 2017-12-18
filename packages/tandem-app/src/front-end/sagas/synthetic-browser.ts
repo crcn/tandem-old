@@ -1,6 +1,5 @@
 import { uniq } from "lodash";
 import { delay } from "redux-saga";
-import { createDeferredPromise } from "mesh";
 import { apiWatchUris } from "../utils";
 import { take, fork, select, put, call, spawn } from "redux-saga/effects";
 import { Point, shiftPoint, watch, resized, Bounds, REMOVED } from "aerial-common2";
@@ -349,6 +348,20 @@ function* handleWindowMousePanned() {
       });
     }
   });
+}
+
+const createDeferredPromise = () => {
+  let _resolve;
+  let _reject;
+  const promise = new Promise((resolve, reject) => {
+    _resolve = resolve;
+    _reject = reject;
+  })
+  return {
+    resolve: _resolve,
+    reject: _reject,
+    promise
+  };
 }
 
 const WINDOW_SYNC_MS = 1000 / 30;

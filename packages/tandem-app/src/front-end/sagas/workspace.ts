@@ -82,6 +82,7 @@ import {
   getWorkspaceWindow,
   getSelectedWorkspace, 
   getScaledMouseStagePosition,
+  createArtboard,
   getWorkspaceSelectionBounds,
   AVAILABLE_COMPONENT,
   getBoundedWorkspaceSelection,
@@ -278,12 +279,14 @@ function* handleDroppedOnEmptySpace(event: DNDEvent) {
   const workspace = getSelectedWorkspace(state);
   const mousePosition = getScaledMouseStagePosition(state, event);
 
-
-  yield put(artboardCreated(componentId, null, {
+  yield put(artboardCreated(createArtboard({
+    componentId, 
+    previewName: null, 
+    bounds: {
     ...mousePosition,
     right: mousePosition.left + DEFAULT_WINDOW_WIDTH,
     bottom: mousePosition.top + DEFAULT_WINDOW_HEIGHT
-  }));
+  }})));
 }
 
 function* handleSelectionResized() {

@@ -1,4 +1,4 @@
-import { createQueue } from "mesh";
+
 import { eventChannel, delay } from "redux-saga";
 import { difference, debounce, values, uniq } from "lodash";
 import { cancel, fork, take, put, call, spawn, actionChannel, select } from "redux-saga/effects";
@@ -332,23 +332,23 @@ function* handleFetchRequests() {
 
 function* getFetch() {
   const externalResources: string[] = [];
-  const fetchQueue = createQueue();
+  // const fetchQueue = createQueue();
   const state: SyntheticBrowserRootState = yield select();
 
-  yield spawn(function*() {
-    while(1) {
-      const { value: [info, resolve] } = yield call(fetchQueue.next);
-      const buffer = (yield yield request(fetchRequest(info))).payload;
-      const text = String.fromCharCode.apply(null, new Uint8Array(buffer));
+  // yield spawn(function*() {
+  //   while(1) {
+  //     const { value: [info, resolve] } = yield call(fetchQueue.next);
+  //     const buffer = (yield yield request(fetchRequest(info))).payload;
+  //     const text = String.fromCharCode.apply(null, new Uint8Array(buffer));
 
-      resolve({
-        text: () => Promise.resolve(text)
-      });
-    }
-  });
+  //     resolve({
+  //       text: () => Promise.resolve(text)
+  //     });
+  //   }
+  // });
 
   return (info: RequestInfo) => new Promise((resolve, reject) => {
-    fetchQueue.unshift([info, resolve]);
+    // fetchQueue.unshift([info, resolve]);
   });
 }
 

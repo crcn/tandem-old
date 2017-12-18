@@ -1,4 +1,4 @@
-import "./window.scss";
+import "./artboard.scss";
 const VOID_ELEMENTS = require("void-elements");
 import * as React from "react";
 import { findDOMNode } from "react-dom";
@@ -10,65 +10,65 @@ import {
   SEnvNodeTypes,
   SyntheticNode,
   SyntheticTextNode,
-  SyntheticWindow,
   SyntheticBrowser,
 } from "aerial-browser-sandbox";
+import { Artboard as ArtboardState } from "front-end/state";
 import { Isolate } from "front-end/components/isolated";
 
 const stiffSpring = (amount: number) => spring(amount, { stiffness: 330, damping: 30 });
 
-export type WindowsOuterProps = {
+export type ArtboardsOuterProps = {
   browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
 };
 
-export type WindowsInnerProps = WindowsOuterProps;
+export type ArtboardsInnerProps = ArtboardsOuterProps;
 
-type WindowProps = {
-  fullScreenWindowId: string;
-  window: SyntheticWindow;
+type ArtboardProps = {
+  fullScreenArtboardId: string;
+  artboard: ArtboardState;
   dispatch: Dispatcher<any>;
   smooth: boolean;
 };
 
-type WindowMountOuterProps = {
-  renderContainer: HTMLElement;
+type ArtboardMountOuterProps = {
+  mount: HTMLElement;
 }
 
-type WindowMountInnerProps = {
+type ArtboardMountInnerProps = {
   setContainer(element: HTMLElement);
-  renderContainer: HTMLElement;
+  mount: HTMLElement;
   container: HTMLElement;
-} & WindowMountOuterProps;
+} & ArtboardMountOuterProps;
 
-const WindowMountBase = ({ setContainer }: WindowMountInnerProps) => {
+const ArtboardMountBase = ({ setContainer }: ArtboardMountInnerProps) => {
   return <div ref={setContainer} />;
 }
 
-const enhanceWindowMount = compose<WindowMountInnerProps, WindowMountOuterProps>(
+const enhanceArtboardMount = compose<ArtboardMountInnerProps, ArtboardMountOuterProps>(
   pure,
   withState("container", "setContainer", null),
   lifecycle({
-    shouldComponentUpdate(props: WindowMountInnerProps) {
-      return this.props.renderContainer !== props.renderContainer || this.props.container !== props.container;
+    shouldComponentUpdate(props: ArtboardMountInnerProps) {
+      return this.props.mount !== props.mount || this.props.container !== props.container;
     },
     componentDidUpdate() {
-      const { container, renderContainer } = this.props as WindowMountInnerProps;
-      if (container && renderContainer) {
+      const { container, mount } = this.props as ArtboardMountInnerProps;
+      if (container && mount) {
         if (container.firstChild) {
           container.removeChild(container.firstChild);
         }
-        container.appendChild(renderContainer);
+        container.appendChild(mount);
         // TODO - dispatch mounted here
       }
     }
   })
 );
 
-const WindowMount = enhanceWindowMount(WindowMountBase);
+const ArtboardMount = enhanceArtboardMount(ArtboardMountBase);
 
-const WindowBase = ({ window, fullScreenWindowId, dispatch, smooth }: WindowProps) => {
-  const { bounds, document } = window;
+const ArtboardBase = ({ artboard, fullScreenArtboardId, dispatch, smooth }: ArtboardProps) => {
+  const { bounds, document } = artboard;
   
   const style = {
     left: bounds.left,
@@ -81,7 +81,7 @@ const WindowBase = ({ window, fullScreenWindowId, dispatch, smooth }: WindowProp
     // default to white since window background colors
     // are white too (CC)
     background: "white",
-    display: fullScreenWindowId && window.$id !== fullScreenWindowId ? "none" : undefined
+    display: fullScreenArtboardId && artboard.$id !== fullScreenArtboardId ? "none" : undefined
   };
 
   const smoothStyle = smooth ? {
@@ -94,15 +94,15 @@ const WindowBase = ({ window, fullScreenWindowId, dispatch, smooth }: WindowProp
   return <Motion defaultStyle={style} style={smoothStyle} onRest={() => dispatch(canvasMotionRested())}>
     {
       style => {
-        return <div className="preview-window-component" style={{...style, ...defaultStyle}}>
-          <WindowMount renderContainer={window.renderContainer} />
+        return <div className="preview-artboard-component" style={{...style, ...defaultStyle}}>
+          <ArtboardMount mount={artboard.mount} />
         </div>;
       }
     }
   </Motion>;
 };
 
-export const Window = pure(WindowBase as any) as typeof WindowBase;
+export const Artboard = pure(ArtboardBase as any) as typeof ArtboardBase;
 
 
 export const Preview = () => <div>PREVIEW!</div>;

@@ -25,7 +25,9 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
       const element = node as Element;
       const attribs = [];
       for (const attribute of element.attributes) {
-        attribs[attribute.name] = attribs[attribute.value];
+        if (typeof attribute.value !== "object") {
+          attribs.push([attribute.name, attribute.value]);
+        }
       }
       return [
         element.type,
@@ -39,11 +41,9 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
     case NodeType.DOCUMENT_FRAGMENT: 
     case NodeType.DOCUMENT: {
       const element = node as ParentNode;
-      const attribs = [];
       return [
         element.type,
         compressSource(node.source, sourceUris),
-        attribs,
         element.childNodes.map(child => compressNode(child, sourceUris))
       ];
     }
@@ -83,6 +83,8 @@ const uncompressNode = (node: any, sources: string[]) => {
       }
       return {
         type,
+        tagName, 
+        attributes: atts,
         source: uncompressSource(source, sources),
         shadow: shadow && uncompressNode(shadow, sources),
         childNodes: childNodes.map(child => uncompressNode(child, sources))

@@ -55,7 +55,6 @@ function* handleWatchUrisRequest() {
 
     chan = yield eventChannel((emit) => {
       const watcher = chokidar.watch(allUris);
-      console.log(allUris);
   
       watcher.on("ready", () => {
 

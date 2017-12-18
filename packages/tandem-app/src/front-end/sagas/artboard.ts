@@ -1,4 +1,4 @@
-import { uncompressDocument } from "slim-dom";
+import { uncompressDocument, renderDOM } from "slim-dom";
 import { take, spawn, fork, select, call, put } from "redux-saga/effects";
 import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated } from "../actions";
 import { getComponentPreview } from "../utils";
@@ -46,7 +46,12 @@ function* reloadArtboard(artboardId: string) {
     const artboard = getArtboardById(artboardId, state);
     const [dependencyUris, compressedNode] = yield call(getComponentPreview, artboard.componentId, artboard.previewName, state);
 
-    yield put(artboardLoaded(artboard.$id, dependencyUris, uncompressDocument([dependencyUris, compressedNode])));
+    console.log(uncompressDocument.toString());
+    const doc = uncompressDocument([dependencyUris, compressedNode]);
+    const mount = document.createElement("div");
+    renderDOM(doc, mount);
+
+    yield put(artboardLoaded(artboard.$id, dependencyUris, doc, mount));
   });
 }
 

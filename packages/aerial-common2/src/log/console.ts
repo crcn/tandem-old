@@ -3,7 +3,6 @@ import { take, select } from "redux-saga/effects";
 import path = require("path");
 import moment = require("moment");
 import { titleize } from "inflection";
-import { parallel } from "mesh";
 import { weakMemo } from "../memo";
 import AnsiUp from "ansi_up";
 import { reader } from "../monad";

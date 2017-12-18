@@ -1,7 +1,5 @@
 import { noop } from "lodash";
-import { Kernel } from "aerial-common";
 import { LogLevel } from "aerial-common2";
-
 import { 
   addWorkspace,
   initApplication, 

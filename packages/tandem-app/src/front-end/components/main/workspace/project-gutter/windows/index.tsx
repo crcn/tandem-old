@@ -5,10 +5,10 @@ import { Pane } from "front-end/components/pane/index";
 import { SyntheticWindow } from "aerial-browser-sandbox";
 import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { pure, compose, withHandlers } from "recompose";
-import { promptedNewWindowUrl, windowPaneRowClicked } from "front-end/actions";
+import { promptedNewWindowUrl } from "front-end/actions";
 import { Dispatcher, BaseEvent, wrapEventToDispatch } from "aerial-common2";
 
-const WindowRow = ({ window, dispatch }: { window: SyntheticWindow, dispatch: Dispatcher<any> }) => <div className="m-windows-pane-window-row"  onClick={wrapEventToDispatch(dispatch, windowPaneRowClicked.bind(this, window.$id))}>
+const WindowRow = ({ window, dispatch }: { window: SyntheticWindow, dispatch: Dispatcher<any> }) => <div className="m-windows-pane-window-row">
   {window.document && window.document.title || window.location} 
 </div>
 

@@ -22,7 +22,7 @@
   </style>
   <template>
     <div onClick=[[bind onClick]]>
-      [[bind document && document.title || "Loading..."]]
+      [[bind componentId]]
     </div>
   </template>
 </component>
@@ -34,7 +34,7 @@
       <span slot="content">
         <td-list>
           <td-list-item [[repeat artboards as artboard]] selectable [[bind artboard]] key=[[bind artboard.$id]] noPadding>
-            <td-artboards-pane-row [[bind artboard]] onClick=[[bind onWindowClicked]] />
+            <td-artboards-pane-row [[bind artboard]] onClick=[[bind onArtboardClicked]] />
           </td-list-item>
         </td-list>
       </span>

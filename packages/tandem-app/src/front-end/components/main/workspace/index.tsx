@@ -26,7 +26,7 @@ export const WorkspaceBase = ({ state, workspace, browser, dispatch }: Workspace
     { stage.showLeftGutter ? <ProjectGutter workspace={workspace} browser={browser} dispatch={dispatch} /> : null }
     <div className="workspace-editors">
       <div className="workspace-stage">
-        <Stage workspace={workspace} dispatch={dispatch} browser={browser} />
+        <Stage workspace={workspace} dispatch={dispatch} />
         <Breadcrumbs workspace={workspace} dispatch={dispatch} browser={browser} />
       </div>
     </div>

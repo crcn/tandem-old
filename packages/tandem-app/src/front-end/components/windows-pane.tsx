@@ -2,7 +2,7 @@ import * as React from "react";
 import { hydrateTdWindowsPane, TdWindowsPaneInnerProps, hydrateTdWindowsPaneRow, TdWindowsPaneRowInnerProps } from "./windows-pane.pc";
 import { Workspace } from "front-end/state";
 import { SyntheticWindow } from "aerial-browser-sandbox";
-import { windowPaneRowClicked } from "front-end/actions";
+import { ArtboardPaneRowClicked } from "front-end/actions";
 import { compose, pure, withHandlers, withProps } from "recompose";
 
 const WindowsPaneRow = hydrateTdWindowsPaneRow(
@@ -33,7 +33,7 @@ export const WindowsPane = hydrateTdWindowsPane(
     pure,
     withHandlers({
       onWindowClicked: ({dispatch}) => (event, windowId) => {
-        dispatch(windowPaneRowClicked(windowId, event));
+        // dispatch(ArtboardPaneRowClicked(windowId, event));
       }
     }),
     (Base: React.ComponentClass<TdWindowsPaneInnerProps>) => ({ workspace, windows, onWindowClicked }: WindowsPaneInnerProps) => {

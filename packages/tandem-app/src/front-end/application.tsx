@@ -13,16 +13,12 @@ import { mainSaga } from "./sagas";
 import { Provider } from "react-redux";
 import { createWorkerMiddleware } from "./middleware";
 import { 
-  hook,
-  fork,
-  workerReducer,
   ImmutableObject,
   initBaseApplication2, 
   BaseApplicationState,
 } from "aerial-common2";
 
 const mainReducer = reduceReducers(
-  workerReducer,
   applicationReducer
 );
 

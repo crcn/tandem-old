@@ -1,5 +1,5 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
-import { ApplicationState, SyntheticElement, AvailableComponent, createArtboard, Artboard } from "../state";
+import { ApplicationState, SyntheticElement, AvailableComponent, Artboard } from "../state";
 import { BaseNode } from "slim-dom";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
@@ -7,7 +7,7 @@ export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
 export const TRIED_LOADING_APP_STATE    = "TRIED_LOADING_APP_STATE";
 export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
 export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
-export const WINDOW_PANE_ROW_CLICKED     = "WINDOW_PANE_ROW_CLICKED";
+export const ARTBOARD_PANE_ROW_CLICKED     = "ARTBOARD_PANE_ROW_CLICKED";
 export const PROMPTED_NEW_WINDOW_URL     = "PROMPTED_NEW_WINDOW_URL";
 export const KEYBOARD_SHORTCUT_ADDED     = "KEYBOARD_SHORTCUT_ADDED";
 export const DELETE_SHORCUT_PRESSED      = "DELETE_SHORCUT_PRESSED";
@@ -127,7 +127,7 @@ export type TreeNodeLabelClicked = {
   node: TreeNode<any>
 } & BaseEvent;
 
-export type WindowPaneRowClicked = {
+export type ArtboardPaneRowClicked = {
   windowId: string
 } & WrappedEvent<React.MouseEvent<any>>;
 
@@ -287,6 +287,7 @@ export type ArtboardLoaded = {
   artboardId: string;
   dependencyUris: string[];
   document: BaseNode;
+  mount: HTMLElement;
 } & BaseEvent;  
 
 export type ArtboardCreated = {
@@ -397,20 +398,17 @@ export const cssDeclarationCreated = (name: string, value: string, declarationId
   type: CSS_DECLARATION_CREATED
 });
 
-export const artboardLoaded = (artboardId, dependencyUris: string[], document: BaseNode): ArtboardLoaded => ({
+export const artboardLoaded = (artboardId, dependencyUris: string[], document: BaseNode, mount: HTMLElement): ArtboardLoaded => ({
   type: ARTBOARD_LOADED,
   artboardId,
   document, 
-  dependencyUris
+  dependencyUris,
+  mount
 });
 
-export const artboardCreated = (componentId: string, previewName: string, bounds: Bounds): ArtboardCreated => ({
+export const artboardCreated = (artboard: Artboard): ArtboardCreated => ({
   type: ARTBOARD_CREATED,
-  artboard: createArtboard({
-    componentId,
-    previewName,
-    bounds
-  })
+  artboard,
 });
 
 export const cssDeclarationTitleMouseEnter = (ruleId: string, windowId: string): CSSDeclarationTitleMouseLeaveEnter => ({
@@ -534,10 +532,10 @@ export const resizerPathStoppedMoving = (workspaceId: string, sourceEvent): Resi
   sourceEvent: {...sourceEvent}
 });
 
-export const windowPaneRowClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): WindowPaneRowClicked => ({
+export const artboardPaneRowClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): ArtboardPaneRowClicked => ({
   windowId,
   sourceEvent,
-  type: WINDOW_PANE_ROW_CLICKED
+  type: ARTBOARD_PANE_ROW_CLICKED
 });
 
 export const workspaceSelectionDeleted = (workspaceId: string): WorkspaceSelectionDeleted => ({

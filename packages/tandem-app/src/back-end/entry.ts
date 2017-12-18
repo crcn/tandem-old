@@ -1,6 +1,5 @@
 import { noop } from "lodash";
 import { resolve } from "path";
-import { readAll } from "mesh";
 import { initApplication } from "./index";
 import { createImmutableObject, immutable, LogLevel, logInfoAction } from "aerial-common2";
 

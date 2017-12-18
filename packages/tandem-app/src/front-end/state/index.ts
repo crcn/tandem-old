@@ -100,8 +100,6 @@ import {
   differenceWith
 } from "lodash";
 
-import { Kernel } from "aerial-common";
-
 /**
  * Types
  */
@@ -162,6 +160,7 @@ export type Artboard = {
   componentId: string;
   previewName: string;
   document?: BaseNode;
+  mount?: HTMLElement;
 } & Struct;
 
 export type Workspace = {
@@ -630,8 +629,7 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
 
 export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, browserStore }: ApplicationState) => ({
   workspaces: workspaces.map(serializeWorkspace),
-  selectedWorkspaceId,
-  browserStore: serialize(browserStore)
+  selectedWorkspaceId
 });
 
 export const serializeWorkspace = (workspace: Workspace): Partial<Workspace> => ({
@@ -639,11 +637,19 @@ export const serializeWorkspace = (workspace: Workspace): Partial<Workspace> => 
   $type: workspace.$type,
   targetCSSSelectors: workspace.targetCSSSelectors,
   selectionRefs: [],
-  browserId: workspace.browserId,
+  artboards: workspace.artboards.map(serializeArtboard),
   stage: serializeStage(workspace.stage),
   textEditor: workspace.textEditor,
   library: [],
   availableComponents: []
+});
+
+const serializeArtboard = ({ $id, $type, componentId, previewName, bounds }: Artboard): Artboard => ({ 
+  $id,
+  $type,
+  componentId,
+  previewName,
+  bounds
 });
 
 const serializeStage = ({ showTextEditor, showRightGutter, showLeftGutter, showTools, translate, fullScreen }: Stage): Stage => ({
