@@ -1,4 +1,4 @@
-import { NodeType, BaseNode, Element, ElementAttribute, ParentNode, VMObjectSource, TextNode } from "./state";
+import { NodeType, BaseNode, Element, ElementAttribute, ParentNode, VMObjectSource, TextNode, CSSRuleType, CSSGroupingRule, CSSMediaRule, CSSRule, CSSStyleDeclaration, CSSStyleRule, CSSStyleSheet, StyleElement } from "./state";
 
 export type CompressedFragment = [NodeType, any[]];
 export type CompressedTextNode = [NodeType, string];
@@ -29,7 +29,7 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
           attribs.push([attribute.name, attribute.value]);
         }
       }
-      return [
+      const base = [
         element.type,
         compressSource(node.source, sourceUris),
         element.tagName,
@@ -37,6 +37,12 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
         element.shadow ? compressNode(element.shadow, sourceUris) : null,
         element.childNodes.map(child => compressNode(child, sourceUris))
       ];
+
+      if (element.tagName === "style") {
+        base.push(compressStyleSheet((element as StyleElement).sheet, sourceUris));
+      }
+
+      return base;
     }
     case NodeType.DOCUMENT_FRAGMENT: 
     case NodeType.DOCUMENT: {
@@ -49,6 +55,41 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
     }
   }
 };
+
+const compressStyleSheet = (sheet: CSSStyleSheet, sources: string[]) => {
+  return [
+    sheet.type,
+    compressSource(sheet.source, sources),
+    sheet.rules.map(rule => compressStyleRule(rule, sources))
+  ]
+}
+
+const compressStyleRule = (rule: CSSRule, sources: string[]) => {
+  switch(rule.type) {
+    case CSSRuleType.STYLE_RULE: {
+      const { selectorText, style, source } = rule as CSSStyleRule;
+      const decl = [];
+      for (const key in style) {
+        decl.push([key, style[key]]);
+      }
+
+      return [
+        rule.type,
+        compressSource(source, sources),
+        selectorText,
+        decl
+      ]
+    }
+    case CSSRuleType.MEDIA_RULE: {
+      const { conditionText, source, rules } = rule as CSSMediaRule;
+      return [
+        rule.type,
+        compressSource(source, sources),
+        rules.map(rule => compressStyleRule(rule, sources))
+      ]
+    }
+  }
+}
 
 const compressSource = (source: VMObjectSource, sourceUris: string[]) => {
   if (sourceUris.indexOf(source.uri) === -1) {
@@ -81,14 +122,22 @@ const uncompressNode = (node: any, sources: string[]) => {
       for (const [name, value] of attributes) {
         atts.push({ name, value });
       }
-      return {
+      let base = {
         type,
         tagName, 
         attributes: atts,
         source: uncompressSource(source, sources),
         shadow: shadow && uncompressNode(shadow, sources),
         childNodes: childNodes.map(child => uncompressNode(child, sources))
-      } as Element
+      } as Element;
+
+      if (tagName === "style") {
+        base = {
+          ...base,
+          sheet: uncompressStyleSheet(node[6], sources)
+        } as StyleElement;
+      }
+      return base;
     }
     case NodeType.DOCUMENT_FRAGMENT: 
     case NodeType.DOCUMENT: {
@@ -102,6 +151,40 @@ const uncompressNode = (node: any, sources: string[]) => {
   }
 };
 
+const uncompressStyleSheet = ([type, source, rules]: any, sources: string[]): CSSStyleSheet => {
+  return {
+    type,
+    source: uncompressSource(source, sources),
+    rules: rules.map(rule => uncompressCSSRule(rule, sources))
+  }
+}
+const uncompressCSSRule = (rule: any, sources: string[]) => {
+  switch(rule[0]) {
+    case CSSRuleType.STYLE_RULE: {
+      const [type, source, selectorText, decls] = rule;
+      const style: CSSStyleDeclaration = {} as any;
+      for (let i = 0, {length} = decls; i < length; i++) {
+        const [key, value] = decls[i];
+        style[key] = value;
+      }
+      return {
+        type,
+        source: uncompressSource(source, sources),
+        selectorText,
+        style
+      }
+    }
+    case CSSRuleType.MEDIA_RULE: {
+      const [type, source, conditionText, rules] = rule;
+      return {
+        type,
+        source: uncompressSource(source, sources),
+        conditionText,
+        rules: rules.map(rule => uncompressCSSRule(rule, sources))
+      }
+    }
+  }
+}
 const uncompressSource = ([type, uriIndex, startLine, startColumn, startPos, endLine, endColumn, endPos]: any, sources: string[]): VMObjectSource => ({
   type,
   uri: sources[uriIndex],

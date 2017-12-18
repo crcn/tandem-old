@@ -46,7 +46,6 @@ function* reloadArtboard(artboardId: string) {
     const artboard = getArtboardById(artboardId, state);
     const [dependencyUris, compressedNode] = yield call(getComponentPreview, artboard.componentId, artboard.previewName, state);
 
-    console.log(uncompressDocument.toString());
     const doc = uncompressDocument([dependencyUris, compressedNode]);
     const mount = document.createElement("div");
     renderDOM(doc, mount);

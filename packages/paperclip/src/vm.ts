@@ -1,9 +1,10 @@
-import { PCElement, PCTextNode, PCSelfClosingElement, PCExpression, PCRootExpression, PCExpressionType, PCComment, PCStartTag, BKRepeat, BKIf, BKElse, BKExpression, BKExpressionType, BKElseIf, PCAttribute, PCStringBlock, BKNumber, BKNot, BKString, BKOperation, BKGroup, BKObject, BKArray, BKBind, PCString, PCBlock } from "./ast";
+import { PCElement, PCTextNode, PCSelfClosingElement, PCExpression, PCRootExpression, PCExpressionType, PCComment, PCStartTag, BKRepeat, BKIf, BKElse, BKExpression, BKExpressionType, BKElseIf, PCAttribute, PCStringBlock, BKNumber, BKNot, BKString, BKOperation, BKGroup, BKObject, BKArray, BKBind, PCString, PCBlock, CSSStyleRule, CSSSheet, CSSAtRule, CSSDeclarationProperty, CSSExpression, CSSExpressionType, CSSGroupingRule } from "./ast";
 import { Diagnostic, DiagnosticType, diagnosticsContainsError } from "./parser-utils";
 import { getReferenceKeyPath } from "./inferencing";
 import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris } from "./loader";
 import { eachValue } from "./utils";
-import { BaseNode, ParentNode, TextNode, Element, NodeType, pushChildNode, ElementAttribute, VMObjectSource } from "slim-dom";
+import { BaseNode, ParentNode, TextNode, Element, NodeType, pushChildNode, ElementAttribute, VMObjectSource, StyleElement, CSSStyleSheet as SDCSSStyleSheet, CSSStyleRule as SDCSSStyleRule, CSSRule as SDCSSRule, CSSRuleType, CSSStyleDeclaration as CSSStyleDeclaration, CSSMediaRule as SDCSSMediaRule } from "slim-dom";
+import { kebabCase } from "lodash";
 
 type VMContext = {
   currentProps: any;
@@ -137,7 +138,7 @@ let appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCEl
   
   for (let i = 0, {length} = startTag.attributes; i < length; i++) {
     const attribute = startTag.attributes[i];
-    const value     = evalAttributeValue(attribute.value, context);
+    const value     = normalizeAttributeValue(attribute.name, evalAttributeValue(attribute.value, context));
     props[attribute.name] = value;
     attributes.push({
       name: attribute.name,
@@ -150,6 +151,18 @@ let appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCEl
     if (modifier.type === BKExpressionType.BIND) {
       Object.assign(props, evalExpr(modifier as BKBind, context) || {});
     }
+  }
+
+  if (name === "style") {
+    let style = {
+      type: NodeType.ELEMENT,
+      tagName: name,
+      attributes,
+      childNodes: [],
+      source: createVMSource(child, context),
+      sheet: createStyleSheet(childNodes[0] as any as CSSSheet, context)
+    } as StyleElement;
+    return pushChildNode(parent, style);
   }
 
   let shadow: ParentNode;
@@ -185,6 +198,25 @@ let appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCEl
 
   return parent;
 }
+
+const normalizeAttributeValue = (name: string, value: any) => {
+  if (name === "style") {
+    return stringifyStyleAttributeValue(value);
+  }
+  return value;
+};
+
+const stringifyStyleAttributeValue = (style: any) => {
+  if (typeof style === "object") {
+    let buffer = "";
+    for (const key in style) {
+      buffer +=  ` ${kebabCase(key)}: ${style[key]};`
+    }
+    return buffer.trim();
+  }
+  return style;
+}
+
 
 const evalAttributeValue = (value: PCExpression, context: VMContext) => {
   if (!value) {
@@ -260,6 +292,57 @@ const appendTextBlock = <TParent extends ParentNode>(parent: TParent, child: PCB
   value: evalExpr(child.value, context),
   source: createVMSource(child, context)
 } as TextNode);
+
+const createStyleSheet = (expr: CSSSheet, context: VMContext): SDCSSStyleSheet => {
+
+  const rules: SDCSSRule[] = Array.prototype.map.call(expr.children, rule => {
+    return createCSSRule(rule, context);
+  })
+  
+  return {
+    rules,
+    type: CSSRuleType.STYLE_SHEET,
+    source: createVMSource(expr, context)
+  };
+}
+
+const createCSSRule = (rule: CSSExpression, context: VMContext) => {
+  const source = createVMSource(rule, context);
+  switch(rule.type) {
+    case CSSExpressionType.STYLE_RULE: {
+      const { selectorText, children } = rule as CSSStyleRule;
+      const style: CSSStyleDeclaration = {} as any;
+      
+      for (let i = 0, {length} = children; i < length; i++) {
+        const child = children[i];
+        if (child.type === CSSExpressionType.DECLARATION_PROPERTY) {
+          const decl = child as CSSDeclarationProperty;
+          style[decl.name] = decl.value;
+        }
+      };
+
+      return {
+        type: CSSRuleType.STYLE_RULE,
+        selectorText,
+        style,
+        source
+      } as SDCSSStyleRule;
+    }
+    case CSSExpressionType.AT_RULE: {
+      const { name, params, children } = rule as CSSAtRule;
+      const rules: SDCSSRule[] = [];
+
+      if (name === "media") {
+        return {
+          type: CSSRuleType.MEDIA_RULE,
+          conditionText: params.join(" "),
+          rules,
+          source,
+        } as SDCSSMediaRule;
+      }
+    }
+  }
+}
 
 const addDiagnosticError = (message: string, context: VMContext) => addDiagnostic(message, DiagnosticType.ERROR, context)
 
