@@ -5,7 +5,7 @@ import { findDOMNode } from "react-dom";
 import { Motion, spring } from "react-motion";
 import { weakMemo, Dispatcher, Bounds, BaseEvent, calculateAbsoluteBounds, shiftBounds} from "aerial-common2";
 import { lifecycle, compose, withState, pure, onlyUpdateForKeys, withHandlers } from "recompose";
-import { canvasElementsComputedPropsChanged, canvasMotionRested } from "front-end/actions";
+import { canvasMotionRested, artboardMounted } from "front-end/actions";
 import { 
   SEnvNodeTypes,
   SyntheticNode,
@@ -33,6 +33,8 @@ type ArtboardProps = {
 
 type ArtboardMountOuterProps = {
   mount: HTMLElement;
+  artboardId: string;
+  dispatch: any;
 }
 
 type ArtboardMountInnerProps = {
@@ -53,12 +55,13 @@ const enhanceArtboardMount = compose<ArtboardMountInnerProps, ArtboardMountOuter
       return this.props.mount !== props.mount || this.props.container !== props.container;
     },
     componentDidUpdate() {
-      const { container, mount } = this.props as ArtboardMountInnerProps;
+      const { dispatch, container, mount, artboardId } = this.props as ArtboardMountInnerProps;
       if (container && mount) {
         if (container.firstChild) {
           container.removeChild(container.firstChild);
         }
         container.appendChild(mount);
+        dispatch(artboardMounted(artboardId));
         // TODO - dispatch mounted here
       }
     }
@@ -95,7 +98,7 @@ const ArtboardBase = ({ artboard, fullScreenArtboardId, dispatch, smooth }: Artb
     {
       style => {
         return <div className="preview-artboard-component" style={{...style, ...defaultStyle}}>
-          <ArtboardMount mount={artboard.mount} />
+          <ArtboardMount artboardId={artboard.$id} mount={artboard.mount} dispatch={dispatch} />
         </div>;
       }
     }

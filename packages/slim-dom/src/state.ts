@@ -33,6 +33,8 @@ export type VMObjectSource = {
 };
 
 export type VMObject = {
+  id: any;
+  type: any;
 
   // the sourc of the VM Object
   source: VMObjectSource;
@@ -70,14 +72,18 @@ export type StyleElement = {
 } & Element;
 
 export type CSSStyleSheet = {
-  type: CSSRuleType;
   rules: CSSRule[];
-  source: VMObjectSource;
-};
+} & VMObject;
 
 export type CSSRule = {
   type: CSSRuleType;
-  source: VMObjectSource
+} & VMObject;
+
+export type Bounds = {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
 };
 
 export type CSSStyleRule = {
@@ -94,6 +100,7 @@ export type CSSMediaRule = {
 } & CSSGroupingRule;
 
 export type CSSStyleDeclaration = {
+  id: string;
   alignContent: string | null;
   alignItems: string | null;
   alignmentBaseline: string | null;
@@ -439,4 +446,4 @@ export type CSSStyleDeclaration = {
   resize: string | null;
   userSelect: string | null;
   [index: number]: string;
-}
+} & VMObject;

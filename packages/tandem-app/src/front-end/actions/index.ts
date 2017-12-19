@@ -1,6 +1,6 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
 import { ApplicationState, SyntheticElement, AvailableComponent, Artboard } from "../state";
-import { BaseNode } from "slim-dom";
+import { ParentNode, BaseNode, ComputedDOMInfo, DOMNodeMap } from "slim-dom";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
@@ -16,11 +16,11 @@ export const EMPTY_WINDOWS_URL_ADDED = "EMPTY_WINDOWS_URL_ADDED";
 export const ZOOM_IN_SHORTCUT_PRESSED = "ZOOM_IN_SHORTCUT_PRESSED";
 export const ZOOM_OUT_SHORTCUT_PRESSED = "ZOOM_OUT_SHORTCUT_PRESSED";
 export const OPEN_NEW_WINDOW_SHORTCUT_PRESSED = "OPEN_NEW_WINDOW_SHORTCUT_PRESSED";
-export const WINDOW_SELECTION_SHIFTED = "WINDOW_SELECTION_SHIFTED";
+export const ARTBOARD_SELECTION_SHIFTED = "ARTBOARD_SELECTION_SHIFTED";
 export const CLONE_WINDOW_SHORTCUT_PRESSED = "CLONE_WINDOW_SHORTCUT_PRESSED";
 export const ESCAPE_SHORTCUT_PRESSED = "ESCAPE_SHORTCUT_PRESSED";
-export const NEXT_WINDOW_SHORTCUT_PRESSED = "NEXT_WINDOW_SHORTCUT_PRESSED";
-export const PREV_WINDOW_SHORTCUT_PRESSED = "PREV_WINDOW_SHORTCUT_PRESSED";
+export const NEXT_ARTBOARD_SHORTCUT_PRESSED = "NEXT_ARTBOARD_SHORTCUT_PRESSED";
+export const PREV_ARTBOARD_SHORTCUT_PRESSED = "PREV_ARTBOARD_SHORTCUT_PRESSED";
 export const TOGGLE_TOOLS_SHORTCUT_PRESSED = "TOGGLE_TOOLS_SHORTCUT_PRESSED";
 export const FULL_SCREEN_TARGET_DELETED = "FULL_SCREEN_TARGET_DELETED";
 export const TOGGLE_TEXT_EDITOR_PRESSED  = "TOGGLE_TEXT_EDITOR_PRESSED";
@@ -39,6 +39,8 @@ export const FILE_REMOVED = "FILE_REMOVED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
 export const COMPONENTS_PANE_ADD_COMPONENT_CLICKED = "COMPONENTS_PANE_ADD_COMPONENT_CLICKED";
 export const COMPONENTS_PANE_COMPONENT_CLICKED = "COMPONENTS_PANE_COMPONENT_CLICKED";
+export const ARTBOARD_MOUNTED = "ARTBOARD_MOUNTED";
+export const ARTBOARD_DOM_INFO_COMPUTED = "ARTBOARD_DOM_INFO_COMPUTED";
 export const BREADCRUMB_ITEM_CLICKED   = "BREADCRUMB_ITEM_CLICKED";
 export const BREADCRUMB_ITEM_MOUSE_ENTER   = "BREADCRUMB_ITEM_MOUSE_ENTER";
 export const BREADCRUMB_ITEM_MOUSE_LEAVE   = "BREADCRUMB_ITEM_MOUSE_LEAVE";
@@ -48,6 +50,8 @@ export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
 export const VISUAL_EDITOR_WHEEL = "VISUAL_EDITOR_WHEEL";
 export const STAGE_TOOL_ARTBOARD_TITLE_CLICKED = "STAGE_TOOL_ARTBOARD_TITLE_CLICKED";
 export const ARTBOARD_LOADED = "ARTBOARD_LOADED";
+export const ARTBOARD_SCROLL = "ARTBOARD_SCROLL";
+export const ARTBOARD_RENDERED = "ARTBOARD_RENDERED";
 export const ARTBOARD_CREATED = "ARTBOARD_CREATED";
 export const DOWN_KEY_DOWN = "DOWN_KEY_DOWN";
 export const DOWN_KEY_UP = "DOWN_KEY_UP";
@@ -74,7 +78,7 @@ export const STAGE_TOOL_EDIT_TEXT_BLUR = "STAGE_TOOL_EDIT_TEXT_BLUR";
 export const STAGE_MOUNTED = "STAGE_MOUNTED";
 export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
 export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
-export const WINDOW_FOCUSED   = "WINDOW_FOCUSED";
+export const ARTBOARD_FOCUSED   = "ARTBOARD_FOCUSED";
 export const CSS_DECLARATION_CREATED   = "CSS_DECLARATION_CREATED";
 export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_ENTER";
 export const SOURCE_CLICKED   = "SOURCE_CLICKED";
@@ -104,15 +108,6 @@ export type StageMounted = {
   element: HTMLDivElement;
 } & BaseEvent;
 
-export type CanvasElementsComputedPropsChanged = {
-  syntheticWindowId: string,
-  allComputedBounds: {
-    [identifier: string]: Bounds
-  },
-  allComputedStyles: {
-    [identifier: string]: CSSStyleDeclaration
-  }
-} & BaseEvent;
 
 export type ResizerMoved = {
   point: Point;
@@ -155,8 +150,8 @@ export type LoadedSavedState = {
   state: ApplicationState;
 } & BaseEvent;
 
-export type WindowFocused = {
-  windowId: string;
+export type ArtboardFocused = {
+  artboardId: string;
 } & BaseEvent;
 
 export type ResizerPathStoppedMoving = {
@@ -173,20 +168,20 @@ export type FileChanged = {
 } & BaseEvent;
 
 export type StageWillWindowKeyDown = {
-  windowId: string;
+  artboardId: string;
 } & WrappedEvent<React.KeyboardEvent<any>>;
 
 export type OpenExternalWindowButtonClicked = {
-  windowId: string;
+  artboardId: string;
 } & WrappedEvent<React.KeyboardEvent<any>>;
 
 export type StageToolNodeOverlayClicked = {
-  windowId: string;
+  artboardId: string;
   nodeId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type StageToolNodeOverlayHoverOver = {
-  windowId: string;
+  artboardId: string;
   nodeId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
@@ -204,48 +199,57 @@ export type StageToolEditTextBlur = {
 
 export type BreadcrumbItemClicked = {
   nodeId: string;
-  windowId: string;
+  artboardId: string;
 } & BaseEvent;
 
 export type OpenExternalWindowsRequested = {
-  uris: string[];
+  artboardInfo: Array<string[]>
 } & BaseEvent;
 
 export type BreadcrumbItemMouseEnterLeave = {
   nodeId: string;
-  windowId: string;
+  artboardId: string;
 } & BaseEvent;
 
 export type StageToolNodeOverlayHoverOut = {
-  windowId: string;
+  artboardId: string;
   nodeId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type StageToolOverlayMousePanStart = {
-  windowId: string;
+  artboardId: string;
 } & BaseEvent;
 
 export type StageToolOverlayMousePanning = {
-  windowId: string;
+  artboardId: string;
   deltaY: number;
   velocityY: number;
   center: Point;
 } & BaseEvent;
 
-export type WindowSelectionShifted = {
-  windowId: string;
+export type ArtboardSelectionShifted = {
+  artboardId: string;
 } & BaseEvent;
 
 export type StageToolOverlayMousePanEnd = {
-  windowId: string;
+  artboardId: string;
 } & BaseEvent;
 
 export type StageToolOverlayClicked = {
-  windowId: string;
+  artboardId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type StageToolOverlayMouseMoved = {
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type ArtboardMounted = {
+  artboardId: string;
+} & BaseEvent;
+
+export type ArtboardDOMInfoComputed = {
+  artboardId: string;
+  computedInfo: ComputedDOMInfo;
+} & BaseEvent;
 
 export type SelectorDoubleClicked = {
   item: Struct;
@@ -267,36 +271,50 @@ export type EmptyWindowsUrlAdded = {
 } & BaseEvent;
 
 export type CSSDeclarationChanged = {
-  windowId: string;
+  artboardId: string;
   name: string;
   declarationId: string;
   value: string;
 } & BaseEvent;
 
 export type CSSDeclarationTitleMouseLeaveEnter = {
-  windowId: string;
+  artboardId: string;
   ruleId: string;
 } & BaseEvent;
 
 export type SourceClicked = {
-  windowId: string;
+  artboardId: string;
   itemId: string;
 } & BaseEvent;
 
 export type ArtboardLoaded = {
   artboardId: string;
   dependencyUris: string[];
-  document: BaseNode;
+  document: ParentNode;
   mount: HTMLElement;
 } & BaseEvent;  
+
+export type ArtboardRendered = {
+  artboardId: string;
+  nativeNodeMap: DOMNodeMap;
+} & BaseEvent;  
+
+export type ArtboardMountLoaded = {
+  
+} & BaseEvent;
 
 export type ArtboardCreated = {
   artboard: Artboard;
 } & BaseEvent;  
 
+export type ArtboardScroll = {
+  artboardId: string;
+  scrollPosition: Point;
+} & BaseEvent;
+
 export type ToggleCSSTargetSelectorClicked = {
   itemId: string;
-  windowId: string;
+  artboardId: string;
 } & BaseEvent;
 
 export type APIComponentsLoaded = {
@@ -311,18 +329,6 @@ export type ComponentsPaneComponentClicked = {
   componentId: string;
   sourceEvent: MouseEvent;
 } & BaseEvent;
-
-
-/**
- * Factories
- */
-
-export const canvasElementsComputedPropsChanged = (syntheticWindowId: string, allComputedBounds: { [identififer: string]: Bounds }, allComputedStyles: { [identifier: string]: CSSStyleDeclaration }): CanvasElementsComputedPropsChanged => ({
-  syntheticWindowId,
-  type: CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED,
-  allComputedBounds,
-  allComputedStyles
-});
 
 export const componentsPaneAddComponentClicked = () => ({
   type: COMPONENTS_PANE_ADD_COMPONENT_CLICKED
@@ -340,15 +346,15 @@ export const canvasMotionRested = () => ({
 
 export const treeNodeLabelClicked = (node: TreeNode<any>): TreeNodeLabelClicked => ({ type: TREE_NODE_LABEL_CLICKED, node });
 export const stageToolArtboardTitleClicked = (artboardId: string, sourceEvent: React.MouseEvent<any>): StageWillArtboardTitleClicked => ({ type: STAGE_TOOL_ARTBOARD_TITLE_CLICKED, artboardId, sourceEvent });
-export const stageToolWindowKeyDown = (windowId: string, sourceEvent: React.KeyboardEvent<any>): StageWillWindowKeyDown => ({ type: STAGE_TOOL_WINDOW_KEY_DOWN, windowId, sourceEvent });
-export const openExternalWindowButtonClicked = (windowId: string, sourceEvent: React.KeyboardEvent<any>): OpenExternalWindowButtonClicked => ({ type: OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED, windowId, sourceEvent });
+export const stageToolWindowKeyDown = (artboardId: string, sourceEvent: React.KeyboardEvent<any>): StageWillWindowKeyDown => ({ type: STAGE_TOOL_WINDOW_KEY_DOWN, artboardId, sourceEvent });
+export const openExternalWindowButtonClicked = (artboardId: string, sourceEvent: React.KeyboardEvent<any>): OpenExternalWindowButtonClicked => ({ type: OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED, artboardId, sourceEvent });
 
 export const stageToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: STAGE_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });
 
-// TODO - possible include CSS url, or windowId
-export const toggleCSSTargetSelectorClicked = (itemId: string, windowId: string): ToggleCSSTargetSelectorClicked => ({
+// TODO - possible include CSS url, or artboardId
+export const toggleCSSTargetSelectorClicked = (itemId: string, artboardId: string): ToggleCSSTargetSelectorClicked => ({
   type: TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED,
-  windowId,
+  artboardId,
   itemId,
 });
 
@@ -374,31 +380,42 @@ export const dndHandled = (): BaseEvent => ({
   type: DND_HANDLED
 });
 
-export const cssDeclarationNameChanged = (name: string, value: string, declarationId: string, windowId: string): CSSDeclarationChanged => ({
+export const artboardMounted = (artboardId: string): ArtboardMounted => ({
+  type: ARTBOARD_MOUNTED,
+  artboardId
+});
+
+export const artboardDOMComputedInfo = (artboardId: string, computedInfo: ComputedDOMInfo): ArtboardDOMInfoComputed => ({
+  artboardId,
+  computedInfo,
+  type: ARTBOARD_DOM_INFO_COMPUTED,
+});
+
+export const cssDeclarationNameChanged = (name: string, value: string, declarationId: string, artboardId: string): CSSDeclarationChanged => ({
   declarationId,
-  windowId,
+  artboardId,
   name,
   value,
   type: CSS_DECLARATION_NAME_CHANGED
 });
 
-export const cssDeclarationValueChanged = (name: string, value: string, declarationId: string, windowId: string): CSSDeclarationChanged => ({
+export const cssDeclarationValueChanged = (name: string, value: string, declarationId: string, artboardId: string): CSSDeclarationChanged => ({
   declarationId,
-  windowId,
+  artboardId,
   name,
   value,
   type: CSS_DECLARATION_VALUE_CHANGED
 });
 
-export const cssDeclarationCreated = (name: string, value: string, declarationId: string, windowId: string): CSSDeclarationChanged => ({
-  windowId,
+export const cssDeclarationCreated = (name: string, value: string, declarationId: string, artboardId: string): CSSDeclarationChanged => ({
+  artboardId,
   name,
   value,
   declarationId,
   type: CSS_DECLARATION_CREATED
 });
 
-export const artboardLoaded = (artboardId, dependencyUris: string[], document: BaseNode, mount: HTMLElement): ArtboardLoaded => ({
+export const artboardLoaded = (artboardId, dependencyUris: string[], document: ParentNode, mount: HTMLElement): ArtboardLoaded => ({
   type: ARTBOARD_LOADED,
   artboardId,
   document, 
@@ -406,25 +423,31 @@ export const artboardLoaded = (artboardId, dependencyUris: string[], document: B
   mount
 });
 
+export const artboardRendered = (artboardId: string, nativeNodeMap: DOMNodeMap): ArtboardRendered => ({
+  type: ARTBOARD_RENDERED,
+  artboardId,
+  nativeNodeMap
+});
+
 export const artboardCreated = (artboard: Artboard): ArtboardCreated => ({
   type: ARTBOARD_CREATED,
   artboard,
 });
 
-export const cssDeclarationTitleMouseEnter = (ruleId: string, windowId: string): CSSDeclarationTitleMouseLeaveEnter => ({
-  windowId,
+export const cssDeclarationTitleMouseEnter = (ruleId: string, artboardId: string): CSSDeclarationTitleMouseLeaveEnter => ({
+  artboardId,
   ruleId,
   type: CSS_DECLARATION_TITLE_MOUSE_ENTER
 });
 
-export const sourceClicked = (itemId: string, windowId: string): SourceClicked => ({
-  windowId,
+export const sourceClicked = (itemId: string, artboardId: string): SourceClicked => ({
+  artboardId,
   itemId,
   type: SOURCE_CLICKED
 });
 
-export const cssDeclarationTitleMouseLeave = (ruleId: string, windowId: string): CSSDeclarationTitleMouseLeaveEnter => ({
-  windowId,
+export const cssDeclarationTitleMouseLeave = (ruleId: string, artboardId: string): CSSDeclarationTitleMouseLeaveEnter => ({
+  artboardId,
   ruleId,
   type: CSS_DECLARATION_TITLE_MOUSE_LEAVE
 });
@@ -435,27 +458,27 @@ export const resizerStoppedMoving = (workspaceId: string, point: Point): Resizer
   type: RESIZER_STOPPED_MOVING,
 });
 
-export const breadcrumbItemClicked = (nodeId: string, windowId: string): BreadcrumbItemClicked => ({
+export const breadcrumbItemClicked = (nodeId: string, artboardId: string): BreadcrumbItemClicked => ({
   nodeId,
-  windowId,
+  artboardId,
   type: BREADCRUMB_ITEM_CLICKED
 })
 
-export const breadcrumbItemMouseEnter = (nodeId: string, windowId: string): BreadcrumbItemMouseEnterLeave => ({
+export const breadcrumbItemMouseEnter = (nodeId: string, artboardId: string): BreadcrumbItemMouseEnterLeave => ({
   nodeId,
-  windowId,
+  artboardId,
   type: BREADCRUMB_ITEM_MOUSE_ENTER
 })
 
-export const breadcrumbItemMouseLeave = (nodeId: string, windowId: string): BreadcrumbItemMouseEnterLeave => ({
+export const breadcrumbItemMouseLeave = (nodeId: string, artboardId: string): BreadcrumbItemMouseEnterLeave => ({
   nodeId,
-  windowId,
+  artboardId,
   type: BREADCRUMB_ITEM_MOUSE_LEAVE
 })
 
-export const windowSelectionShifted = (windowId: string): WindowSelectionShifted => ({
-  windowId,
-  type: WINDOW_SELECTION_SHIFTED,
+export const artboardSelectionShifted = (artboardId: string): ArtboardSelectionShifted => ({
+  artboardId,
+  type: ARTBOARD_SELECTION_SHIFTED,
 });
 
 export const resizerMouseDown = (workspaceId: string, sourceEvent: React.MouseEvent<any>): ResizerMouseDown => ({
@@ -469,26 +492,26 @@ export const stageToolOverlayMouseLeave = (sourceEvent: React.MouseEvent<any>): 
   sourceEvent
 });
 
-export const stageToolOverlayMousePanStart = (windowId: string): StageToolOverlayMousePanStart => ({
-  windowId,
+export const stageToolOverlayMousePanStart = (artboardId: string): StageToolOverlayMousePanStart => ({
+  artboardId,
   type: STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
 });
 
-export const windowFocused = (windowId: string): WindowFocused => ({
-  type: WINDOW_FOCUSED,
-  windowId
+export const artboardFocused = (artboardId: string): ArtboardFocused => ({
+  type: ARTBOARD_FOCUSED,
+  artboardId
 })
 
-export const stageToolOverlayMousePanning = (windowId: string, center: Point, deltaY: number, velocityY: number): StageToolOverlayMousePanning => ({
-  windowId,
+export const stageToolOverlayMousePanning = (artboardId: string, center: Point, deltaY: number, velocityY: number): StageToolOverlayMousePanning => ({
+  artboardId,
   center,
   deltaY,
   velocityY,
   type: STAGE_TOOL_OVERLAY_MOUSE_PANNING,
 });
 
-export const stageToolOverlayMousePanEnd = (windowId: string): StageToolOverlayMousePanEnd => ({
-  windowId,
+export const stageToolOverlayMousePanEnd = (artboardId: string): StageToolOverlayMousePanEnd => ({
+  artboardId,
   type: STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
 });
 
@@ -505,10 +528,16 @@ export const triedLoadedSavedState = () => ({
   type: TRIED_LOADING_APP_STATE,
 });
 
-export const stageToolOverlayMouseDoubleClicked = (windowId: string, sourceEvent: React.MouseEvent<any>): StageToolOverlayClicked => ({
-  windowId,
+export const stageToolOverlayMouseDoubleClicked = (artboardId: string, sourceEvent: React.MouseEvent<any>): StageToolOverlayClicked => ({
+  artboardId,
   type: STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED,
   sourceEvent
+});
+
+export const artboardScroll = (artboardId: string, scrollPosition: Point): ArtboardScroll => ({
+  scrollPosition,
+  artboardId,
+  type: ARTBOARD_SCROLL
 });
 
 export const selectorDoubleClicked = (item: Struct, sourceEvent: React.MouseEvent<any>): SelectorDoubleClicked => ({
@@ -600,12 +629,12 @@ export const escapeShortcutPressed = (): BaseEvent => ({
   type: ESCAPE_SHORTCUT_PRESSED,
 });
 
-export const nextWindowShortcutPressed = (): BaseEvent => ({
-  type: NEXT_WINDOW_SHORTCUT_PRESSED,
+export const nextArtboardShortcutPressed = (): BaseEvent => ({
+  type: NEXT_ARTBOARD_SHORTCUT_PRESSED,
 });
 
-export const prevWindowShortcutPressed = (): BaseEvent => ({
-  type: PREV_WINDOW_SHORTCUT_PRESSED,
+export const prevArtboardShortcutPressed = (): BaseEvent => ({
+  type: PREV_ARTBOARD_SHORTCUT_PRESSED,
 });
 
 export const toggleToolsShortcutPressed = (): BaseEvent => ({

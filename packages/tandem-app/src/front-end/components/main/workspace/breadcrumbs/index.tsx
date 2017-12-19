@@ -13,7 +13,6 @@ import { 
   getSyntheticNodeById,
   getSyntheticNodeWindow,
   getSyntheticElementLabel,
-  getWorkspaceLastSelectionOwnerWindow2
 } from "front-end/state";
 
 import {

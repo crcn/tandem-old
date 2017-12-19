@@ -123,6 +123,15 @@ export const getAllComponents = weakMemo((graph: DependencyGraph): {
   return allComponents;
 });
 
+export const getAllGlobalStyles = weakMemo((graph: DependencyGraph): PCExpression[] => {
+  const styles = []
+  for (const filePath in graph) {
+    const { module } = graph[filePath];
+    styles.push(...module.globalStyles);
+  }
+  return styles;
+});
+
 export const getComponentSourceUris = weakMemo((graph: DependencyGraph): {
   [identifier: string]: string
 } => {

@@ -1,15 +1,20 @@
 import { PCElement, PCTextNode, PCSelfClosingElement, PCExpression, PCRootExpression, PCExpressionType, PCComment, PCStartTag, BKRepeat, BKIf, BKElse, BKExpression, BKExpressionType, BKElseIf, PCAttribute, PCStringBlock, BKNumber, BKNot, BKString, BKOperation, BKGroup, BKObject, BKArray, BKBind, PCString, PCBlock, CSSStyleRule, CSSSheet, CSSAtRule, CSSDeclarationProperty, CSSExpression, CSSExpressionType, CSSGroupingRule } from "./ast";
 import { Diagnostic, DiagnosticType, diagnosticsContainsError } from "./parser-utils";
 import { getReferenceKeyPath } from "./inferencing";
-import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris } from "./loader";
+import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris, getAllGlobalStyles } from "./loader";
 import { eachValue } from "./utils";
-import { BaseNode, ParentNode, TextNode, Element, NodeType, pushChildNode, ElementAttribute, VMObjectSource, StyleElement, CSSStyleSheet as SDCSSStyleSheet, CSSStyleRule as SDCSSStyleRule, CSSRule as SDCSSRule, CSSRuleType, CSSStyleDeclaration as CSSStyleDeclaration, CSSMediaRule as SDCSSMediaRule } from "slim-dom";
+import { BaseNode, ParentNode, TextNode, Element, NodeType, pushChildNode, ElementAttribute, VMObjectSource, StyleElement, CSSStyleSheet as SDCSSStyleSheet, CSSStyleRule as SDCSSStyleRule, CSSRule as SDCSSRule, CSSRuleType, CSSStyleDeclaration as CSSStyleDeclaration, CSSMediaRule as SDCSSMediaRule, VMObject } from "slim-dom";
 import { kebabCase } from "lodash";
 
+// Note that this is MUTABLE primarily to make incrementing
+// IDs easier. 
 type VMContext = {
+  idSeed: string,
+  refCount: number;
   currentProps: any;
   currentURI: string;
   graph: DependencyGraph;
+  globalStyles: PCExpression[];
   components: {
     [identifier: string]: Component
   };
@@ -41,7 +46,10 @@ export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph
   }
   
   const context: VMContext = {
+    idSeed: Math.floor(1000 + Math.random() * 8999) + "",
+    refCount: 0,
     currentProps: {},
+    globalStyles: getAllGlobalStyles(graph),
     currentURI: getComponentSourceUris(graph)[componentId],
     graph,
     components: getAllComponents(graph),
@@ -71,12 +79,21 @@ export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph
   } as VMResult) as any;
 };
 
+const createId = (context: VMContext) => {
+  return context.idSeed + (++context.refCount);
+}
+
 const runPreview = (preview: PCElement, context: VMContext) => {
   let root = {
+    id: createId(context),
     type: NodeType.DOCUMENT_FRAGMENT,
     childNodes: [],
     source: createVMSource(preview, context)
   };
+
+  for (let i = 0, {length} = context.globalStyles; i < length; i++) {
+    root = appendChildNode(root, context.globalStyles[i], context);
+  }
 
   root = appendChildNodes(root, preview.childNodes, context);
 
@@ -98,14 +115,14 @@ let appendElement = <TParent extends ParentNode>(parent: TParent, child: PCEleme
 
   if (_repeat) {
     eachValue(evalExpr(_repeat.each, context), (item, i) => {
-      parent = appendRawElement(parent, child, {
-        ...context,
-        currentProps: {
-          ...context.currentProps,
-          [_repeat.asValue.name]: item,
-          [_repeat.asKey ? _repeat.asKey.name : "__i"]: i,
-        }
-      });
+      const oldProps = context.currentProps;
+      context.currentProps = {
+        ...context.currentProps,
+        [_repeat.asValue.name]: item,
+        [_repeat.asKey ? _repeat.asKey.name : "__i"]: i,
+      }
+      parent = appendRawElement(parent, child, context);
+      context.currentProps = oldProps;
     });
   } else {
     parent = appendRawElement(parent, child, context);
@@ -114,7 +131,7 @@ let appendElement = <TParent extends ParentNode>(parent: TParent, child: PCEleme
   return parent;
 }
 
-let appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext) => {
+const appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext) => {
   let startTag: PCStartTag;
   let childNodes: PCExpression[];
 
@@ -155,6 +172,7 @@ let appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCEl
 
   if (name === "style") {
     let style = {
+      id: createId(context),
       type: NodeType.ELEMENT,
       tagName: name,
       attributes,
@@ -177,14 +195,17 @@ let appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCEl
     if (component.style) {
       shadow = appendChildNode(shadow, component.style, context);
     }
-    shadow = appendChildNodes(shadow, component.template.childNodes, {
-      ...context,
-      currentURI: getComponentSourceUris(context.graph)[component.id],
-      currentProps: props
-    });
+    const oldURI = context.currentURI;
+    const oldProps = context.currentProps;
+    context.currentURI = getComponentSourceUris(context.graph)[component.id];
+    context.currentProps = props;
+    shadow = appendChildNodes(shadow, component.template.childNodes, context);
+    context.currentURI = oldURI;
+    context.currentProps = oldProps;
   }
 
   let element = {
+    id: createId(context),
     type: NodeType.ELEMENT,
     tagName: name,
     attributes,
@@ -200,23 +221,13 @@ let appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCEl
 }
 
 const normalizeAttributeValue = (name: string, value: any) => {
+
+  // TODO - check if this is STRING instead
   if (name === "style") {
-    return stringifyStyleAttributeValue(value);
+    // return stringifyStyleAttributeValue(value);
   }
   return value;
 };
-
-const stringifyStyleAttributeValue = (style: any) => {
-  if (typeof style === "object") {
-    let buffer = "";
-    for (const key in style) {
-      buffer +=  ` ${kebabCase(key)}: ${style[key]};`
-    }
-    return buffer.trim();
-  }
-  return style;
-}
-
 
 const evalAttributeValue = (value: PCExpression, context: VMContext) => {
   if (!value) {
@@ -276,11 +287,13 @@ const appendChildNodes = <TParent extends ParentNode>(parent: TParent, childNode
 
     parent = appendChildNode(parent, childNodes[i], context);
   }
+
   return parent;
 };
 
 const appendTextNode = <TParent extends ParentNode>(parent: TParent, child: PCTextNode, context: VMContext) => {
   return pushChildNode(parent, {
+    id: createId(context),
     type: NodeType.TEXT,
     value: String(child.value || "").trim() || " ",
     source: createVMSource(child, context)
@@ -288,6 +301,7 @@ const appendTextNode = <TParent extends ParentNode>(parent: TParent, child: PCTe
 };
 
 const appendTextBlock = <TParent extends ParentNode>(parent: TParent, child: PCBlock, context: VMContext) => pushChildNode(parent, {
+  id: createId(context),
   type: NodeType.TEXT,
   value: evalExpr(child.value, context),
   source: createVMSource(child, context)
@@ -295,12 +309,16 @@ const appendTextBlock = <TParent extends ParentNode>(parent: TParent, child: PCB
 
 const createStyleSheet = (expr: CSSSheet, context: VMContext): SDCSSStyleSheet => {
 
-  const rules: SDCSSRule[] = Array.prototype.map.call(expr.children, rule => {
-    return createCSSRule(rule, context);
-  })
-  
+  const rules: SDCSSRule[] = new Array(expr.children.length);
+
+  for (let i = 0, {length} = expr.children; i < length; i++) {
+    const child = expr.children[i];
+    rules[i] = createCSSRule(child, context);
+  }
+
   return {
     rules,
+    id: createId(context),
     type: CSSRuleType.STYLE_SHEET,
     source: createVMSource(expr, context)
   };
@@ -311,7 +329,9 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
   switch(rule.type) {
     case CSSExpressionType.STYLE_RULE: {
       const { selectorText, children } = rule as CSSStyleRule;
-      const style: CSSStyleDeclaration = {} as any;
+      const style: CSSStyleDeclaration = {
+        id: createId(context),
+      } as any;
       
       for (let i = 0, {length} = children; i < length; i++) {
         const child = children[i];
@@ -322,6 +342,7 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
       };
 
       return {
+        id: createId(context),
         type: CSSRuleType.STYLE_RULE,
         selectorText,
         style,
@@ -330,10 +351,15 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
     }
     case CSSExpressionType.AT_RULE: {
       const { name, params, children } = rule as CSSAtRule;
-      const rules: SDCSSRule[] = [];
+      const rules: SDCSSRule[] = new Array(children.length);
+      for (let i = 0, {length} = children; i < length; i++) {
+        const child = children[i];
+        rules[i] = createCSSRule(child, context);
+      }
 
       if (name === "media") {
         return {
+          id: createId(context),
           type: CSSRuleType.MEDIA_RULE,
           conditionText: params.join(" "),
           rules,
@@ -343,21 +369,6 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
     }
   }
 }
-
-const addDiagnosticError = (message: string, context: VMContext) => addDiagnostic(message, DiagnosticType.ERROR, context)
-
-const addDiagnostic = (message: string, type: DiagnosticType, context: VMContext): VMContext => ({
-  ...context,
-  diagnostics: [
-    ...context.diagnostics,
-    {
-      type,
-      message,
-      location: null,
-      filePath: null
-    }
-  ]
-});
 
 const evalExpr = (expr: BKExpression, context: VMContext) => {
   switch(expr.type) {

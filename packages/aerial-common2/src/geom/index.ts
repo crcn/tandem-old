@@ -198,13 +198,13 @@ export const scaleInnerBounds = (inner: Bounds, oldBounds: Bounds, newBounds: Bo
 export const isBounds = (bounds: any) => bounds && bounds.left != null && bounds.top != null && bounds.right != null && bounds.bottom != null;
 export const filterBounded = (values: any[]): Bounded[] => values.filter(value => isBounds(value.bounds));
 
-export const mergeBounds = (...boundses: Bounds[]) => {
+export const mergeBounds = (...allBounds: Bounds[]) => {
   let left   = Infinity;
   let bottom = -Infinity;
   let top    = Infinity;
   let right  = -Infinity;
 
-  for (const bounds of boundses) {
+  for (const bounds of allBounds) {
     left   = Math.min(left, bounds.left);
     right  = Math.max(right, bounds.right);
     top    = Math.min(top, bounds.top);
@@ -258,7 +258,7 @@ export const centerTransformZoom = (translate: Translate, bounds: Bounds, nz: nu
 
 export const boundsIntersect = (a: Bounds, b: Bounds) => !(a.left > b.right || a.right < b.left || a.top > b.bottom || a.bottom < a.top);
 export const pointIntersectsBounds = (point: Point, bounds: Bounds) => !(point.left < bounds.left || point.left > bounds.right || point.top < bounds.top || point.top > bounds.bottom);
-export const getSmallestBounds = (...boundses: Bounds[]) => boundses.reduce((a, b) => {
+export const getSmallestBounds = (...bounds: Bounds[]) => bounds.reduce((a, b) => {
   const asize = getBoundsSize(a);
   const bsize = getBoundsSize(b);
   return asize.width * asize.height < bsize.width * bsize.height ? a : b;

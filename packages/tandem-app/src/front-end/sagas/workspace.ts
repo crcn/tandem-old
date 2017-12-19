@@ -24,8 +24,8 @@ import {
   ResizerPathMoved,
   resizerMoved,
   TEXT_EDITOR_CHANGED,
-  NEXT_WINDOW_SHORTCUT_PRESSED,
-  PREV_WINDOW_SHORTCUT_PRESSED,
+  NEXT_ARTBOARD_SHORTCUT_PRESSED,
+  PREV_ARTBOARD_SHORTCUT_PRESSED,
   COMPONENTS_PANE_ADD_COMPONENT_CLICKED,
   RESIZER_PATH_MOUSE_MOVED,
   COMPONENTS_PANE_COMPONENT_CLICKED,
@@ -33,8 +33,7 @@ import {
   SOURCE_CLICKED,
   SourceClicked,
   OPEN_NEW_WINDOW_SHORTCUT_PRESSED,
-  windowSelectionShifted,
-  WINDOW_SELECTION_SHIFTED,
+  artboardSelectionShifted,
   CLONE_WINDOW_SHORTCUT_PRESSED,
   DND_ENDED,
   dndHandled,
@@ -79,7 +78,6 @@ import {
   getStageTranslate,
   getWorkspaceById,
   ApplicationState, 
-  getWorkspaceWindow,
   getSelectedWorkspace, 
   getArtboardById,
   ARTBOARD,
@@ -91,16 +89,14 @@ import {
   getWorkspaceSelectionBounds,
   AVAILABLE_COMPONENT,
   getBoundedWorkspaceSelection,
-  getWorkspaceLastSelectionOwnerWindow,
+  getWorkspaceLastSelectionOwnerArtboard,
   getAvailableComponent,
-  getSyntheticWindowWorkspace,
   getStageToolMouseNodeTargetReference,
 } from "../state";
 // import { deleteShortcutPressed, , apiComponentsLoaded } from "front-end";
 
 export function* mainWorkspaceSaga() {
   yield fork(openDefaultWindow);
-  yield fork(handleAltClickElement);
   yield fork(handleMetaClickElement);
   yield fork(handleMetaClickComponentCell);
   yield fork(handleDeleteKeyPressed);
@@ -135,33 +131,10 @@ function* openDefaultWindow() {
 
 function* handleOpenExternalWindowButtonClicked() {
   while(true) {
-    const { windowId }: OpenExternalWindowButtonClicked = yield take(OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED);
+    const { artboardId }: OpenExternalWindowButtonClicked = yield take(OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED);
     const state = yield select();
-    const artboard = getArtboardById(windowId, state);
+    const artboard = getArtboardById(artboardId, state);
     window.open(getArtboardPreviewUri(artboard, state), "_blank");
-  }
-}
-
-function* handleAltClickElement() {
-  while(true) {
-    const event: StageToolOverlayClicked = yield take((action: StageToolOverlayClicked) => action.type === STAGE_MOUSE_CLICKED && action.sourceEvent.altKey);
-    const state = yield select();
-    const targetRef = getStageToolMouseNodeTargetReference(state, event);
-    const workspace = getSelectedWorkspace(state);
-    if (!targetRef) continue;
-    const node = getSyntheticNodeById(state, targetRef[1]);
-    if (node.nodeType === SEnvNodeTypes.ELEMENT) {
-      const element = node as SyntheticElement;
-      if (element.nodeName === "A") {
-        const href = element.attributes.find((a) => a.name === "href");
-        if (href) {
-          const window = getSyntheticNodeWindow(state, node.$id);
-          const browserBounds = getSyntheticBrowserBounds(getSyntheticWindowBrowser(state, window.$id));
-          const workspace = getSyntheticWindowWorkspace(state, window.$id);
-          yield openNewWindow(state, href.value, window, workspace);
-        }
-      }
-    }
   }
 }
 
@@ -404,7 +377,7 @@ function* handleSelectionKeyUp() {
 
 function* handleSourceClicked() {
   while(true) {
-    const { itemId, windowId } = (yield take(SOURCE_CLICKED)) as SourceClicked;
+    const { itemId } = (yield take(SOURCE_CLICKED)) as SourceClicked;
 
     const state = yield select();
 
@@ -459,32 +432,32 @@ function* handleSelectionStoppedMoving() {
 
 function* handleNextWindowPressed() {
   while(true) {
-    yield take(NEXT_WINDOW_SHORTCUT_PRESSED);
-    yield call(shiftSelectedWindow, 1);
+    yield take(NEXT_ARTBOARD_SHORTCUT_PRESSED);
+    yield call(shiftSelectedArtboard, 1);
   }
 }
 
 function* handlePrevWindowPressed() {
   while(true) {
-    yield take(PREV_WINDOW_SHORTCUT_PRESSED);
-    yield call(shiftSelectedWindow, -1);
+    yield take(PREV_ARTBOARD_SHORTCUT_PRESSED);
+    yield call(shiftSelectedArtboard, -1);
   }
 }
 
-function* shiftSelectedWindow(indexDelta: number) {
+function* shiftSelectedArtboard(indexDelta: number) {
   const state: ApplicationState = yield select();
-  const window = getWorkspaceLastSelectionOwnerWindow(state, state.selectedWorkspaceId) || getWorkspaceWindow(state, state.selectedWorkspaceId);
-  if (!window) {
+  const workspace = getSelectedWorkspace(state);
+  const artboard = getWorkspaceLastSelectionOwnerArtboard(state, state.selectedWorkspaceId) || workspace.artboards[workspace.artboards.length - 1];
+  if (!artboard) {
     return;
   }
-  const browser = getSyntheticWindowBrowser(state, window.$id);
 
-  const index = browser.windows.indexOf(window);
+  const index = workspace.artboards.indexOf(artboard);
   const change = index + indexDelta
 
   // TODO - change index based on window location, not index
-  const newIndex = change < 0 ? browser.windows.length - 1 : change >= browser.windows.length ? 0 : change;
-  yield put(windowSelectionShifted(browser.windows[newIndex].$id))
+  const newIndex = change < 0 ? workspace.artboards.length - 1 : change >= workspace.artboards.length ? 0 : change;
+  yield put(artboardSelectionShifted(workspace.artboards[newIndex].$id))
 }
 
 function* handleComponentsPaneEvents() {

@@ -36,7 +36,7 @@ import {
   createImmutableStructFactory,
 } from "aerial-common2";
 
-import { BaseNode, ParentNode, CSSStyleDeclaration } from "slim-dom";
+import { BaseNode, ParentNode, CSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById } from "slim-dom";
 
 import {
  AvailableComponent
@@ -55,8 +55,8 @@ import {
   toggleLeftGutterPressed, 
   toggleRightGutterPressed, 
   fullScreenShortcutPressed,
-  nextWindowShortcutPressed,
-  prevWindowShortcutPressed,
+  nextArtboardShortcutPressed,
+  prevArtboardShortcutPressed,
   toggleToolsShortcutPressed,
   cloneWindowShortcutPressed,
   LEFT_KEY_DOWN,
@@ -75,7 +75,6 @@ import {
   SYNTHETIC_WINDOW,
   SYNTHETIC_ELEMENT,
   SyntheticElement,
-  getSyntheticWindow,
   SyntheticCSSStyleRule,
   getSyntheticNodeById,
   getSyntheticNodeWindow,
@@ -109,6 +108,11 @@ export const WORKSPACE         = "WORKSPACE";
 export const APPLICATION_STATE = "APPLICATION_STATE";
 export const LIBRARY_COMPONENT = "LIBRARY_COMPONENT";
 export const ARTBOARD = "ARTBOARD";
+
+export const DEFAULT_ARTBOARD_SIZE = {
+  width: 1024,
+  height: 768
+}
 
 export type Stage = {
   secondarySelection?: boolean;
@@ -157,17 +161,14 @@ export type LibraryComponent = {
 
 export type Artboard = {
   bounds: Bounds;
+  scrollPosition: Point;
   dependencyUris?: string[];
-  allComputedBounds?: {
-    [identifier: string]: Bounds;
-  }
-  allComputedStyles?: {
-    [identifier: string]: CSSStyleDeclaration
-  }
+  computedDOMInfo?: ComputedDOMInfo;
   componentId: string;
   previewName: string;
-  document?: BaseNode;
+  document?: ParentNode;
   mount?: HTMLElement;
+  nativeNodeMap?: DOMNodeMap;
 } & Struct;
 
 export type Workspace = {
@@ -195,8 +196,6 @@ export type ApplicationState = {
  * Utilities
  */
 
-
-export const getSyntheticWindowWorkspace = (root: ApplicationState, windowId: string): Workspace => getSyntheticBrowserWorkspace(root, getSyntheticWindowBrowser(root, windowId).$id);
 
 export const showWorkspaceTextEditor = (root: ApplicationState, workspaceId: string): ApplicationState => {
   const workspace = getWorkspaceById(root, workspaceId);
@@ -352,6 +351,7 @@ export const createTargetSelector = (uri: string, value: string): TargetSelector
   value
 });
 
+
 export const toggleWorkspaceTargetCSSSelector = (root: ApplicationState, workspaceId: string, uri: string, selectorText: string) => {
   const workspace = getWorkspaceById(root, workspaceId);
   const cssSelectors = (workspace.targetCSSSelectors || []);
@@ -443,22 +443,60 @@ export const getWorkspaceReference = (ref: StructReference, workspace: Workspace
   if (ref[0] === ARTBOARD) {
     return getArtboardById(ref[1], workspace);
   }
-  // TODO - return ref to node
+  const artboard = getNodeArtboard(ref[1], workspace);
+  return artboard && getNestedObjectById(ref[1], artboard.document);
 };
 
 export const getSyntheticNodeWorkspace = weakMemo((root: ApplicationState, nodeId: string): Workspace => {
-  return getSyntheticWindowWorkspace(root, getSyntheticNodeWindow(root, nodeId).$id);
+  return getArtboardWorkspace(getNodeArtboard(nodeId, root).$id, root);
 });
 
 export const getBoundedWorkspaceSelection = weakMemo((workspace: Workspace): Array<Bounded & Struct> => workspace.selectionRefs.map((ref) => getWorkspaceReference(ref, workspace)).filter(item => getWorkspaceItemBounds(item, workspace)) as any);
 
 export const getWorkspaceSelectionBounds = weakMemo((workspace: Workspace) => mergeBounds(...getBoundedWorkspaceSelection(workspace).map(boxed => getWorkspaceItemBounds(boxed, workspace))));
 
+export const getNodeArtboard = weakMemo((nodeId: string, state: Workspace|ApplicationState) => {
+  if (state.$type === WORKSPACE) {
+    return (state as Workspace).artboards.find((artboard) => {
+      return artboard.document && Boolean(getNestedObjectById(nodeId, artboard.document));
+    })
+  } else {
+    for (const workspace of (state as ApplicationState).workspaces) {
+      const artboard = getNodeArtboard(nodeId, workspace);
+      if (artboard) {
+        return artboard;
+      }
+    }
+  }
+});
+
+export const getComputedNodeBounds = weakMemo((nodeId: string, artboard: Artboard) => {
+  const info = artboard.computedDOMInfo;
+  return info[nodeId] && info[nodeId].bounds;
+});
+
 export const getWorkspaceItemBounds = weakMemo((value: any, workspace: Workspace) => {
   if ((value as Artboard).$type === ARTBOARD) {
     return (value as Artboard).bounds;
-  }
+  } else {
+    const artboard = getNodeArtboard((value as BaseNode).id, workspace);
+    return shiftBounds(getComputedNodeBounds(value.id, artboard), artboard.bounds);
+  } 
 });
+
+export const moveArtboardToBestPosition = (artboard: Artboard, state: ApplicationState) => {
+  const workspace = getSelectedWorkspace(state);
+  const bounds = getArtboardBounds(workspace);
+  return {
+    ...artboard,
+    bounds: {
+      left: bounds.right,
+      top: bounds.top,
+      right: bounds.left + DEFAULT_ARTBOARD_SIZE.width,
+      bottom: bounds.top + DEFAULT_ARTBOARD_SIZE.height
+    }
+  }
+}
 
 export const getArtboardPreviewUri = (artboard: Artboard, state: ApplicationState) => state.apiHost + `/components/${artboard.componentId}/preview` + (artboard.previewName ? `/${artboard.previewName}` : "");
 
@@ -471,26 +509,14 @@ export const getSelectedWorkspace = (state: ApplicationState) => state.selectedW
 
 export const getAvailableComponent = (componentId: string, workspace: Workspace) => workspace.availableComponents.find(component => component.$id === componentId);
 
-export const getWorkspaceLastSelectionOwnerWindow = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
+export const getWorkspaceLastSelectionOwnerArtboard = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);
   if (workspace.selectionRefs.length === 0) {
     return null;
   }
   const lastSelectionRef = workspace.selectionRefs[workspace.selectionRefs.length - 1];
-  return getWorkspaceLastSelectionOwnerWindow2(workspace, getSyntheticBrowser(state, workspace.browserId));
-};
 
-export const getWorkspaceLastSelectionOwnerWindow2 = (workspace: Workspace, browser: SyntheticBrowser) => {
-  if (workspace.selectionRefs.length === 0) {
-    return null;
-  }
-  const lastSelectionRef = workspace.selectionRefs[workspace.selectionRefs.length - 1];
-  return lastSelectionRef[0] === SYNTHETIC_WINDOW ? getSyntheticWindow(browser, lastSelectionRef[1]) : getSyntheticNodeWindow(browser, lastSelectionRef[1]);
-};
-
-export const getWorkspaceWindow = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId, index?: number) => {
-  const browser = getSyntheticBrowser(state, getWorkspaceById(state, workspaceId).browserId);
-  return browser.windows[index == null ? browser.windows.length - 1 : 0];
+  return lastSelectionRef[0] === ARTBOARD ? getArtboardById(lastSelectionRef[1], workspace) : getNodeArtboard(lastSelectionRef[1], workspace);
 };
 
 export const getArtboardById = weakMemo((artboardId: string, state: ApplicationState|Workspace): Artboard => {
@@ -507,6 +533,8 @@ export const getArtboardById = weakMemo((artboardId: string, state: ApplicationS
 
   return workspace.artboards.find(artboard => artboard.$id === artboardId);
 });
+
+export const getArtboardBounds = weakMemo((workspace: Workspace) => mergeBounds(...workspace.artboards.map(artboard => artboard.bounds)));
 
 export const getArtboardWorkspace = weakMemo((artboardId: string, state: ApplicationState) => {
   const appState = state as ApplicationState;
@@ -581,8 +609,8 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
     // createKeyboardShortcut("ctrl+t", openNewWindowShortcutPressed()),
     createKeyboardShortcut("meta+enter", cloneWindowShortcutPressed()),
     createKeyboardShortcut("escape", escapeShortcutPressed()),
-    createKeyboardShortcut("ctrl+shift+]", nextWindowShortcutPressed()),
-    createKeyboardShortcut("ctrl+shift+[", prevWindowShortcutPressed()),
+    createKeyboardShortcut("ctrl+shift+]", nextArtboardShortcutPressed()),
+    createKeyboardShortcut("ctrl+shift+[", prevArtboardShortcutPressed()),
     createKeyboardShortcut("ctrl+meta+t", toggleToolsShortcutPressed()),
     createKeyboardShortcut("up", { type: UP_KEY_DOWN }, { keyup: false }),
     createKeyboardShortcut("up", { type: UP_KEY_UP }, { keyup: true }),
@@ -597,7 +625,10 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
 });
 
 export const createArtboard = createStructFactory<Artboard>(ARTBOARD, {
-
+  scrollPosition: {
+    left: 0,
+    top: 0
+  }
 });
 
 export const selectWorkspace = (state: ApplicationState, selectedWorkspaceId: string) => ({
@@ -629,26 +660,26 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
 
   const {left: scaledPageX, top: scaledPageY } = getScaledMouseStagePosition(state, event);
 
-  const browser  = getSyntheticBrowser(state, workspace.browserId);
-  const window = stage.fullScreen ? getSyntheticWindow(state, stage.fullScreen.artboardId) : browser.windows.find((window) => (
-    pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, window.bounds)
+  const artboard = stage.fullScreen ? getArtboardById(stage.fullScreen.artboardId, workspace) : workspace.artboards.find((artboard) => (
+    pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, artboard.bounds)
   ));
 
-  if (!window) return null;
+  if (!artboard) return null;
 
-  const mouseX = scaledPageX - window.bounds.left;
-  const mouseY = scaledPageY - window.bounds.top;
+  const mouseX = scaledPageX - artboard.bounds.left;
+  const mouseY = scaledPageY - artboard.bounds.top;
 
-  const allComputedBounds = window.allComputedBounds;
+  const computedInfo = artboard.computedDOMInfo || {};
   const intersectingBounds: Bounds[] = [];
   const intersectingBoundsMap = new Map<Bounds, string>();
-  for (const $id in allComputedBounds) {
-    const bounds = allComputedBounds[$id];
+  for (const $id in computedInfo) {
+    const { bounds } = computedInfo[$id];
     if (pointIntersectsBounds({ left: mouseX, top: mouseY }, bounds)) {
       intersectingBounds.push(bounds);
       intersectingBoundsMap.set(bounds, $id);
     }
   }
+
   if (!intersectingBounds.length) return null;
   const smallestBounds = getSmallestBounds(...intersectingBounds);
   return [SYNTHETIC_ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [string, string];
@@ -676,7 +707,11 @@ const serializeArtboard = ({ $id, $type, componentId, previewName, bounds }: Art
   $type,
   componentId,
   previewName,
-  bounds
+  bounds,
+  scrollPosition: {
+    left: 0,
+    top: 0
+  }
 });
 
 const serializeStage = ({ showTextEditor, showRightGutter, showLeftGutter, showTools, translate, fullScreen }: Stage): Stage => ({

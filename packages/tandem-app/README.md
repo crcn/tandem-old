@@ -9,8 +9,8 @@ IMMEDIATE:
 - [ ] deletable artboards
 - [ ] tools later
 - [ ] ensure that components can be launched from vscode
-- [ ] WINDOW_SELECTION_SHIFTED rewire
-- [ ] WINDOW_FOCUSED rewire
+- [ ] ARTBOARD_SELECTION_SHIFTED rewire
+- [ ] ARTBOARD_FOCUSED rewire
 
 - [ ] front-end needs to use saga for virt windows
 - [ ] front-end needs to load assoc ASTs for selected elements

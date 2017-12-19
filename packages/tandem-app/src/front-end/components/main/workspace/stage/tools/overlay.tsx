@@ -5,8 +5,8 @@ import * as Hammer from "react-hammerjs";
 import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
+import { FlattenedObjects, flattenObjects, BaseNode } from "slim-dom";
 import { compose, pure, withHandlers } from "recompose";
-import { SyntheticNode, SyntheticWindow, SyntheticBrowser, getSyntheticWindowChildStructs } from "aerial-browser-sandbox";
 import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { 
   stageToolOverlayMouseLeave,
@@ -26,7 +26,7 @@ type ArtboardOverlayToolsOuterProps = {
   dispatch: Dispatcher<any>;
   artboard: Artboard;
   zoom: number;
-  hoveringNodes: SyntheticNode[];
+  hoveringNodes: BaseNode[];
 };
 
 type ArtboardOverlayToolsInnerProps = {
@@ -40,7 +40,7 @@ type NodeOverlayProps = {
   bounds: Bounds;
   zoom: number;
   hovering: boolean;
-  node: SyntheticNode;
+  node: BaseNode;
   dispatch: Dispatcher<any>;
 };
 
@@ -69,7 +69,7 @@ const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
 
 const ArtboardOverlayToolsBase = ({ dispatch, artboard, hoveringNodes, zoom, onPanStart, onPan, onPanEnd }: ArtboardOverlayToolsInnerProps) => {
 
-  if (!artboard.allComputedBounds) {
+  if (!artboard.computedDOMInfo) {
     return null;
   }
 
@@ -90,9 +90,9 @@ const ArtboardOverlayToolsBase = ({ dispatch, artboard, hoveringNodes, zoom, onP
         hoveringNodes.map((node) => <NodeOverlay 
           artboardId={artboard.$id} 
           zoom={zoom} 
-          key={node.$id} 
+          key={node.id} 
           node={node} 
-          bounds={artboard.allComputedBounds[node.$id]} 
+          bounds={artboard.computedDOMInfo[node.id] && artboard.computedDOMInfo[node.id].bounds} 
           dispatch={dispatch} 
           hovering={true} />)
       }
@@ -121,18 +121,16 @@ const enhanceArtboardOverlayTools = compose<ArtboardOverlayToolsInnerProps, Artb
 
 const ArtboardOverlayTools = enhanceArtboardOverlayTools(ArtboardOverlayToolsBase);
 
-
-const getSyntheticNodes = weakMemo((refs: StructReference[], allNodes: any) => {
-  return refs.map(([type, id]) => allNodes[id]).filter((id) => !!id);
+const getNodes = weakMemo((refs: StructReference[], allNodes: FlattenedObjects) => {
+  return refs.map(([type, id]) => allNodes[id]).filter((flattenedObject) => !!flattenedObject).map(object => object.value as BaseNode)
 });
 
 const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, artboard: Artboard) => {
-  return [];
-  // const allNodes = getSyntheticWindowChildStructs(artboard);
-  // return difference(
-  //   getSyntheticNodes(workspace.hoveringRefs, allNodes),
-  //   getSyntheticNodes(workspace.selectionRefs, allNodes)
-  // );
+  const allNodes = artboard.document && flattenObjects(artboard.document) || {};
+  return difference(
+    getNodes(workspace.hoveringRefs, allNodes),
+    getNodes(workspace.selectionRefs, allNodes)
+  );
 });
 
 export const  NodeOverlaysToolBase = ({ workspace, dispatch, zoom }: VisualToolsProps) => {

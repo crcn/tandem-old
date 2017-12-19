@@ -34,9 +34,9 @@ import {
   getWorkspaceById,
   getStageTranslate,
   getSyntheticWindow,
+  createArtboard,
   getSelectedWorkspace, 
   getSyntheticNodeWorkspace, 
-  getSyntheticWindowWorkspace,
   getSyntheticBrowser
 } from "front-end/state";
 import { 
@@ -56,16 +56,17 @@ import {
   STAGE_TOOL_EDIT_TEXT_KEY_DOWN,
   FULL_SCREEN_TARGET_DELETED,
   VISUAL_EDITOR_WHEEL,
+  artboardCreated,
   StageWheel,
   CSS_DECLARATION_NAME_CHANGED,
   CSSDeclarationChanged,
   CSS_DECLARATION_VALUE_CHANGED,
-  windowFocused,
+  artboardFocused,
   FILE_CONTENT_CHANGED,
   FILE_REMOVED,
   FileChanged,
   CSS_DECLARATION_CREATED,
-  WINDOW_SELECTION_SHIFTED,
+  ARTBOARD_SELECTION_SHIFTED,
   STAGE_TOOL_OVERLAY_MOUSE_PANNING,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
@@ -160,10 +161,6 @@ function* nodeValueStoppedEditing(nodeId: string) {
   yield put(syntheticNodeValueStoppedEditing(window.$id, nodeId));
 }
 
-const MOMENTUM_THRESHOLD = 100;
-const DEFAULT_MOMENTUM_DAMP = 0.1;
-const MOMENTUM_DELAY = 50;
-const VELOCITY_MULTIPLIER = 10;
 
 function* handleScrollInFullScreenMode() {
   while(true) {
@@ -203,7 +200,7 @@ function* handleFileChanged() {
 
 function* handleOpenExternalArtboardsRequested() {
   while(true) {
-    const { uris }: OpenExternalWindowsRequested = yield take(OPEN_EXTERNAL_WINDOWS_REQUESTED);
+    const { artboardInfo }: OpenExternalWindowsRequested = yield take(OPEN_EXTERNAL_WINDOWS_REQUESTED);
 
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
@@ -213,21 +210,22 @@ function* handleOpenExternalArtboardsRequested() {
     let lastExistingArtboard;
 
     // TODO
-    // for (const uri of uris) {
-    //   const existingArtboard = workspace.artboards.find((window) => window.location === uri);
-    //   if (existingArtboard) {
-    //     lastExistingArtboard = existingArtboard;
-    //     continue;
-    //   }
-    //   openedNewWindow = true;
-    //   yield put(openSyntheticWindowRequest({
-    //     location: uri
-    //   }, workspace.$id));
-    // }
+    for (const [componentId, previewName] of artboardInfo) {
+      const existingArtboard = workspace.artboards.find((artboard) => artboard.componentId === componentId && (!previewName || artboard.previewName === previewName));
+      if (existingArtboard) {
+        lastExistingArtboard = existingArtboard;
+        continue;
+      }
+      openedNewWindow = true;
+      yield put(artboardCreated(createArtboard({
+        componentId,
+        previewName
+      })))
+    }
 
-    // if (!openedNewWindow && lastExistingArtboard) {
-    //   yield put(windowFocused(lastExistingArtboard.$id));
-    // }
+    if (!openedNewWindow && lastExistingArtboard) {
+      yield put(artboardFocused(lastExistingArtboard.$id));
+    }
   }
 }
 
@@ -262,9 +260,9 @@ function* persistDeclarationChange(declaration: SEnvCSSStyleDeclarationInterface
 function* handleCSSDeclarationChanges() {
   yield fork(function* handleNameChanges() {
     while(true) {
-      const { value, windowId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
+      const { value, artboardId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
       const state: ApplicationState = yield select();
-      const window = getSyntheticWindow(state, windowId);
+      const window = getSyntheticWindow(state, artboardId);
     }
   });
   
@@ -272,9 +270,9 @@ function* handleCSSDeclarationChanges() {
 
     // TODO - consider disabled properties here
     while(true) {
-      const { name, value, windowId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
+      const { name, value, artboardId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
       const state: ApplicationState = yield select();
-      const window = getSyntheticWindow(state, windowId);
+      const window = getSyntheticWindow(state, artboardId);
       const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
       declaration
 
@@ -291,9 +289,9 @@ function* handleCSSDeclarationChanges() {
   
   yield fork(function* handleNewDeclaration() {
     while(true) {
-      const { name, value, windowId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_CREATED);
+      const { name, value, artboardId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_CREATED);
       const state: ApplicationState = yield select();
-      const window = getSyntheticWindow(state, windowId);
+      const window = getSyntheticWindow(state, artboardId);
       const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
       declaration.setProperty(name, value);
 
@@ -313,40 +311,14 @@ function* handleWindowMousePanned() {
 
   yield fork(function*() {
     while(true) {
-      const { windowId } = (yield take(STAGE_TOOL_OVERLAY_MOUSE_PAN_START)) as StageToolOverlayMousePanStart;
-      panStartScrollPosition = getSyntheticWindow(yield select(), windowId).scrollPosition || { left: 0, top: 0 };
+      const { artboardId } = (yield take(STAGE_TOOL_OVERLAY_MOUSE_PAN_START)) as StageToolOverlayMousePanStart;
+      panStartScrollPosition = getSyntheticWindow(yield select(), artboardId).scrollPosition || { left: 0, top: 0 };
     }
   });
 
-  function* scrollDelta(windowId, deltaY) {
-    yield put(syntheticWindowScroll(windowId, shiftPoint(panStartScrollPosition, {
-      left: 0,
-      top: -deltaY
-    })));
-  }
 
   yield fork(function*() {
-    while(true) {
-      const event = lastPaneEvent = (yield take(STAGE_TOOL_OVERLAY_MOUSE_PANNING)) as StageToolOverlayMousePanning;
-      const { windowId, deltaY, center, velocityY: newVelocityY } = event;
-
-      const zoom = getStageTranslate(getSelectedWorkspace(yield select()).stage).zoom;
-
-      yield scrollDelta(windowId, deltaY / zoom);
-    }
-  });
-  
-  yield fork(function*() {
-    while(true) {
-      yield take(STAGE_TOOL_OVERLAY_MOUSE_PAN_END);
-      const { windowId, deltaY, velocityY } = lastPaneEvent;
-
-      const zoom = getStageTranslate(getSelectedWorkspace(yield select()).stage).zoom;
-      
-      yield spring(deltaY, velocityY * VELOCITY_MULTIPLIER, function*(deltaY) {
-        yield scrollDelta(windowId, deltaY / zoom);
-      });
-    }
+    
   });
 }
 
@@ -366,20 +338,3 @@ const createDeferredPromise = () => {
 
 const WINDOW_SYNC_MS = 1000 / 30;
 
-
-function* spring(start: number, velocityY: number, iterate: Function, damp: number = DEFAULT_MOMENTUM_DAMP, complete: Function = () => {}) {
-  let i = 0;
-  let v = velocityY;
-  let currentValue = start;
-  function* tick() {
-    i += damp;
-    currentValue += velocityY / (i / 1);
-    if (i >= 1) {
-      return complete();
-    }
-    yield iterate(currentValue);
-    yield call(delay, MOMENTUM_DELAY);
-    yield tick();
-  }
-  yield tick();
-}

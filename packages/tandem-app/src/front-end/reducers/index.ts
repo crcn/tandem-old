@@ -31,6 +31,7 @@ import {
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
+import { getNestedObjectById, BaseNode } from "slim-dom";
 
 import { 
   Artboard,
@@ -42,9 +43,10 @@ import {
   ApplicationState,
   removeArtboard,
   getArtboardById,
+  moveArtboardToBestPosition,
   getArtboardWorkspace,
-  SyntheticWindow,
   getStageTranslate,
+  getArtboardBounds,
   ShortcutServiceState,
   getWorkspaceItemBounds,
   AVAILABLE_COMPONENT,
@@ -62,7 +64,6 @@ import {
   updateWorkspaceTextEditor,
   getSyntheticBrowserBounds,
   getWorkspaceSelectionBounds,
-  getSyntheticWindowWorkspace,
   getBoundedWorkspaceSelection,
   getSyntheticBrowserItemBounds,
   toggleWorkspaceTargetCSSSelector,
@@ -106,6 +107,8 @@ import {
   DeleteShortcutPressed,
   StageWillWindowKeyDown,
   BREADCRUMB_ITEM_MOUSE_ENTER,
+  ARTBOARD_SCROLL,
+  ArtboardScroll,
   BREADCRUMB_ITEM_MOUSE_LEAVE,
   CSS_DECLARATION_TITLE_MOUSE_ENTER,
   CSS_DECLARATION_TITLE_MOUSE_LEAVE,
@@ -113,12 +116,12 @@ import {
   DELETE_SHORCUT_PRESSED,
   PROMPTED_NEW_WINDOW_URL,
   KEYBOARD_SHORTCUT_ADDED,
-  WindowSelectionShifted,
-  WINDOW_SELECTION_SHIFTED,
+  ArtboardSelectionShifted,
+  ARTBOARD_SELECTION_SHIFTED,
   ESCAPE_SHORTCUT_PRESSED,
   CANVAS_MOTION_RESTED,
-  NEXT_WINDOW_SHORTCUT_PRESSED,
-  PREV_WINDOW_SHORTCUT_PRESSED,
+  NEXT_ARTBOARD_SHORTCUT_PRESSED,
+  PREV_ARTBOARD_SHORTCUT_PRESSED,
   TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED,
   ToggleCSSTargetSelectorClicked,
   EMPTY_WINDOWS_URL_ADDED,
@@ -154,14 +157,17 @@ import {
   STAGE_TOOL_ARTBOARD_TITLE_CLICKED,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
   RESIZER_PATH_MOUSE_STOPPED_MOVING,
-  WINDOW_FOCUSED,
+  ARTBOARD_FOCUSED,
   ARTBOARD_LOADED,
+  ARTBOARD_RENDERED,
+  ArtboardRendered,
   ArtboardCreated,
   ARTBOARD_CREATED,
   ArtboardLoaded,
-  WindowFocused,
+  ArtboardFocused,
+  ARTBOARD_DOM_INFO_COMPUTED,
+  ArtboardDOMInfoComputed,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
-  CanvasElementsComputedPropsChanged,
   STAGE_TOOL_WINDOW_BACKGROUND_CLICKED,
   COMPONENTS_PANE_COMPONENT_CLICKED,
   ComponentsPaneComponentClicked,
@@ -217,11 +223,11 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     }
 
     case TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED: {
-      const { itemId, windowId } = event as ToggleCSSTargetSelectorClicked;
-      const window = getSyntheticWindow(state, windowId);
-      const item = getSyntheticWindowChild(window, itemId);
-      const workspace = getSyntheticWindowWorkspace(state, window.$id);
-      state = toggleWorkspaceTargetCSSSelector(state, workspace.$id, item.source.uri, (item as SyntheticCSSStyleRule).selectorText);
+      const { itemId, artboardId } = event as ToggleCSSTargetSelectorClicked;
+      const artboard = getArtboardById(artboardId, state);
+      const item = getNestedObjectById(itemId, artboard.document);
+      const workspace = getArtboardWorkspace(artboard.$id, state);;
+      state = toggleWorkspaceTargetCSSSelector(state, workspace.$id, item.source.uri, (item as any as SyntheticCSSStyleRule).selectorText);
       return state;
     }
   }
@@ -300,7 +306,7 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
       return setStageZoom(state, workspace.$id, normalizeZoom(workspace.stage.translate.zoom) / 2);
     }
 
-    case PREV_WINDOW_SHORTCUT_PRESSED: {
+    case PREV_ARTBOARD_SHORTCUT_PRESSED: {
       return state;
     }
 
@@ -509,11 +515,9 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-    case WINDOW_FOCUSED: {
-      const { windowId } = event as WindowFocused;
-      const window = getSyntheticWindow(state, windowId);
-      // return selectAndCenterArtboard(state, window);
-      return state;
+    case ARTBOARD_FOCUSED: {
+      const { artboardId } = event as ArtboardFocused;
+      return selectAndCenterArtboard(state, getArtboardById(artboardId, state));
     }
 
     case SYNTHETIC_WINDOW_PROXY_OPENED: {
@@ -536,42 +540,44 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     }
 
     case CSS_DECLARATION_TITLE_MOUSE_ENTER: {
-      const { windowId, ruleId } = event as CSSDeclarationTitleMouseLeaveEnter;
-      const window = getSyntheticWindow(state, windowId);
-      const { selectorText }: SEnvCSSStyleRuleInterface = getSyntheticWindowChild(window, ruleId);
-      return updateWorkspace(state, state.selectedWorkspaceId, {
-        hoveringRefs: getMatchingElements(window, selectorText).map((element) => [
-          element.$type,
-          element.$id
-        ]) as [[string, string]]
-      });
+      const { artboardId, ruleId } = event as CSSDeclarationTitleMouseLeaveEnter;
+      const artboard = getArtboardById(artboardId, state);
+
+      // TODO
+      return state; 
+      // const { selectorText }: SEnvCSSStyleRuleInterface = getNestedObjectById(ruleId, artboard.document);
+      // return updateWorkspace(state, state.selectedWorkspaceId, {
+      //   hoveringRefs: getMatchingElements(artboard, selectorText).map((element) => [
+      //     element.$type,
+      //     element.$id
+      //   ]) as [[string, string]]
+      // });
     }
 
     case CSS_DECLARATION_TITLE_MOUSE_LEAVE: {
-      const { windowId, ruleId } = event as CSSDeclarationTitleMouseLeaveEnter;
+      const { artboardId, ruleId } = event as CSSDeclarationTitleMouseLeaveEnter;
       return updateWorkspace(state, state.selectedWorkspaceId, {
         hoveringRefs: []
       });
     }
 
     case BREADCRUMB_ITEM_CLICKED: {
-      const { windowId, nodeId } = event as BreadcrumbItemClicked;
-      const window = getSyntheticWindow(state, windowId);
-      const browser = getSyntheticWindowBrowser(state, window.$id);
-      const node = getSyntheticNodeById(browser, nodeId);
-      const workspace = getSyntheticWindowWorkspace(state, window.$id);
-      return setWorkspaceSelection(state, workspace.$id, [node.$type, node.$id]);
+      const { artboardId, nodeId } = event as BreadcrumbItemClicked;
+      const artboard = getArtboardById(artboardId, state);
+      const node = getNestedObjectById(nodeId, artboard.document) as BaseNode;
+      const workspace = getArtboardWorkspace(artboard.$id, state);
+      return setWorkspaceSelection(state, workspace.$id, [node.type, node.id]);
     }
 
     case BREADCRUMB_ITEM_MOUSE_ENTER: {
-      const { windowId, nodeId }  = event as BreadcrumbItemMouseEnterLeave;
+      const { artboardId, nodeId }  = event as BreadcrumbItemMouseEnterLeave;
       return updateWorkspace(state, state.selectedWorkspaceId, {
         hoveringRefs: [[SYNTHETIC_ELEMENT, nodeId]]
       });
     }
 
     case BREADCRUMB_ITEM_MOUSE_LEAVE: {
-      const { windowId, nodeId }  = event as BreadcrumbItemMouseEnterLeave;
+      const { artboardId, nodeId }  = event as BreadcrumbItemMouseEnterLeave;
       return updateWorkspace(state, state.selectedWorkspaceId, {
         hoveringRefs: []
       });
@@ -605,14 +611,14 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     };
 
     case STAGE_TOOL_OVERLAY_MOUSE_PAN_START: {
-      const { windowId } = event as StageToolOverlayMousePanStart;
-      const workspace = getSyntheticWindowWorkspace(state, windowId);
+      const { artboardId } = event as StageToolOverlayMousePanStart;
+      const workspace = getArtboardWorkspace(artboardId, state);
       return updateWorkspaceStage(state, workspace.$id, { panning: true });
     }
     
     case STAGE_TOOL_OVERLAY_MOUSE_PAN_END: {
-      const { windowId } = event as StageToolOverlayMousePanEnd;
-      const workspace = getSyntheticWindowWorkspace(state, windowId)
+      const { artboardId } = event as StageToolOverlayMousePanEnd;
+      const workspace = getArtboardWorkspace(artboardId, state)
       return updateWorkspaceStage(state, workspace.$id, { panning: false });
     }
 
@@ -668,8 +674,8 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     }
 
     case STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED: {
-      const { sourceEvent, windowId } = event as StageToolNodeOverlayClicked;
-      const workspace = getSyntheticWindowWorkspace(state, windowId);
+      const { sourceEvent, artboardId } = event as StageToolNodeOverlayClicked;
+      const workspace = getArtboardWorkspace(artboardId, state);
       const targetRef = getStageToolMouseNodeTargetReference(state, event as StageToolNodeOverlayClicked);
       if (!targetRef) return state;      
 
@@ -682,10 +688,9 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-    case WINDOW_SELECTION_SHIFTED: {
-      const { windowId } = event as WindowSelectionShifted;
-      return state;
-      // return selectAndCenterArtboard(state, getSyntheticWindow(state, windowId));
+    case ARTBOARD_SELECTION_SHIFTED: {
+      const { artboardId } = event as ArtboardSelectionShifted;
+      return selectAndCenterArtboard(state, getArtboardById(artboardId, state));
     }
 
     case SELECTOR_DOUBLE_CLICKED: {
@@ -696,6 +701,13 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       });
       state = setWorkspaceSelection(state, workspace.$id, getStructReference(item));
       return state;
+    }
+
+    case ARTBOARD_SCROLL: {
+      const { artboardId, scrollPosition } = event as ArtboardScroll;
+      return updateArtboard(state, artboardId, {
+        scrollPosition
+      });
     }
 
     case WORKSPACE_DELETION_SELECTED: {
@@ -782,6 +794,13 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
+    case ARTBOARD_RENDERED: {
+      const { artboardId, nativeNodeMap } = event as ArtboardRendered;
+      return updateArtboard(state, artboardId, {
+        nativeNodeMap
+      });
+    }
+
     case REMOVED: {
       const { itemId, itemType } = event as Removed;
       if (itemType === ARTBOARD) {
@@ -789,9 +808,20 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       }
       return state;
     }
+
+    case ARTBOARD_DOM_INFO_COMPUTED: {
+      const { artboardId, computedInfo } = event as ArtboardDOMInfoComputed;
+      return updateArtboard(state, artboardId, {
+        computedDOMInfo: computedInfo
+      });
+    }
     
     case ARTBOARD_CREATED: {
-      const { artboard } = event as ArtboardCreated;
+      let { artboard } = event as ArtboardCreated;
+      if (!artboard.bounds) {
+        artboard = moveArtboardToBestPosition(artboard, state);
+      }
+
       const workspace = getSelectedWorkspace(state);
       return updateWorkspace(state, workspace.$id, {
         artboards: [...workspace.artboards, artboard]
@@ -803,7 +833,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
 
 const centerSelectedWorkspace = (state: ApplicationState, smooth: boolean = false) => {
   const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
-  const innerBounds = getSyntheticBrowserBounds(getSyntheticBrowser(state, workspace.browserId));
+  const innerBounds = getArtboardBounds(workspace);
   
   // no windows loaded
   if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {

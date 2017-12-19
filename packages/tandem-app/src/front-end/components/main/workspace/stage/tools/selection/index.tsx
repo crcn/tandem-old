@@ -32,11 +32,12 @@ const  SelectionBounds = ({ workspace, zoom }: { workspace: Workspace, zoom: nu
     height: entireBounds.bottom - entireBounds.top,
     boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
   };
+
   return <div style={boundsStyle as any}></div>;
 };
 
 export const  SelectionStageToolBase = ({ workspace, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
-  const selection = getBoundedWorkspaceSelection(workspace);      
+  const selection = getBoundedWorkspaceSelection(workspace);     
   if (!selection.length || workspace.stage.secondarySelection) return null;
 
   return <div className="m-stage-selection-tool" tabIndex={-1} onDoubleClick={onDoubleClick}>

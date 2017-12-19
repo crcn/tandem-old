@@ -20,37 +20,37 @@ export const compressDocument = (root: BaseNode): CompressionResult => {
 
 const compressNode = (node: BaseNode, sourceUris: string[]) => {
   switch (node.type) {
-    case NodeType.TEXT: return [node.type, compressSource(node.source, sourceUris), (node as TextNode).value];
+    case NodeType.TEXT: return [node.type, node.id, compressSource(node.source, sourceUris), (node as TextNode).value];
     case NodeType.ELEMENT: {
-      const element = node as Element;
+      const { type, id, source, tagName, attributes, shadow, childNodes } = node as Element;
       const attribs = [];
-      for (const attribute of element.attributes) {
-        if (typeof attribute.value !== "object") {
-          attribs.push([attribute.name, attribute.value]);
-        }
+      for (const attribute of attributes) {
+        attribs.push([attribute.name, attribute.value]);
       }
       const base = [
-        element.type,
+        type,
+        id,
         compressSource(node.source, sourceUris),
-        element.tagName,
+        tagName,
         attribs,
-        element.shadow ? compressNode(element.shadow, sourceUris) : null,
-        element.childNodes.map(child => compressNode(child, sourceUris))
+        shadow ? compressNode(shadow, sourceUris) : null,
+        childNodes.map(child => compressNode(child, sourceUris))
       ];
 
-      if (element.tagName === "style") {
-        base.push(compressStyleSheet((element as StyleElement).sheet, sourceUris));
+      if (tagName === "style") {
+        base.push(compressStyleSheet((node as StyleElement).sheet, sourceUris));
       }
 
       return base;
     }
     case NodeType.DOCUMENT_FRAGMENT: 
     case NodeType.DOCUMENT: {
-      const element = node as ParentNode;
+      const { type, id, source, childNodes } = node as ParentNode;
       return [
-        element.type,
-        compressSource(node.source, sourceUris),
-        element.childNodes.map(child => compressNode(child, sourceUris))
+        type,
+        id,
+        compressSource(source, sourceUris),
+        childNodes.map(child => compressNode(child, sourceUris))
       ];
     }
   }
@@ -59,6 +59,7 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
 const compressStyleSheet = (sheet: CSSStyleSheet, sources: string[]) => {
   return [
     sheet.type,
+    sheet.id,
     compressSource(sheet.source, sources),
     sheet.rules.map(rule => compressStyleRule(rule, sources))
   ]
@@ -67,23 +68,26 @@ const compressStyleSheet = (sheet: CSSStyleSheet, sources: string[]) => {
 const compressStyleRule = (rule: CSSRule, sources: string[]) => {
   switch(rule.type) {
     case CSSRuleType.STYLE_RULE: {
-      const { selectorText, style, source } = rule as CSSStyleRule;
+      const { type, id, selectorText, style, source } = rule as CSSStyleRule;
       const decl = [];
       for (const key in style) {
         decl.push([key, style[key]]);
       }
 
       return [
-        rule.type,
+        type,
+        id,
         compressSource(source, sources),
         selectorText,
+        style.id,
         decl
       ]
     }
     case CSSRuleType.MEDIA_RULE: {
-      const { conditionText, source, rules } = rule as CSSMediaRule;
+      const { type, id, conditionText, source, rules } = rule as CSSMediaRule;
       return [
-        rule.type,
+        type,
+        id, 
         compressSource(source, sources),
         rules.map(rule => compressStyleRule(rule, sources))
       ]
@@ -109,21 +113,23 @@ export const uncompressDocument = ([sources, node]: CompressionResult): BaseNode
 const uncompressNode = (node: any, sources: string[]) => {
   switch(node[0]) {
     case NodeType.TEXT: {
-      const [type, source, value] = node;
+      const [type, id, source, value] = node;
       return {
         type,
+        id,
         source: uncompressSource(source, sources),
         value,
       } as TextNode
     }
     case NodeType.ELEMENT: {
-      const [type, source, tagName, attributes, shadow, childNodes] = node;
+      const [type, id, source, tagName, attributes, shadow, childNodes] = node;
       const atts: ElementAttribute[] = [];
       for (const [name, value] of attributes) {
         atts.push({ name, value });
       }
       let base = {
         type,
+        id,
         tagName, 
         attributes: atts,
         source: uncompressSource(source, sources),
@@ -134,16 +140,17 @@ const uncompressNode = (node: any, sources: string[]) => {
       if (tagName === "style") {
         base = {
           ...base,
-          sheet: uncompressStyleSheet(node[6], sources)
+          sheet: uncompressStyleSheet(node[7], sources)
         } as StyleElement;
       }
       return base;
     }
     case NodeType.DOCUMENT_FRAGMENT: 
     case NodeType.DOCUMENT: {
-      const [type, source, childNodes] = node;
+      const [type, id, source, childNodes] = node;
       return {
         type,
+        id,
         source: uncompressSource(source, sources),
         childNodes: childNodes.map(child => uncompressNode(child, sources))
       } as ParentNode;
@@ -151,8 +158,9 @@ const uncompressNode = (node: any, sources: string[]) => {
   }
 };
 
-const uncompressStyleSheet = ([type, source, rules]: any, sources: string[]): CSSStyleSheet => {
+const uncompressStyleSheet = ([type, id, source, rules]: any, sources: string[]): CSSStyleSheet => {
   return {
+    id,
     type,
     source: uncompressSource(source, sources),
     rules: rules.map(rule => uncompressCSSRule(rule, sources))
@@ -161,23 +169,27 @@ const uncompressStyleSheet = ([type, source, rules]: any, sources: string[]): CS
 const uncompressCSSRule = (rule: any, sources: string[]) => {
   switch(rule[0]) {
     case CSSRuleType.STYLE_RULE: {
-      const [type, source, selectorText, decls] = rule;
-      const style: CSSStyleDeclaration = {} as any;
+      const [type, id, source, selectorText, styleId, decls] = rule;
+      const style: CSSStyleDeclaration = {
+        id: styleId
+      } as any;
       for (let i = 0, {length} = decls; i < length; i++) {
         const [key, value] = decls[i];
         style[key] = value;
       }
       return {
         type,
+        id,
         source: uncompressSource(source, sources),
         selectorText,
         style
       }
     }
     case CSSRuleType.MEDIA_RULE: {
-      const [type, source, conditionText, rules] = rule;
+      const [type, id, source, conditionText, rules] = rule;
       return {
         type,
+        id,
         source: uncompressSource(source, sources),
         conditionText,
         rules: rules.map(rule => uncompressCSSRule(rule, sources))
