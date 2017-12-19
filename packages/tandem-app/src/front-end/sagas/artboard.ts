@@ -3,7 +3,7 @@ import { take, spawn, fork, select, call, put } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll } from "../actions";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED } from "../actions";
 import { getComponentPreview } from "../utils";
 import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate } from "../state";
 
@@ -22,6 +22,7 @@ export function* artboardSaga() {
   yield fork(handleResized);
   yield fork(handleScroll);
   yield fork(handleSyncScroll);
+  yield fork(handleArtboardSizeChanges);
 }
 
 function* handleLoadAllArtboards() {
@@ -60,9 +61,29 @@ function* handleArtboardRendered() {
 
       // delay for a bit to ensure that the DOM nodes are painted. This is a dumb quick fix that may be racy sometimes. 
       yield call(delay, COMPUTE_DOM_INFO_DELAY);
-      yield put(artboardDOMComputedInfo(artboardId, computedDOMInfo(artboard.nativeNodeMap)));
+      yield call(recomputeArtboardInfo, artboard);
     });
   }
+}
+
+function* handleArtboardSizeChanges() {
+  // handle full screen
+  yield fork(function*() {
+    while(1) {
+      yield take([FULL_SCREEN_SHORTCUT_PRESSED, LOADED_SAVED_STATE, CANVAS_MOTION_RESTED]);
+      const state: ApplicationState = yield select();
+      const workspace = getSelectedWorkspace(state);
+      
+      // just reload everything for now
+      for (const artboard of workspace.artboards) {
+        yield call(recomputeArtboardInfo, artboard);
+      }
+    }
+  })
+}
+
+function* recomputeArtboardInfo(artboard: Artboard) {
+  yield put(artboardDOMComputedInfo(artboard.$id, computedDOMInfo(artboard.nativeNodeMap)));
 }
 
 function* reloadArtboard(artboardId: string) {
