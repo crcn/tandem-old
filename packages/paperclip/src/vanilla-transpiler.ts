@@ -355,6 +355,7 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
     });
     content += `$$previews["${id}"]["${name}"] = () => {` +
       decl.content +
+      decl.bindings.map((binding) => binding) +
       `return ${decl.varName};` +
     `};` 
   });

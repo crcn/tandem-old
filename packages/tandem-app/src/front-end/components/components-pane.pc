@@ -106,19 +106,49 @@
   </template>
   <preview name="main">
     <td-components-pane dispatch onAddComponentClick components=[[bind [
-    {
-      label: "Component1",
-      $id: null,
-      dispatch: null,
-      onDragStart: null,
-      onDragEnd: null,
-      onClick: null,
-      screenshotScale: 1,
-      screenshot: {
-        clip: null,
-        uri: null
-      }
-    }
-  ]]] />
+          { 
+            $id: null,
+            onDragStart: null,
+            onDragEnd: null,
+            onClick: null,
+            label: "div", 
+            screenshot: {
+              uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
+              clip: { left: 0, top: 0, right: 900, bottom: 400 }
+            },
+            screenshotScale: 0.07
+          },
+          { 
+            $id: null,
+            onDragStart: null,
+            onDragEnd: null,
+            onClick: null,
+            label: "h2", 
+            screenshot: {
+              uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
+              clip: { left: 0, top: 0, right: 900, bottom: 400 }
+            },
+            screenshotScale: 0.07
+          },
+          { 
+            $id: null,
+            onDragStart: null,
+            onDragEnd: null,
+            onClick: null,
+            label: "h3", 
+            hovering: true,
+            screenshot: {
+              uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
+              clip: { left: 0, top: 0, right: 900, bottom: 400 }
+            },
+            screenshotScale: 0.07
+          },
+          { label: "h4", hovering: true, $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "span", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "form", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "input", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "ul", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null }
+        ]]] />
   </preview>
 </component>
