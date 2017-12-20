@@ -4,6 +4,8 @@ RESEARCH:
 
 IMMEDIATE:
 
+- [ ] prefix slim objects with Slim - SlimElement, SlimParentNode, SlimCSSStyleRule
+- [ ] query selector testing
 - [ ] ensure that components can be launched from vscode
 - [ ] ARTBOARD_SELECTION_SHIFTED rewire
 - [ ] ARTBOARD_FOCUSED rewire

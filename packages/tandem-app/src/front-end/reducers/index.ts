@@ -218,7 +218,6 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     case LOADED_SAVED_STATE: {
       const { state: newState } = event as LoadedSavedState;
       state = merge({}, state, JSON.parse(JSON.stringify(newState)));
-      const workspace = getSelectedWorkspace(state);
       break;
     }
     

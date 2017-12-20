@@ -1,3 +1,5 @@
+
+// TODO - change this to NativeNodeType, shove all VM Objects within same type
 export enum NodeType {
   ELEMENT = 1,
   TEXT= 3,
@@ -6,6 +8,7 @@ export enum NodeType {
 };
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CSSRule#Type_constants
+// TODO - change to NativeCSSRuleType - show actual types in VMObjectType
 export enum CSSRuleType {
   STYLE_SHEET = 99,
   STYLE_RULE = 1,
