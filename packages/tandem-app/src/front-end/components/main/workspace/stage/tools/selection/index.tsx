@@ -37,7 +37,8 @@ const  SelectionBounds = ({ workspace, zoom }: { workspace: Workspace, zoom: nu
 };
 
 export const  SelectionStageToolBase = ({ workspace, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
-  const selection = getBoundedWorkspaceSelection(workspace);     
+  const selection = getBoundedWorkspaceSelection(workspace);    
+  console.log(selection) ;
   if (!selection.length || workspace.stage.secondarySelection) return null;
 
   return <div className="m-stage-selection-tool" tabIndex={-1} onDoubleClick={onDoubleClick}>

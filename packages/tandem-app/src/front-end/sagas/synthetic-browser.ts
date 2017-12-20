@@ -70,8 +70,8 @@ import {
   STAGE_TOOL_OVERLAY_MOUSE_PANNING,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
   STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
-  OpenExternalWindowsRequested,
-  OPEN_EXTERNAL_WINDOWS_REQUESTED
+  OpenArtboardsRequested,
+  OPEN_ARTBOARDS_REQUESTED
 } from "front-end/actions";
 
 export function* frontEndSyntheticBrowserSaga() {
@@ -200,7 +200,7 @@ function* handleFileChanged() {
 
 function* handleOpenExternalArtboardsRequested() {
   while(true) {
-    const { artboardInfo }: OpenExternalWindowsRequested = yield take(OPEN_EXTERNAL_WINDOWS_REQUESTED);
+    const { artboardInfo }: OpenArtboardsRequested = yield take(OPEN_ARTBOARDS_REQUESTED);
 
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);

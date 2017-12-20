@@ -6,9 +6,6 @@ IMMEDIATE:
 
 - [ ] prefix slim objects with Slim - SlimElement, SlimParentNode, SlimCSSStyleRule
 - [ ] query selector testing
-- [ ] ensure that components can be launched from vscode
-- [ ] ARTBOARD_SELECTION_SHIFTED rewire
-- [ ] ARTBOARD_FOCUSED rewire
 
 - [ ] front-end needs to use saga for virt windows
 - [ ] front-end needs to load assoc ASTs for selected elements
@@ -20,8 +17,6 @@ IMMEDIATE:
 
 - [ ] fix outstanding errors in PC components
 - [ ] Remove VSCode bugs (try to break)
-- [ ] slim dom impl
-- [ ] vscode highlight over preview tag instead of component
 
 - [ ] CSS Inspector
 

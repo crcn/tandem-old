@@ -3,8 +3,8 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openTandemWindowsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp } from "../actions";
-import { parseModuleSource, loadModuleAST, Module } from "paperclip";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openArtboardsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp } from "../actions";
+import { parseModuleSource, loadModuleAST, Module, getPCStartTagAttribute } from "paperclip";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime, TandemEditorReadyStatus } from "../state";
 import { isPaperclipFile, waitForFEConnected, requestOpenTandemIfDisconnected } from "../utils";
@@ -369,16 +369,16 @@ function* handleOpenCurrentFileInTandem() {
       continue;
     }
 
-    const uris = componentIds.map((id) => `/components/${id}/preview`);
+    // null provided for default preview (first one)
+    const artboardInfo = componentIds.map((id) => [id, null]);
 
     yield call(requestOpenTandemIfDisconnected);
-
-    yield put(openTandemWindowsRequested(uris));    
+    yield put(openArtboardsRequested(artboardInfo));    
   }
 }
-const ALL_COMPONENTS_LABEL = "All components in this file";
+const ALL_COMPONENTS_LABEL = "All components with previews in file";
 function* pickComponentIds(module: Module) {
-  const componentIds = module.components.map(component => component.id);
+  const componentIds = module.components.filter(component => component.previews.length).map(component => component.id);
   if (componentIds.length === 1) {
     return componentIds;
   }

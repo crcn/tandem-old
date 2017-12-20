@@ -490,7 +490,13 @@ export const getWorkspaceItemBounds = weakMemo((value: any, workspace: Workspace
 
 export const moveArtboardToBestPosition = (artboard: Artboard, state: ApplicationState) => {
   const workspace = getSelectedWorkspace(state);
-  const bounds = getArtboardBounds(workspace);
+  const bounds = workspace.artboards.length ? getArtboardBounds(workspace) : {
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0
+  };
+
   return {
     ...artboard,
     bounds: {

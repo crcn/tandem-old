@@ -440,8 +440,5 @@
   <preview name="main" width="1024" height="768">
     <td-workspace workspace=[[bind null]] />
   </preview>
-  <preview name="mini" width="400" height="100">
-    <td-workspace workspace=[[bind null]] />
-  </preview>
 </component>
 

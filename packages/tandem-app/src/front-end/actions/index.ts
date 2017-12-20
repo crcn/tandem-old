@@ -35,7 +35,7 @@ export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
 export const FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED   = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
-export const OPEN_EXTERNAL_WINDOWS_REQUESTED = "OPEN_EXTERNAL_WINDOWS_REQUESTED";
+export const OPEN_ARTBOARDS_REQUESTED = "OPEN_ARTBOARDS_REQUESTED";
 export const FILE_REMOVED = "FILE_REMOVED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
 export const COMPONENTS_PANE_ADD_COMPONENT_CLICKED = "COMPONENTS_PANE_ADD_COMPONENT_CLICKED";
@@ -204,7 +204,7 @@ export type BreadcrumbItemClicked = {
   artboardId: string;
 } & BaseEvent;
 
-export type OpenExternalWindowsRequested = {
+export type OpenArtboardsRequested = {
   artboardInfo: Array<string[]>
 } & BaseEvent;
 

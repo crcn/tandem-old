@@ -104,8 +104,8 @@ import {
   TreeNodeLabelClicked,
   ArtboardPaneRowClicked,
   SelectorDoubleClicked,
-  OPEN_EXTERNAL_WINDOWS_REQUESTED,
-  OpenExternalWindowsRequested,
+  OPEN_ARTBOARDS_REQUESTED,
+  OpenArtboardsRequested,
   DeleteShortcutPressed,
   StageWillWindowKeyDown,
   BREADCRUMB_ITEM_MOUSE_ENTER,
@@ -835,9 +835,12 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       }
 
       const workspace = getSelectedWorkspace(state);
-      return updateWorkspace(state, workspace.$id, {
+      state = updateWorkspace(state, workspace.$id, {
         artboards: [...workspace.artboards, artboard]
-      })
+      });
+      
+      state = setWorkspaceSelection(state, workspace.$id, getStructReference(artboard));
+      return state;
     }
   }
   return state;

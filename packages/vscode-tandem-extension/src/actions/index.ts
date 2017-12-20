@@ -16,7 +16,7 @@ export const TANDEM_FE_CONNECTIVITY = "TANDEM_FE_CONNECTIVITY";
 export const SOCKET_CLIENT_CONNECTED = "SOCKET_CLIENT_CONNECTED";
 export const START_DEV_SERVER_REQUESTED = "START_DEV_SERVER_REQUESTED";
 export const ACTIVE_TEXT_EDITOR_CHANGED = "ACTIVE_TEXT_EDITOR_CHANGED";
-export const OPEN_EXTERNAL_WINDOWS_REQUESTED = "OPEN_EXTERNAL_WINDOWS_REQUESTED";
+export const OPEN_ARTBOARDS_REQUESTED = "OPEN_ARTBOARDS_REQUESTED";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 export const OPEN_FILE_REQUESTED = "OPEN_FILE_REQUESTED";
 export const OPEN_TANDEM_EXECUTED = "OPEN_TANDEM_EXECUTED";
@@ -57,8 +57,8 @@ export type OpenFileRequested = {
   source: VMObjectExpressionSource|string
 } & Action;
 
-export type OpenTandemWindowsRequested = {
-  uris: string[];
+export type OpenArtboardsRequested = {
+  artboardInfo: Array<string[]>;
   type: string;
   $public: true
 } & Action;
@@ -138,9 +138,9 @@ export const insertNewComponentExecuted = () => ({
   type: CREATE_INSERT_NEW_COMPONENT_EXECUTED
 });
 
-export const openTandemWindowsRequested = (uris: string[]): OpenTandemWindowsRequested => ({
-  type: OPEN_EXTERNAL_WINDOWS_REQUESTED,
-  uris,
+export const openArtboardsRequested = (artboardInfo: Array<string[]>): OpenArtboardsRequested => ({
+  type: OPEN_ARTBOARDS_REQUESTED,
+  artboardInfo,
   $public: true
 });
 
