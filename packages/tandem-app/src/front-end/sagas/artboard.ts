@@ -1,5 +1,5 @@
 import { uncompressDocument, renderDOM, computedDOMInfo, ParentNode } from "slim-dom";
-import { take, spawn, fork, select, call, put } from "redux-saga/effects";
+import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";

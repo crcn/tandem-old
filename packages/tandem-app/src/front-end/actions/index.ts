@@ -12,6 +12,7 @@ export const PROMPTED_NEW_WINDOW_URL     = "PROMPTED_NEW_WINDOW_URL";
 export const KEYBOARD_SHORTCUT_ADDED     = "KEYBOARD_SHORTCUT_ADDED";
 export const DELETE_SHORCUT_PRESSED      = "DELETE_SHORCUT_PRESSED";
 export const FULL_SCREEN_SHORTCUT_PRESSED = "FULL_SCREEN_SHORTCUT_PRESSED";
+export const WINDOW_RESIZED = "WINDOW_RESIZED";
 export const EMPTY_WINDOWS_URL_ADDED = "EMPTY_WINDOWS_URL_ADDED";
 export const ZOOM_IN_SHORTCUT_PRESSED = "ZOOM_IN_SHORTCUT_PRESSED";
 export const ZOOM_OUT_SHORTCUT_PRESSED = "ZOOM_OUT_SHORTCUT_PRESSED";
@@ -58,6 +59,7 @@ export const DOWN_KEY_UP = "DOWN_KEY_UP";
 export const UP_KEY_DOWN = "UP_KEY_DOWN";
 export const UP_KEY_UP = "UP_KEY_UP";
 export const LEFT_KEY_DOWN = "LEFT_KEY_DOWN";
+export const STAGE_RESIZED = "STAGE_RESIZED";
 export const LEFT_KEY_UP = "LEFT_KEY_UP";
 export const RIGHT_KEY_DOWN = "RIGHT_KEY_DOWN";
 export const RIGHT_KEY_UP = "RIGHT_KEY_UP";
@@ -303,6 +305,13 @@ export type ArtboardMountLoaded = {
   
 } & BaseEvent;
 
+export type WindowResized = {
+  width: number;
+  height: number;
+} & BaseEvent;
+
+export type StageResized = WindowResized;
+
 export type ArtboardCreated = {
   artboard: Artboard;
 } & BaseEvent;  
@@ -421,6 +430,18 @@ export const artboardLoaded = (artboardId, dependencyUris: string[], document: P
   document, 
   dependencyUris,
   mount
+});
+
+export const windowResized = (width: number, height: number): WindowResized => ({
+  type: WINDOW_RESIZED,
+  width,
+  height
+});
+
+export const stageResized = (width: number, height: number): StageResized => ({
+  type: STAGE_RESIZED,
+  width,
+  height
 });
 
 export const artboardRendered = (artboardId: string, nativeNodeMap: DOMNodeMap): ArtboardRendered => ({

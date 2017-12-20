@@ -13,8 +13,10 @@ import {
   FileRemoved,
   FILE_REMOVED,
   LEFT_KEY_DOWN,
+  stageResized,
   LEFT_KEY_UP,
   RIGHT_KEY_DOWN,
+  WINDOW_RESIZED,
   RIGHT_KEY_UP,
   API_COMPONENTS_LOADED,
   UP_KEY_DOWN,
@@ -39,6 +41,7 @@ import {
   dndHandled,
   DNDEvent,
   deleteShortcutPressed,
+  LOADED_SAVED_STATE,
   artboardCreated,
   apiComponentsLoaded ,
   OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED,
@@ -114,6 +117,7 @@ export function* mainWorkspaceSaga() {
   yield fork(handleOpenExternalWindowButtonClicked);
   yield fork(handleDNDEnded);
   yield fork(handleComponentsPaneEvents);
+  yield fork(handleStageContainerResize);
 }
 
 function* openDefaultWindow() {
@@ -496,4 +500,17 @@ function* handleDeleteComponentsPane() {
       }
     }
   } 
+}
+
+function* handleStageContainerResize() {
+  while(1) {
+    yield take([LOADED_SAVED_STATE, WINDOW_RESIZED]);
+    const state: ApplicationState = yield select();
+    const workspace = getSelectedWorkspace(state);
+    if (!workspace.stage.container) {
+      continue;
+    }
+    const { width, height } = workspace.stage.container.getBoundingClientRect();
+    yield put(stageResized(width, height));
+  }
 }

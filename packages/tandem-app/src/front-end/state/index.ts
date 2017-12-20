@@ -556,6 +556,18 @@ export const updateArtboard = (state: ApplicationState, artboardId: string, prop
   })
 };
 
+export const updateArtboardSize = (state: ApplicationState, artboardId: string, width: number, height: number) => {
+  const artboard = getArtboardById(artboardId, state);
+  return updateArtboard(state, artboardId, {
+    bounds: {
+      left: artboard.bounds.left,
+      top: artboard.bounds.top,
+      right: artboard.bounds.left + width,
+      bottom: artboard.bounds.top + height
+    }
+  });
+};
+
 export const removeArtboard = (artboardId: string, state: ApplicationState) => {
   const workspace = getArtboardWorkspace(artboardId, state);
   const artboard = getArtboardById(artboardId, workspace);

@@ -43,6 +43,7 @@ import {
   ApplicationState,
   removeArtboard,
   getArtboardById,
+  updateArtboardSize,
   moveArtboardToBestPosition,
   getArtboardWorkspace,
   getStageTranslate,
@@ -108,6 +109,10 @@ import {
   StageWillWindowKeyDown,
   BREADCRUMB_ITEM_MOUSE_ENTER,
   ARTBOARD_SCROLL,
+  WINDOW_RESIZED,
+  WindowResized,
+  StageResized,
+  STAGE_RESIZED,
   ArtboardScroll,
   BREADCRUMB_ITEM_MOUSE_LEAVE,
   CSS_DECLARATION_TITLE_MOUSE_ENTER,
@@ -212,14 +217,16 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     case LOADED_SAVED_STATE: {
       const { state: newState } = event as LoadedSavedState;
       state = merge({}, state, JSON.parse(JSON.stringify(newState)));
-      return state;
+      const workspace = getSelectedWorkspace(state);
+      break;
     }
     
     case TREE_NODE_LABEL_CLICKED: {
       const { node } = event as TreeNodeLabelClicked;
-      return updateWorkspace(state, state.selectedWorkspaceId, {
+      state = updateWorkspace(state, state.selectedWorkspaceId, {
         selectedFileId: node.$id
       });
+      break;
     }
 
     case TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED: {
@@ -228,7 +235,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
       const item = getNestedObjectById(itemId, artboard.document);
       const workspace = getArtboardWorkspace(artboard.$id, state);;
       state = toggleWorkspaceTargetCSSSelector(state, workspace.$id, item.source.uri, (item as any as SyntheticCSSStyleRule).selectorText);
-      return state;
+      break;
     }
   }
   
@@ -604,7 +611,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
       // do not center if in full screen mode
       if (workspace.stage.fullScreen) {
-        return state;
+        return updateArtboardSize(state, workspace.stage.fullScreen.artboardId, width, height);
       }
 
       return centerSelectedWorkspace(state);
@@ -801,6 +808,11 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
+    case STAGE_RESIZED: {
+      const { width, height } = event as StageResized;
+      return resizeFullScreenArtboard(state, width, height);
+    }
+
     case REMOVED: {
       const { itemId, itemType } = event as Removed;
       if (itemType === ARTBOARD) {
@@ -876,6 +888,16 @@ const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseE
   const { sourceEvent } = event;
   const workspace = getSelectedWorkspace(state);
   return setWorkspaceSelection(state, workspace.$id, ref);
+}
+
+const resizeFullScreenArtboard = (state: ApplicationState, width: number, height: number) => {
+  const workspace = getSelectedWorkspace(state);
+  if (workspace.stage.fullScreen && workspace.stage.container) {
+
+    // TODO - do not all getBoundingClientRect here. Dimensions need to be 
+    return updateArtboardSize(state, workspace.stage.fullScreen.artboardId, width, height);
+  }
+  return state;
 }
 
 const normalizeZoom = (zoom) => {
