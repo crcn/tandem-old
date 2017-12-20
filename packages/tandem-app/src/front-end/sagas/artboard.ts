@@ -3,9 +3,9 @@ import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED } from "../actions";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused } from "../actions";
 import { getComponentPreview } from "../utils";
-import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate } from "../state";
+import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard } from "../state";
 import { debounce } from "lodash";
 
 const COMPUTE_DOM_INFO_DELAY = 500;
@@ -24,6 +24,7 @@ export function* artboardSaga() {
   yield fork(handleScroll);
   yield fork(handleSyncScroll);
   yield fork(handleArtboardSizeChanges);
+  yield fork(handleOpenExternalArtboardsRequested);
 }
 
 function* handleLoadAllArtboards() {
@@ -194,4 +195,33 @@ function* spring(start: number, velocityY: number, iterate: Function, damp: numb
     yield tick();
   }
   yield tick();
+}
+
+function* handleOpenExternalArtboardsRequested() {
+  while(true) {
+    const { artboardInfo }: OpenArtboardsRequested = yield take(OPEN_ARTBOARDS_REQUESTED);
+
+    const state: ApplicationState = yield select();
+    const workspace = getSelectedWorkspace(state);
+    // const browser = getSyntheticBrowser(state, workspace.browserId);
+
+    let lastExistingArtboard;
+
+    // TODO
+    for (const [componentId, previewName] of artboardInfo) {
+      const existingArtboard = workspace.artboards.find((artboard) => artboard.componentId === componentId && (!previewName || artboard.previewName === previewName));
+      if (existingArtboard) {
+        lastExistingArtboard = existingArtboard;
+        continue;
+      }
+      yield put(artboardCreated(lastExistingArtboard = createArtboard({
+        componentId,
+        previewName
+      })))
+    }
+
+    if (lastExistingArtboard) {
+      yield put(artboardFocused(lastExistingArtboard.$id));
+    }
+  }
 }

@@ -1,22 +1,7 @@
-RESEARCH:
-
-- [ ] spread prop for react. Why? Why not?
-
 IMMEDIATE:
 
 - [ ] prefix slim objects with Slim - SlimElement, SlimParentNode, SlimCSSStyleRule
 - [ ] query selector testing
-
-- [ ] front-end needs to use saga for virt windows
-- [ ] front-end needs to load assoc ASTs for selected elements
-
-- [ ] prop inferencing for css styles (needed for things like transpiling)
-  - [ ] auto flag for if statement
-- [ ] make vscode extension rock solid
-- [ ] better d.ts generation - need to use templates for child components.
-
-- [ ] fix outstanding errors in PC components
-- [ ] Remove VSCode bugs (try to break)
 
 - [ ] CSS Inspector
 
@@ -67,6 +52,10 @@ HIGH PRIO:
     - [ ] `:root` inspecting
   - [ ] Guides
     - [ ] snap DND
+
+LOW PRIO:
+
+- [ ] remove synthetic browser impl
 
 POSSIBLY:
 

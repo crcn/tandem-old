@@ -84,7 +84,6 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleCSSDeclarationChanges);
   yield fork(handleWatchWindowResource);
   yield fork(handleFileChanged);
-  yield fork(handleOpenExternalArtboardsRequested);
 }
 
 function* handleEmptyWindowsUrlAdded() {
@@ -194,37 +193,6 @@ function* handleFileChanged() {
       if (shouldReload) {
         window.instance.location.reload();
       }
-    }
-  }
-}
-
-function* handleOpenExternalArtboardsRequested() {
-  while(true) {
-    const { artboardInfo }: OpenArtboardsRequested = yield take(OPEN_ARTBOARDS_REQUESTED);
-
-    const state: ApplicationState = yield select();
-    const workspace = getSelectedWorkspace(state);
-    // const browser = getSyntheticBrowser(state, workspace.browserId);
-
-    let openedNewWindow = false;
-    let lastExistingArtboard;
-
-    // TODO
-    for (const [componentId, previewName] of artboardInfo) {
-      const existingArtboard = workspace.artboards.find((artboard) => artboard.componentId === componentId && (!previewName || artboard.previewName === previewName));
-      if (existingArtboard) {
-        lastExistingArtboard = existingArtboard;
-        continue;
-      }
-      openedNewWindow = true;
-      yield put(artboardCreated(createArtboard({
-        componentId,
-        previewName
-      })))
-    }
-
-    if (!openedNewWindow && lastExistingArtboard) {
-      yield put(artboardFocused(lastExistingArtboard.$id));
     }
   }
 }

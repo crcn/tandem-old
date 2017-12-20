@@ -109,6 +109,8 @@ export const APPLICATION_STATE = "APPLICATION_STATE";
 export const LIBRARY_COMPONENT = "LIBRARY_COMPONENT";
 export const ARTBOARD = "ARTBOARD";
 
+const ARTBOARD_PADDING = 10;
+
 export const DEFAULT_ARTBOARD_SIZE = {
   width: 1024,
   height: 768
@@ -500,10 +502,10 @@ export const moveArtboardToBestPosition = (artboard: Artboard, state: Applicatio
   return {
     ...artboard,
     bounds: {
-      left: bounds.right,
-      top: bounds.top,
-      right: bounds.left + DEFAULT_ARTBOARD_SIZE.width,
-      bottom: bounds.top + DEFAULT_ARTBOARD_SIZE.height
+      left: ARTBOARD_PADDING + bounds.right,
+      top: ARTBOARD_PADDING + bounds.top,
+      right: ARTBOARD_PADDING + bounds.right + DEFAULT_ARTBOARD_SIZE.width,
+      bottom: ARTBOARD_PADDING + bounds.top + DEFAULT_ARTBOARD_SIZE.height
     }
   }
 }

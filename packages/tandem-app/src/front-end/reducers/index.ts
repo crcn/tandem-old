@@ -840,6 +840,8 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       });
       
       state = setWorkspaceSelection(state, workspace.$id, getStructReference(artboard));
+
+
       return state;
     }
   }
