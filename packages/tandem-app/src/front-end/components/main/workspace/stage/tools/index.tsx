@@ -35,12 +35,12 @@ export const ToolsLayerBase = ({ workspace, dispatch, translate }: ToolsProps) =
     <GridStageTool translate={translate} />
     <NodeOverlaysTool zoom={translate.zoom} workspace={workspace} dispatch={dispatch} />
     {/* <BoxModelStageTool zoom={translate.zoom} workspace={workspace} /> */}
-    <SelectionStageTool zoom={translate.zoom} workspace={workspace}  dispatch={dispatch} />
+    { workspace.stage.smooth ? null : <SelectionStageTool zoom={translate.zoom} workspace={workspace}  dispatch={dispatch} /> }
 
     { windowElement }
     {/* <StaticPositionStageTool zoom={translate.zoom} workspace={workspace} browser={browser} /> */}
     {/* <EditTextTool zoom={translate.zoom} workspace={workspace}  browser={browser} dispatch={dispatch} /> */}
-    {/* <AffectedNodesTool zoom={translate.zoom} workspace={workspace} browser={browser} /> */}
+    <AffectedNodesTool zoom={translate.zoom} workspace={workspace} />
   </div>;
 }
 

@@ -4,13 +4,9 @@ RESEARCH:
 
 IMMEDIATE:
 
-- [ ] artboards must be movable
-- [ ] full screen mode must resize artboard with window
-- [ ] selectable artboards
 - [ ] ensure that components can be launched from vscode
 - [ ] ARTBOARD_SELECTION_SHIFTED rewire
 - [ ] ARTBOARD_FOCUSED rewire
-- [ ] Full screen mode when selected elements
 
 - [ ] front-end needs to use saga for virt windows
 - [ ] front-end needs to load assoc ASTs for selected elements

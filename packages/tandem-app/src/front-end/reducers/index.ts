@@ -40,6 +40,7 @@ import {
   updateArtboard,
   updateWorkspace,
   getWorkspaceById,
+  getNodeArtboard,
   ApplicationState,
   removeArtboard,
   getArtboardById,
@@ -325,7 +326,7 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
       const workspace = getSelectedWorkspace(state);
       const selection = workspace.selectionRefs[0];
 
-      const artboardId = selection ? selection[0] === ARTBOARD ? selection[1] : getSyntheticNodeWindow(state, selection[1]) && getSyntheticNodeWindow(state, selection[1]).$id : null;
+      const artboardId = selection ? selection[0] === ARTBOARD ? selection[1] : getNodeArtboard(selection[1], state) && getNodeArtboard(selection[1], state).$id : null;
 
       if (artboardId && !workspace.stage.fullScreen) {
         const artboard = getArtboardById(artboardId, state);

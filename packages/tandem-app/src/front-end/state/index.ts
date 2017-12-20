@@ -36,7 +36,7 @@ import {
   createImmutableStructFactory,
 } from "aerial-common2";
 
-import { BaseNode, ParentNode, CSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById } from "slim-dom";
+import { Element, BaseNode, ParentNode, CSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById } from "slim-dom";
 
 import {
  AvailableComponent
@@ -167,7 +167,7 @@ export type Artboard = {
   componentId: string;
   previewName: string;
   document?: ParentNode;
-  mount?: HTMLElement;
+  mount?: HTMLIFrameElement;
   nativeNodeMap?: DOMNodeMap;
 } & Struct;
 
@@ -370,7 +370,7 @@ export const addWorkspace = (root: ApplicationState, workspace: Workspace) => {
   };
 }
 
-export const filterMatchingTargetSelectors = weakMemo((targetCSSSelectors: TargetSelector[], element: SyntheticElement, window: SyntheticWindow) => filterApplicableTargetSelectors(targetCSSSelectors, window).filter((rule) => elementMatches(rule.value, element, window)));
+export const filterMatchingTargetSelectors = weakMemo((targetCSSSelectors: TargetSelector[], element: any, document: any) => filterApplicableTargetSelectors(targetCSSSelectors, document).filter((rule) => elementMatches(rule.value, element, document)));
 
 const filterApplicableTargetSelectors = weakMemo((selectors: TargetSelector[], window: SyntheticWindow): TargetSelector[] => {
   const map = {};
@@ -470,6 +470,10 @@ export const getNodeArtboard = weakMemo((nodeId: string, state: Workspace|Applic
   }
 });
 
+export const getWorkspaceNode = weakMemo((nodeId: string, state: Workspace) => {
+  return state.artboards.map(artboard => getNestedObjectById(nodeId, artboard.document)).find(Boolean);
+});
+
 export const getComputedNodeBounds = weakMemo((nodeId: string, artboard: Artboard) => {
   const info = artboard.computedDOMInfo;
   return info[nodeId] && info[nodeId].bounds;
@@ -566,7 +570,7 @@ export const updateArtboardSize = (state: ApplicationState, artboardId: string, 
       bottom: artboard.bounds.top + height
     }
   });
-};
+}
 
 export const removeArtboard = (artboardId: string, state: ApplicationState) => {
   const workspace = getArtboardWorkspace(artboardId, state);

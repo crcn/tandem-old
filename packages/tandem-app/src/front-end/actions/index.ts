@@ -293,7 +293,7 @@ export type ArtboardLoaded = {
   artboardId: string;
   dependencyUris: string[];
   document: ParentNode;
-  mount: HTMLElement;
+  mount: HTMLIFrameElement;
 } & BaseEvent;  
 
 export type ArtboardRendered = {
@@ -424,7 +424,7 @@ export const cssDeclarationCreated = (name: string, value: string, declarationId
   type: CSS_DECLARATION_CREATED
 });
 
-export const artboardLoaded = (artboardId, dependencyUris: string[], document: ParentNode, mount: HTMLElement): ArtboardLoaded => ({
+export const artboardLoaded = (artboardId, dependencyUris: string[], document: ParentNode, mount: HTMLIFrameElement): ArtboardLoaded => ({
   type: ARTBOARD_LOADED,
   artboardId,
   document, 

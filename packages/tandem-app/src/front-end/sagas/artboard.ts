@@ -3,9 +3,10 @@ import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED } from "../actions";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED } from "../actions";
 import { getComponentPreview } from "../utils";
 import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate } from "../state";
+import { debounce } from "lodash";
 
 const COMPUTE_DOM_INFO_DELAY = 500;
 const VELOCITY_MULTIPLIER = 10;
@@ -65,21 +66,24 @@ function* handleArtboardRendered() {
     });
   }
 }
-
+const RESIZE_TIMEOUT = 10;
 function* handleArtboardSizeChanges() {
-  // handle full screen
-  yield fork(function*() {
-    while(1) {
-      yield take([FULL_SCREEN_SHORTCUT_PRESSED, LOADED_SAVED_STATE, CANVAS_MOTION_RESTED]);
-      const state: ApplicationState = yield select();
-      const workspace = getSelectedWorkspace(state);
-      
-      // just reload everything for now
-      for (const artboard of workspace.artboards) {
+
+  while(1) {
+    const { artboardId } = yield take(ARTBOARD_RENDERED);
+    const artboard = getArtboardById(artboardId, yield select());
+    yield fork(function*() {
+      const resizeChan = eventChannel((emit) => {
+        artboard.mount.contentWindow.addEventListener("resize", debounce(emit, RESIZE_TIMEOUT));
+        return () => {};
+      });
+
+      while(1) {
+        yield take(resizeChan);
         yield call(recomputeArtboardInfo, artboard);
       }
-    }
-  })
+    });
+  }
 }
 
 function* recomputeArtboardInfo(artboard: Artboard) {
