@@ -15,29 +15,16 @@ IMMEDIATE:
   - [ ] breadcrumbs
     - [ ] cmd click breadcrumb to view source
     - [ ] scrolling - no line break
-    - [ ] update UI
   - [ ] UX
     - [ ] spinner 
-
-- [ ] slim-browser-vm - replace browser VM - work on speed
-  - [ ] do not have built-in parser
-  - [ ] only work with CSS & HTML objects
-  - [ ] output immutable objects
-  - [ ] designed to run in separate process
-  - [ ] custom renderers
 
 HIGH PRIO:
 
 - [ ] Native elements pane
 
-- [ ] Components pane
-    - [ ] insert preview for elements that do not have one
+- [ ] Components panes
   - [ ] DND elements to other elements
   - [ ] native elements
-
-- [ ] UX
-  - [ ] turn features on / off based on server capabilities
-    - [ ] ability to add or remove components
 
 - [ ] Tandem
   - [ ] Components Pane

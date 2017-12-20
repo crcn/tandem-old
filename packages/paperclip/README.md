@@ -48,11 +48,8 @@ paperclip.bundleVanilla("component.pc", {
 
 #### HIGH PRIO TODOS
 
-- [ ] Remove `property` section - use type inferencing for this.
-- [ ] transpile preview as function
 - [ ] Linting
-  - Warning for components that do not have `<preview />` tag
-- [ ] linting errors need to be traced back to their source value   
+  - Warning for components that do not have `<preview />` tag  
 
 #### LOW PRIO CORE TODOS
 
