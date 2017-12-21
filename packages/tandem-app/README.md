@@ -1,6 +1,6 @@
 IMMEDIATE:
 
-- [ ] prefix slim objects with Slim - SlimElement, SlimParentNode, SlimCSSStyleRule
+- [ ] diff/patch for slim-dom 
 - [ ] query selector testing
 
 - [ ] diff/patch code for previews
