@@ -185,6 +185,7 @@ export const getComponentScreenshot = (componentId: string, previewName: string,
   const ss = state.componentScreenshots[state.componentScreenshots.length - 1];
   const clippingNamespace = getPreviewClippingNamespace(componentId, previewName);
   return ss && ss.clippings[clippingNamespace] && {
+    previewName,
     uri: `http://localhost:${state.options.port}/screenshots/${md5(state.componentScreenshots[state.componentScreenshots.length - 1].uri)}`,
     clip: ss.clippings[clippingNamespace]
   };

@@ -30,7 +30,19 @@ type ComponentsPaneCellInnerProps = {
 const enhanceComponentsPaneCell = compose<TdComponentsPaneCellInnerProps, ComponentsPaneCellOuterProps>(
   pure,
   withDragSource({
-    getData: ({ tagName }: ComponentsPaneCellOuterProps) => [AVAILABLE_COMPONENT, tagName]
+    getData: ({ tagName }: ComponentsPaneCellOuterProps) => [AVAILABLE_COMPONENT, tagName],
+    start: (props: ComponentsPaneCellOuterProps) => (event: React.DragEvent<any>) => {
+      if (props.screenshots.length) {
+        const screenshot = props.screenshots
+        [0];
+
+        // TODO - this isn't working for now
+        const nativeEvent = event.nativeEvent;
+        const image = new Image();
+        image.src = `/components/${props.tagName}/screenshots/${screenshot.previewName}/latest.png`;
+        nativeEvent.dataTransfer.setDragImage(image, 0, 0);
+      }
+    }
   }),
   withHandlers({
     onClick: ({ dispatch, tagName }: ComponentsPaneCellOuterProps) => (event) => {

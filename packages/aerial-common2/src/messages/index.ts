@@ -54,7 +54,7 @@ export const stoppedMoving = (itemId: string, itemType: string, targetSelectors?
   type: STOPPED_MOVING
 });
 
-export const removed = (itemId: string, itemType: string): Removed => ({
+export const removed = (itemId: string, itemType: any): Removed => ({
   itemId,
   itemType,
   type: REMOVED

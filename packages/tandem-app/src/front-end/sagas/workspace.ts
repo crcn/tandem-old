@@ -201,7 +201,7 @@ function* handleDeleteKeyPressed() {
     const workspace = getSelectedWorkspace(state);
     for (const [type, id] of workspace.selectionRefs) {
       yield put(workspaceSelectionDeleted(workspace.$id));
-      yield put(removed(id, type));
+      yield put(removed(id, type as any));
 
       if (workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId === id) {
         yield put(fullScreenTargetDeleted());
@@ -249,7 +249,6 @@ function* handleDNDEnded() {
 }
 
 function* handleDroppedOnElement(ref: StructReference, event: DNDEvent) {
-  console.log(ref, event);
 }
 
 function* handleDroppedOnEmptySpace(event: DNDEvent) {

@@ -40,7 +40,7 @@ export type InitOptions = {
 
 export type ApplicationState = {
   options?: InitOptions;
-  graph: DependencyGraph;
+  graph?: DependencyGraph;
   watchUris: string[];
   headlessBrowser?: pupeteer.Browser;
   shouldTakeAnotherScreenshot?: boolean;
@@ -53,6 +53,7 @@ export type RegisteredComponent = {
   label: string;
   location: ExpressionLocation;
   screenshots: Array<{
+    previewName: string;
     uri: string;
     clip: Bounds;
   }>;

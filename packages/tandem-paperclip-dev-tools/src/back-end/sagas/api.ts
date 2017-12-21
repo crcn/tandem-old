@@ -61,7 +61,8 @@ function* addRoutes(server: express.Express) {
   server.get("/components/:componentId/preview/:previewName.json", yield wrapRoute(getComponentJSONPreview));
 
   // return all components
-  server.get("/components/:componentId/screenshots/:previewName/:screenshotHash", yield wrapRoute(getTrimmedComponentScreenshot));
+  server.get("/components/:componentId/screenshots/:previewName/:screenshotHash", yield wrapRoute(getClippedComponentScreenshot));
+  server.get("/components/:componentId/screenshots/:previewName/:screenshotHash.png", yield wrapRoute(getClippedComponentScreenshot));
 
   // create a new component (creates a new module with a single component)
   server.post("/components", yield wrapRoute(createComponent));
@@ -386,10 +387,9 @@ function* getComponentsScreenshot(req: express.Request, res: express.Response, n
   res.sendFile(uri);
 }
 
-function* getTrimmedComponentScreenshot(req: express.Request, res: express.Response, next) {
+function* getClippedComponentScreenshot(req: express.Request, res: express.Response, next) {
   const state = yield select();
   const { componentId, previewName } = req.params;
-  console.log("TRIMMED");
   const { uri } = (yield call(getComponentsScreenshotFromReq, req)) || { uri: null };
 
   const { maxWidth, maxHeight } = req.query;
@@ -438,6 +438,8 @@ function* getTrimmedComponentScreenshot(req: express.Request, res: express.Respo
 
   res.setHeader("Content-Length", buffer.length);
   res.setHeader("Content-Type", "image/png");
+  res.setHeader("Accept-Ranges", "bytes");
+  res.setHeader("Connection", "keep-alive");
 
   res.end(buffer);
 

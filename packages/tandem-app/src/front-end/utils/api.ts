@@ -22,7 +22,6 @@ export const apiWatchUris = async (uris: string[], state: ApplicationState) => {
 
 export const getComponentPreview = async (componentId: string, previewName: string, state: ApplicationState) => {
   const base = `${state.apiHost}/components/${componentId}/preview`;
-  console.log((previewName ? base + "/" + previewName : base) + ".json");
   const response = await fetch((previewName ? base + "/" + previewName : base) + ".json");
 
   return await response.json();

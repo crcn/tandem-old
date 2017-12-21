@@ -10,6 +10,7 @@ export type AvailableComponent = {
   location: ExpressionLocation;
   screenshots: Array<{
     uri: string;
+    previewName: string;
     clip: Bounds
   }>,
   filePath: string;
