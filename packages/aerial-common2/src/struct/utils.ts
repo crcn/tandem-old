@@ -83,7 +83,7 @@ export const createStructFactory = <T>(type: string, defaults: Partial<T> = {}) 
 }
 
 
-export type StructReference = [string, string];
+export type StructReference = [string|number, string];
 
 export const getReferenceString = ({ $id, $type }: Struct) => `${$type}:${$id}`;
 export const getStructReference = ({ $id, $type }: Struct): [string, string] => [$type, $id];

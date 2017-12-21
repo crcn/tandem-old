@@ -5,7 +5,7 @@ import * as Hammer from "react-hammerjs";
 import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
-import { FlattenedObjects, flattenObjects, BaseNode } from "slim-dom";
+import { FlattenedObjects, flattenObjects, SlimBaseNode } from "slim-dom";
 import { compose, pure, withHandlers } from "recompose";
 import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { 
@@ -26,7 +26,7 @@ type ArtboardOverlayToolsOuterProps = {
   dispatch: Dispatcher<any>;
   artboard: Artboard;
   zoom: number;
-  hoveringNodes: BaseNode[];
+  hoveringNodes: SlimBaseNode[];
 };
 
 type ArtboardOverlayToolsInnerProps = {
@@ -40,7 +40,7 @@ type NodeOverlayProps = {
   bounds: Bounds;
   zoom: number;
   hovering: boolean;
-  node: BaseNode;
+  node: SlimBaseNode;
   dispatch: Dispatcher<any>;
 };
 
@@ -122,7 +122,7 @@ const enhanceArtboardOverlayTools = compose<ArtboardOverlayToolsInnerProps, Artb
 const ArtboardOverlayTools = enhanceArtboardOverlayTools(ArtboardOverlayToolsBase);
 
 const getNodes = weakMemo((refs: StructReference[], allNodes: FlattenedObjects) => {
-  return refs.map(([type, id]) => allNodes[id]).filter((flattenedObject) => !!flattenedObject).map(object => object.value as BaseNode)
+  return refs.map(([type, id]) => allNodes[id]).filter((flattenedObject) => !!flattenedObject).map(object => object.value as SlimBaseNode)
 });
 
 const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, artboard: Artboard) => {

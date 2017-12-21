@@ -1,16 +1,16 @@
-import { NodeType, BaseNode, Element, ElementAttribute, ParentNode, VMObjectSource, TextNode, CSSRuleType, CSSGroupingRule, CSSMediaRule, CSSRule, CSSStyleDeclaration, CSSStyleRule, CSSStyleSheet, StyleElement } from "./state";
+import { SlimVMObjectType, SlimBaseNode, SlimElement, SlimElementAttribute, SlimParentNode, VMObjectSource, SlimTextNode, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimStyleElement,  } from "./state";
 
-export type CompressedFragment = [NodeType, any[]];
-export type CompressedTextNode = [NodeType, string];
+export type CompressedFragment = [SlimVMObjectType, any[]];
+export type CompressedTextNode = [SlimVMObjectType, string];
 export type CompressedAttributes = [string, string];
-export type CompressedElement = [NodeType, CompressedAttributes[], any[], any[]];
+export type CompressedElement = [SlimVMObjectType, CompressedAttributes[], any[], any[]];
 export type CompressedNode = any[];
 
 export type CompressionResult = [string[], any];
 
 const memoKey = Symbol();
 
-export const compressDocument = (root: BaseNode): CompressionResult => {
+export const compressDocument = (root: SlimBaseNode): CompressionResult => {
   if (root[memoKey]) {
     return root[memoKey];
   }
@@ -18,11 +18,11 @@ export const compressDocument = (root: BaseNode): CompressionResult => {
   return root[memoKey] = [sources, compressNode(root, sources)] as any;
 };
 
-const compressNode = (node: BaseNode, sourceUris: string[]) => {
+const compressNode = (node: SlimBaseNode, sourceUris: string[]) => {
   switch (node.type) {
-    case NodeType.TEXT: return [node.type, node.id, compressSource(node.source, sourceUris), (node as TextNode).value];
-    case NodeType.ELEMENT: {
-      const { type, id, source, tagName, attributes, shadow, childNodes } = node as Element;
+    case SlimVMObjectType.TEXT: return [node.type, node.id, compressSource(node.source, sourceUris), (node as SlimTextNode).value];
+    case SlimVMObjectType.ELEMENT: {
+      const { type, id, source, tagName, attributes, shadow, childNodes } = node as SlimElement;
       const attribs = [];
       for (const attribute of attributes) {
         attribs.push([attribute.name, attribute.value]);
@@ -38,14 +38,14 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
       ];
 
       if (tagName === "style") {
-        base.push(compressStyleSheet((node as StyleElement).sheet, sourceUris));
+        base.push(compressStyleSheet((node as SlimStyleElement).sheet, sourceUris));
       }
 
       return base;
     }
-    case NodeType.DOCUMENT_FRAGMENT: 
-    case NodeType.DOCUMENT: {
-      const { type, id, source, childNodes } = node as ParentNode;
+    case SlimVMObjectType.DOCUMENT_FRAGMENT: 
+    case SlimVMObjectType.DOCUMENT: {
+      const { type, id, source, childNodes } = node as SlimParentNode;
       return [
         type,
         id,
@@ -56,7 +56,7 @@ const compressNode = (node: BaseNode, sourceUris: string[]) => {
   }
 };
 
-const compressStyleSheet = (sheet: CSSStyleSheet, sources: string[]) => {
+const compressStyleSheet = (sheet: SlimCSSStyleSheet, sources: string[]) => {
   return [
     sheet.type,
     sheet.id,
@@ -65,10 +65,10 @@ const compressStyleSheet = (sheet: CSSStyleSheet, sources: string[]) => {
   ]
 }
 
-const compressStyleRule = (rule: CSSRule, sources: string[]) => {
+const compressStyleRule = (rule: SlimCSSRule, sources: string[]) => {
   switch(rule.type) {
-    case CSSRuleType.STYLE_RULE: {
-      const { type, id, selectorText, style, source } = rule as CSSStyleRule;
+    case SlimVMObjectType.STYLE_RULE: {
+      const { type, id, selectorText, style, source } = rule as SlimCSSStyleRule;
       const decl = [];
       for (const key in style) {
         decl.push([key, style[key]]);
@@ -83,8 +83,8 @@ const compressStyleRule = (rule: CSSRule, sources: string[]) => {
         decl
       ]
     }
-    case CSSRuleType.MEDIA_RULE: {
-      const { type, id, conditionText, source, rules } = rule as CSSMediaRule;
+    case SlimVMObjectType.MEDIA_RULE: {
+      const { type, id, conditionText, source, rules } = rule as SlimCSSMediaRule;
       return [
         type,
         id, 
@@ -106,24 +106,24 @@ const compressSource = (source: VMObjectSource, sourceUris: string[]) => {
   ];
 }
 
-export const uncompressDocument = ([sources, node]: CompressionResult): BaseNode  => {
+export const uncompressDocument = ([sources, node]: CompressionResult): SlimBaseNode  => {
   return uncompressNode(node, sources);
 }
 
 const uncompressNode = (node: any, sources: string[]) => {
   switch(node[0]) {
-    case NodeType.TEXT: {
+    case SlimVMObjectType.TEXT: {
       const [type, id, source, value] = node;
       return {
         type,
         id,
         source: uncompressSource(source, sources),
         value,
-      } as TextNode
+      } as SlimTextNode;
     }
-    case NodeType.ELEMENT: {
+    case SlimVMObjectType.ELEMENT: {
       const [type, id, source, tagName, attributes, shadow, childNodes] = node;
-      const atts: ElementAttribute[] = [];
+      const atts: SlimElementAttribute[] = [];
       for (const [name, value] of attributes) {
         atts.push({ name, value });
       }
@@ -135,30 +135,30 @@ const uncompressNode = (node: any, sources: string[]) => {
         source: uncompressSource(source, sources),
         shadow: shadow && uncompressNode(shadow, sources),
         childNodes: childNodes.map(child => uncompressNode(child, sources))
-      } as Element;
+      } as SlimElement;
 
       if (tagName === "style") {
         base = {
           ...base,
           sheet: uncompressStyleSheet(node[7], sources)
-        } as StyleElement;
+        } as SlimStyleElement;
       }
       return base;
     }
-    case NodeType.DOCUMENT_FRAGMENT: 
-    case NodeType.DOCUMENT: {
+    case SlimVMObjectType.DOCUMENT_FRAGMENT: 
+    case SlimVMObjectType.DOCUMENT: {
       const [type, id, source, childNodes] = node;
       return {
         type,
         id,
         source: uncompressSource(source, sources),
         childNodes: childNodes.map(child => uncompressNode(child, sources))
-      } as ParentNode;
+      } as SlimParentNode;
     }
   }
 };
 
-const uncompressStyleSheet = ([type, id, source, rules]: any, sources: string[]): CSSStyleSheet => {
+const uncompressStyleSheet = ([type, id, source, rules]: any, sources: string[]): SlimCSSStyleSheet => {
   return {
     id,
     type,
@@ -168,7 +168,7 @@ const uncompressStyleSheet = ([type, id, source, rules]: any, sources: string[])
 }
 const uncompressCSSRule = (rule: any, sources: string[]) => {
   switch(rule[0]) {
-    case CSSRuleType.STYLE_RULE: {
+    case SlimVMObjectType.STYLE_RULE: {
       const [type, id, source, selectorText, styleId, decls] = rule;
       const style: CSSStyleDeclaration = {
         id: styleId
@@ -185,7 +185,7 @@ const uncompressCSSRule = (rule: any, sources: string[]) => {
         style
       }
     }
-    case CSSRuleType.MEDIA_RULE: {
+    case SlimVMObjectType.MEDIA_RULE: {
       const [type, id, source, conditionText, rules] = rule;
       return {
         type,

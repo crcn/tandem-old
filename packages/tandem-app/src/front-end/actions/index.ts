@@ -1,6 +1,6 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
 import { ApplicationState, SyntheticElement, AvailableComponent, Artboard } from "../state";
-import { ParentNode, BaseNode, ComputedDOMInfo, DOMNodeMap } from "slim-dom";
+import { SlimParentNode, ComputedDOMInfo, DOMNodeMap } from "slim-dom";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
@@ -292,7 +292,7 @@ export type SourceClicked = {
 export type ArtboardLoaded = {
   artboardId: string;
   dependencyUris: string[];
-  document: ParentNode;
+  document: SlimParentNode;
   mount: HTMLIFrameElement;
 } & BaseEvent;  
 
@@ -424,7 +424,7 @@ export const cssDeclarationCreated = (name: string, value: string, declarationId
   type: CSS_DECLARATION_CREATED
 });
 
-export const artboardLoaded = (artboardId, dependencyUris: string[], document: ParentNode, mount: HTMLIFrameElement): ArtboardLoaded => ({
+export const artboardLoaded = (artboardId, dependencyUris: string[], document: SlimParentNode, mount: HTMLIFrameElement): ArtboardLoaded => ({
   type: ARTBOARD_LOADED,
   artboardId,
   document, 

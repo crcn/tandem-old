@@ -31,7 +31,7 @@ import {
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
-import { getNestedObjectById, BaseNode } from "slim-dom";
+import { getNestedObjectById, SlimBaseNode } from "slim-dom";
 
 import { 
   Artboard,
@@ -571,7 +571,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     case BREADCRUMB_ITEM_CLICKED: {
       const { artboardId, nodeId } = event as BreadcrumbItemClicked;
       const artboard = getArtboardById(artboardId, state);
-      const node = getNestedObjectById(nodeId, artboard.document) as BaseNode;
+      const node = getNestedObjectById(nodeId, artboard.document) as SlimBaseNode;
       const workspace = getArtboardWorkspace(artboard.$id, state);
       return setWorkspaceSelection(state, workspace.$id, [node.type, node.id]);
     }

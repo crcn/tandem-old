@@ -1,4 +1,4 @@
-import { uncompressDocument, renderDOM, computedDOMInfo, ParentNode } from "slim-dom";
+import { uncompressDocument, renderDOM, computedDOMInfo, SlimParentNode } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -113,7 +113,7 @@ function* reloadArtboard(artboardId: string) {
       yield put(artboardRendered(artboardId, yield take(renderChan)));
     });
 
-    yield put(artboardLoaded(artboard.$id, dependencyUris, doc as ParentNode, mount));
+    yield put(artboardLoaded(artboard.$id, dependencyUris, doc as SlimParentNode, mount));
   });
 }
 

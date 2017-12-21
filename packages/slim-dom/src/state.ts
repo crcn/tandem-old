@@ -1,21 +1,14 @@
-
-// TODO - change this to NativeNodeType, shove all VM Objects within same type
-export enum NodeType {
-  ELEMENT = 1,
-  TEXT= 3,
-  DOCUMENT = 9,
-  DOCUMENT_FRAGMENT = 11,
-};
-
-// https://developer.mozilla.org/en-US/docs/Web/API/CSSRule#Type_constants
-// TODO - change to NativeCSSRuleType - show actual types in VMObjectType
-export enum CSSRuleType {
-  STYLE_SHEET = 99,
-  STYLE_RULE = 1,
-  MEDIA_RULE = 4,
-  FONT_FACE_RULE = 5,
-  KEYFRAME_RULE = 7,
-  UNKNOWN_RULE = 0,
+export enum SlimVMObjectType {
+  ELEMENT,
+  TEXT,
+  DOCUMENT,
+  DOCUMENT_FRAGMENT,
+  STYLE_SHEET,
+  STYLE_RULE,
+  MEDIA_RULE,
+  FONT_FACE_RULE,
+  KEYFRAME_RULE,
+  UNKNOWN_RULE
 };
 
 export type SourcePosition = {
@@ -37,49 +30,47 @@ export type VMObjectSource = {
 
 export type VMObject = {
   id: any;
-  type: any;
+  type: SlimVMObjectType;
 
   // the sourc of the VM Object
   source: VMObjectSource;
 };
 
-export type BaseNode = {
-  type: NodeType;
+export type SlimBaseNode = {
 } & VMObject;
 
-export type ParentNode = {
-  childNodes: BaseNode[];
-} & BaseNode;
+export type SlimParentNode = {
+  childNodes: SlimBaseNode[];
+} & SlimBaseNode;
 
-export type TextNode = {
+export type SlimTextNode = {
   value: string;
-} & BaseNode;
+} & SlimBaseNode;
 
-export type Fragment = {
+export type SlimFragment = {
 
-} & BaseNode;
+} & SlimBaseNode;
 
-export type ElementAttribute = {
+export type SlimElementAttribute = {
   name: string;
   value: any;
 };
 
-export type Element = {
+export type SlimElement = {
   tagName: string;
-  attributes: ElementAttribute[];
-  shadow: ParentNode;
-} & ParentNode;
+  attributes: SlimElementAttribute[];
+  shadow: SlimParentNode;
+} & SlimParentNode;
 
-export type StyleElement = {
-  sheet: CSSStyleSheet;
-} & Element;
+export type SlimStyleElement = {
+  sheet: SlimCSSStyleSheet;
+} & SlimElement;
 
-export type CSSStyleSheet = {
-  rules: CSSRule[];
+export type SlimCSSStyleSheet = {
+  rules: SlimCSSRule[];
 } & VMObject;
 
-export type CSSRule = {
-  type: CSSRuleType;
+export type SlimCSSRule = {
 } & VMObject;
 
 export type Bounds = {
@@ -89,20 +80,20 @@ export type Bounds = {
   bottom: number;
 };
 
-export type CSSStyleRule = {
+export type SlimCSSStyleRule = {
   selectorText: string;
-  style: CSSStyleDeclaration;
-} & CSSRule;
+  style: SlimCSSStyleDeclaration;
+} & SlimCSSRule;
 
-export type CSSGroupingRule = {
-  rules: CSSRule[];
-} & CSSRule;
+export type SlimCSSGroupingRule = {
+  rules: SlimCSSRule[];
+} & SlimCSSRule;
 
-export type CSSMediaRule = {
+export type SlimCSSMediaRule = {
   conditionText: string;
-} & CSSGroupingRule;
+} & SlimCSSGroupingRule;
 
-export type CSSStyleDeclaration = {
+export type SlimCSSStyleDeclaration = {
   id: string;
   alignContent: string | null;
   alignItems: string | null;

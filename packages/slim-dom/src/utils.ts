@@ -1,4 +1,4 @@
-import { ParentNode, BaseNode, NodeType, Element, TextNode, VMObject, CSSStyleDeclaration, CSSStyleRule, CSSRuleType, CSSGroupingRule, CSSMediaRule, CSSRule, CSSStyleSheet, VMObjectSource, StyleElement } from "./state";
+import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement } from "./state";
 
 let previousPurgeTime = 0;
 const DUMP_DEFAULT_ANCHOR_INTERVAL = 1000 * 60 * 5;
@@ -37,7 +37,7 @@ export function weakMemo<TFunc extends (...args: any[]) => any>(func: TFunc, map
   } as any as TFunc;
 };
 
-export const pushChildNode = <TParent extends ParentNode>(parent: TParent, child: BaseNode): TParent => ({
+export const pushChildNode = <TParent extends SlimParentNode>(parent: TParent, child: SlimBaseNode): TParent => ({
   ...(parent as any),
   childNodes: [
     ...parent.childNodes,
@@ -45,14 +45,14 @@ export const pushChildNode = <TParent extends ParentNode>(parent: TParent, child
   ]
 });
 
-export const stringifyNode = weakMemo((node: BaseNode) => {
+export const stringifyNode = weakMemo((node: SlimBaseNode) => {
   switch(node.type) {
-    case NodeType.TEXT: {
-      const text = node as TextNode;
+    case SlimVMObjectType.TEXT: {
+      const text = node as SlimTextNode;
       return text.value;
     }
-    case NodeType.ELEMENT: {
-      const el = node as Element;
+    case SlimVMObjectType.ELEMENT: {
+      const el = node as SlimElement;
       let buffer = `<${el.tagName} `;
       for (let i = 0, {length} = el.attributes; i < length; i++) {
         const attr = el.attributes[i];
@@ -65,9 +65,9 @@ export const stringifyNode = weakMemo((node: BaseNode) => {
       buffer += `</${el.tagName}>`;
       return buffer;
     }
-    case NodeType.DOCUMENT_FRAGMENT: 
-    case NodeType.DOCUMENT: {
-      const el = node as ParentNode;
+    case SlimVMObjectType.DOCUMENT_FRAGMENT: 
+    case SlimVMObjectType.DOCUMENT: {
+      const el = node as SlimParentNode;
       let buffer = ``;
       for (let i = 0, {length} = el.childNodes; i < length; i++) {
         buffer += stringifyNode(el.childNodes[i]);
@@ -77,13 +77,13 @@ export const stringifyNode = weakMemo((node: BaseNode) => {
   }
 });
 
-export const getAttribute = (name: string, element: Element) => element.attributes.find(attribute => attribute.name === name);
+export const getAttribute = (name: string, element: SlimElement) => element.attributes.find(attribute => attribute.name === name);
 
-export const hasAttribute = (name: string, element: Element) => {
+export const hasAttribute = (name: string, element: SlimElement) => {
   return getAttribute(name, element) != null;
 };
 
-export const getAttributeValue = (name: string, element: Element) => {
+export const getAttributeValue = (name: string, element: SlimElement) => {
   const attribute = getAttribute(name, element);
   return attribute && attribute.value;
 };
@@ -95,28 +95,28 @@ export type FlattenedObjects = {
   }
 };
 
-export const getNodeAncestor = weakMemo((value: BaseNode, root: ParentNode): ParentNode[] => {
+export const getNodeAncestor = weakMemo((value: SlimBaseNode, root: SlimParentNode): SlimParentNode[] => {
   const objects = flattenObjects(root);
   let current = objects[objects[value.id].parentId];
-  let ancestors: ParentNode[] = [];
+  let ancestors: SlimParentNode[] = [];
 
   while(current) {
-    ancestors.push(current as any as ParentNode);
+    ancestors.push(current as any as SlimParentNode);
     current = objects[current.parentId];
   }
 
   return ancestors;
 });
 
-export const getNestedObjectById = weakMemo((id: string, root: ParentNode): VMObject => {
+export const getNestedObjectById = weakMemo((id: string, root: SlimParentNode): VMObject => {
   const ref = flattenChildNodes(root);
   return ref[id] && ref[id].value;
 });
 
 export const flattenObjects = weakMemo((value: VMObject, parentId?: string): FlattenedObjects => {
   switch(value.type) {
-    case NodeType.TEXT: {
-      const node = value as TextNode;
+    case SlimVMObjectType.TEXT: {
+      const node = value as SlimTextNode;
       return {
         [node.id]: {
           parentId,
@@ -124,8 +124,8 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
         }
       };
     }
-    case NodeType.ELEMENT: {
-      const element = value as Element;
+    case SlimVMObjectType.ELEMENT: {
+      const element = value as SlimElement;
       let base = {
         [element.id]: {
           parentId,
@@ -133,7 +133,7 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
         }
       };
 
-      const style: CSSStyleDeclaration = getAttributeValue("style", element);
+      const style: SlimCSSStyleDeclaration = getAttributeValue("style", element);
       if (style && typeof style === "object") {
         base[style.id] = {
           parentId: element.id,
@@ -142,7 +142,7 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
       }
 
       if (element.tagName === "style") {
-        Object.assign(base, flattenCSSObjects((element as StyleElement).sheet, element.id));
+        Object.assign(base, flattenCSSObjects((element as SlimStyleElement).sheet, element.id));
       } else {
         if (element.shadow) {
           Object.assign(base, flattenObjects(element.shadow));
@@ -151,18 +151,18 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
       }
       return base;
     }
-    case NodeType.DOCUMENT: 
-    case NodeType.DOCUMENT_FRAGMENT: {
-      return flattenChildNodes(value as ParentNode);
+    case SlimVMObjectType.DOCUMENT: 
+    case SlimVMObjectType.DOCUMENT_FRAGMENT: {
+      return flattenChildNodes(value as SlimParentNode);
     }
   }
 });
 
 const flattenCSSObjects = weakMemo((value: any, parentId: string): FlattenedObjects => {
   switch(value.type) {
-    case CSSRuleType.MEDIA_RULE:
-    case CSSRuleType.STYLE_SHEET: {
-      const grouping = value as CSSGroupingRule;
+    case SlimVMObjectType.MEDIA_RULE:
+    case SlimVMObjectType.STYLE_SHEET: {
+      const grouping = value as SlimCSSGroupingRule;
       let base = {
         [grouping.id]: {
           parentId,
@@ -173,8 +173,8 @@ const flattenCSSObjects = weakMemo((value: any, parentId: string): FlattenedObje
       return base;
     }
     
-    case CSSRuleType.STYLE_RULE: {
-      const rule = value as CSSStyleRule;
+    case SlimVMObjectType.STYLE_RULE: {
+      const rule = value as SlimCSSStyleRule;
       return {
         [rule.id]: {
           parentId,
@@ -189,7 +189,7 @@ const flattenCSSObjects = weakMemo((value: any, parentId: string): FlattenedObje
   }
 });
 
-const flattenChildNodes = weakMemo((target: ParentNode) => {
+const flattenChildNodes = weakMemo((target: SlimParentNode) => {
   let objects = {};
   for (let i = 0, {length} = target.childNodes; i < length; i++) {
     Object.assign(objects, flattenObjects(target.childNodes[i], target.id));
@@ -197,7 +197,7 @@ const flattenChildNodes = weakMemo((target: ParentNode) => {
   return objects;
 });
 
-const flattenCSSRules = weakMemo((target: CSSGroupingRule) => {
+const flattenCSSRules = weakMemo((target: SlimCSSGroupingRule) => {
   let objects = {};
   for (let i = 0, {length} = target.rules; i < length; i++) {
     Object.assign(objects, flattenCSSObjects(target.rules[i], target.id));

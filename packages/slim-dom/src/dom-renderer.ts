@@ -1,7 +1,7 @@
-import { ParentNode, NodeType, Element, TextNode, BaseNode, StyleElement, CSSStyleSheet as SDCSSStyleSheet, CSSStyleRule as SDCSSStyleRule, CSSRuleType, CSSMediaRule as SDCSSMediaRule, CSSRule as SDCSSRule, Bounds } from "./state";
+import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSMediaRule, SlimCSSRule, Bounds } from "./state";
 import { weakMemo } from "./utils";
 
-export const renderDOM = (node: BaseNode, mount: HTMLElement) => {
+export const renderDOM = (node: SlimBaseNode, mount: HTMLElement) => {
   let map: DOMNodeMap = {};
   mount.appendChild(createNode(node, mount.ownerDocument, map));
   return map;
@@ -11,20 +11,20 @@ export type DOMNodeMap = {
   [identifier: string]: HTMLElement
 };
 
-const createNode = (node: BaseNode, document: Document, map: DOMNodeMap) => {
+const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => {
   switch(node.type) {
-    case NodeType.TEXT: {
-      return document.createTextNode((node as TextNode).value);
+    case SlimVMObjectType.TEXT: {
+      return document.createTextNode((node as SlimTextNode).value);
     }
-    case NodeType.ELEMENT: {
-      const { tagName, id, shadow, childNodes, attributes } = node as Element;
+    case SlimVMObjectType.ELEMENT: {
+      const { tagName, id, shadow, childNodes, attributes } = node as SlimElement;
       const ret = map[id] = document.createElement(tagName);
       if (shadow) {
         ret.attachShadow({ mode: "open" }).appendChild(createNode(shadow, document, map));
       }
 
       if (tagName === "style") {
-        renderStyle((node as StyleElement).sheet, ret as HTMLStyleElement);
+        renderStyle((node as SlimStyleElement).sheet, ret as HTMLStyleElement);
       }
       for (let i = 0, {length} = attributes; i < length; i++) {
         const attribute = attributes[i];
@@ -41,8 +41,8 @@ const createNode = (node: BaseNode, document: Document, map: DOMNodeMap) => {
       }
       return ret;
     }
-    case NodeType.DOCUMENT_FRAGMENT: {
-      const { childNodes } = node as ParentNode;
+    case SlimVMObjectType.DOCUMENT_FRAGMENT: {
+      const { childNodes } = node as SlimParentNode;
       const fragment = document.createDocumentFragment();
       for (let i = 0, {length} = childNodes; i < length; i++) {
         fragment.appendChild(createNode(childNodes[i], document, map));
@@ -56,7 +56,7 @@ const createNode = (node: BaseNode, document: Document, map: DOMNodeMap) => {
   }
 };
 
-const renderStyle = (sheet: SDCSSStyleSheet, element: HTMLStyleElement) => {
+const renderStyle = (sheet: SlimCSSStyleSheet, element: HTMLStyleElement) => {
   let j = 0;
   let buffer = ``;
   for (let i = 0, {length} = sheet.rules; i < length; i++) {
@@ -73,10 +73,10 @@ const renderStyle = (sheet: SDCSSStyleSheet, element: HTMLStyleElement) => {
 }
 
 // TODO - move to util file
-const stringifyRule = (rule: SDCSSRule) => {
+const stringifyRule = (rule: SlimCSSRule) => {
   switch(rule.type) {
-    case CSSRuleType.STYLE_RULE: {
-      const { selectorText, style } = rule as SDCSSStyleRule;
+    case SlimVMObjectType.STYLE_RULE: {
+      const { selectorText, style } = rule as SlimCSSStyleRule;
       let buffer = `${selectorText} {`;
       for (const key in style) {
         buffer += `${key}: ${style[key]};`
@@ -84,8 +84,8 @@ const stringifyRule = (rule: SDCSSRule) => {
 
       return `${buffer} }`;
     }
-    case CSSRuleType.MEDIA_RULE: {
-      const { conditionText, rules } = rule as SDCSSMediaRule;
+    case SlimVMObjectType.MEDIA_RULE: {
+      const { conditionText, rules } = rule as SlimCSSMediaRule;
       return `@media ${conditionText} { ${rules.map(stringifyRule)} }`
     }
   }

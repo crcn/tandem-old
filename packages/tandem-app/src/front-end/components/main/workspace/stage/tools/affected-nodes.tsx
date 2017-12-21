@@ -16,7 +16,7 @@ import {
   getSelectorAffectedElements, 
   filterMatchingTargetSelectors, 
 } from "front-end/state";
-import { getNestedObjectById, Element } from "slim-dom";
+import { getNestedObjectById, SlimElement } from "slim-dom";
 
 type AffectedNodesToolOuterProps = {
   workspace: Workspace;
@@ -56,7 +56,7 @@ const AffectedNodesToolBase = ({ workspace, zoom }: AffectedNodesToolOuterProps)
     return null;
   }
 
-  const targetElement = getWorkspaceNode(targetElementRef[1], workspace) as Element;
+  const targetElement = getWorkspaceNode(targetElementRef[1], workspace) as SlimElement;
 
   if (!targetElement) {
     return null;

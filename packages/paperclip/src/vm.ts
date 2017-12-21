@@ -3,7 +3,7 @@ import { Diagnostic, DiagnosticType, diagnosticsContainsError } from "./parser-
 import { getReferenceKeyPath } from "./inferencing";
 import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris, getAllGlobalStyles } from "./loader";
 import { eachValue } from "./utils";
-import { BaseNode, ParentNode, TextNode, Element, NodeType, pushChildNode, ElementAttribute, VMObjectSource, StyleElement, CSSStyleSheet as SDCSSStyleSheet, CSSStyleRule as SDCSSStyleRule, CSSRule as SDCSSRule, CSSRuleType, CSSStyleDeclaration as CSSStyleDeclaration, CSSMediaRule as SDCSSMediaRule, VMObject } from "slim-dom";
+import { SlimBaseNode, SlimParentNode, SlimTextNode, SlimElement, SlimVMObjectType, pushChildNode, SlimElementAttribute, VMObjectSource, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSMediaRule, VMObject } from "slim-dom";
 import { kebabCase } from "lodash";
 
 // Note that this is MUTABLE primarily to make incrementing
@@ -22,7 +22,7 @@ type VMContext = {
 };
 
 type VMResult = {
-  document: BaseNode;
+  document: SlimBaseNode;
   diagnostics: Diagnostic[];
 };
 
@@ -86,7 +86,7 @@ const createId = (context: VMContext) => {
 const runPreview = (preview: PCElement, context: VMContext) => {
   let root = {
     id: createId(context),
-    type: NodeType.DOCUMENT_FRAGMENT,
+    type: SlimVMObjectType.DOCUMENT_FRAGMENT,
     childNodes: [],
     source: createVMSource(preview, context)
   };
@@ -100,7 +100,7 @@ const runPreview = (preview: PCElement, context: VMContext) => {
   return root;
 };
 
-let appendElement = <TParent extends ParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext): TParent => {
+let appendElement = <TParent extends SlimParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext): TParent => {
   let _repeat: BKRepeat;
 
   const startTag = child.type === PCExpressionType.SELF_CLOSING_ELEMENT ? child as PCSelfClosingElement : (child as PCElement).startTag;
@@ -131,7 +131,7 @@ let appendElement = <TParent extends ParentNode>(parent: TParent, child: PCEleme
   return parent;
 }
 
-const appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext) => {
+const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext) => {
   let startTag: PCStartTag;
   let childNodes: PCExpression[];
 
@@ -150,7 +150,7 @@ const appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PC
     return parent;
   }
 
-  let attributes: ElementAttribute[] = [];
+  let attributes: SlimElementAttribute[] = [];
   let props = {};
   
   for (let i = 0, {length} = startTag.attributes; i < length; i++) {
@@ -173,25 +173,25 @@ const appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PC
   if (name === "style") {
     let style = {
       id: createId(context),
-      type: NodeType.ELEMENT,
+      type: SlimVMObjectType.ELEMENT,
       tagName: name,
       attributes,
       childNodes: [],
       source: createVMSource(child, context),
       sheet: createStyleSheet(childNodes[0] as any as CSSSheet, context)
-    } as StyleElement;
+    } as SlimStyleElement;
     return pushChildNode(parent, style);
   }
 
-  let shadow: ParentNode;
+  let shadow: SlimParentNode;
   const component = context.components[name];
 
   if (component) {
     shadow = {
-      type: NodeType.DOCUMENT_FRAGMENT,
+      type: SlimVMObjectType.DOCUMENT_FRAGMENT,
       childNodes: [],
       source: createVMSource(component.source, context)
-    } as ParentNode;
+    } as SlimParentNode;
     if (component.style) {
       shadow = appendChildNode(shadow, component.style, context);
     }
@@ -206,13 +206,13 @@ const appendRawElement = <TParent extends ParentNode>(parent: TParent, child: PC
 
   let element = {
     id: createId(context),
-    type: NodeType.ELEMENT,
+    type: SlimVMObjectType.ELEMENT,
     tagName: name,
     attributes,
     childNodes: [],
     source: createVMSource(child, context),
     shadow: shadow
-  } as Element;
+  } as SlimElement;
 
   element = appendChildNodes(element, childNodes, context);
   parent = pushChildNode(parent, element); 
@@ -241,7 +241,7 @@ const evalAttributeValue = (value: PCExpression, context: VMContext) => {
   }
 };
 
-const appendChildNode = <TParent extends ParentNode>(parent: TParent, child: PCExpression, context: VMContext): TParent => {
+const appendChildNode = <TParent extends SlimParentNode>(parent: TParent, child: PCExpression, context: VMContext): TParent => {
   switch(child.type) {    
     case PCExpressionType.TEXT_NODE: return appendTextNode(parent, child as PCTextNode, context);
     case PCExpressionType.BLOCK: return appendTextBlock(parent, child as PCBlock, context)
@@ -251,7 +251,7 @@ const appendChildNode = <TParent extends ParentNode>(parent: TParent, child: PCE
   }
 };
 
-const appendChildNodes = <TParent extends ParentNode>(parent: TParent, childNodes: PCExpression[], context: VMContext): TParent => {
+const appendChildNodes = <TParent extends SlimParentNode>(parent: TParent, childNodes: PCExpression[], context: VMContext): TParent => {
 
   // TODO - check for conditional stuff here
 
@@ -291,25 +291,25 @@ const appendChildNodes = <TParent extends ParentNode>(parent: TParent, childNode
   return parent;
 };
 
-const appendTextNode = <TParent extends ParentNode>(parent: TParent, child: PCTextNode, context: VMContext) => {
+const appendTextNode = <TParent extends SlimParentNode>(parent: TParent, child: PCTextNode, context: VMContext) => {
   return pushChildNode(parent, {
     id: createId(context),
-    type: NodeType.TEXT,
+    type: SlimVMObjectType.TEXT,
     value: String(child.value || "").trim() || " ",
     source: createVMSource(child, context)
-  } as TextNode);
+  } as SlimTextNode);
 };
 
-const appendTextBlock = <TParent extends ParentNode>(parent: TParent, child: PCBlock, context: VMContext) => pushChildNode(parent, {
+const appendTextBlock = <TParent extends SlimParentNode>(parent: TParent, child: PCBlock, context: VMContext) => pushChildNode(parent, {
   id: createId(context),
-  type: NodeType.TEXT,
+  type: SlimVMObjectType.TEXT,
   value: evalExpr(child.value, context),
   source: createVMSource(child, context)
-} as TextNode);
+} as SlimTextNode);
 
-const createStyleSheet = (expr: CSSSheet, context: VMContext): SDCSSStyleSheet => {
+const createStyleSheet = (expr: CSSSheet, context: VMContext): SlimCSSStyleSheet => {
 
-  const rules: SDCSSRule[] = new Array(expr.children.length);
+  const rules: SlimCSSRule[] = new Array(expr.children.length);
 
   for (let i = 0, {length} = expr.children; i < length; i++) {
     const child = expr.children[i];
@@ -319,7 +319,7 @@ const createStyleSheet = (expr: CSSSheet, context: VMContext): SDCSSStyleSheet =
   return {
     rules,
     id: createId(context),
-    type: CSSRuleType.STYLE_SHEET,
+    type: SlimVMObjectType.STYLE_SHEET,
     source: createVMSource(expr, context)
   };
 }
@@ -329,7 +329,7 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
   switch(rule.type) {
     case CSSExpressionType.STYLE_RULE: {
       const { selectorText, children } = rule as CSSStyleRule;
-      const style: CSSStyleDeclaration = {
+      const style: SlimCSSStyleDeclaration = {
         id: createId(context),
       } as any;
       
@@ -343,15 +343,15 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
 
       return {
         id: createId(context),
-        type: CSSRuleType.STYLE_RULE,
+        type: SlimVMObjectType.STYLE_RULE,
         selectorText,
         style,
         source
-      } as SDCSSStyleRule;
+      } as SlimCSSStyleRule;
     }
     case CSSExpressionType.AT_RULE: {
       const { name, params, children } = rule as CSSAtRule;
-      const rules: SDCSSRule[] = new Array(children.length);
+      const rules: SlimCSSRule[] = new Array(children.length);
       for (let i = 0, {length} = children; i < length; i++) {
         const child = children[i];
         rules[i] = createCSSRule(child, context);
@@ -360,11 +360,11 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
       if (name === "media") {
         return {
           id: createId(context),
-          type: CSSRuleType.MEDIA_RULE,
+          type: SlimVMObjectType.MEDIA_RULE,
           conditionText: params.join(" "),
           rules,
           source,
-        } as SDCSSMediaRule;
+        } as SlimCSSMediaRule;
       }
     }
   }

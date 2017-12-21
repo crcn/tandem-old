@@ -442,14 +442,3 @@
   </preview>
 </component>
 
-<component id="td-test2">
-  <style>
-  </style>
-  <template>
-    blarg!
-  </template>
-  <preview name="main">
-    <td-test2 />
-  </preview>
-</component>
-

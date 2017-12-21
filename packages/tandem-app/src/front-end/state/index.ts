@@ -36,7 +36,7 @@ import {
   createImmutableStructFactory,
 } from "aerial-common2";
 
-import { Element, BaseNode, ParentNode, CSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById } from "slim-dom";
+import { SlimElement, SlimBaseNode, SlimParentNode, SlimCSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById } from "slim-dom";
 
 import {
  AvailableComponent
@@ -168,7 +168,7 @@ export type Artboard = {
   computedDOMInfo?: ComputedDOMInfo;
   componentId: string;
   previewName: string;
-  document?: ParentNode;
+  document?: SlimParentNode;
   mount?: HTMLIFrameElement;
   nativeNodeMap?: DOMNodeMap;
 } & Struct;
@@ -485,7 +485,7 @@ export const getWorkspaceItemBounds = weakMemo((value: any, workspace: Workspace
   if ((value as Artboard).$type === ARTBOARD) {
     return (value as Artboard).bounds;
   } else {
-    const artboard = getNodeArtboard((value as BaseNode).id, workspace);
+    const artboard = getNodeArtboard((value as SlimBaseNode).id, workspace);
     return shiftBounds(getComputedNodeBounds(value.id, artboard), artboard.bounds);
   } 
 });

@@ -1,7 +1,7 @@
 import { runPCFile } from "../vm";
 import { expect } from "chai";
 import { loadModuleDependencyGraph } from "../loader";
-import { NodeType, Element, ParentNode, BaseNode, TextNode } from "slim-dom";
+import { SlimVMObjectType, SlimElement, SlimParentNode, SlimBaseNode, SlimTextNode } from "slim-dom";
 
 describe(__filename + "#", () => {
   [
@@ -372,14 +372,14 @@ describe(__filename + "#", () => {
   });
 });
 
-const stringifyNode = (node: BaseNode) => {
+const stringifyNode = (node: SlimBaseNode) => {
   switch(node.type) {
-    case NodeType.TEXT: {
-      const text = node as TextNode;
+    case SlimVMObjectType.TEXT: {
+      const text = node as SlimTextNode;
       return text.value;
     }
-    case NodeType.ELEMENT: {
-      const element = node as Element;
+    case SlimVMObjectType.ELEMENT: {
+      const element = node as SlimElement;
       let buffer = `<${element.tagName}`;
       for (const attribute of element.attributes) {
         if (typeof attribute.value === "object") {
@@ -396,9 +396,9 @@ const stringifyNode = (node: BaseNode) => {
       buffer += `</${element.tagName}>`;
       return buffer;
     }
-    case NodeType.DOCUMENT_FRAGMENT: 
-    case NodeType.DOCUMENT: {
-      return (node as ParentNode).childNodes.map(stringifyNode).join("");
+    case SlimVMObjectType.DOCUMENT_FRAGMENT: 
+    case SlimVMObjectType.DOCUMENT: {
+      return (node as SlimParentNode).childNodes.map(stringifyNode).join("");
     }
   }
 };

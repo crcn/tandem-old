@@ -3,6 +3,8 @@ IMMEDIATE:
 - [ ] prefix slim objects with Slim - SlimElement, SlimParentNode, SlimCSSStyleRule
 - [ ] query selector testing
 
+- [ ] diff/patch code for previews
+- [ ] perf test - (preview a TON of windows.)
 - [ ] CSS Inspector
 
 - [ ] Bugs
