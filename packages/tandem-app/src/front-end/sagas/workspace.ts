@@ -255,10 +255,18 @@ function* handleDroppedOnElement(ref: StructReference, event: DNDEvent) {
 function* handleDroppedOnEmptySpace(event: DNDEvent) {
 
   const { sourceEvent: { pageX, pageY }} = event;
-  const state = yield select();
+  const state: ApplicationState = yield select();
   const componentId = event.ref[1];
 
   const workspace = getSelectedWorkspace(state);
+  const availableComponent = workspace.availableComponents.find(component => component.$id === componentId);
+
+  const screenshot = availableComponent.screenshots[0];
+  const size = screenshot ? { width: screenshot.clip.right - screenshot.clip.left, height: screenshot.clip.bottom - screenshot.clip.top } : {
+    width: DEFAULT_WINDOW_WIDTH,
+    height: DEFAULT_WINDOW_HEIGHT
+  };
+  
   const mousePosition = getScaledMouseStagePosition(state, event);
 
   yield put(artboardCreated(createArtboard({
@@ -266,8 +274,8 @@ function* handleDroppedOnEmptySpace(event: DNDEvent) {
     previewName: null, 
     bounds: {
     ...mousePosition,
-    right: mousePosition.left + DEFAULT_WINDOW_WIDTH,
-    bottom: mousePosition.top + DEFAULT_WINDOW_HEIGHT
+    right: mousePosition.left + size.width,
+    bottom: mousePosition.top + size.height
   }})));
 }
 
