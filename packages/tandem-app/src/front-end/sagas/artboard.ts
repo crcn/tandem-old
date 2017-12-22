@@ -1,4 +1,4 @@
-import { uncompressDocument, renderDOM, computedDOMInfo, SlimParentNode } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -99,7 +99,7 @@ function* reloadArtboard(artboardId: string) {
     const artboard = getArtboardById(artboardId, state);
     const [dependencyUris, compressedNode] = yield call(getComponentPreview, artboard.componentId, artboard.previewName, state);
 
-    const doc = uncompressDocument([dependencyUris, compressedNode]);
+    const doc = uncompressRootNode([dependencyUris, compressedNode]);
     const mount = document.createElement("iframe");
     mount.setAttribute("style", `border: none; width: 100%; height: 100%`);
     const renderChan = eventChannel((emit) => {

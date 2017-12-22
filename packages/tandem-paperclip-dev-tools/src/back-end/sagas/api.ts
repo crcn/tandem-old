@@ -5,7 +5,7 @@ import * as sharp from "sharp";
 import * as request from "request"; 
 import * as md5 from "md5";
 import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
-import { compressDocument } from "slim-dom";
+import { compressRootNode } from "slim-dom";
 import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../state";
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource, runPCFile } from "paperclip";
@@ -565,7 +565,7 @@ function* getComponentJSONPreview(req: express.Request, res: express.Response, n
     graph: state.graph,
   });
 
-  return res.send(compressDocument(document));
+  return res.send(compressRootNode(document));
 }
 
 function* setFileContent(req: express.Request, res: express.Response, next) {

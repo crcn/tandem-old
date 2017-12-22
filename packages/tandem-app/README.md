@@ -22,6 +22,8 @@ IMMEDIATE:
 HIGH PRIO:
 
 - [ ] Native elements pane
+- [ ] artboards should automatically be layed out if they're close to one another
+  - [ ] do not allow artboards to overlap
 
 - [ ] Components panes
   - [ ] DND elements to other elements

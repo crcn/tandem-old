@@ -10,7 +10,7 @@ export type CompressionResult = [string[], any];
 
 const memoKey = Symbol();
 
-export const compressDocument = (root: SlimBaseNode): CompressionResult => {
+export const compressRootNode = (root: SlimBaseNode): CompressionResult => {
   if (root[memoKey]) {
     return root[memoKey];
   }
@@ -106,7 +106,7 @@ const compressSource = (source: VMObjectSource, sourceUris: string[]) => {
   ];
 }
 
-export const uncompressDocument = ([sources, node]: CompressionResult): SlimBaseNode  => {
+export const uncompressRootNode = ([sources, node]: CompressionResult): SlimBaseNode  => {
   return uncompressNode(node, sources);
 }
 

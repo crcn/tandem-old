@@ -35,10 +35,11 @@ export type RunPCFileEntry = {
 export type RunPCFileOptions = {
   entry: RunPCFileEntry;
   graph: DependencyGraph;
+  idSeed?: string
 };
 
 // TODO - may eventually want to have a compilation step for this
-export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph }: RunPCFileOptions): VMResult => {
+export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph, idSeed }: RunPCFileOptions): VMResult => {
 
   let memoKey = "__memo$$" + filePath + componentId + previewName;
   if (graph[memoKey]) {
@@ -46,7 +47,7 @@ export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph
   }
   
   const context: VMContext = {
-    idSeed: Math.floor(1000 + Math.random() * 8999) + "",
+    idSeed: String(idSeed || Math.floor(1000 + Math.random() * 8999)),
     refCount: 0,
     currentProps: {},
     globalStyles: getAllGlobalStyles(graph),

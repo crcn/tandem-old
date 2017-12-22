@@ -23,8 +23,18 @@ export type SourceRange = {
 };
 
 export type VMObjectSource = {
+
+  // hash of the document that is generated based
+  // on the content source. 
+  hash?: string;
+
+  // expression type
   type?: string|number;
+
+  // document uri
   uri: string;
+
+  // range of the expression in the source
   range: SourceRange;
 };
 
