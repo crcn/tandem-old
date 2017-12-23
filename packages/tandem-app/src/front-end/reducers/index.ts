@@ -31,7 +31,7 @@ import {
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
-import { getNestedObjectById, SlimBaseNode } from "slim-dom";
+import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, patchNode } from "slim-dom";
 
 import { 
   Artboard,
@@ -165,11 +165,13 @@ import {
   RESIZER_PATH_MOUSE_STOPPED_MOVING,
   ARTBOARD_FOCUSED,
   ARTBOARD_LOADED,
+  ARTBOARD_DIFFED,
   ARTBOARD_RENDERED,
   ArtboardRendered,
   ArtboardCreated,
   ARTBOARD_CREATED,
   ArtboardLoaded,
+  ArtboardDiffed,
   ArtboardFocused,
   ARTBOARD_DOM_INFO_COMPUTED,
   ArtboardDOMInfoComputed,
@@ -797,7 +799,18 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       return updateArtboard(state, artboardId, {
         dependencyUris,
         document,
-        mount
+        mount,
+        checksum: getDocumentChecksum(document)
+      });
+    }
+
+    case ARTBOARD_DIFFED: {
+      const { artboardId, diffs } = event as ArtboardDiffed;
+      const artboard = getArtboardById(artboardId, state);
+      const document = patchNode(artboard.document, diffs);
+      return updateArtboard(state, artboardId, {
+        document,
+        checksum: getDocumentChecksum(document)
       });
     }
 

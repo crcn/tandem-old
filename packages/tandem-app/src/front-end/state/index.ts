@@ -169,6 +169,7 @@ export type Artboard = {
   componentId: string;
   previewName: string;
   document?: SlimParentNode;
+  checksum?: string;
   mount?: HTMLIFrameElement;
   nativeNodeMap?: DOMNodeMap;
 } & Struct;

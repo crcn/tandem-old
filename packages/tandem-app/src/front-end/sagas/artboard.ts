@@ -3,8 +3,8 @@ import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused } from "../actions";
-import { getComponentPreview } from "../utils";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardDiffed } from "../actions";
+import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
 import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard } from "../state";
 import { debounce } from "lodash";
 
@@ -49,7 +49,7 @@ function* handleChangedArtboards() {
 
     for (const artboard of workspace.artboards) {
       if (artboard.dependencyUris.indexOf(filePath) !== -1) {
-        yield call(reloadArtboard, artboard.$id);
+        yield call(diffArtboard, artboard.$id);
       }
     }
   }
@@ -114,6 +114,17 @@ function* reloadArtboard(artboardId: string) {
     });
 
     yield put(artboardLoaded(artboard.$id, dependencyUris, doc as SlimParentNode, mount));
+  });
+}
+
+function* diffArtboard(artboardId: string) {
+  yield spawn(function*() {
+    const state: ApplicationState = yield select();
+    const artboard = getArtboardById(artboardId, state);
+    const diffs = yield call(getDocumentPreviewDiff, artboard.componentId, artboard.previewName, artboard.checksum, state);
+
+    // TODO - patch DOM nodes here
+    yield put(artboardDiffed(artboard.$id, diffs));
   });
 }
 

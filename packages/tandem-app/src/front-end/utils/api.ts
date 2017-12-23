@@ -27,6 +27,14 @@ export const getComponentPreview = async (componentId: string, previewName: stri
   return await response.json();
 };
 
+export const getDocumentPreviewDiff = async (componentId: string, previewName: string, checksum: string, state: ApplicationState) => {
+  let uri = `${state.apiHost}/components/${componentId}/preview`;
+  uri += (previewName ? previewName + "/" : "/") + "diff/" + checksum + "/latest.json";
+  const response = await fetch(uri);
+
+  return await response.json();
+};
+
 export const apiOpenSourceFile = async (source: VMObjectExpressionSource, state: ApplicationState) => { 
   const response = await fetch(`${state.apiHost}/open`, {
     method: "POST",

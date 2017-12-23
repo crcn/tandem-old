@@ -1,6 +1,7 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
 import { ApplicationState, SyntheticElement, AvailableComponent, Artboard } from "../state";
 import { SlimParentNode, ComputedDOMInfo, DOMNodeMap } from "slim-dom";
+import { Mutation } from "source-mutation";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
@@ -51,6 +52,7 @@ export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
 export const VISUAL_EDITOR_WHEEL = "VISUAL_EDITOR_WHEEL";
 export const STAGE_TOOL_ARTBOARD_TITLE_CLICKED = "STAGE_TOOL_ARTBOARD_TITLE_CLICKED";
 export const ARTBOARD_LOADED = "ARTBOARD_LOADED";
+export const ARTBOARD_DIFFED = "ARTBOARD_DIFFED";
 export const ARTBOARD_SCROLL = "ARTBOARD_SCROLL";
 export const ARTBOARD_RENDERED = "ARTBOARD_RENDERED";
 export const ARTBOARD_CREATED = "ARTBOARD_CREATED";
@@ -296,6 +298,11 @@ export type ArtboardLoaded = {
   mount: HTMLIFrameElement;
 } & BaseEvent;  
 
+export type ArtboardDiffed = {
+  artboardId: string;
+  diffs: Mutation<any>[];
+} & BaseEvent;  
+
 export type ArtboardRendered = {
   artboardId: string;
   nativeNodeMap: DOMNodeMap;
@@ -430,6 +437,12 @@ export const artboardLoaded = (artboardId, dependencyUris: string[], document: S
   document, 
   dependencyUris,
   mount
+});
+
+export const artboardDiffed = (artboardId: string, diffs: Mutation<any>[]): ArtboardDiffed => ({
+  type: ARTBOARD_DIFFED,
+  artboardId,
+  diffs
 });
 
 export const windowResized = (width: number, height: number): WindowResized => ({

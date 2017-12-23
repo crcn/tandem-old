@@ -1,9 +1,11 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
-import { ApplicationState } from "../state";
+import { diffNode, patchNode } from "slim-dom";
+import { ApplicationState, getLatestPreviewDocument } from "../state";
 import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated } from "../actions";
 import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
+import crc32 = require("crc32");
 import * as chokidar from "chokidar";
 import * as fs from "fs";
 import * as glob from "glob";
@@ -131,21 +133,29 @@ function* handleDependencyGraph() {
 function* handleEvaluatedPreviews() {
   while(true) {
     yield take(DEPENDENCY_GRAPH_LOADED);
-    const { graph }: ApplicationState = yield select();
+    const state = yield select();
+    const { graph }: ApplicationState = state;
     const components = getAllComponents(graph);
     const componentSourceUris = getComponentSourceUris(graph);
     for (const componentId in components) {
       const component = components[componentId];
       for (const preview of component.previews) {
+        const filePath = componentSourceUris[componentId];
         const entry = {
           componentId,
-          filePath: componentSourceUris[componentId],
+          filePath,
           previewName: preview.name
         }
-        const { document } = yield call(runPCFile, { entry, graph, idSeed: componentId });
-        console.log(`Evaluated component ${componentId} preview ${preview.name}`);
+        const { document } = yield call(runPCFile, { entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
+        const latestDocument = getLatestPreviewDocument(componentId, preview.name, yield select());
+        
+        console.log(`Evaluated component ${componentId}:${preview.name}`);
+
+        // patch the previous document to preserve node IDs
+        const newDocument = latestDocument ? patchNode(latestDocument, diffNode(latestDocument, document)) : document;
+
         // TODO - push diagnostics too
-        yield put(previewEvaluated(componentId, preview.name, document));
+        yield put(previewEvaluated(componentId, preview.name, newDocument));
       }
     }
   }
