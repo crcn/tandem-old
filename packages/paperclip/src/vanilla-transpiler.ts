@@ -341,8 +341,8 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
   content += `$$previews["${id}"] = {};`;
 
   previews.forEach((preview) => {
-    const name = getPCStartTagAttribute(preview, "name");
-    const child = preview.childNodes.find(child => child.type === PCExpressionType.SELF_CLOSING_ELEMENT || child.type === PCExpressionType.ELEMENT);
+    const name = preview.name;
+    const child = preview.source.childNodes.find(child => child.type === PCExpressionType.SELF_CLOSING_ELEMENT || child.type === PCExpressionType.ELEMENT);
     if (!child) {
       return;
     }

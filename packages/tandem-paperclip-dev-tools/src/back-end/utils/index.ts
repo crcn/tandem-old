@@ -174,7 +174,7 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
     location: source.location,
     $id: id,
     screenshots: previews.map(preview => {
-      return getComponentScreenshot(id, getPCStartTagAttribute(preview, "name"), state)
+      return getComponentScreenshot(id, preview.name, state)
     }),
     tagName: id,
     moduleId: moduleId,
@@ -208,15 +208,15 @@ export const getPreviewComponentEntries = (state: ApplicationState): AllComponen
 
       for (let i = 0, {length} = component.previews; i < length; i++) {
         const preview = component.previews[i];
-        const width = Number(getPCStartTagAttribute(preview, "width") || DEFAULT_COMPONENT_PREVIEW_SIZE.width);
-        const height = Number(getPCStartTagAttribute(preview, "height") || DEFAULT_COMPONENT_PREVIEW_SIZE.height);
+        const width = Number(getPCStartTagAttribute(preview.source, "width") || DEFAULT_COMPONENT_PREVIEW_SIZE.width);
+        const height = Number(getPCStartTagAttribute(preview.source, "height") || DEFAULT_COMPONENT_PREVIEW_SIZE.height);
 
         const bounds = { left: 0, top: currentTop, right: width, bottom: currentTop + height };
         
         entries.push({
           bounds,
           componentId: component.id,
-          previewName: getPCStartTagAttribute(preview, "name") || String(i),
+          previewName: preview.name || String(i),
           relativeFilePath: getPublicSrcPath(module.uri, state)
         });
 

@@ -2,8 +2,8 @@ import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
 import { ApplicationState } from "../state";
-import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded } from "../actions";
-import { DependencyGraph, loadModuleDependencyGraph } from "paperclip";
+import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated } from "../actions";
+import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
 import * as chokidar from "chokidar";
 import * as fs from "fs";
 import * as glob from "glob";
@@ -11,6 +11,7 @@ import * as glob from "glob";
 export function* uriWatcherSaga() {
   yield fork(handleWatchUrisRequest);
   yield fork(handleDependencyGraph);
+  yield fork(handleEvaluatedPreviews);
 }
 
 function* handleWatchUrisRequest() {
@@ -124,5 +125,28 @@ function* handleDependencyGraph() {
       graph = newGraph;
     }
     yield put(dependencyGraphLoaded(graph));
+  }
+}
+
+function* handleEvaluatedPreviews() {
+  while(true) {
+    yield take(DEPENDENCY_GRAPH_LOADED);
+    const { graph }: ApplicationState = yield select();
+    const components = getAllComponents(graph);
+    const componentSourceUris = getComponentSourceUris(graph);
+    for (const componentId in components) {
+      const component = components[componentId];
+      for (const preview of component.previews) {
+        const entry = {
+          componentId,
+          filePath: componentSourceUris[componentId],
+          previewName: preview.name
+        }
+        const { document } = yield call(runPCFile, { entry, graph, idSeed: componentId });
+        console.log(`Evaluated component ${componentId} preview ${preview.name}`);
+        // TODO - push diagnostics too
+        yield put(previewEvaluated(componentId, preview.name, document));
+      }
+    }
   }
 }

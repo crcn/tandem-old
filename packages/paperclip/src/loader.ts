@@ -44,13 +44,18 @@ export type ComponentMetadata = {
   }
 }
 
+export type Preview = {
+  name: string;
+  source: PCElement;
+};
+
 export type Component = {
   source: PCElement;
   id: string;
   metadata: ComponentMetadata[];
   style: PCElement;
   template: PCElement;
-  previews: PCElement[];
+  previews: Preview[];
 };
 
 export type ComponentExpressions = {
@@ -333,7 +338,7 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
   let id: string;
   let style: PCElement;
   let template: PCElement;
-  const previews: PCElement[] = [];
+  const previews: Preview[] = [];
   const metadata: ComponentMetadata[] = [];
 
   for (let i = 0, {length} = attributes; i < length; i++) {
@@ -356,7 +361,10 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
         template = element as any as PCElement;
       } else if (tagName === "preview") {
         if (child.type === PCExpressionType.ELEMENT && (child as PCElement).childNodes.find(child => child.type === PCExpressionType.ELEMENT || child.type === PCExpressionType.SELF_CLOSING_ELEMENT) && Boolean(getPCStartTagAttribute(element as any, "name"))) {
-          previews.push(element as any as PCElement);
+          previews.push({
+            source: element as any as PCElement,
+            name: getPCStartTagAttribute(element as any, "name")
+          });
         }
       } else if (tagName === "meta") {
         metadata.push({
@@ -378,7 +386,7 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
 };
 
 export const getComponentPreview = (name: string, component: Component) => {
-  return component.previews.find(preview => getPCStartTagAttribute(preview, "name") === name)
+  return component.previews.find(preview => preview.name === name)
 }
 
 const createImport = (attributes: PCAttribute[]): Import => {

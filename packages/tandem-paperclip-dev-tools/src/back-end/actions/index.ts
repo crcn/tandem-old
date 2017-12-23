@@ -1,6 +1,7 @@
 import { Action } from "redux";
 import { FileCacheItem, ApplicationState, ScreenshotClippings, InitOptions } from "../state";
 import { DependencyGraph } from "paperclip";
+import { SlimParentNode } from "slim-dom";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
 import * as express from "express";
@@ -26,6 +27,7 @@ export const WATCH_URIS_REQUESTED = "WATCH_URIS_REQUESTED";
 export const WATCHING_FILES = "WATCHING_FILES";
 export const INIT_SERVER_REQUESTED = "INIT_SERVER_REQUESTED";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
+export const PREVIEW_EVALUATED = "PREVIEW_EVALUATED";
 
 export type HTTPRequest = {
   request: Request;
@@ -86,6 +88,12 @@ export type ComponentScreenshotSaved = {
 
 export type DependencyGraphLoaded = {
   graph: DependencyGraph;
+} & Action;
+
+export type PreviewEvaluated = {
+  componentId: string;
+  previewName: string;
+  document: SlimParentNode;
 } & Action;
 
 export type ComponentScreenshotRemoved = {
@@ -194,6 +202,13 @@ export const componentScreenshotRemoved = (uri: string): ComponentScreenshotRemo
 export const dependencyGraphLoaded = (graph: DependencyGraph): DependencyGraphLoaded => ({
   graph,
   type: DEPENDENCY_GRAPH_LOADED
+});
+
+export const previewEvaluated = (componentId: string, previewName: string, document: SlimParentNode): PreviewEvaluated => ({
+  componentId,
+  previewName,
+  document,
+  type: PREVIEW_EVALUATED
 });
 
 export const childDevServerStarted = (port: number): ChildDevServerStarted => ({

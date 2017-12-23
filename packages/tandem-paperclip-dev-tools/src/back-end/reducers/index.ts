@@ -1,7 +1,9 @@
 import { Action } from "redux";
-import { ApplicationState, updateApplicationState, updateFileCacheItem, addComponentScreenshot, removeComponentScreenshot, removeFileCacheItem } from "../state";
-import { WATCH_URIS_REQUESTED, WatchUrisRequested, FileAction, fileContentChanged, FILE_CONTENT_CHANGED, FileContentChanged, WATCHING_FILES, WatchingFiles, HEADLESS_BROWSER_LAUNCHED, HeadlessBrowserLaunched, ComponentScreenshotSaved, ComponentScreenshotRemoved, COMPONENT_SCREENSHOT_SAVED, COMPONENT_SCREENSHOT_REMOVED, ComponentScreenshotTaken, componentScreenshotRemoved, ComponentScreenshotRequested, COMPONENT_SCREENSHOT_STARTED, ComponentScreenshotStarted, INIT_SERVER_REQUESTED, InitServerRequested, FILE_REMOVED, DEPENDENCY_GRAPH_LOADED, DependencyGraphLoaded } from "../actions";
+import { ApplicationState, updateApplicationState, updateFileCacheItem, addComponentScreenshot, removeComponentScreenshot, removeFileCacheItem, addPreviewDocument, getLatestPreviewDocument, limitPreviewDocuments } from "../state";
+import { WATCH_URIS_REQUESTED, WatchUrisRequested, FileAction, fileContentChanged, FILE_CONTENT_CHANGED, FileContentChanged, WATCHING_FILES, WatchingFiles, HEADLESS_BROWSER_LAUNCHED, HeadlessBrowserLaunched, ComponentScreenshotSaved, ComponentScreenshotRemoved, COMPONENT_SCREENSHOT_SAVED, COMPONENT_SCREENSHOT_REMOVED, ComponentScreenshotTaken, componentScreenshotRemoved, ComponentScreenshotRequested, COMPONENT_SCREENSHOT_STARTED, ComponentScreenshotStarted, INIT_SERVER_REQUESTED, InitServerRequested, FILE_REMOVED, DEPENDENCY_GRAPH_LOADED, DependencyGraphLoaded, PreviewEvaluated, PREVIEW_EVALUATED } from "../actions";
 import { arrayRemoveItem } from "aerial-common2";
+
+const MAX_PREVIEW_DOCUMENTS = 10;
 
 export function mainReducer(state: ApplicationState, event: Action) {
 
@@ -36,6 +38,11 @@ export function mainReducer(state: ApplicationState, event: Action) {
       return updateApplicationState(state, {
         watchUris: uris
       });
+    }
+
+    case PREVIEW_EVALUATED: {
+      const { previewName, componentId, document } = event as PreviewEvaluated;
+      return limitPreviewDocuments(componentId, previewName, MAX_PREVIEW_DOCUMENTS, addPreviewDocument(componentId, previewName, document, state));
     }
     
     case HEADLESS_BROWSER_LAUNCHED: {

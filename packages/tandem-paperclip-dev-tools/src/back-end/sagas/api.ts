@@ -5,8 +5,8 @@ import * as sharp from "sharp";
 import * as request from "request"; 
 import * as md5 from "md5";
 import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
-import { compressRootNode } from "slim-dom";
-import { ApplicationState, RegisteredComponent, getFileCacheContent } from "../state";
+import { compressRootNode, diffNode, getDocumentChecksum } from "slim-dom";
+import { ApplicationState, RegisteredComponent, getFileCacheContent, getLatestPreviewDocument, getPreviewDocumentByChecksum } from "../state";
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource, runPCFile } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
@@ -49,7 +49,6 @@ function* addRoutes(server: express.Express) {
   // return all components
   server.get("/screenshots/:screenshotHash", yield wrapRoute(getComponentsScreenshot));
 
-
   // return a module preview
   // all is OKAY since it's not a valid tag name
   server.get("/components/all/preview", yield wrapRoute(getAllComponentsPreview));
@@ -57,8 +56,9 @@ function* addRoutes(server: express.Express) {
   // return a module preview
   server.get("/components/:componentId/preview", yield wrapRoute(getComponentHTMLPreview));
   server.get("/components/:componentId/preview.json", yield wrapRoute(getComponentJSONPreview));
-  server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentHTMLPreview));
   server.get("/components/:componentId/preview/:previewName.json", yield wrapRoute(getComponentJSONPreview));
+  server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentHTMLPreview));
+  server.get("/components/:componentId/preview/:previewName/diff/:oldChecksum/:newChecksum.json", yield wrapRoute(getComponentJSONPreviewDiff));
 
   // return all components
   server.get("/components/:componentId/screenshots/:previewName/:screenshotHash", yield wrapRoute(getClippedComponentScreenshot));
@@ -400,8 +400,6 @@ function* getClippedComponentScreenshot(req: express.Request, res: express.Respo
 
   const screenshot = getComponentScreenshot(componentId, previewName, state);
 
-  console.log(screenshot, componentId, previewName);
-
   if (!screenshot) {
     return next();
   }
@@ -545,27 +543,24 @@ function* getComponentHTMLPreview(req: express.Request, res: express.Response) {
 }
 
 function* getComponentJSONPreview(req: express.Request, res: express.Response, next) {
-  let state: ApplicationState = yield select();
+  const state: ApplicationState = yield select();
   const { componentId, previewName } = req.params;
-  const components = (yield call(getAvailableComponents, state, getReadFile(state))) as RegisteredComponent[];
 
-  const targetComponent = components.find(component => component.tagName === componentId);
-
-  if (!state.graph) {
-    yield take(DEPENDENCY_GRAPH_LOADED);
-    state = yield select();
+  const document = getLatestPreviewDocument(componentId, previewName, state);
+  if (!document) {
+    return next();
   }
 
-  const { document, diagnostics } = runPCFile({
-    entry: {
-      componentId,
-      previewName,
-      filePath: targetComponent.filePath
-    },
-    graph: state.graph,
-  });
-
   return res.send(compressRootNode(document));
+}
+
+function* getComponentJSONPreviewDiff(req: express.Request, res: express.Response, next) {
+  const state: ApplicationState = yield select();
+  const { componentId, previewName, oldChecksum, newChecksum } = req.params;
+  const oldDocument = getPreviewDocumentByChecksum(componentId, previewName, oldChecksum, state);
+  const newDocument = getPreviewDocumentByChecksum(componentId, previewName, newChecksum, state);
+
+  return res.send(diffNode(oldDocument, newDocument));
 }
 
 function* setFileContent(req: express.Request, res: express.Response, next) {

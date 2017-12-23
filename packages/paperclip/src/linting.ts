@@ -124,7 +124,7 @@ const lintComponent = (component: Component, context: LintContext) => {
 
   for (let i = 0, {length} = component.previews; i < length; i++) {
     const preview = component.previews[i];
-    context = lintNode(preview, context);
+    context = lintNode(preview.source, context);
   }
 
   return context;

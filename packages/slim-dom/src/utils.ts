@@ -1,4 +1,5 @@
-import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement } from "./state";
+import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute } from "./state";
+import crc32 = require("crc32");
 
 let previousPurgeTime = 0;
 const DUMP_DEFAULT_ANCHOR_INTERVAL = 1000 * 60 * 5;
@@ -45,7 +46,24 @@ export const pushChildNode = <TParent extends SlimParentNode>(parent: TParent, c
   ]
 });
 
-export const stringifyNode = weakMemo((node: SlimBaseNode) => {
+export const removeChildNodeAt = <TParent extends SlimParentNode>(parent: TParent, index: number): TParent => ({
+  ...(parent as any),
+  childNodes: [
+    ...parent.childNodes.slice(0, index),
+    ...parent.childNodes.slice(index + 1)
+  ]
+});
+
+export const insertChildNode = <TParent extends SlimParentNode>(parent: TParent, child: SlimBaseNode, index: number = Number.MAX_SAFE_INTEGER): TParent => ({
+  ...(parent as any),
+  childNodes: [
+    ...parent.childNodes.slice(0, index),
+    child,
+    ...parent.childNodes.slice(index)
+  ]
+});
+
+export const stringifyNode = weakMemo((node: SlimBaseNode, includeShadow?: boolean) => {
   switch(node.type) {
     case SlimVMObjectType.TEXT: {
       const text = node as SlimTextNode;
@@ -59,8 +77,13 @@ export const stringifyNode = weakMemo((node: SlimBaseNode) => {
         buffer += ` ${attr.name}=${JSON.stringify(attr.value)}`;
       }
       buffer += `>`;
+      if (includeShadow && el.shadow)  {
+        buffer += `<#shadow>`;
+        buffer += stringifyNode(el.shadow, includeShadow);
+        buffer += `</#shadow>`;
+      }
       for (let i = 0, {length} = el.childNodes; i < length; i++) {
-        buffer += stringifyNode(el.childNodes[i]);
+        buffer += stringifyNode(el.childNodes[i], includeShadow);
       }
       buffer += `</${el.tagName}>`;
       return buffer;
@@ -70,7 +93,7 @@ export const stringifyNode = weakMemo((node: SlimBaseNode) => {
       const el = node as SlimParentNode;
       let buffer = ``;
       for (let i = 0, {length} = el.childNodes; i < length; i++) {
-        buffer += stringifyNode(el.childNodes[i]);
+        buffer += stringifyNode(el.childNodes[i], includeShadow);
       }
       return buffer;
     }
@@ -95,17 +118,37 @@ export type FlattenedObjects = {
   }
 };
 
-export const getNodeAncestor = weakMemo((value: SlimBaseNode, root: SlimParentNode): SlimParentNode[] => {
+export const getNodeAncestors = weakMemo((value: SlimBaseNode, root: SlimParentNode): SlimParentNode[] => {
   const objects = flattenObjects(root);
   let current = objects[objects[value.id].parentId];
   let ancestors: SlimParentNode[] = [];
 
   while(current) {
-    ancestors.push(current as any as SlimParentNode);
+    ancestors.push(current.value as any as SlimParentNode);
     current = objects[current.parentId];
   }
 
   return ancestors;
+});
+
+export const getNodePath = weakMemo((value: SlimBaseNode, root: SlimParentNode): any[] => {
+  const objects = flattenObjects(root);
+  let current = objects[value.id];
+  const path: any[] = [];
+
+  while(current && current.parentId) {
+    const parentInfo = objects[current.parentId];
+
+    // TODO - check if css rules
+    if ((parentInfo.value as SlimElement).shadow === current.value) { 
+      path.unshift("shadow");
+    } else {
+      path.unshift((parentInfo.value as SlimParentNode).childNodes.indexOf(current.value));
+    }
+    current = parentInfo;
+  }
+
+  return path;
 });
 
 export const getNestedObjectById = weakMemo((id: string, root: SlimParentNode): VMObject => {
@@ -145,7 +188,7 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
         Object.assign(base, flattenCSSObjects((element as SlimStyleElement).sheet, element.id));
       } else {
         if (element.shadow) {
-          Object.assign(base, flattenObjects(element.shadow));
+          Object.assign(base, flattenObjects(element.shadow, element.id));
         }
         Object.assign(base, flattenChildNodes(element));
       }
@@ -153,7 +196,10 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
     }
     case SlimVMObjectType.DOCUMENT: 
     case SlimVMObjectType.DOCUMENT_FRAGMENT: {
-      return flattenChildNodes(value as SlimParentNode);
+      return {
+        [value.id]: { parentId: parentId, value },
+        ...flattenChildNodes(value as SlimParentNode)
+      };
     }
   }
 });
@@ -204,3 +250,58 @@ const flattenCSSRules = weakMemo((target: SlimCSSGroupingRule) => {
   }
   return objects;
 });
+
+export const getDocumentChecksum = weakMemo((document: SlimParentNode) => crc32(stringifyNode(document, true)));
+
+export const replaceNestedChild = <TNode extends SlimParentNode>(current: TNode, path: any[], child: SlimBaseNode, index: number = 0): TNode => {
+  const part = path[index];
+  if (index === path.length) {
+    return child as TNode;
+  }
+
+  if (part === "shadow") {
+    return {
+      ...(current as any),
+      shadow: replaceNestedChild((current as any).shadow, path, child, index + 1)
+    }
+  }
+
+  return {
+    ...(current as any),
+    childNodes: [
+      ...current.childNodes.slice(0, part),
+      replaceNestedChild(current.childNodes[part] as SlimParentNode, path, child, index + 1),
+      ...current.childNodes.slice(part + 1)
+    ]  
+  } as TNode;
+};
+
+export const setTextNodeValue = (target: SlimTextNode, newValue: string): SlimTextNode => ({
+  ...target,
+  value: newValue
+});
+
+export const setElementAttribute = (target: SlimElement, name: string, value: string): SlimElement => {
+  let attributes: SlimElementAttribute[] = [];
+  let found: boolean;
+  for (let i = 0, {length} = target.attributes; i < length; i++) {
+    const attribute = target.attributes[i];
+    if (attribute.name === name) {
+      found = true;
+      if (value) {
+        attributes.push({ name, value });
+      }
+    } else {
+      attributes.push(attribute);
+    }
+  }
+
+  if (!found) {
+    attributes.push({ name, value });
+  }
+
+  return {
+    ...target,
+    attributes,
+  };
+}

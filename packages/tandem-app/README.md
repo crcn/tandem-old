@@ -1,6 +1,7 @@
 IMMEDIATE:
 
 - [ ] diff/patch for slim-dom 
+  - [ ] diff/patch front-end impl
 - [ ] query selector testing
 
 - [ ] perf test - (preview a TON of windows.)

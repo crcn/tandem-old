@@ -3,7 +3,8 @@ import * as path from "path";
 import * as pupeteer from "puppeteer";
 import { arrayReplaceIndex, arraySplice, weakMemo, arrayRemoveItem, Bounds, arrayRemoveIndex } from "aerial-common2";
 import { getModuleId, getModuleFilePaths } from "../utils";
-import { ExpressionLocation, DependencyGraph } from "paperclip";
+import { SlimParentNode, getDocumentChecksum } from "slim-dom";
+import { ExpressionLocation, DependencyGraph, getAllComponents } from "paperclip";
 
 export type ProjectConfig = {
   sourceFilePattern: string;
@@ -38,9 +39,14 @@ export type InitOptions = {
   projectConfig: ProjectConfig;
 }
 
+export type PreviewDocuments = {
+  [identifier: string]: SlimParentNode[]
+};
+
 export type ApplicationState = {
   options?: InitOptions;
   graph?: DependencyGraph;
+  previewDocuments?: PreviewDocuments;
   watchUris: string[];
   headlessBrowser?: pupeteer.Browser;
   shouldTakeAnotherScreenshot?: boolean;
@@ -79,7 +85,56 @@ export const removeComponentScreenshot = (uri: string, state: ApplicationState) 
   return updateApplicationState(state, {
     componentScreenshots: arrayRemoveIndex(state.componentScreenshots, index)
   });
-}
+};
+
+export const addPreviewDocument = (componentId: string, previewName: string, document: SlimParentNode, root: ApplicationState) => {
+  const key = getPreviewHash(componentId, previewName, root);
+  return updateApplicationState(root, {
+    previewDocuments: {
+      ...(root.previewDocuments as any),
+      [key]: [
+        ...(root.previewDocuments[key] || []),
+        document
+      ]
+    }
+  })
+};
+
+export const limitPreviewDocuments = (componentId: string, previewName: string, max: number, root: ApplicationState) => {
+  const key = getPreviewHash(componentId, previewName, root);
+  if (root.previewDocuments[key].length > max) {
+    return updateApplicationState(root, {
+      previewDocuments: {
+        ...(root.previewDocuments as any),
+        [key]: root.previewDocuments[key].slice(1)
+      }
+    });
+  }
+  return root;
+};
+
+export const getLatestPreviewDocument = (componentId: string, previewName: string, root: ApplicationState) => {
+  const key = getPreviewHash(componentId, previewName, root);
+  const docs = root.previewDocuments[key];
+  return docs && docs.length ? docs[docs.length - 1] : null;
+};
+
+export const getPreviewDocumentByChecksum = (componentId: string, previewName: string, checksum: string, root: ApplicationState) => {
+  const key = getPreviewHash(componentId, previewName, root);
+  const docs = root.previewDocuments[key];
+  if (checksum === "latest") {
+    return docs[docs.length - 1];
+  }
+  return docs.find(doc => getDocumentChecksum(doc) === checksum);
+};
+
+const getPreviewHash = (componentId: string, previewName: string, { graph }: ApplicationState) => {
+  if (previewName) {
+    return componentId + previewName;
+  }
+  const component = getAllComponents(graph)[componentId];
+  return componentId + component.previews[0].name;
+};
 
 export const updateFileCacheItem = (state: ApplicationState, item: FileCacheItem) => {
 

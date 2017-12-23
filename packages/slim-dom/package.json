@@ -9,12 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "crc32": "^0.2.2",
     "lodash": "^4.17.4",
     "typescript": "^2.6.2"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.91",
     "@types/chai": "^4.0.4",
+    "@types/lodash": "^4.14.91",
     "@types/mocha": "^2.2.44",
     "chai": "^4.1.2",
     "mocha": "^4.0.1"

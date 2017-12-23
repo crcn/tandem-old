@@ -75,7 +75,7 @@ export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph
   }
 
   return graph[memoKey] = ({
-    document: runPreview(preview, context),
+    document: runPreview(preview.source, context),
     diagnostics: []
   } as VMResult) as any;
 };
@@ -189,6 +189,7 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
 
   if (component) {
     shadow = {
+      id: createId(context),
       type: SlimVMObjectType.DOCUMENT_FRAGMENT,
       childNodes: [],
       source: createVMSource(component.source, context)

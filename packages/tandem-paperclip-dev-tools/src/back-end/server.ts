@@ -9,7 +9,7 @@ import { CONFIG_NAMESPACE, DEFAULT_BASE_DIRECTORY } from "./constants";
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   mainReducer,
-  { fileCache: [], watchUris: [], componentScreenshots: [] },
+  { fileCache: [], watchUris: [], componentScreenshots: [], previewDocuments: {} },
   applyMiddleware(sagaMiddleware)
 );
 

@@ -1,6 +1,7 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
-import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION } from "source-mutation";
-import { compressRootNode } from "./compression";
+import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation } from "source-mutation";
+import { compressRootNode, uncompressRootNode } from "./compression";
+import { weakMemo, flattenObjects, getNodePath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute } from "./utils";
 
 // text
 export const SET_TEXT_NODE_VALUE = "SET_TEXT_NODE_VALUE";
@@ -18,7 +19,7 @@ export const REMOVE_SHADOW = "REMOVE_SHADOW";
 
 export type SetTextNodeValueMutation = {} & SetValueMutation<VMObjectSource>;
 
-export const diffNode = (oldNode: SlimBaseNode, newNode: SlimBaseNode) => {
+export const diffNode = weakMemo((oldNode: SlimBaseNode, newNode: SlimBaseNode) => {
   switch(oldNode.type) {
     case SlimVMObjectType.TEXT: return diffTextNode(oldNode as SlimTextNode, newNode as SlimTextNode);
     case SlimVMObjectType.ELEMENT: return diffElement(oldNode as SlimElement, newNode as SlimElement);
@@ -28,31 +29,31 @@ export const diffNode = (oldNode: SlimBaseNode, newNode: SlimBaseNode) => {
       throw new Error(`Unable to diff`);
     }
   }
-}
+});
 
 const diffTextNode = (oldNode: SlimTextNode, newNode: SlimTextNode) => {
   if(oldNode.value !== newNode.value) {
-    return [createSetValueMutation(SET_TEXT_NODE_VALUE, oldNode.source, newNode.value)];
+    return [createSetValueMutation(SET_TEXT_NODE_VALUE, oldNode.id, newNode.value)];
   }
 };
 
-const diffElement = (oldElement: SlimElement, newElement: SlimElement): Mutation<VMObjectSource>[] => {
-  const diffs: Mutation<VMObjectSource>[] = [];
+const diffElement = (oldElement: SlimElement, newElement: SlimElement): Mutation<string>[] => {
+  const diffs: Mutation<string>[] = [];
 
   eachArrayValueMutation(
     diffArray(oldElement.attributes, newElement.attributes, (a, b) => a.name === b.name ? 0 : -1),
     {
       insert({ index, value }) {
         diffs.push(
-          createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.source, value.name, value.value)
+          createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, value.name, value.value)
         );
       },
       delete({ index, value }) {
-        diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.source, value.name, null));
+        diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, value.name, null));
       },
       update({ index, newValue, originalOldIndex }) {
         if (newValue.value !== oldElement.attributes[originalOldIndex].value) {
-          diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.source, newValue.name, newValue.value));
+          diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, newValue.name, newValue.value));
         }
       }
     }
@@ -68,24 +69,23 @@ const diffElement = (oldElement: SlimElement, newElement: SlimElement): Mutation
     );
   } else if (oldElement.shadow && !newElement.shadow) {
     diffs.push(
-      createSetValueMutation(REMOVE_SHADOW, oldElement.source, null)
+      createSetValueMutation(REMOVE_SHADOW, oldElement.id, null)
     );
   } else if (!oldElement.shadow && newElement.shadow) {
     diffs.push(
-      createSetValueMutation(ATTACH_SHADOW, oldElement.source, compressRootNode(newElement.shadow))
+      createSetValueMutation(ATTACH_SHADOW, oldElement.id, compressRootNode(newElement.shadow))
     );
   }
 
   return diffs;
 };
 
-
-const diffDocumentFragment = (oldParent: SlimParentNode, newParent: SlimParentNode): Mutation<VMObjectSource>[] => {
+const diffDocumentFragment = (oldParent: SlimParentNode, newParent: SlimParentNode): Mutation<string>[] => {
   return diffChildNodes(oldParent, newParent);
 };
 
-const diffChildNodes = (oldParent: SlimParentNode, newParent: SlimParentNode): Mutation<VMObjectSource>[] => {
-  const diffs: Mutation<VMObjectSource>[] = [];
+const diffChildNodes = (oldParent: SlimParentNode, newParent: SlimParentNode): Mutation<string>[] => {
+  const diffs: Mutation<string>[] = [];
 
   eachArrayValueMutation(
     diffArray(oldParent.childNodes, newParent.childNodes, compareNodeDiffs),
@@ -94,7 +94,7 @@ const diffChildNodes = (oldParent: SlimParentNode, newParent: SlimParentNode): M
         diffs.push(
           createInsertChildMutation(
             INSERT_CHILD_NODE,
-            oldParent.source,
+            oldParent.id,
             compressRootNode(value)
           )
         )
@@ -103,7 +103,7 @@ const diffChildNodes = (oldParent: SlimParentNode, newParent: SlimParentNode): M
         diffs.push(
           createRemoveChildMutation(
             REMOVE_CHILD_NODE,
-            oldParent.source,
+            oldParent.id,
             null,
             index
           )
@@ -145,3 +145,45 @@ const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
 
   return 0;
 }
+
+export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<string>[]) => {
+
+  for (let i = 0, {length} = diffs; i < length; i++) {
+    const diff = diffs[i];
+    const info = flattenObjects(root)[diff.target];
+    if (!info) {
+      throw new Error(`diff ${JSON.stringify(diff)} doesn't have a matching node.`);
+    }
+    const target = info.value;
+    let newTarget = target;
+
+    switch(diff.type) {
+      case SET_TEXT_NODE_VALUE: {
+        const { newValue } = diff as SetValueMutation<string>;
+        newTarget = setTextNodeValue(target as SlimTextNode, newValue);
+        break;
+      }
+      case SET_ATTRIBUTE_VALUE: {
+        const { name, newValue } = diff as SetPropertyMutation<string>;
+        newTarget = setElementAttribute(target as SlimElement, name, newValue);
+        break;
+      }
+      case REMOVE_CHILD_NODE: {
+        const { index } = diff as RemoveChildMutation<any, any>;
+        newTarget = removeChildNodeAt(newTarget as SlimParentNode, index);
+        break;
+      }
+      case INSERT_CHILD_NODE: {
+        const { index, child } = diff as InsertChildMutation<any, any>;
+        newTarget = insertChildNode(newTarget as SlimParentNode, uncompressRootNode(child), index);
+        break;
+      }
+    }
+
+    if (newTarget !== target) {
+      root = replaceNestedChild(root, getNodePath(target, root), newTarget);
+    }
+  }
+
+  return root;
+};
