@@ -59,6 +59,7 @@ function* addRoutes(server: express.Express) {
   server.get("/components/:componentId/preview/:previewName.json", yield wrapRoute(getComponentJSONPreview));
   server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentHTMLPreview));
   server.get("/components/:componentId/preview/:previewName/diff/:oldChecksum/:newChecksum.json", yield wrapRoute(getComponentJSONPreviewDiff));
+  server.get("/components/:componentId/preview/diff/:oldChecksum/:newChecksum.json", yield wrapRoute(getComponentJSONPreviewDiff));
 
   // return all components
   server.get("/components/:componentId/screenshots/:previewName/:screenshotHash", yield wrapRoute(getClippedComponentScreenshot));

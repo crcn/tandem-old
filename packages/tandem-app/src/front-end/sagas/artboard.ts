@@ -1,4 +1,4 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -118,13 +118,15 @@ function* reloadArtboard(artboardId: string) {
 }
 
 function* diffArtboard(artboardId: string) {
+  console.log("DI ART");
   yield spawn(function*() {
     const state: ApplicationState = yield select();
     const artboard = getArtboardById(artboardId, state);
     const diffs = yield call(getDocumentPreviewDiff, artboard.componentId, artboard.previewName, artboard.checksum, state);
+    console.log("PATCH", diffs.map(diff => diff.type));
 
     // TODO - patch DOM nodes here
-    yield put(artboardDiffed(artboard.$id, diffs));
+    yield put(artboardDiffed(artboard.$id, diffs, patchDOM(diffs, artboard.nativeNodeMap, artboard.mount)));
   });
 }
 

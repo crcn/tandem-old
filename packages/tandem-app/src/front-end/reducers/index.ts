@@ -799,17 +799,20 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       return updateArtboard(state, artboardId, {
         dependencyUris,
         document,
+        originalDocument: document,
         mount,
         checksum: getDocumentChecksum(document)
       });
     }
 
     case ARTBOARD_DIFFED: {
-      const { artboardId, diffs } = event as ArtboardDiffed;
+      const { artboardId, diffs, nativeNodeMap } = event as ArtboardDiffed;
       const artboard = getArtboardById(artboardId, state);
-      const document = patchNode(artboard.document, diffs);
+      const document = patchNode(artboard.originalDocument, diffs);
       return updateArtboard(state, artboardId, {
         document,
+        nativeNodeMap,
+        originalDocument: document,
         checksum: getDocumentChecksum(document)
       });
     }

@@ -342,7 +342,7 @@
   <template>
     <td-pane>
       <span slot="header">
-        CSS Inspector
+        CSS Inspector!!!!
       </span>
       <div slot="content" class="content">
         Please select only one element to edit CSS 

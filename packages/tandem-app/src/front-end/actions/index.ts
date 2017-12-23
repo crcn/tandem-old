@@ -300,6 +300,7 @@ export type ArtboardLoaded = {
 
 export type ArtboardDiffed = {
   artboardId: string;
+  nativeNodeMap: DOMNodeMap;
   diffs: Mutation<any>[];
 } & BaseEvent;  
 
@@ -439,8 +440,9 @@ export const artboardLoaded = (artboardId, dependencyUris: string[], document: S
   mount
 });
 
-export const artboardDiffed = (artboardId: string, diffs: Mutation<any>[]): ArtboardDiffed => ({
+export const artboardDiffed = (artboardId: string, diffs: Mutation<any>[], nativeNodeMap: DOMNodeMap): ArtboardDiffed => ({
   type: ARTBOARD_DIFFED,
+  nativeNodeMap,
   artboardId,
   diffs
 });

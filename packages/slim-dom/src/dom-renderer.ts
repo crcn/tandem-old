@@ -1,5 +1,8 @@
 import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSMediaRule, SlimCSSRule, Bounds } from "./state";
 import { weakMemo } from "./utils";
+import { Mutation, SetValueMutation } from "source-mutation"
+import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE } from "./diff-patch";
+import { uncompressRootNode } from "./compression";
 
 export const renderDOM = (node: SlimBaseNode, mount: HTMLElement) => {
   let map: DOMNodeMap = {};
@@ -8,13 +11,13 @@ export const renderDOM = (node: SlimBaseNode, mount: HTMLElement) => {
 };
 
 export type DOMNodeMap = {
-  [identifier: string]: HTMLElement
+  [identifier: string]: HTMLElement|Text
 };
 
 const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => {
   switch(node.type) {
     case SlimVMObjectType.TEXT: {
-      return document.createTextNode((node as SlimTextNode).value);
+      return map[node.id] = document.createTextNode((node as SlimTextNode).value);
     }
     case SlimVMObjectType.ELEMENT: {
       const { tagName, id, shadow, childNodes, attributes } = node as SlimElement;
@@ -104,7 +107,13 @@ export type ComputedDOMInfo = {
 export const computedDOMInfo = (map: DOMNodeMap): ComputedDOMInfo => {
   let computedInfo = {};
   for (const nodeId in map) {
-    const element = map[nodeId];
+    const node = map[nodeId];
+
+    if (node.nodeName.charAt(0) === "#") {
+      continue;
+    }
+    
+    const element = node as HTMLElement;
 
     // TODO - memoize computed info here
     computedInfo[nodeId] = {
@@ -116,6 +125,17 @@ export const computedDOMInfo = (map: DOMNodeMap): ComputedDOMInfo => {
 };
 
 // TODO
-export const patchDOM = (diffs: any[], container: HTMLElement) => {
+export const patchDOM = (diffs: Mutation<string>[], map: DOMNodeMap, container: HTMLIFrameElement): DOMNodeMap => {
+  for (let i = 0, {length} = diffs; i < length; i++) {
+    const mutation = diffs[i];
+    const target = map[mutation.target];
+    switch(mutation.type) {
+      case SET_TEXT_NODE_VALUE: {
+        (target as Text).nodeValue = (mutation as SetValueMutation<string>).newValue;
+        break;
+      }
+    }
+  }
 
+  return map;
 };

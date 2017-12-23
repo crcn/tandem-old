@@ -66,7 +66,6 @@ import {
   SYNTHETIC_WINDOW,
   getSyntheticWindow,
   getSyntheticBrowser,
-  getSyntheticNodeById, 
   getSyntheticNodeWindow,
   getSyntheticWindowBrowser,
   getSyntheticBrowserBounds,
@@ -74,6 +73,7 @@ import {
   DEFAULT_WINDOW_WIDTH, 
   DEFAULT_WINDOW_HEIGHT,
 } from "aerial-browser-sandbox";
+import { getNestedObjectById } from "slim-dom";
 
 import { 
   Workspace,
@@ -95,6 +95,7 @@ import {
   getWorkspaceLastSelectionOwnerArtboard,
   getAvailableComponent,
   getStageToolMouseNodeTargetReference,
+  getWorkspaceNode,
 } from "../state";
 // import { deleteShortcutPressed, , apiComponentsLoaded } from "front-end";
 
@@ -155,7 +156,7 @@ function* handleMetaClickElement() {
     // }
 
     if (!targetRef) continue;
-    const node = getSyntheticNodeById(state, targetRef[1]);
+    const node = getWorkspaceNode(targetRef[1], workspace);
 
     // TODO - display error if source URI does not exist, or URI is not a file
     if (node.source && node.source.uri) {
@@ -392,7 +393,7 @@ function* handleSourceClicked() {
 
     const state = yield select();
 
-    const item = getSyntheticNodeById(state, itemId);
+    const item = getWorkspaceNode(itemId, getSelectedWorkspace(state));
 
     // TODO - display error if source URI does not exist, or URI is not a file
     if (item.source && item.source.uri) {

@@ -3,7 +3,7 @@ import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
 import { diffNode, patchNode } from "slim-dom";
 import { ApplicationState, getLatestPreviewDocument } from "../state";
-import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated } from "../actions";
+import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged } from "../actions";
 import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
 import crc32 = require("crc32");
 import * as chokidar from "chokidar";
@@ -132,6 +132,9 @@ function* handleDependencyGraph() {
 
 function* handleEvaluatedPreviews() {
   while(true) {
+
+    // TODO - only run changed files
+    // emit diffs for browser
     yield take(DEPENDENCY_GRAPH_LOADED);
     const state = yield select();
     const { graph }: ApplicationState = state;
