@@ -1,6 +1,6 @@
 import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSMediaRule, SlimCSSRule, Bounds } from "./state";
 import { weakMemo } from "./utils";
-import { Mutation, SetValueMutation } from "source-mutation"
+import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation } from "source-mutation"
 import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE } from "./diff-patch";
 import { uncompressRootNode } from "./compression";
 
@@ -132,6 +132,29 @@ export const patchDOM = (diffs: Mutation<string>[], map: DOMNodeMap, container: 
     switch(mutation.type) {
       case SET_TEXT_NODE_VALUE: {
         (target as Text).nodeValue = (mutation as SetValueMutation<string>).newValue;
+        break;
+      }
+      case SET_ATTRIBUTE_VALUE: {
+        const { name, newValue } = mutation as SetPropertyMutation<string>;
+        (target as HTMLElement).setAttribute(name, newValue);
+        break;
+      }
+      case REMOVE_CHILD_NODE: {
+        const { child, index } = mutation as RemoveChildMutation<string, string>;
+        map = { ...map, [child]: undefined };
+        target.removeChild(target.childNodes[index]);
+        break;
+      }
+      case INSERT_CHILD_NODE: {
+        const { child, index } = mutation as InsertChildMutation<string, any>;
+        let childMap: DOMNodeMap = {};
+        const nativeChild = createNode(uncompressRootNode(child), document, childMap);
+        if (index >= target.childNodes.length) {
+          target.appendChild(nativeChild);
+        } else {
+          target.insertBefore(nativeChild, target.childNodes[index]);
+        }
+        map = { ...map, ...childMap };
         break;
       }
     }
