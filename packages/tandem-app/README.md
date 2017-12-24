@@ -1,7 +1,8 @@
 IMMEDIATE:
 
 - [ ] diff/patch for slim-dom 
-  - [ ] diff/patch front-end impl
+  - [ ] diff/patch front-end impl - child nodes
+  - [ ] remove source attribute
 - [ ] query selector testing
 
 - [ ] perf test - (preview a TON of windows.)

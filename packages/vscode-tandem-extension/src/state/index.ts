@@ -12,7 +12,7 @@ export type ChildDevServerInfo = {
 
 export type FileCache = {
   [identifer: string]: {
-    content: Buffer;
+    content: string;
     mtime: Date;
   }
 }

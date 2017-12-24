@@ -91,7 +91,7 @@ function* handleFileContentChanged() {
             doc.positionAt(0),
             doc.positionAt(doc.getText().length)
           ),
-          content.toString("utf8")
+          content
         )
       });
     }
@@ -111,7 +111,7 @@ function* handleTextDocumentChange() {
   const chan = eventChannel((emit) => {
     vscode.workspace.onDidChangeTextDocument((e) => {
       const document = e.document as vscode.TextDocument;
-      emit(textContentChanged(document.uri.fsPath, new Buffer(document.getText())));
+      emit(textContentChanged(document.uri.fsPath, document.getText()));
     })
     return () => {};
   });
@@ -122,7 +122,7 @@ function* handleTextDocumentChange() {
 
     // Covers cases where change events are emitted when the content
     // hasn't changed. 
-    if (getFileCacheContent(action.filePath, state) && getFileCacheContent(action.filePath, state).toString("utf8") === action.content.toString("utf8")) {
+    if (getFileCacheContent(action.filePath, state) && getFileCacheContent(action.filePath, state) === action.content) {
       continue;
     }
 
@@ -297,7 +297,7 @@ function* handleTextDocumentClose() {
     vscode.workspace.onDidCloseTextDocument(() => {
       if (!vscode.window.activeTextEditor) return;
       const doc = vscode.window.activeTextEditor.document;
-      emit(textContentChanged(doc.uri.fsPath.replace(".git", ""), fs.readFileSync(doc.uri.fsPath.replace(".git", ""))))
+      emit(textContentChanged(doc.uri.fsPath.replace(".git", ""), fs.readFileSync(doc.uri.fsPath.replace(".git", ""), "utf8")))
     });
     return () => {};
   });

@@ -41,7 +41,7 @@ export type ExpressServerStarted = {
 
 export type FileContentChanged =  {
   filePath: string;
-  content: Buffer;
+  content: string;
   mtime: Date;
 } & Action;
 
@@ -86,7 +86,7 @@ export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const textContentChanged = (filePath: string, content: Buffer, mtime: Date = new Date()): FileContentChanged  => ({
+export const textContentChanged = (filePath: string, content: string, mtime: Date = new Date()): FileContentChanged  => ({
   type: TEXT_CONTENT_CHANGED,
   content,
   filePath,
