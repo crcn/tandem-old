@@ -145,8 +145,12 @@ export const getNodePath = weakMemo((value: SlimBaseNode, root: SlimParentNode):
     // TODO - check if css rules
     if ((parentInfo.value as SlimElement).shadow === current.value) { 
       path.unshift("shadow");
-    } else {
+    } else if ((parentInfo.value as SlimStyleElement).sheet === current.value) {
+      path.unshift("sheet");
+    } else if ((parentInfo.value as SlimParentNode).childNodes) {
       path.unshift((parentInfo.value as SlimParentNode).childNodes.indexOf(current.value));
+    } else if ((parentInfo.value as SlimCSSGroupingRule).rules) {
+      path.unshift((parentInfo.value as SlimCSSGroupingRule).rules.indexOf(current.value));
     }
     current = parentInfo;
   }
@@ -292,7 +296,7 @@ const layoutCSSRules = weakMemo((rules: SlimCSSRule[], parentId: string) => {
 
 export const getDocumentChecksum = weakMemo((document: SlimParentNode) => crc32(stringifyNode(document, true)));
 
-export const replaceNestedChild = <TNode extends SlimParentNode>(current: TNode, path: any[], child: SlimBaseNode, index: number = 0): TNode => {
+export const replaceNestedChild = <TNode extends VMObject>(current: TNode, path: any[], child: SlimBaseNode, index: number = 0): TNode => {
   const part = path[index];
   if (index === path.length) {
     return child as TNode;
@@ -305,14 +309,34 @@ export const replaceNestedChild = <TNode extends SlimParentNode>(current: TNode,
     }
   }
 
-  return {
-    ...(current as any),
-    childNodes: [
-      ...current.childNodes.slice(0, part),
-      replaceNestedChild(current.childNodes[part] as SlimParentNode, path, child, index + 1),
-      ...current.childNodes.slice(part + 1)
-    ]  
-  } as TNode;
+  if (part === "sheet") {
+    return {
+      ...(current as any),
+      sheet: replaceNestedChild((current as any as SlimStyleElement).sheet, path, child, index + 1)
+    }
+  }
+
+  if ((current as any as SlimParentNode).childNodes)  {
+    const parentNode = current as any as SlimParentNode;
+    return {
+      ...(parentNode as any),
+      childNodes: [
+        ...parentNode.childNodes.slice(0, part),
+        replaceNestedChild(parentNode.childNodes[part] as SlimParentNode, path, child, index + 1),
+        ...parentNode.childNodes.slice(part + 1)
+      ]  
+    }
+  } else if ((current as any as SlimCSSGroupingRule).rules) {
+    const parentRule = current as any as SlimCSSGroupingRule;
+    return {
+      ...(parentRule as any),
+      rules: [
+        ...parentRule.rules.slice(0, part),
+        replaceNestedChild(parentRule.rules[part] as SlimParentNode, path, child, index + 1),
+        ...parentRule.rules.slice(part + 1)
+      ]  
+    }
+  }
 };
 
 export const setTextNodeValue = (target: SlimTextNode, newValue: string): SlimTextNode => ({
@@ -343,4 +367,4 @@ export const setElementAttribute = (target: SlimElement, name: string, value: st
     ...target,
     attributes,
   };
-}
+};

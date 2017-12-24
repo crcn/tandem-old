@@ -1,4 +1,4 @@
-import { SlimBaseNode, SlimCSSMediaRule, SlimVMObjectType, SlimElement, SlimTextNode, SlimParentNode } from "slim-dom";
+import { SlimBaseNode, SlimCSSMediaRule, SlimVMObjectType, SlimElement, SlimTextNode, SlimParentNode, SlimStyleElement, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElementAttribute, SlimFragment } from "slim-dom";
 
 export const stringifyNode = (node: SlimBaseNode) => {
   switch(node.type) {
@@ -21,6 +21,9 @@ export const stringifyNode = (node: SlimBaseNode) => {
       }
 
       buffer += element.childNodes.map(stringifyNode).join("");
+      if (element.tagName === "style") {
+        buffer += stringifyStyleSheet((element as SlimStyleElement).sheet);
+      }
       buffer += `</${element.tagName}>`;
       return buffer;
     }
@@ -30,3 +33,28 @@ export const stringifyNode = (node: SlimBaseNode) => {
     }
   }
 };
+
+const stringifyStyleSheet = (sheet: SlimCSSRule) => {
+  switch(sheet.type) {
+    case SlimVMObjectType.STYLE_SHEET: {
+      return (sheet as SlimCSSStyleSheet).rules.map(stringifyStyleSheet).join(" ");
+    }
+    case SlimVMObjectType.STYLE_RULE: {
+      const rule = sheet as SlimCSSStyleRule;
+      let buffer = `${rule.selectorText} {`;
+      for (const key in rule.style) {
+        if (key === "id" || rule.style[key] == null) continue;
+        buffer += `${key}:${rule.style[key]};`
+      }
+      buffer += `}`
+      return buffer;
+    }
+    case SlimVMObjectType.MEDIA_RULE: {
+      const rule = sheet as SlimCSSMediaRule;
+      let buffer = `${rule.conditionText} {`;
+      buffer += rule.rules.map(stringifyStyleSheet).join("");
+      buffer += `}`
+      return buffer;
+    }
+  }
+}

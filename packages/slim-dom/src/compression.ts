@@ -1,5 +1,5 @@
 import { SlimVMObjectType, SlimBaseNode, SlimElement, SlimElementAttribute, SlimParentNode, VMObjectSource, SlimTextNode, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimStyleElement,  } from "./state";
-import  { weakMemo } from "./utils";
+import  { weakMemo, getVmObjectSourceUris } from "./utils";
 
 export type CompressedFragment = [SlimVMObjectType, any[]];
 export type CompressedTextNode = [SlimVMObjectType, string];
@@ -10,15 +10,14 @@ export type CompressedNode = any[];
 export type CompressionResult = [string[], any];
 
 export const compressRootNode = weakMemo((root: SlimBaseNode): CompressionResult => {
-  const sources = [];
-  return [sources, compressNode(root, sources)] as any;
+  return [getVmObjectSourceUris(root), compressVMObject(root)] as any;
 });
 
-const compressNode = (node: SlimBaseNode, sourceUris: string[]) => {
+const compressVMObject = (node: SlimBaseNode) => {
   switch (node.type) {
-    case SlimVMObjectType.TEXT: return [node.type, node.id, compressSource(node.source, sourceUris), (node as SlimTextNode).value];
+    case SlimVMObjectType.TEXT: return [node.type, node.id, (node as SlimTextNode).value];
     case SlimVMObjectType.ELEMENT: {
-      const { type, id, source, tagName, attributes, shadow, childNodes } = node as SlimElement;
+      const { type, id, tagName, attributes, shadow, childNodes } = node as SlimElement;
       const attribs = [];
       for (const attribute of attributes) {
         attribs.push([attribute.name, attribute.value]);
@@ -26,45 +25,37 @@ const compressNode = (node: SlimBaseNode, sourceUris: string[]) => {
       const base = [
         type,
         id,
-        compressSource(node.source, sourceUris),
         tagName,
         attribs,
-        shadow ? compressNode(shadow, sourceUris) : null,
-        childNodes.map(child => compressNode(child, sourceUris))
+        shadow ? compressVMObject(shadow) : null,
+        childNodes.map(child => compressVMObject(child))
       ];
 
       if (tagName === "style") {
-        base.push(compressStyleSheet((node as SlimStyleElement).sheet, sourceUris));
+        base.push(compressVMObject((node as SlimStyleElement).sheet));
       }
 
       return base;
     }
     case SlimVMObjectType.DOCUMENT_FRAGMENT: 
     case SlimVMObjectType.DOCUMENT: {
-      const { type, id, source, childNodes } = node as SlimParentNode;
+      const { type, id, childNodes } = node as SlimParentNode;
       return [
         type,
         id,
-        compressSource(source, sourceUris),
-        childNodes.map(child => compressNode(child, sourceUris))
+        childNodes.map(child => compressVMObject(child))
       ];
     }
-  }
-};
-
-const compressStyleSheet = (sheet: SlimCSSStyleSheet, sources: string[]) => {
-  return [
-    sheet.type,
-    sheet.id,
-    compressSource(sheet.source, sources),
-    sheet.rules.map(rule => compressStyleRule(rule, sources))
-  ]
-}
-
-const compressStyleRule = (rule: SlimCSSRule, sources: string[]) => {
-  switch(rule.type) {
+    case SlimVMObjectType.STYLE_SHEET: {
+      const { type, id, rules } = node as SlimCSSStyleSheet;
+      return [
+        type,
+        id,
+        rules.map(rule => compressVMObject(rule))
+      ]
+    }
     case SlimVMObjectType.STYLE_RULE: {
-      const { type, id, selectorText, style, source } = rule as SlimCSSStyleRule;
+      const { type, id, selectorText, style, source } = node as SlimCSSStyleRule;
       const decl = [];
       for (const key in style) {
         decl.push([key, style[key]]);
@@ -73,52 +64,38 @@ const compressStyleRule = (rule: SlimCSSRule, sources: string[]) => {
       return [
         type,
         id,
-        compressSource(source, sources),
         selectorText,
         style.id,
         decl
       ]
     }
     case SlimVMObjectType.MEDIA_RULE: {
-      const { type, id, conditionText, source, rules } = rule as SlimCSSMediaRule;
+      const { type, id, conditionText, rules } = node as SlimCSSMediaRule;
       return [
         type,
         id, 
-        compressSource(source, sources),
-        rules.map(rule => compressStyleRule(rule, sources))
+        rules.map(rule => compressVMObject(rule))
       ]
     }
   }
-}
-
-const compressSource = (source: VMObjectSource, sourceUris: string[]) => {
-  if (sourceUris.indexOf(source.uri) === -1) {
-    sourceUris.push(source.uri);
-  }
-  return [
-    source.type,
-    sourceUris.indexOf(source.uri),
-    source.range.start.line, source.range.start.column, source.range.start.pos, source.range.end.line, source.range.end.column, source.range.end.pos
-  ];
-}
+};
 
 export const uncompressRootNode = ([sources, node]: CompressionResult): SlimBaseNode  => {
-  return uncompressNode(node, sources);
+  return uncompressVMObject(node);
 }
 
-const uncompressNode = (node: any, sources: string[]) => {
+const uncompressVMObject = (node: any) => {
   switch(node[0]) {
     case SlimVMObjectType.TEXT: {
-      const [type, id, source, value] = node;
+      const [type, id, value] = node;
       return {
         type,
         id,
-        source: uncompressSource(source, sources),
         value,
       } as SlimTextNode;
     }
     case SlimVMObjectType.ELEMENT: {
-      const [type, id, source, tagName, attributes, shadow, childNodes] = node;
+      const [type, id, tagName, attributes, shadow, childNodes] = node;
       const atts: SlimElementAttribute[] = [];
       for (const [name, value] of attributes) {
         atts.push({ name, value });
@@ -128,44 +105,37 @@ const uncompressNode = (node: any, sources: string[]) => {
         id,
         tagName, 
         attributes: atts,
-        source: uncompressSource(source, sources),
-        shadow: shadow && uncompressNode(shadow, sources),
-        childNodes: childNodes.map(child => uncompressNode(child, sources))
+        shadow: shadow && uncompressVMObject(shadow),
+        childNodes: childNodes.map(child => uncompressVMObject(child))
       } as SlimElement;
 
       if (tagName === "style") {
         base = {
           ...base,
-          sheet: uncompressStyleSheet(node[7], sources)
+          sheet: uncompressVMObject(node[6])
         } as SlimStyleElement;
       }
       return base;
     }
     case SlimVMObjectType.DOCUMENT_FRAGMENT: 
     case SlimVMObjectType.DOCUMENT: {
-      const [type, id, source, childNodes] = node;
+      const [type, id, childNodes] = node;
       return {
         type,
         id,
-        source: uncompressSource(source, sources),
-        childNodes: childNodes.map(child => uncompressNode(child, sources))
+        childNodes: childNodes.map(child => uncompressVMObject(child))
       } as SlimParentNode;
     }
-  }
-};
-
-const uncompressStyleSheet = ([type, id, source, rules]: any, sources: string[]): SlimCSSStyleSheet => {
-  return {
-    id,
-    type,
-    source: uncompressSource(source, sources),
-    rules: rules.map(rule => uncompressCSSRule(rule, sources))
-  }
-}
-const uncompressCSSRule = (rule: any, sources: string[]) => {
-  switch(rule[0]) {
+    case SlimVMObjectType.STYLE_SHEET: {
+      const [type, id, rules] = node;
+      return {
+        id,
+        type,
+        rules: rules.map(rule => uncompressVMObject(rule))
+      }
+    }
     case SlimVMObjectType.STYLE_RULE: {
-      const [type, id, source, selectorText, styleId, decls] = rule;
+      const [type, id, selectorText, styleId, decls] = node;
       const style: CSSStyleDeclaration = {
         id: styleId
       } as any;
@@ -176,36 +146,18 @@ const uncompressCSSRule = (rule: any, sources: string[]) => {
       return {
         type,
         id,
-        source: uncompressSource(source, sources),
         selectorText,
         style
       }
     }
     case SlimVMObjectType.MEDIA_RULE: {
-      const [type, id, source, conditionText, rules] = rule;
+      const [type, id, conditionText, rules] = node;
       return {
         type,
         id,
-        source: uncompressSource(source, sources),
         conditionText,
-        rules: rules.map(rule => uncompressCSSRule(rule, sources))
+        rules: rules.map(rule => uncompressVMObject(rule))
       }
     }
   }
-}
-const uncompressSource = ([type, uriIndex, startLine, startColumn, startPos, endLine, endColumn, endPos]: any, sources: string[]): VMObjectSource => ({
-  type,
-  uri: sources[uriIndex],
-  range: {
-    start: {
-      line: startLine,
-      column: startColumn,
-      pos: startPos,
-    },
-    end: {
-      line: endLine,
-      column: endColumn,
-      pos: endPos
-    }
-  }
-});
+};

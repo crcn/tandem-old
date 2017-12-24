@@ -351,7 +351,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root><#shadow><style></style> <div class="container"> </div> </#shadow></root> `
+      ` <root><#shadow><style>.container {color: red;}</style> <div class="container"> </div> </#shadow></root> `
     ]
   ].forEach(([entries, result]: any) => {
     it(`can render ${entries.entry}`, async () => {

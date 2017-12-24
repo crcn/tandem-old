@@ -43,7 +43,7 @@ export type VMObject = {
   type: SlimVMObjectType;
 
   // the sourc of the VM Object
-  source: VMObjectSource;
+  source?: VMObjectSource;
 };
 
 export type SlimBaseNode = {

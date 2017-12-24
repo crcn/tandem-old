@@ -30,16 +30,6 @@ describe(__filename + "#", () => {
           [
             0,
             "10003",
-            [
-              4,
-              0,
-              1,
-              32,
-              32,
-              1,
-              37,
-              37
-            ],
             "b",
             [],
             null,
@@ -80,6 +70,17 @@ describe(__filename + "#", () => {
         "oldValue": undefined,
         "index": undefined
       }
+    ]],
+    [`<a b="1" />`, `<a b="2" />`, [
+      {
+        "type": "SET_ATTRIBUTE_VALUE",
+        "target": "20003",
+        "name": "b",
+        "newValue": "2",
+        "oldName": undefined,
+        "oldValue": undefined,
+        "index": undefined
+      }
     ]]
   ].forEach(([oldSource, newSource, expectedDiffs]: any) => {
     it(`can diff ${oldSource} against ${newSource}`, async () => {
@@ -103,7 +104,12 @@ describe(__filename + "#", () => {
     [`a`, `b`, `c`],
     [`<a></a>`, `<b></b>`],
     [`<a b="true"></a>`, `<a c="true"></a>`],
-    [`<a b="1"></a>`, `<a b="2"></a>`]
+    [`<a b="1"></a>`, `<a b="2"></a>`],
+    [`<style>.a {}</style>`, `<style>.b {}</style>`],
+    [`<style>.a {a: 1;}</style>`, `<style>.a {a: 2;}</style>`],
+    [`<style>.a {a: 1;}</style>`, `<style>.a {b: 1;}</style>`],
+    [`<style>.a {a: 1;}</style>`, `<style>.a {} .b {}</style>`],
+    [`<style>.a {a: 1;} .b {a:2;}</style>`, `<style>.a {} </style>`]
   ].forEach((variants) => {
     it(`can diff and patch ${variants.join(" -> ")}`, async () => {
       let prevDocument: SlimParentNode;

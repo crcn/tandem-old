@@ -126,7 +126,6 @@
       display: block;
       position: relative;
     }
-    
     .fill {
       height: 20px;
       background: red;
@@ -142,7 +141,6 @@
       border-radius: 100px;
       position: relative;
     }
-    
     span {
       color: var(--font-color-light);
       position: absolute;

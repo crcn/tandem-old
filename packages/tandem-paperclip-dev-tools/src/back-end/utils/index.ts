@@ -62,7 +62,6 @@ export const getModuleSourceDirectory = (state: ApplicationState) => {
 // side effect code - use in sagas
 export const getReadFile = weakMemo((state: ApplicationState) => (filePath: string) => {
   const fileCache = state.fileCache.find((item) => item.filePath === filePath);
-  console.log("FCACHE");
   return fileCache ? fileCache.content.toString("utf8") : fs.readFileSync(filePath, "utf8")
 });
 

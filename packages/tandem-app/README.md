@@ -2,7 +2,7 @@ IMMEDIATE:
 
 - [ ] diff/patch for slim-dom 
   - [ ] remove source attribute
-  - [ ] patch CSS objects
+  - [ ] patch new positions
 - [ ] query selector testing
 
 - [ ] perf test - (preview a TON of windows.)

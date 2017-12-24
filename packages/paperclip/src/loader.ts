@@ -108,7 +108,6 @@ export const loadModuleAST = (ast: PCRootExpression, uri: string): Module => {
   // weak memoization
   if (ast[LOADED_SYMBOL] && ast[LOADED_SYMBOL][0] === ast) return ast[LOADED_SYMBOL][1];
 
-
   const module = createModule(ast, uri);
   ast[LOADED_SYMBOL] = [ast, module];
 
@@ -240,7 +239,6 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
   if (graph[uri]) {
     return Promise.resolve({ diagnostics, graph });
   }
-  
   return Promise.resolve(readFile(uri))
   .then(source => parseModuleSource(source, uri))
   .then(result => {

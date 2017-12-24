@@ -111,7 +111,7 @@
   <template>
     <td-pane>
       <span slot="header">
-        CSS Inspector
+        CSS Inspector!!!!!!
       </span>
       <span slot="content">
         <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] key=[[bind styleRule.rule.$id]] />

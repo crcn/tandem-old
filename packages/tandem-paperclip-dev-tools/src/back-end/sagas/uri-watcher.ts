@@ -123,27 +123,29 @@ function* handleWatchUrisRequest() {
 function* handleDependencyGraph() {
   while(true) {
     const action = yield take([WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED]);
-    console.log("loading dependency graph");
-    const state: ApplicationState = yield select();
-    let graph: DependencyGraph = {};
-    for (const fileCacheItem of state.fileCache) {
-      if (!isPaperclipFile(fileCacheItem.filePath, state)) {
-        continue;
+    yield spawn(function*() {
+      console.log("loading dependency graph");
+      const state: ApplicationState = yield select();
+      let graph: DependencyGraph = {};
+      for (const fileCacheItem of state.fileCache) {
+        if (!isPaperclipFile(fileCacheItem.filePath, state)) {
+          continue;
+        }
+        const { diagnostics, graph: newGraph } = yield call(loadModuleDependencyGraph, fileCacheItem.filePath, {
+          readFile: getReadFile(state)
+        }, graph);
+
+
+        if (diagnostics.length) {
+          console.error(`Failed to load dependency graph for ${fileCacheItem.filePath}.`);
+        }
+
+        graph = newGraph;
+
       }
-      const { diagnostics, graph: newGraph } = yield call(loadModuleDependencyGraph, fileCacheItem.filePath, {
-        readFile: getReadFile(state)
-      }, graph);
-
-
-      if (diagnostics.length) {
-        console.error(`Failed to load dependency graph for ${fileCacheItem.filePath}.`);
-      }
-
-      graph = newGraph;
-
-    }
-    yield put(dependencyGraphLoaded(graph));
-    yield call(evaluatePreviews, graph, action.type === FILE_CONTENT_CHANGED ? (action as FileContentChanged).filePath : null);
+      yield put(dependencyGraphLoaded(graph));
+      yield call(evaluatePreviews, graph, action.type === FILE_CONTENT_CHANGED ? (action as FileContentChanged).filePath : null);
+    });
   }
 }
 
@@ -167,7 +169,6 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
         yield spawn(function*() {
           const { document } = runPCFile({ entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
           const latestDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
-          const start = Date.now();
           
           console.log(`Evaluated component ${component.id}:${preview.name}`);
   
@@ -179,14 +180,14 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
             hasDiffs = diffs.length > 0;
             newDocument = patchNode(latestDocument, diffs);
           }
-  
           // TODO - push diagnostics too
           yield put(previewEvaluated(component.id, preview.name, newDocument));
   
           if (latestDocument && hasDiffs) {
-  
+            
+            const diffs = diffNode(latestDocument, newDocument);
             // push to the public
-            yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(latestDocument), diffNode(latestDocument, newDocument)));
+            yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(latestDocument), diffs));
           }
         });
       }
