@@ -51,8 +51,9 @@ export const STAGE_MOUSE_MOVED = "STAGE_MOUSE_MOVED";
 export const STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
 export const VISUAL_EDITOR_WHEEL = "VISUAL_EDITOR_WHEEL";
 export const STAGE_TOOL_ARTBOARD_TITLE_CLICKED = "STAGE_TOOL_ARTBOARD_TITLE_CLICKED";
+export const PREVIEW_DIFFED = "PREVIEW_DIFFED";
 export const ARTBOARD_LOADED = "ARTBOARD_LOADED";
-export const ARTBOARD_DIFFED = "ARTBOARD_DIFFED";
+export const ARTBOARD_PATCHED = "ARTBOARD_PATCHED";
 export const ARTBOARD_SCROLL = "ARTBOARD_SCROLL";
 export const ARTBOARD_RENDERED = "ARTBOARD_RENDERED";
 export const ARTBOARD_CREATED = "ARTBOARD_CREATED";
@@ -298,10 +299,17 @@ export type ArtboardLoaded = {
   mount: HTMLIFrameElement;
 } & BaseEvent;  
 
-export type ArtboardDiffed = {
+export type ArtboardPatched = {
   artboardId: string;
   nativeNodeMap: DOMNodeMap;
-  diffs: Mutation<any>[];
+  document: SlimParentNode;
+} & BaseEvent;  
+
+export type PreviewDiffed = {
+  componentId: string;
+  previewName: string;
+  documentChecksum: string;
+  diff: Mutation<string>[];
 } & BaseEvent;  
 
 export type ArtboardRendered = {
@@ -440,11 +448,11 @@ export const artboardLoaded = (artboardId, dependencyUris: string[], document: S
   mount
 });
 
-export const artboardDiffed = (artboardId: string, diffs: Mutation<any>[], nativeNodeMap: DOMNodeMap): ArtboardDiffed => ({
-  type: ARTBOARD_DIFFED,
+export const artboardPatched = (artboardId: string, document: SlimParentNode, nativeNodeMap: DOMNodeMap): ArtboardPatched => ({
+  type: ARTBOARD_PATCHED,
   nativeNodeMap,
   artboardId,
-  diffs
+  document
 });
 
 export const windowResized = (width: number, height: number): WindowResized => ({

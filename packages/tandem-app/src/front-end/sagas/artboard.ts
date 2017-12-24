@@ -1,12 +1,13 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardDiffed } from "../actions";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched } from "../actions";
 import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
-import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard } from "../state";
+import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardByInfo } from "../state";
 import { debounce } from "lodash";
+import { PreviewDiffed, PREVIEW_DIFFED } from "front-end";
 
 const COMPUTE_DOM_INFO_DELAY = 500;
 const VELOCITY_MULTIPLIER = 10;
@@ -16,9 +17,10 @@ const MOMENTUM_DELAY = 50;
 
 export function* artboardSaga() {
   yield fork(handleLoadAllArtboards);
-  yield fork(handleChangedArtboards);
+  // yield fork(handleChangedArtboards);
   yield fork(handleCreatedArtboard);
   yield fork(handleArtboardRendered);
+  yield fork(handlePreviewDiffed);
   yield fork(handleMoved);
   yield fork(handleResized);
   yield fork(handleScroll);
@@ -40,18 +42,43 @@ function* handleLoadAllArtboards() {
   }
 }
 
-function* handleChangedArtboards() {
+// function* handleChangedArtboards() {
+//   while(1) {
+//     const { filePath, publicPath }: FileChanged = yield take(FILE_CONTENT_CHANGED);
+
+//     const state: ApplicationState = yield select();
+//     const workspace = getSelectedWorkspace(state);
+
+//     for (const artboard of workspace.artboards) {
+//       if (artboard.dependencyUris.indexOf(filePath) !== -1) {
+//         yield call(diffArtboard, artboard.$id);
+//       }
+//     }
+//   }
+// }
+
+function* handlePreviewDiffed() {
   while(1) {
-    const { filePath, publicPath }: FileChanged = yield take(FILE_CONTENT_CHANGED);
-
-    const state: ApplicationState = yield select();
-    const workspace = getSelectedWorkspace(state);
-
-    for (const artboard of workspace.artboards) {
-      if (artboard.dependencyUris.indexOf(filePath) !== -1) {
-        yield call(diffArtboard, artboard.$id);
-      }
+    const { componentId, previewName, documentChecksum, diff }: PreviewDiffed = yield take(PREVIEW_DIFFED);
+    const artboard = getArtboardByInfo(componentId, previewName, yield select());
+    if (!artboard) {
+      console.error(`artboard ${componentId}:${previewName} not found`);
     }
+
+    // likely that the server restarted, or user connection dropped while the document changed.
+    if (artboard.checksum !== documentChecksum) {
+      console.info(`Checksum mismatch for artboard ${artboard.componentId}:${artboard.previewName}, reloading document.`);
+      yield call(reloadArtboard, artboard.$id);
+      continue;
+    }
+
+    yield put(
+      artboardPatched(
+        artboard.$id, 
+        patchNode(artboard.document, diff), 
+        patchDOM(diff, artboard.nativeNodeMap, artboard.mount)
+      )
+    );
   }
 }
 
@@ -117,18 +144,18 @@ function* reloadArtboard(artboardId: string) {
   });
 }
 
-function* diffArtboard(artboardId: string) {
-  console.log("DI ART");
-  yield spawn(function*() {
-    const state: ApplicationState = yield select();
-    const artboard = getArtboardById(artboardId, state);
-    const diffs = yield call(getDocumentPreviewDiff, artboard.componentId, artboard.previewName, artboard.checksum, state);
-    console.log("PATCH", diffs.map(diff => diff.type));
+// function* diffArtboard(artboardId: string) {
+//   console.log("DI ART");
+//   yield spawn(function*() {
+//     const state: ApplicationState = yield select();
+//     const artboard = getArtboardById(artboardId, state);
+//     const diffs = yield call(getDocumentPreviewDiff, artboard.componentId, artboard.previewName, artboard.checksum, state);
+//     console.log("PATCH", diffs.map(diff => diff.type));
 
-    // TODO - patch DOM nodes here
-    yield put(artboardDiffed(artboard.$id, diffs, patchDOM(diffs, artboard.nativeNodeMap, artboard.mount)));
-  });
-}
+//     // TODO - patch DOM nodes here
+//     yield put(artboardDiffed(artboard.$id, diffs, patchDOM(diffs, artboard.nativeNodeMap, artboard.mount)));
+//   });
+// }
 
 function* handleCreatedArtboard() {
   while(1) {

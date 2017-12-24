@@ -28,6 +28,7 @@ export const SYNTHETIC_WINDOW_CLOSED             = "SYNTHETIC_WINDOW_CLOSED";
 export const SYNTHETIC_WINDOW_RESIZED            = "SYNTHETIC_WINDOW_RESIZED";
 export const SYNTHETIC_WINDOW_RESOURCE_CHANGED   = "SYNTHETIC_WINDOW_RESOURCE_CHANGED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
+export const FILE_URI_CHANGED = "FILE_URI_CHANGED";
 export const FETCHED_CONTENT      = "FETCHED_CONTENT";
 
 export type SyntheticWindowSourceChanged = {
@@ -47,11 +48,11 @@ export type OpenSyntheticBrowserWindow = {
   syntheticBrowserId: string;
 } & Request;
 
-export type FileContentChanged = {
+
+export type FileUriChanged = {
   filePath: string;
-  publicPath: string;
-  content: ArrayBuffer;
   mtime: Date;
+  publicPath: string;
 } & BaseEvent;
 
 export type FetchedContent = {

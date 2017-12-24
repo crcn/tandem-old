@@ -41,7 +41,13 @@ const diffElement = (oldElement: SlimElement, newElement: SlimElement): Mutation
   const diffs: Mutation<string>[] = [];
 
   eachArrayValueMutation(
-    diffArray(oldElement.attributes, newElement.attributes, (a, b) => a.name === b.name ? 0 : -1),
+    diffArray(oldElement.attributes, newElement.attributes, (a, b) => {
+      if (a.name === b.name) {
+        return 0;
+      }
+
+      return -1;
+    }),
     {
       insert({ index, value }) {
         diffs.push(
@@ -52,7 +58,8 @@ const diffElement = (oldElement: SlimElement, newElement: SlimElement): Mutation
         diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, value.name, null));
       },
       update({ index, newValue, originalOldIndex }) {
-        if (newValue.value !== oldElement.attributes[originalOldIndex].value) {
+        const oldAttrValue = oldElement.attributes[originalOldIndex].value;
+        if (newValue.value !== oldAttrValue && (typeof newValue.value !== "object" || JSON.stringify(newValue.value) !== JSON.stringify(oldAttrValue))) {
           diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, newValue.name, newValue.value));
         }
       }
@@ -149,8 +156,9 @@ const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
 export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<string>[]) => {
 
   for (let i = 0, {length} = diffs; i < length; i++) {
+    const allObjects = flattenObjects(root);
     const diff = diffs[i];
-    const info = flattenObjects(root)[diff.target];
+    const info = allObjects[diff.target];
     if (!info) {
       throw new Error(`diff ${JSON.stringify(diff)} doesn't have a matching node.`);
     }

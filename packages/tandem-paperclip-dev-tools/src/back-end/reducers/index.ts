@@ -91,7 +91,7 @@ export function mainReducer(state: ApplicationState, event: Action) {
       return updateFileCacheItem(state, {
         filePath,
         mtime,
-        content: content as any,
+        content: typeof content === "object" ? content : new Buffer(content, "utf8"),
       });
     }
   }

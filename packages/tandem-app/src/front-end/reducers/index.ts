@@ -165,13 +165,13 @@ import {
   RESIZER_PATH_MOUSE_STOPPED_MOVING,
   ARTBOARD_FOCUSED,
   ARTBOARD_LOADED,
-  ARTBOARD_DIFFED,
+  ARTBOARD_PATCHED,
   ARTBOARD_RENDERED,
   ArtboardRendered,
   ArtboardCreated,
   ARTBOARD_CREATED,
   ArtboardLoaded,
-  ArtboardDiffed,
+  ArtboardPatched,
   ArtboardFocused,
   ARTBOARD_DOM_INFO_COMPUTED,
   ArtboardDOMInfoComputed,
@@ -805,10 +805,9 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
-    case ARTBOARD_DIFFED: {
-      const { artboardId, diffs, nativeNodeMap } = event as ArtboardDiffed;
+    case ARTBOARD_PATCHED: {
+      const { artboardId, document, nativeNodeMap } = event as ArtboardPatched;
       const artboard = getArtboardById(artboardId, state);
-      const document = patchNode(artboard.originalDocument, diffs);
       return updateArtboard(state, artboardId, {
         document,
         nativeNodeMap,

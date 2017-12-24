@@ -5,6 +5,7 @@ import { SlimParentNode } from "slim-dom";
 import { Request, Response } from "express";
 import { publicActionFactory } from "aerial-common2";
 import * as express from "express";
+import { Mutation as SourceMutation } from "source-mutation";
 import * as puppeteer from "puppeteer";
 
 export const ALERT = "ALERT";
@@ -28,6 +29,7 @@ export const WATCHING_FILES = "WATCHING_FILES";
 export const INIT_SERVER_REQUESTED = "INIT_SERVER_REQUESTED";
 export const EXPRESS_SERVER_STARTED = "EXPRESS_SERVER_STARTED";
 export const PREVIEW_EVALUATED = "PREVIEW_EVALUATED";
+export const PREVIEW_DIFFED = "PREVIEW_DIFFED";
 
 export type HTTPRequest = {
   request: Request;
@@ -54,9 +56,8 @@ export type FileAction = {
 
 export type FileContentChanged =  {
   publicPath: string;
-  content: Buffer;
+  content: string;
   mtime: Date;
-  $public: true;
 } & FileAction;
 
 export type MutateSourceContentRequest = {
@@ -96,6 +97,15 @@ export type PreviewEvaluated = {
   document: SlimParentNode;
 } & Action;
 
+
+export type PreviewDiffed = {
+  componentId: string;
+  previewName: string;
+  documentChecksum: string;
+  diff: SourceMutation<string>[];
+  $public: true;
+} & Action;
+
 export type ComponentScreenshotRemoved = {
   uri: string;
 } & Action;
@@ -132,7 +142,7 @@ export type ModuleCreated = {
   $public: true;
 } & Action;
 
-export const moduleCreated = (filePath: string, publicPath: string, content: Buffer): FileContentChanged => ({
+export const moduleCreated = (filePath: string, publicPath: string, content: string): FileContentChanged => ({
   filePath,
   content,
   publicPath,
@@ -156,7 +166,7 @@ export const extensionActivated = () => ({
   type: EXTENSION_ACTIVATED
 });
 
-export const fileContentChanged = (filePath: string, publicPath: string, content: Buffer, mtime: Date): FileContentChanged  => ({
+export const fileContentChanged = (filePath: string, publicPath: string, content: string, mtime: Date): FileContentChanged  => ({
   type: FILE_CONTENT_CHANGED,
   content,
   filePath,
@@ -209,6 +219,15 @@ export const previewEvaluated = (componentId: string, previewName: string, docum
   previewName,
   document,
   type: PREVIEW_EVALUATED
+});
+
+export const previewDiffed = (componentId: string, previewName: string, documentChecksum: string, diff: SourceMutation<string>[]): PreviewDiffed => ({
+  componentId,
+  previewName,
+  documentChecksum,
+  diff,
+  type: PREVIEW_DIFFED,
+  $public: true
 });
 
 export const childDevServerStarted = (port: number): ChildDevServerStarted => ({

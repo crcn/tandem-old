@@ -43,7 +43,8 @@ import {
   syntheticWindowLoaded,
   syntheticWindowChanged,
   FILE_CONTENT_CHANGED,
-  FileContentChanged,
+  FILE_URI_CHANGED,
+  FileUriChanged,
   syntheticWindowRectsUpdated,
   OpenSyntheticBrowserWindow,
   ToggleCSSDeclarationProperty,
@@ -270,7 +271,7 @@ function* watchWindowExternalResourceUris(instance: SEnvWindowInterface, reload:
   // watch for changes
   yield spawn(function*() {
     while(true) {
-      const { publicPath } = (yield take(FILE_CONTENT_CHANGED)) as FileContentChanged;
+      const { publicPath } = (yield take(FILE_URI_CHANGED)) as FileUriChanged;
       if (instance.externalResourceUris.indexOf(publicPath) !== -1) {
         yield call(reload);
         break;

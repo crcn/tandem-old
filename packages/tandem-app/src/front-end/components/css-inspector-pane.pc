@@ -111,7 +111,7 @@
   <template>
     <td-pane>
       <span slot="header">
-        CSS Inspector
+        CSS Inspector!!
       </span>
       <span slot="content">
         <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] key=[[bind styleRule.rule.$id]] />
@@ -342,7 +342,7 @@
   <template>
     <td-pane>
       <span slot="header">
-        CSS Inspector!!!!
+        CSS Inspector
       </span>
       <div slot="content" class="content">
         Please select only one element to edit CSS 

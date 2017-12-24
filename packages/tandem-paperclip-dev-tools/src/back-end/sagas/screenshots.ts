@@ -139,8 +139,12 @@ function* handleSavedScreenshot() {
       for (let i = delta; i--;) {
         const { uri } = screenshots.shift();
         console.log(`Removing old screenshot ${uri}`);
-        fsa.unlinkSync(uri);
-        yield put(componentScreenshotRemoved(uri));
+        try {
+          fsa.unlinkSync(uri);
+          yield put(componentScreenshotRemoved(uri));
+        } catch(e) {
+          
+        }
       }
     }
   }

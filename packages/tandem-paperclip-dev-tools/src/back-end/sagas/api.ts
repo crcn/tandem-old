@@ -114,7 +114,9 @@ function* wrapRoute(route) {
 
   yield spawn(function*() {
     while(true) {
-      yield route(...(yield take(chan)));
+      yield spawn(function*() {
+        yield route(...(yield take(chan)));
+      });
     }
   });
 
@@ -248,7 +250,7 @@ function* createComponent(req: express.Request, res: express.Response) {
 
   const publicPath = getPublicSrcPath(filePath, state);
 
-  yield put(moduleCreated(filePath, publicPath, new Buffer(content)));
+  yield put(moduleCreated(filePath, publicPath, content));
 
   res.send({ componentId: componentId });
 
@@ -343,7 +345,7 @@ function* deleteComponent(req: express.Request, res: express.Response, next) {
     ...(previewComponent ? editPaperclipSource(oldContent, createPCRemoveNodeMutation(previewComponent.source)) : [])
   ]);
 
-  yield put(fileContentChanged(targetModule.uri, getPublicFilePath(targetModule.uri, state), new Buffer(content), new Date()));
+  yield put(fileContentChanged(targetModule.uri, getPublicFilePath(targetModule.uri, state), content, new Date()));
 
   res.send({});
 }
@@ -557,9 +559,18 @@ function* getComponentJSONPreview(req: express.Request, res: express.Response, n
 
 function* getComponentJSONPreviewDiff(req: express.Request, res: express.Response, next) {
   const state: ApplicationState = yield select();
+  console.log("DP");
   const { componentId, previewName, oldChecksum, newChecksum } = req.params;
   const oldDocument = getPreviewDocumentByChecksum(componentId, previewName, oldChecksum, state);
   const newDocument = getPreviewDocumentByChecksum(componentId, previewName, newChecksum, state);
+
+  if (!oldDocument) {
+    return next();
+  }
+
+  if (!newDocument) {
+    return next();
+  }
 
   return res.send(diffNode(oldDocument, newDocument));
 }
@@ -567,7 +578,7 @@ function* getComponentJSONPreviewDiff(req: express.Request, res: express.Respons
 function* setFileContent(req: express.Request, res: express.Response, next) {
   const { filePath, content, mtime } = yield getPostData(req);
   const state = yield select();
-  yield put(fileContentChanged(filePath, getPublicFilePath(filePath, state), new Buffer(content), new Date(mtime)));
+  yield put(fileContentChanged(filePath, getPublicFilePath(filePath, state), content, new Date(mtime)));
   res.send(`"ok"`);
 }
 
@@ -609,6 +620,6 @@ function* setFile(req: express.Request, res: express.Response) {
   const { filePath, content } = yield call(getPostData, req);
   const state: ApplicationState = yield select();
   const publicPath = getPublicFilePath(filePath, state);
-  yield put(fileContentChanged(filePath, publicPath, new Buffer(content, "utf8"), new Date()));
+  yield put(fileContentChanged(filePath, publicPath, content, new Date()));
   res.send([]);
 }

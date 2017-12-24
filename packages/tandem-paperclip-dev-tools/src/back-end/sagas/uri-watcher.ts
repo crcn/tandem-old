@@ -1,10 +1,11 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
-import { diffNode, patchNode } from "slim-dom";
+import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum } from "slim-dom";
 import { ApplicationState, getLatestPreviewDocument } from "../state";
-import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged } from "../actions";
+import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged, previewDiffed } from "../actions";
 import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
+import { diffArray, ARRAY_UPDATE } from "source-mutation";
 import crc32 = require("crc32");
 import * as chokidar from "chokidar";
 import * as fs from "fs";
@@ -20,9 +21,20 @@ function* handleWatchUrisRequest() {
   yield take(INIT_SERVER_REQUESTED);
   let child;
   let chan;
+  let prevWatchUris = [];
+
   while(true) {
     const state: ApplicationState = yield select();
     const { watchUris = [], fileCache } = state;
+
+    const diffs = diffArray(watchUris, prevWatchUris, (a, b) => a === b ? 0 : -1);
+    const updates = diffs.mutations.filter(mutation => mutation.type === ARRAY_UPDATE);
+    if (prevWatchUris.length && updates.length === diffs.mutations.length) {
+      console.log("no change");
+      continue;
+    }
+
+    prevWatchUris = watchUris;
 
     const componentFileTester = getModulesFileTester(state);
 
@@ -72,7 +84,9 @@ function* handleWatchUrisRequest() {
           }
           const newContent = fs.readFileSync(path, "utf8");
           const publicPath = getPublicFilePath(path, state);
-          emit(fileContentChanged(path, publicPath, new Buffer(newContent), mtime));
+
+          // for internal -- do not want this being sent over the network since it is slow
+          emit(fileContentChanged(path, publicPath, newContent, mtime));
         }
 
         watcher.on("add", emitChange);
@@ -108,7 +122,8 @@ function* handleWatchUrisRequest() {
 
 function* handleDependencyGraph() {
   while(true) {
-    yield take([WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED]);
+    const action = yield take([WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED]);
+    console.log("loading dependency graph");
     const state: ApplicationState = yield select();
     let graph: DependencyGraph = {};
     for (const fileCacheItem of state.fileCache) {
@@ -149,16 +164,32 @@ function* handleEvaluatedPreviews() {
           filePath,
           previewName: preview.name
         }
-        const { document } = yield call(runPCFile, { entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
-        const latestDocument = getLatestPreviewDocument(componentId, preview.name, yield select());
-        
-        console.log(`Evaluated component ${componentId}:${preview.name}`);
 
-        // patch the previous document to preserve node IDs
-        const newDocument = latestDocument ? patchNode(latestDocument, diffNode(latestDocument, document)) : document;
+        yield spawn(function*() {
+          const { document } = runPCFile({ entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
+          const latestDocument = getLatestPreviewDocument(componentId, preview.name, yield select());
+          const start = Date.now();
+          
+          console.log(`Evaluated component ${componentId}:${preview.name}`);
 
-        // TODO - push diagnostics too
-        yield put(previewEvaluated(componentId, preview.name, newDocument));
+          let newDocument = document as SlimParentNode;
+          let hasDiffs: boolean = false;
+
+          if (latestDocument) {
+            const diffs = diffNode(latestDocument, newDocument);
+            hasDiffs = diffs.length > 0;
+            newDocument = patchNode(latestDocument, diffs);
+          }
+
+          // TODO - push diagnostics too
+          yield put(previewEvaluated(componentId, preview.name, newDocument));
+
+          if (latestDocument && hasDiffs) {
+
+            // push to the public
+            yield put(previewDiffed(componentId, preview.name, getDocumentChecksum(latestDocument), diffNode(latestDocument, newDocument)));
+          }
+        });
       }
     }
   }

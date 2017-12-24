@@ -111,11 +111,13 @@ export const getAttributeValue = (name: string, element: SlimElement) => {
   return attribute && attribute.value;
 };
 
+export type FlattenedObject = {
+  parentId: string;
+  value: VMObject;
+};
+
 export type FlattenedObjects = {
-  [identifier: string]: {
-    parentId: string;
-    value: VMObject;
-  }
+  [identifier: string]: FlattenedObject;
 };
 
 export const getNodeAncestors = weakMemo((value: SlimBaseNode, root: SlimParentNode): SlimParentNode[] => {
@@ -152,23 +154,30 @@ export const getNodePath = weakMemo((value: SlimBaseNode, root: SlimParentNode):
 });
 
 export const getNestedObjectById = weakMemo((id: string, root: SlimParentNode): VMObject => {
-  const ref = flattenChildNodes(root);
+  const ref = flattenObjects(root);
   return ref[id] && ref[id].value;
 });
 
 export const flattenObjects = weakMemo((value: VMObject, parentId?: string): FlattenedObjects => {
+  return Object.assign({}, ...layoutObjects(value, parentId));
+});
+
+const layoutObjects = weakMemo((value: any, parentId: string): FlattenedObjects[] => {
   switch(value.type) {
     case SlimVMObjectType.TEXT: {
       const node = value as SlimTextNode;
-      return {
-        [node.id]: {
-          parentId,
-          value
+      return [
+        {
+          [node.id]: {
+            parentId,
+            value
+          }
         }
-      };
+      ]
     }
     case SlimVMObjectType.ELEMENT: {
       const element = value as SlimElement;
+      const children = [];
       let base = {
         [element.id]: {
           parentId,
@@ -185,43 +194,49 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
       }
 
       if (element.tagName === "style") {
-        Object.assign(base, flattenCSSObjects((element as SlimStyleElement).sheet, element.id));
+        children.push(...layoutCSSObjects((element as SlimStyleElement).sheet, element.id));
       } else {
         if (element.shadow) {
-          Object.assign(base, flattenObjects(element.shadow, element.id));
+          children.push(...layoutObjects(element.shadow, element.id));
         }
-        Object.assign(base, flattenChildNodes(element));
+        children.push(...layoutChildNodes(element.childNodes, element.id));
       }
-      return base;
+
+      children.push(base);
+      return children;
     }
     case SlimVMObjectType.DOCUMENT: 
     case SlimVMObjectType.DOCUMENT_FRAGMENT: {
-      return {
-        [value.id]: { parentId: parentId, value },
-        ...flattenChildNodes(value as SlimParentNode)
-      };
+      return [
+        {
+          [value.id]: { parentId, value }
+        },
+        ...layoutChildNodes((value as SlimParentNode).childNodes, value.id)
+      ]
     }
   }
 });
 
-const flattenCSSObjects = weakMemo((value: any, parentId: string): FlattenedObjects => {
+const layoutCSSObjects = weakMemo((value: any, parentId: string): FlattenedObjects[] => {
+  const children: FlattenedObjects[] = [];
   switch(value.type) {
     case SlimVMObjectType.MEDIA_RULE:
     case SlimVMObjectType.STYLE_SHEET: {
       const grouping = value as SlimCSSGroupingRule;
-      let base = {
-        [grouping.id]: {
-          parentId,
-          value,
-        }
-      };
-      Object.assign(base, flattenCSSRules(grouping));
-      return base;
+      return [
+        {
+          [grouping.id]: {
+            parentId,
+            value,
+          }
+        },
+        ...layoutCSSRules(grouping.rules, grouping.id)
+      ]
     }
     
     case SlimVMObjectType.STYLE_RULE: {
       const rule = value as SlimCSSStyleRule;
-      return {
+      return [{
         [rule.id]: {
           parentId,
           value,
@@ -230,25 +245,25 @@ const flattenCSSObjects = weakMemo((value: any, parentId: string): FlattenedObje
           parentId: rule.id,
           value: rule.style
         }
-      };
+      }];
     }
   }
 });
 
-const flattenChildNodes = weakMemo((target: SlimParentNode) => {
-  let objects = {};
-  for (let i = 0, {length} = target.childNodes; i < length; i++) {
-    Object.assign(objects, flattenObjects(target.childNodes[i], target.id));
+const layoutChildNodes = weakMemo((childNodes: SlimBaseNode[], parentId: string) => {
+  const children = [];
+  for (let i = 0, {length} = childNodes; i < length; i++) {
+    children.push(...layoutObjects(childNodes[i], parentId));
   }
-  return objects;
+  return children;
 });
 
-const flattenCSSRules = weakMemo((target: SlimCSSGroupingRule) => {
-  let objects = {};
-  for (let i = 0, {length} = target.rules; i < length; i++) {
-    Object.assign(objects, flattenCSSObjects(target.rules[i], target.id));
+const layoutCSSRules = weakMemo((rules: SlimCSSRule[], parentId: string) => {
+  const children = [];
+  for (let i = 0, {length} = rules; i < length; i++) {
+    children.push(...layoutCSSObjects(rules[i], parentId));
   }
-  return objects;
+  return children;
 });
 
 export const getDocumentChecksum = weakMemo((document: SlimParentNode) => crc32(stringifyNode(document, true)));

@@ -30,7 +30,6 @@ import { 
   SYNTHETIC_WINDOW_CLOSED,
   FILE_CONTENT_CHANGED,
   SYNTHETIC_WINDOW_RESIZED,
-  FileContentChanged,
   SyntheticWindowRectsUpdated,
   SyntheticWindowSourceChanged,
   OPEN_SYNTHETIC_WINDOW, 
@@ -98,11 +97,6 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
     case FETCHED_CONTENT: {
       const { publicPath, content, mtime } = event as FetchedContent;
       return setFileCacheItem(publicPath, content, new Date(0), root);
-    }
-
-    case FILE_CONTENT_CHANGED: {
-      const { publicPath, content, mtime } = event as FileContentChanged;
-      return setFileCacheItem(publicPath, content, new Date(mtime), root);
     }
 
     case SYNTHETIC_WINDOW_RESIZED: 

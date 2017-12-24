@@ -1,4 +1,5 @@
 import { SlimVMObjectType, SlimBaseNode, SlimElement, SlimElementAttribute, SlimParentNode, VMObjectSource, SlimTextNode, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimStyleElement,  } from "./state";
+import  { weakMemo } from "./utils";
 
 export type CompressedFragment = [SlimVMObjectType, any[]];
 export type CompressedTextNode = [SlimVMObjectType, string];
@@ -8,15 +9,10 @@ export type CompressedNode = any[];
 
 export type CompressionResult = [string[], any];
 
-const memoKey = Symbol();
-
-export const compressRootNode = (root: SlimBaseNode): CompressionResult => {
-  if (root[memoKey]) {
-    return root[memoKey];
-  }
+export const compressRootNode = weakMemo((root: SlimBaseNode): CompressionResult => {
   const sources = [];
-  return root[memoKey] = [sources, compressNode(root, sources)] as any;
-};
+  return [sources, compressNode(root, sources)] as any;
+});
 
 const compressNode = (node: SlimBaseNode, sourceUris: string[]) => {
   switch (node.type) {

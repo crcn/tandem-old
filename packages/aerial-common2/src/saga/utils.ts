@@ -34,6 +34,7 @@ export const createSocketIOSaga = (socket) => {
     yield fork(function*() {
       while(true) {
         const action = yield take(isPublicAction);
+        action[TAG] = 1;
         socket.emit("action", action);
       }
     });

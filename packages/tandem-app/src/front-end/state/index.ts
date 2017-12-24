@@ -548,6 +548,17 @@ export const getArtboardById = weakMemo((artboardId: string, state: ApplicationS
   return workspace.artboards.find(artboard => artboard.$id === artboardId);
 });
 
+export const getArtboardByInfo = (componentId: string, previewName: string, state: ApplicationState) => {
+  for (const workspace of state.workspaces) {
+    for (const artboard of workspace.artboards) {
+      if (artboard.componentId === componentId && (artboard.previewName === previewName || !artboard.previewName)) {
+        return artboard;
+      }
+    }
+  }
+  return null;
+}
+
 export const getArtboardBounds = weakMemo((workspace: Workspace) => mergeBounds(...workspace.artboards.map(artboard => artboard.bounds)));
 
 export const getArtboardWorkspace = weakMemo((artboardId: string, state: ApplicationState) => {

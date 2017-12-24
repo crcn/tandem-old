@@ -9,7 +9,6 @@ const base = require("./webpack-base.config.js");
 
 module.exports = merge({}, base, {
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('[name].bundle.css'),
     new HtmlWebpackPlugin({
       title: "Aerial Playground",
@@ -21,7 +20,7 @@ module.exports = merge({}, base, {
     rules: [
       ...base.module.rules,
       { test: /\.pc$/, use: [__dirname + '/../paperclip-react-transpiler/webpack-loader' ]},
-      { test: /\.tsx?$/, use: ['react-hot-loader/webpack', 'ts-loader'] },
+      { test: /\.tsx?$/, use: ['ts-loader'] }
     ]
   }
 });
