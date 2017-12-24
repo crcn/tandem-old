@@ -63,6 +63,7 @@ function* handlePreviewDiffed() {
     const artboard = getArtboardByInfo(componentId, previewName, yield select());
     if (!artboard) {
       console.error(`artboard ${componentId}:${previewName} not found`);
+      continue;
     }
 
     // likely that the server restarted, or user connection dropped while the document changed.

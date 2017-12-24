@@ -13,7 +13,7 @@ import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents,
 const SCREENSHOT_DELAY = 1000;
 
 export function* screenshotsSaga() {
-  yield fork(handleTakingScreesnshots);
+  yield spawn(handleTakingScreesnshots);
   yield fork(handleNewScreenshot);
   yield fork(handleSavedScreenshot);
   yield fork(cleanupOldScreenshots);
