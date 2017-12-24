@@ -1,4 +1,5 @@
 import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute } from "./state";
+import { uniq, flatten } from "lodash";
 import crc32 = require("crc32");
 
 let previousPurgeTime = 0;
@@ -151,6 +152,29 @@ export const getNodePath = weakMemo((value: SlimBaseNode, root: SlimParentNode):
   }
 
   return path;
+});
+
+export const getVmObjectSourceUris = weakMemo((node: SlimBaseNode) => {
+  return uniq(getNestedSourceUris(node));
+});
+
+const getNestedSourceUris = weakMemo((node: SlimBaseNode): string[] => {
+  const sources: string[] = [];
+  if (node.source && node.source.uri) {
+    sources.push(node.source.uri);
+  }
+  if (node.type === SlimVMObjectType.ELEMENT) {
+    const element = node as SlimElement;
+    if (element.shadow) {
+      sources.push(...getNestedSourceUris(element.shadow));
+    }
+  }
+
+  if (node.type === SlimVMObjectType.ELEMENT || node.type === SlimVMObjectType.DOCUMENT_FRAGMENT) {
+    sources.push(...flatten((node as SlimParentNode).childNodes.map(child => getNestedSourceUris(child))));
+  }
+
+  return sources;
 });
 
 export const getNestedObjectById = weakMemo((id: string, root: SlimParentNode): VMObject => {

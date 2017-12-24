@@ -1,11 +1,12 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
-import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum } from "slim-dom";
+import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum, getVmObjectSourceUris } from "slim-dom";
 import { ApplicationState, getLatestPreviewDocument } from "../state";
 import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged, previewDiffed } from "../actions";
 import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
 import { diffArray, ARRAY_UPDATE } from "source-mutation";
+import { values } from "lodash";
 import crc32 = require("crc32");
 import * as chokidar from "chokidar";
 import * as fs from "fs";
@@ -14,7 +15,6 @@ import * as glob from "glob";
 export function* uriWatcherSaga() {
   yield fork(handleWatchUrisRequest);
   yield fork(handleDependencyGraph);
-  yield fork(handleEvaluatedPreviews);
 }
 
 function* handleWatchUrisRequest() {
@@ -140,54 +140,53 @@ function* handleDependencyGraph() {
       }
 
       graph = newGraph;
+
     }
     yield put(dependencyGraphLoaded(graph));
+    yield call(evaluatePreviews, graph, action.type === FILE_CONTENT_CHANGED ? (action as FileContentChanged).filePath : null);
   }
 }
 
-function* handleEvaluatedPreviews() {
-  while(true) {
+function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
+  const state = yield select();
+  for (const filePath in graph) {
+    const dep = graph[filePath];
+    if (sourceUri && sourceUri !== filePath && values(dep.resolvedImportUris).indexOf(sourceUri) === -1) {
+      continue;
+    }
 
-    // TODO - only run changed files
-    // emit diffs for browser
-    yield take(DEPENDENCY_GRAPH_LOADED);
-    const state = yield select();
-    const { graph }: ApplicationState = state;
-    const components = getAllComponents(graph);
-    const componentSourceUris = getComponentSourceUris(graph);
-    for (const componentId in components) {
-      const component = components[componentId];
+    const { module } = dep;
+    for (const component of module.components) {
       for (const preview of component.previews) {
-        const filePath = componentSourceUris[componentId];
         const entry = {
-          componentId,
+          componentId: component.id,
           filePath,
           previewName: preview.name
         }
-
+  
         yield spawn(function*() {
           const { document } = runPCFile({ entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
-          const latestDocument = getLatestPreviewDocument(componentId, preview.name, yield select());
+          const latestDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
           const start = Date.now();
           
-          console.log(`Evaluated component ${componentId}:${preview.name}`);
-
+          console.log(`Evaluated component ${component.id}:${preview.name}`);
+  
           let newDocument = document as SlimParentNode;
           let hasDiffs: boolean = false;
-
+  
           if (latestDocument) {
             const diffs = diffNode(latestDocument, newDocument);
             hasDiffs = diffs.length > 0;
             newDocument = patchNode(latestDocument, diffs);
           }
-
+  
           // TODO - push diagnostics too
-          yield put(previewEvaluated(componentId, preview.name, newDocument));
-
+          yield put(previewEvaluated(component.id, preview.name, newDocument));
+  
           if (latestDocument && hasDiffs) {
-
+  
             // push to the public
-            yield put(previewDiffed(componentId, preview.name, getDocumentChecksum(latestDocument), diffNode(latestDocument, newDocument)));
+            yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(latestDocument), diffNode(latestDocument, newDocument)));
           }
         });
       }
