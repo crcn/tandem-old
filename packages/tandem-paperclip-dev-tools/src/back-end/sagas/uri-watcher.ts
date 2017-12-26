@@ -1,7 +1,7 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
-import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum, getVmObjectSourceUris } from "slim-dom";
+import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum, getVmObjectSourceUris, syncVMObjectSources } from "slim-dom";
 import { ApplicationState, getLatestPreviewDocument } from "../state";
 import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged, previewDiffed } from "../actions";
 import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
@@ -174,11 +174,14 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
   
           let newDocument = document as SlimParentNode;
           let hasDiffs: boolean = false;
-  
+          
+          // patch new document to maintain IDs
           if (latestDocument) {
+            const prevDocument = newDocument;
             const diffs = diffNode(latestDocument, newDocument);
             hasDiffs = diffs.length > 0;
             newDocument = patchNode(latestDocument, diffs);
+            syncVMObjectSources(newDocument, prevDocument);
           }
           // TODO - push diagnostics too
           yield put(previewEvaluated(component.id, preview.name, newDocument));

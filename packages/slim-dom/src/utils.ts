@@ -64,6 +64,62 @@ export const insertChildNode = <TParent extends SlimParentNode>(parent: TParent,
   ]
 });
 
+export const moveChildNode = <TParent extends SlimParentNode>(parent: TParent, index: number, newIndex: number) => {
+
+  const childNodes = [...parent.childNodes];
+  const child = childNodes[index];
+  childNodes.splice(index, 1);
+  childNodes.splice(newIndex, 0, child);
+  
+  return {
+    ...(parent as any),
+    childNodes
+  };
+};
+
+export const insertCSSRule = <TParent extends SlimCSSGroupingRule>(parent: TParent, child: SlimBaseNode, index: number = Number.MAX_SAFE_INTEGER): TParent => ({
+  ...(parent as any),
+  rules: [
+    ...parent.rules.slice(0, index),
+    child,
+    ...parent.rules.slice(index)
+  ]
+});
+
+export const removeCSSRuleAt = <TParent extends SlimCSSGroupingRule>(parent: TParent, index: number): TParent => ({
+  ...(parent as any),
+  rules: [
+    ...parent.rules.slice(0, index),
+    ...parent.rules.slice(index + 1)
+  ]
+});
+
+export const moveCSSRule = <TParent extends SlimCSSGroupingRule>(parent: TParent, index: number, newIndex: number): TParent => {
+
+  const rules = [...parent.rules];
+  const child = rules[index];
+  rules.splice(index, 1);
+  rules.splice(newIndex, 0, child);
+  
+  return {
+    ...(parent as any),
+    rules
+  };
+};
+
+export const setCSSSelectorText = <TRule extends SlimCSSStyleRule>(rule: TRule, selectorText: string): TRule => ({
+  ...(rule as any),
+  selectorText
+});
+
+export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, name: string, newValue: any): TRule => ({
+  ...(rule as any), 
+  style: {
+    ...rule.style,
+    [name]: newValue
+  }
+});
+
 export const stringifyNode = weakMemo((node: SlimBaseNode, includeShadow?: boolean) => {
   switch(node.type) {
     case SlimVMObjectType.TEXT: {
@@ -344,13 +400,13 @@ export const setTextNodeValue = (target: SlimTextNode, newValue: string): SlimTe
   value: newValue
 });
 
-export const setElementAttribute = (target: SlimElement, name: string, value: string): SlimElement => {
+export const setElementAttribute = (target: SlimElement, name: string, value: string, index?: number): SlimElement => {
   let attributes: SlimElementAttribute[] = [];
-  let found: boolean;
+  let foundIndex: number = -1;
   for (let i = 0, {length} = target.attributes; i < length; i++) {
     const attribute = target.attributes[i];
     if (attribute.name === name) {
-      found = true;
+      foundIndex = i;
       if (value) {
         attributes.push({ name, value });
       }
@@ -359,12 +415,42 @@ export const setElementAttribute = (target: SlimElement, name: string, value: st
     }
   }
 
-  if (!found) {
+  if (foundIndex === -1) {
+    foundIndex = attributes.length;
     attributes.push({ name, value });
   }
 
+  if (index != null && foundIndex !== index) {
+    const attribute = attributes[foundIndex];
+    attributes.splice(foundIndex, 1);
+    attributes.splice(index, 0, attribute);
+  }
+
+  
   return {
     ...target,
     attributes,
   };
 };
+
+export const syncVMObjectSources = (to: VMObject, from: VMObject) => {
+  to.source = from.source;
+  if ((to as SlimParentNode).childNodes) {
+    const children = (to as SlimParentNode).childNodes;
+    for (let i = 0, {length} = children; i < length; i++) {
+      syncVMObjectSources(children[i], (from as SlimParentNode).childNodes[i]);
+    }
+  }
+  if ((to as SlimElement).shadow) {
+    syncVMObjectSources((to as SlimElement).shadow, (from as SlimElement).shadow);
+  }
+  if ((to as SlimStyleElement).sheet) {
+    syncVMObjectSources((to as SlimStyleElement).sheet, (from as SlimStyleElement).sheet);
+  }
+  if ((to as SlimCSSGroupingRule).rules) {
+    const rules = (to as SlimCSSGroupingRule).rules;
+    for (let i = 0, {length} = rules; i < length; i++) {
+      syncVMObjectSources(rules[i], (from as SlimCSSGroupingRule).rules[i]);
+    }
+  }
+}

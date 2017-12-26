@@ -1,7 +1,9 @@
+// TODO - diff context with patched path
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
-import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation } from "source-mutation";
+import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, createMoveChildMutation, MoveChildMutation } from "source-mutation";
 import { compressRootNode, uncompressRootNode } from "./compression";
-import { weakMemo, flattenObjects, getNodePath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute } from "./utils";
+import { weakMemo, flattenObjects, getNodePath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty } from "./utils";
+import { isEqual } from "lodash";
 
 import { getVMObjectTree } from "./tree";
 
@@ -9,18 +11,20 @@ import { getVMObjectTree } from "./tree";
 export const SET_TEXT_NODE_VALUE = "SET_TEXT_NODE_VALUE";
 
 // parent node
-
 export const INSERT_CHILD_NODE = "INSERT_CHILD_NODE";
 export const REMOVE_CHILD_NODE = "REMOVE_CHILD_NODE";
+export const MOVE_CHILD_NODE   = "MOVE_CHILD_NODE";
 
 // elements
 export const SET_ATTRIBUTE_VALUE = "SET_ATTRIBUTE_VALUE";
 export const ATTACH_SHADOW = "ATTACH_SHADOW";
 export const REMOVE_SHADOW = "REMOVE_SHADOW";
+export const MOVE_ATTRIBUTE = "MOVE_ATTRIBUTE";
 
 // CSS Grouping
 export const CSS_INSERT_RULE = "CSS_INSERT_RULE";
 export const CSS_DELETE_RULE = "CSS_DELETE_RULE";
+export const CSS_MOVE_RULE   = "CSS_MOVE_RULE";
 
 // CSS Style Rule
 export const CSS_SET_STYLE_PROPERTY = "CSS_SET_STYLE_PROPERTY";
@@ -61,16 +65,16 @@ const diffElement = (oldElement: SlimElement, newElement: SlimElement): Mutation
     {
       insert({ index, value }) {
         diffs.push(
-          createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, value.name, value.value)
+          createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, value.name, value.value, null, null, index)
         );
       },
       delete({ index, value }) {
         diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, value.name, null));
       },
-      update({ index, newValue, originalOldIndex }) {
+      update({ index, newValue, originalOldIndex, patchedOldIndex }) {
         const oldAttrValue = oldElement.attributes[originalOldIndex].value;
-        if (newValue.value !== oldAttrValue && (typeof newValue.value !== "object" || JSON.stringify(newValue.value) !== JSON.stringify(oldAttrValue))) {
-          diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, newValue.name, newValue.value));
+        if (!isEqual(newValue.value, oldAttrValue) || index !== patchedOldIndex) {
+          diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, oldElement.id, newValue.name, newValue.value, null, null, index));
         }
       }
     }
@@ -132,7 +136,10 @@ const diffChildNodes = (oldParent: SlimParentNode, newParent: SlimParentNode): M
           )
         );
       },
-      update({ index, newValue, originalOldIndex }) {
+      update({ index, newValue, originalOldIndex, patchedOldIndex }) {
+        if (index !== patchedOldIndex) {
+          diffs.push(createMoveChildMutation(MOVE_CHILD_NODE, oldParent.id, null, index, patchedOldIndex));
+        }
         diffs.push(
           ...diffNode(
             oldParent.childNodes[originalOldIndex],
@@ -157,7 +164,6 @@ const diffCSSRule = (oldRule: SlimCSSRule, newRule: SlimCSSRule) => {
 const diffCSSStyleSheet = (oldSheet: SlimCSSStyleSheet, newSheet: SlimCSSStyleSheet) => {
   return diffCSSGroupingRuleChildren(oldSheet, newSheet);
 }
-
 
 const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule) => {
   const diffs = [];
@@ -202,7 +208,10 @@ const diffCSSGroupingRuleChildren = (oldRule: SlimCSSGroupingRule, newRule: Slim
       delete({ index }) {
         diffs.push(createRemoveChildMutation(CSS_DELETE_RULE, oldRule.id, null, index));
       },
-      update({ newValue, originalOldIndex }) {
+      update({ newValue, originalOldIndex, index, patchedOldIndex }) {
+        if (index !== patchedOldIndex) {
+          diffs.push(createMoveChildMutation(CSS_MOVE_RULE, oldRule.id, null, index, patchedOldIndex));
+        }
         diffs.push(
           ...diffCSSRule(
             oldRule.rules[originalOldIndex],
@@ -211,23 +220,24 @@ const diffCSSGroupingRuleChildren = (oldRule: SlimCSSGroupingRule, newRule: Slim
         );
       }
     }
-  )
+  );
 
   return diffs;
-}
+};
+
 const compareCSSRules = (a: SlimCSSRule, b: SlimCSSRule) => {
   if (a.type !== b.type) {
     return -1;
   }
 
   if (a.type === SlimVMObjectType.STYLE_RULE) {
-    return (a as SlimCSSStyleRule).selectorText === (a as SlimCSSStyleRule).selectorText ? 0 : 1;
+    return (a as SlimCSSStyleRule).selectorText === (b as SlimCSSStyleRule).selectorText ? 0 : 1;
   }
 
   // TODO - check media
 
   return 1;
-}
+};
 
 const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
   if (a.type !== b.type) {
@@ -250,7 +260,7 @@ const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
   }
 
   return 0;
-}
+};
 
 export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<string>[]) => {
 
@@ -271,8 +281,8 @@ export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Muta
         break;
       }
       case SET_ATTRIBUTE_VALUE: {
-        const { name, newValue } = diff as SetPropertyMutation<string>;
-        newTarget = setElementAttribute(target as SlimElement, name, newValue);
+        const { name, newValue, index } = diff as SetPropertyMutation<string>;
+        newTarget = setElementAttribute(target as SlimElement, name, newValue, index);
         break;
       }
       case REMOVE_CHILD_NODE: {
@@ -285,34 +295,34 @@ export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Muta
         newTarget = insertChildNode(newTarget as SlimParentNode, uncompressRootNode(child), index);
         break;
       }
+      case MOVE_CHILD_NODE: {
+        const { index, oldIndex } = diff as MoveChildMutation<any, any>;
+        newTarget = moveChildNode(newTarget as SlimParentNode, oldIndex, index);
+        break;
+      }
       case CSS_SET_SELECTOR_TEXT: {
         const { newValue } = diff as SetValueMutation<string>;
-        newTarget = { ...newTarget, selectorText: newValue } as SlimCSSStyleRule;
+        newTarget = setCSSSelectorText(newTarget as SlimCSSStyleRule, newValue);
         break;
       }
       case CSS_SET_STYLE_PROPERTY: {
         const { name, newValue } = diff as SetPropertyMutation<string>;
-        const styleRule = newTarget as SlimCSSStyleRule;
-        newTarget = { ...styleRule, style: {
-          ...styleRule.style,
-          [name]: newValue
-        } } as SlimCSSStyleRule;
+        newTarget = setCSSStyleProperty(newTarget as SlimCSSStyleRule, name, newValue);
         break;
       }
       case CSS_INSERT_RULE: {
-        const { child } = diff as InsertChildMutation<any, any>;
-        const styleRule = newTarget as SlimCSSGroupingRule;
-        newTarget = { ...styleRule, rules: [...styleRule.rules, uncompressRootNode(child)] } as SlimCSSGroupingRule;
+        const { child, index } = diff as InsertChildMutation<any, any>;
+        newTarget = insertCSSRule(newTarget as SlimCSSGroupingRule, uncompressRootNode(child), index);
         break;
       }
       case CSS_DELETE_RULE: {
         const { index } = diff as InsertChildMutation<any, any>;
-        const styleRule = newTarget as SlimCSSGroupingRule;
-        newTarget = { ...styleRule, rules: [
-          ...styleRule.rules.slice(0, index),
-          styleRule.rules.slice(0, index + 1)
-        ] } as SlimCSSGroupingRule;
+        newTarget = removeCSSRuleAt(newTarget as SlimCSSGroupingRule, index);
         break;
+      }
+      case CSS_MOVE_RULE: {
+        const { index, oldIndex } = diff as MoveChildMutation<any, any>;
+        newTarget = moveCSSRule(newTarget as SlimCSSGroupingRule, oldIndex, index);
       }
     }
 

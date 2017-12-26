@@ -55,9 +55,9 @@ describe(__filename + "#", () => {
         "target": "20003",
         "name": "c",
         "newValue": true,
-        "oldValue": undefined,
-        "oldName": undefined,
-        "index": undefined
+        "oldValue": null,
+        "oldName": null,
+        "index": 0
       }
     ]],
     [`<a b="1" />`, `<a b="2" />`, [
@@ -66,9 +66,9 @@ describe(__filename + "#", () => {
         "target": "20003",
         "name": "b",
         "newValue": "2",
-        "oldName": undefined,
-        "oldValue": undefined,
-        "index": undefined
+        "oldName": null,
+        "oldValue": null,
+        "index": 0
       }
     ]],
     [`<a b="1" />`, `<a b="2" />`, [
@@ -77,9 +77,9 @@ describe(__filename + "#", () => {
         "target": "20003",
         "name": "b",
         "newValue": "2",
-        "oldName": undefined,
-        "oldValue": undefined,
-        "index": undefined
+        "oldName": null,
+        "oldValue": null,
+        "index": 0
       }
     ]]
   ].forEach(([oldSource, newSource, expectedDiffs]: any) => {
@@ -105,11 +105,17 @@ describe(__filename + "#", () => {
     [`<a></a>`, `<b></b>`],
     [`<a b="true"></a>`, `<a c="true"></a>`],
     [`<a b="1"></a>`, `<a b="2"></a>`],
+    [`<a b="1" c="1"></a>`, `<a b="1" c="1"></a>`],
+    [`<a b="1"></a>`, `<a c="1" b="1"></a>`],
     [`<style>.a {}</style>`, `<style>.b {}</style>`],
     [`<style>.a {a: 1;}</style>`, `<style>.a {a: 2;}</style>`],
     [`<style>.a {a: 1;}</style>`, `<style>.a {b: 1;}</style>`],
     [`<style>.a {a: 1;}</style>`, `<style>.a {} .b {}</style>`],
-    [`<style>.a {a: 1;} .b {a:2;}</style>`, `<style>.a {} </style>`]
+    [`<style>.a {a: 1;} .b {a:2;}</style>`, `<style>.a {}</style>`],
+    [`<a></a><b></b>`, `<b></b><a></a>`, `<a></a><b></b>`],
+    [`<a></a><b></b><c></c>`, `<c></c><a></a><b></b>`, `<b></b><a></a><c></c>`],
+    [`<a b="1" c="1" d="1"></a>`, `<a c="1" b="1" d="1"></a>`, `<a d="1" b="1" c="1"></a>`],
+    [`<style>.a {} .b {}</style>`, `<style>.b {} .a {}</style>`]
   ].forEach((variants) => {
     it(`can diff and patch ${variants.join(" -> ")}`, async () => {
       let prevDocument: SlimParentNode;
