@@ -5,7 +5,7 @@ import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, get
 import { ApplicationState, getLatestPreviewDocument } from "../state";
 import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged, previewDiffed } from "../actions";
 import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
-import { diffArray, ARRAY_UPDATE } from "source-mutation";
+import { diffArray, ARRAY_UPDATE, Mutation } from "source-mutation";
 import { values } from "lodash";
 import crc32 = require("crc32");
 import * as chokidar from "chokidar";
@@ -123,29 +123,28 @@ function* handleWatchUrisRequest() {
 function* handleDependencyGraph() {
   while(true) {
     const action = yield take([WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED]);
-    yield spawn(function*() {
-      console.log("loading dependency graph");
-      const state: ApplicationState = yield select();
-      let graph: DependencyGraph = {};
-      for (const fileCacheItem of state.fileCache) {
-        if (!isPaperclipFile(fileCacheItem.filePath, state)) {
-          continue;
-        }
-        const { diagnostics, graph: newGraph } = yield call(loadModuleDependencyGraph, fileCacheItem.filePath, {
-          readFile: getReadFile(state)
-        }, graph);
 
-
-        if (diagnostics.length) {
-          console.error(`Failed to load dependency graph for ${fileCacheItem.filePath}.`);
-        }
-
-        graph = newGraph;
-
+    console.log("loading dependency graph");
+    const state: ApplicationState = yield select();
+    let graph: DependencyGraph = {};
+    for (const fileCacheItem of state.fileCache) {
+      if (!isPaperclipFile(fileCacheItem.filePath, state)) {
+        continue;
       }
-      yield put(dependencyGraphLoaded(graph));
-      yield call(evaluatePreviews, graph, action.type === FILE_CONTENT_CHANGED ? (action as FileContentChanged).filePath : null);
-    });
+      const { diagnostics, graph: newGraph } = yield call(loadModuleDependencyGraph, fileCacheItem.filePath, {
+        readFile: getReadFile(state)
+      }, graph);
+
+
+      if (diagnostics.length) {
+        console.error(`Failed to load dependency graph for ${fileCacheItem.filePath}.`);
+      }
+
+      graph = newGraph;
+
+    }
+    yield put(dependencyGraphLoaded(graph));
+    yield call(evaluatePreviews, graph, action.type === FILE_CONTENT_CHANGED ? (action as FileContentChanged).filePath : null);
   }
 }
 
@@ -166,33 +165,25 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
           previewName: preview.name
         }
   
-        yield spawn(function*() {
-          const { document } = runPCFile({ entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
-          const latestDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
-          
-          console.log(`Evaluated component ${component.id}:${preview.name}`);
-  
-          let newDocument = document as SlimParentNode;
-          let hasDiffs: boolean = false;
-          
-          // patch new document to maintain IDs
-          if (latestDocument) {
-            const prevDocument = newDocument;
-            const diffs = diffNode(latestDocument, newDocument);
-            hasDiffs = diffs.length > 0;
-            newDocument = patchNode(latestDocument, diffs);
-            syncVMObjectSources(newDocument, prevDocument);
+        const { document } = runPCFile({ entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
+        const prevDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
+        
+        console.log(`Evaluated component ${component.id}:${preview.name}`);
+
+        let newDocument = document as SlimParentNode;
+        let diffs: Mutation<any[]>[] = [];
+
+        // TODO - push diagnostics too
+        yield put(previewEvaluated(component.id, preview.name, newDocument));
+
+        if (prevDocument) {
+          const diff = diffNode(prevDocument, newDocument);
+
+          // push to the public
+          if (diff.length) {
+            yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(prevDocument), diff));
           }
-          // TODO - push diagnostics too
-          yield put(previewEvaluated(component.id, preview.name, newDocument));
-  
-          if (latestDocument && hasDiffs) {
-            
-            const diffs = diffNode(latestDocument, newDocument);
-            // push to the public
-            yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(latestDocument), diffs));
-          }
-        });
+        }
       }
     }
   }

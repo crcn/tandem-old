@@ -309,7 +309,7 @@ export type PreviewDiffed = {
   componentId: string;
   previewName: string;
   documentChecksum: string;
-  diff: Mutation<string>[];
+  diff: Mutation<any[]>[];
 } & BaseEvent;  
 
 export type ArtboardRendered = {

@@ -102,7 +102,7 @@ export type PreviewDiffed = {
   componentId: string;
   previewName: string;
   documentChecksum: string;
-  diff: SourceMutation<string>[];
+  diff: SourceMutation<any[]>[];
   $public: true;
 } & Action;
 
@@ -221,7 +221,7 @@ export const previewEvaluated = (componentId: string, previewName: string, docum
   type: PREVIEW_EVALUATED
 });
 
-export const previewDiffed = (componentId: string, previewName: string, documentChecksum: string, diff: SourceMutation<string>[]): PreviewDiffed => ({
+export const previewDiffed = (componentId: string, previewName: string, documentChecksum: string, diff: SourceMutation<any[]>[]): PreviewDiffed => ({
   componentId,
   previewName,
   documentChecksum,

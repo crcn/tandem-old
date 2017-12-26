@@ -2,7 +2,7 @@
 import { diffNode, SlimParentNode, patchNode, SlimElement } from "slim-dom";
 import { expect } from "chai";
 import { loadModuleDependencyGraph, runPCFile, PCElement } from "..";
-import { stringifyNode } from "./utils";
+import { stringifyNode, FakeDocument } from "./utils";
 
 describe(__filename + "#", () => {
   [
@@ -37,7 +37,7 @@ describe(__filename + "#", () => {
           ]
         ],
         "clone": undefined,
-        "index": 9007199254740991
+        "index": 0
       }
     ]],
     [`<a b />`, `<a c />`, [
@@ -137,6 +137,7 @@ describe(__filename + "#", () => {
       }
     })
   });
+
 });
 
 const wrapSource = (template: string) => `<component id="entry"><template>${template}</template><preview name="main"><entry /></preview></component>`;

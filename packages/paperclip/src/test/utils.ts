@@ -58,3 +58,116 @@ const stringifyStyleSheet = (sheet: SlimCSSRule) => {
     }
   }
 }
+
+abstract class FakeBaseNode {
+  readonly childNodes: FakeBaseNode[] = [];
+  constructor(readonly ownerDocument: FakeDocument) {
+
+  }
+  abstract toString(); 
+}
+
+class FakeParentNode extends FakeBaseNode {
+  constructor(ownerDocument: FakeDocument) {
+    super(ownerDocument);
+  }
+  appendChild(child: FakeBaseNode) {
+    if (child instanceof FakeDocumentFragment) {
+      for (const subChild of child.childNodes)  {
+        this.appendChild(subChild);
+      }
+    } else {
+      this.childNodes.push(child);
+    }
+  }
+  removeChild(child: FakeBaseNode) {
+    const index = this.childNodes.indexOf(child);
+    if (index !== -1) {
+      this.childNodes.splice(index, 1);
+    } else {
+      throw new Error(`child does not exist`);
+    }
+  }
+  insertBefore(newChild: FakeBaseNode, refChild: FakeBaseNode) {
+    const index = this.childNodes.indexOf(refChild);
+    if (index === -1) {
+      throw new Error(`ref child does not exist`);
+    }
+    this.childNodes.splice(index, 0, newChild);
+  }
+  toString() {
+    return this.childNodes.map(child => child.toString()).join("");
+  }
+}
+
+export class FakeDocumentFragment extends FakeParentNode {
+
+}
+
+export class FakeAttribute {
+  constructor(public name: string, public value: string) {
+
+  }
+}
+
+export class FakeElement extends FakeParentNode {
+  readonly attributes: FakeAttribute[] = [];
+  private _shadowRoot: FakeDocumentFragment;
+  constructor(readonly tagName: string, ownerDocument: FakeDocument) {
+    super(ownerDocument);
+  }
+  removeAttribute(name: string) {
+    const index = this.attributes.findIndex((attr) => attr.name === name);
+    if (index !== -1) {
+      this.attributes.splice(index, 1);
+    }
+  }
+  attachShadow() {
+    if (this._shadowRoot) {
+      throw new Error(`Cannot re-attach shadow root`);
+    }
+    return this._shadowRoot = this.ownerDocument.createDocumentFragment();
+  }
+  get shadowRoot() {
+    return this._shadowRoot;
+  }
+  setAttribute(name: string, value: string) {
+    const index = this.attributes.findIndex((attr) => attr.name === name);
+    if (index !== -1) {
+      this.attributes[index].value = value;
+    } else {
+      this.attributes.push(new FakeAttribute(name, value));
+    }
+  }
+  toString() {
+    let buffer = `<${this.tagName}`;
+    for (const { name, value } of this.attributes) {
+      buffer += ` ${name}="${value}"`
+    }
+    buffer += `>`;
+    buffer += super.toString();
+    buffer += `</${this.tagName}>`;
+    return buffer;
+  }
+}
+
+export class FakeTextNode extends FakeBaseNode {
+  constructor(public nodeValue: string, ownerDocument: FakeDocument) {
+    super(ownerDocument);
+  }
+  toString() {
+    return this.nodeValue;
+  }
+}
+
+export class FakeDocument {
+  createElement(tagName: string) {
+    return new FakeElement(tagName, this);
+  }
+  createTextNode(nodeValue: string) {
+    return new FakeTextNode(nodeValue, this);
+  }
+  createDocumentFragment() {
+    return new FakeDocumentFragment(this);
+  }
+};

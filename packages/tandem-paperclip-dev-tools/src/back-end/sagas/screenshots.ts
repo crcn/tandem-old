@@ -13,13 +13,13 @@ import { isPaperclipFile, getModuleFilePaths, getAllModules, getAssocComponents,
 const SCREENSHOT_DELAY = 1000;
 
 export function* screenshotsSaga() {
-  yield spawn(handleTakingScreesnshots);
-  yield fork(handleNewScreenshot);
-  yield fork(handleSavedScreenshot);
-  yield fork(cleanupOldScreenshots);
+  // yield spawn(handleTakingScreesnshots);
+  // yield fork(handleNewScreenshot);
+  // yield fork(handleSavedScreenshot);
+  // yield fork(cleanupOldScreenshots);
 
-  // last thing to launch
-  yield fork(openHeadlessBrowser);
+  // // last thing to launch
+  // yield fork(openHeadlessBrowser);
 }
 
 const MAX_SCREENSHOTS = 10;

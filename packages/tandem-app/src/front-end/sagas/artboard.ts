@@ -77,7 +77,7 @@ function* handlePreviewDiffed() {
       artboardPatched(
         artboard.$id, 
         patchNode(artboard.document, diff), 
-        patchDOM(diff, artboard.nativeNodeMap, artboard.mount)
+        patchDOM(diff, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
       )
     );
   }

@@ -1,7 +1,7 @@
-import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSMediaRule, SlimCSSRule, Bounds } from "./state";
-import { weakMemo } from "./utils";
-import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation } from "source-mutation"
-import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE } from "./diff-patch";
+import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSMediaRule, SlimCSSRule, Bounds, VMObject } from "./state";
+import { weakMemo, getVMObjectFromPath } from "./utils";
+import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
+import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY } from "./diff-patch";
 import { uncompressRootNode } from "./compression";
 
 export const renderDOM = (node: SlimBaseNode, mount: HTMLElement) => {
@@ -124,31 +124,47 @@ export const computedDOMInfo = (map: DOMNodeMap): ComputedDOMInfo => {
   return computedInfo;
 };
 
+const getDOMNodeFromPath = (path: any[], root: HTMLElement) => {
+  let current: any = root;
+  for (let i = 0, {length} = path; i < length; i++) {
+    const part = path[i];
+    if (part === "shadow") {
+      current = (current as HTMLElement).shadowRoot;
+    } else {
+      current = current.childNodes[part];
+    }
+    if (!current) {
+      return null;
+    }
+  }
+  return current;
+}
+
 // TODO
-export const patchDOM = (diffs: Mutation<string>[], map: DOMNodeMap, container: HTMLIFrameElement): DOMNodeMap => {
+export const patchDOM = (diffs: Mutation<any[]>[], map: DOMNodeMap, root: HTMLElement): DOMNodeMap => {
   for (let i = 0, {length} = diffs; i < length; i++) {
     const mutation = diffs[i];
-    const target = map[mutation.target];
+    const target = getDOMNodeFromPath(mutation.target, root);
     switch(mutation.type) {
       case SET_TEXT_NODE_VALUE: {
-        (target as Text).nodeValue = (mutation as SetValueMutation<string>).newValue;
+        (target as Text).nodeValue = (mutation as SetValueMutation<any>).newValue;
         break;
       }
       case SET_ATTRIBUTE_VALUE: {
-        const { name, newValue } = mutation as SetPropertyMutation<string>;
+        const { name, newValue } = mutation as SetPropertyMutation<any>;
         (target as HTMLElement).setAttribute(name, newValue);
         break;
       }
       case REMOVE_CHILD_NODE: {
-        const { child, index } = mutation as RemoveChildMutation<string, string>;
+        const { child, index } = mutation as RemoveChildMutation<any, any>;
         map = { ...map, [child]: undefined };
         target.removeChild(target.childNodes[index]);
         break;
       }
       case INSERT_CHILD_NODE: {
-        const { child, index } = mutation as InsertChildMutation<string, any>;
+        const { child, index } = mutation as InsertChildMutation<any, any>;
         let childMap: DOMNodeMap = {};
-        const nativeChild = createNode(uncompressRootNode(child), document, childMap);
+        const nativeChild = createNode(uncompressRootNode(child), root.ownerDocument, childMap);
         if (index >= target.childNodes.length) {
           target.appendChild(nativeChild);
         } else {
@@ -156,6 +172,26 @@ export const patchDOM = (diffs: Mutation<string>[], map: DOMNodeMap, container: 
         }
         map = { ...map, ...childMap };
         break;
+      }
+
+      case MOVE_CHILD_NODE: {
+        const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
+        const child = target.childNodes[oldIndex];
+        target.removeChild(child);
+        if (index >= target.childNodes.length) {
+          target.appendChild(child);
+        } else {
+          target.insertBefore(child, target.childNodes[index]);
+        }
+        break;
+      }
+
+      case CSS_INSERT_RULE:
+      case CSS_DELETE_RULE: 
+      case CSS_MOVE_RULE: 
+      case CSS_SET_SELECTOR_TEXT: 
+      case CSS_SET_STYLE_PROPERTY: {
+
       }
     }
   }

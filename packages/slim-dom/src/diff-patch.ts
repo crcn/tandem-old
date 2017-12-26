@@ -121,7 +121,8 @@ const diffChildNodes = (oldParent: SlimParentNode, newParent: SlimParentNode, pa
           createInsertChildMutation(
             INSERT_CHILD_NODE,
             path,
-            compressRootNode(value)
+            compressRootNode(value),
+            index
           )
         )
       },
