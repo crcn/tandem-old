@@ -4,7 +4,6 @@ import { compressRootNode, uncompressRootNode } from "./compression";
 import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, getVMObjectFromPath } from "./utils";
 import { isEqual } from "lodash";
 
-import { getVMObjectTree } from "./tree";
 
 // text
 export const SET_TEXT_NODE_VALUE = "SET_TEXT_NODE_VALUE";

@@ -1,6 +1,5 @@
 import { SlimParentNode, SlimElement, SlimVMObjectType } from "./state";
 import { weakMemo, FlattenedObjects } from "./utils";
-import { parseSelector } from "./selector-parser";
 import { flattenObjects, SlimBaseNode } from "./index";
 import nwmatcher = require("nwmatcher");
 import { getLightDomWrapper, traverseLightDOM, LightBaseNode, LightDocumentFragment, LightElement, LightParentNode, LightTextNode, getLightDocumentWrapper, LightDocument } from "./dom-wrap";
