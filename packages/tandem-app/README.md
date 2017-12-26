@@ -3,8 +3,6 @@ IMMEDIATE:
 - [ ] diff/patch for slim-dom 
   - [ ] remove source attribute
   - [ ] how to eliminate IDs? Maybe have them on the front-end only?
-  - [ ] patch new positions
-  - [ ] patching should be based on path, node id
 - [ ] query selector testing
 
 - [ ] perf test - (preview a TON of windows.)

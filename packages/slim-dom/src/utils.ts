@@ -112,7 +112,7 @@ export const setCSSSelectorText = <TRule extends SlimCSSStyleRule>(rule: TRule, 
   selectorText
 });
 
-export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, name: string, newValue: any): TRule => ({
+export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, name: string, newValue: any, index: number): TRule => ({
   ...(rule as any), 
   style: {
     ...rule.style,
@@ -190,7 +190,7 @@ export const getNodeAncestors = weakMemo((value: SlimBaseNode, root: SlimParentN
   return ancestors;
 });
 
-export const getNodePath = weakMemo((value: SlimBaseNode, root: SlimParentNode): any[] => {
+export const getVMObjectPath = weakMemo((value: SlimBaseNode, root: SlimParentNode): any[] => {
   const objects = flattenObjects(root);
   let current = objects[value.id];
   const path: any[] = [];
@@ -213,6 +213,29 @@ export const getNodePath = weakMemo((value: SlimBaseNode, root: SlimParentNode):
 
   return path;
 });
+
+// not memoized because this isn't a very expensive op
+export const getVMObjectFromPath = (path: any[], root: VMObject): VMObject => {
+  let current = root;
+  for (let i = 0, {length} = path; i < length; i++) {
+    const part = path[i];
+    if (part === "shadow") {
+      current = (current as SlimElement).shadow;
+    } else if (part === "sheet") {
+      current = (current as SlimStyleElement).sheet;
+    } else if ((current as SlimParentNode).childNodes) {
+      current = (current as SlimParentNode).childNodes[part];
+    } else if ((current as SlimCSSGroupingRule).rules) {
+      current = (current as SlimCSSGroupingRule).rules[part];
+    }
+
+    if (!current) {
+      return null;
+    }
+  }
+
+  return current;
+};
 
 export const getVmObjectSourceUris = weakMemo((node: SlimBaseNode) => {
   return uniq(getNestedSourceUris(node));

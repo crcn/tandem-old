@@ -9,20 +9,20 @@ describe(__filename + "#", () => {
     [`a`, `b`, [
       {
         "type": "SET_TEXT_NODE_VALUE",
-        "target": "20003",
+        "target": [0, "shadow", 0],
         "newValue": "b"
       }
     ]],
     [`<a />`, `<b />`, [
       {
         "type": "REMOVE_CHILD_NODE",
-        "target": "20002",
+        "target": [0, "shadow"],
         "child": null,
         "index": 0
       },
       {
         "type": "INSERT_CHILD_NODE",
-        "target": "20002",
+        "target": [0, "shadow"],
         "child": [
           [
             "entry"
@@ -43,7 +43,7 @@ describe(__filename + "#", () => {
     [`<a b />`, `<a c />`, [
       {
         "type": "SET_ATTRIBUTE_VALUE",
-        "target": "20003",
+        "target": [0, "shadow", 0],
         "name": "b",
         "newValue": null,
         "oldValue": undefined,
@@ -52,7 +52,7 @@ describe(__filename + "#", () => {
       },
       {
         "type": "SET_ATTRIBUTE_VALUE",
-        "target": "20003",
+        "target": [0, "shadow", 0],
         "name": "c",
         "newValue": true,
         "oldValue": null,
@@ -63,7 +63,7 @@ describe(__filename + "#", () => {
     [`<a b="1" />`, `<a b="2" />`, [
       {
         "type": "SET_ATTRIBUTE_VALUE",
-        "target": "20003",
+        "target": [0, "shadow", 0],
         "name": "b",
         "newValue": "2",
         "oldName": null,
@@ -74,7 +74,7 @@ describe(__filename + "#", () => {
     [`<a b="1" />`, `<a b="2" />`, [
       {
         "type": "SET_ATTRIBUTE_VALUE",
-        "target": "20003",
+        "target": [0, "shadow", 0],
         "name": "b",
         "newValue": "2",
         "oldName": null,
