@@ -48,6 +48,7 @@ import {
   moveArtboardToBestPosition,
   getArtboardWorkspace,
   getStageTranslate,
+  getDocumentBody,
   getArtboardBounds,
   ShortcutServiceState,
   getWorkspaceItemBounds,
@@ -750,7 +751,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
         document,
         originalDocument: document,
         mount,
-        checksum: getDocumentChecksum(document)
+        checksum: getDocumentChecksum(getDocumentBody(document))
       });
     }
 
@@ -761,7 +762,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
         document,
         nativeNodeMap,
         originalDocument: document,
-        checksum: getDocumentChecksum(document)
+        checksum: getDocumentChecksum(getDocumentBody(document))
       });
     }
 

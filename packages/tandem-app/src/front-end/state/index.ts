@@ -532,7 +532,9 @@ export const getArtboardByInfo = (componentId: string, previewName: string, stat
   return null;
 }
 
-export const getArtboardDocumentBody = (artboard: Artboard) => (artboard.document.childNodes[0] as SlimElement).childNodes[0];
+export const getArtboardDocumentBody = (artboard: Artboard) => getDocumentBody(artboard.document);
+
+export const getDocumentBody = (document: SlimParentNode): SlimElement => (document.childNodes[0] as SlimElement).childNodes[0] as SlimElement;
 
 export const getArtboardDocumentBodyPath = (artboard: Artboard) => [0, 0];
 

@@ -33,11 +33,10 @@ describe(__filename + "#", () => {
           graph
         });
 
-
         if (currDocument) {
           const diff = diffNode(currDocument, document);
           currDocument = patchNode(currDocument, diff);
-          patchDOM(diff, {}, fakeBody as any);
+          patchDOM(diff, document as SlimParentNode, {}, fakeBody as any);
         } else {
           renderDOM(currDocument = document as SlimParentNode, fakeBody as any);
         }

@@ -72,18 +72,19 @@ function* handlePreviewDiffed() {
       continue;
     }
 
-    const previewPath = [...getArtboardDocumentBodyPath(artboard), 0];
+    const previewPath = [...getArtboardDocumentBodyPath(artboard)];
 
-    patchNode(artboard.document, diff)
+    const patchedDoc = patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, diff);
+
     yield put(
       artboardPatched(
         artboard.$id, 
         replaceNestedChild(
           artboard.document, 
           previewPath,
-          patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, diff)
+          patchedDoc
         ),
-        patchDOM(diff, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
+        patchDOM(diff, patchedDoc as SlimParentNode, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
       )
     );
   }

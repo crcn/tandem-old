@@ -1,7 +1,7 @@
 import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSMediaRule, SlimCSSRule, Bounds, VMObject } from "./state";
 import { weakMemo, getVMObjectFromPath } from "./utils";
 import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
-import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY } from "./diff-patch";
+import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, patchNode } from "./diff-patch";
 import { uncompressRootNode } from "./compression";
 
 export const renderDOM = (node: SlimBaseNode, mount: HTMLElement) => {
@@ -60,7 +60,10 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => 
 };
 
 const renderStyle = (sheet: SlimCSSStyleSheet, element: HTMLStyleElement) => {
-  let j = 0;
+  element.textContent = stringifyStyleSheet(sheet);
+}
+
+const stringifyStyleSheet = (sheet: SlimCSSStyleSheet) => {
   let buffer = ``;
   for (let i = 0, {length} = sheet.rules; i < length; i++) {
     const rule = sheet.rules[i];
@@ -71,9 +74,8 @@ const renderStyle = (sheet: SlimCSSStyleSheet, element: HTMLStyleElement) => {
 
     buffer += `${ruleText}\n`;
   }
-
-  element.textContent = buffer;
-}
+  return buffer;
+};
 
 // TODO - move to util file
 const stringifyRule = (rule: SlimCSSRule) => {
@@ -128,6 +130,7 @@ const getDOMNodeFromPath = (path: any[], root: HTMLElement) => {
   let current: any = root;
   for (let i = 0, {length} = path; i < length; i++) {
     const part = path[i];
+
     if (part === "shadow") {
       current = (current as HTMLElement).shadowRoot;
     } else {
@@ -138,13 +141,29 @@ const getDOMNodeFromPath = (path: any[], root: HTMLElement) => {
     }
   }
   return current;
-}
+};
+
+const getNativeNodePath = (current: any, root: HTMLElement) => {
+  let path: any[] = [];  
+  while(current !== root) {
+    if ((current as ShadowRoot).host) {
+      path.unshift("shadow");
+    } else {
+      path.unshift(Array.prototype.indexOf.call((current.parentNode as HTMLElement).childNodes, current));
+    }
+    current = current.host || current.parentNode;
+  }
+  return path;
+};
 
 // TODO
-export const patchDOM = (diffs: Mutation<any[]>[], map: DOMNodeMap, root: HTMLElement): DOMNodeMap => {
+export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map: DOMNodeMap, root: HTMLElement): DOMNodeMap => {
+  const resetStyleMap: HTMLStyleElement[] = [];
+
   for (let i = 0, {length} = diffs; i < length; i++) {
     const mutation = diffs[i];
-    const target = getDOMNodeFromPath(mutation.target, root);
+    let target = getDOMNodeFromPath(mutation.target, root);
+
     switch(mutation.type) {
       case SET_TEXT_NODE_VALUE: {
         (target as Text).nodeValue = (mutation as SetValueMutation<any>).newValue;
@@ -191,11 +210,24 @@ export const patchDOM = (diffs: Mutation<any[]>[], map: DOMNodeMap, root: HTMLEl
       case CSS_MOVE_RULE: 
       case CSS_SET_SELECTOR_TEXT: 
       case CSS_SET_STYLE_PROPERTY: {
-
-        // TODO - just reset stylesheet
-        console.error(`Unable to patch CSS for now`);
+        const stylePath =  mutation.target.slice(0, mutation.target.indexOf("sheet"));
+        
+        const nativeStyle = getDOMNodeFromPath(stylePath, root) as HTMLStyleElement;
+        resetStyleMap.push(nativeStyle);
         break;
       }
+    }
+  }
+
+  for (const nativeStyle of resetStyleMap) {
+    const slimStyle = getVMObjectFromPath(getNativeNodePath(nativeStyle, root), slimRoot) as SlimStyleElement;
+
+    const sheet = nativeStyle.sheet as CSSStyleSheet;
+    while(sheet.rules.length) {
+      sheet.deleteRule(0);
+    }
+    for (const rule of slimStyle.sheet.rules) {
+      sheet.insertRule(stringifyRule(rule));
     }
   }
 
