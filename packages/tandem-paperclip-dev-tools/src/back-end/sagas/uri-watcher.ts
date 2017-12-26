@@ -1,7 +1,7 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
-import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum, getVmObjectSourceUris, syncVMObjectSources } from "slim-dom";
+import { diffNode, patchNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum, getVmObjectSourceUris } from "slim-dom";
 import { ApplicationState, getLatestPreviewDocument } from "../state";
 import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged, previewDiffed } from "../actions";
 import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";

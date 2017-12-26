@@ -6,11 +6,11 @@ import { 
   Workspace, 
   SyntheticBrowser,
   SyntheticElement,
-  SYNTHETIC_ELEMENT,
   getSyntheticNodeById,
   getSyntheticElementLabel,
   getWorkspaceSelectionBounds
 } from "front-end/state";
+import { SlimVMObjectType } from "slim-dom";
 
 export type SelectionLabelInnerProps = {
   workspace: Workspace;
@@ -30,7 +30,7 @@ const SelectionLabelBase = ({ workspace, browser, zoom }: SelectionLabelInnerPro
 
   const targetSelectors = workspace.targetCSSSelectors;
 
-  if (type !== SYNTHETIC_ELEMENT) {
+  if (type !== SlimVMObjectType.ELEMENT) {
     return null;
   }
 

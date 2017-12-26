@@ -3,7 +3,7 @@
  */
 
 import { SlimBaseNode, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimParentNode, SlimStyleElement, SlimTextNode, SlimVMObjectType } from "./state";
-import { weakMemo } from "./utils";
+import { weakMemo } from "./weak-memo";
 
 export const getLightDomWrapper = weakMemo((node: SlimBaseNode): LightBaseNode => {
   switch(node.type) {

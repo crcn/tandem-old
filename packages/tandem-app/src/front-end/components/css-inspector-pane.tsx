@@ -7,19 +7,9 @@ import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerPr
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
-import { SyntheticBrowser, Workspace } from "front-end/state";
+import { Workspace, getNodeArtboard } from "front-end/state";
 
-import { 
-  AppliedCSSRuleResult,
-  cssPropNameToKebabCase,
-  toggleCSSDeclarationProperty,
-  getSyntheticAppliedCSSRules,
-  getSyntheticNodeById,
-  getSyntheticNodeWindow,
-  SyntheticElement,
-  SYNTHETIC_ELEMENT,
-  getSyntheticMatchingCSSRules, 
-} from "aerial-browser-sandbox";
+import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType } from "slim-dom";
 
 type StyleDelarationOuterProps = {
   name: string;
@@ -119,7 +109,7 @@ const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
 const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDelarationOuterProps>(
   pure,
   (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
-    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclaration(value)} sourceValue={value} />;
+    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclaration(value).root} sourceValue={value} />;
   }
 );
 
@@ -129,7 +119,6 @@ const CSSStyleDeclaration = hydrateTdStyleDeclaration(enhanceCSSStyleDeclaration
 
 export type CSSInspectorOuterProps = {
   workspace: Workspace;
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
 }
 
@@ -148,24 +137,38 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     // const properties = [];
     
     const childDeclarations: StyleDelarationOuterProps[] = [];
-    
-    for (let i = 0, n = declarations.length; i < n; i++) {
-      const name = declarations[i];
+
+    for (const name in rule.style) {
+      if (name == "id") continue;
       const value = declarations[name];
+      if (value == null) {
+        continue;
+      }
       const origValue = rule.style.disabledPropertyNames && rule.style.disabledPropertyNames[name];
       const disabled = Boolean(origValue);
       const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
       const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
-
-      // childDeclarations.push({
-      //   name,
-      //   ignored,
-      //   disabled,
-      //   overridden,
-      //   value,
-      // });
+      childDeclarations.push({
+        name,
+        ignored,
+        disabled,
+        overridden,
+        value
+      });
     }
-    return <Base label={beautifyLabel(rule.label || rule.selectorText)} source={null} declarations={childDeclarations} inherited={inherited} />;
+
+    
+    
+    // for (let i = 0, n = declarations.length; i < n; i++) {
+    //   // childDeclarations.push({
+    //   //   name,
+    //   //   ignored,
+    //   //   disabled,
+    //   //   overridden,
+    //   //   value,
+    //   // });
+    // }
+    return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} />;
   }
 );
 
@@ -183,9 +186,9 @@ const CSSPaneMultipleSelectedError = hydrateCssInspectorMultipleItemsSelected(id
 
 const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspectorOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdCssInspectorPaneInnerProps>) => ({ workspace, browser }: CSSInspectorOuterProps) => {
+  (Base: React.ComponentClass<TdCssInspectorPaneInnerProps>) => ({ workspace }: CSSInspectorOuterProps) => {
 
-    const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SYNTHETIC_ELEMENT);
+    const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT);
 
     if (!selectedElementRefs.length) {
       return null;
@@ -197,15 +200,12 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
 
     const [type, targetElementId] = selectedElementRefs[0];
     
-
-    const element = getSyntheticNodeById(browser, targetElementId) as SyntheticElement;
-    const window = getSyntheticNodeWindow(browser, targetElementId);
-    if (!element || !window) {
+    const artboard = getNodeArtboard(targetElementId, workspace);
+    if (!artboard) {
       return null;
     }
-  
 
-    const rules = getSyntheticAppliedCSSRules(window, targetElementId);
+    const rules = getSyntheticAppliedCSSRules(artboard, targetElementId);
 
     return <Base styleRules={rules} />;
   }

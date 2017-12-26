@@ -9,7 +9,6 @@ import {
 } from "./html-content-editor";
 
 import {
-  getSyntheticAppliedCSSRules,
   convertAbsoluteBoundsToRelative,
 } from "../utils";
 
@@ -484,24 +483,7 @@ const getTargetStyleOwners = (element: SEnvElementInterface, propertyNames: stri
   [identifier: string]: SEnvHTMLElementInterface | SEnvCSSStyleRuleInterface
 } => {
 
-  // find all applied rules
-  const appliedRules = getSyntheticAppliedCSSRules(element.ownerDocument.defaultView.struct, element.$id).map(({ rule }) => rule.instance);
-
-  // cascade down style rule list until targets are found (defined in css inspector)
-  let targetRules  = appliedRules.filter((rule) => Boolean(targetSelectors.find(({uri, value}) => {
-    return rule.source.uri === uri && rule["selectorText"] == value;
-  })));
-
-  if (!targetRules.length) {
-    targetRules = [appliedRules[0]];
-  }
-
-  const ret = {};
-  for (const propName of propertyNames) {
-    ret[propName] = targetRules.find((rule) => Boolean(rule.style[propName])) || targetRules[0]
-  }
-
-  return ret;
+  return {};
 };
 
 const createStyleMutation = (target: SEnvElementInterface | SEnvCSSStyleRuleInterface) => {

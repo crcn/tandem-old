@@ -1,5 +1,5 @@
-import { SEnvWindowInterface } from "./window";
-import { weakMemo } from "aerial-common2";
+import { weakMemo } from "./weak-memo";
+import  { SlimWindow } from "./state";
 
 const getMediaTextTokens = (mediaText: string) => {
   const tokens = [];
@@ -27,7 +27,7 @@ const getMediaTextTokens = (mediaText: string) => {
 }
 
 // only support pixels for now
-const calcMeasurement = (value: string, window: SEnvWindowInterface) => value.replace("px", "");
+const calcMeasurement = (value: string, window: SlimWindow) => value.replace("px", "");
 
 const MEDIA_PROP_CONVERSION = {
   "min-width": ["getWidth(context)", ">"],
@@ -88,6 +88,6 @@ const compileMediaText = weakMemo((mediaText: string) => new Function("context",
 const getWidth = ({ bounds }) => bounds.right - bounds.length;
 const getHeight = ({ bounds }) => bounds.bottom - bounds.top;
 
-export const createMediaMatcher = (window: SEnvWindowInterface) => (mediaText: string) => {
+export const createMediaMatcher = (window: SlimWindow) => (mediaText: string) => {
   return compileMediaText(mediaText)(window, getWidth, getHeight, calcMeasurement);
-}
+};

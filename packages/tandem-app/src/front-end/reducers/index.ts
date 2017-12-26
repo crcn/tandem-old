@@ -31,7 +31,7 @@ import {
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
-import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, patchNode } from "slim-dom";
+import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, patchNode, SlimVMObjectType } from "slim-dom";
 
 import { 
   Artboard,
@@ -190,7 +190,6 @@ import {
   SYNTHETIC_WINDOW,
   getSyntheticWindow, 
   getSyntheticBrowser,
-  SYNTHETIC_ELEMENT,
   addSyntheticWindow,
   getMatchingElements,
   DEFAULT_WINDOW_WIDTH,
@@ -581,7 +580,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     case BREADCRUMB_ITEM_MOUSE_ENTER: {
       const { artboardId, nodeId }  = event as BreadcrumbItemMouseEnterLeave;
       return updateWorkspace(state, state.selectedWorkspaceId, {
-        hoveringRefs: [[SYNTHETIC_ELEMENT, nodeId]]
+        hoveringRefs: [[SlimVMObjectType.ELEMENT, nodeId]]
       });
     }
 

@@ -4,16 +4,15 @@ import * as cx from "classnames";
 import {compose, pure, withHandlers } from "recompose";
 import { weakMemo, Dispatcher } from "aerial-common2";
 import { 
-  SyntheticElement, 
   SyntheticBrowser, 
-  SyntheticWindow, 
-  SYNTHETIC_ELEMENT,
   Workspace, 
   getSyntheticNodeAncestors,
   getSyntheticNodeById,
   getSyntheticNodeWindow,
+  getNodeArtboard,
   getSyntheticElementLabel,
 } from "front-end/state";
+import { getNodeAncestors, SlimVMObjectType, getNestedObjectById, SlimElement, getElementLabel } from "slim-dom";
 
 import {
   breadcrumbItemClicked,
@@ -32,8 +31,8 @@ export type BreadcrumbsInnerProps = {
 
 type BreadcrumbOuterProps = {
   selected: boolean;
-  element: SyntheticElement;
-  windowId: string;
+  artboardId: string;
+  element: SlimElement;
   dispatch: Dispatcher<any>;  
 };
 
@@ -44,32 +43,34 @@ type BreadcrumbInnerProps = {
 } & BreadcrumbOuterProps;
 
 
-const getBreadcrumbNodes = weakMemo((workspace: Workspace, browser: SyntheticBrowser): SyntheticElement[] => {
+const getBreadcrumbNodes = weakMemo((workspace: Workspace): SlimElement[] => {
   if (workspace.selectionRefs.length === 0) {
     return [];
   }
 
   const [type, $id] = workspace.selectionRefs[workspace.selectionRefs.length - 1];
 
-  if (type !== SYNTHETIC_ELEMENT) {
+  if (type !== SlimVMObjectType.ELEMENT) {
     return [];
   }
 
-  const node = getSyntheticNodeById(browser, $id);
+  const artboard = getNodeArtboard($id, workspace);
+
+  const node = getNestedObjectById($id, artboard.document);
 
   // not ready yet
   if (!node) {
     return [];
   }
 
-  const ancestors = getSyntheticNodeAncestors(node, getSyntheticNodeWindow(browser, node.$id)).filter((node) => node.$type === SYNTHETIC_ELEMENT).reverse();
+  const ancestors = getNodeAncestors(node, artboard.document).filter((node) => node.type === SlimVMObjectType.ELEMENT).reverse();
 
-  return [...ancestors, node] as SyntheticElement[];
+  return [...ancestors, node] as SlimElement[];
 });
 
 const BreadcrumbBase = ({ element, onClick, selected, onMouseEnter, onMouseLeave }: BreadcrumbInnerProps) => {
   return <div className={cx("breadcrumb fill-text", { selected })} onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-    { getSyntheticElementLabel(element) } 
+    { getElementLabel(element) } 
     { selected ? null : <span className="arrow">
       <i className="ion-ios-arrow-right" />
     </span> }
@@ -79,28 +80,28 @@ const BreadcrumbBase = ({ element, onClick, selected, onMouseEnter, onMouseLeave
 const enhanceBreadcrumb = compose<BreadcrumbInnerProps, BreadcrumbOuterProps>(
   pure,
   withHandlers({
-    onClick: ({ dispatch, element, windowId }) => () => {
-      dispatch(breadcrumbItemClicked(element.$id, windowId));
+    onClick: ({ dispatch, element, artboardId }: BreadcrumbOuterProps) => () => {
+      dispatch(breadcrumbItemClicked(element.id, artboardId));
     },
-    onMouseEnter: ({ dispatch, element, windowId }) => () => {
-      dispatch(breadcrumbItemMouseEnter(element.$id, windowId));
+    onMouseEnter: ({ dispatch, element, artboardId }: BreadcrumbOuterProps) => () => {
+      dispatch(breadcrumbItemMouseEnter(element.id, artboardId));
     },
-    onMouseLeave: ({ dispatch, element, windowId }) => () => {
-      dispatch(breadcrumbItemMouseEnter(element.$id, windowId));
+    onMouseLeave: ({ dispatch, element, artboardId }: BreadcrumbOuterProps) => () => {
+      dispatch(breadcrumbItemMouseEnter(element.id, artboardId));
     }
   })
 );
 
 const Breadcrumb = enhanceBreadcrumb(BreadcrumbBase);
 
-const BreadcrumbsBase = ({ workspace, browser, dispatch }: BreadcrumbsInnerProps) => {
-
-  const breadcrumbNodes = getBreadcrumbNodes(workspace, browser);
+const BreadcrumbsBase = ({ workspace, dispatch }: BreadcrumbsInnerProps) => {
+  
+  const breadcrumbNodes = getBreadcrumbNodes(workspace);
 
   return <div className="m-html-breadcrumbs">
     {
       breadcrumbNodes.map((node, i) => {
-        return <Breadcrumb key={node.$id} dispatch={dispatch} element={node as SyntheticElement} windowId={getSyntheticNodeWindow(browser, node.$id).$id} selected={i === breadcrumbNodes.length - 1} />
+        return <Breadcrumb key={node.id} dispatch={dispatch} element={node as SlimElement} artboardId={getNodeArtboard(node.id, workspace).$id} selected={i === breadcrumbNodes.length - 1} />
       })
     }
   </div>;

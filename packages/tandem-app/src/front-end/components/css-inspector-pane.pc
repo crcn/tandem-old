@@ -114,7 +114,7 @@
         CSS Inspector
       </span>
       <span slot="content">
-        <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] key=[[bind styleRule.rule.$id]] />
+        <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] key=[[bind styleRule.rule.assocId]] />
       </span>
     </td-pane>
   </template>
@@ -127,7 +127,7 @@
           tagName: "div"
         },
         rule: {
-          $id: 1
+          assocId: 1
         },
         declarations: [
           { 
@@ -193,7 +193,7 @@
         label: ".header",
         headerHovering: true,
         rule: {
-          $id: 1
+          assocId: 1
         },
         declarations: [
           { 
@@ -304,7 +304,7 @@
         label: "body, html",
         inherited: true,
         rule: {
-          $id: 1
+          assocId: 1
         },
         declarations: [
           { 

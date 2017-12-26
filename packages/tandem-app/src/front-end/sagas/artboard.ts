@@ -1,11 +1,11 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode  } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
 import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED } from "../actions";
 import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
-import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardByInfo } from "../state";
+import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath } from "../state";
 import { debounce } from "lodash";
 
 const COMPUTE_DOM_INFO_DELAY = 200;
@@ -72,10 +72,17 @@ function* handlePreviewDiffed() {
       continue;
     }
 
+    const previewPath = [...getArtboardDocumentBodyPath(artboard), 0];
+
+    patchNode(artboard.document, diff)
     yield put(
       artboardPatched(
         artboard.$id, 
-        patchNode(artboard.document, diff), 
+        replaceNestedChild(
+          artboard.document, 
+          previewPath,
+          patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, diff)
+        ),
         patchDOM(diff, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
       )
     );
@@ -94,6 +101,7 @@ function* handleArtboardRendered() {
     });
   }
 }
+
 const RESIZE_TIMEOUT = 10;
 function* handleArtboardSizeChanges() {
 
@@ -140,7 +148,11 @@ function* reloadArtboard(artboardId: string) {
       yield put(artboardRendered(artboardId, yield take(renderChan)));
     });
 
-    yield put(artboardLoaded(artboard.$id, dependencyUris, doc as SlimParentNode, mount));
+    const html: SlimElement = createSlimElement("html", "html", [], [
+      createSlimElement("body", "body", [], [doc])
+    ]);
+
+    yield put(artboardLoaded(artboard.$id, dependencyUris, html, mount));
   });
 }
 

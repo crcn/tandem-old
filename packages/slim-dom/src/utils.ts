@@ -1,44 +1,11 @@
-import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute } from "./state";
-import { uniq, flatten } from "lodash";
+import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute, SlimWindow } from "./state";
+import { querySelector, elementMatches } from "./query-selector";
+import { createMediaMatcher } from "./media-match";
+import { uniq, flatten, kebabCase } from "lodash";
+import { INHERITED_CSS_STYLE_PROPERTIES } from "./constants";
 import crc32 = require("crc32");
-
-let previousPurgeTime = 0;
-const DUMP_DEFAULT_ANCHOR_INTERVAL = 1000 * 60 * 5;
-let DEFAULT_ANCHOR: any = {};
-
-export function weakMemo<TFunc extends (...args: any[]) => any>(func: TFunc, mapMemo: (value?: any) => any = (value => value)): TFunc {
-  let count = 1;
-  const memoKey = Symbol();
-  const hashKey = Symbol();
-  return function() {
-    if (previousPurgeTime && Date.now() - DUMP_DEFAULT_ANCHOR_INTERVAL > previousPurgeTime) {
-      previousPurgeTime = Date.now();
-      DEFAULT_ANCHOR = {};
-    }
-    let hash = "";
-    let anchor: any = DEFAULT_ANCHOR;
-
-    for (let i = 0, n = arguments.length; i < n; i++) {
-      const arg = arguments[i];
-
-      let hashPart;
-
-      if (arg && typeof arg === "object") {
-        anchor = arg;
-        hashPart = arg[hashKey] && arg[hashKey].self === arg ? arg[hashKey].value : (arg[hashKey] = { self: arg, value: ":" + (count++) }).value;
-      } else {
-        hashPart = ":" + arg;
-      }
-
-      hash += hashPart;
-    }
-
-    if (!anchor[memoKey] || anchor[memoKey].self !== anchor) anchor[memoKey] = { self: anchor };
-    return mapMemo(anchor[memoKey].hasOwnProperty(hash) ? anchor[memoKey][hash] : anchor[memoKey][hash] = func.apply(this, arguments));
-
-  } as any as TFunc;
-};
-
+import { weakMemo } from "./weak-memo";
+export { weakMemo };
 export const pushChildNode = <TParent extends SlimParentNode>(parent: TParent, child: SlimBaseNode): TParent => ({
   ...(parent as any),
   childNodes: [
@@ -177,14 +144,23 @@ export type FlattenedObjects = {
   [identifier: string]: FlattenedObject;
 };
 
+const MAX_ANCESTOR_COUNT = 1000 * 10;
+
 export const getNodeAncestors = weakMemo((value: SlimBaseNode, root: SlimParentNode): SlimParentNode[] => {
   const objects = flattenObjects(root);
   let current = objects[objects[value.id].parentId];
   let ancestors: SlimParentNode[] = [];
 
+  let i = 0;
   while(current) {
     ancestors.push(current.value as any as SlimParentNode);
+    if (!current.parentId) {
+      break;
+    }
     current = objects[current.parentId];
+    if (i++ > MAX_ANCESTOR_COUNT) {
+      throw new Error(`Infinite loop detected`);
+    }
   }
 
   return ancestors;
@@ -270,6 +246,7 @@ export const flattenObjects = weakMemo((value: VMObject, parentId?: string): Fla
 });
 
 const layoutObjects = weakMemo((value: any, parentId: string): FlattenedObjects[] => {
+
   switch(value.type) {
     case SlimVMObjectType.TEXT: {
       const node = value as SlimTextNode;
@@ -456,24 +433,288 @@ export const setElementAttribute = (target: SlimElement, name: string, value: st
   };
 };
 
-export const syncVMObjectSources = (to: VMObject, from: VMObject) => {
-  to.source = from.source;
-  if ((to as SlimParentNode).childNodes) {
-    const children = (to as SlimParentNode).childNodes;
-    for (let i = 0, {length} = children; i < length; i++) {
-      syncVMObjectSources(children[i], (from as SlimParentNode).childNodes[i]);
+export const getSyntheticWindowChild = weakMemo((nodeId: string, window: SlimWindow) => {
+  return getNestedObjectById(nodeId, window.document);
+});
+
+export const getHostDocument = weakMemo((node: SlimBaseNode, root: SlimParentNode): SlimParentNode => {
+  let p = node;
+
+  // return shadow root since :host selector may be applied
+  if ((p as SlimElement).shadow) {
+    return (p as SlimElement).shadow;
+  }
+
+  const allObjects = flattenObjects(root);
+  
+  while(p && p.type !== SlimVMObjectType.DOCUMENT && p.type !== SlimVMObjectType.DOCUMENT_FRAGMENT) {
+    const info = allObjects[p.id];
+    p = info && info.parentId && allObjects[info.parentId].value;
+  }
+
+  return p as SlimParentNode || root;
+});
+
+const getDocumentStyleSheets = weakMemo((document: SlimParentNode) => {
+  const allObjects = flattenObjects(document);
+  const styleSheets: SlimCSSStyleSheet[] = [];
+  for (const key in allObjects) {
+    const { value } = allObjects[key];
+    if (value.type === SlimVMObjectType.STYLE_SHEET) {
+      styleSheets.push(value as SlimCSSStyleSheet);
     }
   }
-  if ((to as SlimElement).shadow) {
-    syncVMObjectSources((to as SlimElement).shadow, (from as SlimElement).shadow);
-  }
-  if ((to as SlimStyleElement).sheet) {
-    syncVMObjectSources((to as SlimStyleElement).sheet, (from as SlimStyleElement).sheet);
-  }
-  if ((to as SlimCSSGroupingRule).rules) {
-    const rules = (to as SlimCSSGroupingRule).rules;
-    for (let i = 0, {length} = rules; i < length; i++) {
-      syncVMObjectSources(rules[i], (from as SlimCSSGroupingRule).rules[i]);
+  return styleSheets;
+});
+
+const getDocumentCSSRules = weakMemo((document: SlimParentNode) => {
+  const allRules: (SlimCSSStyleRule|SlimCSSMediaRule)[] = [];
+  const styleSheets = getDocumentStyleSheets(document);
+  for (const styleSheet of styleSheets) {
+    for (const rule of styleSheet.rules) {
+      if (rule.type === SlimVMObjectType.STYLE_RULE || rule.type == SlimVMObjectType.MEDIA_RULE) {
+        allRules.push(rule as SlimCSSStyleRule);
+      }
     }
   }
+  return allRules;
+});
+
+export type CSSRuleMatchResult = {
+  assocId: string;
+  style: SlimCSSStyleDeclaration;
+  rule?: SlimCSSStyleRule;
+  targetElement: SlimElement;
+  mediaRule?: SlimCSSMediaRule;
+};
+
+// TODO - media query information here
+export type AppliedCSSRuleResult = {
+
+  inherited?: boolean;
+
+  rule: CSSRuleMatchResult;
+
+  media?: string;
+
+  // property rules that are 
+  ignoredPropertyNames?: {
+    [identifier: string]: boolean
+  }
+
+  // properties overridden by a style rule with a higher priority
+  overriddenPropertyNames?: {
+    [identifier: string]: boolean
+  }
+};
+
+export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elementId: string, breakPastHost?: boolean) => {
+  const element = getSyntheticWindowChild(elementId, window) as any as SlimElement;
+  const hostDocument = getHostDocument(element, window.document);
+  const allRules = getDocumentCSSRules(hostDocument);
+  
+  const matchingRules: CSSRuleMatchResult[] = [];
+
+  const elementStyle = getAttribute("style", element) as any as SlimCSSStyleDeclaration;
+
+  for (let i = 0, n = allRules.length; i < n; i++) {
+    const rule = allRules[i];
+
+    // no parent rule -- check
+    if (rule.type === SlimVMObjectType.STYLE_RULE) {
+      if (elementMatches((rule as SlimCSSStyleRule).selectorText, element)) {
+        matchingRules.push({
+          assocId: rule.id,
+          style: (rule as SlimCSSStyleRule).style,
+          rule: (rule as SlimCSSStyleRule),
+          targetElement: element
+        });
+      }
+    // else - check if media rule
+    } else if ((rule.type === SlimVMObjectType.MEDIA_RULE && createMediaMatcher(window)((rule as any as SlimCSSMediaRule).conditionText))) {
+      const grouping = rule as SlimCSSGroupingRule;
+      for (const childRule of grouping.rules) {
+        if (elementMatches((childRule as SlimCSSStyleRule).selectorText, element)) {
+          matchingRules.push({
+            assocId: childRule.id,
+            style: (childRule as SlimCSSStyleRule).style,
+            rule: (childRule as SlimCSSStyleRule),
+            mediaRule: rule as SlimCSSMediaRule,
+            targetElement: element
+          });
+        }
+      }
+    }
+  }
+
+  if (elementStyle) {
+    matchingRules.push({
+      assocId: element.id,
+      targetElement: element,
+      style: elementStyle
+    });
+  }
+
+  return matchingRules;
+});
+
+
+const getSyntheticInheritableCSSRules = weakMemo((window: SlimWindow, elementId: string) => {
+  const matchingCSSRules = getSyntheticMatchingCSSRules(window, elementId, true);
+  
+  const inheritableCSSRules: CSSRuleMatchResult[] = [];
+
+  for (let i = 0, n = matchingCSSRules.length; i < n; i++) {
+    const rule = matchingCSSRules[i];
+    if (containsInheritableStyleProperty(rule.style)) {
+      inheritableCSSRules.push(rule);
+    }
+  }
+
+
+  return inheritableCSSRules;
+});
+
+
+export const containsInheritableStyleProperty = (style: SlimCSSStyleDeclaration) => {
+  for (const propertyName in style) {
+    if (INHERITED_CSS_STYLE_PROPERTIES[propertyName] && style[propertyName]) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, elementId: string) => {
+  const element = getSyntheticWindowChild(elementId, window) as any as SlimElement;
+  const document = getHostDocument(element, window.document);
+  const allRules = getDocumentCSSRules(document);
+
+  // first grab the rules that are applied directly to the element
+  const matchingRules = getSyntheticMatchingCSSRules(window, elementId);
+
+  const appliedPropertNames = {};
+  const appliedStyleRules = {};
+
+  const appliedRules: AppliedCSSRuleResult[] = [];
+
+  for (let i = matchingRules.length; i--;) {
+    const matchingRule = matchingRules[i];
+
+    appliedStyleRules[matchingRule.assocId] = true;
+
+    const overriddenPropertyNames = {};
+
+    for (const propertyName in matchingRule.style) {
+      if (appliedPropertNames[propertyName]) {
+        overriddenPropertyNames[propertyName] = true;
+      } else if(!matchingRule.style.disabledPropertyNames || !matchingRule.style.disabledPropertyNames[propertyName]) {
+        appliedPropertNames[propertyName] = true;
+      }
+    }
+
+    appliedRules.push({
+      inherited: false,
+      rule: matchingRule,
+      overriddenPropertyNames,
+    });
+  }
+
+  // next, fetch the style rules that have inheritable properties such as font-size, color, etc. 
+  const ancestors = getNodeAncestors(element, window.document);
+
+  // reduce by 1 to omit #document
+  for (let i = 0, n = ancestors.length - 1; i < n; i++) {
+    const ancestor = ancestors[i];
+    if (ancestor.type !== SlimVMObjectType.ELEMENT) {
+      continue;
+    }
+    const inheritedRules = getSyntheticInheritableCSSRules(window, ancestor.id);
+
+    for (let j = inheritedRules.length; j--;) {
+      const ancestorRule = inheritedRules[j];
+      
+      if (appliedStyleRules[ancestorRule.assocId]) {
+        continue;
+      }
+      
+      appliedStyleRules[ancestorRule.assocId] = true;
+
+      const overriddenPropertyNames = {};
+      const ignoredPropertyNames   = {};
+      for (const propertyName in ancestorRule.style) {
+        if (!INHERITED_CSS_STYLE_PROPERTIES[propertyName]) {
+          ignoredPropertyNames[propertyName] = true;
+        } else if (appliedPropertNames[propertyName]) {
+          overriddenPropertyNames[propertyName] = true;
+        } else if(!ancestorRule.style.disabledPropertyNames || !ancestorRule.style.disabledPropertyNames[propertyName]) {
+          appliedPropertNames[propertyName] = true;
+        }
+      }
+
+      appliedRules.push({
+        inherited: true,
+        rule: ancestorRule,
+        ignoredPropertyNames,
+        overriddenPropertyNames,
+      });
+    }
+  }
+
+  return appliedRules;
+});
+
+export type TargetSelector = {
+  uri: string;
+  value: string;
+}
+
+const getTargetStyleOwners = (element: SlimElement, propertyNames: string[], targetSelectors: TargetSelector[], window: SlimWindow): {
+  [identifier: string]: SlimElement | SlimCSSStyleRule
+} => {
+
+  // find all applied rules
+  const styleOwners = getSyntheticAppliedCSSRules(window, element.id).map(({ rule }) => rule.rule || rule.targetElement);
+
+  // cascade down style rule list until targets are found (defined in css inspector)
+  let matchingStyleOwners  = styleOwners.filter((rule) => Boolean(targetSelectors.find(({uri, value}) => {
+    return rule.source.uri === uri && rule["selectorText"] == value;
+  })));
+
+  if (!matchingStyleOwners.length) {
+    matchingStyleOwners = [styleOwners[0]];
+  }
+
+  const ret = {};
+  for (const propName of propertyNames) {
+    ret[propName] = matchingStyleOwners.find((owner) => Boolean(owner.type === SlimVMObjectType.ELEMENT ? (getAttribute("style", owner as SlimElement) || {})[propName] && owner : (owner as SlimCSSStyleRule).style[propName] && owner) || Boolean(matchingStyleOwners[0]))
+  }
+
+  return ret;
+};
+
+export const cssPropNameToKebabCase = (propName: string) => {
+  propName = propName.substr(0, 2) === "--" ? propName : kebabCase(propName);
+
+  // vendor prefix
+  if (/^(webkit|moz|ms|o)-/.test(propName)) {
+    propName = "-" + propName;
+  }
+
+  return propName;
+}
+
+
+export const getElementLabel = (element: SlimElement) => {
+  let label = String(element.tagName).toLowerCase();
+  const className = getAttributeValue("class", element);
+  const id = getAttributeValue("id", element);
+
+  if (id) {
+    label += "#" + id;
+  } else if (className) {
+    label += "." + className;
+  }
+
+  return label;
 }

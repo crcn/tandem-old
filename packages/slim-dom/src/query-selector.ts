@@ -1,6 +1,7 @@
 import { SlimParentNode, SlimElement, SlimVMObjectType } from "./state";
-import { weakMemo, FlattenedObjects } from "./utils";
-import { flattenObjects, SlimBaseNode } from "./index";
+import { FlattenedObjects, flattenObjects } from "./utils";
+import { weakMemo } from "./weak-memo";
+import { SlimBaseNode } from "./state";
 import nwmatcher = require("nwmatcher");
 import { getLightDomWrapper, traverseLightDOM, LightBaseNode, LightDocumentFragment, LightElement, LightParentNode, LightTextNode, getLightDocumentWrapper, LightDocument } from "./dom-wrap";
 
@@ -26,13 +27,16 @@ const queryTester = nwmatcher({
 
 queryTester.configure({ CACHING: true, VERBOSITY: false });
 
-export const querySelectorAll = weakMemo((selector: string, node: SlimBaseNode) => {
+export const elementMatches = weakMemo((selector: string, node: SlimBaseNode) => {
   const wrappedNode = getLightDomWrapper(node);
   wrappedNode.ownerDocument = ownerDocument;
-  
+  return wrappedNode.nodeType === 1 && queryTester.match(wrappedNode, selector);
+});
+
+export const querySelectorAll = weakMemo((selector: string, node: SlimBaseNode) => {
   const matches = [];
 
-  if (wrappedNode.nodeType === 1 && queryTester.match(wrappedNode, selector)) {
+  if (elementMatches(selector, node)) {
     matches.push(node);
   };
 

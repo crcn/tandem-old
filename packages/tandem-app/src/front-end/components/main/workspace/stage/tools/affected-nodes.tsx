@@ -8,7 +8,6 @@ import {
   SyntheticElement,
   SyntheticBrowser, 
   Artboard,
-  SYNTHETIC_ELEMENT,
   getSyntheticNodeWindow,
   getSyntheticNodeById,
   getNodeArtboard,
@@ -16,7 +15,7 @@ import {
   getSelectorAffectedElements, 
   filterMatchingTargetSelectors, 
 } from "front-end/state";
-import { getNestedObjectById, SlimElement } from "slim-dom";
+import { getNestedObjectById, SlimElement, SlimVMObjectType } from "slim-dom";
 
 type AffectedNodesToolOuterProps = {
   workspace: Workspace;
@@ -50,7 +49,7 @@ const AffectedElement = compose<AffectedElementOuterProps, AffectedElementOuterP
 )(AffectedElementBase);
 
 const AffectedNodesToolBase = ({ workspace, zoom }: AffectedNodesToolOuterProps) => {
-  const targetElementRef = workspace.selectionRefs.reverse().find(([$type]) => $type === SYNTHETIC_ELEMENT);
+  const targetElementRef = workspace.selectionRefs.reverse().find(([$type]) => $type === SlimVMObjectType.ELEMENT);
 
   if (!targetElementRef) {
     return null;

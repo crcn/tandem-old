@@ -46,6 +46,16 @@ export type VMObject = {
   source?: VMObjectSource;
 };
 
+export type SlimWindow = {
+  document?: SlimParentNode;
+  bounds: {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  }
+}
+
 export type SlimBaseNode = {
 } & VMObject;
 
@@ -105,6 +115,7 @@ export type SlimCSSMediaRule = {
 
 export type SlimCSSStyleDeclaration = {
   id: string;
+  disabledPropertyNames: string[] | null;
   alignContent: string | null;
   alignItems: string | null;
   alignmentBaseline: string | null;
@@ -451,3 +462,14 @@ export type SlimCSSStyleDeclaration = {
   userSelect: string | null;
   [index: number]: string;
 } & VMObject;
+
+
+export const createSlimElement = (id: string, tagName: string, attributes: SlimElementAttribute[] = [], childNodes: SlimBaseNode[] = []): SlimElement => ({  
+  type: SlimVMObjectType.ELEMENT,
+  id,
+  shadow: null,
+  tagName,
+  source: null,
+  attributes,
+  childNodes,
+});

@@ -33,19 +33,21 @@ import {
   SyntheticWindow, 
   SyntheticBrowser, 
   SyntheticElement,
-  SYNTHETIC_ELEMENT,
   getSyntheticNodeById,
   getSyntheticNodeWindow,
   getSyntheticElementLabel,
 } from "front-end/state";
 
-import { 
-  AppliedCSSRuleResult,
-  cssPropNameToKebabCase,
-  toggleCSSDeclarationProperty,
-  getSyntheticAppliedCSSRules,
-  getSyntheticMatchingCSSRules, 
-} from "aerial-browser-sandbox";
+// import { 
+//   AppliedCSSRuleResult,
+//   cssPropNameToKebabCase,
+//   toggleCSSDeclarationProperty,
+//   getSyntheticAppliedCSSRules,
+//   getSyntheticMatchingCSSRules, 
+// } from "aerial-browser-sandbox";
+import { AppliedCSSRuleResult, cssPropNameToKebabCase } from "slim-dom";
+
+const toggleCSSDeclarationProperty = (...rest): any => {};
 
 const MIN_INPUT_WIDTH = 50;
 const CHAR_WIDTH = 8;
@@ -249,8 +251,9 @@ const AppliedCSSRuleInfoBase = ({
 
   const declaration = appliedRule.rule.style;
   
-  for (let i = 0, n = declaration.length; i < n; i++) {
-    const name = declaration[i];
+  // for (let i = 0, n = declaration.length; i < n; i++) {
+  for (const name in declaration) {
+    // const name = declaration[i];
     const value = declaration[name];
     const origValue = appliedRule.rule.style.disabledPropertyNames && appliedRule.rule.style.disabledPropertyNames[name];
     const disabled = Boolean(origValue);
@@ -258,7 +261,7 @@ const AppliedCSSRuleInfoBase = ({
     const overridden = Boolean(appliedRule.overriddenPropertyNames && appliedRule.overriddenPropertyNames[name]);
 
     properties.push(
-      <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.$id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
+      <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
     );
   }
 
@@ -271,10 +274,10 @@ const AppliedCSSRuleInfoBase = ({
   return <div className={cx("style-rule-info", { "is-target": isTarget, "is-default": isDefault })}>
       <div className="title" onMouseEnter={onTitleMouseEnter} onMouseLeave={onTitleMouseLeave}>
         <span className="selector">
-          { beautifyLabel(appliedRule.rule.label || appliedRule.rule.selectorText) }
+          {/* { beautifyLabel(appliedRule.rule.targetElement ? "style" : appliedRule.rule.rule.selectorText) } */}
         </span>
         <span className="source" onClick={onSourceClicked}>
-          { appliedRule.rule.source && `${path.basename(appliedRule.rule.source.uri)}:${appliedRule.rule.source.start.line}` }
+          {/* { appliedRule.rule.source && `${path.basename(appliedRule.rule.source.uri)}:${appliedRule.rule.source.start.line}` } */}
         </span>
         { appliedRule.inherited ? <span className="inherited">Inherited</span> : null }
         { appliedRule.media ? <span className="media">@media { appliedRule.media }</span> : null }
@@ -295,12 +298,12 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
       setShowNewDeclarationInput(true);
     },
     onToggleAsTarget: ({ dispatch, appliedRule, window }: AppliedCSSRuleResultInnerProps) => () => {
-      dispatch(toggleCSSTargetSelectorClicked(appliedRule.rule.$id, window.$id));
+      // dispatch(toggleCSSTargetSelectorClicked(appliedRule.rule.$id, window.$id));
     },
     onDeclarationCreated: ({ setShowNewDeclarationInput, dispatch, window, appliedRule }: AppliedCSSRuleResultInnerProps) => (name: string, value: string) => {
       setShowNewDeclarationInput(false);
       if (value) {
-        dispatch(cssDeclarationCreated(name, value, appliedRule.rule.style.$id, window.$id));
+        // dispatch(cssDeclarationCreated(name, value, appliedRule.rule.style.$id, window.$id));
       }
     },
     onValueBlur: ({ appliedRule, showNewDeclarationInput, setShowNewDeclarationInput }) => (name: string, value: string) => {
@@ -327,7 +330,7 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
 
 const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterProps) => {
 
-  const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SYNTHETIC_ELEMENT);
+  const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === null);
 
   if (!selectedElementRefs.length) {
     return null;
@@ -342,7 +345,8 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
       if (!element || !window) {
         return null;
       }
-      const rules = getSyntheticAppliedCSSRules(window, targetElementId);
+      const rules = [];
+      // const rules = getSyntheticAppliedCSSRules(window, targetElementId);
       const title = <span className="pane-title"><span className="selected-element">{getSyntheticElementLabel(element)}</span> CSS</span>;
       return <Pane key={element.$id} title={title} className="m-css-inspector">
         {

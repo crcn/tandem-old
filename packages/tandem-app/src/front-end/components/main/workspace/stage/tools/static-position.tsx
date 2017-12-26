@@ -7,13 +7,10 @@ import { 
   SyntheticElement, 
   getComputedStyle,
   SyntheticBrowser, 
-  SYNTHETIC_ELEMENT, 
   getSyntheticNodeById,
   getSyntheticNodeWindow,
   getSyntheticNodeAncestors,
 } from "front-end/state";
-
-import { convertElementMeasurementToNumber, Axis } from "aerial-browser-sandbox";
 
 export type StaticPositionStageToolOuterProps = {
   zoom: number;

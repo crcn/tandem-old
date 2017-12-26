@@ -36,7 +36,7 @@ import {
   createImmutableStructFactory,
 } from "aerial-common2";
 
-import { SlimElement, SlimBaseNode, SlimParentNode, SlimCSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById } from "slim-dom";
+import { SlimElement, SlimBaseNode, SlimParentNode, SlimCSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById, SlimWindow, SlimVMObjectType } from "slim-dom";
 
 import {
  AvailableComponent
@@ -73,7 +73,6 @@ import {
 import {
   SyntheticBrowser,
   SYNTHETIC_WINDOW,
-  SYNTHETIC_ELEMENT,
   SyntheticElement,
   SyntheticCSSStyleRule,
   getSyntheticNodeById,
@@ -162,18 +161,16 @@ export type LibraryComponent = {
 } & LibraryItem;
 
 export type Artboard = {
-  bounds: Bounds;
   scrollPosition: Point;
   dependencyUris?: string[];
   computedDOMInfo?: ComputedDOMInfo;
   componentId: string;
   previewName: string;
-  document?: SlimParentNode;
   originalDocument?: SlimParentNode;
   checksum?: string;
   mount?: HTMLIFrameElement;
   nativeNodeMap?: DOMNodeMap;
-} & Struct;
+} & SlimWindow & Struct;
 
 export type Workspace = {
   targetCSSSelectors: TargetSelector[];
@@ -562,6 +559,10 @@ export const getArtboardByInfo = (componentId: string, previewName: string, stat
   return null;
 }
 
+export const getArtboardDocumentBody = (artboard: Artboard) => (artboard.document.childNodes[0] as SlimElement).childNodes[0];
+
+export const getArtboardDocumentBodyPath = (artboard: Artboard) => [0, 0];
+
 export const getArtboardBounds = weakMemo((workspace: Workspace) => mergeBounds(...workspace.artboards.map(artboard => artboard.bounds)));
 
 export const getArtboardWorkspace = weakMemo((artboardId: string, state: ApplicationState) => {
@@ -721,7 +722,7 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
 
   if (!intersectingBounds.length) return null;
   const smallestBounds = getSmallestBounds(...intersectingBounds);
-  return [SYNTHETIC_ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [string, string];
+  return [SlimVMObjectType.ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [any, string];
 }
 
 export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, browserStore }: ApplicationState) => ({

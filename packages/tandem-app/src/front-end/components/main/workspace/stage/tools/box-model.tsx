@@ -2,7 +2,8 @@ import "./box-model.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
 import { Bounds, shiftBounds } from "aerial-common2";
-import { Workspace, SyntheticBrowser, SyntheticElement, SYNTHETIC_ELEMENT, getSyntheticNodeById, getSyntheticNodeWindow } from "front-end/state";
+import { Workspace, SyntheticBrowser, SyntheticElement, getSyntheticNodeById, getSyntheticNodeWindow } from "front-end/state";
+import { SlimVMObjectType } from "slim-dom";
 
 export type BoxModelStageToolOuterProps = {
   workspace: Workspace;
@@ -54,7 +55,7 @@ const ElementBoxModel = compose<ElementBoxModelOuterProps, ElementBoxModelOuterP
 
 
 export const BoxModelStageTool = compose<BoxModelStageToolOuterProps, BoxModelStageToolOuterProps>(pure)(({ workspace, browser }: BoxModelStageToolOuterProps) => {
-  const selectedElements = workspace.selectionRefs.filter(([type]) => type === SYNTHETIC_ELEMENT).map(([type, $id]) => getSyntheticNodeById(browser, $id)).filter((element) => !!element) as SyntheticElement[];
+  const selectedElements = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT).map(([type, $id]) => getSyntheticNodeById(browser, $id)).filter((element) => !!element) as SyntheticElement[];
 
   if (selectedElements.length === 0) {
     return null;
