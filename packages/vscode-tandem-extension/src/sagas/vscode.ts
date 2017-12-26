@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
-import { select, take, put, fork, call, spawn } from "redux-saga/effects";
+import { select, take, put, fork, call, spawn, cancel } from "redux-saga/effects";
 import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openArtboardsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp } from "../actions";
 import { parseModuleSource, loadModuleAST, Module, getPCStartTagAttribute } from "paperclip";
 import { VMObjectSource, VMObject } from "slim-dom";
@@ -450,19 +450,35 @@ function* handleTandemFEStatus() {
   status.text = "Tandem";
   status.show();
 
+  let i = 0;
   yield fork(function*() {
+    let connectingChan;
+
     while(1) {
       yield take([OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY]);
       const state: ExtensionState = yield select();
+      if (connectingChan) {
+        yield cancel(connectingChan);
+        connectingChan = undefined;
+      }
       if (state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTED) {
-        status.text = "$(check) Tandem";
+        status.text = "$(zap) Tandem";
         status.tooltip = "Connected to Tandem";
       } else if (state.tandemEditorStatus === TandemEditorReadyStatus.CONNECTING) {
-        status.text = "$(zap) Tandem";
         status.tooltip = "Connecting to Tandem";
+        connectingChan = yield spawn(function*() {
+          while(1) {
+            // https://github.com/sindresorhus/elegant-spinner/blob/master/index.js
+            const spinText = `⠋⠙⠹⠼⠴⠦⠧⠇⠏`;
+            status.text = spinText.charAt(i = (i + 1) % spinText.length) + " Tandem";
+            yield call(delay, 100);
+          }
+        });
       } else if (state.tandemEditorStatus === TandemEditorReadyStatus.DISCONNECTED) {
-        status.text = "$(alert) Tandem";
+        status.text = "▶ Tandem";
         status.tooltip = "Disconnected from Tandem";
+
+        
       }
       status.show();
     }
