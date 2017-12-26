@@ -123,7 +123,7 @@ english words for colors
   </style>
   <template>
     <div class="hue-saturation-picker">
-      HSL!!! <span>a</span>
+      TODO
     </div>
   </template>
   <preview name="main" width="100" height="20">

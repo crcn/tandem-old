@@ -5,6 +5,7 @@ import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn } from "redux-saga/effects";
 import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openArtboardsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp } from "../actions";
 import { parseModuleSource, loadModuleAST, Module, getPCStartTagAttribute } from "paperclip";
+import { VMObjectSource, VMObject } from "slim-dom";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime, TandemEditorReadyStatus } from "../state";
 import { isPaperclipFile, waitForFEConnected, requestOpenTandemIfDisconnected } from "../utils";
@@ -398,10 +399,33 @@ function* pickComponentIds(module: Module) {
 function* handleOpenFileRequested() {
   while(true) {
     const { componentId, previewName, checksum, vmObjectPath }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+    const state: ExtensionState = yield select();
 
-    const source = null;
+    let uriBase = `http://localhost:${state.childDevServerInfo.port}/components/${componentId}/preview`;
+    if (previewName) {
+      uriBase += `/${previewName}`;
+    }
 
-    const { uri, start, end }  = typeof source === "object" ? source : { uri: source, start: null, end: null };
+    uriBase += `/source-info/${checksum}/${vmObjectPath.join(".")}.json`;
+
+    console.log(uriBase);
+
+    const { uri, range: { start, end } }: VMObjectSource = yield call(() => {
+      return new Promise((resolve, reject) => {
+        request(uriBase, { json: true }, (err, response, body) => {
+          if (err) {
+            return reject(err);
+          }
+          if (response.statusCode !== 200) {
+            return reject(`Error loading VM source info: ${response.statusCode}`);
+          }
+          console.log(response);
+          console.log(body);
+          resolve(body);
+        });
+      }); 
+    });
+
     
     vscode.workspace.openTextDocument(uri.replace("file://", "")).then(doc => {
       vscode.window.showTextDocument(doc).then(() => {

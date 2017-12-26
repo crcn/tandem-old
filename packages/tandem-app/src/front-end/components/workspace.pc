@@ -222,7 +222,7 @@
       </div>
       <td-gutter right>
         <slot name="right-gutter-content">
-          <td-css-inspector-pane  styleRules=[[bind [
+          <td-css-inspector-pane styleRules=[[bind [
       {
         label: ".container",
         source: { uri: "styles.css" },

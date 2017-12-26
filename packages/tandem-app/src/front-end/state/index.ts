@@ -484,6 +484,9 @@ export const getComputedNodeBounds = weakMemo((nodeId: string, artboard: Artboar
 });
 
 export const getWorkspaceItemBounds = weakMemo((value: any, workspace: Workspace) => {
+  if (!value) {
+    return null;
+  }
   if ((value as Artboard).$type === ARTBOARD) {
     return (value as Artboard).bounds;
   } else {

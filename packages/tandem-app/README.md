@@ -1,12 +1,9 @@
 IMMEDIATE:
 
 - [ ] diff/patch for slim-dom 
-  - [ ] remove source attribute
-  - [ ] how to eliminate IDs? Maybe have them on the front-end only?
+- [ ] query selector
 - [ ] query selector testing
 - [ ] meta click for component cells must work
-- [ ] /components/:componentId/preview
-- [ ] /open path should call /components/:component/preview/source-info/:checksum/:vmObjectPath
 
 - [ ] CSS Inspector*
 

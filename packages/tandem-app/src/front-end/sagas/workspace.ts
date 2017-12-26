@@ -92,6 +92,7 @@ import {
   getWorkspaceSelectionBounds,
   AVAILABLE_COMPONENT,
   getNodeArtboard,
+  getArtboardByInfo,
   getBoundedWorkspaceSelection,
   getWorkspaceLastSelectionOwnerArtboard,
   getAvailableComponent,
@@ -171,11 +172,9 @@ function* handleMetaClickComponentCell() {
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
     const component = getAvailableComponent(componentId, workspace);
+    const artboard = getArtboardByInfo(component.$id, null, state);
 
-    // yield call(apiOpenSourceFile, {
-    //   uri: component.filePath,
-    //   ...component.location
-    // }, state);
+    // yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, [0], state);
   }
 }
 
