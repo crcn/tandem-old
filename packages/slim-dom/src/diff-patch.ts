@@ -29,7 +29,6 @@ export const CSS_MOVE_RULE   = "CSS_MOVE_RULE";
 export const CSS_SET_STYLE_PROPERTY = "CSS_SET_STYLE_PROPERTY";
 export const CSS_SET_SELECTOR_TEXT = "CSS_SET_SELECTOR_TEXT";
 
-
 export type SetTextNodeValueMutation = {} & SetValueMutation<VMObjectSource>;
 
 export const diffNode = weakMemo((oldNode: SlimBaseNode, newNode: SlimBaseNode, path: any[] = []) => {

@@ -11,6 +11,7 @@
   "dependencies": {
     "crc32": "^0.2.2",
     "lodash": "^4.17.4",
+    "nwmatcher": "git+https://github.com/crcn/nwmatcher",
     "typescript": "^2.6.2"
   },
   "devDependencies": {

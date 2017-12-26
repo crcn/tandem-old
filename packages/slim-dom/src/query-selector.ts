@@ -2,12 +2,15 @@ import { SlimParentNode, SlimElement, SlimVMObjectType } from "./state";
 import { weakMemo, FlattenedObjects } from "./utils";
 import { parseSelector } from "./selector-parser";
 import { flattenObjects } from "./index";
+import nwmatcher = require("nwmatcher");
+import { getLightDomWrapper, traverseLightDOM, LightBaseNode, LightDocumentFragment, LightElement, LightParentNode, LightTextNode, getLightDocumentWrapper } from "./dom-wrap";
 
-export const createSelectorTester = weakMemo((selector: string) => {
-  const code = transpileSelector(parseSelector(selector));
 
-  return new Function(`element`, `allNodes`, code) as (element: SlimElement, allNodes: FlattenedObjects) => boolean;
-});
+const fakeWindow = {
+  document: {
+    hasFocus: false,
+  }
+}
 
 export const querySelector = (selector: string, root: SlimParentNode) => {
 
@@ -17,19 +20,21 @@ export const querySelector = (selector: string, root: SlimParentNode) => {
 };
 
 export const querySelectorAll = weakMemo((selector: string, root: SlimParentNode) => {
-  const allNodes = flattenObjects(root);
-  const testElement = createSelectorTester(selector);
-  const result: SlimElement[] = [];
-  for (const id in allNodes) {
-    const { parentId, value } = allNodes[id];
-    if (value.type === SlimVMObjectType.ELEMENT && (value as SlimElement).tagName && testElement(value as SlimElement, allNodes)) {
-      result.push(value as SlimElement);
+  const document = getLightDocumentWrapper(root);
+
+  const tester = nwmatcher({
+    document
+  });
+
+  tester.configure({ CACHING: true, VERBOSITY: false });
+
+  const matches = [];
+
+  traverseLightDOM(document.body, (element) => {
+    if (element.nodeType === 1 && tester.match(element, selector)) {
+      matches.push(element.source);
     }
-  }
-
-  return result;
-});
-
-const transpileSelector = weakMemo((ast: any) => {
-  return "";
+  });
+  
+  return matches;
 });
