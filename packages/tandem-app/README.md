@@ -1,9 +1,8 @@
 IMMEDIATE:
 
-- [ ] diff/patch
-  - [ ] CSS
 
 - [ ] CSS Inspector* 
+  - [ ] show inherited props from slots
   - [ ] eye toggler
   - [ ] add new style - specific to target element
   - [ ] delete style rule

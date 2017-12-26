@@ -84,6 +84,9 @@ const stringifyRule = (rule: SlimCSSRule) => {
       const { selectorText, style } = rule as SlimCSSStyleRule;
       let buffer = `${selectorText} {`;
       for (const key in style) {
+
+        // TODO - change to isValidCSSKey
+        if (key === "id") continue;
         buffer += `${key}: ${style[key]};`
       }
 
@@ -213,7 +216,9 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
         const stylePath =  mutation.target.slice(0, mutation.target.indexOf("sheet"));
         
         const nativeStyle = getDOMNodeFromPath(stylePath, root) as HTMLStyleElement;
-        resetStyleMap.push(nativeStyle);
+        if (resetStyleMap.indexOf(nativeStyle) === -1) {
+          resetStyleMap.push(nativeStyle);
+        }
         break;
       }
     }
@@ -226,8 +231,8 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
     while(sheet.rules.length) {
       sheet.deleteRule(0);
     }
-    for (const rule of slimStyle.sheet.rules) {
-      sheet.insertRule(stringifyRule(rule));
+    for (let i = slimStyle.sheet.rules.length; i--;) {
+      sheet.insertRule(stringifyRule(slimStyle.sheet.rules[i]));
     }
   }
 

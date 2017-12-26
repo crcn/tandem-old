@@ -337,13 +337,12 @@
   <style> 
     .content {
       padding: var(--base6);
-      color: blue;
     }
   </style>
   <template>
     <td-pane>
-      <span slot="header" class="header">
-        CSS Inspector!!!
+      <span slot="header">
+        CSS Inspector
       </span>
       <div slot="content" class="content">
         Please select only one element to edit CSS 
