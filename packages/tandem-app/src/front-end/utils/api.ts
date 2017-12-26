@@ -35,14 +35,19 @@ export const getDocumentPreviewDiff = async (componentId: string, previewName: s
   return await response.json();
 };
 
-export const apiOpenSourceFile = async (source: VMObjectExpressionSource, state: ApplicationState) => { 
+export const apiOpenSourceFile = async (componentId: string, previewName: string, checksum: string, path: any[], state: ApplicationState) => { 
   const response = await fetch(`${state.apiHost}/open`, {
     method: "POST",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
     } as any,
-    body: JSON.stringify(source)
+    body: JSON.stringify({
+      componentId,
+      previewName,
+      checksum,
+      vmObjectPath: path
+    })
   });
 
   return await response.json();

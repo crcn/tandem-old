@@ -54,7 +54,10 @@ export type FileAction = {
 } & Action;
 
 export type OpenFileRequested = {
-  source: VMObjectExpressionSource|string
+  componentId: string;
+  previewName: string;
+  checksum: string;
+  vmObjectPath: any[];
 } & Action;
 
 export type OpenArtboardsRequested = {
@@ -117,9 +120,12 @@ export const startDevServerRequest = () => ({
   type: START_DEV_SERVER_REQUESTED
 });
 
-export const openFileRequested = (source: VMObjectExpressionSource): OpenFileRequested => ({ 
+export const openFileRequested = ({ componentId, previewName, checksum, vmObjectPath }): OpenFileRequested => ({ 
+  componentId,
+  previewName,
   type: OPEN_FILE_REQUESTED,
-  source
+  checksum,
+  vmObjectPath
 });
 
 export const openTandemExecuted = () => ({ 

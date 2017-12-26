@@ -4,6 +4,8 @@ IMMEDIATE:
   - [ ] remove source attribute
   - [ ] how to eliminate IDs? Maybe have them on the front-end only?
 - [ ] query selector testing
+- [ ] meta click for component cells must work
+- [ ] /components/:componentId/preview:e
 
 - [ ] perf test - (preview a TON of windows.)
 - [ ] CSS Inspector

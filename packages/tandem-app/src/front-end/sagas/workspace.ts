@@ -73,7 +73,7 @@ import {
   DEFAULT_WINDOW_WIDTH, 
   DEFAULT_WINDOW_HEIGHT,
 } from "aerial-browser-sandbox";
-import { getNestedObjectById } from "slim-dom";
+import { getNestedObjectById, getVMObjectPath } from "slim-dom";
 
 import { 
   Workspace,
@@ -91,6 +91,7 @@ import {
   getArtboardPreviewUri,
   getWorkspaceSelectionBounds,
   AVAILABLE_COMPONENT,
+  getNodeArtboard,
   getBoundedWorkspaceSelection,
   getWorkspaceLastSelectionOwnerArtboard,
   getAvailableComponent,
@@ -157,13 +158,9 @@ function* handleMetaClickElement() {
 
     if (!targetRef) continue;
     const node = getWorkspaceNode(targetRef[1], workspace);
-
-    // TODO - display error if source URI does not exist, or URI is not a file
-    if (node.source && node.source.uri) {
-      yield call(apiOpenSourceFile, node.source as any, state);
-    } else if (!node.source) {
-      console.warn(`source URI does not exist on selected node.`);
-    }
+    
+    const artboard = getNodeArtboard(node.id, workspace);
+    yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(node, artboard.document), state);
   }
 }
 
@@ -175,10 +172,10 @@ function* handleMetaClickComponentCell() {
     const workspace = getSelectedWorkspace(state);
     const component = getAvailableComponent(componentId, workspace);
 
-    yield call(apiOpenSourceFile, {
-      uri: component.filePath,
-      ...component.location
-    }, state);
+    // yield call(apiOpenSourceFile, {
+    //   uri: component.filePath,
+    //   ...component.location
+    // }, state);
   }
 }
 
@@ -395,10 +392,8 @@ function* handleSourceClicked() {
 
     const item = getWorkspaceNode(itemId, getSelectedWorkspace(state));
 
-    // TODO - display error if source URI does not exist, or URI is not a file
-    if (item.source && item.source.uri) {
-      yield call(apiOpenSourceFile, item.source as any, state);
-    }
+    const artboard = getNodeArtboard(item.id, state);
+    yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(item, artboard.document), state);
   }
 }
 

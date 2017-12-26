@@ -397,7 +397,9 @@ function* pickComponentIds(module: Module) {
 
 function* handleOpenFileRequested() {
   while(true) {
-    const { source }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+    const { componentId, previewName, checksum, vmObjectPath }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+
+    const source = null;
 
     const { uri, start, end }  = typeof source === "object" ? source : { uri: source, start: null, end: null };
     

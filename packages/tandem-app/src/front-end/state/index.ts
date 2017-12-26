@@ -459,7 +459,7 @@ export const getBoundedWorkspaceSelection = weakMemo((workspace: Workspace): Arr
 
 export const getWorkspaceSelectionBounds = weakMemo((workspace: Workspace) => mergeBounds(...getBoundedWorkspaceSelection(workspace).map(boxed => getWorkspaceItemBounds(boxed, workspace))));
 
-export const getNodeArtboard = weakMemo((nodeId: string, state: Workspace|ApplicationState) => {
+export const getNodeArtboard = weakMemo((nodeId: string, state: Workspace|ApplicationState): Artboard => {
   if (state.$type === WORKSPACE) {
     return (state as Workspace).artboards.find((artboard) => {
       return artboard.document && Boolean(getNestedObjectById(nodeId, artboard.document));

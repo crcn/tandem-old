@@ -5,7 +5,7 @@ import * as sharp from "sharp";
 import * as request from "request"; 
 import * as md5 from "md5";
 import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
-import { compressRootNode, diffNode, getDocumentChecksum } from "slim-dom";
+import { compressRootNode, diffNode, getDocumentChecksum, getVMObjectFromPath } from "slim-dom";
 import { ApplicationState, RegisteredComponent, getFileCacheContent, getLatestPreviewDocument, getPreviewDocumentByChecksum } from "../state";
 import { flatten } from "lodash";
 import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource, runPCFile } from "paperclip";
@@ -54,12 +54,17 @@ function* addRoutes(server: express.Express) {
   server.get("/components/all/preview", yield wrapRoute(getAllComponentsPreview));
 
   // return a module preview
+
   server.get("/components/:componentId/preview", yield wrapRoute(getComponentHTMLPreview));
   server.get("/components/:componentId/preview.json", yield wrapRoute(getComponentJSONPreview));
   server.get("/components/:componentId/preview/:previewName.json", yield wrapRoute(getComponentJSONPreview));
   server.get("/components/:componentId/preview/:previewName", yield wrapRoute(getComponentHTMLPreview));
   server.get("/components/:componentId/preview/:previewName/diff/:oldChecksum/:newChecksum.json", yield wrapRoute(getComponentJSONPreviewDiff));
   server.get("/components/:componentId/preview/diff/:oldChecksum/:newChecksum.json", yield wrapRoute(getComponentJSONPreviewDiff));
+
+  server.get("/components/:componentId/preview/:previewName/source-info/:checksum/:vmObjectPath.json", yield wrapRoute(getVMObjectSoureInfo));
+
+  server.get("/components/:componentId/preview/source-info/:checksum/:vmObjectPath.json", yield wrapRoute(getVMObjectSoureInfo));
 
   // return all components
   server.get("/components/:componentId/screenshots/:previewName/:screenshotHash", yield wrapRoute(getClippedComponentScreenshot));
@@ -559,7 +564,6 @@ function* getComponentJSONPreview(req: express.Request, res: express.Response, n
 
 function* getComponentJSONPreviewDiff(req: express.Request, res: express.Response, next) {
   const state: ApplicationState = yield select();
-  console.log("DP");
   const { componentId, previewName, oldChecksum, newChecksum } = req.params;
   const oldDocument = getPreviewDocumentByChecksum(componentId, previewName, oldChecksum, state);
   const newDocument = getPreviewDocumentByChecksum(componentId, previewName, newChecksum, state);
@@ -573,6 +577,23 @@ function* getComponentJSONPreviewDiff(req: express.Request, res: express.Respons
   }
 
   return res.send(diffNode(oldDocument, newDocument));
+}
+
+function* getVMObjectSoureInfo(req: express.Request, res: express.Response, next) {
+  const state: ApplicationState = yield select();
+  const { componentId, previewName, checksum, vmObjectPath } = req.params;
+  const document = getPreviewDocumentByChecksum(componentId, previewName, checksum, state);
+
+  if (!document) {
+    return next();
+  }
+
+  const target = getVMObjectFromPath(vmObjectPath.split("."), document);
+  if (!target) {
+    return next();
+  }
+
+  res.send(target.source);
 }
 
 function* setFileContent(req: express.Request, res: express.Response, next) {
