@@ -6,19 +6,12 @@ import { Motion, spring } from "react-motion";
 import { weakMemo, Dispatcher, Bounds, BaseEvent, calculateAbsoluteBounds, shiftBounds} from "aerial-common2";
 import { lifecycle, compose, withState, pure, onlyUpdateForKeys, withHandlers } from "recompose";
 import { canvasMotionRested, artboardMounted } from "front-end/actions";
-import { 
-  SEnvNodeTypes,
-  SyntheticNode,
-  SyntheticTextNode,
-  SyntheticBrowser,
-} from "aerial-browser-sandbox";
 import { Artboard as ArtboardState } from "front-end/state";
 import { Isolate } from "front-end/components/isolated";
 
 const stiffSpring = (amount: number) => spring(amount, { stiffness: 330, damping: 30 });
 
 export type ArtboardsOuterProps = {
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
 };
 

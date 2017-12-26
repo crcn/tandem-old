@@ -7,10 +7,6 @@ import { 
 
 import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createRemoveChildMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, StringMutation } from "source-mutation";
 
-import {
-  SET_ELEMENT_ATTRIBUTE_EDIT,
-  SET_TEXT_CONTENT
-} from "aerial-browser-sandbox";
 
 module.exports = (content: string, mutation: Mutation<any>, filePath: string) => {
   const source = mutation.target.source;
@@ -18,12 +14,12 @@ module.exports = (content: string, mutation: Mutation<any>, filePath: string) =>
   const targetNode = findTargetASTNode(ast, mutation);
 
   switch(mutation.type) {
-    case SET_ELEMENT_ATTRIBUTE_EDIT: {
-      return editElementAttribute(targetNode, mutation as SetPropertyMutation<any>);
-    }
-    case SET_TEXT_CONTENT: {
-      return setElementTextContent(targetNode, mutation as SetPropertyMutation<any>)
-    }
+    // case SET_ELEMENT_ATTRIBUTE_EDIT: {
+    //   return editElementAttribute(targetNode, mutation as SetPropertyMutation<any>);
+    // }
+    // case SET_TEXT_CONTENT: {
+    //   return setElementTextContent(targetNode, mutation as SetPropertyMutation<any>)
+    // }
   }
 
   // nothing
@@ -117,7 +113,7 @@ const editElementAttribute = (target: ts.Node, mutation: SetPropertyMutation<any
 };
 
 const isElementMutation = (mutation: Mutation<any>) => {
-  return [SET_ELEMENT_ATTRIBUTE_EDIT, SET_TEXT_CONTENT].indexOf(mutation.type) !== -1;
+  // return [SET_ELEMENT_ATTRIBUTE_EDIT, SET_TEXT_CONTENT].indexOf(mutation.type) !== -1;
 }
 
 const findTargetASTNode = (root: ts.Node, mutation: Mutation<any>) => {

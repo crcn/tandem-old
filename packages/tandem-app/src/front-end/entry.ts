@@ -5,8 +5,6 @@ import {
   initApplication, 
   createWorkspace,
   selectWorkspace,
-  addSyntheticBrowser,
-  createSyntheticBrowser,
   createApplicationState, 
 } from "./index";
 
@@ -23,11 +21,7 @@ let state = createApplicationState({
   }
 });
 
-const browser = createSyntheticBrowser();
-state = addSyntheticBrowser(state, browser);
-const workspace = createWorkspace({ 
-  browserId: browser.$id
-});
+const workspace = createWorkspace({});
 
 state = addWorkspace(state, workspace);
 state = selectWorkspace(state, workspace.$id);

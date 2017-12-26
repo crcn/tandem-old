@@ -30,12 +30,6 @@ import {
 
 import { 
   Workspace,
-  SyntheticWindow, 
-  SyntheticBrowser, 
-  SyntheticElement,
-  getSyntheticNodeById,
-  getSyntheticNodeWindow,
-  getSyntheticElementLabel,
 } from "front-end/state";
 
 // import { 
@@ -54,14 +48,12 @@ const CHAR_WIDTH = 8;
 
 export type CSSInspectorOuterProps = {
   workspace: Workspace;
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
 }
 
 export type AppliedCSSRuleResultOuterProps = {
   isDefault?: boolean;
   workspaceId: string;
-  window: SyntheticWindow;
   appliedRule: AppliedCSSRuleResult;
   isTarget: boolean;
   dispatch: Dispatcher<any>;
@@ -232,7 +224,6 @@ const NewStyleProperty = compose<StylePropertyInnerProps, NewStylePropertyOuterP
 )(StylePropertyBase);
 
 const AppliedCSSRuleInfoBase = ({ 
-  window, 
   isDefault,
   isTarget,
   dispatch,
@@ -260,15 +251,15 @@ const AppliedCSSRuleInfoBase = ({
     const ignored = Boolean(appliedRule.ignoredPropertyNames && appliedRule.ignoredPropertyNames[name]);
     const overridden = Boolean(appliedRule.overriddenPropertyNames && appliedRule.overriddenPropertyNames[name]);
 
-    properties.push(
-      <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
-    );
+    // properties.push(
+    //   <StyleProperty onValueBlur={onValueBlur} windowId={window.$id} key={name} name={name} value={value} dispatch={dispatch} declarationId={appliedRule.rule.style.id} ignored={ignored} disabled={disabled} overridden={overridden} origValue={origValue} />
+    // );
   }
 
   if (showNewDeclarationInput) {
-    properties.push(
-      <NewStyleProperty focusNameInput={true} windowId={window.$id} key={properties.length} onCreated={onDeclarationCreated} onValueBlur={onValueBlur} />
-    );
+    // properties.push(
+    //   <NewStyleProperty focusNameInput={true} windowId={window.$id} key={properties.length} onCreated={onDeclarationCreated} onValueBlur={onValueBlur} />
+    // );
   }
 
   return <div className={cx("style-rule-info", { "is-target": isTarget, "is-default": isDefault })}>
@@ -297,10 +288,10 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
     onAddDeclaration: ({ setShowNewDeclarationInput }) => () => {
       setShowNewDeclarationInput(true);
     },
-    onToggleAsTarget: ({ dispatch, appliedRule, window }: AppliedCSSRuleResultInnerProps) => () => {
+    onToggleAsTarget: ({ dispatch, appliedRule }: AppliedCSSRuleResultInnerProps) => () => {
       // dispatch(toggleCSSTargetSelectorClicked(appliedRule.rule.$id, window.$id));
     },
-    onDeclarationCreated: ({ setShowNewDeclarationInput, dispatch, window, appliedRule }: AppliedCSSRuleResultInnerProps) => (name: string, value: string) => {
+    onDeclarationCreated: ({ setShowNewDeclarationInput, dispatch, appliedRule }: AppliedCSSRuleResultInnerProps) => (name: string, value: string) => {
       setShowNewDeclarationInput(false);
       if (value) {
         // dispatch(cssDeclarationCreated(name, value, appliedRule.rule.style.$id, window.$id));
@@ -328,7 +319,7 @@ const AppliedCSSRuleInfo = compose<AppliedCSSRuleResultInnerProps, AppliedCSSRul
   })
 )(AppliedCSSRuleInfoBase);
 
-const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterProps) => {
+const CSSInspectorBase = ({ workspace, dispatch }: CSSInspectorOuterProps) => {
 
   const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === null);
 
@@ -338,25 +329,26 @@ const CSSInspectorBase = ({ browser, workspace, dispatch }: CSSInspectorOuterPro
 
   const targetSelectors = workspace.targetCSSSelectors || [];
 
-  return <div>
-    { selectedElementRefs.sort((a, b) => a[1] > b[1] ? -1 : 1).map(([type, targetElementId]) => {
-      const element = getSyntheticNodeById(browser, targetElementId) as SyntheticElement;
-      const window = getSyntheticNodeWindow(browser, targetElementId);
-      if (!element || !window) {
-        return null;
-      }
-      const rules = [];
-      // const rules = getSyntheticAppliedCSSRules(window, targetElementId);
-      const title = <span className="pane-title"><span className="selected-element">{getSyntheticElementLabel(element)}</span> CSS</span>;
-      return <Pane key={element.$id} title={title} className="m-css-inspector">
-        {
-          rules.map((rule) => {
-            return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source && rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />
-          })
-        }
-      </Pane>
-    }) }
-  </div>
+  return null;
+  // return <div>
+  //   { selectedElementRefs.sort((a, b) => a[1] > b[1] ? -1 : 1).map(([type, targetElementId]) => {
+  //     const element = getSyntheticNodeById(browser, targetElementId) as SyntheticElement;
+  //     const window = getSyntheticNodeWindow(browser, targetElementId);
+  //     if (!element || !window) {
+  //       return null;
+  //     }
+  //     const rules = [];
+  //     // const rules = getSyntheticAppliedCSSRules(window, targetElementId);
+  //     const title = <span className="pane-title"><span className="selected-element">{getSyntheticElementLabel(element)}</span> CSS</span>;
+  //     return <Pane key={element.$id} title={title} className="m-css-inspector">
+  //       {
+  //         rules.map((rule) => {
+  //           return <AppliedCSSRuleInfo workspaceId={workspace.$id} window={window} key={rule.rule.$id}  appliedRule={rule} dispatch={dispatch} isTarget={Boolean(targetSelectors.find(({ uri, value }) => rule.rule.source && rule.rule.source.uri === uri && rule.rule.selectorText == value))} isDefault={targetSelectors.length === 0 && !rule.rule.selectorText} />
+  //         })
+  //       }
+  //     </Pane>
+  //   }) }
+  // </div>
 };
 
 const enhanceCSSInspector = compose<CSSInspectorOuterProps, CSSInspectorOuterProps>(

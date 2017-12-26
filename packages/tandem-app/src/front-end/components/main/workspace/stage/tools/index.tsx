@@ -5,7 +5,6 @@ import React =  require("react");
 import { pure, compose } from "recompose";
 import { Workspace } from "front-end/state";
 import { Dispatcher, Translate } from "aerial-common2";
-import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { EditTextTool } from "./edit-text";
 import { GridStageTool } from "./grid";
 import { ArtboardsStageTool } from "./artboards";

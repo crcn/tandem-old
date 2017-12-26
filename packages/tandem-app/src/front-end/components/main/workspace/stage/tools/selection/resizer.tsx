@@ -1,7 +1,6 @@
 import "./resizer.scss";
 import React =  require("react");
 import { debounce } from "lodash";
-import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { pure, compose, withHandlers } from "recompose";
 import { Workspace, getBoundedWorkspaceSelection, getStageZoom, getWorkspaceSelectionBounds, getStageTranslate } from "front-end/state";
 import { resizerMoved, resizerStoppedMoving, resizerMouseDown } from "front-end/actions";

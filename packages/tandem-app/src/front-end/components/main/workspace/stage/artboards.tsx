@@ -6,10 +6,6 @@ import { findDOMNode } from "react-dom";
 import { weakMemo, Dispatcher, Bounds, BaseEvent} from "aerial-common2";
 import { lifecycle, compose, withState, pure, onlyUpdateForKeys } from "recompose";
 import { Artboard } from "./artboard";
-import { 
-  SyntheticBrowser,
-  SyntheticTextNode,
-} from "aerial-browser-sandbox";
 import { Isolate } from "front-end/components/isolated";
 import { Workspace } from "front-end/state";
 

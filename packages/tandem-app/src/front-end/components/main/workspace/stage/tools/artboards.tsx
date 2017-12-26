@@ -2,7 +2,6 @@ import "./artboards.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
 import { Workspace } from "front-end/state";
-import { SyntheticWindow, SyntheticBrowser } from "aerial-browser-sandbox";
 import { Dispatcher, getBoundsSize, Translate, wrapEventToDispatch } from "aerial-common2";
 import { stageToolArtboardTitleClicked, stageToolWindowKeyDown, stageToolWindowBackgroundClicked, openExternalWindowButtonClicked } from "front-end/actions";
 import { Artboard } from "front-end/state";

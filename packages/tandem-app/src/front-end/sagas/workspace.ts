@@ -58,26 +58,11 @@ import {
 
 const WINDOW_PADDING = 10;
 
-import { 
-  getUri,
-  SEnvNodeTypes, 
-  SyntheticWindow, 
-  SyntheticElement, 
-  SYNTHETIC_WINDOW,
-  getSyntheticWindow,
-  getSyntheticBrowser,
-  getSyntheticNodeWindow,
-  getSyntheticWindowBrowser,
-  getSyntheticBrowserBounds,
-  openSyntheticWindowRequest,
-  DEFAULT_WINDOW_WIDTH, 
-  DEFAULT_WINDOW_HEIGHT,
-} from "aerial-browser-sandbox";
 import { getNestedObjectById, getVMObjectPath } from "slim-dom";
 
 import { 
   Workspace,
-  getSyntheticBrowserItemBounds,
+  DEFAULT_ARTBOARD_SIZE,
   getStageTranslate,
   getWorkspaceById,
   ApplicationState, 
@@ -113,9 +98,6 @@ export function* mainWorkspaceSaga() {
   yield fork(handleSelectionKeyDown);
   yield fork(handleSelectionKeyUp);
   // yield fork(handleSelectionResized);
-  yield fork(handleNewLocationPrompt);
-  yield fork(handleOpenNewWindowShortcut);
-  yield fork(handleCloneSelectedWindowShortcut);
   yield fork(handleSourceClicked);
   yield fork(handleOpenExternalWindowButtonClicked);
   yield fork(handleDNDEnded);
@@ -178,17 +160,6 @@ function* handleMetaClickComponentCell() {
   }
 }
 
-function* openNewWindow(state: ApplicationState, href: string, origin: SyntheticWindow, workspace: Workspace) {
-  const uri = getUri(href, origin.location);
-  const windowBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalArtboardBounds : origin.bounds;
-  const browserBounds = getSyntheticBrowserBounds(getSyntheticWindowBrowser(state, origin.$id));
-  yield put(openSyntheticWindowRequest({ location: uri, bounds: {
-    left: Math.max(browserBounds.right, windowBounds.right) + WINDOW_PADDING,
-    top: 0,
-    right: undefined,
-    bottom: undefined
-  }}, workspace.browserId));
-}
 
 function* handleDeleteKeyPressed() {
   while(true) {
@@ -258,10 +229,7 @@ function* handleDroppedOnEmptySpace(event: DNDEvent) {
   const availableComponent = workspace.availableComponents.find(component => component.$id === componentId);
 
   const screenshot = availableComponent.screenshots[0];
-  const size = screenshot ? { width: screenshot.clip.right - screenshot.clip.left, height: screenshot.clip.bottom - screenshot.clip.top } : {
-    width: DEFAULT_WINDOW_WIDTH,
-    height: DEFAULT_WINDOW_HEIGHT
-  };
+  const size = screenshot ? { width: screenshot.clip.right - screenshot.clip.left, height: screenshot.clip.bottom - screenshot.clip.top } : DEFAULT_ARTBOARD_SIZE;
   
   const mousePosition = getScaledMouseStagePosition(state, event);
 
@@ -299,47 +267,10 @@ function* handleSelectionResized() {
     }
 
     for (const item of getBoundedWorkspaceSelection(workspace)) {
-      const innerBounds = getSyntheticBrowserItemBounds(state, item);
+      const innerBounds = getWorkspaceItemBounds(item, workspace);
       const scaledBounds = scaleInnerBounds(currentBounds, currentBounds, newBounds);
       yield put(resized(item.$id, item.$type, scaleInnerBounds(innerBounds, currentBounds, newBounds), workspace.targetCSSSelectors));
     }
-  }
-}
-
-function* handleOpenNewWindowShortcut() {
-  while(true) {
-    yield take(OPEN_NEW_WINDOW_SHORTCUT_PRESSED);
-    const uri = prompt("URL");
-    if (!uri) continue;
-    const state: ApplicationState = yield select();
-    const workspace = getSelectedWorkspace(state);
-    yield put(openSyntheticWindowRequest({ location: uri }, workspace.browserId));
-
-  }
-}
-
-function* handleCloneSelectedWindowShortcut() {
-  while(true) {
-    yield take(CLONE_WINDOW_SHORTCUT_PRESSED);
-    const state: ApplicationState = yield select();
-    const workspace = getSelectedWorkspace(state);
-    const itemRef = workspace.selectionRefs[0];
-    if (!itemRef) continue;
-    const window = itemRef[0] === SYNTHETIC_WINDOW ? getSyntheticWindow(state, itemRef[1]) : getSyntheticNodeWindow(state, itemRef[1]);
-
-    const originalArtboardBounds = workspace.stage.fullScreen ? workspace.stage.fullScreen.originalArtboardBounds : window.bounds; 
-
-    const clonedWindow = yield yield request(openSyntheticWindowRequest({ location: window.location, bounds: moveBounds(originalArtboardBounds, {
-      left: originalArtboardBounds.left,
-      top: originalArtboardBounds.bottom + WINDOW_PADDING
-    }) }, getSyntheticWindowBrowser(state, window.$id).$id));
-  }
-}
-
-function* handleNewLocationPrompt() {
-  while(true) {
-    const { workspaceId, location } = (yield take(PROMPTED_NEW_WINDOW_URL)) as PromptedNewWindowUrl;
-    yield put(openSyntheticWindowRequest({ location }, getWorkspaceById(yield select(), workspaceId).browserId))
   }
 }
 
@@ -408,7 +339,7 @@ function* handleSelectionStoppedMoving() {
         continue;
       }
       
-      const bounds = getSyntheticBrowserItemBounds(state, item);
+      const bounds = getWorkspaceItemBounds(item, workspace);
       yield put(stoppedMoving(item.$id, item.$type, workspace.targetCSSSelectors));
     }
   }
@@ -481,8 +412,9 @@ function* handleComponentsPaneAddClicked() {
     const state: ApplicationState = yield select();
     const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
     const { componentId } = yield call(apiCreateComponent, name, state);
-
-    yield put(openSyntheticWindowRequest({ location: apiGetComponentPreviewURI(componentId, state)}, workspace.browserId));
+    
+    console.error("TODO");
+    // yield put(openSyntheticWindowRequest({ location: apiGetComponentPreviewURI(componentId, state)}, workspace.browserId));
   }
 }
 

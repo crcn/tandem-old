@@ -62,12 +62,9 @@ import {
   removeWorkspaceSelection,
   toggleWorkspaceSelection,
   getSyntheticNodeWorkspace,
-  getSyntheticWindowBrowser,
   updateWorkspaceTextEditor,
-  getSyntheticBrowserBounds,
   getWorkspaceSelectionBounds,
   getBoundedWorkspaceSelection,
-  getSyntheticBrowserItemBounds,
   toggleWorkspaceTargetCSSSelector,
   getStageToolMouseNodeTargetReference,
 } from "front-end/state";
@@ -185,32 +182,6 @@ import {
   FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED,
 } from "front-end/actions";
 
-import { 
-  SyntheticNode,
-  SYNTHETIC_WINDOW,
-  getSyntheticWindow, 
-  getSyntheticBrowser,
-  addSyntheticWindow,
-  getMatchingElements,
-  DEFAULT_WINDOW_WIDTH,
-  DEFAULT_WINDOW_HEIGHT,
-  getSyntheticNodeById,
-  updateSyntheticBrowser,
-  SyntheticCSSStyleRule,
-  removeSyntheticWindow,
-  SyntheticWindowOpened,
-  getSyntheticNodeWindow,
-  syntheticBrowserReducer, 
-  getSyntheticWindowChild,
-  SEnvCSSStyleRuleInterface,
-  createSyntheticWindow,
-  openSyntheticWindowRequest,
-  SyntheticCSSStyleDeclaration,
-  SYNTHETIC_WINDOW_PROXY_OPENED,
-  SEnvCSSStyleDeclarationInterface,
-  SYNTHETIC_WINDOW_OPENED
-} from "aerial-browser-sandbox";
-
 import reduceReducers = require("reduce-reducers");
 
 export const applicationReducer = (state: ApplicationState = createApplicationState(), event: BaseEvent) => {
@@ -231,18 +202,19 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     }
 
     case TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED: {
-      const { itemId, artboardId } = event as ToggleCSSTargetSelectorClicked;
-      const artboard = getArtboardById(artboardId, state);
-      const item = getNestedObjectById(itemId, artboard.document);
-      const workspace = getArtboardWorkspace(artboard.$id, state);;
-      state = toggleWorkspaceTargetCSSSelector(state, workspace.$id, item.source.uri, (item as any as SyntheticCSSStyleRule).selectorText);
+      console.warn("TODO CSS ")
+      // const { itemId, artboardId } = event as ToggleCSSTargetSelectorClicked;
+      // const artboard = getArtboardById(artboardId, state);
+      // const item = getNestedObjectById(itemId, artboard.document);
+      // const workspace = getArtboardWorkspace(artboard.$id, state);;
+      // state = toggleWorkspaceTargetCSSSelector(state, workspace.$id, item.source.uri, (item as any as SyntheticCSSStyleRule).selectorText);
       break;
     }
   }
   
   // state = canvasReducer(state, event);
   // state = syntheticBrowserReducer(state, event);
-  state = syntheticBrowserReducer(state, event);
+  // state = syntheticBrowserReducer(state, event);
   state = artboardReducer(state, event);
   state = stageReducer(state, event);
   state = artboardPaneReducer(state, event);
@@ -440,11 +412,11 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     case STAGE_TOOL_EDIT_TEXT_KEY_DOWN: {
       const { sourceEvent, nodeId } = event as StageToolEditTextKeyDown;
       if (sourceEvent.key === "Escape") {
-        const workspace = getSyntheticNodeWorkspace(state, nodeId);
-        state = setWorkspaceSelection(state, workspace.$id, getStructReference(getSyntheticNodeById(state, nodeId)));
-        state = updateWorkspaceStage(state, workspace.$id, {
-          secondarySelection: false
-        });
+        // const workspace = getSyntheticNodeWorkspace(state, nodeId);
+        // state = setWorkspaceSelection(state, workspace.$id, getStructReference(getNestedObjectById(nodeId, getNodeArtboard(nodeId, state).document)));
+        // state = updateWorkspaceStage(state, workspace.$id, {
+        //   secondarySelection: false
+        // });
       }
       return state;
     }
@@ -502,7 +474,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       }
 
       for (const item of getBoundedWorkspaceSelection(workspace)) {
-        const innerBounds = getSyntheticBrowserItemBounds(state, item);
+        const innerBounds = getWorkspaceItemBounds(item, workspace);
         const scaledBounds = scaleInnerBounds(currentBounds, currentBounds, newBounds);
 
         if (item.$type === ARTBOARD) {
@@ -526,18 +498,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
     case ARTBOARD_FOCUSED: {
       const { artboardId } = event as ArtboardFocused;
       return selectAndCenterArtboard(state, getArtboardById(artboardId, state));
-    }
-
-    case SYNTHETIC_WINDOW_PROXY_OPENED: {
-      const { instance, isNew } = event as SyntheticWindowOpened;
-
-      // if a window instance exists in the store, then it's already visible on stage -- could
-      // have been loaded from a saved state.
-      if (!isNew) {
-        return state;
-      }
-      // return selectAndCenterArtboard(state, instance.struct);
-      return state;
     }
 
     case STAGE_TOOL_OVERLAY_MOUSE_LEAVE: {
@@ -589,16 +549,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return updateWorkspace(state, state.selectedWorkspaceId, {
         hoveringRefs: []
       });
-    }
-
-    case EMPTY_WINDOWS_URL_ADDED: {
-      const workspaceId = state.selectedWorkspaceId;
-      return centerStage(state, workspaceId, {
-        left: 0,
-        top: 0,
-        right: DEFAULT_WINDOW_WIDTH,
-        bottom: DEFAULT_WINDOW_HEIGHT
-      }, false, true);
     }
 
     case STAGE_MOUNTED: {

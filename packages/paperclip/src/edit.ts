@@ -3,8 +3,8 @@ import { PCExpression, PCParent, PCFragment, PCElement, PCString, PCExpressionTy
 import { repeat } from "lodash";
 import { ExpressionLocation, CSSGroupingRule, CSSStyleRule, PCTextNode, PCBlock } from "./ast";
 import { Mutation, SetPropertyMutation, StringMutation, InsertChildMutation, RemoveChildMutation, SetValueMutation, REMOVE_CHILD_MUTATION, INSERT_CHILD_MUTATION, createStringMutation } from "source-mutation";
-import { CSS_STYLE_RULE_SET_STYLE, SET_ELEMENT_ATTRIBUTE_EDIT, INSERT_CHILD_NODE_EDIT, UPDATE_VALUE_NODE, REMOVE_CHILD_NODE_EDIT, INSERT_HTML_EDIT, CSS_INSERT_CSS_RULE_TEXT, CSS_PARENT_DELETE_RULE, CSS_STYLE_RULE_SET_STYLE_PROPERTY, CSS_STYLE_RULE_SET_SELECTOR_TEXT } from "aerial-browser-sandbox/constants";
-import { InsertHTMLMutation, createInsertHTMLMutation } from "aerial-browser-sandbox/mutation";
+// import { CSS_STYLE_RULE_SET_STYLE, SET_ELEMENT_ATTRIBUTE_EDIT, INSERT_CHILD_NODE_EDIT, UPDATE_VALUE_NODE, REMOVE_CHILD_NODE_EDIT, INSERT_HTML_EDIT, CSS_INSERT_CSS_RULE_TEXT, CSS_PARENT_DELETE_RULE, CSS_STYLE_RULE_SET_STYLE_PROPERTY, CSS_STYLE_RULE_SET_SELECTOR_TEXT } from "slim-dom";
+// import { InsertHTMLMutation, createInsertHTMLMutation } from "aerial-browser-sandbox/mutation";
 import { PC_REMOVE_CHILD_NODE, PC_REMOVE_NODE, PCRemoveNodeMutation, PCRemoveChildNodeMutation } from "./mutation";
 
 export const editPaperclipSource = (content: string, mutation: Mutation<PCExpression>): StringMutation[] => {
@@ -22,44 +22,44 @@ export const editPaperclipSource = (content: string, mutation: Mutation<PCExpres
     return [createStringMutation(0, 0, ``)]
   }
   
-  switch(mutation.type) {
-    case UPDATE_VALUE_NODE: {
-      return editNodeValue(targetNode as PCTextNode, mutation as SetValueMutation<any>);
-    }
-    case SET_ELEMENT_ATTRIBUTE_EDIT: {
-      return editElementAttribute(targetNode, mutation as SetPropertyMutation<any>);
-    }
-    case REMOVE_CHILD_NODE_EDIT: {
-      return removeChildAt(targetNode as PCParent, (mutation as RemoveChildMutation<any, any>).index);
-    }
-    case INSERT_CHILD_NODE_EDIT: {
-      return insertChild(targetNode as PCParent, mutation as RemoveChildMutation<any, any>, content);
-    }
-    case INSERT_HTML_EDIT: {
-      return insertHTML(targetNode as PCParent, mutation as InsertHTMLMutation<any>, content);
-    }
+  // switch(mutation.type) {
+  //   case UPDATE_VALUE_NODE: {
+  //     return editNodeValue(targetNode as PCTextNode, mutation as SetValueMutation<any>);
+  //   }
+  //   case SET_ELEMENT_ATTRIBUTE_EDIT: {
+  //     return editElementAttribute(targetNode, mutation as SetPropertyMutation<any>);
+  //   }
+  //   case REMOVE_CHILD_NODE_EDIT: {
+  //     return removeChildAt(targetNode as PCParent, (mutation as RemoveChildMutation<any, any>).index);
+  //   }
+  //   case INSERT_CHILD_NODE_EDIT: {
+  //     return insertChild(targetNode as PCParent, mutation as RemoveChildMutation<any, any>, content);
+  //   }
+  //   case INSERT_HTML_EDIT: {
+  //     return insertHTML(targetNode as PCParent, mutation as InsertHTMLMutation<any>, content);
+  //   }
 
-    case PC_REMOVE_CHILD_NODE: {
-      return removeChildAt(targetNode as PCParent, (mutation as PCRemoveChildNodeMutation).index);
-    }
+  //   case PC_REMOVE_CHILD_NODE: {
+  //     return removeChildAt(targetNode as PCParent, (mutation as PCRemoveChildNodeMutation).index);
+  //   }
 
-    case PC_REMOVE_NODE: {
-      return removeNode(targetNode);
-    }
+  //   case PC_REMOVE_NODE: {
+  //     return removeNode(targetNode);
+  //   }
     
-    case CSS_INSERT_CSS_RULE_TEXT: {
-      // TODO
-    }
-    case CSS_PARENT_DELETE_RULE: {
-      // TODO
-    }
-    case CSS_STYLE_RULE_SET_SELECTOR_TEXT: {
-      // TODO
-    }
-    case CSS_STYLE_RULE_SET_STYLE_PROPERTY: {
-      // TODO
-    }
-  }
+  //   case CSS_INSERT_CSS_RULE_TEXT: {
+  //     // TODO
+  //   }
+  //   case CSS_PARENT_DELETE_RULE: {
+  //     // TODO
+  //   }
+  //   case CSS_STYLE_RULE_SET_SELECTOR_TEXT: {
+  //     // TODO
+  //   }
+  //   case CSS_STYLE_RULE_SET_STYLE_PROPERTY: {
+  //     // TODO
+  //   }
+  // }
 
   return [createStringMutation(0, 0, ``)];
 };
@@ -116,11 +116,11 @@ const removeNode = (target: PCExpression) => {
   return [createStringMutation(target.location.start.pos, target.location.end.pos, ``)];
 }
 
-const insertChild = (parent: PCFragment, { target, index, child }: InsertChildMutation<any, any>, source: string) => {
-  return insertHTML(parent, createInsertHTMLMutation(target, index, child.nodeValue || child.outerHTML), source);
-};
+// const insertChild = (parent: PCFragment, { target, index, child }: InsertChildMutation<any, any>, source: string) => {
+//   return insertHTML(parent, createInsertHTMLMutation(target, index, child.nodeValue || child.outerHTML), source);
+// };
 
-const insertHTML = (parent: PCParent, { childIndex, html }: InsertHTMLMutation<any>, source: string) => {
+const insertHTML = (parent: PCParent, { childIndex, html }: any, source: string) => {
   if (parent.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
     const parentElement = parent as any as PCSelfClosingElement;
     return [createStringMutation(eatWhitespace(parentElement.location.end.pos - 2, source), parentElement.location.end.pos, ">" + html + `</${parentElement.name}>`)];

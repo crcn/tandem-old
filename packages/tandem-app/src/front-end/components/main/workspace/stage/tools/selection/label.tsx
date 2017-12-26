@@ -4,21 +4,17 @@ import * as React from "react";
 import { compose, pure } from "recompose";
 import { 
   Workspace, 
-  SyntheticBrowser,
-  SyntheticElement,
-  getSyntheticNodeById,
-  getSyntheticElementLabel,
+  getWorkspaceNode,
   getWorkspaceSelectionBounds
 } from "front-end/state";
-import { SlimVMObjectType } from "slim-dom";
+import { SlimVMObjectType, SlimElement, getElementLabel } from "slim-dom";
 
 export type SelectionLabelInnerProps = {
   workspace: Workspace;
-  browser: SyntheticBrowser;
   zoom: number;
 };
 
-const SelectionLabelBase = ({ workspace, browser, zoom }: SelectionLabelInnerProps) => {
+const SelectionLabelBase = ({ workspace, zoom }: SelectionLabelInnerProps) => {
 
   if (zoom < 0.15) {
     return null;
@@ -34,10 +30,9 @@ const SelectionLabelBase = ({ workspace, browser, zoom }: SelectionLabelInnerPro
     return null;
   }
 
-  const element = getSyntheticNodeById(browser, id) as SyntheticElement;
+  const element = getWorkspaceNode(id, workspace) as SlimElement;
 
-
-  let label = getSyntheticElementLabel(element);
+  let label = getElementLabel(element);
 
   const titleScale = Math.max(1 / zoom, 0.3);
 

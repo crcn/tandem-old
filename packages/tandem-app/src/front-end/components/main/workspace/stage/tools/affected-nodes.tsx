@@ -3,17 +3,12 @@ import * as React from "react";
 import { shiftBounds } from "aerial-common2";
 import { compose, pure } from "recompose";
 import { 
-  Workspace, 
-  SyntheticWindow,
-  SyntheticElement,
-  SyntheticBrowser, 
+  Workspace,  
   Artboard,
-  getSyntheticNodeWindow,
-  getSyntheticNodeById,
   getNodeArtboard,
   getWorkspaceNode,
-  getSelectorAffectedElements, 
-  filterMatchingTargetSelectors, 
+  // getSelectorAffectedElements, 
+  // filterMatchingTargetSelectors, 
 } from "front-end/state";
 import { getNestedObjectById, SlimElement, SlimVMObjectType } from "slim-dom";
 

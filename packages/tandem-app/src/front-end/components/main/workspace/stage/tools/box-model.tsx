@@ -2,12 +2,11 @@ import "./box-model.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
 import { Bounds, shiftBounds } from "aerial-common2";
-import { Workspace, SyntheticBrowser, SyntheticElement, getSyntheticNodeById, getSyntheticNodeWindow } from "front-end/state";
-import { SlimVMObjectType } from "slim-dom";
+import { Workspace, getNodeArtboard, getWorkspaceNode } from "front-end/state";
+import { SlimVMObjectType, SlimElement, getNestedObjectById, SlimCSSStyleDeclaration } from "slim-dom";
 
 export type BoxModelStageToolOuterProps = {
   workspace: Workspace;
-  browser: SyntheticBrowser;
   zoom: number;
 }
 
@@ -54,8 +53,8 @@ const ElementBoxModel = compose<ElementBoxModelOuterProps, ElementBoxModelOuterP
 });
 
 
-export const BoxModelStageTool = compose<BoxModelStageToolOuterProps, BoxModelStageToolOuterProps>(pure)(({ workspace, browser }: BoxModelStageToolOuterProps) => {
-  const selectedElements = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT).map(([type, $id]) => getSyntheticNodeById(browser, $id)).filter((element) => !!element) as SyntheticElement[];
+export const BoxModelStageTool = compose<BoxModelStageToolOuterProps, BoxModelStageToolOuterProps>(pure)(({ workspace }: BoxModelStageToolOuterProps) => {
+  const selectedElements = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT).map(([type, $id]) => getWorkspaceNode($id, workspace)).filter((element) => !!element) as SlimElement[];
 
   if (selectedElements.length === 0) {
     return null;
@@ -64,13 +63,13 @@ export const BoxModelStageTool = compose<BoxModelStageToolOuterProps, BoxModelSt
   return <div className="m-box-model-tool">
     {
       selectedElements.map((element) => {
-        const window = getSyntheticNodeWindow(browser, element.$id);
-        const bounds = window.allComputedBounds && window.allComputedBounds[element.$id];
-        const style = window.allComputedStyles && window.allComputedStyles[element.$id];
+        const window = getNodeArtboard(element.id, workspace);
+        const bounds = window.computedDOMInfo && window.computedDOMInfo[element.id] && window.computedDOMInfo[element.id].bounds;
+        const style = window.computedDOMInfo && window.computedDOMInfo[element.id] && window.computedDOMInfo[element.id].style;
         if (!bounds || !style) {
           return null;
         }
-        return <ElementBoxModel key={element.$id} windowBounds={window.bounds} bounds={bounds} computedStyle={style} />;
+        return <ElementBoxModel key={element.id} windowBounds={window.bounds} bounds={bounds} computedStyle={style} />;
       })
     }
   </div>;

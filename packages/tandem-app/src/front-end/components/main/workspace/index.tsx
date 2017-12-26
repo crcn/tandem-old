@@ -1,7 +1,6 @@
 import "./index.scss";
 import * as React from "react";
 import { pure, compose } from "recompose";
-import { SyntheticBrowser } from "aerial-browser-sandbox";
 import { Dispatcher, Message } from "aerial-common2";
 import { ElementGutter } from "./element-gutter";
 import { ProjectGutter } from "./project-gutter";
@@ -14,23 +13,22 @@ import { Workspace as WorkspaceStruct, ApplicationState } from "front-end/state"
 
 export type WorkspaceProps = {
   workspace: WorkspaceStruct;
-  browser: SyntheticBrowser;
   state: ApplicationState;
   dispatch?:  Dispatcher<any>
 };
 
-export const WorkspaceBase = ({ state, workspace, browser, dispatch }: WorkspaceProps) => {
+export const WorkspaceBase = ({ state, workspace, dispatch }: WorkspaceProps) => {
   const stage = workspace.stage;
 
   return <div className="workspace-component">
-    { stage.showLeftGutter ? <ProjectGutter workspace={workspace} browser={browser} dispatch={dispatch} /> : null }
+    { stage.showLeftGutter ? <ProjectGutter workspace={workspace} dispatch={dispatch} /> : null }
     <div className="workspace-editors">
       <div className="workspace-stage">
         <Stage workspace={workspace} dispatch={dispatch} />
-        <Breadcrumbs workspace={workspace} dispatch={dispatch} browser={browser} />
+        <Breadcrumbs workspace={workspace} dispatch={dispatch}  />
       </div>
     </div>
-    { stage.showRightGutter ? <ElementGutter browser={browser} workspace={workspace} dispatch={dispatch} /> : null }
+    { stage.showRightGutter ? <ElementGutter workspace={workspace} dispatch={dispatch} /> : null }
   </div>
 };
 

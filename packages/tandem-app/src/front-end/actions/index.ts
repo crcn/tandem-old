@@ -1,5 +1,5 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
-import { ApplicationState, SyntheticElement, AvailableComponent, Artboard } from "../state";
+import { ApplicationState, AvailableComponent, Artboard } from "../state";
 import { SlimParentNode, ComputedDOMInfo, DOMNodeMap } from "slim-dom";
 import { Mutation } from "source-mutation";
 

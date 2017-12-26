@@ -71,29 +71,6 @@ import {
 } from "front-end/actions";
 
 import {
-  SyntheticBrowser,
-  SYNTHETIC_WINDOW,
-  SyntheticElement,
-  SyntheticCSSStyleRule,
-  getSyntheticNodeById,
-  getSyntheticNodeWindow,
-  SyntheticNode,
-  getSyntheticBrowser,
-  getMatchingElements,
-  elementMatches,
-  SyntheticWindow,
-  getSyntheticWindowChildStructs,
-  syntheticNodeIsRelative,
-  getSyntheticBrowserItemBounds,
-  getSyntheticWindowBrowser,
-  SYNTHETIC_CSS_STYLE_RULE,
-  SyntheticBrowserRootState,
-  createSyntheticBrowserStore,
-  syntheticWindowContainsNode,
-  getSyntheticBrowserStoreItemByReference,
-} from "aerial-browser-sandbox";
-
-import {
   uniq,
   difference,
   differenceWith
@@ -153,13 +130,6 @@ export type LibraryItem = {
   hash: string;
 };
 
-export type LibraryComponent = {
-  defaultAttributes: {
-    [identifier: string]: string
-  };
-  defaultChildren?: SyntheticNode[];
-} & LibraryItem;
-
 export type Artboard = {
   scrollPosition: Point;
   dependencyUris?: string[];
@@ -191,7 +161,7 @@ export type ApplicationState = {
   selectedWorkspaceId?: string;
   element: HTMLElement;
   apiHost: string;
-} & BaseApplicationState &  ShortcutServiceState & SyntheticBrowserRootState & Struct;
+} & BaseApplicationState &  ShortcutServiceState & Struct;
 
 /**
  * Utilities
@@ -246,17 +216,18 @@ export const removeWorkspaceSelection = (root: ApplicationState, workspaceId: st
 
 const deselectOutOfScopeWorkpaceSelection = (root: ApplicationState, workspaceId: string, ref: StructReference) => {
   
-  if (ref && ref[0] === SYNTHETIC_WINDOW) {
+  if (ref && ref[0] === SlimVMObjectType.ELEMENT) {
     return root;
   }
 
-  const window = getSyntheticNodeWindow(root, ref[1]);
+  const artboard = getNodeArtboard(ref[1], root);
 
   const workspace = getWorkspaceById(root, workspaceId);
   const updatedSelection: StructReference[] = [];
 
+  
   for (const selection of workspace.selectionRefs)   {
-    if (syntheticWindowContainsNode(window, selection[1])) {
+    if (getNestedObjectById(selection[1], artboard.document)) {
       updatedSelection.push(selection);
     }
   }
@@ -268,23 +239,25 @@ const deselectOutOfScopeWorkpaceSelection = (root: ApplicationState, workspaceId
  * Prevents nodes that have a parent/child relationship from being selected.
  */
 
+ // TODO UPDATRE ME
 const deselectRelatedWorkspaceSelection = (root: ApplicationState, workspaceId: string, ref: StructReference) => {
   
-  if (ref && ref[0] === SYNTHETIC_WINDOW) {
+  if (ref && ref[0] === SlimVMObjectType.ELEMENT) {
     return root;
   }
 
   const workspace = getWorkspaceById(root, workspaceId);
-  const window = getSyntheticNodeWindow(root, ref[1]);
+  const artboard = getNodeArtboard(ref[1], root);
   const updatedSelection: StructReference[] = [];
 
   for (const selection of workspace.selectionRefs)   {
-    if (!syntheticNodeIsRelative(window, ref[1], selection[1])) {
-      updatedSelection.push(selection);
-    }
+    // if (!syntheticNodeIsRelative(window, ref[1], selection[1])) {
+    //   updatedSelection.push(selection);
+    // }
   }
 
-  return setWorkspaceSelection(root, workspaceId, ...updatedSelection);
+  return root;
+  // return setWorkspaceSelection(root, workspaceId, ...updatedSelection);
 };
 
 // deselect unrelated refs, ensures that selection is not a child of existing one. etc.
@@ -371,74 +344,74 @@ export const addWorkspace = (root: ApplicationState, workspace: Workspace) => {
   };
 }
 
-export const filterMatchingTargetSelectors = weakMemo((targetCSSSelectors: TargetSelector[], element: any, document: any) => filterApplicableTargetSelectors(targetCSSSelectors, document).filter((rule) => elementMatches(rule.value, element, document)));
+// export const filterMatchingTargetSelectors = weakMemo((targetCSSSelectors: TargetSelector[], element: any, document: any) => filterApplicableTargetSelectors(targetCSSSelectors, document).filter((rule) => elementMatches(rule.value, element, document)));
 
-const filterApplicableTargetSelectors = weakMemo((selectors: TargetSelector[], window: SyntheticWindow): TargetSelector[] => {
-  const map = {};
-  for (const selector of selectors) {
-    map[selector.uri + selector.value] = selector;
-  }
+// const filterApplicableTargetSelectors = weakMemo((selectors: TargetSelector[], window: SyntheticWindow): TargetSelector[] => {
+//   const map = {};
+//   for (const selector of selectors) {
+//     map[selector.uri + selector.value] = selector;
+//   }
 
-  const rules = [];
+//   const rules = [];
 
-  const children = getSyntheticWindowChildStructs(window);
-  for (const $id in children) {
-    const child = children[$id] as SyntheticCSSStyleRule;
-    if (child.$type === SYNTHETIC_CSS_STYLE_RULE && child.source && map[child.source.uri + child.selectorText]) {
-      rules.push(map[child.source.uri + child.selectorText]);
-    }
-  }
+//   const children = getSyntheticWindowChildStructs(window);
+//   for (const $id in children) {
+//     const child = children[$id] as SyntheticCSSStyleRule;
+//     if (child.$type === SYNTHETIC_CSS_STYLE_RULE && child.source && map[child.source.uri + child.selectorText]) {
+//       rules.push(map[child.source.uri + child.selectorText]);
+//     }
+//   }
 
-  return uniq(rules);
-});
+//   return uniq(rules);
+// });
 
-const getSelectorAffectedWindows = weakMemo((targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser): SyntheticWindow[] => {
-  const affectedWindows: SyntheticWindow[] = [];
+// const getSelectorAffectedWindows = weakMemo((targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser): SyntheticWindow[] => {
+//   const affectedWindows: SyntheticWindow[] = [];
 
-  for (const window of browser.windows) {
-    if (filterApplicableTargetSelectors(targetCSSSelectors, window).length) {
-      affectedWindows.push(window);
-    }
-  }
+//   for (const window of browser.windows) {
+//     if (filterApplicableTargetSelectors(targetCSSSelectors, window).length) {
+//       affectedWindows.push(window);
+//     }
+//   }
 
-  return affectedWindows;
-});
+//   return affectedWindows;
+// });
 
-export const getObjectsWithSameSource = weakMemo((itemId: string, browser: SyntheticBrowser, limitToElementWindow?: boolean): any[] => {
-  const target = getSyntheticNodeById(browser, itemId);
-  const objects = {};
-  const objectsWithSameSource = [];
-  const windows = limitToElementWindow ? [getSyntheticNodeWindow(browser, itemId)] : browser.windows;
-  for (const window of windows) {
-    const windowsObjects = getSyntheticWindowChildStructs(window);
-    for (const $id in windowsObjects) {
-      const child = windowsObjects[$id];
-      if (child.source && target.source && expressionLocationEquals(child.source, target.source)) {
-        objectsWithSameSource.push(child);
-      }
-    }
-  }
-  return objectsWithSameSource;
-});
+// export const getObjectsWithSameSource = weakMemo((itemId: string, browser: SyntheticBrowser, limitToElementWindow?: boolean): any[] => {
+//   const target = getSyntheticNodeById(browser, itemId);
+//   const objects = {};
+//   const objectsWithSameSource = [];
+//   const windows = limitToElementWindow ? [getSyntheticNodeWindow(browser, itemId)] : browser.windows;
+//   for (const window of windows) {
+//     const windowsObjects = getSyntheticWindowChildStructs(window);
+//     for (const $id in windowsObjects) {
+//       const child = windowsObjects[$id];
+//       if (child.source && target.source && expressionLocationEquals(child.source, target.source)) {
+//         objectsWithSameSource.push(child);
+//       }
+//     }
+//   }
+//   return objectsWithSameSource;
+// });
 
-export const getSelectorAffectedElements = weakMemo((elementId: string, targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser, limitToElementWindow?: boolean): SyntheticElement[] => {
-  const affectedElements: SyntheticElement[] = [];
-  if (!targetCSSSelectors.length) {
-    affectedElements.push(...getObjectsWithSameSource(elementId, browser, limitToElementWindow));
-  } else {
-    let affectedWindows = targetCSSSelectors.length ? getSelectorAffectedWindows(targetCSSSelectors, browser) : browser.windows;
-    if (limitToElementWindow) {
-      affectedWindows = [getSyntheticNodeWindow(browser, elementId)];
-    }
-    for (const window of affectedWindows) {
-      for (const { value: selectorText } of targetCSSSelectors) {
-        affectedElements.push(...getMatchingElements(window, selectorText));
-      }
-    }
-  }
+// export const getSelectorAffectedElements = weakMemo((elementId: string, targetCSSSelectors: TargetSelector[], browser: SyntheticBrowser, limitToElementWindow?: boolean): SyntheticElement[] => {
+//   const affectedElements: SyntheticElement[] = [];
+//   if (!targetCSSSelectors.length) {
+//     affectedElements.push(...getObjectsWithSameSource(elementId, browser, limitToElementWindow));
+//   } else {
+//     let affectedWindows = targetCSSSelectors.length ? getSelectorAffectedWindows(targetCSSSelectors, browser) : browser.windows;
+//     if (limitToElementWindow) {
+//       affectedWindows = [getSyntheticNodeWindow(browser, elementId)];
+//     }
+//     for (const window of affectedWindows) {
+//       for (const { value: selectorText } of targetCSSSelectors) {
+//         affectedElements.push(...getMatchingElements(window, selectorText));
+//       }
+//     }
+//   }
 
-  return uniq(affectedElements);
-});
+//   return uniq(affectedElements);
+// });
 
 export const getWorkspaceReference = (ref: StructReference, workspace: Workspace) => {
   if (ref[0] === ARTBOARD) {
@@ -661,8 +634,7 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
     createKeyboardShortcut("left", { type: LEFT_KEY_UP }, { keyup: true }),
     createKeyboardShortcut("right", { type: RIGHT_KEY_DOWN }, { keyup: false }),
     createKeyboardShortcut("right", { type: RIGHT_KEY_UP }, { keyup: true }),
-  ],
-  browserStore: createSyntheticBrowserStore()
+  ]
 });
 
 export const createArtboard = createStructFactory<Artboard>(ARTBOARD, {
@@ -725,7 +697,7 @@ export const getStageToolMouseNodeTargetReference = (state: ApplicationState, ev
   return [SlimVMObjectType.ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [any, string];
 }
 
-export const serializeApplicationState = ({ workspaces, selectedWorkspaceId, browserStore }: ApplicationState) => ({
+export const serializeApplicationState = ({ workspaces, selectedWorkspaceId }: ApplicationState) => ({
   workspaces: workspaces.map(serializeWorkspace),
   selectedWorkspaceId
 });
@@ -765,6 +737,5 @@ const serializeStage = ({ showTextEditor, showRightGutter, showLeftGutter, showT
 });
 
 export * from "./shortcuts";
-export * from "aerial-browser-sandbox/src/state";
 export * from "./api";
 export * from "./dnd";

@@ -1,11 +1,5 @@
 IMMEDIATE:
 
-- [ ] diff/patch for slim-dom 
-- [ ] query selector
-- [ ] query selector testing
-- [ ] meta click for component cells must work
-- [ ] DOM API wrapper (use with nwmatcher)
-
 - [ ] CSS Inspector*
 
 - [ ] Bugs

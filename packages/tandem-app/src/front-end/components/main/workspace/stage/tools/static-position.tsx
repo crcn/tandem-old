@@ -3,18 +3,12 @@ import { Bounds, shiftBounds, moveBounds, Point } from "aerial-common2";
 import { compose, pure } from "recompose";
 import * as React from "react";
 import { 
-  Workspace, 
-  SyntheticElement, 
-  getComputedStyle,
-  SyntheticBrowser, 
-  getSyntheticNodeById,
-  getSyntheticNodeWindow,
-  getSyntheticNodeAncestors,
+  Workspace,
 } from "front-end/state";
 
 export type StaticPositionStageToolOuterProps = {
   zoom: number;
-  browser: SyntheticBrowser;
+
   workspace: Workspace;
 };
 
@@ -23,33 +17,33 @@ type ElementStaticPositionOuterProps = {
   position: Point;
   windowPosition: Point;
   elementBounds: Bounds;
-  element: SyntheticElement;
+  // element: SyntheticElement;
 };
 
-const ElementStaticPositionInfo = compose<ElementStaticPositionOuterProps, ElementStaticPositionOuterProps>(pure)(({ windowPosition, element, elementBounds, zoom, position }: ElementStaticPositionOuterProps) => {
+// const ElementStaticPositionInfo = compose<ElementStaticPositionOuterProps, ElementStaticPositionOuterProps>(pure)(({ windowPosition, element, elementBounds, zoom, position }: ElementStaticPositionOuterProps) => {
 
-  const borderScale = zoom / 1;
+//   const borderScale = zoom / 1;
   
-  const staticBounds = shiftBounds(elementBounds, {
-    left: -position.left,
-    top: -position.top
-  });
+//   const staticBounds = shiftBounds(elementBounds, {
+//     left: -position.left,
+//     top: -position.top
+//   });
 
-  const style = {
-    left: windowPosition.left + staticBounds.left,
-    top: windowPosition.top + staticBounds.top,
-    width: staticBounds.right - staticBounds.left,
-    height: staticBounds.bottom - staticBounds.top,
-    boxShadow: `0 0 0 ${borderScale}px #FF00FF`
-  };
+//   const style = {
+//     left: windowPosition.left + staticBounds.left,
+//     top: windowPosition.top + staticBounds.top,
+//     width: staticBounds.right - staticBounds.left,
+//     height: staticBounds.bottom - staticBounds.top,
+//     boxShadow: `0 0 0 ${borderScale}px #FF00FF`
+//   };
 
-  return <div className="element-static-position" style={style}>
-  </div>;
-});
+//   return <div className="element-static-position" style={style}>
+//   </div>;
+// });
 
 // TODO - use hotkey toggle to show this component. It shouldn't be on by default
 
-export const StaticPositionStageToolBase = ({ zoom, workspace, browser }: StaticPositionStageToolOuterProps) => {
+export const StaticPositionStageToolBase = ({ zoom, workspace }: StaticPositionStageToolOuterProps) => {
 
 
   // do nothing for now. Need to wire this up with a hotkey flag, 

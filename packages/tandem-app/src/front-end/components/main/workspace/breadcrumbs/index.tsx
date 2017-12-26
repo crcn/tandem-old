@@ -4,13 +4,8 @@ import * as cx from "classnames";
 import {compose, pure, withHandlers } from "recompose";
 import { weakMemo, Dispatcher } from "aerial-common2";
 import { 
-  SyntheticBrowser, 
   Workspace, 
-  getSyntheticNodeAncestors,
-  getSyntheticNodeById,
-  getSyntheticNodeWindow,
   getNodeArtboard,
-  getSyntheticElementLabel,
 } from "front-end/state";
 import { getNodeAncestors, SlimVMObjectType, getNestedObjectById, SlimElement, getElementLabel } from "slim-dom";
 
@@ -22,7 +17,6 @@ import {
 
 export type BreadcrumbsOuterProps = {
   workspace: Workspace;
-  browser: SyntheticBrowser;
   dispatch: Dispatcher<any>;
 };
 

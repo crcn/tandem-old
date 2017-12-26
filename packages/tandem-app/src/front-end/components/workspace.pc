@@ -1,6 +1,6 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./gutter.pc" />
-<link rel="import" href="./windows-pane.pc" />
+<link rel="import" href="./artboards-pane.pc" />
 <link rel="import" href="./components-pane.pc" />
 <link rel="import" href="./css-inspector-pane.pc" />
 
@@ -135,39 +135,29 @@
   <template>
     <div class="workspace">
       <td-gutter left>
-        <td-windows-pane onWindowClicked windows=[[bind [
+        <td-artboards-pane onArtboardClicked artboards=[[bind [
           {
             $id: null,
-            document: {
-              title: "Window 1",
-            }
+            componentId: "component 1"
           },
           {
             $id: null,
             location: "http://google.com",
             hovering: true,
-            document: {
-              title: null
-            }
+            componentId: "component 1"
           },
           {
             $id: null,
-            document: {
-              title: "Window 3",
-            }
+            componentId: "component 1"
           },
           {
             $id: null,
-            document: {
-              title: "Window 4",
-            }
+            componentId: "component 1"
           },
           {
             $id: null,
             selected: true,
-            document: {
-              title: "Window 5",
-            }
+            componentId: "component 1"
           }
         ]]] />
         <td-components-pane onAddComponentClick dispatch components=[[bind [
@@ -230,7 +220,7 @@
           tagName: "div"
         },
         rule: {
-          $id: 1
+          assocId: 1
         },
         declarations: [
           { 
@@ -296,7 +286,7 @@
         label: ".header",
         headerHovering: true,
         rule: {
-          $id: 1
+          assocId: 1
         },
         declarations: [
           { 
@@ -407,7 +397,7 @@
         label: "body, html",
         inherited: true,
         rule: {
-          $id: 1
+          assocId: 1
         },
         declarations: [
           { 
