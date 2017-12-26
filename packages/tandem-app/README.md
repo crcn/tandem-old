@@ -5,13 +5,12 @@ IMMEDIATE:
   - [ ] how to eliminate IDs? Maybe have them on the front-end only?
 - [ ] query selector testing
 - [ ] meta click for component cells must work
-- [ ] /components/:componentId/preview:e
+- [ ] /components/:componentId/preview
+- [ ] /open path should call /components/:component/preview/source-info/:checksum/:vmObjectPath
 
-- [ ] perf test - (preview a TON of windows.)
-- [ ] CSS Inspector
+- [ ] CSS Inspector*
 
 - [ ] Bugs
-  - [ ] adding & removing windows causes an exception
   - [ ] dev server stops after a while
   - [ ] making change then saving (quickly) replaces content with `[object Object]`
   
