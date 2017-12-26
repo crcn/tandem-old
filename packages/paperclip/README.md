@@ -50,16 +50,18 @@ paperclip.bundleVanilla("component.pc", {
 
 - [ ] Linting
   - Warning for components that do not have `<preview />` tag  
+  - Error for components that do not have IDs
+  - Warning for unknown tag names
+- [ ] i18n error messages - used also as codes. Used in Tandem as well to help user fix issues.
+
+- [ ] Source maps*
 
 #### LOW PRIO CORE TODOS
 
-- [ ] Source maps*
 - [ ] a11y helpers
 - [ ] remove property attr parsing code
 - [ ] pretty formatter
-
 - [ ] i18n support (use standard)
-- [ ] warning if unknown tag name is used
 - [ ] vanilla transpiler needs to also bundle assets like images
 - Warning when element (besides style) defined outside of component
 

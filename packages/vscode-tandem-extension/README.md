@@ -45,11 +45,8 @@ paperclip.bundleVanilla("component.pc", {
 
 - [ ] Bugs
   - [ ] `[object Object]` replacing content
-  - [ ] `null` replacing content (hard to reproduce)
   - [ ] dev tools stops working after coding for a bit
   
-
-
 #### LOW PRIO CORE TODOS
 
 - [ ] Source maps*
@@ -59,9 +56,7 @@ paperclip.bundleVanilla("component.pc", {
   - [ ] Warning when there are unhandled nodes 
   - [ ] Error when there are type mismatches
 
-- [ ] Pretty error handling
 - [ ] i18n support (use standard)
-- [ ] warning if unknown tag name is used
 
 
 #### LOW PRIO EXTENSION TODOS

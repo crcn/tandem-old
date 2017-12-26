@@ -1,46 +1,56 @@
 IMMEDIATE:
 
-- [ ] CSS Inspector*
+- [ ] diff/patch
+  - [ ] CSS
+
+- [ ] CSS Inspector* 
+  - [ ] eye toggler
+  - [ ] add new style - specific to target element
+  - [ ] delete style rule
+  - [ ] delete declaration
+  - [ ] edit raw declaration value
+  - [ ] inspect `:root`
+
+- [ ] Components pane
+  - [ ] add new new component
+  - [ ] delete component
+  - [ ] highlight artboards that match component cells
+
+- [ ] Native elements pane
+
+- [ ] stage tools
+  - [ ] DND elements (native & custom) to stage elements
+    - [ ] auto select dropped element
+    - [ ] "Double click to edit" for text
+    
+  - [ ] prompt to create new element when native element dropped to empty space
+
+- [ ] CSS Inspector enhanced
+  - [ ] color picker
+  - [ ] measurement converter
+
+- [ ] breadcrumbs
+
+- [ ] stage tools enhanced
+  - [ ] highlight affected nodes
+  - [ ] snap into place tools
+
+- [ ] Error pane (displayed in footer - pops )
+  - [ ] error items display "quick fix" button that points user to UI where they can make change.
+
+- [ ] pretty CSS pane
 
 - [ ] Bugs
   - [ ] dev server stops after a while
   - [ ] making change then saving (quickly) replaces content with `[object Object]`
+
+SAFETY FEATURES:
+
+- [ ] ALL errors pane showing paperclip warnings
   
-- [ ] Tandem
-  - [ ] do NOT reload window if error occurs - causes flickering. Display error instead.
-  - [ ] breadcrumbs
-    - [ ] cmd click breadcrumb to view source
-    - [ ] scrolling - no line break
-  - [ ] UX
-    - [ ] spinner 
-
-HIGH PRIO:
-
-- [ ] Native elements pane
-- [ ] artboards should automatically be layed out if they're close to one another
-  - [ ] do not allow artboards to overlap
-
-- [ ] Components panes
-  - [ ] DND elements to other elements
-  - [ ] native elements
-
-- [ ] Tandem
-  - [ ] Components Pane
-    - [ ] DND components to existing components
-    - [ ] filter
-  - [ ] CSS Inspector
-    - [ ] toggle eye
-    - [ ] add declaration
-    - [ ] delete declaration
-    - [ ] edit declaration
-    - [ ] add style rule (auto add to scoped style element)
-    - [ ] `:root` inspecting
-  - [ ] Guides
-    - [ ] snap DND
-
 LOW PRIO:
 
-- [ ] remove synthetic browser impl
+- [ ] do not allow artboards to overlap
 
 POSSIBLY:
 
