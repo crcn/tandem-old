@@ -1,9 +1,9 @@
 import { SlimParentNode, SlimElement, SlimVMObjectType } from "./state";
 import { weakMemo, FlattenedObjects } from "./utils";
 import { parseSelector } from "./selector-parser";
-import { flattenObjects } from "./index";
+import { flattenObjects, SlimBaseNode } from "./index";
 import nwmatcher = require("nwmatcher");
-import { getLightDomWrapper, traverseLightDOM, LightBaseNode, LightDocumentFragment, LightElement, LightParentNode, LightTextNode, getLightDocumentWrapper } from "./dom-wrap";
+import { getLightDomWrapper, traverseLightDOM, LightBaseNode, LightDocumentFragment, LightElement, LightParentNode, LightTextNode, getLightDocumentWrapper, LightDocument } from "./dom-wrap";
 
 
 const fakeWindow = {
@@ -19,22 +19,30 @@ export const querySelector = (selector: string, root: SlimParentNode) => {
   return matchingElements.length ? matchingElements[0] : null;
 };
 
-export const querySelectorAll = weakMemo((selector: string, root: SlimParentNode) => {
-  const document = getLightDocumentWrapper(root);
+const ownerDocument = new LightDocument();
 
-  const tester = nwmatcher({
-    document
-  });
+const queryTester = nwmatcher({
+  document: ownerDocument
+});
 
-  tester.configure({ CACHING: true, VERBOSITY: false });
+queryTester.configure({ CACHING: true, VERBOSITY: false });
 
+export const querySelectorAll = weakMemo((selector: string, node: SlimBaseNode) => {
+  const wrappedNode = getLightDomWrapper(node);
+  wrappedNode.ownerDocument = ownerDocument;
+  
   const matches = [];
 
-  traverseLightDOM(document.body, (element) => {
-    if (element.nodeType === 1 && tester.match(element, selector)) {
-      matches.push(element.source);
+  if (wrappedNode.nodeType === 1 && queryTester.match(wrappedNode, selector)) {
+    matches.push(node);
+  };
+
+  if ((node as SlimParentNode).childNodes) {
+    const parent = node as SlimParentNode;
+    for (let i = 0, {length} = parent.childNodes; i < length; i++) {
+      matches.push(...querySelectorAll(selector, parent.childNodes[i]));
     }
-  });
-  
+  }
+
   return matches;
 });

@@ -38,15 +38,17 @@ export abstract class LightBaseNode {
   abstract nodeName: string;
   abstract nodeType: number;
   public parentNode: LightParentNode;
-  public $$ownerDocument: LightDocument;
+  public ownerDocument: LightDocument;
   public host: LightParentNode;
   public childNodes: LightBaseNode[] = [];
   constructor(readonly source: SlimBaseNode) {
 
   }
-
-  get ownerDocument() {
-    return this.$$ownerDocument || this.parentNode.ownerDocument;
+  get nextSibling() {
+    return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) + 1] : null;
+  }
+  get prevSibling() {
+    return this.parentNode ? this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1] : null;
   }
 }
 
@@ -96,7 +98,7 @@ export class LightElement extends LightParentNode {
   }
   constructor(source: SlimElement, ownerDocument?: LightDocument) {
     super(source);
-    this.$$ownerDocument = ownerDocument;
+    this.ownerDocument = ownerDocument;
     this.nodeName = this.tagName = source.tagName;
     if (source) {
       if (source.shadow) {
