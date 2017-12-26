@@ -165,7 +165,7 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
           previewName: preview.name
         }
   
-        const { document } = runPCFile({ entry, graph, idSeed: crc32(getReadFile(state)(filePath)) });
+        const { document } = runPCFile({ entry, graph, idSeed: crc32(getReadFile(state)(filePath) + filePath + entry.componentId + preview.name) });
         const prevDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
         
         console.log(`Evaluated component ${component.id}:${preview.name}`);

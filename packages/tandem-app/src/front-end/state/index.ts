@@ -689,7 +689,6 @@ export const getScaledMouseStagePosition = (state: ApplicationState, event: Stag
 
 export const getStageToolMouseNodeTargetReference = (state: ApplicationState, event: StageToolOverlayMouseMoved|StageToolOverlayClicked) => {
   
-
   const workspace = getSelectedWorkspace(state);
   const stage     = workspace.stage;
 

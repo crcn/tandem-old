@@ -192,6 +192,9 @@ export const patchDOM = (diffs: Mutation<any[]>[], map: DOMNodeMap, root: HTMLEl
       case CSS_SET_SELECTOR_TEXT: 
       case CSS_SET_STYLE_PROPERTY: {
 
+        // TODO - just reset stylesheet
+        console.error(`Unable to patch CSS for now`);
+        break;
       }
     }
   }
