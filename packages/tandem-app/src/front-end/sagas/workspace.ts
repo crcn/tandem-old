@@ -79,6 +79,7 @@ import {
   AVAILABLE_COMPONENT,
   getNodeArtboard,
   getArtboardByInfo,
+  getDocumentBodyPreview,
   getBoundedWorkspaceSelection,
   getWorkspaceLastSelectionOwnerArtboard,
   getAvailableComponent,
@@ -146,7 +147,7 @@ function* handleMetaClickElement() {
     const artboard = getNodeArtboard(node.id, workspace);
 
     try {
-      const json = yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(node, artboard.document), state);
+      const json = yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(node, getDocumentBodyPreview(artboard.document)), state);
     } catch(e) {
       yield put(exceptionCaught(e));
     }
@@ -329,7 +330,7 @@ function* handleSourceClicked() {
     const item = getWorkspaceNode(itemId, getSelectedWorkspace(state));
 
     const artboard = getNodeArtboard(item.id, state);
-    yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(item, artboard.document), state);
+    yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(item, getDocumentBodyPreview(artboard.document)), state);
   }
 }
 

@@ -1,4 +1,4 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode  } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum  } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -84,6 +84,7 @@ function* handlePreviewDiffed() {
           previewPath,
           patchedDoc
         ),
+        getDocumentChecksum(patchedDoc as SlimParentNode),
         patchDOM(diff, patchedDoc as SlimParentNode, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
       )
     );
@@ -148,12 +149,13 @@ function* reloadArtboard(artboardId: string) {
     yield spawn(function*() {
       yield put(artboardRendered(artboardId, yield take(renderChan)));
     });
+    
 
     const html: SlimElement = createSlimElement("html", "html", [], [
       createSlimElement("body", "body", [], [doc])
     ]);
 
-    yield put(artboardLoaded(artboard.$id, dependencyUris, html, mount));
+    yield put(artboardLoaded(artboard.$id, dependencyUris, html, getDocumentChecksum(doc as SlimParentNode), mount));
   });
 }
 
@@ -249,7 +251,6 @@ function* handleOpenExternalArtboardsRequested() {
 
     // TODO
     for (const { componentId, previewName, width, height } of artboardInfo) {
-      console.log(width, height, componentId, previewName);
       const existingArtboard = workspace.artboards.find((artboard) => artboard.componentId === componentId && (!previewName || artboard.previewName === previewName));
       if (existingArtboard) {
         lastExistingArtboard = existingArtboard;

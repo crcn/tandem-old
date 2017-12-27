@@ -96,10 +96,12 @@ function* handleOpenFile(req: Request, res: Response) {
 
     if (error) {
       res.statusCode = 404;
-      res.send({
+      return res.send({
         message: `Unable to open file`
       });
     }
+
+    res.send({ message: "ok" });
   });
 
   yield put(openFileReq);

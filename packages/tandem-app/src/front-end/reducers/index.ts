@@ -48,7 +48,7 @@ import {
   moveArtboardToBestPosition,
   getArtboardWorkspace,
   getStageTranslate,
-  getDocumentBody,
+  getDocumentBodyPreview,
   getArtboardBounds,
   ShortcutServiceState,
   getWorkspaceItemBounds,
@@ -763,24 +763,24 @@ const selectAndCenterArtboard = (state: ApplicationState, artboard: Artboard) =>
 const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {
     case ARTBOARD_LOADED: {
-      const { artboardId, dependencyUris, document, mount } = event as ArtboardLoaded;
+      const { artboardId, dependencyUris, document, checksum, mount } = event as ArtboardLoaded;
       return updateArtboard(state, artboardId, {
         dependencyUris,
         document,
         originalDocument: document,
         mount,
-        checksum: getDocumentChecksum(getDocumentBody(document))
+        checksum
       });
     }
 
     case ARTBOARD_PATCHED: {
-      const { artboardId, document, nativeNodeMap } = event as ArtboardPatched;
+      const { artboardId, document, checksum, nativeNodeMap } = event as ArtboardPatched;
       const artboard = getArtboardById(artboardId, state);
       return updateArtboard(state, artboardId, {
         document,
         nativeNodeMap,
         originalDocument: document,
-        checksum: getDocumentChecksum(getDocumentBody(document))
+        checksum
       });
     }
 

@@ -472,9 +472,6 @@ export const moveArtboardToBestPosition = (artboard: Artboard, state: Applicatio
     height: artboard.bounds.bottom - artboard.bounds.top
   } : DEFAULT_ARTBOARD_SIZE;
 
-  console.log(artboard.bounds);
-
-
   const workspace = getSelectedWorkspace(state);
   const bounds = workspace.artboards.length ? getArtboardBounds(workspace) : {
     left: 0,
@@ -544,6 +541,8 @@ export const getArtboardByInfo = (componentId: string, previewName: string, stat
 export const getArtboardDocumentBody = (artboard: Artboard) => getDocumentBody(artboard.document);
 
 export const getDocumentBody = (document: SlimParentNode): SlimElement => (document.childNodes[0] as SlimElement).childNodes[0] as SlimElement;
+
+export const getDocumentBodyPreview = (document: SlimParentNode): SlimElement => getDocumentBody(document);
 
 export const getArtboardDocumentBodyPath = (artboard: Artboard) => [0, 0];
 

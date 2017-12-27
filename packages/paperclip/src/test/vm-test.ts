@@ -19,7 +19,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root><#shadow>Hello</#shadow></root> `
+      ` <root><#shadow> Hello </#shadow></root> `
     ],
     [
       {
@@ -34,7 +34,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root><#shadow>a</#shadow>b</root> `
+      ` <root><#shadow> a </#shadow>b</root> `
     ],
     [
       {
@@ -170,7 +170,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root a="true"><#shadow> <div> true!</div> </#shadow></root> `
+      ` <root a="true"><#shadow> <div> true! </div> </#shadow></root> `
     ],
     [
       {
@@ -207,7 +207,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root><#shadow> <div>no pass</div> </#shadow></root> `
+      ` <root><#shadow> <div> no pass </div> </#shadow></root> `
     ],
     [
       {
@@ -227,7 +227,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root a="1"><#shadow> <div>One</div> </#shadow></root> `
+      ` <root a="1"><#shadow> <div> One </div> </#shadow></root> `
     ],
     [
       {
@@ -250,7 +250,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root a="2"><#shadow> <div>Two</div> </#shadow></root> `
+      ` <root a="2"><#shadow> <div> Two </div> </#shadow></root> `
     ],
     [
       {
@@ -273,7 +273,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root a="3"><#shadow> <div>No pass</div> </#shadow></root> `
+      ` <root a="3"><#shadow> <div> No pass </div> </#shadow></root> `
     ],
     [
       {
@@ -330,7 +330,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root><#shadow> <compc><#shadow> 1 </#shadow>child</compc> </#shadow></root> `
+      ` <root><#shadow> <compc><#shadow> 1 </#shadow> child </compc> </#shadow></root> `
     ],
     [
       {

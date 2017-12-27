@@ -422,8 +422,8 @@ const  pickComponentPreviews = async(module: Module): Promise<PreviewOption[]> =
 
 function* handleOpenFileRequested() {
   while(true) {
-    const request = yield take(OPEN_FILE_REQUESTED)
-    const { componentId, previewName, checksum, vmObjectPath }: OpenFileRequested = request;
+    const req = yield take(OPEN_FILE_REQUESTED)
+    const { componentId, previewName, checksum, vmObjectPath }: OpenFileRequested = req;
     const state: ExtensionState = yield select();
 
     let uriBase = `http://localhost:${state.childDevServerInfo.port}/components/${componentId}/preview`;
@@ -456,7 +456,7 @@ function* handleOpenFileRequested() {
     } catch(e) {
       console.error(`Unable to fetch ${uriBase}`);
       console.error(e.stack);
-      yield put(openFileRequestResult(request, e));
+      yield put(openFileRequestResult(req, e));
       continue;
     }
 
@@ -475,7 +475,7 @@ function* handleOpenFileRequested() {
       });
     });
 
-    yield put(openFileRequestResult(request));
+    yield put(openFileRequestResult(req));
   }
 }
 

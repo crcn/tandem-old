@@ -585,6 +585,7 @@ function* getVMObjectSoureInfo(req: express.Request, res: express.Response, next
   const document = getPreviewDocumentByChecksum(componentId, previewName, checksum, state);
 
   if (!document) {
+    console.log(`Cannot find vm source info doc`);
     return next();
   }
 

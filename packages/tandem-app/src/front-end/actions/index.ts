@@ -309,6 +309,7 @@ export type SourceClicked = {
 
 export type ArtboardLoaded = {
   artboardId: string;
+  checksum: string;
   dependencyUris: string[];
   document: SlimParentNode;
   mount: HTMLIFrameElement;
@@ -316,6 +317,7 @@ export type ArtboardLoaded = {
 
 export type ArtboardPatched = {
   artboardId: string;
+  checksum: string;
   nativeNodeMap: DOMNodeMap;
   document: SlimParentNode;
 } & BaseEvent;  
@@ -459,10 +461,11 @@ export const cssDeclarationCreated = (name: string, value: string, declarationId
   type: CSS_DECLARATION_CREATED
 });
 
-export const artboardLoaded = (artboardId, dependencyUris: string[], document: SlimParentNode, mount: HTMLIFrameElement): ArtboardLoaded => ({
+export const artboardLoaded = (artboardId, dependencyUris: string[], document: SlimParentNode, checksum: string, mount: HTMLIFrameElement): ArtboardLoaded => ({
   type: ARTBOARD_LOADED,
   artboardId,
   document, 
+  checksum,
   dependencyUris,
   mount
 });
@@ -472,9 +475,10 @@ export const exceptionCaught = (error?: { message: string }): ExceptionCaught =>
   error,
 });
 
-export const artboardPatched = (artboardId: string, document: SlimParentNode, nativeNodeMap: DOMNodeMap): ArtboardPatched => ({
+export const artboardPatched = (artboardId: string, document: SlimParentNode, checksum: string, nativeNodeMap: DOMNodeMap): ArtboardPatched => ({
   type: ARTBOARD_PATCHED,
   nativeNodeMap,
+  checksum,
   artboardId,
   document
 });
