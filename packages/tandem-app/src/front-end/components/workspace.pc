@@ -207,6 +207,9 @@
         ]]] />
       </td-gutter>
       <div class="center">
+        <div [[if showError || true]]>
+          <td-banner onClose error>Some error</td-banner>
+        </div>
         <td-stage />
         <td-workspace-footer workspace=[[bind workspace]] />
       </div>
@@ -429,6 +432,9 @@
   </template>
   <preview name="main" width="1024" height="768">
     <td-workspace workspace=[[bind null]] />
+  </preview>
+  <preview name="error-banner" width="1024" height="768">
+    <td-workspace workspace=[[bind null]] showError />
   </preview>
 </component>
 

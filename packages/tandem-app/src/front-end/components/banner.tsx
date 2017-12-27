@@ -49,7 +49,7 @@ const enhanceWorkspaceBanner = compose<TdBannerInnerProps, BannerOuterProps>(
     return <Motion defaultStyle={{top: -100}} style={{top: spring(!closeButtonClicked && banner ? 0 : -100, SPRING_OPS) }} onRest={onBannerRest}>
       {
         ({top}) => {
-          return <div style={{position: "fixed", top: 0, transform: `translateY(${top}%)`, zIndex: 1024, width: `100%` }}>
+          return <div style={{position: "absolute", top: 0, transform: `translateY(${top}%)`, zIndex: 1024, width: `100%` }}>
             {banner}
           </div>
         }
