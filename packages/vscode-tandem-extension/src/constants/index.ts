@@ -11,7 +11,7 @@ export const NEW_COMPONENT_SNIPPET = `` +
   </style>
   <template>
   </template>
-  <preview name="main">
+  <preview name="main" width="1366" height="768">
   </preview>
 </component>
 `;
