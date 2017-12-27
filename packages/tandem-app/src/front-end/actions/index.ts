@@ -136,6 +136,13 @@ export type BaseKeyboardEvent<T> = {
   sourceEvent?: T;
 } & BaseEvent;
 
+export type ArtboardInfo = {
+  componentId: string;
+  previewName: string;
+  width: number;
+  height: number;
+};
+
 export type PromptedNewWindowUrl = {
   workspaceId: string;
   location: string;
@@ -215,7 +222,7 @@ export type BreadcrumbItemClicked = {
 } & BaseEvent;
 
 export type OpenArtboardsRequested = {
-  artboardInfo: Array<string[]>
+  artboardInfo: ArtboardInfo[]
 } & BaseEvent;
 
 export type BreadcrumbItemMouseEnterLeave = {

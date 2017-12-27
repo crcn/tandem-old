@@ -3,8 +3,8 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn, cancel } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openArtboardsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp, OpenFileRequestResult, openFileRequestResult } from "../actions";
-import { parseModuleSource, loadModuleAST, Module, getPCStartTagAttribute } from "paperclip";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openArtboardsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp, OpenFileRequestResult, openFileRequestResult, ArtboardInfo } from "../actions";
+import { parseModuleSource, loadModuleAST, Module, getPCStartTagAttribute, Component, Preview } from "paperclip";
 import { VMObjectSource, VMObject } from "slim-dom";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
 import { ExtensionState, getFileCacheContent, FileCache, getFileCacheMtime, TandemEditorReadyStatus } from "../state";
@@ -371,7 +371,12 @@ function* handleOpenCurrentFileInTandem() {
     }
 
     // null provided for default preview (first one)
-    const artboardInfo = selectedPreviewOptions.map(({ componentId, previewName }) => [componentId, previewName]);
+    const artboardInfo: ArtboardInfo[]  = selectedPreviewOptions.map(({ component, preview }): ArtboardInfo => ({
+      componentId: component.id,
+      previewName: preview.name,
+      width: preview.width,
+      height: preview.height
+    }));
 
     yield call(requestOpenTandemIfDisconnected);
     yield put(openArtboardsRequested(artboardInfo));    
@@ -380,8 +385,8 @@ function* handleOpenCurrentFileInTandem() {
 
 type PreviewOption = {
   label: string;
-  componentId: string;
-  previewName: string;
+  component: Component;
+  preview: Preview;
 }
 
 const getComponentPreviewOptions = (module: Module): PreviewOption[] => {
@@ -390,8 +395,8 @@ const getComponentPreviewOptions = (module: Module): PreviewOption[] => {
       ...options,
       ...component.previews.map((preview) => ({
         label: `${component.id} - ${preview.name}`,
-        componentId: component.id,
-        previewName: preview.name
+        component,
+        preview
       }))
     ];
   }, []);

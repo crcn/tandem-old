@@ -797,9 +797,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
     
     case ARTBOARD_CREATED: {
       let { artboard } = event as ArtboardCreated;
-      if (!artboard.bounds) {
-        artboard = moveArtboardToBestPosition(artboard, state);
-      }
+      artboard = moveArtboardToBestPosition(artboard, state);
 
       const workspace = getSelectedWorkspace(state);
       state = updateWorkspace(state, workspace.$id, {

@@ -67,8 +67,16 @@ export type OpenFileRequestResult = {
   error?: Error;
 } & Action;
 
+
+export type ArtboardInfo = {
+  componentId: string;
+  previewName: string;
+  width: number;
+  height: number;
+};
+
 export type OpenArtboardsRequested = {
-  artboardInfo: Array<string[]>;
+  artboardInfo: Array<ArtboardInfo>;
   type: string;
   $public: true
 } & Action;
@@ -151,7 +159,7 @@ export const insertNewComponentExecuted = () => ({
   type: CREATE_INSERT_NEW_COMPONENT_EXECUTED
 });
 
-export const openArtboardsRequested = (artboardInfo: Array<string[]>): OpenArtboardsRequested => ({
+export const openArtboardsRequested = (artboardInfo: ArtboardInfo[]): OpenArtboardsRequested => ({
   type: OPEN_ARTBOARDS_REQUESTED,
   artboardInfo,
   $public: true

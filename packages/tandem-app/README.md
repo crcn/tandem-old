@@ -2,9 +2,11 @@ IMMEDIATE:
 
 - [ ] warning if preview tag is missing
 - [ ] open window with respected preview size from vscode
+- [ ] error banner if cannot open file via meta click
 - [ ] get keyframes to work
 - [ ] keyframe diffing
 
+HIGH PRIO:
 
 - [ ] Bug fixing
   - [ ] "Cannot read property 'type' of undefined" - start typing new component

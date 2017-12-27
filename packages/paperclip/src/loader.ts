@@ -25,6 +25,7 @@ import {
 import { weakMemo } from "./utils";
 
 import { parseModuleSource } from "./parser";
+import { DEFAULT_PREVIEW_SIZE } from "./constants";
 import { DiagnosticType, Diagnostic } from "./parser-utils";
 
 export type IO = {
@@ -47,6 +48,8 @@ export type ComponentMetadata = {
 export type Preview = {
   name: string;
   source: PCElement;
+  width: number;
+  height: number;
 };
 
 export type Component = {
@@ -361,7 +364,9 @@ const createComponent = (element: PCElement, modifiers: PCBlock[], attributes: P
         if (child.type === PCExpressionType.ELEMENT && (child as PCElement).childNodes.find(child => child.type === PCExpressionType.ELEMENT || child.type === PCExpressionType.SELF_CLOSING_ELEMENT) && Boolean(getPCStartTagAttribute(element as any, "name"))) {
           previews.push({
             source: element as any as PCElement,
-            name: getPCStartTagAttribute(element as any, "name")
+            name: getPCStartTagAttribute(element as any, "name"),
+            width: Number(getPCStartTagAttribute(element as any, "width") || DEFAULT_PREVIEW_SIZE.width),
+            height: Number(getPCStartTagAttribute(element as any, "height") || DEFAULT_PREVIEW_SIZE.height)
           });
         }
       } else if (tagName === "meta") {

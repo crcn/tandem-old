@@ -248,7 +248,8 @@ function* handleOpenExternalArtboardsRequested() {
     let lastExistingArtboard;
 
     // TODO
-    for (const [componentId, previewName] of artboardInfo) {
+    for (const { componentId, previewName, width, height } of artboardInfo) {
+      console.log(width, height, componentId, previewName);
       const existingArtboard = workspace.artboards.find((artboard) => artboard.componentId === componentId && (!previewName || artboard.previewName === previewName));
       if (existingArtboard) {
         lastExistingArtboard = existingArtboard;
@@ -256,7 +257,16 @@ function* handleOpenExternalArtboardsRequested() {
       }
       yield put(artboardCreated(lastExistingArtboard = createArtboard({
         componentId,
-        previewName
+        previewName,
+
+        // okay to position here since the artboard will be moved
+        // to a better location in the reducer
+        bounds: {
+          left: 0,
+          top: 0,
+          right: width,
+          bottom: height
+        }
       })))
     }
 

@@ -35,6 +35,7 @@ import {
   expressionLocationEquals,
   createImmutableStructFactory,
 } from "aerial-common2";
+import { DEFAULT_PREVIEW_SIZE } from "paperclip";
 
 import { SlimElement, SlimBaseNode, SlimParentNode, SlimCSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById, SlimWindow, SlimVMObjectType } from "slim-dom";
 
@@ -87,10 +88,7 @@ export const ARTBOARD = "ARTBOARD";
 
 const ARTBOARD_PADDING = 10;
 
-export const DEFAULT_ARTBOARD_SIZE = {
-  width: 1024,
-  height: 768
-}
+export const DEFAULT_ARTBOARD_SIZE = DEFAULT_PREVIEW_SIZE;
 
 export type Stage = {
   secondarySelection?: boolean;
@@ -467,6 +465,14 @@ export const getWorkspaceItemBounds = weakMemo((value: any, workspace: Workspace
 });
 
 export const moveArtboardToBestPosition = (artboard: Artboard, state: ApplicationState) => {
+  const size = artboard.bounds ? {
+    width: artboard.bounds.right - artboard.bounds.left,
+    height: artboard.bounds.bottom - artboard.bounds.top
+  } : DEFAULT_ARTBOARD_SIZE;
+
+  console.log(artboard.bounds);
+
+
   const workspace = getSelectedWorkspace(state);
   const bounds = workspace.artboards.length ? getArtboardBounds(workspace) : {
     left: 0,
@@ -480,8 +486,8 @@ export const moveArtboardToBestPosition = (artboard: Artboard, state: Applicatio
     bounds: {
       left: ARTBOARD_PADDING + bounds.right,
       top: ARTBOARD_PADDING + bounds.top,
-      right: ARTBOARD_PADDING + bounds.right + DEFAULT_ARTBOARD_SIZE.width,
-      bottom: ARTBOARD_PADDING + bounds.top + DEFAULT_ARTBOARD_SIZE.height
+      right: ARTBOARD_PADDING + bounds.right + size.width,
+      bottom: ARTBOARD_PADDING + bounds.top + size.height
     }
   }
 }
