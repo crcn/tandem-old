@@ -73,6 +73,8 @@ export function getPaperclipHTMLMode(
 
       allDiagnostics.push(...lintDiagnostics);
 
+      console.log(JSON.stringify(allDiagnostics, null, 2));
+
       return allDiagnostics.map(diag => ({
         range: {
           start: {

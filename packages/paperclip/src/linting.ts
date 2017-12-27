@@ -11,7 +11,7 @@ import { Diagnostic, DiagnosticType } from "./parser-utils";
 import { InferenceType, inferNodeProps, Inference, ANY_REFERENCE, getPrettyTypeLabelEnd, getTypeLabels, getReferenceKeyPath, EACH_KEY, getNestedInference } from "./inferencing";
 import { DependencyGraph, Dependency, Component, getChildComponentInfo } from "./loader";
 import { weakMemo, eachValue } from "./utils";
-import { PCExpression, PCExpressionType, PCElement, PCSelfClosingElement, PCAttribute, PCBlock, PCComment, PCEndTag, PCFragment, PCParent, PCReference, PCRootExpression, PCStartTag, PCString, PCStringBlock, PCTextNode, BKArray, BKBind, BKElse, BKElseIf, BKExpression, BKExpressionType, BKGroup, BKIf, BKKeyValuePair, BKNot, BKNumber, BKObject, BKOperation, BKProperty, BKPropertyReference, BKRepeat, BKReservedKeyword, BKString, BKVarReference }  from "./ast";
+import { PCExpression, PCExpressionType, PCElement, PCSelfClosingElement, PCAttribute, PCBlock, PCComment, PCEndTag, PCFragment, PCParent, PCReference, PCRootExpression, PCStartTag, PCString, PCStringBlock, PCTextNode, BKArray, BKBind, BKElse, BKElseIf, BKExpression, BKExpressionType, BKGroup, BKIf, BKKeyValuePair, BKNot, BKNumber, BKObject, BKOperation, BKProperty, BKPropertyReference, BKRepeat, BKReservedKeyword, BKString, BKVarReference, getElementTagName, getPCStartTagAttribute  }  from "./ast";
 
 const MAX_CALLSTACK_OCCURRENCE = 10;
 
@@ -125,6 +125,40 @@ const lintComponent = (component: Component, context: LintContext) => {
   for (let i = 0, {length} = component.previews; i < length; i++) {
     const preview = component.previews[i];
     context = lintNode(preview.source, context);
+  }
+
+  let hasPreview = false;
+  let usedPreviewNames = {};
+
+  if (!component.id) {
+    context = addDiagnosticError(component.source, `id attribute is missing`, context);
+  }
+
+  for (let i = 0, {length} = component.source.childNodes; i < length; i++) {
+    const componentChild = component.source.childNodes[i] as PCElement;
+    if (componentChild.type === PCExpressionType.ELEMENT || componentChild.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
+      if (getElementTagName(componentChild) === "preview") {
+        hasPreview = true;
+
+        if (componentChild.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
+          context = addDiagnosticWarning(componentChild, `tags must not be self closing`, context);
+        }
+
+        const name = getPCStartTagAttribute(componentChild, "name"); 
+
+        if (!name) {
+          context = addDiagnosticWarning(componentChild, `name attribute is missing`, context);
+        } else {
+          if (usedPreviewNames[name]) {
+            context = addDiagnosticError(componentChild, `name already exists`, context);
+          }
+          usedPreviewNames[name] = true;
+        }
+      }
+    }
+  }
+  if (!hasPreview) {
+    context = addDiagnosticWarning(component.source, `Missing preview tag`, context);
   }
 
   return context;
@@ -298,13 +332,15 @@ const getInferenceTypeFromValue = (value: any) => {
 
 const addDiagnosticError = (expr: PCExpression, message: string, context: LintContext) => addDiagnostic(expr, DiagnosticType.ERROR, message, context);
 
+const addDiagnosticWarning = (expr: PCExpression, message: string, context: LintContext) => addDiagnostic(expr, DiagnosticType.WARNING, message, context);
+
 const addDiagnostic = (expr: PCExpression, type: DiagnosticType, message: string, context: LintContext): LintContext => {
   return {
     ...context,
     diagnostics: [
       ...context.diagnostics,
       {
-        type: DiagnosticType.ERROR,
+        type,
         location: expr.location,
         message,
         filePath: context.currentFilePath

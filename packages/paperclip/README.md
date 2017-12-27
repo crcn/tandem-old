@@ -49,8 +49,7 @@ paperclip.bundleVanilla("component.pc", {
 #### HIGH PRIO TODOS
 
 - [ ] Linting
-  - Warning for components that do not have `<preview />` tag  
-  - Error for components that do not have IDs
+  - Error for existing components
   - Warning for unknown tag names
 - [ ] i18n error messages - used also as codes. Used in Tandem as well to help user fix issues.
 
