@@ -129,6 +129,7 @@ export type LibraryItem = {
 };
 
 export type Artboard = {
+  loading?: boolean;
   scrollPosition: Point;
   dependencyUris?: string[];
   computedDOMInfo?: ComputedDOMInfo;
@@ -648,6 +649,7 @@ export const createApplicationState = createStructFactory<ApplicationState>(APPL
 });
 
 export const createArtboard = createStructFactory<Artboard>(ARTBOARD, {
+  loading: true,
   scrollPosition: {
     left: 0,
     top: 0

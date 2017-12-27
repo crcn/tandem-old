@@ -81,6 +81,8 @@ import {
   ResizerMoved,
   TOGGLE_TOOLS_SHORTCUT_PRESSED,
   RESIZER_MOVED,
+  ARTBOARD_LOADING,
+  ArtboardLoading,
   STAGE_MOUNTED,
   ResizerMouseDown,
   BANNER_CLOSED,
@@ -93,11 +95,13 @@ import {
   ResizerPathMoved,
   STAGE_MOUSE_MOVED,
   EXCEPTION_CAUGHT,
+  FILE_CONTENT_CHANGED,
   ExceptionCaught,
   LoadedSavedState,
   LOADED_SAVED_STATE,
   RESIZER_MOUSE_DOWN,
   BreadcrumbItemClicked,
+  FileChanged,
   BreadcrumbItemMouseEnterLeave,
   BREADCRUMB_ITEM_CLICKED,
   STAGE_MOUSE_CLICKED,
@@ -767,10 +771,28 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       return updateArtboard(state, artboardId, {
         dependencyUris,
         document,
+        loading: false,
         originalDocument: document,
         mount,
         checksum
       });
+    }
+
+    case ARTBOARD_LOADING: {
+      const { artboardId } = event as ArtboardLoaded;
+      return updateArtboard(state, artboardId, { loading: true });
+    }
+
+    case FILE_CONTENT_CHANGED: {
+      const { filePath } = event as FileChanged;
+
+      const workspace = getSelectedWorkspace(state);
+      for (const artboard of workspace.artboards) {
+        if (artboard.dependencyUris.indexOf(filePath) !== -1) {
+          state = updateArtboard(state, artboard.$id, { loading: true });
+        }
+      }
+      return state;
     }
 
     case ARTBOARD_PATCHED: {
@@ -778,6 +800,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       const artboard = getArtboardById(artboardId, state);
       return updateArtboard(state, artboardId, {
         document,
+        loading: false,
         nativeNodeMap,
         originalDocument: document,
         checksum
@@ -787,7 +810,8 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
     case ARTBOARD_RENDERED: {
       const { artboardId, nativeNodeMap } = event as ArtboardRendered;
       return updateArtboard(state, artboardId, {
-        nativeNodeMap
+        nativeNodeMap,
+        loading: false
       });
     }
 

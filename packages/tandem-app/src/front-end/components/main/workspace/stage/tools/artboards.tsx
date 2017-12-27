@@ -5,6 +5,7 @@ import { Workspace } from "front-end/state";
 import { Dispatcher, getBoundsSize, Translate, wrapEventToDispatch } from "aerial-common2";
 import { stageToolArtboardTitleClicked, stageToolWindowKeyDown, stageToolWindowBackgroundClicked, openExternalWindowButtonClicked } from "front-end/actions";
 import { Artboard, getArtboardLabel } from "front-end/state";
+import { Spinner } from "front-end/components/spinner";
 
 type ArtboardItemInnerProps = {
   artboard: Artboard;
@@ -52,7 +53,7 @@ const ArtboardItemBase = ({ artboard, translate, dispatch, fullScreenArtboardId 
     style={titleStyle as any} 
     onKeyDown={wrapEventToDispatch(dispatch, stageToolWindowKeyDown.bind(this, artboard.$id))} 
     onClick={wrapEventToDispatch(dispatch, stageToolArtboardTitleClicked.bind(this, artboard.$id))}>
-      { getArtboardLabel(artboard) }
+      { getArtboardLabel(artboard) } { artboard.loading ? <Spinner /> : null }
 
       {/* TODO: eventually this should point to browserstack -- whatever the navigator agent is of the artboard */}
       <i className="ion-share" onClick={wrapEventToDispatch(dispatch, openExternalWindowButtonClicked.bind(this, artboard.$id))} />

@@ -179,10 +179,8 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
         if (prevDocument) {
           const diff = diffNode(prevDocument, newDocument);
 
-          // push to the public
-          if (diff.length) {
-            yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(prevDocument), diff));
-          }
+          // push even if there are no diffs so that FE can flag windows as loaded.
+          yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(prevDocument), diff));
         }
       }
     }

@@ -1,4 +1,4 @@
-import { PCElement, PCTextNode, PCSelfClosingElement, PCExpression, PCRootExpression, PCExpressionType, PCComment, PCStartTag, BKRepeat, BKIf, BKElse, BKExpression, BKExpressionType, BKElseIf, PCAttribute, PCStringBlock, BKNumber, BKNot, BKString, BKOperation, BKGroup, BKObject, BKArray, BKBind, PCString, PCBlock, CSSStyleRule, CSSSheet, CSSAtRule, CSSDeclarationProperty, CSSExpression, CSSExpressionType, CSSGroupingRule } from "./ast";
+import { PCElement, PCTextNode, PCSelfClosingElement, PCExpression, PCRootExpression, PCExpressionType, PCComment, PCStartTag, BKRepeat, BKIf, BKElse, BKExpression, BKExpressionType, BKElseIf, PCAttribute, PCStringBlock, BKNumber, BKNot, BKString, BKOperation, BKGroup, BKObject, BKArray, BKBind, PCString, PCBlock, CSSStyleRule, CSSSheet, CSSAtRule, CSSDeclarationProperty, CSSExpression, CSSExpressionType, CSSGroupingRule, BKReservedKeyword } from "./ast";
 import { Diagnostic, DiagnosticType, diagnosticsContainsError } from "./parser-utils";
 import { getReferenceKeyPath } from "./inferencing";
 import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris, getAllGlobalStyles } from "./loader";
@@ -425,6 +425,13 @@ const evalExpr = (expr: BKExpression, context: VMContext) => {
     }
     case BKExpressionType.BIND: {
       return evalExpr((expr as BKBind).value, context);
+    }
+    case BKExpressionType.RESERVED_KEYWORD: {
+      const { value } = expr as BKReservedKeyword;
+      if (value === "null") return null;
+      if (value === "undefined") return undefined;
+      if (value === "false" || value === "true") return value === "true";
+      return undefined;
     }
     case BKExpressionType.IF: 
     case BKExpressionType.ELSEIF: {

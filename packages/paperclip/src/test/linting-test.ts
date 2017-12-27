@@ -24,21 +24,55 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
-          location: {
-            start: {
-              column: 15,
-              line: 9,
-              pos: 198
+          "type": "WARNING",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 2,
+              "pos": 11
             },
-            end: {
-              column: 23,
-              line: 9,
-              pos: 206
+            "end": {
+              "column": 23,
+              "line": 6,
+              "pos": 127
             }
           },
-          message: `Property "a" is undefined`,
-          type: DiagnosticType.ERROR
+          "message": "Missing preview tag",
+          "filePath": "entry"
+        },
+        {
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 15,
+              "line": 9,
+              "pos": 198
+            },
+            "end": {
+              "column": 23,
+              "line": 9,
+              "pos": 206
+            }
+          },
+          "message": "Property \"a\" is undefined",
+          "filePath": "entry"
+        },
+        {
+          "type": "WARNING",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 7,
+              "pos": 138
+            },
+            "end": {
+              "column": 23,
+              "line": 11,
+              "pos": 253
+            }
+          },
+          "message": "Missing preview tag",
+          "filePath": "entry"
         }
       ]
     ],
@@ -160,6 +194,23 @@ describe(__filename + "#", () => {
       },
       [
         {
+          "type": "WARNING",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 2,
+              "pos": 11
+            },
+            "end": {
+              "column": 23,
+              "line": 6,
+              "pos": 128
+            }
+          },
+          "message": "Missing preview tag",
+          "filePath": "entry"
+        },
+        {
           "type": "ERROR",
           "location": {
             "start": {
@@ -196,7 +247,25 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      []
+      [
+        {
+          "type": "WARNING",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 2,
+              "pos": 11
+            },
+            "end": {
+              "column": 23,
+              "line": 6,
+              "pos": 128
+            }
+          },
+          "message": "Missing preview tag",
+          "filePath": "entry"
+        }
+      ]
     ],
     [
       {
@@ -217,6 +286,23 @@ describe(__filename + "#", () => {
         `
       },
       [
+        {
+          "type": "WARNING",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 2,
+              "pos": 11
+            },
+            "end": {
+              "column": 23,
+              "line": 6,
+              "pos": 128
+            }
+          },
+          "message": "Missing preview tag",
+          "filePath": "entry"
+        },
         {
           "type": "ERROR",
           "location": {
@@ -260,6 +346,9 @@ describe(__filename + "#", () => {
             <template>
               <a />
             </template>
+            <preview name="a">
+              <a />
+            </preview>
           </component>
         `
       },
@@ -290,6 +379,8 @@ describe(__filename + "#", () => {
             <template>
               <a [[if a.a]] a=[[bind a.a]] />
             </template>
+            <preview name="a">
+            </preview>
           </component>
         `
       },
@@ -430,11 +521,15 @@ describe(__filename + "#", () => {
             <template>
               [[bind d]]
             </template>
+            <preview name="a">
+            </preview>
           </component>
           <component id="b">
             <template>
 
             </template>
+            <preview name="a">
+            </preview>
           </component>
           <component id="a">
             <template>
@@ -454,13 +549,13 @@ describe(__filename + "#", () => {
           "location": {
             "start": {
               "column": 28,
-              "line": 19,
-              "pos": 450
+              "line": 23,
+              "pos": 558
             },
             "end": {
               "column": 30,
-              "line": 19,
-              "pos": 452
+              "line": 23,
+              "pos": 560
             }
           },
           "message": "Property \"d\" is undefined",

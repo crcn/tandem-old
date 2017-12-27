@@ -1,44 +1,53 @@
 <link rel="import" href="./global.pc" />
 
 <component id="td-spinner">
-  <!--style>
-    .loader,
-    .loader:after {
-      border-radius: 50%;
-      width: 10em;
-      height: 10em;
+  <style>
+    :host {
+      display: inline-block;
+      padding-left: 4px;
     }
     .loader {
-      margin: 60px auto;
+      border-radius: 50%;
+      width: 0.9em;
+      height: 0.9em;
+    }
+
+    .loader:after {
+      border-radius: 50%;
+      width: 1em;
+      height: 1em;
+    }
+    .loader {
       font-size: 10px;
       position: relative;
       text-indent: -9999em;
-      border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-      border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-      border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-      border-left: 1.1em solid #ffffff;
-      -webkit-transform: translateZ(0);
-      -ms-transform: translateZ(0);
-      transform: translateZ(0);
-      -webkit-animation: load8 1.1s infinite linear;
-      animation: load8 1.1s infinite linear;
+      border-top: 0.2em solid rgba(0, 0, 0, 0.1);
+      border-right: 0.2em solid rgba(0, 0, 0, 0.1);
+      border-bottom: 0.2em solid rgba(0, 0, 0, 0.1);
+      border-left: 0.2em solid rgba(0, 0, 0, 0.3);
+      transform: translateZ(0) translateY(-50px);
+      animation: spin 1.1s infinite linear;
     }
-    @keyframes load8 {
+    :host([noSpin]) .loader {
+      animation: none;
+    }
+    @keyframes spin {
       0% {
-        -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
       }
       100% {
-        -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
       }
     }
 
-  </style-->
+  </style>
   <template>
-    <div class="loader"></div>
+    <div class="loader">
+    </div>
   </template>
   <preview name="main">
-    <td-spinner />
+    <div style=[[bind {width: "100%", height: "100%", background: "#FEFEFE", position: "absolute", padding: "10px" }]]>
+      loading <td-spinner />
+    </div>
   </preview>
 </component>

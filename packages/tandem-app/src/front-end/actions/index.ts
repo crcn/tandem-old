@@ -57,6 +57,7 @@ export const ARTBOARD_LOADED = "ARTBOARD_LOADED";
 export const ARTBOARD_PATCHED = "ARTBOARD_PATCHED";
 export const ARTBOARD_SCROLL = "ARTBOARD_SCROLL";
 export const ARTBOARD_RENDERED = "ARTBOARD_RENDERED";
+export const ARTBOARD_LOADING = "ARTBOARD_LOADING";
 export const ARTBOARD_CREATED = "ARTBOARD_CREATED";
 export const DOWN_KEY_DOWN = "DOWN_KEY_DOWN";
 export const DOWN_KEY_UP = "DOWN_KEY_UP";
@@ -334,6 +335,10 @@ export type ArtboardRendered = {
   nativeNodeMap: DOMNodeMap;
 } & BaseEvent;  
 
+export type ArtboardLoading = {
+  artboardId: string;
+} & BaseEvent;  
+
 export type ArtboardMountLoaded = {
   
 } & BaseEvent;
@@ -493,6 +498,11 @@ export const stageResized = (width: number, height: number): StageResized => ({
   type: STAGE_RESIZED,
   width,
   height
+});
+
+export const artboardLoading = (artboardId: string): ArtboardLoading => ({
+  type: ARTBOARD_LOADING,
+  artboardId
 });
 
 export const artboardRendered = (artboardId: string, nativeNodeMap: DOMNodeMap): ArtboardRendered => ({

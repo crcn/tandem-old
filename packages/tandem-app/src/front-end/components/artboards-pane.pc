@@ -1,5 +1,6 @@
 <link rel="import" href="./global.pc" />
 <link rel="import" href="./pane.pc" />
+<link rel="import" href="./td-spinner.pc" />
 
 <component id="td-artboards-pane-row">
   <style>
@@ -22,7 +23,7 @@
   </style>
   <template>
     <div onClick=[[bind onClick]]>
-      [[bind label]]
+      [[bind label]] <td-spinner [[if loading]] />
     </div>
   </template>
 </component>

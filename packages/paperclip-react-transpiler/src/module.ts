@@ -221,6 +221,7 @@ const transpileStyle = (style: PCElement, scopeClass?: string, component?: Compo
   `    const style = document.createElement("style");\n` +
   `    style.textContent = ${JSON.stringify(transpileCSSSheet(sheet, (selectorText, i) => {
         const scopedSelectorText = scopeClass ? selectorText.split(" ").map((part, i) => {
+          if (/%/.test(part)) return part;
 
           // TODO - this is all nasty. Need to parse selector as AST, then transform
           // that.

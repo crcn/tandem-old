@@ -35,7 +35,7 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => 
           if (typeof attribute.value === "object") {
             Object.assign(ret[attribute.name], attribute.value);
           }
-        } else if (attribute.value) {
+        } else if (typeof attribute.value !== "object") {
           ret.setAttribute(attribute.name, attribute.value);
         }
       }
@@ -94,7 +94,7 @@ const stringifyRule = (rule: SlimCSSRule) => {
     }
     case SlimVMObjectType.AT_RULE: {
       const { name, params, rules } = rule as SlimCSSAtRule;
-      return `@${name} ${params} { ${rules.map(stringifyRule)} }`
+      return `@${name} ${params} { ${rules.map(stringifyRule).join(" ")} }`
     }
   }
 };
@@ -177,7 +177,11 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
       }
       case SET_ATTRIBUTE_VALUE: {
         const { name, newValue } = mutation as SetPropertyMutation<any>;
-        (target as HTMLElement).setAttribute(name, newValue);
+        if (!newValue) {
+          (target as HTMLElement).removeAttribute(name);
+        } else {
+          (target as HTMLElement).setAttribute(name, newValue);
+        }
         break;
       }
       case REMOVE_CHILD_NODE: {

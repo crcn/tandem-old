@@ -1,7 +1,13 @@
 IMMEDIATE:
 
-
+- [ ] spinner
+- [ ] allow style="[[string]]" for VM
+- [ ] BUG: artboards that share same component ID & preview clobber each other. Need to create UIds based on artboard.
+- [ ] BUG: transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
+- [ ] prefix keyframes name
+- [ ] BUG: components in preview can be used without importing them
 HIGH PRIO:
+- [ ] BUG: hovering prop not working for components pane
 
 - [ ] Bug fixing
   - [ ] "Cannot read property 'type' of undefined" - start typing new component

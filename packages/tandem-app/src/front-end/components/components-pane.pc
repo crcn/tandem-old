@@ -100,7 +100,7 @@
         </span>
       </span>
       <span slot="content" class="content">
-        <td-components-pane-cell [[repeat components as component]] [[bind component]] hovering=[[bind true]] key=[[bind component.$id]] dispatch=[[bind dispatch]] />
+        <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] dispatch=[[bind dispatch]] />
       </span>
     </td-pane>
   </template>
@@ -112,6 +112,7 @@
             onDragEnd: null,
             onClick: null,
             label: "div", 
+            hovering: false,
             screenshot: {
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
@@ -124,6 +125,7 @@
             onDragEnd: null,
             onClick: null,
             label: "h2", 
+            hovering: false,
             screenshot: {
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
