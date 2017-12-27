@@ -73,9 +73,10 @@ export function getPaperclipHTMLMode(
 
       allDiagnostics.push(...lintDiagnostics);
 
-      console.log(JSON.stringify(allDiagnostics, null, 2));
+      const filterDoc = (diag: PCDiagnostic) => diag.filePath === document.uri;
 
-      return allDiagnostics.map(diag => ({
+
+      return allDiagnostics.filter(filterDoc).map(diag => ({
         range: {
           start: {
             line: diag.location.start.line - 1,

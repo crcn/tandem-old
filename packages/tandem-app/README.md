@@ -1,8 +1,5 @@
 IMMEDIATE:
 
-- [ ] warning if preview tag is missing
-- [ ] open window with respected preview size from vscode
-- [ ] error banner if cannot open file via meta click
 - [ ] get keyframes to work
 - [ ] keyframe diffing
 
@@ -20,7 +17,6 @@ HIGH PRIO:
   - [ ] delete declaration
   - [ ] edit raw declaration value
   - [ ] inspect `:root`
-
 
 - [ ] Components pane
   - [ ] add new new component
