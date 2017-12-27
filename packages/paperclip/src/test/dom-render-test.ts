@@ -1,5 +1,5 @@
 import { FakeDocument, FakeAttribute, FakeDocumentFragment, FakeElement, FakeTextNode, stringifyNode } from "./utils";
-import { patchDOM, patchNode, diffNode, SlimParentNode, SlimElementAttribute, SlimCSSMediaRule, SlimBaseNode, DOMNodeMap, renderDOM } from "slim-dom";
+import { patchDOM, patchNode, diffNode, SlimParentNode, SlimElementAttribute, SlimCSSAtRule, SlimBaseNode, DOMNodeMap, renderDOM } from "slim-dom";
 import { LoadDependencyGraphResult, runPCFile, loadModuleDependencyGraph } from "..";
 import { expect } from "chai";
 

@@ -5,10 +5,8 @@ export enum SlimVMObjectType {
   DOCUMENT_FRAGMENT,
   STYLE_SHEET,
   STYLE_RULE,
-  MEDIA_RULE,
-  FONT_FACE_RULE,
-  KEYFRAME_RULE,
-  UNKNOWN_RULE
+  AT_RULE,
+  FONT_FACE_RULE
 };
 
 export type SourcePosition = {
@@ -109,8 +107,9 @@ export type SlimCSSGroupingRule = {
   rules: SlimCSSRule[];
 } & SlimCSSRule;
 
-export type SlimCSSMediaRule = {
-  conditionText: string;
+export type SlimCSSAtRule = {
+  name: string;
+  params: string;
 } & SlimCSSGroupingRule;
 
 export type SlimCSSStyleDeclaration = {

@@ -3,7 +3,7 @@ import { Diagnostic, DiagnosticType, diagnosticsContainsError } from "./parser-
 import { getReferenceKeyPath } from "./inferencing";
 import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris, getAllGlobalStyles } from "./loader";
 import { eachValue } from "./utils";
-import { SlimBaseNode, SlimParentNode, SlimTextNode, SlimElement, SlimVMObjectType, pushChildNode, SlimElementAttribute, VMObjectSource, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSMediaRule, VMObject } from "slim-dom";
+import { SlimBaseNode, SlimParentNode, SlimTextNode, SlimElement, SlimVMObjectType, pushChildNode, SlimElementAttribute, VMObjectSource, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSAtRule, VMObject } from "slim-dom";
 import { kebabCase } from "lodash";
 
 // Note that this is MUTABLE primarily to make incrementing
@@ -358,16 +358,15 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
         const child = children[i];
         rules[i] = createCSSRule(child, context);
       }
+      return {
+        id: createId(context),
+        name,
+        type: SlimVMObjectType.AT_RULE,
+        params: params.join(" "),
+        rules,
+        source,
+      } as SlimCSSAtRule;
 
-      if (name === "media") {
-        return {
-          id: createId(context),
-          type: SlimVMObjectType.MEDIA_RULE,
-          conditionText: params.join(" "),
-          rules,
-          source,
-        } as SlimCSSMediaRule;
-      }
     }
   }
 }

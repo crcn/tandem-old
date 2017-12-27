@@ -1,4 +1,4 @@
-import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute, SlimWindow } from "./state";
+import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute, SlimWindow } from "./state";
 import { querySelector, elementMatches } from "./query-selector";
 import { createMediaMatcher } from "./media-match";
 import { uniq, flatten, kebabCase } from "lodash";
@@ -77,6 +77,11 @@ export const moveCSSRule = <TParent extends SlimCSSGroupingRule>(parent: TParent
 export const setCSSSelectorText = <TRule extends SlimCSSStyleRule>(rule: TRule, selectorText: string): TRule => ({
   ...(rule as any),
   selectorText
+});
+
+export const setCSSAtRuleSetParams = <TRule extends SlimCSSAtRule>(rule: TRule, params: string): TRule => ({
+  ...(rule as any),
+  params
 });
 
 export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, name: string, newValue: any, index: number): TRule => ({
@@ -304,7 +309,7 @@ const layoutObjects = weakMemo((value: any, parentId: string): FlattenedObjects[
 const layoutCSSObjects = weakMemo((value: any, parentId: string): FlattenedObjects[] => {
   const children: FlattenedObjects[] = [];
   switch(value.type) {
-    case SlimVMObjectType.MEDIA_RULE:
+    case SlimVMObjectType.AT_RULE:
     case SlimVMObjectType.STYLE_SHEET: {
       const grouping = value as SlimCSSGroupingRule;
       return [
@@ -468,11 +473,11 @@ const getDocumentStyleSheets = weakMemo((document: SlimParentNode) => {
 });
 
 const getDocumentCSSRules = weakMemo((document: SlimParentNode) => {
-  const allRules: (SlimCSSStyleRule|SlimCSSMediaRule)[] = [];
+  const allRules: (SlimCSSStyleRule|SlimCSSAtRule)[] = [];
   const styleSheets = getDocumentStyleSheets(document);
   for (const styleSheet of styleSheets) {
     for (const rule of styleSheet.rules) {
-      if (rule.type === SlimVMObjectType.STYLE_RULE || rule.type == SlimVMObjectType.MEDIA_RULE) {
+      if (rule.type === SlimVMObjectType.STYLE_RULE || rule.type == SlimVMObjectType.AT_RULE) {
         allRules.push(rule as SlimCSSStyleRule);
       }
     }
@@ -485,7 +490,7 @@ export type CSSRuleMatchResult = {
   style: SlimCSSStyleDeclaration;
   rule?: SlimCSSStyleRule;
   targetElement: SlimElement;
-  mediaRule?: SlimCSSMediaRule;
+  mediaRule?: SlimCSSAtRule;
 };
 
 // TODO - media query information here
@@ -507,6 +512,8 @@ export type AppliedCSSRuleResult = {
     [identifier: string]: boolean
   }
 };
+
+export const isMediaRule = (rule: SlimCSSRule) => rule.type == SlimVMObjectType.AT_RULE && (rule as SlimCSSAtRule).name === "media";
 
 export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elementId: string, breakPastHost?: boolean) => {
   const element = getSyntheticWindowChild(elementId, window) as any as SlimElement;
@@ -531,7 +538,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elemen
         });
       }
     // else - check if media rule
-    } else if ((rule.type === SlimVMObjectType.MEDIA_RULE && createMediaMatcher(window)((rule as any as SlimCSSMediaRule).conditionText))) {
+    } else if ((isMediaRule(rule) && createMediaMatcher(window)((rule as any as SlimCSSAtRule).params))) {
       const grouping = rule as SlimCSSGroupingRule;
       for (const childRule of grouping.rules) {
         if (elementMatches((childRule as SlimCSSStyleRule).selectorText, element)) {
@@ -539,7 +546,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elemen
             assocId: childRule.id,
             style: (childRule as SlimCSSStyleRule).style,
             rule: (childRule as SlimCSSStyleRule),
-            mediaRule: rule as SlimCSSMediaRule,
+            mediaRule: rule as SlimCSSAtRule,
             targetElement: element
           });
         }
@@ -558,7 +565,6 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elemen
   return matchingRules;
 });
 
-
 const getSyntheticInheritableCSSRules = weakMemo((window: SlimWindow, elementId: string) => {
   const matchingCSSRules = getSyntheticMatchingCSSRules(window, elementId, true);
   
@@ -571,10 +577,8 @@ const getSyntheticInheritableCSSRules = weakMemo((window: SlimWindow, elementId:
     }
   }
 
-
   return inheritableCSSRules;
 });
-
 
 export const containsInheritableStyleProperty = (style: SlimCSSStyleDeclaration) => {
   for (const propertyName in style) {

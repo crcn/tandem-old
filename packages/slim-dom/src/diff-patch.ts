@@ -1,7 +1,7 @@
-import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
+import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
 import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, createMoveChildMutation, MoveChildMutation } from "source-mutation";
 import { compressRootNode, uncompressRootNode } from "./compression";
-import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, getVMObjectFromPath } from "./utils";
+import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams } from "./utils";
 import { isEqual } from "lodash";
 
 
@@ -27,6 +27,9 @@ export const CSS_MOVE_RULE   = "CSS_MOVE_RULE";
 // CSS Style Rule
 export const CSS_SET_STYLE_PROPERTY = "CSS_SET_STYLE_PROPERTY";
 export const CSS_SET_SELECTOR_TEXT = "CSS_SET_SELECTOR_TEXT";
+
+// CSS At Rule
+export const CSS_AT_RULE_SET_PARAMS = "CSS_AT_RULE_SET_PARAMS";
 
 export type SetTextNodeValueMutation = {} & SetValueMutation<VMObjectSource>;
 
@@ -156,6 +159,7 @@ const diffCSSRule = (oldRule: SlimCSSRule, newRule: SlimCSSRule, path: any[]) =>
   switch(oldRule.type) {
     case SlimVMObjectType.STYLE_SHEET: return diffCSSStyleSheet(oldRule as SlimCSSStyleSheet, newRule as SlimCSSStyleSheet, path);
     case SlimVMObjectType.STYLE_RULE: return diffCSSStyleRule(oldRule as SlimCSSStyleRule, newRule as SlimCSSStyleRule, path);
+    case SlimVMObjectType.AT_RULE: return diffCSSAtRule(oldRule as SlimCSSAtRule, newRule as SlimCSSAtRule, path);
   }
   return [];
 }
@@ -196,6 +200,20 @@ const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule, 
   return diffs;
 }
 
+
+const diffCSSAtRule = (oldRule: SlimCSSAtRule, newRule: SlimCSSAtRule, path: any[]) => {
+  const diffs = [];
+  if (oldRule.params !== newRule.params) {
+    diffs.push(createSetValueMutation(CSS_AT_RULE_SET_PARAMS, path, newRule.params));
+  }
+
+  diffs.push(
+    ...diffCSSGroupingRuleChildren(oldRule, newRule, path)
+  );
+
+  return diffs;
+}
+
 const diffCSSGroupingRuleChildren = (oldRule: SlimCSSGroupingRule, newRule: SlimCSSGroupingRule, path: any[]) => {
   const diffs: Mutation<any[]>[] = [];
 
@@ -233,6 +251,10 @@ const compareCSSRules = (a: SlimCSSRule, b: SlimCSSRule) => {
 
   if (a.type === SlimVMObjectType.STYLE_RULE) {
     return (a as SlimCSSStyleRule).selectorText === (b as SlimCSSStyleRule).selectorText ? 0 : 1;
+  }
+
+  if (a.type === SlimVMObjectType.AT_RULE) {
+    return (a as SlimCSSAtRule).params === (b as SlimCSSAtRule).params ? 0 : 1;
   }
 
   // TODO - check media
@@ -322,6 +344,12 @@ export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Muta
       case CSS_MOVE_RULE: {
         const { index, oldIndex } = diff as MoveChildMutation<any, any>;
         newTarget = moveCSSRule(newTarget as SlimCSSGroupingRule, oldIndex, index);
+        break;
+      }
+      case CSS_AT_RULE_SET_PARAMS: {
+        const { newValue } = diff as SetValueMutation<any>;
+        newTarget = setCSSAtRuleSetParams(newTarget as SlimCSSAtRule, newValue);
+        break;
       }
     }
 

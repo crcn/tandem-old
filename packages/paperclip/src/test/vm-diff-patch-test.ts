@@ -115,7 +115,12 @@ describe(__filename + "#", () => {
     [`<a></a><b></b>`, `<b></b><a></a>`, `<a></a><b></b>`],
     [`<a></a><b></b><c></c>`, `<c></c><a></a><b></b>`, `<b></b><a></a><c></c>`],
     [`<a b="1" c="1" d="1"></a>`, `<a c="1" b="1" d="1"></a>`, `<a d="1" b="1" c="1"></a>`],
-    [`<style>.a {} .b {}</style>`, `<style>.b {} .a {}</style>`]
+    [`<style>.a {} .b {}</style>`, `<style>.b {} .a {}</style>`],
+    [`<style>@media a {}</style>`, `<style>@media b {}</style>`],
+    [`<style>@media a {.b {color: red;}}</style>`, `<style>@media a {.b {color: blue;}}</style>`],
+    [`<style>@media a {.b {color: red;}}</style>`, `<style>@media a {.b {color: blue;}.c {color: red;}}</style>`],
+    [`<style>@keyframes a {}</style>`, `<style>@keyframes b {}</style>`],
+    [`<style>@unknown a {}</style>`, `<style>@unknown b {}</style>`]
   ].forEach((variants) => {
     it(`can diff and patch ${variants.join(" -> ")}`, async () => {
       let prevDocument: SlimParentNode;

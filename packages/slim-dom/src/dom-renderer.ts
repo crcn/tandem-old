@@ -1,4 +1,4 @@
-import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSMediaRule, SlimCSSRule, Bounds, VMObject } from "./state";
+import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSAtRule, SlimCSSRule, Bounds, VMObject } from "./state";
 import { weakMemo, getVMObjectFromPath } from "./utils";
 import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
 import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, patchNode } from "./diff-patch";
@@ -92,9 +92,9 @@ const stringifyRule = (rule: SlimCSSRule) => {
 
       return `${buffer} }`;
     }
-    case SlimVMObjectType.MEDIA_RULE: {
-      const { conditionText, rules } = rule as SlimCSSMediaRule;
-      return `@media ${conditionText} { ${rules.map(stringifyRule)} }`
+    case SlimVMObjectType.AT_RULE: {
+      const { name, params, rules } = rule as SlimCSSAtRule;
+      return `@${name} ${params} { ${rules.map(stringifyRule)} }`
     }
   }
 };

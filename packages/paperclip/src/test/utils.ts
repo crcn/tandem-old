@@ -1,4 +1,4 @@
-import { SlimBaseNode, SlimCSSMediaRule, SlimVMObjectType, SlimElement, SlimTextNode, SlimParentNode, SlimStyleElement, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElementAttribute, SlimFragment } from "slim-dom";
+import { SlimBaseNode, SlimCSSAtRule, SlimVMObjectType, SlimElement, SlimTextNode, SlimParentNode, SlimStyleElement, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElementAttribute, SlimFragment } from "slim-dom";
 
 export const stringifyNode = (node: SlimBaseNode) => {
   switch(node.type) {
@@ -49,9 +49,9 @@ const stringifyStyleSheet = (sheet: SlimCSSRule) => {
       buffer += `}`
       return buffer;
     }
-    case SlimVMObjectType.MEDIA_RULE: {
-      const rule = sheet as SlimCSSMediaRule;
-      let buffer = `${rule.conditionText} {`;
+    case SlimVMObjectType.AT_RULE: {
+      const rule = sheet as SlimCSSAtRule;
+      let buffer = `@${rule.name} ${rule.params} {`;
       buffer += rule.rules.map(stringifyStyleSheet).join("");
       buffer += `}`
       return buffer;

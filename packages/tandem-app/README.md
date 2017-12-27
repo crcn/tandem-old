@@ -1,7 +1,5 @@
 IMMEDIATE:
 
-- [ ] get keyframes to work
-- [ ] keyframe diffing
 
 HIGH PRIO:
 

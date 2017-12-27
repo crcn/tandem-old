@@ -1,4 +1,4 @@
-import { SlimVMObjectType, SlimBaseNode, SlimElement, SlimElementAttribute, SlimParentNode, VMObjectSource, SlimTextNode, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimStyleElement,  } from "./state";
+import { SlimVMObjectType, SlimBaseNode, SlimElement, SlimElementAttribute, SlimParentNode, VMObjectSource, SlimTextNode, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimStyleElement,  } from "./state";
 import  { weakMemo, getVmObjectSourceUris } from "./utils";
 
 export type CompressedFragment = [SlimVMObjectType, any[]];
@@ -69,11 +69,13 @@ const compressVMObject = (node: SlimBaseNode) => {
         decl
       ]
     }
-    case SlimVMObjectType.MEDIA_RULE: {
-      const { type, id, conditionText, rules } = node as SlimCSSMediaRule;
+    case SlimVMObjectType.AT_RULE: {
+      const { type, id, name, params, rules } = node as SlimCSSAtRule;
       return [
         type,
         id, 
+        name,
+        params,
         rules.map(rule => compressVMObject(rule))
       ]
     }
@@ -150,14 +152,15 @@ const uncompressVMObject = (node: any) => {
         style
       }
     }
-    case SlimVMObjectType.MEDIA_RULE: {
-      const [type, id, conditionText, rules] = node;
+    case SlimVMObjectType.AT_RULE: {
+      const [type, id, name, params, rules] = node;
       return {
         type,
         id,
-        conditionText,
+        name,
+        params,
         rules: rules.map(rule => uncompressVMObject(rule))
-      }
+      } as SlimCSSAtRule;
     }
   }
 };

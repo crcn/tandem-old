@@ -2,7 +2,7 @@
  * Light DOM wrapper for interoperability with immutable DOM objects and third-party DOM libraries such as nwmatcher.
  */
 
-import { SlimBaseNode, SlimCSSGroupingRule, SlimCSSMediaRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimParentNode, SlimStyleElement, SlimTextNode, SlimVMObjectType } from "./state";
+import { SlimBaseNode, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimParentNode, SlimStyleElement, SlimTextNode, SlimVMObjectType } from "./state";
 import { weakMemo } from "./weak-memo";
 
 export const getLightDomWrapper = weakMemo((node: SlimBaseNode): LightBaseNode => {
