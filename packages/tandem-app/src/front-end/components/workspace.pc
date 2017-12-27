@@ -138,30 +138,26 @@
         <td-artboards-pane onArtboardClicked artboards=[[bind [
           {
             $id: null,
-            componentId: "component 1",
-            previewName: "test4"
+            label: "component 1"
           },
           {
             $id: null,
             location: "http://google.com",
             hovering: true,
-            componentId: "component 1",
-            previewName: "test3"
+            label: "component 2"
           },
           {
             $id: null,
-            componentId: "component 1",
-            previewName: "test2"
+            label: "component 2"
           },
           {
             $id: null,
-            componentId: "component 1",
-            previewName: "test"
+            label: "component 2"
           },
           {
             $id: null,
             selected: true,
-            componentId: "component 1"
+            label: "component 2"
           }
         ]]] />
         <td-components-pane onAddComponentClick dispatch components=[[bind [

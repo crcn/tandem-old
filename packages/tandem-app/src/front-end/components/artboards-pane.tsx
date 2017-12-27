@@ -1,6 +1,6 @@
 import * as React from "react";
 import { hydrateTdArtboardsPane, TdArtboardsPaneInnerProps, hydrateTdArtboardsPaneRow, TdArtboardsPaneRowInnerProps } from "./artboards-pane.pc";
-import { Workspace, Artboard } from "front-end/state";
+import { Workspace, Artboard, getArtboardLabel } from "front-end/state";
 import { artboardPaneRowClicked } from "front-end/actions";
 import { compose, pure, withHandlers, withProps } from "recompose";
 
@@ -38,6 +38,7 @@ export const ArtboardsPane = hydrateTdArtboardsPane(
     (Base: React.ComponentClass<TdArtboardsPaneInnerProps>) => ({ workspace, artboards, onArtboardClicked }: ArtboardsPaneInnerProps) => {
       const artboardProps = artboards.map(artboard => ({
         ...artboard,
+        label: getArtboardLabel(artboard),
         selected: workspace.selectionRefs.find(([$type, $id]) => $id === artboard.$id)
       }));
 

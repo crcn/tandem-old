@@ -45,6 +45,8 @@ HIGH PRIO:
 - [ ] stage tools enhanced
   - [ ] highlight affected nodes
   - [ ] snap into place tools
+  - [ ] multi select artboards
+  - [ ] warning for multi selecting elements
 
 - [ ] Error pane (displayed in footer - pops )
   - [ ] error items display "quick fix" button that points user to UI where they can make change.

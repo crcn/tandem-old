@@ -46,6 +46,9 @@ paperclip.bundleVanilla("component.pc", {
 - [ ] Bugs
   - [ ] `[object Object]` replacing content
   - [ ] dev tools stops working after coding for a bit
+
+- [ ] DX
+  - [ ] display syntax errors for ALL pc files 
   
 #### LOW PRIO CORE TODOS
 

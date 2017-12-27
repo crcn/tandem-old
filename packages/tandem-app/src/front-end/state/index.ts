@@ -745,6 +745,8 @@ const serializeStage = ({ showTextEditor, showRightGutter, showLeftGutter, showT
   showTools: true
 });
 
+export const getArtboardLabel = (artboard: Artboard) => artboard.componentId + (artboard.previewName ? ` - ${artboard.previewName}` : ``);
+
 export * from "./shortcuts";
 export * from "./api";
 export * from "./dnd";

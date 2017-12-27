@@ -4,7 +4,7 @@ import { compose, pure } from "recompose";
 import { Workspace } from "front-end/state";
 import { Dispatcher, getBoundsSize, Translate, wrapEventToDispatch } from "aerial-common2";
 import { stageToolArtboardTitleClicked, stageToolWindowKeyDown, stageToolWindowBackgroundClicked, openExternalWindowButtonClicked } from "front-end/actions";
-import { Artboard } from "front-end/state";
+import { Artboard, getArtboardLabel } from "front-end/state";
 
 type ArtboardItemInnerProps = {
   artboard: Artboard;
@@ -52,7 +52,7 @@ const ArtboardItemBase = ({ artboard, translate, dispatch, fullScreenArtboardId 
     style={titleStyle as any} 
     onKeyDown={wrapEventToDispatch(dispatch, stageToolWindowKeyDown.bind(this, artboard.$id))} 
     onClick={wrapEventToDispatch(dispatch, stageToolArtboardTitleClicked.bind(this, artboard.$id))}>
-      { artboard.document && artboard.componentId }
+      { getArtboardLabel(artboard) }
 
       {/* TODO: eventually this should point to browserstack -- whatever the navigator agent is of the artboard */}
       <i className="ion-share" onClick={wrapEventToDispatch(dispatch, openExternalWindowButtonClicked.bind(this, artboard.$id))} />
