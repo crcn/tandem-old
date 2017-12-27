@@ -1,12 +1,13 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum  } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
 import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading } from "../actions";
 import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
-import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath } from "../state";
+import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardsByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath } from "../state";
 import { debounce } from "lodash";
+import crc32 = require("crc32");
 
 const COMPUTE_DOM_INFO_DELAY = 200;
 const VELOCITY_MULTIPLIER = 10;
@@ -59,35 +60,37 @@ function* handleLoadAllArtboards() {
 function* handlePreviewDiffed() {
   while(1) {
     const { componentId, previewName, documentChecksum, diff }: PreviewDiffed = yield take(PREVIEW_DIFFED);
-    const artboard = getArtboardByInfo(componentId, previewName, yield select());
-    if (!artboard) {
+    const artboards = getArtboardsByInfo(componentId, previewName, yield select());
+    if (!artboards.length) {
       console.error(`artboard ${componentId}:${previewName} not found`);
       continue;
     }
+    for (const artboard of artboards) {
 
-    // likely that the server restarted, or user connection dropped while the document changed.
-    if (artboard.checksum !== documentChecksum) {
-      console.info(`Checksum mismatch for artboard ${artboard.componentId}:${artboard.previewName}, reloading document.`);
-      yield call(reloadArtboard, artboard.$id);
-      continue;
+      // likely that the server restarted, or user connection dropped while the document changed.
+      if (artboard.checksum !== documentChecksum) {
+        console.info(`Checksum mismatch for artboard ${artboard.componentId}:${artboard.previewName}, reloading document.`);
+        yield call(reloadArtboard, artboard.$id);
+        continue;
+      }
+
+      const previewPath = [...getArtboardDocumentBodyPath(artboard)];
+
+      const patchedDoc = patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, diff);
+
+      yield put(
+        artboardPatched(
+          artboard.$id, 
+          replaceNestedChild(
+            artboard.document, 
+            previewPath,
+            patchedDoc
+          ),
+          getDocumentChecksum(patchedDoc as SlimParentNode),
+          patchDOM(diff, patchedDoc as SlimParentNode, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
+        )
+      );
     }
-
-    const previewPath = [...getArtboardDocumentBodyPath(artboard)];
-
-    const patchedDoc = patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, diff);
-
-    yield put(
-      artboardPatched(
-        artboard.$id, 
-        replaceNestedChild(
-          artboard.document, 
-          previewPath,
-          patchedDoc
-        ),
-        getDocumentChecksum(patchedDoc as SlimParentNode),
-        patchDOM(diff, patchedDoc as SlimParentNode, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
-      )
-    );
   }
 }
 
@@ -137,7 +140,11 @@ function* reloadArtboard(artboardId: string) {
     const artboard = getArtboardById(artboardId, state);
     const [dependencyUris, compressedNode] = yield call(getComponentPreview, artboard.componentId, artboard.previewName, state);
 
-    const doc = uncompressRootNode([dependencyUris, compressedNode]);
+    let doc = uncompressRootNode([dependencyUris, compressedNode]);
+    const checksum = getDocumentChecksum(doc as SlimParentNode);
+    const idSeed = crc32(checksum + artboard.$id);
+    doc = setVMObjectIds(doc, idSeed);
+
     const mount = document.createElement("iframe");
     mount.setAttribute("style", `border: none; width: 100%; height: 100%`);
     const renderChan = eventChannel((emit) => {
@@ -150,13 +157,13 @@ function* reloadArtboard(artboardId: string) {
     yield spawn(function*() {
       yield put(artboardRendered(artboardId, yield take(renderChan)));
     });
-    
 
+    // Unique IDs necessary for the front-end to ensure that other artboards with the same component & preview don't contain the same node IDs.
     const html: SlimElement = createSlimElement("html", "html", [], [
       createSlimElement("body", "body", [], [doc])
     ]);
 
-    yield put(artboardLoaded(artboard.$id, dependencyUris, html, getDocumentChecksum(doc as SlimParentNode), mount));
+    yield put(artboardLoaded(artboard.$id, dependencyUris, html, checksum, mount));
   });
 }
 

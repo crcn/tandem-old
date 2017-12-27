@@ -708,7 +708,6 @@ export const cssPropNameToKebabCase = (propName: string) => {
   return propName;
 }
 
-
 export const getElementLabel = (element: SlimElement) => {
   let label = String(element.tagName).toLowerCase();
   const className = getAttributeValue("class", element);
@@ -722,3 +721,95 @@ export const getElementLabel = (element: SlimElement) => {
 
   return label;
 }
+
+/**
+ * exists so that other parts of an application can hold onto a reference to a vm object
+ */
+
+// TODO - probably better to use something like updateNested
+export const setVMObjectIds = <TObject extends VMObject>(current: TObject, idSeed: string, refCount: number = 0) => {
+
+  switch(current.type) {
+    case SlimVMObjectType.ELEMENT: {
+      let el = current as any as SlimElement;
+      if (el.shadow) {
+        el = {
+          ...el,
+          shadow: setVMObjectIds(el.shadow, idSeed, refCount)
+        } as SlimElement;
+        refCount = getRefCount(el.shadow, idSeed);
+      }
+
+
+      if ((el as SlimStyleElement).sheet) {
+        el = {
+          ...el,
+          sheet: setVMObjectIds((el as SlimStyleElement).sheet, idSeed, refCount)
+        } as SlimStyleElement;
+        refCount = getRefCount((el as SlimStyleElement).sheet, idSeed);
+      }
+      
+      current = el as any as TObject;
+      // fall through
+    }
+
+    case SlimVMObjectType.DOCUMENT_FRAGMENT:
+    case SlimVMObjectType.DOCUMENT: {
+      let parent = current as any as SlimParentNode;
+
+      const newChildren = new Array(parent.childNodes.length);
+
+      for (let i = 0, {length} = parent.childNodes; i < length; i++) {
+        const child = setVMObjectIds(parent.childNodes[i], idSeed, refCount);
+        refCount = getRefCount(child, idSeed);
+        newChildren[i] = child;
+      }
+
+      parent = {
+        ...parent,
+        childNodes: newChildren
+      };
+
+      current = parent as any as TObject;
+
+      break;
+    }
+
+    case SlimVMObjectType.STYLE_RULE: {
+      let styleRule = current as any as SlimCSSStyleRule;
+      styleRule = {
+        ...styleRule,
+        style: setVMObjectIds(styleRule.style, idSeed, refCount)
+      } as SlimCSSStyleRule;
+      refCount = getRefCount(styleRule.style, idSeed);
+      current = styleRule as any as TObject;
+      break;
+    }
+
+    case SlimVMObjectType.AT_RULE: 
+    case SlimVMObjectType.STYLE_SHEET: {
+      let groupingRule = current as any as SlimCSSGroupingRule;
+      const newRules = new Array(groupingRule.rules.length);
+      for (let i = 0, {length} = groupingRule.rules; i < length; i++) {
+        const rule = setVMObjectIds(groupingRule.rules[i], idSeed, refCount);
+        refCount = getRefCount(rule, idSeed);
+        newRules[i] = rule;
+      }
+
+      groupingRule = {
+        ...groupingRule,
+        rules: newRules
+      };
+
+      current = groupingRule as any as TObject;
+      break;
+    }
+  }
+
+  return {
+    ...(current as any),
+    id: idSeed + (refCount + 1)
+  };
+}
+
+const getRefCount = (current: VMObject, idSeed: string) => Number((current.id as String).substr(idSeed.length));

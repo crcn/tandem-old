@@ -531,12 +531,24 @@ export const getArtboardById = weakMemo((artboardId: string, state: ApplicationS
 export const getArtboardByInfo = (componentId: string, previewName: string, state: ApplicationState) => {
   for (const workspace of state.workspaces) {
     for (const artboard of workspace.artboards) {
-      if (artboard.componentId === componentId && (artboard.previewName === previewName || !artboard.previewName)) {
+      if (artboard.componentId === componentId && (artboard.previewName === previewName)) {
         return artboard;
       }
     }
   }
   return null;
+}
+
+export const getArtboardsByInfo = (componentId: string, previewName: string, state: ApplicationState) => {
+  const artboards: Artboard[] = [];
+  for (const workspace of state.workspaces) {
+    for (const artboard of workspace.artboards) {
+      if (artboard.componentId === componentId && (artboard.previewName === previewName)) {
+        artboards.push(artboard);
+      }
+    }
+  }
+  return artboards;
 }
 
 export const getArtboardDocumentBody = (artboard: Artboard) => getDocumentBody(artboard.document);

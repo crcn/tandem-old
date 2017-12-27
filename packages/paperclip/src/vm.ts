@@ -9,7 +9,6 @@ import { kebabCase } from "lodash";
 // Note that this is MUTABLE primarily to make incrementing
 // IDs easier. 
 type VMContext = {
-  idSeed: string,
   refCount: number;
   currentProps: any;
   currentURI: string;
@@ -35,11 +34,10 @@ export type RunPCFileEntry = {
 export type RunPCFileOptions = {
   entry: RunPCFileEntry;
   graph: DependencyGraph;
-  idSeed?: string
 };
 
 // TODO - may eventually want to have a compilation step for this
-export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph, idSeed }: RunPCFileOptions): VMResult => {
+export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph }: RunPCFileOptions): VMResult => {
 
   let memoKey = "__memo$$" + filePath + componentId + previewName;
   if (graph[memoKey]) {
@@ -47,7 +45,6 @@ export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph
   }
   
   const context: VMContext = {
-    idSeed: String(idSeed || Math.floor(1000 + Math.random() * 8999)),
     refCount: 0,
     currentProps: {},
     globalStyles: getAllGlobalStyles(graph),
@@ -80,13 +77,8 @@ export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph
   } as VMResult) as any;
 };
 
-const createId = (context: VMContext) => {
-  return context.idSeed + (++context.refCount);
-}
-
 const runPreview = (preview: PCElement, context: VMContext) => {
   let root = {
-    id: createId(context),
     type: SlimVMObjectType.DOCUMENT_FRAGMENT,
     childNodes: [],
     source: createVMSource(preview, context)
@@ -173,7 +165,6 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
 
   if (name === "style") {
     let style = {
-      id: createId(context),
       type: SlimVMObjectType.ELEMENT,
       tagName: name,
       attributes,
@@ -189,7 +180,6 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
 
   if (component) {
     shadow = {
-      id: createId(context),
       type: SlimVMObjectType.DOCUMENT_FRAGMENT,
       childNodes: [],
       source: createVMSource(component.source, context)
@@ -207,7 +197,6 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
   }
 
   let element = {
-    id: createId(context),
     type: SlimVMObjectType.ELEMENT,
     tagName: name,
     attributes,
@@ -295,7 +284,6 @@ const appendChildNodes = <TParent extends SlimParentNode>(parent: TParent, child
 
 const appendTextNode = <TParent extends SlimParentNode>(parent: TParent, child: PCTextNode, context: VMContext) => {
   return pushChildNode(parent, {
-    id: createId(context),
     type: SlimVMObjectType.TEXT,
     value: String(child.value || "") || " ",
     source: createVMSource(child, context)
@@ -303,7 +291,6 @@ const appendTextNode = <TParent extends SlimParentNode>(parent: TParent, child: 
 };
 
 const appendTextBlock = <TParent extends SlimParentNode>(parent: TParent, child: PCBlock, context: VMContext) => pushChildNode(parent, {
-  id: createId(context),
   type: SlimVMObjectType.TEXT,
   value: evalExpr(child.value, context),
   source: createVMSource(child, context)
@@ -320,7 +307,6 @@ const createStyleSheet = (expr: CSSSheet, context: VMContext): SlimCSSStyleSheet
 
   return {
     rules,
-    id: createId(context),
     type: SlimVMObjectType.STYLE_SHEET,
     source: createVMSource(expr, context)
   };
@@ -332,7 +318,6 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
     case CSSExpressionType.STYLE_RULE: {
       const { selectorText, children } = rule as CSSStyleRule;
       const style: SlimCSSStyleDeclaration = {
-        id: createId(context),
       } as any;
       
       for (let i = 0, {length} = children; i < length; i++) {
@@ -344,7 +329,6 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
       };
 
       return {
-        id: createId(context),
         type: SlimVMObjectType.STYLE_RULE,
         selectorText,
         style,
@@ -359,7 +343,6 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
         rules[i] = createCSSRule(child, context);
       }
       return {
-        id: createId(context),
         name,
         type: SlimVMObjectType.AT_RULE,
         params: params.join(" "),

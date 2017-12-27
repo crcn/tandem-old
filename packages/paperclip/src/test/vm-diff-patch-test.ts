@@ -29,7 +29,6 @@ describe(__filename + "#", () => {
           ],
           [
             0,
-            "10003",
             "b",
             [],
             null,
@@ -91,9 +90,9 @@ describe(__filename + "#", () => {
         readFile: () => Promise.resolve(wrapSource(newSource))
       });
 
-      const { document: an } = runPCFile({ entry: {filePath: "entry", componentId: "entry", previewName: "main" }, graph: ag, idSeed: "2000" });
+      const { document: an } = runPCFile({ entry: {filePath: "entry", componentId: "entry", previewName: "main" }, graph: ag });
 
-      const { document: bn, diagnostics } = runPCFile({ entry: {filePath: "entry", componentId: "entry", previewName: "main" }, graph: bg,  idSeed: "1000" });
+      const { document: bn, diagnostics } = runPCFile({ entry: {filePath: "entry", componentId: "entry", previewName: "main" }, graph: bg });
 
       const diffs = diffNode(an, bn);
       expect(diffs).to.eql(expectedDiffs);
@@ -129,7 +128,7 @@ describe(__filename + "#", () => {
         const { graph } = await loadModuleDependencyGraph("entry", {
           readFile: () => Promise.resolve(wrapSource(variant))
         });
-        const { document } = runPCFile({ entry: { filePath: "entry", componentId: "entry", previewName: "main" }, graph, idSeed: "1000" });
+        const { document } = runPCFile({ entry: { filePath: "entry", componentId: "entry", previewName: "main" }, graph });
 
         if (prevDocument) {
           const diffs = diffNode(prevDocument, document);

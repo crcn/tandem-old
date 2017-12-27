@@ -235,6 +235,11 @@ function* handleDroppedOnEmptySpace(event: DNDEvent) {
   const workspace = getSelectedWorkspace(state);
   const availableComponent = workspace.availableComponents.find(component => component.$id === componentId);
 
+  // TODO - automatically create preview tag instead of showing an error
+  if (!availableComponent.screenshots.length) {
+    return yield put(exceptionCaught(new Error(`Component must have a preview tag`)));
+  }
+
   const screenshot = availableComponent.screenshots[0];
   const size = screenshot ? { width: screenshot.clip.right - screenshot.clip.left, height: screenshot.clip.bottom - screenshot.clip.top } : DEFAULT_ARTBOARD_SIZE;
   
@@ -242,7 +247,7 @@ function* handleDroppedOnEmptySpace(event: DNDEvent) {
 
   yield put(artboardCreated(createArtboard({
     componentId, 
-    previewName: null, 
+    previewName: screenshot.previewName, 
     bounds: {
     ...mousePosition,
     right: mousePosition.left + size.width,

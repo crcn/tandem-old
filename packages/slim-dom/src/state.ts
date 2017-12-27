@@ -37,7 +37,7 @@ export type VMObjectSource = {
 };
 
 export type VMObject = {
-  id: any;
+  id?: any;
   type: SlimVMObjectType;
 
   // the sourc of the VM Object

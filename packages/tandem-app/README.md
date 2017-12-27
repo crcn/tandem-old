@@ -1,20 +1,5 @@
 IMMEDIATE:
 
-- [ ] allow style="[[string]]" for VM
-- [ ] BUG: cannot add multiple previews after single
-- [ ] loader hangup
-- [ ] preview hangs when removing child 
-- [ ] BUG: artboards that share same component ID & preview clobber each other. Need to create UIds based on artboard.
-- [ ] BUG: transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
-- [ ] prefix keyframes name
-- [ ] BUG: components in preview can be used without importing them
-HIGH PRIO:
-- [ ] BUG: hovering prop not working for components pane
-
-- [ ] Bug fixing
-  - [ ] "Cannot read property 'type' of undefined" - start typing new component
-  - [ ] Infinite loop - create new [[if statement]]
-
 - [ ] CSS Inspector* 
   - [ ] show inherited props from slots
   - [ ] eye toggler
@@ -23,6 +8,14 @@ HIGH PRIO:
   - [ ] delete declaration
   - [ ] edit raw declaration value
   - [ ] inspect `:root`
+
+- [ ] Bug fixing
+  - [ ] "Cannot read property 'type' of undefined" - start typing new component
+  - [ ] Infinite loop - create new [[if statement]]
+  - [ ] preview hangs up when removing primary child
+  - [ ] allow for string style attributes
+  - [ ] transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
+  - [ ] hovering prop not working for components pane
 
 - [ ] Components pane
   - [ ] add new new component
