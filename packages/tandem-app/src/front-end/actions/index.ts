@@ -36,6 +36,7 @@ export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
 export const FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED   = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
 export const FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
+export const BANNER_CLOSED = "BANNER_CLOSED";
 export const OPEN_ARTBOARDS_REQUESTED = "OPEN_ARTBOARDS_REQUESTED";
 export const FILE_REMOVED = "FILE_REMOVED";
 export const COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
@@ -401,6 +402,10 @@ export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved =>
   workspaceId,
   point,
   type: RESIZER_MOVED,
+});
+
+export const bannerClosed = () => ({
+  type: BANNER_CLOSED
 });
 
 export const dndStarted = (ref: StructReference, sourceEvent: React.DragEvent<any>): DNDEvent => ({

@@ -54,6 +54,7 @@ import {
   getWorkspaceItemBounds,
   AVAILABLE_COMPONENT,
   updateWorkspaceStage,
+  
   getSelectedWorkspace,
   addWorkspaceSelection,
   setWorkspaceSelection,
@@ -82,6 +83,7 @@ import {
   RESIZER_MOVED,
   STAGE_MOUNTED,
   ResizerMouseDown,
+  BANNER_CLOSED,
   DND_STARTED,
   DND_ENDED,
   DND_HANDLED,
@@ -215,17 +217,14 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
     }
   }
   
-  // state = canvasReducer(state, event);
-  // state = syntheticBrowserReducer(state, event);
-  // state = syntheticBrowserReducer(state, event);
   state = artboardReducer(state, event);
   state = stageReducer(state, event);
+  state = workspaceReducer(state, event);
   state = artboardPaneReducer(state, event);
   state = componentsPaneReducer(state, event);
   state = shortcutReducer(state, event);
   state = apiReducer(state, event);
   state = dndReducer(state, event);
-  // state = externalReducer(state, event);
 
   return state;
 };
@@ -250,6 +249,23 @@ const apiReducer = (state: ApplicationState, event: BaseEvent) => {
   }
   return state;
 };
+
+const workspaceReducer = (state: ApplicationState, event: BaseEvent) => {
+  switch(event.type) {
+    case EXCEPTION_CAUGHT: {
+      const { error } = event as ExceptionCaught;
+      return updateWorkspace(state, getSelectedWorkspace(state).$id, {
+        uncaughtError: error
+      });
+    }
+    case BANNER_CLOSED: {
+      return updateWorkspace(state, getSelectedWorkspace(state).$id, {
+        uncaughtError: null
+      });
+    }
+  }
+  return state;
+}
 
 const componentsPaneReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {

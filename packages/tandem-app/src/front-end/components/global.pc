@@ -178,18 +178,28 @@
       color: var(--font-color-light);
       background: blue;
     }
+
+    .close-button {
+      float: right;
+      cursor: pointer;
+    }
   </style>
   <template>
-    <slot></slot>
+    <div>
+      <slot></slot>
+      <span class="close-button" onClick=[[bind onClose]]>
+        ×
+      </span>
+    </div>
   </template>
   <preview name="success" width="1024" height="30">
-    <td-banner success>Success</td-banner>
+    <td-banner success onClose>Success</td-banner>
   </preview>
   <preview name="warning" width="1024" height="30">
-    <td-banner warning>Warning</td-banner>
+    <td-banner warning onClose>Warning</td-banner>
   </preview>
   <preview name="error" width="1024" height="30">
-    <td-banner error>Error</td-banner>
+    <td-banner error onClose>Error</td-banner>
   </preview>
 </component>
 
