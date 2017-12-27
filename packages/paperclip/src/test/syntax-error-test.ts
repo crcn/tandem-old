@@ -7,8 +7,11 @@ describe(__filename + "#", () => {
   [
     [`<>`, [[0, 1, `Missing open tag name.`]]],
     [`<a`, [[1, 2, `Unexpected end of file.`]]],
+    [`<a `, [[2, 3, `Unexpected end of file.`]]],
     [`<a<`, [[0, 1, `Tag name contains a character where " " or > is expected.`]]],
     [`<a a""`, [[4, 5, `Unexpected token.`]]],
+    [`<a a`, [[3, 4, `Unexpected end of file.`]]],
+    [`<a a `, [[4, 5, `Unexpected end of file.`]]],
     [`<a a=`, [[4, 5, `Unexpected end of file.`]]],
     [`<a a=""`, [[6, 7, `Unexpected end of file.`]]],
     [`<a a="">`, [[0, 8, `Close tag is missing.`]]],
@@ -44,10 +47,14 @@ describe(__filename + "#", () => {
     [`<a b=[[bind {a: 1 }]] />`, []],
     [`<a b=[[bind {a b}]] />`, [[7, 15, `Missing : for object.`]]],
     [`<a b=[[bind a.b.0]] />`, [[5, 15, `Unexpected token.`]]],
-    [`<a b=[[bind [a b]]] />`, [[12, 15, `Missing , delimiter in array.`]]],
+    [`<a b=[[bind [a b]]] />`, [[12, 15, `Unexpected token.`]]],
+    [`<a b=[[bind {a: [1}]] />`, [[16, 18, `Unexpected token.`]]],
     [`<style> .container {}`, [[20, 21, `Unexpected end of file.`]]],
     [`<style> .container {} </style>`, []],
     [`<style> .container {} </style`, [[22, 29, `Missing > character.`]]],
+    [`<style> .container { color } </style>`, [[21, 26, `Unexpected token.`]]],
+    [`<style> .container { color: } </style>`, [[21, 26, `Missing declaration value`]]],
+    [`<style> .container { color:; } </style>`, [[21, 26, `Unexpected token.`]]],
     [`<style> a </style>`, [[10, 12, `Unexpected token.`]]],
     [`<style> a { </style>`, [[12, 14, `Unexpected token.`]]]
   ].forEach(([input, expectedDiagnostics]: [string, any[]]) => {

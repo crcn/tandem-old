@@ -120,7 +120,11 @@ const dedupeDiagnostics = (diagnostics: Diagnostic[]): Diagnostic[] => {
 }
 
 const lintComponent = (component: Component, context: LintContext) => {
-  context = lintNode(component.template, context);
+  if (!component.template) {
+    context = addDiagnosticError(component.source, `missing template`, context);
+  } else {
+    context = lintNode(component.template, context);
+  }
 
   for (let i = 0, {length} = component.previews; i < length; i++) {
     const preview = component.previews[i];
@@ -151,6 +155,12 @@ const lintComponent = (component: Component, context: LintContext) => {
         } else {
           if (usedPreviewNames[name]) {
             context = addDiagnosticError(componentChild, `name already exists`, context);
+          } else {
+            const tagChildren = componentChild.childNodes.filter(child => child.type === PCExpressionType.SELF_CLOSING_ELEMENT || child.type === PCExpressionType.ELEMENT);
+
+            if (tagChildren.length === 0) {
+              context = addDiagnosticError(componentChild, `missing element child`, context);
+            }
           }
           usedPreviewNames[name] = true;
         }

@@ -314,8 +314,8 @@ const createObject = (context: ParseContext): BKObject => {
 
   const properties: BKKeyValuePair[] = [];
 
-  while(!scanner.ended()) {
-    eatWhitespace(context);
+  while(1) {
+    if (!eatWhitespace(context)) break;
     if (scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
       break;
     }
@@ -325,7 +325,7 @@ const createObject = (context: ParseContext): BKObject => {
       return null;
     }
     properties.push(pair);
-    eatWhitespace(context);
+    if (!eatWhitespace(context)) break;
 
     const curr = scanner.curr();
 
@@ -362,13 +362,13 @@ const createArray = (context: ParseContext): BKArray => {
   if (curr.type !== PCTokenType.BRACKET_CLOSE) {
     while(1) {
       values.push(createBKExpression(context));
-      eatWhitespace(context);
+      if (!eatWhitespace(context)) break;
       const curr = scanner.curr();
       if (curr.type === PCTokenType.BRACKET_CLOSE) {
         break;
       }
       
-      if (!testCurrTokenType(context, [PCTokenType.COMMA], "Missing , delimiter in array.", getLocation(start, scanner.curr(), context.source))) {
+      if (!testCurrTokenType(context, [PCTokenType.COMMA], null, getLocation(start, scanner.curr(), context.source))) {
         return null;
       }
 
@@ -406,6 +406,10 @@ const createKeyValuePair = (context: ParseContext): BKKeyValuePair => {
   scanner.next(); // eat :
   eatWhitespace(context);
   const value = createBKExpressionStatement(context);
+
+  if (!value) {
+    return null;
+  }
 
   return {
     type: BKExpressionType.KEY_VALUE_PAIR,
@@ -735,7 +739,17 @@ const createCSSStyleRuleOrDeclarationProperty = (context: ParseContext): CSSStyl
   if (scanner.curr().type === PCTokenType.SEMICOLON || scanner.curr().type === PCTokenType.CURLY_BRACKET_CLOSE) {
 
     // something like this also needs to work: 
-    const [match, name, value] = selectorText.match(/(.+?):(.+)/);
+    const [match, name, value] = selectorText.match(/(.+?):(.+)/) || [null, null, null];
+
+    if (!name) {
+      addUnexpectedToken(context, null, getTokenLocation(start, context.source));
+      return null;
+    }
+    if (!value.trim()) {
+      addUnexpectedToken(context, `Missing declaration value`, getTokenLocation(start, context.source));
+      return null;
+    }
+    
 
     if (scanner.curr().type === PCTokenType.SEMICOLON) {
       scanner.next(); // eat ;
@@ -817,11 +831,12 @@ const createTag = (context: ParseContext) => {
     return null;
   }
 
+  eatWhitespace(context);
   const attributes = [];
   const modifiers = [];
 
-  while(!scanner.ended()) {
-    eatWhitespace(context);
+  while(1) {
+    if (!eatWhitespace(context)) break;
     const curr = scanner.curr();
     if (curr.type === PCTokenType.BACKSLASH || curr.type == PCTokenType.GREATER_THAN) {
       break;
@@ -956,12 +971,14 @@ const getElementChildNodes = (tagName: string, context: ParseContext): [any[], P
   return [childNodes, endTag as PCEndTag];
 };
 
+const getScannerCurrType = (scanner: TokenScanner) => scanner.curr() && scanner.curr().type;
+
 const createAttribute = (context: ParseContext): PCAttribute  => {
   const {scanner} = context;
   const start = scanner.curr();
   const name = getTagName(context);
   let value: PCExpression;
-  if (scanner.curr().type === PCTokenType.EQUALS) {
+  if (getScannerCurrType(scanner) === PCTokenType.EQUALS) {
     scanner.next(); // eat =
     value = createAttributeExpression(context);
     if (!value) {
@@ -981,7 +998,7 @@ const createAttributeExpression = (context: ParseContext) => {
     return null;
   }
   const {scanner} = context;
-  switch(scanner.curr().type) {
+  switch(getScannerCurrType(scanner)) {
     case PCTokenType.SINGLE_QUOTE: 
     case PCTokenType.DOUBLE_QUOTE: return createAttributeString(context);
     default: {
@@ -1074,6 +1091,7 @@ export const eatWhitespace = (context: ParseContext) => {
   while(!scanner.ended() && scanner.curr().type === PCTokenType.WHITESPACE) {
     scanner.next();
   }
+  return !scanner.ended();
 };
 
 const getTagName = (context: ParseContext) => {

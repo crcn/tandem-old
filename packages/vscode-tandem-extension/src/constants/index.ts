@@ -12,6 +12,7 @@ export const NEW_COMPONENT_SNIPPET = `` +
   <template>
   </template>
   <preview name="main" width="1366" height="768">
+    <!-- <x-custom-component-id-here /> -->
   </preview>
 </component>
 `;

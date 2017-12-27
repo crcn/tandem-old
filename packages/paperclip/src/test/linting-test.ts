@@ -80,6 +80,80 @@ describe(__filename + "#", () => {
       {
         "entry": `
           <component id="test">
+          </component>
+        `
+      },
+      [
+        {
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 2,
+              "pos": 11
+            },
+            "end": {
+              "column": 23,
+              "line": 3,
+              "pos": 55
+            }
+          },
+          "message": "missing template",
+          "filePath": "entry"
+        },
+        {
+          "type": "WARNING",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 2,
+              "pos": 11
+            },
+            "end": {
+              "column": 23,
+              "line": 3,
+              "pos": 55
+            }
+          },
+          "message": "Missing preview tag",
+          "filePath": "entry"
+        }
+      ]
+    ],
+    [
+      {
+        "entry": `
+          <component id="test">
+            <preview name="test">
+              <test />
+            </preview>
+          </component>
+        `
+      },
+      [
+        {
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 2,
+              "pos": 11
+            },
+            "end": {
+              "column": 23,
+              "line": 6,
+              "pos": 135
+            }
+          },
+          "message": "missing template",
+          "filePath": "entry"
+        }
+      ]
+    ],
+    [
+      {
+        "entry": `
+          <component id="test">
             <template>
               [[bind a * c]]
             </template>
@@ -384,7 +458,25 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      []
+      [
+        {
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 13,
+              "line": 6,
+              "pos": 135
+            },
+            "end": {
+              "column": 23,
+              "line": 7,
+              "pos": 176
+            }
+          },
+          "message": "missing element child",
+          "filePath": "entry"
+        }
+      ]
     ],
     [
       {
@@ -522,6 +614,7 @@ describe(__filename + "#", () => {
               [[bind d]]
             </template>
             <preview name="a">
+              <c />
             </preview>
           </component>
           <component id="b">
@@ -529,6 +622,7 @@ describe(__filename + "#", () => {
 
             </template>
             <preview name="a">
+              <b />
             </preview>
           </component>
           <component id="a">
@@ -548,14 +642,31 @@ describe(__filename + "#", () => {
           "type": "ERROR",
           "location": {
             "start": {
+              "column": 15,
+              "line": 7,
+              "pos": 147
+            },
+            "end": {
+              "column": 20,
+              "line": 7,
+              "pos": 152
+            }
+          },
+          "message": "Property \"d\" is undefined",
+          "filePath": "entry"
+        },
+        {
+          "type": "ERROR",
+          "location": {
+            "start": {
               "column": 28,
-              "line": 23,
-              "pos": 558
+              "line": 25,
+              "pos": 598
             },
             "end": {
               "column": 30,
-              "line": 23,
-              "pos": 560
+              "line": 25,
+              "pos": 600
             }
           },
           "message": "Property \"d\" is undefined",

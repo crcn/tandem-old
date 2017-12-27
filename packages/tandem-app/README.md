@@ -1,7 +1,9 @@
 IMMEDIATE:
 
-- [ ] spinner
 - [ ] allow style="[[string]]" for VM
+- [ ] BUG: cannot add multiple previews after single
+- [ ] loader hangup
+- [ ] preview hangs when removing child 
 - [ ] BUG: artboards that share same component ID & preview clobber each other. Need to create UIds based on artboard.
 - [ ] BUG: transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
 - [ ] prefix keyframes name
