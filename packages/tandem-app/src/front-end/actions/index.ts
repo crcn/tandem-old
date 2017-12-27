@@ -93,6 +93,7 @@ export const API_COMPONENTS_LOADED = "API_COMPONENTS_LOADED";
 export const DND_STARTED = "DND_STARTED";
 export const DND_ENDED = "DND_ENDED";
 export const DND_HANDLED = "DND_HANDLED";
+export const EXCEPTION_CAUGHT = "EXCEPTION_CAUGHT";
 
 /**
  * Types
@@ -157,6 +158,12 @@ export type LoadedSavedState = {
 
 export type ArtboardFocused = {
   artboardId: string;
+} & BaseEvent;
+
+export type ExceptionCaught = {
+  error: {
+    message: string
+  };
 } & BaseEvent;
 
 export type ResizerPathStoppedMoving = {
@@ -446,6 +453,11 @@ export const artboardLoaded = (artboardId, dependencyUris: string[], document: S
   document, 
   dependencyUris,
   mount
+});
+
+export const exceptionCaught = (error?: { message: string }): ExceptionCaught => ({
+  type: EXCEPTION_CAUGHT,
+  error,
 });
 
 export const artboardPatched = (artboardId: string, document: SlimParentNode, nativeNodeMap: DOMNodeMap): ArtboardPatched => ({

@@ -143,6 +143,7 @@ export type Artboard = {
 } & SlimWindow & Struct;
 
 export type Workspace = {
+  uncaughtError?: Error;
   targetCSSSelectors: TargetSelector[];
   selectionRefs: StructReference[]; // $type:$id;
   browserId: string;

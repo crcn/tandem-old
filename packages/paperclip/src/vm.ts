@@ -297,7 +297,7 @@ const appendTextNode = <TParent extends SlimParentNode>(parent: TParent, child: 
   return pushChildNode(parent, {
     id: createId(context),
     type: SlimVMObjectType.TEXT,
-    value: String(child.value || "").trim() || " ",
+    value: String(child.value || "") || " ",
     source: createVMSource(child, context)
   } as SlimTextNode);
 };

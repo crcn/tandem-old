@@ -1,5 +1,14 @@
 IMMEDIATE:
 
+- [ ] warning if preview tag is missing
+- [ ] open window with respected preview size from vscode
+- [ ] get keyframes to work
+- [ ] keyframe diffing
+
+
+- [ ] Bug fixing
+  - [ ] "Cannot read property 'type' of undefined" - start typing new component
+  - [ ] Infinite loop - create new [[if statement]]
 
 - [ ] CSS Inspector* 
   - [ ] show inherited props from slots
@@ -9,6 +18,7 @@ IMMEDIATE:
   - [ ] delete declaration
   - [ ] edit raw declaration value
   - [ ] inspect `:root`
+
 
 - [ ] Components pane
   - [ ] add new new component

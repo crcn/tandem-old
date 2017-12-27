@@ -48,6 +48,7 @@ import {
   OpenExternalWindowButtonClicked,
   PROMPTED_NEW_WINDOW_URL,
   PromptedNewWindowUrl,
+  exceptionCaught,
   ComponentsPaneComponentClicked,
   DELETE_SHORCUT_PRESSED, 
   fullScreenTargetDeleted,
@@ -143,7 +144,12 @@ function* handleMetaClickElement() {
     const node = getWorkspaceNode(targetRef[1], workspace);
     
     const artboard = getNodeArtboard(node.id, workspace);
-    yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(node, artboard.document), state);
+
+    try {
+      const json = yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(node, artboard.document), state);
+    } catch(e) {
+      yield put(exceptionCaught(e));
+    }
   }
 }
 

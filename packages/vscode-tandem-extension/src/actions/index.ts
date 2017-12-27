@@ -27,6 +27,7 @@ export const OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED = "OPEN_CURRENT_FILE_IN_TANDEM
 export const CREATE_INSERT_NEW_COMPONENT_EXECUTED = "CREATE_INSERT_NEW_COMPONENT_EXECUTED";
 export const MODULE_CREATED = "MODULE_CREATED";
 export const STOP_DEV_SERVER_EXECUTED = "STOP_DEV_SERVER_EXECUTED";
+export const OPEN_FILE_REQUEST_RESULT = "OPEN_FILE_REQUEST_RESULT";
 
 export type HTTPRequest = {
   request: Request;
@@ -58,6 +59,12 @@ export type OpenFileRequested = {
   previewName: string;
   checksum: string;
   vmObjectPath: any[];
+} & Action;
+
+
+export type OpenFileRequestResult = {
+  request: OpenFileRequested;
+  error?: Error;
 } & Action;
 
 export type OpenArtboardsRequested = {
@@ -170,3 +177,9 @@ export const tandemFEConnectivity = (connected: boolean): TandemFEConnectivity =
   connected,
   type: TANDEM_FE_CONNECTIVITY
 });
+
+export const openFileRequestResult = (request: OpenFileRequested, error?: Error): OpenFileRequestResult => ({
+  request,
+  type: OPEN_FILE_REQUEST_RESULT,
+  error
+})

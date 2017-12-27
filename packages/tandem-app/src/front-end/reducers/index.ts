@@ -90,6 +90,8 @@ import {
   DNDEvent,
   ResizerPathMoved,
   STAGE_MOUSE_MOVED,
+  EXCEPTION_CAUGHT,
+  ExceptionCaught,
   LoadedSavedState,
   LOADED_SAVED_STATE,
   RESIZER_MOUSE_DOWN,

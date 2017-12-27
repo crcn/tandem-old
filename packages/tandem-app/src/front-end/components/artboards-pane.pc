@@ -22,7 +22,7 @@
   </style>
   <template>
     <div onClick=[[bind onClick]]>
-      [[bind componentId]]
+      [[bind componentId]] <span [[if previewName]]> - [[bind previewName]]</span>
     </div>
   </template>
 </component>

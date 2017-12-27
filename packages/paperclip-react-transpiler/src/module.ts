@@ -323,8 +323,8 @@ const transpileNode = (node: PCExpression, context: TranspileElementContext) => 
 
 
 const transpileTextNode = (node: PCTextNode) => {
-  const value = node.value.trim();
-  if (value === "") return null;
+  const value = node.value;
+  if (node.value.trim() === "") return null;
   return JSON.stringify(value);
 };
 

@@ -182,6 +182,15 @@
   <template>
     <slot></slot>
   </template>
+  <preview name="error" width="1024" height="22">
+    <td-banner error>Error</td-banner>
+  </preview>
+  <preview name="success" width="1024" height="22">
+    <td-banner success>Success</td-banner>
+  </preview>
+  <preview name="warning" width="1024" height="22">
+    <td-banner warning>Warning</td-banner>
+  </preview>
 </component>
 
 <component id="td-progress-example">
@@ -194,33 +203,3 @@
     <td-progress value=[[bind value]]>[[bind value * 100]]%</td-progress>
   </template>
 </component>
-
-<div>
-  <td-preview-component-example label="List">
-    <td-list>
-      <td-list-item>List item 1</td-list-item>
-      <td-list-item>Item 2</td-list-item>
-      <td-list-item>Item 3</td-list-item>
-      <td-list-item>Item 4</td-list-item>
-    </td-list>
-  </td-preview-component-example>
-
-  <td-preview-component-example label="Banner">
-    <style>
-      td-banner {
-        margin: var(--base4);
-      }
-    </style>
-    <td-banner success>Success</td-banner>
-    <td-banner warning>Warning</td-banner>
-    <td-banner error>Error</td-banner>
-  </td-preview-component-example>
-
-  <td-preview-component-example label="Progress">
-    <td-progress-example value=[[bind 0]] />
-    <td-progress-example value=[[bind 0.5]] />
-    <td-progress-example value=[[bind 1]] />
-  </td-preview-component-example>
-</div>
-
-

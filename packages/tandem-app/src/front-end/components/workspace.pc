@@ -138,21 +138,25 @@
         <td-artboards-pane onArtboardClicked artboards=[[bind [
           {
             $id: null,
-            componentId: "component 1"
+            componentId: "component 1",
+            previewName: "test4"
           },
           {
             $id: null,
             location: "http://google.com",
             hovering: true,
-            componentId: "component 1"
+            componentId: "component 1",
+            previewName: "test3"
           },
           {
             $id: null,
-            componentId: "component 1"
+            componentId: "component 1",
+            previewName: "test2"
           },
           {
             $id: null,
-            componentId: "component 1"
+            componentId: "component 1",
+            previewName: "test"
           },
           {
             $id: null,

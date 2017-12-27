@@ -50,7 +50,12 @@ export const apiOpenSourceFile = async (componentId: string, previewName: string
     })
   });
 
-  return await response.json();
+  const res = await response.json();
+  if (response.status !== 200) {
+    throw res;
+  }
+
+  return res;
 }
 
 export type CreateComponentResult = {

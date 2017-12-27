@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as request from "request";
 import { eventChannel, delay } from "redux-saga";
 import { select, take, put, fork, call, spawn, cancel } from "redux-saga/effects";
-import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openArtboardsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp } from "../actions";
+import { Alert, ALERT, AlertLevel, FILE_CONTENT_CHANGED, FileContentChanged, startDevServerRequest, START_DEV_SERVER_REQUESTED, OPEN_TANDEM_EXECUTED, OPEN_EXTERNAL_WINDOW_EXECUTED, CHILD_DEV_SERVER_STARTED, textContentChanged, TEXT_CONTENT_CHANGED, openTandemExecuted, openExternalWindowExecuted, FileAction, OPEN_FILE_REQUESTED, OpenFileRequested, activeTextEditorChange, ACTIVE_TEXT_EDITOR_CHANGED, ActiveTextEditorChanged, openCurrentFileInTandemExecuted, OPEN_CURRENT_FILE_IN_TANDEM_EXECUTED, openArtboardsRequested, insertNewComponentExecuted, CREATE_INSERT_NEW_COMPONENT_EXECUTED, MODULE_CREATED, OPEN_TANDEM_IF_DISCONNECTED_REQUESTED, openTandemIfDisconnectedRequested, OPENING_TANDEM_APP, TANDEM_FE_CONNECTIVITY, openingTandemApp, OpenFileRequestResult, openFileRequestResult } from "../actions";
 import { parseModuleSource, loadModuleAST, Module, getPCStartTagAttribute } from "paperclip";
 import { VMObjectSource, VMObject } from "slim-dom";
 import { NEW_COMPONENT_SNIPPET } from "../constants";
@@ -364,41 +364,61 @@ function* handleOpenCurrentFileInTandem() {
       continue;
     }
 
-    const componentIds = yield call(pickComponentIds, module);
+    const selectedPreviewOptions: PreviewOption[] = yield call(pickComponentPreviews, module);
 
-    if (!componentIds.length) {
+    if (!selectedPreviewOptions.length) {
       continue;
     }
 
     // null provided for default preview (first one)
-    const artboardInfo = componentIds.map((id) => [id, null]);
+    const artboardInfo = selectedPreviewOptions.map(({ componentId, previewName }) => [componentId, previewName]);
 
     yield call(requestOpenTandemIfDisconnected);
     yield put(openArtboardsRequested(artboardInfo));    
   }
 }
+
+type PreviewOption = {
+  label: string;
+  componentId: string;
+  previewName: string;
+}
+
+const getComponentPreviewOptions = (module: Module): PreviewOption[] => {
+  return module.components.reduce((options, component) => { 
+    return [
+      ...options,
+      ...component.previews.map((preview) => ({
+        label: `${component.id} - ${preview.name}`,
+        componentId: component.id,
+        previewName: preview.name
+      }))
+    ];
+  }, []);
+}
+
 const ALL_COMPONENTS_LABEL = "All components with previews in file";
-function* pickComponentIds(module: Module) {
-  const componentIds = module.components.filter(component => component.previews.length).map(component => component.id);
-  if (componentIds.length === 1) {
-    return componentIds;
+const  pickComponentPreviews = async(module: Module): Promise<PreviewOption[]> =>  {
+  const options = getComponentPreviewOptions(module);
+  const labels = options.map(option => option.label);
+  if (labels.length === 1) {
+    return [options[0]];
   }
-  const pick = yield call(async () => {
-    return await vscode.window.showQuickPick([ALL_COMPONENTS_LABEL, ...componentIds]);
-  });
+  const pick = await vscode.window.showQuickPick([ALL_COMPONENTS_LABEL, ...labels]);
 
   if (!pick) return [];
 
   if (pick === ALL_COMPONENTS_LABEL) {
-    return componentIds;
+    return options;
   }
 
-  return [pick];
+  return [options.find(option => option.label === pick)];
 }
 
 function* handleOpenFileRequested() {
   while(true) {
-    const { componentId, previewName, checksum, vmObjectPath }: OpenFileRequested = yield take(OPEN_FILE_REQUESTED);
+    const request = yield take(OPEN_FILE_REQUESTED)
+    const { componentId, previewName, checksum, vmObjectPath }: OpenFileRequested = request;
     const state: ExtensionState = yield select();
 
     let uriBase = `http://localhost:${state.childDevServerInfo.port}/components/${componentId}/preview`;
@@ -410,22 +430,32 @@ function* handleOpenFileRequested() {
 
     console.log(uriBase);
 
-    const { uri, range: { start, end } }: VMObjectSource = yield call(() => {
-      return new Promise((resolve, reject) => {
-        request(uriBase, { json: true }, (err, response, body) => {
-          if (err) {
-            return reject(err);
-          }
-          if (response.statusCode !== 200) {
-            return reject(`Error loading VM source info: ${response.statusCode}`);
-          }
-          console.log(response);
-          console.log(body);
-          resolve(body);
-        });
-      }); 
-    });
+    let source: VMObjectSource;
 
+    try {
+      source = yield call(() => {
+        return new Promise((resolve, reject) => {
+          request(uriBase, { json: true }, (err, response, body) => {
+            if (err) {
+              return reject(err);
+            }
+            if (response.statusCode !== 200) {
+              return reject(`Error loading VM source info: ${response.statusCode}`);
+            }
+            console.log(response);
+            console.log(body);
+            resolve(body);
+          });
+        }); 
+      });
+    } catch(e) {
+      console.error(`Unable to fetch ${uriBase}`);
+      console.error(e.stack);
+      yield put(openFileRequestResult(request, e));
+      continue;
+    }
+
+    const { uri, range: { start, end } }: VMObjectSource = source;
     
     vscode.workspace.openTextDocument(uri.replace("file://", "")).then(doc => {
       vscode.window.showTextDocument(doc).then(() => {
@@ -439,8 +469,12 @@ function* handleOpenFileRequested() {
         }
       });
     });
+
+    yield put(openFileRequestResult(request));
   }
 }
+
+const SPIN_SEQ = `⠋⠙⠹⠼⠴⠦⠧⠇⠏`;
 
 function* handleTandemFEStatus() {
   const state: ExtensionState = yield select();
@@ -469,8 +503,7 @@ function* handleTandemFEStatus() {
         connectingChan = yield spawn(function*() {
           while(1) {
             // https://github.com/sindresorhus/elegant-spinner/blob/master/index.js
-            const spinText = `⠋⠙⠹⠼⠴⠦⠧⠇⠏`;
-            status.text = spinText.charAt(i = (i + 1) % spinText.length) + " Tandem";
+            status.text = SPIN_SEQ.charAt(i = (i + 1) % SPIN_SEQ.length) + " Tandem";
             yield call(delay, 100);
           }
         });

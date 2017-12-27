@@ -7,7 +7,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as md5 from "md5";
 import { TANDEM_APP_MODULE_NAME } from "../constants";
-import { CHILD_DEV_SERVER_STARTED, startDevServerRequest, openFileRequested, ExpressServerStarted, EXPRESS_SERVER_STARTED, expressServerStarted } from "../actions";
+import { CHILD_DEV_SERVER_STARTED, startDevServerRequest, openFileRequested, ExpressServerStarted, EXPRESS_SERVER_STARTED, expressServerStarted, OPEN_FILE_REQUEST_RESULT, OpenFileRequestResult } from "../actions";
 import { take, fork, call, select, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { routeHTTPRequest } from "../utils";
@@ -90,8 +90,19 @@ function* getTandemFile(req: Request, res: Response) {
 
 function* handleOpenFile(req: Request, res: Response) {
   const body = yield getPostData(req);
-  res.send(`"ok"`);
-  yield put(openFileRequested(body));
+  const openFileReq = openFileRequested(body);
+  yield fork(function*() {
+    const { error } = yield take((action: OpenFileRequestResult) => action.type === OPEN_FILE_REQUEST_RESULT && action.request.checksum === openFileReq.checksum && action.request.componentId === action.request.componentId);
+
+    if (error) {
+      res.statusCode = 404;
+      res.send({
+        message: `Unable to open file`
+      });
+    }
+  });
+
+  yield put(openFileReq);
 }
 
 function* wrapRoute(route) {
