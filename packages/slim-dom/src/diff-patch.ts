@@ -289,7 +289,6 @@ const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
 export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<any[]>[]) => {
 
   const idSeed = root.id ? crc32(getDocumentChecksum(root) + root.id) : null;
-  console.log(idSeed);
 
   // TODO - check ID - compute next id from that + checksum of root
 

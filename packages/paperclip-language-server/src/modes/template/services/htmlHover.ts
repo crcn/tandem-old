@@ -20,7 +20,9 @@ export function doHover(
   devToolsPort
 ): Hover | Promise<Hover> {
   const offset = document.offsetAt(position);
-  const { root } = parseModuleSource(document.getText());
+  // console.log("DOCC");
+  const { root, diagnostics } = parseModuleSource(document.getText());
+  // console.log("PARSE MOD SOURCE" + JSON.stringify(root) + JSON.stringify(diagnostics, null, 2));
   const expr = root && getExpressionAtPosition(offset, root, (expr) => {
     return expr.type === PCExpressionType.SELF_CLOSING_ELEMENT || expr.type === PCExpressionType.ELEMENT;
   });

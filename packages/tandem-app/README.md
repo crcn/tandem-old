@@ -16,6 +16,8 @@ IMMEDIATE:
   - [ ] allow for string style attributes
   - [ ] transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
   - [ ] hovering prop not working for components pane
+  - [ ] **NULL replacing content (hard to reproduce)
+  - [ ] disconnecting front-end
 
 - [ ] Components pane
   - [ ] add new new component

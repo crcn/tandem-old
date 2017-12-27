@@ -27,7 +27,7 @@ export const parseModuleSource = (source: string, filePath?: string): ParseResul
 
   const root = createFragment(context);
   return _memos[source] = {
-    root: {
+    root: root && {
       ...root,
       input: source
     },
@@ -498,9 +498,9 @@ const createRepeatBlock = (context: ParseContext): BKRepeat => {
 
   eatWhitespace(context);
 
-  if (!testCurrTokenType(context, [PCTokenType.TEXT], "Repeat block missing collection parameter.", getTokenLocation(start, context.source))) {
-    return null;
-  }
+  // if (!testCurrTokenType(context, [PCTokenType.TEXT], "Repeat block missing collection parameter.", getTokenLocation(start, context.source))) {
+  //   return null;
+  // }
 
   const each = createBKExpressionStatement(context);
 

@@ -19,6 +19,7 @@ export enum InferenceType {
 };
 
 export const EACH_KEY = "$$each";
+export const EAT_KEY = "$$eat";
 
 type InferenceExtends = {
   tagName: string;
@@ -178,7 +179,7 @@ const inferElement = (element: PCElement|PCSelfClosingElement, context: InferCon
 
   for (let i = 0, {length} = modifiers; i < length; i++) {
     const modifier = modifiers[i].value as BKRepeat;
-    if (modifier.type === BKExpressionType.REPEAT && isReference(modifier.each)) {
+    if (modifier.type === BKExpressionType.REPEAT) {
       _repeat = modifier as BKRepeat;
       break;
     }
@@ -186,7 +187,7 @@ const inferElement = (element: PCElement|PCSelfClosingElement, context: InferCon
 
   if (_repeat) {
     context = inferExprType(_repeat, context);
-    context = setContextScope(_repeat.asValue.name, [...getReferenceKeyPath(_repeat.each), EACH_KEY], context);
+    context = setContextScope(_repeat.asValue.name, isReference(_repeat.each) ? [...getReferenceKeyPath(_repeat.each), EACH_KEY] : [EAT_KEY], context);
   }
 
   context = inferStartTag(startTag, context);
@@ -349,6 +350,9 @@ const setTypeLimit = (typeLimit: InferenceType, typeLimitErrorMessage: string, c
 
 const updateNestedInference = (keyPath: string[], newProps: Partial<Inference>, target: Inference, keyPathIndex: number = -1) => {
   keyPathIndex++;
+  if (keyPath.indexOf(EAT_KEY) !== -1) {
+    return target;
+  }
   if (keyPathIndex === keyPath.length) {
     return {
       ...target,

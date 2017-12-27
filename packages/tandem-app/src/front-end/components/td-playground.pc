@@ -8,25 +8,10 @@
   </style>
   <template>
     <div>
-      component!!
+      <h2>Playground area for resolving bugs</h2>
     </div>
   </template>
   <preview name="main" width="1366" height="768">
     <td-playground />
-  </preview>
-</component>
-
-<component id="td-test2">
-  <style> 
-    :host {
-      color: red;
-      background: blue;
-    }
-  </style>
-  <template>
-    ab
-  </template>
-  <preview name="test" width="400" height="200">
-    <td-test2 />
   </preview>
 </component>

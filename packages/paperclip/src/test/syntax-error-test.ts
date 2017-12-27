@@ -33,7 +33,7 @@ describe(__filename + "#", () => {
     [`[[repeat items]]`, [[2, 8, `Repeat blocks can only be added to elements, for example: <div [[repeat items in item, i]]></div>.`]]],
     [`<a b="[[if a]]"></a>`, [[8, 10, `Condition blocks cannot be assigned to attributes.`]]],
     [`<a b="[[repeat a]]"></a>`, [[8, 14, `Repeat blocks cannot be assigned to attributes.`]]],
-    [`<a [[repeat]]></a>`, [[5, 11, `Repeat block missing collection parameter.`]]],
+    [`<a [[repeat]]></a>`, [[11, 12, `Unexpected token.`], [5, 11, `Unexpected token.`]]],
     [`<a [[repeat a]]></a>`, [[5, 13, `Unexpected token.`]]],
     [`<a [[repeat items ,]]></a>`, [[5, 18, `Unexpected token.`]]],
     [`<a [[repeat items`, [[5, 17, `Unexpected end of file.`]]],
