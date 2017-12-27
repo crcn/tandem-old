@@ -113,6 +113,9 @@ export const computedDOMInfo = (map: DOMNodeMap): ComputedDOMInfo => {
   let computedInfo = {};
   for (const nodeId in map) {
     const node = map[nodeId];
+    if (!node) {
+      continue;
+    }
 
     if (node.nodeName.charAt(0) === "#") {
       continue;

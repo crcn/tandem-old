@@ -3,7 +3,7 @@
 <component id="td-spinner">
   <style>
     :host {
-      color: red;
+      color: blue;
     }
   </style>
   <template>
