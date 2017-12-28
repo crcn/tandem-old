@@ -36,7 +36,7 @@ export const getDocumentPreviewDiff = async (componentId: string, previewName: s
 };
 
 export const apiOpenSourceFile = async (componentId: string, previewName: string, checksum: string, path: any[], state: ApplicationState) => { 
-  const response = await fetch(`${state.apiHost}/open`, {
+  const response = await fetch(`${state.textEditorHost}/open`, {
     method: "POST",
     headers: {
       "Accept": "application/json",

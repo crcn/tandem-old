@@ -1,7 +1,7 @@
 // used for code editor extensions
 
 
-exports.getEntryHTML = function({ filePrefix, apiHost, proxy, storageNamespace }) {
+exports.getEntryHTML = function({ filePrefix, apiHost, textEditorHost, storageNamespace }) {
   if(!filePrefix) {
     filePrefix = `file://${__dirname}`;
   }
@@ -18,7 +18,7 @@ exports.getEntryHTML = function({ filePrefix, apiHost, proxy, storageNamespace }
     <script>
       var config = {
         apiHost: "${apiHost}",
-        proxy: "${proxy}",
+        textEditorHost: "${textEditorHost}",
         storageNamespace: "${storageNamespace}"
       }
     </script>

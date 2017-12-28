@@ -1,6 +1,9 @@
 IMMEDIATE:
 
 - [ ] performance issue ()
+- inline style attribs
+- slot css inheritence
+- debounce changes
 
 - [ ] CSS Inspector* 
   - [ ] show inherited props from slots
@@ -10,16 +13,10 @@ IMMEDIATE:
   - [ ] delete declaration
   - [ ] edit raw declaration value
   - [ ] inspect `:root`
+  - [ ] prioritized css 
 
-- [ ] Bug fixing
-  - [ ] "Cannot read property 'type' of undefined" - start typing new component
-  - [ ] Infinite loop - create new [[if statement]]
-  - [ ] preview hangs up when removing primary child
-  - [ ] allow for string style attributes
-  - [ ] transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
-  - [ ] hovering prop not working for components pane
-  - [ ] **NULL replacing content (hard to reproduce)
-  - [ ] **disconnecting front-end after a while -- smells like things are getting clogged up
+- [ ] persistence
+  - [ ] persist css changes in css inspector
 
 - [ ] Components pane
   - [ ] add new new component
@@ -34,6 +31,16 @@ IMMEDIATE:
     - [ ] "Double click to edit" for text
     
   - [ ] prompt to create new element when native element dropped to empty space
+
+- [ ] Bug fixing
+  - [ ] "Cannot read property 'type' of undefined" - start typing new component
+  - [ ] Infinite loop - create new [[if statement]]
+  - [ ] preview hangs up when removing primary child
+  - [ ] allow for string style attributes
+  - [ ] transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
+  - [ ] hovering prop not working for components pane
+  - [ ] **NULL replacing content (hard to reproduce)
+  - [ ] **disconnecting front-end after a while -- smells like things are getting clogged up
 
 - [ ] CSS Inspector enhanced
   - [ ] color picker
@@ -128,6 +135,9 @@ POSSIBLY:
 - [ ] Tandem
   - [ ] Components filter
   - [ ] Themable
+
+- [ ] Sketch file import
+  - [ ] `<vector src="./file.sketch" name="Some vector icon" />
 
 #### V3
 

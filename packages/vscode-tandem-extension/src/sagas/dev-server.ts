@@ -38,7 +38,7 @@ function* handleDevConfigLoaded() {
   const chan = eventChannel(emit => {
     proc = startPCDevServer({
       cwd: rootPath,
-      pipeStdio: false,
+      pipeStdio: true,
       projectConfig: config.devServer,
       port: childServerPort
     }, emit);

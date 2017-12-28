@@ -163,6 +163,7 @@ export type ApplicationState = {
   selectedWorkspaceId?: string;
   element: HTMLElement;
   apiHost: string;
+  textEditorHost: string;
 } & BaseApplicationState &  ShortcutServiceState & Struct;
 
 /**

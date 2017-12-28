@@ -20,12 +20,30 @@
       width: 100%;
     }
 
-    .hue-picker {
+    .alpha-slider {
       margin-top: var(--base2);
     }
 
-    .hue-picker .placeholder {
-      height: 20px;
+    .color-preview {
+      width: 10px;
+      height: 10px;
+      background: red;
+      display: inline-block;
+    }
+
+    .sliders {
+      width: 100%;
+    }
+
+    .hue-slider .placeholder, .alpha-slider .placeholder {
+      height: 10px;
+      width: 100%;
+    }
+
+    .controls {
+      margin-top: var(--base2);
+      display: flex;
+      flex-direction: row;
       width: 100%;
     }
   </style>
@@ -38,16 +56,31 @@
           </div>
         </slot>
       </div>
-      <div class="hue-picker">
-        <slot name="hslPicker">
-          <div class="placeholder">
+      <div class="controls">
+        <div class="color-preview">
+          <slot name="colorPreview">
+          </slot>
+        </div>
+        <div class="sliders">
+          <div class="hue-slider">
+            <slot name="hslPicker">
+              <div class="placeholder">
 
+              </div>
+            </slot>
           </div>
-        </slot>
+          <div class="alpha-slider">
+            <slot name="hslPicker">
+              <div class="placeholder">
+
+              </div>
+            </slot>
+          </div>
+        </div>
       </div>
     </div>
   </template>
-  <preview name="main" width="100" height="20">
+  <preview name="main" width="200" height="200">
     <td-color-picker color="rgba(203, 128, 52, 0.28)" />
   </preview>
 </component>

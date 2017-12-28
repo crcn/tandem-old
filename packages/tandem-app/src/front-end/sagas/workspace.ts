@@ -334,6 +334,8 @@ function* handleSourceClicked() {
 
     const item = getWorkspaceNode(itemId, getSelectedWorkspace(state));
 
+    // TODO - fallback to internal text editor if textEditorHost does not exist.
+
     const artboard = getNodeArtboard(item.id, state);
     yield call(apiOpenSourceFile, artboard.componentId, artboard.previewName, artboard.checksum, getVMObjectPath(item, getDocumentBodyPreview(artboard.document)), state);
   }
