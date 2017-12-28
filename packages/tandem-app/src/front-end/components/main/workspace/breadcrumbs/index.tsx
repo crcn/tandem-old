@@ -50,6 +50,10 @@ const getBreadcrumbNodes = weakMemo((workspace: Workspace): SlimElement[] => {
 
   const artboard = getNodeArtboard($id, workspace);
 
+  if (!artboard) {
+    return [];
+  }
+
   const node = getNestedObjectById($id, artboard.document);
 
   // not ready yet

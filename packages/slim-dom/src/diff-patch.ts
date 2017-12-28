@@ -1,7 +1,7 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
 import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, createMoveChildMutation, MoveChildMutation } from "source-mutation";
 import { compressRootNode, uncompressRootNode } from "./compression";
-import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum } from "./utils";
+import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount } from "./utils";
 import { isEqual } from "lodash";
 import crc32 = require("crc32");
 
@@ -286,12 +286,35 @@ const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
   return 0;
 };
 
+export const prepDiff = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<any[]>[]) => {
+
+  const idSeed = root.id ? crc32(getDocumentChecksum(root) + root.id) : null;
+  let refCount = 0;
+  return diffs.map(diff => {
+    switch(diff.type) {
+      case CSS_INSERT_RULE:
+      case INSERT_CHILD_NODE: {
+        const { type, target, index, child } = diff as InsertChildMutation<any, any>;
+        let unzippedChild = uncompressRootNode(child);
+        if (idSeed) {
+          unzippedChild = setVMObjectIds(unzippedChild, idSeed, refCount);
+          refCount = getRefCount(unzippedChild, idSeed);
+        }
+        return createInsertChildMutation(type, target, unzippedChild, index)
+      }
+      default: {
+        return diff;
+      }
+    }
+  });
+};
+
 export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<any[]>[]) => {
 
   const idSeed = root.id ? crc32(getDocumentChecksum(root) + root.id) : null;
 
   // TODO - check ID - compute next id from that + checksum of root
-
+  
   for (let i = 0, {length} = diffs; i < length; i++) {
     const diff = diffs[i];
     const target = getVMObjectFromPath(diff.target, root);
@@ -318,8 +341,7 @@ export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Muta
       }
       case INSERT_CHILD_NODE: {
         const { index, child } = diff as InsertChildMutation<any, any>;
-        const unzippedChild = uncompressRootNode(child);
-        newTarget = insertChildNode(newTarget as SlimParentNode, idSeed ? setVMObjectIds(unzippedChild, idSeed) : unzippedChild, index);
+        newTarget = insertChildNode(newTarget as SlimParentNode, child, index);
         break;
       }
       case MOVE_CHILD_NODE: {
@@ -339,8 +361,7 @@ export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Muta
       }
       case CSS_INSERT_RULE: {
         const { child, index } = diff as InsertChildMutation<any, any>;
-        const unzippedChild = uncompressRootNode(child);
-        newTarget = insertCSSRule(newTarget as SlimCSSGroupingRule, idSeed ? setVMObjectIds(unzippedChild, idSeed) : unzippedChild, index);
+        newTarget = insertCSSRule(newTarget as SlimCSSGroupingRule, child, index);
         break;
       }
       case CSS_DELETE_RULE: {

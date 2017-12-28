@@ -4,13 +4,47 @@
 
 <component id="td-color-picker">
   <style>
+    .color-picker {
+      padding: var(--base2);
+    }
     .hsl-picker {
-      background: red;
+      width: 100%;
+    }
+
+    .placeholder {
+      background: var(--background-alt);
+    }
+    
+    .hsl-picker .placeholder {
+      height: 100px;
+      width: 100%;
+    }
+
+    .hue-picker {
+      margin-top: var(--base2);
+    }
+
+    .hue-picker .placeholder {
+      height: 20px;
+      width: 100%;
     }
   </style>
   <template>
-    <div class="hsl-picker">
-      red
+    <div class="color-picker">
+      <div class="hsl-picker">
+        <slot name="hslPicker">
+          <div class="placeholder">
+
+          </div>
+        </slot>
+      </div>
+      <div class="hue-picker">
+        <slot name="hslPicker">
+          <div class="placeholder">
+
+          </div>
+        </slot>
+      </div>
     </div>
   </template>
   <preview name="main" width="100" height="20">

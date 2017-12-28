@@ -2,7 +2,6 @@ import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseN
 import { weakMemo, getVMObjectFromPath } from "./utils";
 import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
 import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, patchNode } from "./diff-patch";
-import { uncompressRootNode } from "./compression";
 
 export const renderDOM = (node: SlimBaseNode, mount: HTMLElement) => {
   let map: DOMNodeMap = {};
@@ -193,7 +192,7 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
       case INSERT_CHILD_NODE: {
         const { child, index } = mutation as InsertChildMutation<any, any>;
         let childMap: DOMNodeMap = {};
-        const nativeChild = createNode(uncompressRootNode(child), root.ownerDocument, childMap);
+        const nativeChild = createNode(child, root.ownerDocument, childMap);
         if (index >= target.childNodes.length) {
           target.appendChild(nativeChild);
         } else {
@@ -239,7 +238,13 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
       sheet.deleteRule(0);
     }
     for (let i = slimStyle.sheet.rules.length; i--;) {
-      sheet.insertRule(stringifyRule(slimStyle.sheet.rules[i]));
+
+      // eat errors -- will crop up during live coding
+      try {
+        sheet.insertRule(stringifyRule(slimStyle.sheet.rules[i]));
+      } catch(e) {
+
+      }
     }
   }
 

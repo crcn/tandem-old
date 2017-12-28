@@ -1,5 +1,7 @@
 IMMEDIATE:
 
+- [ ] performance issue ()
+
 - [ ] CSS Inspector* 
   - [ ] show inherited props from slots
   - [ ] eye toggler
@@ -17,7 +19,7 @@ IMMEDIATE:
   - [ ] transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
   - [ ] hovering prop not working for components pane
   - [ ] **NULL replacing content (hard to reproduce)
-  - [ ] disconnecting front-end
+  - [ ] **disconnecting front-end after a while -- smells like things are getting clogged up
 
 - [ ] Components pane
   - [ ] add new new component

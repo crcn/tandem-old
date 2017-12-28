@@ -812,4 +812,4 @@ export const setVMObjectIds = <TObject extends VMObject>(current: TObject, idSee
   };
 }
 
-const getRefCount = (current: VMObject, idSeed: string) => Number((current.id as String).substr(idSeed.length));
+export const getRefCount = (current: VMObject, idSeed: string) => Number((current.id as String).substr(idSeed.length));

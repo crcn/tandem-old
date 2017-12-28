@@ -1,5 +1,5 @@
 // TODO - css diff / patch
-import { diffNode, SlimParentNode, patchNode, SlimElement } from "slim-dom";
+import { diffNode, SlimParentNode, patchNode, SlimElement, prepDiff } from "slim-dom";
 import { expect } from "chai";
 import { loadModuleDependencyGraph, runPCFile, PCElement } from "..";
 import { stringifyNode, FakeDocument } from "./utils";
@@ -131,7 +131,7 @@ describe(__filename + "#", () => {
         const { document } = runPCFile({ entry: { filePath: "entry", componentId: "entry", previewName: "main" }, graph });
 
         if (prevDocument) {
-          const diffs = diffNode(prevDocument, document);
+          const diffs = prepDiff(prevDocument, diffNode(prevDocument, document));
           prevDocument = patchNode(prevDocument, diffs);
         } else {          
           prevDocument = document as SlimParentNode;

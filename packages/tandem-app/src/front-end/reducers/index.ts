@@ -31,7 +31,7 @@ import {
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
-import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, patchNode, SlimVMObjectType } from "slim-dom";
+import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, SlimVMObjectType } from "slim-dom";
 
 import { 
   Artboard,

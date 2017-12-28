@@ -1,4 +1,4 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -66,7 +66,6 @@ function* handlePreviewDiffed() {
       continue;
     }
     for (const artboard of artboards) {
-
       // likely that the server restarted, or user connection dropped while the document changed.
       if (artboard.checksum !== documentChecksum) {
         console.info(`Checksum mismatch for artboard ${artboard.componentId}:${artboard.previewName}, reloading document.`);
@@ -74,9 +73,11 @@ function* handlePreviewDiffed() {
         continue;
       }
 
+      // inserts unique IDs
+      const preppedDiff = prepDiff(artboard.document, diff);
       const previewPath = [...getArtboardDocumentBodyPath(artboard)];
 
-      const patchedDoc = patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, diff);
+      const patchedDoc = patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, preppedDiff);
 
       yield put(
         artboardPatched(
@@ -87,7 +88,7 @@ function* handlePreviewDiffed() {
             patchedDoc
           ),
           getDocumentChecksum(patchedDoc as SlimParentNode),
-          patchDOM(diff, patchedDoc as SlimParentNode, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
+          patchDOM(preppedDiff, patchedDoc as SlimParentNode, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
         )
       );
     }
