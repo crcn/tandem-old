@@ -92,6 +92,15 @@ export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule,
   }
 });
 
+export const stringifyStyle = (style: any) => {
+  let buffer = ``;
+  for (const key in style) {
+    buffer += `${kebabCase(key)}: ${style[key]};`
+  }
+
+  return buffer;
+}
+
 export const stringifyNode = weakMemo((node: SlimBaseNode, includeShadow?: boolean) => {
   switch(node.type) {
     case SlimVMObjectType.TEXT: {

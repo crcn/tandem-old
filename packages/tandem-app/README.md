@@ -1,6 +1,5 @@
 IMMEDIATE:
 
-- inline style attribs
 - slot css inheritence
 
 - [ ] CSS Inspector* 
