@@ -1,9 +1,7 @@
 IMMEDIATE:
 
-- [ ] performance issue ()
 - inline style attribs
 - slot css inheritence
-- debounce changes
 
 - [ ] CSS Inspector* 
   - [ ] show inherited props from slots

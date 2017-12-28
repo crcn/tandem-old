@@ -109,7 +109,16 @@ const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
 const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDelarationOuterProps>(
   pure,
   (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
-    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={parseDeclaration(value).root} sourceValue={value} />;
+
+    let root: any;
+
+    try {
+      root = parseDeclaration(value).root;
+    } catch(e) {
+      return <span>Syntax error</span>;
+    }
+
+    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} />;
   }
 );
 
