@@ -25,7 +25,7 @@ describe(__filename + "#", () => {
         "target": [0, "shadow"],
         "child": [
           [
-            "entry"
+            "entry.pc"
           ],
           [
             0,
@@ -83,16 +83,16 @@ describe(__filename + "#", () => {
     ]]
   ].forEach(([oldSource, newSource, expectedDiffs]: any) => {
     it(`can diff ${oldSource} against ${newSource}`, async () => {
-      const { graph: ag } = await loadModuleDependencyGraph("entry", {
+      const { graph: ag } = await loadModuleDependencyGraph("entry.pc", {
         readFile: () => Promise.resolve(wrapSource(oldSource))
       });
-      const { graph: bg } =  await loadModuleDependencyGraph("entry", {
+      const { graph: bg } =  await loadModuleDependencyGraph("entry.pc", {
         readFile: () => Promise.resolve(wrapSource(newSource))
       });
 
-      const { document: an } = runPCFile({ entry: {filePath: "entry", componentId: "entry", previewName: "main" }, graph: ag });
+      const { document: an } = runPCFile({ entry: {filePath: "entry.pc", componentId: "entry", previewName: "main" }, graph: ag });
 
-      const { document: bn, diagnostics } = runPCFile({ entry: {filePath: "entry", componentId: "entry", previewName: "main" }, graph: bg });
+      const { document: bn, diagnostics } = runPCFile({ entry: {filePath: "entry.pc", componentId: "entry", previewName: "main" }, graph: bg });
 
       const diffs = diffNode(an, bn);
       expect(diffs).to.eql(expectedDiffs);
@@ -125,10 +125,10 @@ describe(__filename + "#", () => {
       let prevDocument: SlimParentNode;
       
       for (const variant of variants) {
-        const { graph } = await loadModuleDependencyGraph("entry", {
+        const { graph } = await loadModuleDependencyGraph("entry.pc", {
           readFile: () => Promise.resolve(wrapSource(variant))
         });
-        const { document } = runPCFile({ entry: { filePath: "entry", componentId: "entry", previewName: "main" }, graph });
+        const { document } = runPCFile({ entry: { filePath: "entry.pc", componentId: "entry", previewName: "main" }, graph });
 
         if (prevDocument) {
           const diffs = prepDiff(prevDocument, diffNode(prevDocument, document));

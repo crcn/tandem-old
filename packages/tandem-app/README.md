@@ -1,9 +1,12 @@
 IMMEDIATE:
 
-- slot css inheritence
+- [ ] @import "./styles.css"
+- [ ] parse imported styles 
+- [ ] show inherited props from slots
+- [ ] lock computed properties
+- [ ] changes to css files should trigger reload
 
 - [ ] CSS Inspector* 
-  - [ ] show inherited props from slots
   - [ ] eye toggler
   - [ ] add new style - specific to target element
   - [ ] delete style rule
@@ -38,6 +41,8 @@ IMMEDIATE:
   - [ ] hovering prop not working for components pane
   - [ ] **NULL replacing content (hard to reproduce)
   - [ ] **disconnecting front-end after a while -- smells like things are getting clogged up
+  - [ ] need to recompute bounds when images load
+  - [ ] fix flickering for imported files
 
 - [ ] CSS Inspector enhanced
   - [ ] color picker

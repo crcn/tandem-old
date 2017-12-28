@@ -25,7 +25,16 @@ export const parseModuleSource = (source: string, filePath?: string): ParseResul
     diagnostics: []
   };
 
-  const root = createFragment(context);
+  let root;
+
+  if (!filePath || /pc$/.test(filePath)) {
+    root = createFragment(context);
+  } else if (/css$/.test(filePath)) {
+    root = createStyleSheet(context);
+  } else {
+    throw new Error(`Cannot parse ${filePath} type.`);
+  }
+  
   return _memos[source] = {
     root: root && {
       ...root,

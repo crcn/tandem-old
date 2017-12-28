@@ -8,7 +8,7 @@ describe(__filename + "#", () => {
   [
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               Hello
@@ -23,7 +23,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               a
@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               [[bind a]]
@@ -53,7 +53,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="a">
             <template>
               [[bind a]]
@@ -74,7 +74,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               [[bind a]]
@@ -89,7 +89,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               [[bind a]]
@@ -104,7 +104,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[repeat items as item]]>
@@ -121,7 +121,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[repeat items as item, k]]>
@@ -138,7 +138,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[repeat items as a]]>
@@ -157,7 +157,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[if a]]>
@@ -174,7 +174,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[if a]]>
@@ -191,7 +191,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[if a]]>
@@ -211,7 +211,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[if a === 1]]>
@@ -231,7 +231,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[if a === 1]]>
@@ -254,7 +254,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <div [[if a === 1]]>
@@ -277,7 +277,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>
               <root [[if a < 3]] a=[[bind a + 1]]>
@@ -294,7 +294,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <template>  
               [[bind a]] [[bind 2]]
@@ -309,8 +309,8 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
-          <link rel="import" href="module" />
+        "entry.pc": `
+          <link rel="import" href="module.pc" />
           <component id="root">
             <template>  
               <compc [[bind props]]> 
@@ -322,7 +322,7 @@ describe(__filename + "#", () => {
             </preview>
           </component>
         `,
-        "/module": `
+        "/module.pc": `
           <component id="compc">
             <template>  
               [[bind a]]
@@ -334,7 +334,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        entry: `
+        "entry.pc": `
           <component id="root">
             <style>
               .container {
@@ -352,16 +352,40 @@ describe(__filename + "#", () => {
         `
       },
       ` <root><#shadow><style>.container {color: red;}</style> <div class="container"> </div> </#shadow></root> `
+    ],
+    [
+      {
+        "/style.css": `
+          .container {
+            color: red;
+          }
+        `,
+        "entry.pc": `
+          <component id="root">
+            <style>
+              @import "style.css";
+            </style>
+            <template>  
+              <div class="container">
+              </div>
+            </template>
+            <preview name="main">
+              <root />
+            </preview>
+          </component>
+        `
+      },
+      ` <root><#shadow><style>@import "/style.css";</style> <div class="container"> </div> </#shadow></root> `
     ]
   ].forEach(([entries, result]: any) => {
-    it(`can render ${entries.entry}`, async () => {
+    it(`can render ${entries["entry.pc"]}`, async () => {
         const output = await runPCFile({
           entry: {
-            filePath: "entry",
+            filePath: "entry.pc",
             componentId: "root",
             previewName: "main"
           },
-          graph: (await loadModuleDependencyGraph("entry", {
+          graph: (await loadModuleDependencyGraph("entry.pc", {
             readFile: (uri) => {
               return Promise.resolve(entries[uri])
             }

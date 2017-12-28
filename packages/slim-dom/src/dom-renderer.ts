@@ -3,9 +3,9 @@ import { weakMemo, getVMObjectFromPath } from "./utils";
 import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
 import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, patchNode } from "./diff-patch";
 
-export const renderDOM = (node: SlimBaseNode, mount: HTMLElement) => {
+export const renderDOM = (node: SlimBaseNode, mount: HTMLElement, options: RenderOptions = {}) => {
   let map: DOMNodeMap = {};
-  mount.appendChild(createNode(node, mount.ownerDocument, map));
+  mount.appendChild(createNode(node, mount.ownerDocument, map, options));
   return map;
 };
 
@@ -13,7 +13,7 @@ export type DOMNodeMap = {
   [identifier: string]: HTMLElement|Text
 };
 
-const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => {
+const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap, options: RenderOptions) => {
   switch(node.type) {
     case SlimVMObjectType.TEXT: {
       return map[node.id] = document.createTextNode((node as SlimTextNode).value);
@@ -22,11 +22,11 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => 
       const { tagName, id, shadow, childNodes, attributes } = node as SlimElement;
       const ret = map[id] = document.createElement(tagName);
       if (shadow) {
-        ret.attachShadow({ mode: "open" }).appendChild(createNode(shadow, document, map));
+        ret.attachShadow({ mode: "open" }).appendChild(createNode(shadow, document, map, options));
       }
 
       if (tagName === "style") {
-        renderStyle((node as SlimStyleElement).sheet, ret as HTMLStyleElement);
+        renderStyle((node as SlimStyleElement).sheet, ret as HTMLStyleElement, options);
       }
       for (let i = 0, {length} = attributes; i < length; i++) {
         const attribute = attributes[i];
@@ -39,7 +39,7 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => 
         }
       }
       for (let i = 0, {length} = childNodes; i < length; i++) {
-        ret.appendChild(createNode(childNodes[i], document, map));
+        ret.appendChild(createNode(childNodes[i], document, map, options));
       }
       return ret;
     }
@@ -47,7 +47,7 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => 
       const { childNodes } = node as SlimParentNode;
       const fragment = document.createDocumentFragment();
       for (let i = 0, {length} = childNodes; i < length; i++) {
-        fragment.appendChild(createNode(childNodes[i], document, map));
+        fragment.appendChild(createNode(childNodes[i], document, map, options));
       }
       return fragment;
     }
@@ -58,15 +58,15 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap) => 
   }
 };
 
-const renderStyle = (sheet: SlimCSSStyleSheet, element: HTMLStyleElement) => {
-  element.textContent = stringifyStyleSheet(sheet);
+const renderStyle = (sheet: SlimCSSStyleSheet, element: HTMLStyleElement, options: RenderOptions) => {
+  element.textContent = stringifyStyleSheet(sheet, options);
 }
 
-const stringifyStyleSheet = (sheet: SlimCSSStyleSheet) => {
+const stringifyStyleSheet = (sheet: SlimCSSStyleSheet, options: RenderOptions) => {
   let buffer = ``;
   for (let i = 0, {length} = sheet.rules; i < length; i++) {
     const rule = sheet.rules[i];
-    const ruleText = stringifyRule(sheet.rules[i]);
+    const ruleText = stringifyRule(sheet.rules[i], options);
     if (!ruleText) {
       continue;
     }
@@ -76,8 +76,14 @@ const stringifyStyleSheet = (sheet: SlimCSSStyleSheet) => {
   return buffer;
 };
 
+export type RenderOptions = {
+  filePathAliases?: {
+    [identifier: string]: string
+  }
+}
+
 // TODO - move to util file
-const stringifyRule = (rule: SlimCSSRule) => {
+const stringifyRule = (rule: SlimCSSRule, options: RenderOptions) => {
   switch(rule.type) {
     case SlimVMObjectType.STYLE_RULE: {
       const { selectorText, style } = rule as SlimCSSStyleRule;
@@ -93,7 +99,8 @@ const stringifyRule = (rule: SlimCSSRule) => {
     }
     case SlimVMObjectType.AT_RULE: {
       const { name, params, rules } = rule as SlimCSSAtRule;
-      return `@${name} ${params} { ${rules.map(stringifyRule).join(" ")} }`
+
+      return /^(charset|import)$/.test(name) ? `@${name} "${params}";` : `@${name} ${params} { ${rules.map(rule => stringifyRule(rule, options)).join(" ")} }`;
     }
   }
 };
@@ -162,7 +169,7 @@ const getNativeNodePath = (current: any, root: HTMLElement) => {
 };
 
 // TODO
-export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map: DOMNodeMap, root: HTMLElement): DOMNodeMap => {
+export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map: DOMNodeMap, root: HTMLElement, options: RenderOptions = {}): DOMNodeMap => {
   const resetStyleMap: HTMLStyleElement[] = [];
 
   for (let i = 0, {length} = diffs; i < length; i++) {
@@ -192,7 +199,7 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
       case INSERT_CHILD_NODE: {
         const { child, index } = mutation as InsertChildMutation<any, any>;
         let childMap: DOMNodeMap = {};
-        const nativeChild = createNode(child, root.ownerDocument, childMap);
+        const nativeChild = createNode(child, root.ownerDocument, childMap, options);
         if (index >= target.childNodes.length) {
           target.appendChild(nativeChild);
         } else {
@@ -234,16 +241,18 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
     const slimStyle = getVMObjectFromPath(getNativeNodePath(nativeStyle, root), slimRoot) as SlimStyleElement;
 
     const sheet = nativeStyle.sheet as CSSStyleSheet;
+    const rules = slimStyle.sheet.rules;
     while(sheet.rules.length) {
       sheet.deleteRule(0);
     }
-    for (let i = slimStyle.sheet.rules.length; i--;) {
-
-      // eat errors -- will crop up during live coding
+    for (let i = 0, {length} = rules; i < length; i++) {
+      const nativeRule = sheet.cssRules[j++];
+      const synthRule = rules[i];
+      const synthRuleText = stringifyRule(slimStyle.sheet.rules[i], options);
       try {
-        sheet.insertRule(stringifyRule(slimStyle.sheet.rules[i]));
+        sheet.insertRule(synthRuleText, i);
       } catch(e) {
-
+        
       }
     }
   }

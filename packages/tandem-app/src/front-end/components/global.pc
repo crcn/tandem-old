@@ -4,6 +4,8 @@
 <!--link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" /-->
 
 <style>
+  @import "./ionicons/css/ionicons.css";
+  
   * {
     box-sizing: border-box;
   }

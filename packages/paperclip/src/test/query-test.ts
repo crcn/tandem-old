@@ -15,12 +15,12 @@ describe(__filename + "#", () => {
   ].forEach(([selectorText, source, matches]: any) => {
     it(`can query ${selectorText} in ${source}`, async () => {
       const wrapped = `<component id="test"><template>${source}</template><preview name="main"><test /></preview></component>`;
-      const { graph } = await loadModuleDependencyGraph("entry", {
+      const { graph } = await loadModuleDependencyGraph("entry.pc", {
         readFile: () => Promise.resolve(wrapped)
       });
       const { document, diagnostics } = runPCFile({ 
         entry: {
-          filePath: "entry",
+          filePath: "entry.pc",
           componentId: "test",
           previewName: "main"
         },

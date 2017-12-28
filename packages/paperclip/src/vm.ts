@@ -13,9 +13,11 @@ type VMContext = {
   currentProps: any;
   currentURI: string;
   graph: DependencyGraph;
-  globalStyles: PCExpression[];
   components: {
     [identifier: string]: Component
+  };
+  directoryAliases: {
+    [identifier: string]: string
   };
   diagnostics: Diagnostic[]
 };
@@ -34,10 +36,13 @@ export type RunPCFileEntry = {
 export type RunPCFileOptions = {
   entry: RunPCFileEntry;
   graph: DependencyGraph;
+  directoryAliases?: {
+    [identifier: string]: string
+  }
 };
 
 // TODO - may eventually want to have a compilation step for this
-export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph }: RunPCFileOptions): VMResult => {
+export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph, directoryAliases = {} }: RunPCFileOptions): VMResult => {
 
   let memoKey = "__memo$$" + filePath + componentId + previewName;
   if (graph[memoKey]) {
@@ -47,9 +52,9 @@ export const runPCFile = ({ entry: { filePath, componentId, previewName }, graph
   const context: VMContext = {
     refCount: 0,
     currentProps: {},
-    globalStyles: getAllGlobalStyles(graph),
     currentURI: getComponentSourceUris(graph)[componentId],
     graph,
+    directoryAliases,
     components: getAllComponents(graph),
     diagnostics: []
   };
@@ -84,14 +89,37 @@ const runPreview = (preview: PCElement, context: VMContext) => {
     source: createVMSource(preview, context)
   };
 
-  for (let i = 0, {length} = context.globalStyles; i < length; i++) {
-    root = appendChildNode(root, context.globalStyles[i], context);
-  }
+  let scannedDeps: any = {};
+  const entry = context.currentURI;
 
+  root = addGlobalStyles(root, context, {});
   root = appendChildNodes(root, preview.childNodes, context);
 
   return root;
 };
+
+const addGlobalStyles = <TParent extends SlimParentNode>(root: TParent, context: VMContext, scanned: any): TParent => {
+
+  const { currentURI, graph } = context;
+
+  const { module, resolvedImportUris } = graph[currentURI];
+  for (let i = 0, {length} = module.globalStyles; i < length; i++) {
+    const style = module.globalStyles[i];
+    root = appendChildNode(root, style, context);
+  }
+  for (const relPath in resolvedImportUris) {
+    const resolvedUri = resolvedImportUris[relPath];
+    if (scanned[resolvedUri]) {
+      continue;
+    }
+    scanned[resolvedUri] = true;
+    context.currentURI = resolvedUri;
+    root = addGlobalStyles(root, context, scanned);
+    context.currentURI = currentURI;
+  }
+
+  return root;
+}
 
 let appendElement = <TParent extends SlimParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext): TParent => {
   let _repeat: BKRepeat;
@@ -184,13 +212,14 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
       childNodes: [],
       source: createVMSource(component.source, context)
     } as SlimParentNode;
-    if (component.style) {
-      shadow = appendChildNode(shadow, component.style, context);
-    }
     const oldURI = context.currentURI;
     const oldProps = context.currentProps;
     context.currentURI = getComponentSourceUris(context.graph)[component.id];
     context.currentProps = props;
+
+    if (component.style) {
+      shadow = appendChildNode(shadow, component.style, context);
+    }
     shadow = appendChildNodes(shadow, component.template.childNodes, context);
     context.currentURI = oldURI;
     context.currentProps = oldProps;
@@ -336,11 +365,22 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
       } as SlimCSSStyleRule;
     }
     case CSSExpressionType.AT_RULE: {
-      const { name, params, children } = rule as CSSAtRule;
+      let { name, params, children } = rule as CSSAtRule;
       const rules: SlimCSSRule[] = new Array(children.length);
       for (let i = 0, {length} = children; i < length; i++) {
         const child = children[i];
         rules[i] = createCSSRule(child, context);
+      }
+
+      if (name === "import") {
+        const module = context.graph[context.currentURI];
+        let resolvedImportUri = module.resolvedImportUris[params[0]];
+        if (resolvedImportUri) {
+          params = [resolveFile(resolvedImportUri, context)];
+        } else {
+          // this shouldn't happen
+          console.error(`Unresolved CSS import: ${params[0]}`);
+        }
       }
       return {
         name,
@@ -352,6 +392,15 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
 
     }
   }
+}
+
+const resolveFile = (filePath: string, context: VMContext) => {
+  for (const dir in context.directoryAliases) {
+    if (filePath.indexOf(dir) === 0) {
+      return filePath.replace(dir, context.directoryAliases[dir]);
+    }
+  }
+  return filePath;
 }
 
 const evalExpr = (expr: BKExpression, context: VMContext) => {

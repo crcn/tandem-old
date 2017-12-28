@@ -241,7 +241,7 @@ export const getVmObjectSourceUris = weakMemo((node: SlimBaseNode) => {
   return uniq(getNestedSourceUris(node));
 });
 
-const getNestedSourceUris = weakMemo((node: SlimBaseNode): string[] => {
+const getNestedSourceUris = weakMemo((node: VMObject): string[] => {
   const sources: string[] = [];
   if (node.source && node.source.uri) {
     sources.push(node.source.uri);
@@ -250,6 +250,23 @@ const getNestedSourceUris = weakMemo((node: SlimBaseNode): string[] => {
     const element = node as SlimElement;
     if (element.shadow) {
       sources.push(...getNestedSourceUris(element.shadow));
+    }
+
+    if (element.tagName === "style") {
+      sources.push(...getNestedSourceUris((element as SlimStyleElement).sheet));
+    }
+  }
+
+  if (node.type === SlimVMObjectType.STYLE_SHEET || node.type === SlimVMObjectType.AT_RULE) {
+    const grouping = node as SlimCSSGroupingRule;
+    if (node.type === SlimVMObjectType.AT_RULE) {
+      const { name, params } = node as SlimCSSAtRule;
+      if (name === "import") {
+        sources.push(params);
+      }
+    }
+    for (let i = 0, {length} = grouping.rules; i < length; i++) {
+      sources.push(...getNestedSourceUris(grouping.rules[i]));
     }
   }
 

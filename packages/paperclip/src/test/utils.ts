@@ -50,11 +50,8 @@ const stringifyStyleSheet = (sheet: SlimCSSRule) => {
       return buffer;
     }
     case SlimVMObjectType.AT_RULE: {
-      const rule = sheet as SlimCSSAtRule;
-      let buffer = `@${rule.name} ${rule.params} {`;
-      buffer += rule.rules.map(stringifyStyleSheet).join("");
-      buffer += `}`
-      return buffer;
+      const { name, params, rules } = sheet as SlimCSSAtRule;
+      return /^(charset|import)$/.test(name) ? `@${name} "${params}";` : `@${name} ${params} {${rules.map(stringifyStyleSheet).join("")}}`;
     }
   }
 }

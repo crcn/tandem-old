@@ -9,7 +9,7 @@ describe(__filename + "#", () => {
   [
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="test">
             <template>
               [[bind a]]
@@ -38,7 +38,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Missing preview tag",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         },
         {
           "type": "ERROR",
@@ -55,7 +55,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Property \"a\" is undefined",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         },
         {
           "type": "WARNING",
@@ -72,13 +72,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Missing preview tag",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="test">
           </component>
         `
@@ -99,7 +99,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "missing template",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         },
         {
           "type": "WARNING",
@@ -116,13 +116,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Missing preview tag",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="test">
             <preview name="test">
               <test />
@@ -146,13 +146,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "missing template",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="test">
             <template>
               [[bind a * c]]
@@ -165,7 +165,7 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
+          filePath: "entry.pc",
           location: {
             start: {
               column: 23,
@@ -182,7 +182,7 @@ describe(__filename + "#", () => {
           type: DiagnosticType.ERROR
         },
         {
-          filePath: "entry",
+          filePath: "entry.pc",
           location: {
             start: {
               column: 15,
@@ -202,7 +202,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="test">
             <template>
               [[bind a * c]]
@@ -217,7 +217,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="test">
             <template>
               [[bind a.b.c * 4]]
@@ -230,7 +230,7 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
+          filePath: "entry.pc",
           location: {
             end: {
               column: 42,
@@ -250,7 +250,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               [[bind c * 1]]
@@ -282,7 +282,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Missing preview tag",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         },
         {
           "type": "ERROR",
@@ -299,13 +299,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Type mismatch: attribute \"c\" expecting a number, string provided.",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               [[bind c * 1]]
@@ -337,13 +337,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Missing preview tag",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               [[bind c * 1]]
@@ -375,7 +375,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Missing preview tag",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         },
         {
           "type": "ERROR",
@@ -392,7 +392,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Property \"d\" is undefined",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         },
         {
           "type": "ERROR",
@@ -409,13 +409,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Property \"c\" is undefined",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               <a />
@@ -428,7 +428,7 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
+          filePath: "entry.pc",
           location: {
             start: {
               column: 15,
@@ -448,7 +448,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               <a [[if a.a]] a=[[bind a.a]] />
@@ -474,13 +474,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "missing element child",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               [[bind c]]
@@ -494,7 +494,7 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
+          filePath: "entry.pc",
           location: {
             start: {
               column: 15,
@@ -514,7 +514,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               [[bind c]]
@@ -530,7 +530,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               <a [[repeat a as b]] [[bind b]]></a>
@@ -545,7 +545,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               <a [[repeat a as b]] [[bind b]]></a>
@@ -572,13 +572,13 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Property \"a\" is undefined",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               <a [[repeat a as b]] a=[[bind b]]></a>
@@ -593,7 +593,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="a">
             <template>
               <a [[repeat a as b]] [[bind b]]></a>
@@ -608,7 +608,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="c">
             <template>
               [[bind d]]
@@ -653,7 +653,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Property \"d\" is undefined",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         },
         {
           "type": "ERROR",
@@ -670,7 +670,7 @@ describe(__filename + "#", () => {
             }
           },
           "message": "Property \"d\" is undefined",
-          "filePath": "entry"
+          "filePath": "entry.pc"
         }
       ]
     ],
@@ -678,7 +678,7 @@ describe(__filename + "#", () => {
     // optional testing
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="c">
             <template>
               <a [[if a]]>[[bind a]]</a>
@@ -693,7 +693,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="c">
             <template>
               [[bind a || "not defined"]]
@@ -708,7 +708,7 @@ describe(__filename + "#", () => {
     ],
     [
       {
-        "entry": `
+        "entry.pc": `
           <component id="c">
             <template>
               <a [[if a]]>[[bind a]]</a>
@@ -722,7 +722,7 @@ describe(__filename + "#", () => {
       },
       [
         {
-          filePath: "entry",
+          filePath: "entry.pc",
           location: {
             end: {
               column: 20,
@@ -742,7 +742,7 @@ describe(__filename + "#", () => {
     ]
   ].forEach(([sources, inferResult]: any) => {
     it(`can lint ${sources.entry}`, async () => {
-      const { graph } = await loadModuleDependencyGraph("entry", {
+      const { graph } = await loadModuleDependencyGraph("entry.pc", {
         readFile: (uri) => sources[uri]
       });
 

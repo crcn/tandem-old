@@ -1,6 +1,7 @@
 import { fork, call, select, take, cancel, spawn, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile } from "../utils";
+import { getModulesFileTester, getModulesFilePattern, getPublicFilePath, getReadFile, isPaperclipFile, getModuleSourceDirectory } from "../utils";
+import { PUBLIC_SRC_DIR_PATH } from "../constants";
 import { diffNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum, getVmObjectSourceUris } from "slim-dom";
 import { ApplicationState, getLatestPreviewDocument } from "../state";
 import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged, previewDiffed } from "../actions";
@@ -149,7 +150,8 @@ function* handleDependencyGraph() {
 }
 
 function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
-  const state = yield select();
+  const state: ApplicationState = yield select();
+  const moduleSourceDirectory = getModuleSourceDirectory(state);
   for (const filePath in graph) {
     const dep = graph[filePath];
     if (sourceUri && sourceUri !== filePath && values(dep.resolvedImportUris).indexOf(sourceUri) === -1) {
@@ -165,7 +167,11 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
           previewName: preview.name
         }
   
-        const { document } = runPCFile({ entry, graph });
+        const { document } = runPCFile({ entry, graph, directoryAliases: {
+
+          // TODO - will eventually want to pass host and protocol information here too
+          [moduleSourceDirectory]: `http://localhost:${state.options.port}${PUBLIC_SRC_DIR_PATH}`
+        } });
         const prevDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
         
         console.log(`Evaluated component ${component.id}:${preview.name}`);

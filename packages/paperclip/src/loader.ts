@@ -9,13 +9,23 @@ import {
   BKProperty,
   PCBlock,
   BKExpression,
+  PCStartTag,
   PCExpression, 
   BKExpressionType,
   PCExpressionType, 
   PCSelfClosingElement,
+  CSSExpressionType,
+  CSSAtRule,
+  CSSDeclarationProperty,
+  CSSExpression,
+  CSSGroupingRule,
+  CSSRule,
+  CSSSheet,
+  CSSStyleRule,
   getElementModifiers,
   PCRootExpression,
   getElementChildNodes,
+  getStartTag,
   getElementAttributes,
   getPCStartTagAttribute,
   getElementTagName,
@@ -155,7 +165,7 @@ export const getComponentSourceUris = weakMemo((graph: DependencyGraph): {
 export const defaultResolveModulePath = (relative, base) => {
   const dirname = base.split("/");
   dirname.pop();
-  relative = relative.replace("./", "");
+  relative = relative.replace(/^\.\//, "");
   const parentDirs = relative.split("../");
   const baseName = parentDirs.pop();
   dirname.splice(dirname.length - parentDirs.length, dirname.length);
@@ -238,6 +248,7 @@ export const getComponentDependency = (id: string, graph: DependencyGraph) => {
 
 export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile = defaultResolveModulePath }: Partial<IO>, graph: DependencyGraph = {}, diagnostics: Diagnostic[] = []): Promise<LoadDependencyGraphResult> => {
 
+  
   // beat circular dep
   if (graph[uri]) {
     return Promise.resolve({ diagnostics, graph });
@@ -288,6 +299,8 @@ const createModule = (ast: PCRootExpression, uri: string): Module => {
   const globalStyles: PCElement[] = [];
   const unhandledExpressions: PCExpression[] = [];
 
+  addImports(ast, imports);
+
   for (let i = 0, {length} = childNodes; i < length; i++) {
     const child = childNodes[i];
 
@@ -302,7 +315,7 @@ const createModule = (ast: PCRootExpression, uri: string): Module => {
         components.push(createComponent(element as any as PCElement, modifiers, attributes, childNodes));
         continue;
       } else if (tagName === "link") {
-        imports.push(createImport(attributes));
+        // imports.push(createImport(attributes));
         continue;
       } else if (tagName === "style") {
         globalStyles.push(element as any as PCElement);
@@ -322,6 +335,64 @@ const createModule = (ast: PCRootExpression, uri: string): Module => {
     unhandledExpressions,
   };
 };
+
+const addImports = (current: PCExpression, imports: Import[]) => {
+  switch(current.type) {
+    case PCExpressionType.SELF_CLOSING_ELEMENT:
+    case PCExpressionType.ELEMENT: {
+      let childNodes: PCExpression[];
+      let startTag: PCStartTag;
+      if (current.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
+        startTag = getStartTag(current as PCSelfClosingElement);
+        childNodes = [];
+      } else {
+        const el = current as PCElement;
+        startTag = el.startTag;
+        childNodes = el.childNodes;
+      }
+
+      if (startTag.name === "link") {
+        imports.push(createImport(startTag.attributes));
+      }
+
+      for (let i = 0, {length} = childNodes; i < length; i++) {
+        addImports(childNodes[i], imports);
+      }
+      break;
+    }
+    
+    case PCExpressionType.FRAGMENT: {
+      const { childNodes } = current as PCFragment;
+      for (let i = 0, {length} = childNodes; i < length; i++) {
+        addImports(childNodes[i], imports);
+      }
+      break;
+    }
+
+    case CSSExpressionType.SHEET: {
+      const { children } = current as CSSSheet;
+      for (let i = 0, {length} = children; i < length; i++) {
+        addCSSImports(children[i], imports);
+      }
+      break;
+    }
+  }
+}
+
+const addCSSImports = (current: CSSExpression, imports: Import[]) => {
+  switch(current.type) {
+    case CSSExpressionType.AT_RULE: {
+      const { name, params, children } = current as CSSAtRule;
+      if (name === "import") {
+        imports.push({
+          href: params.join(" "),
+          type: "stylesheet"
+        });
+      }
+      break;
+    }
+  }
+}
 
 export const parseMetaContent = (content: string) => {
   const params = {};

@@ -8,8 +8,20 @@
 <component id="td-style-declaration">
   <meta name="internal" content="true" />
   <style>
+    @import "./ionicons/css/ionicons.css";
+
     :host([ignored]) {
       opacity: 0.2;
+    }
+    :host {
+      background: red;
+      display: inline-block;
+    }
+    .toggle-button {
+      display: none;
+    }
+    :host:hover .toggle-button, :host([hovering]) .toggle-button {
+      display: inline-block;
     }
     :host([overridden]) span {
       text-decoration: line-through;
@@ -21,6 +33,10 @@
     .name::after {
       content: ": ";
     }
+
+    i {
+      float: right;
+    }
   </style>
   <template>
     <span class="name">[[bind name]]</span>
@@ -28,12 +44,14 @@
     <span [[else]]>
       [[bind sourceValue]]
     </span>
+    <i class="toggle-button ion-eye"></i>
   </template>
 </component>
 
 <component id="td-style-rule">
   <meta name="internal" content="true" />
   <style>
+    
     :host:hover td-gutter-subheader span, :host([headerHovering]) .controls {
       /* TODO */
     }
@@ -136,7 +154,8 @@
             value: {
               type: "COLOR",
               value: "red"
-            }
+            },
+            hovering: true
           },
           { 
             name: "flex",
