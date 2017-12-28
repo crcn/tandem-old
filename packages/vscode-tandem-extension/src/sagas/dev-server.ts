@@ -119,16 +119,21 @@ function* handleTextEditorChanges() {
           console.log("Saving " + filePath);
           const { content, mtime } = batchActions[filePath];
           const state: ExtensionState = yield select();
-          const req: request.Request = yield call(request.post as any, `http://localhost:${state.childDevServerInfo.port}/file`, {
-            json: {
-              filePath,
-              content: content,
-              mtime
-            }
-          });
-
-          req.on("error", (e) => {
-            console.error(e);
+          yield call(() => {
+            return new Promise((resolve, reject) => {
+              request.post(`http://localhost:${state.childDevServerInfo.port}/file`, {
+                json: {
+                  filePath,
+                  content: content,
+                  mtime
+                }
+              }, (err, response, body) => {
+                if (err) {
+                  console.error(err);
+                }
+                resolve();
+              });
+            });
           });
         }
       }

@@ -38,13 +38,17 @@ export const createSocketIOSaga = (socket) => {
           continue;
         }
         action[TAG] = 1;
+        // console.log("PUSH", action);
         socket.emit("action", action);
       }
     });
 
 
     yield bubbleEventChannel((emit) => {
-      socket.on("action", emit);
+      socket.on("action", (action) => {
+        // console.log("PULL", action);
+        emit(action);
+      });
       socket.on("connection", connection => {
         connection.on("action", emit);
       });

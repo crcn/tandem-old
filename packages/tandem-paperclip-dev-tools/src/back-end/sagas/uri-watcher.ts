@@ -123,7 +123,7 @@ function* handleWatchUrisRequest() {
 function* handleDependencyGraph() {
   while(true) {
     const action = yield take([WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED]);
-
+    
     console.log("loading dependency graph");
     const state: ApplicationState = yield select();
     let graph: DependencyGraph = {};
@@ -171,7 +171,6 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
         console.log(`Evaluated component ${component.id}:${preview.name}`);
 
         let newDocument = document as SlimParentNode;
-        let diffs: Mutation<any[]>[] = [];
 
         // TODO - push diagnostics too
         yield put(previewEvaluated(component.id, preview.name, newDocument));

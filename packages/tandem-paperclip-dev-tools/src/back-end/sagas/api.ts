@@ -130,13 +130,6 @@ function* wrapRoute(route) {
   }
 }
 
-function getCapabilities() {
-  return [
-    "CREATE_COMPONENTS",
-    "GET_COMPONENTS"
-  ];
-}
-
 function* getModuleFileContent(req: express.Request, res: express.Response, next) {
   const { moduleId } = req.params;
   const state: ApplicationState = yield select();
