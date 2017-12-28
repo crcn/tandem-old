@@ -9,7 +9,7 @@ import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyle
 import { Dispatcher } from "aerial-common2";
 import { Workspace, getNodeArtboard } from "front-end/state";
 
-import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, stringifyStyle } from "slim-dom";
+import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType } from "slim-dom";
 
 type StyleDelarationOuterProps = {
   name: string;
@@ -111,9 +111,6 @@ const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDe
   (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
 
     let root: any;
-    if (typeof value === "object") {
-      value = stringifyStyle(value);
-    }
 
     try {
       root = parseDeclaration(value).root;

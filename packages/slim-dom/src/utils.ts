@@ -1,7 +1,7 @@
 import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute, SlimWindow } from "./state";
 import { querySelector, elementMatches } from "./query-selector";
 import { createMediaMatcher } from "./media-match";
-import { uniq, flatten, kebabCase } from "lodash";
+import { uniq, flatten, kebabCase, camelCase } from "lodash";
 import { INHERITED_CSS_STYLE_PROPERTIES } from "./constants";
 import crc32 = require("crc32");
 import { weakMemo } from "./weak-memo";
@@ -92,10 +92,20 @@ export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule,
   }
 });
 
+export const parseStyle = weakMemo((styleStr: string) => {
+  const style = {};
+  styleStr.split(";").forEach(part => {
+    const [name, ...rest] = part.split(":");
+    if (!name) return;
+    style[camelCase(name.trim())] = rest.join(":").trim();
+  });
+  return style;
+});
+
 export const stringifyStyle = (style: any) => {
   let buffer = ``;
   for (const key in style) {
-    buffer += `${kebabCase(key)}: ${style[key]};`
+    buffer += `${cssPropNameToKebabCase(key)}: ${style[key]};`
   }
 
   return buffer;
@@ -531,7 +541,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elemen
   
   const matchingRules: CSSRuleMatchResult[] = [];
 
-  const elementStyle = getAttribute("style", element) as any as SlimCSSStyleDeclaration;
+  const elementStyle = getAttribute("style", element);
 
   for (let i = 0, n = allRules.length; i < n; i++) {
     const rule = allRules[i];
@@ -567,7 +577,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elemen
     matchingRules.push({
       assocId: element.id,
       targetElement: element,
-      style: elementStyle
+      style: typeof elementStyle.value === "string" ? parseStyle(elementStyle.value) : elementStyle.value
     });
   }
 
