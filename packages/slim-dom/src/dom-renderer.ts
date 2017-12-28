@@ -246,7 +246,6 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
       sheet.deleteRule(0);
     }
     for (let i = 0, {length} = rules; i < length; i++) {
-      const nativeRule = sheet.cssRules[j++];
       const synthRule = rules[i];
       const synthRuleText = stringifyRule(slimStyle.sheet.rules[i], options);
       try {

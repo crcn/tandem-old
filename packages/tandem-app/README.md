@@ -1,6 +1,7 @@
 IMMEDIATE:
 
-- [ ] @import "./styles.css"
+- [ ] fix eye toggler
+- [ ] wire up eye toggler
 - [ ] parse imported styles 
 - [ ] show inherited props from slots
 - [ ] lock computed properties

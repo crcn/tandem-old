@@ -14,10 +14,12 @@
       opacity: 0.2;
     }
     :host {
-      background: red;
       display: inline-block;
+      padding: var(--base6) var(--base8);
+      width: 100%;
     }
     .toggle-button {
+      cursor: pointer;
       display: none;
     }
     :host:hover .toggle-button, :host([hovering]) .toggle-button {
@@ -118,7 +120,7 @@
     </td-gutter-subheader>
 
     <td-list>
-      <td-list-item [[if declarations]] [[repeat declarations as declaration]]>
+      <td-list-item [[if declarations]] [[repeat declarations as declaration]] noPadding>
         <td-style-declaration [[bind declaration]] key=[[bind declaration.name]] />
       </td-list-item>
     </td-list>
