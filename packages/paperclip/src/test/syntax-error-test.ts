@@ -56,7 +56,8 @@ describe(__filename + "#", () => {
     [`<style> .container { color: } </style>`, [[21, 26, `Missing declaration value`]]],
     [`<style> .container { color:; } </style>`, [[21, 26, `Unexpected token.`]]],
     [`<style> a </style>`, [[10, 12, `Unexpected token.`]]],
-    [`<style> a { </style>`, [[12, 14, `Unexpected token.`]]]
+    [`<style> a { </style>`, [[12, 14, `Unexpected token.`]]],
+    [`<style> . </style>`, [[10, 12, `Unexpected token.`]]]
   ].forEach(([input, expectedDiagnostics]: [string, any[]]) => {
     it(`Generates a syntax error for "${input}"`, () => {
       expect(parseModuleSource(input).diagnostics.map((({location, message}) => [location.start.pos, location.end.pos, message]))).to.eql(expectedDiagnostics);

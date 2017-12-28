@@ -63,18 +63,23 @@ export function getPaperclipHTMLMode(
      
       allDiagnostics.push(...astDiagnostics);
 
-      const module = graph[document.uri].module;
-      for (const component of module.components) {
-        const { diagnostics: inferDiagnostics } = inferNodeProps(component.source, document.uri);
-        allDiagnostics.push(...inferDiagnostics);
+      const dep = graph[document.uri];
+
+      // dep may not be loaded if there are errors
+      if (dep) {
+        const module = dep.module;
+        for (const component of module.components) {
+          const { diagnostics: inferDiagnostics } = inferNodeProps(component.source, document.uri);
+          allDiagnostics.push(...inferDiagnostics);
+        }
+
+        const { diagnostics: lintDiagnostics } = lintDependencyGraph(graph);
+
+        allDiagnostics.push(...lintDiagnostics);
+
       }
 
-      const { diagnostics: lintDiagnostics } = lintDependencyGraph(graph);
-
-      allDiagnostics.push(...lintDiagnostics);
-
       const filterDoc = (diag: PCDiagnostic) => diag.filePath === document.uri;
-
 
       return allDiagnostics.filter(filterDoc).map(diag => ({
         range: {

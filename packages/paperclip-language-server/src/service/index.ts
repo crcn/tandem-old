@@ -86,7 +86,11 @@ export function getVls(): VLS {
       if (doc.languageId === 'paperclip') {
         for (const mode of languageModes.getAllModesInDocument(doc)) {
           if (mode.doValidation && validation[mode.getId()]) {
-            pushAll(diagnostics, await mode.doValidation(doc, allDocuments));
+            try {
+              pushAll(diagnostics, await mode.doValidation(doc, allDocuments));
+            } catch(e) {
+              console.error(e.stack);
+            }
           }
         }
       }
