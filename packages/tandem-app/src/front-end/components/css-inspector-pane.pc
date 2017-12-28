@@ -13,12 +13,13 @@
     :host([ignored]) {
       opacity: 0.2;
     }
+    
     :host {
-      display: inline-block;
+      display: block;
       padding: var(--base6) var(--base8);
-      width: 100%;
     }
     .toggle-button {
+      float: right;
       cursor: pointer;
       display: none;
     }
@@ -36,9 +37,6 @@
       content: ": ";
     }
 
-    i {
-      float: right;
-    }
   </style>
   <template>
     <span class="name">[[bind name]]</span>

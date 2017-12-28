@@ -48,7 +48,7 @@ function* pingPong() {
     while(1) {
       _ponged = false;
       yield put({ type: "$$PING", $public: true });
-      yield call(delay, 1000 * 5);
+      yield call(delay, 1000 * 20);
       if (!_ponged) {
         console.log("Did not receive pong. Closing.");
         process.exit();

@@ -114,7 +114,11 @@ const addGlobalStyles = <TParent extends SlimParentNode>(root: TParent, context:
     }
     scanned[resolvedUri] = true;
     context.currentURI = resolvedUri;
-    root = addGlobalStyles(root, context, scanned);
+
+    // dep may not be loaded if there's an error
+    if (context.graph[context.currentURI]) {
+      root = addGlobalStyles(root, context, scanned);
+    }
     context.currentURI = currentURI;
   }
 

@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+- [ ] fix brittleness
 - [ ] fix eye toggler
 - [ ] wire up eye toggler
 - [ ] parse imported styles 
