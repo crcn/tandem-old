@@ -108,7 +108,7 @@
         [[bind label]]
       </span>
       <span class="inherited" [[if inherited]]>
-        inherited
+        inherited.
       </span>
       <span class="space">
       </span>
@@ -176,6 +176,7 @@
           { 
             name: "background",
             sourceValue: "background(255, 255, 255 0)",
+            ignored: true,
             value: {
               type: "CALL",
               name: "rgb",

@@ -238,6 +238,23 @@ const deselectOutOfScopeWorkpaceSelection = (root: ApplicationState, workspaceId
   return setWorkspaceSelection(root, workspaceId, ...updatedSelection);
 };
 
+export const structRefExists = ([type, id]: StructReference, state: ApplicationState) => {
+  if (type === ARTBOARD) {
+    return Boolean(getArtboardById(id, state));
+  }
+  return Boolean(getNodeArtboard(id, state))
+}
+
+export const deselectNotFoundItems = (root: ApplicationState) => {
+  for (const workspace of root.workspaces) {
+    root = updateWorkspace(root, workspace.$id, {
+      hoveringRefs: workspace.hoveringRefs.filter(ref => structRefExists(ref, root)),
+      selectionRefs: workspace.selectionRefs.filter(ref => structRefExists(ref, root))
+    });
+  }
+  return root;
+}
+
 /**
  * Prevents nodes that have a parent/child relationship from being selected.
  */

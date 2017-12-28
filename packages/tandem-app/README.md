@@ -1,6 +1,6 @@
 IMMEDIATE:
 
-- [ ] fix brittleness
+- [ ] fix bad checksum
 - [ ] fix eye toggler
 - [ ] wire up eye toggler
 - [ ] parse imported styles 

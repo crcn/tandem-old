@@ -129,6 +129,11 @@ export const computedDOMInfo = (map: DOMNodeMap): ComputedDOMInfo => {
     
     const element = node as HTMLElement;
 
+    if (!element.ownerDocument.defaultView) {
+      console.warn(`Element is not attached to the document body.`);
+      return {};
+    }
+
     // TODO - memoize computed info here
     computedInfo[nodeId] = {
       bounds: element.getBoundingClientRect(),

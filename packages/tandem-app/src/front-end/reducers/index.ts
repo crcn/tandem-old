@@ -54,7 +54,7 @@ import {
   getWorkspaceItemBounds,
   AVAILABLE_COMPONENT,
   updateWorkspaceStage,
-  
+  deselectNotFoundItems,
   getSelectedWorkspace,
   addWorkspaceSelection,
   setWorkspaceSelection,
@@ -780,7 +780,9 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
 
     case ARTBOARD_LOADING: {
       const { artboardId } = event as ArtboardLoaded;
-      return updateArtboard(state, artboardId, { loading: true });
+      state = updateArtboard(state, artboardId, { loading: true });
+      state = deselectNotFoundItems(state);
+      return state;
     }
 
     case FILE_CONTENT_CHANGED: {
@@ -798,13 +800,15 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
     case ARTBOARD_PATCHED: {
       const { artboardId, document, checksum, nativeNodeMap } = event as ArtboardPatched;
       const artboard = getArtboardById(artboardId, state);
-      return updateArtboard(state, artboardId, {
+      state = updateArtboard(state, artboardId, {
         document,
         loading: false,
         nativeNodeMap,
         originalDocument: document,
         checksum
       });
+      state = deselectNotFoundItems(state);
+      return state;
     }
 
     case ARTBOARD_RENDERED: {

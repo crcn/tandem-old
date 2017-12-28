@@ -201,7 +201,7 @@
             },
             screenshotScale: 0.07
           },
-          { label: "h4", hovering: true, $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "h4", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "span", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "form", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "input", $id: null, onDragStart: null, onDragEnd: null, onClick: null },

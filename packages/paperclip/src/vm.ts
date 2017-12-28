@@ -191,7 +191,14 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
   for (let i = 0, {length} = startTag.modifiers; i < length; i++) {
     const modifier = startTag.modifiers[i].value;
     if (modifier.type === BKExpressionType.BIND) {
-      Object.assign(props, evalExpr(modifier as BKBind, context) || {});
+      const bindProps = evalExpr(modifier as BKBind, context) || {};
+      for (const name in bindProps) {
+        const value = bindProps[name];
+        if (value !== false && value != null) {
+          attributes.push({ name, value });
+        }
+      }
+      Object.assign(props, bindProps);
     }
   }
 
