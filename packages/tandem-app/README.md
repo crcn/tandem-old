@@ -10,7 +10,7 @@ IMMEDIATE:
 
 - [ ] WARM UP
   - [ ] token spacing
-  - [ ] hovered element width and height
+  - [ ] syntax error in breadcrumbs.pc
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler
