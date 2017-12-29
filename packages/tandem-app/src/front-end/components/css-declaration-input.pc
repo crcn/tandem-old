@@ -102,7 +102,7 @@
 
       <!-- TODO - fix me - super slow -->
       <!-- need to not render this until slot is present -->
-      <td-color-picker value=[[bind value]] />
+      <td-color-picker color=[[bind value]] />
     </td-tooltip>
   </template>
 </component>

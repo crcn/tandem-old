@@ -17,7 +17,7 @@ export type PathOuterProps = {
 };
 
 // padding prevents the SVG from getting cut off when transform is applied - particularly during zoom. 
-const PADDING = 20; 
+const PADDING = 10; 
 
 export type PathInnerProps = {
   onPointClick: (point: Point, event: React.MouseEvent<any>) => {};
@@ -25,14 +25,6 @@ export type PathInnerProps = {
 
 export const PathBase = ({ bounds , points, zoom, pointRadius, strokeWidth, showPoints = true, onPointClick }: PathInnerProps) => {
 
-  let d = "";
-
-  // calculate the size of the bounds
-  points.forEach(function (point, i) {
-    d += (i === 0 ? "M" : "L") + point.left + " " + point.top;
-  });
-
-  d += "Z";
 
   const width = bounds.right - bounds.left;
   const height = bounds.bottom - bounds.top;
@@ -40,8 +32,8 @@ export const PathBase = ({ bounds , points, zoom, pointRadius, strokeWidth, show
   const crz = cr / zoom;
   const cw = cr * 2;
   const cwz = cw / zoom;
-  const w = Math.ceil(width + PADDING + Math.max(cw, cwz)); 
-  const h = Math.ceil(width + PADDING + Math.max(cw, cwz)); 
+  const w = width + PADDING + Math.max(cw, cwz); 
+  const h = height + PADDING + Math.max(cw, cwz); 
   const p = 100;
 
   const style = {
@@ -63,8 +55,8 @@ export const PathBase = ({ bounds , points, zoom, pointRadius, strokeWidth, show
           fill="transparent"
           width={cwz}
           height={cwz}
-          x={Math.ceil(path.left * width) + PADDING / 2}
-          y={Math.ceil(path.top * height) + PADDING / 2}
+          x={path.left * width + PADDING / 2}
+          y={path.top * height + PADDING / 2}
           rx={0}
           ry={0}
           key={key}

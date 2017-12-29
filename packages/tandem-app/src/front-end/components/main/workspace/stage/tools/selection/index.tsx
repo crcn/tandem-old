@@ -27,6 +27,8 @@ const  SelectionBounds = ({ workspace, zoom }: { workspace: Workspace, zoom: nu
     position: "absolute",
     top: entireBounds.top,
     left: entireBounds.left,
+
+    // round bounds so that they match up with the NWSE resizer
     width: entireBounds.right - entireBounds.left,
     height: entireBounds.bottom - entireBounds.top,
     boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`

@@ -55,8 +55,10 @@ const NodeOverlayBase = ({ artboardId, zoom, bounds, node, dispatch, hovering }:
   const style = {
     left: bounds.left,
     top: bounds.top,
-    width: bounds.right - bounds.left,
-    height: bounds.bottom - bounds.top,
+
+    // round to ensure that the bounds match up with the selection bounds
+    width: Math.ceil(bounds.right - bounds.left),
+    height: Math.ceil(bounds.bottom - bounds.top),
     boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
   };
 

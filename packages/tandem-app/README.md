@@ -10,6 +10,7 @@ IMMEDIATE:
 
 - [ ] WARM UP
   - [ ] token spacing
+  - [ ] hovered element width and height
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler

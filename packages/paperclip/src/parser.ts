@@ -205,6 +205,10 @@ const createBKOperation = (context: ParseContext): BKExpression => {
   const lhs = createBKExpression(context);
   eatWhitespace(context);
 
+  if (!lhs) {
+    return null;
+  }
+
   const operator = scanner.curr();
   const otype = operator ? operator.type : -1;
 

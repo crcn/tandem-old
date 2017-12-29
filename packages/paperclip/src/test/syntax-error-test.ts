@@ -43,6 +43,7 @@ describe(__filename + "#", () => {
     [`<a b="""`, [[7, 8, `Unexpected token.`]]],
     [`<a b=[[bind a +]] />`, [[7, 15, `Unexpected token.`]]],
     [`<a b=[[bind "a]] />`, [[12, 13, `Missing closing " character.`]]],
+    [`<a b=[[bind><div</a>`, [[7, 12, `Unexpected token.`]]],
     [`<a b=[[bind {a: 1]] />`, [[7, 17, `Unexpected token.`]]],
     [`<a b=[[bind {a: 1 }]] />`, []],
     [`<a b=[[bind {a b}]] />`, [[7, 15, `Missing : for object.`]]],
