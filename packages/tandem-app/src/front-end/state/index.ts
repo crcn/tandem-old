@@ -27,6 +27,7 @@ import {
   pointIntersectsBounds,
   createStructFactory,
   getReferenceString,
+  roundBounds,
   BaseApplicationState,
   createImmutableArray,
   createImmutableObject,
@@ -509,6 +510,13 @@ export const moveArtboardToBestPosition = (artboard: Artboard, state: Applicatio
     }
   }
 }
+
+export const roundArtboardBounds = (artboardId: string, state: ApplicationState) => {
+  const { bounds } = getArtboardById(artboardId, state);
+  return updateArtboard(state, artboardId, {
+    bounds: roundBounds(bounds)
+  })
+};
 
 export const getArtboardPreviewUri = (artboard: Artboard, state: ApplicationState) => state.apiHost + `/components/${artboard.componentId}/preview` + (artboard.previewName ? `/${artboard.previewName}` : "");
 

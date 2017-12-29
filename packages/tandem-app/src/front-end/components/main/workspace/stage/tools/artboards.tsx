@@ -36,6 +36,10 @@ const ArtboardItemBase = ({ artboard, translate, dispatch, fullScreenArtboardId 
     transform: `translateY(-${20 * titleScale}px) scale(${titleScale})`,
     transformOrigin: "top left",
     whiteSpace: "nowrap",
+
+    // some random height to prevent text from getting cut off
+    // when zooming. 
+    height: 200,
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: width * translate.zoom,

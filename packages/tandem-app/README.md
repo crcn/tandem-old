@@ -1,12 +1,17 @@
 IMMEDIATE:
-
-- [ ] fix bad checksum
-- [ ] fix eye toggler
+- [ ] remove shadow DOM
+- [ ] imported statements need to be patched somehow
+  - [ ] possibly include them in doc -- inject only selectors that apply
+- [ ] css files should be treated like modules
 - [ ] wire up eye toggler
 - [ ] parse imported styles 
 - [ ] show inherited props from slots
-- [ ] lock computed properties
 - [ ] changes to css files should trigger reload
+
+- [ ] WARM UP
+  - [ ] token spacing
+  - [ ] SVG resizer messed up UI
+  - [ ] window title 
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler
@@ -19,6 +24,9 @@ IMMEDIATE:
 
 - [ ] persistence
   - [ ] persist css changes in css inspector
+
+- [ ] UX
+  - [ ] `computed` property locks dynamic styles. Should also have a special UI associated with them that links to the source code.
 
 - [ ] Components pane
   - [ ] add new new component
@@ -44,7 +52,7 @@ IMMEDIATE:
   - [ ] **NULL replacing content (hard to reproduce)
   - [ ] **disconnecting front-end after a while -- smells like things are getting clogged up
   - [ ] need to recompute bounds when images load
-  - [ ] fix flickering for imported files
+  - [ ] fix flickering for imported css files
 
 - [ ] CSS Inspector enhanced
   - [ ] color picker

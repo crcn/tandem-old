@@ -305,7 +305,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root><#shadow> 1 2 </#shadow></root> `
+      ` <root a="1" b="2"><#shadow> 1 2 </#shadow></root> `
     ],
     [
       {
@@ -330,7 +330,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      ` <root><#shadow> <compc><#shadow> 1 </#shadow> child </compc> </#shadow></root> `
+      ` <root><#shadow> <compc a="1"><#shadow> 1 </#shadow> child </compc> </#shadow></root> `
     ],
     [
       {

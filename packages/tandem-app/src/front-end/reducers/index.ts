@@ -17,6 +17,7 @@ import {
   getBoundsSize,
   REMOVED,
   Removed,
+  roundBounds,
   boundsFromRect,
   boundsIntersect,
   StructReference,
@@ -56,6 +57,7 @@ import {
   updateWorkspaceStage,
   deselectNotFoundItems,
   getSelectedWorkspace,
+  roundArtboardBounds,
   addWorkspaceSelection,
   setWorkspaceSelection,
   createApplicationState,
@@ -462,10 +464,10 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
           break;
         }
 
-        const newBounds = scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint))
+        const newBounds = roundBounds(scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)));
 
         if (item.$type === ARTBOARD) {
-          state = updateArtboard(state, item.$id, { bounds: newBounds })
+          state = updateArtboard(state, item.$id, { bounds: newBounds });
         }
       }
 
@@ -849,6 +851,8 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       state = updateWorkspace(state, workspace.$id, {
         artboards: [...workspace.artboards, artboard]
       });
+
+      state = roundArtboardBounds(artboard.$id, state);
       
       state = setWorkspaceSelection(state, workspace.$id, getStructReference(artboard));
 

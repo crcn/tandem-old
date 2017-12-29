@@ -144,7 +144,7 @@
     }
   </style>
   <template>
-    <td-color-mini-input [[if returnType && returnType === "COLOR"]] value=[[bind returnValue]] /> !!
+    <td-color-mini-input [[if returnType && returnType === "COLOR"]] value=[[bind returnValue]] /> 
     <span class="name">[[bind name]]</span>
       <td-css-expr-input [[repeat params as param]] value=[[bind param]] />
   </template>
