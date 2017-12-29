@@ -10,8 +10,6 @@ IMMEDIATE:
 
 - [ ] WARM UP
   - [ ] token spacing
-  - [ ] SVG resizer messed up UI
-  - [ ] window title 
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler

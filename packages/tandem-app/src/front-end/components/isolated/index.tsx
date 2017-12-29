@@ -2,7 +2,6 @@ import React =  require("react");
 import ReactDOM = require("react-dom");
 import { bubbleHTMLIframeEvents, Point } from "aerial-common2";
 
-
 export class Isolate extends React.Component<{ 
   inheritCSS?: boolean, 
   onMouseDown?: any, 
@@ -102,6 +101,10 @@ export class Isolate extends React.Component<{
     });
   }
 
+  onWheel = (event) => {
+    this.props.onWheel(event);
+  }
+
   onScroll = (event) => {
     if (this.props.onScroll) this.props.onScroll(event);
     if (this.props.scrolling === false) {
@@ -117,6 +120,6 @@ export class Isolate extends React.Component<{
       return <span>{this.props.children}</span>;
     }
 
-    return <iframe ref="container" onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.props.onWheel} onScroll={this.onScroll} onLoad={this.onLoad} className={this.props.className} style={this.props.style} />;
+    return <iframe ref="container" onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.onWheel} onScroll={this.onScroll} onLoad={this.onLoad} className={this.props.className} style={this.props.style} />;
   }
 }

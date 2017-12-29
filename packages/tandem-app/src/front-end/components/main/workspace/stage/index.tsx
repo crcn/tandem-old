@@ -12,7 +12,7 @@ import { Motion, spring } from "react-motion";
 import { Dispatcher, BaseEvent, Point, Translate } from "aerial-common2";
 import { stageWheel, stageContainerMounted, stageMouseMoved, stageMouseClicked, canvasMotionRested } from "front-end/actions";
 import { lifecycle, compose, withState, withHandlers, pure, withProps } from "recompose";
-
+import { throttle } from "lodash";
 
 const stiffSpring = (amount: number) => spring(amount, { stiffness: 330, damping: 30 });
 
