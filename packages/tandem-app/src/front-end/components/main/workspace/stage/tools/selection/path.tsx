@@ -14,7 +14,10 @@ export type PathOuterProps = {
   showPoints?: boolean;
   bounds: Bounds;
   dispatch: Dispatcher<any>;
-}
+};
+
+// padding prevents the SVG from getting cut off when transform is applied - particularly during zoom. 
+const PADDING = 20; 
 
 export type PathInnerProps = {
   onPointClick: (point: Point, event: React.MouseEvent<any>) => {};
@@ -37,12 +40,19 @@ export const PathBase = ({ bounds , points, zoom, pointRadius, strokeWidth, show
   const crz = cr / zoom;
   const cw = cr * 2;
   const cwz = cw / zoom;
-  const w = Math.ceil(width + Math.max(cw, cwz));
-  const h = Math.ceil(height + Math.max(cw, cwz));
+  const w = Math.ceil(width + PADDING + Math.max(cw, cwz)); 
+  const h = Math.ceil(width + PADDING + Math.max(cw, cwz)); 
   const p = 100;
 
-  return <svg width={w} height={h} viewBox={[0, 0, w, h].join(" ")} className="resizer-path">
-    <path d={d} strokeWidth={strokeWidth} stroke="transparent" fill="transparent" />
+  const style = {
+    width: w,
+    height: h,
+    left: -PADDING / 2,
+    top: -PADDING / 2,
+    position: "relative"
+  };
+
+  return <svg style={style as any} viewBox={[0, 0, w, h].join(" ")} className="resizer-path">
     {
       showPoints !== false ? points.map((path, key) =>
         <rect
@@ -53,8 +63,8 @@ export const PathBase = ({ bounds , points, zoom, pointRadius, strokeWidth, show
           fill="transparent"
           width={cwz}
           height={cwz}
-          x={Math.ceil(path.left * width)}
-          y={Math.ceil(path.top * height)}
+          x={Math.ceil(path.left * width) + PADDING / 2}
+          y={Math.ceil(path.top * height) + PADDING / 2}
           rx={0}
           ry={0}
           key={key}
