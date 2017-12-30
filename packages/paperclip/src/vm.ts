@@ -273,7 +273,7 @@ const evalAttributeValue = (value: PCExpression, context: VMContext) => {
 };
 
 const appendChildNode = <TParent extends SlimParentNode>(parent: TParent, child: PCExpression, context: VMContext): TParent => {
-  switch(child.type) {    
+  switch(child.type) {
     case PCExpressionType.TEXT_NODE: return appendTextNode(parent, child as PCTextNode, context);
     case PCExpressionType.BLOCK: return appendTextBlock(parent, child as PCBlock, context)
     case PCExpressionType.ELEMENT:

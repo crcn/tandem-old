@@ -309,9 +309,9 @@ export const prepDiff = <TNode extends SlimParentNode>(root: TNode, diffs: Mutat
   });
 };
 
-export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<any[]>[]) => {
 
-  const idSeed = root.id ? crc32(getDocumentChecksum(root) + root.id) : null;
+// DEPRICATE
+export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<any[]>[]) => {
 
   // TODO - check ID - compute next id from that + checksum of root
   
@@ -384,6 +384,80 @@ export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Muta
     if (newTarget !== target) {
       root = replaceNestedChild(root, diff.target, newTarget);
     }
+  }
+
+  return root;
+};
+
+export const patchNode2 = <TNode extends SlimParentNode>(mutation: Mutation<any>, root: TNode) => {
+
+  
+  const target = getVMObjectFromPath(mutation.target, root);
+  if (!target) {
+    throw new Error(`mutation ${JSON.stringify(mutation)} doesn't have a matching node.`);
+  }
+  let newTarget = target;
+
+  switch(mutation.type) {
+    case SET_TEXT_NODE_VALUE: {
+      const { newValue } = mutation as SetValueMutation<any>;
+      newTarget = setTextNodeValue(target as SlimTextNode, newValue);
+      break;
+    }
+    case SET_ATTRIBUTE_VALUE: {
+      const { name, newValue, index } = mutation as SetPropertyMutation<any>;
+      newTarget = setElementAttribute(target as SlimElement, name, newValue, index);
+      break;
+    }
+    case REMOVE_CHILD_NODE: {
+      const { index } = mutation as RemoveChildMutation<any, any>;
+      newTarget = removeChildNodeAt(newTarget as SlimParentNode, index);
+      break;
+    }
+    case INSERT_CHILD_NODE: {
+      const { index, child } = mutation as InsertChildMutation<any, any>;
+      newTarget = insertChildNode(newTarget as SlimParentNode, child, index);
+      break;
+    }
+    case MOVE_CHILD_NODE: {
+      const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
+      newTarget = moveChildNode(newTarget as SlimParentNode, oldIndex, index);
+      break;
+    }
+    case CSS_SET_SELECTOR_TEXT: {
+      const { newValue } = mutation as SetValueMutation<any>;
+      newTarget = setCSSSelectorText(newTarget as SlimCSSStyleRule, newValue);
+      break;
+    }
+    case CSS_SET_STYLE_PROPERTY: {
+      const { name, newValue, index } = mutation as SetPropertyMutation<any[]>;
+      newTarget = setCSSStyleProperty(newTarget as SlimCSSStyleRule, name, newValue, index);
+      break;
+    }
+    case CSS_INSERT_RULE: {
+      const { child, index } = mutation as InsertChildMutation<any, any>;
+      newTarget = insertCSSRule(newTarget as SlimCSSGroupingRule, child, index);
+      break;
+    }
+    case CSS_DELETE_RULE: {
+      const { index } = mutation as InsertChildMutation<any, any>;
+      newTarget = removeCSSRuleAt(newTarget as SlimCSSGroupingRule, index);
+      break;
+    }
+    case CSS_MOVE_RULE: {
+      const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
+      newTarget = moveCSSRule(newTarget as SlimCSSGroupingRule, oldIndex, index);
+      break;
+    }
+    case CSS_AT_RULE_SET_PARAMS: {
+      const { newValue } = mutation as SetValueMutation<any>;
+      newTarget = setCSSAtRuleSetParams(newTarget as SlimCSSAtRule, newValue);
+      break;
+    }
+  }
+
+  if (newTarget !== target) {
+    root = replaceNestedChild(root, mutation.target, newTarget);
   }
 
   return root;

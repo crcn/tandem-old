@@ -1,5 +1,9 @@
 IMMEDIATE:
-- [ ] remove shadow DOM
+
+- [ ] inherit global styles
+- [ ] component styles are scoped
+- [ ] dom renderer shouldn't use shadow
+
 - [ ] imported statements need to be patched somehow
   - [ ] possibly include them in doc -- inject only selectors that apply
 - [ ] css files should be treated like modules
@@ -9,8 +13,7 @@ IMMEDIATE:
 - [ ] changes to css files should trigger reload
 
 - [ ] WARM UP
-  - [ ] token spacing
-  - [ ] syntax error in breadcrumbs.pc
+  - [ ] start on error handling for FE
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler
@@ -32,6 +35,8 @@ IMMEDIATE:
   - [ ] delete component
   - [ ] highlight artboards that match component cells
 
+- [ ] Pretty pane
+
 - [ ] Native elements pane
 
 - [ ] stage tools
@@ -45,11 +50,8 @@ IMMEDIATE:
   - [ ] "Cannot read property 'type' of undefined" - start typing new component
   - [ ] Infinite loop - create new [[if statement]]
   - [ ] preview hangs up when removing primary child
-  - [ ] allow for string style attributes
   - [ ] transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
-  - [ ] hovering prop not working for components pane
   - [ ] **NULL replacing content (hard to reproduce)
-  - [ ] **disconnecting front-end after a while -- smells like things are getting clogged up
   - [ ] need to recompute bounds when images load
   - [ ] fix flickering for imported css files
 

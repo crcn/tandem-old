@@ -98,7 +98,7 @@ class FakeParentNode extends FakeBaseNode {
 }
 
 export class FakeDocumentFragment extends FakeParentNode {
-
+  readonly nodeType = 11;
 }
 
 export class FakeAttribute {
@@ -110,6 +110,7 @@ export class FakeAttribute {
 export class FakeElement extends FakeParentNode {
   readonly attributes: FakeAttribute[] = [];
   private _shadowRoot: FakeDocumentFragment;
+  readonly nodeType = 1;
   constructor(readonly tagName: string, ownerDocument: FakeDocument) {
     super(ownerDocument);
   }
@@ -127,6 +128,10 @@ export class FakeElement extends FakeParentNode {
   }
   get shadowRoot() {
     return this._shadowRoot;
+  }
+  getAttribute(name: string) {
+    const attr = this.attributes.find(attr => attr.name === name);
+    return attr && attr.value;
   }
   setAttribute(name: string, value: string) {
     const index = this.attributes.findIndex((attr) => attr.name === name);
@@ -149,6 +154,7 @@ export class FakeElement extends FakeParentNode {
 }
 
 export class FakeTextNode extends FakeBaseNode {
+  readonly nodeType = 3;
   constructor(public nodeValue: string, ownerDocument: FakeDocument) {
     super(ownerDocument);
   }

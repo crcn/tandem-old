@@ -42,6 +42,9 @@
     td-css-expr-input::after {
       content: " ";
     }
+    td-css-expr-input:last-child::after {
+      content: "";
+    }
   </style>
   <template>
     <td-css-expr-input [[repeat items as item]] value=[[bind item]] />
@@ -146,7 +149,7 @@
   <template>
     <td-color-mini-input [[if returnType && returnType === "COLOR"]] value=[[bind returnValue]] /> 
     <span class="name">[[bind name]]</span>
-      <td-css-expr-input [[repeat params as param]] value=[[bind param]] />
+    <td-css-expr-input [[repeat params as param]] value=[[bind param]] />
   </template>
 </component>
 

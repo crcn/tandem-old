@@ -920,7 +920,7 @@ const createTag = (context: ParseContext) => {
 
 const getElementChildNodes = (tagName: string, context: ParseContext): [any[], PCEndTag]  => {
   const {scanner} = context;
-  const childNodes = [];
+  let childNodes = [];
 
   // special tags
   if (tagName === "style") {
@@ -979,8 +979,17 @@ const getElementChildNodes = (tagName: string, context: ParseContext): [any[], P
       // TODO - assert name is the same
       break;
     }
+    const prevChild = childNodes.length ? childNodes[childNodes.length - 1] : null;
+
     childNodes.push(child);
   }
+
+  childNodes = childNodes.filter((child, index, childNodes) => {
+    const prevChild = childNodes[index - 1];
+    const nextChild = childNodes[index + 1];
+
+    return !((!prevChild || (prevChild.type === PCExpressionType.ELEMENT || prevChild.type === PCExpressionType.SELF_CLOSING_ELEMENT)) && (child.type === PCExpressionType.TEXT_NODE && /^[\s\r\n\t]+$/.test((child as PCTextNode).value)) && (!nextChild || (nextChild.type === PCExpressionType.ELEMENT || nextChild.type === PCExpressionType.SELF_CLOSING_ELEMENT)));
+  });
 
   return [childNodes, endTag as PCEndTag];
 };
