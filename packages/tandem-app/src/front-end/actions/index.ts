@@ -1,6 +1,6 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
 import { ApplicationState, AvailableComponent, Artboard } from "../state";
-import { SlimParentNode, ComputedDOMInfo, DOMNodeMap } from "slim-dom";
+import { SlimParentNode, ComputedDOMInfo, DOMNodeMap, NativeObjectMap } from "slim-dom";
 import { Mutation } from "source-mutation";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
@@ -319,7 +319,7 @@ export type ArtboardLoaded = {
 export type ArtboardPatched = {
   artboardId: string;
   checksum: string;
-  nativeNodeMap: DOMNodeMap;
+  nativeObjectMap: NativeObjectMap;
   document: SlimParentNode;
 } & BaseEvent;  
 
@@ -332,7 +332,7 @@ export type PreviewDiffed = {
 
 export type ArtboardRendered = {
   artboardId: string;
-  nativeNodeMap: DOMNodeMap;
+  nativeObjectMap: NativeObjectMap;
 } & BaseEvent;  
 
 export type ArtboardLoading = {
@@ -480,9 +480,9 @@ export const exceptionCaught = (error?: { message: string }): ExceptionCaught =>
   error,
 });
 
-export const artboardPatched = (artboardId: string, document: SlimParentNode, checksum: string, nativeNodeMap: DOMNodeMap): ArtboardPatched => ({
+export const artboardPatched = (artboardId: string, document: SlimParentNode, checksum: string, nativeObjectMap: NativeObjectMap): ArtboardPatched => ({
   type: ARTBOARD_PATCHED,
-  nativeNodeMap,
+  nativeObjectMap,
   checksum,
   artboardId,
   document
@@ -505,10 +505,10 @@ export const artboardLoading = (artboardId: string): ArtboardLoading => ({
   artboardId
 });
 
-export const artboardRendered = (artboardId: string, nativeNodeMap: DOMNodeMap): ArtboardRendered => ({
+export const artboardRendered = (artboardId: string, nativeObjectMap: NativeObjectMap): ArtboardRendered => ({
   type: ARTBOARD_RENDERED,
   artboardId,
-  nativeNodeMap
+  nativeObjectMap
 });
 
 export const artboardCreated = (artboard: Artboard): ArtboardCreated => ({

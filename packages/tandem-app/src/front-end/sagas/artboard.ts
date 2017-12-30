@@ -1,4 +1,4 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2 } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -77,7 +77,13 @@ function* handlePreviewDiffed() {
       const preppedDiff = prepDiff(artboard.document, diff);
       const previewPath = [...getArtboardDocumentBodyPath(artboard)];
 
-      const patchedDoc = patchNode(getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode, preppedDiff);
+      let document = getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode;
+      let vmObjectMap = artboard.nativeObjectMap;
+
+      for (const mutation of preppedDiff) {
+        vmObjectMap = patchDOM2(mutation, document, artboard.mount.contentDocument.body, vmObjectMap);
+        document = patchNode2(mutation, document);
+      }
 
       yield put(
         artboardPatched(
@@ -85,10 +91,10 @@ function* handlePreviewDiffed() {
           replaceNestedChild(
             artboard.document, 
             previewPath,
-            patchedDoc
+            document
           ),
-          getDocumentChecksum(patchedDoc as SlimParentNode),
-          patchDOM(preppedDiff, patchedDoc as SlimParentNode, artboard.nativeNodeMap, artboard.mount.contentDocument.body)
+          getDocumentChecksum(document as SlimParentNode),
+          vmObjectMap
         )
       );
     }
@@ -129,7 +135,7 @@ function* handleArtboardSizeChanges() {
 }
 
 function* recomputeArtboardInfo(artboard: Artboard) {
-  yield put(artboardDOMComputedInfo(artboard.$id, computedDOMInfo(artboard.nativeNodeMap)));
+  yield put(artboardDOMComputedInfo(artboard.$id, computedDOMInfo2(artboard.nativeObjectMap)));
 }
 
 function* reloadArtboard(artboardId: string) {
@@ -150,7 +156,7 @@ function* reloadArtboard(artboardId: string) {
     mount.setAttribute("style", `border: none; width: 100%; height: 100%`);
     const renderChan = eventChannel((emit) => {
       mount.addEventListener("load", () => {
-        emit(renderDOM(doc, mount.contentDocument.body));
+        emit(renderDOM2(doc, mount.contentDocument.body));
       });
       return () => {};
     });

@@ -38,7 +38,7 @@ import {
 } from "aerial-common2";
 import { DEFAULT_PREVIEW_SIZE } from "paperclip";
 
-import { SlimElement, SlimBaseNode, SlimParentNode, SlimCSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById, SlimWindow, SlimVMObjectType } from "slim-dom";
+import { SlimElement, SlimBaseNode, SlimParentNode, SlimCSSStyleDeclaration, flattenObjects, ComputedDOMInfo, DOMNodeMap, getNestedObjectById, SlimWindow, SlimVMObjectType, NativeObjectMap } from "slim-dom";
 
 import {
  AvailableComponent
@@ -139,7 +139,7 @@ export type Artboard = {
   originalDocument?: SlimParentNode;
   checksum?: string;
   mount?: HTMLIFrameElement;
-  nativeNodeMap?: DOMNodeMap;
+  nativeObjectMap?: NativeObjectMap;
 } & SlimWindow & Struct;
 
 export type Workspace = {

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { runPCFile, loadModuleDependencyGraph } from "..";
 import { FakeAttribute, FakeDocument, FakeDocumentFragment, FakeElement, FakeTextNode } from "./utils";
-import { renderDOM2, SlimParentNode, diffNode } from "slim-dom";
+import { renderDOM2, SlimParentNode, diffNode, patchNode2, patchNode, patchDOM2, DOMNodeMap, setVMObjectIds, prepDiff, NativeObjectMap } from "slim-dom";
 
 describe(__filename + "#", () => {
   it(`can render a component with a template`, async () => {
@@ -40,7 +40,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test><span></span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test><span><span></span></span></test><span></span></body>`);
   });
 
   it(`can render a component with default slot children`, async () => {
@@ -59,7 +59,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test><span>a <b></b> c</span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test><span><span>a <b></b> c</span></span></test></body>`);
   });
 
   it(`can render a component with named slots`, async () => {
@@ -78,12 +78,12 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test><span>a e<span slot="a">b</span><span slot="b">c</span><span slot="b">d</span></span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test><span><span>a e</span><span><span slot="a">b</span></span><span><span slot="b">c</span><span slot="b">d</span></span></span></test></body>`);
   });
 
   describe("diff/patch", () => {
     it(`can diff & patch slotted children in a shadow document`, async () => {
-      const a = await runPCComponent({
+      const a = setVMObjectIds(await runPCComponent({
         "entry.pc": `
           <component id="test">
             <template>
@@ -94,25 +94,116 @@ describe(__filename + "#", () => {
             </preview>
           </component>
         `
-      });
+      }), "item");
+
       const b = await runPCComponent({
         "entry.pc": `
           <component id="test">
             <template>
-              <span><slot></slot><slot name="a"></slot><slot name="b"></slot></span>
+              <div><slot></slot><slot name="a"></slot><slot name="b"></slot></div>
             </template>
             <preview name="main">
-              <test><span>a</span><span>b</span></test>
+              <test><span>A</span><span>B</span></test>
             </preview>
           </component>
         `
       });
 
-      const diff = diffNode(a, b);
-      console.log(diff);
+      const document = new FakeDocument();
+      const body = document.createElement("body");
+      const map = renderDOM2(a, body as any);
+      const result = patchNodeAndDOM(a, b, body as any, map);
+
+      expect(body.toString()).to.eql(`<body><test><div><span><span>A</span><span>B</span></span><span></span><span></span></div></test></body>`);
+    });
+
+
+    [
+      [
+        `
+          <component id="test">
+            <template>
+              <a />
+            </template>
+            <preview name="main">
+              <test />
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test">
+            <template>
+              <b />
+            </template>
+            <preview name="main">
+              <test />
+            </preview>
+          </component>
+        `
+      ],
+      [
+        `
+          <component id="test">
+            <template>
+              <slot></slot>
+            </template>
+            <preview name="main">
+              <test>
+                a b
+              </test>
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test">
+            <template>
+              <slot></slot>
+            </template>
+            <preview name="main">
+              <test>
+                b c
+              </test>
+            </preview>
+          </component>
+        `
+      ]
+    ].forEach((variants) => {
+      it(`can diff & patch ${variants.join("->")}`, async () => {
+        const fakeDocument = new FakeDocument();
+        const body = fakeDocument.createElement("body");
+        let map: any;
+        let currentDocument: SlimParentNode;
+        for (const variant of variants) {
+          const newDocument = await runPCComponent({
+            "entry.pc": variant
+          });
+          if (!currentDocument) {
+            currentDocument = setVMObjectIds(newDocument, "item");
+            map = renderDOM2(currentDocument, body as any);
+          } else {
+            const result = patchNodeAndDOM(currentDocument, newDocument, body as any, map);
+            currentDocument = result.node;
+            map = result.map;
+
+            const expBody = fakeDocument.createElement("body");
+            renderDOM2(newDocument, expBody as any);
+            expect(body.toString()).to.eql(expBody.toString());
+          }
+        }
+      });
     });
   });
 });
+
+const patchNodeAndDOM = (oldNode: SlimParentNode, newNode: SlimParentNode, mount: HTMLElement, map: NativeObjectMap) => {
+  const diffs = prepDiff(oldNode, diffNode(oldNode, newNode));
+  for (const mutation of diffs) {
+    map = patchDOM2(mutation, oldNode, mount, map);
+    oldNode = patchNode2(mutation, oldNode);
+  }
+
+  return { node: oldNode, map };
+};
 
 const runPCTemplate = async (source) => await runPCComponent({
   "entry.pc": `<component id="comp"><template>${source}</template><preview name="main"><comp /></preview></component>`

@@ -680,7 +680,6 @@ const createCSSAtRule = (context: ParseContext): CSSAtRule => {
   const children: CSSRule[] = [];
   eatWhitespace(context);
   while(!scanner.ended()) {
-    eatWhitespace(context);
     if (scanner.curr().type === PCTokenType.CURLY_BRACKET_OPEN || scanner.curr().type === PCTokenType.SEMICOLON) {
       break;
     }

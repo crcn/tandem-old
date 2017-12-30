@@ -14,6 +14,7 @@ IMMEDIATE:
 
 - [ ] WARM UP
   - [ ] start on error handling for FE
+  - [ ] exception creating @media rule
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler

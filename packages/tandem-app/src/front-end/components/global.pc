@@ -185,6 +185,13 @@
       float: right;
       cursor: pointer;
     }
+
+    @media screen and (min-width: 400px) {
+      span {
+        color: orange;
+      }
+    }
+
   </style>
   <template>
     <div>

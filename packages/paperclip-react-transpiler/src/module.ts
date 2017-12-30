@@ -48,6 +48,7 @@ import { 
   getComponentDependency,
   getModuleComponent
 } from "paperclip";
+import { compileScopedCSS } from "slim-dom";
 import { camelCase, uniq } from "lodash";
 import { getComponentTranspileInfo, ComponentTranspileInfo, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName } from "./utils";
 
@@ -171,7 +172,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 
   const componentPropertyNames = Object.keys(inferNodeProps(component.source).inference.properties);
 
-  const hostContent = `${context.elementFactoryName}("span", Object.assign({ className: "${context.scopeClass} host" }, __getDataProps(props)), ` + 
+  const hostContent = `${context.elementFactoryName}("span", Object.assign({ className: "${context.scopeClass}_host" }, __getDataProps(props)), ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
   `)`;
 
@@ -220,47 +221,7 @@ const transpileStyle = (style: PCElement, scopeClass?: string, component?: Compo
   `  (() => {\n` +
   `    const style = document.createElement("style");\n` +
   `    style.textContent = ${JSON.stringify(transpileCSSSheet(sheet, (selectorText, i) => {
-        const scopedSelectorText = scopeClass ? selectorText.split(" ").map((part, i) => {
-          if (/%/.test(part)) return part;
-
-          // TODO - this is all nasty. Need to parse selector as AST, then transform
-          // that.
-
-          // ignore ".selector > .selector"
-          if (/^[>,]$/.test(part)) return part;
-
-          for (const alias in aliases) {
-            if (part.indexOf(alias) !== -1) {
-              // console.log(`.${scopeClass}.host > ${part.replace(alias, aliases[alias])}`);
-              return `.${scopeClass}.host > ${part.replace(alias, aliases[alias] + ".host")}`;
-            }
-          }
-          const [pseudo] = part.match(/::.*/) || [""];
-          part = part.replace(pseudo, "");
-
-          if (part.indexOf(":host") !== -1) {
-            let [match, params] = part.match(/\:host\((.*?)\)/) || [null, ""];
-
-            params = params.replace(/\[([\w\d\-]+)\]/g, "[data-$1]");
-            // for (const prop of componentProps) {
-            //   params = params.replace(prop, "data-" + prop);
-            // }
-
-            return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}.host` + (params ? params : ""));
-          }
-
-          // don't want to target spans since the host is one
-          if (part === "span" && i === 0) {
-            return `.${scopeClass}.host span.${scopeClass}`;
-          }
-
-
-          const addedClass = `.${scopeClass}`;
-
-          // part first in case the selector is a tag name
-          // TODO - consider psuedo selectors
-          return part + addedClass + pseudo;
-        }).join(" ") : selectorText;
+        const scopedSelectorText = scopeClass ? compileScopedCSS(selectorText, scopeClass, aliases) : selectorText;
         return scopedSelectorText;
       }))}\n\n` +
   `    document.body.appendChild(style);\n` +

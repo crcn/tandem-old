@@ -57,6 +57,7 @@ const stringifyStyleSheet = (sheet: SlimCSSRule) => {
 }
 
 abstract class FakeBaseNode {
+  public parentNode: FakeBaseNode;
   readonly childNodes: FakeBaseNode[] = [];
   constructor(readonly ownerDocument: FakeDocument) {
 
@@ -69,6 +70,7 @@ class FakeParentNode extends FakeBaseNode {
     super(ownerDocument);
   }
   appendChild(child: FakeBaseNode) {
+    child.parentNode = this;
     if (child instanceof FakeDocumentFragment) {
       for (const subChild of child.childNodes)  {
         this.appendChild(subChild);

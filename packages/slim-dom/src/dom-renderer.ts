@@ -10,7 +10,7 @@ export const renderDOM = (node: SlimBaseNode, mount: HTMLElement, options: Rende
 };
 
 export type DOMNodeMap = {
-  [identifier: string]: HTMLElement|Text
+  [identifier: string]: any
 };
 
 const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap, options: RenderOptions) => {
@@ -33,7 +33,7 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap, opt
         if (attribute.name === "style") {
           if (typeof attribute.value === "object") {
             Object.assign(ret[attribute.name], attribute.value);
-          }
+          } 
         } else if (typeof attribute.value !== "object") {
           ret.setAttribute(attribute.name, attribute.value);
         }

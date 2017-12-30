@@ -800,12 +800,12 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
     }
 
     case ARTBOARD_PATCHED: {
-      const { artboardId, document, checksum, nativeNodeMap } = event as ArtboardPatched;
+      const { artboardId, document, checksum, nativeObjectMap } = event as ArtboardPatched;
       const artboard = getArtboardById(artboardId, state);
       state = updateArtboard(state, artboardId, {
         document,
         loading: false,
-        nativeNodeMap,
+        nativeObjectMap,
         originalDocument: document,
         checksum
       });
@@ -814,9 +814,9 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
     }
 
     case ARTBOARD_RENDERED: {
-      const { artboardId, nativeNodeMap } = event as ArtboardRendered;
+      const { artboardId, nativeObjectMap } = event as ArtboardRendered;
       return updateArtboard(state, artboardId, {
-        nativeNodeMap,
+        nativeObjectMap,
         loading: false
       });
     }

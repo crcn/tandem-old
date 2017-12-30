@@ -396,7 +396,7 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
       return {
         name,
         type: SlimVMObjectType.AT_RULE,
-        params: params.join(" "),
+        params: params.join("").trim(),
         rules,
         source,
       } as SlimCSSAtRule;
