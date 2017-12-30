@@ -548,6 +548,20 @@ describe(__filename + "#", () => {
         "entry.pc": `
           <component id="a">
             <template>
+            </template>
+            <preview name="main">
+              <a a=[[bind [{a:1}, ]]] />
+            </preview>
+          </component>
+        `
+      },
+      []
+    ],
+    [
+      {
+        "entry.pc": `
+          <component id="a">
+            <template>
               <a [[repeat a as b]] [[bind b]]></a>
             </template>
             <preview name="main">
@@ -741,7 +755,7 @@ describe(__filename + "#", () => {
       ]
     ]
   ].forEach(([sources, inferResult]: any) => {
-    it(`can lint ${sources.entry}`, async () => {
+    it(`can lint ${sources["entry.pc"]}`, async () => {
       const { graph } = await loadModuleDependencyGraph("entry.pc", {
         readFile: (uri) => sources[uri]
       });

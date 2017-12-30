@@ -374,7 +374,11 @@ const createArray = (context: ParseContext): BKArray => {
   const curr = scanner.curr();
   if (curr.type !== PCTokenType.BRACKET_CLOSE) {
     while(1) {
-      values.push(createBKExpression(context));
+      const expr = createBKExpression(context);
+      if (!expr) {
+        return null;
+      }
+      values.push(expr);
       if (!eatWhitespace(context)) break;
       const curr = scanner.curr();
       if (curr.type === PCTokenType.BRACKET_CLOSE) {
@@ -460,9 +464,6 @@ const createBindBlock = (context: ParseContext): BKBind => {
   const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat bind
-  // if (!testCurrTokenType(context, [PCTokenType.WHITESPACE], `Missing whitespace after bind keyword.`, getTokenLocation(start, context.source))) {
-  //   return null;
-  // }
   scanner.next(); // eat WS
   context.startToken = start;
   const value = createBKExpressionStatement(context);

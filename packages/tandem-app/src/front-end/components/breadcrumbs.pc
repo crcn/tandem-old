@@ -12,12 +12,6 @@
     <td-element-breadcrumbs elements=[[bind [
       {
         tagName: "E"
-      },
-      {
-        tagName: "E"
-      },
-      {
-        tagName: "E"
       }
     ]]] />
   </preview>
