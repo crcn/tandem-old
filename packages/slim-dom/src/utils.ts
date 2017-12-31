@@ -850,6 +850,22 @@ export const setVMObjectIds = <TObject extends VMObject>(current: TObject, idSee
 
 export const getRefCount = (current: VMObject, idSeed: string) => Number((current.id as String).substr(idSeed.length));
 
+export const traverseSlimNode = (current: VMObject, each: (child: VMObject) => void|boolean) => {
+  if (each(current) === false)  {
+    return false;
+  }
+  switch(current.type) {
+    case SlimVMObjectType.ELEMENT: 
+    case SlimVMObjectType.DOCUMENT_FRAGMENT: {
+      const parent = current as SlimParentNode;
+      for (let i = 0, {length} = parent.childNodes; i < length; i++) {
+        if (traverseSlimNode(parent.childNodes[i], each) === false) {
+          return false;
+        }
+      }
+    }
+  }
+}
 export const compileScopedCSS = (selectorText: string, scopeClass: string, aliases: any = {}) => {
   return selectorText.split(" ").map((part, i) => {
     if (/%/.test(part)) return part;
@@ -891,4 +907,35 @@ export const compileScopedCSS = (selectorText: string, scopeClass: string, alias
     // TODO - consider psuedo selectors
     return part + addedClass + pseudo;
   }).join(" ");
-}
+};
+
+export const getSlot = weakMemo((slotName: string, parent: SlimElement) => {
+
+  if (!parent.shadow) {
+    return null;
+  }
+
+  let foundSlot: SlimElement;
+
+  traverseSlimNode(parent.shadow, (nestedChild) => {
+    if (nestedChild.type === SlimVMObjectType.ELEMENT) {
+      const element = nestedChild as SlimElement;
+      if (element.tagName === "slot" && getAttributeValue("name", element) == slotName) {
+        foundSlot = element;
+        return false;
+      }
+    }
+  });
+  
+  return foundSlot;
+});
+
+export const getSlotChildren = (slot: SlimElement, parent: SlimElement) => {
+  return getSlotChildrenByName(getAttributeValue("name", slot), parent)
+};
+
+export const getSlotChildrenByName = weakMemo((slotName: string, parent: SlimElement) => {
+  return parent.childNodes.filter(child => getNodeSlotName(child) == slotName);
+});
+
+export const getNodeSlotName = (node: SlimBaseNode) => node.type === SlimVMObjectType.ELEMENT ? getAttributeValue("slot", node as SlimElement) : null;

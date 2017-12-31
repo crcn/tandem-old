@@ -20,7 +20,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test><span>hello</span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">hello</span></test></body>`);
   });
 
 
@@ -40,7 +40,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test><span><span></span></span></test><span></span></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope"></span></test></body>`);
   });
 
   it(`can render a component with default slot children`, async () => {
@@ -59,7 +59,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test><span><span>a <b></b> c</span></span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">a <b></b> c</span></test></body>`);
   });
 
   it(`can render a component with named slots`, async () => {
@@ -78,47 +78,157 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test><span><span>a e</span><span><span slot="a">b</span></span><span><span slot="b">c</span><span slot="b">d</span></span></span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">a e<span slot="a">b</span><span slot="b">c</span><span slot="b">d</span></span></test></body>`);
   });
 
   describe("diff/patch", () => {
-    it(`can diff & patch slotted children in a shadow document`, async () => {
-      const a = setVMObjectIds(await runPCComponent({
-        "entry.pc": `
-          <component id="test">
-            <template>
-              <span><slot></slot><slot name="a"></slot><slot name="b"></slot></span>
-            </template>
-            <preview name="main">
-              <test>a <span slot="a">b</span><span slot="b">c</span><span slot="b">d</span>e</test>
-            </preview>
-          </component>
-        `
-      }), "item");
-
-      const b = await runPCComponent({
-        "entry.pc": `
-          <component id="test">
-            <template>
-              <div><slot></slot><slot name="a"></slot><slot name="b"></slot></div>
-            </template>
-            <preview name="main">
-              <test><span>A</span><span>B</span></test>
-            </preview>
-          </component>
-        `
-      });
-
-      const document = new FakeDocument();
-      const body = document.createElement("body");
-      const map = renderDOM2(a, body as any);
-      const result = patchNodeAndDOM(a, b, body as any, map);
-
-      expect(body.toString()).to.eql(`<body><test><div><span><span>A</span><span>B</span></span><span></span><span></span></div></test></body>`);
-    });
-
-
     [
+      [
+        // slot testing
+        // add slotted child
+        `
+          <component id="test">
+            <template>
+              <slot></slot>
+            </template>
+            <preview name="main">
+              <test>
+                <a /><b />
+              </test>
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test">
+            <template>
+              <slot></slot>
+            </template>
+            <preview name="main">
+              <test>
+                <a /><b /><c />
+              </test>
+            </preview>
+          </component>
+        `
+      ],
+
+      [
+        `
+          <component id="test">
+            <template>
+              <slot name="test"></slot>
+            </template>
+            <preview name="main">
+              <test>
+                <a slot="test"></a>
+              </test>
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test">
+            <template>
+              <slot name="test"></slot>
+            </template>
+            <preview name="main">
+              <test>
+                <a slot="test"></a>
+                <a slot="test"></a>
+              </test>
+            </preview>
+          </component>
+        `
+      ],
+
+      [
+        `
+          <component id="test">
+            <template>
+              <slot name="test"></slot>
+            </template>
+            <preview name="main">
+              <test>
+                <b slot="test"></b>
+                <c slot="test2"></c>
+              </test>
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test">
+            <template>
+              <slot name="test2"></slot>
+            </template>
+            <preview name="main">
+              <test>
+                <b slot="test"></b>
+                <c slot="test2"></c>
+              </test>
+            </preview>
+          </component>
+        `
+      ],
+
+      [
+        `
+          <component id="test">
+            <template>
+              <div>
+                <slot></slot>
+              </div>
+            </template>
+            <preview name="main">
+              <test>a</test>
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test">
+            <template>
+              <span>
+                <slot></slot>
+              </span>
+            </template>
+            <preview name="main">
+              <test>a</test>
+            </preview>
+          </component>
+        `
+      ],
+      
+      [
+        `
+          <component id="test">
+            <template>
+              <slot></slot>
+            </template>
+            <preview name="main">
+              <test>
+                a
+                <span slot="test2">b</span>
+                c
+              </test>
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test">
+            <template>
+              <slot name="slot2"></slot>
+              <slot></slot>
+            </template>
+            <preview name="main">
+              <test>
+                a
+                <span slot="test2">b</span>
+                c
+              </test>
+            </preview>
+          </component>
+        `
+      ],
+
+      // add named slotted child
       [
         `
           <component id="test">

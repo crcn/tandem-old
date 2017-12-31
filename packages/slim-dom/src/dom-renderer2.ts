@@ -1,9 +1,10 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject } from "./state";
 import { patchNode } from "./diff-patch";
-import { getAttributeValue, getVMObjectFromPath, compileScopedCSS } from "./utils";
+import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
 import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE } from "./diff-patch";
+import { weakMemo } from "./weak-memo";
 
 export type DOMMap = {
   [identifier: string]: Node
@@ -21,16 +22,14 @@ export type NativeObjectMap = {
 export const renderDOM2 = (object: VMObject, root: HTMLElement): NativeObjectMap => {
   const domMap: DOMMap = {};
   const cssomMap: CSSOMMap = {};
-  root.appendChild(createNativeNode(object, root.ownerDocument, { map: domMap }));
+  root.appendChild(createNativeNode(object, root.ownerDocument, { map: domMap, root: object as SlimParentNode }));
   insertStyleSheets(object as SlimParentNode, root, { map: cssomMap, insertedStyles: {} });
   return { dom: domMap, cssom: cssomMap };
 };
 
 type CreateNativeNodeContext = {
-  host?: {
-    element: SlimElement;
-    childNodes: Node[];
-  };
+  host?: SlimElement;
+  root: SlimParentNode;
   map: DOMMap;
 };
 
@@ -47,28 +46,30 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
     case SlimVMObjectType.ELEMENT: {
       const { tagName, id, shadow, childNodes, attributes } = vmNode as SlimElement;
 
-      const elementContext = shadow ? { ...context, host: vmNode as SlimElement } : context;
-
       if (tagName === "slot") {
 
-        // TODO - may need to use anchor text node to ensure that the slot has its place. 
         // Note that document fragment is necessary for slots to ensure that that certain props are inheritable from the parent (like display: flex)
         const slotElement = context.map[id] = document.createDocumentFragment();
+
+        // add a marker so that elements can be dynamically inserted when patched
+        slotElement.appendChild(context.map[id] = document.createTextNode(""));
 
         const host = context.host;
 
         if (host) {
           const slotName = getAttributeValue("name", vmNode as SlimElement);
-          for (let i = 0, {length} = host.childNodes; i < length; i++) {
-            const child = host.childNodes[i];
-            const nativeChildSlotName = child.nodeType === 1 ? (child as Element).getAttribute("slot") : null;
-
-            if (nativeChildSlotName == slotName) {
-              slotElement.appendChild(child);
-            }
+          const slotChildNodes = getSlotChildrenByName(slotName, host);
+          
+          for (let i = 0, {length} = slotChildNodes; i < length; i++) {
+            const child = slotChildNodes[i];
+            slotElement.appendChild(createNativeNode(child, document, {
+              ...context,
+              host: getNodeHost(child, context.root as SlimParentNode)
+            }));
           }
         }
 
+        // append default slot element children
         if (!slotElement.childNodes.length) {
           appendNativeChildNodes(vmNode as SlimParentNode, slotElement, document,  context)
         }
@@ -92,7 +93,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         nativeElement.dataset[attribute.name.toLowerCase()] = "true";
       }
       if (context.host) {
-        nativeElement.classList.add(getScopeTagName(context.host.element));
+        nativeElement.classList.add(getScopeTagName(context.host));
       }
       
       if (shadow) {
@@ -104,10 +105,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         context.map[shadow.id] = nativeElement;
         const nativeShadow = createNativeNode(shadow, document, {
           ...context,
-          host: {
-            element: vmNode as SlimElement,
-            childNodes: childNodes.map(child => createNativeNode(child, document, context))
-          }
+          host: vmNode as SlimElement
         });
         // TODO - get slots
         nativeElement.appendChild(nativeShadow);
@@ -270,46 +268,92 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const { index } = mutation as RemoveChildMutation<any, any>;
       const parent = slimTarget as SlimParentNode;
       const child = parent.childNodes[index];
-      const nativeChild = map.dom[child.id];
-      map = {
-        ...map,
-        dom: {
-          ...map.dom,
-          [child.id]: undefined
-        }
-      };
-      nativeChild.parentNode.removeChild(nativeChild);
+      map = removeNativeChildNode(child, map);
       break;
     }
     case SET_ATTRIBUTE_VALUE: {
       const { name, newValue } = mutation as SetPropertyMutation<any>;
+      const slimElement = slimTarget as SlimElement;
       const nativeTarget = map.dom[slimTarget.id] as HTMLElement;
-      if (!newValue) {
-        nativeTarget.removeAttribute(name);
-        nativeTarget.dataset[name.toLowerCase()] = undefined;
+
+      if (slimElement.tagName === "slot") {
+        if (name === "name") {
+          // TODO - get host
+          // TODO - insert children
+          const host = getMutationHost(mutation, root);
+          const oldSlotChildren = getSlotChildren(slimElement, host);
+
+          for (let i = oldSlotChildren.length; i--;) {
+            const child = oldSlotChildren[i];
+            map = removeNativeChildNode(child, map);
+          }
+
+          const newSlotChildren = getSlotChildrenByName(newValue, host);
+
+          const nativeParent = nativeTarget.parentNode;
+        
+          const slotIndex = Array.prototype.indexOf.call(nativeParent.childNodes, nativeTarget);
+
+          let childMap: DOMMap = {};
+
+          for (let i = 0, {length} = newSlotChildren; i < length; i++) {
+            const child = newSlotChildren[i];
+            const childHost = getNodeHost(child, root);
+            const newNativeChild = createNativeNode(newSlotChildren[i], nativeTarget.ownerDocument, {
+              root: root,
+              map: childMap,
+              host: childHost
+            });
+
+            insertNativeNode(newNativeChild, slotIndex + i + 1, nativeParent);
+          }
+          
+          map = {
+            ...map,
+            dom: {
+              ...map.dom,
+              ...childMap,
+            }
+          };
+        }
+
       } else {
-        nativeTarget.setAttribute(name, newValue);
-        nativeTarget.dataset[name.toLowerCase()] = "true";
+        if (!newValue) {
+          nativeTarget.removeAttribute(name);
+          nativeTarget.dataset[name.toLowerCase()] = undefined;
+        } else {
+          nativeTarget.setAttribute(name, newValue);
+          nativeTarget.dataset[name.toLowerCase()] = "true";
+        }
       }
       break;
     }
     case INSERT_CHILD_NODE: {
       const { child, index } = mutation as InsertChildMutation<any, any>;
-      const nativeTarget = map.dom[slimTarget.id];
+      let insertIndex = index;
+
+      let nativeParent: Node;
+
+      if ((slimTarget as SlimElement).shadow) {
+        const slot = getSlot(getNodeSlotName(child), slimTarget as SlimElement);
+        const nativeSlotMarker = map.dom[slot.id];
+        const nativeSlotParent = nativeSlotMarker.parentNode;
+        const nativeSlotIndex  = Array.prototype.indexOf.call(nativeSlotParent.childNodes, nativeSlotMarker);
+        nativeParent = nativeSlotParent;
+        insertIndex = nativeSlotIndex + index + 1;
+      } else {
+        nativeParent = map.dom[slimTarget.id];
+      }
+
       let childMap: DOMMap = {};
       const mutationHost = getMutationHost(mutation, root) as SlimElement;
+      // console.log(mutation.target, mutationHost);
       const nativeChild = createNativeNode(child, ownerDocument, {  
-        map: childMap, 
-        host: {
-          element: mutationHost,
-          childNodes: []
-        }
+        map: childMap,
+        root: root,
+        host: mutationHost
       });
-      if (index >= nativeTarget.childNodes.length) {
-        nativeTarget.appendChild(nativeChild);
-      } else {
-        nativeTarget.insertBefore(nativeChild, nativeTarget.childNodes[index]);
-      }
+      insertNativeNode(nativeChild, insertIndex, nativeParent);
       map = {
         ...map,
         dom: {
@@ -327,11 +371,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const nativeParent = nativeChild.parentNode;
 
       nativeParent.removeChild(nativeChild);
-      if (index >= nativeParent.childNodes.length) {
-        nativeParent.appendChild(nativeChild);
-      } else {
-        nativeParent.insertBefore(nativeChild, nativeParent.childNodes[index]);
-      }
+      insertNativeNode(nativeChild, index, nativeParent);
       break;
     }
 
@@ -398,12 +438,38 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
   return map;
 };
 
-const getMutationHost = (mutation: Mutation<any[]>, root: SlimParentNode) => {
-  const index = mutation.target.lastIndexOf("shadow");
-  const path = index > -1 ? mutation.target.slice(0, index) : mutation.target;
+const removeNativeChildNode = (child: SlimBaseNode, map: NativeObjectMap) => {
+  const nativeChild = map.dom[child.id];
+  map = {
+    ...map,
+    dom: {
+      ...map.dom,
+      [child.id]: undefined
+    }
+  };
+  nativeChild.parentNode.removeChild(nativeChild);
+  return map;
+};
 
-  return getVMObjectFromPath(path, root);
-}
+const insertNativeNode = (child: Node, index: number, parent: Node) => {  
+  if (index >= parent.childNodes.length) {
+    parent.appendChild(child);
+  } else {
+    parent.insertBefore(child, parent.childNodes[index]);
+  }
+};
+
+const getMutationHost = (mutation: Mutation<any[]>, root: SlimParentNode) => getHostFromPath(mutation.target, root);
+
+const getNodeHost = (child: SlimBaseNode, root: SlimParentNode) => getHostFromPath(getVMObjectPath(child, root), root);
+
+const getHostFromPath = weakMemo((path: string[], root: SlimParentNode) => {
+  const index = path.lastIndexOf("shadow");
+  if (index === -1) {
+    return null;
+  }
+  return getVMObjectFromPath(path.slice(0, index), root) as SlimElement;
+});
 
 // do NOT memoize this since computed information may change over time. 
 export const computedDOMInfo2 = (map: NativeObjectMap): ComputedDOMInfo => {

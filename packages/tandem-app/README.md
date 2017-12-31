@@ -16,6 +16,7 @@ IMMEDIATE:
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] Finish TODOS in dom renderer2
   - [ ] ensure that default children
+  - [ ] get padding / margin stage tool working again
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler

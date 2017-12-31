@@ -111,10 +111,19 @@ export class FakeAttribute {
 
 export class FakeElement extends FakeParentNode {
   readonly attributes: FakeAttribute[] = [];
+  readonly dataset: any = {};
   private _shadowRoot: FakeDocumentFragment;
   readonly nodeType = 1;
   constructor(readonly tagName: string, ownerDocument: FakeDocument) {
     super(ownerDocument);
+  }
+  get classList() {
+    return {
+      add: (...classNames: string[]) => {
+        const prevClass = this.getAttribute("class");
+        this.setAttribute("class", (prevClass ? [prevClass] : []).concat(classNames).join(" "));
+      }
+    }
   }
   removeAttribute(name: string) {
     const index = this.attributes.findIndex((attr) => attr.name === name);
