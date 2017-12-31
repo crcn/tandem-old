@@ -1,11 +1,9 @@
 IMMEDIATE:
 
-- [ ] inherit global styles
-- [ ] component styles are scoped
-- [ ] dom renderer shouldn't use shadow
+- [ ] fix css inspector issues
+- [ ] ensure that diff/patch works with new dom render updates (particularly inserting elements with shadow children)
+- [ ] ensure that ionicons .css works
 
-- [ ] imported statements need to be patched somehow
-  - [ ] possibly include them in doc -- inject only selectors that apply
 - [ ] css files should be treated like modules
 - [ ] wire up eye toggler
 - [ ] parse imported styles 
