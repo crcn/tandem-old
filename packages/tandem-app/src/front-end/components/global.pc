@@ -191,7 +191,6 @@
         color: orange;
       }
     }
-
   </style>
   <template>
     <div>

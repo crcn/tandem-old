@@ -12,7 +12,6 @@ IMMEDIATE:
 
 - [ ] WARM UP
   - [ ] start on error handling for FE
-  - [ ] exception creating @media rule
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler
@@ -136,6 +135,9 @@ POSSIBLY:
   - [ ] Example on site
 - [ ] Screenshots
   - [ ] visual difference?
+
+#### LAUNCH
+- [ ] online playground. Ability to export components as zip file.
 
 #### V2
 

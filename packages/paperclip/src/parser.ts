@@ -692,6 +692,11 @@ const createCSSAtRule = (context: ParseContext): CSSAtRule => {
   }
 
   const curr = scanner.curr();
+  
+  if (!testCurrTokenType(context, [PCTokenType.SEMICOLON, PCTokenType.CURLY_BRACKET_OPEN])) {
+    return null;
+  }
+
   scanner.next(); // eat ; or {
 
   if (curr.type === PCTokenType.CURLY_BRACKET_OPEN) {
