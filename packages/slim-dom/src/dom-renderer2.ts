@@ -89,7 +89,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         } else if (typeof attribute.value !== "object") {
           nativeElement.setAttribute(attribute.name, attribute.value);
         }
-        nativeElement.dataset[attribute.name] = "true";
+        nativeElement.dataset[attribute.name.toLowerCase()] = "true";
       }
       if (context.host) {
         nativeElement.classList.add(getScopeTagName(context.host.element));
@@ -223,9 +223,9 @@ const getScopeTagName = ({tagName}: SlimElement) => `__${tagName}_scope`;
 const getScopeTagNameHost = (element: SlimElement) => getScopeTagName(element) + "__host";
 
 const stringifyScopedSelectorText = (selectorText: string, host: SlimElement) => {
-  if (host) {
-    console.log(compileScopedCSS(selectorText, getScopeTagName(host)), selectorText);
-  }
+  // if (host) {
+  //   console.log(compileScopedCSS(selectorText, getScopeTagName(host)), selectorText);
+  // }
   return host ? compileScopedCSS(selectorText, getScopeTagName(host)) : selectorText;
 };
 
@@ -283,10 +283,10 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const nativeTarget = map.dom[slimTarget.id] as HTMLElement;
       if (!newValue) {
         nativeTarget.removeAttribute(name);
-        nativeTarget.dataset[name] = undefined;
+        nativeTarget.dataset[name.toLowerCase()] = undefined;
       } else {
         nativeTarget.setAttribute(name, newValue);
-        nativeTarget.dataset[name] = "true";
+        nativeTarget.dataset[name.toLowerCase()] = "true";
       }
       break;
     }

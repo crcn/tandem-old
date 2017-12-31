@@ -63,7 +63,7 @@ const getBreadcrumbNodes = weakMemo((workspace: Workspace): SlimElement[] => {
 
   const ancestors = getNodeAncestors(node, artboard.document).filter((node) => node.type === SlimVMObjectType.ELEMENT).reverse();
 
-  return [...ancestors, node] as SlimElement[];
+  return [...ancestors, node].filter(node => node.type === SlimVMObjectType.ELEMENT) as SlimElement[];
 });
 
 const BreadcrumbBase = ({ element, onClick, selected, onMouseEnter, onMouseLeave }: BreadcrumbInnerProps) => {
