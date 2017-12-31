@@ -50,7 +50,8 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
       const elementContext = shadow ? { ...context, host: vmNode as SlimElement } : context;
 
       if (tagName === "slot") {
-        const slotElement = context.map[id] = document.createElement("span");
+        const slotElement = context.map[id] = document.createDocumentFragment();
+
         const host = context.host;
 
         if (host) {
@@ -67,10 +68,6 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
 
         if (!slotElement.childNodes.length) {
           appendNativeChildNodes(vmNode as SlimParentNode, slotElement, document,  context)
-        }
-
-        if (context.host) {
-          slotElement.classList.add(getScopeTagName(context.host.element));
         }
 
         return  slotElement;
@@ -178,6 +175,8 @@ const insertChildRules = (slimRule: SlimCSSGroupingRule, nativeRule: CSSGrouping
 
 const insertChildRule = (slimRule: SlimCSSRule, nativeRule: CSSGroupingRule|CSSStyleSheet|CSSKeyframesRule, context: InsertStyleSheetContext, index: number) => {
 
+  index = Math.min(index, nativeRule.cssRules.length);
+
   const childRule = shallowStringifyRule(slimRule, context);
   try {
     if ((nativeRule as any).insertRule) {
@@ -192,7 +191,8 @@ const insertChildRule = (slimRule: SlimCSSRule, nativeRule: CSSGroupingRule|CSSS
       insertChildRules(slimRule as SlimCSSGroupingRule, context.map[slimRule.id] as any, context);
     }
   } catch(e) {
-
+    console.warn(`Unable to insert ${childRule} style`);
+    console.error(e.stack);
   }
 };
 

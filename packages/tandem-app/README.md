@@ -1,6 +1,7 @@
 IMMEDIATE:
 
-- [ ] fix css inspector issues
+- [ ] more diff/patch testing for DOM renderer
+  - [ ] ensure that slots are diffed & patched correctly
 - [ ] ensure that diff/patch works with new dom render updates (particularly inserting elements with shadow children)
 - [ ] ensure that ionicons .css works
 
@@ -12,6 +13,8 @@ IMMEDIATE:
 
 - [ ] WARM UP
   - [ ] start on error handling for FE
+  - [ ] width/height labels around hovered & selected stage items (like inspector)
+  - [ ] Finish TODOS in dom renderer2
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler
@@ -36,6 +39,8 @@ IMMEDIATE:
 - [ ] Pretty pane
 
 - [ ] Native elements pane
+
+- [ ] HTML layers
 
 - [ ] stage tools
   - [ ] DND elements (native & custom) to stage elements

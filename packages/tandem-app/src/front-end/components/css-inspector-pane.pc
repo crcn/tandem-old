@@ -51,7 +51,7 @@
 <component id="td-style-rule">
   <meta name="internal" content="true" />
   <style>
-    
+
     :host:hover td-gutter-subheader span, :host([headerHovering]) .controls {
       /* TODO */
     }
@@ -97,9 +97,6 @@
     td-gutter-subheader {
       display: flex;
       flex-direction: row;
-    }
-
-    .value:after {
     }
   </style>
   <template>

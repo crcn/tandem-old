@@ -390,7 +390,6 @@ export const patchNode = <TNode extends SlimParentNode>(root: TNode, diffs: Muta
 };
 
 export const patchNode2 = <TNode extends SlimParentNode>(mutation: Mutation<any>, root: TNode) => {
-
   
   const target = getVMObjectFromPath(mutation.target, root);
   if (!target) {
