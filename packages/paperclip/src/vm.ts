@@ -1,7 +1,8 @@
 import { PCElement, PCTextNode, PCSelfClosingElement, PCExpression, PCRootExpression, PCExpressionType, PCComment, PCStartTag, BKRepeat, BKIf, BKElse, BKExpression, BKExpressionType, BKElseIf, PCAttribute, PCStringBlock, BKNumber, BKNot, BKString, BKOperation, BKGroup, BKObject, BKArray, BKBind, PCString, PCBlock, CSSStyleRule, CSSSheet, CSSAtRule, CSSDeclarationProperty, CSSExpression, CSSExpressionType, CSSGroupingRule, BKReservedKeyword } from "./ast";
 import { Diagnostic, DiagnosticType, diagnosticsContainsError } from "./parser-utils";
+import * as path from "path";
 import { getReferenceKeyPath } from "./inferencing";
-import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris, getAllGlobalStyles } from "./loader";
+import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris, PCModuleType, CSSModule, ComponentModule } from "./loader";
 import { eachValue } from "./utils";
 import { SlimBaseNode, SlimParentNode, SlimTextNode, SlimElement, SlimVMObjectType, pushChildNode, SlimElementAttribute, VMObjectSource, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSAtRule, VMObject } from "slim-dom";
 import { kebabCase } from "lodash";
@@ -103,9 +104,23 @@ const addGlobalStyles = <TParent extends SlimParentNode>(root: TParent, context:
   const { currentURI, graph } = context;
 
   const { module, resolvedImportUris } = graph[currentURI];
-  for (let i = 0, {length} = module.globalStyles; i < length; i++) {
-    const style = module.globalStyles[i];
-    root = appendChildNode(root, style, context);
+
+  if (module.type === PCModuleType.COMPONENT) {
+    const { globalStyles } = module as ComponentModule;
+    for (let i = 0, {length} = globalStyles; i < length; i++) {
+      const style = globalStyles[i];
+      root = appendChildNode(root, style, context);
+    }
+  } else if (module.type === PCModuleType.CSS) {
+    const { source } = module as CSSModule;
+    root = pushChildNode(root, {
+      type: SlimVMObjectType.ELEMENT,
+      tagName: "style",
+      attributes: [],
+      childNodes: [],
+      source: null,
+      sheet: createStyleSheet(source, context)
+    } as SlimStyleElement);
   }
   for (const relPath in resolvedImportUris) {
     const resolvedUri = resolvedImportUris[relPath];
@@ -354,54 +369,65 @@ const createStyleSheet = (expr: CSSSheet, context: VMContext): SlimCSSStyleSheet
 
 const createCSSRule = (rule: CSSExpression, context: VMContext) => {
   const source = createVMSource(rule, context);
-  switch(rule.type) {
-    case CSSExpressionType.STYLE_RULE: {
-      const { selectorText, children } = rule as CSSStyleRule;
-      const style: SlimCSSStyleDeclaration = {
-      } as any;
-      
-      for (let i = 0, {length} = children; i < length; i++) {
-        const child = children[i];
-        if (child.type === CSSExpressionType.DECLARATION_PROPERTY) {
-          const decl = child as CSSDeclarationProperty;
-          style[decl.name] = decl.value;
+
+  if (rule.type === CSSExpressionType.STYLE_RULE || (rule.type === CSSExpressionType.AT_RULE && (rule as CSSAtRule).name === "font-face")) {
+    const { selectorText, children } = rule as CSSStyleRule;
+    const style: SlimCSSStyleDeclaration = {
+    } as any;
+    
+    for (let i = 0, {length} = children; i < length; i++) {
+      const child = children[i];
+      if (child.type === CSSExpressionType.DECLARATION_PROPERTY) {
+
+        const decl = child as CSSDeclarationProperty;
+        let value = decl.value;
+
+        if (/url\(/.test(value)) {
+          value = value.replace(/url\(["'](.*?)["']\)/g, (match, url) => {
+            if (url.charAt(0) === "." || url.charAt(0) === "/") {
+              return `url("${resolveFile(path.resolve(path.dirname(context.currentURI), url), context)}")`;
+            }
+            return match;
+          });
         }
-      };
 
-      return {
-        type: SlimVMObjectType.STYLE_RULE,
-        selectorText,
-        style,
-        source
-      } as SlimCSSStyleRule;
-    }
-    case CSSExpressionType.AT_RULE: {
-      let { name, params, children } = rule as CSSAtRule;
-      const rules: SlimCSSRule[] = new Array(children.length);
-      for (let i = 0, {length} = children; i < length; i++) {
-        const child = children[i];
-        rules[i] = createCSSRule(child, context);
+        style[decl.name] = decl.value;
       }
+    };
 
-      if (name === "import") {
-        const module = context.graph[context.currentURI];
-        let resolvedImportUri = module.resolvedImportUris[params[0]];
-        if (resolvedImportUri) {
-          params = [resolveFile(resolvedImportUri, context)];
-        } else {
-          // this shouldn't happen
-          console.error(`Unresolved CSS import: ${params[0]}`);
-        }
-      }
-      return {
-        name,
-        type: SlimVMObjectType.AT_RULE,
-        params: params.join("").trim(),
-        rules,
-        source,
-      } as SlimCSSAtRule;
+    return {
 
+      // TODO - need to check for font face
+      type: SlimVMObjectType.STYLE_RULE,
+      selectorText,
+      style,
+      source
+    } as SlimCSSStyleRule;
+  } else if (rule.type === CSSExpressionType.AT_RULE) {
+    let { name, params, children } = rule as CSSAtRule;
+    const rules: SlimCSSRule[] = new Array(children.length);
+    for (let i = 0, {length} = children; i < length; i++) {
+      const child = children[i];
+      rules[i] = createCSSRule(child, context);
     }
+
+    if (name === "import") {
+      const module = context.graph[context.currentURI];
+      let resolvedImportUri = module.resolvedImportUris[params[0]];
+      if (resolvedImportUri) {
+        params = [resolveFile(resolvedImportUri, context)];
+      } else {
+        // this shouldn't happen
+        console.error(`Unresolved CSS import: ${params[0]}`);
+      }
+    }
+    return {
+      name,
+      type: SlimVMObjectType.AT_RULE,
+      params: params.join("").trim(),
+      rules,
+      source,
+    } as SlimCSSAtRule;
   }
 }
 

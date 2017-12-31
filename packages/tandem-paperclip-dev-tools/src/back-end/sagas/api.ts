@@ -4,11 +4,11 @@ import { eventChannel } from "redux-saga";
 import * as sharp from "sharp";
 import * as request from "request"; 
 import * as md5 from "md5";
-import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation } from "paperclip";
+import { PCRemoveChildNodeMutation, createPCRemoveChildNodeMutation, createPCRemoveNodeMutation, PCModuleType } from "paperclip";
 import { compressRootNode, diffNode, getDocumentChecksum, getVMObjectFromPath } from "slim-dom";
 import { ApplicationState, RegisteredComponent, getFileCacheContent, getLatestPreviewDocument, getPreviewDocumentByChecksum } from "../state";
 import { flatten } from "lodash";
-import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource, runPCFile } from "paperclip";
+import { loadModuleAST, parseModuleSource, loadModuleDependencyGraph, DependencyGraph, Module, Component, getAllChildElementNames, getComponentMetadataItem, editPaperclipSource, runPCFile, ComponentModule } from "paperclip";
 import { PAPERCLIP_FILE_EXTENSION } from "../constants";
 import { getModuleFilePaths, getModuleId, getPublicFilePath, getReadFile, getAvailableComponents, getComponentScreenshot, getComponentsFromSourceContent, getPublicSrcPath, getPreviewComponentEntries, getAllModules, getModuleSourceDirectory, getStorageData, setStorageData } from "../utils";
 import { watchUrisRequested, expressServerStarted, EXPRESS_SERVER_STARTED, ExpressServerStarted, fileContentChanged, moduleCreated, DependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED } from "../actions";
@@ -303,7 +303,10 @@ function* deleteComponent(req: express.Request, res: express.Response, next) {
   let previewComponent: Component;
 
   for (const module of allModules) {
-    for (const component of module.components) {
+    if (module.type !== PCModuleType.COMPONENT) {
+      continue;
+    }
+    for (const component of (module as ComponentModule).components) {
       if (!targetModule && component.id === componentId) {
         targetModule = module;
         targetComponent = component;

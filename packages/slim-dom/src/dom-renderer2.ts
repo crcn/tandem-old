@@ -69,7 +69,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         }
 
         // append default slot element children
-        if (!slotElement.childNodes.length) {
+        if (slotElement.childNodes.length === 1) {
           appendNativeChildNodes(vmNode as SlimParentNode, slotElement, document,  context)
         }
 

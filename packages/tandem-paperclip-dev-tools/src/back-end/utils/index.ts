@@ -9,7 +9,7 @@ import * as md5 from "md5";
 import * as fs from "fs";
 import * as fsa from "fs-extra";
 import { weakMemo, Bounds } from "aerial-common2";
-import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage, DependencyGraph, getPCStartTagAttribute } from "paperclip";
+import { parseModuleSource, loadModuleAST, defaultResolveModulePath, loadModuleDependencyGraph, Component, getUsedDependencies, getImportDependencies, getChildComponentInfo, getDependencyChildComponentInfo, getModuleComponent, ChildComponentInfo, getComponentMetadataItem, generatePrettyErrorMessage, DependencyGraph, getPCStartTagAttribute, PCModuleType, ComponentModule } from "paperclip";
 
 enum ComponentMetadataName {
   PREVIEW = "preview",
@@ -82,7 +82,9 @@ export const getAllModules = (state: ApplicationState) => {
 export const getAllModuleComponents = (state: ApplicationState) => {
   const components: Component[] = [];
   for (const module of getAllModules(state)) {
-    components.push(...module.components);
+    if (module.type === PCModuleType.COMPONENT) {
+      components.push(...(module as ComponentModule).components);
+    }
 }
   return components;
 }
@@ -118,8 +120,8 @@ export const getAssocComponents = async (matchFilePath: string, state: Applicati
     if (!assocComponents.length) {
       const importedDependencies = getImportDependencies(entry, graph);
       for (const globalDep of importedDependencies) {
-        if (globalDep.module.uri === matchFilePath) {
-          for (const component of entry.module.components) {
+        if (globalDep.module.uri === matchFilePath && entry.module.type === PCModuleType.COMPONENT) {
+          for (const component of (entry.module as ComponentModule).components) {
             assocComponents[component.id] = entry;
           }
           break;
@@ -167,8 +169,12 @@ export const getComponentsFromSourceContent = (content: string, filePath: string
   }
 
   const module = loadModuleAST(result.root, filePath);
+
+  if (module.type !== PCModuleType.COMPONENT) {
+    return [];
+  }
   
-  return module.components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id, source, previews}) => ({
+  return (module as ComponentModule).components.filter(component => !getComponentMetadataItem(component, ComponentMetadataName.INTERNAL)).map(({id, source, previews}) => ({
     filePath,
     label: id,
     location: source.location,
@@ -203,7 +209,10 @@ export const getPreviewComponentEntries = (state: ApplicationState): AllComponen
   let currentTop = 0;
 
   for (const module of allModules) {
-    for (const component of module.components) {
+    if (module.type !== PCModuleType.COMPONENT) {
+      continue;
+    }
+    for (const component of (module as ComponentModule).components) {
       // TODO - check for preview meta
 
       for (let i = 0, {length} = component.previews; i < length; i++) {

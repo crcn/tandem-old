@@ -8,15 +8,15 @@ TODOS:
 
 import { upperFirst, camelCase, repeat } from "lodash";
 import * as path from "path";
-import { loadModuleAST, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment, PCSelfClosingElement, getElementModifiers, getPCElementModifier, BKExpressionType, getElementChildNodes, PCBlock, BKExpression, BKOperation, BKPropertyReference, BKVarReference, BKArray, BKBind, BKRepeat, BKIf, BKElse, BKElseIf, getElementAttributes, getPCASTElementsByTagName, inferNodeProps, Inference, InferenceType } from "paperclip";
+import { loadModuleAST, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment, PCSelfClosingElement, getElementModifiers, getPCElementModifier, BKExpressionType, getElementChildNodes, PCBlock, BKExpression, BKOperation, BKPropertyReference, BKVarReference, BKArray, BKBind, BKRepeat, BKIf, BKElse, BKElseIf, getElementAttributes, getPCASTElementsByTagName, inferNodeProps, Inference, InferenceType, ComponentModule } from "paperclip";
 import { basename, relative } from "path";
 import { ComponentTranspileInfo, getComponentTranspileInfo, getComponentClassName, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
 
 export const transpileToTypeScriptDefinition = (graph: DependencyGraph, uri: string) => {
-  return transpileModule(graph[uri], graph);
+  return transpileModule(graph[uri] as Dependency<ComponentModule>, graph);
 };
 
-const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
+const transpileModule = (entry: Dependency<ComponentModule>, graph: DependencyGraph) => {
   let content = ``;
   const { module } = entry;
 

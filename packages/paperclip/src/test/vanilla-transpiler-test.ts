@@ -7,7 +7,7 @@ import { getSEnvWindowClass } from "aerial-browser-sandbox";
 describe(__filename + "#", () => {
 
   const runCode = async (input: string, wrap: (value: string) => string = (value) => value, init: string = "") => {
-    const { code } = await bundleVanilla(null, {
+    const { code } = await bundleVanilla("component.pc", {
       target: PaperclipTargetType.TANDEM,
       io: {
         readFile: async () => wrap(input),

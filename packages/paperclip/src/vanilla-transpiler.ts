@@ -1,7 +1,7 @@
 // TODO - emit warnings for elements that have invalid IDs, emit errors
 
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule, getStartTag, getPCStartTagAttribute } from "./ast";
-import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph } from "./loader";
+import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph, ComponentModule, PCModuleType } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { PaperclipTranspileResult } from "./transpiler";
 import { inferNodeProps } from "./inferencing";
@@ -155,7 +155,10 @@ const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
   content += "$$modules = {};";
 
   for (const uri in graph) {
-    content += `$$modules["${uri}"] = ${transpileModule(graph[uri].module, graph[uri].resolvedImportUris)};`;
+    const { resolvedImportUris, module } = graph[uri];
+    if (module.type === PCModuleType.COMPONENT) {
+      content += `$$modules["${uri}"] = ${transpileModule(module as ComponentModule, resolvedImportUris)};`;
+    }
   }
 
   content += `const entry = $$modules["${entryUri}"]();`
@@ -169,7 +172,7 @@ const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
   return content;
 };
 
-const transpileModule = ({ source, imports, globalStyles, components, unhandledExpressions, uri }: Module, resolvedImportUris: { [identifier: string]: string }) => {
+const transpileModule = ({ source, imports, globalStyles, components, unhandledExpressions, uri }: ComponentModule, resolvedImportUris: { [identifier: string]: string }) => {
 
   const context: TranspileContext = {
     uri,

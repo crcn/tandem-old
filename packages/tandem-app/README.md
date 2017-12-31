@@ -1,8 +1,5 @@
 IMMEDIATE:
 
-- [ ] more diff/patch testing for DOM renderer
-  - [ ] ensure that slots are diffed & patched correctly
-- [ ] ensure that diff/patch works with new dom render updates (particularly inserting elements with shadow children)
 - [ ] ensure that ionicons .css works
 
 - [ ] css files should be treated like modules
@@ -12,6 +9,7 @@ IMMEDIATE:
 - [ ] changes to css files should trigger reload
 
 - [ ] WARM UP
+  - [ ] do not require special prefix for component ids
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] Finish TODOS in dom renderer2

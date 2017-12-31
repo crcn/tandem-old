@@ -375,7 +375,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      `<root><#shadow><style>@import "/style.css";</style><div class="container"></div></#shadow></root>`
+      `<style>.container {color: red;}</style><root><#shadow><style>@import "/style.css";</style><div class="container"></div></#shadow></root>`
     ]
   ].forEach(([entries, result]: any) => {
     it(`can render ${entries["entry.pc"]}`, async () => {

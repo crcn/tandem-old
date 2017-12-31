@@ -1,4 +1,4 @@
-import { loadModuleDependencyGraph, IO } from "./loader";
+import { loadModuleDependencyGraph, IO, ComponentModule, PCModuleType } from "./loader";
 import { Diagnostic } from "./parser-utils";
 import { parseModuleSource } from "./parser";
 import { lintDependencyGraph } from "./linting";
@@ -16,20 +16,26 @@ export const validatePaperclipSource = async (entry: string, io: Partial<IO>) =>
   if (dgDiagnostics.length) {
     for (const filePath in graph) {
       const { module } = graph[filePath];
-      for (const component of module.components) {
-        const { diagnostics: inferDiagnostics } = inferNodeProps(component.source, filePath);
-        allDiagnostics.push(...inferDiagnostics);
-        hasInferDiagnostics = hasInferDiagnostics || Boolean(inferDiagnostics.length);
+      if (module.type === PCModuleType.COMPONENT) {
+        const componentModule = module as ComponentModule;
+        for (const component of componentModule.components) {
+          const { diagnostics: inferDiagnostics } = inferNodeProps(component.source, filePath);
+          allDiagnostics.push(...inferDiagnostics);
+          hasInferDiagnostics = hasInferDiagnostics || Boolean(inferDiagnostics.length);
+        }
       }
     }
   }
 
   for (const filePath in graph) {
     const { module } = graph[filePath];
-    for (const component of module.components) {
-      const { diagnostics: inferDiagnostics } = inferNodeProps(component.source, filePath);
-      allDiagnostics.push(...inferDiagnostics);
-      hasInferDiagnostics = hasInferDiagnostics || Boolean(inferDiagnostics.length);
+    if (module.type === PCModuleType.COMPONENT) {
+      const componentModule = module as ComponentModule;
+      for (const component of componentModule.components) {
+        const { diagnostics: inferDiagnostics } = inferNodeProps(component.source, filePath);
+        allDiagnostics.push(...inferDiagnostics);
+        hasInferDiagnostics = hasInferDiagnostics || Boolean(inferDiagnostics.length);
+      }
     }
   }
 

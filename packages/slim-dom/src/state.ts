@@ -77,7 +77,7 @@ export type SlimElementAttribute = {
 export type SlimElement = {
   tagName: string;
   attributes: SlimElementAttribute[];
-  shadow: SlimParentNode;
+  shadow?: SlimParentNode;
 } & SlimParentNode;
 
 export type SlimStyleElement = {

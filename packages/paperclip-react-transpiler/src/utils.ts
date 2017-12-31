@@ -1,7 +1,7 @@
 // TODO - many useful functions here that should be moved to the paperclip repository
 // when more transpilers are created
 
-import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module, isTag, Dependency, DependencyGraph, getPCStartTagAttribute, getAllChildElementNames, getChildComponentInfo } from "paperclip";
+import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module, isTag, Dependency, DependencyGraph, getPCStartTagAttribute, getAllChildElementNames, getChildComponentInfo, PCModuleType, ComponentModule } from "paperclip";
 import * as path from "path";
 import { upperFirst, camelCase, uniq } from "lodash";
 
@@ -17,7 +17,7 @@ export type ComponentTranspileInfo = {
 export type ImportTranspileInfo = {
   baseName: string;
   relativePath;
-  dependency: Dependency;
+  dependency: Dependency<Module>;
   varName: string;
 };
 
@@ -38,7 +38,7 @@ export const getComponentTranspileInfo = (component: Component): ComponentTransp
   };
 };
 
-export const getComponentFromModule = (id: string, module: Module) => module.components.find(component => component.id === id);
+export const getComponentFromModule = (id: string, module: Module) => module.type === PCModuleType.COMPONENT ? (module as ComponentModule).components.find(component => component.id === id) : null;
 
 export const getSlotName = (name: string) => `${camelCase(name.replace(/-/g, "_"))}Slot`;
 
@@ -55,7 +55,7 @@ export const getTemplateSlotNames = (root: PCElement) => {
 };
 
 export const getImportBaseName = href => upperFirst(camelCase(path.basename(href).split(".").shift()));
-export const getImportsInfo = (entry: Dependency, allDeps: Dependency[]) => {
+export const getImportsInfo = (entry: Dependency<Module>, allDeps: Dependency<Module>[]) => {
 
   const importTranspileInfo = [];
 
@@ -84,4 +84,4 @@ export const getImportsInfo = (entry: Dependency, allDeps: Dependency[]) => {
   return importTranspileInfo;
 };
 
-export const getImportFromDependency = (_imports: ImportTranspileInfo[], dep: Dependency) => _imports.find(_import => _import.dependency.module.uri === dep.module.uri);
+export const getImportFromDependency = (_imports: ImportTranspileInfo[], dep: Dependency<Module>) => _imports.find(_import => _import.dependency.module.uri === dep.module.uri);

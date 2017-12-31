@@ -5,7 +5,7 @@ import { PUBLIC_SRC_DIR_PATH } from "../constants";
 import { diffNode, stringifyNode, SlimParentNode, flattenObjects, getDocumentChecksum, getVmObjectSourceUris } from "slim-dom";
 import { ApplicationState, getLatestPreviewDocument } from "../state";
 import { WATCH_URIS_REQUESTED, fileContentChanged, watchingFiles, INIT_SERVER_REQUESTED, fileRemoved, WATCHING_FILES, FILE_CONTENT_CHANGED, FILE_REMOVED, dependencyGraphLoaded, DEPENDENCY_GRAPH_LOADED, previewEvaluated, FileContentChanged, previewDiffed } from "../actions";
-import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris } from "paperclip";
+import { DependencyGraph, loadModuleDependencyGraph, getAllComponents, runPCFile, getComponentSourceUris, PCModuleType, ComponentModule } from "paperclip";
 import { diffArray, ARRAY_UPDATE, Mutation } from "source-mutation";
 import { values } from "lodash";
 import crc32 = require("crc32");
@@ -159,33 +159,35 @@ function* evaluatePreviews(graph: DependencyGraph, sourceUri: string) {
     }
 
     const { module } = dep;
-    for (const component of module.components) {
-      for (const preview of component.previews) {
-        const entry = {
-          componentId: component.id,
-          filePath,
-          previewName: preview.name
-        }
-  
-        const { document } = runPCFile({ entry, graph, directoryAliases: {
+    if (module.type === PCModuleType.COMPONENT) {
+      for (const component of (module as ComponentModule).components) {
+        for (const preview of component.previews) {
+          const entry = {
+            componentId: component.id,
+            filePath,
+            previewName: preview.name
+          }
+    
+          const { document } = runPCFile({ entry, graph, directoryAliases: {
 
-          // TODO - will eventually want to pass host and protocol information here too
-          [moduleSourceDirectory]: `http://localhost:${state.options.port}${PUBLIC_SRC_DIR_PATH}`
-        } });
-        const prevDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
-        
-        console.log(`Evaluated component ${component.id}:${preview.name}`);
+            // TODO - will eventually want to pass host and protocol information here too
+            [moduleSourceDirectory]: `http://localhost:${state.options.port}${PUBLIC_SRC_DIR_PATH}`
+          } });
+          const prevDocument = getLatestPreviewDocument(component.id, preview.name, yield select());
+          
+          console.log(`Evaluated component ${component.id}:${preview.name}`);
 
-        let newDocument = document as SlimParentNode;
+          let newDocument = document as SlimParentNode;
 
-        // TODO - push diagnostics too
-        yield put(previewEvaluated(component.id, preview.name, newDocument));
+          // TODO - push diagnostics too
+          yield put(previewEvaluated(component.id, preview.name, newDocument));
 
-        if (prevDocument) {
-          const diff = diffNode(prevDocument, newDocument);
+          if (prevDocument) {
+            const diff = diffNode(prevDocument, newDocument);
 
-          // push even if there are no diffs so that FE can flag windows as loaded.
-          yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(prevDocument), diff));
+            // push even if there are no diffs so that FE can flag windows as loaded.
+            yield put(previewDiffed(component.id, preview.name, getDocumentChecksum(prevDocument), diff));
+          }
         }
       }
     }

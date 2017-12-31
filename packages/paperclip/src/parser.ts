@@ -10,6 +10,7 @@ TODOS:
 import { PCExpression, PCTextNode, PCExpressionType, PCElement, PCSelfClosingElement, PCStartTag, PCAttribute, Token, PCEndTag, PCComment, PCString, PCStringBlock, PCBlock, BKBind, BKReservedKeyword, BKExpressionType, BKPropertyReference, BKRepeat, BKIf, BKNot, BKOperation, BKExpression, BKGroup, BKObject, BKProperty, BKNumber, BKKeyValuePair, BKArray, BKString, BKVarReference, CSSExpression, CSSExpressionType, CSSStyleRule, CSSRule, CSSGroupingRule, CSSAtRule, CSSDeclarationProperty, CSSSheet, ExpressionLocation } from "./ast";
 import { ParseResult, ParseContext, DiagnosticType, ParseSubResult } from "./parser-utils";
 import { getLocation, getPosition, getTokenLocation } from "./ast-utils";
+import { isPaperclipFile, isCSSFile } from "./utils";
 import { TokenScanner, Scanner } from "./scanners";
 import { tokenizePaperclipSource, PCTokenType } from "./tokenizer";
 
@@ -27,9 +28,9 @@ export const parseModuleSource = (source: string, filePath?: string): ParseResul
 
   let root;
 
-  if (!filePath || /pc$/.test(filePath)) {
+  if (!filePath || isPaperclipFile(filePath)) {
     root = createFragment(context);
-  } else if (/css$/.test(filePath)) {
+  } else if (isCSSFile(filePath)) {
     root = createStyleSheet(context);
   } else {
     throw new Error(`Cannot parse ${filePath} type.`);

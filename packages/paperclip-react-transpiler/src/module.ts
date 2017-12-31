@@ -46,7 +46,8 @@ import { 
   ChildComponentInfo,
   getChildComponentInfo,
   getComponentDependency,
-  getModuleComponent
+  getModuleComponent,
+  ComponentModule
 } from "paperclip";
 import { compileScopedCSS } from "slim-dom";
 import { camelCase, uniq } from "lodash";
@@ -58,10 +59,10 @@ type ConditionTranspileInfo = {
 };
 
 export const transpileToReactComponents = (graph: DependencyGraph, entryUri: string) => {
-  return transpileModule(graph[entryUri], graph);
+  return transpileModule(graph[entryUri] as Dependency<ComponentModule>, graph);
 };
 
-const transpileModule = (entry: Dependency, graph: DependencyGraph) => {
+const transpileModule = (entry: Dependency<ComponentModule>, graph: DependencyGraph) => {
   let content = ``;
   const { module } = entry;
 
@@ -201,7 +202,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 const transpileStyle = (style: PCElement, scopeClass?: string, component?: Component, childComponentInfo = {}) => {
   let aliases = {};
   for (const componentId in childComponentInfo) {
-    const dep: Dependency = childComponentInfo[componentId];
+    const dep: Dependency<ComponentModule> = childComponentInfo[componentId];
     aliases[componentId] = "." + getComponentTranspileInfo(getModuleComponent(componentId, dep.module)).className;
   }
 

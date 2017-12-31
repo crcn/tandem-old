@@ -1,5 +1,4 @@
-import { loadModuleDependencyGraph, runPCFile } from "..";
-import { } from "slim-dom";
+import { loadModuleDependencyGraph, runPCFile, ComponentModule  } from "..";
 
 describe(__filename + "#", () => {
   describe("imported css files", () => {
@@ -41,7 +40,7 @@ describe(__filename + "#", () => {
 
       console.log(JSON.stringify((document as any), null, 2));
       const { module } = graph.entry;
-      const testComponent = module.components[0];
+      const testComponent = (module as ComponentModule).components[0];
       console.log(testComponent.style);
     });
   });

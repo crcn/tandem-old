@@ -4,11 +4,11 @@
 <link rel="import" href="./tooltip.pc" />
 <link rel="import" href="./color-picker.pc" />
 <link rel="import" href="./css-declaration-input.pc" />
+<link rel="stylesheet" href="./ionicons/css/ionicons.css" />
 
 <component id="td-style-declaration">
   <meta name="internal" content="true" />
   <style>
-    @import "./ionicons/css/ionicons.css";
 
     :host([ignored]) {
       opacity: 0.2;

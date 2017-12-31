@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { runPCFile, loadModuleDependencyGraph } from "..";
+import { runPCFile, loadModuleDependencyGraph, ComponentModule } from "..";
 import { FakeAttribute, FakeDocument, FakeDocumentFragment, FakeElement, FakeTextNode } from "./utils";
 import { renderDOM2, SlimParentNode, diffNode, patchNode2, patchNode, patchDOM2, DOMNodeMap, setVMObjectIds, prepDiff, NativeObjectMap } from "slim-dom";
 
@@ -329,8 +329,8 @@ const runPCComponent = async (files, entry = Object.keys(files)[0]) => {
   const { document, diagnostics } = runPCFile({ 
     entry: {
       filePath: entry,
-      componentId: module.components[0].id,
-      previewName: module.components[0].previews[0].name
+      componentId: (module as ComponentModule).components[0].id,
+      previewName: (module as ComponentModule).components[0].previews[0].name
     },
     graph
   });

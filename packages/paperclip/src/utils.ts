@@ -15,3 +15,7 @@ export const eachValue = (items: any, each: (value: any, index: string|number) =
     }
   }
 };
+
+export const isPaperclipFile = (filePath: string) => /pc$/.test(filePath);
+
+export const isCSSFile = (filePath: string) => /css$/.test(filePath);

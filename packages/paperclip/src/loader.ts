@@ -1,5 +1,3 @@
-// TODO - assert modifiers (cannot have else, elseif, and else in the same block)
-// TODO - throw error if var found out of context
 
 import { 
   PCElement, 
@@ -32,7 +30,7 @@ import {
   getAttributeStringValue,
   getAllChildElementNames
 } from "./ast";
-import { weakMemo } from "./utils";
+import { weakMemo, isCSSFile, isPaperclipFile } from "./utils";
 
 import { parseModuleSource } from "./parser";
 import { DEFAULT_PREVIEW_SIZE } from "./constants";
@@ -83,10 +81,16 @@ export type LoadDependencyGraphResult = {
   graph: DependencyGraph;
 };
 
-export type Module = {
+export enum PCModuleType {
+  COMPONENT,
+  CSS
+};
+
+export type ComponentModule = {
 
   source: PCRootExpression;
   uri: string;
+  type: PCModuleType;
 
   globalStyles: PCElement[];
 
@@ -100,15 +104,24 @@ export type Module = {
   unhandledExpressions: PCExpression[];
 };
 
-export type Dependency = {
-  module: Module;
+export type CSSModule = {
+  scoped?: boolean;
+  source: CSSSheet;
+  uri: string;
+  type: PCModuleType;
+}
+
+export type Module = ComponentModule | CSSModule;
+
+export type Dependency<TModule extends Module> = {
+  module: TModule;
   resolvedImportUris: {
     [identifier: string]: string
   }
 };
 
 export type DependencyGraph = {
-  [identifier: string]: Dependency
+  [identifier: string]: Dependency<Module>
 };
 
 // rename to avoid confusion
@@ -133,20 +146,13 @@ export const getAllComponents = weakMemo((graph: DependencyGraph): {
   const allComponents = {};
   for (const filePath in graph) {
     const { module } = graph[filePath];
-    for (const component of module.components) {
-      allComponents[component.id] = component;
+    if (module.type === PCModuleType.COMPONENT) {
+      for (const component of (module as ComponentModule).components) {
+        allComponents[component.id] = component;
+      }
     }
   }
   return allComponents;
-});
-
-export const getAllGlobalStyles = weakMemo((graph: DependencyGraph): PCExpression[] => {
-  const styles = []
-  for (const filePath in graph) {
-    const { module } = graph[filePath];
-    styles.push(...module.globalStyles);
-  }
-  return styles;
 });
 
 export const getComponentSourceUris = weakMemo((graph: DependencyGraph): {
@@ -155,8 +161,10 @@ export const getComponentSourceUris = weakMemo((graph: DependencyGraph): {
   const componentUris = {};
   for (const filePath in graph) {
     const { module } = graph[filePath];
-    for (const component of module.components) {
-      componentUris[component.id] = filePath;
+    if (module.type === PCModuleType.COMPONENT) {
+      for (const component of (module as ComponentModule).components) {
+        componentUris[component.id] = filePath;
+      }
     }
   }
   return componentUris;
@@ -188,7 +196,7 @@ export const getDependencyGraphComponentsExpressions = (graph: DependencyGraph):
   const templates: ComponentExpressions = {};
   for (const filePath in graph) {
     const { module } = graph[filePath];
-    for (const component of module.components) {
+    for (const component of (module as ComponentModule).components) {
       templates[component.id] = {
         filePath,
         expression: component.source
@@ -198,20 +206,22 @@ export const getDependencyGraphComponentsExpressions = (graph: DependencyGraph):
   return templates;
 };
 
-export const getDependencyChildComponentInfo = ({ module }: Dependency, graph: DependencyGraph): ChildComponentInfo => {
+export const getDependencyChildComponentInfo = ({ module }: Dependency<any>, graph: DependencyGraph): ChildComponentInfo => {
   const info = {};
-  
-  module.components.forEach((component) => {
-    Object.assign(info, getChildComponentInfo(component.template, graph));
-  });
+
+  if (module.type === PCModuleType.COMPONENT) {
+    (module as ComponentModule).components.forEach((component) => {
+      Object.assign(info, getChildComponentInfo(component.template, graph));
+    });
+  }
 
   return info;
 };
 
-export const getModuleComponent = (id: string, module: Module) => module.components.find((component) => component.id === id);
+export const getModuleComponent = (id: string, module: ComponentModule) => module.components.find((component) => component.id === id);
 
-export const getUsedDependencies = (dep: Dependency, graph: DependencyGraph) => {
-  const allDeps: Dependency[] = [];
+export const getUsedDependencies = (dep: Dependency<any>, graph: DependencyGraph) => {
+  const allDeps: Dependency<any>[] = [];
   const info = getDependencyChildComponentInfo(dep, graph)
   const componentTagGraph = getDependencyChildComponentInfo(dep, graph);
   for (const tagName in componentTagGraph) {
@@ -223,8 +233,8 @@ export const getUsedDependencies = (dep: Dependency, graph: DependencyGraph) => 
   return allDeps;
 };
 
-export const getImportDependencies = ({ resolvedImportUris }: Dependency, graph: DependencyGraph) => {
-  const importDeps: Dependency[] = [];
+export const getImportDependencies = ({ resolvedImportUris }: Dependency<any>, graph: DependencyGraph) => {
+  const importDeps: Dependency<any>[] = [];
 
   for (const relativePath in resolvedImportUris) {
     importDeps.push(graph[resolvedImportUris[relativePath]]);
@@ -237,10 +247,13 @@ export const getImportDependencies = ({ resolvedImportUris }: Dependency, graph:
 export const getComponentDependency = (id: string, graph: DependencyGraph) => {
   for (const uri in graph) {
     const dep = graph[uri];
-    for (let i = 0, {length} = dep.module.components; i < length; i++) {
-      const component = dep.module.components[i];
-      if (component.id === id) {
-        return dep;
+    if (dep.module.type === PCModuleType.COMPONENT) {
+      const module = dep.module as ComponentModule;
+      for (let i = 0, {length} = module.components; i < length; i++) {
+        const component = module.components[i];
+        if (component.id === id) {
+          return dep;
+        }
       }
     }
   }
@@ -274,11 +287,11 @@ export const loadModuleDependencyGraph = (uri: string, { readFile, resolveFile =
     // circ dependencies
     graph[uri] = { module, resolvedImportUris };
 
-    if (!module.imports.length) {
+    if (module.type !== PCModuleType.COMPONENT || !(module as ComponentModule).imports.length) {
       return Promise.resolve(graph);
     }
 
-    return Promise.all(module.imports.map(_import => {
+    return Promise.all((module as ComponentModule).imports.map(_import => {
       return Promise.resolve(resolveFile(_import.href, uri))
       .then((resolvedUri) => {
         resolvedImportUris[_import.href] = resolvedUri;
@@ -301,39 +314,51 @@ const createModule = (ast: PCRootExpression, uri: string): Module => {
 
   addImports(ast, imports);
 
-  for (let i = 0, {length} = childNodes; i < length; i++) {
-    const child = childNodes[i];
+  if (isPaperclipFile(uri)) {
 
-    if (child.type === PCExpressionType.SELF_CLOSING_ELEMENT || child.type === PCExpressionType.ELEMENT) {
-      const element = child as PCSelfClosingElement;
-      const tagName = getElementTagName(element);
-      const childNodes = getElementChildNodes(element);
-      const attributes = getElementAttributes(element);
-      const modifiers = getElementModifiers(element);
+    for (let i = 0, {length} = childNodes; i < length; i++) {
+      const child = childNodes[i];
 
-      if (tagName === "component" && element.type === PCExpressionType.ELEMENT) {
-        components.push(createComponent(element as any as PCElement, modifiers, attributes, childNodes));
-        continue;
-      } else if (tagName === "link") {
-        // imports.push(createImport(attributes));
-        continue;
-      } else if (tagName === "style") {
-        globalStyles.push(element as any as PCElement);
-        continue;
+      if (child.type === PCExpressionType.SELF_CLOSING_ELEMENT || child.type === PCExpressionType.ELEMENT) {
+        const element = child as PCSelfClosingElement;
+        const tagName = getElementTagName(element);
+        const childNodes = getElementChildNodes(element);
+        const attributes = getElementAttributes(element);
+        const modifiers = getElementModifiers(element);
+
+        if (tagName === "component" && element.type === PCExpressionType.ELEMENT) {
+          components.push(createComponent(element as any as PCElement, modifiers, attributes, childNodes));
+          continue;
+        } else if (tagName === "link") {
+          // imports.push(createImport(attributes));
+          continue;
+        } else if (tagName === "style") {
+          globalStyles.push(element as any as PCElement);
+          continue;
+        }
       }
+
+      unhandledExpressions.push(child);
     }
 
-    unhandledExpressions.push(child);
+    return {
+      source: ast,
+      uri,
+      imports,
+      type: PCModuleType.COMPONENT,
+      components,
+      globalStyles,
+      unhandledExpressions,
+    } as ComponentModule;
+  } else if (isCSSFile(uri)) {
+    return {
+      source: ast as any as CSSSheet,
+      type: PCModuleType.CSS,
+      uri,
+    } as CSSModule;
+
   }
 
-  return {
-    source: ast,
-    uri,
-    imports,
-    components,
-    globalStyles,
-    unhandledExpressions,
-  };
 };
 
 const addImports = (current: PCExpression, imports: Import[]) => {

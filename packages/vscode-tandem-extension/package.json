@@ -78,7 +78,7 @@
       "properties": {
         "tandem.paperclip.devServer.sourceFilePattern": {
           "type": "string",
-          "default": "{,!(node_modules)/**/}*.pc",
+          "default": "{,!(node_modules)/**/}*.{json,pc}",
           "description": "Files pattern for paperclip source files."
         },
         "tandem.paperclip.devServer.port": {

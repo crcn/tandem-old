@@ -9,7 +9,7 @@ TODOS:
 import { Diagnostic, DiagnosticType } from "./parser-utils";
 
 import { InferenceType, inferNodeProps, Inference, ANY_REFERENCE, getPrettyTypeLabelEnd, getTypeLabels, getReferenceKeyPath, EACH_KEY, getNestedInference } from "./inferencing";
-import { DependencyGraph, Dependency, Component, getChildComponentInfo } from "./loader";
+import { DependencyGraph, Dependency, Component, getChildComponentInfo, PCModuleType, ComponentModule } from "./loader";
 import { weakMemo, eachValue } from "./utils";
 import { PCExpression, PCExpressionType, PCElement, PCSelfClosingElement, PCAttribute, PCBlock, PCComment, PCEndTag, PCFragment, PCParent, PCReference, PCRootExpression, PCStartTag, PCString, PCStringBlock, PCTextNode, BKArray, BKBind, BKElse, BKElseIf, BKExpression, BKExpressionType, BKGroup, BKIf, BKKeyValuePair, BKNot, BKNumber, BKObject, BKOperation, BKProperty, BKPropertyReference, BKRepeat, BKReservedKeyword, BKString, BKVarReference, getElementTagName, getPCStartTagAttribute  }  from "./ast";
 
@@ -70,10 +70,12 @@ export const lintDependencyGraph = weakMemo((graph: DependencyGraph, options: Li
 
   for (const filePath in graph) {
     const { module } = graph[filePath];
-    for (const component of module.components) {
-      allComponents[component.id] = {
-        filePath,
-        component
+    if (module.type === PCModuleType.COMPONENT) {
+      for (const component of (module as ComponentModule).components) {
+        allComponents[component.id] = {
+          filePath,
+          component
+        }
       }
     }
   }

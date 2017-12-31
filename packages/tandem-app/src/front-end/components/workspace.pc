@@ -217,7 +217,6 @@
         <td-workspace-footer workspace=[[bind workspace]] />
       </div>
       <td-gutter right>
-        <slot name="right-gutter-content">
           <td-css-inspector-pane styleRules=[[bind [
       {
         label: ".container",
@@ -429,7 +428,6 @@
         ]
       }
     ]]] />
-        </slot>
       </td-gutter>
     </div>
   </template>
