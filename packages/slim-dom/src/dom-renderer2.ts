@@ -50,6 +50,9 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
       const elementContext = shadow ? { ...context, host: vmNode as SlimElement } : context;
 
       if (tagName === "slot") {
+
+        // TODO - may need to use anchor text node to ensure that the slot has its place. 
+        // Note that document fragment is necessary for slots to ensure that that certain props are inheritable from the parent (like display: flex)
         const slotElement = context.map[id] = document.createDocumentFragment();
 
         const host = context.host;

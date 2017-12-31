@@ -15,6 +15,7 @@ IMMEDIATE:
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] Finish TODOS in dom renderer2
+  - [ ] ensure that default children
 
 - [ ] CSS Inspector* 
   - [ ] eye toggler
@@ -24,6 +25,9 @@ IMMEDIATE:
   - [ ] edit raw declaration value
   - [ ] inspect `:root`
   - [ ] prioritized css 
+  - [ ] quick add style feature (like chrome inspector)
+
+- [ ] Pretty CSS Inspector
 
 - [ ] persistence
   - [ ] persist css changes in css inspector
