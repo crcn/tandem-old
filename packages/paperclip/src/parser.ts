@@ -287,6 +287,7 @@ export const createString = (context: ParseContext): BKString => {
 
     // escape
     if (curr.value === "\\") {
+      value += curr.value;
       value += scanner.next().value;
       scanner.next();
       continue;
