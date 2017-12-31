@@ -1,9 +1,8 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject } from "./state";
-import { patchNode } from "./diff-patch";
 import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
-import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE } from "./diff-patch";
+import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2 } from "./diff-patch";
 import { weakMemo } from "./weak-memo";
 
 export type DOMMap = {
@@ -376,7 +375,9 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     }
 
     case CSS_SET_SELECTOR_TEXT: {
-      console.log("TODO", CSS_SET_SELECTOR_TEXT);
+      const { newValue } = mutation as SetValueMutation<any>;
+      const nativeTarget: CSSStyleRule = map.cssom[slimTarget.id] as CSSStyleRule;
+      nativeTarget.selectorText = newValue;
       break;
     }
 
@@ -408,12 +409,43 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     }
 
     case CSS_AT_RULE_SET_PARAMS: {
-      console.log("TODO", CSS_AT_RULE_SET_PARAMS);
+      const { newValue } = mutation as SetValueMutation<any>;
+      const nativeTarget: CSSMediaRule = map.cssom[slimTarget.id] as CSSMediaRule;
+      nativeTarget.conditionText = newValue;
       break;
     }
 
     case CSS_MOVE_RULE: {
-      console.log("TODO", CSS_MOVE_RULE);
+      const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
+      const nativeTarget = map.cssom[slimTarget.id] as any;
+      
+      const cssomMap = {};
+      if ((nativeTarget as any as CSSKeyframesRule).appendRule) {
+        const patchedRoot = patchNode2(mutation, root);
+        const patchedSlimParent = getVMObjectFromPath(mutation.target, patchedRoot) as SlimCSSGroupingRule;
+        while(nativeTarget.cssRules.length) {
+          nativeTarget.deleteRule(0);
+        }
+
+        insertChildRules(patchedSlimParent, nativeTarget, {
+          insertedStyles: {},
+          map: cssomMap
+        });
+      } else {
+        nativeTarget.deleteRule(oldIndex);
+        insertChildRule((slimTarget as SlimCSSGroupingRule).rules[oldIndex], nativeTarget, {
+          insertedStyles: {},
+          map: cssomMap
+        }, index);
+      }
+
+      map = {
+        ...map,
+        cssom: {
+          ...map.cssom,
+          ...cssomMap
+        }
+      }
       break;
     }
 
