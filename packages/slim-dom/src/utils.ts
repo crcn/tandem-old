@@ -173,18 +173,30 @@ export type FlattenedObjects = {
 
 const MAX_ANCESTOR_COUNT = 1000 * 10;
 
-export const getNodeAncestors = weakMemo((value: SlimBaseNode, root: SlimParentNode): SlimParentNode[] => {
+export const getNodeAncestors = weakMemo((value: SlimBaseNode, root: SlimParentNode, followSlots: boolean = false): SlimParentNode[] => {
   const objects = flattenObjects(root);
-  let current = objects[objects[value.id].parentId];
+  let child = objects[value.id];
+  let parent = objects[child.parentId];
   let ancestors: SlimParentNode[] = [];
 
   let i = 0;
-  while(current) {
-    ancestors.push(current.value as any as SlimParentNode);
-    if (!current.parentId) {
+  while(parent) {
+    
+    if (followSlots && (parent.value as SlimElement).shadow) {
+      const parentElement = parent.value as SlimElement;
+      const slot = getSlot(getNodeSlotName(child.value), parentElement);
+      if (slot) {
+        ancestors.push(...getNodeAncestors(slot, parentElement.shadow));
+      }
+    }
+
+    ancestors.push(parent.value as any as SlimParentNode);
+    if (!parent.parentId) {
       break;
     }
-    current = objects[current.parentId];
+    child  = parent;
+    parent = objects[parent.parentId];
+
     if (i++ > MAX_ANCESTOR_COUNT) {
       throw new Error(`Infinite loop detected`);
     }
@@ -506,7 +518,6 @@ export const setElementAttribute = (target: SlimElement, name: string, value: st
     attributes.splice(index, 0, attribute);
   }
 
-  
   return {
     ...target,
     attributes,
@@ -725,7 +736,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
   }
 
   // next, fetch the style rules that have inheritable properties such as font-size, color, etc. 
-  const ancestors = getNodeAncestors(element, window.document);
+  const ancestors = getNodeAncestors(element, window.document, true);
 
   // reduce by 1 to omit #document
   for (let i = 0, n = ancestors.length - 1; i < n; i++) {

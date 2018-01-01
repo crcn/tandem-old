@@ -1,6 +1,5 @@
 IMMEDIATE:
 
-- [ ] `:root` prop should work
 - [ ] show inherited props from slots
 - [ ] get eye button to work
 - [ ] add style declarations
