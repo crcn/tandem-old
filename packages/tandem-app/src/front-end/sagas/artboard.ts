@@ -1,11 +1,12 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2 } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading } from "../actions";
+import { Mutation, createPropertyMutation } from "source-mutation";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading, CSS_TOGGLE_DECLARATION_EYE_CLICKED, CSSToggleDeclarationEyeClicked, artboardDOMPatched } from "../actions";
 import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
-import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardsByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath } from "../state";
+import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardsByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath, getWorkspaceVMObject } from "../state";
 import { debounce } from "lodash";
 import crc32 = require("crc32");
 
@@ -27,6 +28,7 @@ export function* artboardSaga() {
   yield fork(handleSyncScroll);
   yield fork(handleArtboardSizeChanges);
   yield fork(handleOpenExternalArtboardsRequested);
+  yield fork(handleToggleCSSDeclaration);
 }
 
 function* handleLoadAllArtboards() {
@@ -81,6 +83,8 @@ function* handlePreviewDiffed() {
       let vmObjectMap = artboard.nativeObjectMap;
 
       for (const mutation of preppedDiff) {
+
+        // TODO - filter out disabled mutations
         vmObjectMap = patchDOM2(mutation, document, artboard.mount.contentDocument.body, vmObjectMap);
         document = patchNode2(mutation, document);
       }
@@ -187,6 +191,30 @@ function* handleMoved() {
   }
 }
 
+function* handleToggleCSSDeclaration() {
+  while(1) {
+    const { artboardId, declarationName, itemId }: CSSToggleDeclarationEyeClicked = yield take(CSS_TOGGLE_DECLARATION_EYE_CLICKED);
+    const itemType = getVMObjectIdType(itemId);
+    const state: ApplicationState = yield select();
+    const artboard = getArtboardById(artboardId, state);
+    const item = getWorkspaceVMObject(itemId, getArtboardWorkspace(artboard.$id, state));
+    const body = getArtboardDocumentBody(artboard);
+    const itemPath = getVMObjectPath(item, body);
+    const disabled = artboard.disabledStyleDeclarations[itemId][declarationName];
+    let mutation: Mutation<any>;
+    if (itemType === SlimVMObjectType.STYLE_RULE) {
+      const rule = item as SlimCSSStyleRule;
+      mutation = createPropertyMutation(CSS_SET_STYLE_PROPERTY, itemPath, declarationName, disabled ? null : rule.style[declarationName]);
+    } else if (itemType === SlimVMObjectType.ELEMENT) {
+
+    }
+
+    yield put(artboardDOMPatched(
+      artboardId, 
+      patchDOM2(mutation, body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap)
+    ));
+  }
+}
 function* handleResized() {
   const { bounds }: Resized = yield take((action: Resized) => action.type === RESIZED && action.itemType === ARTBOARD);
 }

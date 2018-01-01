@@ -1,6 +1,6 @@
 import { TreeNode, Bounds, Action, BaseEvent, Point, WrappedEvent, publicObject, Struct, StructReference } from "aerial-common2";
 import { ApplicationState, AvailableComponent, Artboard } from "../state";
-import { SlimParentNode, ComputedDOMInfo, DOMNodeMap, NativeObjectMap } from "slim-dom";
+import { SlimParentNode, ComputedDOMInfo, DOMNodeMap, NativeObjectMap, SlimBaseNode, SlimCSSAtRule, SlimWindow, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFontFace, SlimFragment } from "slim-dom";
 import { Mutation } from "source-mutation";
 
 export const RESIZER_MOVED               = "RESIZER_MOVED";
@@ -55,6 +55,7 @@ export const STAGE_TOOL_ARTBOARD_TITLE_CLICKED = "STAGE_TOOL_ARTBOARD_TITLE_CLIC
 export const PREVIEW_DIFFED = "PREVIEW_DIFFED";
 export const ARTBOARD_LOADED = "ARTBOARD_LOADED";
 export const ARTBOARD_PATCHED = "ARTBOARD_PATCHED";
+export const ARTBOARD_DOM_PATCHED = "ARTBOARD_DOM_PATCHED";
 export const ARTBOARD_SCROLL = "ARTBOARD_SCROLL";
 export const ARTBOARD_RENDERED = "ARTBOARD_RENDERED";
 export const ARTBOARD_LOADING = "ARTBOARD_LOADING";
@@ -91,6 +92,7 @@ export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_
 export const SOURCE_CLICKED   = "SOURCE_CLICKED";
 export const CSS_DECLARATION_TITLE_MOUSE_LEAVE   = "CSS_DECLARATION_TITLE_MOUSE_LEAVE";
 export const TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED   = "TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED";
+export const CSS_TOGGLE_DECLARATION_EYE_CLICKED   = "CSS_TOGGLE_DECLARATION_EYE_CLICKED";
 export const API_COMPONENTS_LOADED = "API_COMPONENTS_LOADED";
 export const DND_STARTED = "DND_STARTED";
 export const DND_ENDED = "DND_ENDED";
@@ -323,6 +325,11 @@ export type ArtboardPatched = {
   document: SlimParentNode;
 } & BaseEvent;  
 
+export type ArtboardDOMPatched = {
+  artboardId: string;
+  nativeObjectMap: NativeObjectMap;
+} & BaseEvent;  
+
 export type PreviewDiffed = {
   componentId: string;
   previewName: string;
@@ -364,6 +371,12 @@ export type ToggleCSSTargetSelectorClicked = {
   artboardId: string;
 } & BaseEvent;
 
+export type CSSToggleDeclarationEyeClicked = {
+  artboardId: string;
+  itemId: string;
+  declarationName: string;
+} & BaseEvent;
+
 export type APIComponentsLoaded = {
   components: AvailableComponent[];
 } & BaseEvent;
@@ -403,6 +416,13 @@ export const toggleCSSTargetSelectorClicked = (itemId: string, artboardId: strin
   type: TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED,
   artboardId,
   itemId,
+});
+
+export const cssToggleDeclarationEyeClicked = (artboardId: string, itemId: string, declarationName: string): CSSToggleDeclarationEyeClicked => ({
+  type: CSS_TOGGLE_DECLARATION_EYE_CLICKED,
+  artboardId,
+  itemId,
+  declarationName,
 });
 
 export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved => ({
@@ -486,6 +506,12 @@ export const artboardPatched = (artboardId: string, document: SlimParentNode, ch
   checksum,
   artboardId,
   document
+});
+
+export const artboardDOMPatched = (artboardId: string, nativeObjectMap: NativeObjectMap): ArtboardDOMPatched => ({
+  type: ARTBOARD_DOM_PATCHED,
+  nativeObjectMap,
+  artboardId
 });
 
 export const windowResized = (width: number, height: number): WindowResized => ({

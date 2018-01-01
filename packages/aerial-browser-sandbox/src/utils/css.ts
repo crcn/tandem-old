@@ -20,7 +20,6 @@ import { 
   CSSRuleType, 
   SEnvNodeTypes,
   matchesSelector, 
-  getHostDocument,
   SEnvCSSRuleInterface, 
   SEnvDocumentInterface, 
   SEnvCSSObjectInterface, 

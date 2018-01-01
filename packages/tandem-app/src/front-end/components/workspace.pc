@@ -235,7 +235,8 @@
               type: "COLOR",
               value: "red"
             },
-            hovering: true
+            hovering: true,
+            onToggleDeclarationClick: null
           },
           { 
             name: "flex",
@@ -243,7 +244,9 @@
             value: {
               type: "NUMBER",
               value: 1
-            }
+            },
+            disabled: true,
+            onToggleDeclarationClick: null
           },
           { 
             name: "flex-direction",
@@ -251,7 +254,8 @@
             value: {
               type: "KEYWORD",
               name: "row"
-            }
+            },
+            onToggleDeclarationClick: null
           },
           { 
             name: "background",
@@ -275,7 +279,8 @@
                   value: 0
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           },
           { 
             name: "margin-top",
@@ -284,7 +289,8 @@
               type: "MEASUREMENT",
               value: "10",
               unit: "px"
-            }
+            },
+            onToggleDeclarationClick: null
           }
         ]
       },
@@ -360,7 +366,8 @@
                   ]
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           },
           {
             name: "padding",
@@ -376,7 +383,8 @@
                   name: "--padding"
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           },
           {
             name: "color",
@@ -395,7 +403,8 @@
                   name: "--font-color"
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           }
         ]
       },
@@ -424,7 +433,8 @@
                   unit: "px"
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           }
         ]
       }

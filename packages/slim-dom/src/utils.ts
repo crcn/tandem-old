@@ -481,22 +481,11 @@ export const getSyntheticWindowChild = weakMemo((nodeId: string, window: SlimWin
   return getNestedObjectById(nodeId, window.document);
 });
 
-export const getHostDocument = weakMemo((node: SlimBaseNode, root: SlimParentNode): SlimParentNode => {
-  let p = node;
 
-  // return shadow root since :host selector may be applied
-  if ((p as SlimElement).shadow) {
-    return (p as SlimElement).shadow;
-  }
-
-  const allObjects = flattenObjects(root);
-  
-  while(p && p.type !== SlimVMObjectType.DOCUMENT && p.type !== SlimVMObjectType.DOCUMENT_FRAGMENT) {
-    const info = allObjects[p.id];
-    p = info && info.parentId && allObjects[info.parentId].value;
-  }
-
-  return p as SlimParentNode || root;
+export const getSlimNodeHost = weakMemo((node: SlimBaseNode, root: SlimParentNode): SlimElement => {
+  const path = getVMObjectPath(node, root);
+  const shadowIndex = path.lastIndexOf("shadow");
+  return shadowIndex > -1 ? getVMObjectFromPath(path.slice(0, shadowIndex), root) as SlimElement : null;
 });
 
 const getDocumentStyleSheets = weakMemo((document: SlimParentNode) => {
@@ -504,8 +493,8 @@ const getDocumentStyleSheets = weakMemo((document: SlimParentNode) => {
   const styleSheets: SlimCSSStyleSheet[] = [];
   for (const key in allObjects) {
     const { value } = allObjects[key];
-    if (value.type === SlimVMObjectType.STYLE_SHEET) {
-      styleSheets.push(value as SlimCSSStyleSheet);
+    if (value.type === SlimVMObjectType.ELEMENT && (value as SlimElement).tagName === "style" && !getAttributeValue("scope", (value as SlimElement))) {
+      styleSheets.push((value as SlimStyleElement).sheet);
     }
   }
   return styleSheets;
@@ -554,10 +543,38 @@ export type AppliedCSSRuleResult = {
 
 export const isMediaRule = (rule: SlimCSSRule) => rule.type == SlimVMObjectType.AT_RULE && (rule as SlimCSSAtRule).name === "media";
 
+export const getScopedStyleRules = weakMemo((tagName: string, window: SlimWindow) => {
+  const allVMObjects = flattenObjects(window.document);
+  const scopedRules: (SlimCSSStyleRule|SlimCSSAtRule)[] = [];
+  for (const id in allVMObjects) {
+    const { value } = allVMObjects[id];
+    if (value.type === SlimVMObjectType.ELEMENT && (value as SlimElement).tagName === "style" && getAttributeValue("scope", value as SlimElement) === tagName) {
+      const styleElement: SlimStyleElement = value as SlimStyleElement;
+      for (const rule of styleElement.sheet.rules) {
+        if (rule.type === SlimVMObjectType.STYLE_RULE || rule.type == SlimVMObjectType.AT_RULE) {
+          scopedRules.push(rule as SlimCSSStyleRule);
+        }
+      }
+    }
+  }
+  return scopedRules;
+});
+
+const getNodeCSSRules = weakMemo((node: SlimBaseNode, window: SlimWindow) => {
+  const host = getSlimNodeHost(node, window.document);
+  let allRules = host ? getScopedStyleRules(host.tagName, window) : getDocumentCSSRules(window.document);
+
+  // if shadow exists, then the element may have scoped styles
+  if (node.type === SlimVMObjectType.ELEMENT && (node as SlimElement).shadow) {
+    allRules = [...allRules, ...getScopedStyleRules((node as SlimElement).tagName, window)]
+  }
+
+  return allRules;
+});
+
 export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elementId: string, breakPastHost?: boolean) => {
   const element = getSyntheticWindowChild(elementId, window) as any as SlimElement;
-  const hostDocument = getHostDocument(element, window.document);
-  const allRules = getDocumentCSSRules(hostDocument);
+  const allRules = getNodeCSSRules(element, window);
   
   const matchingRules: CSSRuleMatchResult[] = [];
 
@@ -630,8 +647,7 @@ export const containsInheritableStyleProperty = (style: SlimCSSStyleDeclaration)
 
 export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, elementId: string) => {
   const element = getSyntheticWindowChild(elementId, window) as any as SlimElement;
-  const document = getHostDocument(element, window.document);
-  const allRules = getDocumentCSSRules(document);
+  const allRules = getNodeCSSRules(element, window);
 
   // first grab the rules that are applied directly to the element
   const matchingRules = getSyntheticMatchingCSSRules(window, elementId);
@@ -814,17 +830,16 @@ export const setVMObjectIds = <TObject extends VMObject>(current: TObject, idSee
       break;
     }
 
-    case SlimVMObjectType.STYLE_RULE: {
-      let styleRule = current as any as SlimCSSStyleRule;
-      styleRule = {
-        ...styleRule,
-        // style: setVMObjectIds(styleRule.style, idSeed, refCount)
-        // style: styleRule.style
-      } as SlimCSSStyleRule;
-      // refCount = getRefCount(styleRule.style, idSeed);
-      current = styleRule as any as TObject;
-      break;
-    }
+    // case SlimVMObjectType.STYLE_RULE: {
+    //   let styleRule = current as any as SlimCSSStyleRule;
+    //   styleRule = {
+    //     ...styleRule,
+    //     style: setVMObjectIds(styleRule.style, idSeed, refCount)
+    //   } as SlimCSSStyleRule;
+    //   refCount = getRefCount(styleRule.style, idSeed);
+    //   current = styleRule as any as TObject;
+    //   break;
+    // }
 
     case SlimVMObjectType.AT_RULE: 
     case SlimVMObjectType.STYLE_SHEET: {
@@ -902,7 +917,6 @@ const getScopedSelector = (part: string, scopeClass: string, aliases: any, i: nu
 
   for (const alias in aliases) {
     if (part.indexOf(alias) !== -1) {
-      // console.log(`.${scopeClass}.host > ${part.replace(alias, aliases[alias])}`);
       return `.${scopeClass}_host > ${part.replace(alias, aliases[alias] + "_host")}`;
     }
   }
@@ -962,3 +976,5 @@ export const getSlotChildrenByName = weakMemo((slotName: string, parent: SlimEle
 });
 
 export const getNodeSlotName = (node: SlimBaseNode) => node.type === SlimVMObjectType.ELEMENT ? getAttributeValue("slot", node as SlimElement) : null;
+
+export const isValidStyleDeclarationName = (name: string) => !/^([\$_]|\d+$)/.test(name.charAt(0)) && !/^(type|id)$/.test(name);

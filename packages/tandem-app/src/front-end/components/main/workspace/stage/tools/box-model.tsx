@@ -2,7 +2,7 @@ import "./box-model.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
 import { Bounds, shiftBounds } from "aerial-common2";
-import { Workspace, getNodeArtboard, getWorkspaceNode } from "front-end/state";
+import { Workspace, getNodeArtboard, getWorkspaceVMObject } from "front-end/state";
 import { SlimVMObjectType, SlimElement, getNestedObjectById, SlimCSSStyleDeclaration } from "slim-dom";
 
 export type BoxModelStageToolOuterProps = {
@@ -54,7 +54,7 @@ const ElementBoxModel = compose<ElementBoxModelOuterProps, ElementBoxModelOuterP
 
 
 export const BoxModelStageTool = compose<BoxModelStageToolOuterProps, BoxModelStageToolOuterProps>(pure)(({ workspace }: BoxModelStageToolOuterProps) => {
-  const selectedElements = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT).map(([type, $id]) => getWorkspaceNode($id, workspace)).filter((element) => !!element) as SlimElement[];
+  const selectedElements = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT).map(([type, $id]) => getWorkspaceVMObject($id, workspace)).filter((element) => !!element) as SlimElement[];
 
   if (selectedElements.length === 0) {
     return null;

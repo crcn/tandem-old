@@ -4,7 +4,7 @@ import * as React from "react";
 import { compose, pure } from "recompose";
 import { 
   Workspace, 
-  getWorkspaceNode,
+  getWorkspaceVMObject,
   getWorkspaceSelectionBounds
 } from "front-end/state";
 import { SlimVMObjectType, SlimElement, getElementLabel } from "slim-dom";
@@ -30,7 +30,7 @@ const SelectionLabelBase = ({ workspace, zoom }: SelectionLabelInnerProps) => {
     return null;
   }
 
-  const element = getWorkspaceNode(id, workspace) as SlimElement;
+  const element = getWorkspaceVMObject(id, workspace) as SlimElement;
 
   let label = getElementLabel(element);
 

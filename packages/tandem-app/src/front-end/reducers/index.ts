@@ -81,6 +81,8 @@ import {
   StageWheel,
   StageMounted,
   ResizerMoved,
+  CSS_TOGGLE_DECLARATION_EYE_CLICKED,
+  CSSToggleDeclarationEyeClicked,
   TOGGLE_TOOLS_SHORTCUT_PRESSED,
   RESIZER_MOVED,
   ARTBOARD_LOADING,
@@ -110,6 +112,8 @@ import {
   VISUAL_EDITOR_WHEEL,
   PromptedNewWindowUrl,
   TreeNodeLabelClicked,
+  ARTBOARD_DOM_PATCHED,
+  ArtboardDOMPatched,
   ArtboardPaneRowClicked,
   SelectorDoubleClicked,
   OPEN_ARTBOARDS_REQUESTED,
@@ -225,6 +229,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
   
   state = artboardReducer(state, event);
   state = stageReducer(state, event);
+  state = cssInspectorReducer(state, event);
   state = workspaceReducer(state, event);
   state = artboardPaneReducer(state, event);
   state = componentsPaneReducer(state, event);
@@ -268,6 +273,27 @@ const workspaceReducer = (state: ApplicationState, event: BaseEvent) => {
       return updateWorkspace(state, getSelectedWorkspace(state).$id, {
         uncaughtError: null
       });
+    }
+  }
+  return state;
+};
+
+const cssInspectorReducer = (state: ApplicationState, event: BaseEvent) => {
+  switch(event.type) {
+    case CSS_TOGGLE_DECLARATION_EYE_CLICKED: {
+      const { artboardId, itemId, declarationName } = event as CSSToggleDeclarationEyeClicked;
+      const artboard = getArtboardById(artboardId, state);
+      const disabledStyleDeclarations = artboard.disabledStyleDeclarations || {};
+      const disabledItemDecls = disabledStyleDeclarations[itemId] || {};
+      return updateArtboard(state, artboardId, {
+        disabledStyleDeclarations: {
+          ...disabledStyleDeclarations,
+          [itemId]: {
+            ...disabledItemDecls,
+            [declarationName]: !disabledItemDecls[declarationName]
+          }
+        }
+      })
     }
   }
   return state;
@@ -808,6 +834,16 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
         nativeObjectMap,
         originalDocument: document,
         checksum
+      });
+      state = deselectNotFoundItems(state);
+      return state;
+    }
+
+    case ARTBOARD_DOM_PATCHED: {
+      const { artboardId, nativeObjectMap } = event as ArtboardDOMPatched;
+      state = updateArtboard(state, artboardId, {
+        loading: false,
+        nativeObjectMap
       });
       state = deselectNotFoundItems(state);
       return state;

@@ -22,7 +22,7 @@ export const renderDOM2 = (object: VMObject, root: HTMLElement): NativeObjectMap
   const domMap: DOMMap = {};
   const cssomMap: CSSOMMap = {};
   root.appendChild(createNativeNode(object, root.ownerDocument, { map: domMap, root: object as SlimParentNode }));
-  insertStyleSheets(object as SlimParentNode, root, { map: cssomMap, insertedStyles: {} });
+  insertStyleSheets(object as SlimParentNode, root, { map: cssomMap });
   return { dom: domMap, cssom: cssomMap };
 };
 
@@ -33,10 +33,8 @@ type CreateNativeNodeContext = {
 };
 
 type InsertStyleSheetContext = {
+  scope?: string;
   host?: SlimElement;
-  insertedStyles: {
-    [identifier: string]: boolean
-  }
   map: CSSOMMap
 };
 
@@ -92,11 +90,11 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         nativeElement.dataset[attribute.name.toLowerCase()] = "true";
       }
       if (context.host) {
-        nativeElement.classList.add(getScopeTagName(context.host));
+        nativeElement.classList.add(getElementScopeTagName(context.host));
       }
       
       if (shadow) {
-        nativeElement.classList.add(getScopeTagName(vmNode as SlimElement) + "_host");
+        nativeElement.classList.add(getElementScopeTagName(vmNode as SlimElement) + "_host");
       }
 
       if (shadow) {
@@ -151,19 +149,14 @@ const insertStyleSheets = (current: VMObject, mount: HTMLElement, context: Inser
 };
 
 const insertStyleSheet = (element: SlimStyleElement, mount: HTMLElement, context: InsertStyleSheetContext) => {
-  if (context.host && context.insertedStyles[context.host.tagName]) {
-    return;
-  }
-  if (context.host) {
-    context.insertedStyles[context.host.tagName] = true;
-  }
   const nativeElement = mount.ownerDocument.createElement("style");
   nativeElement.appendChild(mount.ownerDocument.createTextNode(""));
   mount.appendChild(nativeElement);
   const sheet = nativeElement.sheet as CSSStyleSheet;
 
   context.map[element.sheet.id] = sheet;
-  insertChildRules(element.sheet, sheet, context);
+  const scope = getAttributeValue("scope", element);
+  insertChildRules(element.sheet, sheet, { ...context, scope });
 };
 
 const insertChildRules = (slimRule: SlimCSSGroupingRule, nativeRule: CSSGroupingRule|CSSStyleSheet|CSSKeyframesRule, context: InsertStyleSheetContext) => {
@@ -199,7 +192,7 @@ const shallowStringifyRule = (rule: SlimCSSRule, context: InsertStyleSheetContex
   switch(rule.type) {
     case SlimVMObjectType.STYLE_RULE: {
       const { selectorText, style } = rule as SlimCSSStyleRule;
-      return `${stringifyScopedSelectorText(selectorText, context.host)} { ${stringifyStyle(style)} }`;
+      return `${stringifyScopedSelectorText(selectorText, context)} { ${stringifyStyle(style)} }`;
     }
 
     case SlimVMObjectType.FONT_FACE_RULE: {
@@ -227,15 +220,16 @@ const stringifyStyle = (style) => {
   return buffer;
 }
 
-const getScopeTagName = ({tagName}: SlimElement) => `__${tagName}_scope`;
+const getScopeTagName = (tagName: string) => `__${tagName}_scope`
+const getElementScopeTagName = ({tagName}: SlimElement) => getScopeTagName(tagName);
 
-const getScopeTagNameHost = (element: SlimElement) => getScopeTagName(element) + "__host";
+const getElementScopeTagNameHost = (element: SlimElement) => getElementScopeTagName(element) + "__host";
 
-const stringifyScopedSelectorText = (selectorText: string, host: SlimElement) => {
+const stringifyScopedSelectorText = (selectorText: string, context: InsertStyleSheetContext) => {
   // if (host) {
-  //   console.log(compileScopedCSS(selectorText, getScopeTagName(host)), "-----", selectorText);
+  //   console.log(compileScopedCSS(selectorText, getElementScopeTagName(host)), "-----", selectorText);
   // }
-  return host ? compileScopedCSS(selectorText, getScopeTagName(host)) : selectorText;
+  return context.scope ? compileScopedCSS(selectorText, getScopeTagName(context.scope)) : selectorText;
 };
 
 const appendNativeChildNodes = ({ childNodes }: SlimParentNode, nativeParent: Element|DocumentFragment, document: Document, context: CreateNativeNodeContext) => {
@@ -437,13 +431,11 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         }
 
         insertChildRules(patchedSlimParent, nativeTarget, {
-          insertedStyles: {},
           map: cssomMap
         });
       } else {
         nativeTarget.deleteRule(oldIndex);
         insertChildRule((slimTarget as SlimCSSGroupingRule).rules[oldIndex], nativeTarget, {
-          insertedStyles: {},
           map: cssomMap
         }, index);
       }
@@ -462,7 +454,6 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const { index, child } = mutation as RemoveChildMutation<any, any>;
       const cssomMap = {};
       insertChildRule(child, map.cssom[slimTarget.id] as any, {
-        insertedStyles: {},
         map: cssomMap
       }, index);
       map = {

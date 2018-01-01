@@ -13,7 +13,9 @@ const ArtboardsPaneRow = hydrateTdArtboardsPaneRow(
       }
     })
   ),
-  {}
+  {
+    TdSpinner: null
+  }
 );
 
 export type ArtboardsPaneOuterProps = {

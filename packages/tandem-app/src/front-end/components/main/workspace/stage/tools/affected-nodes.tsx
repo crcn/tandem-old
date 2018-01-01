@@ -6,7 +6,7 @@ import {
   Workspace,  
   Artboard,
   getNodeArtboard,
-  getWorkspaceNode,
+  getWorkspaceVMObject,
   // getSelectorAffectedElements, 
   // filterMatchingTargetSelectors, 
 } from "front-end/state";
@@ -50,7 +50,7 @@ const AffectedNodesToolBase = ({ workspace, zoom }: AffectedNodesToolOuterProps)
     return null;
   }
 
-  const targetElement = getWorkspaceNode(targetElementRef[1], workspace) as SlimElement;
+  const targetElement = getWorkspaceVMObject(targetElementRef[1], workspace) as SlimElement;
 
   if (!targetElement) {
     return null;

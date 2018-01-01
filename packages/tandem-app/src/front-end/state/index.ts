@@ -129,10 +129,17 @@ export type LibraryItem = {
   hash: string;
 };
 
+export type DisabledStyleDeclarations = {
+  [identifier: string]: {
+    [identifier: string]: boolean
+  }
+}
+
 export type Artboard = {
   loading?: boolean;
   scrollPosition: Point;
   dependencyUris?: string[];
+  disabledStyleDeclarations: DisabledStyleDeclarations;
   computedDOMInfo?: ComputedDOMInfo;
   componentId: string;
   previewName: string;
@@ -465,7 +472,7 @@ export const getNodeArtboard = weakMemo((nodeId: string, state: Workspace|Applic
   }
 });
 
-export const getWorkspaceNode = weakMemo((nodeId: string, state: Workspace) => {
+export const getWorkspaceVMObject = weakMemo((nodeId: string, state: Workspace) => {
   return state.artboards.map(artboard => getNestedObjectById(nodeId, artboard.document)).find(Boolean);
 });
 
@@ -770,6 +777,7 @@ const serializeArtboard = ({ $id, $type, componentId, previewName, bounds }: Art
   componentId,
   previewName,
   bounds,
+  disabledStyleDeclarations: {},
   scrollPosition: {
     left: 0,
     top: 0

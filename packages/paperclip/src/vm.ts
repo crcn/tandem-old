@@ -105,22 +105,22 @@ const addGlobalStyles = <TParent extends SlimParentNode>(root: TParent, context:
 
   const { module, resolvedImportUris } = graph[currentURI];
 
+  const scopedSheets = getScopedStyleSheets(context);
+
+  for (const componentId in scopedSheets) {
+    const sheet = scopedSheets[componentId];
+    root = pushChildNode(root, createStyleElementFromSheet(sheet, context, componentId));
+  }
+
   if (module.type === PCModuleType.COMPONENT) {
     const { globalStyles } = module as ComponentModule;
     for (let i = 0, {length} = globalStyles; i < length; i++) {
       const style = globalStyles[i];
-      root = appendChildNode(root, style, context);
+      root = pushChildNode(root, createStyleElementFromSheet(style.childNodes[0] as any as CSSSheet, context));
     }
   } else if (module.type === PCModuleType.CSS) {
     const { source } = module as CSSModule;
-    root = pushChildNode(root, {
-      type: SlimVMObjectType.ELEMENT,
-      tagName: "style",
-      attributes: [],
-      childNodes: [],
-      source: null,
-      sheet: createStyleSheet(source, context)
-    } as SlimStyleElement);
+    root = pushChildNode(root, createStyleElementFromSheet(source, context));
   }
   for (const relPath in resolvedImportUris) {
     const resolvedUri = resolvedImportUris[relPath];
@@ -138,6 +138,41 @@ const addGlobalStyles = <TParent extends SlimParentNode>(root: TParent, context:
   }
 
   return root;
+}
+
+const createStyleElementFromSheet = (sheet: CSSSheet, context: VMContext, scopedTagName?: string): SlimStyleElement => {
+  const attributes: SlimElementAttribute[] = [];
+
+  if (scopedTagName) {
+    attributes.push({ name: "scope", value: scopedTagName });
+  }
+
+  return {
+    type: SlimVMObjectType.ELEMENT,
+    tagName: "style",
+    attributes,
+    childNodes: [],
+    source: null,
+    sheet: createStyleSheet(sheet, context)
+  };
+}
+
+const getScopedStyleSheets = (context: VMContext) => {
+  const scopedSheets: {
+    [identifier: string]: CSSSheet
+  } = {};
+  const { module } = context.graph[context.currentURI];
+  if (module.type === PCModuleType.COMPONENT) {
+    const componentModule = module as ComponentModule;
+    for (let i = 0, {length} = componentModule.components; i < length; i++) {
+      const component = componentModule.components[i];
+      if (component.style) {
+        scopedSheets[component.id] = component.style.childNodes[0] as any as CSSSheet;
+      }
+    }
+  }
+
+  return scopedSheets;
 }
 
 let appendElement = <TParent extends SlimParentNode>(parent: TParent, child: PCElement|PCSelfClosingElement, context: VMContext): TParent => {
@@ -186,7 +221,8 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
 
   const { name } = startTag;
 
-  if (name === "link") {
+  // style elements are added at the top
+  if (name === "link" || name === "style") {
     return parent;
   }
 
@@ -215,18 +251,6 @@ const appendRawElement = <TParent extends SlimParentNode>(parent: TParent, child
       }
       Object.assign(props, bindProps);
     }
-  }
-
-  if (name === "style") {
-    let style = {
-      type: SlimVMObjectType.ELEMENT,
-      tagName: name,
-      attributes,
-      childNodes: [],
-      source: createVMSource(child, context),
-      sheet: createStyleSheet(childNodes[0] as any as CSSSheet, context)
-    } as SlimStyleElement;
-    return pushChildNode(parent, style);
   }
 
   let shadow: SlimParentNode;
@@ -317,6 +341,9 @@ const appendChildNodes = <TParent extends SlimParentNode>(parent: TParent, child
         if (modifier.type === BKExpressionType.IF || modifier.type === BKExpressionType.ELSEIF) {
           _if = modifier as BKIf;
           _isCondition = true;
+
+          // reset
+          _passedCondition = modifier.type === BKExpressionType.IF ? false : _passedCondition;
         } else if (modifier.type === BKExpressionType.ELSE) {
           _isCondition = true;
         }

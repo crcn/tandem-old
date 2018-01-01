@@ -10,7 +10,7 @@
   <meta name="internal" content="true" />
   <style>
 
-    :host([ignored]) {
+    :host([ignored]), :host([disabled]) {
       opacity: 0.2;
     }
 
@@ -21,6 +21,10 @@
     .toggle-button {
       float: right;
       cursor: pointer;
+      display: inline-block;
+    }
+
+    .ion-eye {
       display: none;
     }
     :host:hover .toggle-button, :host([hovering]) .toggle-button {
@@ -44,7 +48,10 @@
     <span [[else]]>
       [[bind sourceValue]]
     </span>
-    <i class="toggle-button ion-eye"></i>
+
+    <i [[if !disabled]] class="toggle-button ion-eye" onClick=[[bind onToggleDeclarationClick]]></i>
+    <i [[else]] class="toggle-button ion-eye-disabled" onClick=[[bind onToggleDeclarationClick]]></i>
+
   </template>
 </component>
 
@@ -152,7 +159,8 @@
               type: "COLOR",
               value: "red"
             },
-            hovering: true
+            hovering: true,
+            onToggleDeclarationClick: null
           },
           { 
             name: "flex",
@@ -161,7 +169,8 @@
               type: "NUMBER",
               value: 1
             },
-            hovering: true
+            hovering: true,
+            onToggleDeclarationClick: null
           },
           { 
             name: "flex-direction",
@@ -170,7 +179,8 @@
               type: "KEYWORD",
               name: "row"
             },
-            hovering: true
+            hovering: true,
+            onToggleDeclarationClick: null
           },
           { 
             name: "background",
@@ -195,7 +205,8 @@
                   value: 0
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           },
           { 
             name: "margin-top",
@@ -204,7 +215,8 @@
               type: "MEASUREMENT",
               value: "10",
               unit: "px"
-            }
+            },
+            onToggleDeclarationClick: null
           }
         ]
       },
@@ -280,7 +292,8 @@
                   ]
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           },
           {
             name: "padding",
@@ -296,7 +309,8 @@
                   name: "--padding"
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           },
           {
             name: "color",
@@ -315,7 +329,8 @@
                   name: "--font-color"
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           }
         ]
       },
@@ -344,7 +359,8 @@
                   unit: "px"
                 }
               ]
-            }
+            },
+            onToggleDeclarationClick: null
           }
         ]
       }

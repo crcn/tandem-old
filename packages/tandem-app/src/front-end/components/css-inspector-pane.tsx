@@ -1,23 +1,32 @@
 import * as React from "react";
 import { Pane } from "./pane";
 import { identity, kebabCase } from "lodash";
-import { compose, pure } from "recompose";
+import { compose, pure, withHandlers } from "recompose";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, TdCssSpacedListExprInputBaseInnerProps, TdCssCommaListExprInputBaseInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
-import { Workspace, getNodeArtboard } from "front-end/state";
+import { cssToggleDeclarationEyeClicked } from "front-end/actions";
+import { Workspace, getNodeArtboard, DisabledStyleDeclarations } from "front-end/state";
 
-import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType } from "slim-dom";
+import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule } from "slim-dom";
 
 type StyleDelarationOuterProps = {
+  artboardId: string;
+  owner: SlimCSSStyleRule | SlimElement;
   name: string;
   ignored: boolean;
   disabled: boolean;
   overridden: boolean;
   value: string;
+  dispatch: any;
 };
+
+type StyleDelarationInnerProps = {
+  onToggleDeclarationClick: () => any;
+} & TdStyleDeclarationInnerProps;
+
 
 const enhanceCssCallExprInput = compose<TdCssCallExprInputInnerProps, TdCssCallExprInputInnerProps>(
   pure,
@@ -106,9 +115,14 @@ const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
   TdCssSpacedListExprInput: CssSpacedList
 });
 
-const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDelarationOuterProps>(
+const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelarationOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value}: StyleDelarationOuterProps) => {
+  withHandlers({
+    onToggleDeclarationClick: ({ artboardId, owner, dispatch, name }: StyleDelarationOuterProps) => (event) => {
+      dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name));
+    }
+  }),
+  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value, onToggleDeclarationClick}: StyleDelarationInnerProps) => {
 
     let root: any;
 
@@ -118,7 +132,7 @@ const enhanceCSSStyleDeclaration = compose<TdStyleDeclarationInnerProps, StyleDe
       return <span>Syntax error</span>;
     }
 
-    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} />;
+    return <Base name={kebabCase(name)} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} />;
   }
 );
 
@@ -131,56 +145,53 @@ export type CSSInspectorOuterProps = {
   dispatch: Dispatcher<any>;
 }
 
-export type CSSStyleRuleOuterProps = AppliedCSSRuleResult
+export type CSSStyleRuleOuterProps = {
+  disabledStyleDeclarations: DisabledStyleDeclarations;
+  artboardId: string;
+} & AppliedCSSRuleResult;
+export type CSSStyleRuleInnerProps = CSSStyleRuleOuterProps & TdStyleRuleInnerProps;
 
 const beautifyLabel = (label: string) => {
   return label.replace(/\s*,\s*/g, ", ");
 };
 
+const EMPTY_OBJECT = {};
+
 const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames }: CSSStyleRuleOuterProps) => {
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledStyleDeclarations }: CSSStyleRuleInnerProps) => {
 
     const declarations = rule.style;
 
     // const properties = [];
-    
+
     const childDeclarations: StyleDelarationOuterProps[] = [];
 
     for (const name in rule.style) {
-      if (name == "id") continue;
       const value = declarations[name];
-      if (value == null) {
+      if (value == null || !isValidStyleDeclarationName(name)) {
         continue;
       }
-      const origValue = rule.style.disabledPropertyNames && rule.style.disabledPropertyNames[name];
-      const disabled = Boolean(origValue);
+      
+      const owner = (rule.rule || rule.targetElement);
+      const disabled = (disabledStyleDeclarations[owner.id] || EMPTY_OBJECT)[name];
       const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
       const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
       childDeclarations.push({
+        owner: owner,
+        artboardId,
         name,
         ignored,
         disabled,
         overridden,
-        value
+        value,
+        dispatch
       });
     }
 
-    
-    
-    // for (let i = 0, n = declarations.length; i < n; i++) {
-    //   // childDeclarations.push({
-    //   //   name,
-    //   //   ignored,
-    //   //   disabled,
-    //   //   overridden,
-    //   //   value,
-    //   // });
-    // }
     return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} />;
   }
 );
-
 
 const CSSStyleRule = hydrateTdStyleRule(enhanceCSSStyleRule, {
   TdGutterSubheader: null,
@@ -195,7 +206,7 @@ const CSSPaneMultipleSelectedError = hydrateCssInspectorMultipleItemsSelected(id
 
 const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspectorOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdCssInspectorPaneInnerProps>) => ({ workspace }: CSSInspectorOuterProps) => {
+  (Base: React.ComponentClass<TdCssInspectorPaneInnerProps>) => ({ workspace, dispatch }: CSSInspectorOuterProps) => {
 
     const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT);
 
@@ -214,9 +225,9 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
       return null;
     }
 
-    const rules = getSyntheticAppliedCSSRules(artboard, targetElementId);
+    const ruleProps: CSSStyleRuleOuterProps[] = getSyntheticAppliedCSSRules(artboard, targetElementId).map(rule => ({...rule, dispatch, artboardId: artboard.$id, disabledStyleDeclarations: artboard.disabledStyleDeclarations }))
 
-    return <Base styleRules={rules} />;
+    return <Base styleRules={ruleProps} />;
   }
 );
 

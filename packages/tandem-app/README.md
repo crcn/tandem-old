@@ -1,5 +1,9 @@
 IMMEDIATE:
 
+- [ ] style scope="tag-name"
+- [ ] cache host styles somehow
+- [ ] cannot change selector text in patch dom
+- [ ] inherited styles not showing up for first selected node
 - [ ] show inherited props from slots
 - [ ] get eye button to work
 - [ ] add style declarations
@@ -7,6 +11,7 @@ IMMEDIATE:
 
 - [ ] WARM UP
   - [ ] error when component id already exists (linter)
+  - [ ] ensure that disabled css properties _stay_ disabled when they change
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again

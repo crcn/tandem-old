@@ -100,19 +100,19 @@ export const getSenvLightDocumentClass = (context) => {
   return SEnvLightDocument;
 }
 
-export const getHostDocument = (node: SEnvNodeInterface) => {
-  let p = node;
+// export const getHostDocument = (node: SEnvNodeInterface) => {
+//   let p = node;
 
-  // return shadow root since :host selector may be applied
-  if (p["shadowRoot"]) {
-    return p["shadowRoot"];
-  }
+//   // return shadow root since :host selector may be applied
+//   if (p["shadowRoot"]) {
+//     return p["shadowRoot"];
+//   }
   
-  while(p && p.nodeType !== SEnvNodeTypes.DOCUMENT && p.nodeType !== SEnvNodeTypes.DOCUMENT_FRAGMENT) {
-    p = p.parentNode as SEnvNodeInterface;
-  }
-  return p;
-};
+//   while(p && p.nodeType !== SEnvNodeTypes.DOCUMENT && p.nodeType !== SEnvNodeTypes.DOCUMENT_FRAGMENT) {
+//     p = p.parentNode as SEnvNodeInterface;
+//   }
+//   return p;
+// };
 
 export const getSEnvShadowRootClass = (context) => {
   const SEnvLightDocument = getSenvLightDocumentClass(context);

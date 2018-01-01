@@ -84,7 +84,7 @@ import {
   getWorkspaceLastSelectionOwnerArtboard,
   getAvailableComponent,
   getStageToolMouseNodeTargetReference,
-  getWorkspaceNode,
+  getWorkspaceVMObject,
 } from "../state";
 // import { deleteShortcutPressed, , apiComponentsLoaded } from "front-end";
 
@@ -142,7 +142,7 @@ function* handleMetaClickElement() {
     // }
 
     if (!targetRef) continue;
-    const node = getWorkspaceNode(targetRef[1], workspace);
+    const node = getWorkspaceVMObject(targetRef[1], workspace);
     
     const artboard = getNodeArtboard(node.id, workspace);
 
@@ -332,7 +332,7 @@ function* handleSourceClicked() {
 
     const state = yield select();
 
-    const item = getWorkspaceNode(itemId, getSelectedWorkspace(state));
+    const item = getWorkspaceVMObject(itemId, getSelectedWorkspace(state));
 
     // TODO - fallback to internal text editor if textEditorHost does not exist.
 
