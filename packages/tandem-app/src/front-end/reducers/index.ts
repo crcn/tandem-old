@@ -32,7 +32,7 @@ import {
 } from "aerial-common2";
 
 import { clamp, merge } from "lodash";
-import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, SlimVMObjectType } from "slim-dom";
+import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, SlimVMObjectType, getStyleOwnerScopeInfo } from "slim-dom";
 
 import { 
   Artboard,
@@ -282,15 +282,18 @@ const cssInspectorReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {
     case CSS_TOGGLE_DECLARATION_EYE_CLICKED: {
       const { artboardId, itemId, declarationName } = event as CSSToggleDeclarationEyeClicked;
+      const workspace = getArtboardWorkspace(artboardId, state)
       const artboard = getArtboardById(artboardId, state);
-      const disabledStyleDeclarations = artboard.disabledStyleDeclarations || {};
-      const disabledItemDecls = disabledStyleDeclarations[itemId] || {};
-      return updateArtboard(state, artboardId, {
+      const disabledStyleDeclarations = workspace.disabledStyleDeclarations || {};
+      const scopeInfo = getStyleOwnerScopeInfo(itemId, artboard.document);
+      const scopeKey = scopeInfo.join("");
+      const disabledItemDecls = disabledStyleDeclarations[scopeKey] || {};
+      return updateWorkspace(state, workspace.$id, {
         disabledStyleDeclarations: {
           ...disabledStyleDeclarations,
-          [itemId]: {
-            ...disabledItemDecls,
-            [declarationName]: !disabledItemDecls[declarationName]
+          [scopeKey]: {
+            ...(disabledItemDecls as any),
+            [declarationName]: disabledItemDecls[declarationName] ? null : scopeInfo
           }
         }
       })

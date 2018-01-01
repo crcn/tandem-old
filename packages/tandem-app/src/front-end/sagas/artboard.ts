@@ -1,4 +1,4 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -43,21 +43,6 @@ function* handleLoadAllArtboards() {
     }
   }
 }
-
-// function* handleChangedArtboards() {
-//   while(1) {
-//     const { filePath, publicPath }: FileChanged = yield take(FILE_CONTENT_CHANGED);
-
-//     const state: ApplicationState = yield select();
-//     const workspace = getSelectedWorkspace(state);
-
-//     for (const artboard of workspace.artboards) {
-//       if (artboard.dependencyUris.indexOf(filePath) !== -1) {
-//         yield call(diffArtboard, artboard.$id);
-//       }
-//     }
-//   }
-// }
 
 function* handlePreviewDiffed() {
   while(1) {
@@ -107,7 +92,7 @@ function* handlePreviewDiffed() {
 
 function* handleArtboardRendered() {
   while(1) {
-    const { artboardId } = (yield take([ARTBOARD_RENDERED, ARTBOARD_PATCHED, CSS_TOGGLE_DECLARATION_EYE_CLICKED])) as ArtboardMounted|ArtboardPatched;
+    const { artboardId } = (yield take([ARTBOARD_RENDERED, ARTBOARD_PATCHED])) as ArtboardMounted|ArtboardPatched;
     yield fork(function*() {
       const artboard = getArtboardById(artboardId, yield select());
 
@@ -196,23 +181,35 @@ function* handleToggleCSSDeclaration() {
     const { artboardId, declarationName, itemId }: CSSToggleDeclarationEyeClicked = yield take(CSS_TOGGLE_DECLARATION_EYE_CLICKED);
     const itemType = getVMObjectIdType(itemId);
     const state: ApplicationState = yield select();
-    const artboard = getArtboardById(artboardId, state);
-    const item = getWorkspaceVMObject(itemId, getArtboardWorkspace(artboard.$id, state));
-    const body = getArtboardDocumentBody(artboard);
-    const itemPath = getVMObjectPath(item, body);
-    const disabled = artboard.disabledStyleDeclarations[itemId][declarationName];
-    let mutation: Mutation<any>;
-    if (itemType === SlimVMObjectType.STYLE_RULE) {
-      const rule = item as SlimCSSStyleRule;
-      mutation = createPropertyMutation(CSS_SET_STYLE_PROPERTY, itemPath, declarationName, disabled ? null : rule.style[declarationName]);
-    } else if (itemType === SlimVMObjectType.ELEMENT) {
+    const workspace = getSelectedWorkspace(state);
 
+    const scopeInfo = getStyleOwnerScopeInfo(itemId, getArtboardById(artboardId, state).document);
+    const scopeHash = scopeInfo.join("");
+
+    for (const artboard of workspace.artboards) {
+
+      const owner = getStyleOwnerFromScopeInfo(scopeInfo, artboard);
+      if (!owner) {
+        continue;
+      }
+
+      const body = getArtboardDocumentBody(artboard);
+      const ownerPath = getVMObjectPath(owner, body);
+      const disabled = workspace.disabledStyleDeclarations[scopeHash][declarationName];
+      let mutation: Mutation<any>;
+
+      if (itemType === SlimVMObjectType.STYLE_RULE) {
+        const rule = owner as SlimCSSStyleRule;
+        mutation = createPropertyMutation(CSS_SET_STYLE_PROPERTY, ownerPath, declarationName, disabled ? null : rule.style[declarationName]);
+      } else if (itemType === SlimVMObjectType.ELEMENT) {
+
+      }
+
+      yield put(artboardDOMPatched(
+        artboard.$id, 
+        patchDOM2(mutation, body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap)
+      ));
     }
-
-    yield put(artboardDOMPatched(
-      artboardId, 
-      patchDOM2(mutation, body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap)
-    ));
   }
 }
 function* handleResized() {

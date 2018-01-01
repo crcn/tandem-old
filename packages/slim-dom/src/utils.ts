@@ -439,6 +439,42 @@ export const replaceNestedChild = <TNode extends VMObject>(current: TNode, path:
   }
 };
 
+export const getStyleOwnerScopeInfo = (ownerId: string, root: SlimParentNode): any[] => {
+  const owner = getNestedObjectById(ownerId, root);
+  const path = getVMObjectPath(owner, root);
+  if (owner.type === SlimVMObjectType.STYLE_RULE) {
+    const styleElement = getSheetStyleElement(path, root);
+    return [
+      owner.type,
+      (owner as SlimCSSStyleRule).selectorText,
+      getAttributeValue("scope", styleElement),
+      ...path.slice(path.indexOf("sheet"))
+    ];
+  } else {
+    console.error(`Not implemented yet`);
+    return [];
+  }
+};
+
+export const getStyleOwnerFromScopeInfo = ([type, ...rest]: any[], window: SlimWindow): SlimCSSStyleRule|SlimElement => {
+  if (type === SlimVMObjectType.STYLE_RULE) {
+    const [selectorText, scope, ...relPath] = rest;
+    const styleElements = getScopedStyleElements(scope, window);
+    for (const styleElement of styleElements) {
+      const absPath = [...getVMObjectPath(styleElement, window.document), ...relPath];
+      const owner = getVMObjectFromPath(absPath, window.document) as SlimCSSStyleRule;
+      if (owner && owner.type === type && owner.selectorText === selectorText) {
+        return owner as SlimCSSStyleRule;
+      }
+    }
+  }
+};
+
+const getSheetStyleElement = (path: string[], root: SlimParentNode) => {
+  const index = path.indexOf("sheet");
+  return index > -1 ? getVMObjectFromPath(path.slice(0, index), root) as SlimStyleElement : null;
+};
+
 export const setTextNodeValue = (target: SlimTextNode, newValue: string): SlimTextNode => ({
   ...target,
   value: newValue
@@ -546,18 +582,27 @@ export const isMediaRule = (rule: SlimCSSRule) => rule.type == SlimVMObjectType.
 export const getScopedStyleRules = weakMemo((tagName: string, window: SlimWindow) => {
   const allVMObjects = flattenObjects(window.document);
   const scopedRules: (SlimCSSStyleRule|SlimCSSAtRule)[] = [];
-  for (const id in allVMObjects) {
-    const { value } = allVMObjects[id];
-    if (value.type === SlimVMObjectType.ELEMENT && (value as SlimElement).tagName === "style" && getAttributeValue("scope", value as SlimElement) === tagName) {
-      const styleElement: SlimStyleElement = value as SlimStyleElement;
-      for (const rule of styleElement.sheet.rules) {
-        if (rule.type === SlimVMObjectType.STYLE_RULE || rule.type == SlimVMObjectType.AT_RULE) {
-          scopedRules.push(rule as SlimCSSStyleRule);
-        }
+  const scopedStyleElements = getScopedStyleElements(tagName, window);
+  for (const styleElement of scopedStyleElements) {
+    for (const rule of styleElement.sheet.rules) {
+      if (rule.type === SlimVMObjectType.STYLE_RULE || rule.type == SlimVMObjectType.AT_RULE) {
+        scopedRules.push(rule as SlimCSSStyleRule);
       }
     }
   }
   return scopedRules;
+});
+
+export const getScopedStyleElements = weakMemo((tagName: string, window: SlimWindow) => {
+  const allVMObjects = flattenObjects(window.document);
+  const elements: SlimStyleElement[] = [];
+  for (const id in allVMObjects) {
+    const { value } = allVMObjects[id];
+    if (value.type === SlimVMObjectType.ELEMENT && (value as SlimElement).tagName === "style" && getAttributeValue("scope", value as SlimElement) == tagName) {
+      elements.push(value as SlimStyleElement);  
+    }
+  }
+  return elements;
 });
 
 const getNodeCSSRules = weakMemo((node: SlimBaseNode, window: SlimWindow) => {

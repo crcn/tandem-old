@@ -2,15 +2,16 @@ import * as React from "react";
 import { Pane } from "./pane";
 import { identity } from "lodash";
 import { compose, pure, withHandlers } from "recompose";
+import { weakMemo } from "aerial-common2";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, TdCssSpacedListExprInputBaseInnerProps, TdCssCommaListExprInputBaseInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
 import { cssToggleDeclarationEyeClicked } from "front-end/actions";
-import { Workspace, getNodeArtboard, DisabledStyleDeclarations } from "front-end/state";
+import { Workspace, getNodeArtboard, DisabledStyleDeclarations, Artboard } from "front-end/state";
 
-import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule } from "slim-dom";
+import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule, getStyleOwnerFromScopeInfo, getStyleOwnerScopeInfo } from "slim-dom";
 
 type StyleDelarationOuterProps = {
   artboardId: string;
@@ -146,7 +147,9 @@ export type CSSInspectorOuterProps = {
 }
 
 export type CSSStyleRuleOuterProps = {
-  disabledStyleDeclarations: DisabledStyleDeclarations;
+  disabledStyleDeclarations: {
+    [identifier: string]: boolean
+  };
   artboardId: string;
 } & AppliedCSSRuleResult;
 export type CSSStyleRuleInnerProps = CSSStyleRuleOuterProps & TdStyleRuleInnerProps;
@@ -174,7 +177,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       }
       
       const owner = (rule.rule || rule.targetElement);
-      const disabled = (disabledStyleDeclarations[owner.id] || EMPTY_OBJECT)[name];
+      const disabled = disabledStyleDeclarations[name];
       const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
       const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
       childDeclarations.push({
@@ -225,11 +228,27 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
       return null;
     }
 
-    const ruleProps: CSSStyleRuleOuterProps[] = getSyntheticAppliedCSSRules(artboard, targetElementId).map(rule => ({...rule, dispatch, artboardId: artboard.$id, disabledStyleDeclarations: artboard.disabledStyleDeclarations }))
+    const ruleProps: CSSStyleRuleOuterProps[] = getSyntheticAppliedCSSRules(artboard, targetElementId).map(rule => ({...rule, dispatch, artboardId: artboard.$id, disabledStyleDeclarations: getDisabledDeclarations(rule, artboard, workspace.disabledStyleDeclarations) }))
 
     return <Base styleRules={ruleProps} />;
   }
 );
+
+const getDisabledDeclarations = weakMemo((result: AppliedCSSRuleResult, artboard: Artboard, disabledInfo: DisabledStyleDeclarations = EMPTY_OBJECT) => {
+  const ruleOwner = result.rule.rule || result.rule.targetElement;
+  const scopeInfo = getStyleOwnerScopeInfo(ruleOwner.id, artboard.document);
+  const scopeHash = scopeInfo.join("");
+
+  const info =  disabledInfo[scopeHash] || EMPTY_OBJECT;
+
+  let ret: any = {};
+
+  for (const key in info) {
+    ret[key] = Boolean(info[key]);
+  }
+
+  return ret;
+});
 
 export const CSSInpectorPane = hydrateTdCssInspectorPane(enhanceCSSInspectorPane, {
   TdPane: Pane,

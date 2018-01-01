@@ -131,15 +131,14 @@ export type LibraryItem = {
 
 export type DisabledStyleDeclarations = {
   [identifier: string]: {
-    [identifier: string]: boolean
+    [identifier: string]: [string, number]
   }
-}
+};
 
 export type Artboard = {
   loading?: boolean;
   scrollPosition: Point;
   dependencyUris?: string[];
-  disabledStyleDeclarations: DisabledStyleDeclarations;
   computedDOMInfo?: ComputedDOMInfo;
   componentId: string;
   previewName: string;
@@ -153,6 +152,7 @@ export type Workspace = {
   uncaughtError?: {
     message: string
   };
+  disabledStyleDeclarations: DisabledStyleDeclarations;
   targetCSSSelectors: TargetSelector[];
   selectionRefs: StructReference[]; // $type:$id;
   browserId: string;
