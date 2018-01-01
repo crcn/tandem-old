@@ -105,6 +105,10 @@
       display: flex;
       flex-direction: row;
     }
+
+    .add-declaration-button {
+      cursor: pointer;
+    }
   </style>
   <template>
     <td-gutter-subheader>
@@ -116,7 +120,7 @@
       </span>
       <span class="space">
       </span>
-      <span>
+      <span class="add-declaration-button" [[bind onAddDeclarationClick]]>
         +
       </span>
     </td-gutter-subheader>
@@ -151,6 +155,7 @@
         rule: {
           assocId: 1
         },
+        onAddDeclarationClick: null,
         declarations: [
           { 
             name: "color",
@@ -226,6 +231,7 @@
         rule: {
           assocId: 1
         },
+        onAddDeclarationClick: null,
         declarations: [
           { 
             name: "background",
@@ -340,6 +346,7 @@
         rule: {
           assocId: 1
         },
+        onAddDeclarationClick: null,
         declarations: [
           { 
             name: "padding",

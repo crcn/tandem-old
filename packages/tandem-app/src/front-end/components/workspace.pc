@@ -227,6 +227,7 @@
         rule: {
           assocId: 1
         },
+        onAddDeclarationClick: null,
         declarations: [
           { 
             name: "color",
@@ -300,6 +301,7 @@
         rule: {
           assocId: 1
         },
+        onAddDeclarationClick: null,
         declarations: [
           { 
             name: "background",
@@ -414,6 +416,7 @@
         rule: {
           assocId: 1
         },
+        onAddDeclarationClick: null,
         declarations: [
           { 
             name: "padding",

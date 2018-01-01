@@ -1,9 +1,9 @@
 IMMEDIATE:
 
-- [ ] show inherited props from slots
-- [ ] get eye button to work
 - [ ] add style declarations
 - [ ] remove style declarations
+- [ ] allow for multiple css declarations to exist
+- [ ] declaration style should be an array, not an object
 
 - [ ] WARM UP
   - [ ] error when component id already exists (linter)
@@ -11,9 +11,9 @@ IMMEDIATE:
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
+  - [ ] investigate why syntax errors do not show up
 
 - [ ] CSS Inspector* 
-  - [ ] eye toggler
   - [ ] add new style - specific to target element
   - [ ] delete style rule
   - [ ] delete declaration
