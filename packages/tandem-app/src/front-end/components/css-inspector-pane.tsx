@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Pane } from "./pane";
 import { identity } from "lodash";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure, withHandlers, withState } from "recompose";
 import { weakMemo } from "aerial-common2";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, TdCssSpacedListExprInputBaseInnerProps, TdCssCommaListExprInputBaseInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
@@ -149,7 +149,10 @@ export type CSSInspectorOuterProps = {
 export type CSSStyleRuleOuterProps = {
   artboardId: string;
 } & AppliedCSSRuleResult;
-export type CSSStyleRuleInnerProps = CSSStyleRuleOuterProps & TdStyleRuleInnerProps;
+export type CSSStyleRuleInnerProps = {
+  addingDeclaration: boolean;
+  onAddDeclarationClick: () => any;
+} & CSSStyleRuleOuterProps & TdStyleRuleInnerProps;
 
 const beautifyLabel = (label: string) => {
   return label.replace(/\s*,\s*/g, ", ");
@@ -159,7 +162,13 @@ const EMPTY_OBJECT = {};
 
 const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames }: CSSStyleRuleInnerProps) => {
+  withState(`addingDeclaration`, `setAddingDeclaration`, false),
+  withHandlers({
+    onAddDeclarationClick: ({  }) => () => {
+
+    },
+  }),
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration }: CSSStyleRuleInnerProps) => {
 
     const declarations = rule.style;
 
@@ -167,13 +176,13 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
 
     const childDeclarations: StyleDelarationOuterProps[] = [];
 
+    const owner = (rule.rule || rule.targetElement);
     for (const name in rule.style) {
       const value = declarations[name];
       if (value == null || !isValidStyleDeclarationName(name)) {
         continue;
       }
       
-      const owner = (rule.rule || rule.targetElement);
       const disabled = disabledPropertyNames[name];
       const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
       const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
@@ -189,7 +198,20 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       });
     }
 
-    return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} />;
+    if (addingDeclaration) {
+      childDeclarations.push({
+        owner,
+        artboardId,
+        dispatch,
+        name: undefined,
+        value: undefined,
+        ignored: false,
+        disabled: false,
+        overridden: false
+      });
+    }
+
+    return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;
   }
 );
 

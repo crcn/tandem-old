@@ -41,9 +41,18 @@
       content: ": ";
     }
 
+    input {
+      border: none;
+      color: var(--font-color);
+    }
+
   </style>
   <template>
-    <span class="name">[[bind name]]</span>
+    <span [[if editingName]]>
+      <input type="text" value=[[bind name]] />
+    </span>
+    <span [[else]] class="name">[[bind name]]</span>
+
     <td-css-expr-input [[if !overridden]] value=[[bind value]] />
     <span [[else]]>
       [[bind sourceValue]]
@@ -215,6 +224,17 @@
           { 
             name: "margin-top",
             sourceValue: "10px",
+            value: {
+              type: "MEASUREMENT",
+              value: "10",
+              unit: "px"
+            },
+            onToggleDeclarationClick: null
+          },
+          { 
+            name: "text-transform",
+            editingName: true,
+            sourceValue: "uppercase",
             value: {
               type: "MEASUREMENT",
               value: "10",

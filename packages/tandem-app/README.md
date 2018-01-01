@@ -1,9 +1,12 @@
 IMMEDIATE:
 
+- [ ] removeChild exception in patch do when editing css inspector
 - [ ] add style declarations
 - [ ] remove style declarations
-- [ ] allow for multiple css declarations to exist
-- [ ] declaration style should be an array, not an object
+- [ ] edit raw value
+- [ ] edit selector text
+- [ ] add style rule
+- [ ] delete style rule
 
 - [ ] WARM UP
   - [ ] start on error handling for FE
@@ -19,7 +22,6 @@ IMMEDIATE:
   - [ ] delete style rule
   - [ ] delete declaration
   - [ ] edit raw declaration value
-  - [ ] inspect `:root`
   - [ ] prioritized css 
   - [ ] quick add style feature (like chrome inspector)
 
@@ -51,7 +53,6 @@ IMMEDIATE:
 
 - [ ] Bug fixing
   - [ ] "Cannot read property 'type' of undefined" - start typing new component
-  - [ ] Infinite loop - create new [[if statement]]
   - [ ] preview hangs up when removing primary child
   - [ ] transpiling react scoped styles doesn't work for `.loader, .loader:after` - need to properly parse and transform 
   - [ ] **NULL replacing content (hard to reproduce)

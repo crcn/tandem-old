@@ -710,7 +710,7 @@ const getDisabledDeclarations = (matchingRule: CSSRuleMatchResult, window: SlimW
   return getDisabledStyleRuleProperties(ruleOwner.id, window.document, disabledDeclarationInfo);
 }
 
-export const isCSSPropertyDisabled = (itemId: string, propertyName: string, document: SlimParentNode, disabledDeclarationInfo: any) => {
+export const isCSSPropertyDisabled = (itemId: string, propertyName: string, document: SlimParentNode, disabledDeclarationInfo: any = {}) => {
   return Boolean(getDisabledStyleRuleProperties(itemId, document, disabledDeclarationInfo)[propertyName]);
 };
 
