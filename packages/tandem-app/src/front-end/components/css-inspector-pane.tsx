@@ -128,7 +128,7 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
     let root: any;
 
     try {
-      root = parseDeclaration(value).root;
+      root = value && parseDeclaration(value).root;
     } catch(e) {
       return <span>Syntax error</span>;
     }
@@ -164,8 +164,8 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
   pure,
   withState(`addingDeclaration`, `setAddingDeclaration`, false),
   withHandlers({
-    onAddDeclarationClick: ({  }) => () => {
-
+    onAddDeclarationClick: ({ setAddingDeclaration }) => () => {
+      setAddingDeclaration(true);
     },
   }),
   (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration }: CSSStyleRuleInnerProps) => {
@@ -203,12 +203,13 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
         owner,
         artboardId,
         dispatch,
+        editingName: true,
         name: undefined,
         value: undefined,
         ignored: false,
         disabled: false,
         overridden: false
-      });
+      } as any);
     }
 
     return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;
