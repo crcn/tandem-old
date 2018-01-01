@@ -10,7 +10,7 @@ import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboa
 import { debounce } from "lodash";
 import crc32 = require("crc32");
 
-const COMPUTE_DOM_INFO_DELAY = 200;
+const COMPUTE_DOM_INFO_DELAY = 100;
 const VELOCITY_MULTIPLIER = 10;
 const DEFAULT_MOMENTUM_DAMP = 0.1;
 const MOMENTUM_THRESHOLD = 100;
@@ -209,6 +209,11 @@ function* handleToggleCSSDeclaration() {
         artboard.$id, 
         patchDOM2(mutation, body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap)
       ));
+
+      yield spawn(function*() {
+        yield call(delay, COMPUTE_DOM_INFO_DELAY);
+        yield call(recomputeArtboardInfo, artboard);
+      });
     }
   }
 }
