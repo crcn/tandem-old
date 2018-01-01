@@ -107,7 +107,7 @@ function* handlePreviewDiffed() {
 
 function* handleArtboardRendered() {
   while(1) {
-    const { artboardId } = (yield take([ARTBOARD_RENDERED, ARTBOARD_PATCHED])) as ArtboardMounted|ArtboardPatched;
+    const { artboardId } = (yield take([ARTBOARD_RENDERED, ARTBOARD_PATCHED, CSS_TOGGLE_DECLARATION_EYE_CLICKED])) as ArtboardMounted|ArtboardPatched;
     yield fork(function*() {
       const artboard = getArtboardById(artboardId, yield select());
 
