@@ -6,7 +6,7 @@ IMMEDIATE:
 - [ ] remove style declarations
 
 - [ ] WARM UP
-  - [ ] do not require special prefix for component ids
+  - [ ] error when component id already exists (linter)
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] Finish TODOS in dom renderer2
