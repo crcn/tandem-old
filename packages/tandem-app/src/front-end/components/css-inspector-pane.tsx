@@ -147,9 +147,6 @@ export type CSSInspectorOuterProps = {
 }
 
 export type CSSStyleRuleOuterProps = {
-  disabledStyleDeclarations: {
-    [identifier: string]: boolean
-  };
   artboardId: string;
 } & AppliedCSSRuleResult;
 export type CSSStyleRuleInnerProps = CSSStyleRuleOuterProps & TdStyleRuleInnerProps;
@@ -162,7 +159,7 @@ const EMPTY_OBJECT = {};
 
 const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledStyleDeclarations }: CSSStyleRuleInnerProps) => {
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames }: CSSStyleRuleInnerProps) => {
 
     const declarations = rule.style;
 
@@ -177,7 +174,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       }
       
       const owner = (rule.rule || rule.targetElement);
-      const disabled = disabledStyleDeclarations[name];
+      const disabled = disabledPropertyNames[name];
       const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
       const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
       childDeclarations.push({
@@ -228,27 +225,27 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
       return null;
     }
 
-    const ruleProps: CSSStyleRuleOuterProps[] = getSyntheticAppliedCSSRules(artboard, targetElementId).map(rule => ({...rule, dispatch, artboardId: artboard.$id, disabledStyleDeclarations: getDisabledDeclarations(rule, artboard, workspace.disabledStyleDeclarations) }))
+    const ruleProps: CSSStyleRuleOuterProps[] = getSyntheticAppliedCSSRules(artboard, targetElementId, workspace.disabledStyleDeclarations).map(rule => ({...rule, dispatch, artboardId: artboard.$id }))
 
     return <Base styleRules={ruleProps} />;
   }
 );
 
-const getDisabledDeclarations = weakMemo((result: AppliedCSSRuleResult, artboard: Artboard, disabledInfo: DisabledStyleDeclarations = EMPTY_OBJECT) => {
-  const ruleOwner = result.rule.rule || result.rule.targetElement;
-  const scopeInfo = getStyleOwnerScopeInfo(ruleOwner.id, artboard.document);
-  const scopeHash = scopeInfo.join("");
+// const getDisabledDeclarations = weakMemo((result: AppliedCSSRuleResult, artboard: Artboard, disabledInfo: DisabledStyleDeclarations = EMPTY_OBJECT) => {
+//   const ruleOwner = result.rule.rule || result.rule.targetElement;
+//   const scopeInfo = getStyleOwnerScopeInfo(ruleOwner.id, artboard.document);
+//   const scopeHash = scopeInfo.join("");
 
-  const info =  disabledInfo[scopeHash] || EMPTY_OBJECT;
+//   const info =  disabledInfo[scopeHash] || EMPTY_OBJECT;
 
-  let ret: any = {};
+//   let ret: any = {};
 
-  for (const key in info) {
-    ret[key] = Boolean(info[key]);
-  }
+//   for (const key in info) {
+//     ret[key] = Boolean(info[key]);
+//   }
 
-  return ret;
-});
+//   return ret;
+// });
 
 export const CSSInpectorPane = hydrateTdCssInspectorPane(enhanceCSSInspectorPane, {
   TdPane: Pane,

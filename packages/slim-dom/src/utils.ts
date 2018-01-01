@@ -577,6 +577,10 @@ export type AppliedCSSRuleResult = {
 
   media?: string;
 
+  disabledPropertyNames?: {
+    [identifier: string]: boolean
+  };
+
   // property rules that are 
   ignoredPropertyNames?: {
     [identifier: string]: boolean
@@ -701,7 +705,21 @@ export const containsInheritableStyleProperty = (style: SlimCSSStyleDeclaration)
   return false;
 };
 
-export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, elementId: string) => {
+const getDisabledDeclarations = (matchingRule: CSSRuleMatchResult, window: SlimWindow, disabledDeclarationInfo: any = {}) => {
+  const ruleOwner = matchingRule.rule || matchingRule.targetElement;
+  const scopeInfo = getStyleOwnerScopeInfo(ruleOwner.id, window.document);
+  const scopeHash = scopeInfo.join("");
+
+  const disabledPropertyNames = {}
+  const info =  disabledDeclarationInfo[scopeHash] || {};
+
+  for (const key in info) {
+    disabledPropertyNames[key] = Boolean(info[key]);
+  }
+  return disabledPropertyNames;
+}
+
+export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, elementId: string, disabledDeclarationInfo: any = {}) => {
   const element = getSyntheticWindowChild(elementId, window) as any as SlimElement;
   const allRules = getNodeCSSRules(element, window);
 
@@ -716,14 +734,15 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
   for (let i = matchingRules.length; i--;) {
     const matchingRule = matchingRules[i];
 
+    const disabledPropertyNames = getDisabledDeclarations(matchingRule, window, disabledDeclarationInfo);
     appliedStyleRules[matchingRule.assocId] = true;
 
-    const overriddenPropertyNames = {};
+    const overriddenPropertyNames = {};;
 
     for (const propertyName in matchingRule.style) {
       if (appliedPropertNames[propertyName]) {
         overriddenPropertyNames[propertyName] = true;
-      } else if(!matchingRule.style.disabledPropertyNames || !matchingRule.style.disabledPropertyNames[propertyName]) {
+      } else if(!disabledPropertyNames[propertyName]) {
         appliedPropertNames[propertyName] = true;
       }
     }
@@ -732,6 +751,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
       inherited: false,
       rule: matchingRule,
       overriddenPropertyNames,
+      disabledPropertyNames,
     });
   }
 
@@ -752,6 +772,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
       if (appliedStyleRules[ancestorRule.assocId]) {
         continue;
       }
+      const disabledPropertyNames = getDisabledDeclarations(ancestorRule, window, disabledDeclarationInfo);
       
       appliedStyleRules[ancestorRule.assocId] = true;
 
@@ -762,7 +783,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
           ignoredPropertyNames[propertyName] = true;
         } else if (appliedPropertNames[propertyName]) {
           overriddenPropertyNames[propertyName] = true;
-        } else if(!ancestorRule.style.disabledPropertyNames || !ancestorRule.style.disabledPropertyNames[propertyName]) {
+        } else if(!disabledPropertyNames[propertyName]) {
           appliedPropertNames[propertyName] = true;
         }
       }
@@ -771,6 +792,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
         inherited: true,
         rule: ancestorRule,
         ignoredPropertyNames,
+        disabledPropertyNames,
         overriddenPropertyNames,
       });
     }
@@ -779,15 +801,17 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
   const rootStyleRule = getRootStyleRule(window);
 
   if (rootStyleRule) {
+    const matchingCSSRules = {
+      assocId: rootStyleRule.id,
+      style: rootStyleRule.style,
+      rule: rootStyleRule,
+    };
     appliedRules.push({
       inherited: true,
-      rule: {
-        assocId: rootStyleRule.id,
-        style: rootStyleRule.style,
-        rule: rootStyleRule,
-      },
+      rule: matchingCSSRules,
       ignoredPropertyNames: {},
-      overriddenPropertyNames: {}
+      overriddenPropertyNames: {},
+      disabledPropertyNames: getDisabledDeclarations(matchingCSSRules, window, disabledDeclarationInfo)
     })
   }
 
@@ -810,12 +834,12 @@ export const getRootStyleRule = weakMemo((window: SlimWindow) => {
   }
 });
 
-const getTargetStyleOwners = (element: SlimElement, propertyNames: string[], targetSelectors: TargetSelector[], window: SlimWindow): {
+const getTargetStyleOwners = (element: SlimElement, propertyNames: string[], targetSelectors: TargetSelector[], window: SlimWindow, disabledProperties?: any): {
   [identifier: string]: SlimElement | SlimCSSStyleRule
 } => {
 
   // find all applied rules
-  const styleOwners = getSyntheticAppliedCSSRules(window, element.id).map(({ rule }) => rule.rule || rule.targetElement);
+  const styleOwners = getSyntheticAppliedCSSRules(window, element.id, disabledProperties).map(({ rule }) => rule.rule || rule.targetElement);
 
   // cascade down style rule list until targets are found (defined in css inspector)
   let matchingStyleOwners  = styleOwners.filter((rule) => Boolean(targetSelectors.find(({uri, value}) => {
