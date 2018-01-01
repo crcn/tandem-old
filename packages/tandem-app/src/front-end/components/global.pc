@@ -204,14 +204,3 @@
   </preview>
 </component>
 
-
-<component id="test8">
-  <style>
-  </style>
-  <template>
-    Compo
-  </template>
-  <preview name="main" width="1366" height="768">
-    <test8 />
-  </preview>
-</component>

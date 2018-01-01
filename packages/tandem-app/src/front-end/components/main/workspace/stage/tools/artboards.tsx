@@ -39,7 +39,7 @@ const ArtboardItemBase = ({ artboard, translate, dispatch, fullScreenArtboardId 
 
     // some random height to prevent text from getting cut off
     // when zooming. 
-    height: 200,
+    height: 30,
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: width * translate.zoom,
