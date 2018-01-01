@@ -1,12 +1,9 @@
 IMMEDIATE:
 
-- [ ] ensure that ionicons .css works
-
-- [ ] css files should be treated like modules
-- [ ] wire up eye toggler
-- [ ] parse imported styles 
 - [ ] show inherited props from slots
-- [ ] changes to css files should trigger reload
+- [ ] get eye button to work
+- [ ] add style declarations
+- [ ] remove style declarations
 
 - [ ] WARM UP
   - [ ] do not require special prefix for component ids

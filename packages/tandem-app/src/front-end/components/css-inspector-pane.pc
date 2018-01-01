@@ -105,7 +105,7 @@
         [[bind label]]
       </span>
       <span class="inherited" [[if inherited]]>
-        inherited.
+        inherited
       </span>
       <span class="space">
       </span>
