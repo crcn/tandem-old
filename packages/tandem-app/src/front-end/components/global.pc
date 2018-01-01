@@ -177,7 +177,7 @@
 
     :host([success]) {
       color: var(--font-color-light);
-      background: blue;
+      background: green;
     }
 
     .close-button {

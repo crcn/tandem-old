@@ -1,7 +1,5 @@
 IMMEDIATE:
 
-- [ ] style scope="tag-name"
-- [ ] cache host styles somehow
 - [ ] cannot change selector text in patch dom
 - [ ] inherited styles not showing up for first selected node
 - [ ] show inherited props from slots

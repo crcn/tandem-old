@@ -423,6 +423,10 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const nativeTarget = map.cssom[slimTarget.id] as any;
       
       const cssomMap = {};
+
+      const styleElement = getStyleElementFomPath(mutation.target, root);
+      const scope = getAttributeValue("scope", styleElement);
+
       if ((nativeTarget as any as CSSKeyframesRule).appendRule) {
         const patchedRoot = patchNode2(mutation, root);
         const patchedSlimParent = getVMObjectFromPath(mutation.target, patchedRoot) as SlimCSSGroupingRule;
@@ -431,12 +435,14 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         }
 
         insertChildRules(patchedSlimParent, nativeTarget, {
-          map: cssomMap
+          map: cssomMap,
+          scope,
         });
       } else {
         nativeTarget.deleteRule(oldIndex);
         insertChildRule((slimTarget as SlimCSSGroupingRule).rules[oldIndex], nativeTarget, {
-          map: cssomMap
+          map: cssomMap,
+          scope
         }, index);
       }
 
@@ -453,9 +459,12 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     case CSS_INSERT_RULE: { 
       const { index, child } = mutation as RemoveChildMutation<any, any>;
       const cssomMap = {};
+      const styleElement = getStyleElementFomPath(mutation.target, root);
       insertChildRule(child, map.cssom[slimTarget.id] as any, {
-        map: cssomMap
+        map: cssomMap,
+        scope: getAttributeValue("scope", styleElement)
       }, index);
+
       map = {
         ...map,
         cssom: {
@@ -497,6 +506,14 @@ const getNodeHost = (child: SlimBaseNode, root: SlimParentNode) => getHostFromPa
 
 const getHostFromPath = weakMemo((path: string[], root: SlimParentNode) => {
   const index = path.lastIndexOf("shadow");
+  if (index === -1) {
+    return null;
+  }
+  return getVMObjectFromPath(path.slice(0, index), root) as SlimElement;
+});
+
+const getStyleElementFomPath = weakMemo((path: string[], root: SlimParentNode) => {
+  const index = path.lastIndexOf("sheet");
   if (index === -1) {
     return null;
   }
