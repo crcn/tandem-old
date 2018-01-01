@@ -99,9 +99,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         nativeElement.classList.add(getScopeTagName(vmNode as SlimElement) + "_host");
       }
 
-
       if (shadow) {
-        context.map[shadow.id] = nativeElement;
         const nativeShadow = createNativeNode(shadow, document, {
           ...context,
           host: vmNode as SlimElement

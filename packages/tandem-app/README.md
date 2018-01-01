@@ -9,8 +9,6 @@ IMMEDIATE:
   - [ ] error when component id already exists (linter)
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
-  - [ ] Finish TODOS in dom renderer2
-  - [ ] ensure that default children
   - [ ] get padding / margin stage tool working again
 
 - [ ] CSS Inspector* 
@@ -155,11 +153,13 @@ POSSIBLY:
   - [ ] Components filter
   - [ ] Themable
 
-- [ ] Sketch file import
-  - [ ] `<vector src="./file.sketch" name="Some vector icon" />
-
 #### V3
 
 - [ ] Notes
 - [ ] Git integration
 - [ ] FSM - connecting UIs
+- [ ] Sketch file import
+  - [ ] `<vector src="./file.sketch" name="Some vector icon" />
+
+- [ ] paperclip
+  - [ ] use Rust for parsing & evaluating
