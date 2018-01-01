@@ -1,11 +1,14 @@
 import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute, SlimWindow } from "./state";
 import { querySelector, elementMatches } from "./query-selector";
 import { createMediaMatcher } from "./media-match";
-import { uniq, flatten, kebabCase, camelCase } from "lodash";
+import { uniq, flatten, kebabCase, camelCase, padStart } from "lodash";
 import { INHERITED_CSS_STYLE_PROPERTIES } from "./constants";
 import crc32 = require("crc32");
 import { weakMemo } from "./weak-memo";
 export { weakMemo };
+
+const ID_TYPE_PAD = 2;
+
 export const pushChildNode = <TParent extends SlimParentNode>(parent: TParent, child: SlimBaseNode): TParent => ({
   ...(parent as any),
   childNodes: [
@@ -815,9 +818,10 @@ export const setVMObjectIds = <TObject extends VMObject>(current: TObject, idSee
       let styleRule = current as any as SlimCSSStyleRule;
       styleRule = {
         ...styleRule,
-        style: setVMObjectIds(styleRule.style, idSeed, refCount)
+        // style: setVMObjectIds(styleRule.style, idSeed, refCount)
+        // style: styleRule.style
       } as SlimCSSStyleRule;
-      refCount = getRefCount(styleRule.style, idSeed);
+      // refCount = getRefCount(styleRule.style, idSeed);
       current = styleRule as any as TObject;
       break;
     }
@@ -840,15 +844,25 @@ export const setVMObjectIds = <TObject extends VMObject>(current: TObject, idSee
       current = groupingRule as any as TObject;
       break;
     }
+  };
+
+  if (current.type == null) {
+    throw new Error(`Current type is not defined`);
   }
 
   return {
     ...(current as any),
-    id: idSeed + (refCount + 1)
+
+    // insert type to allow other parts of app to pull it out (like dom renderer)
+    id: padStart(String(current.type), ID_TYPE_PAD, "0") + idSeed + (refCount + 1)
   };
 }
 
-export const getRefCount = (current: VMObject, idSeed: string) => Number((current.id as String).substr(idSeed.length));
+export const getVMObjectIdType = (id: string) => Number(id.substr(0, ID_TYPE_PAD));
+
+export const getRefCount = (current: VMObject, idSeed: string) => {
+  return Number((current.id as String).substr(idSeed.length + ID_TYPE_PAD));
+}
 
 export const traverseSlimNode = (current: VMObject, each: (child: VMObject) => void|boolean) => {
   if (each(current) === false)  {

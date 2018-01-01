@@ -1,5 +1,5 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject, SlimFontFace } from "./state";
-import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath } from "./utils";
+import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
 import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2 } from "./diff-patch";
@@ -43,15 +43,15 @@ type InsertStyleSheetContext = {
 const createNativeNode = (vmNode: VMObject, document: Document, context: CreateNativeNodeContext): Node => {
   switch(vmNode.type) {
     case SlimVMObjectType.ELEMENT: {
-      const { tagName, id, shadow, childNodes, attributes } = vmNode as SlimElement;
+      const { tagName, type, id, shadow, childNodes, attributes } = vmNode as SlimElement;
 
       if (tagName === "slot") {
 
         // Note that document fragment is necessary for slots to ensure that that certain props are inheritable from the parent (like display: flex)
-        const slotElement = context.map[id] = document.createDocumentFragment();
+        const slotElement = document.createDocumentFragment();
 
         // add a marker so that elements can be dynamically inserted when patched
-        slotElement.appendChild(context.map[id] = document.createTextNode(""));
+        slotElement.appendChild(context.map[vmNode.id] = document.createTextNode(""));
 
         const host = context.host;
 
@@ -76,7 +76,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         return  slotElement;
       }
 
-      const nativeElement = context.map[id] = document.createElement(tagName);
+      const nativeElement = context.map[vmNode.id] = document.createElement(tagName);
 
       if (tagName === "style") {
         return null;
@@ -100,6 +100,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
       }
 
       if (shadow) {
+        context.map[shadow.id] = nativeElement;
         const nativeShadow = createNativeNode(shadow, document, {
           ...context,
           host: vmNode as SlimElement
@@ -516,7 +517,8 @@ export const computedDOMInfo2 = (map: NativeObjectMap): ComputedDOMInfo => {
   let computedInfo = {};
   for (const nodeId in map.dom) {
     const node = map.dom[nodeId];
-    if (!node) {
+
+    if (!node || getVMObjectIdType(nodeId) !== SlimVMObjectType.ELEMENT) {
       continue;
     }
 

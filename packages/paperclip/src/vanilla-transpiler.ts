@@ -790,6 +790,11 @@ const transpileNewCSSStyledRule = (rule: CSSStyleRule, constructorName: string, 
 const translateSelectorText = (selectorText: string, { aliases }: TranspileContext) => {
   let newSelectorText = selectorText;
 
+  // do not transpile in now -- neg lookbehind regex dosesn't work in this environment. Only 
+  // in modern browsers.
+  if (typeof process !== "undefined") {
+    return newSelectorText;
+  }
   for (const id in aliases) {
     newSelectorText = newSelectorText.replace(new RegExp(`(?<!x-)${id}`, "g"), aliases[id]);
   }

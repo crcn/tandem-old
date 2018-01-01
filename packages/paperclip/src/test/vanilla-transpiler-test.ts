@@ -98,7 +98,7 @@ describe(__filename + "#", () => {
     [{ a: 1, b: 0 }, `<span [[if a || b]]>A</span>b`, `<span>A</span>b`]
   ].forEach(([context, input, output]: [any, string, string]) => {
     it(`renders ${input} as ${output} with ${JSON.stringify(context)}`, async () => {
-      const document = await runCode(input, (html) => `<component id="x-test"><template>${html}</template></component>`, `const el = document.createElement("x-test"); 
+      const document = await runCode(input, (html) => `<component id="test"><template>${html}</template></component>`, `const el = document.createElement("x-test"); 
       Object.assign(el, ${JSON.stringify(context)})
       window.document.body.appendChild(el);`);
       expect(Array.prototype.map.call(document.body.querySelector("x-test").shadowRoot.childNodes, (child) => child.outerHTML || child.nodeValue).join("").trim()).to.eql(output.trim());
