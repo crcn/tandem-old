@@ -17,10 +17,10 @@ export default {
       extensions: [ '.js'], 
     }),
     commonjs({
-        include: ['node_modules/**', '../**'],
+        include: ['node_modules/**', '../**', '../../../../../public/nwmatcher/src/nwmatcher.js'],
         namedExports: {
           'node_modules/source-mutation/index.js': [ 'createStringMutation' ],
-          '../slim-dom/index.js': [ 'NodeType', 'pushChildNode', 'CSSRuleType' ],
+          '../slim-dom/index.js': [ 'NodeType', 'pushChildNode', 'CSSRuleType', 'SlimVMObjectType' ],
           '../aerial-browser-sandbox/constants.js': [ 'UPDATE_VALUE_NODE', 'SET_ELEMENT_ATTRIBUTE_EDIT', 'INSERT_CHILD_NODE_EDIT', 'REMOVE_CHILD_NODE_EDIT', 'INSERT_HTML_EDIT', 'CSS_INSERT_CSS_RULE_TEXT', 'CSS_PARENT_DELETE_RULE', 'CSS_STYLE_RULE_SET_SELECTOR_TEXT', 'CSS_STYLE_RULE_SET_STYLE_PROPERTY'],
           '../aerial-browser-sandbox/mutation.js': [ 'createInsertHTMLMutation'],
         }

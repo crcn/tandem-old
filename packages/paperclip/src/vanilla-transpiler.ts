@@ -1,7 +1,7 @@
 // TODO - emit warnings for elements that have invalid IDs, emit errors
 
 import { PCExpression, PCExpressionType, PCTextNode, PCFragment, PCElement, PCSelfClosingElement, PCStartTag, PCEndTag, BKBind, BKRepeat, PCString, PCStringBlock, PCBlock, BKElse, BKElseIf, BKPropertyReference, BKVarReference, BKReservedKeyword, BKGroup, BKExpression, BKExpressionType, BKIf, isTag, getPCParent, PCParent, getExpressionPath, getPCElementModifier, BKNot, BKOperation, BKKeyValuePair, BKObject, BKNumber, BKArray, BKString, CSSExpression, CSSExpressionType, CSSAtRule, CSSDeclarationProperty, CSSGroupingRule, CSSRule, CSSSheet, CSSStyleRule, getStartTag, getPCStartTagAttribute } from "./ast";
-import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph, ComponentModule, PCModuleType } from "./loader";
+import { loadModuleAST, Module, Import, Component, IO, loadModuleDependencyGraph, Dependency, DependencyGraph, ComponentModule, PCModuleType, getAllComponents, CSSModule } from "./loader";
 import { PaperclipTargetType } from "./constants";
 import { PaperclipTranspileResult } from "./transpiler";
 import { inferNodeProps } from "./inferencing";
@@ -154,11 +154,11 @@ const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
 
   content += "$$modules = {};";
 
+  const componentAliases = getComponentAliases(graph);
+
   for (const uri in graph) {
     const { resolvedImportUris, module } = graph[uri];
-    if (module.type === PCModuleType.COMPONENT) {
-      content += `$$modules["${uri}"] = ${transpileModule(module as ComponentModule, resolvedImportUris)};`;
-    }
+    content += `$$modules["${uri}"] = ${transpileModule(module as ComponentModule, resolvedImportUris, componentAliases)};`;
   }
 
   content += `const entry = $$modules["${entryUri}"]();`
@@ -172,11 +172,24 @@ const transpileBundle = (entryUri: string, graph: DependencyGraph) => {
   return content;
 };
 
-const transpileModule = ({ source, imports, globalStyles, components, unhandledExpressions, uri }: ComponentModule, resolvedImportUris: { [identifier: string]: string }) => {
+const getComponentAliases = (graph: DependencyGraph) => {
+  const aliases = {};
+  const allComponents = getAllComponents(graph);
+  
+  for (const id in allComponents) {
+    aliases[id] = getComponentTagName(id);
+  }
+
+  return aliases;
+}
+
+const transpileModule = (module: Module, resolvedImportUris: { [identifier: string]: string }, aliases: any) => {
+
+  const { uri, source } = module;
 
   const context: TranspileContext = {
     uri,
-    aliases: {},
+    aliases,
     varCount: 0,
     root: source
   };
@@ -186,22 +199,32 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
 
   content += `var $$previews = {};`;
 
-  const styleDecls = transpileChildNodes(globalStyles, context);
+  if (module.type === PCModuleType.COMPONENT) {
+    const { imports, globalStyles, components, unhandledExpressions } = module as ComponentModule;
 
-  for (let i = 0, {length} = styleDecls; i < length; i++) {
-    const decl = styleDecls[i];
+    const styleDecls = transpileChildNodes(globalStyles, context);
+
+    for (let i = 0, {length} = styleDecls; i < length; i++) {
+      const decl = styleDecls[i];
+      content += decl.content;
+      content += `document.body.appendChild(${decl.varName});`;
+    }
+
+    for (let i = 0, {length} = imports; i < length; i++) {
+      const _import = imports[i];
+      const decl = declare(`import`, `require(${JSON.stringify(resolvedImportUris[_import.href])})`, context);
+      content += decl.content;
+    }
+
+    for (let i = 0, {length} = components; i < length; i++) {
+      content += tranpsileComponent(components[i], context).content;
+    }
+  } else if (module.type === PCModuleType.CSS) {
+    const ast = source as CSSSheet;
+    const decl = declareNode(`document.createElement("style")`, context);
+    decl.content += addStyleElementSheet(ast, decl.varName, context);
+
     content += decl.content;
-    content += `document.body.appendChild(${decl.varName});`;
-  }
-
-  for (let i = 0, {length} = imports; i < length; i++) {
-    const _import = imports[i];
-    const decl = declare(`import`, `require(${JSON.stringify(resolvedImportUris[_import.href])})`, context);
-    content += decl.content;
-  }
-
-  for (let i = 0, {length} = components; i < length; i++) {
-    content += tranpsileComponent(components[i], context).content;
   }
 
   content += `return {` +
@@ -211,13 +234,15 @@ const transpileModule = ({ source, imports, globalStyles, components, unhandledE
   content += `})`;
 
   return content;
-}
+};
+
 
 const wrapTranspiledStatement = (statement) => `(() => {${statement}} )();\n`;
 const wrapAndCallBinding = (binding) => `(() => { const binding = () => { ${binding} }; binding(); return binding; })()`;
 
 const tranpsileComponent = ({ previews, source, id, style, template }: Component, context: TranspileContext) => {
   const varName = createVarName(getJSFriendlyName(id), context);
+  const tagName = getComponentTagName(id);
 
   const templateContext: TranspileContext = {
     ...context,
@@ -335,10 +360,10 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
     // paperclip linter will catch cases where there is more than one 
     // registered component in a project. This shouldn't block browsers from loading
     // paperclip files (especially needed when loading multiple previews in the same window)
-    `if (!customElements.get("${id}")) {` +
-      `customElements.define("${id}", ${varName});` +
+    `if (!customElements.get("${tagName}")) {` +
+      `customElements.define("${tagName}", ${varName});` +
     `} else {` +
-      `console.error("Custom element \\"${id}\\" is already defined, ignoring");` +
+      `console.error("Custom element \\"${tagName}\\" is already defined, ignoring");` +
     `}`
 
   content += `$$previews["${id}"] = {};`;
@@ -370,6 +395,7 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
   };
 };
 
+const getComponentTagName = (id: string) => `x-${id}`;
 
 const transpileExpression = (ast: PCExpression, context: TranspileContext) => {
   switch(ast.type) {
@@ -672,21 +698,29 @@ const transpileElement = (ast: PCElement, context: TranspileContext) => {
 export const transpileStyleElement = (ast: PCElement, context: TranspileContext) => {
   let decl = declareNode(`document.createElement("style")`, context);
   decl = attachSource(decl, ast, context);
-  decl.content += `` +
+  decl.content += addStyleElementSheet(ast.childNodes[0] as any as CSSSheet, decl.varName, context);
+  return decl;
+};
+
+
+export const addStyleElementSheet = (ast: CSSSheet, varName: string, context: TranspileContext) => {
+  let content = ``;
+  content += `` +
     `if (window.$synthetic) {`;
 
-      const sheetDecl = transpileNewCSSSheet(ast.childNodes[0] as any as CSSSheet, context);
+      const sheetDecl = transpileNewCSSSheet(ast, context);
 
-      decl.content += sheetDecl.content +
-      `${decl.varName}.$$setSheet(${sheetDecl.varName});`
+      content += sheetDecl.content +
+      `${varName}.$$setSheet(${sheetDecl.varName});`
       // todo - need to create style rules
-  decl.content += `` +
+
+  content += `` +
     `} else {` + 
 
       // todo - need to stringify css
-      `${decl.varName}.textContent = ${JSON.stringify(transpileCSSSheet(ast.childNodes[0] as any as CSSSheet))};` +
+      `${varName}.textContent = ${JSON.stringify(transpileCSSSheet(ast, (value, rule) => translateSelectorText(value, context)))};` +
     `}`
-  return decl;
+  return content;
 };
 
 const transpileNewCSSSheet = (sheet: CSSSheet, context: TranspileContext) => {
@@ -750,7 +784,16 @@ const transpileNewCharsetRule = (rule: CSSAtRule, context: TranspileContext) => 
 };
 
 const transpileNewCSSStyledRule = (rule: CSSStyleRule, constructorName: string, context: TranspileContext) => {
-  return declareRule(`new ${constructorName}(${JSON.stringify(rule.selectorText)}, ${transpileStyleDeclaration(getCSSDeclarationProperties(rule), context)})`, context);
+  return declareRule(`new ${constructorName}(${JSON.stringify(translateSelectorText(rule.selectorText, context))}, ${transpileStyleDeclaration(getCSSDeclarationProperties(rule), context)})`, context);
+}
+
+const translateSelectorText = (selectorText: string, { aliases }: TranspileContext) => {
+  let newSelectorText = selectorText;
+
+  for (const id in aliases) {
+    newSelectorText = newSelectorText.replace(new RegExp(`(?<!x-)${id}`, "g"), aliases[id]);
+  }
+  return newSelectorText;
 }
 
 const transpileNewCSSStyleRule = (rule: CSSStyleRule, context: TranspileContext) => transpileNewCSSStyledRule(rule, "CSSStyleRule", context);
@@ -777,7 +820,7 @@ const transpileCSSRule = (rule: CSSRule, mapSelectorText: (value, rule: CSSRule)
     case CSSExpressionType.AT_RULE: {
       const atRule = rule as CSSAtRule;
       if (atRule.name === "charset" || atRule.name === "import") return null;
-      let content = `@${atRule.name} ${atRule.params} {`;
+      let content = `@${atRule.name} ${atRule.params.join("")} {`;
       content += atRule.children.map(rule => transpileCSSRule(rule, mapSelectorText)).filter(Boolean).join(" ");
       content += `}`;
       return content;
