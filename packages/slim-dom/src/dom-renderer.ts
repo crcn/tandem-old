@@ -1,4 +1,4 @@
-import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSAtRule, SlimCSSRule, Bounds, VMObject } from "./state";
+import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSAtRule, SlimCSSRule, Bounds, VMObject, SlimFontFace } from "./state";
 import { weakMemo, getVMObjectFromPath } from "./utils";
 import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
 import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, patchNode } from "./diff-patch";
@@ -87,15 +87,11 @@ const stringifyRule = (rule: SlimCSSRule, options: RenderOptions) => {
   switch(rule.type) {
     case SlimVMObjectType.STYLE_RULE: {
       const { selectorText, style } = rule as SlimCSSStyleRule;
-      let buffer = `${selectorText} {`;
-      for (const key in style) {
-
-        // TODO - change to isValidCSSKey
-        if (key === "id") continue;
-        buffer += `${key}: ${style[key]};`
-      }
-
-      return `${buffer} }`;
+      return `${selectorText} { ${stringifyStyle(style)} }`;
+    }
+    case SlimVMObjectType.FONT_FACE_RULE: {
+      const {  style } = rule as SlimFontFace;
+      return `@font-face { ${stringifyStyle(style)} }`;
     }
     case SlimVMObjectType.AT_RULE: {
       const { name, params, rules } = rule as SlimCSSAtRule;
@@ -104,6 +100,19 @@ const stringifyRule = (rule: SlimCSSRule, options: RenderOptions) => {
     }
   }
 };
+
+const stringifyStyle = (style) => {
+  let buffer: string = ``;
+
+  for (const key in style) {
+
+    // TODO - change to isValidCSSKey
+    if (key === "id") continue;
+    buffer += `${key}: ${style[key]};`
+  }
+
+  return buffer;
+}
 
 export type ComputedDOMElementInfo = {
   bounds: Bounds;

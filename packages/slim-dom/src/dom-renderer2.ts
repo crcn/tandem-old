@@ -1,4 +1,4 @@
-import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject } from "./state";
+import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject, SlimFontFace } from "./state";
 import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
@@ -200,15 +200,12 @@ const shallowStringifyRule = (rule: SlimCSSRule, context: InsertStyleSheetContex
   switch(rule.type) {
     case SlimVMObjectType.STYLE_RULE: {
       const { selectorText, style } = rule as SlimCSSStyleRule;
-      let buffer = `${stringifyScopedSelectorText(selectorText, context.host)} {`;
-      for (const key in style) {
+      return `${stringifyScopedSelectorText(selectorText, context.host)} { ${stringifyStyle(style)} }`;
+    }
 
-        // TODO - change to isValidCSSKey
-        if (key === "id") continue;
-        buffer += `${key}: ${style[key]};`
-      }
-
-      return `${buffer} }`;
+    case SlimVMObjectType.FONT_FACE_RULE: {
+      const {  style } = rule as SlimFontFace;
+      return `@font-face { ${stringifyStyle(style)} }`;
     }
     case SlimVMObjectType.AT_RULE: {
       const { name, params, rules } = rule as SlimCSSAtRule;
@@ -218,13 +215,26 @@ const shallowStringifyRule = (rule: SlimCSSRule, context: InsertStyleSheetContex
   }
 };
 
+const stringifyStyle = (style) => {
+  let buffer: string = ``;
+
+  for (const key in style) {
+
+    // TODO - change to isValidCSSKey
+    if (key === "id") continue;
+    buffer += `${key}: ${style[key]};`
+  }
+
+  return buffer;
+}
+
 const getScopeTagName = ({tagName}: SlimElement) => `__${tagName}_scope`;
 
 const getScopeTagNameHost = (element: SlimElement) => getScopeTagName(element) + "__host";
 
 const stringifyScopedSelectorText = (selectorText: string, host: SlimElement) => {
   // if (host) {
-  //   console.log(compileScopedCSS(selectorText, getScopeTagName(host)), selectorText);
+  //   console.log(compileScopedCSS(selectorText, getScopeTagName(host)), "-----", selectorText);
   // }
   return host ? compileScopedCSS(selectorText, getScopeTagName(host)) : selectorText;
 };

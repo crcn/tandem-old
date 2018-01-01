@@ -867,47 +867,56 @@ export const traverseSlimNode = (current: VMObject, each: (child: VMObject) => v
   }
 }
 export const compileScopedCSS = (selectorText: string, scopeClass: string, aliases: any = {}) => {
-  return selectorText.split(" ").map((part, i) => {
-    if (/%/.test(part)) return part;
+  const parts = selectorText.match(/.*?([,\s]+|$)/g) || [selectorText];
 
-    // TODO - this is all nasty. Need to parse selector as AST, then transform
-    // that.
-
-    // ignore ".selector > .selector"
-    if (/^[>,]$/.test(part)) return part;
-
-    for (const alias in aliases) {
-      if (part.indexOf(alias) !== -1) {
-        // console.log(`.${scopeClass}.host > ${part.replace(alias, aliases[alias])}`);
-        return `.${scopeClass}_host > ${part.replace(alias, aliases[alias] + "_host")}`;
-      }
-    }
-    const [pseudo] = part.match(/::.*/) || [""];
-    part = part.replace(pseudo, "");
-
-    if (part.indexOf(":host") !== -1) {
-      let [match, params] = part.match(/\:host\((.*?)\)/) || [null, ""];
-
-      params = params.replace(/\[([\w\d\-]+)\]/g, "[data-$1]");
-      // for (const prop of componentProps) {
-      //   params = params.replace(prop, "data-" + prop);
-      // }
-
-      return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}_host` + (params ? params : ""));
-    }
-
-    // don't want to target spans since the host is one
-    if (part === "span" && i === 0) {
-      return `.${scopeClass}_host span.${scopeClass}`;
-    }
-
-    const addedClass = `.${scopeClass}`;
-
-    // part first in case the selector is a tag name
-    // TODO - consider psuedo selectors
-    return part + addedClass + pseudo;
-  }).join(" ");
+  return parts.map((part, i) => {
+    if (!part) return part;
+    let [match, selector, delim] = part.match(/(.*?)([,\s]+)/) || [part, part, ""];
+    selector = getScopedSelector(selector, scopeClass, aliases, i);
+    return `${selector}${delim}`;
+  }).join("");
 };
+
+const getScopedSelector = (part: string, scopeClass: string, aliases: any, i: number) => {
+  if (/%/.test(part)) return part;
+
+  // TODO - this is all nasty. Need to parse selector as AST, then transform
+  // that.
+
+  // ignore ".selector > .selector"
+  if (/^[>,]$/.test(part)) return part;
+
+  for (const alias in aliases) {
+    if (part.indexOf(alias) !== -1) {
+      // console.log(`.${scopeClass}.host > ${part.replace(alias, aliases[alias])}`);
+      return `.${scopeClass}_host > ${part.replace(alias, aliases[alias] + "_host")}`;
+    }
+  }
+  const [pseudo] = part.match(/::.*/) || [""];
+  part = part.replace(pseudo, "");
+
+  if (part.indexOf(":host") !== -1) {
+    let [match, params] = part.match(/\:host\((.*?)\)/) || [null, ""];
+
+    params = params.replace(/\[([\w\d\-]+)\]/g, "[data-$1]");
+    // for (const prop of componentProps) {
+    //   params = params.replace(prop, "data-" + prop);
+    // }
+
+    return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}_host` + (params ? params : ""));
+  }
+
+  // don't want to target spans since the host is one
+  if (part === "span" && i === 0) {
+    return `.${scopeClass}_host span.${scopeClass}`;
+  }
+
+  const addedClass = `.${scopeClass}`;
+
+  // part first in case the selector is a tag name
+  // TODO - consider psuedo selectors
+  return part + addedClass + pseudo;
+}
 
 export const getSlot = weakMemo((slotName: string, parent: SlimElement) => {
 

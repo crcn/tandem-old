@@ -1,4 +1,4 @@
-import { SlimVMObjectType, SlimBaseNode, SlimElement, SlimElementAttribute, SlimParentNode, VMObjectSource, SlimTextNode, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimStyleElement,  } from "./state";
+import { SlimVMObjectType, SlimBaseNode, SlimElement, SlimElementAttribute, SlimParentNode, VMObjectSource, SlimTextNode, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimStyleElement, SlimFontFace } from "./state";
 import  { weakMemo, getVmObjectSourceUris } from "./utils";
 
 export type CompressedFragment = [SlimVMObjectType, any[]];
@@ -49,6 +49,18 @@ const compressVMObject = (node: SlimBaseNode) => {
       return [
         type,
         rules.map(rule => compressVMObject(rule))
+      ]
+    }
+    case SlimVMObjectType.FONT_FACE_RULE: {
+      const { type, style, source } = node as SlimFontFace;
+      const decl = [];
+      for (const key in style) {
+        decl.push([key, style[key]]);
+      }
+
+      return [
+        type,
+        decl
       ]
     }
     case SlimVMObjectType.STYLE_RULE: {
@@ -126,14 +138,17 @@ const uncompressVMObject = (node: any) => {
         rules: rules.map(rule => uncompressVMObject(rule))
       }
     }
+    case SlimVMObjectType.FONT_FACE_RULE: {
+      const [type, decls] = node;
+      const style: CSSStyleDeclaration = uncompressStyle(decls);
+      return {
+        type,
+        style
+      } as CSSFontFaceRule;
+    }
     case SlimVMObjectType.STYLE_RULE: {
       const [type, selectorText, decls] = node;
-      const style: CSSStyleDeclaration = {
-      } as any;
-      for (let i = 0, {length} = decls; i < length; i++) {
-        const [key, value] = decls[i];
-        style[key] = value;
-      }
+      const style: CSSStyleDeclaration = uncompressStyle(decls);
       return {
         type,
         selectorText,
@@ -151,3 +166,13 @@ const uncompressVMObject = (node: any) => {
     }
   }
 };
+
+const uncompressStyle = (decls: any) => {
+  const style: CSSStyleDeclaration = {
+  } as any;
+  for (let i = 0, {length} = decls; i < length; i++) {
+    const [key, value] = decls[i];
+    style[key] = value;
+  }
+  return style;
+}

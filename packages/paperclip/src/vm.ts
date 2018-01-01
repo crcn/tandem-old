@@ -4,7 +4,7 @@ import * as path from "path";
 import { getReferenceKeyPath } from "./inferencing";
 import { loadModuleDependencyGraph, DependencyGraph, IO, Component, getAllComponents, getComponentPreview, getComponentSourceUris, PCModuleType, CSSModule, ComponentModule } from "./loader";
 import { eachValue } from "./utils";
-import { SlimBaseNode, SlimParentNode, SlimTextNode, SlimElement, SlimVMObjectType, pushChildNode, SlimElementAttribute, VMObjectSource, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSAtRule, VMObject } from "slim-dom";
+import { SlimBaseNode, SlimParentNode, SlimTextNode, SlimElement, SlimVMObjectType, pushChildNode, SlimElementAttribute, VMObjectSource, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSAtRule, VMObject, SlimFontFace } from "slim-dom";
 import { kebabCase } from "lodash";
 
 // Note that this is MUTABLE primarily to make incrementing
@@ -389,11 +389,20 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
             }
             return match;
           });
+
         }
 
-        style[decl.name] = decl.value;
+        style[decl.name] = value;
       }
     };
+
+    if (rule.type === CSSExpressionType.AT_RULE) {
+      return {
+        type: SlimVMObjectType.FONT_FACE_RULE,
+        style,
+        source
+      } as SlimFontFace;
+    }
 
     return {
 

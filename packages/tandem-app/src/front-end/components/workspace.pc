@@ -234,7 +234,8 @@
             value: {
               type: "COLOR",
               value: "red"
-            }
+            },
+            hovering: true
           },
           { 
             name: "flex",

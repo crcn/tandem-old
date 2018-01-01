@@ -112,6 +112,10 @@ export type SlimCSSAtRule = {
   params: string;
 } & SlimCSSGroupingRule;
 
+export type SlimFontFace = {
+  style: SlimCSSStyleDeclaration;
+} & SlimCSSGroupingRule;
+
 export type SlimCSSStyleDeclaration = {
   id: string;
   disabledPropertyNames: string[] | null;

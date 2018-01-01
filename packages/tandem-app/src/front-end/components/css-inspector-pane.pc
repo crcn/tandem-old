@@ -13,7 +13,7 @@
     :host([ignored]) {
       opacity: 0.2;
     }
-    
+
     :host {
       display: block;
       padding: var(--base6) var(--base8);
@@ -160,7 +160,8 @@
             value: {
               type: "NUMBER",
               value: 1
-            }
+            },
+            hovering: true
           },
           { 
             name: "flex-direction",
@@ -168,7 +169,8 @@
             value: {
               type: "KEYWORD",
               name: "row"
-            }
+            },
+            hovering: true
           },
           { 
             name: "background",
