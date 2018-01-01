@@ -1,7 +1,6 @@
 IMMEDIATE:
 
-- [ ] cannot change selector text in patch dom
-- [ ] inherited styles not showing up for first selected node
+- [ ] `:root` prop should work
 - [ ] show inherited props from slots
 - [ ] get eye button to work
 - [ ] add style declarations

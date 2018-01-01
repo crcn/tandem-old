@@ -517,7 +517,7 @@ export type CSSRuleMatchResult = {
   assocId: string;
   style: SlimCSSStyleDeclaration;
   rule?: SlimCSSStyleRule;
-  targetElement: SlimElement;
+  targetElement?: SlimElement;
   mediaRule?: SlimCSSAtRule;
 };
 
@@ -720,6 +720,21 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
     }
   }
 
+  const rootStyleRule = getRootStyleRule(window);
+
+  if (rootStyleRule) {
+    appliedRules.push({
+      inherited: true,
+      rule: {
+        assocId: rootStyleRule.id,
+        style: rootStyleRule.style,
+        rule: rootStyleRule,
+      },
+      ignoredPropertyNames: {},
+      overriddenPropertyNames: {}
+    })
+  }
+
   return appliedRules;
 });
 
@@ -727,6 +742,17 @@ export type TargetSelector = {
   uri: string;
   value: string;
 }
+
+
+export const getRootStyleRule = weakMemo((window: SlimWindow) => {
+  const allObjects = flattenObjects(window.document);
+  for (const id in allObjects) {
+    const { value } = allObjects[id];
+    if (value.type === SlimVMObjectType.STYLE_RULE && (value as SlimCSSStyleRule).selectorText === ":root") {
+      return value as SlimCSSStyleRule
+    }
+  }
+});
 
 const getTargetStyleOwners = (element: SlimElement, propertyNames: string[], targetSelectors: TargetSelector[], window: SlimWindow): {
   [identifier: string]: SlimElement | SlimCSSStyleRule
