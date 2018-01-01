@@ -777,7 +777,6 @@ const serializeArtboard = ({ $id, $type, componentId, previewName, bounds }: Art
   componentId,
   previewName,
   bounds,
-  disabledStyleDeclarations: {},
   scrollPosition: {
     left: 0,
     top: 0

@@ -6,12 +6,13 @@ IMMEDIATE:
 - [ ] declaration style should be an array, not an object
 
 - [ ] WARM UP
-  - [ ] error when component id already exists (linter)
-  - [ ] ensure that disabled css properties _stay_ disabled when they change
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
+
+- [ ] Bugs
+  - [ ] removing hover prop on css inspector component doesn't remove eye icon.
 
 - [ ] CSS Inspector* 
   - [ ] add new style - specific to target element

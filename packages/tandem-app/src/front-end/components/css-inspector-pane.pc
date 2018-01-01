@@ -174,7 +174,6 @@
               type: "NUMBER",
               value: 1
             },
-            hovering: true,
             onToggleDeclarationClick: null
           },
           { 

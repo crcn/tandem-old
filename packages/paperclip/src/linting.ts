@@ -45,6 +45,9 @@ type Caller = {
 }
 
 type LintContext = {
+  lintedComponentIds: {
+    [identifier: string]: boolean
+  };
   currentComponentId: string;
   graph: DependencyGraph;
   optionalVars?: boolean;
@@ -67,11 +70,22 @@ export type LintResult = {
 export const lintDependencyGraph = weakMemo((graph: DependencyGraph, options: LintingOptions = {}): LintResult => {
 
   const allComponents = {};
+  const diagnostics: Diagnostic[] = [];
 
   for (const filePath in graph) {
     const { module } = graph[filePath];
     if (module.type === PCModuleType.COMPONENT) {
       for (const component of (module as ComponentModule).components) {
+        if (allComponents[component.id]) {
+          diagnostics.push({
+            type: DiagnosticType.ERROR,
+            location: component.source.location,
+            message: `Duplicate component`,
+            filePath,
+          });
+          continue;
+        }
+
         allComponents[component.id] = {
           filePath,
           component
@@ -84,11 +98,12 @@ export const lintDependencyGraph = weakMemo((graph: DependencyGraph, options: Li
     graph,
     currentComponentId: null,
     options,
+    lintedComponentIds: {},
     currentFilePath: null,
     ignoreTagNames: {},
     callstack: [],
     components: allComponents,
-    diagnostics: []
+    diagnostics,
   };
 
   for (const componentId in allComponents) {
@@ -122,6 +137,7 @@ const dedupeDiagnostics = (diagnostics: Diagnostic[]): Diagnostic[] => {
 }
 
 const lintComponent = (component: Component, context: LintContext) => {
+
   if (!component.template) {
     context = addDiagnosticError(component.source, `missing template`, context);
   } else {
@@ -139,6 +155,7 @@ const lintComponent = (component: Component, context: LintContext) => {
   if (!component.id) {
     context = addDiagnosticError(component.source, `id attribute is missing`, context);
   }
+
 
   for (let i = 0, {length} = component.source.childNodes; i < length; i++) {
     const componentChild = component.source.childNodes[i] as PCElement;

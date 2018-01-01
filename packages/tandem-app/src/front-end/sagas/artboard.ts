@@ -1,9 +1,9 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { Mutation, createPropertyMutation } from "source-mutation";
+import { Mutation, createPropertyMutation, SetPropertyMutation } from "source-mutation";
 import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading, CSS_TOGGLE_DECLARATION_EYE_CLICKED, CSSToggleDeclarationEyeClicked, artboardDOMPatched } from "../actions";
 import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
 import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardsByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath, getWorkspaceVMObject } from "../state";
@@ -47,12 +47,15 @@ function* handleLoadAllArtboards() {
 function* handlePreviewDiffed() {
   while(1) {
     const { componentId, previewName, documentChecksum, diff }: PreviewDiffed = yield take(PREVIEW_DIFFED);
-    const artboards = getArtboardsByInfo(componentId, previewName, yield select());
+    const state: ApplicationState = yield select();
+    const artboards = getArtboardsByInfo(componentId, previewName, state);
     if (!artboards.length) {
       console.error(`artboard ${componentId}:${previewName} not found`);
       continue;
     }
     for (const artboard of artboards) {
+      const workspace = getArtboardWorkspace(artboard.$id, state);
+      
       // likely that the server restarted, or user connection dropped while the document changed.
       if (artboard.checksum !== documentChecksum) {
         console.info(`Checksum mismatch for artboard ${artboard.componentId}:${artboard.previewName}, reloading document.`);
@@ -69,8 +72,12 @@ function* handlePreviewDiffed() {
 
       for (const mutation of preppedDiff) {
 
-        // TODO - filter out disabled mutations
-        vmObjectMap = patchDOM2(mutation, document, artboard.mount.contentDocument.body, vmObjectMap);
+        if (canPatchDOM(mutation, artboard, workspace)) {
+
+          // TODO - map mutation based on disabled props
+          vmObjectMap = patchDOM2(mutation, document, artboard.mount.contentDocument.body, vmObjectMap);
+        }
+
         document = patchNode2(mutation, document);
       }
 
@@ -88,6 +95,17 @@ function* handlePreviewDiffed() {
       );
     }
   }
+}
+
+const canPatchDOM = (mutation: Mutation<any>, artboard: Artboard, workspace: Workspace) => {
+  if (mutation.type === CSS_SET_STYLE_PROPERTY) {
+    const { name, newValue } = mutation as SetPropertyMutation<any>;
+    const document = getArtboardDocumentBody(artboard);
+    const target = getVMObjectFromPath(mutation.target, document);
+    return !isCSSPropertyDisabled(target.id, name, document, workspace.disabledStyleDeclarations);
+  }
+
+  return true;
 }
 
 function* handleArtboardRendered() {

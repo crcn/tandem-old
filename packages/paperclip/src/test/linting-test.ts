@@ -753,6 +753,46 @@ describe(__filename + "#", () => {
           type: DiagnosticType.ERROR
         }
       ]
+    ],
+    [
+      {
+        "entry.pc": `
+          <component id="c">
+            <template>
+            </template>
+            <preview name="main">
+              <c />
+            </preview>
+          </component>
+
+          <component id="c">
+            <template>
+            </template>
+            <preview name="main">
+              <c />
+            </preview>
+          </component>          
+        `
+      },
+      [
+        {
+          "type": "ERROR",
+          "location": {
+            "start": {
+              "column": 11,
+              "line": 10,
+              "pos": 188
+            },
+            "end": {
+              "column": 23,
+              "line": 16,
+              "pos": 353
+            }
+          },
+          "message": "Duplicate component",
+          "filePath": "entry.pc"
+        }
+      ]
     ]
   ].forEach(([sources, inferResult]: any) => {
     it(`can lint ${sources["entry.pc"]}`, async () => {

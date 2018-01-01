@@ -351,7 +351,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      `<root><#shadow><style>.container {color: red;}</style><div class="container"></div></#shadow></root>`
+      `<style scope="root">.container {color: red;}</style><root><#shadow><div class="container"></div></#shadow></root>`
     ],
     [
       {
@@ -375,7 +375,7 @@ describe(__filename + "#", () => {
           </component>
         `
       },
-      `<style>.container {color: red;}</style><root><#shadow><style>@import "/style.css";</style><div class="container"></div></#shadow></root>`
+      `<style scope="root">@import "/style.css";</style><style>.container {color: red;}</style><root><#shadow><div class="container"></div></#shadow></root>`
     ]
   ].forEach(([entries, result]: any) => {
     it(`can render ${entries["entry.pc"]}`, async () => {

@@ -707,7 +707,15 @@ export const containsInheritableStyleProperty = (style: SlimCSSStyleDeclaration)
 
 const getDisabledDeclarations = (matchingRule: CSSRuleMatchResult, window: SlimWindow, disabledDeclarationInfo: any = {}) => {
   const ruleOwner = matchingRule.rule || matchingRule.targetElement;
-  const scopeInfo = getStyleOwnerScopeInfo(ruleOwner.id, window.document);
+  return getDisabledStyleRuleProperties(ruleOwner.id, window.document, disabledDeclarationInfo);
+}
+
+export const isCSSPropertyDisabled = (itemId: string, propertyName: string, document: SlimParentNode, disabledDeclarationInfo: any) => {
+  return Boolean(getDisabledStyleRuleProperties(itemId, document, disabledDeclarationInfo)[propertyName]);
+};
+
+export const getDisabledStyleRuleProperties = (itemId: string, document: SlimParentNode, disabledDeclarationInfo: any) => {
+  const scopeInfo = getStyleOwnerScopeInfo(itemId, document);
   const scopeHash = scopeInfo.join("");
 
   const disabledPropertyNames = {}
@@ -717,7 +725,9 @@ const getDisabledDeclarations = (matchingRule: CSSRuleMatchResult, window: SlimW
     disabledPropertyNames[key] = Boolean(info[key]);
   }
   return disabledPropertyNames;
-}
+};
+
+
 
 export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, elementId: string, disabledDeclarationInfo: any = {}) => {
   const element = getSyntheticWindowChild(elementId, window) as any as SlimElement;
