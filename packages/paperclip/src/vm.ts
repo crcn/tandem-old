@@ -350,7 +350,7 @@ const appendChildNodes = <TParent extends SlimParentNode>(parent: TParent, child
       }
 
       if (_isCondition) {
-        if (_if ? evalExpr(_if.condition, context) : !_passedCondition) {
+        if (!_passedCondition && (!_if || evalExpr(_if.condition, context))) {
           _passedCondition = true;
         } else {
           continue;

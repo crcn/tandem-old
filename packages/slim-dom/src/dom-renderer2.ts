@@ -42,6 +42,10 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
   switch(vmNode.type) {
     case SlimVMObjectType.ELEMENT: {
       const { tagName, type, id, shadow, childNodes, attributes } = vmNode as SlimElement;
+      
+      if (tagName === "style") {
+        return null;
+      }
 
       if (tagName === "slot") {
 
@@ -73,12 +77,10 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
 
         return  slotElement;
       }
+      
 
       const nativeElement = context.map[vmNode.id] = document.createElement(tagName);
 
-      if (tagName === "style") {
-        return null;
-      }
       
       for (let i = 0, {length} = attributes; i < length; i++) {
         const attribute = attributes[i];
@@ -481,6 +483,12 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
 
 const removeNativeChildNode = (child: SlimBaseNode, map: NativeObjectMap) => {
   const nativeChild = map.dom[child.id];
+
+  // happens for style elements
+  if (!nativeChild) {
+    console.warn(`${JSON.stringify(child)} does not have an associative native DOM node.`);
+    return map;
+  }
   map = {
     ...map,
     dom: {

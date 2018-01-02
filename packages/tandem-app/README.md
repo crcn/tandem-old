@@ -1,6 +1,7 @@
 IMMEDIATE:
 
-- [ ] removeChild exception in patch do when editing css inspector
+- [ ] fix child node not found (style - add `input a {` to break)
+- [ ] cannot read childNodes - type out `<input type="text" value=[[bind sourceValue]] />`
 - [ ] add style declarations
 - [ ] remove style declarations
 - [ ] edit raw value
@@ -25,6 +26,16 @@ IMMEDIATE:
   - [ ] edit raw declaration value
   - [ ] prioritized css 
   - [ ] quick add style feature (like chrome inspector)
+
+- [ ] Color inspector
+  - [ ] hsl picker
+  - [ ] hue icker
+  - [ ] alpha picker
+  - [ ] color preview
+  - [ ] li
+
+- [ ] shadow picker
+- [ ] border inspector
 
 - [ ] Pretty CSS Inspector
 

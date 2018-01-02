@@ -133,7 +133,7 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
       return <span>Syntax error</span>;
     }
 
-    return <Base name={name} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} />;
+    return <Base name={name} editingName={!name} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} />;
   }
 );
 

@@ -821,7 +821,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
 
       const workspace = getSelectedWorkspace(state);
       for (const artboard of workspace.artboards) {
-        if (artboard.dependencyUris.indexOf(filePath) !== -1) {
+        if (artboard.dependencyUris && artboard.dependencyUris.indexOf(filePath) !== -1) {
           state = updateArtboard(state, artboard.$id, { loading: true });
         }
       }
