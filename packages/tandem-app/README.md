@@ -10,7 +10,6 @@ IMMEDIATE:
 - [ ] delete style rule
 
 - [ ] WARM UP
-  - [ ] exception for `[[if !overridden && value]]`
   - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again

@@ -33,6 +33,8 @@ function* handleDevConfigLoaded() {
 
   console.log(`spawning Paperclip dev server with env PORT ${childServerPort}`);
 
+  console.log(JSON.stringify(config.devServer));
+
   let proc;
 
   const chan = eventChannel(emit => {
