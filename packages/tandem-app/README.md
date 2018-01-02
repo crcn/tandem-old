@@ -14,9 +14,11 @@ IMMEDIATE:
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
+  - [ ] disabled CSS declaration eye should not be dimmed
 
 - [ ] Bugs
   - [ ] removing hover prop on css inspector component doesn't remove eye icon.
+  - [ ] full screen mode doesn't resize when gutters are toggled
 
 - [ ] CSS Inspector* 
   - [ ] add new style - specific to target element
