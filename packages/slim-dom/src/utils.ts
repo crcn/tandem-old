@@ -1025,15 +1025,14 @@ export const compileScopedCSS = (selectorText: string, scopeClass: string, alias
 const getScopedSelector = (part: string, scopeClass: string, aliases: any, i: number) => {
   if (/%/.test(part)) return part;
 
+  const scopeHostClass = scopeClass + `_host`;
+
   // TODO - this is all nasty. Need to parse selector as AST, then transform
   // that.
 
-  // ignore ".selector > .selector"
-  if (/^[>,]$/.test(part)) return part;
-
   for (const alias in aliases) {
     if (part.indexOf(alias) !== -1) {
-      return `.${scopeClass}_host > ${part.replace(alias, aliases[alias] + "_host")}`;
+      part = part.replace(part, part.replace(alias, aliases[alias] + "_host"));
     }
   }
   const [pseudo] = part.match(/::.*/) || [""];
@@ -1047,12 +1046,12 @@ const getScopedSelector = (part: string, scopeClass: string, aliases: any, i: nu
     //   params = params.replace(prop, "data-" + prop);
     // }
 
-    return part.replace(/\:host(\(.*?\))?/g, `.${scopeClass}_host` + (params ? params : ""));
+    return part.replace(/\:host(\(.*?\))?/g, `.${scopeHostClass}` + (params ? params : ""));
   }
 
   // don't want to target spans since the host is one
   if (part === "span" && i === 0) {
-    return `.${scopeClass}_host span.${scopeClass}`;
+    return `.${scopeHostClass} span.${scopeClass}`;
   }
 
   const addedClass = `.${scopeClass}`;

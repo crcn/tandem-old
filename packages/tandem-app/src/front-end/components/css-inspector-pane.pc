@@ -14,18 +14,10 @@
       opacity: 0.2;
     }
 
-    :host([disabled]) .name {
+    :host([disabled]) .name, :host([disabled]) td-css-expr-input, :host([disabled]) .raw-value {
       opacity: 0.2;
     }
-
-     {
-      opacity: 0.2;
-    }
-
-    :host([disabled]) .raw-value {
-      opacity: 0.2;
-    }
-
+    
     :host {
       display: block;
       padding: var(--base6) var(--base8);

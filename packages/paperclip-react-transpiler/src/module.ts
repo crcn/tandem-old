@@ -173,7 +173,7 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 
   const componentPropertyNames = Object.keys(inferNodeProps(component.source).inference.properties);
 
-  const hostContent = `${context.elementFactoryName}("span", Object.assign({ className: "${context.scopeClass}_host" }, __getDataProps(props)), ` + 
+  const hostContent = `${context.elementFactoryName}("span", Object.assign({ className: "${context.scopeClass}_host " + (props.className || "") }, __getDataProps(props)), ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
   `)`;
 
@@ -466,7 +466,7 @@ const transpileAttributes = (element: PCElement | PCSelfClosingElement, context:
     content += `"${name}": ${value},`
   }
 
-  if (!addedScopeStyle && !isComponent) {
+  if (!addedScopeStyle) {
     content += `"className": "${context.scopeClass}",`
   }
 
