@@ -13,7 +13,7 @@
   </style>
   <template>
     <div>
-      <h2>Playground area for resolving!!!</h2>
+      <h2>Playground area for resolving</h2>
     </div>
   </template>
   <preview name="main" width="400" height="300">

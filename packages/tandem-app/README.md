@@ -1,6 +1,7 @@
 IMMEDIATE:
 
 - [ ] fix child node not found (style - add `input a {` to break)
+- [ ] `:host([disabled]) td-css-expr-input` not working
 - [ ] cannot read childNodes - type out `<input type="text" value=[[bind sourceValue]] />`
 - [ ] add style declarations
 - [ ] remove style declarations
@@ -10,11 +11,11 @@ IMMEDIATE:
 - [ ] delete style rule
 
 - [ ] WARM UP
-  - [ ] start on error handling for FE
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
   - [ ] disabled CSS declaration eye should not be dimmed
+  - [ ] start on error handling for FE
 
 - [ ] Bugs
   - [ ] removing hover prop on css inspector component doesn't remove eye icon.

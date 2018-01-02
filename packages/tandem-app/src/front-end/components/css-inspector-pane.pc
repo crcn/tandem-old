@@ -10,7 +10,19 @@
   <meta name="internal" content="true" />
   <style>
 
-    :host([ignored]), :host([disabled]) {
+    :host([ignored]) {
+      opacity: 0.2;
+    }
+
+    :host([disabled]) .name {
+      opacity: 0.2;
+    }
+
+     {
+      opacity: 0.2;
+    }
+
+    :host([disabled]) .raw-value {
       opacity: 0.2;
     }
 
@@ -59,7 +71,7 @@
       <input type="text" value=[[bind sourceValue]] />
     </span>
     <td-css-expr-input [[elseif !overridden && value]] value=[[bind value]] />
-    <span [[else]]>
+    <span [[else]] name="raw-value">
       [[bind sourceValue]]
     </span>
 
@@ -188,6 +200,7 @@
               type: "NUMBER",
               value: 1
             },
+            disabled: true,
             onToggleDeclarationClick: null
           },
           { 
