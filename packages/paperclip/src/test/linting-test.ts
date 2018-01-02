@@ -793,6 +793,21 @@ describe(__filename + "#", () => {
           "filePath": "entry.pc"
         }
       ]
+    ],
+    [
+      {
+        "entry.pc": `
+          <component id="test2">
+          <template>
+            <td-css-expr-input [[elseif !overridden &&]] value=[[bind value]] />
+          </template>
+          <preview name="test">
+            <test2 value="a" />
+          </preview>
+          </component>
+        `
+      },
+      []
     ]
   ].forEach(([sources, inferResult]: any) => {
     it(`can lint ${sources["entry.pc"]}`, async () => {

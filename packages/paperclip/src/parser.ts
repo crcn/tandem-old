@@ -498,11 +498,22 @@ const createConditionBlock = (context: ParseContext, type: BKExpressionType): BK
   const start = scanner.curr();
   scanner.next(); // eat name
   eatWhitespace(context);
+
+  let condition = null;
+
+  if (scanner.curr().type !== PCTokenType.BRACKET_CLOSE) {
+    condition = createBKExpressionStatement(context);
+    if (!condition) {
+      return null;
+    }
+  }
+
+  
   return ({
     type,
 
     // only support references for now
-    condition: scanner.curr().type !== PCTokenType.BRACKET_CLOSE ? createBKExpressionStatement(context) : null,
+    condition,
     location: getLocation(start, scanner.curr(), scanner.source)
   });
 };
