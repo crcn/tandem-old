@@ -70,6 +70,7 @@ function* handlePreviewDiffed() {
       let document = getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode;
       let vmObjectMap = artboard.nativeObjectMap;
 
+      console.log("PATCH", preppedDiff);
       for (const mutation of preppedDiff) {
 
         if (canPatchDOM(mutation, artboard, workspace)) {

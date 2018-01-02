@@ -17,7 +17,7 @@
     :host([disabled]) .name, :host([disabled]) td-css-expr-input, :host([disabled]) .raw-value {
       opacity: 0.2;
     }
-    
+
     :host {
       display: block;
       padding: var(--base6) var(--base8);
@@ -52,6 +52,8 @@
       color: var(--font-color);
       width: 33%;
     }
+
+    
   </style>
   <template>
     <span [[if editingName]]>
@@ -90,7 +92,7 @@
       padding-right: var(--base4);
     }
     .
-    .name:after {
+    .name::aftera {
       content: ":";
     }
     .value {
