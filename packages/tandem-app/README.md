@@ -1,8 +1,5 @@
 IMMEDIATE:
 
-- [ ] fix child node not found (style - add `input a {` to break)
-- [ ] `:host([disabled]) td-css-expr-input` not working
-- [ ] cannot read childNodes - type out `<input type="text" value=[[bind sourceValue]] />`
 - [ ] add style declarations
 - [ ] remove style declarations
 - [ ] edit raw value

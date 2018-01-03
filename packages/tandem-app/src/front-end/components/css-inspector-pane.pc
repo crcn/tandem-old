@@ -55,16 +55,20 @@
       padding: var(--base) var(--base2);
     }
 
+    input::placeholder {
+      opacity: 0.3;
+    }
+
     
   </style>
   <template>
     <span [[if editingName]]>
-      <input type="text" value=[[bind name]] />
+      <input type="text" value=[[bind name]] placeholder="name" />
     </span>
     <span [[else]] class="name">[[bind name]]</span>
 
     <span [[if editingValue]]>
-      <input type="text" value=[[bind sourceValue]] />
+      <input type="text" value=[[bind sourceValue]] placeholder="value" />
     </span>
     <td-css-expr-input [[elseif !overridden && value]] value=[[bind value]] />
     <span [[else]] name="raw-value">
@@ -260,7 +264,18 @@
           { 
             name: "margin",
             editingValue: true,
-            sourceValue: "uppercase",
+            sourceValue: "editing value",
+            value: {
+              type: "MEASUREMENT",
+              value: "10",
+              unit: "px"
+            },
+            onToggleDeclarationClick: null
+          },
+          { 
+            name: "margin",
+            sourceValue: null,
+            editingValue: true,
             value: {
               type: "MEASUREMENT",
               value: "10",
