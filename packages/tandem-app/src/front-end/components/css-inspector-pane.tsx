@@ -3,18 +3,22 @@ import { Pane } from "./pane";
 import { identity } from "lodash";
 import { compose, pure, withHandlers, withState, withProps, mapProps } from "recompose";
 import { weakMemo } from "aerial-common2";
+import { Autofocus } from "./autofocus";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
-import { cssToggleDeclarationEyeClicked } from "front-end/actions";
+import { cssToggleDeclarationEyeClicked, cssDeclarationNameChanged, cssDeclarationValueChanged } from "front-end/actions";
 import { Workspace, getNodeArtboard, DisabledStyleDeclarations, Artboard } from "front-end/state";
 
 import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule, getStyleOwnerFromScopeInfo, getStyleOwnerScopeInfo } from "slim-dom";
 
 type StyleDelarationOuterProps = {
   isNewDeclaration?: boolean;
+  onDeclarationBlur?: () => any;
+  onNameChange: (oldName: string, newName: string) => any;
+  onValueChange: (name: string, value: string) => any;
   artboardId: string;
   owner: SlimCSSStyleRule | SlimElement;
   name: string;
@@ -27,8 +31,12 @@ type StyleDelarationOuterProps = {
 
 type StyleDelarationInnerProps = {
   onToggleDeclarationClick: () => any;
-  nameInputSlot: any;
-
+  // setNewName: (value: string) => any;
+  // setNewValue: (value: string) => any;
+  setEditingName: (value: boolean) => any;
+  setEditingValue: (value: boolean) => any;
+  onNameInputBlur: (event: any) => any;
+  onValueInputBlur: (event: any) => any;
 } & TdStyleDeclarationInnerProps;
 
 
@@ -121,33 +129,79 @@ const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
 
 const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelarationOuterProps>(
   pure,
-  withState(`editingName`, `setEditingName`, false),
-  withState(`editingValue`, `setEditingValue`, false),
-  mapProps(({editingName, isNewDeclaration}) => ({
-    editingName: isNewDeclaration ? !name : editingName
-  })),
+  withState(`editingName`, `setEditingName`, undefined),
+  withState(`editingValue`, `setEditingValue`, undefined),
+  withState(`newName`, `setNewName`, undefined),
+  withState(`newValue`, `setNewValue`, undefined),
   withHandlers({
-    onToggleDeclarationClick: ({ artboardId, owner, dispatch, name }: StyleDelarationOuterProps) => (event) => {
+    onDone: ({ name, value, onDeclarationBlur }) => ({ newName, newValue }) => {
+
+    },
+    onToggleDeclarationClick: ({ artboardId, owner, dispatch, name }: StyleDelarationInnerProps) => (event) => {
       dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name));
     },
-    onNameInputKeyPress: ({ dispatch })  => (event) => {
-
+    onNameInputKeyPress: ({ setEditingName, onNameChange })  => (event) => {
+      if (event.key === "Enter") {
+        setEditingName(false);
+        if (event.target.value !== name) {
+          onNameChange(name, event.target.value);
+        }
+      }
     },
-    onValueInputKeyPress: ({ dispatch }) => () => {
+    onValueInputKeyPress: ({ setEditingValue }) => (event) => {
+      if (event.key === "Enter") {
+        setEditingValue(false);
+      }
+    },
+    onNameInputBlur: ({ name, setEditingName, setEditingValue, onNameChange }: StyleDelarationInnerProps) => (event) => {
+      setEditingName(false);
 
+      if (event.target.value !== name) {
+        onNameChange(name, event.target.value);
+      }
+    },
+    onValueInputBlur: ({ setEditingValue, onValueChange, onDeclarationBlur, name, value }: StyleDelarationInnerProps) => (event) => {
+      setEditingValue(false);
+      if (onDeclarationBlur) {
+        onDeclarationBlur();
+      }
+
+      if (event.target.value !== value) {
+        onValueChange(name, event.target.value);
+      }
+    },
+    onNameFocus: ({ setEditingName }) => () => {
+      setEditingName(true);
+    },
+    onValueFocus: ({ setEditingValue, name }) => () => {
+      setEditingValue(true);
     }
   }),
-  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value, onToggleDeclarationClick, editingName, editingValue, ...rest}: StyleDelarationInnerProps) => {
+  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value, onToggleDeclarationClick, editingName, editingValue, onNameInputBlur, onValueInputBlur, onValueInputKeyPress, onNameInputKeyPress, isNewDeclaration, onNameFocus, onValueFocus, ...rest}: StyleDelarationInnerProps) => {
 
     let root: any;
 
+    if (isNewDeclaration && editingName !== false) {
+      editingName = true;
+    }
+    
     try {
       root = value && parseDeclaration(value).root;
     } catch(e) {
-      return <span>Syntax error</span>;
     }
 
-    return <Base name={name} editingName={editingName} editingValue={editingValue} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} {...rest} />;
+    let nameInputSlot;
+    let valueInputSlot;
+
+    if (editingName) {
+      nameInputSlot = <Autofocus select><input type="text" placeholder="name" defaultValue={name} className="TdStyleDeclaration" onBlur={onNameInputBlur} onKeyPress={onNameInputKeyPress} /></Autofocus>;
+    }
+
+    if (editingValue) {
+      valueInputSlot = <Autofocus select><input type="text" placeholder="value" defaultValue={value} className="TdStyleDeclaration" onBlur={onValueInputBlur} onKeyPress={onValueInputKeyPress} /></Autofocus>;
+    }
+
+    return <Base name={name} editingName={editingName} onNameFocus={onNameFocus} onValueFocus={onValueFocus} editingValue={editingValue} nameInputSlot={nameInputSlot} valueInputSlot={valueInputSlot} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} {...rest} />;
   }
 );
 
@@ -164,8 +218,10 @@ export type CSSStyleRuleOuterProps = {
   artboardId: string;
 } & AppliedCSSRuleResult;
 export type CSSStyleRuleInnerProps = {
+  onLastDeclarationBlur: () => any;
   addingDeclaration: boolean;
   onAddDeclarationClick: () => any;
+  onDeclarationNameChange: (oldName: string, newName: string) => any;
 } & CSSStyleRuleOuterProps & TdStyleRuleInnerProps;
 
 const beautifyLabel = (label: string) => {
@@ -181,8 +237,20 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     onAddDeclarationClick: ({ setAddingDeclaration }) => () => {
       setAddingDeclaration(true);
     },
+    onLastDeclarationBlur: ({ setAddingDeclaration, addingDeclaration }) => () => {
+      setAddingDeclaration(!addingDeclaration);
+      
+    },
+    onDeclarationNameChange: ({ dispatch, rule, artboardId }: CSSStyleRuleInnerProps) => (oldName: string, newName: string) => {
+      const owner = (rule.rule || rule.targetElement);
+      dispatch(cssDeclarationNameChanged(oldName, newName, owner.id, artboardId));
+    },
+    onDeclarationValueChange: ({ dispatch, rule, artboardId }: CSSStyleRuleInnerProps) => (name: string, newValue: string) => {
+      const owner = (rule.rule || rule.targetElement);
+      dispatch(cssDeclarationValueChanged(name, newValue, owner.id, artboardId));
+    }
   }),
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration }: CSSStyleRuleInnerProps) => {
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationBlur, onDeclarationNameChange, onDeclarationValueChange }: CSSStyleRuleInnerProps) => {
 
     const declarations = rule.style;
 
@@ -203,6 +271,8 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       childDeclarations.push({
         owner: owner,
         artboardId,
+        onNameChange: onDeclarationNameChange,
+        onValueChange: onDeclarationValueChange,
         name,
         ignored,
         disabled,
@@ -216,14 +286,20 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       childDeclarations.push({
         owner,
         artboardId,
-        dispatch,
         isNewDeclaration: true,
+        onNameChange: onDeclarationNameChange,
+        onValueChange: onDeclarationValueChange,
+        dispatch,
         name: undefined,
         value: undefined,
         ignored: false,
         disabled: false,
         overridden: false
       });
+    }
+
+    if (childDeclarations.length) {
+      childDeclarations[childDeclarations.length - 1].onDeclarationBlur = onLastDeclarationBlur;
     }
 
     return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;

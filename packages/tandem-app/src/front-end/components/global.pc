@@ -8,6 +8,11 @@
   * {
     box-sizing: border-box;
   }
+
+    *:focus {
+      outline: red;
+    }
+    
   :root {
     --base: 2px;
     --base2: 4px;

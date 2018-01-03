@@ -21,7 +21,6 @@ import { pure, compose, withHandlers, withState } from "recompose";
 import { 
   sourceClicked,
   cssDeclarationCreated,
-  cssDeclarationNameChanged, 
   cssDeclarationValueChanged, 
   cssDeclarationTitleMouseEnter,
   cssDeclarationTitleMouseLeave,
@@ -199,7 +198,7 @@ const StyleProperty = compose<StylePropertyInnerProps, StylePropertyInnerProps>(
   pure,
   withHandlers({
     onNameChange: ({ name, windowId, declarationId, dispatch }) => (value: string) => {
-      dispatch(cssDeclarationNameChanged(name, value, declarationId, windowId));
+      // dispatch(cssDeclarationNameChanged(name, value, declarationId, windowId));
     },
     onValueChange: ({ name, windowId, declarationId, dispatch }) => (value: string) => {
       dispatch(cssDeclarationValueChanged(name, value, declarationId, windowId));

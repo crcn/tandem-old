@@ -296,7 +296,7 @@ export type EmptyWindowsUrlAdded = {
 export type CSSDeclarationChanged = {
   artboardId: string;
   name: string;
-  declarationId: string;
+  ownerId: string;
   value: string;
 } & BaseEvent;
 
@@ -425,6 +425,7 @@ export const cssToggleDeclarationEyeClicked = (artboardId: string, itemId: strin
   declarationName,
 });
 
+
 export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved => ({
   workspaceId,
   point,
@@ -462,27 +463,27 @@ export const artboardDOMComputedInfo = (artboardId: string, computedInfo: Comput
   type: ARTBOARD_DOM_INFO_COMPUTED,
 });
 
-export const cssDeclarationNameChanged = (name: string, value: string, declarationId: string, artboardId: string): CSSDeclarationChanged => ({
-  declarationId,
+export const cssDeclarationNameChanged = (name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
+  ownerId,
   artboardId,
   name,
   value,
   type: CSS_DECLARATION_NAME_CHANGED
 });
 
-export const cssDeclarationValueChanged = (name: string, value: string, declarationId: string, artboardId: string): CSSDeclarationChanged => ({
-  declarationId,
+export const cssDeclarationValueChanged = (name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
+  ownerId,
   artboardId,
   name,
   value,
   type: CSS_DECLARATION_VALUE_CHANGED
 });
 
-export const cssDeclarationCreated = (name: string, value: string, declarationId: string, artboardId: string): CSSDeclarationChanged => ({
+export const cssDeclarationCreated = (name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
   artboardId,
   name,
   value,
-  declarationId,
+  ownerId,
   type: CSS_DECLARATION_CREATED
 });
 

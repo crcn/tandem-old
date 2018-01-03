@@ -1,11 +1,13 @@
 IMMEDIATE:
 
+- [ ] focus on next declaration when TAB is pressed
 - [ ] add style declarations
 - [ ] remove style declarations
 - [ ] edit raw value
 - [ ] edit selector text
 - [ ] add style rule
 - [ ] delete style rule
+- [ ] maintain declaration name index
 
 - [ ] WARM UP
   - [ ] pseudo selectors must work

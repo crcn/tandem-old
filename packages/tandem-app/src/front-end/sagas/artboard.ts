@@ -1,10 +1,10 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled, VMObject, SlimStyleElement } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
 import { Mutation, createPropertyMutation, SetPropertyMutation } from "source-mutation";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading, CSS_TOGGLE_DECLARATION_EYE_CLICKED, CSSToggleDeclarationEyeClicked, artboardDOMPatched } from "../actions";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading, CSS_TOGGLE_DECLARATION_EYE_CLICKED, CSSToggleDeclarationEyeClicked, artboardDOMPatched, CSSDeclarationChanged, CSS_DECLARATION_CREATED, CSS_DECLARATION_NAME_CHANGED, CSS_DECLARATION_VALUE_CHANGED } from "../actions";
 import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
 import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardsByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath, getWorkspaceVMObject } from "../state";
 import { debounce } from "lodash";
@@ -29,6 +29,7 @@ export function* artboardSaga() {
   yield fork(handleArtboardSizeChanges);
   yield fork(handleOpenExternalArtboardsRequested);
   yield fork(handleToggleCSSDeclaration);
+  yield fork(handleCSSChanges);
 }
 
 function* handleLoadAllArtboards() {
@@ -197,44 +198,53 @@ function* handleMoved() {
 function* handleToggleCSSDeclaration() {
   while(1) {
     const { artboardId, declarationName, itemId }: CSSToggleDeclarationEyeClicked = yield take(CSS_TOGGLE_DECLARATION_EYE_CLICKED);
+
     const itemType = getVMObjectIdType(itemId);
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
 
-    const scopeInfo = getStyleOwnerScopeInfo(itemId, getArtboardById(artboardId, state).document);
-    const scopeHash = scopeInfo.join("");
-
-    for (const artboard of workspace.artboards) {
-
-      const owner = getStyleOwnerFromScopeInfo(scopeInfo, artboard);
-      if (!owner) {
-        continue;
-      }
-
-      const body = getArtboardDocumentBody(artboard);
-      const ownerPath = getVMObjectPath(owner, body);
+    yield call(updateSharedArtboardContainers, itemId, artboardId, (nestedObject, scopeHash, path, root) => {
       const disabled = workspace.disabledStyleDeclarations[scopeHash][declarationName];
-      let mutation: Mutation<any>;
 
       if (itemType === SlimVMObjectType.STYLE_RULE) {
-        const rule = owner as SlimCSSStyleRule;
-        mutation = createPropertyMutation(CSS_SET_STYLE_PROPERTY, ownerPath, declarationName, disabled ? null : rule.style[declarationName]);
-      } else if (itemType === SlimVMObjectType.ELEMENT) {
-
+        return createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, declarationName, disabled ? null : (nestedObject as SlimCSSStyleRule).style[declarationName]);
       }
 
-      yield put(artboardDOMPatched(
-        artboard.$id, 
-        patchDOM2(mutation, body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap)
-      ));
-
-      yield spawn(function*() {
-        yield call(delay, COMPUTE_DOM_INFO_DELAY);
-        yield call(recomputeArtboardInfo, artboard);
-      });
-    }
+      return null;
+    });
   }
 }
+
+function* updateSharedArtboardContainers(itemId: string, originArtboardId: string, createMutation: (nestedObject: VMObject, scopeHash: string, path: any[], root: SlimParentNode) => Mutation<any>) {
+  const itemType = getVMObjectIdType(itemId);
+  const state: ApplicationState = yield select();
+  const workspace = getSelectedWorkspace(state);
+
+  const scopeInfo = getStyleOwnerScopeInfo(itemId, getArtboardById(originArtboardId, state).document);
+  const scopeHash = scopeInfo.join("");
+
+  for (const artboard of workspace.artboards) {
+
+    const owner = getStyleOwnerFromScopeInfo(scopeInfo, artboard);
+    if (!owner) {
+      continue;
+    }
+
+    const body = getArtboardDocumentBody(artboard);
+    const ownerPath = getVMObjectPath(owner, body);
+
+    yield put(artboardDOMPatched(
+      artboard.$id, 
+      patchDOM2(createMutation(owner, scopeHash, ownerPath, body), body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap)
+    ));
+
+    yield spawn(function*() {
+      yield call(delay, COMPUTE_DOM_INFO_DELAY);
+      yield call(recomputeArtboardInfo, artboard);
+    });
+  }
+}
+
 function* handleResized() {
   const { bounds }: Resized = yield take((action: Resized) => action.type === RESIZED && action.itemType === ARTBOARD);
 }
@@ -337,5 +347,30 @@ function* handleOpenExternalArtboardsRequested() {
     if (lastExistingArtboard) {
       yield put(artboardFocused(lastExistingArtboard.$id));
     }
+  }
+}
+
+function* handleCSSChanges() {
+  yield fork(handleDeclarationNameChange);
+  yield fork(handleDecarationValueChange);
+}
+
+function* handleDeclarationNameChange() {
+  while(1) {
+    const { name, value }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
+  }
+}
+
+function* handleDecarationValueChange() {
+  while(1) {
+    const { ownerId, artboardId, name, value }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
+    console.log(name, value);
+    yield call(updateSharedArtboardContainers, ownerId, artboardId, (nestedObject, hash, path, root) => {
+      if (nestedObject.type === SlimVMObjectType.STYLE_RULE) {
+        const rule = nestedObject as SlimCSSStyleRule;
+        return createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, name, value);
+      }
+      return null;
+    });
   }
 }

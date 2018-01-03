@@ -54,7 +54,7 @@ export function* frontEndSyntheticBrowserSaga() {
   yield fork(handleScrollInFullScreenMode);
   yield fork(handleTextEditorEscaped);
   yield fork(handleLoadedSavedState);
-  yield fork(handleCSSDeclarationChanges);
+  // yield fork(handleCSSDeclarationChanges);
   yield fork(handleFileChanged);
 }
 
@@ -198,13 +198,13 @@ function* persistDeclarationChange(declaration: any, name: string, value: string
 
 // TODO - move this to synthetic browser
 function* handleCSSDeclarationChanges() {
-  yield fork(function* handleNameChanges() {
-    while(true) {
-      const { value, artboardId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
-      const state: ApplicationState = yield select();
-      // const window = getSyntheticWindow(state, artboardId);
-    }
-  });
+  // yield fork(function* handleNameChanges() {
+  //   while(true) {
+  //     const { value, artboardId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
+  //     const state: ApplicationState = yield select();
+  //     // const window = getSyntheticWindow(state, artboardId);
+  //   }
+  // });
   
   yield fork(function* handleValueChanges() {
 

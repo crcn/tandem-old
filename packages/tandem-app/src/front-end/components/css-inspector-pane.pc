@@ -58,23 +58,21 @@
     input::placeholder {
       opacity: 0.3;
     }
-
-    
   </style>
   <template>
     <span [[if editingName]]>
       <slot name="nameInput"><input type="text" placeholder="name" /></slot>
     </span>
-    <span [[else]] class="name">[[bind name]]</span>
+    <span [[else]] class="name" tabIndex="0" onFocus=[[bind onNameFocus]]>[[bind name]]</span>
 
     <span [[if editingValue]]>
-      <slot name="valueInput">
-        <input type="text" placeholder="value" />
-      </slot>
+      <slot name="valueInput"><input type="text" placeholder="value" /></slot>
     </span>
-    <td-css-expr-input [[elseif !overridden && value]] value=[[bind value]] />
-    <span [[else]] name="raw-value">
-      [[bind sourceValue]]
+    <span [[else]] tabIndex="0" onFocus=[[bind onValueFocus]]>
+      <td-css-expr-input [[if !overridden && value]] value=[[bind value]] />
+      <span [[else]] name="raw-value">
+        [[bind sourceValue]]
+      </span>
     </span>
 
     <i [[if !disabled]] class="toggle-button ion-eye" onClick=[[bind onToggleDeclarationClick]]></i>
@@ -194,6 +192,8 @@
               value: "red"
             },
             hovering: true,
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -204,6 +204,8 @@
               value: 1
             },
             disabled: true,
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -214,6 +216,8 @@
               name: "row"
             },
             hovering: true,
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -240,6 +244,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -250,6 +256,8 @@
               value: "10",
               unit: "px"
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -261,6 +269,8 @@
               value: "10",
               unit: "px"
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onNameInputKeyPress: null,
             onToggleDeclarationClick: null
           },
@@ -273,6 +283,8 @@
               value: "10",
               unit: "px"
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onValueInputKeyPress: null,
             onToggleDeclarationClick: null
           }
@@ -352,6 +364,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           {
@@ -369,6 +383,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           {
@@ -389,6 +405,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           }
         ]
@@ -420,6 +438,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           }
         ]
