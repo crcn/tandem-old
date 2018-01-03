@@ -17,7 +17,7 @@ import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRu
 type StyleDelarationOuterProps = {
   index: number;
   isNewDeclaration?: boolean;
-  onDeclarationTabbed?: () => any;
+  onDeclarationBlur?: () => any;
   onNameChange: (oldName: string, newName: string) => any;
   onValueChange: (name: string, value: string) => any;
   artboardId: string;
@@ -138,32 +138,36 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
     onToggleDeclarationClick: ({ index, artboardId, owner, dispatch, name }: StyleDelarationInnerProps) => (event) => {
       dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name, index));
     },
-    onNameInputKeyDown: ({ setEditingName, onNameChange, onDeclarationTabbed })  => (event) => {
+    onNameInputKeyDown: ({ setEditingName, onNameChange, onDeclarationBlur })  => (event) => {
       if (event.key === "Enter") {
         setEditingName(false);
         if (event.target.value !== name) {
           onNameChange(name, event.target.value);
         }
-      } else if (event.key === "Tab" && onDeclarationTabbed && !event.target.value) {
-        onDeclarationTabbed(event);
+      } else if (event.key === "Tab" && onDeclarationBlur && !event.target.value) {
+        onDeclarationBlur(event);
       }
     },
-    onValueInputKeyDown: ({ setEditingValue, value, name, onValueChange, onDeclarationTabbed }) => (event: React.KeyboardEvent<any>) => {
+    onValueInputKeyDown: ({ setEditingValue, value, name, onValueChange, onDeclarationBlur }) => (event: React.KeyboardEvent<any>) => {
       const target = event.target as any;
       if (event.key === "Enter") {
         setEditingValue(false);
         if (target.value !== value) {
           onValueChange(name, target.value);
         }
-      } else if (event.key === "Tab" && !event.shiftKey && onDeclarationTabbed) {
-        onDeclarationTabbed(event, true);
+      } else if (event.key === "Tab" && !event.shiftKey && onDeclarationBlur) {
+        onDeclarationBlur(event, true);
       }
     },
-    onNameInputBlur: ({ index, name, setEditingName, setEditingValue, onNameChange }: StyleDelarationInnerProps) => (event) => {
+    onNameInputBlur: ({ index, name, setEditingName, setEditingValue, onNameChange, editingValue, onDeclarationBlur }: StyleDelarationInnerProps) => (event) => {
       setEditingName(false);
 
       if (event.target.value !== name) {
         onNameChange(index, name, event.target.value);
+      }
+
+      if (!event.target.value && onDeclarationBlur) {
+        onDeclarationBlur(event);
       }
     },
     onValueInputBlur: ({ index, setEditingValue, onValueChange, name, value }: StyleDelarationInnerProps) => (event) => {
@@ -307,7 +311,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     }
 
     if (childDeclarations.length) {
-      childDeclarations[childDeclarations.length - 1].onDeclarationTabbed = onLastDeclarationTabbed;
+      childDeclarations[childDeclarations.length - 1].onDeclarationBlur = onLastDeclarationTabbed;
     }
 
     return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;
