@@ -1,4 +1,4 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, patchNode, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -73,7 +73,7 @@ function* handlePreviewDiffed() {
       // console.log("PATCH", preppedDiff);
       for (const mutation of preppedDiff) {
 
-        if (canPatchDOM(mutation, artboard, workspace)) {
+        if (canPatchDOM(mutation, document, workspace)) {
 
           // TODO - map mutation based on disabled props
           vmObjectMap = patchDOM2(mutation, document, artboard.mount.contentDocument.body, vmObjectMap);
@@ -98,10 +98,9 @@ function* handlePreviewDiffed() {
   }
 }
 
-const canPatchDOM = (mutation: Mutation<any>, artboard: Artboard, workspace: Workspace) => {
+const canPatchDOM = (mutation: Mutation<any>, document: SlimParentNode, workspace: Workspace) => {
   if (mutation.type === CSS_SET_STYLE_PROPERTY) {
     const { name, newValue } = mutation as SetPropertyMutation<any>;
-    const document = getArtboardDocumentBody(artboard);
     const target = getVMObjectFromPath(mutation.target, document);
     return !isCSSPropertyDisabled(target.id, name, document, workspace.disabledStyleDeclarations);
   }

@@ -52,8 +52,9 @@ export const tokenizePaperclipSource = (source: string) => {
     let token: Token;
 
     if (cchar === "<") {
+      const pos = scanner.pos;
       if (scanner.peek(2) === "</") {
-        token = createToken(PCTokenType.CLOSE_TAG, scanner.pos, scanner.take(2));
+        token = createToken(PCTokenType.CLOSE_TAG, pos, scanner.take(2));
       } else if (scanner.peek(4) === "<!--") {
         let buffer = scanner.take(4);
         while(!scanner.ended()) {
@@ -66,7 +67,7 @@ export const tokenizePaperclipSource = (source: string) => {
           buffer += cchar;
         }
 
-        token = createToken(PCTokenType.COMMENT, scanner.pos, buffer);
+        token = createToken(PCTokenType.COMMENT, pos, buffer);
       } else if (scanner.peek(2) === "<=") {
         token = createToken(PCTokenType.LESS_THAN_OR_EQUAL, scanner.pos, scanner.take(2));
       } else {

@@ -1,7 +1,5 @@
 IMMEDIATE:
 
-- [ ] inserting new component in global.pc breaks everything (try adding `td-input`)
-- [ ] cannot start creating component immediately before comment (see global.pc)
 - [ ] add style declarations
 - [ ] remove style declarations
 - [ ] edit raw value

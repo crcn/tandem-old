@@ -51,6 +51,7 @@ describe(__filename + "#", () => {
     [`<a b=[[bind [a b]]] />`, [[12, 15, `Unexpected token.`]]],
     [`<a b=[[bind [{ a: 1 }, ]]] />`, [[7, 23, `Unexpected token.`]]],
     [`<a b=[[bind {a: [1}]] />`, [[16, 18, `Unexpected token.`]]],
+    [`<c <!-- a -->`, [[3, 13, `Unexpected token.`]]],
     [`<style> .container {}`, [[20, 21, `Unexpected end of file.`]]],
     [`<style> .container {} </style>`, []],
     [`<style> .container {} </style`, [[22, 29, `Missing > character.`]]],

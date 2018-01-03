@@ -857,6 +857,7 @@ const createTag = (context: ParseContext) => {
     addUnexpectedToken(context, "Missing open tag name.", getTokenLocation(start, context.source));
     return null;
   }
+
   
   if (!scanner.ended() && !testCurrTokenType(context, [PCTokenType.WHITESPACE, PCTokenType.GREATER_THAN], `Tag name contains a character where " " or > is expected.`, getTokenLocation(start, context.source))) {
     return null;

@@ -230,7 +230,7 @@ export const getVMObjectPath = weakMemo((value: SlimBaseNode, root: SlimParentNo
 });
 
 // not memoized because this isn't a very expensive op
-export const getVMObjectFromPath = (path: any[], root: VMObject): VMObject => {
+export const getVMObjectFromPath = weakMemo((path: any[], root: VMObject): VMObject => {
   let current = root;
   for (let i = 0, {length} = path; i < length; i++) {
     const part = path[i];
@@ -250,7 +250,7 @@ export const getVMObjectFromPath = (path: any[], root: VMObject): VMObject => {
   }
 
   return current;
-};
+});
 
 export const getVmObjectSourceUris = weakMemo((node: SlimBaseNode) => {
   return uniq(getNestedSourceUris(node));
