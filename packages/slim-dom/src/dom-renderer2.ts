@@ -208,7 +208,7 @@ const shallowStringifyRule = (rule: SlimCSSRule, context: InsertStyleSheetContex
   switch(rule.type) {
     case SlimVMObjectType.STYLE_RULE: {
       const { selectorText, style } = rule as SlimCSSStyleRule;
-      return `${stringifyScopedSelectorText(selectorText, context)} { ${stringifyStyle(style)} }`;
+      return `${stringifyScopedSelectorText(selectorText, context.scope)} { ${stringifyStyle(style)} }`;
     }
 
     case SlimVMObjectType.FONT_FACE_RULE: {
@@ -241,11 +241,11 @@ const getElementScopeTagName = ({tagName}: SlimElement) => getScopeTagName(tagNa
 
 const getElementScopeTagNameHost = (element: SlimElement) => getElementScopeTagName(element) + "__host";
 
-const stringifyScopedSelectorText = (selectorText: string, context: InsertStyleSheetContext) => {
+const stringifyScopedSelectorText = (selectorText: string, scope: string) => {
   // if (host) {
   //   console.log(compileScopedCSS(selectorText, getElementScopeTagName(host)), "-----", selectorText);
   // }
-  return context.scope ? compileScopedCSS(selectorText, getScopeTagName(context.scope)) : selectorText;
+  return scope ? compileScopedCSS(selectorText, getScopeTagName(scope)) : selectorText;
 };
 
 const appendNativeChildNodes = ({ childNodes }: SlimParentNode, nativeParent: Element|DocumentFragment, document: Document, context: CreateNativeNodeContext) => {
@@ -409,7 +409,10 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const { newValue } = mutation as SetValueMutation<any>;
       const nativeTarget: CSSStyleRule = map.cssom[slimTarget.id] as CSSStyleRule;
 
-      nativeTarget.selectorText = newValue;
+      const host = getStyleElementFomPath(mutation.target
+      , root);
+      
+      nativeTarget.selectorText = stringifyScopedSelectorText(newValue, getAttributeValue("scope", host));
       break;
     }
 
