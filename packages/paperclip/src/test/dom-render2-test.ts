@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { runPCFile, loadModuleDependencyGraph, ComponentModule } from "..";
 import { FakeAttribute, FakeDocument, FakeDocumentFragment, FakeElement, FakeTextNode } from "./utils";
-import { renderDOM2, SlimParentNode, diffNode, patchNode2, patchNode, patchDOM2, DOMNodeMap, setVMObjectIds, prepDiff, NativeObjectMap } from "slim-dom";
+import { renderDOM2, SlimParentNode, diffNode, patchNode2, patchDOM2, DOMNodeMap, setVMObjectIds, prepDiff, NativeObjectMap } from "slim-dom";
 
 describe(__filename + "#", () => {
   it(`can render a component with a template`, async () => {
