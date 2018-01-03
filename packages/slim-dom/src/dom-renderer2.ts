@@ -183,8 +183,7 @@ const insertChildRule = (slimRule: SlimCSSRule, nativeRule: CSSGroupingRule|CSSS
     } catch(e) {
 
       console.warn(`Unable to insert ${childRuleText} style. Inserting placeholder rule.`);
-
-      console.error(e.stack);
+      console.warn(e.stack);
 
       if (slimRule.type === SlimVMObjectType.STYLE_RULE) {
         childRuleText = `.___placeholder {}`;

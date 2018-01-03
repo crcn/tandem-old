@@ -4,8 +4,8 @@ import { identity } from "lodash";
 import { compose, pure, withHandlers, withState, withProps, mapProps } from "recompose";
 import { weakMemo } from "aerial-common2";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
-import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, TdCssSpacedListExprInputBaseInnerProps, TdCssCommaListExprInputBaseInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
-import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, TdCssInspectorPaneBaseInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
+import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
+import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
 import { cssToggleDeclarationEyeClicked } from "front-end/actions";
@@ -27,6 +27,8 @@ type StyleDelarationOuterProps = {
 
 type StyleDelarationInnerProps = {
   onToggleDeclarationClick: () => any;
+  nameInputSlot: any;
+
 } & TdStyleDeclarationInnerProps;
 
 
@@ -95,7 +97,7 @@ const enhanceCSSCallExprInput = compose<TdCssExprInputInnerProps, TdCssExprInput
   pure
 );
 
-const enhanceCSSSpaced = compose<TdCssSpacedListExprInputBaseInnerProps, TdCssSpacedListExprInputBaseInnerProps>(
+const enhanceCSSSpaced = compose<any, any>(
   pure
 );
 

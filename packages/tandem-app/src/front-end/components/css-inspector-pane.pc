@@ -63,12 +63,14 @@
   </style>
   <template>
     <span [[if editingName]]>
-      <input type="text" value=[[bind name]] placeholder="name" onKeyPress=[[bind onNameInputKeyPress]] />
+      <slot name="nameInput"><input type="text" placeholder="name" /></slot>
     </span>
     <span [[else]] class="name">[[bind name]]</span>
 
     <span [[if editingValue]]>
-      <input type="text" value=[[bind sourceValue]] placeholder="value" onKeyPress=[[bind onValueInputKeyPress]] />
+      <slot name="valueInput">
+        <input type="text" placeholder="value" />
+      </slot>
     </span>
     <td-css-expr-input [[elseif !overridden && value]] value=[[bind value]] />
     <span [[else]] name="raw-value">
@@ -260,18 +262,6 @@
               unit: "px"
             },
             onNameInputKeyPress: null,
-            onToggleDeclarationClick: null
-          },
-          { 
-            name: "margin",
-            editingValue: true,
-            sourceValue: "editing value",
-            value: {
-              type: "MEASUREMENT",
-              value: "10",
-              unit: "px"
-            },
-            onValueInputKeyPress: null,
             onToggleDeclarationClick: null
           },
           { 

@@ -45,7 +45,7 @@ const transpileModule = (entry: Dependency<ComponentModule>, graph: DependencyGr
 
 const getImportBaseName = (href: string) => upperFirst(camelCase(path.basename(href).split(".").shift()));
 
-const transpileComponentTypedInformation = ({ className, component, propTypesName, enhancerName, basePropTypesName }: ComponentTranspileInfo, importTranspileInfo: ImportTranspileInfo[], graph: DependencyGraph) => {
+const transpileComponentTypedInformation = ({ className, component, propTypesName, enhancerName }: ComponentTranspileInfo, importTranspileInfo: ImportTranspileInfo[], graph: DependencyGraph) => {
 
   let content = ``;
   const classPropsName = propTypesName;
@@ -53,14 +53,14 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
   const { inference } = inferNodeProps(component.source);
 
   content += `` + 
-  `export type ${basePropTypesName} = {` +
+  `type ${classPropsName}SlotProps = {` +
     `${getTemplateSlotNames(component.template).map((slotName) => (
       `  ${slotName}: any;\n`
     )).join("")}` +
   `};\n\n`;
   
   content += `` +
-  `export type ${classPropsName} = ${transpileInferredProps(inference)} & ${basePropTypesName};\n\n`;
+  `export type ${classPropsName} = ${transpileInferredProps(inference)} & ${classPropsName}SlotProps;\n\n`;
 
   const childComponentDependencies = getChildComponentInfo(component.template, graph);  
 
@@ -76,7 +76,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
 
     const childComponentInfo = getComponentTranspileInfo(childComponent);
     const childImport = getImportFromDependency(importTranspileInfo, childComponentDependency);
-    let basePropsRef = childImport ? `${childImport.varName}.${childComponentInfo.basePropTypesName}` : `${childComponentInfo.basePropTypesName}`;
+    let propsRef = childImport ? `${childImport.varName}.${childComponentInfo.propTypesName}` : `${childComponentInfo.propTypesName}`;
 
     let allEntries = [];
 
@@ -108,7 +108,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
 
     propTypeMap[childComponentInfo.className] = childTypeName;
 
-    content += `type ${childTypeName} = ${childPropTypes} & ${basePropsRef};\n\n`;
+    content += `type ${childTypeName} = ${childPropTypes};\n\n`;
     childComponentInfo.propTypesName;
     // content += `  ${childComponentInfo.className}: React.StatelessComponent<${refPath}> | React.ComponentClass<${refPath}>;\n`
   }

@@ -9,7 +9,6 @@ export type ComponentTranspileInfo = {
   className: string;
   component: Component;
   propTypesName: string;
-  basePropTypesName: string;
   enhancerName: string;
   enhancerTypeName: string;
 };
@@ -31,7 +30,6 @@ export const getComponentTranspileInfo = (component: Component): ComponentTransp
   return {
     component,
     className,
-    basePropTypesName: `${className}BaseInnerProps`,
     enhancerTypeName: `${className}Enhancer`,
     propTypesName: `${className}InnerProps`,
     enhancerName: `enhance${className}`,
