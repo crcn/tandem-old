@@ -148,9 +148,12 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
         }
       }
     },
-    onValueInputKeyPress: ({ setEditingValue }) => (event) => {
+    onValueInputKeyPress: ({ setEditingValue, value, name, onValueChange }) => (event) => {
       if (event.key === "Enter") {
         setEditingValue(false);
+        if (event.target.value !== value) {
+          onValueChange(name, event.target.value);
+        }
       }
     },
     onNameInputBlur: ({ name, setEditingName, setEditingValue, onNameChange }: StyleDelarationInnerProps) => (event) => {

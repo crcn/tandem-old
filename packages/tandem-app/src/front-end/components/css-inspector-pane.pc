@@ -82,8 +82,8 @@
       </span>
     </span>
 
-    <i [[if !editing && !disabled]] class="toggle-button ion-eye" onClick=[[bind onToggleDeclarationClick]]></i>
-    <i [[elseif !editing]] class="toggle-button ion-eye-disabled" onClick=[[bind onToggleDeclarationClick]]></i>
+    <i [[if !editingValue && !editingName && !disabled]] class="toggle-button ion-eye" onClick=[[bind onToggleDeclarationClick]]></i>
+    <i [[elseif !editingValue && !editingName]] class="toggle-button ion-eye-disabled" onClick=[[bind onToggleDeclarationClick]]></i>
 
   </template>
 </component>
