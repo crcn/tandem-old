@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Pane } from "./pane";
 import { identity } from "lodash";
-import { compose, pure, withHandlers, withState } from "recompose";
+import { compose, pure, withHandlers, withState, withProps, mapProps } from "recompose";
 import { weakMemo } from "aerial-common2";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, TdCssSpacedListExprInputBaseInnerProps, TdCssCommaListExprInputBaseInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
@@ -14,6 +14,7 @@ import { Workspace, getNodeArtboard, DisabledStyleDeclarations, Artboard } from 
 import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule, getStyleOwnerFromScopeInfo, getStyleOwnerScopeInfo } from "slim-dom";
 
 type StyleDelarationOuterProps = {
+  isNewDeclaration?: boolean;
   artboardId: string;
   owner: SlimCSSStyleRule | SlimElement;
   name: string;
@@ -118,12 +119,23 @@ const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
 
 const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelarationOuterProps>(
   pure,
+  withState(`editingName`, `setEditingName`, false),
+  withState(`editingValue`, `setEditingValue`, false),
+  mapProps(({editingName, isNewDeclaration}) => ({
+    editingName: isNewDeclaration ? !name : editingName
+  })),
   withHandlers({
     onToggleDeclarationClick: ({ artboardId, owner, dispatch, name }: StyleDelarationOuterProps) => (event) => {
       dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name));
+    },
+    onNameInputKeyPress: ({ dispatch })  => (event) => {
+
+    },
+    onValueInputKeyPress: ({ dispatch }) => () => {
+
     }
   }),
-  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value, onToggleDeclarationClick, ...rest}: StyleDelarationInnerProps) => {
+  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value, onToggleDeclarationClick, editingName, editingValue, ...rest}: StyleDelarationInnerProps) => {
 
     let root: any;
 
@@ -133,7 +145,7 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
       return <span>Syntax error</span>;
     }
 
-    return <Base name={name} editingName={!name} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} {...rest} />;
+    return <Base name={name} editingName={editingName} editingValue={editingValue} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} {...rest} />;
   }
 );
 
@@ -203,13 +215,13 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
         owner,
         artboardId,
         dispatch,
-        editingName: true,
+        isNewDeclaration: true,
         name: undefined,
         value: undefined,
         ignored: false,
         disabled: false,
         overridden: false
-      } as any);
+      });
     }
 
     return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;

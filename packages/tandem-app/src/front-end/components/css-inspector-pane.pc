@@ -63,12 +63,12 @@
   </style>
   <template>
     <span [[if editingName]]>
-      <input type="text" value=[[bind name]] placeholder="name" />
+      <input type="text" value=[[bind name]] placeholder="name" onKeyPress=[[bind onNameInputKeyPress]] />
     </span>
     <span [[else]] class="name">[[bind name]]</span>
 
     <span [[if editingValue]]>
-      <input type="text" value=[[bind sourceValue]] placeholder="value" />
+      <input type="text" value=[[bind sourceValue]] placeholder="value" onKeyPress=[[bind onValueInputKeyPress]] />
     </span>
     <td-css-expr-input [[elseif !overridden && value]] value=[[bind value]] />
     <span [[else]] name="raw-value">
@@ -259,6 +259,7 @@
               value: "10",
               unit: "px"
             },
+            onNameInputKeyPress: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -270,6 +271,7 @@
               value: "10",
               unit: "px"
             },
+            onValueInputKeyPress: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -281,6 +283,7 @@
               value: "10",
               unit: "px"
             },
+            onValueInputKeyPress: null,
             onToggleDeclarationClick: null
           }
         ]
