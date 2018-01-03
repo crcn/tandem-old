@@ -51,6 +51,8 @@
       border-radius: var(--base);
       color: var(--font-color);
       width: 33%;
+      line-height: 0;
+      padding: var(--base) var(--base2);
     }
 
     
@@ -245,7 +247,7 @@
             onToggleDeclarationClick: null
           },
           { 
-            name: "text-transform",
+            name: "editing name",
             editingName: true,
             sourceValue: "uppercase",
             value: {
