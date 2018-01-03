@@ -160,8 +160,8 @@
     </td-gutter-subheader>
 
     <td-list>
-      <td-list-item [[if declarations]] [[repeat declarations as declaration]] noPadding>
-        <td-style-declaration [[bind declaration]] key=[[bind declaration.name]] />
+      <td-list-item [[if declarations]] [[repeat declarations as declaration, index]] noPadding>
+        <td-style-declaration [[bind declaration]] key=[[bind index]] />
       </td-list-item>
     </td-list>
   </template>

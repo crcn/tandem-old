@@ -207,15 +207,15 @@ function* handleToggleCSSDeclaration() {
       const disabled = workspace.disabledStyleDeclarations[scopeHash][declarationName];
 
       if (itemType === SlimVMObjectType.STYLE_RULE) {
-        return createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, declarationName, disabled ? null : (nestedObject as SlimCSSStyleRule).style[declarationName]);
+        return [createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, declarationName, disabled ? null : (nestedObject as SlimCSSStyleRule).style[declarationName])];
       }
 
-      return null;
+      return [];
     });
   }
 }
 
-function* updateSharedArtboards(itemId: string,  originArtboardId: string,patchDocument: boolean, createMutation: (nestedObject: VMObject, scopeHash: string, path: any[], root: SlimParentNode) => Mutation<any>) {
+function* updateSharedArtboards(itemId: string,  originArtboardId: string,patchDocument: boolean, createMutations: (nestedObject: VMObject, scopeHash: string, path: any[], root: SlimParentNode) => Mutation<any>[]) {
   const itemType = getVMObjectIdType(itemId);
   const state: ApplicationState = yield select();
   const workspace = getSelectedWorkspace(state);
@@ -230,10 +230,23 @@ function* updateSharedArtboards(itemId: string,  originArtboardId: string,patchD
       continue;
     }
 
-    const body = getArtboardDocumentBody(artboard);
-    const ownerPath = getVMObjectPath(owner, body);
-    const mutation = createMutation(owner, scopeHash, ownerPath, body);
-    const vmObjectMap = patchDOM2(mutation, body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap);
+    let document = getArtboardDocumentBody(artboard);
+    const ownerPath = getVMObjectPath(owner, document);
+    const mutations = createMutations(owner, scopeHash, ownerPath, document);
+
+    let vmObjectMap;
+
+    if (!mutations.length) {
+      continue;
+    }
+
+    for (const mutation of mutations) {
+      vmObjectMap = patchDOM2(mutation, document, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap);
+
+      if (patchDocument) {
+        document = patchNode2(mutation, document);
+      }
+    }
 
     if (patchDocument) {
       yield put(
@@ -242,7 +255,7 @@ function* updateSharedArtboards(itemId: string,  originArtboardId: string,patchD
           replaceNestedChild(
             artboard.document, 
             [...getArtboardDocumentBodyPath(artboard)],
-            patchNode2(mutation, body)
+            document
           ),
           null,
           vmObjectMap
@@ -374,7 +387,24 @@ function* handleCSSChanges() {
 
 function* handleDeclarationNameChange() {
   while(1) {
-    const { name, value }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
+    const { ownerId, artboardId, name: oldName, value: newName }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
+
+    yield call(updateSharedArtboards, ownerId, artboardId, true, (nestedObject, hash, path, root) => {
+      if (nestedObject.type === SlimVMObjectType.STYLE_RULE) {
+        const rule = nestedObject as SlimCSSStyleRule;
+        const value = rule.style[oldName];
+        const mutations = [];
+        if (oldName) {
+          mutations.push(createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, oldName, null));
+        }
+        if (newName) {
+          mutations.push(createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newName, value || ""));
+        }
+        return mutations;
+
+      }
+      return [];
+    });
   }
 }
 
@@ -384,7 +414,7 @@ function* handleDecarationValueChange() {
     yield call(updateSharedArtboards, ownerId, artboardId, true, (nestedObject, hash, path, root) => {
       if (nestedObject.type === SlimVMObjectType.STYLE_RULE) {
         const rule = nestedObject as SlimCSSStyleRule;
-        return createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, name, value);
+        return [createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, name, value)];
       }
       return null;
     });

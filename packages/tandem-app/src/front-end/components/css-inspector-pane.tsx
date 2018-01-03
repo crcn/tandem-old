@@ -16,7 +16,7 @@ import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRu
 
 type StyleDelarationOuterProps = {
   isNewDeclaration?: boolean;
-  onDeclarationBlur?: () => any;
+  onDeclarationTabbed?: () => any;
   onNameChange: (oldName: string, newName: string) => any;
   onValueChange: (name: string, value: string) => any;
   artboardId: string;
@@ -134,26 +134,28 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
   withState(`newName`, `setNewName`, undefined),
   withState(`newValue`, `setNewValue`, undefined),
   withHandlers({
-    onDone: ({ name, value, onDeclarationBlur }) => ({ newName, newValue }) => {
-
-    },
     onToggleDeclarationClick: ({ artboardId, owner, dispatch, name }: StyleDelarationInnerProps) => (event) => {
       dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name));
     },
-    onNameInputKeyPress: ({ setEditingName, onNameChange })  => (event) => {
+    onNameInputKeyDown: ({ setEditingName, onNameChange, onDeclarationTabbed })  => (event) => {
       if (event.key === "Enter") {
         setEditingName(false);
         if (event.target.value !== name) {
           onNameChange(name, event.target.value);
         }
+      } else if (event.key === "Tab" && !event.shiftKey && onDeclarationTabbed && !event.target.value) {
+        onDeclarationTabbed(event);
       }
     },
-    onValueInputKeyPress: ({ setEditingValue, value, name, onValueChange }) => (event) => {
+    onValueInputKeyDown: ({ setEditingValue, value, name, onValueChange, onDeclarationTabbed }) => (event: React.KeyboardEvent<any>) => {
+      const target = event.target as any;
       if (event.key === "Enter") {
         setEditingValue(false);
-        if (event.target.value !== value) {
-          onValueChange(name, event.target.value);
+        if (target.value !== value) {
+          onValueChange(name, target.value);
         }
+      } else if (event.key === "Tab" && !event.shiftKey && onDeclarationTabbed) {
+        onDeclarationTabbed(event, true);
       }
     },
     onNameInputBlur: ({ name, setEditingName, setEditingValue, onNameChange }: StyleDelarationInnerProps) => (event) => {
@@ -163,11 +165,8 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
         onNameChange(name, event.target.value);
       }
     },
-    onValueInputBlur: ({ setEditingValue, onValueChange, onDeclarationBlur, name, value }: StyleDelarationInnerProps) => (event) => {
+    onValueInputBlur: ({ setEditingValue, onValueChange, name, value }: StyleDelarationInnerProps) => (event) => {
       setEditingValue(false);
-      if (onDeclarationBlur) {
-        onDeclarationBlur();
-      }
 
       if (event.target.value !== value) {
         onValueChange(name, event.target.value);
@@ -180,7 +179,7 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
       setEditingValue(true);
     }
   }),
-  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value, onToggleDeclarationClick, editingName, editingValue, onNameInputBlur, onValueInputBlur, onValueInputKeyPress, onNameInputKeyPress, isNewDeclaration, onNameFocus, onValueFocus, ...rest}: StyleDelarationInnerProps) => {
+  (Base: React.ComponentClass<TdStyleDeclarationInnerProps>) => ({name, ignored, disabled, overridden, value, onToggleDeclarationClick, editingName, editingValue, onNameInputBlur, onValueInputBlur, onValueInputKeyDown, onNameInputKeyDown, isNewDeclaration, onNameFocus, onValueFocus, ...rest}: StyleDelarationInnerProps) => {
 
     let root: any;
 
@@ -197,11 +196,11 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
     let valueInputSlot;
 
     if (editingName) {
-      nameInputSlot = <Autofocus select><input type="text" placeholder="name" defaultValue={name} className="TdStyleDeclaration" onBlur={onNameInputBlur} onKeyPress={onNameInputKeyPress} /></Autofocus>;
+      nameInputSlot = <Autofocus select><input type="text" placeholder="name" defaultValue={name} className="TdStyleDeclaration" onBlur={onNameInputBlur} onKeyDown={onNameInputKeyDown} /></Autofocus>;
     }
 
     if (editingValue) {
-      valueInputSlot = <Autofocus select><input type="text" placeholder="value" defaultValue={value} className="TdStyleDeclaration" onBlur={onValueInputBlur} onKeyPress={onValueInputKeyPress} /></Autofocus>;
+      valueInputSlot = <Autofocus select><input type="text" placeholder="value" defaultValue={value} className="TdStyleDeclaration" onBlur={onValueInputBlur} onKeyDown={onValueInputKeyDown} /></Autofocus>;
     }
 
     return <Base name={name} editingName={editingName} onNameFocus={onNameFocus} onValueFocus={onValueFocus} editingValue={editingValue} nameInputSlot={nameInputSlot} valueInputSlot={valueInputSlot} ignored={ignored} disabled={disabled} overridden={overridden} value={root} sourceValue={value} onToggleDeclarationClick={onToggleDeclarationClick} {...rest} />;
@@ -240,12 +239,19 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     onAddDeclarationClick: ({ setAddingDeclaration }) => () => {
       setAddingDeclaration(true);
     },
-    onLastDeclarationBlur: ({ setAddingDeclaration, addingDeclaration }) => () => {
+    onLastDeclarationTabbed: ({ setAddingDeclaration, addingDeclaration }) => (event: React.KeyboardEvent<any>, isValue: boolean) => {
+      if (isValue && !addingDeclaration) {
+        event.preventDefault();
+      }
       setAddingDeclaration(!addingDeclaration);
-      
     },
-    onDeclarationNameChange: ({ dispatch, rule, artboardId }: CSSStyleRuleInnerProps) => (oldName: string, newName: string) => {
+    onDeclarationNameChange: ({ dispatch, rule, artboardId, setAddingDeclaration }: CSSStyleRuleInnerProps) => (oldName: string, newName: string) => {
       const owner = (rule.rule || rule.targetElement);
+
+      // is a new prop
+      if (!oldName && newName) {
+        setAddingDeclaration(false);
+      }
       dispatch(cssDeclarationNameChanged(oldName, newName, owner.id, artboardId));
     },
     onDeclarationValueChange: ({ dispatch, rule, artboardId }: CSSStyleRuleInnerProps) => (name: string, newValue: string) => {
@@ -253,7 +259,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       dispatch(cssDeclarationValueChanged(name, newValue, owner.id, artboardId));
     }
   }),
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationBlur, onDeclarationNameChange, onDeclarationValueChange }: CSSStyleRuleInnerProps) => {
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationTabbed, onDeclarationNameChange, onDeclarationValueChange }: CSSStyleRuleInnerProps) => {
 
     const declarations = rule.style;
 
@@ -302,7 +308,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     }
 
     if (childDeclarations.length) {
-      childDeclarations[childDeclarations.length - 1].onDeclarationBlur = onLastDeclarationBlur;
+      childDeclarations[childDeclarations.length - 1].onDeclarationTabbed = onLastDeclarationTabbed;
     }
 
     return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;

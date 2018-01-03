@@ -1,10 +1,9 @@
 IMMEDIATE:
 
-- [ ] exception creating conditional after elseif
-- [ ] value must be patched to tree
-- [ ] focus on next declaration when TAB is pressed
-- [ ] changing name
-- [ ] add declaration
+- [ ] css declarations should be a list, not an object
+  - [ ] needed to allow for multiples of the same prop to be added
+  - [ ] needed for ordering declarations
+- [ ] changing name 
 
 - [ ] add style declarations
 - [ ] remove style declarations
@@ -15,6 +14,7 @@ IMMEDIATE:
 - [ ] maintain declaration name index
 
 - [ ] WARM UP
+  - [ ] ion-eye css inspector props
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
@@ -26,6 +26,7 @@ IMMEDIATE:
   - [ ] pseudo selectors don't work (:focus, :after: :before)
   - [ ] removing hover prop on css inspector component doesn't remove eye icon.
   - [ ] full screen mode doesn't resize when gutters are toggled
+  - [ ] `calc(100% - 10px)` parses as a list, not as an op expr
 
 - [ ] CSS Inspector* 
   - [ ] add new style - specific to target element
