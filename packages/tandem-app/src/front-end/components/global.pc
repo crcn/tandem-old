@@ -12,7 +12,7 @@
     *:focus {
       outline: red;
     }
-    
+
   :root {
     --base: 2px;
     --base2: 4px;
@@ -199,7 +199,7 @@
     </div>
   </template>
   <preview name="success" width="500" height="30">
-    <td-banner success onClose>Success</td-banner>
+    <td-banner success onClose>Success!</td-banner>
   </preview>
   <preview name="warning" width="500" height="30">
     <td-banner warning onClose>Warning</td-banner>
@@ -220,3 +220,5 @@
     <td-input type="text" />
   </preview>
 </component>
+
+

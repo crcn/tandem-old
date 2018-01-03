@@ -65,10 +65,10 @@ function* handlePreviewDiffed() {
       }
 
       // inserts unique IDs
-      const preppedDiff = prepDiff(artboard.document, diff);
+      const preppedDiff = prepDiff(artboard.originalDocument, diff);
       const previewPath = [...getArtboardDocumentBodyPath(artboard)];
 
-      let document = getVMObjectFromPath(previewPath, artboard.document) as SlimParentNode;
+      let document = getVMObjectFromPath(previewPath, artboard.originalDocument) as SlimParentNode;
       let vmObjectMap = artboard.nativeObjectMap;
 
       // console.log("PATCH", preppedDiff);
@@ -87,7 +87,7 @@ function* handlePreviewDiffed() {
         artboardPatched(
           artboard.$id, 
           replaceNestedChild(
-            artboard.document, 
+            artboard.originalDocument, 
             previewPath,
             document
           ),
@@ -203,7 +203,7 @@ function* handleToggleCSSDeclaration() {
     const state: ApplicationState = yield select();
     const workspace = getSelectedWorkspace(state);
 
-    yield call(updateSharedArtboardContainers, itemId, artboardId, (nestedObject, scopeHash, path, root) => {
+    yield call(updateSharedArtboards, itemId, artboardId, false, (nestedObject, scopeHash, path, root) => {
       const disabled = workspace.disabledStyleDeclarations[scopeHash][declarationName];
 
       if (itemType === SlimVMObjectType.STYLE_RULE) {
@@ -215,7 +215,7 @@ function* handleToggleCSSDeclaration() {
   }
 }
 
-function* updateSharedArtboardContainers(itemId: string, originArtboardId: string, createMutation: (nestedObject: VMObject, scopeHash: string, path: any[], root: SlimParentNode) => Mutation<any>) {
+function* updateSharedArtboards(itemId: string,  originArtboardId: string,patchDocument: boolean, createMutation: (nestedObject: VMObject, scopeHash: string, path: any[], root: SlimParentNode) => Mutation<any>) {
   const itemType = getVMObjectIdType(itemId);
   const state: ApplicationState = yield select();
   const workspace = getSelectedWorkspace(state);
@@ -232,11 +232,28 @@ function* updateSharedArtboardContainers(itemId: string, originArtboardId: strin
 
     const body = getArtboardDocumentBody(artboard);
     const ownerPath = getVMObjectPath(owner, body);
+    const mutation = createMutation(owner, scopeHash, ownerPath, body);
+    const vmObjectMap = patchDOM2(mutation, body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap);
 
-    yield put(artboardDOMPatched(
-      artboard.$id, 
-      patchDOM2(createMutation(owner, scopeHash, ownerPath, body), body, artboard.mount.contentWindow.document.body, artboard.nativeObjectMap)
-    ));
+    if (patchDocument) {
+      yield put(
+        artboardPatched(
+          artboard.$id, 
+          replaceNestedChild(
+            artboard.document, 
+            [...getArtboardDocumentBodyPath(artboard)],
+            patchNode2(mutation, body)
+          ),
+          null,
+          vmObjectMap
+        )
+      );
+    } else {
+      yield put(artboardDOMPatched(
+        artboard.$id, 
+        vmObjectMap
+      ));
+    }
 
     yield spawn(function*() {
       yield call(delay, COMPUTE_DOM_INFO_DELAY);
@@ -364,8 +381,7 @@ function* handleDeclarationNameChange() {
 function* handleDecarationValueChange() {
   while(1) {
     const { ownerId, artboardId, name, value }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
-    console.log(name, value);
-    yield call(updateSharedArtboardContainers, ownerId, artboardId, (nestedObject, hash, path, root) => {
+    yield call(updateSharedArtboards, ownerId, artboardId, true, (nestedObject, hash, path, root) => {
       if (nestedObject.type === SlimVMObjectType.STYLE_RULE) {
         const rule = nestedObject as SlimCSSStyleRule;
         return createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, name, value);

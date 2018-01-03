@@ -10,7 +10,7 @@
   <meta name="internal" content="true" />
   <style>
 
-    :host([ignored]) {
+    :host([ignored]) .name, :host([ignored]) td-css-expr-input, :host([ignored]) .raw-value {
       opacity: 0.2;
     }
 
@@ -19,7 +19,7 @@
     }
 
     :host {
-      display: block;
+      display: flex;
       padding: var(--base6) var(--base8);
     }
     .toggle-button {
@@ -40,19 +40,26 @@
     }
     .name {
       color: var(--font-color-dim);
+      white-space: nowrap;
+      padding-right: var(--base2);
     }
     .name::after {
       content: ": ";
     }
 
+    .value {
+      width: 100%;
+      display: inline-block;
+    }
+
     input {
       border: none;
       background: var(--background-deep);
-      border-radius: var(--base);
       color: var(--font-color);
-      width: 33%;
+      width: calc(100% - var(--base2));
       line-height: 0;
-      padding: var(--base) var(--base2);
+      padding: 0;
+      margin-right: var(--base2);
     }
 
     input::placeholder {
@@ -65,18 +72,18 @@
     </span>
     <span [[else]] class="name" tabIndex="0" onFocus=[[bind onNameFocus]]>[[bind name]]</span>
 
-    <span [[if editingValue]]>
+    <span [[if editingValue]] class="value">
       <slot name="valueInput"><input type="text" placeholder="value" /></slot>
     </span>
-    <span [[else]] tabIndex="0" onFocus=[[bind onValueFocus]]>
+    <span class="value" [[else]] tabIndex="0" onFocus=[[bind onValueFocus]]>
       <td-css-expr-input [[if !overridden && value]] value=[[bind value]] />
-      <span [[else]] name="raw-value">
+      <span [[else]] name="raw">
         [[bind sourceValue]]
       </span>
     </span>
 
-    <i [[if !disabled]] class="toggle-button ion-eye" onClick=[[bind onToggleDeclarationClick]]></i>
-    <i [[else]] class="toggle-button ion-eye-disabled" onClick=[[bind onToggleDeclarationClick]]></i>
+    <i [[if !editing && !disabled]] class="toggle-button ion-eye" onClick=[[bind onToggleDeclarationClick]]></i>
+    <i [[elseif !editing]] class="toggle-button ion-eye-disabled" onClick=[[bind onToggleDeclarationClick]]></i>
 
   </template>
 </component>

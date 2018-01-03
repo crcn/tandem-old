@@ -1,6 +1,11 @@
 IMMEDIATE:
 
+- [ ] exception creating conditional after elseif
+- [ ] value must be patched to tree
 - [ ] focus on next declaration when TAB is pressed
+- [ ] changing name
+- [ ] add declaration
+
 - [ ] add style declarations
 - [ ] remove style declarations
 - [ ] edit raw value
@@ -10,14 +15,15 @@ IMMEDIATE:
 - [ ] maintain declaration name index
 
 - [ ] WARM UP
-  - [ ] pseudo selectors must work
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
   - [ ] disabled CSS declaration eye should not be dimmed
   - [ ] start on error handling for FE
+  - [ ] check if conditional slots work
 
 - [ ] Bugs
+  - [ ] pseudo selectors don't work (:focus, :after: :before)
   - [ ] removing hover prop on css inspector component doesn't remove eye icon.
   - [ ] full screen mode doesn't resize when gutters are toggled
 

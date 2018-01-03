@@ -835,8 +835,8 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
         document,
         loading: false,
         nativeObjectMap,
-        originalDocument: document,
-        checksum
+        originalDocument: checksum ? document : artboard.originalDocument,
+        checksum: checksum || artboard.checksum
       });
       state = deselectNotFoundItems(state);
       return state;

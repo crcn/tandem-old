@@ -808,6 +808,23 @@ describe(__filename + "#", () => {
         `
       },
       []
+    ],
+    [
+      {
+        "entry.pc": `
+        <component id="a">
+          <style>
+          </style>
+          <template>
+            <i [[elseif]] />
+          </template>
+          <preview name="main" width="1366" height="768">
+            <a />
+          </preview>
+        </component>
+        `
+      },
+      []
     ]
   ].forEach(([sources, inferResult]: any) => {
     it(`can lint ${sources["entry.pc"]}`, async () => {

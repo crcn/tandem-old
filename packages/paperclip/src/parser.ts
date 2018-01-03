@@ -136,8 +136,8 @@ const createElementBlockStatement = (context: ParseContext) => {
   switch(scanner.curr().value) {
     case "bind": return createBindBlock(context);
     case "repeat": return createRepeatBlock(context);
-    case "if": return createConditionBlock(context, BKExpressionType.IF);
-    case "elseif": return createConditionBlock(context, BKExpressionType.ELSEIF);
+    case "if": return createConditionBlock(context, BKExpressionType.IF, true);
+    case "elseif": return createConditionBlock(context, BKExpressionType.ELSEIF, true);
     case "else": return createConditionBlock(context, BKExpressionType.ELSE);
     case "property": return createPropertyBlock(context, BKExpressionType.PROPERTY);
     default: {
@@ -493,7 +493,7 @@ const createPropertyBlock = (context: ParseContext, type: BKExpressionType): BKP
   });
 }
 
-const createConditionBlock = (context: ParseContext, type: BKExpressionType): BKIf  => {
+const createConditionBlock = (context: ParseContext, type: BKExpressionType, expectCondition?: boolean): BKIf  => {
   const {scanner} = context;
   const start = scanner.curr();
   scanner.next(); // eat name
@@ -506,6 +506,11 @@ const createConditionBlock = (context: ParseContext, type: BKExpressionType): BK
     if (!condition) {
       return null;
     }
+  }
+
+  if (expectCondition && !condition) {
+    addUnexpectedToken(context, `Missing condition.`, getLocation(start, scanner.curr(), context.source));
+    return null;
   }
 
   

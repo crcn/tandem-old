@@ -32,6 +32,8 @@ describe(__filename + "#", () => {
     [`[[else test]]`, [[2, 6, `Condition blocks can only be added to elements, for example: <div [[if condition]]></div>.`]]],
     [`[[repeat items]]`, [[2, 8, `Repeat blocks can only be added to elements, for example: <div [[repeat items in item, i]]></div>.`]]],
     [`<a b="[[if a]]"></a>`, [[8, 10, `Condition blocks cannot be assigned to attributes.`]]],
+    [`<a [[if]]></a>`, [[5, 7, `Missing condition.`]]],
+    [`<a [[elseif]]></a>`, [[5, 11, `Missing condition.`]]],
     [`<a b="[[repeat a]]"></a>`, [[8, 14, `Repeat blocks cannot be assigned to attributes.`]]],
     [`<a [[repeat]]></a>`, [[11, 12, `Unexpected token.`], [5, 11, `Unexpected token.`]]],
     [`<a [[repeat a]]></a>`, [[5, 13, `Unexpected token.`]]],
