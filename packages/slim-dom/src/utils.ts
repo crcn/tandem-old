@@ -87,28 +87,45 @@ export const setCSSAtRuleSetParams = <TRule extends SlimCSSAtRule>(rule: TRule, 
   params
 });
 
-export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, name: string, newValue: any, index: number): TRule => ({
-  ...(rule as any), 
-  style: {
-    ...rule.style,
-    [name]: newValue
-  }
-});
+export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, name: string, newValue: any, newIndex?: number): TRule => {
+  const foundIndex = rule.style.findIndex(item => item.name === name);
+  const prop =  { name, value: newValue };
+
+  const newStyle = [...rule.style];
+  if (foundIndex > -1) {
+    newStyle.splice(foundIndex, 1);
+  } 
+  newStyle.splice(newIndex != null ? newIndex : foundIndex > -1 ? foundIndex : newStyle.length, 0, prop);
+
+  return {
+    ...(rule as any),
+    style: newStyle
+  };
+};
 
 export const parseStyle = weakMemo((styleStr: string) => {
-  const style = {};
+  const style = [];
   styleStr.split(";").forEach(part => {
     const [name, ...rest] = part.split(":");
     if (!name) return;
-    style[camelCase(name.trim())] = rest.join(":").trim();
+    style.push({
+      name: camelCase(name.trim()),
+      value: rest.join(":").trim()
+    });
   });
   return style;
 });
 
 export const stringifyStyle = (style: any) => {
   let buffer = ``;
-  for (const key in style) {
-    buffer += `${cssPropNameToKebabCase(key)}: ${style[key]};`
+  if (Array.isArray(style)) {
+    for (const {name,value} of style) {
+      buffer += `${cssPropNameToKebabCase(name)}: ${value};`
+    }
+  } else {
+    for (const key of style) {
+      buffer += `${cssPropNameToKebabCase(key)}: ${style[key]};`
+    }
   }
 
   return buffer;
@@ -326,12 +343,7 @@ const layoutObjects = weakMemo((value: any, parentId: string): FlattenedObjects[
       };
 
       const style: SlimCSSStyleDeclaration = getAttributeValue("style", element);
-      if (style && typeof style === "object") {
-        base[style.id] = {
-          parentId: element.id,
-          value: style,
-        };
-      }
+
 
       if (element.tagName === "style") {
         children.push(...layoutCSSObjects((element as SlimStyleElement).sheet, element.id));
@@ -380,10 +392,6 @@ const layoutCSSObjects = weakMemo((value: any, parentId: string): FlattenedObjec
         [rule.id]: {
           parentId,
           value,
-        },
-        [rule.style.id]: {
-          parentId: rule.id,
-          value: rule.style
         }
       }];
     }
@@ -696,9 +704,9 @@ const getSyntheticInheritableCSSRules = weakMemo((window: SlimWindow, elementId:
   return inheritableCSSRules;
 });
 
-export const containsInheritableStyleProperty = (style: SlimCSSStyleDeclaration) => {
-  for (const propertyName in style) {
-    if (INHERITED_CSS_STYLE_PROPERTIES[propertyName] && style[propertyName]) {
+export const  containsInheritableStyleProperty = (style: SlimCSSStyleDeclaration) => {
+  for (const {name, value} of style) {
+    if (INHERITED_CSS_STYLE_PROPERTIES[name] && value) {
       return true;
     }
   }
@@ -749,7 +757,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
 
     const overriddenPropertyNames = {};;
 
-    for (const propertyName in matchingRule.style) {
+    for (const {name: propertyName} of matchingRule.style) {
       if (appliedPropertNames[propertyName]) {
         overriddenPropertyNames[propertyName] = true;
       } else if(!disabledPropertyNames[propertyName]) {
@@ -788,7 +796,7 @@ export const getSyntheticAppliedCSSRules = weakMemo((window: SlimWindow, element
 
       const overriddenPropertyNames = {};
       const ignoredPropertyNames   = {};
-      for (const propertyName in ancestorRule.style) {
+      for (const {name: propertyName} of ancestorRule.style) {
         if (!INHERITED_CSS_STYLE_PROPERTIES[propertyName]) {
           ignoredPropertyNames[propertyName] = true;
         } else if (appliedPropertNames[propertyName]) {
@@ -862,11 +870,16 @@ const getTargetStyleOwners = (element: SlimElement, propertyNames: string[], tar
 
   const ret = {};
   for (const propName of propertyNames) {
-    ret[propName] = matchingStyleOwners.find((owner) => Boolean(owner.type === SlimVMObjectType.ELEMENT ? (getAttribute("style", owner as SlimElement) || {})[propName] && owner : (owner as SlimCSSStyleRule).style[propName] && owner) || Boolean(matchingStyleOwners[0]))
+    ret[propName] = matchingStyleOwners.find((owner) => Boolean(owner.type === SlimVMObjectType.ELEMENT ? getStyleValue(propName, getAttribute("style", owner as SlimElement) as any || []) && owner : getStyleValue(propName, (owner as SlimCSSStyleRule).style) && owner) || Boolean(matchingStyleOwners[0]))
   }
 
   return ret;
 };
+
+const getStyleValue = (name: string, style: SlimCSSStyleDeclaration) => {
+  const prop = style.find(prop => prop.name === name);
+  return prop && prop.value;
+}
 
 export const cssPropNameToKebabCase = (propName: string) => {
   propName = propName.substr(0, 2) === "--" ? propName : kebabCase(propName);

@@ -175,24 +175,24 @@ const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule, 
     diffs.push(createSetValueMutation(CSS_SET_SELECTOR_TEXT, path, newRule.selectorText));
   }
   eachArrayValueMutation(
-    diffArray(Object.keys(oldRule.style), Object.keys(newRule.style), (a, b) => a === b ? 0 : -1),
+    diffArray(oldRule.style, newRule.style, (a, b) => a.name === b.name ? 0 : -1),
     {
       insert({ index, value}) {
         diffs.push(
-          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value, newRule.style[value])
+          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value.name, value.value)
         );
       },
       delete({ index, value }) {
         diffs.push(
-          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value, undefined)
+          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value.name, undefined)
         );
       },
-      update({ newValue, index, patchedOldIndex }) {
-        if (newValue === "id") return;
+      update({ newValue, index, patchedOldIndex, originalOldIndex }) {
+
         // TODO - move style attribute
-        if (newRule.style[newValue] !== oldRule.style[newValue]) {
+        if (newRule.style[originalOldIndex].value !== oldRule.style[index].value || patchedOldIndex !== index) {
           diffs.push(
-            createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newValue, newRule.style[newValue], null, null, index)
+            createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newValue.name, newValue.value, null, null, index)
           );
         }
       }

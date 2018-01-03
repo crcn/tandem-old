@@ -399,8 +399,7 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
 
   if (rule.type === CSSExpressionType.STYLE_RULE || (rule.type === CSSExpressionType.AT_RULE && (rule as CSSAtRule).name === "font-face")) {
     const { selectorText, children } = rule as CSSStyleRule;
-    const style: SlimCSSStyleDeclaration = {
-    } as any;
+    const style: SlimCSSStyleDeclaration = [];
     
     for (let i = 0, {length} = children; i < length; i++) {
       const child = children[i];
@@ -416,10 +415,12 @@ const createCSSRule = (rule: CSSExpression, context: VMContext) => {
             }
             return match;
           });
-
         }
 
-        style[decl.name] = value;
+        style.push({
+          name: decl.name,
+          value,
+        });
       }
     };
 

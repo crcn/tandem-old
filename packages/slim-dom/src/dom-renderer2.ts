@@ -225,11 +225,8 @@ const shallowStringifyRule = (rule: SlimCSSRule, context: InsertStyleSheetContex
 const stringifyStyle = (style) => {
   let buffer: string = ``;
 
-  for (const key in style) {
-
-    // TODO - change to isValidCSSKey
-    if (key === "id") continue;
-    buffer += `${key}: ${style[key]};`
+  for (const {name, value} of style) {
+    buffer += `${name}: ${value};`
   }
 
   return buffer;

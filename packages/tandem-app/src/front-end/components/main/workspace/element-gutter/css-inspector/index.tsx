@@ -245,8 +245,8 @@ const AppliedCSSRuleInfoBase = ({
   for (const name in declaration) {
     // const name = declaration[i];
     const value = declaration[name];
-    const origValue = appliedRule.rule.style.disabledPropertyNames && appliedRule.rule.style.disabledPropertyNames[name];
-    const disabled = Boolean(origValue);
+    // const origValue = appliedRule.rule.style.disabledPropertyNames && appliedRule.rule.style.disabledPropertyNames[name];
+    // const disabled = Boolean(origValue);
     const ignored = Boolean(appliedRule.ignoredPropertyNames && appliedRule.ignoredPropertyNames[name]);
     const overridden = Boolean(appliedRule.overriddenPropertyNames && appliedRule.overriddenPropertyNames[name]);
 

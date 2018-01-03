@@ -53,11 +53,7 @@ const compressVMObject = (node: SlimBaseNode) => {
     }
     case SlimVMObjectType.FONT_FACE_RULE: {
       const { type, style, source } = node as SlimFontFace;
-      const decl = [];
-      for (const key in style) {
-        decl.push([key, style[key]]);
-      }
-
+      const decl = compressStyle(style);
       return [
         type,
         decl
@@ -65,11 +61,7 @@ const compressVMObject = (node: SlimBaseNode) => {
     }
     case SlimVMObjectType.STYLE_RULE: {
       const { type, selectorText, style, source } = node as SlimCSSStyleRule;
-      const decl = [];
-      for (const key in style) {
-        decl.push([key, style[key]]);
-      }
-
+      const decl = compressStyle(style);
       return [
         type,
         selectorText,
@@ -140,15 +132,15 @@ const uncompressVMObject = (node: any) => {
     }
     case SlimVMObjectType.FONT_FACE_RULE: {
       const [type, decls] = node;
-      const style: CSSStyleDeclaration = uncompressStyle(decls);
+      const style: SlimCSSStyleDeclaration = uncompressStyle(decls);
       return {
         type,
         style
-      } as CSSFontFaceRule;
+      } as SlimFontFace;
     }
     case SlimVMObjectType.STYLE_RULE: {
       const [type, selectorText, decls] = node;
-      const style: CSSStyleDeclaration = uncompressStyle(decls);
+      const style: SlimCSSStyleDeclaration = uncompressStyle(decls);
       return {
         type,
         selectorText,
@@ -168,11 +160,19 @@ const uncompressVMObject = (node: any) => {
 };
 
 const uncompressStyle = (decls: any) => {
-  const style: CSSStyleDeclaration = {
-  } as any;
+  const style: SlimCSSStyleDeclaration = [];
   for (let i = 0, {length} = decls; i < length; i++) {
-    const [key, value] = decls[i];
-    style[key] = value;
+    const [name, value] = decls[i];
+    style.push({ name, value });
   }
   return style;
+}
+
+const compressStyle = (decls: SlimCSSStyleDeclaration) => {
+  const compressed = [];
+  for (let i = 0, {length} = decls; i < length; i++) {
+    const {name, value} = decls[i];
+    compressed.push([name, value]);
+  }
+  return compressed;
 }

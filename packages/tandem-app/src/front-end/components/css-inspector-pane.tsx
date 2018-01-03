@@ -268,8 +268,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     const childDeclarations: StyleDelarationOuterProps[] = [];
 
     const owner = (rule.rule || rule.targetElement);
-    for (const name in rule.style) {
-      const value = declarations[name];
+    for (const {name, value} of rule.style) {
       if (value == null || !isValidStyleDeclarationName(name)) {
         continue;
       }

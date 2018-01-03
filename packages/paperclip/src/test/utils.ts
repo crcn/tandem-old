@@ -42,9 +42,8 @@ const stringifyStyleSheet = (sheet: SlimCSSRule) => {
     case SlimVMObjectType.STYLE_RULE: {
       const rule = sheet as SlimCSSStyleRule;
       let buffer = `${rule.selectorText} {`;
-      for (const key in rule.style) {
-        if (key === "id" || rule.style[key] == null) continue;
-        buffer += `${key}:${rule.style[key]};`
+      for (const {name, value} of rule.style) {
+        buffer += `${name}:${value};`
       }
       buffer += `}`
       return buffer;
