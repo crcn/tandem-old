@@ -149,11 +149,11 @@ const insertStyleSheets = (current: VMObject, mount: HTMLElement, context: Inser
   }
 };
 
-const insertStyleSheet = (element: SlimStyleElement, mount: HTMLElement, context: InsertStyleSheetContext) => {
+const insertStyleSheet = (element: SlimStyleElement, mount: HTMLElement, context: InsertStyleSheetContext, index: number = Number.MAX_SAFE_INTEGER) => {
   const nativeElement = mount.ownerDocument.createElement("style");
   context.map.dom[element.id] = nativeElement;
   nativeElement.appendChild(mount.ownerDocument.createTextNode(""));
-  mount.appendChild(nativeElement);
+  insertNativeNode(nativeElement, index, mount);
   const sheet = nativeElement.sheet as CSSStyleSheet;
 
   context.map.cssom[element.sheet.id] = sheet;
@@ -257,18 +257,27 @@ const appendNativeChildNodes = ({ childNodes }: SlimParentNode, nativeParent: El
   }
 };
 
-const deleteNestedCSSRules = (rule: SlimCSSGroupingRule, map: CSSOMMap) => {
-  map = {
-    ...map,
-    [rule.id]: undefined
-  };
-
+const deleteNestedCSSRules = (rule: SlimCSSGroupingRule, map: NativeObjectMap) => {
+  map = updateCSSOMMap(map, { [rule.id]: undefined });
   if (rule.rules) {
     for (let i = rule.rules.length; i--;) {
       map = deleteNestedCSSRules(rule.rules[i] as any, map);
     }
   }
+  return map;
+};
 
+const deleteNestedChildNodes = (node: SlimBaseNode, map: NativeObjectMap) => {
+  map = updateDOMMap(map, { [node.id]: undefined });
+  if ((node as SlimElement).shadow) {
+    map = deleteNestedChildNodes((node as SlimElement).shadow, map);
+  }
+  if ((node as SlimParentNode).childNodes) {
+    const parent = node as SlimParentNode;
+    for (let i = parent.childNodes.length; i--;) {
+      map = deleteNestedChildNodes(parent.childNodes[i] as any, map);
+    }
+  }
   return map;
 };
 
@@ -326,13 +335,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
             insertNativeNode(newNativeChild, slotIndex + i + 1, nativeParent);
           }
           
-          map = {
-            ...map,
-            dom: {
-              ...map.dom,
-              ...childMap,
-            }
-          };
+          map = updateDOMMap(map, childMap);
         }
 
       } else {
@@ -348,6 +351,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     }
     case INSERT_CHILD_NODE: {
       const { child, index } = mutation as InsertChildMutation<any, any>;
+
       let insertIndex = index;
 
       let nativeParent: Node;
@@ -363,22 +367,30 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         nativeParent = map.dom[slimTarget.id];
       }
 
-      let childMap: DOMMap = {};
+      let domMap: DOMMap = {};
+      let cssomMap: CSSOMMap = {};
       const mutationHost = getMutationHost(mutation, root) as SlimElement;
-      // console.log(mutation.target, mutationHost);
-      const nativeChild = createNativeNode(child, ownerDocument, {  
-        map: childMap,
-        root: root,
-        host: mutationHost
-      });
-      insertNativeNode(nativeChild, insertIndex, nativeParent);
-      map = {
-        ...map,
-        dom: {
-          ...map.dom,
-          ...childMap
-        }
+      
+      if (child.type === SlimVMObjectType.ELEMENT && (child as SlimElement).tagName === "style") {
+        insertStyleSheet(child as SlimStyleElement, mount, {
+          host: getNodeHost(child, root),
+          map: { cssom: cssomMap, dom: domMap }
+        });
+
+      } else {
+        const nativeChild = createNativeNode(child, ownerDocument, {  
+          map: domMap,
+          root: root,
+          host: mutationHost
+        });
+
+        insertNativeNode(nativeChild, insertIndex, nativeParent);
       }
+
+      map = updateNativeMap(map, {
+        cssom: cssomMap,
+        dom: domMap
+      });
       break;
     }
     case MOVE_CHILD_NODE: {
@@ -409,11 +421,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const parentRule: CSSGroupingRule = ((nativeChild as CSSStyleRule).parentRule || (nativeChild as CSSGroupingRule).parentStyleSheet) as any;
 
       parentRule.deleteRule(Array.prototype.indexOf.call(parentRule.cssRules, nativeChild));
-      map = {
-        ...map,
-        cssom: deleteNestedCSSRules(slimChild as any, map.cssom)
-      };
-
+      map = updateNativeMap(map, deleteNestedCSSRules(slimChild as any, map))
       break;
     }
 
@@ -432,6 +440,31 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const { newValue } = mutation as SetValueMutation<any>;
       const nativeTarget: CSSMediaRule = map.cssom[slimTarget.id] as CSSMediaRule;
       nativeTarget.conditionText = newValue;
+      break;
+    }
+
+    case REMOVE_SHADOW:
+    case ATTACH_SHADOW: {
+
+      // dumb patch where the target element is replaced entirely -- this is to reduce complex code, and is probably okay for this case since ATTACH_SHADOW probably won't be called that often.
+      const patchedRoot = patchNode2(mutation, root);
+      const patchedTarget = getVMObjectFromPath(mutation.target, patchedRoot);
+      const nativeTarget = map.dom[slimTarget.id];
+      const nativeParent = nativeTarget.parentNode;
+      const index = Array.prototype.indexOf.call(nativeParent.childNodes, nativeTarget);
+      nativeParent.removeChild(nativeTarget);
+      map = deleteNestedChildNodes(slimTarget, map);
+
+      const domMap = {};
+
+      const newNativeTarget = createNativeNode(patchedTarget, document, {
+        root: patchedRoot,
+        host: getNodeHost(patchedTarget, patchedRoot),
+        map: domMap
+      });
+
+      insertNativeNode(newNativeTarget, index, nativeParent);
+      map = updateDOMMap(map, domMap);
       break;
     }
 
@@ -463,13 +496,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         }, index);
       }
 
-      map = {
-        ...map,
-        cssom: {
-          ...map.cssom,
-          ...cssomMap
-        }
-      }
+      map = updateCSSOMMap(map, cssomMap);
       break;
     }
 
@@ -481,20 +508,41 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         map: { cssom: cssomMap, dom: {}},
         scope: getAttributeValue("scope", styleElement)
       }, index);
-
-      map = {
-        ...map,
-        cssom: {
-          ...map.cssom,
-          ...cssomMap
-        }
-      }
+      map = updateCSSOMMap(map, cssomMap);
       break;
     }
   }
 
   return map;
 };
+
+const updateDOMMap = (map: NativeObjectMap, dom: DOMMap): NativeObjectMap => ({
+  ...map,
+  dom: {
+    ...map.dom,
+    ...dom
+  }
+});
+
+const updateNativeMap = (oldMap: NativeObjectMap, newMap: NativeObjectMap): NativeObjectMap => ({
+  ...oldMap,
+  dom: {
+    ...oldMap.dom,
+    ...newMap.dom
+  },
+  cssom: {
+    ...oldMap.cssom,
+    ...newMap.cssom
+  }
+});
+
+const updateCSSOMMap = (oldMap: NativeObjectMap, newMap: CSSOMMap): NativeObjectMap => ({
+  ...oldMap,
+  cssom: {
+    ...oldMap.cssom,
+    ...newMap
+  }
+});
 
 const removeNativeChildNode = (child: SlimBaseNode, map: NativeObjectMap) => {
   const nativeChild = map.dom[child.id];
@@ -503,13 +551,7 @@ const removeNativeChildNode = (child: SlimBaseNode, map: NativeObjectMap) => {
   if (!nativeChild) {
     throw new Error(`VM node does not have an associative DOM element`);
   }
-  map = {
-    ...map,
-    dom: {
-      ...map.dom,
-      [child.id]: undefined
-    }
-  };
+  map = deleteNestedChildNodes(child, map);
   nativeChild.parentNode.removeChild(nativeChild);
   return map;
 };

@@ -129,6 +129,7 @@
     .add-declaration-button {
       cursor: pointer;
     }
+
   </style>
   <template>
     <td-gutter-subheader>
