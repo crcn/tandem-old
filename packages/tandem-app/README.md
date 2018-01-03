@@ -3,10 +3,9 @@ IMMEDIATE:
 - [ ] edit selector text
 - [ ] add style rule
 - [ ] delete style rule
-- [ ] maintain declaration name index
+- [ ] psuedo selectors need to show up
 
 - [ ] WARM UP
-  - [ ] ion-eye css inspector props
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
