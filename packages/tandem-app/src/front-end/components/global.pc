@@ -203,3 +203,15 @@
     <td-banner error onClose>Error</td-banner>
   </preview>
 </component>
+
+
+<!--component id="td-input">
+  <style>
+  </style>
+  <template>
+    <input />
+  </template>
+  <preview name="main" width="1366" height="768">
+    <input />
+  </preview>
+</component-->

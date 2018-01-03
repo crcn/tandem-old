@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+- [ ] inserting new component in global.pc breaks everything (try adding `td-input`)
 - [ ] add style declarations
 - [ ] remove style declarations
 - [ ] edit raw value
@@ -8,6 +9,7 @@ IMMEDIATE:
 - [ ] delete style rule
 
 - [ ] WARM UP
+  - [ ] pseudo selectors must work
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
