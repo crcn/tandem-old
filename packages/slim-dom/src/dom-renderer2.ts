@@ -2,7 +2,7 @@ import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSG
 import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
-import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2 } from "./diff-patch";
+import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2, CSS_DELETE_STYLE_PROPERTY } from "./diff-patch";
 import { weakMemo } from "./weak-memo";
 
 export type DOMMap = {
@@ -421,6 +421,13 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
 
       parentRule.deleteRule(Array.prototype.indexOf.call(parentRule.cssRules, nativeChild));
       map = updateNativeMap(map, deleteNestedCSSRules(slimChild as any, map))
+      break;
+    }
+
+    case CSS_DELETE_STYLE_PROPERTY: {
+      const { name } = mutation as SetPropertyMutation<any>;
+      const nativeTarget = map.cssom[slimTarget.id] as CSSStyleRule;
+      nativeTarget.style.removeProperty(name);
       break;
     }
 

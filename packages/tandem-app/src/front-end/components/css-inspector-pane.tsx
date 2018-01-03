@@ -15,6 +15,7 @@ import { Workspace, getNodeArtboard, DisabledStyleDeclarations, Artboard } from 
 import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule, getStyleOwnerFromScopeInfo, getStyleOwnerScopeInfo } from "slim-dom";
 
 type StyleDelarationOuterProps = {
+  index: number;
   isNewDeclaration?: boolean;
   onDeclarationTabbed?: () => any;
   onNameChange: (oldName: string, newName: string) => any;
@@ -134,8 +135,8 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
   withState(`newName`, `setNewName`, undefined),
   withState(`newValue`, `setNewValue`, undefined),
   withHandlers({
-    onToggleDeclarationClick: ({ artboardId, owner, dispatch, name }: StyleDelarationInnerProps) => (event) => {
-      dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name));
+    onToggleDeclarationClick: ({ index, artboardId, owner, dispatch, name }: StyleDelarationInnerProps) => (event) => {
+      dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name, index));
     },
     onNameInputKeyDown: ({ setEditingName, onNameChange, onDeclarationTabbed })  => (event) => {
       if (event.key === "Enter") {
@@ -143,7 +144,7 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
         if (event.target.value !== name) {
           onNameChange(name, event.target.value);
         }
-      } else if (event.key === "Tab" && !event.shiftKey && onDeclarationTabbed && !event.target.value) {
+      } else if (event.key === "Tab" && onDeclarationTabbed && !event.target.value) {
         onDeclarationTabbed(event);
       }
     },
@@ -158,18 +159,18 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
         onDeclarationTabbed(event, true);
       }
     },
-    onNameInputBlur: ({ name, setEditingName, setEditingValue, onNameChange }: StyleDelarationInnerProps) => (event) => {
+    onNameInputBlur: ({ index, name, setEditingName, setEditingValue, onNameChange }: StyleDelarationInnerProps) => (event) => {
       setEditingName(false);
 
       if (event.target.value !== name) {
-        onNameChange(name, event.target.value);
+        onNameChange(index, name, event.target.value);
       }
     },
-    onValueInputBlur: ({ setEditingValue, onValueChange, name, value }: StyleDelarationInnerProps) => (event) => {
+    onValueInputBlur: ({ index, setEditingValue, onValueChange, name, value }: StyleDelarationInnerProps) => (event) => {
       setEditingValue(false);
 
       if (event.target.value !== value) {
-        onValueChange(name, event.target.value);
+        onValueChange(index, name, event.target.value);
       }
     },
     onNameFocus: ({ setEditingName }) => () => {
@@ -245,18 +246,18 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       }
       setAddingDeclaration(!addingDeclaration);
     },
-    onDeclarationNameChange: ({ dispatch, rule, artboardId, setAddingDeclaration }: CSSStyleRuleInnerProps) => (oldName: string, newName: string) => {
+    onDeclarationNameChange: ({ dispatch, rule, artboardId, setAddingDeclaration }: CSSStyleRuleInnerProps) => (index: number, oldName: string, newName: string) => {
       const owner = (rule.rule || rule.targetElement);
 
       // is a new prop
       if (!oldName && newName) {
         setAddingDeclaration(false);
       }
-      dispatch(cssDeclarationNameChanged(oldName, newName, owner.id, artboardId));
+      dispatch(cssDeclarationNameChanged(index, oldName, newName, owner.id, artboardId));
     },
-    onDeclarationValueChange: ({ dispatch, rule, artboardId }: CSSStyleRuleInnerProps) => (name: string, newValue: string) => {
+    onDeclarationValueChange: ({ dispatch, rule, artboardId }: CSSStyleRuleInnerProps) => (index: number, name: string, newValue: string) => {
       const owner = (rule.rule || rule.targetElement);
-      dispatch(cssDeclarationValueChanged(name, newValue, owner.id, artboardId));
+      dispatch(cssDeclarationValueChanged(index, name, newValue, owner.id, artboardId));
     }
   }),
   (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationTabbed, onDeclarationNameChange, onDeclarationValueChange }: CSSStyleRuleInnerProps) => {
@@ -268,15 +269,13 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     const childDeclarations: StyleDelarationOuterProps[] = [];
 
     const owner = (rule.rule || rule.targetElement);
+    let index = 0;
     for (const {name, value} of rule.style) {
-      if (value == null || !isValidStyleDeclarationName(name)) {
-        continue;
-      }
-      
       const disabled = disabledPropertyNames[name];
       const ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name]);
       const overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name]);
       childDeclarations.push({
+        index: index++,
         owner: owner,
         artboardId,
         onNameChange: onDeclarationNameChange,
@@ -292,6 +291,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
 
     if (addingDeclaration) {
       childDeclarations.push({
+        index,
         owner,
         artboardId,
         isNewDeclaration: true,

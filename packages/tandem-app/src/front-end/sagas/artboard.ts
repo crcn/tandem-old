@@ -1,4 +1,4 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled, VMObject, SlimStyleElement } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled, VMObject, SlimStyleElement, CSS_DELETE_STYLE_PROPERTY, getStyleValue } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
@@ -197,7 +197,7 @@ function* handleMoved() {
 
 function* handleToggleCSSDeclaration() {
   while(1) {
-    const { artboardId, declarationName, itemId }: CSSToggleDeclarationEyeClicked = yield take(CSS_TOGGLE_DECLARATION_EYE_CLICKED);
+    const { artboardId, declarationName, itemId, index }: CSSToggleDeclarationEyeClicked = yield take(CSS_TOGGLE_DECLARATION_EYE_CLICKED);
 
     const itemType = getVMObjectIdType(itemId);
     const state: ApplicationState = yield select();
@@ -207,7 +207,7 @@ function* handleToggleCSSDeclaration() {
       const disabled = workspace.disabledStyleDeclarations[scopeHash][declarationName];
 
       if (itemType === SlimVMObjectType.STYLE_RULE) {
-        return [createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, declarationName, disabled ? null : (nestedObject as SlimCSSStyleRule).style[declarationName])];
+        return [createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, declarationName, disabled ? null : (nestedObject as SlimCSSStyleRule).style[index].value, null, null, index)];
       }
 
       return [];
@@ -387,7 +387,7 @@ function* handleCSSChanges() {
 
 function* handleDeclarationNameChange() {
   while(1) {
-    const { ownerId, artboardId, name: oldName, value: newName }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
+    const { ownerId, index, artboardId, name: oldName, value: newName }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
 
     yield call(updateSharedArtboards, ownerId, artboardId, true, (nestedObject, hash, path, root) => {
       if (nestedObject.type === SlimVMObjectType.STYLE_RULE) {
@@ -395,10 +395,10 @@ function* handleDeclarationNameChange() {
         const value = rule.style[oldName];
         const mutations = [];
         if (oldName) {
-          mutations.push(createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, oldName, null));
+          mutations.push(createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, oldName, null, null, null, index));
         }
         if (newName) {
-          mutations.push(createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newName, value || ""));
+          mutations.push(createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newName, value || "", null, null, index));
         }
         return mutations;
 
@@ -410,11 +410,16 @@ function* handleDeclarationNameChange() {
 
 function* handleDecarationValueChange() {
   while(1) {
-    const { ownerId, artboardId, name, value }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
+    const { ownerId, artboardId, name, value, index }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
     yield call(updateSharedArtboards, ownerId, artboardId, true, (nestedObject, hash, path, root) => {
       if (nestedObject.type === SlimVMObjectType.STYLE_RULE) {
         const rule = nestedObject as SlimCSSStyleRule;
-        return [createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, name, value)];
+
+        if (!value) {
+          return [createPropertyMutation(CSS_DELETE_STYLE_PROPERTY, path, name, null, null, null, index)];
+        }
+
+        return [createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, name, value, null, null, index)];
       }
       return null;
     });

@@ -1,13 +1,5 @@
 IMMEDIATE:
 
-- [ ] css declarations should be a list, not an object
-  - [ ] needed to allow for multiples of the same prop to be added
-  - [ ] needed for ordering declarations
-- [ ] changing name 
-
-- [ ] add style declarations
-- [ ] remove style declarations
-- [ ] edit raw value
 - [ ] edit selector text
 - [ ] add style rule
 - [ ] delete style rule

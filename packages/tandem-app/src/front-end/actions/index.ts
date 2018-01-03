@@ -294,6 +294,7 @@ export type EmptyWindowsUrlAdded = {
 } & BaseEvent;
 
 export type CSSDeclarationChanged = {
+  index: number;
   artboardId: string;
   name: string;
   ownerId: string;
@@ -372,6 +373,7 @@ export type ToggleCSSTargetSelectorClicked = {
 } & BaseEvent;
 
 export type CSSToggleDeclarationEyeClicked = {
+  index: number;
   artboardId: string;
   itemId: string;
   declarationName: string;
@@ -418,7 +420,8 @@ export const toggleCSSTargetSelectorClicked = (itemId: string, artboardId: strin
   itemId,
 });
 
-export const cssToggleDeclarationEyeClicked = (artboardId: string, itemId: string, declarationName: string): CSSToggleDeclarationEyeClicked => ({
+export const cssToggleDeclarationEyeClicked = (artboardId: string, itemId: string, declarationName: string, index: number): CSSToggleDeclarationEyeClicked => ({
+  index,
   type: CSS_TOGGLE_DECLARATION_EYE_CLICKED,
   artboardId,
   itemId,
@@ -463,24 +466,27 @@ export const artboardDOMComputedInfo = (artboardId: string, computedInfo: Comput
   type: ARTBOARD_DOM_INFO_COMPUTED,
 });
 
-export const cssDeclarationNameChanged = (name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
+export const cssDeclarationNameChanged = (index: number, name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
   ownerId,
   artboardId,
+  index,
   name,
   value,
   type: CSS_DECLARATION_NAME_CHANGED
 });
 
-export const cssDeclarationValueChanged = (name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
+export const cssDeclarationValueChanged = (index: number, name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
   ownerId,
   artboardId,
+  index,
   name,
   value,
   type: CSS_DECLARATION_VALUE_CHANGED
 });
 
-export const cssDeclarationCreated = (name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
+export const cssDeclarationCreated = (index: number, name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({
   artboardId,
+  index,
   name,
   value,
   ownerId,

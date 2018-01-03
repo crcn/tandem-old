@@ -1,7 +1,7 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
 import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, createMoveChildMutation, MoveChildMutation } from "source-mutation";
 import { compressRootNode, uncompressRootNode } from "./compression";
-import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount } from "./utils";
+import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, removeCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount, moveCSSStyleProperty } from "./utils";
 import { isEqual } from "lodash";
 import crc32 = require("crc32");
 
@@ -27,6 +27,8 @@ export const CSS_MOVE_RULE   = "CSS_MOVE_RULE";
 
 // CSS Style Rule
 export const CSS_SET_STYLE_PROPERTY = "CSS_SET_STYLE_PROPERTY";
+export const CSS_MOVE_STYLE_PROPERTY = "CSS_MOVE_STYLE_PROPERTY";
+export const CSS_DELETE_STYLE_PROPERTY = "CSS_DELETE_STYLE_PROPERTY";
 export const CSS_SET_SELECTOR_TEXT = "CSS_SET_SELECTOR_TEXT";
 
 // CSS At Rule
@@ -179,18 +181,24 @@ const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule, 
     {
       insert({ index, value}) {
         diffs.push(
-          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value.name, value.value)
+          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value.name, value.value, null, null, index)
         );
       },
       delete({ index, value }) {
         diffs.push(
-          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value.name, undefined)
+          createPropertyMutation(CSS_DELETE_STYLE_PROPERTY, path, null, null, null, null, index)
         );
       },
       update({ newValue, index, patchedOldIndex, originalOldIndex }) {
 
+        if (patchedOldIndex !== index) {
+          diffs.push(
+            createMoveChildMutation(CSS_MOVE_STYLE_PROPERTY, path, newValue, index, patchedOldIndex)
+          );
+        }
+
         // TODO - move style attribute
-        if (newRule.style[originalOldIndex].value !== oldRule.style[index].value || patchedOldIndex !== index) {
+        if (newRule.style[originalOldIndex].value !== oldRule.style[index].value) {
           diffs.push(
             createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newValue.name, newValue.value, null, null, index)
           );
@@ -366,9 +374,19 @@ export const patchNode2 = <TNode extends SlimParentNode>(mutation: Mutation<any>
       newTarget = setCSSSelectorText(newTarget as SlimCSSStyleRule, newValue);
       break;
     }
+    case CSS_DELETE_STYLE_PROPERTY: {
+      const { index } = mutation as SetPropertyMutation<any[]>;
+      newTarget = removeCSSStyleProperty(newTarget as SlimCSSStyleRule, index);
+      break;
+    }
+    case CSS_MOVE_STYLE_PROPERTY: {
+      const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
+      newTarget = moveCSSStyleProperty(newTarget as SlimCSSStyleRule, oldIndex, index);
+      break;
+    }
     case CSS_SET_STYLE_PROPERTY: {
       const { name, newValue, index } = mutation as SetPropertyMutation<any[]>;
-      newTarget = setCSSStyleProperty(newTarget as SlimCSSStyleRule, name, newValue, index);
+      newTarget = setCSSStyleProperty(newTarget as SlimCSSStyleRule, index, name, newValue);
       break;
     }
     case CSS_INSERT_RULE: {

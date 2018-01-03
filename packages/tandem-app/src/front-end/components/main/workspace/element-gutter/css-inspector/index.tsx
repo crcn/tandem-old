@@ -201,7 +201,7 @@ const StyleProperty = compose<StylePropertyInnerProps, StylePropertyInnerProps>(
       // dispatch(cssDeclarationNameChanged(name, value, declarationId, windowId));
     },
     onValueChange: ({ name, windowId, declarationId, dispatch }) => (value: string) => {
-      dispatch(cssDeclarationValueChanged(name, value, declarationId, windowId));
+      // dispatch(cssDeclarationValueChanged(name, value, declarationId, windowId));
     }
   })
 )(StylePropertyBase);

@@ -87,15 +87,37 @@ export const setCSSAtRuleSetParams = <TRule extends SlimCSSAtRule>(rule: TRule, 
   params
 });
 
-export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, name: string, newValue: any, newIndex?: number): TRule => {
-  const foundIndex = rule.style.findIndex(item => item.name === name);
-  const prop =  { name, value: newValue };
+export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, index: number, name: string, value: string): TRule => {
+  const newStyle = [...rule.style];
+  const prop = { name, value };
+  if (index > newStyle.length) {
+    newStyle.push(prop);
+  } else {
+    newStyle[index] = prop;
+  }
+  return {
+    ...(rule as any),
+    style: newStyle
+  };
+};
+
+export const removeCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, index: number): TRule => {
 
   const newStyle = [...rule.style];
-  if (foundIndex > -1) {
-    newStyle.splice(foundIndex, 1);
-  } 
-  newStyle.splice(newIndex != null ? newIndex : foundIndex > -1 ? foundIndex : newStyle.length, 0, prop);
+  newStyle.splice(index, 1);
+
+  return {
+    ...(rule as any),
+    style: newStyle
+  };
+};
+
+export const moveCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, oldIndex: number, newIndex: number): TRule => {
+
+  const newStyle = [...rule.style];
+  const prop = newStyle[oldIndex];
+  newStyle.splice(oldIndex, 1);
+  newStyle.splice(newIndex, 0, prop);
 
   return {
     ...(rule as any),
@@ -876,7 +898,7 @@ const getTargetStyleOwners = (element: SlimElement, propertyNames: string[], tar
   return ret;
 };
 
-const getStyleValue = (name: string, style: SlimCSSStyleDeclaration) => {
+export const getStyleValue = (name: string, style: SlimCSSStyleDeclaration) => {
   const prop = style.find(prop => prop.name === name);
   return prop && prop.value;
 }
