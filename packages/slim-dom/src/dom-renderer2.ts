@@ -80,15 +80,9 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
       
       const nativeElement = context.map[vmNode.id] = document.createElement(tagName);
 
-      
       for (let i = 0, {length} = attributes; i < length; i++) {
         const attribute = attributes[i];
-        if (attribute.name === "style" && typeof attribute.value === "object") {
-          Object.assign(nativeElement[attribute.name], attribute.value);
-        } else if (typeof attribute.value !== "object") {
-          nativeElement.setAttribute(attribute.name, attribute.value);
-        }
-        nativeElement.dataset[attribute.name.toLowerCase()] = "true";
+        setNativeElementAttribute(nativeElement, attribute.name, attribute.value);
       }
       if (context.host) {
         nativeElement.classList.add(getElementScopeTagName(context.host));
@@ -337,10 +331,9 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       } else {
         if (!newValue) {
           nativeTarget.removeAttribute(name);
-          nativeTarget.dataset[name.toLowerCase()] = undefined;
+          delete nativeTarget.dataset[name.toLowerCase()];
         } else {
-          nativeTarget.setAttribute(name, newValue);
-          nativeTarget.dataset[name.toLowerCase()] = "true";
+          setNativeElementAttribute(nativeTarget, name, newValue);
         }
       }
       break;
@@ -530,6 +523,15 @@ const updateDOMMap = (map: NativeObjectMap, dom: DOMMap): NativeObjectMap => ({
   }
 });
 
+const setNativeElementAttribute = (nativeElement: HTMLElement, name: string, value: any) => {
+  if (name === "style" && typeof value === "object") {
+    Object.assign(nativeElement[name], value);
+  } else if (typeof value !== "object") {
+    nativeElement.setAttribute(name, value);
+  }
+  nativeElement.dataset[name.toLowerCase()] = "true";
+}
+
 const updateNativeMap = (oldMap: NativeObjectMap, newMap: NativeObjectMap): NativeObjectMap => ({
   ...oldMap,
   dom: {
@@ -550,15 +552,28 @@ const updateCSSOMMap = (oldMap: NativeObjectMap, newMap: CSSOMMap): NativeObject
   }
 });
 
-const removeNativeChildNode = (child: SlimBaseNode, map: NativeObjectMap) => {
+const removeNativeChildNode = (child: SlimBaseNode, map: NativeObjectMap, updateMap: boolean = true) => {
   const nativeChild = map.dom[child.id];
 
   // happens for style elements
   if (!nativeChild) {
     throw new Error(`VM node does not have an associative DOM element`);
   }
-  map = deleteNestedChildNodes(child, map);
+
   nativeChild.parentNode.removeChild(nativeChild);
+
+  if ((child as SlimElement).tagName === "slot") {
+    const slot = child as SlimElement;
+    for (let i = slot.childNodes.length; i--;) {
+      removeNativeChildNode(slot.childNodes[i], map, false);
+    }
+  }
+
+  if (updateMap) {
+    map = deleteNestedChildNodes(child, map);
+  }
+
+
   return map;
 };
 

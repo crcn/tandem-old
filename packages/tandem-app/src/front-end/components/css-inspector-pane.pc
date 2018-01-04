@@ -206,7 +206,7 @@
               type: "COLOR",
               value: "red"
             },
-            hovering: true,
+            hovering: false,
             onNameFocus: null,
             onValueFocus: null,
             onToggleDeclarationClick: null
@@ -306,7 +306,7 @@
           { 
             name: "content",
             sourceValue: null,
-            editingValue: false,
+            editingValue: true,
             value: {
               type: "STRING",
               value: "content"

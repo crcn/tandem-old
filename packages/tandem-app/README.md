@@ -1,7 +1,6 @@
 IMMEDIATE:
 
 - [ ] must figure out language features around shadow piercing**
-- [ ] psuedo selectors need to show up
 - [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
 - [ ] add style rule
 - [ ] delete style rule
@@ -11,14 +10,9 @@ IMMEDIATE:
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
-  - [ ] disabled CSS declaration eye should not be dimmed
   - [ ] start on error handling for FE
-  - [ ] check if conditional slots work
 
 - [ ] Bugs
-  - [ ] changes in inspector preview props don't show up
-
-  - [ ] removing hover prop on css inspector component doesn't remove eye icon.
   - [ ] full screen mode doesn't resize when gutters are toggled
   - [ ] `calc(100% - 10px)` parses as a list, not as an op expr
 
