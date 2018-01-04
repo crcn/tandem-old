@@ -653,7 +653,10 @@ export const getScopedStyleElements = weakMemo((tagName: string, window: SlimWin
 
 const getNodeCSSRules = weakMemo((node: SlimBaseNode, window: SlimWindow) => {
   const host = getSlimNodeHost(node, window.document);
-  let allRules = host ? getScopedStyleRules(host.tagName, window) : getDocumentCSSRules(window.document);
+  let allRules = getDocumentCSSRules(window.document);
+  if (host) {
+    allRules = [...getScopedStyleRules(host.tagName, window), ...allRules];
+  }
 
   // if shadow exists, then the element may have scoped styles
   if (node.type === SlimVMObjectType.ELEMENT && (node as SlimElement).shadow) {

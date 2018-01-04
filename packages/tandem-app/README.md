@@ -1,7 +1,7 @@
 IMMEDIATE:
 
+- [ ] must figure out language features around shadow piercing**
 - [ ] psuedo selectors need to show up
-- [ ] 
 - [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
 - [ ] add style rule
 - [ ] delete style rule
@@ -16,7 +16,6 @@ IMMEDIATE:
   - [ ] check if conditional slots work
 
 - [ ] Bugs
-  - [ ] `content: "\";` causes an exception
   - [ ] changes in inspector preview props don't show up
 
   - [ ] removing hover prop on css inspector component doesn't remove eye icon.
@@ -44,6 +43,8 @@ IMMEDIATE:
 - [ ] border inspector
 
 - [ ] Pretty CSS Inspector
+
+- [ ] SVG tooling
 
 - [ ] persistence
   - [ ] persist css changes in css inspector

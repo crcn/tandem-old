@@ -759,8 +759,13 @@ const createCSSStyleRuleOrDeclarationProperty = (context: ParseContext): CSSStyl
     // need to check for strings because something such as content: "; "; needs to be possible.
     if (curr.type === PCTokenType.SINGLE_QUOTE || curr.type === PCTokenType.DOUBLE_QUOTE)  {
 
+      const str = createString(context);
+      if (!str) {
+        return null;
+      }
+
       // TODO - define selector that is a selector AST
-      selectorText += curr.value + createString(context).value + curr.value;
+      selectorText += curr.value + str.value + curr.value;
     } else {
       selectorText += curr.value;
       scanner.next();
