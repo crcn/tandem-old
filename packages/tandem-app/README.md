@@ -4,6 +4,7 @@ IMMEDIATE:
 - [ ] add style rule
 - [ ] delete style rule
 - [ ] psuedo selectors need to show up
+- [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
 
 - [ ] WARM UP
   - [ ] width/height labels around hovered & selected stage items (like inspector)
