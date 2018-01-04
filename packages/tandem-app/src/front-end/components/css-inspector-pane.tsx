@@ -138,7 +138,7 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
     onToggleDeclarationClick: ({ index, artboardId, owner, dispatch, name }: StyleDelarationInnerProps) => (event) => {
       dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name, index));
     },
-    onNameInputKeyDown: ({ setEditingName, onNameChange, onDeclarationBlur })  => (event) => {
+    onNameInputKeyDown: ({ index, setEditingName, onNameChange, onDeclarationBlur })  => (event) => {
       if (event.key === "Enter") {
         setEditingName(false);
         if (event.target.value !== name) {
@@ -148,12 +148,12 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
         onDeclarationBlur(event);
       }
     },
-    onValueInputKeyDown: ({ setEditingValue, value, name, onValueChange, onDeclarationBlur }) => (event: React.KeyboardEvent<any>) => {
+    onValueInputKeyDown: ({ index, setEditingValue, value, name, onValueChange, onDeclarationBlur }) => (event: React.KeyboardEvent<any>) => {
       const target = event.target as any;
       if (event.key === "Enter") {
         setEditingValue(false);
         if (target.value !== value) {
-          onValueChange(name, target.value);
+          onValueChange(index, name, target.value);
         }
       } else if (event.key === "Tab" && !event.shiftKey && onDeclarationBlur) {
         onDeclarationBlur(event, true);

@@ -302,6 +302,19 @@
             onValueFocus: null,
             onValueInputKeyPress: null,
             onToggleDeclarationClick: null
+          },
+          { 
+            name: "content",
+            sourceValue: null,
+            editingValue: false,
+            value: {
+              type: "STRING",
+              value: "content"
+            },
+            onNameFocus: null,
+            onValueFocus: null,
+            onValueInputKeyPress: null,
+            onToggleDeclarationClick: null
           }
         ]
       },

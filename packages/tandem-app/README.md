@@ -1,9 +1,10 @@
 IMMEDIATE:
 
+- [ ] psuedo selectors need to show up
+- [ ] 
+- [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
 - [ ] add style rule
 - [ ] delete style rule
-- [ ] psuedo selectors need to show up
-- [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
 - [ ] ability to delete declaration props and shift tabbing
 
 - [ ] WARM UP
@@ -15,7 +16,9 @@ IMMEDIATE:
   - [ ] check if conditional slots work
 
 - [ ] Bugs
-  - [ ] pseudo selectors don't work (:focus, :after: :before)
+  - [ ] `content: "\";` causes an exception
+  - [ ] changes in inspector preview props don't show up
+
   - [ ] removing hover prop on css inspector component doesn't remove eye icon.
   - [ ] full screen mode doesn't resize when gutters are toggled
   - [ ] `calc(100% - 10px)` parses as a list, not as an op expr

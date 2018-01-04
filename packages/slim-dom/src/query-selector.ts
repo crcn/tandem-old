@@ -30,6 +30,7 @@ queryTester.configure({ CACHING: true, VERBOSITY: false });
 export const elementMatches = weakMemo((selector: string, node: SlimBaseNode) => {
   const wrappedNode = getLightDomWrapper(node);
   wrappedNode.ownerDocument = ownerDocument;
+
   return wrappedNode.nodeType === 1 && queryTester.match(wrappedNode, selector);
 });
 

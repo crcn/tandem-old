@@ -25,7 +25,6 @@
 </component>
 
 <component id="td-css-keyword-expr-input">
-  <meta name="internal" content="true" />
   <style>
     :host {
       color: var(--font-color-alt);
@@ -33,6 +32,23 @@
   </style>
   <template>
     <span>[[bind name]]</span>
+  </template>
+</component>
+
+<component id="td-css-string-expr-input">
+  <style>
+    :host {
+      color: var(--font-color-alt);
+    }
+    .value::before {
+      content: "\"";
+    }
+    .value::after {
+      content: "\"";
+    }
+  </style>
+  <template>
+    <span class="value">[[bind value]]</span>
   </template>
 </component>
 
@@ -165,6 +181,7 @@
     <td-css-measurement-input [[elseif value.type === "MEASUREMENT"]] [[bind value]] />
     <td-css-number-expr-input [[elseif value.type === "NUMBER"]] [[bind value]] />
     <td-css-keyword-expr-input [[elseif value.type === "KEYWORD"]] [[bind value]] />
+    <td-css-string-expr-input [[elseif value.type === "STRING"]] [[bind value]] />
     <td-css-spaced-list-expr-input [[elseif value.type === "SPACED_LIST"]] [[bind value]] />
     <td-css-comma-list-expr-input [[elseif value.type === "COMMA_LIST"]] [[bind value]] />
     <span [[else]]>
