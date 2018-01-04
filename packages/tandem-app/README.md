@@ -1,10 +1,10 @@
 IMMEDIATE:
 
-- [ ] wire up changing selector text
 - [ ] add style rule
 - [ ] delete style rule
 - [ ] psuedo selectors need to show up
 - [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
+- [ ] ability to delete declaration props and shift tabbing
 
 - [ ] WARM UP
   - [ ] width/height labels around hovered & selected stage items (like inspector)
@@ -27,6 +27,8 @@ IMMEDIATE:
   - [ ] edit raw declaration value
   - [ ] prioritized css 
   - [ ] quick add style feature (like chrome inspector)
+
+- [ ] DND elements to stage
 
 - [ ] Color inspector
   - [ ] hsl picker

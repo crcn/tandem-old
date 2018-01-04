@@ -9,7 +9,7 @@ import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerPr
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
-import { cssToggleDeclarationEyeClicked, cssDeclarationNameChanged, cssDeclarationValueChanged } from "front-end/actions";
+import { cssToggleDeclarationEyeClicked, cssDeclarationNameChanged, cssDeclarationValueChanged, cssSelectorTextChanged } from "front-end/actions";
 import { Workspace, getNodeArtboard, DisabledStyleDeclarations, Artboard } from "front-end/state";
 
 import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule, getStyleOwnerFromScopeInfo, getStyleOwnerScopeInfo } from "slim-dom";
@@ -230,6 +230,7 @@ export type CSSStyleRuleInnerProps = {
   setEditingSelectorText: (value: boolean) => any;
   onSelectorTextInputFocus: () => any;
   onSelectorTextInputBlur: () => any;
+  onSelectorTextInputKeyDown: () => any;
   addingDeclaration: boolean;
   onAddDeclarationClick: () => any;
   onDeclarationNameChange: (oldName: string, newName: string) => any;
@@ -271,11 +272,20 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     onSelectorTextFocus: ({ setEditingSelectorText }) => () => {
       setEditingSelectorText(true);
     },
-    onSelectorTextBlur: ({ setEditingSelectorText }) => () => {
+    onSelectorTextBlur: ({ dispatch, setEditingSelectorText, rule, artboardId }: CSSStyleRuleInnerProps) => (event: React.KeyboardEvent<any>) => {
       setEditingSelectorText(false);
+
+      if (rule.rule && rule.rule.selectorText !== (event.target as any).value) {
+        dispatch(cssSelectorTextChanged(rule.rule.id, (event.target as any).value, artboardId));
+      }
+    },
+    onSelectorTextInputKeyDown: ({ dispatch, rule, artboardId }) => (event: React.KeyboardEvent<any>) => {
+      if (event.key === "Enter" && rule.rule && rule.rule.selectorText !== (event.target as any).value) {
+        dispatch(cssSelectorTextChanged(rule.rule.id, (event.target as any).value, artboardId));
+      }
     }
   }),
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationTabbed, onDeclarationNameChange, onDeclarationValueChange, editingSelectorText, onSelectorTextFocus, onSelectorTextBlur }: CSSStyleRuleInnerProps) => {
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationTabbed, onDeclarationNameChange, onDeclarationValueChange, editingSelectorText, onSelectorTextFocus, onSelectorTextBlur, onSelectorTextInputKeyDown }: CSSStyleRuleInnerProps) => {
 
     const declarations = rule.style;
 
@@ -328,7 +338,7 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     let selectorTextInputSlot;
 
     if (rule.rule && editingSelectorText) {
-      selectorTextInputSlot = <Autofocus select><input type="text" defaultValue={rule.rule.selectorText} onBlur={onSelectorTextBlur} className="TdStyleRule" /></Autofocus>;
+      selectorTextInputSlot = <Autofocus select><input type="text" defaultValue={rule.rule.selectorText} onBlur={onSelectorTextBlur} className="TdStyleRule" onKeyDown={onSelectorTextInputKeyDown} /></Autofocus>;
     }
 
     return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} index={-1} selectorTextInputSlot={selectorTextInputSlot} onSelectorTextFocus={onSelectorTextFocus} editingSelectorText={editingSelectorText}  source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;

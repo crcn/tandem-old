@@ -1,10 +1,10 @@
-import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled, VMObject, SlimStyleElement, CSS_DELETE_STYLE_PROPERTY, getStyleValue } from "slim-dom";
+import { uncompressRootNode, renderDOM, computedDOMInfo, SlimParentNode, patchDOM, pushChildNode, SlimElement, createSlimElement, replaceNestedChild, getVMObjectPath, getVMObjectFromPath, SlimBaseNode, getDocumentChecksum, setVMObjectIds, prepDiff, patchNode2, patchDOM2, renderDOM2, computedDOMInfo2, getVMObjectIdType, SlimVMObjectType, SET_ATTRIBUTE_VALUE, CSS_SET_STYLE_PROPERTY, SlimCSSStyleRule, getStyleOwnerScopeInfo, getStyleOwnerFromScopeInfo, isCSSPropertyDisabled, VMObject, SlimStyleElement, CSS_DELETE_STYLE_PROPERTY, getStyleValue, CSS_SET_SELECTOR_TEXT, elementMatches } from "slim-dom";
 import { take, spawn, fork, select, call, put, race } from "redux-saga/effects";
 import { Point, shiftPoint } from "aerial-common2";
 import { delay, eventChannel } from "redux-saga";
 import { Moved, MOVED, Resized, RESIZED } from "aerial-common2";
-import { Mutation, createPropertyMutation, SetPropertyMutation } from "source-mutation";
-import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading, CSS_TOGGLE_DECLARATION_EYE_CLICKED, CSSToggleDeclarationEyeClicked, artboardDOMPatched, CSSDeclarationChanged, CSS_DECLARATION_CREATED, CSS_DECLARATION_NAME_CHANGED, CSS_DECLARATION_VALUE_CHANGED } from "../actions";
+import { Mutation, createPropertyMutation, SetPropertyMutation, createSetValueMutation } from "source-mutation";
+import { LOADED_SAVED_STATE, FILE_CONTENT_CHANGED, FileChanged, artboardLoaded, ARTBOARD_CREATED, ArtboardCreated, ArtboardMounted, ARTBOARD_MOUNTED, artboardDOMComputedInfo, artboardRendered, ARTBOARD_RENDERED, STAGE_TOOL_OVERLAY_MOUSE_PAN_END, StageToolOverlayMousePanning, STAGE_TOOL_OVERLAY_MOUSE_PANNING, artboardScroll, CANVAS_MOTION_RESTED, FULL_SCREEN_SHORTCUT_PRESSED, STAGE_RESIZED, OPEN_ARTBOARDS_REQUESTED, artboardCreated, OpenArtboardsRequested, artboardFocused, artboardPatched, ArtboardPatched, PREVIEW_DIFFED, PreviewDiffed, ARTBOARD_PATCHED, artboardLoading, CSS_TOGGLE_DECLARATION_EYE_CLICKED, CSSToggleDeclarationEyeClicked, artboardDOMPatched, CSSDeclarationChanged, CSS_DECLARATION_CREATED, CSS_DECLARATION_NAME_CHANGED, CSS_DECLARATION_VALUE_CHANGED, CSS_SELECTOR_TEXT_CHANGED, CSSSelectorTextChanged } from "../actions";
 import { getComponentPreview, getDocumentPreviewDiff } from "../utils";
 import { Artboard, Workspace, ApplicationState, getSelectedWorkspace, getArtboardById, getArtboardWorkspace, ARTBOARD,  getStageTranslate, createArtboard, getArtboardsByInfo, getArtboardDocumentBody, getArtboardDocumentBodyPath, getWorkspaceVMObject } from "../state";
 import { debounce } from "lodash";
@@ -383,6 +383,7 @@ function* handleOpenExternalArtboardsRequested() {
 function* handleCSSChanges() {
   yield fork(handleDeclarationNameChange);
   yield fork(handleDecarationValueChange);
+  yield fork(handleSelectorTextChanged);
 }
 
 function* handleDeclarationNameChange() {
@@ -421,7 +422,19 @@ function* handleDecarationValueChange() {
 
         return [createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, name, value, null, null, index)];
       }
-      return null;
+      return [];
+    });
+  }
+}
+
+function* handleSelectorTextChanged() {
+  while(1) {
+    const { styleRuleId, artboardId, newSelectorText }: CSSSelectorTextChanged = yield take(CSS_SELECTOR_TEXT_CHANGED);
+
+    yield call(updateSharedArtboards, styleRuleId, artboardId, true, (styleRule, hash, path, root) => {
+      return [
+        createSetValueMutation(CSS_SET_SELECTOR_TEXT, path, newSelectorText)
+      ];
     });
   }
 }

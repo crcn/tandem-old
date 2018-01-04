@@ -86,6 +86,7 @@ export const STAGE_TOOL_EDIT_TEXT_BLUR = "STAGE_TOOL_EDIT_TEXT_BLUR";
 export const STAGE_MOUNTED = "STAGE_MOUNTED";
 export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
 export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
+export const CSS_SELECTOR_TEXT_CHANGED   = "CSS_SELECTOR_TEXT_CHANGED";
 export const ARTBOARD_FOCUSED   = "ARTBOARD_FOCUSED";
 export const CSS_DECLARATION_CREATED   = "CSS_DECLARATION_CREATED";
 export const CSS_DECLARATION_TITLE_MOUSE_ENTER   = "CSS_DECLARATION_TITLE_MOUSE_ENTER";
@@ -301,6 +302,12 @@ export type CSSDeclarationChanged = {
   value: string;
 } & BaseEvent;
 
+export type CSSSelectorTextChanged = {
+  artboardId: string;
+  styleRuleId: string;
+  newSelectorText: string;
+} & BaseEvent;
+
 export type CSSDeclarationTitleMouseLeaveEnter = {
   artboardId: string;
   ruleId: string;
@@ -491,6 +498,13 @@ export const cssDeclarationCreated = (index: number, name: string, value: string
   value,
   ownerId,
   type: CSS_DECLARATION_CREATED
+});
+
+export const cssSelectorTextChanged = (styleRuleId: string, newSelectorText: string, artboardId: string): CSSSelectorTextChanged => ({
+  styleRuleId,
+  artboardId,
+  newSelectorText,
+  type: CSS_SELECTOR_TEXT_CHANGED
 });
 
 export const artboardLoaded = (artboardId, dependencyUris: string[], document: SlimParentNode, checksum: string, mount: HTMLIFrameElement): ArtboardLoaded => ({
