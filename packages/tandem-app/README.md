@@ -1,6 +1,6 @@
 IMMEDIATE:
 
-- [ ] edit selector text
+- [ ] wire up changing selector text
 - [ ] add style rule
 - [ ] delete style rule
 - [ ] psuedo selectors need to show up

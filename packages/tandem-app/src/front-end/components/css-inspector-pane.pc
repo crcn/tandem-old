@@ -6,6 +6,22 @@
 <link rel="import" href="./css-declaration-input.pc" />
 <link rel="stylesheet" href="./ionicons/css/ionicons.css" />
 
+<style>
+  .css-inspector-pane-content input {
+      border: none;
+      background: var(--background-deep);
+      color: var(--font-color);
+      width: calc(100% - var(--base2));
+      line-height: 0;
+      padding: 0;
+      margin-right: var(--base2);
+  }
+
+  .css-inspector-pane-content input::placeholder {
+    opacity: 0.3;
+  }
+</style>
+
 <component id="td-style-declaration">
   <meta name="internal" content="true" />
   <style>
@@ -50,20 +66,6 @@
     .value {
       width: 100%;
       display: inline-block;
-    }
-
-    input {
-      border: none;
-      background: var(--background-deep);
-      color: var(--font-color);
-      width: calc(100% - var(--base2));
-      line-height: 0;
-      padding: 0;
-      margin-right: var(--base2);
-    }
-
-    input::placeholder {
-      opacity: 0.3;
     }
   </style>
   <template>
@@ -146,7 +148,12 @@
   </style>
   <template>
     <td-gutter-subheader>
-      <span class="selector-text">
+      <span [[if editingSelectorText]] class="selector-text">
+        <slot name="selectorTextInput">
+          <input type="text" placeholder="selector" />
+        </slot>
+      </span>
+      <span [[else]] tabIndex="0" class="selector-text" onFocus=[[bind onSelectorTextFocus]]>
         [[bind label]]
       </span>
       <span class="inherited" [[if inherited]]>
@@ -173,7 +180,7 @@
       <span slot="header">
         CSS Inspector
       </span>
-      <span slot="content">
+      <span slot="content" class="css-inspector-pane-content">
         <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] key=[[bind styleRule.rule.assocId]] />
       </span>
     </td-pane>
@@ -189,6 +196,7 @@
         rule: {
           assocId: 1
         },
+        onSelectorTextFocus: null,
         onAddDeclarationClick: null,
         declarations: [
           { 
@@ -303,6 +311,7 @@
         rule: {
           assocId: 1
         },
+        onSelectorTextFocus: null,
         onAddDeclarationClick: null,
         declarations: [
           { 
@@ -424,6 +433,42 @@
         rule: {
           assocId: 1
         },
+        onSelectorTextFocus: null,
+        onAddDeclarationClick: null,
+        declarations: [
+          { 
+            name: "padding",
+            ignored: true,
+            sourceValue: null,
+            value: {
+              type: "SPACED_LIST",
+              items: [
+                {
+                  type: "MEASUREMENT",
+                  value: 10,
+                  unit: "px"
+                },
+                {
+                  type: "MEASUREMENT",
+                  value: 20,
+                  unit: "px"
+                }
+              ]
+            },
+            onNameFocus: null,
+            onValueFocus: null,
+            onToggleDeclarationClick: null
+          }
+        ]
+      },
+      {
+        label: "body, html",
+        editingSelectorText: true,
+        inherited: true,
+        rule: {
+          assocId: 1
+        },
+        onSelectorTextFocus: null,
         onAddDeclarationClick: null,
         declarations: [
           { 

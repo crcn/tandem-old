@@ -226,6 +226,10 @@ export type CSSStyleRuleOuterProps = {
 } & AppliedCSSRuleResult;
 export type CSSStyleRuleInnerProps = {
   onLastDeclarationBlur: () => any;
+  editingSelectorText: boolean;
+  setEditingSelectorText: (value: boolean) => any;
+  onSelectorTextInputFocus: () => any;
+  onSelectorTextInputBlur: () => any;
   addingDeclaration: boolean;
   onAddDeclarationClick: () => any;
   onDeclarationNameChange: (oldName: string, newName: string) => any;
@@ -240,6 +244,7 @@ const EMPTY_OBJECT = {};
 const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProps>(
   pure,
   withState(`addingDeclaration`, `setAddingDeclaration`, false),
+  withState(`editingSelectorText`, `setEditingSelectorText`, false),
   withHandlers({
     onAddDeclarationClick: ({ setAddingDeclaration }) => () => {
       setAddingDeclaration(true);
@@ -262,9 +267,15 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
     onDeclarationValueChange: ({ dispatch, rule, artboardId }: CSSStyleRuleInnerProps) => (index: number, name: string, newValue: string) => {
       const owner = (rule.rule || rule.targetElement);
       dispatch(cssDeclarationValueChanged(index, name, newValue, owner.id, artboardId));
+    },
+    onSelectorTextFocus: ({ setEditingSelectorText }) => () => {
+      setEditingSelectorText(true);
+    },
+    onSelectorTextBlur: ({ setEditingSelectorText }) => () => {
+      setEditingSelectorText(false);
     }
   }),
-  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationTabbed, onDeclarationNameChange, onDeclarationValueChange }: CSSStyleRuleInnerProps) => {
+  (Base: React.ComponentClass<TdStyleRuleInnerProps>) => ({ rule, inherited, ignoredPropertyNames, overriddenPropertyNames, dispatch, artboardId, disabledPropertyNames, onAddDeclarationClick, addingDeclaration, onLastDeclarationTabbed, onDeclarationNameChange, onDeclarationValueChange, editingSelectorText, onSelectorTextFocus, onSelectorTextBlur }: CSSStyleRuleInnerProps) => {
 
     const declarations = rule.style;
 
@@ -314,7 +325,13 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
       childDeclarations[childDeclarations.length - 1].onDeclarationBlur = onLastDeclarationTabbed;
     }
 
-    return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;
+    let selectorTextInputSlot;
+
+    if (rule.rule && editingSelectorText) {
+      selectorTextInputSlot = <Autofocus select><input type="text" defaultValue={rule.rule.selectorText} onBlur={onSelectorTextBlur} className="TdStyleRule" /></Autofocus>;
+    }
+
+    return <Base label={beautifyLabel(rule.rule ? rule.rule.selectorText : "style")} index={-1} selectorTextInputSlot={selectorTextInputSlot} onSelectorTextFocus={onSelectorTextFocus} editingSelectorText={editingSelectorText}  source={null} declarations={childDeclarations} inherited={inherited} onAddDeclarationClick={onAddDeclarationClick} />;
   }
 );
 
