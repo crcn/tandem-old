@@ -15,7 +15,7 @@ const fakeWindow = {
 export const querySelector = (selector: string, root: SlimParentNode) => {
 
   // Use querySelectorAll because of memoization.
-  const matchingElements = querySelectorAll(selector, root)
+  const matchingElements = querySelectorAll(selector, root, root)
   return matchingElements.length ? matchingElements[0] : null;
 };
 
@@ -27,24 +27,28 @@ const queryTester = nwmatcher({
 
 queryTester.configure({ CACHING: true, VERBOSITY: false });
 
-export const elementMatches = weakMemo((selector: string, node: SlimBaseNode) => {
+export const elementMatches = weakMemo((selector: string, node: SlimBaseNode, root: SlimBaseNode) => {
+
+  // Janky as hell. Touch root element to set parent node of all child elements.
+  getLightDomWrapper(root);
+
   const wrappedNode = getLightDomWrapper(node);
   wrappedNode.ownerDocument = ownerDocument;
 
   return wrappedNode.nodeType === 1 && queryTester.match(wrappedNode, selector);
 });
 
-export const querySelectorAll = weakMemo((selector: string, node: SlimBaseNode) => {
+export const querySelectorAll = weakMemo((selector: string, node: SlimBaseNode, root: SlimBaseNode) => {
   const matches = [];
 
-  if (elementMatches(selector, node)) {
+  if (elementMatches(selector, node, root)) {
     matches.push(node);
   };
 
   if ((node as SlimParentNode).childNodes) {
     const parent = node as SlimParentNode;
     for (let i = 0, {length} = parent.childNodes; i < length; i++) {
-      matches.push(...querySelectorAll(selector, parent.childNodes[i]));
+      matches.push(...querySelectorAll(selector, parent.childNodes[i], root));
     }
   }
 

@@ -684,7 +684,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elemen
 
     // no parent rule -- check
     if (rule.type === SlimVMObjectType.STYLE_RULE) {
-      if (elementMatches((rule as SlimCSSStyleRule).selectorText, element)) {
+      if (elementMatches((rule as SlimCSSStyleRule).selectorText, element, window.document)) {
         const styleRule = (rule as SlimCSSStyleRule);
 
         matchingRules.push({
@@ -699,7 +699,7 @@ export const getSyntheticMatchingCSSRules = weakMemo((window: SlimWindow, elemen
     } else if ((isMediaRule(rule) && createMediaMatcher(window)((rule as any as SlimCSSAtRule).params))) {
       const grouping = rule as SlimCSSGroupingRule;
       for (const childRule of grouping.rules) {
-        if (elementMatches((childRule as SlimCSSStyleRule).selectorText, element)) {
+        if (elementMatches((childRule as SlimCSSStyleRule).selectorText, element, window.document)) {
           matchingRules.push({
             assocId: childRule.id,
             style: (childRule as SlimCSSStyleRule).style,

@@ -1,6 +1,5 @@
 IMMEDIATE:
 
-- [ ] must figure out language features around shadow piercing**
 - [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
 - [ ] add style rule
 - [ ] delete style rule
