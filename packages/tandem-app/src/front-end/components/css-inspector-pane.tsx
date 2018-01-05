@@ -155,7 +155,7 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
         if (target.value !== value) {
           onValueChange(index, name, target.value);
         }
-      } else if (event.key === "Tab" && !event.shiftKey && onDeclarationBlur) {
+      } else if (event.key === "Tab" && onDeclarationBlur) {
         onDeclarationBlur(event, true);
       }
     },

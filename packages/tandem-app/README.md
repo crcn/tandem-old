@@ -1,9 +1,8 @@
 IMMEDIATE:
 
-- [ ] global styles are are not showing up in css inspector -- look at css-inspector-pane-content
+- [ ] ability to delete declaration props and shift tabbing
 - [ ] add style rule
 - [ ] delete style rule
-- [ ] ability to delete declaration props and shift tabbing
 
 - [ ] WARM UP
   - [ ] width/height labels around hovered & selected stage items (like inspector)
