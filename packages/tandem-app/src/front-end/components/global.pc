@@ -7,11 +7,8 @@
   
   * {
     box-sizing: border-box;
+    outline: none;
   }
-
-    *:focus {
-      outline: red;
-    }
 
   :root {
     --base: 2px;
@@ -39,7 +36,9 @@
     --background-deep: #E9E9E9;
     --background-bold: #EFEFEF;
     --background-highlight: #00B5FF;
+    --background-dark: rgba(0,0,0,0.1);
     --background-overlay: rgba(255, 255, 255, 0.7);
+    --shadow-color: rgba(0,0,0,0.2);
   }
   body, html {
     font-family: Helvetica;
@@ -208,4 +207,5 @@
     <td-banner error onClose>Error</td-banner>
   </preview>
 </component>
+
 

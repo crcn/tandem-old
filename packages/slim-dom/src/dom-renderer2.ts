@@ -386,8 +386,8 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     case MOVE_CHILD_NODE: {
       const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
       const parent = slimTarget as SlimParentNode;
-      const slimChild = parent.childNodes[index];
-      const nativeChild = map[slimChild.id];
+      const slimChild = parent.childNodes[oldIndex];
+      const nativeChild = map.dom[slimChild.id];
       const nativeParent = nativeChild.parentNode;
       
       nativeParent.removeChild(nativeChild);

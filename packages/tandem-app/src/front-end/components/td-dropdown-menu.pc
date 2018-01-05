@@ -1,0 +1,79 @@
+<link rel="import" href="./global.pc" />
+
+<component id="td-dropdown-menu">
+  <style>
+    :host {
+      width: 100%;
+      display: inline-block;
+      border: 1px solid var(--shadow-color);
+      border-radius: var(--base2);
+      box-shadow: 1px 1px 5px var(--shadow-color);
+    }
+    td-list-item:first-child {
+      border-top-left-radius: var(--base2);
+      border-top-right-radius: var(--base2);
+    }
+    td-list-item:last-child {
+      border-bottom-left-radius: var(--base2);
+      border-bottom-right-radius: var(--base2);
+    }
+    td-list-item[hovering] {
+      background: var(--background-dark);
+    }
+    td-list-item[selected] {
+      background: var(--background-highlight);
+      color: white;
+    }
+  </style>
+  <template>
+    <td-list>
+      <td-list-item [[repeat items as item]] onClick=[[bind item.onClick]] [[bind item]]>
+        [[bind item.label]]
+      </td-list-item>
+    </td-list>
+  </template>
+  <preview name="main" width="300" height="200">
+    <div style="padding: 10px">
+      <td-dropdown-menu items=[[bind [
+        {
+          label: "Item",
+          onClick: null
+        },
+        {
+          label: "Selected item",
+          selected: true,
+          onClick: null
+        },
+        {
+          label: "Item",
+          onClick: null
+        },
+        {
+          label: "Super really long label that should extend to the right edge of the menu",
+          onClick: null
+        },
+        {
+          label: "Item",
+          onClick: null
+        },
+        {
+          label: "Item",
+          onClick: null
+        },
+        {
+          label: "Item",
+          onClick: null
+        },
+        {
+          label: "Item",
+          onClick: null
+        },
+        {
+          label: "Hovering item",
+          hovering: true,
+          onClick: null
+        }
+      ]]] />
+    </div>
+  </preview>
+</component>
