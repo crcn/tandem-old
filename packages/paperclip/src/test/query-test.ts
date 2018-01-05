@@ -27,7 +27,7 @@ describe(__filename + "#", () => {
         graph
       });
 
-      expect(querySelectorAll(selectorText, ((document as any as SlimParentNode).childNodes[0] as SlimElement).shadow.childNodes[0] as SlimParentNode).map(stringifyNode)).to.eql(matches);
+      expect(querySelectorAll(selectorText, ((document as any as SlimParentNode).childNodes[0] as SlimElement).shadow.childNodes[0] as SlimParentNode, document).map(stringifyNode)).to.eql(matches);
     });  
   });
 });

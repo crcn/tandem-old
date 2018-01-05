@@ -275,6 +275,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
 
   const slimTarget = getVMObjectFromPath(mutation.target, root);
   const ownerDocument = mount.ownerDocument;
+
   switch(mutation.type) {
     case SET_TEXT_NODE_VALUE: {
       const nativeTarget = map.dom[slimTarget.id];
@@ -388,7 +389,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const slimChild = parent.childNodes[index];
       const nativeChild = map[slimChild.id];
       const nativeParent = nativeChild.parentNode;
-
+      
       nativeParent.removeChild(nativeChild);
       insertNativeNode(nativeChild, index, nativeParent);
       break;
@@ -412,15 +413,29 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const nativeChild = map.cssom[slimChild.id];
       const parentRule: CSSGroupingRule = ((nativeChild as CSSStyleRule).parentRule || (nativeChild as CSSGroupingRule).parentStyleSheet) as any;
 
+      // if ((nativeChild as any).selectorText === ".input-box") {
+      //   console.log("DEL INPUT BUX");
+      // }
+
+      // if ((nativeChild as any).selectorText.indexOf( ".input-box") > -1) {
+      //   console.log("DEL STYLE RULE", (nativeChild as any));
+      // }
+
       parentRule.deleteRule(Array.prototype.indexOf.call(parentRule.cssRules, nativeChild));
       map = updateNativeMap(map, deleteNestedCSSRules(slimChild as any, map))
       break;
     }
 
     case CSS_DELETE_STYLE_PROPERTY: {
-      const { name } = mutation as SetPropertyMutation<any>;
+      const { index } = mutation as SetPropertyMutation<any>;
+      // if (!(slimTarget as SlimCSSStyleRule).style[index]) {
+      //   console.log(slimTarget, (slimTarget as SlimCSSStyleRule).style[index]);
+      // }
+      
+      const { name } = (slimTarget as SlimCSSStyleRule).style[index];
       const nativeTarget = map.cssom[slimTarget.id] as CSSStyleRule;
       nativeTarget.style.removeProperty(name);
+
       break;
     }
 

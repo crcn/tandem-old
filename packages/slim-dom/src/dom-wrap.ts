@@ -137,7 +137,6 @@ export class LightElement extends LightParentNode {
   }
   getAttribute(name) {
     const attr = this._attributesByName[name];
-    console.log("GATR", name);
     if (name === "class") {
       console.log(attr.value);
     }

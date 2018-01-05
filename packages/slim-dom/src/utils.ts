@@ -493,6 +493,7 @@ export const getStyleOwnerScopeInfo = (ownerId: string, root: SlimParentNode): a
       ...path.slice(path.indexOf("sheet"))
     ];
   } else {
+    console.log(owner);
     console.error(`Not implemented yet`);
     return [];
   }

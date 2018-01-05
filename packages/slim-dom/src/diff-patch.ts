@@ -1,7 +1,7 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
 import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, createMoveChildMutation, MoveChildMutation } from "source-mutation";
 import { compressRootNode, uncompressRootNode } from "./compression";
-import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, removeCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount, moveCSSStyleProperty } from "./utils";
+import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, removeCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount, moveCSSStyleProperty, getAttributeValue } from "./utils";
 import { isEqual } from "lodash";
 import crc32 = require("crc32");
 
@@ -179,7 +179,7 @@ const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule, 
   eachArrayValueMutation(
     diffArray(oldRule.style, newRule.style, (a, b) => a.name === b.name ? 0 : -1),
     {
-      insert({ index, value}) {
+      insert({ index, value }) {
         diffs.push(
           createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value.name, value.value, null, null, index)
         );
@@ -198,9 +198,9 @@ const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule, 
         }
 
         // TODO - move style attribute
-        if (newRule.style[originalOldIndex].value !== oldRule.style[index].value) {
+        if (newRule.style[index].value !== oldRule.style[originalOldIndex].value) {
           diffs.push(
-            createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newValue.name, newValue.value, null, null, index)
+            createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, newValue.name, newValue.value, oldRule.style[originalOldIndex].name, oldRule.style[originalOldIndex].value, index)
           );
         }
       }
@@ -278,8 +278,16 @@ const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
 
   if (a.type === SlimVMObjectType.ELEMENT) {
 
+    const ae = a as SlimElement;
+    const ab = b as SlimElement;
+
     // if the tag names are not the same, then return no match
-    if ((a as SlimElement).tagName !== (b as SlimElement).tagName) {
+    if (ae.tagName !== ab.tagName) {
+      return -1;
+    }
+
+    // compare non-standard scope prop on style element. Scope is the tag name where the style is applied to. 
+    if (ae.tagName === "style" && getAttributeValue("scope", ae) !== getAttributeValue("scope", ab)) {
       return -1;
     }
 

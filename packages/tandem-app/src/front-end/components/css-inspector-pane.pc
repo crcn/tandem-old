@@ -175,10 +175,16 @@
 </component>
 
 <component id="td-css-inspector-pane">
+  <style>
+    .ion-more {
+      float: right;
+    }
+  </style>
   <template>
     <td-pane>
       <span slot="header">
         CSS Inspector
+        <i class="ion-more" />
       </span>
       <span slot="content" class="css-inspector-pane-content">
         <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] key=[[bind styleRule.rule.assocId]] />

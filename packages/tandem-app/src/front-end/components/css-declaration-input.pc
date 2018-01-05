@@ -102,7 +102,6 @@
 </component>
 
 <component id="td-color-mini-input">
-  <meta name="internal" content="true" />
   <style>
     .input-box {
       width: var(--base4);
