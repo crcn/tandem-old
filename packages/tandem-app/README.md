@@ -1,14 +1,17 @@
 IMMEDIATE:
 
-- [ ] ability to delete declaration props and shift tabbing
 - [ ] add style rule
+  - [ ] automatically scope to the element
 - [ ] delete style rule
+
+- [ ] DND elements to stage
 
 - [ ] WARM UP
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
   - [ ] start on error handling for FE
+  - [ ] ability to delete declaration props and shift tabbing
 
 - [ ] Bugs
   - [ ] full screen mode doesn't resize when gutters are toggled
@@ -17,12 +20,8 @@ IMMEDIATE:
 - [ ] CSS Inspector* 
   - [ ] add new style - specific to target element
   - [ ] delete style rule
-  - [ ] delete declaration
-  - [ ] edit raw declaration value
   - [ ] prioritized css 
   - [ ] quick add style feature (like chrome inspector)
-
-- [ ] DND elements to stage
 
 - [ ] Color inspector
   - [ ] hsl picker

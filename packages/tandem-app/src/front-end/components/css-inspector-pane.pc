@@ -178,13 +178,14 @@
   <style>
     .ion-more {
       float: right;
+      cursor: pointer;
     }
   </style>
   <template>
     <td-pane>
       <span slot="header">
         CSS Inspector
-        <i class="ion-more" />
+        <i class="ion-more" onClick=[[bind onMoreClick]] />
       </span>
       <span slot="content" class="css-inspector-pane-content">
         <td-style-rule [[if styleRules]] [[repeat styleRules as styleRule]] [[bind styleRule]] key=[[bind styleRule.rule.assocId]] />
@@ -192,7 +193,7 @@
     </td-pane>
   </template>
   <preview name="main" width="200" height="300">
-    <td-css-inspector-pane styleRules=[[bind [
+    <td-css-inspector-pane onMoreClick styleRules=[[bind [
       {
         label: ".container",
         source: { uri: "styles.css" },

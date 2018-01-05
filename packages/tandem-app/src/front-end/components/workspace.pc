@@ -217,7 +217,7 @@
         <td-workspace-footer workspace=[[bind workspace]] />
       </div>
       <td-gutter right>
-          <td-css-inspector-pane styleRules=[[bind [
+          <td-css-inspector-pane onMoreClick styleRules=[[bind [
       {
         label: ".container",
         source: { uri: "styles.css" },
@@ -227,6 +227,7 @@
         rule: {
           assocId: 1
         },
+        onSelectorTextFocus: null,
         onAddDeclarationClick: null,
         declarations: [
           { 
