@@ -2,8 +2,17 @@ IMMEDIATE:
 
 - [ ] add style rule
   - [ ] automatically scope to the element
-- [ ] delete style rule
-- [ ] fix 404 errors for link elements
+- [ ] delete style rule - just delete selector text
+- [ ] Enter key must work for changing selectorText
+- [ ] ability to change host of style element
+- [ ] Add :host style option
+- [ ] Add scoped style option
+- [ ] ability to change scopes - global, or scoped
+- [ ] persistence
+  - [ ] save style rules
+  - [ ] save declaration changes
+
+- [ ] Stage tools
 
 - [ ] DND elements to stage
 
@@ -16,6 +25,7 @@ IMMEDIATE:
   - [ ] ability to delete declaration props and shift tabbing
 
 - [ ] Bugs
+  - [ ] fix "file not found" exceptions for link elements
   - [ ] border radiuses not showing up for dropdown
   - [ ] dropdown menu not showing up properly in workspace
   - [ ] `td-dropdown-button` options not being inferred

@@ -85,6 +85,7 @@ export const STAGE_TOOL_EDIT_TEXT_KEY_DOWN = "STAGE_TOOL_EDIT_TEXT_KEY_DOWN";
 export const STAGE_TOOL_EDIT_TEXT_BLUR = "STAGE_TOOL_EDIT_TEXT_BLUR";
 export const STAGE_MOUNTED = "STAGE_MOUNTED";
 export const CSS_DECLARATION_NAME_CHANGED   = "CSS_DECLARATION_NAME_CHANGED";
+export const CSS_ADD_STYLE_RULE_CLICKED   = "CSS_ADD_STYLE_RULE_CLICKED";
 export const CSS_DECLARATION_VALUE_CHANGED   = "CSS_DECLARATION_VALUE_CHANGED";
 export const CSS_SELECTOR_TEXT_CHANGED   = "CSS_SELECTOR_TEXT_CHANGED";
 export const ARTBOARD_FOCUSED   = "ARTBOARD_FOCUSED";
@@ -302,6 +303,11 @@ export type CSSDeclarationChanged = {
   value: string;
 } & BaseEvent;
 
+export type CSSAddStyleRuleOptionClicked = {
+  artboardId: string;
+  elementScopeId: string;
+} & BaseEvent;
+
 export type CSSSelectorTextChanged = {
   artboardId: string;
   styleRuleId: string;
@@ -480,6 +486,12 @@ export const cssDeclarationNameChanged = (index: number, name: string, value: st
   name,
   value,
   type: CSS_DECLARATION_NAME_CHANGED
+});
+
+export const cssAddStyleRuleOptionClicked = (elementScopeId: string, artboardId: string): CSSAddStyleRuleOptionClicked => ({
+  elementScopeId, 
+  artboardId,
+  type: CSS_ADD_STYLE_RULE_CLICKED
 });
 
 export const cssDeclarationValueChanged = (index: number, name: string, value: string, ownerId: string, artboardId: string): CSSDeclarationChanged => ({

@@ -10,7 +10,7 @@ import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerPr
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
 
 import { Dispatcher } from "aerial-common2";
-import { cssToggleDeclarationEyeClicked, cssDeclarationNameChanged, cssDeclarationValueChanged, cssSelectorTextChanged } from "front-end/actions";
+import { cssToggleDeclarationEyeClicked, cssDeclarationNameChanged, cssDeclarationValueChanged, cssSelectorTextChanged, cssAddStyleRuleOptionClicked } from "front-end/actions";
 import { Workspace, getNodeArtboard, DisabledStyleDeclarations, Artboard } from "front-end/state";
 
 import { getSyntheticAppliedCSSRules, getSyntheticMatchingCSSRules, AppliedCSSRuleResult, SlimVMObjectType, isValidStyleDeclarationName, SlimElement, SlimCSSStyleRule, getStyleOwnerFromScopeInfo, getStyleOwnerScopeInfo } from "slim-dom";
@@ -41,9 +41,12 @@ type StyleDelarationInnerProps = {
   onValueInputBlur: (event: any) => any;
 } & TdStyleDeclarationInnerProps;
 
+const ADD_SYLE_OPTION = "ADD_SYLE_OPTION";
+
 const CSS_INSPECTOR_MORE_OPTIONS = [
   {
-    label: "Add style"
+    label: "Add style",
+    value: ADD_SYLE_OPTION
   }
 ];
 
@@ -368,16 +371,26 @@ const CSSPaneMultipleSelectedError = hydrateCssInspectorMultipleItemsSelected(id
   TdPane: Pane,
 });
 
+const gtSelectedElementRefs = (workspace: Workspace) => workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT)
+
 const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspectorOuterProps>(
   pure,
   withHandlers({
-    onMoreOptionSelected: ({ dispatch }) => (option: DropdownMenuOption) => {
-      console.log(dispatch, option);
+    onMoreOptionSelected: ({ dispatch, workspace }: CSSInspectorOuterProps) => ({ value }: DropdownMenuOption) => {
+
+      const selectedElementRefs = gtSelectedElementRefs(workspace);
+      const [type, targetElementId] = selectedElementRefs[0];
+      
+      const artboard = getNodeArtboard(targetElementId, workspace);
+
+      if (value === ADD_SYLE_OPTION) {
+        dispatch(cssAddStyleRuleOptionClicked(targetElementId, artboard.$id));
+      }
     }
   }),
   (Base: React.ComponentClass<TdCssInspectorPaneInnerProps>) => ({ workspace, dispatch, onMoreOptionSelected }: CSSInspectorPaneInnerProps) => {
 
-    const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT);
+    const selectedElementRefs = gtSelectedElementRefs(workspace);
 
     if (!selectedElementRefs.length) {
       return null;
@@ -405,22 +418,6 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
     return <Base styleRules={ruleProps} onMoreClick={null} moreButtonProps={moreButtonProps} />;
   }
 );
-
-// const getDisabledDeclarations = weakMemo((result: AppliedCSSRuleResult, artboard: Artboard, disabledInfo: DisabledStyleDeclarations = EMPTY_OBJECT) => {
-//   const ruleOwner = result.rule.rule || result.rule.targetElement;
-//   const scopeInfo = getStyleOwnerScopeInfo(ruleOwner.id, artboard.document);
-//   const scopeHash = scopeInfo.join("");
-
-//   const info =  disabledInfo[scopeHash] || EMPTY_OBJECT;
-
-//   let ret: any = {};
-
-//   for (const key in info) {
-//     ret[key] = Boolean(info[key]);
-//   }
-
-//   return ret;
-// });
 
 export const CSSInpectorPane = hydrateTdCssInspectorPane(enhanceCSSInspectorPane, {
   TdPane: Pane,
