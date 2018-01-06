@@ -825,6 +825,34 @@ describe(__filename + "#", () => {
         `
       },
       []
+    ],
+    [
+      {
+        "entry.pc": `
+        <component id="a">
+          <style>
+          </style>
+          <template>
+            [[bind c]] [[bind d]]
+          </template>
+          <preview name="main" width="1366" height="768">
+            <a c d />
+          </preview>
+        </component>
+
+        <component id="b">
+          <style>
+          </style>
+          <template>
+            <a [[bind aProps]] />
+          </template>
+          <preview name="main" width="1366" height="768">
+            <b aProps=[[bind {c: true, d: true}]] />
+          </preview>
+        </component>
+        `
+      },
+      []
     ]
   ].forEach(([sources, inferResult]: any) => {
     it(`can lint ${sources["entry.pc"]}`, async () => {

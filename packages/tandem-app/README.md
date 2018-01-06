@@ -1,6 +1,7 @@
 IMMEDIATE:
 
 - [ ] `moreButtonProps` inferencing is not working in css-inspector-pane
+  - [ ] solution is it to make nested props work for any keys 
 - [ ] optional ? flags for paperclip
 - [ ] cannot change name of declaration
 - [ ] add style rule
