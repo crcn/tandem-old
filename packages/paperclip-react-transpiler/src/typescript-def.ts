@@ -10,7 +10,7 @@ import { upperFirst, camelCase, repeat } from "lodash";
 import * as path from "path";
 import { loadModuleAST, Module, Component, loadModuleDependencyGraph, DependencyGraph, Dependency, traversePCAST, PCElement, getStartTag, isTag, getChildComponentInfo, getComponentDependency, getUsedDependencies, PCExpression, PCExpressionType, PCFragment, PCSelfClosingElement, getElementModifiers, getPCElementModifier, BKExpressionType, getElementChildNodes, PCBlock, BKExpression, BKOperation, BKPropertyReference, BKVarReference, BKArray, BKBind, BKRepeat, BKIf, BKElse, BKElseIf, getElementAttributes, getPCASTElementsByTagName, inferNodeProps, Inference, InferenceType, ComponentModule } from "paperclip";
 import { basename, relative } from "path";
-import { ComponentTranspileInfo, getComponentTranspileInfo, getComponentClassName, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames } from "./utils";
+import { ComponentTranspileInfo, getComponentTranspileInfo, getComponentClassName, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, ATTRIBUTE_MAP } from "./utils";
 
 export const transpileToTypeScriptDefinition = (graph: DependencyGraph, uri: string) => {
   return transpileModule(graph[uri] as Dependency<ComponentModule>, graph);
@@ -90,7 +90,7 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
         }
 
         // TODO - get inference types based on value
-        childPropTypes += `${attr.name}: any;\n`
+        childPropTypes += `${ATTRIBUTE_MAP[attr.name] || attr.name}: any;\n`
       }
 
       if (getPCElementModifier(element, BKExpressionType.BIND)) {
@@ -149,7 +149,7 @@ const transpileInferredProps = ({ type, properties }: Inference, path: string[] 
   } else if (type & InferenceType.OBJECT) { 
     let content = `{\n`;
     for (const key in properties) {
-      content += repeat(" ", path.length * 2) + `${key}: ${transpileInferredProps(properties[key], [...path, key])};\n`
+      content += repeat(" ", path.length * 2) + `${ATTRIBUTE_MAP[key] || key}: ${transpileInferredProps(properties[key], [...path, key])};\n`
     }
 
     // allow for any props for now. Will eventuall want to request for template 

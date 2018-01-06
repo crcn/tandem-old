@@ -1,12 +1,17 @@
 IMMEDIATE:
 
+- [ ] `moreButtonProps` inferencing is not working in css-inspector-pane
+- [ ] optional ? flags for paperclip
+- [ ] cannot change name of declaration
 - [ ] add style rule
   - [ ] automatically scope to the element
 - [ ] delete style rule
+- [ ] fix 404 errors for link elements
 
 - [ ] DND elements to stage
 
 - [ ] WARM UP
+  - [ ] CSS inspector styles are out of order. See td-dropdown
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
   - [ ] investigate why syntax errors do not show up
@@ -14,6 +19,9 @@ IMMEDIATE:
   - [ ] ability to delete declaration props and shift tabbing
 
 - [ ] Bugs
+  - [ ] border radiuses not showing up for dropdown
+  - [ ] dropdown menu not showing up properly in workspace
+  - [ ] `td-dropdown-button` options not being inferred
   - [ ] full screen mode doesn't resize when gutters are toggled
   - [ ] `calc(100% - 10px)` parses as a list, not as an op expr
 

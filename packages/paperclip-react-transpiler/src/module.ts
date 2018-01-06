@@ -51,7 +51,7 @@ import { 
 } from "paperclip";
 import { compileScopedCSS } from "slim-dom";
 import { camelCase, uniq } from "lodash";
-import { getComponentTranspileInfo, ComponentTranspileInfo, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName } from "./utils";
+import { getComponentTranspileInfo, ComponentTranspileInfo, getComponentFromModule, getImportsInfo, ImportTranspileInfo, getImportFromDependency, getTemplateSlotNames, getSlotName, ATTRIBUTE_MAP } from "./utils";
 
 type ConditionTranspileInfo = {
   modifier: BKIf;
@@ -173,7 +173,9 @@ const transpileComponent = ({ component, className }: ComponentTranspileInfo, gr
 
   const componentPropertyNames = Object.keys(inferNodeProps(component.source).inference.properties);
 
-  const hostContent = `${context.elementFactoryName}("span", Object.assign({ className: "${context.scopeClass}_host " + (props.className || "") }, __getDataProps(props)), ` + 
+  // Note that props need to be added to the host element since 
+  // items like click handlers need to pass through
+  const hostContent = `${context.elementFactoryName}("span", Object.assign({}, props, { className: "${context.scopeClass}_host " + (props.className || "") }, __getDataProps(props)), ` + 
   `  ${component.template.childNodes.map(node => transpileNode(node, context)).filter(Boolean).join(",")}` +
   `)`;
 
@@ -394,50 +396,6 @@ const transpileElementModifiers = (element: PCElement | PCSelfClosingElement, co
   return newContent;
 }
 
-const ATTRIBUTE_MAP = {
-  "class": "className",
-
-  // events - https://developer.mozilla.org/en-US/docs/Web/Events
-
-  // Mouse events
-  "mouseenter": "onMouseEnter",
-  "mouseover": "onMouseOver",
-  "mousemove": "onMouseMove",
-  "onmousedown": "onMouseDown",
-  "onmouseup": "onMouseUp",
-  "auxclick": "onAuxClick",
-  "onclick": "onClick",
-  "ondblclick": "onDoubleClick",
-  "oncontextmenu": "onContextMenu",
-  "onmousewheel": "onMouseWheel",
-  "onmouseleave": "onMouseLeave",
-  "onmouseout": "onMouseOut",
-  "onselect": "onSelect",
-  "pointerlockchange": "onPointerLockChange",
-  "pointerlockerror": "onPointerLockError",
-
-  // DND
-  "ondragstart": "onDragStart",
-  "ondrag": "onDrag",
-  "ondragend": "onDragEnd",
-  "ondragenter": "onDragEnter",
-  "ondragover": "onDragOver",
-  "ondragleave": "onDragLeave",
-  "ondrop": "onDrop",
-
-  // Keyboard
-  "onkeydown": "onKeyDown",
-  "onkeypfress": "onKeyPress",
-  "onkeyup": "onKeyUp",
-
-  // Form
-  "onreset": "onReset",
-  "onsubmit": "onSubmit",
-
-  // Focus
-  "onfocus": "onFocus",
-  "onblur": "onBlur",
-};
 
 
 const transpileAttributes = (element: PCElement | PCSelfClosingElement, context: TranspileElementContext, isComponent?: boolean) => {

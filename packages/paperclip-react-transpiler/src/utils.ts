@@ -5,6 +5,52 @@ import { traversePCAST, Component, PCElement, PCExpression, getStartTag, Module
 import * as path from "path";
 import { upperFirst, camelCase, uniq } from "lodash";
 
+
+export const ATTRIBUTE_MAP = {
+  "class": "className",
+
+  // events - https://developer.mozilla.org/en-US/docs/Web/Events
+
+  // Mouse events
+  "mouseenter": "onMouseEnter",
+  "mouseover": "onMouseOver",
+  "mousemove": "onMouseMove",
+  "onmousedown": "onMouseDown",
+  "onmouseup": "onMouseUp",
+  "auxclick": "onAuxClick",
+  "onclick": "onClick",
+  "ondblclick": "onDoubleClick",
+  "oncontextmenu": "onContextMenu",
+  "onmousewheel": "onMouseWheel",
+  "onmouseleave": "onMouseLeave",
+  "onmouseout": "onMouseOut",
+  "onselect": "onSelect",
+  "pointerlockchange": "onPointerLockChange",
+  "pointerlockerror": "onPointerLockError",
+
+  // DND
+  "ondragstart": "onDragStart",
+  "ondrag": "onDrag",
+  "ondragend": "onDragEnd",
+  "ondragenter": "onDragEnter",
+  "ondragover": "onDragOver",
+  "ondragleave": "onDragLeave",
+  "ondrop": "onDrop",
+
+  // Keyboard
+  "onkeydown": "onKeyDown",
+  "onkeypfress": "onKeyPress",
+  "onkeyup": "onKeyUp",
+
+  // Form
+  "onreset": "onReset",
+  "onsubmit": "onSubmit",
+
+  // Focus
+  "onfocus": "onFocus",
+  "onblur": "onBlur",
+};
+
 export type ComponentTranspileInfo = {
   className: string;
   component: Component;

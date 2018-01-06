@@ -4,6 +4,7 @@ import { identity } from "lodash";
 import { compose, pure, withHandlers, withState, withProps, mapProps } from "recompose";
 import { weakMemo } from "aerial-common2";
 import { Autofocus } from "./autofocus";
+import { DropdownButton } from "./td-dropdown";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
@@ -39,6 +40,12 @@ type StyleDelarationInnerProps = {
   onNameInputBlur: (event: any) => any;
   onValueInputBlur: (event: any) => any;
 } & TdStyleDeclarationInnerProps;
+
+const CSS_INSPECTOR_MORE_OPTIONS = [
+  {
+    label: "Add style"
+  }
+];
 
 
 const enhanceCssCallExprInput = compose<TdCssCallExprInputInnerProps, TdCssCallExprInputInnerProps>(
@@ -125,7 +132,8 @@ const CSSExprInput = hydrateTdCssExprInput(enhanceCSSCallExprInput, {
   TdCssKeywordExprInput: CssKeywordInput,
   TdCssMeasurementInput: CssMeasurementInput,
   TdCssNumberExprInput: CssNumberInput,
-  TdCssSpacedListExprInput: CssSpacedList
+  TdCssSpacedListExprInput: CssSpacedList,
+  TdCssStringExprInput: null
 });
 
 const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelarationOuterProps>(
@@ -379,7 +387,7 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
 
     const ruleProps: CSSStyleRuleOuterProps[] = getSyntheticAppliedCSSRules(artboard, targetElementId, workspace.disabledStyleDeclarations).map(rule => ({...rule, dispatch, artboardId: artboard.$id }))
 
-    return <Base styleRules={ruleProps} />;
+    return <Base styleRules={ruleProps} onMoreClick={null} moreButtonOptions={CSS_INSPECTOR_MORE_OPTIONS} />;
   }
 );
 
@@ -401,6 +409,7 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
 
 export const CSSInpectorPane = hydrateTdCssInspectorPane(enhanceCSSInspectorPane, {
   TdPane: Pane,
-  TdStyleRule: CSSStyleRule
+  TdStyleRule: CSSStyleRule,
+  TdDropdownButton: DropdownButton
 });
 
