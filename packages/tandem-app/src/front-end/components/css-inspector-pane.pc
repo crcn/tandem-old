@@ -202,6 +202,8 @@
     <td-css-inspector-pane onMoreClick
     moreButtonProps=[[bind {
       onButtonClick: null,
+      open: true,
+      onOptionSelected: null,
       options: [
         {
           label: "Add style selector",
