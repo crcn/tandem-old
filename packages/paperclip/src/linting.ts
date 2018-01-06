@@ -466,7 +466,7 @@ const lintExpr = (expr: BKExpression, context: LintContext): any => {
         const value = getNestedValue(keypath.slice(1), context.caller.props[keypath[0]]);
         context = setCurrentExprEvalResult(value, origin, context);
 
-        if (value === undefined && (keypath.length > 1 || !context.optionalVars)) {
+        if (value === undefined && (keypath.length > 1 || !context.optionalVars) && context.caller.source.type !== BKExpressionType.VAR_REFERENCE && context.caller.source.type !== BKExpressionType.PROP_REFERENCE) {
           context = addDiagnosticError(origin, `Property "${keypath.join(".")}" is undefined`, context);
         } else if (componentInferenceResult) {
           const inference = getNestedInference(keypath, componentInferenceResult.inference) || ANY_REFERENCE;
