@@ -10,23 +10,18 @@ export type DropdownMenuOption = {
 
 export type DropdownMenuOuterProps = {
   options: DropdownMenuOption[];
+  onOptionSelected: () => any;
 };
 
-export type DropdownMenuInnerProps = {
-  onOptionSelected: () => any;
-} & DropdownMenuOuterProps & TdDropdownMenuInnerProps;
+export type DropdownMenuInnerProps = DropdownMenuOuterProps & TdDropdownMenuInnerProps;
 
 export const DropdownMenu = hydrateTdDropdownMenu(compose<DropdownMenuInnerProps, DropdownMenuOuterProps>(
   pure,
-  withHandlers({
-    onOptionSelected: ({ }) => (option) => {
-      console.log("ITEM", option);
-    }
-  }),
-  (Base: React.ComponentClass<TdDropdownMenuInnerProps>) => ({ options, onOptionSelected, ...rest }: DropdownMenuInnerProps) => {
+  (Base: React.ComponentClass<TdDropdownMenuInnerProps>) => ({ options, onOptionSelected, dispatch, ...rest }: DropdownMenuInnerProps) => {
     const optionProps = options.map(option => ({
       ...option,
-      onClick: onOptionSelected.bind(this, option)
+      dispatch,
+      onClick: onOptionSelected && onOptionSelected.bind(this, option)
     }))
     return <Base options={optionProps} {...rest} />
   }
@@ -37,6 +32,7 @@ export const DropdownMenu = hydrateTdDropdownMenu(compose<DropdownMenuInnerProps
 
 export type DropdownButtonOuterProps = {
   children?: any;
+  onOptionSelected?: (option: DropdownMenuOption) => any;
   options: DropdownMenuOption[];
   open: any;
   right: boolean;
@@ -53,6 +49,12 @@ export const DropdownButton = hydrateTdDropdownButton(compose<DropdownButtonInne
     onButtonClick: ({ open, setOpen }) => () => {
       setOpen(!open);
     },
+    onOptionSelected: ({ onOptionSelected, setOpen }) => (option) => {
+      if (onOptionSelected) {
+        onOptionSelected(option);
+      }
+      setOpen(false);
+    }
   }),
   lifecycle({
     componentDidUpdate() {
@@ -68,8 +70,8 @@ export const DropdownButton = hydrateTdDropdownButton(compose<DropdownButtonInne
       }
     }
   }),
-  (Base: React.ComponentClass<TdDropdownButtonInnerProps>) => ({ open, options, children, onButtonClick, ...rest }: DropdownButtonInnerProps) => {
-    return <Base open={open} options={options} onButtonClick={onButtonClick} {...rest}>
+  (Base: React.ComponentClass<TdDropdownButtonInnerProps>) => ({ open, options, children, onOptionSelected, onButtonClick, ...rest }: DropdownButtonInnerProps) => {
+    return <Base open={open} options={options} onButtonClick={onButtonClick} onOptionSelected={onOptionSelected} {...rest}>
       {children}
     </Base>;
   }

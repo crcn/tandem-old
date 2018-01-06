@@ -4,7 +4,7 @@ import { identity } from "lodash";
 import { compose, pure, withHandlers, withState, withProps, mapProps } from "recompose";
 import { weakMemo } from "aerial-common2";
 import { Autofocus } from "./autofocus";
-import { DropdownButton } from "./td-dropdown";
+import { DropdownButton, DropdownMenuOption } from "./td-dropdown";
 import { parseDeclaration, stringifyDeclarationAST, DcCall } from "paperclip";
 import { hydrateTdCssExprInput, hydrateTdCssCallExprInput, TdCssExprInputInnerProps, TdCssCallExprInputInnerProps, hydrateTdCssSpacedListExprInput, hydrateTdCssCommaListExprInput, TdCssColorExprInputInnerProps, hydrateTdCssColorExprInput, TdCssKeywordExprInputInnerProps, hydrateTdCssKeywordExprInput, hydrateTdCssNumberExprInput, TdCssNumberExprInputInnerProps, hydrateTdCssMeasurementInput, TdCssMeasurementInputInnerProps } from "./css-declaration-input.pc";
 import { TdCssInspectorPaneInnerProps, hydrateTdCssInspectorPane, hydrateTdStyleRule, TdStyleRuleInnerProps, hydrateCssInspectorMultipleItemsSelected, hydrateTdStyleDeclaration, TdStyleDeclarationInnerProps } from "./css-inspector-pane.pc";
@@ -227,7 +227,11 @@ const CSSStyleDeclaration = hydrateTdStyleDeclaration(enhanceCSSStyleDeclaration
 export type CSSInspectorOuterProps = {
   workspace: Workspace;
   dispatch: Dispatcher<any>;
-}
+};
+
+export type CSSInspectorPaneInnerProps = {
+  onMoreOptionSelected: (option) => any;
+} & CSSInspectorOuterProps;
 
 export type CSSStyleRuleOuterProps = {
   artboardId: string;
@@ -366,7 +370,12 @@ const CSSPaneMultipleSelectedError = hydrateCssInspectorMultipleItemsSelected(id
 
 const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspectorOuterProps>(
   pure,
-  (Base: React.ComponentClass<TdCssInspectorPaneInnerProps>) => ({ workspace, dispatch }: CSSInspectorOuterProps) => {
+  withHandlers({
+    onMoreOptionSelected: ({ dispatch }) => (option: DropdownMenuOption) => {
+      console.log(dispatch, option);
+    }
+  }),
+  (Base: React.ComponentClass<TdCssInspectorPaneInnerProps>) => ({ workspace, dispatch, onMoreOptionSelected }: CSSInspectorPaneInnerProps) => {
 
     const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SlimVMObjectType.ELEMENT);
 
@@ -387,7 +396,13 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
 
     const ruleProps: CSSStyleRuleOuterProps[] = getSyntheticAppliedCSSRules(artboard, targetElementId, workspace.disabledStyleDeclarations).map(rule => ({...rule, dispatch, artboardId: artboard.$id }))
 
-    return <Base styleRules={ruleProps} onMoreClick={null} moreButtonOptions={CSS_INSPECTOR_MORE_OPTIONS} />;
+    const moreButtonProps = {
+      options: CSS_INSPECTOR_MORE_OPTIONS,
+      dispatch,
+      onOptionSelected: onMoreOptionSelected,
+    };
+
+    return <Base styleRules={ruleProps} onMoreClick={null} moreButtonProps={moreButtonProps} />;
   }
 );
 
