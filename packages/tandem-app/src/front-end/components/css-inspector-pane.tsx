@@ -146,11 +146,11 @@ const enhanceCSSStyleDeclaration = compose<StyleDelarationInnerProps, StyleDelar
     onToggleDeclarationClick: ({ index, artboardId, owner, dispatch, name }: StyleDelarationInnerProps) => (event) => {
       dispatch(cssToggleDeclarationEyeClicked(artboardId, owner.id, name, index));
     },
-    onNameInputKeyDown: ({ index, setEditingName, onNameChange, onDeclarationBlur })  => (event) => {
+    onNameInputKeyDown: ({ index, setEditingName, onNameChange, onDeclarationBlur, name })  => (event) => {
       if (event.key === "Enter") {
         setEditingName(false);
         if (event.target.value !== name) {
-          onNameChange(name, event.target.value);
+          onNameChange(index, name, event.target.value);
         }
       } else if (event.key === "Tab" && onDeclarationBlur && !event.target.value) {
         onDeclarationBlur(event);

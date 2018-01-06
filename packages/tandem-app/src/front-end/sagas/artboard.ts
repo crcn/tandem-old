@@ -390,11 +390,14 @@ function* handleDeclarationNameChange() {
   while(1) {
     const { ownerId, index, artboardId, name: oldName, value: newName }: CSSDeclarationChanged = yield take(CSS_DECLARATION_NAME_CHANGED);
 
+    console.log(oldName, newName);
+
     yield call(updateSharedArtboards, ownerId, artboardId, true, (nestedObject, hash, path, root) => {
       if (nestedObject.type === SlimVMObjectType.STYLE_RULE) {
         const rule = nestedObject as SlimCSSStyleRule;
-        const value = rule.style[oldName];
+        const value = getStyleValue(oldName, rule.style);
         const mutations = [];
+        console.log(newName, value, oldName);
         if (oldName) {
           mutations.push(createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, oldName, null, null, null, index));
         }
