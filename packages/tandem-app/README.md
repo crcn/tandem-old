@@ -1,18 +1,22 @@
 IMMEDIATE:
 
-- [ ] delete style rule - just delete selector text
-- [ ] Enter key must work for changing selectorText
-- [ ] ability to change host of style element
-- [ ] Add :host style option
-- [ ] Add scoped style option
-- [ ] ability to change scopes - global, or scoped
-- [ ] persistence
-  - [ ] save style rules
-  - [ ] save declaration changes
+- [ ] Persistence
+  - [ ] 
 
 - [ ] Stage tools
+  - [ ] DND native elements to artboard elements
+    - [ ] will need hotspot areas
+  - [ ] drag elements
+  - [ ] resize elements
 
-- [ ] DND elements to stage
+- [ ] CSS Inspector
+  - [ ] prioritized style rules
+  - [ ] get element styles to work
+
+- [ ] Element inspector
+
+- [ ] HTML layers (bottom panel)
+  - [ ] DND layers
 
 - [ ] WARM UP
   - [ ] ability to focus on new selectors
@@ -31,10 +35,9 @@ IMMEDIATE:
   - [ ] `calc(100% - 10px)` parses as a list, not as an op expr
 
 - [ ] CSS Inspector* 
-  - [ ] add new style - specific to target element
-  - [ ] delete style rule
   - [ ] prioritized css 
   - [ ] quick add style feature (like chrome inspector)
+  - [ ] ability to change style rule scope (self, host, or global)
 
 - [ ] Color inspector
   - [ ] hsl picker

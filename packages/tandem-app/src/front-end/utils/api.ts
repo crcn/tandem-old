@@ -1,3 +1,4 @@
+import { Mutation } from "source-mutation";
 import { ApplicationState } from "../state";
 import { VMObjectExpressionSource } from "paperclip";
 
@@ -83,8 +84,26 @@ export const apiDeleteComponent = async (componentId: string, state: Application
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
-    } as any
+    }
   });
 
   return await response.json();
-}
+};
+
+export const apiEditComponent = async (componentId: string, previewName: string, checksum: string, mutations: Mutation<any>[], state: ApplicationState) => {
+  const response = await fetch(`${state.apiHost}/components/${componentId}`, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      componentId,
+      previewName,
+      checksum,
+      mutations
+    })
+  });
+
+  return await response.json();
+};
