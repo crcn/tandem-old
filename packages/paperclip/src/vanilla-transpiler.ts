@@ -320,7 +320,7 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
               `};` +
               `__binding();` + 
               `return __binding;` +
-            `})()`)});` : ``) +
+            `})()`).join(",")});` : ``) +
             `shadow.appendChild(${decl.varName});`
           );
         }).join("") : "") +
@@ -383,7 +383,7 @@ const tranpsileComponent = ({ previews, source, id, style, template }: Component
     });
     content += `$$previews["${id}"]["${name}"] = () => {` +
       decl.content +
-      decl.bindings.map((binding) => binding) +
+      decl.bindings.map((binding) => `(() => {${binding}})();`).join("") +
       `return ${decl.varName};` +
     `};` 
   });
@@ -610,7 +610,7 @@ const transpileElementModifiers = (startTag: PCStartTag, decl: TranspileDeclarat
       `if (newValue) {` +
         `const elementFragment = document.createDocumentFragment();` +
         `${decl.content}` +
-        (decl.bindings.length ? `${bindingsVarName} = ${bindingsVarName}.concat(${decl.bindings.map(wrapAndCallBinding)});` : `` ) +
+        (decl.bindings.length ? `${bindingsVarName} = ${bindingsVarName}.concat(${decl.bindings.map(wrapAndCallBinding).join(",")});` : `` ) +
         `elementFragment.appendChild(${decl.varName});` +
         `${end.varName}.parentNode.insertBefore(elementFragment, ${end.varName});` +
       `} else {` +
@@ -808,7 +808,7 @@ const transpileStyleDeclaration = (declarationProperties: CSSDeclarationProperty
   let content = `{`;
 
   for (const property of declarationProperties) {
-    content += `"${property.name}": "${property.value.replace(/"/g, '\\"').replace(/[\s\r\n\t]+/g, " ")}", `;
+    content += `"${property.name}":${JSON.stringify(property.value)}, `;
   }
   
   content += `}`;

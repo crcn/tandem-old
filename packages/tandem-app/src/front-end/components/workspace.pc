@@ -217,7 +217,10 @@
         <td-workspace-footer workspace=[[bind workspace]] />
       </div>
       <td-gutter right>
-          <td-css-inspector-pane onMoreClick styleRules=[[bind [
+          <td-css-inspector-pane moreButtonProps=[[bind {
+            onButtonClick: null,
+            options: []
+          }]] onMoreClick styleRules=[[bind [
       {
         label: ".container",
         source: { uri: "styles.css" },
@@ -237,6 +240,8 @@
               type: "COLOR",
               value: "red"
             },
+            onNameFocus: null,
+            onValueFocus: null,
             hovering: true,
             onToggleDeclarationClick: null
           },
@@ -248,6 +253,8 @@
               value: 1
             },
             disabled: true,
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -257,6 +264,8 @@
               type: "KEYWORD",
               name: "row"
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -282,6 +291,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           { 
@@ -292,6 +303,8 @@
               value: "10",
               unit: "px"
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           }
         ]
@@ -302,6 +315,7 @@
         rule: {
           assocId: 1
         },
+        onSelectorTextFocus: null,
         onAddDeclarationClick: null,
         declarations: [
           { 
@@ -370,6 +384,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           {
@@ -387,6 +403,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           },
           {
@@ -407,6 +425,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           }
         ]
@@ -417,6 +437,7 @@
         rule: {
           assocId: 1
         },
+        onSelectorTextFocus: null,
         onAddDeclarationClick: null,
         declarations: [
           { 
@@ -438,6 +459,8 @@
                 }
               ]
             },
+            onNameFocus: null,
+            onValueFocus: null,
             onToggleDeclarationClick: null
           }
         ]

@@ -158,6 +158,8 @@ function* getAllComponentsPreview(req: express.Request, res: express.Response, n
         const _cache = {};
 
         const onPreviewBundle = ({ componentId, previewName, bounds }, { code }) => {
+          console.log("Rendering " + componentId + ":" + previewName);
+          
           const { entry, modules } = new Function("window", "with (window) { return " + code + "}")(window);
 
           const container = document.createElement("div");

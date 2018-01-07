@@ -8,11 +8,10 @@
       cursor: pointer;
       overflow: hidden;
       box-sizing: border-box;
-      height: 130px;
       position: relative;
-      text-align: center;
-      border-right: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
+      padding: var(--base6) var(--base8);
+      display: inline-block;
+      width: 100%;
     }
 
     :host:hover, :host([hovering]), :host([selected]) {
@@ -24,25 +23,19 @@
       width: 100%;
       height:100%;
       position: relative;
-
-      /* fake padding */
-      border: var(--base4) solid transparent;
       box-sizing: border-box;
     }
 
     .label {
-      color: var(--font-color-dim);
       position: relative;
-      top: 10px;
       overflow: hidden;
     }
 
     .screenshot {
       position: absolute;
-      transform-origin: top left;
+      float: right;
+      display: none;
       background-repeat: no-repeat;
-      top: 50%;
-      left: 50%;
     }
 
   </style>
@@ -65,16 +58,8 @@
 <component id="td-components-pane">
   <style>
     .content {
+      max-height: 400px;
       position: relative;
-      display: grid;
-      grid-template-areas: inherit;
-      grid-template-columns: repeat(2, 1fr);
-      grid-gap: 0px;
-      grid-auto-rows: minmax(100px, auto);
-    }
-
-    td-components-pane-cell:nth-child(2n) {
-      border-right: none;
     }
 
     .header {
@@ -99,9 +84,13 @@
           +
         </span>
       </span>
-      <span slot="content" class="content">
-        <td-components-pane-cell [[repeat components as component]] [[bind component]] key=[[bind component.$id]] dispatch=[[bind dispatch]] />
-      </span>
+      <div slot="content" class="content">
+        <td-list>
+          <td-list-item [[repeat components as component]] key=[[bind component.$id]] noPadding>
+            <td-components-pane-cell [[bind component]] dispatch=[[bind dispatch]] />
+          </td-list-item>
+        </td-list>
+      </div>
     </td-pane>
   </template>
   <preview name="main">

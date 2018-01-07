@@ -6,7 +6,7 @@ import { componentsPaneAddComponentClicked, componentsPaneComponentClicked } fro
 import { Dispatcher } from "aerial-common2";
 import { Workspace, withDragSource, ConnectDragSource, AvailableComponent, AVAILABLE_COMPONENT } from "front-end/state";
 
-const ICON_SIZE = 110;
+const ICON_SIZE = 10;
 
 export type ComponentsPaneOuterProps = {
   workspace: Workspace;

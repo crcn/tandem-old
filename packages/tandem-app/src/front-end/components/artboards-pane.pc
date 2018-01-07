@@ -29,16 +29,22 @@
 </component>
 
 <component id="td-artboards-pane">
+  <style>
+    .content {
+      max-height: 200px;
+      overflow: scroll;
+    }
+  </style>
   <template>
     <td-pane>
       <span slot="header">Artboards</span>
-      <span slot="content">
+      <div class="content" slot="content">
         <td-list>
           <td-list-item [[repeat artboards as artboard]] selectable [[bind artboard]] key=[[bind artboard.$id]] noPadding>
             <td-artboards-pane-row [[bind artboard]] onClick=[[bind onArtboardClicked]] />
           </td-list-item>
         </td-list>
-      </span>
+      </div>
     </td-pane>
   </template>
 </component>

@@ -9,9 +9,6 @@
       <slot name="button"></slot>
     </span>
     <div id="overlay" [[if show]]>
-      <div id="card" style=[[bind anchor || { visibility: "hidden" }]]>
-        <slot></slot>
-      </div>
     </div>
   </template>
 </component>

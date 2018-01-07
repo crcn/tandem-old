@@ -1,5 +1,7 @@
 IMMEDIATE:
 
+- [ ] 2+ declarations override each other in style rules
+
 - [ ] Persistence
   - [ ] 
 
