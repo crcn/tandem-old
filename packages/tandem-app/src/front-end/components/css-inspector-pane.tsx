@@ -294,8 +294,9 @@ const enhanceCSSStyleRule = compose<TdStyleRuleInnerProps, CSSStyleRuleOuterProp
         dispatch(cssSelectorTextChanged(rule.rule.id, (event.target as any).value, artboardId));
       }
     },
-    onSelectorTextInputKeyDown: ({ dispatch, rule, artboardId }) => (event: React.KeyboardEvent<any>) => {
+    onSelectorTextInputKeyDown: ({ setEditingSelectorText, dispatch, rule, artboardId }) => (event: React.KeyboardEvent<any>) => {
       if (event.key === "Enter" && rule.rule && rule.rule.selectorText !== (event.target as any).value) {
+        setEditingSelectorText(false);
         dispatch(cssSelectorTextChanged(rule.rule.id, (event.target as any).value, artboardId));
       }
     }

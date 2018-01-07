@@ -1,7 +1,5 @@
 IMMEDIATE:
 
-- [ ] add style rule
-  - [ ] automatically scope to the element
 - [ ] delete style rule - just delete selector text
 - [ ] Enter key must work for changing selectorText
 - [ ] ability to change host of style element
@@ -17,6 +15,7 @@ IMMEDIATE:
 - [ ] DND elements to stage
 
 - [ ] WARM UP
+  - [ ] ability to focus on new selectors
   - [ ] CSS inspector styles are out of order. See td-dropdown
   - [ ] width/height labels around hovered & selected stage items (like inspector)
   - [ ] get padding / margin stage tool working again
@@ -28,7 +27,6 @@ IMMEDIATE:
   - [ ] fix "file not found" exceptions for link elements
   - [ ] border radiuses not showing up for dropdown
   - [ ] dropdown menu not showing up properly in workspace
-  - [ ] `td-dropdown-button` options not being inferred
   - [ ] full screen mode doesn't resize when gutters are toggled
   - [ ] `calc(100% - 10px)` parses as a list, not as an op expr
 
