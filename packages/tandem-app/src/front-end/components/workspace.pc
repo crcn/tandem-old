@@ -174,7 +174,7 @@
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
             },
-            screenshotScale: 0.07
+            screenshotScale: 0.04
           },
           { 
             $id: null,
@@ -186,7 +186,7 @@
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
             },
-            screenshotScale: 0.07
+            screenshotScale: 0.04
           },
           { 
             $id: null,
@@ -199,7 +199,7 @@
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
             },
-            screenshotScale: 0.07
+            screenshotScale: 0.04
           },
           { label: "h4", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "span", $id: null, onDragStart: null, onDragEnd: null, onClick: null },

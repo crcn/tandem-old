@@ -34,23 +34,33 @@
     .screenshot {
       position: absolute;
       float: right;
-      display: none;
+      transform-origin: top left;
       background-repeat: no-repeat;
+    }
+
+    .screenshot-container {
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      right: var(--base8);
+      top: 50%;
     }
 
   </style>
   <template>
     <div class="inner" title=[[bind label]] draggable alt=[[bind label]] onDragStart=[[bind onDragStart]] onDragEnd=[[bind onDragEnd]] onClick=[[bind onClick]]>
-      <span class="label" [[if !screenshot]]> 
+      <span class="label"> 
         [[bind label]]
       </span>
-      <div class="screenshot" [[if screenshot]] src="[[bind screenshot.uri]]" style=[[bind {
-        width: screenshot.clip.right - screenshot.clip.left,
-        height: screenshot.clip.bottom - screenshot.clip.top,
-        transform: "scale(" + screenshotScale + ") translate(-50%, -50%)",
-        backgroundImage: "url('" + screenshot.uri + "')",
-        backgroundPosition: "-"+(screenshot.clip.left)+"px -"+(screenshot.clip.top)+"px"
-      }]] />
+      <div class="screenshot-container">
+        <div class="screenshot" [[if screenshot]] src="[[bind screenshot.uri]]" style=[[bind {
+          width: screenshot.clip.right - screenshot.clip.left,
+          height: screenshot.clip.bottom - screenshot.clip.top,
+          transform: "scale(" + screenshotScale + ") translate(-50%, -50%)",
+          backgroundImage: "url('" + screenshot.uri + "')",
+          backgroundPosition: "-"+(screenshot.clip.left)+"px -"+(screenshot.clip.top)+"px"
+        }]] />
+      </div>
     </div>
   </template>
 </component>
@@ -105,7 +115,7 @@
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
             },
-            screenshotScale: 0.07
+            screenshotScale: 0.04
           },
           { 
             $id: null,
@@ -117,7 +127,7 @@
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
             },
-            screenshotScale: 0.07
+            screenshotScale: 0.04
           },
           { 
             $id: null,
@@ -130,7 +140,7 @@
               uri: "https://img00.deviantart.net/8ef2/i/2012/325/e/c/8_bit_sprites__nyan_cat_by_toshirofrog-d4hzdrp.png",
               clip: { left: 0, top: 0, right: 900, bottom: 400 }
             },
-            screenshotScale: 0.07
+            screenshotScale: 0.04
           },
           { label: "h4", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "span", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
