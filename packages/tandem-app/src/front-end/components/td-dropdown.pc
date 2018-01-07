@@ -11,6 +11,7 @@
     td-dropdown-menu {
       position: absolute;
       left: 0;
+      z-index: 1024;
       bottom: calc(var(--base4) * -1);
       transform: translateY(100%);
       width: 200px;
