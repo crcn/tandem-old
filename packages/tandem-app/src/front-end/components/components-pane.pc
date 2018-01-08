@@ -68,8 +68,14 @@
 <component id="td-components-pane">
   <style>
     .content {
-      max-height: 400px;
+      overflow: scroll;
       position: relative;
+      height: 100%;
+    }
+    :host {
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
     }
 
     .header {
@@ -147,6 +153,19 @@
           { label: "form", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "input", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "ul", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null }
         ]]] />
   </preview>

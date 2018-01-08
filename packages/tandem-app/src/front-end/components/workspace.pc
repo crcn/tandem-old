@@ -206,6 +206,16 @@
           { label: "form", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "input", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "ul", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null }
         ]]] />
       </td-gutter>
