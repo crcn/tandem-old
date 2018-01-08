@@ -14,9 +14,10 @@
       color: var(--font-color);
       width: calc(100% - var(--base2));
       line-height: 0;
-      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: inset 1px 1px 0px 0px var(--shadow-color);
       border-radius: var(--base);
       padding: 0;
+      padding-left: 2;
       margin-right: var(--base2);
   }
 
