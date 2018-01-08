@@ -4,28 +4,17 @@
 <link rel="import" href="./color-picker.pc" />
 
 <component id="td-tooltip">
+  <style>
+  </style>
   <template>  
     <span id="button">
-      <slot name="button"></slot>
+      <slot name="button">tooltip bottom</slot>
     </span>
-    <div id="overlay" [[if show]]>
+    <div id="overlay" [[if show]]>  
+
     </div>
   </template>
+  <preview name="main" width="100" height="100">
+    <td-tooltip />
+  </preview>
 </component>
-
-<td-preview>
-  <style>
-    td-tooltip {
-      margin: 20px;
-    }
-  </style>
-  <td-tooltip show>
-    <span slot="button">
-      click me
-    </span>
-
-    <!-- TODO - need to wrap this in a template -->
-    <td-color-picker color="#FF00FF" />
-  </td-tooltip>
-
-</td-preview>
