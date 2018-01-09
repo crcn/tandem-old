@@ -279,31 +279,58 @@ describe(__filename + "#", () => {
       ]
     ].forEach((variants) => {
       it(`can diff & patch ${variants.join("->")}`, async () => {
-        const fakeDocument = new FakeDocument();
-        const body = fakeDocument.createElement("body");
-        let map: any;
-        let currentDocument: SlimParentNode;
-        for (const variant of variants) {
-          const newDocument = await runPCComponent({
-            "entry.pc": variant
-          });
-          if (!currentDocument) {
-            currentDocument = setVMObjectIds(newDocument, "item");
-            map = renderDOM2(currentDocument, body as any);
-          } else {
-            const result = patchNodeAndDOM(currentDocument, newDocument, body as any, map);
-            currentDocument = result.node;
-            map = result.map;
+        await diffPatchVariants(variants);
+    });
 
-            const expBody = fakeDocument.createElement("body");
-            renderDOM2(newDocument, expBody as any);
-            expect(body.toString()).to.eql(expBody.toString());
-          }
-        }
+    describe("CSS", () => {
+      [
+        [`.a {}`, `.b {}`]
+      ].forEach((variants: any) => {
+        it(`can diff & patch ${variants.join("->")}`, async () => {
+          await diffPatchVariants(variants.map(variant => {
+            return `
+            <component id="test">
+              <style>
+                ${variant}
+              </style>
+              <template>
+                <slot></slot>
+              </template>
+              <preview name="main">
+                <test />
+              </preview>
+            </component>
+            `;
+          }));
+        });
       });
     });
   });
 });
+
+const diffPatchVariants = async (variants: string[]) => {
+  const fakeDocument = new FakeDocument();
+  const body = fakeDocument.createElement("body");
+  let map: any;
+  let currentDocument: SlimParentNode;
+  for (const variant of variants) {
+    const newDocument = await runPCComponent({
+      "entry.pc": variant
+    });
+    if (!currentDocument) {
+      currentDocument = setVMObjectIds(newDocument, "item");
+      map = renderDOM2(currentDocument, body as any);
+    } else {
+      const result = patchNodeAndDOM(currentDocument, newDocument, body as any, map);
+      currentDocument = result.node;
+      map = result.map;
+
+      const expBody = fakeDocument.createElement("body");
+      renderDOM2(newDocument, expBody as any);
+      expect(body.toString()).to.eql(expBody.toString());
+    }
+  }
+}
 
 const patchNodeAndDOM = (oldNode: SlimParentNode, newNode: SlimParentNode, mount: HTMLElement, map: NativeObjectMap) => {
   const diffs = prepDiff(oldNode, diffNode(oldNode, newNode));

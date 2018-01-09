@@ -163,6 +163,14 @@ export class FakeElement extends FakeParentNode {
   }
 }
 
+export class FakeStyleElement extends FakeElement {
+  readonly sheet: FakeCSSStyleSheet;
+  constructor(tagName: string, ownerDocument: FakeDocument) {
+    super(tagName, ownerDocument);
+    this.sheet = new FakeCSSStyleSheet();
+  }
+}
+
 export class FakeTextNode extends FakeBaseNode {
   readonly nodeType = 3;
   constructor(public nodeValue: string, ownerDocument: FakeDocument) {
@@ -171,6 +179,14 @@ export class FakeTextNode extends FakeBaseNode {
   toString() {
     return this.nodeValue;
   }
+}
+
+class FakeCSSObject {
+  constr
+}
+
+export class FakeCSSStyleSheet {
+
 }
 
 export class FakeDocument {

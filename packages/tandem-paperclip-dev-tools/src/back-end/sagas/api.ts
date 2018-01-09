@@ -224,15 +224,12 @@ function* createComponent(req: express.Request, res: express.Response) {
   `  <style>\n` + 
   `  </style>\n` +
   `  <template>\n` + 
+  `    Content here\n` +
   `  </template>\n` +
-  `</component>\n\n` +
-
-  `<component id="${componentId}-preview">\n` +
-  `  <meta name="preview" content="of=${componentId}, width=400, height=400"></meta>\n` +
-  `  <template>\n` +
+  `  <preview name="main" width="600" height="400">\n` +
   `    <${componentId} />\n` +
-  `  </template>\n` +
-  `</component>\n`;
+  `  </preview>\n` +
+  `</component>\n\n`;
 
   const filePath = path.join(getModuleSourceDirectory(state), componentId + "." + PAPERCLIP_FILE_EXTENSION);
 

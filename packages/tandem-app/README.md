@@ -1,15 +1,20 @@
 IMMEDIATE:
 
-- [ ] 2+ declarations override each other in style rules
+- [ ] FIX ALL OUTSTANDING BUGS.
+	- [ ] use aerial-browser-sandbox for testing dom renderer
 
-- [ ] Persistence
-  - [ ] 
+- [ ] native elements pane
 
 - [ ] Stage tools
   - [ ] DND native elements to artboard elements
     - [ ] will need hotspot areas
   - [ ] drag elements
   - [ ] resize elements
+
+- [ ] Persistence
+  - [ ] 
+
+- [ ] logic pane
 
 - [ ] CSS Inspector
   - [ ] prioritized style rules
@@ -30,6 +35,7 @@ IMMEDIATE:
   - [ ] ability to delete declaration props and shift tabbing
 
 - [ ] Bugs
+  - [ ] 2+ declarations override each other in style rules
   - [ ] fix "file not found" exceptions for link elements
   - [ ] border radiuses not showing up for dropdown
   - [ ] dropdown menu not showing up properly in workspace
