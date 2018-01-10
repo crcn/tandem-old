@@ -94,6 +94,9 @@ class FakeParentNode extends FakeBaseNode {
     this.childNodes.splice(index, 0, newChild);
   }
   toString() {
+    return this.childrenToString();
+  }
+  childrenToString() {
     return this.childNodes.map(child => child.toString()).join("");
   }
 }
@@ -169,6 +172,10 @@ export class FakeStyleElement extends FakeElement {
     super(tagName, ownerDocument);
     this.sheet = new FakeCSSStyleSheet();
   }
+  childrenToString() {
+    return this.sheet.toString();
+  }
+  
 }
 
 export class FakeTextNode extends FakeBaseNode {
@@ -182,16 +189,107 @@ export class FakeTextNode extends FakeBaseNode {
 }
 
 class FakeCSSObject {
-  constr
+  constructor() {
+
+  }
 }
 
-export class FakeCSSStyleSheet {
+class FakeCSSGroupingRule extends FakeCSSObject {
+  readonly cssRules: FakeCSSObject[];
+  constructor(cssRules: FakeCSSObject[] = []) {
+    super();
+    this.cssRules = [...cssRules];
+  }
+  insertRule(ruleSource: string, index: number = Number.MAX_SAFE_INTEGER) {
+    const rule = parseCSSRule(ruleSource);
+    this.cssRules.splice(index, 0, rule);
+  }
+  deleteRule(index: number) {
+    this.cssRules.splice(index, 1);
+  }
+  toString() {
+    return this.cssRules.join(" ");
+  }
+}
 
+const parseCSSRule = (source: string): FakeCSSObject => {
+  if (/@\w+\s+.*?{/.test(source)) {
+    const [match, name, params] = source.match(/@(\w+)\s+(.*?){/);
+    if (name === "media") {
+      return new FakeCSSMediaRule(params, parseDeclarationBlock(source));
+    } else {
+      throw new Error(`Cannot create ${name} at rule for now.`);
+    }
+  } else {
+    const [match, selectorText] = source.match(/(.*?){/);
+      return new FakeCSSStyleRule(selectorText, parseStyleDeclaration(source));
+  }
+}
+
+const parseDeclarationBlock = (source: string): FakeCSSObject[] => (getInnerBlock(source).match(/.*?{[\s\S]*?}/g) || []).map(parseCSSRule);
+const parseStyleDeclaration = (source: string): FakeCSSStyle => {
+  const style = new FakeCSSStyle();
+  const inner = getInnerBlock(source);
+  for (const property of inner.split(";")) {
+    const [name, value] = property.trim().split(":");
+    if (name.trim()) {
+      style[name.trim()] = value.trim();
+    }
+  }
+
+  return style;
+}
+
+const getInnerBlock = (source: string) => {
+  source = source.substr(source.indexOf("{") + 1);
+  source = source.substr(0, source.lastIndexOf("}"))
+  return source;
+}
+
+export class FakeCSSMediaRule extends FakeCSSGroupingRule {
+  constructor(public conditionText: string, cssRules: FakeCSSObject[] = []) {
+    super(cssRules);
+  }
+  toString() {
+    return `@media ${this.conditionText} { ${super.toString()} }`;
+  }
+}
+
+export class FakeCSSStyleRule extends FakeCSSObject {
+  constructor(public selectorText: string, readonly style: FakeCSSStyle) {
+    super();
+  }
+  toString() {
+    return `${this.selectorText.trim()} { ${this.style.toString()} }`;
+  }
+}
+
+export class FakeCSSStyle extends FakeCSSObject {
+  [identifier: string]: any;
+  constructor() {
+    super();
+  }
+  toString() {
+    let buffer = [];
+    for (const key in this) {
+      const value = this[key];
+      if ((this as Object).hasOwnProperty(key)) {
+        buffer.push(`${key}: ${value}`);
+      }
+    }
+    return buffer.join(";");
+  }
+}
+
+export class FakeCSSStyleSheet extends FakeCSSGroupingRule {
 }
 
 export class FakeDocument {
   createElement(tagName: string) {
-    return new FakeElement(tagName, this);
+    switch(tagName) {
+      case "style": return new FakeStyleElement(tagName, this);
+      default: return new FakeElement(tagName, this);
+    }
   }
   createTextNode(nodeValue: string) {
     return new FakeTextNode(nodeValue, this);

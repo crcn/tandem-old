@@ -280,11 +280,13 @@ describe(__filename + "#", () => {
     ].forEach((variants) => {
       it(`can diff & patch ${variants.join("->")}`, async () => {
         await diffPatchVariants(variants);
+      });
     });
 
     describe("CSS", () => {
       [
-        [`.a {}`, `.b {}`]
+        [`.a {}`, `.b {}`],
+        [`.a {} .b {}`, `.b {} .a {}`]
       ].forEach((variants: any) => {
         it(`can diff & patch ${variants.join("->")}`, async () => {
           await diffPatchVariants(variants.map(variant => {

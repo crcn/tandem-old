@@ -2,6 +2,7 @@ IMMEDIATE:
 
 - [ ] FIX ALL OUTSTANDING BUGS.
 	- [ ] use aerial-browser-sandbox for testing dom renderer
+  - [ ] take tests from prev versions of Tandem
 
 - [ ] native elements pane
 

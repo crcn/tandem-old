@@ -405,6 +405,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       nativeTarget.selectorText = stringifyScopedSelectorText(newValue, getAttributeValue("scope", host));
       break;
     }
+    
 
     case CSS_DELETE_RULE: {
       const { index } = mutation as RemoveChildMutation<any, any>;
