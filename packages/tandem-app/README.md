@@ -1,8 +1,11 @@
 IMMEDIATE:
 
 - [ ] FIX ALL OUTSTANDING BUGS.
-	- [ ] use aerial-browser-sandbox for testing dom renderer
-  - [ ] take tests from prev versions of Tandem
+  - [ ] take tests from prev versions of Tandem for DOM renderer
+  - [ ] reduce latency for PC changes -> tandem 
+    - [ ] compile to JS
+    - [ ] scan for other components that use changed expression
+
 
 - [ ] native elements pane
 
