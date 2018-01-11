@@ -1,4 +1,5 @@
 import { SlimBaseNode, SlimCSSAtRule, SlimVMObjectType, SlimElement, SlimTextNode, SlimParentNode, SlimStyleElement, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElementAttribute, SlimFragment } from "slim-dom";
+import { sample, sampleSize, random } from "lodash";
 
 export const stringifyNode = (node: SlimBaseNode) => {
   switch(node.type) {
@@ -189,6 +190,8 @@ export class FakeTextNode extends FakeBaseNode {
 }
 
 class FakeCSSObject {
+  public parentRule: FakeCSSObject;
+  public parentStyleSheet: FakeCSSStyleSheet;
   constructor() {
 
   }
@@ -202,10 +205,14 @@ class FakeCSSGroupingRule extends FakeCSSObject {
   }
   insertRule(ruleSource: string, index: number = Number.MAX_SAFE_INTEGER) {
     const rule = parseCSSRule(ruleSource);
+    this._linkRule(rule);
     this.cssRules.splice(index, 0, rule);
   }
   deleteRule(index: number) {
     this.cssRules.splice(index, 1);
+  }
+  protected _linkRule(rule: FakeCSSObject) {
+    rule.parentRule = this;
   }
   toString() {
     return this.cssRules.join(" ");
@@ -251,7 +258,7 @@ export class FakeCSSMediaRule extends FakeCSSGroupingRule {
     super(cssRules);
   }
   toString() {
-    return `@media ${this.conditionText} { ${super.toString()} }`;
+    return `@media ${this.conditionText.trim()} { ${super.toString()} }`;
   }
 }
 
@@ -269,12 +276,18 @@ export class FakeCSSStyle extends FakeCSSObject {
   constructor() {
     super();
   }
+  removeProperty(name: string) {
+    delete this[name];
+  }
+  setProperty(name: string, value: string) {
+    this[name] = value;
+  }
   toString() {
     let buffer = [];
     for (const key in this) {
-      const value = this[key];
+      const value: string = this[key];
       if ((this as Object).hasOwnProperty(key)) {
-        buffer.push(`${key}: ${value}`);
+        buffer.push(`${key}: ${value.trim()}`);
       }
     }
     return buffer.join(";");
@@ -282,6 +295,10 @@ export class FakeCSSStyle extends FakeCSSObject {
 }
 
 export class FakeCSSStyleSheet extends FakeCSSGroupingRule {
+  protected _linkRule(child: FakeCSSObject) {
+    super._linkRule(child);
+    child.parentStyleSheet = this;
+  }
 }
 
 export class FakeDocument {
@@ -298,3 +315,48 @@ export class FakeDocument {
     return new FakeDocumentFragment(this);
   }
 };
+
+const CHARS = "abcdefghijkl".split("");
+
+function generateRandomText(maxLength: number = 5) {
+  return sampleSize(CHARS, random(1, maxLength)).join("");
+}
+
+function generateRandomChar() {
+  return sample(CHARS);
+}
+
+export const generateRandomStyleSheet = (maxRules: number = 10, maxDeclarations: number = 20) => {
+
+  function createKeyFrameRule() {
+    return ` @keyframes ${generateRandomChar()} {` +
+        Array.from({ length: random(1, maxRules) }).map((v) => {
+          return createStyleRule();
+        }).join(" ") +
+      `}` +
+    `}`;
+  }
+  function createStyleRule() {
+    return ` .${generateRandomChar()} {` +
+        Array.from({ length: random(1, maxDeclarations) }).map((v) => {
+          return ` ${generateRandomChar()}: ${generateRandomText(2)};`;
+        }).join("") +
+      `}` +
+    `}`;
+  }
+  function createMediaRule() {
+    return ` @media ${generateRandomChar()} {` +
+        Array.from({ length: random(1, maxRules) }).map((v) => {
+          return sample([createStyleRule, createKeyFrameRule])();
+        }).join(" ") +
+      `}` +
+    `}`;
+  }
+
+  const randomStyleSheet = Array
+  .from({ length: random(1, maxRules) })
+  .map(v => sample([createStyleRule, createMediaRule, createKeyFrameRule])()).join("\n");
+
+
+  return randomStyleSheet;
+}

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { runPCFile, loadModuleDependencyGraph, ComponentModule } from "..";
-import { FakeAttribute, FakeDocument, FakeDocumentFragment, FakeElement, FakeTextNode } from "./utils";
+import { FakeAttribute, FakeDocument, FakeDocumentFragment, FakeElement, FakeTextNode, generateRandomStyleSheet } from "./utils";
 import { renderDOM2, SlimParentNode, diffNode, patchNode2, patchDOM2, DOMNodeMap, setVMObjectIds, prepDiff, NativeObjectMap } from "slim-dom";
 
 describe(__filename + "#", () => {
@@ -286,9 +286,10 @@ describe(__filename + "#", () => {
     describe("CSS", () => {
       [
         [`.a {}`, `.b {}`],
-        [`.a {} .b {}`, `.b {} .a {}`]
+        [`.a {} .b {}`, `.b {} .a {}`],
+        [`.a {} .b {}`, `.b {}`]
       ].forEach((variants: any) => {
-        it(`can diff & patch ${variants.join("->")}`, async () => {
+        it(`can diff & patch ${variants.join(" -> ")}`, async () => {
           await diffPatchVariants(variants.map(variant => {
             return `
             <component id="test">
@@ -306,7 +307,33 @@ describe(__filename + "#", () => {
           }));
         });
       });
-    });
+      describe(`fuzzy tests`, () => {
+
+        const tests = Array.from({ length: 100 }).map(() => {
+          return Array.from({ length: Math.ceil(Math.random() * 3)}).map(() => generateRandomStyleSheet(2, 2))
+        });
+
+        tests.forEach((variants) => {
+          it(`can diff & patch ${variants.join(" -> ")}`, async () => {
+            await diffPatchVariants(variants.map(variant => {
+              return `
+              <component id="test">
+                <style>
+                  ${variant}
+                </style>
+                <template>
+                  <slot></slot>
+                </template>
+                <preview name="main">
+                  <test />
+                </preview>
+              </component>
+              `;
+            }));
+          });
+        });
+      });
+    });    
   });
 });
 
@@ -349,9 +376,13 @@ const runPCTemplate = async (source) => await runPCComponent({
 });
 
 const runPCComponent = async (files, entry = Object.keys(files)[0]) => {
-  const { graph } = await loadModuleDependencyGraph(entry, {
+  const { graph, diagnostics: graphDiagnostics } = await loadModuleDependencyGraph(entry, {
     readFile: (filePath) => files[filePath]
   });
+
+  if (graphDiagnostics.length) {
+    throw graphDiagnostics[0];
+  }
 
   const { module } = graph[entry];
   
