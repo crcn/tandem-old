@@ -441,8 +441,14 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
 
     case CSS_AT_RULE_SET_PARAMS: {
       const { newValue } = mutation as SetValueMutation<any>;
-      const nativeTarget: CSSMediaRule = map.cssom[slimTarget.id] as CSSMediaRule;
-      nativeTarget.conditionText = newValue;
+      const nativeTarget: CSSRule = map.cssom[slimTarget.id] as CSSMediaRule;
+      if (nativeTarget.type === 4) {
+        const mediaRule = nativeTarget as CSSMediaRule;
+        mediaRule.conditionText = newValue;
+      } else if (nativeTarget.type === 7) {
+        const keyframesRule = nativeTarget as CSSKeyframesRule;
+        keyframesRule.name = newValue;
+      }
       break;
     }
 

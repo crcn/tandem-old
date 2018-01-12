@@ -224,16 +224,18 @@ const parseCSSRule = (source: string): FakeCSSObject => {
     const [match, name, params] = source.match(/@(\w+)\s+(.*?){/);
     if (name === "media") {
       return new FakeCSSMediaRule(params, parseDeclarationBlock(source));
+    } else if (name === "keyframes") {
+      return new FakeCSSKeyframesRule(params, parseDeclarationBlock(source));
     } else {
       throw new Error(`Cannot create ${name} at rule for now.`);
     }
   } else {
     const [match, selectorText] = source.match(/(.*?){/);
-      return new FakeCSSStyleRule(selectorText, parseStyleDeclaration(source));
+    return new FakeCSSStyleRule(selectorText, parseStyleDeclaration(source));
   }
 }
 
-const parseDeclarationBlock = (source: string): FakeCSSObject[] => (getInnerBlock(source).match(/.*?{[\s\S]*?}/g) || []).map(parseCSSRule);
+const parseDeclarationBlock = (source: string, factory = parseCSSRule): FakeCSSObject[] => (getInnerBlock(source).match(/.*?{[\s\S]*?}/g) || []).map(factory);
 const parseStyleDeclaration = (source: string): FakeCSSStyle => {
   const style = new FakeCSSStyle();
   const inner = getInnerBlock(source);
@@ -254,11 +256,22 @@ const getInnerBlock = (source: string) => {
 }
 
 export class FakeCSSMediaRule extends FakeCSSGroupingRule {
+  readonly type = 4;
   constructor(public conditionText: string, cssRules: FakeCSSObject[] = []) {
     super(cssRules);
   }
   toString() {
     return `@media ${this.conditionText.trim()} { ${super.toString()} }`;
+  }
+}
+
+export class FakeCSSKeyframesRule extends FakeCSSGroupingRule {
+  readonly type = 7;
+  constructor(public name: string, cssRules: FakeCSSObject[] = []) {
+    super(cssRules);
+  }
+  toString() {
+    return `@keyframes ${this.name.trim()} { ${super.toString()} }`;
   }
 }
 
@@ -284,13 +297,14 @@ export class FakeCSSStyle extends FakeCSSObject {
   }
   toString() {
     let buffer = [];
+    
     for (const key in this) {
       const value: string = this[key];
       if ((this as Object).hasOwnProperty(key)) {
         buffer.push(`${key}: ${value.trim()}`);
       }
     }
-    return buffer.join(";");
+    return buffer.sort().join(";");
   }
 }
 
@@ -328,34 +342,38 @@ function generateRandomChar() {
 
 export const generateRandomStyleSheet = (maxRules: number = 10, maxDeclarations: number = 20) => {
 
-  function createKeyFrameRule() {
+  function createKeyFramesRule() {
     return ` @keyframes ${generateRandomChar()} {` +
-        Array.from({ length: random(1, maxRules) }).map((v) => {
-          return createStyleRule();
-        }).join(" ") +
-      `}` +
+      Array.from({ length: random(1, maxRules) }).map((v, i) => Math.round(Math.random() * 100)).sort().map((v) => {
+        return createKeyframeRule(v);
+      }).join(" ") +
     `}`;
+  }
+  function createKeyframeRule(perc: number) {
+    return ` ${perc}% {` +
+      Array.from({ length: random(1, maxDeclarations) }).map((v) => {
+        return ` ${generateRandomChar()}: ${generateRandomText(2)};`;
+      }).join("") +
+    `}`
   }
   function createStyleRule() {
     return ` .${generateRandomChar()} {` +
-        Array.from({ length: random(1, maxDeclarations) }).map((v) => {
-          return ` ${generateRandomChar()}: ${generateRandomText(2)};`;
-        }).join("") +
-      `}` +
+      Array.from({ length: random(1, maxDeclarations) }).map((v) => {
+        return ` ${generateRandomChar()}: ${generateRandomText(2)};`;
+      }).join("") +
     `}`;
   }
   function createMediaRule() {
     return ` @media ${generateRandomChar()} {` +
-        Array.from({ length: random(1, maxRules) }).map((v) => {
-          return sample([createStyleRule, createKeyFrameRule])();
-        }).join(" ") +
-      `}` +
+      Array.from({ length: random(1, maxRules) }).map((v) => {
+        return sample([createStyleRule, createKeyFramesRule])();
+      }).join(" ") +
     `}`;
   }
 
   const randomStyleSheet = Array
   .from({ length: random(1, maxRules) })
-  .map(v => sample([createStyleRule, createMediaRule, createKeyFrameRule])()).join("\n");
+  .map(v => sample([createStyleRule, createMediaRule, createKeyFramesRule])()).join("\n");
 
 
   return randomStyleSheet;

@@ -287,7 +287,13 @@ describe(__filename + "#", () => {
       [
         [`.a {}`, `.b {}`],
         [`.a {} .b {}`, `.b {} .a {}`],
-        [`.a {} .b {}`, `.b {}`]
+        [`.a {} .b {}`, `.b {}`],
+
+        // busted fuzzy tests
+        [`@keyframes a {}`, `@keyframes b {}`],
+        [`@keyframes a { 0% { color: red; }}`, `@media b { .c { color: blue; }}`],
+        [`.k { e: a;}`, `i { f: kb; e: k;} .i { a: e;}`],
+        [`.i { h: ag;}`, `@media e { .f { h: ea;}}`, `.g { c: el;} @media k { .k { l: h; d: gk;}}`]
       ].forEach((variants: any) => {
         it(`can diff & patch ${variants.join(" -> ")}`, async () => {
           await diffPatchVariants(variants.map(variant => {
@@ -381,6 +387,7 @@ const runPCComponent = async (files, entry = Object.keys(files)[0]) => {
   });
 
   if (graphDiagnostics.length) {
+    console.error(JSON.stringify(graphDiagnostics, null, 2));
     throw graphDiagnostics[0];
   }
 

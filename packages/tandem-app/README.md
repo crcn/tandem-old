@@ -6,6 +6,11 @@ IMMEDIATE:
     - [ ] compile to JS
     - [ ] scan for other components that use changed expression
   - [ ] fuzzy tests -- see https://github.com/crcn/tandem/blob/1.0/src/%40tandem/synthetic-browser/test/helpers/index.ts
+    - [ ] https://github.com/crcn/tandem/blob/1.0/src/@tandem/synthetic-browser/sandbox/css-editor-test.ts
+    - [ ] for components
+    - [ ] for CSS
+  - [ ] test scoped style parsing
+
 
 - [ ] SPEED
   - [ ] compile ast to JS

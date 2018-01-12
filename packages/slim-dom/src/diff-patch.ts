@@ -263,7 +263,14 @@ const compareCSSRules = (a: SlimCSSRule, b: SlimCSSRule) => {
   }
 
   if (a.type === SlimVMObjectType.AT_RULE) {
-    return (a as SlimCSSAtRule).params === (b as SlimCSSAtRule).params ? 0 : 1;
+    const ar = (a as SlimCSSAtRule);
+    const br = (b as SlimCSSAtRule);
+
+    if (ar.name !== br.name) {
+      return -1;
+    }
+
+    return ar.params === br.params ? 0 : 1;
   }
 
   // TODO - check media
@@ -305,6 +312,7 @@ const compareNodeDiffs = (a: SlimBaseNode, b: SlimBaseNode) => {
 export const prepDiff = <TNode extends SlimParentNode>(root: TNode, diffs: Mutation<any[]>[]) => {
 
   const idSeed = root.id ? crc32(getDocumentChecksum(root) + root.id) : null;
+
   let refCount = 0;
   return diffs.map(diff => {
     switch(diff.type) {

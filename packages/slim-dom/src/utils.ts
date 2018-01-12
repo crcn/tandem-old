@@ -172,8 +172,12 @@ export const stringifyNode = weakMemo((node: SlimBaseNode, includeShadow?: boole
         buffer += stringifyNode(el.shadow, includeShadow);
         buffer += `</#shadow>`;
       }
-      for (let i = 0, {length} = el.childNodes; i < length; i++) {
-        buffer += stringifyNode(el.childNodes[i], includeShadow);
+      if (el.tagName === "style") {
+        buffer += stringifyStyleObject((el as SlimStyleElement).sheet);
+      } else {
+        for (let i = 0, {length} = el.childNodes; i < length; i++) {
+          buffer += stringifyNode(el.childNodes[i], includeShadow);
+        }
       }
       buffer += `</${el.tagName}>`;
       return buffer;
@@ -186,6 +190,26 @@ export const stringifyNode = weakMemo((node: SlimBaseNode, includeShadow?: boole
         buffer += stringifyNode(el.childNodes[i], includeShadow);
       }
       return buffer;
+    }
+  }
+});
+
+export const stringifyStyleObject = weakMemo((styleObject: SlimCSSRule) => {
+  switch(styleObject.type) {
+    case SlimVMObjectType.STYLE_SHEET: {
+      const sheet = styleObject as SlimCSSStyleSheet;
+      return sheet.rules.map(stringifyStyleObject);
+    }
+    case SlimVMObjectType.STYLE_RULE: {
+      const {selectorText, style} = styleObject as SlimCSSStyleRule;
+      return `${selectorText} { ${stringifyStyle(style)} }`
+    }
+    case SlimVMObjectType.AT_RULE: {
+      const {name, params, rules} = styleObject as SlimCSSAtRule;
+      return `@${name} ${params.trim()} { ${rules.map(stringifyStyleObject)} }`
+    }
+    default: {
+      throw new Error(`Cannot stringify style rule type ${styleObject.type}.`);
     }
   }
 });
