@@ -373,7 +373,7 @@ export const generateRandomStyleSheet = (maxRules: number = 10, maxDeclarations:
 
   const randomStyleSheet = Array
   .from({ length: random(1, maxRules) })
-  .map(v => sample([createStyleRule, createMediaRule, createKeyFramesRule])()).join("\n");
+  .map(v => sample([createStyleRule, createMediaRule, createKeyFramesRule])()).join(" ");
 
 
   return randomStyleSheet;

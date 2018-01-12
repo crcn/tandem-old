@@ -315,8 +315,8 @@ describe(__filename + "#", () => {
       });
       describe(`fuzzy tests`, () => {
 
-        const tests = Array.from({ length: 100 }).map(() => {
-          return Array.from({ length: Math.ceil(Math.random() * 3)}).map(() => generateRandomStyleSheet(2, 2))
+        const tests = Array.from({ length: 300 }).map(() => {
+          return Array.from({ length: Math.ceil(Math.random() * 5)}).map(() => generateRandomStyleSheet(10, 8))
         });
 
         tests.forEach((variants) => {
