@@ -270,6 +270,8 @@ const deleteNestedChildNodes = (node: SlimBaseNode, map: NativeObjectMap) => {
 
 export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount: HTMLElement, map: NativeObjectMap): NativeObjectMap => {
 
+  console.log(mutation.type);
+
   let slimTarget = getVMObjectFromPath(mutation.target, root);
   const ownerDocument = mount.ownerDocument;
 
@@ -283,6 +285,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const { index } = mutation as RemoveChildMutation<any, any>;
       const parent = slimTarget as SlimParentNode;
       const child = parent.childNodes[index];
+      console.log(child);
       map = removeNativeChildNode(child, map);
       break;
     }
@@ -338,7 +341,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     }
     case INSERT_CHILD_NODE: {
       const { child, index } = mutation as InsertChildMutation<any, any>;
-
+      console.log(mutation);
       let insertIndex = index;
 
       let nativeOwner: Node;
@@ -349,6 +352,8 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         const nativeSlotParent = nativeSlotMarker.parentNode;
         const nativeSlotIndex  = Array.prototype.indexOf.call(nativeSlotParent.childNodes, nativeSlotMarker);
         nativeOwner = nativeSlotParent;
+
+        // TODO - index needs to be calculated based on other children that share the same slot.
         insertIndex = nativeSlotIndex + index + 1;
       } else {
         nativeOwner = map.dom[slimTarget.id];
@@ -370,7 +375,6 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
           root: root,
           host: mutationHost
         });
-
 
         if ((slimTarget as SlimElement).tagName === "slot") {
           const host = getMutationHost(mutation, root);

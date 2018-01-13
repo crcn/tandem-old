@@ -298,8 +298,29 @@ describe(__filename + "#", () => {
       ],
 
       [
-        `<component id="component0"><template><slot name="l0">dg<j g="j" f="bk" l="a"><slot name="l0"></slot></j></slot><slot name="l0">aefhg</slot><g j="g" l="fh" c="l">lecd<slot name="l0">fkhae<slot name="l0"><k k="f"></k><slot name="l0"></slot></slot><b g="g" l="k" l="bk" j="gd">fekgi<slot name="l0"></slot></b></slot><slot name="l0"><b j="e">hidgk</b></slot></g><slot name="l0"><slot name="l0"><slot name="l0">aihekbgjdljjghc</slot>bakcl<slot name="l0"><slot name="l0"></slot><j a="i" h="i" c="bh" l="e"></j></slot>cda</slot></slot><i l="fe" c="c" j="l">jfk<slot name="l0"></slot>gcj</i><c a="h" k="g" c="i" h="i">fcghj<j j="i">ijde</j></c><slot name="l0"></slot><slot name="l0">hjfcggie<l b="je" l="b" i="k">edaglfbkgcailehjil</l></slot><slot name="l0"></slot></template><preview name="main"><component0 f="dj" d="b"></component0></preview></component>`,
-        `<component id="component0"><template><slot name="l0">gelcafel<k a="k" h="ef">ajkbea<slot name="l0">jld</slot></k><slot name="l0"></slot></slot><f f="bh" i="e" j="e"></f><slot name="l0">ceajbjdgjbi</slot><slot name="l0"><slot name="l0"></slot><e f="d" k="ai" e="ae" b="be">iejdl</e></slot></template><preview name="main"><component0 l="gc" h="a" j="l" a="k"></component0></preview></component> <component id="component1"><template><slot name="i0">cijfbegck</slot><component0 l="he" i="k" b="kd" b="k"></component0><slot name="i0">f</slot><slot name="i0"><slot name="i0"><component0 h="j"></component0>glaecfl</slot><slot name="i0">iglaajbfc<component0 a="a" c="e"></component0></slot><component0 b="i" j="l"></component0></slot><c c="fj" a="hk">cecfi</c><slot name="i0">cfdki</slot><component0 g="la" i="g"></component0><slot name="i0">h</slot><slot name="i0">degialedhb<c g="i" e="h"><i k="ei">gf<component0 g="f"></component0><component0 c="kj" e="j" b="e"></component0>i</i><slot name="i0">hhdl</slot></c></slot><g i="b" j="e"><component0 b="jl" d="c" e="a"></component0><slot name="i0">kdhb</slot></g></template><preview name="main"><component1 i="ej" j="gl" d="b"></component1></preview></component>`
+        `<component id="component0">
+          <template>
+            <i>jfkgcj</i>
+          </template>
+          <preview name="main">
+            <component0 />
+          </preview>
+        </component>`,
+
+        `<component id="component0">
+          <template>
+            <slot name="l0">
+              gelcafel
+              <k> ajkbea d</k>
+            </slot>
+            <slot name="l0">
+              <e>iejdl</e>
+            </slot>
+          </template>
+          <preview name="main">
+            <component0></component0>
+          </preview>
+        </component>`
       ]
     ].forEach((variants) => {
       it(`can diff & patch ${variants.join(" -> ")}`, async () => {

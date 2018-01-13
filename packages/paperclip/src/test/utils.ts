@@ -187,7 +187,7 @@ export class FakeTextNode extends FakeBaseNode {
     super(ownerDocument);
   }
   toString() {
-    return this.nodeValue;
+    return this.nodeValue.trim();
   }
 }
 
