@@ -186,7 +186,7 @@ const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule, 
       },
       delete({ index, value }) {
         diffs.push(
-          createPropertyMutation(CSS_DELETE_STYLE_PROPERTY, path, null, null, null, null, index)
+          createPropertyMutation(CSS_DELETE_STYLE_PROPERTY, path, value.name, null, null, null, index)
         );
       },
       update({ newValue, index, patchedOldIndex, originalOldIndex }) {

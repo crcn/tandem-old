@@ -288,12 +288,14 @@ describe(__filename + "#", () => {
         [`.a {}`, `.b {}`],
         [`.a {} .b {}`, `.b {} .a {}`],
         [`.a {} .b {}`, `.b {}`],
+        [`.a {b: c; d: e;}`, `.b {d:e;b:c;}`],
 
         // busted fuzzy tests
         [`@keyframes a {}`, `@keyframes b {}`],
         [`@keyframes a { 0% { color: red; }}`, `@media b { .c { color: blue; }}`],
         [`.k { e: a;}`, `i { f: kb; e: k;} .i { a: e;}`],
-        [`.i { h: ag;}`, `@media e { .f { h: ea;}}`, `.g { c: el;} @media k { .k { l: h; d: gk;}}`]
+        [`.i { h: ag;}`, `@media e { .f { h: ea;}}`, `.g { c: el;} @media k { .k { l: h; d: gk;}}`],
+        [`.i { g: d; a: fk; g: ca;}`, `.f { g: d;}`]
       ].forEach((variants: any) => {
         it(`can diff & patch ${variants.join(" -> ")}`, async () => {
           await diffPatchVariants(variants.map(variant => {
