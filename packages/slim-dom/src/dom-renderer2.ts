@@ -341,17 +341,17 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
 
       let insertIndex = index;
 
-      let nativeParent: Node;
+      let nativeOwner: Node;
 
       if ((slimTarget as SlimElement).shadow) {
         const slot = getSlot(getNodeSlotName(child), slimTarget as SlimElement);
         const nativeSlotMarker = map.dom[slot.id];
         const nativeSlotParent = nativeSlotMarker.parentNode;
         const nativeSlotIndex  = Array.prototype.indexOf.call(nativeSlotParent.childNodes, nativeSlotMarker);
-        nativeParent = nativeSlotParent;
+        nativeOwner = nativeSlotParent;
         insertIndex = nativeSlotIndex + index + 1;
       } else {
-        nativeParent = map.dom[slimTarget.id];
+        nativeOwner = map.dom[slimTarget.id];
       }
 
       let domMap: DOMMap = {};
@@ -371,7 +371,20 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
           host: mutationHost
         });
 
-        insertNativeNode(nativeChild, insertIndex, nativeParent);
+
+        if ((slimTarget as SlimElement).tagName === "slot") {
+          const host = getMutationHost(mutation, root);
+          const slot = slimTarget as SlimElement;
+          const slotChildren = getSlotChildren(slot, host);
+          const nativeParent = nativeOwner.parentNode;
+          if (slotChildren.length === 0) {
+            const nativeSlotIndex  = Array.prototype.indexOf.call(nativeParent.childNodes, nativeOwner);
+            insertNativeNode(nativeChild, nativeSlotIndex + index + 1, nativeParent);
+          }
+        } else {
+          insertNativeNode(nativeChild, insertIndex, nativeOwner);
+        }
+
       }
 
       map = updateNativeMap(map, {

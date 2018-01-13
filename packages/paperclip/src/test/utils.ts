@@ -10,13 +10,14 @@ export const stringifyNode = (node: SlimBaseNode) => {
     case SlimVMObjectType.ELEMENT: {
       const element = node as SlimElement;
       let buffer = `<${element.tagName}`;
+      const attrBuffer = [];
       for (const attribute of element.attributes) {
         if (typeof attribute.value === "object") {
           continue;
         }
-        buffer += ` ${attribute.name}="${attribute.value}"`;
+        attrBuffer.push(` ${attribute.name}="${attribute.value}"`);
       }
-      buffer += `>`;
+      buffer += attrBuffer.sort().join("") + `>`;
       if (element.shadow) {
         buffer += `<#shadow>${stringifyNode(element.shadow)}</#shadow>`;
       }
@@ -157,10 +158,11 @@ export class FakeElement extends FakeParentNode {
   }
   toString() {
     let buffer = `<${this.tagName}`;
+    let attrBuffer = [];
     for (const { name, value } of this.attributes) {
-      buffer += ` ${name}="${value}"`
+      attrBuffer.push(` ${name}="${value}"`);
     }
-    buffer += `>`;
+    buffer += attrBuffer.sort().join("") + `>`;
     buffer += super.toString();
     buffer += `</${this.tagName}>`;
     return buffer;
@@ -377,4 +379,105 @@ export const generateRandomStyleSheet = (maxRules: number = 10, maxDeclarations:
 
 
   return randomStyleSheet;
+}
+
+type RandomComponentInfo = {
+  id: string;
+  slotNames: string[];
+};
+
+export const generateRandomComponents = (maxComponents: number = 4, maxAttributes: number = 5, maxSlots: number = 3, maxNodeDepth: number = 2, maxChildNodes: number = 4, maxStyleRules: number = 4, maxStyleDeclarations: number = 4) => {
+
+  const components: RandomComponentInfo[] = [];
+
+  function createComponent(v, i) {
+    const id = "component" + i;
+    const slotNames = Array.from({ length: random(0, maxSlots) }).map((v, i) => `${generateRandomChar()}${i}`);
+    const info: RandomComponentInfo = {
+      id,
+      slotNames
+    };
+    
+    let buffer = `<component id="${id}">` +
+      createStyle() +
+      createTemplate(info) +
+      createPreview(info) +
+    `</component>`;
+
+    components.push(info);
+    return buffer;
+  }
+
+  function createStyle() {
+    if (!maxStyleRules || Math.random() < 0.2) {
+      return "";
+    }
+    return `<style>` +
+      generateRandomStyleSheet(maxStyleRules, maxStyleDeclarations) +
+    `</style>`;
+  }
+  
+  function createTemplate({ id, slotNames }: RandomComponentInfo) {
+    return `<template>` +
+      Array.from({ length: random(1, 10) }).map((v, i) => {
+        return generateRandomElement(0, slotNames[random(0, slotNames.length - 1)])
+      }).join("") +
+    `</template>`;
+  }
+
+  function createPreview({ id, slotNames }: RandomComponentInfo) {
+    return `<preview name="main">` +
+      createComponentElement({ id, slotNames }) +
+    `</preview>`;
+  }
+  
+  function createComponentElement({id, slotNames}: RandomComponentInfo, depth: number = 0, unclaimedSlotName: string = null) {
+    return `<${id} ${generateRandomAttributes()}>` +
+    slotNames.slice(0, random(0, depth > maxNodeDepth ? 0 : slotNames.length)).map(slotName => {
+      const tagName = generateRandomChar();
+      `<${tagName} slot="${slotName}">` +
+        generateRandomElement(depth, unclaimedSlotName);
+      `</${tagName}>`
+    }).join("") +
+  `</${id}>` ;
+  }
+
+  function generateRandomComponentElement(depth: number = 0, unclaimedSlotName: string = null) {
+    return components.length ? createComponentElement(sample(components), depth, unclaimedSlotName) : generateRandomElement(depth, unclaimedSlotName);
+  }
+  
+  function generateRandomElement(depth: number = 0, unclaimedSlotName: string = null) {
+    const claimSlotName = unclaimedSlotName && Math.random() < 0.5;
+    if (!claimSlotName && Math.random() < 0.5) {
+      return generateRandomComponentElement(depth, unclaimedSlotName);
+    }
+    const tagName = claimSlotName ? "slot" : generateRandomChar();
+    return `<${tagName} ${claimSlotName ? `name="${unclaimedSlotName}"` : generateRandomAttributes()}>` +
+      Array.from({ length: random(0, depth < maxNodeDepth ? maxChildNodes : 0 )}).map(() => generateRandomNode(depth + 1, unclaimedSlotName)).join("") +
+    `</${tagName}>`;
+  }
+
+  function generateRandomNode(depth: number = 0, unclaimedSlotName) {
+    return sample([
+      generateRandomElement,
+      generateRandomTextNode
+    ])(depth, unclaimedSlotName);
+  }
+
+  function generateRandomTextNode() {
+    return `${generateRandomText(5)}`;
+  }
+
+  function generateRandomAttributes() {
+    return Array.from({ length: random(1, maxAttributes) }).map(() => {
+      return `${generateRandomChar()}="${generateRandomText(2)}"`
+    }).join(" ");
+  }
+
+  const randomComponents = Array
+  .from({ length: random(1, maxComponents) })
+  .map(createComponent).join(" ");
+
+
+  return randomComponents;
 }
