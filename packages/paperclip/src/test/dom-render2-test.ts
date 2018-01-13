@@ -295,7 +295,9 @@ describe(__filename + "#", () => {
         [`@keyframes a { 0% { color: red; }}`, `@media b { .c { color: blue; }}`],
         [`.k { e: a;}`, `i { f: kb; e: k;} .i { a: e;}`],
         [`.i { h: ag;}`, `@media e { .f { h: ea;}}`, `.g { c: el;} @media k { .k { l: h; d: gk;}}`],
-        [`.i { g: d; a: fk; g: ca;}`, `.f { g: d;}`]
+        [`.i { g: d; a: fk; g: ca;}`, `.f { g: d;}`],
+        [`.d { a: h; i: le; h: j;}`, `.a { g: b; c: k; g: c;}  @keyframes j { 100% { a: kl;}  4% { g: c;}}`],
+        [`.l { i: kj; g: dg;}`, `.b { k: c; g: d; i: e;}`]
       ].forEach((variants: any) => {
         it(`can diff & patch ${variants.join(" -> ")}`, async () => {
           await diffPatchVariants(variants.map(variant => {
@@ -317,8 +319,8 @@ describe(__filename + "#", () => {
       });
       describe(`fuzzy tests`, () => {
 
-        const tests = Array.from({ length: 300 }).map(() => {
-          return Array.from({ length: Math.ceil(Math.random() * 5)}).map(() => generateRandomStyleSheet(10, 8))
+        const tests = Array.from({ length: 300 * 10 }).map(() => {
+          return Array.from({ length: 4 }).map(() => generateRandomStyleSheet(10, 10))
         });
 
         tests.forEach((variants) => {

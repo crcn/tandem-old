@@ -101,6 +101,15 @@ export const setCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule,
   };
 };
 
+export const insertCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, index: number, name: string, value: string): TRule => {
+  const newStyle = [...rule.style];
+  newStyle.splice(index, 0, { name, value });
+  return {
+    ...(rule as any),
+    style: newStyle
+  };
+}
+
 export const removeCSSStyleProperty = <TRule extends SlimCSSStyleRule>(rule: TRule, index: number): TRule => {
 
   const newStyle = [...rule.style];
@@ -939,8 +948,13 @@ const getTargetStyleOwners = (element: SlimElement, propertyNames: string[], tar
 };
 
 export const getStyleValue = (name: string, style: SlimCSSStyleDeclaration) => {
-  const prop = style.find(prop => prop.name === name);
-  return prop && prop.value;
+  for (let i = style.length; i--;) {
+    const prop = style[i];
+    if (prop.name === name) {
+      return prop.value;
+    }
+  }
+  return null;
 }
 
 export const cssPropNameToKebabCase = (propName: string) => {

@@ -1,8 +1,8 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject, SlimFontFace } from "./state";
-import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType, setCSSStyleProperty, removeCSSStyleProperty, getStyleValue } from "./utils";
+import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType, setCSSStyleProperty, removeCSSStyleProperty, getStyleValue, insertCSSStyleProperty } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
-import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2, CSS_DELETE_STYLE_PROPERTY } from "./diff-patch";
+import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2, CSS_DELETE_STYLE_PROPERTY, CSS_INSERT_STYLE_PROPERTY } from "./diff-patch";
 import { weakMemo } from "./weak-memo";
 
 export type DOMMap = {
@@ -232,9 +232,6 @@ const getElementScopeTagName = ({tagName}: SlimElement) => getScopeTagName(tagNa
 const getElementScopeTagNameHost = (element: SlimElement) => getElementScopeTagName(element) + "__host";
 
 const stringifyScopedSelectorText = (selectorText: string, scope: string) => {
-  // if (host) {
-  //   console.log(compileScopedCSS(selectorText, getElementScopeTagName(host)), "-----", selectorText);
-  // }
   return scope ? compileScopedCSS(selectorText, getScopeTagName(scope)) : selectorText;
 };
 
@@ -419,25 +416,14 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       break;
     }
 
-    case CSS_DELETE_STYLE_PROPERTY: {
-      const { index } = mutation as SetPropertyMutation<any>;
-      const { name } = (slimTarget as SlimCSSStyleRule).style[index];
-      const nativeTarget = map.cssom[slimTarget.id] as CSSStyleRule;
-      slimTarget = removeCSSStyleProperty(slimTarget as SlimCSSStyleRule, index);
-      const newValue = getStyleValue(name, (slimTarget as SlimCSSStyleRule).style);
-      if (newValue == null) {
-        nativeTarget.style.removeProperty(name);
-      } else {
-        nativeTarget.style.setProperty(name, newValue);
-      }
-
-      break;
-    }
-
+    case CSS_DELETE_STYLE_PROPERTY:
+    case CSS_INSERT_STYLE_PROPERTY:
     case CSS_SET_STYLE_PROPERTY: {
-      const { name, newValue, index } = mutation as SetPropertyMutation<any>;
+      const { type, name, newValue, index } = mutation as SetPropertyMutation<any>;
       const nativeTarget = map.cssom[slimTarget.id] as CSSStyleRule;
-      slimTarget = setCSSStyleProperty(slimTarget as SlimCSSStyleRule, index, name, newValue);
+
+      slimTarget = type === CSS_INSERT_STYLE_PROPERTY ? insertCSSStyleProperty(slimTarget as SlimCSSStyleRule, index, name, newValue) : type === CSS_DELETE_STYLE_PROPERTY ? removeCSSStyleProperty(slimTarget as SlimCSSStyleRule, index) :setCSSStyleProperty(slimTarget as SlimCSSStyleRule, index, name, newValue);
+
       const actualValue = getStyleValue(name, (slimTarget as SlimCSSStyleRule).style);
 
       if (actualValue == null) {

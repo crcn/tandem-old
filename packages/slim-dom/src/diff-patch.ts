@@ -1,7 +1,7 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
 import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, createMoveChildMutation, MoveChildMutation } from "source-mutation";
 import { compressRootNode, uncompressRootNode } from "./compression";
-import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, removeCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount, moveCSSStyleProperty, getAttributeValue } from "./utils";
+import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, removeCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount, moveCSSStyleProperty, getAttributeValue, insertCSSStyleProperty } from "./utils";
 import { isEqual } from "lodash";
 import crc32 = require("crc32");
 
@@ -26,6 +26,7 @@ export const CSS_DELETE_RULE = "CSS_DELETE_RULE";
 export const CSS_MOVE_RULE   = "CSS_MOVE_RULE";
 
 // CSS Style Rule
+export const CSS_INSERT_STYLE_PROPERTY = "CSS_INSERT_STYLE_PROPERTY";
 export const CSS_SET_STYLE_PROPERTY = "CSS_SET_STYLE_PROPERTY";
 export const CSS_MOVE_STYLE_PROPERTY = "CSS_MOVE_STYLE_PROPERTY";
 export const CSS_DELETE_STYLE_PROPERTY = "CSS_DELETE_STYLE_PROPERTY";
@@ -181,7 +182,7 @@ const diffCSSStyleRule = (oldRule: SlimCSSStyleRule, newRule: SlimCSSStyleRule, 
     {
       insert({ index, value }) {
         diffs.push(
-          createPropertyMutation(CSS_SET_STYLE_PROPERTY, path, value.name, value.value, null, null, index)
+          createPropertyMutation(CSS_INSERT_STYLE_PROPERTY, path, value.name, value.value, null, null, index)
         );
       },
       delete({ index, value }) {
@@ -398,6 +399,11 @@ export const patchNode2 = <TNode extends SlimParentNode>(mutation: Mutation<any>
     case CSS_MOVE_STYLE_PROPERTY: {
       const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
       newTarget = moveCSSStyleProperty(newTarget as SlimCSSStyleRule, oldIndex, index);
+      break;
+    }
+    case CSS_INSERT_STYLE_PROPERTY: {
+      const { name, newValue, index } = mutation as SetPropertyMutation<any[]>;
+      newTarget = insertCSSStyleProperty(newTarget as SlimCSSStyleRule, index, name, newValue);
       break;
     }
     case CSS_SET_STYLE_PROPERTY: {
