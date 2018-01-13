@@ -319,7 +319,7 @@ describe(__filename + "#", () => {
       });
       describe(`fuzzy tests`, () => {
 
-        const tests = Array.from({ length: 300 }).map(() => {
+        const tests = Array.from({ length: 100 }).map(() => {
           return Array.from({ length: 4 }).map(() => generateRandomStyleSheet(5, 5))
         });
 
