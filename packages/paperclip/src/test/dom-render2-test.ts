@@ -39,7 +39,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope"></span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope"><!--section-start--><!--section-end--></span></test><!--section-start--><!--section-end--></body>`);
   });
 
   it(`can render a component with default slot children`, async () => {
@@ -58,7 +58,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">a<b></b>c</span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope"><!--section-start-->a<b></b>c<!--section-end--></span></test></body>`);
   });
 
   it(`can render a component with named slots`, async () => {
@@ -77,7 +77,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">ae<span slot="a">b</span><span slot="b">c</span><span slot="b">d</span></span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope"><!--section-start-->ae<!--section-end--><!--section-start--><span slot="a">b</span><!--section-end--><!--section-start--><span slot="b">c</span><span slot="b">d</span><!--section-end--></span></test></body>`);
   });
 
   describe("diff/patch", () => {
@@ -320,6 +320,71 @@ describe(__filename + "#", () => {
           <preview name="main">
             <component0></component0>
           </preview>
+        </component>`,
+      ],
+      [
+        `<component id="component0"><template><slot name="a0"></slot><c d="ik" e="h"></c><j c="ji" g="a"></j><slot name="a0"></slot><slot name="a0"></slot></template><preview name="main"><component0 a="j" i="dj"></component0></preview></component>`,
+
+        `<component id="component0"><template><g i="j"></g><b h="l"></b><f b="ai" f="ie"></f><c b="eg" g="b"></c><l i="ke"></l><c f="e"></c><c d="jh" f="bc"></c><k d="a"></k><h d="ca"></h><g a="a" j="jf"></g></template><preview name="main"><component0 d="gi" f="f"></component0></preview></component> -> <component id="component0"><template><j k="ej" i="dl"></j><e c="kf"></e><j h="h" i="fb"></j><c f="cl" l="k"></c></template><preview name="main"><component0 c="ck" j="g"></component0></preview></component> -> <component id="component0"><template><e j="b" c="kh"></e><g i="gj"></g></template><preview name="main"><component0 e="l"></component0></preview></component>`
+      ],
+      [
+        `<component id="component0">
+            <template>
+                <b></b>
+                <slot name="a0"></slot>
+            </template>
+            <preview name="main">
+                <component0></component0>
+            </preview>
+        </component>`,
+        `<component id="component0">
+            <template>
+              <slot name="b0"></slot>
+              <b></b>
+            </template>
+            <preview name="main">
+              <component0></component0>
+            </preview>
+        </component>`
+      ],
+      [
+        `<component id="component0">
+            <template>
+                <g></g>
+                <l></l>
+            </template>
+            <preview name="main">
+                <component0></component0>
+            </preview>
+        </component>`,
+        `<component id="component0">
+            <template>
+                <slot name="h0"></slot>
+                <k></k>
+                <l></l>
+            </template>
+            <preview name="main">
+                <component0></component0>
+            </preview>
+        </component>`
+      ],
+      [
+        `<component id="component0">
+            <template>
+                <slot name="g0"></slot>
+            </template>
+            <preview name="main">
+                <component0 b="le" g="g" g="ej" i="ah"></component0>
+            </preview>
+        </component>`,
+        `<component id="component0">
+            <template>
+                <slot name="e0"></slot>
+                <slot name="e0"></slot>
+            </template>
+            <preview name="main">
+                <component0 g="g"></component0>
+            </preview>
         </component>`
       ]
     ].forEach((variants) => {
@@ -330,8 +395,8 @@ describe(__filename + "#", () => {
 
     describe("components", () => {
       describe("fuzzy", () => {
-        const tests = Array.from({ length: 100 }).map(() => {
-          return Array.from({ length: 4 }).map(() => generateRandomComponents(2, 4, 2, 3, 4, 0, 0))
+        const tests = Array.from({ length: 100 * 10 }).map(() => {
+          return Array.from({ length: 2 }).map(() => generateRandomComponents(2, 4, 3, 3, 0, 0, 0))
         });
         
         tests.forEach((variants) => {

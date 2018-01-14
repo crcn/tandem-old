@@ -58,10 +58,16 @@ const stringifyStyleSheet = (sheet: SlimCSSRule) => {
 }
 
 abstract class FakeBaseNode {
-  public parentNode: FakeBaseNode;
+  public parentNode: FakeParentNode;
   readonly childNodes: FakeBaseNode[] = [];
   constructor(readonly ownerDocument: FakeDocument) {
 
+  }
+  get nextSibling() {
+    return this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) + 1];
+  }
+  get previousSibling() {
+    return this.parentNode.childNodes[this.parentNode.childNodes.indexOf(this) - 1];
   }
   abstract toString(); 
 }
@@ -71,12 +77,16 @@ class FakeParentNode extends FakeBaseNode {
     super(ownerDocument);
   }
   appendChild(child: FakeBaseNode) {
-    child.parentNode = this;
     if (child instanceof FakeDocumentFragment) {
-      for (const subChild of child.childNodes)  {
+      const childen = [...child.childNodes];
+      for (const subChild of childen)  {
         this.appendChild(subChild);
       }
     } else {
+      if (child.parentNode) {
+        child.parentNode.removeChild(child);
+      }
+      child.parentNode = this;
       this.childNodes.push(child);
     }
   }
@@ -89,7 +99,11 @@ class FakeParentNode extends FakeBaseNode {
     }
   }
   insertBefore(newChild: FakeBaseNode, refChild: FakeBaseNode) {
+    if (newChild.parentNode) {
+      newChild.parentNode.removeChild(newChild);
+    }
     const index = this.childNodes.indexOf(refChild);
+    newChild.parentNode = this;
     if (index === -1) {
       throw new Error(`ref child does not exist`);
     }
@@ -188,6 +202,16 @@ export class FakeTextNode extends FakeBaseNode {
   }
   toString() {
     return this.nodeValue.trim();
+  }
+}
+
+export class FakeComment extends FakeBaseNode {
+  readonly nodeType = 8;
+  constructor(public text: string, ownerDocument: FakeDocument) {
+    super(ownerDocument);
+  }
+  toString() {
+    return `<!--${this.text.trim()}-->`;
   }
 }
 
@@ -326,6 +350,9 @@ export class FakeDocument {
   }
   createTextNode(nodeValue: string) {
     return new FakeTextNode(nodeValue, this);
+  }
+  createComment(nodeValue: string) {
+    return new FakeComment(nodeValue, this);
   }
   createDocumentFragment() {
     return new FakeDocumentFragment(this);

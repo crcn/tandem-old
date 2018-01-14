@@ -589,6 +589,7 @@ export const setElementAttribute = (target: SlimElement, name: string, value: st
   };
 };
 
+
 export const getSyntheticWindowChild = weakMemo((nodeId: string, window: SlimWindow) => {
   return getNestedObjectById(nodeId, window.document);
 });

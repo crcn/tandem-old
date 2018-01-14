@@ -1,5 +1,5 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject, SlimFontFace } from "./state";
-import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType, setCSSStyleProperty, removeCSSStyleProperty, getStyleValue, insertCSSStyleProperty } from "./utils";
+import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType, setCSSStyleProperty, removeCSSStyleProperty, getStyleValue, insertCSSStyleProperty, setElementAttribute } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
 import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2, CSS_DELETE_STYLE_PROPERTY, CSS_INSERT_STYLE_PROPERTY } from "./diff-patch";
@@ -53,7 +53,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         const slotElement = document.createDocumentFragment();
 
         // add a marker so that elements can be dynamically inserted when patched
-        slotElement.appendChild(context.map[vmNode.id] = document.createTextNode(""));
+        slotElement.appendChild(context.map[vmNode.id] = document.createComment("section-start"));
 
         const host = context.host;
 
@@ -74,6 +74,8 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         if (slotElement.childNodes.length === 1) {
           appendNativeChildNodes(vmNode as SlimParentNode, slotElement, document,  context)
         }
+
+        slotElement.appendChild(document.createComment("section-end"));
 
         return  slotElement;
       }
@@ -272,8 +274,8 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
 
   let slimTarget = getVMObjectFromPath(mutation.target, root);
   const ownerDocument = mount.ownerDocument;
-  console.log(mutation.type);
-  console.log(mutation);
+
+  // console.log(mutation.type);
 
   switch(mutation.type) {
     case SET_TEXT_NODE_VALUE: {
@@ -289,7 +291,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       break;
     }
     case SET_ATTRIBUTE_VALUE: {
-      const { name, newValue } = mutation as SetPropertyMutation<any>;
+      const { name, newValue, index } = mutation as SetPropertyMutation<any>;
       const slimElement = slimTarget as SlimElement;
       const nativeTarget = map.dom[slimTarget.id] as HTMLElement;
 
@@ -329,11 +331,13 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         }
 
       } else {
-        if (!newValue) {
+        slimTarget = setElementAttribute(slimTarget as SlimElement, name, newValue, index);
+        const actualValue = getAttributeValue(name, slimTarget as SlimElement);
+        if (!actualValue) {
           nativeTarget.removeAttribute(name);
           delete nativeTarget.dataset[name.toLowerCase()];
         } else {
-          setNativeElementAttribute(nativeTarget, name, newValue);
+          setNativeElementAttribute(nativeTarget, name, actualValue);
         }
       }
       break;
@@ -355,14 +359,13 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         insertIndex = nativeSlotIndex + index + 1;
       } else {
         nativeOwner = map.dom[slimTarget.id];
-        const afterChild = (slimTarget as SlimParentNode).childNodes[Math.min((slimTarget as SlimParentNode).childNodes.length - 1, insertIndex - 1)];
+        const beforeChild = (slimTarget as SlimParentNode).childNodes[insertIndex];
 
-        if (afterChild) {
-          const afterNativeChild = map.dom[afterChild.id];
+        if (beforeChild) {
+          insertIndex = Array.prototype.indexOf.call(nativeOwner.childNodes, map.dom[beforeChild.id]);
+        } else {
+          insertIndex = nativeOwner.childNodes.length;
         }
-
-        // console.log("AFTER", afterChild);
-        // insertIndex = afterChild ? Array.prototype.indexOf.call(nativeOwner.childNodes, map.dom[afterChild.id]) + 1 : insertIndex;
       }
 
       let domMap: DOMMap = {};
@@ -388,8 +391,9 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
           const slotChildren = getSlotChildren(slot, host);
           const nativeParent = nativeOwner.parentNode;
           if (slotChildren.length === 0) {
-            const nativeSlotIndex  = Array.prototype.indexOf.call(nativeParent.childNodes, nativeOwner);
-            insertNativeNode(nativeChild, nativeSlotIndex + index + 1, nativeParent);
+            const nativeSlotIndex  = Array.prototype.indexOf.call(nativeParent.childNodes, getSectionEndComment(nativeOwner as Comment));
+            insertNativeNode(nativeChild, nativeSlotIndex, nativeParent);
+          } else {
           }
         } else {
           insertNativeNode(nativeChild, insertIndex, nativeOwner);
@@ -405,13 +409,33 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     }
     case MOVE_CHILD_NODE: {
       const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
+      let insertIndex = index;
       const parent = slimTarget as SlimParentNode;
       const slimChild = parent.childNodes[oldIndex];
-      const nativeChild = map.dom[slimChild.id];
+      const beforeChild = parent.childNodes[index];
+      let nativeChild = map.dom[slimChild.id];
       const nativeParent = nativeChild.parentNode;
       
-      nativeParent.removeChild(nativeChild);
-      insertNativeNode(nativeChild, index, nativeParent);
+      if ((slimChild as SlimElement).tagName === "slot") {
+        const start = nativeChild as Comment;
+        const children = getSectionChildNodes(start);
+        const end = getSectionEndComment(start);
+
+        nativeChild = nativeChild.ownerDocument.createDocumentFragment();
+        nativeChild.appendChild(start);
+        for (const child of children) {
+          nativeChild.appendChild(child);
+        }
+        nativeChild.appendChild(end);
+      }
+
+      if (beforeChild) {
+        insertIndex = Array.prototype.indexOf.call(nativeParent.childNodes, map.dom[beforeChild.id]);
+      } else {
+        insertIndex = nativeParent.childNodes.length;
+      }
+
+      insertNativeNode(nativeChild, insertIndex, nativeParent);
       break;
     }
 
@@ -572,6 +596,29 @@ const updateNativeMap = (oldMap: NativeObjectMap, newMap: NativeObjectMap): Nati
   }
 });
 
+const getSectionChildNodes = (start: Comment) => {
+  const children: Node[] = [];
+  let current = start.nextSibling;
+  while(current.nodeType !== 8 && (current as Comment).text !== "section-end") {
+    children.push(current);
+    current = current.nextSibling;
+  }
+  return children;
+};
+
+const getLastSectionChildNode = (start: Comment) => {
+  const sectionChildNodes = getSectionChildNodes(start);
+  return sectionChildNodes[sectionChildNodes.length - 1];
+};
+const getSectionEndComment = (start: Comment) => {
+  let current = start.nextSibling;
+  while(current.nodeType !== 8 && (current as Comment).text !== "section-end") {
+    current = current.nextSibling;
+  }
+  return current;
+};
+
+
 const updateCSSOMMap = (oldMap: NativeObjectMap, newMap: CSSOMMap): NativeObjectMap => ({
   ...oldMap,
   cssom: {
@@ -588,14 +635,17 @@ const removeNativeChildNode = (child: SlimBaseNode, map: NativeObjectMap, update
     throw new Error(`VM node does not have an associative DOM element`);
   }
 
-  nativeChild.parentNode.removeChild(nativeChild);
 
   if ((child as SlimElement).tagName === "slot") {
     const slot = child as SlimElement;
     for (let i = slot.childNodes.length; i--;) {
       removeNativeChildNode(slot.childNodes[i], map, false);
     }
+    const end = getSectionEndComment(nativeChild as Comment);
+    end.parentNode.removeChild(end);
   }
+
+  nativeChild.parentNode.removeChild(nativeChild);
 
   if (updateMap) {
     map = deleteNestedChildNodes(child, map);
