@@ -386,6 +386,22 @@ describe(__filename + "#", () => {
                 <component0 g="g"></component0>
             </preview>
         </component>`
+      ],
+      [
+        `<component id="component0">
+            <template><i i="j"></i></template>
+            <preview name="main">
+                <component0></component0>
+            </preview>
+        </component>`,
+        `<component id="component0">
+            <template>
+                <i g="j" i="i" k="c" k="a"></i>
+            </template>
+            <preview name="main">
+                <component0 e="l" g="h" i="ik"></component0>
+            </preview>
+        </component>`
       ]
     ].forEach((variants) => {
       it(`can diff & patch ${variants.join(" -> ")}`, async () => {
@@ -396,7 +412,7 @@ describe(__filename + "#", () => {
     describe("components", () => {
       describe("fuzzy", () => {
         const tests = Array.from({ length: 100 * 10 }).map(() => {
-          return Array.from({ length: 2 }).map(() => generateRandomComponents(2, 4, 3, 3, 0, 0, 0))
+          return Array.from({ length: 2 }).map(() => generateRandomComponents(3, 4, 3, 3, 1, 0, 0))
         });
         
         tests.forEach((variants) => {

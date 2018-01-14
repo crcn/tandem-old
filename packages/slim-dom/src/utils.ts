@@ -224,7 +224,16 @@ export const stringifyStyleObject = weakMemo((styleObject: SlimCSSRule) => {
   }
 });
 
-export const getAttribute = (name: string, element: SlimElement) => element.attributes.find(attribute => attribute.name === name);
+export const getAttribute = (name: string, element: SlimElement) => {
+  const {attributes} = element;
+  for (let i = attributes.length; i--;) {
+    const attribute = attributes[i];
+    if (attribute.name === name) {
+      return attribute;
+    }
+  }
+  return null;
+}
 
 export const hasAttribute = (name: string, element: SlimElement) => {
   return getAttribute(name, element) != null;
@@ -587,6 +596,39 @@ export const setElementAttribute = (target: SlimElement, name: string, value: st
     ...target,
     attributes,
   };
+};
+
+export const setElementAttributeAt = (target: SlimElement, index: number, name: string, value) => {
+  let attributes: SlimElementAttribute[] = [...target.attributes];
+  attributes[index] = { name, value };
+  return {
+    ...target,
+    attributes
+  } as SlimElement;
+}
+
+export const removeElementAttributeAt = (target: SlimElement, index: number) => {
+  let attributes: SlimElementAttribute[] = [...target.attributes];
+  attributes.splice(index, 1);
+  return {
+    ...target,
+    attributes
+  } as SlimElement;
+};
+
+export const insertElementAttributeAt = (target: SlimElement, index: number, name: string, value: string) => {
+  let attributes: SlimElementAttribute[] = [...target.attributes];
+  attributes.splice(index, 0, { name, value });
+  return {
+    ...target,
+    attributes
+  } as SlimElement;
+}
+
+export const moveElementAttribute = (target: SlimElement, index: number, newIndex: number) => {
+  const { name, value } = target.attributes[index];
+  target = removeElementAttributeAt(target, index);
+  return insertElementAttributeAt(target, newIndex, name, value);
 };
 
 

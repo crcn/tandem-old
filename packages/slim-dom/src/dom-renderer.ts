@@ -1,7 +1,7 @@
 import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSAtRule, SlimCSSRule, Bounds, VMObject, SlimFontFace } from "./state";
 import { weakMemo, getVMObjectFromPath } from "./utils";
 import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
-import { SET_TEXT_NODE_VALUE, SET_ATTRIBUTE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY } from "./diff-patch";
+import { SET_TEXT_NODE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY } from "./diff-patch";
 
 export const renderDOM = (node: SlimBaseNode, mount: HTMLElement, options: RenderOptions = {}) => {
   let map: DOMNodeMap = {};
@@ -195,15 +195,15 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
         (target as Text).nodeValue = (mutation as SetValueMutation<any>).newValue;
         break;
       }
-      case SET_ATTRIBUTE_VALUE: {
-        const { name, newValue } = mutation as SetPropertyMutation<any>;
-        if (!newValue) {
-          (target as HTMLElement).removeAttribute(name);
-        } else {
-          (target as HTMLElement).setAttribute(name, newValue);
-        }
-        break;
-      }
+      // case SET_ATTRIBUTE_VALUE: {
+      //   const { name, newValue } = mutation as SetPropertyMutation<any>;
+      //   if (!newValue) {
+      //     (target as HTMLElement).removeAttribute(name);
+      //   } else {
+      //     (target as HTMLElement).setAttribute(name, newValue);
+      //   }
+      //   break;
+      // }
       case REMOVE_CHILD_NODE: {
         const { child, index } = mutation as RemoveChildMutation<any, any>;
         map = { ...map, [child]: undefined };

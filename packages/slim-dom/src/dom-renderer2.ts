@@ -1,8 +1,8 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSAtRule, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, SlimWindow, VMObjectSource, VMObject, SlimFontFace } from "./state";
-import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType, setCSSStyleProperty, removeCSSStyleProperty, getStyleValue, insertCSSStyleProperty, setElementAttribute } from "./utils";
+import { getAttributeValue, getVMObjectFromPath, compileScopedCSS, getSlot, getNodeSlotName, getSlotChildren, getSlotChildrenByName, getVMObjectPath, getVMObjectIdType, setCSSStyleProperty, removeCSSStyleProperty, getStyleValue, insertCSSStyleProperty, setElementAttribute, setElementAttributeAt, removeElementAttributeAt, insertElementAttributeAt, moveElementAttribute } from "./utils";
 import { DOMNodeMap, ComputedDOMInfo } from "./dom-renderer";
 import { Mutation, InsertChildMutation, RemoveChildMutation, SetPropertyMutation, SetValueMutation, MoveChildMutation } from "source-mutation";
-import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE_VALUE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2, CSS_DELETE_STYLE_PROPERTY, CSS_INSERT_STYLE_PROPERTY } from "./diff-patch";
+import { REMOVE_CHILD_NODE, INSERT_CHILD_NODE, CSS_AT_RULE_SET_PARAMS, CSS_DELETE_RULE, CSS_INSERT_RULE, CSS_MOVE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY, ATTACH_SHADOW, REMOVE_SHADOW, SET_ATTRIBUTE, REMOVE_ATTRIBUTE, INSERT_ATTRIBUTE, MOVE_CHILD_NODE, SET_TEXT_NODE_VALUE, patchNode2, CSS_DELETE_STYLE_PROPERTY, CSS_INSERT_STYLE_PROPERTY, MOVE_ATTRIBUTE } from "./diff-patch";
 import { weakMemo } from "./weak-memo";
 
 export type DOMMap = {
@@ -275,7 +275,6 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
   let slimTarget = getVMObjectFromPath(mutation.target, root);
   const ownerDocument = mount.ownerDocument;
 
-  // console.log(mutation.type);
 
   switch(mutation.type) {
     case SET_TEXT_NODE_VALUE: {
@@ -290,7 +289,10 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       map = removeNativeChildNode(child, map);
       break;
     }
-    case SET_ATTRIBUTE_VALUE: {
+
+    case REMOVE_ATTRIBUTE:
+    case INSERT_ATTRIBUTE:
+    case SET_ATTRIBUTE: {
       const { name, newValue, index } = mutation as SetPropertyMutation<any>;
       const slimElement = slimTarget as SlimElement;
       const nativeTarget = map.dom[slimTarget.id] as HTMLElement;
@@ -331,8 +333,10 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         }
 
       } else {
-        slimTarget = setElementAttribute(slimTarget as SlimElement, name, newValue, index);
+        slimTarget = mutation.type === SET_ATTRIBUTE ? setElementAttributeAt(slimTarget as SlimElement, index, name, newValue) : mutation.type === REMOVE_ATTRIBUTE ? removeElementAttributeAt(slimTarget as SlimElement, index) : mutation.type === INSERT_ATTRIBUTE ? insertElementAttributeAt(slimTarget as SlimElement, index, name, newValue) : slimTarget;
+
         const actualValue = getAttributeValue(name, slimTarget as SlimElement);
+        
         if (!actualValue) {
           nativeTarget.removeAttribute(name);
           delete nativeTarget.dataset[name.toLowerCase()];

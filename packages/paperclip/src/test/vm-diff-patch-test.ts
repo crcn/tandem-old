@@ -41,16 +41,16 @@ describe(__filename + "#", () => {
     ]],
     [`<a b />`, `<a c />`, [
       {
-        "type": "SET_ATTRIBUTE_VALUE",
+        "type": "REMOVE_ATTRIBUTE",
         "target": [0, "shadow", 0],
         "name": "b",
         "newValue": null,
-        "oldValue": undefined,
-        "oldName": undefined,
-        "index": undefined
+        "oldValue": null,
+        "oldName": null,
+        "index": 0
       },
       {
-        "type": "SET_ATTRIBUTE_VALUE",
+        "type": "INSERT_ATTRIBUTE",
         "target": [0, "shadow", 0],
         "name": "c",
         "newValue": true,
@@ -61,7 +61,7 @@ describe(__filename + "#", () => {
     ]],
     [`<a b="1" />`, `<a b="2" />`, [
       {
-        "type": "SET_ATTRIBUTE_VALUE",
+        "type": "SET_ATTRIBUTE",
         "target": [0, "shadow", 0],
         "name": "b",
         "newValue": "2",
@@ -72,7 +72,7 @@ describe(__filename + "#", () => {
     ]],
     [`<a b="1" />`, `<a b="2" />`, [
       {
-        "type": "SET_ATTRIBUTE_VALUE",
+        "type": "SET_ATTRIBUTE",
         "target": [0, "shadow", 0],
         "name": "b",
         "newValue": "2",

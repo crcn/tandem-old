@@ -1,7 +1,7 @@
 import { SlimBaseNode, SlimParentNode, SlimVMObjectType, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFragment, SlimStyleElement, SlimTextNode, VMObjectSource } from "./state";
 import { SetValueMutation, createSetValueMutation, diffArray, ARRAY_DELETE, ARRAY_DIFF, ARRAY_INSERT, ARRAY_UPDATE, createPropertyMutation, ArrayInsertMutation, ArrayDeleteMutation, ArrayMutation, ArrayUpdateMutation, Mutation, eachArrayValueMutation, createInsertChildMutation, createRemoveChildMutation, INSERT_CHILD_MUTATION, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, createMoveChildMutation, MoveChildMutation } from "source-mutation";
 import { compressRootNode, uncompressRootNode } from "./compression";
-import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, removeCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount, moveCSSStyleProperty, getAttributeValue, insertCSSStyleProperty } from "./utils";
+import { weakMemo, flattenObjects, getVMObjectPath, replaceNestedChild, setTextNodeValue, removeChildNodeAt, insertChildNode, setElementAttribute, moveChildNode, moveCSSRule, insertCSSRule, removeCSSRuleAt, setCSSSelectorText, setCSSStyleProperty, removeCSSStyleProperty, getVMObjectFromPath, setCSSAtRuleSetParams, setVMObjectIds, getDocumentChecksum, getRefCount, moveCSSStyleProperty, getAttributeValue, insertCSSStyleProperty, insertElementAttributeAt, removeElementAttributeAt, setElementAttributeAt, moveElementAttribute } from "./utils";
 import { isEqual } from "lodash";
 import crc32 = require("crc32");
 
@@ -15,7 +15,9 @@ export const REMOVE_CHILD_NODE = "REMOVE_CHILD_NODE";
 export const MOVE_CHILD_NODE   = "MOVE_CHILD_NODE";
 
 // elements
-export const SET_ATTRIBUTE_VALUE = "SET_ATTRIBUTE_VALUE";
+export const SET_ATTRIBUTE = "SET_ATTRIBUTE";
+export const REMOVE_ATTRIBUTE = "REMOVE_ATTRIBUTE";
+export const INSERT_ATTRIBUTE = "INSERT_ATTRIBUTE";
 export const ATTACH_SHADOW = "ATTACH_SHADOW";
 export const REMOVE_SHADOW = "REMOVE_SHADOW";
 export const MOVE_ATTRIBUTE = "MOVE_ATTRIBUTE";
@@ -69,16 +71,19 @@ const diffElement = (oldElement: SlimElement, newElement: SlimElement, path: any
     {
       insert({ index, value }) {
         diffs.push(
-          createPropertyMutation(SET_ATTRIBUTE_VALUE, path, value.name, value.value, null, null, index)
+          createPropertyMutation(INSERT_ATTRIBUTE, path, value.name, value.value, null, null, index)
         );
       },
       delete({ index, value }) {
-        diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, path, value.name, null));
+        diffs.push(createPropertyMutation(REMOVE_ATTRIBUTE, path, value.name, null, null, null, index));
       },
       update({ index, newValue, originalOldIndex, patchedOldIndex }) {
         const oldAttrValue = oldElement.attributes[originalOldIndex].value;
-        if (!isEqual(newValue.value, oldAttrValue) || index !== patchedOldIndex) {
-          diffs.push(createPropertyMutation(SET_ATTRIBUTE_VALUE, path, newValue.name, newValue.value, null, null, index));
+        if (index !== patchedOldIndex) {
+          diffs.push(createMoveChildMutation(MOVE_ATTRIBUTE, path, null, index, patchedOldIndex));
+        }
+        if (!isEqual(newValue.value, oldAttrValue)) {
+          diffs.push(createPropertyMutation(SET_ATTRIBUTE, path, newValue.name, newValue.value, null, null, index));
         }
       }
     }
@@ -357,9 +362,24 @@ export const patchNode2 = <TNode extends SlimParentNode>(mutation: Mutation<any>
       newTarget = setTextNodeValue(target as SlimTextNode, newValue);
       break;
     }
-    case SET_ATTRIBUTE_VALUE: {
+    case INSERT_ATTRIBUTE: {
       const { name, newValue, index } = mutation as SetPropertyMutation<any>;
-      newTarget = setElementAttribute(target as SlimElement, name, newValue, index);
+      newTarget = insertElementAttributeAt(target as SlimElement, index, name, newValue);
+      break;
+    }
+    case MOVE_ATTRIBUTE: {
+      const { index, oldIndex } = mutation as MoveChildMutation<any, any>;
+      newTarget = moveElementAttribute(newTarget as SlimElement, oldIndex, index);
+      break;
+    }
+    case REMOVE_ATTRIBUTE: {
+      const { name, newValue, index } = mutation as SetPropertyMutation<any>;
+      newTarget = removeElementAttributeAt(target as SlimElement, index);
+      break;
+    }
+    case SET_ATTRIBUTE: {
+      const { name, newValue, index } = mutation as SetPropertyMutation<any>;
+      newTarget = setElementAttributeAt(target as SlimElement, index, name, newValue);
       break;
     }
     case REMOVE_SHADOW: {
