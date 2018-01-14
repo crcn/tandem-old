@@ -58,7 +58,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">a <b></b> c</span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">a<b></b>c</span></test></body>`);
   });
 
   it(`can render a component with named slots`, async () => {
@@ -77,7 +77,7 @@ describe(__filename + "#", () => {
       `
     });
     renderDOM2(slimDoc, body as any);
-    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">a e<span slot="a">b</span><span slot="b">c</span><span slot="b">d</span></span></test></body>`);
+    expect(body.toString()).to.eql(`<body><test class="__test_scope_host"><span class="__test_scope">ae<span slot="a">b</span><span slot="b">c</span><span slot="b">d</span></span></test></body>`);
   });
 
   describe("diff/patch", () => {

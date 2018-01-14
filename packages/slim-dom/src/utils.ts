@@ -218,7 +218,8 @@ export const stringifyStyleObject = weakMemo((styleObject: SlimCSSRule) => {
       return `@${name} ${params.trim()} { ${rules.map(stringifyStyleObject)} }`
     }
     default: {
-      throw new Error(`Cannot stringify style rule type ${styleObject.type}.`);
+      console.error(`cannot stringify `, styleObject);
+      // throw new Error(`Cannot stringify style rule type ${styleObject.type}.`);
     }
   }
 });

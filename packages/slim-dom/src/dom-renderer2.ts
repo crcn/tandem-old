@@ -270,10 +270,10 @@ const deleteNestedChildNodes = (node: SlimBaseNode, map: NativeObjectMap) => {
 
 export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount: HTMLElement, map: NativeObjectMap): NativeObjectMap => {
 
-  console.log(mutation.type);
-
   let slimTarget = getVMObjectFromPath(mutation.target, root);
   const ownerDocument = mount.ownerDocument;
+  console.log(mutation.type);
+  console.log(mutation);
 
   switch(mutation.type) {
     case SET_TEXT_NODE_VALUE: {
@@ -285,7 +285,6 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const { index } = mutation as RemoveChildMutation<any, any>;
       const parent = slimTarget as SlimParentNode;
       const child = parent.childNodes[index];
-      console.log(child);
       map = removeNativeChildNode(child, map);
       break;
     }
@@ -341,7 +340,6 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
     }
     case INSERT_CHILD_NODE: {
       const { child, index } = mutation as InsertChildMutation<any, any>;
-      console.log(mutation);
       let insertIndex = index;
 
       let nativeOwner: Node;
@@ -357,6 +355,14 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         insertIndex = nativeSlotIndex + index + 1;
       } else {
         nativeOwner = map.dom[slimTarget.id];
+        const afterChild = (slimTarget as SlimParentNode).childNodes[Math.min((slimTarget as SlimParentNode).childNodes.length - 1, insertIndex - 1)];
+
+        if (afterChild) {
+          const afterNativeChild = map.dom[afterChild.id];
+        }
+
+        // console.log("AFTER", afterChild);
+        // insertIndex = afterChild ? Array.prototype.indexOf.call(nativeOwner.childNodes, map.dom[afterChild.id]) + 1 : insertIndex;
       }
 
       let domMap: DOMMap = {};

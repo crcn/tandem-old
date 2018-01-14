@@ -8,6 +8,7 @@ IMMEDIATE:
     - [ ] for components
     - [ ] for CSS
   - [ ] test scoped style parsing
+  - [ ] use virtual fragments for slots
 
 - [ ] testing
   - [ ] ensure that default slot children are removed on a patch

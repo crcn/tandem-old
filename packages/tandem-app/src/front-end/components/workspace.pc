@@ -307,7 +307,7 @@
           },
           { 
             name: "margin-top",
-            sourceValue: "10px",
+            sourceValue: "11px",
             value: {
               type: "MEASUREMENT",
               value: "10",
