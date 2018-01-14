@@ -1,4 +1,4 @@
-import { diffNode, VMObjectSource, SET_TEXT_NODE_VALUE, SlimVMObjectType, SET_ATTRIBUTE_VALUE } from "../";
+import { diffNode, VMObjectSource, SET_TEXT_NODE_VALUE, SlimVMObjectType, SET_ATTRIBUTE } from "../";
 import { SetValueMutation } from "source-mutation";
 import { expect } from "chai";
 
@@ -26,7 +26,7 @@ describe(__filename + "#", () => {
       {
         target: undefined,
         index: undefined,
-        type: SET_ATTRIBUTE_VALUE,
+        type: SET_ATTRIBUTE,
         name: "c",
         oldName: undefined,
         oldValue: undefined,
@@ -46,7 +46,7 @@ describe(__filename + "#", () => {
       {
         target: undefined,
         index: undefined,
-        type: SET_ATTRIBUTE_VALUE,
+        type: SET_ATTRIBUTE,
         name: "c",
         oldName: undefined,
         oldValue: undefined,

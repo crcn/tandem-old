@@ -274,9 +274,13 @@ const deleteNestedChildNodes = (node: SlimBaseNode, map: NativeObjectMap) => {
 
 export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount: HTMLElement, map: NativeObjectMap): NativeObjectMap => {
 
+
   let slimTarget = getVMObjectFromPath(mutation.target, root);
   const ownerDocument = mount.ownerDocument;
 
+  // console.log(mutation.type);
+  // console.log(slimTarget);
+  // console.log(mutation);
 
   switch(mutation.type) {
     case SET_TEXT_NODE_VALUE: {
@@ -397,7 +401,9 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
           const slotChildren = getSlotChildren(slot, host);
           const nativeParent = nativeOwner.parentNode;
           if (slotChildren.length === 0) {
-            const nativeSlotIndex  = Array.prototype.indexOf.call(nativeParent.childNodes, getSectionEndComment(nativeOwner as Comment));
+            const beforeChild = index < slot.childNodes.length ? slot.childNodes[index] : null;
+            const beforeNativeChild = beforeChild ? map.dom[beforeChild.id] : getSectionEndComment(nativeOwner as Comment);
+            const nativeSlotIndex  = Array.prototype.indexOf.call(nativeParent.childNodes, beforeNativeChild);
             insertNativeNode(nativeChild, nativeSlotIndex, nativeParent);
           } else {
           }
@@ -619,7 +625,7 @@ const getLastSectionChildNode = (start: Comment) => {
 };
 const getSectionEndComment = (start: Comment) => {
   let current = start.nextSibling;
-  while(current.nodeType !== 8 && (current as Comment).text !== "section-end") {
+  while((current as Comment).text !== "section-end") {
     if (current.nodeType === 8 && (current as Comment).text === "section-start") {
       current = getSectionEndComment(current as Comment);
     }

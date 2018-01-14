@@ -406,31 +406,43 @@ describe(__filename + "#", () => {
       [
         `<component id="component0">
             <template>
-                <l d="gh" c="b">
-                    <slot name="k0">lfci</slot>
-                </l>
+                <l></l>
                 <slot name="d1">
                     <slot name="d1"></slot>
                 </slot>
             </template>
             <preview name="main">
-                <component0 d="f" c="eh" c="b"></component0>
+                <component0></component0>
             </preview>
         </component>`,
         `<component id="component0">
             <template>
                 <slot name="l0"></slot>
-                <slot name="l0"><b d="k" b="kl" d="f" j="ce"><k f="f" c="e" b="a" i="kh"></k></b></slot>
-                <slot name="e1">l</slot>
-                <l e="b" g="ik" f="i" a="kl">lcf</l>
-                <slot name="e1">gileb</slot>
-                <d h="he" c="hl" k="k"></d>
-                <l i="gh" h="e" i="di"></l>
-                <slot name="l0"></slot>
+                <l>lcf</l>
             </template>
             <preview name="main">
-                <component0 i="h" h="gd"></component0>
+                <component0></component0>
             </preview>
+        </component>`
+      ],
+      [
+        `<component id="component0">
+          <template>
+            <slot name="a0">fch</slot>
+          </template>
+          <preview name="main">
+            <component0></component0>
+          </preview>
+        </component>`,
+        `<component id="component0">
+          <template>
+            <slot name="e0">
+              <slot name="e0"></slot>dbcf
+            </slot>
+          </template>
+          <preview name="main">
+            <component0></component0>
+          </preview>
         </component>`
       ]
     ].forEach((variants) => {
@@ -442,7 +454,7 @@ describe(__filename + "#", () => {
     describe("components", () => {
       describe("fuzzy", () => {
         const tests = Array.from({ length: 100 * 10 }).map(() => {
-          return Array.from({ length: 2 }).map(() => generateRandomComponents(3, 4, 3, 3, 1, 0, 0))
+          return Array.from({ length: 2 }).map(() => generateRandomComponents(3, 4, 4, 3, 3, 4, 4))
         });
         
         tests.forEach((variants) => {

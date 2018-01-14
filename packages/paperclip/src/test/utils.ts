@@ -472,7 +472,7 @@ export const generateRandomComponents = (maxComponents: number = 4, maxAttribute
     slotNames.slice(0, random(0, depth > maxNodeDepth ? 0 : slotNames.length)).map(slotName => {
       const tagName = generateRandomChar();
       `<${tagName} slot="${slotName}">` +
-        generateRandomElement(depth, unclaimedSlotName);
+        generateRandomElement(depth + 1, unclaimedSlotName);
       `</${tagName}>`
     }).join("") +
   `</${id}>` ;
