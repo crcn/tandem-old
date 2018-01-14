@@ -58,6 +58,7 @@ const stringifyStyleSheet = (sheet: SlimCSSRule) => {
 }
 
 abstract class FakeBaseNode {
+  readonly nodeType: number;
   public parentNode: FakeParentNode;
   readonly childNodes: FakeBaseNode[] = [];
   constructor(readonly ownerDocument: FakeDocument) {
@@ -77,9 +78,9 @@ class FakeParentNode extends FakeBaseNode {
     super(ownerDocument);
   }
   appendChild(child: FakeBaseNode) {
-    if (child instanceof FakeDocumentFragment) {
-      const childen = [...child.childNodes];
-      for (const subChild of childen)  {
+    if (child.nodeType === 11) {
+      const children = [...child.childNodes];
+      for (const subChild of children)  {
         this.appendChild(subChild);
       }
     } else {
@@ -99,6 +100,14 @@ class FakeParentNode extends FakeBaseNode {
     }
   }
   insertBefore(newChild: FakeBaseNode, refChild: FakeBaseNode) {
+    if (newChild.nodeType === 11) {
+      const children = [...newChild.childNodes];
+      for (let i = children.length; i--;) {
+        this.insertBefore(children[i], refChild);
+        refChild = children[i];
+      }
+      return;
+    }
     if (newChild.parentNode) {
       newChild.parentNode.removeChild(newChild);
     }

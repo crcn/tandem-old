@@ -63,10 +63,11 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
           
           for (let i = 0, {length} = slotChildNodes; i < length; i++) {
             const child = slotChildNodes[i];
-            slotElement.appendChild(createNativeNode(child, document, {
+            const nativeChild = createNativeNode(child, document, {
               ...context,
               host: getNodeHost(child, context.root as SlimParentNode)
-            }));
+            });
+            slotElement.appendChild(nativeChild);
           }
         }
 
@@ -76,6 +77,7 @@ const createNativeNode = (vmNode: VMObject, document: Document, context: CreateN
         }
 
         slotElement.appendChild(document.createComment("section-end"));
+
 
         return  slotElement;
       }
@@ -603,7 +605,8 @@ const updateNativeMap = (oldMap: NativeObjectMap, newMap: NativeObjectMap): Nati
 const getSectionChildNodes = (start: Comment) => {
   const children: Node[] = [];
   let current = start.nextSibling;
-  while(current.nodeType !== 8 && (current as Comment).text !== "section-end") {
+  const end = getSectionEndComment(start);
+  while(current !== end) {
     children.push(current);
     current = current.nextSibling;
   }
@@ -617,6 +620,9 @@ const getLastSectionChildNode = (start: Comment) => {
 const getSectionEndComment = (start: Comment) => {
   let current = start.nextSibling;
   while(current.nodeType !== 8 && (current as Comment).text !== "section-end") {
+    if (current.nodeType === 8 && (current as Comment).text === "section-start") {
+      current = getSectionEndComment(current as Comment);
+    }
     current = current.nextSibling;
   }
   return current;

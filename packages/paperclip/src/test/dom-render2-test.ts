@@ -402,6 +402,36 @@ describe(__filename + "#", () => {
                 <component0 e="l" g="h" i="ik"></component0>
             </preview>
         </component>`
+      ],
+      [
+        `<component id="component0">
+            <template>
+                <l d="gh" c="b">
+                    <slot name="k0">lfci</slot>
+                </l>
+                <slot name="d1">
+                    <slot name="d1"></slot>
+                </slot>
+            </template>
+            <preview name="main">
+                <component0 d="f" c="eh" c="b"></component0>
+            </preview>
+        </component>`,
+        `<component id="component0">
+            <template>
+                <slot name="l0"></slot>
+                <slot name="l0"><b d="k" b="kl" d="f" j="ce"><k f="f" c="e" b="a" i="kh"></k></b></slot>
+                <slot name="e1">l</slot>
+                <l e="b" g="ik" f="i" a="kl">lcf</l>
+                <slot name="e1">gileb</slot>
+                <d h="he" c="hl" k="k"></d>
+                <l i="gh" h="e" i="di"></l>
+                <slot name="l0"></slot>
+            </template>
+            <preview name="main">
+                <component0 i="h" h="gd"></component0>
+            </preview>
+        </component>`
       ]
     ].forEach((variants) => {
       it(`can diff & patch ${variants.join(" -> ")}`, async () => {
