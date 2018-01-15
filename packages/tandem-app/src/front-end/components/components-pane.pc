@@ -6,7 +6,6 @@
     :host {
       user-select: none;
       cursor: pointer;
-      overflow: hidden;
       box-sizing: border-box;
       position: relative;
       padding: var(--base6) var(--base8);
@@ -75,7 +74,6 @@
     :host {
       flex: 1;
       height: 100%;
-      overflow: hidden;
     }
 
     .header {

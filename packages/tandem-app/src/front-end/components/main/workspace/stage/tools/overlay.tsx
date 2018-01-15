@@ -145,4 +145,4 @@ export const  NodeOverlaysToolBase = ({ workspace, dispatch, zoom }: VisualTool
   </div>
 }
 
-export const  NodeOverlaysTool = pure( NodeOverlaysToolBase as any) as typeof  NodeOverlaysToolBase;
+export const  NodeOverlaysTool = pure(NodeOverlaysToolBase as any) as typeof  NodeOverlaysToolBase;
