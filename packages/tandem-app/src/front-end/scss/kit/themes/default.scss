@@ -40,26 +40,6 @@ $disabled-color: rgba(0,0,0,0.2);
   }
 }
 
-.gutter {
-  min-width: 250px;
-  & .popup {
-    background: #F9F9F9;
-    border: 1px solid $superlight-black;
-  }
-
-
-  background: #F9F9F9;
-  border-color: $superlight-black;
-
-  .header {
-    background: rgba(0,0,0,0.03);
-  }
-
-  hr {
-    height: 2px;
-    background: $superlight-black;
-  }
-}
 
 .table {
   .row {
@@ -102,24 +82,6 @@ $disabled-color: rgba(0,0,0,0.2);
   background: $sky-blue;
 }
 
-.selected {
-  &:not(.fill-text):not(.underline) {
-    background: $sky-blue;
-    color: $offset-white !important;
-
-    & * {
-      color: $offset-white !important;
-    }
-  }
-
-  &.fill-text {
-    color: $sky-blue;
-
-  }
-  &.underline {
-    border-bottom: 2px solid $sky-blue;
-  }
-}
 
 
 .hovering {

@@ -10,6 +10,7 @@
       width: 100%;
       padding: var(--base6) var(--base8);
       box-sizing: border-box;
+      
     }
     :host([selected]) {
       background: var(--background-highlight);
@@ -31,8 +32,10 @@
 <component id="td-artboards-pane">
   <style>
     .content {
-      max-height: 200px;
       overflow: scroll;
+    }
+    :host {
+      height: 200px;
     }
   </style>
   <template>

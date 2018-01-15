@@ -28,7 +28,7 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      overflow: scroll;
+      overflow: hidden;
       max-width: 300px;
     }
 

@@ -14,7 +14,6 @@
     .content {
       flex: 1;
       overflow: scroll;
-      height: 100%;
     }
 
     .content.padded {
@@ -28,6 +27,17 @@
       text-transform: uppercase;      
       padding: var(--base8) var(--base8);
       font-size: 0.9em;
+    }
+
+    :host([noheadingpadding]) .header {
+      padding: 0;
+    }
+
+    :host {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .header.sub {

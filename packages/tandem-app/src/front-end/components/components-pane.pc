@@ -64,6 +64,7 @@
   </template>
 </component>
 
+
 <component id="td-components-pane">
   <style>
     .content {
@@ -77,6 +78,7 @@
     }
 
     .header {
+      display: flex;
     }
 
     .controls {
@@ -88,14 +90,31 @@
       display: none;
     }
 
+    .tab { 
+      padding: var(--base8) var(--base8);
+      display: inline-block;
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .tab.selected {
+      background: var(--background-deep);
+    }
+
   </style>
   <template>
-    <td-pane>
-      <span slot="header">
-        Components
-        <input type="text"></input>
-        <span class="controls" onClick=[[bind onAddComponentClick]]>
-          +
+    <td-pane noHeadingPadding>
+      <span slot="header" class="header">
+        <span class="tab selected">
+          Native Elements
+        </span>
+        <span class="tab">
+          Components
+          <input type="text"></input>
+          <span class="controls" onClick=[[bind onAddComponentClick]]>
+            +
+          </span>
         </span>
       </span>
       <div slot="content" class="content">

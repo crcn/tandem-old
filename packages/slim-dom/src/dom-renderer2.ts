@@ -166,6 +166,7 @@ const insertChildRules = (slimRule: SlimCSSGroupingRule, nativeRule: CSSGrouping
 };
 
 const insertChildRule = (slimRule: SlimCSSRule, nativeRule: CSSGroupingRule|CSSStyleSheet|CSSKeyframesRule, context: InsertStyleSheetContext, index: number) => {
+  
 
   index = Math.min(index, nativeRule.cssRules.length);
 
@@ -205,6 +206,7 @@ const shallowStringifyRule = (rule: SlimCSSRule, context: InsertStyleSheetContex
   switch(rule.type) {
     case SlimVMObjectType.STYLE_RULE: {
       const { selectorText, style } = rule as SlimCSSStyleRule;
+      // console.log(stringifyScopedSelectorText(selectorText, context.scope));
       return `${stringifyScopedSelectorText(selectorText, context.scope)} { ${stringifyStyle(style)} }`;
     }
 
@@ -277,10 +279,6 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
 
   let slimTarget = getVMObjectFromPath(mutation.target, root);
   const ownerDocument = mount.ownerDocument;
-
-  // console.log(mutation.type);
-  // console.log(slimTarget);
-  // console.log(mutation);
 
   switch(mutation.type) {
     case SET_TEXT_NODE_VALUE: {
@@ -387,6 +385,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const mutationHost = getMutationHost(mutation, root) as SlimElement;
       
       if (child.type === SlimVMObjectType.ELEMENT && (child as SlimElement).tagName === "style") {
+        // console.log("INSERT LES CHILD", child);
         insertStyleSheet(child as SlimStyleElement, mount, {
           host: getNodeHost(child, root),
           map: { cssom: cssomMap, dom: domMap }
@@ -431,6 +430,11 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const beforeChild = parent.childNodes[index];
       let nativeChild = map.dom[slimChild.id];
       const nativeParent = nativeChild.parentNode;
+
+      // style sheets cannot be moved (for now) since they will not render if they're removed and re-added to the document. 
+      if ((slimChild as SlimElement).tagName === "style") {
+        break;
+      }
       
       if ((slimChild as SlimElement).tagName === "slot") {
         const start = nativeChild as Comment;

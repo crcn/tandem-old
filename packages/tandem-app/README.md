@@ -1,25 +1,7 @@
 IMMEDIATE:
 
-- [ ] FIX ALL OUTSTANDING BUGS.
-  - [ ] take tests from prev versions of Tandem for DOM renderer
-  - [ ] reduce latency for PC changes -> tandem 
-    - [ ] compile to JS
-    - [ ] scan for other components that use changed expression
-    - [ ] for components
-    - [ ] for CSS
-  - [ ] test scoped style parsing
-  - [ ] use virtual fragments for slots
-
-- [ ] testing
-  - [ ] ensure that default slot children are removed on a patch
-
-
-- [ ] SPEED
-  - [ ] compile ast to JS
-  - [ ] look into better diff/patch algorithms
-
-
 - [ ] native elements pane
+- [ ] cannot add hsot selector
 
 - [ ] Stage tools
   - [ ] DND native elements to artboard elements
