@@ -8,6 +8,8 @@
   </template>
   <preview name="main" width="600" height="400">
     <td-html-layers />
+    <svg>
+    </svg>
   </preview>
 </component>
 

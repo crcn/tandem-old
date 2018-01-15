@@ -1,5 +1,10 @@
 IMMEDIATE:
 
+- [ ] start with HIFI tools and convert into elements
+  - [ ] 
+
+- [ ] SVG rect tool
+  - [ ] convert SVG rect to element
 - [ ] native elements pane
 - [ ] cannot add hsot selector
 

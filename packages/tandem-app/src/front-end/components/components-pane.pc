@@ -106,10 +106,10 @@
   <template>
     <td-pane noHeadingPadding>
       <span slot="header" class="header">
-        <span class="tab selected">
+        <span class="tab [[bind nativeElementsTabSelected && "selected"]]">
           Native Elements
         </span>
-        <span class="tab">
+        <span class="tab [[bind nativeComponentsTabSelected && "selected"]]">
           Components
           <input type="text"></input>
           <span class="controls" onClick=[[bind onAddComponentClick]]>
@@ -118,16 +118,21 @@
         </span>
       </span>
       <div slot="content" class="content">
-        <td-list>
+        <td-list [[if nativeComponentsTabSelected]]>
           <td-list-item [[repeat components as component]] key=[[bind component.$id]] noPadding>
             <td-components-pane-cell [[bind component]] dispatch=[[bind dispatch]] />
+          </td-list-item>
+        </td-list>
+        <td-list [[elseif nativeElementsTabSelected]]>
+          <td-list-item [[repeat nativeElements as nativeElement]] key=[[bind nativeElement.$id]] noPadding>
+            <td-components-pane-cell [[bind nativeElement]] dispatch=[[bind dispatch]] />
           </td-list-item>
         </td-list>
       </div>
     </td-pane>
   </template>
   <preview name="main">
-    <td-components-pane dispatch onAddComponentClick components=[[bind [
+    <td-components-pane nativeElementsTabSelected=[[bind false]]nativeComponentsTabSelected=[[bind true]] dispatch onAddComponentClick components=[[bind [
           { 
             $id: null,
             onDragStart: null,
@@ -184,6 +189,13 @@
           { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
           { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null }
-        ]]] />
+        ]]]
+        
+        nativeElements=[[bind [
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null },
+          { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null }
+        ]]]
+         />
   </preview>
 </component>
