@@ -19,10 +19,10 @@ export type NativeObjectMap = {
 }
 
 export const renderDOM2 = (object: VMObject, root: HTMLElement): NativeObjectMap => {
-  const domMap: DOMMap = {};
+  const domMap: DOMMap = { [object.id]: root };
   const cssomMap: CSSOMMap = {};
-  root.appendChild(createNativeNode(object, root.ownerDocument, { map: domMap, root: object as SlimParentNode }));
   insertStyleSheets(object as SlimParentNode, root, { map: { dom: domMap, cssom: cssomMap } });
+  root.appendChild(createNativeNode(object, root.ownerDocument, { map: domMap, root: object as SlimParentNode }));
   return { dom: domMap, cssom: cssomMap };
 };
 
@@ -376,6 +376,8 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         } else {
           insertIndex = nativeOwner.childNodes.length;
         }
+
+        console.log(insertIndex);
       }
 
       let domMap: DOMMap = {};
@@ -386,7 +388,7 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         insertStyleSheet(child as SlimStyleElement, mount, {
           host: getNodeHost(child, root),
           map: { cssom: cssomMap, dom: domMap }
-        });
+        }, insertIndex);
 
       } else {
         const nativeChild = createNativeNode(child, ownerDocument, {  

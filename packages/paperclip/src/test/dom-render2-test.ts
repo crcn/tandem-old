@@ -444,6 +444,74 @@ describe(__filename + "#", () => {
             <component0></component0>
           </preview>
         </component>`
+      ],
+      [
+        `<component id="component0">
+            <template></template>
+            <preview name="main">
+                <component0></component0>
+            </preview>
+        </component>`,
+        `<component id="component0">
+            <style>
+                .container {
+                  color: red;
+                }
+            </style>
+            <template></template>
+            <preview name="main">
+                <component0></component0>
+            </preview>
+        </component>`
+      ],
+      [
+        `
+        <component id="component1">
+            <style>
+                @media k {
+                   
+                }
+                
+            </style>
+            <template>
+                <component0></component0>
+            </template>
+            <preview name="main">
+                <component1></component1>
+            </preview>
+        </component>`,
+        `<component id="component0">
+            <style>
+                @media g {
+                    .k {
+                        b: kh;
+                        a: eb;
+                        g: ki;
+                    }
+                }
+            </style>
+            <template>
+                <c></c>
+            </template>
+            <preview name="main">
+                <component0></component0>
+            </preview>
+        </component>
+        <component id="component1">
+            <style>
+                @media e {
+                    .l {
+                        d: fk;
+                    }
+                }
+            </style>
+            <template>
+                <component0></component0>
+            </template>
+            <preview name="main">
+                <component1></component1>
+            </preview>
+        </component>`
       ]
     ].forEach((variants) => {
       it(`can diff & patch ${variants.join(" -> ")}`, async () => {
@@ -453,8 +521,8 @@ describe(__filename + "#", () => {
 
     describe("components", () => {
       describe("fuzzy", () => {
-        const tests = Array.from({ length: 100 * 10 }).map(() => {
-          return Array.from({ length: 2 }).map(() => generateRandomComponents(3, 4, 4, 3, 3, 4, 4))
+        const tests = Array.from({ length: 100 }).map(() => {
+          return Array.from({ length: 2 }).map(() => generateRandomComponents(4, 4, 4, 4, 4, 4, 4))
         });
         
         tests.forEach((variants) => {
