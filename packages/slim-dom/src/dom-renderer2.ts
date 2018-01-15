@@ -376,8 +376,6 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
         } else {
           insertIndex = nativeOwner.childNodes.length;
         }
-
-        console.log(insertIndex);
       }
 
       let domMap: DOMMap = {};

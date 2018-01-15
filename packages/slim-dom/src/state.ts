@@ -5,7 +5,6 @@ export enum SlimVMObjectType {
   DOCUMENT_FRAGMENT,
   STYLE_SHEET,
   STYLE_RULE,
-  STYLE,
   AT_RULE,
   FONT_FACE_RULE
 };

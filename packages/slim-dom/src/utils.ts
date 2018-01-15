@@ -1,4 +1,4 @@
-import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute, SlimWindow } from "./state";
+import { SlimParentNode, SlimBaseNode, SlimVMObjectType, SlimElement, SlimTextNode, VMObject, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSGroupingRule, SlimCSSAtRule, SlimCSSRule, SlimCSSStyleSheet, VMObjectSource, SlimStyleElement, SlimElementAttribute, SlimWindow, SlimFontFace } from "./state";
 import { querySelector, elementMatches } from "./query-selector";
 import { createMediaMatcher } from "./media-match";
 import { uniq, flatten, kebabCase, camelCase, padStart } from "lodash";
@@ -216,6 +216,10 @@ export const stringifyStyleObject = weakMemo((styleObject: SlimCSSRule) => {
     case SlimVMObjectType.AT_RULE: {
       const {name, params, rules} = styleObject as SlimCSSAtRule;
       return `@${name} ${params.trim()} { ${rules.map(stringifyStyleObject)} }`
+    }
+    case SlimVMObjectType.FONT_FACE_RULE: {
+      const {style} = styleObject as SlimFontFace;
+      return `@font-face { ${stringifyStyle(style)} }`
     }
     default: {
       console.error(`cannot stringify `, styleObject);
