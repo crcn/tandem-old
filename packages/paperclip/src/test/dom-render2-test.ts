@@ -512,6 +512,50 @@ describe(__filename + "#", () => {
                 <component1></component1>
             </preview>
         </component>`
+      ],
+      [
+        `
+          <component id="test1">
+            <template>
+              <div class="a"></div>
+            </template>
+            <preview name="main"> 
+              <test1 />
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test1">
+            <template>
+              <div class="b"></div>
+            </template>
+            <preview name="main"> 
+              <test1 />
+            </preview>
+          </component>
+        `
+      ],
+      [
+        `
+          <component id="test1">
+            <template>
+              <span class="a"></div>
+            </template>
+            <preview name="main"> 
+              <test1 />
+            </preview>
+          </component>
+        `,
+        `
+          <component id="test1">
+            <template>
+              <div class="b"></div>
+            </template>
+            <preview name="main"> 
+              <test1 />
+            </preview>
+          </component>
+        `
       ]
     ].forEach((variants) => {
       it(`can diff & patch ${variants.join(" -> ")}`, async () => {

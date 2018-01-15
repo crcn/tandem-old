@@ -302,12 +302,12 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       const { name, newValue, index } = mutation as SetPropertyMutation<any>;
       const slimElement = slimTarget as SlimElement;
       const nativeTarget = map.dom[slimTarget.id] as HTMLElement;
+      const host = getMutationHost(mutation, root);
 
       if (slimElement.tagName === "slot") {
         if (name === "name") {
           // TODO - get host
           // TODO - insert children
-          const host = getMutationHost(mutation, root);
           const oldSlotChildren = getSlotChildren(slimElement, host);
 
           for (let i = oldSlotChildren.length; i--;) {
@@ -341,7 +341,11 @@ export const patchDOM2 = (mutation: Mutation<any[]>, root: SlimParentNode, mount
       } else {
         slimTarget = mutation.type === SET_ATTRIBUTE ? setElementAttributeAt(slimTarget as SlimElement, index, name, newValue) : mutation.type === REMOVE_ATTRIBUTE ? removeElementAttributeAt(slimTarget as SlimElement, index) : mutation.type === INSERT_ATTRIBUTE ? insertElementAttributeAt(slimTarget as SlimElement, index, name, newValue) : slimTarget;
 
-        const actualValue = getAttributeValue(name, slimTarget as SlimElement);
+        let actualValue = getAttributeValue(name, slimTarget as SlimElement);
+        
+        if (name === "class") {
+          actualValue = actualValue + " " + getElementScopeTagName(host);
+        }
         
         if (!actualValue) {
           nativeTarget.removeAttribute(name);
