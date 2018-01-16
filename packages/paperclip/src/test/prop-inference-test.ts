@@ -281,12 +281,12 @@ describe(__filename + "#", () => {
       type: InferenceType.OBJECT_OR_ARRAY, 
       properties: { 
         c: { 
-          type: InferenceType.STRING, 
+          type: InferenceType.PRIMITIVE, 
           
           properties: { }
         },
         d: { 
-          type: InferenceType.STRING, 
+          type: InferenceType.PRIMITIVE, 
           
           properties: { }
         }

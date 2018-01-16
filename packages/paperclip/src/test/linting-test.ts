@@ -899,6 +899,49 @@ describe(__filename + "#", () => {
           "filePath": "entry.pc"
         }
       ]
+    ],
+    [
+      {
+        "entry.pc": `
+        <component id="td-components-pane">
+        <template>
+          <td-pane noHeadingPadding>
+            <span slot="header" class="header">
+              <span class="tab [[bind nativeElementsTabSelected && "selected"]]">
+                Native Elements
+              </span>
+              <span class="tab [[bind nativeComponentsTabSelected && "selected"]]">
+                Components
+                <input type="text"></input>
+                <span class="controls" onClick=[[bind onAddComponentClick]]>
+                  +
+                </span>
+              </span>
+            </span>
+            <div slot="content" class="content">
+              <td-list [[if nativeComponentsTabSelected]]>
+                <td-list-item [[repeat components as component]]>
+                </td-list-item>
+              </td-list>
+              <td-list [[elseif nativeElementsTabSelected]]>
+                <td-list-item [[repeat nativeElements as nativeElement]]>
+                  
+                </td-list-item>
+              </td-list>
+            </div>
+          </td-pane>
+        </template>
+        <preview name="main">
+          <td-components-pane nativeElementsTabSelected=[[bind false]] nativeComponentsTabSelected=[[bind true]] dispatch onAddComponentClick components=[[bind []]] nativeElements=[[bind [
+                { label: "li", $id: null, onDragStart: null, onDragEnd: null, onClick: null }
+              ]]]
+               />
+        </preview>
+      </component>
+        `
+      },
+      [
+      ]
     ]
   ].forEach(([sources, inferResult]: any) => {
     it(`can lint ${sources["entry.pc"]}`, async () => {

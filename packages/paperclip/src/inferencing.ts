@@ -144,7 +144,7 @@ const inferAttributeValue = (startTag: PCStartTag, value: PCExpression, context:
     case PCExpressionType.STRING_BLOCK: {
       const block = value as PCStringBlock;
       for (let i = 0, {length} = block.values; i < length; i++) {
-        context = inferAttributeValue(startTag, block.values[i], setTypeLimit(InferenceType.STRING, null, context));
+        context = inferAttributeValue(startTag, block.values[i], setTypeLimit(InferenceType.PRIMITIVE, null, context));
       }
       return context;
     }
@@ -186,7 +186,7 @@ const inferElement = (element: PCElement|PCSelfClosingElement, context: InferCon
   }
 
   if (_repeat) {
-    context = inferExprType(_repeat, context);
+    context = inferExprType(_repeat, setTypeLimit(InferenceType.ANY, null, context));
     context = setContextScope(_repeat.asValue.name, isReference(_repeat.each) ? [...getReferenceKeyPath(_repeat.each), EACH_KEY] : [EAT_KEY], context);
   }
 
