@@ -163,7 +163,7 @@
             label: "component 2"
           }
         ]]] />
-        <td-components-pane onAddComponentClick dispatch components=[[bind [
+        <td-components-pane onAddComponentClick nativeComponentsTabSelected dispatch components=[[bind [
           { 
             $id: null,
             onDragStart: null,

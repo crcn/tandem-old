@@ -78,7 +78,7 @@ const enhanceComponentsPane = compose<TdComponentsPaneInnerProps, ComponentsPane
       selected: workspace.selectionRefs.find((ref) => ref[1] === component.tagName)
     })).sort((a, b) => a.tagName > b.tagName ? 1 : -1);
 
-    return <Base components={components} dispatch={dispatch} onAddComponentClick={onAddComponentClick} />;
+    return <Base components={components} dispatch={dispatch} onAddComponentClick={onAddComponentClick} nativeComponentsTabSelected={true} nativeElementsTabSelected={false} nativeElements={[]} />;
   }
 );
 
@@ -86,5 +86,7 @@ const ComponentsPaneCell = hydrateTdComponentsPaneCell(enhanceComponentsPaneCell
 
 export const ComponentsPane = hydrateTdComponentsPane(enhanceComponentsPane, {
   TdPane: Pane,
+  TdList: null,
+  TdListItem: null,
   TdComponentsPaneCell: ComponentsPaneCell
 });
