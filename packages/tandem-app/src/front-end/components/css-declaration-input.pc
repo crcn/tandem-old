@@ -1,5 +1,4 @@
 <link rel="import" href="./global.pc" />
-<link rel="import" href="./pane.pc" />
 <link rel="import" href="./gutter.pc" />
 <link rel="import" href="./tooltip.pc" />
 <link rel="import" href="./color-picker.pc" />

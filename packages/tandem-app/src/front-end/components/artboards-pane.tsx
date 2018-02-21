@@ -50,7 +50,6 @@ export const ArtboardsPane = hydrateTdArtboardsPane(
   {
     TdListItem: null,
     TdArtboardsPaneRow: ArtboardsPaneRow,
-    TdList: null,
-    TdPane: null
+    TdList: null
   }
 );

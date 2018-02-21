@@ -421,7 +421,6 @@ const enhanceCSSInspectorPane = compose<TdCssInspectorPaneInnerProps, CSSInspect
 );
 
 export const CSSInpectorPane = hydrateTdCssInspectorPane(enhanceCSSInspectorPane, {
-  TdPane: Pane,
   TdStyleRule: CSSStyleRule,
   TdDropdownButton: DropdownButton
 });

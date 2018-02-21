@@ -14,8 +14,8 @@ module.exports = {
     filename: 'entry.bundle.js'
   },
   devServer: {
-    hot: false,
-    inline: false
+    hot: true,
+    inline: true
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],

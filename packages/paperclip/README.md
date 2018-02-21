@@ -48,6 +48,10 @@ paperclip.bundleVanilla("component.pc", {
 
 #### HIGH PRIO TODOS
 
+- [ ] xmlns namespace for importing files
+- [ ] link imports should be from root directory (like package imports)
+- [ ] <artboard /> instead of preview
+- [ ] special interpreter code for tandem app specific features - possibly in renderer
 - [ ] Linting
   - Warning for unknown tag names
 - [ ] i18n error messages - used also as codes. Used in Tandem as well to help user fix issues.

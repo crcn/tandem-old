@@ -85,7 +85,6 @@ const enhanceComponentsPane = compose<TdComponentsPaneInnerProps, ComponentsPane
 const ComponentsPaneCell = hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {});
 
 export const ComponentsPane = hydrateTdComponentsPane(enhanceComponentsPane, {
-  TdPane: Pane,
   TdList: null,
   TdListItem: null,
   TdComponentsPaneCell: ComponentsPaneCell

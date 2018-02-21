@@ -1,5 +1,4 @@
 <link rel="import" href="./global.pc" />
-<link rel="import" href="./pane.pc" />
 
 <component id="td-components-pane-cell"> 
   <style>

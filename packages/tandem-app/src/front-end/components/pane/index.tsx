@@ -1,27 +1,23 @@
 import "./index.scss";
 import * as React from "react";
+import * as cx from "classnames";
 import { pure, compose } from "recompose";
-import { Component } from "front-end/components/types";
-const cx = require("classnames");
 
-// TODOS
-// collapsible
-const enhancePane = pure;
-
-export type PaneProps = {
-  title: any;
-  controls?: any;
-  children: any;
+export type TOuterPaneProps = {
+  title: string;
   className?: string;
-}
+  children: any;
+};
 
-export const PaneBase = ({ title, controls, children, className }: PaneProps) => <div className={cx("m-pane", className)}>
-  <div className="header">
-    { title } <span className="controls">{ controls }</span>
-  </div>
-  <div className="body">
-    { children }
-  </div>
-</div>;
-
-export const Pane = enhancePane(PaneBase);
+export const Pane = compose<TOuterPaneProps, TOuterPaneProps>(
+  pure
+)(({title, children, className}) => {
+  return <div className={cx({ "m-pane": true }, className)}>
+    <div className="header">
+      {title}
+    </div>
+    <div className="content">
+      {children}
+    </div>
+  </div>;
+});

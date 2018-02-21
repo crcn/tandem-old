@@ -81,28 +81,28 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
     let allEntries = [];
 
     let childPropTypes: string = "{\n";
+    const usedAttributes: any = {};
+    let addedBind = false;
     
     for (const element of componentElements) {
       const attrs = getElementAttributes(element);
       for (const attr of attrs) {
-        if (attr.name === "key") {
+        if (attr.name === "key" || usedAttributes[attr.name]) {
           continue;
         }
+        usedAttributes[attr.name] = true;
 
         // TODO - get inference types based on value
         childPropTypes += `${ATTRIBUTE_MAP[attr.name] || attr.name}: any;\n`
       }
 
-      if (getPCElementModifier(element, BKExpressionType.BIND)) {
+      if (!addedBind && getPCElementModifier(element, BKExpressionType.BIND)) {
+        addedBind = true;
         childPropTypes += "[identifier: string]: any;\n";
       }
     }
 
     childPropTypes += "}";
-
-    // const childTable = setSymbolTableEntries(allEntries, symbolTable());
-
-    // const childPropTypes = transpileInferredProps(childTable.context);
 
     const childTypeName = `${className}Child${childComponentInfo.propTypesName}`;
 
@@ -110,7 +110,6 @@ const transpileComponentTypedInformation = ({ className, component, propTypesNam
 
     content += `type ${childTypeName} = ${childPropTypes};\n\n`;
     childComponentInfo.propTypesName;
-    // content += `  ${childComponentInfo.className}: React.StatelessComponent<${refPath}> | React.ComponentClass<${refPath}>;\n`
   }
 
   const childComponentGettersTypeName = `${className}ChildComponentClasses`;

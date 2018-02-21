@@ -10,4 +10,8 @@
     }
     background: $color-grey-10;
   }
+
+  > .content {
+    padding: $padding-base * 4 $padding-base * 8;
+  }
 }

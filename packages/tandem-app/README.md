@@ -1,4 +1,30 @@
+WORKFLOW OBJECTIVE:
+
+- [ ] ***HiFi mockups with sketch UX
+- [ ] convert parts of the app into components
+- [ ] dnd components to stage
+- [ ] do have alignment on dev organization -- folder structure, type safety, etc.
+
 IMMEDIATE:
+
+- [ ] Paperclip files must not be global - use xmlns (do research first)
+- [ ] rectangle tool
+- [ ] Electron desktop
+- [ ] folder component
+- [ ] artboard tool
+- [ ] Copy Sketch UX**
+- [ ] text tool
+- [ ] bundle button should automatically launch preview (would require developer to hook this up)
+- [ ] need to figure out way to organize components in folder.
+- [ ] artboards as part of data model.
+- [ ] context menu
+  - [ ] create into component
+  - [ ] repeat
+  - [ ] make dynamic block
+- [ ] focus on just stage tools (absolute position). Components should be authorable without panes.
+- [ ] CSS grid
+- [ ] styles should be added to the currently selected canvas
+- [ ] separate interpreter for language specific features (artboards, locked layers)
 
 - [ ] start with HIFI tools and convert into elements
   - [ ] 

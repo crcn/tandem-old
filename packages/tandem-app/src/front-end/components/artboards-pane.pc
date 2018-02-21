@@ -1,5 +1,4 @@
 <link rel="import" href="./global.pc" />
-<link rel="import" href="./pane.pc" />
 <link rel="import" href="./td-spinner.pc" />
 
 <component id="td-artboards-pane-row">
