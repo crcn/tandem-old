@@ -3,6 +3,9 @@
 - LDE must keep abstractions to a minimum.
 - LDE must be unopinionated to increase designer Flow (less designer frustration), and reduce likelyhood of designer creating a hack, or work-around.
 - LDE must have traits that are translatable (from Sketch, or to some other app).
+- LDE must contain safety measures to ensure that the designer doesn't produce bugs.
+	- Components shouldn't compile if they're misused (will happen when UIs are updated).
+	
 
 #### LDE data model traits
 
@@ -26,7 +29,7 @@ Everyone will have their own workflow that works, but the idea around this is in
 
 #### Adopted IDE traits
 
-Designers will become developers, and so an LDEs tooling should adopt traits similar to an IDE's. Error highlighting may be used to show the user where a component is being misused -- a problem that will definitely come up when refactoring components. A file navigator may be used to display assets & components in a project _as_ they're represented in the file system (going on the no-abstraction philosophy). The file navigator would allow designers to organize components however they want. 
+Designers will become developers, and so an LDEs tooling should adopt traits similar to an IDE's. Error highlighting may be used to show the user where a component is being misused -- a problem that will definitely come up when refactoring components. A file navigator may be used to display assets & components in a project _as_ they're represented in the file system (going on the no-abstraction philosophy). The file navigator would allow designers to organize components however they want. Another consideration would be to have a built-in text editor for source code that would enable designers & developers to use the same environment for building UIs. However, including a text editor with full IDE capabilities would almost be unrealistic -- a _better_ option would be to introduce LDE tooling into existing IDEs. 
 
 #### Desktop
 
