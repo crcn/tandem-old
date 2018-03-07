@@ -1,0 +1,12 @@
+.m-panel {
+  &.headerless {
+    border-top: 1px solid red;
+  }
+  > .header {
+    background: red;
+    padding: 4px;
+  }
+  > .content {
+
+  }
+}

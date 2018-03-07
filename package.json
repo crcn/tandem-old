@@ -27,5 +27,8 @@
     "typescript": "2.4.1",
     "yargs": "^8.0.1",
     "yarn": "^0.24.5"
+  },
+  "dependencies": {
+    "@storybook/cli": "^3.3.14"
   }
 }

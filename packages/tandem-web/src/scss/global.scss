@@ -1,0 +1,9 @@
+:root {
+  --font-family: Helvetica;
+}
+
+html, body {
+  font-family: var(--font-family);
+  padding: 0px;
+  margin: 0px;
+}
