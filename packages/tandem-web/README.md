@@ -31,6 +31,8 @@ TODOS:
     - [ ] measurement
     - [ ] grid (zoomed in)
     - [ ] resizer
+  - [ ] atoms
+    - [ ] measurement input
 
 
 
