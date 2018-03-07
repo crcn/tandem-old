@@ -12,3 +12,11 @@ html, body {
   margin: 0px;
   font-size: var(--font-size-rg);
 }
+
+input {
+  border: 0;
+  box-shadow: inset 0px 0px 0px 1px red;
+  &:focus {
+    outline: none;
+  }
+}

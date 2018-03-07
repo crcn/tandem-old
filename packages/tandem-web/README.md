@@ -18,6 +18,7 @@ TODOS:
     - [ ] file navigator
     - [ ] open files   
       - [ ] show selectable objects (components, styles )
+    - [ ] Layers (part of open files?)
   - [ ] toolbar
     - [ ] artboard tool
     - [ ] text tool

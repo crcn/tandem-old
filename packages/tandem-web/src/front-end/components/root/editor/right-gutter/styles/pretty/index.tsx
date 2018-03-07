@@ -1,6 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { PaneComponent } from "front-end/components/pane";
+import { CSSInputComponent } from "front-end/components/inputs/css-property";
 
 /* 
 
@@ -15,7 +16,7 @@ const BasePrettyStylesComponent = () => <div className="m-pretty-styles">
     INHERITED SELECTOS
   </div>
   <PaneComponent header="Layout" secondary>
-    x, y, width, height
+    x <CSSInputComponent value="100" />
   </PaneComponent>
   <PaneComponent header="Backgrounds" secondary>
     color, images
