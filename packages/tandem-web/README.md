@@ -33,7 +33,13 @@ TODOS:
     - [ ] resizer
   - [ ] atoms
     - [ ] measurement input
+      - [ ] scrollable
 
+
+QUESTIONS:
+
+- [ ] possible to make pretty style pane similar to inspector? Could be _all_ styles combined. Quick shortcuts for things like background, typography, shadows. 
+  - [ ] needs to be visually present
 
 
 - [ ] core

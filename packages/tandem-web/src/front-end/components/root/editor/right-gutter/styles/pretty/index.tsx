@@ -4,7 +4,9 @@ import { PaneComponent } from "front-end/components/pane";
 
 /* 
 
-TODOS: 
+COMPONENT GOAL:
+
+Display only immediate components that help user create HiFi design. 
 
 */
 
@@ -13,7 +15,7 @@ const BasePrettyStylesComponent = () => <div className="m-pretty-styles">
     INHERITED SELECTOS
   </div>
   <PaneComponent header="Layout" secondary>
-    x, y, width, height, padding, margin, display, position
+    x, y, width, height
   </PaneComponent>
   <PaneComponent header="Backgrounds" secondary>
     color, images
