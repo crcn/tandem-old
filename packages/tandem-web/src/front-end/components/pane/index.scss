@@ -1,0 +1,20 @@
+.m-panel {
+  &.headerless {
+    border-top: 2px solid var(--background-2);
+  }
+  > .header {
+    background: var(--background-2);
+    padding: 4px;
+  }
+
+  &.secondary {
+    > .header {
+      background: transparent;
+      border-bottom: 2px solid var(--background-2);
+    }
+  }
+
+  > .content {
+
+  }
+}

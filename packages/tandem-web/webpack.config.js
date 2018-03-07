@@ -1,6 +1,6 @@
 const {resolve} = require('path');
 const {merge} = require('lodash');
-const webpack   = require('webpack');
+const webpack = require('webpack');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
