@@ -6,6 +6,10 @@
   --background-3: #CFCFCF;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   font-family: var(--font-family);
   padding: 0px;
