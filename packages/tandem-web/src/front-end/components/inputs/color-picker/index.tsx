@@ -5,47 +5,104 @@ TODO:
 - [ ] draggable hue picker
 - [ ] hex view
 - [ ] rgba view
-- [ ] swaps - make them selectable
+- [ ] swaps - make them selectable (like figma)
 
 */
 
 import "./index.scss"
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { compose, pure, lifecycle, withState, withPropsOnChange } from "recompose";
+import { compose, pure, lifecycle, withState, withPropsOnChange, withHandlers } from "recompose";
+import { DraggableComponent } from "front-end/components/draggable";
 
 export type ColorPickerComponentOuterProps = {
   value: string;
   swaps?: string[];
 };
 
+type Position = {
+  left: number;
+  top: number;
+};
 
 export type ColorPickerComponentInnerProps = {
   rgba: [number, number, number, number];
+  hslKnobPosition: Position;
+  spectrumKnobPosition: number;
+  opacityKnobPosition: number;
+  onHslKnobDrag: () => any;
+  onSpectrumKnobDrag: () => any;
+  onOpacityKnobDrag: () => any;
+  setHslKnobPosition: (pos: Position) => any;
+  setSpectrumKnobPosition: (pos: Position) => any;
+  setOpacityKnobPosition: (pos: Position) => any;
 } & ColorPickerComponentOuterProps;
 
 const SPECTRUM_HEIGHT = 30;
 
-const BaseColorPickerComponent = () => <div className="m-color-picker">
-  <div className="hsl">
-    <canvas ref="hsl" />
-  </div>
-  <div className="spectrum">
-    <canvas ref="spectrum" />
-  </div>
-  <div className="opacity">
-    <canvas ref="opacity" />
-  </div>
+const BaseColorPickerComponent = ({onHslKnobDrag, onSpectrumKnobDrag,onOpacityKnobDrag, hslKnobPosition, spectrumKnobPosition, opacityKnobPosition}: ColorPickerComponentInnerProps) => <div className="m-color-picker">
+  <DraggableComponent onDrag={onHslKnobDrag}>
+    <div className="hsl palette">
+        <canvas ref="hsl" />
+      <div className="knob" style={{ left: `${hslKnobPosition.left}%`, top: `${hslKnobPosition.top}%`}}  />
+    </div>
+  </DraggableComponent>
+  <DraggableComponent onDrag={onSpectrumKnobDrag}>
+    <div className="spectrum palette">
+      <canvas ref="spectrum" />
+        <div className="knob" style={{ left: `${spectrumKnobPosition}%` }} />
+    </div>
+  </DraggableComponent>
+  <DraggableComponent onDrag={onOpacityKnobDrag}>
+    <div className="opacity palette">
+      <canvas ref="opacity" />
+        <div className="knob" style={{ left: `${opacityKnobPosition}%` }} />
+    </div>
+  </DraggableComponent>
 </div>;
 
 const enhance = compose<ColorPickerComponentInnerProps, ColorPickerComponentOuterProps>(
   pure,
-  withPropsOnChange(['value'], ({ value }: ColorPickerComponentOuterProps) => ({
+  withPropsOnChange(["value"], ({ value }: ColorPickerComponentOuterProps) => ({
     rgba: parseRGBA(value)
   })),
+  withState("hslKnobPosition", "setHslKnobPosition", { left: 0, top: 0 }),
+  withState("spectrumKnobPosition", "setSpectrumKnobPosition", 0),
+  withState("opacityKnobPosition", "setOpacityKnobPosition", 0),
+  withHandlers({
+    onHslKnobDrag: ({ setHslKnobPosition }) => ({ px, py, width
+    , height }) => {
+      const ax = Math.round(width * px);
+      const ay = Math.round(height * py);
+      setHslKnobPosition({ left: px * 100, top: py * 100 });
+      const context = (this.refs.hsl as HTMLCanvasElement).getContext("2d");
+
+      const hsl = rgbToHsl(context.getImageData(ax, ay, 1, 1).data as any);
+
+      console.log(hsl);
+      /*
+
+      const p = canvas.getImageData(Math.min(point.left, this.hslPicker.width - 1), point.top, 1, 1).data;
+          const hsl = rgbToHsl(...p);
+          return {
+            ...state,
+            ...updateColor(rgbToHex(hslToRgb(hue, hsl[1], hsl[2])), state),
+            dropperPoint: point,
+            hue,
+            dragging: true
+          }*/
+
+
+    },
+    onSpectrumKnobDrag: ({ setSpectrumKnobPosition }) => ({ px }) => {
+      setSpectrumKnobPosition(px * 100);
+    },
+    onOpacityKnobDrag: ({ setOpacityKnobPosition }) => ({ px }) => {
+      setOpacityKnobPosition(px * 100);
+    }
+  }),
   lifecycle<ColorPickerComponentInnerProps, any>({    
     componentDidMount() {
-      console.log(this.props["rgba"]);
       const { width } = (this.refs.hsl as HTMLCanvasElement).parentElement.getBoundingClientRect();
 
       const hue = rgbToHsl(this.props.rgba)[0] * 360; // TODO - calculate this
@@ -99,7 +156,7 @@ const drawSpectrum = (canvas: HTMLCanvasElement, width: number, height: number) 
 };
 
 const drawOpacity = (canvas: HTMLCanvasElement, hue: number, width: number, height: number) => {
-  var ctx = canvas.getContext('2d');
+  var ctx = canvas.getContext("2d");
   canvas.width = width;
   canvas.height = height;
   for (var row = 0; row <= width; row++) {
