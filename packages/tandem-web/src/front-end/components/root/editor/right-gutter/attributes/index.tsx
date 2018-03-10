@@ -5,7 +5,9 @@ import { RawAttributesComponent } from "./raw";
 import { PrettyAttributesComponent } from "./pretty";
 
 const BaseAttributesPaneComponent = () => <PaneComponent header="Attributes" className="m-attributes">
-  <RawAttributesComponent />
+  <div className="m-content">
+    <RawAttributesComponent />
+  </div>
 </PaneComponent>;
 
 export const AttributesPaneComponent = BaseAttributesPaneComponent;

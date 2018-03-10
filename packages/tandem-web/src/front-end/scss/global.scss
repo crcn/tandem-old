@@ -1,13 +1,13 @@
 :root {
   --font-size-sm: 11px;
   --font-size-rg: 12px;
-  --font-family: Helvetica;
-  --background-2: #BBB;
-  --background-3: #CFCFCF;
-}
-
-* {
-  box-sizing: border-box;
+  --font-color-1: rgba(0, 0, 0, 0.5);
+  --active-color-1: rgb(58, 150, 247);
+  --font-family: Roboto, sans-serif;
+  --background-1: rgb(228, 228, 228);
+  --background-2: rgb(238, 238, 238);
+  --background-3: rgb(247, 247, 247);
+  --boundary-color-1: rgba(0, 0, 0, 0.2);
 }
 
 html, body {
@@ -15,12 +15,5 @@ html, body {
   padding: 0px;
   margin: 0px;
   font-size: var(--font-size-rg);
-}
-
-input {
-  border: 0;
-  box-shadow: inset 0px 0px 0px 1px red;
-  &:focus {
-    outline: none;
-  }
+  color: var(--font-color-1);
 }

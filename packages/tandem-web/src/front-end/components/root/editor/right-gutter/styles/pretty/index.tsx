@@ -13,7 +13,7 @@ Display only immediate components that help user create HiFi design.
 
 const BasePrettyStylesComponent = () => <div className="m-pretty-styles">
   <div className="selectors">
-    INHERITED SELECTOS
+  
   </div>
   <PaneComponent header="Layout" secondary>
     x <CSSInputComponent value="100" />

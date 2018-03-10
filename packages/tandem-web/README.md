@@ -12,6 +12,9 @@ GOALS:
 
 TODOS:
 
+- [ ] color picker
+  - [ ] swatches
+
 - [ ] start on components -- create single page of all examples
 - [ ] components (in order of importance)
   - [ ] left gutter
@@ -35,6 +38,7 @@ TODOS:
   - [ ] atoms
     - [ ] measurement input
       - [ ] scrollable
+    - [ ] input
 
 
 QUESTIONS:

@@ -12,7 +12,7 @@ export type PaneComponentInnerProps = {
 
 const BasePaneComponent = ({header, children, className, secondary}: PaneComponentInnerProps) => <div className={cx({"m-panel": true, headerless: !header, secondary }, className)}>
   {header && <div className="header">{header}</div>}
-  <div className="content">
+  <div className="content-outer">
     {children}
   </div>
 </div>;

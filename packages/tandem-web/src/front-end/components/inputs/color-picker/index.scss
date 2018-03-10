@@ -1,8 +1,13 @@
 .m-color-picker {
-  width: 360px;
+  width: 300px;
   height: 400px;
-  background: #CFCFCF;
+  background: var(--background-3);
   padding: 4px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--boundary-color-1);
+  .settings {
+    width: 100%;
+  }
   canvas {
     vertical-align: bottom;
   }
@@ -12,7 +17,7 @@
     left: 0;
     cursor: pointer;
     background: transparent;
-    border: 1px solid rgba(0,0,0,0.8);
+    border: 1px solid var(--boundary-color-1);
     box-shadow: inset 0px 0px 0px 1px white;
   }
   .palette {
@@ -35,5 +40,9 @@
       border-radius: 2px;
       transform: translateX(-50%);
     }
+  }
+
+  .presets {
+    
   }
 }
