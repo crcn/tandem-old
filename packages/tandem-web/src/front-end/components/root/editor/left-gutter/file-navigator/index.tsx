@@ -12,14 +12,17 @@ TODO:
 - [ ] create new file
 - [ ] add new folder
 */
+
 const BaseFileNavigatorHeaderComponent = () => <div className="header">
-        HEADER
+  Files
 </div>;
 
 const FileNavigatorHeaderComponent = BaseFileNavigatorHeaderComponent;
 
 const BaseFileNavigatorPaneComponent = () => <PaneComponent header={<FileNavigatorHeaderComponent />} className="m-file-navigator-pane">
-        TODOS
+        <div className="m-content">
+                
+        </div>
 </PaneComponent>
 
 export const FileNavigatorPaneComponent = BaseFileNavigatorPaneComponent;

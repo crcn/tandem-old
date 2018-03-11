@@ -16,7 +16,22 @@ const BasePrettyStylesComponent = () => <div className="m-pretty-styles">
   
   </div>
   <PaneComponent header="Layout" secondary>
-    x <CSSInputComponent value="100" />
+    <div className="row">
+      <div className="field vertical">
+        <label>left</label><CSSInputComponent value="100" />
+      </div>
+      <div className="field vertical">
+        <label>top</label><CSSInputComponent value="100" />
+      </div>
+    </div>
+    <div className="row">
+      <div className="field vertical">
+        <label>width</label><CSSInputComponent value="100" />
+      </div>
+      <div className="field vertical">
+        <label>height</label><CSSInputComponent value="100" />
+      </div>
+    </div>
   </PaneComponent>
   <PaneComponent header="Backgrounds" secondary>
     color, images

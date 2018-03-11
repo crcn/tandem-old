@@ -1,6 +1,7 @@
 import "./index.scss";
 import * as React from "react";
-import { compose, pure } from "recompose";
+import { TextInputComponent } from "front-end/components/inputs/text";
+import { compose, pure, withState, withHandlers } from "recompose";
 
 type InputComponentProps = {
   value: any;
@@ -15,10 +16,15 @@ type LabeledInputComponentProps = {
 export type RawColorInputOuterProps = {
 } & InputComponentProps;
 
+export type RawColorInputInputProps = {
+  currentInputIndex: number;
+  onSwitcherClick: () => any;
+} & RawColorInputOuterProps;
+
 
 const InputComponent = ({ value, label, onChange }: LabeledInputComponentProps) => {
   return <div className="field">
-    <input className="m-input" type="text" onChange={onChange} />
+    <TextInputComponent  onChange={onChange} />
     <label>{label}</label>
   </div>;
 };
@@ -38,7 +44,13 @@ const RGBAInputComponent = ({ value }: InputComponentProps) => {
   </div>
 };
 
-const BaseRawColorInputComponent = ({ value }: RawColorInputOuterProps) => {
+
+const OPTIONS = [
+  RGBAInputComponent,
+  HexInputComponent
+];
+
+const BaseRawColorInputComponent = ({ value, onSwitcherClick }: RawColorInputInputProps) => {
   return <div className="m-raw-color-input">
     <RGBAInputComponent value={value} />
     <div className="switcher">
@@ -49,7 +61,11 @@ const BaseRawColorInputComponent = ({ value }: RawColorInputOuterProps) => {
 }
 
 const enhance = compose<RawColorInputOuterProps, RawColorInputOuterProps>(
-  pure
+  pure,
+  withState('currentInputIndex', 'setCurrentInputIndex', 0),
+  withHandlers({
+    onSwitcherClick: () => () => {}
+  })
 );
 
 export const RawColorInputComponent = enhance(BaseRawColorInputComponent);

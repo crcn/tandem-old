@@ -1,3 +1,12 @@
 .m-css-property-input {
   display: inline-block;
+  background: white;
+  .measurement {
+    display:inline-block;
+    background: var(--background-1);
+    padding: 0px 2px;
+    margin-left: 2px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
 }

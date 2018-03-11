@@ -13,6 +13,7 @@ import "./index.scss"
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { compose, pure, lifecycle, withState, withPropsOnChange, withHandlers } from "recompose";
+import { PresetComponent } from "./presets";
 import { DraggableComponent } from "front-end/components/draggable";
 import { RawColorInputComponent } from "./raw-input";
 
@@ -41,29 +42,36 @@ export type ColorPickerComponentInnerProps = {
 
 const SPECTRUM_HEIGHT = 30;
 
+const PRESET_VALUES = [
+  { name: "--background-color", value: "red" },
+  { name: "test", value: "red" }
+];
 
 const BaseColorPickerComponent = ({onHslKnobDrag, onSpectrumKnobDrag,onOpacityKnobDrag, hslKnobPosition, spectrumKnobPosition, opacityKnobPosition, value}: ColorPickerComponentInnerProps) => <div className="m-color-picker">
-  <DraggableComponent onDrag={onHslKnobDrag}>
-    <div className="hsl palette">
-        <canvas ref="hsl" />
-      <div className="knob" style={{ left: `${hslKnobPosition.left}%`, top: `${hslKnobPosition.top}%`}}  />
+  <div className="content">
+    <DraggableComponent onDrag={onHslKnobDrag}>
+      <div className="hsl palette">
+          <canvas ref="hsl" />
+        <div className="knob" style={{ left: `${hslKnobPosition.left}%`, top: `${hslKnobPosition.top}%`}}  />
+      </div>
+    </DraggableComponent>
+    <div className="settings">
+      <DraggableComponent onDrag={onSpectrumKnobDrag}>
+        <div className="spectrum palette">
+          <canvas ref="spectrum" />
+            <div className="knob" style={{ left: `${spectrumKnobPosition}%` }} />
+        </div>
+      </DraggableComponent>
+      <DraggableComponent onDrag={onOpacityKnobDrag}>
+        <div className="opacity palette">
+          <canvas ref="opacity" />
+            <div className="knob" style={{ left: `${opacityKnobPosition}%` }} />
+        </div>
+      </DraggableComponent>
+      <RawColorInputComponent value={value} />
     </div>
-  </DraggableComponent>
-  <div className="settings">
-    <DraggableComponent onDrag={onSpectrumKnobDrag}>
-      <div className="spectrum palette">
-        <canvas ref="spectrum" />
-          <div className="knob" style={{ left: `${spectrumKnobPosition}%` }} />
-      </div>
-    </DraggableComponent>
-    <DraggableComponent onDrag={onOpacityKnobDrag}>
-      <div className="opacity palette">
-        <canvas ref="opacity" />
-          <div className="knob" style={{ left: `${opacityKnobPosition}%` }} />
-      </div>
-    </DraggableComponent>
-    <RawColorInputComponent value={value} />
   </div>
+  <PresetComponent values={PRESET_VALUES} />
 </div>;
 
 const enhance = compose<ColorPickerComponentInnerProps, ColorPickerComponentOuterProps>(

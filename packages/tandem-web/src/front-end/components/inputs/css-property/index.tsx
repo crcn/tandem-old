@@ -8,6 +8,7 @@ input
 import "./index.scss";
 import * as React from "react";
 import { FocusComponent } from "front-end/components/focus";
+import { TextInputComponent } from "front-end/components/inputs/text";
 import { compose, pure, withHandlers, withState } from "recompose";
 
 export type CSSInputComponentOuterProps = {
@@ -20,12 +21,26 @@ export type CSSInputComponentInnerProps = {
   onBlur: () => any;
 } & CSSInputComponentOuterProps;
 
+type MeasurementInputOuterProps = {
+  value?: string;
+  onChange?: () => any;
+}
+
+const MeasurementInput = ({ value }: MeasurementInputOuterProps) => {
+  return <div className="measurement">
+    px
+  </div>
+};
+
 const BaseCSSInputComponent = ({ value, active, onFocus, onBlur }: CSSInputComponentInnerProps) => {
   const tokens = [{ type: "string", value }];
   return <div className="m-css-property-input" tabIndex={0} onFocus={onFocus} onBlur={onBlur}>
   {
-    active ? <FocusComponent><input type="text" defaultValue={value} /></FocusComponent> : tokens.map(({ type, value }) => (
-      <span>{value}</span>
+    active ? <FocusComponent><TextInputComponent /></FocusComponent> : tokens.map(({ type, value }) => (
+      <span className="m-input text">
+        100
+        <MeasurementInput />
+      </span>
     ))
   }
 </div>;

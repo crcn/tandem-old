@@ -19,7 +19,10 @@ export class FocusComponent extends React.Component<FocusProps> {
     }
   }
   focus() {
-    (ReactDOM.findDOMNode(this) as HTMLInputElement).select();
+    const self = ReactDOM.findDOMNode(this) as HTMLElement;
+    const input = self.tagName === "INPUT" ? self as HTMLInputElement : self.querySelector("input");
+    console.log(self, input);
+    input.select();
   }
   render() {
     return this.props.children;

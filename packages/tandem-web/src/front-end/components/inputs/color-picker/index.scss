@@ -1,10 +1,12 @@
 .m-color-picker {
   width: 300px;
-  height: 400px;
   background: var(--background-3);
-  padding: 4px;
   border-radius: 4px;
   box-shadow: 0 0 0 1px var(--boundary-color-1);
+  .content {
+    padding: 4px;
+    
+  }
   .settings {
     width: 100%;
   }
@@ -43,6 +45,6 @@
   }
 
   .presets {
-    
+
   }
 }
