@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/modes/pc/index.ts"],"names":[],"mappings":";;AACA,2DAA0D;AAE1D;IACE,MAAM,CAAC;QACL,KAAK;YACH,MAAM,CAAC,KAAK,CAAC;QACf,CAAC;QACD,UAAU,YAAC,QAAQ,EAAE,QAAQ;YAC3B,MAAM,CAAC,uCAAkB,EAAE,CAAC;QAC9B,CAAC;QACD,iBAAiB,gBAAI,CAAC;QACtB,OAAO,gBAAI,CAAC;KACb,CAAC;AACJ,CAAC;AAXD,gCAWC"}

@@ -1,0 +1,3933 @@
+webpackHotUpdate(0,{
+
+/***/ "./src/front-end/actions/index.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RESIZER_MOVED = "RESIZER_MOVED";
+exports.LOADED_SAVED_STATE = "LOADED_SAVED_STATE";
+exports.TRIED_LOADING_APP_STATE = "TRIED_LOADING_APP_STATE";
+exports.RESIZER_STOPPED_MOVING = "RESIZER_STOPPED_MOVING";
+exports.RESIZER_MOUSE_DOWN = "RESIZER_MOUSE_DOWN";
+exports.WINDOW_PANE_ROW_CLICKED = "WINDOW_PANE_ROW_CLICKED";
+exports.PROMPTED_NEW_WINDOW_URL = "PROMPTED_NEW_WINDOW_URL";
+exports.KEYBOARD_SHORTCUT_ADDED = "KEYBOARD_SHORTCUT_ADDED";
+exports.DELETE_SHORCUT_PRESSED = "DELETE_SHORCUT_PRESSED";
+exports.FULL_SCREEN_SHORTCUT_PRESSED = "FULL_SCREEN_SHORTCUT_PRESSED";
+exports.EMPTY_WINDOWS_URL_ADDED = "EMPTY_WINDOWS_URL_ADDED";
+exports.ZOOM_IN_SHORTCUT_PRESSED = "ZOOM_IN_SHORTCUT_PRESSED";
+exports.ZOOM_OUT_SHORTCUT_PRESSED = "ZOOM_OUT_SHORTCUT_PRESSED";
+exports.OPEN_NEW_WINDOW_SHORTCUT_PRESSED = "OPEN_NEW_WINDOW_SHORTCUT_PRESSED";
+exports.WINDOW_SELECTION_SHIFTED = "WINDOW_SELECTION_SHIFTED";
+exports.CLONE_WINDOW_SHORTCUT_PRESSED = "CLONE_WINDOW_SHORTCUT_PRESSED";
+exports.ESCAPE_SHORTCUT_PRESSED = "ESCAPE_SHORTCUT_PRESSED";
+exports.NEXT_WINDOW_SHORTCUT_PRESSED = "NEXT_WINDOW_SHORTCUT_PRESSED";
+exports.PREV_WINDOW_SHORTCUT_PRESSED = "PREV_WINDOW_SHORTCUT_PRESSED";
+exports.TOGGLE_TOOLS_SHORTCUT_PRESSED = "TOGGLE_TOOLS_SHORTCUT_PRESSED";
+exports.FULL_SCREEN_TARGET_DELETED = "FULL_SCREEN_TARGET_DELETED";
+exports.TOGGLE_TEXT_EDITOR_PRESSED = "TOGGLE_TEXT_EDITOR_PRESSED";
+exports.TOGGLE_LEFT_GUTTER_PRESSED = "TOGGLE_LEFT_GUTTER_PRESSED";
+exports.TOGGLE_RIGHT_GUTTER_PRESSED = "TOGGLE_RIGHT_GUTTER_PRESSED";
+exports.RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
+exports.RESIZER_PATH_MOUSE_STOPPED_MOVING = "RESIZER_PATH_MOUSE_STOPPED_MOVING";
+exports.TEXT_EDITOR_CHANGED = "TEXT_EDITOR_CHANGED";
+exports.CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED = "CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED";
+exports.CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
+exports.TREE_NODE_LABEL_CLICKED = "TREE_NODE_LABE_CLICKED";
+exports.FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED = "FILE_NAVIGATOR_ADD_FILE_BUTTON_CLICKED";
+exports.FILE_CONTENT_CHANGED = "FILE_CONTENT_CHANGED";
+exports.OPEN_EXTERNAL_WINDOWS_REQUESTED = "OPEN_EXTERNAL_WINDOWS_REQUESTED";
+exports.FILE_REMOVED = "FILE_REMOVED";
+exports.COMPONENT_SCREENSHOT_SAVED = "COMPONENT_SCREENSHOT_SAVED";
+exports.COMPONENTS_PANE_ADD_COMPONENT_CLICKED = "COMPONENTS_PANE_ADD_COMPONENT_CLICKED";
+exports.COMPONENTS_PANE_COMPONENT_CLICKED = "COMPONENTS_PANE_COMPONENT_CLICKED";
+exports.BREADCRUMB_ITEM_CLICKED = "BREADCRUMB_ITEM_CLICKED";
+exports.BREADCRUMB_ITEM_MOUSE_ENTER = "BREADCRUMB_ITEM_MOUSE_ENTER";
+exports.BREADCRUMB_ITEM_MOUSE_LEAVE = "BREADCRUMB_ITEM_MOUSE_LEAVE";
+exports.FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED = "FILE_NAVIGATOR_ADD_FOLDER_BUTTON_CLICKED";
+exports.STAGE_MOUSE_MOVED = "STAGE_MOUSE_MOVED";
+exports.STAGE_MOUSE_CLICKED = "STAGE_MOUSE_CLICKED";
+exports.VISUAL_EDITOR_WHEEL = "VISUAL_EDITOR_WHEEL";
+exports.STAGE_TOOL_WINDOW_TITLE_CLICKED = "STAGE_TOOL_WINDOW_TITLE_CLICKED";
+exports.DOWN_KEY_DOWN = "DOWN_KEY_DOWN";
+exports.DOWN_KEY_UP = "DOWN_KEY_UP";
+exports.UP_KEY_DOWN = "UP_KEY_DOWN";
+exports.UP_KEY_UP = "UP_KEY_UP";
+exports.LEFT_KEY_DOWN = "LEFT_KEY_DOWN";
+exports.LEFT_KEY_UP = "LEFT_KEY_UP";
+exports.RIGHT_KEY_DOWN = "RIGHT_KEY_DOWN";
+exports.RIGHT_KEY_UP = "RIGHT_KEY_UP";
+exports.STAGE_TOOL_WINDOW_BACKGROUND_CLICKED = "STAGE_TOOL_WINDOW_BACKGROUND_CLICKED";
+exports.DISPLAY_SOURCE_CODE_REQUESTED = "DISPLAY_SOURCE_CODE_REQUESTED";
+exports.STAGE_TOOL_OVERLAY_MOUSE_LEAVE = "STAGE_TOOL_OVERLAY_MOUSE_LEAVE";
+exports.STAGE_TOOL_OVERLAY_MOUSE_PAN_START = "STAGE_TOOL_OVERLAY_MOUSE_PAN_START";
+exports.STAGE_TOOL_OVERLAY_MOUSE_PANNING = "STAGE_TOOL_OVERLAY_MOUSE_PANNING";
+exports.STAGE_TOOL_OVERLAY_MOUSE_PAN_END = "STAGE_TOOL_OVERLAY_MOUSE_PAN_END";
+exports.STAGE_TOOL_WINDOW_KEY_DOWN = "STAGE_TOOL_WINDOW_KEY_DOWN";
+exports.OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED = "OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED";
+exports.WORKSPACE_DELETION_SELECTED = "WORKSPACE_DELETION_SELECTED";
+exports.STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED = "STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED";
+exports.SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
+exports.STAGE_TOOL_EDIT_TEXT_CHANGED = "STAGE_TOOL_EDIT_TEXT_CHANGED";
+exports.STAGE_TOOL_EDIT_TEXT_KEY_DOWN = "STAGE_TOOL_EDIT_TEXT_KEY_DOWN";
+exports.STAGE_TOOL_EDIT_TEXT_BLUR = "STAGE_TOOL_EDIT_TEXT_BLUR";
+exports.STAGE_MOUNTED = "STAGE_MOUNTED";
+exports.CSS_DECLARATION_NAME_CHANGED = "CSS_DECLARATION_NAME_CHANGED";
+exports.CSS_DECLARATION_VALUE_CHANGED = "CSS_DECLARATION_VALUE_CHANGED";
+exports.WINDOW_FOCUSED = "WINDOW_FOCUSED";
+exports.CSS_DECLARATION_CREATED = "CSS_DECLARATION_CREATED";
+exports.CSS_DECLARATION_TITLE_MOUSE_ENTER = "CSS_DECLARATION_TITLE_MOUSE_ENTER";
+exports.SOURCE_CLICKED = "SOURCE_CLICKED";
+exports.CSS_DECLARATION_TITLE_MOUSE_LEAVE = "CSS_DECLARATION_TITLE_MOUSE_LEAVE";
+exports.TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED = "TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED";
+exports.API_COMPONENTS_LOADED = "API_COMPONENTS_LOADED";
+exports.DND_STARTED = "DND_STARTED";
+exports.DND_ENDED = "DND_ENDED";
+exports.DND_HANDLED = "DND_HANDLED";
+/**
+ * Factories
+ */
+exports.canvasElementsComputedPropsChanged = function (syntheticWindowId, allComputedBounds, allComputedStyles) { return ({
+    syntheticWindowId: syntheticWindowId,
+    type: exports.CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED,
+    allComputedBounds: allComputedBounds,
+    allComputedStyles: allComputedStyles
+}); };
+exports.componentsPaneAddComponentClicked = function () { return ({
+    type: exports.COMPONENTS_PANE_ADD_COMPONENT_CLICKED
+}); };
+exports.componentsPaneComponentClicked = function (componentId) { return ({
+    type: exports.COMPONENTS_PANE_COMPONENT_CLICKED,
+    componentId: componentId
+}); };
+exports.canvasMotionRested = function () { return ({
+    type: exports.CANVAS_MOTION_RESTED
+}); };
+exports.treeNodeLabelClicked = function (node) { return ({ type: exports.TREE_NODE_LABEL_CLICKED, node: node }); };
+exports.stageToolWindowTitleClicked = function (windowId, sourceEvent) { return ({ type: exports.STAGE_TOOL_WINDOW_TITLE_CLICKED, windowId: windowId, sourceEvent: sourceEvent }); };
+exports.stageToolWindowKeyDown = function (windowId, sourceEvent) { return ({ type: exports.STAGE_TOOL_WINDOW_KEY_DOWN, windowId: windowId, sourceEvent: sourceEvent }); };
+exports.openExternalWindowButtonClicked = function (windowId, sourceEvent) { return ({ type: exports.OPEN_EXTERNAL_WINDOW_BUTTON_CLICKED, windowId: windowId, sourceEvent: sourceEvent }); };
+exports.stageToolWindowBackgroundClicked = function (sourceEvent) { return ({ type: exports.STAGE_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent: sourceEvent }); };
+// TODO - possible include CSS url, or windowId
+exports.toggleCSSTargetSelectorClicked = function (itemId, windowId) { return ({
+    type: exports.TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED,
+    windowId: windowId,
+    itemId: itemId,
+}); };
+exports.resizerMoved = function (workspaceId, point) { return ({
+    workspaceId: workspaceId,
+    point: point,
+    type: exports.RESIZER_MOVED,
+}); };
+exports.dndStarted = function (ref, sourceEvent) { return ({
+    type: exports.DND_STARTED,
+    sourceEvent: sourceEvent,
+    ref: ref
+}); };
+exports.dndEnded = function (ref, sourceEvent) { return ({
+    type: exports.DND_ENDED,
+    sourceEvent: sourceEvent,
+    ref: ref
+}); };
+exports.dndHandled = function () { return ({
+    type: exports.DND_HANDLED
+}); };
+exports.cssDeclarationNameChanged = function (name, value, declarationId, windowId) { return ({
+    declarationId: declarationId,
+    windowId: windowId,
+    name: name,
+    value: value,
+    type: exports.CSS_DECLARATION_NAME_CHANGED
+}); };
+exports.cssDeclarationValueChanged = function (name, value, declarationId, windowId) { return ({
+    declarationId: declarationId,
+    windowId: windowId,
+    name: name,
+    value: value,
+    type: exports.CSS_DECLARATION_VALUE_CHANGED
+}); };
+exports.cssDeclarationCreated = function (name, value, declarationId, windowId) { return ({
+    windowId: windowId,
+    name: name,
+    value: value,
+    declarationId: declarationId,
+    type: exports.CSS_DECLARATION_CREATED
+}); };
+exports.cssDeclarationTitleMouseEnter = function (ruleId, windowId) { return ({
+    windowId: windowId,
+    ruleId: ruleId,
+    type: exports.CSS_DECLARATION_TITLE_MOUSE_ENTER
+}); };
+exports.sourceClicked = function (itemId, windowId) { return ({
+    windowId: windowId,
+    itemId: itemId,
+    type: exports.SOURCE_CLICKED
+}); };
+exports.cssDeclarationTitleMouseLeave = function (ruleId, windowId) { return ({
+    windowId: windowId,
+    ruleId: ruleId,
+    type: exports.CSS_DECLARATION_TITLE_MOUSE_LEAVE
+}); };
+exports.resizerStoppedMoving = function (workspaceId, point) { return ({
+    workspaceId: workspaceId,
+    point: point,
+    type: exports.RESIZER_STOPPED_MOVING,
+}); };
+exports.breadcrumbItemClicked = function (nodeId, windowId) { return ({
+    nodeId: nodeId,
+    windowId: windowId,
+    type: exports.BREADCRUMB_ITEM_CLICKED
+}); };
+exports.breadcrumbItemMouseEnter = function (nodeId, windowId) { return ({
+    nodeId: nodeId,
+    windowId: windowId,
+    type: exports.BREADCRUMB_ITEM_MOUSE_ENTER
+}); };
+exports.breadcrumbItemMouseLeave = function (nodeId, windowId) { return ({
+    nodeId: nodeId,
+    windowId: windowId,
+    type: exports.BREADCRUMB_ITEM_MOUSE_LEAVE
+}); };
+exports.windowSelectionShifted = function (windowId) { return ({
+    windowId: windowId,
+    type: exports.WINDOW_SELECTION_SHIFTED,
+}); };
+exports.resizerMouseDown = function (workspaceId, sourceEvent) { return ({
+    workspaceId: workspaceId,
+    sourceEvent: sourceEvent,
+    type: exports.RESIZER_MOUSE_DOWN,
+}); };
+exports.stageToolOverlayMouseLeave = function (sourceEvent) { return ({
+    type: exports.STAGE_TOOL_OVERLAY_MOUSE_LEAVE,
+    sourceEvent: sourceEvent
+}); };
+exports.stageToolOverlayMousePanStart = function (windowId) { return ({
+    windowId: windowId,
+    type: exports.STAGE_TOOL_OVERLAY_MOUSE_PAN_START,
+}); };
+exports.windowFocused = function (windowId) { return ({
+    type: exports.WINDOW_FOCUSED,
+    windowId: windowId
+}); };
+exports.stageToolOverlayMousePanning = function (windowId, center, deltaY, velocityY) { return ({
+    windowId: windowId,
+    center: center,
+    deltaY: deltaY,
+    velocityY: velocityY,
+    type: exports.STAGE_TOOL_OVERLAY_MOUSE_PANNING,
+}); };
+exports.stageToolOverlayMousePanEnd = function (windowId) { return ({
+    windowId: windowId,
+    type: exports.STAGE_TOOL_OVERLAY_MOUSE_PAN_END,
+}); };
+exports.fullScreenTargetDeleted = function () { return ({
+    type: exports.FULL_SCREEN_TARGET_DELETED
+}); };
+exports.loadedSavedState = function (state) { return ({
+    type: exports.LOADED_SAVED_STATE,
+    state: state
+}); };
+exports.triedLoadedSavedState = function () { return ({
+    type: exports.TRIED_LOADING_APP_STATE,
+}); };
+exports.stageToolOverlayMouseDoubleClicked = function (windowId, sourceEvent) { return ({
+    windowId: windowId,
+    type: exports.STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED,
+    sourceEvent: sourceEvent
+}); };
+exports.selectorDoubleClicked = function (item, sourceEvent) { return ({
+    item: item,
+    type: exports.SELECTOR_DOUBLE_CLICKED,
+    sourceEvent: sourceEvent
+}); };
+exports.resizerPathMoved = function (workspaceId, anchor, originalBounds, newBounds, sourceEvent) { return ({
+    type: exports.RESIZER_PATH_MOUSE_MOVED,
+    workspaceId: workspaceId,
+    anchor: anchor,
+    originalBounds: originalBounds,
+    newBounds: newBounds,
+    sourceEvent: sourceEvent,
+}); };
+exports.resizerPathStoppedMoving = function (workspaceId, sourceEvent) { return ({
+    type: exports.RESIZER_PATH_MOUSE_STOPPED_MOVING,
+    workspaceId: workspaceId,
+    sourceEvent: __assign({}, sourceEvent)
+}); };
+exports.windowPaneRowClicked = function (windowId, sourceEvent) { return ({
+    windowId: windowId,
+    sourceEvent: sourceEvent,
+    type: exports.WINDOW_PANE_ROW_CLICKED
+}); };
+exports.workspaceSelectionDeleted = function (workspaceId) { return ({
+    workspaceId: workspaceId,
+    type: exports.WORKSPACE_DELETION_SELECTED
+}); };
+exports.promptedNewWindowUrl = function (workspaceId, location) { return ({
+    location: location,
+    workspaceId: workspaceId,
+    type: exports.PROMPTED_NEW_WINDOW_URL
+}); };
+exports.stageToolEditTextChanged = function (nodeId, sourceEvent) { return ({
+    type: exports.STAGE_TOOL_EDIT_TEXT_CHANGED,
+    nodeId: nodeId,
+    sourceEvent: sourceEvent
+}); };
+exports.stageToolEditTextKeyDown = function (nodeId, sourceEvent) { return ({
+    type: exports.STAGE_TOOL_EDIT_TEXT_KEY_DOWN,
+    nodeId: nodeId,
+    sourceEvent: sourceEvent
+}); };
+exports.stageToolEditTextBlur = function (nodeId, sourceEvent) { return ({
+    nodeId: nodeId,
+    type: exports.STAGE_TOOL_EDIT_TEXT_BLUR,
+    sourceEvent: sourceEvent
+}); };
+exports.deleteShortcutPressed = function () { return ({
+    type: exports.DELETE_SHORCUT_PRESSED,
+}); };
+exports.fullScreenShortcutPressed = function () { return ({
+    type: exports.FULL_SCREEN_SHORTCUT_PRESSED,
+}); };
+exports.emptyWindowsUrlAdded = function (url) { return ({
+    type: exports.EMPTY_WINDOWS_URL_ADDED,
+    url: url,
+}); };
+exports.zoomInShortcutPressed = function () { return ({
+    type: exports.ZOOM_IN_SHORTCUT_PRESSED,
+}); };
+exports.zoomOutShortcutPressed = function () { return ({
+    type: exports.ZOOM_OUT_SHORTCUT_PRESSED,
+}); };
+exports.openNewWindowShortcutPressed = function () { return ({
+    type: exports.OPEN_NEW_WINDOW_SHORTCUT_PRESSED,
+}); };
+exports.cloneWindowShortcutPressed = function () { return ({
+    type: exports.CLONE_WINDOW_SHORTCUT_PRESSED,
+}); };
+exports.escapeShortcutPressed = function () { return ({
+    type: exports.ESCAPE_SHORTCUT_PRESSED,
+}); };
+exports.nextWindowShortcutPressed = function () { return ({
+    type: exports.NEXT_WINDOW_SHORTCUT_PRESSED,
+}); };
+exports.prevWindowShortcutPressed = function () { return ({
+    type: exports.PREV_WINDOW_SHORTCUT_PRESSED,
+}); };
+exports.toggleToolsShortcutPressed = function () { return ({
+    type: exports.TOGGLE_TOOLS_SHORTCUT_PRESSED,
+}); };
+exports.toggleTextEditorPressed = function () { return ({
+    type: exports.TOGGLE_TEXT_EDITOR_PRESSED,
+}); };
+exports.toggleLeftGutterPressed = function () { return ({
+    type: exports.TOGGLE_LEFT_GUTTER_PRESSED,
+}); };
+exports.toggleRightGutterPressed = function () { return ({
+    type: exports.TOGGLE_RIGHT_GUTTER_PRESSED,
+}); };
+exports.stageWheel = function (workspaceId, canvasWidth, canvasHeight, _a) {
+    var metaKey = _a.metaKey, ctrlKey = _a.ctrlKey, deltaX = _a.deltaX, deltaY = _a.deltaY, clientX = _a.clientX, clientY = _a.clientY;
+    return ({
+        workspaceId: workspaceId,
+        metaKey: metaKey,
+        canvasWidth: canvasWidth,
+        canvasHeight: canvasHeight,
+        ctrlKey: ctrlKey,
+        deltaX: deltaX,
+        deltaY: deltaY,
+        type: exports.VISUAL_EDITOR_WHEEL,
+    });
+};
+exports.stageContainerMounted = function (element) { return ({
+    element: element,
+    type: exports.STAGE_MOUNTED,
+}); };
+exports.stageMouseMoved = function (sourceEvent) { return ({
+    sourceEvent: sourceEvent,
+    type: exports.STAGE_MOUSE_MOVED,
+}); };
+exports.stageMouseClicked = function (sourceEvent) { return ({
+    sourceEvent: sourceEvent,
+    type: exports.STAGE_MOUSE_CLICKED,
+}); };
+exports.apiComponentsLoaded = function (components) { return ({
+    type: exports.API_COMPONENTS_LOADED,
+    components: components
+}); };
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/actions/index.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/actions/index.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/application.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/scss/index.scss");
+var reduceReducers = __webpack_require__("./node_modules/reduce-reducers/lib/index.js");
+var React = __webpack_require__("./node_modules/react/react.js");
+var ReactDOM = __webpack_require__("./node_modules/react-dom/index.js");
+var components_1 = __webpack_require__("./src/front-end/components/index.ts");
+var reducers_1 = __webpack_require__("./src/front-end/reducers/index.ts");
+var sagas_1 = __webpack_require__("./src/front-end/sagas/index.ts");
+var react_redux_1 = __webpack_require__("./node_modules/react-redux/es/index.js");
+var middleware_1 = __webpack_require__("./src/front-end/middleware/index.ts");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var mainReducer = reduceReducers(aerial_common2_1.workerReducer, reducers_1.applicationReducer);
+exports.initApplication = function (initialState) {
+    var store = aerial_common2_1.initBaseApplication2(initialState, mainReducer, sagas_1.mainSaga, middleware_1.createWorkerMiddleware());
+    var render = function (Main) {
+        ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
+            React.createElement(Main, { dispatch: function (action) { return store.dispatch(action); } })), initialState.element);
+    };
+    render(components_1.Main);
+    // if (module["hot"]) {
+    //   module["hot"].accept(() => {
+    //     render(Main);
+    //     debugger;
+    //   });
+    // }
+};
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/application.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/application.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/components-pane.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var components_pane_pc_1 = __webpack_require__("./src/front-end/components/components-pane.pc");
+var pane_1 = __webpack_require__("./src/front-end/components/pane.tsx");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var ICON_SIZE = 110;
+var enhanceComponentsPaneCell = recompose_1.compose(recompose_1.pure, state_1.withDragSource({
+    getData: function (_a) {
+        var tagName = _a.tagName;
+        return [state_1.AVAILABLE_COMPONENT, tagName];
+    }
+}), recompose_1.withHandlers({
+    onClick: function (_a) {
+        var dispatch = _a.dispatch, tagName = _a.tagName;
+        return function () {
+            dispatch(actions_1.componentsPaneComponentClicked(tagName));
+        };
+    }
+}), function (Base) { return function (_a) {
+    var label = _a.label, selected = _a.selected, screenshot = _a.screenshot, connectDragSource = _a.connectDragSource, onClick = _a.onClick, dispatch = _a.dispatch;
+    var width = screenshot && screenshot.clip.right - screenshot.clip.left;
+    var height = screenshot && screenshot.clip.bottom - screenshot.clip.top;
+    var scale = 1;
+    if (width >= height && width > ICON_SIZE) {
+        scale = ICON_SIZE / width;
+    }
+    else if (height >= width && height > ICON_SIZE) {
+        scale = ICON_SIZE / height;
+    }
+    return connectDragSource(React.createElement(Base, { label: label, onClick: onClick, selected: selected, screenshot: screenshot, screenshotScale: scale, hovering: false, onDragStart: null, onDragEnd: null }));
+}; });
+var enhanceComponentsPane = recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onAddComponentClick: function (_a) {
+        var dispatch = _a.dispatch;
+        return function (event) {
+            dispatch(actions_1.componentsPaneAddComponentClicked());
+        };
+    }
+}), function (Base) { return function (_a) {
+    var workspace = _a.workspace, dispatch = _a.dispatch, onAddComponentClick = _a.onAddComponentClick;
+    var components = (workspace.availableComponents || []).map(function (component) { return (__assign({}, component, { selected: workspace.selectionRefs.find(function (ref) { return ref[1] === component.tagName; }) })); });
+    return React.createElement(Base, { components: components, dispatch: dispatch, onAddComponentClick: onAddComponentClick });
+}; });
+var ComponentsPaneCell = components_pane_pc_1.hydrateTdComponentsPaneCell(enhanceComponentsPaneCell, {});
+exports.ComponentsPane = components_pane_pc_1.hydrateTdComponentsPane(enhanceComponentsPane, {
+    TdPane: pane_1.Pane,
+    TdComponentsPaneCell: ComponentsPaneCell
+});
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/components-pane.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/components-pane.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/css-inspector-pane.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__("./node_modules/react/react.js");
+var pane_1 = __webpack_require__("./src/front-end/components/pane.tsx");
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var paperclip_1 = __webpack_require__("../paperclip/index.js");
+var css_declaration_input_pc_1 = __webpack_require__("./src/front-end/components/css-declaration-input.pc");
+var css_inspector_pane_pc_1 = __webpack_require__("./src/front-end/components/css-inspector-pane.pc");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+var enhanceCssCallExprInput = recompose_1.compose(recompose_1.pure, function (Base) { return function (_a) {
+    var name = _a.name, params = _a.params, rest = __rest(_a, ["name", "params"]);
+    var returnType;
+    var returnValue = paperclip_1.stringifyDeclarationAST(__assign({ name: name,
+        params: params }, rest));
+    switch (name) {
+        case "rgb":
+        case "rgba": {
+            returnType = "COLOR";
+            break;
+        }
+    }
+    return React.createElement(Base, __assign({ name: name, params: params, returnValue: returnValue, returnType: returnType }, rest));
+}; });
+var CssCallExprInput = css_declaration_input_pc_1.hydrateTdCssCallExprInput(enhanceCssCallExprInput, {
+    TdColorMiniInput: null,
+    TdCssExprInput: function (props) {
+        return React.createElement(CSSExprInput, __assign({}, props));
+    }
+});
+var enhanceCssNumberInput = recompose_1.compose(recompose_1.pure);
+var CssNumberInput = css_declaration_input_pc_1.hydrateTdCssNumberExprInput(enhanceCssNumberInput, {});
+var enhanceCssMeasurementInput = recompose_1.compose(recompose_1.pure);
+var CssMeasurementInput = css_declaration_input_pc_1.hydrateTdCssMeasurementInput(enhanceCssMeasurementInput, {});
+var enhanceCssKeywordInput = recompose_1.compose(recompose_1.pure);
+var CssKeywordInput = css_declaration_input_pc_1.hydrateTdCssKeywordExprInput(enhanceCssKeywordInput, {});
+var enhanceCssColorInput = recompose_1.compose(recompose_1.pure);
+var CssColorInput = css_declaration_input_pc_1.hydrateTdCssColorExprInput(enhanceCssColorInput, {
+    TdColorMiniInput: null
+});
+var enhanceCSSCallExprInput = recompose_1.compose(recompose_1.pure);
+var enhanceCSSSpaced = recompose_1.compose(recompose_1.pure);
+var CssSpacedList = css_declaration_input_pc_1.hydrateTdCssSpacedListExprInput(enhanceCSSSpaced, {
+    TdCssExprInput: function (props) { return React.createElement(CSSExprInput, __assign({}, props)); }
+});
+var CssCommaList = css_declaration_input_pc_1.hydrateTdCssCommaListExprInput(enhanceCSSSpaced, {
+    TdCssExprInput: function (props) { return React.createElement(CSSExprInput, __assign({}, props)); }
+});
+var CSSExprInput = css_declaration_input_pc_1.hydrateTdCssExprInput(enhanceCSSCallExprInput, {
+    TdCssCallExprInput: CssCallExprInput,
+    TdCssColorExprInput: CssColorInput,
+    TdCssCommaListExprInput: CssCommaList,
+    TdCssKeywordExprInput: CssKeywordInput,
+    TdCssMeasurementInput: CssMeasurementInput,
+    TdCssNumberExprInput: CssNumberInput,
+    TdCssSpacedListExprInput: CssSpacedList
+});
+var enhanceCSSStyleDeclaration = recompose_1.compose(recompose_1.pure, function (Base) { return function (_a) {
+    var name = _a.name, ignored = _a.ignored, disabled = _a.disabled, overridden = _a.overridden, value = _a.value;
+    return React.createElement(Base, { name: lodash_1.kebabCase(name), ignored: ignored, disabled: disabled, overridden: overridden, value: paperclip_1.parseDeclaration(value), sourceValue: value });
+}; });
+var CSSStyleDeclaration = css_inspector_pane_pc_1.hydrateTdStyleDeclaration(enhanceCSSStyleDeclaration, {
+    TdCssExprInput: CSSExprInput
+});
+var beautifyLabel = function (label) {
+    return label.replace(/\s*,\s*/g, ", ");
+};
+var enhanceCSSStyleRule = recompose_1.compose(recompose_1.pure, function (Base) { return function (_a) {
+    var rule = _a.rule, inherited = _a.inherited, ignoredPropertyNames = _a.ignoredPropertyNames, overriddenPropertyNames = _a.overriddenPropertyNames;
+    var declarations = rule.style;
+    // const properties = [];
+    var childDeclarations = [];
+    for (var i = 0, n = declarations.length; i < n; i++) {
+        var name_1 = declarations[i];
+        var value = declarations[name_1];
+        var origValue = rule.style.disabledPropertyNames && rule.style.disabledPropertyNames[name_1];
+        var disabled = Boolean(origValue);
+        var ignored = Boolean(ignoredPropertyNames && ignoredPropertyNames[name_1]);
+        var overridden = Boolean(overriddenPropertyNames && overriddenPropertyNames[name_1]);
+        // childDeclarations.push({
+        //   name,
+        //   ignored,
+        //   disabled,
+        //   overridden,
+        //   value,
+        // });
+    }
+    return React.createElement(Base, { label: beautifyLabel(rule.label || rule.selectorText), source: null, declarations: childDeclarations, inherited: inherited });
+}; });
+var CSSStyleRule = css_inspector_pane_pc_1.hydrateTdStyleRule(enhanceCSSStyleRule, {
+    TdGutterSubheader: null,
+    TdStyleDeclaration: CSSStyleDeclaration,
+    TdList: null,
+    TdListItem: null
+});
+var CSSPaneMultipleSelectedError = css_inspector_pane_pc_1.hydrateCssInspectorMultipleItemsSelected(lodash_1.identity, {
+    TdPane: pane_1.Pane,
+});
+var enhanceCSSInspectorPane = recompose_1.compose(recompose_1.pure, function (Base) { return function (_a) {
+    var workspace = _a.workspace, browser = _a.browser;
+    var selectedElementRefs = workspace.selectionRefs.filter(function (_a) {
+        var type = _a[0];
+        return type === aerial_browser_sandbox_1.SYNTHETIC_ELEMENT;
+    });
+    if (!selectedElementRefs.length) {
+        return null;
+    }
+    if (selectedElementRefs.length > 1) {
+        return React.createElement(CSSPaneMultipleSelectedError, null);
+    }
+    var _b = selectedElementRefs[0], type = _b[0], targetElementId = _b[1];
+    var element = aerial_browser_sandbox_1.getSyntheticNodeById(browser, targetElementId);
+    var window = aerial_browser_sandbox_1.getSyntheticNodeWindow(browser, targetElementId);
+    if (!element || !window) {
+        return null;
+    }
+    var rules = aerial_browser_sandbox_1.getSyntheticAppliedCSSRules(window, targetElementId);
+    return React.createElement(Base, { styleRules: rules });
+}; });
+exports.CSSInpectorPane = css_inspector_pane_pc_1.hydrateTdCssInspectorPane(enhanceCSSInspectorPane, {
+    TdPane: pane_1.Pane,
+    TdStyleRule: CSSStyleRule
+});
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/css-inspector-pane.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/css-inspector-pane.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/index.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var workspace_1 = __webpack_require__("./src/front-end/components/main/workspace/index.tsx");
+var react_redux_1 = __webpack_require__("./node_modules/react-redux/es/index.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+exports.MainBase = function (_a) {
+    var state = _a.state, dispatch = _a.dispatch;
+    var workspace = state_1.getSelectedWorkspace(state);
+    var browser = aerial_browser_sandbox_1.getSyntheticBrowser(state, workspace.browserId);
+    return React.createElement("div", { className: "main-component" }, workspace && React.createElement(workspace_1.Workspace, { state: state, workspace: workspace, dispatch: dispatch, browser: browser }));
+};
+var enhanceMain = recompose_1.compose(react_redux_1.connect(function (state) { return ({ state: state }); }));
+exports.Main = enhanceMain(exports.MainBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/breadcrumbs/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/breadcrumbs/index.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var cx = __webpack_require__("./node_modules/classnames/index.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var getBreadcrumbNodes = aerial_common2_1.weakMemo(function (workspace, browser) {
+    if (workspace.selectionRefs.length === 0) {
+        return [];
+    }
+    var _a = workspace.selectionRefs[workspace.selectionRefs.length - 1], type = _a[0], $id = _a[1];
+    if (type !== state_1.SYNTHETIC_ELEMENT) {
+        return [];
+    }
+    var node = state_1.getSyntheticNodeById(browser, $id);
+    // not ready yet
+    if (!node) {
+        return [];
+    }
+    var ancestors = state_1.getSyntheticNodeAncestors(node, state_1.getSyntheticNodeWindow(browser, node.$id)).filter(function (node) { return node.$type === state_1.SYNTHETIC_ELEMENT; }).reverse();
+    return ancestors.concat([node]);
+});
+var BreadcrumbBase = function (_a) {
+    var element = _a.element, onClick = _a.onClick, selected = _a.selected, onMouseEnter = _a.onMouseEnter, onMouseLeave = _a.onMouseLeave;
+    return React.createElement("div", { className: cx("breadcrumb fill-text", { selected: selected }), onClick: onClick, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave },
+        state_1.getSyntheticElementLabel(element),
+        selected ? null : React.createElement("span", { className: "arrow" },
+            React.createElement("i", { className: "ion-ios-arrow-right" })));
+};
+var enhanceBreadcrumb = recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onClick: function (_a) {
+        var dispatch = _a.dispatch, element = _a.element, windowId = _a.windowId;
+        return function () {
+            dispatch(actions_1.breadcrumbItemClicked(element.$id, windowId));
+        };
+    },
+    onMouseEnter: function (_a) {
+        var dispatch = _a.dispatch, element = _a.element, windowId = _a.windowId;
+        return function () {
+            dispatch(actions_1.breadcrumbItemMouseEnter(element.$id, windowId));
+        };
+    },
+    onMouseLeave: function (_a) {
+        var dispatch = _a.dispatch, element = _a.element, windowId = _a.windowId;
+        return function () {
+            dispatch(actions_1.breadcrumbItemMouseEnter(element.$id, windowId));
+        };
+    }
+}));
+var Breadcrumb = enhanceBreadcrumb(BreadcrumbBase);
+var BreadcrumbsBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch;
+    var breadcrumbNodes = getBreadcrumbNodes(workspace, browser);
+    return React.createElement("div", { className: "m-html-breadcrumbs" }, breadcrumbNodes.map(function (node, i) {
+        return React.createElement(Breadcrumb, { key: node.$id, dispatch: dispatch, element: node, windowId: state_1.getSyntheticNodeWindow(browser, node.$id).$id, selected: i === breadcrumbNodes.length - 1 });
+    }));
+};
+var Breadcrumbs = BreadcrumbsBase;
+exports.Breadcrumbs = Breadcrumbs;
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/breadcrumbs/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/breadcrumbs/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/element-gutter/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var enhanced_1 = __webpack_require__("./src/front-end/components/enhanced.ts");
+exports.ElementGutterBase = function (_a) {
+    var browser = _a.browser, workspace = _a.workspace, dispatch = _a.dispatch;
+    return React.createElement(enhanced_1.Gutter, { left: false, right: true },
+        React.createElement(enhanced_1.CSSInpectorPane, { workspace: workspace, browser: browser, dispatch: dispatch }));
+};
+var enhanceElementGutter = recompose_1.compose(recompose_1.pure);
+exports.ElementGutter = enhanceElementGutter(exports.ElementGutterBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/element-gutter/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/element-gutter/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/index.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var element_gutter_1 = __webpack_require__("./src/front-end/components/main/workspace/element-gutter/index.tsx");
+var project_gutter_1 = __webpack_require__("./src/front-end/components/main/workspace/project-gutter/index.tsx");
+var stage_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/index.tsx");
+var breadcrumbs_1 = __webpack_require__("./src/front-end/components/main/workspace/breadcrumbs/index.tsx");
+var react_dnd_1 = __webpack_require__("./node_modules/react-dnd/lib/index.js");
+var react_dnd_html5_backend_1 = __webpack_require__("./node_modules/react-dnd-html5-backend/lib/index.js");
+exports.WorkspaceBase = function (_a) {
+    var state = _a.state, workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch;
+    var stage = workspace.stage;
+    return React.createElement("div", { className: "workspace-component" },
+        stage.showLeftGutter ? React.createElement(project_gutter_1.ProjectGutter, { workspace: workspace, browser: browser, dispatch: dispatch }) : null,
+        React.createElement("div", { className: "workspace-editors" },
+            React.createElement("div", { className: "workspace-stage" },
+                React.createElement(stage_1.Stage, { workspace: workspace, dispatch: dispatch, browser: browser }),
+                React.createElement(breadcrumbs_1.Breadcrumbs, { workspace: workspace, dispatch: dispatch, browser: browser }))),
+        stage.showRightGutter ? React.createElement(element_gutter_1.ElementGutter, { browser: browser, workspace: workspace, dispatch: dispatch }) : null);
+};
+exports.Workspace = recompose_1.compose(recompose_1.pure, react_dnd_1.DragDropContext(react_dnd_html5_backend_1.default))(exports.WorkspaceBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/project-gutter/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__("./node_modules/react/react.js");
+var enhanced_1 = __webpack_require__("./src/front-end/components/enhanced.ts");
+exports.ProjectGutterBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch;
+    return React.createElement(enhanced_1.Gutter, { left: true, right: false },
+        React.createElement(enhanced_1.WindowsPane, { windows: browser.windows || [], dispatch: dispatch, workspace: workspace }),
+        React.createElement(enhanced_1.ComponentsPane, { workspace: workspace, dispatch: dispatch }));
+};
+exports.ProjectGutter = exports.ProjectGutterBase;
+// export * from "./file-navigator";
+__export(__webpack_require__("./src/front-end/components/main/workspace/project-gutter/windows/index.tsx"));
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/project-gutter/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/project-gutter/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/project-gutter/windows/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/project-gutter/windows/index.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var index_1 = __webpack_require__("./src/front-end/components/pane/index.tsx");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var WindowRow = function (_a) {
+    var window = _a.window, dispatch = _a.dispatch;
+    return React.createElement("div", { className: "m-windows-pane-window-row", onClick: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.windowPaneRowClicked.bind(_this, window.$id)) }, window.document && window.document.title || window.location);
+};
+var WindowsPaneControlsBase = function (_a) {
+    var workspace = _a.workspace, dispatch = _a.dispatch, onAddWindow = _a.onAddWindow;
+    return React.createElement("span", null,
+        React.createElement("i", { className: "icon ion-plus", onClick: onAddWindow }));
+};
+var enhanceControls = recompose_1.compose(recompose_1.withHandlers({
+    onAddWindow: function (_a) {
+        var workspace = _a.workspace, dispatch = _a.dispatch;
+        return function (event) {
+            var location = prompt("Type in a URL");
+            if (!location)
+                return;
+            dispatch(actions_1.promptedNewWindowUrl(workspace.$id, location));
+        };
+    }
+}));
+var WindowsPaneControls = enhanceControls(WindowsPaneControlsBase);
+exports.WindowsPaneBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch;
+    return React.createElement(index_1.Pane, { title: "Windows", className: "m-windows-pane", controls: React.createElement(WindowsPaneControls, { workspace: workspace, dispatch: dispatch }) }, browser.windows.map(function (window) { return React.createElement(WindowRow, { key: window.$id, window: window, dispatch: dispatch }); }));
+};
+exports.WindowsPane = recompose_1.compose(recompose_1.pure)(exports.WindowsPaneBase);
+exports.Preview = function () { return React.createElement(exports.WindowsPane, { workspace: state_1.createWorkspace({}), browser: state_1.createSyntheticBrowser({
+        windows: [
+            state_1.createSyntheticWindow({
+                document: state_1.createSyntheticDocument({
+                    title: "Window 1"
+                })
+            }),
+            state_1.createSyntheticWindow({
+                document: state_1.createSyntheticDocument({
+                    title: "Window 2"
+                })
+            })
+        ]
+    }), dispatch: function () { } }); };
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/project-gutter/windows/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/project-gutter/windows/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+// https://github.com/tandemcode/tandem/blob/master/src/%40tandem/editor/browser/components/pages/workspace/mid/center/canvas/index.tsx#L270
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/index.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var cx = __webpack_require__("./node_modules/classnames/index.js");
+var tools_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/index.tsx");
+var windows_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/windows.tsx");
+var isolated_1 = __webpack_require__("./src/front-end/components/isolated/index.tsx");
+var empty_windows_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/empty-windows.tsx");
+var react_motion_1 = __webpack_require__("./node_modules/react-motion/lib/react-motion.js");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var stiffSpring = function (amount) { return react_motion_1.spring(amount, { stiffness: 330, damping: 30 }); };
+var PANE_SENSITIVITY = process.platform === "win32" ? 0.1 : 1;
+var ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
+var enhanceStage = recompose_1.compose(recompose_1.pure, recompose_1.withState('canvasOuter', 'setCanvasOuter', null), recompose_1.withState('stageContainer', 'setStageContainer', null), recompose_1.withHandlers({
+    onMouseEvent: function (_a) {
+        var dispatch = _a.dispatch;
+        return function (event) {
+            dispatch(actions_1.stageMouseMoved(event));
+        };
+    },
+    onDragOver: function (_a) {
+        var dispatch = _a.dispatch;
+        return function (event) {
+            dispatch(actions_1.stageMouseMoved(event));
+        };
+    },
+    onMotionRest: function (_a) {
+        var dispatch = _a.dispatch;
+        return function () {
+            dispatch(actions_1.canvasMotionRested());
+        };
+    },
+    onMouseClick: function (_a) {
+        var dispatch = _a.dispatch;
+        return function (event) {
+            dispatch(actions_1.stageMouseClicked(event));
+        };
+    },
+    setStageContainer: function (_a) {
+        var dispatch = _a.dispatch, setStageContainer = _a.setStageContainer;
+        return function (element) {
+            setStageContainer(element);
+            dispatch(actions_1.stageContainerMounted(element));
+        };
+    },
+    onWheel: function (_a) {
+        var workspace = _a.workspace, dispatch = _a.dispatch, canvasOuter = _a.canvasOuter;
+        return function (event) {
+            var rect = canvasOuter.getBoundingClientRect();
+            event.preventDefault();
+            event.stopPropagation();
+            dispatch(actions_1.stageWheel(workspace.$id, rect.width, rect.height, event));
+        };
+    }
+}));
+exports.StageBase = function (_a) {
+    var setCanvasOuter = _a.setCanvasOuter, setStageContainer = _a.setStageContainer, workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch, onWheel = _a.onWheel, onDrop = _a.onDrop, onMouseEvent = _a.onMouseEvent, shouldTransitionZoom = _a.shouldTransitionZoom, onDragOver = _a.onDragOver, onMouseClick = _a.onMouseClick, onMotionRest = _a.onMotionRest, onDragExit = _a.onDragExit;
+    if (!workspace)
+        return null;
+    var _b = workspace.stage, translate = _b.translate, cursor = _b.cursor, fullScreen = _b.fullScreen, smooth = _b.smooth;
+    var fullScreenWindow = fullScreen ? aerial_browser_sandbox_1.getSyntheticWindow(browser, fullScreen.windowId) : null;
+    var outerStyle = {
+        cursor: cursor || "default"
+    };
+    // TODO - motionTranslate must come from fullScreen.translate
+    // instead of here so that other parts of the app can access this info
+    var hasWindows = Boolean(browser.windows && browser.windows.length);
+    var motionTranslate = hasWindows ? translate : { left: 0, top: 0, zoom: 1 };
+    return React.createElement("div", { className: "stage-component", ref: setStageContainer },
+        React.createElement(isolated_1.Isolate, { inheritCSS: true, ignoreInputEvents: true, className: "stage-component-isolate", onWheel: onWheel, scrolling: false, translateMousePositions: false },
+            React.createElement("span", null,
+                React.createElement("style", null, "html, body {\n              overflow: hidden;\n            }"),
+                React.createElement("div", { ref: setCanvasOuter, onMouseMove: onMouseEvent, onDragOver: onDragOver, onDrop: onDrop, onClick: onMouseClick, tabIndex: -1, onDragExit: onDragExit, className: "stage-inner", style: outerStyle },
+                    React.createElement(react_motion_1.Motion, { defaultStyle: { left: 0, top: 0, zoom: 1 }, style: { left: smooth ? stiffSpring(motionTranslate.left) : motionTranslate.left, top: smooth ? stiffSpring(motionTranslate.top) : motionTranslate.top, zoom: smooth ? stiffSpring(motionTranslate.zoom) : motionTranslate.zoom }, onRest: onMotionRest }, function (translate) {
+                        return React.createElement("div", { style: { transform: "translate(" + translate.left + "px, " + translate.top + "px) scale(" + translate.zoom + ")" }, className: cx({ "stage-inner": true }) },
+                            hasWindows ? React.createElement(windows_1.Windows, { browser: browser, smooth: smooth, dispatch: dispatch, fullScreenWindowId: workspace.stage.fullScreen && workspace.stage.fullScreen.windowId }) : React.createElement(empty_windows_1.EmptyWindows, { dispatch: dispatch }),
+                            hasWindows ? React.createElement(tools_1.ToolsLayer, { workspace: workspace, translate: translate, dispatch: dispatch, browser: browser }) : null);
+                    })))));
+};
+exports.Stage = enhanceStage(exports.StageBase);
+__export(__webpack_require__("./src/front-end/components/main/workspace/stage/tools/index.tsx"));
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/affected-nodes.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/affected-nodes.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var AffectedElementBase = function (_a) {
+    var element = _a.element, window = _a.window, zoom = _a.zoom;
+    var elementBounds = window.allComputedBounds && window.allComputedBounds[element.$id];
+    if (!elementBounds)
+        return null;
+    var _b = aerial_common2_1.shiftBounds(elementBounds, window.bounds), left = _b.left, top = _b.top, right = _b.right, bottom = _b.bottom;
+    var borderWidth = 1 / zoom;
+    var style = {
+        boxShadow: "inset 0 0 0 " + borderWidth + "px #F5AB35",
+        left: left,
+        top: top,
+        width: right - left,
+        height: bottom - top
+    };
+    return React.createElement("div", { className: "affected-element", style: style });
+};
+var AffectedElement = recompose_1.compose(recompose_1.pure)(AffectedElementBase);
+var AffectedNodesToolBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, zoom = _a.zoom;
+    var targetElementRef = workspace.selectionRefs.reverse().find(function (_a) {
+        var $type = _a[0];
+        return $type === state_1.SYNTHETIC_ELEMENT;
+    });
+    if (!targetElementRef) {
+        return null;
+    }
+    var targetElement = state_1.getSyntheticNodeById(browser, targetElementRef[1]);
+    if (!targetElement) {
+        return null;
+    }
+    var targetWindow = state_1.getSyntheticNodeWindow(browser, targetElement.$id);
+    var affectedElements = state_1.getSelectorAffectedElements(targetElement.$id, state_1.filterMatchingTargetSelectors(workspace.targetCSSSelectors, targetElement, targetWindow), browser, !!workspace.stage.fullScreen);
+    return React.createElement("div", { className: "m-affected-nodes" }, affectedElements.filter(function (element) { return element.$id !== targetElement.$id; }).map(function (element) { return React.createElement(AffectedElement, { zoom: zoom, key: element.$id, window: state_1.getSyntheticNodeWindow(browser, element.$id), element: element }); }));
+};
+exports.AffectedNodesTool = recompose_1.compose(recompose_1.pure)(AffectedNodesToolBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/affected-nodes.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/affected-nodes.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/box-model.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/box-model.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var pxToNumber = function (px) { return Number(px.replace("px", "")); };
+var boxShadow = function (x, y, color, inset) { return (inset ? "inset" : "") + " " + x + "px " + y + "px 0 0px " + color; };
+var paddingBoxShadow = function (x, y) { return boxShadow(x, y, '#6EFF27', true); };
+var ElementBoxModel = recompose_1.compose(recompose_1.pure)(function (_a) {
+    var windowBounds = _a.windowBounds, bounds = _a.bounds, computedStyle = _a.computedStyle;
+    var fixedPosition = aerial_common2_1.shiftBounds(bounds, windowBounds);
+    var marginLeft = pxToNumber(computedStyle.marginLeft);
+    var marginTop = pxToNumber(computedStyle.marginTop);
+    var style = {
+        left: fixedPosition.left - marginLeft,
+        top: fixedPosition.top - marginTop,
+        width: fixedPosition.right - fixedPosition.left,
+        height: fixedPosition.bottom - fixedPosition.top,
+        opacity: 0.3,
+        borderColor: "#FF8100",
+        borderStyle: "solid",
+        boxSizing: "content-box",
+        borderLeftWidth: marginLeft,
+        borderRightWidth: pxToNumber(computedStyle.marginRight),
+        borderTopWidth: marginTop,
+        borderBottomWidth: pxToNumber(computedStyle.marginBottom),
+        boxShadow: [
+            paddingBoxShadow(-pxToNumber(computedStyle.paddingLeft), 0),
+            paddingBoxShadow(pxToNumber(computedStyle.paddingRight), 0),
+            paddingBoxShadow(0, pxToNumber(computedStyle.paddingTop)),
+            paddingBoxShadow(0, -pxToNumber(computedStyle.paddingBottom))
+        ].join(", ")
+    };
+    return React.createElement("div", { className: "element-box-model", style: style });
+});
+exports.BoxModelStageTool = recompose_1.compose(recompose_1.pure)(function (_a) {
+    var workspace = _a.workspace, browser = _a.browser;
+    var selectedElements = workspace.selectionRefs.filter(function (_a) {
+        var type = _a[0];
+        return type === state_1.SYNTHETIC_ELEMENT;
+    }).map(function (_a) {
+        var type = _a[0], $id = _a[1];
+        return state_1.getSyntheticNodeById(browser, $id);
+    }).filter(function (element) { return !!element; });
+    if (selectedElements.length === 0) {
+        return null;
+    }
+    return React.createElement("div", { className: "m-box-model-tool" }, selectedElements.map(function (element) {
+        var window = state_1.getSyntheticNodeWindow(browser, element.$id);
+        var bounds = window.allComputedBounds && window.allComputedBounds[element.$id];
+        var style = window.allComputedStyles && window.allComputedStyles[element.$id];
+        if (!bounds || !style) {
+            return null;
+        }
+        return React.createElement(ElementBoxModel, { key: element.$id, windowBounds: window.bounds, bounds: bounds, computedStyle: style });
+    }));
+});
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/box-model.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/box-model.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/edit-text.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/edit-text.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+var TEXT_PADDING = 10;
+exports.EditTextToolBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch, setTextarea = _a.setTextarea, zoom = _a.zoom;
+    if (!workspace.stage.secondarySelection)
+        return null;
+    var selectedNode = workspace.selectionRefs.map(function (_a) {
+        var type = _a[0], id = _a[1];
+        return aerial_browser_sandbox_1.getSyntheticNodeById(browser, id);
+    }).shift();
+    if (!aerial_browser_sandbox_1.isSyntheticDOMNode(selectedNode))
+        return null;
+    var nodeWindow = aerial_browser_sandbox_1.getSyntheticNodeWindow(browser, selectedNode.$id);
+    var bounds = nodeWindow.allComputedBounds[selectedNode.$id];
+    var computedStyle = (nodeWindow.allComputedStyles[selectedNode.$id] || {});
+    if (!bounds)
+        return null;
+    var _b = aerial_common2_1.getBoundsSize(bounds), width = _b.width, height = _b.height;
+    var style = {
+        fontSize: computedStyle.fontSize,
+        color: computedStyle.color,
+        position: "absolute",
+        left: nodeWindow.bounds.left + bounds.left,
+        top: nodeWindow.bounds.top + bounds.top,
+        overflow: "visible",
+        background: "white",
+        minWidth: width,
+        minHeight: height,
+        // that may be on a white background.
+        zIndex: 99999999
+    };
+    var textStyle = {
+        fontSize: computedStyle.fontSize,
+        // color: computedStyle.color,
+        fontFamily: computedStyle.fontFamily,
+        lineHeight: computedStyle.lineHeight,
+        letterSpacing: computedStyle.letterSpacing,
+        textAlign: computedStyle.textAlign,
+        padding: computedStyle.padding,
+        border: "none",
+    };
+    return React.createElement("div", { style: style },
+        React.createElement("span", { ref: setTextarea, style: __assign({ resize: "none", overflow: "visible", padding: 0 }, textStyle), contentEditable: true, onChange: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.stageToolEditTextChanged.bind(_this, selectedNode.$id)), onKeyDown: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.stageToolEditTextKeyDown.bind(_this, selectedNode.$id)), onBlur: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.stageToolEditTextBlur.bind(_this, selectedNode.$id)) }, aerial_browser_sandbox_1.getSyntheticNodeTextContent(selectedNode).trim()));
+};
+var enhanceEditTextTool = recompose_1.compose(recompose_1.pure, recompose_1.withState("textarea", "setTextarea", null), recompose_1.lifecycle({
+    componentWillUpdate: function (_a) {
+        var textarea = _a.textarea;
+        if (textarea && this.props.textarea !== textarea) {
+            textarea.focus();
+            setTimeout(function () {
+                var range = textarea.ownerDocument.createRange();
+                range.selectNodeContents(textarea);
+                var sel = textarea.ownerDocument.defaultView.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }, 1);
+        }
+    }
+}));
+exports.EditTextTool = enhanceEditTextTool(exports.EditTextToolBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/edit-text.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/edit-text.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/grid.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/grid.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+exports.GridStageToolBase = function (_a) {
+    var translate = _a.translate;
+    if (translate.zoom <= 12)
+        return null;
+    var size = 20000;
+    var gridSize = 1;
+    var paths = [
+        // horizontal
+        [[0, 0], [gridSize, 0]],
+        // vertical
+        [[0, 0], [0, gridSize]]
+    ];
+    return React.createElement("div", { className: "m-grid-tool", style: { left: -size / 2, top: -size / 2 } },
+        React.createElement("svg", { width: size, height: size, viewBox: "0 0 " + size + " " + size },
+            React.createElement("defs", null,
+                React.createElement("pattern", { id: "grid", width: gridSize / size, height: gridSize / size },
+                    React.createElement("g", { stroke: "#d8d8d8" }, paths.map(function (_a, i) {
+                        var _b = _a[0], sx = _b[0], sy = _b[1], _c = _a[1], ex = _c[0], ey = _c[1];
+                        return React.createElement("path", { strokeWidth: 1 / translate.zoom, key: i, d: "M" + sx + "," + sy + " L" + ex + "," + ey });
+                    })))),
+            React.createElement("rect", { fill: "url(#grid)", width: size, height: size })));
+};
+exports.GridStageTool = recompose_1.compose(recompose_1.pure)(exports.GridStageToolBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/grid.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/grid.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__("./src/front-end/components/main/workspace/stage/tools/grid.tsx"));
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/index.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var edit_text_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/edit-text.tsx");
+var grid_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/grid.tsx");
+var windows_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/windows.tsx");
+var overlay_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/overlay.tsx");
+var affected_nodes_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/affected-nodes.tsx");
+var selection_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/index.tsx");
+var box_model_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/box-model.tsx");
+var static_position_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/static-position.tsx");
+exports.ToolsLayerBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch, translate = _a.translate;
+    var showTools = workspace.stage.showTools !== false;
+    var windowElement = React.createElement(windows_1.WindowsStageTool, { workspace: workspace, browser: browser, dispatch: dispatch, translate: translate });
+    if (showTools === false) {
+        return React.createElement("div", { className: "m-stage-tools" }, windowElement);
+    }
+    return React.createElement("div", { className: "m-stage-tools" },
+        React.createElement(grid_1.GridStageTool, { translate: translate }),
+        React.createElement(overlay_1.NodeOverlaysTool, { zoom: translate.zoom, workspace: workspace, browser: browser, dispatch: dispatch }),
+        React.createElement(box_model_1.BoxModelStageTool, { zoom: translate.zoom, workspace: workspace, browser: browser }),
+        React.createElement(selection_1.SelectionStageTool, { zoom: translate.zoom, workspace: workspace, browser: browser, dispatch: dispatch }),
+        windowElement,
+        React.createElement(static_position_1.StaticPositionStageTool, { zoom: translate.zoom, workspace: workspace, browser: browser }),
+        React.createElement(edit_text_1.EditTextTool, { zoom: translate.zoom, workspace: workspace, browser: browser, dispatch: dispatch }),
+        React.createElement(affected_nodes_1.AffectedNodesTool, { zoom: translate.zoom, workspace: workspace, browser: browser }));
+};
+exports.ToolsLayer = recompose_1.compose(recompose_1.pure)(exports.ToolsLayerBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/overlay.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(setImmediate, process) {
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/overlay.scss");
+var cx = __webpack_require__("./node_modules/classnames/index.js");
+var React = __webpack_require__("./node_modules/react/react.js");
+var Hammer = __webpack_require__("./node_modules/react-hammerjs/src/Hammer.js");
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var NodeOverlayBase = function (_a) {
+    var windowId = _a.windowId, zoom = _a.zoom, bounds = _a.bounds, node = _a.node, dispatch = _a.dispatch, hovering = _a.hovering;
+    if (!bounds) {
+        return null;
+    }
+    var borderWidth = 2 / zoom;
+    var style = {
+        left: bounds.left,
+        top: bounds.top,
+        width: bounds.right - bounds.left,
+        height: bounds.bottom - bounds.top,
+        boxShadow: "inset 0 0 0 " + borderWidth + "px #00B5FF"
+    };
+    return React.createElement("div", { className: cx("visual-tools-node-overlay", { hovering: hovering }), style: style });
+};
+var NodeOverlay = recompose_1.pure(NodeOverlayBase);
+var WindowOverlayToolsBase = function (_a) {
+    var dispatch = _a.dispatch, window = _a.window, hoveringNodes = _a.hoveringNodes, zoom = _a.zoom, onPanStart = _a.onPanStart, onPan = _a.onPan, onPanEnd = _a.onPanEnd;
+    if (!window.allComputedBounds) {
+        return null;
+    }
+    var style = {
+        position: "absolute",
+        left: window.bounds.left,
+        top: window.bounds.top,
+        width: window.bounds.right - window.bounds.left,
+        height: window.bounds.bottom - window.bounds.top
+    };
+    return React.createElement("div", { style: style },
+        React.createElement(Hammer, { onPanStart: onPanStart, onPan: onPan, onPanEnd: onPanEnd, direction: "DIRECTION_ALL" },
+            React.createElement("div", { style: { width: "100%", height: "100%", position: "absolute" }, onDoubleClick: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.stageToolOverlayMouseDoubleClicked.bind(_this, window.$id)) }, hoveringNodes.map(function (node) { return React.createElement(NodeOverlay, { windowId: window.$id, zoom: zoom, key: node.$id, node: node, bounds: window.allComputedBounds[node.$id], dispatch: dispatch, hovering: true }); }))));
+};
+var enhanceWindowOverlayTools = recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onPanStart: function (_a) {
+        var dispatch = _a.dispatch, window = _a.window;
+        return function (event) {
+            dispatch(actions_1.stageToolOverlayMousePanStart(window.$id));
+        };
+    },
+    onPan: function (_a) {
+        var dispatch = _a.dispatch, window = _a.window;
+        return function (event) {
+            dispatch(actions_1.stageToolOverlayMousePanning(window.$id, { left: event.center.x, top: event.center.y }, event.deltaY, event.velocityY));
+        };
+    },
+    onPanEnd: function (_a) {
+        var dispatch = _a.dispatch, window = _a.window;
+        return function (event) {
+            event.preventDefault();
+            setImmediate(function () {
+                dispatch(actions_1.stageToolOverlayMousePanEnd(window.$id));
+            });
+        };
+    }
+}));
+var WindowOverlayTools = enhanceWindowOverlayTools(WindowOverlayToolsBase);
+var getSyntheticNodes = aerial_common2_1.weakMemo(function (refs, allNodes) {
+    return refs.map(function (_a) {
+        var type = _a[0], id = _a[1];
+        return allNodes[id];
+    }).filter(function (id) { return !!id; });
+});
+var getHoveringSyntheticNodes = aerial_common2_1.weakMemo(function (workspace, window) {
+    var allNodes = aerial_browser_sandbox_1.getSyntheticWindowChildStructs(window);
+    return lodash_1.difference(getSyntheticNodes(workspace.hoveringRefs, allNodes), getSyntheticNodes(workspace.selectionRefs, allNodes));
+});
+exports.NodeOverlaysToolBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch, zoom = _a.zoom;
+    return React.createElement("div", { className: "visual-tools-layer-component" }, browser.windows.map(function (window) {
+        return React.createElement(WindowOverlayTools, { key: window.$id, hoveringNodes: getHoveringSyntheticNodes(workspace, window), window: window, dispatch: dispatch, zoom: zoom });
+    }));
+};
+exports.NodeOverlaysTool = recompose_1.pure(exports.NodeOverlaysToolBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/overlay.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/overlay.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/timers-browserify/main.js").setImmediate, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/selection/index.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/index.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var resizer_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/resizer.tsx");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var SelectionBounds = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, zoom = _a.zoom;
+    var selection = state_1.getBoundedWorkspaceSelection(browser, workspace);
+    var entireBounds = aerial_common2_1.mergeBounds.apply(void 0, selection.map(function (value) { return state_1.getSyntheticBrowserItemBounds(browser, value); }));
+    var style = {};
+    var borderWidth = 1 / zoom;
+    var boundsStyle = {
+        position: "absolute",
+        top: entireBounds.top,
+        left: entireBounds.left,
+        width: entireBounds.right - entireBounds.left,
+        height: entireBounds.bottom - entireBounds.top,
+        boxShadow: "inset 0 0 0 " + borderWidth + "px #00B5FF"
+    };
+    return React.createElement("div", { style: boundsStyle });
+};
+exports.SelectionStageToolBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch, onDoubleClick = _a.onDoubleClick, zoom = _a.zoom;
+    var selection = state_1.getBoundedWorkspaceSelection(browser, workspace);
+    if (!selection.length || workspace.stage.secondarySelection)
+        return null;
+    return React.createElement("div", { className: "m-stage-selection-tool", tabIndex: -1, onDoubleClick: onDoubleClick },
+        React.createElement(SelectionBounds, { workspace: workspace, browser: browser, zoom: zoom }),
+        React.createElement(resizer_1.Resizer, { workspace: workspace, browser: browser, dispatch: dispatch, zoom: zoom }));
+};
+var enhanceSelectionStageTool = recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onDoubleClick: function (_a) {
+        var dispatch = _a.dispatch, workspace = _a.workspace, browser = _a.browser;
+        return function (event) {
+            var selection = state_1.getBoundedWorkspaceSelection(browser, workspace);
+            if (selection.length === 1) {
+                dispatch(actions_1.selectorDoubleClicked(selection[0], event));
+            }
+        };
+    }
+}));
+exports.SelectionStageTool = enhanceSelectionStageTool(exports.SelectionStageToolBase);
+__export(__webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/resizer.tsx"));
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/selection/index.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/selection/index.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/selection/path.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/path.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+exports.PathBase = function (_a) {
+    var bounds = _a.bounds, points = _a.points, zoom = _a.zoom, pointRadius = _a.pointRadius, strokeWidth = _a.strokeWidth, _b = _a.showPoints, showPoints = _b === void 0 ? true : _b, onPointClick = _a.onPointClick;
+    var d = "";
+    // calculate the size of the bounds
+    points.forEach(function (point, i) {
+        d += (i === 0 ? "M" : "L") + point.left + " " + point.top;
+    });
+    d += "Z";
+    var width = bounds.right - bounds.left;
+    var height = bounds.bottom - bounds.top;
+    var cr = pointRadius;
+    var crz = cr / zoom;
+    var cw = cr * 2;
+    var cwz = cw / zoom;
+    var w = Math.ceil(width + Math.max(cw, cwz));
+    var h = Math.ceil(height + Math.max(cw, cwz));
+    var p = 100;
+    return React.createElement("svg", { width: w, height: h, viewBox: [0, 0, w, h].join(" "), className: "resizer-path" },
+        React.createElement("path", { d: d, strokeWidth: strokeWidth, stroke: "transparent", fill: "transparent" }),
+        showPoints !== false ? points.map(function (path, key) {
+            return React.createElement("rect", { onMouseDown: function (event) { return onPointClick(path, event); }, className: "point-circle-" + (path.top * 100) + "-" + path.left * 100, strokeWidth: 0, stroke: "black", fill: "transparent", width: cwz, height: cwz, x: Math.ceil(path.left * width), y: Math.ceil(path.top * height), rx: 0, ry: 0, key: key });
+        }) : void 0);
+};
+var enhancePath = recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onPointClick: function (_a) {
+        var bounds = _a.bounds, dispatch = _a.dispatch, zoom = _a.zoom, workspace = _a.workspace;
+        return function (point, event) {
+            event.stopPropagation();
+            var sourceEvent = __assign({}, event);
+            aerial_common2_1.startDOMDrag(event, (function () { }), function (event2, info) {
+                var delta = {
+                    left: info.delta.x / zoom,
+                    top: info.delta.y / zoom
+                };
+                dispatch(actions_1.resizerPathMoved(workspace.$id, point, bounds, {
+                    left: point.left === 0 ? bounds.left + delta.left : bounds.left,
+                    top: point.top === 0 ? bounds.top + delta.top : bounds.top,
+                    right: point.left === 1 ? bounds.right + delta.left : bounds.right,
+                    bottom: point.top === 1 ? bounds.bottom + delta.top : bounds.bottom,
+                }, event2));
+            }, function (event) {
+                dispatch(actions_1.resizerPathStoppedMoving(workspace.$id, event));
+            });
+        };
+    }
+}));
+exports.Path = enhancePath(exports.PathBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/selection/path.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/selection/path.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/selection/resizer.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/resizer.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var path_1 = __webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/path.tsx");
+var POINT_STROKE_WIDTH = 1;
+var POINT_RADIUS = 4;
+exports.ResizerBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, dispatch = _a.dispatch, onMouseDown = _a.onMouseDown, zoom = _a.zoom;
+    var bounds = state_1.getWorkspaceSelectionBounds(browser, workspace);
+    // offset stroke
+    var resizerStyle = {
+        position: "absolute",
+        left: bounds.left,
+        top: bounds.top,
+        width: bounds.right - bounds.left,
+        height: bounds.bottom - bounds.top,
+        transform: "translate(-" + POINT_RADIUS / zoom + "px, -" + POINT_RADIUS / zoom + "px)",
+        transformOrigin: "top left"
+    };
+    var points = [
+        { left: 0, top: 0 },
+        { left: .5, top: 0 },
+        { left: 1, top: 0 },
+        { left: 1, top: .5 },
+        { left: 1, top: 1 },
+        { left: .5, top: 1 },
+        { left: 0, top: 1 },
+        { left: 0, top: 0.5 },
+    ];
+    return React.createElement("div", { className: "m-resizer-component", tabIndex: -1 },
+        React.createElement("div", { className: "m-resizer-component--selection", style: resizerStyle, onMouseDown: onMouseDown },
+            React.createElement(path_1.Path, { zoom: zoom, points: points, workspace: workspace, bounds: bounds, strokeWidth: POINT_STROKE_WIDTH, dispatch: dispatch, pointRadius: POINT_RADIUS })));
+};
+var enhanceResizer = recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onMouseDown: function (_a) {
+        var dispatch = _a.dispatch, workspace = _a.workspace, browser = _a.browser;
+        return function (event) {
+            var translate = state_1.getStageTranslate(workspace.stage);
+            var bounds = state_1.getWorkspaceSelectionBounds(browser, workspace);
+            var translateLeft = translate.left;
+            var translateTop = translate.top;
+            var onStartDrag = function (event) {
+                dispatch(actions_1.resizerMouseDown(workspace.$id, event));
+            };
+            var onDrag = function (event2, _a) {
+                var delta = _a.delta;
+                dispatch(actions_1.resizerMoved(workspace.$id, {
+                    left: bounds.left + delta.x / translate.zoom,
+                    top: bounds.top + delta.y / translate.zoom,
+                }));
+            };
+            // debounce stopped moving so that it beats the stage click event
+            // which checks for moving or resizing state.
+            var onStopDrag = lodash_1.debounce(function () {
+                dispatch(actions_1.resizerStoppedMoving(workspace.$id, null));
+            }, 0);
+            aerial_common2_1.startDOMDrag(event, onStartDrag, onDrag, onStopDrag);
+        };
+    }
+}));
+exports.Resizer = enhanceResizer(exports.ResizerBase);
+__export(__webpack_require__("./src/front-end/components/main/workspace/stage/tools/selection/path.tsx"));
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/selection/resizer.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/selection/resizer.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/static-position.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/static-position.scss");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var React = __webpack_require__("./node_modules/react/react.js");
+var ElementStaticPositionInfo = recompose_1.compose(recompose_1.pure)(function (_a) {
+    var windowPosition = _a.windowPosition, element = _a.element, elementBounds = _a.elementBounds, zoom = _a.zoom, position = _a.position;
+    var borderScale = zoom / 1;
+    var staticBounds = aerial_common2_1.shiftBounds(elementBounds, {
+        left: -position.left,
+        top: -position.top
+    });
+    var style = {
+        left: windowPosition.left + staticBounds.left,
+        top: windowPosition.top + staticBounds.top,
+        width: staticBounds.right - staticBounds.left,
+        height: staticBounds.bottom - staticBounds.top,
+        boxShadow: "0 0 0 " + borderScale + "px #FF00FF"
+    };
+    return React.createElement("div", { className: "element-static-position", style: style });
+});
+// TODO - use hotkey toggle to show this component. It shouldn't be on by default
+exports.StaticPositionStageToolBase = function (_a) {
+    var zoom = _a.zoom, workspace = _a.workspace, browser = _a.browser;
+    // do nothing for now. Need to wire this up with a hotkey flag, 
+    // and need to show when CSS properties are mutated.
+    return null;
+    // const selectedElementRefs = workspace.selectionRefs.filter(([type]) => type === SYNTHETIC_ELEMENT);
+    // const selectedElements = selectedElementRefs.map(([type, $id]) => getSyntheticNodeById(browser, $id)).filter((element) => !!element) as SyntheticElement[];
+    // if (selectedElements.length === 0) return null;
+    // return <div className="m-static-position">
+    //   {
+    //     selectedElements.map((element) => {
+    //       const window = getSyntheticNodeWindow(browser, element.$id);
+    //       const elementBounds = window.allComputedBounds[element.$id];
+    //       const computedStyle = getComputedStyle(element.$id, window);
+    //       const position = {
+    //         left: convertElementMeasurementToNumber(element, computedStyle.left, Axis.HORIZONTAL, window),
+    //         top: convertElementMeasurementToNumber(element, computedStyle.top, Axis.HORIZONTAL, window),
+    //       };
+    //       return <ElementStaticPositionInfo windowPosition={window.bounds} key={element.$id} element={element} elementBounds={elementBounds} zoom={zoom} position={position} />
+    //     })
+    //   }
+    // </div>;
+};
+exports.StaticPositionStageTool = recompose_1.compose(recompose_1.pure)(exports.StaticPositionStageToolBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/static-position.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/static-position.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/main/workspace/stage/tools/windows.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__("./src/front-end/components/main/workspace/stage/tools/windows.scss");
+var React = __webpack_require__("./node_modules/react/react.js");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var WindowItemBase = function (_a) {
+    var window = _a.window, translate = _a.translate, dispatch = _a.dispatch, fullScreenWindowId = _a.fullScreenWindowId;
+    if (fullScreenWindowId && fullScreenWindowId !== window.$id) {
+        return null;
+    }
+    var _b = aerial_common2_1.getBoundsSize(window.bounds), width = _b.width, height = _b.height;
+    var style = {
+        width: width,
+        height: height,
+        left: window.bounds.left,
+        top: window.bounds.top,
+        background: "transparent",
+    };
+    var titleScale = Math.max(1 / translate.zoom, 0.03);
+    var titleStyle = {
+        transform: "translateY(-" + 20 * titleScale + "px) scale(" + titleScale + ")",
+        transformOrigin: "top left",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        width: width * translate.zoom,
+    };
+    var contentStyle = {
+        // boxShadow: `0 0 0 ${titleScale}px #DFDFDF`
+        background: "transparent"
+    };
+    return React.createElement("div", { className: "m-windows-stage-tool-item", style: style },
+        React.createElement("div", { className: "m-windows-stage-tool-item-title", tabIndex: -1, style: titleStyle, onKeyDown: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.stageToolWindowKeyDown.bind(_this, window.$id)), onClick: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.stageToolWindowTitleClicked.bind(_this, window.$id)) },
+            window.document && window.document.title || window.location,
+            React.createElement("i", { className: "ion-share", onClick: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.openExternalWindowButtonClicked.bind(_this, window.$id)) })),
+        React.createElement("div", { className: "m-windows-stage-tool-item-content", style: contentStyle }));
+};
+var WindowItem = recompose_1.pure(WindowItemBase);
+exports.WindowsStageToolBase = function (_a) {
+    var workspace = _a.workspace, browser = _a.browser, translate = _a.translate, dispatch = _a.dispatch;
+    var _b = workspace.stage, backgroundColor = _b.backgroundColor, fullScreen = _b.fullScreen;
+    var backgroundStyle = {
+        backgroundColor: backgroundColor || "rgba(0, 0, 0, 0.05)",
+        transform: "translate(" + -translate.left / translate.zoom + "px, " + -translate.top / translate.zoom + "px) scale(" + 1 / translate.zoom + ") translateZ(0)",
+        transformOrigin: "top left"
+    };
+    return React.createElement("div", { className: "m-windows-stage-tool" },
+        React.createElement("div", { style: backgroundStyle, className: "m-windows-stage-tool-background", onClick: aerial_common2_1.wrapEventToDispatch(dispatch, actions_1.stageToolWindowBackgroundClicked) }),
+        browser.windows.map(function (window) { return React.createElement(WindowItem, { key: window.$id, window: window, fullScreenWindowId: fullScreen && fullScreen.windowId, dispatch: dispatch, translate: translate }); }));
+};
+exports.WindowsStageTool = recompose_1.pure(exports.WindowsStageToolBase);
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/windows.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/main/workspace/stage/tools/windows.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/components/windows-pane.tsx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__("./node_modules/react/react.js");
+var windows_pane_pc_1 = __webpack_require__("./src/front-end/components/windows-pane.pc");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var recompose_1 = __webpack_require__("./node_modules/recompose/es/Recompose.js");
+var WindowsPaneRow = windows_pane_pc_1.hydrateTdWindowsPaneRow(recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onClick: function (_a) {
+        var onClick = _a.onClick, $id = _a.$id;
+        return function (event) {
+            onClick(event, $id);
+        };
+    }
+})), {});
+exports.WindowsPane = windows_pane_pc_1.hydrateTdWindowsPane(recompose_1.compose(recompose_1.pure, recompose_1.withHandlers({
+    onWindowClicked: function (_a) {
+        var dispatch = _a.dispatch;
+        return function (event, windowId) {
+            dispatch(actions_1.windowPaneRowClicked(windowId, event));
+        };
+    }
+}), function (Base) { return function (_a) {
+    var workspace = _a.workspace, windows = _a.windows, onWindowClicked = _a.onWindowClicked;
+    var windowProps = windows.map(function (window) { return (__assign({}, window, { selected: workspace.selectionRefs.find(function (_a) {
+            var $type = _a[0], $id = _a[1];
+            return $id === window.$id;
+        }) })); });
+    return React.createElement(Base, { windows: windowProps, onWindowClicked: onWindowClicked });
+}; }), {
+    TdListItem: null,
+    TdWindowsPaneRow: WindowsPaneRow,
+    TdList: null,
+    TdPane: null
+});
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/windows-pane.tsx"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/components/windows-pane.tsx"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/constants/index.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NATIVE_COMPONENTS = [];
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/constants/index.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/constants/index.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/index.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__("./src/front-end/application.tsx"));
+__export(__webpack_require__("./src/front-end/state/index.ts"));
+__export(__webpack_require__("./src/front-end/reducers/index.ts"));
+__export(__webpack_require__("./src/front-end/actions/index.ts"));
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/index.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/index.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/reducers/index.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var constants_1 = __webpack_require__("./src/front-end/constants/index.ts");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+exports.applicationReducer = function (state, event) {
+    if (state === void 0) { state = state_1.createApplicationState(); }
+    switch (event.type) {
+        case actions_1.LOADED_SAVED_STATE: {
+            var newState = event.state;
+            state = lodash_1.merge({}, state, JSON.parse(JSON.stringify(newState)));
+            return state;
+        }
+        case actions_1.TREE_NODE_LABEL_CLICKED: {
+            var node = event.node;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                selectedFileId: node.$id
+            });
+        }
+        case actions_1.TOGGLE_TARGET_CSS_TARGET_SELECTOR_CLICKED: {
+            var _a = event, itemId = _a.itemId, windowId = _a.windowId;
+            var window_1 = aerial_browser_sandbox_1.getSyntheticWindow(state, windowId);
+            var item = aerial_browser_sandbox_1.getSyntheticWindowChild(window_1, itemId);
+            var workspace = state_1.getSyntheticWindowWorkspace(state, window_1.$id);
+            state = state_1.toggleWorkspaceTargetCSSSelector(state, workspace.$id, item.source.uri, item.selectorText);
+            return state;
+        }
+    }
+    // state = canvasReducer(state, event);
+    // state = syntheticBrowserReducer(state, event);
+    state = aerial_browser_sandbox_1.syntheticBrowserReducer(state, event);
+    state = stageReducer(state, event);
+    state = windowPaneReducer(state, event);
+    state = componentsPaneReducer(state, event);
+    state = shortcutReducer(state, event);
+    state = apiReducer(state, event);
+    state = dndReducer(state, event);
+    // state = externalReducer(state, event);
+    return state;
+};
+var PANE_SENSITIVITY = process.platform === "win32" ? 0.1 : 1;
+var ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
+var MIN_ZOOM = 0.02;
+var MAX_ZOOM = 6400 / 100;
+var INITIAL_ZOOM_PADDING = 50;
+var apiReducer = function (state, event) {
+    switch (event.type) {
+        case actions_1.API_COMPONENTS_LOADED: {
+            var components = event.components;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                availableComponents: constants_1.NATIVE_COMPONENTS.concat(components)
+            });
+        }
+    }
+    return state;
+};
+var componentsPaneReducer = function (state, event) {
+    switch (event.type) {
+        case actions_1.COMPONENTS_PANE_COMPONENT_CLICKED: {
+            var componentId = event.componentId;
+            return state_1.setWorkspaceSelection(state, state.selectedWorkspaceId, aerial_common2_1.getStructReference({ $id: componentId, $type: state_1.AVAILABLE_COMPONENT }));
+        }
+    }
+    return state;
+};
+var shortcutReducer = function (state, event) {
+    switch (event.type) {
+        case actions_1.TOGGLE_LEFT_GUTTER_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            return state_1.updateWorkspaceStage(state, workspace.$id, {
+                showLeftGutter: !workspace.stage.showLeftGutter
+            });
+        }
+        case actions_1.ESCAPE_SHORTCUT_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            return state_1.updateWorkspace(state, workspace.$id, {
+                selectionRefs: []
+            });
+        }
+        case actions_1.ZOOM_IN_SHORTCUT_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            if (workspace.stage.fullScreen)
+                return state;
+            return setStageZoom(state, workspace.$id, normalizeZoom(workspace.stage.translate.zoom) * 2);
+        }
+        case actions_1.ZOOM_OUT_SHORTCUT_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            if (workspace.stage.fullScreen)
+                return state;
+            return setStageZoom(state, workspace.$id, normalizeZoom(workspace.stage.translate.zoom) / 2);
+        }
+        case actions_1.PREV_WINDOW_SHORTCUT_PRESSED: {
+            return state;
+        }
+        case actions_1.FULL_SCREEN_TARGET_DELETED: {
+            return unfullscreen(state);
+        }
+        case actions_1.FULL_SCREEN_SHORTCUT_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            var selection = workspace.selectionRefs[0];
+            var windowId = selection ? selection[0] === aerial_browser_sandbox_1.SYNTHETIC_WINDOW ? selection[1] : aerial_browser_sandbox_1.getSyntheticNodeWindow(state, selection[1]) && aerial_browser_sandbox_1.getSyntheticNodeWindow(state, selection[1]).$id : null;
+            if (windowId && !workspace.stage.fullScreen) {
+                var window_2 = aerial_browser_sandbox_1.getSyntheticWindow(state, windowId);
+                state = state_1.updateWorkspaceStage(state, workspace.$id, {
+                    smooth: true,
+                    fullScreen: {
+                        windowId: windowId,
+                        originalTranslate: workspace.stage.translate,
+                        originalWindowBounds: window_2.bounds
+                    },
+                    translate: {
+                        zoom: 1,
+                        left: -window_2.bounds.left,
+                        top: -window_2.bounds.top
+                    }
+                });
+                return state;
+            }
+            else if (workspace.stage.fullScreen) {
+                return unfullscreen(state);
+            }
+            else {
+                return state;
+            }
+        }
+        case actions_1.CANVAS_MOTION_RESTED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            return state_1.updateWorkspaceStage(state, workspace.$id, {
+                smooth: false
+            });
+        }
+        case actions_1.TOGGLE_TEXT_EDITOR_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            return state_1.updateWorkspaceStage(state, workspace.$id, {
+                showTextEditor: !workspace.stage.showTextEditor
+            });
+        }
+        case actions_1.TOGGLE_RIGHT_GUTTER_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            return state_1.updateWorkspaceStage(state, workspace.$id, {
+                showRightGutter: !workspace.stage.showRightGutter
+            });
+        }
+    }
+    return state;
+};
+var dndReducer = function (state, event) {
+    switch (event.type) {
+        case actions_1.DND_STARTED: {
+            var ref = event.ref;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                draggingRefs: [ref]
+            });
+        }
+        case actions_1.DND_HANDLED: {
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                draggingRefs: []
+            });
+        }
+    }
+    return state;
+};
+var stageReducer = function (state, event) {
+    switch (event.type) {
+        case actions_1.VISUAL_EDITOR_WHEEL: {
+            var _a = event, workspaceId = _a.workspaceId, metaKey = _a.metaKey, ctrlKey = _a.ctrlKey, deltaX = _a.deltaX, deltaY = _a.deltaY, canvasHeight = _a.canvasHeight, canvasWidth = _a.canvasWidth;
+            var workspace = state_1.getWorkspaceById(state, workspaceId);
+            if (workspace.stage.fullScreen) {
+                return state;
+            }
+            var translate = state_1.getStageTranslate(workspace.stage);
+            if (metaKey || ctrlKey) {
+                translate = aerial_common2_1.centerTransformZoom(translate, aerial_common2_1.boundsFromRect({
+                    width: canvasWidth,
+                    height: canvasHeight
+                }), lodash_1.clamp(translate.zoom + translate.zoom * deltaY / ZOOM_SENSITIVITY, MIN_ZOOM, MAX_ZOOM), workspace.stage.mousePosition);
+            }
+            else {
+                translate = __assign({}, translate, { left: translate.left - deltaX, top: translate.top - deltaY });
+            }
+            return state_1.updateWorkspaceStage(state, workspace.$id, { smooth: false, translate: translate });
+        }
+        case actions_1.TOGGLE_TOOLS_SHORTCUT_PRESSED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            return state_1.updateWorkspaceStage(state, workspace.$id, {
+                showTools: workspace.stage.showTools == null ? false : !workspace.stage.showTools
+            });
+        }
+        case actions_1.STAGE_TOOL_EDIT_TEXT_KEY_DOWN: {
+            var _b = event, sourceEvent = _b.sourceEvent, nodeId = _b.nodeId;
+            if (sourceEvent.key === "Escape") {
+                var workspace = state_1.getSyntheticNodeWorkspace(state, nodeId);
+                state = state_1.setWorkspaceSelection(state, workspace.$id, aerial_common2_1.getStructReference(aerial_browser_sandbox_1.getSyntheticNodeById(state, nodeId)));
+                state = state_1.updateWorkspaceStage(state, workspace.$id, {
+                    secondarySelection: false
+                });
+            }
+            return state;
+        }
+        case actions_1.RESIZER_PATH_MOUSE_MOVED:
+        case actions_1.RESIZER_MOVED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            state = state_1.updateWorkspaceStage(state, workspace.$id, {
+                movingOrResizing: true
+            });
+            return state;
+        }
+        case actions_1.RESIZER_PATH_MOUSE_STOPPED_MOVING:
+        case actions_1.RESIZER_STOPPED_MOVING: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            state = state_1.updateWorkspaceStage(state, workspace.$id, {
+                movingOrResizing: false
+            });
+            return state;
+        }
+        case actions_1.WINDOW_FOCUSED: {
+            var windowId = event.windowId;
+            var window_3 = aerial_browser_sandbox_1.getSyntheticWindow(state, windowId);
+            return selectAndCenterSyntheticWindow(state, window_3);
+        }
+        case aerial_browser_sandbox_1.SYNTHETIC_WINDOW_PROXY_OPENED: {
+            var _c = event, instance = _c.instance, isNew = _c.isNew;
+            // if a window instance exists in the store, then it's already visible on stage -- could
+            // have been loaded from a saved state.
+            if (!isNew) {
+                return state;
+            }
+            return selectAndCenterSyntheticWindow(state, instance.struct);
+        }
+        case actions_1.STAGE_TOOL_OVERLAY_MOUSE_LEAVE: {
+            var sourceEvent = event.sourceEvent;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                hoveringRefs: []
+            });
+        }
+        case actions_1.CSS_DECLARATION_TITLE_MOUSE_ENTER: {
+            var _d = event, windowId = _d.windowId, ruleId = _d.ruleId;
+            var window_4 = aerial_browser_sandbox_1.getSyntheticWindow(state, windowId);
+            var selectorText = aerial_browser_sandbox_1.getSyntheticWindowChild(window_4, ruleId).selectorText;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                hoveringRefs: aerial_browser_sandbox_1.getMatchingElements(window_4, selectorText).map(function (element) { return [
+                    element.$type,
+                    element.$id
+                ]; })
+            });
+        }
+        case actions_1.CSS_DECLARATION_TITLE_MOUSE_LEAVE: {
+            var _e = event, windowId = _e.windowId, ruleId = _e.ruleId;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                hoveringRefs: []
+            });
+        }
+        case actions_1.BREADCRUMB_ITEM_CLICKED: {
+            var _f = event, windowId = _f.windowId, nodeId = _f.nodeId;
+            var window_5 = aerial_browser_sandbox_1.getSyntheticWindow(state, windowId);
+            var browser = state_1.getSyntheticWindowBrowser(state, window_5.$id);
+            var node = aerial_browser_sandbox_1.getSyntheticNodeById(browser, nodeId);
+            var workspace = state_1.getSyntheticWindowWorkspace(state, window_5.$id);
+            return state_1.setWorkspaceSelection(state, workspace.$id, [node.$type, node.$id]);
+        }
+        case actions_1.BREADCRUMB_ITEM_MOUSE_ENTER: {
+            var _g = event, windowId = _g.windowId, nodeId = _g.nodeId;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                hoveringRefs: [[aerial_browser_sandbox_1.SYNTHETIC_ELEMENT, nodeId]]
+            });
+        }
+        case actions_1.BREADCRUMB_ITEM_MOUSE_LEAVE: {
+            var _h = event, windowId = _h.windowId, nodeId = _h.nodeId;
+            return state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                hoveringRefs: []
+            });
+        }
+        case actions_1.EMPTY_WINDOWS_URL_ADDED: {
+            var workspaceId = state.selectedWorkspaceId;
+            return centerStage(state, workspaceId, {
+                left: 0,
+                top: 0,
+                right: aerial_browser_sandbox_1.DEFAULT_WINDOW_WIDTH,
+                bottom: aerial_browser_sandbox_1.DEFAULT_WINDOW_HEIGHT
+            }, false, true);
+        }
+        case actions_1.STAGE_MOUNTED:
+            {
+                var element = event.element;
+                var _j = element.getBoundingClientRect() || {}, _k = _j.width, width = _k === void 0 ? 400 : _k, _l = _j.height, height = _l === void 0 ? 300 : _l;
+                var workspaceId = state.selectedWorkspaceId;
+                var workspace = state_1.getSelectedWorkspace(state);
+                state = state_1.updateWorkspaceStage(state, workspaceId, { container: element });
+                // do not center if in full screen mode
+                if (workspace.stage.fullScreen) {
+                    return state;
+                }
+                return centerSelectedWorkspace(state);
+            }
+            ;
+        case actions_1.STAGE_TOOL_OVERLAY_MOUSE_PAN_START: {
+            var windowId = event.windowId;
+            var workspace = state_1.getSyntheticWindowWorkspace(state, windowId);
+            return state_1.updateWorkspaceStage(state, workspace.$id, { panning: true });
+        }
+        case actions_1.STAGE_TOOL_OVERLAY_MOUSE_PAN_END: {
+            var windowId = event.windowId;
+            var workspace = state_1.getSyntheticWindowWorkspace(state, windowId);
+            return state_1.updateWorkspaceStage(state, workspace.$id, { panning: false });
+        }
+        case actions_1.STAGE_MOUSE_MOVED:
+            {
+                var _m = event.sourceEvent, pageX = _m.pageX, pageY = _m.pageY;
+                state = state_1.updateWorkspaceStage(state, state.selectedWorkspaceId, {
+                    mousePosition: {
+                        left: pageX,
+                        top: pageY
+                    }
+                });
+                var workspace = state_1.getSelectedWorkspace(state);
+                // TODO - in the future, we'll probably want to be able to highlight hovered nodes as the user is moving an element around to indicate where
+                // they can drop the element. 
+                var targetRef = workspace.stage.movingOrResizing ? null : state_1.getStageToolMouseNodeTargetReference(state, event);
+                state = state_1.updateWorkspace(state, state.selectedWorkspaceId, {
+                    hoveringRefs: targetRef ? [targetRef] : []
+                });
+                return state;
+            }
+            ;
+        case actions_1.STAGE_MOUSE_CLICKED: {
+            var sourceEvent = event.sourceEvent;
+            if (/textarea|input/i.test(sourceEvent.target.nodeName)) {
+                return state;
+            }
+            // alt key opens up a new link
+            var altKey = sourceEvent.altKey;
+            var workspace = state_1.getSelectedWorkspace(state);
+            state = updateWorkspaceStageSmoothing(state, workspace);
+            // do not allow selection while window is panning (scrolling)
+            if (workspace.stage.panning || workspace.stage.movingOrResizing)
+                return state;
+            var targetRef = state_1.getStageToolMouseNodeTargetReference(state, event);
+            if (!targetRef) {
+                return state;
+            }
+            if (!altKey) {
+                state = handleWindowSelectionFromAction(state, targetRef, event);
+                state = state_1.updateWorkspaceStage(state, workspace.$id, {
+                    secondarySelection: false
+                });
+                return state;
+            }
+            return state;
+        }
+        case actions_1.STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED: {
+            var _o = event, sourceEvent = _o.sourceEvent, windowId = _o.windowId;
+            var workspace = state_1.getSyntheticWindowWorkspace(state, windowId);
+            var targetRef = state_1.getStageToolMouseNodeTargetReference(state, event);
+            if (!targetRef)
+                return state;
+            state = state_1.updateWorkspaceStage(state, workspace.$id, {
+                secondarySelection: true
+            });
+            state = state_1.setWorkspaceSelection(state, workspace.$id, targetRef);
+            return state;
+        }
+        case actions_1.WINDOW_SELECTION_SHIFTED: {
+            var windowId = event.windowId;
+            return selectAndCenterSyntheticWindow(state, aerial_browser_sandbox_1.getSyntheticWindow(state, windowId));
+        }
+        case actions_1.SELECTOR_DOUBLE_CLICKED: {
+            var _p = event, sourceEvent = _p.sourceEvent, item = _p.item;
+            var workspace = state_1.getSyntheticNodeWorkspace(state, item.$id);
+            state = state_1.updateWorkspaceStage(state, workspace.$id, {
+                secondarySelection: true
+            });
+            state = state_1.setWorkspaceSelection(state, workspace.$id, aerial_common2_1.getStructReference(item));
+            return state;
+        }
+        case actions_1.WORKSPACE_DELETION_SELECTED: {
+            var workspaceId = event.workspaceId;
+            state = state_1.clearWorkspaceSelection(state, workspaceId);
+            return state;
+        }
+        case actions_1.STAGE_TOOL_WINDOW_TITLE_CLICKED: {
+            state = updateWorkspaceStageSmoothing(state);
+            return handleWindowSelectionFromAction(state, aerial_common2_1.getStructReference(aerial_browser_sandbox_1.getSyntheticWindow(state, event.windowId)), event);
+        }
+        case actions_1.STAGE_TOOL_WINDOW_BACKGROUND_CLICKED: {
+            var workspace = state_1.getSelectedWorkspace(state);
+            return state_1.clearWorkspaceSelection(state, workspace.$id);
+        }
+    }
+    return state;
+};
+// const externalReducer = (state: ApplicationState, event: BaseEvent) => {
+//   switch(event.type) {
+//     case OPEN_EXTERNAL_WINDOWS_REQUESTED: {
+//       console.log("REQ");
+//       const { uris }: OpenExternalWindowsRequested = event;
+//       const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
+//       const browser = getSyntheticBrowser(state, workspace.browserId);
+//       const selection = [];
+//       for (const uri of uris) {
+//         let window = browser.windows.find(window => {
+//           return window.location === uri;
+//         });
+//         if (!window) {
+//           window = createSyntheticWindow({
+//             location: uri,
+//             bounds: { left: 0, top: 0, right: 100, bottom: 100 }
+//           });
+//           state = addSyntheticWindow(state, browser.$id, window);
+//         }
+//         selection.push(window);
+//       }
+//       console.log(selection);
+//       return state;
+//     }
+//   }
+//   return state;
+// };
+var unfullscreen = function (state, workspaceId) {
+    if (workspaceId === void 0) { workspaceId = state.selectedWorkspaceId; }
+    var workspace = state_1.getWorkspaceById(state, workspaceId);
+    var originalWindowBounds = workspace.stage.fullScreen.originalWindowBounds;
+    state = state_1.updateWorkspaceStage(state, workspace.$id, {
+        smooth: true,
+        fullScreen: undefined
+    });
+    state = state_1.updateWorkspaceStage(state, workspace.$id, {
+        translate: workspace.stage.fullScreen.originalTranslate,
+        smooth: true
+    });
+    return state;
+};
+var selectAndCenterSyntheticWindow = function (state, window) {
+    var workspace = state_1.getSelectedWorkspace(state);
+    if (!workspace.stage.container)
+        return state;
+    var _a = workspace.stage.container.getBoundingClientRect(), width = _a.width, height = _a.height;
+    state = centerStage(state, state.selectedWorkspaceId, window.bounds, true, workspace.stage.fullScreen ? workspace.stage.fullScreen.originalTranslate.zoom : true);
+    // update translate
+    workspace = state_1.getSelectedWorkspace(state);
+    if (workspace.stage.fullScreen) {
+        state = state_1.updateWorkspaceStage(state, workspace.$id, {
+            smooth: true,
+            fullScreen: {
+                windowId: window.$id,
+                originalTranslate: workspace.stage.translate,
+                originalWindowBounds: window.bounds
+            },
+            translate: {
+                zoom: 1,
+                left: -window.bounds.left,
+                top: -window.bounds.top
+            }
+        });
+    }
+    state = state_1.setWorkspaceSelection(state, workspace.$id, aerial_common2_1.getStructReference(window));
+    return state;
+};
+var centerSelectedWorkspace = function (state, smooth) {
+    if (smooth === void 0) { smooth = false; }
+    var workspace = state_1.getWorkspaceById(state, state.selectedWorkspaceId);
+    var innerBounds = state_1.getSyntheticBrowserBounds(aerial_browser_sandbox_1.getSyntheticBrowser(state, workspace.browserId));
+    // no windows loaded
+    if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {
+        console.warn("Stage mounted before windows have been loaded");
+        return state;
+    }
+    return centerStage(state, workspace.$id, innerBounds, smooth, true);
+};
+var centerStage = function (state, workspaceId, innerBounds, smooth, zoomOrZoomToFit) {
+    var workspace = state_1.getWorkspaceById(state, workspaceId);
+    var _a = workspace.stage, container = _a.container, translate = _a.translate;
+    if (!container)
+        return state;
+    var _b = container.getBoundingClientRect(), width = _b.width, height = _b.height;
+    var innerSize = aerial_common2_1.getBoundsSize(innerBounds);
+    var centered = {
+        left: -innerBounds.left + width / 2 - (innerSize.width) / 2,
+        top: -innerBounds.top + height / 2 - (innerSize.height) / 2,
+    };
+    var scale = typeof zoomOrZoomToFit === "boolean" ? Math.min((width - INITIAL_ZOOM_PADDING) / innerSize.width, (height - INITIAL_ZOOM_PADDING) / innerSize.height) : typeof zoomOrZoomToFit === "number" ? zoomOrZoomToFit : translate.zoom;
+    return state_1.updateWorkspaceStage(state, workspaceId, {
+        smooth: smooth,
+        translate: aerial_common2_1.centerTransformZoom(__assign({}, centered, { zoom: 1 }), { left: 0, top: 0, right: width, bottom: height }, scale)
+    });
+};
+var handleWindowSelectionFromAction = function (state, ref, event) {
+    var sourceEvent = event.sourceEvent;
+    var workspace = state_1.getSelectedWorkspace(state);
+    // TODO - may want to allow multi selection once it's confirmed to work on
+    // all scenarios.
+    // meta key + no items selected should display source of 
+    // if (sourceEvent.metaKey && workspace.selectionRefs.length) {
+    //   return toggleWorkspaceSelection(state, workspace.$id, ref);
+    // } else if(!sourceEvent.metaKey) {
+    //   return setWorkspaceSelection(state, workspace.$id, ref);
+    // }
+    return state_1.setWorkspaceSelection(state, workspace.$id, ref);
+};
+var normalizeZoom = function (zoom) {
+    return (zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom));
+};
+var windowPaneReducer = function (state, event) {
+    switch (event.type) {
+        case actions_1.WINDOW_PANE_ROW_CLICKED: {
+            var windowId = event.windowId;
+            var window_6 = aerial_browser_sandbox_1.getSyntheticWindow(state, windowId);
+            return selectAndCenterSyntheticWindow(state, window_6);
+        }
+    }
+    return state;
+};
+var updateWorkspaceStageSmoothing = function (state, workspace) {
+    if (!workspace)
+        workspace = state_1.getSelectedWorkspace(state);
+    if (!workspace.stage.fullScreen && workspace.stage.smooth) {
+        return state_1.updateWorkspaceStage(state, workspace.$id, {
+            smooth: false
+        });
+    }
+    return state;
+};
+var setStageZoom = function (state, workspaceId, zoom, smooth) {
+    if (smooth === void 0) { smooth = true; }
+    var workspace = state_1.getWorkspaceById(state, workspaceId);
+    return state_1.updateWorkspaceStage(state, workspace.$id, {
+        smooth: smooth,
+        translate: aerial_common2_1.centerTransformZoom(workspace.stage.translate, workspace.stage.container.getBoundingClientRect(), lodash_1.clamp(zoom, MIN_ZOOM, MAX_ZOOM), workspace.stage.mousePosition)
+    });
+};
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/reducers/index.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/reducers/index.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/sagas/api.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var io = __webpack_require__("./node_modules/socket.io-client/lib/index.js");
+var redux_saga_1 = __webpack_require__("./node_modules/redux-saga/es/index.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var PERSIST_DELAY_TIMEOUT = 1000;
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var effects_1 = __webpack_require__("./node_modules/redux-saga/es/effects.js");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var SAVE_KEY = "app-state";
+function apiSaga() {
+    var apiHost;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.select()];
+            case 1:
+                apiHost = (_a.sent()).apiHost;
+                return [4 /*yield*/, effects_1.fork(getComponents)];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(syncWorkspaceState)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(aerial_common2_1.createSocketIOSaga(io(apiHost)))];
+            case 4:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+exports.apiSaga = apiSaga;
+function getComponents() {
+    var apiHost, response, json;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (false) return [3 /*break*/, 6];
+                return [4 /*yield*/, effects_1.select()];
+            case 1:
+                apiHost = (_a.sent()).apiHost;
+                return [4 /*yield*/, effects_1.call(fetch, apiHost + "/components")];
+            case 2:
+                response = _a.sent();
+                return [4 /*yield*/, effects_1.call(response.json.bind(response))];
+            case 3:
+                json = _a.sent();
+                return [4 /*yield*/, effects_1.put(actions_1.apiComponentsLoaded(json))];
+            case 4:
+                _a.sent();
+                // just refresh whenever a file has changed
+                return [4 /*yield*/, effects_1.take([actions_1.FILE_CONTENT_CHANGED, actions_1.FILE_REMOVED, actions_1.COMPONENT_SCREENSHOT_SAVED])];
+            case 5:
+                // just refresh whenever a file has changed
+                _a.sent();
+                return [3 /*break*/, 0];
+            case 6: return [2 /*return*/];
+        }
+    });
+}
+function syncWorkspaceState() {
+    var state, apiHost, pojoState, e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.fork(function () {
+                    var prevState, state_2, pojoState, apiHost_1;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, effects_1.take(actions_1.TRIED_LOADING_APP_STATE)];
+                            case 1:
+                                _a.sent();
+                                _a.label = 2;
+                            case 2:
+                                if (false) return [3 /*break*/, 7];
+                                return [4 /*yield*/, effects_1.take()];
+                            case 3:
+                                _a.sent();
+                                return [4 /*yield*/, effects_1.call(redux_saga_1.delay, PERSIST_DELAY_TIMEOUT)];
+                            case 4:
+                                _a.sent();
+                                return [4 /*yield*/, effects_1.select()];
+                            case 5:
+                                state_2 = _a.sent();
+                                if (prevState === state_2) {
+                                    return [3 /*break*/, 2];
+                                }
+                                prevState = state_2;
+                                pojoState = state_1.serializeApplicationState(state_2);
+                                apiHost_1 = state_2.apiHost;
+                                return [4 /*yield*/, effects_1.call(fetch, apiHost_1 + "/storage/" + state_2.storageNamespace + SAVE_KEY, {
+                                        method: "POST",
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(pojoState)
+                                    })];
+                            case 6:
+                                _a.sent();
+                                return [3 /*break*/, 2];
+                            case 7: return [2 /*return*/];
+                        }
+                    });
+                })];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.select()];
+            case 2:
+                state = _a.sent();
+                return [4 /*yield*/, effects_1.select()];
+            case 3:
+                apiHost = (_a.sent()).apiHost;
+                _a.label = 4;
+            case 4:
+                _a.trys.push([4, 8, , 9]);
+                return [4 /*yield*/, effects_1.call(function () {
+                        return __awaiter(this, void 0, void 0, function () {
+                            var response;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, fetch(apiHost + "/storage/" + state.storageNamespace + SAVE_KEY)];
+                                    case 1:
+                                        response = _a.sent();
+                                        return [4 /*yield*/, response.json()];
+                                    case 2: return [2 /*return*/, _a.sent()];
+                                }
+                            });
+                        });
+                    })];
+            case 5:
+                pojoState = _a.sent();
+                if (!pojoState) return [3 /*break*/, 7];
+                return [4 /*yield*/, effects_1.put(actions_1.loadedSavedState(pojoState))];
+            case 6:
+                _a.sent();
+                _a.label = 7;
+            case 7: return [3 /*break*/, 9];
+            case 8:
+                e_1 = _a.sent();
+                console.warn(e_1);
+                return [3 /*break*/, 9];
+            case 9: return [4 /*yield*/, effects_1.put(actions_1.triedLoadedSavedState())];
+            case 10:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/sagas/api.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/sagas/api.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/sagas/shortcuts.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Mousetrap = __webpack_require__("./node_modules/mousetrap/mousetrap.js");
+var redux_saga_1 = __webpack_require__("./node_modules/redux-saga/es/index.js");
+var effects_1 = __webpack_require__("./node_modules/redux-saga/es/effects.js");
+function shortcutsService() {
+    var state, mt, chan, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, effects_1.select()];
+            case 1:
+                state = _b.sent();
+                mt = Mousetrap();
+                chan = redux_saga_1.eventChannel(function (emit) {
+                    var _loop_1 = function (keyCombo, action, options) {
+                        mt.bind(keyCombo, function (event) {
+                            event.preventDefault();
+                            emit(__assign({}, action));
+                        }, options.keyup ? "keyup" : "keydown");
+                    };
+                    for (var _i = 0, _a = state.shortcuts; _i < _a.length; _i++) {
+                        var _b = _a[_i], keyCombo = _b.keyCombo, action = _b.action, options = _b.options;
+                        _loop_1(keyCombo, action, options);
+                    }
+                    return function () {
+                    };
+                });
+                _b.label = 2;
+            case 2:
+                if (false) return [3 /*break*/, 5];
+                _a = effects_1.put;
+                return [4 /*yield*/, effects_1.take(chan)];
+            case 3: return [4 /*yield*/, _a.apply(void 0, [_b.sent()])];
+            case 4:
+                _b.sent();
+                return [3 /*break*/, 2];
+            case 5: return [2 /*return*/];
+        }
+    });
+}
+exports.shortcutsService = shortcutsService;
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/sagas/shortcuts.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/sagas/shortcuts.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/sagas/synthetic-browser.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+var redux_saga_1 = __webpack_require__("./node_modules/redux-saga/es/index.js");
+var mesh_1 = __webpack_require__("./node_modules/mesh/index.js");
+var utils_1 = __webpack_require__("./src/front-end/utils/index.ts");
+var effects_1 = __webpack_require__("./node_modules/redux-saga/es/effects.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var source_mutation_1 = __webpack_require__("../source-mutation/index.js");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+var state_1 = __webpack_require__("./src/front-end/state/index.ts");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+function frontEndSyntheticBrowserSaga() {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.fork(handleTextEditBlur)];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleWindowMousePanned)];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleFullScreenWindow)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleScrollInFullScreenMode)];
+            case 4:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleTextEditorEscaped)];
+            case 5:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleEmptyWindowsUrlAdded)];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleLoadedSavedState)];
+            case 7:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleCSSDeclarationChanges)];
+            case 8:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleWatchWindowResource)];
+            case 9:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleFileChanged)];
+            case 10:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleOpenExternalWindowsRequested)];
+            case 11:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+exports.frontEndSyntheticBrowserSaga = frontEndSyntheticBrowserSaga;
+function handleEmptyWindowsUrlAdded() {
+    var url, state;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (false) return [3 /*break*/, 4];
+                return [4 /*yield*/, effects_1.take(actions_1.EMPTY_WINDOWS_URL_ADDED)];
+            case 1:
+                url = (_a.sent()).url;
+                return [4 /*yield*/, effects_1.select()];
+            case 2:
+                state = _a.sent();
+                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.openSyntheticWindowRequest({ location: url }, state_1.getSelectedWorkspace(state).browserId))];
+            case 3:
+                _a.sent();
+                return [3 /*break*/, 0];
+            case 4: return [2 /*return*/];
+        }
+    });
+}
+function handleWatchWindowResource() {
+    var watchingUris, _loop_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                watchingUris = [];
+                _loop_1 = function () {
+                    var action, state, allUris, updates;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, effects_1.take([
+                                    aerial_browser_sandbox_1.SYNTHETIC_WINDOW_CHANGED,
+                                    aerial_browser_sandbox_1.SYNTHETIC_WINDOW_LOADED,
+                                    aerial_browser_sandbox_1.SYNTHETIC_WINDOW_CLOSED,
+                                    aerial_common2_1.REMOVED
+                                ])];
+                            case 1:
+                                action = _a.sent();
+                                return [4 /*yield*/, effects_1.select()];
+                            case 2:
+                                state = _a.sent();
+                                allUris = lodash_1.uniq(state.browserStore.records.reduce(function (a, b) {
+                                    return a.concat(b.windows.reduce(function (a2, b2) {
+                                        return a2.concat(b2.externalResourceUris);
+                                    }, []));
+                                }, []));
+                                updates = source_mutation_1.diffArray(allUris, watchingUris, function (a, b) { return a === b ? 0 : -1; }).mutations.filter(function (mutation) { return mutation.type === source_mutation_1.ARRAY_UPDATE; });
+                                // no changes, so just continue
+                                if (updates.length === allUris.length) {
+                                    return [2 /*return*/, "continue"];
+                                }
+                                return [4 /*yield*/, effects_1.spawn(function () {
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0: return [4 /*yield*/, effects_1.call(utils_1.apiWatchUris, watchingUris = allUris, state)];
+                                                case 1:
+                                                    _a.sent();
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    })];
+                            case 3:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                };
+                _a.label = 1;
+            case 1:
+                if (false) return [3 /*break*/, 3];
+                return [5 /*yield**/, _loop_1()];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 1];
+            case 3: return [2 /*return*/];
+        }
+    });
+}
+function handleTextEditorEscaped() {
+    var _a, sourceEvent, nodeId;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                if (false) return [3 /*break*/, 4];
+                return [4 /*yield*/, effects_1.take(actions_1.STAGE_TOOL_EDIT_TEXT_KEY_DOWN)];
+            case 1:
+                _a = (_b.sent()), sourceEvent = _a.sourceEvent, nodeId = _a.nodeId;
+                if (sourceEvent.key !== "Escape") {
+                    return [3 /*break*/, 0];
+                }
+                return [4 /*yield*/, effects_1.call(applyTextEditChanges, sourceEvent, nodeId)];
+            case 2:
+                _b.sent();
+                // blur does _not_ get fired on escape.
+                return [4 /*yield*/, effects_1.call(nodeValueStoppedEditing, nodeId)];
+            case 3:
+                // blur does _not_ get fired on escape.
+                _b.sent();
+                return [3 /*break*/, 0];
+            case 4: return [2 /*return*/];
+        }
+    });
+}
+function applyTextEditChanges(sourceEvent, nodeId) {
+    var state, window, text, workspace;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.select()];
+            case 1:
+                state = _a.sent();
+                window = aerial_browser_sandbox_1.getSyntheticNodeWindow(state, nodeId);
+                text = String(sourceEvent.target.textContent || "").trim();
+                workspace = state_1.getSyntheticNodeWorkspace(state, nodeId);
+                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.syntheticNodeTextContentChanged(window.$id, nodeId, text))];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+function handleTextEditBlur() {
+    var _a, sourceEvent, nodeId;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                if (false) return [3 /*break*/, 4];
+                return [4 /*yield*/, effects_1.take(actions_1.STAGE_TOOL_EDIT_TEXT_BLUR)];
+            case 1:
+                _a = (_b.sent()), sourceEvent = _a.sourceEvent, nodeId = _a.nodeId;
+                return [4 /*yield*/, effects_1.call(applyTextEditChanges, sourceEvent, nodeId)];
+            case 2:
+                _b.sent();
+                return [4 /*yield*/, effects_1.call(nodeValueStoppedEditing, nodeId)];
+            case 3:
+                _b.sent();
+                return [3 /*break*/, 0];
+            case 4: return [2 /*return*/];
+        }
+    });
+}
+function nodeValueStoppedEditing(nodeId) {
+    var state, window;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.select()];
+            case 1:
+                state = _a.sent();
+                window = aerial_browser_sandbox_1.getSyntheticNodeWindow(state, nodeId);
+                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.syntheticNodeValueStoppedEditing(window.$id, nodeId))];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+var MOMENTUM_THRESHOLD = 100;
+var DEFAULT_MOMENTUM_DAMP = 0.1;
+var MOMENTUM_DELAY = 50;
+var VELOCITY_MULTIPLIER = 10;
+function handleScrollInFullScreenMode() {
+    var _a, deltaX, deltaY, state, workspace, window_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                if (false) return [3 /*break*/, 4];
+                return [4 /*yield*/, effects_1.take(actions_1.VISUAL_EDITOR_WHEEL)];
+            case 1:
+                _a = (_b.sent()), deltaX = _a.deltaX, deltaY = _a.deltaY;
+                return [4 /*yield*/, effects_1.select()];
+            case 2:
+                state = (_b.sent());
+                workspace = state_1.getSelectedWorkspace(state);
+                if (!workspace.stage.fullScreen) {
+                    return [3 /*break*/, 0];
+                }
+                window_1 = state_1.getSyntheticWindow(state, workspace.stage.fullScreen.windowId);
+                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.syntheticWindowScroll(window_1.$id, aerial_common2_1.shiftPoint(window_1.scrollPosition || { left: 0, top: 0 }, {
+                        left: 0,
+                        top: deltaY
+                    })))];
+            case 3:
+                _b.sent();
+                return [3 /*break*/, 0];
+            case 4: return [2 /*return*/];
+        }
+    });
+}
+function handleFileChanged() {
+    var _loop_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _loop_2 = function () {
+                    var _a, filePath, publicPath, state, workspace, windows, _i, windows_1, window_2, shouldReload;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0: return [4 /*yield*/, effects_1.take([actions_1.FILE_CONTENT_CHANGED, actions_1.FILE_REMOVED])];
+                            case 1:
+                                _a = _b.sent(), filePath = _a.filePath, publicPath = _a.publicPath;
+                                return [4 /*yield*/, effects_1.select()];
+                            case 2:
+                                state = _b.sent();
+                                workspace = state_1.getSelectedWorkspace(state);
+                                windows = state_1.getSyntheticBrowser(state, workspace.browserId).windows;
+                                for (_i = 0, windows_1 = windows; _i < windows_1.length; _i++) {
+                                    window_2 = windows_1[_i];
+                                    shouldReload = window_2.externalResourceUris.find(function (uri) { return ((publicPath && uri.indexOf(publicPath) !== -1) || uri.indexOf(filePath) !== -1); });
+                                    if (shouldReload) {
+                                        window_2.instance.location.reload();
+                                    }
+                                }
+                                return [2 /*return*/];
+                        }
+                    });
+                };
+                _a.label = 1;
+            case 1:
+                if (false) return [3 /*break*/, 3];
+                return [5 /*yield**/, _loop_2()];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 1];
+            case 3: return [2 /*return*/];
+        }
+    });
+}
+function handleOpenExternalWindowsRequested() {
+    var uris, state, workspace, browser, openedNewWindow, lastExistingWindow, _loop_3, _i, uris_1, uri;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (false) return [3 /*break*/, 9];
+                return [4 /*yield*/, effects_1.take(actions_1.OPEN_EXTERNAL_WINDOWS_REQUESTED)];
+            case 1:
+                uris = (_a.sent()).uris;
+                return [4 /*yield*/, effects_1.select()];
+            case 2:
+                state = _a.sent();
+                workspace = state_1.getSelectedWorkspace(state);
+                browser = state_1.getSyntheticBrowser(state, workspace.browserId);
+                openedNewWindow = false;
+                lastExistingWindow = void 0;
+                _loop_3 = function (uri) {
+                    var existingWindow;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                existingWindow = browser.windows.find(function (window) { return window.location === uri; });
+                                if (existingWindow) {
+                                    lastExistingWindow = existingWindow;
+                                    return [2 /*return*/, "continue"];
+                                }
+                                openedNewWindow = true;
+                                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.openSyntheticWindowRequest({
+                                        location: uri
+                                    }, browser.$id))];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                };
+                _i = 0, uris_1 = uris;
+                _a.label = 3;
+            case 3:
+                if (!(_i < uris_1.length)) return [3 /*break*/, 6];
+                uri = uris_1[_i];
+                return [5 /*yield**/, _loop_3(uri)];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 3];
+            case 6:
+                if (!(!openedNewWindow && lastExistingWindow)) return [3 /*break*/, 8];
+                return [4 /*yield*/, effects_1.put(actions_1.windowFocused(lastExistingWindow.$id))];
+            case 7:
+                _a.sent();
+                _a.label = 8;
+            case 8: return [3 /*break*/, 0];
+            case 9: return [2 /*return*/];
+        }
+    });
+}
+function handleLoadedSavedState() {
+    var state, workspace, browser, _i, _a, window_3;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                if (false) return [3 /*break*/, 7];
+                return [4 /*yield*/, effects_1.take(actions_1.LOADED_SAVED_STATE)];
+            case 1:
+                _b.sent();
+                return [4 /*yield*/, effects_1.select()];
+            case 2:
+                state = _b.sent();
+                workspace = state_1.getSelectedWorkspace(state);
+                browser = state_1.getSyntheticBrowser(state, workspace.browserId);
+                _i = 0, _a = browser.windows;
+                _b.label = 3;
+            case 3:
+                if (!(_i < _a.length)) return [3 /*break*/, 6];
+                window_3 = _a[_i];
+                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.openSyntheticWindowRequest(window_3, browser.$id))];
+            case 4:
+                _b.sent();
+                _b.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 3];
+            case 6: return [3 /*break*/, 0];
+            case 7: return [2 /*return*/];
+        }
+    });
+}
+function persistDeclarationChange(declaration, name, value) {
+    var owner, element, mutation, mutation;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                owner = declaration.$owner;
+                if (!(owner.nodeType === aerial_browser_sandbox_1.SEnvNodeTypes.ELEMENT)) return [3 /*break*/, 2];
+                element = owner;
+                mutation = aerial_browser_sandbox_1.createSetElementAttributeMutation(element, "style", element.getAttribute("style"));
+                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.deferApplyFileMutationsRequest(mutation))];
+            case 1:
+                _a.sent();
+                return [3 /*break*/, 4];
+            case 2:
+                mutation = aerial_browser_sandbox_1.cssStyleDeclarationSetProperty(declaration, name, value);
+                return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.deferApplyFileMutationsRequest(mutation))];
+            case 3:
+                _a.sent();
+                _a.label = 4;
+            case 4: return [2 /*return*/];
+        }
+    });
+}
+// TODO - move this to synthetic browser
+function handleCSSDeclarationChanges() {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.fork(function handleNameChanges() {
+                    var _a, value, windowId, declarationId, state, window_4;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                if (false) return [3 /*break*/, 3];
+                                return [4 /*yield*/, effects_1.take(actions_1.CSS_DECLARATION_NAME_CHANGED)];
+                            case 1:
+                                _a = _b.sent(), value = _a.value, windowId = _a.windowId, declarationId = _a.declarationId;
+                                return [4 /*yield*/, effects_1.select()];
+                            case 2:
+                                state = _b.sent();
+                                window_4 = state_1.getSyntheticWindow(state, windowId);
+                                return [3 /*break*/, 0];
+                            case 3: return [2 /*return*/];
+                        }
+                    });
+                })];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function handleValueChanges() {
+                        var _a, name_1, value, windowId, declarationId, state, window_5, declaration;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, effects_1.take(actions_1.CSS_DECLARATION_VALUE_CHANGED)];
+                                case 1:
+                                    _a = _b.sent(), name_1 = _a.name, value = _a.value, windowId = _a.windowId, declarationId = _a.declarationId;
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 2:
+                                    state = _b.sent();
+                                    window_5 = state_1.getSyntheticWindow(state, windowId);
+                                    declaration = aerial_browser_sandbox_1.getSyntheticWindowChild(window_5, declarationId).instance;
+                                    declaration;
+                                    // null or ""
+                                    if (!value) {
+                                        declaration.removeProperty(name_1);
+                                    }
+                                    else {
+                                        declaration.setProperty(name_1, value);
+                                    }
+                                    return [4 /*yield*/, effects_1.call(persistDeclarationChange, declaration, name_1, value)];
+                                case 3:
+                                    _b.sent();
+                                    return [3 /*break*/, 0];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function handleNewDeclaration() {
+                        var _a, name_2, value, windowId, declarationId, state, window_6, declaration;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, effects_1.take(actions_1.CSS_DECLARATION_CREATED)];
+                                case 1:
+                                    _a = _b.sent(), name_2 = _a.name, value = _a.value, windowId = _a.windowId, declarationId = _a.declarationId;
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 2:
+                                    state = _b.sent();
+                                    window_6 = state_1.getSyntheticWindow(state, windowId);
+                                    declaration = aerial_browser_sandbox_1.getSyntheticWindowChild(window_6, declarationId).instance;
+                                    declaration.setProperty(name_2, value);
+                                    return [4 /*yield*/, effects_1.call(persistDeclarationChange, declaration, name_2, value)];
+                                case 3:
+                                    _b.sent();
+                                    return [3 /*break*/, 0];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 3:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+// fugly quick momentum scrolling implementation
+function handleWindowMousePanned() {
+    function scrollDelta(windowId, deltaY) {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, effects_1.put(aerial_browser_sandbox_1.syntheticWindowScroll(windowId, aerial_common2_1.shiftPoint(panStartScrollPosition, {
+                        left: 0,
+                        top: -deltaY
+                    })))];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }
+    var deltaTop, deltaLeft, currentWindowId, panStartScrollPosition, lastPaneEvent;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                deltaTop = 0;
+                deltaLeft = 0;
+                return [4 /*yield*/, effects_1.fork(function () {
+                        var windowId, _a;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 3];
+                                    return [4 /*yield*/, effects_1.take(actions_1.STAGE_TOOL_OVERLAY_MOUSE_PAN_START)];
+                                case 1:
+                                    windowId = (_b.sent()).windowId;
+                                    _a = state_1.getSyntheticWindow;
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 2:
+                                    panStartScrollPosition = _a.apply(void 0, [_b.sent(), windowId]).scrollPosition || { left: 0, top: 0 };
+                                    return [3 /*break*/, 0];
+                                case 3: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function () {
+                        var event_1, windowId, deltaY, center, newVelocityY, zoom, _a, _b;
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, effects_1.take(actions_1.STAGE_TOOL_OVERLAY_MOUSE_PANNING)];
+                                case 1:
+                                    event_1 = lastPaneEvent = (_c.sent());
+                                    windowId = event_1.windowId, deltaY = event_1.deltaY, center = event_1.center, newVelocityY = event_1.velocityY;
+                                    _a = state_1.getStageTranslate;
+                                    _b = state_1.getSelectedWorkspace;
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 2:
+                                    zoom = _a.apply(void 0, [_b.apply(void 0, [_c.sent()]).stage]).zoom;
+                                    return [4 /*yield*/, scrollDelta(windowId, deltaY / zoom)];
+                                case 3:
+                                    _c.sent();
+                                    return [3 /*break*/, 0];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function () {
+                        var _loop_4;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    _loop_4 = function () {
+                                        var windowId, deltaY, velocityY, zoom, _a, _b;
+                                        return __generator(this, function (_c) {
+                                            switch (_c.label) {
+                                                case 0: return [4 /*yield*/, effects_1.take(actions_1.STAGE_TOOL_OVERLAY_MOUSE_PAN_END)];
+                                                case 1:
+                                                    _c.sent();
+                                                    windowId = lastPaneEvent.windowId, deltaY = lastPaneEvent.deltaY, velocityY = lastPaneEvent.velocityY;
+                                                    _a = state_1.getStageTranslate;
+                                                    _b = state_1.getSelectedWorkspace;
+                                                    return [4 /*yield*/, effects_1.select()];
+                                                case 2:
+                                                    zoom = _a.apply(void 0, [_b.apply(void 0, [_c.sent()]).stage]).zoom;
+                                                    return [4 /*yield*/, spring(deltaY, velocityY * VELOCITY_MULTIPLIER, function (deltaY) {
+                                                            return __generator(this, function (_a) {
+                                                                switch (_a.label) {
+                                                                    case 0: return [4 /*yield*/, scrollDelta(windowId, deltaY / zoom)];
+                                                                    case 1:
+                                                                        _a.sent();
+                                                                        return [2 /*return*/];
+                                                                }
+                                                            });
+                                                        })];
+                                                case 3:
+                                                    _c.sent();
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    };
+                                    _a.label = 1;
+                                case 1:
+                                    if (false) return [3 /*break*/, 3];
+                                    return [5 /*yield**/, _loop_4()];
+                                case 2:
+                                    _a.sent();
+                                    return [3 /*break*/, 1];
+                                case 3: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 3:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+var WINDOW_SYNC_MS = 1000 / 30;
+function handleFullScreenWindow() {
+    var currentFullScreenWindowId, previousWindowBounds, waitForFullScreenMode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                waitForFullScreenMode = mesh_1.createDeferredPromise();
+                return [4 /*yield*/, effects_1.fork(function () {
+                        var state, workspace, windowId, window_7;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 5];
+                                    // TODO - possibly change to WINDOW_SCOPE_CHANGED
+                                    return [4 /*yield*/, effects_1.take([actions_1.FULL_SCREEN_SHORTCUT_PRESSED, aerial_browser_sandbox_1.SYNTHETIC_WINDOW_PROXY_OPENED, actions_1.WINDOW_SELECTION_SHIFTED, actions_1.FULL_SCREEN_TARGET_DELETED])];
+                                case 1:
+                                    // TODO - possibly change to WINDOW_SCOPE_CHANGED
+                                    _a.sent();
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 2:
+                                    state = _a.sent();
+                                    workspace = state_1.getSelectedWorkspace(state);
+                                    windowId = workspace.stage.fullScreen && workspace.stage.fullScreen.windowId;
+                                    if (!currentFullScreenWindowId) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, effects_1.put(aerial_common2_1.resized(currentFullScreenWindowId, aerial_browser_sandbox_1.SYNTHETIC_WINDOW, previousWindowBounds))];
+                                case 3:
+                                    _a.sent();
+                                    previousWindowBounds = undefined;
+                                    currentFullScreenWindowId = undefined;
+                                    // TODO - revert window size
+                                    waitForFullScreenMode = mesh_1.createDeferredPromise();
+                                    _a.label = 4;
+                                case 4:
+                                    if (windowId) {
+                                        window_7 = state_1.getSyntheticWindow(state, windowId);
+                                        previousWindowBounds = workspace.stage.fullScreen.originalWindowBounds;
+                                        waitForFullScreenMode.resolve(true);
+                                    }
+                                    currentFullScreenWindowId = windowId;
+                                    return [3 /*break*/, 0];
+                                case 5: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function syncFullScreenWindowSize() {
+                        var state, workspace, container, rect, window_8;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 5];
+                                    return [4 /*yield*/, effects_1.call(function () { return waitForFullScreenMode.promise; })];
+                                case 1:
+                                    _a.sent();
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 2:
+                                    state = _a.sent();
+                                    workspace = state_1.getSelectedWorkspace(state);
+                                    container = workspace.stage.container;
+                                    rect = container.getBoundingClientRect();
+                                    window_8 = state_1.getSyntheticWindow(state, currentFullScreenWindowId);
+                                    return [4 /*yield*/, effects_1.put(aerial_common2_1.resized(currentFullScreenWindowId, aerial_browser_sandbox_1.SYNTHETIC_WINDOW, {
+                                            left: window_8.bounds.left,
+                                            top: window_8.bounds.top,
+                                            right: window_8.bounds.left + rect.width,
+                                            bottom: window_8.bounds.top + rect.height,
+                                        }))];
+                                case 3:
+                                    _a.sent();
+                                    return [4 /*yield*/, effects_1.call(function () { return new Promise(function (resolve) { return setTimeout(resolve, WINDOW_SYNC_MS); }); })];
+                                case 4:
+                                    _a.sent();
+                                    return [3 /*break*/, 0];
+                                case 5: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+function spring(start, velocityY, iterate, damp, complete) {
+    if (damp === void 0) { damp = DEFAULT_MOMENTUM_DAMP; }
+    if (complete === void 0) { complete = function () { }; }
+    function tick() {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    i += damp;
+                    currentValue += velocityY / (i / 1);
+                    if (i >= 1) {
+                        return [2 /*return*/, complete()];
+                    }
+                    return [4 /*yield*/, iterate(currentValue)];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, effects_1.call(redux_saga_1.delay, MOMENTUM_DELAY)];
+                case 2:
+                    _a.sent();
+                    return [4 /*yield*/, tick()];
+                case 3:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }
+    var i, v, currentValue;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                i = 0;
+                v = velocityY;
+                currentValue = start;
+                return [4 /*yield*/, tick()];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/sagas/synthetic-browser.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/sagas/synthetic-browser.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/sagas/workspace.ts":
+/***/ (function(module, exports) {
+
+"use strict";
+throw new Error("Module parse failed: /Users/crcn/Developer/work/tandem/public/packages/tandem-app/node_modules/react-hot-loader/webpack.js!/Users/crcn/Developer/work/tandem/public/packages/tandem-app/node_modules/ts-loader/index.js!/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/sagas/workspace.ts Unexpected token (235:37)\nYou may need an appropriate loader to handle this file type.\n|                 state = _a.sent();\n|                 workspace = state_1.getSelectedWorkspace(state);\n|                 availaboeComponent = ;\n|                 // not items should be selected for meta clicks\n|                 // if (workspace.selectionRefs.length) {");
+
+/***/ }),
+
+/***/ "./src/front-end/state/index.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var shortcuts_1 = __webpack_require__("./src/front-end/state/shortcuts.ts");
+var actions_1 = __webpack_require__("./src/front-end/actions/index.ts");
+var aerial_browser_sandbox_1 = __webpack_require__("../aerial-browser-sandbox/index.js");
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+/**
+ * Types
+ */
+exports.WORKSPACE = "WORKSPACE";
+exports.APPLICATION_STATE = "APPLICATION_STATE";
+exports.LIBRARY_COMPONENT = "LIBRARY_COMPONENT";
+/**
+ * Utilities
+ */
+exports.getSyntheticWindowWorkspace = function (root, windowId) { return exports.getSyntheticBrowserWorkspace(root, aerial_browser_sandbox_1.getSyntheticWindowBrowser(root, windowId).$id); };
+exports.showWorkspaceTextEditor = function (root, workspaceId) {
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    return exports.updateWorkspaceStage(root, workspaceId, {
+        showTextEditor: true
+    });
+};
+exports.updateWorkspaceStage = function (root, workspaceId, stageProperties) {
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    return exports.updateWorkspace(root, workspaceId, {
+        stage: __assign({}, workspace.stage, stageProperties)
+    });
+};
+exports.updateWorkspaceTextEditor = function (root, workspaceId, textEditorProperties) {
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    return exports.updateWorkspace(root, workspaceId, {
+        textEditor: __assign({}, workspace.textEditor, textEditorProperties)
+    });
+};
+exports.getSyntheticBrowserWorkspace = aerial_common2_1.weakMemo(function (root, browserId) {
+    return root.workspaces.find(function (workspace) { return workspace.browserId === browserId; });
+});
+exports.addWorkspaceSelection = function (root, workspaceId) {
+    var selection = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        selection[_i - 2] = arguments[_i];
+    }
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    return exports.setWorkspaceSelection.apply(void 0, [root, workspaceId].concat(workspace.selectionRefs, selection));
+};
+exports.removeWorkspaceSelection = function (root, workspaceId) {
+    var selection = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        selection[_i - 2] = arguments[_i];
+    }
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    return exports.setWorkspaceSelection.apply(void 0, [root, workspaceId].concat(workspace.selectionRefs.filter(function (type, id) { return !selection.find(function (type2, id2) { return id === id2; }); })));
+};
+/**
+ * Utility to ensure that workspace selection items are within the same window object. This prevents users from selecting
+ * the _same_ element across different window objects.
+ */
+var deselectOutOfScopeWorkpaceSelection = function (root, workspaceId, ref) {
+    if (ref && ref[0] === aerial_browser_sandbox_1.SYNTHETIC_WINDOW) {
+        return root;
+    }
+    var window = aerial_browser_sandbox_1.getSyntheticNodeWindow(root, ref[1]);
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    var updatedSelection = [];
+    for (var _i = 0, _a = workspace.selectionRefs; _i < _a.length; _i++) {
+        var selection = _a[_i];
+        if (aerial_browser_sandbox_1.syntheticWindowContainsNode(window, selection[1])) {
+            updatedSelection.push(selection);
+        }
+    }
+    return exports.setWorkspaceSelection.apply(void 0, [root, workspaceId].concat(updatedSelection));
+};
+/**
+ * Prevents nodes that have a parent/child relationship from being selected.
+ */
+var deselectRelatedWorkspaceSelection = function (root, workspaceId, ref) {
+    if (ref && ref[0] === aerial_browser_sandbox_1.SYNTHETIC_WINDOW) {
+        return root;
+    }
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    var window = aerial_browser_sandbox_1.getSyntheticNodeWindow(root, ref[1]);
+    var updatedSelection = [];
+    for (var _i = 0, _a = workspace.selectionRefs; _i < _a.length; _i++) {
+        var selection = _a[_i];
+        if (!aerial_browser_sandbox_1.syntheticNodeIsRelative(window, ref[1], selection[1])) {
+            updatedSelection.push(selection);
+        }
+    }
+    return exports.setWorkspaceSelection.apply(void 0, [root, workspaceId].concat(updatedSelection));
+};
+// deselect unrelated refs, ensures that selection is not a child of existing one. etc.
+var cleanupWorkspaceSelection = function (state, workspaceId) {
+    var workspace = exports.getWorkspaceById(state, workspaceId);
+    if (workspace.selectionRefs.length > 0) {
+        // use _last_ selected element since it's likely the one that was just clicked. Don't want to prevent the 
+        // user from doing so
+        state = deselectOutOfScopeWorkpaceSelection(state, workspaceId, workspace.selectionRefs[workspace.selectionRefs.length - 1]);
+        state = deselectRelatedWorkspaceSelection(state, workspaceId, workspace.selectionRefs[workspace.selectionRefs.length - 1]);
+    }
+    return state;
+};
+exports.toggleWorkspaceSelection = function (root, workspaceId) {
+    var selection = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        selection[_i - 2] = arguments[_i];
+    }
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    var newSelection = [];
+    var oldSelectionIds = workspace.selectionRefs.map(function (_a) {
+        var type = _a[0], id = _a[1];
+        return id;
+    });
+    var toggleSelectionIds = selection.map(function (_a) {
+        var type = _a[0], id = _a[1];
+        return id;
+    });
+    for (var _a = 0, _b = workspace.selectionRefs; _a < _b.length; _a++) {
+        var ref = _b[_a];
+        if (toggleSelectionIds.indexOf(ref[1]) === -1) {
+            newSelection.push(ref);
+        }
+    }
+    for (var _c = 0, selection_1 = selection; _c < selection_1.length; _c++) {
+        var ref = selection_1[_c];
+        if (oldSelectionIds.indexOf(ref[1]) === -1) {
+            newSelection.push(ref);
+        }
+    }
+    return cleanupWorkspaceSelection(exports.setWorkspaceSelection.apply(void 0, [root, workspaceId].concat(newSelection)), workspaceId);
+};
+exports.clearWorkspaceSelection = function (root, workspaceId) {
+    return exports.updateWorkspaceStage(exports.updateWorkspace(root, workspaceId, {
+        selectionRefs: [],
+        hoveringRefs: []
+    }), workspaceId, {
+        secondarySelection: false
+    });
+};
+exports.setWorkspaceSelection = function (root, workspaceId) {
+    var selectionIds = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        selectionIds[_i - 2] = arguments[_i];
+    }
+    return exports.updateWorkspace(root, workspaceId, {
+        selectionRefs: lodash_1.uniq(selectionIds.slice())
+    });
+};
+exports.updateWorkspace = function (root, workspaceId, newProperties) {
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    return __assign({}, root, { workspaces: aerial_common2_1.arrayReplaceIndex(root.workspaces, root.workspaces.indexOf(workspace), __assign({}, workspace, newProperties)) });
+};
+exports.createTargetSelector = function (uri, value) { return ({
+    uri: uri,
+    value: value
+}); };
+exports.toggleWorkspaceTargetCSSSelector = function (root, workspaceId, uri, selectorText) {
+    var workspace = exports.getWorkspaceById(root, workspaceId);
+    var cssSelectors = (workspace.targetCSSSelectors || []);
+    var index = cssSelectors.findIndex(function (targetSelector) {
+        return targetSelector.uri === uri && targetSelector.value == selectorText;
+    });
+    return exports.updateWorkspace(root, workspaceId, {
+        targetCSSSelectors: index === -1 ? cssSelectors.concat([exports.createTargetSelector(uri, selectorText)]) : aerial_common2_1.arraySplice(cssSelectors, index, 1)
+    });
+};
+exports.addWorkspace = function (root, workspace) {
+    return __assign({}, root, { workspaces: root.workspaces.concat([workspace]) });
+};
+exports.filterMatchingTargetSelectors = aerial_common2_1.weakMemo(function (targetCSSSelectors, element, window) { return filterApplicableTargetSelectors(targetCSSSelectors, window).filter(function (rule) { return aerial_browser_sandbox_1.elementMatches(rule.value, element, window); }); });
+var filterApplicableTargetSelectors = aerial_common2_1.weakMemo(function (selectors, window) {
+    var map = {};
+    for (var _i = 0, selectors_1 = selectors; _i < selectors_1.length; _i++) {
+        var selector = selectors_1[_i];
+        map[selector.uri + selector.value] = selector;
+    }
+    var rules = [];
+    var children = aerial_browser_sandbox_1.getSyntheticWindowChildStructs(window);
+    for (var $id in children) {
+        var child = children[$id];
+        if (child.$type === aerial_browser_sandbox_1.SYNTHETIC_CSS_STYLE_RULE && child.source && map[child.source.uri + child.selectorText]) {
+            rules.push(map[child.source.uri + child.selectorText]);
+        }
+    }
+    return lodash_1.uniq(rules);
+});
+var getSelectorAffectedWindows = aerial_common2_1.weakMemo(function (targetCSSSelectors, browser) {
+    var affectedWindows = [];
+    for (var _i = 0, _a = browser.windows; _i < _a.length; _i++) {
+        var window_1 = _a[_i];
+        if (filterApplicableTargetSelectors(targetCSSSelectors, window_1).length) {
+            affectedWindows.push(window_1);
+        }
+    }
+    return affectedWindows;
+});
+exports.getObjectsWithSameSource = aerial_common2_1.weakMemo(function (itemId, browser, limitToElementWindow) {
+    var target = aerial_browser_sandbox_1.getSyntheticNodeById(browser, itemId);
+    var objects = {};
+    var objectsWithSameSource = [];
+    var windows = limitToElementWindow ? [aerial_browser_sandbox_1.getSyntheticNodeWindow(browser, itemId)] : browser.windows;
+    for (var _i = 0, windows_1 = windows; _i < windows_1.length; _i++) {
+        var window_2 = windows_1[_i];
+        var windowsObjects = aerial_browser_sandbox_1.getSyntheticWindowChildStructs(window_2);
+        for (var $id in windowsObjects) {
+            var child = windowsObjects[$id];
+            if (child.source && target.source && aerial_common2_1.expressionLocationEquals(child.source, target.source)) {
+                objectsWithSameSource.push(child);
+            }
+        }
+    }
+    return objectsWithSameSource;
+});
+exports.getSelectorAffectedElements = aerial_common2_1.weakMemo(function (elementId, targetCSSSelectors, browser, limitToElementWindow) {
+    var affectedElements = [];
+    if (!targetCSSSelectors.length) {
+        affectedElements.push.apply(affectedElements, exports.getObjectsWithSameSource(elementId, browser, limitToElementWindow));
+    }
+    else {
+        var affectedWindows = targetCSSSelectors.length ? getSelectorAffectedWindows(targetCSSSelectors, browser) : browser.windows;
+        if (limitToElementWindow) {
+            affectedWindows = [aerial_browser_sandbox_1.getSyntheticNodeWindow(browser, elementId)];
+        }
+        for (var _i = 0, affectedWindows_1 = affectedWindows; _i < affectedWindows_1.length; _i++) {
+            var window_3 = affectedWindows_1[_i];
+            for (var _a = 0, targetCSSSelectors_1 = targetCSSSelectors; _a < targetCSSSelectors_1.length; _a++) {
+                var selectorText = targetCSSSelectors_1[_a].value;
+                affectedElements.push.apply(affectedElements, aerial_browser_sandbox_1.getMatchingElements(window_3, selectorText));
+            }
+        }
+    }
+    return lodash_1.uniq(affectedElements);
+});
+exports.getFrontEndItemByReference = function (root, ref) {
+    return aerial_browser_sandbox_1.getSyntheticBrowserStoreItemByReference(root, ref);
+};
+exports.getSyntheticNodeWorkspace = aerial_common2_1.weakMemo(function (root, nodeId) {
+    return exports.getSyntheticWindowWorkspace(root, aerial_browser_sandbox_1.getSyntheticNodeWindow(root, nodeId).$id);
+});
+exports.getBoundedWorkspaceSelection = aerial_common2_1.weakMemo(function (state, workspace) { return workspace.selectionRefs.map(function (ref) { return exports.getFrontEndItemByReference(state, ref); }).filter(function (item) { return aerial_browser_sandbox_1.getSyntheticBrowserItemBounds(state, item); }); });
+exports.getWorkspaceSelectionBounds = aerial_common2_1.weakMemo(function (state, workspace) { return aerial_common2_1.mergeBounds.apply(void 0, exports.getBoundedWorkspaceSelection(state, workspace).map(function (boxed) { return aerial_browser_sandbox_1.getSyntheticBrowserItemBounds(state, boxed); })); });
+exports.getStageZoom = function (stage) { return exports.getStageTranslate(stage).zoom; };
+exports.getStageTranslate = function (stage) { return stage.translate; };
+exports.getWorkspaceById = function (state, id) { return state.workspaces.find(function (workspace) { return workspace.$id === id; }); };
+exports.getSelectedWorkspace = function (state) { return state.selectedWorkspaceId && exports.getWorkspaceById(state, state.selectedWorkspaceId); };
+exports.getAvailableComponent = function (componentId, workspace) { return workspace.availableComponents.find(function (component) { return component.$id === componentId; }); };
+exports.getWorkspaceLastSelectionOwnerWindow = function (state, workspaceId) {
+    if (workspaceId === void 0) { workspaceId = state.selectedWorkspaceId; }
+    var workspace = exports.getWorkspaceById(state, workspaceId);
+    if (workspace.selectionRefs.length === 0) {
+        return null;
+    }
+    var lastSelectionRef = workspace.selectionRefs[workspace.selectionRefs.length - 1];
+    return exports.getWorkspaceLastSelectionOwnerWindow2(workspace, aerial_browser_sandbox_1.getSyntheticBrowser(state, workspace.browserId));
+};
+exports.getWorkspaceLastSelectionOwnerWindow2 = function (workspace, browser) {
+    if (workspace.selectionRefs.length === 0) {
+        return null;
+    }
+    var lastSelectionRef = workspace.selectionRefs[workspace.selectionRefs.length - 1];
+    return lastSelectionRef[0] === aerial_browser_sandbox_1.SYNTHETIC_WINDOW ? aerial_browser_sandbox_1.getSyntheticWindow(browser, lastSelectionRef[1]) : aerial_browser_sandbox_1.getSyntheticNodeWindow(browser, lastSelectionRef[1]);
+};
+exports.getWorkspaceWindow = function (state, workspaceId, index) {
+    if (workspaceId === void 0) { workspaceId = state.selectedWorkspaceId; }
+    var browser = aerial_browser_sandbox_1.getSyntheticBrowser(state, exports.getWorkspaceById(state, workspaceId).browserId);
+    return browser.windows[index == null ? browser.windows.length - 1 : 0];
+};
+/**
+ * Factories
+ */
+exports.createWorkspace = aerial_common2_1.createStructFactory(exports.WORKSPACE, {
+    // null to denote style attribute
+    targetCSSSelectors: [],
+    stage: {
+        panning: false,
+        secondarySelection: false,
+        translate: { left: 0, top: 0, zoom: 1 },
+        showTextEditor: false,
+        showLeftGutter: true,
+        showRightGutter: true,
+    },
+    textEditor: {},
+    selectionRefs: [],
+    hoveringRefs: [],
+    draggingRefs: [],
+    library: [],
+    availableComponents: []
+});
+exports.createApplicationState = aerial_common2_1.createStructFactory(exports.APPLICATION_STATE, {
+    workspaces: [],
+    shortcuts: [
+        shortcuts_1.createKeyboardShortcut("backspace", actions_1.deleteShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("meta+b", actions_1.toggleLeftGutterPressed()),
+        shortcuts_1.createKeyboardShortcut("ctrl+b", actions_1.toggleLeftGutterPressed()),
+        shortcuts_1.createKeyboardShortcut("meta+/", actions_1.toggleRightGutterPressed()),
+        shortcuts_1.createKeyboardShortcut("ctrl+/", actions_1.toggleRightGutterPressed()),
+        shortcuts_1.createKeyboardShortcut("meta+e", actions_1.toggleTextEditorPressed()),
+        shortcuts_1.createKeyboardShortcut("meta+f", actions_1.fullScreenShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("ctrl+f", actions_1.fullScreenShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("meta+=", actions_1.zoomInShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("meta+-", actions_1.zoomOutShortcutPressed()),
+        // ignore for now since project is scoped to Paperclip only. Windows
+        // should be added in via the components pane.
+        // createKeyboardShortcut("meta+t", openNewWindowShortcutPressed()),
+        // createKeyboardShortcut("ctrl+t", openNewWindowShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("meta+enter", actions_1.cloneWindowShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("escape", actions_1.escapeShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("ctrl+shift+]", actions_1.nextWindowShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("ctrl+shift+[", actions_1.prevWindowShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("ctrl+meta+t", actions_1.toggleToolsShortcutPressed()),
+        shortcuts_1.createKeyboardShortcut("up", { type: actions_1.UP_KEY_DOWN }, { keyup: false }),
+        shortcuts_1.createKeyboardShortcut("up", { type: actions_1.UP_KEY_UP }, { keyup: true }),
+        shortcuts_1.createKeyboardShortcut("down", { type: actions_1.DOWN_KEY_DOWN }, { keyup: false }),
+        shortcuts_1.createKeyboardShortcut("down", { type: actions_1.DOWN_KEY_UP }, { keyup: true }),
+        shortcuts_1.createKeyboardShortcut("left", { type: actions_1.LEFT_KEY_DOWN }, { keyup: false }),
+        shortcuts_1.createKeyboardShortcut("left", { type: actions_1.LEFT_KEY_UP }, { keyup: true }),
+        shortcuts_1.createKeyboardShortcut("right", { type: actions_1.RIGHT_KEY_DOWN }, { keyup: false }),
+        shortcuts_1.createKeyboardShortcut("right", { type: actions_1.RIGHT_KEY_UP }, { keyup: true }),
+    ],
+    browserStore: aerial_browser_sandbox_1.createSyntheticBrowserStore()
+});
+exports.selectWorkspace = function (state, selectedWorkspaceId) { return (__assign({}, state, { selectedWorkspaceId: selectedWorkspaceId })); };
+exports.getScaledMouseStagePosition = function (state, event) {
+    var _a = event.sourceEvent, pageX = _a.pageX, pageY = _a.pageY, nativeEvent = _a.nativeEvent;
+    var workspace = exports.getSelectedWorkspace(state);
+    var stage = workspace.stage;
+    var translate = exports.getStageTranslate(stage);
+    var scaledPageX = ((pageX - translate.left) / translate.zoom);
+    var scaledPageY = ((pageY - translate.top) / translate.zoom);
+    return { left: scaledPageX, top: scaledPageY };
+};
+exports.getStageToolMouseNodeTargetReference = function (state, event) {
+    var workspace = exports.getSelectedWorkspace(state);
+    var stage = workspace.stage;
+    var translate = exports.getStageTranslate(stage);
+    var _a = exports.getScaledMouseStagePosition(state, event), scaledPageX = _a.left, scaledPageY = _a.top;
+    var browser = aerial_browser_sandbox_1.getSyntheticBrowser(state, workspace.browserId);
+    var window = stage.fullScreen ? aerial_browser_sandbox_1.getSyntheticWindow(state, stage.fullScreen.windowId) : browser.windows.find(function (window) { return (aerial_common2_1.pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, window.bounds)); });
+    if (!window)
+        return null;
+    var mouseX = scaledPageX - window.bounds.left;
+    var mouseY = scaledPageY - window.bounds.top;
+    var allComputedBounds = window.allComputedBounds;
+    var intersectingBounds = [];
+    var intersectingBoundsMap = new Map();
+    for (var $id in allComputedBounds) {
+        var bounds = allComputedBounds[$id];
+        if (aerial_common2_1.pointIntersectsBounds({ left: mouseX, top: mouseY }, bounds)) {
+            intersectingBounds.push(bounds);
+            intersectingBoundsMap.set(bounds, $id);
+        }
+    }
+    if (!intersectingBounds.length)
+        return null;
+    var smallestBounds = aerial_common2_1.getSmallestBounds.apply(void 0, intersectingBounds);
+    return [aerial_browser_sandbox_1.SYNTHETIC_ELEMENT, intersectingBoundsMap.get(smallestBounds)];
+};
+exports.serializeApplicationState = function (_a) {
+    var workspaces = _a.workspaces, selectedWorkspaceId = _a.selectedWorkspaceId, browserStore = _a.browserStore;
+    return ({
+        workspaces: workspaces.map(exports.serializeWorkspace),
+        selectedWorkspaceId: selectedWorkspaceId,
+        browserStore: aerial_common2_1.serialize(browserStore)
+    });
+};
+exports.serializeWorkspace = function (workspace) { return ({
+    $id: workspace.$id,
+    $type: workspace.$type,
+    targetCSSSelectors: workspace.targetCSSSelectors,
+    selectionRefs: [],
+    browserId: workspace.browserId,
+    stage: serializeStage(workspace.stage),
+    textEditor: workspace.textEditor,
+    library: [],
+    availableComponents: []
+}); };
+var serializeStage = function (_a) {
+    var showTextEditor = _a.showTextEditor, showRightGutter = _a.showRightGutter, showLeftGutter = _a.showLeftGutter, showTools = _a.showTools, translate = _a.translate, fullScreen = _a.fullScreen;
+    return ({
+        panning: false,
+        translate: translate,
+        fullScreen: fullScreen,
+        showTextEditor: showTextEditor,
+        showRightGutter: showRightGutter,
+        showLeftGutter: showLeftGutter,
+        showTools: true
+    });
+};
+__export(__webpack_require__("./src/front-end/state/shortcuts.ts"));
+__export(__webpack_require__("../aerial-browser-sandbox/src/state/index.ts"));
+__export(__webpack_require__("./src/front-end/state/api.ts"));
+__export(__webpack_require__("./src/front-end/state/dnd.ts"));
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/state/index.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/state/index.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/front-end/utils/api.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.apiGetComponentPreviewURI = function (componentId, state) {
+    // NOTE -- host is not defined here because it can be dynamic for local development.
+    return "/components/" + componentId + "/preview";
+};
+exports.apiWatchUris = function (uris, state) { return __awaiter(_this, void 0, void 0, function () {
+    var response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, fetch(state.apiHost + "/watch", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(uris)
+                })];
+            case 1:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.apiOpenSourceFile = function (source, state) { return __awaiter(_this, void 0, void 0, function () {
+    var response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, fetch(state.apiHost + "/open", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(source)
+                })];
+            case 1:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.apiCreateComponent = function (name, state) { return __awaiter(_this, void 0, void 0, function () {
+    var response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, fetch(state.apiHost + "/components", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: name
+                    })
+                })];
+            case 1:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.apiDeleteComponent = function (componentId, state) { return __awaiter(_this, void 0, void 0, function () {
+    var response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, fetch(state.apiHost + "/components/" + componentId, {
+                    method: "DELETE",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                })];
+            case 1:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+
+
+ ;(function register() { /* react-hot-loader/webpack */ if (process.env.NODE_ENV !== 'production') { if (typeof __REACT_HOT_LOADER__ === 'undefined') { return; } /* eslint-disable camelcase, no-undef */ var webpackExports = typeof __webpack_exports__ !== 'undefined' ? __webpack_exports__ : module.exports; /* eslint-enable camelcase, no-undef */ if (typeof webpackExports === 'function') { __REACT_HOT_LOADER__.register(webpackExports, 'module.exports', "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/utils/api.ts"); return; } /* eslint-disable no-restricted-syntax */ for (var key in webpackExports) { /* eslint-enable no-restricted-syntax */ if (!Object.prototype.hasOwnProperty.call(webpackExports, key)) { continue; } var namedExport = void 0; try { namedExport = webpackExports[key]; } catch (err) { continue; } __REACT_HOT_LOADER__.register(namedExport, key, "/Users/crcn/Developer/work/tandem/public/packages/tandem-app/src/front-end/utils/api.ts"); } } })();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/process/browser.js")))
+
+/***/ })
+
+})

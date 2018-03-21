@@ -1,0 +1,1582 @@
+webpackHotUpdate(0,{
+
+/***/ "../aerial-browser-sandbox/lib/environment/window.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+var state_1 = __webpack_require__("../aerial-browser-sandbox/lib/state/index.js");
+var location_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/location.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+var events_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/events/index.js");
+var renderers_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/renderers/index.js");
+var timers_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/timers.js");
+var media_match_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/media-match.js");
+var local_storage_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/local-storage.js");
+var css_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/css/index.js");
+var nodes_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/nodes/index.js");
+var custom_element_registry_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/custom-element-registry.js");
+var nwmatcher = __webpack_require__("../../../../../public/nwmatcher/src/nwmatcher.js");
+var constants_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/constants.js");
+;
+exports.mirrorWindow = function (target, source) {
+    var _a = events_1.getSEnvEventClasses(), SEnvMutationEvent = _a.SEnvMutationEvent, SEnvWindowOpenedEvent = _a.SEnvWindowOpenedEvent, SEnvURIChangedEvent = _a.SEnvURIChangedEvent, SEnvWindowEvent = _a.SEnvWindowEvent;
+    source.renderer.source = target.renderer;
+    if (target.$id !== source.$id) {
+        throw new Error("target must be a previous clone of the source.");
+    }
+    var sync = function () {
+        exports.patchWindow(target, exports.diffWindow(target, source));
+        // sync window Ids to ensure future mutation events. This
+        // also doubles as a sanity check for patching. 
+        exports.syncWindowIds(target, source);
+    };
+    // TODO - need to sync mutations from target to source since
+    // the editor mutates the target -- changes need to be reflected in the source
+    // so that incomming source mutations are properly mapped back to the target. 
+    // happens with dynamic content.
+    var onMutation = function (_a) {
+        var mutation = _a.mutation;
+        var childObjects = exports.flattenWindowObjectSources(target.struct);
+        // likely a full window reload. In that case, need to diff & patch
+        if (!childObjects[mutation.target.$id]) {
+            console.warn("Could not find matching mutation target, slowly syncing windows.", mutation);
+            sync();
+        }
+        else {
+            exports.patchWindow(target, [mutation]);
+        }
+    };
+    var mirrorEvent = function (event) {
+        target.dispatchEvent(event);
+    };
+    var tryPatching = function () {
+        if (source.document.readyState !== "complete") {
+            return;
+        }
+        sync();
+        source.addEventListener(SEnvMutationEvent.MUTATION, onMutation);
+    };
+    var onResize = function (event) {
+        target.resizeTo(source.innerWidth, source.innerHeight);
+    };
+    var onMove = function (event) {
+        target.moveTo(source.screenLeft, source.screenTop);
+    };
+    var onTargetMove = function (event) {
+        source.moveTo(target.screenLeft, target.screenTop);
+    };
+    var onTargetResize = function (event) {
+        source.resizeTo(target.innerWidth, target.innerHeight);
+    };
+    var onClose = function (event) {
+        target.close();
+    };
+    var onResourceChanged = function (event) {
+        target.$setExternalUris(source.externalResourceUris);
+    };
+    var onUriChanged = function (event) { return target.dispatchEvent(event); };
+    source.resizeTo(target.innerWidth, target.innerHeight);
+    source.moveTo(target.screenLeft, target.screenTop);
+    source.addEventListener(SEnvWindowOpenedEvent.WINDOW_OPENED, mirrorEvent);
+    source.addEventListener("move", onMove);
+    source.addEventListener("resize", onResize);
+    source.addEventListener("close", onClose);
+    source.addEventListener(SEnvURIChangedEvent.URI_CHANGED, onUriChanged);
+    target.addEventListener("move", onTargetMove);
+    target.addEventListener("resize", onTargetResize);
+    source.document.addEventListener("readystatechange", tryPatching);
+    source.addEventListener(SEnvWindowEvent.EXTERNAL_URIS_CHANGED, onResourceChanged);
+    tryPatching();
+    return function () {
+        source.removeEventListener(SEnvMutationEvent.MUTATION, onMutation);
+        source.removeEventListener(SEnvWindowOpenedEvent.WINDOW_OPENED, mirrorEvent);
+        source.removeEventListener(SEnvURIChangedEvent.URI_CHANGED, onUriChanged);
+        source.removeEventListener("move", onMove);
+        source.removeEventListener("resize", onResize);
+        source.removeEventListener("close", onClose);
+        target.removeEventListener("move", onTargetMove);
+        target.removeEventListener("resize", onTargetResize);
+        target.removeEventListener("readystatechange", tryPatching);
+        source.removeEventListener(SEnvWindowEvent.EXTERNAL_URIS_CHANGED, onResourceChanged);
+    };
+};
+var defaultFetch = (function (info) {
+    throw new Error("Fetch not provided for " + info);
+});
+var throwUnsupportedMethod = function () {
+    throw new Error("Unsupported");
+};
+exports.getSEnvWindowClass = aerial_common2_1.weakMemo(function (context) {
+    var createRenderer = context.createRenderer, _a = context.fetch, fetch = _a === void 0 ? defaultFetch : _a, _b = context.getProxyUrl, getProxyUrl = _b === void 0 ? lodash_1.identity : _b;
+    var SEnvEventTarget = events_1.getSEnvEventTargetClass(context);
+    var SEnvDocument = nodes_1.getSEnvDocumentClass(context);
+    var SEnvLocation = location_1.getSEnvLocationClass(context);
+    var SEnvCustomElementRegistry = custom_element_registry_1.getSEnvCustomElementRegistry(context);
+    var SEnvElement = nodes_1.getSEnvElementClass(context);
+    var SEnvHTMLElement = nodes_1.getSEnvHTMLElementClass(context);
+    var SEnvLocalStorage = local_storage_1.getSEnvLocalStorageClass(context);
+    var SEnvDOMImplementation = nodes_1.getSEnvDOMImplementationClass(context);
+    var SEnvTimers = timers_1.getSEnvTimerClasses(context).SEnvTimers;
+    var _c = events_1.getSEnvEventClasses(context), SEnvEvent = _c.SEnvEvent, SEnvMutationEvent = _c.SEnvMutationEvent, SEnvWindowOpenedEvent = _c.SEnvWindowOpenedEvent, SEnvURIChangedEvent = _c.SEnvURIChangedEvent, SEnvWindowEvent = _c.SEnvWindowEvent;
+    var _d = css_1.getSEnvCSSRuleClasses(context), SEnvCSSFontFace = _d.SEnvCSSFontFace, SEnvCSSKeyframesRule = _d.SEnvCSSKeyframesRule, SEnvCSSMediaRule = _d.SEnvCSSMediaRule, SEnvCSSStyleRule = _d.SEnvCSSStyleRule, SEnvUnknownGroupingRule = _d.SEnvUnknownGroupingRule;
+    var SEnvCSSStyleDeclaration = css_1.getSEnvCSSStyleDeclarationClass(context);
+    var SEnvCSSStyleSheet = css_1.getSEnvCSSStyleSheetClass(context);
+    // register default HTML tag names
+    var TAG_NAME_MAP = nodes_1.getSEnvHTMLElementClasses(context);
+    var SEnvNavigator = /** @class */ (function () {
+        function SEnvNavigator() {
+            this.doNotTrack = null;
+            this.appCodeName = "Tandem";
+            this.appName = "Tandem";
+            this.appVersion = "1.0";
+            this.platform = "Tandem";
+            this.product = "Tandem";
+            this.productSub = "tandem";
+            this.userAgent = "Tandem";
+            this.vendor = "Tandem";
+            this.vendorSub = "Tandem";
+            this.cookieEnabled = true;
+            this.onLine = true;
+            this.language = "en/us";
+            this.maxTouchPoints = 0;
+            this.plugins = [];
+            this.languages = ["en/us"];
+        }
+        SEnvNavigator.prototype.getUserMedia = function (constraints, successCallback, errorCallback) {
+            throwUnsupportedMethod();
+        };
+        SEnvNavigator.prototype.sendBeacon = function (url, data) {
+            throwUnsupportedMethod();
+            return false;
+        };
+        SEnvNavigator.prototype.msSaveBlob = function (blob, defaultName) {
+            throwUnsupportedMethod();
+            return false;
+        };
+        SEnvNavigator.prototype.msSaveOrOpenBlob = function (blob, defaultName) {
+            throwUnsupportedMethod();
+            return false;
+        };
+        SEnvNavigator.prototype.getGamepads = function () {
+            throwUnsupportedMethod();
+            return [];
+        };
+        SEnvNavigator.prototype.javaEnabled = function () {
+            return false;
+        };
+        SEnvNavigator.prototype.msLaunchUri = function (uri, successCallback, noHandlerCallback) {
+            throwUnsupportedMethod();
+        };
+        SEnvNavigator.prototype.requestMediaKeySystemAccess = function (keySystem, supportedConfigurations) {
+            return null;
+        };
+        SEnvNavigator.prototype.vibrate = function (pattern) {
+            throwUnsupportedMethod();
+            return false;
+        };
+        SEnvNavigator.prototype.confirmSiteSpecificTrackingException = function (args) {
+            throwUnsupportedMethod();
+            return false;
+        };
+        SEnvNavigator.prototype.confirmWebWideTrackingException = function (args) {
+            throwUnsupportedMethod();
+            return false;
+        };
+        SEnvNavigator.prototype.removeSiteSpecificTrackingException = function (args) {
+            throwUnsupportedMethod();
+        };
+        SEnvNavigator.prototype.removeWebWideTrackingException = function (args) {
+            throwUnsupportedMethod();
+        };
+        SEnvNavigator.prototype.storeSiteSpecificTrackingException = function (args) {
+            throwUnsupportedMethod();
+        };
+        SEnvNavigator.prototype.storeWebWideTrackingException = function (args) {
+            throwUnsupportedMethod();
+        };
+        return SEnvNavigator;
+    }());
+    return /** @class */ (function (_super) {
+        __extends(SEnvWindow, _super);
+        function SEnvWindow(origin, browserId, top) {
+            var _this = _super.call(this) || this;
+            _this.browserId = browserId;
+            _this.console = context.console;
+            _this.$synthetic = true;
+            _this.name = "";
+            _this.scrollX = 0;
+            _this.scrollY = 0;
+            _this.CustomEvent = SEnvEvent;
+            _this._scrollRect = { width: Infinity, height: Infinity };
+            // classes
+            _this.EventTarget = SEnvEventTarget;
+            _this.Element = SEnvElement;
+            _this.HTMLElement = SEnvHTMLElement;
+            _this._childWindowCount = 0;
+            _this._onRendererPainted = _this._onRendererPainted.bind(_this);
+            _this.clearImmediate = _this.clearImmediate.bind(_this);
+            _this.clearTimeout = _this.clearTimeout.bind(_this);
+            _this.clearInterval = _this.clearInterval.bind(_this);
+            _this.setImmediate = _this.setImmediate.bind(_this);
+            _this.setTimeout = _this.setTimeout.bind(_this);
+            _this.setInterval = _this.setInterval.bind(_this);
+            _this._timers = new SEnvTimers();
+            _this.CSSFontFaceRule = SEnvCSSFontFace;
+            _this.CSSKeyframesRule = SEnvCSSKeyframesRule;
+            _this.CSSKeyframeRule = SEnvCSSStyleRule;
+            _this.CSSMediaRule = SEnvCSSMediaRule;
+            _this.CSSStyleRule = SEnvCSSStyleRule;
+            _this.UnknownGroupingRule = SEnvUnknownGroupingRule;
+            _this.CSSStyleDeclaration = SEnvCSSStyleDeclaration;
+            _this.CSSStyleSheet = SEnvCSSStyleSheet;
+            _this.implementation = new SEnvDOMImplementation(_this);
+            _this.URIChangedEvent = SEnvURIChangedEvent;
+            _this.uid = _this.$id = aerial_common2_1.generateDefaultId();
+            _this.location = new SEnvLocation(origin, context.reload);
+            _this.window = _this.self = _this;
+            _this.top = top || _this;
+            _this.localStorage = new SEnvLocalStorage([]);
+            _this.innerWidth = constants_1.DEFAULT_WINDOW_WIDTH;
+            _this.innerHeight = constants_1.DEFAULT_WINDOW_HEIGHT;
+            _this.moveTo(0, 0);
+            _this.externalResourceUris = [];
+            _this.navigator = new SEnvNavigator();
+            _this.fetch = function (info) { return __awaiter(_this, void 0, void 0, function () {
+                var inf, dir, fetchPromise, ret;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            inf = String(info);
+                            if (!/^http/.test(inf) && /^http/.test(origin)) {
+                                if (inf.charAt(0) !== "/") {
+                                    dir = this.location.pathname.split("/");
+                                    dir.pop();
+                                    inf = dir.join("/") + inf;
+                                }
+                                inf = this.location.protocol + "//" + this.location.host + inf;
+                            }
+                            fetchPromise = fetch(inf);
+                            return [4 /*yield*/, fetchPromise];
+                        case 1:
+                            ret = _a.sent();
+                            this.$setExternalUris(this.externalResourceUris.concat([info]));
+                            return [2 /*return*/, ret];
+                    }
+                });
+            }); };
+            var customElements = _this.customElements = new SEnvCustomElementRegistry(_this);
+            for (var tagName in TAG_NAME_MAP) {
+                customElements.define(tagName, TAG_NAME_MAP[tagName]);
+            }
+            _this._matchMedia = media_match_1.createMediaMatcher(_this);
+            _this.document = _this.implementation.createHTMLDocument(null);
+            _this.renderer = (createRenderer || renderers_1.createNoopRenderer)(_this);
+            _this.document.addEventListener(SEnvMutationEvent.MUTATION, _this._onDocumentMutation.bind(_this));
+            return _this;
+        }
+        SEnvWindow.prototype.getSourceUri = function (uri) {
+            return uri;
+        };
+        SEnvWindow.prototype.didChange = function () {
+            this._struct = undefined;
+        };
+        Object.defineProperty(SEnvWindow.prototype, "renderer", {
+            get: function () {
+                return this._renderer;
+            },
+            set: function (value) {
+                if (this._renderer) {
+                    this._renderer.dispose();
+                    this._renderer.removeEventListener(renderers_1.SyntheticWindowRendererEvent.PAINTED, this._onRendererPainted);
+                }
+                this._renderer = value || renderers_1.createNoopRenderer(this);
+                this._renderer.addEventListener(renderers_1.SyntheticWindowRendererEvent.PAINTED, this._onRendererPainted);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SEnvWindow.prototype.$setExternalUris = function (uris) {
+            this.externalResourceUris = uris.slice();
+            this._struct = undefined;
+            this.dispatchEvent(new SEnvWindowEvent(SEnvWindowEvent.EXTERNAL_URIS_CHANGED));
+        };
+        Object.defineProperty(SEnvWindow.prototype, "struct", {
+            get: function () {
+                if (!this._struct) {
+                    this._struct = state_1.createSyntheticWindow({
+                        $id: this.$id,
+                        browserId: this.browserId,
+                        location: this.location.toString(),
+                        document: this.document.struct,
+                        instance: this,
+                        renderContainer: this.renderer.container,
+                        externalResourceUris: this.externalResourceUris.slice(),
+                        scrollPosition: {
+                            left: this.scrollX,
+                            top: this.scrollY,
+                        },
+                        bounds: {
+                            left: this.screenLeft,
+                            top: this.screenTop,
+                            right: this.screenLeft + this.innerWidth,
+                            bottom: this.screenTop + this.innerHeight
+                        }
+                    });
+                }
+                return this._struct;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SEnvWindow.prototype.dispose = function () {
+            this.renderer.dispose();
+            this._timers.dispose();
+        };
+        Object.defineProperty(SEnvWindow.prototype, "$selector", {
+            get: function () {
+                if (this._selector)
+                    return this._selector;
+                this._selector = nwmatcher(this);
+                // VERBOSITY = false to prevent breaking on invalid selector rules
+                this._selector.configure({ CACHING: true, VERBOSITY: false });
+                return this._selector;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SEnvWindow.prototype.reloadWhenUrisChange = function (uris) {
+            this.$setExternalUris(this.externalResourceUris.concat(uris));
+        };
+        SEnvWindow.prototype.alert = function (message) { };
+        SEnvWindow.prototype.blur = function () { };
+        SEnvWindow.prototype.cancelAnimationFrame = function (handle) { };
+        SEnvWindow.prototype.captureEvents = function () { };
+        SEnvWindow.prototype.close = function () {
+            this.closed = true;
+            var event = new SEnvEvent();
+            event.initEvent("close", true, true);
+            this.dispatchEvent(event);
+        };
+        SEnvWindow.prototype.confirm = function (message) {
+            return false;
+        };
+        SEnvWindow.prototype.atob = function (encodedString) {
+            this._throwUnsupportedMethod();
+            return null;
+        };
+        SEnvWindow.prototype.btoa = function (rawString) {
+            this._throwUnsupportedMethod();
+            return null;
+        };
+        SEnvWindow.prototype.departFocus = function (navigationReason, origin) {
+        };
+        SEnvWindow.prototype.focus = function () {
+        };
+        SEnvWindow.prototype.getComputedStyle = function (elt, pseudoElt) {
+            return this.renderer.getComputedStyle(elt);
+        };
+        SEnvWindow.prototype.getMatchedCSSRules = function (elt, pseudoElt) {
+            this._throwUnsupportedMethod();
+            return null;
+        };
+        SEnvWindow.prototype.getSelection = function () {
+            this._throwUnsupportedMethod();
+            return null;
+        };
+        SEnvWindow.prototype.matchMedia = function (mediaQuery) {
+            return {
+                matches: this._matchMedia(mediaQuery),
+                media: mediaQuery,
+                addListener: null,
+                removeListener: null,
+            };
+        };
+        SEnvWindow.prototype.clearInterval = function (handle) {
+            return this._timers.clearInterval(handle);
+        };
+        SEnvWindow.prototype.clearTimeout = function (handle) {
+            return this._timers.clearTimeout(handle);
+        };
+        SEnvWindow.prototype.setInterval = function (handler, ms) {
+            var args = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                args[_i - 2] = arguments[_i];
+            }
+            return (_a = this._timers).setInterval.apply(_a, [handler, ms].concat(args));
+            var _a;
+        };
+        SEnvWindow.prototype.clone = function (deep) {
+            var window = new SEnvWindow(this.location.toString(), this.browserId, this.top === this ? null : this.top);
+            window.$id = this.$id;
+            if (deep !== false) {
+                window.document.$id = this.document.$id;
+                exports.patchWindow(window, exports.diffWindow(window, this));
+            }
+            window.renderer.start();
+            return window;
+        };
+        SEnvWindow.prototype.setTimeout = function (handler, ms) {
+            var args = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                args[_i - 2] = arguments[_i];
+            }
+            return (_a = this._timers).setTimeout.apply(_a, [handler, ms].concat(args));
+            var _a;
+        };
+        SEnvWindow.prototype.clearImmediate = function (handle) {
+            return this._timers.clearImmediate(handle);
+        };
+        SEnvWindow.prototype.setImmediate = function (handler) {
+            return this._timers.setImmediate(handler);
+        };
+        SEnvWindow.prototype.moveBy = function (x, y) {
+        };
+        SEnvWindow.prototype.moveTo = function (x, y) {
+            if (x === void 0) { x = this.screenLeft; }
+            if (y === void 0) { y = this.screenTop; }
+            x = x && Math.round(x);
+            y = y && Math.round(y);
+            if (x === this.screenLeft && y === this.screenTop) {
+                return;
+            }
+            this.screenLeft = this.screenY = x;
+            this.screenTop = this.screenX = y;
+            this.didChange();
+            var e = new SEnvEvent();
+            e.initEvent("move", true, true);
+            this.dispatchEvent(e);
+        };
+        SEnvWindow.prototype.msWriteProfilerMark = function (profilerMarkName) {
+        };
+        SEnvWindow.prototype.open = function (url, target, features, replace) {
+            var _this = this;
+            var windowId = this.$id + "." + (++this._childWindowCount);
+            var open = function () {
+                var SEnvWindow = exports.getSEnvWindowClass({ console: console, fetch: fetch, reload: open });
+                var window = new SEnvWindow(url, _this.browserId);
+                window.$id = windowId;
+                window.document.$id = window.$id + "-document";
+                window.$load();
+                var event = new SEnvWindowOpenedEvent();
+                event.initWindowOpenedEvent(window);
+                _this.dispatchEvent(event);
+                return window;
+            };
+            return open();
+        };
+        SEnvWindow.prototype.postMessage = function (message, targetOrigin, transfer) {
+        };
+        SEnvWindow.prototype.print = function () {
+        };
+        SEnvWindow.prototype.prompt = function (message, _default) {
+            this._throwUnsupportedMethod();
+            return null;
+        };
+        SEnvWindow.prototype.releaseEvents = function () {
+        };
+        SEnvWindow.prototype.requestAnimationFrame = function (callback) {
+            if (!this._animationFrameRequests) {
+                this._animationFrameRequests = [];
+            }
+            this._animationFrameRequests.push(callback);
+            return -1;
+        };
+        SEnvWindow.prototype.resizeBy = function (x, y) {
+        };
+        SEnvWindow.prototype.resizeTo = function (x, y) {
+            if (x === void 0) { x = this.innerWidth; }
+            if (y === void 0) { y = this.innerHeight; }
+            x = x && Math.round(x);
+            y = y && Math.round(y);
+            if (x === this.innerWidth && y === this.innerHeight) {
+                return;
+            }
+            this.innerWidth = x;
+            this.innerHeight = y;
+            this.didChange();
+            var event = new SEnvEvent();
+            event.initEvent("resize", true, true);
+            this.dispatchEvent(event);
+        };
+        SEnvWindow.prototype.scroll = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            this.scrollTo.apply(this, args);
+        };
+        SEnvWindow.prototype.scrollBy = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+        };
+        SEnvWindow.prototype._throwUnsupportedMethod = function () {
+            throw new Error("This node type does not support this method.");
+        };
+        SEnvWindow.prototype.scrollTo = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var left;
+            var top;
+            // scroll with options
+            if (typeof args[0] === "object") {
+            }
+            else {
+                left = args[0], top = args[1];
+            }
+            // TODO - use computed bounds here too
+            left = lodash_1.clamp(left, 0, this._scrollRect.width);
+            top = lodash_1.clamp(top, 0, this._scrollRect.height);
+            var oldScrollX = this.scrollX;
+            var oldScrollY = this.scrollY;
+            // no change
+            if (oldScrollX === left && oldScrollY === top) {
+                return;
+            }
+            this.scrollX = left;
+            this.scrollY = top;
+            var event = new SEnvEvent();
+            event.initEvent("scroll", true, true);
+            this.dispatchEvent(event);
+        };
+        SEnvWindow.prototype.stop = function () {
+        };
+        SEnvWindow.prototype.webkitCancelAnimationFrame = function (handle) {
+        };
+        SEnvWindow.prototype.webkitConvertPointFromNodeToPage = function (node, pt) {
+            this._throwUnsupportedMethod();
+            return null;
+        };
+        SEnvWindow.prototype.webkitConvertPointFromPageToNode = function (node, pt) {
+            this._throwUnsupportedMethod();
+            return null;
+        };
+        SEnvWindow.prototype.webkitRequestAnimationFrame = function (callback) {
+            this._throwUnsupportedMethod();
+            return -1;
+        };
+        SEnvWindow.prototype.createImageBitmap = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return Promise.reject(null);
+        };
+        SEnvWindow.prototype.$load = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var location, response, content;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            console.log("LOAD WINDOW");
+                            location = this.location.toString();
+                            this.renderer.start();
+                            if (!location) return [3 /*break*/, 4];
+                            return [4 /*yield*/, this.fetch(location)];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.text()];
+                        case 2:
+                            content = _a.sent();
+                            return [4 /*yield*/, this.document.$load(content)];
+                        case 3:
+                            _a.sent();
+                            return [3 /*break*/, 6];
+                        case 4: return [4 /*yield*/, this.document.$load("")];
+                        case 5:
+                            _a.sent();
+                            _a.label = 6;
+                        case 6: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        SEnvWindow.prototype._onDocumentMutation = function (event) {
+            this.didChange();
+            var eventClone = new SEnvMutationEvent();
+            eventClone.initMutationEvent(event.mutation);
+            this.dispatchEvent(eventClone);
+        };
+        SEnvWindow.prototype._onRendererPainted = function (event) {
+            this._scrollRect = event.scrollRect;
+            // sync scroll position that may have changed
+            // during window resize, otherwise 
+            this.scrollTo(event.scrollPosition.left, event.scrollPosition.top);
+            if (this._animationFrameRequests) {
+                var animationFrameRequests = this._animationFrameRequests;
+                this._animationFrameRequests = [];
+                for (var i = 0, n = animationFrameRequests.length; i < n; i++) {
+                    animationFrameRequests[i]();
+                }
+            }
+        };
+        return SEnvWindow;
+    }(SEnvEventTarget));
+});
+exports.openSyntheticEnvironmentWindow = function (location, context) {
+    var SEnvWindow = exports.getSEnvWindowClass(context);
+    var window = new SEnvWindow(location, _this.browserId);
+    window.$load();
+    return window;
+};
+exports.diffWindow = function (oldWindow, newWindow) {
+    return nodes_1.diffDocument(oldWindow.document, newWindow.document);
+};
+exports.flattenWindowObjectSources = function (window) {
+    if (!window.document) {
+        return {};
+    }
+    return nodes_1.flattenDocumentSources(window.document);
+};
+exports.windowMutators = __assign({}, nodes_1.documentMutators);
+exports.patchWindow = function (oldWindow, mutations) {
+    var childObjects = exports.flattenWindowObjectSources(oldWindow.struct);
+    for (var _i = 0, mutations_1 = mutations; _i < mutations_1.length; _i++) {
+        var mutation = mutations_1[_i];
+        var target = childObjects[mutation.target.$id];
+        if (!target) {
+            throw new Error("Unable to find target for mutation " + mutation.type);
+        }
+        var mutate = exports.windowMutators[mutation.type];
+        if (!mutate) {
+            throw new Error("Unable to find window mutator for " + mutation.type);
+        }
+        mutate(target, mutation);
+    }
+};
+/**
+ * Synchronizes IDs between two windows to ensure that future mutations sync
+ * properly - seen window mirror impl.
+ */
+exports.syncWindowIds = function (sourceWindow, targetWindow) {
+    var sourceChildObjects = exports.flattenWindowObjectSources(sourceWindow.struct);
+    var targetChildObjects = exports.flattenWindowObjectSources(targetWindow.struct);
+    var sids = Object.keys(sourceChildObjects);
+    var tids = Object.keys(targetChildObjects);
+    if (sids.length !== tids.length) {
+        throw new Error("child object count missmatch. Cannot synchronize ids");
+    }
+    // source & target windows should be synchronized, so it should
+    // okay to just copy IDs over
+    for (var i = 0, n = sids.length; i < n; i++) {
+        var sco = sourceChildObjects[sids[i]];
+        var nco = targetChildObjects[tids[i]];
+        if (sco.$id === nco.$id) {
+            continue;
+        }
+        if (sco.struct.type !== nco.struct.type) {
+            throw new Error("Cannot set $id from type " + sco.struct.type + " to type " + nco.struct.type + ".");
+        }
+        // TODO - assert the type here --- should be identical
+        nco.$id = sco.$id;
+    }
+};
+//# sourceMappingURL=window.js.map
+
+/***/ }),
+
+/***/ "../aerial-browser-sandbox/lib/sagas/synthetic-browser.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var mesh_1 = __webpack_require__("./node_modules/mesh/index.js");
+var redux_saga_1 = __webpack_require__("./node_modules/redux-saga/es/index.js");
+var lodash_1 = __webpack_require__("./node_modules/lodash/lodash.js");
+var effects_1 = __webpack_require__("./node_modules/redux-saga/es/effects.js");
+var aerial_sandbox2_1 = __webpack_require__("../aerial-sandbox2/index.js");
+var html_content_editor_1 = __webpack_require__("../aerial-browser-sandbox/lib/sagas/html-content-editor.js");
+var utils_1 = __webpack_require__("../aerial-browser-sandbox/lib/utils/index.js");
+var file_editor_1 = __webpack_require__("../aerial-browser-sandbox/lib/sagas/file-editor.js");
+var actions_1 = __webpack_require__("../aerial-browser-sandbox/lib/actions/index.js");
+var aerial_common2_1 = __webpack_require__("../aerial-common2/index.js");
+var state_1 = __webpack_require__("../aerial-browser-sandbox/lib/state/index.js");
+var environment_1 = __webpack_require__("../aerial-browser-sandbox/lib/environment/index.js");
+function syntheticBrowserSaga() {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.fork(handleFetchRequests)];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(html_content_editor_1.htmlContentEditorSaga)];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(file_editor_1.fileEditorSaga)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleToggleCSSProperty)];
+            case 4:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleOpenSyntheticWindow)];
+            case 5:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleOpenedSyntheticWindow)];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleOpenedSyntheticProxyWindow)];
+            case 7:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+exports.syntheticBrowserSaga = syntheticBrowserSaga;
+function handleFetchRequests() {
+    var _loop_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _loop_1 = function () {
+                    var req;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, effects_1.take(actions_1.FETCH_REQUEST)];
+                            case 1:
+                                req = (_a.sent());
+                                return [4 /*yield*/, effects_1.spawn(function () {
+                                        var _a, _b, _c;
+                                        return __generator(this, function (_d) {
+                                            switch (_d.label) {
+                                                case 0:
+                                                    _a = effects_1.put;
+                                                    _b = aerial_common2_1.createRequestResponse;
+                                                    _c = [req.$id];
+                                                    return [4 /*yield*/, aerial_common2_1.request(aerial_sandbox2_1.createReadUriRequest(String(req.info)))];
+                                                case 1: return [4 /*yield*/, _d.sent()];
+                                                case 2: return [4 /*yield*/, _a.apply(void 0, [_b.apply(void 0, _c.concat([(_d.sent()).payload]))])];
+                                                case 3:
+                                                    _d.sent();
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    })];
+                            case 2:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                };
+                _a.label = 1;
+            case 1:
+                if (false) return [3 /*break*/, 3];
+                return [5 /*yield**/, _loop_1()];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 1];
+            case 3: return [2 /*return*/];
+        }
+    });
+}
+function handleOpenSyntheticWindow() {
+    var request_1, instance;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (false) return [3 /*break*/, 3];
+                return [4 /*yield*/, effects_1.take(function (action) { return action.type === actions_1.OPEN_SYNTHETIC_WINDOW; })];
+            case 1:
+                request_1 = (_a.sent());
+                return [4 /*yield*/, effects_1.call(openSyntheticWindowEnvironment, request_1.state, request_1.syntheticBrowserId)];
+            case 2:
+                instance = (_a.sent());
+                return [3 /*break*/, 0];
+            case 3: return [2 /*return*/];
+        }
+    });
+}
+function openSyntheticWindowEnvironment(_a, browserId) {
+    var _b = _a.$id, windowId = _b === void 0 ? aerial_common2_1.generateDefaultId() : _b, location = _a.location, bounds = _a.bounds, scrollPosition = _a.scrollPosition;
+    var main, documentId, fetch, apiHost, currentWindow, reloadChan;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                documentId = aerial_common2_1.generateDefaultId();
+                return [4 /*yield*/, getFetch()];
+            case 1:
+                fetch = _c.sent();
+                return [4 /*yield*/, effects_1.select()];
+            case 2:
+                apiHost = (_c.sent()).apiHost;
+                return [4 /*yield*/, redux_saga_1.eventChannel(function (emit) {
+                        var reload = function (bounds) {
+                            if (currentWindow) {
+                                currentWindow.dispose();
+                            }
+                            var SEnvWindow = environment_1.getSEnvWindowClass({
+                                console: getSEnvWindowConsole(),
+                                fetch: fetch,
+                                reload: function () { return reload(); },
+                                getProxyUrl: function (url) {
+                                    return apiHost && url.substr(0, 5) !== "data:" && url.indexOf(window.location.host) === -1 ? apiHost + "/proxy/" + encodeURIComponent(url) : url;
+                                },
+                                createRenderer: function (window) {
+                                    return window.top === window ? new environment_1.SyntheticMirrorRenderer(window) : new environment_1.SyntheticDOMRenderer(window, document);
+                                }
+                            });
+                            var window = currentWindow = new SEnvWindow(location, browserId);
+                            // ick. Better to use seed function instead to generate UIDs <- TODO.
+                            window.$id = windowId;
+                            window.document.$id = documentId;
+                            if (bounds) {
+                                window.moveTo(bounds.left, bounds.top);
+                                if (bounds.right) {
+                                    window.resizeTo(bounds.right - bounds.left, bounds.bottom - bounds.top);
+                                }
+                            }
+                            emit(window);
+                            return window;
+                        };
+                        reload(bounds);
+                        return function () { };
+                    })];
+            case 3:
+                reloadChan = _c.sent();
+                return [4 /*yield*/, effects_1.spawn(function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, watchWindowExternalResourceUris(currentWindow, function () { return currentWindow.location.reload(); })];
+                                case 1:
+                                    _a.sent();
+                                    currentWindow.$load();
+                                    return [4 /*yield*/, effects_1.put(actions_1.syntheticWindowOpened(currentWindow))];
+                                case 2:
+                                    _a.sent();
+                                    return [4 /*yield*/, effects_1.take(reloadChan)];
+                                case 3:
+                                    _a.sent();
+                                    return [3 /*break*/, 0];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 4:
+                _c.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+function handleToggleCSSProperty() {
+    var _a, cssDeclarationId, propertyName, windowId, state, window_1, childObjects, cssDeclaration;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                if (false) return [3 /*break*/, 3];
+                return [4 /*yield*/, effects_1.take(actions_1.TOGGLE_CSS_DECLARATION_PROPERTY)];
+            case 1:
+                _a = _b.sent(), cssDeclarationId = _a.cssDeclarationId, propertyName = _a.propertyName, windowId = _a.windowId;
+                return [4 /*yield*/, effects_1.select()];
+            case 2:
+                state = _b.sent();
+                window_1 = state_1.getSyntheticWindow(state, windowId);
+                childObjects = environment_1.flattenWindowObjectSources(window_1);
+                cssDeclaration = childObjects[cssDeclarationId];
+                cssDeclaration.toggle(propertyName);
+                return [3 /*break*/, 0];
+            case 3: return [2 /*return*/];
+        }
+    });
+}
+;
+var PADDING = 10;
+function getBestWindowPosition(browserId, filter) {
+    var state, browser, entireBounds;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.select()];
+            case 1:
+                state = _a.sent();
+                browser = state_1.getSyntheticBrowser(state, browserId);
+                entireBounds = state_1.getSyntheticBrowserBounds(browser, filter);
+                return [2 /*return*/, {
+                        left: entireBounds.right ? entireBounds.right + PADDING : 0,
+                        top: entireBounds.top
+                    }];
+        }
+    });
+}
+;
+var getSEnvWindowConsole = function () { return ({
+    warn: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        console.warn.apply(console, ['VM '].concat(args));
+    },
+    log: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        console.log.apply(console, ['VM '].concat(args));
+    },
+    error: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        console.error.apply(console, ['VM '].concat(args));
+    },
+    debug: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        console.debug.apply(console, ['VM '].concat(args));
+    },
+    info: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        console.info.apply(console, ['VM '].concat(args));
+    }
+}); };
+function watchWindowExternalResourceUris(instance, reload) {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: 
+            // watch for changes
+            return [4 /*yield*/, effects_1.spawn(function () {
+                    var uri;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (false) return [3 /*break*/, 4];
+                                return [4 /*yield*/, effects_1.take(aerial_sandbox2_1.URI_CACHE_BUSTED)];
+                            case 1:
+                                uri = (_a.sent()).uri;
+                                if (!(instance.externalResourceUris.indexOf(uri) !== -1)) return [3 /*break*/, 3];
+                                return [4 /*yield*/, effects_1.call(reload)];
+                            case 2:
+                                _a.sent();
+                                return [3 /*break*/, 4];
+                            case 3: return [3 /*break*/, 0];
+                            case 4: return [2 /*return*/];
+                        }
+                    });
+                })];
+            case 1:
+                // watch for changes
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+function getFetch() {
+    var externalResources, fetchQueue, state;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                externalResources = [];
+                fetchQueue = mesh_1.createQueue();
+                return [4 /*yield*/, effects_1.select()];
+            case 1:
+                state = _a.sent();
+                return [4 /*yield*/, effects_1.spawn(function () {
+                        var _a, info, resolve, body;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, effects_1.call(fetchQueue.next)];
+                                case 1:
+                                    _a = (_b.sent()).value, info = _a[0], resolve = _a[1];
+                                    return [4 /*yield*/, aerial_common2_1.request(actions_1.fetchRequest(info))];
+                                case 2: return [4 /*yield*/, _b.sent()];
+                                case 3:
+                                    body = (_b.sent()).payload;
+                                    externalResources.push(info);
+                                    resolve(body);
+                                    return [3 /*break*/, 0];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 2:
+                _a.sent();
+                return [2 /*return*/, function (info) {
+                        var url = String(info);
+                        if (url.charAt(0) === "/") {
+                            url = window.location.protocol + "//" + window.location.host + url;
+                        }
+                        if (url.indexOf(window.location.host) === -1) {
+                            url = state.apiHost + "/proxy/" + encodeURIComponent(String(info));
+                        }
+                        return fetch(url);
+                    }];
+        }
+    });
+}
+function handleOpenedSyntheticWindow() {
+    function updateProxy(window) {
+        var containsProxy, proxy, disposeMirror, position, _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    containsProxy = proxies.has(window.$id);
+                    if (!!containsProxy) return [3 /*break*/, 5];
+                    proxy = window.clone();
+                    if (!(window.screenLeft || window.screenTop)) return [3 /*break*/, 1];
+                    _a = { left: window.screenLeft, top: window.screenTop };
+                    return [3 /*break*/, 3];
+                case 1: return [4 /*yield*/, effects_1.call(getBestWindowPosition, window.browserId, function (existingWindow) { return existingWindow.$id !== window.$id; })];
+                case 2:
+                    _a = (_c.sent());
+                    _c.label = 3;
+                case 3:
+                    position = _a;
+                    proxy.moveTo(position.left, position.top);
+                    proxy.resizeTo(window.innerWidth, window.innerHeight);
+                    proxy.renderer = createRenderer(proxy);
+                    proxy.renderer.start();
+                    disposeMirror = function () { };
+                    return [4 /*yield*/, effects_1.put(actions_1.syntheticWindowProxyOpened(proxy))];
+                case 4:
+                    _c.sent();
+                    return [3 /*break*/, 6];
+                case 5:
+                    _b = proxies.get(window.$id), proxy = _b[0], disposeMirror = _b[1];
+                    _c.label = 6;
+                case 6:
+                    disposeMirror();
+                    proxies.set(window.$id, [proxy, environment_1.mirrorWindow(proxy, window)]);
+                    return [2 /*return*/];
+            }
+        });
+    }
+    var proxies, createRenderer, instance;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                proxies = new Map();
+                createRenderer = environment_1.createSyntheticDOMRendererFactory(document);
+                ;
+                _a.label = 1;
+            case 1:
+                if (false) return [3 /*break*/, 4];
+                return [4 /*yield*/, effects_1.take(actions_1.SYNTHETIC_WINDOW_OPENED)];
+            case 2:
+                instance = (_a.sent()).instance;
+                return [4 /*yield*/, effects_1.call(updateProxy, instance)];
+            case 3:
+                _a.sent();
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/];
+        }
+    });
+}
+function handleOpenedSyntheticProxyWindow() {
+    var _loop_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _loop_2 = function () {
+                    var instance, thread;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, effects_1.take(actions_1.SYNTHETIC_WINDOW_PROXY_OPENED)];
+                            case 1:
+                                instance = (_a.sent()).instance;
+                                return [4 /*yield*/, effects_1.spawn(handleSyntheticWindowInstance, instance)];
+                            case 2:
+                                thread = _a.sent();
+                                return [4 /*yield*/, effects_1.fork(function () {
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0: return [4 /*yield*/, effects_1.take(function (action) { return action.type === aerial_common2_1.REMOVED && action.itemId === instance.$id; })];
+                                                case 1:
+                                                    _a.sent();
+                                                    return [4 /*yield*/, effects_1.cancel(thread)];
+                                                case 2:
+                                                    _a.sent();
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    })];
+                            case 3:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                };
+                _a.label = 1;
+            case 1:
+                if (false) return [3 /*break*/, 3];
+                return [5 /*yield**/, _loop_2()];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 1];
+            case 3: return [2 /*return*/];
+        }
+    });
+}
+function handleSyntheticWindowInstance(window) {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, effects_1.fork(handleSyntheticWindowEvents, window)];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(handleSyntheticWindowMutations, window)];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+function handleSyntheticWindowEvents(window) {
+    var _a, SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent, SEnvWindowEvent, chan;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = environment_1.getSEnvEventClasses(window), SEnvMutationEvent = _a.SEnvMutationEvent, SEnvWindowOpenedEvent = _a.SEnvWindowOpenedEvent, SEnvURIChangedEvent = _a.SEnvURIChangedEvent, SEnvWindowEvent = _a.SEnvWindowEvent;
+                chan = redux_saga_1.eventChannel(function (emit) {
+                    window.renderer.addEventListener(environment_1.SyntheticWindowRendererEvent.PAINTED, function (_a) {
+                        var rects = _a.rects, styles = _a.styles;
+                        emit(actions_1.syntheticWindowRectsUpdated(window.$id, rects, styles));
+                    });
+                    var emitStructChange = lodash_1.debounce(function () {
+                        emit(actions_1.syntheticWindowChanged(window));
+                    }, 0);
+                    window.addEventListener(SEnvMutationEvent.MUTATION, function (event) {
+                        if (window.document.readyState !== "complete")
+                            return;
+                        emitStructChange();
+                    });
+                    window.addEventListener("move", function (event) {
+                        emit(actions_1.syntheticWindowMoved(window));
+                    });
+                    window.addEventListener("close", function (event) {
+                        // TODO - need to properly clean up event listeners here
+                        emit(actions_1.syntheticWindowClosed(window));
+                    });
+                    window.addEventListener("scroll", function (event) {
+                        emit(actions_1.syntheticWindowScrolled(window.$id, {
+                            left: window.scrollX,
+                            top: window.scrollY
+                        }));
+                    });
+                    window.addEventListener(SEnvURIChangedEvent.URI_CHANGED, function (_a) {
+                        var uri = _a.uri;
+                        emit(actions_1.syntheticWindowResourceChanged(uri));
+                    });
+                    window.addEventListener("resize", function (event) {
+                        emit(actions_1.syntheticWindowResized(window));
+                    });
+                    window.addEventListener(SEnvWindowEvent.EXTERNAL_URIS_CHANGED, function () {
+                        emitStructChange();
+                    });
+                    window.addEventListener(SEnvWindowOpenedEvent.WINDOW_OPENED, function (event) {
+                        emit(actions_1.syntheticWindowOpened(event.window, window.$id));
+                    });
+                    window.addEventListener("scroll", function (event) {
+                        emit(actions_1.syntheticWindowScrolled(window.$id, {
+                            left: window.scrollX,
+                            top: window.scrollY
+                        }));
+                    });
+                    var triggerLoaded = function () {
+                        if (window.document.readyState !== "complete")
+                            return;
+                        emit(actions_1.syntheticWindowLoaded(window));
+                    };
+                    window.document.addEventListener("readystatechange", triggerLoaded);
+                    triggerLoaded();
+                    return function () { };
+                });
+                return [4 /*yield*/, effects_1.fork(function () {
+                        var _loop_3;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    _loop_3 = function () {
+                                        var e;
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0: return [4 /*yield*/, effects_1.take(chan)];
+                                                case 1:
+                                                    e = _a.sent();
+                                                    return [4 /*yield*/, effects_1.spawn(function () {
+                                                            return __generator(this, function (_a) {
+                                                                switch (_a.label) {
+                                                                    case 0: return [4 /*yield*/, effects_1.put(e)];
+                                                                    case 1:
+                                                                        _a.sent();
+                                                                        return [2 /*return*/];
+                                                                }
+                                                            });
+                                                        })];
+                                                case 2:
+                                                    _a.sent();
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    };
+                                    _a.label = 1;
+                                case 1:
+                                    if (false) return [3 /*break*/, 3];
+                                    return [5 /*yield**/, _loop_3()];
+                                case 2:
+                                    _a.sent();
+                                    return [3 /*break*/, 1];
+                                case 3: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 1:
+                _b.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+var getTargetStyleOwners = function (element, propertyNames, targetSelectors) {
+    // find all applied rules
+    var appliedRules = utils_1.getSyntheticAppliedCSSRules(element.ownerDocument.defaultView.struct, element.$id).map(function (_a) {
+        var rule = _a.rule;
+        return rule.instance;
+    });
+    // cascade down style rule list until targets are found (defined in css inspector)
+    var targetRules = appliedRules.filter(function (rule) { return Boolean(targetSelectors.find(function (_a) {
+        var uri = _a.uri, value = _a.value;
+        return rule.source.uri === uri && rule["selectorText"] == value;
+    })); });
+    if (!targetRules.length) {
+        targetRules = [appliedRules[0]];
+    }
+    var ret = {};
+    var _loop_4 = function (propName) {
+        ret[propName] = targetRules.find(function (rule) { return Boolean(rule.style[propName]); }) || targetRules[0];
+    };
+    for (var _i = 0, propertyNames_1 = propertyNames; _i < propertyNames_1.length; _i++) {
+        var propName = propertyNames_1[_i];
+        _loop_4(propName);
+    }
+    return ret;
+};
+var createStyleMutation = function (target) {
+    if (target.struct.$type === state_1.SYNTHETIC_ELEMENT) {
+        var element = target;
+        return environment_1.createSetElementAttributeMutation(element, "style", element.getAttribute("style"));
+    }
+    else if (target.struct.$type === state_1.SYNTHETIC_CSS_STYLE_RULE) {
+        var rule = target;
+        return environment_1.cssStyleRuleSetStyle(rule, rule.style);
+    }
+};
+function handleSyntheticWindowMutations(window) {
+    var takeWindowAction;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                takeWindowAction = function (type, test) {
+                    if (test === void 0) { test = function (action) { return action.syntheticWindowId === window.$id; }; }
+                    return effects_1.take(function (action) { return action.type === type && test(action); });
+                };
+                return [4 /*yield*/, effects_1.fork(function handleRemoveNode() {
+                        var _a, itemType, itemId, target, parent_1, removeMutation;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, effects_1.take(function (action) { return action.type === aerial_common2_1.REMOVED && state_1.isSyntheticNodeType(action.itemType) && !!environment_1.flattenWindowObjectSources(window.struct)[action.itemId]; })];
+                                case 1:
+                                    _a = (_b.sent()), itemType = _a.itemType, itemId = _a.itemId;
+                                    target = environment_1.flattenWindowObjectSources(window.struct)[itemId];
+                                    parent_1 = target.parentNode;
+                                    removeMutation = environment_1.createParentNodeRemoveChildMutation(parent_1, target);
+                                    // remove immediately so that it's reflected in the canvas
+                                    parent_1.removeChild(target);
+                                    return [4 /*yield*/, aerial_common2_1.request(actions_1.deferApplyFileMutationsRequest(removeMutation))];
+                                case 2: return [4 /*yield*/, _b.sent()];
+                                case 3:
+                                    _b.sent();
+                                    return [3 /*break*/, 0];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function handleMoveNode() {
+                        var _a, itemType, itemId, point, targetSelectors, syntheticWindow, _b, syntheticNode, _c, originalRect, computedStyle, relativeRect, envElement, _d, top_1, left, position;
+                        return __generator(this, function (_e) {
+                            switch (_e.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, effects_1.take(function (action) { return action.type === aerial_common2_1.MOVED && state_1.isSyntheticNodeType(action.itemType) && !!environment_1.flattenWindowObjectSources(window.struct)[action.itemId]; })];
+                                case 1:
+                                    _a = (_e.sent()), itemType = _a.itemType, itemId = _a.itemId, point = _a.point, targetSelectors = _a.targetSelectors;
+                                    _b = state_1.getSyntheticWindow;
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 2:
+                                    syntheticWindow = _b.apply(void 0, [_e.sent(), window.$id]);
+                                    _c = state_1.getSyntheticNodeById;
+                                    return [4 /*yield*/, effects_1.select()];
+                                case 3:
+                                    syntheticNode = _c.apply(void 0, [_e.sent(), itemId]);
+                                    originalRect = syntheticWindow.allComputedBounds[syntheticNode.$id];
+                                    computedStyle = syntheticWindow.allComputedStyles[syntheticNode.$id];
+                                    relativeRect = aerial_common2_1.roundBounds(aerial_common2_1.shiftBounds(utils_1.convertAbsoluteBoundsToRelative(aerial_common2_1.pointToBounds(point), syntheticNode, syntheticWindow), {
+                                        left: -syntheticWindow.bounds.left,
+                                        top: -syntheticWindow.bounds.top
+                                    }));
+                                    envElement = environment_1.flattenWindowObjectSources(window.struct)[syntheticNode.$id];
+                                    _d = getTargetStyleOwners(envElement, ["top", "left", "position"], targetSelectors), top_1 = _d.top, left = _d.left, position = _d.position;
+                                    // TODO - get best CSS style
+                                    if (computedStyle.position === "static") {
+                                        position.style.setProperty("position", "relative");
+                                    }
+                                    // transitions will foo with dragging, so temporarily
+                                    // disable them
+                                    // TODO - need to fix this -- causes jumpy CSS inspector
+                                    // envElement.style.setProperty("transition", "none");
+                                    left.style.setProperty("left", relativeRect.left + "px");
+                                    top_1.style.setProperty("top", relativeRect.top + "px");
+                                    return [3 /*break*/, 0];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function () {
+                        var _a, syntheticNodeId, textContent, syntheticNode;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, takeWindowAction(actions_1.SYNTHETIC_NODE_TEXT_CONTENT_CHANGED)];
+                                case 1:
+                                    _a = (_b.sent()), syntheticNodeId = _a.syntheticNodeId, textContent = _a.textContent;
+                                    syntheticNode = environment_1.flattenWindowObjectSources(window.struct)[syntheticNodeId];
+                                    syntheticNode.textContent = textContent;
+                                    return [3 /*break*/, 0];
+                                case 2: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 3:
+                _a.sent();
+                // TODO: deprecated. changes must be explicit in the editor instead of doing diff / patch work
+                // since we may end up editing the wrong node otherwise (CC).
+                return [4 /*yield*/, effects_1.fork(function handleNodeStoppedEditing() {
+                        var nodeId, node, mutation;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 3];
+                                    return [4 /*yield*/, takeWindowAction(actions_1.NODE_VALUE_STOPPED_EDITING)];
+                                case 1:
+                                    nodeId = (_a.sent()).nodeId;
+                                    node = environment_1.flattenWindowObjectSources(window.struct)[nodeId];
+                                    mutation = environment_1.createSetElementTextContentMutation(node, node.textContent);
+                                    return [4 /*yield*/, aerial_common2_1.request(actions_1.deferApplyFileMutationsRequest(mutation))];
+                                case 2:
+                                    _a.sent();
+                                    return [3 /*break*/, 0];
+                                case 3: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 4:
+                // TODO: deprecated. changes must be explicit in the editor instead of doing diff / patch work
+                // since we may end up editing the wrong node otherwise (CC).
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function handleMoveNodeStopped() {
+                        var _loop_5;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    _loop_5 = function () {
+                                        var _a, itemType, itemId, targetSelectors;
+                                        return __generator(this, function (_b) {
+                                            switch (_b.label) {
+                                                case 0: return [4 /*yield*/, effects_1.take(function (action) { return action.type === aerial_common2_1.STOPPED_MOVING && state_1.isSyntheticNodeType(action.itemType) && !!environment_1.flattenWindowObjectSources(window.struct)[action.itemId]; })];
+                                                case 1:
+                                                    _a = (_b.sent()), itemType = _a.itemType, itemId = _a.itemId, targetSelectors = _a.targetSelectors;
+                                                    return [4 /*yield*/, effects_1.spawn(function () {
+                                                            var target, _a, top, left, position, mutations;
+                                                            return __generator(this, function (_b) {
+                                                                switch (_b.label) {
+                                                                    case 0:
+                                                                        target = environment_1.flattenWindowObjectSources(window.struct)[itemId];
+                                                                        _a = getTargetStyleOwners(target, ["top", "left", "position"], targetSelectors), top = _a.top, left = _a.left, position = _a.position;
+                                                                        mutations = lodash_1.uniq([top, left, position]).map(createStyleMutation);
+                                                                        return [4 /*yield*/, aerial_common2_1.request(actions_1.deferApplyFileMutationsRequest.apply(void 0, mutations))];
+                                                                    case 1: return [4 /*yield*/, _b.sent()];
+                                                                    case 2:
+                                                                        _b.sent();
+                                                                        return [2 /*return*/];
+                                                                }
+                                                            });
+                                                        })];
+                                                case 2:
+                                                    _b.sent();
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    };
+                                    _a.label = 1;
+                                case 1:
+                                    if (false) return [3 /*break*/, 3];
+                                    return [5 /*yield**/, _loop_5()];
+                                case 2:
+                                    _a.sent();
+                                    return [3 /*break*/, 1];
+                                case 3: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 5:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function () {
+                        var _a, left, top_2;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, takeWindowAction(actions_1.SYNTHETIC_WINDOW_SCROLL)];
+                                case 1:
+                                    _a = (_b.sent()).scrollPosition, left = _a.left, top_2 = _a.top;
+                                    window.scrollTo(left, top_2);
+                                    return [3 /*break*/, 0];
+                                case 2: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function handleResized() {
+                        var point;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, takeWindowAction(aerial_common2_1.MOVED, function (action) { return action.itemId === window.$id; })];
+                                case 1:
+                                    point = (_a.sent()).point;
+                                    window.moveTo(point.left, point.top);
+                                    return [3 /*break*/, 0];
+                                case 2: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 7:
+                _a.sent();
+                return [4 /*yield*/, effects_1.fork(function handleResized() {
+                        var bounds;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (false) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, takeWindowAction(aerial_common2_1.RESIZED, function (action) { return action.itemId === window.$id; })];
+                                case 1:
+                                    bounds = (_a.sent()).bounds;
+                                    window.moveTo(bounds.left, bounds.top);
+                                    window.resizeTo(bounds.right - bounds.left, bounds.bottom - bounds.top);
+                                    return [3 /*break*/, 0];
+                                case 2: return [2 /*return*/];
+                            }
+                        });
+                    })];
+            case 8:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}
+//# sourceMappingURL=synthetic-browser.js.map
+
+/***/ })
+
+})
