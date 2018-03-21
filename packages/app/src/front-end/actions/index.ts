@@ -1,14 +1,24 @@
 import { Action } from "redux";
-import { OpenFile } from "../state";
+import { SyntheticWindow } from "paperclip";
 
-export const TEST_PROJECT_LOADED = "TEST_PROJECT_LOADED";
+export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
+export const SYNTHETIC_WINDOW_OPENED = "SYNTHETIC_WINDOW_OPENED";
 
-export type TestProjectLoaded = {
-  file: OpenFile;
+export type ProjectLoaded = {
+  uri: string;
 } & Action;
 
-export const testProjectLoaded = (file: OpenFile): TestProjectLoaded => ({
-  file,
-  type: TEST_PROJECT_LOADED
+export type SyntheticWindowOpened = {
+  window: SyntheticWindow
+} & Action;
+
+export const projectLoaded = (uri: string): ProjectLoaded => ({
+  uri,
+  type: PROJECT_LOADED
+});
+
+export const syntheticWindowOpened = (window: SyntheticWindow): SyntheticWindowOpened => ({
+  window,
+  type: SYNTHETIC_WINDOW_OPENED
 });

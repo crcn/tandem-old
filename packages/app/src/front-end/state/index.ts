@@ -1,49 +1,22 @@
 import { arraySplice } from "common/utils";
-
-export type SyntheticWindow = {
-
-};
-
-export type OpenFile = {
-  path: string;
-
-  // TRUE if the file has been edited
-  dirty?: boolean;
-  content: Buffer;
-
-  // TODO
-  // history?: string[]; 
-  window?: 
-}
+import { SyntheticBrowser } from "paperclip";
 
 export type RootState = {
-  activeFilePath?: string;
-  openFiles: OpenFile[];
+  activeUri?: string;
   mount: Element;
+  browser: SyntheticBrowser;
 };
 
-export const updateRootState = (root: RootState, properties: Partial<RootState>) => ({
+export const updateRootState = (properties: Partial<RootState>, root: RootState) => ({
   ...root,
   ...properties,
 });
 
-export const setActiveFile = (root: RootState, newActivePath: string) => {
-  if (!root.openFiles.some(({path}) => path === newActivePath)) {
+export const setActiveUri = (newActiveUri: string, root: RootState) => {
+  if (!root.browser.windows.some(({location}) => location === newActiveUri)) {
     throw new Error(`Active file path is not currently open`);
   }
-  return updateRootState(root, {
-    activeFilePath: newActivePath
-  });
+  return updateRootState({
+    activeUri: newActiveUri
+  }, root);
 };
-
-export const addOpenedProject = (root: RootState, file: OpenFile) => {
-  root = updateRootState(root, {
-    openFiles: arraySplice(root.openFiles, 0, 0, file)
-  });
-
-  if (!root.activeFilePath) {
-    root = setActiveFile(root, file.path);
-  }
-
-  return root;
-}

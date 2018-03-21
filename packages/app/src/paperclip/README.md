@@ -22,5 +22,7 @@ Example:
 VM:
 
 ```typescript
-import {  } from "paperclip";
+import { load, run, mergeGraph } from "paperclip";
+const info = await loadEntry("test.pc", { openFile, graph });
+const synth = await run(info);
 ```

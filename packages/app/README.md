@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+- [ ] web workers for editing files
 - [ ] get canvas to state where HiFi components can be create with D&D interface
   - [ ] measurement tools
   - [ ] grid tool

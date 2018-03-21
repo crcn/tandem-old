@@ -1,6 +1,8 @@
 import { Action } from "redux";
-import { TEST_PROJECT_LOADED, TestProjectLoaded } from "../actions";
-import { RootState, addOpenedProject } from "../state";
+import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, SyntheticWindowOpened } from "../actions";
+import { RootState, setActiveUri, updateRootState } from "../state";
+import { stat } from "fs";
+import { updateSyntheticBrowser, addSyntheticWindow } from "paperclip";
 
 export const rootReducer = (state: RootState, action: Action) => {
   state = projectReducer(state, action);
@@ -8,14 +10,19 @@ export const rootReducer = (state: RootState, action: Action) => {
 };
 
 const projectReducer = (state: RootState, action: Action) => {
+  return state;
+};
+
+const syntheticBrowserReducer = (state: RootState, action: Action) => {
   switch(action.type) {
-    case TEST_PROJECT_LOADED: {
-      const { file } = action as TestProjectLoaded;
-      state = addOpenedProject(state, file);
+    case SYNTHETIC_WINDOW_OPENED: {
+      const { window } = action as SyntheticWindowOpened;
+      state = updateRootState({
+        browser: addSyntheticWindow(window, state.browser)
+      }, state);
+      state = setActiveUri(window.location, state);
       break;
     }
   }
-  console.log(state);
-
   return state;
-};
+}
