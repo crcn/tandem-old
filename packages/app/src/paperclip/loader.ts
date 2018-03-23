@@ -1,7 +1,7 @@
 import { Dependency, DependencyGraph } from "./loader-state";
 import { createComponentModule, BaseModule, ModuleType, ComponentModule } from "./dsl";
 
-export type FileLoader = (uri: string) => Promise<string>;
+export type FileLoader = (uri: string) => string | Promise<string>;
 
 export type LoadEntryOptions = {
   openFile: FileLoader;

@@ -11,7 +11,7 @@ export type TreeNodeAttribute = {
 export type TreeNode = {
   children: TreeNode[];
   name: string;
-  namespace: string;
+  namespace?: string;
   attributes: TreeNodeAttribute[]
 };
 
