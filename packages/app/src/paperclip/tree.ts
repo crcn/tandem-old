@@ -1,16 +1,24 @@
 import { memoize } from "../common/utils";
 
-export type TreeNodeAttribute = {
+export const DEFAULT_NAMESPACE = "undefined";
+
+export type NamespacedAttributes = {
   namespace: string;
   name: string;
-  value: string;
+  value: any;
+};
+
+export type TreeNodeAttributes = {
+  [identifier: string]: {
+    [identifier: string]: any
+  }
 };
 
 export type TreeNode = {
   children: TreeNode[];
   name: string;
   namespace?: string;
-  attributes: TreeNodeAttribute[]
+  attributes: TreeNodeAttributes
 };
 
 export type NodeFilter = (node: TreeNode) => boolean;
@@ -42,9 +50,7 @@ export const filterNestedNodes = memoize((current: TreeNode, filter: NodeFilter,
   return found;
 });
 
-export const getAttributesWithNamespace = memoize((current: TreeNode, namespace: string) => current.attributes.filter(attribute => attribute.namespace === namespace));
-
-export const getAttribute = memoize((current: TreeNode, name: string, namespace?: string) => current.attributes.find(attr => attr.name === name && attr.namespace == namespace));
+export const getAttribute = (current: TreeNode, name: string, namespace?: string) => current.attributes[namespace] && current.attributes[namespace][name];
 
 export const getAttributeValue = (current: TreeNode, name: string, namespace?: string) => {
   const attr = getAttribute(current, name, namespace);

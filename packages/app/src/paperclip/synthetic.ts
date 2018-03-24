@@ -1,4 +1,4 @@
-import { TreeNode, TreeNodeAttribute, TreeNodeType, getTeeNodePath } from "./tree";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath } from "./tree";
 import { arraySplice } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
 
@@ -60,7 +60,7 @@ export const addSyntheticWindow = (window: SyntheticWindow, browser: SyntheticBr
   windows: arraySplice(browser.windows, 0, 0, window),
 }, browser);
 
-export const createSyntheticElement = (name: string, attributes: TreeNodeAttribute[], children: TreeNode[], source: SyntheticNodeSource): SyntheticNode => ({
+export const createSyntheticElement = (name: string, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource): SyntheticNode => ({
   name,
   attributes,
   children,

@@ -25,7 +25,7 @@
     "@types/chai": "^4.0.0",
     "@types/chokidar": "^1.7.5",
     "@types/express": "^4.0.36",
-    "@types/lodash": "^4.14.66",
+    "@types/lodash": "^4.14.106",
     "@types/mocha": "^2.2.41",
     "@types/react": "^15.6.0",
     "@types/react-dnd": "^2.0.34",
@@ -70,6 +70,7 @@
     "@types/http-proxy": "^1.12.1",
     "@types/request": "^2.0.0",
     "@types/socket.io-client": "^1.4.30",
+    "@types/xml-js": "^1.0.0",
     "abab": "^1.0.3",
     "aerial-browser-sandbox": "^0.0.3",
     "aerial-common": "0.0.x",
@@ -90,7 +91,7 @@
     "glob": "^7.1.2",
     "http-proxy": "^1.16.2",
     "immutable": "^3.8.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.5",
     "md5": "^2.2.1",
     "media-match": "git+https://github.com/crcn/media-match",
     "memoizee": "^0.4.5",
@@ -123,6 +124,7 @@
     "socket.io-client": "^2.0.3",
     "systemjs": "^0.20.14",
     "tinycolor2": "^1.4.1",
-    "void-elements": "^3.1.0"
+    "void-elements": "^3.1.0",
+    "xml-js": "^1.6.2"
   }
 }

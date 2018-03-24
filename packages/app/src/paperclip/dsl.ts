@@ -1,10 +1,18 @@
-import { memoize } from "../common/utils";
-import { TreeNode, filterNestedNodes, getAttributesWithNamespace, getAttributeValue, createNodeNameMatcher } from "./tree";
+import { memoize, EMPTY_OBJECT } from "../common/utils";
+import { TreeNode, filterNestedNodes, getAttributeValue, createNodeNameMatcher } from "./tree";
 
 export const ROOT_MODULE_NAME = "module";
 
 export type DependencyGraph = {
   [identifier: string]: Dependency
+};
+
+// TODO - generic style 
+export type StyleDeclaration = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 };
 
 export type Dependency = {
@@ -81,12 +89,7 @@ export const getImports = memoize((root: TreeNode): ModuleImports => {
   if (root.name !== ROOT_MODULE_NAME) {
     throw new Error(`Root name must be module, "${root.name}" provided.`);
   }
-  const imports = {};
-  getAttributesWithNamespace(root, "xmlns").forEach(attr => {
-    imports[attr.name] = attr.value;
-  });
-
-  return imports;
+  return root.attributes.xmlns || EMPTY_OBJECT;
 });
 
 /**
