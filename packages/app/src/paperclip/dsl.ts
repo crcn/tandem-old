@@ -1,26 +1,29 @@
-import { memoize } from "common/utils";
-import { TreeNode, filterNestedNodes, getAttributesWithNamespace, getAttributeValue, createNodeNameMatcher } from "./tree-state";
+import { memoize } from "../common/utils";
+import { TreeNode, filterNestedNodes, getAttributesWithNamespace, getAttributeValue, createNodeNameMatcher } from "./tree";
 
 export const ROOT_MODULE_NAME = "module";
 
-export enum ModuleType {
-  COMPONENT,
-  IMAGE
+export type DependencyGraph = {
+  [identifier: string]: Dependency
 };
 
-export type BaseModule = {
-  type: ModuleType
-}
+export type Dependency = {
 
-// TODO 
-export type ImageModule = {
+  // URI used here since it could be a url
+  uri: string;
+  dirty?: boolean; // TRUE if the contents have changed
+  originalContent: TreeNode;
+  content: TreeNode;
+  importUris: {
+    [identifier: string]: string
+  }
+};
 
-}
-
-export type ComponentModule = {
+export type Module = {
+  source: TreeNode;
   imports: ModuleImports;
   components: Component[];
-} & BaseModule;
+};
 
 export type Component = {
 
@@ -113,8 +116,33 @@ export const getModuleComponents = memoize((root: TreeNode) => {
  * 
  */
 
-export const createComponentModule = memoize((root: TreeNode) => ({
-  type: ModuleType.COMPONENT,
-  imports: getImports(root),
-  components: getModuleComponents(root),
+export const getModuleInfo = memoize((source: TreeNode) => ({
+  source,
+  imports: getImports(source),
+  components: getModuleComponents(source),
+}));
+
+/**
+ */
+
+export const getNodeSourceDependency = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => {
+  const module = getModuleInfo(dependency.content);
+  const importedPath = dependency.importUris[module.imports[node.namespace]];
+  return importedPath ? graph[importedPath] : dependency;
+});
+
+/**
+ */
+
+export const getNodeSourceModule = (node: TreeNode, dependency: Dependency, graph: DependencyGraph) => {
+  const sourceDependency = getNodeSourceDependency(node, dependency, graph);
+  return getModuleInfo(sourceDependency.content);
+};
+
+/**
+ */
+
+export const getNodeSourceComponent = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => {
+  const sourceModule = getNodeSourceModule(node, dependency, graph);
+  return sourceModule && sourceModule.components.find(component => component.id === node.name);
 });

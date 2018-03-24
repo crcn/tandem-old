@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { loadEntry, evaluateEntry, TreeNode } from "..";
+import { loadEntry, evaluateDependencyEntry, TreeNode } from "..";
 
 type TestModuleFiles = {
   [identifier: string]: TreeNode
@@ -8,15 +8,44 @@ type TestModuleFiles = {
 const createTestFileReader = (files: TestModuleFiles) => (uri) => JSON.stringify(files[uri]);
 
 describe(__filename + "#", () => {
-  it("can be created", async () => {
+  it("can evaluate a module with a component", async () => {
     const files: TestModuleFiles = {
       "entry.json": {
         name: "module",
         attributes: [],
-        children: []
+        children: [
+          {
+            name: "component",
+            attributes: [
+            ],
+            children: [
+              {
+                name: "template",
+                attributes: [],
+                children: []
+              }
+            ]
+          },
+          {
+            name: "component",
+            attributes: [
+            ],
+            children: [
+              {
+                name: "template",
+                attributes: [],
+                children: []
+              }
+            ]
+          }
+        ]
       }
     };
 
-    const syntheticNode = evaluateEntry(await loadEntry("entry.json", { openFile: createTestFileReader(files) }));
+    const { componentPreviews } = evaluateDependencyEntry(await loadEntry("entry.json", { openFile: createTestFileReader(files) }));
+
+    expect(componentPreviews.length).to.eql(2);
+    const preview1 = componentPreviews[0];
+    expect(preview1.name).to.eql("div");
   });
 });

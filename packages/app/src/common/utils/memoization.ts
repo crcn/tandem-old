@@ -1,4 +1,4 @@
-export const memoize = <TFunc extends Function>(func: TFunc) => {
+export const memoize = <TFunc extends (...any) => any>(func: TFunc) => {
   return ((...args) => {
     
     /// TODO

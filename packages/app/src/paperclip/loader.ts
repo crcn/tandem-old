@@ -1,6 +1,12 @@
-import { Dependency, DependencyGraph } from "./loader-state";
-import { createComponentModule, BaseModule, ModuleType, ComponentModule } from "./dsl";
+/**
+TODOS:
 
+- better error messaging for files that are not found 
+*/
+
+import { TreeNode } from "./tree";
+import { resolveFilePath } from "../common/utils";
+import { Module, Component, ComponentOverride, getModuleInfo, Dependency, DependencyGraph } from "./dsl";
 export type FileLoader = (uri: string) => string | Promise<string>;
 
 export type LoadEntryOptions = {
@@ -17,21 +23,22 @@ export const loadEntry = async (entryFileUri: string, options: LoadEntryOptions)
   const queue: string[] = [entryFileUri];
   while(queue.length) {
     const currentUri = queue.shift();
-    if (graph[currentUri]) {
-      continue;
-    }
     const module = await loadModule(currentUri, options);
-    if (module.type !== ModuleType.COMPONENT) {
-      throw new Error(`Module type ${module.type} is not currently supported`);
-    }
-    const dependency = createDependency(currentUri, module);
-    graph[currentUri] = dependency;
-    if (module.type === ModuleType.COMPONENT) {
-      const imports = module as ComponentModule;
 
-      // todo - need to make relative
-      queue.push(...(Object.values(imports) as string[]));
+    const absolutePaths = [];
+    const importUris = {};
+
+    for (const xmlns in module.imports) {
+      const relativePath = module.imports[xmlns];
+      const absolutePath = resolveFilePath(relativePath, currentUri);
+      importUris[relativePath] = absolutePath; 
+      if (!graph[absolutePath]) {
+        queue.push(absolutePath);
+      }
     }
+
+    const dependency = createDependency(currentUri, module.source, importUris);
+    graph[currentUri] = dependency;
   }
   
   return {
@@ -40,25 +47,25 @@ export const loadEntry = async (entryFileUri: string, options: LoadEntryOptions)
   };
 };
 
-const createDependency = (uri: string, module: BaseModule): Dependency => ({
+const createDependency = (uri: string, content: TreeNode, importUris): Dependency => ({
   uri,
-  module,
-  originalModule: module,
+  content,
+  originalContent: content,
+  importUris
 });
 
-const loadModule = async (uri: string, options: LoadEntryOptions): Promise<BaseModule> => {
+const loadModule = async (uri: string, options: LoadEntryOptions): Promise<Module> => {
   const content = await options.openFile(uri);
-
 
   // TODO - support other extensions in the future like images
   if (/xml$/.test(uri)) {
 
     // TODO - transform XML to JSON
     throw new Error(`XML is not supported yet`);
-  } else if (/json$/.test(uri)) {
-    throw new Error(`File extension is not supported yet`);
+  } else if (!/json$/.test(uri)) {
+    throw new Error(`Unsupported import ${uri}.`);
   } else {
     const moduleSource = JSON.parse(content);
-    return createComponentModule(moduleSource);
+    return getModuleInfo(moduleSource);
   }
 };

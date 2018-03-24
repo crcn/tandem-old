@@ -1,6 +1,6 @@
-import { DependencyGraph } from "./loader-state";
-import { Expression, ExpressionType, ExpressionRange } from "./expression-state";
-import { arraySplice } from "common/utils";
+import { TreeNode, TreeNodeAttribute, TreeNodeType, getTeeNodePath } from "./tree";
+import { arraySplice } from "../common/utils";
+import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
 
 export enum SyntheticObjectType {
   BROWSER,
@@ -10,15 +10,7 @@ export enum SyntheticObjectType {
   TEXT_NODE
 };
 
-export type SyntheticObjectSource = {
-  uri: string;
-  type: ExpressionType;
-  range: ExpressionRange;
-};
-
 export type SyntheticObject = {
-  type: SyntheticObjectType;
-  source: SyntheticObjectSource;
 };
 
 export type ComputedInfo = {
@@ -37,26 +29,19 @@ export type SyntheticBrowser = {
 export type SyntheticWindow = {
   location: string;
   type: SyntheticObjectType;
-  document?: SyntheticDocument;
+  document?: SyntheticNode;
   mount: HTMLElement;
   computed?: ComputedInfo
 };
 
-export type SyntheticNode = {} & SyntheticObject;
+export type SyntheticNodeSource = {
+  uri: string;
+  path: number[];
+};
 
-export type SyntheticParentNode = {
-  children: SyntheticNode[]
-} & SyntheticNode;
-
-export type SyntheticDocument = {
-  
-} & SyntheticParentNode;
-
-export type SyntheticElement = {
-  attributes: {
-    [identifier: string]: string
-  }
-} & SyntheticParentNode;
+export type SyntheticNode = {
+  source: SyntheticNodeSource
+} & TreeNode;
 
 export const updateSyntheticBrowser = (properties: Partial<SyntheticBrowser>, browser: SyntheticBrowser) => ({
   ...browser,
@@ -74,3 +59,15 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
 export const addSyntheticWindow = (window: SyntheticWindow, browser: SyntheticBrowser) => updateSyntheticBrowser({
   windows: arraySplice(browser.windows, 0, 0, window),
 }, browser);
+
+export const createSyntheticElement = (name: string, attributes: TreeNodeAttribute[], children: TreeNode[], source: SyntheticNodeSource): SyntheticNode => ({
+  name,
+  attributes,
+  children,
+  source
+});
+
+export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency): SyntheticNodeSource => ({
+  uri: dependency.uri,
+  path: getTeeNodePath(source, getModuleInfo(dependency.content).source),
+});

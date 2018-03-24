@@ -1,12 +1,10 @@
-import { memoize } from "common/utils";
-
-// Note that Element types are only provided for simplification
+import { memoize } from "../common/utils";
 
 export type TreeNodeAttribute = {
   namespace: string;
   name: string;
   value: string;
-}
+};
 
 export type TreeNode = {
   children: TreeNode[];
@@ -39,19 +37,41 @@ export const filterNestedNodes = memoize((current: TreeNode, filter: NodeFilter,
   }
   const {children} = current;
   for (let i = 0, {length} = children; i < length; i++) {
-    filterNestedNodes(current, filter, found);
+    filterNestedNodes(current.children[i], filter, found);
   }
   return found;
 });
 
 export const getAttributesWithNamespace = memoize((current: TreeNode, namespace: string) => current.attributes.filter(attribute => attribute.namespace === namespace));
 
-export const getAttribute = memoize((current: TreeNode, name: string, namespace?: string) => {
-  const attr = current.attributes.find(attr => attr.name === name && attr.namespace == namespace);
-  return attr;
-});
+export const getAttribute = memoize((current: TreeNode, name: string, namespace?: string) => current.attributes.find(attr => attr.name === name && attr.namespace == namespace));
 
 export const getAttributeValue = (current: TreeNode, name: string, namespace?: string) => {
   const attr = getAttribute(current, name, namespace);
   return attr && attr.value;
 };
+
+export const getChildParentMap = memoize((current: TreeNode): Map<TreeNode, TreeNode> => {
+  let parentChildMap: Map<TreeNode, TreeNode> = new Map();
+  for (let i = current.children.length; i--;) {
+    parentChildMap.set(current.children[i], current);
+    const nestedMap = getChildParentMap(current.children[i]);
+    for (const [nc, np] of Array.from(nestedMap.entries())) {
+      parentChildMap.set(nc, np);
+    }
+  }
+  return parentChildMap;
+});
+
+export const getTeeNodePath = memoize((node: TreeNode, root: TreeNode) => {
+  const childParentMap = getChildParentMap(root);
+  let current = node;
+  const path: number[] = [];
+  while(1) {
+    const parent = childParentMap.get(current);
+    if (!parent) break;
+    path.push(parent.children.indexOf(current));
+    current = parent;
+  }
+  return path;
+});
