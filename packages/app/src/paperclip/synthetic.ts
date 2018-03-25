@@ -1,4 +1,4 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath } from "./tree";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum } from "./tree";
 import { arraySplice } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
 
@@ -13,7 +13,7 @@ export enum SyntheticObjectType {
 export type SyntheticObject = {
 };
 
-export type ComputedInfo = {
+export type ComputedDisplayInfo = {
   [identifier: string]: {
     rect: ClientRect;
     style: CSSStyleDeclaration;
@@ -31,11 +31,12 @@ export type SyntheticWindow = {
   type: SyntheticObjectType;
   document?: SyntheticNode;
   mount: HTMLElement;
-  computed?: ComputedInfo
+  computed?: ComputedDisplayInfo
 };
 
 export type SyntheticNodeSource = {
   uri: string;
+  checksum: string;
   path: number[];
 };
 
@@ -60,7 +61,8 @@ export const addSyntheticWindow = (window: SyntheticWindow, browser: SyntheticBr
   windows: arraySplice(browser.windows, 0, 0, window),
 }, browser);
 
-export const createSyntheticElement = (name: string, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource): SyntheticNode => ({
+export const createSyntheticElement = (name: string, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string): SyntheticNode => ({
+  id,
   name,
   attributes,
   children,
@@ -69,5 +71,6 @@ export const createSyntheticElement = (name: string, attributes: TreeNodeAttribu
 
 export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency): SyntheticNodeSource => ({
   uri: dependency.uri,
+  checksum: generateTreeChecksum(dependency.content),
   path: getTeeNodePath(source, getModuleInfo(dependency.content).source),
 });

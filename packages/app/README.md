@@ -1,16 +1,7 @@
 TODO:
 
-- need to add custom logic to diff
-- consider using key / value for attributes. {
-  attributes: {
-    default: {
-      name: value
-    }
-    extends: {
-      import: name
-    }
-  }
-}
+- DOM renderer
+- link synthetic nodes back to expressions
 
 IMMEDIATE:
 

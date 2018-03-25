@@ -1,4 +1,6 @@
 import { memoize } from "../common/utils";
+import { stringifyTreeNodeToXML } from "./xml";
+import * as crc32 from "crc32";
 
 export const DEFAULT_NAMESPACE = "undefined";
 
@@ -15,6 +17,7 @@ export type TreeNodeAttributes = {
 };
 
 export type TreeNode = {
+  id?: string;
   children: TreeNode[];
   name: string;
   namespace?: string;
@@ -76,3 +79,5 @@ export const getTeeNodePath = memoize((node: TreeNode, root: TreeNode) => {
   }
   return path;
 });
+
+export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)))
