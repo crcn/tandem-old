@@ -1,4 +1,4 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum } from "./tree";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum } from "../common/state/tree";
 import { arraySplice } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
 
@@ -49,7 +49,22 @@ export const updateSyntheticBrowser = (properties: Partial<SyntheticBrowser>, br
   ...properties
 });
 
-export const getSyntheticWindow = (uri: string, browser: SyntheticBrowser) => browser.windows.find(window => window.location === uri);
+export const updateSyntheticWindow = (location: string, properties: Partial<SyntheticWindow>, browser: SyntheticBrowser) => {
+  const window = getSyntheticWindow(location, browser);
+  if (!window) {
+    throw new Error(`window does not exist with location: ${location}`);
+  }
+
+  const index = browser.windows.indexOf(window);
+  return updateSyntheticBrowser({
+    windows: arraySplice(browser.windows, index, 1, {
+      ...window,
+      ...properties
+    })
+  }, browser);
+}
+
+export const getSyntheticWindow = (location: string, browser: SyntheticBrowser) => browser.windows.find(window => window.location === location);
 
 export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   location,

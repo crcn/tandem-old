@@ -80,4 +80,12 @@ export const getTeeNodePath = memoize((node: TreeNode, root: TreeNode) => {
   return path;
 });
 
+export const getTreeNodeFromPath = memoize(<TNode extends TreeNode>(path: number[], root: TNode) => {
+  let current: TreeNode = root;
+  for (let i = 0, {length} = path; i < length; i++) {
+    current = current.children[path[i]];
+  }
+  return current;
+}); 
+
 export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)))

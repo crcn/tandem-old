@@ -5,7 +5,7 @@ TODOS:
 */
 
 import { TreeNode } from "../common/state";
-import { resolveFilePath, EMPTY_OBJECT } from "../common/utils";
+import { resolveFilePath, EMPTY_OBJECT, xmlToTreeNode } from "../common/utils";
 import { Module, Component, ComponentOverride, getModuleInfo, Dependency, DependencyGraph } from "./dsl";
 export type FileLoader = (uri: string) => string | Promise<string>;
 
@@ -64,6 +64,9 @@ const loadModule = async (uri: string, options: LoadEntryOptions): Promise<Modul
 
     // TODO - transform XML to JSON
     throw new Error(`XML is not supported yet`);
+  } else if (/pc$/.test(uri)) {
+    const moduleSource = xmlToTreeNode(content);
+    return getModuleInfo(moduleSource);
   } else if (!/json$/.test(uri)) {
     throw new Error(`Unsupported import ${uri}.`);
   } else {
