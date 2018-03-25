@@ -33,7 +33,10 @@ function* handleProjectDirectoryLoaded() {
 const TEST_FILES = {
   "components/main.pc": `
     <module>
-      <component id="test">
+      <component id="test" style="background-color: red; color: white; padding: 20px; border-radius: 10px;">
+        <template>
+          <text value="hello" />
+        </template>
       </component>
     </module>
   `

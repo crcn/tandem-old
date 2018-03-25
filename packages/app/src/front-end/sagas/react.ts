@@ -4,11 +4,12 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { RootState } from "../state";
 
-
 export function* reactSaga() {
   while(1) {
-    const state: RootState = yield select();
-    ReactDOM.render(React.createElement(RootComponent), state.mount);
+    const root: RootState = yield select();
+    ReactDOM.render(React.createElement(RootComponent, {
+      root,
+    }), root.mount);
     yield take();
   }
-}
+};

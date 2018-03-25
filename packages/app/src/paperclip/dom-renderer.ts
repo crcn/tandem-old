@@ -43,7 +43,12 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
     const nativeElement = document.createElement(synthetic.name);
     const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
     for (const name in attrs) {
-      nativeElement.setAttribute(name, attrs[name]);
+      const value = attrs[name];
+      if (name === "style") {
+        Object.assign(nativeElement.style, value);
+      } else {
+        nativeElement.setAttribute(name, value);
+      }
     }
     for (let i = 0, {length} = synthetic.children; i < length; i++) {
       const childSynthetic = synthetic.children[i];

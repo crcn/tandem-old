@@ -1,8 +1,16 @@
 import * as React from "react";
 import { EditorComponent } from "./editor";
+import { RootState } from "front-end/state";
+import { compose, pure } from "recompose";
 
-const RootBaseComponent = () => <div className="m-root">
-  <EditorComponent />
-</div>;
+export type RootOuterProps = {
+  root: RootState;
+}
 
-export const RootComponent = EditorComponent;
+const RootBaseComponent = ({ root }: RootOuterProps) => {
+  return <div className="m-root">
+    <EditorComponent root={root} />
+  </div>;
+};
+
+export const RootComponent = compose<RootOuterProps, RootOuterProps>(pure)(EditorComponent);

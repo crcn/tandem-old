@@ -1,14 +1,19 @@
 import "./index.scss";
 import * as React from "react";
-import { compose } from "recompose";
+import { compose, pure } from "recompose";
 import { StageComponent } from "./stage";
 import { LeftGutterComponent } from "./left-gutter";
 import { RightGutterComponent } from "./right-gutter";
+import { RootState, getActiveWindow } from "front-end/state";
 
-const EditorBaseComponent = () => <div className="m-editor">
+export type EditorOuterProps = {
+  root: RootState;
+};
+
+const EditorBaseComponent = ({ root }: EditorOuterProps) => <div className="m-editor">
   <LeftGutterComponent />
-  <StageComponent />
+  <StageComponent window={getActiveWindow(root)} />
   <RightGutterComponent />
 </div>;
 
-export const EditorComponent = EditorBaseComponent;
+export const EditorComponent = compose<EditorOuterProps, EditorOuterProps>(pure)(EditorBaseComponent);

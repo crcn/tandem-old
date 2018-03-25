@@ -1,13 +1,22 @@
 import "./index.scss";
 import * as React from "react";
-import { ToolbarComponent } from "./toolbar";
+import { pure, compose } from "recompose";
+import { SyntheticWindow } from "paperclip";
 import { CanvasComponent } from "./canvas";
 import { FooterComponent } from "./footer";
+import { ToolbarComponent } from "./toolbar";
+import { RootState, getActiveWindow } from "front-end/state";
 
-const BaseStageComponent = () => <div className="m-stage">
+getActiveWindow
+
+export type StageOuterProps = {
+  window: SyntheticWindow;
+};
+
+const BaseStageComponent = ({window}: StageOuterProps) => <div className="m-stage">
   <ToolbarComponent />
-  <CanvasComponent />
+  <CanvasComponent window={window} />
   <FooterComponent />
 </div>;
 
-export const StageComponent = BaseStageComponent;
+export const StageComponent = compose<StageOuterProps, StageOuterProps>(pure)(BaseStageComponent);

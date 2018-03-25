@@ -1,7 +1,7 @@
 import { Action } from "redux";
 import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded } from "../actions";
 import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow } from "../state";
-import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry } from "paperclip";
+import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode } from "common";
 
 export const rootReducer = (state: RootState, action: Action) => {
@@ -34,8 +34,10 @@ const projectReducer = (state: RootState, action: Action) => {
         }
       }, state);
 
+      const documents = evaluateDependencyEntry({ entry, graph }).componentPreviews.map(createSyntheticDocument);
+
       state = updateRootStateSyntheticWindow(entry.uri, {
-        document: evaluateDependencyEntry({ entry, graph })
+        documents,
       }, state);
     }
   }

@@ -1,6 +1,7 @@
 import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum } from "../common/state/tree";
 import { arraySplice } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
+import { renderDOM } from "./dom-renderer";
 
 export enum SyntheticObjectType {
   BROWSER,
@@ -29,10 +30,16 @@ export type SyntheticBrowser = {
 export type SyntheticWindow = {
   location: string;
   type: SyntheticObjectType;
-  document?: SyntheticNode;
+  documents?: SyntheticDocument[];
+};
+
+export type SyntheticDocument = {
+  type: SyntheticObjectType;
+  root: SyntheticNode;
   mount: HTMLElement;
   computed?: ComputedDisplayInfo;
-};
+}
+
 
 export type SyntheticNodeSource = {
   uri: string;
@@ -68,9 +75,22 @@ export const getSyntheticWindow = (location: string, browser: SyntheticBrowser) 
 
 export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   location,
-  mount: document.createElement("div"),
   type: SyntheticObjectType.WINDOW,
 });
+
+export const createSyntheticDocument = (root: SyntheticNode): SyntheticDocument => {
+
+  const mount = document.createElement("div");
+
+  const syntheticDocument = {
+    root,
+    mount,
+    type: SyntheticObjectType.DOCUMENT,
+    computed: renderDOM(mount, root)
+  };
+
+  return syntheticDocument;
+};
 
 export const addSyntheticWindow = (window: SyntheticWindow, browser: SyntheticBrowser) => updateSyntheticBrowser({
   windows: arraySplice(browser.windows, 0, 0, window),

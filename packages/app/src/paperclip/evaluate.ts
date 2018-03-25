@@ -69,7 +69,7 @@ const evaluateComponent = (component: Component, attributes: TreeNodeAttributes,
     }
   };
 
-  const syntheticChildren = template.children.map((child, i) => evaluateNode(child, module, checksum + i, checksum, dependency, graph, slots));
+  const syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, checksum + i, checksum, dependency, graph, slots)) : EMPTY_ARRAY;
 
   const extendsFromDependency = getImportedDependency(ext.namespace, dependency, graph);
 
