@@ -1,10 +1,11 @@
-import { arraySplice } from "common/utils";
+import { arraySplice, Directory } from "common";
 import { SyntheticBrowser } from "paperclip";
 
 export type RootState = {
   activeUri?: string;
   mount: Element;
   browser: SyntheticBrowser;
+  projectDirectory?: Directory;
 };
 
 export const updateRootState = (properties: Partial<RootState>, root: RootState) => ({
