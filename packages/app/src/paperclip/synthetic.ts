@@ -31,7 +31,7 @@ export type SyntheticWindow = {
   type: SyntheticObjectType;
   document?: SyntheticNode;
   mount: HTMLElement;
-  computed?: ComputedDisplayInfo
+  computed?: ComputedDisplayInfo;
 };
 
 export type SyntheticNodeSource = {

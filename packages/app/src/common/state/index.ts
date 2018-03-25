@@ -1,7 +1,2 @@
-export type File = {
-  name: string;
-}
-
-export type Directory = {
-  
-}
+export * from "./file";
+export * from "./tree";

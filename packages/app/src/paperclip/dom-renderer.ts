@@ -1,6 +1,6 @@
 import { EMPTY_OBJECT } from "../common/utils";
 import { ComputedDisplayInfo } from "./synthetic";
-import { TreeNode, DEFAULT_NAMESPACE, getAttribute } from "./tree";
+import { TreeNode, DEFAULT_NAMESPACE, getAttribute } from "../common/state";
 
 type SyntheticNativeNodeMap = {
   [identifier: string]: Node

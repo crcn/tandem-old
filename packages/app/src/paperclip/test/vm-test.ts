@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { mapValues } from "lodash";
-import { loadEntry, evaluateDependencyEntry, TreeNode, xmlToTreeNode, DEFAULT_NAMESPACE, stringifyTreeNodeToXML } from "..";
+import {  TreeNode, xmlToTreeNode, DEFAULT_NAMESPACE, stringifyTreeNodeToXML } from "../../common";
+import { loadEntry, evaluateDependencyEntry } from "..";
 
 type TestModuleFiles = {
   [identifier: string]: TreeNode

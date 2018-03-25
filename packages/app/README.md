@@ -1,7 +1,8 @@
 TODO:
 
-- DOM renderer
-- link synthetic nodes back to expressions
+- fake file directory
+- load dependency graph from file directory (scan for PC files)
+- load initial file based on file directory
 
 IMMEDIATE:
 

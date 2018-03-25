@@ -1,5 +1,5 @@
 import { memoize, EMPTY_OBJECT } from "../common/utils";
-import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE } from "./tree";
+import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE } from "../common/state";
 import { DEFAULT_EXTENDS } from ".";
 
 export const ROOT_MODULE_NAME = "module";
@@ -78,8 +78,7 @@ export type Component = {
 }
 
 export type ComponentOverride = {
-
-}
+};
 
 export type ModuleImports = {
   [identifier: string]: string;

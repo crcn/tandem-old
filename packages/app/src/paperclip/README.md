@@ -10,11 +10,12 @@ Example:
 <module xmlns:some-import="./file.pc">
   <component id="test">
     <template>
-      <text id="test" />
+      <text ref="text-ref" />
     </template>
-    <variant name="some-variant">
-      <remove-child target="test" />
-    </variant>
+  </component>
+
+  <component id="test2" extends="test">
+    <remove-child="text-ref" />
   </component>
 </module>
 ```
@@ -22,7 +23,7 @@ Example:
 VM:
 
 ```typescript
-import { load, run, mergeGraph } from "paperclip";
+import { loadEntry, evaluateEntry } from "paperclip";
 const info = await loadEntry("test.pc", { openFile, graph });
-const synth = await run(info);
+const { componentPreviews } = evaluateEntry(await loadEntry("test.pc", { openFile }));
 ```

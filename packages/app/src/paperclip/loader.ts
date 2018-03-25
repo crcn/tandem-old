@@ -4,13 +4,14 @@ TODOS:
 - better error messaging for files that are not found 
 */
 
-import { TreeNode } from "./tree";
-import { resolveFilePath } from "../common/utils";
+import { TreeNode } from "../common/state";
+import { resolveFilePath, EMPTY_OBJECT } from "../common/utils";
 import { Module, Component, ComponentOverride, getModuleInfo, Dependency, DependencyGraph } from "./dsl";
 export type FileLoader = (uri: string) => string | Promise<string>;
 
 export type LoadEntryOptions = {
   openFile: FileLoader;
+  graph?: DependencyGraph;
 };
 
 export type LoadEntryResult = {
@@ -19,10 +20,13 @@ export type LoadEntryResult = {
 };
 
 export const loadEntry = async (entryFileUri: string, options: LoadEntryOptions): Promise<LoadEntryResult> => { 
-  const graph: DependencyGraph = {};
+  const graph: DependencyGraph = { ...(options.graph || EMPTY_OBJECT) };
   const queue: string[] = [entryFileUri];
   while(queue.length) {
     const currentUri = queue.shift();
+    if (graph[currentUri]) {
+      continue;
+    }
     const module = await loadModule(currentUri, options);
 
     const absolutePaths = [];
@@ -32,9 +36,7 @@ export const loadEntry = async (entryFileUri: string, options: LoadEntryOptions)
       const relativePath = module.imports[xmlns];
       const absolutePath = resolveFilePath(relativePath, currentUri);
       importUris[relativePath] = absolutePath; 
-      if (!graph[absolutePath]) {
-        queue.push(absolutePath);
-      }
+      queue.push(absolutePath);
     }
 
     const dependency = createDependency(currentUri, module.source, importUris);

@@ -1,5 +1,5 @@
-import { memoize } from "../common/utils";
-import { stringifyTreeNodeToXML } from "./xml";
+import { memoize } from "../utils/memoization";
+import { stringifyTreeNodeToXML } from "../utils/xml";
 import * as crc32 from "crc32";
 
 export const DEFAULT_NAMESPACE = "undefined";
