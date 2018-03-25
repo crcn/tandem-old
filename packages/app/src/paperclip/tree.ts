@@ -52,11 +52,6 @@ export const filterNestedNodes = memoize((current: TreeNode, filter: NodeFilter,
 
 export const getAttribute = (current: TreeNode, name: string, namespace?: string) => current.attributes[namespace] && current.attributes[namespace][name];
 
-export const getAttributeValue = (current: TreeNode, name: string, namespace?: string) => {
-  const attr = getAttribute(current, name, namespace);
-  return attr && attr.value;
-};
-
 export const getChildParentMap = memoize((current: TreeNode): Map<TreeNode, TreeNode> => {
   let parentChildMap: Map<TreeNode, TreeNode> = new Map();
   for (let i = current.children.length; i--;) {

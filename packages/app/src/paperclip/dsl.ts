@@ -1,5 +1,6 @@
 import { memoize, EMPTY_OBJECT } from "../common/utils";
-import { TreeNode, filterNestedNodes, getAttributeValue, createNodeNameMatcher } from "./tree";
+import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE } from "./tree";
+import { DEFAULT_EXTENDS } from ".";
 
 export const ROOT_MODULE_NAME = "module";
 
@@ -33,6 +34,11 @@ export type Module = {
   components: Component[];
 };
 
+export type ComponentExtendsInfo = {
+  namespace: string;
+  tagName: string;
+}
+
 export type Component = {
 
   /**
@@ -51,7 +57,7 @@ export type Component = {
    * Extension of an existing component or a native element
    */
 
-  extends?: string;
+  extends?: ComponentExtendsInfo;
 
   /**
    * reference where all of this information is derrived from
@@ -100,10 +106,28 @@ export const getModuleComponents = memoize((root: TreeNode) => {
   const components: Component[] = [];
 
   filterNestedNodes(root, node => node.name === "component").forEach(source => {
+
+    let ext: ComponentExtendsInfo;
+
+    if (source.attributes.extends) {
+      for (const namespace in source.attributes.extends) {
+        ext = {
+          namespace,
+          tagName: source.attributes.extends[namespace]
+        };
+        break;
+      }
+    } else if ((source.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT).extends) {
+      ext = {
+        namespace: DEFAULT_NAMESPACE,
+        tagName: source.attributes[DEFAULT_NAMESPACE].extends
+      }
+    }
+    
     components.push({
-      id: getAttributeValue(source, "id"),
-      label: getAttributeValue(source, "label"),
-      extends: getAttributeValue(source, "extends"),
+      id: getAttribute(source, "id"),
+      label: getAttribute(source, "label"),
+      extends: ext,
       template: source.children.find(createNodeNameMatcher("template")),
       source,
 
@@ -125,27 +149,21 @@ export const getModuleInfo = memoize((source: TreeNode) => ({
   components: getModuleComponents(source),
 }));
 
-/**
- */
-
-export const getNodeSourceDependency = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => {
+export const getImportedDependency = (namespace: string, dependency: Dependency, graph: DependencyGraph) => {
   const module = getModuleInfo(dependency.content);
-  const importedPath = dependency.importUris[module.imports[node.namespace]];
+  const importedPath = dependency.importUris[module.imports[namespace]];
   return importedPath ? graph[importedPath] : dependency;
-});
+};
 
-/**
- */
+export const getNodeSourceDependency = (node: TreeNode, dependency: Dependency, graph: DependencyGraph) => getImportedDependency(node.namespace, dependency, graph);
+
+export const getDependencyModule = (dependency: Dependency) => getModuleInfo(dependency.content);
 
 export const getNodeSourceModule = (node: TreeNode, dependency: Dependency, graph: DependencyGraph) => {
   const sourceDependency = getNodeSourceDependency(node, dependency, graph);
   return getModuleInfo(sourceDependency.content);
 };
 
-/**
- */
+export const getModuleComponent = (componentId: string, module: Module) => module.components.find(component => component.id === componentId);
 
-export const getNodeSourceComponent = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => {
-  const sourceModule = getNodeSourceModule(node, dependency, graph);
-  return sourceModule && sourceModule.components.find(component => component.id === node.name);
-});
+export const getNodeSourceComponent = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => getModuleComponent(node.name, getNodeSourceModule(node, dependency, graph)));

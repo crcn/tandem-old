@@ -9,14 +9,17 @@ TODO (in order of importance):
 
 */
 
-import { TreeNode, getTeeNodePath, DEFAULT_NAMESPACE, TreeNodeAttributes } from "./tree";
-import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent } from "./dsl";
+import { TreeNode, getTeeNodePath, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute } from "./tree";
+import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule } from "./dsl";
 import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource } from "./synthetic";
-import { EMPTY_OBJECT } from "../common/utils";
+import { EMPTY_OBJECT, EMPTY_ARRAY } from "../common/utils";
 import { pick } from "lodash";
 
 export const EDITOR_NAMESPACE = "editor";
-export const DEFAULT_COMPONENT_ELEMENT_NAME = "div";
+export const DEFAULT_EXTENDS: ComponentExtendsInfo = {
+  namespace: DEFAULT_NAMESPACE,
+  tagName: "div"
+};
 
 export type EvaluateOptions = {
   entry: Dependency;
@@ -25,6 +28,10 @@ export type EvaluateOptions = {
 
 export type EvaluationResult = {
   componentPreviews: SyntheticNode[]
+};
+
+type Slots = {
+  [identifier: string]: TreeNode[]
 };
 
 export const evaluateDependencyEntry = ({ entry, graph }: EvaluateOptions): EvaluationResult => {
@@ -39,26 +46,72 @@ const evaluateComponentPreview = (component: Component, module: Module, dependen
 };
 
 const evaluateComponent = (component: Component, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, module: Module, dependency, graph: DependencyGraph) => {
-  const parentName = component.extends || DEFAULT_COMPONENT_ELEMENT_NAME;
-  const template = component.template;
+  const ext = component.extends || DEFAULT_EXTENDS;
   
-  // TODO - pass slots down
-  // TODO - check for existing component extends:importName="component"
-  return createSyntheticElement(parentName, {
+  const template = component.template;
+
+  const slots = {};
+
+  for (const child of children) {
+    const slotName = child.attributes[DEFAULT_NAMESPACE].slot;
+    if (!slots[slotName]) {
+      slots[slotName] = [];
+    }
+    slots[slotName].push(child);
+  }
+
+  const syntheticAttributes = {
     ...attributes,
     [DEFAULT_NAMESPACE]: {
       ...(attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT),
       ...pick(component.source.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT, "style"),
     }
-  }, template.children.map(child => evaluateNode(child, module, dependency, graph)), source);
+  };
+
+  const syntheticChildren = template.children.map(child => evaluateNode(child, module, dependency, graph, slots));
+
+  const extendsFromDependency = getImportedDependency(ext.namespace, dependency, graph);
+
+  if (extendsFromDependency) {
+    const extendsFromModule = getDependencyModule(extendsFromDependency);
+    const extendsComponent = getModuleComponent(ext.tagName, extendsFromModule);
+
+    if (extendsComponent) {
+      return evaluateComponent(extendsComponent, syntheticAttributes, syntheticChildren, source, extendsFromModule, extendsFromDependency, graph);
+    }
+  }
+  
+  // TODO - pass slots down
+  // TODO - check for existing component extends:importName="component"
+  return createSyntheticElement(ext.tagName, syntheticAttributes, syntheticChildren, source);
 };
 
-const evaluateNode = (node: TreeNode, module: Module, dependency: Dependency, graph: DependencyGraph) => {
-  const component = getNodeSourceComponent(node, dependency, graph);
+const evaluateNode = (node: TreeNode, module: Module, dependency: Dependency, graph: DependencyGraph, slots: Slots = EMPTY_OBJECT) => {
 
-  if (component) {
-    console.log("TODO!");
+  const nodeDependency = getNodeSourceDependency(node, dependency, graph);
+  const nodeModule = getModuleInfo(nodeDependency.content);
+  const nodeComponent = getModuleComponent(node.name, nodeModule);
+
+  if (nodeComponent) {
+    return evaluateComponent(nodeComponent, node.attributes, node.children, getSytheticNodeSource(node, dependency), nodeModule, nodeDependency, graph)
   }
 
-  return createSyntheticElement(node.name, node.attributes, node.children.map(child => evaluateNode(child, module, dependency, graph)), getSytheticNodeSource(module.source, dependency));
+  let children = node.children;
+  let attributes = node.attributes;
+
+  let tagName = node.name;
+
+  if (tagName === "slot") {
+    attributes = {};
+    tagName = "span";
+    const slotName = getAttribute(node, "name");
+
+    const slotChildren = slots[slotName] || EMPTY_ARRAY;
+
+    if (slotChildren.length > 0) {
+      children = slotChildren;
+    }
+  }
+
+  return createSyntheticElement(tagName, attributes, children.map(child => evaluateNode(child, module, dependency, graph, slots)), getSytheticNodeSource(module.source, dependency));
 };

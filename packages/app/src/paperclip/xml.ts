@@ -1,13 +1,20 @@
 import { memoize, EMPTY_ARRAY } from "../common/utils";
 import { TreeNode, DEFAULT_NAMESPACE } from "./tree";
 import { xml2js } from "xml-js";
-import { camelCase } from "lodash";
+import { camelCase, repeat } from "lodash";
 
-export const translateXMLToTreeNode = memoize((xml: string): TreeNode => {
+export const xmlToTreeNode = memoize((xml: string): TreeNode => {
   return normalizeTree(xml2js(xml).elements[0]);
 });
 
-const normalizeTree = ({name, attributes, elements = EMPTY_ARRAY}: any) => {
+const normalizeTree = ({name: nameAndNamespace, attributes, elements = EMPTY_ARRAY}: any) => {
+
+  let [namespace, name] = nameAndNamespace.split(":");
+
+  if (!name) {
+    name = namespace;
+    namespace = null;
+  }
 
   const normalizedAttributes = { };
 
@@ -29,13 +36,51 @@ const normalizeTree = ({name, attributes, elements = EMPTY_ARRAY}: any) => {
 
     normalizedAttributes[namespace][name2] = value;
   }
+
   
   return {
     name,
+    namespace,
     attributes: normalizedAttributes,
-    children: elements.map(normalizeTree)
+    children: elements.filter(element => Boolean(element.name)).map(normalizeTree)
   };
 };
+
+export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0) => {
+  const tabs = repeat(" ", level * 2);
+  let buffer = `${tabs}<${node.name}`;
+
+  for (const namespace in node.attributes) {
+    const nsa = node.attributes[namespace];
+    for (const name in nsa) {
+      let value = nsa[name];
+
+      if (name === "style") {
+        value = stringifyStyle(value);
+      }
+
+      let attrName = name;
+
+      if (namespace !== DEFAULT_NAMESPACE) {
+        attrName = namespace + ":" + attrName;
+      }
+
+      buffer += ` ${attrName}=${JSON.stringify(value)}`
+    }
+  }
+
+  buffer += `>`;
+
+  if (node.children.length) {
+    buffer += `\n`;
+  }
+  
+  buffer += node.children.map(child => stringifyTreeNodeToXML(child, level + 1)).join("");
+
+  buffer += `${node.children.length ? tabs : ""}</${node.name}>\n`;
+
+  return buffer;
+});
 
 const parseStyle = (source: string) => {
   const style = {};
@@ -48,3 +93,13 @@ const parseStyle = (source: string) => {
   });
   return style;
 };
+
+const stringifyStyle = (style: any) => {
+  let buffer = ``;
+
+  for (const name in style) {
+    buffer += `${name}:${style[name]};`
+  }
+
+  return buffer;
+}
