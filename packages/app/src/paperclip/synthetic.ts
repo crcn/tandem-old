@@ -36,7 +36,7 @@ export type SyntheticWindow = {
 export type SyntheticDocument = {
   type: SyntheticObjectType;
   root: SyntheticNode;
-  mount: HTMLElement;
+  container: HTMLIFrameElement;
   computed?: ComputedDisplayInfo;
 }
 
@@ -80,13 +80,15 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
 
 export const createSyntheticDocument = (root: SyntheticNode): SyntheticDocument => {
 
-  const mount = document.createElement("div");
+  const container = document.createElement("iframe");
+  container.style.border = "none";
+  container.style.width = "100%";
+  container.style.height = "100%";
 
   const syntheticDocument = {
     root,
-    mount,
+    container,
     type: SyntheticObjectType.DOCUMENT,
-    computed: renderDOM(mount, root)
   };
 
   return syntheticDocument;

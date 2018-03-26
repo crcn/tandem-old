@@ -1,7 +1,7 @@
 import { Action } from "redux";
-import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow } from "../state";
-import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument } from "paperclip";
+import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered } from "../actions";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument } from "../state";
+import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode } from "common";
 
 export const rootReducer = (state: RootState, action: Action) => {
@@ -36,8 +36,15 @@ const projectReducer = (state: RootState, action: Action) => {
 
       const documents = evaluateDependencyEntry({ entry, graph }).componentPreviews.map(createSyntheticDocument);
 
-      state = updateRootStateSyntheticWindow(entry.uri, {
+      return updateRootStateSyntheticWindow(entry.uri, {
         documents,
+      }, state);
+    }
+    case DOCUMENT_RENDERED: {
+      const { info, documentIndex, window } = action as DocumentRendered;
+      const win = getSyntheticWindow(window.location, state.browser);
+      return updateRootStateSyntheticWindowDocument(window.location, documentIndex, {
+        computed: info
       }, state);
     }
   }

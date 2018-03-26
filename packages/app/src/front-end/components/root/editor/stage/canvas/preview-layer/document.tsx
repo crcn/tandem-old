@@ -21,18 +21,18 @@ const BaseDocumentPreviewComponent = ({ document }) => {
 const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
   pure,
   lifecycle({
-    componentDidUpdate({ document: oldDocument }: DocumentPreviewOuterProps, { document: newDocument }: DocumentPreviewOuterProps) {
-      if (!oldDocument || oldDocument.mount !== newDocument.mount) {
-        const container = this.refs.container as HTMLElement;
-        while(container.childNodes) {
-          container.removeChild(container.childNodes[0]);
-        }
-        container.appendChild(newDocument.mount);
-      }
-    },
+    // componentDidUpdate({ document: oldDocument }: DocumentPreviewOuterProps, { document: newDocument }: DocumentPreviewOuterProps = { document: null }) {
+    //   if (!oldDocument || oldDocument.container !== newDocument.container) {
+    //     const container = this.refs.container as HTMLElement;
+    //     while(container.childNodes) {
+    //       container.removeChild(container.childNodes[0]);
+    //     }
+    //     container.appendChild(newDocument.container);
+    //   }
+    // },
     componentDidMount() {
       const container = this.refs.container as HTMLElement;
-      container.appendChild(this.props.document.mount);
+      container.appendChild((this.props as DocumentPreviewOuterProps).document.container);
     }
   })
 );

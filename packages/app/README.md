@@ -1,11 +1,7 @@
 TODO:
 
-- variants
-  - set-attribute
-  - set-style
 - web workers
 - shove documents in iframe - call container
-- fake file directory
 - load dependency graph from file directory (scan for PC files)
 - load initial file based on file directory
 - start persisting changes to dependency graph
