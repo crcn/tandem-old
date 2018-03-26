@@ -33,7 +33,6 @@ const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
     componentDidMount() {
       const container = this.refs.container as HTMLElement;
       container.appendChild(this.props.document.mount);
-      console.log(this.props.document.mount);
     }
   })
 );

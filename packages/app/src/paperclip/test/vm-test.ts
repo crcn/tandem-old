@@ -52,8 +52,8 @@ describe(__filename + "#", () => {
       {
         "entry.json": `
           <module>
-            <component id="test" style="color: red; background-color: blue;">
-              <template>
+            <component id="test">
+              <template style="color: red; background-color: blue;">
               </template>
             </component>
           </module>
@@ -66,13 +66,13 @@ describe(__filename + "#", () => {
       {
         "entry.json": `
           <module>
-            <component id="test" style="color: red; background-color: blue;">
-              <template>
+            <component id="test">
+              <template style="color: red; background-color: blue;">
                 <test2 />
               </template>
             </component>
-            <component id="test2" style="color: red; background-color: blue;">
-              <template>
+            <component id="test2">
+              <template style="color: red; background-color: blue;">
                 <text value="hello world" />
               </template>
             </component>
@@ -313,13 +313,128 @@ describe(__filename + "#", () => {
       `
     ],
 
-    // can extend a component default in another module
-    // overrides
-    // errors if a component does not exist
-    // variants
+    [
+      `can override with delete-child`,
+      {
+        "entry.json": `
+          <module>
+            <component id="test"> 
+              <template>  
+                <text ref="text1" value="a"></text>
+                <text ref="text2" value="a"></text>
+              </template>
+            </component>
+            <component id="test2" extends="test"> 
+              <overrides>   
+                <delete-child target="text1" />
+              </overrides>
+            </component>
+          </module>
+        `
+      },
+      `
+      <div>
+        <text ref="text1" value="a"></text>
+        <text ref="text2" value="a"></text>
+      </div>
+      <div>
+        <text ref="text2" value="a"></text>
+      </div>
+      `
+    ],
+    [
+      `can override with insert-child`,
+      {
+        "entry.json": `
+          <module>
+            <component id="test"> 
+              <template>  
+                <text ref="text1" value="a"></text>
+              </template>
+            </component>
+            <component id="test2" extends="test"> 
+              <overrides>   
+                <insert-child before="text1">
+                  <text ref="text2" value="a"></text>
+                </insert-child>
+              </overrides>
+            </component>
+          </module>
+        `
+      },
+      `
+      <div>
+        <text ref="text1" value="a"></text>
+      </div>
+      <div>
+        <text ref="text2" value="a"></text>
+        <text ref="text1" value="a"></text>
+      </div>
+      `
+    ],
+    [
+      `can override with set-attribute`,
+      {
+        "entry.json": `
+          <module>
+            <component id="test"> 
+              <template>  
+                <text ref="text1" value="a"></text>
+              </template>
+            </component>
+            <component id="test2" extends="test"> 
+              <overrides>   
+                <set-attribute target="text1" name="value" value="b" />
+              </overrides>
+            </component>
+          </module>
+        `
+      },
+      `
+      <div>
+        <text ref="text1" value="a"></text>
+      </div>
+      <div>
+        <text ref="text1" value="b"></text>
+      </div>
+      `
+    ],
+    [
+      `can override with set-style`,
+      {
+        "entry.json": `
+          <module>
+            <component id="test"> 
+              <template>  
+                <text ref="text1" value="a"></text>
+              </template>
+            </component>
+            <component id="test2" extends="test"> 
+              <overrides>   
+                <set-style name="color" value="blue" />
+              </overrides>
+            </component>
+          </module>
+        `
+      },
+      `
+      <div>
+        <text ref="text1" value="a"></text>
+      </div>
+      <div style="color:blue;">
+        <text ref="text1" value="a"></text>
+      </div>
+      `
+    ],
+
+    // can override with insert-child
+    // can override with move-child
+    // can override with set-attribute on slot
+    // can override a style property
   ].forEach(([name, files, expectedOutput]: any) => {
     it(name, async () => {
       const { componentPreviews } = evaluateDependencyEntry(await loadEntry("entry.json", { openFile: createTestFileReader(mapValues(files, (file) => xmlToTreeNode(file))) }));
+
       
       const result = componentPreviews.map(pv => stringifyTreeNodeToXML(pv)).join("\n");
       expect(result.replace(/[\n\r\s\t]+/g, " ").trim()).to.eql(expectedOutput.replace(/[\n\r\s\t]+/g, " ").trim());

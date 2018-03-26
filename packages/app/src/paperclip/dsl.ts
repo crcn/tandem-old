@@ -1,5 +1,5 @@
-import { memoize, EMPTY_OBJECT } from "../common/utils";
-import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE } from "../common/state";
+import { memoize, EMPTY_OBJECT, EMPTY_ARRAY } from "../common/utils";
+import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode } from "../common/state";
 import { DEFAULT_EXTENDS } from ".";
 
 export const ROOT_MODULE_NAME = "module";
@@ -77,8 +77,40 @@ export type Component = {
   overrides: ComponentOverride[];
 }
 
-export type ComponentOverride = {
+export enum ComponentOverrideType {
+  DELETE_NODE,
+  INSERT_NODE,
+  MOVE_NODE,
+  SET_ATTRIBUTE,
+  SET_STYLE,
+  DELETE_ATTRIBUTE
 };
+
+export type ComponentOverride = {
+  type: ComponentOverrideType;
+};
+
+export type DeleteChildOverride = {  
+  target: string;  
+} & ComponentOverride;
+
+export type InsertChildOverride = {
+  child: TreeNode;
+  beforeChild: string;
+} & ComponentOverride;
+
+export type SetAttributeOverride = {
+  target?: string;
+  name: string;
+  namespace?: string;
+  value: string;
+} & ComponentOverride;
+
+export type SetStyleOverride = {
+  target?: string;
+  name: string;
+  value: string;
+} & ComponentOverride;
 
 export type ModuleImports = {
   [identifier: string]: string;
@@ -122,6 +154,8 @@ export const getModuleComponents = memoize((root: TreeNode) => {
         tagName: source.attributes[DEFAULT_NAMESPACE].extends
       }
     }
+
+    const overrides = source.children.find(createNodeNameMatcher("overrides"));
     
     components.push({
       id: getAttribute(source, "id"),
@@ -129,9 +163,7 @@ export const getModuleComponents = memoize((root: TreeNode) => {
       extends: ext,
       template: source.children.find(createNodeNameMatcher("template")),
       source,
-
-      // TODO 
-      overrides: []
+      overrides: overrides ? overrides.children.map(getOverrideInfo) : EMPTY_ARRAY
     });
   });
 
@@ -139,7 +171,6 @@ export const getModuleComponents = memoize((root: TreeNode) => {
 });
 
 /**
- * 
  */
 
 export const getModuleInfo = memoize((source: TreeNode) => ({
@@ -166,3 +197,36 @@ export const getNodeSourceModule = (node: TreeNode, dependency: Dependency, grap
 export const getModuleComponent = (componentId: string, module: Module) => module.components.find(component => component.id === componentId);
 
 export const getNodeSourceComponent = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => getModuleComponent(node.name, getNodeSourceModule(node, dependency, graph)));
+
+export const getOverrideInfo = memoize((node: TreeNode): ComponentOverride => {
+  switch(node.name) {
+    case "delete-child": return {
+      type: ComponentOverrideType.DELETE_NODE,
+      target:  getAttribute(node, "target"),
+    } as DeleteChildOverride;
+    case "insert-child": return {
+      type: ComponentOverrideType.INSERT_NODE,
+      child: node.children[0],
+      beforeChild: getAttribute(node, "before")
+    } as InsertChildOverride;
+    case "set-attribute": return {
+      type: ComponentOverrideType.SET_ATTRIBUTE,
+      target:  getAttribute(node, "target"), 
+      name: getAttribute(node, "name"),
+      namespace: getAttribute(node, "namespace"),
+      value: getAttribute(node, "value"),
+    } as SetAttributeOverride;
+    case "set-style": return {
+      type: ComponentOverrideType.SET_STYLE,
+      target:  getAttribute(node, "target"), 
+      name: getAttribute(node, "name"),
+      value: getAttribute(node, "value"),
+    } as SetAttributeOverride;
+    default: {
+      throw new Error(`Unknown override type ${node.name}`);
+    }
+  }
+
+});
+
+export const getNodeReference = memoize((refName: string, root: TreeNode) => findNestedNode(root, child => getAttribute(child, "ref") === refName));

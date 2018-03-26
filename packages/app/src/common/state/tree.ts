@@ -1,6 +1,7 @@
 import { memoize } from "../utils/memoization";
 import { stringifyTreeNodeToXML } from "../utils/xml";
 import * as crc32 from "crc32";
+import { arraySplice } from "../utils/array";
 
 export const DEFAULT_NAMESPACE = "undefined";
 
@@ -32,7 +33,7 @@ export const findNestedNode = memoize((current: TreeNode, filter: NodeFilter) =>
   }
   const {children} = current;
   for (let i = 0, {length} = children; i < length; i++) {
-    const foundChild = findNestedNode(current, filter);
+    const foundChild = findNestedNode(children[i], filter);
     if (foundChild) {
       return foundChild;
     }
@@ -89,3 +90,24 @@ export const getTreeNodeFromPath = memoize(<TNode extends TreeNode>(path: number
 }); 
 
 export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)))
+
+export const removeNestedTreeNode = (nestedChild: TreeNode, current: TreeNode) => removeNestedTreeNodeFromPath(getTeeNodePath(nestedChild, current), current);
+
+export const removeNestedTreeNodeFromPath = (path: number[], current: TreeNode) => updatedNestedNodeFromPath(path, current, (child) => null);
+
+export const updatedNestedNode = (nestedChild: TreeNode, current: TreeNode, updater: (child: TreeNode) => TreeNode) => updatedNestedNodeFromPath(getTeeNodePath(nestedChild, current), current, updater);
+
+export const updatedNestedNodeFromPath = (path: number[], current: TreeNode, updater: (child: TreeNode) => TreeNode, depth: number = 0) => {
+  if (depth === path.length) {
+    return updater(current);
+  }
+
+  const updatedChild = updatedNestedNodeFromPath(path, current.children[path[depth]], updater, depth + 1);
+
+  return {
+    ...current,
+    children: updatedChild ? arraySplice(current.children, path[depth], 1, updatedChild) : arraySplice(current.children, path[depth], 1)
+  };
+};
+
+export const getParentTreeNode = memoize((node: TreeNode, root: TreeNode) => getChildParentMap(root).get(node));

@@ -1,5 +1,9 @@
 TODO:
 
+- variants
+  - set-attribute
+  - set-style
+- web workers
 - shove documents in iframe - call container
 - fake file directory
 - load dependency graph from file directory (scan for PC files)
