@@ -1,4 +1,4 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum } from "../common/state/tree";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath } from "../common/state/tree";
 import { arraySplice } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
 import { renderDOM } from "./dom-renderer";
@@ -111,3 +111,5 @@ export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency):
   checksum: generateTreeChecksum(dependency.content),
   path: getTeeNodePath(source, getModuleInfo(dependency.content).source),
 });
+
+export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, sourceRoot: TreeNode) => getTreeNodeFromPath(synthetic.source.path, sourceRoot);

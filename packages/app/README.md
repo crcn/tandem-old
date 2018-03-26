@@ -1,6 +1,7 @@
 TODO:
 
 - web workers
+- vars <variable id="test" value="test" />
 - shove documents in iframe - call container
 - load dependency graph from file directory (scan for PC files)
 - load initial file based on file directory

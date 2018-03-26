@@ -133,47 +133,40 @@ export const getImports = memoize((root: TreeNode): ModuleImports => {
  * Returns all components in a module
  */
 
-export const getModuleComponents = memoize((root: TreeNode) => {
-  const components: Component[] = [];
+export const getModuleComponents = memoize((root: TreeNode): Component[] => filterNestedNodes(root, node => node.name === "component").map(getComponentInfo));
 
-  filterNestedNodes(root, node => node.name === "component").forEach(source => {
+export const getComponentInfo = memoize((component: TreeNode): Component => {
 
-    let ext: ComponentExtendsInfo;
+  let ext: ComponentExtendsInfo;
 
-    if (source.attributes.extends) {
-      for (const namespace in source.attributes.extends) {
-        ext = {
-          namespace,
-          tagName: source.attributes.extends[namespace]
-        };
-        break;
-      }
-    } else if ((source.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT).extends) {
+  if (component.attributes.extends) {
+    for (const namespace in component.attributes.extends) {
       ext = {
-        namespace: DEFAULT_NAMESPACE,
-        tagName: source.attributes[DEFAULT_NAMESPACE].extends
-      }
+        namespace,
+        tagName: component.attributes.extends[namespace]
+      };
+      break;
     }
+  } else if ((component.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT).extends) {
+    ext = {
+      namespace: DEFAULT_NAMESPACE,
+      tagName: component.attributes[DEFAULT_NAMESPACE].extends
+    }
+  }
 
-    const overrides = source.children.find(createNodeNameMatcher("overrides"));
-    
-    components.push({
-      id: getAttribute(source, "id"),
-      label: getAttribute(source, "label"),
-      extends: ext,
-      template: source.children.find(createNodeNameMatcher("template")),
-      source,
-      overrides: overrides ? overrides.children.map(getOverrideInfo) : EMPTY_ARRAY
-    });
-  });
-
-  return components;
+  const overrides = component.children.find(createNodeNameMatcher("overrides"));
+  
+  return {
+    id: getAttribute(component, "id"),
+    label: getAttribute(component, "label"),
+    extends: ext,
+    template: component.children.find(createNodeNameMatcher("template")),
+    source: component,
+    overrides: overrides ? overrides.children.map(getOverrideInfo) : EMPTY_ARRAY
+  };
 });
 
-/**
- */
-
-export const getModuleInfo = memoize((source: TreeNode) => ({
+export const getModuleInfo = memoize((source: TreeNode): Module => ({
   source,
   imports: getImports(source),
   components: getModuleComponents(source),

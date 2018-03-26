@@ -43,3 +43,5 @@ export const setActiveFilePath = (newActiveFilePath: string, root: RootState) =>
 };
 
 export const getActiveWindow = (root: RootState) => root.browser.windows.find(window => window.location === root.activeFilePath);
+
+export * from "./constants";

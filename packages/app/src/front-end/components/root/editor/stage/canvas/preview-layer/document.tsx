@@ -1,18 +1,24 @@
 import "./document.scss";
 import * as React from "react";
+import { getAttribute } from "common";
 import { compose, pure, lifecycle } from "recompose";
-import { SyntheticDocument, getModuleInfo } from "paperclip";
+import { SyntheticDocument, getModuleInfo, Dependency, DependencyGraph, getSyntheticNodeSourceNode, getComponentInfo } from "paperclip";
+import { PREVIEW_NAMESPACE } from "../../../../../../state";
 
 export type DocumentPreviewOuterProps = {
-  document: SyntheticDocument
+  document: SyntheticDocument;
+  dependency: Dependency;
 };
 
 type DocumentPreviewInnerProps = {  
 
 } & DocumentPreviewOuterProps;
 
-const BaseDocumentPreviewComponent = ({ document }) => {
-  return <div className="m-preview-document">
+const BaseDocumentPreviewComponent = ({ document, dependency }) => {
+  const componentNode = getSyntheticNodeSourceNode(document.root, dependency.content);
+  const style = getAttribute(componentNode, "style", PREVIEW_NAMESPACE);
+
+  return <div className="m-preview-document" style={style}>
     <div ref="container">
     </div>
   </div>;
