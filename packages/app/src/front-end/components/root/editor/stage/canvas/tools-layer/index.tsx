@@ -4,12 +4,18 @@
 
 import "./index.scss";
 import * as React from "react";
-import { ColorPickerComponent } from "front-end/components/inputs/color-picker";
-import { CSSInputComponent } from "front-end/components/inputs/css-property";
+import { SyntheticWindow } from "paperclip";
+import { RootState, getActiveWindow } from "front-end/state";
+import { SelectableToolsComponent } from "./selectables";
 
-const BaseToolsLayerComponent = () => <div className="m-tools-layer">
-  {/* <ColorPickerComponent value="#00FF00" /> */}
-  {/* <CSSInputComponent value="#F60" /> */}
-</div>;
+export type ToolsLayerComponent = {
+  window: SyntheticWindow;
+};
+
+const BaseToolsLayerComponent = ({ window }: ToolsLayerComponent) => {
+  return <div className="m-tools-layer">
+    { window && <SelectableToolsComponent documents={window.documents} /> }
+  </div>;
+};
 
 export const ToolsLayerComponent = BaseToolsLayerComponent;

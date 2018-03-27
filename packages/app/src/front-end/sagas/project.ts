@@ -17,7 +17,7 @@ function* putFakeDirectory() {
       </file>
     </directory>
   `) as Directory;
-  
+
   yield put(projectDirectoryLoaded(rootDirectory));
 }
 
@@ -35,7 +35,7 @@ const TEST_FILES = {
     <module>
       <component id="test" preview:style="width: 100px; height: 100px;">
         <template style="font-family: Helvetica; background-color: red; color: white; padding: 20px; border-radius: 10px;">
-          <text ref="hello" value="hello" />
+          <text ref="hello" value="helloaa==" />
         </template>
       </component>
       <component id="test2" extends="test" preview:style="width: 100px; height: 100px;">
@@ -60,10 +60,9 @@ const TEST_FILES = {
   `
 }
 
-
 function* handleActiveFile() {
   while(1) {
-    const { path } = yield take(FILE_NAVIGATOR_ITEM_CLICKED);    
+    const { path } = yield take(FILE_NAVIGATOR_ITEM_CLICKED);
     const state: RootState = yield select();
     const { entry, graph } = yield call(loadEntry, state.activeFilePath, {
       graph: state.browser.graph,

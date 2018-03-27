@@ -1,4 +1,4 @@
-import { arraySplice, Directory } from "common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY } from "common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow } from "paperclip";
 
 export type RootState = {
@@ -43,5 +43,11 @@ export const setActiveFilePath = (newActiveFilePath: string, root: RootState) =>
 };
 
 export const getActiveWindow = (root: RootState) => root.browser.windows.find(window => window.location === root.activeFilePath);
+
+export const getAllWindowDocuments = memoize((browser: SyntheticBrowser): SyntheticDocument[] => {
+  return browser.windows.reduce((documents, window) => {
+    return [...documents, ...(window.documents || EMPTY_ARRAY)];
+  }, []);
+});
 
 export * from "./constants";
