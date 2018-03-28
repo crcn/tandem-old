@@ -12,9 +12,7 @@ const BaseSelectableToolsComponent = ({ documents }: SelectableToolsOuterProps) 
     return null;
   }
 
-  console.log(documents);
   return <div className="m-selectable-tools">
-    COOL TOOL!
   </div>;
 };
 

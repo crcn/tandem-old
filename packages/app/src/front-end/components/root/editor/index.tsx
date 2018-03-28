@@ -1,4 +1,5 @@
 import "./index.scss";
+import { Dispatch } from "redux";
 import * as React from "react";
 import { Dependency } from "paperclip";
 import { compose, pure } from "recompose";
@@ -9,14 +10,15 @@ import { RootState, getActiveWindow } from "front-end/state";
 
 export type EditorOuterProps = {
   root: RootState;
+  dispatch: Dispatch<any>;
 };
 
-const EditorBaseComponent = ({ root }: EditorOuterProps) => {
+const EditorBaseComponent = ({ root, dispatch }: EditorOuterProps) => {
   const window = getActiveWindow(root);
   const dependency = window && root.browser.graph && root.browser.graph[window.location];
   return <div className="m-editor">
     <LeftGutterComponent />
-    <StageComponent window={window} dependency={dependency} />
+    <StageComponent root={root} dispatch={dispatch} dependency={dependency} />
     <RightGutterComponent />
   </div>;
 }

@@ -4,17 +4,23 @@
 
 import "./index.scss";
 import * as React from "react";
+import { Dispatch } from "redux";
 import { SyntheticWindow } from "paperclip";
 import { RootState, getActiveWindow } from "front-end/state";
 import { SelectableToolsComponent } from "./selectables";
+import { NodeOverlaysTool } from "./document-overlay";
 
 export type ToolsLayerComponent = {
-  window: SyntheticWindow;
+  root: RootState;
+  zoom: number;
+  dispatch: Dispatch<any>
 };
 
-const BaseToolsLayerComponent = ({ window }: ToolsLayerComponent) => {
+const BaseToolsLayerComponent = ({ root, zoom, dispatch }: ToolsLayerComponent) => {
+  const activeWindow = getActiveWindow(root);
   return <div className="m-tools-layer">
-    { window && <SelectableToolsComponent documents={window.documents} /> }
+    <NodeOverlaysTool root={root} zoom={zoom} dispatch={dispatch} />
+    { activeWindow && <SelectableToolsComponent documents={activeWindow.documents} /> }
   </div>;
 };
 

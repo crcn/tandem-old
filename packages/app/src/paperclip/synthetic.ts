@@ -1,5 +1,5 @@
 import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath } from "../common/state/tree";
-import { arraySplice } from "../common/utils";
+import { arraySplice, generateId } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
 import { renderDOM } from "./dom-renderer";
 
@@ -77,6 +77,7 @@ export const getSyntheticWindow = (location: string, browser: SyntheticBrowser) 
 
 export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   location,
+  id: generateId(),
   type: SyntheticObjectType.WINDOW,
 });
 
@@ -87,9 +88,10 @@ export const createSyntheticDocument = (root: SyntheticNode): SyntheticDocument 
   container.style.width = "100%";
   container.style.height = "100%";
 
-  const syntheticDocument = {
+  const syntheticDocument: SyntheticDocument = {
     root,
     container,
+    id: generateId(),
     type: SyntheticObjectType.DOCUMENT,
   };
 

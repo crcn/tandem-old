@@ -1,10 +1,11 @@
-import "./overlay.scss";
+import "./document-overlay.scss";
 const cx = require("classnames");
 import * as React from "react";
 import * as Hammer from "react-hammerjs";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { wrapEventToDispatch } from "front-end/utils";
+import { RootState, getActiveWindow } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import { SyntheticNode, SyntheticDocument, SyntheticWindow } from "paperclip";
@@ -22,7 +23,7 @@ import {
 
 export type VisualToolsProps = {
   zoom: number;
-  window: SyntheticWindow;
+  root: RootState;
   dispatch: Dispatch<any>;
 };
 
@@ -88,6 +89,8 @@ const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onP
     // height: document.bounds.bottom - document.bounds.top
   };
 
+  console.log(document.root);
+
   return <div style={style as any}>
     <Hammer onPanStart={onPanStart} onPan={onPan} onPanEnd={onPanEnd} direction="DIRECTION_ALL">
       <div
@@ -132,19 +135,23 @@ const getNodes = memoize((refs: StructReference[], allNodes: TreeNodeIdMap) => {
   return refs.map(({type, id}) => allNodes[id]).filter((flattenedObject) => !!flattenedObject)
 });
 
-const getHoveringSyntheticNodes = memoize((window: SyntheticWindow, artboard: Artboard): SyntheticNode[] => {
-  const allNodes = artboard.document && getTreeNodeIdMap(artboard.document) || {};
+const getHoveringSyntheticNodes = memoize((root: RootState, document: SyntheticDocument): SyntheticNode[] => {
+  const allNodes = document && getTreeNodeIdMap(document.root) || {};
   return difference(
-    getNodes(workspace.hoveringRefs, allNodes),
-    getNodes(workspace.selectionRefs, allNodes)
+    getNodes(root.hoveringReferences, allNodes),
+    getNodes(root.selectionReferences, allNodes)
   ) as SyntheticNode[]
 });
 
-export const  NodeOverlaysToolBase = ({ window, dispatch, zoom }: VisualToolsProps) => {
+export const  NodeOverlaysToolBase = ({ root, dispatch, zoom }: VisualToolsProps) => {
+  const activeWindow = getActiveWindow(root);
+  if (!activeWindow) {
+    return null;
+  }
   return <div className="visual-tools-layer-component">
     {
-      window.documents.map((document, i) => {
-        return <ArtboardOverlayTools key={document.id} document={document} hoveringNodes={getHoveringSyntheticNodes(window, document)} dispatch={dispatch} zoom={zoom} />;
+      activeWindow.documents && activeWindow.documents.map((document, i) => {
+        return <ArtboardOverlayTools key={document.id} document={document} hoveringNodes={getHoveringSyntheticNodes(root, document)} dispatch={dispatch} zoom={zoom} />;
       })
     }
   </div>
