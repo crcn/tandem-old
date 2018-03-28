@@ -68,6 +68,18 @@ export const getChildParentMap = memoize((current: TreeNode): Map<TreeNode, Tree
   return parentChildMap;
 });
 
+export type TreeNodeIdMap = {
+  [identifier: string]: TreeNode
+}
+
+export const getTreeNodeIdMap = memoize((current: TreeNode): TreeNodeIdMap => {
+  const map = {
+    [current.id]: current
+  };
+  Object.assign(map, current.children.map(getTreeNodeIdMap));
+  return map;
+});
+
 export const getTeeNodePath = memoize((node: TreeNode, root: TreeNode) => {
   const childParentMap = getChildParentMap(root);
   let current = node;
@@ -87,7 +99,7 @@ export const getTreeNodeFromPath = memoize(<TNode extends TreeNode>(path: number
     current = current.children[path[i]];
   }
   return current;
-}); 
+});
 
 export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)))
 

@@ -28,12 +28,14 @@ export type SyntheticBrowser = {
 };
 
 export type SyntheticWindow = {
+  id: string;
   location: string;
   type: SyntheticObjectType;
   documents?: SyntheticDocument[];
 };
 
 export type SyntheticDocument = {
+  id: string;
   type: SyntheticObjectType;
   root: SyntheticNode;
   container: HTMLIFrameElement;

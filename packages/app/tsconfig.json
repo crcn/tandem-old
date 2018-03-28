@@ -9,6 +9,9 @@
       "es5",
       "esnext"
     ],
+    "paths": {
+      "common": ["./common"]
+    },
     "module": "commonjs",
     "outDir": "lib",
     "jsx": "react",

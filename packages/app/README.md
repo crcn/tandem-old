@@ -1,6 +1,7 @@
 TODO:
 
 - web workers
+- workspace structure
 - vars <variable id="test" value="test" />
 - shove documents in iframe - call container
 - load dependency graph from file directory (scan for PC files)
@@ -36,7 +37,7 @@ TODOS:
 - [ ] components (in order of importance)
   - [ ] left gutter
     - [ ] file navigator
-    - [ ] open files   
+    - [ ] open files
       - [ ] show selectable objects (components, styles )
     - [ ] Layers (part of open files?)
   - [ ] toolbar
@@ -60,10 +61,10 @@ TODOS:
 
 QUESTIONS:
 
-- [ ] possible to make pretty style pane similar to inspector? Could be _all_ styles combined. Quick shortcuts for things like background, typography, shadows. 
+- [ ] possible to make pretty style pane similar to inspector? Could be _all_ styles combined. Quick shortcuts for things like background, typography, shadows.
   - [ ] needs to be visually present
 
 
 - [ ] core
   - [ ] web worker
-  
+

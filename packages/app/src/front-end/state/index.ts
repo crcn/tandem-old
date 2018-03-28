@@ -1,9 +1,11 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY } from "common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference } from "common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow } from "paperclip";
 
 export type RootState = {
   activeFilePath?: string;
   mount: Element;
+  hoveringReferences: StructReference[];
+  selectionReferences: StructReference[];
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
 };

@@ -2,31 +2,35 @@ import "./overlay.scss";
 const cx = require("classnames");
 import * as React from "react";
 import * as Hammer from "react-hammerjs";
-import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
+// import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
+// import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
+import { wrapEventToDispatch } from "front-end/utils";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
-import { FlattenedObjects, flattenObjects, SlimBaseNode } from "slim-dom";
+import { SyntheticNode, SyntheticDocument, SyntheticWindow } from "paperclip";
+import { Bounds, memoize, getTreeNodeIdMap, TreeNodeIdMap, StructReference } from "common";
 import { compose, pure, withHandlers } from "recompose";
-import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
+// import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
+import { Dispatch } from "redux";
 import {
-  stageToolOverlayMouseLeave,
-  stageToolOverlayMousePanStart,
-  stageToolOverlayMousePanning,
-  stageToolOverlayMousePanEnd,
-  stageToolOverlayMouseDoubleClicked,
+  canvasToolOverlayMouseLeave,
+  canvasToolOverlayMousePanStart,
+  canvasToolOverlayMousePanning,
+  canvasToolOverlayMousePanEnd,
+  canvasToolOverlayMouseDoubleClicked,
 } from "front-end/actions";
 
 export type VisualToolsProps = {
   zoom: number;
-  workspace: Workspace;
-  dispatch: Dispatcher<any>;
+  window: SyntheticWindow;
+  dispatch: Dispatch<any>;
 };
 
 type ArtboardOverlayToolsOuterProps = {
-  dispatch: Dispatcher<any>;
-  artboard: Artboard;
+  dispatch: Dispatch<any>;
+  document: SyntheticDocument;
   zoom: number;
-  hoveringNodes: SlimBaseNode[];
+  hoveringNodes: SyntheticNode[];
 };
 
 type ArtboardOverlayToolsInnerProps = {
@@ -40,8 +44,8 @@ type NodeOverlayProps = {
   bounds: Bounds;
   zoom: number;
   hovering: boolean;
-  node: SlimBaseNode;
-  dispatch: Dispatcher<any>;
+  node: SyntheticNode;
+  dispatch: Dispatch<any>;
 };
 
 const NodeOverlayBase = ({ artboardId, zoom, bounds, node, dispatch, hovering }: NodeOverlayProps) => {
@@ -69,32 +73,33 @@ const NodeOverlayBase = ({ artboardId, zoom, bounds, node, dispatch, hovering }:
 
 const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
 
-const ArtboardOverlayToolsBase = ({ dispatch, artboard, hoveringNodes, zoom, onPanStart, onPan, onPanEnd }: ArtboardOverlayToolsInnerProps) => {
+const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onPanStart, onPan, onPanEnd }: ArtboardOverlayToolsInnerProps) => {
 
-  if (!artboard.computedDOMInfo) {
+  if (!document.computed) {
     return null;
   }
 
+  // TODO - compute info based on content
   const style = {
-    position: "absolute",
-    left: artboard.bounds.left,
-    top: artboard.bounds.top,
-    width: artboard.bounds.right - artboard.bounds.left,
-    height: artboard.bounds.bottom - artboard.bounds.top
+    // position: "absolute",
+    // left: document.bounds.left,
+    // top: document.bounds.top,
+    // width: document.bounds.right - document.bounds.left,
+    // height: document.bounds.bottom - document.bounds.top
   };
 
   return <div style={style as any}>
     <Hammer onPanStart={onPanStart} onPan={onPan} onPanEnd={onPanEnd} direction="DIRECTION_ALL">
       <div
         style={{ width: "100%", height: "100%", position: "absolute" } as any}
-        onDoubleClick={wrapEventToDispatch(dispatch, stageToolOverlayMouseDoubleClicked.bind(this, artboard.$id))}>
+        onDoubleClick={wrapEventToDispatch(dispatch, canvasToolOverlayMouseDoubleClicked.bind(this, document.id))}>
       {
         hoveringNodes.map((node) => <NodeOverlay
-          artboardId={artboard.$id}
+          artboardId={document.id}
           zoom={zoom}
           key={node.id}
           node={node}
-          bounds={artboard.computedDOMInfo[node.id] && artboard.computedDOMInfo[node.id].bounds}
+          bounds={document.computed[node.id] && document.computed[node.id].rect}
           dispatch={dispatch}
           hovering={true} />)
       }
@@ -106,16 +111,16 @@ const ArtboardOverlayToolsBase = ({ dispatch, artboard, hoveringNodes, zoom, onP
 const enhanceArtboardOverlayTools = compose<ArtboardOverlayToolsInnerProps, ArtboardOverlayToolsOuterProps>(
   pure,
   withHandlers({
-    onPanStart: ({ dispatch, artboard }: ArtboardOverlayToolsOuterProps) => (event) => {
-      dispatch(stageToolOverlayMousePanStart(artboard.$id));
+    onPanStart: ({ dispatch, document }: ArtboardOverlayToolsOuterProps) => (event) => {
+      dispatch(canvasToolOverlayMousePanStart(document.id));
     },
-    onPan: ({ dispatch, artboard }: ArtboardOverlayToolsOuterProps) => (event) => {
-      dispatch(stageToolOverlayMousePanning(artboard.$id, { left: event.center.x, top: event.center.y }, event.deltaY, event.velocityY));
+    onPan: ({ dispatch, document }: ArtboardOverlayToolsOuterProps) => (event) => {
+      dispatch(canvasToolOverlayMousePanning(document.id, { left: event.center.x, top: event.center.y }, event.deltaY, event.velocityY));
     },
-    onPanEnd: ({ dispatch, artboard }: ArtboardOverlayToolsOuterProps) => (event) => {
+    onPanEnd: ({ dispatch, document }: ArtboardOverlayToolsOuterProps) => (event) => {
       event.preventDefault();
       setImmediate(() => {
-        dispatch(stageToolOverlayMousePanEnd(artboard.$id));
+        dispatch(canvasToolOverlayMousePanEnd(document.id));
       });
     }
   })
@@ -123,23 +128,23 @@ const enhanceArtboardOverlayTools = compose<ArtboardOverlayToolsInnerProps, Artb
 
 const ArtboardOverlayTools = enhanceArtboardOverlayTools(ArtboardOverlayToolsBase);
 
-const getNodes = weakMemo((refs: StructReference[], allNodes: FlattenedObjects) => {
-  return refs.map(([type, id]) => allNodes[id]).filter((flattenedObject) => !!flattenedObject).map(object => object.value as SlimBaseNode)
+const getNodes = memoize((refs: StructReference[], allNodes: TreeNodeIdMap) => {
+  return refs.map(({type, id}) => allNodes[id]).filter((flattenedObject) => !!flattenedObject)
 });
 
-const getHoveringSyntheticNodes = weakMemo((workspace: Workspace, artboard: Artboard) => {
-  const allNodes = artboard.document && flattenObjects(artboard.document) || {};
+const getHoveringSyntheticNodes = memoize((window: SyntheticWindow, artboard: Artboard): SyntheticNode[] => {
+  const allNodes = artboard.document && getTreeNodeIdMap(artboard.document) || {};
   return difference(
     getNodes(workspace.hoveringRefs, allNodes),
     getNodes(workspace.selectionRefs, allNodes)
-  );
+  ) as SyntheticNode[]
 });
 
-export const  NodeOverlaysToolBase = ({ workspace, dispatch, zoom }: VisualToolsProps) => {
+export const  NodeOverlaysToolBase = ({ window, dispatch, zoom }: VisualToolsProps) => {
   return <div className="visual-tools-layer-component">
     {
-      workspace.artboards.map((artboard) => {
-        return <ArtboardOverlayTools key={artboard.$id} hoveringNodes={getHoveringSyntheticNodes(workspace, artboard)} artboard={artboard} dispatch={dispatch} zoom={zoom} />;
+      window.documents.map((document, i) => {
+        return <ArtboardOverlayTools key={document.id} document={document} hoveringNodes={getHoveringSyntheticNodes(window, document)} dispatch={dispatch} zoom={zoom} />;
       })
     }
   </div>
