@@ -5,6 +5,8 @@ TODO:
 - resizer
 - move elements around (persist)
 - layers pane
+- navigator pane
+- load dependencies from other files
 - load dependency graph from file directory (scan for PC files)
 - load initial file based on file directory
 - start persisting changes to dependency graph
