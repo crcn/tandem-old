@@ -1,4 +1,4 @@
-import { 
+import {
   IDd,
   moved,
   update,
@@ -6,13 +6,13 @@ import {
   Struct,
   removed,
   resized,
-  updateIn, 
+  updateIn,
   Translate,
-  BaseEvent, 
+  BaseEvent,
   zoomBounds,
   moveBounds,
   mergeBounds,
-  mapImmutable, 
+  mapImmutable,
   WrappedEvent,
   getBoundsSize,
   REMOVED,
@@ -34,7 +34,7 @@ import {
 import { clamp, merge } from "lodash";
 import { getNestedObjectById, SlimBaseNode, getDocumentChecksum, SlimVMObjectType, getStyleOwnerScopeInfo } from "slim-dom";
 
-import { 
+import {
   Artboard,
   ARTBOARD,
   Workspace,
@@ -201,13 +201,13 @@ import reduceReducers = require("reduce-reducers");
 
 export const applicationReducer = (state: ApplicationState = createApplicationState(), event: BaseEvent) => {
   switch(event.type) {
-    
+
     case LOADED_SAVED_STATE: {
       const { state: newState } = event as LoadedSavedState;
       state = merge({}, state, JSON.parse(JSON.stringify(newState)));
       break;
     }
-    
+
     case TREE_NODE_LABEL_CLICKED: {
       const { node } = event as TreeNodeLabelClicked;
       state = updateWorkspace(state, state.selectedWorkspaceId, {
@@ -226,7 +226,7 @@ export const applicationReducer = (state: ApplicationState = createApplicationSt
       break;
     }
   }
-  
+
   state = artboardReducer(state, event);
   state = stageReducer(state, event);
   state = cssInspectorReducer(state, event);
@@ -347,7 +347,7 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
     case FULL_SCREEN_TARGET_DELETED: {
       return unfullscreen(state);
     }
-    
+
     case FULL_SCREEN_SHORTCUT_PRESSED: {
       const workspace = getSelectedWorkspace(state);
       const selection = workspace.selectionRefs[0];
@@ -392,7 +392,7 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
         smooth: false
       });
     }
-    
+
     case TOGGLE_TEXT_EDITOR_PRESSED: {
       const workspace = getSelectedWorkspace(state);
       return updateWorkspaceStage(state, workspace.$id, {
@@ -437,7 +437,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       if (workspace.stage.fullScreen) {
         return state;
       }
-      
+
       let translate = getStageTranslate(workspace.stage);
 
       if (metaKey || ctrlKey) {
@@ -475,34 +475,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-    case RESIZER_MOVED: {
-      const { point, workspaceId, point: newPoint } = event as ResizerMoved;
-      const workspace = getSelectedWorkspace(state);
-      state = updateWorkspaceStage(state, workspace.$id, {
-        movingOrResizing: true
-      });
 
-      const translate = getStageTranslate(workspace.stage);
-
-      const selectionBounds = getWorkspaceSelectionBounds(workspace);
-      for (const item of getBoundedWorkspaceSelection(workspace)) {
-        const itemBounds = getWorkspaceItemBounds(item, workspace);
-
-        // skip moving window if in full screen mode
-        if (workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId === item.$id) {
-          break;
-        }
-
-        const newBounds = roundBounds(scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)));
-
-        if (item.$type === ARTBOARD) {
-          state = updateArtboard(state, item.$id, { bounds: newBounds });
-        }
-      }
-
-      return state;
-
-    }
 
     case RESIZER_PATH_MOUSE_MOVED: {
       let { workspaceId, anchor, originalBounds, newBounds, sourceEvent } = event as ResizerPathMoved;
@@ -540,7 +513,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-    case RESIZER_PATH_MOUSE_STOPPED_MOVING: 
+    case RESIZER_PATH_MOUSE_STOPPED_MOVING:
     case RESIZER_STOPPED_MOVING: {
       const workspace = getSelectedWorkspace(state);
       state = updateWorkspaceStage(state, workspace.$id, {
@@ -566,7 +539,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       const artboard = getArtboardById(artboardId, state);
 
       // TODO
-      return state; 
+      return state;
       // const { selectorText }: SEnvCSSStyleRuleInterface = getNestedObjectById(ruleId, artboard.document);
       // return updateWorkspace(state, state.selectedWorkspaceId, {
       //   hoveringRefs: getMatchingElements(artboard, selectorText).map((element) => [
@@ -627,69 +600,18 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       const workspace = getArtboardWorkspace(artboardId, state);
       return updateWorkspaceStage(state, workspace.$id, { panning: true });
     }
-    
+
     case STAGE_TOOL_OVERLAY_MOUSE_PAN_END: {
       const { artboardId } = event as StageToolOverlayMousePanEnd;
       const workspace = getArtboardWorkspace(artboardId, state)
       return updateWorkspaceStage(state, workspace.$id, { panning: false });
     }
 
-    case STAGE_MOUSE_MOVED: {
-      const { sourceEvent: { pageX, pageY }} = event as WrappedEvent<React.MouseEvent<any>>;
-      state = updateWorkspaceStage(state, state.selectedWorkspaceId, {
-        mousePosition: {
-          left: pageX,
-          top: pageY
-        }
-      });
-
-      const workspace = getSelectedWorkspace(state);
-
-      // TODO - in the future, we'll probably want to be able to highlight hovered nodes as the user is moving an element around to indicate where
-      // they can drop the element. 
-      const targetRef = workspace.stage.movingOrResizing ? null : getStageToolMouseNodeTargetReference(state, event as StageToolOverlayMouseMoved);
-
-      state = updateWorkspace(state, state.selectedWorkspaceId, {
-        hoveringRefs: targetRef ? [targetRef] : []
-      });
-
-      return state;
-    };
-
-    case STAGE_MOUSE_CLICKED: {
-      const { sourceEvent } = event as StageToolNodeOverlayClicked;
-      if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
-        return state;
-      }
-
-      // alt key opens up a new link
-      const altKey = sourceEvent.altKey;
-      const workspace = getSelectedWorkspace(state);
-      state = updateWorkspaceStageSmoothing(state, workspace);
-      
-      // do not allow selection while window is panning (scrolling)
-      if (workspace.stage.panning || workspace.stage.movingOrResizing) return state;
-
-      const targetRef = getStageToolMouseNodeTargetReference(state, event as StageToolNodeOverlayClicked);
-      if (!targetRef) {
-        return state;
-      }
-
-      if (!altKey) {
-        state = handleArtboardSelectionFromAction(state, targetRef, event as StageToolNodeOverlayClicked);
-        state = updateWorkspaceStage(state, workspace.$id, {
-          secondarySelection: false
-        });
-        return state;
-      }
-      return state;
-    }
-
     case STAGE_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED: {
       const { sourceEvent, artboardId } = event as StageToolNodeOverlayClicked;
       const workspace = getArtboardWorkspace(artboardId, state);
       const targetRef = getStageToolMouseNodeTargetReference(state, event as StageToolNodeOverlayClicked);
-      if (!targetRef) return state;      
+      if (!targetRef) return state;
 
       state = updateWorkspaceStage(state, workspace.$id, {
         secondarySelection: true
@@ -742,7 +664,7 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
   return state;
 }
-  
+
 const unfullscreen = (state: ApplicationState, workspaceId: string = state.selectedWorkspaceId) => {
   const workspace = getWorkspaceById(state, workspaceId);
   const { originalArtboardBounds, artboardId } = workspace.stage.fullScreen;
@@ -750,16 +672,16 @@ const unfullscreen = (state: ApplicationState, workspaceId: string = state.selec
     smooth: true,
     fullScreen: undefined
   });
-  
+
   state = updateWorkspaceStage(state, workspace.$id, {
     translate: workspace.stage.fullScreen.originalTranslate,
     smooth: true
   });
-  
+
   state = updateArtboard(state, artboardId, {
     bounds: originalArtboardBounds
   });
-  
+
   return state;
 }
 
@@ -879,7 +801,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
         computedDOMInfo: computedInfo
       });
     }
-    
+
     case ARTBOARD_CREATED: {
       let { artboard } = event as ArtboardCreated;
       if (!artboard.bounds || artboard.bounds.top === 0 && artboard.bounds.left === 0) {
@@ -892,7 +814,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
       });
 
       state = roundArtboardBounds(artboard.$id, state);
-      
+
       state = setWorkspaceSelection(state, workspace.$id, getStructReference(artboard));
 
 
@@ -905,7 +827,7 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
 const centerSelectedWorkspace = (state: ApplicationState, smooth: boolean = false) => {
   const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
   const innerBounds = getArtboardBounds(workspace);
-  
+
   // no windows loaded
   if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {
     console.warn(`Stage mounted before windows have been loaded`);
@@ -953,7 +875,7 @@ const resizeFullScreenArtboard = (state: ApplicationState, width: number, height
   const workspace = getSelectedWorkspace(state);
   if (workspace.stage.fullScreen && workspace.stage.container) {
 
-    // TODO - do not all getBoundingClientRect here. Dimensions need to be 
+    // TODO - do not all getBoundingClientRect here. Dimensions need to be
     return updateArtboardSize(state, workspace.stage.fullScreen.artboardId, width, height);
   }
   return state;
@@ -988,7 +910,7 @@ const setStageZoom = (state: ApplicationState, workspaceId: string, zoom: number
   return updateWorkspaceStage(state, workspace.$id, {
     smooth,
     translate: centerTransformZoom(
-      workspace.stage.translate, workspace.stage.container.getBoundingClientRect(), 
+      workspace.stage.translate, workspace.stage.container.getBoundingClientRect(),
       clamp(zoom, MIN_ZOOM, MAX_ZOOM),
       workspace.stage.mousePosition
     )

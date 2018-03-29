@@ -1,7 +1,9 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath } from "../common/state/tree";
-import { arraySplice, generateId } from "../common/utils";
-import { DependencyGraph, Dependency, getModuleInfo } from "./dsl";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute } from "../common/state/tree";
+import { arraySplice, generateId, parseStyle } from "../common/utils";
+import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo } from "./dsl";
 import { renderDOM } from "./dom-renderer";
+import { Bounds } from "../common";
+import { mapValues } from "lodash";
 
 export enum SyntheticObjectType {
   BROWSER,
@@ -40,6 +42,7 @@ export type SyntheticDocument = {
   root: SyntheticNode;
   container: HTMLIFrameElement;
   computed?: ComputedDisplayInfo;
+  bounds?: Bounds;
 }
 
 
@@ -81,7 +84,9 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   type: SyntheticObjectType.WINDOW,
 });
 
-export const createSyntheticDocument = (root: SyntheticNode): SyntheticDocument => {
+export const createSyntheticDocument = (root: SyntheticNode, graph: DependencyGraph): SyntheticDocument => {
+  const component = getSyntheticNodeSourceNode(root, graph);
+
 
   const container = document.createElement("iframe");
   container.style.border = "none";
@@ -91,6 +96,7 @@ export const createSyntheticDocument = (root: SyntheticNode): SyntheticDocument 
   const syntheticDocument: SyntheticDocument = {
     root,
     container,
+    bounds: mapValues(parseStyle(getAttribute(component, "bounds", "preview")), Number) as Bounds,
     id: generateId(),
     type: SyntheticObjectType.DOCUMENT,
   };
@@ -116,4 +122,8 @@ export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency):
   path: getTeeNodePath(source, getModuleInfo(dependency.content).source),
 });
 
-export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, sourceRoot: TreeNode) => getTreeNodeFromPath(synthetic.source.path, sourceRoot);
+export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: DependencyGraph) => getTreeNodeFromPath(synthetic.source.path, graph[synthetic.source.uri].content);
+
+export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
+
+export const getSyntheticDocumentComponent = (document: SyntheticDocument, graph: DependencyGraph) =>  getSyntheticNodeSourceNode(document.root, graph)

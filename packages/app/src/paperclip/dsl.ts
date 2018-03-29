@@ -1,6 +1,7 @@
-import { memoize, EMPTY_OBJECT, EMPTY_ARRAY } from "../common/utils";
-import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode } from "../common/state";
+import { memoize, EMPTY_OBJECT, EMPTY_ARRAY, parseStyle } from "../common/utils";
+import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode, Bounds } from "../common/state";
 import { DEFAULT_EXTENDS } from ".";
+import { mapValues } from "lodash";
 
 export const ROOT_MODULE_NAME = "module";
 
@@ -8,7 +9,7 @@ export type DependencyGraph = {
   [identifier: string]: Dependency
 };
 
-// TODO - generic style 
+// TODO - generic style
 export type StyleDeclaration = {
   left: number;
   top: number;
@@ -46,8 +47,8 @@ export type Component = {
    */
 
   id: string;
-  
-  /** 
+
+  /**
    * Human friendly label of the component
    */
 
@@ -90,8 +91,8 @@ export type ComponentOverride = {
   type: ComponentOverrideType;
 };
 
-export type DeleteChildOverride = {  
-  target: string;  
+export type DeleteChildOverride = {
+  target: string;
 } & ComponentOverride;
 
 export type InsertChildOverride = {
@@ -118,7 +119,7 @@ export type ModuleImports = {
 
 /**
  * returns all imports of a module. For example:
- * 
+ *
  * <module xmlns:main="./main-module"></module>
  */
 
@@ -155,7 +156,7 @@ export const getComponentInfo = memoize((component: TreeNode): Component => {
   }
 
   const overrides = component.children.find(createNodeNameMatcher("overrides"));
-  
+
   return {
     id: getAttribute(component, "id"),
     label: getAttribute(component, "label"),
@@ -204,14 +205,14 @@ export const getOverrideInfo = memoize((node: TreeNode): ComponentOverride => {
     } as InsertChildOverride;
     case "set-attribute": return {
       type: ComponentOverrideType.SET_ATTRIBUTE,
-      target:  getAttribute(node, "target"), 
+      target:  getAttribute(node, "target"),
       name: getAttribute(node, "name"),
       namespace: getAttribute(node, "namespace"),
       value: getAttribute(node, "value"),
     } as SetAttributeOverride;
     case "set-style": return {
       type: ComponentOverrideType.SET_STYLE,
-      target:  getAttribute(node, "target"), 
+      target:  getAttribute(node, "target"),
       name: getAttribute(node, "name"),
       value: getAttribute(node, "value"),
     } as SetAttributeOverride;

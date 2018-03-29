@@ -33,24 +33,24 @@ function* handleProjectDirectoryLoaded() {
 const TEST_FILES = {
   "components/main.pc": `
     <module>
-      <component id="test" preview:style="width: 100px; height: 100px;">
+      <component id="test" preview:bounds="left: 0; right: 100; top: 0; bottom: 100">
         <template style="font-family: Helvetica; background-color: red; color: white; padding: 20px; border-radius: 10px;">
           <text ref="hello" value="helloaa==" />
         </template>
       </component>
-      <component id="test2" extends="test" preview:style="width: 100px; height: 100px;">
+      <component id="test2" extends="test" preview:bounds="left: 100; right: 200; top: 0; bottom: 100">
         <overrides>
           <delete-child target="hello" />
         </overrides>
       </component>
-      <component id="test2" extends="test" preview:style="width: 100px; height: 100px;">
+      <component id="test2" extends="test" preview:bounds="left: 0; right: 100; top: 100; bottom: 200">
         <overrides>
           <insert-child before="hello">
             <text value="world" />
           </insert-child>
         </overrides>
       </component>
-      <component id="test2" extends="test" preview:style="width: 100px; height: 100px;">
+      <component id="test2" extends="test" preview:bounds="left: 0; right: 100; top: 200; bottom: 300">
         <overrides>
           <set-attribute target="hello" name="value" value="blarg" />
           <set-style name="background-color" value="blue" />

@@ -38,7 +38,7 @@ const normalizeTree = ({name: nameAndNamespace, attributes, elements = EMPTY_ARR
     normalizedAttributes[namespace][name2] = value;
   }
 
-  
+
   return {
     name,
     namespace,
@@ -75,7 +75,7 @@ export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0
   if (node.children.length) {
     buffer += `\n`;
   }
-  
+
   buffer += node.children.map(child => stringifyTreeNodeToXML(child, level + 1)).join("");
 
   buffer += `${node.children.length ? tabs : ""}</${node.name}>\n`;
@@ -83,7 +83,7 @@ export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0
   return buffer;
 });
 
-const parseStyle = (source: string) => {
+export const parseStyle = (source: string) => {
   const style = {};
   source.split(/\s*;\s*/g).forEach(kv => {
     const [name, value] = kv.split(":");

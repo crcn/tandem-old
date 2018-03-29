@@ -101,26 +101,6 @@ export const DND_ENDED = "DND_ENDED";
 export const DND_HANDLED = "DND_HANDLED";
 export const EXCEPTION_CAUGHT = "EXCEPTION_CAUGHT";
 
-/**
- * Types
- */
-
-export type StageWheel = {
-  workspaceId: string;
-  canvasWidth: number;
-  canvasHeight: number;
-  type: string;
-  metaKey: boolean;
-  ctrlKey: boolean;
-  deltaX: number;
-  deltaY: number;
-} & BaseEvent;
-
-export type StageMounted = {
-  element: HTMLDivElement;
-} & BaseEvent;
-
-
 export type ResizerMoved = {
   point: Point;
   workspaceId: string;
@@ -330,38 +310,38 @@ export type ArtboardLoaded = {
   dependencyUris: string[];
   document: SlimParentNode;
   mount: HTMLIFrameElement;
-} & BaseEvent;  
+} & BaseEvent;
 
 export type ArtboardPatched = {
   artboardId: string;
   checksum: string;
   nativeObjectMap: NativeObjectMap;
   document: SlimParentNode;
-} & BaseEvent;  
+} & BaseEvent;
 
 export type ArtboardDOMPatched = {
   artboardId: string;
   nativeObjectMap: NativeObjectMap;
-} & BaseEvent;  
+} & BaseEvent;
 
 export type PreviewDiffed = {
   componentId: string;
   previewName: string;
   documentChecksum: string;
   diff: Mutation<any[]>[];
-} & BaseEvent;  
+} & BaseEvent;
 
 export type ArtboardRendered = {
   artboardId: string;
   nativeObjectMap: NativeObjectMap;
-} & BaseEvent;  
+} & BaseEvent;
 
 export type ArtboardLoading = {
   artboardId: string;
-} & BaseEvent;  
+} & BaseEvent;
 
 export type ArtboardMountLoaded = {
-  
+
 } & BaseEvent;
 
 export type WindowResized = {
@@ -373,7 +353,7 @@ export type StageResized = WindowResized;
 
 export type ArtboardCreated = {
   artboard: Artboard;
-} & BaseEvent;  
+} & BaseEvent;
 
 export type ArtboardScroll = {
   artboardId: string;
@@ -489,7 +469,7 @@ export const cssDeclarationNameChanged = (index: number, name: string, value: st
 });
 
 export const cssAddStyleRuleOptionClicked = (elementScopeId: string, artboardId: string): CSSAddStyleRuleOptionClicked => ({
-  elementScopeId, 
+  elementScopeId,
   artboardId,
   type: CSS_ADD_STYLE_RULE_CLICKED
 });
@@ -522,7 +502,7 @@ export const cssSelectorTextChanged = (styleRuleId: string, newSelectorText: str
 export const artboardLoaded = (artboardId, dependencyUris: string[], document: SlimParentNode, checksum: string, mount: HTMLIFrameElement): ArtboardLoaded => ({
   type: ARTBOARD_LOADED,
   artboardId,
-  document, 
+  document,
   checksum,
   dependencyUris,
   mount

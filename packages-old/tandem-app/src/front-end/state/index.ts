@@ -12,7 +12,7 @@ import {
   filterBounded,
   getSmallestBounds,
   TargetSelector,
-  ImmutableArray, 
+  ImmutableArray,
   arrayRemoveItem,
   Point,
   serializableKeys,
@@ -48,14 +48,14 @@ import { DNDState } from "./dnd";
 
 import { StageToolOverlayMouseMoved, StageToolOverlayClicked } from "../actions";
 import { Shortcut, ShortcutServiceState, createKeyboardShortcut } from "./shortcuts";
-import { 
+import {
   zoomInShortcutPressed,
   escapeShortcutPressed,
   deleteShortcutPressed,
   zoomOutShortcutPressed,
   toggleTextEditorPressed,
-  toggleLeftGutterPressed, 
-  toggleRightGutterPressed, 
+  toggleLeftGutterPressed,
+  toggleRightGutterPressed,
   fullScreenShortcutPressed,
   nextArtboardShortcutPressed,
   prevArtboardShortcutPressed,
@@ -125,7 +125,7 @@ export type LibraryItem = {
   icon?: string;
 
   // deterministic hash generated usually by file path to help
-  // file writer (when library item is dropped to the stage) identify the origin of the library item. 
+  // file writer (when library item is dropped to the stage) identify the origin of the library item.
   hash: string;
 };
 
@@ -222,11 +222,11 @@ export const removeWorkspaceSelection = (root: ApplicationState, workspaceId: st
 
 /**
  * Utility to ensure that workspace selection items are within the same window object. This prevents users from selecting
- * the _same_ element across different window objects. 
+ * the _same_ element across different window objects.
  */
 
 const deselectOutOfScopeWorkpaceSelection = (root: ApplicationState, workspaceId: string, ref: StructReference) => {
-  
+
   if (ref && ref[0] === SlimVMObjectType.ELEMENT) {
     return root;
   }
@@ -236,7 +236,7 @@ const deselectOutOfScopeWorkpaceSelection = (root: ApplicationState, workspaceId
   const workspace = getWorkspaceById(root, workspaceId);
   const updatedSelection: StructReference[] = [];
 
-  
+
   for (const selection of workspace.selectionRefs)   {
     if (getNestedObjectById(selection[1], artboard.document)) {
       updatedSelection.push(selection);
@@ -269,7 +269,7 @@ export const deselectNotFoundItems = (root: ApplicationState) => {
 
  // TODO UPDATRE ME
 const deselectRelatedWorkspaceSelection = (root: ApplicationState, workspaceId: string, ref: StructReference) => {
-  
+
   if (ref && ref[0] === SlimVMObjectType.ELEMENT) {
     return root;
   }
@@ -291,10 +291,10 @@ const deselectRelatedWorkspaceSelection = (root: ApplicationState, workspaceId: 
 // deselect unrelated refs, ensures that selection is not a child of existing one. etc.
 const cleanupWorkspaceSelection = (state: ApplicationState, workspaceId: string) => {
   const workspace = getWorkspaceById(state, workspaceId);
-  
+
   if (workspace.selectionRefs.length > 0) {
 
-    // use _last_ selected element since it's likely the one that was just clicked. Don't want to prevent the 
+    // use _last_ selected element since it's likely the one that was just clicked. Don't want to prevent the
     // user from doing so
     state = deselectOutOfScopeWorkpaceSelection(state, workspaceId, workspace.selectionRefs[workspace.selectionRefs.length - 1]);
     state = deselectRelatedWorkspaceSelection(state, workspaceId, workspace.selectionRefs[workspace.selectionRefs.length - 1]);
@@ -490,7 +490,7 @@ export const getWorkspaceItemBounds = weakMemo((value: any, workspace: Workspace
   } else {
     const artboard = getNodeArtboard((value as SlimBaseNode).id, workspace);
     return shiftBounds(getComputedNodeBounds(value.id, artboard), artboard.bounds);
-  } 
+  }
 });
 
 export const moveArtboardToBestPosition = (artboard: Artboard, state: ApplicationState) => {
@@ -706,54 +706,6 @@ export const selectWorkspace = (state: ApplicationState, selectedWorkspaceId: st
   selectedWorkspaceId,
 });
 
-export const getScaledMouseStagePosition = (state: ApplicationState, event: StageToolOverlayMouseMoved|StageToolOverlayClicked) => {
-  const { sourceEvent: { pageX, pageY, nativeEvent } } = event as StageToolOverlayMouseMoved;
-
-  const workspace = getSelectedWorkspace(state);
-  const stage     = workspace.stage;
-
-  const translate = getStageTranslate(stage);
-  
-  const scaledPageX = ((pageX - translate.left) / translate.zoom);
-  const scaledPageY = ((pageY - translate.top) / translate.zoom);
-  return { left: scaledPageX, top: scaledPageY };
-
-}
-
-export const getStageToolMouseNodeTargetReference = (state: ApplicationState, event: StageToolOverlayMouseMoved|StageToolOverlayClicked) => {
-  
-  const workspace = getSelectedWorkspace(state);
-  const stage     = workspace.stage;
-
-  const translate = getStageTranslate(stage);
-
-  const {left: scaledPageX, top: scaledPageY } = getScaledMouseStagePosition(state, event);
-
-  const artboard = stage.fullScreen ? getArtboardById(stage.fullScreen.artboardId, workspace) : workspace.artboards.find((artboard) => (
-    pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, artboard.bounds)
-  ));
-
-  if (!artboard) return null;
-
-  const mouseX = scaledPageX - artboard.bounds.left;
-  const mouseY = scaledPageY - artboard.bounds.top;
-
-  const computedInfo = artboard.computedDOMInfo || {};
-  const intersectingBounds: Bounds[] = [];
-  const intersectingBoundsMap = new Map<Bounds, string>();
-  for (const $id in computedInfo) {
-    const { bounds } = computedInfo[$id];
-    if (pointIntersectsBounds({ left: mouseX, top: mouseY }, bounds)) {
-      intersectingBounds.push(bounds);
-      intersectingBoundsMap.set(bounds, $id);
-    }
-  }
-
-  if (!intersectingBounds.length) return null;
-  const smallestBounds = getSmallestBounds(...intersectingBounds);
-  return [SlimVMObjectType.ELEMENT, intersectingBoundsMap.get(smallestBounds)] as [any, string];
-}
-
 export const serializeApplicationState = ({ workspaces, selectedWorkspaceId }: ApplicationState) => ({
   workspaces: workspaces.map(serializeWorkspace),
   selectedWorkspaceId
@@ -771,7 +723,7 @@ export const serializeWorkspace = (workspace: Workspace): Partial<Workspace> => 
   availableComponents: []
 });
 
-const serializeArtboard = ({ $id, $type, componentId, previewName, bounds }: Artboard): Artboard => ({ 
+const serializeArtboard = ({ $id, $type, componentId, previewName, bounds }: Artboard): Artboard => ({
   $id,
   $type,
   componentId,

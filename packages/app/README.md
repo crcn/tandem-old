@@ -1,9 +1,10 @@
 TODO:
 
-- web workers
-- workspace structure
-- vars <variable id="test" value="test" />
-- shove documents in iframe - call container
+- zoom
+- pixel grid
+- resizer
+- move elements around (persist)
+- layers pane
 - load dependency graph from file directory (scan for PC files)
 - load initial file based on file directory
 - start persisting changes to dependency graph

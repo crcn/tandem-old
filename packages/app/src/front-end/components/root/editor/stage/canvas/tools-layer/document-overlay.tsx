@@ -8,8 +8,8 @@ import { wrapEventToDispatch } from "front-end/utils";
 import { RootState, getActiveWindow } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
-import { SyntheticNode, SyntheticDocument, SyntheticWindow } from "paperclip";
-import { Bounds, memoize, getTreeNodeIdMap, TreeNodeIdMap, StructReference } from "common";
+import { SyntheticNode, SyntheticDocument, SyntheticWindow, getSyntheticNodeSourceNode, getSyntheticWindowDependency, getComponentInfo, Component } from "paperclip";
+import { Bounds, memoize, getTreeNodeIdMap, TreeNodeIdMap, StructReference, EMPTY_OBJECT } from "common";
 import { compose, pure, withHandlers } from "recompose";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { Dispatch } from "redux";
@@ -80,16 +80,20 @@ const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onP
     return null;
   }
 
+  if (!document.bounds) {
+    return null;
+  }
+
+  const bounds = document.bounds;
+
   // TODO - compute info based on content
   const style = {
-    // position: "absolute",
-    // left: document.bounds.left,
-    // top: document.bounds.top,
-    // width: document.bounds.right - document.bounds.left,
-    // height: document.bounds.bottom - document.bounds.top
+    position: "absolute",
+    left: bounds.left,
+    top: bounds.top,
+    width: bounds.right - bounds.left,
+    height: bounds.bottom - bounds.top
   };
-
-  console.log(document.root);
 
   return <div style={style as any}>
     <Hammer onPanStart={onPanStart} onPan={onPan} onPanEnd={onPanEnd} direction="DIRECTION_ALL">
@@ -148,10 +152,11 @@ export const  NodeOverlaysToolBase = ({ root, dispatch, zoom }: VisualToolsProp
   if (!activeWindow) {
     return null;
   }
+  const dependency = getSyntheticWindowDependency(activeWindow, root.browser.graph);
   return <div className="visual-tools-layer-component">
     {
       activeWindow.documents && activeWindow.documents.map((document, i) => {
-        return <ArtboardOverlayTools key={document.id} document={document} hoveringNodes={getHoveringSyntheticNodes(root, document)} dispatch={dispatch} zoom={zoom} />;
+        return <ArtboardOverlayTools key={document.id} document={document}  hoveringNodes={getHoveringSyntheticNodes(root, document)} dispatch={dispatch} zoom={zoom} />;
       })
     }
   </div>

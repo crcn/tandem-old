@@ -10,13 +10,22 @@ export type DocumentPreviewOuterProps = {
   dependency: Dependency;
 };
 
-type DocumentPreviewInnerProps = {  
+type DocumentPreviewInnerProps = {
 
 } & DocumentPreviewOuterProps;
 
-const BaseDocumentPreviewComponent = ({ document, dependency }) => {
-  const componentNode = getSyntheticNodeSourceNode(document.root, dependency.content);
-  const style = getAttribute(componentNode, "style", PREVIEW_NAMESPACE);
+const BaseDocumentPreviewComponent = ({ document }) => {
+  const bounds = document.bounds;
+  if (!bounds) {
+    return null;
+  }
+  const style = {
+    position: "absolute",
+    left: bounds.left,
+    top: bounds.top,
+    width: bounds.right - bounds.left,
+    height: bounds.bottom - bounds.top
+  } as any;
 
   return <div className="m-preview-document" style={style}>
     <div ref="container">
@@ -38,7 +47,9 @@ const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
     // },
     componentDidMount() {
       const container = this.refs.container as HTMLElement;
-      container.appendChild((this.props as DocumentPreviewOuterProps).document.container);
+      if (container) {
+        container.appendChild((this.props as DocumentPreviewOuterProps).document.container);
+      }
     }
   })
 );

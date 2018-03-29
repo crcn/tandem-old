@@ -15,6 +15,11 @@ export const CANVAS_TOOL_OVERLAY_MOUSE_PANNING = "CANVAS_TOOL_OVERLAY_MOUSE_PANN
 export const CANVAS_TOOL_OVERLAY_MOUSE_PAN_END = "CANVAS_TOOL_OVERLAY_MOUSE_PAN_END";
 export const CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED = "CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED";
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
+export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
+export const CANVAS_MOUSE_MOVED = "CANVAS_MOUSE_MOVED";
+export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
+export const CANVAS_WHEEL = "CANVAS_WHEEL";
+export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -51,6 +56,7 @@ export type CanvasToolOverlayMousePanStart = {
   artboardId: string;
 } & Action;
 
+
 export type CanvasToolOverlayMousePanning = {
   artboardId: string;
   deltaY: number;
@@ -68,6 +74,20 @@ export type CanvasToolOverlayClicked = {
 
 export type CanvasToolOverlayMouseMoved = {
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type CanvasWheel = {
+  canvasWidth: number;
+  canvasHeight: number;
+  type: string;
+  metaKey: boolean;
+  ctrlKey: boolean;
+  deltaX: number;
+  deltaY: number;
+} & Action;
+
+export type CanvasMounted = {
+  element: HTMLDivElement;
+} & Action;
 
 export const fileNavigatorItemClicked = (path: number[]): FileNavigatorItemClicked => ({
   path,
@@ -130,4 +150,36 @@ export const canvasToolOverlayMouseDoubleClicked = (artboardId: string, sourceEv
   artboardId,
   type: CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED,
   sourceEvent
+});
+
+
+export const canvasContainerMounted = (element: HTMLDivElement): CanvasMounted => ({
+  element,
+  type: CANVAS_MOUNTED,
+})
+
+export const canvasMouseMoved = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
+  sourceEvent,
+  type: CANVAS_MOUSE_MOVED,
+});
+
+export const canvasMouseClicked = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
+  sourceEvent,
+  type: CANVAS_MOUSE_CLICKED,
+});
+
+
+export const canvasWheel = (canvasWidth: number, canvasHeight: number, { metaKey, ctrlKey, deltaX, deltaY, clientX, clientY }: React.WheelEvent<any>): CanvasWheel => ({
+  metaKey,
+  canvasWidth,
+  canvasHeight,
+  ctrlKey,
+  deltaX,
+  deltaY,
+  type: CANVAS_WHEEL,
+});
+
+
+export const canvasMotionRested = () => ({
+  type: CANVAS_MOTION_RESTED
 });
