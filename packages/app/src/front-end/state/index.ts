@@ -1,11 +1,14 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds } from "common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo } from "paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
+import { uniq } from "lodash";
 
 export type Canvas = {
   mousePosition?: Point;
   movingOrResizing?: boolean;
+  panning?: boolean;
   translate: Translate;
+  secondarySelection?: boolean;
   fullScreen?: boolean;
 };
 
@@ -80,8 +83,7 @@ export const getScaledMouseCanvasPosition = (state: RootState, event: CanvasTool
   const scaledPageX = ((pageX - translate.left) / translate.zoom);
   const scaledPageY = ((pageY - translate.top) / translate.zoom);
   return { left: scaledPageX, top: scaledPageY };
-
-}
+};
 
 export const getCanvasMouseNodeTargetReference = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked): StructReference => {
 
@@ -120,5 +122,10 @@ export const getCanvasMouseNodeTargetReference = (state: RootState, event: Canva
   };
 }
 
+export const setSelection = (root: RootState, ...selectionIds: StructReference[]) => {
+  return updateRootState({
+    selectionReferences: uniq([...selectionIds])
+  }, root);
+};
 
 export * from "./constants";

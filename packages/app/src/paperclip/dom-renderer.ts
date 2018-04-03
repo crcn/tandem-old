@@ -16,10 +16,18 @@ export const renderDOM = (native: HTMLElement, synthetic: TreeNode, document: Do
 
   const nativeMap = {};
   native.appendChild(createNativeNode(synthetic, document, nativeMap));
-  return computeDisplayInfo(nativeMap, document);
+
+  return nativeMap;
 };
 
-const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Document): ComputedDisplayInfo => {
+export const waitForDOMReady = (map: SyntheticNativeNodeMap) => {
+  const loadableElements = Object.values(map).filter(element => /img/.test(element.nodeName)) as (HTMLImageElement)[];
+  return Promise.all(loadableElements.map(element => new Promise(resolve => {
+    element.onload = resolve;
+  })));
+};
+
+export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Document = window.document): ComputedDisplayInfo => {
   const computed: ComputedDisplayInfo = {};
 
   for (const id in map) {

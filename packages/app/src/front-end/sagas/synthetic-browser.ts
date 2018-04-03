@@ -1,7 +1,7 @@
 import { RootState, getActiveWindow } from "../state";
 import { fork, take, select, put, call, spawn } from "redux-saga/effects";
 import { PROJECT_LOADED, ProjectLoaded, syntheticWindowOpened, SyntheticWindowOpened, SYNTHETIC_WINDOW_OPENED, FILE_NAVIGATOR_ITEM_CLICKED, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, documentRendered } from "../actions";
-import { getSyntheticWindow, createSyntheticWindow, SyntheticWindow, renderDOM } from "paperclip";
+import { getSyntheticWindow, createSyntheticWindow, SyntheticWindow, renderDOM, computeDisplayInfo, waitForDOMReady } from "paperclip";
 import { eventChannel } from "redux-saga";
 
 export function* syntheticBrowserSaga() {
@@ -26,7 +26,9 @@ function* renderDocuments(window: SyntheticWindow) {
         return () => {};
       });
       yield take(doneChan);
-      const computedInfo = renderDOM(document.container.contentDocument.body, document.root);
+      const nativeMap = renderDOM(document.container.contentDocument.body, document.root);
+      yield call(waitForDOMReady, nativeMap);
+      const computedInfo = computeDisplayInfo(nativeMap);
       yield put(documentRendered(window.documents.indexOf(document), computedInfo, window));
     });
   }

@@ -87,7 +87,6 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
 export const createSyntheticDocument = (root: SyntheticNode, graph: DependencyGraph): SyntheticDocument => {
   const component = getSyntheticNodeSourceNode(root, graph);
 
-
   const container = document.createElement("iframe");
   container.style.border = "none";
   container.style.width = "100%";

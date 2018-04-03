@@ -1,8 +1,8 @@
 import { Action } from "redux";
 import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference } from "../state";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection } from "../state";
 import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow } from "paperclip";
-import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode } from "common";
+import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference } from "common";
 
 export const rootReducer = (state: RootState, action: Action) => {
   switch(action.type) {
@@ -92,33 +92,53 @@ export const rootReducer = (state: RootState, action: Action) => {
     };
 
     // TODO
-    // case CANVAS_MOUSE_CLICKED: {
-    //   const { sourceEvent } = action as CanvasToolOverlayClicked;
-    //   if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
-    //     return state;
-    //   }
+    case CANVAS_MOUSE_CLICKED: {
+      const { sourceEvent } = action as CanvasToolOverlayClicked;
+      if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
+        return state;
+      }
 
-    //   // alt key opens up a new link
-    //   const altKey = sourceEvent.altKey;
-    //   state = updateWorkspaceStageSmoothing(state, workspace);
+      state.canvas.movingOrResizing
 
-    //   // do not allow selection while window is panning (scrolling)
-    //   if (workspace.stage.panning || workspace.stage.movingOrResizing) return state;
+      // alt key opens up a new link
+      const altKey = sourceEvent.altKey;
+      // state = updateWorkspaceStageSmoothing(state, workspace);
 
-    //   const targetRef = getStageToolMouseNodeTargetReference(state, event as StageToolNodeOverlayClicked);
-    //   if (!targetRef) {
-    //     return state;
-    //   }
+      // do not allow selection while window is panning (scrolling)
+      if (state.canvas.panning || state.canvas.movingOrResizing) return state;
 
-    //   if (!altKey) {
-    //     state = handleArtboardSelectionFromAction(state, targetRef, event as StageToolNodeOverlayClicked);
-    //     state = updateWorkspaceStage(state, workspace.$id, {
-    //       secondarySelection: false
-    //     });
-    //     return state;
-    //   }
-    //   return state;
-    // }
+      const targetRef = getCanvasMouseNodeTargetReference(state, action as CanvasToolOverlayMouseMoved);
+
+      console.log(targetRef);
+      if (!targetRef) {
+        return state;
+      }
+
+      if (!altKey) {
+        state = handleArtboardSelectionFromAction(state, targetRef, action as CanvasToolOverlayMouseMoved);
+        state = updateCanvas({
+          secondarySelection: false
+        }, state);
+        return state;
+      }
+      return state;
+    }
   }
   return state;
 };
+
+const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: RootState, ref: StructReference, event: T) => {
+  const { sourceEvent } = event;
+  return setSelection(state, ref);
+}
+
+// const resizeFullScreenArtboard = (state: RootState, width: number, height: number) => {
+//   const workspace = getSelectedWorkspace(state);
+//   if (workspace.stage.fullScreen && workspace.stage.container) {
+
+//     // TODO - do not all getBoundingClientRect here. Dimensions need to be
+//     return updateArtboardSize(state, workspace.stage.fullScreen.artboardId, width, height);
+//   }
+//   return state;
+// }
+

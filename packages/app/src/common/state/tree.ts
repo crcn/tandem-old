@@ -76,7 +76,7 @@ export const getTreeNodeIdMap = memoize((current: TreeNode): TreeNodeIdMap => {
   const map = {
     [current.id]: current
   };
-  Object.assign(map, current.children.map(getTreeNodeIdMap));
+  Object.assign(map, ...current.children.map(getTreeNodeIdMap));
   return map;
 });
 

@@ -48,7 +48,7 @@ const evaluateComponentPreview = (component: Component, module: Module, id: stri
 
 const evaluateComponent = (component: Component, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
   const ext = component.extends || DEFAULT_EXTENDS;
-  
+
   let template = component.template;
 
   const slots = {};
@@ -61,12 +61,11 @@ const evaluateComponent = (component: Component, attributes: TreeNodeAttributes,
     slots[slotName].push(child);
   }
 
-
   if (template) {
     template = overrideComponentTemplate(template, overrides);
   }
 
-  const syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, checksum + i, checksum, dependency, graph, slots)) : EMPTY_ARRAY;
+  const syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)) : EMPTY_ARRAY;
 
   const syntheticAttributes = {
     ...attributes,
@@ -88,7 +87,7 @@ const evaluateComponent = (component: Component, attributes: TreeNodeAttributes,
       return evaluateComponent(extendsComponent, syntheticAttributes, syntheticChildren, source, id, extendsFromModule, checksum, extendsFromDependency, graph, component.overrides);
     }
   }
-  
+
   // TODO - pass slots down
   // TODO - check for existing component extends:importName="component"
   return createSyntheticElement(ext.tagName, syntheticAttributes, syntheticChildren, source, id);
@@ -112,7 +111,7 @@ const overrideComponentTemplate = (template: TreeNode, overrides: ComponentOverr
           ...parent,
           children: arraySplice(parent.children, index, 0, insertNodeOverride.child)
         };
-      });      
+      });
     } else if (override.type === ComponentOverrideType.SET_ATTRIBUTE) {
       const setAttributeOverride = override as SetAttributeOverride;
       const ref = getNodeReference(setAttributeOverride.target, template);

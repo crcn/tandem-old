@@ -35,7 +35,9 @@ const TEST_FILES = {
     <module>
       <component id="test" preview:bounds="left: 0; right: 100; top: 0; bottom: 100">
         <template style="font-family: Helvetica; background-color: red; color: white; padding: 20px; border-radius: 10px;">
-          <text ref="hello" value="helloaa==" />
+          <div style="background: blue; padding: 20px;">
+            <text ref="hello" value="helloaa==" />
+          </div>
         </template>
       </component>
       <component id="test2" extends="test" preview:bounds="left: 100; right: 200; top: 0; bottom: 100">
