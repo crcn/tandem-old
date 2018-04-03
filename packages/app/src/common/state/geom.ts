@@ -257,6 +257,7 @@ export const centerTransformZoom = (translate: Translate, bounds: Bounds, nz: nu
   };
 };
 
+
 export const boundsIntersect = (a: Bounds, b: Bounds) => !(a.left > b.right || a.right < b.left || a.top > b.bottom || a.bottom < a.top);
 export const pointIntersectsBounds = (point: Point, bounds: Bounds) => !(point.left < bounds.left || point.left > bounds.right || point.top < bounds.top || point.top > bounds.bottom);
 export const getSmallestBounds = (...bounds: Bounds[]) => bounds.reduce((a, b) => {

@@ -1,4 +1,4 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds } from "common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded } from "common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo } from "paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq } from "lodash";
@@ -127,5 +127,20 @@ export const setSelection = (root: RootState, ...selectionIds: StructReference[]
     selectionReferences: uniq([...selectionIds])
   }, root);
 };
+
+export const getWorkspaceReference = (ref: StructReference, root: RootState) => {
+
+
+  // if (ref[0] === ARTBOARD) {
+  //   return getArtboardById(ref[1], workspace);
+  // }
+  // const artboard = getNodeArtboard(ref[1], workspace);
+  // return artboard && getNestedObjectById(ref[1], artboard.document);
+};
+
+export const getBoundedSelection = memoize((root: RootState): Array<Bounded & Struct> => root.selectionReferences.map((ref) => getWorkspaceReference(ref, workspace)).filter(item => getWorkspaceItemBounds(item, workspace)) as any);
+
+export const getSelectionBounds = memoize((root: RootState) => mergeBounds(...getBoundedWorkspaceSelection(workspace).map(boxed => getWorkspaceItemBounds(boxed, workspace))));
+
 
 export * from "./constants";

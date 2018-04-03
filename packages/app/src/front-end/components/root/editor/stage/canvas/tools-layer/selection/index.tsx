@@ -7,6 +7,7 @@ import { SelectionLabel } from "./label";
 // import { Workspace, getBoundedWorkspaceSelection, getWorkspaceItemBounds } from "front-end/state";
 // import { selectorDoubleClicked } from "front-end/actions";
 import { Dispatch } from "redux";
+import { RootState } from "front-end/state";
 
 export type SelectionOuterProps = {
   dispatch: Dispatch<any>;
@@ -18,7 +19,7 @@ export type SelectionInnerProps = {
   onDoubleClick(event: React.MouseEvent<any>);
 } & SelectionOuterProps;
 
-const  SelectionBounds = ({ workspace, zoom }: { workspace: Workspace, zoom: number }) => {
+const  SelectionBounds = ({ workspace, zoom }: { root: RootState, zoom: number }) => {
   const selection = getBoundedWorkspaceSelection(workspace);
   const entireBounds = mergeBounds(...selection.map(value => getWorkspaceItemBounds(value, workspace)));
   const style = {};

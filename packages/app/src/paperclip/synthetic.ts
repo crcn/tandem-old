@@ -126,3 +126,19 @@ export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: Depe
 export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
 
 export const getSyntheticDocumentComponent = (document: SyntheticDocument, graph: DependencyGraph) =>  getSyntheticNodeSourceNode(document.root, graph)
+
+
+// export const getNodeDocument = memoize((nodeId: string, state: Workspace|ApplicationState): Artboard => {
+//   if (state.$type === WORKSPACE) {
+//     return (state as Workspace).artboards.find((artboard) => {
+//       return artboard.document && Boolean(getNestedObjectById(nodeId, artboard.document));
+//     })
+//   } else {
+//     for (const workspace of (state as ApplicationState).workspaces) {
+//       const artboard = getNodeArtboard(nodeId, workspace);
+//       if (artboard) {
+//         return artboard;
+//       }
+//     }
+//   }
+// });
