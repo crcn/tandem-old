@@ -1,16 +1,26 @@
 TODO:
 
-- zoom
-- pixel grid
 - resizer
 - move elements around (persist)
+- multi-select elements
+- style pane
+  - background color
+  - position
+  - size
+- insert new elements
 - layers pane
+  - move elements around
 - navigator pane
 - load dependencies from other files
 - load dependency graph from file directory (scan for PC files)
 - load initial file based on file directory
 - start persisting changes to dependency graph
 
+
+POLISH:
+
+- zoom
+- pixel grid
 IMMEDIATE:
 
 - [ ] web workers for editing files
