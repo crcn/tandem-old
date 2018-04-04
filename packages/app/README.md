@@ -1,8 +1,10 @@
 TODO:
 
-- remove *Component from name
 - resizer
-- move elements around (persist)
+  - move elements around
+  - resize elements
+  - respect position, and padding info (need to TEST this)
+
 - multi-select elements
 - style pane
   - background color
@@ -18,10 +20,12 @@ TODO:
 - start persisting changes to dependency graph
 
 
-POLISH:
+POLISH (after MVP):
 
 - zoom
 - pixel grid
+- remove *Component from name
+
 IMMEDIATE:
 
 - [ ] web workers for editing files
