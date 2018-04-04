@@ -9,6 +9,7 @@ import { SyntheticWindow } from "paperclip";
 import { RootState, getActiveWindow } from "front-end/state";
 import { SelectableToolsComponent } from "./selectables";
 import { NodeOverlaysTool } from "./document-overlay";
+import { SelectionStageTool } from "./selection";
 
 export type ToolsLayerComponent = {
   root: RootState;
@@ -21,6 +22,7 @@ const BaseToolsLayerComponent = ({ root, zoom, dispatch }: ToolsLayerComponent) 
   return <div className="m-tools-layer">
     <NodeOverlaysTool root={root} zoom={zoom} dispatch={dispatch} />
     { activeWindow && <SelectableToolsComponent documents={activeWindow.documents} /> }
+    <SelectionStageTool root={root} dispatch={dispatch} zoom={zoom} />
   </div>;
 };
 

@@ -2,14 +2,15 @@ import "./resizer.scss";
 import React =  require("react");
 import { debounce } from "lodash";
 import { pure, compose, withHandlers } from "recompose";
-import { Workspace, getBoundedWorkspaceSelection, getStageZoom, getWorkspaceSelectionBounds, getStageTranslate } from "front-end/state";
+import { RootState, getBoundedSelection, getSelectionBounds } from "front-end/state";
 import { resizerMoved, resizerStoppedMoving, resizerMouseDown } from "front-end/actions";
-import { startDOMDrag, Dispatcher, mergeBounds, moveBounds } from "aerial-common2";
+import { startDOMDrag, mergeBounds, moveBounds } from "common";
+import { Dispatch } from "redux";
 import { Path } from "./path";
 
 export type ResizerOuterProps = {
-  dispatch: Dispatcher<any>;
-  workspace: Workspace;
+  dispatch: Dispatch<any>;
+  root: RootState;
   zoom: number;
 }
 
@@ -21,9 +22,9 @@ const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS       = 4;
 
 
-export const ResizerBase = ({ workspace, dispatch, onMouseDown, zoom }: ResizerInnerProps) => {
+export const ResizerBase = ({ root, dispatch, onMouseDown, zoom }: ResizerInnerProps) => {
 
-  const bounds = getWorkspaceSelectionBounds(workspace);
+  const bounds = getSelectionBounds(root);
 
   // offset stroke
   const resizerStyle = {
@@ -56,7 +57,7 @@ export const ResizerBase = ({ workspace, dispatch, onMouseDown, zoom }: ResizerI
       <Path
         zoom={zoom}
         points={points}
-        workspace={workspace}
+        root={root}
         bounds={bounds}
         strokeWidth={POINT_STROKE_WIDTH}
         dispatch={dispatch}
@@ -69,17 +70,17 @@ export const ResizerBase = ({ workspace, dispatch, onMouseDown, zoom }: ResizerI
 const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   pure,
   withHandlers({
-    onMouseDown: ({ dispatch, workspace }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
-      
-      const translate = getStageTranslate(workspace.stage);
-      const bounds = getWorkspaceSelectionBounds(workspace);
+    onMouseDown: ({ dispatch, root }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
+
+      const translate = root.canvas.translate;
+      const bounds = getSelectionBounds(root);
       const translateLeft = translate.left;
       const translateTop  = translate.top;
       const onStartDrag = (event) => {
-        dispatch(resizerMouseDown(workspace.$id, event));
+        dispatch(resizerMouseDown(event));
       };
       const onDrag = (event2, { delta }) => {
-        dispatch(resizerMoved(workspace.$id, {
+        dispatch(resizerMoved({
           left: bounds.left + delta.x / translate.zoom,
           top: bounds.top + delta.y / translate.zoom,
         }));
@@ -88,7 +89,7 @@ const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
       // debounce stopped moving so that it beats the stage click event
       // which checks for moving or resizing state.
       const onStopDrag = debounce(() => {
-        dispatch(resizerStoppedMoving(workspace.$id, null));
+        dispatch(resizerStoppedMoving(null));
       }, 0);
 
       startDOMDrag(event, onStartDrag, onDrag, onStopDrag);

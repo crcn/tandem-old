@@ -102,14 +102,12 @@ export const rootReducer = (state: RootState, action: Action) => {
 
       // alt key opens up a new link
       const altKey = sourceEvent.altKey;
-      // state = updateWorkspaceStageSmoothing(state, workspace);
 
       // do not allow selection while window is panning (scrolling)
       if (state.canvas.panning || state.canvas.movingOrResizing) return state;
 
       const targetRef = getCanvasMouseNodeTargetReference(state, action as CanvasToolOverlayMouseMoved);
 
-      console.log(targetRef);
       if (!targetRef) {
         return state;
       }

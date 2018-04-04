@@ -3,11 +3,8 @@ import { ApplicationState, AvailableComponent, Artboard } from "../state";
 import { SlimParentNode, ComputedDOMInfo, DOMNodeMap, NativeObjectMap, SlimBaseNode, SlimCSSAtRule, SlimWindow, SlimCSSGroupingRule, SlimCSSRule, SlimCSSStyleDeclaration, SlimCSSStyleRule, SlimCSSStyleSheet, SlimElement, SlimElementAttribute, SlimFontFace, SlimFragment } from "slim-dom";
 import { Mutation } from "source-mutation";
 
-export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const LOADED_SAVED_STATE          = "LOADED_SAVED_STATE";
 export const TRIED_LOADING_APP_STATE    = "TRIED_LOADING_APP_STATE";
-export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
-export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
 export const ARTBOARD_PANE_ROW_CLICKED     = "ARTBOARD_PANE_ROW_CLICKED";
 export const PROMPTED_NEW_WINDOW_URL     = "PROMPTED_NEW_WINDOW_URL";
 export const KEYBOARD_SHORTCUT_ADDED     = "KEYBOARD_SHORTCUT_ADDED";
@@ -28,8 +25,6 @@ export const FULL_SCREEN_TARGET_DELETED = "FULL_SCREEN_TARGET_DELETED";
 export const TOGGLE_TEXT_EDITOR_PRESSED  = "TOGGLE_TEXT_EDITOR_PRESSED";
 export const TOGGLE_LEFT_GUTTER_PRESSED  = "TOGGLE_LEFT_GUTTER_PRESSED";
 export const TOGGLE_RIGHT_GUTTER_PRESSED = "TOGGLE_RIGHT_GUTTER_PRESSED";
-export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
-export const RESIZER_PATH_MOUSE_STOPPED_MOVING = "RESIZER_PATH_MOUSE_STOPPED_MOVING";
 export const TEXT_EDITOR_CHANGED      = "TEXT_EDITOR_CHANGED";
 export const CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED = "CANVAS_ELEMENTS_COMPUTED_PROPS_CHANGED";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
@@ -101,15 +96,6 @@ export const DND_ENDED = "DND_ENDED";
 export const DND_HANDLED = "DND_HANDLED";
 export const EXCEPTION_CAUGHT = "EXCEPTION_CAUGHT";
 
-export type ResizerMoved = {
-  point: Point;
-  workspaceId: string;
-} & BaseEvent;
-
-export type ResizerMouseDown = {
-  workspaceId: string;
-} & WrappedEvent<React.MouseEvent<any>>;
-
 export type TreeNodeLabelClicked = {
   node: TreeNode<any>
 } & BaseEvent;
@@ -138,13 +124,6 @@ export type ShortcutEvent = {
   type: string
 } & BaseKeyboardEvent<KeyboardEvent>;
 
-export type ResizerPathMoved = {
-  originalBounds: Bounds;
-  newBounds: Bounds;
-  anchor: Point;
-  workspaceId: string;
-} & WrappedEvent<MouseEvent>;
-
 export type LoadedSavedState = {
   state: ApplicationState;
 } & BaseEvent;
@@ -158,10 +137,6 @@ export type ExceptionCaught = {
     message: string
   };
 } & BaseEvent;
-
-export type ResizerPathStoppedMoving = {
-  workspaceId: string;
-} & WrappedEvent<React.MouseEvent<any>>;
 
 export type StageWillArtboardTitleClicked = {
   artboardId: string;
@@ -422,11 +397,6 @@ export const cssToggleDeclarationEyeClicked = (artboardId: string, itemId: strin
 });
 
 
-export const resizerMoved = (workspaceId: string, point: Point): ResizerMoved => ({
-  workspaceId,
-  point,
-  type: RESIZER_MOVED,
-});
 
 export const bannerClosed = () => ({
   type: BANNER_CLOSED
@@ -573,12 +543,6 @@ export const cssDeclarationTitleMouseLeave = (ruleId: string, artboardId: string
   type: CSS_DECLARATION_TITLE_MOUSE_LEAVE
 });
 
-export const resizerStoppedMoving = (workspaceId: string, point: Point): ResizerMoved => ({
-  workspaceId,
-  point,
-  type: RESIZER_STOPPED_MOVING,
-});
-
 export const breadcrumbItemClicked = (nodeId: string, artboardId: string): BreadcrumbItemClicked => ({
   nodeId,
   artboardId,
@@ -602,11 +566,7 @@ export const artboardSelectionShifted = (artboardId: string): ArtboardSelectionS
   type: ARTBOARD_SELECTION_SHIFTED,
 });
 
-export const resizerMouseDown = (workspaceId: string, sourceEvent: React.MouseEvent<any>): ResizerMouseDown => ({
-  workspaceId,
-  sourceEvent,
-  type: RESIZER_MOUSE_DOWN,
-});
+
 
 export const stageToolOverlayMouseLeave = (sourceEvent: React.MouseEvent<any>): StageToolOverlayMouseMoved => ({
   type: STAGE_TOOL_OVERLAY_MOUSE_LEAVE,
@@ -665,21 +625,6 @@ export const selectorDoubleClicked = (item: Struct, sourceEvent: React.MouseEven
   item,
   type: SELECTOR_DOUBLE_CLICKED,
   sourceEvent
-});
-
-export const resizerPathMoved = (workspaceId: string, anchor: Point, originalBounds: Bounds, newBounds: Bounds, sourceEvent: MouseEvent): ResizerPathMoved => ({
-  type: RESIZER_PATH_MOUSE_MOVED,
-  workspaceId,
-  anchor,
-  originalBounds,
-  newBounds,
-  sourceEvent,
-});
-
-export const resizerPathStoppedMoving = (workspaceId: string, sourceEvent): ResizerPathStoppedMoving => ({
-  type: RESIZER_PATH_MOUSE_STOPPED_MOVING,
-  workspaceId,
-  sourceEvent: {...sourceEvent}
 });
 
 export const artboardPaneRowClicked = (artboardId: string, sourceEvent: React.MouseEvent<any>): ArtboardPaneRowClicked => ({

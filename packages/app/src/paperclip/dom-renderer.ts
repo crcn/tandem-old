@@ -35,7 +35,7 @@ export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Docume
     if (node.nodeType === 1) {
       computed[id] = {
         style: window.getComputedStyle(node as HTMLElement),
-        rect: (node as HTMLElement).getBoundingClientRect(),
+        bounds: (node as HTMLElement).getBoundingClientRect(),
       };
     }
   }

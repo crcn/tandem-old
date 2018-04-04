@@ -1,5 +1,6 @@
 TODO:
 
+- remove *Component from name
 - resizer
 - move elements around (persist)
 - multi-select elements

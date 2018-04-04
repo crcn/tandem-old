@@ -35,7 +35,7 @@ const TEST_FILES = {
     <module>
       <component id="test" preview:bounds="left: 0; right: 100; top: 0; bottom: 100">
         <template style="font-family: Helvetica; background-color: red; color: white; padding: 20px; border-radius: 10px;">
-          <div style="background: blue; padding: 20px;">
+          <div style="background: blue; padding: 20px;" ref="bg">
             <text ref="hello" value="helloaa==" />
           </div>
         </template>
@@ -56,6 +56,7 @@ const TEST_FILES = {
         <overrides>
           <set-attribute target="hello" name="value" value="blarg" />
           <set-style name="background-color" value="blue" />
+          <set-style target="bg" name="background-color" value="green" />
         </overrides>
       </component>
     </module>

@@ -1,8 +1,8 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute } from "../common/state/tree";
-import { arraySplice, generateId, parseStyle } from "../common/utils";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap } from "../common/state/tree";
+import { arraySplice, generateId, parseStyle, memoize } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo } from "./dsl";
 import { renderDOM } from "./dom-renderer";
-import { Bounds } from "../common";
+import { Bounds, Struct, shiftBounds } from "../common";
 import { mapValues } from "lodash";
 
 export enum SyntheticObjectType {
@@ -18,7 +18,7 @@ export type SyntheticObject = {
 
 export type ComputedDisplayInfo = {
   [identifier: string]: {
-    rect: ClientRect;
+    bounds: ClientRect;
     style: CSSStyleDeclaration;
   }
 };
@@ -127,18 +127,46 @@ export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: Dep
 
 export const getSyntheticDocumentComponent = (document: SyntheticDocument, graph: DependencyGraph) =>  getSyntheticNodeSourceNode(document.root, graph)
 
+export const findSyntheticDocument = (state: SyntheticWindow|SyntheticBrowser, test: (document: SyntheticDocument) => Boolean) => {
+  if (state.type === SyntheticObjectType.BROWSER) {
+    for (const window of (state as SyntheticBrowser).windows) {
+      const document = findSyntheticDocument(window, test);
+      if (document) {
+        return document;
+      }
+    }
+    return null
+  } else {
+    const window = state as SyntheticWindow;
+    if (window.documents) {
+      for (const document of window.documents) {
+        if (test(document)) {
+          return document;
+        }
+      }
+      return null;
+    }
+  }
+};
 
-// export const getNodeDocument = memoize((nodeId: string, state: Workspace|ApplicationState): Artboard => {
-//   if (state.$type === WORKSPACE) {
-//     return (state as Workspace).artboards.find((artboard) => {
-//       return artboard.document && Boolean(getNestedObjectById(nodeId, artboard.document));
-//     })
-//   } else {
-//     for (const workspace of (state as ApplicationState).workspaces) {
-//       const artboard = getNodeArtboard(nodeId, workspace);
-//       if (artboard) {
-//         return artboard;
-//       }
-//     }
-//   }
-// });
+export const getComputedNodeBounds = memoize((nodeId: string, document: SyntheticDocument) => {
+  const info = document.computed;
+  return info[nodeId] && info[nodeId].bounds;
+});
+
+export const getSyntheticItemBounds = memoize((value: any, browser: SyntheticBrowser) => {
+  if (!value) {
+    return null;
+  }
+  if ((value as SyntheticDocument).type === SyntheticObjectType.DOCUMENT) {
+    return (value as SyntheticDocument).bounds;
+  } else {
+
+    const document = getSyntheticNodeDocument((value as SyntheticNode).id, browser);
+    return shiftBounds(getComputedNodeBounds(value.id, document), document.bounds);
+  }
+});
+
+export const getSyntheticDocumentById = memoize((documentId: string, state: SyntheticWindow|SyntheticBrowser) => findSyntheticDocument(state, document => document.id === documentId));
+
+export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => Boolean(getNestedTreeNodeById(nodeId, document.root))));

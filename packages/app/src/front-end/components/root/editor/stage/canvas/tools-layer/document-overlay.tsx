@@ -106,7 +106,7 @@ const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onP
           zoom={zoom}
           key={node.id}
           node={node}
-          bounds={document.computed[node.id] && document.computed[node.id].rect}
+          bounds={document.computed[node.id] && document.computed[node.id].bounds}
           dispatch={dispatch}
           hovering={true} />)
       }

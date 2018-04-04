@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { Directory, Point } from "common";
+import { Directory, Point, Bounds, Struct } from "common";
 import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo } from "paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
@@ -20,6 +20,12 @@ export const CANVAS_MOUSE_MOVED = "CANVAS_MOUSE_MOVED";
 export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
 export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
+export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
+export const RESIZER_PATH_MOUSE_STOPPED_MOVING = "RESIZER_PATH_MOUSE_STOPPED_MOVING";
+export const RESIZER_MOVED               = "RESIZER_MOVED";
+export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
+export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
+export const SELECTOR_DOUBLE_CLICKED  = "SELECTOR_DOUBLE_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -88,6 +94,26 @@ export type CanvasWheel = {
 export type CanvasMounted = {
   element: HTMLDivElement;
 } & Action;
+
+export type ResizerPathMoved = {
+  originalBounds: Bounds;
+  newBounds: Bounds;
+  anchor: Point;
+} & WrappedEvent<MouseEvent>;
+
+export type ResizerMoved = {
+  point: Point;
+} & Action;
+
+export type ResizerMouseDown = {
+} & WrappedEvent<React.MouseEvent<any>>;
+
+export type ResizerPathStoppedMoving = {
+} & WrappedEvent<React.MouseEvent<any>>;
+
+export type SelectorDoubleClicked = {
+  item: Struct;
+} & WrappedEvent<React.MouseEvent<any>>;
 
 export const fileNavigatorItemClicked = (path: number[]): FileNavigatorItemClicked => ({
   path,
@@ -183,3 +209,41 @@ export const canvasWheel = (canvasWidth: number, canvasHeight: number, { metaKey
 export const canvasMotionRested = () => ({
   type: CANVAS_MOTION_RESTED
 });
+
+
+export const resizerPathMoved = (anchor: Point, originalBounds: Bounds, newBounds: Bounds, sourceEvent: MouseEvent): ResizerPathMoved => ({
+  type: RESIZER_PATH_MOUSE_MOVED,
+  anchor,
+  originalBounds,
+  newBounds,
+  sourceEvent,
+});
+
+export const resizerPathStoppedMoving = (sourceEvent): ResizerPathStoppedMoving => ({
+  type: RESIZER_PATH_MOUSE_STOPPED_MOVING,
+  sourceEvent: {...sourceEvent}
+});
+
+export const resizerMoved = (point: Point): ResizerMoved => ({
+  point,
+  type: RESIZER_MOVED,
+});
+
+export const resizerStoppedMoving = (point: Point): ResizerMoved => ({
+  point,
+  type: RESIZER_STOPPED_MOVING,
+});
+
+
+export const resizerMouseDown = (sourceEvent: React.MouseEvent<any>): ResizerMouseDown => ({
+  sourceEvent,
+  type: RESIZER_MOUSE_DOWN,
+});
+
+export const selectorDoubleClicked = (item: Struct, sourceEvent: React.MouseEvent<any>): SelectorDoubleClicked => ({
+  item,
+  type: SELECTOR_DOUBLE_CLICKED,
+  sourceEvent
+});
+
+

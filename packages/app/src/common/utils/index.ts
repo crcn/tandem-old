@@ -5,3 +5,4 @@ export * from "./object";
 export * from "./xml";
 export * from "./struct";
 export * from "./iframe";
+export * from "./dnd";

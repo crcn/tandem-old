@@ -101,6 +101,10 @@ export const getTreeNodeFromPath = memoize(<TNode extends TreeNode>(path: number
   return current;
 });
 
+export const getNestedTreeNodeById = memoize(<TNode extends TreeNode>(id: string, root: TNode) => {
+  return getTreeNodeIdMap(root)[id];
+});
+
 export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)))
 
 export const removeNestedTreeNode = (nestedChild: TreeNode, current: TreeNode) => removeNestedTreeNodeFromPath(getTeeNodePath(nestedChild, current), current);
