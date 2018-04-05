@@ -1,5 +1,7 @@
 TODO:
 
+- persist preview changes
+
 - resizer
   - move elements around
   - resize elements

@@ -1,16 +1,16 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap } from "../common/state/tree";
-import { arraySplice, generateId, parseStyle, memoize } from "../common/utils";
-import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo } from "./dsl";
-import { renderDOM } from "./dom-renderer";
-import { Bounds, Struct, shiftBounds } from "../common";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE } from "../common/state/tree";
+import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT } from "../common/utils";
+import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency } from "./dsl";
+import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
+import { Bounds, Struct, shiftBounds, StructReference, Point } from "../common";
 import { mapValues } from "lodash";
+import { createSetAttributeTransform, OperationalTransform } from "../common/utils/tree";
 
 export enum SyntheticObjectType {
   BROWSER,
   WINDOW,
   DOCUMENT,
-  ELEMENT,
-  TEXT_NODE
+  ELEMENT
 };
 
 export type SyntheticObject = {
@@ -38,9 +38,13 @@ export type SyntheticWindow = {
 
 export type SyntheticDocument = {
   id: string;
+
+  // transforms from current state
+  transforms?: OperationalTransform[];
   type: SyntheticObjectType;
   root: SyntheticNode;
   container: HTMLIFrameElement;
+  nativeNodeMap?: any;
   computed?: ComputedDisplayInfo;
   bounds?: Bounds;
 }
@@ -124,6 +128,7 @@ export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency):
 export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: DependencyGraph) => getTreeNodeFromPath(synthetic.source.path, graph[synthetic.source.uri].content);
 
 export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
+export const getSyntheticDocumentDependency = (documentId: string, browser: SyntheticBrowser) => getSyntheticWindowDependency(getSyntheticDocumentWindow(documentId, browser), browser.graph);
 
 export const getSyntheticDocumentComponent = (document: SyntheticDocument, graph: DependencyGraph) =>  getSyntheticNodeSourceNode(document.root, graph)
 
@@ -166,6 +171,100 @@ export const getSyntheticItemBounds = memoize((value: any, browser: SyntheticBro
     return shiftBounds(getComputedNodeBounds(value.id, document), document.bounds);
   }
 });
+
+export const getSyntheticDocumentWindow = memoize((documentId: string, browser: SyntheticBrowser) => browser.windows.find(window => Boolean((window.documents || EMPTY_ARRAY).find(document => document.id === documentId))));
+
+const updateSyntheticDocument = (properties: Partial<SyntheticDocument>, documentId: string, browser: SyntheticBrowser) => {
+  const window = getSyntheticDocumentWindow(documentId, browser);
+  const document = getSyntheticDocumentById(documentId, window);
+  return updateSyntheticWindow(window.location, {
+    documents: arraySplice(window.documents, window.documents.indexOf(document), 1, {
+      ...document,
+      ...properties
+    })
+  }, browser);
+}
+
+const applyDocumentElementTransforms = (transforms: OperationalTransform[], documentId: string, browser: SyntheticBrowser) => {
+  const document: SyntheticDocument = getSyntheticDocumentById(documentId, browser);
+  patchDOM(transforms, document.container.contentDocument.body.children[0] as HTMLElement);
+  return updateSyntheticDocument({
+    computed: computeDisplayInfo(document.nativeNodeMap)
+  }, document.id, browser);
+};
+
+const updateSyntheticItem = <TItem>(properties: Partial<TItem>, ref: StructReference<any>, browser: SyntheticBrowser) => {
+  if (ref.type === SyntheticObjectType.DOCUMENT) {
+    const document = getSyntheticDocumentById(ref.id, browser);
+    throw new Error("TODO - modify document, and source");
+  }
+  const document = getSyntheticNodeDocument(ref.id, browser);
+  const item = getNestedTreeNodeById(ref.id, document.root) as SyntheticNode;
+  const itemPath = getTeeNodePath(item, document.root);
+
+  const transforms: OperationalTransform[] = [];
+
+  const props: Partial<TreeNode> = properties;
+
+  if (props.attributes) {
+    for (const namespace in props.attributes) {
+      for (const name in props.attributes[namespace]) {
+        const value = props.attributes[namespace][name];
+        if (getAttribute(item, name, namespace) === value) continue;
+        transforms.push(createSetAttributeTransform(itemPath, name, namespace, value));
+      }
+    }
+  }
+
+  browser = applyDocumentElementTransforms(transforms, document.id, browser);
+
+  // TODO - patch synthetic document with OTs
+
+  return browser;
+};
+
+export const updateSyntheticNodeAttributes = (name: string, namespace: string, value: any, ref: StructReference<SyntheticObjectType.ELEMENT>, browser: SyntheticBrowser) => {
+  const node = getSyntheticNodeById(ref.id, browser);
+
+  return updateSyntheticItem({
+    attributes: {
+      [namespace]: {
+        ...(node.attributes[namespace] || EMPTY_OBJECT),
+        [name]: value
+      }
+    }
+  }, ref, browser);
+};
+
+export const updateSyntheticNodeStyle = (style: any, ref: StructReference<SyntheticObjectType.ELEMENT>, browser: SyntheticBrowser) => {
+  const node = getSyntheticNodeById(ref.id, browser);
+  const oldStyle = getAttribute(node, "style") || EMPTY_OBJECT;
+
+  return updateSyntheticNodeAttributes("style", DEFAULT_NAMESPACE, {
+    ...oldStyle,
+    ...style,
+  }, ref, browser);
+};
+
+export const getSyntheticNodeById = (nodeId: string, browser: SyntheticBrowser) => {
+  const document = getSyntheticNodeDocument(nodeId, browser);
+  return getNestedTreeNodeById(nodeId, document.root);
+};
+
+
+export const updateSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
+  if (ref.type === SyntheticObjectType.DOCUMENT) {
+    throw new Error("NOT DONE");
+  } else {
+    const node = getSyntheticNodeById(ref.id, browser);
+    const style = getAttribute(node, "style") || EMPTY_OBJECT;
+    return updateSyntheticNodeStyle({
+      position: style.position || "relative",
+      left: position.left,
+      top: position.top
+    }, ref, browser);
+  }
+};
 
 export const getSyntheticDocumentById = memoize((documentId: string, state: SyntheticWindow|SyntheticBrowser) => findSyntheticDocument(state, document => document.id === documentId));
 

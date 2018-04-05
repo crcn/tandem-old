@@ -1,8 +1,8 @@
 import { Action } from "redux";
-import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection } from "../state";
-import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow } from "paperclip";
-import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference } from "common";
+import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING } from "../actions";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition } from "../state";
+import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow } from "paperclip";
+import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds } from "common";
 
 export const rootReducer = (state: RootState, action: Action) => {
   switch(action.type) {
@@ -38,42 +38,42 @@ export const rootReducer = (state: RootState, action: Action) => {
       }, state);
     }
     case DOCUMENT_RENDERED: {
-      const { info, documentIndex, window } = action as DocumentRendered;
-      const win = getSyntheticWindow(window.location, state.browser);
-      return updateRootStateSyntheticWindowDocument(window.location, documentIndex, {
+      const { info, documentId, nativeMap } = action as DocumentRendered;
+      return updateRootStateSyntheticWindowDocument(documentId, {
+        nativeNodeMap: nativeMap,
         computed: info
       }, state);
     }
 
-    // TODO
-    //  case RESIZER_MOVED: {
-    //   const { point, workspaceId, point: newPoint } = event as ResizerMoved;
-    //   const workspace = getSelectedWorkspace(state);
-    //   state = updateWorkspaceStage(state, workspace.$id, {
-    //     movingOrResizing: true
-    //   });
+    case RESIZER_MOUSE_DOWN: {
+      return state;
+    }
 
-    //   const translate = getStageTranslate(workspace.stage);
+    case RESIZER_MOVED: {
+      const { point, point: newPoint } = action as ResizerMoved;
+      state = updateCanvas({
+        movingOrResizing: true
+      }, state);
 
-    //   const selectionBounds = getWorkspaceSelectionBounds(workspace);
-    //   for (const item of getBoundedWorkspaceSelection(workspace)) {
-    //     const itemBounds = getWorkspaceItemBounds(item, workspace);
+      const translate = state.canvas.translate;
 
-    //     // skip moving window if in full screen mode
-    //     if (workspace.stage.fullScreen && workspace.stage.fullScreen.artboardId === item.$id) {
-    //       break;
-    //     }
+      const selectionBounds = getSelectionBounds(state);
+      for (const item of state.selectionReferences) {
+        const itemBounds = getSyntheticItemBounds(item, state.browser);
+        const newBounds = roundBounds(scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)));
+        state = updateRootSyntheticPosition(newBounds, item, state);
+      }
 
-    //     const newBounds = roundBounds(scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, newPoint)));
+      return state;
+    }
 
-    //     if (item.$type === ARTBOARD) {
-    //       state = updateArtboard(state, item.$id, { bounds: newBounds });
-    //     }
-    //   }
-
-    //   return state;
-
-    // }
+    case RESIZER_PATH_MOUSE_STOPPED_MOVING:
+    case RESIZER_STOPPED_MOVING: {
+      state = updateCanvas({
+        movingOrResizing: false
+      }, state);
+      return state;
+    }
 
     case CANVAS_MOUSE_MOVED: {
       const { sourceEvent: { pageX, pageY }} = action as WrappedEvent<React.MouseEvent<any>>;
@@ -97,8 +97,6 @@ export const rootReducer = (state: RootState, action: Action) => {
       if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
         return state;
       }
-
-      state.canvas.movingOrResizing
 
       // alt key opens up a new link
       const altKey = sourceEvent.altKey;
@@ -125,7 +123,7 @@ export const rootReducer = (state: RootState, action: Action) => {
   return state;
 };
 
-const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: RootState, ref: StructReference, event: T) => {
+const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: RootState, ref: StructReference<any>, event: T) => {
   const { sourceEvent } = event;
   return setSelection(state, ref);
 }

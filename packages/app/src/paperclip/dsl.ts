@@ -179,7 +179,7 @@ export const getImportedDependency = (namespace: string, dependency: Dependency,
   return importedPath ? graph[importedPath] : dependency;
 };
 
-export const getNodeSourceDependency = (node: TreeNode, dependency: Dependency, graph: DependencyGraph) => getImportedDependency(node.namespace, dependency, graph);
+export const getNodeSourceDependency = (node: TreeNode, currentDependency: Dependency, graph: DependencyGraph) => getImportedDependency(node.namespace, currentDependency, graph);
 
 export const getDependencyModule = (dependency: Dependency) => getModuleInfo(dependency.content);
 

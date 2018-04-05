@@ -1,5 +1,5 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById } from "common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds } from "paperclip";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, getSyntheticDocumentWindow } from "paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq } from "lodash";
 
@@ -16,8 +16,8 @@ export type RootState = {
   activeFilePath?: string;
   canvas: Canvas;
   mount: Element;
-  hoveringReferences: StructReference[];
-  selectionReferences: StructReference[];
+  hoveringReferences: StructReference<any>[];
+  selectionReferences: StructReference<any>[];
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
 };
@@ -36,12 +36,13 @@ export const updateRootStateSyntheticWindow = (location: string, properties: Par
   browser: updateSyntheticWindow(location, properties, root.browser)
 }, root);
 
-export const updateRootStateSyntheticWindowDocument = (location: string, documentIndex: number, properties: Partial<SyntheticDocument>, root: RootState) => {
-  const window = getSyntheticWindow(location, root.browser);
+export const updateRootStateSyntheticWindowDocument = (documentId: string, properties: Partial<SyntheticDocument>, root: RootState) => {
+  const window = getSyntheticDocumentWindow(documentId, root.browser);
+  const document = getSyntheticDocumentById(documentId, root.browser);
   return updateRootState({
-    browser: updateSyntheticWindow(location, {
-      documents: arraySplice(window.documents, documentIndex, 1, {
-        ...window.documents[documentIndex],
+    browser: updateSyntheticWindow(window.location, {
+      documents: arraySplice(window.documents, window.documents.indexOf(document), 1, {
+        ...document,
         ...properties
       })
     }, root.browser)
@@ -86,7 +87,7 @@ export const getScaledMouseCanvasPosition = (state: RootState, event: CanvasTool
   return { left: scaledPageX, top: scaledPageY };
 };
 
-export const getCanvasMouseNodeTargetReference = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked): StructReference => {
+export const getCanvasMouseNodeTargetReference = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked): StructReference<any> => {
 
   const canvas     = state.canvas;
   const translate = getCanvasTranslate(canvas);
@@ -123,13 +124,13 @@ export const getCanvasMouseNodeTargetReference = (state: RootState, event: Canva
   };
 }
 
-export const setSelection = (root: RootState, ...selectionIds: StructReference[]) => {
+export const setSelection = (root: RootState, ...selectionIds: StructReference<any>[]) => {
   return updateRootState({
     selectionReferences: uniq([...selectionIds])
   }, root);
 };
 
-export const getReference = (ref: StructReference, root: RootState) => {
+export const getReference = (ref: StructReference<any>, root: RootState) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
     return getSyntheticDocumentById(ref.id, root.browser);
   }
@@ -138,6 +139,9 @@ export const getReference = (ref: StructReference, root: RootState) => {
   return document && getNestedTreeNodeById(ref.id, document.root);
 };
 
+export const updateRootSyntheticPosition = (position: Point, item: StructReference<any>, root: RootState) => updateRootState({
+  browser: updateSyntheticItemPosition(position, item, root.browser)
+}, root);
 
 export const getBoundedSelection = memoize((root: RootState): Array<Bounded & Struct> => root.selectionReferences.map((ref) => getReference(ref, root)).filter(item => getSyntheticItemBounds(item, root.browser)) as any);
 export const getSelectionBounds = memoize((root: RootState) => mergeBounds(...getBoundedSelection(root).map(boxed => getSyntheticItemBounds(boxed, root.browser))));

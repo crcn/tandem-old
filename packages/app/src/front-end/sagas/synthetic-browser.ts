@@ -1,11 +1,12 @@
 import { RootState, getActiveWindow } from "../state";
 import { fork, take, select, put, call, spawn } from "redux-saga/effects";
-import { PROJECT_LOADED, ProjectLoaded, syntheticWindowOpened, SyntheticWindowOpened, SYNTHETIC_WINDOW_OPENED, FILE_NAVIGATOR_ITEM_CLICKED, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, documentRendered } from "../actions";
-import { getSyntheticWindow, createSyntheticWindow, SyntheticWindow, renderDOM, computeDisplayInfo, waitForDOMReady } from "paperclip";
+import { PROJECT_LOADED, ProjectLoaded, syntheticWindowOpened, SyntheticWindowOpened, SYNTHETIC_WINDOW_OPENED, FILE_NAVIGATOR_ITEM_CLICKED, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, documentRendered, RESIZER_MOVED } from "../actions";
+import { getSyntheticWindow, createSyntheticWindow, SyntheticWindow, renderDOM, computeDisplayInfo, waitForDOMReady, SyntheticDocument, SyntheticNativeNodeMap } from "paperclip";
 import { eventChannel } from "redux-saga";
 
 export function* syntheticBrowserSaga() {
   yield fork(handleNavigatorItemClicked);
+  yield fork(handleSyntheticDocumentRootChanged);
 }
 
 
@@ -28,8 +29,20 @@ function* renderDocuments(window: SyntheticWindow) {
       yield take(doneChan);
       const nativeMap = renderDOM(document.container.contentDocument.body, document.root);
       yield call(waitForDOMReady, nativeMap);
-      const computedInfo = computeDisplayInfo(nativeMap);
-      yield put(documentRendered(window.documents.indexOf(document), computedInfo, window));
+      yield call(componentDocumentDisplayInfo, document.id, nativeMap);
     });
+  }
+}
+
+
+function* componentDocumentDisplayInfo(documentId: string, nativeNodeMap: SyntheticNativeNodeMap) {
+  yield put(documentRendered(documentId, computeDisplayInfo(nativeNodeMap), nativeNodeMap));
+}
+
+function* handleSyntheticDocumentRootChanged() {
+
+  while(1) {
+    yield take([RESIZER_MOVED]);
+    // console.log("MOVED");
   }
 }

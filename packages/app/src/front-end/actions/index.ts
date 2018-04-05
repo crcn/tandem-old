@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import { Directory, Point, Bounds, Struct } from "common";
-import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo } from "paperclip";
+import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap } from "paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -36,8 +36,8 @@ export type ProjectLoaded = {
 } & Action;
 
 export type DocumentRendered = {
-  window: SyntheticWindow;
-  documentIndex: number;
+  nativeMap: SyntheticNativeNodeMap;
+  documentId: string;
   info: ComputedDisplayInfo;
 } & Action;
 
@@ -136,10 +136,11 @@ export const projectDirectoryLoaded = (directory: Directory): ProjectDirectoryLo
   type: PROJECT_DIRECTORY_LOADED
 });
 
-export const documentRendered = (documentIndex: number, info: ComputedDisplayInfo, window: SyntheticWindow): DocumentRendered => ({
-  documentIndex,
+
+export const documentRendered = (documentId: string, info: ComputedDisplayInfo, nativeMap: SyntheticNativeNodeMap): DocumentRendered => ({
+  nativeMap,
+  documentId,
   info,
-  window,
   type: DOCUMENT_RENDERED
 });
 

@@ -1,7 +1,9 @@
+import { mapValues } from "lodash";
 import { ComputedDisplayInfo } from "./synthetic";
 import { TreeNode, DEFAULT_NAMESPACE, getAttribute } from "../common/state";
+import { OperationalTransform, OperationalTransformType, SetAttributeTransform } from "common/utils/tree";
 
-type SyntheticNativeNodeMap = {
+export type SyntheticNativeNodeMap = {
   [identifier: string]: Node
 }
 
@@ -65,6 +67,34 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
   }
 };
 
-export const patchDOM = () => {
+export const patchDOM = (transforms: OperationalTransform[], root: HTMLElement) => {
   // TODO
+  for (const transform of transforms) {
+    const target = getElementFromPath(transform.path, root);
+    switch(transform.type) {
+      case OperationalTransformType.SET_ATTRIBUTE: {
+        const { name,  value, namespace } = transform as SetAttributeTransform;
+        if (namespace === DEFAULT_NAMESPACE && name === "style") {
+          Object.assign(target.style, normalizeStyle(value));
+        }
+        break;
+      }
+    }
+  }
+}
+
+const normalizeStyle = (value: any) => mapValues(value, (value, key) => {
+  if (typeof value === "number") {
+    return `${value}px`;
+  }
+
+  return value;
+});
+
+const getElementFromPath = (path: number[], root: HTMLElement) => {
+  let current = root;
+  for (const part of path) {
+    current = current.children[part] as HTMLElement;
+  }
+  return current;
 }

@@ -135,7 +135,7 @@ const enhanceArtboardOverlayTools = compose<ArtboardOverlayToolsInnerProps, Artb
 
 const ArtboardOverlayTools = enhanceArtboardOverlayTools(ArtboardOverlayToolsBase);
 
-const getNodes = memoize((refs: StructReference[], allNodes: TreeNodeIdMap) => {
+const getNodes = memoize((refs: StructReference<any>[], allNodes: TreeNodeIdMap) => {
   return refs.map(({type, id}) => allNodes[id]).filter((flattenedObject) => !!flattenedObject)
 });
 

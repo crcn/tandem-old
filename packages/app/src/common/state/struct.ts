@@ -3,7 +3,7 @@ export type Struct = {
   id: string;
 };
 
-export type StructReference = {
+export type StructReference<T extends any> = {
   id: string;
-  type: any;
+  type: T;
 };

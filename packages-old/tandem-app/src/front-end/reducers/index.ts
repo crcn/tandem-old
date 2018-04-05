@@ -513,15 +513,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-    case RESIZER_PATH_MOUSE_STOPPED_MOVING:
-    case RESIZER_STOPPED_MOVING: {
-      const workspace = getSelectedWorkspace(state);
-      state = updateWorkspaceStage(state, workspace.$id, {
-        movingOrResizing: false
-      });
-      return state;
-    }
-
     case ARTBOARD_FOCUSED: {
       const { artboardId } = event as ArtboardFocused;
       return selectAndCenterArtboard(state, getArtboardById(artboardId, state));
