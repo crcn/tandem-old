@@ -1,9 +1,10 @@
 TODO:
 
-- persist preview changes
+- persist changes to AST
+
 
 - resizer
-  - move elements around
+  - fix jumping
   - resize elements
   - respect position, and padding info (need to TEST this)
 

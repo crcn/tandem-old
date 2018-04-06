@@ -34,8 +34,8 @@ const TEST_FILES = {
   "components/main.pc": `
     <module>
       <component id="test" preview:bounds="left: 0; right: 100; top: 0; bottom: 100">
-        <template style="font-family: Helvetica; background-color: red; color: white; padding: 20px; border-radius: 10px;">
-          <div style="background: blue; padding: 20px;" ref="bg">
+        <template style="font-family: Helvetica; background-color: red; color: white; width: 100px; height: 100px; border-radius: 10px;">
+          <div style="background: blue; display: inline-block;" ref="bg">
             <text ref="hello" value="helloaa==" />
           </div>
         </template>

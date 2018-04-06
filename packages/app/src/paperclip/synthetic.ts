@@ -49,7 +49,6 @@ export type SyntheticDocument = {
   bounds?: Bounds;
 }
 
-
 export type SyntheticNodeSource = {
   uri: string;
   checksum: string;
@@ -248,9 +247,8 @@ export const updateSyntheticNodeStyle = (style: any, ref: StructReference<Synthe
 
 export const getSyntheticNodeById = (nodeId: string, browser: SyntheticBrowser) => {
   const document = getSyntheticNodeDocument(nodeId, browser);
-  return getNestedTreeNodeById(nodeId, document.root);
+  return getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
 };
-
 
 export const updateSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
@@ -269,3 +267,15 @@ export const updateSyntheticItemPosition = (position: Point, ref: StructReferenc
 export const getSyntheticDocumentById = memoize((documentId: string, state: SyntheticWindow|SyntheticBrowser) => findSyntheticDocument(state, document => document.id === documentId));
 
 export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => Boolean(getNestedTreeNodeById(nodeId, document.root))));
+
+// TODO move this code to sep func
+export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
+  if (ref.type === SyntheticObjectType.DOCUMENT) {
+    throw new Error("NOT DONE");
+  } else {
+    const node = getSyntheticNodeById(ref.id, browser);
+    const sourceNode = getSyntheticNodeSourceNode(node, browser.graph);
+    const sourceDep = browser.graph[node.source.uri];
+
+  }
+};
