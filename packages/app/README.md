@@ -6,7 +6,11 @@ TODO:
 - resizer
   - resize elements
 
-- multi-select elements
+- artboard tool (A key)
+- rectangle tool (R key)
+  - should be able to insert into artboard
+  - should be able to insert into other rectangles
+
 - style pane
   - background color
   - position
