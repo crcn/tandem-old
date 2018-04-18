@@ -67,7 +67,7 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
   }
 };
 
-export const patchDOM = (transforms: OperationalTransform[], root: HTMLElement) => {
+export const patchDOM = (transforms: OperationalTransform[], root: HTMLElement, map: SyntheticNativeNodeMap) => {
   // TODO
   for (const transform of transforms) {
     const target = getElementFromPath(transform.path, root);
@@ -81,6 +81,7 @@ export const patchDOM = (transforms: OperationalTransform[], root: HTMLElement) 
       }
     }
   }
+  return map;
 }
 
 const normalizeStyle = (value: any) => mapValues(value, (value, key) => {

@@ -1,7 +1,7 @@
 import { Action } from "redux";
-import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING } from "../actions";
+import { PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving } from "../actions";
 import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition } from "../state";
-import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow } from "paperclip";
+import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds } from "common";
 
 export const rootReducer = (state: RootState, action: Action) => {
@@ -29,7 +29,7 @@ export const rootReducer = (state: RootState, action: Action) => {
         }
       }, state);
 
-      const documents = evaluateDependencyEntry({ entry, graph }).componentPreviews.map(root => {
+      const documents = evaluateDependencyEntry({ entry, graph }).documentNodes.map(root => {
         return createSyntheticDocument(root, graph);
       });
 
@@ -50,7 +50,7 @@ export const rootReducer = (state: RootState, action: Action) => {
     }
 
     case RESIZER_MOVED: {
-      const { point, point: newPoint } = action as ResizerMoved;
+      const { point: newPoint } = action as ResizerMoved;
       state = updateCanvas({
         movingOrResizing: true
       }, state);
@@ -67,8 +67,17 @@ export const rootReducer = (state: RootState, action: Action) => {
       return state;
     }
 
-    case RESIZER_PATH_MOUSE_STOPPED_MOVING:
+    case RESIZER_PATH_MOUSE_STOPPED_MOVING: {
+      state = updateCanvas({
+        movingOrResizing: false
+      }, state);
+      return state;
+    }
     case RESIZER_STOPPED_MOVING: {
+      const { point } = action as ResizerMoved;
+      state = updateRootState({
+        browser: state.selectionReferences.reduce((state, ref) => persistSyntheticItemPosition(point, ref, state), state.browser)
+      }, state);
       state = updateCanvas({
         movingOrResizing: false
       }, state);

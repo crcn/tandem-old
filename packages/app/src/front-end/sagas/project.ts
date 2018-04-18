@@ -45,14 +45,14 @@ const TEST_FILES = {
           <delete-child target="hello" />
         </overrides>
       </component>
-      <component id="test2" extends="test" preview:bounds="left: 0; right: 100; top: 100; bottom: 200">
+      <component id="test3" extends="test" preview:bounds="left: 0; right: 100; top: 100; bottom: 200">
         <overrides>
           <insert-child before="hello">
             <text value="world" />
           </insert-child>
         </overrides>
       </component>
-      <component id="test2" extends="test" preview:bounds="left: 0; right: 100; top: 200; bottom: 300">
+      <component id="test4" extends="test" preview:bounds="left: 0; right: 100; top: 200; bottom: 300">
         <overrides>
           <set-attribute target="hello" name="value" value="blarg" />
           <set-style name="background-color" value="blue" />

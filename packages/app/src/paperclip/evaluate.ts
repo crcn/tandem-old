@@ -9,9 +9,9 @@ TODO (in order of importance):
 
 */
 
-import { TreeNode, getTeeNodePath, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updatedNestedNode } from "../common/state/tree";
+import { TreeNode, getTeeNodePath, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updatedNestedNode, setNodeAttribute, TREE_NODE_REF } from "../common/state/tree";
 import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride } from "./dsl";
-import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource } from "./synthetic";
+import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency, getSyntheticDocumentComponent } from "./synthetic";
 import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML } from "../common/utils";
 import { pick } from "lodash";
 
@@ -27,7 +27,7 @@ export type EvaluateOptions = {
 };
 
 export type EvaluationResult = {
-  componentPreviews: SyntheticNode[]
+  documentNodes: SyntheticNode[]
 };
 
 type Slots = {
@@ -38,15 +38,19 @@ export const evaluateDependencyEntry = ({ entry, graph }: EvaluateOptions): Eval
   const module = getModuleInfo(entry.content);
   const checksum = generateTreeChecksum(entry.content);
   return {
-    componentPreviews: module.components.map((component, i) => evaluateComponentPreview(component, module, checksum + i, checksum, entry, graph))
+    documentNodes: module.components.map((component, i) => evaluateComponent(component, entry, graph))
   };
 };
 
-const evaluateComponentPreview = (component: Component, module: Module, id: string, checksum: string, dependency: Dependency, graph: DependencyGraph) => {
-  return evaluateComponent(component, {}, [], getSytheticNodeSource(component.source, dependency), id, module, checksum, dependency, graph);
+export const evaluateComponent = (component: Component, currentDependency: Dependency, graph: DependencyGraph): SyntheticNode  => {
+  const module = getModuleInfo(currentDependency.content);
+  const dependency = getNodeSourceDependency(component.source, currentDependency, graph);
+  const checksum = generateTreeChecksum(dependency.content);
+
+  return _evaluateComponent(component, {}, [], getSytheticNodeSource(component.source, dependency), checksum + component.id, module, checksum, dependency, graph);
 };
 
-const evaluateComponent = (component: Component, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
+const _evaluateComponent = (component: Component, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
   const ext = component.extends || DEFAULT_EXTENDS;
 
   let template = component.template;
@@ -84,7 +88,7 @@ const evaluateComponent = (component: Component, attributes: TreeNodeAttributes,
     if (extendsComponent) {
 
       // overrides passed in
-      return evaluateComponent(extendsComponent, syntheticAttributes, syntheticChildren, source, id, extendsFromModule, checksum, extendsFromDependency, graph, component.overrides);
+      return _evaluateComponent(extendsComponent, syntheticAttributes, syntheticChildren, source, id, extendsFromModule, checksum, extendsFromDependency, graph, component.overrides);
     }
   }
 
@@ -94,7 +98,6 @@ const evaluateComponent = (component: Component, attributes: TreeNodeAttributes,
 };
 
 const overrideComponentTemplate = (template: TreeNode, overrides: ComponentOverride[]) => {
-
   for (let i = 0, {length} = overrides; i < length; i++) {
     const override = overrides[i];
     if (override.type === ComponentOverrideType.DELETE_NODE) {
@@ -106,42 +109,22 @@ const overrideComponentTemplate = (template: TreeNode, overrides: ComponentOverr
       const ref = getNodeReference(insertNodeOverride.beforeChild, template);
       const parent = getParentTreeNode(ref, template);
       const index = parent.children.indexOf(ref);
-      template = updatedNestedNode(parent, template, (parent) => {
-        return {
-          ...parent,
-          children: arraySplice(parent.children, index, 0, insertNodeOverride.child)
-        };
-      });
+      template = updatedNestedNode(parent, template, (parent) => ({
+        ...parent,
+        children: arraySplice(parent.children, index, 0, insertNodeOverride.child)
+      }));
     } else if (override.type === ComponentOverrideType.SET_ATTRIBUTE) {
       const setAttributeOverride = override as SetAttributeOverride;
       const ref = getNodeReference(setAttributeOverride.target, template);
-      template = updatedNestedNode(ref, template, (ref) => {
-        return {
-          ...ref,
-          attributes: {
-            [setAttributeOverride.namespace]: {
-              ...(ref.attributes[setAttributeOverride.namespace] || EMPTY_OBJECT),
-              [setAttributeOverride.name]: setAttributeOverride.value
-            }
-          }
-        };
-      });
+      template = updatedNestedNode(ref, template, (ref) => setNodeAttribute(ref, setAttributeOverride.name, setAttributeOverride.value));
     } else if (override.type === ComponentOverrideType.SET_STYLE) {
       const setStyleOverride = override as SetStyleOverride;
       const ref = getNodeReference(setStyleOverride.target, template);
       template = updatedNestedNode(ref, template, (ref) => {
-        return {
-          ...ref,
-          attributes: {
-            [DEFAULT_NAMESPACE]: {
-              ...(ref.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT),
-              style: {
-                ...((ref.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT).style || EMPTY_OBJECT),
-                [setStyleOverride.name]: setStyleOverride.value
-              }
-            }
-          }
-        };
+        return setNodeAttribute(ref, "style", {
+          ...(getAttribute(ref, "style") || EMPTY_OBJECT),
+          [setStyleOverride.name]: setStyleOverride.value
+        });
       });
     }
   }
@@ -156,7 +139,7 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
   const nodeComponent = getModuleComponent(node.name, nodeModule);
 
   if (nodeComponent) {
-    return evaluateComponent(nodeComponent, node.attributes, node.children, getSytheticNodeSource(node, dependency), id, nodeModule, checksum, nodeDependency, graph)
+    return _evaluateComponent(nodeComponent, node.attributes, node.children, getSytheticNodeSource(node, dependency), id, nodeModule, checksum, nodeDependency, graph)
   }
 
   let children = node.children;
@@ -176,5 +159,5 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
     }
   }
 
-  return createSyntheticElement(tagName, attributes, children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)), getSytheticNodeSource(module.source, dependency), id);
+  return createSyntheticElement(tagName, attributes, children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)), getSytheticNodeSource(node, dependency), id);
 };

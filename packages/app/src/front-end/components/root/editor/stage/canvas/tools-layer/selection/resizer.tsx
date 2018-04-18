@@ -4,7 +4,7 @@ import { debounce } from "lodash";
 import { pure, compose, withHandlers } from "recompose";
 import { RootState, getBoundedSelection, getSelectionBounds } from "front-end/state";
 import { resizerMoved, resizerStoppedMoving, resizerMouseDown } from "front-end/actions";
-import { startDOMDrag, mergeBounds, moveBounds } from "common";
+import { startDOMDrag, mergeBounds, moveBounds, Point } from "common";
 import { Dispatch } from "redux";
 import { Path } from "./path";
 
@@ -79,17 +79,19 @@ const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
       const onStartDrag = (event) => {
         dispatch(resizerMouseDown(event));
       };
+
+      const calcMousePoint = (delta: any) => ({
+        left: bounds.left + delta.x / translate.zoom,
+        top: bounds.top + delta.y / translate.zoom,
+      });
       const onDrag = (event2, { delta }) => {
-        dispatch(resizerMoved({
-          left: bounds.left + delta.x / translate.zoom,
-          top: bounds.top + delta.y / translate.zoom,
-        }));
+        dispatch(resizerMoved(calcMousePoint(delta)));
       };
 
       // debounce stopped moving so that it beats the stage click event
       // which checks for moving or resizing state.
-      const onStopDrag = debounce(() => {
-        dispatch(resizerStoppedMoving(null));
+      const onStopDrag = debounce((event, { delta }) => {
+        dispatch(resizerStoppedMoving(calcMousePoint(delta)));
       }, 0);
 
       startDOMDrag(event, onStartDrag, onDrag, onStopDrag);

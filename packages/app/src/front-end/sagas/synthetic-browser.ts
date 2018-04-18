@@ -23,7 +23,11 @@ function* renderDocuments(window: SyntheticWindow) {
   for (const document of window.documents) {
     yield spawn(function*() {
       const doneChan = eventChannel((emit) => {
-        document.container.onload = emit;
+        const onDone = event => {
+          document.container.removeEventListener('load', onDone);
+          emit(event);
+        };
+        document.container.addEventListener('load', onDone);
         return () => {};
       });
       yield take(doneChan);

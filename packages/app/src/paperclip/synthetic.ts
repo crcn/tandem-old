@@ -1,10 +1,11 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE } from "../common/state/tree";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updatedNestedNode, setNodeAttribute } from "../common/state/tree";
 import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT } from "../common/utils";
-import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency } from "./dsl";
+import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { Bounds, Struct, shiftBounds, StructReference, Point } from "../common";
 import { mapValues } from "lodash";
-import { createSetAttributeTransform, OperationalTransform } from "../common/utils/tree";
+import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode } from "../common/utils/tree";
+import { evaluateDependencyEntry, evaluateComponent } from ".";
 
 export enum SyntheticObjectType {
   BROWSER,
@@ -94,6 +95,12 @@ export const createSyntheticDocument = (root: SyntheticNode, graph: DependencyGr
   container.style.border = "none";
   container.style.width = "100%";
   container.style.height = "100%";
+  container.addEventListener('load', () => {
+    Object.assign(container.contentDocument.body.style, {
+      padding: 0,
+      margin: 0
+    });
+  });
 
   const syntheticDocument: SyntheticDocument = {
     root,
@@ -186,11 +193,13 @@ const updateSyntheticDocument = (properties: Partial<SyntheticDocument>, documen
 
 const applyDocumentElementTransforms = (transforms: OperationalTransform[], documentId: string, browser: SyntheticBrowser) => {
   const document: SyntheticDocument = getSyntheticDocumentById(documentId, browser);
-  patchDOM(transforms, document.container.contentDocument.body.children[0] as HTMLElement);
+  const nativeNodeMap = patchDOM(transforms, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
   return updateSyntheticDocument({
-    computed: computeDisplayInfo(document.nativeNodeMap)
+    computed: computeDisplayInfo(nativeNodeMap),
+    nativeNodeMap
   }, document.id, browser);
 };
+
 
 const updateSyntheticItem = <TItem>(properties: Partial<TItem>, ref: StructReference<any>, browser: SyntheticBrowser) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
@@ -255,11 +264,12 @@ export const updateSyntheticItemPosition = (position: Point, ref: StructReferenc
     throw new Error("NOT DONE");
   } else {
     const node = getSyntheticNodeById(ref.id, browser);
+    const document = getSyntheticNodeDocument(ref.id, browser);
     const style = getAttribute(node, "style") || EMPTY_OBJECT;
     return updateSyntheticNodeStyle({
       position: style.position || "relative",
-      left: position.left,
-      top: position.top
+      left: position.left - document.bounds.left,
+      top: position.top - document.bounds.top
     }, ref, browser);
   }
 };
@@ -269,6 +279,7 @@ export const getSyntheticDocumentById = memoize((documentId: string, state: Synt
 export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => Boolean(getNestedTreeNodeById(nodeId, document.root))));
 
 // TODO move this code to sep func
+// TODO - filter out components with dep URIs
 export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
     throw new Error("NOT DONE");
@@ -276,6 +287,57 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
     const node = getSyntheticNodeById(ref.id, browser);
     const sourceNode = getSyntheticNodeSourceNode(node, browser.graph);
     const sourceDep = browser.graph[node.source.uri];
+    const graph = updateGraphDependency({
+      content: updatedNestedNode(sourceNode, sourceDep.content, (child) => {
 
+        // TODO - add overrides here
+        const style = getAttribute(child, "style") || EMPTY_OBJECT;
+        const pos = style.position || "relative";
+        return setNodeAttribute(child, "style", {
+          ...style,
+          position: pos,
+          left: position.left,
+          top: position.top
+        });
+      })
+    }, sourceDep.uri, browser.graph);
+
+    browser = updateSyntheticBrowser({
+      graph: graph
+    }, browser);
+
+    // TODO - evaluate sourceDep dependents & update assoc windows
+
+    const sourceDependents = getDependents(sourceDep.uri, graph);
+    const sourceDependentUris = [];
+
+    for (const dep of sourceDependents) {
+      sourceDependentUris.push(dep.uri);
+    }
+
+    let depWindows: SyntheticWindow[] = [];
+    for (const window of browser.windows) {
+      if (sourceDependentUris.indexOf(window.location) === -1) {
+        continue;
+      }
+
+      browser = updateSyntheticWindow(window.location, {
+        documents: window.documents.map(document => {
+          const newComponent = getSyntheticDocumentComponent(document, graph);
+          const componentInfo = getComponentInfo(newComponent);
+          const newDocumentNode = evaluateComponent(componentInfo, getSyntheticDocumentDependency(document.id, browser), browser.graph);
+          const ots = diffNode(document.root, newDocumentNode);
+          const nativeNodeMap = patchDOM(ots, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
+          return {
+            ...document,
+            nativeNodeMap,
+            computed: computeDisplayInfo(nativeNodeMap),
+            root: patchNode(ots, document.root)
+          }
+        })
+      }, browser);
+    }
+
+    return browser;
   }
 };

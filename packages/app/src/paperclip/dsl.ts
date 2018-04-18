@@ -220,7 +220,31 @@ export const getOverrideInfo = memoize((node: TreeNode): ComponentOverride => {
       throw new Error(`Unknown override type ${node.name}`);
     }
   }
-
 });
 
 export const getNodeReference = memoize((refName: string, root: TreeNode) => findNestedNode(root, child => getAttribute(child, "ref") === refName));
+
+export const updateGraphDependency = (properties: Partial<Dependency>, uri: string, graph: DependencyGraph) => ({
+  ...graph,
+  [uri]: {
+    ...graph[uri],
+    ...properties
+  }
+});
+
+export const getDependents = memoize((uri: string, graph: DependencyGraph, dependents: Dependency[] = []) => {
+  let current = graph[uri];
+
+  if (dependents.indexOf(current) !== -1) {
+    return dependents;
+  }
+
+  dependents.push(current);
+
+  for (const ns in current.importUris) {
+    const uri = current.importUris[ns];
+    getDependents(uri, graph, dependents);
+  }
+
+  return dependents;
+});

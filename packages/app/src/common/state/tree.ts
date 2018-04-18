@@ -54,7 +54,7 @@ export const filterNestedNodes = memoize((current: TreeNode, filter: NodeFilter,
   return found;
 });
 
-export const getAttribute = (current: TreeNode, name: string, namespace?: string) => current.attributes[namespace] && current.attributes[namespace][name];
+export const getAttribute = (current: TreeNode, name: string, namespace: string = DEFAULT_NAMESPACE) => current.attributes[namespace] && current.attributes[namespace][name];
 
 export const getChildParentMap = memoize((current: TreeNode): Map<TreeNode, TreeNode> => {
   let parentChildMap: Map<TreeNode, TreeNode> = new Map();
@@ -73,12 +73,14 @@ export type TreeNodeIdMap = {
 }
 
 export const getTreeNodeIdMap = memoize((current: TreeNode): TreeNodeIdMap => {
+
   const map = {
     [current.id]: current
   };
   Object.assign(map, ...current.children.map(getTreeNodeIdMap));
   return map;
 });
+
 
 export const getTeeNodePath = memoize((node: TreeNode, root: TreeNode) => {
   const childParentMap = getChildParentMap(root);
@@ -125,5 +127,16 @@ export const updatedNestedNodeFromPath = (path: number[], current: TreeNode, upd
     children: updatedChild ? arraySplice(current.children, path[depth], 1, updatedChild) : arraySplice(current.children, path[depth], 1)
   };
 };
+
+export const setNodeAttribute = (node: TreeNode, name: string, value: any, namespace: string = DEFAULT_NAMESPACE) => ({
+  ...node,
+  attributes: {
+    ...node.attributes,
+    [namespace]: {
+      ...node.attributes[namespace],
+      [name]: value
+    }
+  }
+})
 
 export const getParentTreeNode = memoize((node: TreeNode, root: TreeNode) => getChildParentMap(root).get(node));

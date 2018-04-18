@@ -24,16 +24,19 @@ export const startDOMDrag = (startEvent: any, onStart: (event?: MouseEvent) => a
     });
   }, 10);
 
-  function cleanup() {
+  function onMouseUp(event) {
     doc.removeEventListener("mousemove", drag);
-    doc.removeEventListener("mouseup", cleanup);
-    if (stop && _started) stop();
+    doc.removeEventListener("mouseup", onMouseUp);
+    if (stop && _started) {
+      stop(event, {
+        delta: {
+          x: event.clientX - sx,
+          y: event.clientY - sy,
+        }
+      });
+    }
   }
 
   doc.addEventListener("mousemove", drag);
-  doc.addEventListener("mouseup", cleanup);
-
-  return {
-    dispose: cleanup,
-  };
+  doc.addEventListener("mouseup", onMouseUp);
 };

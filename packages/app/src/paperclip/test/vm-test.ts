@@ -82,9 +82,9 @@ describe(__filename + "#", () => {
       `
       <div style="color:red;backgroundColor:blue;">
         <div style="color:red;backgroundColor:blue;">
-          <text value="hello world"></text> 
+          <text value="hello world"></text>
         </div>
-      </div> 
+      </div>
       <div style="color:red;backgroundColor:blue;">
         <text value="hello world"></text>
       </div>`
@@ -295,7 +295,7 @@ describe(__filename + "#", () => {
           </module>
         `,
       },
-      
+
       `
         <div>
           <h1>
@@ -318,14 +318,14 @@ describe(__filename + "#", () => {
       {
         "entry.json": `
           <module>
-            <component id="test"> 
-              <template>  
+            <component id="test">
+              <template>
                 <text ref="text1" value="a"></text>
                 <text ref="text2" value="a"></text>
               </template>
             </component>
-            <component id="test2" extends="test"> 
-              <overrides>   
+            <component id="test2" extends="test">
+              <overrides>
                 <delete-child target="text1" />
               </overrides>
             </component>
@@ -347,13 +347,13 @@ describe(__filename + "#", () => {
       {
         "entry.json": `
           <module>
-            <component id="test"> 
-              <template>  
+            <component id="test">
+              <template>
                 <text ref="text1" value="a"></text>
               </template>
             </component>
-            <component id="test2" extends="test"> 
-              <overrides>   
+            <component id="test2" extends="test">
+              <overrides>
                 <insert-child before="text1">
                   <text ref="text2" value="a"></text>
                 </insert-child>
@@ -377,13 +377,13 @@ describe(__filename + "#", () => {
       {
         "entry.json": `
           <module>
-            <component id="test"> 
-              <template>  
+            <component id="test">
+              <template>
                 <text ref="text1" value="a"></text>
               </template>
             </component>
-            <component id="test2" extends="test"> 
-              <overrides>   
+            <component id="test2" extends="test">
+              <overrides>
                 <set-attribute target="text1" name="value" value="b" />
               </overrides>
             </component>
@@ -404,13 +404,13 @@ describe(__filename + "#", () => {
       {
         "entry.json": `
           <module>
-            <component id="test"> 
-              <template>  
+            <component id="test">
+              <template>
                 <text ref="text1" value="a"></text>
               </template>
             </component>
-            <component id="test2" extends="test"> 
-              <overrides>   
+            <component id="test2" extends="test">
+              <overrides>
                 <set-style name="color" value="blue" />
               </overrides>
             </component>
@@ -433,10 +433,10 @@ describe(__filename + "#", () => {
     // can override a style property
   ].forEach(([name, files, expectedOutput]: any) => {
     it(name, async () => {
-      const { componentPreviews } = evaluateDependencyEntry(await loadEntry("entry.json", { openFile: createTestFileReader(mapValues(files, (file) => xmlToTreeNode(file))) }));
+      const { documentNodes } = evaluateDependencyEntry(await loadEntry("entry.json", { openFile: createTestFileReader(mapValues(files, (file) => xmlToTreeNode(file))) }));
 
-      
-      const result = componentPreviews.map(pv => stringifyTreeNodeToXML(pv)).join("\n");
+
+      const result = documentNodes.map(pv => stringifyTreeNodeToXML(pv)).join("\n");
       expect(result.replace(/[\n\r\s\t]+/g, " ").trim()).to.eql(expectedOutput.replace(/[\n\r\s\t]+/g, " ").trim());
     });
   });
