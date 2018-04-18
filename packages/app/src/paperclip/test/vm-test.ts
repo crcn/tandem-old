@@ -141,13 +141,13 @@ describe(__filename + "#", () => {
       },
       `
         <div>
-          <span></span>
+          <slot></slot>
         </div>
         <div>
           <div>
-            <span>
+            <slot>
               <text value="hello world"></text>
-            </span>
+            </slot>
           </div>
         </div>
       `
@@ -185,28 +185,28 @@ describe(__filename + "#", () => {
       },
       `
       <div>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+        <slot></slot>
+        <slot></slot>
+        <slot></slot>
+        <slot></slot>
       </div>
       <div>
         <div>
-          <span>
+          <slot>
             <text slot="slot0" value="c"></text>
-          </span>
-          <span>
+          </slot>
+          <slot>
             <text slot="slot1" value="b"></text>
             <text slot="slot1" value="d"></text>
-          </span>
-          <span>
+          </slot>
+          <slot>
             <text slot="slot2" value="a"></text>
             <text slot="slot2" value="e"></text>
-          </span>
-          <span>
+          </slot>
+          <slot>
             <text value="1"></text>
             <text value="2"></text>
-          </span>
+          </slot>
         </div>
       </div>
       `
@@ -257,12 +257,12 @@ describe(__filename + "#", () => {
       },
       `
         <div>
-          <span></span>
+          <slot></slot>
         </div>
         <div>
-          <span>
+          <slot>
             <text value="hello world"></text>
-          </span>
+          </slot>
         </div>
       `
     ],
@@ -299,15 +299,15 @@ describe(__filename + "#", () => {
       `
         <div>
           <h1>
-            <span>
+            <slot>
               <text value="2"></text>
               <text value="3"></text>
-            </span>
+            </slot>
           </h1>
           <h2>
-            <span>
+            <slot>
               <text value="1" slot="slot1"></text>
-            </span>
+            </slot>
           </h2>
         </div>
       `

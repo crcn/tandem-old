@@ -1,7 +1,7 @@
 import { mapValues } from "lodash";
 import { ComputedDisplayInfo } from "./synthetic";
 import { TreeNode, DEFAULT_NAMESPACE, getAttribute } from "../common/state";
-import { OperationalTransform, OperationalTransformType, SetAttributeTransform } from "common/utils/tree";
+import { OperationalTransform, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node

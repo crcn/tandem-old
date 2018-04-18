@@ -1,11 +1,11 @@
 import { memoize } from "./memoization";
 import { EMPTY_ARRAY } from "./object";
-import { TreeNode, DEFAULT_NAMESPACE } from "../state/tree";
+import { TreeNode, DEFAULT_NAMESPACE, addTreeNodeIds } from "../state/tree";
 import { xml2js } from "xml-js";
 import { camelCase, repeat } from "lodash";
 
 export const xmlToTreeNode = memoize((xml: string): TreeNode => {
-  return normalizeTree(xml2js(xml).elements[0]);
+  return addTreeNodeIds(normalizeTree(xml2js(xml).elements[0]));
 });
 
 const normalizeTree = ({name: nameAndNamespace, attributes, elements = EMPTY_ARRAY}: any) => {

@@ -128,7 +128,7 @@ export const createSyntheticElement = (name: string, attributes: TreeNodeAttribu
 export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency): SyntheticNodeSource => ({
   uri: dependency.uri,
   checksum: generateTreeChecksum(dependency.content),
-  path: getTeeNodePath(source, getModuleInfo(dependency.content).source),
+  path: getTeeNodePath(source.id, getModuleInfo(dependency.content).source),
 });
 
 export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: DependencyGraph) => getTreeNodeFromPath(synthetic.source.path, graph[synthetic.source.uri].content);
@@ -208,7 +208,7 @@ const updateSyntheticItem = <TItem>(properties: Partial<TItem>, ref: StructRefer
   }
   const document = getSyntheticNodeDocument(ref.id, browser);
   const item = getNestedTreeNodeById(ref.id, document.root) as SyntheticNode;
-  const itemPath = getTeeNodePath(item, document.root);
+  const itemPath = getTeeNodePath(item.id, document.root);
 
   const transforms: OperationalTransform[] = [];
 
@@ -259,6 +259,11 @@ export const getSyntheticNodeById = (nodeId: string, browser: SyntheticBrowser) 
   return getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
 };
 
+export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
+  const document = getSyntheticNodeDocument(nodeId, browser);
+  return getComponentInfo(getSyntheticNodeSourceNode(document.root, browser.graph));
+});
+
 export const updateSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
     throw new Error("NOT DONE");
@@ -285,8 +290,14 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
     throw new Error("NOT DONE");
   } else {
     const node = getSyntheticNodeById(ref.id, browser);
+    const document = getSyntheticNodeDocument(ref.id, browser);
     const sourceNode = getSyntheticNodeSourceNode(node, browser.graph);
     const sourceDep = browser.graph[node.source.uri];
+    const sourceComponent = getSyntheticNodeSourceComponent(ref.id, browser);
+
+    // TODO - use this prop to use overrides or not
+    const sourceComponentContainsSourceNode = Boolean(getNestedTreeNodeById(sourceNode.id, sourceComponent.source));
+
     const graph = updateGraphDependency({
       content: updatedNestedNode(sourceNode, sourceDep.content, (child) => {
 
@@ -296,8 +307,8 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
         return setNodeAttribute(child, "style", {
           ...style,
           position: pos,
-          left: position.left,
-          top: position.top
+          left: position.left - document.bounds.left,
+          top: position.top - document.bounds.top
         });
       })
     }, sourceDep.uri, browser.graph);

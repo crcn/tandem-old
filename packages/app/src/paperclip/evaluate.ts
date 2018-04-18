@@ -9,7 +9,7 @@ TODO (in order of importance):
 
 */
 
-import { TreeNode, getTeeNodePath, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updatedNestedNode, setNodeAttribute, TREE_NODE_REF } from "../common/state/tree";
+import { TreeNode, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updatedNestedNode, setNodeAttribute } from "../common/state/tree";
 import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride } from "./dsl";
 import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency, getSyntheticDocumentComponent } from "./synthetic";
 import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML } from "../common/utils";
@@ -46,7 +46,6 @@ export const evaluateComponent = (component: Component, currentDependency: Depen
   const module = getModuleInfo(currentDependency.content);
   const dependency = getNodeSourceDependency(component.source, currentDependency, graph);
   const checksum = generateTreeChecksum(dependency.content);
-
   return _evaluateComponent(component, {}, [], getSytheticNodeSource(component.source, dependency), checksum + component.id, module, checksum, dependency, graph);
 };
 
@@ -146,18 +145,22 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
   let attributes = node.attributes;
 
   let tagName = node.name;
+  let hasSlottedChildren = false;
 
   if (tagName === "slot") {
     attributes = {};
-    tagName = "span";
+    tagName = "slot";
     const slotName = getAttribute(node, "name");
 
     const slotChildren = slots[slotName] || EMPTY_ARRAY;
 
     if (slotChildren.length > 0) {
       children = slotChildren;
+      hasSlottedChildren = true;
     }
   }
 
-  return createSyntheticElement(tagName, attributes, children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)), getSytheticNodeSource(node, dependency), id);
+  const children2 = hasSlottedChildren ? children : children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots));
+
+  return createSyntheticElement(tagName, attributes, children2, getSytheticNodeSource(node, dependency), id);
 };

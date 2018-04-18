@@ -26,7 +26,7 @@ function* handleProjectDirectoryLoaded() {
     yield take(PROJECT_DIRECTORY_LOADED);
     const { projectDirectory }: RootState = yield select();
     const [mainPaperclipFile] = getFilesWithExtension(PAPERCLIP_EXTENSION_NAME, projectDirectory);
-    yield put(fileNavigatorItemClicked(getTeeNodePath(mainPaperclipFile, projectDirectory)));
+    yield put(fileNavigatorItemClicked(getTeeNodePath(mainPaperclipFile.id, projectDirectory)));
   }
 }
 

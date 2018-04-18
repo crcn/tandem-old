@@ -44,7 +44,7 @@ export const getFilePath = memoize((file: File, directory: Directory) => {
   let current: TreeNode = file;
   while(current) {
     path.unshift(getFileName(current));
-    current = childParentMap.get(current);
+    current = childParentMap[current.id];
   }
 
   return path.join("/");

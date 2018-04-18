@@ -1,12 +1,10 @@
 TODO:
 
 - persist changes to AST
-
+  - extended components should set override
 
 - resizer
-  - fix jumping
   - resize elements
-  - respect position, and padding info (need to TEST this)
 
 - multi-select elements
 - style pane
