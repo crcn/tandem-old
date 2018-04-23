@@ -98,11 +98,15 @@ export const getTeeNodePath = memoize((nodeId: string, root: TreeNode) => {
   while(1) {
     const parent = childParentMap[current.id];
     if (!parent) break;
-    path.push(parent.children.indexOf(current));
+    path.unshift(parent.children.indexOf(current));
     current = parent;
   }
 
   return path;
+});
+
+export const findNodeByTagName = memoize((root: TreeNode, name: string, namespace?: string) => {
+  return findNestedNode(root, child => child.name === name && child.namespace == namespace)
 });
 
 export const getTreeNodeFromPath = memoize(<TNode extends TreeNode>(path: number[], root: TNode) => {
@@ -131,6 +135,7 @@ export const updatedNestedNodeFromPath = (path: number[], current: TreeNode, upd
   }
 
   const updatedChild = updatedNestedNodeFromPath(path, current.children[path[depth]], updater, depth + 1);
+
 
   return {
     ...current,

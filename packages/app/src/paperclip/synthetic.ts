@@ -1,10 +1,10 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updatedNestedNode, setNodeAttribute } from "../common/state/tree";
-import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT } from "../common/utils";
-import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents } from "./dsl";
+import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updatedNestedNode, setNodeAttribute, findNodeByTagName } from "../common/state/tree";
+import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML } from "../common/utils";
+import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { Bounds, Struct, shiftBounds, StructReference, Point } from "../common";
 import { mapValues } from "lodash";
-import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode } from "../common/utils/tree";
+import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry, evaluateComponent } from ".";
 
 export enum SyntheticObjectType {
@@ -283,6 +283,8 @@ export const getSyntheticDocumentById = memoize((documentId: string, state: Synt
 
 export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => Boolean(getNestedTreeNodeById(nodeId, document.root))));
 
+
+
 // TODO move this code to sep func
 // TODO - filter out components with dep URIs
 export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
@@ -295,23 +297,91 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
     const sourceDep = browser.graph[node.source.uri];
     const sourceComponent = getSyntheticNodeSourceComponent(ref.id, browser);
 
+    let updatedModuleRoot = updatedNestedNode(sourceNode, sourceDep.content, (child) => {
+
+      // TODO - add overrides here
+      const style = getAttribute(child, "style") || EMPTY_OBJECT;
+      const pos = style.position || "relative";
+      return setNodeAttribute(child, "style", {
+        ...style,
+        position: pos,
+        left: position.left - document.bounds.left,
+        top: position.top - document.bounds.top
+      });
+    });
+
     // TODO - use this prop to use overrides or not
     const sourceComponentContainsSourceNode = Boolean(getNestedTreeNodeById(sourceNode.id, sourceComponent.source));
 
-    const graph = updateGraphDependency({
-      content: updatedNestedNode(sourceNode, sourceDep.content, (child) => {
+    // set override.
+    // TODO - recompute overrides
+    if (!sourceComponentContainsSourceNode) {
+      const ots = diffNode(sourceDep.content, updatedModuleRoot);
+      updatedModuleRoot = sourceDep.content;
 
-        // TODO - add overrides here
-        const style = getAttribute(child, "style") || EMPTY_OBJECT;
-        const pos = style.position || "relative";
-        return setNodeAttribute(child, "style", {
-          ...style,
-          position: pos,
-          left: position.left - document.bounds.left,
-          top: position.top - document.bounds.top
+      if (ots.length) {
+        updatedModuleRoot = updatedNestedNode(sourceComponent.source, updatedModuleRoot, (child) => {
+          const overrides = child.children.find(child => child.name === "overrides");
+          if (overrides) {
+            return child;
+          }
+
+          return {
+            ...child,
+            children: [
+              ...child.children,
+              { name: "overrides", children: [], attributes: {}, id: child.id + "overrides" }
+            ]
+          };
         });
-      })
+      }
+
+      const overrideChildren: TreeNode[] = [];
+      const overrides = findNodeByTagName(sourceComponent.source, "overrides");
+
+      const targetName = getAttribute(sourceNode, "ref");
+      for (const ot of ots) {
+        switch(ot.type) {
+          case OperationalTransformType.SET_ATTRIBUTE: {
+            const { name, value, namespace } = ot as SetAttributeTransform;
+            if (name === "style" && namespace === DEFAULT_NAMESPACE) {
+              for (const key in value) {
+                overrideChildren.push({
+                  name: "set-style",
+                  id: "set-style" + key,
+                  attributes: {
+                    [DEFAULT_NAMESPACE]: {
+                      name: key,
+                      value: value[key],
+                      ref: targetName,
+                    }
+                  },
+                  children: []
+                })
+              }
+            }
+          }
+        }
+      }
+
+      if (ots.length) {
+        updatedModuleRoot = updatedNestedNode(overrides, updatedModuleRoot, (child) => {
+          return {
+            ...child,
+            children: [
+              ...child.children,
+              ...overrideChildren
+            ]
+          }
+        });
+      }
+
+    }
+
+    const graph = updateGraphDependency({
+      content: updatedModuleRoot
     }, sourceDep.uri, browser.graph);
+
 
     browser = updateSyntheticBrowser({
       graph: graph

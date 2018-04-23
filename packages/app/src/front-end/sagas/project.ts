@@ -52,7 +52,7 @@ const TEST_FILES = {
           </insert-child>
         </overrides>
       </component>
-      <component id="test4" extends="test" preview:bounds="left: 0; right: 100; top: 200; bottom: 300">
+      <component id="test4" extends="test3" preview:bounds="left: 0; right: 100; top: 200; bottom: 300">
         <overrides>
           <set-attribute target="hello" name="value" value="blarg" />
           <set-style name="background-color" value="blue" />
