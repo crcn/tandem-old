@@ -1,5 +1,5 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById } from "common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, getSyntheticDocumentWindow } from "paperclip";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow } from "paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq } from "lodash";
 
@@ -141,6 +141,10 @@ export const getReference = (ref: StructReference<any>, root: RootState) => {
 
 export const updateRootSyntheticPosition = (position: Point, item: StructReference<any>, root: RootState) => updateRootState({
   browser: updateSyntheticItemPosition(position, item, root.browser)
+}, root);
+
+export const updateRootSyntheticBounds = (bounds: Bounds, item: StructReference<any>, root: RootState) => updateRootState({
+  browser: updateSyntheticItemBounds(bounds, item, root.browser)
 }, root);
 
 export const getBoundedSelection = memoize((root: RootState): Array<Bounded & Struct> => root.selectionReferences.map((ref) => getReference(ref, root)).filter(item => getSyntheticItemBounds(item, root.browser)) as any);

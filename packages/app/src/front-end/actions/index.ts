@@ -109,7 +109,7 @@ export type ResizerMouseDown = {
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type ResizerPathStoppedMoving = {
-} & WrappedEvent<React.MouseEvent<any>>;
+} & ResizerPathMoved;
 
 export type SelectorDoubleClicked = {
   item: Struct;
@@ -220,8 +220,12 @@ export const resizerPathMoved = (anchor: Point, originalBounds: Bounds, newBound
   sourceEvent,
 });
 
-export const resizerPathStoppedMoving = (sourceEvent): ResizerPathStoppedMoving => ({
+
+export const resizerPathStoppedMoving = (anchor: Point, originalBounds: Bounds, newBounds: Bounds, sourceEvent: MouseEvent): ResizerPathMoved => ({
   type: RESIZER_PATH_MOUSE_STOPPED_MOVING,
+  anchor,
+  originalBounds,
+  newBounds,
   sourceEvent: {...sourceEvent}
 });
 

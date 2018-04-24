@@ -73,22 +73,21 @@ const enhancePath = compose<PathInnerProps, PathOuterProps>(
     onPointClick: ({ bounds, dispatch, zoom, root }: PathOuterProps) => (point: Point, event: React.MouseEvent<any>) => {
       event.stopPropagation();
       const sourceEvent = {...event};
-      startDOMDrag(event, (() => {}), (event2, info) => {
+
+      const wrapActionCreator = (createAction) => (event, info) => {
         const delta = {
           left: info.delta.x / zoom,
           top: info.delta.y / zoom
         };
-
-
-        dispatch(resizerPathMoved(point, bounds, {
+        dispatch(createAction(point, bounds, {
           left: point.left === 0 ? bounds.left + delta.left : bounds.left,
           top: point.top === 0 ? bounds.top + delta.top : bounds.top,
           right: point.left === 1 ? bounds.right + delta.left : bounds.right,
           bottom: point.top === 1 ? bounds.bottom + delta.top : bounds.bottom,
-        }, event2));
-      }, (event) => {
-        dispatch(resizerPathStoppedMoving(event));
-      });
+        }, event));
+      };
+
+      startDOMDrag(event, (() => {}), wrapActionCreator(resizerPathMoved), wrapActionCreator(resizerPathStoppedMoving));
     }
   })
 )

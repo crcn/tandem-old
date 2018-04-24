@@ -1,7 +1,31 @@
+OBJECTIVE: get to point where styles panel can be created in Tandem
+
+TODAY:
+
+- wire up resizer
+
+TOMORROW (WED):
+
+- document gutter
+- selecting document (from gutter)
+- persist moving document
+
 TODO:
 
-- persist changes to AST
-  - extended components should set override
+- wire up resizer
+- document gutter
+- document title
+- persist moving document
+- persist resizing document
+- create new document (randomly generate component name)
+- copy + paste component to create variant
+
+
+NUANCE:
+
+- resizer
+  - center resize
+  - keep aspect ratio
 
 - resizer
   - resize elements

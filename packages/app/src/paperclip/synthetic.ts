@@ -279,6 +279,23 @@ export const updateSyntheticItemPosition = (position: Point, ref: StructReferenc
   }
 };
 
+export const updateSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser) => {
+  if (ref.type === SyntheticObjectType.DOCUMENT) {
+    throw new Error("NOT DONE");
+  } else {
+    const node = getSyntheticNodeById(ref.id, browser);
+    const document = getSyntheticNodeDocument(ref.id, browser);
+    const style = getAttribute(node, "style") || EMPTY_OBJECT;
+    return updateSyntheticNodeStyle({
+      position: style.position || "relative",
+      left: bounds.left - document.bounds.left,
+      top: bounds.top - document.bounds.top,
+      width: bounds.right - bounds.left,
+      height: bounds.bottom - bounds.top
+    }, ref, browser);
+  }
+};
+
 export const getSyntheticDocumentById = memoize((documentId: string, state: SyntheticWindow|SyntheticBrowser) => findSyntheticDocument(state, document => document.id === documentId));
 
 export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => Boolean(getNestedTreeNodeById(nodeId, document.root))));
@@ -433,6 +450,29 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
         position: pos,
         left: position.left - document.bounds.left,
         top: position.top - document.bounds.top
+      });
+    });
+  }
+};
+
+
+// TODO move this code to sep func
+// TODO - filter out components with dep URIs
+export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser) => {
+  if (ref.type === SyntheticObjectType.DOCUMENT) {
+    throw new Error("NOT DONE");
+  } else {
+    const document = getSyntheticNodeDocument(ref.id, browser);
+    return persistSyntheticNodeChanges(ref, browser, (child) => {
+      const style = getAttribute(child, "style") || EMPTY_OBJECT;
+      const pos = style.position || "relative";
+      return setNodeAttribute(child, "style", {
+        ...style,
+        position: pos,
+        left: bounds.left - document.bounds.left,
+        top: bounds.top - document.bounds.top,
+        width: bounds.right - bounds.left,
+        height: bounds.bottom - bounds.top,
       });
     });
   }
