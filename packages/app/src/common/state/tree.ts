@@ -17,6 +17,8 @@ export type TreeNodeAttributes = {
   }
 };
 
+export type TreeNodeUpdater = (node: TreeNode) => TreeNode;
+
 export type TreeNode = {
   id?: string;
   children: TreeNode[];
@@ -125,16 +127,16 @@ export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyT
 
 export const removeNestedTreeNode = (nestedChild: TreeNode, current: TreeNode) => removeNestedTreeNodeFromPath(getTeeNodePath(nestedChild.id, current), current);
 
-export const removeNestedTreeNodeFromPath = (path: number[], current: TreeNode) => updatedNestedNodeFromPath(path, current, (child) => null);
+export const removeNestedTreeNodeFromPath = (path: number[], current: TreeNode) => updateNestedNodeFromPath(path, current, (child) => null);
 
-export const updatedNestedNode = (nestedChild: TreeNode, current: TreeNode, updater: (child: TreeNode) => TreeNode) => updatedNestedNodeFromPath(getTeeNodePath(nestedChild.id, current), current, updater);
+export const updateNestedNode = (nestedChild: TreeNode, current: TreeNode, updater: TreeNodeUpdater) => updateNestedNodeFromPath(getTeeNodePath(nestedChild.id, current), current, updater);
 
-export const updatedNestedNodeFromPath = (path: number[], current: TreeNode, updater: (child: TreeNode) => TreeNode, depth: number = 0) => {
+export const updateNestedNodeFromPath = (path: number[], current: TreeNode, updater: TreeNodeUpdater, depth: number = 0) => {
   if (depth === path.length) {
     return updater(current);
   }
 
-  const updatedChild = updatedNestedNodeFromPath(path, current.children[path[depth]], updater, depth + 1);
+  const updatedChild = updateNestedNodeFromPath(path, current.children[path[depth]], updater, depth + 1);
 
 
   return {

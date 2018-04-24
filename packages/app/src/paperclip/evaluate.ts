@@ -9,10 +9,10 @@ TODO (in order of importance):
 
 */
 
-import { TreeNode, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updatedNestedNode, setNodeAttribute } from "../common/state/tree";
+import { TreeNode, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updateNestedNode, setNodeAttribute } from "../common/state/tree";
 import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride } from "./dsl";
 import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency, getSyntheticDocumentComponent } from "./synthetic";
-import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML } from "../common/utils";
+import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML, memoize } from "../common/utils";
 import { pick } from "lodash";
 
 export const EDITOR_NAMESPACE = "editor";
@@ -87,7 +87,7 @@ const _evaluateComponent = (component: Component, attributes: TreeNodeAttributes
     if (extendsComponent) {
 
       // overrides passed in
-      return _evaluateComponent(extendsComponent, syntheticAttributes, syntheticChildren, source, id, extendsFromModule, checksum, extendsFromDependency, graph, component.overrides);
+      return _evaluateComponent(extendsComponent, syntheticAttributes, syntheticChildren, source, id, extendsFromModule, checksum, extendsFromDependency, graph, [...component.overrides, ...overrides]);
     }
   }
 
@@ -108,18 +108,18 @@ const overrideComponentTemplate = (template: TreeNode, overrides: ComponentOverr
       const ref = getNodeReference(insertNodeOverride.beforeChild, template);
       const parent = getParentTreeNode(ref, template);
       const index = parent.children.indexOf(ref);
-      template = updatedNestedNode(parent, template, (parent) => ({
+      template = updateNestedNode(parent, template, (parent) => ({
         ...parent,
         children: arraySplice(parent.children, index, 0, insertNodeOverride.child)
       }));
     } else if (override.type === ComponentOverrideType.SET_ATTRIBUTE) {
       const setAttributeOverride = override as SetAttributeOverride;
       const ref = getNodeReference(setAttributeOverride.target, template);
-      template = updatedNestedNode(ref, template, (ref) => setNodeAttribute(ref, setAttributeOverride.name, setAttributeOverride.value));
+      template = updateNestedNode(ref, template, (ref) => setNodeAttribute(ref, setAttributeOverride.name, setAttributeOverride.value));
     } else if (override.type === ComponentOverrideType.SET_STYLE) {
       const setStyleOverride = override as SetStyleOverride;
       const ref = getNodeReference(setStyleOverride.target, template);
-      template = updatedNestedNode(ref, template, (ref) => {
+      template = updateNestedNode(ref, template, (ref) => {
         return setNodeAttribute(ref, "style", {
           ...(getAttribute(ref, "style") || EMPTY_OBJECT),
           [setStyleOverride.name]: setStyleOverride.value

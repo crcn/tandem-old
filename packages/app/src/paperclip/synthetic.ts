@@ -1,4 +1,4 @@
-import { TreeNode, TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updatedNestedNode, setNodeAttribute, findNodeByTagName } from "../common/state/tree";
+import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode } from "../common/state/tree";
 import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
@@ -283,44 +283,26 @@ export const getSyntheticDocumentById = memoize((documentId: string, state: Synt
 
 export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => Boolean(getNestedTreeNodeById(nodeId, document.root))));
 
+const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
+  const syntheticNode = getSyntheticNodeById(ref.id, browser);
+  const syntheticDocument = getSyntheticNodeDocument(ref.id, browser);
+  const sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
+  const sourceDependency = browser.graph[syntheticNode.source.uri];
+  const sourceComponent = getSyntheticNodeSourceComponent(ref.id, browser);
 
+  let updatedModuleSourceNode = updateNestedNode(sourceNode, sourceDependency.content, updater);
 
-// TODO move this code to sep func
-// TODO - filter out components with dep URIs
-export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
-  if (ref.type === SyntheticObjectType.DOCUMENT) {
-    throw new Error("NOT DONE");
-  } else {
-    const node = getSyntheticNodeById(ref.id, browser);
-    const document = getSyntheticNodeDocument(ref.id, browser);
-    const sourceNode = getSyntheticNodeSourceNode(node, browser.graph);
-    const sourceDep = browser.graph[node.source.uri];
-    const sourceComponent = getSyntheticNodeSourceComponent(ref.id, browser);
+  // TODO - use this prop to use overrides or not
+  const sourceComponentContainsSourceNode = Boolean(getNestedTreeNodeById(sourceNode.id, sourceComponent.source));
 
-    let updatedModuleRoot = updatedNestedNode(sourceNode, sourceDep.content, (child) => {
-
-      // TODO - add overrides here
-      const style = getAttribute(child, "style") || EMPTY_OBJECT;
-      const pos = style.position || "relative";
-      return setNodeAttribute(child, "style", {
-        ...style,
-        position: pos,
-        left: position.left - document.bounds.left,
-        top: position.top - document.bounds.top
-      });
-    });
-
-    // TODO - use this prop to use overrides or not
-    const sourceComponentContainsSourceNode = Boolean(getNestedTreeNodeById(sourceNode.id, sourceComponent.source));
-
-    // set override.
+  // set override.
     // TODO - recompute overrides
     if (!sourceComponentContainsSourceNode) {
-      const ots = diffNode(sourceDep.content, updatedModuleRoot);
-      updatedModuleRoot = sourceDep.content;
+      const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
+      updatedModuleSourceNode = sourceDependency.content;
 
       if (ots.length) {
-        updatedModuleRoot = updatedNestedNode(sourceComponent.source, updatedModuleRoot, (child) => {
+        updatedModuleSourceNode = updateNestedNode(sourceComponent.source, updatedModuleSourceNode, (child) => {
           const overrides = child.children.find(child => child.name === "overrides");
           if (overrides) {
             return child;
@@ -346,18 +328,34 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
             const { name, value, namespace } = ot as SetAttributeTransform;
             if (name === "style" && namespace === DEFAULT_NAMESPACE) {
               for (const key in value) {
-                overrideChildren.push({
-                  name: "set-style",
-                  id: "set-style" + key,
-                  attributes: {
-                    [DEFAULT_NAMESPACE]: {
-                      name: key,
-                      value: value[key],
-                      ref: targetName,
+                const existingStyleOverride = findNestedNode(overrides, (node) => node.name === "set-style" && getAttribute(node, "name") === key && getAttribute(node, "target") === targetName);
+                if (existingStyleOverride) {
+                  updatedModuleSourceNode = updateNestedNode(existingStyleOverride, updatedModuleSourceNode, (child) => {
+                    return {
+                      ...child,
+                      attributes: {
+                        ...child.attributes,
+                        [DEFAULT_NAMESPACE]: {
+                          ...(child.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT),
+                          value: value[key]
+                        }
+                      }
                     }
-                  },
-                  children: []
-                })
+                  });
+                } else {
+                  overrideChildren.push({
+                    name: "set-style",
+                    id: overrides.id + "set-style" + key,
+                    attributes: {
+                      [DEFAULT_NAMESPACE]: {
+                        name: key,
+                        value: value[key],
+                        target: targetName,
+                      }
+                    },
+                    children: []
+                  });
+                }
               }
             }
           }
@@ -365,7 +363,7 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
       }
 
       if (ots.length) {
-        updatedModuleRoot = updatedNestedNode(overrides, updatedModuleRoot, (child) => {
+        updatedModuleSourceNode = updateNestedNode(overrides, updatedModuleSourceNode, (child) => {
           return {
             ...child,
             children: [
@@ -375,13 +373,11 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
           }
         });
       }
-
     }
 
     const graph = updateGraphDependency({
-      content: updatedModuleRoot
-    }, sourceDep.uri, browser.graph);
-
+      content: updatedModuleSourceNode
+    }, sourceDependency.uri, browser.graph);
 
     browser = updateSyntheticBrowser({
       graph: graph
@@ -389,7 +385,7 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
 
     // TODO - evaluate sourceDep dependents & update assoc windows
 
-    const sourceDependents = getDependents(sourceDep.uri, graph);
+    const sourceDependents = getDependents(sourceDependency.uri, graph);
     const sourceDependentUris = [];
 
     for (const dep of sourceDependents) {
@@ -420,5 +416,24 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
     }
 
     return browser;
+};
+
+// TODO move this code to sep func
+// TODO - filter out components with dep URIs
+export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
+  if (ref.type === SyntheticObjectType.DOCUMENT) {
+    throw new Error("NOT DONE");
+  } else {
+    const document = getSyntheticNodeDocument(ref.id, browser);
+    return persistSyntheticNodeChanges(ref, browser, (child) => {
+      const style = getAttribute(child, "style") || EMPTY_OBJECT;
+      const pos = style.position || "relative";
+      return setNodeAttribute(child, "style", {
+        ...style,
+        position: pos,
+        left: position.left - document.bounds.left,
+        top: position.top - document.bounds.top
+      });
+    });
   }
 };

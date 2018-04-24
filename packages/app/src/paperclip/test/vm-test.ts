@@ -427,6 +427,42 @@ describe(__filename + "#", () => {
       `
     ],
 
+    [
+      `can can override an already extended component`,
+      {
+        "entry.json": `
+          <module>
+            <component id="test">
+              <template>
+                <text ref="text1" value="a"></text>
+              </template>
+            </component>
+            <component id="test2" extends="test">
+              <overrides>
+                <set-style name="color" value="blue" />
+              </overrides>
+            </component>
+            <component id="test3" extends="test2">
+              <overrides>
+                <set-style name="color" value="orange" />
+              </overrides>
+            </component>
+          </module>
+        `
+      },
+      `
+      <div>
+        <text ref="text1" value="a"></text>
+      </div>
+      <div style="color:blue;">
+        <text ref="text1" value="a"></text>
+      </div>
+      <div style="color:orange;">
+        <text ref="text1" value="a"></text>
+      </div>
+      `
+    ],
+
     // can override with insert-child
     // can override with move-child
     // can override with set-attribute on slot

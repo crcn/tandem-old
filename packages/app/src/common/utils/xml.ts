@@ -66,7 +66,7 @@ export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0
         attrName = namespace + ":" + attrName;
       }
 
-      buffer += ` ${attrName}=${JSON.stringify(value)}`
+      buffer += ` ${attrName}=${/string|object/.test(typeof value) ? JSON.stringify(value) : `"${value}"`}`
     }
   }
 

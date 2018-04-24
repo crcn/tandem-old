@@ -18,8 +18,9 @@ export function memoize<TFunc extends (...args: any[]) => any>(func: TFunc, mapM
       const arg = arguments[i];
 
       let hashPart;
+      const targ = typeof arg;
 
-      if (arg && typeof arg === "object") {
+      if (arg && targ === "object" || targ === "function") {
         anchor = arg;
         hashPart = arg[hashKey] && arg[hashKey].self === arg ? arg[hashKey].value : (arg[hashKey] = { self: arg, value: ":" + (count++) }).value;
       } else {

@@ -1,4 +1,4 @@
-import {TreeNode, updatedNestedNodeFromPath, setNodeAttribute} from "../../state/tree";
+import {TreeNode, updateNestedNodeFromPath, setNodeAttribute} from "../../state/tree";
 import { EMPTY_OBJECT } from "../object";
 import { BADFAMILY } from "dns";
 
@@ -79,7 +79,7 @@ export const patchNode = <TNode extends TreeNode>(ots: OperationalTransform[], a
     switch(ot.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
         const { path, name, namespace, value } = ot as SetAttributeTransform;
-        b = updatedNestedNodeFromPath(path, b, (child) => setNodeAttribute(child, name, value, namespace));
+        b = updateNestedNodeFromPath(path, b, (child) => setNodeAttribute(child, name, value, namespace));
         break;
       }
     }
