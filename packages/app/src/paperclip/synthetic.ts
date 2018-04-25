@@ -2,10 +2,12 @@ import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFr
 import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
-import { Bounds, Struct, shiftBounds, StructReference, Point } from "../common";
+import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds } from "../common";
 import { mapValues } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry, evaluateComponent } from ".";
+import { STATUS_CODES } from "http";
+import { PREVIEW_NAMESPACE } from "front-end/state";
 
 export enum SyntheticObjectType {
   BROWSER,
@@ -136,7 +138,7 @@ export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: Depe
 export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
 export const getSyntheticDocumentDependency = (documentId: string, browser: SyntheticBrowser) => getSyntheticWindowDependency(getSyntheticDocumentWindow(documentId, browser), browser.graph);
 
-export const getSyntheticDocumentComponent = (document: SyntheticDocument, graph: DependencyGraph) =>  getSyntheticNodeSourceNode(document.root, graph)
+export const getSyntheticDocumentComponent = (document: SyntheticDocument, graph: DependencyGraph) =>  getComponentInfo(getSyntheticNodeSourceNode(document.root, graph));
 
 export const findSyntheticDocument = (state: SyntheticWindow|SyntheticBrowser, test: (document: SyntheticDocument) => Boolean) => {
   if (state.type === SyntheticObjectType.BROWSER) {
@@ -165,15 +167,15 @@ export const getComputedNodeBounds = memoize((nodeId: string, document: Syntheti
   return info[nodeId] && info[nodeId].bounds;
 });
 
-export const getSyntheticItemBounds = memoize((value: any, browser: SyntheticBrowser) => {
+export const getSyntheticItemBounds = memoize((value: Struct, browser: SyntheticBrowser) => {
   if (!value) {
     return null;
   }
   if ((value as SyntheticDocument).type === SyntheticObjectType.DOCUMENT) {
-    return (value as SyntheticDocument).bounds;
+    return getSyntheticDocumentById(value.id, browser).bounds;
   } else {
 
-    const document = getSyntheticNodeDocument((value as SyntheticNode).id, browser);
+    const document = getSyntheticNodeDocument(value.id, browser);
     return shiftBounds(getComputedNodeBounds(value.id, document), document.bounds);
   }
 });
@@ -265,23 +267,15 @@ export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser:
 });
 
 export const updateSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
-  if (ref.type === SyntheticObjectType.DOCUMENT) {
-    throw new Error("NOT DONE");
-  } else {
-    const node = getSyntheticNodeById(ref.id, browser);
-    const document = getSyntheticNodeDocument(ref.id, browser);
-    const style = getAttribute(node, "style") || EMPTY_OBJECT;
-    return updateSyntheticNodeStyle({
-      position: style.position || "relative",
-      left: position.left - document.bounds.left,
-      top: position.top - document.bounds.top
-    }, ref, browser);
-  }
+  const bounds = getSyntheticItemBounds(ref, browser);
+  return updateSyntheticItemBounds(moveBounds(bounds, position), ref, browser);
 };
 
 export const updateSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
-    throw new Error("NOT DONE");
+    return updateSyntheticDocument({
+      bounds,
+    }, ref.id, browser);
   } else {
     const node = getSyntheticNodeById(ref.id, browser);
     const document = getSyntheticNodeDocument(ref.id, browser);
@@ -301,11 +295,13 @@ export const getSyntheticDocumentById = memoize((documentId: string, state: Synt
 export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => Boolean(getNestedTreeNodeById(nodeId, document.root))));
 
 const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
-  const syntheticNode = getSyntheticNodeById(ref.id, browser);
-  const syntheticDocument = getSyntheticNodeDocument(ref.id, browser);
+
+  const syntheticDocument = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentById(ref.id, browser) : getSyntheticNodeDocument(ref.id, browser);
+  const syntheticNode = ref.type === SyntheticObjectType.DOCUMENT ? syntheticDocument.root : getSyntheticNodeById(ref.id, browser);
+
   const sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
   const sourceDependency = browser.graph[syntheticNode.source.uri];
-  const sourceComponent = getSyntheticNodeSourceComponent(ref.id, browser);
+  const sourceComponent = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentComponent(syntheticDocument, browser.graph) : getSyntheticNodeSourceComponent(ref.id, browser);
 
   let updatedModuleSourceNode = updateNestedNode(sourceNode, sourceDependency.content, updater);
 
@@ -418,7 +414,7 @@ const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: Synthet
       browser = updateSyntheticWindow(window.location, {
         documents: window.documents.map(document => {
           const newComponent = getSyntheticDocumentComponent(document, graph);
-          const componentInfo = getComponentInfo(newComponent);
+          const componentInfo = getComponentInfo(newComponent.source);
           const newDocumentNode = evaluateComponent(componentInfo, getSyntheticDocumentDependency(document.id, browser), browser.graph);
           const ots = diffNode(document.root, newDocumentNode);
           const nativeNodeMap = patchDOM(ots, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
@@ -435,32 +431,20 @@ const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: Synthet
     return browser;
 };
 
-// TODO move this code to sep func
-// TODO - filter out components with dep URIs
 export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
-  if (ref.type === SyntheticObjectType.DOCUMENT) {
-    throw new Error("NOT DONE");
-  } else {
-    const document = getSyntheticNodeDocument(ref.id, browser);
-    return persistSyntheticNodeChanges(ref, browser, (child) => {
-      const style = getAttribute(child, "style") || EMPTY_OBJECT;
-      const pos = style.position || "relative";
-      return setNodeAttribute(child, "style", {
-        ...style,
-        position: pos,
-        left: position.left - document.bounds.left,
-        top: position.top - document.bounds.top
-      });
-    });
-  }
+  const bounds = getSyntheticItemBounds(ref, browser);
+  return persistSyntheticItemBounds(moveBounds(bounds, position), ref, browser);
 };
 
-
-// TODO move this code to sep func
-// TODO - filter out components with dep URIs
 export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
-    throw new Error("NOT DONE");
+    return persistSyntheticNodeChanges(ref, browser, (child) => {
+      const style = getAttribute(child, "style", PREVIEW_NAMESPACE) || EMPTY_OBJECT;
+      return setNodeAttribute(child, "style", {
+        ...style,
+        ...bounds
+      }, PREVIEW_NAMESPACE);
+    });
   } else {
     const document = getSyntheticNodeDocument(ref.id, browser);
     return persistSyntheticNodeChanges(ref, browser, (child) => {

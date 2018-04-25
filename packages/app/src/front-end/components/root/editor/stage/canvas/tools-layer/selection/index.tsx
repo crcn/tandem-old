@@ -42,7 +42,7 @@ const  SelectionBounds = ({ root, zoom }: { root: RootState, zoom: number }) =>
   return <div style={boundsStyle as any}></div>;
 };
 
-export const  SelectionStageToolBase = ({ root, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
+export const  SelectionCanvasToolBase = ({ root, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
   const selection = getBoundedSelection(root);
   if (!selection.length || root.canvas.secondarySelection) return null;
 
@@ -52,7 +52,7 @@ export const  SelectionStageToolBase = ({ root, dispatch, onDoubleClick, zoom }
   </div>;
 };
 
-const enhanceSelectionStageTool = compose<SelectionInnerProps, SelectionOuterProps>(
+const enhanceSelectionCanvasTool = compose<SelectionInnerProps, SelectionOuterProps>(
   pure,
   withHandlers({
     onDoubleClick: ({ dispatch, root }: SelectionInnerProps) => (event: React.MouseEvent<any>) => {
@@ -64,6 +64,6 @@ const enhanceSelectionStageTool = compose<SelectionInnerProps, SelectionOuterPro
   })
 );
 
-export const  SelectionStageTool = enhanceSelectionStageTool(SelectionStageToolBase);
+export const  SelectionCanvasTool = enhanceSelectionCanvasTool(SelectionCanvasToolBase);
 
 export * from "./resizer";

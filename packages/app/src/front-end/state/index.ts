@@ -4,12 +4,14 @@ import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../action
 import { uniq } from "lodash";
 
 export type Canvas = {
+  backgroundColor: string;
   mousePosition?: Point;
   movingOrResizing?: boolean;
   panning?: boolean;
   translate: Translate;
   secondarySelection?: boolean;
   fullScreen?: boolean;
+  smooth?: boolean;
 };
 
 export type RootState = {

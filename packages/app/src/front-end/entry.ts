@@ -7,6 +7,7 @@ init({
   hoveringReferences: [],
   selectionReferences: [],
   canvas: {
+    backgroundColor: "#CFCFCF",
     translate: {
       left: 0,
       top: 0,

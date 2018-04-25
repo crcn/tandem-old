@@ -14,6 +14,9 @@ export const CANVAS_TOOL_OVERLAY_MOUSE_PAN_START = "CANVAS_TOOL_OVERLAY_MOUSE_PA
 export const CANVAS_TOOL_OVERLAY_MOUSE_PANNING = "CANVAS_TOOL_OVERLAY_MOUSE_PANNING";
 export const CANVAS_TOOL_OVERLAY_MOUSE_PAN_END = "CANVAS_TOOL_OVERLAY_MOUSE_PAN_END";
 export const CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED = "CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED";
+export const CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED = "CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED";
+export const CANVAS_TOOL_WINDOW_KEY_DOWN = "CANVAS_TOOL_WINDOW_KEY_DOWN";
+export const CANVAS_TOOL_ARTBOARD_TITLE_CLICKED = "CANVAS_TOOL_ARTBOARD_TITLE_CLICKED";
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
 export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
 export const CANVAS_MOUSE_MOVED = "CANVAS_MOUSE_MOVED";
@@ -59,23 +62,23 @@ export type SyntheticWindowOpened = {
 } & Action;
 
 export type CanvasToolOverlayMousePanStart = {
-  artboardId: string;
+  documentId: string;
 } & Action;
 
 
 export type CanvasToolOverlayMousePanning = {
-  artboardId: string;
+  documentId: string;
   deltaY: number;
   velocityY: number;
   center: Point;
 } & Action;
 
 export type CanvasToolOverlayMousePanEnd = {
-  artboardId: string;
+  documentId: string;
 } & Action;
 
 export type CanvasToolOverlayClicked = {
-  artboardId: string;
+  documentId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type CanvasToolOverlayMouseMoved = {
@@ -94,6 +97,14 @@ export type CanvasWheel = {
 export type CanvasMounted = {
   element: HTMLDivElement;
 } & Action;
+
+export type CanvasToolWindowKeyDown = {
+  documentId: string;
+} & WrappedEvent<React.KeyboardEvent<any>>;
+
+export type CanvasToolArtboardTitleClicked = {
+  documentId: string;
+} & WrappedEvent<React.MouseEvent<any>>;
 
 export type ResizerPathMoved = {
   originalBounds: Bounds;
@@ -149,14 +160,14 @@ export const syntheticWindowOpened = (window: SyntheticWindow): SyntheticWindowO
   type: SYNTHETIC_WINDOW_OPENED
 });
 
-export const canvasToolOverlayMousePanStart = (artboardId: string): CanvasToolOverlayMousePanStart => ({
-  artboardId,
+export const canvasToolOverlayMousePanStart = (documentId: string): CanvasToolOverlayMousePanStart => ({
+  documentId,
   type: CANVAS_TOOL_OVERLAY_MOUSE_PAN_START,
 });
 
 
-export const canvasToolOverlayMousePanning = (artboardId: string, center: Point, deltaY: number, velocityY: number): CanvasToolOverlayMousePanning => ({
-  artboardId,
+export const canvasToolOverlayMousePanning = (documentId: string, center: Point, deltaY: number, velocityY: number): CanvasToolOverlayMousePanning => ({
+  documentId,
   center,
   deltaY,
   velocityY,
@@ -168,13 +179,13 @@ export const canvasToolOverlayMouseLeave = (sourceEvent: React.MouseEvent<any>):
   sourceEvent
 });
 
-export const canvasToolOverlayMousePanEnd = (artboardId: string): CanvasToolOverlayMousePanEnd => ({
-  artboardId,
+export const canvasToolOverlayMousePanEnd = (documentId: string): CanvasToolOverlayMousePanEnd => ({
+  documentId,
   type: CANVAS_TOOL_OVERLAY_MOUSE_PAN_END,
 });
 
-export const canvasToolOverlayMouseDoubleClicked = (artboardId: string, sourceEvent: React.MouseEvent<any>): CanvasToolOverlayClicked => ({
-  artboardId,
+export const canvasToolOverlayMouseDoubleClicked = (documentId: string, sourceEvent: React.MouseEvent<any>): CanvasToolOverlayClicked => ({
+  documentId,
   type: CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED,
   sourceEvent
 });
@@ -195,7 +206,6 @@ export const canvasMouseClicked = (sourceEvent: React.MouseEvent<any>): WrappedE
   type: CANVAS_MOUSE_CLICKED,
 });
 
-
 export const canvasWheel = (canvasWidth: number, canvasHeight: number, { metaKey, ctrlKey, deltaX, deltaY, clientX, clientY }: React.WheelEvent<any>): CanvasWheel => ({
   metaKey,
   canvasWidth,
@@ -206,10 +216,13 @@ export const canvasWheel = (canvasWidth: number, canvasHeight: number, { metaKey
   type: CANVAS_WHEEL,
 });
 
-
 export const canvasMotionRested = () => ({
   type: CANVAS_MOTION_RESTED
 });
+
+export const canvasToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });
+export const canvasToolWindowKeyDown = (documentId: string, sourceEvent: React.KeyboardEvent<any>): CanvasToolWindowKeyDown => ({ type: CANVAS_TOOL_WINDOW_KEY_DOWN, documentId, sourceEvent });
+export const canvasToolDocumentTitleClicked = (documentId: string, sourceEvent: React.MouseEvent<any>): CanvasToolArtboardTitleClicked => ({ type: CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, documentId, sourceEvent });
 
 
 export const resizerPathMoved = (anchor: Point, originalBounds: Bounds, newBounds: Bounds, sourceEvent: MouseEvent): ResizerPathMoved => ({
@@ -219,7 +232,6 @@ export const resizerPathMoved = (anchor: Point, originalBounds: Bounds, newBound
   newBounds,
   sourceEvent,
 });
-
 
 export const resizerPathStoppedMoving = (anchor: Point, originalBounds: Bounds, newBounds: Bounds, sourceEvent: MouseEvent): ResizerPathMoved => ({
   type: RESIZER_PATH_MOUSE_STOPPED_MOVING,

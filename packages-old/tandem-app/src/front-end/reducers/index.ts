@@ -475,44 +475,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       return state;
     }
 
-
-
-    case RESIZER_PATH_MOUSE_MOVED: {
-      let { workspaceId, anchor, originalBounds, newBounds, sourceEvent } = event as ResizerPathMoved;
-
-      const workspace = getSelectedWorkspace(state);
-      state = updateWorkspaceStage(state, workspace.$id, {
-        movingOrResizing: true
-      });
-
-      // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
-      const currentBounds = getWorkspaceSelectionBounds(workspace);
-
-
-      const keepAspectRatio = sourceEvent.shiftKey;
-      const keepCenter      = sourceEvent.altKey;
-
-      if (keepCenter) {
-        // newBounds = keepBoundsCenter(newBounds, bounds, anchor);
-      }
-
-      if (keepAspectRatio) {
-        newBounds = keepBoundsAspectRatio(newBounds, originalBounds, anchor, keepCenter ? { left: 0.5, top: 0.5 } : anchor);
-      }
-
-      for (const item of getBoundedWorkspaceSelection(workspace)) {
-        const innerBounds = getWorkspaceItemBounds(item, workspace);
-        const scaledBounds = scaleInnerBounds(currentBounds, currentBounds, newBounds);
-
-        if (item.$type === ARTBOARD) {
-          state = updateArtboard(state, item.$id, {
-            bounds: scaleInnerBounds(innerBounds, currentBounds, newBounds)
-          })
-        }
-      }
-      return state;
-    }
-
     case ARTBOARD_FOCUSED: {
       const { artboardId } = event as ArtboardFocused;
       return selectAndCenterArtboard(state, getArtboardById(artboardId, state));

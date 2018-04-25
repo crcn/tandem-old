@@ -41,7 +41,7 @@ type ArtboardOverlayToolsInnerProps = {
 } & ArtboardOverlayToolsOuterProps;
 
 type NodeOverlayProps = {
-  artboardId: string;
+  documentId: string;
   bounds: Bounds;
   zoom: number;
   hovering: boolean;
@@ -49,7 +49,7 @@ type NodeOverlayProps = {
   dispatch: Dispatch<any>;
 };
 
-const NodeOverlayBase = ({ artboardId, zoom, bounds, node, dispatch, hovering }: NodeOverlayProps) => {
+const NodeOverlayBase = ({ documentId, zoom, bounds, node, dispatch, hovering }: NodeOverlayProps) => {
 
   if (!bounds) {
     return null;
@@ -102,7 +102,7 @@ const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onP
         onDoubleClick={wrapEventToDispatch(dispatch, canvasToolOverlayMouseDoubleClicked.bind(this, document.id))}>
       {
         hoveringNodes.map((node) => <NodeOverlay
-          artboardId={document.id}
+          documentId={document.id}
           zoom={zoom}
           key={node.id}
           node={node}

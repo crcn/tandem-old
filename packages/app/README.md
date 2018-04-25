@@ -1,39 +1,39 @@
 OBJECTIVE: get to point where styles panel can be created in Tandem
 
-TODAY:
+TOMORROW (THU):
 
-- wire up resizer
+- insert new document
+- insert rectangle
 
-TOMORROW (WED):
+TODO (IN ORDER):
 
-- document gutter
-- selecting document (from gutter)
-- persist moving document
-
-TODO:
-
-- wire up resizer
-- document gutter
-- document title
-- persist moving document
-- persist resizing document
-- create new document (randomly generate component name)
+- insert text
+- delete element
+- delete artboard
 - copy + paste component to create variant
+- alignment tool
 
+- styles pane
+  - color picker
+  - layout constraint (abstract CSS)
 
-NUANCE:
+- Atom desktop wrapper
+- load projects from file
 
-- resizer
-  - center resize
-  - keep aspect ratio
+- compile to react component
 
-- resizer
-  - resize elements
+- UX
+  - highlight child variant
 
-- artboard tool (A key)
-- rectangle tool (R key)
-  - should be able to insert into artboard
-  - should be able to insert into other rectangles
+- WOWZA
+  - merge conflict resolver
+  - browsertap integration
+  - sharing online
+  - GIT integration
+
+FEATURES:
+
+- multiple file tabs (like vscode)
 
 - style pane
   - background color
@@ -114,4 +114,5 @@ QUESTIONS:
 
 - [ ] core
   - [ ] web worker
+
 
