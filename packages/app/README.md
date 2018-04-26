@@ -1,4 +1,4 @@
-OBJECTIVE: get to point where styles panel can be created in Tandem
+MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
@@ -13,14 +13,24 @@ TODO (IN ORDER):
 - delete artboard
 - copy + paste component to create variant
 - alignment tool
-- layers
+- layers*
+  - re-organize elements
+  - delete elements
+  - update text
+
+TODO (UNORG AFTER OBJECTIVE):
+
+- Atom desktop wrapper
+- load projects from file
+- save project
+- compiler
+  - compile to React
+  - compile CSS vars to JS
 
 - styles pane
   - color picker
   - layout constraint (abstract CSS)
 
-- Atom desktop wrapper
-- load projects from file
 
 - UX
   - highlight child variant
@@ -30,10 +40,6 @@ TODO (IN ORDER):
   - browsertap integration
   - sharing online
   - GIT integration
-
-- compiler
-  - compile to React
-  - compile CSS vars to JS
 
 FEATURES:
 
