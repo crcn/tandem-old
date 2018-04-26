@@ -29,6 +29,12 @@ export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
 export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
 export const SELECTOR_DOUBLE_CLICKED  = "SELECTOR_DOUBLE_CLICKED";
+export const SHORTCUT_A_KEY_DOWN = "SHORTCUT_A_KEY_DOWN";
+export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
+export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
+export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
+export const SHORTCUT_DELETE_KEY_DOWN = "SHORTCUT_DELETE_KEY_DOWN";
+export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -126,6 +132,14 @@ export type SelectorDoubleClicked = {
   item: Struct;
 } & WrappedEvent<React.MouseEvent<any>>;
 
+export type ShortcutKeyDown = {
+
+} & WrappedEvent<KeyboardEvent>;
+
+export type InsertToolFinished = {
+  bounds: Bounds;
+} & Action;
+
 export const fileNavigatorItemClicked = (path: number[]): FileNavigatorItemClicked => ({
   path,
   type: FILE_NAVIGATOR_ITEM_CLICKED,
@@ -147,6 +161,10 @@ export const projectDirectoryLoaded = (directory: Directory): ProjectDirectoryLo
   type: PROJECT_DIRECTORY_LOADED
 });
 
+export const shortcutKeyDown = (type: string, sourceEvent: KeyboardEvent): ShortcutKeyDown => ({
+  type,
+  sourceEvent
+});
 
 export const documentRendered = (documentId: string, info: ComputedDisplayInfo, nativeMap: SyntheticNativeNodeMap): DocumentRendered => ({
   nativeMap,
@@ -164,7 +182,6 @@ export const canvasToolOverlayMousePanStart = (documentId: string): CanvasToolOv
   documentId,
   type: CANVAS_TOOL_OVERLAY_MOUSE_PAN_START,
 });
-
 
 export const canvasToolOverlayMousePanning = (documentId: string, center: Point, deltaY: number, velocityY: number): CanvasToolOverlayMousePanning => ({
   documentId,
@@ -189,7 +206,6 @@ export const canvasToolOverlayMouseDoubleClicked = (documentId: string, sourceEv
   type: CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED,
   sourceEvent
 });
-
 
 export const canvasContainerMounted = (element: HTMLDivElement): CanvasMounted => ({
   element,
@@ -216,8 +232,14 @@ export const canvasWheel = (canvasWidth: number, canvasHeight: number, { metaKey
   type: CANVAS_WHEEL,
 });
 
+
 export const canvasMotionRested = () => ({
   type: CANVAS_MOTION_RESTED
+});
+
+export const insertToolFinished = (bounds: Bounds): InsertToolFinished => ({
+  bounds,
+  type: INSERT_TOOL_FINISHED
 });
 
 export const canvasToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });

@@ -1,13 +1,14 @@
 
 
 import { Action } from "redux";
-import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds } from "../state";
-import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById } from "paperclip";
+import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN } from "../actions";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow } from "../state";
+import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds } from "common";
 
 export const rootReducer = (state: RootState, action: Action) => {
   state = canvasReducer(state, action);
+  state = shortcutReducer(state, action);
   switch(action.type) {
     case PROJECT_DIRECTORY_LOADED: {
       const { directory } = action as ProjectDirectoryLoaded;
@@ -82,6 +83,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case CANVAS_MOUSE_MOVED: {
+      if (state.canvas.toolType != null) {
+        return state;
+      }
+
       const { sourceEvent: { pageX, pageY }} = action as WrappedEvent<React.MouseEvent<any>>;
       state = updateCanvas({ mousePosition: { left: pageX, top: pageY }}, state);
 
@@ -99,6 +104,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     // TODO
     case CANVAS_MOUSE_CLICKED: {
+
+      if (state.canvas.toolType != null) {
+        return state;
+      }
       const { sourceEvent } = action as CanvasToolOverlayClicked;
       if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
         return state;
@@ -155,6 +164,30 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = updateCanvas({ smooth: false }, state);
       return handleArtboardSelectionFromAction(state, getSyntheticDocumentById(documentId, state.browser), action as CanvasToolArtboardTitleClicked);
     }
+    case INSERT_TOOL_FINISHED: {
+      const { bounds } = action as InsertToolFinished;
+      const toolType = state.canvas.toolType;
+      state = updateCanvas({
+        toolType: null
+      }, state);
+
+      switch(toolType) {
+        case CanvasToolType.ARTBOARD: {
+
+          state = updateRootStateSyntheticBrowser(persistNewComponent(bounds, state.activeFilePath, state.browser), state) ;
+          const newActiveWindow = getActiveWindow(state);
+          const newDocument = newActiveWindow.documents[newActiveWindow.documents.length - 1];
+          state = setSelection(state, newDocument);
+          return state;
+        }
+        case CanvasToolType.RECTANGLE: {
+          throw new Error("NOT DONE");
+        }
+        case CanvasToolType.TEXT: {
+          throw new Error("NOT DONE");
+        }
+      }
+    }
   }
 
   return state;
@@ -185,7 +218,41 @@ const getResizeActionBounds = (action: ResizerPathMoved|ResizerMoved) => {
   return newBounds;
 }
 
+const shortcutReducer = (state: RootState, action: Action) => {
+  switch(action.type) {
+    case SHORTCUT_A_KEY_DOWN: {
+      return updateCanvas({
+        toolType: CanvasToolType.ARTBOARD
+      }, state);
+    }
+    case SHORTCUT_R_KEY_DOWN: {
+      return updateCanvas({
+        toolType: CanvasToolType.RECTANGLE
+      }, state);
+    }
+    case SHORTCUT_T_KEY_DOWN: {
+      return updateCanvas({
+        toolType: CanvasToolType.TEXT
+      }, state);
+    }
+    case SHORTCUT_ESCAPE_KEY_DOWN: {
+      if (state.canvas.toolType) {
+        return updateCanvas({
+          toolType: null
+        }, state);
+      } else {
+        return setSelection(state);
+      }
+    }
+    case SHORTCUT_DELETE_KEY_DOWN: {
+      const selection = state.selectionReferences;
+      console.log("TO DELETE", selection);
+      return state;
+    }
+  }
 
+  return state;
+};
 const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: RootState, ref: StructReference<any>, event: T) => {
   const { sourceEvent } = event;
   return setSelection(state, ref);

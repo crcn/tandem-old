@@ -11,6 +11,7 @@ import { SelectableToolsComponent } from "./selectables";
 import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";
 import { DocumentsCanvasTool } from "./documents";
+import { InsertLayer } from "./insert-layer";
 
 export type ToolsLayerComponent = {
   root: RootState;
@@ -21,6 +22,7 @@ export type ToolsLayerComponent = {
 const BaseToolsLayerComponent = ({ root, zoom, dispatch }: ToolsLayerComponent) => {
   const activeWindow = getActiveWindow(root);
   return <div className="m-tools-layer">
+    <InsertLayer canvas={root.canvas} dispatch={dispatch} />
     <DocumentsCanvasTool root={root} translate={root.canvas.translate} dispatch={dispatch} />
     <NodeOverlaysTool root={root} zoom={zoom} dispatch={dispatch} />
     { activeWindow && <SelectableToolsComponent documents={activeWindow.documents} /> }

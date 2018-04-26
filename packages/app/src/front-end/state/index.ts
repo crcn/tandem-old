@@ -3,6 +3,12 @@ import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSynthe
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq } from "lodash";
 
+export enum CanvasToolType {
+  TEXT,
+  RECTANGLE,
+  ARTBOARD
+};
+
 export type Canvas = {
   backgroundColor: string;
   mousePosition?: Point;
@@ -11,6 +17,7 @@ export type Canvas = {
   translate: Translate;
   secondarySelection?: boolean;
   fullScreen?: boolean;
+  toolType?: CanvasToolType;
   smooth?: boolean;
 };
 
@@ -151,5 +158,6 @@ export const updateRootSyntheticBounds = (bounds: Bounds, item: StructReference<
 
 export const getBoundedSelection = memoize((root: RootState): Array<Bounded & Struct> => root.selectionReferences.map((ref) => getReference(ref, root)).filter(item => getSyntheticItemBounds(item, root.browser)) as any);
 export const getSelectionBounds = memoize((root: RootState) => mergeBounds(...getBoundedSelection(root).map(boxed => getSyntheticItemBounds(boxed, root.browser))));
+
 
 export * from "./constants";

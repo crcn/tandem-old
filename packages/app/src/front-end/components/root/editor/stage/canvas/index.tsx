@@ -2,7 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { compose, pure, withState, withHandlers } from "recompose";
-import { RootState, getActiveWindow } from "front-end/state";
+import { RootState, getActiveWindow, CanvasToolType } from "front-end/state";
 import { SyntheticWindow, Dependency } from "paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
 import { ToolsLayerComponent } from "./tools-layer";
@@ -32,7 +32,6 @@ export type CanvasInnerProps = {
 } & CanvasOuterProps;
 
 const onWheel = () => {};
-
 const BaseCanvasComponent = ({
   root,
   dispatch,
@@ -49,10 +48,6 @@ const BaseCanvasComponent = ({
   onDragExit
 }: CanvasInnerProps) => {
   const activeWindow = getActiveWindow(root);
-
-  const outerStyle = {
-    // cursor: cursor || "default"
-  };
 
   return <div className="m-canvas">
     <Isolate
@@ -79,8 +74,7 @@ const BaseCanvasComponent = ({
           onClick={onMouseClick}
           tabIndex={-1}
           onDragExit={onDragExit}
-          className="stage-inner"
-          style={outerStyle}>
+          className="stage-inner">
           <PreviewLayerComponent window={activeWindow} dependency={dependency} />
           <ToolsLayerComponent root={root} dispatch={dispatch} zoom={1} />
         </div>
@@ -88,8 +82,6 @@ const BaseCanvasComponent = ({
     </Isolate>
   </div>;
 };
-
-
 
 const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
   pure,
