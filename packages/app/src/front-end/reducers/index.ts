@@ -2,7 +2,7 @@
 
 import { Action } from "redux";
 import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow } from "../state";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool } from "../state";
 import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds } from "common";
 
@@ -221,19 +221,13 @@ const getResizeActionBounds = (action: ResizerPathMoved|ResizerMoved) => {
 const shortcutReducer = (state: RootState, action: Action) => {
   switch(action.type) {
     case SHORTCUT_A_KEY_DOWN: {
-      return updateCanvas({
-        toolType: CanvasToolType.ARTBOARD
-      }, state);
+      return setCanvasTool(CanvasToolType.ARTBOARD, state);
     }
     case SHORTCUT_R_KEY_DOWN: {
-      return updateCanvas({
-        toolType: CanvasToolType.RECTANGLE
-      }, state);
+      return setCanvasTool(CanvasToolType.RECTANGLE, state);
     }
     case SHORTCUT_T_KEY_DOWN: {
-      return updateCanvas({
-        toolType: CanvasToolType.TEXT
-      }, state);
+      return setCanvasTool(CanvasToolType.TEXT, state);
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
       if (state.canvas.toolType) {

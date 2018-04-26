@@ -76,6 +76,12 @@ export const updateCanvas = (properties: Partial<Canvas>, root: RootState) => {
   }, root);
 }
 
+export const setCanvasTool = (toolType: CanvasToolType, root: RootState) => {
+  root = updateCanvas({ toolType }, root);
+  root = setSelection(root);
+  return root;
+}
+
 export const getActiveWindow = (root: RootState) => root.browser.windows.find(window => window.location === root.activeFilePath);
 
 export const getAllWindowDocuments = memoize((browser: SyntheticBrowser): SyntheticDocument[] => {
