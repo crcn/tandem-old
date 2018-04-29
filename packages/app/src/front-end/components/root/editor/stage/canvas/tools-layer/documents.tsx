@@ -5,7 +5,7 @@ import { Translate, getBoundsSize } from "common";
 import { RootState, getActiveWindow } from "front-end/state";
 import { wrapEventToDispatch } from "front-end/utils";
 import { Dispatch } from "redux";
-import {SyntheticBrowser, SyntheticDocument, getComponentInfo, DependencyGraph, getSytheticNodeSource, getSyntheticDocumentDependency, getSyntheticNodeSourceComponent } from "paperclip";
+import {SyntheticBrowser, SyntheticDocument, DependencyGraph, getSytheticNodeSource, getSyntheticDocumentDependency, getSyntheticNodeSourceComponent } from "paperclip";
 import { canvasToolDocumentTitleClicked, canvasToolWindowKeyDown, canvasToolWindowBackgroundClicked } from "front-end/actions";
 
 type DocumentItemInnerProps = {
@@ -47,6 +47,12 @@ const DocumentItemBase = ({ browser, document, translate, dispatch }: DocumentIt
     background: "transparent"
   };
 
+  const component = getSyntheticNodeSourceComponent(document.root.id, browser);
+
+  if (!component) {
+    return null;
+  }
+
   return <div className="m-documents-stage-tool-item" style={style}>
     <div
     className="m-documents-stage-tool-item-title"
@@ -54,7 +60,7 @@ const DocumentItemBase = ({ browser, document, translate, dispatch }: DocumentIt
     style={titleStyle as any}
     onKeyDown={wrapEventToDispatch(dispatch, canvasToolWindowKeyDown.bind(this, document.id))}
     onClick={wrapEventToDispatch(dispatch, canvasToolDocumentTitleClicked.bind(this, document.id))}>
-      { getSyntheticNodeSourceComponent(document.root.id, browser).label || "Untitled" }
+      { component.label || "Untitled" }
     </div>
     <div className="m-documents-stage-tool-item-content" style={contentStyle}>
 

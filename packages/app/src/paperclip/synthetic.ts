@@ -1,4 +1,4 @@
-import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds } from "../common/state/tree";
+import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode } from "../common/state/tree";
 import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
@@ -265,7 +265,11 @@ export const getSyntheticNodeById = (nodeId: string, browser: SyntheticBrowser) 
 
 export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
   const document = getSyntheticNodeDocument(nodeId, browser);
-  return getComponentInfo(getSyntheticNodeSourceNode(document.root, browser.graph));
+  const componentNode = getSyntheticNodeSourceNode(document.root, browser.graph);
+  if (!componentNode) {
+    return null;
+  }
+  return getComponentInfo(componentNode);
 });
 
 export const updateSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
@@ -525,6 +529,21 @@ export const persistNewComponent = (bounds: Bounds, dependencyUri: string, brows
       ]
     }
   }, dependencyUri, browser);
+};
+
+export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browser: SyntheticBrowser) => {
+  return refs.reduce((state, ref) => {
+    if (ref.type === SyntheticObjectType.DOCUMENT) {
+      const document = getSyntheticDocumentById(ref.id, browser);
+      const dep = getSyntheticDocumentDependency(document.id, browser);
+      const component = getSyntheticDocumentComponent(document, browser.graph);
+      return updateDependencyAndRevaluate({
+        content: removeNestedTreeNode(component.source, dep.content)
+      }, dep.uri, state);
+    } else {
+      throw new Error("TODO");
+    }
+  }, browser);
 };
 
 export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
