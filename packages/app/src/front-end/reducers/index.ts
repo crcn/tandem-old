@@ -2,7 +2,7 @@
 
 import { Action } from "redux";
 import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool } from "../state";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentReference } from "../state";
 import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds } from "common";
 
@@ -83,9 +83,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case CANVAS_MOUSE_MOVED: {
-      if (state.canvas.toolType != null) {
-        return state;
-      }
+
 
       const { sourceEvent: { pageX, pageY }} = action as WrappedEvent<React.MouseEvent<any>>;
       state = updateCanvas({ mousePosition: { left: pageX, top: pageY }}, state);
@@ -93,7 +91,18 @@ export const canvasReducer = (state: RootState, action: Action) => {
       // TODO - in the future, we'll probably want to be able to highlight hovered nodes as the user is moving an element around to indicate where
       // they can drop the element.
 
-      const targetRef = state.canvas.movingOrResizing ? null : getCanvasMouseNodeTargetReference(state, action as CanvasToolOverlayMouseMoved);
+      let targetRef: StructReference<any>;
+
+      if (!state.canvas.movingOrResizing) {
+        const toolType = state.canvas.toolType;
+        if (toolType != null) {
+          if (toolType === CanvasToolType.RECTANGLE || toolType === CanvasToolType.TEXT) {
+            targetRef = getCanvasMouseDocumentReference(state, action as CanvasToolOverlayMouseMoved);
+          }
+        } else {
+          targetRef = getCanvasMouseNodeTargetReference(state, action as CanvasToolOverlayMouseMoved);
+        }
+      }
 
       state = updateRootState({
         hoveringReferences: targetRef ? [targetRef] : []
@@ -177,7 +186,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       switch(toolType) {
         case CanvasToolType.ARTBOARD: {
 
-          state = updateRootStateSyntheticBrowser(persistNewComponent(bounds, state.activeFilePath, state.browser), state) ;
+          state = updateRootStateSyntheticBrowser(persistNewComponent(bounds, state.activeFilePath, state.browser), state);
           const newActiveWindow = getActiveWindow(state);
           const newDocument = newActiveWindow.documents[newActiveWindow.documents.length - 1];
           state = setSelection(state, newDocument);

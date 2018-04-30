@@ -2,12 +2,11 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
-- delete artboard
-- double click artboard title to change
 - insert rectangle
 
 TODO (IN ORDER):
 
+- finish diffing algorithm
 - insert text
 - delete element / text
 - delete artboard

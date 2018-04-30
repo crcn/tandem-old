@@ -9,7 +9,7 @@ import { RootState, getActiveWindow } from "front-end/state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import { SyntheticNode, SyntheticDocument, SyntheticWindow, getSyntheticNodeSourceNode, getSyntheticWindowDependency, getComponentInfo, Component } from "paperclip";
-import { Bounds, memoize, getTreeNodeIdMap, TreeNodeIdMap, StructReference, EMPTY_OBJECT } from "common";
+import { Bounds, memoize, getTreeNodeIdMap, TreeNodeIdMap, StructReference, EMPTY_OBJECT, Bounded } from "common";
 import { compose, pure, withHandlers } from "recompose";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { Dispatch } from "redux";
@@ -31,7 +31,7 @@ type ArtboardOverlayToolsOuterProps = {
   dispatch: Dispatch<any>;
   document: SyntheticDocument;
   zoom: number;
-  hoveringNodes: SyntheticNode[];
+  hoveringNodes: StructReference<any>[];
 };
 
 type ArtboardOverlayToolsInnerProps = {
@@ -41,15 +41,12 @@ type ArtboardOverlayToolsInnerProps = {
 } & ArtboardOverlayToolsOuterProps;
 
 type NodeOverlayProps = {
-  documentId: string;
   bounds: Bounds;
   zoom: number;
-  hovering: boolean;
-  node: SyntheticNode;
   dispatch: Dispatch<any>;
 };
 
-const NodeOverlayBase = ({ documentId, zoom, bounds, node, dispatch, hovering }: NodeOverlayProps) => {
+const NodeOverlayBase = ({ zoom, bounds, dispatch }: NodeOverlayProps) => {
 
   if (!bounds) {
     return null;
@@ -68,11 +65,18 @@ const NodeOverlayBase = ({ documentId, zoom, bounds, node, dispatch, hovering }:
   };
 
   return <div
-  className={cx("visual-tools-node-overlay", { hovering: hovering })}
+  className={cx("visual-tools-node-overlay hovering")}
   style={style} />;
 }
 
 const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
+
+const getDocumentRelativeBounds = memoize((document: SyntheticDocument) => ({
+  left: 0,
+  top: 0,
+  right: document.bounds.right - document.bounds.left,
+  bottom: document.bounds.bottom - document.bounds.top
+}));
 
 const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onPanStart, onPan, onPanEnd }: ArtboardOverlayToolsInnerProps) => {
 
@@ -101,14 +105,11 @@ const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onP
         style={{ width: "100%", height: "100%", position: "absolute" } as any}
         onDoubleClick={wrapEventToDispatch(dispatch, canvasToolOverlayMouseDoubleClicked.bind(this, document.id))}>
       {
-        hoveringNodes.map((node) => <NodeOverlay
-          documentId={document.id}
+        hoveringNodes.map((ref) => <NodeOverlay
           zoom={zoom}
-          key={node.id}
-          node={node}
-          bounds={document.computed[node.id] && document.computed[node.id].bounds}
-          dispatch={dispatch}
-          hovering={true} />)
+          key={ref.id}
+          bounds={document.id === ref.id ? getDocumentRelativeBounds(document) : document.computed[ref.id] && document.computed[ref.id].bounds}
+          dispatch={dispatch}  />)
       }
     </div>
     </Hammer>
@@ -139,12 +140,10 @@ const getNodes = memoize((refs: StructReference<any>[], allNodes: TreeNodeIdMap)
   return refs.map(({type, id}) => allNodes[id]).filter((flattenedObject) => !!flattenedObject)
 });
 
-const getHoveringSyntheticNodes = memoize((root: RootState, document: SyntheticDocument): SyntheticNode[] => {
+const getHoveringSyntheticNodes = memoize((root: RootState, document: SyntheticDocument): StructReference<any>[] => {
   const allNodes = document && getTreeNodeIdMap(document.root) || {};
-  return difference(
-    getNodes(root.hoveringReferences, allNodes),
-    getNodes(root.selectionReferences, allNodes)
-  ) as SyntheticNode[]
+  const selectionRefIds = root.selectionReferences.map(ref => ref.id);
+  return root.hoveringReferences.filter(ref => selectionRefIds.indexOf(ref.id) === -1);
 });
 
 export const  NodeOverlaysToolBase = ({ root, dispatch, zoom }: VisualToolsProps) => {

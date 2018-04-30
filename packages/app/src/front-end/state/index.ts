@@ -107,15 +107,16 @@ export const getCanvasMouseNodeTargetReference = (state: RootState, event: Canva
   const canvas     = state.canvas;
   const translate = getCanvasTranslate(canvas);
 
-  const {left: scaledPageX, top: scaledPageY } = getScaledMouseCanvasPosition(state, event);
 
   const activeWindow = getActiveWindow(state);
 
-  const document = getAllWindowDocuments(state.browser).find((document) => {
-    return pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, document.bounds)
-  });
+  const documentRef = getCanvasMouseDocumentReference(state, event);
 
-  if (!document) return null;
+  if (!documentRef) return null;
+
+  const document = getSyntheticDocumentById(documentRef.id, state.browser);
+
+  const {left: scaledPageX, top: scaledPageY } = getScaledMouseCanvasPosition(state, event);
 
   const mouseX = scaledPageX - document.bounds.left;
   const mouseY = scaledPageY - document.bounds.top;
@@ -137,6 +138,13 @@ export const getCanvasMouseNodeTargetReference = (state: RootState, event: Canva
     type: SyntheticObjectType.ELEMENT,
     id: intersectingBoundsMap.get(smallestBounds)
   };
+};
+
+export const getCanvasMouseDocumentReference = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked) => {
+  const {left: scaledPageX, top: scaledPageY } = getScaledMouseCanvasPosition(state, event);
+  return getAllWindowDocuments(state.browser).find((document) => {
+    return pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, document.bounds)
+  });
 }
 
 export const setSelection = (root: RootState, ...selectionIds: StructReference<any>[]) => {
