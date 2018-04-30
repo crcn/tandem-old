@@ -97,7 +97,7 @@ export type DeleteChildOverride = {
 
 export type InsertChildOverride = {
   child: TreeNode;
-  beforeChild: string;
+  beforeChild?: string;
 } & ComponentOverride;
 
 export type SetAttributeOverride = {

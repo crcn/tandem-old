@@ -1,4 +1,4 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById } from "common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect } from "common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow } from "paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq } from "lodash";
@@ -141,9 +141,13 @@ export const getCanvasMouseNodeTargetReference = (state: RootState, event: Canva
 };
 
 export const getCanvasMouseDocumentReference = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked) => {
-  const {left: scaledPageX, top: scaledPageY } = getScaledMouseCanvasPosition(state, event);
+  return getDocumentReferenceFromPoint(getScaledMouseCanvasPosition(state, event), state);
+}
+
+
+export const getDocumentReferenceFromPoint = (point: Point, state: RootState) => {
   return getAllWindowDocuments(state.browser).find((document) => {
-    return pointIntersectsBounds({ left: scaledPageX, top: scaledPageY }, document.bounds)
+    return pointIntersectsBounds(point, document.bounds)
   });
 }
 

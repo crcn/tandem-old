@@ -531,7 +531,76 @@ export const persistNewComponent = (bounds: Bounds, dependencyUri: string, brows
   }, dependencyUri, browser);
 };
 
-// export const persistInsertRectangle = (bounds: Bound
+export const persistInsertRectangle = (style: any, documentId: string, browser: SyntheticBrowser) => {
+  const dep = getSyntheticDocumentDependency(documentId, browser);
+  const newRectangleNode: TreeNode = addTreeNodeIds({
+    name: "div",
+    attributes: {
+      [DEFAULT_NAMESPACE]: {
+        style
+      }
+    },
+    children: []
+  }, dep.content.id);
+  const componentNode = getSyntheticDocumentComponent(getSyntheticDocumentById(documentId, browser), browser.graph).source;
+  const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
+
+
+  return updateDependencyAndRevaluate({
+    content: insertComponentChildNode(componentNode.id, newRectangleNode, dep.content)
+  }, dep.uri, browser);
+};
+
+const insertComponentChildNode = (componentId: string, child: TreeNode, content: TreeNode) => {
+  const componentNode = getNestedTreeNodeById(componentId, content);
+  const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
+
+  let newContent: TreeNode = content;
+
+  if (isChildComponent) {
+    let overrides = componentNode.children.find(child => child.name === "overrides");
+    if (!overrides) {
+      overrides = addTreeNodeIds({
+        name: "overrides",
+        attributes: {
+        },
+        children: []
+      }, child.id);
+      newContent = updateNestedNode(componentNode, newContent, (component) => ({
+        ...component,
+        children: [
+          ...component.children,
+          overrides
+        ]
+      }));
+    }
+
+    newContent = updateNestedNode(overrides, newContent, (overrides) => ({
+      ...overrides,
+      children: [
+        ...overrides.children,
+        addTreeNodeIds({
+          name: "insert-child",
+          attributes: {},
+          children: [child]
+        }, generateTreeChecksum(newContent))
+      ]
+    }));
+  } else {
+
+    const template = componentNode.children.find(child => child.name === "template");
+    newContent = updateNestedNode(template, newContent, (template) => {
+      return {
+        ...template,
+        children: [
+          ...template.children,
+          child
+        ]
+      };
+    });
+  }
+  return newContent;
+};
 
 export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browser: SyntheticBrowser) => {
   return refs.reduce((state, ref) => {
