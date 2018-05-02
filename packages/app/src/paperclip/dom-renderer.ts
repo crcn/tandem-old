@@ -1,7 +1,7 @@
 import { mapValues } from "lodash";
 import { ComputedDisplayInfo } from "./synthetic";
-import { TreeNode, DEFAULT_NAMESPACE, getAttribute } from "../common/state";
-import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform } from "../common/utils/tree";
+import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath } from "../common/state";
+import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform, patchNode } from "../common/utils/tree";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node
@@ -46,25 +46,27 @@ export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Docume
 };
 
 const createNativeNode = (synthetic: TreeNode, document: Document, map: SyntheticNativeNodeMap) => {
-  if (synthetic.name === "text") {
-    return map[synthetic.id] = document.createTextNode(getAttribute(synthetic, "value"));
-  } else {
-    const nativeElement = document.createElement(synthetic.name);
-    const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
-    for (const name in attrs) {
-      const value = attrs[name];
-      if (name === "style") {
-        Object.assign(nativeElement.style, value);
-      } else {
-        nativeElement.setAttribute(name, value);
-      }
+  const isText = synthetic.name === "text";
+  const nativeElement = document.createElement(isText ? "span" : synthetic.name);
+  const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
+  for (const name in attrs) {
+    const value = attrs[name];
+    if (name === "style") {
+      Object.assign(nativeElement.style, value);
+    } else {
+      nativeElement.setAttribute(name, value);
     }
+  }
+
+  if (isText) {
+    nativeElement.appendChild(document.createTextNode(getAttribute(synthetic, "value", DEFAULT_NAMESPACE)));
+  } else {
     for (let i = 0, {length} = synthetic.children; i < length; i++) {
       const childSynthetic = synthetic.children[i];
       nativeElement.appendChild(createNativeNode(childSynthetic, document, map));
     }
-    return map[synthetic.id] = nativeElement;
   }
+  return map[synthetic.id] = nativeElement;
 };
 
 const removeElementsFromMap = (synthetic: TreeNode, map: SyntheticNativeNodeMap) => {
@@ -74,15 +76,23 @@ const removeElementsFromMap = (synthetic: TreeNode, map: SyntheticNativeNodeMap)
   }
 }
 
-export const patchDOM = (transforms: OperationalTransform[], root: HTMLElement, map: SyntheticNativeNodeMap) => {
+export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode, root: HTMLElement, map: SyntheticNativeNodeMap) => {
   let newMap = map;
+  let newSyntheticTree: TreeNode = synthetic;
+
   for (const transform of transforms) {
     const target = getElementFromPath(transform.path, root);
+    const syntheticTarget = getTreeNodeFromPath(transform.path, newSyntheticTree);
+    newSyntheticTree = patchNode([transform], newSyntheticTree);
     switch(transform.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
         const { name,  value, namespace } = transform as SetAttributeTransform;
-        if (namespace === DEFAULT_NAMESPACE && name === "style") {
-          Object.assign(target.style, normalizeStyle(value));
+        if (namespace === DEFAULT_NAMESPACE) {
+          if (name === "style") {
+            Object.assign(target.style, normalizeStyle(value));
+          } else if (name === "value" && syntheticTarget.name === "text") {
+            target.childNodes[0].nodeValue = value;
+          }
         }
         break;
       }

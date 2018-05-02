@@ -198,7 +198,7 @@ const updateSyntheticDocument = (properties: Partial<SyntheticDocument>, documen
 
 const applyDocumentElementTransforms = (transforms: OperationalTransform[], documentId: string, browser: SyntheticBrowser) => {
   const document: SyntheticDocument = getSyntheticDocumentById(documentId, browser);
-  const nativeNodeMap = patchDOM(transforms, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
+  const nativeNodeMap = patchDOM(transforms, document.root, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
   return updateSyntheticDocument({
     computed: computeDisplayInfo(nativeNodeMap),
     nativeNodeMap
@@ -474,7 +474,7 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
         }
         const ots = diffNode(document.root, newDocumentNode);
         const newRoot = patchNode(ots, document.root);
-        const nativeNodeMap = patchDOM(ots, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
+        const nativeNodeMap = patchDOM(ots, document.root, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
         return {
           ...document,
           nativeNodeMap,
@@ -535,8 +535,7 @@ export const persistNewComponent = (bounds: Bounds, dependencyUri: string, brows
 };
 
 export const persistInsertRectangle = (style: any, documentId: string, browser: SyntheticBrowser) => {
-  const dep = getSyntheticDocumentDependency(documentId, browser);
-  const newRectangleNode: TreeNode = addTreeNodeIds({
+  return persistInsertNode({
     name: "div",
     attributes: {
       [DEFAULT_NAMESPACE]: {
@@ -544,16 +543,31 @@ export const persistInsertRectangle = (style: any, documentId: string, browser: 
       }
     },
     children: []
-  }, dep.content.id);
-  const componentNode = getSyntheticDocumentComponent(getSyntheticDocumentById(documentId, browser), browser.graph).source;
-  const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
-
-
-  return updateDependencyAndRevaluate({
-    content: insertComponentChildNode(componentNode.id, newRectangleNode, dep.content)
-  }, dep.uri, browser);
+  }, documentId, browser);
 };
 
+export const persistInsertText = (style: any, nodeValue: string, documentId: string, browser: SyntheticBrowser) => {
+  return persistInsertNode({
+    name: "text",
+    attributes: {
+      [DEFAULT_NAMESPACE]: {
+        style,
+        value: nodeValue
+      }
+    },
+    children: []
+  }, documentId, browser);
+};
+
+
+export const persistInsertNode = (child: TreeNode, documentId: string, browser: SyntheticBrowser) => {
+  const dep = getSyntheticDocumentDependency(documentId, browser);
+  const componentNode = getSyntheticDocumentComponent(getSyntheticDocumentById(documentId, browser), browser.graph).source;
+  const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
+  return updateDependencyAndRevaluate({
+    content: insertComponentChildNode(componentNode.id, addTreeNodeIds(child, dep.content.id), dep.content)
+  }, dep.uri, browser);
+};
 const insertComponentChildNode = (componentId: string, child: TreeNode, content: TreeNode) => {
   const componentNode = getNestedTreeNodeById(componentId, content);
   const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
