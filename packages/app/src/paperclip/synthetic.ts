@@ -607,16 +607,22 @@ const insertComponentChildNode = (componentId: string, child: TreeNode, content:
 
 export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browser: SyntheticBrowser) => {
   return refs.reduce((state, ref) => {
+    let document: SyntheticDocument;
+    let dep: Dependency;
+    let sourceNode: TreeNode;
     if (ref.type === SyntheticObjectType.DOCUMENT) {
-      const document = getSyntheticDocumentById(ref.id, browser);
-      const dep = getSyntheticDocumentDependency(document.id, browser);
       const component = getSyntheticDocumentComponent(document, browser.graph);
-      return updateDependencyAndRevaluate({
-        content: removeNestedTreeNode(component.source, dep.content)
-      }, dep.uri, state);
+      sourceNode = component.source;
     } else {
-      throw new Error("TODO");
+      const syntheticNode = getSyntheticNodeById(ref.id, browser);
+      document= getSyntheticNodeDocument(ref.id, browser);
+      dep = browser.graph[syntheticNode.source.uri];
+      sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
     }
+
+    return updateDependencyAndRevaluate({
+      content: removeNestedTreeNode(sourceNode, dep.content)
+    }, dep.uri, state);
   }, browser);
 };
 

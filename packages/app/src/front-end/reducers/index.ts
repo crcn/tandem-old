@@ -185,7 +185,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       switch(toolType) {
         case CanvasToolType.ARTBOARD: {
-
           state = updateRootStateSyntheticBrowser(persistNewComponent(bounds, state.activeFilePath, state.browser), state);
           const newActiveWindow = getActiveWindow(state);
           const newDocument = newActiveWindow.documents[newActiveWindow.documents.length - 1];
