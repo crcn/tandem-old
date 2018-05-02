@@ -611,6 +611,8 @@ export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browse
     let dep: Dependency;
     let sourceNode: TreeNode;
     if (ref.type === SyntheticObjectType.DOCUMENT) {
+      document = getSyntheticDocumentById(ref.id, browser);
+      dep = getSyntheticDocumentDependency(ref.id, browser);
       const component = getSyntheticDocumentComponent(document, browser.graph);
       sourceNode = component.source;
     } else {
