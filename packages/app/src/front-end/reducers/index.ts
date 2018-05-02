@@ -3,10 +3,15 @@
 import { Action } from "redux";
 import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED } from "../actions";
 import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentReference, getDocumentReferenceFromPoint } from "../state";
-import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle, persistInsertText } from "paperclip";
+import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle, persistInsertText, SyntheticDocument, SyntheticBrowser } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint } from "common";
+import { difference, pull } from "lodash";
 
 const DEFAULT_RECT_COLOR = "#CCC";
+const INSERT_TEXT_OFFSET = {
+  left: -5,
+  top: -10
+};
 
 export const rootReducer = (state: RootState, action: Action) => {
   state = canvasReducer(state, action);
@@ -206,6 +211,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             position: "absolute"
           }, document.id, state.browser), state);
 
+          state = setSelection(state, ...getInsertedDocumentElementRefs(document, state.browser));
           return state;
         }
         case CanvasToolType.TEXT: {
@@ -216,11 +222,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
           }
 
           state = updateRootStateSyntheticBrowser(persistInsertText({
-            ...shiftBounds(bounds, flipPoint(document.bounds)),
+            ...shiftBounds(shiftBounds(bounds, flipPoint(document.bounds)), INSERT_TEXT_OFFSET),
             display: "inline-block",
             position: "relative"
           }, "double click to edit", document.id, state.browser), state);
 
+          state = setSelection(state, ...getInsertedDocumentElementRefs(document, state.browser));
           return state;
         }
       }
@@ -228,6 +235,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
   }
 
   return state;
+};
+
+const getInsertedDocumentElementRefs = (oldDocument: SyntheticDocument, newBrowser: SyntheticBrowser): StructReference<any>[] => {
+  const newDocument = getSyntheticDocumentById(oldDocument.id, newBrowser);
+  const oldIds = Object.keys(oldDocument.nativeNodeMap);
+  const newIds = Object.keys(newDocument.nativeNodeMap);
+  return pull(newIds, ...oldIds).map(id => ({
+    id,
+    type: SyntheticObjectType.ELEMENT
+  }))
 };
 
 const getNewSyntheticItemBounds = (newBounds: Bounds, item: Struct, state: RootState) => {
