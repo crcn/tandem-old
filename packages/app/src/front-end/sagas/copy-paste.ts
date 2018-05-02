@@ -1,7 +1,8 @@
-import { fork, take, select } from "redux-saga/effects";
+import { fork, take, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { RootState } from "../state";
 import { SyntheticObjectType, getSyntheticDocumentById, SyntheticDocument, getSyntheticNodeById, SyntheticNode } from "paperclip";
+import { syntheticNodesPasted } from "../actions";
 
 export function* copyPasteSaga() {
   yield fork(handleCopy);
@@ -55,13 +56,7 @@ function* handlePaste() {
       const text = event.clipboardData.getData("text/plain");
       try {
         const syntheticNodes = JSON.parse(text) as SyntheticNode[];
-
-
-        // TODO - dispatch SYNTHETIC_NODES_PASTED
-        // TODO - identify what are root synthetic nodes (create variant), vs
-        // non root (just copy & paste)
-        console.log("PASTE", syntheticNodes);
-
+        yield put(syntheticNodesPasted(syntheticNodes));
         event.preventDefault();
       } catch(e) {
         console.warn(e);

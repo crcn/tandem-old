@@ -9,6 +9,10 @@ import { evaluateDependencyEntry, evaluateComponent } from "./evaluate";
 import { STATUS_CODES } from "http";
 
 const PREVIEW_NAMESPACE = "preview";
+const PASTED_ARTBOARD_OFFSET = {
+  left: 20,
+  top: 20
+};
 
 export enum SyntheticObjectType {
   BROWSER,
@@ -328,6 +332,52 @@ export const updateSyntheticItemBounds = (bounds: Bounds, ref: StructReference<a
   }
 };
 
+export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: string, syntheticNodes: SyntheticNode[], browser: SyntheticBrowser) => {
+  const targetDep = browser.graph[dependencyUri];
+  const targetSourceNode = getNestedTreeNodeById(sourceNodeId, targetDep.content);
+
+  const newContent = syntheticNodes.reduce((content, syntheticNode) => {
+    const sourceDep = browser.graph[syntheticNode.source.uri];
+    const sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
+
+    // If there is NO source node, then possibly create a detached node and add to target component
+    if (!sourceNode) {
+      throw new Error("not implemented");
+    }
+
+    // is component
+    if (syntheticNode.source.path.length === 1) {
+
+      // TODO - need to possibly import import component
+      if (syntheticNode.source.uri !== targetDep.uri) {
+        throw new Error("NOT IMPLEMENTED YET");
+      }
+
+
+      const childComponentNode = createComponentNode(
+        targetDep,
+        shiftBounds(getAttribute(sourceNode, "bounds", PREVIEW_NAMESPACE), PASTED_ARTBOARD_OFFSET),
+        getAttribute(sourceNode, "id")
+      );
+
+      console.log(childComponentNode);
+
+      return {
+        ...content,
+        children: [
+          ...content.children,
+          childComponentNode
+        ]
+      }
+    }
+    return content;
+  }, targetDep.content);
+
+  return updateDependencyAndRevaluate({
+    content: newContent
+  }, targetDep.uri, browser);
+}
+
 export const getSyntheticDocumentById = memoize((documentId: string, state: SyntheticWindow|SyntheticBrowser) => findSyntheticDocument(state, document => document.id === documentId));
 
 export const getSyntheticNodeDocument = memoize((nodeId: string, state: SyntheticBrowser|SyntheticWindow): SyntheticDocument => findSyntheticDocument(state, document => {
@@ -501,14 +551,13 @@ const generateComponentId = (moduleNode: TreeNode) => {
   return cid;
 }
 
-export const persistNewComponent = (bounds: Bounds, dependencyUri: string, browser: SyntheticBrowser) => {
-  const dep = browser.graph[dependencyUri];
-
-  const newComponentNode: TreeNode = addTreeNodeIds({
+const createComponentNode = (dep: Dependency, bounds?: Bounds, parentId?: string) => {
+  return addTreeNodeIds({
     name: "component",
     attributes: {
       [DEFAULT_NAMESPACE]: {
-        id: generateComponentId(dep.content)
+        id: generateComponentId(dep.content),
+        extends: parentId
       },
       [PREVIEW_NAMESPACE]: {
         bounds
@@ -522,6 +571,12 @@ export const persistNewComponent = (bounds: Bounds, dependencyUri: string, brows
       }
     ]
   }, dep.content.id);
+};
+
+export const persistNewComponent = (bounds: Bounds, dependencyUri: string, browser: SyntheticBrowser) => {
+  const dep = browser.graph[dependencyUri];
+
+  const newComponentNode: TreeNode = createComponentNode(dep, bounds);
 
   return updateDependencyAndRevaluate({
     content: {

@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import { Directory, Point, Bounds, Struct } from "common";
-import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap } from "paperclip";
+import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap, SyntheticNode } from "paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -35,6 +35,7 @@ export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
 export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
 export const SHORTCUT_DELETE_KEY_DOWN = "SHORTCUT_DELETE_KEY_DOWN";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
+export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -70,7 +71,6 @@ export type SyntheticWindowOpened = {
 export type CanvasToolOverlayMousePanStart = {
   documentId: string;
 } & Action;
-
 
 export type CanvasToolOverlayMousePanning = {
   documentId: string;
@@ -140,6 +140,10 @@ export type InsertToolFinished = {
   bounds: Bounds;
 } & Action;
 
+export type SyntheticNodesPasted = {
+  syntheticNodes: SyntheticNode[]
+} & Action;
+
 export const fileNavigatorItemClicked = (path: number[]): FileNavigatorItemClicked => ({
   path,
   type: FILE_NAVIGATOR_ITEM_CLICKED,
@@ -164,6 +168,11 @@ export const projectDirectoryLoaded = (directory: Directory): ProjectDirectoryLo
 export const shortcutKeyDown = (type: string, sourceEvent: KeyboardEvent): ShortcutKeyDown => ({
   type,
   sourceEvent
+});
+
+export const syntheticNodesPasted = (syntheticNodes: SyntheticNode[]) => ({
+  syntheticNodes,
+  type: SYNTHETIC_NODES_PASTED
 });
 
 export const documentRendered = (documentId: string, info: ComputedDisplayInfo, nativeMap: SyntheticNativeNodeMap): DocumentRendered => ({

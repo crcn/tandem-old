@@ -52,7 +52,7 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
   for (const name in attrs) {
     const value = attrs[name];
     if (name === "style") {
-      Object.assign(nativeElement.style, value);
+      Object.assign(nativeElement.style, normalizeStyle(value));
     } else {
       nativeElement.setAttribute(name, value);
     }

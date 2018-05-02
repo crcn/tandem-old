@@ -1,10 +1,10 @@
 
 
 import { Action } from "redux";
-import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED } from "../actions";
+import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, SYNTHETIC_NODES_PASTED, SyntheticNodesPasted } from "../actions";
 import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentReference, getDocumentReferenceFromPoint } from "../state";
-import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle, persistInsertText, SyntheticDocument, SyntheticBrowser } from "paperclip";
-import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint } from "common";
+import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle, persistInsertText, SyntheticDocument, SyntheticBrowser, persistPasteSyntheticNodes, getSyntheticNodeSourceNode, getSyntheticNodeById, SyntheticWindow } from "paperclip";
+import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint, getAttribute, diffArray } from "common";
 import { difference, pull } from "lodash";
 
 const DEFAULT_RECT_COLOR = "#CCC";
@@ -16,6 +16,7 @@ const INSERT_TEXT_OFFSET = {
 export const rootReducer = (state: RootState, action: Action) => {
   state = canvasReducer(state, action);
   state = shortcutReducer(state, action);
+  state = clipboardReducer(state, action);
   switch(action.type) {
     case PROJECT_DIRECTORY_LOADED: {
       const { directory } = action as ProjectDirectoryLoaded;
@@ -237,6 +238,22 @@ export const canvasReducer = (state: RootState, action: Action) => {
   return state;
 };
 
+const getInsertedWindowRefs = (oldWindow: SyntheticWindow, newBrowser: SyntheticBrowser): StructReference<any>[] => {
+  const elementRefs = oldWindow.documents.reduce((refs, oldDocument) => {
+    return [...refs, ...getInsertedDocumentElementRefs(oldDocument, newBrowser)];
+  }, []);
+  const newWindow = newBrowser.windows.find(window => window.location === oldWindow.location);
+  return [
+    ...elementRefs,
+    ...newWindow.documents.filter(document => {
+      const isInserted = oldWindow.documents.find(oldDocument => {
+        return oldDocument.id === document.id
+      }) == null
+      return isInserted;
+    })
+  ];
+};
+
 const getInsertedDocumentElementRefs = (oldDocument: SyntheticDocument, newBrowser: SyntheticBrowser): StructReference<any>[] => {
   const newDocument = getSyntheticDocumentById(oldDocument.id, newBrowser);
   const oldIds = Object.keys(oldDocument.nativeNodeMap);
@@ -301,6 +318,32 @@ const shortcutReducer = (state: RootState, action: Action) => {
 
   return state;
 };
+
+const clipboardReducer = (state: RootState, action: Action) => {
+  switch(action.type) {
+    case SYNTHETIC_NODES_PASTED: {
+      const { syntheticNodes } = action as SyntheticNodesPasted;
+
+      let targetSourceNode: TreeNode;
+
+      if (state.selectionReferences.length) {
+        const ref = state.selectionReferences[0];
+        targetSourceNode = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentById(ref.id, state.browser).root : getSyntheticNodeSourceNode(getSyntheticNodeById(ref.id, state.browser), state.browser.graph);
+      } else {
+        targetSourceNode = state.browser.graph[state.activeFilePath].content;
+      }
+
+      const oldWindow = getActiveWindow(state);
+
+      state = updateRootStateSyntheticBrowser(persistPasteSyntheticNodes(state.activeFilePath, targetSourceNode.id, syntheticNodes, state.browser), state);
+
+      state = setSelection(state, ...getInsertedWindowRefs(oldWindow, state.browser));
+    }
+  }
+
+  return state;
+};
+
 const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: RootState, ref: StructReference<any>, event: T) => {
   const { sourceEvent } = event;
   return setSelection(state, ref);
