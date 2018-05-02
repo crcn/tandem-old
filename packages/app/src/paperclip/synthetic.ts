@@ -7,7 +7,8 @@ import { mapValues } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry, evaluateComponent } from "./evaluate";
 import { STATUS_CODES } from "http";
-import { PREVIEW_NAMESPACE } from "front-end/state";
+
+const PREVIEW_NAMESPACE = "preview";
 
 export enum SyntheticObjectType {
   BROWSER,
@@ -471,12 +472,13 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
           return createSyntheticDocument(newDocumentNode, graph);
         }
         const ots = diffNode(document.root, newDocumentNode);
+        const newRoot = patchNode(ots, document.root);
         const nativeNodeMap = patchDOM(ots, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
         return {
           ...document,
           nativeNodeMap,
           computed: computeDisplayInfo(nativeNodeMap),
-          root: patchNode(ots, document.root)
+          root: newRoot
         }
       })
     }, browser);

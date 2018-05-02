@@ -1,7 +1,7 @@
 import { mapValues } from "lodash";
 import { ComputedDisplayInfo } from "./synthetic";
 import { TreeNode, DEFAULT_NAMESPACE, getAttribute } from "../common/state";
-import { OperationalTransform, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
+import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform } from "../common/utils/tree";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node
@@ -67,8 +67,15 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
   }
 };
 
+const removeElementsFromMap = (synthetic: TreeNode, map: SyntheticNativeNodeMap) => {
+  map[synthetic.id] = undefined;
+  for (let i = 0, {length} = synthetic.children; i < length; i++) {
+    removeElementsFromMap(synthetic, map);
+  }
+}
+
 export const patchDOM = (transforms: OperationalTransform[], root: HTMLElement, map: SyntheticNativeNodeMap) => {
-  // TODO
+  let newMap = map;
   for (const transform of transforms) {
     const target = getElementFromPath(transform.path, root);
     switch(transform.type) {
@@ -79,9 +86,44 @@ export const patchDOM = (transforms: OperationalTransform[], root: HTMLElement, 
         }
         break;
       }
+      case OperationalTransformType.INSERT_CHILD: {
+        const { child, index } = transform as InsertChildTransform;
+        if (!child.namespace || child.namespace == DEFAULT_NAMESPACE) {
+          if (newMap === map) {
+            newMap = {...map};
+          }
+          const nativeChild = createNativeNode(child, root.ownerDocument, newMap);
+          insertChild(target, nativeChild, index);
+        }
+        break;
+      }
+      case OperationalTransformType.REMOVE_CHILD: {
+        const { path, index } = transform as RemoveChildTransform;
+        target.removeChild(target.childNodes[index]);
+        break;
+      }
+      case OperationalTransformType.MOVE_CHILD: {
+        const { path, oldIndex, newIndex } = transform as MoveChildTransform;
+        const child = target.childNodes[oldIndex];
+        target.removeChild(child);
+        insertChild(target, child, newIndex);
+        break;
+      }
+      default: {
+        throw new Error(`OT ${transform.type} not supported yet`);
+      }
     }
   }
-  return map;
+  return newMap;
+}
+
+const insertChild = (target: HTMLElement, child: Node, index: number) => {
+
+  if (index < target.childNodes.length) {
+    target.insertBefore(child, target.childNodes[index]);
+  } else {
+    target.appendChild(child);
+  }
 }
 
 const normalizeStyle = (value: any) => mapValues(value, (value, key) => {

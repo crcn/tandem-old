@@ -1,6 +1,7 @@
 import {TreeNode, updateNestedNodeFromPath, setNodeAttribute} from "../../state/tree";
 import { EMPTY_OBJECT } from "../object";
 import { BADFAMILY } from "dns";
+import { diffArray, ArrayOperationalTransformType, ArrayInsertMutation, ArrayUpdateMutation, arraySplice, ArrayDeleteMutation } from "../array";
 
 // to add namespace, import with import * as tree from "utils/tree";
 
@@ -9,8 +10,10 @@ import { BADFAMILY } from "dns";
  */
 
 export enum OperationalTransformType {
-  REMOVE_NODE = "REMOVE_NODE",
-  SET_ATTRIBUTE = "SET_ATTRIBUTE"
+  SET_ATTRIBUTE = "SET_ATTRIBUTE",
+  REMOVE_CHILD = "REMOVE_CHILD",
+  INSERT_CHILD = "INSERT_CHILD",
+  MOVE_CHILD = "MOVE_CHILD"
 };
 
 export type OperationalTransform = {
@@ -24,12 +27,46 @@ export type SetAttributeTransform = {
   value: any;
 } & OperationalTransform;
 
+export type InsertChildTransform = {
+  child: TreeNode;
+  index: number;
+} & OperationalTransform;
+
+export type RemoveChildTransform = {
+  index: number;
+} & OperationalTransform;
+
+export type MoveChildTransform = {
+  oldIndex: number;
+  newIndex: number;
+} & OperationalTransform;
+
 export const createSetAttributeTransform = (path: number[], name: string, namespace: string, value: any): SetAttributeTransform => ({
   type: OperationalTransformType.SET_ATTRIBUTE,
   path,
   name,
   namespace,
   value
+});
+
+export const createInsertChildTransform = (path: number[], child: TreeNode, index: number): InsertChildTransform => ({
+  type: OperationalTransformType.INSERT_CHILD,
+  path,
+  index,
+  child
+});
+
+export const createRemoveChildTransform = (path: number[], index: number): RemoveChildTransform => ({
+  type: OperationalTransformType.REMOVE_CHILD,
+  path,
+  index,
+});
+
+export const createMoveChildTransform = (path: number[], oldIndex: number, newIndex: number): MoveChildTransform => ({
+  type: OperationalTransformType.MOVE_CHILD,
+  path,
+  oldIndex,
+  newIndex,
 });
 
 export const diffNode = (a: TreeNode, b: TreeNode, path: number[] = [], diffs: OperationalTransform[] = []) => {
@@ -62,12 +99,32 @@ export const diffNode = (a: TreeNode, b: TreeNode, path: number[] = [], diffs: O
     }
   }
 
-  for (let i = Math.min(a.children.length, b.children.length); i--;) {
-    diffNode(a.children[i], b.children[i], [...path, i], diffs);
+  const cots = diffArray(a.children, b.children, (a, b) => {
+    return a.name === b.name ? 0 : -1;
+  });
+
+  for (const ot of cots) {
+    switch(ot.type) {
+      case ArrayOperationalTransformType.INSERT: {
+        const { value, index } = ot as ArrayInsertMutation<TreeNode>;
+        diffs.push(createInsertChildTransform(path, value, index));
+        break;
+      }
+      case ArrayOperationalTransformType.UPDATE: {
+        const { patchedOldIndex, originalOldIndex, index, newValue } = ot as ArrayUpdateMutation<TreeNode>;
+        if (patchedOldIndex !== index) {
+          diffs.push(createMoveChildTransform(path, patchedOldIndex, index));
+        }
+        diffNode(a.children[originalOldIndex], newValue, [...path, index], diffs);
+        break;
+      }
+      case ArrayOperationalTransformType.DELETE: {
+        const { index } = ot as ArrayDeleteMutation;
+        diffs.push(createRemoveChildTransform(path, index));
+        break;
+      }
+    }
   }
-
-  // insert
-
 
   return diffs;
 };
@@ -79,8 +136,44 @@ export const patchNode = <TNode extends TreeNode>(ots: OperationalTransform[], a
     switch(ot.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
         const { path, name, namespace, value } = ot as SetAttributeTransform;
-        b = updateNestedNodeFromPath(path, b, (child) => setNodeAttribute(child, name, value, namespace));
+        b = updateNestedNodeFromPath(path, b, (parent) => setNodeAttribute(parent, name, value, namespace));
         break;
+      }
+      case OperationalTransformType.INSERT_CHILD: {
+        const { path, child, index } = ot as InsertChildTransform;
+        b = updateNestedNodeFromPath(path, b, parent => ({
+          ...parent,
+          children: arraySplice(parent.children, index, 0, child)
+        }))
+        break;
+      }
+      case OperationalTransformType.MOVE_CHILD: {
+        const { path, oldIndex, newIndex } = ot as MoveChildTransform;
+        b = updateNestedNodeFromPath(path, b, parent => {
+          const newChildren = [...parent.children];
+          const child = newChildren[oldIndex];
+          newChildren.splice(oldIndex, 1);
+          newChildren.splice(newIndex, 0, child);
+
+          return {
+            ...parent,
+            children: newChildren
+          }
+        });
+        break;
+      }
+      case OperationalTransformType.REMOVE_CHILD: {
+        const { path, index } = ot as RemoveChildTransform;
+        b = updateNestedNodeFromPath(path, b, parent => {
+          return {
+            ...parent,
+            children: arraySplice(parent.children, index, 1)
+          }
+        });
+        break;
+      }
+      default: {
+        throw new Error(`OT ${ot.type} not supported yet`);
       }
     }
   }

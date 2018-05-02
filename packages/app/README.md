@@ -1,15 +1,13 @@
 MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
-TOMORROW (FRI):
-
-- insert rectangle
-
-TODO (IN ORDER):
+TOMORROW (TUES):
 
 - finish diffing algorithm
 - insert text
 - delete element / text
-- delete artboard
+
+TODO (IN ORDER):
+
 - copy + paste component to create variant
 - alignment tool
 - layers*
