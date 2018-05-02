@@ -1,13 +1,19 @@
 MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
-TOMORROW (TUES):
+TOMORROW (THURS):
 
-- insert text
-- delete text
+- copy + paste component to create variant
+- Atom desktop
+- file drawer
+
+TODO (FRI):
+
+- load project from FS
+- load file from drawer
+- save changes to disk
 
 TODO (IN ORDER):
 
-- copy + paste component to create variant
 - alignment tool
 - layers*
   - re-organize elements
