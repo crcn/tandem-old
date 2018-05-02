@@ -63,7 +63,8 @@ export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: { tra
     "mousedown",
     "mouseup",
     "keyup",
-    "keydown"
+    "keydown",
+    "paste"
   ];
 
   for (let eventType of eventTypes) {

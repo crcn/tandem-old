@@ -2,6 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (THURS):
 
+- keyup not always fired for shortcuts
 - copy + paste component to create variant
 - Atom desktop
 - file drawer
@@ -14,7 +15,10 @@ TODO (FRI):
 
 TODO (IN ORDER):
 
-- alignment tool
+- slots
+- compiler
+  - compile to React
+  - compile CSS vars to JS
 - layers*
   - re-organize elements
   - delete elements
@@ -22,12 +26,6 @@ TODO (IN ORDER):
 
 TODO (UNORG AFTER OBJECTIVE):
 
-- Atom desktop wrapper
-- load projects from file
-- save project
-- compiler
-  - compile to React
-  - compile CSS vars to JS
 
 - styles pane
   - color picker

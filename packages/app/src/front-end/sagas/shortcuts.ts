@@ -19,7 +19,7 @@ export function* shortcutSaga() {
     "escape": wrapDispatch(SHORTCUT_ESCAPE_KEY_DOWN),
 
     // artboard
-    "backspace": wrapDispatch(SHORTCUT_DELETE_KEY_DOWN),
+    "backspace": wrapDispatch(SHORTCUT_DELETE_KEY_DOWN)
   }));
 }
 
@@ -40,7 +40,6 @@ const mapHotkeys = (map: {
       }
       const handler = ordererdMap[keysDown.join(" ").toLocaleLowerCase().split(" ").sort().join(" ")];
       if (handler) {
-        event.preventDefault();
         emit(call(handler, event));
       }
     });
