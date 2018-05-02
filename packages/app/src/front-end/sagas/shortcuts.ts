@@ -1,4 +1,4 @@
-import { fork, put, take, call } from "redux-saga/effects";
+import { fork, put, take, call, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { mapKeys } from "lodash";
 import { shortcutKeyDown, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN } from "../actions";
@@ -54,6 +54,9 @@ const mapHotkeys = (map: {
   });
 
   while(1) {
-    yield yield take(chan);
+    const action = yield take(chan);
+    yield spawn(function*() {
+      yield action;
+    });
   }
 };

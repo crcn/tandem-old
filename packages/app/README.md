@@ -2,9 +2,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (TUES):
 
-- finish diffing algorithm
 - insert text
-- delete element / text
+- delete text
 
 TODO (IN ORDER):
 

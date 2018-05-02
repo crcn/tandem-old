@@ -6,6 +6,8 @@ import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheti
 import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle } from "paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint } from "common";
 
+const DEFAULT_RECT_COLOR = "#CCC";
+
 export const rootReducer = (state: RootState, action: Action) => {
   state = canvasReducer(state, action);
   state = shortcutReducer(state, action);
@@ -200,7 +202,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           state = updateRootStateSyntheticBrowser(persistInsertRectangle({
             ...shiftBounds(bounds, flipPoint(document.bounds)),
             ...getBoundsSize(bounds),
-            background: "#F60",
+            background: DEFAULT_RECT_COLOR,
             position: "absolute"
           }, document.id, state.browser), state);
 
