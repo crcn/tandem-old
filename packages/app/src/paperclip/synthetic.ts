@@ -469,7 +469,8 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
           return getAttribute(documentComponent.source, "id") === getAttribute(sourceComponent.source, "id")
         });
         if (!document) {
-          return createSyntheticDocument(newDocumentNode, graph);
+          const newDocument = createSyntheticDocument(newDocumentNode, graph);
+          return newDocument;
         }
         const ots = diffNode(document.root, newDocumentNode);
         const newRoot = patchNode(ots, document.root);
