@@ -1,0 +1,17 @@
+{
+  "name": "tandem-desktop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^2.0.0",
+    "electron-builder": "^20.11.1",
+    "electron-devtools-installer": "^2.2.3",
+    "tandem-front-end": "^3.0.0"
+  }
+}
