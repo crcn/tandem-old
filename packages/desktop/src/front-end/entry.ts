@@ -1,9 +1,10 @@
 import "tandem-front-end/lib/front-end/entry.bundle.css";
-import { init, SyntheticObjectType } from "tandem-front-end";
+import { rootSaga } from "./sagas";
+import { rootReducer } from "./reducers";
+import { setup, SyntheticObjectType } from "tandem-front-end";
+import { DesktopRootState } from "./state";
 
-console.log(document.getElementById("application"));
-
-init({
+setup<DesktopRootState>(rootReducer, rootSaga)({
   mount: document.getElementById("application"),
   hoveringReferences: [],
   selectionReferences: [],
@@ -19,4 +20,4 @@ init({
       zoom: 1
     }
   }
-})
+});

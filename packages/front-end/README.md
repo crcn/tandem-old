@@ -2,10 +2,9 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (THURS):
 
-- keyup not always fired for shortcuts
-- copy + paste component to create variant
-- Atom desktop
-- file drawer
+- File pane
+- Open file
+- save command
 
 TODO (FRI):
 
