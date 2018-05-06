@@ -164,10 +164,10 @@ export const projectLoaded = (uri: string): ProjectLoaded => ({
   type: PROJECT_LOADED
 });
 
-export const projectDirectoryLoaded = (directory: Directory): ProjectDirectoryLoaded => ({
+export const projectDirectoryLoaded = publicActionCreator((directory: Directory): ProjectDirectoryLoaded => ({
   directory,
   type: PROJECT_DIRECTORY_LOADED
-});
+}));
 
 export const shortcutKeyDown = (type: string, sourceEvent: KeyboardEvent): ShortcutKeyDown => ({
   type,

@@ -6,7 +6,7 @@ import { RootState, getActiveWindow } from "../state";
 
 export function* projectSaga() {
   yield fork(handleActiveFile);
-  yield fork(handleProjectDirectoryLoaded);
+  // yield fork(handleProjectDirectoryLoaded);
   yield fork(putFakeDirectory);
 }
 
@@ -21,14 +21,14 @@ function* putFakeDirectory() {
   yield put(projectDirectoryLoaded(rootDirectory));
 }
 
-function* handleProjectDirectoryLoaded() {
-  while(1) {
-    yield take(PROJECT_DIRECTORY_LOADED);
-    const { projectDirectory }: RootState = yield select();
-    const [mainPaperclipFile] = getFilesWithExtension(PAPERCLIP_EXTENSION_NAME, projectDirectory);
-    yield put(fileNavigatorItemClicked(getTeeNodePath(mainPaperclipFile.id, projectDirectory)));
-  }
-}
+// function* handleProjectDirectoryLoaded() {
+//   while(1) {
+//     yield take(PROJECT_DIRECTORY_LOADED);
+//     // const { projectDirectory }: RootState = yield select();
+//     // const [mainPaperclipFile] = getFilesWithExtension(PAPERCLIP_EXTENSION_NAME, projectDirectory);
+//     // yield put(fileNavigatorItemClicked(getTeeNodePath(mainPaperclipFile.id, projectDirectory)));
+//   }
+// }
 
 const TEST_FILES = {
   "components/main.pc": `

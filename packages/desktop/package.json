@@ -14,9 +14,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/glob": "^5.0.35",
+    "@types/globby": "^6.1.0",
     "electron": "^2.0.0",
     "electron-builder": "^20.11.1",
     "electron-devtools-installer": "^2.2.3",
+    "glob": "^7.1.2",
+    "globby": "^8.0.1",
     "react-hot-loader": "3.x.x",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",

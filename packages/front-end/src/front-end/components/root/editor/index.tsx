@@ -17,7 +17,7 @@ const EditorBaseComponent = ({ root, dispatch }: EditorOuterProps) => {
   const window = getActiveWindow(root);
   const dependency = window && root.browser.graph && root.browser.graph[window.location];
   return <div className="m-editor">
-    {/* <LeftGutterComponent /> */}
+    <LeftGutterComponent rootDirectory={root.projectDirectory} dispatch={dispatch} />
     <StageComponent root={root} dispatch={dispatch} dependency={dependency} />
     {/* <RightGutterComponent /> */}
   </div>;

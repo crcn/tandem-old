@@ -11,6 +11,7 @@ TODO (FRI):
 - load project from FS
 - load file from drawer
 - save changes to disk
+- active window
 
 TODO (IN ORDER):
 

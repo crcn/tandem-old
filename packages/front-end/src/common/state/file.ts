@@ -1,5 +1,6 @@
 import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getChildParentMap, filterNestedNodes, getTreeNodeFromPath } from "./tree";
 import { memoize } from "../utils/memoization";
+import * as path from "path";
 
 export const FILE_TAG_NAME = "file";
 export const DIRECTORY_TAG_NAME = "directory";
@@ -56,3 +57,57 @@ export const getFilesWithExtension = memoize((extension: string, directory: Dire
   const tester = new RegExp(`${extension}$`);
   return filterNestedNodes(directory, file => isFile(file) && tester.test(getFileName(file)));
 });
+
+export const convertFlatFilesToNested = (uri: string, files: string[]): Directory => {
+  const partedFiles = files.map(file => {
+    return file.substr(uri.length).split("/")
+  });
+
+  let root: Directory = {
+    name: "directory",
+    attributes: {
+      [DEFAULT_NAMESPACE]: {
+        uri,
+        basename: path.basename(uri)
+      }
+    },
+    children: []
+  };
+
+  for (const pf of partedFiles) {
+    let current: Directory = root;
+    let prev: Directory;
+    let i = 0;
+    for (let n = pf.length; i < n - 1; i++) {
+      const part = pf[i];
+      prev = current;
+      current = current.children.find(child => child.attributes[DEFAULT_NAMESPACE].basename === part) as Directory;
+      if (!current) {
+        current = {
+          name: "directory",
+          attributes: {
+            [DEFAULT_NAMESPACE]: {
+              basename: part
+            }
+          },
+          children: []
+        };
+
+        prev.children.push(current);
+      }
+    }
+
+    current.children.push({
+      name: "file",
+      attributes: {
+        [DEFAULT_NAMESPACE]: {
+          uri: "file://" + pf.join("/"),
+          basename: pf[i],
+        }
+      },
+      children: []
+    })
+  }
+
+  return root;
+};
