@@ -8,6 +8,7 @@ import { fork } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
 import { rootSaga } from "./sagas";
 import { RootState } from "./state";
+import { appLoaded } from "./actions";
 
 export const setup = <TState extends RootState>(reducer?: Reducer<TState>, saga?: () => IterableIterator<any>) => {
   return (initialState: TState) => {
@@ -25,6 +26,10 @@ export const setup = <TState extends RootState>(reducer?: Reducer<TState>, saga?
         yield fork(saga);
       }
     });
+
+    console.log("LOADED")
+
+    store.dispatch(appLoaded());
   };
 };
 export const init = (initialState: RootState) => {
@@ -32,3 +37,4 @@ export const init = (initialState: RootState) => {
 
 export * from "../paperclip";
 export * from "./state";
+export * from "./actions";

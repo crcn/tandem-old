@@ -1,5 +1,7 @@
 import { Action } from "redux";
+import * as React from "react";
 import { Directory, Point, Bounds, Struct } from "../../common";
+import { publicActionCreator } from "tandem-common";
 import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap, SyntheticNode } from "../../paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
@@ -36,6 +38,7 @@ export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
 export const SHORTCUT_DELETE_KEY_DOWN = "SHORTCUT_DELETE_KEY_DOWN";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
+export const APP_LOADED = "APP_LOADED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -149,6 +152,7 @@ export const fileNavigatorItemClicked = (path: number[]): FileNavigatorItemClick
   type: FILE_NAVIGATOR_ITEM_CLICKED,
 });
 
+export const appLoaded = publicActionCreator(() => ({ type: APP_LOADED }));
 export const dependencyEntryLoaded = (entry: Dependency, graph: DependencyGraph): DependencyEntryLoaded => ({
   entry,
   graph,

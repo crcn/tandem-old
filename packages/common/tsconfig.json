@@ -9,6 +9,9 @@
       "es5",
       "esnext"
     ],
+    "paths": {
+      "common": ["./common"]
+    },
     "module": "commonjs",
     "outDir": "lib",
     "jsx": "react",
@@ -19,7 +22,8 @@
     "node_modules",
     "*-test",
     "lib",
-    "index.d.ts"
+    "index.d.ts",
+    "../front-end"
   ],
   "filesGlob": [
     "./src/**/*.ts"

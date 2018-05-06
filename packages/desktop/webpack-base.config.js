@@ -13,6 +13,7 @@ module.exports = {
     path: resolve(__dirname, 'lib', 'front-end'),
     filename: 'entry.bundle.js'
   },
+  target: "electron-renderer",
   devServer: {
     hot: true,
     inline: true
@@ -39,13 +40,13 @@ module.exports = {
         test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
         use: 'url-loader?limit=1000'
       },
-      { 
-        test: /\.scss$/, 
+      {
+        test: /\.scss$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
             { loader: 'css-loader'   },
-            { 
+            {
               loader: 'sass-loader',
               options: {
                 includePaths: [__dirname + '/src']
@@ -54,8 +55,8 @@ module.exports = {
           ]
         })
       },
-      { 
-        test: /\.css$/, 
+      {
+        test: /\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
