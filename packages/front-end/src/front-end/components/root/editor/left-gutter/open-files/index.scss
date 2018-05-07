@@ -5,8 +5,20 @@
     overflow: hidden;
     padding: 4px;
     cursor: pointer;
+
+    .ion-close {
+      visibility: hidden;
+    }
+
     &:hover {
       background: #EEEEEE;
+      .ion-close {
+        visibility: visible;
+      }
+    }
+
+    &.active {
+      background: #DDDDDD;
     }
 
     i {

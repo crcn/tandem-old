@@ -6,6 +6,7 @@ TOMORROW (TEUS):
 - show modified files
 - ability to change file
 - ability to save file
+- ability to insert file
 
 TODO (FRI):
 

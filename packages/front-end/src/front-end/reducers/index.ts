@@ -32,6 +32,12 @@ export const rootReducer = (state: RootState, action: Action) => {
           })
         }, state);
       } else {
+        const uri = getAttribute(file, FileAttributeNames.URI);
+
+        if (state.openFiles.find((openFile) => openFile.uri === uri)) {
+          return state;
+        }
+
         return updateRootState({
           activeFilePath: getAttribute(file, FileAttributeNames.URI),
           selectionReferences: [],
@@ -39,7 +45,7 @@ export const rootReducer = (state: RootState, action: Action) => {
           openFiles: [
             ...state.openFiles.filter(openFile => openFile.temporary === false),
             {
-              uri: getAttribute(file, FileAttributeNames.URI),
+              uri,
               temporary: true
             }
           ]

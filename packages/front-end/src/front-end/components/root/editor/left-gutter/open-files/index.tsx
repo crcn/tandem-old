@@ -19,6 +19,7 @@ import { openFilesItemClick, openFilesItemCloseClick } from "../../../../../act
 
 type OpenFileOuterProps = {
   openFile: OpenFile;
+  active: boolean;
   dispatch: Dispatch<any>;
 }
 
@@ -27,8 +28,8 @@ type OpenFileInnerProps = {
   onCloseClick: () => any;
 } & OpenFileOuterProps;
 
-const BaseOpenFileComponent = ({ openFile: { temporary, uri }, onClick, onCloseClick }: OpenFileInnerProps) => {
-  return <div className={cx("open-file", { temporary })} onClick={onClick}>
+const BaseOpenFileComponent = ({ openFile: { temporary, uri }, active, onClick, onCloseClick }: OpenFileInnerProps) => {
+  return <div className={cx("open-file", { temporary, active })} onClick={onClick}>
     <i className="ion-close" onClick={onCloseClick}>
     </i>
     <div className="basename">
@@ -55,17 +56,18 @@ const OpenFileComponent = compose<OpenFileInnerProps, OpenFileOuterProps>(
 
 type OpenFilesPaneOuterProps = {
   openFiles: OpenFile[];
+  activeFileUri: string;
   dispatch: Dispatch<any>;
 };
 
 type OpenFilesPaneInnerProps = {
 } & OpenFilesPaneOuterProps;
 
-const BaseOpenFilesPaneComponent = ({ openFiles, dispatch }) => {
+const BaseOpenFilesPaneComponent = ({ activeFileUri, openFiles, dispatch }) => {
   return <PaneComponent header="Open Files" className="m-open-files-pane">
     {
       openFiles.map((openFile) => {
-        return <OpenFileComponent openFile={openFile} dispatch={dispatch} />
+        return <OpenFileComponent openFile={openFile} dispatch={dispatch} active={activeFileUri === openFile.uri}/>
       })
     }
   </PaneComponent>;

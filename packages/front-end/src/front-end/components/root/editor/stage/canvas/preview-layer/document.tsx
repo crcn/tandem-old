@@ -37,15 +37,16 @@ const BaseDocumentPreviewComponent = ({ document }) => {
 const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
   pure,
   lifecycle({
-    // componentDidUpdate({ document: oldDocument }: DocumentPreviewOuterProps, { document: newDocument }: DocumentPreviewOuterProps = { document: null }) {
-    //   if (!oldDocument || oldDocument.container !== newDocument.container) {
-    //     const container = this.refs.container as HTMLElement;
-    //     while(container.childNodes) {
-    //       container.removeChild(container.childNodes[0]);
-    //     }
-    //     container.appendChild(newDocument.container);
-    //   }
-    // },
+    componentDidUpdate({ document: oldDocument }: DocumentPreviewOuterProps) {
+      const props: DocumentPreviewOuterProps = this.props;
+      if (!oldDocument || oldDocument.container !== props.document.container) {
+        const container = this.refs.container as HTMLElement;
+        while(container.childNodes.length) {
+          container.removeChild(container.childNodes[0]);
+        }
+        container.appendChild(props.document.container);
+      }
+    },
     componentDidMount() {
       const container = this.refs.container as HTMLElement;
       if (container) {

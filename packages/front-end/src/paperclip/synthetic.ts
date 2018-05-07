@@ -704,11 +704,7 @@ export const persistSyntheticItemPosition = (position: Point, ref: StructReferen
 export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {
     return persistSyntheticNodeChanges(ref, browser, (child) => {
-      const style = getAttribute(child, "style", PREVIEW_NAMESPACE) || EMPTY_OBJECT;
-      return setNodeAttribute(child, "style", {
-        ...style,
-        ...bounds
-      }, PREVIEW_NAMESPACE);
+      return setNodeAttribute(child, "bounds", bounds, PREVIEW_NAMESPACE);
     });
   } else {
     const document = getSyntheticNodeDocument(ref.id, browser);
