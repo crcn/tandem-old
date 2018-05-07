@@ -1,11 +1,10 @@
 import { fork, put, call, take, select } from "redux-saga/effects";
-import { projectDirectoryLoaded, PROJECT_DIRECTORY_LOADED, FILE_NAVIGATOR_ITEM_CLICKED, fileNavigatorItemClicked, dependencyEntryLoaded } from "../actions";
+import { projectDirectoryLoaded, PROJECT_DIRECTORY_LOADED, FILE_NAVIGATOR_ITEM_CLICKED, fileNavigatorItemClicked, dependencyEntryLoaded, FileNavigatorItemClicked, OpenFilesItemClick, OPEN_FILE_ITEM_CLICKED } from "../actions";
 import { PAPERCLIP_EXTENSION_NAME, loadEntry } from "../../paperclip";
 import { File, Directory, xmlToTreeNode, getFilesWithExtension, getFilePath, getTeeNodePath, getTreeNodeFromPath, getFilePathFromNodePath } from "../../common";
 import { RootState, getActiveWindow } from "../state";
 
 export function* projectSaga() {
-  yield fork(handleActiveFile);
   // yield fork(handleProjectDirectoryLoaded);
   yield fork(putFakeDirectory);
 }
@@ -61,16 +60,4 @@ const TEST_FILES = {
       </component>
     </module>
   `
-}
-
-function* handleActiveFile() {
-  // while(1) {
-  //   const { path } = yield take(FILE_NAVIGATOR_ITEM_CLICKED);
-  //   const state: RootState = yield select();
-  //   const { entry, graph } = yield call(loadEntry, state.activeFilePath, {
-  //     graph: state.browser.graph,
-  //     openFile: filePath => TEST_FILES[filePath]
-  //   });
-  //   yield put(dependencyEntryLoaded(entry, graph));
-  // }
 }

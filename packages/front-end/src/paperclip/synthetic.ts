@@ -360,8 +360,6 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
         getAttribute(sourceNode, "id")
       );
 
-      console.log(childComponentNode);
-
       return {
         ...content,
         children: [
@@ -484,6 +482,7 @@ const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: Synthet
 };
 
 const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependencyUri: string, browser: SyntheticBrowser) => {
+
   const oldGraph = browser.graph;
   const graph = updateGraphDependency(properties, dependencyUri, browser.graph);
 

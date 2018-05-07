@@ -4,23 +4,23 @@ import { mapKeys } from "lodash";
 import { shortcutKeyDown, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN } from "../actions";
 
 export function* shortcutSaga() {
-  yield fork(mapHotkeys({
+  // yield fork(mapHotkeys({
 
-    // artboard
-    "a": wrapDispatch(SHORTCUT_A_KEY_DOWN),
+  //   // artboard
+  //   "a": wrapDispatch(SHORTCUT_A_KEY_DOWN),
 
-    // rectangle
-    "r": wrapDispatch(SHORTCUT_R_KEY_DOWN),
+  //   // rectangle
+  //   "r": wrapDispatch(SHORTCUT_R_KEY_DOWN),
 
-    // text
-    "t": wrapDispatch(SHORTCUT_T_KEY_DOWN),
+  //   // text
+  //   "t": wrapDispatch(SHORTCUT_T_KEY_DOWN),
 
-    // artboard
-    "escape": wrapDispatch(SHORTCUT_ESCAPE_KEY_DOWN),
+  //   // artboard
+  //   "escape": wrapDispatch(SHORTCUT_ESCAPE_KEY_DOWN),
 
-    // artboard
-    "backspace": wrapDispatch(SHORTCUT_DELETE_KEY_DOWN)
-  }));
+  //   // artboard
+  //   "backspace": wrapDispatch(SHORTCUT_DELETE_KEY_DOWN)
+  // }));
 }
 
 const wrapDispatch = (type: string) => function*(sourceEvent) {

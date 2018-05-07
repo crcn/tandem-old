@@ -5,7 +5,7 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { PaneComponent } from "../../../../pane";
 import { Dispatch } from "redux";
-import { Directory, File, getAttribute } from "../../../../../../common";
+import { Directory, File, getAttribute, FileAttributeNames } from "../../../../../../common";
 import { fileNavigatorItemClicked, fileNavigatorItemDoubleClicked } from "../../../../../actions";
 
 /*
@@ -60,10 +60,10 @@ const FileComponent = compose<FileComponentInnerProps, FileComponentOuterProps>(
   pure,
   withHandlers({
     onLabelClick: ({ dispatch, file }) => (event) => {
-      dispatch(fileNavigatorItemClicked(file.id));
+      dispatch(fileNavigatorItemClicked(getAttribute(file, FileAttributeNames.URI)));
     },
     onLabelDoubleClick: ({ dispatch, file }) => (event) => {
-      dispatch(fileNavigatorItemDoubleClicked(file.id));
+      dispatch(fileNavigatorItemDoubleClicked(getAttribute(file, FileAttributeNames.URI)));
     }
   })
 )(BaseFileComponent);

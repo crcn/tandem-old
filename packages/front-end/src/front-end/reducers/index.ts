@@ -23,8 +23,8 @@ export const rootReducer = (state: RootState, action: Action) => {
       return updateRootState({ projectDirectory: addTreeNodeIds(directory) }, state);
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
-      const { fileId } = action as FileNavigatorItemClicked;
-      const file = getNestedTreeNodeById(fileId, state.projectDirectory);
+      const { uri } = action as FileNavigatorItemClicked;
+      const file = getFileFromUri(uri, state.projectDirectory);
       if (isDirectory(file)) {
         return updateRootState({
           projectDirectory: updateNestedNode(file, state.projectDirectory, (child) => {
@@ -34,6 +34,8 @@ export const rootReducer = (state: RootState, action: Action) => {
       } else {
         return updateRootState({
           activeFilePath: getAttribute(file, FileAttributeNames.URI),
+          selectionReferences: [],
+          hoveringReferences: [],
           openFiles: [
             ...state.openFiles.filter(openFile => openFile.temporary === false),
             {
@@ -45,10 +47,9 @@ export const rootReducer = (state: RootState, action: Action) => {
       }
     }
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
-      const { fileId } = action as FileNavigatorItemClicked;
-      const file = getNestedTreeNodeById(fileId, state.projectDirectory);
+      const { uri } = action as FileNavigatorItemClicked;
+      const file = getFileFromUri(uri, state.projectDirectory);
       if (isFile(file)) {
-        const uri = getAttribute(file, FileAttributeNames.URI);
         const i = state.openFiles.findIndex(openFile => openFile.uri === uri);
         const openFile = {
           uri,
@@ -57,6 +58,8 @@ export const rootReducer = (state: RootState, action: Action) => {
 
         return updateRootState({
           activeFilePath: uri,
+          selectionReferences: [],
+          hoveringReferences: [],
           openFiles: ~i ? arraySplice(state.openFiles, i, 1, openFile) : [
             ...state.openFiles.filter(openFile => openFile.temporary === false),
             openFile
@@ -70,7 +73,8 @@ export const rootReducer = (state: RootState, action: Action) => {
       const { uri } = action as OpenFilesItemClick;
       return setNextOpenFile(updateRootState({
         openFiles: state.openFiles.filter(openFile => !openFile.temporary),
-        activeFilePath: uri
+        activeFilePath: uri,
+        selectionReferences: []
       }, state));
     }
     case OPEN_FILE_ITEM_CLOSE_CLICKED: {
@@ -92,6 +96,17 @@ export const rootReducer = (state: RootState, action: Action) => {
       const documents = evaluateDependencyEntry({ entry, graph }).documentNodes.map(root => {
         return createSyntheticDocument(root, graph);
       });
+
+      const existingWindow = state.browser.windows.find(window => window.location === entry.uri);
+
+      if (!existingWindow) {
+        state = updateRootStateSyntheticBrowser({
+          windows: [
+            ...state.browser.windows,
+            createSyntheticWindow(entry.uri)
+          ]
+        }, state);
+      }
 
       return updateRootStateSyntheticWindow(entry.uri, {
         documents,
@@ -241,7 +256,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       switch(toolType) {
         case CanvasToolType.ARTBOARD: {
-          state = updateRootStateSyntheticBrowser(persistNewComponent(bounds, state.activeFilePath, state.browser), state);
+          state = keepActiveFileOpen(updateRootStateSyntheticBrowser(persistNewComponent(bounds, state.activeFilePath, state.browser), state));
           const newActiveWindow = getActiveWindow(state);
           const newDocument = newActiveWindow.documents[newActiveWindow.documents.length - 1];
           state = setSelection(state, newDocument);
@@ -296,6 +311,16 @@ const setNextOpenFile = (state: RootState): RootState => {
     activeFilePath: state.openFiles.length ? state.openFiles[0].uri : null
   };
 };
+
+const keepActiveFileOpen = (state: RootState): RootState => {
+  return {
+    ...state,
+    openFiles: state.openFiles.map(openFile => ({
+      ...openFile,
+      temporary: false
+    }))
+  }
+}
 
 const getInsertedWindowRefs = (oldWindow: SyntheticWindow, newBrowser: SyntheticBrowser): StructReference<any>[] => {
   const elementRefs = oldWindow.documents.reduce((refs, oldDocument) => {
@@ -371,7 +396,7 @@ const shortcutReducer = (state: RootState, action: Action) => {
     case SHORTCUT_DELETE_KEY_DOWN: {
       const selection = state.selectionReferences;
       state = updateRootStateSyntheticBrowser(persistDeleteSyntheticItems(selection, state.browser), state);
-      return setSelection(state);
+      return keepActiveFileOpen(setSelection(state));
     }
   }
 
@@ -396,7 +421,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
 
       state = updateRootStateSyntheticBrowser(persistPasteSyntheticNodes(state.activeFilePath, targetSourceNode.id, syntheticNodes, state.browser), state);
 
-      state = setSelection(state, ...getInsertedWindowRefs(oldWindow, state.browser));
+      state = keepActiveFileOpen(setSelection(state, ...getInsertedWindowRefs(oldWindow, state.browser)));
     }
   }
 

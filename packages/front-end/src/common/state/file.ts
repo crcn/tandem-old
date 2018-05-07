@@ -95,6 +95,7 @@ export const convertFlatFilesToNested = (uri: string, files: string[]): Director
           name: "directory",
           attributes: {
             [DEFAULT_NAMESPACE]: {
+              [FileAttributeNames.URI]: "file://" + path.join(uri, pf.slice(0, i + 1).join("/")),
               [FileAttributeNames.BASENAME]: part
             }
           },
@@ -105,7 +106,7 @@ export const convertFlatFilesToNested = (uri: string, files: string[]): Director
       }
     }
 
-    current.children.push({
+    current.children.unshift({
       name: "file",
       attributes: {
         [DEFAULT_NAMESPACE]: {

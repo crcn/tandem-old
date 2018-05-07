@@ -27,8 +27,6 @@ export const setup = <TState extends RootState>(reducer?: Reducer<TState>, saga?
       }
     });
 
-    console.log("LOADED")
-
     store.dispatch(appLoaded());
   };
 };

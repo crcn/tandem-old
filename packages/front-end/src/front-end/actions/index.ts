@@ -63,7 +63,7 @@ export type DependencyEntryLoaded = {
 } & Action;
 
 export type FileNavigatorItemClicked = {
-  fileId: string;
+  uri: string;
 } & Action;
 
 export type OpenFilesItemClick = {
@@ -158,8 +158,8 @@ export type FileNavigatorLabelClicked = {
   fileId: string;
 } & Action;
 
-export const fileNavigatorItemClicked = (fileId: string): FileNavigatorItemClicked => ({
-  fileId,
+export const fileNavigatorItemClicked = (uri: string): FileNavigatorItemClicked => ({
+  uri,
   type: FILE_NAVIGATOR_ITEM_CLICKED,
 });
 
@@ -173,8 +173,8 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
   type: OPEN_FILE_ITEM_CLOSE_CLICKED,
 });
 
-export const fileNavigatorItemDoubleClicked = (fileId: string): FileNavigatorItemClicked => ({
-  fileId,
+export const fileNavigatorItemDoubleClicked = (uri: string): FileNavigatorItemClicked => ({
+  uri,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
 });
 

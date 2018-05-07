@@ -8,12 +8,14 @@ import { APP_LOADED, projectDirectoryLoaded, convertFlatFilesToNested } from "ta
 import { DesktopState } from "../state";
 import * as globby from "globby";
 import { isPublicAction } from "tandem-common";
+import { shortcutsSaga } from "./menu";
 
 export function* rootSaga() {
   yield fork(openMainWindow);
   yield fork(electronSaga);
   yield fork(ipcSaga)
   yield fork(handleLoadProject);
+  yield fork(shortcutsSaga);
 }
 
 function* openMainWindow() {

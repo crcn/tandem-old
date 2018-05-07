@@ -83,6 +83,9 @@ export const updateCanvas = (properties: Partial<Canvas>, root: RootState) => {
 }
 
 export const setCanvasTool = (toolType: CanvasToolType, root: RootState) => {
+  if (!root.activeFilePath) {
+    return root;
+  }
   root = updateCanvas({ toolType }, root);
   root = setSelection(root);
   return root;

@@ -1,10 +1,10 @@
 /**
 TODOS:
 
-- better error messaging for files that are not found 
+- better error messaging for files that are not found
 */
 
-import { TreeNode } from "../common/state";
+import { TreeNode, addTreeNodeIds } from "../common/state";
 import { resolveFilePath, EMPTY_OBJECT, xmlToTreeNode } from "../common/utils";
 import { Module, Component, ComponentOverride, getModuleInfo, Dependency, DependencyGraph } from "./dsl";
 export type FileLoader = (uri: string) => string | Promise<string>;
@@ -19,7 +19,7 @@ export type LoadEntryResult = {
   graph: DependencyGraph;
 };
 
-export const loadEntry = async (entryFileUri: string, options: LoadEntryOptions): Promise<LoadEntryResult> => { 
+export const loadEntry = async (entryFileUri: string, options: LoadEntryOptions): Promise<LoadEntryResult> => {
   const graph: DependencyGraph = { ...(options.graph || EMPTY_OBJECT) };
   const queue: string[] = [entryFileUri];
   while(queue.length) {
@@ -35,14 +35,14 @@ export const loadEntry = async (entryFileUri: string, options: LoadEntryOptions)
     for (const xmlns in module.imports) {
       const relativePath = module.imports[xmlns];
       const absolutePath = resolveFilePath(relativePath, currentUri);
-      importUris[relativePath] = absolutePath; 
+      importUris[relativePath] = absolutePath;
       queue.push(absolutePath);
     }
 
     const dependency = createDependency(currentUri, module.source, importUris);
     graph[currentUri] = dependency;
   }
-  
+
   return {
     entry: graph[entryFileUri],
     graph
@@ -65,8 +65,17 @@ const loadModule = async (uri: string, options: LoadEntryOptions): Promise<Modul
     // TODO - transform XML to JSON
     throw new Error(`XML is not supported yet`);
   } else if (/pc$/.test(uri)) {
-    const moduleSource = xmlToTreeNode(content);
-    return getModuleInfo(moduleSource);
+    try {
+      const moduleSource = xmlToTreeNode(content);
+      return getModuleInfo(moduleSource);
+    } catch(e) {
+      console.warn(e);
+      return getModuleInfo(addTreeNodeIds({
+        name: "module",
+        attributes: {},
+        children: [],
+      }));
+    }
   } else if (!/json$/.test(uri)) {
     throw new Error(`Unsupported import ${uri}.`);
   } else {
