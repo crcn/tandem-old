@@ -2,4 +2,23 @@
   > .content {
     padding: 4px;
   }
+
+  .file {
+    .label {
+      cursor: pointer;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      &:hover {
+        background: #EEEEEE;
+      }
+    }
+    i {
+      margin-right: 4px;
+      &.ion-android-document {
+        font-size: 0.7em;
+      }
+    }
+
+
+  }
 }

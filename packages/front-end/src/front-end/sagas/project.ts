@@ -64,13 +64,13 @@ const TEST_FILES = {
 }
 
 function* handleActiveFile() {
-  while(1) {
-    const { path } = yield take(FILE_NAVIGATOR_ITEM_CLICKED);
-    const state: RootState = yield select();
-    const { entry, graph } = yield call(loadEntry, state.activeFilePath, {
-      graph: state.browser.graph,
-      openFile: filePath => TEST_FILES[filePath]
-    });
-    yield put(dependencyEntryLoaded(entry, graph));
-  }
+  // while(1) {
+  //   const { path } = yield take(FILE_NAVIGATOR_ITEM_CLICKED);
+  //   const state: RootState = yield select();
+  //   const { entry, graph } = yield call(loadEntry, state.activeFilePath, {
+  //     graph: state.browser.graph,
+  //     openFile: filePath => TEST_FILES[filePath]
+  //   });
+  //   yield put(dependencyEntryLoaded(entry, graph));
+  // }
 }

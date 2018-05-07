@@ -1,4 +1,4 @@
-import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getChildParentMap, filterNestedNodes, getTreeNodeFromPath } from "./tree";
+import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getChildParentMap, filterNestedNodes, getTreeNodeFromPath, findNestedNode } from "./tree";
 import { memoize } from "../utils/memoization";
 import * as path from "path";
 
@@ -12,6 +12,12 @@ export type File = {
 export type Directory = {
   name: "directory"
 } & TreeNode;
+
+export enum FileAttributeNames {
+  URI = "uri",
+  EXPANDED = "expanded",
+  BASENAME = "basename"
+};
 
 export const isFile = (node: TreeNode) => node.name === FILE_TAG_NAME;
 export const isDirectory = (node: TreeNode) => node.name === DIRECTORY_TAG_NAME;
@@ -53,6 +59,8 @@ export const getFilePath = memoize((file: File, directory: Directory) => {
 
 export const getFilePathFromNodePath = (path: number[], directory: Directory) => getFilePath(getTreeNodeFromPath(path, directory) as File, directory);
 
+export const getFileFromUri = (uri: string, root: Directory) => findNestedNode(root, (child) => getAttribute(child, FileAttributeNames.URI) === uri);
+
 export const getFilesWithExtension = memoize((extension: string, directory: Directory) => {
   const tester = new RegExp(`${extension}$`);
   return filterNestedNodes(directory, file => isFile(file) && tester.test(getFileName(file)));
@@ -67,8 +75,8 @@ export const convertFlatFilesToNested = (uri: string, files: string[]): Director
     name: "directory",
     attributes: {
       [DEFAULT_NAMESPACE]: {
-        uri,
-        basename: path.basename(uri)
+        [FileAttributeNames.URI]: uri,
+        [FileAttributeNames.BASENAME]: path.basename(uri)
       }
     },
     children: []
@@ -87,7 +95,7 @@ export const convertFlatFilesToNested = (uri: string, files: string[]): Director
           name: "directory",
           attributes: {
             [DEFAULT_NAMESPACE]: {
-              basename: part
+              [FileAttributeNames.BASENAME]: part
             }
           },
           children: []
@@ -101,8 +109,8 @@ export const convertFlatFilesToNested = (uri: string, files: string[]): Director
       name: "file",
       attributes: {
         [DEFAULT_NAMESPACE]: {
-          uri: "file://" + pf.join("/"),
-          basename: pf[i],
+          [FileAttributeNames.URI]: "file://" + path.join(uri, pf.join("/")),
+          [FileAttributeNames.BASENAME]: pf[i],
         }
       },
       children: []

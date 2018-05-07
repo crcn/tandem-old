@@ -1,10 +1,10 @@
 MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
-TOMORROW (THURS):
+TOMORROW (TEUS):
 
-- File pane
-- Open file
-- save command
+- ability to open file
+- ability to change file
+- ability to save file
 
 TODO (FRI):
 

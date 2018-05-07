@@ -13,6 +13,7 @@ init({
       zoom: 1
     }
   },
+  openFiles: [],
   browser: {
     windows: [],
     type: SyntheticObjectType.BROWSER

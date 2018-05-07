@@ -1,3 +1,38 @@
 .m-open-files-pane {
+  .open-file {
+    max-width: 200px;
+    display: flex;
+    overflow: hidden;
+    padding: 4px;
+    cursor: pointer;
+    &:hover {
+      background: #EEEEEE;
+    }
 
+    i {
+      padding-left: 12px;
+      font-size: 0.7em;
+      padding-right: 4px;
+      margin-top: 2px;
+    }
+    &.temporary {
+      font-style: italic;
+    }
+    .basename {
+      margin-right: 4px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: inline-block;
+      font-weight: 400;
+    }
+    .uri {
+      opacity: 0.5;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      flex: 1;
+      display: inline-block;
+      overflow: hidden;
+    }
+  }
 }

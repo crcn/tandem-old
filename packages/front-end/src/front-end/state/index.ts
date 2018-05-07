@@ -25,11 +25,17 @@ export type RootState = {
   activeFilePath?: string;
   canvas: Canvas;
   mount: Element;
+  openFiles: OpenFile[];
   hoveringReferences: StructReference<any>[];
   selectionReferences: StructReference<any>[];
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
 };
+
+export type OpenFile = {
+  temporary: boolean;
+  uri: string;
+}
 
 export const updateRootState = (properties: Partial<RootState>, root: RootState) => ({
   ...root,

@@ -8,12 +8,70 @@ TODOS:
 
 import "./index.scss";
 import * as React from "react";
+import { Dispatch } from "redux";
+import { OpenFile } from "../../../../../state";
+import { compose, pure, withHandlers } from "recompose";
 import { PaneComponent } from "../../../../pane";
+import * as cx from "classnames";
+import * as path from "path";
+import { openFilesItemClick, openFilesItemCloseClick } from "../../../../../actions";
 
-const BaseOpenFilesPaneComponent = () => <PaneComponent header="Open Files" className="m-open-files-pane">
-  <div className="m-content">
-    Open Files
+
+type OpenFileOuterProps = {
+  openFile: OpenFile;
+  dispatch: Dispatch<any>;
+}
+
+type OpenFileInnerProps = {
+  onClick: () => any;
+  onCloseClick: () => any;
+} & OpenFileOuterProps;
+
+const BaseOpenFileComponent = ({ openFile: { temporary, uri }, onClick, onCloseClick }: OpenFileInnerProps) => {
+  return <div className={cx("open-file", { temporary })} onClick={onClick}>
+    <i className="ion-close" onClick={onCloseClick}>
+    </i>
+    <div className="basename">
+      {path.basename(uri)}
+    </div>
+    <div className="uri">
+      {uri}
+    </div>
   </div>
-</PaneComponent>;
+}
 
-export const OpenFilesPaneComponent = BaseOpenFilesPaneComponent;
+const OpenFileComponent = compose<OpenFileInnerProps, OpenFileOuterProps>(
+  pure,
+  withHandlers({
+    onClick: ({ dispatch, openFile }) => () => {
+      dispatch(openFilesItemClick(openFile.uri));
+    },
+    onCloseClick: ({ dispatch, openFile }) => (event: React.MouseEvent<any>) => {
+      event.stopPropagation();
+      dispatch(openFilesItemCloseClick(openFile.uri));
+    }
+  })
+)(BaseOpenFileComponent);
+
+type OpenFilesPaneOuterProps = {
+  openFiles: OpenFile[];
+  dispatch: Dispatch<any>;
+};
+
+type OpenFilesPaneInnerProps = {
+} & OpenFilesPaneOuterProps;
+
+const BaseOpenFilesPaneComponent = ({ openFiles, dispatch }) => {
+  return <PaneComponent header="Open Files" className="m-open-files-pane">
+    {
+      openFiles.map((openFile) => {
+        return <OpenFileComponent openFile={openFile} dispatch={dispatch} />
+      })
+    }
+  </PaneComponent>;
+};
+
+
+export const OpenFilesPaneComponent = compose<OpenFilesPaneInnerProps, OpenFilesPaneOuterProps>(
+  pure
+)(BaseOpenFilesPaneComponent);

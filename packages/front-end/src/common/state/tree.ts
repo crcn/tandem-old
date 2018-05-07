@@ -158,7 +158,7 @@ export const setNodeAttribute = (node: TreeNode, name: string, value: any, names
 
 export const getParentTreeNode = memoize((node: TreeNode, root: TreeNode) => getChildParentMap(root)[node.id]);
 
-export const addTreeNodeIds = (node: TreeNode, seed: string = ""): TreeNode => {
+export const addTreeNodeIds = <TTree extends TreeNode>(node: TTree, seed: string = ""): TTree => {
   let i = 0;
   if (node.id) {
     return node;
@@ -166,8 +166,8 @@ export const addTreeNodeIds = (node: TreeNode, seed: string = ""): TreeNode => {
 
   const checksum = seed + generateTreeChecksum(node);
 
-  const update = (node: TreeNode) => ({
-    ...node,
+  const update = (node: TTree) => ({
+    ...(node as any),
     id: checksum + (i++),
     children: node.children.map(update)
   });

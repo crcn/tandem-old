@@ -12,6 +12,7 @@ setup<DesktopRootState>(rootReducer, rootSaga)({
     type: SyntheticObjectType.BROWSER,
     windows: []
   },
+  openFiles: [],
   canvas: {
     backgroundColor: "#EFEFEF",
     translate: {

@@ -20,6 +20,9 @@ export const CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED = "CANVAS_TOOL_WINDOW_BACKGRO
 export const CANVAS_TOOL_WINDOW_KEY_DOWN = "CANVAS_TOOL_WINDOW_KEY_DOWN";
 export const CANVAS_TOOL_ARTBOARD_TITLE_CLICKED = "CANVAS_TOOL_ARTBOARD_TITLE_CLICKED";
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
+export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED = "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
+export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
+export const OPEN_FILE_ITEM_CLOSE_CLICKED = "OPEN_FILE_ITEM_CLOSE_CLICKED";
 export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
 export const CANVAS_MOUSE_MOVED = "CANVAS_MOUSE_MOVED";
 export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
@@ -60,7 +63,11 @@ export type DependencyEntryLoaded = {
 } & Action;
 
 export type FileNavigatorItemClicked = {
-  path: number[];
+  fileId: string;
+} & Action;
+
+export type OpenFilesItemClick = {
+  uri: string;
 } & Action;
 
 export type ProjectDirectoryLoaded = {
@@ -147,9 +154,28 @@ export type SyntheticNodesPasted = {
   syntheticNodes: SyntheticNode[]
 } & Action;
 
-export const fileNavigatorItemClicked = (path: number[]): FileNavigatorItemClicked => ({
-  path,
+export type FileNavigatorLabelClicked = {
+  fileId: string;
+} & Action;
+
+export const fileNavigatorItemClicked = (fileId: string): FileNavigatorItemClicked => ({
+  fileId,
   type: FILE_NAVIGATOR_ITEM_CLICKED,
+});
+
+export const openFilesItemClick = (uri: string): OpenFilesItemClick => ({
+  uri,
+  type: OPEN_FILE_ITEM_CLICKED,
+});
+
+export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
+  uri,
+  type: OPEN_FILE_ITEM_CLOSE_CLICKED,
+});
+
+export const fileNavigatorItemDoubleClicked = (fileId: string): FileNavigatorItemClicked => ({
+  fileId,
+  type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
 });
 
 export const appLoaded = publicActionCreator(() => ({ type: APP_LOADED }));

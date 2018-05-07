@@ -1,10 +1,10 @@
 
 
 import { Action } from "redux";
-import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, SYNTHETIC_NODES_PASTED, SyntheticNodesPasted } from "../actions";
+import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, SYNTHETIC_NODES_PASTED, SyntheticNodesPasted, FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED, OPEN_FILE_ITEM_CLICKED, OPEN_FILE_ITEM_CLOSE_CLICKED, OpenFilesItemClick } from "../actions";
 import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseNodeTargetReference, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentReference, getDocumentReferenceFromPoint } from "../state";
 import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticItemBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle, persistInsertText, SyntheticDocument, SyntheticBrowser, persistPasteSyntheticNodes, getSyntheticNodeSourceNode, getSyntheticNodeById, SyntheticWindow } from "../../paperclip";
-import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint, getAttribute, diffArray } from "../../common";
+import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint, getAttribute, diffArray, getFileFromUri, isDirectory, updateNestedNode, DEFAULT_NAMESPACE, setNodeAttribute, FileAttributeNames, addTreeNodeIds, Directory, getNestedTreeNodeById, isFile, arraySplice } from "../../common";
 import { difference, pull } from "lodash";
 
 const DEFAULT_RECT_COLOR = "#CCC";
@@ -20,16 +20,64 @@ export const rootReducer = (state: RootState, action: Action) => {
   switch(action.type) {
     case PROJECT_DIRECTORY_LOADED: {
       const { directory } = action as ProjectDirectoryLoaded;
-      return updateRootState({ projectDirectory: directory }, state);
+      return updateRootState({ projectDirectory: addTreeNodeIds(directory) }, state);
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
-      const { path } = action as FileNavigatorItemClicked;
-      const filePath = getFilePathFromNodePath(path, state.projectDirectory);
-      const window = createSyntheticWindow(filePath);
-      state = updateRootState({
-        browser: addSyntheticWindow(window, state.browser)
-      }, state);
-      return setActiveFilePath(window.location, state);
+      const { fileId } = action as FileNavigatorItemClicked;
+      const file = getNestedTreeNodeById(fileId, state.projectDirectory);
+      if (isDirectory(file)) {
+        return updateRootState({
+          projectDirectory: updateNestedNode(file, state.projectDirectory, (child) => {
+            return setNodeAttribute(child, FileAttributeNames.EXPANDED, !getAttribute(child, FileAttributeNames.EXPANDED));
+          })
+        }, state);
+      } else {
+        return updateRootState({
+          activeFilePath: getAttribute(file, FileAttributeNames.URI),
+          openFiles: [
+            ...state.openFiles.filter(openFile => openFile.temporary === false),
+            {
+              uri: getAttribute(file, FileAttributeNames.URI),
+              temporary: true
+            }
+          ]
+        }, state);
+      }
+    }
+    case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
+      const { fileId } = action as FileNavigatorItemClicked;
+      const file = getNestedTreeNodeById(fileId, state.projectDirectory);
+      if (isFile(file)) {
+        const uri = getAttribute(file, FileAttributeNames.URI);
+        const i = state.openFiles.findIndex(openFile => openFile.uri === uri);
+        const openFile = {
+          uri,
+          temporary: false
+        };
+
+        return updateRootState({
+          activeFilePath: uri,
+          openFiles: ~i ? arraySplice(state.openFiles, i, 1, openFile) : [
+            ...state.openFiles.filter(openFile => openFile.temporary === false),
+            openFile
+          ]
+        }, state);
+      }
+
+      return state;
+    }
+    case OPEN_FILE_ITEM_CLICKED: {
+      const { uri } = action as OpenFilesItemClick;
+      return setNextOpenFile(updateRootState({
+        openFiles: state.openFiles.filter(openFile => !openFile.temporary),
+        activeFilePath: uri
+      }, state));
+    }
+    case OPEN_FILE_ITEM_CLOSE_CLICKED: {
+      const { uri } = action as OpenFilesItemClick;
+      return setNextOpenFile(updateRootState({
+        openFiles: state.openFiles.filter(openFile => openFile.uri !== uri),
+      }, state));
     }
     case DEPENDENCY_ENTRY_LOADED: {
       const { entry, graph } = action as DependencyEntryLoaded;
@@ -236,6 +284,17 @@ export const canvasReducer = (state: RootState, action: Action) => {
   }
 
   return state;
+};
+
+const setNextOpenFile = (state: RootState): RootState => {
+  const hasOpenFile = state.openFiles.find(openFile => state.activeFilePath === openFile.uri);
+  if (hasOpenFile) {
+    return state;
+  }
+  return {
+    ...state,
+    activeFilePath: state.openFiles.length ? state.openFiles[0].uri : null
+  };
 };
 
 const getInsertedWindowRefs = (oldWindow: SyntheticWindow, newBrowser: SyntheticBrowser): StructReference<any>[] => {
