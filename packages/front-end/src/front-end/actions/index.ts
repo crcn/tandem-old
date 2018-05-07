@@ -144,7 +144,7 @@ export type SelectorDoubleClicked = {
 
 export type ShortcutKeyDown = {
 
-} & WrappedEvent<KeyboardEvent>;
+};
 
 export type InsertToolFinished = {
   bounds: Bounds;
@@ -195,10 +195,9 @@ export const projectDirectoryLoaded = publicActionCreator((directory: Directory)
   type: PROJECT_DIRECTORY_LOADED
 }));
 
-export const shortcutKeyDown = (type: string, sourceEvent: KeyboardEvent): ShortcutKeyDown => ({
-  type,
-  sourceEvent
-});
+export const shortcutKeyDown = publicActionCreator((type: string): ShortcutKeyDown => ({
+  type
+}));
 
 export const syntheticNodesPasted = (syntheticNodes: SyntheticNode[]) => ({
   syntheticNodes,

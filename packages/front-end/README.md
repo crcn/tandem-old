@@ -2,6 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (TEUS):
 
+- ensure that component positions are persisted
 - show modified files
 - ability to change file
 - ability to save file

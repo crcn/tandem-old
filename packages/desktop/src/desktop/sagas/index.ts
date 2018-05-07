@@ -1,7 +1,7 @@
 import { fork, call, take, select, put } from "redux-saga/effects";
 import { electronSaga } from "./electron";
 import { BrowserWindow } from "electron";
-import { APP_READY } from "../actions";
+import { APP_READY, mainWindowOpened } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
 import { APP_LOADED, projectDirectoryLoaded, convertFlatFilesToNested } from "tandem-front-end";
@@ -36,6 +36,8 @@ function* openMainWindow() {
       }
     }
   });
+
+  yield put(mainWindowOpened());
 }
 
 function* handleLoadProject() {

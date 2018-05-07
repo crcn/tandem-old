@@ -24,7 +24,7 @@ export function* shortcutSaga() {
 }
 
 const wrapDispatch = (type: string) => function*(sourceEvent) {
-  yield put(shortcutKeyDown(type, sourceEvent));
+  // yield put(shortcutKeyDown(type));
 }
 
 const mapHotkeys = (map: {
