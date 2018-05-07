@@ -2,7 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (TEUS):
 
-- ability to open file
+- ability to open file (must work with images & text too)
 - ability to change file
 - ability to save file
 
