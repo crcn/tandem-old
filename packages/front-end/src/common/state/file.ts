@@ -1,4 +1,4 @@
-import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getChildParentMap, filterNestedNodes, getTreeNodeFromPath, findNestedNode } from "./tree";
+import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getChildParentMap, filterNestedNodes, getTreeNodeFromPath, findNestedNode, updateNestedNode, setNodeAttribute } from "./tree";
 import { memoize } from "../utils/memoization";
 import * as path from "path";
 
@@ -16,7 +16,8 @@ export type Directory = {
 export enum FileAttributeNames {
   URI = "uri",
   EXPANDED = "expanded",
-  BASENAME = "basename"
+  BASENAME = "basename",
+  SELECTED = "selected"
 };
 
 export const isFile = (node: TreeNode) => node.name === FILE_TAG_NAME;
@@ -60,6 +61,22 @@ export const getFilePath = memoize((file: File, directory: Directory) => {
 export const getFilePathFromNodePath = (path: number[], directory: Directory) => getFilePath(getTreeNodeFromPath(path, directory) as File, directory);
 
 export const getFileFromUri = (uri: string, root: Directory) => findNestedNode(root, (child) => getAttribute(child, FileAttributeNames.URI) === uri);
+
+const getSelectedFile = memoize((root: Directory) => findNestedNode(root, child => getAttribute(child, FileAttributeNames.SELECTED)));
+
+export const selectFile = (file: File | Directory, multi: boolean, root: Directory) => {
+
+  if (!multi) {
+    root = deselectAllFiles(root);
+  }
+
+  return updateNestedNode(file, root, (file) => setNodeAttribute(file, FileAttributeNames.SELECTED, true));
+};
+
+const getSelectedFiles = memoize((root: Directory) => filterNestedNodes(root, child => getAttribute(child, FileAttributeNames.SELECTED)));
+export const deselectFiles = (files: File[], root: Directory): Directory => files.reduce((root, file) => updateNestedNode(file, root, (file) => setNodeAttribute(file, FileAttributeNames.SELECTED, false)), root);
+
+export const deselectAllFiles = (root: Directory) => deselectFiles(getSelectedFiles(root) as File[], root);
 
 export const getFilesWithExtension = memoize((extension: string, directory: Directory) => {
   const tester = new RegExp(`${extension}$`);

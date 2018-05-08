@@ -1,6 +1,16 @@
+@import "front-end/scss/variables.scss";
+
 .m-file-navigator-pane {
   > .content {
     padding: 4px;
+  }
+
+  .controls {
+    float: right;
+    * {
+      margin-right: 4px;
+      cursor: pointer;
+    }
   }
 
   .file {
@@ -10,6 +20,13 @@
       padding-bottom: 4px;
       &:hover {
         background: #EEEEEE;
+      }
+    }
+
+    &.selected {
+      > .label {
+        background: $color-aqua-1;
+        color: white;
       }
     }
     i {

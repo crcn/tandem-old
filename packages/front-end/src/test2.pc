@@ -1,0 +1,8 @@
+<module>
+  <component id="component1" preview:bounds="left:67;right:273;top:86;bottom:214;">
+    <template></template>
+  </component>
+  <component id="component2" preview:bounds="left:309;right:466;top:35;bottom:100;">
+    <template></template>
+  </component>
+</module>

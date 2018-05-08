@@ -15,7 +15,7 @@ export type PreviewLayerOuterProps = {
 };
 
 const BasePreviewLayerComponent = ({ window, dependency }: PreviewLayerOuterProps) => <div className="m-preview-layer">
-  { (window && window.documents || EMPTY_ARRAY).map(document => <DocumentPreviewComponent document={document} dependency={dependency} />)}
+  { (window && window.documents || EMPTY_ARRAY).map(document => <DocumentPreviewComponent key={document.id} document={document} dependency={dependency} />)}
 </div>;
 
 

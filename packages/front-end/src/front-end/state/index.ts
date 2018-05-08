@@ -1,4 +1,4 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML } from "../../common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, selectFile, File, deselectAllFiles } from "../../common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq, pull } from "lodash";
@@ -43,6 +43,14 @@ export const updateRootState = (properties: Partial<RootState>, root: RootState)
   ...properties,
 });
 
+export const selectRootProjectFile = (file: File, multi: boolean, state: RootState) => updateRootState({
+  projectDirectory: selectFile(file, multi, state.projectDirectory)
+}, state);
+
+export const deselectRootProjectFiles = (state: RootState) => updateRootState({
+  projectDirectory: deselectAllFiles(state.projectDirectory)
+}, state);
+
 export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBrowser) => SyntheticBrowser, state: RootState) => {
   const oldGraph = state.browser.graph;
   state = keepActiveFileOpen(updateRootState({
@@ -59,6 +67,8 @@ export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBr
 };
 
 export const getOpenFile = (uri: string, state: RootState) => state.openFiles.find((openFile) => openFile.uri === uri);
+
+export const getOpenFilesWithContent = (state: RootState) => state.openFiles.filter(openFile => openFile.newContent);
 
 export const updateOpenFileContent = (uri: string, newContent: Buffer, state: RootState) => {
   return updateOpenFile({

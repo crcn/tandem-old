@@ -2,11 +2,10 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (TEUS):
 
-- show modified files
-- ability to change file
-- ability to save file
 - ability to insert file
+- ability to insert directory
 - quick search (light vscode)
+- undo / redo
 
 TODO (FRI):
 

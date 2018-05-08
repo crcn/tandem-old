@@ -17,7 +17,7 @@ function* handleNewWindowDocuments() {
     yield take();
     const state: RootState = yield select();
     if (state.browser.windows !== currentWindows) {
-      const diffs = diffArray(state.browser.windows, currentWindows, (a, b) => a.location === b.location ? 0 : -1);
+      const diffs = diffArray(currentWindows, state.browser.windows, (a, b) => a.location === b.location ? 0 : -1);
       for (const diff of diffs) {
         switch(diff.type) {
           case ArrayOperationalTransformType.INSERT: {
@@ -47,7 +47,6 @@ function* renderDocuments(window: SyntheticWindow) {
 }
 
 function* renderDocument(document: SyntheticDocument) {
-
   if (document.container.contentDocument && document.container.contentDocument.documentElement) {
     return;
   }

@@ -45,6 +45,8 @@ export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 export const APP_LOADED = "APP_LOADED";
 export const SAVED_FILE = "SAVED_FILE";
 export const SAVED_ALL_FILES = "SAVED_ALL_FILES";
+export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
+export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -115,6 +117,10 @@ export type CanvasWheel = {
 
 export type CanvasMounted = {
   element: HTMLDivElement;
+} & Action;
+
+export type NewFileEntered = {
+  basename: string;
 } & Action;
 
 export type CanvasToolWindowKeyDown = {
@@ -194,6 +200,16 @@ export const dependencyEntryLoaded = (entry: Dependency, graph: DependencyGraph)
   entry,
   graph,
   type: DEPENDENCY_ENTRY_LOADED
+});
+
+export const newFileEntered = (basename: string): NewFileEntered => ({
+  basename,
+  type: NEW_FILE_ENTERED
+});
+
+export const newDirectoryEntered = (basename: string): NewFileEntered => ({
+  basename,
+  type: NEW_DIRECTORY_ENTERED
 });
 
 export const projectLoaded = (uri: string): ProjectLoaded => ({

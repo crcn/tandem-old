@@ -66,7 +66,11 @@ export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0
         attrName = namespace + ":" + attrName;
       }
 
-      buffer += ` ${attrName}=${/string|object/.test(typeof value) ? JSON.stringify(value) : `"${value}"`}`
+      if (/null|undefined/.test(String(value))) {
+        continue;
+      }
+      const tov = typeof value;
+      buffer += ` ${attrName}=${tov === "string" ? JSON.stringify(value) : `"${tov === "object" ? stringifyStyle(value) : value}"`}`
     }
   }
 
@@ -86,11 +90,13 @@ export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0
 export const parseStyle = (source: string) => {
   const style = {};
   source.split(/\s*;\s*/g).forEach(kv => {
-    const [name, value] = kv.split(":");
+    let [name, value] = kv.split(":");
     if (!name || !value) {
       return;
     }
-    style[camelCase(name.trim())] = value.trim();
+    value = value.trim();
+
+    style[camelCase(name.trim())] = !isNaN(Number(value)) ? Number(value) : value;
   });
   return style;
 };

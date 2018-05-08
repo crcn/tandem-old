@@ -69,7 +69,7 @@ const BaseOpenFilesPaneComponent = ({ activeFileUri, openFiles, dispatch }) => {
   return <PaneComponent header="Open Files" className="m-open-files-pane">
     {
       openFiles.map((openFile) => {
-        return <OpenFileComponent openFile={openFile} dispatch={dispatch} active={activeFileUri === openFile.uri}/>
+        return <OpenFileComponent key={openFile.uri} openFile={openFile} dispatch={dispatch} active={activeFileUri === openFile.uri}/>
       })
     }
   </PaneComponent>;

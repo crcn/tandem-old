@@ -6,8 +6,7 @@ import { RootState, getActiveWindow } from "../state";
 
 export function* projectSaga() {
   // yield fork(handleProjectDirectoryLoaded);
-  yield fork(putFakeDirectory);
-  yield fork(handleSaveShortcut);
+  // yield fork(putFakeDirectory);
 }
 
 function* putFakeDirectory() {
@@ -61,17 +60,4 @@ const TEST_FILES = {
       </component>
     </module>
   `
-}
-
-
-function* handleSaveShortcut() {
-  while(1) {
-    yield take(SHORTCUT_SAVE_KEY_DOWN);
-    const state: RootState = yield select();
-    const uri = state.activeFilePath;
-    if (!uri) {
-      continue;
-    }
-    yield put(savedFile(uri));
-  }
 }
