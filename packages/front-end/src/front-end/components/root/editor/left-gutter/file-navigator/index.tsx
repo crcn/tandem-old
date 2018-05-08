@@ -26,8 +26,8 @@ type FileNavigatorHeaderComponentOuterProps = {
 
 const BaseFileNavigatorHeaderComponent = ({onAddFileButtonClick, onAddDirectoryButtonClick}: FileNavigatorHeaderComponentOuterProps) => <div className="header">
   Files <span className="controls">
-    <span onClick={onAddFileButtonClick}>nf</span>
-    <span onClick={onAddDirectoryButtonClick}>nd</span>
+    {/* <span onClick={onAddFileButtonClick}>nf</span>
+    <span onClick={onAddDirectoryButtonClick}>nd</span> */}
   </span>
 </div>;
 

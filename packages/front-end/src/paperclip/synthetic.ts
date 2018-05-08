@@ -7,6 +7,7 @@ import { mapValues, pull } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry, evaluateComponent } from "./evaluate";
 import { STATUS_CODES } from "http";
+import { Children } from "react";
 
 const PREVIEW_NAMESPACE = "preview";
 const PASTED_ARTBOARD_OFFSET = {
@@ -59,12 +60,11 @@ export type SyntheticDocument = {
 
 export type SyntheticNodeSource = {
   uri: string;
-  checksum: string;
   path: number[];
 };
 
 export type SyntheticNode = {
-  source: SyntheticNodeSource
+  source: SyntheticNodeSource;
 } & TreeNode;
 
 export const updateSyntheticBrowser = (properties: Partial<SyntheticBrowser>, browser: SyntheticBrowser) => ({
@@ -131,16 +131,17 @@ export const createSyntheticElement = (name: string, attributes: TreeNodeAttribu
   name,
   attributes,
   children,
-  source
+  source,
 });
 
 export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency): SyntheticNodeSource => ({
   uri: dependency.uri,
-  checksum: generateTreeChecksum(dependency.content),
   path: getTeeNodePath(source.id, getModuleInfo(dependency.content).source),
 });
 
-export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: DependencyGraph) => getTreeNodeFromPath(synthetic.source.path, graph[synthetic.source.uri].content);
+export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: DependencyGraph) => {
+  return getTreeNodeFromPath(synthetic.source.path, graph[synthetic.source.uri].content);
+}
 
 export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
 export const getSyntheticDocumentDependency = (documentId: string, browser: SyntheticBrowser) => getSyntheticWindowDependency(getSyntheticDocumentWindow(documentId, browser), browser.graph);
@@ -522,7 +523,7 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
           return newDocument;
         }
         const ots = diffNode(document.root, newDocumentNode);
-        const newRoot = patchNode(ots, document.root);
+        const newRoot = copyTreeSources(patchNode(ots, document.root), newDocumentNode);
         const nativeNodeMap = patchDOM(ots, document.root, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
         return {
           ...document,
@@ -535,6 +536,41 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
   }
 
   return browser;
+};
+
+const copyTreeSources = (a: SyntheticNode, b: SyntheticNode) => {
+  let na = a;
+
+  if (!syntheticSourceEquals(a.source, b.source)) {
+    na = { ...na, source: b.source };
+  }
+
+  let newChildren;
+
+  for (let i = a.children.length; i--;) {
+    const c = a.children[i]
+    const nc = copyTreeSources(c as SyntheticNode, b.children[i] as SyntheticNode);
+
+    if (c !== nc) {
+      if (!newChildren) {
+        newChildren = a.children.slice(i + 1);
+      }
+    }
+
+    if (newChildren) {
+      newChildren.unshift(nc)
+    }
+  }
+
+  if (newChildren) {
+    return { ...na, children: newChildren };
+  }
+
+  return na;
+};
+
+const syntheticSourceEquals = (a: SyntheticNodeSource, b: SyntheticNodeSource) => {
+  return a.uri === b.uri && a.path.join("") === b.path.join("");
 };
 
 const generateComponentId = (moduleNode: TreeNode) => {
@@ -689,7 +725,6 @@ export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browse
       dep = browser.graph[syntheticNode.source.uri];
       sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
     }
-
     return updateDependencyAndRevaluate({
       content: removeNestedTreeNode(sourceNode, dep.content)
     }, dep.uri, state);
