@@ -1,7 +1,7 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow } from "../../paperclip";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML } from "../../common";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
-import { uniq } from "lodash";
+import { uniq, pull } from "lodash";
 
 export enum CanvasToolType {
   TEXT,
@@ -34,6 +34,7 @@ export type RootState = {
 
 export type OpenFile = {
   temporary: boolean;
+  newContent?: Buffer;
   uri: string;
 }
 
@@ -42,6 +43,136 @@ export const updateRootState = (properties: Partial<RootState>, root: RootState)
   ...properties,
 });
 
+export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBrowser) => SyntheticBrowser, state: RootState) => {
+  const oldGraph = state.browser.graph;
+  state = keepActiveFileOpen(updateRootState({
+    browser: persistBrowserState(state.browser)
+  }, state));
+  const modifiedDeps = getModifiedDependencies(oldGraph, state.browser.graph);
+
+  state = modifiedDeps.reduce((state, dep: Dependency) => updateOpenFile({
+    temporary: false,
+    newContent: new Buffer(stringifyTreeNodeToXML(dep.content), "utf8")
+  }, dep.uri, state), state);
+
+  return state;
+};
+
+export const getOpenFile = (uri: string, state: RootState) => state.openFiles.find((openFile) => openFile.uri === uri);
+
+export const updateOpenFileContent = (uri: string, newContent: Buffer, state: RootState) => {
+  return updateOpenFile({
+    temporary: false,
+    newContent
+  }, uri, state);
+};
+
+export const updateOpenFile = (properties: Partial<OpenFile>, uri: string, state: RootState) => {
+  const file = getOpenFile(uri, state);
+
+  if (!file) {
+    state = addOpenFile(uri, false, state);
+    return updateOpenFile(properties, uri, state);
+  }
+
+  const index = state.openFiles.indexOf(file);
+  return updateRootState({
+    openFiles: arraySplice(state.openFiles, index, 1, {
+      ...file,
+      ...properties
+    })
+  }, state);
+};
+
+export const upsertOpenFile = (uri: string, temporary: boolean, state: RootState): RootState => {
+  const file = getOpenFile(uri, state);
+  if (file) {
+    if (file.temporary !== temporary) {
+      return updateOpenFile({ temporary }, uri, state);
+    }
+    return state;
+  }
+
+  return addOpenFile(uri, temporary, state);
+};
+
+export const setNextOpenFile = (state: RootState): RootState => {
+  const hasOpenFile = state.openFiles.find(openFile => state.activeFilePath === openFile.uri);
+  if (hasOpenFile) {
+    return state;
+  }
+  return {
+    ...state,
+    activeFilePath: state.openFiles.length ? state.openFiles[0].uri : null,
+    hoveringReferences: [],
+    selectionReferences: []
+  };
+};
+
+
+export const removeTemporaryOpenFiles = (state: RootState) => {
+  return {
+    ...state,
+    openFiles: state.openFiles.filter(openFile => !openFile.temporary)
+  };
+};
+
+export const addOpenFile = (uri: string, temporary: boolean, state: RootState): RootState => {
+  const file = getOpenFile(uri, state);
+  if (file) {
+    return state;
+  }
+
+  state = removeTemporaryOpenFiles(state);
+
+  return {
+    ...state,
+    openFiles: [
+      ...state.openFiles,
+      {
+        uri,
+        temporary
+      }
+    ]
+  }
+};
+
+export const getInsertedWindowRefs = (oldWindow: SyntheticWindow, newBrowser: SyntheticBrowser): StructReference<any>[] => {
+  const elementRefs = oldWindow.documents.reduce((refs, oldDocument) => {
+    return [...refs, ...getInsertedDocumentElementRefs(oldDocument, newBrowser)];
+  }, []);
+  const newWindow = newBrowser.windows.find(window => window.location === oldWindow.location);
+  return [
+    ...elementRefs,
+    ...newWindow.documents.filter(document => {
+      const isInserted = oldWindow.documents.find(oldDocument => {
+        return oldDocument.id === document.id
+      }) == null
+      return isInserted;
+    })
+  ];
+};
+
+
+export const getInsertedDocumentElementRefs = (oldDocument: SyntheticDocument, newBrowser: SyntheticBrowser): StructReference<any>[] => {
+  const newDocument = getSyntheticDocumentById(oldDocument.id, newBrowser);
+  const oldIds = Object.keys(oldDocument.nativeNodeMap);
+  const newIds = Object.keys(newDocument.nativeNodeMap);
+  return pull(newIds, ...oldIds).map(id => ({
+    id,
+    type: SyntheticObjectType.ELEMENT
+  }))
+};
+
+export const keepActiveFileOpen = (state: RootState): RootState => {
+  return {
+    ...state,
+    openFiles: state.openFiles.map(openFile => ({
+      ...openFile,
+      temporary: false
+    }))
+  }
+};
 
 export const updateRootStateSyntheticBrowser = (properties: Partial<SyntheticBrowser>, root: RootState) => updateRootState({
   browser: updateSyntheticBrowser(properties, root.browser)

@@ -1,5 +1,5 @@
 import { fork, put, call, take, select } from "redux-saga/effects";
-import { projectDirectoryLoaded, PROJECT_DIRECTORY_LOADED, FILE_NAVIGATOR_ITEM_CLICKED, fileNavigatorItemClicked, dependencyEntryLoaded, FileNavigatorItemClicked, OpenFilesItemClick, OPEN_FILE_ITEM_CLICKED } from "../actions";
+import { projectDirectoryLoaded, PROJECT_DIRECTORY_LOADED, FILE_NAVIGATOR_ITEM_CLICKED, fileNavigatorItemClicked, dependencyEntryLoaded, FileNavigatorItemClicked, OpenFilesItemClick, OPEN_FILE_ITEM_CLICKED, SHORTCUT_SAVE_KEY_DOWN, savedFile } from "../actions";
 import { PAPERCLIP_EXTENSION_NAME, loadEntry } from "../../paperclip";
 import { File, Directory, xmlToTreeNode, getFilesWithExtension, getFilePath, getTeeNodePath, getTreeNodeFromPath, getFilePathFromNodePath } from "../../common";
 import { RootState, getActiveWindow } from "../state";
@@ -7,6 +7,7 @@ import { RootState, getActiveWindow } from "../state";
 export function* projectSaga() {
   // yield fork(handleProjectDirectoryLoaded);
   yield fork(putFakeDirectory);
+  yield fork(handleSaveShortcut);
 }
 
 function* putFakeDirectory() {
@@ -60,4 +61,17 @@ const TEST_FILES = {
       </component>
     </module>
   `
+}
+
+
+function* handleSaveShortcut() {
+  while(1) {
+    yield take(SHORTCUT_SAVE_KEY_DOWN);
+    const state: RootState = yield select();
+    const uri = state.activeFilePath;
+    if (!uri) {
+      continue;
+    }
+    yield put(savedFile(uri));
+  }
 }

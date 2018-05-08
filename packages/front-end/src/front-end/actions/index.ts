@@ -38,10 +38,13 @@ export const SHORTCUT_A_KEY_DOWN = "SHORTCUT_A_KEY_DOWN";
 export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
 export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
 export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
+export const SHORTCUT_SAVE_KEY_DOWN = "SHORTCUT_SAVE_KEY_DOWN";
 export const SHORTCUT_DELETE_KEY_DOWN = "SHORTCUT_DELETE_KEY_DOWN";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 export const APP_LOADED = "APP_LOADED";
+export const SAVED_FILE = "SAVED_FILE";
+export const SAVED_ALL_FILES = "SAVED_ALL_FILES";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -146,6 +149,14 @@ export type ShortcutKeyDown = {
 
 };
 
+export type SavedFile = {
+  uri: string
+} & Action;
+
+
+export type SavedAllFiles = {
+} & Action;
+
 export type InsertToolFinished = {
   bounds: Bounds;
 } & Action;
@@ -209,6 +220,15 @@ export const documentRendered = (documentId: string, info: ComputedDisplayInfo, 
   documentId,
   info,
   type: DOCUMENT_RENDERED
+});
+
+export const savedFile = (uri: string): SavedFile => ({
+  uri,
+  type: SAVED_FILE
+});
+
+export const savedAllFiles = (uri: string): SavedAllFiles => ({
+  type: SAVED_ALL_FILES
 });
 
 export const syntheticWindowOpened = (window: SyntheticWindow): SyntheticWindowOpened => ({

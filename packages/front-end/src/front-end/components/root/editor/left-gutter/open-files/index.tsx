@@ -28,10 +28,12 @@ type OpenFileInnerProps = {
   onCloseClick: () => any;
 } & OpenFileOuterProps;
 
-const BaseOpenFileComponent = ({ openFile: { temporary, uri }, active, onClick, onCloseClick }: OpenFileInnerProps) => {
-  return <div className={cx("open-file", { temporary, active })} onClick={onClick}>
+const BaseOpenFileComponent = ({ openFile: { temporary, uri, newContent }, active, onClick, onCloseClick }: OpenFileInnerProps) => {
+  return <div className={cx("open-file", { temporary, active, unsaved: !!newContent })} onClick={onClick}>
     <i className="ion-close" onClick={onCloseClick}>
     </i>
+    { newContent ? <i className="ion-record" onClick={onCloseClick}>
+    </i> : null }
     <div className="basename">
       {path.basename(uri)}
     </div>

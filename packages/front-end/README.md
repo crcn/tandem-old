@@ -2,11 +2,11 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (TEUS):
 
-- ensure that component positions are persisted
 - show modified files
 - ability to change file
 - ability to save file
 - ability to insert file
+- quick search (light vscode)
 
 TODO (FRI):
 
@@ -17,14 +17,16 @@ TODO (FRI):
 
 TODO (IN ORDER):
 
-- slots
-- compiler
-  - compile to React
-  - compile CSS vars to JS
+- styles pane
 - layers*
   - re-organize elements
   - delete elements
   - update text
+- grouping elements (ctrl + g)
+- slots
+- compiler
+  - compile to React
+  - compile CSS vars to JS
 
 TODO (UNORG AFTER OBJECTIVE):
 

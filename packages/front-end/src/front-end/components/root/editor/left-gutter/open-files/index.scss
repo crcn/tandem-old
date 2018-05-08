@@ -10,10 +10,23 @@
       visibility: hidden;
     }
 
+    &.unsaved {
+      .ion-close {
+        display: none;
+      }
+      .ion-record {
+        visibility: visible;
+      }
+    }
+
     &:hover {
       background: #EEEEEE;
       .ion-close {
         visibility: visible;
+        display: inline-block;
+      }
+      .ion-record {
+        display: none;
       }
     }
 

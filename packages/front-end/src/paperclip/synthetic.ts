@@ -3,7 +3,7 @@ import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect } from "../common";
-import { mapValues } from "lodash";
+import { mapValues, pull } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry, evaluateComponent } from "./evaluate";
 import { STATUS_CODES } from "http";
@@ -699,6 +699,10 @@ export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browse
 export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
   const bounds = getSyntheticItemBounds(ref, browser);
   return persistSyntheticItemBounds(moveBounds(bounds, position), ref, browser);
+};
+
+export const getModifiedDependencies = (oldGraph: DependencyGraph, newGraph: DependencyGraph): Dependency[] => {
+  return pull(Object.values(newGraph), ...(Object.values(oldGraph) as any));
 };
 
 export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser) => {
