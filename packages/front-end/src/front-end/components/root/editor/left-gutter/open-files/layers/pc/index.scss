@@ -1,0 +1,18 @@
+.m-synthetic-window-layers {
+  .label {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    cursor: default;
+  }
+}
+
+.m-synthetic-document-layer {
+  > .label {
+    padding-left: 22px;
+  }
+}
+
+.m-synthetic-node-layer {
+  > .label {
+  }
+}

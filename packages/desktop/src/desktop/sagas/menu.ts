@@ -72,21 +72,21 @@ export function* shortcutsSaga() {
         submenu: [
           {
             label: "Artboard",
-            accelerator: "a",
+            accelerator: "alt+a",
             click: () => {
               emit(shortcutKeyDown(SHORTCUT_A_KEY_DOWN));
             }
           },
           {
             label: "Rectangle",
-            accelerator: "r",
-            click: () => {
+            accelerator: "alt+r",
+            click: (a, window, event) => {
               emit(shortcutKeyDown(SHORTCUT_R_KEY_DOWN));
             }
           },
           {
             label: "Text",
-            accelerator: "t",
+            accelerator: "alt+t",
             click: () => {
               emit(shortcutKeyDown(SHORTCUT_T_KEY_DOWN));
             }

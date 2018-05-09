@@ -1,8 +1,8 @@
 import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode } from "../common/state/tree";
-import { arraySplice, generateId, parseStyle, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML } from "../common/utils";
+import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
-import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect } from "../common";
+import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect, parseStyle } from "../common";
 import { mapValues, pull } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry, evaluateComponent } from "./evaluate";
@@ -266,7 +266,7 @@ export const updateSyntheticNodeStyle = (style: any, ref: StructReference<Synthe
 
 export const getSyntheticNodeById = (nodeId: string, browser: SyntheticBrowser) => {
   const document = getSyntheticNodeDocument(nodeId, browser);
-  return getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
+  return document && getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
 };
 
 export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
@@ -760,4 +760,17 @@ export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<
       });
     });
   }
+};
+
+export const persistRawCSSText = (text: string, ref: StructReference<any>, browser: SyntheticBrowser) => {
+  const newStyle = parseStyle(text);
+  console.log(newStyle);
+  const document = getSyntheticNodeDocument(ref.id, browser);
+    return persistSyntheticNodeChanges(ref, browser, (child) => {
+      const style = getAttribute(child, "style") || EMPTY_OBJECT;
+      return setNodeAttribute(child, "style", {
+        ...style,
+        ...newStyle
+      });
+    });
 };

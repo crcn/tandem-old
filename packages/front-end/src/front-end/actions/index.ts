@@ -47,6 +47,7 @@ export const SAVED_FILE = "SAVED_FILE";
 export const SAVED_ALL_FILES = "SAVED_ALL_FILES";
 export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
+export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -73,6 +74,10 @@ export type FileNavigatorItemClicked = {
 
 export type OpenFilesItemClick = {
   uri: string;
+} & Action;
+
+export type RawCSSTextChanged = {
+  value: string
 } & Action;
 
 export type ProjectDirectoryLoaded = {
@@ -193,6 +198,11 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
 export const fileNavigatorItemDoubleClicked = (uri: string): FileNavigatorItemClicked => ({
   uri,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
+});
+
+export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({
+  value,
+  type: RAW_CSS_TEXT_CHANGED
 });
 
 export const appLoaded = publicActionCreator(() => ({ type: APP_LOADED }));

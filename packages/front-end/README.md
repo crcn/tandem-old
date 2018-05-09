@@ -1,16 +1,24 @@
 MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
-TOMORROW (TEUS):
+TOMORROW (WED):
 
-- ability to insert file
-- ability to insert directory
-- quick search (light vscode)
-- undo / redo
+- layers
+- auto generate layer names
+- get short keys to work without modifier*
+- add icons for layers
+- react-dnd
+- grouping elements
+- editing text
+- custom styles
+- slots
+
+COMPONENTS:
+
+- quick search
+- layers
 
 TODO (FRI):
 
-- load project from FS
-- load file from drawer
 - save changes to disk
 - active window
 

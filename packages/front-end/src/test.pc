@@ -1,18 +1,7 @@
 <module>
-  <component id="component2" preview:bounds="left:351;right:543;top:60;bottom:191;">
+  <component id="component1" preview:bounds="left:22;top:78;right:278;bottom:257;">
     <template>
-      <div style="left:2;right:147;top:0;bottom:85;width:112;height:63;background:#CCC;position:absolute;"></div>
-      <text style="left:15;right:27;top:49;bottom:26;display:inline-block;position:relative;width:123.078125;height:18;" value="double click to edit"></text>
-    </template>
-    <overrides>
-      <insert-child>
-        <text style="left:40;right:40;top:86;bottom:86;display:inline-block;position:relative;" value="double click to edit"></text>
-      </insert-child>
-    </overrides>
-  </component>
-  <component id="component3" preview:bounds="left:59;right:231;top:177;bottom:275;">
-    <template>
-      <div style="left:20;right:74;top:13;bottom:30;width:54;height:17;background:#CCC;position:absolute;"></div>
+      <div style="left:0px;right:232;top:0px;bottom:41;width:100%;height:100%;background:red;position:absolute;border:4px solid black;boxSizing:border-box;"></div>
     </template>
   </component>
 </module>

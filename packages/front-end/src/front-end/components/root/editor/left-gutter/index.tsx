@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Dispatch } from "redux";
-import { OpenFile } from "../../../../state";
 import { Directory } from "../../../../../common";
 import { GutterComponent } from "../../../gutter";
+import { OpenFile, RootState } from "../../../../state";
 import { OpenFilesPaneComponent } from "./open-files";
 import { FileNavigatorPaneComponent } from "./file-navigator";
 
@@ -10,11 +10,11 @@ type LeftGutterProps = {
     activeFileUri: string;
     dispatch: Dispatch<any>;
     rootDirectory: Directory;
-    openFiles: OpenFile[];
+    root: RootState;
 }
 
-const BaseLeftGutterComponent = ({ activeFileUri, dispatch, rootDirectory, openFiles }: LeftGutterProps) => <GutterComponent>
-    <OpenFilesPaneComponent activeFileUri={activeFileUri} openFiles={openFiles} dispatch={dispatch} />
+const BaseLeftGutterComponent = ({ activeFileUri, dispatch, rootDirectory, root }: LeftGutterProps) => <GutterComponent>
+    <OpenFilesPaneComponent root={root} activeFileUri={activeFileUri} dispatch={dispatch} />
     <FileNavigatorPaneComponent dispatch={dispatch} rootDirectory={rootDirectory} />
 </GutterComponent>;
 
