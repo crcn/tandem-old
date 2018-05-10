@@ -22,7 +22,7 @@ export const BaseLayersComponent = ({ dispatch, root, uri }: LayersOuterProps) =
   // only PC for now. Ideally this may also support images, and other visual documents.
   return <div className="m-open-file-layers">
     {
-      ext === ".pc" ? <SyntheticWindowLayersComponent dispatch={dispatch} window={getSyntheticWindow(uri, root.browser)} browser={root.browser} /> : null
+      ext === ".pc" ? <SyntheticWindowLayersComponent selectedReferences={root.selectionReferences} hoveringReferences={root.hoveringReferences} dispatch={dispatch} window={getSyntheticWindow(uri, root.browser)} browser={root.browser} /> : null
     }
   </div>;
 };

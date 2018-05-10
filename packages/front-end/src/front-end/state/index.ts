@@ -1,5 +1,5 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, selectFile, File, deselectAllFiles } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency } from "../../paperclip";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, selectFile, File, deselectAllFiles, setNodeAttribute } from "../../common";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setNodeExpanded, getSyntheticNodeById } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq, pull } from "lodash";
 
@@ -57,7 +57,6 @@ export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBr
     browser: persistBrowserState(state.browser)
   }, state));
   const modifiedDeps = getModifiedDependencies(oldGraph, state.browser.graph);
-
   state = modifiedDeps.reduce((state, dep: Dependency) => updateOpenFile({
     temporary: false,
     newContent: new Buffer(stringifyTreeNodeToXML(dep.content), "utf8")
@@ -205,12 +204,22 @@ export const updateRootStateSyntheticWindowDocument = (documentId: string, prope
   }, root);
 };
 
+export const setRootStateNodeExpanded = (ref: StructReference<any>, value: boolean, state: RootState) => {
+  const node = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentById(ref.id, state.browser).root : getSyntheticNodeById(ref.id, state.browser);
+  const document = getSyntheticNodeDocument(node.id, state.browser);
+  return updateRootStateSyntheticWindowDocument(document.id, {
+    root: setNodeExpanded(node, value, document.root)
+  }, state);
+};
+
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
   if (!root.browser.windows.some(({location}) => location === newActiveFilePath)) {
     throw new Error(`Active file path is not currently open`);
   }
   return updateRootState({
-    activeFilePath: newActiveFilePath
+    activeFilePath: newActiveFilePath,
+    hoveringReferences: [],
+    selectionReferences: []
   }, root);
 };
 
@@ -303,9 +312,30 @@ export const getDocumentReferenceFromPoint = (point: Point, state: RootState) =>
 
 export const setSelection = (root: RootState, ...selectionIds: StructReference<any>[]) => {
   return updateRootState({
-    selectionReferences: uniq([...selectionIds])
+    selectionReferences: uniqRefs([...selectionIds])
   }, root);
 };
+
+export const setHovering = (root: RootState, ...selectionIds: StructReference<any>[]) => {
+  return updateRootState({
+    hoveringReferences: uniqRefs([...selectionIds])
+  }, root);
+};
+
+const uniqRefs = (refs: StructReference<any>[]) => {
+  const used = {};
+  const uniq: StructReference<any>[] = [];
+
+  for (const ref of refs) {
+    if (used[ref.id]) {
+      continue;
+    }
+    used[ref.id] = true;
+    uniq.push(ref);
+  }
+
+  return uniq;
+}
 
 export const getReference = (ref: StructReference<any>, root: RootState) => {
   if (ref.type === SyntheticObjectType.DOCUMENT) {

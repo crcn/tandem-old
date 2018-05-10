@@ -17,7 +17,7 @@ export type TreeNodeAttributes = {
   }
 };
 
-export type TreeNodeUpdater = (node: TreeNode) => TreeNode;
+export type TreeNodeUpdater = (node: TreeNode, index?: number, path?: number[]) => TreeNode;
 
 export type TreeNode = {
   id?: string;
@@ -144,6 +144,18 @@ export const updateNestedNodeFromPath = (path: number[], current: TreeNode, upda
     children: updatedChild ? arraySplice(current.children, path[depth], 1, updatedChild) : arraySplice(current.children, path[depth], 1)
   };
 };
+
+export const updateNestedNodeTrail = (path: number[], current: TreeNode, updater: TreeNodeUpdater, depth: number = 0) => {
+  if (depth !== path.length) {
+    const updatedChild = updateNestedNodeFromPath(path, current.children[path[depth]], updater, depth + 1);
+    current = {
+      ...current,
+      children: updatedChild ? arraySplice(current.children, path[depth], 1, updatedChild) : arraySplice(current.children, path[depth], 1)
+    };
+  }
+  return updater(current, depth, path);
+};
+
 
 export const setNodeAttribute = (node: TreeNode, name: string, value: any, namespace: string = DEFAULT_NAMESPACE) => ({
   ...node,

@@ -17,7 +17,6 @@ import * as path from "path";
 import { LayersComponent } from "./layers";
 import { openFilesItemClick, openFilesItemCloseClick } from "../../../../../actions";
 
-
 type OpenFileOuterProps = {
   openFile: OpenFile;
   active: boolean;
@@ -32,8 +31,8 @@ type OpenFileInnerProps = {
 
 const BaseOpenFileComponent = ({ dispatch, root, openFile: { temporary, uri, newContent }, active, onClick, onCloseClick }: OpenFileInnerProps) => {
 
-  return <div className={cx("open-file", { temporary, active, unsaved: !!newContent })} onClick={onClick}>
-    <div className="label">
+  return <div className={cx("open-file", { temporary, active, unsaved: !!newContent })}>
+    <div className="label" onClick={onClick}>
       <i className="ion-close" onClick={onCloseClick}>
       </i>
       { newContent ? <i className="ion-record" onClick={onCloseClick}>

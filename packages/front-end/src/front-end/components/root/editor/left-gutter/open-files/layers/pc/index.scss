@@ -1,8 +1,23 @@
+@import "front-end/scss/variables.scss";
+
 .m-synthetic-window-layers {
   .label {
     padding-top: 4px;
     padding-bottom: 4px;
     cursor: default;
+    user-select: none;
+
+    &.hovering {
+      box-shadow: inset 0px 0px 0px 2px $color-aqua-1;
+    }
+    &.selected {
+      color: white;
+      background: $color-aqua-1;
+    }
+
+    i {
+      margin-right: 4px;
+    }
   }
 }
 

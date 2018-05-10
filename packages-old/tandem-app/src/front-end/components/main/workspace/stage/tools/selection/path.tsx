@@ -16,8 +16,8 @@ export type PathOuterProps = {
   dispatch: Dispatcher<any>;
 };
 
-// padding prevents the SVG from getting cut off when transform is applied - particularly during zoom. 
-const PADDING = 10; 
+// padding prevents the SVG from getting cut off when transform is applied - particularly during zoom.
+const PADDING = 10;
 
 export type PathInnerProps = {
   onPointClick: (point: Point, event: React.MouseEvent<any>) => {};
@@ -32,8 +32,8 @@ export const PathBase = ({ bounds , points, zoom, pointRadius, strokeWidth, show
   const crz = cr / zoom;
   const cw = cr * 2;
   const cwz = cw / zoom;
-  const w = width + PADDING + Math.max(cw, cwz); 
-  const h = height + PADDING + Math.max(cw, cwz); 
+  const w = width + PADDING + Math.max(cw, cwz);
+  const h = height + PADDING + Math.max(cw, cwz);
   const p = 100;
 
   const style = {
@@ -48,7 +48,7 @@ export const PathBase = ({ bounds , points, zoom, pointRadius, strokeWidth, show
     {
       showPoints !== false ? points.map((path, key) =>
         <rect
-          onMouseDown={(event) => onPointClick(path, event)} 
+          onMouseDown={(event) => onPointClick(path, event)}
           className={`point-circle-${(path.top * 100)}-${path.left * 100}`}
           strokeWidth={0}
           stroke="black"
@@ -77,8 +77,8 @@ const enhancePath = compose<PathInnerProps, PathOuterProps>(
           left: info.delta.x / zoom,
           top: info.delta.y / zoom
         };
-        
-        
+
+
         dispatch(resizerPathMoved(workspace.$id, point, bounds, {
           left: point.left === 0 ? bounds.left + delta.left : bounds.left,
           top: point.top === 0 ? bounds.top + delta.top : bounds.top,
@@ -86,7 +86,12 @@ const enhancePath = compose<PathInnerProps, PathOuterProps>(
           bottom: point.top === 1 ? bounds.bottom + delta.top : bounds.bottom,
         }, event2));
       }, (event) => {
-        dispatch(resizerPathStoppedMoving(workspace.$id, event));
+
+        // beat click so that selection is not made
+        setTimeout(() => {
+          dispatch(resizerPathStoppedMoving(workspace.$id, event));
+          console.log("STOP MOV");
+        }, 100);
       });
     }
   })

@@ -17,3 +17,7 @@ html, body {
   font-size: var(--font-size-rg);
   color: var(--font-color-1);
 }
+
+* {
+  box-sizing: border-box;
+}

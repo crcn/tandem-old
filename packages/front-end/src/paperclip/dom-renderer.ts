@@ -89,6 +89,7 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
         const { name,  value, namespace } = transform as SetAttributeTransform;
         if (namespace === DEFAULT_NAMESPACE) {
           if (name === "style") {
+            target.setAttribute("style", "");
             Object.assign(target.style, normalizeStyle(value));
           } else if (name === "value" && syntheticTarget.name === "text") {
             target.childNodes[0].nodeValue = value;

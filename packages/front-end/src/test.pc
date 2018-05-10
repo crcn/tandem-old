@@ -1,7 +1,8 @@
 <module>
-  <component id="component1" preview:bounds="left:22;top:78;right:278;bottom:257;">
+  <component id="component1" preview:bounds="left:72;top:57;right:328;bottom:236;">
     <template>
       <div style="left:0px;right:232;top:0px;bottom:41;width:100%;height:100%;background:red;position:absolute;border:4px solid black;boxSizing:border-box;"></div>
+      <div style="left:0;right:163;top:0;bottom:77;width:256;height:74;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
     </template>
   </component>
 </module>

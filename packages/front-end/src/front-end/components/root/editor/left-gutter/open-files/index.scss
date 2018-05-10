@@ -7,9 +7,13 @@
         border-bottom: none;
       }
     }
-
-    &.temporary > .label {
-      font-style: italic;
+    &.unsaved > .label {
+      .ion-close {
+        display: none;
+      }
+      .ion-record {
+        visibility: visible;
+      }
     }
 
     > .label {
@@ -22,15 +26,6 @@
 
       .ion-close {
         visibility: hidden;
-      }
-
-      &.unsaved {
-        .ion-close {
-          display: none;
-        }
-        .ion-record {
-          visibility: visible;
-        }
       }
 
       &:hover {
@@ -70,6 +65,10 @@
         display: inline-block;
         overflow: hidden;
       }
+    }
+
+    &.temporary > .label {
+      font-style: italic;
     }
   }
 }

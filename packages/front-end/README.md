@@ -1,15 +1,17 @@
 MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
-TOMORROW (WED):
+TOMORROW (FRI):
 
-- layers
-- auto generate layer names
+- start on react-dnd
+
 - get short keys to work without modifier*
-- add icons for layers
 - react-dnd
 - grouping elements
 - editing text
-- custom styles
+
+SATURDAY (or mon):
+
+- editing text
 - slots
 
 COMPONENTS:

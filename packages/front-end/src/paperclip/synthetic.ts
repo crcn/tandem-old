@@ -1,5 +1,5 @@
-import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode } from "../common/state/tree";
-import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML } from "../common/utils";
+import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail } from "../common/state/tree";
+import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML, ArrayOperationalTransform } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect, parseStyle } from "../common";
@@ -10,6 +10,7 @@ import { STATUS_CODES } from "http";
 import { Children } from "react";
 
 const PREVIEW_NAMESPACE = "preview";
+export const EDITOR_NAMESPACE = "editor";
 const PASTED_ARTBOARD_OFFSET = {
   left: 20,
   top: 20
@@ -383,6 +384,20 @@ export const getSyntheticNodeDocument = memoize((nodeId: string, state: Syntheti
   return Boolean(getNestedTreeNodeById(nodeId, document.root));
 }));
 
+export const setNodeExpanded = (node: SyntheticNode, value: boolean, root: SyntheticNode): SyntheticNode => {
+  const path = getTeeNodePath(node.id, root);
+  let current = root;
+  const updater = (node) => {
+    return setNodeAttribute(node, "expanded", value, EDITOR_NAMESPACE);
+  };
+  return (value ? updateNestedNodeTrail(path, root, updater) : updateNestedNode(node, root, updater)) as SyntheticNode;
+};
+
+export const expandSyntheticNode = (node: SyntheticNode, root: SyntheticNode) => setNodeExpanded(node, true, root);
+export const collapseSyntheticNode = (node: SyntheticNode, root: SyntheticNode) => setNodeExpanded(node, false, root);
+
+export const getSyntheticNodeWindow = memoize((nodeId: string, state: SyntheticBrowser) => getSyntheticDocumentWindow(getSyntheticNodeDocument(nodeId, state).id, state));
+
 const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
 
   const syntheticDocument = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentById(ref.id, browser) : getSyntheticNodeDocument(ref.id, browser);
@@ -522,7 +537,7 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
           const newDocument = createSyntheticDocument(newDocumentNode, graph);
           return newDocument;
         }
-        const ots = diffNode(document.root, newDocumentNode);
+        const ots = filterEditorOts(diffNode(document.root, newDocumentNode));
         const newRoot = copyTreeSources(patchNode(ots, document.root), newDocumentNode);
         const nativeNodeMap = patchDOM(ots, document.root, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
         return {
@@ -537,6 +552,15 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
 
   return browser;
 };
+
+const filterEditorOts = (ots: OperationalTransform[]) => ots.filter(ot => {
+  switch(ot.type) {
+    case OperationalTransformType.SET_ATTRIBUTE: {
+      return (ot as SetAttributeTransform).namespace !== EDITOR_NAMESPACE;
+    }
+  }
+  return true;
+});
 
 const copyTreeSources = (a: SyntheticNode, b: SyntheticNode) => {
   let na = a;
@@ -630,6 +654,9 @@ export const persistInsertRectangle = (style: any, documentId: string, browser: 
     attributes: {
       [DEFAULT_NAMESPACE]: {
         style
+      },
+      [EDITOR_NAMESPACE]: {
+        label: "Rectangle"
       }
     },
     children: []
@@ -764,7 +791,6 @@ export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<
 
 export const persistRawCSSText = (text: string, ref: StructReference<any>, browser: SyntheticBrowser) => {
   const newStyle = parseStyle(text);
-  console.log(newStyle);
   const document = getSyntheticNodeDocument(ref.id, browser);
     return persistSyntheticNodeChanges(ref, browser, (child) => {
       const style = getAttribute(child, "style") || EMPTY_OBJECT;

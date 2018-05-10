@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import * as React from "react";
-import { Directory, Point, Bounds, Struct } from "../../common";
+import { Directory, Point, Bounds, Struct, StructReference } from "../../common";
 import { publicActionCreator } from "tandem-common";
 import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap, SyntheticNode } from "../../paperclip";
 
@@ -48,6 +48,10 @@ export const SAVED_ALL_FILES = "SAVED_ALL_FILES";
 export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
+export const PC_LAYER_MOUSE_OVER = "PC_LAYER_MOUSE_OVER";
+export const PC_LAYER_MOUSE_OUT = "PC_LAYER_MOUSE_OUT";
+export const PC_LAYER_CLICK = "PC_LAYER_CLICK";
+export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -119,6 +123,15 @@ export type CanvasWheel = {
   deltaX: number;
   deltaY: number;
 } & Action;
+
+export type PCLayerMouseOver = {
+  type: string;
+  ref: StructReference<any>;
+} & Action;
+
+export type PCLayerClick = PCLayerMouseOver;
+export type PCLayerExpandToggleClick = PCLayerMouseOver;
+export type PCLayerMouseOut = PCLayerMouseOver;
 
 export type CanvasMounted = {
   element: HTMLDivElement;
@@ -198,6 +211,26 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
 export const fileNavigatorItemDoubleClicked = (uri: string): FileNavigatorItemClicked => ({
   uri,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
+});
+
+export const pcLayerMouseOver = (ref: StructReference<any>): PCLayerMouseOver => ({
+  ref,
+  type: PC_LAYER_MOUSE_OVER,
+});
+
+export const pcLayerMouseOut = (ref: StructReference<any>): PCLayerMouseOut => ({
+  ref,
+  type: PC_LAYER_MOUSE_OUT,
+});
+
+export const pcLayerClick = (ref: StructReference<any>): PCLayerClick => ({
+  ref,
+  type: PC_LAYER_CLICK,
+});
+
+export const pcLayerExpandToggleClick = (ref: StructReference<any>): PCLayerExpandToggleClick => ({
+  ref,
+  type: PC_LAYER_EXPAND_TOGGLE_CLICK,
 });
 
 export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({

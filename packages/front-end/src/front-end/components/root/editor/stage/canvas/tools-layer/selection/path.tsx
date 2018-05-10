@@ -87,7 +87,14 @@ const enhancePath = compose<PathInnerProps, PathOuterProps>(
         }, event));
       };
 
-      startDOMDrag(event, (() => {}), wrapActionCreator(resizerPathMoved), wrapActionCreator(resizerPathStoppedMoving));
+      const svac =  wrapActionCreator(resizerPathStoppedMoving);
+      startDOMDrag(event, (() => {}), wrapActionCreator(resizerPathMoved), (event, info) => {
+
+        // beat click so that items aren't selected
+        setTimeout(() => {
+          svac(event, info);
+        })
+      });
     }
   })
 )
