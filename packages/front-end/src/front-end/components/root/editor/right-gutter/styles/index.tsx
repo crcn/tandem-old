@@ -5,7 +5,7 @@ import { RootState } from "../../../../../state";
 import { compose, pure, withHandlers } from "recompose";
 import { PaneComponent } from "../../../../pane";
 import { PrettyStylesComponent } from "./pretty";
-import { getSyntheticNodeById } from "paperclip";
+import { getSyntheticNodeById } from "../../../../../../paperclip";
 import { getAttribute, EMPTY_OBJECT, stringifyStyle } from "../../../../../../common";
 import { rawCssTextChanged } from "../../../../..";
 
@@ -24,11 +24,11 @@ type StylePaneInnerProps = {
 
 const BaseStylesPaneComponent = ({ root, onCssChange }: StylePaneInnerProps) => {
 
-  if (!root.selectionReferences.length) {
+  if (!root.selectedNodeIds.length) {
     return null;
   }
 
-  const node = getSyntheticNodeById(root.selectionReferences[0].id, root.browser);
+  const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
 
   if (!node) {
     return null;

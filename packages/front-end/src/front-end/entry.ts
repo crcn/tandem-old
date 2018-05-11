@@ -3,8 +3,8 @@ import { SyntheticObjectType } from "../paperclip";
 
 init({
   mount: document.getElementById("application"),
-  hoveringReferences: [],
-  selectionReferences: [],
+  hoveringNodeIds: [],
+  selectedNodeIds: [],
   canvas: {
     backgroundColor: "#EFEFEF",
     translate: {

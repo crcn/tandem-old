@@ -13,7 +13,7 @@ type RightGutterProps = {
 
 const BaseRightGutterComponent = ({ dispatch, root }: RightGutterProps) => {
 
-    if (!root.selectionReferences.length) {
+    if (!root.selectedNodeIds.length) {
         return null;
     }
     return <GutterComponent>

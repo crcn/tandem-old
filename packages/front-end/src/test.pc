@@ -2,7 +2,16 @@
   <component id="component1" preview:bounds="left:72;top:57;right:328;bottom:236;">
     <template>
       <div style="left:0px;right:232;top:0px;bottom:41;width:100%;height:100%;background:red;position:absolute;border:4px solid black;boxSizing:border-box;"></div>
-      <div style="left:0;right:163;top:0;bottom:77;width:256;height:74;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
+      <div style="left:59;right:166;top:31;bottom:103;width:107;height:72;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
     </template>
+  </component>
+  <component id="component2" extends="component1" preview:bounds="left:317;top:96;right:573;bottom:275;">
+    <template></template>
+    <overrides>
+      <set-style name="left" value="41"></set-style>
+      <set-style name="right" value="166"></set-style>
+      <set-style name="top" value="87"></set-style>
+      <set-style name="bottom" value="103"></set-style>
+    </overrides>
   </component>
 </module>

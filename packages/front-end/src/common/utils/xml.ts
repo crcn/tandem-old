@@ -87,7 +87,7 @@ export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0
   return buffer;
 });
 
-export const parseStyle = (source: string) => {
+export const parseStyle = (source: string): any => {
   const style = {};
   source.split(/\s*;\s*/g).forEach(kv => {
     let [name, value] = kv.split(":");

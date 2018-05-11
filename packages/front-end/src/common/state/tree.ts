@@ -130,6 +130,7 @@ export const removeNestedTreeNode = (nestedChild: TreeNode, current: TreeNode) =
 export const removeNestedTreeNodeFromPath = (path: number[], current: TreeNode) => updateNestedNodeFromPath(path, current, (child) => null);
 
 export const updateNestedNode = (nestedChild: TreeNode, current: TreeNode, updater: TreeNodeUpdater) => updateNestedNodeFromPath(getTeeNodePath(nestedChild.id, current), current, updater);
+export const replaceNestedNode = (newChild: TreeNode, oldChildId: string, root: TreeNode) => updateNestedNodeFromPath(getTeeNodePath(oldChildId, root), root, () => newChild);
 
 export const updateNestedNodeFromPath = (path: number[], current: TreeNode, updater: TreeNodeUpdater, depth: number = 0) => {
   if (depth === path.length) {
@@ -166,7 +167,15 @@ export const setNodeAttribute = (node: TreeNode, name: string, value: any, names
       [name]: value
     }
   }
-})
+});
+
+export const appendChildNode = <TTree extends TreeNode>(child: TTree, parent: TTree): TTree => ({
+  ...(parent as any),
+  children: [
+    ...parent.children,
+    child
+  ]
+});
 
 export const getParentTreeNode = memoize((node: TreeNode, root: TreeNode) => getChildParentMap(root)[node.id]);
 

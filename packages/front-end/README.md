@@ -3,7 +3,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 TOMORROW (FRI):
 
 - start on react-dnd
-
+- persist IDs
 - get short keys to work without modifier*
 - react-dnd
 - grouping elements
@@ -57,7 +57,10 @@ TODO (UNORG AFTER OBJECTIVE):
 FEATURES:
 
 - multiple file tabs (like vscode)
+- ability to inherit styles from other components?
 
+- states
+  -
 - style pane
   - background color
   - position

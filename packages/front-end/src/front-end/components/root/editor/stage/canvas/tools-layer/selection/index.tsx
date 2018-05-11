@@ -10,7 +10,7 @@ import { Dispatch } from "redux";
 import { mergeBounds } from "../../../../../../../../common";
 import { RootState, getBoundedSelection } from "../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../actions";
-import { getSyntheticItemBounds } from "../../../../../../../../paperclip";
+import { getSyntheticNodeBounds } from "../../../../../../../../paperclip";
 
 export type SelectionOuterProps = {
   dispatch: Dispatch<any>;
@@ -25,7 +25,7 @@ export type SelectionInnerProps = {
 
 const  SelectionBounds = ({ root, zoom }: { root: RootState, zoom: number }) => {
   const selection = getBoundedSelection(root);
-  const entireBounds = mergeBounds(...selection.map(value => getSyntheticItemBounds(value, root.browser)));
+  const entireBounds = mergeBounds(...selection.map(value => getSyntheticNodeBounds(value, root.browser)));
   const style = {};
   const borderWidth = 1 / zoom;
   const boundsStyle = {

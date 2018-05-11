@@ -1,5 +1,5 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, selectFile, File, deselectAllFiles, setNodeAttribute } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticItemBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setNodeExpanded, getSyntheticNodeById } from "../../paperclip";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setNodeExpanded, getSyntheticNodeById } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq, pull } from "lodash";
 
@@ -26,8 +26,8 @@ export type RootState = {
   canvas: Canvas;
   mount: Element;
   openFiles: OpenFile[];
-  hoveringReferences: StructReference<any>[];
-  selectionReferences: StructReference<any>[];
+  hoveringNodeIds: string[];
+  selectedNodeIds: string[];
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
 };
@@ -113,8 +113,8 @@ export const setNextOpenFile = (state: RootState): RootState => {
   return {
     ...state,
     activeFilePath: state.openFiles.length ? state.openFiles[0].uri : null,
-    hoveringReferences: [],
-    selectionReferences: []
+    hoveringNodeIds: [],
+    selectedNodeIds: []
   };
 };
 
@@ -146,31 +146,28 @@ export const addOpenFile = (uri: string, temporary: boolean, state: RootState): 
   }
 };
 
-export const getInsertedWindowRefs = (oldWindow: SyntheticWindow, newBrowser: SyntheticBrowser): StructReference<any>[] => {
-  const elementRefs = oldWindow.documents.reduce((refs, oldDocument) => {
-    return [...refs, ...getInsertedDocumentElementRefs(oldDocument, newBrowser)];
+export const getInsertedWindowElementIds = (oldWindow: SyntheticWindow, newBrowser: SyntheticBrowser): string[] => {
+  const elementIds = oldWindow.documents.reduce((nodeIds, oldDocument) => {
+    return [...nodeIds, ...getInsertedDocumentElementIds(oldDocument, newBrowser)];
   }, []);
   const newWindow = newBrowser.windows.find(window => window.location === oldWindow.location);
   return [
-    ...elementRefs,
+    ...elementIds,
     ...newWindow.documents.filter(document => {
       const isInserted = oldWindow.documents.find(oldDocument => {
         return oldDocument.id === document.id
       }) == null
       return isInserted;
-    })
+    }).map(document => document.root)
   ];
 };
 
 
-export const getInsertedDocumentElementRefs = (oldDocument: SyntheticDocument, newBrowser: SyntheticBrowser): StructReference<any>[] => {
+export const getInsertedDocumentElementIds = (oldDocument: SyntheticDocument, newBrowser: SyntheticBrowser): string[] => {
   const newDocument = getSyntheticDocumentById(oldDocument.id, newBrowser);
   const oldIds = Object.keys(oldDocument.nativeNodeMap);
   const newIds = Object.keys(newDocument.nativeNodeMap);
-  return pull(newIds, ...oldIds).map(id => ({
-    id,
-    type: SyntheticObjectType.ELEMENT
-  }))
+  return pull(newIds, ...oldIds)
 };
 
 export const keepActiveFileOpen = (state: RootState): RootState => {
@@ -204,8 +201,8 @@ export const updateRootStateSyntheticWindowDocument = (documentId: string, prope
   }, root);
 };
 
-export const setRootStateNodeExpanded = (ref: StructReference<any>, value: boolean, state: RootState) => {
-  const node = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentById(ref.id, state.browser).root : getSyntheticNodeById(ref.id, state.browser);
+export const setRootStateNodeExpanded = (nodeId: string, value: boolean, state: RootState) => {
+  const node = getSyntheticNodeById(nodeId, state.browser);
   const document = getSyntheticNodeDocument(node.id, state.browser);
   return updateRootStateSyntheticWindowDocument(document.id, {
     root: setNodeExpanded(node, value, document.root)
@@ -218,8 +215,8 @@ export const setActiveFilePath = (newActiveFilePath: string, root: RootState) =>
   }
   return updateRootState({
     activeFilePath: newActiveFilePath,
-    hoveringReferences: [],
-    selectionReferences: []
+    hoveringNodeIds: [],
+    selectedNodeIds: []
   }, root);
 };
 
@@ -261,7 +258,7 @@ export const getScaledMouseCanvasPosition = (state: RootState, event: CanvasTool
   return { left: scaledPageX, top: scaledPageY };
 };
 
-export const getCanvasMouseNodeTargetReference = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked): StructReference<any> => {
+export const getCanvasMouseTargetNodeId = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked): string => {
 
   const canvas     = state.canvas;
   const translate = getCanvasTranslate(canvas);
@@ -269,11 +266,11 @@ export const getCanvasMouseNodeTargetReference = (state: RootState, event: Canva
 
   const activeWindow = getActiveWindow(state);
 
-  const documentRef = getCanvasMouseDocumentReference(state, event);
+  const documentRootId = getCanvasMouseDocumentRootId(state, event);
 
-  if (!documentRef) return null;
+  if (!documentRootId) return null;
 
-  const document = getSyntheticDocumentById(documentRef.id, state.browser);
+  const document = getSyntheticNodeDocument(documentRootId, state.browser);
 
   const {left: scaledPageX, top: scaledPageY } = getScaledMouseCanvasPosition(state, event);
 
@@ -293,32 +290,32 @@ export const getCanvasMouseNodeTargetReference = (state: RootState, event: Canva
 
   if (!intersectingBounds.length) return null;
   const smallestBounds = getSmallestBounds(...intersectingBounds);
-  return {
-    type: SyntheticObjectType.ELEMENT,
-    id: intersectingBoundsMap.get(smallestBounds)
-  };
+  return intersectingBoundsMap.get(smallestBounds);
 };
 
-export const getCanvasMouseDocumentReference = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked) => {
-  return getDocumentReferenceFromPoint(getScaledMouseCanvasPosition(state, event), state);
+export const getCanvasMouseDocumentRootId = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked) => {
+  return getDocumentRootIdFromPoint(getScaledMouseCanvasPosition(state, event), state);
 }
 
-
-export const getDocumentReferenceFromPoint = (point: Point, state: RootState) => {
-  return getAllWindowDocuments(state.browser).find((document) => {
-    return pointIntersectsBounds(point, document.bounds)
-  });
+export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
+  const documents = getAllWindowDocuments(state.browser);
+  for (let i = documents.length; i--;)  {
+    const document = documents[i];
+    if (pointIntersectsBounds(point, document.bounds)) {
+      return document.root.id;
+    }
+  }
 }
 
-export const setSelection = (root: RootState, ...selectionIds: StructReference<any>[]) => {
+export const setSelection = (root: RootState, ...selectionIds: string[]) => {
   return updateRootState({
-    selectionReferences: uniqRefs([...selectionIds])
+    selectedNodeIds: uniq([...selectionIds])
   }, root);
 };
 
-export const setHovering = (root: RootState, ...selectionIds: StructReference<any>[]) => {
+export const setHovering = (root: RootState, ...selectionIds: string[]) => {
   return updateRootState({
-    hoveringReferences: uniqRefs([...selectionIds])
+    hoveringNodeIds: uniq([...selectionIds])
   }, root);
 };
 
@@ -346,16 +343,16 @@ export const getReference = (ref: StructReference<any>, root: RootState) => {
   return document && getNestedTreeNodeById(ref.id, document.root);
 };
 
-export const updateRootSyntheticPosition = (position: Point, item: StructReference<any>, root: RootState) => updateRootState({
-  browser: updateSyntheticItemPosition(position, item, root.browser)
+export const updateRootSyntheticPosition = (position: Point, nodeId: string, root: RootState) => updateRootState({
+  browser: updateSyntheticItemPosition(position, nodeId, root.browser)
 }, root);
 
-export const updateRootSyntheticBounds = (bounds: Bounds, item: StructReference<any>, root: RootState) => updateRootState({
-  browser: updateSyntheticItemBounds(bounds, item, root.browser)
+export const updateRootSyntheticBounds = (bounds: Bounds, nodeId: string, root: RootState) => updateRootState({
+  browser: updateSyntheticItemBounds(bounds, nodeId, root.browser)
 }, root);
 
-export const getBoundedSelection = memoize((root: RootState): Array<Bounded & Struct> => root.selectionReferences.map((ref) => getReference(ref, root)).filter(item => getSyntheticItemBounds(item, root.browser)) as any);
-export const getSelectionBounds = memoize((root: RootState) => mergeBounds(...getBoundedSelection(root).map(boxed => getSyntheticItemBounds(boxed, root.browser))));
+export const getBoundedSelection = memoize((root: RootState): string[] => root.selectedNodeIds.filter(nodeId => getSyntheticNodeBounds(nodeId, root.browser)));
+export const getSelectionBounds = memoize((root: RootState) => mergeBounds(...getBoundedSelection(root).map(nodeId => getSyntheticNodeBounds(nodeId, root.browser))));
 
 
 export * from "./constants";

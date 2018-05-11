@@ -6,8 +6,8 @@ import { DesktopRootState } from "./state";
 
 setup<DesktopRootState>(rootReducer, rootSaga)({
   mount: document.getElementById("application"),
-  hoveringReferences: [],
-  selectionReferences: [],
+  hoveringNodeIds: [],
+  selectedNodeIds: [],
   browser: {
     type: SyntheticObjectType.BROWSER,
     windows: []

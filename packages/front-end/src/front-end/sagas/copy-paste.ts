@@ -23,13 +23,7 @@ function* handleCopy() {
     while(1) {
       const event: ClipboardEvent = yield take(chan);
       const root: RootState = yield select();
-      event.clipboardData.setData("text/plain", JSON.stringify(root.selectionReferences.map(ref => {
-        if (ref.type === SyntheticObjectType.DOCUMENT) {
-          return (getSyntheticDocumentById(ref.id, root.browser) as SyntheticDocument).root;
-        } else {
-          return getSyntheticNodeById(ref.id, root.browser);
-        }
-      })));
+      event.clipboardData.setData("text/plain", JSON.stringify(root.selectedNodeIds.map(nodeId => getSyntheticNodeById(nodeId, root.browser))));
       event.preventDefault();
     }
   }

@@ -1,11 +1,11 @@
-import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail } from "../common/state/tree";
+import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode } from "../common/state/tree";
 import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML, ArrayOperationalTransform } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect, parseStyle } from "../common";
 import { mapValues, pull } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
-import { evaluateDependencyEntry, evaluateComponent } from "./evaluate";
+import { evaluateDependencyEntry } from "./evaluate";
 import { STATUS_CODES } from "http";
 import { Children } from "react";
 
@@ -87,6 +87,11 @@ export const updateSyntheticWindow = (location: string, properties: Partial<Synt
     })
   }, browser);
 }
+
+export const isSyntheticDocumentRoot = (nodeId: string, state: SyntheticWindow|SyntheticBrowser) => {
+  const document = getSyntheticNodeDocument(nodeId, state);
+  return document.root.id === nodeId;
+};
 
 export const getSyntheticWindow = (location: string, browser: SyntheticBrowser) => browser.windows.find(window => window.location === location);
 
@@ -176,16 +181,13 @@ export const getComputedNodeBounds = memoize((nodeId: string, document: Syntheti
   return info[nodeId] && info[nodeId].bounds;
 });
 
-export const getSyntheticItemBounds = memoize((value: Struct, browser: SyntheticBrowser) => {
-  if (!value) {
-    return null;
-  }
-  if ((value as SyntheticDocument).type === SyntheticObjectType.DOCUMENT) {
-    return getSyntheticDocumentById(value.id, browser).bounds;
+export const getSyntheticNodeBounds = memoize((nodeId: string, browser: SyntheticBrowser) => {
+  if (isSyntheticDocumentRoot(nodeId, browser)) {
+    return getSyntheticNodeDocument(nodeId, browser).bounds;
   } else {
 
-    const document = getSyntheticNodeDocument(value.id, browser);
-    return shiftBounds(getComputedNodeBounds(value.id, document), document.bounds);
+    const document = getSyntheticNodeDocument(nodeId, browser);
+    return shiftBounds(getComputedNodeBounds(nodeId, document), document.bounds);
   }
 });
 
@@ -212,13 +214,13 @@ const applyDocumentElementTransforms = (transforms: OperationalTransform[], docu
 };
 
 
-const updateSyntheticItem = <TItem>(properties: Partial<TItem>, ref: StructReference<any>, browser: SyntheticBrowser) => {
-  if (ref.type === SyntheticObjectType.DOCUMENT) {
-    const document = getSyntheticDocumentById(ref.id, browser);
+const updateSyntheticItem = <TItem>(properties: Partial<TItem>, nodeId: string, browser: SyntheticBrowser) => {
+  if (isSyntheticDocumentRoot(nodeId, browser)) {
+    const document = getSyntheticNodeDocument(nodeId, browser);
     throw new Error("TODO - modify document, and source");
   }
-  const document = getSyntheticNodeDocument(ref.id, browser);
-  const item = getNestedTreeNodeById(ref.id, document.root) as SyntheticNode;
+  const document = getSyntheticNodeDocument(nodeId, browser);
+  const item = getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
   const itemPath = getTeeNodePath(item.id, document.root);
 
   const transforms: OperationalTransform[] = [];
@@ -242,8 +244,8 @@ const updateSyntheticItem = <TItem>(properties: Partial<TItem>, ref: StructRefer
   return browser;
 };
 
-export const updateSyntheticNodeAttributes = (name: string, namespace: string, value: any, ref: StructReference<SyntheticObjectType.ELEMENT>, browser: SyntheticBrowser) => {
-  const node = getSyntheticNodeById(ref.id, browser);
+export const updateSyntheticNodeAttributes = (name: string, namespace: string, value: any, nodeId, browser: SyntheticBrowser) => {
+  const node = getSyntheticNodeById(nodeId, browser);
 
   return updateSyntheticItem({
     attributes: {
@@ -252,17 +254,17 @@ export const updateSyntheticNodeAttributes = (name: string, namespace: string, v
         [name]: value
       }
     }
-  }, ref, browser);
+  }, nodeId, browser);
 };
 
-export const updateSyntheticNodeStyle = (style: any, ref: StructReference<SyntheticObjectType.ELEMENT>, browser: SyntheticBrowser) => {
-  const node = getSyntheticNodeById(ref.id, browser);
+export const updateSyntheticNodeStyle = (style: any, nodeId: string, browser: SyntheticBrowser) => {
+  const node = getSyntheticNodeById(nodeId, browser);
   const oldStyle = getAttribute(node, "style") || EMPTY_OBJECT;
 
   return updateSyntheticNodeAttributes("style", DEFAULT_NAMESPACE, {
     ...oldStyle,
     ...style,
-  }, ref, browser);
+  }, nodeId, browser);
 };
 
 export const getSyntheticNodeById = (nodeId: string, browser: SyntheticBrowser) => {
@@ -279,9 +281,9 @@ export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser:
   return getComponentInfo(componentNode);
 });
 
-export const updateSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
-  const bounds = getSyntheticItemBounds(ref, browser);
-  return updateSyntheticItemBounds(moveBounds(bounds, position), ref, browser, PersistBoundsFilter.POSITION);
+export const updateSyntheticItemPosition = (position: Point, nodeId: string, browser: SyntheticBrowser) => {
+  const bounds = getSyntheticNodeBounds(nodeId, browser);
+  return updateSyntheticItemBounds(moveBounds(bounds, position), nodeId, browser, PersistBoundsFilter.POSITION);
 };
 
 enum PersistBoundsFilter {
@@ -290,14 +292,14 @@ enum PersistBoundsFilter {
   POSITION = 1 << 2
 };
 
-export const updateSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser, filter: PersistBoundsFilter = PersistBoundsFilter.HEIGHT | PersistBoundsFilter.POSITION | PersistBoundsFilter.WIDTH) => {
-  if (ref.type === SyntheticObjectType.DOCUMENT) {
+export const updateSyntheticItemBounds = (bounds: Bounds, nodeId: string, browser: SyntheticBrowser, filter: PersistBoundsFilter = PersistBoundsFilter.HEIGHT | PersistBoundsFilter.POSITION | PersistBoundsFilter.WIDTH) => {
+  if (isSyntheticDocumentRoot(nodeId, browser)) {
     return updateSyntheticDocument({
       bounds,
-    }, ref.id, browser);
+    }, getSyntheticNodeDocument(nodeId, browser).id, browser);
   } else {
-    const node = getSyntheticNodeById(ref.id, browser);
-    const document = getSyntheticNodeDocument(ref.id, browser);
+    const node = getSyntheticNodeById(nodeId, browser);
+    const document = getSyntheticNodeDocument(nodeId, browser);
     const style = getAttribute(node, "style") || EMPTY_OBJECT;
 
     let newStyle: any = {
@@ -330,7 +332,7 @@ export const updateSyntheticItemBounds = (bounds: Bounds, ref: StructReference<a
       };
     }
 
-    return updateSyntheticNodeStyle(newStyle, ref, browser);
+    return updateSyntheticNodeStyle(newStyle, nodeId, browser);
   }
 };
 
@@ -355,10 +357,9 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
         throw new Error("NOT IMPLEMENTED YET");
       }
 
-
       const childComponentNode = createComponentNode(
         targetDep,
-        shiftBounds(getAttribute(sourceNode, "bounds", PREVIEW_NAMESPACE), PASTED_ARTBOARD_OFFSET),
+        shiftBounds(parseStyle(getAttribute(sourceNode, "bounds", PREVIEW_NAMESPACE)), PASTED_ARTBOARD_OFFSET),
         getAttribute(sourceNode, "id")
       );
 
@@ -398,14 +399,14 @@ export const collapseSyntheticNode = (node: SyntheticNode, root: SyntheticNode) 
 
 export const getSyntheticNodeWindow = memoize((nodeId: string, state: SyntheticBrowser) => getSyntheticDocumentWindow(getSyntheticNodeDocument(nodeId, state).id, state));
 
-const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
+const persistSyntheticNodeChanges = (nodeId: string, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
 
-  const syntheticDocument = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentById(ref.id, browser) : getSyntheticNodeDocument(ref.id, browser);
-  const syntheticNode = ref.type === SyntheticObjectType.DOCUMENT ? syntheticDocument.root : getSyntheticNodeById(ref.id, browser);
+  const syntheticDocument = getSyntheticNodeDocument(nodeId, browser);
+  const syntheticNode = getSyntheticNodeById(nodeId, browser);
 
   const sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
   const sourceDependency = browser.graph[syntheticNode.source.uri];
-  const sourceComponent = ref.type === SyntheticObjectType.DOCUMENT ? getSyntheticDocumentComponent(syntheticDocument, browser.graph) : getSyntheticNodeSourceComponent(ref.id, browser);
+  const sourceComponent = getSyntheticNodeSourceComponent(nodeId, browser);
 
   let updatedModuleSourceNode = updateNestedNode(sourceNode, sourceDependency.content, updater);
 
@@ -436,59 +437,32 @@ const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: Synthet
       }
 
       const overrideChildren: TreeNode[] = [];
-      const overrides = findNodeByTagName(sourceComponent.source, "overrides");
-
+      let overrides = findNodeByTagName(updatedModuleSourceNode, "overrides");
       const targetName = getAttribute(sourceNode, "ref");
       for (const ot of ots) {
         switch(ot.type) {
           case OperationalTransformType.SET_ATTRIBUTE: {
             const { name, value, namespace } = ot as SetAttributeTransform;
             if (name === "style" && namespace === DEFAULT_NAMESPACE) {
-              for (const key in value) {
-                const existingStyleOverride = findNestedNode(overrides, (node) => node.name === "set-style" && getAttribute(node, "name") === key && getAttribute(node, "target") === targetName);
-                if (existingStyleOverride) {
-                  updatedModuleSourceNode = updateNestedNode(existingStyleOverride, updatedModuleSourceNode, (child) => {
-                    return {
-                      ...child,
-                      attributes: {
-                        ...child.attributes,
-                        [DEFAULT_NAMESPACE]: {
-                          ...(child.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT),
-                          value: value[key]
-                        }
-                      }
-                    }
-                  });
-                } else {
-                  overrideChildren.push({
-                    name: "set-style",
-                    id: overrides.id + "set-style" + key,
-                    attributes: {
-                      [DEFAULT_NAMESPACE]: {
-                        name: key,
-                        value: value[key],
-                        target: targetName,
-                      }
-                    },
-                    children: []
-                  });
-                }
-              }
+              overrides = addSetStyleOverride(value, targetName, overrides);
             }
+            console.log(overrides);
+            break;
+          }
+          case OperationalTransformType.REMOVE_CHILD: {
+
+            // set display none override since the parent template should be immutable
+            overrides = addSetStyleOverride({ display: "none" }, targetName, overrides);
+            break;
+          }
+          default: {
+            throw new Error(`cannot override with ${OperationalTransformType.REMOVE_CHILD} operational transform.`);
           }
         }
       }
 
       if (ots.length) {
-        updatedModuleSourceNode = updateNestedNode(overrides, updatedModuleSourceNode, (child) => {
-          return {
-            ...child,
-            children: [
-              ...child.children,
-              ...overrideChildren
-            ]
-          }
-        });
+        updatedModuleSourceNode = replaceNestedNode(overrides, overrides.id, updatedModuleSourceNode);
       }
     }
 
@@ -496,6 +470,39 @@ const persistSyntheticNodeChanges = (ref: StructReference<any>, browser: Synthet
       content: updatedModuleSourceNode
     }, sourceDependency.uri, browser);
 };
+
+const addSetStyleOverride = (style: any, targetName: string, overridesNode: TreeNode) => {
+  for (const key in style) {
+    const existingStyleOverride = findNestedNode(overridesNode, (node) => node.name === "set-style" && getAttribute(node, "name") === key && getAttribute(node, "target") === targetName);
+    if (existingStyleOverride) {
+      overridesNode = updateNestedNode(existingStyleOverride, overridesNode, (child) => {
+        return {
+          ...child,
+          attributes: {
+            ...child.attributes,
+            [DEFAULT_NAMESPACE]: {
+              ...(child.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT),
+              value: style[key]
+            }
+          }
+        }
+      });
+    } else {
+      return appendChildNode({
+        name: "set-style",
+        id: overridesNode.id + "set-style" + key,
+        attributes: {
+          [DEFAULT_NAMESPACE]: {
+            name: key,
+            value: style[key],
+            target: targetName,
+          }
+        },
+        children: []
+      }, overridesNode);
+    }
+  }
+}
 
 const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependencyUri: string, browser: SyntheticBrowser) => {
 
@@ -736,19 +743,19 @@ const insertComponentChildNode = (componentId: string, child: TreeNode, content:
   return newContent;
 };
 
-export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browser: SyntheticBrowser) => {
-  return refs.reduce((state, ref) => {
+export const persistDeleteSyntheticItems = (nodeIds: string[], browser: SyntheticBrowser) => {
+  return nodeIds.reduce((state, nodeId) => {
     let document: SyntheticDocument;
     let dep: Dependency;
     let sourceNode: TreeNode;
-    if (ref.type === SyntheticObjectType.DOCUMENT) {
-      document = getSyntheticDocumentById(ref.id, browser);
-      dep = getSyntheticDocumentDependency(ref.id, browser);
+    if (isSyntheticDocumentRoot(nodeId, state)) {
+      document = getSyntheticNodeDocument(nodeId, browser);
+      dep = getSyntheticDocumentDependency(nodeId, browser);
       const component = getSyntheticDocumentComponent(document, browser.graph);
       sourceNode = component.source;
     } else {
-      const syntheticNode = getSyntheticNodeById(ref.id, browser);
-      document= getSyntheticNodeDocument(ref.id, browser);
+      const syntheticNode = getSyntheticNodeById(nodeId, browser);
+      document= getSyntheticNodeDocument(nodeId, browser);
       dep = browser.graph[syntheticNode.source.uri];
       sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
     }
@@ -758,23 +765,23 @@ export const persistDeleteSyntheticItems = (refs: StructReference<any>[], browse
   }, browser);
 };
 
-export const persistSyntheticItemPosition = (position: Point, ref: StructReference<any>, browser: SyntheticBrowser) => {
-  const bounds = getSyntheticItemBounds(ref, browser);
-  return persistSyntheticItemBounds(moveBounds(bounds, position), ref, browser);
+export const persistSyntheticItemPosition = (position: Point, nodeId: string, browser: SyntheticBrowser) => {
+  const bounds = getSyntheticNodeBounds(nodeId, browser);
+  return persistSyntheticItemBounds(moveBounds(bounds, position), nodeId, browser);
 };
 
 export const getModifiedDependencies = (oldGraph: DependencyGraph, newGraph: DependencyGraph): Dependency[] => {
   return pull(Object.values(newGraph), ...(Object.values(oldGraph) as any));
 };
 
-export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<any>, browser: SyntheticBrowser) => {
-  if (ref.type === SyntheticObjectType.DOCUMENT) {
-    return persistSyntheticNodeChanges(ref, browser, (child) => {
+export const persistSyntheticItemBounds = (bounds: Bounds, nodeId: string, browser: SyntheticBrowser) => {
+  if (isSyntheticDocumentRoot(nodeId, browser)) {
+    return persistSyntheticNodeChanges(nodeId, browser, (child) => {
       return setNodeAttribute(child, "bounds", bounds, PREVIEW_NAMESPACE);
     });
   } else {
-    const document = getSyntheticNodeDocument(ref.id, browser);
-    return persistSyntheticNodeChanges(ref, browser, (child) => {
+    const document = getSyntheticNodeDocument(nodeId, browser);
+    return persistSyntheticNodeChanges(nodeId, browser, (child) => {
       const style = getAttribute(child, "style") || EMPTY_OBJECT;
       const pos = style.position || "relative";
       return setNodeAttribute(child, "style", {
@@ -789,14 +796,13 @@ export const persistSyntheticItemBounds = (bounds: Bounds, ref: StructReference<
   }
 };
 
-export const persistRawCSSText = (text: string, ref: StructReference<any>, browser: SyntheticBrowser) => {
+export const persistRawCSSText = (text: string, nodeId: string, browser: SyntheticBrowser) => {
   const newStyle = parseStyle(text);
-  const document = getSyntheticNodeDocument(ref.id, browser);
-    return persistSyntheticNodeChanges(ref, browser, (child) => {
-      const style = getAttribute(child, "style") || EMPTY_OBJECT;
-      return setNodeAttribute(child, "style", {
-        ...style,
-        ...newStyle
-      });
+  return persistSyntheticNodeChanges(nodeId, browser, (child) => {
+    const style = getAttribute(child, "style") || EMPTY_OBJECT;
+    return setNodeAttribute(child, "style", {
+      ...style,
+      ...newStyle
     });
+  });
 };

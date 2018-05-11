@@ -30,7 +30,6 @@ type OpenFileInnerProps = {
 } & OpenFileOuterProps;
 
 const BaseOpenFileComponent = ({ dispatch, root, openFile: { temporary, uri, newContent }, active, onClick, onCloseClick }: OpenFileInnerProps) => {
-
   return <div className={cx("open-file", { temporary, active, unsaved: !!newContent })}>
     <div className="label" onClick={onClick}>
       <i className="ion-close" onClick={onCloseClick}>

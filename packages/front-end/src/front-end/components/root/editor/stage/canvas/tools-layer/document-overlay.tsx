@@ -31,7 +31,7 @@ type ArtboardOverlayToolsOuterProps = {
   dispatch: Dispatch<any>;
   document: SyntheticDocument;
   zoom: number;
-  hoveringNodes: StructReference<any>[];
+  hoveringNodeIds: string[];
 };
 
 type ArtboardOverlayToolsInnerProps = {
@@ -78,7 +78,7 @@ const getDocumentRelativeBounds = memoize((document: SyntheticDocument) => ({
   bottom: document.bounds.bottom - document.bounds.top
 }));
 
-const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onPanStart, onPan, onPanEnd }: ArtboardOverlayToolsInnerProps) => {
+const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodeIds, zoom, onPanStart, onPan, onPanEnd }: ArtboardOverlayToolsInnerProps) => {
 
   if (!document.computed) {
     return null;
@@ -105,10 +105,10 @@ const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodes, zoom, onP
         style={{ width: "100%", height: "100%", position: "absolute" } as any}
         onDoubleClick={wrapEventToDispatch(dispatch, canvasToolOverlayMouseDoubleClicked.bind(this, document.id))}>
       {
-        hoveringNodes.map((ref) => <NodeOverlay
+        hoveringNodeIds.map((nodeId) => <NodeOverlay
           zoom={zoom}
-          key={ref.id}
-          bounds={document.id === ref.id ? getDocumentRelativeBounds(document) : document.computed[ref.id] && document.computed[ref.id].bounds}
+          key={nodeId}
+          bounds={document.id === nodeId ? getDocumentRelativeBounds(document) : document.computed[nodeId] && document.computed[nodeId].bounds}
           dispatch={dispatch}  />)
       }
     </div>
@@ -140,10 +140,10 @@ const getNodes = memoize((refs: StructReference<any>[], allNodes: TreeNodeIdMap)
   return refs.map(({type, id}) => allNodes[id]).filter((flattenedObject) => !!flattenedObject)
 });
 
-const getHoveringSyntheticNodes = memoize((root: RootState, document: SyntheticDocument): StructReference<any>[] => {
+const getHoveringSyntheticNodes = memoize((root: RootState, document: SyntheticDocument): string[] => {
   const allNodes = document && getTreeNodeIdMap(document.root) || {};
-  const selectionRefIds = root.selectionReferences.map(ref => ref.id);
-  return root.hoveringReferences.filter(ref => selectionRefIds.indexOf(ref.id) === -1);
+  const selectionRefIds = root.selectedNodeIds;
+  return root.hoveringNodeIds.filter(nodeId => selectionRefIds.indexOf(nodeId) === -1);
 });
 
 export const  NodeOverlaysToolBase = ({ root, dispatch, zoom }: VisualToolsProps) => {
@@ -155,7 +155,7 @@ export const  NodeOverlaysToolBase = ({ root, dispatch, zoom }: VisualToolsProp
   return <div className="visual-tools-layer-component">
     {
       activeWindow.documents && activeWindow.documents.map((document, i) => {
-        return <ArtboardOverlayTools key={document.id} document={document}  hoveringNodes={getHoveringSyntheticNodes(root, document)} dispatch={dispatch} zoom={zoom} />;
+        return <ArtboardOverlayTools key={document.id} document={document}  hoveringNodeIds={getHoveringSyntheticNodes(root, document)} dispatch={dispatch} zoom={zoom} />;
       })
     }
   </div>

@@ -126,7 +126,7 @@ export type CanvasWheel = {
 
 export type PCLayerMouseOver = {
   type: string;
-  ref: StructReference<any>;
+  nodeId: string;
 } & Action;
 
 export type PCLayerClick = PCLayerMouseOver;
@@ -166,7 +166,7 @@ export type ResizerPathStoppedMoving = {
 } & ResizerPathMoved;
 
 export type SelectorDoubleClicked = {
-  item: Struct;
+  nodeId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type ShortcutKeyDown = {
@@ -213,23 +213,23 @@ export const fileNavigatorItemDoubleClicked = (uri: string): FileNavigatorItemCl
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
 });
 
-export const pcLayerMouseOver = (ref: StructReference<any>): PCLayerMouseOver => ({
-  ref,
+export const pcLayerMouseOver = (nodeId: string): PCLayerMouseOver => ({
+  nodeId,
   type: PC_LAYER_MOUSE_OVER,
 });
 
-export const pcLayerMouseOut = (ref: StructReference<any>): PCLayerMouseOut => ({
-  ref,
+export const pcLayerMouseOut = (nodeId: string): PCLayerMouseOut => ({
+  nodeId,
   type: PC_LAYER_MOUSE_OUT,
 });
 
-export const pcLayerClick = (ref: StructReference<any>): PCLayerClick => ({
-  ref,
+export const pcLayerClick = (nodeId: string): PCLayerClick => ({
+  nodeId,
   type: PC_LAYER_CLICK,
 });
 
-export const pcLayerExpandToggleClick = (ref: StructReference<any>): PCLayerExpandToggleClick => ({
-  ref,
+export const pcLayerExpandToggleClick = (nodeId: string): PCLayerExpandToggleClick => ({
+  nodeId,
   type: PC_LAYER_EXPAND_TOGGLE_CLICK,
 });
 
@@ -396,8 +396,8 @@ export const resizerMouseDown = (sourceEvent: React.MouseEvent<any>): ResizerMou
   type: RESIZER_MOUSE_DOWN,
 });
 
-export const selectorDoubleClicked = (item: Struct, sourceEvent: React.MouseEvent<any>): SelectorDoubleClicked => ({
-  item,
+export const selectorDoubleClicked = (nodeId: string, sourceEvent: React.MouseEvent<any>): SelectorDoubleClicked => ({
+  nodeId,
   type: SELECTOR_DOUBLE_CLICKED,
   sourceEvent
 });

@@ -7,6 +7,8 @@ import { StageComponent } from "./stage";
 import { LeftGutterComponent } from "./left-gutter";
 import { RightGutterComponent } from "./right-gutter";
 import { RootState, getActiveWindow } from "../../../state";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend, { IHTML5BackendContext } from "react-dnd-html5-backend";
 
 export type EditorOuterProps = {
   root: RootState;
@@ -23,4 +25,7 @@ const EditorBaseComponent = ({ root, dispatch }: EditorOuterProps) => {
   </div>;
 }
 
-export const EditorComponent = compose<EditorOuterProps, EditorOuterProps>(pure)(EditorBaseComponent);
+export const EditorComponent = compose<EditorOuterProps, EditorOuterProps>(
+  pure,
+  DragDropContext(HTML5Backend)
+)(EditorBaseComponent);

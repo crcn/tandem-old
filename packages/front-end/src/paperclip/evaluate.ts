@@ -13,9 +13,8 @@ import { TreeNode, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generat
 import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride } from "./dsl";
 import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency, getSyntheticDocumentComponent } from "./synthetic";
 import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML, memoize } from "../common/utils";
-import { pick } from "lodash";
+import { pick, merge } from "lodash";
 
-export const EDITOR_NAMESPACE = "editor";
 export const DEFAULT_EXTENDS: ComponentExtendsInfo = {
   namespace: DEFAULT_NAMESPACE,
   tagName: "div"
@@ -38,15 +37,22 @@ export const evaluateDependencyEntry = ({ entry, graph }: EvaluateOptions): Eval
   const module = getModuleInfo(entry.content);
   const checksum = generateTreeChecksum(entry.content);
   return {
-    documentNodes: module.components.map((component, i) => evaluateComponent(component, entry, graph))
+    documentNodes: module.components.map((component, i) => evaluateRootComponent(component, entry, graph))
   };
 };
 
-export const evaluateComponent = (component: Component, currentDependency: Dependency, graph: DependencyGraph): SyntheticNode  => {
+export const evaluateRootComponent = (component: Component, currentDependency: Dependency, graph: DependencyGraph): SyntheticNode  => {
   const module = getModuleInfo(currentDependency.content);
   const dependency = getNodeSourceDependency(component.source, currentDependency, graph);
   const checksum = generateTreeChecksum(dependency.content);
-  return _evaluateComponent(component, {}, [], getSytheticNodeSource(component.source, dependency), checksum + component.id, module, checksum, dependency, graph);
+  return _evaluateComponent(component, {
+    [DEFAULT_NAMESPACE]: {
+      style: {
+        width: "100vw",
+        height: "100vh"
+      }
+    }
+  }, [], getSytheticNodeSource(component.source, dependency), checksum + component.id, module, checksum, dependency, graph);
 };
 
 const _evaluateComponent = (component: Component, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
@@ -70,13 +76,7 @@ const _evaluateComponent = (component: Component, attributes: TreeNodeAttributes
 
   const syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)) : EMPTY_ARRAY;
 
-  const syntheticAttributes = {
-    ...attributes,
-    [DEFAULT_NAMESPACE]: {
-      ...(attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT),
-      ...pick(template && template.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT, "style"),
-    }
-  };
+  const syntheticAttributes = attributes;
 
   const extendsFromDependency = getImportedDependency(ext.namespace, dependency, graph);
 
