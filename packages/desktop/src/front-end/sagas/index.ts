@@ -47,7 +47,6 @@ function* handleSaveShortcut() {
 }
 
 const saveFile = (uri: string, content: Buffer) => {
-  console.log(content.toString());
   return new Promise((resolve, reject) => {
     fs.writeFile(uri.substr("file:/".length), content, (err) => {
       if (err) {

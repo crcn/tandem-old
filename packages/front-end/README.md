@@ -2,10 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
-- start on react-dnd
-- persist IDs
-- get short keys to work without modifier*
-- react-dnd
+- re-ordering
 - grouping elements
 - editing text
 

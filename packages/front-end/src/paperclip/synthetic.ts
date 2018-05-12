@@ -1,4 +1,4 @@
-import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode } from "../common/state/tree";
+import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode } from "../common/state/tree";
 import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML, ArrayOperationalTransform } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
@@ -387,7 +387,6 @@ export const getSyntheticNodeDocument = memoize((nodeId: string, state: Syntheti
 
 export const setNodeExpanded = (node: SyntheticNode, value: boolean, root: SyntheticNode): SyntheticNode => {
   const path = getTeeNodePath(node.id, root);
-  let current = root;
   const updater = (node) => {
     return setNodeAttribute(node, "expanded", value, EDITOR_NAMESPACE);
   };
@@ -655,7 +654,7 @@ export const persistNewComponent = (bounds: Bounds, dependencyUri: string, brows
   }, dependencyUri, browser);
 };
 
-export const persistInsertRectangle = (style: any, documentId: string, browser: SyntheticBrowser) => {
+export const persistInsertRectangle = (style: any, parentId: string, browser: SyntheticBrowser) => {
   return persistInsertNode({
     name: "div",
     attributes: {
@@ -667,10 +666,10 @@ export const persistInsertRectangle = (style: any, documentId: string, browser: 
       }
     },
     children: []
-  }, documentId, browser);
+  }, parentId, browser);
 };
 
-export const persistInsertText = (style: any, nodeValue: string, documentId: string, browser: SyntheticBrowser) => {
+export const persistInsertText = (style: any, nodeValue: string, parentId: string, browser: SyntheticBrowser) => {
   return persistInsertNode({
     name: "text",
     attributes: {
@@ -680,66 +679,47 @@ export const persistInsertText = (style: any, nodeValue: string, documentId: str
       }
     },
     children: []
-  }, documentId, browser);
+  }, parentId, browser);
 };
 
 
-export const persistInsertNode = (child: TreeNode, documentId: string, browser: SyntheticBrowser) => {
-  const dep = getSyntheticDocumentDependency(documentId, browser);
-  const componentNode = getSyntheticDocumentComponent(getSyntheticDocumentById(documentId, browser), browser.graph).source;
+// TODO - documentId needs to be nodeId
+export const persistInsertNode = (child: TreeNode, parentId: string, browser: SyntheticBrowser) => {
+  const document = getSyntheticNodeDocument(parentId, browser);
+  const parentNode = getSyntheticNodeById(parentId, browser);
+  const sourceParentNode = getSyntheticNodeSourceNode(parentNode, browser.graph)
+  const dep = getSyntheticDocumentDependency(document.id, browser);
+  const componentNode = getSyntheticDocumentComponent(getSyntheticDocumentById(document.id, browser), browser.graph).source;
   const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
   return updateDependencyAndRevaluate({
-    content: insertComponentChildNode(componentNode.id, addTreeNodeIds(child, dep.content.id), dep.content)
+    content: insertComponentChildNode(componentNode.id, addTreeNodeIds(child, dep.content.id), sourceParentNode.id, dep.content)
   }, dep.uri, browser);
 };
-const insertComponentChildNode = (componentId: string, child: TreeNode, content: TreeNode) => {
+
+const insertComponentChildNode = (componentId: string, child: TreeNode, parentId: string, content: TreeNode) => {
   const componentNode = getNestedTreeNodeById(componentId, content);
+  const parentNode = getNestedTreeNodeById(parentId, componentNode);
+
+  // deprecated
   const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
 
-  let newContent: TreeNode = content;
 
+  // don't allow for this kind of thing
   if (isChildComponent) {
-    let overrides = componentNode.children.find(child => child.name === "overrides");
-    if (!overrides) {
-      overrides = addTreeNodeIds({
-        name: "overrides",
-        attributes: {
-        },
-        children: []
-      }, child.id);
-      newContent = updateNestedNode(componentNode, newContent, (component) => ({
-        ...component,
-        children: [
-          ...component.children,
-          overrides
-        ]
-      }));
-    }
-
-    newContent = updateNestedNode(overrides, newContent, (overrides) => ({
-      ...overrides,
-      children: [
-        ...overrides.children,
-        addTreeNodeIds({
-          name: "insert-child",
-          attributes: {},
-          children: [child]
-        }, generateTreeChecksum(newContent))
-      ]
-    }));
-  } else {
-
-    const template = componentNode.children.find(child => child.name === "template");
-    newContent = updateNestedNode(template, newContent, (template) => {
-      return {
-        ...template,
-        children: [
-          ...template.children,
-          child
-        ]
-      };
-    });
+    throw new Error(`Cannot insert node into child component`);
   }
+  const parent = parentNode === componentNode ? componentNode.children.find(child => child.name === "template") : parentNode;
+
+  let newContent: TreeNode = content;
+  newContent = updateNestedNode(parent, newContent, (template) => {
+    return {
+      ...template,
+      children: [
+        ...template.children,
+        child
+      ]
+    };
+  });
   return newContent;
 };
 
@@ -750,7 +730,7 @@ export const persistDeleteSyntheticItems = (nodeIds: string[], browser: Syntheti
     let sourceNode: TreeNode;
     if (isSyntheticDocumentRoot(nodeId, state)) {
       document = getSyntheticNodeDocument(nodeId, browser);
-      dep = getSyntheticDocumentDependency(nodeId, browser);
+      dep = getSyntheticDocumentDependency(document.id, browser);
       const component = getSyntheticDocumentComponent(document, browser.graph);
       sourceNode = component.source;
     } else {
@@ -763,6 +743,19 @@ export const persistDeleteSyntheticItems = (nodeIds: string[], browser: Syntheti
       content: removeNestedTreeNode(sourceNode, dep.content)
     }, dep.uri, state);
   }, browser);
+};
+
+export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: string, browser: SyntheticBrowser) => {
+  const document = getSyntheticNodeDocument(node.id, browser);
+  const parent = getParentTreeNode(node, document.root);
+  const sourceNode = getSyntheticNodeSourceNode(node, browser.graph);
+  browser = persistSyntheticNodeChanges(parent.id, browser, parent => {
+    return removeNestedTreeNode(sourceNode, parent);
+  });
+
+  // TODO - point to target node id
+  browser = persistInsertNode(sourceNode, targetNodeId, browser);
+  return browser;
 };
 
 export const persistSyntheticItemPosition = (position: Point, nodeId: string, browser: SyntheticBrowser) => {

@@ -52,6 +52,7 @@ export const PC_LAYER_MOUSE_OVER = "PC_LAYER_MOUSE_OVER";
 export const PC_LAYER_MOUSE_OUT = "PC_LAYER_MOUSE_OUT";
 export const PC_LAYER_CLICK = "PC_LAYER_CLICK";
 export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
+export const PC_LAYER_DROPPED_NODE = "PC_LAYER_DROPPED_NODE";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -127,6 +128,11 @@ export type CanvasWheel = {
 export type PCLayerMouseOver = {
   type: string;
   nodeId: string;
+} & Action;
+
+export type PCLayerDroppedNode = {
+  node: SyntheticNode;
+  targetNodeId: string;
 } & Action;
 
 export type PCLayerClick = PCLayerMouseOver;
@@ -232,6 +238,12 @@ export const pcLayerExpandToggleClick = (nodeId: string): PCLayerExpandToggleCli
   nodeId,
   type: PC_LAYER_EXPAND_TOGGLE_CLICK,
 });
+
+export const pcLayerDroppedNode = (node: SyntheticNode, targetNodeId: string): PCLayerDroppedNode => ({
+  node,
+  targetNodeId,
+  type: PC_LAYER_DROPPED_NODE
+})
 
 export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({
   value,

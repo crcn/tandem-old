@@ -5,13 +5,4 @@
       <div style="left:59;right:166;top:31;bottom:103;width:107;height:72;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
     </template>
   </component>
-  <component id="component2" extends="component1" preview:bounds="left:317;top:96;right:573;bottom:275;">
-    <template></template>
-    <overrides>
-      <set-style name="left" value="41"></set-style>
-      <set-style name="right" value="166"></set-style>
-      <set-style name="top" value="87"></set-style>
-      <set-style name="bottom" value="103"></set-style>
-    </overrides>
-  </component>
 </module>

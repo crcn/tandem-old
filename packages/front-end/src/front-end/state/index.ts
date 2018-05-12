@@ -158,7 +158,7 @@ export const getInsertedWindowElementIds = (oldWindow: SyntheticWindow, newBrows
         return oldDocument.id === document.id
       }) == null
       return isInserted;
-    }).map(document => document.root)
+    }).map(document => document.root.id)
   ];
 };
 
@@ -204,9 +204,10 @@ export const updateRootStateSyntheticWindowDocument = (documentId: string, prope
 export const setRootStateNodeExpanded = (nodeId: string, value: boolean, state: RootState) => {
   const node = getSyntheticNodeById(nodeId, state.browser);
   const document = getSyntheticNodeDocument(node.id, state.browser);
-  return updateRootStateSyntheticWindowDocument(document.id, {
+  state = updateRootStateSyntheticWindowDocument(document.id, {
     root: setNodeExpanded(node, value, document.root)
   }, state);
+  return state;
 };
 
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
@@ -308,9 +309,13 @@ export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
 }
 
 export const setSelection = (root: RootState, ...selectionIds: string[]) => {
-  return updateRootState({
-    selectedNodeIds: uniq([...selectionIds])
+  const nodeIds = uniq([...selectionIds]);
+  root = nodeIds.reduce((state, nodeId) => setRootStateNodeExpanded(nodeId, true, root), root);
+
+  root = updateRootState({
+    selectedNodeIds: nodeIds
   }, root);
+  return root;
 };
 
 export const setHovering = (root: RootState, ...selectionIds: string[]) => {

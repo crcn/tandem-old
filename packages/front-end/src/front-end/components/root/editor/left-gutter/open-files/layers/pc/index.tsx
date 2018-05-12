@@ -5,21 +5,35 @@ import { SyntheticWindow, SyntheticBrowser, SyntheticNode, SyntheticDocument, S
 import { compose, pure, withHandlers } from "recompose"
 import { getAttribute, EMPTY_ARRAY } from "../../../../../../../../common";
 import { Dispatch } from "redux";
-import { pcLayerClick, pcLayerMouseOut, pcLayerMouseOver, pcLayerExpandToggleClick } from "../../../../../../../actions";
+import { pcLayerClick, pcLayerMouseOut, pcLayerMouseOver, pcLayerExpandToggleClick, pcLayerDroppedNode } from "../../../../../../../actions";
 import { StructReference } from "../../../../../../../../common";
 import {
-	DropTarget,
+  DropTarget,
+  DragSource,
 	DropTargetCollector,
 } from "react-dnd";
 
-type SyntheticNodeLayerOuterProps = {
+const DRAG_TYPE = "SYNTHETIC_NODE";
+
+type SyntheticNodeLayerLabelOuterProps = {
   node: SyntheticNode;
   depth: number;
+  selected: boolean;
+  hovering: boolean;
+  expanded: boolean;
   dispatch: Dispatch<any>;
-  hoveringNodeIds: string[];
-  selectedReferences: string[];
 };
 
+type SyntheticNodeLayerLabelInnerProps = {
+  connectDropTarget?: any;
+  connectDragSource?: any;
+  isOver: boolean;
+  canDrop: boolean;
+  onLabelMouseOver: (event: React.MouseEvent<any>) => any;
+  onLabelMouseOut: (event: React.MouseEvent<any>) => any;
+  onLabelClick: (event: React.MouseEvent<any>) => any;
+  onExpandToggleButtonClick: (event: React.MouseEvent<any>) => any;
+} & SyntheticNodeLayerLabelOuterProps;
 
 const collect = (connect, monitor) => {
 	return {
@@ -30,39 +44,29 @@ const collect = (connect, monitor) => {
 };
 
 
-type SyntheticNodeLayerInnerProps = {
-  onLabelMouseOver: (event: React.MouseEvent<any>) => any;
-  onLabelMouseOut: (event: React.MouseEvent<any>) => any;
-  onLabelClick: (event: React.MouseEvent<any>) => any;
-  onExpandToggleButtonClick: (event: React.MouseEvent<any>) => any;
-} & SyntheticNodeLayerOuterProps;
+const labelTarget = {
+	canDrop(node: SyntheticNode) {
+		return true;
+	},
 
-const BaseSyntheticNodeLayerComponent = ({ onExpandToggleButtonClick, onLabelMouseOver, onLabelMouseOut, onLabelClick, hoveringNodeIds, selectedReferences, node, depth, dispatch }: SyntheticNodeLayerInnerProps) => {
+	drop(props: SyntheticNode) {
+
+	},
+}
+
+const BaseSyntheticNodeLayerLabelComponent = ({ connectDropTarget, connectDragSource, node, isOver, depth, expanded, selected, hovering, onLabelClick, onLabelMouseOut, onLabelMouseOver, onExpandToggleButtonClick }: SyntheticNodeLayerLabelInnerProps) => {
   const labelStyle = {
     paddingLeft: 30 + depth * 8
   };
-
-  const selected = ~selectedReferences.indexOf(node.id);
-  const hovering = ~hoveringNodeIds.indexOf(node.id);
-  const expanded = getAttribute(node, "expanded", EDITOR_NAMESPACE);
-
-  return <div className="m-synthetic-node-layer">
-    <div style={labelStyle} className={cx("label", { selected, hovering })} onMouseOver={onLabelMouseOver} onMouseOut={onLabelMouseOut} onClick={onLabelClick}>
-      <span onClick={onExpandToggleButtonClick}>
-        { node.children.length ? expanded ? <i className="ion-arrow-down-b" /> : <i className="ion-arrow-right-b" /> : null }
-      </span>
-      { getAttribute(node, "label", EDITOR_NAMESPACE) || "Untitled" }
-    </div>
-    <div className="children">
-      {
-        !node.children.length || expanded ? node.children.map(child => {
-          return <SyntheticNodeLayerComponent hoveringNodeIds={hoveringNodeIds} selectedReferences={selectedReferences} key={child.id} node={child as SyntheticNode} depth={depth + 1} dispatch={dispatch} />
-        }) : null
-      }
-    </div>
-  </div>;
+  return connectDropTarget(connectDragSource(<div style={labelStyle} className={cx("label", { selected, hovering: hovering || isOver })} onMouseOver={onLabelMouseOver} onMouseOut={onLabelMouseOut} onClick={onLabelClick}>
+    <span onClick={onExpandToggleButtonClick}>
+      { node.children.length ? expanded ? <i className="ion-arrow-down-b" /> : <i className="ion-arrow-right-b" /> : null }
+    </span>
+    { getAttribute(node, "label", EDITOR_NAMESPACE) || "Untitled" }
+  </div>));
 };
-const SyntheticNodeLayerComponent = compose<SyntheticNodeLayerInnerProps, SyntheticNodeLayerOuterProps>(
+
+const SyntheticNodeLayerLabelComponent = compose<SyntheticNodeLayerLabelInnerProps, SyntheticNodeLayerLabelOuterProps>(
   pure,
   withHandlers({
     onLabelMouseOver: ({ dispatch, document, node }) => () => {
@@ -78,7 +82,62 @@ const SyntheticNodeLayerComponent = compose<SyntheticNodeLayerInnerProps, Synthe
       dispatch(pcLayerExpandToggleClick(node.id));
       event.stopPropagation();
     }
+  }),
+  DragSource(DRAG_TYPE, {
+    beginDrag({ node }: SyntheticNodeLayerLabelOuterProps) {
+      return node;
+    }
+  }, (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
+    isDragging: monitor.isDragging(),
+  })),
+  DropTarget(DRAG_TYPE, {
+    canDrop({ node }: SyntheticNodeLayerLabelOuterProps, monitor) {
+      return node.id !== (monitor.getItem() as SyntheticNode).id;
+    },
+    drop({ node, dispatch }: SyntheticNodeLayerLabelOuterProps, monitor) {
+      dispatch(pcLayerDroppedNode(monitor.getItem() as SyntheticNode, node.id));
+    },
+  }, (connect, monitor) => {
+    return {
+      connectDropTarget: connect.dropTarget(),
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
+    }
   })
+)(BaseSyntheticNodeLayerLabelComponent);
+
+type SyntheticNodeLayerOuterProps = {
+  node: SyntheticNode;
+  depth: number;
+  dispatch: Dispatch<any>;
+  hoveringNodeIds: string[];
+  selectedReferences: string[];
+};
+
+type SyntheticNodeLayerInnerProps = {
+} & SyntheticNodeLayerOuterProps;
+
+const BaseSyntheticNodeLayerComponent = ({ hoveringNodeIds, selectedReferences, node, depth, dispatch }: SyntheticNodeLayerInnerProps) => {
+
+  const selected = selectedReferences.indexOf(node.id) !== -1;
+  const hovering = hoveringNodeIds.indexOf(node.id) !== -1;
+  const expanded = getAttribute(node, "expanded", EDITOR_NAMESPACE);
+
+  return <div className="m-synthetic-node-layer">
+    <SyntheticNodeLayerLabelComponent node={node} selected={selected} hovering={hovering} dispatch={dispatch} depth={depth} expanded={expanded} />
+    <div className="children">
+      {
+        !node.children.length || expanded ? node.children.map(child => {
+          return <SyntheticNodeLayerComponent hoveringNodeIds={hoveringNodeIds} selectedReferences={selectedReferences} key={child.id} node={child as SyntheticNode} depth={depth + 1} dispatch={dispatch} />
+        }) : null
+      }
+    </div>
+  </div>;
+};
+const SyntheticNodeLayerComponent = compose<SyntheticNodeLayerInnerProps, SyntheticNodeLayerOuterProps>(
+  pure
 )(BaseSyntheticNodeLayerComponent);
 
 type SyntheticDocumentLayerOuterProps = {
@@ -93,25 +152,7 @@ type SyntheticDocumentLayerInnerProps = {
 
 
 const BaseSyntheticDocumentLayerComponent = ({ dispatch, document, hoveringNodeIds, selectedReferences }: SyntheticDocumentLayerInnerProps) => {
-  // const selected = selectedReferences.find(ref => ref.id === document.id);
-  // const hovering = hoveringNodeIds.find(ref => ref.id === document.id);
-  // const expanded = getAttribute(document.root, "expanded", EDITOR_NAMESPACE);
-  return <SyntheticNodeLayerComponent node={document.root} depth={1} dispatch={dispatch} hoveringNodeIds={hoveringNodeIds} selectedReferences={selectedReferences} />
-  // return <div className="m-synthetic-document-layer">
-  //   <div className={cx("label", { selected, hovering })} onMouseOver={onLabelMouseOver} onMouseOut={onLabelMouseOut} onClick={onLabelClick}>
-  //     <span onClick={onExpandToggleButtonClick}>
-  //       { document.root.children.length ? expanded ? <i className="ion-arrow-down-b" /> : <i className="ion-arrow-right-b" /> : null }
-  //     </span>
-  //     Component
-  //   </div>
-  //   <div className="children">
-  //     {
-  //       !document.root.children.length || expanded ? document.root.children.map(child => {
-  //         return <SyntheticNodeLayerComponent key={child.id} hoveringNodeIds={hoveringNodeIds} selectedReferences={selectedReferences} node={child as SyntheticNode} dispatch={dispatch} depth={1} />
-  //       }) : null
-  //     }
-  //   </div>
-  // </div>;
+  return <SyntheticNodeLayerComponent node={document.root} depth={0} dispatch={dispatch} hoveringNodeIds={hoveringNodeIds} selectedReferences={selectedReferences} />
 };
 
 const SyntheticDocumentLayerComponent = compose<SyntheticDocumentLayerInnerProps, SyntheticDocumentLayerOuterProps>(
