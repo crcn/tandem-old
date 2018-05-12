@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import * as React from "react";
-import { Directory, Point, Bounds, Struct, StructReference } from "../../common";
+import { Directory, Point, Bounds, Struct, StructReference, TreeNode } from "../../common";
 import { publicActionCreator } from "tandem-common";
 import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap, SyntheticNode } from "../../paperclip";
 
@@ -54,6 +54,7 @@ export const PC_LAYER_CLICK = "PC_LAYER_CLICK";
 export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
 export const PC_LAYER_DROPPED_NODE = "PC_LAYER_DROPPED_NODE";
 
+
 export type WrappedEvent<T> = {
   sourceEvent: T
 } & Action;
@@ -74,7 +75,7 @@ export type DependencyEntryLoaded = {
 } & Action;
 
 export type FileNavigatorItemClicked = {
-  uri: string;
+  node: TreeNode;
 } & Action;
 
 export type OpenFilesItemClick = {
@@ -125,20 +126,20 @@ export type CanvasWheel = {
   deltaY: number;
 } & Action;
 
-export type PCLayerMouseOver = {
+export type TreeLayerMouseOver = {
   type: string;
-  nodeId: string;
+  node: TreeNode;
 } & Action;
 
-export type PCLayerDroppedNode = {
-  node: SyntheticNode;
-  targetNodeId: string;
+export type TreeLayerDroppedNode = {
+  node: TreeNode;
+  targetNode: TreeNode;
   offset?: 0|-1|1;
 } & Action;
 
-export type PCLayerClick = PCLayerMouseOver;
-export type PCLayerExpandToggleClick = PCLayerMouseOver;
-export type PCLayerMouseOut = PCLayerMouseOver;
+export type TreeLayerClick = TreeLayerMouseOver;
+export type TreeLayerExpandToggleClick = TreeLayerMouseOver;
+export type TreeLayerMouseOut = TreeLayerMouseOver;
 
 export type CanvasMounted = {
   element: HTMLDivElement;
@@ -200,8 +201,8 @@ export type FileNavigatorLabelClicked = {
   fileId: string;
 } & Action;
 
-export const fileNavigatorItemClicked = (uri: string): FileNavigatorItemClicked => ({
-  uri,
+export const fileNavigatorItemClicked = (node: TreeNode): FileNavigatorItemClicked => ({
+  node,
   type: FILE_NAVIGATOR_ITEM_CLICKED,
 });
 
@@ -215,34 +216,34 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
   type: OPEN_FILE_ITEM_CLOSE_CLICKED,
 });
 
-export const fileNavigatorItemDoubleClicked = (uri: string): FileNavigatorItemClicked => ({
-  uri,
+export const fileNavigatorItemDoubleClicked = (node: TreeNode): FileNavigatorItemClicked => ({
+  node,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
 });
 
-export const pcLayerMouseOver = (nodeId: string): PCLayerMouseOver => ({
-  nodeId,
+export const pcLayerMouseOver = (node: TreeNode): TreeLayerMouseOver => ({
+  node,
   type: PC_LAYER_MOUSE_OVER,
 });
 
-export const pcLayerMouseOut = (nodeId: string): PCLayerMouseOut => ({
-  nodeId,
+export const pcLayerMouseOut = (node: TreeNode): TreeLayerMouseOut => ({
+  node,
   type: PC_LAYER_MOUSE_OUT,
 });
 
-export const pcLayerClick = (nodeId: string): PCLayerClick => ({
-  nodeId,
+export const pcLayerClick = (node: TreeNode): TreeLayerClick => ({
+  node,
   type: PC_LAYER_CLICK,
 });
 
-export const pcLayerExpandToggleClick = (nodeId: string): PCLayerExpandToggleClick => ({
-  nodeId,
+export const pcLayerExpandToggleClick = (node: TreeNode): TreeLayerExpandToggleClick => ({
+  node,
   type: PC_LAYER_EXPAND_TOGGLE_CLICK,
 });
 
-export const pcLayerDroppedNode = (node: SyntheticNode, targetNodeId: string, offset?: 0|-1|1): PCLayerDroppedNode => ({
+export const pcLayerDroppedNode = (node: SyntheticNode, targetNode: TreeNode, offset?: 0|-1|1): TreeLayerDroppedNode => ({
   node,
-  targetNodeId,
+  targetNode,
   offset,
   type: PC_LAYER_DROPPED_NODE
 })

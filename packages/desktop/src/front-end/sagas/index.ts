@@ -14,7 +14,7 @@ function* handleActivePaperclipFile() {
     yield take([FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED]);
     const { activeFilePath, browser }: RootState = yield select();
 
-    if (activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) === -1) {
+    if (!activeFilePath || activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) === -1) {
       continue;
     }
 

@@ -2,7 +2,6 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
-- insert elements
 - creating folders
 - creating new files
 - start on quick search component (get HiFi done)

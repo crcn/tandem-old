@@ -5,6 +5,7 @@ init({
   mount: document.getElementById("application"),
   hoveringNodeIds: [],
   selectedNodeIds: [],
+  selectedFileNodeIds: [],
   canvas: {
     backgroundColor: "#EFEFEF",
     translate: {

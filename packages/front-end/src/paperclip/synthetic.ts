@@ -401,7 +401,7 @@ export const getSyntheticNodeDocument = memoize((nodeId: string, state: Syntheti
   return Boolean(getNestedTreeNodeById(nodeId, document.root));
 }));
 
-export const setNodeExpanded = (node: SyntheticNode, value: boolean, root: SyntheticNode): SyntheticNode => {
+export const setSyntheticNodeExpanded = (node: SyntheticNode, value: boolean, root: SyntheticNode): SyntheticNode => {
   const path = getTeeNodePath(node.id, root);
   const updater = (node) => {
     return setNodeAttribute(node, "expanded", value, EDITOR_NAMESPACE);
@@ -409,8 +409,8 @@ export const setNodeExpanded = (node: SyntheticNode, value: boolean, root: Synth
   return (value ? updateNestedNodeTrail(path, root, updater) : updateNestedNode(node, root, updater)) as SyntheticNode;
 };
 
-export const expandSyntheticNode = (node: SyntheticNode, root: SyntheticNode) => setNodeExpanded(node, true, root);
-export const collapseSyntheticNode = (node: SyntheticNode, root: SyntheticNode) => setNodeExpanded(node, false, root);
+export const expandSyntheticNode = (node: SyntheticNode, root: SyntheticNode) => setSyntheticNodeExpanded(node, true, root);
+export const collapseSyntheticNode = (node: SyntheticNode, root: SyntheticNode) => setSyntheticNodeExpanded(node, false, root);
 
 export const getSyntheticNodeWindow = memoize((nodeId: string, state: SyntheticBrowser) => getSyntheticDocumentWindow(getSyntheticNodeDocument(nodeId, state).id, state));
 
@@ -801,9 +801,6 @@ export const persistRawCSSText = (text: string, nodeId: string, browser: Synthet
   const newStyle = parseStyle(text);
   return persistSyntheticNodeChanges(nodeId, browser, (child) => {
     const style = getAttribute(child, "style") || EMPTY_OBJECT;
-    return setNodeAttribute(child, "style", {
-      ...style,
-      ...newStyle
-    });
+    return setNodeAttribute(child, "style", newStyle);
   });
 };

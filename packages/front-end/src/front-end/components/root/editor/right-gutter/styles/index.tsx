@@ -42,7 +42,7 @@ const getSelectedNodeStyle = (root: RootState) => {
 
 export const StylesPaneComponent = compose<StylePaneInnerProps, StylePaneOuterProps>(
   pure,
-  withState("focus", "setFocus", false),
+  withState("focused", "setFocus", false),
   withState("value", "setValue", ({ root }) => getSelectedNodeStyle(root)),
   withHandlers({
     onCssChange: ({ dispatch, setValue }) => (event: React.ChangeEvent<any>) => {

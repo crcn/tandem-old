@@ -8,6 +8,7 @@ setup<DesktopRootState>(rootReducer, rootSaga)({
   mount: document.getElementById("application"),
   hoveringNodeIds: [],
   selectedNodeIds: [],
+  selectedFileNodeIds: [],
   browser: {
     type: SyntheticObjectType.BROWSER,
     windows: []

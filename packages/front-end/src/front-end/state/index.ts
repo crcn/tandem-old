@@ -1,5 +1,5 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, selectFile, File, deselectAllFiles, setNodeAttribute } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setNodeExpanded, getSyntheticNodeById } from "../../paperclip";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames } from "../../common";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq, pull } from "lodash";
 
@@ -28,6 +28,7 @@ export type RootState = {
   openFiles: OpenFile[];
   hoveringNodeIds: string[];
   selectedNodeIds: string[];
+  selectedFileNodeIds: string[];
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
 };
@@ -43,12 +44,8 @@ export const updateRootState = (properties: Partial<RootState>, root: RootState)
   ...properties,
 });
 
-export const selectRootProjectFile = (file: File, multi: boolean, state: RootState) => updateRootState({
-  projectDirectory: selectFile(file, multi, state.projectDirectory)
-}, state);
-
 export const deselectRootProjectFiles = (state: RootState) => updateRootState({
-  projectDirectory: deselectAllFiles(state.projectDirectory)
+  selectedFileNodeIds: []
 }, state);
 
 export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBrowser) => SyntheticBrowser, state: RootState) => {
@@ -201,13 +198,22 @@ export const updateRootStateSyntheticWindowDocument = (documentId: string, prope
   }, root);
 };
 
-export const setRootStateNodeExpanded = (nodeId: string, value: boolean, state: RootState) => {
+export const setRootStateSyntheticNodeExpanded = (nodeId: string, value: boolean, state: RootState) => {
   const node = getSyntheticNodeById(nodeId, state.browser);
   const document = getSyntheticNodeDocument(node.id, state.browser);
   state = updateRootStateSyntheticWindowDocument(document.id, {
-    root: setNodeExpanded(node, value, document.root)
+    root: setSyntheticNodeExpanded(node, value, document.root)
   }, state);
   return state;
+};
+
+
+export const setRootStateFileNodeExpanded = (nodeId: string, value: boolean, state: RootState) => {
+  return updateRootState({
+    projectDirectory: updateNestedNode(getNestedTreeNodeById(nodeId, state.projectDirectory), state.projectDirectory, (child) => {
+      return setNodeAttribute(child, FileAttributeNames.EXPANDED, value);
+    })
+  }, state);
 };
 
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
@@ -238,7 +244,7 @@ export const setCanvasTool = (toolType: CanvasToolType, root: RootState) => {
     return root;
   }
   root = updateCanvas({ toolType }, root);
-  root = setSelection(root);
+  root = setSelectedSyntheticNodeIds(root);
   return root;
 }
 
@@ -311,12 +317,21 @@ export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
   }
 }
 
-export const setSelection = (root: RootState, ...selectionIds: string[]) => {
+export const setSelectedSyntheticNodeIds = (root: RootState, ...selectionIds: string[]) => {
   const nodeIds = uniq([...selectionIds]);
-  root = nodeIds.reduce((state, nodeId) => setRootStateNodeExpanded(nodeId, true, root), root);
-
+  root = nodeIds.reduce((state, nodeId) => setRootStateSyntheticNodeExpanded(nodeId, true, root), root);
   root = updateRootState({
     selectedNodeIds: nodeIds
+  }, root);
+  return root;
+};
+
+export const setSelectedFileNodeIds = (root: RootState, ...selectionIds: string[]) => {
+  const nodeIds = uniq([...selectionIds]);
+  root = nodeIds.reduce((state, nodeId) => setRootStateFileNodeExpanded(nodeId, true, root), root);
+
+  root = updateRootState({
+    selectedFileNodeIds: nodeIds
   }, root);
   return root;
 };

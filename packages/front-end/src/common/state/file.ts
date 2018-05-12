@@ -64,19 +64,7 @@ export const getFileFromUri = (uri: string, root: Directory) => findNestedNode(r
 
 const getSelectedFile = memoize((root: Directory) => findNestedNode(root, child => getAttribute(child, FileAttributeNames.SELECTED)));
 
-export const selectFile = (file: File | Directory, multi: boolean, root: Directory) => {
-
-  if (!multi) {
-    root = deselectAllFiles(root);
-  }
-
-  return updateNestedNode(file, root, (file) => setNodeAttribute(file, FileAttributeNames.SELECTED, true));
-};
-
 const getSelectedFiles = memoize((root: Directory) => filterNestedNodes(root, child => getAttribute(child, FileAttributeNames.SELECTED)));
-export const deselectFiles = (files: File[], root: Directory): Directory => files.reduce((root, file) => updateNestedNode(file, root, (file) => setNodeAttribute(file, FileAttributeNames.SELECTED, false)), root);
-
-export const deselectAllFiles = (root: Directory) => deselectFiles(getSelectedFiles(root) as File[], root);
 
 export const getFilesWithExtension = memoize((extension: string, directory: Directory) => {
   const tester = new RegExp(`${extension}$`);

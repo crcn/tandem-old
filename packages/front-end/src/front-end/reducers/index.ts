@@ -1,10 +1,10 @@
 
 
 import { Action } from "redux";
-import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, SYNTHETIC_NODES_PASTED, SyntheticNodesPasted, FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED, OPEN_FILE_ITEM_CLICKED, OPEN_FILE_ITEM_CLOSE_CLICKED, OpenFilesItemClick, SAVED_FILE, SavedFile, SAVED_ALL_FILES, RAW_CSS_TEXT_CHANGED, RawCSSTextChanged, PC_LAYER_MOUSE_OVER, PC_LAYER_MOUSE_OUT, PC_LAYER_CLICK, PCLayerDroppedNode, PCLayerMouseOver, PCLayerMouseOut, PCLayerClick, PC_LAYER_EXPAND_TOGGLE_CLICK, PCLayerExpandToggleClick, PC_LAYER_DROPPED_NODE } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseTargetNodeId, setSelection, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentRootId, getDocumentRootIdFromPoint, persistRootStateBrowser, getInsertedWindowElementIds, getInsertedDocumentElementIds, getOpenFile, addOpenFile, upsertOpenFile, removeTemporaryOpenFiles, setNextOpenFile, updateOpenFile, selectRootProjectFile, deselectRootProjectFiles, setHovering, setRootStateNodeExpanded } from "../state";
+import { CanvasToolArtboardTitleClicked, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, SYNTHETIC_NODES_PASTED, SyntheticNodesPasted, FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED, OPEN_FILE_ITEM_CLICKED, OPEN_FILE_ITEM_CLOSE_CLICKED, OpenFilesItemClick, SAVED_FILE, SavedFile, SAVED_ALL_FILES, RAW_CSS_TEXT_CHANGED, RawCSSTextChanged, PC_LAYER_MOUSE_OVER, PC_LAYER_MOUSE_OUT, PC_LAYER_CLICK, PC_LAYER_EXPAND_TOGGLE_CLICK, TreeLayerClick, TreeLayerDroppedNode, TreeLayerExpandToggleClick, TreeLayerMouseOut, TreeLayerMouseOver, PC_LAYER_DROPPED_NODE } from "../actions";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseTargetNodeId, setSelectedSyntheticNodeIds, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentRootId, getDocumentRootIdFromPoint, persistRootStateBrowser, getInsertedWindowElementIds, getInsertedDocumentElementIds, getOpenFile, addOpenFile, upsertOpenFile, removeTemporaryOpenFiles, setNextOpenFile, updateOpenFile, deselectRootProjectFiles, setHovering, setRootStateSyntheticNodeExpanded, setSelectedFileNodeIds } from "../state";
 import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticNodeBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle, persistInsertText, SyntheticDocument, SyntheticBrowser, persistPasteSyntheticNodes, getSyntheticSourceNode, getSyntheticNodeById, SyntheticWindow, getModifiedDependencies, persistRawCSSText, getSyntheticNodeDocument, getSyntheticNodeWindow, expandSyntheticNode, persistMoveSyntheticNode } from "../../paperclip";
-import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint, getAttribute, diffArray, getFileFromUri, isDirectory, updateNestedNode, DEFAULT_NAMESPACE, setNodeAttribute, FileAttributeNames, addTreeNodeIds, Directory, getNestedTreeNodeById, isFile, arraySplice, selectFile, deselectAllFiles } from "../../common";
+import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint, getAttribute, diffArray, getFileFromUri, isDirectory, updateNestedNode, DEFAULT_NAMESPACE, setNodeAttribute, FileAttributeNames, addTreeNodeIds, Directory, getNestedTreeNodeById, isFile, arraySplice } from "../../common";
 import { difference, pull } from "lodash";
 import { select } from "redux-saga/effects";
 import { EDITOR_NAMESPACE } from "../../paperclip";
@@ -25,17 +25,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return updateRootState({ projectDirectory: addTreeNodeIds(directory) }, state);
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
-      const { uri } = action as FileNavigatorItemClicked;
-      const file = getFileFromUri(uri, state.projectDirectory);
-      state = selectRootProjectFile(file, false, state);
+      const { node } = action as FileNavigatorItemClicked;
+      const uri = getAttribute(node, FileAttributeNames.URI);
+      const file = node as File;
+      state = setSelectedFileNodeIds(state, file.id);
 
-      if (isDirectory(file)) {
-        return updateRootState({
-          projectDirectory: updateNestedNode(file, state.projectDirectory, (child) => {
-            return setNodeAttribute(child, FileAttributeNames.EXPANDED, !getAttribute(child, FileAttributeNames.EXPANDED));
-          })
-        }, state);
-      } else {
+      if (!isDirectory(file)) {
         if (state.activeFilePath === uri) {
           return state;
         }
@@ -52,7 +47,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       }
     }
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
-      const { uri } = action as FileNavigatorItemClicked;
+      const { node } = action as FileNavigatorItemClicked;
+      const uri = getAttribute(node, FileAttributeNames.URI);
       const file = getFileFromUri(uri, state.projectDirectory);
       if (isFile(file)) {
         state = upsertOpenFile(uri, false, state);
@@ -89,42 +85,41 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       }, state);
     }
     case PC_LAYER_MOUSE_OVER: {
-      const { nodeId } = action as PCLayerMouseOver;
-      state = setHovering(state, nodeId);
+      const { node } = action as TreeLayerMouseOver;
+      state = setHovering(state, node.id);
       return state;
     }
     case PC_LAYER_DROPPED_NODE: {
-      const { node, targetNodeId, offset } = action as PCLayerDroppedNode;
-      const oldDocument = getSyntheticNodeDocument(targetNodeId, state.browser);
-      const targetNodeWindow = getSyntheticNodeWindow(targetNodeId, state.browser);
-      state = persistRootStateBrowser(browser => persistMoveSyntheticNode(node, targetNodeId, offset, browser), state);
+      const { node, targetNode, offset } = action as TreeLayerDroppedNode;
+      const oldDocument = getSyntheticNodeDocument(targetNode.id, state.browser);
+      const targetNodeWindow = getSyntheticNodeWindow(targetNode.id, state.browser);
+      state = persistRootStateBrowser(browser => persistMoveSyntheticNode(node as SyntheticNode, targetNode.id, offset, browser), state);
       // if (!getSyntheticNodeById(node.id, state.browser)) {
-      //   state = setSelection(state, ...getInsertedDocumentElementIds(oldDocument, state.browser));
+      //   state = setSelectedSyntheticNodeIds(state, ...getInsertedDocumentElementIds(oldDocument, state.browser));
       // }
 
       state = setActiveFilePath(targetNodeWindow.location, state);
 
       // deselect until fixed -- exception thrown in various conditions
       // where synthetic node no longer exists.
-      state = setSelection(state);
+      state = setSelectedSyntheticNodeIds(state);
       return state;
     }
     case PC_LAYER_MOUSE_OUT: {
-      const { nodeId } = action as PCLayerMouseOut;
+      const { node } = action as TreeLayerMouseOut;
       state = setHovering(state);
       return state;
     }
     case PC_LAYER_CLICK: {
-      const { nodeId } = action as PCLayerClick;
-      const window = getSyntheticNodeWindow(nodeId, state.browser);
+      const { node } = action as TreeLayerClick;
+      const window = getSyntheticNodeWindow(node.id, state.browser);
       state = setActiveFilePath(window.location, state);
-      state = setSelection(state, nodeId);
+      state = setSelectedSyntheticNodeIds(state, node.id);
       return state;
     }
     case PC_LAYER_EXPAND_TOGGLE_CLICK: {
-      const { nodeId } = action as PCLayerExpandToggleClick;
-      const node = getSyntheticNodeById(nodeId, state.browser);
-      state = setRootStateNodeExpanded(nodeId, !getAttribute(node, "expanded", EDITOR_NAMESPACE), state);
+      const { node } = action as TreeLayerExpandToggleClick;
+      state = setRootStateSyntheticNodeExpanded(node.id, !getAttribute(node, "expanded", EDITOR_NAMESPACE), state);
       return state;
     }
     case OPEN_FILE_ITEM_CLOSE_CLICKED: {
@@ -307,7 +302,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return handleArtboardSelectionFromAction(state, getSyntheticDocumentById(documentId, state.browser).root.id, action as CanvasToolArtboardTitleClicked);
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
-      return setSelection(state);
+      return setSelectedSyntheticNodeIds(state);
     }
     case INSERT_TOOL_FINISHED: {
       const { bounds } = action as InsertToolFinished;
@@ -321,7 +316,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           state = persistRootStateBrowser(browser => persistNewComponent(bounds, state.activeFilePath, browser), state);
           const newActiveWindow = getActiveWindow(state);
           const newDocument = newActiveWindow.documents[newActiveWindow.documents.length - 1];
-          state = setSelection(state, newDocument.root.id);
+          state = setSelectedSyntheticNodeIds(state, newDocument.root.id);
           return state;
         }
         case CanvasToolType.RECTANGLE: {
@@ -339,7 +334,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
               position: "absolute"
             }, document.root.id, browser)
           }, state);
-          state = setSelection(state, ...getInsertedDocumentElementIds(document, state.browser));
+          state = setSelectedSyntheticNodeIds(state, ...getInsertedDocumentElementIds(document, state.browser));
           return state;
         }
         case CanvasToolType.TEXT: {
@@ -358,7 +353,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             }, "double click to edit", document.root.id, browser);
           }, state);
 
-          state = setSelection(state, ...getInsertedDocumentElementIds(document, state.browser));
+          state = setSelectedSyntheticNodeIds(state, ...getInsertedDocumentElementIds(document, state.browser));
           return state;
         }
       }
@@ -418,7 +413,7 @@ const shortcutReducer = (state: RootState, action: Action) => {
           toolType: null
         }, state);
       } else {
-        return setSelection(state);
+        return setSelectedSyntheticNodeIds(state);
       }
     }
     case SHORTCUT_DELETE_KEY_DOWN: {
@@ -426,7 +421,7 @@ const shortcutReducer = (state: RootState, action: Action) => {
         return state;
       }
       const selection = state.selectedNodeIds;
-      return setSelection(persistRootStateBrowser(browser => persistDeleteSyntheticItems(selection, state.browser), state));
+      return setSelectedSyntheticNodeIds(persistRootStateBrowser(browser => persistDeleteSyntheticItems(selection, state.browser), state));
     }
   }
 
@@ -450,7 +445,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
       const oldWindow = getActiveWindow(state);
 
       state = persistRootStateBrowser(browser => persistPasteSyntheticNodes(state.activeFilePath, targetSourceNode.id, syntheticNodes, browser), state);
-      state = setSelection(state, ...getInsertedWindowElementIds(oldWindow, state.browser));
+      state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, state.browser));
       return state;
     }
   }
@@ -460,8 +455,8 @@ const clipboardReducer = (state: RootState, action: Action) => {
 
 const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: RootState, nodeId: string, event: T) => {
   const { sourceEvent } = event;
-  state = setRootStateNodeExpanded(nodeId, true, state);
-  return setSelection(state, nodeId);
+  state = setRootStateSyntheticNodeExpanded(nodeId, true, state);
+  return setSelectedSyntheticNodeIds(state, nodeId);
 }
 
 // const resizeFullScreenArtboard = (state: RootState, width: number, height: number) => {
