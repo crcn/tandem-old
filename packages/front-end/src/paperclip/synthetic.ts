@@ -101,8 +101,8 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   type: SyntheticObjectType.WINDOW,
 });
 
-export const createSyntheticDocument = (root: SyntheticNode, graph: DependencyGraph): SyntheticDocument => {
-  const component = getSyntheticNodeSourceNode(root, graph);
+export const createSyntheticDocument = (root: SyntheticNode, browser: SyntheticBrowser): SyntheticDocument => {
+  const component = getTreeNodeFromPath(root.source.path, browser.graph[root.source.uri].content);
 
   const container = document.createElement("iframe");
   container.style.border = "none";
@@ -145,14 +145,15 @@ export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency):
   path: getTeeNodePath(source.id, getModuleInfo(dependency.content).source),
 });
 
-export const getSyntheticNodeSourceNode = (synthetic: SyntheticNode, graph: DependencyGraph) => {
-  return getTreeNodeFromPath(synthetic.source.path, graph[synthetic.source.uri].content);
-}
+export const getSyntheticSourceNode = (syntheticNodeId: string, browser: SyntheticBrowser) => {
+  const synthetic = getSyntheticNodeById(syntheticNodeId, browser);
+  return getTreeNodeFromPath(synthetic.source.path, browser.graph[synthetic.source.uri].content);
+};
 
 export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
 export const getSyntheticDocumentDependency = (documentId: string, browser: SyntheticBrowser) => getSyntheticWindowDependency(getSyntheticDocumentWindow(documentId, browser), browser.graph);
 
-export const getSyntheticDocumentComponent = (document: SyntheticDocument, graph: DependencyGraph) =>  getComponentInfo(getSyntheticNodeSourceNode(document.root, graph));
+export const getSyntheticDocumentComponent = (document: SyntheticDocument, browser: SyntheticBrowser) =>  getComponentInfo(getSyntheticSourceNode(document.root.id, browser));
 
 export const findSyntheticDocument = (state: SyntheticWindow|SyntheticBrowser, test: (document: SyntheticDocument) => Boolean) => {
   if (state.type === SyntheticObjectType.BROWSER) {
@@ -272,9 +273,24 @@ export const getSyntheticNodeById = (nodeId: string, browser: SyntheticBrowser) 
   return document && getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
 };
 
+export const getSourceNodeById = (nodeId: string, browser: SyntheticBrowser) => {
+  const dependency = getSourceNodeDependency(nodeId, browser);
+  return dependency && getNestedTreeNodeById(nodeId, dependency.content);
+};
+
+export const getSourceNodeDependency = memoize((nodeId: string, browser: SyntheticBrowser): Dependency => {
+  for (const uri in browser.graph) {
+    const dep = browser.graph[uri];
+    if (getNestedTreeNodeById(nodeId, dep.content)) {
+      return dep;
+    }
+  }
+  return null;
+});
+
 export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
   const document = getSyntheticNodeDocument(nodeId, browser);
-  const componentNode = getSyntheticNodeSourceNode(document.root, browser.graph);
+  const componentNode = getSyntheticSourceNode(document.root.id, browser);
   if (!componentNode) {
     return null;
   }
@@ -342,7 +358,7 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
 
   const newContent = syntheticNodes.reduce((content, syntheticNode) => {
     const sourceDep = browser.graph[syntheticNode.source.uri];
-    const sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
+    const sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
 
     // If there is NO source node, then possibly create a detached node and add to target component
     if (!sourceNode) {
@@ -403,7 +419,7 @@ const persistSyntheticNodeChanges = (nodeId: string, browser: SyntheticBrowser, 
   const syntheticDocument = getSyntheticNodeDocument(nodeId, browser);
   const syntheticNode = getSyntheticNodeById(nodeId, browser);
 
-  const sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
+  const sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
   const sourceDependency = browser.graph[syntheticNode.source.uri];
   const sourceComponent = getSyntheticNodeSourceComponent(nodeId, browser);
 
@@ -445,7 +461,6 @@ const persistSyntheticNodeChanges = (nodeId: string, browser: SyntheticBrowser, 
             if (name === "style" && namespace === DEFAULT_NAMESPACE) {
               overrides = addSetStyleOverride(value, targetName, overrides);
             }
-            console.log(overrides);
             break;
           }
           case OperationalTransformType.REMOVE_CHILD: {
@@ -505,7 +520,7 @@ const addSetStyleOverride = (style: any, targetName: string, overridesNode: Tree
 
 const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependencyUri: string, browser: SyntheticBrowser) => {
 
-  const oldGraph = browser.graph;
+  const oldBrowser = browser;
   const graph = updateGraphDependency(properties, dependencyUri, browser.graph);
 
   browser = updateSyntheticBrowser({
@@ -534,18 +549,18 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
 
     browser = updateSyntheticWindow(window.location, {
       documents: documentNodes.map(newDocumentNode => {
-        const sourceComponent = getComponentInfo(getSyntheticNodeSourceNode(newDocumentNode, graph));
+        const sourceComponent = getComponentInfo(getTreeNodeFromPath(newDocumentNode.source.path, browser.graph[newDocumentNode.source.uri].content));
         const document = window.documents.find(document => {
-          const documentComponent = getSyntheticDocumentComponent(document, oldGraph);
+          const documentComponent = getSyntheticDocumentComponent(document, oldBrowser);
           return getAttribute(documentComponent.source, "id") === getAttribute(sourceComponent.source, "id")
         });
         if (!document) {
-          const newDocument = createSyntheticDocument(newDocumentNode, graph);
+          const newDocument = createSyntheticDocument(newDocumentNode, browser);
           return newDocument;
         }
         const ots = filterEditorOts(diffNode(document.root, newDocumentNode));
         const newRoot = copyTreeSources(patchNode(ots, document.root), newDocumentNode);
-        const nativeNodeMap = patchDOM(ots, document.root, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap);
+        const nativeNodeMap = document.container.contentDocument ? patchDOM(ots, document.root, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap) : document.nativeNodeMap;
         return {
           ...document,
           nativeNodeMap,
@@ -666,7 +681,7 @@ export const persistInsertRectangle = (style: any, parentId: string, browser: Sy
       }
     },
     children: []
-  }, parentId, browser);
+  }, getSyntheticSourceNode(parentId, browser).id, 0, browser);
 };
 
 export const persistInsertText = (style: any, nodeValue: string, parentId: string, browser: SyntheticBrowser) => {
@@ -679,45 +694,37 @@ export const persistInsertText = (style: any, nodeValue: string, parentId: strin
       }
     },
     children: []
-  }, parentId, browser);
+  }, getSyntheticSourceNode(parentId, browser).id, 0, browser);
 };
 
 
 // TODO - documentId needs to be nodeId
-export const persistInsertNode = (child: TreeNode, parentId: string, browser: SyntheticBrowser) => {
-  const document = getSyntheticNodeDocument(parentId, browser);
-  const parentNode = getSyntheticNodeById(parentId, browser);
-  const sourceParentNode = getSyntheticNodeSourceNode(parentNode, browser.graph)
-  const dep = getSyntheticDocumentDependency(document.id, browser);
-  const componentNode = getSyntheticDocumentComponent(getSyntheticDocumentById(document.id, browser), browser.graph).source;
-  const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
+export const persistInsertNode = (child: TreeNode, refSourceNodeId: string, offset: 0 | -1 | 1, browser: SyntheticBrowser) => {
+  const sourceRefNode = getSourceNodeById(refSourceNodeId, browser);
+  const dep = getSourceNodeDependency(refSourceNodeId, browser);
+  const sourceParentNode = offset === 0 ? sourceRefNode : getParentTreeNode(sourceRefNode, dep.content);
+  const index = offset === 0 ? sourceParentNode.children.length : sourceParentNode.children.indexOf(sourceRefNode) + (offset === -1 ? 0 : 1);
   return updateDependencyAndRevaluate({
-    content: insertComponentChildNode(componentNode.id, addTreeNodeIds(child, dep.content.id), sourceParentNode.id, dep.content)
+    content: insertComponentChildNode(addTreeNodeIds(child, dep.content.id), index, sourceParentNode.id, dep.content)
   }, dep.uri, browser);
 };
 
-const insertComponentChildNode = (componentId: string, child: TreeNode, parentId: string, content: TreeNode) => {
-  const componentNode = getNestedTreeNodeById(componentId, content);
-  const parentNode = getNestedTreeNodeById(parentId, componentNode);
+const insertComponentChildNode = (child: TreeNode, index: number, parentId: string, content: TreeNode) => {
+  const parentNode = getNestedTreeNodeById(parentId, content);
 
-  // deprecated
-  const isChildComponent = Boolean(getAttribute(componentNode, "extends"));
-
-
+  const isComponent = parentNode.name === "component";
+  const isChildComponent = Boolean(getAttribute(parentNode, "extends"));
   // don't allow for this kind of thing
   if (isChildComponent) {
     throw new Error(`Cannot insert node into child component`);
   }
-  const parent = parentNode === componentNode ? componentNode.children.find(child => child.name === "template") : parentNode;
+  const parent = isComponent ? parentNode.children.find(child => child.name === "template") : parentNode;
 
   let newContent: TreeNode = content;
-  newContent = updateNestedNode(parent, newContent, (template) => {
+  newContent = updateNestedNode(parent, newContent, (parent) => {
     return {
-      ...template,
-      children: [
-        ...template.children,
-        child
-      ]
+      ...parent,
+      children: arraySplice(parent.children, index, 0, child)
     };
   });
   return newContent;
@@ -731,13 +738,13 @@ export const persistDeleteSyntheticItems = (nodeIds: string[], browser: Syntheti
     if (isSyntheticDocumentRoot(nodeId, state)) {
       document = getSyntheticNodeDocument(nodeId, browser);
       dep = getSyntheticDocumentDependency(document.id, browser);
-      const component = getSyntheticDocumentComponent(document, browser.graph);
+      const component = getSyntheticDocumentComponent(document, browser);
       sourceNode = component.source;
     } else {
       const syntheticNode = getSyntheticNodeById(nodeId, browser);
       document= getSyntheticNodeDocument(nodeId, browser);
       dep = browser.graph[syntheticNode.source.uri];
-      sourceNode = getSyntheticNodeSourceNode(syntheticNode, browser.graph);
+      sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
     }
     return updateDependencyAndRevaluate({
       content: removeNestedTreeNode(sourceNode, dep.content)
@@ -745,16 +752,17 @@ export const persistDeleteSyntheticItems = (nodeIds: string[], browser: Syntheti
   }, browser);
 };
 
-export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: string, browser: SyntheticBrowser) => {
+export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: string, offset: 0 | -1 |  1, browser: SyntheticBrowser) => {
   const document = getSyntheticNodeDocument(node.id, browser);
   const parent = getParentTreeNode(node, document.root);
-  const sourceNode = getSyntheticNodeSourceNode(node, browser.graph);
+  const sourceNode = getSyntheticSourceNode(node.id, browser);
+  const targetSourceNode = getSyntheticSourceNode(targetNodeId, browser);
   browser = persistSyntheticNodeChanges(parent.id, browser, parent => {
     return removeNestedTreeNode(sourceNode, parent);
   });
 
   // TODO - point to target node id
-  browser = persistInsertNode(sourceNode, targetNodeId, browser);
+  browser = persistInsertNode(sourceNode, targetSourceNode.id, offset, browser);
   return browser;
 };
 

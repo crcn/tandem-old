@@ -6,7 +6,14 @@ TOMORROW (FRI):
 - creating folders
 - creating new files
 - start on quick search component (get HiFi done)
--
+- DND in nested elements
+
+- history
+-resizer
+  - respect units
+  - works in nested
+  - multi-select
+  - only mutate necessary props
 - re-ordering
 
 SATURDAY (or mon):

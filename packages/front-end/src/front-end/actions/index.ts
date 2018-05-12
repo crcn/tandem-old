@@ -133,6 +133,7 @@ export type PCLayerMouseOver = {
 export type PCLayerDroppedNode = {
   node: SyntheticNode;
   targetNodeId: string;
+  offset?: 0|-1|1;
 } & Action;
 
 export type PCLayerClick = PCLayerMouseOver;
@@ -239,9 +240,10 @@ export const pcLayerExpandToggleClick = (nodeId: string): PCLayerExpandToggleCli
   type: PC_LAYER_EXPAND_TOGGLE_CLICK,
 });
 
-export const pcLayerDroppedNode = (node: SyntheticNode, targetNodeId: string): PCLayerDroppedNode => ({
+export const pcLayerDroppedNode = (node: SyntheticNode, targetNodeId: string, offset?: 0|-1|1): PCLayerDroppedNode => ({
   node,
   targetNodeId,
+  offset,
   type: PC_LAYER_DROPPED_NODE
 })
 

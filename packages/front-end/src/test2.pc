@@ -1,8 +1,8 @@
 <module>
-  <component id="component3" preview:bounds="left:40;right:225;top:122;bottom:317;">
+  <component id="component3" preview:bounds="left:59;top:25;right:429;bottom:311;">
     <template>
-      <div style="left:13;right:182;top:19;bottom:44;width:118;height:122;background:blue;position:absolute;border:4px solid red;"></div>
-      <div style="left:36;right:153;top:37;bottom:133;width:117;height:96;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
+      <div style="left:42;right:153;top:22;bottom:133;width:117;height:96;background:#ECECEC;position:absolute;" editor:label="Rectangle"></div>
+      <div style="left:189;right:300;top:39;bottom:125;width:111;height:86;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
     </template>
   </component>
 </module>

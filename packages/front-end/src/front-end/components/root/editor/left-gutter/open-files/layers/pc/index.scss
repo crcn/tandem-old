@@ -28,6 +28,20 @@
 }
 
 .m-synthetic-node-layer {
-  > .label {
+  position: relative;
+  > .insert-line {
+    background: $color-sky-blue-3;
+    border: 1px solid white;
+    box-sizing: content-box;
+    height: 2px;
+    width: 100%;
+    right: 0;
+    position: absolute;
+    transform: translateY(-50%);
+    opacity: 0;
+    z-index: 5;
+    &.hovering {
+      opacity: 1;
+    }
   }
 }

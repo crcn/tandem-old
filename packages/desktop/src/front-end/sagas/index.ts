@@ -12,18 +12,20 @@ export function* rootSaga() {
 function* handleActivePaperclipFile() {
   while(1) {
     yield take([FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED]);
-    const { activeFilePath = "", browser }: RootState = yield select();
+    const { activeFilePath, browser }: RootState = yield select();
 
     if (activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) === -1) {
       continue;
     }
 
-    const { entry, graph } = yield call(loadEntry, activeFilePath, {
-      graph: browser.graph,
-      openFile: uri => fs.readFileSync(uri.substr("file:/".length), "utf8")
-    });
+    if (!browser.graph || !browser.graph[activeFilePath]) {
+      const { entry, graph } = yield call(loadEntry, activeFilePath, {
+        graph: browser.graph,
+        openFile: uri => fs.readFileSync(uri.substr("file:/".length), "utf8")
+      });
 
-    yield put(dependencyEntryLoaded(entry, graph));
+      yield put(dependencyEntryLoaded(entry, graph));
+    }
   }
 }
 

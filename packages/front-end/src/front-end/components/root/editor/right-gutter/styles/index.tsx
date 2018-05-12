@@ -2,7 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { RootState } from "../../../../../state";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure, withHandlers, lifecycle, withState } from "recompose";
 import { PaneComponent } from "../../../../pane";
 import { PrettyStylesComponent } from "./pretty";
 import { getSyntheticNodeById } from "../../../../../../paperclip";
@@ -19,34 +19,49 @@ type StylePaneOuterProps = {
 };
 
 type StylePaneInnerProps = {
+  focused?: boolean;
+  rawValue: any;
+  setValue?: (value: string) => any;
   onCssChange: () => any;
+  onFocus: () => any;
+  onBlur: () => any;
+  value: any;
 } & StylePaneOuterProps;
 
-const BaseStylesPaneComponent = ({ root, onCssChange }: StylePaneInnerProps) => {
-
-  if (!root.selectedNodeIds.length) {
-    return null;
-  }
-
-  const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
-
-  if (!node) {
-    return null;
-  }
-
+const BaseStylesPaneComponent = ({ root, onCssChange, onFocus, onBlur, value, focused }: StylePaneInnerProps) => {
   return <PaneComponent header="Styles" className="m-styles-pane">
-    {/* <PrettyStylesComponent /> */}
     <div>CSS (temporary)</div>
-    <textarea defaultValue={stringifyStyle(getAttribute(node, "style") || EMPTY_OBJECT).split(";").join(";\n")} style={{height: 400}} onChange={onCssChange}></textarea>
+    <textarea onFocus={onFocus} onBlur={onBlur} defaultValue={value} {...(focused ? EMPTY_OBJECT : { value: value } )} style={{height: 400}} onChange={onCssChange}></textarea>
   </PaneComponent>;
+};
+
+const getSelectedNodeStyle = (root: RootState) => {
+  const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
+  return stringifyStyle(getAttribute(node, "style") || EMPTY_OBJECT).split(";").join(";\n");
 }
 
 export const StylesPaneComponent = compose<StylePaneInnerProps, StylePaneOuterProps>(
   pure,
+  withState("focus", "setFocus", false),
+  withState("value", "setValue", ({ root }) => getSelectedNodeStyle(root)),
   withHandlers({
-    onCssChange: ({ dispatch }) => (event: React.ChangeEvent<any>) => {
+    onCssChange: ({ dispatch, setValue }) => (event: React.ChangeEvent<any>) => {
+      setValue(event.target.value);
       dispatch(rawCssTextChanged(event.target.value));
       event.stopPropagation();
+    },
+    onFocus: ({ setFocus }) => () => setFocus(true),
+    onBlur: ({ setFocus }) => () => setFocus(false)
+  }),
+  lifecycle({
+    componentDidUpdate({ focused, root, setValue }: StylePaneInnerProps) {
+      if (this.props.root) {
+        const oldValue = getSelectedNodeStyle(root);
+        const newValue = getSelectedNodeStyle(this.props.root);
+        if (!this.props.focused && oldValue !== newValue) {
+          setValue(newValue);
+        }
+      }
     }
   })
 )(BaseStylesPaneComponent);

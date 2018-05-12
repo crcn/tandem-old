@@ -211,6 +211,9 @@ export const setRootStateNodeExpanded = (nodeId: string, value: boolean, state: 
 };
 
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
+  if (root.activeFilePath === newActiveFilePath) {
+    return root;
+  }
   if (!root.browser.windows.some(({location}) => location === newActiveFilePath)) {
     throw new Error(`Active file path is not currently open`);
   }

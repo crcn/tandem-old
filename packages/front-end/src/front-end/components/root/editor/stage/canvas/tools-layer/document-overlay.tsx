@@ -8,7 +8,7 @@ import { wrapEventToDispatch } from "../../../../../../utils";
 import { RootState, getActiveWindow } from "../../../../../../state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
-import { SyntheticNode, SyntheticDocument, SyntheticWindow, getSyntheticNodeSourceNode, getSyntheticWindowDependency, getComponentInfo, Component } from "../../../../../../../paperclip";
+import { SyntheticNode, SyntheticDocument, SyntheticWindow, getSyntheticWindowDependency, getComponentInfo, Component } from "../../../../../../../paperclip";
 import { Bounds, memoize, getTreeNodeIdMap, TreeNodeIdMap, StructReference, EMPTY_OBJECT, Bounded } from "../../../../../../../common";
 import { compose, pure, withHandlers } from "recompose";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
