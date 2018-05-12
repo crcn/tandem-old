@@ -2,12 +2,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
-- creating folders
-- ability to delete files
-- sort dir files
-- creating new files
 - start on quick search component (get HiFi done)
-- DND in nested elements
+- copy & paste elements
 
 - history
 -resizer

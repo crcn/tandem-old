@@ -93,7 +93,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case NEW_FILE_ADDED: {
       const { directoryId, basename, fileType } = action as NewFileAdded;
       const directory = getNestedTreeNodeById(directoryId, state.projectDirectory);
-      const uri = getAttribute(directory, FileAttributeNames.URI) + basename;
+      let uri = getAttribute(directory, FileAttributeNames.URI) + basename;
+      if (fileType === "directory") {
+        uri += "/";
+      }
       state = updateRootState({
         insertFileInfo: null,
         projectDirectory: updateNestedNode(directory, state.projectDirectory, (dir) => {
@@ -115,7 +118,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             ]
           }
         })
-      }, state)
+      }, state);
       return state;
     }
     case OPEN_FILE_ITEM_CLICKED: {
