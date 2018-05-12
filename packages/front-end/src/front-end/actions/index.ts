@@ -21,6 +21,10 @@ export const CANVAS_TOOL_WINDOW_KEY_DOWN = "CANVAS_TOOL_WINDOW_KEY_DOWN";
 export const CANVAS_TOOL_ARTBOARD_TITLE_CLICKED = "CANVAS_TOOL_ARTBOARD_TITLE_CLICKED";
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
 export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED = "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
+export const FILE_NAVIGATOR_NEW_FILE_CLICKED = "FILE_NAVIGATOR_NEW_FILE_CLICKED";
+export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED = "FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED";
+export const FILE_NAVIGATOR_NEW_FILE_ENTERED = "FILE_NAVIGATOR_NEW_FILE_ENTERED";
+export const FILE_NAVIGATOR_DROPPED_ITEM = "FILE_NAVIGATOR_DROPPED_ITEM";
 export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
 export const OPEN_FILE_ITEM_CLOSE_CLICKED = "OPEN_FILE_ITEM_CLOSE_CLICKED";
 export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
@@ -53,7 +57,7 @@ export const PC_LAYER_MOUSE_OUT = "PC_LAYER_MOUSE_OUT";
 export const PC_LAYER_CLICK = "PC_LAYER_CLICK";
 export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
 export const PC_LAYER_DROPPED_NODE = "PC_LAYER_DROPPED_NODE";
-
+export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -103,6 +107,12 @@ export type CanvasToolOverlayMousePanning = {
   deltaY: number;
   velocityY: number;
   center: Point;
+} & Action;
+
+export type NewFileAdded = {
+  directoryId: string;
+  basename: string;
+  fileType: string;
 } & Action;
 
 export type CanvasToolOverlayMousePanEnd = {
@@ -201,9 +211,46 @@ export type FileNavigatorLabelClicked = {
   fileId: string;
 } & Action;
 
+export type FileNavigatorNewFileEntered = {
+  basename: string;
+} & Action;
+
+export type FileNavigatorDroppedItem = {
+  node: TreeNode;
+  targetNode: TreeNode;
+  offset: 0 | -1 | 1;
+} & Action;
+
+export const fileNavigatorDroppedItem = (node: TreeNode, targetNode: TreeNode, offset: 0 | -1 | 1): FileNavigatorDroppedItem => ({
+  node,
+  targetNode,
+  offset,
+  type: FILE_NAVIGATOR_DROPPED_ITEM
+});
+
 export const fileNavigatorItemClicked = (node: TreeNode): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_CLICKED,
+});
+
+export const newFileAdded = (directoryId: string, basename: string, fileType: "directory" | "file"): NewFileAdded => ({
+  directoryId,
+  basename,
+  fileType,
+  type: NEW_FILE_ADDED
+});
+
+export const fileNavigatorNewFileClicked = (): Action => ({
+  type: FILE_NAVIGATOR_NEW_FILE_CLICKED
+});
+
+export const fileNavigatorNewDirectoryClicked = (): Action => ({
+  type: FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED
+});
+
+export const fileNavigatorNewFileEntered = (basename: string): FileNavigatorNewFileEntered => ({
+  basename,
+  type: FILE_NAVIGATOR_NEW_FILE_ENTERED
 });
 
 export const openFilesItemClick = (uri: string): OpenFilesItemClick => ({

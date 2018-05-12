@@ -9,6 +9,8 @@ import { DesktopState } from "../state";
 import * as globby from "globby";
 import { isPublicAction } from "tandem-common";
 import { shortcutsSaga } from "./menu";
+import * as fs from "fs";
+import * as path from "path";
 
 export function* rootSaga() {
   yield fork(openMainWindow);
@@ -44,11 +46,22 @@ function* handleLoadProject() {
   while(1) {
     yield take(APP_LOADED);
     const state: DesktopState = yield select();
-    const files = globby.sync(state.projectDirectory, {
-      gitignore: true
-    } as any);
+    const files = scanDirectory(state.projectDirectory);
 
     const root = convertFlatFilesToNested(state.projectDirectory, files);
+
     yield put(projectDirectoryLoaded(root));
   }
 }
+
+const scanDirectory = (filePath: string) => {
+  if (fs.lstatSync(filePath).isDirectory()) {
+    return fs.readdirSync(filePath).reduce((dirs, basename) => {
+      if (basename.charAt(0) === ".") {
+        return dirs;
+      }
+      return [...dirs, ...scanDirectory(path.join(filePath, basename))];
+    }, [filePath]);
+  }
+  return [filePath];
+};

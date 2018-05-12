@@ -1,4 +1,4 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames } from "../../common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode } from "../../common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
 import { uniq, pull } from "lodash";
@@ -21,6 +21,17 @@ export type Canvas = {
   smooth?: boolean;
 };
 
+export enum InsertFileType {
+  FILE,
+  DIRECTORY
+};
+
+export type InsertFileInfo = {
+  type: InsertFileType;
+  directoryId: string;
+}
+
+
 export type RootState = {
   activeFilePath?: string;
   canvas: Canvas;
@@ -31,6 +42,7 @@ export type RootState = {
   selectedFileNodeIds: string[];
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
+  insertFileInfo?: InsertFileInfo;
 };
 
 export type OpenFile = {
@@ -238,6 +250,16 @@ export const updateCanvas = (properties: Partial<Canvas>, root: RootState) => {
     }
   }, root);
 }
+
+export const setInsertFile = (type: InsertFileType, state: RootState) => {
+  const file = getNestedTreeNodeById(state.selectedFileNodeIds[0] || state.projectDirectory.id, state.projectDirectory);
+  return updateRootState({
+    insertFileInfo: {
+      type,
+      directoryId: isDirectory(file) ? file.id : getParentTreeNode(file.id, state.projectDirectory).id
+    }
+  }, state);
+};
 
 export const setCanvasTool = (toolType: CanvasToolType, root: RootState) => {
   if (!root.activeFilePath) {

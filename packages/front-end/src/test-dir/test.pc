@@ -1,0 +1,12 @@
+<module>
+  <component id="component1" preview:bounds="left:107;right:336;top:86;bottom:186;">
+    <template>
+      <div style="left:43;right:132;top:22;bottom:57;width:89;height:35;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
+    </template>
+  </component>
+  <component id="component2" preview:bounds="left:71;right:259;top:258;bottom:332;">
+    <template>
+      <div style="left:53;right:129;top:33;bottom:54;width:76;height:21;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
+    </template>
+  </component>
+</module>

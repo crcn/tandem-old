@@ -71,17 +71,18 @@ export const getFilesWithExtension = memoize((extension: string, directory: Dire
   return filterNestedNodes(directory, file => isFile(file) && tester.test(getFileName(file)));
 });
 
-export const convertFlatFilesToNested = (uri: string, files: string[]): Directory => {
+export const convertFlatFilesToNested = (rootDir: string, files: string[]): Directory => {
   const partedFiles = files.map(file => {
-    return file.substr(uri.length).split("/")
+    return file.substr(rootDir.length).split("/");
   });
+
 
   let root: Directory = {
     name: "directory",
     attributes: {
       [DEFAULT_NAMESPACE]: {
-        [FileAttributeNames.URI]: uri,
-        [FileAttributeNames.BASENAME]: path.basename(uri)
+        [FileAttributeNames.URI]: "file://" + rootDir,
+        [FileAttributeNames.BASENAME]: path.basename(rootDir)
       }
     },
     children: []
@@ -100,7 +101,7 @@ export const convertFlatFilesToNested = (uri: string, files: string[]): Director
           name: "directory",
           attributes: {
             [DEFAULT_NAMESPACE]: {
-              [FileAttributeNames.URI]: "file://" + path.join(uri, pf.slice(0, i + 1).join("/")),
+              [FileAttributeNames.URI]: "file://" + path.join(rootDir, pf.slice(0, i + 1).join("/")) + "/",
               [FileAttributeNames.BASENAME]: part
             }
           },
@@ -111,11 +112,13 @@ export const convertFlatFilesToNested = (uri: string, files: string[]): Director
       }
     }
 
+    const isFile = /\./.test(pf[i]);
+
     current.children.unshift({
-      name: "file",
+      name: isFile ? "file" : "directory",
       attributes: {
         [DEFAULT_NAMESPACE]: {
-          [FileAttributeNames.URI]: "file://" + path.join(uri, pf.join("/")),
+          [FileAttributeNames.URI]: "file://" + path.join(rootDir, pf.join("/")) + (isFile ? "" : "/"),
           [FileAttributeNames.BASENAME]: pf[i],
         }
       },

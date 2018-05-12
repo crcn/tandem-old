@@ -7,22 +7,50 @@ import { PaneComponent } from "../../../../pane";
 import * as cx from "classnames";
 import { Dispatch } from "redux";
 import { Directory, File, getAttribute, FileAttributeNames, EMPTY_ARRAY, TreeNode, filterNestedNodes, memoize } from "../../../../../../common";
-import { fileNavigatorItemClicked, fileNavigatorItemDoubleClicked, newFileEntered, newDirectoryEntered } from "../../../../../actions";
-import { createTreeLayerComponents } from "../../../../layers";
-
-/*
-
-TODO:
-
-- [ ] create new file
-- [ ] add new folder
-*/
+import { fileNavigatorItemClicked, fileNavigatorItemDoubleClicked, fileNavigatorDroppedItem, newFileEntered, newDirectoryEntered, fileNavigatorNewFileClicked, fileNavigatorNewDirectoryClicked, fileNavigatorNewFileEntered } from "../../../../../actions";
+import { createTreeLayerComponents, TreeNodeLayerOuterProps } from "../../../../layers";
+import { InsertFileInfo } from "../../../../../state";
+import { FocusComponent } from "../../../../focus";
 
 
-const { TreeNodeLayerComponent } = createTreeLayerComponents({
+type NewFileInputOuterProps = {
+  dispatch: Dispatch<any>;
+  depth: number;
+};
+
+type NewFileInputInnerProps = {
+  onKeyDown: any;
+} & NewFileInputOuterProps;
+
+const BaseFileInputComponent = ({ depth, onKeyDown }: NewFileInputInnerProps) => {
+  const style = {
+    marginLeft: depth * 8
+  };
+  return <div style={style} className="new-file-input">
+    <FocusComponent><input type="text" onKeyDown={onKeyDown} /></FocusComponent>
+  </div>;
+};
+
+const FileInputComponent = compose<NewFileInputInnerProps, NewFileInputOuterProps>(
+  pure,
+  withHandlers({
+    onKeyDown: ({ dispatch }) => (event: React.KeyboardEvent<any>) => {
+      if (event.key === "Enter") {
+        dispatch(fileNavigatorNewFileEntered((event.target as any).value));
+      }
+    }
+  })
+)(BaseFileInputComponent);
+
+type FileNodeLayerOuterProps = {
+  insertFileInfo: InsertFileInfo;
+} & TreeNodeLayerOuterProps;
+
+const { TreeNodeLayerComponent } = createTreeLayerComponents<FileNodeLayerOuterProps>({
   actionCreators: {
     treeLayerClick: fileNavigatorItemClicked,
     treeLayerDoubleClick: fileNavigatorItemDoubleClicked,
+    treeLayerDroppedNode: fileNavigatorDroppedItem
   },
   dragType: "FILE",
   reorganizable: false,
@@ -34,6 +62,17 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents({
     expandAttr: {
       name: "expanded"
     }
+  },
+  hasChildren: (node: TreeNode) => {
+    return node.name === "directory";
+  },
+  childRenderer: (Base) => ({node, hoveringNodeIds, selectedNodeIds, depth, dispatch, insertFileInfo }: FileNodeLayerOuterProps) => {
+    return [
+      insertFileInfo != null && node.id === insertFileInfo.directoryId ? <FileInputComponent dispatch={dispatch} depth={depth} /> : null,
+      ...node.children.map(child => {
+        return <Base hoveringNodeIds={hoveringNodeIds} selectedNodeIds={selectedNodeIds} key={child.id} node={child as TreeNode} depth={depth + 1} dispatch={dispatch} insertFileInfo={insertFileInfo} />
+      })
+    ];
   }
 });
 
@@ -45,13 +84,14 @@ type FileNavigatorHeaderComponentOuterProps = {
 
 const BaseFileNavigatorHeaderComponent = ({onAddFileButtonClick, onAddDirectoryButtonClick}: FileNavigatorHeaderComponentOuterProps) => <div className="header">
   Files <span className="controls">
-    {/* <span onClick={onAddFileButtonClick}>nf</span>
-    <span onClick={onAddDirectoryButtonClick}>nd</span> */}
+    <i className="ion-document" onClick={onAddFileButtonClick}></i>
+    <i className="ion-folder" onClick={onAddDirectoryButtonClick}></i>
   </span>
 </div>;
 
 
 type FileNavigatorPaneOuterProps = {
+  insertFileInfo: InsertFileInfo;
   selectedFileNodeIds: string[];
   dispatch: Dispatch<any>;
   rootDirectory: Directory;
@@ -65,15 +105,16 @@ type FileNavigatorPaneInnerProps = {
 const FileNavigatorHeaderComponent = BaseFileNavigatorHeaderComponent;
 
 
-const BaseFileNavigatorPaneComponent = ({selectedFileNodeIds, rootDirectory, dispatch, onAddDirectoryButtonClick, onAddFileButtonClick}: FileNavigatorPaneInnerProps) => {
+const BaseFileNavigatorPaneComponent = ({ insertFileInfo, selectedFileNodeIds, rootDirectory, dispatch, onAddDirectoryButtonClick, onAddFileButtonClick}: FileNavigatorPaneInnerProps) => {
   if (!rootDirectory) {
     return null;
   }
 
   return <PaneComponent header={<FileNavigatorHeaderComponent onAddDirectoryButtonClick={onAddDirectoryButtonClick} onAddFileButtonClick={onAddFileButtonClick} />} className="m-file-navigator-pane">
-      {rootDirectory.children.map(file => {
-        return <TreeNodeLayerComponent key={file.id} hoveringNodeIds={EMPTY_ARRAY} selectedNodeIds={selectedFileNodeIds}  node={file as File} depth={1} dispatch={dispatch} />
-      })}
+    {insertFileInfo != null && rootDirectory.id === insertFileInfo.directoryId ? <FileInputComponent dispatch={dispatch} depth={1} /> : null}
+    {rootDirectory.children.map(file => {
+      return <TreeNodeLayerComponent key={file.id} insertFileInfo={insertFileInfo} hoveringNodeIds={EMPTY_ARRAY} selectedNodeIds={selectedFileNodeIds}  node={file as File} depth={1} dispatch={dispatch} />
+    })}
   </PaneComponent>;
 }
 
@@ -81,10 +122,10 @@ export const FileNavigatorPaneComponent = compose<FileNavigatorPaneInnerProps, F
   pure,
   withHandlers({
     onAddDirectoryButtonClick: ({ dispatch }) => () => {
-      dispatch(newDirectoryEntered(prompt("New folder name")));
+      dispatch(fileNavigatorNewDirectoryClicked());
     },
     onAddFileButtonClick: ({ dispatch }) => () => {
-      dispatch(newFileEntered(prompt("New file name")));
+      dispatch(fileNavigatorNewFileClicked());
     }
   })
 )(BaseFileNavigatorPaneComponent);

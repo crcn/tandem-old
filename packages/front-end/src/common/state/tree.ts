@@ -177,7 +177,7 @@ export const appendChildNode = <TTree extends TreeNode>(child: TTree, parent: TT
   ]
 });
 
-export const getParentTreeNode = memoize((node: TreeNode, root: TreeNode) => getChildParentMap(root)[node.id]);
+export const getParentTreeNode = memoize((nodeId: string, root: TreeNode) => getChildParentMap(root)[nodeId]);
 
 export const addTreeNodeIds = <TTree extends TreeNode>(node: TTree, seed: string = ""): TTree => {
   let i = 0;

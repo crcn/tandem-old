@@ -702,7 +702,7 @@ export const persistInsertText = (style: any, nodeValue: string, parentId: strin
 export const persistInsertNode = (child: TreeNode, refSourceNodeId: string, offset: 0 | -1 | 1, browser: SyntheticBrowser) => {
   const sourceRefNode = getSourceNodeById(refSourceNodeId, browser);
   const dep = getSourceNodeDependency(refSourceNodeId, browser);
-  const sourceParentNode = offset === 0 ? sourceRefNode : getParentTreeNode(sourceRefNode, dep.content);
+  const sourceParentNode = offset === 0 ? sourceRefNode : getParentTreeNode(sourceRefNode.id, dep.content);
   const index = offset === 0 ? sourceParentNode.children.length : sourceParentNode.children.indexOf(sourceRefNode) + (offset === -1 ? 0 : 1);
   return updateDependencyAndRevaluate({
     content: insertComponentChildNode(addTreeNodeIds(child, dep.content.id), index, sourceParentNode.id, dep.content)
@@ -754,7 +754,7 @@ export const persistDeleteSyntheticItems = (nodeIds: string[], browser: Syntheti
 
 export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: string, offset: 0 | -1 |  1, browser: SyntheticBrowser) => {
   const document = getSyntheticNodeDocument(node.id, browser);
-  const parent = getParentTreeNode(node, document.root);
+  const parent = getParentTreeNode(node.id, document.root);
   const sourceNode = getSyntheticSourceNode(node.id, browser);
   const targetSourceNode = getSyntheticSourceNode(targetNodeId, browser);
   browser = persistSyntheticNodeChanges(parent.id, browser, parent => {

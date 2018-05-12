@@ -5,6 +5,16 @@
     padding: 4px;
   }
 
+  input {
+    outline: none;
+    border-radius: 2px;
+    width: 100%;
+    border: 1px solid #EEE;
+    &:focus {
+      border: 1px solid $color-aqua-1;
+    }
+  }
+
   .controls {
     float: right;
     * {

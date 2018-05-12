@@ -106,7 +106,7 @@ const overrideComponentTemplate = (template: TreeNode, overrides: ComponentOverr
     } else if (override.type === ComponentOverrideType.INSERT_NODE) {
       const insertNodeOverride = override as InsertChildOverride;
       const beforeRef = insertNodeOverride.beforeChild ? getNodeReference(insertNodeOverride.beforeChild, template) : template.children.length ? template.children[template.children.length - 1] : null;
-      const parent = beforeRef ? getParentTreeNode(beforeRef, template) : template;
+      const parent = beforeRef ? getParentTreeNode(beforeRef.id, template) : template;
       const index = beforeRef ? parent.children.indexOf(beforeRef) : parent.children.length;
       template = updateNestedNode(parent, template, (parent) => ({
         ...parent,

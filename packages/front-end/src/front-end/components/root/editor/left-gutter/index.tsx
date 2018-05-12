@@ -15,7 +15,7 @@ type LeftGutterProps = {
 
 const BaseLeftGutterComponent = ({ activeFileUri, dispatch, rootDirectory, root }: LeftGutterProps) => <GutterComponent>
     <OpenFilesPaneComponent root={root} activeFileUri={activeFileUri} dispatch={dispatch} />
-    <FileNavigatorPaneComponent dispatch={dispatch} rootDirectory={rootDirectory} selectedFileNodeIds={root.selectedFileNodeIds} />
+    <FileNavigatorPaneComponent dispatch={dispatch} rootDirectory={rootDirectory} selectedFileNodeIds={root.selectedFileNodeIds} insertFileInfo={root.insertFileInfo} />
 </GutterComponent>;
 
 export const LeftGutterComponent = BaseLeftGutterComponent;

@@ -1,12 +1,16 @@
 import { fork, select, take, call, put } from "redux-saga/effects";
 import * as fs from "fs";
+import * as fsa from "fs-extra";
+import * as path from "path";
 import { ipcSaga } from "./ipc";
-import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile } from "tandem-front-end";
+import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, FILE_NAVIGATOR_NEW_FILE_ENTERED, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile, FileNavigatorNewFileEntered, getTreeNodeFromPath, getNestedTreeNodeById, getAttribute, FileAttributeNames, newFileAdded, InsertFileType, FILE_NAVIGATOR_DROPPED_ITEM } from "tandem-front-end";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
   yield fork(handleSaveShortcut);
   yield fork(handleActivePaperclipFile);
+  yield fork(handleNewFileEntered);
+  yield fork(handleDroppedFile);
 }
 
 function* handleActivePaperclipFile() {
@@ -26,6 +30,39 @@ function* handleActivePaperclipFile() {
 
       yield put(dependencyEntryLoaded(entry, graph));
     }
+  }
+}
+
+function* handleNewFileEntered() {
+  while(1) {
+    const { basename }: FileNavigatorNewFileEntered = yield take(FILE_NAVIGATOR_NEW_FILE_ENTERED);
+    const { insertFileInfo: { directoryId, type: insertType }, projectDirectory }: RootState = yield select();
+    const directory = getNestedTreeNodeById(directoryId, projectDirectory);
+    const uri = getAttribute(directory, FileAttributeNames.URI);
+    const filePath = uri.replace("file:/", "") + basename;
+
+    if (fs.existsSync(filePath)) {
+      continue;
+    }
+
+    if (insertType === InsertFileType.FILE) {
+      fs.writeFileSync(filePath, "");
+    } else {
+      fs.mkdirSync(filePath);
+    }
+
+    yield put(newFileAdded(directoryId, basename, insertType === InsertFileType.FILE ? "file" : "directory"));
+  }
+}
+
+function* handleDroppedFile() {
+  while(1) {
+    const { node, targetNode, offset } = yield take(FILE_NAVIGATOR_DROPPED_ITEM);
+    const root: RootState = yield select();
+    const newNode = getNestedTreeNodeById(node.id, root.projectDirectory);
+    const newUri = getAttribute(newNode, FileAttributeNames.URI);
+    const oldUri = getAttribute(node, FileAttributeNames.URI);
+    fsa.moveSync(oldUri.replace("file:/", ""), newUri.replace("file:/", ""));
   }
 }
 
