@@ -293,7 +293,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
       const { documentId, sourceEvent } = action as CanvasToolArtboardTitleClicked;
       state = updateCanvas({ smooth: false }, state);
-      return handleArtboardSelectionFromAction(state, getSyntheticDocumentById(documentId, state.browser), action as CanvasToolArtboardTitleClicked);
+      return handleArtboardSelectionFromAction(state, getSyntheticDocumentById(documentId, state.browser).root.id, action as CanvasToolArtboardTitleClicked);
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
       return setSelection(state);
@@ -382,18 +382,26 @@ const getResizeActionBounds = (action: ResizerPathMoved|ResizerMoved) => {
   return newBounds;
 }
 
+const isInputSelected = (state: RootState) => {
+  // ick -- this needs to be moved into a saga
+  return document.activeElement && /textarea|input|button/i.test(document.activeElement.tagName);
+}
+
 const shortcutReducer = (state: RootState, action: Action) => {
   switch(action.type) {
     case SHORTCUT_A_KEY_DOWN: {
-      return setCanvasTool(CanvasToolType.ARTBOARD, state);
+      return isInputSelected(state) ? state : setCanvasTool(CanvasToolType.ARTBOARD, state);
     }
     case SHORTCUT_R_KEY_DOWN: {
-      return setCanvasTool(CanvasToolType.RECTANGLE, state);
+      return isInputSelected(state) ? state :  setCanvasTool(CanvasToolType.RECTANGLE, state);
     }
     case SHORTCUT_T_KEY_DOWN: {
-      return setCanvasTool(CanvasToolType.TEXT, state);
+      return  isInputSelected(state) ? state : setCanvasTool(CanvasToolType.TEXT, state);
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
+      if (isInputSelected(state)) {
+        return state;
+      }
       if (state.canvas.toolType) {
         return updateCanvas({
           toolType: null
@@ -403,6 +411,9 @@ const shortcutReducer = (state: RootState, action: Action) => {
       }
     }
     case SHORTCUT_DELETE_KEY_DOWN: {
+      if (isInputSelected(state)) {
+        return state;
+      }
       const selection = state.selectedNodeIds;
       return setSelection(persistRootStateBrowser(browser => persistDeleteSyntheticItems(selection, state.browser), state));
     }
