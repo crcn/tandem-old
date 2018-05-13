@@ -1,14 +1,11 @@
 <module>
   <component id="component1" editor:bounds="left:27;top:68;right:626;bottom:393;">
     <template>
-      <div style="bottom:109;width:100%;height:100%;background:#CCC;padding:10px;boxSizing:border-box;fontFamily:Helvetica;display:flex;flexDirection:column;" editor:label="Rectangle">
+      <div style="bottom:109;width:100%;height:100%;background:#CCC;padding:10px;color:white;boxSizing:border-box;fontFamily:Helvetica;display:flex;flexDirection:column;" editor:label="Rectangle">
         <div style="width:100%;padding:10px;background:rgba(0,0,0,0.1);boxSizing:border-box;marginBottom:10px;" editor:label="Rectangle">
           <text style="display:inline-block;position:relative;" value="double click to edit"></text>
         </div>
-        <div style="width:100%;height:100%;background:rgba(0,0,0,0.1);boxSizing:border-box;overflow:scroll;position:relative;padding:10px;" editor:label="Rectangle">
-          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
-          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
-          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
+        <div style="width:100%;height:100%;background:rgba(0,0,0,0.1);boxSizing:border-box;overflow:scroll;position:relative;" editor:label="Rectangle">
           <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
           <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
           <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
@@ -19,7 +16,7 @@
   </component>
   <component id="component2" editor:bounds="left:51;right:592;top:434;bottom:529;">
     <template>
-      <div style="width:100%;background:#CCC;marginBottom:10px;position:relative;left:0;top:0;color:white;padding:10px;boxSizing:border-box;" editor:label="Rectangle">
+      <div style="width:100%;background:#CCC;position:relative;left:0;top:0;padding:10px;boxSizing:border-box;" editor:label="Rectangle">
         <text style="display:inline-block;position:relative;height:18;" value="double click to edit"></text>
       </div>
     </template>

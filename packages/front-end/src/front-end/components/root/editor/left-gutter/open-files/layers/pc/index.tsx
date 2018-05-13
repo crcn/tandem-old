@@ -27,7 +27,11 @@ const {TreeNodeLayerComponent} = createTreeLayerComponents<PCLayerOuterProps>({
   dragType: DRAG_TYPE,
   getLabelProps: (attribs, props: any) => ({
     ...attribs,
-    className: cx(attribs.className, { "in-component-instance": props.inComponentInstance, "is-component-root": props.isComponentRoot })
+    className: cx(attribs.className, {
+      "in-component-instance": props.inComponentInstance,
+      "is-component-root": props.isComponentRoot,
+      "is-slot-container": Boolean(getAttribute(props.node, "container"))
+    })
   }),
   layerRenderer: (Base) => (props: PCLayerOuterProps) => {
     return <Base {...props} isComponentRoot={getAttribute(props.node, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE)} inComponentInstance={props.inComponentInstance || getAttribute(props.node, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE)} />;

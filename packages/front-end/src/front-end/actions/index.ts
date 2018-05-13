@@ -57,6 +57,7 @@ export const SAVED_ALL_FILES = "SAVED_ALL_FILES";
 export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
+export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
 export const PC_LAYER_MOUSE_OVER = "PC_LAYER_MOUSE_OVER";
 export const PC_LAYER_MOUSE_OUT = "PC_LAYER_MOUSE_OUT";
 export const PC_LAYER_CLICK = "PC_LAYER_CLICK";
@@ -171,6 +172,9 @@ export type CanvasToolWindowKeyDown = {
 export type CanvasToolArtboardTitleClicked = {
   documentId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type SlotToggleClick = {
+} & Action;
 
 export type ResizerPathMoved = {
   originalBounds: Bounds;
@@ -309,6 +313,10 @@ export const pcLayerDroppedNode = (node: SyntheticNode, targetNode: TreeNode, of
 export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({
   value,
   type: RAW_CSS_TEXT_CHANGED
+});
+
+export const slotToggleClick = (): SlotToggleClick => ({
+  type: SLOT_TOGGLE_CLICK
 });
 
 export const appLoaded = publicActionCreator(() => ({ type: APP_LOADED }));

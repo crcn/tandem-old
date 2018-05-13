@@ -9,6 +9,11 @@ export type DependencyGraph = {
   [identifier: string]: Dependency
 };
 
+export enum PCSourceAttributeNames {
+  CONTAINER = "container",
+  CONTAINER_STORAGE = "container-keep"
+};
+
 // TODO - generic style
 export type StyleDeclaration = {
   left: number;

@@ -3,9 +3,10 @@
     <template>
       <div style="width:100%;height:100%;color:blue;background:#CCC;position:absolute;padding:10px;boxSizing:border-box;display:flex;flexDirection:column;fontFamily:helvetica;" editor:label="Rectangle">
         <div style="left:0%;right:300;top:0;bottom:125;width:100%;height:20px;background:rgba(0,0,0,00.1);position:relative;flexShrink:0;marginBottom:10px;" editor:label="Rectangle"></div>
-        <div style="left:0;right:293;top:0;bottom:218;width:100%;height:100%;background:rgba(0,0,0,0.1);position:relative;padding:10px;boxSizing:border-box;" editor:label="Rectangle"></div>
+        <div style="left:0;right:293;top:0;bottom:218;width:100%;height:100%;background:rgba(0,0,0,0.1);position:relative;padding:10px;boxSizing:border-box;" container="containera939e865" prev-container="containera939e865" editor:label="Rectangle"></div>
       </div>
     </template>
   </component>
+  <component3 style="left:20;right:NaN;top:20;bottom:NaN;" editor:bounds="left:540;top:79;right:1047;bottom:476;"></component3>
   <import1:component1 style="left:117;top:144;right:406;bottom:314;" editor:bounds="left:69;right:358;top:378;bottom:548;"></import1:component1>
 </module>

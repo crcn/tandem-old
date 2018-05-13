@@ -10,7 +10,7 @@ TODO (in order of importance):
 */
 
 import { TreeNode, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updateNestedNode, setNodeAttribute } from "../common/state/tree";
-import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride, getComponentInfo } from "./dsl";
+import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride, getComponentInfo, PCSourceAttributeNames } from "./dsl";
 import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency, EDITOR_NAMESPACE, EditorAttributeNames } from "./synthetic";
 import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML, memoize } from "../common/utils";
 import { pick, merge } from "lodash";
@@ -165,7 +165,7 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
   const nodeComponent = getModuleComponent(node.name, nodeModule);
 
   if (nodeComponent) {
-    return _evaluateComponent(nodeComponent.source, node.attributes, node.children, getSytheticNodeSource(node, dependency), id, nodeModule, checksum, nodeDependency, graph)
+    return _evaluateComponent(nodeComponent.source, node.attributes, node.children.map((node, i) => evaluateNode(node, nodeModule, id + Math.random(), checksum, dependency, graph, slots)), getSytheticNodeSource(node, dependency), id, nodeModule, checksum, nodeDependency, graph)
   }
 
   let children = node.children;
@@ -173,13 +173,10 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
 
   let tagName = node.name;
   let hasSlottedChildren = false;
+  const containerName = getAttribute(node, PCSourceAttributeNames.CONTAINER);
 
-  if (tagName === "slot") {
-    attributes = {};
-    tagName = "slot";
-    const slotName = getAttribute(node, "name");
-
-    const slotChildren = slots[slotName] || EMPTY_ARRAY;
+  if (containerName) {
+    const slotChildren = slots[containerName] || EMPTY_ARRAY;
 
     if (slotChildren.length > 0) {
       children = slotChildren;

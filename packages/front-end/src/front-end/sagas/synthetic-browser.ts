@@ -15,6 +15,7 @@ function* handleNewWindowDocuments() {
   let currentWindows: SyntheticWindow[] = [];
   while(1) {
     const action = yield take();
+    console.log("REN");
     const state: RootState = yield select();
     if (state.browser.windows !== currentWindows) {
       const diffs = diffArray(currentWindows, state.browser.windows, (a, b) => a.location === b.location ? 0 : -1);
