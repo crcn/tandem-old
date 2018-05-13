@@ -3,7 +3,7 @@ import React =  require("react");
 import { debounce } from "lodash";
 import { pure, compose, withHandlers } from "recompose";
 import { RootState, getBoundedSelection, getSelectionBounds } from "../../../../../../../state";
-import { resizerMoved, resizerStoppedMoving, resizerMouseDown } from "../../../../../../../actions";
+import { resizerMoved, resizerStoppedMoving, resizerMouseDown, resizerStartDrag } from "../../../../../../../actions";
 import { startDOMDrag, mergeBounds, moveBounds, Point } from "../../../../../../../../common";
 import { Dispatch } from "redux";
 import { Path } from "./path";
@@ -72,12 +72,14 @@ const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   withHandlers({
     onMouseDown: ({ dispatch, root }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
 
+      dispatch(resizerMouseDown(event));
+
       const translate = root.canvas.translate;
       const bounds = getSelectionBounds(root);
       const translateLeft = translate.left;
       const translateTop  = translate.top;
       const onStartDrag = (event) => {
-        dispatch(resizerMouseDown(event));
+        dispatch(resizerStartDrag(event));
       };
 
       const calcMousePoint = (delta: any) => ({

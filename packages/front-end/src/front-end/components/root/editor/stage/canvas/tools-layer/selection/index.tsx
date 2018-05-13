@@ -8,7 +8,7 @@ import { Resizer } from "./resizer";
 // import { selectorDoubleClicked } from "front-end/actions";
 import { Dispatch } from "redux";
 import { mergeBounds } from "../../../../../../../../common";
-import { RootState, getBoundedSelection } from "../../../../../../../state";
+import { RootState, getBoundedSelection, getActiveWindow } from "../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../actions";
 import { getSyntheticNodeBounds } from "../../../../../../../../paperclip";
 
@@ -24,6 +24,7 @@ export type SelectionInnerProps = {
 } & SelectionOuterProps;
 
 const  SelectionBounds = ({ root, zoom }: { root: RootState, zoom: number }) => {
+  const activeWindow = getActiveWindow(root);
   const selection = getBoundedSelection(root);
   const entireBounds = mergeBounds(...selection.map(value => getSyntheticNodeBounds(value, root.browser)));
   const style = {};

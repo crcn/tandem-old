@@ -1,4 +1,4 @@
-import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode, cloneNode, getTreeNodeUidGenerator } from "../common/state/tree";
+import { TreeNodeAttributes, getTreeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode, cloneNode, getTreeNodeUidGenerator } from "../common/state/tree";
 import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML, ArrayOperationalTransform, castStyle, createUIDGenerator } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent, addModuleNodeImport, getModuleImportNamespace } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
@@ -13,7 +13,8 @@ import * as path from "path";
 export const EDITOR_NAMESPACE = "editor";
 
 export enum EditorAttributeNames {
-  IS_COMPONENT_INSTANCE = "isComponentInstance"
+  IS_COMPONENT_INSTANCE = "isComponentInstance",
+  IS_COMPONENT_ROOT = "isComponentRoot"
 };
 
 export type TreeNodeClip = {
@@ -171,9 +172,44 @@ export const createSyntheticElement = (name: string, attributes: TreeNodeAttribu
   source,
 });
 
+export const getSyntheticOriginSourceNodeUri = (node: SyntheticNode, browser: SyntheticBrowser) => {
+  const sourceNode = getSyntheticSourceNode(node.id, browser);
+  const dep = browser.graph[node.source.uri];
+  const module = getModuleInfo(dep.content);
+  return dep.importUris[module.imports[sourceNode.namespace]] || dep.uri;
+};
+
+export const getSyntheticOriginSourceNode = (node: SyntheticNode, browser: SyntheticBrowser) => {
+  const sourceNode = getSyntheticSourceNode(node.id, browser);
+  const originUri = getSyntheticOriginSourceNodeUri(node, browser);
+  const originDep = browser.graph[originUri];
+  const isComponentInstance = node.source.uri !== originUri;
+  return isComponentInstance ? originDep.content.children.find(child => getComponentInfo(child).id === sourceNode.name) : getSyntheticSourceNode(node.id, browser);
+};
+
+export const findSourceSyntheticNode = (node: TreeNode, targetUri: string, browser: SyntheticBrowser): SyntheticNode => {
+  const dep = getSourceNodeDependency(node.id, browser);
+  const nodePath = getTreeNodePath(node.id, dep.content).join("");
+
+  const targetDep = browser.graph[targetUri];
+  const window = browser.windows.find(window => window.location === targetUri);
+  if (!window.documents) {
+    return;
+  }
+
+  for (const document of window.documents) {
+    const synthetic = findNestedNode(document.root, (synthetic: SyntheticNode) => {
+      return synthetic.source.path.join("") === nodePath;
+    });
+    if (synthetic) {
+      return synthetic;
+    }
+  }
+};
+
 export const getSytheticNodeSource = (source: TreeNode, dependency: Dependency): SyntheticNodeSource => ({
   uri: dependency.uri,
-  path: getTeeNodePath(source.id, getModuleInfo(dependency.content).source),
+  path: getTreeNodePath(source.id, getModuleInfo(dependency.content).source),
 });
 
 export const getSyntheticSourceNode = (syntheticNodeId: string, browser: SyntheticBrowser) => {
@@ -209,7 +245,7 @@ export const findSyntheticDocument = (state: SyntheticWindow|SyntheticBrowser, t
 
 export const getComputedNodeBounds = memoize((nodeId: string, document: SyntheticDocument) => {
   const info = document.computed;
-  return info[nodeId] && info[nodeId].bounds;
+  return info && info[nodeId] && info[nodeId].bounds || { left: 0, top: 0, right: 0, bottom: 0 };
 });
 
 export const getSyntheticNodeBounds = memoize((nodeId: string, browser: SyntheticBrowser) => {
@@ -252,7 +288,7 @@ const updateSyntheticItem = <TItem>(properties: Partial<TItem>, nodeId: string, 
   }
   const document = getSyntheticNodeDocument(nodeId, browser);
   const item = getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
-  const itemPath = getTeeNodePath(item.id, document.root);
+  const itemPath = getTreeNodePath(item.id, document.root);
 
   const transforms: OperationalTransform[] = [];
 
@@ -310,7 +346,7 @@ export const getSourceNodeById = (nodeId: string, browser: SyntheticBrowser) => 
 
 export const getSourceNodeElementRoot = (nodeId: string, browser: SyntheticBrowser) => {
   const dependency = getSourceNodeDependency(nodeId, browser);
-  return getTreeNodeFromPath(getTeeNodePath(nodeId, dependency.content).slice(0, 1), dependency.content);
+  return getTreeNodeFromPath(getTreeNodePath(nodeId, dependency.content).slice(0, 1), dependency.content);
 };
 
 export const getSourceNodeDependency = memoize((nodeId: string, browser: SyntheticBrowser): Dependency => {
@@ -481,7 +517,7 @@ export const getSyntheticNodeDocument = memoize((nodeId: string, state: Syntheti
 }));
 
 export const setSyntheticNodeExpanded = (node: SyntheticNode, value: boolean, root: SyntheticNode): SyntheticNode => {
-  const path = getTeeNodePath(node.id, root);
+  const path = getTreeNodePath(node.id, root);
   const updater = (node) => {
     return setNodeAttribute(node, "expanded", value, EDITOR_NAMESPACE);
   };

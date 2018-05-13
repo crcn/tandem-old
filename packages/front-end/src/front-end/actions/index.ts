@@ -39,6 +39,7 @@ export const RESIZER_PATH_MOUSE_STOPPED_MOVING = "RESIZER_PATH_MOUSE_STOPPED_MOV
 export const RESIZER_MOVED               = "RESIZER_MOVED";
 export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
 export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
+export const RESIZER_START_DRGG          = "RESIZER_START_DRGG";
 export const SELECTOR_DOUBLE_CLICKED  = "SELECTOR_DOUBLE_CLICKED";
 export const SHORTCUT_A_KEY_DOWN = "SHORTCUT_A_KEY_DOWN";
 export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
@@ -151,7 +152,7 @@ export type TreeLayerDroppedNode = {
   offset?: 0|-1|1;
 } & Action;
 
-export type TreeLayerClick = TreeLayerMouseOver;
+export type TreeLayerClick = TreeLayerMouseOver & WrappedEvent<React.MouseEvent<any>>;
 export type TreeLayerExpandToggleClick = TreeLayerMouseOver;
 export type TreeLayerMouseOut = TreeLayerMouseOver;
 
@@ -287,8 +288,9 @@ export const pcLayerMouseOut = (node: TreeNode): TreeLayerMouseOut => ({
   type: PC_LAYER_MOUSE_OUT,
 });
 
-export const pcLayerClick = (node: TreeNode): TreeLayerClick => ({
+export const pcLayerClick = (node: TreeNode, sourceEvent: React.MouseEvent<any>): TreeLayerClick => ({
   node,
+  sourceEvent,
   type: PC_LAYER_CLICK,
 });
 
@@ -465,6 +467,11 @@ export const resizerStoppedMoving = (point: Point): ResizerMoved => ({
 export const resizerMouseDown = (sourceEvent: React.MouseEvent<any>): ResizerMouseDown => ({
   sourceEvent,
   type: RESIZER_MOUSE_DOWN,
+});
+
+export const resizerStartDrag = (sourceEvent: React.MouseEvent<any>): ResizerMouseDown => ({
+  sourceEvent,
+  type: RESIZER_START_DRGG,
 });
 
 export const selectorDoubleClicked = (nodeId: string, sourceEvent: React.MouseEvent<any>): SelectorDoubleClicked => ({

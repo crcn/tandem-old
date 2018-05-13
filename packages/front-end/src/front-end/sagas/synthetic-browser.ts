@@ -27,10 +27,7 @@ function* handleNewWindowDocuments() {
           case ArrayOperationalTransformType.UPDATE: {
             const { originalOldIndex, index } = diff as ArrayUpdateMutation<SyntheticWindow>;
             const newWindow = state.browser.windows[index];
-            const oldWindow = currentWindows.find(window => window.location === newWindow.location);
-            if (newWindow !== oldWindow) {
-              yield call(renderDocuments, newWindow);
-            }
+            yield call(renderDocuments, newWindow);
             break;
           }
         }

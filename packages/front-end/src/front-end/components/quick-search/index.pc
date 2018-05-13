@@ -17,7 +17,7 @@
       </div>
     </template>
   </component>
-  <component id="component2" editor:bounds="left:658;right:1199;top:71;bottom:166;">
+  <component id="component2" editor:bounds="left:51;right:592;top:434;bottom:529;">
     <template>
       <div style="width:100%;background:#CCC;marginBottom:10px;position:relative;left:0;top:0;color:white;padding:10px;boxSizing:border-box;" editor:label="Rectangle">
         <text style="display:inline-block;position:relative;height:18;" value="double click to edit"></text>

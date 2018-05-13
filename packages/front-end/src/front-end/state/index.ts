@@ -1,5 +1,5 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency } from "../../paperclip";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
 
@@ -198,6 +198,17 @@ export const removeTemporaryOpenFiles = (state: RootState) => {
   };
 };
 
+export const openSyntheticNodeOriginWindow = (nodeId: string, state: RootState) => {
+  const node = getSyntheticNodeById(nodeId, state.browser);
+  const sourceNode = getSyntheticOriginSourceNode(node as SyntheticNode, state.browser);
+  const uri = getSyntheticOriginSourceNodeUri(node as SyntheticNode, state.browser);
+  state = openSyntheticWindow(uri, state);
+  const instance = findSourceSyntheticNode(sourceNode, uri, state.browser);
+  state = setActiveFilePath(uri, state);
+  state = setSelectedSyntheticNodeIds(state, instance.id);
+  return state;
+};
+
 export const addOpenFile = (uri: string, temporary: boolean, state: RootState): RootState => {
   const file = getOpenFile(uri, state);
   if (file) {
@@ -289,18 +300,47 @@ export const setRootStateFileNodeExpanded = (nodeId: string, value: boolean, sta
   }, state);
 };
 
+export const openSyntheticWindow = (uri: string, state: RootState): RootState => {
+  const graph = state.browser.graph;
+  const entry = graph[uri];
+  if (!entry) {
+    throw new Error(`Cannot open window if graph entry is not loaded`);
+  }
+
+  const existingWindow = state.browser.windows.find(window => window.location === uri);
+
+  // return window -- should use updateDependencyAndRevaluate if dep changed
+  if (existingWindow) {
+    return state;
+  }
+
+  state = updateRootStateSyntheticBrowser({
+    windows: [
+      ...state.browser.windows,
+      createSyntheticWindow(uri)
+    ]
+  }, state);
+
+  const documents = evaluateDependencyEntry({ entry, graph }).documentNodes.map(root => {
+    return createSyntheticDocument(root, graph[root.source.uri].content);
+  });
+
+  return updateRootStateSyntheticWindow(entry.uri, {
+    documents,
+  }, state);
+};
+
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
   if (root.activeFilePath === newActiveFilePath) {
     return root;
   }
-  if (!root.browser.windows.some(({location}) => location === newActiveFilePath)) {
-    throw new Error(`Active file path is not currently open`);
-  }
-  return updateRootState({
+  root = updateRootState({
     activeFilePath: newActiveFilePath,
     hoveringNodeIds: [],
     selectedNodeIds: []
   }, root);
+  root = addOpenFile(newActiveFilePath, true, root);
+  return root;
 };
 
 export const updateCanvas = (properties: Partial<Canvas>, root: RootState) => {
@@ -421,7 +461,7 @@ export const setSelectedFileNodeIds = (root: RootState, ...selectionIds: string[
   return root;
 };
 
-export const setHovering = (root: RootState, ...selectionIds: string[]) => {
+export const setHoveringSyntheticNodeIds = (root: RootState, ...selectionIds: string[]) => {
   return updateRootState({
     hoveringNodeIds: uniq([...selectionIds])
   }, root);

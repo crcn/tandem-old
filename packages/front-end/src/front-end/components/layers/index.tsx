@@ -14,7 +14,7 @@ import {
 } from "react-dnd";
 
 export type TreeLayerDroppedNodeActionCreator = (child: TreeNode, targetNode: TreeNode, offset: 0|-1|1) => any;
-export type TreeLayerMouseActionCreator = (node: TreeNode) => any;
+export type TreeLayerMouseActionCreator = (node: TreeNode, sourceEvent?: React.MouseEvent<any>) => any;
 
 type AttributeInfo = {
   name: string;
@@ -179,8 +179,8 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
       onLabelMouseOut: ({ dispatch, document, node }) => () => {
         treeLayerMouseOut && dispatch(treeLayerMouseOut(node));
       },
-      onLabelClick: ({ dispatch, document, node }) => () => {
-        treeLayerClick && dispatch(treeLayerClick(node));
+      onLabelClick: ({ dispatch, document, node }) => (event) => {
+        treeLayerClick && dispatch(treeLayerClick(node, event));
       },
       onLabelDoubleClick: ({ dispatch, document, node }) => () => {
         treeLayerDoubleClick && dispatch(treeLayerDoubleClick(node));

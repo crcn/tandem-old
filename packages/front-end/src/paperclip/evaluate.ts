@@ -76,6 +76,7 @@ export const evaluateRootDocumentComponent = (componentNode: TreeNode, currentDe
     }
   }, [], getSytheticNodeSource(componentNode, dependency), checksum + componentNode.id, module, checksum, dependency, graph);
   element = setNodeAttribute(element, EditorAttributeNames.IS_COMPONENT_INSTANCE, false, EDITOR_NAMESPACE);
+  element = setNodeAttribute(element, EditorAttributeNames.IS_COMPONENT_ROOT, true, EDITOR_NAMESPACE);
   return element;
 };
 

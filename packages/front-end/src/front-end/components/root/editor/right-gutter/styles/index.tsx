@@ -37,7 +37,7 @@ const BaseStylesPaneComponent = ({ root, onCssChange, onFocus, onBlur, value, fo
 
 const getSelectedNodeStyle = (root: RootState) => {
   const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
-  return stringifyStyle(getAttribute(node, "style") || EMPTY_OBJECT).split(";").join(";\n");
+  return node && stringifyStyle(getAttribute(node, "style") || EMPTY_OBJECT).split(";").join(";\n");
 }
 
 export const StylesPaneComponent = compose<StylePaneInnerProps, StylePaneOuterProps>(
