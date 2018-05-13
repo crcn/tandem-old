@@ -24,7 +24,7 @@ const BaseDocumentPreviewComponent = ({ document }) => {
     top: bounds.top,
     width: bounds.right - bounds.left,
     height: bounds.bottom - bounds.top,
-    background: "white"
+    background: "transparent"
   } as any;
 
   return <div className="m-preview-document" style={style}>

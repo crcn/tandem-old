@@ -7,7 +7,7 @@ import { PaneComponent } from "../../../../pane";
 import * as cx from "classnames";
 import { Dispatch } from "redux";
 import { Directory, File, getAttribute, FileAttributeNames, EMPTY_ARRAY, TreeNode, filterNestedNodes, memoize } from "../../../../../../common";
-import { fileNavigatorItemClicked, fileNavigatorItemDoubleClicked, fileNavigatorDroppedItem, newFileEntered, newDirectoryEntered, fileNavigatorNewFileClicked, fileNavigatorNewDirectoryClicked, fileNavigatorNewFileEntered } from "../../../../../actions";
+import { fileNavigatorItemClicked, fileNavigatorItemDoubleClicked, fileNavigatorToggleDirectoryClicked, fileNavigatorDroppedItem, newFileEntered, newDirectoryEntered, fileNavigatorNewFileClicked, fileNavigatorNewDirectoryClicked, fileNavigatorNewFileEntered } from "../../../../../actions";
 import { createTreeLayerComponents, TreeNodeLayerOuterProps } from "../../../../layers";
 import { InsertFileInfo } from "../../../../../state";
 import { FocusComponent } from "../../../../focus";
@@ -50,7 +50,8 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<FileNodeLayerOuterP
   actionCreators: {
     treeLayerClick: fileNavigatorItemClicked,
     treeLayerDoubleClick: fileNavigatorItemDoubleClicked,
-    treeLayerDroppedNode: fileNavigatorDroppedItem
+    treeLayerDroppedNode: fileNavigatorDroppedItem,
+    treeLayerExpandToggleClick: fileNavigatorToggleDirectoryClicked
   },
   dragType: "FILE",
   reorganizable: false,

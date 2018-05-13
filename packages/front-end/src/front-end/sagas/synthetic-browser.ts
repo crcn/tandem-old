@@ -14,7 +14,7 @@ export function* syntheticBrowserSaga() {
 function* handleNewWindowDocuments() {
   let currentWindows: SyntheticWindow[] = [];
   while(1) {
-    yield take();
+    const action = yield take();
     const state: RootState = yield select();
     if (state.browser.windows !== currentWindows) {
       const diffs = diffArray(currentWindows, state.browser.windows, (a, b) => a.location === b.location ? 0 : -1);
@@ -27,7 +27,10 @@ function* handleNewWindowDocuments() {
           case ArrayOperationalTransformType.UPDATE: {
             const { originalOldIndex, index } = diff as ArrayUpdateMutation<SyntheticWindow>;
             const newWindow = state.browser.windows[index];
-            yield call(renderDocuments, newWindow);
+            const oldWindow = currentWindows.find(window => window.location === newWindow.location);
+            if (newWindow !== oldWindow) {
+              yield call(renderDocuments, newWindow);
+            }
             break;
           }
         }

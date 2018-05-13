@@ -69,7 +69,10 @@ export const evaluateRootDocumentComponent = (componentNode: TreeNode, currentDe
   const checksum = generateTreeChecksum(dependency.content);
   return _evaluateComponent(componentNode, {
     [DEFAULT_NAMESPACE]: {
-      style: DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE
+      style: {
+        background: "white",
+        ...DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE
+      }
     }
   }, [], getSytheticNodeSource(componentNode, dependency), checksum + componentNode.id, module, checksum, dependency, graph);
 };

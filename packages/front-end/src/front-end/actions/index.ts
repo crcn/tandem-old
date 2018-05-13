@@ -23,6 +23,7 @@ export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
 export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED = "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
 export const FILE_NAVIGATOR_NEW_FILE_CLICKED = "FILE_NAVIGATOR_NEW_FILE_CLICKED";
 export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED = "FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED";
+export const FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED = "FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED";
 export const FILE_NAVIGATOR_NEW_FILE_ENTERED = "FILE_NAVIGATOR_NEW_FILE_ENTERED";
 export const FILE_NAVIGATOR_DROPPED_ITEM = "FILE_NAVIGATOR_DROPPED_ITEM";
 export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
@@ -233,6 +234,11 @@ export const fileNavigatorDroppedItem = (node: TreeNode, targetNode: TreeNode, o
 export const fileNavigatorItemClicked = (node: TreeNode): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_CLICKED,
+});
+
+export const fileNavigatorToggleDirectoryClicked = (node: TreeNode): FileNavigatorItemClicked => ({
+  node,
+  type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED,
 });
 
 export const newFileAdded = (directoryId: string, basename: string, fileType: "directory" | "file"): NewFileAdded => ({

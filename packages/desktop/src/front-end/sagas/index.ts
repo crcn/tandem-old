@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
-import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, FILE_NAVIGATOR_NEW_FILE_ENTERED, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile, FileNavigatorNewFileEntered, getTreeNodeFromPath, getNestedTreeNodeById, getAttribute, FileAttributeNames, newFileAdded, InsertFileType, FILE_NAVIGATOR_DROPPED_ITEM } from "tandem-front-end";
+import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, FILE_NAVIGATOR_NEW_FILE_ENTERED, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile, FileNavigatorNewFileEntered, getTreeNodeFromPath, getNestedTreeNodeById, getAttribute, FileAttributeNames, newFileAdded, InsertFileType, FILE_NAVIGATOR_DROPPED_ITEM, Dependency, DependencyGraph } from "tandem-front-end";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -22,14 +22,19 @@ function* handleActivePaperclipFile() {
       continue;
     }
 
-    if (!browser.graph || !browser.graph[activeFilePath]) {
-      const { entry, graph } = yield call(loadEntry, activeFilePath, {
+    let graph: DependencyGraph = browser.graph;
+    let entry: Dependency = graph && graph[activeFilePath];
+
+    if (!entry) {
+      const result = yield call(loadEntry, activeFilePath, {
         graph: browser.graph,
         openFile: uri => fs.readFileSync(uri.substr("file:/".length), "utf8")
       });
-
-      yield put(dependencyEntryLoaded(entry, graph));
+      entry = result.entry;
+      graph = result.graph;
     }
+
+    yield put(dependencyEntryLoaded(entry, graph));
   }
 }
 

@@ -74,6 +74,14 @@ export const shiftBounds = (bounds: Bounds, { left, top }: Point): Bounds => ({
   bottom: bounds.bottom + top
 });
 
+export const resizeBounds = (bounds: Bounds, { width, height }): Bounds => ({
+  ...bounds,
+  left: bounds.left,
+  top: bounds.top,
+  right: bounds.left + width,
+  bottom: bounds.top + height
+});
+
 export const flipPoint = (point: Point): Point => ({
   left: -point.left,
   top: -point.top,

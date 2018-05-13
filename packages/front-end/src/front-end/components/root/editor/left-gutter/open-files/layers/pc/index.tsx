@@ -12,7 +12,7 @@ import { StructReference } from "../../../../../../../../common";
 
 const DRAG_TYPE = "SYNTHETIC_NODE";
 
-const {RootNodeLayerComponent} = createTreeLayerComponents({
+const {TreeNodeLayerComponent} = createTreeLayerComponents({
   actionCreators: {
     treeLayerDroppedNode: pcLayerDroppedNode,
     treeLayerClick: pcLayerClick,
@@ -36,10 +36,13 @@ type SyntheticWindowLayersInnerProps = {
 } & SyntheticWindowLayersOuterProps;
 
 const BaseSyntheticWindowLayersComponent = ({ hoveringNodeIds, selectedReferences, dispatch, window, browser }: SyntheticWindowLayersInnerProps) => {
+  if(!window) {
+    return null;
+  }
   return <div className="m-synthetic-window-layers">
     {
       (window.documents || EMPTY_ARRAY).map(document => {
-        return <RootNodeLayerComponent key={document.id} node={document.root} depth={0} hoveringNodeIds={hoveringNodeIds} selectedNodeIds={selectedReferences} dispatch={dispatch} />
+        return <TreeNodeLayerComponent key={document.id} node={document.root} depth={0} hoveringNodeIds={hoveringNodeIds} selectedNodeIds={selectedReferences} dispatch={dispatch} />
       })
     }
   </div>;

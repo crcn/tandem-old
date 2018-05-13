@@ -391,7 +391,9 @@ export const getCanvasMouseDocumentRootId = (state: RootState, event: CanvasTool
 }
 
 export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
-  const documents = getAllWindowDocuments(state.browser);
+  const activeWindow = getActiveWindow(state);
+  if (!activeWindow) return null;
+  const documents = activeWindow.documents || EMPTY_ARRAY;
   for (let i = documents.length; i--;)  {
     const document = documents[i];
     if (pointIntersectsBounds(point, document.bounds)) {

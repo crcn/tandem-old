@@ -1,5 +1,5 @@
 import { memoize, EMPTY_OBJECT, EMPTY_ARRAY, parseStyle } from "../common/utils";
-import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode, Bounds } from "../common/state";
+import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode, Bounds, setNodeAttribute } from "../common/state";
 import { DEFAULT_EXTENDS } from ".";
 import { mapValues } from "lodash";
 
@@ -232,19 +232,50 @@ export const updateGraphDependency = (properties: Partial<Dependency>, uri: stri
   }
 });
 
-export const getDependents = memoize((uri: string, graph: DependencyGraph, dependents: Dependency[] = []) => {
-  let current = graph[uri];
+export const getDependents = memoize((uri: string, graph: DependencyGraph) => {
 
-  if (dependents.indexOf(current) !== -1) {
-    return dependents;
-  }
+  const dependents = [];
 
-  dependents.push(current);
+  for (const depUri in graph) {
+    if (depUri === uri) {
+      continue;
+    }
 
-  for (const ns in current.importUris) {
-    const uri = current.importUris[ns];
-    getDependents(uri, graph, dependents);
+    const dep = graph[depUri];
+
+    for (const relativePath in dep.importUris) {
+      const importedUri = dep.importUris[relativePath];
+      if (importedUri === uri) {
+        dependents.push(dep);
+        continue;
+      }
+    }
   }
 
   return dependents;
 });
+
+export const getModuleImportNamespace = (uri: string, moduleNode: TreeNode): string => {
+  const info = getModuleInfo(moduleNode);
+  for (const namespace in info.imports) {
+    if (info.imports[namespace] === uri) {
+      return namespace;
+    }
+  }
+};
+
+export const addModuleNodeImport = (uri: string, moduleNode: TreeNode) => {
+  const namespace = getModuleImportNamespace(uri, moduleNode);
+  if (namespace) return moduleNode;
+  const imports = getImports(moduleNode);
+  const importCount = Object.keys(imports).length;
+  return {
+    ...moduleNode,
+    attributes: {
+      xmlns: {
+        ...imports,
+        ["import" + importCount]: uri
+      }
+    }
+  }
+};

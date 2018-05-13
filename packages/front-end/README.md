@@ -2,9 +2,10 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
-- allow for elements to be rendered on the canvas*
+- indicate that something is component
+- editing text
 - start on quick search component (get HiFi done)
-- flagging shapes as components
+- flagging shapes as component
 
 - history
 -resizer

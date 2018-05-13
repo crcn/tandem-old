@@ -1,4 +1,4 @@
-<module>
+<module xmlns:import0="test.pc" xmlns:import1="button.pc">
   <component id="component3" style="width:100vw;height:100vh;boxSizing:content-box;" editor:bounds="left:56;top:65;right:306;bottom:247;">
     <template>
       <div style="left:0;right:153;top:0;bottom:133;width:100%;height:100%;background:#CCCCCC;position:absolute;eRight:153;padding:10px;boxSizing:border-box;display:flex;flexDirection:column;fontFamily:helvetica;" editor:label="Rectangle">
@@ -11,6 +11,4 @@
       </div>
     </template>
   </component>
-  <div style="left:375;right:550;top:75;bottom:190;width:175;height:115;background:#CCC;position:absolute;" editor:label="Rectangle" editor:bounds="left:330;top:59;right:730;bottom:359;"></div>
-  <div style="left:58;right:252;top:278;bottom:378;width:194;height:100;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
 </module>
