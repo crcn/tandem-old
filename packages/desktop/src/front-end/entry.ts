@@ -13,6 +13,7 @@ setup<DesktopRootState>(rootReducer, rootSaga)({
     type: SyntheticObjectType.BROWSER,
     windows: []
   },
+  history: {},
   openFiles: [],
   canvas: {
     backgroundColor: "#EFEFEF",

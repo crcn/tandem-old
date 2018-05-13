@@ -11,4 +11,5 @@
       </div>
     </template>
   </component>
+  <div style="left:375;right:550;top:75;bottom:190;width:175;height:115;background:#CCC;position:absolute;" editor:label="Rectangle"></div>
 </module>

@@ -2,8 +2,8 @@
 
 import { Action } from "redux";
 import * as path from "path";
-import { CanvasToolArtboardTitleClicked, NEW_FILE_ADDED, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, SYNTHETIC_NODES_PASTED, SyntheticNodesPasted, FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED, OPEN_FILE_ITEM_CLICKED, OPEN_FILE_ITEM_CLOSE_CLICKED, OpenFilesItemClick, SAVED_FILE, SavedFile, SAVED_ALL_FILES, RAW_CSS_TEXT_CHANGED, RawCSSTextChanged, PC_LAYER_MOUSE_OVER, PC_LAYER_MOUSE_OUT, PC_LAYER_CLICK, PC_LAYER_EXPAND_TOGGLE_CLICK, TreeLayerClick, TreeLayerDroppedNode, TreeLayerExpandToggleClick, TreeLayerMouseOut, TreeLayerMouseOver, PC_LAYER_DROPPED_NODE, FILE_NAVIGATOR_NEW_FILE_CLICKED, FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED, NewFileAdded, FILE_NAVIGATOR_DROPPED_ITEM, FileNavigatorDroppedItem } from "../actions";
-import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseTargetNodeId, setSelectedSyntheticNodeIds, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentRootId, getDocumentRootIdFromPoint, persistRootStateBrowser, getInsertedWindowElementIds, getInsertedDocumentElementIds, getOpenFile, addOpenFile, upsertOpenFile, removeTemporaryOpenFiles, setNextOpenFile, updateOpenFile, deselectRootProjectFiles, setHovering, setRootStateSyntheticNodeExpanded, setSelectedFileNodeIds, InsertFileType, setInsertFile } from "../state";
+import { CanvasToolArtboardTitleClicked, NEW_FILE_ADDED, CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, PROJECT_LOADED, ProjectLoaded, SYNTHETIC_WINDOW_OPENED, CanvasToolOverlayMouseMoved, SyntheticWindowOpened, PROJECT_DIRECTORY_LOADED, ProjectDirectoryLoaded, FILE_NAVIGATOR_ITEM_CLICKED, FileNavigatorItemClicked, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, DocumentRendered, CANVAS_WHEEL, CANVAS_MOUSE_MOVED, CANVAS_MOUSE_CLICKED, WrappedEvent, CanvasToolOverlayClicked, RESIZER_MOUSE_DOWN, ResizerMouseDown, ResizerMoved, RESIZER_MOVED, RESIZER_PATH_MOUSE_STOPPED_MOVING, RESIZER_STOPPED_MOVING, ResizerPathStoppedMoving, RESIZER_PATH_MOUSE_MOVED, ResizerPathMoved, SHORTCUT_A_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, INSERT_TOOL_FINISHED, InsertToolFinished, SHORTCUT_DELETE_KEY_DOWN, CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, SYNTHETIC_NODES_PASTED, SyntheticNodesPasted, FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED, OPEN_FILE_ITEM_CLICKED, OPEN_FILE_ITEM_CLOSE_CLICKED, OpenFilesItemClick, SAVED_FILE, SavedFile, SAVED_ALL_FILES, RAW_CSS_TEXT_CHANGED, RawCSSTextChanged, PC_LAYER_MOUSE_OVER, PC_LAYER_MOUSE_OUT, PC_LAYER_CLICK, PC_LAYER_EXPAND_TOGGLE_CLICK, TreeLayerClick, TreeLayerDroppedNode, TreeLayerExpandToggleClick, TreeLayerMouseOut, TreeLayerMouseOver, PC_LAYER_DROPPED_NODE, FILE_NAVIGATOR_NEW_FILE_CLICKED, FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED, NewFileAdded, FILE_NAVIGATOR_DROPPED_ITEM, FileNavigatorDroppedItem, SHORTCUT_UNDO_KEY_DOWN, SHORTCUT_REDO_KEY_DOWN } from "../actions";
+import { RootState, setActiveFilePath, updateRootState, updateRootStateSyntheticBrowser, updateRootStateSyntheticWindow, updateRootStateSyntheticWindowDocument, updateCanvas, getCanvasMouseTargetNodeId, setSelectedSyntheticNodeIds, getSelectionBounds, updateRootSyntheticPosition, getBoundedSelection, updateRootSyntheticBounds, CanvasToolType, getActiveWindow, setCanvasTool, getCanvasMouseDocumentRootId, getDocumentRootIdFromPoint, persistRootStateBrowser, getInsertedWindowElementIds, getInsertedDocumentElementIds, getOpenFile, addOpenFile, upsertOpenFile, removeTemporaryOpenFiles, setNextOpenFile, updateOpenFile, deselectRootProjectFiles, setHovering, setRootStateSyntheticNodeExpanded, setSelectedFileNodeIds, InsertFileType, setInsertFile, undo, redo } from "../state";
 import { updateSyntheticBrowser, addSyntheticWindow, createSyntheticWindow, SyntheticNode, evaluateDependencyEntry, createSyntheticDocument, getSyntheticWindow, getSyntheticNodeBounds, getSyntheticDocumentWindow, persistSyntheticItemPosition, persistSyntheticItemBounds, SyntheticObjectType, getSyntheticDocumentById, persistNewComponent, persistDeleteSyntheticItems, persistInsertRectangle, persistInsertText, SyntheticDocument, SyntheticBrowser, persistPasteSyntheticNodes, getSyntheticSourceNode, getSyntheticNodeById, SyntheticWindow, getModifiedDependencies, persistRawCSSText, getSyntheticNodeDocument, getSyntheticNodeWindow, expandSyntheticNode, persistMoveSyntheticNode } from "../../paperclip";
 import { getTeeNodePath, getTreeNodeFromPath, getFilePath, File, getFilePathFromNodePath, EMPTY_OBJECT, TreeNode, StructReference, roundBounds, scaleInnerBounds, moveBounds, keepBoundsAspectRatio, keepBoundsCenter, Bounded, Struct, Bounds, getBoundsSize, shiftBounds, flipPoint, getAttribute, diffArray, getFileFromUri, isDirectory, updateNestedNode, DEFAULT_NAMESPACE, setNodeAttribute, FileAttributeNames, addTreeNodeIds, Directory, getNestedTreeNodeById, isFile, arraySplice, getParentTreeNode, appendChildNode, removeNestedTreeNode } from "../../common";
 import { difference, pull } from "lodash";
@@ -380,40 +380,33 @@ export const canvasReducer = (state: RootState, action: Action) => {
           return state;
         }
         case CanvasToolType.RECTANGLE: {
-          const nodeId = getDocumentRootIdFromPoint(bounds, state);
-          if (!nodeId) {
-            console.warn(`Cannot insert rectangle off canvas`);
-            return state;
-          }
-          const document = getSyntheticNodeDocument(nodeId, state.browser);
+          const targetDocumentId = getDocumentRootIdFromPoint(bounds, state);
+          const oldWindow = getActiveWindow(state);
+          const document = targetDocumentId && getSyntheticNodeDocument(targetDocumentId, state.browser);
           state = persistRootStateBrowser(browser => {
             return persistInsertRectangle({
-              ...shiftBounds(bounds, flipPoint(document.bounds)),
+              ...shiftBounds(bounds, flipPoint(document ? document.bounds : { left: 0, top: 0 })),
               ...getBoundsSize(bounds),
               background: DEFAULT_RECT_COLOR,
               position: "absolute"
-            }, document.root.id, browser)
+            }, document ? getSyntheticSourceNode(document.root.id, browser).id : browser.graph[oldWindow.location].content.id, browser)
           }, state);
-          state = setSelectedSyntheticNodeIds(state, ...getInsertedDocumentElementIds(document, state.browser));
+          state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, state.browser));
           return state;
         }
         case CanvasToolType.TEXT: {
-          const nodeId = getDocumentRootIdFromPoint(bounds, state);
-          if (!nodeId) {
-            console.warn(`Cannot insert rectangle off canvas`);
-            return state;
-          }
-          const document = getSyntheticNodeDocument(nodeId, state.browser);
+          const targetDocumentId = getDocumentRootIdFromPoint(bounds, state);
+          const oldWindow = getActiveWindow(state);
+          const document = targetDocumentId && getSyntheticNodeDocument(targetDocumentId, state.browser);
 
           state = persistRootStateBrowser(browser => {
             return persistInsertText({
-              ...shiftBounds(shiftBounds(bounds, flipPoint(document.bounds)), INSERT_TEXT_OFFSET),
+              ...shiftBounds(shiftBounds(bounds, flipPoint(document ? document.bounds : { left: 0, top: 0 })), INSERT_TEXT_OFFSET),
               display: "inline-block",
               position: "relative"
-            }, "double click to edit", document.root.id, browser);
+            }, "double click to edit", document ? getSyntheticSourceNode(document.root.id, browser).id : browser.graph[oldWindow.location].content.id, browser);
           }, state);
-
-          state = setSelectedSyntheticNodeIds(state, ...getInsertedDocumentElementIds(document, state.browser));
+          state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, state.browser));
           return state;
         }
       }
@@ -453,7 +446,7 @@ const isInputSelected = (state: RootState) => {
   return document.activeElement && /textarea|input|button/i.test(document.activeElement.tagName);
 }
 
-const shortcutReducer = (state: RootState, action: Action) => {
+const shortcutReducer = (state: RootState, action: Action): RootState => {
   switch(action.type) {
     case SHORTCUT_A_KEY_DOWN: {
       return isInputSelected(state) ? state : setCanvasTool(CanvasToolType.ARTBOARD, state);
@@ -463,6 +456,12 @@ const shortcutReducer = (state: RootState, action: Action) => {
     }
     case SHORTCUT_T_KEY_DOWN: {
       return  isInputSelected(state) ? state : setCanvasTool(CanvasToolType.TEXT, state);
+    }
+    case SHORTCUT_UNDO_KEY_DOWN: {
+      return isInputSelected(state) || !state.activeFilePath ? state : undo(state.activeFilePath, state);
+    }
+    case SHORTCUT_REDO_KEY_DOWN: {
+      return isInputSelected(state) || !state.activeFilePath ? state : redo(state.activeFilePath, state);
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
       if (isInputSelected(state)) {

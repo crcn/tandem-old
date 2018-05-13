@@ -1,6 +1,6 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById } from "../../paperclip";
-import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked } from "../actions";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency } from "../../paperclip";
+import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
 
 export enum CanvasToolType {
@@ -31,6 +31,14 @@ export type InsertFileInfo = {
   directoryId: string;
 }
 
+export type DependencyHistory = {
+  index: number;
+  snapshots: Dependency[];
+};
+
+export type GraphHistory = {
+  [identifier: string]: DependencyHistory
+};
 
 export type RootState = {
   activeFilePath?: string;
@@ -43,6 +51,7 @@ export type RootState = {
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
   insertFileInfo?: InsertFileInfo;
+  history: GraphHistory;
 };
 
 export type OpenFile = {
@@ -66,13 +75,65 @@ export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBr
     browser: persistBrowserState(state.browser)
   }, state));
   const modifiedDeps = getModifiedDependencies(oldGraph, state.browser.graph);
-  state = modifiedDeps.reduce((state, dep: Dependency) => updateOpenFile({
-    temporary: false,
-    newContent: new Buffer(stringifyTreeNodeToXML(dep.content), "utf8")
-  }, dep.uri, state), state);
+  state = addHistory(state, modifiedDeps.map(dep => oldGraph[dep.uri]));
+  state = modifiedDeps.reduce((state, dep: Dependency) => setOpenFileContent(dep, state), state);
 
   return state;
 };
+
+const setOpenFileContent = (dep: Dependency, state: RootState) => updateOpenFile({
+  temporary: false,
+  newContent: new Buffer(stringifyTreeNodeToXML(dep.content), "utf8")
+}, dep.uri, state);
+
+const addHistory = (root: RootState, modifiedDeps: Dependency[]) => {
+  return modifiedDeps.reduce((state, dep) => {
+    const history: DependencyHistory = state.history[dep.uri] || {
+      index: 0,
+      snapshots: EMPTY_ARRAY
+    };
+
+    const snapshots = [...history.snapshots.slice(0, history.index), dep];
+
+    return updateRootState({
+      history: {
+        [dep.uri]: {
+          index: snapshots.length,
+          snapshots,
+        }
+      }
+    }, state);
+  }, root);
+};
+
+const moveDependencyRecordHistory = (uri: string, pos: number, root: RootState): RootState => {
+  const record = root.history[uri];
+  if (!record) {
+    return root;
+  }
+
+  const index = Math.max(0, Math.min(record.snapshots.length, record.index + pos));
+
+  // if index exceeds snapshot count, then we're at the end.
+  const dep = record.snapshots[index] || root.browser.graph[uri];
+
+  root = updateRootState({
+    history: {
+      [uri]: {
+        ...record,
+        index
+      }
+    }
+  }, root);
+
+  root = setOpenFileContent(dep, root);
+  root = updateRootStateSyntheticBrowser(replaceDependency(dep, root.browser), root);
+
+  return root;
+}
+
+export const undo = (uri: string, root: RootState) => moveDependencyRecordHistory(uri, -1, root);
+export const redo = (uri: string, root: RootState) => moveDependencyRecordHistory(uri, 1, root);
 
 export const getOpenFile = (uri: string, state: RootState) => state.openFiles.find((openFile) => openFile.uri === uri);
 
@@ -171,7 +232,6 @@ export const getInsertedWindowElementIds = (oldWindow: SyntheticWindow, newBrows
   ];
 };
 
-
 export const getInsertedDocumentElementIds = (oldDocument: SyntheticDocument, newBrowser: SyntheticBrowser): string[] => {
   const newDocument = getSyntheticDocumentById(oldDocument.id, newBrowser);
   const oldIds = Object.keys(oldDocument.nativeNodeMap);
@@ -218,7 +278,6 @@ export const setRootStateSyntheticNodeExpanded = (nodeId: string, value: boolean
   }, state);
   return state;
 };
-
 
 export const setRootStateFileNodeExpanded = (nodeId: string, value: boolean, state: RootState) => {
   return updateRootState({

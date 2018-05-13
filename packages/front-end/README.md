@@ -2,10 +2,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
-- copy & paste elements
-- undo / redo
+- allow for elements to be rendered on the canvas*
 - start on quick search component (get HiFi done)
-- copy & paste elements
 - flagging shapes as components
 
 - history

@@ -6,7 +6,10 @@
           <text style="display:inline-block;position:relative;" value="double click to edit"></text>
         </div>
         <div style="width:100%;height:100%;background:rgba(0,0,0,0.1);boxSizing:border-box;overflow:scroll;position:relative;padding:10px;" editor:label="Rectangle">
-          <div style="width:100%;height:84;background:#CCC;" editor:label="Rectangle"></div>
+          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle"></div>
+          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle" editor:expanded="true"></div>
+          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle" editor:expanded="true"></div>
+          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle" editor:expanded="true"></div>
         </div>
       </div>
     </template>

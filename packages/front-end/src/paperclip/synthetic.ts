@@ -521,6 +521,8 @@ const addSetStyleOverride = (style: any, targetName: string, overridesNode: Tree
   }
 }
 
+export const replaceDependency = (dep: Dependency, browser: SyntheticBrowser) => updateDependencyAndRevaluate(dep, dep.uri, browser);
+
 const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependencyUri: string, browser: SyntheticBrowser) => {
 
   const oldBrowser = browser;
@@ -672,7 +674,7 @@ export const persistNewComponent = (bounds: Bounds, dependencyUri: string, brows
   }, dependencyUri, browser);
 };
 
-export const persistInsertRectangle = (style: any, parentId: string, browser: SyntheticBrowser) => {
+export const persistInsertRectangle = (style: any, targetSourceNodeId: string, browser: SyntheticBrowser) => {
   return persistInsertNode({
     name: "div",
     attributes: {
@@ -684,10 +686,10 @@ export const persistInsertRectangle = (style: any, parentId: string, browser: Sy
       }
     },
     children: []
-  }, getSyntheticSourceNode(parentId, browser).id, 0, browser);
+  }, targetSourceNodeId, 0, browser);
 };
 
-export const persistInsertText = (style: any, nodeValue: string, parentId: string, browser: SyntheticBrowser) => {
+export const persistInsertText = (style: any, nodeValue: string, targetSourceNodeId: string, browser: SyntheticBrowser) => {
   return persistInsertNode({
     name: "text",
     attributes: {
@@ -697,7 +699,7 @@ export const persistInsertText = (style: any, nodeValue: string, parentId: strin
       }
     },
     children: []
-  }, getSyntheticSourceNode(parentId, browser).id, 0, browser);
+  }, targetSourceNodeId, 0, browser);
 };
 
 

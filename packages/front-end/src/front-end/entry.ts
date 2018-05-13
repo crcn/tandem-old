@@ -14,6 +14,7 @@ init({
       zoom: 1
     }
   },
+  history: {},
   openFiles: [],
   browser: {
     windows: [],

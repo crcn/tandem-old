@@ -2,7 +2,7 @@ import {Menu, MenuItem, MenuItemConstructorOptions, app} from "electron";
 import {fork, put, take} from "redux-saga/effects";
 import {eventChannel} from "redux-saga";
 import { APP_READY, MAIN_WINDOW_OPENED } from "../actions";
-import { APP_LOADED, shortcutKeyDown, SHORTCUT_R_KEY_DOWN, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, SHORTCUT_SAVE_KEY_DOWN } from "tandem-front-end";
+import { APP_LOADED, shortcutKeyDown, SHORTCUT_R_KEY_DOWN, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, SHORTCUT_SAVE_KEY_DOWN, SHORTCUT_UNDO_KEY_DOWN, SHORTCUT_REDO_KEY_DOWN } from "tandem-front-end";
 
 export function* shortcutsSaga() {
   yield take(MAIN_WINDOW_OPENED);
@@ -31,8 +31,20 @@ export function* shortcutsSaga() {
       {
         label: "Edit",
         submenu: [
-          {role: "undo"},
-          {role: "redo"},
+          {
+            label: "Undo",
+            accelerator: "meta+z",
+            click: () => {
+              emit(shortcutKeyDown(SHORTCUT_UNDO_KEY_DOWN));
+            }
+          },
+          {
+            label: "Redo",
+            accelerator: "meta+y",
+            click: () => {
+              emit(shortcutKeyDown(SHORTCUT_REDO_KEY_DOWN));
+            }
+          },
           {type: "separator"},
           {role: "cut"},
           {role: "copy"},
