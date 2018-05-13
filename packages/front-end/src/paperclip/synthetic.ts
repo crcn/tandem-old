@@ -354,7 +354,7 @@ export const updateSyntheticItemBounds = (bounds: Bounds, nodeId: string, browse
 
 export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: string, syntheticNodes: SyntheticNode[], browser: SyntheticBrowser) => {
   const targetDep = browser.graph[dependencyUri];
-  const targetSourceNode = getNestedTreeNodeById(sourceNodeId, targetDep.content);
+  let targetSourceNode =  getParentTreeNode(sourceNodeId, targetDep.content) || getNestedTreeNodeById(sourceNodeId, targetDep.content);
 
   const newContent = syntheticNodes.reduce((content, syntheticNode) => {
     const sourceDep = browser.graph[syntheticNode.source.uri];
@@ -386,8 +386,11 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
           childComponentNode
         ]
       }
+    } else {
+      return updateNestedNode(targetSourceNode, content, (target) => appendChildNode(syntheticNode, target));
     }
-    return content;
+
+
   }, targetDep.content);
 
   return updateDependencyAndRevaluate({

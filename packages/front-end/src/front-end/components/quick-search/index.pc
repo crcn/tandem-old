@@ -1,11 +1,13 @@
 <module>
-  <component id="component1" preview:bounds="left:145;right:707;top:149;bottom:443;">
+  <component id="component1" preview:bounds="left:218;top:174;right:687;bottom:489;">
     <template>
       <div style="bottom:109;width:100%;height:100%;background:#CCC;padding:10px;boxSizing:border-box;fontFamily:Helvetica;display:flex;flexDirection:column;" editor:label="Rectangle">
         <div style="width:100%;padding:10px;background:rgba(0,0,0,0.1);boxSizing:border-box;marginBottom:10px;" editor:label="Rectangle">
           <text style="display:inline-block;position:relative;" value="double click to edit"></text>
         </div>
-        <div style="bottom:149;width:100%;height:100%;background:rgba(0,0,0,0.1);boxSizing:border-box;" editor:label="Rectangle"></div>
+        <div style="width:100%;height:100%;background:rgba(0,0,0,0.1);boxSizing:border-box;overflow:scroll;position:relative;padding:10px;" editor:label="Rectangle">
+          <div style="width:100%;height:84;background:#CCC;" editor:label="Rectangle"></div>
+        </div>
       </div>
     </template>
   </component>
