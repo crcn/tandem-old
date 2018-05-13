@@ -506,7 +506,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 const clipboardReducer = (state: RootState, action: Action) => {
   switch(action.type) {
     case SYNTHETIC_NODES_PASTED: {
-      const { syntheticNodes } = action as SyntheticNodesPasted;
+      const { clips } = action as SyntheticNodesPasted;
 
       let targetSourceNode: TreeNode;
 
@@ -519,8 +519,9 @@ const clipboardReducer = (state: RootState, action: Action) => {
 
       const oldWindow = getActiveWindow(state);
 
-      state = persistRootStateBrowser(browser => persistPasteSyntheticNodes(state.activeFilePath, targetSourceNode.id, syntheticNodes, browser), state);
-      state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, state.browser));
+      state = persistRootStateBrowser(browser => persistPasteSyntheticNodes(state.activeFilePath, targetSourceNode.id, clips, browser), state);
+      const elementIds = getInsertedWindowElementIds(oldWindow, state.browser);
+      state = setSelectedSyntheticNodeIds(state, elementIds[elementIds.length - 1]);
       return state;
     }
   }

@@ -1,16 +1,26 @@
 <module>
-  <component id="component1" editor:bounds="left:218;top:174;right:687;bottom:489;">
+  <component id="component1" editor:bounds="left:27;top:68;right:626;bottom:393;">
     <template>
       <div style="bottom:109;width:100%;height:100%;background:#CCC;padding:10px;boxSizing:border-box;fontFamily:Helvetica;display:flex;flexDirection:column;" editor:label="Rectangle">
         <div style="width:100%;padding:10px;background:rgba(0,0,0,0.1);boxSizing:border-box;marginBottom:10px;" editor:label="Rectangle">
           <text style="display:inline-block;position:relative;" value="double click to edit"></text>
         </div>
         <div style="width:100%;height:100%;background:rgba(0,0,0,0.1);boxSizing:border-box;overflow:scroll;position:relative;padding:10px;" editor:label="Rectangle">
-          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle"></div>
-          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle" editor:expanded="true"></div>
-          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle" editor:expanded="true"></div>
-          <div style="width:100%;height:84;background:#CCC;marginBottom:10px;" editor:label="Rectangle" editor:expanded="true"></div>
+          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
+          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
+          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
+          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
+          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
+          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
+          <component2 style="left:132;right:673;top:456;bottom:551;"></component2>
         </div>
+      </div>
+    </template>
+  </component>
+  <component id="component2" editor:bounds="left:658;right:1199;top:71;bottom:166;">
+    <template>
+      <div style="width:100%;background:#CCC;marginBottom:10px;position:relative;left:0;top:0;color:white;padding:10px;boxSizing:border-box;" editor:label="Rectangle">
+        <text style="display:inline-block;position:relative;height:18;" value="double click to edit"></text>
       </div>
     </template>
   </component>

@@ -1,4 +1,4 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode } from "../../common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode } from "../../common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
@@ -58,7 +58,7 @@ export type OpenFile = {
   temporary: boolean;
   newContent?: Buffer;
   uri: string;
-}
+};
 
 export const updateRootState = (properties: Partial<RootState>, root: RootState) => ({
   ...root,
@@ -403,7 +403,7 @@ export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
 }
 
 export const setSelectedSyntheticNodeIds = (root: RootState, ...selectionIds: string[]) => {
-  const nodeIds = uniq([...selectionIds]);
+  const nodeIds = uniq([...selectionIds]).filter(Boolean);
   root = nodeIds.reduce((state, nodeId) => setRootStateSyntheticNodeExpanded(nodeId, true, root), root);
   root = updateRootState({
     selectedNodeIds: nodeIds

@@ -2,6 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { RootState } from "../../state";
+import { identity } from "lodash";
 import { SyntheticWindow, SyntheticBrowser, SyntheticDocument, SyntheticObjectType, EDITOR_NAMESPACE } from "../../../paperclip";
 import { compose, pure, withHandlers, withState, withProps } from "recompose"
 import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById, TreeNode } from "../../../common";
@@ -69,7 +70,9 @@ type TreeLayerOptions = {
     expandAttr?: AttributeInfo,
   },
   hasChildren?: (node: TreeNode) => boolean;
+  getLabelProps?: (attributes: any, props: TreeNodeLayerLabelOuterProps) => any
   childRenderer?: (Base: any) => (props: TreeNodeLayerOuterProps) => any[];
+  layerRenderer?: (Base: any) => (props: TreeNodeLayerOuterProps) => any;
 };
 
 const DEFAULT_NODE_EXPAND_ATTRIBUTE = {
@@ -86,6 +89,8 @@ const defaultRender = (Base) => ({ node, hoveringNodeIds, selectedNodeIds, depth
   return <Base hoveringNodeIds={hoveringNodeIds} selectedNodeIds={selectedNodeIds} key={child.id} node={child as TreeNode} depth={depth + 1} dispatch={dispatch} {...rest} />
 });
 
+const defaultLayerRenderer = (Base) => (props) => React.createElement(Base, props);
+
 const defaultShowChildren = (node: TreeNode) => node.children.length;
 
 export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeLayerOuterProps>({
@@ -95,6 +100,8 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   } = {},
   childRenderer = defaultRender,
   hasChildren = defaultShowChildren,
+  layerRenderer = defaultLayerRenderer,
+  getLabelProps = identity,
   depthOffset = 30, actionCreators: { treeLayerDroppedNode, treeLayerMouseOver, treeLayerClick, treeLayerDoubleClick, treeLayerMouseOut, treeLayerExpandToggleClick }, dragType, reorganizable = true }: TreeLayerOptions) => {
 
   const DRAG_TYPE = dragType;
@@ -147,11 +154,15 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
     withNodeDropTarget(1),
   )(BaseInsertComponent);
 
-  const BaseTreeNodeLayerLabelComponent = ({ connectDropTarget, connectDragSource, node, canDrop, isOver, depth, expanded, selected, hovering, onLabelClick, onLabelMouseOut, onLabelMouseOver, onLabelDoubleClick, onExpandToggleButtonClick }: TreeNodeLayerLabelInnerProps) => {
-    const labelStyle = {
-      paddingLeft: DEPTH_OFFSET + depth * DEPTH_PADDING
-    };
-    return connectDropTarget(connectDragSource(<div style={labelStyle} className={cx("label", { selected, hovering: hovering || (isOver && canDrop) })} onMouseOver={onLabelMouseOver} onMouseOut={onLabelMouseOut} onClick={onLabelClick} onDoubleClick={onLabelDoubleClick}>
+  const BaseTreeNodeLayerLabelComponent = (props: TreeNodeLayerLabelInnerProps) => {
+    const { connectDropTarget, connectDragSource, node, canDrop, isOver, depth, expanded, selected, hovering, onLabelClick, onLabelMouseOut, onLabelMouseOver, onLabelDoubleClick, onExpandToggleButtonClick } = props;
+    const labelProps = getLabelProps({
+      style: {
+        paddingLeft: DEPTH_OFFSET + depth * DEPTH_PADDING
+      },
+      className: cx("label", { selected, hovering: hovering || (isOver && canDrop) }, props)
+    }, props);
+    return connectDropTarget(connectDragSource(<div {...labelProps} onMouseOver={onLabelMouseOver} onMouseOut={onLabelMouseOut} onClick={onLabelClick} onDoubleClick={onLabelDoubleClick}>
       <span onClick={onExpandToggleButtonClick}>
         { hasChildren(node) ? expanded ? <i className="ion-arrow-down-b" /> : <i className="ion-arrow-right-b" /> : null }
       </span>
@@ -202,7 +213,7 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
 
     return <div className="m-tree-node-layer">
       { isRoot || !reorganizable ? null : <InsertBeforeComponent node={node} depth={depth} dispatch={dispatch} /> }
-      <TreeNodeLayerLabelComponent node={node} selected={selected} hovering={hovering} dispatch={dispatch} depth={depth} expanded={expanded} />
+      <TreeNodeLayerLabelComponent node={node} selected={selected} hovering={hovering} dispatch={dispatch} depth={depth} expanded={expanded} {...rest} />
       <div className="children">
         {
           !node.children.length || expanded ? renderChildren({ isRoot, hoveringNodeIds, selectedNodeIds, node, depth, dispatch, ...rest }) : null
@@ -213,7 +224,8 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   };
 
   const TreeNodeLayerComponent = compose<TreeNodeLayerInnerProps, TTreeLayerOuterProps>(
-    pure
+    pure,
+    layerRenderer
   )(BaseTreeNodeLayerComponent);
 
   renderChildren = childRenderer(TreeNodeLayerComponent);

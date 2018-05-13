@@ -167,8 +167,8 @@ export const updateNestedNodeTrail = (path: number[], current: TreeNode, updater
 };
 
 
-export const setNodeAttribute = (node: TreeNode, name: string, value: any, namespace: string = DEFAULT_NAMESPACE) => ({
-  ...node,
+export const setNodeAttribute = <TTree extends TreeNode>(node: TTree, name: string, value: any, namespace: string = DEFAULT_NAMESPACE): TTree => ({
+  ...(node as any),
   attributes: {
     ...node.attributes,
     [namespace]: {

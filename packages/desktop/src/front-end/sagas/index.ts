@@ -14,14 +14,18 @@ export function* rootSaga() {
 }
 
 function* handleActivePaperclipFile() {
+  let oldState: RootState;
+
   while(1) {
     yield take([FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED]);
-    const { activeFilePath, browser }: RootState = yield select();
+    const state: RootState = yield select();
+    const { activeFilePath, browser } = state;
 
-    if (!activeFilePath || activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) === -1) {
+    if ((oldState && oldState.activeFilePath === activeFilePath) || !activeFilePath || activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) === -1) {
       continue;
     }
 
+    oldState = state;
     let graph: DependencyGraph = browser.graph;
     let entry: Dependency = graph && graph[activeFilePath];
 

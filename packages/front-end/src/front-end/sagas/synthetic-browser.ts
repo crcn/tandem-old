@@ -76,9 +76,7 @@ function* componentDocumentDisplayInfo(documentId: string, nativeNodeMap: Synthe
 }
 
 function* handleSyntheticDocumentRootChanged() {
-
   while(1) {
     yield take([RESIZER_MOVED]);
-    // console.log("MOVED");
   }
 }

@@ -3,6 +3,7 @@ import * as React from "react";
 import { Directory, Point, Bounds, Struct, StructReference, TreeNode } from "../../common";
 import { publicActionCreator } from "tandem-common";
 import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap, SyntheticNode } from "../../paperclip";
+import { TreeNodeClip } from "..";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -207,7 +208,7 @@ export type InsertToolFinished = {
 } & Action;
 
 export type SyntheticNodesPasted = {
-  syntheticNodes: SyntheticNode[]
+  clips: TreeNodeClip[];
 } & Action;
 
 export type FileNavigatorLabelClicked = {
@@ -339,8 +340,8 @@ export const shortcutKeyDown = publicActionCreator((type: string): ShortcutKeyDo
   type
 }));
 
-export const syntheticNodesPasted = (syntheticNodes: SyntheticNode[]) => ({
-  syntheticNodes,
+export const syntheticNodesPasted = (clips: TreeNodeClip[]): SyntheticNodesPasted => ({
+  clips,
   type: SYNTHETIC_NODES_PASTED
 });
 

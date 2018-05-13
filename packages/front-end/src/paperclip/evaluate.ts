@@ -11,7 +11,7 @@ TODO (in order of importance):
 
 import { TreeNode, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updateNestedNode, setNodeAttribute } from "../common/state/tree";
 import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride, getComponentInfo } from "./dsl";
-import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency } from "./synthetic";
+import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency, EDITOR_NAMESPACE, EditorAttributeNames } from "./synthetic";
 import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML, memoize } from "../common/utils";
 import { pick, merge } from "lodash";
 
@@ -67,7 +67,7 @@ export const evaluateRootDocumentComponent = (componentNode: TreeNode, currentDe
   const module = getModuleInfo(currentDependency.content);
   const dependency = getNodeSourceDependency(componentNode, currentDependency, graph);
   const checksum = generateTreeChecksum(dependency.content);
-  return _evaluateComponent(componentNode, {
+  let element = _evaluateComponent(componentNode, {
     [DEFAULT_NAMESPACE]: {
       style: {
         background: "white",
@@ -75,6 +75,8 @@ export const evaluateRootDocumentComponent = (componentNode: TreeNode, currentDe
       }
     }
   }, [], getSytheticNodeSource(componentNode, dependency), checksum + componentNode.id, module, checksum, dependency, graph);
+  element = setNodeAttribute(element, EditorAttributeNames.IS_COMPONENT_INSTANCE, false, EDITOR_NAMESPACE);
+  return element;
 };
 
 const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
@@ -115,7 +117,9 @@ const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttribu
 
   // TODO - pass slots down
   // TODO - check for existing component extends:importName="component"
-  return createSyntheticElement(ext.tagName, syntheticAttributes, syntheticChildren, source, id);
+  let element = createSyntheticElement(ext.tagName, syntheticAttributes, syntheticChildren, source, id);
+  element = setNodeAttribute(element, EditorAttributeNames.IS_COMPONENT_INSTANCE, true, EDITOR_NAMESPACE);
+  return element;
 };
 
 const overrideComponentTemplate = (template: TreeNode, overrides: ComponentOverride[]) => {

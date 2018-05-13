@@ -2,18 +2,9 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
-- indicate that something is component
-- editing text
-- start on quick search component (get HiFi done)
-- flagging shapes as component
+- slots
+- react compiler
 
-- history
--resizer
-  - respect units
-  - works in nested
-  - multi-select
-  - only mutate necessary props
-- re-ordering
 
 SATURDAY (or mon):
 

@@ -11,6 +11,17 @@ import { Children, SyntheticEvent } from "react";
 import * as path from "path";
 
 export const EDITOR_NAMESPACE = "editor";
+
+export enum EditorAttributeNames {
+  IS_COMPONENT_INSTANCE = "isComponentInstance"
+};
+
+export type TreeNodeClip = {
+  uri: string;
+  node: TreeNode;
+};
+
+
 const DEFAULT_BOUNDS = {
   left: 0,
   top: 0,
@@ -376,7 +387,7 @@ export const updateSyntheticItemBounds = (bounds: Bounds, nodeId: string, browse
   }
 };
 
-export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: string, syntheticNodes: SyntheticNode[], browser: SyntheticBrowser) => {
+export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: string, clips: TreeNodeClip[], browser: SyntheticBrowser) => {
   const targetDep = browser.graph[dependencyUri];
   let targetSourceNode = getParentTreeNode(sourceNodeId, targetDep.content) || getNestedTreeNodeById(sourceNodeId, targetDep.content);
 
@@ -387,11 +398,10 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
   let graph = browser.graph;
   let importUris = targetDep.importUris;
 
-  for (const syntheticNode of syntheticNodes) {
-    const sourceDep = browser.graph[syntheticNode.source.uri];
-    const document = getSyntheticNodeDocument(syntheticNode.id, browser);
+  for (const { uri, node } of clips) {
+    const sourceDep = browser.graph[uri];
     const generateUid = getTreeNodeUidGenerator(sourceDep.content);
-    const sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
+    const sourceNode = node;
 
     // If there is NO source node, then possibly create a detached node and add to target component
     if (!sourceNode) {
@@ -400,11 +410,12 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
 
     // is component
     if (sourceNode.name === "component") {
+      const bounds = calculateRootNodeBounds(sourceNode);
 
       let namespace: string;
 
       // TODO - need to possibly import import component
-      if (syntheticNode.source.uri !== targetDep.uri) {
+      if (uri !== targetDep.uri) {
         const relativePath = path.relative(path.dirname(targetDep.uri), sourceDep.uri);
         namespace = moduleInfo.imports[relativePath];
         if (!namespace) {
@@ -419,7 +430,7 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
 
       const info = getComponentInfo(sourceNode);
 
-      const pos: Bounds = targetNodeIsModuleRoot ? shiftBounds(document.bounds, PASTED_ARTBOARD_OFFSET) : {
+      const pos: Bounds = targetNodeIsModuleRoot ? shiftBounds(bounds, PASTED_ARTBOARD_OFFSET) : {
         left: 0,
         top: 0,
         right: 0,
@@ -433,7 +444,7 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
         id: generateUid(),
         attributes: {
           [DEFAULT_NAMESPACE]: {
-            style: resizeBounds(pos, getBoundsSize(document.bounds))
+            style: resizeBounds(pos, getBoundsSize(bounds))
           }
         },
         children: []
@@ -441,7 +452,10 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
 
       content = updateNestedNode(targetSourceNode, content, (target) => appendChildNode(child, target));
     } else {
-      content = updateNestedNode(targetSourceNode, content, (target) => appendChildNode(cloneNode(sourceNode, generateUid), target));
+      content = updateNestedNode(targetSourceNode, content, (target) => {
+        target = appendChildNode(cloneNode(sourceNode, generateUid), target);
+        return target;
+      });
     }
 
   };
@@ -642,7 +656,7 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
 const filterEditorOts = (ots: OperationalTransform[]) => ots.filter(ot => {
   switch(ot.type) {
     case OperationalTransformType.SET_ATTRIBUTE: {
-      return (ot as SetAttributeTransform).namespace !== EDITOR_NAMESPACE;
+      return (ot as SetAttributeTransform).namespace !== EDITOR_NAMESPACE || !/expanded/.test((ot as SetAttributeTransform).name);
     }
   }
   return true;

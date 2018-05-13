@@ -1,6 +1,12 @@
 @import "front-end/scss/variables.scss";
 
 .m-synthetic-window-layers {
+
+  .m-tree-node-layer {
+    .in-component-instance {
+      background: $color-purple-7;
+    }
+  }
   .label {
     padding-top: 4px;
     padding-bottom: 4px;

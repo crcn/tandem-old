@@ -1,7 +1,8 @@
 import { fork, take, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { RootState } from "../state";
-import { SyntheticObjectType, getSyntheticDocumentById, SyntheticDocument, getSyntheticNodeById, SyntheticNode } from "../../paperclip";
+import { TreeNodeClip } from  "../../paperclip";
+import { SyntheticObjectType, getSyntheticDocumentById, SyntheticDocument, getSyntheticNodeById, SyntheticNode, getSyntheticSourceNode } from "../../paperclip";
 import { syntheticNodesPasted } from "../actions";
 
 export function* copyPasteSaga() {
@@ -23,7 +24,10 @@ function* handleCopy() {
     while(1) {
       const event: ClipboardEvent = yield take(chan);
       const root: RootState = yield select();
-      event.clipboardData.setData("text/plain", JSON.stringify(root.selectedNodeIds.map(nodeId => getSyntheticNodeById(nodeId, root.browser))));
+      event.clipboardData.setData("text/plain", JSON.stringify(root.selectedNodeIds.map(nodeId => ({
+        uri: getSyntheticNodeById(nodeId, root.browser).source.uri,
+        node: getSyntheticSourceNode(nodeId, root.browser)
+      }))));
       event.preventDefault();
     }
   }
@@ -49,8 +53,8 @@ function* handlePaste() {
 
       const text = event.clipboardData.getData("text/plain");
       try {
-        const syntheticNodes = JSON.parse(text) as SyntheticNode[];
-        yield put(syntheticNodesPasted(syntheticNodes));
+        const clips = JSON.parse(text) as TreeNodeClip[];
+        yield put(syntheticNodesPasted(clips));
         event.preventDefault();
       } catch(e) {
         console.warn(e);

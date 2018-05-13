@@ -2,9 +2,9 @@ import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { RootState } from "../../../../../../../state";
-import { SyntheticWindow, SyntheticBrowser, SyntheticNode, SyntheticDocument, SyntheticObjectType, EDITOR_NAMESPACE } from "../../../../../../../../paperclip";
+import { SyntheticWindow, SyntheticBrowser, SyntheticNode, SyntheticDocument, SyntheticObjectType, EDITOR_NAMESPACE, EditorAttributeNames } from "../../../../../../../../paperclip";
 import { compose, pure, withHandlers } from "recompose"
-import { createTreeLayerComponents } from "../../../../../../layers";
+import { createTreeLayerComponents, TreeNodeLayerOuterProps } from "../../../../../../layers";
 import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById } from "../../../../../../../../common";
 import { Dispatch } from "redux";
 import { pcLayerClick, pcLayerMouseOut, pcLayerMouseOver, pcLayerExpandToggleClick, pcLayerDroppedNode, RESIZER_STOPPED_MOVING } from "../../../../../../../actions";
@@ -12,7 +12,11 @@ import { StructReference } from "../../../../../../../../common";
 
 const DRAG_TYPE = "SYNTHETIC_NODE";
 
-const {TreeNodeLayerComponent} = createTreeLayerComponents({
+type PCLayerOuterProps ={
+  inComponentInstance?: boolean;
+} & TreeNodeLayerOuterProps;
+
+const {TreeNodeLayerComponent} = createTreeLayerComponents<PCLayerOuterProps>({
   actionCreators: {
     treeLayerDroppedNode: pcLayerDroppedNode,
     treeLayerClick: pcLayerClick,
@@ -20,7 +24,14 @@ const {TreeNodeLayerComponent} = createTreeLayerComponents({
     treeLayerMouseOut: pcLayerMouseOut,
     treeLayerMouseOver: pcLayerMouseOver
   },
-  dragType: DRAG_TYPE
+  dragType: DRAG_TYPE,
+  getLabelProps: (attribs, props: any) => ({
+    ...attribs,
+    className: cx(attribs.className, { "in-component-instance": props.inComponentInstance })
+  }),
+  layerRenderer: (Base) => (props: PCLayerOuterProps) => {
+    return <Base {...props} inComponentInstance={props.inComponentInstance || getAttribute(props.node, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE)} />;
+  }
 });
 
 type SyntheticWindowLayersOuterProps = {
