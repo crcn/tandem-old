@@ -200,7 +200,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       }, state);
 
       const documents = evaluateDependencyEntry({ entry, graph }).documentNodes.map(root => {
-        return createSyntheticDocument(root, state.browser);
+        return createSyntheticDocument(root, graph[root.source.uri].content);
       });
 
       const existingWindow = state.browser.windows.find(window => window.location === entry.uri);

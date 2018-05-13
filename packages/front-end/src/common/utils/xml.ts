@@ -101,6 +101,8 @@ export const parseStyle = (source: string): any => {
   return style;
 };
 
+export const castStyle = (source: string): any => typeof source === "string" ? parseStyle(source) : source;
+
 const stringifyStyle = (style: any) => {
   let buffer = ``;
 

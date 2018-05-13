@@ -1,5 +1,5 @@
-import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode } from "../common/state/tree";
-import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML, ArrayOperationalTransform } from "../common/utils";
+import { TreeNodeAttributes, getTeeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode, cloneNode, getTreeNodeUidGenerator } from "../common/state/tree";
+import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, stringifyTreeNodeToXML, ArrayOperationalTransform, castStyle, createUIDGenerator } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect, parseStyle } from "../common";
@@ -7,10 +7,16 @@ import { mapValues, pull } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry } from "./evaluate";
 import { STATUS_CODES } from "http";
-import { Children } from "react";
+import { Children, SyntheticEvent } from "react";
 
-const PREVIEW_NAMESPACE = "preview";
 export const EDITOR_NAMESPACE = "editor";
+const DEFAULT_BOUNDS = {
+  left: 0,
+  top: 0,
+  right: 400,
+  bottom: 300
+};
+
 const PASTED_ARTBOARD_OFFSET = {
   left: 20,
   top: 20
@@ -101,8 +107,18 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   type: SyntheticObjectType.WINDOW,
 });
 
-export const createSyntheticDocument = (root: SyntheticNode, browser: SyntheticBrowser): SyntheticDocument => {
-  const component = getTreeNodeFromPath(root.source.path, browser.graph[root.source.uri].content);
+const calculateRootNodeBounds = (rootSourceNode: TreeNode) =>  {
+  const style = getAttribute(rootSourceNode, "style");
+  return style || DEFAULT_BOUNDS;
+};
+
+const getSyntheticDocumentBounds = (documentRootNode: SyntheticNode, moduleRootNode: TreeNode) => {
+  const rootSourceNode = getTreeNodeFromPath(documentRootNode.source.path, moduleRootNode);
+  const bounds = getAttribute(rootSourceNode, "bounds", EDITOR_NAMESPACE) || calculateRootNodeBounds(rootSourceNode);
+  return typeof bounds === "string" ? mapValues(parseStyle(bounds), Number) as Bounds : bounds;
+};
+
+export const createSyntheticDocument = (documentRootNode: SyntheticNode, moduleRootNode: TreeNode): SyntheticDocument => {
 
   const container = document.createElement("iframe");
   container.style.border = "none";
@@ -115,12 +131,10 @@ export const createSyntheticDocument = (root: SyntheticNode, browser: SyntheticB
     });
   });
 
-  const bounds = getAttribute(component, "bounds", "preview");
-
   const syntheticDocument: SyntheticDocument = {
-    root,
+    root: documentRootNode,
     container,
-    bounds: typeof bounds === "string" ? mapValues(parseStyle(bounds), Number) as Bounds : bounds,
+    bounds: getSyntheticDocumentBounds(documentRootNode, moduleRootNode),
     id: generateId(),
     type: SyntheticObjectType.DOCUMENT,
   };
@@ -152,8 +166,7 @@ export const getSyntheticSourceNode = (syntheticNodeId: string, browser: Synthet
 
 export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
 export const getSyntheticDocumentDependency = (documentId: string, browser: SyntheticBrowser) => getSyntheticWindowDependency(getSyntheticDocumentWindow(documentId, browser), browser.graph);
-
-export const getSyntheticDocumentComponent = (document: SyntheticDocument, browser: SyntheticBrowser) =>  getComponentInfo(getSyntheticSourceNode(document.root.id, browser));
+export const getSyntheticDocumentSourceNode = (document: SyntheticDocument, browser: SyntheticBrowser) => getSyntheticSourceNode(document.root.id, browser);
 
 export const findSyntheticDocument = (state: SyntheticWindow|SyntheticBrowser, test: (document: SyntheticDocument) => Boolean) => {
   if (state.type === SyntheticObjectType.BROWSER) {
@@ -356,8 +369,10 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
   const targetDep = browser.graph[dependencyUri];
   let targetSourceNode =  getParentTreeNode(sourceNodeId, targetDep.content) || getNestedTreeNodeById(sourceNodeId, targetDep.content);
 
+
   const newContent = syntheticNodes.reduce((content, syntheticNode) => {
     const sourceDep = browser.graph[syntheticNode.source.uri];
+    const generateUid = getTreeNodeUidGenerator(sourceDep.content);
     const sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
 
     // If there is NO source node, then possibly create a detached node and add to target component
@@ -366,7 +381,7 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
     }
 
     // is component
-    if (syntheticNode.source.path.length === 1) {
+    if (sourceNode.name === "component") {
 
       // TODO - need to possibly import import component
       if (syntheticNode.source.uri !== targetDep.uri) {
@@ -375,7 +390,7 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
 
       const childComponentNode = createComponentNode(
         targetDep,
-        shiftBounds(parseStyle(getAttribute(sourceNode, "bounds", PREVIEW_NAMESPACE)), PASTED_ARTBOARD_OFFSET),
+        shiftBounds(castStyle(getAttribute(sourceNode, "bounds", EDITOR_NAMESPACE)), PASTED_ARTBOARD_OFFSET),
         getAttribute(sourceNode, "id")
       );
 
@@ -387,7 +402,7 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
         ]
       }
     } else {
-      return updateNestedNode(targetSourceNode, content, (target) => appendChildNode(syntheticNode, target));
+      return updateNestedNode(targetSourceNode, content, (target) => appendChildNode(cloneNode(sourceNode, generateUid), target));
     }
 
 
@@ -556,11 +571,11 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
       documents: documentNodes.map(newDocumentNode => {
         const sourceComponent = getComponentInfo(getTreeNodeFromPath(newDocumentNode.source.path, browser.graph[newDocumentNode.source.uri].content));
         const document = window.documents.find(document => {
-          const documentComponent = getSyntheticDocumentComponent(document, oldBrowser);
-          return getAttribute(documentComponent.source, "id") === getAttribute(sourceComponent.source, "id")
+          const documentSourceNode = getSyntheticDocumentSourceNode(document, oldBrowser);
+          return documentSourceNode.id === sourceComponent.source.id;
         });
         if (!document) {
-          const newDocument = createSyntheticDocument(newDocumentNode, browser);
+          const newDocument = createSyntheticDocument(newDocumentNode, graph[window.location].content);
           return newDocument;
         }
         const ots = filterEditorOts(diffNode(document.root, newDocumentNode));
@@ -568,6 +583,7 @@ const updateDependencyAndRevaluate = (properties: Partial<Dependency>, dependenc
         const nativeNodeMap = document.container.contentDocument ? patchDOM(ots, document.root, document.container.contentDocument.body.children[0] as HTMLElement, document.nativeNodeMap) : document.nativeNodeMap;
         return {
           ...document,
+          bounds: getSyntheticDocumentBounds(newRoot, graph[window.location].content),
           nativeNodeMap,
           computed: computeDisplayInfo(nativeNodeMap),
           root: newRoot
@@ -644,7 +660,7 @@ const createComponentNode = (dep: Dependency, bounds?: Bounds, parentId?: string
         id: generateComponentId(dep.content),
         extends: parentId
       },
-      [PREVIEW_NAMESPACE]: {
+      [EDITOR_NAMESPACE]: {
         bounds
       }
     },
@@ -709,6 +725,7 @@ export const persistInsertNode = (child: TreeNode, refSourceNodeId: string, offs
   const dep = getSourceNodeDependency(refSourceNodeId, browser);
   const sourceParentNode = offset === 0 ? sourceRefNode : getParentTreeNode(sourceRefNode.id, dep.content);
   const index = offset === 0 ? sourceParentNode.children.length : sourceParentNode.children.indexOf(sourceRefNode) + (offset === -1 ? 0 : 1);
+
   return updateDependencyAndRevaluate({
     content: insertComponentChildNode(addTreeNodeIds(child, dep.content.id), index, sourceParentNode.id, dep.content)
   }, dep.uri, browser);
@@ -737,20 +754,9 @@ const insertComponentChildNode = (child: TreeNode, index: number, parentId: stri
 
 export const persistDeleteSyntheticItems = (nodeIds: string[], browser: SyntheticBrowser) => {
   return nodeIds.reduce((state, nodeId) => {
-    let document: SyntheticDocument;
-    let dep: Dependency;
-    let sourceNode: TreeNode;
-    if (isSyntheticDocumentRoot(nodeId, state)) {
-      document = getSyntheticNodeDocument(nodeId, browser);
-      dep = getSyntheticDocumentDependency(document.id, browser);
-      const component = getSyntheticDocumentComponent(document, browser);
-      sourceNode = component.source;
-    } else {
-      const syntheticNode = getSyntheticNodeById(nodeId, browser);
-      document= getSyntheticNodeDocument(nodeId, browser);
-      dep = browser.graph[syntheticNode.source.uri];
-      sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
-    }
+    const syntheticNode = getSyntheticNodeById(nodeId, browser);
+    const dep = browser.graph[syntheticNode.source.uri];
+    const sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
     return updateDependencyAndRevaluate({
       content: removeNestedTreeNode(sourceNode, dep.content)
     }, dep.uri, state);
@@ -783,7 +789,7 @@ export const getModifiedDependencies = (oldGraph: DependencyGraph, newGraph: Dep
 export const persistSyntheticItemBounds = (bounds: Bounds, nodeId: string, browser: SyntheticBrowser) => {
   if (isSyntheticDocumentRoot(nodeId, browser)) {
     return persistSyntheticNodeChanges(nodeId, browser, (child) => {
-      return setNodeAttribute(child, "bounds", bounds, PREVIEW_NAMESPACE);
+      return setNodeAttribute(child, "bounds", bounds, EDITOR_NAMESPACE);
     });
   } else {
     const document = getSyntheticNodeDocument(nodeId, browser);

@@ -1,5 +1,5 @@
 <module>
-  <component id="component1" preview:bounds="left:218;top:174;right:687;bottom:489;">
+  <component id="component1" editor:bounds="left:218;top:174;right:687;bottom:489;">
     <template>
       <div style="bottom:109;width:100%;height:100%;background:#CCC;padding:10px;boxSizing:border-box;fontFamily:Helvetica;display:flex;flexDirection:column;" editor:label="Rectangle">
         <div style="width:100%;padding:10px;background:rgba(0,0,0,0.1);boxSizing:border-box;marginBottom:10px;" editor:label="Rectangle">

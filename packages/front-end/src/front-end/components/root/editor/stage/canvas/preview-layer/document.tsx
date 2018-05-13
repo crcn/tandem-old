@@ -3,7 +3,6 @@ import * as React from "react";
 import { getAttribute } from "../../../../../../../common";
 import { compose, pure, lifecycle } from "recompose";
 import { SyntheticDocument, getModuleInfo, Dependency, DependencyGraph, getComponentInfo } from "../../../../../../../paperclip";
-import { PREVIEW_NAMESPACE } from "../../../../../../state";
 
 export type DocumentPreviewOuterProps = {
   document: SyntheticDocument;

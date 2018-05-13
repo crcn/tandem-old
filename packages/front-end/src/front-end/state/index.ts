@@ -1,5 +1,5 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticDocumentComponent, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency } from "../../paperclip";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
 
@@ -77,7 +77,6 @@ export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBr
   const modifiedDeps = getModifiedDependencies(oldGraph, state.browser.graph);
   state = addHistory(state, modifiedDeps.map(dep => oldGraph[dep.uri]));
   state = modifiedDeps.reduce((state, dep: Dependency) => setOpenFileContent(dep, state), state);
-
   return state;
 };
 
@@ -123,7 +122,10 @@ const moveDependencyRecordHistory = (uri: string, pos: number, root: RootState):
         ...record,
         index
       }
-    }
+    },
+    selectedFileNodeIds: [],
+    selectedNodeIds: [],
+    hoveringNodeIds: []
   }, root);
 
   root = setOpenFileContent(dep, root);
@@ -459,4 +461,3 @@ export const getBoundedSelection = memoize((root: RootState): string[] => root.s
 export const getSelectionBounds = memoize((root: RootState) => mergeBounds(...getBoundedSelection(root).map(nodeId => getSyntheticNodeBounds(nodeId, root.browser))));
 
 
-export * from "./constants";

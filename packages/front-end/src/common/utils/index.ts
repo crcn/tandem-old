@@ -7,3 +7,4 @@ export * from "./struct";
 export * from "./iframe";
 export * from "./dnd";
 export * from "./html";
+export * from "./uid";

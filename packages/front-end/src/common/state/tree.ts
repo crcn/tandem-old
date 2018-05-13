@@ -2,6 +2,7 @@ import { memoize } from "../utils/memoization";
 import { stringifyTreeNodeToXML } from "../utils/xml";
 import * as crc32 from "crc32";
 import { arraySplice } from "../utils/array";
+import { UIDGenerator, createUIDGenerator } from "../utils/uid";
 
 export const DEFAULT_NAMESPACE = "undefined";
 
@@ -123,7 +124,15 @@ export const getNestedTreeNodeById = memoize(<TNode extends TreeNode>(id: string
   return getTreeNodeIdMap(root)[id];
 });
 
-export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)))
+export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)));
+export const getTreeNodeUidGenerator = memoize((root: TreeNode) => {
+  const rightMostTreeNode = getRightMostTreeNode(root);
+  return createUIDGenerator(crc32(rightMostTreeNode.id));
+});
+
+export const getRightMostTreeNode = (current: TreeNode) => {
+  return current.children.length ? getRightMostTreeNode(current.children[current.children.length - 1]) : current;
+};
 
 export const removeNestedTreeNode = (nestedChild: TreeNode, current: TreeNode) => removeNestedTreeNodeFromPath(getTeeNodePath(nestedChild.id, current), current);
 
@@ -177,21 +186,14 @@ export const appendChildNode = <TTree extends TreeNode>(child: TTree, parent: TT
   ]
 });
 
+export const cloneNode = <TTree extends TreeNode>(node: TTree, generateUID: UIDGenerator) => ({
+  ...(node as any),
+  id: generateUID(),
+  children: node.children.map(child => cloneNode(child, generateUID))
+});
+
 export const getParentTreeNode = memoize((nodeId: string, root: TreeNode) => getChildParentMap(root)[nodeId]);
 
 export const addTreeNodeIds = <TTree extends TreeNode>(node: TTree, seed: string = ""): TTree => {
-  let i = 0;
-  if (node.id) {
-    return node;
-  }
-
-  const checksum = seed + generateTreeChecksum(node);
-
-  const update = (node: TTree) => ({
-    ...(node as any),
-    id: checksum + (i++),
-    children: node.children.map(update)
-  });
-
-  return update(node);
+  return node.id ? node : cloneNode(node, createUIDGenerator(seed + generateTreeChecksum(node)));
 };

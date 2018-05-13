@@ -10,14 +10,23 @@ TODO (in order of importance):
 */
 
 import { TreeNode, DEFAULT_NAMESPACE, TreeNodeAttributes, getAttribute, generateTreeChecksum, removeNestedTreeNodeFromPath, removeNestedTreeNode, getParentTreeNode, updateNestedNode, setNodeAttribute } from "../common/state/tree";
-import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride } from "./dsl";
-import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency, getSyntheticDocumentComponent } from "./synthetic";
+import { getImports, getModuleInfo, Component, Module, Dependency, DependencyGraph, getNodeSourceComponent, getNodeSourceModule, getModuleComponent, getNodeSourceDependency, ComponentExtendsInfo, getImportedDependency, getDependencyModule, ComponentOverride, ComponentOverrideType, getNodeReference, DeleteChildOverride, InsertChildOverride, SetAttributeOverride, SetStyleOverride, getComponentInfo } from "./dsl";
+import { SyntheticNodeSource, SyntheticBrowser, SyntheticNode, SyntheticObject, SyntheticObjectType, SyntheticWindow, createSyntheticElement, getSytheticNodeSource, SyntheticDocument, getSyntheticDocumentDependency } from "./synthetic";
 import { EMPTY_OBJECT, EMPTY_ARRAY, arraySplice, xmlToTreeNode, stringifyTreeNodeToXML, memoize } from "../common/utils";
 import { pick, merge } from "lodash";
 
 export const DEFAULT_EXTENDS: ComponentExtendsInfo = {
   namespace: DEFAULT_NAMESPACE,
   tagName: "div"
+};
+
+const DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE = {
+  left: "0px",
+  top: "0px",
+  right: undefined,
+  bottom: undefined,
+  width: "100vw",
+  height: "100vh"
 };
 
 export type EvaluateOptions = {
@@ -37,28 +46,38 @@ export const evaluateDependencyEntry = ({ entry, graph }: EvaluateOptions): Eval
   const module = getModuleInfo(entry.content);
   const checksum = generateTreeChecksum(entry.content);
   return {
-    documentNodes: module.components.map((component, i) => evaluateRootComponent(component, entry, graph))
+    documentNodes: entry.content.children.map((element, i) => evaluatRooteDocumentElement(element, entry, graph))
   };
 };
 
-export const evaluateRootComponent = (component: Component, currentDependency: Dependency, graph: DependencyGraph): SyntheticNode  => {
-  const module = getModuleInfo(currentDependency.content);
-  const dependency = getNodeSourceDependency(component.source, currentDependency, graph);
-  const checksum = generateTreeChecksum(dependency.content);
-  return _evaluateComponent(component, {
-    [DEFAULT_NAMESPACE]: {
-      style: {
-        width: "100vw",
-        height: "100vh"
-      }
-    }
-  }, [], getSytheticNodeSource(component.source, dependency), checksum + component.id, module, checksum, dependency, graph);
+export const evaluatRooteDocumentElement = (element: TreeNode, entry: Dependency, graph: DependencyGraph) => {
+  if (element.name === "component") {
+    return evaluateRootDocumentComponent(element, entry, graph);
+  } else {
+    const checksum = generateTreeChecksum(entry.content);
+    const synthetic = evaluateNode(element, getModuleInfo(entry.content), checksum + element.id, checksum, entry, graph);
+    return setNodeAttribute(synthetic, "style", {
+      ...(getAttribute(synthetic, "style") || EMPTY_OBJECT),
+      ...DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE
+    }) as SyntheticNode;
+  }
 };
 
-const _evaluateComponent = (component: Component, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
-  const ext = component.extends || DEFAULT_EXTENDS;
+export const evaluateRootDocumentComponent = (componentNode: TreeNode, currentDependency: Dependency, graph: DependencyGraph): SyntheticNode  => {
+  const module = getModuleInfo(currentDependency.content);
+  const dependency = getNodeSourceDependency(componentNode, currentDependency, graph);
+  const checksum = generateTreeChecksum(dependency.content);
+  return _evaluateComponent(componentNode, {
+    [DEFAULT_NAMESPACE]: {
+      style: DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE
+    }
+  }, [], getSytheticNodeSource(componentNode, dependency), checksum + componentNode.id, module, checksum, dependency, graph);
+};
 
-  let template = component.template;
+const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
+  const info = getComponentInfo(componentNode);
+  const ext = info.extends || DEFAULT_EXTENDS;
+  let template = info.template;
 
   const slots = {};
 
@@ -87,7 +106,7 @@ const _evaluateComponent = (component: Component, attributes: TreeNodeAttributes
     if (extendsComponent) {
 
       // overrides passed in
-      return _evaluateComponent(extendsComponent, syntheticAttributes, syntheticChildren, source, id, extendsFromModule, checksum, extendsFromDependency, graph, [...component.overrides, ...overrides]);
+      return _evaluateComponent(extendsComponent.source, syntheticAttributes, syntheticChildren, source, id, extendsFromModule, checksum, extendsFromDependency, graph, [...info.overrides, ...overrides]);
     }
   }
 
@@ -138,7 +157,7 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
   const nodeComponent = getModuleComponent(node.name, nodeModule);
 
   if (nodeComponent) {
-    return _evaluateComponent(nodeComponent, node.attributes, node.children, getSytheticNodeSource(node, dependency), id, nodeModule, checksum, nodeDependency, graph)
+    return _evaluateComponent(nodeComponent.source, node.attributes, node.children, getSytheticNodeSource(node, dependency), id, nodeModule, checksum, nodeDependency, graph)
   }
 
   let children = node.children;
