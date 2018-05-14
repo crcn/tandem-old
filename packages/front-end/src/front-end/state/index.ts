@@ -1,5 +1,5 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode } from "../../paperclip";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
 
@@ -288,6 +288,15 @@ export const setRootStateSyntheticNodeExpanded = (nodeId: string, value: boolean
   const document = getSyntheticNodeDocument(node.id, state.browser);
   state = updateRootStateSyntheticWindowDocument(document.id, {
     root: setSyntheticNodeExpanded(node, value, document.root)
+  }, state);
+  return state;
+};
+
+export const setRootStateSyntheticNodeLabelEditing = (nodeId: string, value: boolean, state: RootState) => {
+  const node = getSyntheticNodeById(nodeId, state.browser);
+  const document = getSyntheticNodeDocument(node.id, state.browser);
+  state = updateRootStateSyntheticWindowDocument(document.id, {
+    root: updateNestedNode(node, document.root, node => setNodeAttribute(node, "editingLabel", value, EDITOR_NAMESPACE))
   }, state);
   return state;
 };

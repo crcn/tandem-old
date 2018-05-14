@@ -5,16 +5,18 @@ import { RootState } from "../../state";
 import { identity } from "lodash";
 import { SyntheticWindow, SyntheticBrowser, SyntheticDocument, SyntheticObjectType, EDITOR_NAMESPACE } from "../../../paperclip";
 import { compose, pure, withHandlers, withState, withProps } from "recompose"
-import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById, TreeNode } from "../../../common";
+import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById, TreeNode, DEFAULT_NAMESPACE } from "../../../common";
 import { Dispatch } from "redux";
 import {
   DropTarget,
   DragSource,
 	DropTargetCollector,
 } from "react-dnd";
+import { FocusComponent } from "../focus";
 
 export type TreeLayerDroppedNodeActionCreator = (child: TreeNode, targetNode: TreeNode, offset: 0|-1|1) => any;
 export type TreeLayerMouseActionCreator = (node: TreeNode, sourceEvent?: React.MouseEvent<any>) => any;
+export type TreeLayerLabelChangedActionCreator = (label: string, node: TreeNode) => any;
 
 type AttributeInfo = {
   name: string;
@@ -38,6 +40,7 @@ type TreeNodeLayerLabelOuterProps = {
   selected: boolean;
   hovering: boolean;
   expanded: boolean;
+  editingLabel: boolean;
   dispatch: Dispatch<any>;
 };
 
@@ -51,6 +54,8 @@ type TreeNodeLayerLabelInnerProps = {
   onLabelClick: (event: React.MouseEvent<any>) => any;
   onLabelDoubleClick: (event: React.MouseEvent<any>) => any;
   onExpandToggleButtonClick: (event: React.MouseEvent<any>) => any;
+  onLabelKeyDown: (event: React.KeyboardEvent<any>) => any;
+  onLabelBlur: () => any;
 } & TreeNodeLayerLabelOuterProps;
 
 type TreeLayerOptions = {
@@ -60,14 +65,18 @@ type TreeLayerOptions = {
     treeLayerMouseOver?: TreeLayerMouseActionCreator,
     treeLayerClick?: TreeLayerMouseActionCreator,
     treeLayerDoubleClick?: TreeLayerMouseActionCreator,
-    treeLayerExpandToggleClick?: TreeLayerMouseActionCreator
-  }
+    treeLayerLabelChanged?: TreeLayerLabelChangedActionCreator,
+    treeLayerExpandToggleClick?: TreeLayerMouseActionCreator,
+    treeLayerEditLabelBlur?: TreeLayerMouseActionCreator
+  };
+  layersEditable?: boolean;
   reorganizable?: boolean;
   dragType: string,
   depthOffset?: number,
   attributeOptions?: {
     nodeLabelAttr?: AttributeInfo,
     expandAttr?: AttributeInfo,
+    editingLabelAttr?: AttributeInfo
   },
   hasChildren?: (node: TreeNode) => boolean;
   getLabelProps?: (attributes: any, props: TreeNodeLayerLabelOuterProps) => any
@@ -82,6 +91,11 @@ const DEFAULT_NODE_EXPAND_ATTRIBUTE = {
 
 const DEFAULT_NODE_LABEL_ATTRIBUTE = {
   name: "label",
+  namespace: DEFAULT_NAMESPACE
+};
+
+const DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE = {
+  name: "editingLabel",
   namespace: EDITOR_NAMESPACE
 };
 
@@ -97,12 +111,13 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   attributeOptions: {
     nodeLabelAttr = DEFAULT_NODE_LABEL_ATTRIBUTE,
     expandAttr = DEFAULT_NODE_EXPAND_ATTRIBUTE,
+    editingLabelAttr = DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE
   } = {},
   childRenderer = defaultRender,
   hasChildren = defaultShowChildren,
   layerRenderer = defaultLayerRenderer,
   getLabelProps = identity,
-  depthOffset = 30, actionCreators: { treeLayerDroppedNode, treeLayerMouseOver, treeLayerClick, treeLayerDoubleClick, treeLayerMouseOut, treeLayerExpandToggleClick }, dragType, reorganizable = true }: TreeLayerOptions) => {
+  depthOffset = 30, actionCreators: { treeLayerDroppedNode, treeLayerMouseOver, treeLayerEditLabelBlur, treeLayerLabelChanged, treeLayerClick, treeLayerDoubleClick, treeLayerMouseOut, treeLayerExpandToggleClick }, dragType, reorganizable = true }: TreeLayerOptions) => {
 
   const DRAG_TYPE = dragType;
   const DEPTH_PADDING = 8;
@@ -155,18 +170,23 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   )(BaseInsertComponent);
 
   const BaseTreeNodeLayerLabelComponent = (props: TreeNodeLayerLabelInnerProps) => {
-    const { connectDropTarget, connectDragSource, node, canDrop, isOver, depth, expanded, selected, hovering, onLabelClick, onLabelMouseOut, onLabelMouseOver, onLabelDoubleClick, onExpandToggleButtonClick } = props;
+    const { connectDropTarget, connectDragSource, node, canDrop, isOver, depth, editingLabel, expanded, selected, hovering, onLabelClick, onLabelMouseOut, onLabelMouseOver, onLabelDoubleClick, onLabelKeyDown, onLabelBlur, onExpandToggleButtonClick } = props;
     const labelProps = getLabelProps({
       style: {
         paddingLeft: DEPTH_OFFSET + depth * DEPTH_PADDING
       },
       className: cx("label", { selected, hovering: hovering || (isOver && canDrop) }, props)
     }, props);
+    const label = getAttribute(node, nodeLabelAttr.name, nodeLabelAttr.namespace);
     return connectDropTarget(connectDragSource(<div {...labelProps} onMouseOver={onLabelMouseOver} onMouseOut={onLabelMouseOut} onClick={onLabelClick} onDoubleClick={onLabelDoubleClick}>
-      <span onClick={onExpandToggleButtonClick}>
-        { hasChildren(node) ? expanded ? <i className="ion-arrow-down-b" /> : <i className="ion-arrow-right-b" /> : null }
-      </span>
-      { getAttribute(node, nodeLabelAttr.name, nodeLabelAttr.namespace) || "Untitled" }
+      { editingLabel ? <FocusComponent><input onKeyDown={onLabelKeyDown} onBlur={onLabelBlur} defaultValue={label} /></FocusComponent> : <span>
+        <span onClick={onExpandToggleButtonClick}>
+          { hasChildren(node) ? expanded ? <i className="ion-arrow-down-b" /> : <i className="ion-arrow-right-b" /> : null }
+        </span>
+        { label || "Untitled" }
+        </span>
+      }
+
     </div>));
   };
 
@@ -188,6 +208,14 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
       onExpandToggleButtonClick: ({ dispatch, document, node }) => (event: React.MouseEvent<any>) => {
         treeLayerExpandToggleClick && dispatch(treeLayerExpandToggleClick(node));
         event.stopPropagation();
+      },
+      onLabelKeyDown: ({ dispatch, node }) => (event: KeyboardEvent) => {
+        if (event.key === "Enter" && treeLayerLabelChanged) {
+          dispatch(treeLayerLabelChanged((event.target as any).value, node));
+        }
+      },
+      onLabelBlur: ({ dispatch, node }) => (event) => {
+        treeLayerEditLabelBlur && dispatch(treeLayerEditLabelBlur(node));
       }
     }),
     DragSource(DRAG_TYPE, {
@@ -210,10 +238,11 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
     const selected = selectedNodeIds.indexOf(node.id) !== -1;
     const hovering = hoveringNodeIds.indexOf(node.id) !== -1;
     const expanded = getAttribute(node, expandAttr.name, expandAttr.namespace);
+    const editingLabel = getAttribute(node, editingLabelAttr.name, editingLabelAttr.namespace);
 
     return <div className="m-tree-node-layer">
       { isRoot || !reorganizable ? null : <InsertBeforeComponent node={node} depth={depth} dispatch={dispatch} /> }
-      <TreeNodeLayerLabelComponent node={node} selected={selected} hovering={hovering} dispatch={dispatch} depth={depth} expanded={expanded} {...rest} />
+      <TreeNodeLayerLabelComponent editingLabel={editingLabel} node={node} selected={selected} hovering={hovering} dispatch={dispatch} depth={depth} expanded={expanded} {...rest} />
       <div className="children">
         {
           !node.children.length || expanded ? renderChildren({ isRoot, hoveringNodeIds, selectedNodeIds, node, depth, dispatch, ...rest }) : null

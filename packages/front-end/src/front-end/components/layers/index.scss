@@ -8,6 +8,10 @@
     cursor: default;
     user-select: none;
 
+    input {
+      color: #333;
+    }
+
     &.hovering {
       box-shadow: inset 0px 0px 0px 2px $color-aqua-1;
     }

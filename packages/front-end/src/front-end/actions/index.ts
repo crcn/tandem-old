@@ -58,11 +58,16 @@ export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
 export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
+export const NATIVE_NODE_TYPE_CHANGED = "NATIVE_NODE_TYPE_CHANGED";
+export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
 export const PC_LAYER_MOUSE_OVER = "PC_LAYER_MOUSE_OVER";
 export const PC_LAYER_MOUSE_OUT = "PC_LAYER_MOUSE_OUT";
 export const PC_LAYER_CLICK = "PC_LAYER_CLICK";
+export const PC_LAYER_DOUBLE_CLICK = "PC_LAYER_DOUBLE_CLICK";
+export const PC_LAYER_LABEL_CHANGED = "PC_LAYER_LABEL_CHANGED";
 export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
 export const PC_LAYER_DROPPED_NODE = "PC_LAYER_DROPPED_NODE";
+export const PC_LAYER_EDIT_LABEL_BLUR = "PC_LAYER_EDIT_LABEL_BLUR";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 
 export type WrappedEvent<T> = {
@@ -147,6 +152,11 @@ export type TreeLayerMouseOver = {
   node: TreeNode;
 } & Action;
 
+export type TreeLayerLabelChanged = {
+  label: string;
+  node: TreeNode;
+} & Action;
+
 export type TreeLayerDroppedNode = {
   node: TreeNode;
   targetNode: TreeNode;
@@ -174,6 +184,14 @@ export type CanvasToolArtboardTitleClicked = {
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type SlotToggleClick = {
+} & Action;
+
+export type NativeNodeTypeChanged = {
+  nativeType: string;
+} & Action;
+
+export type TextValueChanged = {
+  value: string;
 } & Action;
 
 export type ResizerPathMoved = {
@@ -287,9 +305,25 @@ export const pcLayerMouseOver = (node: TreeNode): TreeLayerMouseOver => ({
   type: PC_LAYER_MOUSE_OVER,
 });
 
+export const pcLayerDoubleClick = (node: TreeNode): TreeLayerMouseOver => ({
+  node,
+  type: PC_LAYER_DOUBLE_CLICK,
+});
+
+export const pcLayerLabelChanged = (label: string, node: TreeNode): TreeLayerLabelChanged => ({
+  label,
+  node,
+  type: PC_LAYER_LABEL_CHANGED,
+});
+
 export const pcLayerMouseOut = (node: TreeNode): TreeLayerMouseOut => ({
   node,
   type: PC_LAYER_MOUSE_OUT,
+});
+
+export const pcEditLayerLabelBlur = (node: TreeNode): TreeLayerMouseOut => ({
+  node,
+  type: PC_LAYER_EDIT_LABEL_BLUR
 });
 
 export const pcLayerClick = (node: TreeNode, sourceEvent: React.MouseEvent<any>): TreeLayerClick => ({
@@ -317,6 +351,16 @@ export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({
 
 export const slotToggleClick = (): SlotToggleClick => ({
   type: SLOT_TOGGLE_CLICK
+});
+
+export const nativeNodeTypeChange = (nativeType: string): NativeNodeTypeChanged => ({
+  nativeType,
+  type: NATIVE_NODE_TYPE_CHANGED
+});
+
+export const textValueChanged = (value: string): TextValueChanged => ({
+  value,
+  type: TEXT_VALUE_CHANGED
 });
 
 export const appLoaded = publicActionCreator(() => ({ type: APP_LOADED }));

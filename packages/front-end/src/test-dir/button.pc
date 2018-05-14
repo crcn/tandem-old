@@ -1,8 +1,8 @@
 <module xmlns:import0="test2.pc">
-  <component id="component1" editor:bounds="left:144;top:171;right:433;bottom:341;">
+  <component id="component1" label="Button" editor:bounds="left:144;top:171;right:433;bottom:341;">
     <template>
-      <div style="width:100%;height:100%;background:blue;padding:10px;color:white;boxSizing:border-box;fontFamily:Helvetica;" editor:label="Rectangle">
-        <text style="display:inline-block;position:relative;top:50%;transform:translate(-50%, -50%);left:50%;width:57.78125;height:18;" value="click me"></text>
+      <div style="width:100%;height:100%;background:blue;padding:10px;color:white;boxSizing:border-box;fontFamily:Helvetica;" label="container" editor:label="Rectangle">
+        <text style="display:inline-block;position:relative;top:50%;transform:translate(-50%, -50%);left:50%;" value="click that!" label="label"></text>
       </div>
     </template>
   </component>

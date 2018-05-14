@@ -90,7 +90,7 @@ export const diffNode = (a: TreeNode, b: TreeNode, path: number[] = [], diffs: O
     const aatts = a.attributes[namespace] || EMPTY_OBJECT;
     const batts = b.attributes[namespace];
 
-    for (const name in aatts) {
+    for (const name in batts) {
       const newValue = batts[name];
       const oldValue = aatts[name];
       if (oldValue == null) {

@@ -11,7 +11,9 @@ export type DependencyGraph = {
 
 export enum PCSourceAttributeNames {
   CONTAINER = "container",
-  CONTAINER_STORAGE = "container-keep"
+  CONTAINER_STORAGE = "container-keep",
+  NATIVE_TYPE = "native-type",
+  LABEL = "label"
 };
 
 // TODO - generic style

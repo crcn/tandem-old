@@ -2,12 +2,12 @@ import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { RootState } from "../../../../../../../state";
-import { SyntheticWindow, SyntheticBrowser, SyntheticNode, SyntheticDocument, SyntheticObjectType, EDITOR_NAMESPACE, EditorAttributeNames } from "../../../../../../../../paperclip";
+import { SyntheticWindow, SyntheticBrowser, SyntheticNode, SyntheticDocument, SyntheticObjectType, EDITOR_NAMESPACE, EditorAttributeNames, PCSourceAttributeNames } from "../../../../../../../../paperclip";
 import { compose, pure, withHandlers } from "recompose"
 import { createTreeLayerComponents, TreeNodeLayerOuterProps } from "../../../../../../layers";
 import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById } from "../../../../../../../../common";
 import { Dispatch } from "redux";
-import { pcLayerClick, pcLayerMouseOut, pcLayerMouseOver, pcLayerExpandToggleClick, pcLayerDroppedNode, RESIZER_STOPPED_MOVING } from "../../../../../../../actions";
+import { pcLayerClick, pcLayerMouseOut,, pcEditLayerLabelBlur, pcLayerMouseOver, pcLayerLabelChanged, pcLayerDoubleClick, pcLayerExpandToggleClick, pcLayerDroppedNode, RESIZER_STOPPED_MOVING } from "../../../../../../../actions";
 import { StructReference } from "../../../../../../../../common";
 
 const DRAG_TYPE = "SYNTHETIC_NODE";
@@ -22,7 +22,10 @@ const {TreeNodeLayerComponent} = createTreeLayerComponents<PCLayerOuterProps>({
     treeLayerClick: pcLayerClick,
     treeLayerExpandToggleClick: pcLayerExpandToggleClick,
     treeLayerMouseOut: pcLayerMouseOut,
-    treeLayerMouseOver: pcLayerMouseOver
+    treeLayerMouseOver: pcLayerMouseOver,
+    treeLayerDoubleClick: pcLayerDoubleClick,
+    treeLayerLabelChanged: pcLayerLabelChanged,
+    treeLayerEditLabelBlur: pcEditLayerLabelBlur
   },
   dragType: DRAG_TYPE,
   getLabelProps: (attribs, props: any) => ({
@@ -30,7 +33,7 @@ const {TreeNodeLayerComponent} = createTreeLayerComponents<PCLayerOuterProps>({
     className: cx(attribs.className, {
       "in-component-instance": props.inComponentInstance,
       "is-component-root": props.isComponentRoot,
-      "is-slot-container": Boolean(getAttribute(props.node, "container"))
+      "is-slot-container": Boolean(getAttribute(props.node, PCSourceAttributeNames.CONTAINER))
     })
   }),
   layerRenderer: (Base) => (props: PCLayerOuterProps) => {

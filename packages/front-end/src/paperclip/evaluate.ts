@@ -101,7 +101,11 @@ const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttribu
 
   const syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)) : EMPTY_ARRAY;
 
-  const syntheticAttributes = attributes;
+  const syntheticAttributes = merge({
+    [DEFAULT_NAMESPACE]: {
+      label: getAttribute(componentNode, "label")
+    }
+  }, attributes);
 
   const extendsFromDependency = getImportedDependency(ext.namespace, dependency, graph);
 
@@ -171,7 +175,7 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
   let children = node.children;
   let attributes = node.attributes;
 
-  let tagName = node.name;
+  let tagName = node.name === "text" ? "text" : getAttribute(node, PCSourceAttributeNames.NATIVE_TYPE) || "div";
   let hasSlottedChildren = false;
   const containerName = getAttribute(node, PCSourceAttributeNames.CONTAINER);
 

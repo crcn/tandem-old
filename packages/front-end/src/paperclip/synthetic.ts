@@ -121,7 +121,7 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
 });
 
 const calculateRootNodeBounds = (rootSourceNode: TreeNode): Bounds =>  {
-  const style = getAttribute(rootSourceNode, "style");
+  const style = getAttribute(rootSourceNode, "style") || EMPTY_OBJECT;
   const left = style.left || DEFAULT_BOUNDS.left;
   const top = style.top || DEFAULT_BOUNDS.left;
   const right = style.right || (style.width ? left + style.width : DEFAULT_BOUNDS.right);
@@ -282,10 +282,6 @@ const applyDocumentElementTransforms = (transforms: OperationalTransform[], docu
 
 
 const updateSyntheticItem = <TItem>(properties: Partial<TItem>, nodeId: string, browser: SyntheticBrowser) => {
-  if (isSyntheticDocumentRoot(nodeId, browser)) {
-    const document = getSyntheticNodeDocument(nodeId, browser);
-    throw new Error("TODO - modify document, and source");
-  }
   const document = getSyntheticNodeDocument(nodeId, browser);
   const item = getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
   const itemPath = getTreeNodePath(item.id, document.root);
@@ -786,17 +782,21 @@ export const persistNewComponent = (bounds: Bounds, dependencyUri: string, brows
 
 export const persistInsertRectangle = (style: any, targetSourceNodeId: string, browser: SyntheticBrowser) => {
   return persistInsertNode({
-    name: "div",
+    name: "rectangle",
     attributes: {
       [DEFAULT_NAMESPACE]: {
-        style
-      },
-      [EDITOR_NAMESPACE]: {
-        label: "Rectangle"
+        style,
+        [PCSourceAttributeNames.LABEL]: "Rectangle",
+        [PCSourceAttributeNames.NATIVE_TYPE]: "div"
       }
     },
     children: []
   }, targetSourceNodeId, 0, browser);
+};
+
+export const persistChangeNodeLabel = (label: string, targetSourceNodeId: string, browser: SyntheticBrowser) => {
+  browser = persistSyntheticNodeChanges(targetSourceNodeId, browser, node => setNodeAttribute(node, "label", label));
+  return browser;
 };
 
 export const persistInsertText = (style: any, nodeValue: string, targetSourceNodeId: string, browser: SyntheticBrowser) => {
@@ -805,7 +805,8 @@ export const persistInsertText = (style: any, nodeValue: string, targetSourceNod
     attributes: {
       [DEFAULT_NAMESPACE]: {
         style,
-        value: nodeValue
+        value: nodeValue,
+        label: "Text"
       }
     },
     children: []
@@ -934,8 +935,8 @@ const generateContainerName = (sourceNodeId: string, browser: SyntheticBrowser) 
   return `container` + generateTreeChecksum(rootSourceElement);
 };
 
-export const persistToggleSlotContainer = (nodeId: string, browser: SyntheticBrowser) => {
-  const sourceNode = getSyntheticSourceNode(nodeId, browser);
+export const persistToggleSlotContainer = (sourceNodeId: string, browser: SyntheticBrowser) => {
+  const sourceNode = getSourceNodeById(sourceNodeId, browser);
   const rootSourceElement = getSourceNodeElementRoot(sourceNode.id, browser);
   return persistSyntheticNodeChanges(sourceNode.id, browser, (child) => {
     const style = getAttribute(child, "style") || EMPTY_OBJECT;
@@ -949,4 +950,12 @@ export const persistToggleSlotContainer = (nodeId: string, browser: SyntheticBro
     }
     return child;
   });
+};
+
+export const persistChangeNodeType = (nativeType: string, sourceNodeId: string, browser: SyntheticBrowser) => {
+  return persistSyntheticNodeChanges(sourceNodeId, browser, node => setNodeAttribute(node, PCSourceAttributeNames.NATIVE_TYPE, nativeType));
+};
+
+export const persistTextValue = (value: string, sourceNodeId: string, browser: SyntheticBrowser) => {
+  return persistSyntheticNodeChanges(sourceNodeId, browser, node => setNodeAttribute(node, "value", value));
 };
