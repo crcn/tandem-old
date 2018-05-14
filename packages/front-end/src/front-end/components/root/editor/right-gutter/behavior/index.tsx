@@ -30,7 +30,7 @@ const BaseBehaviorPaneComponent = ({ root, onSlotToggleClick, onNativeTypeKeyDow
   if (!selectedNodeId) {
     return null;
   }
-  // const syntheticNode = getSyntheticNodeById(selectedNodeId, root.browser);
+  const syntheticNode = getSyntheticNodeById(selectedNodeId, root.browser);
   const sourceNode = getSyntheticSourceNode(selectedNodeId, root.browser);
   const sourceRoot = getSourceNodeElementRoot(sourceNode.id, root.browser);
   const isSlotContainer = Boolean(getAttribute(sourceNode, PCSourceAttributeNames.CONTAINER));

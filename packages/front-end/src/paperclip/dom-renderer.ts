@@ -2,6 +2,7 @@ import { mapValues } from "lodash";
 import { ComputedDisplayInfo } from "./synthetic";
 import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath } from "../common/state";
 import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform, patchNode } from "../common/utils/tree";
+import { PCSourceAttributeNames } from ".";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node
@@ -47,7 +48,7 @@ export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Docume
 
 const createNativeNode = (synthetic: TreeNode, document: Document, map: SyntheticNativeNodeMap) => {
   const isText = synthetic.name === "text";
-  const nativeElement = document.createElement(isText ? "span" : synthetic.name);
+  const nativeElement = document.createElement(isText ? "span" : getAttribute(synthetic, PCSourceAttributeNames.NATIVE_TYPE) || "div");
   const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
   for (const name in attrs) {
     const value = attrs[name];
@@ -93,6 +94,14 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
             Object.assign(target.style, normalizeStyle(value));
           } else if (name === "value" && syntheticTarget.name === "text") {
             target.childNodes[0].nodeValue = value;
+          } else if (name === PCSourceAttributeNames.NATIVE_TYPE) {
+            const parent = target.parentNode;
+            if (newMap === map) {
+              newMap = {...map};
+            }
+            const newTarget = createNativeNode(getTreeNodeFromPath(transform.path, newSyntheticTree), root.ownerDocument, newMap);
+            parent.insertBefore(newTarget, target);
+            parent.removeChild(target);
           }
         }
         break;
@@ -128,7 +137,7 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
   return newMap;
 }
 
-const insertChild = (target: HTMLElement, child: Node, index: number) => {
+const insertChild = (target: Node, child: Node, index: number) => {
 
   if (index < target.childNodes.length) {
     target.insertBefore(child, target.childNodes[index]);

@@ -887,7 +887,11 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
 const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBrowser) => {
   const node = getSyntheticNodeById(nodeId, browser);
   const document = getSyntheticNodeDocument(nodeId, browser);
-  return findTreeNodeParent(nodeId, document.root, (parent) => getAttribute(parent, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE));
+  const filter = (parent) => getAttribute(parent, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE);
+  if (filter(node)) {
+    return node;
+  }
+  return findTreeNodeParent(nodeId, document.root, filter);
 };
 
 export const persistSyntheticItemPosition = (position: Point, nodeId: string, browser: SyntheticBrowser) => {

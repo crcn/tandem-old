@@ -26,7 +26,8 @@ const DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE = {
   right: undefined,
   bottom: undefined,
   width: "100vw",
-  height: "100vh"
+  height: "100vh",
+  margin: 0
 };
 
 export type EvaluateOptions = {
@@ -175,7 +176,7 @@ const evaluateNode = (node: TreeNode, module: Module, id: string, checksum: stri
   let children = node.children;
   let attributes = node.attributes;
 
-  let tagName = node.name === "text" ? "text" : getAttribute(node, PCSourceAttributeNames.NATIVE_TYPE) || "div";
+  let tagName = node.name;
   let hasSlottedChildren = false;
   const containerName = getAttribute(node, PCSourceAttributeNames.CONTAINER);
 
