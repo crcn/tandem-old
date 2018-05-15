@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
-import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, FILE_NAVIGATOR_NEW_FILE_ENTERED, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile, FileNavigatorNewFileEntered, getTreeNodeFromPath, getNestedTreeNodeById, getAttribute, FileAttributeNames, newFileAdded, InsertFileType, FILE_NAVIGATOR_DROPPED_ITEM, Dependency, DependencyGraph, PC_LAYER_EXPAND_TOGGLE_CLICK, PC_LAYER_CLICK, TreeLayerClick, SyntheticNode, getSyntheticOriginSourceNodeUri } from "tandem-front-end";
+import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, FILE_NAVIGATOR_NEW_FILE_ENTERED, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile, FileNavigatorNewFileEntered, getTreeNodeFromPath, getNestedTreeNodeById, getAttribute, FileAttributeNames, newFileAdded, InsertFileType, FILE_NAVIGATOR_DROPPED_ITEM, Dependency, DependencyGraph, PC_LAYER_EXPAND_TOGGLE_CLICK, PC_LAYER_CLICK, TreeLayerClick, SyntheticNode, getSyntheticOriginSourceNodeUri, QUICK_SEARCH_ITEM_CLICKED } from "tandem-front-end";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -17,7 +17,7 @@ function* handleActivePaperclipFile() {
   let oldState: RootState;
 
   while(1) {
-    yield take([FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PC_LAYER_CLICK]);
+    yield take();
     const state: RootState = yield select();
     const { activeFilePath, browser } = state;
 

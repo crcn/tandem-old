@@ -1,7 +1,7 @@
 import { fork, put, call, take, select } from "redux-saga/effects";
 import { projectDirectoryLoaded, PROJECT_DIRECTORY_LOADED, FILE_NAVIGATOR_ITEM_CLICKED, fileNavigatorItemClicked, dependencyEntryLoaded, FileNavigatorItemClicked, OpenFilesItemClick, OPEN_FILE_ITEM_CLICKED, SHORTCUT_SAVE_KEY_DOWN, savedFile } from "../actions";
 import { PAPERCLIP_EXTENSION_NAME, loadEntry } from "../../paperclip";
-import { File, Directory, xmlToTreeNode, getFilesWithExtension, getFilePath, getTreeNodePath, getTreeNodeFromPath, getFilePathFromNodePath } from "../../common";
+import { File, Directory, getFilesWithExtension, getFilePath, getTreeNodePath, getTreeNodeFromPath, getFilePathFromNodePath } from "../../common";
 import { RootState, getActiveWindow } from "../state";
 
 export function* projectSaga() {
@@ -9,16 +9,6 @@ export function* projectSaga() {
   // yield fork(putFakeDirectory);
 }
 
-function* putFakeDirectory() {
-  const rootDirectory = xmlToTreeNode(`
-    <directory name="components">
-      <file name="main.pc">
-      </file>
-    </directory>
-  `) as Directory;
-
-  yield put(projectDirectoryLoaded(rootDirectory));
-}
 
 // function* handleProjectDirectoryLoaded() {
 //   while(1) {

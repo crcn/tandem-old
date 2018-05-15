@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+const path = require("path");
+const fs = require("fs");
+const { compilePaperclipToReact } = require("..");
+
+const relPath = process.argv.slice(2)[0];
+const absPath = relPath.charAt(0) === "/" ? relPath : path.join(process.cwd(), relPath);
+
+console.log(compilePaperclipToReact(fs.readFileSync(absPath, "utf8")));

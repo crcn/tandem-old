@@ -2,6 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 TOMORROW (FRI):
 
+- use JSON instead of PC (no compiling necessary)
 - renaming layers
 - changing text
 - edit text

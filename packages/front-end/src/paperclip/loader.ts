@@ -56,6 +56,14 @@ const createDependency = (uri: string, content: TreeNode, importUris): Dependenc
   importUris
 });
 
+const parseNodeSource = (source: string) => {
+  try {
+    return JSON.parse(source);
+  } catch(e) {
+    return xmlToTreeNode(source);
+  }
+}
+
 const loadModule = async (uri: string, options: LoadEntryOptions): Promise<Module> => {
   const content = await options.openFile(uri);
 
@@ -66,7 +74,7 @@ const loadModule = async (uri: string, options: LoadEntryOptions): Promise<Modul
     throw new Error(`XML is not supported yet`);
   } else if (/pc$/.test(uri)) {
     try {
-      const moduleSource = xmlToTreeNode(content);
+      const moduleSource = parseNodeSource(content);
       return getModuleInfo(moduleSource);
     } catch(e) {
       console.warn(e);

@@ -46,6 +46,7 @@ export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
 export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
 export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
 export const SHORTCUT_SAVE_KEY_DOWN = "SHORTCUT_SAVE_KEY_DOWN";
+export const SHORTCUT_QUICK_SEARCH_KEY_DOWN = "SHORTCUT_QUICK_SEARCH_KEY_DOWN";
 export const SHORTCUT_DELETE_KEY_DOWN = "SHORTCUT_DELETE_KEY_DOWN";
 export const SHORTCUT_UNDO_KEY_DOWN = "SHORTCUT_UNDO_KEY_DOWN";
 export const SHORTCUT_REDO_KEY_DOWN = "SHORTCUT_REDO_KEY_DOWN";
@@ -69,6 +70,8 @@ export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
 export const PC_LAYER_DROPPED_NODE = "PC_LAYER_DROPPED_NODE";
 export const PC_LAYER_EDIT_LABEL_BLUR = "PC_LAYER_EDIT_LABEL_BLUR";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
+export const QUICK_SEARCH_ITEM_CLICKED = "QUICK_SEARCH_ITEM_CLICKED";
+export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -218,6 +221,10 @@ export type ShortcutKeyDown = {
 
 };
 
+export type QuickSearchItemClicked = {
+  file: TreeNode;
+} & Action;
+
 export type SavedFile = {
   uri: string
 } & Action;
@@ -278,6 +285,15 @@ export const fileNavigatorNewFileClicked = (): Action => ({
 
 export const fileNavigatorNewDirectoryClicked = (): Action => ({
   type: FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED
+});
+
+export const quickSearchItemClicked = (file: TreeNode): QuickSearchItemClicked => ({
+  file,
+  type: QUICK_SEARCH_ITEM_CLICKED
+});
+
+export const quickSearchBackgroundClick = (): Action => ({
+  type: QUICK_SEARCH_BACKGROUND_CLICK
 });
 
 export const fileNavigatorNewFileEntered = (basename: string): FileNavigatorNewFileEntered => ({

@@ -92,6 +92,8 @@ export const getTreeNodeIdMap = memoize((current: TreeNode): TreeNodeIdMap => {
   return map;
 });
 
+export const flattenTreeNode = memoize((current: TreeNode) => Object.values(getTreeNodeIdMap(current)));
+
 
 export const getTreeNodePath = memoize((nodeId: string, root: TreeNode) => {
   const childParentMap = getChildParentMap(root);

@@ -52,6 +52,7 @@ export type RootState = {
   projectDirectory?: Directory;
   insertFileInfo?: InsertFileInfo;
   history: GraphHistory;
+  showQuickSearch?: boolean;
 };
 
 export type OpenFile = {
@@ -82,7 +83,7 @@ export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBr
 
 const setOpenFileContent = (dep: Dependency, state: RootState) => updateOpenFile({
   temporary: false,
-  newContent: new Buffer(stringifyTreeNodeToXML(dep.content), "utf8")
+  newContent: new Buffer(JSON.stringify(dep.content, null, 2), "utf8")
 }, dep.uri, state);
 
 const addHistory = (root: RootState, modifiedDeps: Dependency[]) => {

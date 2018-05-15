@@ -7,6 +7,7 @@ import { StageComponent } from "./stage";
 import { LeftGutterComponent } from "./left-gutter";
 import { RightGutterComponent } from "./right-gutter";
 import { RootState, getActiveWindow } from "../../../state";
+import { QuickSearchComponent } from "../../quick-search";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend, { IHTML5BackendContext } from "react-dnd-html5-backend";
 
@@ -22,6 +23,7 @@ const EditorBaseComponent = ({ root, dispatch }: EditorOuterProps) => {
     <LeftGutterComponent activeFileUri={root.activeFilePath} rootDirectory={root.projectDirectory} dispatch={dispatch} root={root} />
     <StageComponent root={root} dispatch={dispatch} dependency={dependency} />
     <RightGutterComponent root={root} dispatch={dispatch} />
+    <QuickSearchComponent root={root} dispatch={dispatch} />
   </div>;
 }
 

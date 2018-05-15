@@ -1,6 +1,6 @@
 {
   "name": "tandem-front-end",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
@@ -52,6 +52,7 @@
     "mocha": "^3.4.2",
     "node-sass": "^4.7.2",
     "null-loader": "^0.1.1",
+    "paperclip-react-loader": "^1.0.0",
     "react-hot-loader": "^3.1.2",
     "sass-loader": "^6.0.6",
     "source-map": "^0.5.7",

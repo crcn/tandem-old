@@ -1,7 +1,7 @@
 {
-  "name": "tandem-common",
-  "version": "2.0.0",
-  "description": "",
+  "name": "paperclip",
+  "version": "1.0.0",
+  "description": "Paperclip DSL specific for visual development.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

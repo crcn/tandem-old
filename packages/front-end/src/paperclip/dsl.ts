@@ -13,7 +13,8 @@ export enum PCSourceAttributeNames {
   CONTAINER = "container",
   CONTAINER_STORAGE = "container-keep",
   NATIVE_TYPE = "native-type",
-  LABEL = "label"
+  LABEL = "label",
+  SLOT = "slot"
 };
 
 // TODO - generic style

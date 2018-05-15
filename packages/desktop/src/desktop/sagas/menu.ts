@@ -2,7 +2,7 @@ import {Menu, MenuItem, MenuItemConstructorOptions, app} from "electron";
 import {fork, put, take} from "redux-saga/effects";
 import {eventChannel} from "redux-saga";
 import { APP_READY, MAIN_WINDOW_OPENED } from "../actions";
-import { APP_LOADED, shortcutKeyDown, SHORTCUT_R_KEY_DOWN, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, SHORTCUT_SAVE_KEY_DOWN, SHORTCUT_UNDO_KEY_DOWN, SHORTCUT_REDO_KEY_DOWN } from "tandem-front-end";
+import { APP_LOADED, shortcutKeyDown, SHORTCUT_R_KEY_DOWN, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, SHORTCUT_SAVE_KEY_DOWN, SHORTCUT_UNDO_KEY_DOWN, SHORTCUT_REDO_KEY_DOWN, SHORTCUT_QUICK_SEARCH_KEY_DOWN } from "tandem-front-end";
 
 export function* shortcutsSaga() {
   yield take(MAIN_WINDOW_OPENED);
@@ -75,6 +75,13 @@ export function* shortcutsSaga() {
             accelerator: "meta+s",
             click: () => {
               emit(shortcutKeyDown(SHORTCUT_SAVE_KEY_DOWN));
+            }
+          },
+          {
+            label: "Search",
+            accelerator: "meta+t",
+            click: () => {
+              emit(shortcutKeyDown(SHORTCUT_QUICK_SEARCH_KEY_DOWN));
             }
           }
         ]

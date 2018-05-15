@@ -7,7 +7,7 @@ import { compose, pure, withHandlers } from "recompose"
 import { createTreeLayerComponents, TreeNodeLayerOuterProps } from "../../../../../../layers";
 import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById } from "../../../../../../../../common";
 import { Dispatch } from "redux";
-import { pcLayerClick, pcLayerMouseOut,, pcEditLayerLabelBlur, pcLayerMouseOver, pcLayerLabelChanged, pcLayerDoubleClick, pcLayerExpandToggleClick, pcLayerDroppedNode, RESIZER_STOPPED_MOVING } from "../../../../../../../actions";
+import { pcLayerClick, pcLayerMouseOut, pcEditLayerLabelBlur, pcLayerMouseOver, pcLayerLabelChanged, pcLayerDoubleClick, pcLayerExpandToggleClick, pcLayerDroppedNode, RESIZER_STOPPED_MOVING } from "../../../../../../../actions";
 import { StructReference } from "../../../../../../../../common";
 
 const DRAG_TYPE = "SYNTHETIC_NODE";
