@@ -2,6 +2,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
+- PC HOT RELOADING 🔥
+
 - components
   - dropdown
   - button
