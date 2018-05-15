@@ -2,6 +2,14 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
+- components
+  - dropdown
+  - button
+  - text input
+  - background input
+  - pane
+  - split pane view
+  - tabs
 - styles pane
   - basic components
     - background fill
