@@ -1,18 +1,21 @@
 import "./index.scss";
 import * as React from "react";
+import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { Dispatch } from "redux";
 import { RootState } from "../../../../../state";
 import { PaneComponent } from "../../../../pane";
 import { FocusComponent } from "../../../../focus";
 import { getAttribute } from "common";
-import { getSyntheticNodeById, PCSourceAttributeNames, getSourceNodeById, getSyntheticSourceNode, PCSourceTagNames, getComponentInfo } from "paperclip";
-import { newStateNameEntered, componentStateNameDefaultToggleClick, componentStateRemoved, componentComponentStateNameChanged } from "../../../../..";
+import { getSyntheticNodeById, PCSourceAttributeNames, getSourceNodeById, getSyntheticSourceNode, PCSourceTagNames, getComponentInfo, getSyntheticNodeDocument } from "paperclip";
+import { newStateNameEntered, componentStateNameDefaultToggleClick, componentStateRemoved, componentComponentStateNameChanged, componentComponentStateNameClicked } from "../../../../..";
 const { States: BaseStates, StateItem: BaseStatesItem } = require("./index.pc");
 
 type StateItemOuterProps = {
   name: string;
   useAsDefault: boolean;
+  selected: boolean;
+  onClick: () => any;
   onChange: (name: string, value: boolean) => any;
   onNameChange: (name: string, newName:string) => any;
   onRemove: (name: string) => any;
@@ -31,11 +34,13 @@ const StateItem = compose<StateItemInnerProps, StateItemOuterProps>(
   pure,
   withState("editingName", "setEditingName", false),
   withHandlers({
-    onCheckboxClick: ({ onChange, name, useAsDefault }) => () => {
+    onCheckboxClick: ({ onChange, name, useAsDefault }) => (event) => {
       onChange(name, !useAsDefault);
+      event.stopPropagation();
     },
-    onRemoveClick: ({ onRemove, name }) => () => {
+    onRemoveClick: ({ onRemove, name }) => (event) => {
       onRemove(name);
+      event.stopPropagation();
     },
     onLabelDoubleClick: ({setEditingName}) => () => {
       setEditingName(true);
@@ -48,9 +53,12 @@ const StateItem = compose<StateItemInnerProps, StateItemOuterProps>(
     },
     onNameInputBlur: ({ setEditingName }) => () => {
       setEditingName(false);
+    },
+    onClick: ({ onClick, name }) => (event) => {
+      onClick(name);
     }
   })
-)(({name, useAsDefault, onCheckboxClick, editingName, onRemoveClick, onLabelDoubleClick, onNameInputBlur, onNameInputKeyDown}) => {
+)(({name, selected, useAsDefault, onCheckboxClick, onClick, editingName, onRemoveClick, onLabelDoubleClick, onNameInputBlur, onNameInputKeyDown}) => {
   const label = editingName ? <FocusComponent><input type="text" defaultValue={name} onKeyDown={onNameInputKeyDown} onBlur={onNameInputBlur} /></FocusComponent> : <span className="state-name" onDoubleClick={onLabelDoubleClick}>
     {name}
     <span className="options">
@@ -59,7 +67,7 @@ const StateItem = compose<StateItemInnerProps, StateItemOuterProps>(
       </span>
     </span>
   </span>
-  return <BaseStatesItem className="state-item" checkboxContainerChildren={<input type="checkbox" onClick={onCheckboxClick} checked={useAsDefault} />} labelContainerChildren={label} />;
+  return <BaseStatesItem onClick={onClick} className={cx("state-item", { selected })} checkboxContainerChildren={<input type="checkbox" onClick={onCheckboxClick} checked={useAsDefault} />} labelContainerChildren={label} />;
 });
 
 type StatesPaneOuterProps = {
@@ -75,6 +83,7 @@ type StatePaneInnerProps = {
   onNewStateNameKeyDown: any;
   onNewStateNameBlur: any;
   onRemoveStateClick: any;
+  onStateNameClick: any;
 } & StatesPaneOuterProps;
 
 export const StatesComponent = compose<StatePaneInnerProps, StatesPaneOuterProps>(
@@ -104,26 +113,29 @@ export const StatesComponent = compose<StatePaneInnerProps, StatesPaneOuterProps
     },
     onStateNameChange: ({ dispatch }) => (oldName: string, newName: string) => {
       dispatch(componentComponentStateNameChanged(oldName, newName));
+    },
+    onStateNameClick: ({ dispatch }) => (name: string) => {
+      dispatch(componentComponentStateNameClicked(name));
     }
   })
-)(({root, onStateToggle, onAddStateClick, inputNewStateMode, onNewStateNameKeyDown, onNewStateNameBlur, onRemoveStateClick, onStateNameChange}) => {
-
+)(({root, onStateToggle, onAddStateClick, onStateNameClick, inputNewStateMode, onNewStateNameKeyDown, onNewStateNameBlur, onRemoveStateClick, onStateNameChange}) => {
   const selectedNodeId = root.selectedNodeIds[0];
 
   if (!selectedNodeId) {
     return null;
   }
 
-  const sourceNode = getSyntheticSourceNode(selectedNodeId, root.browser);
+  const document = getSyntheticNodeDocument(selectedNodeId, root.browser);
+  const documentSourceNode = getSyntheticSourceNode(document.root.id, root.browser);
 
-  if (sourceNode.name !== PCSourceTagNames.COMPONENT) {
+  if (documentSourceNode.name !== PCSourceTagNames.COMPONENT) {
     return null;
   }
 
-  const info = getComponentInfo(sourceNode);
+  const info = getComponentInfo(documentSourceNode);
 
   const itemsContainerChildren = info.states.map(({name, isDefault}) => {
-    return <StateItem key={name} name={name} useAsDefault={isDefault} onChange={onStateToggle} onRemove={onRemoveStateClick} onNameChange={onStateNameChange} />;
+    return <StateItem selected={name === root.selectedComponentStateName} onClick={onStateNameClick} key={name} name={name} useAsDefault={isDefault} onChange={onStateToggle} onRemove={onRemoveStateClick} onNameChange={onStateNameChange} />;
   });
 
   if (inputNewStateMode) {

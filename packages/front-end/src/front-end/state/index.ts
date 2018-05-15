@@ -48,6 +48,7 @@ export type RootState = {
   hoveringNodeIds: string[];
   selectedNodeIds: string[];
   selectedFileNodeIds: string[];
+  selectedComponentStateName: string;
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
   insertFileInfo?: InsertFileInfo;

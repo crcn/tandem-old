@@ -96,9 +96,10 @@ const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttribu
     slots[slotName].push(child);
   }
 
-  if (template) {
-    template = overrideComponentTemplate(template, overrides);
-  }
+  template = info.states.reduce((template, state) => {
+    return state.isDefault ? overrideComponentTemplate(template, state.overrides) : template;
+  }, template);
+
 
   const syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)) : EMPTY_ARRAY;
 

@@ -75,6 +75,7 @@ export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
 export const NEW_STATE_NAME_ENTERED = "NEW_STATE_NAME_ENTERED";
 export const COMPONENT_STATE_REMOVED = "COMPONENT_STATE_REMOVED";
 export const COMPONENT_STATE_NAME_CHANGED = "COMPONENT_STATE_NAME_CHANGED";
+export const COMPONENT_STATE_NAME_CLICKED = "COMPONENT_STATE_NAME_CLICKED";
 export const COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK = "COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK";
 
 export type WrappedEvent<T> = {
@@ -204,6 +205,10 @@ export type NewStateNameEntered = {
 export type ComponentStateNameChanged = {
   oldName: string;
   newName:string;
+} & Action;
+
+export type ComponentStateNameClicked = {
+  name: string;
 } & Action;
 
 export type ComponentStateRemoved = {
@@ -379,6 +384,11 @@ export const componentComponentStateNameChanged = (oldName: string, newName: str
   oldName,
   newName,
   type: COMPONENT_STATE_NAME_CHANGED
+});
+
+export const componentComponentStateNameClicked = (name: string): ComponentStateNameClicked => ({
+  name,
+  type: COMPONENT_STATE_NAME_CLICKED
 });
 
 export const componentStateRemoved = (name: string): ComponentStateRemoved => ({

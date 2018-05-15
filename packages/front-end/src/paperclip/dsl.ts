@@ -34,6 +34,7 @@ export type StyleDeclaration = {
 export type ComponentStateInfo = {
   name: string;
   isDefault: boolean;
+  overrides: ComponentOverride[];
 };
 
 export type Dependency = {
@@ -219,6 +220,7 @@ export const getStateInfo = memoize((node: TreeNode): ComponentStateInfo => {
   return {
     name: getAttribute(node, "name"),
     isDefault: Boolean(getAttribute(node, "default")),
+    overrides: node.children.map(getOverrideInfo)
   };
 });
 

@@ -525,7 +525,7 @@ export const collapseSyntheticNode = (node: SyntheticNode, root: SyntheticNode) 
 
 export const getSyntheticNodeWindow = memoize((nodeId: string, state: SyntheticBrowser) => getSyntheticDocumentWindow(getSyntheticNodeDocument(nodeId, state).id, state));
 
-const persistSourceNodeChanges = (sourceNodeId: string, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
+const persistSourceNodeChanges = (sourceNodeId: string, stateName: string, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
 
   const sourceNode = getSourceNodeById(sourceNodeId, browser);
   const elementSourceRoot = getSourceNodeElementRoot(sourceNode.id, browser);
@@ -533,64 +533,43 @@ const persistSourceNodeChanges = (sourceNodeId: string, browser: SyntheticBrowse
 
   let updatedModuleSourceNode = updateNestedNode(sourceNode, sourceDependency.content, updater);
 
-  // TODO - child components won't be able to create overrides anymore
-  const sourceComponentContainsSourceNode = true; // Boolean(getNestedTreeNodeById(sourceNode.id, sourceComponent.source));
+  if (stateName && elementSourceRoot.name === PCSourceTagNames.COMPONENT) {
+    let stateSourceNode = elementSourceRoot.children.find(child => child.name === PCSourceTagNames.COMPONENT_STATE && getAttribute(child, "name") === stateName);
 
-  // set override.
-    // TODO - recompute overrides
-    if (!sourceComponentContainsSourceNode) {
-      const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
-      updatedModuleSourceNode = sourceDependency.content;
+    const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
+    updatedModuleSourceNode = sourceDependency.content;
 
-      if (ots.length) {
-        updatedModuleSourceNode = updateNestedNode(elementSourceRoot, updatedModuleSourceNode, (child) => {
-          const overrides = child.children.find(child => child.name === "overrides");
-          if (overrides) {
-            return child;
+    const overrideChildren: TreeNode[] = [];
+    const targetName = getAttribute(sourceNode, "ref");
+    for (const ot of ots) {
+      switch(ot.type) {
+        case OperationalTransformType.SET_ATTRIBUTE: {
+          const { name, value, namespace } = ot as SetAttributeTransform;
+          if (name === "style" && namespace === DEFAULT_NAMESPACE) {
+            stateSourceNode = addSetStyleOverride(value, targetName, stateSourceNode);
           }
-
-          return {
-            ...child,
-            children: [
-              ...child.children,
-              { name: "overrides", children: [], attributes: {}, id: child.id + "overrides" }
-            ]
-          };
-        });
-      }
-
-      const overrideChildren: TreeNode[] = [];
-      let overrides = findNodeByTagName(updatedModuleSourceNode, "overrides");
-      const targetName = getAttribute(sourceNode, "ref");
-      for (const ot of ots) {
-        switch(ot.type) {
-          case OperationalTransformType.SET_ATTRIBUTE: {
-            const { name, value, namespace } = ot as SetAttributeTransform;
-            if (name === "style" && namespace === DEFAULT_NAMESPACE) {
-              overrides = addSetStyleOverride(value, targetName, overrides);
-            }
-            break;
-          }
-          case OperationalTransformType.REMOVE_CHILD: {
-
-            // set display none override since the parent template should be immutable
-            overrides = addSetStyleOverride({ display: "none" }, targetName, overrides);
-            break;
-          }
-          default: {
-            throw new Error(`cannot override with ${OperationalTransformType.REMOVE_CHILD} operational transform.`);
-          }
+          break;
         }
-      }
+        case OperationalTransformType.REMOVE_CHILD: {
 
-      if (ots.length) {
-        updatedModuleSourceNode = replaceNestedNode(overrides, overrides.id, updatedModuleSourceNode);
+          // set display none override since the parent template should be immutable
+          stateSourceNode = addSetStyleOverride({ display: "none" }, targetName, stateSourceNode);
+          break;
+        }
+        default: {
+          throw new Error(`cannot override with ${OperationalTransformType.REMOVE_CHILD} operational transform.`);
+        }
       }
     }
 
-    return updateDependencyAndRevaluate({
-      content: updatedModuleSourceNode
-    }, sourceDependency.uri, browser);
+    if (ots.length) {
+      updatedModuleSourceNode = replaceNestedNode(stateSourceNode, stateSourceNode.id, updatedModuleSourceNode);
+    }
+  }
+
+  return updateDependencyAndRevaluate({
+    content: updatedModuleSourceNode
+  }, sourceDependency.uri, browser);
 };
 
 const addSetStyleOverride = (style: any, targetName: string, overridesNode: TreeNode) => {
@@ -610,7 +589,7 @@ const addSetStyleOverride = (style: any, targetName: string, overridesNode: Tree
         }
       });
     } else {
-      return appendChildNode({
+      overridesNode = appendChildNode({
         name: "set-style",
         id: overridesNode.id + "set-style" + key,
         attributes: {
@@ -624,6 +603,7 @@ const addSetStyleOverride = (style: any, targetName: string, overridesNode: Tree
       }, overridesNode);
     }
   }
+  return overridesNode;
 }
 
 export const replaceDependency = (dep: Dependency, browser: SyntheticBrowser) => updateDependencyAndRevaluate(dep, dep.uri, browser);
@@ -795,12 +775,12 @@ export const persistInsertRectangle = (style: any, targetSourceNodeId: string, b
 };
 
 export const persistChangeNodeLabel = (label: string, targetSourceNodeId: string, browser: SyntheticBrowser) => {
-  browser = persistSourceNodeChanges(targetSourceNodeId, browser, node => setNodeAttribute(node, "label", label));
+  browser = persistSourceNodeChanges(targetSourceNodeId, null, browser, node => setNodeAttribute(node, "label", label));
   return browser;
 };
 
 export const persistInsertNewComponentState = (stateName: string, componentNodeId: string, browser: SyntheticBrowser) => {
-  return persistSourceNodeChanges(componentNodeId, browser, (componentNode) => {
+  return persistSourceNodeChanges(componentNodeId, null, browser, (componentNode) => {
     return appendChildNode({
       name: PCSourceTagNames.COMPONENT_STATE,
       id: getTreeNodeUidGenerator(componentNode)(),
@@ -818,7 +798,7 @@ export const persistInsertNewComponentState = (stateName: string, componentNodeI
 export const persistComponentStateChanged = (properties: Partial<ComponentStateInfo>, name: string, componentNodeId: string, browser: SyntheticBrowser) => {
   const sourceNode = getSourceNodeById(componentNodeId, browser);
   const stateNode = sourceNode.children.find(child => getAttribute(child, "name") === name);
-  return persistSourceNodeChanges(stateNode.id, browser, (stateNode) => {
+  return persistSourceNodeChanges(stateNode.id, null, browser, (stateNode) => {
     if (properties.isDefault != null) {
       stateNode = setNodeAttribute(stateNode, "default", properties.isDefault);
     }
@@ -832,7 +812,7 @@ export const persistComponentStateChanged = (properties: Partial<ComponentStateI
 export const persistRemoveComponentState = (name: string, componentNodeId: string, browser: SyntheticBrowser) => {
   const sourceNode = getSourceNodeById(componentNodeId, browser);
   const stateNode = sourceNode.children.find(child => getAttribute(child, "name") === name);
-  return persistSourceNodeChanges(sourceNode.id, browser, (componentNode) => {
+  return persistSourceNodeChanges(sourceNode.id, null, browser, (componentNode) => {
     return removeNestedTreeNode(stateNode, componentNode);
   });
 };
@@ -858,7 +838,10 @@ export const persistInsertNode = (child: TreeNode, refSourceNodeId: string, offs
   const dep = getSourceNodeDependency(refSourceNodeId, browser);
   const sourceParentNode = offset === 0 ? sourceRefNode : getParentTreeNode(sourceRefNode.id, dep.content);
   const index = offset === 0 ? sourceParentNode.children.length : sourceParentNode.children.indexOf(sourceRefNode) + (offset === -1 ? 0 : 1);
-
+  if (!getAttribute(child, "ref")) {
+    child = setNodeAttribute(child, "ref", getTreeNodeUidGenerator(sourceParentNode)());
+  }
+  console.log(getAttribute(child, "ref"));
   return updateDependencyAndRevaluate({
     content: insertComponentChildNode(addTreeNodeIds(child, dep.content.id), index, sourceParentNode.id, dep.content)
   }, dep.uri, browser);
@@ -909,7 +892,7 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   const targetActSourceNode = componentInstanceNode ? getSyntheticSourceNode(componentInstanceNode.id, browser) : targetSourceNode;
 
   // const actualtargetSourceNode = containerName ?
-  browser = persistSourceNodeChanges(sourceParent.id, browser, parent => {
+  browser = persistSourceNodeChanges(sourceParent.id, null, browser, parent => {
     return removeNestedTreeNode(sourceNode, parent);
   });
 
@@ -949,12 +932,12 @@ export const getModifiedDependencies = (oldGraph: DependencyGraph, newGraph: Dep
 export const persistSyntheticItemBounds = (bounds: Bounds, nodeId: string, browser: SyntheticBrowser) => {
   const sourceNodeId = getSyntheticSourceNode(nodeId, browser);
   if (isSyntheticDocumentRoot(nodeId, browser)) {
-    return persistSourceNodeChanges(sourceNodeId.id, browser, (child) => {
+    return persistSourceNodeChanges(sourceNodeId.id, null, browser, (child) => {
       return setNodeAttribute(child, "bounds", bounds, EDITOR_NAMESPACE);
     });
   } else {
     const document = getSyntheticNodeDocument(nodeId, browser);
-    return persistSourceNodeChanges(sourceNodeId.id, browser, (child) => {
+    return persistSourceNodeChanges(sourceNodeId.id, null, browser, (child) => {
       const style = getAttribute(child, "style") || EMPTY_OBJECT;
       const pos = style.position || "relative";
       return setNodeAttribute(child, "style", {
@@ -969,9 +952,9 @@ export const persistSyntheticItemBounds = (bounds: Bounds, nodeId: string, brows
   }
 };
 
-export const persistRawCSSText = (text: string, nodeId: string, browser: SyntheticBrowser) => {
+export const persistRawCSSText = (text: string, nodeId: string, stateName: string, browser: SyntheticBrowser) => {
   const newStyle = parseStyle(text);
-  return persistSourceNodeChanges(getSyntheticSourceNode(nodeId, browser).id, browser, (child) => {
+  return persistSourceNodeChanges(getSyntheticSourceNode(nodeId, browser).id, stateName, browser, (child) => {
     const style = getAttribute(child, "style") || EMPTY_OBJECT;
     return setNodeAttribute(child, "style", newStyle);
   });
@@ -985,7 +968,7 @@ const generateContainerName = (sourceNodeId: string, browser: SyntheticBrowser) 
 export const persistToggleSlotContainer = (sourceNodeId: string, browser: SyntheticBrowser) => {
   const sourceNode = getSourceNodeById(sourceNodeId, browser);
   const rootSourceElement = getSourceNodeElementRoot(sourceNode.id, browser);
-  return persistSourceNodeChanges(sourceNode.id, browser, (child) => {
+  return persistSourceNodeChanges(sourceNode.id, null, browser, (child) => {
     const style = getAttribute(child, "style") || EMPTY_OBJECT;
     const containerName = getAttribute(child, PCSourceAttributeNames.CONTAINER);
     if (containerName) {
@@ -1000,9 +983,9 @@ export const persistToggleSlotContainer = (sourceNodeId: string, browser: Synthe
 };
 
 export const persistChangeNodeType = (nativeType: string, sourceNodeId: string, browser: SyntheticBrowser) => {
-  return persistSourceNodeChanges(sourceNodeId, browser, node => setNodeAttribute(node, PCSourceAttributeNames.NATIVE_TYPE, nativeType));
+  return persistSourceNodeChanges(sourceNodeId, null, browser, node => setNodeAttribute(node, PCSourceAttributeNames.NATIVE_TYPE, nativeType));
 };
 
 export const persistTextValue = (value: string, sourceNodeId: string, browser: SyntheticBrowser) => {
-  return persistSourceNodeChanges(sourceNodeId, browser, node => setNodeAttribute(node, "value", value));
+  return persistSourceNodeChanges(sourceNodeId, null, browser, node => setNodeAttribute(node, "value", value));
 };
