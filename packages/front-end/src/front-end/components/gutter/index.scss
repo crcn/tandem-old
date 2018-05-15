@@ -1,4 +1,7 @@
 .m-gutter {
   background: var(--background-3);
   min-width: 200px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
