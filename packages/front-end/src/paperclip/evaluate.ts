@@ -17,7 +17,7 @@ import { pick, merge } from "lodash";
 
 export const DEFAULT_EXTENDS: ComponentExtendsInfo = {
   namespace: DEFAULT_NAMESPACE,
-  tagName: "div"
+  tagName: "rectangle"
 };
 
 const DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE = {

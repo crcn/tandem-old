@@ -14,6 +14,9 @@ function* handleCopy() {
   while(1) {
     const chan = eventChannel((emit) => {
       document.addEventListener("copy", (event: ClipboardEvent) => {
+        if (document.activeElement && /input|textarea/i.test(document.activeElement.tagName)) {
+          return;
+        }
         emit(event);
       });
       return () => {

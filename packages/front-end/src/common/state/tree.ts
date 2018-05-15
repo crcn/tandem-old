@@ -113,7 +113,7 @@ export const getTreeNodePath = memoize((nodeId: string, root: TreeNode) => {
 export const findTreeNodeParent = (nodeId: string, root: TreeNode, filter: (node: TreeNode) => boolean) => {
   const path = getTreeNodePath(nodeId, root);
   if (!path.length) return null;
-  for (let i = path.length - 1; i--;) {
+  for (let i = path.length; i--;) {
     const parent = getTreeNodeFromPath(path.slice(0, i), root);
     if (filter(parent)) {
       return parent;

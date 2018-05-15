@@ -518,10 +518,10 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }, state);
     }
     case SHORTCUT_UNDO_KEY_DOWN: {
-      return isInputSelected(state) || !state.activeFilePath ? state : undo(state.activeFilePath, state);
+      return !state.activeFilePath ? state : undo(state.activeFilePath, state);
     }
     case SHORTCUT_REDO_KEY_DOWN: {
-      return isInputSelected(state) || !state.activeFilePath ? state : redo(state.activeFilePath, state);
+      return !state.activeFilePath ? state : redo(state.activeFilePath, state);
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
       if (isInputSelected(state)) {

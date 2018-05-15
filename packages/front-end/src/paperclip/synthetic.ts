@@ -863,6 +863,8 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   const sourceDep = getSourceNodeDependency(sourceNode.id, browser);
   const componentInstanceNode = getComponentInstanceSyntheticNode(targetNodeId, browser);
 
+  console.log(componentInstanceNode);
+
   const sourceParent = getParentTreeNode(sourceNode.id, sourceDep.content);
 
   const targetSourceNode = getSyntheticSourceNode(targetNodeId, browser);
@@ -887,10 +889,13 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
 const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBrowser) => {
   const node = getSyntheticNodeById(nodeId, browser);
   const document = getSyntheticNodeDocument(nodeId, browser);
-  const filter = (parent) => getAttribute(parent, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE);
+  const filter = (parent) => {
+    return getAttribute(parent, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE);
+  };
   if (filter(node)) {
     return node;
   }
+
   return findTreeNodeParent(nodeId, document.root, filter);
 };
 
