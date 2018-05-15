@@ -1,0 +1,158 @@
+{
+  "name": "module",
+  "attributes": {},
+  "children": [
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component1",
+          "label": "Pane"
+        },
+        "editor": {
+          "bounds": {
+            "left": 169,
+            "right": 471,
+            "top": 89,
+            "bottom": 281
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": [
+            {
+              "name": "rectangle",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "background": "#CCC",
+                    "width": "100%",
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "height": "100%"
+                  },
+                  "label": "Container",
+                  "native-type": "div"
+                }
+              },
+              "children": [
+                {
+                  "name": "component2",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "left": 20,
+                        "right": 420,
+                        "top": 20,
+                        "bottom": 420
+                      }
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "text",
+                      "attributes": {
+                        "undefined": {
+                          "style": {
+                            "display": "inline-block",
+                            "position": "relative"
+                          },
+                          "value": "States",
+                          "label": "Text",
+                          "slot": "containercefedb0d"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "rectangle",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "background": "rgb(247, 247, 247)",
+                        "height": "100%",
+                        "width": "100%"
+                      },
+                      "label": "Content",
+                      "native-type": "div",
+                      "container": "containeraa7d1430"
+                    }
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component2",
+          "label": "Header"
+        },
+        "editor": {
+          "bounds": {
+            "left": 514,
+            "top": 155,
+            "right": 830,
+            "bottom": 187
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": [
+            {
+              "name": "rectangle",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "width": "100%",
+                    "background": "rgb(238, 238, 238)",
+                    "padding": "8px 10px",
+                    "boxSizing": "border-box",
+                    "textTransform": "uppercase",
+                    "fontFamily": "Helvetica",
+                    "fontSize": "0.8em",
+                    "color": "rgba(0, 0, 0, 0.5)",
+                    "borderBottom": "1px solid rgb(228, 228, 228)",
+                    "borderTop": "1px solid rgb(228, 228, 228)"
+                  },
+                  "label": "Container",
+                  "native-type": "div",
+                  "container": "containercefedb0d"
+                }
+              },
+              "children": [
+                {
+                  "name": "text",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "display": "inline-block",
+                        "position": "relative"
+                      },
+                      "value": "Pane title",
+                      "label": "Text"
+                    }
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

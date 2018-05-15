@@ -178,22 +178,7 @@
                       "native-type": "div"
                     }
                   },
-                  "children": [
-                    {
-                      "name": "text",
-                      "attributes": {
-                        "undefined": {
-                          "style": {
-                            "bottom": "undefined",
-                            "display": "inline-block"
-                          },
-                          "value": "tab 1",
-                          "label": "Text"
-                        }
-                      },
-                      "children": []
-                    }
-                  ]
+                  "children": []
                 }
               ]
             }
@@ -261,6 +246,16 @@
               ]
             }
           ]
+        },
+        {
+          "name": "state",
+          "attributes": {
+            "undefined": {
+              "name": "selected",
+              "default": false
+            }
+          },
+          "children": []
         }
       ]
     }

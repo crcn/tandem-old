@@ -2,6 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
+- fix selection
 - fix overriding children
 - variants (design tabs with this)
 - tabs

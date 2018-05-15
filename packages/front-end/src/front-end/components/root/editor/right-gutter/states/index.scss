@@ -1,0 +1,27 @@
+.m-states-pane {
+
+  .state-item {
+    &:hover {
+      .options {
+        display: block;
+      }
+    }
+  }
+  .options {
+    float: right;
+    cursor: pointer;
+    display: none;
+  }
+  .header {
+    .controls {
+      float: right;
+    }
+    .add-state-button {
+      cursor: pointer;
+    }
+  }
+  .state-name {
+    width: 100%;
+    display: inline-block;
+  }
+}

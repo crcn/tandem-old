@@ -72,6 +72,10 @@ export const PC_LAYER_EDIT_LABEL_BLUR = "PC_LAYER_EDIT_LABEL_BLUR";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 export const QUICK_SEARCH_ITEM_CLICKED = "QUICK_SEARCH_ITEM_CLICKED";
 export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
+export const NEW_STATE_NAME_ENTERED = "NEW_STATE_NAME_ENTERED";
+export const COMPONENT_STATE_REMOVED = "COMPONENT_STATE_REMOVED";
+export const COMPONENT_STATE_NAME_CHANGED = "COMPONENT_STATE_NAME_CHANGED";
+export const COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK = "COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -191,6 +195,24 @@ export type SlotToggleClick = {
 
 export type NativeNodeTypeChanged = {
   nativeType: string;
+} & Action;
+
+export type NewStateNameEntered = {
+  value: string;
+} & Action;
+
+export type ComponentStateNameChanged = {
+  oldName: string;
+  newName:string;
+} & Action;
+
+export type ComponentStateRemoved = {
+  name: string;
+} & Action;
+
+export type ComponentStateNameDefaultToggleClick = {
+  name: string;
+  value: boolean;
 } & Action;
 
 export type TextValueChanged = {
@@ -346,6 +368,29 @@ export const pcLayerClick = (node: TreeNode, sourceEvent: React.MouseEvent<any>)
   node,
   sourceEvent,
   type: PC_LAYER_CLICK,
+});
+
+export const newStateNameEntered = (value: string): NewStateNameEntered => ({
+  value,
+  type: NEW_STATE_NAME_ENTERED
+});
+
+export const componentComponentStateNameChanged = (oldName: string, newName: string): ComponentStateNameChanged => ({
+  oldName,
+  newName,
+  type: COMPONENT_STATE_NAME_CHANGED
+});
+
+export const componentStateRemoved = (name: string): ComponentStateRemoved => ({
+  name,
+  type: COMPONENT_STATE_REMOVED
+});
+
+
+export const componentStateNameDefaultToggleClick = (name: string, value: boolean): ComponentStateNameDefaultToggleClick => ({
+  name,
+  value,
+  type: COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK
 });
 
 export const pcLayerExpandToggleClick = (node: TreeNode): TreeLayerExpandToggleClick => ({
