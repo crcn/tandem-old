@@ -210,3 +210,9 @@ export const getParentTreeNode = memoize((nodeId: string, root: TreeNode) => get
 export const addTreeNodeIds = <TTree extends TreeNode>(node: TTree, seed: string = ""): TTree => {
   return node.id ? node : cloneNode(node, createUIDGenerator(seed + generateTreeChecksum(node)));
 };
+
+export const stripTreeNodeIds = (node: TreeNode) => ({
+  ...node,
+  id: undefined,
+  children: node.children.map(stripTreeNodeIds)
+});

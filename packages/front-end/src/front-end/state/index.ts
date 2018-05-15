@@ -1,4 +1,4 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode } from "../../common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode, addTreeNodeIds, stripTreeNodeIds } from "../../common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
@@ -81,9 +81,10 @@ export const persistRootStateBrowser = (persistBrowserState: (state: SyntheticBr
   return state;
 };
 
+
 const setOpenFileContent = (dep: Dependency, state: RootState) => updateOpenFile({
   temporary: false,
-  newContent: new Buffer(JSON.stringify(dep.content, null, 2), "utf8")
+  newContent: new Buffer(JSON.stringify(stripTreeNodeIds(dep.content), null, 2), "utf8")
 }, dep.uri, state);
 
 const addHistory = (root: RootState, modifiedDeps: Dependency[]) => {
@@ -248,6 +249,9 @@ export const getInsertedWindowElementIds = (oldWindow: SyntheticWindow, newBrows
 
 export const getInsertedDocumentElementIds = (oldDocument: SyntheticDocument, newBrowser: SyntheticBrowser): string[] => {
   const newDocument = getSyntheticDocumentById(oldDocument.id, newBrowser);
+  if (!newDocument) {
+    return [];
+  }
   const oldIds = Object.keys(oldDocument.nativeNodeMap);
   const newIds = Object.keys(newDocument.nativeNodeMap);
   return pull(newIds, ...oldIds)

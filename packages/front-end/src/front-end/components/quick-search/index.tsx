@@ -1,11 +1,12 @@
 import "./index.scss";
 import * as React from "react";
-const { QuickSearch: BaseQuickSearch, SearchResult: BaseSearchResult } = require("./index.pc");
+const { QuickSearch: BaseQuickSearch, SearchResult: BaseSearchResult, QuickSearchInput } = require("./index.pc");
 import { compose, pure, withHandlers, withState } from "recompose";
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
 import { quickSearchItemClicked, quickSearchBackgroundClick } from "../../actions";
 import {getAttribute, flattenTreeNode, FileAttributeNames, isFile, TreeNode } from "../../../common";
+import { FocusComponent } from "../focus";
 
 type SearchResultOuterProps = {
   file: TreeNode;
@@ -65,6 +66,6 @@ export const QuickSearchComponent = compose<QuickSearchInnerProps, QuickSearchOu
 
   return <div className="m-quick-search">
     <div className="background" onClick={onBackgroundClick} />
-    <BaseQuickSearch searchResultsChildren={results} inputProps={{onKeyUp: onInputKeyDown}} />
+    <BaseQuickSearch searchResultsChildren={results} inputWrapperChildren={<FocusComponent><QuickSearchInput onKeyUp={onInputKeyDown} /></FocusComponent>} />
   </div>
 });

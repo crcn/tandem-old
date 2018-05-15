@@ -2,7 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
-- PC HOT RELOADING 🔥
+- Hot reloading - https://github.com/geowarin/electron-hot-loader
 
 - components
   - dropdown

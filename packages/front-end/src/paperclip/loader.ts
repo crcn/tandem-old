@@ -58,7 +58,7 @@ const createDependency = (uri: string, content: TreeNode, importUris): Dependenc
 
 const parseNodeSource = (source: string) => {
   try {
-    return JSON.parse(source);
+    return addTreeNodeIds(JSON.parse(source));
   } catch(e) {
     return xmlToTreeNode(source);
   }
