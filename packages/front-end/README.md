@@ -1,5 +1,16 @@
 MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
+IMMEDIATE:
+
+- styles pane
+  - basic components
+    - background fill
+  - panes
+    - typography
+      - text alignment
+      - font family
+- ability to load images
+
 TOMORROW (FRI):
 
 - use JSON instead of PC (no compiling necessary)
