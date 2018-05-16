@@ -16,10 +16,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 148,
-            "right": 335,
-            "top": 329,
-            "bottom": 423
+            "left": 446,
+            "right": 633,
+            "top": 298,
+            "bottom": 392
           }
         }
       },
@@ -192,7 +192,6 @@
     },
     {
       "name": "component1",
-      "namespace": "import1",
       "attributes": {
         "undefined": {
           "style": {
@@ -205,10 +204,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 124,
-            "top": 80,
-            "right": 367,
-            "bottom": 239
+            "left": 96,
+            "top": 53,
+            "right": 368,
+            "bottom": 243
           }
         }
       },
@@ -221,15 +220,16 @@
                 "display": "inline-block",
                 "position": "relative"
               },
-              "value": "This component can probably be generalized to a checkbox input",
+              "value": "Generalize this component as a checkbox input.",
               "label": "Text",
-              "ref": "937a9c670",
+              "ref": "8918d2160",
               "slot": "container4a9895b6"
             }
           },
           "children": []
         }
-      ]
+      ],
+      "namespace": "import1"
     }
   ]
 }

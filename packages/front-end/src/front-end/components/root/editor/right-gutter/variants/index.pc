@@ -272,47 +272,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "component1",
-      "attributes": {
-        "undefined": {
-          "style": {
-            "left": 20,
-            "right": 420,
-            "top": 20,
-            "bottom": 420
-          },
-          "label": "Copy THIS sticky note"
-        },
-        "editor": {
-          "bounds": {
-            "left": 698,
-            "top": 128,
-            "right": 1064,
-            "bottom": 337
-          }
-        }
-      },
-      "children": [
-        {
-          "name": "text",
-          "attributes": {
-            "undefined": {
-              "style": {
-                "display": "inline-block",
-                "position": "relative"
-              },
-              "value": "The text override is already provided for you.",
-              "label": "Text",
-              "ref": "8918d2160",
-              "slot": "container4a9895b6"
-            }
-          },
-          "children": []
-        }
-      ],
-      "namespace": "import1"
     }
   ]
 }

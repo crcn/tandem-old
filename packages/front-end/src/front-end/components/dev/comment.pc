@@ -97,7 +97,7 @@
                             "display": "inline-block",
                             "position": "relative"
                           },
-                          "value": "Sticky note for adding information about designs in other documents.",
+                          "value": "Sticky note for adding information about designs in other documents. Just copy any instance here to a separate doc & change the text.",
                           "label": "About",
                           "ref": "c08d2b6e0",
                           "container": null,
@@ -124,7 +124,47 @@
             "top": 20,
             "bottom": 420
           },
-          "label": "Copy THIS sticky note"
+          "label": "TODO"
+        },
+        "editor": {
+          "bounds": {
+            "left": 401,
+            "top": 314,
+            "right": 673,
+            "bottom": 504
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "text",
+          "attributes": {
+            "undefined": {
+              "style": {
+                "display": "inline-block",
+                "position": "relative"
+              },
+              "value": "TODO content here",
+              "label": "Text",
+              "ref": "8918d2160",
+              "slot": "container4a9895b6"
+            }
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "component1",
+      "attributes": {
+        "undefined": {
+          "style": {
+            "left": 20,
+            "right": 420,
+            "top": 20,
+            "bottom": 420
+          },
+          "label": "NOTICE"
         },
         "editor": {
           "bounds": {
@@ -144,7 +184,7 @@
                 "display": "inline-block",
                 "position": "relative"
               },
-              "value": "The text override is already provided for you.",
+              "value": "NOTIE content here",
               "label": "Text",
               "ref": "8918d2160",
               "slot": "container4a9895b6"
