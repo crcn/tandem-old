@@ -2,7 +2,7 @@ import { fork, put, call, take, select } from "redux-saga/effects";
 import { projectDirectoryLoaded, PROJECT_DIRECTORY_LOADED, FILE_NAVIGATOR_ITEM_CLICKED, fileNavigatorItemClicked, dependencyEntryLoaded, FileNavigatorItemClicked, OpenFilesItemClick, OPEN_FILE_ITEM_CLICKED, SHORTCUT_SAVE_KEY_DOWN, savedFile } from "../actions";
 import { PAPERCLIP_EXTENSION_NAME, loadEntry } from "../../paperclip";
 import { File, Directory, getFilesWithExtension, getFilePath, getTreeNodePath, getTreeNodeFromPath, getFilePathFromNodePath } from "../../common";
-import { RootState, getActiveWindow } from "../state";
+import { RootState } from "../state";
 
 export function* projectSaga() {
   // yield fork(handleProjectDirectoryLoaded);

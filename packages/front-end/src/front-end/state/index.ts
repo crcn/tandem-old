@@ -2,6 +2,7 @@ import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, T
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
+import { stat } from "fs";
 
 export enum CanvasToolType {
   TEXT,
@@ -40,15 +41,21 @@ export type GraphHistory = {
   [identifier: string]: DependencyHistory
 };
 
-export type RootState = {
+export type Editor = {
   activeFilePath?: string;
+  tabUris: string[];
+}
+
+export type RootState = {
+  editors: Editor[];
   canvas: Canvas;
   mount: Element;
   openFiles: OpenFile[];
+  activeEditorFilePath?: string;
   hoveringNodeIds: string[];
   selectedNodeIds: string[];
   selectedFileNodeIds: string[];
-  selectedComponentVariantName: string;
+  selectedComponentVariantName?: string;
   browser: SyntheticBrowser;
   projectDirectory?: Directory;
   insertFileInfo?: InsertFileInfo;
@@ -137,8 +144,8 @@ const moveDependencyRecordHistory = (uri: string, pos: number, root: RootState):
   return root;
 }
 
-export const undo = (uri: string, root: RootState) => moveDependencyRecordHistory(uri, -1, root);
-export const redo = (uri: string, root: RootState) => moveDependencyRecordHistory(uri, 1, root);
+export const undo = (root: RootState) => root.editors.reduce((state, editor) => moveDependencyRecordHistory(editor.activeFilePath, -1, root), root);
+export const redo = (root: RootState) => root.editors.reduce((state, editor) => moveDependencyRecordHistory(editor.activeFilePath, 1, root), root);
 
 export const getOpenFile = (uri: string, state: RootState) => state.openFiles.find((openFile) => openFile.uri === uri);
 
@@ -150,6 +157,8 @@ export const updateOpenFileContent = (uri: string, newContent: Buffer, state: Ro
     newContent
   }, uri, state);
 };
+
+export const getActiveEditor = (state: RootState) => getEditorWithActiveFileUri(state.activeEditorFilePath, state);
 
 export const updateOpenFile = (properties: Partial<OpenFile>, uri: string, state: RootState) => {
   const file = getOpenFile(uri, state);
@@ -180,19 +189,103 @@ export const upsertOpenFile = (uri: string, temporary: boolean, state: RootState
   return addOpenFile(uri, temporary, state);
 };
 
+export const getEditorWithFileUri = (uri: string, state: RootState): Editor => {
+  return state.editors.find(editor => editor.tabUris.indexOf(uri) !== -1);
+};
+
+export const getEditorWithActiveFileUri = (uri: string, state: RootState): Editor => {
+  return state.editors.find(editor => editor.activeFilePath === uri);
+};
+
+export const openSecondEditor = (uri: string, state: RootState) => {
+  const editor = getEditorWithFileUri(uri, state);
+  const i = state.editors.indexOf(editor);
+  if (i === 1) {
+    return openEditorFileUri(uri, state);
+  }
+
+  if (i === 0 && editor.tabUris.length === 1) {
+    return state;
+  }
+
+  const newTabUris = arraySplice(editor.tabUris, editor.tabUris.indexOf(uri), 1);
+
+  state = {
+    ...state,
+    editors: arraySplice(state.editors, i, 1, {
+      ...editor,
+      tabUris: newTabUris,
+      activeFilePath: editor.activeFilePath === uri ? newTabUris[newTabUris.length - 1] : editor.activeFilePath,
+    })
+  };
+
+  if (state.editors.length === 1) {
+    state = {
+      ...state,
+      editors: [
+        ...state.editors,
+        { tabUris: [], activeFilePath: null }
+      ]
+    }
+  };
+
+  const secondEditor = state.editors[1];
+  return {
+    ...state,
+    editors: arraySplice(state.editors, state.editors.indexOf(secondEditor), 1, {
+      tabUris: [
+        ...secondEditor.tabUris,
+        uri
+      ],
+      activeFilePath: uri
+    })
+  }
+};
+
+export const openEditorFileUri = (uri: string, state: RootState): RootState => {
+  const editor = getEditorWithFileUri(uri, state) || state.editors[0];
+
+  return {
+    ...state,
+    hoveringNodeIds: [],
+    selectedNodeIds: [],
+    activeEditorFilePath: uri,
+    editors: editor ? arraySplice(state.editors, state.editors.indexOf(editor) , 1, {
+      ...editor,
+      tabUris: editor.tabUris.indexOf(uri) === -1 ? [
+        ...editor.tabUris,
+        uri,
+      ] : editor.tabUris,
+      activeFilePath: uri
+    }) : [{
+      tabUris: [uri],
+      activeFilePath: uri
+    }]
+  }
+};
+
 export const setNextOpenFile = (state: RootState): RootState => {
-  const hasOpenFile = state.openFiles.find(openFile => state.activeFilePath === openFile.uri);
+  const hasOpenFile = state.openFiles.find(openFile => Boolean(getEditorWithActiveFileUri(openFile.uri, state)));
   if (hasOpenFile) {
     return state;
   }
-  return {
+  state = {
     ...state,
-    activeFilePath: state.openFiles.length ? state.openFiles[0].uri : null,
     hoveringNodeIds: [],
     selectedNodeIds: []
   };
-};
 
+  if (state.openFiles.length) {
+    state = openEditorFileUri(state.openFiles[0].uri, state);
+  }
+
+  state = {
+    ...state,
+    editors: []
+  };
+
+  return state;
+};
 
 export const removeTemporaryOpenFiles = (state: RootState) => {
   return {
@@ -346,14 +439,10 @@ export const openSyntheticWindow = (uri: string, state: RootState): RootState =>
 };
 
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
-  if (root.activeFilePath === newActiveFilePath) {
+  if (getEditorWithActiveFileUri(newActiveFilePath, root)) {
     return root;
   }
-  root = updateRootState({
-    activeFilePath: newActiveFilePath,
-    hoveringNodeIds: [],
-    selectedNodeIds: []
-  }, root);
+  root = openEditorFileUri(newActiveFilePath, root);
   root = addOpenFile(newActiveFilePath, true, root);
   return root;
 };
@@ -378,7 +467,7 @@ export const setInsertFile = (type: InsertFileType, state: RootState) => {
 };
 
 export const setCanvasTool = (toolType: CanvasToolType, root: RootState) => {
-  if (!root.activeFilePath) {
+  if (!root.editors.length) {
     return root;
   }
   root = updateCanvas({ toolType }, root);
@@ -386,7 +475,7 @@ export const setCanvasTool = (toolType: CanvasToolType, root: RootState) => {
   return root;
 }
 
-export const getActiveWindow = (root: RootState) => root.browser.windows.find(window => window.location === root.activeFilePath);
+export const getActiveWindows = (root: RootState) => root.browser.windows.filter(window => root.editors.some(editor => editor.activeFilePath === window.location));
 
 export const getAllWindowDocuments = memoize((browser: SyntheticBrowser): SyntheticDocument[] => {
   return browser.windows.reduce((documents, window) => {
@@ -410,9 +499,6 @@ export const getCanvasMouseTargetNodeId = (state: RootState, event: CanvasToolOv
 
   const canvas     = state.canvas;
   const translate = getCanvasTranslate(canvas);
-
-
-  const activeWindow = getActiveWindow(state);
 
   const documentRootId = getCanvasMouseDocumentRootId(state, event);
 
@@ -446,13 +532,15 @@ export const getCanvasMouseDocumentRootId = (state: RootState, event: CanvasTool
 }
 
 export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
-  const activeWindow = getActiveWindow(state);
-  if (!activeWindow) return null;
-  const documents = activeWindow.documents || EMPTY_ARRAY;
-  for (let i = documents.length; i--;)  {
-    const document = documents[i];
-    if (pointIntersectsBounds(point, document.bounds)) {
-      return document.root.id;
+  const activeWindows = getActiveWindows(state);
+  if (!activeWindows.length) return null;
+  for (let j = activeWindows.length; j--;) {
+    const documents = activeWindows[j].documents || EMPTY_ARRAY;
+    for (let i = documents.length; i--;)  {
+      const document = documents[i];
+      if (pointIntersectsBounds(point, document.bounds)) {
+        return document.root.id;
+      }
     }
   }
 }

@@ -37,7 +37,7 @@
                     "boxSizing": "border-box",
                     "height": "100%"
                   },
-                  "label": "Wrapper",
+                  "label": "Container",
                   "native-type": "div"
                 }
               },
@@ -48,10 +48,12 @@
                     "undefined": {
                       "style": {
                         "width": "100%",
-                        "display": "flex"
+                        "display": "flex",
+                        "flexShrink": 0
                       },
                       "label": "bar",
-                      "native-type": "div"
+                      "native-type": "div",
+                      "container": "container6de2e5a8"
                     }
                   },
                   "children": [
@@ -64,7 +66,10 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": [
+                            "Selected"
+                          ]
                         }
                       },
                       "children": []
@@ -78,7 +83,8 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": []
                         }
                       },
                       "children": []
@@ -92,7 +98,8 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": []
                         }
                       },
                       "children": []
@@ -106,7 +113,8 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": []
                         }
                       },
                       "children": []
@@ -120,7 +128,8 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": []
                         }
                       },
                       "children": []
@@ -134,7 +143,8 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": []
                         }
                       },
                       "children": []
@@ -148,7 +158,8 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": []
                         }
                       },
                       "children": []
@@ -162,7 +173,8 @@
                             "right": 420,
                             "top": 20,
                             "bottom": 420
-                          }
+                          },
+                          "variants": []
                         }
                       },
                       "children": []
@@ -179,7 +191,8 @@
                         "background": "rgb(228, 228, 228)"
                       },
                       "label": "content",
-                      "native-type": "div"
+                      "native-type": "div",
+                      "container": "container7dbf261c"
                     }
                   },
                   "children": []
@@ -216,12 +229,13 @@
               "attributes": {
                 "undefined": {
                   "style": {
-                    "background": "rgb(238, 238, 238)",
+                    "background": "rgb(228, 228, 228)",
                     "marginRight": "1px",
                     "padding": "5px 10px",
-                    "fontFamily": "Helvetica"
+                    "fontFamily": "Helvetica",
+                    "cursor": "pointer"
                   },
-                  "label": "tab",
+                  "label": "label",
                   "native-type": "div",
                   "ref": "fbd732300",
                   "container": "containerde32b09e"

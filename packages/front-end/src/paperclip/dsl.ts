@@ -14,12 +14,13 @@ export enum PCSourceAttributeNames {
   CONTAINER_STORAGE = "container-keep",
   NATIVE_TYPE = "native-type",
   LABEL = "label",
-  SLOT = "slot"
+  SLOT = "slot",
+  VARIANTS = "variants"
 };
 
 export enum PCSourceTagNames {
   COMPONENT = "component",
-  RECTANGLE = "text",
+  RECTANGLE = "rectangle",
   TEXT = "text",
   COMPONENT_VARIANT = "variant"
 };

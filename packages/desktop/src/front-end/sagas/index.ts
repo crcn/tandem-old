@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
-import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, FILE_NAVIGATOR_NEW_FILE_ENTERED, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile, FileNavigatorNewFileEntered, getTreeNodeFromPath, getNestedTreeNodeById, getAttribute, FileAttributeNames, newFileAdded, InsertFileType, FILE_NAVIGATOR_DROPPED_ITEM, Dependency, DependencyGraph, PC_LAYER_EXPAND_TOGGLE_CLICK, PC_LAYER_CLICK, TreeLayerClick, SyntheticNode, getSyntheticOriginSourceNodeUri, QUICK_SEARCH_ITEM_CLICKED } from "tandem-front-end";
+import { RootState, FILE_NAVIGATOR_ITEM_CLICKED, OPEN_FILE_ITEM_CLICKED, PAPERCLIP_EXTENSION_NAME, FILE_NAVIGATOR_NEW_FILE_ENTERED, loadEntry, dependencyEntryLoaded, SHORTCUT_SAVE_KEY_DOWN, savedFile, getOpenFile, FileNavigatorNewFileEntered, getTreeNodeFromPath, getNestedTreeNodeById, getAttribute, FileAttributeNames, newFileAdded, InsertFileType, FILE_NAVIGATOR_DROPPED_ITEM, Dependency, DependencyGraph, PC_LAYER_EXPAND_TOGGLE_CLICK, PC_LAYER_CLICK, TreeLayerClick, SyntheticNode, getSyntheticOriginSourceNodeUri, QUICK_SEARCH_ITEM_CLICKED, getEditorWithActiveFileUri, getActiveEditor } from "tandem-front-end";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -19,14 +19,17 @@ function* handleActivePaperclipFile() {
   while(1) {
     yield take();
     const state: RootState = yield select();
-    const { activeFilePath, browser } = state;
+    const { editors, browser } = state;
 
-    if ((oldState && oldState.activeFilePath === activeFilePath) || !activeFilePath || activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) === -1) {
-      continue;
-    }
+    const newPCEditors = editors.filter(editor => {
+      return !getEditorWithActiveFileUri(editor.activeFilePath, oldState) && editor.activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) !== -1
+    });
 
     oldState = state;
-    yield call(openDependencyEntry, activeFilePath);
+
+    for (const editor of newPCEditors) {
+      yield call(openDependencyEntry, editor.activeFilePath);
+    }
   }
 }
 
@@ -84,7 +87,8 @@ function* handleSaveShortcut() {
   while(1) {
     yield take(SHORTCUT_SAVE_KEY_DOWN);
     const state: RootState = yield select();
-    const uri = state.activeFilePath;
+    const activeEditor = getActiveEditor(state);
+    const uri = activeEditor.activeFilePath;
 
     // TODO - post save
     if (!uri) {

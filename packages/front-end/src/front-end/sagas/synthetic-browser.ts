@@ -1,4 +1,4 @@
-import { RootState, getActiveWindow } from "../state";
+import { RootState } from "../state";
 import { fork, take, select, put, call, spawn } from "redux-saga/effects";
 import { PROJECT_LOADED, ProjectLoaded, syntheticWindowOpened, SyntheticWindowOpened, SYNTHETIC_WINDOW_OPENED, FILE_NAVIGATOR_ITEM_CLICKED, DEPENDENCY_ENTRY_LOADED, DependencyEntryLoaded, DOCUMENT_RENDERED, documentRendered, RESIZER_MOVED } from "../actions";
 import { getSyntheticWindow, createSyntheticWindow, SyntheticWindow, renderDOM, computeDisplayInfo, waitForDOMReady, SyntheticDocument, SyntheticNativeNodeMap } from "../../paperclip";
@@ -11,14 +11,18 @@ export function* syntheticBrowserSaga() {
 }
 
 function* handleActiveWindows() {
-  let activeWindow: SyntheticWindow;
+  let activeWindows: SyntheticWindow[] = [];
   while(1) {
     yield take();
     const state: RootState = yield select();
-    const currWindow = getActiveWindow(state);
-    if (currWindow && currWindow !== activeWindow) {
-      yield call(renderDocuments, activeWindow = currWindow);
+    const currWindows = state.editors.map(editor => getSyntheticWindow(editor.activeFilePath, state.browser)).filter(Boolean);
+
+    for (const window of currWindows) {
+      if (activeWindows.indexOf(window) === -1) {
+        yield call(renderDocuments, window);
+      }
     }
+    activeWindows = currWindows;
   }
 }
 

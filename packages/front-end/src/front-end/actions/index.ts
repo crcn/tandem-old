@@ -27,6 +27,7 @@ export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED = "FILE_NAVIGATOR_NEW_DIRECTOR
 export const FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED = "FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED";
 export const FILE_NAVIGATOR_NEW_FILE_ENTERED = "FILE_NAVIGATOR_NEW_FILE_ENTERED";
 export const FILE_NAVIGATOR_DROPPED_ITEM = "FILE_NAVIGATOR_DROPPED_ITEM";
+export const EDITOR_TAB_CLICKED = "EDITOR_TAB_CLICKED";
 export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
 export const OPEN_FILE_ITEM_CLOSE_CLICKED = "OPEN_FILE_ITEM_CLOSE_CLICKED";
 export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
@@ -77,6 +78,7 @@ export const COMPONENT_VARIANT_REMOVED = "COMPONENT_VARIANT_REMOVED";
 export const COMPONENT_VARIANT_NAME_CHANGED = "COMPONENT_VARIANT_NAME_CHANGED";
 export const COMPONENT_VARIANT_NAME_CLICKED = "COMPONENT_VARIANT_NAME_CLICKED";
 export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK = "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
+export const ELEMENT_VARIANT_TOGGLED = "ELEMENT_VARIANT_TOGGLED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -103,7 +105,7 @@ export type FileNavigatorItemClicked = {
 
 export type OpenFilesItemClick = {
   uri: string;
-} & Action;
+} & WrappedEvent<React.MouseEvent<any>>;
 
 export type RawCSSTextChanged = {
   value: string
@@ -144,6 +146,11 @@ export type CanvasToolOverlayClicked = {
 
 export type CanvasToolOverlayMouseMoved = {
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type ElementVariantToggled = {
+  node: SyntheticNode;
+  newVariants: string[];
+} & Action;
 
 export type CanvasWheel = {
   canvasWidth: number;
@@ -261,6 +268,7 @@ export type SavedAllFiles = {
 } & Action;
 
 export type InsertToolFinished = {
+  fileUri: string;
   bounds: Bounds;
 } & Action;
 
@@ -282,11 +290,20 @@ export type FileNavigatorDroppedItem = {
   offset: 0 | -1 | 1;
 } & Action;
 
+export type EditorTabClicked = {
+  uri: string;
+} & Action;
+
 export const fileNavigatorDroppedItem = (node: TreeNode, targetNode: TreeNode, offset: 0 | -1 | 1): FileNavigatorDroppedItem => ({
   node,
   targetNode,
   offset,
   type: FILE_NAVIGATOR_DROPPED_ITEM
+});
+
+export const editorTabClicked = (uri: string): EditorTabClicked => ({
+  uri,
+  type: EDITOR_TAB_CLICKED
 });
 
 export const fileNavigatorItemClicked = (node: TreeNode): FileNavigatorItemClicked => ({
@@ -304,6 +321,12 @@ export const newFileAdded = (directoryId: string, basename: string, fileType: "d
   basename,
   fileType,
   type: NEW_FILE_ADDED
+});
+
+export const elementVariantToggled = (newVariants: string[], node: SyntheticNode): ElementVariantToggled => ({
+  newVariants,
+  node,
+  type: ELEMENT_VARIANT_TOGGLED
 });
 
 export const fileNavigatorNewFileClicked = (): Action => ({
@@ -328,13 +351,15 @@ export const fileNavigatorNewFileEntered = (basename: string): FileNavigatorNewF
   type: FILE_NAVIGATOR_NEW_FILE_ENTERED
 });
 
-export const openFilesItemClick = (uri: string): OpenFilesItemClick => ({
+export const openFilesItemClick = (uri: string, sourceEvent: React.MouseEvent<any>): OpenFilesItemClick => ({
   uri,
+  sourceEvent,
   type: OPEN_FILE_ITEM_CLICKED,
 });
 
 export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
   uri,
+  sourceEvent: null,
   type: OPEN_FILE_ITEM_CLOSE_CLICKED,
 });
 
@@ -550,8 +575,9 @@ export const canvasMotionRested = () => ({
   type: CANVAS_MOTION_RESTED
 });
 
-export const insertToolFinished = (bounds: Bounds): InsertToolFinished => ({
+export const insertToolFinished = (bounds: Bounds, fileUri: string): InsertToolFinished => ({
   bounds,
+  fileUri,
   type: INSERT_TOOL_FINISHED
 });
 

@@ -186,8 +186,7 @@ export const getSyntheticOriginSourceNode = (node: SyntheticNode, browser: Synth
   const sourceNode = getSyntheticSourceNode(node.id, browser);
   const originUri = getSyntheticOriginSourceNodeUri(node, browser);
   const originDep = browser.graph[originUri];
-  const isComponentInstance = node.source.uri !== originUri;
-  return isComponentInstance ? originDep.content.children.find(child => getComponentInfo(child).id === sourceNode.name) : getSyntheticSourceNode(node.id, browser);
+  return isComponentInstanceSourceNode(sourceNode) ? originDep.content.children.find(child => getComponentInfo(child).id === sourceNode.name) : getSyntheticSourceNode(node.id, browser);
 };
 
 export const findSourceSyntheticNode = (node: TreeNode, targetUri: string, browser: SyntheticBrowser): SyntheticNode => {
@@ -372,6 +371,21 @@ export const getSourceNodeDependency = memoize((nodeId: string, browser: Synthet
     }
   }
   return null;
+});
+
+export const getSyntheticNodeOriginComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
+  const node = getSyntheticNodeById(nodeId, browser);
+  const componentInstanceNode = getComponentInstanceSyntheticNode(node.id, browser) as SyntheticNode;
+  if (!componentInstanceNode) {
+    return getSyntheticNodeSourceComponent(node.id, browser);
+  }
+
+  return getComponentInfo(getSyntheticOriginSourceNode(componentInstanceNode, browser));
+});
+
+export const getComponentInstanceComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
+  const node = getSyntheticNodeById(nodeId, browser);
+  return getComponentInfo(getSyntheticOriginSourceNode(node, browser));
 });
 
 export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
@@ -842,6 +856,15 @@ export const persistInsertNewComponentVariant = (variantName: string, componentN
   });
 };
 
+export const persistSetElementVariants = (variantNames: string[], sourceNodeId: string, componentVariantName: string, browser: SyntheticBrowser) => {
+  if (componentVariantName) {
+    throw new Error(`cannot set variant under component`);
+  }
+  const componentInstanceNode = getComponentInstanceSourceNode(sourceNodeId, browser);
+  return persistSourceNodeChanges(componentInstanceNode.id, null, browser, (sourceNode) => {
+    return setNodeAttribute(sourceNode, PCSourceAttributeNames.VARIANTS, variantNames);
+  });
+};
 export const persistComponentVariantChanged = (properties: Partial<ComponentVariantInfo>, name: string, componentNodeId: string, browser: SyntheticBrowser) => {
   const sourceNode = getSourceNodeById(componentNodeId, browser);
   const stateNode = sourceNode.children.find(child => getAttribute(child, "name") === name);
@@ -952,7 +975,7 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   return browser;
 };
 
-const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBrowser) => {
+export const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBrowser) => {
   const node = getSyntheticNodeById(nodeId, browser);
   const document = getSyntheticNodeDocument(nodeId, browser);
   const filter = (parent) => {
@@ -963,6 +986,16 @@ const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBro
   }
 
   return findTreeNodeParent(nodeId, document.root, filter);
+};
+
+
+export const getComponentInstanceSourceNode = (nodeId: string, browser: SyntheticBrowser) => {
+  const node = getSourceNodeById(nodeId, browser);
+  const dep = getSourceNodeDependency(nodeId, browser);
+  if (isComponentInstanceSourceNode(node)) {
+    return node;
+  }
+  return findTreeNodeParent(nodeId, dep.content, isComponentInstanceSourceNode);
 };
 
 export const persistSyntheticItemPosition = (position: Point, nodeId: string, browser: SyntheticBrowser) => {

@@ -75,13 +75,13 @@ export const evaluateRootDocumentComponent = (componentNode: TreeNode, currentDe
         ...DEFAULT_ROOT_DOCUMENT_ELEMENT_STYLE
       }
     }
-  }, [], getSytheticNodeSource(componentNode, dependency), checksum + componentNode.id, module, checksum, dependency, graph);
+  }, [], getSytheticNodeSource(componentNode, dependency), checksum + componentNode.id, module, checksum, dependency, graph, EMPTY_ARRAY, true);
   element = setNodeAttribute(element, EditorAttributeNames.IS_COMPONENT_INSTANCE, false, EDITOR_NAMESPACE);
   element = setNodeAttribute(element, EditorAttributeNames.IS_COMPONENT_ROOT, true, EDITOR_NAMESPACE);
   return element;
 };
 
-const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY) => {
+const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, id: string, module: Module, checksum: string, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY, isRoot?: boolean) => {
   const info = getComponentInfo(componentNode);
   const ext = info.extends || DEFAULT_EXTENDS;
   let template = info.template;
@@ -96,10 +96,11 @@ const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttribu
     slots[slotName].push(child);
   }
 
-  template = info.states.reduce((template, state) => {
-    return state.isDefault ? overrideComponentTemplate(template, state.overrides) : template;
-  }, template);
+  const variants = (attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT)[PCSourceAttributeNames.VARIANTS];
 
+  template = info.states.reduce((template, state) => {
+    return (variants ? variants.indexOf(state.name) !== -1 : isRoot && state.isDefault) ? overrideComponentTemplate(template, state.overrides) : template;
+  }, template);
 
   const syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, id + i, checksum, dependency, graph, slots)) : EMPTY_ARRAY;
 

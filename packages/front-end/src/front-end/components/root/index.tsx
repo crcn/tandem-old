@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dispatch } from "redux";
-import { EditorComponent } from "./editor";
+import { WorkspaceComponent } from "./workspace";
 import { RootState } from "../../state";
 import { compose, pure } from "recompose";
 
@@ -11,8 +11,8 @@ export type RootOuterProps = {
 
 const RootBaseComponent = ({ root, dispatch }: RootOuterProps) => {
   return <div className="m-root">
-    <EditorComponent root={root} dispatch={dispatch} />
+    <WorkspaceComponent root={root} dispatch={dispatch} />
   </div>;
 };
 
-export const RootComponent = compose<RootOuterProps, RootOuterProps>(pure)(EditorComponent);
+export const RootComponent = compose<RootOuterProps, RootOuterProps>(pure)(RootBaseComponent);

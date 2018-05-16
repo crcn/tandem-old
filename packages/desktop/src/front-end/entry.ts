@@ -9,6 +9,7 @@ setup<DesktopRootState>(rootReducer, rootSaga)({
   hoveringNodeIds: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
+  editors: [],
   browser: {
     type: SyntheticObjectType.BROWSER,
     windows: []
