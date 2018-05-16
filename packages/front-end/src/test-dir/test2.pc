@@ -1,13 +1,108 @@
-<module xmlns:import0="test.pc" xmlns:import1="button.pc">
-  <component id="component3" style="width:100vw;height:100vh;boxSizing:content-box;" editor:bounds="left:78;top:44;right:513;bottom:338;">
-    <template>
-      <rectangle style="width:100%;height:100%;color:blue;background:#CCC;position:absolute;padding:10px;boxSizing:border-box;display:flex;flexDirection:column;fontFamily:helvetica;" label="container">
-        <rectangle style="left:0%;right:300;top:0;bottom:125;width:100%;height:20px;background:rgba(0,0,0,00.1);position:relative;flexShrink:0;marginBottom:10px;" label="Header" native-type="div"></rectangle>
-        <rectangle style="left:0;right:293;top:0;bottom:218;width:100%;height:100%;background:rgba(0,0,0,0.1);position:relative;padding:10px;boxSizing:border-box;" container="containera939e865" prev-container="containera939e865" label="slot"></rectangle>
-      </rectangle>
-    </template>
-  </component>
-  <component3 style="left:20;right:NaN;top:20;bottom:NaN;" label="Quick search" editor:bounds="left:540;top:79;right:1047;bottom:476;">
-    <import1:component1 style="left:117;top:144;right:406;bottom:314;" slot="containera939e865" label="Button" editor:bounds="left:69;right:358;top:378;bottom:548;"></import1:component1>
-  </component3>
-</module>
+{
+  "name": "module",
+  "namespace": null,
+  "attributes": {
+    "xmlns": {
+      "import0": "test.pc",
+      "import1": "button.pc"
+    }
+  },
+  "children": [
+    {
+      "name": "component",
+      "namespace": null,
+      "attributes": {
+        "undefined": {
+          "id": "component3",
+          "style": {
+            "width": "100vw",
+            "height": "100vh",
+            "boxSizing": "content-box"
+          }
+        },
+        "editor": {
+          "bounds": "left:78;top:44;right:513;bottom:338;"
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "namespace": null,
+          "attributes": {},
+          "children": [
+            {
+              "name": "rectangle",
+              "namespace": null,
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "width": "100%",
+                    "height": "100%",
+                    "color": "blue",
+                    "background": "#CCC",
+                    "position": "absolute",
+                    "padding": "10px",
+                    "boxSizing": "border-box",
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "fontFamily": "helvetica"
+                  },
+                  "label": "container"
+                }
+              },
+              "children": [
+                {
+                  "name": "rectangle",
+                  "namespace": null,
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "left": "0%",
+                        "right": 300,
+                        "top": 0,
+                        "bottom": 125,
+                        "width": "100%",
+                        "height": "20px",
+                        "background": "rgba(0,0,0,00.1)",
+                        "position": "relative",
+                        "flexShrink": 0,
+                        "marginBottom": "10px"
+                      },
+                      "label": "Header",
+                      "native-type": "div"
+                    }
+                  },
+                  "children": []
+                },
+                {
+                  "name": "rectangle",
+                  "namespace": null,
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "left": 0,
+                        "right": 293,
+                        "top": 0,
+                        "bottom": 218,
+                        "width": "100%",
+                        "height": "100%",
+                        "background": "rgba(0,0,0,0.1)",
+                        "position": "relative",
+                        "padding": "10px",
+                        "boxSizing": "border-box"
+                      },
+                      "container": "containera939e865",
+                      "prev-container": "containera939e865",
+                      "label": "slot"
+                    }
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

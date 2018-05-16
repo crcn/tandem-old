@@ -14,14 +14,16 @@ export enum PCSourceAttributeNames {
   CONTAINER_STORAGE = "container-keep",
   NATIVE_TYPE = "native-type",
   LABEL = "label",
-  SLOT = "slot",
-  STATES = "states"
+  SLOT = "slot"
 };
 
 export enum PCSourceTagNames {
   COMPONENT = "component",
-  COMPONENT_STATE = "state"
+  RECTANGLE = "text",
+  TEXT = "text",
+  COMPONENT_VARIANT = "variant"
 };
+export const isComponentInstanceSourceNode = (sourceNode: TreeNode) => sourceNode.name !== PCSourceTagNames.TEXT && sourceNode.name !== PCSourceTagNames.RECTANGLE;
 
 // TODO - generic style
 export type StyleDeclaration = {
@@ -31,7 +33,7 @@ export type StyleDeclaration = {
   height: number;
 };
 
-export type ComponentStateInfo = {
+export type ComponentVariantInfo = {
   name: string;
   isDefault: boolean;
   overrides: ComponentOverride[];
@@ -97,7 +99,7 @@ export type Component = {
 
   overrides: ComponentOverride[];
 
-  states: ComponentStateInfo[];
+  states: ComponentVariantInfo[];
 }
 
 export enum ComponentOverrideType {
@@ -183,7 +185,7 @@ export const getComponentInfo = memoize((component: TreeNode): Component => {
   return {
     id: getAttribute(component, "id"),
     label: getAttribute(component, "label"),
-    states: states.map(getStateInfo),
+    states: states.map(getVariantInfo),
     extends: ext,
     template: component.children.find(createNodeNameMatcher("template")),
     source: component,
@@ -216,7 +218,7 @@ export const getModuleComponent = (componentId: string, module: Module) => modul
 
 export const getNodeSourceComponent = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => getModuleComponent(node.name, getNodeSourceModule(node, dependency, graph)));
 
-export const getStateInfo = memoize((node: TreeNode): ComponentStateInfo => {
+export const getVariantInfo = memoize((node: TreeNode): ComponentVariantInfo => {
   return {
     name: getAttribute(node, "name"),
     isDefault: Boolean(getAttribute(node, "default")),

@@ -2,8 +2,11 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
+- fix switching between documents
 - selecting states
+- cannot copy component instances to other documents
 - removing attributes
+- ability to define variant on component instance
 - fix selection
 - fix overriding children
 - variants (design tabs with this)

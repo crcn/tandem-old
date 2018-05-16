@@ -1,6 +1,6 @@
 import { TreeNodeAttributes, getTreeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode, cloneNode, getTreeNodeUidGenerator, filterNestedNodes, findTreeNodeParent } from "../common/state/tree";
 import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, ArrayOperationalTransform, castStyle } from "../common/utils";
-import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent, addModuleNodeImport, getModuleImportNamespace, PCSourceAttributeNames, ComponentStateInfo, PCSourceTagNames } from "./dsl";
+import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent, addModuleNodeImport, getModuleImportNamespace, PCSourceAttributeNames, ComponentVariantInfo, PCSourceTagNames, isComponentInstanceSourceNode } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect, parseStyle, resizeBounds } from "../common";
 import { mapValues, pull } from "lodash";
@@ -20,6 +20,9 @@ export enum EditorAttributeNames {
 export type TreeNodeClip = {
   uri: string;
   node: TreeNode;
+  namespaceUris: {
+    [identifier: string]: string
+  }
 };
 
 
@@ -216,6 +219,22 @@ export const getSyntheticSourceNode = (syntheticNodeId: string, browser: Synthet
   const synthetic = getSyntheticNodeById(syntheticNodeId, browser);
   return getTreeNodeFromPath(synthetic.source.path, browser.graph[synthetic.source.uri].content);
 };
+
+export const getNamespaceUris = memoize((sourceNodeId: string, browser: SyntheticBrowser) => {
+  const sourceNode = getSourceNodeById(sourceNodeId, browser);
+  const dependency = getSourceNodeDependency(sourceNodeId, browser);
+  const moduleInfo = getModuleInfo(dependency.content);
+  const namespaceUris = {};
+  findNestedNode(sourceNode, (node: TreeNode) => {
+    const uri = moduleInfo.imports[node.namespace];
+    if (uri) {
+      namespaceUris[node.namespace] = "file:/" + path.resolve(path.dirname(dependency.uri).substr("file:/".length), uri);
+    }
+    return false;
+  });
+
+  return namespaceUris;
+});
 
 export const getSyntheticWindowDependency = (window: SyntheticWindow, graph: DependencyGraph) => graph && graph[window.location];
 export const getSyntheticDocumentDependency = (documentId: string, browser: SyntheticBrowser) => getSyntheticWindowDependency(getSyntheticDocumentWindow(documentId, browser), browser.graph);
@@ -430,7 +449,7 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
   let graph = browser.graph;
   let importUris = targetDep.importUris;
 
-  for (const { uri, node } of clips) {
+  for (const { uri, node, namespaceUris } of clips) {
     const sourceDep = browser.graph[uri];
     const generateUid = getTreeNodeUidGenerator(sourceDep.content);
     const sourceNode = node;
@@ -440,8 +459,10 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
       throw new Error("not implemented");
     }
 
+    const isComponent = sourceNode.name === PCSourceTagNames.COMPONENT;
+
     // is component
-    if (sourceNode.name === "component") {
+    if (sourceNode.name === PCSourceTagNames.COMPONENT) {
       const bounds = calculateRootNodeBounds(sourceNode);
 
       let namespace: string;
@@ -450,14 +471,12 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
       if (uri !== targetDep.uri) {
         const relativePath = path.relative(path.dirname(targetDep.uri), sourceDep.uri);
         namespace = moduleInfo.imports[relativePath];
-        if (!namespace) {
-          content = addModuleNodeImport(relativePath, content);
-          namespace = getModuleImportNamespace(relativePath, content);
-          importUris = {
-            ...importUris,
-            [relativePath]: sourceDep.uri
-          };
-        }
+        content = addModuleNodeImport(relativePath, content);
+        namespace = getModuleImportNamespace(relativePath, content);
+        importUris = {
+          ...importUris,
+          [relativePath]: sourceDep.uri
+        };
       }
 
       const info = getComponentInfo(sourceNode);
@@ -484,8 +503,36 @@ export const persistPasteSyntheticNodes = (dependencyUri: string, sourceNodeId: 
 
       content = updateNestedNode(targetSourceNode, content, (target) => appendChildNode(child, target));
     } else {
+      // TODO - need to recursively transform child namespaces
+
+      const updateNamespaces = (node: TreeNode) => {
+        node = {
+          ...node,
+          children: node.children.map(updateNamespaces)
+        } as TreeNode;
+
+        let sourceUri = namespaceUris[node.namespace];
+
+        if (!sourceUri && isComponentInstanceSourceNode(node)) {
+          sourceUri = sourceDep.uri;
+        }
+
+        if (sourceUri) {
+          const sourceRelativeUri = path.relative(path.dirname(targetDep.uri), sourceUri);
+
+          node = {...node, namespace: getModuleImportNamespace(sourceRelativeUri, content)};
+          importUris = {
+            ...importUris,
+            [sourceUri]: sourceRelativeUri
+          };
+        }
+
+        return node;
+      }
+
+      const clonedChild = updateNamespaces(cloneNode(sourceNode, generateUid));
       content = updateNestedNode(targetSourceNode, content, (target) => {
-        target = appendChildNode(cloneNode(sourceNode, generateUid), target);
+        target = appendChildNode(clonedChild, target);
         return target;
       });
     }
@@ -525,7 +572,7 @@ export const collapseSyntheticNode = (node: SyntheticNode, root: SyntheticNode) 
 
 export const getSyntheticNodeWindow = memoize((nodeId: string, state: SyntheticBrowser) => getSyntheticDocumentWindow(getSyntheticNodeDocument(nodeId, state).id, state));
 
-const persistSourceNodeChanges = (sourceNodeId: string, stateName: string, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
+const persistSourceNodeChanges = (sourceNodeId: string, variantName: string, browser: SyntheticBrowser, updater: TreeNodeUpdater) => {
 
   const sourceNode = getSourceNodeById(sourceNodeId, browser);
   const elementSourceRoot = getSourceNodeElementRoot(sourceNode.id, browser);
@@ -533,8 +580,8 @@ const persistSourceNodeChanges = (sourceNodeId: string, stateName: string, brows
 
   let updatedModuleSourceNode = updateNestedNode(sourceNode, sourceDependency.content, updater);
 
-  if (stateName && elementSourceRoot.name === PCSourceTagNames.COMPONENT) {
-    let stateSourceNode = elementSourceRoot.children.find(child => child.name === PCSourceTagNames.COMPONENT_STATE && getAttribute(child, "name") === stateName);
+  if (variantName && elementSourceRoot.name === PCSourceTagNames.COMPONENT) {
+    let stateSourceNode = elementSourceRoot.children.find(child => child.name === PCSourceTagNames.COMPONENT_VARIANT && getAttribute(child, "name") === variantName);
 
     const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
     updatedModuleSourceNode = sourceDependency.content;
@@ -779,14 +826,14 @@ export const persistChangeNodeLabel = (label: string, targetSourceNodeId: string
   return browser;
 };
 
-export const persistInsertNewComponentState = (stateName: string, componentNodeId: string, browser: SyntheticBrowser) => {
+export const persistInsertNewComponentVariant = (variantName: string, componentNodeId: string, browser: SyntheticBrowser) => {
   return persistSourceNodeChanges(componentNodeId, null, browser, (componentNode) => {
     return appendChildNode({
-      name: PCSourceTagNames.COMPONENT_STATE,
+      name: PCSourceTagNames.COMPONENT_VARIANT,
       id: getTreeNodeUidGenerator(componentNode)(),
       attributes: {
         [DEFAULT_NAMESPACE]: {
-          name: stateName,
+          name: variantName,
           default: false
         }
       },
@@ -795,7 +842,7 @@ export const persistInsertNewComponentState = (stateName: string, componentNodeI
   });
 };
 
-export const persistComponentStateChanged = (properties: Partial<ComponentStateInfo>, name: string, componentNodeId: string, browser: SyntheticBrowser) => {
+export const persistComponentVariantChanged = (properties: Partial<ComponentVariantInfo>, name: string, componentNodeId: string, browser: SyntheticBrowser) => {
   const sourceNode = getSourceNodeById(componentNodeId, browser);
   const stateNode = sourceNode.children.find(child => getAttribute(child, "name") === name);
   return persistSourceNodeChanges(stateNode.id, null, browser, (stateNode) => {
@@ -809,7 +856,7 @@ export const persistComponentStateChanged = (properties: Partial<ComponentStateI
   });
 };
 
-export const persistRemoveComponentState = (name: string, componentNodeId: string, browser: SyntheticBrowser) => {
+export const persistRemoveComponentVariant = (name: string, componentNodeId: string, browser: SyntheticBrowser) => {
   const sourceNode = getSourceNodeById(componentNodeId, browser);
   const stateNode = sourceNode.children.find(child => getAttribute(child, "name") === name);
   return persistSourceNodeChanges(sourceNode.id, null, browser, (componentNode) => {
@@ -841,7 +888,7 @@ export const persistInsertNode = (child: TreeNode, refSourceNodeId: string, offs
   if (!getAttribute(child, "ref")) {
     child = setNodeAttribute(child, "ref", getTreeNodeUidGenerator(sourceParentNode)());
   }
-  console.log(getAttribute(child, "ref"));
+
   return updateDependencyAndRevaluate({
     content: insertComponentChildNode(addTreeNodeIds(child, dep.content.id), index, sourceParentNode.id, dep.content)
   }, dep.uri, browser);
@@ -883,8 +930,6 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   let sourceNode = getSyntheticSourceNode(node.id, browser);
   const sourceDep = getSourceNodeDependency(sourceNode.id, browser);
   const componentInstanceNode = getComponentInstanceSyntheticNode(targetNodeId, browser);
-
-  console.log(componentInstanceNode);
 
   const sourceParent = getParentTreeNode(sourceNode.id, sourceDep.content);
 
@@ -952,9 +997,9 @@ export const persistSyntheticItemBounds = (bounds: Bounds, nodeId: string, brows
   }
 };
 
-export const persistRawCSSText = (text: string, nodeId: string, stateName: string, browser: SyntheticBrowser) => {
+export const persistRawCSSText = (text: string, nodeId: string, variantName: string, browser: SyntheticBrowser) => {
   const newStyle = parseStyle(text);
-  return persistSourceNodeChanges(getSyntheticSourceNode(nodeId, browser).id, stateName, browser, (child) => {
+  return persistSourceNodeChanges(getSyntheticSourceNode(nodeId, browser).id, variantName, browser, (child) => {
     const style = getAttribute(child, "style") || EMPTY_OBJECT;
     return setNodeAttribute(child, "style", newStyle);
   });

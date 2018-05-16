@@ -38,7 +38,7 @@ function* openDependencyEntry (activeFilePath: string) {
   if (!entry) {
     const result = yield call(loadEntry, activeFilePath, {
       graph: browser.graph,
-      openFile: uri => fs.readFileSync(uri.substr("file:/".length), "utf8")
+      openFile: uri => fs.readFileSync(uri.substr("file://".length), "utf8")
     });
     entry = result.entry;
     graph = result.graph;
@@ -53,7 +53,7 @@ function* handleNewFileEntered() {
     const { insertFileInfo: { directoryId, type: insertType }, projectDirectory }: RootState = yield select();
     const directory = getNestedTreeNodeById(directoryId, projectDirectory);
     const uri = getAttribute(directory, FileAttributeNames.URI);
-    const filePath = uri.replace("file:/", "") + basename;
+    const filePath = uri.replace("file://", "") + basename;
 
     if (fs.existsSync(filePath)) {
       continue;

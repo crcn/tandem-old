@@ -8,10 +8,10 @@ import { PaneComponent } from "../../../../pane";
 import { FocusComponent } from "../../../../focus";
 import { getAttribute } from "common";
 import { getSyntheticNodeById, PCSourceAttributeNames, getSourceNodeById, getSyntheticSourceNode, PCSourceTagNames, getComponentInfo, getSyntheticNodeDocument } from "paperclip";
-import { newStateNameEntered, componentStateNameDefaultToggleClick, componentStateRemoved, componentComponentStateNameChanged, componentComponentStateNameClicked } from "../../../../..";
-const { States: BaseStates, StateItem: BaseStatesItem } = require("./index.pc");
+import { newVariantNameEntered, componentVariantNameDefaultToggleClick, componentVariantRemoved, componentComponentVariantNameChanged, componentComponentVariantNameClicked } from "../../../../..";
+const { Variants: BaseVariants, VariantItem: BaseVariantsItem } = require("./index.pc");
 
-type StateItemOuterProps = {
+type VariantItemOuterProps = {
   name: string;
   useAsDefault: boolean;
   selected: boolean;
@@ -21,16 +21,16 @@ type StateItemOuterProps = {
   onRemove: (name: string) => any;
 };
 
-type StateItemInnerProps = {
+type VariantItemInnerProps = {
   editingName: boolean;
   onCheckboxClick: any;
   onRemoveClick: any;
   onLabelDoubleClick: any;
   onNameInputKeyDown: any;
   onNameInputBlur: any;
-} & StateItemOuterProps;
+} & VariantItemOuterProps;
 
-const StateItem = compose<StateItemInnerProps, StateItemOuterProps>(
+const VariantItem = compose<VariantItemInnerProps, VariantItemOuterProps>(
   pure,
   withState("editingName", "setEditingName", false),
   withHandlers({
@@ -67,58 +67,58 @@ const StateItem = compose<StateItemInnerProps, StateItemOuterProps>(
       </span>
     </span>
   </span>
-  return <BaseStatesItem onClick={onClick} className={cx("state-item", { selected })} checkboxContainerChildren={<input type="checkbox" onClick={onCheckboxClick} checked={useAsDefault} />} labelContainerChildren={label} />;
+  return <BaseVariantsItem onClick={onClick} className={cx("state-item", { selected })} checkboxContainerChildren={<input type="checkbox" onClick={onCheckboxClick} checked={useAsDefault} />} labelContainerChildren={label} />;
 });
 
-type StatesPaneOuterProps = {
+type VariantsPaneOuterProps = {
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type StatePaneInnerProps = {
-  inputNewStateMode: boolean;
-  onStateToggle: (name: string, value: boolean) => any;
-  onAddStateClick: any;
-  onStateNameChange: any;
-  onNewStateNameKeyDown: any;
-  onNewStateNameBlur: any;
-  onRemoveStateClick: any;
-  onStateNameClick: any;
-} & StatesPaneOuterProps;
+type VariantPaneInnerProps = {
+  inputNewVariantMode: boolean;
+  onVariantToggle: (name: string, value: boolean) => any;
+  onAddVariantClick: any;
+  onVariantNameChange: any;
+  onNewVariantNameKeyDown: any;
+  onNewVariantNameBlur: any;
+  onRemoveVariantClick: any;
+  onVariantNameClick: any;
+} & VariantsPaneOuterProps;
 
-export const StatesComponent = compose<StatePaneInnerProps, StatesPaneOuterProps>(
+export const VariantsComponent = compose<VariantPaneInnerProps, VariantsPaneOuterProps>(
   pure,
   withState("inputNewStateMode", "setInputNewStateMode", false),
   withHandlers({
-    onStateToggle: ({ dispatch }) => (name: string, value: boolean) => {
-      dispatch(componentStateNameDefaultToggleClick(name, value));
+    onVariantToggle: ({ dispatch }) => (name: string, value: boolean) => {
+      dispatch(componentVariantNameDefaultToggleClick(name, value));
     },
-    onAddStateClick: ({ dispatch, setInputNewStateMode }) => (event: React.MouseEvent<any>) => {
-      setInputNewStateMode(true);
+    onAddVariantClick: ({ dispatch, setInputNewVariantMode }) => (event: React.MouseEvent<any>) => {
+      setInputNewVariantMode(true);
     },
-    onNewStateNameKeyDown: ({ dispatch, setInputNewStateMode }) => (event: React.KeyboardEvent<any>) => {
+    onNewVariantNameKeyDown: ({ dispatch, setInputNewVariantMode }) => (event: React.KeyboardEvent<any>) => {
       if (event.key === "Enter") {
-        const newStateName = String((event.target as any).value || "").trim();
-        if (newStateName) {
-          dispatch(newStateNameEntered(newStateName));
+        const newVariantName = String((event.target as any).value || "").trim();
+        if (newVariantName) {
+          dispatch(newVariantNameEntered(newVariantName));
         }
-        setInputNewStateMode(false);
+        setInputNewVariantMode(false);
       }
     },
-    onNewStateNameBlur: ({ setInputNewStateMode }) => () => {
-      setInputNewStateMode(false);
+    onNewVariantNameBlur: ({ setInputNewVariantMode }) => () => {
+      setInputNewVariantMode(false);
     },
-    onRemoveStateClick: ({ dispatch }) => (name: string) => {
-      dispatch(componentStateRemoved(name));
+    onRemoveVariantClick: ({ dispatch }) => (name: string) => {
+      dispatch(componentVariantRemoved(name));
     },
-    onStateNameChange: ({ dispatch }) => (oldName: string, newName: string) => {
-      dispatch(componentComponentStateNameChanged(oldName, newName));
+    onVariantNameChange: ({ dispatch }) => (oldName: string, newName: string) => {
+      dispatch(componentComponentVariantNameChanged(oldName, newName));
     },
-    onStateNameClick: ({ dispatch }) => (name: string) => {
-      dispatch(componentComponentStateNameClicked(name));
+    onVariantNameClick: ({ dispatch }) => (name: string) => {
+      dispatch(componentComponentVariantNameClicked(name));
     }
   })
-)(({root, onStateToggle, onAddStateClick, onStateNameClick, inputNewStateMode, onNewStateNameKeyDown, onNewStateNameBlur, onRemoveStateClick, onStateNameChange}) => {
+)(({root, onVariantToggle, onAddVariantClick, onVariantNameClick, inputNewVariantMode, onNewVariantNameKeyDown, onNewVariantNameBlur, onRemoveVariantClick, onVariantNameChange}) => {
   const selectedNodeId = root.selectedNodeIds[0];
 
   if (!selectedNodeId) {
@@ -135,27 +135,27 @@ export const StatesComponent = compose<StatePaneInnerProps, StatesPaneOuterProps
   const info = getComponentInfo(documentSourceNode);
 
   const itemsContainerChildren = info.states.map(({name, isDefault}) => {
-    return <StateItem selected={name === root.selectedComponentStateName} onClick={onStateNameClick} key={name} name={name} useAsDefault={isDefault} onChange={onStateToggle} onRemove={onRemoveStateClick} onNameChange={onStateNameChange} />;
+    return <VariantItem selected={name === root.selectedComponentVariantName} onClick={onVariantNameClick} key={name} name={name} useAsDefault={isDefault} onChange={onVariantToggle} onRemove={onRemoveVariantClick} onNameChange={onVariantNameChange} />;
   });
 
-  if (inputNewStateMode) {
+  if (inputNewVariantMode) {
     itemsContainerChildren.push(
-      <BaseStatesItem checkboxContainerChildren={<span></span>} labelContainerChildren={<FocusComponent>
-        <input type="text" onKeyDown={onNewStateNameKeyDown} onBlur={onNewStateNameBlur} />
+      <BaseVariantsItem checkboxContainerChildren={<span></span>} labelContainerChildren={<FocusComponent>
+        <input type="text" onKeyDown={onNewVariantNameKeyDown} onBlur={onNewVariantNameBlur} />
       </FocusComponent>} />
     );
   }
 
   const header = <span>
-    States
+    Variants
     <div className="controls">
-      <span className="add-state-button" onClick={onAddStateClick}>
+      <span className="add-state-button" onClick={onAddVariantClick}>
         +
       </span>
     </div>
   </span>;
 
   return <PaneComponent className="m-states-pane" header={header}>
-    <BaseStates itemsContainerChildren={itemsContainerChildren} />
+    <BaseVariants itemsContainerChildren={itemsContainerChildren} />
   </PaneComponent>;
 });

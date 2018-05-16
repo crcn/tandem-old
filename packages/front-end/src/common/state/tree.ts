@@ -43,6 +43,7 @@ export const findNestedNode = memoize((current: TreeNode, filter: NodeFilter) =>
   }
 });
 
+
 export const createNodeNameMatcher = memoize((name: string, namespace?: string) => node => node.name
  === name && node.namespace == namespace);
 

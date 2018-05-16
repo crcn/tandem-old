@@ -6,34 +6,19 @@ import { eventChannel } from "redux-saga";
 import { diffArray, ArrayOperationalTransformType, ArrayInsertMutation, ArrayUpdateMutation } from "../../common";
 
 export function* syntheticBrowserSaga() {
-  yield fork(handleNewWindowDocuments);
+  yield fork(handleActiveWindows);
   yield fork(handleSyntheticDocumentRootChanged);
 }
 
-
-function* handleNewWindowDocuments() {
-  let currentWindows: SyntheticWindow[] = [];
+function* handleActiveWindows() {
+  let activeWindow: SyntheticWindow;
   while(1) {
-    const action = yield take();
+    yield take();
     const state: RootState = yield select();
-    if (state.browser.windows !== currentWindows) {
-      const diffs = diffArray(currentWindows, state.browser.windows, (a, b) => a.location === b.location ? 0 : -1);
-      for (const diff of diffs) {
-        switch(diff.type) {
-          case ArrayOperationalTransformType.INSERT: {
-            yield call(renderDocuments, (diff as ArrayInsertMutation<SyntheticWindow>).value);
-            break;
-          }
-          case ArrayOperationalTransformType.UPDATE: {
-            const { originalOldIndex, index } = diff as ArrayUpdateMutation<SyntheticWindow>;
-            const newWindow = state.browser.windows[index];
-            yield call(renderDocuments, newWindow);
-            break;
-          }
-        }
-      }
+    const currWindow = getActiveWindow(state);
+    if (currWindow && currWindow !== activeWindow) {
+      yield call(renderDocuments, activeWindow = currWindow);
     }
-    currentWindows = state.browser.windows;
   }
 }
 
@@ -42,16 +27,18 @@ function* renderDocuments(window: SyntheticWindow) {
     return;
   }
   for (const document of window.documents) {
-    yield call(renderDocument, document);
+    yield fork(renderDocument, document);
   }
 }
 
 function* renderDocument(document: SyntheticDocument) {
-  if (document.container.contentDocument && document.container.contentDocument.documentElement) {
+  const body = document.container.contentDocument && document.container.contentDocument.body;
+  const isRendered =  body && body.childElementCount > 0;
+  if (body && isRendered) {
     return;
   }
 
-  yield spawn(function*() {
+  if (!body) {
     const doneChan = eventChannel((emit) => {
       const onDone = event => {
         document.container.removeEventListener('load', onDone);
@@ -61,12 +48,11 @@ function* renderDocument(document: SyntheticDocument) {
       return () => {};
     });
     yield take(doneChan);
-    const nativeMap = renderDOM(document.container.contentDocument.body, document.root);
-    yield call(waitForDOMReady, nativeMap);
-    yield call(componentDocumentDisplayInfo, document.id, nativeMap);
-  });
+  }
+  const nativeMap = renderDOM(document.container.contentDocument.body, document.root);
+  yield call(waitForDOMReady, nativeMap);
+  yield call(componentDocumentDisplayInfo, document.id, nativeMap);
 }
-
 
 function* componentDocumentDisplayInfo(documentId: string, nativeNodeMap: SyntheticNativeNodeMap) {
   yield put(documentRendered(documentId, computeDisplayInfo(nativeNodeMap), nativeNodeMap));

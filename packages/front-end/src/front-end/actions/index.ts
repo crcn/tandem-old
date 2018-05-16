@@ -72,11 +72,11 @@ export const PC_LAYER_EDIT_LABEL_BLUR = "PC_LAYER_EDIT_LABEL_BLUR";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 export const QUICK_SEARCH_ITEM_CLICKED = "QUICK_SEARCH_ITEM_CLICKED";
 export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
-export const NEW_STATE_NAME_ENTERED = "NEW_STATE_NAME_ENTERED";
-export const COMPONENT_STATE_REMOVED = "COMPONENT_STATE_REMOVED";
-export const COMPONENT_STATE_NAME_CHANGED = "COMPONENT_STATE_NAME_CHANGED";
-export const COMPONENT_STATE_NAME_CLICKED = "COMPONENT_STATE_NAME_CLICKED";
-export const COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK = "COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK";
+export const NEW_VARIANT_NAME_ENTERED = "NEW_VARIANT_NAME_ENTERED";
+export const COMPONENT_VARIANT_REMOVED = "COMPONENT_VARIANT_REMOVED";
+export const COMPONENT_VARIANT_NAME_CHANGED = "COMPONENT_VARIANT_NAME_CHANGED";
+export const COMPONENT_VARIANT_NAME_CLICKED = "COMPONENT_VARIANT_NAME_CLICKED";
+export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK = "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
 
 export type WrappedEvent<T> = {
   sourceEvent: T
@@ -198,24 +198,24 @@ export type NativeNodeTypeChanged = {
   nativeType: string;
 } & Action;
 
-export type NewStateNameEntered = {
+export type NewVariantNameEntered = {
   value: string;
 } & Action;
 
-export type ComponentStateNameChanged = {
+export type ComponentVariantNameChanged = {
   oldName: string;
   newName:string;
 } & Action;
 
-export type ComponentStateNameClicked = {
+export type ComponentVariantNameClicked = {
   name: string;
 } & Action;
 
-export type ComponentStateRemoved = {
+export type ComponentVariantRemoved = {
   name: string;
 } & Action;
 
-export type ComponentStateNameDefaultToggleClick = {
+export type ComponentVariantNameDefaultToggleClick = {
   name: string;
   value: boolean;
 } & Action;
@@ -375,32 +375,32 @@ export const pcLayerClick = (node: TreeNode, sourceEvent: React.MouseEvent<any>)
   type: PC_LAYER_CLICK,
 });
 
-export const newStateNameEntered = (value: string): NewStateNameEntered => ({
+export const newVariantNameEntered = (value: string): NewVariantNameEntered => ({
   value,
-  type: NEW_STATE_NAME_ENTERED
+  type: NEW_VARIANT_NAME_ENTERED
 });
 
-export const componentComponentStateNameChanged = (oldName: string, newName: string): ComponentStateNameChanged => ({
+export const componentComponentVariantNameChanged = (oldName: string, newName: string): ComponentVariantNameChanged => ({
   oldName,
   newName,
-  type: COMPONENT_STATE_NAME_CHANGED
+  type: COMPONENT_VARIANT_NAME_CHANGED
 });
 
-export const componentComponentStateNameClicked = (name: string): ComponentStateNameClicked => ({
+export const componentComponentVariantNameClicked = (name: string): ComponentVariantNameClicked => ({
   name,
-  type: COMPONENT_STATE_NAME_CLICKED
+  type: COMPONENT_VARIANT_NAME_CLICKED
 });
 
-export const componentStateRemoved = (name: string): ComponentStateRemoved => ({
+export const componentVariantRemoved = (name: string): ComponentVariantRemoved => ({
   name,
-  type: COMPONENT_STATE_REMOVED
+  type: COMPONENT_VARIANT_REMOVED
 });
 
 
-export const componentStateNameDefaultToggleClick = (name: string, value: boolean): ComponentStateNameDefaultToggleClick => ({
+export const componentVariantNameDefaultToggleClick = (name: string, value: boolean): ComponentVariantNameDefaultToggleClick => ({
   name,
   value,
-  type: COMPONENT_STATE_NAME_DEFAULT_TOGGLE_CLICK
+  type: COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK
 });
 
 export const pcLayerExpandToggleClick = (node: TreeNode): TreeLayerExpandToggleClick => ({

@@ -1,0 +1,235 @@
+{
+  "name": "module",
+  "attributes": {
+    "xmlns": {
+      "import0": "../../../../pane/index.pc",
+      "import1": "../../../../dev/comment.pc"
+    }
+  },
+  "children": [
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component3",
+          "label": "Variant Option"
+        },
+        "editor": {
+          "bounds": {
+            "left": 148,
+            "right": 335,
+            "top": 329,
+            "bottom": 423
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": [
+            {
+              "name": "rectangle",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "padding": "4px 8px",
+                    "boxSizing": "border-box",
+                    "display": "inline-flex",
+                    "float": "left",
+                    "fontFamily": "Helvetica",
+                    "alignItems": "center"
+                  },
+                  "label": "Item",
+                  "native-type": "div",
+                  "ref": "f5e29aef0"
+                }
+              },
+              "children": [
+                {
+                  "name": "rectangle",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "marginRight": "4px"
+                      },
+                      "label": "Checkbox container",
+                      "native-type": "div",
+                      "ref": "ca54545c0",
+                      "container": "container55e93e38"
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "rectangle",
+                      "attributes": {
+                        "undefined": {
+                          "style": {
+                            "width": "10px",
+                            "height": "10px",
+                            "background": "#333"
+                          },
+                          "label": "Rectangle",
+                          "native-type": "div",
+                          "ref": "ca54545c0"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "rectangle",
+                  "attributes": {
+                    "undefined": {
+                      "style": {},
+                      "label": "Name container",
+                      "native-type": "div",
+                      "ref": "fe99a7a90",
+                      "container": "container8ad38360"
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "text",
+                      "attributes": {
+                        "undefined": {
+                          "style": {
+                            "display": "inline-block",
+                            "position": "relative"
+                          },
+                          "value": "Item",
+                          "label": "Name",
+                          "ref": "9342742c0"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rectangle",
+      "attributes": {
+        "undefined": {
+          "style": {
+            "left": 448,
+            "right": 751,
+            "top": 75,
+            "bottom": 251,
+            "width": 303,
+            "height": 176,
+            "background": "#CCC",
+            "position": "absolute"
+          },
+          "label": "Preview",
+          "native-type": "div",
+          "ref": "28c888810"
+        }
+      },
+      "children": [
+        {
+          "name": "component3",
+          "attributes": {
+            "undefined": {
+              "style": {
+                "left": 20,
+                "right": 420,
+                "top": 20,
+                "bottom": 420
+              },
+              "ref": "f5e29aef0"
+            }
+          },
+          "children": []
+        },
+        {
+          "name": "component3",
+          "attributes": {
+            "undefined": {
+              "style": {
+                "left": 20,
+                "right": 420,
+                "top": 20,
+                "bottom": 420
+              },
+              "ref": "f5e29aef0"
+            }
+          },
+          "children": []
+        },
+        {
+          "name": "component3",
+          "attributes": {
+            "undefined": {
+              "style": {
+                "left": 20,
+                "right": 420,
+                "top": 20,
+                "bottom": 420
+              },
+              "ref": "f5e29aef0"
+            }
+          },
+          "children": []
+        },
+        {
+          "name": "component3",
+          "attributes": {
+            "undefined": {
+              "style": {},
+              "ref": "f5e29aef0"
+            }
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "component1",
+      "namespace": "import1",
+      "attributes": {
+        "undefined": {
+          "style": {
+            "left": 20,
+            "right": 420,
+            "top": 20,
+            "bottom": 420
+          },
+          "label": "TODO"
+        },
+        "editor": {
+          "bounds": {
+            "left": 124,
+            "top": 80,
+            "right": 367,
+            "bottom": 239
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "text",
+          "attributes": {
+            "undefined": {
+              "style": {
+                "display": "inline-block",
+                "position": "relative"
+              },
+              "value": "This component can probably be generalized to a checkbox input",
+              "label": "Text",
+              "ref": "937a9c670",
+              "slot": "container4a9895b6"
+            }
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}
