@@ -51,6 +51,8 @@ const BaseCanvasComponent = ({
 }: CanvasInnerProps) => {
   const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
 
+  const translate = editor.canvas.translate;
+
   return <div className="m-canvas">
     <Isolate
     inheritCSS
@@ -76,9 +78,11 @@ const BaseCanvasComponent = ({
           onClick={onMouseClick}
           tabIndex={-1}
           onDragExit={onDragExit}
-          className="stage-inner">
-          <PreviewLayerComponent window={activeWindow} dependency={dependency} />
-          <ToolsLayerComponent root={root} dispatch={dispatch} zoom={1} editor={editor} />
+          className="canvas-inner">
+          <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})`, transformOrigin: "top left" }}>
+            <PreviewLayerComponent window={activeWindow} dependency={dependency} />
+            <ToolsLayerComponent root={root} dispatch={dispatch} zoom={translate.zoom} editor={editor} />
+          </div>
         </div>
       </span>
     </Isolate>

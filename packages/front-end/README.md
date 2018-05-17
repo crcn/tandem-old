@@ -2,14 +2,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
-- start designing master doc
-- storing style on root component
-  menu item
-- rename SyntheticDocument to SyntheticFrame
-- setting variants on children
-- tabs
-- multi windows
-- ability to define variant on component instance
+- setting root styles on components
+- styles pane
 
 - components
   - dropdown

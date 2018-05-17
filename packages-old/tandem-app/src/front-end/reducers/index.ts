@@ -328,18 +328,6 @@ const shortcutReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
-    case ZOOM_IN_SHORTCUT_PRESSED: {
-      const workspace = getSelectedWorkspace(state);
-      if (workspace.stage.fullScreen) return state;
-      return setStageZoom(state, workspace.$id, normalizeZoom(workspace.stage.translate.zoom) * 2);
-    }
-
-    case ZOOM_OUT_SHORTCUT_PRESSED: {
-      const workspace = getSelectedWorkspace(state);
-      if (workspace.stage.fullScreen) return state;
-      return setStageZoom(state, workspace.$id, normalizeZoom(workspace.stage.translate.zoom) / 2);
-    }
-
     case PREV_ARTBOARD_SHORTCUT_PRESSED: {
       return state;
     }
@@ -430,31 +418,6 @@ const dndReducer = (state: ApplicationState, event: BaseEvent) => {
 const stageReducer = (state: ApplicationState, event: BaseEvent) => {
 
   switch(event.type) {
-    case VISUAL_EDITOR_WHEEL: {
-      const { workspaceId, metaKey, ctrlKey, deltaX, deltaY, canvasHeight, canvasWidth } = event as StageWheel;
-      const workspace = getWorkspaceById(state, workspaceId);
-
-      if (workspace.stage.fullScreen) {
-        return state;
-      }
-
-      let translate = getStageTranslate(workspace.stage);
-
-      if (metaKey || ctrlKey) {
-        translate = centerTransformZoom(translate, boundsFromRect({
-          width: canvasWidth,
-          height: canvasHeight
-        }), clamp(translate.zoom + translate.zoom * deltaY / ZOOM_SENSITIVITY, MIN_ZOOM, MAX_ZOOM), workspace.stage.mousePosition);
-      } else {
-        translate = {
-          ...translate,
-          left: translate.left - deltaX,
-          top: translate.top - deltaY
-        };
-      }
-
-      return updateWorkspaceStage(state, workspace.$id, { smooth: false, translate });
-    }
 
     case TOGGLE_TOOLS_SHORTCUT_PRESSED: {
       const workspace = getSelectedWorkspace(state);
@@ -856,16 +819,4 @@ const updateWorkspaceStageSmoothing = (state: ApplicationState, workspace?: Work
     });
   }
   return state;
-};
-
-const setStageZoom = (state: ApplicationState, workspaceId: string, zoom: number, smooth: boolean = true) => {
-  const workspace = getWorkspaceById(state, workspaceId);
-  return updateWorkspaceStage(state, workspace.$id, {
-    smooth,
-    translate: centerTransformZoom(
-      workspace.stage.translate, workspace.stage.container.getBoundingClientRect(),
-      clamp(zoom, MIN_ZOOM, MAX_ZOOM),
-      workspace.stage.mousePosition
-    )
-  });
 };

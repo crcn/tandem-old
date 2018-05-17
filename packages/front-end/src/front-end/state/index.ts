@@ -224,6 +224,7 @@ export const openSecondEditor = (uri: string, state: RootState) => {
     editors: arraySplice(state.editors, i, 1, {
       ...editor,
       tabUris: newTabUris,
+      canvas: DEFAULT_CANVAS,
       activeFilePath: editor.activeFilePath === uri ? newTabUris[newTabUris.length - 1] : editor.activeFilePath,
     })
   };
@@ -263,6 +264,7 @@ export const openEditorFileUri = (uri: string, state: RootState): RootState => {
     activeEditorFilePath: uri,
     editors: editor ? arraySplice(state.editors, state.editors.indexOf(editor) , 1, {
       ...editor,
+      canvas: DEFAULT_CANVAS,
       tabUris: editor.tabUris.indexOf(uri) === -1 ? [
         ...editor.tabUris,
         uri,
