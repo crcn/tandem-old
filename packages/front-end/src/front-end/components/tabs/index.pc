@@ -15,10 +15,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 185,
-            "right": 661,
-            "top": 136,
-            "bottom": 422
+            "left": 183,
+            "right": 659,
+            "top": 105,
+            "bottom": 391
           }
         }
       },
@@ -214,8 +214,8 @@
           "bounds": {
             "left": 183,
             "top": 443,
-            "right": 360,
-            "bottom": 511
+            "right": 368,
+            "bottom": 503
           }
         }
       },

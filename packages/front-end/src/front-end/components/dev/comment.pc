@@ -12,10 +12,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 50,
-            "top": 87,
-            "right": 358,
-            "bottom": 281
+            "left": 40,
+            "top": 177,
+            "right": 348,
+            "bottom": 371
           }
         }
       },
@@ -131,10 +131,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 401,
-            "top": 314,
-            "right": 673,
-            "bottom": 504
+            "left": 392,
+            "top": 459,
+            "right": 664,
+            "bottom": 649
           }
         }
       },
@@ -171,10 +171,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 384,
-            "top": 71,
-            "right": 656,
-            "bottom": 261
+            "left": 389,
+            "top": 171,
+            "right": 661,
+            "bottom": 361
           }
         }
       },

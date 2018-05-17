@@ -2,20 +2,14 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
-- compile variants
-- new Editor type and Editors
-- tabs
-  - meta click open tab
-  - close tabs
-  - move tabs
+- start designing master doc
+- storing style on root component
   menu item
 - rename SyntheticDocument to SyntheticFrame
 - setting variants on children
 - tabs
 - multi windows
 - ability to define variant on component instance
-- tabs
-- multiple windows
 
 - components
   - dropdown

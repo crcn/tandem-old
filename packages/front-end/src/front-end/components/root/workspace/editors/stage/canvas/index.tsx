@@ -2,7 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { compose, pure, withState, withHandlers } from "recompose";
-import { RootState, Editor, CanvasToolType } from "../../../../../../state";
+import { RootState, Editor, ToolType } from "../../../../../../state";
 import { SyntheticWindow, Dependency, getSyntheticWindow } from "../../../../../../../paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
 import { ToolsLayerComponent } from "./tools-layer";

@@ -46,11 +46,11 @@ const  SelectionBounds = ({ editor,root, zoom }: { root: RootState, zoom: numbe
 
 export const  SelectionCanvasToolBase = ({ editor, root, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
   const selection = getBoundedSelection(root);
-  if (!selection.length || root.canvas.secondarySelection) return null;
+  if (!selection.length || editor.canvas.secondarySelection) return null;
 
   return <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
     <SelectionBounds root={root} zoom={zoom} editor={editor} />
-    <Resizer root={root} dispatch={dispatch} zoom={zoom} />
+    <Resizer root={root} editor={editor} dispatch={dispatch} zoom={zoom} />
   </div>;
 };
 

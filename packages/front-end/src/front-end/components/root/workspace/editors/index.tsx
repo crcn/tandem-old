@@ -5,7 +5,7 @@ import * as path from "path";
 import { Dependency, getSyntheticWindow } from "../../../../../paperclip";
 import { compose, pure, withHandlers } from "recompose";
 import { StageComponent } from "./stage";
-import { RootState } from "../../../../state";
+import { RootState, Editor } from "../../../../state";
 import { DragDropContext } from "react-dnd";
 import { TabsComponent, TabItem } from "../../../tabs";
 import { editorTabClicked } from "../../../..";

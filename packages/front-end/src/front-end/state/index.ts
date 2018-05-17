@@ -4,7 +4,7 @@ import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryL
 import { uniq, pull } from "lodash";
 import { stat } from "fs";
 
-export enum CanvasToolType {
+export enum ToolType {
   TEXT,
   RECTANGLE,
   ARTBOARD
@@ -18,7 +18,6 @@ export type Canvas = {
   translate: Translate;
   secondarySelection?: boolean;
   fullScreen?: boolean;
-  toolType?: CanvasToolType;
   smooth?: boolean;
 };
 
@@ -44,13 +43,14 @@ export type GraphHistory = {
 export type Editor = {
   activeFilePath?: string;
   tabUris: string[];
+  canvas: Canvas;
 }
 
 export type RootState = {
   editors: Editor[];
-  canvas: Canvas;
   mount: Element;
   openFiles: OpenFile[];
+  toolType?: ToolType;
   activeEditorFilePath?: string;
   hoveringNodeIds: string[];
   selectedNodeIds: string[];
@@ -144,6 +144,15 @@ const moveDependencyRecordHistory = (uri: string, pos: number, root: RootState):
   return root;
 }
 
+const DEFAULT_CANVAS: Canvas = {
+  backgroundColor: "#EEE",
+  translate: {
+    left: 0,
+    top: 0,
+    zoom: 1
+  }
+};
+
 export const undo = (root: RootState) => root.editors.reduce((state, editor) => moveDependencyRecordHistory(editor.activeFilePath, -1, root), root);
 export const redo = (root: RootState) => root.editors.reduce((state, editor) => moveDependencyRecordHistory(editor.activeFilePath, 1, root), root);
 
@@ -224,7 +233,8 @@ export const openSecondEditor = (uri: string, state: RootState) => {
       ...state,
       editors: [
         ...state.editors,
-        { tabUris: [], activeFilePath: null }
+
+        { tabUris: [], activeFilePath: null, canvas: DEFAULT_CANVAS }
       ]
     }
   };
@@ -237,7 +247,8 @@ export const openSecondEditor = (uri: string, state: RootState) => {
         ...secondEditor.tabUris,
         uri
       ],
-      activeFilePath: uri
+      activeFilePath: uri,
+      canvas: DEFAULT_CANVAS
     })
   }
 };
@@ -259,7 +270,8 @@ export const openEditorFileUri = (uri: string, state: RootState): RootState => {
       activeFilePath: uri
     }) : [{
       tabUris: [uri],
-      activeFilePath: uri
+      activeFilePath: uri,
+      canvas: DEFAULT_CANVAS
     }]
   }
 };
@@ -438,6 +450,18 @@ export const openSyntheticWindow = (uri: string, state: RootState): RootState =>
   }, state);
 };
 
+export const updateEditor = (properties: Partial<Editor>, uri: string, root: RootState) => {
+  const editor = getEditorWithFileUri(uri, root);
+  const i = root.editors.indexOf(editor);
+  return updateRootState({
+    editors: arraySplice(root.editors, i, 1, {
+      ...editor,
+      ...properties
+    })
+  }, root);
+}
+
+
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
   if (getEditorWithActiveFileUri(newActiveFilePath, root)) {
     return root;
@@ -447,13 +471,14 @@ export const setActiveFilePath = (newActiveFilePath: string, root: RootState) =>
   return root;
 };
 
-export const updateCanvas = (properties: Partial<Canvas>, root: RootState) => {
-  return updateRootState({
+export const updateEditorCanvas = (properties: Partial<Canvas>, uri: string, root: RootState) => {
+  const editor = getEditorWithFileUri(uri, root);
+  return updateEditor({
     canvas: {
-      ...root.canvas,
+      ...editor.canvas,
       ...properties
     }
-  }, root);
+  }, uri, root);
 }
 
 export const setInsertFile = (type: InsertFileType, state: RootState) => {
@@ -466,11 +491,11 @@ export const setInsertFile = (type: InsertFileType, state: RootState) => {
   }, state);
 };
 
-export const setCanvasTool = (toolType: CanvasToolType, root: RootState) => {
+export const setTool = (toolType: ToolType, root: RootState) => {
   if (!root.editors.length) {
     return root;
   }
-  root = updateCanvas({ toolType }, root);
+  root = updateRootState({ toolType }, root);
   root = setSelectedSyntheticNodeIds(root);
   return root;
 }
@@ -487,7 +512,7 @@ export const getCanvasTranslate = (canvas: Canvas) => canvas.translate;
 
 export const getScaledMouseCanvasPosition = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked) => {
   const { sourceEvent: { pageX, pageY, nativeEvent } } = event as CanvasToolOverlayMouseMoved;
-  const canvas     = state.canvas;
+  const canvas     = getActiveEditor(state).canvas;
   const translate = getCanvasTranslate(canvas);
 
   const scaledPageX = ((pageX - translate.left) / translate.zoom);
@@ -497,7 +522,7 @@ export const getScaledMouseCanvasPosition = (state: RootState, event: CanvasTool
 
 export const getCanvasMouseTargetNodeId = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked): string => {
 
-  const canvas     = state.canvas;
+  const canvas     = getActiveEditor(state).canvas;
   const translate = getCanvasTranslate(canvas);
 
   const documentRootId = getCanvasMouseDocumentRootId(state, event);

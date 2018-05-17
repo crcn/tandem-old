@@ -1,15 +1,16 @@
 import "./insert-layer.scss";
 import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
-import { Canvas, CanvasToolType } from "../../../../../../../state";
+import { Canvas, ToolType, Editor } from "../../../../../../../state";
 import { CANVAS_MOTION_RESTED, insertToolFinished } from "../../../../../../../actions";
 import { Dispatch } from "redux";
 import { startDOMDrag, Bounds, getBoundsSize } from "../../../../../../../../common";
 import { SyntheticWindow } from "../../../../../../../../paperclip";
 
 type InsertLayerOuterProps = {
+  toolType: ToolType;
+  editor: Editor;
   window: SyntheticWindow;
-  canvas: Canvas;
   dispatch: Dispatch<any>;
 };
 
@@ -20,20 +21,20 @@ type InsertLayerInnerProps = {
 } & InsertLayerOuterProps;
 
 const CURSOR_MAP = {
-  [CanvasToolType.ARTBOARD]: "crosshair",
-  [CanvasToolType.RECTANGLE]: "crosshair",
-  [CanvasToolType.TEXT]: "text"
+  [ToolType.ARTBOARD]: "crosshair",
+  [ToolType.RECTANGLE]: "crosshair",
+  [ToolType.TEXT]: "text"
 };
 
 const TEXT_PADDING = 5;
 
-const BaseInsertLayer = ({ canvas, onMouseDown, previewBounds }: InsertLayerInnerProps) => {
-  if (canvas.toolType == null) {
+const BaseInsertLayer = ({ toolType, editor, onMouseDown, previewBounds }: InsertLayerInnerProps) => {
+  if (toolType == null) {
     return null;
   }
 
   const outerStyle = {
-    cursor: CURSOR_MAP[canvas.toolType] || "default"
+    cursor: CURSOR_MAP[toolType] || "default"
   };
 
   let preview;
@@ -67,7 +68,7 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
   pure,
   withState("previewBounds", "setPreviewBounds", null),
   withHandlers({
-    onMouseDown: ({ window, setPreviewBounds, canvas, dispatch }: InsertLayerInnerProps) => (startEvent: React.MouseEvent<any>) => {
+    onMouseDown: ({ toolType, window, setPreviewBounds, dispatch }: InsertLayerInnerProps) => (startEvent: React.MouseEvent<any>) => {
 
       const startX = startEvent.clientX;
       const startY = startEvent.clientY;
@@ -79,7 +80,7 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
         bottom: Math.max(startY, startY + delta.y),
       });
 
-      if (canvas.toolType === CanvasToolType.TEXT) {
+      if (toolType === ToolType.TEXT) {
         return dispatch(insertToolFinished(getBounds(), window.location));
       }
 

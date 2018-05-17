@@ -2,13 +2,14 @@ import "./resizer.scss";
 import React =  require("react");
 import { debounce } from "lodash";
 import { pure, compose, withHandlers } from "recompose";
-import { RootState, getBoundedSelection, getSelectionBounds } from "../../../../../../../../state";
+import { RootState, Editor, getBoundedSelection, getSelectionBounds } from "../../../../../../../../state";
 import { resizerMoved, resizerStoppedMoving, resizerMouseDown, resizerStartDrag } from "../../../../../../../../actions";
 import { startDOMDrag, mergeBounds, moveBounds, Point } from "../../../../../../../../../common";
 import { Dispatch } from "redux";
 import { Path } from "./path";
 
 export type ResizerOuterProps = {
+  editor: Editor;
   dispatch: Dispatch<any>;
   root: RootState;
   zoom: number;
@@ -70,11 +71,11 @@ export const ResizerBase = ({ root, dispatch, onMouseDown, zoom }: ResizerInnerP
 const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   pure,
   withHandlers({
-    onMouseDown: ({ dispatch, root }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
+    onMouseDown: ({ dispatch, root, editor }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
 
       dispatch(resizerMouseDown(event));
 
-      const translate = root.canvas.translate;
+      const translate = editor.canvas.translate;
       const bounds = getSelectionBounds(root);
       const translateLeft = translate.left;
       const translateTop  = translate.top;

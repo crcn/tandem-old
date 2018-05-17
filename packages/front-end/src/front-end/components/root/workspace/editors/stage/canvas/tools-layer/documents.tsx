@@ -72,7 +72,7 @@ export type DocumentsCanvasToolInnerProps = {
 };
 
 export const DocumentsCanvasToolBase = ({ root, editor, translate, dispatch }: DocumentsCanvasToolInnerProps) => {
-  const { backgroundColor, fullScreen } = root.canvas;
+  const { backgroundColor, fullScreen } = editor.canvas;
 
   const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
 
