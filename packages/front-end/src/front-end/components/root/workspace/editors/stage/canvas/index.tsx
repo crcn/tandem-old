@@ -21,7 +21,7 @@ export type CanvasInnerProps = {
   onWheel: (event: React.SyntheticEvent<MouseEvent>) => any;
   shouldTransitionZoom: boolean;
   canvasContainer: HTMLElement;
-  setStageContainer(element: HTMLElement);
+  setCanvasContainer(element: HTMLElement);
   onMotionRest: () => any;
   onDrop: (event: React.SyntheticEvent<any>) => any;
   onMouseEvent: (event: React.SyntheticEvent<any>) => any;
@@ -39,7 +39,7 @@ const BaseCanvasComponent = ({
   dependency,
   setCanvasOuter,
   editor,
-  setStageContainer,
+  setCanvasContainer,
   onWheel,
   onDrop,
   onMouseEvent,
@@ -53,7 +53,7 @@ const BaseCanvasComponent = ({
 
   const translate = editor.canvas.translate;
 
-  return <div className="m-canvas">
+  return <div className="m-canvas" ref={setCanvasContainer}>
     <Isolate
     inheritCSS
     ignoreInputEvents
@@ -106,9 +106,8 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
     onMouseClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
       dispatch(canvasMouseClicked(event));
     },
-    setCanvasContainer: ({ dispatch, setStageContainer }) => (element: HTMLDivElement) => {
-      setStageContainer(element);
-      dispatch(canvasContainerMounted(element));
+    setCanvasContainer: ({ dispatch, editor }) => (element: HTMLDivElement) => {
+      dispatch(canvasContainerMounted(element, editor.activeFilePath));
     },
     onWheel: ({ root, dispatch, canvasOuter }: CanvasInnerProps) => (event: React.WheelEvent<any>) => {
       const rect = canvasOuter.getBoundingClientRect();

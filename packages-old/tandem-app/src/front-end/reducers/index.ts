@@ -244,7 +244,7 @@ const PANE_SENSITIVITY = process.platform === "win32" ? 0.1 : 1;
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 6400 / 100;
-const INITIAL_ZOOM_PADDING = 50;
+
 
 const apiReducer = (state: ApplicationState, event: BaseEvent) => {
   switch(event.type) {
@@ -494,23 +494,6 @@ const stageReducer = (state: ApplicationState, event: BaseEvent) => {
       });
     }
 
-    case STAGE_MOUNTED: {
-      const { element } = event as StageMounted;
-
-      const { width = 400, height = 300 } = element.getBoundingClientRect() || {};
-      const workspaceId = state.selectedWorkspaceId;
-      const workspace = getSelectedWorkspace(state);
-
-      state = updateWorkspaceStage(state, workspaceId, { container: element });
-
-      // do not center if in full screen mode
-      if (workspace.stage.fullScreen) {
-        return updateArtboardSize(state, workspace.stage.fullScreen.artboardId, width, height);
-      }
-
-      return centerSelectedWorkspace(state);
-    };
-
     case STAGE_TOOL_OVERLAY_MOUSE_PAN_START: {
       const { artboardId } = event as StageToolOverlayMousePanStart;
       const workspace = getArtboardWorkspace(artboardId, state);
@@ -739,47 +722,6 @@ const artboardReducer = (state: ApplicationState, event: BaseEvent) => {
   }
   return state;
 }
-
-const centerSelectedWorkspace = (state: ApplicationState, smooth: boolean = false) => {
-  const workspace = getWorkspaceById(state, state.selectedWorkspaceId);
-  const innerBounds = getArtboardBounds(workspace);
-
-  // no windows loaded
-  if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {
-    console.warn(`Stage mounted before windows have been loaded`);
-    return state;
-  }
-
-  return centerStage(state, workspace.$id, innerBounds, smooth, true);
-}
-
-const centerStage = (state: ApplicationState, workspaceId: string, innerBounds: Bounds, smooth?: boolean, zoomOrZoomToFit?: boolean|number) => {
-  const workspace = getWorkspaceById(state, workspaceId);
-  const { stage: { container, translate }} = workspace;
-  if (!container) return state;
-
-  const { width, height } = container.getBoundingClientRect();
-
-  const innerSize = getBoundsSize(innerBounds);
-
-  const centered = {
-    left: -innerBounds.left + width / 2 - (innerSize.width) / 2,
-    top: -innerBounds.top + height / 2 - (innerSize.height) / 2,
-  };
-
-  const scale = typeof zoomOrZoomToFit === "boolean" ? Math.min(
-    (width - INITIAL_ZOOM_PADDING) / innerSize.width,
-    (height - INITIAL_ZOOM_PADDING) / innerSize.height
-  ) : typeof zoomOrZoomToFit === "number" ? zoomOrZoomToFit : translate.zoom;
-
-  return updateWorkspaceStage(state, workspaceId, {
-    smooth,
-    translate: centerTransformZoom({
-      ...centered,
-      zoom: 1
-    }, { left: 0, top: 0, right: width, bottom: height }, scale)
-  });
-};
 
 const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: ApplicationState, ref: StructReference, event: T) => {
   const { sourceEvent } = event;

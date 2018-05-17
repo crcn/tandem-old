@@ -186,6 +186,7 @@ export type TreeLayerMouseOut = TreeLayerMouseOver;
 
 export type CanvasMounted = {
   element: HTMLDivElement;
+  fileUri: string;
 } & Action;
 
 export type NewFileEntered = {
@@ -547,8 +548,9 @@ export const canvasToolOverlayMouseDoubleClicked = (documentId: string, sourceEv
   sourceEvent
 });
 
-export const canvasContainerMounted = (element: HTMLDivElement): CanvasMounted => ({
+export const canvasContainerMounted = (element: HTMLDivElement, fileUri: string): CanvasMounted => ({
   element,
+  fileUri,
   type: CANVAS_MOUNTED,
 })
 

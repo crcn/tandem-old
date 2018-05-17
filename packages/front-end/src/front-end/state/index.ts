@@ -1,4 +1,4 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode, addTreeNodeIds, stripTreeNodeIds } from "../../common";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode, addTreeNodeIds, stripTreeNodeIds, getBoundsSize, centerTransformZoom, createZeroBounds } from "../../common";
 import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
@@ -14,6 +14,7 @@ export type Canvas = {
   backgroundColor: string;
   mousePosition?: Point;
   movingOrResizing?: boolean;
+  container?: HTMLElement;
   panning?: boolean;
   translate: Translate;
   secondarySelection?: boolean;
@@ -224,7 +225,6 @@ export const openSecondEditor = (uri: string, state: RootState) => {
     editors: arraySplice(state.editors, i, 1, {
       ...editor,
       tabUris: newTabUris,
-      canvas: DEFAULT_CANVAS,
       activeFilePath: editor.activeFilePath === uri ? newTabUris[newTabUris.length - 1] : editor.activeFilePath,
     })
   };
@@ -244,15 +244,21 @@ export const openSecondEditor = (uri: string, state: RootState) => {
   return {
     ...state,
     editors: arraySplice(state.editors, state.editors.indexOf(secondEditor), 1, {
+      ...secondEditor,
       tabUris: [
         ...secondEditor.tabUris,
         uri
       ],
       activeFilePath: uri,
-      canvas: DEFAULT_CANVAS
     })
   }
 };
+
+export const getSyntheticWindowBounds = memoize((uri: string, state: RootState) => {
+  const window = getSyntheticWindow(uri, state.browser);
+  if (!window) return createZeroBounds();
+  return mergeBounds(...(window.documents || EMPTY_ARRAY).map(document => document.bounds));
+});
 
 export const openEditorFileUri = (uri: string, state: RootState): RootState => {
   const editor = getEditorWithFileUri(uri, state) || state.editors[0];
@@ -264,7 +270,6 @@ export const openEditorFileUri = (uri: string, state: RootState): RootState => {
     activeEditorFilePath: uri,
     editors: editor ? arraySplice(state.editors, state.editors.indexOf(editor) , 1, {
       ...editor,
-      canvas: DEFAULT_CANVAS,
       tabUris: editor.tabUris.indexOf(uri) === -1 ? [
         ...editor.tabUris,
         uri,
@@ -463,6 +468,51 @@ export const updateEditor = (properties: Partial<Editor>, uri: string, root: Roo
   }, root);
 }
 
+const INITIAL_ZOOM_PADDING = 50;
+
+export const centerEditorCanvas = (state: RootState, editorFileUri: string, innerBounds?: Bounds, smooth: boolean = false, zoomOrZoomToFit: boolean|number = true) => {
+  if (!innerBounds) {
+    innerBounds = getSyntheticWindowBounds(editorFileUri, state);
+  }
+
+  // no windows loaded
+  if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {
+    console.warn(` Cannot center when bounds has no size`);
+    return state;
+  }
+
+  const editor = getEditorWithFileUri(editorFileUri, state);
+  const { canvas: { container, translate }} = editor;
+  if (!container) {
+    console.warn("cannot center canvas without a container");
+    return state;
+  }
+
+  const { width, height } = container.getBoundingClientRect();
+
+  const innerSize = getBoundsSize(innerBounds);
+
+  const centered = {
+    left: -innerBounds.left + width / 2 - (innerSize.width) / 2,
+    top: -innerBounds.top + height / 2 - (innerSize.height) / 2,
+  };
+
+  const scale = typeof zoomOrZoomToFit === "boolean" ? Math.min(
+    (width - INITIAL_ZOOM_PADDING) / innerSize.width,
+    (height - INITIAL_ZOOM_PADDING) / innerSize.height
+  ) : typeof zoomOrZoomToFit === "number" ? zoomOrZoomToFit : translate.zoom;
+
+  state = updateEditorCanvas({
+    smooth,
+    translate: centerTransformZoom({
+      ...centered,
+      zoom: 1
+    }, { left: 0, top: 0, right: width, bottom: height }, Math.min(scale, 1))
+  }, editorFileUri, state);
+
+  return state;
+};
+
 
 export const setActiveFilePath = (newActiveFilePath: string, root: RootState) => {
   if (getEditorWithActiveFileUri(newActiveFilePath, root)) {
@@ -470,6 +520,7 @@ export const setActiveFilePath = (newActiveFilePath: string, root: RootState) =>
   }
   root = openEditorFileUri(newActiveFilePath, root);
   root = addOpenFile(newActiveFilePath, true, root);
+  root = centerEditorCanvas(root, newActiveFilePath);
   return root;
 };
 
