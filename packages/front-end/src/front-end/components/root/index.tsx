@@ -1,3 +1,4 @@
+import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { WorkspaceComponent } from "./workspace";

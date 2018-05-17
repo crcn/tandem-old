@@ -361,14 +361,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
 
     case SHORTCUT_ZOOM_IN_KEY_DOWN: {
-      // return updateEditorCanvas(state, workspace.$id, normalizeZoom(workspace.stage.translate.zoom) * 2);
+      const editor = getActiveEditor(state);
+      state = setCanvasZoom(normalizeZoom(editor.canvas.translate.zoom) * 2, false, editor.activeFilePath, state);
       return state;
     }
 
     case SHORTCUT_ZOOM_OUT_KEY_DOWN: {
-      // const workspace = getSelectedWorkspace(state);
-      // if (workspace.stage.fullScreen) return state;
-      // return setStageZoom(state, workspace.$id, normalizeZoom(workspace.stage.translate.zoom) / 2);
+      const editor = getActiveEditor(state);
+      state = setCanvasZoom(normalizeZoom(editor.canvas.translate.zoom) / 2, false, editor.activeFilePath, state);
       return state;
     }
 
@@ -691,23 +691,15 @@ const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseE
 
 
 const setCanvasZoom = (zoom: number, smooth: boolean = true, uri: string, state: RootState) => {
+  const editor = getEditorWithFileUri(uri, state);
 
-  // return updateEditorCanvas({
-  //   translate: centerTransformZoom(
-  //     workspace.stage.translate, workspace.stage.container.getBoundingClientRect(),
-  //     clamp(zoom, MIN_ZOOM, MAX_ZOOM),
-  //     workspace.stage.mousePosition
-  //   )
-  // })
-  // const workspace = getWorkspaceById(state, workspaceId);
-  // return updateWorkspaceStage(state, workspace.$id, {
-  //   smooth,
-  //   translate: centerTransformZoom(
-  //     workspace.stage.translate, workspace.stage.container.getBoundingClientRect(),
-  //     clamp(zoom, MIN_ZOOM, MAX_ZOOM),
-  //     workspace.stage.mousePosition
-  //   )
-  // });
+  return updateEditorCanvas({
+    translate: centerTransformZoom(
+      editor.canvas.translate, editor.canvas.container.getBoundingClientRect(),
+      clamp(zoom, MIN_ZOOM, MAX_ZOOM),
+      editor.canvas.mousePosition
+    )
+  }, uri, state);
 };
 
 const normalizeBounds = (translate: Translate, bounds: Bounds) => {
@@ -715,4 +707,8 @@ const normalizeBounds = (translate: Translate, bounds: Bounds) => {
     left: -translate.left,
     top: -translate.top
   }), 1/translate.zoom);
+};
+
+const normalizeZoom = (zoom) => {
+  return (zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom));
 };

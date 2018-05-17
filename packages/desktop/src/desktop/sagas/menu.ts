@@ -124,7 +124,7 @@ export function* shortcutsSaga() {
         {role: 'resetzoom'},,
         {
           label: "Zoom In",
-          accelerator: "meta++",
+          accelerator: "meta+=",
           click: (a, window, event) => {
             emit(shortcutKeyDown(SHORTCUT_ZOOM_IN_KEY_DOWN));
           }
