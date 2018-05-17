@@ -2,10 +2,20 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
-- respect insert position for zoom & panning
+- respect the position when dropping to new parent
+- resizing relative to parent
+  - resize based on NWES parts
+- measurement tooling
+- multi-select items
+- boundaries around selected nodes -- cannot be related
+- grouping tool
+- fix element position
+- paste into selected component
 - styles pane
 - cannot re-organize children within slot
 - everything is a slot?
+- bugs
+  - only select ONE inserted element
 
 - components
   - dropdown

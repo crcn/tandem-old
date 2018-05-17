@@ -1,6 +1,6 @@
 import { mapValues } from "lodash";
 import { ComputedDisplayInfo, EditorAttributeNames, EDITOR_NAMESPACE } from "./synthetic";
-import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath } from "../common/state";
+import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath, roundBounds } from "../common/state";
 import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform, patchNode } from "../common/utils/tree";
 import { PCSourceAttributeNames } from ".";
 
@@ -29,6 +29,7 @@ export const waitForDOMReady = (map: SyntheticNativeNodeMap) => {
     element.onload = resolve;
   })));
 };
+
 
 export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Document = window.document): ComputedDisplayInfo => {
   const computed: ComputedDisplayInfo = {};

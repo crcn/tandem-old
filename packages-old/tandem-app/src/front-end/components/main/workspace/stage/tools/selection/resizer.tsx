@@ -70,7 +70,7 @@ const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   pure,
   withHandlers({
     onMouseDown: ({ dispatch, workspace }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
-      
+
       const translate = getStageTranslate(workspace.stage);
       const bounds = getWorkspaceSelectionBounds(workspace);
       const translateLeft = translate.left;

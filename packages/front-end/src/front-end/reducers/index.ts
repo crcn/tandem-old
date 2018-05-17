@@ -150,7 +150,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       if (getEditorWithActiveFileUri(uri, state)) {
         return state;
       }
-      state = setNextOpenFile(removeTemporaryOpenFiles(sourceEvent.metaKey ? openSecondEditor(uri, state) : openEditorFileUri(uri, state)));
+      state = setNextOpenFile(removeTemporaryOpenFiles(sourceEvent.altKey ? openSecondEditor(uri, state) : openEditorFileUri(uri, state)));
       return state;
     }
     case SAVED_FILE: {
@@ -245,7 +245,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case PC_LAYER_CLICK: {
       const { node, sourceEvent } = action as TreeLayerClick;
 
-      if (sourceEvent.metaKey) {
+      if (sourceEvent.altKey) {
         state = openSyntheticNodeOriginWindow(node.id, state);
       } else {
         const window = getSyntheticNodeWindow(node.id, state.browser);
@@ -296,7 +296,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
   return state;
 };
 
-
 export const canvasReducer = (state: RootState, action: Action) => {
   switch(action.type) {
     case RESIZER_MOVED: {
@@ -327,8 +326,13 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const { point } = action as ResizerMoved;
       const oldGraph = state.browser.graph;
 
+      const selectionBounds = getSelectionBounds(state);
       state = persistRootStateBrowser(browser => {
-        return state.selectedNodeIds.reduce((state, nodeId) => persistSyntheticItemPosition(point, nodeId, state), browser)
+        return state.selectedNodeIds.reduce((state, nodeId) => {
+          const itemBounds = getSyntheticNodeBounds(nodeId, browser);
+          const newBounds = roundBounds(scaleInnerBounds(itemBounds, selectionBounds, moveBounds(selectionBounds, point)));
+          return persistSyntheticItemPosition(newBounds, nodeId, state)
+        }, browser)
       }, state);
 
       state = updateEditorCanvas({
@@ -428,7 +432,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return state;
       }
 
-      if (metaKey) {
+      if (altKey) {
         state = openSyntheticNodeOriginWindow(targetNodeId, state);
         return state;
       }
@@ -510,7 +514,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const editor = getEditorWithActiveFileUri(fileUri, state);
       bounds = normalizeBounds(editor.canvas.translate, bounds);
 
-      console.log(bounds);
       const toolType = state.toolType;
       state = setTool(null, state);
 
@@ -675,7 +678,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
 const handleArtboardSelectionFromAction = <T extends { sourceEvent: React.MouseEvent<any> }>(state: RootState, nodeId: string, event: T) => {
   const { sourceEvent } = event;
   state = setRootStateSyntheticNodeExpanded(nodeId, true, state);
-  return setSelectedSyntheticNodeIds(state, nodeId);
+  return setSelectedSyntheticNodeIds(state, ...(event.sourceEvent.metaKey ? [...state.selectedNodeIds, nodeId] : [nodeId]));
 }
 
 // const resizeFullScreenArtboard = (state: RootState, width: number, height: number) => {

@@ -9,6 +9,7 @@ import { evaluateDependencyEntry } from "./evaluate";
 import { STATUS_CODES } from "http";
 import { Children, SyntheticEvent } from "react";
 import * as path from "path";
+import { convertFixedBoundsToRelative } from "./synthetic-layout";
 
 export const EDITOR_NAMESPACE = "editor";
 
@@ -50,7 +51,7 @@ export type SyntheticObject = {
 
 export type ComputedDisplayInfo = {
   [identifier: string]: {
-    bounds: ClientRect;
+    bounds: Bounds;
     style: CSSStyleDeclaration;
   }
 };
@@ -399,8 +400,10 @@ export const getSyntheticNodeSourceComponent = memoize((nodeId: string, browser:
 
 export const updateSyntheticItemPosition = (position: Point, nodeId: string, browser: SyntheticBrowser) => {
   const bounds = getSyntheticNodeBounds(nodeId, browser);
-  return updateSyntheticItemBounds(moveBounds(bounds, position), nodeId, browser, PersistBoundsFilter.POSITION);
+  const newBounds = convertFixedBoundsToRelative(moveBounds(bounds, position), getSyntheticNodeById(nodeId, browser), getSyntheticNodeDocument(nodeId, browser));
+  return updateSyntheticItemBounds(newBounds, nodeId, browser, PersistBoundsFilter.POSITION);
 };
+
 
 enum PersistBoundsFilter {
   WIDTH = 1,
@@ -989,7 +992,6 @@ export const getComponentInstanceSyntheticNode = (nodeId: string, browser: Synth
   return findTreeNodeParent(nodeId, document.root, filter);
 };
 
-
 export const getComponentInstanceSourceNode = (nodeId: string, browser: SyntheticBrowser) => {
   const node = getSourceNodeById(nodeId, browser);
   const dep = getSourceNodeDependency(nodeId, browser);
@@ -1001,7 +1003,8 @@ export const getComponentInstanceSourceNode = (nodeId: string, browser: Syntheti
 
 export const persistSyntheticItemPosition = (position: Point, nodeId: string, browser: SyntheticBrowser) => {
   const bounds = getSyntheticNodeBounds(nodeId, browser);
-  return persistSyntheticItemBounds(moveBounds(bounds, position), nodeId, browser);
+  const newBounds = convertFixedBoundsToRelative(moveBounds(bounds, position), getSyntheticNodeById(nodeId, browser), getSyntheticNodeDocument(nodeId, browser));
+  return persistSyntheticItemBounds(newBounds, nodeId, browser);
 };
 
 export const getModifiedDependencies = (oldGraph: DependencyGraph, newGraph: DependencyGraph): Dependency[] => {

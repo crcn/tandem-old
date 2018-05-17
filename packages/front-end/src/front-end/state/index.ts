@@ -471,14 +471,22 @@ export const updateEditor = (properties: Partial<Editor>, uri: string, root: Roo
 const INITIAL_ZOOM_PADDING = 50;
 
 export const centerEditorCanvas = (state: RootState, editorFileUri: string, innerBounds?: Bounds, smooth: boolean = false, zoomOrZoomToFit: boolean|number = true) => {
+
   if (!innerBounds) {
+    const window = getSyntheticWindow(editorFileUri, state.browser);
+    if (!window || !window.documents || !window.documents.length) {
+      return state;
+    }
+
     innerBounds = getSyntheticWindowBounds(editorFileUri, state);
   }
 
   // no windows loaded
   if (innerBounds.left + innerBounds.right + innerBounds.top + innerBounds.bottom === 0) {
     console.warn(` Cannot center when bounds has no size`);
-    return state;
+    return updateEditorCanvas({
+      translate: { left: 0, top: 0, zoom: 1 }
+    }, editorFileUri, state);
   }
 
   const editor = getEditorWithFileUri(editorFileUri, state);
