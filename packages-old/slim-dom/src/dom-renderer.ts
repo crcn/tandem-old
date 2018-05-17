@@ -1,5 +1,5 @@
 import { SlimParentNode, SlimVMObjectType, SlimElement, SlimTextNode, SlimBaseNode, SlimStyleElement, SlimCSSStyleSheet, SlimCSSStyleRule, SlimCSSAtRule, SlimCSSRule, Bounds, VMObject, SlimFontFace } from "./state";
-import { weakMemo, getVMObjectFromPath } from "./utils";
+import { weakMemo, getVMObjectFromPath, getAttribute } from "./utils";
 import { Mutation, SetValueMutation, SetPropertyMutation, RemoveChildMutation, InsertChildMutation, MoveChildMutation } from "source-mutation"
 import { SET_TEXT_NODE_VALUE, REMOVE_CHILD_NODE, INSERT_CHILD_NODE, MOVE_CHILD_NODE, CSS_MOVE_RULE, CSS_INSERT_RULE, CSS_DELETE_RULE, CSS_SET_SELECTOR_TEXT, CSS_SET_STYLE_PROPERTY } from "./diff-patch";
 
@@ -33,7 +33,7 @@ const createNode = (node: SlimBaseNode, document: Document, map: DOMNodeMap, opt
         if (attribute.name === "style") {
           if (typeof attribute.value === "object") {
             Object.assign(ret[attribute.name], attribute.value);
-          } 
+          }
         } else if (typeof attribute.value !== "object") {
           ret.setAttribute(attribute.name, attribute.value);
         }
@@ -123,7 +123,7 @@ export type ComputedDOMInfo = {
   [identifier: string]: ComputedDOMElementInfo
 };
 
-// do NOT memoize this since computed information may change over time. 
+// do NOT memoize this since computed information may change over time.
 export const computedDOMInfo = (map: DOMNodeMap): ComputedDOMInfo => {
   let computedInfo = {};
   for (const nodeId in map) {
@@ -135,7 +135,7 @@ export const computedDOMInfo = (map: DOMNodeMap): ComputedDOMInfo => {
     if (node.nodeName.charAt(0) === "#") {
       continue;
     }
-    
+
     const element = node as HTMLElement;
 
     if (!element.ownerDocument.defaultView) {
@@ -170,7 +170,7 @@ const getDOMNodeFromPath = (path: any[], root: HTMLElement) => {
 };
 
 const getNativeNodePath = (current: any, root: HTMLElement) => {
-  let path: any[] = [];  
+  let path: any[] = [];
   while(current !== root) {
     if ((current as ShadowRoot).host) {
       path.unshift("shadow");
@@ -236,12 +236,12 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
       }
 
       case CSS_INSERT_RULE:
-      case CSS_DELETE_RULE: 
-      case CSS_MOVE_RULE: 
-      case CSS_SET_SELECTOR_TEXT: 
+      case CSS_DELETE_RULE:
+      case CSS_MOVE_RULE:
+      case CSS_SET_SELECTOR_TEXT:
       case CSS_SET_STYLE_PROPERTY: {
         const stylePath =  mutation.target.slice(0, mutation.target.indexOf("sheet"));
-        
+
         const nativeStyle = getDOMNodeFromPath(stylePath, root) as HTMLStyleElement;
         if (resetStyleMap.indexOf(nativeStyle) === -1) {
           resetStyleMap.push(nativeStyle);
@@ -265,7 +265,7 @@ export const patchDOM = (diffs: Mutation<any[]>[], slimRoot: SlimParentNode, map
       try {
         sheet.insertRule(synthRuleText, i);
       } catch(e) {
-        
+
       }
     }
   }

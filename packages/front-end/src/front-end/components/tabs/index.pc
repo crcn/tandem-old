@@ -11,7 +11,8 @@
       "attributes": {
         "undefined": {
           "id": "component1",
-          "label": "Tabs"
+          "label": "Tabs",
+          "style": {}
         },
         "editor": {
           "bounds": {

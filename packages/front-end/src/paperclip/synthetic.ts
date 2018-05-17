@@ -957,6 +957,7 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   const sourceParent = getParentTreeNode(sourceNode.id, sourceDep.content);
 
   const targetSourceNode = getSyntheticSourceNode(targetNodeId, browser);
+  const targetOriginSourceNode = getSyntheticOriginSourceNode(getSyntheticNodeById(targetNodeId, browser), browser);
   const targetActSourceNode = componentInstanceNode ? getSyntheticSourceNode(componentInstanceNode.id, browser) : targetSourceNode;
 
   // const actualtargetSourceNode = containerName ?
@@ -965,7 +966,7 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   });
 
   if (componentInstanceNode) {
-    const slotName = getAttribute(targetSourceNode, PCSourceAttributeNames.CONTAINER);
+    const slotName = getAttribute(targetOriginSourceNode, PCSourceAttributeNames.CONTAINER);
     sourceNode = setNodeAttribute(sourceNode, "slot", slotName);
   }
 
@@ -1033,7 +1034,6 @@ export const persistSyntheticItemBounds = (bounds: Bounds, nodeId: string, brows
 export const persistRawCSSText = (text: string, nodeId: string, variantName: string, browser: SyntheticBrowser) => {
   const newStyle = parseStyle(text);
   return persistSourceNodeChanges(getSyntheticSourceNode(nodeId, browser).id, variantName, browser, (child) => {
-    const style = getAttribute(child, "style") || EMPTY_OBJECT;
     return setNodeAttribute(child, "style", newStyle);
   });
 };

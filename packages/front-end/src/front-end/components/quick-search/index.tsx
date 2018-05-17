@@ -36,7 +36,7 @@ type QuickSearchOuterProps = {
 type QuickSearchInnerProps = {
   onInputKeyDown: any;
   onBackgroundClick: any;
-  filter: string;
+  filter: string[];
 } & QuickSearchOuterProps;
 
 export const QuickSearchComponent = compose<QuickSearchInnerProps, QuickSearchOuterProps>(
@@ -44,7 +44,7 @@ export const QuickSearchComponent = compose<QuickSearchInnerProps, QuickSearchOu
   withState("filter", "setFilter", null),
   withHandlers({
     onInputKeyDown: ({ setFilter }) => (event) => {
-      setFilter(String(event.target.value || "").toLowerCase().trim());
+      setFilter(String(event.target.value || "").toLowerCase().trim().split(" "));
     },
     onBackgroundClick: ({ dispatch }) => () => {
       dispatch(quickSearchBackgroundClick());
@@ -59,9 +59,20 @@ export const QuickSearchComponent = compose<QuickSearchInnerProps, QuickSearchOu
   const allFiles = flattenTreeNode(root.projectDirectory);
 
   const results = filter ? allFiles.filter(file => {
-    return isFile(file) && getAttribute(file, FileAttributeNames.URI).toLowerCase().indexOf(filter) !== -1;
+    if (!isFile(file)) {
+      return false;
+    }
+    const uri = getAttribute(file, FileAttributeNames.URI);
+    let lastIndex = 0;
+    for (const part of filter) {
+      const i = uri.indexOf(part);
+      if (i < lastIndex) {
+        return false;
+      }
+    }
+    return true;
   }).map((file) => {
-    return <SearchResult file={file} key={getAttribute(file, FileAttributeNames.URI)} textChildren={getAttribute(file, FileAttributeNames.URI)} dispatch={dispatch} />;
+    return <SearchResult file={file} key={file.id} textChildren={getAttribute(file, FileAttributeNames.URI)} dispatch={dispatch} />;
   }) : [];
 
   return <div className="m-quick-search">

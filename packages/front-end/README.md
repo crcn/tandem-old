@@ -3,7 +3,10 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 IMMEDIATE:
 
 - setting root styles on components
+- respect insert position for zoom & panning
 - styles pane
+- cannot re-organize children within slot
+- everything is a slot?
 
 - components
   - dropdown

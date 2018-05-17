@@ -7,14 +7,6 @@ init({
   editors: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
-  canvas: {
-    backgroundColor: "#EFEFEF",
-    translate: {
-      left: 0,
-      top: 0,
-      zoom: 1
-    }
-  },
   history: {},
   openFiles: [],
   browser: {

@@ -66,7 +66,6 @@ export const getChildParentMap = memoize((current: TreeNode): {
   const idMap = getTreeNodeIdMap(current);
   const parentChildMap: any = {};
 
-
   for (const id in idMap) {
     const parent = idMap[id];
     for (const child of parent.children) {
@@ -104,7 +103,11 @@ export const getTreeNodePath = memoize((nodeId: string, root: TreeNode) => {
   while(1) {
     const parent = childParentMap[current.id];
     if (!parent) break;
-    path.unshift(parent.children.indexOf(current));
+    const i = parent.children.indexOf(current);
+    if (i === -1) {
+      throw new Error(`parent child mismatch. Likely id collision`);
+    }
+    path.unshift(i);
     current = parent;
   }
 

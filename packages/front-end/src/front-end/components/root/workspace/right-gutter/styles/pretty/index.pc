@@ -11,14 +11,18 @@
       "attributes": {
         "undefined": {
           "id": "component1",
-          "label": "Styler"
+          "label": "Styler",
+          "style": {
+            "display": "flex",
+            "flexDirection": "column"
+          }
         },
         "editor": {
           "bounds": {
             "left": -1.3184681912838982,
             "top": -57.11969186838239,
             "right": 276.6815318087161,
-            "bottom": 238.8803081316176
+            "bottom": 805.040863205712
           }
         }
       },
@@ -28,71 +32,64 @@
           "attributes": {},
           "children": [
             {
-              "name": "rectangle",
+              "name": "component6",
               "attributes": {
                 "undefined": {
                   "style": {
-                    "display": "flex",
-                    "flexDirection": "column",
-                    "height": 372,
-                    "width": 278,
-                    "position": "relative",
-                    "left": 0,
-                    "top": 0
+                    "left": 20,
+                    "right": 420,
+                    "top": 20,
+                    "bottom": 420
                   },
-                  "label": "Container",
-                  "native-type": "div",
-                  "ref": "44909c2a0"
+                  "ref": "bbab45f1"
                 }
               },
-              "children": [
-                {
-                  "name": "component4",
-                  "attributes": {
-                    "undefined": {
-                      "style": {
-                        "left": 20,
-                        "right": 420,
-                        "top": 20,
-                        "bottom": 420,
-                        "flex": 1
-                      },
-                      "ref": "86f932b60"
-                    }
+              "children": []
+            },
+            {
+              "name": "component2",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "left": 20,
+                    "right": 420,
+                    "top": 20,
+                    "bottom": 420
                   },
-                  "children": []
-                },
-                {
-                  "name": "component2",
-                  "attributes": {
-                    "undefined": {
-                      "style": {
-                        "left": 20,
-                        "right": 420,
-                        "top": 20,
-                        "bottom": 420
-                      },
-                      "ref": "a84fcb350"
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "component3",
-                  "attributes": {
-                    "undefined": {
-                      "style": {
-                        "left": 20,
-                        "right": 420,
-                        "top": 20,
-                        "bottom": 420
-                      },
-                      "ref": "8e53b8410"
-                    }
-                  },
-                  "children": []
+                  "ref": "bf95a8b31"
                 }
-              ]
+              },
+              "children": []
+            },
+            {
+              "name": "component3",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "left": 20,
+                    "right": 420,
+                    "top": 20,
+                    "bottom": 420
+                  },
+                  "ref": "7726a48a0"
+                }
+              },
+              "children": []
+            },
+            {
+              "name": "component4",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "left": 20,
+                    "right": 420,
+                    "top": 20,
+                    "bottom": 420
+                  },
+                  "ref": "aea56cf90"
+                }
+              },
+              "children": []
             }
           ]
         }
@@ -103,14 +100,18 @@
       "attributes": {
         "undefined": {
           "id": "component2",
-          "label": "Typography Section"
+          "label": "Typography Section",
+          "style": {
+            "flex": 1,
+            "display": "flex"
+          }
         },
         "editor": {
           "bounds": {
-            "left": 401.61459321380534,
-            "right": 712.6145932138054,
-            "top": -57.23530481310314,
-            "bottom": 135.76469518689686
+            "left": 351.81175563287957,
+            "top": -47.27473729691798,
+            "right": 641.5317186269259,
+            "bottom": 107.4376561957931
           }
         }
       },
@@ -124,10 +125,9 @@
               "attributes": {
                 "undefined": {
                   "style": {
-                    "left": 20,
-                    "right": 420,
-                    "top": 20,
-                    "bottom": 420
+                    "background": "white",
+                    "height": "100%",
+                    "width": "100%"
                   },
                   "ref": "615963170"
                 }
@@ -159,14 +159,18 @@
       "attributes": {
         "undefined": {
           "id": "component3",
-          "label": "Effects Section"
+          "label": "Effects Section",
+          "style": {
+            "display": "flex",
+            "flex": 1
+          }
         },
         "editor": {
           "bounds": {
-            "left": 409.46449124071376,
-            "right": 657.4644912407139,
-            "top": 402.5172445141854,
-            "bottom": 520.5172445141854
+            "left": 355.8450189382048,
+            "top": 379.537470670253,
+            "right": 640.2296608577644,
+            "bottom": 497.537470670253
           }
         }
       },
@@ -210,6 +214,34 @@
                     }
                   },
                   "children": []
+                },
+                {
+                  "name": "text",
+                  "attributes": {
+                    "undefined": {
+                      "style": {},
+                      "value": "+",
+                      "label": "Text",
+                      "ref": "f261bd4e0",
+                      "slot": "container63be648e"
+                    }
+                  },
+                  "children": []
+                },
+                {
+                  "name": "rectangle",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "float": "right"
+                      },
+                      "label": "controls",
+                      "native-type": "div",
+                      "ref": "bbab45f2",
+                      "slot": "container63be648e"
+                    }
+                  },
+                  "children": []
                 }
               ]
             }
@@ -224,23 +256,16 @@
           "id": "component4",
           "label": "Fill Section",
           "style": {
-            "background": "white",
-            "left": "0px",
-            "top": "0px",
-            "right": "undefined",
-            "bottom": "undefined",
-            "width": "100vw",
-            "height": "100vh",
-            "margin": 0,
-            "flex": 1
+            "flex": 1,
+            "display": "flex"
           }
         },
         "editor": {
           "bounds": {
-            "left": 408.76469518689686,
-            "right": 641.7646951868969,
-            "top": 215.30020394618307,
-            "bottom": 328.30020394618305
+            "left": 351.3152605770659,
+            "top": 173.17061856564035,
+            "right": 640.7388333731592,
+            "bottom": 299.5649679894357
           }
         }
       },
@@ -287,22 +312,15 @@
           "label": "Section",
           "style": {
             "background": "white",
-            "left": "0px",
-            "top": "0px",
-            "right": "undefined",
-            "bottom": "undefined",
-            "width": "100vw",
-            "height": "100vh",
-            "margin": 0,
-            "flex": 1
+            "display": "flex"
           }
         },
         "editor": {
           "bounds": {
-            "left": 404.2312258894415,
-            "right": 704.2312258894415,
-            "top": 596.1845910014623,
-            "bottom": 733.1845910014622
+            "left": 342.822372567372,
+            "right": 642.822372567372,
+            "top": 577.034779464852,
+            "bottom": 714.0347794648519
           }
         }
       },
@@ -316,10 +334,9 @@
               "attributes": {
                 "undefined": {
                   "style": {
-                    "background": "rgba(253, 253, 253, 1)",
-                    "width": "100%",
+                    "fontFamily": "Helvetica",
                     "height": "100%",
-                    "fontFamily": "Helvetica"
+                    "width": "100%"
                   },
                   "label": "container",
                   "native-type": "div",
@@ -332,8 +349,7 @@
                   "attributes": {
                     "undefined": {
                       "style": {
-                        "position": "absolute",
-                        "borderBottom": "1px solid rgba(240, 240, 240, 1)",
+                        "borderTop": "1px solid rgba(240, 240, 240, 1)",
                         "width": "100%",
                         "padding": "6px 10px",
                         "boxSizing": "border-box",
@@ -382,6 +398,359 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component6",
+          "label": "Constraints Section"
+        },
+        "editor": {
+          "bounds": {
+            "left": 703.4617482726312,
+            "top": -59.01899440661539,
+            "right": 965.2132435018032,
+            "bottom": 78.6370029612036
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": [
+            {
+              "name": "component8",
+              "attributes": {
+                "undefined": {
+                  "style": {},
+                  "ref": "fd94f9ee0"
+                },
+                "editor": {
+                  "bounds": {
+                    "left": 907.2877612865286,
+                    "right": 1307.2877612865286,
+                    "top": -89.66477948485185,
+                    "bottom": 310.33522051514814
+                  }
+                }
+              },
+              "children": [
+                {
+                  "name": "component7",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "left": 20,
+                        "right": 420,
+                        "top": 20,
+                        "bottom": 420
+                      },
+                      "slot": "container65ad16f4",
+                      "ref": "8b7be0090"
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "text",
+                      "attributes": {
+                        "undefined": {
+                          "style": {},
+                          "value": "x",
+                          "label": "input",
+                          "ref": "9260d1480",
+                          "slot": "containerefa06b4a"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "component7",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "left": 20,
+                        "right": 420,
+                        "top": 20,
+                        "bottom": 420
+                      },
+                      "slot": "container65ad16f4",
+                      "ref": "8b7be0090"
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "text",
+                      "attributes": {
+                        "undefined": {
+                          "style": {},
+                          "value": "y",
+                          "label": "input",
+                          "ref": "9260d1480",
+                          "slot": "containerefa06b4a"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "component8",
+              "attributes": {
+                "undefined": {
+                  "style": {},
+                  "ref": "fd94f9ee0"
+                },
+                "editor": {
+                  "bounds": {
+                    "left": 907.2877612865286,
+                    "right": 1307.2877612865286,
+                    "top": -89.66477948485185,
+                    "bottom": 310.33522051514814
+                  }
+                }
+              },
+              "children": [
+                {
+                  "name": "component7",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "left": 20,
+                        "right": 420,
+                        "top": 20,
+                        "bottom": 420
+                      },
+                      "slot": "container65ad16f4",
+                      "ref": "8b7be0090"
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "text",
+                      "attributes": {
+                        "undefined": {
+                          "style": {},
+                          "value": "width",
+                          "label": "input",
+                          "ref": "9260d1480",
+                          "slot": "containerefa06b4a"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "component7",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "left": 20,
+                        "right": 420,
+                        "top": 20,
+                        "bottom": 420
+                      },
+                      "slot": "container65ad16f4",
+                      "ref": "8b7be0090"
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "text",
+                      "attributes": {
+                        "undefined": {
+                          "style": {},
+                          "value": "height",
+                          "label": "input",
+                          "ref": "9260d1480",
+                          "slot": "containerefa06b4a"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component7",
+          "label": "Labeled Input",
+          "style": {
+            "fontFamily": "Helvetica",
+            "alignItems": "center",
+            "padding": "6px",
+            "boxSizing": "border-box"
+          }
+        },
+        "editor": {
+          "bounds": {
+            "left": -458.12320072886195,
+            "top": -32.11123889548643,
+            "right": -189.12970747382565,
+            "bottom": 50.88876110451357
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": [
+            {
+              "name": "rectangle",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "display": "inline-block",
+                    "textAlign": "center",
+                    "padding": "6px",
+                    "width": "50%",
+                    "boxSizing": "border-box"
+                  },
+                  "label": "label",
+                  "native-type": "div",
+                  "ref": "7726a48a2",
+                  "container": "containerefa06b4a"
+                }
+              },
+              "children": [
+                {
+                  "name": "text",
+                  "attributes": {
+                    "undefined": {
+                      "style": {},
+                      "value": "unit",
+                      "label": "Text",
+                      "ref": "7726a48a1",
+                      "container": null,
+                      "container-keep": "containerac7193a4"
+                    }
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "rectangle",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "width": "50%",
+                    "display": "inline-block",
+                    "boxSizing": "border-box"
+                  },
+                  "label": "input",
+                  "native-type": "div",
+                  "ref": "a056b3ca0",
+                  "container": "container68cd55e1"
+                }
+              },
+              "children": [
+                {
+                  "name": "rectangle",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "width": "100%"
+                      },
+                      "label": "Rectangle",
+                      "native-type": "input",
+                      "ref": "a056b3ca0"
+                    }
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component8",
+          "label": "Input Row",
+          "container": "container65ad16f4",
+          "style": {
+            "display": "flex"
+          }
+        },
+        "editor": {
+          "bounds": {
+            "left": -458.6656884173468,
+            "top": 90.56716946040872,
+            "right": -182.89411520754487,
+            "bottom": 156.5671694604087
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": [
+            {
+              "name": "component7",
+              "attributes": {
+                "undefined": {
+                  "style": {},
+                  "ref": "dd2c5e820"
+                }
+              },
+              "children": []
+            },
+            {
+              "name": "component7",
+              "attributes": {
+                "undefined": {
+                  "style": {},
+                  "ref": "dd2c5e820"
+                }
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component9",
+          "label": "Color Input"
+        },
+        "editor": {
+          "bounds": {
+            "left": -447.1923797194187,
+            "right": -241.19237971941868,
+            "top": 302.32989990276593,
+            "bottom": 484.3298999027659
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": []
         }
       ]
     }

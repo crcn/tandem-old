@@ -15,13 +15,5 @@ setup<DesktopRootState>(rootReducer, rootSaga)({
     windows: []
   },
   history: {},
-  openFiles: [],
-  canvas: {
-    backgroundColor: "#EFEFEF",
-    translate: {
-      left: 0,
-      top: 0,
-      zoom: 1
-    }
-  }
+  openFiles: []
 });

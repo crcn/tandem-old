@@ -1,5 +1,5 @@
 import { mapValues } from "lodash";
-import { ComputedDisplayInfo } from "./synthetic";
+import { ComputedDisplayInfo, EditorAttributeNames, EDITOR_NAMESPACE } from "./synthetic";
 import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath } from "../common/state";
 import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform, patchNode } from "../common/utils/tree";
 import { PCSourceAttributeNames } from ".";
@@ -46,9 +46,18 @@ export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Docume
   return computed;
 };
 
+const setStyleConstraintsIfRoot = (synthetic: TreeNode, nativeElement: HTMLElement) => {
+  const isRoot = getAttribute(synthetic, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE);
+  if (isRoot) {
+    nativeElement.style.width = "100vw";
+    nativeElement.style.height = "100vh";
+  }
+}
+
 const createNativeNode = (synthetic: TreeNode, document: Document, map: SyntheticNativeNodeMap) => {
   const isText = synthetic.name === "text";
   const nativeElement = document.createElement(isText ? "span" : getAttribute(synthetic, PCSourceAttributeNames.NATIVE_TYPE) || "div");
+
   const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
   for (const name in attrs) {
     const value = attrs[name];
@@ -58,6 +67,7 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
       nativeElement.setAttribute(name, value);
     }
   }
+  setStyleConstraintsIfRoot(synthetic, nativeElement);
 
   if (isText) {
     nativeElement.appendChild(document.createTextNode(getAttribute(synthetic, "value", DEFAULT_NAMESPACE)));
@@ -92,6 +102,7 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
           if (name === "style") {
             target.setAttribute("style", "");
             Object.assign(target.style, normalizeStyle(value));
+            setStyleConstraintsIfRoot(syntheticTarget, target);
           } else if (name === "value" && syntheticTarget.name === "text") {
             target.childNodes[0].nodeValue = value;
           } else if (name === PCSourceAttributeNames.NATIVE_TYPE) {
@@ -147,7 +158,7 @@ const insertChild = (target: Node, child: Node, index: number) => {
 }
 
 const normalizeStyle = (value: any) => mapValues(value, (value, key) => {
-  if (typeof value === "number") {
+  if (typeof value === "number" && /width|height|left|top|right|bottom/.test(key)) {
     return `${value}px`;
   }
 

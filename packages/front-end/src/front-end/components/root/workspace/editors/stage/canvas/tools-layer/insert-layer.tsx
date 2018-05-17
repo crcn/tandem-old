@@ -32,10 +32,14 @@ const BaseInsertLayer = ({ toolType, editor, onMouseDown, previewBounds }: Inser
   if (toolType == null) {
     return null;
   }
+  const translate = editor.canvas.translate;
 
   const outerStyle = {
-    cursor: CURSOR_MAP[toolType] || "default"
+    cursor: CURSOR_MAP[toolType] || "default",
+    transform: `translate(${-translate.left / translate.zoom}px, ${-translate.top / translate.zoom}px) scale(${1 / translate.zoom}) translateZ(0)`,
+    transformOrigin: `top left`
   };
+
 
   let preview;
 

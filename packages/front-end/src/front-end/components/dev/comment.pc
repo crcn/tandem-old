@@ -13,9 +13,9 @@
         "editor": {
           "bounds": {
             "left": 40,
-            "top": 177,
-            "right": 348,
-            "bottom": 371
+            "top": 80,
+            "right": 260,
+            "bottom": 220
           }
         }
       },
