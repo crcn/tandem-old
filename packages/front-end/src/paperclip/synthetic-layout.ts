@@ -10,17 +10,16 @@ import { getSyntheticNodeById, SyntheticBrowser, getSyntheticNodeBounds, Synthet
 import { Point, getAttribute, getParentTreeNode, memoize, findTreeNodeParent, Bounds, TreeNode, shiftBounds, moveBounds } from "../common";
 import { negate } from "lodash";
 
+enum Axis { X, Y };
+
 const getStyleProp = (node: TreeNode, prop: string, defaultValue: string) => {
   const style = getAttribute(node, "style");
   return style && style[prop] || defaultValue;
 }
 
-const isRelativeNode = (node: TreeNode) => /relative|absolute|fixed/i.test(getStyleProp(node, "position", "static"));
-const isAbsolutelyPositionedNode = (node: TreeNode) => /absolute|fixed/i.test(getStyleProp(node, "position", "static"));
-
-enum Axis { X, Y };
-
-const getRelativeParent = memoize((node: SyntheticNode, document: SyntheticDocument) => {
+export const isRelativeNode = (node: TreeNode) => /relative|absolute|fixed/i.test(getStyleProp(node, "position", "static"));
+export const isAbsolutelyPositionedNode = (node: TreeNode) => /absolute|fixed/i.test(getStyleProp(node, "position", "static"));
+export const getRelativeParent = memoize((node: SyntheticNode, document: SyntheticDocument) => {
   return findTreeNodeParent(node.id, document.root, isRelativeNode) || document.root;
 });
 
@@ -76,10 +75,7 @@ export const convertFixedBoundsToRelative = (bounds: Bounds, node: SyntheticNode
  * the static position of the element cannot easily be computed (unless we want to mock the DOM 😅).
  */
 
-export const convertFixedBoundsToNewAbsoluteRelativeToParent = (bounds: Bounds, node: SyntheticNode, newParent: SyntheticNode, document: SyntheticDocument) => {
-  if (getStyleProp(node, "position", "static") === "fixed") {
-    return bounds;
-  }
+export const convertFixedBoundsToNewAbsoluteRelativeToParent = (bounds: Bounds, newParent: SyntheticNode, document: SyntheticDocument) => {
 
   const relativeParent = isRelativeNode(newParent) ? newParent : getRelativeParent(newParent, document);
   const relativeParentBounds = document.computed[relativeParent.id].bounds;

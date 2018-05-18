@@ -195,12 +195,11 @@ export const setNodeAttribute = <TTree extends TreeNode>(node: TTree, name: stri
   }
 });
 
-export const appendChildNode = <TTree extends TreeNode>(child: TTree, parent: TTree): TTree => ({
+export const appendChildNode = <TTree extends TreeNode>(child: TTree, parent: TTree): TTree => insertChildNode(child, parent.children.length, parent);
+
+export const insertChildNode = <TTree extends TreeNode>(child: TTree, index: number, parent: TTree): TTree => ({
   ...(parent as any),
-  children: [
-    ...parent.children,
-    child
-  ]
+  children: arraySplice(parent.children, index, 1, child)
 });
 
 export const cloneNode = <TTree extends TreeNode>(node: TTree, generateUID: UIDGenerator) => ({

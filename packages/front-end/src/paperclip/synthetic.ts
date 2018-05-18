@@ -1,15 +1,15 @@
-import { TreeNodeAttributes, getTreeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode, cloneNode, getTreeNodeUidGenerator, filterNestedNodes, findTreeNodeParent } from "../common/state/tree";
-import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, ArrayOperationalTransform, castStyle } from "../common/utils";
+import { TreeNodeAttributes, getTreeNodePath, generateTreeChecksum, getTreeNodeFromPath, getAttribute, getNestedTreeNodeById, getTreeNodeIdMap, DEFAULT_NAMESPACE, updateNestedNode, setNodeAttribute, findNodeByTagName, TreeNode, TreeNodeUpdater, findNestedNode, addTreeNodeIds, removeNestedTreeNode, updateNestedNodeTrail, appendChildNode, replaceNestedNode, getParentTreeNode, cloneNode, getTreeNodeUidGenerator, filterNestedNodes, findTreeNodeParent, insertChildNode } from "../common/state/tree";
+import { arraySplice, generateId, memoize, EMPTY_ARRAY, EMPTY_OBJECT, ArrayOperationalTransform, castStyle, createUIDGenerator } from "../common/utils";
 import { DependencyGraph, Dependency, getModuleInfo, getComponentInfo, getNodeSourceDependency, updateGraphDependency, getDependents, SetAttributeOverride, getNodeSourceModule, getNodeSourceComponent, addModuleNodeImport, getModuleImportNamespace, PCSourceAttributeNames, ComponentVariantInfo, PCSourceTagNames, isComponentInstanceSourceNode } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
-import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect, parseStyle, resizeBounds } from "../common";
+import { Bounds, Struct, shiftBounds, StructReference, Point, getBoundsSize, pointIntersectsBounds, moveBounds, boundsFromRect, parseStyle, resizeBounds, mergeBounds } from "../common";
 import { mapValues, pull } from "lodash";
 import { createSetAttributeTransform, OperationalTransform, diffNode, patchNode, OperationalTransformType, SetAttributeTransform } from "../common/utils/tree";
 import { evaluateDependencyEntry } from "./evaluate";
 import { STATUS_CODES } from "http";
 import { Children, SyntheticEvent } from "react";
 import * as path from "path";
-import { convertFixedBoundsToRelative, convertFixedBoundsToNewAbsoluteRelativeToParent } from "./synthetic-layout";
+import { convertFixedBoundsToRelative, convertFixedBoundsToNewAbsoluteRelativeToParent, isRelativeNode, getRelativeParent } from "./synthetic-layout";
 
 export const EDITOR_NAMESPACE = "editor";
 
@@ -969,7 +969,10 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
     const targetParent = getSyntheticNodeById(targetNodeId, browser);
     const sourceDocument = getSyntheticNodeDocument(node.id, browser);
     const destDocument = getSyntheticNodeDocument(targetNodeId, browser);
-    const absoluteBounds = convertFixedBoundsToNewAbsoluteRelativeToParent(sourceDocument.computed[node.id].bounds, node, targetParent, destDocument);
+    let absoluteBounds = sourceDocument.computed[node.id].bounds;
+    if (sourceDocument.computed[node.id].style.position !== "fixed") {
+      absoluteBounds = convertFixedBoundsToNewAbsoluteRelativeToParent(absoluteBounds, targetParent, destDocument);
+    }
     sourceNode = setNodeStyle(sourceNode, {
       position: "absolute",
       left: absoluteBounds.left,
@@ -997,8 +1000,70 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   return browser;
 };
 
-export const moveSourceNodeRelativeToParent = (child: SyntheticNode, parent: SyntheticNode, document: SyntheticDocument) => {
-}
+/**
+ * This assumes that the nodes in the same parent
+ */
+
+export const persistGroupSyntheticNodes = (nodeIds: string[], browser: SyntheticBrowser) => {
+  let document = getSyntheticNodeDocument(nodeIds[0], browser);
+  const entireBounds = mergeBounds(...nodeIds.map(nodeId => document.computed[nodeId].bounds));
+  const oldFirstSourceNode = getSyntheticSourceNode(nodeIds[0], browser);
+  const firstDep = getSourceNodeDependency(oldFirstSourceNode.id, browser);
+  let oldParent = getParentTreeNode(nodeIds[0], document.root) as SyntheticNode;
+
+  // seems a bit backwards, but we fetch the source node's parent node instead of the synthetic source node
+  // since there could be a mismatch.
+  let oldSourceParent = getParentTreeNode(oldFirstSourceNode.id, firstDep.content);
+  const relativeBounds = convertFixedBoundsToNewAbsoluteRelativeToParent(entireBounds, oldParent, document);
+
+  const relativeParentBounds = convertFixedBoundsToNewAbsoluteRelativeToParent(entireBounds, oldParent, document);
+
+  let groupParent: TreeNode = {
+    name: "rectangle",
+    id: getTreeNodeUidGenerator(oldSourceParent)(),
+    attributes: {
+      [DEFAULT_NAMESPACE]: {
+        [PCSourceAttributeNames.LABEL]: "Group",
+        style: {
+          position: "absolute",
+          left: relativeParentBounds.left,
+          top: relativeParentBounds.top,
+          width: relativeParentBounds.right - relativeParentBounds.left,
+          height: relativeParentBounds.bottom - relativeParentBounds.top
+        }
+      }
+    },
+    children: []
+  };
+
+  groupParent = nodeIds.reduce((parent, nodeId) => {
+    let sourceNode = getSyntheticSourceNode(nodeId, browser);
+    const fixedBounds = document.computed[nodeId].bounds;
+    const bounds = moveBounds(fixedBounds, {
+      left: fixedBounds.left - entireBounds.left,
+      top: fixedBounds.top - entireBounds.top,
+    });
+
+    sourceNode = setNodeStyle(sourceNode, {
+      position: "absolute",
+      left: bounds.left,
+      top: bounds.top
+    });
+    return appendChildNode(sourceNode, parent);
+  }, groupParent);
+
+  const firstChildIndex = nodeIds.reduce((i, nodeId) => {
+    return Math.min(i, oldParent.children.findIndex(child => child.id === nodeId))
+  }, Infinity);
+
+  let newSourceParent = nodeIds.reduce((sourceParent, nodeId) => {
+    return removeNestedTreeNode(getSyntheticSourceNode(nodeId, browser), sourceParent);
+  }, oldSourceParent);
+
+  newSourceParent = insertChildNode(groupParent, firstChildIndex, newSourceParent);
+
+  return persistSourceNodeChanges(oldSourceParent.id, null, browser, () => newSourceParent);
+};
 
 export const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBrowser) => {
   const node = getSyntheticNodeById(nodeId, browser);
