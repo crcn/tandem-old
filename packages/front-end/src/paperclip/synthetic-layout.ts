@@ -7,7 +7,7 @@ TODO:
 - respect align-content
 */
 import { getSyntheticNodeById, SyntheticBrowser, getSyntheticNodeBounds, SyntheticNode, getSyntheticNodeDocument, SyntheticDocument } from "./synthetic";
-import { Point, getAttribute, getParentTreeNode, memoize, findTreeNodeParent, Bounds, TreeNode, shiftBounds } from "../common";
+import { Point, getAttribute, getParentTreeNode, memoize, findTreeNodeParent, Bounds, TreeNode, shiftBounds, moveBounds } from "../common";
 import { negate } from "lodash";
 
 const getStyleProp = (node: TreeNode, prop: string, defaultValue: string) => {
@@ -21,7 +21,7 @@ const isAbsolutelyPositionedNode = (node: TreeNode) => /absolute|fixed/i.test(ge
 enum Axis { X, Y };
 
 const getRelativeParent = memoize((node: SyntheticNode, document: SyntheticDocument) => {
-  return findTreeNodeParent(node.id, document.root, isRelativeNode);
+  return findTreeNodeParent(node.id, document.root, isRelativeNode) || document.root;
 });
 
 const measurementToPx = (measurment: string, axis: Axis, node: SyntheticNode, document: SyntheticDocument) => {
@@ -68,6 +68,25 @@ export const convertFixedBoundsToRelative = (bounds: Bounds, node: SyntheticNode
   });
 };
 
-export const convertFixedBoundsToNewRelativeParent = (bounds: Bounds, node: SyntheticNode, newParent: SyntheticNode, document: SyntheticDocument) => {
+/**
+ * Used to maintian the same position of a node when it's moved to another parent.  This function
+ * assumes that the node is translated to be absolutely positioned since there moving a relatively positioned
+ * element to a parent will have cascading affects to other children. We don't want that. Also, moving a relatively
+ * positioned element to another parent would need to consider the layout engine (we don't have access to that directly), so
+ * the static position of the element cannot easily be computed (unless we want to mock the DOM 😅).
+ */
 
+export const convertFixedBoundsToNewAbsoluteRelativeToParent = (bounds: Bounds, node: SyntheticNode, newParent: SyntheticNode, document: SyntheticDocument) => {
+  if (getStyleProp(node, "position", "static") === "fixed") {
+    return bounds;
+  }
+
+  const relativeParent = isRelativeNode(newParent) ? newParent : getRelativeParent(newParent, document);
+  const relativeParentBounds = document.computed[relativeParent.id].bounds;
+
+  // based on abs parent of new child.
+  return moveBounds(bounds, {
+    left: bounds.left - relativeParentBounds.left,
+    top: bounds.top - relativeParentBounds.top
+  });
 };

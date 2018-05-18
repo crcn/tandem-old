@@ -9,7 +9,7 @@ import { evaluateDependencyEntry } from "./evaluate";
 import { STATUS_CODES } from "http";
 import { Children, SyntheticEvent } from "react";
 import * as path from "path";
-import { convertFixedBoundsToRelative } from "./synthetic-layout";
+import { convertFixedBoundsToRelative, convertFixedBoundsToNewAbsoluteRelativeToParent } from "./synthetic-layout";
 
 export const EDITOR_NAMESPACE = "editor";
 
@@ -952,12 +952,30 @@ export const persistDeleteSyntheticItems = (nodeIds: string[], browser: Syntheti
   }, browser);
 };
 
+const setNodeStyle = (node: TreeNode, properties: any) => setNodeAttribute(node, "style", {
+  ...(getAttribute(node, "style") || EMPTY_OBJECT),
+  ...properties
+});
+
 export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: string, offset: 0 | -1 |  1, browser: SyntheticBrowser) => {
   let sourceNode = getSyntheticSourceNode(node.id, browser);
+
   const sourceDep = getSourceNodeDependency(sourceNode.id, browser);
   const componentInstanceNode = getComponentInstanceSyntheticNode(targetNodeId, browser);
 
   const sourceParent = getParentTreeNode(sourceNode.id, sourceDep.content);
+
+  if (offset === 0) {
+    const targetParent = getSyntheticNodeById(targetNodeId, browser);
+    const sourceDocument = getSyntheticNodeDocument(node.id, browser);
+    const destDocument = getSyntheticNodeDocument(targetNodeId, browser);
+    const absoluteBounds = convertFixedBoundsToNewAbsoluteRelativeToParent(sourceDocument.computed[node.id].bounds, node, targetParent, destDocument);
+    sourceNode = setNodeStyle(sourceNode, {
+      position: "absolute",
+      left: absoluteBounds.left,
+      top: absoluteBounds.top
+    });
+  }
 
   const targetSourceNode = getSyntheticSourceNode(targetNodeId, browser);
   const targetOriginSourceNode = getSyntheticOriginSourceNode(getSyntheticNodeById(targetNodeId, browser), browser);
@@ -978,6 +996,9 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
 
   return browser;
 };
+
+export const moveSourceNodeRelativeToParent = (child: SyntheticNode, parent: SyntheticNode, document: SyntheticDocument) => {
+}
 
 export const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBrowser) => {
   const node = getSyntheticNodeById(nodeId, browser);

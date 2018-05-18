@@ -432,27 +432,6 @@
               "attributes": {
                 "undefined": {
                   "style": {
-                    "left": 55.70267717661591,
-                    "right": 174.25112500228875,
-                    "top": 46.707286164775994,
-                    "bottom": 115.46538590366622,
-                    "width": 118.54844782567284,
-                    "height": 68.75809973889022,
-                    "background": "#CCC",
-                    "position": "absolute"
-                  },
-                  "label": "Rectangle",
-                  "native-type": "div",
-                  "ref": "5feca67f0"
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "rectangle",
-              "attributes": {
-                "undefined": {
-                  "style": {
                     "left": 50.56557777083674,
                     "right": 111.4204476546821,
                     "top": 16.675012715605554,
@@ -465,6 +444,27 @@
                   "label": "Rectangle",
                   "native-type": "div",
                   "ref": "1cd6296d0"
+                }
+              },
+              "children": []
+            },
+            {
+              "name": "rectangle",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "left": 55.70267717661591,
+                    "right": 174.25112500228875,
+                    "top": 46.707286164775994,
+                    "bottom": 115.46538590366622,
+                    "width": 118.54844782567284,
+                    "height": 68.75809973889022,
+                    "background": "#CCC",
+                    "position": "absolute"
+                  },
+                  "label": "Rectangle",
+                  "native-type": "div",
+                  "ref": "5feca67f0"
                 }
               },
               "children": []
