@@ -3,6 +3,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 IMMEDIATE:
 
 - measurement tooling
+  - snap tool
+  - grid tool
 - alow for only grouped elements to be selected - prohibit selecting all elements
 - resizing relative to parent
   - resize based on NWES parts

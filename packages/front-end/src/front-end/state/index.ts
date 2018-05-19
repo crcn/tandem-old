@@ -1,5 +1,5 @@
-import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode, addTreeNodeIds, stripTreeNodeIds, getBoundsSize, centerTransformZoom, createZeroBounds } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE } from "../../paperclip";
+import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode, addTreeNodeIds, stripTreeNodeIds, getBoundsSize, centerTransformZoom, createZeroBounds, getTreeNodeHeight, flattenTreeNode, shiftBounds, shiftPoint, flipPoint, moveBounds } from "../../common";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE, isSyntheticDocumentRoot } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
 import { stat } from "fs";
@@ -30,7 +30,7 @@ export enum InsertFileType {
 export type InsertFileInfo = {
   type: InsertFileType;
   directoryId: string;
-}
+};
 
 export type DependencyHistory = {
   index: number;
@@ -45,7 +45,7 @@ export type Editor = {
   activeFilePath?: string;
   tabUris: string[];
   canvas: Canvas;
-}
+};
 
 export type RootState = {
   editors: Editor[];
@@ -151,6 +151,122 @@ const DEFAULT_CANVAS: Canvas = {
     left: 0,
     top: 0,
     zoom: 1
+  }
+};
+
+const SNAP_PADDING = 5;
+
+// Todo - restrict to viewport
+
+export const snapBounds = (bounds: Bounds, selectedNodeIds: string[], browser: SyntheticBrowser) => {
+
+  const guides = getSnapGuides(bounds, selectedNodeIds, browser);
+  return guides;
+
+  return bounds;
+};
+
+export const getSnapGuides = memoize((bounds: Bounds, selectedNodeIds: string[], browser: SyntheticBrowser) => {
+  let alignableBounds: Bounds[];
+
+  const firstNode = getSyntheticNodeById(selectedNodeIds[0], browser);
+  const document = getSyntheticNodeDocument(firstNode.id, browser);
+
+  bounds = shiftBounds(bounds, flipPoint(document.bounds));
+
+  if (isSyntheticDocumentRoot(selectedNodeIds[0], browser)) {
+    const window = getSyntheticDocumentWindow(document.id, browser);
+    alignableBounds = window.documents.map(document => selectedNodeIds.indexOf(document.root.id) === -1 && document.bounds).filter(Boolean);
+  } else {
+    const highestNode = selectedNodeIds.concat().sort((a, b) => getTreeNodeHeight(a, document.root) > getTreeNodeHeight(b, document.root) ? 1 : -1)[0];
+    const highestNodeParent = getParentTreeNode(highestNode, document.root);
+
+    // omit items that are being dragged
+    alignableBounds = flattenTreeNode(highestNodeParent).map(node => node.id !== highestNodeParent.id && selectedNodeIds.indexOf(node.id) === -1 && document.computed[node.id] && document.computed[node.id].bounds).filter(Boolean);
+  }
+
+  const { width, height } = getBoundsSize(bounds);
+  let left: number = bounds.left;
+  let top: number = bounds.top;
+  const orgLeft = bounds.left;
+  const orgTop  = bounds.top;
+
+  let guideLeft;
+  let guideTop;
+
+  for (let i = 0, n = alignableBounds.length; i < n; i++) {
+    const nodeBounds = alignableBounds[i];
+
+    if (orgLeft === left) {
+      [guideLeft, left] = snap(left, nodeBounds.left, width, nodeBounds.right - nodeBounds.left);
+    }
+
+    if (orgTop === top) {
+      [guideTop, top] = snap(top, nodeBounds.top, height, nodeBounds.bottom - nodeBounds.top);
+    }
+
+    // when bounds intersect two items
+    if (orgLeft !== left && orgTop !== top) {
+      break;
+    }
+  }
+
+  return moveBounds(bounds, {
+    left: left + document.bounds.left,
+    top: top + document.bounds.top
+  });
+});
+
+const snap = (fromLeft, toLeft, fromWidth, toWidth, margin: number = 5) => {
+  const fromMidWidth = fromWidth / 2;
+  const fromMidLeft  = fromLeft + fromMidWidth;
+  const toMidLeft    = toLeft + toWidth / 2;
+  const toRight      = toLeft + toWidth;
+  const fromRight    = fromLeft + fromWidth;
+
+  const lines = [
+
+    // left matches left
+    [fromLeft, toLeft],
+
+    // right matches left
+    [fromRight, toLeft, -fromWidth],
+
+    // right matches right
+    [fromRight, toRight, -fromWidth],
+
+    // left matches right
+    [fromLeft, toRight],
+
+    // left matches mid
+    [fromLeft, toMidLeft],
+
+    // left matches mid
+    [fromRight, toMidLeft, -fromWidth],
+
+    // mid matches mide
+    [fromMidLeft, toMidLeft, -fromMidWidth],
+
+    // mid matches right
+    [fromMidLeft, toRight, -fromMidWidth],
+
+    // mid matches left
+    [fromMidLeft, toLeft, -fromMidWidth],
+
+    // default
+    [fromLeft],
+  ];
+
+  for (const [from, to = -1, offset = 0] of lines) {
+
+    // no guide. Return from.
+    if (to === -1) {
+      return [-1, from];
+    }
+
+    if ((from < to + margin) && (from > to - margin)) {
+      return [to, to + offset];
+    }
   }
 };
 

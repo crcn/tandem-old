@@ -141,6 +141,8 @@ export const getNestedTreeNodeById = memoize(<TNode extends TreeNode>(id: string
   return getTreeNodeIdMap(root)[id];
 });
 
+export const getTreeNodeHeight = memoize(<TNode extends TreeNode>(id: string, root: TNode) => getTreeNodePath(id, root).length);
+
 export const generateTreeChecksum = memoize((root: TreeNode) => crc32(stringifyTreeNodeToXML(root)));
 export const getTreeNodeUidGenerator = memoize((root: TreeNode) => {
   const rightMostTreeNode = getRightMostTreeNode(root);
