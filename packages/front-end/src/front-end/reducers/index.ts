@@ -250,7 +250,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       } else {
         const window = getSyntheticNodeWindow(node.id, state.browser);
         state = setActiveFilePath(window.location, state);
-        state = setSelectedSyntheticNodeIds(state, node.id);
+        state = setSelectedSyntheticNodeIds(state, ...(sourceEvent.shiftKey ? [...state.selectedNodeIds, node.id] : [node.id]));
       }
       return state;
     }
