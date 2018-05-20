@@ -942,14 +942,24 @@ const insertComponentChildNode = (child: TreeNode, index: number, parentId: stri
 };
 
 export const persistDeleteSyntheticItems = (nodeIds: string[], browser: SyntheticBrowser) => {
-  return nodeIds.reduce((state, nodeId) => {
+
+  const updatedDepContent = {};
+
+  nodeIds.forEach((nodeId) => {
     const syntheticNode = getSyntheticNodeById(nodeId, browser);
-    const dep = browser.graph[syntheticNode.source.uri];
+    const sourceUri = syntheticNode.source.uri;
+    const content = updatedDepContent[sourceUri] || browser.graph[sourceUri].content;
     const sourceNode = getSyntheticSourceNode(syntheticNode.id, browser);
-    return updateDependencyAndRevaluate({
-      content: removeNestedTreeNode(sourceNode, dep.content)
-    }, dep.uri, state);
-  }, browser);
+    updatedDepContent[sourceUri] = removeNestedTreeNode(sourceNode, content);
+  });
+
+  for (const uri in updatedDepContent) {
+    browser = updateDependencyAndRevaluate({
+      content: updatedDepContent[uri]
+    }, uri, browser);
+  }
+
+  return browser;
 };
 
 const setNodeStyle = (node: TreeNode, properties: any) => setNodeAttribute(node, "style", {
