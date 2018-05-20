@@ -426,7 +426,22 @@
         {
           "name": "template",
           "attributes": {},
-          "children": []
+          "children": [
+            {
+              "name": "text",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "display": "inline-block"
+                  },
+                  "value": "x",
+                  "label": "Text",
+                  "ref": "e601ae1c0"
+                }
+              },
+              "children": []
+            }
+          ]
         }
       ]
     },

@@ -460,8 +460,8 @@ export const addOpenFile = (uri: string, temporary: boolean, state: RootState): 
   }
 };
 
-export const getInsertedWindowElementIds = (oldWindow: SyntheticWindow, newBrowser: SyntheticBrowser): string[] => {
-  const elementIds = oldWindow.documents.reduce((nodeIds, oldDocument) => {
+export const getInsertedWindowElementIds = (oldWindow: SyntheticWindow, targetDocumentId: string, newBrowser: SyntheticBrowser): string[] => {
+  const elementIds = oldWindow.documents.filter(document => !targetDocumentId || document.id === targetDocumentId).reduce((nodeIds, oldDocument) => {
     return [...nodeIds, ...getInsertedDocumentElementIds(oldDocument, newBrowser)];
   }, []);
   const newWindow = newBrowser.windows.find(window => window.location === oldWindow.location);

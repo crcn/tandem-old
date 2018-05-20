@@ -540,7 +540,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
               position: "absolute"
             }, document ? getSyntheticSourceNode(document.root.id, browser).id : browser.graph[oldWindow.location].content.id, browser)
           }, state);
-          state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, state.browser));
+          state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, document && document.id, state.browser));
           return state;
         }
         case ToolType.TEXT: {
@@ -555,7 +555,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
               position: "relative"
             }, "double click to edit", document ? getSyntheticSourceNode(document.root.id, browser).id : browser.graph[oldWindow.location].content.id, browser);
           }, state);
-          state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, state.browser));
+          state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, document && document.id, state.browser));
           return state;
         }
       }

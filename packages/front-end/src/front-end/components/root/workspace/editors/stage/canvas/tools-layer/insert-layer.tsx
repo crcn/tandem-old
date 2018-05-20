@@ -92,7 +92,11 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
         setPreviewBounds(getBounds(delta));
       }, (event: MouseEvent, { delta}) => {
         setPreviewBounds(null);
-        return dispatch(insertToolFinished(getBounds(delta), window.location));
+
+        // beat click
+        setTimeout(() => {
+          dispatch(insertToolFinished(getBounds(delta), window.location));
+        });
       });
     }
   })
