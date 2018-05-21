@@ -6,6 +6,12 @@ import { UIDGenerator, createUIDGenerator } from "../utils/uid";
 
 export const DEFAULT_NAMESPACE = "undefined";
 
+export enum TreeMoveOffset {
+  APPEND = 0,
+  BEFORE = -1,
+  AFTER = 1
+};
+
 export type NamespacedAttributes = {
   namespace: string;
   name: string;

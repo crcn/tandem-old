@@ -70,7 +70,7 @@ export const evaluateRootDocumentComponent = (componentNode: TreeNode, currentDe
   return element;
 };
 
-const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, generateId: IDGenerator, module: Module, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY, isRoot?: boolean) => {
+const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttributes, children: TreeNode[], source: SyntheticNodeSource, generateId: IDGenerator, module: Module, dependency, graph: DependencyGraph, overrides: ComponentOverride[] = EMPTY_ARRAY, isRoot?: boolean, createdFromComponent?: boolean) => {
   const info = getComponentInfo(componentNode);
   const ext = info.extends || DEFAULT_EXTENDS;
   let template = info.template;
@@ -95,33 +95,23 @@ const _evaluateComponent = (componentNode: TreeNode, attributes: TreeNodeAttribu
       return (variants ? variants.indexOf(state.name) !== -1 : isRoot && state.isDefault) ? overrideComponentTemplate(template, state.overrides) : template;
     }, template);
 
-    syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, generateId, dependency, graph, slots)) : EMPTY_ARRAY;
+    syntheticChildren = template ? template.children.map((child, i) => evaluateNode(child, module, generateId, dependency, graph, slots, createdFromComponent)) : EMPTY_ARRAY;
   }
 
   const syntheticAttributes = merge({}, {
     [DEFAULT_NAMESPACE]: {
       label: getAttribute(componentNode, "label"),
       style: getAttribute(componentNode, "style"),
-    } as any
-  }, attributes);
-
-  const extendsFromDependency = getImportedDependency(ext.namespace, dependency, graph);
-
-  if (extendsFromDependency) {
-    const extendsFromModule = getDependencyModule(extendsFromDependency);
-    const extendsComponent = getModuleComponent(ext.tagName, extendsFromModule);
-
-    if (extendsComponent) {
-
-      // overrides passed in
-      return _evaluateComponent(extendsComponent.source, syntheticAttributes, syntheticChildren, source, generateId, extendsFromModule, extendsFromDependency, graph, [...info.overrides, ...overrides]);
+    },
+    [EDITOR_NAMESPACE]: {
+      [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent,
+      [EditorAttributeNames.IS_COMPONENT_INSTANCE]: createdFromComponent
     }
-  }
+  }, attributes);
 
   // TODO - pass slots down
   // TODO - check for existing component extends:importName="component"
   let element = createSyntheticElement(ext.tagName, syntheticAttributes, syntheticChildren, source, generateId());
-  element = setNodeAttribute(element, EditorAttributeNames.IS_COMPONENT_INSTANCE, true, EDITOR_NAMESPACE);
   return element;
 };
 
@@ -160,7 +150,7 @@ const overrideComponentTemplate = (template: TreeNode, overrides: ComponentOverr
   return template;
 };
 
-const evaluateNode = (node: TreeNode, module: Module, generateId: IDGenerator, dependency: Dependency, graph: DependencyGraph, slots: Slots = EMPTY_OBJECT) => {
+const evaluateNode = (node: TreeNode, module: Module, generateId: IDGenerator, dependency: Dependency, graph: DependencyGraph, slots: Slots = EMPTY_OBJECT, createdFromComponent?: boolean) => {
 
   const nodeDependency = getNodeSourceDependency(node, dependency, graph);
   const nodeModule = getModuleInfo(nodeDependency.content);
@@ -181,11 +171,16 @@ const evaluateNode = (node: TreeNode, module: Module, generateId: IDGenerator, d
     }
   }
 
-  const children2 = hasSlottedChildren ? children : children.map((child, i) => evaluateNode(child, module, generateId, dependency, graph, slots));
+  const children2 = hasSlottedChildren ? children : children.map((child, i) => evaluateNode(child, module, generateId, dependency, graph, slots, createdFromComponent));
 
   if (nodeComponent) {
-    return _evaluateComponent(nodeComponent.source, node.attributes, children2, getSytheticNodeSource(node, dependency), generateId, nodeModule, nodeDependency, graph)
+
+    return _evaluateComponent(nodeComponent.source, node.attributes, children2, getSytheticNodeSource(node, dependency), generateId, nodeModule, nodeDependency, graph, EMPTY_ARRAY, false, true);
   }
 
-  return createSyntheticElement(tagName, attributes, children2, getSytheticNodeSource(node, dependency), generateId());
+  return createSyntheticElement(tagName, merge({}, attributes, {
+    [EDITOR_NAMESPACE]: {
+      [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent
+    }
+  }), children2, getSytheticNodeSource(node, dependency), generateId());
 };

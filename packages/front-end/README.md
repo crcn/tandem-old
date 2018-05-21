@@ -2,6 +2,11 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
 
 IMMEDIATE:
 
+- prohibit editing instance of component
+- block instance elements from being deleted
+- override component instance styles
+- ability to override text
+- everything is a slot. Simplifies architecture.
 - measurement tooling
   - snap tool
   - grid tool

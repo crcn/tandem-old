@@ -40,7 +40,6 @@ const BaseInsertLayer = ({ toolType, editor, onMouseDown, previewBounds }: Inser
     transformOrigin: `top left`
   };
 
-
   let preview;
 
   if (previewBounds) {

@@ -15,7 +15,8 @@ export const EDITOR_NAMESPACE = "editor";
 
 export enum EditorAttributeNames {
   IS_COMPONENT_INSTANCE = "isComponentInstance",
-  IS_COMPONENT_ROOT = "isComponentRoot"
+  IS_COMPONENT_ROOT = "isComponentRoot",
+  CREATED_FROM_COMPONENT = "createFromComponent"
 };
 
 export type TreeNodeClip = {
@@ -376,7 +377,7 @@ export const getSourceNodeDependency = memoize((nodeId: string, browser: Synthet
 
 export const getSyntheticNodeOriginComponent = memoize((nodeId: string, browser: SyntheticBrowser) => {
   const node = getSyntheticNodeById(nodeId, browser);
-  const componentInstanceNode = getComponentInstanceSyntheticNode(node.id, browser) as SyntheticNode;
+  const componentInstanceNode = getComponentInstanceSyntheticNode(node.id, getSyntheticNodeDocument(node.id, browser).root) as SyntheticNode;
   if (!componentInstanceNode) {
     return getSyntheticNodeSourceComponent(node.id, browser);
   }
@@ -971,7 +972,7 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
   let sourceNode = getSyntheticSourceNode(node.id, browser);
 
   const sourceDep = getSourceNodeDependency(sourceNode.id, browser);
-  const componentInstanceNode = getComponentInstanceSyntheticNode(targetNodeId, browser);
+  const componentInstanceNode = getComponentInstanceSyntheticNode(targetNodeId, getSyntheticNodeDocument(targetNodeId, browser).root);
 
   const sourceParent = getParentTreeNode(sourceNode.id, sourceDep.content);
 
@@ -1009,6 +1010,8 @@ export const persistMoveSyntheticNode = (node: SyntheticNode, targetNodeId: stri
 
   return browser;
 };
+
+export const isContainerSyntheticNode = (node: TreeNode) => Boolean(getAttribute(node, PCSourceAttributeNames.CONTAINER));
 
 /**
  * This assumes that the nodes in the same parent
@@ -1075,9 +1078,8 @@ export const persistGroupSyntheticNodes = (nodeIds: string[], browser: Synthetic
   return persistSourceNodeChanges(oldSourceParent.id, null, browser, () => newSourceParent);
 };
 
-export const getComponentInstanceSyntheticNode = (nodeId: string, browser: SyntheticBrowser) => {
-  const node = getSyntheticNodeById(nodeId, browser);
-  const document = getSyntheticNodeDocument(nodeId, browser);
+export const getComponentInstanceSyntheticNode = (nodeId: string, root: TreeNode) => {
+  const node = getNestedTreeNodeById(nodeId, root);
   const filter = (parent) => {
     return getAttribute(parent, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE);
   };
@@ -1085,8 +1087,12 @@ export const getComponentInstanceSyntheticNode = (nodeId: string, browser: Synth
     return node;
   }
 
-  return findTreeNodeParent(nodeId, document.root, filter);
+  return findTreeNodeParent(nodeId, root, filter);
 };
+
+export const isCreatedFromComponent = (node: TreeNode) => Boolean(getAttribute(node, EditorAttributeNames.CREATED_FROM_COMPONENT, EDITOR_NAMESPACE));
+export const isComponentInstance = (node: TreeNode) => Boolean(getAttribute(node, EditorAttributeNames.IS_COMPONENT_INSTANCE, EDITOR_NAMESPACE));
+export const isComponent = (node: TreeNode) => Boolean(getAttribute(node, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE));
 
 export const getComponentInstanceSourceNode = (nodeId: string, browser: SyntheticBrowser) => {
   const node = getSourceNodeById(nodeId, browser);

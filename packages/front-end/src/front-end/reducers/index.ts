@@ -308,7 +308,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       const selectionBounds = getSelectionBounds(state);
       let movedBounds = moveBounds(selectionBounds, newPoint);
-      movedBounds = snapBounds(movedBounds, state.selectedNodeIds, state.browser);
+      // movedBounds = snapBounds(movedBounds, state.selectedNodeIds, state.browser);
 
       // selected n
       for (const nodeId of state.selectedNodeIds) {
@@ -552,7 +552,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             return persistInsertText({
               ...shiftBounds(shiftBounds(resizeBounds(bounds, { width: 100, height: 100 }), flipPoint(document ? document.bounds : { left: 0, top: 0 })), INSERT_TEXT_OFFSET),
               display: "inline-block",
-              position: "relative"
+              position: "absolute"
             }, "double click to edit", document ? getSyntheticSourceNode(document.root.id, browser).id : browser.graph[oldWindow.location].content.id, browser);
           }, state);
           state = setSelectedSyntheticNodeIds(state, ...getInsertedWindowElementIds(oldWindow, document && document.id, state.browser));

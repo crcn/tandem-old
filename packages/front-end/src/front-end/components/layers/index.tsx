@@ -5,7 +5,7 @@ import { RootState } from "../../state";
 import { identity } from "lodash";
 import { SyntheticWindow, SyntheticBrowser, SyntheticDocument, SyntheticObjectType, EDITOR_NAMESPACE } from "../../../paperclip";
 import { compose, pure, withHandlers, withState, withProps } from "recompose"
-import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById, TreeNode, DEFAULT_NAMESPACE } from "../../../common";
+import { getAttribute, EMPTY_ARRAY, getNestedTreeNodeById, TreeNode, DEFAULT_NAMESPACE, TreeMoveOffset } from "../../../common";
 import { Dispatch } from "redux";
 import {
   DropTarget,
@@ -25,7 +25,7 @@ type AttributeInfo = {
 
 
 export type TreeNodeLayerOuterProps = {
-  isRoot?: boolean;
+  root?: TreeNode;
   node: TreeNode;
   depth: number;
   dispatch: Dispatch<any>;
@@ -33,8 +33,8 @@ export type TreeNodeLayerOuterProps = {
   selectedNodeIds: string[];
 };
 
-
 type TreeNodeLayerLabelOuterProps = {
+  root: TreeNode;
   node: TreeNode;
   depth: number;
   selected: boolean;
@@ -69,6 +69,8 @@ type TreeLayerOptions = {
     treeLayerExpandToggleClick?: TreeLayerMouseActionCreator,
     treeLayerEditLabelBlur?: TreeLayerMouseActionCreator
   };
+  canDrop?: (child: TreeNode, parent: TreeNode, offset: number, root: TreeNode) => boolean;
+  canDrag?: (child: TreeNode) => boolean;
   layersEditable?: boolean;
   reorganizable?: boolean;
   dragType: string,
@@ -116,6 +118,8 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   childRenderer = defaultRender,
   hasChildren = defaultShowChildren,
   layerRenderer = defaultLayerRenderer,
+  canDrop = () => true,
+  canDrag = () => true,
   getLabelProps = identity,
   depthOffset = 30, actionCreators: { treeLayerDroppedNode, treeLayerMouseOver, treeLayerEditLabelBlur, treeLayerLabelChanged, treeLayerClick, treeLayerDoubleClick, treeLayerMouseOut, treeLayerExpandToggleClick }, dragType, reorganizable = true }: TreeLayerOptions) => {
 
@@ -125,28 +129,30 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   let renderChildren;
 
   type InsertOuterProps = {
+    root: TreeNode;
     depth: number;
     node: TreeNode;
     dispatch: Dispatch<any>;
   };
 
   type InsertInnerProps = {
+    canDrop: boolean;
     isOver: boolean;
     connectDropTarget: any;
   } & InsertOuterProps;
 
-  const BaseInsertComponent = ({ depth, isOver: hovering, connectDropTarget }: InsertInnerProps) => {
+  const BaseInsertComponent = ({ depth, isOver, canDrop, connectDropTarget }: InsertInnerProps) => {
     const style = {
       width: `calc(100% - ${DEPTH_OFFSET + depth * DEPTH_PADDING}px)`
     };
-    return connectDropTarget(<div style={style} className={cx("insert-line", { hovering })}>
+    return connectDropTarget(<div style={style} className={cx("insert-line", { hovering: isOver && canDrop })}>
     </div>);
   };
 
-  const withNodeDropTarget = (offset: 0 | -1 | 1) => DropTarget(DRAG_TYPE, {
-    canDrop: ({ node }: { node: TreeNode, dispatch: Dispatch<any> }, monitor) => {
+  const withNodeDropTarget = (offset: TreeMoveOffset) => DropTarget(DRAG_TYPE, {
+    canDrop: ({ node, root }: { node: TreeNode, dispatch: Dispatch<any>, root: TreeNode }, monitor) => {
       const draggingNode = (monitor.getItem() as TreeNode);
-      return node.id !== draggingNode.id && getNestedTreeNodeById(node.id, draggingNode) == null;
+      return node.id !== draggingNode.id && getNestedTreeNodeById(node.id, draggingNode) == null && canDrop(draggingNode, node, offset, root);
     },
     drop: ({ dispatch, node }, monitor) => {
       dispatch(treeLayerDroppedNode(monitor.getItem() as TreeNode, node, offset));
@@ -221,6 +227,9 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
     DragSource(DRAG_TYPE, {
       beginDrag({ node }: TreeNodeLayerLabelOuterProps) {
         return node;
+      },
+      canDrag({ node }) {
+        return canDrag(node);
       }
     }, (connect, monitor) => ({
       connectDragSource: connect.dragSource(),
@@ -233,22 +242,25 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   type TreeNodeLayerInnerProps = {
   } & TTreeLayerOuterProps & any;
 
-  const BaseTreeNodeLayerComponent = ({ isRoot, hoveringNodeIds, selectedNodeIds, node, depth, dispatch, ...rest }: TreeNodeLayerInnerProps) => {
+  const BaseTreeNodeLayerComponent = ({ hoveringNodeIds, selectedNodeIds, node, depth, dispatch, root, ...rest }: TreeNodeLayerInnerProps) => {
 
     const selected = selectedNodeIds.indexOf(node.id) !== -1;
     const hovering = hoveringNodeIds.indexOf(node.id) !== -1;
     const expanded = getAttribute(node, expandAttr.name, expandAttr.namespace);
     const editingLabel = getAttribute(node, editingLabelAttr.name, editingLabelAttr.namespace);
+    if (!root) {
+      root = node;
+    }
 
     return <div className="m-tree-node-layer">
-      { isRoot || !reorganizable ? null : <InsertBeforeComponent node={node} depth={depth} dispatch={dispatch} /> }
-      <TreeNodeLayerLabelComponent editingLabel={editingLabel} node={node} selected={selected} hovering={hovering} dispatch={dispatch} depth={depth} expanded={expanded} {...rest} />
+      { !reorganizable ? null : <InsertBeforeComponent node={node} depth={depth} root={root} dispatch={dispatch} /> }
+      <TreeNodeLayerLabelComponent root={root} editingLabel={editingLabel} node={node} selected={selected} hovering={hovering} dispatch={dispatch} depth={depth} expanded={expanded} {...rest} />
       <div className="children">
         {
-          !node.children.length || expanded ? renderChildren({ isRoot, hoveringNodeIds, selectedNodeIds, node, depth, dispatch, ...rest }) : null
+          !node.children.length || expanded ? renderChildren({ hoveringNodeIds, selectedNodeIds, node, depth, dispatch, root: root || node, ...rest }) : null
         }
       </div>
-      { isRoot || !reorganizable ? null : <InsertAfterComponent node={node} depth={depth} dispatch={dispatch}  /> }
+      { !reorganizable ? null : <InsertAfterComponent node={node} root={root} depth={depth} dispatch={dispatch}  /> }
     </div>;
   };
 
@@ -260,8 +272,7 @@ export const createTreeLayerComponents = <TTreeLayerOuterProps extends TreeNodeL
   renderChildren = childRenderer(TreeNodeLayerComponent);
 
   const RootNodeLayerComponent = compose<TreeNodeLayerInnerProps, TTreeLayerOuterProps>(
-    pure,
-    withProps({ isRoot: true })
+    pure
   )(BaseTreeNodeLayerComponent);
 
   return { RootNodeLayerComponent, TreeNodeLayerComponent};
