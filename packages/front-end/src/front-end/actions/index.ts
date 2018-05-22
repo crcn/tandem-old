@@ -1,9 +1,9 @@
 import { Action } from "redux";
 import * as React from "react";
-import { Directory, Point, Bounds, Struct, StructReference, TreeNode } from "../../common";
+import { Directory, Point, Bounds, Struct, StructReference, TreeNode, TreeMoveOffset } from "../../common";
 import { publicActionCreator } from "tandem-common";
 import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap, SyntheticNode } from "../../paperclip";
-import { TreeNodeClip } from "..";
+import { TreeNodeClip, RegisteredComponent } from "..";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -32,9 +32,11 @@ export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
 export const OPEN_FILE_ITEM_CLOSE_CLICKED = "OPEN_FILE_ITEM_CLOSE_CLICKED";
 export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
 export const CANVAS_MOUSE_MOVED = "CANVAS_MOUSE_MOVED";
+export const CANVAS_DRAGGED_OVER = "CANVAS_DRAGGED_OVER";
 export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
 export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
+export const CANVAS_DROPPED_REGISTERED_COMPONENT = "CANVAS_DROPPED_REGISTERED_COMPONENT";
 export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
 export const RESIZER_PATH_MOUSE_STOPPED_MOVING = "RESIZER_PATH_MOUSE_STOPPED_MOVING";
 export const RESIZER_MOVED               = "RESIZER_MOVED";
@@ -42,11 +44,7 @@ export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
 export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
 export const RESIZER_START_DRGG          = "RESIZER_START_DRGG";
 export const SELECTOR_DOUBLE_CLICKED  = "SELECTOR_DOUBLE_CLICKED";
-export const SHORTCUT_A_KEY_DOWN = "SHORTCUT_A_KEY_DOWN";
-export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
-export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
 export const SHORTCUT_ZOOM_IN_KEY_DOWN = "SHORTCUT_ZOOM_IN_KEY_DOWN";
-export const SHORTCUT_GROUP_KEY_DOWN = "SHORTCUT_GROUP_KEY_DOWN";
 export const SHORTCUT_ZOOM_OUT_KEY_DOWN = "SHORTCUT_ZOOM_OUT_KEY_DOWN";
 export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
 export const SHORTCUT_SAVE_KEY_DOWN = "SHORTCUT_SAVE_KEY_DOWN";
@@ -54,6 +52,9 @@ export const SHORTCUT_QUICK_SEARCH_KEY_DOWN = "SHORTCUT_QUICK_SEARCH_KEY_DOWN";
 export const SHORTCUT_DELETE_KEY_DOWN = "SHORTCUT_DELETE_KEY_DOWN";
 export const SHORTCUT_UNDO_KEY_DOWN = "SHORTCUT_UNDO_KEY_DOWN";
 export const SHORTCUT_REDO_KEY_DOWN = "SHORTCUT_REDO_KEY_DOWN";
+export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
+export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
+export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN = "SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 export const APP_LOADED = "APP_LOADED";
@@ -273,7 +274,7 @@ export type SavedAllFiles = {
 
 export type InsertToolFinished = {
   fileUri: string;
-  bounds: Bounds;
+  point: Point;
 } & Action;
 
 export type SyntheticNodesPasted = {
@@ -291,11 +292,17 @@ export type FileNavigatorNewFileEntered = {
 export type FileNavigatorDroppedItem = {
   node: TreeNode;
   targetNode: TreeNode;
-  offset: 0 | -1 | 1;
+  offset: TreeMoveOffset;
 } & Action;
 
 export type EditorTabClicked = {
   uri: string;
+} & Action;
+
+export type CanvasDroppedRegisteredComponent = {
+  editorUri: string;
+  item: RegisteredComponent;
+  point: Point;
 } & Action;
 
 export const fileNavigatorDroppedItem = (node: TreeNode, targetNode: TreeNode, offset: 0 | -1 | 1): FileNavigatorDroppedItem => ({
@@ -560,6 +567,11 @@ export const canvasMouseMoved = (sourceEvent: React.MouseEvent<any>): WrappedEve
   type: CANVAS_MOUSE_MOVED,
 });
 
+export const canvasDraggedOver = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
+  sourceEvent,
+  type: CANVAS_DRAGGED_OVER,
+});
+
 export const canvasMouseClicked = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
   sourceEvent,
   type: CANVAS_MOUSE_CLICKED,
@@ -575,13 +587,19 @@ export const canvasWheel = (canvasWidth: number, canvasHeight: number, { metaKey
   type: CANVAS_WHEEL,
 });
 
+export const canvasDroppedRegisteredComponent = (item: RegisteredComponent, point: Point, editorUri: string): CanvasDroppedRegisteredComponent => ({
+  editorUri,
+  item,
+  point,
+  type: CANVAS_DROPPED_REGISTERED_COMPONENT
+});
 
 export const canvasMotionRested = () => ({
   type: CANVAS_MOTION_RESTED
 });
 
-export const insertToolFinished = (bounds: Bounds, fileUri: string): InsertToolFinished => ({
-  bounds,
+export const insertToolFinished = (point: Point, fileUri: string): InsertToolFinished => ({
+  point,
   fileUri,
   type: INSERT_TOOL_FINISHED
 });

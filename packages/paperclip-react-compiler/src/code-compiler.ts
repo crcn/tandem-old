@@ -1,7 +1,7 @@
-import { DependencyGraph, Dependency, getModuleInfo, Component, Module, TreeNode, PCSourceAttributeNames,  } from "tandem-front-end";
+import { DependencyGraph, Dependency, getModuleInfo, Component, Module, TreeNode, PCSourceAttributeNames, TreeNodeAttributes, DEFAULT_NAMESPACE } from "tandem-front-end";
 import { getAttribute, getTreeNodePath } from "tandem-front-end/lib/common/state/tree";
 import { parseStyle, xmlToTreeNode } from "tandem-front-end/lib/common/utils";
-import { camelCase } from "lodash";
+import { camelCase, merge } from "lodash";
 
 
 type CompileContext = {
@@ -61,7 +61,11 @@ const compileComponent = (context: CompileContext) => {
   const componentName = getNodeClassName(context.currentComponent.source, context);
   const id = context.currentComponent.id;
   let buffer = `function __${id} (props) {`;
-  buffer += `return (` + compileElement(context.currentComponent.template, true, context) + `);`;
+  buffer += `return (` + compileElement(context.currentComponent.template, {
+    [DEFAULT_NAMESPACE]: {
+      style: getAttribute(context.currentComponent.source, "style")
+    }
+  }, true, context) + `);`;
   buffer += `}\n`;
 
   buffer += `exports.__${id} = __${id};`;
@@ -73,7 +77,14 @@ const compileComponent = (context: CompileContext) => {
   return buffer;
 };
 
-const compileElement = (node: TreeNode, isRoot: boolean,context: CompileContext) => {
+
+
+const compileElement = (node: TreeNode, attributes: TreeNodeAttributes, isRoot: boolean, context: CompileContext) => {
+
+  node = {
+    ...node,
+    attributes: merge({}, node.attributes, attributes)
+  };
 
   if (node.name === "text" && node.namespace == null) {
     return `'${getAttribute(node, "value")}'`;
@@ -99,7 +110,7 @@ const compileElementAttributes = (node: TreeNode, isRoot: boolean, context: Comp
   for (const child of node.children) {
     const slotName = getAttribute(child, PCSourceAttributeNames.SLOT);
     if (slotName) {
-      buffer += `${slotName}: ${compileElement(child, false, context)},`
+      buffer += `${slotName}: ${compileElement(child, {}, false, context)},`
     }
   }
 
@@ -134,7 +145,7 @@ const compileElementChildren = (node: TreeNode, context: CompileContext) => {
   const internalContainerName = getAttribute(node, PCSourceAttributeNames.CONTAINER);
   const publicContainerName = getNodeVarName(node, context);
 
-  const base = "[" + node.children.map(child => getAttribute(child, PCSourceAttributeNames.SLOT) ? null : compileElement(child, false, context)).filter(Boolean).join(",") + "]";
+  const base = "[" + node.children.map(child => getAttribute(child, PCSourceAttributeNames.SLOT) ? null : compileElement(child, {}, false, context)).filter(Boolean).join(",") + "]";
 
   if (internalContainerName) {
     return `props.${publicContainerName}Children || props.${internalContainerName} || ${base}`;

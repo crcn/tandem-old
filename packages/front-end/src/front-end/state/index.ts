@@ -1,5 +1,5 @@
 import { arraySplice, Directory, memoize, EMPTY_ARRAY, StructReference, Point, Translate, Bounds, pointIntersectsBounds, getSmallestBounds, mergeBounds, Bounded, Struct, getTreeNodeIdMap, getNestedTreeNodeById, boundsFromRect, getFileFromUri, stringifyTreeNodeToXML, File, setNodeAttribute, updateNestedNode, FileAttributeNames, isDirectory, getParentTreeNode, TreeNode, addTreeNodeIds, stripTreeNodeIds, getBoundsSize, centerTransformZoom, createZeroBounds, getTreeNodeHeight, flattenTreeNode, shiftBounds, shiftPoint, flipPoint, moveBounds } from "../../common";
-import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE, isSyntheticDocumentRoot } from "../../paperclip";
+import { SyntheticBrowser, updateSyntheticBrowser, SyntheticWindow, updateSyntheticWindow, SyntheticDocument, getSyntheticWindow, SyntheticObjectType, getSyntheticWindowDependency, getComponentInfo, getSyntheticDocumentById, getSyntheticNodeDocument, getSyntheticNodeBounds, updateSyntheticItemPosition, updateSyntheticItemBounds, getSyntheticDocumentWindow, getModifiedDependencies, Dependency, SyntheticNode, setSyntheticNodeExpanded, getSyntheticNodeById, replaceDependency, createSyntheticWindow, evaluateDependencyEntry, createSyntheticDocument, getSyntheticOriginSourceNode, getSyntheticOriginSourceNodeUri, findSourceSyntheticNode, EDITOR_NAMESPACE, isSyntheticDocumentRoot, getNodeStyle, isNodeMovable, isNodeResizable } from "../../paperclip";
 import { CanvasToolOverlayMouseMoved, CanvasToolOverlayClicked, dependencyEntryLoaded } from "../actions";
 import { uniq, pull } from "lodash";
 import { stat } from "fs";
@@ -8,6 +8,14 @@ export enum ToolType {
   TEXT,
   RECTANGLE,
   ARTBOARD
+};
+
+export const REGISTERED_COMPONENT = "REGISTERED_COMPONENT";
+
+export type RegisteredComponent = {
+  uri?: string;
+  tagName: string;
+  template: TreeNode;
 };
 
 export type Canvas = {
@@ -174,7 +182,7 @@ export const getSnapGuides = memoize((bounds: Bounds, selectedNodeIds: string[],
 
   bounds = shiftBounds(bounds, flipPoint(document.bounds));
 
-  if (isSyntheticDocumentRoot(selectedNodeIds[0], browser)) {
+  if (isSyntheticDocumentRoot(getSyntheticNodeById(selectedNodeIds[0], browser))) {
     const window = getSyntheticDocumentWindow(document.id, browser);
     alignableBounds = window.documents.map(document => selectedNodeIds.indexOf(document.root.id) === -1 && document.bounds).filter(Boolean);
   } else {
@@ -687,28 +695,36 @@ export const getAllWindowDocuments = memoize((browser: SyntheticBrowser): Synthe
 
 export const getCanvasTranslate = (canvas: Canvas) => canvas.translate;
 
-export const getScaledMouseCanvasPosition = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked) => {
-  const { sourceEvent: { pageX, pageY, nativeEvent } } = event as CanvasToolOverlayMouseMoved;
+export const getScaledMouseCanvasPosition = (state: RootState, point: Point) => {
   const canvas     = getActiveEditor(state).canvas;
   const translate = getCanvasTranslate(canvas);
 
-  const scaledPageX = ((pageX - translate.left) / translate.zoom);
-  const scaledPageY = ((pageY - translate.top) / translate.zoom);
+  const scaledPageX = ((point.left - translate.left) / translate.zoom);
+  const scaledPageY = ((point.top - translate.top) / translate.zoom);
   return { left: scaledPageX, top: scaledPageY };
 };
 
-export const getCanvasMouseTargetNodeId = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked): string => {
+export const getCanvasMouseTargetNodeId = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked, filter?: (node: TreeNode) => boolean): string => {
+  return getCanvasMouseTargetNodeIdFromPoint(state, {
+    left: event.sourceEvent.pageX,
+    top: event.sourceEvent.pageY,
+  }, filter);
+};
+
+export const getCanvasMouseTargetNodeIdFromPoint = (state: RootState, point: Point, filter?: (node: TreeNode) => boolean): string => {
 
   const canvas     = getActiveEditor(state).canvas;
   const translate = getCanvasTranslate(canvas);
 
-  const documentRootId = getCanvasMouseDocumentRootId(state, event);
+  const scaledMousePos = getScaledMouseCanvasPosition(state, point);
+
+  const documentRootId = getDocumentRootIdFromPoint(scaledMousePos, state);
 
   if (!documentRootId) return null;
 
   const document = getSyntheticNodeDocument(documentRootId, state.browser);
 
-  const {left: scaledPageX, top: scaledPageY } = getScaledMouseCanvasPosition(state, event);
+  const {left: scaledPageX, top: scaledPageY } = scaledMousePos;
 
   const mouseX = scaledPageX - document.bounds.left;
   const mouseY = scaledPageY - document.bounds.top;
@@ -718,7 +734,7 @@ export const getCanvasMouseTargetNodeId = (state: RootState, event: CanvasToolOv
   const intersectingBoundsMap = new Map<Bounds, string>();
   for (const $id in computedInfo) {
     const { bounds } = computedInfo[$id];
-    if (pointIntersectsBounds({ left: mouseX, top: mouseY }, bounds)) {
+    if (pointIntersectsBounds({ left: mouseX, top: mouseY }, bounds) && (!filter || filter(getNestedTreeNodeById($id, document.root)))) {
       intersectingBounds.push(bounds);
       intersectingBoundsMap.set(bounds, $id);
     }
@@ -730,7 +746,10 @@ export const getCanvasMouseTargetNodeId = (state: RootState, event: CanvasToolOv
 };
 
 export const getCanvasMouseDocumentRootId = (state: RootState, event: CanvasToolOverlayMouseMoved|CanvasToolOverlayClicked) => {
-  return getDocumentRootIdFromPoint(getScaledMouseCanvasPosition(state, event), state);
+  return getDocumentRootIdFromPoint(getScaledMouseCanvasPosition(state, {
+    left: event.sourceEvent.pageX,
+    top: event.sourceEvent.pageY,
+  }), state);
 }
 
 export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
@@ -806,5 +825,19 @@ export const updateRootSyntheticBounds = (bounds: Bounds, nodeId: string, root: 
 
 export const getBoundedSelection = memoize((root: RootState): string[] => root.selectedNodeIds.filter(nodeId => getSyntheticNodeBounds(nodeId, root.browser)));
 export const getSelectionBounds = memoize((root: RootState) => mergeBounds(...getBoundedSelection(root).map(nodeId => getSyntheticNodeBounds(nodeId, root.browser))));
+
+export const isSelectionMovable = memoize((root: RootState) => {
+  return !root.selectedNodeIds.some((nodeId) => {
+    const node = getSyntheticNodeById(nodeId, root.browser);
+    return !isNodeMovable(node);
+  });
+});
+
+export const isSelectionResizable = memoize((root: RootState) => {
+  return !root.selectedNodeIds.some((nodeId) => {
+    const node = getSyntheticNodeById(nodeId, root.browser);
+    return !isNodeResizable(node);
+  });
+});
 
 

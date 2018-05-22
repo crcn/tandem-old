@@ -13,10 +13,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 55,
-            "top": 51,
-            "right": 444,
-            "bottom": 371
+            "left": 34,
+            "top": 36,
+            "right": 423,
+            "bottom": 356
           }
         }
       },
@@ -166,6 +166,15 @@
                         }
                       },
                       "children": []
+                    },
+                    {
+                      "name": "rectangle",
+                      "attributes": {
+                        "undefined": {
+                          "ref": "a74d1d960"
+                        }
+                      },
+                      "children": []
                     }
                   ]
                 }
@@ -205,8 +214,7 @@
                 "undefined": {
                   "style": {
                     "width": "100%",
-                    "background": "rgba(0,0,0,0.05)",
-                    "position": "relative",
+                    "background": "#CCC",
                     "left": 0,
                     "top": 0,
                     "color": "#888",
@@ -287,6 +295,48 @@
                 },
                 "editor": {
                   "label": "Rectangle"
+                }
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rectangle",
+      "attributes": {
+        "undefined": {
+          "style": {
+            "left": 500.93569110636815,
+            "top": 307.6307423450865,
+            "width": 100,
+            "height": 100
+          },
+          "ref": "392988350"
+        }
+      },
+      "children": [
+        {
+          "name": "rectangle",
+          "attributes": {
+            "undefined": {
+              "ref": "abfc1c20",
+              "style": {
+                "padding": "10px",
+                "background": "red",
+                "color": "white",
+                "fontFamily": "Helvetica"
+              }
+            }
+          },
+          "children": [
+            {
+              "name": "text",
+              "attributes": {
+                "undefined": {
+                  "vaule": "edit me",
+                  "ref": "ddc0779e0"
                 }
               },
               "children": []

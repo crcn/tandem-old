@@ -1,6 +1,21 @@
 import React =  require("react");
 import ReactDOM = require("react-dom");
+import * as PropTypes from "prop-types";
 import { bubbleHTMLIframeEvents, Point } from "../../../common";
+
+class IsolateContent extends React.Component<{ children: any, dragDropManager: any }, any> {
+  static childContextTypes = {
+    dragDropManager: PropTypes.object.isRequired,
+  };
+  getChildContext() {
+    return {
+      dragDropManager: this.props.dragDropManager
+    };
+  }
+  render() {
+    return this.props.children;
+  }
+}
 
 export class Isolate extends React.Component<{
   inheritCSS?: boolean,
@@ -20,13 +35,19 @@ export class Isolate extends React.Component<{
   onDrop?: any
 }, any> {
 
+  static contextTypes = {
+    dragDropManager: PropTypes.object.isRequired,
+  }
+
   private _mountElement: any;
+  private _iframe: HTMLIFrameElement;
 
   componentDidMount() {
-
     if (window["$synthetic"]) {
       return;
     }
+
+    this.context.dragDropManager.getBackend().addEventListeners(this.window);
 
     if (this.props.inheritCSS) {
       const head    = this.head;
@@ -56,6 +77,10 @@ export class Isolate extends React.Component<{
     this._addListeners();
   }
 
+  componentWillUnmount() {
+    this.context.dragDropManager.getBackend().removeEventListeners(this.window);
+  }
+
   componentDidUpdate() {
     this._render();
     const scrollPosition = this.props.scrollPosition as Point;
@@ -68,7 +93,7 @@ export class Isolate extends React.Component<{
   }
 
   get window(): Window {
-    return (this.refs as any).container && (this.refs as any).container.contentWindow;
+    return this._iframe && this._iframe.contentWindow;
   }
 
   get head() {
@@ -79,10 +104,6 @@ export class Isolate extends React.Component<{
     return this.window.document.body;
   }
 
-  get container() {
-    return (this.refs as any).container;
-  }
-
   onLoad = () => {
     if (this.props.onLoad) this.props.onLoad();
   }
@@ -90,12 +111,15 @@ export class Isolate extends React.Component<{
   _render() {
     if (window["$synthetic"]) return;
     if (this.props.children && this._mountElement) {
-      ReactDOM.render(this.props.children, this._mountElement);
+      ReactDOM.render(React.createElement(IsolateContent, {
+        children: this.props.children,
+        dragDropManager: this.context.dragDropManager
+      }), this._mountElement);
     }
   }
 
   _addListeners() {
-    bubbleHTMLIframeEvents((this.refs as any).container, {
+    bubbleHTMLIframeEvents(this._iframe, {
       ignoreInputEvents: this.props.ignoreInputEvents,
       translateMousePositions: this.props.translateMousePositions
     });
@@ -108,10 +132,14 @@ export class Isolate extends React.Component<{
   onScroll = (event) => {
     if (this.props.onScroll) this.props.onScroll(event);
     if (this.props.scrolling === false) {
-      const db = (this.refs as any).container.contentDocument;
+      const db = this._iframe.contentDocument;
       db.body.scrollLeft = db.body.scrollTop = 0;
     }
   }
+
+  setIframe = (iframe: HTMLIFrameElement) => {
+    this._iframe = iframe;
+  };
 
   render() {
 
@@ -120,6 +148,6 @@ export class Isolate extends React.Component<{
       return <span>{this.props.children}</span>;
     }
 
-    return <iframe ref="container" onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.onWheel} onScroll={this.onScroll} onLoad={this.onLoad} className={this.props.className} style={this.props.style} />;
+    return <iframe ref={this.setIframe} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.onWheel} onScroll={this.onScroll} onLoad={this.onLoad} className={this.props.className} style={this.props.style} />;
   }
 }

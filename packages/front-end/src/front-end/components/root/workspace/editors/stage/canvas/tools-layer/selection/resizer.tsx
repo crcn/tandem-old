@@ -2,7 +2,7 @@ import "./resizer.scss";
 import React =  require("react");
 import { debounce } from "lodash";
 import { pure, compose, withHandlers } from "recompose";
-import { RootState, Editor, getBoundedSelection, getSelectionBounds } from "../../../../../../../../state";
+import { RootState, Editor, getBoundedSelection, getSelectionBounds, isSelectionMovable, isSelectionResizable } from "../../../../../../../../state";
 import { resizerMoved, resizerStoppedMoving, resizerMouseDown, resizerStartDrag } from "../../../../../../../../actions";
 import { startDOMDrag, mergeBounds, moveBounds, Point } from "../../../../../../../../../common";
 import { Dispatch } from "redux";
@@ -38,16 +38,25 @@ export const ResizerBase = ({ root, dispatch, onMouseDown, zoom }: ResizerInnerP
     transformOrigin: "top left"
   };
 
-  const points = [
-    { left: 0, top: 0 },
-    { left: .5, top: 0 },
-    { left: 1, top: 0 },
-    { left: 1, top: .5 },
-    { left: 1, top: 1 },
-    { left: .5, top: 1 },
-    { left: 0, top: 1 },
-    { left: 0, top: 0.5 },
-  ];
+  const points = [];
+
+  if (isSelectionMovable(root)) {
+    points.push(
+      { left: 0, top: 0 },
+      { left: 1, top: 0 },
+      { left: .5, top: 0 },
+      { left: 0, top: 0.5 },
+      { left: 0, top: 1 }
+    );
+  }
+
+  if (isSelectionResizable(root)) {
+    points.push(
+      { left: 1, top: .5 },
+      { left: 1, top: 1 },
+      { left: .5, top: 1 }
+    );
+  }
 
   return <div className="m-resizer-component" tabIndex={-1}>
     <div
@@ -72,6 +81,7 @@ const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   pure,
   withHandlers({
     onMouseDown: ({ dispatch, root, editor }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
+
 
       dispatch(resizerMouseDown(event));
 

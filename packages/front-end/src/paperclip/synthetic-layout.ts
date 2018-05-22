@@ -40,17 +40,16 @@ const measurementToPx = (measurment: string, axis: Axis, node: SyntheticNode, do
 export const getFixedSyntheticNodeStaticPosition = memoize((node: SyntheticNode, document: SyntheticDocument): Point => {
 
   const position = getAttribute(node, "position");
-
-  if (position === "absolute") {
-    const relativeParent = getRelativeParent(node, document);
-    return document.computed[relativeParent.id].bounds;
-  }
-
-  if (position === "fixed") {
+  if (position === "fixed" || document.root.id === node.id) {
     return {
       left: 0,
       top: 0
     };
+  }
+
+  if (position === "absolute") {
+    const relativeParent = getRelativeParent(node, document);
+    return document.computed[relativeParent.id].bounds;
   }
 
   return {

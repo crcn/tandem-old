@@ -1,0 +1,57 @@
+{
+  "name": "module",
+  "attributes": {},
+  "children": [
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component1",
+          "label": "Background",
+          "style": {
+            "background": "red"
+          }
+        },
+        "editor": {
+          "bounds": {
+            "left": -689,
+            "top": -102,
+            "right": -139.01670681419637,
+            "bottom": 249.8960901315947
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "component",
+      "attributes": {
+        "undefined": {
+          "id": "component2",
+          "label": "Background alt"
+        },
+        "editor": {
+          "bounds": {
+            "left": -22,
+            "top": -93,
+            "right": 560.6094207476733,
+            "bottom": 254.23521476561325
+          }
+        }
+      },
+      "children": [
+        {
+          "name": "template",
+          "attributes": {},
+          "children": []
+        }
+      ]
+    }
+  ]
+}

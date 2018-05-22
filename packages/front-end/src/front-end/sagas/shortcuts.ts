@@ -1,7 +1,7 @@
 import { fork, put, take, call, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { mapKeys } from "lodash";
-import { shortcutKeyDown, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN } from "../actions";
+import { shortcutKeyDown, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN } from "../actions";
 
 export function* shortcutSaga() {
   // yield fork(mapHotkeys({

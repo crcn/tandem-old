@@ -55,9 +55,13 @@ export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: { tra
   const eventTypes = [
     "keypress",
     "copy",
-    "dragenter",
-    "dragexit",
-    "drop",
+
+    // these bust react-dnd, so don't use them
+    // "dragenter",
+    // "dragexit",
+    // "dragend",
+    // "dragover",
+    // "drop",
     "paste",
     "mousemove",
     "mousedown",

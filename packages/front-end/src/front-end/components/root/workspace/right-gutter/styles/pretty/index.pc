@@ -38,10 +38,13 @@
               "attributes": {
                 "undefined": {
                   "style": {
-                    "left": 20,
+                    "left": 0,
                     "right": 420,
-                    "top": 20,
-                    "bottom": 420
+                    "top": 0,
+                    "bottom": 420,
+                    "position": "relative",
+                    "width": 278,
+                    "height": 71
                   },
                   "ref": "bbab45f1"
                 }
@@ -53,6 +56,8 @@
               "attributes": {
                 "undefined": {
                   "style": {
+                    "flex": 1,
+                    "display": "flex",
                     "left": 20,
                     "right": 420,
                     "top": 20,
@@ -68,10 +73,8 @@
               "attributes": {
                 "undefined": {
                   "style": {
-                    "left": 20,
-                    "right": 420,
-                    "top": 20,
-                    "bottom": 420
+                    "flex": 1,
+                    "display": "flex"
                   },
                   "ref": "aea56cf90"
                 }
@@ -151,92 +154,125 @@
                   "children": []
                 },
                 {
-                  "name": "component11",
-                  "attributes": {
-                    "undefined": {
-                      "style": {},
-                      "ref": "7bde253e0",
-                      "slot": "container24fdd32c"
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "component11",
+                  "name": "component12",
                   "attributes": {
                     "undefined": {
                       "style": {
-                        "display": "flex",
-                        "padding": "6px",
-                        "paddingTop": "0px",
-                        "boxSizing": "border-box"
+                        "width": "100%"
                       },
-                      "ref": "7bde253e0",
+                      "ref": "33e3c7100",
                       "slot": "container24fdd32c"
+                    },
+                    "editor": {
+                      "bounds": {
+                        "left": 20,
+                        "top": 20,
+                        "right": 342.51156761356265,
+                        "bottom": 420
+                      }
                     }
                   },
                   "children": [
                     {
-                      "name": "component10",
+                      "name": "text",
                       "attributes": {
                         "undefined": {
                           "style": {
-                            "display": "inline-flex",
-                            "fontFamily": "Helvetica",
-                            "width": "100%"
+                            "left": -57.09375,
+                            "top": 10.984375,
+                            "display": "inline-block",
+                            "width": 47.25,
+                            "height": 18
                           },
-                          "ref": "5c2247b40",
-                          "slot": "containerb1df80ad"
+                          "value": "Family",
+                          "label": "Text",
+                          "ref": "e513e7890",
+                          "slot": "container537b351e"
                         }
                       },
-                      "children": [
-                        {
-                          "name": "text",
-                          "attributes": {
-                            "undefined": {
-                              "style": {},
-                              "value": "",
-                              "label": "Text",
-                              "ref": "60c9f6010",
-                              "slot": "containere54e7345",
-                              "container": null,
-                              "container-keep": "container8a58cb7"
-                            }
-                          },
-                          "children": []
-                        }
-                      ]
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "component12",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "width": "100%"
+                      },
+                      "ref": "33e3c7100",
+                      "slot": "container24fdd32c"
                     },
+                    "editor": {
+                      "bounds": {
+                        "left": 20,
+                        "top": 20,
+                        "right": 342.51156761356265,
+                        "bottom": 420
+                      }
+                    }
+                  },
+                  "children": [
                     {
-                      "name": "component10",
+                      "name": "text",
                       "attributes": {
                         "undefined": {
                           "style": {
-                            "display": "inline-flex",
-                            "fontFamily": "Helvetica",
-                            "width": "100%"
+                            "left": -57.09375,
+                            "top": 10.984375,
+                            "display": "inline-block",
+                            "width": 47.25,
+                            "height": 18
                           },
-                          "ref": "5c2247b40",
-                          "slot": "containerb1df80ad"
+                          "value": "Weight",
+                          "label": "Text",
+                          "ref": "e513e7890",
+                          "slot": "container537b351e"
                         }
                       },
-                      "children": [
-                        {
-                          "name": "text",
-                          "attributes": {
-                            "undefined": {
-                              "style": {},
-                              "value": "font",
-                              "label": "Text",
-                              "ref": "60c9f6010",
-                              "slot": "containere54e7345",
-                              "container": null,
-                              "container-keep": "container8a58cb7"
-                            }
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "component12",
+                  "attributes": {
+                    "undefined": {
+                      "style": {
+                        "width": "100%"
+                      },
+                      "ref": "33e3c7100",
+                      "slot": "container24fdd32c"
+                    },
+                    "editor": {
+                      "bounds": {
+                        "left": 20,
+                        "top": 20,
+                        "right": 342.51156761356265,
+                        "bottom": 420
+                      }
+                    }
+                  },
+                  "children": [
+                    {
+                      "name": "text",
+                      "attributes": {
+                        "undefined": {
+                          "style": {
+                            "left": -57.09375,
+                            "top": 10.984375,
+                            "display": "inline-block",
+                            "width": 47.25,
+                            "height": 18
                           },
-                          "children": []
+                          "value": "Size",
+                          "label": "Text",
+                          "ref": "e513e7890",
+                          "slot": "container537b351e"
                         }
-                      ]
+                      },
+                      "children": []
                     }
                   ]
                 }
@@ -665,30 +701,6 @@
       ]
     },
     {
-      "name": "component",
-      "attributes": {
-        "undefined": {
-          "id": "component9",
-          "label": "Color Input"
-        },
-        "editor": {
-          "bounds": {
-            "left": -447,
-            "right": -241,
-            "top": 434,
-            "bottom": 616
-          }
-        }
-      },
-      "children": [
-        {
-          "name": "template",
-          "attributes": {},
-          "children": []
-        }
-      ]
-    },
-    {
       "name": "component1",
       "namespace": "import0",
       "attributes": {
@@ -724,10 +736,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 699,
-            "top": 54,
-            "right": 908.6636113360464,
-            "bottom": 111.05130620176203
+            "left": 701,
+            "top": 68,
+            "right": 910.6636113360464,
+            "bottom": 125.05130620176203
           }
         }
       },
@@ -817,9 +829,9 @@
         "editor": {
           "bounds": {
             "left": 705,
-            "top": 198,
+            "top": 179,
             "right": 1047.0881269426668,
-            "bottom": 227.84595335092604
+            "bottom": 208.84595335092604
           }
         }
       },
@@ -895,10 +907,10 @@
         },
         "editor": {
           "bounds": {
-            "left": -464,
-            "right": -184.05905203759994,
-            "top": 647,
-            "bottom": 758.2265373600608
+            "left": -458,
+            "right": -178.05905203759994,
+            "top": 262,
+            "bottom": 373.2265373600608
           }
         }
       },
@@ -919,53 +931,40 @@
                 }
               },
               "children": []
+            },
+            {
+              "name": "rectangle",
+              "attributes": {
+                "undefined": {
+                  "style": {
+                    "width": "100%",
+                    "background": "#Ccc",
+                    "fontFamily": "helvetica",
+                    "padding": "10px",
+                    "boxSizing": "border-box"
+                  },
+                  "label": "Rectangle",
+                  "native-type": "div",
+                  "ref": "95c1f4e20",
+                  "container": "container537b351e"
+                }
+              },
+              "children": [
+                {
+                  "name": "text",
+                  "attributes": {
+                    "undefined": {
+                      "style": {},
+                      "value": "Label",
+                      "label": "Text",
+                      "ref": "e03f18c10"
+                    }
+                  },
+                  "children": []
+                }
+              ]
             }
           ]
-        }
-      ]
-    },
-    {
-      "name": "component12",
-      "attributes": {
-        "undefined": {
-          "style": {
-            "left": 20,
-            "right": 420,
-            "top": 20,
-            "bottom": 420
-          }
-        },
-        "editor": {
-          "bounds": {
-            "left": -459,
-            "top": 806,
-            "right": -174.2549112373424,
-            "bottom": 958.7258267998836
-          }
-        }
-      },
-      "children": [
-        {
-          "name": "rectangle",
-          "attributes": {
-            "undefined": {
-              "style": {
-                "left": 0,
-                "right": 184.89547918635498,
-                "top": 0,
-                "bottom": 88.37643181436374,
-                "width": 134.078125,
-                "height": 53.625,
-                "background": "#CCC",
-                "position": "absolute"
-              },
-              "label": "Rectangle",
-              "native-type": "div",
-              "ref": "5fdddfb30",
-              "slot": "container2bd05e8d"
-            }
-          },
-          "children": []
         }
       ]
     }

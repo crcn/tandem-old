@@ -78,6 +78,8 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
       nativeElement.appendChild(createNativeNode(childSynthetic, document, map));
     }
   }
+
+  makeElementClickable(nativeElement, synthetic);
   return map[synthetic.id] = nativeElement;
 };
 
@@ -94,16 +96,16 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
 
   for (const transform of transforms) {
     const target = getElementFromPath(transform.path, root);
-    const syntheticTarget = getTreeNodeFromPath(transform.path, newSyntheticTree);
     newSyntheticTree = patchNode([transform], newSyntheticTree);
+    const syntheticTarget = getTreeNodeFromPath(transform.path, newSyntheticTree);
     switch(transform.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
         const { name,  value, namespace } = transform as SetAttributeTransform;
         if (namespace === DEFAULT_NAMESPACE) {
           if (name === "style") {
-            target.setAttribute("style", "");
-            Object.assign(target.style, normalizeStyle(value));
+            resetElementStyle(target, syntheticTarget);
             setStyleConstraintsIfRoot(syntheticTarget, target);
+            makeElementClickable(target, syntheticTarget);
           } else if (name === "value" && syntheticTarget.name === "text") {
             target.childNodes[0].nodeValue = value;
           } else if (name === PCSourceAttributeNames.NATIVE_TYPE) {
@@ -125,6 +127,7 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
             newMap = {...map};
           }
           const nativeChild = createNativeNode(child, root.ownerDocument, newMap);
+          removeClickableStyle(target, syntheticTarget);
           insertChild(target, nativeChild, index);
         }
         break;
@@ -148,6 +151,54 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
   }
   return newMap;
 }
+
+const makeElementClickable = (target: HTMLElement, synthetic: TreeNode) => {
+  const isRoot = getAttribute(synthetic, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE);
+  if (synthetic.name !== "text" && !isRoot) {
+    const style = getAttribute(synthetic, "style") || {};
+    if (target.childNodes.length === 0 && Object.keys(style).length === 0) {
+      target.dataset.empty = "1";
+      Object.assign(target.style, {
+        width: `100%`,
+        height: `50px`,
+        minWidth: `50px`,
+        border: `2px dashed rgba(0,0,0,0.05)`,
+        boxSizing: `border-box`,
+        borderRadius: `2px`,
+        position: `relative`
+      });
+
+      const placeholder = document.createElement("div");
+      Object.assign(placeholder.style, {
+        left: `50%`,
+        top: `50%`,
+        position: `absolute`,
+        transform: `translate(-50%, -50%)`,
+        color: `rgba(0,0,0,0.05)`,
+        fontFamily: "Helvetica"
+      });
+
+      placeholder.textContent = `Empty element`;
+
+      target.appendChild(placeholder);
+    }
+  }
+};
+
+const resetElementStyle = (target: HTMLElement, synthetic: TreeNode) => {
+  removeClickableStyle(target, synthetic);
+  const style = getAttribute(synthetic, "style") || {};
+  target.setAttribute("style", "");
+  Object.assign(target.style, normalizeStyle(style));
+};
+
+const removeClickableStyle = (target: HTMLElement,  synthetic: TreeNode) => {
+  if (target.dataset.empty === "1") {
+    target.dataset.empty = null;
+    target.innerHTML = ``;
+    resetElementStyle(target, synthetic);
+  }
+};
 
 const insertChild = (target: Node, child: Node, index: number) => {
 

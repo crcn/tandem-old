@@ -2,12 +2,18 @@ import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { compose, pure, withState, withHandlers } from "recompose";
-import { RootState, Editor, ToolType } from "../../../../../../state";
+import { RootState, Editor, ToolType, REGISTERED_COMPONENT, RegisteredComponent } from "../../../../../../state";
 import { SyntheticWindow, Dependency, getSyntheticWindow } from "../../../../../../../paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
 import { ToolsLayerComponent } from "./tools-layer";
 import { Isolate } from "../../../../../isolated";
-import { canvasWheel, canvasContainerMounted, canvasMouseMoved, canvasMouseClicked, canvasMotionRested } from "../../../../../../actions";
+import { canvasWheel, canvasContainerMounted, canvasMouseMoved, canvasMouseClicked, canvasMotionRested, canvasDroppedRegisteredComponent, canvasDraggedOver } from "../../../../../../actions";
+import {
+  DropTarget,
+  DropTargetCollector,
+  DragDropContextProvider,
+  DropTargetMonitor
+} from "react-dnd";
 
 export type CanvasOuterProps = {
   root: RootState;
@@ -18,6 +24,7 @@ export type CanvasOuterProps = {
 
 export type CanvasInnerProps = {
   canvasOuter: HTMLElement;
+  connectDropTarget:any;
   onWheel: (event: React.SyntheticEvent<MouseEvent>) => any;
   shouldTransitionZoom: boolean;
   canvasContainer: HTMLElement;
@@ -46,6 +53,7 @@ const BaseCanvasComponent = ({
   shouldTransitionZoom,
   onDragOver,
   onMouseClick,
+  connectDropTarget,
   onMotionRest,
   onDragExit
 }: CanvasInnerProps) => {
@@ -54,6 +62,8 @@ const BaseCanvasComponent = ({
   const translate = editor.canvas.translate;
 
   return <div className="m-canvas" ref={setCanvasContainer}>
+
+  {/* isolate necessary here for bounding client rect information */}
     <Isolate
     inheritCSS
     ignoreInputEvents
@@ -61,30 +71,30 @@ const BaseCanvasComponent = ({
     onWheel={onWheel}
     scrolling={false}
     translateMousePositions={false}>
-      <span>
-        <style>
-          {
-            `html, body {
-              overflow: hidden;
-            }`
-          }
-        </style>
+        <span>
+          <style>
+            {
+              `html, body {
+                overflow: hidden;
+              }`
+            }
+          </style>
 
-        <div
-          ref={setCanvasOuter}
-          onMouseMove={onMouseEvent}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-          onClick={onMouseClick}
-          tabIndex={-1}
-          onDragExit={onDragExit}
-          className="canvas-inner">
-          <div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})`, transformOrigin: "top left" }}>
-            <PreviewLayerComponent window={activeWindow} dependency={dependency} />
-            <ToolsLayerComponent root={root} dispatch={dispatch} zoom={translate.zoom} editor={editor} />
+          <div
+            ref={setCanvasOuter}
+            onMouseMove={onMouseEvent}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            onClick={onMouseClick}
+            tabIndex={-1}
+            onDragExit={onDragExit}
+            className="canvas-inner">
+            {connectDropTarget(<div style={{ transform: `translate(${translate.left}px, ${translate.top}px) scale(${translate.zoom})`, transformOrigin: "top left" }}>
+              <PreviewLayerComponent window={activeWindow} dependency={dependency} />
+              <ToolsLayerComponent root={root} dispatch={dispatch} zoom={translate.zoom} editor={editor} />
+            </div>)}
           </div>
-        </div>
-      </span>
+        </span>
     </Isolate>
   </div>;
 };
@@ -98,7 +108,7 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
       dispatch(canvasMouseMoved(event));
     },
     onDragOver: ({ dispatch }) => (event) => {
-      dispatch(canvasMouseMoved(event));
+      dispatch(canvasDraggedOver(event));
     },
     onMotionRest: ({ dispatch}) => () => {
       dispatch(canvasMotionRested());
@@ -114,6 +124,30 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
       event.preventDefault();
       event.stopPropagation();
       dispatch(canvasWheel(rect.width, rect.height, event));
+    }
+  }),
+  DropTarget(REGISTERED_COMPONENT, {
+    canDrop: ({ root }: CanvasOuterProps, monitor: DropTargetMonitor) => {
+      return true;
+    },
+    drop: ({ root, dispatch, editor }: CanvasOuterProps, monitor: DropTargetMonitor) => {
+      const item = monitor.getItem() as RegisteredComponent;
+      const offset = monitor.getClientOffset();
+      const point = {
+        left: offset.x,
+        top: offset.y
+      };
+
+      dispatch(canvasDroppedRegisteredComponent(item, point, editor.activeFilePath));
+    },
+    hover: () => {
+
+    }
+  }, (connect, monitor) => {
+    return {
+      connectDropTarget: connect.dropTarget(),
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
     }
   })
 );

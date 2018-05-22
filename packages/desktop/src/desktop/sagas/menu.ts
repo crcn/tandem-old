@@ -2,7 +2,7 @@ import {Menu, MenuItem, MenuItemConstructorOptions, app} from "electron";
 import {fork, put, take} from "redux-saga/effects";
 import {eventChannel} from "redux-saga";
 import { APP_READY, MAIN_WINDOW_OPENED } from "../actions";
-import { APP_LOADED, shortcutKeyDown, SHORTCUT_R_KEY_DOWN, SHORTCUT_A_KEY_DOWN, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_T_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, SHORTCUT_SAVE_KEY_DOWN, SHORTCUT_UNDO_KEY_DOWN, SHORTCUT_REDO_KEY_DOWN, SHORTCUT_QUICK_SEARCH_KEY_DOWN, SHORTCUT_ZOOM_IN_KEY_DOWN, SHORTCUT_ZOOM_OUT_KEY_DOWN, SHORTCUT_GROUP_KEY_DOWN } from "tandem-front-end";
+import { APP_LOADED, shortcutKeyDown, SHORTCUT_DELETE_KEY_DOWN, SHORTCUT_ESCAPE_KEY_DOWN, SHORTCUT_SAVE_KEY_DOWN, SHORTCUT_UNDO_KEY_DOWN, SHORTCUT_REDO_KEY_DOWN, SHORTCUT_QUICK_SEARCH_KEY_DOWN, SHORTCUT_ZOOM_IN_KEY_DOWN, SHORTCUT_ZOOM_OUT_KEY_DOWN, SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN, SHORTCUT_R_KEY_DOWN, SHORTCUT_T_KEY_DOWN } from "tandem-front-end";
 
 export function* shortcutsSaga() {
   yield take(MAIN_WINDOW_OPENED);
@@ -10,7 +10,6 @@ export function* shortcutsSaga() {
   const menu = new Menu();
 
   const chan = eventChannel((emit) => {
-
     const tpl: MenuItemConstructorOptions[] = [
       {
         label: app.getName(),
@@ -43,6 +42,13 @@ export function* shortcutsSaga() {
             accelerator: "meta+y",
             click: () => {
               emit(shortcutKeyDown(SHORTCUT_REDO_KEY_DOWN));
+            }
+          },
+          {
+            label: "Convert to component",
+            accelerator: "alt+c",
+            click: () => {
+              emit(shortcutKeyDown(SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN));
             }
           },
           {type: "separator"},
@@ -90,57 +96,22 @@ export function* shortcutsSaga() {
         label: "Insert",
         submenu: [
           {
-            label: "Artboard",
-            accelerator: "a",
-            click: () => {
-              emit(shortcutKeyDown(SHORTCUT_A_KEY_DOWN));
-            }
-          },
-          {
-            label: "Rectangle",
-            accelerator: "r",
-            click: (a, window, event) => {
-              emit(shortcutKeyDown(SHORTCUT_R_KEY_DOWN));
-            }
-          },
-          {
             label: "Text",
             accelerator: "t",
             click: () => {
               emit(shortcutKeyDown(SHORTCUT_T_KEY_DOWN));
             }
+          },
+          {
+            label: "Div",
+            accelerator: "r",
+            click: () => {
+              emit(shortcutKeyDown(SHORTCUT_R_KEY_DOWN));
+            }
           }
         ]
       },
 
-    // for dev
-    {
-      label: 'Arange',
-      submenu: [
-
-        // bring forward
-        // bring to front
-        // send backward
-        // send to back
-        // -------------
-        // align -> left
-        // align -> right
-        // align -> center
-        // align -> --------
-        // align -> top
-        // align -> bottom
-        // align -> vertical
-        // ----------------
-
-        {
-          label: "Group",
-          accelerator: "meta+g",
-          click: (a, window, event) => {
-            emit(shortcutKeyDown(SHORTCUT_GROUP_KEY_DOWN));
-          }
-        }
-      ]
-    },
 
     {
       label: 'View',

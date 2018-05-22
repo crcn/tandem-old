@@ -75,28 +75,10 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
 
       const startX = startEvent.clientX;
       const startY = startEvent.clientY;
-
-      const getBounds = (delta = { x: 0, y: 0 }) => ({
-        left: Math.min(startX, startX + delta.x),
-        right: Math.max(startX, startX + delta.x),
-        top: Math.min(startY, startY + delta.y),
-        bottom: Math.max(startY, startY + delta.y),
-      });
-
-      if (toolType === ToolType.TEXT) {
-        return dispatch(insertToolFinished(getBounds(), window.location));
-      }
-
-      startDOMDrag(startEvent, () => { }, (event: MouseEvent, { delta }) => {
-        setPreviewBounds(getBounds(delta));
-      }, (event: MouseEvent, { delta}) => {
-        setPreviewBounds(null);
-
-        // beat click
-        setTimeout(() => {
-          dispatch(insertToolFinished(getBounds(delta), window.location));
-        });
-      });
+      dispatch(insertToolFinished({
+        left: startX,
+        top: startY
+      }, window.location));
     }
   })
 );

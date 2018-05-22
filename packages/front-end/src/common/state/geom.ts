@@ -171,6 +171,12 @@ export const zoomBounds = (bounds: Bounds, zoom: number): Bounds => ({
   bottom: bounds.bottom * zoom
 });
 
+export const zoomPoint = (point: Point, zoom: number): Point => ({
+  ...point,
+  left: point.left * zoom,
+  top: point.top * zoom
+});
+
 export const boundsFromRect = ({ width, height }: Rectangle): Bounds => ({
   left: 0,
   top: 0,
@@ -183,6 +189,10 @@ export const getBoundsHeight = (bounds: Bounds) => bounds.bottom - bounds.top;
 export const getBoundsSize   = memoize((bounds: Bounds): Size => ({
   width: getBoundsWidth(bounds),
   height: getBoundsHeight(bounds)
+}));
+export const getBoundsPoint   = memoize((bounds: Bounds): Point => ({
+  left: bounds.left,
+  top: bounds.top
 }));
 
 export const scaleInnerBounds = (inner: Bounds, oldBounds: Bounds, newBounds: Bounds): Bounds => {
