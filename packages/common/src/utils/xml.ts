@@ -5,7 +5,8 @@ import { xml2js } from "xml-js";
 import { camelCase, repeat } from "lodash";
 
 export const xmlToTreeNode = memoize((xml: string): TreeNode => {
-  return addTreeNodeIds(normalizeTree(xml2js(xml).elements[0]));
+  return null;
+  // return addTreeNodeIds(normalizeTree(xml2js(xml).elements[0]));
 });
 
 const normalizeTree = ({name: nameAndNamespace, attributes, elements = EMPTY_ARRAY}: any) => {

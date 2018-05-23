@@ -1,11 +1,17 @@
 {
   "name": "tandem-common",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.1.2",
+    "crc32": "^0.2.2",
+    "lodash": "^4.17.10",
+    "xml-js": "^1.6.3"
+  }
 }

@@ -1,6 +1,5 @@
 import {TreeNode, updateNestedNodeFromPath, setNodeAttribute} from "../../state/tree";
 import { EMPTY_OBJECT } from "../object";
-import { BADFAMILY } from "dns";
 import { diffArray, ArrayOperationalTransformType, ArrayInsertMutation, ArrayUpdateMutation, arraySplice, ArrayDeleteMutation } from "../array";
 
 // to add namespace, import with import * as tree from "utils/tree";

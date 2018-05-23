@@ -166,15 +166,6 @@
                         }
                       },
                       "children": []
-                    },
-                    {
-                      "name": "rectangle",
-                      "attributes": {
-                        "undefined": {
-                          "ref": "a74d1d960"
-                        }
-                      },
-                      "children": []
                     }
                   ]
                 }
@@ -215,9 +206,9 @@
                   "style": {
                     "width": "100%",
                     "background": "#CCC",
+                    "color": "#666",
                     "left": 0,
                     "top": 0,
-                    "color": "#888",
                     "fontSize": "11px",
                     "fontFamily": "Helvetica",
                     "padding": "4px 8px",
@@ -295,48 +286,6 @@
                 },
                 "editor": {
                   "label": "Rectangle"
-                }
-              },
-              "children": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "rectangle",
-      "attributes": {
-        "undefined": {
-          "style": {
-            "left": 500.93569110636815,
-            "top": 307.6307423450865,
-            "width": 100,
-            "height": 100
-          },
-          "ref": "392988350"
-        }
-      },
-      "children": [
-        {
-          "name": "rectangle",
-          "attributes": {
-            "undefined": {
-              "ref": "abfc1c20",
-              "style": {
-                "padding": "10px",
-                "background": "red",
-                "color": "white",
-                "fontFamily": "Helvetica"
-              }
-            }
-          },
-          "children": [
-            {
-              "name": "text",
-              "attributes": {
-                "undefined": {
-                  "vaule": "edit me",
-                  "ref": "ddc0779e0"
                 }
               },
               "children": []

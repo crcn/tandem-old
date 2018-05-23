@@ -4,8 +4,8 @@ TODOS:
 - better error messaging for files that are not found
 */
 
-import { TreeNode, addTreeNodeIds } from "../common/state";
-import { resolveFilePath, EMPTY_OBJECT, xmlToTreeNode } from "../common/utils";
+import { TreeNode, addTreeNodeIds } from "tandem-common/src/state";
+import { resolveFilePath, EMPTY_OBJECT, xmlToTreeNode } from "tandem-common/src/utils";
 import { Module, Component, ComponentOverride, getModuleInfo, Dependency, DependencyGraph } from "./dsl";
 export type FileLoader = (uri: string) => string | Promise<string>;
 

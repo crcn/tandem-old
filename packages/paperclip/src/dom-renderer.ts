@@ -1,7 +1,7 @@
 import { mapValues } from "lodash";
 import { ComputedDisplayInfo, EditorAttributeNames, EDITOR_NAMESPACE } from "./synthetic";
-import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath, roundBounds } from "../common/state";
-import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform, patchNode } from "../common/utils/tree";
+import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath, roundBounds } from "tandem-common/src/state";
+import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform, patchNode } from "tandem-common/src/utils/tree";
 import { PCSourceAttributeNames } from ".";
 
 export type SyntheticNativeNodeMap = {
