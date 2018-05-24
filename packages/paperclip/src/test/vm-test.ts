@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { mapValues } from "lodash";
-import {  TreeNode, xmlToTreeNode, DEFAULT_NAMESPACE, stringifyTreeNodeToXML } from "../../common";
+import {  TreeNode, xmlToTreeNode, DEFAULT_NAMESPACE, stringifyTreeNodeToXML } from "tandem-common/lib";
 import { loadEntry, evaluateDependencyEntry } from "..";
 
 type TestModuleFiles = {
