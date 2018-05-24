@@ -1,6 +1,6 @@
 {
   "name": "paperclip-react-compiler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -19,7 +19,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.108",
     "lodash": "^4.17.10",
-    "tandem-common": "^2.0.0",
-    "tandem-front-end": "^3.0.0"
+    "paperclip": "^9.0.0",
+    "tandem-common": "^2.0.0"
   }
 }
