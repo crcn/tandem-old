@@ -49,26 +49,38 @@ import {
   SetAttributeTransform,
   createTreeNode,
   ArrayOperationalTransform,
-  castStyle
+  castStyle,
+  mergeNodeAttributes
 } from "tandem-common";
 
 import {
   DependencyGraph,
   Dependency,
-  getModuleInfo,
-  getComponentInfo,
   getNodeSourceDependency,
   updateGraphDependency,
   getDependents,
-  SetAttributeOverride,
   getNodeSourceModule,
   getNodeSourceComponent,
   addModuleNodeImport,
   getModuleImportNamespace,
-  PCSourceAttributeNames,
-  ComponentVariantInfo,
   PCSourceTagNames,
-  isComponentInstanceSourceNode
+  isComponentInstanceSourceNode,
+  PCComponentNode,
+  PCRectangleNode,
+  createPCRectangle,
+  PCVisibleNode,
+  PCVisibleNodeAttributes,
+  PCSourceNode,
+  createPCVariant,
+  createPCTextNode,
+  PCVariantNodeAttributes,
+  getComponentVariants,
+  PCVariantNode,
+  PCModuleNode,
+  createPCComponent,
+  createPCTemplate,
+  PCTextNode,
+  PCRectangleNodeAttributes
 } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { mapValues, pull } from "lodash";
@@ -91,7 +103,7 @@ export enum EditorAttributeNames {
 
 export type TreeNodeClip = {
   uri: string;
-  node: TreeNode;
+  node: TreeNode<any, any>;
   namespaceUris: {
     [identifier: string]: string;
   };
@@ -158,7 +170,7 @@ export type SyntheticNodeSource = {
 
 export type SyntheticNode = {
   source: SyntheticNodeSource;
-} & TreeNode;
+} & TreeNode<any, any>;
 
 export const updateSyntheticBrowser = (
   properties: Partial<SyntheticBrowser>,
@@ -205,7 +217,9 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   type: SyntheticObjectType.WINDOW
 });
 
-const calculateRootNodeBounds = (rootSourceNode: TreeNode): Bounds => {
+const calculateRootNodeBounds = (
+  rootSourceNode: TreeNode<any, any>
+): Bounds => {
   const style = getAttribute(rootSourceNode, "style") || EMPTY_OBJECT;
   const left = style.left || DEFAULT_BOUNDS.left;
   const top = style.top || DEFAULT_BOUNDS.top;
@@ -218,7 +232,7 @@ const calculateRootNodeBounds = (rootSourceNode: TreeNode): Bounds => {
 
 const getSyntheticDocumentBounds = (
   documentRootNode: SyntheticNode,
-  moduleRootNode: TreeNode
+  moduleRootNode: TreeNode<any, any>
 ) => {
   const rootSourceNode = getTreeNodeFromPath(
     documentRootNode.source.path,
@@ -234,7 +248,7 @@ const getSyntheticDocumentBounds = (
 
 export const createSyntheticDocument = (
   documentRootNode: SyntheticNode,
-  moduleRootNode: TreeNode
+  moduleRootNode: TreeNode<any, any>
 ): SyntheticDocument => {
   const container = document.createElement("iframe");
   container.style.border = "none";
@@ -273,7 +287,7 @@ export const addSyntheticWindow = (
 export const createSyntheticElement = (
   name: string,
   attributes: TreeNodeAttributes,
-  children: TreeNode[],
+  children: TreeNode<any, any>[],
   source: SyntheticNodeSource,
   id: string
 ): SyntheticNode => ({
@@ -290,8 +304,12 @@ export const getSyntheticOriginSourceNodeUri = (
 ) => {
   const sourceNode = getSyntheticSourceNode(node.id, browser);
   const dep = browser.graph[node.source.uri];
-  const module = getModuleInfo(dep.content);
-  return dep.importUris[module.imports[sourceNode.namespace]] || dep.uri;
+  return (
+    dep.importUris[
+      dep.content.attributes.xmlns &&
+        dep.content.attributes.xmlns[sourceNode.namespace]
+    ] || dep.uri
+  );
 };
 
 export const getSyntheticOriginSourceNode = (
@@ -301,15 +319,15 @@ export const getSyntheticOriginSourceNode = (
   const sourceNode = getSyntheticSourceNode(node.id, browser);
   const originUri = getSyntheticOriginSourceNodeUri(node, browser);
   const originDep = browser.graph[originUri];
-  return isComponentInstanceSourceNode(sourceNode)
+  return (isComponentInstanceSourceNode(sourceNode)
     ? originDep.content.children.find(
-        child => getComponentInfo(child).id === sourceNode.name
+        child => child.attributes.undefined.id === sourceNode.name
       )
-    : getSyntheticSourceNode(node.id, browser);
+    : getSyntheticSourceNode(node.id, browser)) as PCSourceNode;
 };
 
 export const findSourceSyntheticNode = (
-  node: TreeNode,
+  node: TreeNode<any, any>,
   targetUri: string,
   browser: SyntheticBrowser
 ): SyntheticNode => {
@@ -336,11 +354,11 @@ export const findSourceSyntheticNode = (
 };
 
 export const getSytheticNodeSource = (
-  source: TreeNode,
+  source: TreeNode<any, any>,
   dependency: Dependency
 ): SyntheticNodeSource => ({
   uri: dependency.uri,
-  path: getTreeNodePath(source.id, getModuleInfo(dependency.content).source)
+  path: getTreeNodePath(source.id, dependency.content)
 });
 
 export const getSyntheticSourceNode = (
@@ -351,17 +369,19 @@ export const getSyntheticSourceNode = (
   return getTreeNodeFromPath(
     synthetic.source.path,
     browser.graph[synthetic.source.uri].content
-  );
+  ) as PCSourceNode;
 };
 
 export const getNamespaceUris = memoize(
   (sourceNodeId: string, browser: SyntheticBrowser) => {
     const sourceNode = getSourceNodeById(sourceNodeId, browser);
     const dependency = getSourceNodeDependency(sourceNodeId, browser);
-    const moduleInfo = getModuleInfo(dependency.content);
+    const moduleInfo = dependency.content;
     const namespaceUris = {};
-    findNestedNode(sourceNode, (node: TreeNode) => {
-      const uri = moduleInfo.imports[node.namespace];
+    findNestedNode(sourceNode, (node: TreeNode<any, any>) => {
+      const uri =
+        moduleInfo.attributes.undefined.xmlns &&
+        moduleInfo.attributes.undefined.xmlns[node.namespace];
       if (uri) {
         namespaceUris[node.namespace] =
           "file:/" +
@@ -518,7 +538,7 @@ const updateSyntheticItem = <TItem>(
 
   const transforms: OperationalTransform[] = [];
 
-  const props: Partial<TreeNode> = properties;
+  const props: Partial<TreeNode<any, any>> = properties;
 
   if (props.attributes) {
     for (const namespace in props.attributes) {
@@ -597,7 +617,10 @@ export const getSourceNodeById = (
   browser: SyntheticBrowser
 ) => {
   const dependency = getSourceNodeDependency(nodeId, browser);
-  return dependency && getNestedTreeNodeById(nodeId, dependency.content);
+  return (
+    dependency &&
+    (getNestedTreeNodeById(nodeId, dependency.content) as PCSourceNode)
+  );
 };
 
 export const getSourceNodeElementRoot = (
@@ -634,16 +657,17 @@ export const getSyntheticNodeOriginComponent = memoize(
       return getSyntheticNodeSourceComponent(node.id, browser);
     }
 
-    return getComponentInfo(
-      getSyntheticOriginSourceNode(componentInstanceNode, browser)
-    );
+    return getSyntheticOriginSourceNode(
+      componentInstanceNode,
+      browser
+    ) as PCComponentNode;
   }
 );
 
 export const getComponentInstanceComponent = memoize(
   (nodeId: string, browser: SyntheticBrowser) => {
     const node = getSyntheticNodeById(nodeId, browser);
-    return getComponentInfo(getSyntheticOriginSourceNode(node, browser));
+    return getSyntheticOriginSourceNode(node, browser) as PCComponentNode;
   }
 );
 
@@ -654,7 +678,7 @@ export const getSyntheticNodeSourceComponent = memoize(
     if (!componentNode) {
       return null;
     }
-    return getComponentInfo(componentNode);
+    return componentNode as PCComponentNode;
   }
 );
 
@@ -677,7 +701,7 @@ export const updateSyntheticItemPosition = (
   );
 };
 
-export const getNodeStyle = (node: TreeNode, name: string) =>
+export const getNodeStyle = (node: TreeNode<any, any>, name: string) =>
   (getAttribute(node, "style") || EMPTY_OBJECT)[name];
 
 export const isNodeMovable = (node: SyntheticNode) =>
@@ -763,7 +787,7 @@ export const persistPasteSyntheticNodes = (
     getNestedTreeNodeById(sourceNodeId, targetDep.content);
 
   const targetNodeIsModuleRoot = targetSourceNode === targetDep.content;
-  const moduleInfo = getModuleInfo(targetDep.content);
+  const moduleInfo = targetDep.content;
 
   let content = targetDep.content;
   let graph = browser.graph;
@@ -792,7 +816,9 @@ export const persistPasteSyntheticNodes = (
           path.dirname(targetDep.uri),
           sourceDep.uri
         );
-        namespace = moduleInfo.imports[relativePath];
+        namespace =
+          moduleInfo.attributes.undefined.xmlns &&
+          moduleInfo.attributes.undefined.xmlns[relativePath];
         content = addModuleNodeImport(relativePath, content);
         namespace = getModuleImportNamespace(relativePath, content);
         importUris = {
@@ -801,7 +827,7 @@ export const persistPasteSyntheticNodes = (
         };
       }
 
-      const info = getComponentInfo(sourceNode);
+      const info = sourceNode as PCComponentNode;
 
       const pos: Bounds = targetNodeIsModuleRoot
         ? shiftBounds(bounds, PASTED_ARTBOARD_OFFSET)
@@ -812,7 +838,7 @@ export const persistPasteSyntheticNodes = (
             bottom: 0
           };
 
-      const child: TreeNode = createTreeNode(
+      const child: TreeNode<any, any> = createTreeNode(
         info.id,
         {
           [DEFAULT_NAMESPACE]: {
@@ -829,11 +855,11 @@ export const persistPasteSyntheticNodes = (
     } else {
       // TODO - need to recursively transform child namespaces
 
-      const updateNamespaces = (node: TreeNode) => {
+      const updateNamespaces = (node: TreeNode<any, any>) => {
         node = {
           ...node,
           children: node.children.map(updateNamespaces)
-        } as TreeNode;
+        } as TreeNode<any, any>;
 
         let sourceUri = namespaceUris[node.namespace];
 
@@ -934,15 +960,15 @@ export const getSyntheticNodeWindow = memoize(
     )
 );
 
-const persistSourceNodeChanges = (
-  sourceNodeId: string,
+const persistSourceNodeChanges = <TTree extends PCSourceNode>(
+  refSourceNode: TTree,
   variantName: string,
   browser: SyntheticBrowser,
-  updater: TreeNodeUpdater
+  updater: TreeNodeUpdater<TTree>
 ) => {
-  const sourceNode = getSourceNodeById(sourceNodeId, browser);
+  const sourceNode = getSourceNodeById(refSourceNode.id, browser);
   const elementSourceRoot = getSourceNodeElementRoot(sourceNode.id, browser);
-  const sourceDependency = getSourceNodeDependency(sourceNodeId, browser);
+  const sourceDependency = getSourceNodeDependency(sourceNode.id, browser);
 
   let updatedModuleSourceNode = updateNestedNode(
     sourceNode,
@@ -960,7 +986,7 @@ const persistSourceNodeChanges = (
     const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
     updatedModuleSourceNode = sourceDependency.content;
 
-    const overrideChildren: TreeNode[] = [];
+    const overrideChildren: TreeNode<any, any>[] = [];
     const targetName = getAttribute(sourceNode, "ref");
     for (const ot of ots) {
       switch (ot.type) {
@@ -1015,7 +1041,7 @@ const persistSourceNodeChanges = (
 const addSetStyleOverride = (
   style: any,
   targetName: string,
-  overridesNode: TreeNode
+  overridesNode: TreeNode<any, any>
 ) => {
   for (const key in style) {
     const existingStyleOverride = findNestedNode(
@@ -1100,18 +1126,16 @@ const updateDependencyAndRevaluate = (
       window.location,
       {
         documents: documentNodes.map(newDocumentNode => {
-          const sourceComponent = getComponentInfo(
-            getTreeNodeFromPath(
-              newDocumentNode.source.path,
-              browser.graph[newDocumentNode.source.uri].content
-            )
-          );
+          const sourceComponent = getTreeNodeFromPath(
+            newDocumentNode.source.path,
+            browser.graph[newDocumentNode.source.uri].content
+          ) as PCComponentNode;
           const document = window.documents.find(document => {
             const documentSourceNode = getSyntheticDocumentSourceNode(
               document,
               oldBrowser
             );
-            return documentSourceNode.id === sourceComponent.source.id;
+            return documentSourceNode.id === sourceComponent.id;
           });
           if (!document) {
             const newDocument = createSyntheticDocument(
@@ -1207,7 +1231,7 @@ const syntheticSourceEquals = (
   return a.uri === b.uri && a.path.join("") === b.path.join("");
 };
 
-const generateComponentId = (moduleNode: TreeNode) => {
+const generateComponentId = (moduleNode: TreeNode<any, any>) => {
   let i = moduleNode.children.length;
   let cid;
 
@@ -1248,7 +1272,7 @@ export const persistNewComponent = (
 ) => {
   const dep = browser.graph[dependencyUri];
 
-  const newComponentNode: TreeNode = createComponentNode(dep, bounds);
+  const newComponentNode: TreeNode<any, any> = createComponentNode(dep, bounds);
 
   return updateDependencyAndRevaluate(
     {
@@ -1268,11 +1292,10 @@ export const persistInsertRectangle = (
   browser: SyntheticBrowser
 ) => {
   return persistInsertNode(
-    createTreeNode("rectangle", {
+    createPCRectangle({
       [DEFAULT_NAMESPACE]: {
-        style,
-        [PCSourceAttributeNames.LABEL]: "Rectangle",
-        [PCSourceAttributeNames.NATIVE_TYPE]: "div"
+        label: "Rectangle",
+        nativeType: "div"
       }
     }),
     targetSourceNodeId,
@@ -1283,30 +1306,34 @@ export const persistInsertRectangle = (
 
 export const persistChangeNodeLabel = (
   label: string,
-  targetSourceNodeId: string,
+  sourceNode: PCVisibleNode,
   browser: SyntheticBrowser
 ) => {
-  browser = persistSourceNodeChanges(targetSourceNodeId, null, browser, node =>
-    setNodeAttribute(node, "label", label)
+  browser = persistSourceNodeChanges(sourceNode, null, browser, node =>
+    mergeNodeAttributes(node, {
+      [DEFAULT_NAMESPACE]: {
+        label
+      }
+    })
   );
   return browser;
 };
 
 export const persistInsertNewComponentVariant = (
   variantName: string,
-  componentNodeId: string,
+  componentSourceNode: PCComponentNode,
   browser: SyntheticBrowser
 ) => {
   return persistSourceNodeChanges(
-    componentNodeId,
+    componentSourceNode,
     null,
     browser,
     componentNode => {
       return appendChildNode(
-        createTreeNode(PCSourceTagNames.COMPONENT_VARIANT, {
+        createPCVariant({
           [DEFAULT_NAMESPACE]: {
             name: variantName,
-            default: false
+            isDefault: true
           }
         }),
         componentNode
@@ -1329,37 +1356,36 @@ export const persistSetElementVariants = (
     browser
   );
   return persistSourceNodeChanges(
-    componentInstanceNode.id,
+    componentInstanceNode,
     null,
     browser,
-    sourceNode => {
-      return setNodeAttribute(
-        sourceNode,
-        PCSourceAttributeNames.VARIANTS,
-        variantNames
-      );
-    }
+    (sourceNode: PCVisibleNode) =>
+      mergeNodeAttributes(sourceNode, {
+        [DEFAULT_NAMESPACE]: {
+          variants: variantNames
+        }
+      })
   );
 };
 export const persistComponentVariantChanged = (
-  properties: Partial<ComponentVariantInfo>,
+  properties: Partial<PCVariantNodeAttributes>,
   name: string,
   componentNodeId: string,
   browser: SyntheticBrowser
 ) => {
-  const sourceNode = getSourceNodeById(componentNodeId, browser);
-  const stateNode = sourceNode.children.find(
-    child => getAttribute(child, "name") === name
+  const sourceNode = getSourceNodeById(
+    componentNodeId,
+    browser
+  ) as PCComponentNode;
+  const variantNode = getComponentVariants(sourceNode).find(
+    variant => variant.attributes.undefined.name === name
   );
-  return persistSourceNodeChanges(stateNode.id, null, browser, stateNode => {
-    if (properties.isDefault != null) {
-      stateNode = setNodeAttribute(stateNode, "default", properties.isDefault);
-    }
-    if (properties.name) {
-      stateNode = setNodeAttribute(stateNode, "name", properties.name);
-    }
-    return stateNode;
-  });
+  return persistSourceNodeChanges(
+    variantNode,
+    null,
+    browser,
+    variant => mergeNodeAttributes(variant, properties) as PCVariantNode
+  );
 };
 
 export const persistRemoveComponentVariant = (
@@ -1371,27 +1397,22 @@ export const persistRemoveComponentVariant = (
   const stateNode = sourceNode.children.find(
     child => getAttribute(child, "name") === name
   );
-  return persistSourceNodeChanges(
-    sourceNode.id,
-    null,
-    browser,
-    componentNode => {
-      return removeNestedTreeNode(stateNode, componentNode);
-    }
+  return persistSourceNodeChanges(sourceNode, null, browser, componentNode =>
+    removeNestedTreeNode(stateNode, componentNode)
   );
 };
 
 export const persistInsertText = (
   style: any,
-  nodeValue: string,
+  value: string,
   targetSourceNodeId: string,
   browser: SyntheticBrowser
 ) => {
   return persistInsertNode(
-    createTreeNode("text", {
+    createPCTextNode({
       [DEFAULT_NAMESPACE]: {
+        value,
         style,
-        value: nodeValue,
         label: "Text"
       }
     }),
@@ -1403,7 +1424,7 @@ export const persistInsertText = (
 
 // TODO - documentId needs to be nodeId
 export const persistInsertNode = (
-  child: TreeNode,
+  child: TreeNode<any, any>,
   refSourceNodeId: string,
   offset: TreeMoveOffset,
   browser: SyntheticBrowser
@@ -1442,10 +1463,10 @@ export const persistInsertNode = (
 };
 
 const insertComponentChildNode = (
-  child: TreeNode,
+  child: TreeNode<any, any>,
   index: number,
   parentId: string,
-  content: TreeNode
+  content: PCModuleNode
 ) => {
   const parentNode = getNestedTreeNodeById(parentId, content);
 
@@ -1459,13 +1480,14 @@ const insertComponentChildNode = (
     ? parentNode.children.find(child => child.name === "template")
     : parentNode;
 
-  let newContent: TreeNode = content;
+  let newContent = content;
   newContent = updateNestedNode(parent, newContent, parent => {
     return {
       ...parent,
       children: arraySplice(parent.children, index, 0, child)
     };
   });
+
   return newContent;
 };
 
@@ -1477,15 +1499,16 @@ export const persistConvertNodeToComponent = (
   const dep = getSourceNodeDependency(sourceNode.id, browser);
   const sourceParent = getParentTreeNode(sourceNode.id, dep.content);
 
-  const componentSourceNode = createTreeNode(
-    "component",
+  const componentSourceNode = createPCComponent(
     {
       // TODO - calculate best document position
       [EDITOR_NAMESPACE]: {
-        left: 0,
-        top: 0,
-        right: 200,
-        bottom: 200
+        bounds: {
+          left: 0,
+          top: 0,
+          right: 200,
+          bottom: 200
+        }
       },
       [DEFAULT_NAMESPACE]: {
         id: generateComponentId(dep.content),
@@ -1494,16 +1517,12 @@ export const persistConvertNodeToComponent = (
           sourceNode.name === "text" ? {} : getAttribute(sourceNode, "style")
       }
     },
-    [
-      createTreeNode(
-        "template",
-        {},
-        sourceNode.name === "text" ? [sourceNode] : sourceNode.children
-      )
-    ]
+    createPCTemplate(
+      sourceNode.name === "text" ? [sourceNode] : sourceNode.children
+    )
   );
 
-  browser = persistSourceNodeChanges(dep.content.id, null, browser, content => {
+  browser = persistSourceNodeChanges(dep.content, null, browser, content => {
     content = replaceNestedNode(
       createTreeNode(getAttribute(componentSourceNode, "id")),
       sourceNode.id,
@@ -1552,7 +1571,7 @@ export const persistDeleteSyntheticItems = (
   return browser;
 };
 
-const setNodeStyle = (node: TreeNode, properties: any) =>
+const setNodeStyle = (node: TreeNode<any, any>, properties: any) =>
   setNodeAttribute(node, "style", {
     ...(getAttribute(node, "style") || EMPTY_OBJECT),
     ...properties
@@ -1572,7 +1591,10 @@ export const persistMoveSyntheticNode = (
     getSyntheticNodeDocument(targetNodeId, browser).root
   );
 
-  const sourceParent = getParentTreeNode(sourceNode.id, sourceDep.content);
+  const sourceParent = getParentTreeNode(
+    sourceNode.id,
+    sourceDep.content
+  ) as PCSourceNode;
 
   if (offset === 0) {
     const targetParent = getSyntheticNodeById(targetNodeId, browser);
@@ -1596,21 +1618,19 @@ export const persistMoveSyntheticNode = (
   const targetOriginSourceNode = getSyntheticOriginSourceNode(
     getSyntheticNodeById(targetNodeId, browser),
     browser
-  );
+  ) as PCVisibleNode;
+
   const targetActSourceNode = componentInstanceNode
     ? getSyntheticSourceNode(componentInstanceNode.id, browser)
     : targetSourceNode;
 
   // const actualtargetSourceNode = containerName ?
-  browser = persistSourceNodeChanges(sourceParent.id, null, browser, parent => {
+  browser = persistSourceNodeChanges(sourceParent, null, browser, parent => {
     return removeNestedTreeNode(sourceNode, parent);
   });
 
   if (componentInstanceNode) {
-    const slotName = getAttribute(
-      targetOriginSourceNode,
-      PCSourceAttributeNames.CONTAINER
-    );
+    const slotName = targetOriginSourceNode.attributes.undefined.container;
     sourceNode = setNodeAttribute(sourceNode, "slot", slotName);
   }
 
@@ -1625,8 +1645,8 @@ export const persistMoveSyntheticNode = (
   return browser;
 };
 
-export const isContainerSyntheticNode = (node: TreeNode) =>
-  Boolean(getAttribute(node, PCSourceAttributeNames.CONTAINER));
+export const isContainerSyntheticNode = (node: TreeNode<any, any>) =>
+  Boolean((node as PCVisibleNode).attributes.undefined.container);
 
 /**
  * This assumes that the nodes in the same parent
@@ -1634,7 +1654,7 @@ export const isContainerSyntheticNode = (node: TreeNode) =>
 
 export const getComponentInstanceSyntheticNode = (
   nodeId: string,
-  root: TreeNode
+  root: TreeNode<any, any>
 ) => {
   const node = getNestedTreeNodeById(nodeId, root);
   const filter = parent => {
@@ -1651,7 +1671,7 @@ export const getComponentInstanceSyntheticNode = (
   return findTreeNodeParent(nodeId, root, filter);
 };
 
-export const isCreatedFromComponent = (node: TreeNode) =>
+export const isCreatedFromComponent = (node: TreeNode<any, any>) =>
   Boolean(
     getAttribute(
       node,
@@ -1659,7 +1679,7 @@ export const isCreatedFromComponent = (node: TreeNode) =>
       EDITOR_NAMESPACE
     )
   );
-export const isComponentInstance = (node: TreeNode) =>
+export const isComponentInstance = (node: TreeNode<any, any>) =>
   Boolean(
     getAttribute(
       node,
@@ -1667,7 +1687,7 @@ export const isComponentInstance = (node: TreeNode) =>
       EDITOR_NAMESPACE
     )
   );
-export const isComponent = (node: TreeNode) =>
+export const isComponent = (node: TreeNode<any, any>) =>
   Boolean(
     getAttribute(node, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE)
   );
@@ -1681,7 +1701,11 @@ export const getComponentInstanceSourceNode = (
   if (isComponentInstanceSourceNode(node)) {
     return node;
   }
-  return findTreeNodeParent(nodeId, dep.content, isComponentInstanceSourceNode);
+  return findTreeNodeParent(
+    nodeId,
+    dep.content,
+    isComponentInstanceSourceNode
+  ) as PCComponentNode;
 };
 
 export const persistSyntheticItemPosition = (
@@ -1710,25 +1734,33 @@ export const persistSyntheticItemBounds = (
   nodeId: string,
   browser: SyntheticBrowser
 ) => {
-  const sourceNodeId = getSyntheticSourceNode(nodeId, browser);
+  const sourceNode = getSyntheticSourceNode(nodeId, browser);
   if (isSyntheticDocumentRoot(getSyntheticNodeById(nodeId, browser))) {
-    return persistSourceNodeChanges(sourceNodeId.id, null, browser, child => {
+    return persistSourceNodeChanges(sourceNode, null, browser, child => {
       return setNodeAttribute(child, "bounds", bounds, EDITOR_NAMESPACE);
     });
   } else {
     const document = getSyntheticNodeDocument(nodeId, browser);
-    return persistSourceNodeChanges(sourceNodeId.id, null, browser, child => {
-      const style = getAttribute(child, "style") || EMPTY_OBJECT;
-      const pos = style.position || "relative";
-      return setNodeAttribute(child, "style", {
-        ...style,
-        position: pos,
-        left: bounds.left - document.bounds.left,
-        top: bounds.top - document.bounds.top,
-        width: bounds.right - bounds.left,
-        height: bounds.bottom - bounds.top
-      });
-    });
+    return persistSourceNodeChanges(
+      sourceNode,
+      null,
+      browser,
+      (child: PCVisibleNode) => {
+        const style = getAttribute(child, "style") || EMPTY_OBJECT;
+        const pos = style.position || "relative";
+        return mergeNodeAttributes(child, {
+          [DEFAULT_NAMESPACE]: {
+            style: {
+              position: pos,
+              left: bounds.left - document.bounds.left,
+              top: bounds.top - document.bounds.top,
+              width: bounds.right - bounds.left,
+              height: bounds.bottom - bounds.top
+            }
+          }
+        });
+      }
+    );
   }
 };
 
@@ -1740,7 +1772,7 @@ export const persistRawCSSText = (
 ) => {
   const newStyle = parseStyle(text);
   return persistSourceNodeChanges(
-    getSyntheticSourceNode(nodeId, browser).id,
+    getSyntheticSourceNode(nodeId, browser),
     variantName,
     browser,
     child => {
@@ -1761,26 +1793,27 @@ export const persistToggleSlotContainer = (
   sourceNodeId: string,
   browser: SyntheticBrowser
 ) => {
-  const sourceNode = getSourceNodeById(sourceNodeId, browser);
+  const sourceNode = getSourceNodeById(sourceNodeId, browser) as PCVisibleNode;
   const rootSourceElement = getSourceNodeElementRoot(sourceNode.id, browser);
-  return persistSourceNodeChanges(sourceNode.id, null, browser, child => {
+  return persistSourceNodeChanges(sourceNode, null, browser, child => {
     const style = getAttribute(child, "style") || EMPTY_OBJECT;
-    const containerName = getAttribute(child, PCSourceAttributeNames.CONTAINER);
+    const containerName = child.attributes.undefined.container;
     if (containerName) {
-      child = setNodeAttribute(child, PCSourceAttributeNames.CONTAINER, null);
-      child = setNodeAttribute(
-        child,
-        PCSourceAttributeNames.CONTAINER_STORAGE,
-        containerName
-      );
+      child = mergeNodeAttributes(child, {
+        [DEFAULT_NAMESPACE]: {
+          container: null,
+          containerStorage: containerName
+        }
+      });
       return child;
     } else {
-      child = setNodeAttribute(
-        child,
-        PCSourceAttributeNames.CONTAINER,
-        getAttribute(child, PCSourceAttributeNames.CONTAINER_STORAGE) ||
-          generateContainerName(sourceNode.id, browser)
-      );
+      child = mergeNodeAttributes(child, {
+        [DEFAULT_NAMESPACE]: {
+          container:
+            child.attributes.undefined.containerStorage ||
+            generateContainerName(sourceNode.id, browser)
+        }
+      });
     }
     return child;
   });
@@ -1788,20 +1821,28 @@ export const persistToggleSlotContainer = (
 
 export const persistChangeNodeType = (
   nativeType: string,
-  sourceNodeId: string,
+  sourceNode: PCRectangleNode,
   browser: SyntheticBrowser
 ) => {
-  return persistSourceNodeChanges(sourceNodeId, null, browser, node =>
-    setNodeAttribute(node, PCSourceAttributeNames.NATIVE_TYPE, nativeType)
+  return persistSourceNodeChanges(sourceNode, null, browser, node =>
+    mergeNodeAttributes(node, {
+      [DEFAULT_NAMESPACE]: {
+        nativeType
+      }
+    })
   );
 };
 
 export const persistTextValue = (
   value: string,
-  sourceNodeId: string,
+  sourceNode: PCTextNode,
   browser: SyntheticBrowser
 ) => {
-  return persistSourceNodeChanges(sourceNodeId, null, browser, node =>
-    setNodeAttribute(node, "value", value)
+  return persistSourceNodeChanges(sourceNode, null, browser, node =>
+    mergeNodeAttributes(node, {
+      [DEFAULT_NAMESPACE]: {
+        value
+      }
+    })
   );
 };

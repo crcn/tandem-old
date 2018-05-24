@@ -10,294 +10,303 @@ import {
   DEFAULT_NAMESPACE,
   findNestedNode,
   Bounds,
-  setNodeAttribute
+  setNodeAttribute,
+  TreeNodeAttributes,
+  createTreeNode,
+  generateUID
 } from "tandem-common";
-import { DEFAULT_EXTENDS } from ".";
 import { mapValues } from "lodash";
-
-export const ROOT_MODULE_NAME = "module";
+import { EDITOR_NAMESPACE } from ".";
 
 export type DependencyGraph = {
   [identifier: string]: Dependency;
-};
-
-export enum PCSourceAttributeNames {
-  CONTAINER = "container",
-  CONTAINER_STORAGE = "container-keep",
-  NATIVE_TYPE = "native-type",
-  LABEL = "label",
-  SLOT = "slot",
-  VARIANTS = "variants"
-}
-
-export enum PCSourceTagNames {
-  COMPONENT = "component",
-  RECTANGLE = "rectangle",
-  TEXT = "text",
-  COMPONENT_VARIANT = "variant"
-}
-export const isComponentInstanceSourceNode = (sourceNode: TreeNode) =>
-  sourceNode.name !== PCSourceTagNames.TEXT &&
-  sourceNode.name !== PCSourceTagNames.RECTANGLE;
-
-// TODO - generic style
-export type StyleDeclaration = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};
-
-export type ComponentVariantInfo = {
-  name: string;
-  isDefault: boolean;
-  overrides: ComponentOverride[];
 };
 
 export type Dependency = {
   // URI used here since it could be a url
   uri: string;
   dirty?: boolean; // TRUE if the contents have changed
-  originalContent: TreeNode;
-  content: TreeNode;
+  originalContent: PCModuleNode;
+  content: PCModuleNode;
   importUris: {
     [identifier: string]: string;
   };
 };
 
-export type Module = {
-  source: TreeNode;
-  imports: ModuleImports;
-  components: Component[];
-};
-
-export type ComponentExtendsInfo = {
-  namespace: string;
-  tagName: string;
-};
-
-export type Component = {
-  /**
-   * ID of the component (should reflect the label)
-   */
-
-  id: string;
-
-  /**
-   * Human friendly label of the component
-   */
-
-  label?: string;
-
-  /**
-   * Extension of an existing component or a native element
-   */
-
-  extends?: ComponentExtendsInfo;
-
-  /**
-   * reference where all of this information is derrived from
-   */
-
-  source: TreeNode;
-
-  /**
-   */
-
-  template: TreeNode;
-
-  /**
-   * Valid only if extending an existing component
-   */
-
-  overrides: ComponentOverride[];
-
-  states: ComponentVariantInfo[];
-};
-
-export enum ComponentOverrideType {
-  DELETE_NODE,
-  INSERT_NODE,
-  MOVE_NODE,
-  SET_ATTRIBUTE,
-  SET_STYLE,
-  DELETE_ATTRIBUTE
+export enum PCSourceNamespaces {
+  XMLNS = "xmlns"
 }
 
-export type ComponentOverride = {
-  type: ComponentOverrideType;
+export enum PCSourceTagNames {
+  MODULE = "module",
+  COMPONENT = "component",
+  TEMPLATE = "template",
+  RECTANGLE = "rectangle",
+  VARIANT = "variant",
+  TEXT = "text",
+  COMPONENT_VARIANT = "variant",
+  SET_STYLE = "set-style",
+  SET_ATTRIBUTE = "set-attribute"
+}
+
+type PCBaseSourceNode<
+  TName extends string,
+  TAttributes extends TreeNodeAttributes,
+  TChild = PCBaseSourceNode<any, any, any>
+> = {
+  children: TChild[];
+} & TreeNode<TName, TAttributes>;
+
+export const isComponentInstanceSourceNode = (sourceNode: TreeNode<any, any>) =>
+  sourceNode.name !== PCSourceTagNames.TEXT &&
+  sourceNode.name !== PCSourceTagNames.RECTANGLE;
+
+export type PCSetAttributeOverrideNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    target?: string;
+    name: string;
+    namespace?: string;
+    value: string;
+  };
 };
 
-export type DeleteChildOverride = {
-  target: string;
-} & ComponentOverride;
+export type PCSetAttributeOverrideNode = PCBaseSourceNode<
+  PCSourceTagNames.SET_ATTRIBUTE,
+  PCSetAttributeOverrideNodeAttributes
+>;
 
-export type InsertChildOverride = {
-  child: TreeNode;
-  beforeChild?: string;
-} & ComponentOverride;
-
-export type SetAttributeOverride = {
-  target?: string;
-  name: string;
-  namespace?: string;
-  value: string;
-} & ComponentOverride;
-
-export type SetStyleOverride = {
-  target?: string;
-  name: string;
-  value: string;
-} & ComponentOverride;
-
-export type ModuleImports = {
-  [identifier: string]: string;
+export type PCSetStyleOverrideNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    target?: string;
+    name: string;
+    value: string;
+  };
 };
 
-/**
- * returns all imports of a module. For example:
- *
- * <module xmlns:main="./main-module"></module>
- */
+export type PCSetStyleOverrideNode = PCBaseSourceNode<
+  PCSourceTagNames.SET_STYLE,
+  PCSetStyleOverrideNodeAttributes
+>;
+export type PCOverrideNode =
+  | PCSetAttributeOverrideNode
+  | PCSetStyleOverrideNode;
 
-export const getImports = memoize((root: TreeNode): ModuleImports => {
-  if (root.name !== ROOT_MODULE_NAME) {
-    throw new Error(`Root name must be module, "${root.name}" provided.`);
+export type PCVariantNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    name: string;
+    isDefault?: boolean;
+  };
+};
+
+export type PCVariantNode = PCBaseSourceNode<
+  PCSourceTagNames.VARIANT,
+  PCVariantNodeAttributes,
+  PCOverrideNode
+>;
+
+export type PCVisibleNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    variants?: string[];
+    style?: any;
+    container?: string;
+    containerStorage?: string;
+    label?: string;
+  };
+};
+
+export type PCBaseVisibleNode<
+  TName extends string,
+  TAttributes extends PCVisibleNodeAttributes
+> = PCBaseSourceNode<
+  TName,
+  TAttributes,
+  PCBaseSourceNode<any, PCVisibleNodeAttributes>
+>;
+
+export type PCRectangleNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    nativeType?: string;
+  };
+} & PCVisibleNodeAttributes;
+
+export type PCRectangleNode = PCBaseVisibleNode<
+  PCSourceTagNames.RECTANGLE,
+  PCRectangleNodeAttributes
+>;
+
+export type PCTextNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    value: string;
+  };
+} & PCVisibleNodeAttributes;
+
+export type PCTextNode = PCBaseVisibleNode<
+  PCSourceTagNames.TEXT,
+  PCTextNodeAttributes
+>;
+export type PCVisibleNode = PCBaseVisibleNode<
+  any,
+  PCTextNodeAttributes | PCRectangleNodeAttributes
+>;
+export type PCTemplateNode = PCBaseSourceNode<
+  PCSourceTagNames.TEMPLATE,
+  TreeNodeAttributes,
+  PCVisibleNode
+>;
+
+export type PCComponentAttributes = {
+  [EDITOR_NAMESPACE]: {
+    bounds: Bounds;
+  };
+  [DEFAULT_NAMESPACE]: {
+    label?: string;
+    container?: string;
+
+    // TODO - switch to name
+    id?: string; // identifier
+    style: any;
+  };
+};
+
+export type PCComponentNode = PCBaseSourceNode<
+  PCSourceTagNames.COMPONENT,
+  PCComponentAttributes,
+  PCTemplateNode | PCVariantNode
+>;
+
+export type PCModuleAttributes = {
+  [PCSourceNamespaces.XMLNS]: {
+    [identifier: string]: string;
+  };
+} & TreeNodeAttributes;
+
+export type PCModuleNode = PCBaseSourceNode<
+  PCSourceTagNames.MODULE,
+  PCModuleAttributes,
+  PCComponentNode | PCBaseVisibleNode<any, any>
+>;
+
+export type PCSourceNode =
+  | PCModuleNode
+  | PCComponentNode
+  | PCVisibleNode
+  | PCOverrideNode
+  | PCVariantNode;
+
+export const createPCRectangle = (
+  attributes: PCRectangleNodeAttributes,
+  children: PCBaseVisibleNode<any, any>[] = []
+): PCRectangleNode => ({
+  id: generateUID(),
+  name: PCSourceTagNames.RECTANGLE,
+  attributes,
+  children
+});
+
+export const createPCTextNode = (
+  attributes: PCTextNodeAttributes
+): PCTextNode => ({
+  id: generateUID(),
+  name: PCSourceTagNames.TEXT,
+  attributes,
+  children: []
+});
+
+export const createPCTemplate = (
+  children: PCBaseVisibleNode<any, any>[] = []
+): PCTemplateNode => ({
+  id: generateUID(),
+  name: PCSourceTagNames.TEMPLATE,
+  children: [],
+  attributes: {
+    [DEFAULT_NAMESPACE]: {}
   }
-  return root.attributes.xmlns || EMPTY_OBJECT;
+});
+
+export const createPCComponent = (
+  attributes: PCComponentAttributes,
+  template?: PCTemplateNode
+): PCComponentNode => ({
+  id: generateUID(),
+  name: PCSourceTagNames.COMPONENT,
+  attributes,
+  children: [template || createPCTemplate()]
+});
+
+export const createPCVariant = (
+  attributes: PCVariantNodeAttributes
+): PCVariantNode => ({
+  id: generateUID(),
+  name: PCSourceTagNames.VARIANT,
+  attributes,
+  children: []
 });
 
 /**
  * Returns all components in a module
  */
 
-export const getModuleComponents = memoize((root: TreeNode): Component[] =>
-  filterNestedNodes(root, node => node.name === "component").map(
-    getComponentInfo
-  )
+export const getModuleComponents = memoize(
+  (root: PCModuleNode): PCComponentNode[] =>
+    (filterNestedNodes(
+      root,
+      node => node.name === PCSourceTagNames.COMPONENT
+    ) as any) as PCComponentNode[]
 );
-
-export const getComponentInfo = memoize((component: TreeNode): Component => {
-  let ext: ComponentExtendsInfo;
-
-  if (component.attributes.extends) {
-    for (const namespace in component.attributes.extends) {
-      ext = {
-        namespace,
-        tagName: component.attributes.extends[namespace]
-      };
-      break;
-    }
-  } else if (
-    (component.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT).extends
-  ) {
-    ext = {
-      namespace: DEFAULT_NAMESPACE,
-      tagName: component.attributes[DEFAULT_NAMESPACE].extends
-    };
-  }
-
-  const overrides = component.children.find(createNodeNameMatcher("overrides"));
-  const states = component.children.filter(createNodeNameMatcher("state"));
-
-  return {
-    id: getAttribute(component, "id"),
-    label: getAttribute(component, "label"),
-    states: states.map(getVariantInfo),
-    extends: ext,
-    template: component.children.find(createNodeNameMatcher("template")),
-    source: component,
-    overrides: overrides ? overrides.children.map(getOverrideInfo) : EMPTY_ARRAY
-  };
-});
-
-export const getModuleInfo = memoize((source: TreeNode): Module => ({
-  source,
-  imports: getImports(source),
-  components: getModuleComponents(source)
-}));
 
 export const getImportedDependency = (
   namespace: string,
   dependency: Dependency,
   graph: DependencyGraph
 ) => {
-  const module = getModuleInfo(dependency.content);
-  const importedPath = dependency.importUris[module.imports[namespace]];
+  const module = dependency.content as PCModuleNode;
+  const importedPath =
+    dependency.importUris[
+      module.attributes.xmlns && module.attributes.xmlns[namespace]
+    ];
   return importedPath ? graph[importedPath] : dependency;
 };
 
 export const getNodeSourceDependency = (
-  node: TreeNode,
+  node: PCBaseSourceNode<any, any>,
   currentDependency: Dependency,
   graph: DependencyGraph
 ) => getImportedDependency(node.namespace, currentDependency, graph);
 
-export const getDependencyModule = (dependency: Dependency) =>
-  getModuleInfo(dependency.content);
-
 export const getNodeSourceModule = (
-  node: TreeNode,
+  node: PCBaseSourceNode<any, any>,
   dependency: Dependency,
   graph: DependencyGraph
 ) => {
   const sourceDependency = getNodeSourceDependency(node, dependency, graph);
-  return getModuleInfo(sourceDependency.content);
+  return sourceDependency.content as PCModuleNode;
 };
 
-export const getModuleComponent = (componentId: string, module: Module) =>
-  module.components.find(component => component.id === componentId);
+export const getModuleComponent = (componentId: string, module: PCModuleNode) =>
+  module.children.find(
+    component =>
+      component.name === PCSourceTagNames.COMPONENT &&
+      (component as PCComponentNode).attributes.undefined.id === componentId
+  ) as PCComponentNode;
 
+export const getComponentTemplate = (component: PCComponentNode) =>
+  component.children.find(
+    child => child.name === PCSourceTagNames.TEMPLATE
+  ) as PCTemplateNode;
+export const getComponentVariants = (component: PCComponentNode) =>
+  component.children.filter(
+    child => child.name === PCSourceTagNames.VARIANT
+  ) as PCVariantNode[];
 export const getNodeSourceComponent = memoize(
-  (node: TreeNode, dependency: Dependency, graph: DependencyGraph) =>
+  (
+    node: PCBaseSourceNode<any, any>,
+    dependency: Dependency,
+    graph: DependencyGraph
+  ) =>
     getModuleComponent(node.name, getNodeSourceModule(node, dependency, graph))
 );
 
-export const getVariantInfo = memoize(
-  (node: TreeNode): ComponentVariantInfo => {
-    return {
-      name: getAttribute(node, "name"),
-      isDefault: Boolean(getAttribute(node, "default")),
-      overrides: node.children.map(getOverrideInfo)
-    };
-  }
-);
-
-export const getOverrideInfo = memoize((node: TreeNode): ComponentOverride => {
-  switch (node.name) {
-    case "delete-child":
-      return {
-        type: ComponentOverrideType.DELETE_NODE,
-        target: getAttribute(node, "target")
-      } as DeleteChildOverride;
-    case "insert-child":
-      return {
-        type: ComponentOverrideType.INSERT_NODE,
-        child: node.children[0],
-        beforeChild: getAttribute(node, "before")
-      } as InsertChildOverride;
-    case "set-attribute":
-      return {
-        type: ComponentOverrideType.SET_ATTRIBUTE,
-        target: getAttribute(node, "target"),
-        name: getAttribute(node, "name"),
-        namespace: getAttribute(node, "namespace"),
-        value: getAttribute(node, "value")
-      } as SetAttributeOverride;
-    case "set-style":
-      return {
-        type: ComponentOverrideType.SET_STYLE,
-        target: getAttribute(node, "target"),
-        name: getAttribute(node, "name"),
-        value: getAttribute(node, "value")
-      } as SetAttributeOverride;
-    default: {
-      throw new Error(`Unknown override type ${node.name}`);
-    }
-  }
-});
-
-export const getNodeReference = memoize((refName: string, root: TreeNode) =>
+export const getNodeReference = memoize((refName: string, root: PCModuleNode) =>
   findNestedNode(root, child => getAttribute(child, "ref") === refName)
 );
 
@@ -337,28 +346,27 @@ export const getDependents = memoize((uri: string, graph: DependencyGraph) => {
 
 export const getModuleImportNamespace = (
   uri: string,
-  moduleNode: TreeNode
+  moduleNode: PCModuleNode
 ): string => {
-  const info = getModuleInfo(moduleNode);
-  for (const namespace in info.imports) {
-    if (info.imports[namespace] === uri) {
+  for (const namespace in moduleNode.attributes.xmlns) {
+    if (moduleNode.attributes.xmlns[namespace] === uri) {
       return namespace;
     }
   }
 };
 
-export const addModuleNodeImport = (uri: string, moduleNode: TreeNode) => {
+export const addModuleNodeImport = (
+  uri: string,
+  moduleNode: PCModuleNode
+): PCModuleNode => {
   const namespace = getModuleImportNamespace(uri, moduleNode);
   if (namespace) return moduleNode;
-  const imports = getImports(moduleNode);
+  const imports = moduleNode.attributes.xmlns || {};
   const importCount = Object.keys(imports).length;
-  return {
-    ...moduleNode,
-    attributes: {
-      xmlns: {
-        ...imports,
-        ["import" + importCount]: uri
-      }
-    }
-  };
+  return setNodeAttribute(
+    moduleNode,
+    "import" + importCount,
+    uri,
+    PCSourceNamespaces.XMLNS
+  );
 };

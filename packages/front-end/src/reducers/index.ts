@@ -489,9 +489,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = persistRootStateBrowser(
         browser =>
           persistComponentVariantChanged(
-            { isDefault: value },
+            { [DEFAULT_NAMESPACE]: { isDefault: value } },
             name,
-            sourceComponent.source.id,
+            sourceComponent.id,
             browser
           ),
         state
@@ -522,16 +522,18 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case COMPONENT_VARIANT_NAME_CHANGED: {
       const { oldName, newName } = action as ComponentVariantNameChanged;
-      const sourceComponent = getSyntheticNodeSourceComponent(
+      const sourceComponentNode = getSyntheticNodeSourceComponent(
         state.selectedNodeIds[0],
         state.browser
       );
       state = persistRootStateBrowser(
         browser =>
           persistComponentVariantChanged(
-            { name: newName },
+            {
+              [DEFAULT_NAMESPACE]: { name: newName }
+            },
             oldName,
-            sourceComponent.source.id,
+            sourceComponentNode.id,
             browser
           ),
         state
@@ -560,7 +562,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         browser =>
           persistChangeNodeLabel(
             label,
-            getSyntheticSourceNode(node.id, browser).id,
+            getSyntheticSourceNode(node.id, browser) as PCVisibleNode,
             browser
           ),
         state
@@ -795,7 +797,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       } = action as CanvasDroppedRegisteredComponent;
       const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
 
-      let sourceNode: TreeNode = cloneTreeNode(item.template);
+      let sourceNode: TreeNode<any, any> = cloneTreeNode(item.template);
 
       let targetSourceId: string;
 
@@ -1126,7 +1128,7 @@ const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
 
 const persistInsertNodeFromPoint = (
-  node: TreeNode,
+  node: TreeNode<any, any>,
   fileUri: string,
   point: Point,
   state: RootState
@@ -1172,7 +1174,11 @@ const persistInsertNodeFromPoint = (
   return state;
 };
 
-const setFileExpanded = (node: TreeNode, value: boolean, state: RootState) => {
+const setFileExpanded = (
+  node: TreeNode<any, any>,
+  value: boolean,
+  state: RootState
+) => {
   state = updateRootState(
     {
       projectDirectory: updateNestedNode(node, state.projectDirectory, node =>
@@ -1303,7 +1309,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
     case SYNTHETIC_NODES_PASTED: {
       const { clips } = action as SyntheticNodesPasted;
 
-      let targetSourceNode: TreeNode;
+      let targetSourceNode: TreeNode<any, any>;
 
       if (state.selectedNodeIds.length) {
         const nodeId = state.selectedNodeIds[0];
@@ -1339,7 +1345,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
   return state;
 };
 
-const isDroppableNode = (node: TreeNode) => {
+const isDroppableNode = (node: TreeNode<any, any>) => {
   return (
     node.name !== "text" &&
     !/input/.test(String(getAttribute(node, "native-type")))

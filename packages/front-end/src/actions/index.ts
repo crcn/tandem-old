@@ -135,7 +135,7 @@ export type DependencyEntryLoaded = {
 } & Action;
 
 export type FileNavigatorItemClicked = {
-  node: TreeNode;
+  node: TreeNode<any, any>;
 } & Action;
 
 export type OpenFilesItemClick = {
@@ -200,17 +200,17 @@ export type CanvasWheel = {
 
 export type TreeLayerMouseOver = {
   type: string;
-  node: TreeNode;
+  node: TreeNode<any, any>;
 } & Action;
 
 export type TreeLayerLabelChanged = {
   label: string;
-  node: TreeNode;
+  node: TreeNode<any, any>;
 } & Action;
 
 export type TreeLayerDroppedNode = {
-  node: TreeNode;
-  targetNode: TreeNode;
+  node: TreeNode<any, any>;
+  targetNode: TreeNode<any, any>;
   offset?: 0 | -1 | 1;
 } & Action;
 
@@ -289,7 +289,7 @@ export type SelectorDoubleClicked = {
 export type ShortcutKeyDown = {};
 
 export type QuickSearchItemClicked = {
-  file: TreeNode;
+  file: TreeNode<any, any>;
 } & Action;
 
 export type SavedFile = {
@@ -316,8 +316,8 @@ export type FileNavigatorNewFileEntered = {
 } & Action;
 
 export type FileNavigatorDroppedItem = {
-  node: TreeNode;
-  targetNode: TreeNode;
+  node: TreeNode<any, any>;
+  targetNode: TreeNode<any, any>;
   offset: TreeMoveOffset;
 } & Action;
 
@@ -332,8 +332,8 @@ export type CanvasDroppedRegisteredComponent = {
 } & Action;
 
 export const fileNavigatorDroppedItem = (
-  node: TreeNode,
-  targetNode: TreeNode,
+  node: TreeNode<any, any>,
+  targetNode: TreeNode<any, any>,
   offset: 0 | -1 | 1
 ): FileNavigatorDroppedItem => ({
   node,
@@ -348,14 +348,14 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
 });
 
 export const fileNavigatorItemClicked = (
-  node: TreeNode
+  node: TreeNode<any, any>
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_CLICKED
 });
 
 export const fileNavigatorToggleDirectoryClicked = (
-  node: TreeNode
+  node: TreeNode<any, any>
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
@@ -390,7 +390,7 @@ export const fileNavigatorNewDirectoryClicked = (): Action => ({
 });
 
 export const quickSearchItemClicked = (
-  file: TreeNode
+  file: TreeNode<any, any>
 ): QuickSearchItemClicked => ({
   file,
   type: QUICK_SEARCH_ITEM_CLICKED
@@ -423,43 +423,51 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
 });
 
 export const fileNavigatorItemDoubleClicked = (
-  node: TreeNode
+  node: TreeNode<any, any>
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED
 });
 
-export const pcLayerMouseOver = (node: TreeNode): TreeLayerMouseOver => ({
+export const pcLayerMouseOver = (
+  node: TreeNode<any, any>
+): TreeLayerMouseOver => ({
   node,
   type: PC_LAYER_MOUSE_OVER
 });
 
-export const pcLayerDoubleClick = (node: TreeNode): TreeLayerMouseOver => ({
+export const pcLayerDoubleClick = (
+  node: TreeNode<any, any>
+): TreeLayerMouseOver => ({
   node,
   type: PC_LAYER_DOUBLE_CLICK
 });
 
 export const pcLayerLabelChanged = (
   label: string,
-  node: TreeNode
+  node: TreeNode<any, any>
 ): TreeLayerLabelChanged => ({
   label,
   node,
   type: PC_LAYER_LABEL_CHANGED
 });
 
-export const pcLayerMouseOut = (node: TreeNode): TreeLayerMouseOut => ({
+export const pcLayerMouseOut = (
+  node: TreeNode<any, any>
+): TreeLayerMouseOut => ({
   node,
   type: PC_LAYER_MOUSE_OUT
 });
 
-export const pcEditLayerLabelBlur = (node: TreeNode): TreeLayerMouseOut => ({
+export const pcEditLayerLabelBlur = (
+  node: TreeNode<any, any>
+): TreeLayerMouseOut => ({
   node,
   type: PC_LAYER_EDIT_LABEL_BLUR
 });
 
 export const pcLayerClick = (
-  node: TreeNode,
+  node: TreeNode<any, any>,
   sourceEvent: React.MouseEvent<any>
 ): TreeLayerClick => ({
   node,
@@ -507,7 +515,7 @@ export const componentVariantNameDefaultToggleClick = (
 });
 
 export const pcLayerExpandToggleClick = (
-  node: TreeNode
+  node: TreeNode<any, any>
 ): TreeLayerExpandToggleClick => ({
   node,
   type: PC_LAYER_EXPAND_TOGGLE_CLICK
@@ -515,7 +523,7 @@ export const pcLayerExpandToggleClick = (
 
 export const pcLayerDroppedNode = (
   node: SyntheticNode,
-  targetNode: TreeNode,
+  targetNode: TreeNode<any, any>,
   offset?: 0 | -1 | 1
 ): TreeLayerDroppedNode => ({
   node,

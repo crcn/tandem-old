@@ -19,11 +19,11 @@ export const DIRECTORY_TAG_NAME = "directory";
 
 export type File = {
   name: "file";
-} & TreeNode;
+} & TreeNode<any, any>;
 
 export type Directory = {
   name: "directory";
-} & TreeNode;
+} & TreeNode<any, any>;
 
 export enum FileAttributeNames {
   URI = "uri",
@@ -32,10 +32,12 @@ export enum FileAttributeNames {
   SELECTED = "selected"
 }
 
-export const isFile = (node: TreeNode) => node.name === FILE_TAG_NAME;
-export const isDirectory = (node: TreeNode) => node.name === DIRECTORY_TAG_NAME;
+export const isFile = (node: TreeNode<any, any>) => node.name === FILE_TAG_NAME;
+export const isDirectory = (node: TreeNode<any, any>) =>
+  node.name === DIRECTORY_TAG_NAME;
 
-export const getFileName = (node: TreeNode) => getAttribute(node, "name");
+export const getFileName = (node: TreeNode<any, any>) =>
+  getAttribute(node, "name");
 
 export const createFile = (name: string): File =>
   createTreeNode(FILE_TAG_NAME, {
@@ -58,7 +60,7 @@ export const getFilePath = memoize((file: File, directory: Directory) => {
   const childParentMap = getChildParentMap(directory);
   const path: string[] = [];
 
-  let current: TreeNode = file;
+  let current: TreeNode<any, any> = file;
   while (current) {
     path.unshift(getFileName(current));
     current = childParentMap[current.id];

@@ -26,28 +26,25 @@ import {
   memoize
 } from "tandem-common";
 import {
-  getImports,
-  getModuleInfo,
-  Component,
-  Module,
   Dependency,
   DependencyGraph,
   getNodeSourceComponent,
   getNodeSourceModule,
   getModuleComponent,
   getNodeSourceDependency,
-  ComponentExtendsInfo,
   getImportedDependency,
-  getDependencyModule,
-  ComponentOverride,
-  ComponentOverrideType,
   getNodeReference,
-  DeleteChildOverride,
-  InsertChildOverride,
-  SetAttributeOverride,
-  SetStyleOverride,
-  getComponentInfo,
-  PCSourceAttributeNames
+  PCModuleNode,
+  PCOverrideNode,
+  PCComponentNode,
+  getComponentTemplate,
+  PCVisibleNodeAttributes,
+  getComponentVariants,
+  PCSourceTagNames,
+  PCSetAttributeOverrideNode,
+  PCSetStyleOverrideNode,
+  PCTemplateNode,
+  PCBaseVisibleNode
 } from "./dsl";
 import {
   SyntheticNodeSource,
@@ -61,15 +58,11 @@ import {
   SyntheticDocument,
   getSyntheticDocumentDependency,
   EDITOR_NAMESPACE,
-  EditorAttributeNames
+  EditorAttributeNames,
+  getComponentInstanceSourceNode
 } from "./synthetic";
 
 import { pick, merge } from "lodash";
-
-export const DEFAULT_EXTENDS: ComponentExtendsInfo = {
-  namespace: DEFAULT_NAMESPACE,
-  tagName: "rectangle"
-};
 
 export type EvaluateOptions = {
   entry: Dependency;
@@ -90,7 +83,6 @@ export const evaluateDependencyEntry = ({
   entry,
   graph
 }: EvaluateOptions): EvaluationResult => {
-  const module = getModuleInfo(entry.content);
   const checksum = generateTreeChecksum(entry.content);
   let i = 0;
   const generateId = () => checksum + i++;
@@ -107,12 +99,17 @@ export const evaluatRooteDocumentElement = (
   graph: DependencyGraph,
   generateId: IDGenerator
 ) => {
-  if (element.name === "component") {
-    return evaluateRootDocumentComponent(element, entry, graph, generateId);
+  if (element.name === PCSourceTagNames.COMPONENT) {
+    return evaluateRootDocumentComponent(
+      element as PCComponentNode,
+      entry,
+      graph,
+      generateId
+    );
   } else {
     const synthetic = evaluateNode(
       element,
-      getModuleInfo(entry.content),
+      entry.content,
       generateId,
       entry,
       graph,
@@ -125,12 +122,11 @@ export const evaluatRooteDocumentElement = (
 };
 
 export const evaluateRootDocumentComponent = (
-  componentNode: TreeNode,
+  componentNode: PCComponentNode,
   currentDependency: Dependency,
   graph: DependencyGraph,
   generateId: IDGenerator
 ): SyntheticNode => {
-  const module = getModuleInfo(currentDependency.content);
   const dependency = getNodeSourceDependency(
     componentNode,
     currentDependency,
@@ -146,7 +142,7 @@ export const evaluateRootDocumentComponent = (
     [],
     getSytheticNodeSource(componentNode, dependency),
     generateId,
-    module,
+    currentDependency.content,
     dependency,
     graph,
     EMPTY_ARRAY,
@@ -168,21 +164,19 @@ export const evaluateRootDocumentComponent = (
 };
 
 const _evaluateComponent = (
-  componentNode: TreeNode,
-  attributes: TreeNodeAttributes,
+  componentNode: PCComponentNode,
+  attributes: PCVisibleNodeAttributes,
   children: TreeNode[],
   source: SyntheticNodeSource,
   generateId: IDGenerator,
-  module: Module,
+  module: PCModuleNode,
   dependency,
   graph: DependencyGraph,
-  overrides: ComponentOverride[] = EMPTY_ARRAY,
+  overrides: PCOverrideNode[] = EMPTY_ARRAY,
   isRoot?: boolean,
   createdFromComponent?: boolean
 ) => {
-  const info = getComponentInfo(componentNode);
-  const ext = info.extends || DEFAULT_EXTENDS;
-  let template = info.template;
+  let template = getComponentTemplate(componentNode);
 
   const slots = {};
 
@@ -193,23 +187,23 @@ const _evaluateComponent = (
     }
     slots[slotName].push(child);
   }
-  const componentContainerName =
-    info.source.attributes[DEFAULT_NAMESPACE][PCSourceAttributeNames.CONTAINER];
+  const componentContainerName = componentNode.attributes.undefined.container;
 
-  const variants = (attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT)[
-    PCSourceAttributeNames.VARIANTS
-  ];
+  const variants = attributes.undefined.variants;
 
   let syntheticChildren = slots[componentContainerName];
 
   if (!syntheticChildren) {
-    template = info.states.reduce((template, state) => {
-      return (variants
-      ? variants.indexOf(state.name) !== -1
-      : isRoot && state.isDefault)
-        ? overrideComponentTemplate(template, state.overrides)
-        : template;
-    }, template);
+    template = getComponentVariants(componentNode).reduce(
+      (template, variant) => {
+        return (variants
+        ? variants.indexOf(variant.attributes.undefined.name) !== -1
+        : isRoot && variant.attributes.undefined.isDefault)
+          ? overrideComponentTemplate(template, variant.children)
+          : template;
+      },
+      template
+    );
 
     syntheticChildren = template
       ? template.children.map((child, i) =>
@@ -244,7 +238,7 @@ const _evaluateComponent = (
   // TODO - pass slots down
   // TODO - check for existing component extends:importName="component"
   let element = createSyntheticElement(
-    ext.tagName,
+    PCSourceTagNames.RECTANGLE,
     syntheticAttributes,
     syntheticChildren,
     source,
@@ -254,54 +248,35 @@ const _evaluateComponent = (
 };
 
 const overrideComponentTemplate = (
-  template: TreeNode,
-  overrides: ComponentOverride[]
-) => {
+  template: PCTemplateNode,
+  overrides: PCOverrideNode[]
+): PCTemplateNode => {
   for (let i = 0, { length } = overrides; i < length; i++) {
     const override = overrides[i];
-    if (override.type === ComponentOverrideType.DELETE_NODE) {
-      const deleteNodeOverride = override as DeleteChildOverride;
-      const ref = getNodeReference(deleteNodeOverride.target, template);
-      template = removeNestedTreeNode(ref, template);
-    } else if (override.type === ComponentOverrideType.INSERT_NODE) {
-      const insertNodeOverride = override as InsertChildOverride;
-      const beforeRef = insertNodeOverride.beforeChild
-        ? getNodeReference(insertNodeOverride.beforeChild, template)
-        : template.children.length
-          ? template.children[template.children.length - 1]
-          : null;
-      const parent = beforeRef
-        ? getParentTreeNode(beforeRef.id, template)
-        : template;
-      const index = beforeRef
-        ? parent.children.indexOf(beforeRef)
-        : parent.children.length;
-      template = updateNestedNode(parent, template, parent => ({
-        ...parent,
-        children: arraySplice(
-          parent.children,
-          index,
-          0,
-          insertNodeOverride.child
-        )
-      }));
-    } else if (override.type === ComponentOverrideType.SET_ATTRIBUTE) {
-      const setAttributeOverride = override as SetAttributeOverride;
-      const ref = getNodeReference(setAttributeOverride.target, template);
+    if (override.name === PCSourceTagNames.SET_ATTRIBUTE) {
+      const setAttributeOverride = override as PCSetAttributeOverrideNode;
+      const ref = getNodeReference(
+        setAttributeOverride.attributes.undefined.target,
+        template
+      );
       template = updateNestedNode(ref, template, ref =>
         setNodeAttribute(
           ref,
-          setAttributeOverride.name,
-          setAttributeOverride.value
+          setAttributeOverride.attributes.undefined.name,
+          setAttributeOverride.attributes.undefined.value
         )
       );
-    } else if (override.type === ComponentOverrideType.SET_STYLE) {
-      const setStyleOverride = override as SetStyleOverride;
-      const ref = getNodeReference(setStyleOverride.target, template);
+    } else if (override.name === PCSourceTagNames.SET_STYLE) {
+      const setStyleOverride = override as PCSetStyleOverrideNode;
+      const ref = getNodeReference(
+        setStyleOverride.attributes.undefined.target,
+        template
+      );
       template = updateNestedNode(ref, template, ref => {
         return setNodeAttribute(ref, "style", {
           ...(getAttribute(ref, "style") || EMPTY_OBJECT),
-          [setStyleOverride.name]: setStyleOverride.value
+          [setStyleOverride.attributes.undefined.name]:
+            setStyleOverride.attributes.undefined.value
         });
       });
     }
@@ -311,8 +286,8 @@ const overrideComponentTemplate = (
 };
 
 const evaluateNode = (
-  node: TreeNode,
-  module: Module,
+  node: PCBaseVisibleNode<any, any>,
+  module: PCModuleNode,
   generateId: IDGenerator,
   dependency: Dependency,
   graph: DependencyGraph,
@@ -320,14 +295,13 @@ const evaluateNode = (
   createdFromComponent?: boolean
 ) => {
   const nodeDependency = getNodeSourceDependency(node, dependency, graph);
-  const nodeModule = getModuleInfo(nodeDependency.content);
-  const nodeComponent = getModuleComponent(node.name, nodeModule);
+  const nodeComponent = getModuleComponent(node.name, module);
 
   let { children, attributes } = node;
 
   let tagName = node.name;
   let hasSlottedChildren = false;
-  const containerName = getAttribute(node, PCSourceAttributeNames.CONTAINER);
+  const containerName = node.attributes.undefined.container;
 
   if (containerName) {
     const slotChildren = slots[containerName] || EMPTY_ARRAY;
@@ -354,12 +328,12 @@ const evaluateNode = (
 
   if (nodeComponent) {
     return _evaluateComponent(
-      nodeComponent.source,
+      nodeComponent,
       node.attributes,
       children2,
       getSytheticNodeSource(node, dependency),
       generateId,
-      nodeModule,
+      module,
       nodeDependency,
       graph,
       EMPTY_ARRAY,
