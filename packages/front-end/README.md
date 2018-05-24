@@ -13,6 +13,15 @@ IMMEDIATE:
 - select newly inserted elements
 - When inserting new elements, only highlight slots when mouse is over component instance
 
+CLEAN UP:
+
+- auto generate tree node IDs
+- do not use `undefined` for default namespace
+- better typing for DSL
+- eliminiate getAttribute usage
+- evaluate whether to actually use `attributes` or `props`
+- eliminiate `ref` attribute. Use `id` instead.
+
 HIGH PRIO:
 
 - **move back to style sheets** - functionality is already built-in for overriding styles. Will be a cleaner compile. Works better for future

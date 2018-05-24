@@ -3,6 +3,8 @@ import { stringifyTreeNodeToXML } from "../utils/xml";
 import * as crc32 from "crc32";
 import { arraySplice } from "../utils/array";
 import { UIDGenerator, createUIDGenerator } from "../utils/uid";
+import { generateUID } from "../utils/uid";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "../utils";
 
 export const DEFAULT_NAMESPACE = "undefined";
 
@@ -47,6 +49,13 @@ export const findNestedNode = memoize((current: TreeNode, filter: NodeFilter) =>
       return foundChild;
     }
   }
+});
+
+export const createTreeNode = (name: string, attributes: TreeNodeAttributes = EMPTY_OBJECT, children: TreeNode[] = EMPTY_ARRAY): TreeNode => ({
+  id: generateUID(),
+  name,
+  attributes,
+  children
 });
 
 
@@ -221,9 +230,3 @@ export const getParentTreeNode = memoize((nodeId: string, root: TreeNode) => get
 export const addTreeNodeIds = <TTree extends TreeNode>(node: TTree, seed: string = ""): TTree => {
   return node.id ? node : cloneNode(node, createUIDGenerator(seed + generateTreeChecksum(node)));
 };
-
-export const stripTreeNodeIds = (node: TreeNode) => ({
-  ...node,
-  id: undefined,
-  children: node.children.map(stripTreeNodeIds)
-});
