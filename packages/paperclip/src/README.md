@@ -1,8 +1,8 @@
 Features:
 
-- variants
-- slots
-- components
+* variants
+* slots
+* components
 
 Example:
 
@@ -25,5 +25,7 @@ VM:
 ```typescript
 import { loadEntry, evaluateEntry } from "paperclip";
 const info = await loadEntry("test.pc", { openFile, graph });
-const { componentPreviews } = evaluateEntry(await loadEntry("test.pc", { openFile }));
+const { componentPreviews } = evaluateEntry(
+  await loadEntry("test.pc", { openFile })
+);
 ```

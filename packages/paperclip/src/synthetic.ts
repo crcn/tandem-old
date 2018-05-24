@@ -50,7 +50,8 @@ import {
   createTreeNode,
   ArrayOperationalTransform,
   castStyle,
-  mergeNodeAttributes
+  mergeNodeAttributes,
+  RecursivePartial
 } from "tandem-common";
 
 import {
@@ -128,6 +129,55 @@ export enum SyntheticObjectType {
   ELEMENT
 }
 
+export type SyntheticBaseNodeAttributes = {
+  [EDITOR_NAMESPACE]: {
+    expanded?: boolean;
+  };
+  [DEFAULT_NAMESPACE]: {
+    label?: string;
+  };
+};
+
+export type SyntheticNodeSource = {
+  uri: string;
+  path: number[];
+};
+
+type SyntheticBaseTreeNode<
+  TName extends string,
+  TAttributes extends TreeNodeAttributes
+> = {
+  source: SyntheticNodeSource;
+} & TreeNode<TName, TAttributes>;
+
+export type SyntheticRectangleNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    nativeType?: string;
+    container?: string;
+  };
+} & SyntheticBaseNodeAttributes;
+
+export type SyntheticRectangleNode = SyntheticBaseTreeNode<
+  PCSourceTagNames.RECTANGLE,
+  SyntheticRectangleNodeAttributes
+>;
+
+export type SyntheticTextNodeAttributes = {
+  [DEFAULT_NAMESPACE]: {
+    value: string;
+  };
+} & SyntheticBaseNodeAttributes;
+
+export type SyntheticTextNode = SyntheticBaseTreeNode<
+  PCSourceTagNames.TEXT,
+  SyntheticTextNodeAttributes
+>;
+
+export type SyntheticNode = SyntheticBaseTreeNode<
+  PCSourceTagNames.TEXT | PCSourceTagNames.RECTANGLE,
+  SyntheticRectangleNodeAttributes | SyntheticTextNodeAttributes
+>;
+
 export type SyntheticObject = {};
 
 export type ComputedDisplayInfo = {
@@ -162,15 +212,6 @@ export type SyntheticDocument = {
   computed?: ComputedDisplayInfo;
   bounds?: Bounds;
 };
-
-export type SyntheticNodeSource = {
-  uri: string;
-  path: number[];
-};
-
-export type SyntheticNode = {
-  source: SyntheticNodeSource;
-} & TreeNode<any, any>;
 
 export const updateSyntheticBrowser = (
   properties: Partial<SyntheticBrowser>,
@@ -284,17 +325,28 @@ export const addSyntheticWindow = (
     browser
   );
 
-export const createSyntheticElement = (
-  name: string,
-  attributes: TreeNodeAttributes,
+export const createSyntheticRectangle = (
+  attributes: SyntheticRectangleNodeAttributes,
   children: TreeNode<any, any>[],
   source: SyntheticNodeSource,
   id: string
-): SyntheticNode => ({
+): SyntheticRectangleNode => ({
   id,
-  name,
+  name: PCSourceTagNames.RECTANGLE,
   attributes,
   children,
+  source
+});
+
+export const createSyntheticTextNode = (
+  attributes: SyntheticTextNodeAttributes,
+  source: SyntheticNodeSource,
+  id: string
+): SyntheticTextNode => ({
+  id,
+  name: PCSourceTagNames.TEXT,
+  attributes,
+  children: [],
   source
 });
 
@@ -1368,7 +1420,7 @@ export const persistSetElementVariants = (
   );
 };
 export const persistComponentVariantChanged = (
-  properties: Partial<PCVariantNodeAttributes>,
+  properties: RecursivePartial<PCVariantNodeAttributes>,
   name: string,
   componentNodeId: string,
   browser: SyntheticBrowser

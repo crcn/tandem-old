@@ -2,7 +2,9 @@ import { mapValues } from "lodash";
 import {
   ComputedDisplayInfo,
   EditorAttributeNames,
-  EDITOR_NAMESPACE
+  EDITOR_NAMESPACE,
+  SyntheticNode,
+  SyntheticRectangleNode
 } from "./synthetic";
 import {
   TreeNode,
@@ -18,7 +20,7 @@ import {
   MoveChildTransform,
   patchNode
 } from "tandem-common";
-import { PCSourceAttributeNames } from ".";
+import { PCRectangleNodeAttributeNames, PCSourceTagNames, PCTextNode } from ".";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node;
@@ -26,7 +28,7 @@ export type SyntheticNativeNodeMap = {
 
 export const renderDOM = (
   native: HTMLElement,
-  synthetic: TreeNode,
+  synthetic: SyntheticNode,
   document: Document = window.document
 ) => {
   let parentNative;
@@ -77,7 +79,7 @@ export const computeDisplayInfo = (
 };
 
 const setStyleConstraintsIfRoot = (
-  synthetic: TreeNode,
+  synthetic: SyntheticNode,
   nativeElement: HTMLElement
 ) => {
   const isRoot = getAttribute(
@@ -92,7 +94,7 @@ const setStyleConstraintsIfRoot = (
 };
 
 const createNativeNode = (
-  synthetic: TreeNode,
+  synthetic: SyntheticNode,
   document: Document,
   map: SyntheticNativeNodeMap
 ) => {
@@ -100,7 +102,8 @@ const createNativeNode = (
   const nativeElement = document.createElement(
     isText
       ? "span"
-      : getAttribute(synthetic, PCSourceAttributeNames.NATIVE_TYPE) || "div"
+      : (synthetic as SyntheticRectangleNode).attributes.undefined.nativeType ||
+        "div"
   );
 
   const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
@@ -117,12 +120,12 @@ const createNativeNode = (
   if (isText) {
     nativeElement.appendChild(
       document.createTextNode(
-        getAttribute(synthetic, "value", DEFAULT_NAMESPACE)
+        (synthetic as PCTextNode).attributes.undefined.value
       )
     );
   } else {
     for (let i = 0, { length } = synthetic.children; i < length; i++) {
-      const childSynthetic = synthetic.children[i];
+      const childSynthetic = synthetic.children[i] as SyntheticNode;
       nativeElement.appendChild(
         createNativeNode(childSynthetic, document, map)
       );
@@ -134,7 +137,7 @@ const createNativeNode = (
 };
 
 const removeElementsFromMap = (
-  synthetic: TreeNode,
+  synthetic: SyntheticNode,
   map: SyntheticNativeNodeMap
 ) => {
   map[synthetic.id] = undefined;
@@ -145,12 +148,12 @@ const removeElementsFromMap = (
 
 export const patchDOM = (
   transforms: OperationalTransform[],
-  synthetic: TreeNode,
+  synthetic: SyntheticNode,
   root: HTMLElement,
   map: SyntheticNativeNodeMap
 ) => {
   let newMap = map;
-  let newSyntheticTree: TreeNode = synthetic;
+  let newSyntheticTree: SyntheticNode = synthetic;
 
   for (const transform of transforms) {
     const target = getElementFromPath(transform.path, root);
@@ -167,9 +170,12 @@ export const patchDOM = (
             resetElementStyle(target, syntheticTarget);
             setStyleConstraintsIfRoot(syntheticTarget, target);
             makeElementClickable(target, syntheticTarget);
-          } else if (name === "value" && syntheticTarget.name === "text") {
+          } else if (
+            name === "value" &&
+            syntheticTarget.name === PCSourceTagNames.TEXT
+          ) {
             target.childNodes[0].nodeValue = value;
-          } else if (name === PCSourceAttributeNames.NATIVE_TYPE) {
+          } else if (name === PCRectangleNodeAttributeNames.NATIVE_TYPE) {
             const parent = target.parentNode;
             if (newMap === map) {
               newMap = { ...map };
@@ -192,7 +198,7 @@ export const patchDOM = (
             newMap = { ...map };
           }
           const nativeChild = createNativeNode(
-            child,
+            child as SyntheticNode,
             root.ownerDocument,
             newMap
           );
@@ -221,7 +227,10 @@ export const patchDOM = (
   return newMap;
 };
 
-const makeElementClickable = (target: HTMLElement, synthetic: TreeNode) => {
+const makeElementClickable = (
+  target: HTMLElement,
+  synthetic: SyntheticNode
+) => {
   const isRoot = getAttribute(
     synthetic,
     EditorAttributeNames.IS_COMPONENT_ROOT,
@@ -258,14 +267,17 @@ const makeElementClickable = (target: HTMLElement, synthetic: TreeNode) => {
   }
 };
 
-const resetElementStyle = (target: HTMLElement, synthetic: TreeNode) => {
+const resetElementStyle = (target: HTMLElement, synthetic: SyntheticNode) => {
   removeClickableStyle(target, synthetic);
   const style = getAttribute(synthetic, "style") || {};
   target.setAttribute("style", "");
   Object.assign(target.style, normalizeStyle(style));
 };
 
-const removeClickableStyle = (target: HTMLElement, synthetic: TreeNode) => {
+const removeClickableStyle = (
+  target: HTMLElement,
+  synthetic: SyntheticNode
+) => {
   if (target.dataset.empty === "1") {
     target.dataset.empty = null;
     target.innerHTML = ``;

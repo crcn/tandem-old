@@ -43,7 +43,6 @@ import {
   getSyntheticWindow,
   SyntheticObjectType,
   getSyntheticWindowDependency,
-  getComponentInfo,
   getSyntheticDocumentById,
   getSyntheticNodeDocument,
   getSyntheticNodeBounds,
@@ -87,7 +86,7 @@ export const REGISTERED_COMPONENT = "REGISTERED_COMPONENT";
 export type RegisteredComponent = {
   uri?: string;
   tagName: string;
-  template: TreeNode;
+  template: TreeNode<any, any>;
 };
 
 export type Canvas = {
@@ -1070,7 +1069,7 @@ export const getScaledMouseCanvasPosition = (
 export const getCanvasMouseTargetNodeId = (
   state: RootState,
   event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked,
-  filter?: (node: TreeNode) => boolean
+  filter?: (node: TreeNode<any, any>) => boolean
 ): string => {
   return getCanvasMouseTargetNodeIdFromPoint(
     state,
@@ -1085,7 +1084,7 @@ export const getCanvasMouseTargetNodeId = (
 export const getCanvasMouseTargetNodeIdFromPoint = (
   state: RootState,
   point: Point,
-  filter?: (node: TreeNode) => boolean
+  filter?: (node: TreeNode<any, any>) => boolean
 ): string => {
   const canvas = getActiveEditor(state).canvas;
   const translate = getCanvasTranslate(canvas);

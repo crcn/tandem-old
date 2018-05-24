@@ -5,18 +5,18 @@ import { compose, pure } from "recompose";
 export type PresetOption = {
   name: string;
   value: string;
-}
+};
 
 export type PresetComponentOuterProps = {
   values: PresetOption[];
 };
 
 const BasePresetComponent = ({ values }: PresetComponentOuterProps) => {
-  return <div className="m-presets m-hidden">
-    <div className="content">
-      TODO
+  return (
+    <div className="m-presets m-hidden">
+      <div className="content">TODO</div>
     </div>
-  </div>;
+  );
 };
 
 const enhance = compose<PresetComponentOuterProps, PresetComponentOuterProps>(
@@ -24,5 +24,3 @@ const enhance = compose<PresetComponentOuterProps, PresetComponentOuterProps>(
 );
 
 export const PresetComponent = enhance(BasePresetComponent);
-
-

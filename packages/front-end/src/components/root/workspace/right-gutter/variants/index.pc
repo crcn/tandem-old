@@ -34,7 +34,7 @@
                 "undefined": {
                   "style": {},
                   "label": "Items container",
-                  "native-type": "div",
+                  "nativeType": "div",
                   "container": "containerd1901a08"
                 }
               },
@@ -137,7 +137,7 @@
                     "alignItems": "center"
                   },
                   "label": "Container",
-                  "native-type": "div"
+                  "nativeType": "div"
                 }
               },
               "children": [
@@ -150,7 +150,7 @@
                         "marginRight": "6px"
                       },
                       "label": "checkbox container",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "container": "containerea940ca5"
                     }
                   },
@@ -167,7 +167,7 @@
                             "borderRadius": "2px"
                           },
                           "label": "placeholder",
-                          "native-type": "div"
+                          "nativeType": "div"
                         }
                       },
                       "children": []
@@ -183,7 +183,7 @@
                         "width": "100%"
                       },
                       "label": "label container",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "container": "container6ffbc908"
                     }
                   },

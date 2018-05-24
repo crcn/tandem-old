@@ -197,8 +197,12 @@ import {
   persistSetElementVariants,
   PCSourceTagNames,
   persistInsertNode,
+  PCVisibleNode,
+  PCComponentNode,
   persistConvertNodeToComponent,
-  isSyntheticDocumentRoot
+  isSyntheticDocumentRoot,
+  PCTextNode,
+  PCRectangleNode
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -272,7 +276,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
   switch (action.type) {
     case PROJECT_DIRECTORY_LOADED: {
       const { directory } = action as ProjectDirectoryLoaded;
-      console.log(directory);
       return updateRootState({ projectDirectory: directory }, state);
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
@@ -472,10 +475,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const sourceNode = getSyntheticSourceNode(
         state.selectedNodeIds[0],
         state.browser
-      );
+      ) as PCComponentNode;
       state = persistRootStateBrowser(
-        browser =>
-          persistInsertNewComponentVariant(value, sourceNode.id, browser),
+        browser => persistInsertNewComponentVariant(value, sourceNode, browser),
         state
       );
       return state;
@@ -506,11 +508,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
       state = persistRootStateBrowser(
         browser =>
-          persistRemoveComponentVariant(
-            name,
-            sourceComponent.source.id,
-            browser
-          ),
+          persistRemoveComponentVariant(name, sourceComponent.id, browser),
         state
       );
       return state;
@@ -1049,7 +1047,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootStateBrowser(browser => {
         return persistChangeNodeType(
           nativeType,
-          getSyntheticSourceNode(state.selectedNodeIds[0], state.browser).id,
+          getSyntheticSourceNode(
+            state.selectedNodeIds[0],
+            state.browser
+          ) as PCRectangleNode,
           browser
         );
       }, state);
@@ -1060,7 +1061,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootStateBrowser(browser => {
         return persistTextValue(
           value,
-          getSyntheticSourceNode(state.selectedNodeIds[0], state.browser).id,
+          getSyntheticSourceNode(
+            state.selectedNodeIds[0],
+            state.browser
+          ) as PCTextNode,
           browser
         );
       }, state);

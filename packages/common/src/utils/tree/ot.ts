@@ -38,7 +38,7 @@ export type SetAttributeTransform = {
 } & OperationalTransform;
 
 export type InsertChildTransform = {
-  child: TreeNode;
+  child: TreeNode<any, any>;
   index: number;
 } & OperationalTransform;
 
@@ -66,7 +66,7 @@ export const createSetAttributeTransform = (
 
 export const createInsertChildTransform = (
   path: number[],
-  child: TreeNode,
+  child: TreeNode<any, any>,
   index: number
 ): InsertChildTransform => ({
   type: OperationalTransformType.INSERT_CHILD,
@@ -96,8 +96,8 @@ export const createMoveChildTransform = (
 });
 
 export const diffNode = (
-  a: TreeNode,
-  b: TreeNode,
+  a: TreeNode<any, any>,
+  b: TreeNode<any, any>,
   path: number[] = [],
   diffs: OperationalTransform[] = []
 ) => {
@@ -140,7 +140,7 @@ export const diffNode = (
   for (const ot of cots) {
     switch (ot.type) {
       case ArrayOperationalTransformType.INSERT: {
-        const { value, index } = ot as ArrayInsertMutation<TreeNode>;
+        const { value, index } = ot as ArrayInsertMutation<TreeNode<any, any>>;
         diffs.push(createInsertChildTransform(path, value, index));
         break;
       }
@@ -150,7 +150,7 @@ export const diffNode = (
           originalOldIndex,
           index,
           newValue
-        } = ot as ArrayUpdateMutation<TreeNode>;
+        } = ot as ArrayUpdateMutation<TreeNode<any, any>>;
         if (patchedOldIndex !== index) {
           diffs.push(createMoveChildTransform(path, patchedOldIndex, index));
         }
@@ -173,7 +173,7 @@ export const diffNode = (
   return diffs;
 };
 
-export const patchNode = <TNode extends TreeNode>(
+export const patchNode = <TNode extends TreeNode<any, any>>(
   ots: OperationalTransform[],
   a: TNode
 ): TNode => {

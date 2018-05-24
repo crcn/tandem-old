@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dispatch } from "redux";
-import { compose, pure } from "recompose";
+import { compose, pure } from "recompose";
 const { Tabs: BaseTabs, Tab: BaseTab } = require("./index.pc");
 
 export type TabItem = {
@@ -16,15 +16,22 @@ type TabsOuterProps = {
   children: any;
 };
 
-export const TabsComponent = compose<TabsOuterProps, TabsOuterProps>(
-  pure
-)(({ items, style, onTabClick, children}: TabsOuterProps) => {
-  return <BaseTabs style={style} barChildren={
-      items.map((item, i) => {
-        return <BaseTab labelChildren={item.label} variants={item.selected ? ["Selected"] : null} onClick={() => onTabClick(item)} />
-      })
-    }
-    contentChildren={children}
-  />
-});
-
+export const TabsComponent = compose<TabsOuterProps, TabsOuterProps>(pure)(
+  ({ items, style, onTabClick, children }: TabsOuterProps) => {
+    return (
+      <BaseTabs
+        style={style}
+        barChildren={items.map((item, i) => {
+          return (
+            <BaseTab
+              labelChildren={item.label}
+              variants={item.selected ? ["Selected"] : null}
+              onClick={() => onTabClick(item)}
+            />
+          );
+        })}
+        contentChildren={children}
+      />
+    );
+  }
+);

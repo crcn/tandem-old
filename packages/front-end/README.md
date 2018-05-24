@@ -24,6 +24,9 @@ CLEAN UP:
 * change `xmlns` to `ns`
 * component style props need to go on `template` instead
 * move `Dependency` to separate
+* root nodes must have separate bounds param
+* use Box (left, top, width, height) instead of bounds
+* add Constraints (left, top, right, bottom)
 
 HIGH PRIO:
 

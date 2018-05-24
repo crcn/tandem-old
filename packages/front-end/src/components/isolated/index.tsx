@@ -1,11 +1,14 @@
-import React =  require("react");
+import React = require("react");
 import ReactDOM = require("react-dom");
 import * as PropTypes from "prop-types";
 import { bubbleHTMLIframeEvents, Point } from "tandem-common";
 
-class IsolateContent extends React.Component<{ children: any, dragDropManager: any }, any> {
+class IsolateContent extends React.Component<
+  { children: any; dragDropManager: any },
+  any
+> {
   static childContextTypes = {
-    dragDropManager: PropTypes.object.isRequired,
+    dragDropManager: PropTypes.object.isRequired
   };
   getChildContext() {
     return {
@@ -17,27 +20,29 @@ class IsolateContent extends React.Component<{ children: any, dragDropManager: a
   }
 }
 
-export class Isolate extends React.Component<{
-  inheritCSS?: boolean,
-  onMouseDown?: any,
-  onKeyDown?: any,
-  onLoad?: any,
-  scrollPosition?: Point;
-  children: any,
-  ignoreInputEvents?: boolean;
-  translateMousePositions?: boolean;
-  onScroll?: any,
-  scrolling?: boolean,
-  style?: any,
-  onWheel?: any,
-  onDragOver?: any,
-  className?: string,
-  onDrop?: any
-}, any> {
-
+export class Isolate extends React.Component<
+  {
+    inheritCSS?: boolean;
+    onMouseDown?: any;
+    onKeyDown?: any;
+    onLoad?: any;
+    scrollPosition?: Point;
+    children: any;
+    ignoreInputEvents?: boolean;
+    translateMousePositions?: boolean;
+    onScroll?: any;
+    scrolling?: boolean;
+    style?: any;
+    onWheel?: any;
+    onDragOver?: any;
+    className?: string;
+    onDrop?: any;
+  },
+  any
+> {
   static contextTypes = {
-    dragDropManager: PropTypes.object.isRequired,
-  }
+    dragDropManager: PropTypes.object.isRequired
+  };
 
   private _mountElement: any;
   private _iframe: HTMLIFrameElement;
@@ -50,19 +55,22 @@ export class Isolate extends React.Component<{
     this.context.dragDropManager.getBackend().addEventListeners(this.window);
 
     if (this.props.inheritCSS) {
-      const head    = this.head;
+      const head = this.head;
 
       const tags = [
-        ...Array.prototype.slice.call(document.getElementsByTagName("style"), 0),
+        ...Array.prototype.slice.call(
+          document.getElementsByTagName("style"),
+          0
+        ),
         ...Array.prototype.slice.call(document.getElementsByTagName("link"), 0)
       ];
 
-      Array.prototype.forEach.call(tags, function (style) {
+      Array.prototype.forEach.call(tags, function(style) {
         head.appendChild(style.cloneNode(true));
       });
     }
 
-    this.body.appendChild(this._mountElement = document.createElement("div"));
+    this.body.appendChild((this._mountElement = document.createElement("div")));
 
     if (this.props.onMouseDown) {
       this.body.addEventListener("mousedown", this.props.onMouseDown);
@@ -86,7 +94,10 @@ export class Isolate extends React.Component<{
     const scrollPosition = this.props.scrollPosition as Point;
 
     if (this.window && scrollPosition) {
-      if (scrollPosition.left !== this.window.scrollX || scrollPosition.top !== this.window.scrollY) {
+      if (
+        scrollPosition.left !== this.window.scrollX ||
+        scrollPosition.top !== this.window.scrollY
+      ) {
         this.window.scrollTo(scrollPosition.left, scrollPosition.top);
       }
     }
@@ -106,15 +117,18 @@ export class Isolate extends React.Component<{
 
   onLoad = () => {
     if (this.props.onLoad) this.props.onLoad();
-  }
+  };
 
   _render() {
     if (window["$synthetic"]) return;
     if (this.props.children && this._mountElement) {
-      ReactDOM.render(React.createElement(IsolateContent, {
-        children: this.props.children,
-        dragDropManager: this.context.dragDropManager
-      }), this._mountElement);
+      ReactDOM.render(
+        React.createElement(IsolateContent, {
+          children: this.props.children,
+          dragDropManager: this.context.dragDropManager
+        }),
+        this._mountElement
+      );
     }
   }
 
@@ -125,29 +139,39 @@ export class Isolate extends React.Component<{
     });
   }
 
-  onWheel = (event) => {
+  onWheel = event => {
     this.props.onWheel(event);
-  }
+  };
 
-  onScroll = (event) => {
+  onScroll = event => {
     if (this.props.onScroll) this.props.onScroll(event);
     if (this.props.scrolling === false) {
       const db = this._iframe.contentDocument;
       db.body.scrollLeft = db.body.scrollTop = 0;
     }
-  }
+  };
 
   setIframe = (iframe: HTMLIFrameElement) => {
     this._iframe = iframe;
   };
 
   render() {
-
     // TODO - eventually want to use iframes. Currently not supported though.
     if (window["$synthetic"]) {
       return <span>{this.props.children}</span>;
     }
 
-    return <iframe ref={this.setIframe} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop} onWheel={this.onWheel} onScroll={this.onScroll} onLoad={this.onLoad} className={this.props.className} style={this.props.style} />;
+    return (
+      <iframe
+        ref={this.setIframe}
+        onDragOver={this.props.onDragOver}
+        onDrop={this.props.onDrop}
+        onWheel={this.onWheel}
+        onScroll={this.onScroll}
+        onLoad={this.onLoad}
+        className={this.props.className}
+        style={this.props.style}
+      />
+    );
   }
 }

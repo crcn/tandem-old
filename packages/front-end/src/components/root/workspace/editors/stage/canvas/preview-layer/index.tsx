@@ -4,9 +4,9 @@
 
 import "./index.scss";
 import * as React from "react";
-import { EMPTY_ARRAY } from "tandem-common";
+import { EMPTY_ARRAY } from "tandem-common";
 import { SyntheticWindow, Dependency } from "paperclip";
-import { DocumentPreviewComponent } from "./document";
+import { DocumentPreviewComponent } from "./document";
 import { compose, pure, withHandlers, lifecycle } from "recompose";
 
 export type PreviewLayerOuterProps = {
@@ -14,9 +14,22 @@ export type PreviewLayerOuterProps = {
   dependency: Dependency;
 };
 
-const BasePreviewLayerComponent = ({ window, dependency }: PreviewLayerOuterProps) => <div className="m-preview-layer">
-  { (window && window.documents || EMPTY_ARRAY).map(document => <DocumentPreviewComponent key={document.id} document={document} dependency={dependency} />)}
-</div>;
+const BasePreviewLayerComponent = ({
+  window,
+  dependency
+}: PreviewLayerOuterProps) => (
+  <div className="m-preview-layer">
+    {((window && window.documents) || EMPTY_ARRAY).map(document => (
+      <DocumentPreviewComponent
+        key={document.id}
+        document={document}
+        dependency={dependency}
+      />
+    ))}
+  </div>
+);
 
-
-export const PreviewLayerComponent = compose<PreviewLayerOuterProps, PreviewLayerOuterProps>(pure)(BasePreviewLayerComponent);
+export const PreviewLayerComponent = compose<
+  PreviewLayerOuterProps,
+  PreviewLayerOuterProps
+>(pure)(BasePreviewLayerComponent);

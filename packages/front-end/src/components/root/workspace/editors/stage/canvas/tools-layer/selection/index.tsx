@@ -8,7 +8,11 @@ import { Resizer } from "./resizer";
 // import { selectorDoubleClicked } from "front-end/actions";
 import { Dispatch } from "redux";
 import { mergeBounds } from "tandem-common";
-import { RootState, getBoundedSelection, Editor } from "../../../../../../../../state";
+import {
+  RootState,
+  getBoundedSelection,
+  Editor
+} from "../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../actions";
 import { getSyntheticNodeBounds, getSyntheticWindow } from "paperclip";
 
@@ -17,17 +21,27 @@ export type SelectionOuterProps = {
   zoom: number;
   root: RootState;
   editor: Editor;
-}
+};
 
 export type SelectionInnerProps = {
   setSelectionElement(element: HTMLDivElement);
   onDoubleClick(event: React.MouseEvent<any>);
 } & SelectionOuterProps;
 
-const  SelectionBounds = ({ editor,root, zoom }: { root: RootState, zoom: number, editor: Editor }) => {
+const SelectionBounds = ({
+  editor,
+  root,
+  zoom
+}: {
+  root: RootState;
+  zoom: number;
+  editor: Editor;
+}) => {
   const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
   const selection = getBoundedSelection(root);
-  const entireBounds = mergeBounds(...selection.map(value => getSyntheticNodeBounds(value, root.browser)));
+  const entireBounds = mergeBounds(
+    ...selection.map(value => getSyntheticNodeBounds(value, root.browser))
+  );
   const style = {};
   const borderWidth = 1 / zoom;
   const boundsStyle = {
@@ -41,23 +55,36 @@ const  SelectionBounds = ({ editor,root, zoom }: { root: RootState, zoom: numbe
     boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
   };
 
-  return <div style={boundsStyle as any}></div>;
+  return <div style={boundsStyle as any} />;
 };
 
-export const  SelectionCanvasToolBase = ({ editor, root, dispatch, onDoubleClick, zoom }: SelectionInnerProps) => {
+export const SelectionCanvasToolBase = ({
+  editor,
+  root,
+  dispatch,
+  onDoubleClick,
+  zoom
+}: SelectionInnerProps) => {
   const selection = getBoundedSelection(root);
   if (!selection.length || editor.canvas.secondarySelection) return null;
 
-  return <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
-    <SelectionBounds root={root} zoom={zoom} editor={editor} />
-    <Resizer root={root} editor={editor} dispatch={dispatch} zoom={zoom} />
-  </div>;
+  return (
+    <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
+      <SelectionBounds root={root} zoom={zoom} editor={editor} />
+      <Resizer root={root} editor={editor} dispatch={dispatch} zoom={zoom} />
+    </div>
+  );
 };
 
-const enhanceSelectionCanvasTool = compose<SelectionInnerProps, SelectionOuterProps>(
+const enhanceSelectionCanvasTool = compose<
+  SelectionInnerProps,
+  SelectionOuterProps
+>(
   pure,
   withHandlers({
-    onDoubleClick: ({ dispatch, root }: SelectionInnerProps) => (event: React.MouseEvent<any>) => {
+    onDoubleClick: ({ dispatch, root }: SelectionInnerProps) => (
+      event: React.MouseEvent<any>
+    ) => {
       const selection = getBoundedSelection(root);
       if (selection.length === 1) {
         dispatch(selectorDoubleClicked(selection[0], event));
@@ -66,6 +93,8 @@ const enhanceSelectionCanvasTool = compose<SelectionInnerProps, SelectionOuterPr
   })
 );
 
-export const  SelectionCanvasTool = enhanceSelectionCanvasTool(SelectionCanvasToolBase);
+export const SelectionCanvasTool = enhanceSelectionCanvasTool(
+  SelectionCanvasToolBase
+);
 
 export * from "./resizer";

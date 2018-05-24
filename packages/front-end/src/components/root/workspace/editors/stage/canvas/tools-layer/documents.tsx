@@ -5,8 +5,21 @@ import { Translate, getBoundsSize, getAttribute } from "tandem-common";
 import { RootState, Editor } from "../../../../../../../state";
 import { wrapEventToDispatch } from "../../../../../../../utils";
 import { Dispatch } from "redux";
-import {SyntheticBrowser, SyntheticWindow, getSyntheticWindow, SyntheticDocument, DependencyGraph, getSytheticNodeSource, getSyntheticDocumentDependency, getSyntheticNodeSourceComponent, PCSourceAttributeNames } from "paperclip";
-import { canvasToolDocumentTitleClicked, canvasToolWindowKeyDown, canvasToolWindowBackgroundClicked } from "../../../../../../../actions";
+import {
+  SyntheticBrowser,
+  SyntheticWindow,
+  getSyntheticWindow,
+  SyntheticDocument,
+  DependencyGraph,
+  getSytheticNodeSource,
+  getSyntheticDocumentDependency,
+  getSyntheticNodeSourceComponent
+} from "paperclip";
+import {
+  canvasToolDocumentTitleClicked,
+  canvasToolWindowKeyDown,
+  canvasToolWindowBackgroundClicked
+} from "../../../../../../../actions";
 
 type DocumentItemInnerProps = {
   browser: SyntheticBrowser;
@@ -15,8 +28,12 @@ type DocumentItemInnerProps = {
   translate: Translate;
 };
 
-const DocumentItemBase = ({ browser, document, translate, dispatch }: DocumentItemInnerProps) => {
-
+const DocumentItemBase = ({
+  browser,
+  document,
+  translate,
+  dispatch
+}: DocumentItemInnerProps) => {
   const { width, height } = getBoundsSize(document.bounds);
 
   const style = {
@@ -24,7 +41,7 @@ const DocumentItemBase = ({ browser, document, translate, dispatch }: DocumentIt
     height,
     left: document.bounds.left,
     top: document.bounds.top,
-    background: "transparent",
+    background: "transparent"
   };
 
   const titleScale = Math.max(1 / translate.zoom, 0.03);
@@ -39,7 +56,7 @@ const DocumentItemBase = ({ browser, document, translate, dispatch }: DocumentIt
     height: 30,
     overflow: "hidden",
     textOverflow: "ellipsis",
-    width: width * translate.zoom,
+    width: width * translate.zoom
   };
 
   const contentStyle = {
@@ -47,19 +64,29 @@ const DocumentItemBase = ({ browser, document, translate, dispatch }: DocumentIt
     background: "transparent"
   };
 
-  return <div className="m-documents-stage-tool-item" style={style}>
-    <div
-    className="m-documents-stage-tool-item-title"
-    tabIndex={-1}
-    style={titleStyle as any}
-    onKeyDown={wrapEventToDispatch(dispatch, canvasToolWindowKeyDown.bind(this, document.id))}
-    onClick={wrapEventToDispatch(dispatch, canvasToolDocumentTitleClicked.bind(this, document.id))}>
-      { getAttribute(document.root, PCSourceAttributeNames.LABEL) || "Untitled" }
+  return (
+    <div className="m-documents-stage-tool-item" style={style}>
+      <div
+        className="m-documents-stage-tool-item-title"
+        tabIndex={-1}
+        style={titleStyle as any}
+        onKeyDown={wrapEventToDispatch(
+          dispatch,
+          canvasToolWindowKeyDown.bind(this, document.id)
+        )}
+        onClick={wrapEventToDispatch(
+          dispatch,
+          canvasToolDocumentTitleClicked.bind(this, document.id)
+        )}
+      >
+        {document.root.attributes.undefined.label || "Untitled"}
+      </div>
+      <div
+        className="m-documents-stage-tool-item-content"
+        style={contentStyle}
+      />
     </div>
-    <div className="m-documents-stage-tool-item-content" style={contentStyle}>
-
-    </div>
-  </div>
+  );
 };
 
 const DocumentItem = pure(DocumentItemBase as any) as typeof DocumentItemBase;
@@ -71,7 +98,12 @@ export type DocumentsCanvasToolInnerProps = {
   dispatch: Dispatch<any>;
 };
 
-export const DocumentsCanvasToolBase = ({ root, editor, translate, dispatch }: DocumentsCanvasToolInnerProps) => {
+export const DocumentsCanvasToolBase = ({
+  root,
+  editor,
+  translate,
+  dispatch
+}: DocumentsCanvasToolInnerProps) => {
   const { backgroundColor, fullScreen } = editor.canvas;
 
   const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
@@ -82,15 +114,34 @@ export const DocumentsCanvasToolBase = ({ root, editor, translate, dispatch }: D
 
   const backgroundStyle = {
     backgroundColor: backgroundColor || "rgba(0, 0, 0, 0.05)",
-    transform: `translate(${-translate.left / translate.zoom}px, ${-translate.top / translate.zoom}px) scale(${1 / translate.zoom}) translateZ(0)`,
+    transform: `translate(${-translate.left /
+      translate.zoom}px, ${-translate.top / translate.zoom}px) scale(${1 /
+      translate.zoom}) translateZ(0)`,
     transformOrigin: "top left"
   };
-  return <div className="m-documents-stage-tool">
-    <div style={backgroundStyle} className="m-documents-stage-tool-background" onClick={wrapEventToDispatch(dispatch, canvasToolWindowBackgroundClicked)} />
-    {
-      activeWindow.documents.map((document) => <DocumentItem key={document.id} browser={root.browser} document={document} dispatch={dispatch} translate={translate} />)
-    }
-  </div>;
-}
+  return (
+    <div className="m-documents-stage-tool">
+      <div
+        style={backgroundStyle}
+        className="m-documents-stage-tool-background"
+        onClick={wrapEventToDispatch(
+          dispatch,
+          canvasToolWindowBackgroundClicked
+        )}
+      />
+      {activeWindow.documents.map(document => (
+        <DocumentItem
+          key={document.id}
+          browser={root.browser}
+          document={document}
+          dispatch={dispatch}
+          translate={translate}
+        />
+      ))}
+    </div>
+  );
+};
 
-export const DocumentsCanvasTool = pure(DocumentsCanvasToolBase as any) as typeof DocumentsCanvasToolBase;
+export const DocumentsCanvasTool = pure(
+  DocumentsCanvasToolBase as any
+) as typeof DocumentsCanvasToolBase;

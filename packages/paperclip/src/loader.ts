@@ -12,14 +12,7 @@ import {
   xmlToTreeNode,
   createTreeNode
 } from "tandem-common";
-import {
-  Module,
-  Component,
-  ComponentOverride,
-  getModuleInfo,
-  Dependency,
-  DependencyGraph
-} from "./dsl";
+import { Dependency, DependencyGraph, PCModuleNode } from "./dsl";
 export type FileLoader = (uri: string) => string | Promise<string>;
 
 export type LoadEntryOptions = {
@@ -48,14 +41,14 @@ export const loadEntry = async (
     const absolutePaths = [];
     const importUris = {};
 
-    for (const xmlns in module.imports) {
-      const relativePath = module.imports[xmlns];
+    for (const xmlns in module.attributes.xmlns || EMPTY_OBJECT) {
+      const relativePath = module.attributes.xmlns[xmlns];
       const absolutePath = resolveFilePath(relativePath, currentUri);
       importUris[relativePath] = absolutePath;
       queue.push(absolutePath);
     }
 
-    const dependency = createDependency(currentUri, module.source, importUris);
+    const dependency = createDependency(currentUri, module, importUris);
     graph[currentUri] = dependency;
   }
 
@@ -67,7 +60,7 @@ export const loadEntry = async (
 
 const createDependency = (
   uri: string,
-  content: TreeNode,
+  content: PCModuleNode,
   importUris
 ): Dependency => ({
   uri,
@@ -87,7 +80,7 @@ const parseNodeSource = (source: string) => {
 const loadModule = async (
   uri: string,
   options: LoadEntryOptions
-): Promise<Module> => {
+): Promise<PCModuleNode> => {
   const content = await options.openFile(uri);
 
   // TODO - support other extensions in the future like images
@@ -96,16 +89,14 @@ const loadModule = async (
     throw new Error(`XML is not supported yet`);
   } else if (/pc$/.test(uri)) {
     try {
-      const moduleSource = parseNodeSource(content);
-      return getModuleInfo(moduleSource);
+      return parseNodeSource(content);
     } catch (e) {
       console.warn(e);
-      return getModuleInfo(createTreeNode("module"));
+      return createTreeNode("module");
     }
   } else if (!/json$/.test(uri)) {
     throw new Error(`Unsupported import ${uri}.`);
   } else {
-    const moduleSource = JSON.parse(content);
-    return getModuleInfo(moduleSource);
+    return JSON.parse(content);
   }
 };

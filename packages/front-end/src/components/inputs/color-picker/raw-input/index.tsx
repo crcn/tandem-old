@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { TextInputComponent } from "../../../inputs/text";
+import { TextInputComponent } from "../../../inputs/text";
 import { compose, pure, withState, withHandlers } from "recompose";
 
 type InputComponentProps = {
@@ -12,57 +12,65 @@ type LabeledInputComponentProps = {
   label: string;
 } & InputComponentProps;
 
-
-export type RawColorInputOuterProps = {
-} & InputComponentProps;
+export type RawColorInputOuterProps = {} & InputComponentProps;
 
 export type RawColorInputInputProps = {
   currentInputIndex: number;
   onSwitcherClick: () => any;
 } & RawColorInputOuterProps;
 
-
-const InputComponent = ({ value, label, onChange }: LabeledInputComponentProps) => {
-  return <div className="field">
-    <TextInputComponent  onChange={onChange} />
-    <label>{label}</label>
-  </div>;
+const InputComponent = ({
+  value,
+  label,
+  onChange
+}: LabeledInputComponentProps) => {
+  return (
+    <div className="field">
+      <TextInputComponent onChange={onChange} />
+      <label>{label}</label>
+    </div>
+  );
 };
 
 const HexInputComponent = ({ value }: InputComponentProps) => {
-  return <div className="fields">
-    <InputComponent label="hex" value={0} />
-  </div>
+  return (
+    <div className="fields">
+      <InputComponent label="hex" value={0} />
+    </div>
+  );
 };
 
 const RGBAInputComponent = ({ value }: InputComponentProps) => {
-  return <div className="fields">
-    <InputComponent label="r" value={0} />
-    <InputComponent label="g" value={0} />
-    <InputComponent label="b" value={0} />
-    <InputComponent label="a" value={0} />
-  </div>
+  return (
+    <div className="fields">
+      <InputComponent label="r" value={0} />
+      <InputComponent label="g" value={0} />
+      <InputComponent label="b" value={0} />
+      <InputComponent label="a" value={0} />
+    </div>
+  );
 };
 
+const OPTIONS = [RGBAInputComponent, HexInputComponent];
 
-const OPTIONS = [
-  RGBAInputComponent,
-  HexInputComponent
-];
-
-const BaseRawColorInputComponent = ({ value, onSwitcherClick }: RawColorInputInputProps) => {
-  return <div className="m-raw-color-input">
-    <RGBAInputComponent value={value} />
-    <div className="switcher">
-      <i className="ion-arrow-up-b" />
-      <i className="ion-arrow-down-b" />
+const BaseRawColorInputComponent = ({
+  value,
+  onSwitcherClick
+}: RawColorInputInputProps) => {
+  return (
+    <div className="m-raw-color-input">
+      <RGBAInputComponent value={value} />
+      <div className="switcher">
+        <i className="ion-arrow-up-b" />
+        <i className="ion-arrow-down-b" />
+      </div>
     </div>
-  </div>
-}
+  );
+};
 
 const enhance = compose<RawColorInputOuterProps, RawColorInputOuterProps>(
   pure,
-  withState('currentInputIndex', 'setCurrentInputIndex', 0),
+  withState("currentInputIndex", "setCurrentInputIndex", 0),
   withHandlers({
     onSwitcherClick: () => () => {}
   })

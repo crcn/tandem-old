@@ -8,8 +8,22 @@ import { wrapEventToDispatch } from "../../../../../../../utils";
 import { RootState, Editor } from "../../../../../../../state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
-import { SyntheticNode, SyntheticDocument, SyntheticWindow, getSyntheticWindowDependency, getComponentInfo, Component, getSyntheticWindow } from "paperclip";
-import { Bounds, memoize, getTreeNodeIdMap, TreeNodeIdMap, StructReference, EMPTY_OBJECT, Bounded } from "tandem-common";
+import {
+  SyntheticNode,
+  SyntheticDocument,
+  SyntheticWindow,
+  getSyntheticWindowDependency,
+  getSyntheticWindow
+} from "paperclip";
+import {
+  Bounds,
+  memoize,
+  getTreeNodeIdMap,
+  TreeNodeIdMap,
+  StructReference,
+  EMPTY_OBJECT,
+  Bounded
+} from "tandem-common";
 import { compose, pure, withHandlers } from "recompose";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { Dispatch } from "redux";
@@ -18,7 +32,7 @@ import {
   canvasToolOverlayMousePanStart,
   canvasToolOverlayMousePanning,
   canvasToolOverlayMousePanEnd,
-  canvasToolOverlayMouseDoubleClicked,
+  canvasToolOverlayMouseDoubleClicked
 } from "../../../../../../../actions";
 
 export type VisualToolsProps = {
@@ -48,7 +62,6 @@ type NodeOverlayProps = {
 };
 
 const NodeOverlayBase = ({ zoom, bounds, dispatch }: NodeOverlayProps) => {
-
   if (!bounds) {
     return null;
   }
@@ -65,10 +78,10 @@ const NodeOverlayBase = ({ zoom, bounds, dispatch }: NodeOverlayProps) => {
     boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
   };
 
-  return <div
-  className={cx("visual-tools-node-overlay hovering")}
-  style={style} />;
-}
+  return (
+    <div className={cx("visual-tools-node-overlay hovering")} style={style} />
+  );
+};
 
 const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
 
@@ -79,8 +92,15 @@ const getDocumentRelativeBounds = memoize((document: SyntheticDocument) => ({
   bottom: document.bounds.bottom - document.bounds.top
 }));
 
-const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodeIds, zoom, onPanStart, onPan, onPanEnd }: ArtboardOverlayToolsInnerProps) => {
-
+const ArtboardOverlayToolsBase = ({
+  dispatch,
+  document,
+  hoveringNodeIds,
+  zoom,
+  onPanStart,
+  onPan,
+  onPanEnd
+}: ArtboardOverlayToolsInnerProps) => {
   if (!document.computed) {
     return null;
   }
@@ -100,33 +120,69 @@ const ArtboardOverlayToolsBase = ({ dispatch, document, hoveringNodeIds, zoom, o
     height: bounds.bottom - bounds.top
   };
 
-  return <div style={style as any}>
-    <Hammer onPanStart={onPanStart} onPan={onPan} onPanEnd={onPanEnd} direction="DIRECTION_ALL">
-      <div
-        style={{ width: "100%", height: "100%", position: "absolute" } as any}
-        onDoubleClick={wrapEventToDispatch(dispatch, canvasToolOverlayMouseDoubleClicked.bind(this, document.id))}>
-      {
-        hoveringNodeIds.map((nodeId) => <NodeOverlay
-          zoom={zoom}
-          key={nodeId}
-          bounds={document.id === nodeId ? getDocumentRelativeBounds(document) : document.computed[nodeId] && document.computed[nodeId].bounds}
-          dispatch={dispatch}  />)
-      }
+  return (
+    <div style={style as any}>
+      <Hammer
+        onPanStart={onPanStart}
+        onPan={onPan}
+        onPanEnd={onPanEnd}
+        direction="DIRECTION_ALL"
+      >
+        <div
+          style={{ width: "100%", height: "100%", position: "absolute" } as any}
+          onDoubleClick={wrapEventToDispatch(
+            dispatch,
+            canvasToolOverlayMouseDoubleClicked.bind(this, document.id)
+          )}
+        >
+          {hoveringNodeIds.map(nodeId => (
+            <NodeOverlay
+              zoom={zoom}
+              key={nodeId}
+              bounds={
+                document.id === nodeId
+                  ? getDocumentRelativeBounds(document)
+                  : document.computed[nodeId] &&
+                    document.computed[nodeId].bounds
+              }
+              dispatch={dispatch}
+            />
+          ))}
+        </div>
+      </Hammer>
     </div>
-    </Hammer>
-  </div>
+  );
 };
 
-const enhanceArtboardOverlayTools = compose<ArtboardOverlayToolsInnerProps, ArtboardOverlayToolsOuterProps>(
+const enhanceArtboardOverlayTools = compose<
+  ArtboardOverlayToolsInnerProps,
+  ArtboardOverlayToolsOuterProps
+>(
   pure,
   withHandlers({
-    onPanStart: ({ dispatch, document }: ArtboardOverlayToolsOuterProps) => (event) => {
+    onPanStart: ({
+      dispatch,
+      document
+    }: ArtboardOverlayToolsOuterProps) => event => {
       dispatch(canvasToolOverlayMousePanStart(document.id));
     },
-    onPan: ({ dispatch, document }: ArtboardOverlayToolsOuterProps) => (event) => {
-      dispatch(canvasToolOverlayMousePanning(document.id, { left: event.center.x, top: event.center.y }, event.deltaY, event.velocityY));
+    onPan: ({
+      dispatch,
+      document
+    }: ArtboardOverlayToolsOuterProps) => event => {
+      dispatch(
+        canvasToolOverlayMousePanning(
+          document.id,
+          { left: event.center.x, top: event.center.y },
+          event.deltaY,
+          event.velocityY
+        )
+      );
     },
-    onPanEnd: ({ dispatch, document }: ArtboardOverlayToolsOuterProps) => (event) => {
+    onPanEnd: ({
+      dispatch,
+      document
+    }: ArtboardOverlayToolsOuterProps) => event => {
       event.preventDefault();
       setImmediate(() => {
         dispatch(canvasToolOverlayMousePanEnd(document.id));
@@ -135,31 +191,60 @@ const enhanceArtboardOverlayTools = compose<ArtboardOverlayToolsInnerProps, Artb
   })
 );
 
-const ArtboardOverlayTools = enhanceArtboardOverlayTools(ArtboardOverlayToolsBase);
+const ArtboardOverlayTools = enhanceArtboardOverlayTools(
+  ArtboardOverlayToolsBase
+);
 
-const getNodes = memoize((refs: StructReference<any>[], allNodes: TreeNodeIdMap) => {
-  return refs.map(({type, id}) => allNodes[id]).filter((flattenedObject) => !!flattenedObject)
-});
+const getNodes = memoize(
+  (refs: StructReference<any>[], allNodes: TreeNodeIdMap) => {
+    return refs
+      .map(({ type, id }) => allNodes[id])
+      .filter(flattenedObject => !!flattenedObject);
+  }
+);
 
-const getHoveringSyntheticNodes = memoize((root: RootState, document: SyntheticDocument): string[] => {
-  const allNodes = document && getTreeNodeIdMap(document.root) || {};
-  const selectionRefIds = root.selectedNodeIds;
-  return root.hoveringNodeIds.filter(nodeId => selectionRefIds.indexOf(nodeId) === -1);
-});
+const getHoveringSyntheticNodes = memoize(
+  (root: RootState, document: SyntheticDocument): string[] => {
+    const allNodes = (document && getTreeNodeIdMap(document.root)) || {};
+    const selectionRefIds = root.selectedNodeIds;
+    return root.hoveringNodeIds.filter(
+      nodeId => selectionRefIds.indexOf(nodeId) === -1
+    );
+  }
+);
 
-export const  NodeOverlaysToolBase = ({ root, editor, dispatch, zoom }: VisualToolsProps) => {
+export const NodeOverlaysToolBase = ({
+  root,
+  editor,
+  dispatch,
+  zoom
+}: VisualToolsProps) => {
   const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
   if (!activeWindow) {
     return null;
   }
-  const dependency = getSyntheticWindowDependency(activeWindow, root.browser.graph);
-  return <div className="visual-tools-layer-component">
-    {
-      activeWindow.documents && activeWindow.documents.map((document, i) => {
-        return <ArtboardOverlayTools key={document.id} document={document}  hoveringNodeIds={getHoveringSyntheticNodes(root, document)} dispatch={dispatch} zoom={zoom} />;
-      })
-    }
-  </div>
-}
+  const dependency = getSyntheticWindowDependency(
+    activeWindow,
+    root.browser.graph
+  );
+  return (
+    <div className="visual-tools-layer-component">
+      {activeWindow.documents &&
+        activeWindow.documents.map((document, i) => {
+          return (
+            <ArtboardOverlayTools
+              key={document.id}
+              document={document}
+              hoveringNodeIds={getHoveringSyntheticNodes(root, document)}
+              dispatch={dispatch}
+              zoom={zoom}
+            />
+          );
+        })}
+    </div>
+  );
+};
 
-export const  NodeOverlaysTool = pure(NodeOverlaysToolBase as any) as typeof  NodeOverlaysToolBase;
+export const NodeOverlaysTool = pure(
+  NodeOverlaysToolBase as any
+) as typeof NodeOverlaysToolBase;

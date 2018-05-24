@@ -107,6 +107,7 @@ export type PCVariantNode = PCBaseSourceNode<
 export type PCVisibleNodeAttributes = {
   [DEFAULT_NAMESPACE]: {
     variants?: string[];
+    slot?: string;
     style?: any;
     container?: string;
     containerStorage?: string;
@@ -123,9 +124,13 @@ export type PCBaseVisibleNode<
   PCBaseSourceNode<any, PCVisibleNodeAttributes>
 >;
 
+export enum PCRectangleNodeAttributeNames {
+  NATIVE_TYPE = "nativeType"
+}
+
 export type PCRectangleNodeAttributes = {
   [DEFAULT_NAMESPACE]: {
-    nativeType?: string;
+    [PCRectangleNodeAttributeNames.NATIVE_TYPE]?: string;
   };
 } & PCVisibleNodeAttributes;
 
@@ -306,7 +311,7 @@ export const getNodeSourceComponent = memoize(
     getModuleComponent(node.name, getNodeSourceModule(node, dependency, graph))
 );
 
-export const getNodeReference = memoize((refName: string, root: PCModuleNode) =>
+export const getNodeReference = memoize((refName: string, root: PCSourceNode) =>
   findNestedNode(root, child => getAttribute(child, "ref") === refName)
 );
 

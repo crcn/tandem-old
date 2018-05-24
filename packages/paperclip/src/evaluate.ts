@@ -44,7 +44,9 @@ import {
   PCSetAttributeOverrideNode,
   PCSetStyleOverrideNode,
   PCTemplateNode,
-  PCBaseVisibleNode
+  PCBaseVisibleNode,
+  PCRectangleNodeAttributeNames,
+  PCTextNode
 } from "./dsl";
 import {
   SyntheticNodeSource,
@@ -53,13 +55,14 @@ import {
   SyntheticObject,
   SyntheticObjectType,
   SyntheticWindow,
-  createSyntheticElement,
+  createSyntheticRectangle,
   getSytheticNodeSource,
   SyntheticDocument,
   getSyntheticDocumentDependency,
   EDITOR_NAMESPACE,
   EditorAttributeNames,
-  getComponentInstanceSourceNode
+  getComponentInstanceSourceNode,
+  createSyntheticTextNode
 } from "./synthetic";
 
 import { pick, merge } from "lodash";
@@ -74,7 +77,7 @@ export type EvaluationResult = {
 };
 
 type Slots = {
-  [identifier: string]: TreeNode[];
+  [identifier: string]: TreeNode<any, any>[];
 };
 
 type IDGenerator = () => string;
@@ -94,7 +97,7 @@ export const evaluateDependencyEntry = ({
 };
 
 export const evaluatRooteDocumentElement = (
-  element: TreeNode,
+  element: TreeNode<any, any>,
   entry: Dependency,
   graph: DependencyGraph,
   generateId: IDGenerator
@@ -166,7 +169,7 @@ export const evaluateRootDocumentComponent = (
 const _evaluateComponent = (
   componentNode: PCComponentNode,
   attributes: PCVisibleNodeAttributes,
-  children: TreeNode[],
+  children: TreeNode<any, any>[],
   source: SyntheticNodeSource,
   generateId: IDGenerator,
   module: PCModuleNode,
@@ -237,8 +240,7 @@ const _evaluateComponent = (
 
   // TODO - pass slots down
   // TODO - check for existing component extends:importName="component"
-  let element = createSyntheticElement(
-    PCSourceTagNames.RECTANGLE,
+  let element = createSyntheticRectangle(
     syntheticAttributes,
     syntheticChildren,
     source,
@@ -302,6 +304,7 @@ const evaluateNode = (
   let tagName = node.name;
   let hasSlottedChildren = false;
   const containerName = node.attributes.undefined.container;
+  const source = getSytheticNodeSource(node, dependency);
 
   if (containerName) {
     const slotChildren = slots[containerName] || EMPTY_ARRAY;
@@ -310,6 +313,17 @@ const evaluateNode = (
       children = slotChildren;
       hasSlottedChildren = true;
     }
+  }
+
+  if (node.name === PCSourceTagNames.TEXT) {
+    return createSyntheticTextNode(
+      {
+        [DEFAULT_NAMESPACE]: (node as PCTextNode).attributes.undefined,
+        [EDITOR_NAMESPACE]: {}
+      },
+      source,
+      generateId()
+    );
   }
 
   const children2 = hasSlottedChildren
@@ -331,7 +345,7 @@ const evaluateNode = (
       nodeComponent,
       node.attributes,
       children2,
-      getSytheticNodeSource(node, dependency),
+      source,
       generateId,
       module,
       nodeDependency,
@@ -342,15 +356,17 @@ const evaluateNode = (
     );
   }
 
-  return createSyntheticElement(
-    tagName,
+  return createSyntheticRectangle(
     merge({}, attributes, {
       [EDITOR_NAMESPACE]: {
         [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent
+      },
+      [DEFAULT_NAMESPACE]: {
+        [PCRectangleNodeAttributeNames.NATIVE_TYPE]: tagName
       }
     }),
     children2,
-    getSytheticNodeSource(node, dependency),
+    source,
     generateId()
   );
 };

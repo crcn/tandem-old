@@ -39,7 +39,7 @@
                     "height": "100%"
                   },
                   "label": "Container",
-                  "native-type": "div"
+                  "nativeType": "div"
                 }
               },
               "children": [
@@ -53,7 +53,7 @@
                         "flexShrink": 0
                       },
                       "label": "bar",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "container": "container6de2e5a8"
                     }
                   },
@@ -201,7 +201,7 @@
                         "background": "rgb(228, 228, 228)"
                       },
                       "label": "content",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "container": "container7dbf261c"
                     }
                   },
@@ -250,7 +250,7 @@
                     "cursor": "pointer"
                   },
                   "label": "label",
-                  "native-type": "div",
+                  "nativeType": "div",
                   "ref": "fbd732300",
                   "container": "containerde32b09e"
                 }

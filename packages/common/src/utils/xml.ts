@@ -4,7 +4,7 @@ import { TreeNode, DEFAULT_NAMESPACE, addTreeNodeIds } from "../state/tree";
 import { xml2js } from "xml-js";
 import { camelCase, repeat } from "lodash";
 
-export const xmlToTreeNode = memoize((xml: string): TreeNode => {
+export const xmlToTreeNode = memoize((xml: string): TreeNode<any, any> => {
   return null;
   // return addTreeNodeIds(normalizeTree(xml2js(xml).elements[0]));
 });
@@ -53,7 +53,7 @@ const normalizeTree = ({
 };
 
 export const stringifyTreeNodeToXML = memoize(
-  (node: TreeNode, level: number = 0) => {
+  (node: TreeNode<any, any>, level: number = 0) => {
     const tabs = repeat(" ", level * 2);
 
     let tagName = node.name;

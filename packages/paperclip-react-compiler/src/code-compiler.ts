@@ -1,10 +1,13 @@
 import {
   DependencyGraph,
   Dependency,
-  getModuleInfo,
-  Component,
-  Module,
-  PCSourceAttributeNames
+  PCModuleNode,
+  PCComponentNode,
+  getModuleComponents,
+  getComponentTemplate,
+  PCVisibleNode,
+  PCSourceTagNames,
+  PCRectangleNode
 } from "paperclip";
 import {
   getAttribute,
@@ -13,14 +16,16 @@ import {
   TreeNodeAttributes,
   DEFAULT_NAMESPACE,
   parseStyle,
-  xmlToTreeNode
+  xmlToTreeNode,
+  EMPTY_OBJECT,
+  RecursivePartial
 } from "tandem-common";
 import { camelCase, merge } from "lodash";
 
 type CompileContext = {
-  entry: TreeNode;
-  currentModule?: Module;
-  currentComponent?: Component;
+  entry: PCModuleNode;
+  currentModule?: PCModuleNode;
+  currentComponent?: PCComponentNode;
   varNameRefs: {
     [identifier: string]: string[];
   };
@@ -51,17 +56,17 @@ export const compilePaperclipToReact = (content: string) => {
 };
 
 const compileModule = (context: CompileContext) => {
-  const info = getModuleInfo(context.entry);
+  const info = context.entry;
   context.currentModule = info;
 
   let buffer = `var React = require('react');`;
   buffer += `var __EMPTY_OBJECT = {};`;
 
-  for (const ns in info.imports) {
-    buffer += `var ${ns} = require('${info.imports[ns]}');`;
+  for (const ns in info.attributes.xmlns || EMPTY_OBJECT) {
+    buffer += `var ${ns} = require('${info.attributes.xmlns[ns]}');`;
   }
 
-  for (const component of info.components) {
+  for (const component of getModuleComponents(info)) {
     context.currentComponent = component;
     buffer += compileComponent(context);
   }
@@ -70,19 +75,16 @@ const compileModule = (context: CompileContext) => {
 };
 
 const compileComponent = (context: CompileContext) => {
-  const componentName = getNodeClassName(
-    context.currentComponent.source,
-    context
-  );
-  const id = context.currentComponent.id;
+  const componentName = getNodeClassName(context.currentComponent, context);
+  const id = context.currentComponent.attributes.undefined.id;
   let buffer = `function __${id} (props) {`;
   buffer +=
     `return (` +
     compileElement(
-      context.currentComponent.template,
+      getComponentTemplate(context.currentComponent),
       {
         [DEFAULT_NAMESPACE]: {
-          style: getAttribute(context.currentComponent.source, "style")
+          style: getAttribute(context.currentComponent, "style")
         }
       },
       true,
@@ -101,8 +103,8 @@ const compileComponent = (context: CompileContext) => {
 };
 
 const compileElement = (
-  node: TreeNode,
-  attributes: TreeNodeAttributes,
+  node: PCVisibleNode,
+  attributes: RecursivePartial<TreeNodeAttributes>,
   isRoot: boolean,
   context: CompileContext
 ) => {
@@ -111,14 +113,12 @@ const compileElement = (
     attributes: merge({}, node.attributes, attributes)
   };
 
-  if (node.name === "text" && node.namespace == null) {
+  if (node.name === PCSourceTagNames.TEXT && node.namespace == null) {
     return `'${getAttribute(node, "value")}'`;
   }
 
-  const slotContainerName = getAttribute(
-    node,
-    PCSourceAttributeNames.CONTAINER
-  );
+  const slotContainerName = (node as PCRectangleNode).attributes.undefined
+    .container;
   const tagNameStr = getNodeReactComponentRef(node, context);
   let buffer = `React.createElement(${getNodeReactComponentRef(
     node,
@@ -133,7 +133,7 @@ const compileElement = (
 };
 
 const compileElementAttributes = (
-  node: TreeNode,
+  node: PCVisibleNode,
   isRoot: boolean,
   context: CompileContext
 ) => {
@@ -144,8 +144,8 @@ const compileElementAttributes = (
   } {`;
   const style = getAttribute(node, "style");
 
-  for (const child of node.children) {
-    const slotName = getAttribute(child, PCSourceAttributeNames.SLOT);
+  for (const child of node.children as PCVisibleNode[]) {
+    const slotName = child.attributes.undefined.slot;
     if (slotName) {
       buffer += `${slotName}: ${compileElement(child, {}, false, context)},`;
     }
@@ -178,11 +178,11 @@ const compileElementAttributes = (
   return buffer;
 };
 
-const compileElementChildren = (node: TreeNode, context: CompileContext) => {
-  const internalContainerName = getAttribute(
-    node,
-    PCSourceAttributeNames.CONTAINER
-  );
+const compileElementChildren = (
+  node: PCRectangleNode,
+  context: CompileContext
+) => {
+  const internalContainerName = node.attributes.undefined.container;
   const publicContainerName = getNodeVarName(node, context);
 
   const base =
@@ -190,9 +190,9 @@ const compileElementChildren = (node: TreeNode, context: CompileContext) => {
     node.children
       .map(
         child =>
-          getAttribute(child, PCSourceAttributeNames.SLOT)
+          child.attributes.undefined.slot
             ? null
-            : compileElement(child, {}, false, context)
+            : compileElement(child as PCVisibleNode, {}, false, context)
       )
       .filter(Boolean)
       .join(",") +
@@ -205,7 +205,7 @@ const compileElementChildren = (node: TreeNode, context: CompileContext) => {
   return base;
 };
 
-const defineNodeVarName = (ref: TreeNode, context: CompileContext) => {
+const defineNodeVarName = (ref: PCVisibleNode, context: CompileContext) => {
   let varName = getBaseNodeVarName(ref);
   let refs: string[];
   if (!(refs = context.varNameRefs[varName])) {
@@ -218,10 +218,10 @@ const defineNodeVarName = (ref: TreeNode, context: CompileContext) => {
   return getNodeVarName(ref, context);
 };
 
-const getBaseNodeVarName = (node: TreeNode) =>
-  camelCase(getAttribute(node, "label"));
+const getBaseNodeVarName = (node: PCVisibleNode) =>
+  camelCase(String(node.attributes.undefined.label));
 
-const getNodeVarName = (ref: TreeNode, context: CompileContext) => {
+const getNodeVarName = (ref: PCVisibleNode, context: CompileContext) => {
   const baseVarName = getBaseNodeVarName(ref);
   const refs = context.varNameRefs[baseVarName];
   return refs
@@ -231,21 +231,26 @@ const getNodeVarName = (ref: TreeNode, context: CompileContext) => {
     : defineNodeVarName(ref, context);
 };
 
-const getNodeReactComponentRef = (ref: TreeNode, context: CompileContext) => {
-  const isImport = Boolean(context.currentModule.imports[ref.namespace]);
-  const internaComponent = context.currentModule.components.find(
-    component => component.id === ref.name && ref.namespace == null
+const getNodeReactComponentRef = (
+  ref: PCRectangleNode,
+  context: CompileContext
+) => {
+  const isImport = Boolean(
+    (context.currentModule.attributes.xmlns || EMPTY_OBJECT)[ref.namespace]
+  );
+
+  const internaComponent = getModuleComponents(context.currentModule).find(
+    component =>
+      component.attributes.undefined.id === ref.name && ref.namespace == null
   );
   return isImport
     ? `${ref.namespace}.__${ref.name}`
     : internaComponent
-      ? `__` + internaComponent.id
-      : "'" +
-        (getAttribute(ref, PCSourceAttributeNames.NATIVE_TYPE) || "div") +
-        "'";
+      ? `__` + internaComponent.attributes.undefined.id
+      : "'" + (ref.attributes.undefined.nativeType || "div") + "'";
 };
 
-const getNodeClassName = (ref: TreeNode, context: CompileContext) => {
+const getNodeClassName = (ref: TreeNode<any, any>, context: CompileContext) => {
   const varName = getNodeVarName(ref, context);
   return varName.substr(0, 1).toUpperCase() + varName.substr(1);
 };

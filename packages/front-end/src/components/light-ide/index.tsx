@@ -17,30 +17,42 @@ import "./index.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { PreviewComponent } from "./preview";
-import { calcCaretPosition } from "./utils";
-import { LightIDETextToken } from "./state";
+import { calcCaretPosition } from "./utils";
+import { LightIDETextToken } from "./state";
 import { compose, pure, withHandlers } from "recompose";
 
 export type LightIDEComponentOuterProps = {
-  tokens: LightIDETextToken[]
+  tokens: LightIDETextToken[];
 };
 
 export type LightIDEComponentInnerProps = {
   onMouseDown: () => any;
 } & LightIDEComponentOuterProps;
 
-const BaseLightIDEComponent = ({ tokens, onMouseDown }: LightIDEComponentInnerProps) => {
-  return <div className="m-light-text-editor" tabIndex={0} onMouseDown={onMouseDown}>
-    <PreviewComponent tokens={tokens} />
-    <div className="cursor" />
-  </div>;
+const BaseLightIDEComponent = ({
+  tokens,
+  onMouseDown
+}: LightIDEComponentInnerProps) => {
+  return (
+    <div className="m-light-text-editor" tabIndex={0} onMouseDown={onMouseDown}>
+      <PreviewComponent tokens={tokens} />
+      <div className="cursor" />
+    </div>
+  );
 };
 
-const enhance = compose<LightIDEComponentOuterProps, LightIDEComponentOuterProps>(
+const enhance = compose<
+  LightIDEComponentOuterProps,
+  LightIDEComponentOuterProps
+>(
   pure,
   withHandlers({
     onMouseDown: ({ tokens }) => (event: React.MouseEvent<any>) => {
-      const pos = calcCaretPosition(ReactDOM.findDOMNode(this), tokens, event.nativeEvent);
+      const pos = calcCaretPosition(
+        ReactDOM.findDOMNode(this),
+        tokens,
+        event.nativeEvent
+      );
       console.log(pos);
     }
   })

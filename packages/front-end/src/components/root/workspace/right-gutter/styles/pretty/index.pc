@@ -364,7 +364,7 @@
                         "float": "right"
                       },
                       "label": "controls",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "ref": "bbab45f2",
                       "slot": "container63be648e"
                     }
@@ -467,7 +467,7 @@
                     "width": "100%"
                   },
                   "label": "container",
-                  "native-type": "div",
+                  "nativeType": "div",
                   "ref": "75d11c090"
                 }
               },
@@ -484,7 +484,7 @@
                         "textTransform": "uppercase"
                       },
                       "label": "Title",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "ref": "75d11c090",
                       "container": "container63be648e"
                     }
@@ -516,7 +516,7 @@
                         "height": "100%"
                       },
                       "label": "Content",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "ref": "75d11c090",
                       "container": "container24fdd32c"
                     }
@@ -762,7 +762,7 @@
                     "position": "relative"
                   },
                   "container": "containere54e7345",
-                  "native-type": "x"
+                  "nativeType": "x"
                 }
               },
               "children": [
@@ -801,7 +801,7 @@
                         "width": "100%"
                       },
                       "label": "Rectangle",
-                      "native-type": "input",
+                      "nativeType": "input",
                       "ref": "8f94fc620"
                     }
                   },
@@ -925,7 +925,7 @@
                 "undefined": {
                   "style": {},
                   "label": "Rectangle",
-                  "native-type": "div",
+                  "nativeType": "div",
                   "ref": "e423af1e0",
                   "container": "container2bd05e8d"
                 }
@@ -944,7 +944,7 @@
                     "boxSizing": "border-box"
                   },
                   "label": "Rectangle",
-                  "native-type": "div",
+                  "nativeType": "div",
                   "ref": "95c1f4e20",
                   "container": "container537b351e"
                 }

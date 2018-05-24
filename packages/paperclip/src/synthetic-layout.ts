@@ -32,14 +32,18 @@ enum Axis {
   Y
 }
 
-const getStyleProp = (node: TreeNode, prop: string, defaultValue: string) => {
+const getStyleProp = (
+  node: TreeNode<any, any>,
+  prop: string,
+  defaultValue: string
+) => {
   const style = getAttribute(node, "style");
   return (style && style[prop]) || defaultValue;
 };
 
-export const isRelativeNode = (node: TreeNode) =>
+export const isRelativeNode = (node: TreeNode<any, any>) =>
   /relative|absolute|fixed/i.test(getStyleProp(node, "position", "static"));
-export const isAbsolutelyPositionedNode = (node: TreeNode) =>
+export const isAbsolutelyPositionedNode = (node: TreeNode<any, any>) =>
   /absolute|fixed/i.test(getStyleProp(node, "position", "static"));
 export const getRelativeParent = memoize(
   (node: SyntheticNode, document: SyntheticDocument) => {

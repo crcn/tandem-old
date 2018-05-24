@@ -1,7 +1,8 @@
 {
   "name": "module",
   "namespace": null,
-  "attributes": {},
+  "attributes": {
+  },
   "children": [
     {
       "name": "component",
@@ -55,7 +56,7 @@
                     "undefined": {
                       "style": {},
                       "label": "Input Wrapper",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "container": "containere12829e4"
                     },
                     "editor": {
@@ -295,7 +296,7 @@
                     "border": "1px solid #999",
                     "borderRadius": "2px"
                   },
-                  "native-type": "input",
+                  "nativeType": "input",
                   "label": "Search Input"
                 },
                 "editor": {

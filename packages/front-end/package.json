@@ -8,7 +8,8 @@
     "start-dev": "./node_modules/.bin/webpack-dev-server --hot",
     "build": "rm -rf lib; tsc; webpack",
     "start": "node lib/back-end/entry",
-    "create-pc-d-ts": "for FILE in `find ./src -name *.pc`; do ../paperclip-react-transpiler/bin/transpile-paperclip-to-react $FILE --definition > `echo $FILE | sed 's/.pc/.pc.d.ts/g'`; echo \"created $FILE.d.ts\"; done;"
+    "create-pc-d-ts":
+      "for FILE in `find ./src -name *.pc`; do ../paperclip-react-transpiler/bin/transpile-paperclip-to-react $FILE --definition > `echo $FILE | sed 's/.pc/.pc.d.ts/g'`; echo \"created $FILE.d.ts\"; done;"
   },
   "repository": {
     "type": "git",
@@ -61,7 +62,7 @@
     "style-loader": "^0.18.2",
     "text-loader": "^0.0.1",
     "ts-loader": "^2.1.0",
-    "typescript": "2.5.x",
+    "typescript": "2.7.x",
     "url-loader": "^0.5.9",
     "vue-loader": "^13.0.4",
     "vue-template-compiler": "^2.4.2",

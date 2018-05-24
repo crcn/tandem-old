@@ -41,7 +41,7 @@
                     "alignItems": "center"
                   },
                   "label": "Item",
-                  "native-type": "div",
+                  "nativeType": "div",
                   "ref": "f5e29aef0"
                 }
               },
@@ -54,7 +54,7 @@
                         "marginRight": "4px"
                       },
                       "label": "Checkbox container",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "ref": "ca54545c0",
                       "container": "container55e93e38"
                     }
@@ -70,7 +70,7 @@
                             "background": "#333"
                           },
                           "label": "Rectangle",
-                          "native-type": "div",
+                          "nativeType": "div",
                           "ref": "ca54545c0"
                         }
                       },
@@ -84,7 +84,7 @@
                     "undefined": {
                       "style": {},
                       "label": "Name container",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "ref": "fe99a7a90",
                       "container": "container8ad38360"
                     }
@@ -128,7 +128,7 @@
             "position": "absolute"
           },
           "label": "Preview",
-          "native-type": "div",
+          "nativeType": "div",
           "ref": "28c888810"
         }
       },

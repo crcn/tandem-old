@@ -35,7 +35,7 @@
                     "height": "100%"
                   },
                   "label": "Container",
-                  "native-type": "div"
+                  "nativeType": "div"
                 }
               },
               "children": [
@@ -79,7 +79,7 @@
                         "width": "100%"
                       },
                       "label": "Content",
-                      "native-type": "div",
+                      "nativeType": "div",
                       "container": "containeraa7d1430"
                     }
                   },
@@ -129,7 +129,7 @@
                     "borderTop": "1px solid rgb(228, 228, 228)"
                   },
                   "label": "Container",
-                  "native-type": "div",
+                  "nativeType": "div",
                   "container": "containercefedb0d"
                 }
               },

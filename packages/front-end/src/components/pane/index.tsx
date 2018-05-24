@@ -8,13 +8,23 @@ export type PaneComponentInnerProps = {
   secondary?: boolean;
   className?: string;
   children: any;
-}
+};
 
-const BasePaneComponent = ({header, children, className, secondary}: PaneComponentInnerProps) => <div className={cx({"m-panel": true, headerless: !header, secondary }, className)}>
-  {header && <div className="header">{header}</div>}
-  <div className="content-outer">
-    {children}
+const BasePaneComponent = ({
+  header,
+  children,
+  className,
+  secondary
+}: PaneComponentInnerProps) => (
+  <div
+    className={cx(
+      { "m-panel": true, headerless: !header, secondary },
+      className
+    )}
+  >
+    {header && <div className="header">{header}</div>}
+    <div className="content-outer">{children}</div>
   </div>
-</div>;
+);
 
 export const PaneComponent = BasePaneComponent;

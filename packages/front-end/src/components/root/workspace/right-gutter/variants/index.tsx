@@ -6,10 +6,27 @@ import { Dispatch } from "redux";
 import { RootState } from "../../../../../state";
 import { PaneComponent } from "../../../../pane";
 import { FocusComponent } from "../../../../focus";
-import { getAttribute } from "tandem-common";
-import { getSyntheticNodeById, PCSourceAttributeNames, getSourceNodeById, getSyntheticSourceNode, PCSourceTagNames, getComponentInfo, getSyntheticNodeDocument } from "paperclip";
-import { newVariantNameEntered, componentVariantNameDefaultToggleClick, componentVariantRemoved, componentComponentVariantNameChanged, componentComponentVariantNameClicked } from "../../../../..";
-const { Variants: BaseVariants, VariantItem: BaseVariantsItem } = require("./index.pc");
+import { getAttribute, DEFAULT_NAMESPACE } from "tandem-common";
+import {
+  getSyntheticNodeById,
+  getSourceNodeById,
+  getSyntheticSourceNode,
+  PCSourceTagNames,
+  getSyntheticNodeDocument,
+  getComponentVariants,
+  PCComponentNode
+} from "paperclip";
+import {
+  newVariantNameEntered,
+  componentVariantNameDefaultToggleClick,
+  componentVariantRemoved,
+  componentComponentVariantNameChanged,
+  componentComponentVariantNameClicked
+} from "../../../../..";
+const {
+  Variants: BaseVariants,
+  VariantItem: BaseVariantsItem
+} = require("./index.pc");
 
 type VariantItemOuterProps = {
   name: string;
@@ -17,7 +34,7 @@ type VariantItemOuterProps = {
   selected: boolean;
   onClick: () => any;
   onChange: (name: string, value: boolean) => any;
-  onNameChange: (name: string, newName:string) => any;
+  onNameChange: (name: string, newName: string) => any;
   onRemove: (name: string) => any;
 };
 
@@ -34,18 +51,20 @@ const VariantItem = compose<VariantItemInnerProps, VariantItemOuterProps>(
   pure,
   withState("editingName", "setEditingName", false),
   withHandlers({
-    onCheckboxClick: ({ onChange, name, useAsDefault }) => (event) => {
+    onCheckboxClick: ({ onChange, name, useAsDefault }) => event => {
       onChange(name, !useAsDefault);
       event.stopPropagation();
     },
-    onRemoveClick: ({ onRemove, name }) => (event) => {
+    onRemoveClick: ({ onRemove, name }) => event => {
       onRemove(name);
       event.stopPropagation();
     },
-    onLabelDoubleClick: ({setEditingName}) => () => {
+    onLabelDoubleClick: ({ setEditingName }) => () => {
       setEditingName(true);
     },
-    onNameInputKeyDown: ({ name, setEditingName, onNameChange }) => (event: React.KeyboardEvent<any>) => {
+    onNameInputKeyDown: ({ name, setEditingName, onNameChange }) => (
+      event: React.KeyboardEvent<any>
+    ) => {
       if (event.key === "Enter") {
         onNameChange(name, String((event.target as any).value).trim());
         setEditingName(false);
@@ -54,21 +73,56 @@ const VariantItem = compose<VariantItemInnerProps, VariantItemOuterProps>(
     onNameInputBlur: ({ setEditingName }) => () => {
       setEditingName(false);
     },
-    onClick: ({ onClick, name }) => (event) => {
+    onClick: ({ onClick, name }) => event => {
       onClick(name);
     }
   })
-)(({name, selected, useAsDefault, onCheckboxClick, onClick, editingName, onRemoveClick, onLabelDoubleClick, onNameInputBlur, onNameInputKeyDown}) => {
-  const label = editingName ? <FocusComponent><input type="text" defaultValue={name} onKeyDown={onNameInputKeyDown} onBlur={onNameInputBlur} /></FocusComponent> : <span className="state-name" onDoubleClick={onLabelDoubleClick}>
-    {name}
-    <span className="options">
-      <span onClick={onRemoveClick}>
-        &times;
+)(
+  ({
+    name,
+    selected,
+    useAsDefault,
+    onCheckboxClick,
+    onClick,
+    editingName,
+    onRemoveClick,
+    onLabelDoubleClick,
+    onNameInputBlur,
+    onNameInputKeyDown
+  }) => {
+    const label = editingName ? (
+      <FocusComponent>
+        <input
+          type="text"
+          defaultValue={name}
+          onKeyDown={onNameInputKeyDown}
+          onBlur={onNameInputBlur}
+        />
+      </FocusComponent>
+    ) : (
+      <span className="state-name" onDoubleClick={onLabelDoubleClick}>
+        {name}
+        <span className="options">
+          <span onClick={onRemoveClick}>&times;</span>
+        </span>
       </span>
-    </span>
-  </span>
-  return <BaseVariantsItem onClick={onClick} className={cx("state-item", { selected })} checkboxContainerChildren={<input type="checkbox" onClick={onCheckboxClick} checked={useAsDefault} />} labelContainerChildren={label} />;
-});
+    );
+    return (
+      <BaseVariantsItem
+        onClick={onClick}
+        className={cx("state-item", { selected })}
+        checkboxContainerChildren={
+          <input
+            type="checkbox"
+            onClick={onCheckboxClick}
+            checked={useAsDefault}
+          />
+        }
+        labelContainerChildren={label}
+      />
+    );
+  }
+);
 
 type VariantsPaneOuterProps = {
   root: RootState;
@@ -86,17 +140,24 @@ type VariantPaneInnerProps = {
   onVariantNameClick: any;
 } & VariantsPaneOuterProps;
 
-export const VariantsComponent = compose<VariantPaneInnerProps, VariantsPaneOuterProps>(
+export const VariantsComponent = compose<
+  VariantPaneInnerProps,
+  VariantsPaneOuterProps
+>(
   pure,
   withState("inputNewStateMode", "setInputNewStateMode", false),
   withHandlers({
     onVariantToggle: ({ dispatch }) => (name: string, value: boolean) => {
       dispatch(componentVariantNameDefaultToggleClick(name, value));
     },
-    onAddVariantClick: ({ dispatch, setInputNewVariantMode }) => (event: React.MouseEvent<any>) => {
+    onAddVariantClick: ({ dispatch, setInputNewVariantMode }) => (
+      event: React.MouseEvent<any>
+    ) => {
       setInputNewVariantMode(true);
     },
-    onNewVariantNameKeyDown: ({ dispatch, setInputNewVariantMode }) => (event: React.KeyboardEvent<any>) => {
+    onNewVariantNameKeyDown: ({ dispatch, setInputNewVariantMode }) => (
+      event: React.KeyboardEvent<any>
+    ) => {
       if (event.key === "Enter") {
         const newVariantName = String((event.target as any).value || "").trim();
         if (newVariantName) {
@@ -111,51 +172,99 @@ export const VariantsComponent = compose<VariantPaneInnerProps, VariantsPaneOute
     onRemoveVariantClick: ({ dispatch }) => (name: string) => {
       dispatch(componentVariantRemoved(name));
     },
-    onVariantNameChange: ({ dispatch }) => (oldName: string, newName: string) => {
+    onVariantNameChange: ({ dispatch }) => (
+      oldName: string,
+      newName: string
+    ) => {
       dispatch(componentComponentVariantNameChanged(oldName, newName));
     },
     onVariantNameClick: ({ dispatch }) => (name: string) => {
       dispatch(componentComponentVariantNameClicked(name));
     }
   })
-)(({root, onVariantToggle, onAddVariantClick, onVariantNameClick, inputNewVariantMode, onNewVariantNameKeyDown, onNewVariantNameBlur, onRemoveVariantClick, onVariantNameChange}) => {
-  const selectedNodeId = root.selectedNodeIds[0];
+)(
+  ({
+    root,
+    onVariantToggle,
+    onAddVariantClick,
+    onVariantNameClick,
+    inputNewVariantMode,
+    onNewVariantNameKeyDown,
+    onNewVariantNameBlur,
+    onRemoveVariantClick,
+    onVariantNameChange
+  }) => {
+    const selectedNodeId = root.selectedNodeIds[0];
 
-  if (!selectedNodeId) {
-    return null;
-  }
+    if (!selectedNodeId) {
+      return null;
+    }
 
-  const document = getSyntheticNodeDocument(selectedNodeId, root.browser);
-  const documentSourceNode = getSyntheticSourceNode(document.root.id, root.browser);
+    const document = getSyntheticNodeDocument(selectedNodeId, root.browser);
+    const documentSourceNode = getSyntheticSourceNode(
+      document.root.id,
+      root.browser
+    ) as PCComponentNode;
 
-  if (documentSourceNode.name !== PCSourceTagNames.COMPONENT) {
-    return null;
-  }
+    if (documentSourceNode.name !== PCSourceTagNames.COMPONENT) {
+      return null;
+    }
 
-  const info = getComponentInfo(documentSourceNode);
+    const info = documentSourceNode;
 
-  const itemsContainerChildren = info.states.map(({name, isDefault}) => {
-    return <VariantItem selected={name === root.selectedComponentVariantName} onClick={onVariantNameClick} key={name} name={name} useAsDefault={isDefault} onChange={onVariantToggle} onRemove={onRemoveVariantClick} onNameChange={onVariantNameChange} />;
-  });
+    const itemsContainerChildren = getComponentVariants(info).map(
+      ({
+        attributes: {
+          [DEFAULT_NAMESPACE]: { name, isDefault }
+        }
+      }) => {
+        return (
+          <VariantItem
+            selected={name === root.selectedComponentVariantName}
+            onClick={onVariantNameClick}
+            key={name}
+            name={name}
+            useAsDefault={isDefault}
+            onChange={onVariantToggle}
+            onRemove={onRemoveVariantClick}
+            onNameChange={onVariantNameChange}
+          />
+        );
+      }
+    );
 
-  if (inputNewVariantMode) {
-    itemsContainerChildren.push(
-      <BaseVariantsItem checkboxContainerChildren={<span></span>} labelContainerChildren={<FocusComponent>
-        <input type="text" onKeyDown={onNewVariantNameKeyDown} onBlur={onNewVariantNameBlur} />
-      </FocusComponent>} />
+    if (inputNewVariantMode) {
+      itemsContainerChildren.push(
+        <BaseVariantsItem
+          checkboxContainerChildren={<span />}
+          labelContainerChildren={
+            <FocusComponent>
+              <input
+                type="text"
+                onKeyDown={onNewVariantNameKeyDown}
+                onBlur={onNewVariantNameBlur}
+              />
+            </FocusComponent>
+          }
+        />
+      );
+    }
+
+    const header = (
+      <span>
+        Variants
+        <div className="controls">
+          <span className="add-state-button" onClick={onAddVariantClick}>
+            +
+          </span>
+        </div>
+      </span>
+    );
+
+    return (
+      <PaneComponent className="m-states-pane" header={header}>
+        <BaseVariants itemsContainerChildren={itemsContainerChildren} />
+      </PaneComponent>
     );
   }
-
-  const header = <span>
-    Variants
-    <div className="controls">
-      <span className="add-state-button" onClick={onAddVariantClick}>
-        +
-      </span>
-    </div>
-  </span>;
-
-  return <PaneComponent className="m-states-pane" header={header}>
-    <BaseVariants itemsContainerChildren={itemsContainerChildren} />
-  </PaneComponent>;
-});
+);

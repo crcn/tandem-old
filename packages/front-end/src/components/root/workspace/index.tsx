@@ -17,13 +17,20 @@ export type EditorOuterProps = {
 };
 
 const WorksapceBaseComponent = ({ root, dispatch }: EditorOuterProps) => {
-  return <div className="m-workspace">
-    <LeftGutterComponent editors={root.editors} rootDirectory={root.projectDirectory} dispatch={dispatch} root={root} />
-    <EditorsComponent root={root} dispatch={dispatch} />
-    <RightGutterComponent root={root} dispatch={dispatch} />
-    <QuickSearchComponent root={root} dispatch={dispatch} />
-  </div>;
-}
+  return (
+    <div className="m-workspace">
+      <LeftGutterComponent
+        editors={root.editors}
+        rootDirectory={root.projectDirectory}
+        dispatch={dispatch}
+        root={root}
+      />
+      <EditorsComponent root={root} dispatch={dispatch} />
+      <RightGutterComponent root={root} dispatch={dispatch} />
+      <QuickSearchComponent root={root} dispatch={dispatch} />
+    </div>
+  );
+};
 
 export const WorkspaceComponent = compose<EditorOuterProps, EditorOuterProps>(
   pure,

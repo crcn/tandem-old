@@ -1,11 +1,11 @@
-import { compose, pure, lifecycle } from "recompose";
+import { compose, pure, lifecycle } from "recompose";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 export type FocusProps = {
   children: any;
   focus?: boolean;
-}
+};
 
 export class FocusComponent extends React.Component<FocusProps> {
   componentDidMount() {
@@ -20,7 +20,10 @@ export class FocusComponent extends React.Component<FocusProps> {
   }
   focus() {
     const self = ReactDOM.findDOMNode(this) as HTMLElement;
-    const input = self.tagName === "INPUT" ? self as HTMLInputElement : self.querySelector("input");
+    const input =
+      self.tagName === "INPUT"
+        ? (self as HTMLInputElement)
+        : self.querySelector("input");
     input.select();
   }
   render() {

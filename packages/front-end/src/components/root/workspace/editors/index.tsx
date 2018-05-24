@@ -20,26 +20,42 @@ type EditorInnerProps = {
   onTabClick: () => any;
 } & EditorOuterProps;
 
-const EditorBaseComponent = ({ editor, root, dispatch, onTabClick }: EditorInnerProps) => {
+const EditorBaseComponent = ({
+  editor,
+  root,
+  dispatch,
+  onTabClick
+}: EditorInnerProps) => {
   const window = getSyntheticWindow(editor.activeFilePath, root.browser);
   if (!window) {
     return null;
   }
-  const dependency = window && root.browser.graph && root.browser.graph[window.location];
+  const dependency =
+    window && root.browser.graph && root.browser.graph[window.location];
 
-  const items: TabItem[] = editor.tabUris.map((tabUri) => ({
+  const items: TabItem[] = editor.tabUris.map(tabUri => ({
     selected: editor.activeFilePath === tabUri,
     label: path.basename(tabUri),
     value: tabUri
   }));
 
-  return <div className="m-editor">
-    <TabsComponent style={{ height: "100%", width: "100%" } as any} items={items} onTabClick={onTabClick}>
-      <StageComponent root={root} dispatch={dispatch} dependency={dependency} editor={editor} />
-    </TabsComponent>
-  </div>;
-}
-
+  return (
+    <div className="m-editor">
+      <TabsComponent
+        style={{ height: "100%", width: "100%" } as any}
+        items={items}
+        onTabClick={onTabClick}
+      >
+        <StageComponent
+          root={root}
+          dispatch={dispatch}
+          dependency={dependency}
+          editor={editor}
+        />
+      </TabsComponent>
+    </div>
+  );
+};
 
 export const EditorComponent = compose<EditorOuterProps, EditorOuterProps>(
   pure,
@@ -50,24 +66,24 @@ export const EditorComponent = compose<EditorOuterProps, EditorOuterProps>(
   })
 )(EditorBaseComponent);
 
-
 export type EditorsOuterProps = {
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type EditorsInnerProps = {
-} & EditorsOuterProps;
+type EditorsInnerProps = {} & EditorsOuterProps;
 
 const EditorsBaseComponent = ({ root, dispatch }: EditorsInnerProps) => {
-  return <div className="m-editors">
-    {
-      root.editors.map(editor => {
-        return <EditorComponent editor={editor} root={root} dispatch={dispatch} />;
-      })
-    }
-  </div>;
-}
+  return (
+    <div className="m-editors">
+      {root.editors.map(editor => {
+        return (
+          <EditorComponent editor={editor} root={root} dispatch={dispatch} />
+        );
+      })}
+    </div>
+  );
+};
 
 export const EditorsComponent = compose<EditorsOuterProps, EditorsOuterProps>(
   pure

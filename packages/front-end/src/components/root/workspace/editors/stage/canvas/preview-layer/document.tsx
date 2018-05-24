@@ -1,17 +1,15 @@
 import "./document.scss";
 import * as React from "react";
-import { getAttribute } from "tandem-common";
+import { getAttribute } from "tandem-common";
 import { compose, pure, lifecycle } from "recompose";
-import { SyntheticDocument, getModuleInfo, Dependency, DependencyGraph, getComponentInfo } from "paperclip";
+import { SyntheticDocument, Dependency, DependencyGraph } from "paperclip";
 
 export type DocumentPreviewOuterProps = {
   document: SyntheticDocument;
   dependency: Dependency;
 };
 
-type DocumentPreviewInnerProps = {
-
-} & DocumentPreviewOuterProps;
+type DocumentPreviewInnerProps = {} & DocumentPreviewOuterProps;
 
 const BaseDocumentPreviewComponent = ({ document }) => {
   const bounds = document.bounds;
@@ -27,10 +25,11 @@ const BaseDocumentPreviewComponent = ({ document }) => {
     background: "white"
   } as any;
 
-  return <div className="m-preview-document" style={style}>
-    <div ref="container">
+  return (
+    <div className="m-preview-document" style={style}>
+      <div ref="container" />
     </div>
-  </div>;
+  );
 };
 
 const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
@@ -40,7 +39,7 @@ const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
       const props: DocumentPreviewOuterProps = this.props;
       if (!oldDocument || oldDocument.container !== props.document.container) {
         const container = this.refs.container as HTMLElement;
-        while(container.childNodes.length) {
+        while (container.childNodes.length) {
           container.removeChild(container.childNodes[0]);
         }
         container.appendChild(props.document.container);
@@ -49,7 +48,9 @@ const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
     componentDidMount() {
       const container = this.refs.container as HTMLElement;
       if (container) {
-        container.appendChild((this.props as DocumentPreviewOuterProps).document.container);
+        container.appendChild(
+          (this.props as DocumentPreviewOuterProps).document.container
+        );
       }
     }
   })

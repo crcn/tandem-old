@@ -8,3 +8,4 @@ export * from "./dnd";
 export * from "./html";
 export * from "./uid";
 export * from "./tree";
+export * from "./types";

@@ -1,6 +1,5 @@
 import * as React from "react";
 
-const BaseAnchorPrettyAttributesComponent = () => <div>
-</div>;
+const BaseAnchorPrettyAttributesComponent = () => <div />;
 
 export const AnchorPrettyAttributesComponent = BaseAnchorPrettyAttributesComponent;

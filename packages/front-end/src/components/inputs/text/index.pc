@@ -32,7 +32,7 @@
                     "height": "100%"
                   },
                   "label": "Rectangle",
-                  "native-type": "input",
+                  "nativeType": "input",
                   "ref": "696fca6b0"
                 }
               },

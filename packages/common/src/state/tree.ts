@@ -6,6 +6,7 @@ import { arraySplice } from "../utils/array";
 import { UIDGenerator, createUIDGenerator } from "../utils/uid";
 import { generateUID } from "../utils/uid";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "../utils/object";
+import { RecursivePartial } from "../utils/types";
 
 export const DEFAULT_NAMESPACE = "undefined";
 
@@ -195,7 +196,7 @@ export const getTreeNodeFromPath = memoize(
     for (let i = 0, { length } = path; i < length; i++) {
       current = current.children[path[i]];
     }
-    return current;
+    return current as TNode;
   }
 );
 
@@ -331,7 +332,7 @@ export const mergeNodeAttributes = <
   P extends TreeNodeAttributes
 >(
   node: TreeNode<N, P>,
-  attributes: Partial<P>
+  attributes: RecursivePartial<P>
 ): TreeNode<N, P> => ({
   ...node,
   attributes: merge({}, node.attributes, attributes)
