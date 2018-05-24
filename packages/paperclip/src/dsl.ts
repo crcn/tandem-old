@@ -31,7 +31,7 @@ export type Dependency = {
 };
 
 export enum PCSourceNamespaces {
-  XMLNS = "xmlns",
+  IMPORT = "import",
   CORE = "core",
   EDITOR = "editor"
 }

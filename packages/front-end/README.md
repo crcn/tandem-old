@@ -15,13 +15,9 @@ IMMEDIATE:
 
 CLEAN UP:
 
-* do not use `undefined` for default namespace
-* eliminiate getAttribute usage
-* evaluate whether to actually use `attributes` or `props`
 * eliminiate `ref` attribute. Use `id` instead.
 * change SyntheticWindow to SyntheticDocument
 * change SyntheticDocument to SyntheticFrame
-* change `xmlns` to `ns`
 * component style props need to go on `template` instead
 * move `Dependency` to separate
 * root nodes must have separate bounds param
