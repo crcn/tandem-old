@@ -10,7 +10,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component3",
           "label": "Variant Option"
         },
@@ -31,7 +31,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "padding": "4px 8px",
                     "boxSizing": "border-box",
@@ -49,7 +49,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "marginRight": "4px"
                       },
@@ -63,7 +63,7 @@
                     {
                       "name": "rectangle",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "width": "10px",
                             "height": "10px",
@@ -81,7 +81,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "label": "Name container",
                       "nativeType": "div",
@@ -93,7 +93,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "display": "inline-block",
                             "position": "relative"
@@ -116,7 +116,7 @@
     {
       "name": "rectangle",
       "attributes": {
-        "undefined": {
+        "core": {
           "style": {
             "left": 448,
             "right": 751,
@@ -136,7 +136,7 @@
         {
           "name": "component3",
           "attributes": {
-            "undefined": {
+            "core": {
               "style": {
                 "left": 20,
                 "right": 420,
@@ -151,7 +151,7 @@
         {
           "name": "component3",
           "attributes": {
-            "undefined": {
+            "core": {
               "style": {
                 "left": 20,
                 "right": 420,
@@ -166,7 +166,7 @@
         {
           "name": "component3",
           "attributes": {
-            "undefined": {
+            "core": {
               "style": {
                 "left": 20,
                 "right": 420,
@@ -181,7 +181,7 @@
         {
           "name": "component3",
           "attributes": {
-            "undefined": {
+            "core": {
               "style": {},
               "ref": "f5e29aef0"
             }
@@ -193,7 +193,7 @@
     {
       "name": "component1",
       "attributes": {
-        "undefined": {
+        "core": {
           "style": {
             "left": 20,
             "right": 420,
@@ -215,7 +215,7 @@
         {
           "name": "text",
           "attributes": {
-            "undefined": {
+            "core": {
               "style": {
                 "display": "inline-block",
                 "position": "relative"

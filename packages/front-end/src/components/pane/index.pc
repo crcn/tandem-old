@@ -5,7 +5,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component1",
           "label": "Pane"
         },
@@ -26,7 +26,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "background": "#CCC",
                     "width": "100%",
@@ -42,7 +42,7 @@
                 {
                   "name": "component2",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "left": 20,
                         "right": 420,
@@ -55,7 +55,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "display": "inline-block",
                             "position": "relative"
@@ -72,7 +72,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "background": "rgb(247, 247, 247)",
                         "height": "100%",
@@ -94,7 +94,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component2",
           "label": "Header"
         },
@@ -115,7 +115,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "100%",
                     "background": "rgb(238, 238, 238)",
@@ -137,7 +137,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "display": "inline-block",
                         "position": "relative"

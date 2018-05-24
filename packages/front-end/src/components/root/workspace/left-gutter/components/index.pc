@@ -9,7 +9,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component1",
           "label": "Components Pane"
         },
@@ -31,7 +31,7 @@
               "name": "component1",
               "namespace": "import0",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {},
                   "ref": "1001b6680"
                 }
@@ -40,7 +40,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "background": "rgb(247, 247, 247)",
                         "height": "100%",
@@ -61,7 +61,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component2",
           "label": "Item",
           "style": {
@@ -93,7 +93,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "label": "label",
                   "style": {
                     "position": "absolute",
@@ -108,7 +108,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "h4",
                       "label": "Text",
@@ -126,7 +126,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component3",
           "label": "Components",
           "style": {
@@ -152,7 +152,7 @@
             {
               "name": "component2",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "33.333%",
                     "height": "100px",
@@ -169,7 +169,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "div",
                       "label": "Text",
@@ -184,7 +184,7 @@
             {
               "name": "component2",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "33.33%",
                     "height": 100,
@@ -204,7 +204,7 @@
             {
               "name": "component2",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "33.333%",
                     "height": "100px",
@@ -222,7 +222,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "div",
                       "label": "Text",
@@ -237,7 +237,7 @@
             {
               "name": "component2",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "33.333%",
                     "height": 100,
@@ -256,7 +256,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "h2",
                       "label": "Text",
@@ -271,7 +271,7 @@
             {
               "name": "component2",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "33.333%",
                     "height": "100px",
@@ -289,7 +289,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "double click to edit",
                       "label": "Text",

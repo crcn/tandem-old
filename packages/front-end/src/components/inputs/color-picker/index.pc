@@ -5,7 +5,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component1",
           "label": "Color Picker"
         },
@@ -26,7 +26,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "padding": "10px",
                     "width": "100%",
@@ -43,7 +43,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "100%",
                         "height": "100%",
@@ -62,7 +62,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "100%",
                         "height": "30px",

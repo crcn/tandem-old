@@ -17,7 +17,7 @@
             "bottom": 268
           }
         },
-        "undefined": {
+        "core": {
           "id": "component2",
           "label": "Dropdown",
           "style": {
@@ -36,7 +36,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "ref": "b18312650",
                   "style": {
                     "padding": "10px",
@@ -51,7 +51,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "vaule": "edit me",
                       "ref": "df805d210",
                       "value": "Label"
@@ -64,7 +64,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "ref": "1aac8bf50",
                   "label": "Menu",
                   "style": {
@@ -77,7 +77,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {}
                     }
                   },
@@ -86,7 +86,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {}
                     }
                   },
@@ -95,7 +95,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {}
                     }
                   },
@@ -104,7 +104,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {}
                     }
                   },
@@ -113,7 +113,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {}
                     }
                   },
@@ -140,7 +140,7 @@
             "bottom": 288
           }
         },
-        "undefined": {
+        "core": {
           "id": "component3",
           "label": "Menu Item",
           "style": {
@@ -160,7 +160,7 @@
             {
               "name": "text",
               "attributes": {
-                "undefined": {
+                "core": {
                   "vaule": "edit me",
                   "ref": "63ab1a850",
                   "value": "Item"
@@ -175,7 +175,7 @@
     {
       "name": "rectangle",
       "attributes": {
-        "undefined": {
+        "core": {
           "style": {
             "left": 19,
             "top": 342,
@@ -203,7 +203,7 @@
             "bottom": 441
           }
         },
-        "undefined": {
+        "core": {
           "id": "component5",
           "label": "Menu",
           "style": {

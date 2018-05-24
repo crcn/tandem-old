@@ -10,7 +10,7 @@
       "name": "component1",
       "namespace": "import0",
       "attributes": {
-        "undefined": {
+        "core": {
           "style": {
             "left": 20,
             "right": 420,

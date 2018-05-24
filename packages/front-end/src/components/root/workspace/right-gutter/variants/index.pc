@@ -10,7 +10,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component1",
           "label": "Variants"
         },
@@ -31,7 +31,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {},
                   "label": "Items container",
                   "nativeType": "div",
@@ -42,7 +42,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "left": 20,
                         "right": 420,
@@ -56,7 +56,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "left": 20,
                         "right": 420,
@@ -70,7 +70,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "left": 20,
                         "right": 420,
@@ -84,7 +84,7 @@
                 {
                   "name": "component3",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "left": 20,
                         "right": 420,
@@ -104,7 +104,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component3",
           "label": "Variant Item"
         },
@@ -125,7 +125,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "100%",
                     "borderBottom": "1px solid rgb(228, 228, 228)",
@@ -144,7 +144,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "display": "inline-block",
                         "marginRight": "6px"
@@ -158,7 +158,7 @@
                     {
                       "name": "rectangle",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "background": "#333",
                             "width": "10px",
@@ -177,7 +177,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "display": "inline-block",
                         "width": "100%"
@@ -191,7 +191,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "display": "inline-block"
                           },
@@ -212,7 +212,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component4",
           "label": "Variants Pane"
         },
@@ -234,7 +234,7 @@
               "name": "component1",
               "namespace": "import0",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "left": 20,
                     "right": 420,
@@ -255,7 +255,7 @@
                 {
                   "name": "component1",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "left": 20,
                         "right": 420,

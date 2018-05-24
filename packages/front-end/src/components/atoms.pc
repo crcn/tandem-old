@@ -5,7 +5,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component1",
           "label": "Background",
           "style": {
@@ -34,7 +34,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component2",
           "label": "Background alt"
         },

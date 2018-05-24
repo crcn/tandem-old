@@ -11,7 +11,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component1",
           "label": "Styler",
           "style": {
@@ -36,7 +36,7 @@
             {
               "name": "component6",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "left": 0,
                     "right": 420,
@@ -54,7 +54,7 @@
             {
               "name": "component2",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "flex": 1,
                     "display": "flex",
@@ -71,7 +71,7 @@
             {
               "name": "component4",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "flex": 1,
                     "display": "flex"
@@ -84,7 +84,7 @@
             {
               "name": "component3",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "left": 20,
                     "right": 420,
@@ -103,7 +103,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component2",
           "label": "Typography Section",
           "style": {
@@ -128,7 +128,7 @@
             {
               "name": "component5",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "background": "white",
                     "height": "100%",
@@ -141,7 +141,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "Typography",
                       "label": "Text",
@@ -156,7 +156,7 @@
                 {
                   "name": "component12",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "100%"
                       },
@@ -176,7 +176,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "left": -57.09375,
                             "top": 10.984375,
@@ -197,7 +197,7 @@
                 {
                   "name": "component12",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "100%"
                       },
@@ -217,7 +217,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "left": -57.09375,
                             "top": 10.984375,
@@ -238,7 +238,7 @@
                 {
                   "name": "component12",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "100%"
                       },
@@ -258,7 +258,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "left": -57.09375,
                             "top": 10.984375,
@@ -285,7 +285,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component3",
           "label": "Effects Section",
           "style": {
@@ -310,7 +310,7 @@
             {
               "name": "component5",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "left": 20,
                     "right": 420,
@@ -333,7 +333,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "Effects",
                       "label": "Text",
@@ -346,7 +346,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "+",
                       "label": "Text",
@@ -359,7 +359,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "float": "right"
                       },
@@ -380,7 +380,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component4",
           "label": "Fill Section",
           "style": {
@@ -405,7 +405,7 @@
             {
               "name": "component5",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "flex": 1
                   },
@@ -416,7 +416,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "Backgrounds",
                       "label": "Text",
@@ -435,7 +435,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component5",
           "label": "Section",
           "style": {
@@ -460,7 +460,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "fontFamily": "Helvetica",
                     "height": "100%",
@@ -475,7 +475,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "borderTop": "1px solid rgba(240, 240, 240, 1)",
                         "width": "100%",
@@ -493,7 +493,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "display": "inline-block",
                             "position": "relative"
@@ -510,7 +510,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "100%",
                         "height": "100%"
@@ -532,7 +532,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component6",
           "label": "Constraints Section",
           "style": {
@@ -557,7 +557,7 @@
             {
               "name": "component11",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "display": "inline-flex",
                     "padding": "6px",
@@ -570,7 +570,7 @@
                 {
                   "name": "component10",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "display": "inline-flex",
                         "fontFamily": "Helvetica"
@@ -583,7 +583,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {},
                           "value": "x",
                           "label": "Text",
@@ -598,7 +598,7 @@
                 {
                   "name": "component10",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "display": "inline-flex",
                         "fontFamily": "Helvetica"
@@ -611,7 +611,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {},
                           "value": "y",
                           "label": "Text",
@@ -628,7 +628,7 @@
             {
               "name": "component11",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "display": "inline-flex",
                     "padding": "6px",
@@ -641,7 +641,7 @@
                 {
                   "name": "component10",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "display": "inline-flex",
                         "fontFamily": "Helvetica"
@@ -654,7 +654,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {},
                           "value": "w",
                           "label": "Text",
@@ -669,7 +669,7 @@
                 {
                   "name": "component10",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "display": "inline-flex",
                         "fontFamily": "Helvetica"
@@ -682,7 +682,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {},
                           "value": "h",
                           "label": "Text",
@@ -704,7 +704,7 @@
       "name": "component1",
       "namespace": "import0",
       "attributes": {
-        "undefined": {
+        "core": {
           "style": {
             "left": 20,
             "right": 420,
@@ -726,7 +726,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component10",
           "label": "Labeled input",
           "style": {
@@ -751,7 +751,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "label": "label",
                   "style": {
                     "flexShrink": 0,
@@ -769,7 +769,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "x",
                       "label": "Text",
@@ -783,7 +783,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "label": "input",
                   "style": {
                     "flex": 1,
@@ -796,7 +796,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "100%"
                       },
@@ -816,7 +816,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component11",
           "label": "Input row",
           "style": {
@@ -843,7 +843,7 @@
             {
               "name": "component10",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "display": "inline-flex",
                     "fontFamily": "Helvetica"
@@ -855,7 +855,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "x",
                       "label": "Text",
@@ -870,7 +870,7 @@
             {
               "name": "component10",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "display": "inline-flex",
                     "fontFamily": "Helvetica"
@@ -882,7 +882,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "y",
                       "label": "Text",
@@ -901,7 +901,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component12",
           "label": "Dropdown"
         },
@@ -922,7 +922,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {},
                   "label": "Rectangle",
                   "nativeType": "div",
@@ -935,7 +935,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "width": "100%",
                     "background": "#Ccc",
@@ -953,7 +953,7 @@
                 {
                   "name": "text",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {},
                       "value": "Label",
                       "label": "Text",

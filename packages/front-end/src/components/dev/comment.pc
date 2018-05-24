@@ -5,7 +5,7 @@
     {
       "name": "component",
       "attributes": {
-        "undefined": {
+        "core": {
           "id": "component1",
           "label": "Sticky Note",
           "style": {}
@@ -27,7 +27,7 @@
             {
               "name": "rectangle",
               "attributes": {
-                "undefined": {
+                "core": {
                   "style": {
                     "background": "yellow",
                     "position": "absolute",
@@ -55,7 +55,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": "30px",
                         "height": "30px",
@@ -76,7 +76,7 @@
                 {
                   "name": "rectangle",
                   "attributes": {
-                    "undefined": {
+                    "core": {
                       "style": {
                         "width": 288,
                         "height": 174,
@@ -96,7 +96,7 @@
                     {
                       "name": "text",
                       "attributes": {
-                        "undefined": {
+                        "core": {
                           "style": {
                             "display": "inline-block",
                             "position": "relative"
@@ -126,7 +126,7 @@
     {
       "name": "component1",
       "attributes": {
-        "undefined": {
+        "core": {
           "style": {
             "left": 20,
             "right": 420,
@@ -148,7 +148,7 @@
         {
           "name": "text",
           "attributes": {
-            "undefined": {
+            "core": {
               "style": {
                 "display": "inline-block",
                 "position": "relative"
@@ -168,7 +168,7 @@
     {
       "name": "component1",
       "attributes": {
-        "undefined": {
+        "core": {
           "style": {
             "left": 20,
             "right": 420,
@@ -190,7 +190,7 @@
         {
           "name": "text",
           "attributes": {
-            "undefined": {
+            "core": {
               "style": {
                 "display": "inline-block",
                 "position": "relative"
