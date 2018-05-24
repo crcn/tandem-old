@@ -7,7 +7,7 @@ TODO:
 - respect align-content
 */
 import { getSyntheticNodeById, SyntheticBrowser, getSyntheticNodeBounds, SyntheticNode, getSyntheticNodeDocument, SyntheticDocument } from "./synthetic";
-import { Point, getAttribute, getParentTreeNode, memoize, findTreeNodeParent, Bounds, TreeNode, shiftBounds, moveBounds } from "tandem-common";
+import { Point, getAttribute, getParentTreeNode, memoize, findTreeNodeParent, Bounds, TreeNode, shiftBounds, moveBounds } from "tandem-common/lib";
 import { negate } from "lodash";
 
 enum Axis { X, Y };

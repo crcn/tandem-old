@@ -1,6 +1,6 @@
-import { DependencyGraph, Dependency, getModuleInfo, Component, Module, TreeNode, PCSourceAttributeNames, TreeNodeAttributes, DEFAULT_NAMESPACE } from "tandem-front-end";
-import { getAttribute, getTreeNodePath } from "tandem-front-end/lib/common/state/tree";
-import { parseStyle, xmlToTreeNode } from "tandem-front-end/lib/common/utils";
+import { DependencyGraph, Dependency, getModuleInfo, Component, Module, PCSourceAttributeNames } from "paperclip";
+import { getAttribute, getTreeNodePath, TreeNode, TreeNodeAttributes, DEFAULT_NAMESPACE } from "tandem-common/src/state/tree";
+import { parseStyle, xmlToTreeNode } from "tandem-common/src/utils";
 import { camelCase, merge } from "lodash";
 
 

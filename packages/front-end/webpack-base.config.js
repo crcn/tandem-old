@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    entry: ['react-hot-loader/patch', __dirname + '/src/front-end/index.ts']
+    entry: ['react-hot-loader/patch', __dirname + '/src/index.ts']
   },
   output: {
     path: resolve(__dirname, 'lib', 'front-end'),

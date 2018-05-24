@@ -1,6 +1,6 @@
 {
   "name": "paperclip",
-  "version": "1.0.0",
+  "version": "9.0.0",
   "description": "Paperclip DSL specific for visual development.",
   "main": "index.js",
   "scripts": {

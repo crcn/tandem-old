@@ -1,5 +1,5 @@
-import { memoize, EMPTY_OBJECT, EMPTY_ARRAY, parseStyle } from "tandem-common/src/utils";
-import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode, Bounds, setNodeAttribute } from "tandem-common/src/state";
+import { memoize, EMPTY_OBJECT, EMPTY_ARRAY, parseStyle } from "tandem-common/lib/utils";
+import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode, Bounds, setNodeAttribute } from "tandem-common/lib/state";
 import { DEFAULT_EXTENDS } from ".";
 import { mapValues } from "lodash";
 
