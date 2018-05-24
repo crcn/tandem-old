@@ -3,12 +3,9 @@ import {
   getTreeNodePath,
   generateTreeChecksum,
   getTreeNodeFromPath,
-  getAttribute,
   getNestedTreeNodeById,
   getTreeNodeIdMap,
-  DEFAULT_NAMESPACE,
   updateNestedNode,
-  setNodeAttribute,
   findNodeByTagName,
   TreeNode,
   TreeNodeUpdater,
@@ -81,10 +78,12 @@ import {
   createPCComponent,
   createPCTemplate,
   PCTextNode,
-  PCRectangleNodeAttributes
+  PCRectangleNodeAttributes,
+  PCSourceNamespaces,
+  PCVisibleRootNode
 } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
-import { mapValues, pull } from "lodash";
+import { mapValues, pull, merge } from "lodash";
 import { evaluateDependencyEntry } from "./evaluate";
 import * as path from "path";
 import {
@@ -93,8 +92,6 @@ import {
   isRelativeNode,
   getRelativeParent
 } from "./synthetic-layout";
-
-export const EDITOR_NAMESPACE = "editor";
 
 export enum EditorAttributeNames {
   IS_COMPONENT_INSTANCE = "isComponentInstance",
@@ -130,10 +127,11 @@ export enum SyntheticObjectType {
 }
 
 export type SyntheticBaseNodeAttributes = {
-  [EDITOR_NAMESPACE]: {
+  [PCSourceNamespaces.EDITOR]: {
     expanded?: boolean;
+    isComponentRoot?: boolean;
   };
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     label?: string;
   };
 };
@@ -145,15 +143,16 @@ export type SyntheticNodeSource = {
 
 type SyntheticBaseTreeNode<
   TName extends string,
-  TAttributes extends TreeNodeAttributes
+  TAttributes extends SyntheticBaseNodeAttributes
 > = {
   source: SyntheticNodeSource;
 } & TreeNode<TName, TAttributes>;
 
 export type SyntheticRectangleNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     nativeType?: string;
     container?: string;
+    style?: any;
   };
 } & SyntheticBaseNodeAttributes;
 
@@ -163,8 +162,9 @@ export type SyntheticRectangleNode = SyntheticBaseTreeNode<
 >;
 
 export type SyntheticTextNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     value: string;
+    style?: any;
   };
 } & SyntheticBaseNodeAttributes;
 
@@ -259,9 +259,9 @@ export const createSyntheticWindow = (location: string): SyntheticWindow => ({
 });
 
 const calculateRootNodeBounds = (
-  rootSourceNode: TreeNode<any, any>
+  rootSourceNode: SyntheticNode | PCVisibleNode
 ): Bounds => {
-  const style = getAttribute(rootSourceNode, "style") || EMPTY_OBJECT;
+  const style = rootSourceNode.attributes.core.style || EMPTY_OBJECT;
   const left = style.left || DEFAULT_BOUNDS.left;
   const top = style.top || DEFAULT_BOUNDS.top;
   const right =
@@ -278,9 +278,11 @@ const getSyntheticDocumentBounds = (
   const rootSourceNode = getTreeNodeFromPath(
     documentRootNode.source.path,
     moduleRootNode
-  );
+  ) as PCVisibleRootNode;
+
   const bounds =
-    getAttribute(rootSourceNode, "bounds", EDITOR_NAMESPACE) ||
+    (rootSourceNode.attributes.editor &&
+      rootSourceNode.attributes.editor.bounds) ||
     calculateRootNodeBounds(rootSourceNode);
   return typeof bounds === "string"
     ? (mapValues(parseStyle(bounds), Number) as Bounds)
@@ -373,7 +375,7 @@ export const getSyntheticOriginSourceNode = (
   const originDep = browser.graph[originUri];
   return (isComponentInstanceSourceNode(sourceNode)
     ? originDep.content.children.find(
-        child => child.attributes.undefined.id === sourceNode.name
+        child => child.attributes.core.id === sourceNode.name
       )
     : getSyntheticSourceNode(node.id, browser)) as PCSourceNode;
 };
@@ -432,8 +434,8 @@ export const getNamespaceUris = memoize(
     const namespaceUris = {};
     findNestedNode(sourceNode, (node: TreeNode<any, any>) => {
       const uri =
-        moduleInfo.attributes.undefined.xmlns &&
-        moduleInfo.attributes.undefined.xmlns[node.namespace];
+        moduleInfo.attributes.xmlns &&
+        moduleInfo.attributes.xmlns[node.namespace];
       if (uri) {
         namespaceUris[node.namespace] =
           "file:/" +
@@ -579,13 +581,13 @@ const applyDocumentElementTransforms = (
   );
 };
 
-const updateSyntheticItem = <TItem>(
-  properties: Partial<TItem>,
-  nodeId: string,
+const updateSyntheticItem = <TTree extends SyntheticBaseTreeNode<any, any>>(
+  properties: Partial<TTree>,
+  node: TTree,
   browser: SyntheticBrowser
 ) => {
-  const document = getSyntheticNodeDocument(nodeId, browser);
-  const item = getNestedTreeNodeById(nodeId, document.root) as SyntheticNode;
+  const document = getSyntheticNodeDocument(node.id, browser);
+  const item = getNestedTreeNodeById(node.id, document.root) as SyntheticNode;
   const itemPath = getTreeNodePath(item.id, document.root);
 
   const transforms: OperationalTransform[] = [];
@@ -596,7 +598,8 @@ const updateSyntheticItem = <TItem>(
     for (const namespace in props.attributes) {
       for (const name in props.attributes[namespace]) {
         const value = props.attributes[namespace][name];
-        if (getAttribute(item, name, namespace) === value) continue;
+        if ((item.attributes[namespace] || EMPTY_OBJECT)[name] === value)
+          continue;
         transforms.push(
           createSetAttributeTransform(itemPath, name, namespace, value)
         );
@@ -611,25 +614,18 @@ const updateSyntheticItem = <TItem>(
   return browser;
 };
 
-export const updateSyntheticNodeAttributes = (
-  name: string,
-  namespace: string,
-  value: any,
-  nodeId,
+export const updateSyntheticNodeAttributes = <
+  TAttributes extends SyntheticBaseNodeAttributes
+>(
+  attributes: RecursivePartial<TAttributes>,
+  node: SyntheticBaseTreeNode<any, TAttributes>,
   browser: SyntheticBrowser
 ) => {
-  const node = getSyntheticNodeById(nodeId, browser);
-
   return updateSyntheticItem(
     {
-      attributes: {
-        [namespace]: {
-          ...(node.attributes[namespace] || EMPTY_OBJECT),
-          [name]: value
-        }
-      }
+      attributes: merge({}, node.attributes, attributes)
     },
-    nodeId,
+    node,
     browser
   );
 };
@@ -640,16 +636,15 @@ export const updateSyntheticNodeStyle = (
   browser: SyntheticBrowser
 ) => {
   const node = getSyntheticNodeById(nodeId, browser);
-  const oldStyle = getAttribute(node, "style") || EMPTY_OBJECT;
+  const oldStyle = node.attributes.core.style || EMPTY_OBJECT;
 
   return updateSyntheticNodeAttributes(
-    "style",
-    DEFAULT_NAMESPACE,
     {
-      ...oldStyle,
-      ...style
+      [PCSourceNamespaces.CORE]: {
+        style: style
+      }
     },
-    nodeId,
+    node,
     browser
   );
 };
@@ -753,8 +748,10 @@ export const updateSyntheticItemPosition = (
   );
 };
 
-export const getNodeStyle = (node: TreeNode<any, any>, name: string) =>
-  (getAttribute(node, "style") || EMPTY_OBJECT)[name];
+export const getNodeStyle = (
+  node: PCVisibleNode | SyntheticNode,
+  name: string
+) => (node.attributes.core.style || EMPTY_OBJECT)[name];
 
 export const isNodeMovable = (node: SyntheticNode) =>
   node.source.path.length === 1 ||
@@ -791,7 +788,7 @@ export const updateSyntheticItemBounds = (
   } else {
     const node = getSyntheticNodeById(nodeId, browser);
     const document = getSyntheticNodeDocument(nodeId, browser);
-    const style = getAttribute(node, "style") || EMPTY_OBJECT;
+    const style = node.attributes.core.style || EMPTY_OBJECT;
 
     let newStyle: any = {
       position: style.position || "relative"
@@ -847,7 +844,7 @@ export const persistPasteSyntheticNodes = (
 
   for (const { uri, node, namespaceUris } of clips) {
     const sourceDep = browser.graph[uri];
-    const sourceNode = node;
+    const sourceNode = cloneTreeNode(node);
 
     // If there is NO source node, then possibly create a detached node and add to target component
     if (!sourceNode) {
@@ -869,8 +866,8 @@ export const persistPasteSyntheticNodes = (
           sourceDep.uri
         );
         namespace =
-          moduleInfo.attributes.undefined.xmlns &&
-          moduleInfo.attributes.undefined.xmlns[relativePath];
+          moduleInfo.attributes.xmlns &&
+          moduleInfo.attributes.xmlns[relativePath];
         content = addModuleNodeImport(relativePath, content);
         namespace = getModuleImportNamespace(relativePath, content);
         importUris = {
@@ -893,7 +890,7 @@ export const persistPasteSyntheticNodes = (
       const child: TreeNode<any, any> = createTreeNode(
         info.id,
         {
-          [DEFAULT_NAMESPACE]: {
+          [PCSourceNamespaces.CORE]: {
             style: resizeBounds(pos, getBoundsSize(bounds))
           }
         },
@@ -989,8 +986,12 @@ export const setSyntheticNodeExpanded = (
   root: SyntheticNode
 ): SyntheticNode => {
   const path = getTreeNodePath(node.id, root);
-  const updater = node => {
-    return setNodeAttribute(node, "expanded", value, EDITOR_NAMESPACE);
+  const updater = (node: SyntheticNode) => {
+    return mergeNodeAttributes(node, {
+      [PCSourceNamespaces.EDITOR]: {
+        expanded: true
+      }
+    });
   };
   return (value
     ? updateNestedNodeTrail(path, root, updater)
@@ -1032,7 +1033,7 @@ const persistSourceNodeChanges = <TTree extends PCSourceNode>(
     let stateSourceNode = elementSourceRoot.children.find(
       child =>
         child.name === PCSourceTagNames.COMPONENT_VARIANT &&
-        getAttribute(child, "name") === variantName
+        (child as PCVariantNode).attributes.core.name === variantName
     );
 
     const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
@@ -1044,7 +1045,7 @@ const persistSourceNodeChanges = <TTree extends PCSourceNode>(
       switch (ot.type) {
         case OperationalTransformType.SET_ATTRIBUTE: {
           const { name, value, namespace } = ot as SetAttributeTransform;
-          if (name === "style" && namespace === DEFAULT_NAMESPACE) {
+          if (name === "style" && namespace === PCSourceNamespaces.CORE) {
             stateSourceNode = addSetStyleOverride(
               value,
               targetName,
@@ -1099,7 +1100,7 @@ const addSetStyleOverride = (
     const existingStyleOverride = findNestedNode(
       overridesNode,
       node =>
-        node.name === "set-style" &&
+        node.name === PCSourceTagNames.SET_STYLE &&
         getAttribute(node, "name") === key &&
         getAttribute(node, "target") === targetName
     );
@@ -1112,8 +1113,8 @@ const addSetStyleOverride = (
             ...child,
             attributes: {
               ...child.attributes,
-              [DEFAULT_NAMESPACE]: {
-                ...(child.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT),
+              [PCSourceNamespaces.CORE]: {
+                ...(child.attributes[PCSourceNamespaces.CORE] || EMPTY_OBJECT),
                 value: style[key]
               }
             }
@@ -1123,7 +1124,7 @@ const addSetStyleOverride = (
     } else {
       overridesNode = appendChildNode(
         createTreeNode("set-style", {
-          [DEFAULT_NAMESPACE]: {
+          [PCSourceNamespaces.CORE]: {
             name: key,
             value: style[key],
             target: targetName
@@ -1234,7 +1235,8 @@ const filterEditorOts = (ots: OperationalTransform[]) =>
     switch (ot.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
         return (
-          (ot as SetAttributeTransform).namespace !== EDITOR_NAMESPACE ||
+          (ot as SetAttributeTransform).namespace !==
+            PCSourceNamespaces.EDITOR ||
           !/expanded/.test((ot as SetAttributeTransform).name)
         );
       }
@@ -1305,11 +1307,11 @@ const createComponentNode = (
   return createTreeNode(
     "component",
     {
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         id: generateComponentId(dep.content),
         extends: parentId
       },
-      [EDITOR_NAMESPACE]: {
+      [PCSourceNamespaces.EDITOR]: {
         bounds
       }
     },
@@ -1345,7 +1347,7 @@ export const persistInsertRectangle = (
 ) => {
   return persistInsertNode(
     createPCRectangle({
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         label: "Rectangle",
         nativeType: "div"
       }
@@ -1363,7 +1365,7 @@ export const persistChangeNodeLabel = (
 ) => {
   browser = persistSourceNodeChanges(sourceNode, null, browser, node =>
     mergeNodeAttributes(node, {
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         label
       }
     })
@@ -1383,7 +1385,7 @@ export const persistInsertNewComponentVariant = (
     componentNode => {
       return appendChildNode(
         createPCVariant({
-          [DEFAULT_NAMESPACE]: {
+          [PCSourceNamespaces.CORE]: {
             name: variantName,
             isDefault: true
           }
@@ -1413,7 +1415,7 @@ export const persistSetElementVariants = (
     browser,
     (sourceNode: PCVisibleNode) =>
       mergeNodeAttributes(sourceNode, {
-        [DEFAULT_NAMESPACE]: {
+        [PCSourceNamespaces.CORE]: {
           variants: variantNames
         }
       })
@@ -1430,7 +1432,7 @@ export const persistComponentVariantChanged = (
     browser
   ) as PCComponentNode;
   const variantNode = getComponentVariants(sourceNode).find(
-    variant => variant.attributes.undefined.name === name
+    variant => variant.attributes.core.name === name
   );
   return persistSourceNodeChanges(
     variantNode,
@@ -1462,7 +1464,7 @@ export const persistInsertText = (
 ) => {
   return persistInsertNode(
     createPCTextNode({
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         value,
         style,
         label: "Text"
@@ -1554,7 +1556,7 @@ export const persistConvertNodeToComponent = (
   const componentSourceNode = createPCComponent(
     {
       // TODO - calculate best document position
-      [EDITOR_NAMESPACE]: {
+      [PCSourceNamespaces.EDITOR]: {
         bounds: {
           left: 0,
           top: 0,
@@ -1562,7 +1564,7 @@ export const persistConvertNodeToComponent = (
           bottom: 200
         }
       },
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         id: generateComponentId(dep.content),
         label: "Untitled",
         style:
@@ -1682,7 +1684,7 @@ export const persistMoveSyntheticNode = (
   });
 
   if (componentInstanceNode) {
-    const slotName = targetOriginSourceNode.attributes.undefined.container;
+    const slotName = targetOriginSourceNode.attributes.core.container;
     sourceNode = setNodeAttribute(sourceNode, "slot", slotName);
   }
 
@@ -1698,7 +1700,7 @@ export const persistMoveSyntheticNode = (
 };
 
 export const isContainerSyntheticNode = (node: TreeNode<any, any>) =>
-  Boolean((node as PCVisibleNode).attributes.undefined.container);
+  Boolean((node as PCVisibleNode).attributes.core.container);
 
 /**
  * This assumes that the nodes in the same parent
@@ -1713,7 +1715,7 @@ export const getComponentInstanceSyntheticNode = (
     return getAttribute(
       parent,
       EditorAttributeNames.IS_COMPONENT_INSTANCE,
-      EDITOR_NAMESPACE
+      PCSourceNamespaces.EDITOR
     );
   };
   if (filter(node)) {
@@ -1728,7 +1730,7 @@ export const isCreatedFromComponent = (node: TreeNode<any, any>) =>
     getAttribute(
       node,
       EditorAttributeNames.CREATED_FROM_COMPONENT,
-      EDITOR_NAMESPACE
+      PCSourceNamespaces.EDITOR
     )
   );
 export const isComponentInstance = (node: TreeNode<any, any>) =>
@@ -1736,12 +1738,16 @@ export const isComponentInstance = (node: TreeNode<any, any>) =>
     getAttribute(
       node,
       EditorAttributeNames.IS_COMPONENT_INSTANCE,
-      EDITOR_NAMESPACE
+      PCSourceNamespaces.EDITOR
     )
   );
 export const isComponent = (node: TreeNode<any, any>) =>
   Boolean(
-    getAttribute(node, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE)
+    getAttribute(
+      node,
+      EditorAttributeNames.IS_COMPONENT_ROOT,
+      PCSourceNamespaces.EDITOR
+    )
   );
 
 export const getComponentInstanceSourceNode = (
@@ -1789,7 +1795,12 @@ export const persistSyntheticItemBounds = (
   const sourceNode = getSyntheticSourceNode(nodeId, browser);
   if (isSyntheticDocumentRoot(getSyntheticNodeById(nodeId, browser))) {
     return persistSourceNodeChanges(sourceNode, null, browser, child => {
-      return setNodeAttribute(child, "bounds", bounds, EDITOR_NAMESPACE);
+      return setNodeAttribute(
+        child,
+        "bounds",
+        bounds,
+        PCSourceNamespaces.EDITOR
+      );
     });
   } else {
     const document = getSyntheticNodeDocument(nodeId, browser);
@@ -1801,7 +1812,7 @@ export const persistSyntheticItemBounds = (
         const style = getAttribute(child, "style") || EMPTY_OBJECT;
         const pos = style.position || "relative";
         return mergeNodeAttributes(child, {
-          [DEFAULT_NAMESPACE]: {
+          [PCSourceNamespaces.CORE]: {
             style: {
               position: pos,
               left: bounds.left - document.bounds.left,
@@ -1849,10 +1860,10 @@ export const persistToggleSlotContainer = (
   const rootSourceElement = getSourceNodeElementRoot(sourceNode.id, browser);
   return persistSourceNodeChanges(sourceNode, null, browser, child => {
     const style = getAttribute(child, "style") || EMPTY_OBJECT;
-    const containerName = child.attributes.undefined.container;
+    const containerName = child.attributes.core.container;
     if (containerName) {
       child = mergeNodeAttributes(child, {
-        [DEFAULT_NAMESPACE]: {
+        [PCSourceNamespaces.CORE]: {
           container: null,
           containerStorage: containerName
         }
@@ -1860,9 +1871,9 @@ export const persistToggleSlotContainer = (
       return child;
     } else {
       child = mergeNodeAttributes(child, {
-        [DEFAULT_NAMESPACE]: {
+        [PCSourceNamespaces.CORE]: {
           container:
-            child.attributes.undefined.containerStorage ||
+            child.attributes.core.containerStorage ||
             generateContainerName(sourceNode.id, browser)
         }
       });
@@ -1878,7 +1889,7 @@ export const persistChangeNodeType = (
 ) => {
   return persistSourceNodeChanges(sourceNode, null, browser, node =>
     mergeNodeAttributes(node, {
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         nativeType
       }
     })
@@ -1892,7 +1903,7 @@ export const persistTextValue = (
 ) => {
   return persistSourceNodeChanges(sourceNode, null, browser, node =>
     mergeNodeAttributes(node, {
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         value
       }
     })

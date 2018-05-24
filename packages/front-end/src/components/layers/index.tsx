@@ -8,15 +8,13 @@ import {
   SyntheticBrowser,
   SyntheticDocument,
   SyntheticObjectType,
-  EDITOR_NAMESPACE
+  PCSourceNamespaces
 } from "paperclip";
 import { compose, pure, withHandlers, withState, withProps } from "recompose";
 import {
-  getAttribute,
   EMPTY_ARRAY,
   getNestedTreeNodeById,
   TreeNode,
-  DEFAULT_NAMESPACE,
   TreeMoveOffset
 } from "tandem-common";
 import { Dispatch } from "redux";
@@ -111,17 +109,17 @@ type TreeLayerOptions = {
 
 const DEFAULT_NODE_EXPAND_ATTRIBUTE = {
   name: "expanded",
-  namespace: EDITOR_NAMESPACE
+  namespace: PCSourceNamespaces.EDITOR
 };
 
 const DEFAULT_NODE_LABEL_ATTRIBUTE = {
   name: "label",
-  namespace: DEFAULT_NAMESPACE
+  namespace: PCSourceNamespaces.CORE
 };
 
 const DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE = {
   name: "editingLabel",
-  namespace: EDITOR_NAMESPACE
+  namespace: PCSourceNamespaces.EDITOR
 };
 
 const defaultRender = Base => ({
@@ -299,11 +297,10 @@ export const createTreeLayerComponents = <
       },
       props
     );
-    const label = getAttribute(
-      node,
-      nodeLabelAttr.name,
-      nodeLabelAttr.namespace
-    );
+    const label =
+      node.attributes[nodeLabelAttr.namespace] &&
+      node.attributes[nodeLabelAttr.namespace][nodeLabelAttr.name];
+
     return connectDropTarget(
       connectDragSource(
         <div
@@ -406,12 +403,12 @@ export const createTreeLayerComponents = <
   }: TreeNodeLayerInnerProps) => {
     const selected = selectedNodeIds.indexOf(node.id) !== -1;
     const hovering = hoveringNodeIds.indexOf(node.id) !== -1;
-    const expanded = getAttribute(node, expandAttr.name, expandAttr.namespace);
-    const editingLabel = getAttribute(
-      node,
-      editingLabelAttr.name,
-      editingLabelAttr.namespace
-    );
+    const expanded =
+      node.attributes[expandAttr.namespace] &&
+      node.attributes[expandAttr.namespace][expandAttr.name];
+    const editingLabel =
+      node.attributes[editingLabelAttr.namespace] &&
+      node.attributes[editingLabelAttr.namespace][editingLabelAttr.name];
     if (!root) {
       root = node;
     }

@@ -7,8 +7,9 @@ import {
   REGISTERED_COMPONENT,
   RegisteredComponent
 } from "../../../../../state";
-import { DEFAULT_NAMESPACE, createTreeNode } from "tandem-common";
+import { createTreeNode } from "tandem-common";
 import { compose, pure, withHandlers } from "recompose";
+import { PCSourceNamespaces } from "paperclip";
 import { DropTarget, DragSource, DropTargetCollector } from "react-dnd";
 
 type ListItem = {
@@ -21,7 +22,7 @@ const NATIVE_ELEMENTS: ListItem[] = [
     tagName: "text",
     label: "Text",
     template: createTreeNode("text", {
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         value: "edit me"
       }
     })

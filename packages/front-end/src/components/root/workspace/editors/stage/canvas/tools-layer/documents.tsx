@@ -79,7 +79,7 @@ const DocumentItemBase = ({
           canvasToolDocumentTitleClicked.bind(this, document.id)
         )}
       >
-        {document.root.attributes.undefined.label || "Untitled"}
+        {document.root.attributes.core.label || "Untitled"}
       </div>
       <div
         className="m-documents-stage-tool-item-content"

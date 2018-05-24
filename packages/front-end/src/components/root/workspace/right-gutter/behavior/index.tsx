@@ -56,8 +56,8 @@ const BaseBehaviorPaneComponent = ({
     sourceNode.id,
     root.browser
   ) as PCVisibleNode;
-  const isSlotContainer = Boolean(sourceNode.attributes.undefined.container);
-  const nativeType = sourceNode.attributes.undefined.container || "div";
+  const isSlotContainer = Boolean(sourceNode.attributes.core.container);
+  const nativeType = sourceNode.attributes.core.container || "div";
   const textValue = getAttribute(sourceNode, "value");
 
   return (

@@ -1,6 +1,6 @@
 import { memoize } from "./memoization";
 import { EMPTY_ARRAY } from "./object";
-import { TreeNode, DEFAULT_NAMESPACE, addTreeNodeIds } from "../state/tree";
+import { TreeNode, addTreeNodeIds } from "../state/tree";
 import { xml2js } from "xml-js";
 import { camelCase, repeat } from "lodash";
 
@@ -27,7 +27,6 @@ const normalizeTree = ({
     let [namespace, name2] = name.split(":");
     if (!name2) {
       name2 = namespace;
-      namespace = DEFAULT_NAMESPACE;
     }
     if (!normalizedAttributes[namespace]) {
       normalizedAttributes[namespace] = {};
@@ -58,9 +57,6 @@ export const stringifyTreeNodeToXML = memoize(
 
     let tagName = node.name;
 
-    if (node.namespace && node.namespace !== DEFAULT_NAMESPACE) {
-      tagName = node.namespace + ":" + tagName;
-    }
     let buffer = `${tabs}<${tagName}`;
 
     for (const namespace in node.attributes) {
@@ -73,10 +69,6 @@ export const stringifyTreeNodeToXML = memoize(
         }
 
         let attrName = name;
-
-        if (namespace !== DEFAULT_NAMESPACE) {
-          attrName = namespace + ":" + attrName;
-        }
 
         if (/null|undefined/.test(String(value))) {
           continue;

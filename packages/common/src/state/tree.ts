@@ -8,8 +8,6 @@ import { generateUID } from "../utils/uid";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "../utils/object";
 import { RecursivePartial } from "../utils/types";
 
-export const DEFAULT_NAMESPACE = "undefined";
-
 export enum TreeMoveOffset {
   APPEND = 0,
   BEFORE = -1,
@@ -24,9 +22,6 @@ export type NamespacedAttributes = {
 
 export type TreeNodeAttributes = {
   [identifier: string]: {
-    [identifier: string]: any;
-  };
-  [DEFAULT_NAMESPACE]: {
     [identifier: string]: any;
   };
 };
@@ -48,10 +43,15 @@ export type TreeNode<
   attributes: TAttributes;
 };
 
-export type NodeFilter = (node: TreeNode<any, any>) => boolean;
+export type NodeFilter<TTree extends TreeNode<any, any>> = (
+  node: TTree
+) => boolean;
 
 export const findNestedNode = memoize(
-  (current: TreeNode<any, any>, filter: NodeFilter) => {
+  <TTree extends TreeNode<any, any>>(
+    current: TTree,
+    filter: NodeFilter<TTree>
+  ) => {
     if (filter(current)) {
       return current;
     }
@@ -67,11 +67,9 @@ export const findNestedNode = memoize(
 
 export const createTreeNode = (
   name: string,
-  attributes: TreeNodeAttributes = {
-    [DEFAULT_NAMESPACE]: {}
-  },
+  attributes: TreeNodeAttributes = {},
   children: TreeNode<any, any>[] = [],
-  namespace: string = DEFAULT_NAMESPACE
+  namespace?: string
 ): TreeNode<any, any> => ({
   id: generateUID(),
   name,
@@ -101,12 +99,6 @@ export const filterNestedNodes = memoize(
     return found;
   }
 );
-
-export const getAttribute = (
-  current: TreeNode<any, any>,
-  name: string,
-  namespace: string = DEFAULT_NAMESPACE
-) => current.attributes[namespace] && current.attributes[namespace][name];
 
 export const getChildParentMap = memoize((current: TreeNode<any, any>): {
   [identifier: string]: TreeNode<any, any>;
@@ -310,22 +302,6 @@ export const updateNestedNodeTrail = (
   }
   return updater(current, depth, path);
 };
-
-export const setNodeAttribute = <TTree extends TreeNode<any, any>>(
-  node: TTree,
-  name: string,
-  value: any,
-  namespace: string = DEFAULT_NAMESPACE
-): TTree => ({
-  ...(node as any),
-  attributes: {
-    ...node.attributes,
-    [namespace]: {
-      ...node.attributes[namespace],
-      [name]: value
-    }
-  }
-});
 
 export const mergeNodeAttributes = <
   N extends string,

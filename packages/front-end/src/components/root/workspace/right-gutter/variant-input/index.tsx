@@ -11,11 +11,11 @@ import {
   getSourceNodeById,
   isComponentInstanceSourceNode,
   PCVisibleNode,
+  PCSourceNamespaces,
   getComponentVariants
 } from "paperclip";
 import { RootState } from "../../../../../state";
 import { elementVariantToggled } from "../../../../../actions";
-import { getAttribute, DEFAULT_NAMESPACE } from "tandem-common";
 const { VariantOption: BaseVariantOption } = require("./index.pc");
 
 type VariantOptionProps = {
@@ -56,7 +56,7 @@ const getVariant = (node: SyntheticNode, root: RootState) => {
     node.id,
     root.browser
   ) as PCVisibleNode;
-  return sourceNode.attributes.undefined.variants || [];
+  return sourceNode.attributes.core.variants || [];
 };
 
 export const BaseVariantInput = ({
@@ -83,7 +83,7 @@ export const BaseVariantInput = ({
       {getComponentVariants(originComponent).map(
         ({
           attributes: {
-            [DEFAULT_NAMESPACE]: { name }
+            [PCSourceNamespaces.CORE]: { name }
           }
         }) => {
           return (

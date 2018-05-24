@@ -5,18 +5,15 @@ import {
   parseStyle,
   TreeNode,
   filterNestedNodes,
-  getAttribute,
   createNodeNameMatcher,
-  DEFAULT_NAMESPACE,
   findNestedNode,
   Bounds,
-  setNodeAttribute,
   TreeNodeAttributes,
   createTreeNode,
-  generateUID
+  generateUID,
+  mergeNodeAttributes
 } from "tandem-common";
 import { mapValues } from "lodash";
-import { EDITOR_NAMESPACE } from ".";
 
 export type DependencyGraph = {
   [identifier: string]: Dependency;
@@ -34,7 +31,9 @@ export type Dependency = {
 };
 
 export enum PCSourceNamespaces {
-  XMLNS = "xmlns"
+  XMLNS = "xmlns",
+  CORE = "core",
+  EDITOR = "editor"
 }
 
 export enum PCSourceTagNames {
@@ -62,7 +61,7 @@ export const isComponentInstanceSourceNode = (sourceNode: TreeNode<any, any>) =>
   sourceNode.name !== PCSourceTagNames.RECTANGLE;
 
 export type PCSetAttributeOverrideNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     target?: string;
     name: string;
     namespace?: string;
@@ -76,7 +75,7 @@ export type PCSetAttributeOverrideNode = PCBaseSourceNode<
 >;
 
 export type PCSetStyleOverrideNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     target?: string;
     name: string;
     value: string;
@@ -92,7 +91,7 @@ export type PCOverrideNode =
   | PCSetStyleOverrideNode;
 
 export type PCVariantNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     name: string;
     isDefault?: boolean;
   };
@@ -105,7 +104,7 @@ export type PCVariantNode = PCBaseSourceNode<
 >;
 
 export type PCVisibleNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     variants?: string[];
     slot?: string;
     style?: any;
@@ -129,7 +128,7 @@ export enum PCRectangleNodeAttributeNames {
 }
 
 export type PCRectangleNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     [PCRectangleNodeAttributeNames.NATIVE_TYPE]?: string;
   };
 } & PCVisibleNodeAttributes;
@@ -140,7 +139,7 @@ export type PCRectangleNode = PCBaseVisibleNode<
 >;
 
 export type PCTextNodeAttributes = {
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     value: string;
   };
 } & PCVisibleNodeAttributes;
@@ -153,18 +152,29 @@ export type PCVisibleNode = PCBaseVisibleNode<
   any,
   PCTextNodeAttributes | PCRectangleNodeAttributes
 >;
+
+export type PCVisibleRootNode = PCBaseVisibleNode<
+  any,
+  (PCTextNodeAttributes | PCRectangleNodeAttributes) & {
+    [PCSourceNamespaces.EDITOR]: {
+      bounds: Bounds;
+    };
+  }
+>;
+
 export type PCTemplateNode = PCBaseSourceNode<
   PCSourceTagNames.TEMPLATE,
-  TreeNodeAttributes,
+  PCRectangleNodeAttributes,
   PCVisibleNode
 >;
 
 export type PCComponentAttributes = {
-  [EDITOR_NAMESPACE]: {
+  [PCSourceNamespaces.EDITOR]: {
     bounds: Bounds;
   };
-  [DEFAULT_NAMESPACE]: {
+  [PCSourceNamespaces.CORE]: {
     label?: string;
+    ref?: string;
     container?: string;
 
     // TODO - switch to name
@@ -191,12 +201,16 @@ export type PCModuleNode = PCBaseSourceNode<
   PCComponentNode | PCBaseVisibleNode<any, any>
 >;
 
-export type PCSourceNode =
-  | PCModuleNode
-  | PCComponentNode
-  | PCVisibleNode
-  | PCOverrideNode
-  | PCVariantNode;
+export type PCSourceNode = TreeNode<
+  any,
+  | PCModuleAttributes
+  | PCComponentAttributes
+  | PCVariantNodeAttributes
+  | PCRectangleNodeAttributes
+  | PCTextNodeAttributes
+  | PCSetStyleOverrideNodeAttributes
+  | PCSetAttributeOverrideNodeAttributes
+>;
 
 export const createPCRectangle = (
   attributes: PCRectangleNodeAttributes,
@@ -222,9 +236,10 @@ export const createPCTemplate = (
 ): PCTemplateNode => ({
   id: generateUID(),
   name: PCSourceTagNames.TEMPLATE,
+  namespace: PCSourceNamespaces.CORE,
   children: [],
   attributes: {
-    [DEFAULT_NAMESPACE]: {}
+    [PCSourceNamespaces.CORE]: {}
   }
 });
 
@@ -234,6 +249,7 @@ export const createPCComponent = (
 ): PCComponentNode => ({
   id: generateUID(),
   name: PCSourceTagNames.COMPONENT,
+  namespace: PCSourceNamespaces.CORE,
   attributes,
   children: [template || createPCTemplate()]
 });
@@ -243,6 +259,7 @@ export const createPCVariant = (
 ): PCVariantNode => ({
   id: generateUID(),
   name: PCSourceTagNames.VARIANT,
+  namespace: PCSourceNamespaces.CORE,
   attributes,
   children: []
 });
@@ -291,7 +308,7 @@ export const getModuleComponent = (componentId: string, module: PCModuleNode) =>
   module.children.find(
     component =>
       component.name === PCSourceTagNames.COMPONENT &&
-      (component as PCComponentNode).attributes.undefined.id === componentId
+      (component as PCComponentNode).attributes.core.id === componentId
   ) as PCComponentNode;
 
 export const getComponentTemplate = (component: PCComponentNode) =>
@@ -312,7 +329,10 @@ export const getNodeSourceComponent = memoize(
 );
 
 export const getNodeReference = memoize((refName: string, root: PCSourceNode) =>
-  findNestedNode(root, child => getAttribute(child, "ref") === refName)
+  findNestedNode(
+    root,
+    (child: PCComponentNode) => child.attributes.core.ref === refName
+  )
 );
 
 export const updateGraphDependency = (
@@ -368,10 +388,9 @@ export const addModuleNodeImport = (
   if (namespace) return moduleNode;
   const imports = moduleNode.attributes.xmlns || {};
   const importCount = Object.keys(imports).length;
-  return setNodeAttribute(
-    moduleNode,
-    "import" + importCount,
-    uri,
-    PCSourceNamespaces.XMLNS
-  );
+  return mergeNodeAttributes(moduleNode, {
+    xmlns: {
+      ["import" + importCount]: uri
+    }
+  });
 };

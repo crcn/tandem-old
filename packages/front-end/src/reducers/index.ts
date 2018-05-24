@@ -224,13 +224,10 @@ import {
   getBoundsSize,
   shiftBounds,
   flipPoint,
-  getAttribute,
   diffArray,
   getFileFromUri,
   isDirectory,
   updateNestedNode,
-  DEFAULT_NAMESPACE,
-  setNodeAttribute,
   FileAttributeNames,
   Directory,
   getNestedTreeNodeById,
@@ -255,7 +252,7 @@ import {
 } from "tandem-common";
 import { difference, pull, clamp, merge } from "lodash";
 import { select } from "redux-saga/effects";
-import { EDITOR_NAMESPACE } from "paperclip";
+import { PCSourceNamespaces } from "paperclip";
 
 const DEFAULT_RECT_COLOR = "#CCC";
 const INSERT_TEXT_OFFSET = {
@@ -409,7 +406,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
                 children: [
                   ...dir.children,
                   createTreeNode(fileType, {
-                    [DEFAULT_NAMESPACE]: {
+                    [DocumentNamespaces]: {
                       [FileAttributeNames.URI]: uri,
                       [FileAttributeNames.BASENAME]: basename
                     }

@@ -7,14 +7,15 @@ import {
   getComponentTemplate,
   PCVisibleNode,
   PCSourceTagNames,
-  PCRectangleNode
+  PCRectangleNode,
+  PCTemplateNode,
+  PCSourceNamespaces,
+  PCTextNode
 } from "paperclip";
 import {
-  getAttribute,
   getTreeNodePath,
   TreeNode,
   TreeNodeAttributes,
-  DEFAULT_NAMESPACE,
   parseStyle,
   xmlToTreeNode,
   EMPTY_OBJECT,
@@ -76,17 +77,12 @@ const compileModule = (context: CompileContext) => {
 
 const compileComponent = (context: CompileContext) => {
   const componentName = getNodeClassName(context.currentComponent, context);
-  const id = context.currentComponent.attributes.undefined.id;
+  const id = context.currentComponent.attributes.core.id;
   let buffer = `function __${id} (props) {`;
   buffer +=
     `return (` +
     compileElement(
       getComponentTemplate(context.currentComponent),
-      {
-        [DEFAULT_NAMESPACE]: {
-          style: getAttribute(context.currentComponent, "style")
-        }
-      },
       true,
       context
     ) +
@@ -104,21 +100,14 @@ const compileComponent = (context: CompileContext) => {
 
 const compileElement = (
   node: PCVisibleNode,
-  attributes: RecursivePartial<TreeNodeAttributes>,
   isRoot: boolean,
   context: CompileContext
 ) => {
-  node = {
-    ...node,
-    attributes: merge({}, node.attributes, attributes)
-  };
-
   if (node.name === PCSourceTagNames.TEXT && node.namespace == null) {
-    return `'${getAttribute(node, "value")}'`;
+    return `'${(node as PCTextNode).attributes.core.value}'`;
   }
 
-  const slotContainerName = (node as PCRectangleNode).attributes.undefined
-    .container;
+  const slotContainerName = (node as PCRectangleNode).attributes.core.container;
   const tagNameStr = getNodeReactComponentRef(node, context);
   let buffer = `React.createElement(${getNodeReactComponentRef(
     node,
@@ -142,12 +131,12 @@ const compileElementAttributes = (
   let buffer = `Object.assign({}, ${
     nodeVarName ? `(${propsRef} || __EMPTY_OBJECT),` : ""
   } {`;
-  const style = getAttribute(node, "style");
+  const style = node.attributes.core.style;
 
   for (const child of node.children as PCVisibleNode[]) {
-    const slotName = child.attributes.undefined.slot;
+    const slotName = child.attributes.core.slot;
     if (slotName) {
-      buffer += `${slotName}: ${compileElement(child, {}, false, context)},`;
+      buffer += `${slotName}: ${compileElement(child, false, context)},`;
     }
   }
 
@@ -182,7 +171,7 @@ const compileElementChildren = (
   node: PCRectangleNode,
   context: CompileContext
 ) => {
-  const internalContainerName = node.attributes.undefined.container;
+  const internalContainerName = node.attributes.core.container;
   const publicContainerName = getNodeVarName(node, context);
 
   const base =
@@ -190,9 +179,9 @@ const compileElementChildren = (
     node.children
       .map(
         child =>
-          child.attributes.undefined.slot
+          child.attributes.core.slot
             ? null
-            : compileElement(child as PCVisibleNode, {}, false, context)
+            : compileElement(child as PCVisibleNode, false, context)
       )
       .filter(Boolean)
       .join(",") +
@@ -219,7 +208,7 @@ const defineNodeVarName = (ref: PCVisibleNode, context: CompileContext) => {
 };
 
 const getBaseNodeVarName = (node: PCVisibleNode) =>
-  camelCase(String(node.attributes.undefined.label));
+  camelCase(String(node.attributes.core.label));
 
 const getNodeVarName = (ref: PCVisibleNode, context: CompileContext) => {
   const baseVarName = getBaseNodeVarName(ref);
@@ -241,13 +230,13 @@ const getNodeReactComponentRef = (
 
   const internaComponent = getModuleComponents(context.currentModule).find(
     component =>
-      component.attributes.undefined.id === ref.name && ref.namespace == null
+      component.attributes.core.id === ref.name && ref.namespace == null
   );
   return isImport
     ? `${ref.namespace}.__${ref.name}`
     : internaComponent
-      ? `__` + internaComponent.attributes.undefined.id
-      : "'" + (ref.attributes.undefined.nativeType || "div") + "'";
+      ? `__` + internaComponent.attributes.core.id
+      : "'" + (ref.attributes.core.nativeType || "div") + "'";
 };
 
 const getNodeClassName = (ref: TreeNode<any, any>, context: CompileContext) => {

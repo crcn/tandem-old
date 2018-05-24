@@ -104,7 +104,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
           ),
         "is-component-root": props.isComponentRoot,
         "is-slot-container": Boolean(
-          (props.node as SyntheticRectangleNode).attributes.undefined.container
+          (props.node as SyntheticRectangleNode).attributes.core.container
         )
       })
     }),

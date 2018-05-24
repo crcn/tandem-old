@@ -1,13 +1,10 @@
 import {
   TreeNode,
-  DEFAULT_NAMESPACE,
-  getAttribute,
   getChildParentMap,
   filterNestedNodes,
   getTreeNodeFromPath,
   findNestedNode,
   updateNestedNode,
-  setNodeAttribute,
   createTreeNode,
   appendChildNode
 } from "./tree";
@@ -16,6 +13,10 @@ import * as path from "path";
 
 export const FILE_TAG_NAME = "file";
 export const DIRECTORY_TAG_NAME = "directory";
+
+export enum DocumentNamespaces {
+  CORE = "core"
+}
 
 export type File = {
   name: "file";
@@ -37,11 +38,11 @@ export const isDirectory = (node: TreeNode<any, any>) =>
   node.name === DIRECTORY_TAG_NAME;
 
 export const getFileName = (node: TreeNode<any, any>) =>
-  getAttribute(node, "name");
+  node.attributes[DocumentNamespaces.CORE].name;
 
 export const createFile = (name: string): File =>
   createTreeNode(FILE_TAG_NAME, {
-    [DEFAULT_NAMESPACE]: {
+    [DocumentNamespaces.CORE]: {
       name
     }
   }) as File;
@@ -51,7 +52,7 @@ export const createDirectory = (
   children: (File | Directory)[]
 ): Directory =>
   createTreeNode(DIRECTORY_TAG_NAME, {
-    [DEFAULT_NAMESPACE]: {
+    [DocumentNamespaces.CORE]: {
       uri
     }
   }) as Directory;
@@ -75,18 +76,23 @@ export const getFilePathFromNodePath = (path: number[], directory: Directory) =>
 export const getFileFromUri = (uri: string, root: Directory) =>
   findNestedNode(
     root,
-    child => getAttribute(child, FileAttributeNames.URI) === uri
+    child =>
+      child.attributes[DocumentNamespaces.CORE][FileAttributeNames.URI] === uri
   );
 
 const getSelectedFile = memoize((root: Directory) =>
-  findNestedNode(root, child =>
-    getAttribute(child, FileAttributeNames.SELECTED)
+  findNestedNode(
+    root,
+    child =>
+      child.attributes[DocumentNamespaces.CORE][FileAttributeNames.SELECTED]
   )
 );
 
 const getSelectedFiles = memoize((root: Directory) =>
-  filterNestedNodes(root, child =>
-    getAttribute(child, FileAttributeNames.SELECTED)
+  filterNestedNodes(
+    root,
+    child =>
+      child.attributes[DocumentNamespaces.CORE][FileAttributeNames.SELECTED]
   )
 );
 
@@ -109,7 +115,7 @@ export const convertFlatFilesToNested = (
   });
 
   let root: Directory = createTreeNode("directory", {
-    [DEFAULT_NAMESPACE]: {
+    [DocumentNamespaces.CORE]: {
       [FileAttributeNames.URI]: "file://" + rootDir,
       [FileAttributeNames.BASENAME]: path.basename(rootDir)
     }
@@ -123,11 +129,11 @@ export const convertFlatFilesToNested = (
       const part = pf[i];
       prev = current;
       current = current.children.find(
-        child => child.attributes[DEFAULT_NAMESPACE].basename === part
+        child => child.attributes[DocumentNamespaces.CORE].basename === part
       ) as Directory;
       if (!current) {
         current = createTreeNode("directory", {
-          [DEFAULT_NAMESPACE]: {
+          [DocumentNamespaces.CORE]: {
             [FileAttributeNames.URI]:
               "file://" +
               path.join(rootDir, pf.slice(0, i + 1).join("/")) +
@@ -144,7 +150,7 @@ export const convertFlatFilesToNested = (
 
     current.children.push(
       createTreeNode(isFile ? "file" : "directory", {
-        [DEFAULT_NAMESPACE]: {
+        [DocumentNamespaces.CORE]: {
           [FileAttributeNames.URI]:
             "file://" + path.join(rootDir, pf.join("/")) + (isFile ? "" : "/"),
           [FileAttributeNames.BASENAME]: pf[i]

@@ -190,9 +190,9 @@ const _evaluateComponent = (
     }
     slots[slotName].push(child);
   }
-  const componentContainerName = componentNode.attributes.undefined.container;
+  const componentContainerName = componentNode.attributes.core.container;
 
-  const variants = attributes.undefined.variants;
+  const variants = attributes.core.variants;
 
   let syntheticChildren = slots[componentContainerName];
 
@@ -200,8 +200,8 @@ const _evaluateComponent = (
     template = getComponentVariants(componentNode).reduce(
       (template, variant) => {
         return (variants
-        ? variants.indexOf(variant.attributes.undefined.name) !== -1
-        : isRoot && variant.attributes.undefined.isDefault)
+        ? variants.indexOf(variant.attributes.core.name) !== -1
+        : isRoot && variant.attributes.core.isDefault)
           ? overrideComponentTemplate(template, variant.children)
           : template;
       },
@@ -258,27 +258,27 @@ const overrideComponentTemplate = (
     if (override.name === PCSourceTagNames.SET_ATTRIBUTE) {
       const setAttributeOverride = override as PCSetAttributeOverrideNode;
       const ref = getNodeReference(
-        setAttributeOverride.attributes.undefined.target,
+        setAttributeOverride.attributes.core.target,
         template
       );
       template = updateNestedNode(ref, template, ref =>
         setNodeAttribute(
           ref,
-          setAttributeOverride.attributes.undefined.name,
-          setAttributeOverride.attributes.undefined.value
+          setAttributeOverride.attributes.core.name,
+          setAttributeOverride.attributes.core.value
         )
       );
     } else if (override.name === PCSourceTagNames.SET_STYLE) {
       const setStyleOverride = override as PCSetStyleOverrideNode;
       const ref = getNodeReference(
-        setStyleOverride.attributes.undefined.target,
+        setStyleOverride.attributes.core.target,
         template
       );
       template = updateNestedNode(ref, template, ref => {
         return setNodeAttribute(ref, "style", {
           ...(getAttribute(ref, "style") || EMPTY_OBJECT),
-          [setStyleOverride.attributes.undefined.name]:
-            setStyleOverride.attributes.undefined.value
+          [setStyleOverride.attributes.core.name]:
+            setStyleOverride.attributes.core.value
         });
       });
     }
@@ -303,7 +303,7 @@ const evaluateNode = (
 
   let tagName = node.name;
   let hasSlottedChildren = false;
-  const containerName = node.attributes.undefined.container;
+  const containerName = node.attributes.core.container;
   const source = getSytheticNodeSource(node, dependency);
 
   if (containerName) {

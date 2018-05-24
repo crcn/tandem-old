@@ -2,14 +2,11 @@ import { mapValues } from "lodash";
 import {
   ComputedDisplayInfo,
   EditorAttributeNames,
-  EDITOR_NAMESPACE,
   SyntheticNode,
   SyntheticRectangleNode
 } from "./synthetic";
 import {
   TreeNode,
-  DEFAULT_NAMESPACE,
-  getAttribute,
   getTreeNodeFromPath,
   roundBounds,
   OperationalTransform,
@@ -20,7 +17,12 @@ import {
   MoveChildTransform,
   patchNode
 } from "tandem-common";
-import { PCRectangleNodeAttributeNames, PCSourceTagNames, PCTextNode } from ".";
+import {
+  PCRectangleNodeAttributeNames,
+  PCSourceTagNames,
+  PCTextNode,
+  PCSourceNamespaces
+} from "./dsl";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node;
@@ -82,11 +84,8 @@ const setStyleConstraintsIfRoot = (
   synthetic: SyntheticNode,
   nativeElement: HTMLElement
 ) => {
-  const isRoot = getAttribute(
-    synthetic,
-    EditorAttributeNames.IS_COMPONENT_ROOT,
-    EDITOR_NAMESPACE
-  );
+  const isRoot =
+    synthetic.attributes[PCSourceNamespaces.EDITOR].isComponentRoot;
   if (isRoot) {
     nativeElement.style.width = "100vw";
     nativeElement.style.height = "100vh";
@@ -102,11 +101,11 @@ const createNativeNode = (
   const nativeElement = document.createElement(
     isText
       ? "span"
-      : (synthetic as SyntheticRectangleNode).attributes.undefined.nativeType ||
+      : (synthetic as SyntheticRectangleNode).attributes.core.nativeType ||
         "div"
   );
 
-  const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
+  const attrs = synthetic.attributes.core || {};
   for (const name in attrs) {
     const value = attrs[name];
     if (name === "style") {
@@ -119,9 +118,7 @@ const createNativeNode = (
 
   if (isText) {
     nativeElement.appendChild(
-      document.createTextNode(
-        (synthetic as PCTextNode).attributes.undefined.value
-      )
+      document.createTextNode((synthetic as PCTextNode).attributes.core.value)
     );
   } else {
     for (let i = 0, { length } = synthetic.children; i < length; i++) {
@@ -165,7 +162,7 @@ export const patchDOM = (
     switch (transform.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
         const { name, value, namespace } = transform as SetAttributeTransform;
-        if (namespace === DEFAULT_NAMESPACE) {
+        if (namespace === PCSourceNamespaces.CORE) {
           if (name === "style") {
             resetElementStyle(target, syntheticTarget);
             setStyleConstraintsIfRoot(syntheticTarget, target);
@@ -193,7 +190,7 @@ export const patchDOM = (
       }
       case OperationalTransformType.INSERT_CHILD: {
         const { child, index } = transform as InsertChildTransform;
-        if (!child.namespace || child.namespace == DEFAULT_NAMESPACE) {
+        if (!child.namespace || child.namespace == PCSourceNamespaces.CORE) {
           if (newMap === map) {
             newMap = { ...map };
           }
@@ -231,13 +228,10 @@ const makeElementClickable = (
   target: HTMLElement,
   synthetic: SyntheticNode
 ) => {
-  const isRoot = getAttribute(
-    synthetic,
-    EditorAttributeNames.IS_COMPONENT_ROOT,
-    EDITOR_NAMESPACE
-  );
+  const isRoot = synthetic.attributes.editor.isComponentRoot;
+
   if (synthetic.name !== "text" && !isRoot) {
-    const style = getAttribute(synthetic, "style") || {};
+    const style = synthetic.attributes.core.style || {};
     if (target.childNodes.length === 0 && Object.keys(style).length === 0) {
       target.dataset.empty = "1";
       Object.assign(target.style, {
@@ -269,7 +263,7 @@ const makeElementClickable = (
 
 const resetElementStyle = (target: HTMLElement, synthetic: SyntheticNode) => {
   removeClickableStyle(target, synthetic);
-  const style = getAttribute(synthetic, "style") || {};
+  const style = synthetic.attributes.core.style || {};
   target.setAttribute("style", "");
   Object.assign(target.style, normalizeStyle(style));
 };

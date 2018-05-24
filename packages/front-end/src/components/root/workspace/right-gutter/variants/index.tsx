@@ -6,7 +6,6 @@ import { Dispatch } from "redux";
 import { RootState } from "../../../../../state";
 import { PaneComponent } from "../../../../pane";
 import { FocusComponent } from "../../../../focus";
-import { getAttribute, DEFAULT_NAMESPACE } from "tandem-common";
 import {
   getSyntheticNodeById,
   getSourceNodeById,
@@ -14,7 +13,8 @@ import {
   PCSourceTagNames,
   getSyntheticNodeDocument,
   getComponentVariants,
-  PCComponentNode
+  PCComponentNode,
+  PCSourceNamespaces
 } from "paperclip";
 import {
   newVariantNameEntered,
@@ -215,7 +215,7 @@ export const VariantsComponent = compose<
     const itemsContainerChildren = getComponentVariants(info).map(
       ({
         attributes: {
-          [DEFAULT_NAMESPACE]: { name, isDefault }
+          [PCSourceNamespaces.CORE]: { name, isDefault }
         }
       }) => {
         return (
