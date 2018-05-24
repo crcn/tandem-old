@@ -1,6 +1,6 @@
 import { fork, call, take, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import {app, BrowserWindow} from "electron"
+import { app, BrowserWindow } from "electron";
 import { appReady } from "../actions";
 
 export function* electronSaga() {
@@ -8,13 +8,11 @@ export function* electronSaga() {
 }
 
 function* onAppReady() {
-  const chan = eventChannel((emit) => {
-    app.on("ready", (event) => {
+  const chan = eventChannel(emit => {
+    app.on("ready", event => {
       emit(event);
     });
-    return () => {
-
-    };
+    return () => {};
   });
 
   yield take(chan);

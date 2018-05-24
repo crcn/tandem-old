@@ -81,9 +81,11 @@
                           "label": "input"
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb7"
                     }
-                  ]
+                  ],
+                  "id": "808486bb6"
                 },
                 {
                   "name": "div",
@@ -120,7 +122,8 @@
                           }
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb9"
                     },
                     {
                       "name": "component2",
@@ -135,7 +138,8 @@
                           }
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb10"
                     },
                     {
                       "name": "component2",
@@ -150,7 +154,8 @@
                           }
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb11"
                     },
                     {
                       "name": "component2",
@@ -165,15 +170,20 @@
                           }
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb12"
                     }
-                  ]
+                  ],
+                  "id": "808486bb8"
                 }
-              ]
+              ],
+              "id": "808486bb5"
             }
-          ]
+          ],
+          "id": "808486bb4"
         }
-      ]
+      ],
+      "id": "808486bb3"
     },
     {
       "name": "component",
@@ -238,13 +248,17 @@
                       "label": "Search result item"
                     }
                   },
-                  "children": []
+                  "children": [],
+                  "id": "808486bb16"
                 }
-              ]
+              ],
+              "id": "808486bb15"
             }
-          ]
+          ],
+          "id": "808486bb14"
         }
-      ]
+      ],
+      "id": "808486bb13"
     },
     {
       "name": "component",
@@ -255,10 +269,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 491,
-            "right": 770,
-            "top": 73,
-            "bottom": 233
+            "left": 476,
+            "right": 755,
+            "top": 25,
+            "bottom": 185
           }
         }
       },
@@ -288,11 +302,15 @@
                   "label": "Rectangle"
                 }
               },
-              "children": []
+              "children": [],
+              "id": "808486bb19"
             }
-          ]
+          ],
+          "id": "808486bb18"
         }
-      ]
+      ],
+      "id": "808486bb17"
     }
-  ]
+  ],
+  "id": "808486bb2"
 }

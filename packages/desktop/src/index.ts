@@ -1,12 +1,12 @@
-const {app, BrowserWindow} = require('electron');
+const { app, BrowserWindow } = require("electron");
 
 let mainWindow;
 
-app.on('ready', () => {
+app.on("ready", () => {
   mainWindow = new BrowserWindow({
-      height: 600,
-      width: 800
+    height: 600,
+    width: 800
   });
 
-  mainWindow.loadURL('file://' + __dirname + '/front-end/index.html');
+  mainWindow.loadURL("file://" + __dirname + "/front-end/index.html");
 });

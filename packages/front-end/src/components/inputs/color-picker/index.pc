@@ -11,10 +11,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 27,
-            "top": 78,
-            "right": 425,
-            "bottom": 348
+            "left": 55,
+            "top": -82,
+            "right": 453,
+            "bottom": 188
           }
         }
       },
@@ -56,7 +56,8 @@
                       "native-type": "div"
                     }
                   },
-                  "children": []
+                  "children": [],
+                  "id": "808486bb73"
                 },
                 {
                   "name": "rectangle",
@@ -72,13 +73,18 @@
                       "native-type": "div"
                     }
                   },
-                  "children": []
+                  "children": [],
+                  "id": "808486bb74"
                 }
-              ]
+              ],
+              "id": "808486bb72"
             }
-          ]
+          ],
+          "id": "808486bb71"
         }
-      ]
+      ],
+      "id": "808486bb70"
     }
-  ]
+  ],
+  "id": "808486bb69"
 }

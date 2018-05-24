@@ -1,16 +1,21 @@
 import { expect } from "chai";
-import { mapValues } from "lodash";
-import {  TreeNode, xmlToTreeNode, DEFAULT_NAMESPACE, stringifyTreeNodeToXML } from "tandem-common/lib";
+import { mapValues } from "lodash";
+import {
+  TreeNode,
+  xmlToTreeNode,
+  DEFAULT_NAMESPACE,
+  stringifyTreeNodeToXML
+} from "tandem-common";
 import { loadEntry, evaluateDependencyEntry } from "..";
 
 type TestModuleFiles = {
-  [identifier: string]: TreeNode
+  [identifier: string]: TreeNode;
 };
 
-const createTestFileReader = (files: TestModuleFiles) => (uri) => JSON.stringify(files[uri]);
+const createTestFileReader = (files: TestModuleFiles) => uri =>
+  JSON.stringify(files[uri]);
 
 describe(__filename + "#", () => {
-
   [
     [
       `can evaluate a module with a component`,
@@ -181,7 +186,7 @@ describe(__filename + "#", () => {
             </component>
 
           </module>
-        `,
+        `
       },
       `
       <div>
@@ -293,7 +298,7 @@ describe(__filename + "#", () => {
               </template>
             </component>
           </module>
-        `,
+        `
       },
 
       `
@@ -461,7 +466,7 @@ describe(__filename + "#", () => {
         <text ref="text1" value="a"></text>
       </div>
       `
-    ],
+    ]
 
     // can override with insert-child
     // can override with move-child
@@ -469,11 +474,20 @@ describe(__filename + "#", () => {
     // can override a style property
   ].forEach(([name, files, expectedOutput]: any) => {
     it(name, async () => {
-      const { documentNodes } = evaluateDependencyEntry(await loadEntry("entry.json", { openFile: createTestFileReader(mapValues(files, (file) => xmlToTreeNode(file))) }));
+      const { documentNodes } = evaluateDependencyEntry(
+        await loadEntry("entry.json", {
+          openFile: createTestFileReader(
+            mapValues(files, file => xmlToTreeNode(file))
+          )
+        })
+      );
 
-
-      const result = documentNodes.map(pv => stringifyTreeNodeToXML(pv)).join("\n");
-      expect(result.replace(/[\n\r\s\t]+/g, " ").trim()).to.eql(expectedOutput.replace(/[\n\r\s\t]+/g, " ").trim());
+      const result = documentNodes
+        .map(pv => stringifyTreeNodeToXML(pv))
+        .join("\n");
+      expect(result.replace(/[\n\r\s\t]+/g, " ").trim()).to.eql(
+        expectedOutput.replace(/[\n\r\s\t]+/g, " ").trim()
+      );
     });
   });
 });

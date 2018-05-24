@@ -13,4 +13,4 @@ init({
     windows: [],
     type: SyntheticObjectType.BROWSER
   }
-})
+});

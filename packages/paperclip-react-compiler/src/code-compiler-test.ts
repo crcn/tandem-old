@@ -1,2 +1,2 @@
 import { expect } from "chai";
-import { } from "./code-transpiler";
+import {} from "./code-transpiler";

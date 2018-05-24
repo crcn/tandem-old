@@ -6,28 +6,33 @@ import { RootState } from "../state";
 import { eventChannel } from "redux-saga";
 
 export function* reactSaga() {
-
-  let dispatch: any = (action) => {};
+  let dispatch: any = action => {};
 
   yield spawn(function*() {
-    const chan = eventChannel((emit) => {
+    const chan = eventChannel(emit => {
       dispatch = emit;
       return () => {};
     });
-    while(1) {
+    while (1) {
       yield put(yield take(chan));
     }
   });
 
-  while(1) {
+  while (1) {
     const root: RootState = yield select();
-    ReactDOM.render(React.createElement(RootComponent, {
-      root,
-      dispatch
-    }), root.mount);
+    ReactDOM.render(
+      React.createElement(RootComponent, {
+        root,
+        dispatch
+      }),
+      root.mount
+    );
     yield take();
-    yield call(() => new Promise((resolve) => {
-      requestAnimationFrame(resolve);
-    }));
+    yield call(
+      () =>
+        new Promise(resolve => {
+          requestAnimationFrame(resolve);
+        })
+    );
   }
-};
+}

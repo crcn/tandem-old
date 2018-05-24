@@ -12,10 +12,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 40,
-            "top": 80,
-            "right": 260,
-            "bottom": 220
+            "left": 60,
+            "top": -13,
+            "right": 280,
+            "bottom": 127
           }
         }
       },
@@ -70,7 +70,8 @@
                       "ref": "5b3ef0290"
                     }
                   },
-                  "children": []
+                  "children": [],
+                  "id": "808486bb36"
                 },
                 {
                   "name": "rectangle",
@@ -107,15 +108,20 @@
                           "container-keep": "container1231b298"
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb38"
                     }
-                  ]
+                  ],
+                  "id": "808486bb37"
                 }
-              ]
+              ],
+              "id": "808486bb35"
             }
-          ]
+          ],
+          "id": "808486bb34"
         }
-      ]
+      ],
+      "id": "808486bb33"
     },
     {
       "name": "component1",
@@ -153,9 +159,11 @@
               "slot": "container4a9895b6"
             }
           },
-          "children": []
+          "children": [],
+          "id": "808486bb40"
         }
-      ]
+      ],
+      "id": "808486bb39"
     },
     {
       "name": "component1",
@@ -171,10 +179,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 389,
-            "top": 171,
-            "right": 661,
-            "bottom": 361
+            "left": 379,
+            "top": -46,
+            "right": 651,
+            "bottom": 144
           }
         }
       },
@@ -193,9 +201,12 @@
               "slot": "container4a9895b6"
             }
           },
-          "children": []
+          "children": [],
+          "id": "808486bb42"
         }
-      ]
+      ],
+      "id": "808486bb41"
     }
-  ]
+  ],
+  "id": "808486bb32"
 }

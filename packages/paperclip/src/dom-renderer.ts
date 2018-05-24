@@ -1,19 +1,39 @@
 import { mapValues } from "lodash";
-import { ComputedDisplayInfo, EditorAttributeNames, EDITOR_NAMESPACE } from "./synthetic";
-import { TreeNode, DEFAULT_NAMESPACE, getAttribute, getTreeNodeFromPath, roundBounds } from "tandem-common/lib/state";
-import { OperationalTransform, OperationalTransformType, SetAttributeTransform, InsertChildTransform, RemoveChildTransform, MoveChildTransform, patchNode } from "tandem-common/lib/utils/tree";
+import {
+  ComputedDisplayInfo,
+  EditorAttributeNames,
+  EDITOR_NAMESPACE
+} from "./synthetic";
+import {
+  TreeNode,
+  DEFAULT_NAMESPACE,
+  getAttribute,
+  getTreeNodeFromPath,
+  roundBounds,
+  OperationalTransform,
+  OperationalTransformType,
+  SetAttributeTransform,
+  InsertChildTransform,
+  RemoveChildTransform,
+  MoveChildTransform,
+  patchNode
+} from "tandem-common";
 import { PCSourceAttributeNames } from ".";
 
 export type SyntheticNativeNodeMap = {
-  [identifier: string]: Node
-}
+  [identifier: string]: Node;
+};
 
-export const renderDOM = (native: HTMLElement, synthetic: TreeNode, document: Document = window.document) => {
+export const renderDOM = (
+  native: HTMLElement,
+  synthetic: TreeNode,
+  document: Document = window.document
+) => {
   let parentNative;
   let parentSynthetic;
   let currentSynthetic = synthetic;
 
-  while(native.childNodes.length) {
+  while (native.childNodes.length) {
     native.removeChild(native.childNodes[0]);
   }
 
@@ -24,14 +44,23 @@ export const renderDOM = (native: HTMLElement, synthetic: TreeNode, document: Do
 };
 
 export const waitForDOMReady = (map: SyntheticNativeNodeMap) => {
-  const loadableElements = Object.values(map).filter(element => /img/.test(element.nodeName)) as (HTMLImageElement)[];
-  return Promise.all(loadableElements.map(element => new Promise(resolve => {
-    element.onload = resolve;
-  })));
+  const loadableElements = Object.values(map).filter(element =>
+    /img/.test(element.nodeName)
+  ) as (HTMLImageElement)[];
+  return Promise.all(
+    loadableElements.map(
+      element =>
+        new Promise(resolve => {
+          element.onload = resolve;
+        })
+    )
+  );
 };
 
-
-export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Document = window.document): ComputedDisplayInfo => {
+export const computeDisplayInfo = (
+  map: SyntheticNativeNodeMap,
+  document: Document = window.document
+): ComputedDisplayInfo => {
   const computed: ComputedDisplayInfo = {};
 
   for (const id in map) {
@@ -39,7 +68,7 @@ export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Docume
     if (node.nodeType === 1) {
       computed[id] = {
         style: window.getComputedStyle(node as HTMLElement),
-        bounds: (node as HTMLElement).getBoundingClientRect(),
+        bounds: (node as HTMLElement).getBoundingClientRect()
       };
     }
   }
@@ -47,17 +76,32 @@ export const computeDisplayInfo = (map: SyntheticNativeNodeMap, document: Docume
   return computed;
 };
 
-const setStyleConstraintsIfRoot = (synthetic: TreeNode, nativeElement: HTMLElement) => {
-  const isRoot = getAttribute(synthetic, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE);
+const setStyleConstraintsIfRoot = (
+  synthetic: TreeNode,
+  nativeElement: HTMLElement
+) => {
+  const isRoot = getAttribute(
+    synthetic,
+    EditorAttributeNames.IS_COMPONENT_ROOT,
+    EDITOR_NAMESPACE
+  );
   if (isRoot) {
     nativeElement.style.width = "100vw";
     nativeElement.style.height = "100vh";
   }
-}
+};
 
-const createNativeNode = (synthetic: TreeNode, document: Document, map: SyntheticNativeNodeMap) => {
+const createNativeNode = (
+  synthetic: TreeNode,
+  document: Document,
+  map: SyntheticNativeNodeMap
+) => {
   const isText = synthetic.name === "text";
-  const nativeElement = document.createElement(isText ? "span" : getAttribute(synthetic, PCSourceAttributeNames.NATIVE_TYPE) || "div");
+  const nativeElement = document.createElement(
+    isText
+      ? "span"
+      : getAttribute(synthetic, PCSourceAttributeNames.NATIVE_TYPE) || "div"
+  );
 
   const attrs = synthetic.attributes[DEFAULT_NAMESPACE] || {};
   for (const name in attrs) {
@@ -71,36 +115,53 @@ const createNativeNode = (synthetic: TreeNode, document: Document, map: Syntheti
   setStyleConstraintsIfRoot(synthetic, nativeElement);
 
   if (isText) {
-    nativeElement.appendChild(document.createTextNode(getAttribute(synthetic, "value", DEFAULT_NAMESPACE)));
+    nativeElement.appendChild(
+      document.createTextNode(
+        getAttribute(synthetic, "value", DEFAULT_NAMESPACE)
+      )
+    );
   } else {
-    for (let i = 0, {length} = synthetic.children; i < length; i++) {
+    for (let i = 0, { length } = synthetic.children; i < length; i++) {
       const childSynthetic = synthetic.children[i];
-      nativeElement.appendChild(createNativeNode(childSynthetic, document, map));
+      nativeElement.appendChild(
+        createNativeNode(childSynthetic, document, map)
+      );
     }
   }
 
   makeElementClickable(nativeElement, synthetic);
-  return map[synthetic.id] = nativeElement;
+  return (map[synthetic.id] = nativeElement);
 };
 
-const removeElementsFromMap = (synthetic: TreeNode, map: SyntheticNativeNodeMap) => {
+const removeElementsFromMap = (
+  synthetic: TreeNode,
+  map: SyntheticNativeNodeMap
+) => {
   map[synthetic.id] = undefined;
-  for (let i = 0, {length} = synthetic.children; i < length; i++) {
+  for (let i = 0, { length } = synthetic.children; i < length; i++) {
     removeElementsFromMap(synthetic, map);
   }
-}
+};
 
-export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode, root: HTMLElement, map: SyntheticNativeNodeMap) => {
+export const patchDOM = (
+  transforms: OperationalTransform[],
+  synthetic: TreeNode,
+  root: HTMLElement,
+  map: SyntheticNativeNodeMap
+) => {
   let newMap = map;
   let newSyntheticTree: TreeNode = synthetic;
 
   for (const transform of transforms) {
     const target = getElementFromPath(transform.path, root);
     newSyntheticTree = patchNode([transform], newSyntheticTree);
-    const syntheticTarget = getTreeNodeFromPath(transform.path, newSyntheticTree);
-    switch(transform.type) {
+    const syntheticTarget = getTreeNodeFromPath(
+      transform.path,
+      newSyntheticTree
+    );
+    switch (transform.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
-        const { name,  value, namespace } = transform as SetAttributeTransform;
+        const { name, value, namespace } = transform as SetAttributeTransform;
         if (namespace === DEFAULT_NAMESPACE) {
           if (name === "style") {
             resetElementStyle(target, syntheticTarget);
@@ -111,9 +172,13 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
           } else if (name === PCSourceAttributeNames.NATIVE_TYPE) {
             const parent = target.parentNode;
             if (newMap === map) {
-              newMap = {...map};
+              newMap = { ...map };
             }
-            const newTarget = createNativeNode(getTreeNodeFromPath(transform.path, newSyntheticTree), root.ownerDocument, newMap);
+            const newTarget = createNativeNode(
+              getTreeNodeFromPath(transform.path, newSyntheticTree),
+              root.ownerDocument,
+              newMap
+            );
             parent.insertBefore(newTarget, target);
             parent.removeChild(target);
           }
@@ -124,9 +189,13 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
         const { child, index } = transform as InsertChildTransform;
         if (!child.namespace || child.namespace == DEFAULT_NAMESPACE) {
           if (newMap === map) {
-            newMap = {...map};
+            newMap = { ...map };
           }
-          const nativeChild = createNativeNode(child, root.ownerDocument, newMap);
+          const nativeChild = createNativeNode(
+            child,
+            root.ownerDocument,
+            newMap
+          );
           removeClickableStyle(target, syntheticTarget);
           insertChild(target, nativeChild, index);
         }
@@ -150,10 +219,14 @@ export const patchDOM = (transforms: OperationalTransform[], synthetic: TreeNode
     }
   }
   return newMap;
-}
+};
 
 const makeElementClickable = (target: HTMLElement, synthetic: TreeNode) => {
-  const isRoot = getAttribute(synthetic, EditorAttributeNames.IS_COMPONENT_ROOT, EDITOR_NAMESPACE);
+  const isRoot = getAttribute(
+    synthetic,
+    EditorAttributeNames.IS_COMPONENT_ROOT,
+    EDITOR_NAMESPACE
+  );
   if (synthetic.name !== "text" && !isRoot) {
     const style = getAttribute(synthetic, "style") || {};
     if (target.childNodes.length === 0 && Object.keys(style).length === 0) {
@@ -192,7 +265,7 @@ const resetElementStyle = (target: HTMLElement, synthetic: TreeNode) => {
   Object.assign(target.style, normalizeStyle(style));
 };
 
-const removeClickableStyle = (target: HTMLElement,  synthetic: TreeNode) => {
+const removeClickableStyle = (target: HTMLElement, synthetic: TreeNode) => {
   if (target.dataset.empty === "1") {
     target.dataset.empty = null;
     target.innerHTML = ``;
@@ -201,21 +274,24 @@ const removeClickableStyle = (target: HTMLElement,  synthetic: TreeNode) => {
 };
 
 const insertChild = (target: Node, child: Node, index: number) => {
-
   if (index < target.childNodes.length) {
     target.insertBefore(child, target.childNodes[index]);
   } else {
     target.appendChild(child);
   }
-}
+};
 
-const normalizeStyle = (value: any) => mapValues(value, (value, key) => {
-  if (typeof value === "number" && /width|height|left|top|right|bottom/.test(key)) {
-    return `${value}px`;
-  }
+const normalizeStyle = (value: any) =>
+  mapValues(value, (value, key) => {
+    if (
+      typeof value === "number" &&
+      /width|height|left|top|right|bottom/.test(key)
+    ) {
+      return `${value}px`;
+    }
 
-  return value;
-});
+    return value;
+  });
 
 const getElementFromPath = (path: number[], root: HTMLElement) => {
   let current = root;
@@ -223,4 +299,4 @@ const getElementFromPath = (path: number[], root: HTMLElement) => {
     current = current.children[part] as HTMLElement;
   }
   return current;
-}
+};

@@ -14,10 +14,10 @@
         },
         "editor": {
           "bounds": {
-            "left": -689,
-            "top": -102,
-            "right": -139.01670681419637,
-            "bottom": 249.8960901315947
+            "left": -673,
+            "top": -309,
+            "right": -123.01670681419637,
+            "bottom": 42.89609013159469
           }
         }
       },
@@ -25,9 +25,11 @@
         {
           "name": "template",
           "attributes": {},
-          "children": []
+          "children": [],
+          "id": "808486bb26"
         }
-      ]
+      ],
+      "id": "808486bb25"
     },
     {
       "name": "component",
@@ -49,9 +51,12 @@
         {
           "name": "template",
           "attributes": {},
-          "children": []
+          "children": [],
+          "id": "808486bb28"
         }
-      ]
+      ],
+      "id": "808486bb27"
     }
-  ]
+  ],
+  "id": "808486bb24"
 }

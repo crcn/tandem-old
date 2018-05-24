@@ -1,8 +1,23 @@
-import { Action } from "redux";
+import { Action } from "redux";
 import * as React from "react";
-import { Directory, Point, Bounds, Struct, StructReference, TreeNode, TreeMoveOffset } from "tandem-common";
+import {
+  Directory,
+  Point,
+  Bounds,
+  Struct,
+  StructReference,
+  TreeNode,
+  TreeMoveOffset
+} from "tandem-common";
 import { publicActionCreator } from "tandem-common";
-import { SyntheticWindow, Dependency, DependencyGraph, ComputedDisplayInfo, SyntheticNativeNodeMap, SyntheticNode } from "paperclip";
+import {
+  SyntheticWindow,
+  Dependency,
+  DependencyGraph,
+  ComputedDisplayInfo,
+  SyntheticNativeNodeMap,
+  SyntheticNode
+} from "paperclip";
 import { TreeNodeClip, RegisteredComponent } from "..";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
@@ -12,20 +27,32 @@ export const PROJECT_DIRECTORY_LOADED = "PROJECT_DIRECTORY_LOADED";
 export const DEPENDENCY_ENTRY_LOADED = "DEPENDENCY_ENTRY_LOADED";
 export const DOCUMENT_RENDERED = "DOCUMENT_RENDERERED";
 
-export const CANVAS_TOOL_OVERLAY_MOUSE_LEAVE = "CANVAS_TOOL_OVERLAY_MOUSE_LEAVE";
-export const CANVAS_TOOL_OVERLAY_MOUSE_PAN_START = "CANVAS_TOOL_OVERLAY_MOUSE_PAN_START";
-export const CANVAS_TOOL_OVERLAY_MOUSE_PANNING = "CANVAS_TOOL_OVERLAY_MOUSE_PANNING";
-export const CANVAS_TOOL_OVERLAY_MOUSE_PAN_END = "CANVAS_TOOL_OVERLAY_MOUSE_PAN_END";
-export const CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED = "CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED";
-export const CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED = "CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED";
+export const CANVAS_TOOL_OVERLAY_MOUSE_LEAVE =
+  "CANVAS_TOOL_OVERLAY_MOUSE_LEAVE";
+export const CANVAS_TOOL_OVERLAY_MOUSE_PAN_START =
+  "CANVAS_TOOL_OVERLAY_MOUSE_PAN_START";
+export const CANVAS_TOOL_OVERLAY_MOUSE_PANNING =
+  "CANVAS_TOOL_OVERLAY_MOUSE_PANNING";
+export const CANVAS_TOOL_OVERLAY_MOUSE_PAN_END =
+  "CANVAS_TOOL_OVERLAY_MOUSE_PAN_END";
+export const CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED =
+  "CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED";
+export const CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED =
+  "CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED";
 export const CANVAS_TOOL_WINDOW_KEY_DOWN = "CANVAS_TOOL_WINDOW_KEY_DOWN";
-export const CANVAS_TOOL_ARTBOARD_TITLE_CLICKED = "CANVAS_TOOL_ARTBOARD_TITLE_CLICKED";
+export const CANVAS_TOOL_ARTBOARD_TITLE_CLICKED =
+  "CANVAS_TOOL_ARTBOARD_TITLE_CLICKED";
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
-export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED = "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
-export const FILE_NAVIGATOR_NEW_FILE_CLICKED = "FILE_NAVIGATOR_NEW_FILE_CLICKED";
-export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED = "FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED";
-export const FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED = "FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED";
-export const FILE_NAVIGATOR_NEW_FILE_ENTERED = "FILE_NAVIGATOR_NEW_FILE_ENTERED";
+export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED =
+  "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
+export const FILE_NAVIGATOR_NEW_FILE_CLICKED =
+  "FILE_NAVIGATOR_NEW_FILE_CLICKED";
+export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED =
+  "FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED";
+export const FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED =
+  "FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED";
+export const FILE_NAVIGATOR_NEW_FILE_ENTERED =
+  "FILE_NAVIGATOR_NEW_FILE_ENTERED";
 export const FILE_NAVIGATOR_DROPPED_ITEM = "FILE_NAVIGATOR_DROPPED_ITEM";
 export const EDITOR_TAB_CLICKED = "EDITOR_TAB_CLICKED";
 export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
@@ -36,14 +63,16 @@ export const CANVAS_DRAGGED_OVER = "CANVAS_DRAGGED_OVER";
 export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
 export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
-export const CANVAS_DROPPED_REGISTERED_COMPONENT = "CANVAS_DROPPED_REGISTERED_COMPONENT";
+export const CANVAS_DROPPED_REGISTERED_COMPONENT =
+  "CANVAS_DROPPED_REGISTERED_COMPONENT";
 export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
-export const RESIZER_PATH_MOUSE_STOPPED_MOVING = "RESIZER_PATH_MOUSE_STOPPED_MOVING";
-export const RESIZER_MOVED               = "RESIZER_MOVED";
-export const RESIZER_STOPPED_MOVING      = "RESIZER_STOPPED_MOVING";
-export const RESIZER_MOUSE_DOWN          = "RESIZER_MOUSE_DOWN";
-export const RESIZER_START_DRGG          = "RESIZER_START_DRGG";
-export const SELECTOR_DOUBLE_CLICKED  = "SELECTOR_DOUBLE_CLICKED";
+export const RESIZER_PATH_MOUSE_STOPPED_MOVING =
+  "RESIZER_PATH_MOUSE_STOPPED_MOVING";
+export const RESIZER_MOVED = "RESIZER_MOVED";
+export const RESIZER_STOPPED_MOVING = "RESIZER_STOPPED_MOVING";
+export const RESIZER_MOUSE_DOWN = "RESIZER_MOUSE_DOWN";
+export const RESIZER_START_DRGG = "RESIZER_START_DRGG";
+export const SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
 export const SHORTCUT_ZOOM_IN_KEY_DOWN = "SHORTCUT_ZOOM_IN_KEY_DOWN";
 export const SHORTCUT_ZOOM_OUT_KEY_DOWN = "SHORTCUT_ZOOM_OUT_KEY_DOWN";
 export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
@@ -54,7 +83,8 @@ export const SHORTCUT_UNDO_KEY_DOWN = "SHORTCUT_UNDO_KEY_DOWN";
 export const SHORTCUT_REDO_KEY_DOWN = "SHORTCUT_REDO_KEY_DOWN";
 export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
 export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
-export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN = "SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN";
+export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN =
+  "SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 export const APP_LOADED = "APP_LOADED";
@@ -81,11 +111,12 @@ export const NEW_VARIANT_NAME_ENTERED = "NEW_VARIANT_NAME_ENTERED";
 export const COMPONENT_VARIANT_REMOVED = "COMPONENT_VARIANT_REMOVED";
 export const COMPONENT_VARIANT_NAME_CHANGED = "COMPONENT_VARIANT_NAME_CHANGED";
 export const COMPONENT_VARIANT_NAME_CLICKED = "COMPONENT_VARIANT_NAME_CLICKED";
-export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK = "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
+export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK =
+  "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
 export const ELEMENT_VARIANT_TOGGLED = "ELEMENT_VARIANT_TOGGLED";
 
 export type WrappedEvent<T> = {
-  sourceEvent: T
+  sourceEvent: T;
 } & Action;
 
 export type ProjectLoaded = {
@@ -112,7 +143,7 @@ export type OpenFilesItemClick = {
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type RawCSSTextChanged = {
-  value: string
+  value: string;
 } & Action;
 
 export type ProjectDirectoryLoaded = {
@@ -120,7 +151,7 @@ export type ProjectDirectoryLoaded = {
 } & Action;
 
 export type SyntheticWindowOpened = {
-  window: SyntheticWindow
+  window: SyntheticWindow;
 } & Action;
 
 export type CanvasToolOverlayMousePanStart = {
@@ -148,8 +179,9 @@ export type CanvasToolOverlayClicked = {
   documentId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
-export type CanvasToolOverlayMouseMoved = {
-} & WrappedEvent<React.MouseEvent<any>>;
+export type CanvasToolOverlayMouseMoved = {} & WrappedEvent<
+  React.MouseEvent<any>
+>;
 
 export type ElementVariantToggled = {
   node: SyntheticNode;
@@ -179,10 +211,11 @@ export type TreeLayerLabelChanged = {
 export type TreeLayerDroppedNode = {
   node: TreeNode;
   targetNode: TreeNode;
-  offset?: 0|-1|1;
+  offset?: 0 | -1 | 1;
 } & Action;
 
-export type TreeLayerClick = TreeLayerMouseOver & WrappedEvent<React.MouseEvent<any>>;
+export type TreeLayerClick = TreeLayerMouseOver &
+  WrappedEvent<React.MouseEvent<any>>;
 export type TreeLayerExpandToggleClick = TreeLayerMouseOver;
 export type TreeLayerMouseOut = TreeLayerMouseOver;
 
@@ -203,8 +236,7 @@ export type CanvasToolArtboardTitleClicked = {
   documentId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
-export type SlotToggleClick = {
-} & Action;
+export type SlotToggleClick = {} & Action;
 
 export type NativeNodeTypeChanged = {
   nativeType: string;
@@ -216,7 +248,7 @@ export type NewVariantNameEntered = {
 
 export type ComponentVariantNameChanged = {
   oldName: string;
-  newName:string;
+  newName: string;
 } & Action;
 
 export type ComponentVariantNameClicked = {
@@ -246,31 +278,25 @@ export type ResizerMoved = {
   point: Point;
 } & Action;
 
-export type ResizerMouseDown = {
-} & WrappedEvent<React.MouseEvent<any>>;
+export type ResizerMouseDown = {} & WrappedEvent<React.MouseEvent<any>>;
 
-export type ResizerPathStoppedMoving = {
-} & ResizerPathMoved;
+export type ResizerPathStoppedMoving = {} & ResizerPathMoved;
 
 export type SelectorDoubleClicked = {
   nodeId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
 
-export type ShortcutKeyDown = {
-
-};
+export type ShortcutKeyDown = {};
 
 export type QuickSearchItemClicked = {
   file: TreeNode;
 } & Action;
 
 export type SavedFile = {
-  uri: string
+  uri: string;
 } & Action;
 
-
-export type SavedAllFiles = {
-} & Action;
+export type SavedAllFiles = {} & Action;
 
 export type InsertToolFinished = {
   fileUri: string;
@@ -305,7 +331,11 @@ export type CanvasDroppedRegisteredComponent = {
   point: Point;
 } & Action;
 
-export const fileNavigatorDroppedItem = (node: TreeNode, targetNode: TreeNode, offset: 0 | -1 | 1): FileNavigatorDroppedItem => ({
+export const fileNavigatorDroppedItem = (
+  node: TreeNode,
+  targetNode: TreeNode,
+  offset: 0 | -1 | 1
+): FileNavigatorDroppedItem => ({
   node,
   targetNode,
   offset,
@@ -317,24 +347,35 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
   type: EDITOR_TAB_CLICKED
 });
 
-export const fileNavigatorItemClicked = (node: TreeNode): FileNavigatorItemClicked => ({
+export const fileNavigatorItemClicked = (
+  node: TreeNode
+): FileNavigatorItemClicked => ({
   node,
-  type: FILE_NAVIGATOR_ITEM_CLICKED,
+  type: FILE_NAVIGATOR_ITEM_CLICKED
 });
 
-export const fileNavigatorToggleDirectoryClicked = (node: TreeNode): FileNavigatorItemClicked => ({
+export const fileNavigatorToggleDirectoryClicked = (
+  node: TreeNode
+): FileNavigatorItemClicked => ({
   node,
-  type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED,
+  type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
 });
 
-export const newFileAdded = (directoryId: string, basename: string, fileType: "directory" | "file"): NewFileAdded => ({
+export const newFileAdded = (
+  directoryId: string,
+  basename: string,
+  fileType: "directory" | "file"
+): NewFileAdded => ({
   directoryId,
   basename,
   fileType,
   type: NEW_FILE_ADDED
 });
 
-export const elementVariantToggled = (newVariants: string[], node: SyntheticNode): ElementVariantToggled => ({
+export const elementVariantToggled = (
+  newVariants: string[],
+  node: SyntheticNode
+): ElementVariantToggled => ({
   newVariants,
   node,
   type: ELEMENT_VARIANT_TOGGLED
@@ -348,7 +389,9 @@ export const fileNavigatorNewDirectoryClicked = (): Action => ({
   type: FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED
 });
 
-export const quickSearchItemClicked = (file: TreeNode): QuickSearchItemClicked => ({
+export const quickSearchItemClicked = (
+  file: TreeNode
+): QuickSearchItemClicked => ({
   file,
   type: QUICK_SEARCH_ITEM_CLICKED
 });
@@ -357,47 +400,57 @@ export const quickSearchBackgroundClick = (): Action => ({
   type: QUICK_SEARCH_BACKGROUND_CLICK
 });
 
-export const fileNavigatorNewFileEntered = (basename: string): FileNavigatorNewFileEntered => ({
+export const fileNavigatorNewFileEntered = (
+  basename: string
+): FileNavigatorNewFileEntered => ({
   basename,
   type: FILE_NAVIGATOR_NEW_FILE_ENTERED
 });
 
-export const openFilesItemClick = (uri: string, sourceEvent: React.MouseEvent<any>): OpenFilesItemClick => ({
+export const openFilesItemClick = (
+  uri: string,
+  sourceEvent: React.MouseEvent<any>
+): OpenFilesItemClick => ({
   uri,
   sourceEvent,
-  type: OPEN_FILE_ITEM_CLICKED,
+  type: OPEN_FILE_ITEM_CLICKED
 });
 
 export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
   uri,
   sourceEvent: null,
-  type: OPEN_FILE_ITEM_CLOSE_CLICKED,
+  type: OPEN_FILE_ITEM_CLOSE_CLICKED
 });
 
-export const fileNavigatorItemDoubleClicked = (node: TreeNode): FileNavigatorItemClicked => ({
+export const fileNavigatorItemDoubleClicked = (
+  node: TreeNode
+): FileNavigatorItemClicked => ({
   node,
-  type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
+  type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED
 });
 
 export const pcLayerMouseOver = (node: TreeNode): TreeLayerMouseOver => ({
   node,
-  type: PC_LAYER_MOUSE_OVER,
+  type: PC_LAYER_MOUSE_OVER
 });
 
 export const pcLayerDoubleClick = (node: TreeNode): TreeLayerMouseOver => ({
   node,
-  type: PC_LAYER_DOUBLE_CLICK,
+  type: PC_LAYER_DOUBLE_CLICK
 });
 
-export const pcLayerLabelChanged = (label: string, node: TreeNode): TreeLayerLabelChanged => ({
+export const pcLayerLabelChanged = (
+  label: string,
+  node: TreeNode
+): TreeLayerLabelChanged => ({
   label,
   node,
-  type: PC_LAYER_LABEL_CHANGED,
+  type: PC_LAYER_LABEL_CHANGED
 });
 
 export const pcLayerMouseOut = (node: TreeNode): TreeLayerMouseOut => ({
   node,
-  type: PC_LAYER_MOUSE_OUT,
+  type: PC_LAYER_MOUSE_OUT
 });
 
 export const pcEditLayerLabelBlur = (node: TreeNode): TreeLayerMouseOut => ({
@@ -405,51 +458,71 @@ export const pcEditLayerLabelBlur = (node: TreeNode): TreeLayerMouseOut => ({
   type: PC_LAYER_EDIT_LABEL_BLUR
 });
 
-export const pcLayerClick = (node: TreeNode, sourceEvent: React.MouseEvent<any>): TreeLayerClick => ({
+export const pcLayerClick = (
+  node: TreeNode,
+  sourceEvent: React.MouseEvent<any>
+): TreeLayerClick => ({
   node,
   sourceEvent,
-  type: PC_LAYER_CLICK,
+  type: PC_LAYER_CLICK
 });
 
-export const newVariantNameEntered = (value: string): NewVariantNameEntered => ({
+export const newVariantNameEntered = (
+  value: string
+): NewVariantNameEntered => ({
   value,
   type: NEW_VARIANT_NAME_ENTERED
 });
 
-export const componentComponentVariantNameChanged = (oldName: string, newName: string): ComponentVariantNameChanged => ({
+export const componentComponentVariantNameChanged = (
+  oldName: string,
+  newName: string
+): ComponentVariantNameChanged => ({
   oldName,
   newName,
   type: COMPONENT_VARIANT_NAME_CHANGED
 });
 
-export const componentComponentVariantNameClicked = (name: string): ComponentVariantNameClicked => ({
+export const componentComponentVariantNameClicked = (
+  name: string
+): ComponentVariantNameClicked => ({
   name,
   type: COMPONENT_VARIANT_NAME_CLICKED
 });
 
-export const componentVariantRemoved = (name: string): ComponentVariantRemoved => ({
+export const componentVariantRemoved = (
+  name: string
+): ComponentVariantRemoved => ({
   name,
   type: COMPONENT_VARIANT_REMOVED
 });
 
-
-export const componentVariantNameDefaultToggleClick = (name: string, value: boolean): ComponentVariantNameDefaultToggleClick => ({
+export const componentVariantNameDefaultToggleClick = (
+  name: string,
+  value: boolean
+): ComponentVariantNameDefaultToggleClick => ({
   name,
   value,
   type: COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK
 });
 
-export const pcLayerExpandToggleClick = (node: TreeNode): TreeLayerExpandToggleClick => ({
+export const pcLayerExpandToggleClick = (
+  node: TreeNode
+): TreeLayerExpandToggleClick => ({
   node,
-  type: PC_LAYER_EXPAND_TOGGLE_CLICK,
+  type: PC_LAYER_EXPAND_TOGGLE_CLICK
 });
 
-export const pcLayerDroppedNode = (node: SyntheticNode, targetNode: TreeNode, offset?: 0|-1|1): TreeLayerDroppedNode => ({
+export const pcLayerDroppedNode = (
+  node: SyntheticNode,
+  targetNode: TreeNode,
+  offset?: 0 | -1 | 1
+): TreeLayerDroppedNode => ({
   node,
   targetNode,
   offset,
   type: PC_LAYER_DROPPED_NODE
-})
+});
 
 export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({
   value,
@@ -460,7 +533,9 @@ export const slotToggleClick = (): SlotToggleClick => ({
   type: SLOT_TOGGLE_CLICK
 });
 
-export const nativeNodeTypeChange = (nativeType: string): NativeNodeTypeChanged => ({
+export const nativeNodeTypeChange = (
+  nativeType: string
+): NativeNodeTypeChanged => ({
   nativeType,
   type: NATIVE_NODE_TYPE_CHANGED
 });
@@ -471,7 +546,10 @@ export const textValueChanged = (value: string): TextValueChanged => ({
 });
 
 export const appLoaded = publicActionCreator(() => ({ type: APP_LOADED }));
-export const dependencyEntryLoaded = (entry: Dependency, graph: DependencyGraph): DependencyEntryLoaded => ({
+export const dependencyEntryLoaded = (
+  entry: Dependency,
+  graph: DependencyGraph
+): DependencyEntryLoaded => ({
   entry,
   graph,
   type: DEPENDENCY_ENTRY_LOADED
@@ -492,21 +570,31 @@ export const projectLoaded = (uri: string): ProjectLoaded => ({
   type: PROJECT_LOADED
 });
 
-export const projectDirectoryLoaded = publicActionCreator((directory: Directory): ProjectDirectoryLoaded => ({
-  directory,
-  type: PROJECT_DIRECTORY_LOADED
-}));
+export const projectDirectoryLoaded = publicActionCreator(
+  (directory: Directory): ProjectDirectoryLoaded => ({
+    directory,
+    type: PROJECT_DIRECTORY_LOADED
+  })
+);
 
-export const shortcutKeyDown = publicActionCreator((type: string): ShortcutKeyDown => ({
-  type
-}));
+export const shortcutKeyDown = publicActionCreator(
+  (type: string): ShortcutKeyDown => ({
+    type
+  })
+);
 
-export const syntheticNodesPasted = (clips: TreeNodeClip[]): SyntheticNodesPasted => ({
+export const syntheticNodesPasted = (
+  clips: TreeNodeClip[]
+): SyntheticNodesPasted => ({
   clips,
   type: SYNTHETIC_NODES_PASTED
 });
 
-export const documentRendered = (documentId: string, info: ComputedDisplayInfo, nativeMap: SyntheticNativeNodeMap): DocumentRendered => ({
+export const documentRendered = (
+  documentId: string,
+  info: ComputedDisplayInfo,
+  nativeMap: SyntheticNativeNodeMap
+): DocumentRendered => ({
   nativeMap,
   documentId,
   info,
@@ -522,72 +610,105 @@ export const savedAllFiles = (uri: string): SavedAllFiles => ({
   type: SAVED_ALL_FILES
 });
 
-export const syntheticWindowOpened = (window: SyntheticWindow): SyntheticWindowOpened => ({
+export const syntheticWindowOpened = (
+  window: SyntheticWindow
+): SyntheticWindowOpened => ({
   window,
   type: SYNTHETIC_WINDOW_OPENED
 });
 
-export const canvasToolOverlayMousePanStart = (documentId: string): CanvasToolOverlayMousePanStart => ({
+export const canvasToolOverlayMousePanStart = (
+  documentId: string
+): CanvasToolOverlayMousePanStart => ({
   documentId,
-  type: CANVAS_TOOL_OVERLAY_MOUSE_PAN_START,
+  type: CANVAS_TOOL_OVERLAY_MOUSE_PAN_START
 });
 
-export const canvasToolOverlayMousePanning = (documentId: string, center: Point, deltaY: number, velocityY: number): CanvasToolOverlayMousePanning => ({
+export const canvasToolOverlayMousePanning = (
+  documentId: string,
+  center: Point,
+  deltaY: number,
+  velocityY: number
+): CanvasToolOverlayMousePanning => ({
   documentId,
   center,
   deltaY,
   velocityY,
-  type: CANVAS_TOOL_OVERLAY_MOUSE_PANNING,
+  type: CANVAS_TOOL_OVERLAY_MOUSE_PANNING
 });
 
-export const canvasToolOverlayMouseLeave = (sourceEvent: React.MouseEvent<any>): CanvasToolOverlayMouseMoved => ({
+export const canvasToolOverlayMouseLeave = (
+  sourceEvent: React.MouseEvent<any>
+): CanvasToolOverlayMouseMoved => ({
   type: CANVAS_TOOL_OVERLAY_MOUSE_LEAVE,
   sourceEvent
 });
 
-export const canvasToolOverlayMousePanEnd = (documentId: string): CanvasToolOverlayMousePanEnd => ({
+export const canvasToolOverlayMousePanEnd = (
+  documentId: string
+): CanvasToolOverlayMousePanEnd => ({
   documentId,
-  type: CANVAS_TOOL_OVERLAY_MOUSE_PAN_END,
+  type: CANVAS_TOOL_OVERLAY_MOUSE_PAN_END
 });
 
-export const canvasToolOverlayMouseDoubleClicked = (documentId: string, sourceEvent: React.MouseEvent<any>): CanvasToolOverlayClicked => ({
+export const canvasToolOverlayMouseDoubleClicked = (
+  documentId: string,
+  sourceEvent: React.MouseEvent<any>
+): CanvasToolOverlayClicked => ({
   documentId,
   type: CANVAS_TOOL_OVERLAY_MOUSE_DOUBLE_CLICKED,
   sourceEvent
 });
 
-export const canvasContainerMounted = (element: HTMLDivElement, fileUri: string): CanvasMounted => ({
+export const canvasContainerMounted = (
+  element: HTMLDivElement,
+  fileUri: string
+): CanvasMounted => ({
   element,
   fileUri,
-  type: CANVAS_MOUNTED,
-})
-
-export const canvasMouseMoved = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
-  sourceEvent,
-  type: CANVAS_MOUSE_MOVED,
+  type: CANVAS_MOUNTED
 });
 
-export const canvasDraggedOver = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
+export const canvasMouseMoved = (
+  sourceEvent: React.MouseEvent<any>
+): WrappedEvent<React.MouseEvent<any>> => ({
   sourceEvent,
-  type: CANVAS_DRAGGED_OVER,
+  type: CANVAS_MOUSE_MOVED
 });
 
-export const canvasMouseClicked = (sourceEvent: React.MouseEvent<any>): WrappedEvent<React.MouseEvent<any>> => ({
+export const canvasDraggedOver = (
+  sourceEvent: React.MouseEvent<any>
+): WrappedEvent<React.MouseEvent<any>> => ({
   sourceEvent,
-  type: CANVAS_MOUSE_CLICKED,
+  type: CANVAS_DRAGGED_OVER
 });
 
-export const canvasWheel = (canvasWidth: number, canvasHeight: number, { metaKey, ctrlKey, deltaX, deltaY, clientX, clientY }: React.WheelEvent<any>): CanvasWheel => ({
+export const canvasMouseClicked = (
+  sourceEvent: React.MouseEvent<any>
+): WrappedEvent<React.MouseEvent<any>> => ({
+  sourceEvent,
+  type: CANVAS_MOUSE_CLICKED
+});
+
+export const canvasWheel = (
+  canvasWidth: number,
+  canvasHeight: number,
+  { metaKey, ctrlKey, deltaX, deltaY, clientX, clientY }: React.WheelEvent<any>
+): CanvasWheel => ({
   metaKey,
   canvasWidth,
   canvasHeight,
   ctrlKey,
   deltaX,
   deltaY,
-  type: CANVAS_WHEEL,
+  type: CANVAS_WHEEL
 });
 
-export const canvasDroppedRegisteredComponent = (item: RegisteredComponent, point: Point, editorUri: string): CanvasDroppedRegisteredComponent => ({
+export const canvasDroppedRegisteredComponent = (
+  item: RegisteredComponent,
+  point: Point,
+  editorUri: string
+): CanvasDroppedRegisteredComponent => ({
   editorUri,
   item,
   point,
@@ -598,58 +719,93 @@ export const canvasMotionRested = () => ({
   type: CANVAS_MOTION_RESTED
 });
 
-export const insertToolFinished = (point: Point, fileUri: string): InsertToolFinished => ({
+export const insertToolFinished = (
+  point: Point,
+  fileUri: string
+): InsertToolFinished => ({
   point,
   fileUri,
   type: INSERT_TOOL_FINISHED
 });
 
-export const canvasToolWindowBackgroundClicked = (sourceEvent: React.KeyboardEvent<any>): WrappedEvent<React.KeyboardEvent<any>> => ({ type: CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED, sourceEvent });
-export const canvasToolWindowKeyDown = (documentId: string, sourceEvent: React.KeyboardEvent<any>): CanvasToolWindowKeyDown => ({ type: CANVAS_TOOL_WINDOW_KEY_DOWN, documentId, sourceEvent });
-export const canvasToolDocumentTitleClicked = (documentId: string, sourceEvent: React.MouseEvent<any>): CanvasToolArtboardTitleClicked => ({ type: CANVAS_TOOL_ARTBOARD_TITLE_CLICKED, documentId, sourceEvent });
+export const canvasToolWindowBackgroundClicked = (
+  sourceEvent: React.KeyboardEvent<any>
+): WrappedEvent<React.KeyboardEvent<any>> => ({
+  type: CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED,
+  sourceEvent
+});
+export const canvasToolWindowKeyDown = (
+  documentId: string,
+  sourceEvent: React.KeyboardEvent<any>
+): CanvasToolWindowKeyDown => ({
+  type: CANVAS_TOOL_WINDOW_KEY_DOWN,
+  documentId,
+  sourceEvent
+});
+export const canvasToolDocumentTitleClicked = (
+  documentId: string,
+  sourceEvent: React.MouseEvent<any>
+): CanvasToolArtboardTitleClicked => ({
+  type: CANVAS_TOOL_ARTBOARD_TITLE_CLICKED,
+  documentId,
+  sourceEvent
+});
 
-
-export const resizerPathMoved = (anchor: Point, originalBounds: Bounds, newBounds: Bounds, sourceEvent: MouseEvent): ResizerPathMoved => ({
+export const resizerPathMoved = (
+  anchor: Point,
+  originalBounds: Bounds,
+  newBounds: Bounds,
+  sourceEvent: MouseEvent
+): ResizerPathMoved => ({
   type: RESIZER_PATH_MOUSE_MOVED,
   anchor,
   originalBounds,
   newBounds,
-  sourceEvent,
+  sourceEvent
 });
 
-export const resizerPathStoppedMoving = (anchor: Point, originalBounds: Bounds, newBounds: Bounds, sourceEvent: MouseEvent): ResizerPathMoved => ({
+export const resizerPathStoppedMoving = (
+  anchor: Point,
+  originalBounds: Bounds,
+  newBounds: Bounds,
+  sourceEvent: MouseEvent
+): ResizerPathMoved => ({
   type: RESIZER_PATH_MOUSE_STOPPED_MOVING,
   anchor,
   originalBounds,
   newBounds,
-  sourceEvent: {...sourceEvent}
+  sourceEvent: { ...sourceEvent }
 });
 
 export const resizerMoved = (point: Point): ResizerMoved => ({
   point,
-  type: RESIZER_MOVED,
+  type: RESIZER_MOVED
 });
 
 export const resizerStoppedMoving = (point: Point): ResizerMoved => ({
   point,
-  type: RESIZER_STOPPED_MOVING,
+  type: RESIZER_STOPPED_MOVING
 });
 
-
-export const resizerMouseDown = (sourceEvent: React.MouseEvent<any>): ResizerMouseDown => ({
+export const resizerMouseDown = (
+  sourceEvent: React.MouseEvent<any>
+): ResizerMouseDown => ({
   sourceEvent,
-  type: RESIZER_MOUSE_DOWN,
+  type: RESIZER_MOUSE_DOWN
 });
 
-export const resizerStartDrag = (sourceEvent: React.MouseEvent<any>): ResizerMouseDown => ({
+export const resizerStartDrag = (
+  sourceEvent: React.MouseEvent<any>
+): ResizerMouseDown => ({
   sourceEvent,
-  type: RESIZER_START_DRGG,
+  type: RESIZER_START_DRGG
 });
 
-export const selectorDoubleClicked = (nodeId: string, sourceEvent: React.MouseEvent<any>): SelectorDoubleClicked => ({
+export const selectorDoubleClicked = (
+  nodeId: string,
+  sourceEvent: React.MouseEvent<any>
+): SelectorDoubleClicked => ({
   nodeId,
   type: SELECTOR_DOUBLE_CLICKED,
   sourceEvent
 });
-
-

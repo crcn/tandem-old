@@ -1,12 +1,24 @@
-import { memoize, EMPTY_OBJECT, EMPTY_ARRAY, parseStyle } from "tandem-common/lib/utils";
-import { TreeNode, filterNestedNodes, getAttribute, createNodeNameMatcher, DEFAULT_NAMESPACE, findNestedNode, Bounds, setNodeAttribute } from "tandem-common/lib/state";
+import {
+  memoize,
+  EMPTY_OBJECT,
+  EMPTY_ARRAY,
+  parseStyle,
+  TreeNode,
+  filterNestedNodes,
+  getAttribute,
+  createNodeNameMatcher,
+  DEFAULT_NAMESPACE,
+  findNestedNode,
+  Bounds,
+  setNodeAttribute
+} from "tandem-common";
 import { DEFAULT_EXTENDS } from ".";
-import { mapValues } from "lodash";
+import { mapValues } from "lodash";
 
 export const ROOT_MODULE_NAME = "module";
 
 export type DependencyGraph = {
-  [identifier: string]: Dependency
+  [identifier: string]: Dependency;
 };
 
 export enum PCSourceAttributeNames {
@@ -16,15 +28,17 @@ export enum PCSourceAttributeNames {
   LABEL = "label",
   SLOT = "slot",
   VARIANTS = "variants"
-};
+}
 
 export enum PCSourceTagNames {
   COMPONENT = "component",
   RECTANGLE = "rectangle",
   TEXT = "text",
   COMPONENT_VARIANT = "variant"
-};
-export const isComponentInstanceSourceNode = (sourceNode: TreeNode) => sourceNode.name !== PCSourceTagNames.TEXT && sourceNode.name !== PCSourceTagNames.RECTANGLE;
+}
+export const isComponentInstanceSourceNode = (sourceNode: TreeNode) =>
+  sourceNode.name !== PCSourceTagNames.TEXT &&
+  sourceNode.name !== PCSourceTagNames.RECTANGLE;
 
 // TODO - generic style
 export type StyleDeclaration = {
@@ -41,15 +55,14 @@ export type ComponentVariantInfo = {
 };
 
 export type Dependency = {
-
   // URI used here since it could be a url
   uri: string;
   dirty?: boolean; // TRUE if the contents have changed
   originalContent: TreeNode;
   content: TreeNode;
   importUris: {
-    [identifier: string]: string
-  }
+    [identifier: string]: string;
+  };
 };
 
 export type Module = {
@@ -61,10 +74,9 @@ export type Module = {
 export type ComponentExtendsInfo = {
   namespace: string;
   tagName: string;
-}
+};
 
 export type Component = {
-
   /**
    * ID of the component (should reflect the label)
    */
@@ -101,7 +113,7 @@ export type Component = {
   overrides: ComponentOverride[];
 
   states: ComponentVariantInfo[];
-}
+};
 
 export enum ComponentOverrideType {
   DELETE_NODE,
@@ -110,7 +122,7 @@ export enum ComponentOverrideType {
   SET_ATTRIBUTE,
   SET_STYLE,
   DELETE_ATTRIBUTE
-};
+}
 
 export type ComponentOverride = {
   type: ComponentOverrideType;
@@ -159,10 +171,13 @@ export const getImports = memoize((root: TreeNode): ModuleImports => {
  * Returns all components in a module
  */
 
-export const getModuleComponents = memoize((root: TreeNode): Component[] => filterNestedNodes(root, node => node.name === "component").map(getComponentInfo));
+export const getModuleComponents = memoize((root: TreeNode): Component[] =>
+  filterNestedNodes(root, node => node.name === "component").map(
+    getComponentInfo
+  )
+);
 
 export const getComponentInfo = memoize((component: TreeNode): Component => {
-
   let ext: ComponentExtendsInfo;
 
   if (component.attributes.extends) {
@@ -173,11 +188,13 @@ export const getComponentInfo = memoize((component: TreeNode): Component => {
       };
       break;
     }
-  } else if ((component.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT).extends) {
+  } else if (
+    (component.attributes[DEFAULT_NAMESPACE] || EMPTY_OBJECT).extends
+  ) {
     ext = {
       namespace: DEFAULT_NAMESPACE,
       tagName: component.attributes[DEFAULT_NAMESPACE].extends
-    }
+    };
   }
 
   const overrides = component.children.find(createNodeNameMatcher("overrides"));
@@ -197,69 +214,98 @@ export const getComponentInfo = memoize((component: TreeNode): Component => {
 export const getModuleInfo = memoize((source: TreeNode): Module => ({
   source,
   imports: getImports(source),
-  components: getModuleComponents(source),
+  components: getModuleComponents(source)
 }));
 
-export const getImportedDependency = (namespace: string, dependency: Dependency, graph: DependencyGraph) => {
+export const getImportedDependency = (
+  namespace: string,
+  dependency: Dependency,
+  graph: DependencyGraph
+) => {
   const module = getModuleInfo(dependency.content);
   const importedPath = dependency.importUris[module.imports[namespace]];
   return importedPath ? graph[importedPath] : dependency;
 };
 
-export const getNodeSourceDependency = (node: TreeNode, currentDependency: Dependency, graph: DependencyGraph) => getImportedDependency(node.namespace, currentDependency, graph);
+export const getNodeSourceDependency = (
+  node: TreeNode,
+  currentDependency: Dependency,
+  graph: DependencyGraph
+) => getImportedDependency(node.namespace, currentDependency, graph);
 
-export const getDependencyModule = (dependency: Dependency) => getModuleInfo(dependency.content);
+export const getDependencyModule = (dependency: Dependency) =>
+  getModuleInfo(dependency.content);
 
-export const getNodeSourceModule = (node: TreeNode, dependency: Dependency, graph: DependencyGraph) => {
+export const getNodeSourceModule = (
+  node: TreeNode,
+  dependency: Dependency,
+  graph: DependencyGraph
+) => {
   const sourceDependency = getNodeSourceDependency(node, dependency, graph);
   return getModuleInfo(sourceDependency.content);
 };
 
-export const getModuleComponent = (componentId: string, module: Module) => module.components.find(component => component.id === componentId);
+export const getModuleComponent = (componentId: string, module: Module) =>
+  module.components.find(component => component.id === componentId);
 
-export const getNodeSourceComponent = memoize((node: TreeNode, dependency: Dependency, graph: DependencyGraph) => getModuleComponent(node.name, getNodeSourceModule(node, dependency, graph)));
+export const getNodeSourceComponent = memoize(
+  (node: TreeNode, dependency: Dependency, graph: DependencyGraph) =>
+    getModuleComponent(node.name, getNodeSourceModule(node, dependency, graph))
+);
 
-export const getVariantInfo = memoize((node: TreeNode): ComponentVariantInfo => {
-  return {
-    name: getAttribute(node, "name"),
-    isDefault: Boolean(getAttribute(node, "default")),
-    overrides: node.children.map(getOverrideInfo)
-  };
-});
+export const getVariantInfo = memoize(
+  (node: TreeNode): ComponentVariantInfo => {
+    return {
+      name: getAttribute(node, "name"),
+      isDefault: Boolean(getAttribute(node, "default")),
+      overrides: node.children.map(getOverrideInfo)
+    };
+  }
+);
 
 export const getOverrideInfo = memoize((node: TreeNode): ComponentOverride => {
-  switch(node.name) {
-    case "delete-child": return {
-      type: ComponentOverrideType.DELETE_NODE,
-      target:  getAttribute(node, "target"),
-    } as DeleteChildOverride;
-    case "insert-child": return {
-      type: ComponentOverrideType.INSERT_NODE,
-      child: node.children[0],
-      beforeChild: getAttribute(node, "before")
-    } as InsertChildOverride;
-    case "set-attribute": return {
-      type: ComponentOverrideType.SET_ATTRIBUTE,
-      target:  getAttribute(node, "target"),
-      name: getAttribute(node, "name"),
-      namespace: getAttribute(node, "namespace"),
-      value: getAttribute(node, "value"),
-    } as SetAttributeOverride;
-    case "set-style": return {
-      type: ComponentOverrideType.SET_STYLE,
-      target:  getAttribute(node, "target"),
-      name: getAttribute(node, "name"),
-      value: getAttribute(node, "value"),
-    } as SetAttributeOverride;
+  switch (node.name) {
+    case "delete-child":
+      return {
+        type: ComponentOverrideType.DELETE_NODE,
+        target: getAttribute(node, "target")
+      } as DeleteChildOverride;
+    case "insert-child":
+      return {
+        type: ComponentOverrideType.INSERT_NODE,
+        child: node.children[0],
+        beforeChild: getAttribute(node, "before")
+      } as InsertChildOverride;
+    case "set-attribute":
+      return {
+        type: ComponentOverrideType.SET_ATTRIBUTE,
+        target: getAttribute(node, "target"),
+        name: getAttribute(node, "name"),
+        namespace: getAttribute(node, "namespace"),
+        value: getAttribute(node, "value")
+      } as SetAttributeOverride;
+    case "set-style":
+      return {
+        type: ComponentOverrideType.SET_STYLE,
+        target: getAttribute(node, "target"),
+        name: getAttribute(node, "name"),
+        value: getAttribute(node, "value")
+      } as SetAttributeOverride;
     default: {
       throw new Error(`Unknown override type ${node.name}`);
     }
   }
 });
 
-export const getNodeReference = memoize((refName: string, root: TreeNode) => findNestedNode(root, child => getAttribute(child, "ref") === refName));
+export const getNodeReference = memoize((refName: string, root: TreeNode) =>
+  findNestedNode(root, child => getAttribute(child, "ref") === refName)
+);
 
-export const updateGraphDependency = (properties: Partial<Dependency>, uri: string, graph: DependencyGraph) => ({
+export const updateGraphDependency = (
+  properties: Partial<Dependency>,
+  uri: string,
+  graph: DependencyGraph
+) => ({
   ...graph,
   [uri]: {
     ...graph[uri],
@@ -268,7 +314,6 @@ export const updateGraphDependency = (properties: Partial<Dependency>, uri: stri
 });
 
 export const getDependents = memoize((uri: string, graph: DependencyGraph) => {
-
   const dependents = [];
 
   for (const depUri in graph) {
@@ -290,7 +335,10 @@ export const getDependents = memoize((uri: string, graph: DependencyGraph) => {
   return dependents;
 });
 
-export const getModuleImportNamespace = (uri: string, moduleNode: TreeNode): string => {
+export const getModuleImportNamespace = (
+  uri: string,
+  moduleNode: TreeNode
+): string => {
   const info = getModuleInfo(moduleNode);
   for (const namespace in info.imports) {
     if (info.imports[namespace] === uri) {
@@ -312,5 +360,5 @@ export const addModuleNodeImport = (uri: string, moduleNode: TreeNode) => {
         ["import" + importCount]: uri
       }
     }
-  }
+  };
 };

@@ -1,13 +1,12 @@
-
 // import { getV } from "../struct";
-import { memoize  } from "../utils/memoization";
+import { memoize } from "../utils/memoization";
 
 export type Bounds = {
   left: number;
   right: number;
   top: number;
   bottom: number;
-}
+};
 
 export type Size = {
   width: number;
@@ -21,7 +20,7 @@ export type Bounded = {
 export type Rectangle = {
   width: number;
   height: number;
-}
+};
 
 export type Point = {
   left: number;
@@ -34,7 +33,12 @@ export type Translate = {
   zoom: number;
 };
 
-export const createBounds = (left: number, right: number, top: number, bottom: number): Bounds => ({
+export const createBounds = (
+  left: number,
+  right: number,
+  top: number,
+  bottom: number
+): Bounds => ({
   left,
   right,
   top,
@@ -49,15 +53,19 @@ export const moveBounds = (bounds: Bounds, { left, top }: Point): Bounds => ({
   bottom: top + bounds.bottom - bounds.top
 });
 
-export const mapBounds = (bounds: Bounds, map: (value: number, key?: string) => number): Bounds => ({
+export const mapBounds = (
+  bounds: Bounds,
+  map: (value: number, key?: string) => number
+): Bounds => ({
   ...bounds,
   left: map(bounds.left, "left"),
   right: map(bounds.right, "right"),
   top: map(bounds.top, "top"),
-  bottom: map(bounds.bottom, "bottom"),
+  bottom: map(bounds.bottom, "bottom")
 });
 
-export const roundBounds = (bounds: Bounds) => mapBounds(bounds, (v) => Math.round(v));
+export const roundBounds = (bounds: Bounds) =>
+  mapBounds(bounds, v => Math.round(v));
 
 export const createZeroBounds = () => createBounds(0, 0, 0, 0);
 
@@ -84,7 +92,7 @@ export const resizeBounds = (bounds: Bounds, { width, height }): Bounds => ({
 
 export const flipPoint = (point: Point): Point => ({
   left: -point.left,
-  top: -point.top,
+  top: -point.top
 });
 
 export const pointToBounds = (point: Point): Bounds => ({
@@ -94,23 +102,30 @@ export const pointToBounds = (point: Point): Bounds => ({
   bottom: point.top
 });
 
-export const keepBoundsAspectRatio = (newBounds: Bounds, oldBounds: Bounds, anchor: Point, centerPoint = anchor): Bounds => {
+export const keepBoundsAspectRatio = (
+  newBounds: Bounds,
+  oldBounds: Bounds,
+  anchor: Point,
+  centerPoint = anchor
+): Bounds => {
   const newBoundsSize = getBoundsSize(newBounds);
   const oldBoundsSize = getBoundsSize(oldBounds);
 
-  let left   = newBounds.left;
-  let top    = newBounds.top;
-  let width  = newBoundsSize.width;
+  let left = newBounds.left;
+  let top = newBounds.top;
+  let width = newBoundsSize.width;
   let height = newBoundsSize.height;
 
   if (anchor.top === 0 || anchor.top === 1) {
     const perc = height / oldBoundsSize.height;
     width = oldBoundsSize.width * perc;
-    left = oldBounds.left + (oldBoundsSize.width - width) * (1 - centerPoint.left);
+    left =
+      oldBounds.left + (oldBoundsSize.width - width) * (1 - centerPoint.left);
   } else if (anchor.top === 0.5) {
     const perc = width / oldBoundsSize.width;
     height = oldBoundsSize.height * perc;
-    top = oldBounds.top + (oldBoundsSize.height - height) * (1 - centerPoint.top);
+    top =
+      oldBounds.top + (oldBoundsSize.height - height) * (1 - centerPoint.top);
   }
 
   return {
@@ -118,17 +133,24 @@ export const keepBoundsAspectRatio = (newBounds: Bounds, oldBounds: Bounds, anch
     top: top,
     right: left + width,
     bottom: top + height
-  }
+  };
 };
-export const keepBoundsCenter = (newBounds: Bounds, oldBounds: Bounds, anchor: Point): Bounds => {
+export const keepBoundsCenter = (
+  newBounds: Bounds,
+  oldBounds: Bounds,
+  anchor: Point
+): Bounds => {
   const newBoundsSize = getBoundsSize(newBounds);
   const oldBoundsSize = getBoundsSize(oldBounds);
 
-  let left   = oldBounds.left;
-  let top    = oldBounds.top;
-  let width  = oldBoundsSize.width;
+  let left = oldBounds.left;
+  let top = oldBounds.top;
+  let width = oldBoundsSize.width;
   let height = oldBoundsSize.height;
-  const delta = { left: newBounds.left - oldBounds.left, top: newBounds.top - oldBounds.top };
+  const delta = {
+    left: newBounds.left - oldBounds.left,
+    top: newBounds.top - oldBounds.top
+  };
 
   if (anchor.top === 0) {
     top += delta.top;
@@ -160,7 +182,7 @@ export const keepBoundsCenter = (newBounds: Bounds, oldBounds: Bounds, anchor: P
     top: top,
     right: left + width,
     bottom: top + height
-  }
+  };
 };
 
 export const zoomBounds = (bounds: Bounds, zoom: number): Bounds => ({
@@ -184,31 +206,34 @@ export const boundsFromRect = ({ width, height }: Rectangle): Bounds => ({
   bottom: height
 });
 
-export const getBoundsWidth  = (bounds: Bounds) => bounds.right - bounds.left;
+export const getBoundsWidth = (bounds: Bounds) => bounds.right - bounds.left;
 export const getBoundsHeight = (bounds: Bounds) => bounds.bottom - bounds.top;
-export const getBoundsSize   = memoize((bounds: Bounds): Size => ({
+export const getBoundsSize = memoize((bounds: Bounds): Size => ({
   width: getBoundsWidth(bounds),
   height: getBoundsHeight(bounds)
 }));
-export const getBoundsPoint   = memoize((bounds: Bounds): Point => ({
+export const getBoundsPoint = memoize((bounds: Bounds): Point => ({
   left: bounds.left,
   top: bounds.top
 }));
 
-export const scaleInnerBounds = (inner: Bounds, oldBounds: Bounds, newBounds: Bounds): Bounds => {
-
+export const scaleInnerBounds = (
+  inner: Bounds,
+  oldBounds: Bounds,
+  newBounds: Bounds
+): Bounds => {
   const oldBoundsSize = getBoundsSize(oldBounds);
   const newBoundsSize = getBoundsSize(newBounds);
   const innerBoundsSize = getBoundsSize(inner);
 
-  const percLeft   = (inner.left - oldBounds.left) / oldBoundsSize.width;
-  const percTop    = (inner.top  - oldBounds.top)  / oldBoundsSize.height;
-  const percWidth  = innerBoundsSize.width / oldBoundsSize.width;
+  const percLeft = (inner.left - oldBounds.left) / oldBoundsSize.width;
+  const percTop = (inner.top - oldBounds.top) / oldBoundsSize.height;
+  const percWidth = innerBoundsSize.width / oldBoundsSize.width;
   const percHeight = innerBoundsSize.height / oldBoundsSize.height;
 
-  const left   = newBounds.left + newBoundsSize.width * percLeft;
-  const top    = newBounds.top  + newBoundsSize.height * percTop;
-  const right  = left + newBoundsSize.width * percWidth;
+  const left = newBounds.left + newBoundsSize.width * percLeft;
+  const top = newBounds.top + newBoundsSize.height * percTop;
+  const right = left + newBoundsSize.width * percWidth;
   const bottom = top + newBoundsSize.height * percHeight;
 
   return {
@@ -219,32 +244,43 @@ export const scaleInnerBounds = (inner: Bounds, oldBounds: Bounds, newBounds: Bo
   };
 };
 
-export const isBounds = (bounds: any) => bounds && bounds.left != null && bounds.top != null && bounds.right != null && bounds.bottom != null;
-export const filterBounded = (values: any[]): Bounded[] => values.filter(value => isBounds(value.bounds));
+export const isBounds = (bounds: any) =>
+  bounds &&
+  bounds.left != null &&
+  bounds.top != null &&
+  bounds.right != null &&
+  bounds.bottom != null;
+export const filterBounded = (values: any[]): Bounded[] =>
+  values.filter(value => isBounds(value.bounds));
 
 export const mergeBounds = (...allBounds: Bounds[]) => {
-  let left   = Infinity;
+  let left = Infinity;
   let bottom = -Infinity;
-  let top    = Infinity;
-  let right  = -Infinity;
+  let top = Infinity;
+  let right = -Infinity;
 
   for (const bounds of allBounds) {
-    left   = Math.min(left, bounds.left);
-    right  = Math.max(right, bounds.right);
-    top    = Math.min(top, bounds.top);
+    left = Math.min(left, bounds.left);
+    right = Math.max(right, bounds.right);
+    top = Math.min(top, bounds.top);
     bottom = Math.max(bottom, bounds.bottom);
   }
 
   return createBounds(left, right, top, bottom);
-}
+};
 
-export const centerTransformZoom = (translate: Translate, bounds: Bounds, nz: number, point?: Point): Translate => {
+export const centerTransformZoom = (
+  translate: Translate,
+  bounds: Bounds,
+  nz: number,
+  point?: Point
+): Translate => {
   const oz = translate.zoom;
 
-  const zd   = (nz / oz);
+  const zd = nz / oz;
 
-  const v1w  = bounds.right - bounds.left;
-  const v1h  = bounds.bottom - bounds.top;
+  const v1w = bounds.right - bounds.left;
+  const v1h = bounds.bottom - bounds.top;
 
   // center is based on the mouse position
   const v1px = point ? point.left / v1w : 0.5;
@@ -271,7 +307,7 @@ export const centerTransformZoom = (translate: Translate, bounds: Bounds, nz: nu
   const v2py = (v1cy - v2oy) / v2oh;
 
   const left = v1w * v1px - v2nw * v2px;
-  const top  = v1h * v1py - v2nh * v2py;
+  const top = v1h * v1py - v2nh * v2py;
 
   return {
     left: left,
@@ -280,11 +316,26 @@ export const centerTransformZoom = (translate: Translate, bounds: Bounds, nz: nu
   };
 };
 
-
-export const boundsIntersect = (a: Bounds, b: Bounds) => !(a.left > b.right || a.right < b.left || a.top > b.bottom || a.bottom < a.top);
-export const pointIntersectsBounds = (point: Point, bounds: Bounds) => !(point.left < bounds.left || point.left > bounds.right || point.top < bounds.top || point.top > bounds.bottom);
-export const getSmallestBounds = (...bounds: Bounds[]) => bounds.reduce((a, b) => {
-  const asize = getBoundsSize(a);
-  const bsize = getBoundsSize(b);
-  return asize.width * asize.height < bsize.width * bsize.height ? a : b;
-}, { left: Infinity, right: Infinity, top: Infinity, bottom: Infinity });
+export const boundsIntersect = (a: Bounds, b: Bounds) =>
+  !(
+    a.left > b.right ||
+    a.right < b.left ||
+    a.top > b.bottom ||
+    a.bottom < a.top
+  );
+export const pointIntersectsBounds = (point: Point, bounds: Bounds) =>
+  !(
+    point.left < bounds.left ||
+    point.left > bounds.right ||
+    point.top < bounds.top ||
+    point.top > bounds.bottom
+  );
+export const getSmallestBounds = (...bounds: Bounds[]) =>
+  bounds.reduce(
+    (a, b) => {
+      const asize = getBoundsSize(a);
+      const bsize = getBoundsSize(b);
+      return asize.width * asize.height < bsize.width * bsize.height ? a : b;
+    },
+    { left: Infinity, right: Infinity, top: Infinity, bottom: Infinity }
+  );

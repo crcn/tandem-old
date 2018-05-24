@@ -16,10 +16,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 183,
-            "right": 659,
-            "top": 105,
-            "bottom": 391
+            "left": 184,
+            "right": 660,
+            "top": -122,
+            "bottom": 164
           }
         }
       },
@@ -73,7 +73,8 @@
                           ]
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb86"
                     },
                     {
                       "name": "component2",
@@ -88,7 +89,8 @@
                           "variants": []
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb87"
                     },
                     {
                       "name": "component2",
@@ -103,7 +105,8 @@
                           "variants": []
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb88"
                     },
                     {
                       "name": "component2",
@@ -118,7 +121,8 @@
                           "variants": []
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb89"
                     },
                     {
                       "name": "component2",
@@ -133,7 +137,8 @@
                           "variants": []
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb90"
                     },
                     {
                       "name": "component2",
@@ -148,7 +153,8 @@
                           "variants": []
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb91"
                     },
                     {
                       "name": "component2",
@@ -163,7 +169,8 @@
                           "variants": []
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb92"
                     },
                     {
                       "name": "component2",
@@ -178,9 +185,11 @@
                           "variants": []
                         }
                       },
-                      "children": []
+                      "children": [],
+                      "id": "808486bb93"
                     }
-                  ]
+                  ],
+                  "id": "808486bb85"
                 },
                 {
                   "name": "rectangle",
@@ -196,13 +205,17 @@
                       "container": "container7dbf261c"
                     }
                   },
-                  "children": []
+                  "children": [],
+                  "id": "808486bb94"
                 }
-              ]
+              ],
+              "id": "808486bb84"
             }
-          ]
+          ],
+          "id": "808486bb83"
         }
-      ]
+      ],
+      "id": "808486bb82"
     },
     {
       "name": "component",
@@ -255,11 +268,14 @@
                       "ref": "8d8cf7e40"
                     }
                   },
-                  "children": []
+                  "children": [],
+                  "id": "808486bb98"
                 }
-              ]
+              ],
+              "id": "808486bb97"
             }
-          ]
+          ],
+          "id": "808486bb96"
         },
         {
           "name": "state",
@@ -279,7 +295,8 @@
                   "target": "fbd732300"
                 }
               },
-              "children": []
+              "children": [],
+              "id": "808486bb100"
             },
             {
               "name": "set-style",
@@ -290,7 +307,8 @@
                   "target": "fbd732300"
                 }
               },
-              "children": []
+              "children": [],
+              "id": "808486bb101"
             },
             {
               "name": "set-style",
@@ -301,7 +319,8 @@
                   "target": "fbd732300"
                 }
               },
-              "children": []
+              "children": [],
+              "id": "808486bb102"
             },
             {
               "name": "set-style",
@@ -312,11 +331,15 @@
                   "target": "fbd732300"
                 }
               },
-              "children": []
+              "children": [],
+              "id": "808486bb103"
             }
-          ]
+          ],
+          "id": "808486bb99"
         }
-      ]
+      ],
+      "id": "808486bb95"
     }
-  ]
+  ],
+  "id": "808486bb81"
 }

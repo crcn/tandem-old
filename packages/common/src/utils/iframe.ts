@@ -1,14 +1,25 @@
 import { calculateAbsoluteBounds } from "./transform";
 
-export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: { translateMousePositions?: boolean, ignoreInputEvents?: boolean, ignoreScrollEvents?: boolean } = {}) {
+export function bubbleHTMLIframeEvents(
+  iframe: HTMLIFrameElement,
+  options: {
+    translateMousePositions?: boolean;
+    ignoreInputEvents?: boolean;
+    ignoreScrollEvents?: boolean;
+  } = {}
+) {
   const window = iframe.contentWindow;
-  const body   = window.document.childNodes[0];
+  const body = window.document.childNodes[0];
   const translateMousePositions = options.translateMousePositions !== false;
 
   // TODO - this should be in its own util function
   function bubbleEvent(event) {
-
-    if (/key|input/.test(event.type) && options.ignoreInputEvents && (/textarea|input/i.test(event.target.nodeName) || event.target.contentEditable === "true")) {
+    if (
+      /key|input/.test(event.type) &&
+      options.ignoreInputEvents &&
+      (/textarea|input/i.test(event.target.nodeName) ||
+        event.target.contentEditable === "true")
+    ) {
       return;
     }
 
@@ -16,8 +27,6 @@ export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: { tra
       bubbles: true,
       cancelable: true
     });
-
-
 
     const rect = iframe.getBoundingClientRect();
     const actualRect = calculateAbsoluteBounds(iframe);
@@ -42,7 +51,7 @@ export function bubbleHTMLIframeEvents(iframe: HTMLIFrameElement, options: { tra
       // bypass read-only issues here
       try {
         clonedEvent[key] = value;
-      } catch (e) { }
+      } catch (e) {}
     }
 
     iframe.dispatchEvent(clonedEvent);

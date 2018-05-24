@@ -5,12 +5,10 @@ export namespace ArrayOperationalTransformType {
 }
 
 export abstract class ArrayOperationalTransform<T> {
-  constructor(readonly type: string) {
-
-  }
+  constructor(readonly type: string) {}
 }
 
-export class ArrayInsertMutation<T>  extends ArrayOperationalTransform<T> {
+export class ArrayInsertMutation<T> extends ArrayOperationalTransform<T> {
   constructor(readonly index: number, readonly value: T) {
     super(ArrayOperationalTransformType.INSERT);
   }
@@ -23,27 +21,34 @@ export class ArrayDeleteMutation extends ArrayOperationalTransform<any> {
 }
 
 export class ArrayUpdateMutation<T> extends ArrayOperationalTransform<T> {
-  constructor(readonly originalOldIndex: number, readonly patchedOldIndex: number, readonly newValue: T, readonly index: number) {
+  constructor(
+    readonly originalOldIndex: number,
+    readonly patchedOldIndex: number,
+    readonly newValue: T,
+    readonly index: number
+  ) {
     super(ArrayOperationalTransformType.UPDATE);
   }
 }
 
-export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs: (a: T, b: T) => number): ArrayOperationalTransform<T>[] {
-
+export function diffArray<T>(
+  oldArray: Array<T>,
+  newArray: Array<T>,
+  countDiffs: (a: T, b: T) => number
+): ArrayOperationalTransform<T>[] {
   // model used to figure out the proper mutation indices
-  const model    = [].concat(oldArray);
+  const model = [].concat(oldArray);
 
   // remaining old values to be matched with new values. Remainders get deleted.
-  const oldPool  = [].concat(oldArray);
+  const oldPool = [].concat(oldArray);
 
   // remaining new values. Remainders get inserted.
-  const newPool  = [].concat(newArray);
+  const newPool = [].concat(newArray);
 
   const mutations: ArrayOperationalTransform<any>[] = [];
-  let   matches: Array<[T, T]>           = [];
+  let matches: Array<[T, T]> = [];
 
   for (let i = 0, n = oldPool.length; i < n; i++) {
-
     const oldValue = oldPool[i];
     let bestNewValue;
 
@@ -51,14 +56,13 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
 
     // there may be multiple matches, so look for the best one
     for (let j = 0, n2 = newPool.length; j < n2; j++) {
-
-      const newValue   = newPool[j];
+      const newValue = newPool[j];
 
       // -1 = no match, 0 = no change, > 0 = num diffs
       let diffCount = countDiffs(oldValue, newValue);
 
       if (~diffCount && diffCount < fewestDiffCount) {
-        bestNewValue    = newValue;
+        bestNewValue = newValue;
         fewestDiffCount = diffCount;
       }
 
@@ -79,9 +83,9 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
     }
   }
 
-  for (let i = oldPool.length; i--;) {
-    const oldValue  = oldPool[i];
-    const index     = oldArray.indexOf(oldValue);
+  for (let i = oldPool.length; i--; ) {
+    const oldValue = oldPool[i];
+    const index = oldArray.indexOf(oldValue);
     mutations.push(new ArrayDeleteMutation(oldValue, index));
     model.splice(index, 1);
   }
@@ -90,7 +94,7 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
   // ordered propertly along with the updates - particularly moves.
   for (let i = 0, n = newPool.length; i < n; i++) {
     const newValue = newPool[i];
-    const index    = newArray.indexOf(newValue);
+    const index = newArray.indexOf(newValue);
     matches[index] = [undefined, newValue];
   }
 
@@ -109,10 +113,17 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
     if (oldValue == null) {
       mutations.push(new ArrayInsertMutation(newIndex, newValue));
       model.splice(newIndex, 0, newValue);
-    // updated
+      // updated
     } else {
       const oldIndex = model.indexOf(oldValue);
-      mutations.push(new ArrayUpdateMutation(oldArray.indexOf(oldValue), oldIndex, newValue, newIndex));
+      mutations.push(
+        new ArrayUpdateMutation(
+          oldArray.indexOf(oldValue),
+          oldIndex,
+          newValue,
+          newIndex
+        )
+      );
       if (oldIndex !== newIndex) {
         model.splice(oldIndex, 1);
         model.splice(newIndex, 0, oldValue);
@@ -123,7 +134,12 @@ export function diffArray<T>(oldArray: Array<T>, newArray: Array<T>, countDiffs:
   return mutations;
 }
 
-export function patchArray<T>(target: Array<T>, ots: ArrayOperationalTransform<T>[], mapUpdate: (a: T, b: T) => T, mapInsert?: (b: T) => T) {
+export function patchArray<T>(
+  target: Array<T>,
+  ots: ArrayOperationalTransform<T>[],
+  mapUpdate: (a: T, b: T) => T,
+  mapInsert?: (b: T) => T
+) {
   if (!ots.length) {
     return target;
   }
@@ -141,8 +157,10 @@ export function patchArray<T>(target: Array<T>, ots: ArrayOperationalTransform<T
         newTarget.splice(index, 1);
       }
       case ArrayOperationalTransformType.UPDATE: {
-        const { patchedOldIndex, newValue, index } = ot as ArrayUpdateMutation<T>;
-        const oldValue     = target[patchedOldIndex];
+        const { patchedOldIndex, newValue, index } = ot as ArrayUpdateMutation<
+          T
+        >;
+        const oldValue = target[patchedOldIndex];
         const patchedValue = mapUpdate(oldValue, newValue);
         if (patchedValue !== oldValue || patchedOldIndex !== index) {
           if (patchedOldIndex !== index) {

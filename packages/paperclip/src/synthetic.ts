@@ -13,29 +13,45 @@ import {
   TreeNode,
   TreeNodeUpdater,
   findNestedNode,
-  addTreeNodeIds,
   removeNestedTreeNode,
   updateNestedNodeTrail,
   appendChildNode,
   replaceNestedNode,
   getParentTreeNode,
-  cloneNode,
+  cloneTreeNode,
   getTreeNodeUidGenerator,
   filterNestedNodes,
   findTreeNodeParent,
   insertChildNode,
-  TreeMoveOffset
-} from "tandem-common/lib/state/tree";
-import {
+  TreeMoveOffset,
   arraySplice,
-  generateId,
+  generateUID,
+  Bounds,
+  Struct,
+  shiftBounds,
+  StructReference,
+  Point,
+  getBoundsSize,
+  pointIntersectsBounds,
+  moveBounds,
+  boundsFromRect,
+  parseStyle,
+  resizeBounds,
+  mergeBounds,
   memoize,
   EMPTY_ARRAY,
   EMPTY_OBJECT,
+  createSetAttributeTransform,
+  OperationalTransform,
+  diffNode,
+  patchNode,
+  OperationalTransformType,
+  SetAttributeTransform,
+  createTreeNode,
   ArrayOperationalTransform,
-  castStyle,
-  createUIDGenerator
-} from "tandem-common/lib/utils";
+  castStyle
+} from "tandem-common";
+
 import {
   DependencyGraph,
   Dependency,
@@ -55,29 +71,7 @@ import {
   isComponentInstanceSourceNode
 } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
-import {
-  Bounds,
-  Struct,
-  shiftBounds,
-  StructReference,
-  Point,
-  getBoundsSize,
-  pointIntersectsBounds,
-  moveBounds,
-  boundsFromRect,
-  parseStyle,
-  resizeBounds,
-  mergeBounds
-} from "tandem-common/lib";
 import { mapValues, pull } from "lodash";
-import {
-  createSetAttributeTransform,
-  OperationalTransform,
-  diffNode,
-  patchNode,
-  OperationalTransformType,
-  SetAttributeTransform
-} from "tandem-common/lib/utils/tree";
 import { evaluateDependencyEntry } from "./evaluate";
 import * as path from "path";
 import {
@@ -86,7 +80,6 @@ import {
   isRelativeNode,
   getRelativeParent
 } from "./synthetic-layout";
-import { createTreeNode } from "tandem-common";
 
 export const EDITOR_NAMESPACE = "editor";
 
@@ -208,7 +201,7 @@ export const getSyntheticWindow = (
 
 export const createSyntheticWindow = (location: string): SyntheticWindow => ({
   location,
-  id: generateId(),
+  id: generateUID(),
   type: SyntheticObjectType.WINDOW
 });
 
@@ -259,7 +252,7 @@ export const createSyntheticDocument = (
     root: documentRootNode,
     container,
     bounds: getSyntheticDocumentBounds(documentRootNode, moduleRootNode),
-    id: generateId(),
+    id: generateUID(),
     type: SyntheticObjectType.DOCUMENT
   };
 
@@ -778,7 +771,6 @@ export const persistPasteSyntheticNodes = (
 
   for (const { uri, node, namespaceUris } of clips) {
     const sourceDep = browser.graph[uri];
-    const generateUid = getTreeNodeUidGenerator(sourceDep.content);
     const sourceNode = node;
 
     // If there is NO source node, then possibly create a detached node and add to target component
@@ -820,17 +812,16 @@ export const persistPasteSyntheticNodes = (
             bottom: 0
           };
 
-      const child: TreeNode = {
-        name: info.id,
-        namespace,
-        id: generateUid(),
-        attributes: {
+      const child: TreeNode = createTreeNode(
+        info.id,
+        {
           [DEFAULT_NAMESPACE]: {
             style: resizeBounds(pos, getBoundsSize(bounds))
           }
         },
-        children: []
-      };
+        [],
+        namespace
+      );
 
       content = updateNestedNode(targetSourceNode, content, target =>
         appendChildNode(child, target)
@@ -869,7 +860,7 @@ export const persistPasteSyntheticNodes = (
         return node;
       };
 
-      const clonedChild = updateNamespaces(cloneNode(sourceNode, generateUid));
+      const clonedChild = updateNamespaces(cloneTreeNode(sourceNode));
       content = updateNestedNode(targetSourceNode, content, target => {
         target = appendChildNode(clonedChild, target);
         return target;
@@ -1277,17 +1268,13 @@ export const persistInsertRectangle = (
   browser: SyntheticBrowser
 ) => {
   return persistInsertNode(
-    {
-      name: "rectangle",
-      attributes: {
-        [DEFAULT_NAMESPACE]: {
-          style,
-          [PCSourceAttributeNames.LABEL]: "Rectangle",
-          [PCSourceAttributeNames.NATIVE_TYPE]: "div"
-        }
-      },
-      children: []
-    },
+    createTreeNode("rectangle", {
+      [DEFAULT_NAMESPACE]: {
+        style,
+        [PCSourceAttributeNames.LABEL]: "Rectangle",
+        [PCSourceAttributeNames.NATIVE_TYPE]: "div"
+      }
+    }),
     targetSourceNodeId,
     0,
     browser
@@ -1316,17 +1303,12 @@ export const persistInsertNewComponentVariant = (
     browser,
     componentNode => {
       return appendChildNode(
-        {
-          name: PCSourceTagNames.COMPONENT_VARIANT,
-          id: getTreeNodeUidGenerator(componentNode)(),
-          attributes: {
-            [DEFAULT_NAMESPACE]: {
-              name: variantName,
-              default: false
-            }
-          },
-          children: []
-        },
+        createTreeNode(PCSourceTagNames.COMPONENT_VARIANT, {
+          [DEFAULT_NAMESPACE]: {
+            name: variantName,
+            default: false
+          }
+        }),
         componentNode
       );
     }
@@ -1406,17 +1388,13 @@ export const persistInsertText = (
   browser: SyntheticBrowser
 ) => {
   return persistInsertNode(
-    {
-      name: "text",
-      attributes: {
-        [DEFAULT_NAMESPACE]: {
-          style,
-          value: nodeValue,
-          label: "Text"
-        }
-      },
-      children: []
-    },
+    createTreeNode("text", {
+      [DEFAULT_NAMESPACE]: {
+        style,
+        value: nodeValue,
+        label: "Text"
+      }
+    }),
     targetSourceNodeId,
     0,
     browser
@@ -1452,7 +1430,7 @@ export const persistInsertNode = (
   return updateDependencyAndRevaluate(
     {
       content: insertComponentChildNode(
-        addTreeNodeIds(child, dep.content.id),
+        child,
         index,
         sourceParentNode.id,
         dep.content
@@ -1527,12 +1505,7 @@ export const persistConvertNodeToComponent = (
 
   browser = persistSourceNodeChanges(dep.content.id, null, browser, content => {
     content = replaceNestedNode(
-      {
-        id: String(Math.random()),
-        name: getAttribute(componentSourceNode, "id"),
-        attributes: {},
-        children: []
-      },
+      createTreeNode(getAttribute(componentSourceNode, "id")),
       sourceNode.id,
       content
     );

@@ -1,5 +1,3 @@
-import { RootState  } from "tandem-front-end";
+import { RootState } from "tandem-front-end";
 
-export type DesktopRootState = {
-
-} & RootState;
+export type DesktopRootState = {} & RootState;

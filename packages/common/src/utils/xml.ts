@@ -9,8 +9,11 @@ export const xmlToTreeNode = memoize((xml: string): TreeNode => {
   // return addTreeNodeIds(normalizeTree(xml2js(xml).elements[0]));
 });
 
-const normalizeTree = ({name: nameAndNamespace, attributes, elements = EMPTY_ARRAY}: any) => {
-
+const normalizeTree = ({
+  name: nameAndNamespace,
+  attributes,
+  elements = EMPTY_ARRAY
+}: any) => {
   let [namespace, name] = nameAndNamespace.split(":");
 
   if (!name) {
@@ -18,7 +21,7 @@ const normalizeTree = ({name: nameAndNamespace, attributes, elements = EMPTY_ARR
     namespace = null;
   }
 
-  const normalizedAttributes = { };
+  const normalizedAttributes = {};
 
   for (const name in attributes) {
     let [namespace, name2] = name.split(":");
@@ -39,60 +42,69 @@ const normalizeTree = ({name: nameAndNamespace, attributes, elements = EMPTY_ARR
     normalizedAttributes[namespace][name2] = value;
   }
 
-
   return {
     name,
     namespace,
     attributes: normalizedAttributes,
-    children: elements.filter(element => Boolean(element.name)).map(normalizeTree)
+    children: elements
+      .filter(element => Boolean(element.name))
+      .map(normalizeTree)
   };
 };
 
-export const stringifyTreeNodeToXML = memoize((node: TreeNode, level: number = 0) => {
-  const tabs = repeat(" ", level * 2);
+export const stringifyTreeNodeToXML = memoize(
+  (node: TreeNode, level: number = 0) => {
+    const tabs = repeat(" ", level * 2);
 
-  let tagName = node.name;
+    let tagName = node.name;
 
-  if (node.namespace && node.namespace !== DEFAULT_NAMESPACE) {
-    tagName = node.namespace + ":" + tagName;
-  }
-  let buffer = `${tabs}<${tagName}`;
-
-  for (const namespace in node.attributes) {
-    const nsa = node.attributes[namespace];
-    for (const name in nsa) {
-      let value = nsa[name];
-
-      if (name === "style") {
-        value = stringifyStyle(value);
-      }
-
-      let attrName = name;
-
-      if (namespace !== DEFAULT_NAMESPACE) {
-        attrName = namespace + ":" + attrName;
-      }
-
-      if (/null|undefined/.test(String(value))) {
-        continue;
-      }
-      const tov = typeof value;
-      buffer += ` ${attrName}=${tov === "string" ? JSON.stringify(value) : `"${tov === "object" ? stringifyStyle(value) : value}"`}`
+    if (node.namespace && node.namespace !== DEFAULT_NAMESPACE) {
+      tagName = node.namespace + ":" + tagName;
     }
+    let buffer = `${tabs}<${tagName}`;
+
+    for (const namespace in node.attributes) {
+      const nsa = node.attributes[namespace];
+      for (const name in nsa) {
+        let value = nsa[name];
+
+        if (name === "style") {
+          value = stringifyStyle(value);
+        }
+
+        let attrName = name;
+
+        if (namespace !== DEFAULT_NAMESPACE) {
+          attrName = namespace + ":" + attrName;
+        }
+
+        if (/null|undefined/.test(String(value))) {
+          continue;
+        }
+        const tov = typeof value;
+        buffer += ` ${attrName}=${
+          tov === "string"
+            ? JSON.stringify(value)
+            : `"${tov === "object" ? stringifyStyle(value) : value}"`
+        }`;
+      }
+    }
+
+    buffer += `>`;
+
+    if (node.children.length) {
+      buffer += `\n`;
+    }
+
+    buffer += node.children
+      .map(child => stringifyTreeNodeToXML(child, level + 1))
+      .join("");
+
+    buffer += `${node.children.length ? tabs : ""}</${tagName}>\n`;
+
+    return buffer;
   }
-
-  buffer += `>`;
-
-  if (node.children.length) {
-    buffer += `\n`;
-  }
-
-  buffer += node.children.map(child => stringifyTreeNodeToXML(child, level + 1)).join("");
-
-  buffer += `${node.children.length ? tabs : ""}</${tagName}>\n`;
-
-  return buffer;
-});
+);
 
 export const parseStyle = (source: string): any => {
   const style = {};
@@ -103,19 +115,22 @@ export const parseStyle = (source: string): any => {
     }
     value = value.trim();
 
-    style[camelCase(name.trim())] = !isNaN(Number(value)) ? Number(value) : value;
+    style[camelCase(name.trim())] = !isNaN(Number(value))
+      ? Number(value)
+      : value;
   });
   return style;
 };
 
-export const castStyle = (source: string): any => typeof source === "string" ? parseStyle(source) : source;
+export const castStyle = (source: string): any =>
+  typeof source === "string" ? parseStyle(source) : source;
 
 const stringifyStyle = (style: any) => {
   let buffer = ``;
 
   for (const name in style) {
-    buffer += `${name}:${style[name]};`
+    buffer += `${name}:${style[name]};`;
   }
 
   return buffer;
-}
+};

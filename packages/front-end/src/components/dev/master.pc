@@ -27,7 +27,8 @@
           }
         }
       },
-      "children": []
+      "children": [],
+      "id": "808486bb48"
     },
     {
       "name": "component",
@@ -38,10 +39,10 @@
         },
         "editor": {
           "bounds": {
-            "left": 174,
-            "right": 413,
-            "top": 99,
-            "bottom": 236
+            "left": 186,
+            "right": 425,
+            "top": -46,
+            "bottom": 91
           }
         }
       },
@@ -49,9 +50,11 @@
         {
           "name": "template",
           "attributes": {},
-          "children": []
+          "children": [],
+          "id": "808486bb50"
         }
-      ]
+      ],
+      "id": "808486bb49"
     },
     {
       "name": "component",
@@ -90,11 +93,15 @@
                   "container": "containerb046d6ad"
                 }
               },
-              "children": []
+              "children": [],
+              "id": "808486bb53"
             }
-          ]
+          ],
+          "id": "808486bb52"
         }
-      ]
+      ],
+      "id": "808486bb51"
     }
-  ]
+  ],
+  "id": "808486bb47"
 }

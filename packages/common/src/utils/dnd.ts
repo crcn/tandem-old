@@ -1,7 +1,14 @@
 import { throttle } from "lodash";
 
-export const startDOMDrag = (startEvent: any, onStart: (event?: MouseEvent) => any, update: (event: MouseEvent, data?: { delta?: { x: number, y: number }}) => any, stop: Function = undefined) => {
-
+export const startDOMDrag = (
+  startEvent: any,
+  onStart: (event?: MouseEvent) => any,
+  update: (
+    event: MouseEvent,
+    data?: { delta?: { x: number; y: number } }
+  ) => any,
+  stop: Function = undefined
+) => {
   const sx = startEvent.clientX;
   const sy = startEvent.clientY;
   const doc = startEvent.target.ownerDocument;
@@ -10,7 +17,7 @@ export const startDOMDrag = (startEvent: any, onStart: (event?: MouseEvent) => a
 
   // slight delay to prevent accidental drag from firing
   // if the user does some other mouse interaction such as a double click.
-  const drag = throttle((event) => {
+  const drag = throttle(event => {
     if (!_started) {
       _started = true;
       onStart(event);
@@ -19,8 +26,8 @@ export const startDOMDrag = (startEvent: any, onStart: (event?: MouseEvent) => a
     update(event, {
       delta: {
         x: event.clientX - sx,
-        y: event.clientY - sy,
-      },
+        y: event.clientY - sy
+      }
     });
   }, 10);
 
@@ -31,7 +38,7 @@ export const startDOMDrag = (startEvent: any, onStart: (event?: MouseEvent) => a
       stop(event, {
         delta: {
           x: event.clientX - sx,
-          y: event.clientY - sy,
+          y: event.clientY - sy
         }
       });
     }

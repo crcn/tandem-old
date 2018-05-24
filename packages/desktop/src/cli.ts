@@ -10,4 +10,3 @@ if (dir.charAt(0) !== "/") {
 init({
   projectDirectory: dir
 });
-

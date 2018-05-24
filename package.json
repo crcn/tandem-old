@@ -2,7 +2,8 @@
   "name": "aerial",
   "version": "1.0.0",
   "private": true,
-  "description": "Aerial is a virtual browser for visually creating web applications.",
+  "description":
+    "Aerial is a virtual browser for visually creating web applications.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/crcn/aerial.git"
@@ -15,7 +16,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "packages/*/src/**/*.{ts,json,css,md}": ["prettier --write", "git add"]
+    "*.{ts,json,css,md}": ["prettier --write", "git add"]
   },
   "devDependencies": {
     "husky": "^0.14.3",

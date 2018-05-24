@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { PaneComponent } from "../../../../pane";
 const { Item: BaseItem } = require("./index.pc");
 import { REGISTERED_COMPONENT, RegisteredComponent } from "../../../../../state";
-import { DEFAULT_NAMESPACE } from "tandem-common";
+import { DEFAULT_NAMESPACE, createTreeNode } from "tandem-common";
 import { compose, pure, withHandlers } from "recompose";
 import {
   DropTarget,
@@ -18,16 +18,11 @@ type ListItem = {
 } & RegisteredComponent;
 
 const NATIVE_ELEMENTS: ListItem[] = [
-  { tagName: "div", label: "Div", template: { name: "rectangle", attributes: {}, children: [] } },
-  { tagName: "text", label: "Text", template: {
-    name: "text",
-    attributes: {
-      [DEFAULT_NAMESPACE]: {
-        value: "edit me"
-      }
-    },
-    children: []
-  }}
+  { tagName: "div", label: "Div", template: createTreeNode("template") },
+  { tagName: "text", label: "Text", template: createTreeNode("text", {
+    [DEFAULT_NAMESPACE]: {
+      value: "edit me"
+    }})}
 ];
 
 type NativeElementOuterProps = {

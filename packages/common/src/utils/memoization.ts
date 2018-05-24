@@ -2,12 +2,18 @@ const DUMP_DEFAULT_ANCHOR_INTERVAL = 1000 * 60 * 10;
 let previousPurgeTime = 0;
 let DEFAULT_ANCHOR = {};
 
-export function memoize<TFunc extends (...args: any[]) => any>(func: TFunc, mapMemo: (value?: any) => any = (value => value)): TFunc {
+export function memoize<TFunc extends (...args: any[]) => any>(
+  func: TFunc,
+  mapMemo: (value?: any) => any = value => value
+): TFunc {
   let count = 1;
   const memoKey = Symbol();
   const hashKey = Symbol();
-  return function() {
-    if (previousPurgeTime && Date.now() - DUMP_DEFAULT_ANCHOR_INTERVAL > previousPurgeTime) {
+  return (function() {
+    if (
+      previousPurgeTime &&
+      Date.now() - DUMP_DEFAULT_ANCHOR_INTERVAL > previousPurgeTime
+    ) {
       previousPurgeTime = Date.now();
       DEFAULT_ANCHOR = {};
     }
@@ -20,9 +26,12 @@ export function memoize<TFunc extends (...args: any[]) => any>(func: TFunc, mapM
       let hashPart;
       const targ = typeof arg;
 
-      if (arg && targ === "object" || targ === "function") {
+      if ((arg && targ === "object") || targ === "function") {
         anchor = arg;
-        hashPart = arg[hashKey] && arg[hashKey].self === arg ? arg[hashKey].value : (arg[hashKey] = { self: arg, value: ":" + (count++) }).value;
+        hashPart =
+          arg[hashKey] && arg[hashKey].self === arg
+            ? arg[hashKey].value
+            : (arg[hashKey] = { self: arg, value: ":" + count++ }).value;
       } else {
         hashPart = ":" + arg;
       }
@@ -30,11 +39,15 @@ export function memoize<TFunc extends (...args: any[]) => any>(func: TFunc, mapM
       hash += hashPart;
     }
 
-    if (!anchor[memoKey] || anchor[memoKey].self !== anchor) anchor[memoKey] = { self: anchor };
-    return mapMemo(anchor[memoKey].hasOwnProperty(hash) ? anchor[memoKey][hash] : anchor[memoKey][hash] = func.apply(this, arguments));
-
-  } as any as TFunc;
-};
+    if (!anchor[memoKey] || anchor[memoKey].self !== anchor)
+      anchor[memoKey] = { self: anchor };
+    return mapMemo(
+      anchor[memoKey].hasOwnProperty(hash)
+        ? anchor[memoKey][hash]
+        : (anchor[memoKey][hash] = func.apply(this, arguments))
+    );
+  } as any) as TFunc;
+}
 
 /**
  * Calls target function once & proxies passed functions
@@ -51,11 +64,13 @@ export const underchange = <TFunc extends Function>(fn: TFunc) => {
       return ret;
     }
     started = true;
-    return ret = fn(...currentArgs.map((a, i) => (...args) => currentArgs[i](...args)));
-  }
+    return (ret = fn(
+      ...currentArgs.map((a, i) => (...args) => currentArgs[i](...args))
+    ));
+  };
 
-  return ((...args) => {
+  return (((...args) => {
     currentArgs = args;
     return start();
-  }) as any as TFunc;
+  }) as any) as TFunc;
 };

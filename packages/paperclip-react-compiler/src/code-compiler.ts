@@ -1,33 +1,45 @@
-import { DependencyGraph, Dependency, getModuleInfo, Component, Module, PCSourceAttributeNames } from "paperclip";
-import { getAttribute, getTreeNodePath, TreeNode, TreeNodeAttributes, DEFAULT_NAMESPACE } from "tandem-common/lib/state/tree";
-import { parseStyle, xmlToTreeNode } from "tandem-common/lib/utils";
+import {
+  DependencyGraph,
+  Dependency,
+  getModuleInfo,
+  Component,
+  Module,
+  PCSourceAttributeNames
+} from "paperclip";
+import {
+  getAttribute,
+  getTreeNodePath,
+  TreeNode,
+  TreeNodeAttributes,
+  DEFAULT_NAMESPACE,
+  parseStyle,
+  xmlToTreeNode
+} from "tandem-common";
 import { camelCase, merge } from "lodash";
-
 
 type CompileContext = {
   entry: TreeNode;
   currentModule?: Module;
   currentComponent?: Component;
   varNameRefs: {
-    [identifier: string]: string[]
-  }
+    [identifier: string]: string[];
+  };
 };
 
-type VariableGenerator = {
-
-};
+type VariableGenerator = {};
 
 // https://developer.mozilla.org/en-US/docs/Glossary/Empty_element
-const isVoidTag = (name) => /'(area|base|br|col|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)'/.test(name);
+const isVoidTag = name =>
+  /'(area|base|br|col|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)'/.test(
+    name
+  );
 
 export const compilePaperclipToReact = (content: string) => {
-
   let entry;
 
   try {
     entry = JSON.parse(content);
-  } catch(e) {
-
+  } catch (e) {
     // deprecated
     entry = xmlToTreeNode(content);
   }
@@ -46,7 +58,7 @@ const compileModule = (context: CompileContext) => {
   buffer += `var __EMPTY_OBJECT = {};`;
 
   for (const ns in info.imports) {
-    buffer += `var ${ns} = require('${info.imports[ns]}');`
+    buffer += `var ${ns} = require('${info.imports[ns]}');`;
   }
 
   for (const component of info.components) {
@@ -58,14 +70,25 @@ const compileModule = (context: CompileContext) => {
 };
 
 const compileComponent = (context: CompileContext) => {
-  const componentName = getNodeClassName(context.currentComponent.source, context);
+  const componentName = getNodeClassName(
+    context.currentComponent.source,
+    context
+  );
   const id = context.currentComponent.id;
   let buffer = `function __${id} (props) {`;
-  buffer += `return (` + compileElement(context.currentComponent.template, {
-    [DEFAULT_NAMESPACE]: {
-      style: getAttribute(context.currentComponent.source, "style")
-    }
-  }, true, context) + `);`;
+  buffer +=
+    `return (` +
+    compileElement(
+      context.currentComponent.template,
+      {
+        [DEFAULT_NAMESPACE]: {
+          style: getAttribute(context.currentComponent.source, "style")
+        }
+      },
+      true,
+      context
+    ) +
+    `);`;
   buffer += `}\n`;
 
   buffer += `exports.__${id} = __${id};`;
@@ -77,10 +100,12 @@ const compileComponent = (context: CompileContext) => {
   return buffer;
 };
 
-
-
-const compileElement = (node: TreeNode, attributes: TreeNodeAttributes, isRoot: boolean, context: CompileContext) => {
-
+const compileElement = (
+  node: TreeNode,
+  attributes: TreeNodeAttributes,
+  isRoot: boolean,
+  context: CompileContext
+) => {
   node = {
     ...node,
     attributes: merge({}, node.attributes, attributes)
@@ -90,9 +115,15 @@ const compileElement = (node: TreeNode, attributes: TreeNodeAttributes, isRoot: 
     return `'${getAttribute(node, "value")}'`;
   }
 
-  const slotContainerName = getAttribute(node, PCSourceAttributeNames.CONTAINER);
-  const tagNameStr = getNodeReactComponentRef(node, context)
-  let buffer = `React.createElement(${getNodeReactComponentRef(node, context)}, ${compileElementAttributes(node, isRoot, context)}`;
+  const slotContainerName = getAttribute(
+    node,
+    PCSourceAttributeNames.CONTAINER
+  );
+  const tagNameStr = getNodeReactComponentRef(node, context);
+  let buffer = `React.createElement(${getNodeReactComponentRef(
+    node,
+    context
+  )}, ${compileElementAttributes(node, isRoot, context)}`;
   if (!isVoidTag(tagNameStr)) {
     buffer += `, ${compileElementChildren(node, context)})`;
   } else {
@@ -101,16 +132,22 @@ const compileElement = (node: TreeNode, attributes: TreeNodeAttributes, isRoot: 
   return buffer;
 };
 
-const compileElementAttributes = (node: TreeNode, isRoot: boolean, context: CompileContext) => {
+const compileElementAttributes = (
+  node: TreeNode,
+  isRoot: boolean,
+  context: CompileContext
+) => {
   const nodeVarName = getNodeVarName(node, context);
   const propsRef = nodeVarName && `props.${getNodeVarName(node, context)}Props`;
-  let buffer = `Object.assign({}, ${nodeVarName ? `(${propsRef} || __EMPTY_OBJECT),` : ""} {`;
+  let buffer = `Object.assign({}, ${
+    nodeVarName ? `(${propsRef} || __EMPTY_OBJECT),` : ""
+  } {`;
   const style = getAttribute(node, "style");
 
   for (const child of node.children) {
     const slotName = getAttribute(child, PCSourceAttributeNames.SLOT);
     if (slotName) {
-      buffer += `${slotName}: ${compileElement(child, {}, false, context)},`
+      buffer += `${slotName}: ${compileElement(child, {}, false, context)},`;
     }
   }
 
@@ -142,10 +179,24 @@ const compileElementAttributes = (node: TreeNode, isRoot: boolean, context: Comp
 };
 
 const compileElementChildren = (node: TreeNode, context: CompileContext) => {
-  const internalContainerName = getAttribute(node, PCSourceAttributeNames.CONTAINER);
+  const internalContainerName = getAttribute(
+    node,
+    PCSourceAttributeNames.CONTAINER
+  );
   const publicContainerName = getNodeVarName(node, context);
 
-  const base = "[" + node.children.map(child => getAttribute(child, PCSourceAttributeNames.SLOT) ? null : compileElement(child, {}, false, context)).filter(Boolean).join(",") + "]";
+  const base =
+    "[" +
+    node.children
+      .map(
+        child =>
+          getAttribute(child, PCSourceAttributeNames.SLOT)
+            ? null
+            : compileElement(child, {}, false, context)
+      )
+      .filter(Boolean)
+      .join(",") +
+    "]";
 
   if (internalContainerName) {
     return `props.${publicContainerName}Children || props.${internalContainerName} || ${base}`;
@@ -154,7 +205,7 @@ const compileElementChildren = (node: TreeNode, context: CompileContext) => {
   return base;
 };
 
-const defineNodeVarName = (ref: TreeNode,  context: CompileContext) => {
+const defineNodeVarName = (ref: TreeNode, context: CompileContext) => {
   let varName = getBaseNodeVarName(ref);
   let refs: string[];
   if (!(refs = context.varNameRefs[varName])) {
@@ -167,18 +218,31 @@ const defineNodeVarName = (ref: TreeNode,  context: CompileContext) => {
   return getNodeVarName(ref, context);
 };
 
-const getBaseNodeVarName = (node: TreeNode) => camelCase(getAttribute(node, "label"));
+const getBaseNodeVarName = (node: TreeNode) =>
+  camelCase(getAttribute(node, "label"));
 
 const getNodeVarName = (ref: TreeNode, context: CompileContext) => {
   const baseVarName = getBaseNodeVarName(ref);
   const refs = context.varNameRefs[baseVarName];
-  return refs ? refs.length === 1 ? baseVarName : `${baseVarName}${refs.indexOf(baseVarName) - 1}` : defineNodeVarName(ref, context);
+  return refs
+    ? refs.length === 1
+      ? baseVarName
+      : `${baseVarName}${refs.indexOf(baseVarName) - 1}`
+    : defineNodeVarName(ref, context);
 };
 
 const getNodeReactComponentRef = (ref: TreeNode, context: CompileContext) => {
   const isImport = Boolean(context.currentModule.imports[ref.namespace]);
-  const internaComponent = context.currentModule.components.find(component => component.id === ref.name && ref.namespace == null);
-  return isImport ? `${ref.namespace}.__${ref.name}` :  (internaComponent ? `__` + internaComponent.id : "'" + (getAttribute(ref, PCSourceAttributeNames.NATIVE_TYPE) || "div") + "'");
+  const internaComponent = context.currentModule.components.find(
+    component => component.id === ref.name && ref.namespace == null
+  );
+  return isImport
+    ? `${ref.namespace}.__${ref.name}`
+    : internaComponent
+      ? `__` + internaComponent.id
+      : "'" +
+        (getAttribute(ref, PCSourceAttributeNames.NATIVE_TYPE) || "div") +
+        "'";
 };
 
 const getNodeClassName = (ref: TreeNode, context: CompileContext) => {
