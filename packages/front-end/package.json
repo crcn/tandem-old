@@ -46,6 +46,8 @@
     "gulp-util": "^3.0.8",
     "highland": "^2.11.0",
     "html-webpack-plugin": "^2.29.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.1.2",
     "mesh-ds7": "^0.0.6",
     "mesh-memory-ds7": "^0.0.5",
     "mesh7": "^7.0.8",

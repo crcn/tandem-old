@@ -3,12 +3,6 @@
   "version": "9.0.0",
   "description": "Paperclip DSL specific for visual development.",
   "main": "index.js",
-  "scripts": {
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{ts,json,css,md}": ["prettier --write", "git add"]
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
