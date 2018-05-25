@@ -8,13 +8,10 @@ import {
   SyntheticNode,
   SyntheticDocument,
   SyntheticObjectType,
-  EDITOR_NAMESPACE,
   EditorAttributeNames,
   getComponentInstanceSyntheticNode,
   isContainerSyntheticNode,
   isCreatedFromComponent,
-  isComponentInstance,
-  isComponent,
   SyntheticRectangleNode
 } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
@@ -23,7 +20,6 @@ import {
   TreeNodeLayerOuterProps
 } from "../../../../../../layers";
 import {
-  getAttribute,
   EMPTY_ARRAY,
   getNestedTreeNodeById,
   TreeNode,
@@ -49,8 +45,8 @@ type PCLayerOuterProps = {
   inComponentInstance?: boolean;
 } & TreeNodeLayerOuterProps;
 
-const isMovableNode = node =>
-  !isCreatedFromComponent(node) || isComponentInstance(node);
+const isMovableNode = (node: SyntheticNode) =>
+  !isCreatedFromComponent(node) || node.attributes.editor.isComponentInstance;
 
 const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
   {
@@ -65,14 +61,14 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       treeLayerEditLabelBlur: pcEditLayerLabelBlur
     },
     canDrop(
-      child: TreeNode<any, any>,
-      near: TreeNode<any, any>,
+      child: SyntheticNode,
+      near: SyntheticNode,
       offset: number,
-      root: TreeNode<any, any>
+      root: SyntheticNode
     ) {
       if (offset === TreeMoveOffset.APPEND) {
         if (
-          !isComponent(child) &&
+          !child.attributes.editor.isComponentRoot &&
           (!isCreatedFromComponent(near) || isContainerSyntheticNode(near))
         ) {
           return true;
@@ -88,20 +84,8 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       ...attribs,
       className: cx(attribs.className, {
         "in-component-instance":
-          Boolean(
-            getAttribute(
-              props.node,
-              EditorAttributeNames.CREATED_FROM_COMPONENT,
-              EDITOR_NAMESPACE
-            )
-          ) ||
-          Boolean(
-            getAttribute(
-              props.node,
-              EditorAttributeNames.IS_COMPONENT_INSTANCE,
-              EDITOR_NAMESPACE
-            )
-          ),
+          props.node.attributes.editor.isCreatedFromComponent ||
+          props.attributes.editor.isComponentInstance,
         "is-component-root": props.isComponentRoot,
         "is-slot-container": Boolean(
           (props.node as SyntheticRectangleNode).attributes.core.container
@@ -112,11 +96,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       return (
         <Base
           {...props}
-          isComponentRoot={getAttribute(
-            props.node,
-            EditorAttributeNames.IS_COMPONENT_ROOT,
-            EDITOR_NAMESPACE
-          )}
+          isComponentRoot={props.node.attributes.editor.isComponentRoot}
         />
       );
     }

@@ -202,7 +202,8 @@ import {
   persistConvertNodeToComponent,
   isSyntheticDocumentRoot,
   PCTextNode,
-  PCRectangleNode
+  PCRectangleNode,
+  SyntheticRectangleNode
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -248,7 +249,11 @@ import {
   Point,
   zoomPoint,
   cloneTreeNode,
-  createTreeNode
+  createTreeNode,
+  FSItemNamespaces,
+  FSItemTagNames,
+  mergeNodeAttributes,
+  FSItem
 } from "tandem-common";
 import { difference, pull, clamp, merge } from "lodash";
 import { select } from "redux-saga/effects";
@@ -277,12 +282,11 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
-      const uri = getAttribute(node, FileAttributeNames.URI);
-      const file = node as File;
-      state = setSelectedFileNodeIds(state, file.id);
+      const uri = node.attributes.core.uri;
+      state = setSelectedFileNodeIds(state, node.id);
       state = setFileExpanded(node, true, state);
 
-      if (!isDirectory(file)) {
+      if (!isDirectory(node)) {
         state = setActiveFilePath(uri, state);
         return state;
       }
@@ -291,7 +295,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { file } = action as QuickSearchItemClicked;
-      const uri = getAttribute(file, FileAttributeNames.URI);
+      const uri = file.attributes.core.uri;
       state = setSelectedFileNodeIds(state, file.id);
       state = setActiveFilePath(uri, state);
       state = upsertOpenFile(uri, false, state);
@@ -303,12 +307,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
-      state = setFileExpanded(node, !getAttribute(node, "expanded"), state);
+      state = setFileExpanded(node, !node.attributes.core.expanded, state);
       return state;
     }
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
-      const uri = getAttribute(node, FileAttributeNames.URI);
+      const uri = node.attributes.core.uri;
       const file = getFileFromUri(uri, state.projectDirectory);
       if (isFile(file)) {
         state = upsertOpenFile(uri, false, state);
@@ -343,9 +347,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
     case FILE_NAVIGATOR_DROPPED_ITEM: {
       const { node, targetNode } = action as FileNavigatorDroppedItem;
-      const parent = getParentTreeNode(node.id, state.projectDirectory);
-      const parentUri = getAttribute(parent, FileAttributeNames.URI);
-      const nodeUri = getAttribute(node, FileAttributeNames.URI);
+      const parent: Directory = getParentTreeNode(
+        node.id,
+        state.projectDirectory
+      );
+      const parentUri = parent.attributes.core.uri;
+      const nodeUri = node.attributes.core.uri;
       state = updateRootState(
         {
           projectDirectory: updateNestedNode(
@@ -357,11 +364,11 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      const targetDir =
-        targetNode.name !== "file"
+      const targetDir: Directory =
+        targetNode.name !== FSItemTagNames.FILE
           ? targetNode
           : getParentTreeNode(targetNode.id, state.projectDirectory);
-      const targetUri = getAttribute(targetDir, FileAttributeNames.URI);
+      const targetUri = targetDir.attributes.core.uri;
       state = updateRootState(
         {
           projectDirectory: updateNestedNode(
@@ -369,11 +376,11 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             state.projectDirectory,
             targetNode => {
               return appendChildNode(
-                setNodeAttribute(
-                  node,
-                  FileAttributeNames.URI,
-                  nodeUri.replace(parentUri, targetUri)
-                ),
+                mergeNodeAttributes(node, {
+                  [FSItemNamespaces.CORE]: {
+                    uri: nodeUri.replace(parentUri, targetUri)
+                  }
+                }),
                 targetNode
               );
             }
@@ -386,11 +393,11 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case NEW_FILE_ADDED: {
       const { directoryId, basename, fileType } = action as NewFileAdded;
-      const directory = getNestedTreeNodeById(
+      const directory: Directory = getNestedTreeNodeById(
         directoryId,
         state.projectDirectory
       );
-      let uri = getAttribute(directory, FileAttributeNames.URI) + basename;
+      let uri = directory.attributes.core.uri + basename;
       if (fileType === "directory") {
         uri += "/";
       }
@@ -406,7 +413,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
                 children: [
                   ...dir.children,
                   createTreeNode(fileType, {
-                    [DocumentNamespaces]: {
+                    [FSItemNamespaces.CORE]: {
                       [FileAttributeNames.URI]: uri,
                       [FileAttributeNames.BASENAME]: basename
                     }
@@ -488,7 +495,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = persistRootStateBrowser(
         browser =>
           persistComponentVariantChanged(
-            { [DEFAULT_NAMESPACE]: { isDefault: value } },
+            { [PCSourceNamespaces.CORE]: { isDefault: value } },
             name,
             sourceComponent.id,
             browser
@@ -525,7 +532,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         browser =>
           persistComponentVariantChanged(
             {
-              [DEFAULT_NAMESPACE]: { name: newName }
+              [PCSourceNamespaces.CORE]: { name: newName }
             },
             oldName,
             sourceComponentNode.id,
@@ -621,7 +628,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const { node } = action as TreeLayerExpandToggleClick;
       state = setRootStateSyntheticNodeExpanded(
         node.id,
-        !getAttribute(node, "expanded", EDITOR_NAMESPACE),
+        !(node as FSItem).attributes.core.expanded,
         state
       );
       return state;
@@ -804,16 +811,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
           getEditorWithFileUri(editorUri, state).canvas.translate,
           point
         );
-        sourceNode = setNodeAttribute(
-          sourceNode,
-          "style",
-          merge({}, getAttribute(sourceNode, "style"), {
-            left: point.left,
-            top: point.top,
-            width: 200,
-            height: 200
-          })
-        );
+        sourceNode = mergeNodeAttributes(sourceNode, {
+          [PCSourceNamespaces.CORE]: {
+            style: {
+              left: point.left,
+              top: point.top,
+              width: 200,
+              height: 200
+            }
+          }
+        });
       }
 
       return persistRootStateBrowser(
@@ -1109,7 +1116,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         case ToolType.TEXT: {
           return persistInsertNodeFromPoint(
             createTreeNode("text", {
-              [DEFAULT_NAMESPACE]: {
+              [PCSourceNamespaces.CORE]: {
                 vaule: "edit me"
               }
             }),
@@ -1129,7 +1136,7 @@ const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
 
 const persistInsertNodeFromPoint = (
-  node: TreeNode<any, any>,
+  node: PCVisibleNode,
   fileUri: string,
   point: Point,
   state: RootState
@@ -1143,19 +1150,23 @@ const persistInsertNodeFromPoint = (
     return persistInsertNode(
       targetNodeId
         ? node
-        : setNodeAttribute(node, "style", {
-            ...shiftPoint(
-              normalizePoint(
-                getEditorWithFileUri(fileUri, state).canvas.translate,
-                point
-              ),
-              {
-                left: -(INSERT_ARTBOARD_WIDTH / 2),
-                top: -(INSERT_ARTBOARD_HEIGHT / 2)
+        : mergeNodeAttributes(node, {
+            [PCSourceNamespaces.CORE]: {
+              style: {
+                ...shiftPoint(
+                  normalizePoint(
+                    getEditorWithFileUri(fileUri, state).canvas.translate,
+                    point
+                  ),
+                  {
+                    left: -(INSERT_ARTBOARD_WIDTH / 2),
+                    top: -(INSERT_ARTBOARD_HEIGHT / 2)
+                  }
+                ),
+                width: INSERT_ARTBOARD_WIDTH,
+                height: INSERT_ARTBOARD_HEIGHT
               }
-            ),
-            width: INSERT_ARTBOARD_WIDTH,
-            height: INSERT_ARTBOARD_HEIGHT
+            }
           }),
       targetNodeId
         ? getSyntheticSourceNode(targetNodeId, browser).id
@@ -1175,15 +1186,15 @@ const persistInsertNodeFromPoint = (
   return state;
 };
 
-const setFileExpanded = (
-  node: TreeNode<any, any>,
-  value: boolean,
-  state: RootState
-) => {
+const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
   state = updateRootState(
     {
       projectDirectory: updateNestedNode(node, state.projectDirectory, node =>
-        setNodeAttribute(node, "expanded", value)
+        mergeNodeAttributes(node, {
+          [FSItemNamespaces.CORE]: {
+            expanded: value
+          }
+        })
       )
     },
     state
@@ -1346,10 +1357,12 @@ const clipboardReducer = (state: RootState, action: Action) => {
   return state;
 };
 
-const isDroppableNode = (node: TreeNode<any, any>) => {
+const isDroppableNode = (node: SyntheticNode) => {
   return (
     node.name !== "text" &&
-    !/input/.test(String(getAttribute(node, "native-type")))
+    !/input/.test(
+      String((node as SyntheticRectangleNode).attributes.core.nativeType)
+    )
   );
 };
 

@@ -18,7 +18,6 @@ import {
   getFileFromUri,
   stringifyTreeNodeToXML,
   File,
-  setNodeAttribute,
   updateNestedNode,
   FileAttributeNames,
   isDirectory,
@@ -32,7 +31,10 @@ import {
   shiftBounds,
   shiftPoint,
   flipPoint,
-  moveBounds
+  moveBounds,
+  mergeNodeAttributes,
+  FSItem,
+  FSItemNamespaces
 } from "tandem-common";
 import {
   SyntheticBrowser,
@@ -61,11 +63,11 @@ import {
   getSyntheticOriginSourceNode,
   getSyntheticOriginSourceNodeUri,
   findSourceSyntheticNode,
-  EDITOR_NAMESPACE,
   isSyntheticDocumentRoot,
   getNodeStyle,
   isNodeMovable,
-  isNodeResizable
+  isNodeResizable,
+  PCSourceNamespaces
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -811,8 +813,15 @@ export const setRootStateSyntheticNodeLabelEditing = (
   state = updateRootStateSyntheticWindowDocument(
     document.id,
     {
-      root: updateNestedNode(node, document.root, node =>
-        setNodeAttribute(node, "editingLabel", value, EDITOR_NAMESPACE)
+      root: updateNestedNode(
+        node,
+        document.root,
+        node =>
+          mergeNodeAttributes(node, {
+            [PCSourceNamespaces.EDITOR]: {
+              editingLabel: value
+            }
+          }) as SyntheticNode
       )
     },
     state
@@ -830,8 +839,12 @@ export const setRootStateFileNodeExpanded = (
       projectDirectory: updateNestedNode(
         getNestedTreeNodeById(nodeId, state.projectDirectory),
         state.projectDirectory,
-        child => {
-          return setNodeAttribute(child, FileAttributeNames.EXPANDED, value);
+        (child: FSItem) => {
+          return mergeNodeAttributes(child, {
+            [FSItemNamespaces.CORE]: {
+              expanded: value
+            }
+          });
         }
       )
     },

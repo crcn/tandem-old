@@ -1,6 +1,5 @@
 import "./document.scss";
 import * as React from "react";
-import { getAttribute } from "tandem-common";
 import { compose, pure, lifecycle } from "recompose";
 import { SyntheticDocument, Dependency, DependencyGraph } from "paperclip";
 

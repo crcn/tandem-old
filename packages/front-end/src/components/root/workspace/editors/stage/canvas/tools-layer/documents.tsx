@@ -1,7 +1,7 @@
 import "./documents.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
-import { Translate, getBoundsSize, getAttribute } from "tandem-common";
+import { Translate, getBoundsSize } from "tandem-common";
 import { RootState, Editor } from "../../../../../../../state";
 import { wrapEventToDispatch } from "../../../../../../../utils";
 import { Dispatch } from "redux";

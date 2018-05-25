@@ -7,7 +7,6 @@ import { Dispatch } from "redux";
 import {
   Directory,
   File,
-  getAttribute,
   FileAttributeNames,
   EMPTY_ARRAY,
   TreeNode,

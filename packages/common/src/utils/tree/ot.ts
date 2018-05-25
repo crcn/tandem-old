@@ -1,7 +1,7 @@
 import {
   TreeNode,
   updateNestedNodeFromPath,
-  setNodeAttribute
+  mergeNodeAttributes
 } from "../../state/tree";
 import { EMPTY_OBJECT } from "../object";
 import {
@@ -184,7 +184,11 @@ export const patchNode = <TNode extends TreeNode<any, any>>(
       case OperationalTransformType.SET_ATTRIBUTE: {
         const { path, name, namespace, value } = ot as SetAttributeTransform;
         b = updateNestedNodeFromPath(path, b, parent =>
-          setNodeAttribute(parent, name, value, namespace)
+          mergeNodeAttributes(parent, {
+            [namespace]: {
+              [name]: value
+            }
+          })
         );
         break;
       }

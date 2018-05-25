@@ -11,19 +11,17 @@ TODO (in order of importance):
 
 import {
   TreeNode,
-  DEFAULT_NAMESPACE,
   TreeNodeAttributes,
-  getAttribute,
   generateTreeChecksum,
   removeNestedTreeNodeFromPath,
   removeNestedTreeNode,
   getParentTreeNode,
   updateNestedNode,
-  setNodeAttribute,
   EMPTY_OBJECT,
   EMPTY_ARRAY,
   arraySplice,
-  memoize
+  memoize,
+  mergeNodeAttributes
 } from "tandem-common";
 import {
   Dependency,
@@ -46,7 +44,9 @@ import {
   PCTemplateNode,
   PCBaseVisibleNode,
   PCRectangleNodeAttributeNames,
-  PCTextNode
+  PCTextNode,
+  PCSourceNamespaces,
+  PCRectangleNode
 } from "./dsl";
 import {
   SyntheticNodeSource,
@@ -59,10 +59,10 @@ import {
   getSytheticNodeSource,
   SyntheticDocument,
   getSyntheticDocumentDependency,
-  EDITOR_NAMESPACE,
   EditorAttributeNames,
   getComponentInstanceSourceNode,
-  createSyntheticTextNode
+  createSyntheticTextNode,
+  SyntheticRectangleNode
 } from "./synthetic";
 
 import { pick, merge } from "lodash";
@@ -118,9 +118,8 @@ export const evaluatRooteDocumentElement = (
       graph,
       null
     );
-    return setNodeAttribute(synthetic, "style", {
-      ...(getAttribute(synthetic, "style") || EMPTY_OBJECT)
-    }) as SyntheticNode;
+
+    return synthetic;
   }
 };
 
@@ -135,11 +134,11 @@ export const evaluateRootDocumentComponent = (
     currentDependency,
     graph
   );
-  let element = _evaluateComponent(
+  let element: SyntheticRectangleNode = _evaluateComponent(
     componentNode,
     {
-      [DEFAULT_NAMESPACE]: {
-        style: getAttribute(componentNode, "style")
+      [PCSourceNamespaces.CORE]: {
+        style: componentNode.attributes.core.style
       }
     },
     [],
@@ -151,18 +150,12 @@ export const evaluateRootDocumentComponent = (
     EMPTY_ARRAY,
     true
   );
-  element = setNodeAttribute(
-    element,
-    EditorAttributeNames.IS_COMPONENT_INSTANCE,
-    false,
-    EDITOR_NAMESPACE
-  );
-  element = setNodeAttribute(
-    element,
-    EditorAttributeNames.IS_COMPONENT_ROOT,
-    true,
-    EDITOR_NAMESPACE
-  );
+  element = mergeNodeAttributes(element, {
+    [PCSourceNamespaces.EDITOR]: {
+      isComponentInstance: true,
+      isComponentRoot: true
+    }
+  }) as SyntheticRectangleNode;
   return element;
 };
 
@@ -184,7 +177,7 @@ const _evaluateComponent = (
   const slots = {};
 
   for (const child of children) {
-    const slotName = child.attributes[DEFAULT_NAMESPACE].slot;
+    const slotName = child.attributes[PCSourceNamespaces.CORE].slot;
     if (!slots[slotName]) {
       slots[slotName] = [];
     }
@@ -226,11 +219,11 @@ const _evaluateComponent = (
   const syntheticAttributes = merge(
     {},
     {
-      [DEFAULT_NAMESPACE]: {
-        label: getAttribute(componentNode, "label"),
-        style: getAttribute(componentNode, "style")
+      [PCSourceNamespaces.CORE]: {
+        label: componentNode.attributes.core.label,
+        style: componentNode.attributes.core.style
       },
-      [EDITOR_NAMESPACE]: {
+      [PCSourceNamespaces.EDITOR]: {
         [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent,
         [EditorAttributeNames.IS_COMPONENT_INSTANCE]: createdFromComponent
       }
@@ -253,36 +246,39 @@ const overrideComponentTemplate = (
   template: PCTemplateNode,
   overrides: PCOverrideNode[]
 ): PCTemplateNode => {
-  for (let i = 0, { length } = overrides; i < length; i++) {
-    const override = overrides[i];
-    if (override.name === PCSourceTagNames.SET_ATTRIBUTE) {
-      const setAttributeOverride = override as PCSetAttributeOverrideNode;
-      const ref = getNodeReference(
-        setAttributeOverride.attributes.core.target,
-        template
-      );
-      template = updateNestedNode(ref, template, ref =>
-        setNodeAttribute(
-          ref,
-          setAttributeOverride.attributes.core.name,
-          setAttributeOverride.attributes.core.value
-        )
-      );
-    } else if (override.name === PCSourceTagNames.SET_STYLE) {
-      const setStyleOverride = override as PCSetStyleOverrideNode;
-      const ref = getNodeReference(
-        setStyleOverride.attributes.core.target,
-        template
-      );
-      template = updateNestedNode(ref, template, ref => {
-        return setNodeAttribute(ref, "style", {
-          ...(getAttribute(ref, "style") || EMPTY_OBJECT),
-          [setStyleOverride.attributes.core.name]:
-            setStyleOverride.attributes.core.value
-        });
-      });
-    }
-  }
+  // Deprecated. Use _native_ styles instead.
+
+  // for (let i = 0, { length } = overrides; i < length; i++) {
+  //   const override = overrides[i];
+  //   if (override.name === PCSourceTagNames.SET_ATTRIBUTE) {
+  //     const setAttributeOverride = override as PCSetAttributeOverrideNode;
+  //     const ref = getNodeReference(
+  //       setAttributeOverride.attributes.core.target,
+  //       template
+  //     );
+  //     template = updateNestedNode(ref, template, ref =>
+
+  //       setNodeAttribute(
+  //         ref,
+  //         setAttributeOverride.attributes.core.name,
+  //         setAttributeOverride.attributes.core.value
+  //       )
+  //     );
+  //   } else if (override.name === PCSourceTagNames.SET_STYLE) {
+  //     const setStyleOverride = override as PCSetStyleOverrideNode;
+  //     const ref = getNodeReference(
+  //       setStyleOverride.attributes.core.target,
+  //       template
+  //     );
+  //     template = updateNestedNode(ref, template, ref => {
+  //       return setNodeAttribute(ref, "style", {
+  //         ...(getAttribute(ref, "style") || EMPTY_OBJECT),
+  //         [setStyleOverride.attributes.core.name]:
+  //           setStyleOverride.attributes.core.value
+  //       });
+  //     });
+  //   }
+  // }
 
   return template;
 };
@@ -318,8 +314,8 @@ const evaluateNode = (
   if (node.name === PCSourceTagNames.TEXT) {
     return createSyntheticTextNode(
       {
-        [DEFAULT_NAMESPACE]: (node as PCTextNode).attributes.undefined,
-        [EDITOR_NAMESPACE]: {}
+        [PCSourceNamespaces.CORE]: (node as PCTextNode).attributes.core,
+        [PCSourceNamespaces.EDITOR]: {}
       },
       source,
       generateId()
@@ -358,10 +354,10 @@ const evaluateNode = (
 
   return createSyntheticRectangle(
     merge({}, attributes, {
-      [EDITOR_NAMESPACE]: {
+      [PCSourceNamespaces.CORE]: {
         [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent
       },
-      [DEFAULT_NAMESPACE]: {
+      [PCSourceNamespaces.EDITOR]: {
         [PCRectangleNodeAttributeNames.NATIVE_TYPE]: tagName
       }
     }),

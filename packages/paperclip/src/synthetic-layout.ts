@@ -16,7 +16,6 @@ import {
 } from "./synthetic";
 import {
   Point,
-  getAttribute,
   getParentTreeNode,
   memoize,
   findTreeNodeParent,
@@ -33,17 +32,17 @@ enum Axis {
 }
 
 const getStyleProp = (
-  node: TreeNode<any, any>,
+  node: SyntheticNode,
   prop: string,
-  defaultValue: string
+  defaultValue?: string
 ) => {
-  const style = getAttribute(node, "style");
+  const style = node.attributes.core.style;
   return (style && style[prop]) || defaultValue;
 };
 
-export const isRelativeNode = (node: TreeNode<any, any>) =>
+export const isRelativeNode = (node: SyntheticNode) =>
   /relative|absolute|fixed/i.test(getStyleProp(node, "position", "static"));
-export const isAbsolutelyPositionedNode = (node: TreeNode<any, any>) =>
+export const isAbsolutelyPositionedNode = (node: SyntheticNode) =>
   /absolute|fixed/i.test(getStyleProp(node, "position", "static"));
 export const getRelativeParent = memoize(
   (node: SyntheticNode, document: SyntheticDocument) => {
@@ -74,7 +73,7 @@ const measurementToPx = (
 
 export const getFixedSyntheticNodeStaticPosition = memoize(
   (node: SyntheticNode, document: SyntheticDocument): Point => {
-    const position = getAttribute(node, "position");
+    const position = getStyleProp(node, "position");
     if (position === "fixed" || document.root.id === node.id) {
       return {
         left: 0,

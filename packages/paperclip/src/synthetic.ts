@@ -80,7 +80,9 @@ import {
   PCTextNode,
   PCRectangleNodeAttributes,
   PCSourceNamespaces,
-  PCVisibleRootNode
+  PCVisibleRootNode,
+  PCSourceAttributeNames,
+  getModuleComponents
 } from "./dsl";
 import { renderDOM, patchDOM, computeDisplayInfo } from "./dom-renderer";
 import { mapValues, pull, merge } from "lodash";
@@ -128,8 +130,11 @@ export enum SyntheticObjectType {
 
 export type SyntheticBaseNodeAttributes = {
   [PCSourceNamespaces.EDITOR]: {
+    editingLabel?: boolean;
     expanded?: boolean;
     isComponentRoot?: boolean;
+    isComponentInstance?: boolean;
+    isCreatedFromComponent?: boolean;
   };
   [PCSourceNamespaces.CORE]: {
     label?: string;
@@ -662,7 +667,7 @@ export const getSyntheticNodeById = (
 export const getSourceNodeById = (
   nodeId: string,
   browser: SyntheticBrowser
-) => {
+): PCSourceNode => {
   const dependency = getSourceNodeDependency(nodeId, browser);
   return (
     dependency &&
@@ -1029,58 +1034,61 @@ const persistSourceNodeChanges = <TTree extends PCSourceNode>(
     updater
   );
 
-  if (variantName && elementSourceRoot.name === PCSourceTagNames.COMPONENT) {
-    let stateSourceNode = elementSourceRoot.children.find(
-      child =>
-        child.name === PCSourceTagNames.COMPONENT_VARIANT &&
-        (child as PCVariantNode).attributes.core.name === variantName
-    );
+  // deprecated in favor of styles.
+  // if (variantName && elementSourceRoot.name === PCSourceTagNames.COMPONENT) {
+  //   let stateSourceNode = elementSourceRoot.children.find(
+  //     child =>
+  //       child.name === PCSourceTagNames.COMPONENT_VARIANT &&
+  //       (child as PCVariantNode).attributes.core.name === variantName
+  //   );
 
-    const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
-    updatedModuleSourceNode = sourceDependency.content;
+  //   const ots = diffNode(sourceDependency.content, updatedModuleSourceNode);
+  //   updatedModuleSourceNode = sourceDependency.content;
 
-    const overrideChildren: TreeNode<any, any>[] = [];
-    const targetName = getAttribute(sourceNode, "ref");
-    for (const ot of ots) {
-      switch (ot.type) {
-        case OperationalTransformType.SET_ATTRIBUTE: {
-          const { name, value, namespace } = ot as SetAttributeTransform;
-          if (name === "style" && namespace === PCSourceNamespaces.CORE) {
-            stateSourceNode = addSetStyleOverride(
-              value,
-              targetName,
-              stateSourceNode
-            );
-          }
-          break;
-        }
-        case OperationalTransformType.REMOVE_CHILD: {
-          // set display none override since the parent template should be immutable
-          stateSourceNode = addSetStyleOverride(
-            { display: "none" },
-            targetName,
-            stateSourceNode
-          );
-          break;
-        }
-        default: {
-          throw new Error(
-            `cannot override with ${
-              OperationalTransformType.REMOVE_CHILD
-            } operational transform.`
-          );
-        }
-      }
-    }
+  //   const overrideChildren: TreeNode<any, any>[] = [];
+  //   const targetName = (sourceNode as PCComponentNode).attributes.core.ref;
 
-    if (ots.length) {
-      updatedModuleSourceNode = replaceNestedNode(
-        stateSourceNode,
-        stateSourceNode.id,
-        updatedModuleSourceNode
-      );
-    }
-  }
+  //   // TODO - eliminiate overrides altogether.
+  //   for (const ot of ots) {
+  //     switch (ot.type) {
+  //       case OperationalTransformType.SET_ATTRIBUTE: {
+  //         const { name, value, namespace } = ot as SetAttributeTransform;
+  //         if (name === PCSourceAttributeNames.STYLE && namespace === PCSourceNamespaces.CORE) {
+  //           stateSourceNode = addSetStyleOverride(
+  //             value,
+  //             targetName,
+  //             stateSourceNode
+  //           );
+  //         }
+  //         break;
+  //       }
+  //       case OperationalTransformType.REMOVE_CHILD: {
+  //         // set display none override since the parent template should be immutable
+  //         stateSourceNode = addSetStyleOverride(
+  //           { display: "none" },
+  //           targetName,
+  //           stateSourceNode
+  //         );
+  //         break;
+  //       }
+  //       default: {
+  //         throw new Error(
+  //           `cannot override with ${
+  //             OperationalTransformType.REMOVE_CHILD
+  //           } operational transform.`
+  //         );
+  //       }
+  //     }
+  //   }
+
+  //   if (ots.length) {
+  //     updatedModuleSourceNode = replaceNestedNode(
+  //       stateSourceNode,
+  //       stateSourceNode.id,
+  //       updatedModuleSourceNode
+  //     );
+  //   }
+  // }
 
   return updateDependencyAndRevaluate(
     {
@@ -1091,51 +1099,51 @@ const persistSourceNodeChanges = <TTree extends PCSourceNode>(
   );
 };
 
-const addSetStyleOverride = (
-  style: any,
-  targetName: string,
-  overridesNode: TreeNode<any, any>
-) => {
-  for (const key in style) {
-    const existingStyleOverride = findNestedNode(
-      overridesNode,
-      node =>
-        node.name === PCSourceTagNames.SET_STYLE &&
-        getAttribute(node, "name") === key &&
-        getAttribute(node, "target") === targetName
-    );
-    if (existingStyleOverride) {
-      overridesNode = updateNestedNode(
-        existingStyleOverride,
-        overridesNode,
-        child => {
-          return {
-            ...child,
-            attributes: {
-              ...child.attributes,
-              [PCSourceNamespaces.CORE]: {
-                ...(child.attributes[PCSourceNamespaces.CORE] || EMPTY_OBJECT),
-                value: style[key]
-              }
-            }
-          };
-        }
-      );
-    } else {
-      overridesNode = appendChildNode(
-        createTreeNode("set-style", {
-          [PCSourceNamespaces.CORE]: {
-            name: key,
-            value: style[key],
-            target: targetName
-          }
-        }),
-        overridesNode
-      );
-    }
-  }
-  return overridesNode;
-};
+// const addSetStyleOverride = (
+//   style: any,
+//   targetName: string,
+//   overridesNode: TreeNode<any, any>
+// ) => {
+//   for (const key in style) {
+//     const existingStyleOverride = findNestedNode(
+//       overridesNode,
+//       node =>
+//         node.name === PCSourceTagNames.SET_STYLE &&
+//         getAttribute(node, "name") === key &&
+//         getAttribute(node, "target") === targetName
+//     );
+//     if (existingStyleOverride) {
+//       overridesNode = updateNestedNode(
+//         existingStyleOverride,
+//         overridesNode,
+//         child => {
+//           return {
+//             ...child,
+//             attributes: {
+//               ...child.attributes,
+//               [PCSourceNamespaces.CORE]: {
+//                 ...(child.attributes[PCSourceNamespaces.CORE] || EMPTY_OBJECT),
+//                 value: style[key]
+//               }
+//             }
+//           };
+//         }
+//       );
+//     } else {
+//       overridesNode = appendChildNode(
+//         createTreeNode("set-style", {
+//           [PCSourceNamespaces.CORE]: {
+//             name: key,
+//             value: style[key],
+//             target: targetName
+//           }
+//         }),
+//         overridesNode
+//       );
+//     }
+//   }
+//   return overridesNode;
+// };
 
 export const replaceDependency = (dep: Dependency, browser: SyntheticBrowser) =>
   updateDependencyAndRevaluate(dep, dep.uri, browser);
@@ -1285,14 +1293,14 @@ const syntheticSourceEquals = (
   return a.uri === b.uri && a.path.join("") === b.path.join("");
 };
 
-const generateComponentId = (moduleNode: TreeNode<any, any>) => {
+const generateComponentId = (moduleNode: PCModuleNode) => {
   let i = moduleNode.children.length;
   let cid;
 
   while (1) {
     cid = "component" + ++i;
-    const component = moduleNode.children.find(
-      child => getAttribute(child, "id") === cid
+    const component = getModuleComponents(moduleNode).find(
+      child => child.attributes.core.id === cid
     );
     if (!component) break;
   }
@@ -1447,12 +1455,15 @@ export const persistRemoveComponentVariant = (
   componentNodeId: string,
   browser: SyntheticBrowser
 ) => {
-  const sourceNode = getSourceNodeById(componentNodeId, browser);
-  const stateNode = sourceNode.children.find(
-    child => getAttribute(child, "name") === name
+  const componentNode = getSourceNodeById(
+    componentNodeId,
+    browser
+  ) as PCComponentNode;
+  const variantNode = getComponentVariants(componentNode).find(
+    variant => variant.attributes.core.name === name
   );
-  return persistSourceNodeChanges(sourceNode, null, browser, componentNode =>
-    removeNestedTreeNode(stateNode, componentNode)
+  return persistSourceNodeChanges(variantNode, null, browser, componentNode =>
+    removeNestedTreeNode(variantNode, componentNode)
   );
 };
 
@@ -1494,13 +1505,13 @@ export const persistInsertNode = (
       ? sourceParentNode.children.length
       : sourceParentNode.children.indexOf(sourceRefNode) +
         (offset === -1 ? 0 : 1);
-  if (!getAttribute(child, "ref")) {
-    child = setNodeAttribute(
-      child,
-      "ref",
-      getTreeNodeUidGenerator(sourceParentNode)()
-    );
-  }
+  // if (!getAttribute(child, "ref")) {
+  //   child = setNodeAttribute(
+  //     child,
+  //     "ref",
+  //     getTreeNodeUidGenerator(sourceParentNode)()
+  //   );
+  // }
 
   return updateDependencyAndRevaluate(
     {
@@ -1525,11 +1536,11 @@ const insertComponentChildNode = (
   const parentNode = getNestedTreeNodeById(parentId, content);
 
   const isComponent = parentNode.name === "component";
-  const isChildComponent = Boolean(getAttribute(parentNode, "extends"));
+  // const isChildComponent = Boolean((parentNode as P));
   // don't allow for this kind of thing
-  if (isChildComponent) {
-    throw new Error(`Cannot insert node into child component`);
-  }
+  // if (isChildComponent) {
+  //   throw new Error(`Cannot insert node into child component`);
+  // }
   const parent = isComponent
     ? parentNode.children.find(child => child.name === "template")
     : parentNode;
@@ -1568,7 +1579,9 @@ export const persistConvertNodeToComponent = (
         id: generateComponentId(dep.content),
         label: "Untitled",
         style:
-          sourceNode.name === "text" ? {} : getAttribute(sourceNode, "style")
+          sourceNode.name === "text"
+            ? {}
+            : (sourceNode as PCRectangleNode).attributes.core.style
       }
     },
     createPCTemplate(
@@ -1578,7 +1591,7 @@ export const persistConvertNodeToComponent = (
 
   browser = persistSourceNodeChanges(dep.content, null, browser, content => {
     content = replaceNestedNode(
-      createTreeNode(getAttribute(componentSourceNode, "id")),
+      createTreeNode(componentSourceNode.attributes.core.id),
       sourceNode.id,
       content
     );
@@ -1598,8 +1611,8 @@ export const persistDeleteSyntheticItems = (
   nodeIds.forEach(nodeId => {
     const syntheticNode = getSyntheticNodeById(nodeId, browser);
     if (
-      isCreatedFromComponent(syntheticNode) &&
-      !isComponentInstance(syntheticNode)
+      syntheticNode.attributes.editor.isCreatedFromComponent &&
+      !syntheticNode.attributes.editor.isComponentInstance
     ) {
       // TODO -
       console.warn(`Cannot currently delete instances of nodes`);
@@ -1625,11 +1638,18 @@ export const persistDeleteSyntheticItems = (
   return browser;
 };
 
-const setNodeStyle = (node: TreeNode<any, any>, properties: any) =>
-  setNodeAttribute(node, "style", {
-    ...(getAttribute(node, "style") || EMPTY_OBJECT),
-    ...properties
-  });
+const setNodeStyle = (
+  node: TreeNode<
+    any,
+    PCVisibleNodeAttributes | SyntheticRectangleNodeAttributes
+  >,
+  properties: any
+) =>
+  mergeNodeAttributes(node, {
+    [PCSourceNamespaces.CORE]: {
+      style: node.attributes.core.style
+    }
+  }) as PCVisibleNode;
 
 export const persistMoveSyntheticNode = (
   node: SyntheticNode,
@@ -1662,7 +1682,7 @@ export const persistMoveSyntheticNode = (
         destDocument
       );
     }
-    sourceNode = setNodeStyle(sourceNode, {
+    sourceNode = setNodeStyle(sourceNode as PCVisibleNode, {
       left: absoluteBounds.left,
       top: absoluteBounds.top
     });
@@ -1685,7 +1705,11 @@ export const persistMoveSyntheticNode = (
 
   if (componentInstanceNode) {
     const slotName = targetOriginSourceNode.attributes.core.container;
-    sourceNode = setNodeAttribute(sourceNode, "slot", slotName);
+    sourceNode = mergeNodeAttributes(sourceNode, {
+      [PCSourceNamespaces.CORE]: {
+        slot: slotName
+      }
+    });
   }
 
   // TODO - point to target node id
@@ -1708,15 +1732,11 @@ export const isContainerSyntheticNode = (node: TreeNode<any, any>) =>
 
 export const getComponentInstanceSyntheticNode = (
   nodeId: string,
-  root: TreeNode<any, any>
+  root: SyntheticNode
 ) => {
   const node = getNestedTreeNodeById(nodeId, root);
-  const filter = parent => {
-    return getAttribute(
-      parent,
-      EditorAttributeNames.IS_COMPONENT_INSTANCE,
-      PCSourceNamespaces.EDITOR
-    );
+  const filter = (parent: SyntheticNode) => {
+    return parent.attributes.editor.isComponentInstance;
   };
   if (filter(node)) {
     return node;
@@ -1727,25 +1747,9 @@ export const getComponentInstanceSyntheticNode = (
 
 export const isCreatedFromComponent = (node: TreeNode<any, any>) =>
   Boolean(
-    getAttribute(
+    node.attributes.getAttribute(
       node,
       EditorAttributeNames.CREATED_FROM_COMPONENT,
-      PCSourceNamespaces.EDITOR
-    )
-  );
-export const isComponentInstance = (node: TreeNode<any, any>) =>
-  Boolean(
-    getAttribute(
-      node,
-      EditorAttributeNames.IS_COMPONENT_INSTANCE,
-      PCSourceNamespaces.EDITOR
-    )
-  );
-export const isComponent = (node: TreeNode<any, any>) =>
-  Boolean(
-    getAttribute(
-      node,
-      EditorAttributeNames.IS_COMPONENT_ROOT,
       PCSourceNamespaces.EDITOR
     )
   );
@@ -1795,12 +1799,11 @@ export const persistSyntheticItemBounds = (
   const sourceNode = getSyntheticSourceNode(nodeId, browser);
   if (isSyntheticDocumentRoot(getSyntheticNodeById(nodeId, browser))) {
     return persistSourceNodeChanges(sourceNode, null, browser, child => {
-      return setNodeAttribute(
-        child,
-        "bounds",
-        bounds,
-        PCSourceNamespaces.EDITOR
-      );
+      return mergeNodeAttributes(child, {
+        [PCSourceNamespaces.EDITOR]: {
+          bounds
+        }
+      });
     });
   } else {
     const document = getSyntheticNodeDocument(nodeId, browser);
@@ -1809,7 +1812,7 @@ export const persistSyntheticItemBounds = (
       null,
       browser,
       (child: PCVisibleNode) => {
-        const style = getAttribute(child, "style") || EMPTY_OBJECT;
+        const style = child.attributes.core.style || EMPTY_OBJECT;
         const pos = style.position || "relative";
         return mergeNodeAttributes(child, {
           [PCSourceNamespaces.CORE]: {
@@ -1838,8 +1841,12 @@ export const persistRawCSSText = (
     getSyntheticSourceNode(nodeId, browser),
     variantName,
     browser,
-    child => {
-      return setNodeAttribute(child, "style", newStyle);
+    (child: PCVisibleNode) => {
+      return mergeNodeAttributes(child, {
+        [PCSourceNamespaces.CORE]: {
+          style: newStyle
+        }
+      });
     }
   );
 };
@@ -1859,7 +1866,7 @@ export const persistToggleSlotContainer = (
   const sourceNode = getSourceNodeById(sourceNodeId, browser) as PCVisibleNode;
   const rootSourceElement = getSourceNodeElementRoot(sourceNode.id, browser);
   return persistSourceNodeChanges(sourceNode, null, browser, child => {
-    const style = getAttribute(child, "style") || EMPTY_OBJECT;
+    const style = child.attributes.core.style || EMPTY_OBJECT;
     const containerName = child.attributes.core.container;
     if (containerName) {
       child = mergeNodeAttributes(child, {

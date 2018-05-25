@@ -31,7 +31,7 @@ export type Dependency = {
 };
 
 export enum PCSourceNamespaces {
-  IMPORT = "import",
+  XMLNS = "xmlns",
   CORE = "core",
   EDITOR = "editor"
 }
@@ -46,6 +46,10 @@ export enum PCSourceTagNames {
   COMPONENT_VARIANT = "variant",
   SET_STYLE = "set-style",
   SET_ATTRIBUTE = "set-attribute"
+}
+
+export enum PCSourceAttributeNames {
+  STYLE = "style"
 }
 
 type PCBaseSourceNode<
@@ -107,7 +111,7 @@ export type PCVisibleNodeAttributes = {
   [PCSourceNamespaces.CORE]: {
     variants?: string[];
     slot?: string;
-    style?: any;
+    [PCSourceAttributeNames.STYLE]?: any;
     container?: string;
     containerStorage?: string;
     label?: string;

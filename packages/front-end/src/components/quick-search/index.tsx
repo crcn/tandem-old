@@ -13,16 +13,16 @@ import {
   quickSearchBackgroundClick
 } from "../../actions";
 import {
-  getAttribute,
   flattenTreeNode,
   FileAttributeNames,
   isFile,
-  TreeNode
+  TreeNode,
+  File
 } from "tandem-common";
 import { FocusComponent } from "../focus";
 
 type SearchResultOuterProps = {
-  file: TreeNode<any, any>;
+  file: File;
   textChildren: any;
   dispatch: Dispatch<any>;
 };
@@ -81,7 +81,7 @@ export const QuickSearchComponent = compose<
           if (!isFile(file)) {
             return false;
           }
-          const uri = getAttribute(file, FileAttributeNames.URI);
+          const uri = file.attributes.core.uri;
           let lastIndex = 0;
           for (const part of filter) {
             const i = uri.indexOf(part);
@@ -96,7 +96,7 @@ export const QuickSearchComponent = compose<
             <SearchResult
               file={file}
               key={file.id}
-              textChildren={getAttribute(file, FileAttributeNames.URI)}
+              textChildren={file.attributes.core.uri}
               dispatch={dispatch}
             />
           );

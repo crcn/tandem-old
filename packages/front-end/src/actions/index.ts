@@ -7,7 +7,9 @@ import {
   Struct,
   StructReference,
   TreeNode,
-  TreeMoveOffset
+  File,
+  TreeMoveOffset,
+  FSItem
 } from "tandem-common";
 import { publicActionCreator } from "tandem-common";
 import {
@@ -135,7 +137,7 @@ export type DependencyEntryLoaded = {
 } & Action;
 
 export type FileNavigatorItemClicked = {
-  node: TreeNode<any, any>;
+  node: FSItem;
 } & Action;
 
 export type OpenFilesItemClick = {
@@ -289,7 +291,7 @@ export type SelectorDoubleClicked = {
 export type ShortcutKeyDown = {};
 
 export type QuickSearchItemClicked = {
-  file: TreeNode<any, any>;
+  file: File;
 } & Action;
 
 export type SavedFile = {
@@ -316,8 +318,8 @@ export type FileNavigatorNewFileEntered = {
 } & Action;
 
 export type FileNavigatorDroppedItem = {
-  node: TreeNode<any, any>;
-  targetNode: TreeNode<any, any>;
+  node: File;
+  targetNode: FSItem;
   offset: TreeMoveOffset;
 } & Action;
 
@@ -332,8 +334,8 @@ export type CanvasDroppedRegisteredComponent = {
 } & Action;
 
 export const fileNavigatorDroppedItem = (
-  node: TreeNode<any, any>,
-  targetNode: TreeNode<any, any>,
+  node: File,
+  targetNode: Directory,
   offset: 0 | -1 | 1
 ): FileNavigatorDroppedItem => ({
   node,

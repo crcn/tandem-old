@@ -84,10 +84,10 @@ export const createNodeNameMatcher = memoize(
 );
 
 export const filterNestedNodes = memoize(
-  (
-    current: TreeNode<any, any>,
-    filter: NodeFilter,
-    found: TreeNode<any, any>[] = []
+  <TTree extends TreeNode<any, any>>(
+    current: TTree,
+    filter: NodeFilter<TTree>,
+    found: TTree[] = []
   ) => {
     if (filter(current)) {
       found.push(current);
@@ -193,8 +193,8 @@ export const getTreeNodeFromPath = memoize(
 );
 
 export const getNestedTreeNodeById = memoize(
-  <TNode extends TreeNode<any, any>>(id: string, root: TNode) => {
-    return getTreeNodeIdMap(root)[id];
+  <TNode extends TreeNode<any, any>>(id: string, root: TNode): TNode => {
+    return getTreeNodeIdMap(root)[id] as TNode;
   }
 );
 
@@ -337,7 +337,8 @@ export const cloneTreeNode = <TTree extends TreeNode<any, any>>(
 });
 
 export const getParentTreeNode = memoize(
-  (nodeId: string, root: TreeNode<any, any>) => getChildParentMap(root)[nodeId]
+  <TTree extends TreeNode<any, any>>(nodeId: string, root: TTree) =>
+    getChildParentMap(root)[nodeId] as TTree
 );
 
 export const addTreeNodeIds = <TTree extends TreeNode<any, any>>(

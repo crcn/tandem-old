@@ -17,7 +17,6 @@ import {
   FileNavigatorNewFileEntered,
   getTreeNodeFromPath,
   getNestedTreeNodeById,
-  getAttribute,
   FileAttributeNames,
   newFileAdded,
   InsertFileType,
@@ -92,7 +91,7 @@ function* handleNewFileEntered() {
       projectDirectory
     }: RootState = yield select();
     const directory = getNestedTreeNodeById(directoryId, projectDirectory);
-    const uri = getAttribute(directory, FileAttributeNames.URI);
+    const uri = directory.attributes.core;
     const filePath = uri.replace("file://", "") + basename;
 
     if (fs.existsSync(filePath)) {
@@ -122,8 +121,8 @@ function* handleDroppedFile() {
     );
     const root: RootState = yield select();
     const newNode = getNestedTreeNodeById(node.id, root.projectDirectory);
-    const newUri = getAttribute(newNode, FileAttributeNames.URI);
-    const oldUri = getAttribute(node, FileAttributeNames.URI);
+    const newUri = newNode.attributes.core.uri;
+    const oldUri = node.attributes.core.uri;
     fsa.moveSync(oldUri.replace("file:/", ""), newUri.replace("file:/", ""));
   }
 }

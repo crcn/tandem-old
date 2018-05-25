@@ -6,11 +6,12 @@ import { compose, pure, withHandlers, lifecycle, withState } from "recompose";
 import { PaneComponent } from "../../../../pane";
 import {
   getSyntheticNodeById,
+  PCTextNode,
   getSyntheticSourceNode,
   getSourceNodeElementRoot,
   PCVisibleNode
 } from "paperclip";
-import { getAttribute, EMPTY_OBJECT, stringifyStyle } from "tandem-common";
+import { EMPTY_OBJECT, stringifyStyle } from "tandem-common";
 import {
   rawCssTextChanged,
   slotToggleClick,
@@ -58,7 +59,7 @@ const BaseBehaviorPaneComponent = ({
   ) as PCVisibleNode;
   const isSlotContainer = Boolean(sourceNode.attributes.core.container);
   const nativeType = sourceNode.attributes.core.container || "div";
-  const textValue = getAttribute(sourceNode, "value");
+  const textValue = (sourceNode as PCTextNode).attributes.core.value;
 
   return (
     <PaneComponent header="Behavior" className="m-behavior-pane">
@@ -94,7 +95,7 @@ const getSelectedNodeStyle = (root: RootState) => {
   const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
   return (
     node &&
-    stringifyStyle(getAttribute(node, "style") || EMPTY_OBJECT)
+    stringifyStyle(node.attributes.core.style || EMPTY_OBJECT)
       .split(";")
       .join(";\n")
   );

@@ -6,7 +6,7 @@ import { compose, pure, withHandlers, lifecycle, withState } from "recompose";
 import { PaneComponent } from "../../../../pane";
 import { PrettyStylesComponent } from "./pretty";
 import { getSyntheticNodeById } from "paperclip";
-import { getAttribute, EMPTY_OBJECT, stringifyStyle } from "tandem-common";
+import { EMPTY_OBJECT, stringifyStyle } from "tandem-common";
 import { rawCssTextChanged } from "../../../../..";
 
 /*
@@ -55,7 +55,7 @@ const getSelectedNodeStyle = (root: RootState) => {
   const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
   return (
     node &&
-    stringifyStyle(getAttribute(node, "style") || EMPTY_OBJECT)
+    stringifyStyle(node.attributes.core.style || EMPTY_OBJECT)
       .split(";")
       .join(";\n")
   );

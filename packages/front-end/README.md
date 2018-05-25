@@ -15,6 +15,8 @@ IMMEDIATE:
 
 CLEAN UP:
 
+* persistence must always start with synthetic nodes
+* pass node instance for type safety
 * eliminiate `ref` attribute. Use `id` instead.
 * change SyntheticWindow to SyntheticDocument
 * change SyntheticDocument to SyntheticFrame
