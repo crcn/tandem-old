@@ -203,7 +203,9 @@ import {
   isSyntheticDocumentRoot,
   PCTextNode,
   PCElement,
-  SyntheticElement
+  SyntheticElement,
+  createPCElement,
+  createPCTextNode
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -258,6 +260,7 @@ import {
 import { difference, pull, clamp, merge } from "lodash";
 import { select } from "redux-saga/effects";
 import { PCSourceNamespaces } from "paperclip";
+import { isNullOrUndefined } from "util";
 
 const DEFAULT_RECT_COLOR = "#CCC";
 const INSERT_TEXT_OFFSET = {
@@ -1105,19 +1108,22 @@ export const canvasReducer = (state: RootState, action: Action) => {
         //   state = setSelectedSyntheticNodeIds(state, newDocument.root.id);
         //   return state;
         // }
-        case ToolType.RECTANGLE: {
+        case ToolType.ELEMENT: {
           return persistInsertNodeFromPoint(
-            createTreeNode("rectangle"),
+            createPCElement({
+              [PCSourceNamespaces.CORE]: {}
+            }),
             fileUri,
             point,
             state
           );
         }
+
         case ToolType.TEXT: {
           return persistInsertNodeFromPoint(
-            createTreeNode("text", {
+            createPCTextNode({
               [PCSourceNamespaces.CORE]: {
-                vaule: "edit me"
+                value: "edit me"
               }
             }),
             fileUri,
@@ -1270,9 +1276,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return isInputSelected(state) ? state : setTool(ToolType.TEXT, state);
     }
     case SHORTCUT_R_KEY_DOWN: {
-      return isInputSelected(state)
-        ? state
-        : setTool(ToolType.RECTANGLE, state);
+      return isInputSelected(state) ? state : setTool(ToolType.ELEMENT, state);
     }
     case SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN: {
       if (state.selectedNodeIds.length > 1) {

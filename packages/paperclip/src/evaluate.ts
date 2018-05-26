@@ -358,7 +358,8 @@ const evaluateNode = (
     merge({}, attributes, {
       [PCSourceNamespaces.CORE]: {
         [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent
-      }
+      },
+      [PCSourceNamespaces.EDITOR]: {}
     }),
     children2,
     source,

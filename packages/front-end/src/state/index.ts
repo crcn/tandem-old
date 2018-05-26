@@ -79,7 +79,7 @@ import { stat } from "fs";
 
 export enum ToolType {
   TEXT,
-  RECTANGLE,
+  ELEMENT,
   ARTBOARD
 }
 

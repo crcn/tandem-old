@@ -40,7 +40,7 @@ export enum PCSourceTagNames {
   MODULE = "module",
   COMPONENT = "component",
   TEMPLATE = "template",
-  RECTANGLE = "rectangle",
+  ELEMENT = "element",
   VARIANT = "variant",
   TEXT = "text",
   COMPONENT_VARIANT = "variant",
@@ -62,7 +62,7 @@ type PCBaseSourceNode<
 
 export const isComponentInstanceSourceNode = (sourceNode: TreeNode<any, any>) =>
   sourceNode.name !== PCSourceTagNames.TEXT &&
-  sourceNode.name !== PCSourceTagNames.RECTANGLE;
+  sourceNode.name !== PCSourceTagNames.ELEMENT;
 
 export type PCSetAttributeOverrideNodeAttributes = {
   [PCSourceNamespaces.CORE]: {
@@ -107,15 +107,17 @@ export type PCVariantNode = PCBaseSourceNode<
   PCOverrideNode
 >;
 
+export type PCVisibleNodeCoreAttributes = {
+  variants?: string[];
+  slot?: string;
+  [PCSourceAttributeNames.STYLE]?: any;
+  container?: string;
+  containerStorage?: string;
+  label?: string;
+};
+
 export type PCVisibleNodeAttributes = {
-  [PCSourceNamespaces.CORE]: {
-    variants?: string[];
-    slot?: string;
-    [PCSourceAttributeNames.STYLE]?: any;
-    container?: string;
-    containerStorage?: string;
-    label?: string;
-  };
+  [PCSourceNamespaces.CORE]: PCVisibleNodeCoreAttributes;
 };
 
 export type PCBaseVisibleNode<
@@ -138,15 +140,15 @@ export type PCElementAttributes = {
 } & PCVisibleNodeAttributes;
 
 export type PCElement = PCBaseVisibleNode<
-  PCSourceTagNames.RECTANGLE,
+  PCSourceTagNames.ELEMENT,
   PCElementAttributes
 >;
 
 export type PCTextNodeAttributes = {
   [PCSourceNamespaces.CORE]: {
     value: string;
-  };
-} & PCVisibleNodeAttributes;
+  } & PCVisibleNodeCoreAttributes;
+};
 
 export type PCTextNode = PCBaseVisibleNode<
   PCSourceTagNames.TEXT,
@@ -221,7 +223,7 @@ export const createPCElement = (
   children: PCBaseVisibleNode<any, any>[] = []
 ): PCElement => ({
   id: generateUID(),
-  name: PCSourceTagNames.RECTANGLE,
+  name: PCSourceTagNames.ELEMENT,
   attributes,
   children
 });
