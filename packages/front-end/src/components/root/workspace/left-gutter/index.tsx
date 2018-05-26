@@ -28,7 +28,7 @@ const BaseLeftGutterComponent = ({
       selectedFileNodeIds={root.selectedFileNodeIds}
       insertFileInfo={root.insertFileInfo}
     />
-    <ComponentsPaneComponent dispatch={dispatch} />
+    {/* <ComponentsPaneComponent dispatch={dispatch} /> */}
   </GutterComponent>
 );
 

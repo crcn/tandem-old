@@ -9,7 +9,9 @@ import {
   PCTextNode,
   getSyntheticSourceNode,
   getSourceNodeElementRoot,
-  PCVisibleNode
+  PCVisibleNode,
+  PCSourceNode,
+  PCElement
 } from "paperclip";
 import { EMPTY_OBJECT, stringifyStyle } from "tandem-common";
 import {
@@ -58,7 +60,8 @@ const BaseBehaviorPaneComponent = ({
     root.browser
   ) as PCVisibleNode;
   const isSlotContainer = Boolean(sourceNode.attributes.core.container);
-  const nativeType = sourceNode.attributes.core.container || "div";
+  const nativeType =
+    (sourceNode as PCElement).attributes.core.nativeType || "div";
   const textValue = (sourceNode as PCTextNode).attributes.core.value;
 
   return (

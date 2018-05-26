@@ -49,7 +49,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [],
           "id": "808486bb50"
         }
@@ -75,10 +75,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {
@@ -87,7 +87,7 @@
                     "background": "rgba(0,0,0,0.5)",
                     "position": "absolute"
                   },
-                  "label": "Rectangle",
+                  "label": "element",
                   "nativeType": "div",
                   "ref": "eadfa4bb0",
                   "container": "containerb046d6ad"

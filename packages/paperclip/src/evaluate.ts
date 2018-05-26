@@ -43,10 +43,10 @@ import {
   PCSetStyleOverrideNode,
   PCTemplateNode,
   PCBaseVisibleNode,
-  PCRectangleNodeAttributeNames,
+  PCElementAttributeNames,
   PCTextNode,
   PCSourceNamespaces,
-  PCRectangleNode
+  PCElement
 } from "./dsl";
 import {
   SyntheticNodeSource,
@@ -55,14 +55,14 @@ import {
   SyntheticObject,
   SyntheticObjectType,
   SyntheticWindow,
-  createSyntheticRectangle,
+  createSyntheticElement,
   getSytheticNodeSource,
   SyntheticDocument,
   getSyntheticDocumentDependency,
   EditorAttributeNames,
   getComponentInstanceSourceNode,
   createSyntheticTextNode,
-  SyntheticRectangleNode
+  SyntheticElement
 } from "./synthetic";
 
 import { pick, merge } from "lodash";
@@ -134,7 +134,7 @@ export const evaluateRootDocumentComponent = (
     currentDependency,
     graph
   );
-  let element: SyntheticRectangleNode = _evaluateComponent(
+  let element: SyntheticElement = _evaluateComponent(
     componentNode,
     {
       [PCSourceNamespaces.CORE]: {
@@ -152,10 +152,10 @@ export const evaluateRootDocumentComponent = (
   );
   element = mergeNodeAttributes(element, {
     [PCSourceNamespaces.EDITOR]: {
-      isComponentInstance: true,
+      isComponentInstance: false,
       isComponentRoot: true
     }
-  }) as SyntheticRectangleNode;
+  }) as SyntheticElement;
   return element;
 };
 
@@ -233,7 +233,8 @@ const _evaluateComponent = (
 
   // TODO - pass slots down
   // TODO - check for existing component extends:importName="component"
-  let element = createSyntheticRectangle(
+  let element = createSyntheticElement(
+    "div",
     syntheticAttributes,
     syntheticChildren,
     source,
@@ -352,13 +353,11 @@ const evaluateNode = (
     );
   }
 
-  return createSyntheticRectangle(
+  return createSyntheticElement(
+    tagName,
     merge({}, attributes, {
       [PCSourceNamespaces.CORE]: {
         [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent
-      },
-      [PCSourceNamespaces.EDITOR]: {
-        [PCRectangleNodeAttributeNames.NATIVE_TYPE]: tagName
       }
     }),
     children2,

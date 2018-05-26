@@ -127,19 +127,19 @@ export type PCBaseVisibleNode<
   PCBaseSourceNode<any, PCVisibleNodeAttributes>
 >;
 
-export enum PCRectangleNodeAttributeNames {
+export enum PCElementAttributeNames {
   NATIVE_TYPE = "nativeType"
 }
 
-export type PCRectangleNodeAttributes = {
+export type PCElementAttributes = {
   [PCSourceNamespaces.CORE]: {
-    [PCRectangleNodeAttributeNames.NATIVE_TYPE]?: string;
+    [PCElementAttributeNames.NATIVE_TYPE]?: string;
   };
 } & PCVisibleNodeAttributes;
 
-export type PCRectangleNode = PCBaseVisibleNode<
+export type PCElement = PCBaseVisibleNode<
   PCSourceTagNames.RECTANGLE,
-  PCRectangleNodeAttributes
+  PCElementAttributes
 >;
 
 export type PCTextNodeAttributes = {
@@ -154,12 +154,12 @@ export type PCTextNode = PCBaseVisibleNode<
 >;
 export type PCVisibleNode = PCBaseVisibleNode<
   any,
-  PCTextNodeAttributes | PCRectangleNodeAttributes
+  PCTextNodeAttributes | PCElementAttributes
 >;
 
 export type PCVisibleRootNode = PCBaseVisibleNode<
   any,
-  (PCTextNodeAttributes | PCRectangleNodeAttributes) & {
+  (PCTextNodeAttributes | PCElementAttributes) & {
     [PCSourceNamespaces.EDITOR]: {
       bounds: Bounds;
     };
@@ -168,7 +168,7 @@ export type PCVisibleRootNode = PCBaseVisibleNode<
 
 export type PCTemplateNode = PCBaseSourceNode<
   PCSourceTagNames.TEMPLATE,
-  PCRectangleNodeAttributes,
+  PCElementAttributes,
   PCVisibleNode
 >;
 
@@ -210,16 +210,16 @@ export type PCSourceNode = TreeNode<
   | PCModuleAttributes
   | PCComponentAttributes
   | PCVariantNodeAttributes
-  | PCRectangleNodeAttributes
+  | PCElementAttributes
   | PCTextNodeAttributes
   | PCSetStyleOverrideNodeAttributes
   | PCSetAttributeOverrideNodeAttributes
 >;
 
-export const createPCRectangle = (
-  attributes: PCRectangleNodeAttributes,
+export const createPCElement = (
+  attributes: PCElementAttributes,
   children: PCBaseVisibleNode<any, any>[] = []
-): PCRectangleNode => ({
+): PCElement => ({
   id: generateUID(),
   name: PCSourceTagNames.RECTANGLE,
   attributes,

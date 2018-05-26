@@ -17,7 +17,7 @@ export type Bounded = {
   bounds: Bounds;
 };
 
-export type Rectangle = {
+export type Element = {
   width: number;
   height: number;
 };
@@ -199,7 +199,7 @@ export const zoomPoint = (point: Point, zoom: number): Point => ({
   top: point.top * zoom
 });
 
-export const boundsFromRect = ({ width, height }: Rectangle): Bounds => ({
+export const boundsFromRect = ({ width, height }: Element): Bounds => ({
   left: 0,
   top: 0,
   right: width,

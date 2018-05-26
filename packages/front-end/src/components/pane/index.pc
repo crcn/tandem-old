@@ -1,6 +1,6 @@
 {
   "name": "module",
-             "attributes": {             "core": {}           },
+             "attributes": {             "core": {}, "editor": {}           },
   "children": [
     {
       "name": "component",
@@ -21,10 +21,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {
@@ -70,7 +70,7 @@
                   ]
                 },
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
@@ -110,10 +110,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {

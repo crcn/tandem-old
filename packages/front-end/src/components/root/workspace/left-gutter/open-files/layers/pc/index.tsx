@@ -12,7 +12,7 @@ import {
   getComponentInstanceSyntheticNode,
   isContainerSyntheticNode,
   isCreatedFromComponent,
-  SyntheticRectangleNode
+  SyntheticElement
 } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
 import {
@@ -85,10 +85,10 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       className: cx(attribs.className, {
         "in-component-instance":
           props.node.attributes.editor.isCreatedFromComponent ||
-          props.attributes.editor.isComponentInstance,
+          props.node.attributes.editor.isComponentInstance,
         "is-component-root": props.isComponentRoot,
         "is-slot-container": Boolean(
-          (props.node as SyntheticRectangleNode).attributes.core.container
+          (props.node as SyntheticElement).attributes.core.container
         )
       })
     }),

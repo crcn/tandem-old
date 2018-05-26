@@ -202,8 +202,8 @@ import {
   persistConvertNodeToComponent,
   isSyntheticDocumentRoot,
   PCTextNode,
-  PCRectangleNode,
-  SyntheticRectangleNode
+  PCElement,
+  SyntheticElement
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -1054,7 +1054,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           getSyntheticSourceNode(
             state.selectedNodeIds[0],
             state.browser
-          ) as PCRectangleNode,
+          ) as PCElement,
           browser
         );
       }, state);
@@ -1360,9 +1360,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
 const isDroppableNode = (node: SyntheticNode) => {
   return (
     node.name !== "text" &&
-    !/input/.test(
-      String((node as SyntheticRectangleNode).attributes.core.nativeType)
-    )
+    !/input/.test(String((node as SyntheticElement).attributes.core.nativeType))
   );
 };
 

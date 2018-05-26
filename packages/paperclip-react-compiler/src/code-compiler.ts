@@ -7,7 +7,7 @@ import {
   getComponentTemplate,
   PCVisibleNode,
   PCSourceTagNames,
-  PCRectangleNode,
+  PCElement,
   PCTemplateNode,
   PCSourceNamespaces,
   PCTextNode
@@ -107,9 +107,7 @@ const compileElement = (
     return `'${(node as PCTextNode).attributes.core.value}'`;
   }
 
-  console.log(node);
-
-  const slotContainerName = (node as PCRectangleNode).attributes.core.container;
+  const slotContainerName = (node as PCElement).attributes.core.container;
   const tagNameStr = getNodeReactComponentRef(node, context);
   let buffer = `React.createElement(${getNodeReactComponentRef(
     node,
@@ -169,10 +167,7 @@ const compileElementAttributes = (
   return buffer;
 };
 
-const compileElementChildren = (
-  node: PCRectangleNode,
-  context: CompileContext
-) => {
+const compileElementChildren = (node: PCElement, context: CompileContext) => {
   const internalContainerName = node.attributes.core.container;
   const publicContainerName = getNodeVarName(node, context);
 
@@ -222,10 +217,7 @@ const getNodeVarName = (ref: PCVisibleNode, context: CompileContext) => {
     : defineNodeVarName(ref, context);
 };
 
-const getNodeReactComponentRef = (
-  ref: PCRectangleNode,
-  context: CompileContext
-) => {
+const getNodeReactComponentRef = (ref: PCElement, context: CompileContext) => {
   const isImport = Boolean(
     (context.currentModule.attributes.xmlns || EMPTY_OBJECT)[ref.namespace]
   );

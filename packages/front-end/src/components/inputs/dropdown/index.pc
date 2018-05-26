@@ -1,6 +1,6 @@
 {
   "name": "module",
-             "attributes": {             "core": {}           },
+             "attributes": {             "core": {}, "editor": {}           },
   "children": [
     {
       "name": "component",
@@ -31,10 +31,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "ref": "b18312650",
@@ -62,7 +62,7 @@
               ]
             },
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "ref": "1aac8bf50",
@@ -155,7 +155,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
               "name": "text",
@@ -173,7 +173,7 @@
       ]
     },
     {
-      "name": "rectangle",
+      "name": "element",
       "attributes": {
         "core": {
           "style": {
@@ -217,7 +217,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": []
         }
       ]

@@ -3,7 +3,7 @@ import {
   ComputedDisplayInfo,
   EditorAttributeNames,
   SyntheticNode,
-  SyntheticRectangleNode
+  SyntheticElement
 } from "./synthetic";
 import {
   TreeNode,
@@ -18,7 +18,7 @@ import {
   patchNode
 } from "tandem-common";
 import {
-  PCRectangleNodeAttributeNames,
+  PCElementAttributeNames,
   PCSourceTagNames,
   PCTextNode,
   PCSourceNamespaces
@@ -101,8 +101,7 @@ const createNativeNode = (
   const nativeElement = document.createElement(
     isText
       ? "span"
-      : (synthetic as SyntheticRectangleNode).attributes.core.nativeType ||
-        "div"
+      : (synthetic as SyntheticElement).attributes.core.nativeType || "div"
   );
 
   const attrs = synthetic.attributes.core || {};
@@ -172,7 +171,7 @@ export const patchDOM = (
             syntheticTarget.name === PCSourceTagNames.TEXT
           ) {
             target.childNodes[0].nodeValue = value;
-          } else if (name === PCRectangleNodeAttributeNames.NATIVE_TYPE) {
+          } else if (name === PCElementAttributeNames.NATIVE_TYPE) {
             const parent = target.parentNode;
             if (newMap === map) {
               newMap = { ...map };

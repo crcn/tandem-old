@@ -31,7 +31,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
               "name": "component6",
@@ -123,7 +123,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
               "name": "component5",
@@ -305,7 +305,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
               "name": "component5",
@@ -357,7 +357,7 @@
                   "children": []
                 },
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
@@ -400,7 +400,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
               "name": "component5",
@@ -455,10 +455,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {
@@ -473,7 +473,7 @@
               },
               "children": [
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
@@ -508,7 +508,7 @@
                   ]
                 },
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
@@ -552,7 +552,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
               "name": "component11",
@@ -746,10 +746,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "label": "label",
@@ -781,7 +781,7 @@
               ]
             },
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "label": "input",
@@ -794,13 +794,13 @@
               },
               "children": [
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
                         "width": "100%"
                       },
-                      "label": "Rectangle",
+                      "label": "element",
                       "nativeType": "input",
                       "ref": "8f94fc620"
                     }
@@ -838,7 +838,7 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
               "name": "component10",
@@ -917,14 +917,14 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {},
-                  "label": "Rectangle",
+                  "label": "element",
                   "nativeType": "div",
                   "ref": "e423af1e0",
                   "container": "container2bd05e8d"
@@ -933,7 +933,7 @@
               "children": []
             },
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {
@@ -943,7 +943,7 @@
                     "padding": "10px",
                     "boxSizing": "border-box"
                   },
-                  "label": "Rectangle",
+                  "label": "element",
                   "nativeType": "div",
                   "ref": "95c1f4e20",
                   "container": "container537b351e"

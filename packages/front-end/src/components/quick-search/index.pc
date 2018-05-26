@@ -1,8 +1,7 @@
 {
   "name": "module",
   "namespace": null,
-  "attributes": {
-  },
+  "attributes": {},
   "children": [
     {
       "name": "component",
@@ -25,7 +24,10 @@
         {
           "name": "template",
           "namespace": null,
-                     "attributes": {             "core": {}           },
+          "attributes": {
+            "core": {},
+            "editor": {}
+          },
           "children": [
             {
               "name": "div",
@@ -46,12 +48,12 @@
                   "label": "Wrapper"
                 },
                 "editor": {
-                  "label": "Rectangle"
+                  "label": "element"
                 }
               },
               "children": [
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {},
@@ -106,7 +108,7 @@
                       "label": "Search Results"
                     },
                     "editor": {
-                      "label": "Rectangle"
+                      "label": "element"
                     }
                   },
                   "children": [
@@ -208,7 +210,8 @@
           "name": "template",
           "namespace": null,
           "attributes": {
-            "core": {}
+            "core": {},
+            "editor": {}
           },
           "children": [
             {
@@ -233,7 +236,7 @@
                   "label": "text"
                 },
                 "editor": {
-                  "label": "Rectangle"
+                  "label": "element"
                 }
               },
               "children": [
@@ -282,7 +285,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+          "attributes": {
+            "core": {},
+            "editor": {}
+          },
           "children": [
             {
               "name": "div",
@@ -302,7 +308,7 @@
                   "label": "Search Input"
                 },
                 "editor": {
-                  "label": "Rectangle"
+                  "label": "element"
                 }
               },
               "children": [],

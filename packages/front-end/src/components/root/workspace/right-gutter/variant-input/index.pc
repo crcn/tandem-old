@@ -26,10 +26,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {
@@ -47,7 +47,7 @@
               },
               "children": [
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
@@ -61,7 +61,7 @@
                   },
                   "children": [
                     {
-                      "name": "rectangle",
+                      "name": "element",
                       "attributes": {
                         "core": {
                           "style": {
@@ -69,7 +69,7 @@
                             "height": "10px",
                             "background": "#333"
                           },
-                          "label": "Rectangle",
+                          "label": "element",
                           "nativeType": "div",
                           "ref": "ca54545c0"
                         }
@@ -79,7 +79,7 @@
                   ]
                 },
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {},
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "name": "rectangle",
+      "name": "element",
       "attributes": {
         "core": {
           "style": {

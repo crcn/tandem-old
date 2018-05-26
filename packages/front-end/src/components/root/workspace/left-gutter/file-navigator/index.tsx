@@ -11,6 +11,7 @@ import {
   EMPTY_ARRAY,
   TreeNode,
   filterNestedNodes,
+  FSItemNamespaces,
   memoize
 } from "tandem-common";
 import {
@@ -88,9 +89,11 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<
   depthOffset: 0,
   attributeOptions: {
     nodeLabelAttr: {
+      namespace: FSItemNamespaces.CORE,
       name: "basename"
     },
     expandAttr: {
+      namespace: FSItemNamespaces.CORE,
       name: "expanded"
     }
   },

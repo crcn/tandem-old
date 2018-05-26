@@ -64,8 +64,8 @@ import {
   PCSourceTagNames,
   isComponentInstanceSourceNode,
   PCComponentNode,
-  PCRectangleNode,
-  createPCRectangle,
+  PCElement,
+  createPCElement,
   PCVisibleNode,
   PCVisibleNodeAttributes,
   PCSourceNode,
@@ -78,7 +78,7 @@ import {
   createPCComponent,
   createPCTemplate,
   PCTextNode,
-  PCRectangleNodeAttributes,
+  PCElementAttributes,
   PCSourceNamespaces,
   PCVisibleRootNode,
   PCSourceAttributeNames,
@@ -153,7 +153,7 @@ type SyntheticBaseTreeNode<
   source: SyntheticNodeSource;
 } & TreeNode<TName, TAttributes>;
 
-export type SyntheticRectangleNodeAttributes = {
+export type SyntheticElementAttributes = {
   [PCSourceNamespaces.CORE]: {
     nativeType?: string;
     container?: string;
@@ -161,9 +161,9 @@ export type SyntheticRectangleNodeAttributes = {
   };
 } & SyntheticBaseNodeAttributes;
 
-export type SyntheticRectangleNode = SyntheticBaseTreeNode<
-  PCSourceTagNames.RECTANGLE,
-  SyntheticRectangleNodeAttributes
+export type SyntheticElement = SyntheticBaseTreeNode<
+  string,
+  SyntheticElementAttributes
 >;
 
 export type SyntheticTextNodeAttributes = {
@@ -179,8 +179,8 @@ export type SyntheticTextNode = SyntheticBaseTreeNode<
 >;
 
 export type SyntheticNode = SyntheticBaseTreeNode<
-  PCSourceTagNames.TEXT | PCSourceTagNames.RECTANGLE,
-  SyntheticRectangleNodeAttributes | SyntheticTextNodeAttributes
+  PCSourceTagNames.TEXT | string,
+  SyntheticElementAttributes | SyntheticTextNodeAttributes
 >;
 
 export type SyntheticObject = {};
@@ -332,14 +332,15 @@ export const addSyntheticWindow = (
     browser
   );
 
-export const createSyntheticRectangle = (
-  attributes: SyntheticRectangleNodeAttributes,
+export const createSyntheticElement = (
+  name: string,
+  attributes: SyntheticElementAttributes,
   children: TreeNode<any, any>[],
   source: SyntheticNodeSource,
   id: string
-): SyntheticRectangleNode => ({
+): SyntheticElement => ({
   id,
-  name: PCSourceTagNames.RECTANGLE,
+  name,
   attributes,
   children,
   source
@@ -705,6 +706,7 @@ export const getSyntheticNodeOriginComponent = memoize(
       node.id,
       getSyntheticNodeDocument(node.id, browser).root
     ) as SyntheticNode;
+
     if (!componentInstanceNode) {
       return getSyntheticNodeSourceComponent(node.id, browser);
     }
@@ -1348,15 +1350,15 @@ export const persistNewComponent = (
   );
 };
 
-export const persistInsertRectangle = (
+export const persistInsertElement = (
   style: any,
   targetSourceNodeId: string,
   browser: SyntheticBrowser
 ) => {
   return persistInsertNode(
-    createPCRectangle({
+    createPCElement({
       [PCSourceNamespaces.CORE]: {
-        label: "Rectangle",
+        label: "Element",
         nativeType: "div"
       }
     }),
@@ -1581,7 +1583,7 @@ export const persistConvertNodeToComponent = (
         style:
           sourceNode.name === "text"
             ? {}
-            : (sourceNode as PCRectangleNode).attributes.core.style
+            : (sourceNode as PCElement).attributes.core.style
       }
     },
     createPCTemplate(
@@ -1639,10 +1641,7 @@ export const persistDeleteSyntheticItems = (
 };
 
 const setNodeStyle = (
-  node: TreeNode<
-    any,
-    PCVisibleNodeAttributes | SyntheticRectangleNodeAttributes
-  >,
+  node: TreeNode<any, PCVisibleNodeAttributes | SyntheticElementAttributes>,
   properties: any
 ) =>
   mergeNodeAttributes(node, {
@@ -1891,7 +1890,7 @@ export const persistToggleSlotContainer = (
 
 export const persistChangeNodeType = (
   nativeType: string,
-  sourceNode: PCRectangleNode,
+  sourceNode: PCElement,
   browser: SyntheticBrowser
 ) => {
   return persistSourceNodeChanges(sourceNode, null, browser, node =>

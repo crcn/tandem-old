@@ -26,10 +26,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {
@@ -44,7 +44,7 @@
               },
               "children": [
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
@@ -192,7 +192,7 @@
                   "id": "808486bb85"
                 },
                 {
-                  "name": "rectangle",
+                  "name": "element",
                   "attributes": {
                     "core": {
                       "style": {
@@ -236,10 +236,10 @@
       "children": [
         {
           "name": "template",
-                     "attributes": {             "core": {}           },
+                     "attributes": {             "core": {}, "editor": {}           },
           "children": [
             {
-              "name": "rectangle",
+              "name": "element",
               "attributes": {
                 "core": {
                   "style": {
