@@ -20,6 +20,7 @@
     "@types/lodash": "^4.14.108",
     "lodash": "^4.17.10",
     "paperclip": "^9.0.0",
+    "paperclip-migrator": "^1.0.0",
     "tandem-common": "^3.0.0"
   }
 }

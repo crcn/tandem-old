@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+const path = require("path");
+const fs = require("fs");
+const migrate = require("..");
+let filePath = process.argv[2];
+filePath = filePath.charAt(0) === "/" ? filePath : path.resolve(process.cwd(), filePath);
+
+const newModule = migrate(JSON.parse(fs.readFileSync(filePath, "utf8")));
+
+console.log(JSON.stringify(newModule, null, 2));

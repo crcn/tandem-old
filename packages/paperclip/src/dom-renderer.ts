@@ -97,7 +97,7 @@ const createNativeNode = (
   document: Document,
   map: SyntheticNativeNodeMap
 ) => {
-  const isText = synthetic.name === "text";
+  const isText = synthetic.name === PCSourceTagNames.TEXT;
   const nativeElement = document.createElement(
     isText
       ? "span"

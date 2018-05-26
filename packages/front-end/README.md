@@ -1,28 +1,19 @@
-MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
-TOP:
+MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TOP:
 
 IMMEDIATE:
 
-* **move back to style sheets** - functionality is already built-in for overriding styles. Will be a cleaner compile. Works better for future
+* override style
+* code compiler should compile styles to CSS
 * ability to load images & other resources in PC file. **helps with arch**.
-* When dropping a new element, ensure that it ends up where the mouse is, even when zoomed in.
-* Use native elements as source node tags.
 * document bounds on element should be stored in editor namespace
-* node IDS should be unique\*\* (always use `createSyntheticElement`)
 * when converting elements to artboards, move new artboard to BEST position
 * select newly inserted elements
 * When inserting new elements, only highlight slots when mouse is over component instance
 
-CLEAN UP:
+STYLING:
 
-* pass node instance for type safety
-* eliminiate `ref` attribute. Use `id` instead.
-* component style props need to go on `template` instead
-* move `Dependency` to separate file
-* root nodes must have separate bounds param
-* use Box (left, top, width, height) instead of bounds
-* add Constraints (left, top, right, bottom)
-* persistence must always start with synthetic node
+* insert new style when element is inserted
+* slurp up styles when element is copied or moved (reduce into one style)
 
 HIGH PRIO:
 

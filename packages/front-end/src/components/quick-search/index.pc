@@ -8,8 +8,9 @@
       "namespace": null,
       "attributes": {
         "core": {
-          "id": "component1",
-          "label": "Quick Search"
+          "id": null,
+          "label": "Quick Search",
+          "name": "component1"
         },
         "editor": {
           "bounds": {
@@ -113,68 +114,94 @@
                   },
                   "children": [
                     {
-                      "name": "component2",
-                      "namespace": null,
+                      "id": "33e083be5",
+                      "name": "808486bb13",
                       "attributes": {
                         "core": {
                           "style": {
-                            "left": 132,
-                            "right": 673,
-                            "top": 456,
-                            "bottom": 551
+                            "left": 0,
+                            "top": 0,
+                            "right": 400,
+                            "bottom": 300
                           }
                         }
                       },
-                      "children": [],
-                      "id": "808486bb9"
+                      "children": []
                     },
                     {
-                      "name": "component2",
-                      "namespace": null,
+                      "id": "33e083be6",
+                      "name": "808486bb13",
                       "attributes": {
                         "core": {
                           "style": {
-                            "left": 132,
-                            "right": 673,
-                            "top": 456,
-                            "bottom": 551
+                            "left": 0,
+                            "top": 0,
+                            "right": 400,
+                            "bottom": 300
                           }
                         }
                       },
-                      "children": [],
-                      "id": "808486bb10"
+                      "children": []
                     },
                     {
-                      "name": "component2",
-                      "namespace": null,
+                      "id": "33e083be7",
+                      "name": "808486bb13",
                       "attributes": {
                         "core": {
                           "style": {
-                            "left": 132,
-                            "right": 673,
-                            "top": 456,
-                            "bottom": 551
+                            "left": 0,
+                            "top": 0,
+                            "right": 400,
+                            "bottom": 300
                           }
                         }
                       },
-                      "children": [],
-                      "id": "808486bb11"
+                      "children": []
                     },
                     {
-                      "name": "component2",
-                      "namespace": null,
+                      "id": "33e083be8",
+                      "name": "808486bb13",
                       "attributes": {
                         "core": {
                           "style": {
-                            "left": 132,
-                            "right": 673,
-                            "top": 456,
-                            "bottom": 551
+                            "left": 0,
+                            "top": 0,
+                            "right": 400,
+                            "bottom": 300
                           }
                         }
                       },
-                      "children": [],
-                      "id": "808486bb12"
+                      "children": []
+                    },
+                    {
+                      "id": "33e083be9",
+                      "name": "808486bb13",
+                      "attributes": {
+                        "core": {
+                          "style": {
+                            "left": 0,
+                            "top": 0,
+                            "right": 400,
+                            "bottom": 300
+                          }
+                        }
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "33e083be10",
+                      "name": "808486bb13",
+                      "attributes": {
+                        "core": {
+                          "style": {
+                            "left": 0,
+                            "top": 0,
+                            "right": 400,
+                            "bottom": 300
+                          }
+                        }
+                      },
+                      "children": []
                     }
                   ],
                   "id": "808486bb8"
@@ -193,8 +220,9 @@
       "namespace": null,
       "attributes": {
         "core": {
-          "id": "component2",
-          "label": "Search Result"
+          "id": null,
+          "label": "Search Result",
+          "name": "component2"
         },
         "editor": {
           "bounds": {
@@ -270,8 +298,9 @@
       "name": "component",
       "attributes": {
         "core": {
-          "id": "component4",
-          "label": "Quick Search Input"
+          "id": null,
+          "label": "Quick Search Input",
+          "name": "component4"
         },
         "editor": {
           "bounds": {
@@ -321,5 +350,6 @@
       "id": "808486bb17"
     }
   ],
-  "id": "808486bb2"
+  "id": "808486bb2",
+  "version": "0.0.1"
 }

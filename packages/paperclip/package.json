@@ -10,6 +10,7 @@
     "@types/node": "^10.1.2",
     "chai": "^4.1.2",
     "lodash": "^4.17.10",
+    "paperclip-migrator": "^1.0.0",
     "tandem-common": "^3.0.0"
   },
   "devDependencies": {

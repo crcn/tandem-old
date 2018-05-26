@@ -23,6 +23,8 @@ import {
 } from "tandem-common";
 import { camelCase, merge } from "lodash";
 
+const migratePCModule = require("paperclip-migrator");
+
 type CompileContext = {
   entry: PCModuleNode;
   currentModule?: PCModuleNode;
@@ -41,15 +43,7 @@ const isVoidTag = name =>
   );
 
 export const compilePaperclipToReact = (content: string) => {
-  let entry;
-
-  try {
-    entry = JSON.parse(content);
-  } catch (e) {
-    // deprecated
-    entry = xmlToTreeNode(content);
-  }
-
+  const entry = migratePCModule(JSON.parse(content));
   return compileModule({
     entry,
     varNameRefs: {}
@@ -77,7 +71,7 @@ const compileModule = (context: CompileContext) => {
 
 const compileComponent = (context: CompileContext) => {
   const componentName = getNodeClassName(context.currentComponent, context);
-  const id = context.currentComponent.attributes.core.id;
+  const id = context.currentComponent.id;
   let buffer = `function __${id} (props) {`;
   buffer +=
     `return (` +
@@ -107,7 +101,6 @@ const compileElement = (
     return `'${(node as PCTextNode).attributes.core.value}'`;
   }
 
-  const slotContainerName = (node as PCElement).attributes.core.container;
   const tagNameStr = getNodeReactComponentRef(node, context);
   let buffer = `React.createElement(${getNodeReactComponentRef(
     node,
@@ -168,7 +161,7 @@ const compileElementAttributes = (
 };
 
 const compileElementChildren = (node: PCElement, context: CompileContext) => {
-  const internalContainerName = node.attributes.core.container;
+  const internalContainerName = node.attributes.core.container ? node.id : null;
   const publicContainerName = getNodeVarName(node, context);
 
   const base =
@@ -223,13 +216,12 @@ const getNodeReactComponentRef = (ref: PCElement, context: CompileContext) => {
   );
 
   const internaComponent = getModuleComponents(context.currentModule).find(
-    component =>
-      component.attributes.core.id === ref.name && ref.namespace == null
+    component => component.id === ref.name && ref.namespace == null
   );
   return isImport
     ? `${ref.namespace}.__${ref.name}`
     : internaComponent
-      ? `__` + internaComponent.attributes.core.id
+      ? `__` + internaComponent.id
       : "'" + (ref.attributes.core.nativeType || "div") + "'";
 };
 

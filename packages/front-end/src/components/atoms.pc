@@ -22,12 +22,7 @@
         }
       },
       "children": [
-        {
-          "name": "template",
-                     "attributes": {             "core": {}, "editor": {}           },
-          "children": [],
-          "id": "808486bb26"
-        }
+
       ],
       "id": "808486bb25"
     },

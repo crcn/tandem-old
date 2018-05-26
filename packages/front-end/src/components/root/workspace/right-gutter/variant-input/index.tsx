@@ -65,6 +65,9 @@ export const BaseVariantInput = ({
   onVariantToggle
 }: VariantInputInnerProps) => {
   const sourceNode = getSyntheticSourceNode(node.id, root.browser);
+  if (1 + 1) {
+    return null;
+  }
   if (!isComponentInstanceSourceNode(sourceNode)) {
     return null;
   }

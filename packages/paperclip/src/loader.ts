@@ -12,7 +12,13 @@ import {
   xmlToTreeNode,
   createTreeNode
 } from "tandem-common";
-import { Dependency, DependencyGraph, PCModuleNode } from "./dsl";
+import * as migratePCModule from "paperclip-migrator";
+import {
+  Dependency,
+  DependencyGraph,
+  PCModuleNode,
+  createPCModule
+} from "./dsl";
 export type FileLoader = (uri: string) => string | Promise<string>;
 
 export type LoadEntryOptions = {
@@ -89,10 +95,11 @@ const loadModule = async (
     throw new Error(`XML is not supported yet`);
   } else if (/pc$/.test(uri)) {
     try {
-      return parseNodeSource(content);
+      let source = parseNodeSource(content);
+      return migratePCModule(source);
     } catch (e) {
       console.warn(e);
-      return createTreeNode("module");
+      return createPCModule();
     }
   } else if (!/json$/.test(uri)) {
     throw new Error(`Unsupported import ${uri}.`);

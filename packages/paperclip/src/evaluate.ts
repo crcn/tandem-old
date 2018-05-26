@@ -137,9 +137,7 @@ export const evaluateRootDocumentComponent = (
   let element: SyntheticElement = _evaluateComponent(
     componentNode,
     {
-      [PCSourceNamespaces.CORE]: {
-        style: componentNode.attributes.core.style
-      }
+      [PCSourceNamespaces.CORE]: {}
     },
     [],
     getSytheticNodeSource(componentNode, dependency),
@@ -183,11 +181,10 @@ const _evaluateComponent = (
     }
     slots[slotName].push(child);
   }
-  const componentContainerName = componentNode.attributes.core.container;
 
   const variants = attributes.core.variants;
 
-  let syntheticChildren = slots[componentContainerName];
+  let syntheticChildren = slots[componentNode.id];
 
   if (!syntheticChildren) {
     template = getComponentVariants(componentNode).reduce(
@@ -220,8 +217,7 @@ const _evaluateComponent = (
     {},
     {
       [PCSourceNamespaces.CORE]: {
-        label: componentNode.attributes.core.label,
-        style: componentNode.attributes.core.style
+        label: componentNode.attributes.core.label
       },
       [PCSourceNamespaces.EDITOR]: {
         [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent,

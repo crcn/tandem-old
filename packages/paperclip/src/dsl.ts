@@ -13,7 +13,7 @@ import {
   generateUID,
   mergeNodeAttributes
 } from "tandem-common";
-import { mapValues } from "lodash";
+import { mapValues, merge } from "lodash";
 
 export type DependencyGraph = {
   [identifier: string]: Dependency;
@@ -67,7 +67,8 @@ export const isComponentInstanceSourceNode = (sourceNode: TreeNode<any, any>) =>
 
 export type PCStyleAttributes = {
   [PCSourceNamespaces.CORE]: {
-    target: string;
+    className: string;
+    extends?: string;
     variant?: string;
     declaration: any;
   };
@@ -120,8 +121,7 @@ export type PCVisibleNodeCoreAttributes = {
   variants?: string[];
   slot?: string;
   [PCSourceAttributeNames.STYLE]?: any;
-  container?: string;
-  containerStorage?: string;
+  container?: boolean;
   label?: string;
 };
 
@@ -149,8 +149,6 @@ export type PCElementAttributes = {
     [PCElementAttributeNames.CLASS_NAME]?: string;
   };
 } & PCVisibleNodeAttributes;
-
-export type PCStyle = TreeNode<PCSourceTagNames.STYLE, PCStyleAttributes>;
 
 export type PCElement = PCBaseVisibleNode<
   PCSourceTagNames.ELEMENT,
@@ -193,12 +191,7 @@ export type PCComponentAttributes = {
   };
   [PCSourceNamespaces.CORE]: {
     label?: string;
-    ref?: string;
-    container?: string;
-
-    // TODO - switch to name
-    id?: string; // identifier
-    style: any;
+    container?: boolean;
   };
 };
 
@@ -214,7 +207,7 @@ export type PCModuleAttributes = {
   };
 } & TreeNodeAttributes;
 
-export type PCModuleNode = PCBaseSourceNode<
+export type PCModuleNode = { version: string } & PCBaseSourceNode<
   PCSourceTagNames.MODULE,
   PCModuleAttributes,
   PCComponentNode | PCBaseVisibleNode<any, any>
@@ -231,24 +224,26 @@ export type PCSourceNode = TreeNode<
   | PCSetAttributeOverrideNodeAttributes
 >;
 
+export const PAPERCLIP_MODULE_VERSION = "0.0.1";
+
+export const createPCModule = (
+  children: PCSourceNode[] = []
+): PCModuleNode => ({
+  id: generateUID(),
+  name: PCSourceTagNames.MODULE,
+  version: PAPERCLIP_MODULE_VERSION,
+  attributes: {
+    [PCSourceNamespaces.XMLNS]: {}
+  },
+  children
+});
+
 export const createPCElement = (
   attributes: PCElementAttributes,
   children: PCBaseVisibleNode<any, any>[] = []
-): PCElement => {
-  return {
-    id: generateUID(),
-    name: PCSourceTagNames.ELEMENT,
-    attributes,
-    children
-  };
-};
-
-export const createPCStyle = (
-  attributes: PCStyleAttributes,
-  children: PCStyle[]
-): PCStyle => ({
+): PCElement => ({
   id: generateUID(),
-  name: PCSourceTagNames.STYLE,
+  name: PCSourceTagNames.ELEMENT,
   attributes,
   children
 });
@@ -339,7 +334,7 @@ export const getModuleComponent = (componentId: string, module: PCModuleNode) =>
   module.children.find(
     component =>
       component.name === PCSourceTagNames.COMPONENT &&
-      (component as PCComponentNode).attributes.core.id === componentId
+      (component as PCComponentNode).id === componentId
   ) as PCComponentNode;
 
 export const getComponentTemplate = (component: PCComponentNode) =>
@@ -360,10 +355,7 @@ export const getNodeSourceComponent = memoize(
 );
 
 export const getNodeReference = memoize((refName: string, root: PCSourceNode) =>
-  findNestedNode(
-    root,
-    (child: PCComponentNode) => child.attributes.core.ref === refName
-  )
+  findNestedNode(root, (child: PCComponentNode) => child.id === refName)
 );
 
 export const updateGraphDependency = (
@@ -423,5 +415,5 @@ export const addModuleNodeImport = (
     xmlns: {
       ["import" + importCount]: uri
     }
-  });
+  }) as PCModuleNode;
 };
