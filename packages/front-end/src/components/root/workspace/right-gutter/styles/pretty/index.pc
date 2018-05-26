@@ -31,7 +31,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "component6",
@@ -123,7 +123,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "component5",
@@ -305,7 +305,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "component5",
@@ -400,7 +400,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "component5",
@@ -455,7 +455,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "rectangle",
@@ -552,7 +552,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "component11",
@@ -746,7 +746,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "rectangle",
@@ -838,7 +838,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "component10",
@@ -917,7 +917,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "rectangle",

@@ -107,6 +107,8 @@ const compileElement = (
     return `'${(node as PCTextNode).attributes.core.value}'`;
   }
 
+  console.log(node);
+
   const slotContainerName = (node as PCRectangleNode).attributes.core.container;
   const tagNameStr = getNodeReactComponentRef(node, context);
   let buffer = `React.createElement(${getNodeReactComponentRef(

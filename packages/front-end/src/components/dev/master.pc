@@ -49,7 +49,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [],
           "id": "808486bb50"
         }
@@ -75,7 +75,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "rectangle",

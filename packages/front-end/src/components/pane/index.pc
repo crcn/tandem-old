@@ -1,6 +1,6 @@
 {
   "name": "module",
-  "attributes": {},
+             "attributes": {             "core": {}           },
   "children": [
     {
       "name": "component",
@@ -21,7 +21,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "rectangle",
@@ -110,7 +110,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "rectangle",

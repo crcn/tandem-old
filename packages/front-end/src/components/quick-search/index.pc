@@ -25,7 +25,7 @@
         {
           "name": "template",
           "namespace": null,
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "div",
@@ -207,7 +207,9 @@
         {
           "name": "template",
           "namespace": null,
-          "attributes": {},
+          "attributes": {
+            "core": {}
+          },
           "children": [
             {
               "name": "div",
@@ -280,7 +282,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [
             {
               "name": "div",

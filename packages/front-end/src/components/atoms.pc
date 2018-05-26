@@ -1,6 +1,6 @@
 {
   "name": "module",
-  "attributes": {},
+             "attributes": {             "core": {}           },
   "children": [
     {
       "name": "component",
@@ -24,7 +24,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [],
           "id": "808486bb26"
         }
@@ -50,7 +50,7 @@
       "children": [
         {
           "name": "template",
-          "attributes": {},
+                     "attributes": {             "core": {}           },
           "children": [],
           "id": "808486bb28"
         }

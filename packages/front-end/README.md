@@ -4,6 +4,7 @@ TOP:
 
 IMMEDIATE:
 
+* **move back to style sheets** - functionality is already built-in for overriding styles. Will be a cleaner compile. Works better for future
 * ability to load images & other resources in PC file. **helps with arch**.
 * When dropping a new element, ensure that it ends up where the mouse is, even when zoomed in.
 * Use native elements as source node tags.
@@ -15,21 +16,19 @@ IMMEDIATE:
 
 CLEAN UP:
 
-* persistence must always start with synthetic nodes
 * pass node instance for type safety
 * eliminiate `ref` attribute. Use `id` instead.
-* change SyntheticWindow to SyntheticDocument
-* change SyntheticDocument to SyntheticFrame
 * component style props need to go on `template` instead
-* move `Dependency` to separate
+* move `Dependency` to separate file
 * root nodes must have separate bounds param
 * use Box (left, top, width, height) instead of bounds
 * add Constraints (left, top, right, bottom)
+* persistence must always start with synthetic node
 
 HIGH PRIO:
 
-* **move back to style sheets** - functionality is already built-in for overriding styles. Will be a cleaner compile. Works better for future
-  ideas around importing other design files like Sketch
+ideas around importing other design files like Sketch
+
 * **stronger source data type, don't use tree node structure**
 
 HIGH IMPACT:
