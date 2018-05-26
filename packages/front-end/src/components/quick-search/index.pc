@@ -30,7 +30,7 @@
           },
           "children": [
             {
-              "name": "div",
+              "name": "element",
               "namespace": null,
               "attributes": {
                 "core": {
@@ -58,7 +58,7 @@
                     "core": {
                       "style": {},
                       "label": "Input Wrapper",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "container": "containere12829e4"
                     },
                     "editor": {
@@ -91,7 +91,7 @@
                   "id": "808486bb6"
                 },
                 {
-                  "name": "div",
+                  "name": "element",
                   "namespace": null,
                   "attributes": {
                     "core": {
@@ -215,7 +215,7 @@
           },
           "children": [
             {
-              "name": "div",
+              "name": "element",
               "namespace": null,
               "attributes": {
                 "core": {
@@ -291,7 +291,7 @@
           },
           "children": [
             {
-              "name": "div",
+              "name": "element",
               "namespace": null,
               "attributes": {
                 "core": {

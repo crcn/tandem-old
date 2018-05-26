@@ -41,7 +41,7 @@
                     "alignItems": "center"
                   },
                   "label": "Item",
-                  "nativeType": "div",
+                  "nativeType": "element",
                   "ref": "f5e29aef0"
                 }
               },
@@ -54,7 +54,7 @@
                         "marginRight": "4px"
                       },
                       "label": "Checkbox container",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "ref": "ca54545c0",
                       "container": "container55e93e38"
                     }
@@ -70,7 +70,7 @@
                             "background": "#333"
                           },
                           "label": "element",
-                          "nativeType": "div",
+                          "nativeType": "element",
                           "ref": "ca54545c0"
                         }
                       },
@@ -84,7 +84,7 @@
                     "core": {
                       "style": {},
                       "label": "Name container",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "ref": "fe99a7a90",
                       "container": "container8ad38360"
                     }
@@ -128,7 +128,7 @@
             "position": "absolute"
           },
           "label": "Preview",
-          "nativeType": "div",
+          "nativeType": "element",
           "ref": "28c888810"
         }
       },

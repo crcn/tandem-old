@@ -1,5 +1,4 @@
 MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.
-FOCUS: **do what's convenient for you**
 TOP:
 
 IMMEDIATE:

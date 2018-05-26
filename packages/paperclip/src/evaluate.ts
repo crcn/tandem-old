@@ -356,10 +356,10 @@ const evaluateNode = (
   return createSyntheticElement(
     tagName,
     merge({}, attributes, {
-      [PCSourceNamespaces.CORE]: {
+      [PCSourceNamespaces.CORE]: {},
+      [PCSourceNamespaces.EDITOR]: {
         [EditorAttributeNames.CREATED_FROM_COMPONENT]: createdFromComponent
-      },
-      [PCSourceNamespaces.EDITOR]: {}
+      }
     }),
     children2,
     source,

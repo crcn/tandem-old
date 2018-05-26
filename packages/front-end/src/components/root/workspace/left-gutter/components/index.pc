@@ -171,7 +171,7 @@
                   "attributes": {
                     "core": {
                       "style": {},
-                      "value": "div",
+                      "value": "element",
                       "label": "Text",
                       "ref": "aec3b5ef0",
                       "slot": "container65b72b0b"
@@ -224,7 +224,7 @@
                   "attributes": {
                     "core": {
                       "style": {},
-                      "value": "div",
+                      "value": "element",
                       "label": "Text",
                       "ref": "aec3b5ef0",
                       "slot": "container65b72b0b"

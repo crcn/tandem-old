@@ -39,6 +39,7 @@ export enum PCSourceNamespaces {
 export enum PCSourceTagNames {
   MODULE = "module",
   COMPONENT = "component",
+  STYLE = "style",
   TEMPLATE = "template",
   ELEMENT = "element",
   VARIANT = "variant",
@@ -63,6 +64,14 @@ type PCBaseSourceNode<
 export const isComponentInstanceSourceNode = (sourceNode: TreeNode<any, any>) =>
   sourceNode.name !== PCSourceTagNames.TEXT &&
   sourceNode.name !== PCSourceTagNames.ELEMENT;
+
+export type PCStyleAttributes = {
+  [PCSourceNamespaces.CORE]: {
+    target: string;
+    variant?: string;
+    declaration: any;
+  };
+};
 
 export type PCSetAttributeOverrideNodeAttributes = {
   [PCSourceNamespaces.CORE]: {
@@ -130,14 +139,18 @@ export type PCBaseVisibleNode<
 >;
 
 export enum PCElementAttributeNames {
-  NATIVE_TYPE = "nativeType"
+  NATIVE_TYPE = "nativeType",
+  CLASS_NAME = "className"
 }
 
 export type PCElementAttributes = {
   [PCSourceNamespaces.CORE]: {
     [PCElementAttributeNames.NATIVE_TYPE]?: string;
+    [PCElementAttributeNames.CLASS_NAME]?: string;
   };
 } & PCVisibleNodeAttributes;
+
+export type PCStyle = TreeNode<PCSourceTagNames.STYLE, PCStyleAttributes>;
 
 export type PCElement = PCBaseVisibleNode<
   PCSourceTagNames.ELEMENT,
@@ -221,9 +234,21 @@ export type PCSourceNode = TreeNode<
 export const createPCElement = (
   attributes: PCElementAttributes,
   children: PCBaseVisibleNode<any, any>[] = []
-): PCElement => ({
+): PCElement => {
+  return {
+    id: generateUID(),
+    name: PCSourceTagNames.ELEMENT,
+    attributes,
+    children
+  };
+};
+
+export const createPCStyle = (
+  attributes: PCStyleAttributes,
+  children: PCStyle[]
+): PCStyle => ({
   id: generateUID(),
-  name: PCSourceTagNames.ELEMENT,
+  name: PCSourceTagNames.STYLE,
   attributes,
   children
 });

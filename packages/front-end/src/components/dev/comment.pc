@@ -39,7 +39,7 @@
                     "width": "100%"
                   },
                   "label": "Container",
-                  "nativeType": "div",
+                  "nativeType": "element",
                   "ref": "3bd0fd520"
                 },
                 "editor": {
@@ -66,7 +66,7 @@
                         "transform": "translate(50%, -50%)"
                       },
                       "label": "Ear",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "ref": "5b3ef0290"
                     }
                   },
@@ -86,7 +86,7 @@
                         "top": -2
                       },
                       "label": "Content",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "ref": "f29e6f110",
                       "container": "container4a9895b6",
                       "container-keep": "container4a9895b6"

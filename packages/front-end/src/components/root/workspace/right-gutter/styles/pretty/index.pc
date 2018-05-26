@@ -364,7 +364,7 @@
                         "float": "right"
                       },
                       "label": "controls",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "ref": "bbab45f2",
                       "slot": "container63be648e"
                     }
@@ -467,7 +467,7 @@
                     "width": "100%"
                   },
                   "label": "container",
-                  "nativeType": "div",
+                  "nativeType": "element",
                   "ref": "75d11c090"
                 }
               },
@@ -484,7 +484,7 @@
                         "textTransform": "uppercase"
                       },
                       "label": "Title",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "ref": "75d11c090",
                       "container": "container63be648e"
                     }
@@ -516,7 +516,7 @@
                         "height": "100%"
                       },
                       "label": "Content",
-                      "nativeType": "div",
+                      "nativeType": "element",
                       "ref": "75d11c090",
                       "container": "container24fdd32c"
                     }
@@ -925,7 +925,7 @@
                 "core": {
                   "style": {},
                   "label": "element",
-                  "nativeType": "div",
+                  "nativeType": "element",
                   "ref": "e423af1e0",
                   "container": "container2bd05e8d"
                 }
@@ -944,7 +944,7 @@
                     "boxSizing": "border-box"
                   },
                   "label": "element",
-                  "nativeType": "div",
+                  "nativeType": "element",
                   "ref": "95c1f4e20",
                   "container": "container537b351e"
                 }

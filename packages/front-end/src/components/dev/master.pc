@@ -88,7 +88,7 @@
                     "position": "absolute"
                   },
                   "label": "element",
-                  "nativeType": "div",
+                  "nativeType": "element",
                   "ref": "eadfa4bb0",
                   "container": "containerb046d6ad"
                 }

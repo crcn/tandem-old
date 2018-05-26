@@ -36,7 +36,7 @@
                     "flexDirection": "column"
                   },
                   "label": "Container",
-                  "nativeType": "div"
+                  "nativeType": "element"
                 }
               },
               "children": [
@@ -53,7 +53,7 @@
                         "marginBottom": "10px"
                       },
                       "label": "HSL picker",
-                      "nativeType": "div"
+                      "nativeType": "element"
                     }
                   },
                   "children": [],
@@ -70,7 +70,7 @@
                         "boxSizing": "context-box"
                       },
                       "label": "Spectrum picker",
-                      "nativeType": "div"
+                      "nativeType": "element"
                     }
                   },
                   "children": [],
