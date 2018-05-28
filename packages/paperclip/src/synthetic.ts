@@ -119,6 +119,8 @@ export const mergeSyntheticFrames = (
       computed: newFrame.computed
     };
   }
+
+  return updatedFrames;
 };
 
 export const persistSyntheticNodeChanges = (
