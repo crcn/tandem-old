@@ -27,3 +27,4 @@ const syntheticFrames = evaluatePCModule(pcModule);
 #### TODO
 
 * sketch loader
+* global variables

@@ -127,16 +127,18 @@ export const _diffSyntheticNode = (
   }
 
   for (const key in newNode) {
-    if (key === "children") {
+    if (key === "children" || key === "source" || key === "id") {
       continue;
     }
     const oldValue = oldNode[key];
-    const newValue = oldNode[key];
+    const newValue = newNode[key];
 
     if (
-      oldValue !== newValue ||
-      (typeof newValue === "object" &&
-        JSON.stringify(oldValue) !== JSON.stringify(newValue))
+      oldValue !== newValue &&
+      !(
+        typeof newValue === "object" &&
+        JSON.stringify(oldValue) === JSON.stringify(newValue)
+      )
     ) {
       ots.push(
         createSyntheticSetPropertyOperationalTransform(nodePath, key, newValue)
@@ -192,7 +194,7 @@ export const _diffSyntheticNode = (
   }
 
   for (let i = 0, { length } = newNode.children; i < length; i++) {
-    const child = newNode[i];
+    const child = newNode.children[i] as SyntheticNode;
     if (!oldChildIds[child.source.nodeId]) {
       ots.push(
         createSyntheticInsertChildOperationalTransform(nodePath, child, i)
