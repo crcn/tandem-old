@@ -2,7 +2,8 @@ import {
   KeyValue,
   generateUID,
   EMPTY_ARRAY,
-  TreeNodeUpdater
+  TreeNodeUpdater,
+  EMPTY_OBJECT
 } from "tandem-common";
 import { TreeNode, Bounds } from "tandem-common";
 import { DependencyGraph } from "./graph";
@@ -12,13 +13,20 @@ import {
   getPCNodeFrame,
   getPCNodeDependency
 } from "./dsl";
-import { PaperclipRoot } from "state";
 
 export type ComputedDisplayInfo = {
   [identifier: string]: {
     bounds: Bounds;
     style: CSSStyleDeclaration;
   };
+};
+
+// what reducer stuff actally access
+export type PaperclipState = {
+  // key = frame id, value = evaluated frame
+  syntheticFrames: SyntheticFrames;
+
+  graph: DependencyGraph;
 };
 
 export type SyntheticFrames = KeyValue<SyntheticFrame>;
@@ -28,12 +36,11 @@ export type SyntheticSource = {
 };
 
 export type SyntheticFrame = {
-  id: string;
   root: SyntheticNode;
   source: SyntheticSource;
 
   // internal only
-  $container: HTMLIFrameElement;
+  $container?: HTMLIFrameElement;
   computed?: ComputedDisplayInfo;
 };
 
@@ -125,8 +132,23 @@ export const mergeSyntheticFrames = (
 
 export const persistSyntheticNodeChanges = (
   node: SyntheticNode,
-  state: PaperclipRoot,
+  state: PaperclipState,
   updater: TreeNodeUpdater<SyntheticNode>
-) => {
-  // TODO
+): PaperclipState => {
+  return state;
 };
+
+export const updateSyntheticFrame = (
+  properties: Partial<SyntheticFrame>,
+  sourceFrameId: string,
+  state: PaperclipState
+) => ({
+  ...state,
+  syntheticFrames: {
+    ...state.syntheticFrames,
+    [sourceFrameId]: {
+      ...(state.syntheticFrames[sourceFrameId] || EMPTY_OBJECT),
+      ...properties
+    }
+  }
+});

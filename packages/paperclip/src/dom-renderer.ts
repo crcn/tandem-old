@@ -5,18 +5,16 @@ import {
   SyntheticElement,
   isSyntheticNodeRoot
 } from "./synthetic";
+import { getTreeNodeFromPath, roundBounds } from "tandem-common";
 import {
-  TreeNode,
-  getTreeNodeFromPath,
-  roundBounds,
-  OperationalTransform,
-  OperationalTransformType,
-  SetAttributeTransform,
-  InsertChildTransform,
-  RemoveChildTransform,
-  MoveChildTransform,
-  patchNode
-} from "tandem-common";
+  SyntheticOperationalTransformType,
+  SyntheticMoveChildOperationalTransform,
+  SyntheticOperationalTransform,
+  patchSyntheticNode,
+  SyntheticSetPropertyOperationalTransform,
+  SyntheticInsertChildOperationalTransform,
+  SyntheticRemoveChildOperationalTransform
+} from "./ot";
 import { PCSourceTagNames, PCTextNode } from "./dsl";
 import { DependencyGraph } from "graph";
 
@@ -139,7 +137,7 @@ const removeElementsFromMap = (
 };
 
 export const patchDOM = (
-  transforms: OperationalTransform[],
+  transforms: SyntheticOperationalTransform[],
   synthetic: SyntheticNode,
   graph: DependencyGraph,
   root: HTMLElement,
@@ -149,43 +147,51 @@ export const patchDOM = (
   let newSyntheticTree: SyntheticNode = synthetic;
 
   for (const transform of transforms) {
-    const target = getElementFromPath(transform.path, root);
-    newSyntheticTree = patchNode([transform], newSyntheticTree);
+    const target = getElementFromPath(transform.nodePath, root);
+    newSyntheticTree = patchSyntheticNode([transform], newSyntheticTree);
     const syntheticTarget = getTreeNodeFromPath(
-      transform.path,
+      transform.nodePath,
       newSyntheticTree
     );
     switch (transform.type) {
-      case OperationalTransformType.SET_ATTRIBUTE: {
-        const { name, value, namespace } = transform as SetAttributeTransform;
+      case SyntheticOperationalTransformType.SET_PROPERTY: {
+        const {
+          name,
+          value
+        } = transform as SyntheticSetPropertyOperationalTransform;
 
-        // if (name === "style") {
-        //   resetElementStyle(target, syntheticTarget);
-        //   setStyleConstraintsIfRoot(syntheticTarget, graph, target);
-        //   makeElementClickable(target, syntheticTarget);
-        // } else if (
-        //   name === "value" &&
-        //   syntheticTarget.name === PCSourceTagNames.TEXT
-        // ) {
-        //   target.childNodes[0].nodeValue = value;
-        // } else if (name === PCElementAttributeNames.NATIVE_TYPE) {
-        //   const parent = target.parentNode;
-        //   if (newMap === map) {
-        //     newMap = { ...map };
-        //   }
-        //   const newTarget = createNativeNode(
-        //     getTreeNodeFromPath(transform.path, newSyntheticTree),
-        //     root.ownerDocument,
-        //     newMap
-        //   );
-        //   parent.insertBefore(newTarget, target);
-        //   parent.removeChild(target);
-        // }
+        if (name === "style") {
+          resetElementStyle(target, syntheticTarget);
+          setStyleConstraintsIfRoot(syntheticTarget, graph, target);
+          makeElementClickable(target, syntheticTarget, graph);
+        } else if (name === "attributes") {
+          for (const key in value) {
+            syntheticTarget.setAttribute(key, value[key]);
+          }
+        } else if (name === "is") {
+          const parent = target.parentNode;
+          if (newMap === map) {
+            newMap = { ...map };
+          }
+          const newTarget = createNativeNode(
+            getTreeNodeFromPath(transform.nodePath, newSyntheticTree),
+            graph,
+            root.ownerDocument,
+            newMap
+          );
+          parent.insertBefore(newTarget, target);
+          parent.removeChild(target);
+        } else if (name === "text") {
+          target.childNodes[0].nodeValue = value;
+        }
 
         break;
       }
-      case OperationalTransformType.INSERT_CHILD: {
-        const { child, index } = transform as InsertChildTransform;
+      case SyntheticOperationalTransformType.INSERT_CHILD: {
+        const {
+          child,
+          index
+        } = transform as SyntheticInsertChildOperationalTransform;
 
         if (newMap === map) {
           newMap = { ...map };
@@ -201,20 +207,23 @@ export const patchDOM = (
 
         break;
       }
-      case OperationalTransformType.REMOVE_CHILD: {
-        const { path, index } = transform as RemoveChildTransform;
+      case SyntheticOperationalTransformType.REMOVE_CHILD: {
+        const { index } = transform as SyntheticRemoveChildOperationalTransform;
         target.removeChild(target.childNodes[index]);
         break;
       }
-      case OperationalTransformType.MOVE_CHILD: {
-        const { path, oldIndex, newIndex } = transform as MoveChildTransform;
+      case SyntheticOperationalTransformType.MOVE_CHILD: {
+        const {
+          oldIndex,
+          newIndex
+        } = transform as SyntheticMoveChildOperationalTransform;
         const child = target.childNodes[oldIndex];
         target.removeChild(child);
         insertChild(target, child, newIndex);
         break;
       }
       default: {
-        throw new Error(`OT ${transform.type} not supported yet`);
+        throw new Error(`OT not supported yet`);
       }
     }
   }

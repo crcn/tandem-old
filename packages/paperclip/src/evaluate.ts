@@ -82,31 +82,13 @@ const evaluatePCFrame = (
   parentPath: string,
   context: EvalContext
 ): SyntheticFrame => ({
-  id: generateUID(),
   source: createSyntheticSource(frame),
-  $container: createContainer(),
   root: evaluatePCFrameRootNode(
     frame.children[0],
     appendPath(parentPath, frame.id),
     context
   )
 });
-
-const createContainer = () => {
-  if (typeof window === "undefined") return null;
-  const container = document.createElement("iframe");
-  container.style.border = "none";
-  container.style.width = "100%";
-  container.style.height = "100%";
-  container.style.background = "transparent";
-  container.addEventListener("load", () => {
-    Object.assign(container.contentDocument.body.style, {
-      padding: 0,
-      margin: 0
-    });
-  });
-  return container;
-};
 
 const evaluatePCFrameRootNode = (
   root: PCComponent | PCVisibleNode,

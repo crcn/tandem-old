@@ -1,6 +1,6 @@
 import { take, fork, select, call, put } from "redux-saga/effects";
 import { SyntheticFrame } from "./synthetic";
-import { PaperclipRoot } from "./state";
+import { PaperclipRoot } from "./external-state";
 import { getPCNode, PCFrame } from "./dsl";
 import { pcSyntheticFrameRendered } from "./actions";
 import {
@@ -11,6 +11,7 @@ import {
 } from "./dom-renderer";
 import { KeyValue } from "tandem-common";
 import { Dependency, DependencyGraph } from "graph";
+import { diffSyntheticNode } from "./ot";
 
 // TODO - remote renderer here (Browsertap)
 
@@ -56,25 +57,32 @@ function* nativeRenderer() {
 
   function* renderFrame(
     sourceFrameId: string,
-    frame: SyntheticFrame,
+    newFrame: SyntheticFrame,
     oldFrame: SyntheticFrame,
     graph: DependencyGraph
   ) {
-    const body = frame.$container.contentDocument.body;
+    const container = newFrame.$container || createContainer();
+    const body = container.contentDocument.body;
     if (!oldFrame) {
       yield put(
         pcSyntheticFrameRendered(
-          frame,
+          newFrame,
+          container,
           computeDisplayInfo(
-            (frameNodeMap[sourceFrameId] = renderDOM(body, frame.root, graph))
+            (frameNodeMap[sourceFrameId] = renderDOM(
+              body,
+              newFrame.root,
+              graph
+            ))
           )
         )
       );
     } else {
-      const ots = []; // diffSyntheticNode(oldFrame, frame); // memoized
+      const ots = diffSyntheticNode(oldFrame.root, newFrame.root);
       yield put(
         pcSyntheticFrameRendered(
-          frame,
+          newFrame,
+          container,
           computeDisplayInfo(
             (frameNodeMap[sourceFrameId] = patchDOM(
               ots,
@@ -89,3 +97,19 @@ function* nativeRenderer() {
     }
   }
 }
+
+const createContainer = () => {
+  if (typeof window === "undefined") return null;
+  const container = document.createElement("iframe");
+  container.style.border = "none";
+  container.style.width = "100%";
+  container.style.height = "100%";
+  container.style.background = "transparent";
+  container.addEventListener("load", () => {
+    Object.assign(container.contentDocument.body.style, {
+      padding: 0,
+      margin: 0
+    });
+  });
+  return container;
+};

@@ -4,7 +4,8 @@ import {
   SyntheticElement,
   SyntheticTextNode,
   SyntheticFrame,
-  SyntheticFrames
+  SyntheticFrames,
+  PaperclipState
 } from "./synthetic";
 import { KeyValue } from "tandem-common";
 
@@ -13,10 +14,13 @@ export type PaperclipRoot = {
   paperclip: PaperclipState;
 };
 
-// what reducer stuff actally access
-export type PaperclipState = {
-  // key = frame id, value = evaluated frame
-  syntheticFrames: SyntheticFrames;
-
-  graph: DependencyGraph;
-};
+export const updateRootPaperclipState = (
+  properties: Partial<PaperclipState>,
+  root: PaperclipRoot
+) => ({
+  ...root,
+  paperclip: {
+    ...root.paperclip,
+    ...properties
+  }
+});
