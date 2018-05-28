@@ -1,8 +1,4 @@
-import {
-  TreeNode,
-  updateNestedNodeFromPath,
-  mergeNodeAttributes
-} from "../../state/tree";
+import { TreeNode, updateNestedNodeFromPath } from "../../state/tree";
 import { EMPTY_OBJECT } from "../object";
 import {
   diffArray,
@@ -38,7 +34,7 @@ export type SetAttributeTransform = {
 } & OperationalTransform;
 
 export type InsertChildTransform = {
-  child: TreeNode<any, any>;
+  child: TreeNode<any>;
   index: number;
 } & OperationalTransform;
 
@@ -66,7 +62,7 @@ export const createSetAttributeTransform = (
 
 export const createInsertChildTransform = (
   path: number[],
-  child: TreeNode<any, any>,
+  child: TreeNode<any>,
   index: number
 ): InsertChildTransform => ({
   type: OperationalTransformType.INSERT_CHILD,
@@ -96,42 +92,42 @@ export const createMoveChildTransform = (
 });
 
 export const diffNode = (
-  a: TreeNode<any, any>,
-  b: TreeNode<any, any>,
+  a: TreeNode<any>,
+  b: TreeNode<any>,
   path: number[] = [],
   diffs: OperationalTransform[] = []
 ) => {
-  // delete & update
-  for (const namespace in a.attributes) {
-    const aatts = a.attributes[namespace];
-    const batts = b.attributes[namespace] || EMPTY_OBJECT;
+  // // delete & update
+  // for (const namespace in a.attributes) {
+  //   const aatts = a.attributes[namespace];
+  //   const batts = b.attributes[namespace] || EMPTY_OBJECT;
 
-    for (const name in aatts) {
-      const newValue = batts[name];
-      const oldValue = aatts[name];
-      if (oldValue !== newValue) {
-        diffs.push(
-          createSetAttributeTransform(path, name, namespace, newValue)
-        );
-      }
-    }
-  }
+  //   for (const name in aatts) {
+  //     const newValue = batts[name];
+  //     const oldValue = aatts[name];
+  //     if (oldValue !== newValue) {
+  //       diffs.push(
+  //         createSetAttributeTransform(path, name, namespace, newValue)
+  //       );
+  //     }
+  //   }
+  // }
 
-  // insert
-  for (const namespace in b.attributes) {
-    const aatts = a.attributes[namespace] || EMPTY_OBJECT;
-    const batts = b.attributes[namespace];
+  // // insert
+  // for (const namespace in b.attributes) {
+  //   const aatts = a.attributes[namespace] || EMPTY_OBJECT;
+  //   const batts = b.attributes[namespace];
 
-    for (const name in batts) {
-      const newValue = batts[name];
-      const oldValue = aatts[name];
-      if (oldValue == null) {
-        diffs.push(
-          createSetAttributeTransform(path, name, namespace, newValue)
-        );
-      }
-    }
-  }
+  //   for (const name in batts) {
+  //     const newValue = batts[name];
+  //     const oldValue = aatts[name];
+  //     if (oldValue == null) {
+  //       diffs.push(
+  //         createSetAttributeTransform(path, name, namespace, newValue)
+  //       );
+  //     }
+  //   }
+  // }
 
   const cots = diffArray(a.children, b.children, (a, b) => {
     return a.name === b.name ? 0 : -1;
@@ -140,7 +136,7 @@ export const diffNode = (
   for (const ot of cots) {
     switch (ot.type) {
       case ArrayOperationalTransformType.INSERT: {
-        const { value, index } = ot as ArrayInsertMutation<TreeNode<any, any>>;
+        const { value, index } = ot as ArrayInsertMutation<TreeNode<any>>;
         diffs.push(createInsertChildTransform(path, value, index));
         break;
       }
@@ -150,7 +146,7 @@ export const diffNode = (
           originalOldIndex,
           index,
           newValue
-        } = ot as ArrayUpdateMutation<TreeNode<any, any>>;
+        } = ot as ArrayUpdateMutation<TreeNode<any>>;
         if (patchedOldIndex !== index) {
           diffs.push(createMoveChildTransform(path, patchedOldIndex, index));
         }
@@ -173,7 +169,7 @@ export const diffNode = (
   return diffs;
 };
 
-export const patchNode = <TNode extends TreeNode<any, any>>(
+export const patchNode = <TNode extends TreeNode<any>>(
   ots: OperationalTransform[],
   a: TNode
 ): TNode => {
@@ -181,17 +177,17 @@ export const patchNode = <TNode extends TreeNode<any, any>>(
 
   for (const ot of ots) {
     switch (ot.type) {
-      case OperationalTransformType.SET_ATTRIBUTE: {
-        const { path, name, namespace, value } = ot as SetAttributeTransform;
-        b = updateNestedNodeFromPath(path, b, parent =>
-          mergeNodeAttributes(parent, {
-            [namespace]: {
-              [name]: value
-            }
-          })
-        );
-        break;
-      }
+      // case OperationalTransformType.SET_ATTRIBUTE: {
+      //   const { path, name, namespace, value } = ot as SetAttributeTransform;
+      //   b = updateNestedNodeFromPath(path, b, parent =>
+      //     mergeNodeAttributes(parent, {
+      //       [namespace]: {
+      //         [name]: value
+      //       }
+      //     })
+      //   );
+      //   break;
+      // }
       case OperationalTransformType.INSERT_CHILD: {
         const { path, child, index } = ot as InsertChildTransform;
         b = updateNestedNodeFromPath(path, b, parent => ({

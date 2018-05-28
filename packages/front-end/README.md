@@ -2,6 +2,10 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
+* side effect API (PC)
+* nail re-selecting elements
+* nail down maintaining selection when patching
+
 * override style
 * code compiler should compile styles to CSS
 * ability to load images & other resources in PC file. **helps with arch**.

@@ -1,9 +1,25 @@
-Paperclip DSL specific for visual development.
+Paperclip is DSL for building web UIs visually.
 
-### Goals
+#### API Example
 
-- Platform agnostic - Paperclip should be compilable to any UI framework or platform (iOS, Android, Web)
-- Explicit - Paperclip makes no assumptions about the target Platform. Layout information must be explicitly defined in the UI, or by hand.
-- Logic-less -
-- Unopinionated -- 
-- Readable
+```javascript
+import {
+  DOMRenderer,
+  evaluatePCModule,
+  createPCModule,
+  createPCFrame,
+  createPCComponent,
+  createPCElement,
+  createPCTextNode,
+  createPCComponentInstance
+} from "paperclip";
+
+const component = createPCComponent("Test");
+
+const pcModule = createPCModule([
+  createPCFrame([component]),
+  createPCFrame([createPCComponentInstance(component.id)])
+]);
+
+const syntheticFrames = evaluatePCModule(pcModule);
+```

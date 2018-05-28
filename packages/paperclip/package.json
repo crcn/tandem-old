@@ -4,17 +4,25 @@
   "description": "Paperclip DSL specific for visual development.",
   "main": "index.js",
   "author": "",
+  "scripts": {
+    "test": "mocha lib/**/*-test.js"
+  },
   "license": "ISC",
   "dependencies": {
     "@types/mocha": "^5.2.0",
     "@types/node": "^10.1.2",
+    "@types/redux": "^3.6.0",
+    "@types/redux-saga": "^0.10.5",
     "chai": "^4.1.2",
     "lodash": "^4.17.10",
     "paperclip-migrator": "^1.0.0",
+    "redux": "^4.0.0",
+    "redux-saga": "^0.16.0",
     "tandem-common": "^3.0.0"
   },
   "devDependencies": {
     "husky": "^0.14.3",
-    "lint-staged": "^7.1.2"
+    "lint-staged": "^7.1.2",
+    "mocha": "^5.2.0"
   }
 }

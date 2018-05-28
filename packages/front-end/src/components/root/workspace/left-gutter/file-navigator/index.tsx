@@ -97,7 +97,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<
       name: "expanded"
     }
   },
-  hasChildren: (node: TreeNode<any, any>) => {
+  hasChildren: (node: TreeNode<any>) => {
     return node.name === "directory";
   },
   childRenderer: Base => ({
@@ -118,7 +118,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<
             hoveringNodeIds={hoveringNodeIds}
             selectedNodeIds={selectedNodeIds}
             key={child.id}
-            node={child as TreeNode<any, any>}
+            node={child as TreeNode<any>}
             depth={depth + 1}
             dispatch={dispatch}
             insertFileInfo={insertFileInfo}

@@ -225,7 +225,7 @@ const getNodeReactComponentRef = (ref: PCElement, context: CompileContext) => {
       : "'" + (ref.attributes.core.nativeType || "div") + "'";
 };
 
-const getNodeClassName = (ref: TreeNode<any, any>, context: CompileContext) => {
+const getNodeClassName = (ref: TreeNode<any>, context: CompileContext) => {
   const varName = getNodeVarName(ref, context);
   return varName.substr(0, 1).toUpperCase() + varName.substr(1);
 };

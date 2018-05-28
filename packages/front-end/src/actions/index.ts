@@ -202,17 +202,17 @@ export type CanvasWheel = {
 
 export type TreeLayerMouseOver = {
   type: string;
-  node: TreeNode<any, any>;
+  node: TreeNode<any>;
 } & Action;
 
 export type TreeLayerLabelChanged = {
   label: string;
-  node: TreeNode<any, any>;
+  node: TreeNode<any>;
 } & Action;
 
 export type TreeLayerDroppedNode = {
-  node: TreeNode<any, any>;
-  targetNode: TreeNode<any, any>;
+  node: TreeNode<any>;
+  targetNode: TreeNode<any>;
   offset?: 0 | -1 | 1;
 } & Action;
 
@@ -350,14 +350,14 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
 });
 
 export const fileNavigatorItemClicked = (
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_CLICKED
 });
 
 export const fileNavigatorToggleDirectoryClicked = (
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
@@ -392,7 +392,7 @@ export const fileNavigatorNewDirectoryClicked = (): Action => ({
 });
 
 export const quickSearchItemClicked = (
-  file: TreeNode<any, any>
+  file: TreeNode<any>
 ): QuickSearchItemClicked => ({
   file,
   type: QUICK_SEARCH_ITEM_CLICKED
@@ -425,21 +425,19 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
 });
 
 export const fileNavigatorItemDoubleClicked = (
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED
 });
 
-export const pcLayerMouseOver = (
-  node: TreeNode<any, any>
-): TreeLayerMouseOver => ({
+export const pcLayerMouseOver = (node: TreeNode<any>): TreeLayerMouseOver => ({
   node,
   type: PC_LAYER_MOUSE_OVER
 });
 
 export const pcLayerDoubleClick = (
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ): TreeLayerMouseOver => ({
   node,
   type: PC_LAYER_DOUBLE_CLICK
@@ -447,29 +445,27 @@ export const pcLayerDoubleClick = (
 
 export const pcLayerLabelChanged = (
   label: string,
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ): TreeLayerLabelChanged => ({
   label,
   node,
   type: PC_LAYER_LABEL_CHANGED
 });
 
-export const pcLayerMouseOut = (
-  node: TreeNode<any, any>
-): TreeLayerMouseOut => ({
+export const pcLayerMouseOut = (node: TreeNode<any>): TreeLayerMouseOut => ({
   node,
   type: PC_LAYER_MOUSE_OUT
 });
 
 export const pcEditLayerLabelBlur = (
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ): TreeLayerMouseOut => ({
   node,
   type: PC_LAYER_EDIT_LABEL_BLUR
 });
 
 export const pcLayerClick = (
-  node: TreeNode<any, any>,
+  node: TreeNode<any>,
   sourceEvent: React.MouseEvent<any>
 ): TreeLayerClick => ({
   node,
@@ -517,7 +513,7 @@ export const componentVariantNameDefaultToggleClick = (
 });
 
 export const pcLayerExpandToggleClick = (
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ): TreeLayerExpandToggleClick => ({
   node,
   type: PC_LAYER_EXPAND_TOGGLE_CLICK
@@ -525,7 +521,7 @@ export const pcLayerExpandToggleClick = (
 
 export const pcLayerDroppedNode = (
   node: SyntheticNode,
-  targetNode: TreeNode<any, any>,
+  targetNode: TreeNode<any>,
   offset?: 0 | -1 | 1
 ): TreeLayerDroppedNode => ({
   node,

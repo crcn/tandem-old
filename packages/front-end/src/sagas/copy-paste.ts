@@ -2,7 +2,11 @@ import { fork, take, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { RootState } from "../state";
 import * as path from "path";
-import { TreeNodeClip, getNamespaceUris } from "paperclip";
+import {
+  TreeNodeClip,
+  getImportedNodeSourceUris,
+  getPCImportedChildrenSourceUris
+} from "paperclip";
 import {
   SyntheticObjectType,
   getSyntheticDocumentById,
@@ -36,6 +40,7 @@ function* handleCopy() {
     while (1) {
       const event: ClipboardEvent = yield take(chan);
       const root: RootState = yield select();
+
       event.clipboardData.setData(
         "text/plain",
         JSON.stringify(
@@ -44,9 +49,9 @@ function* handleCopy() {
               ({
                 uri: getSyntheticNodeById(nodeId, root.browser).source.uri,
                 node: getSyntheticSourceNode(nodeId, root.browser),
-                namespaceUris: getNamespaceUris(
+                imports: getPCImportedChildrenSourceUris(
                   getSyntheticSourceNode(nodeId, root.browser).id,
-                  root.browser
+                  root.browser.graph
                 )
               } as TreeNodeClip)
           )

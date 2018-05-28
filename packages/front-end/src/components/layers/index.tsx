@@ -22,17 +22,17 @@ import { DropTarget, DragSource, DropTargetCollector } from "react-dnd";
 import { FocusComponent } from "../focus";
 
 export type TreeLayerDroppedNodeActionCreator = (
-  child: TreeNode<any, any>,
-  targetNode: TreeNode<any, any>,
+  child: TreeNode<any>,
+  targetNode: TreeNode<any>,
   offset: 0 | -1 | 1
 ) => any;
 export type TreeLayerMouseActionCreator = (
-  node: TreeNode<any, any>,
+  node: TreeNode<any>,
   sourceEvent?: React.MouseEvent<any>
 ) => any;
 export type TreeLayerLabelChangedActionCreator = (
   label: string,
-  node: TreeNode<any, any>
+  node: TreeNode<any>
 ) => any;
 
 type AttributeInfo = {
@@ -41,8 +41,8 @@ type AttributeInfo = {
 };
 
 export type TreeNodeLayerOuterProps = {
-  root?: TreeNode<any, any>;
-  node: TreeNode<any, any>;
+  root?: TreeNode<any>;
+  node: TreeNode<any>;
   depth: number;
   dispatch: Dispatch<any>;
   hoveringNodeIds: string[];
@@ -50,8 +50,8 @@ export type TreeNodeLayerOuterProps = {
 };
 
 type TreeNodeLayerLabelOuterProps = {
-  root: TreeNode<any, any>;
-  node: TreeNode<any, any>;
+  root: TreeNode<any>;
+  node: TreeNode<any>;
   depth: number;
   selected: boolean;
   hovering: boolean;
@@ -86,12 +86,12 @@ type TreeLayerOptions = {
     treeLayerEditLabelBlur?: TreeLayerMouseActionCreator;
   };
   canDrop?: (
-    child: TreeNode<any, any>,
-    parent: TreeNode<any, any>,
+    child: TreeNode<any>,
+    parent: TreeNode<any>,
     offset: number,
-    root: TreeNode<any, any>
+    root: TreeNode<any>
   ) => boolean;
-  canDrag?: (child: TreeNode<any, any>) => boolean;
+  canDrag?: (child: TreeNode<any>) => boolean;
   layersEditable?: boolean;
   reorganizable?: boolean;
   dragType: string;
@@ -101,7 +101,7 @@ type TreeLayerOptions = {
     expandAttr?: AttributeInfo;
     editingLabelAttr?: AttributeInfo;
   };
-  hasChildren?: (node: TreeNode<any, any>) => boolean;
+  hasChildren?: (node: TreeNode<any>) => boolean;
   getLabelProps?: (attributes: any, props: TreeNodeLayerLabelOuterProps) => any;
   childRenderer?: (Base: any) => (props: TreeNodeLayerOuterProps) => any[];
   layerRenderer?: (Base: any) => (props: TreeNodeLayerOuterProps) => any;
@@ -136,7 +136,7 @@ const defaultRender = Base => ({
         hoveringNodeIds={hoveringNodeIds}
         selectedNodeIds={selectedNodeIds}
         key={child.id}
-        node={child as TreeNode<any, any>}
+        node={child as TreeNode<any>}
         depth={depth + 1}
         dispatch={dispatch}
         {...rest}
@@ -146,7 +146,7 @@ const defaultRender = Base => ({
 
 const defaultLayerRenderer = Base => props => React.createElement(Base, props);
 
-const defaultShowChildren = (node: TreeNode<any, any>) => node.children.length;
+const defaultShowChildren = (node: TreeNode<any>) => node.children.length;
 
 export const createTreeLayerComponents = <
   TTreeLayerOuterProps extends TreeNodeLayerOuterProps
@@ -182,9 +182,9 @@ export const createTreeLayerComponents = <
   let renderChildren;
 
   type InsertOuterProps = {
-    root: TreeNode<any, any>;
+    root: TreeNode<any>;
     depth: number;
-    node: TreeNode<any, any>;
+    node: TreeNode<any>;
     dispatch: Dispatch<any>;
   };
 
@@ -220,13 +220,13 @@ export const createTreeLayerComponents = <
             node,
             root
           }: {
-            node: TreeNode<any, any>;
+            node: TreeNode<any>;
             dispatch: Dispatch<any>;
-            root: TreeNode<any, any>;
+            root: TreeNode<any>;
           },
           monitor
         ) => {
-          const draggingNode = monitor.getItem() as TreeNode<any, any>;
+          const draggingNode = monitor.getItem() as TreeNode<any>;
           return (
             node.id !== draggingNode.id &&
             getNestedTreeNodeById(node.id, draggingNode) == null &&
@@ -236,7 +236,7 @@ export const createTreeLayerComponents = <
         drop: ({ dispatch, node }, monitor) => {
           dispatch(
             treeLayerDroppedNode(
-              monitor.getItem() as TreeNode<any, any>,
+              monitor.getItem() as TreeNode<any>,
               node,
               offset
             )

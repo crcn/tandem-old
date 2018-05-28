@@ -1,9 +1,9 @@
 import { mapValues } from "lodash";
 import {
   ComputedDisplayInfo,
-  EditorAttributeNames,
   SyntheticNode,
-  SyntheticElement
+  SyntheticElement,
+  isSyntheticNodeRoot
 } from "./synthetic";
 import {
   TreeNode,
@@ -17,12 +17,8 @@ import {
   MoveChildTransform,
   patchNode
 } from "tandem-common";
-import {
-  PCElementAttributeNames,
-  PCSourceTagNames,
-  PCTextNode,
-  PCSourceNamespaces
-} from "./dsl";
+import { PCSourceTagNames, PCTextNode } from "./dsl";
+import { DependencyGraph } from "graph";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node;
@@ -31,6 +27,7 @@ export type SyntheticNativeNodeMap = {
 export const renderDOM = (
   native: HTMLElement,
   synthetic: SyntheticNode,
+  graph: DependencyGraph,
   document: Document = window.document
 ) => {
   let parentNative;
@@ -42,7 +39,7 @@ export const renderDOM = (
   }
 
   const nativeMap = {};
-  native.appendChild(createNativeNode(synthetic, document, nativeMap));
+  native.appendChild(createNativeNode(synthetic, graph, document, nativeMap));
 
   return nativeMap;
 };
@@ -82,10 +79,10 @@ export const computeDisplayInfo = (
 
 const setStyleConstraintsIfRoot = (
   synthetic: SyntheticNode,
+  graph: DependencyGraph,
   nativeElement: HTMLElement
 ) => {
-  const isRoot =
-    synthetic.attributes[PCSourceNamespaces.EDITOR].isComponentRoot;
+  const isRoot = isSyntheticNodeRoot(synthetic, graph);
   if (isRoot) {
     nativeElement.style.width = "100vw";
     nativeElement.style.height = "100vh";
@@ -94,17 +91,16 @@ const setStyleConstraintsIfRoot = (
 
 const createNativeNode = (
   synthetic: SyntheticNode,
+  graph: DependencyGraph,
   document: Document,
   map: SyntheticNativeNodeMap
 ) => {
   const isText = synthetic.name === PCSourceTagNames.TEXT;
   const nativeElement = document.createElement(
-    isText
-      ? "span"
-      : (synthetic as SyntheticElement).attributes.core.nativeType || "div"
+    isText ? "span" : (synthetic as SyntheticElement).name || "div"
   );
 
-  const attrs = synthetic.attributes.core || {};
+  const attrs = synthetic.style || {};
   for (const name in attrs) {
     const value = attrs[name];
     if (name === "style") {
@@ -113,22 +109,22 @@ const createNativeNode = (
       nativeElement.setAttribute(name, value);
     }
   }
-  setStyleConstraintsIfRoot(synthetic, nativeElement);
+  setStyleConstraintsIfRoot(synthetic, graph, nativeElement);
 
   if (isText) {
     nativeElement.appendChild(
-      document.createTextNode((synthetic as PCTextNode).attributes.core.value)
+      document.createTextNode((synthetic as PCTextNode).value)
     );
   } else {
     for (let i = 0, { length } = synthetic.children; i < length; i++) {
       const childSynthetic = synthetic.children[i] as SyntheticNode;
       nativeElement.appendChild(
-        createNativeNode(childSynthetic, document, map)
+        createNativeNode(childSynthetic, graph, document, map)
       );
     }
   }
 
-  makeElementClickable(nativeElement, synthetic);
+  makeElementClickable(nativeElement, synthetic, graph);
   return (map[synthetic.id] = nativeElement);
 };
 
@@ -145,6 +141,7 @@ const removeElementsFromMap = (
 export const patchDOM = (
   transforms: OperationalTransform[],
   synthetic: SyntheticNode,
+  graph: DependencyGraph,
   root: HTMLElement,
   map: SyntheticNativeNodeMap
 ) => {
@@ -161,46 +158,47 @@ export const patchDOM = (
     switch (transform.type) {
       case OperationalTransformType.SET_ATTRIBUTE: {
         const { name, value, namespace } = transform as SetAttributeTransform;
-        if (namespace === PCSourceNamespaces.CORE) {
-          if (name === "style") {
-            resetElementStyle(target, syntheticTarget);
-            setStyleConstraintsIfRoot(syntheticTarget, target);
-            makeElementClickable(target, syntheticTarget);
-          } else if (
-            name === "value" &&
-            syntheticTarget.name === PCSourceTagNames.TEXT
-          ) {
-            target.childNodes[0].nodeValue = value;
-          } else if (name === PCElementAttributeNames.NATIVE_TYPE) {
-            const parent = target.parentNode;
-            if (newMap === map) {
-              newMap = { ...map };
-            }
-            const newTarget = createNativeNode(
-              getTreeNodeFromPath(transform.path, newSyntheticTree),
-              root.ownerDocument,
-              newMap
-            );
-            parent.insertBefore(newTarget, target);
-            parent.removeChild(target);
-          }
-        }
+
+        // if (name === "style") {
+        //   resetElementStyle(target, syntheticTarget);
+        //   setStyleConstraintsIfRoot(syntheticTarget, graph, target);
+        //   makeElementClickable(target, syntheticTarget);
+        // } else if (
+        //   name === "value" &&
+        //   syntheticTarget.name === PCSourceTagNames.TEXT
+        // ) {
+        //   target.childNodes[0].nodeValue = value;
+        // } else if (name === PCElementAttributeNames.NATIVE_TYPE) {
+        //   const parent = target.parentNode;
+        //   if (newMap === map) {
+        //     newMap = { ...map };
+        //   }
+        //   const newTarget = createNativeNode(
+        //     getTreeNodeFromPath(transform.path, newSyntheticTree),
+        //     root.ownerDocument,
+        //     newMap
+        //   );
+        //   parent.insertBefore(newTarget, target);
+        //   parent.removeChild(target);
+        // }
+
         break;
       }
       case OperationalTransformType.INSERT_CHILD: {
         const { child, index } = transform as InsertChildTransform;
-        if (!child.namespace || child.namespace == PCSourceNamespaces.CORE) {
-          if (newMap === map) {
-            newMap = { ...map };
-          }
-          const nativeChild = createNativeNode(
-            child as SyntheticNode,
-            root.ownerDocument,
-            newMap
-          );
-          removeClickableStyle(target, syntheticTarget);
-          insertChild(target, nativeChild, index);
+
+        if (newMap === map) {
+          newMap = { ...map };
         }
+        const nativeChild = createNativeNode(
+          child as SyntheticNode,
+          graph,
+          root.ownerDocument,
+          newMap
+        );
+        removeClickableStyle(target, syntheticTarget);
+        insertChild(target, nativeChild, index);
+
         break;
       }
       case OperationalTransformType.REMOVE_CHILD: {
@@ -225,12 +223,13 @@ export const patchDOM = (
 
 const makeElementClickable = (
   target: HTMLElement,
-  synthetic: SyntheticNode
+  synthetic: SyntheticNode,
+  graph: DependencyGraph
 ) => {
-  const isRoot = synthetic.attributes.editor.isComponentRoot;
+  const isRoot = isSyntheticNodeRoot(synthetic, graph);
 
   if (synthetic.name !== "text" && !isRoot) {
-    const style = synthetic.attributes.core.style || {};
+    const style = synthetic.style || {};
     if (target.childNodes.length === 0 && Object.keys(style).length === 0) {
       target.dataset.empty = "1";
       Object.assign(target.style, {
@@ -262,7 +261,7 @@ const makeElementClickable = (
 
 const resetElementStyle = (target: HTMLElement, synthetic: SyntheticNode) => {
   removeClickableStyle(target, synthetic);
-  const style = synthetic.attributes.core.style || {};
+  const style = synthetic.style || {};
   target.setAttribute("style", "");
   Object.assign(target.style, normalizeStyle(style));
 };

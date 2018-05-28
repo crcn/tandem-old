@@ -10,8 +10,9 @@ import {
   getSyntheticSourceNode,
   getSourceNodeElementRoot,
   PCVisibleNode,
-  PCSourceNode,
-  PCElement
+  PCNode,
+  PCElement,
+  PCSourceTagNames
 } from "paperclip";
 import { EMPTY_OBJECT, stringifyStyle } from "tandem-common";
 import {
@@ -74,7 +75,8 @@ const BaseBehaviorPaneComponent = ({
         </button>
       ) : null}
       <div>
-        {sourceNode.name !== "component" && sourceNode.name !== "text" ? (
+        {sourceNode.name !== PCSourceTagNames.COMPONENT &&
+        sourceNode.name !== PCSourceTagNames.TEXT ? (
           <span>
             native type:{" "}
             <input defaultValue={nativeType} onKeyDown={onNativeTypeKeyDown} />{" "}

@@ -10,9 +10,7 @@ import {
 } from "./tree";
 import { memoize } from "../utils/memoization";
 import * as path from "path";
-
-export const FILE_TAG_NAME = "file";
-export const DIRECTORY_TAG_NAME = "directory";
+import { generateUID } from "../utils/uid";
 
 export enum FSItemNamespaces {
   CORE = "core"
@@ -23,18 +21,15 @@ export enum FSItemTagNames {
   DIRECTORY = "directory"
 }
 
-export type FileAttributes = {
-  [FSItemNamespaces.CORE]: {
-    uri: string;
-    expanded?: boolean;
-    basename: string;
-    selected?: boolean;
-  };
-};
+type BaseFSItem<TName extends string> = {
+  uri: string;
+  expanded?: boolean;
+  selected?: boolean;
+} & TreeNode<TName>;
 
-export type File = TreeNode<FSItemTagNames.FILE, FileAttributes>;
+export type File = BaseFSItem<FSItemTagNames.FILE>;
 
-export type Directory = TreeNode<FSItemTagNames.DIRECTORY, FileAttributes>;
+export type Directory = BaseFSItem<FSItemTagNames.DIRECTORY>;
 
 export enum FileAttributeNames {
   URI = "uri",
@@ -43,133 +38,128 @@ export enum FileAttributeNames {
   SELECTED = "selected"
 }
 
-export type FSItem = TreeNode<FSItemTagNames, FileAttributes>;
+export type FSItem = File | Directory;
 
-export const isFile = (node: TreeNode<any, any>) => node.name === FILE_TAG_NAME;
-export const isDirectory = (node: TreeNode<any, any>) =>
-  node.name === DIRECTORY_TAG_NAME;
+export const isFile = (node: TreeNode<any>) =>
+  node.name === FSItemTagNames.FILE;
+export const isDirectory = (node: TreeNode<any>) =>
+  node.name === FSItemTagNames.DIRECTORY;
 
-export const getFileName = (node: TreeNode<any, any>) =>
-  node.attributes[FSItemNamespaces.CORE].name;
-
-export const createFile = (name: string): File =>
-  createTreeNode(FILE_TAG_NAME, {
-    [FSItemNamespaces.CORE]: {
-      name
-    }
-  }) as File;
-
-export const createDirectory = (
-  uri: string,
-  children: (File | Directory)[]
-): Directory =>
-  createTreeNode(DIRECTORY_TAG_NAME, {
-    [FSItemNamespaces.CORE]: {
-      uri
-    }
-  }) as Directory;
-
-export const getFilePath = memoize((file: File, directory: Directory) => {
-  const childParentMap = getChildParentMap(directory);
-  const path: string[] = [];
-
-  let current: TreeNode<any, any> = file;
-  while (current) {
-    path.unshift(getFileName(current));
-    current = childParentMap[current.id];
-  }
-
-  return path.join("/");
+export const createFile = (uri: string): File => ({
+  id: generateUID(),
+  name: FSItemTagNames.FILE,
+  uri,
+  children: []
 });
 
-export const getFilePathFromNodePath = (path: number[], directory: Directory) =>
-  getFilePath(getTreeNodeFromPath(path, directory) as File, directory);
+export const createDirectory = (uri: string): Directory => ({
+  id: generateUID(),
+  name: FSItemTagNames.DIRECTORY,
+  uri,
+  children: []
+});
 
-export const getFileFromUri = (uri: string, root: Directory) =>
-  findNestedNode(
-    root,
-    child =>
-      child.attributes[FSItemNamespaces.CORE][FileAttributeNames.URI] === uri
-  );
+// export const getFilePath = memoize((file: File, directory: Directory) => {
+//   const childParentMap = getChildParentMap(directory);
+//   const path: string[] = [];
 
-const getSelectedFile = memoize((root: Directory) =>
-  findNestedNode(
-    root,
-    child =>
-      child.attributes[FSItemNamespaces.CORE][FileAttributeNames.SELECTED]
-  )
-);
+//   let current: TreeNode<any> = file;
+//   while (current) {
+//     path.unshift(getFileName(current));
+//     current = childParentMap[current.id];
+//   }
 
-const getSelectedFiles = memoize((root: Directory) =>
-  filterNestedNodes(
-    root,
-    child =>
-      child.attributes[FSItemNamespaces.CORE][FileAttributeNames.SELECTED]
-  )
-);
+//   return path.join("/");
+// });
 
-export const getFilesWithExtension = memoize(
-  (extension: string, directory: Directory) => {
-    const tester = new RegExp(`${extension}$`);
-    return filterNestedNodes(
-      directory,
-      file => isFile(file) && tester.test(getFileName(file))
-    );
-  }
-);
+// export const getFilePathFromNodePath = (path: number[], directory: Directory) =>
+//   getFilePath(getTreeNodeFromPath(path, directory) as File, directory);
 
-export const convertFlatFilesToNested = (
-  rootDir: string,
-  files: string[]
-): Directory => {
-  const partedFiles = files.map(file => {
-    return file.substr(rootDir.length).split("/");
-  });
+// export const getFileFromUri = (uri: string, root: Directory) =>
+//   findNestedNode(
+//     root,
+//     child =>
+//       child.attributes[FSItemNamespaces.CORE][FileAttributeNames.URI] === uri
+//   );
 
-  let root: Directory = createTreeNode("directory", {
-    [FSItemNamespaces.CORE]: {
-      [FileAttributeNames.URI]: "file://" + rootDir,
-      [FileAttributeNames.BASENAME]: path.basename(rootDir)
-    }
-  }) as Directory;
+// const getSelectedFile = memoize((root: Directory) =>
+//   findNestedNode(
+//     root,
+//     child =>
+//       child.attributes[FSItemNamespaces.CORE][FileAttributeNames.SELECTED]
+//   )
+// );
 
-  for (const pf of partedFiles) {
-    let current: Directory = root;
-    let prev: Directory;
-    let i = 0;
-    for (let n = pf.length; i < n - 1; i++) {
-      const part = pf[i];
-      prev = current;
-      current = current.children.find(
-        child => child.attributes[FSItemNamespaces.CORE].basename === part
-      ) as Directory;
-      if (!current) {
-        current = createTreeNode("directory", {
-          [FSItemNamespaces.CORE]: {
-            [FileAttributeNames.URI]:
-              "file://" +
-              path.join(rootDir, pf.slice(0, i + 1).join("/")) +
-              "/",
-            [FileAttributeNames.BASENAME]: part
-          }
-        }) as Directory;
+// const getSelectedFiles = memoize((root: Directory) =>
+//   filterNestedNodes(
+//     root,
+//     child =>
+//       child.attributes[FSItemNamespaces.CORE][FileAttributeNames.SELECTED]
+//   )
+// );
 
-        prev.children.push(current, prev);
-      }
-    }
+// export const getFilesWithExtension = memoize(
+//   (extension: string, directory: Directory) => {
+//     const tester = new RegExp(`${extension}$`);
+//     return filterNestedNodes(
+//       directory,
+//       file => isFile(file) && tester.test(getFileName(file))
+//     );
+//   }
+// );
 
-    const isFile = /\./.test(pf[i]);
+// export const convertFlatFilesToNested = (
+//   rootDir: string,
+//   files: string[]
+// ): Directory => {
+//   const partedFiles = files.map(file => {
+//     return file.substr(rootDir.length).split("/");
+//   });
 
-    current.children.push(
-      createTreeNode(isFile ? "file" : "directory", {
-        [FSItemNamespaces.CORE]: {
-          [FileAttributeNames.URI]:
-            "file://" + path.join(rootDir, pf.join("/")) + (isFile ? "" : "/"),
-          [FileAttributeNames.BASENAME]: pf[i]
-        }
-      })
-    );
-  }
+//   let root: Directory = createTreeNode("directory", {
+//     [FSItemNamespaces.CORE]: {
+//       [FileAttributeNames.URI]: "file://" + rootDir,
+//       [FileAttributeNames.BASENAME]: path.basename(rootDir)
+//     }
+//   }) as Directory;
 
-  return root;
-};
+//   for (const pf of partedFiles) {
+//     let current: Directory = root;
+//     let prev: Directory;
+//     let i = 0;
+//     for (let n = pf.length; i < n - 1; i++) {
+//       const part = pf[i];
+//       prev = current;
+//       current = current.children.find(
+//         child => child.attributes[FSItemNamespaces.CORE].basename === part
+//       ) as Directory;
+//       if (!current) {
+//         current = createTreeNode("directory", {
+//           [FSItemNamespaces.CORE]: {
+//             [FileAttributeNames.URI]:
+//               "file://" +
+//               path.join(rootDir, pf.slice(0, i + 1).join("/")) +
+//               "/",
+//             [FileAttributeNames.BASENAME]: part
+//           }
+//         }) as Directory;
+
+//         prev.children.push(current, prev);
+//       }
+//     }
+
+//     const isFile = /\./.test(pf[i]);
+
+//     current.children.push(
+//       createTreeNode(isFile ? "file" : "directory", {
+//         [FSItemNamespaces.CORE]: {
+//           [FileAttributeNames.URI]:
+//             "file://" + path.join(rootDir, pf.join("/")) + (isFile ? "" : "/"),
+//           [FileAttributeNames.BASENAME]: pf[i]
+//         }
+//       })
+//     );
+//   }
+
+//   return root;
+// };

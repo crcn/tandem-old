@@ -9,16 +9,12 @@ import {
   addTreeNodeIds,
   resolveFilePath,
   EMPTY_OBJECT,
-  xmlToTreeNode,
-  createTreeNode
+  createTreeNode,
+  EMPTY_ARRAY
 } from "tandem-common";
 import * as migratePCModule from "paperclip-migrator";
-import {
-  Dependency,
-  DependencyGraph,
-  PCModuleNode,
-  createPCModule
-} from "./dsl";
+import { createPCModule, PCModule } from "./dsl";
+import { Dependency, DependencyGraph } from "./graph";
 export type FileLoader = (uri: string) => string | Promise<string>;
 
 export type LoadEntryOptions = {
@@ -27,7 +23,7 @@ export type LoadEntryOptions = {
 };
 
 export type LoadEntryResult = {
-  entry: Dependency;
+  entry: Dependency<any>;
   graph: DependencyGraph;
 };
 
@@ -47,8 +43,7 @@ export const loadEntry = async (
     const absolutePaths = [];
     const importUris = {};
 
-    for (const xmlns in module.attributes.xmlns || EMPTY_OBJECT) {
-      const relativePath = module.attributes.xmlns[xmlns];
+    for (const relativePath of module.imports || EMPTY_ARRAY) {
       const absolutePath = resolveFilePath(relativePath, currentUri);
       importUris[relativePath] = absolutePath;
       queue.push(absolutePath);
@@ -66,9 +61,9 @@ export const loadEntry = async (
 
 const createDependency = (
   uri: string,
-  content: PCModuleNode,
+  content: PCModule,
   importUris
-): Dependency => ({
+): Dependency<any> => ({
   uri,
   content,
   originalContent: content,
@@ -76,17 +71,13 @@ const createDependency = (
 });
 
 const parseNodeSource = (source: string) => {
-  try {
-    return addTreeNodeIds(JSON.parse(source));
-  } catch (e) {
-    return xmlToTreeNode(source);
-  }
+  JSON.parse(source);
 };
 
 const loadModule = async (
   uri: string,
   options: LoadEntryOptions
-): Promise<PCModuleNode> => {
+): Promise<PCModule> => {
   const content = await options.openFile(uri);
 
   // TODO - support other extensions in the future like images
