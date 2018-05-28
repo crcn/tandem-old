@@ -3,13 +3,20 @@ import { PCDependency } from "./dsl";
 import {
   SyntheticElement,
   SyntheticTextNode,
-  SyntheticFrame
+  SyntheticFrame,
+  SyntheticFrames
 } from "./synthetic";
 import { KeyValue } from "tandem-common";
 
-export type PaperclipRootState = {
+// namespaced to ensure that key doesn't conflict with others
+export type PaperclipRoot = {
+  paperclip: PaperclipState;
+};
+
+// what reducer stuff actally access
+export type PaperclipState = {
   // key = frame id, value = evaluated frame
-  syntheticFrames: KeyValue<SyntheticFrame>;
+  syntheticFrames: SyntheticFrames;
 
   graph: DependencyGraph;
 };

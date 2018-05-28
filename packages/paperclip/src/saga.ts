@@ -1,6 +1,6 @@
 import { take, fork, select, call, put } from "redux-saga/effects";
 import { SyntheticFrame } from "./synthetic";
-import { PaperclipRootState } from "./state";
+import { PaperclipRoot } from "./state";
 import { getPCNode, PCFrame } from "./dsl";
 import { pcSyntheticFrameRendered } from "./actions";
 import {
@@ -23,7 +23,9 @@ function* nativeRenderer() {
     let currFrames: KeyValue<SyntheticFrame>;
     while (1) {
       yield take();
-      const { syntheticFrames, graph }: PaperclipRootState = yield select();
+      const {
+        paperclip: { syntheticFrames, graph }
+      }: PaperclipRoot = yield select();
       if (syntheticFrames == currFrames) {
         continue;
       }
@@ -58,7 +60,7 @@ function* nativeRenderer() {
     oldFrame: SyntheticFrame,
     graph: DependencyGraph
   ) {
-    const body = frame.container.contentDocument.body;
+    const body = frame.$container.contentDocument.body;
     if (!oldFrame) {
       yield put(
         pcSyntheticFrameRendered(

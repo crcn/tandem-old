@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { evaluatePCModule } from "./evaluate";
 import { SyntheticFrame, createSyntheticElement } from "./synthetic";
+import { values } from "lodash";
 import {
   PCModule,
   PAPERCLIP_MODULE_VERSION,
@@ -67,7 +68,7 @@ describe(__filename + "#", () => {
       ])
     );
 
-    const frames = evaluatePCModule(module, createFakeGraph(module));
+    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
 
     expect(frames.length).to.eql(1);
 
@@ -107,7 +108,7 @@ describe(__filename + "#", () => {
       ])
     );
 
-    const frames = evaluatePCModule(module, createFakeGraph(module));
+    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
 
     expect(frames.length).to.eql(2);
 
@@ -150,7 +151,7 @@ describe(__filename + "#", () => {
       createPCModule([createPCFrame([component1]), createPCFrame([component2])])
     );
 
-    const frames = evaluatePCModule(module, createFakeGraph(module));
+    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
 
     expect(frames.length).to.eql(2);
 
@@ -195,7 +196,7 @@ describe(__filename + "#", () => {
       createPCModule([createPCFrame([component1]), createPCFrame([component2])])
     );
 
-    const frames = evaluatePCModule(module, createFakeGraph(module));
+    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
 
     expect(frames.length).to.eql(2);
 
@@ -268,7 +269,7 @@ describe(__filename + "#", () => {
       ])
     );
 
-    const frames = evaluatePCModule(module, createFakeGraph(module));
+    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
 
     expect(frames.length).to.eql(4);
 
@@ -314,7 +315,7 @@ describe(__filename + "#", () => {
       createPCModule([createPCFrame([component1]), createPCFrame([component2])])
     );
 
-    const frames = evaluatePCModule(module, createFakeGraph(module));
+    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
 
     expect(frames.length).to.eql(2);
 
@@ -354,7 +355,7 @@ describe(__filename + "#", () => {
       ])
     );
 
-    const frames = evaluatePCModule(module, createFakeGraph(module));
+    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
 
     expect(nodeIdCleaner()(frames[0].root)).to.eql(
       nodeIdCleaner()(

@@ -6,6 +6,7 @@ import {
   createSyntheticTextNode,
   SyntheticNode,
   SyntheticSource,
+  SyntheticFrames,
   getSyntheticSourceNode
 } from "./synthetic";
 import {
@@ -59,13 +60,17 @@ type EvalContext = {
 export const evaluatePCModule = (
   module: PCModule,
   graph: DependencyGraph = wrapModuleInDependencyGraph(module)
-): SyntheticFrame[] =>
-  module.children.map(frame =>
-    evaluatePCFrame(frame, module.id, {
-      overrides: {},
-      graph,
-      currentVariantIds: []
-    })
+): SyntheticFrames =>
+  module.children.reduce(
+    (frames, frame) => ({
+      ...frames,
+      [frame.id]: evaluatePCFrame(frame, module.id, {
+        overrides: {},
+        graph,
+        currentVariantIds: []
+      })
+    }),
+    {}
   );
 
 const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
@@ -78,7 +83,8 @@ const evaluatePCFrame = (
   context: EvalContext
 ): SyntheticFrame => ({
   id: generateUID(),
-  container: createContainer(),
+  source: createSyntheticSource(frame),
+  $container: createContainer(),
   root: evaluatePCFrameRootNode(
     frame.children[0],
     appendPath(parentPath, frame.id),

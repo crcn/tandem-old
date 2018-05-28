@@ -1,4 +1,9 @@
-import { KeyValue, generateUID, EMPTY_ARRAY } from "tandem-common";
+import {
+  KeyValue,
+  generateUID,
+  EMPTY_ARRAY,
+  TreeNodeUpdater
+} from "tandem-common";
 import { TreeNode, Bounds } from "tandem-common";
 import { DependencyGraph } from "./graph";
 import {
@@ -6,7 +11,8 @@ import {
   PCVisibleNode,
   getPCNodeFrame,
   getPCNodeDependency
-} from ".";
+} from "./dsl";
+import { PaperclipRoot } from "state";
 
 export type ComputedDisplayInfo = {
   [identifier: string]: {
@@ -15,15 +21,20 @@ export type ComputedDisplayInfo = {
   };
 };
 
-export type SyntheticFrame = {
-  id: string;
-  root: SyntheticNode;
-  container: HTMLIFrameElement;
-  computed?: ComputedDisplayInfo;
-};
+export type SyntheticFrames = KeyValue<SyntheticFrame>;
 
 export type SyntheticSource = {
   nodeId: string;
+};
+
+export type SyntheticFrame = {
+  id: string;
+  root: SyntheticNode;
+  source: SyntheticSource;
+
+  // internal only
+  $container: HTMLIFrameElement;
+  computed?: ComputedDisplayInfo;
 };
 
 export type SyntheticBaseNode = {
@@ -86,3 +97,34 @@ export const isSyntheticNodeRoot = (
   node: SyntheticNode,
   graph: DependencyGraph
 ) => getSyntheticSourceFrame(node, graph).children[0].id === node.source.nodeId;
+
+export const mergeSyntheticFrames = (
+  oldFrames: SyntheticFrames,
+  newFrames: SyntheticFrames
+) => {
+  const updatedFrames: SyntheticFrames = {};
+  for (const sourceFrameId in newFrames) {
+    const newFrame = newFrames[sourceFrameId];
+    const oldFrame = oldFrames[sourceFrameId];
+    if (!oldFrame || oldFrame === newFrame) {
+      continue;
+    }
+
+    const ots = []; //
+    const patchedRoot = newFrame.root;
+
+    updatedFrames[sourceFrameId] = {
+      ...oldFrame,
+      root: patchedRoot,
+      computed: newFrame.computed
+    };
+  }
+};
+
+export const persistSyntheticNodeChanges = (
+  node: SyntheticNode,
+  state: PaperclipRoot,
+  updater: TreeNodeUpdater<SyntheticNode>
+) => {
+  // TODO
+};
