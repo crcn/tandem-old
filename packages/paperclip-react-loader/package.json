@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "paperclip-migrator": "^1.0.0",
     "paperclip-react-compiler": "^1.0.0"
   }
 }

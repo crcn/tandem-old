@@ -1,10 +1,16 @@
 import * as fs from "fs";
-import { compilePaperclipToReact } from "paperclip-react-compiler";
+import { translatePaperclipModuleToReact } from "paperclip-react-compiler";
+import * as migrate from "paperclip-migrator";
 
 // TODO - use options for
 module.exports = function(source) {
   this.cacheable && this.cacheable();
   const callback = this.async();
   const uri = this.resource;
-  callback(null, compilePaperclipToReact(fs.readFileSync(uri, "utf8")));
+  callback(
+    null,
+    translatePaperclipModuleToReact(
+      migrate(JSON.parse(fs.readFileSync(uri, "utf8")))
+    )
+  );
 };
