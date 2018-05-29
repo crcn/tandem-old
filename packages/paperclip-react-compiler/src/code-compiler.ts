@@ -2,6 +2,7 @@
 // - variants for props
 // - variants for classes
 // - tests**
+// - imported deps
 import {
   PCModule,
   PCFrame,
@@ -18,7 +19,8 @@ import {
   getVisibleChildren,
   isVisibleNode,
   createPCFrame,
-  getOverrides
+  getOverrides,
+  getPCNode
 } from "paperclip";
 import { repeat, camelCase, uniq, kebabCase } from "lodash";
 import {
@@ -27,7 +29,8 @@ import {
   flattenTreeNode,
   arraySplice,
   EMPTY_OBJECT,
-  EMPTY_ARRAY
+  EMPTY_ARRAY,
+  getNestedTreeNodeById
 } from "tandem-common";
 
 export const compilePaperclipModuleToReact = (module: PCModule) => {
@@ -40,6 +43,7 @@ type TranslateContext = {
   buffer: string;
   newLine?: boolean;
   currentScope?: string;
+  module: PCModule;
   scopedLabelRefs: {
     // scope ID
     [identifier: string]: {
@@ -54,6 +58,7 @@ const INDENT = "  ";
 
 export const translatePaperclipModuleToReact = (module: PCModule) =>
   translateModule(module, {
+    module,
     buffer: "",
     scopedLabelRefs: {},
     depth: 0
@@ -61,6 +66,15 @@ export const translatePaperclipModuleToReact = (module: PCModule) =>
 
 const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addLine("\nvar React = require('react');", context);
+
+  if (module.imports.length) {
+    context = addLine(`var _imports = {}`, context);
+  }
+
+  for (const imp of module.imports) {
+    context = addLine(`Object.assign(_imports, require("${imp}"));`, context);
+  }
+
   context = addLine("\nvar _EMPTY_OBJECT = {}", context);
 
   context = translateModuleStyles(module, context);
@@ -249,7 +263,11 @@ const translateElement = (
   context = addLineItem(
     `${
       extendsComponent(elementOrComponent)
-        ? `_` + elementOrComponent.is
+        ? (getNestedTreeNodeById(elementOrComponent.is, context.module)
+            ? ""
+            : "_imports.") +
+          `_` +
+          elementOrComponent.is
         : '"' + elementOrComponent.is + '"'
     }, `,
     context

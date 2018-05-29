@@ -4,7 +4,6 @@ IMMEDIATE:
 
 * refactor front-end to use new API.
 * code compiler (compile CSS)
-* tandem config
 
   * execute command on save
 
