@@ -50,6 +50,8 @@ type EvalOverride = {
 };
 
 type EvalContext = {
+  isRoot?: boolean;
+  isCreatedFromComponent?: boolean;
   currentVariantIds: string[];
   overrides: {
     [identifier: string]: EvalOverride;
@@ -96,6 +98,7 @@ const evaluatePCFrameRootNode = (
   parentPath: string,
   context: EvalContext
 ) => {
+  context = { ...context, isRoot: true };
   switch (root.name) {
     case PCSourceTagNames.COMPONENT: {
       return evaluateRootComponent(root, parentPath, context);
@@ -109,7 +112,8 @@ const evaluatePCFrameRootNode = (
 const evaluateRootComponent = (
   root: PCComponent,
   path: string,
-  context: EvalContext
+  context: EvalContext,
+  isRoot?: boolean
 ) => {
   return evaluateComponentOrElementFromInstance(root, root, path, context);
 };
@@ -148,10 +152,15 @@ const evaluateComponentOrElementFromInstance = (
 ): SyntheticElement => {
   if (instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
     // TODO - sort variants
-    context = { ...context, currentVariantIds: instanceNode.variant };
+    context = {
+      ...context,
+      currentVariantIds: instanceNode.variant,
+      isCreatedFromComponent: true
+    };
   } else if (instanceNode.name === PCSourceTagNames.COMPONENT) {
     context = {
       ...context,
+      isCreatedFromComponent: true,
       currentVariantIds: getDefaultVariantIds(instanceNode)
     };
   }
@@ -163,6 +172,9 @@ const evaluateComponentOrElementFromInstance = (
     context
   );
 };
+
+const removeIsRoot = (context: EvalContext) =>
+  context.isRoot ? { ...context, isRoot: false } : context;
 
 const evaluateComponentOrElement = (
   elementOrComponent: PCElement | PCComponent,
@@ -179,6 +191,11 @@ const evaluateComponentOrElement = (
       context
     );
   } else {
+    const isRoot = context.isRoot;
+    context = removeIsRoot(context);
+    const isComponentInstance =
+      instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      instanceNode.name === PCSourceTagNames.COMPONENT;
     return applyPropertyOverrides(
       createSyntheticElement(
         elementOrComponent.is,
@@ -191,7 +208,11 @@ const evaluateComponentOrElement = (
           getVisibleChildren(elementOrComponent).map(child =>
             evaluatePCVisibleNode(child, instancePath, context)
           )
-        )
+        ),
+        instanceNode.label || elementOrComponent.label,
+        Boolean(isRoot),
+        Boolean(context.isCreatedFromComponent),
+        Boolean(isComponentInstance)
       ),
       instancePath,
       context
@@ -317,7 +338,11 @@ const registerOverrides = (
           null,
           null,
           source.children.map(child => {
-            return evaluatePCVisibleNode(child, nodePath, context);
+            return evaluatePCVisibleNode(
+              child,
+              nodePath,
+              removeIsRoot(context)
+            );
           }),
           idPathStr,
           context

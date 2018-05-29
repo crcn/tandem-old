@@ -157,7 +157,8 @@ import {
   getSyntheticSourceNode,
   getSyntheticNodeById,
   SyntheticNode,
-  queueLoadDependencyUri
+  queueLoadDependencyUri,
+  getPCNodeDependency
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -997,19 +998,24 @@ export const canvasReducer = (state: RootState, action: Action) => {
     //   }, state);
     //   return state;
     // }
-    // case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
-    //   const {
-    //     documentId,
-    //     sourceEvent
-    //   } = action as CanvasToolArtboardTitleClicked;
-    //   const window = getSyntheticDocumentWindow(documentId, state.paperclip);
-    //   state = updateEditorCanvas({ smooth: false }, window.location, state);
-    //   return handleArtboardSelectionFromAction(
-    //     state,
-    //     getSyntheticDocumentById(documentId, state.paperclip).root.id,
-    //     action as CanvasToolArtboardTitleClicked
-    //   );
-    // }
+    case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
+      const {
+        documentId,
+        sourceEvent
+      } = action as CanvasToolArtboardTitleClicked;
+      const frame = state.paperclip.syntheticFrames[documentId];
+      state = updateEditorCanvas(
+        { smooth: false },
+        getPCNodeDependency(frame.root.source.nodeId, state.paperclip.graph)
+          .uri,
+        state
+      );
+      return handleArtboardSelectionFromAction(
+        state,
+        frame.root.id,
+        action as CanvasToolArtboardTitleClicked
+      );
+    }
     // case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
     //   return setSelectedSyntheticNodeIds(state);
     // }

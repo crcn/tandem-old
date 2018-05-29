@@ -81,10 +81,18 @@ export const createSyntheticElement = (
   source: SyntheticSource,
   style: KeyValue<any> = {},
   attributes: KeyValue<string>,
-  children: SyntheticNode[] = EMPTY_ARRAY
+  children: SyntheticNode[] = EMPTY_ARRAY,
+  label?: string,
+  isRoot?: boolean,
+  isCreatedFromComponent?: boolean,
+  isComponentInstance?: boolean
 ): SyntheticElement => ({
   id: generateUID(),
   metadata: EMPTY_OBJECT,
+  label,
+  isComponentInstance,
+  isCreatedFromComponent,
+  isRoot,
   source,
   name,
   attributes,
@@ -95,11 +103,15 @@ export const createSyntheticElement = (
 export const createSyntheticTextNode = (
   value: string,
   source: SyntheticSource,
-  style: KeyValue<any> = EMPTY_OBJECT
+  style: KeyValue<any> = EMPTY_OBJECT,
+  label?: string,
+  isCreatedFromComponent?: boolean
 ): SyntheticTextNode => ({
+  label,
   id: generateUID(),
   metadata: EMPTY_OBJECT,
   value,
+  isCreatedFromComponent,
   source,
   name: PCSourceTagNames.TEXT,
   style,

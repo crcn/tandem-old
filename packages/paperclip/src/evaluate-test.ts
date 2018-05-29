@@ -25,6 +25,7 @@ import {
   appendChildNode
 } from "tandem-common";
 import { DependencyGraph } from "./graph";
+import { translateAbsoluteToRelativePoint } from "tandem-common/lib/utils/transform";
 
 describe(__filename + "#", () => {
   type EvaluateCases = Array<[PCModule, SyntheticFrame[]]>;
@@ -84,9 +85,18 @@ describe(__filename + "#", () => {
               "div",
               { nodeId: "000000003" },
               { a: "b2" },
-              { c: "d" }
+              { c: "d" },
+              [],
+              undefined,
+              false,
+              true,
+              false
             )
-          ]
+          ],
+          "Test",
+          true,
+          true,
+          true
         )
       )
     );
@@ -104,7 +114,9 @@ describe(__filename + "#", () => {
     const module = cleanIds(
       createPCModule([
         createPCFrame([component]),
-        createPCFrame([createPCElement(component.id, { a: "b3" }, { c: "d" })])
+        createPCFrame([
+          createPCComponentInstance(component.id, null, { a: "b3" }, { c: "d" })
+        ])
       ])
     );
 
@@ -124,9 +136,18 @@ describe(__filename + "#", () => {
               "div",
               { nodeId: "000000001" },
               { a: "b2" },
-              { c: "d" }
+              { c: "d" },
+              [],
+              undefined,
+              false,
+              true,
+              false
             )
-          ]
+          ],
+          "Test",
+          true,
+          true,
+          true
         )
       )
     );
@@ -167,9 +188,18 @@ describe(__filename + "#", () => {
               "div",
               { nodeId: "000000001" },
               { a: "b2" },
-              { c: "d" }
+              { c: "d" },
+              [],
+              undefined,
+              false,
+              true,
+              false
             )
-          ]
+          ],
+          "Test",
+          true,
+          true,
+          true
         )
       )
     );
@@ -218,11 +248,24 @@ describe(__filename + "#", () => {
                   "div",
                   { nodeId: "000000004" },
                   { a: "bb" },
-                  { c: "dd" }
+                  { c: "dd" },
+                  [],
+                  undefined,
+                  false,
+                  true,
+                  false
                 )
-              ]
+              ],
+              undefined,
+              false,
+              true,
+              false
             )
-          ]
+          ],
+          "Test",
+          true,
+          true,
+          true
         )
       )
     );
@@ -281,15 +324,69 @@ describe(__filename + "#", () => {
           { color: "blue" },
           {},
           [
-            createSyntheticElement("a", { nodeId: "000000000" }, {}, {}, [
-              createSyntheticElement("b", { nodeId: "000000002" }, {}, {}, [
-                createSyntheticElement("c", { nodeId: "000000006" }, {}, {}, [
-                  createSyntheticElement("d", { nodeId: "000000009" }, {}, {})
-                ])
-              ]),
-              createSyntheticElement("b2", { nodeId: "000000005" }, {}, {}, [])
-            ])
-          ]
+            createSyntheticElement(
+              "a",
+              { nodeId: "000000000" },
+              {},
+              {},
+              [
+                createSyntheticElement(
+                  "b",
+                  { nodeId: "000000002" },
+                  {},
+                  {},
+                  [
+                    createSyntheticElement(
+                      "c",
+                      { nodeId: "000000006" },
+                      {},
+                      {},
+                      [
+                        createSyntheticElement(
+                          "d",
+                          { nodeId: "000000009" },
+                          {},
+                          {},
+                          [],
+                          undefined,
+                          false,
+                          true,
+                          false
+                        )
+                      ],
+                      undefined,
+                      false,
+                      true,
+                      false
+                    )
+                  ],
+                  undefined,
+                  false,
+                  true,
+                  false
+                ),
+                createSyntheticElement(
+                  "b2",
+                  { nodeId: "000000005" },
+                  {},
+                  {},
+                  [],
+                  undefined,
+                  false,
+                  true,
+                  false
+                )
+              ],
+              undefined,
+              false,
+              true,
+              false
+            )
+          ],
+          "Test",
+          true,
+          true,
+          true
         )
       )
     );
@@ -321,15 +418,29 @@ describe(__filename + "#", () => {
 
     expect(nodeIdCleaner()(frames[1].root)).to.eql(
       nodeIdCleaner()(
-        createSyntheticElement("div", { nodeId: "000000002" }, {}, {}, [
-          createSyntheticElement(
-            "a",
-            { nodeId: "000000000" },
-            { color: "red" },
-            {},
-            []
-          )
-        ])
+        createSyntheticElement(
+          "div",
+          { nodeId: "000000002" },
+          {},
+          {},
+          [
+            createSyntheticElement(
+              "a",
+              { nodeId: "000000000" },
+              { color: "red" },
+              {},
+              [],
+              undefined,
+              false,
+              true,
+              false
+            )
+          ],
+          "Test",
+          true,
+          true,
+          true
+        )
       )
     );
   });
@@ -359,29 +470,57 @@ describe(__filename + "#", () => {
 
     expect(nodeIdCleaner()(frames[0].root)).to.eql(
       nodeIdCleaner()(
-        createSyntheticElement("div", { nodeId: "000000003" }, {}, {}, [
-          createSyntheticElement(
-            "a",
-            { nodeId: "000000001" },
-            { color: "blue" },
-            {},
-            []
-          )
-        ])
+        createSyntheticElement(
+          "div",
+          { nodeId: "000000003" },
+          {},
+          {},
+          [
+            createSyntheticElement(
+              "a",
+              { nodeId: "000000001" },
+              { color: "blue" },
+              {},
+              [],
+              undefined,
+              false,
+              true,
+              false
+            )
+          ],
+          "Test",
+          true,
+          true,
+          true
+        )
       )
     );
 
     expect(nodeIdCleaner()(frames[1].root)).to.eql(
       nodeIdCleaner()(
-        createSyntheticElement("div", { nodeId: "000000007" }, {}, {}, [
-          createSyntheticElement(
-            "a",
-            { nodeId: "000000001" },
-            { color: "red" },
-            {},
-            []
-          )
-        ])
+        createSyntheticElement(
+          "div",
+          { nodeId: "000000007" },
+          {},
+          {},
+          [
+            createSyntheticElement(
+              "a",
+              { nodeId: "000000001" },
+              { color: "red" },
+              {},
+              [],
+              undefined,
+              false,
+              true,
+              false
+            )
+          ],
+          "Test",
+          true,
+          true,
+          true
+        )
       )
     );
   });
