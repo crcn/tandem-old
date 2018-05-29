@@ -8,7 +8,8 @@ import {
   memoize,
   TreeNode,
   Bounds,
-  updateNestedNode
+  updateNestedNode,
+  shiftBounds
 } from "tandem-common";
 import { values } from "lodash";
 import { DependencyGraph } from "./graph";
@@ -16,8 +17,10 @@ import {
   getPCNode,
   PCVisibleNode,
   getPCNodeFrame,
-  getPCNodeDependency
+  getPCNodeDependency,
+  PCSourceTagNames
 } from "./dsl";
+import { diffSyntheticNode, patchSyntheticNode } from ".";
 
 export type ComputedDisplayInfo = {
   [identifier: string]: {
@@ -56,6 +59,9 @@ export type SyntheticBaseNode = {
   metadata: KeyValue<any>;
   source: SyntheticSource;
   isRoot?: boolean;
+  isCreatedFromComponent?: boolean;
+  isComponentInstance?: boolean;
+  label?: string;
 } & TreeNode<string>;
 
 export type SyntheticElement = {
@@ -95,7 +101,7 @@ export const createSyntheticTextNode = (
   metadata: EMPTY_OBJECT,
   value,
   source,
-  name,
+  name: PCSourceTagNames.TEXT,
   style,
   children: EMPTY_ARRAY
 });
@@ -117,7 +123,7 @@ export const getSyntheticFrameDependencyUri = (
   frame: SyntheticFrame,
   state: PaperclipState
 ) => {
-  return getPCNodeDependency(frame.root.id, state.graph).uri;
+  return getPCNodeDependency(frame.root.source.nodeId, state.graph).uri;
 };
 
 export const getSyntheticNodeFrame = memoize(
@@ -161,15 +167,26 @@ export const getSyntheticNodeById = memoize(
   }
 );
 
-export const getSyntheticNodeBounds = (
+export const getSyntheticNodeComputedBounds = (
   syntheticNodeId: string,
   state: PaperclipState
-): Bounds => {
+) => {
   const frame = getSyntheticNodeFrame(syntheticNodeId, state);
   return (
     frame.computed &&
     frame.computed[syntheticNodeId] &&
     frame.computed[syntheticNodeId].bounds
+  );
+};
+
+export const getSyntheticNodeBounds = (
+  syntheticNodeId: string,
+  state: PaperclipState
+): Bounds => {
+  const frame = getSyntheticNodeFrame(syntheticNodeId, state);
+  return shiftBounds(
+    getSyntheticNodeComputedBounds(syntheticNodeId, state),
+    frame.bounds
   );
 };
 
@@ -202,22 +219,25 @@ export const mergeSyntheticFrames = (
   oldFrames: SyntheticFrames,
   newFrames: SyntheticFrames
 ) => {
-  const updatedFrames: SyntheticFrames = {};
+  const updatedFrames: SyntheticFrames = { ...oldFrames };
   for (const sourceFrameId in newFrames) {
     const newFrame = newFrames[sourceFrameId];
     const oldFrame = oldFrames[sourceFrameId];
-    if (!oldFrame || oldFrame === newFrame) {
+    if (oldFrame === newFrame) {
       continue;
     }
 
-    const ots = []; //
-    const patchedRoot = newFrame.root;
+    const patchedRoot = oldFrame
+      ? patchSyntheticNode(
+          diffSyntheticNode(oldFrame.root, newFrame.root),
+          oldFrame.root
+        )
+      : newFrame.root;
 
     updatedFrames[sourceFrameId] = {
-      ...oldFrame,
-      root: patchedRoot,
-      bounds: newFrame.bounds,
-      computed: newFrame.computed
+      ...(oldFrame || EMPTY_OBJECT),
+      ...newFrame,
+      root: patchedRoot
     };
   }
 

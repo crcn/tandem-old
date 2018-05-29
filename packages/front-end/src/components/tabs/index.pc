@@ -1,9 +1,6 @@
 {
   "name": "module",
   "attributes": {
-    "xmlns": {
-      "import0": "../dev/comment.pc"
-    }
   },
   "children": [
     {

@@ -21,16 +21,19 @@ export const TabsComponent = compose<TabsOuterProps, TabsOuterProps>(pure)(
     return (
       <BaseTabs
         style={style}
-        barChildren={items.map((item, i) => {
-          return (
-            <BaseTab
-              labelChildren={item.label}
-              variants={item.selected ? ["Selected"] : null}
-              onClick={() => onTabClick(item)}
-            />
-          );
-        })}
-        contentChildren={children}
+        barProps={{
+          children: items.map((item, i) => {
+            return (
+              <BaseTab
+                key={i}
+                labelProps={{ children: item.label }}
+                variants={item.selected ? ["Selected"] : null}
+                onClick={() => onTabClick(item)}
+              />
+            );
+          })
+        }}
+        contentProps={{ children }}
       />
     );
   }

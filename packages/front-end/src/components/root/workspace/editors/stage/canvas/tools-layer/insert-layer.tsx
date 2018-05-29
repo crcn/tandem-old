@@ -8,12 +8,10 @@ import {
 } from "../../../../../../../actions";
 import { Dispatch } from "redux";
 import { startDOMDrag, Bounds, getBoundsSize } from "tandem-common";
-import { SyntheticWindow } from "paperclip";
 
 type InsertLayerOuterProps = {
   toolType: ToolType;
   editor: Editor;
-  window: SyntheticWindow;
   dispatch: Dispatch<any>;
 };
 
@@ -95,7 +93,7 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
   withHandlers({
     onMouseDown: ({
       toolType,
-      window,
+      editor,
       setPreviewBounds,
       dispatch
     }: InsertLayerInnerProps) => (startEvent: React.MouseEvent<any>) => {
@@ -107,7 +105,7 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
             left: startX,
             top: startY
           },
-          window.location
+          editor.activeFilePath
         )
       );
     }

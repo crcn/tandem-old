@@ -1,17 +1,17 @@
 import "./document.scss";
 import * as React from "react";
 import { compose, pure, lifecycle } from "recompose";
-import { SyntheticDocument, Dependency, DependencyGraph } from "paperclip";
+import { SyntheticFrame, Dependency, DependencyGraph } from "paperclip";
 
 export type DocumentPreviewOuterProps = {
-  document: SyntheticDocument;
-  dependency: Dependency;
+  frame: SyntheticFrame;
+  dependency: Dependency<any>;
 };
 
 type DocumentPreviewInnerProps = {} & DocumentPreviewOuterProps;
 
-const BaseDocumentPreviewComponent = ({ document }) => {
-  const bounds = document.bounds;
+const BaseDocumentPreviewComponent = ({ frame }) => {
+  const bounds = frame.bounds;
   if (!bounds) {
     return null;
   }
@@ -34,21 +34,23 @@ const BaseDocumentPreviewComponent = ({ document }) => {
 const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
   pure,
   lifecycle({
-    componentDidUpdate({ document: oldDocument }: DocumentPreviewOuterProps) {
+    componentDidUpdate({ frame: oldFrame }: DocumentPreviewOuterProps) {
       const props: DocumentPreviewOuterProps = this.props;
-      if (!oldDocument || oldDocument.container !== props.document.container) {
+      if (!oldFrame || oldFrame.$container !== props.frame.$container) {
         const container = this.refs.container as HTMLElement;
         while (container.childNodes.length) {
           container.removeChild(container.childNodes[0]);
         }
-        container.appendChild(props.document.container);
+        if (props.frame.$container) {
+          container.appendChild(props.frame.$container);
+        }
       }
     },
     componentDidMount() {
       const container = this.refs.container as HTMLElement;
-      if (container) {
+      if (container && this.props.frame.$container) {
         container.appendChild(
-          (this.props as DocumentPreviewOuterProps).document.container
+          (this.props as DocumentPreviewOuterProps).frame.$container
         );
       }
     }

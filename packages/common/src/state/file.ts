@@ -90,58 +90,44 @@ export const getFilesWithExtension = memoize(
   }
 );
 
-// export const convertFlatFilesToNested = (
-//   rootDir: string,
-//   files: string[]
-// ): Directory => {
-//   const partedFiles = files.map(file => {
-//     return file.substr(rootDir.length).split("/");
-//   });
+export const convertFlatFilesToNested = (
+  rootDir: string,
+  files: string[]
+): Directory => {
+  const partedFiles = files.map(file => {
+    return file.substr(rootDir.length).split("/");
+  });
 
-//   let root: Directory = createTreeNode("directory", {
-//     [FSItemNamespaces.CORE]: {
-//       [FileAttributeNames.URI]: "file://" + rootDir,
-//       [FileAttributeNames.BASENAME]: path.basename(rootDir)
-//     }
-//   }) as Directory;
+  let root: Directory = createDirectory("file://" + rootDir);
 
-//   for (const pf of partedFiles) {
-//     let current: Directory = root;
-//     let prev: Directory;
-//     let i = 0;
-//     for (let n = pf.length; i < n - 1; i++) {
-//       const part = pf[i];
-//       prev = current;
-//       current = current.children.find(
-//         child => child.attributes[FSItemNamespaces.CORE].basename === part
-//       ) as Directory;
-//       if (!current) {
-//         current = createTreeNode("directory", {
-//           [FSItemNamespaces.CORE]: {
-//             [FileAttributeNames.URI]:
-//               "file://" +
-//               path.join(rootDir, pf.slice(0, i + 1).join("/")) +
-//               "/",
-//             [FileAttributeNames.BASENAME]: part
-//           }
-//         }) as Directory;
+  for (const pf of partedFiles) {
+    let current: Directory = root;
+    let prev: Directory;
+    let i = 0;
+    for (let n = pf.length; i < n - 1; i++) {
+      const part = pf[i];
+      prev = current;
+      current = current.children.find(
+        (child: FSItem) => path.basename(child.uri) === part
+      ) as Directory;
+      if (!current) {
+        let root: Directory = createDirectory(
+          "file://" + path.join(rootDir, pf.slice(0, i + 1).join("/")) + "/"
+        );
 
-//         prev.children.push(current, prev);
-//       }
-//     }
+        prev.children.push(current, prev);
+      }
+    }
 
-//     const isFile = /\./.test(pf[i]);
+    const isFile = /\./.test(pf[i]);
 
-//     current.children.push(
-//       createTreeNode(isFile ? "file" : "directory", {
-//         [FSItemNamespaces.CORE]: {
-//           [FileAttributeNames.URI]:
-//             "file://" + path.join(rootDir, pf.join("/")) + (isFile ? "" : "/"),
-//           [FileAttributeNames.BASENAME]: pf[i]
-//         }
-//       })
-//     );
-//   }
+    const childUri =
+      "file://" + path.join(rootDir, pf.join("/")) + (isFile ? "" : "/");
 
-//   return root;
-// };
+    current.children.push(
+      isFile ? createFile(childUri) : createDirectory(childUri)
+    );
+  }
+
+  return root;
+};

@@ -15,7 +15,7 @@
     height: 100%;
     background: rgba(255, 255, 255, 0.6);
   }
-  > div:last-child {
+  > .modal {
     left: 50%;
     position: absolute;
     transform: translateX(-50%);

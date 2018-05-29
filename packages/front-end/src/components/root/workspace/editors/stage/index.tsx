@@ -5,13 +5,13 @@ import { pure, compose } from "recompose";
 import { CanvasComponent } from "./canvas";
 import { FooterComponent } from "./footer";
 import { ToolbarComponent } from "./toolbar";
-import { SyntheticWindow, Dependency } from "paperclip";
+import { Dependency } from "paperclip";
 import { RootState, Editor } from "../../../../../state";
 
 export type StageOuterProps = {
   root: RootState;
   editor: Editor;
-  dependency: Dependency;
+  dependency: Dependency<any>;
   dispatch: Dispatch<any>;
 };
 
@@ -22,7 +22,6 @@ const BaseStageComponent = ({
   dispatch
 }: StageOuterProps) => (
   <div className="m-stage">
-    {/* <ToolbarComponent /> */}
     <CanvasComponent
       root={root}
       dependency={dependency}

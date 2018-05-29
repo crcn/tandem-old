@@ -1,5 +1,4 @@
 import { init } from "./index";
-import { SyntheticObjectType } from "paperclip";
 
 init({
   mount: document.getElementById("application"),
@@ -9,8 +8,8 @@ init({
   selectedFileNodeIds: [],
   history: {},
   openFiles: [],
-  browser: {
-    windows: [],
-    type: SyntheticObjectType.BROWSER
+  paperclip: {
+    syntheticFrames: {},
+    graph: {}
   }
 });

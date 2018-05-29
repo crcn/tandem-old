@@ -5,7 +5,7 @@ import {
   SyntheticElement,
   isSyntheticNodeRoot
 } from "./synthetic";
-import { getTreeNodeFromPath, roundBounds } from "tandem-common";
+import { getTreeNodeFromPath, roundBounds, EMPTY_OBJECT } from "tandem-common";
 import {
   SyntheticOperationalTransformType,
   SyntheticMoveChildOperationalTransform,
@@ -98,17 +98,15 @@ const createNativeNode = (
     isText ? "span" : (synthetic as SyntheticElement).name || "div"
   );
 
-  const attrs = synthetic.style || {};
+  const attrs = (synthetic as SyntheticElement).attributes || EMPTY_OBJECT;
   for (const name in attrs) {
     const value = attrs[name];
-    if (name === "style") {
-      Object.assign(nativeElement.style, normalizeStyle(value));
-    } else {
-      nativeElement.setAttribute(name, value);
-    }
+    nativeElement.setAttribute(name, value);
+  }
+  if (synthetic.style) {
+    Object.assign(nativeElement.style, normalizeStyle(synthetic.style));
   }
   setStyleConstraintsIfRoot(synthetic, graph, nativeElement);
-
   if (isText) {
     nativeElement.appendChild(
       document.createTextNode((synthetic as PCTextNode).value)

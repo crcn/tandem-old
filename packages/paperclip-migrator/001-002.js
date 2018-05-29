@@ -2,14 +2,12 @@ const { generateUID } = require("tandem-common");
 const { merge, values } = require("lodash");
 
 module.exports = (module) => {;
-
   const mapModule = ({ id, attributes, children }) => ({
     id: id,
     imports: values(attributes.xmlns || {}),
     version: "0.0.2",
     children: children.map(mapModuleChild)
   });
-
 
   const mapModuleChild = (child) => {
     return {
@@ -38,6 +36,11 @@ module.exports = (module) => {;
     children: children[0].children.map(mapVisibleNode)
   });
 
+  const getComponentInstanceId = (componentName) => {
+    const component = module.children.find(component => component.attributes.core.name === componentName);
+    return component && component.id;
+  }
+
   const mapVisibleNode = (node) => {
     switch(node.name) {
       case "element": return mapElement(node);
@@ -54,7 +57,7 @@ module.exports = (module) => {;
     slot: attributes.core.slot,
     container: attributes.core.container,
     attributes: {},
-    is: "div",
+    is: attributes.core.nativeType && attributes.core.nativeType !== "element" ? attributes.core.nativeType : "div",
     children: children.map(mapVisibleNode)
   });
 
@@ -70,7 +73,7 @@ module.exports = (module) => {;
   const mapComponentInstance = ({ id, name, attributes, children }) => ({
     id,
     name: "component-instance",
-    is: name,
+    is: getComponentInstanceId(name) || name,
     variant: [],
     style: attributes.core.style,
     container: attributes.core.container,

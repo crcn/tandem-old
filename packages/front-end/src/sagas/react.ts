@@ -28,11 +28,5 @@ export function* reactSaga() {
       root.mount
     );
     yield take();
-    yield call(
-      () =>
-        new Promise(resolve => {
-          requestAnimationFrame(resolve);
-        })
-    );
   }
 }

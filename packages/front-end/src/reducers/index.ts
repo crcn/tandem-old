@@ -156,7 +156,8 @@ import {
   getSyntheticNodeFrame,
   getSyntheticSourceNode,
   getSyntheticNodeById,
-  SyntheticNode
+  SyntheticNode,
+  queueLoadDependencyUri
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -248,6 +249,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { file } = action as QuickSearchItemClicked;
       const uri = file.uri;
+      state = queueLoadDependencyUri(uri, state);
       state = setSelectedFileNodeIds(state, file.id);
       state = setActiveFilePath(uri, state);
       state = upsertOpenFile(uri, false, state);
@@ -842,58 +844,58 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     // TODO
-    // case CANVAS_MOUSE_CLICKED: {
-    //   if (state.toolType != null) {
-    //     return state;
-    //   }
+    case CANVAS_MOUSE_CLICKED: {
+      if (state.toolType != null) {
+        return state;
+      }
 
-    //   state = deselectRootProjectFiles(state);
+      state = deselectRootProjectFiles(state);
 
-    //   const { sourceEvent } = action as CanvasToolOverlayClicked;
-    //   if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
-    //     return state;
-    //   }
+      const { sourceEvent } = action as CanvasToolOverlayClicked;
+      if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
+        return state;
+      }
 
-    //   // alt key opens up a new link
-    //   const altKey = sourceEvent.altKey;
-    //   const metaKey = sourceEvent.metaKey;
+      // alt key opens up a new link
+      const altKey = sourceEvent.altKey;
+      const metaKey = sourceEvent.metaKey;
 
-    //   const editor = getActiveEditor(state);
+      const editor = getActiveEditor(state);
 
-    //   // do not allow selection while window is panning (scrolling)
-    //   if (editor.canvas.panning || editor.canvas.movingOrResizing) return state;
+      // do not allow selection while window is panning (scrolling)
+      if (editor.canvas.panning || editor.canvas.movingOrResizing) return state;
 
-    //   const targetNodeId = getCanvasMouseTargetNodeId(
-    //     state,
-    //     action as CanvasToolOverlayMouseMoved
-    //   );
+      const targetNodeId = getCanvasMouseTargetNodeId(
+        state,
+        action as CanvasToolOverlayMouseMoved
+      );
 
-    //   if (!targetNodeId) {
-    //     return state;
-    //   }
+      if (!targetNodeId) {
+        return state;
+      }
 
-    //   if (altKey) {
-    //     state = openSyntheticNodeOriginFile(targetNodeId, state);
-    //     return state;
-    //   }
+      // if (altKey) {
+      //   state = openSyntheticNodeOriginFile(targetNodeId, state);
+      //   return state;
+      // }
 
-    //   if (!altKey) {
-    //     state = handleArtboardSelectionFromAction(
-    //       state,
-    //       targetNodeId,
-    //       action as CanvasToolOverlayMouseMoved
-    //     );
-    //     state = updateEditorCanvas(
-    //       {
-    //         secondarySelection: false
-    //       },
-    //       editor.activeFilePath,
-    //       state
-    //     );
-    //     return state;
-    //   }
-    //   return state;
-    // }
+      if (!altKey) {
+        state = handleArtboardSelectionFromAction(
+          state,
+          targetNodeId,
+          action as CanvasToolOverlayMouseMoved
+        );
+        state = updateEditorCanvas(
+          {
+            secondarySelection: false
+          },
+          editor.activeFilePath,
+          state
+        );
+        return state;
+      }
+      return state;
+    }
     // case RESIZER_PATH_MOUSE_MOVED: {
     //   state = updateEditorCanvas(
     //     {

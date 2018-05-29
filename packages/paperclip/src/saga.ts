@@ -1,8 +1,16 @@
-import { take, fork, select, call, put } from "redux-saga/effects";
+import { eventChannel } from "redux-saga";
+import { take, fork, select, call, put, spawn } from "redux-saga/effects";
 import { SyntheticFrame, PaperclipState } from "./synthetic";
 import { PaperclipRoot } from "./external-state";
 import { getPCNode, PCFrame } from "./dsl";
-import { pcSyntheticFrameRendered, pcDependencyLoaded } from "./actions";
+import {
+  pcSyntheticFrameRendered,
+  pcDependencyLoaded,
+  pcSyntheticFrameContainerCreated,
+  PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
+  PC_SYNTHETIC_FRAME_RENDERED,
+  pcSyntheticFrameContainerDestroyed
+} from "./actions";
 import {
   SyntheticNativeNodeMap,
   renderDOM,
@@ -29,7 +37,11 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
       yield fork(function* captureFrameChanges() {
         let currFrames: KeyValue<SyntheticFrame>;
         while (1) {
-          yield take();
+          yield take(
+            action =>
+              action.type !== PC_SYNTHETIC_FRAME_CONTAINER_CREATED &&
+              action.type !== PC_SYNTHETIC_FRAME_RENDERED
+          );
           const {
             paperclip: { syntheticFrames, graph }
           }: PaperclipRoot = yield select();
@@ -47,14 +59,13 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
 
             // if navigator is present, then we want to point to a remote renderer
             if (
-              !prevFrame ||
               sourceFrame.navigator ||
-              prevFrame.root === currFrame.root
+              (prevFrame && prevFrame === currFrame)
             ) {
               continue;
             }
 
-            yield call(renderFrame, sourceFrameId, currFrame, prevFrame, graph);
+            yield fork(renderFrame, sourceFrameId, currFrame, prevFrame, graph);
           }
         }
       });
@@ -67,13 +78,47 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
         oldFrame: SyntheticFrame,
         graph: DependencyGraph
       ) {
-        const container = newFrame.$container || createContainer();
+        let container: HTMLIFrameElement = newFrame.$container;
+
+        if (!container) {
+          container = createContainer();
+
+          // notify of the new container
+          yield put(pcSyntheticFrameContainerCreated(newFrame, container));
+
+          // wait until it's been mounted, then continue
+          const doneChan = eventChannel(emit => {
+            const onDone = event => {
+              container.removeEventListener("load", onDone);
+              emit(event);
+            };
+            container.addEventListener("load", onDone);
+            return () => {};
+          });
+          yield take(doneChan);
+
+          yield spawn(function*() {
+            const unloadedChan = eventChannel(emit => {
+              const onUnload = event => {
+                container.contentWindow.removeEventListener("unload", onUnload);
+                emit(event);
+              };
+              container.contentWindow.addEventListener("unload", onUnload);
+              return () => {};
+            });
+            yield take(unloadedChan);
+            yield put(pcSyntheticFrameContainerDestroyed(newFrame));
+          });
+        } else if (oldFrame.root === newFrame.root) {
+          return;
+        }
+
         const body = container.contentDocument.body;
-        if (!oldFrame) {
+
+        if (!oldFrame || oldFrame.$container !== container) {
           yield put(
             pcSyntheticFrameRendered(
               newFrame,
-              container,
               computeDisplayInfo(
                 (frameNodeMap[sourceFrameId] = renderDOM(
                   body,
@@ -88,7 +133,6 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
           yield put(
             pcSyntheticFrameRendered(
               newFrame,
-              container,
               computeDisplayInfo(
                 (frameNodeMap[sourceFrameId] = patchDOM(
                   ots,
@@ -109,6 +153,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
 
       // TODO - queue uris here
       while (1) {
+        yield take();
         const {
           paperclip: { openDependencyUri, graph }
         }: PaperclipRoot = yield select();
@@ -135,15 +180,11 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
 const createContainer = () => {
   if (typeof window === "undefined") return null;
   const container = document.createElement("iframe");
-  container.style.border = "none";
   container.style.width = "100%";
   container.style.height = "100%";
   container.style.background = "transparent";
   container.addEventListener("load", () => {
-    Object.assign(container.contentDocument.body.style, {
-      padding: 0,
-      margin: 0
-    });
+    container.contentDocument.body.style.margin = "0";
   });
   return container;
 };

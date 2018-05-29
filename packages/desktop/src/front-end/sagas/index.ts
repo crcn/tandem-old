@@ -10,7 +10,6 @@ import {
   PAPERCLIP_EXTENSION_NAME,
   FILE_NAVIGATOR_NEW_FILE_ENTERED,
   loadEntry,
-  dependencyEntryLoaded,
   SHORTCUT_SAVE_KEY_DOWN,
   savedFile,
   getOpenFile,

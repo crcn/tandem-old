@@ -10,10 +10,8 @@ import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import {
   SyntheticNode,
-  SyntheticDocument,
-  SyntheticWindow,
-  getSyntheticWindowDependency,
-  getSyntheticWindow
+  SyntheticFrame,
+  getSyntheticFramesByDependencyUri
 } from "paperclip";
 import {
   Bounds,
@@ -44,7 +42,7 @@ export type VisualToolsProps = {
 
 type ArtboardOverlayToolsOuterProps = {
   dispatch: Dispatch<any>;
-  document: SyntheticDocument;
+  frame: SyntheticFrame;
   zoom: number;
   hoveringNodeIds: string[];
 };
@@ -85,7 +83,7 @@ const NodeOverlayBase = ({ zoom, bounds, dispatch }: NodeOverlayProps) => {
 
 const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
 
-const getDocumentRelativeBounds = memoize((document: SyntheticDocument) => ({
+const getDocumentRelativeBounds = memoize((document: SyntheticFrame) => ({
   left: 0,
   top: 0,
   right: document.bounds.right - document.bounds.left,
@@ -94,22 +92,22 @@ const getDocumentRelativeBounds = memoize((document: SyntheticDocument) => ({
 
 const ArtboardOverlayToolsBase = ({
   dispatch,
-  document,
+  frame,
   hoveringNodeIds,
   zoom,
   onPanStart,
   onPan,
   onPanEnd
 }: ArtboardOverlayToolsInnerProps) => {
-  if (!document.computed) {
+  if (!frame.computed) {
     return null;
   }
 
-  if (!document.bounds) {
+  if (!frame.bounds) {
     return null;
   }
 
-  const bounds = document.bounds;
+  const bounds = frame.bounds;
 
   // TODO - compute info based on content
   const style = {
@@ -132,7 +130,7 @@ const ArtboardOverlayToolsBase = ({
           style={{ width: "100%", height: "100%", position: "absolute" } as any}
           onDoubleClick={wrapEventToDispatch(
             dispatch,
-            canvasToolOverlayMouseDoubleClicked.bind(this, document.id)
+            canvasToolOverlayMouseDoubleClicked.bind(this, frame.source.nodeId)
           )}
         >
           {hoveringNodeIds.map(nodeId => (
@@ -140,10 +138,9 @@ const ArtboardOverlayToolsBase = ({
               zoom={zoom}
               key={nodeId}
               bounds={
-                document.id === nodeId
-                  ? getDocumentRelativeBounds(document)
-                  : document.computed[nodeId] &&
-                    document.computed[nodeId].bounds
+                frame.source.nodeId === nodeId
+                  ? getDocumentRelativeBounds(frame)
+                  : frame.computed[nodeId] && frame.computed[nodeId].bounds
               }
               dispatch={dispatch}
             />
@@ -162,17 +159,14 @@ const enhanceArtboardOverlayTools = compose<
   withHandlers({
     onPanStart: ({
       dispatch,
-      document
+      frame
     }: ArtboardOverlayToolsOuterProps) => event => {
-      dispatch(canvasToolOverlayMousePanStart(document.id));
+      dispatch(canvasToolOverlayMousePanStart(frame.source.nodeId));
     },
-    onPan: ({
-      dispatch,
-      document
-    }: ArtboardOverlayToolsOuterProps) => event => {
+    onPan: ({ dispatch, frame }: ArtboardOverlayToolsOuterProps) => event => {
       dispatch(
         canvasToolOverlayMousePanning(
-          document.id,
+          frame.source.nodeId,
           { left: event.center.x, top: event.center.y },
           event.deltaY,
           event.velocityY
@@ -181,11 +175,11 @@ const enhanceArtboardOverlayTools = compose<
     },
     onPanEnd: ({
       dispatch,
-      document
+      frame
     }: ArtboardOverlayToolsOuterProps) => event => {
       event.preventDefault();
       setImmediate(() => {
-        dispatch(canvasToolOverlayMousePanEnd(document.id));
+        dispatch(canvasToolOverlayMousePanEnd(frame.source.nodeId));
       });
     }
   })
@@ -204,8 +198,8 @@ const getNodes = memoize(
 );
 
 const getHoveringSyntheticNodes = memoize(
-  (root: RootState, document: SyntheticDocument): string[] => {
-    const allNodes = (document && getTreeNodeIdMap(document.root)) || {};
+  (root: RootState, frame: SyntheticFrame): string[] => {
+    const allNodes = (frame && getTreeNodeIdMap(frame.root)) || {};
     const selectionRefIds = root.selectedNodeIds;
     return root.hoveringNodeIds.filter(
       nodeId => selectionRefIds.indexOf(nodeId) === -1
@@ -219,28 +213,24 @@ export const NodeOverlaysToolBase = ({
   dispatch,
   zoom
 }: VisualToolsProps) => {
-  const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
-  if (!activeWindow) {
-    return null;
-  }
-  const dependency = getSyntheticWindowDependency(
-    activeWindow,
-    root.browser.graph
+  const activeFrames = getSyntheticFramesByDependencyUri(
+    editor.activeFilePath,
+    root.paperclip
   );
+
   return (
     <div className="visual-tools-layer-component">
-      {activeWindow.documents &&
-        activeWindow.documents.map((document, i) => {
-          return (
-            <ArtboardOverlayTools
-              key={document.id}
-              document={document}
-              hoveringNodeIds={getHoveringSyntheticNodes(root, document)}
-              dispatch={dispatch}
-              zoom={zoom}
-            />
-          );
-        })}
+      {activeFrames.map((frame, i) => {
+        return (
+          <ArtboardOverlayTools
+            key={frame.source.nodeId}
+            frame={frame}
+            hoveringNodeIds={getHoveringSyntheticNodes(root, frame)}
+            dispatch={dispatch}
+            zoom={zoom}
+          />
+        );
+      })}
     </div>
   );
 };

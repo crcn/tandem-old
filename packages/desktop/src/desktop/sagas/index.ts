@@ -4,14 +4,10 @@ import { BrowserWindow } from "electron";
 import { APP_READY, mainWindowOpened } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
-import {
-  APP_LOADED,
-  projectDirectoryLoaded,
-  convertFlatFilesToNested
-} from "tandem-front-end";
+import { APP_LOADED, projectDirectoryLoaded } from "tandem-front-end";
 import { DesktopState } from "../state";
 import * as globby from "globby";
-import { isPublicAction } from "tandem-common";
+import { isPublicAction, convertFlatFilesToNested } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as path from "path";

@@ -3,15 +3,9 @@ import * as React from "react";
 import * as cx from "classnames";
 import { RootState } from "../../../../../../../state";
 import {
-  SyntheticWindow,
   PaperclipState,
   SyntheticNode,
-  SyntheticDocument,
-  SyntheticObjectType,
-  EditorAttributeNames,
-  getComponentInstanceSyntheticNode,
-  isContainerSyntheticNode,
-  isCreatedFromComponent,
+  SyntheticFrame,
   SyntheticElement
 } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
@@ -46,7 +40,7 @@ type PCLayerOuterProps = {
 } & TreeNodeLayerOuterProps;
 
 const isMovableNode = (node: SyntheticNode) =>
-  !isCreatedFromComponent(node) || node.attributes.editor.isComponentInstance;
+  !node.isRoot || node.isComponentInstance;
 
 const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
   {
@@ -68,15 +62,15 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
     ) {
       if (offset === TreeMoveOffset.APPEND) {
         if (
-          !child.attributes.editor.isComponentRoot &&
-          (!isCreatedFromComponent(near) || isContainerSyntheticNode(near))
+          !child.isRoot &&
+          (!near.isCreatedFromComponent || near.name !== "text")
         ) {
           return true;
         }
       }
 
       // sibling
-      return !isCreatedFromComponent(near);
+      return !near.isCreatedFromComponent;
     },
     canDrag: isMovableNode,
     dragType: DRAG_TYPE,
@@ -84,52 +78,44 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       ...attribs,
       className: cx(attribs.className, {
         "in-component-instance":
-          props.node.attributes.editor.isCreatedFromComponent ||
-          props.node.attributes.editor.isComponentInstance,
-        "is-component-root": props.isComponentRoot,
-        "is-slot-container": Boolean(
-          (props.node as SyntheticElement).attributes.core.container
-        )
+          props.node.isCreatedFromComponent || props.node.isComponentInstance,
+        "is-component-root": props.isComponentRoot
       })
     }),
     layerRenderer: Base => (props: PCLayerOuterProps) => {
       return (
         <Base
           {...props}
-          isComponentRoot={props.node.attributes.editor.isComponentRoot}
+          isComponentRoot={(props.node as SyntheticNode).isRoot}
         />
       );
     }
   }
 );
 
-type SyntheticWindowLayersOuterProps = {
+type SyntheticFrameLayersOuterProps = {
   hoveringNodeIds: string[];
   selectedReferences: string[];
   dispatch: Dispatch<any>;
-  window: SyntheticWindow;
-  browser: PaperclipState;
+  // window: SyntheticFrame;
+  frames: SyntheticFrame[];
 };
 
-type SyntheticWindowLayersInnerProps = {} & SyntheticWindowLayersOuterProps;
+type SyntheticFrameLayersInnerProps = {} & SyntheticFrameLayersOuterProps;
 
-const BaseSyntheticWindowLayersComponent = ({
+const BaseSyntheticFrameLayersComponent = ({
   hoveringNodeIds,
   selectedReferences,
   dispatch,
-  window,
-  browser
-}: SyntheticWindowLayersInnerProps) => {
-  if (!window) {
-    return null;
-  }
+  frames
+}: SyntheticFrameLayersInnerProps) => {
   return (
     <div className="m-synthetic-window-layers">
-      {(window.documents || EMPTY_ARRAY).map(document => {
+      {frames.map(frame => {
         return (
           <TreeNodeLayerComponent
-            key={document.id}
-            node={document.root}
+            key={frame.source.nodeId}
+            node={frame.root}
             depth={0}
             hoveringNodeIds={hoveringNodeIds}
             selectedNodeIds={selectedReferences}
@@ -141,7 +127,7 @@ const BaseSyntheticWindowLayersComponent = ({
   );
 };
 
-export const SyntheticWindowLayersComponent = compose<
-  SyntheticWindowLayersInnerProps,
-  SyntheticWindowLayersOuterProps
->(pure)(BaseSyntheticWindowLayersComponent);
+export const SyntheticFrameLayersComponent = compose<
+  SyntheticFrameLayersInnerProps,
+  SyntheticFrameLayersOuterProps
+>(pure)(BaseSyntheticFrameLayersComponent);

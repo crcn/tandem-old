@@ -9,7 +9,7 @@ import {
   REGISTERED_COMPONENT,
   RegisteredComponent
 } from "../../../../../../state";
-import { SyntheticWindow, Dependency, getSyntheticWindow } from "paperclip";
+import { Dependency, getSyntheticFramesByDependencyUri } from "paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
 import { ToolsLayerComponent } from "./tools-layer";
 import { Isolate } from "../../../../../isolated";
@@ -32,7 +32,7 @@ import {
 export type CanvasOuterProps = {
   root: RootState;
   editor: Editor;
-  dependency: Dependency;
+  dependency: Dependency<any>;
   dispatch: Dispatch<any>;
 };
 
@@ -70,7 +70,10 @@ const BaseCanvasComponent = ({
   onMotionRest,
   onDragExit
 }: CanvasInnerProps) => {
-  const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
+  const activeFrames = getSyntheticFramesByDependencyUri(
+    editor.activeFilePath,
+    root.paperclip
+  );
 
   const translate = editor.canvas.translate;
 
@@ -112,7 +115,7 @@ const BaseCanvasComponent = ({
                 }}
               >
                 <PreviewLayerComponent
-                  window={activeWindow}
+                  frames={activeFrames}
                   dependency={dependency}
                 />
                 <ToolsLayerComponent

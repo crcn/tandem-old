@@ -2,7 +2,7 @@ import "./index.scss";
 import { Dispatch } from "redux";
 import * as React from "react";
 import * as path from "path";
-import { Dependency, getSyntheticWindow } from "paperclip";
+import { Dependency } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
 import { StageComponent } from "./stage";
 import { RootState, Editor } from "../../../../state";
@@ -26,12 +26,10 @@ const EditorBaseComponent = ({
   dispatch,
   onTabClick
 }: EditorInnerProps) => {
-  const window = getSyntheticWindow(editor.activeFilePath, root.browser);
-  if (!window) {
-    return null;
-  }
   const dependency =
-    window && root.browser.graph && root.browser.graph[window.location];
+    window &&
+    root.paperclip.graph &&
+    root.paperclip.graph[editor.activeFilePath];
 
   const items: TabItem[] = editor.tabUris.map(tabUri => ({
     selected: editor.activeFilePath === tabUri,
@@ -76,9 +74,14 @@ type EditorsInnerProps = {} & EditorsOuterProps;
 const EditorsBaseComponent = ({ root, dispatch }: EditorsInnerProps) => {
   return (
     <div className="m-editors">
-      {root.editors.map(editor => {
+      {root.editors.map((editor, i) => {
         return (
-          <EditorComponent editor={editor} root={root} dispatch={dispatch} />
+          <EditorComponent
+            key={i}
+            editor={editor}
+            root={root}
+            dispatch={dispatch}
+          />
         );
       })}
     </div>

@@ -4,7 +4,6 @@ import {
   PROJECT_DIRECTORY_LOADED,
   FILE_NAVIGATOR_ITEM_CLICKED,
   fileNavigatorItemClicked,
-  dependencyEntryLoaded,
   FileNavigatorItemClicked,
   OpenFilesItemClick,
   OPEN_FILE_ITEM_CLICKED,

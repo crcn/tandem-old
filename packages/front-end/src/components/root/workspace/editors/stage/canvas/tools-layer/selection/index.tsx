@@ -14,7 +14,7 @@ import {
   Editor
 } from "../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../actions";
-import { getSyntheticNodeBounds, getSyntheticWindow } from "paperclip";
+import { getSyntheticNodeBounds } from "paperclip";
 
 export type SelectionOuterProps = {
   dispatch: Dispatch<any>;
@@ -37,10 +37,9 @@ const SelectionBounds = ({
   zoom: number;
   editor: Editor;
 }) => {
-  const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
   const selection = getBoundedSelection(root);
   const entireBounds = mergeBounds(
-    ...selection.map(value => getSyntheticNodeBounds(value, root.browser))
+    ...selection.map(value => getSyntheticNodeBounds(value, root.paperclip))
   );
   const style = {};
   const borderWidth = 1 / zoom;

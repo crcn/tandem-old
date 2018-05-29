@@ -59,7 +59,7 @@
                     "core": {
                       "style": {},
                       "label": "Input Wrapper",
-                      "nativeType": "element",
+                      "nativeType": "div",
                       "container": "containere12829e4"
                     },
                     "editor": {
@@ -73,7 +73,7 @@
                   },
                   "children": [
                     {
-                      "name": "component4",
+                      "name": "808486bb17",
                       "attributes": {
                         "core": {
                           "style": {

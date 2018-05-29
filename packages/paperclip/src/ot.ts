@@ -160,7 +160,7 @@ export const _diffSyntheticNode = (
   for (let i = oldNode.children.length; i--; ) {
     let found: SyntheticNode;
     let foundIndex: number;
-    const oldChild = oldNode[i];
+    const oldChild = oldNode.children[i] as SyntheticNode;
     oldChildIds[oldChild.source.nodeId] = 1;
 
     for (let j = newNode.children.length; j--; ) {

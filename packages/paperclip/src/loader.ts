@@ -71,7 +71,7 @@ const createDependency = (
 });
 
 const parseNodeSource = (source: string) => {
-  JSON.parse(source);
+  return JSON.parse(source);
 };
 
 const loadModule = async (

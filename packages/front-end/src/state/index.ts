@@ -57,8 +57,7 @@ import {
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
-  CanvasToolOverlayClicked,
-  dependencyEntryLoaded
+  CanvasToolOverlayClicked
 } from "../actions";
 import { uniq, pull, values } from "lodash";
 import { stat } from "fs";
@@ -707,6 +706,7 @@ export const centerEditorCanvas = (
       editorFileUri,
       state.paperclip
     );
+
     if (!frames.length) {
       return state;
     }
@@ -733,6 +733,7 @@ export const centerEditorCanvas = (
   }
 
   const editor = getEditorWithFileUri(editorFileUri, state);
+
   const {
     canvas: { container, translate }
   } = editor;

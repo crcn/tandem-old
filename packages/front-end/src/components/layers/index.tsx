@@ -3,13 +3,6 @@ import * as React from "react";
 import * as cx from "classnames";
 import { RootState } from "../../state";
 import { identity } from "lodash";
-import {
-  SyntheticWindow,
-  PaperclipState,
-  SyntheticDocument,
-  SyntheticObjectType,
-  PCSourceNamespaces
-} from "paperclip";
 import { compose, pure, withHandlers, withState, withProps } from "recompose";
 import {
   EMPTY_ARRAY,
@@ -35,10 +28,7 @@ export type TreeLayerLabelChangedActionCreator = (
   node: TreeNode<any>
 ) => any;
 
-type AttributeInfo = {
-  name: string;
-  namespace?: string;
-};
+type AttributeInfo = (node: TreeNode<string>) => any;
 
 export type TreeNodeLayerOuterProps = {
   root?: TreeNode<any>;
@@ -107,20 +97,9 @@ type TreeLayerOptions = {
   layerRenderer?: (Base: any) => (props: TreeNodeLayerOuterProps) => any;
 };
 
-const DEFAULT_NODE_EXPAND_ATTRIBUTE = {
-  name: "expanded",
-  namespace: PCSourceNamespaces.EDITOR
-};
-
-const DEFAULT_NODE_LABEL_ATTRIBUTE = {
-  name: "label",
-  namespace: PCSourceNamespaces.CORE
-};
-
-const DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE = {
-  name: "editingLabel",
-  namespace: PCSourceNamespaces.EDITOR
-};
+const DEFAULT_NODE_EXPAND_ATTRIBUTE = node => node.expanded;
+const DEFAULT_NODE_LABEL_ATTRIBUTE = node => node.label;
+const DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE = node => node.editingLabel;
 
 const defaultRender = Base => ({
   node,
@@ -297,9 +276,7 @@ export const createTreeLayerComponents = <
       },
       props
     );
-    const label =
-      node.attributes[nodeLabelAttr.namespace] &&
-      node.attributes[nodeLabelAttr.namespace][nodeLabelAttr.name];
+    const label = nodeLabelAttr(node);
 
     return connectDropTarget(
       connectDragSource(
@@ -403,12 +380,8 @@ export const createTreeLayerComponents = <
   }: TreeNodeLayerInnerProps) => {
     const selected = selectedNodeIds.indexOf(node.id) !== -1;
     const hovering = hoveringNodeIds.indexOf(node.id) !== -1;
-    const expanded =
-      node.attributes[expandAttr.namespace] &&
-      node.attributes[expandAttr.namespace][expandAttr.name];
-    const editingLabel =
-      node.attributes[editingLabelAttr.namespace] &&
-      node.attributes[editingLabelAttr.namespace][editingLabelAttr.name];
+    const expanded = expandAttr(node);
+    const editingLabel = editingLabelAttr(node);
     if (!root) {
       root = node;
     }

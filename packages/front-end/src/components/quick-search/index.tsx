@@ -17,13 +17,14 @@ import {
   FileAttributeNames,
   isFile,
   TreeNode,
-  File
+  File,
+  FSItem
 } from "tandem-common";
 import { FocusComponent } from "../focus";
 
 type SearchResultOuterProps = {
   file: File;
-  textChildren: any;
+  textProps: any;
   dispatch: Dispatch<any>;
 };
 
@@ -73,7 +74,7 @@ export const QuickSearchComponent = compose<
     return null;
   }
 
-  const allFiles = flattenTreeNode(root.projectDirectory);
+  const allFiles = flattenTreeNode(root.projectDirectory) as File[];
 
   const results = filter
     ? allFiles
@@ -96,7 +97,9 @@ export const QuickSearchComponent = compose<
             <SearchResult
               file={file}
               key={file.id}
-              textChildren={file.uri}
+              textProps={{
+                children: file.uri
+              }}
               dispatch={dispatch}
             />
           );
@@ -107,12 +110,17 @@ export const QuickSearchComponent = compose<
     <div className="m-quick-search">
       <div className="background" onClick={onBackgroundClick} />
       <BaseQuickSearch
-        searchResultsChildren={results}
-        inputWrapperChildren={
-          <FocusComponent>
-            <QuickSearchInput onKeyUp={onInputKeyDown} />
-          </FocusComponent>
-        }
+        className="modal"
+        searchResultsProps={{
+          children: results
+        }}
+        inputWrapperProps={{
+          children: (
+            <FocusComponent>
+              <QuickSearchInput onKeyUp={onInputKeyDown} />
+            </FocusComponent>
+          )
+        }}
       />
     </div>
   );

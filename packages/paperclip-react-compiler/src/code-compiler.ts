@@ -68,8 +68,23 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addLine("\nvar React = require('react');", context);
 
   if (module.imports.length) {
-    context = addLine(`var _imports = {}`, context);
+    context = addLine(`\nvar _imports = {}`, context);
   }
+
+  context = addOpenTag(`\nfunction _toNativeProps(props) {\n`, context);
+  context = addLine(`var newProps = {};`, context);
+  context = addOpenTag(`for (var key in props) {\n`, context);
+  context = addLine(`var value = props[key];`, context);
+  context = addLine(`var tov = typeof value;`, context);
+  context = addOpenTag(
+    `if((tov !== "object" && (tov !== "function" || key.substr(0, 2) === "on")) || key === "style") {\n`,
+    context
+  );
+  context = addLine(`newProps[key] = value;`, context);
+  context = addCloseTag(`}\n`, context);
+  context = addCloseTag(`}\n`, context);
+  context = addLine(`return newProps;`, context);
+  context = addCloseTag(`}\n`, context);
 
   for (const imp of module.imports) {
     context = addLine(`Object.assign(_imports, require("${imp}"));`, context);
@@ -93,11 +108,16 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
 const translateModuleStyles = (module: PCModule, context: TranslateContext) => {
   context = addOpenTag(`\nif (typeof document !== "undefined") {\n`, context);
   const styleVarName = getInternalVarName(module) + "Style";
+
   context = addLine(
     `var ${styleVarName} = document.createElement("style");`,
     context
   );
-  context = addOpenTag(`${styleVarName}.textContent = "" +\n`, context);
+  context = addLine(`${styleVarName}.type = "text/css";`, context);
+  context = addOpenTag(
+    `${styleVarName}.appendChild(document.createTextNode("" +\n`,
+    context
+  );
   context = module.children
     .filter(isComponentFrame)
     .reduce((context, frame: PCFrame) => {
@@ -106,7 +126,7 @@ const translateModuleStyles = (module: PCModule, context: TranslateContext) => {
         context
       );
     }, context);
-  context = addCloseTag(`""; \n\n`, context);
+  context = addCloseTag(`"")); \n\n`, context);
   context = addLine(`document.head.appendChild(${styleVarName});`, context);
   context = addCloseTag(`}\n`, context);
   return context;
@@ -122,7 +142,7 @@ const translateComponentStyles = (
       if (Object.keys(node.style).length === 0) {
         return context;
       }
-      context = addOpenTag(`" .${node.id} {" + \n`, context);
+      context = addOpenTag(`" ._${node.id} {" + \n`, context);
       context = translateStyle(node, context);
       context = addCloseTag(`"}" + \n`, context);
 
@@ -273,11 +293,15 @@ const translateElement = (
     context
   );
   context = addLineItem(
-    getNodePropsVarName(elementOrComponent, context),
+    `_toNativeProps(${getNodePropsVarName(elementOrComponent, context)})`,
+    context
+  );
+  context = addLineItem(
+    `, ${getNodePropsVarName(elementOrComponent, context)}.children`,
     context
   );
   if (visibleChildren.length) {
-    context = addLineItem(",\n", context);
+    context = addLineItem(` || [\n`, context);
     context = visibleChildren.reduce((context, node, index, array) => {
       context = translateVisibleNode(node, context);
       if (index < array.length - 1) {
@@ -288,7 +312,11 @@ const translateElement = (
   } else if (hasVisibleChildren) {
     context = addLineItem("\n", context);
   }
-  context = addCloseTag(`)`, context, hasVisibleChildren);
+  context = addCloseTag(
+    hasVisibleChildren ? "])" : ")",
+    context,
+    hasVisibleChildren
+  );
   return context;
 };
 
@@ -297,8 +325,9 @@ const translateElementFinalAttributes = (
   context: TranslateContext
 ) => {
   context = addOpenTag("{\n", context);
+  context = addLine(`key: "${node.id}",`, context);
   context = addLine(
-    `className: "${node.id} " + (${getNodeProp(
+    `className: "_${node.id} " + (${getNodeProp(
       "className",
       node,
       context

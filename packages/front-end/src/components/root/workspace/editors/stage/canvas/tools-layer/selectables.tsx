@@ -1,16 +1,16 @@
 import "./selectables.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
-import { SyntheticDocument } from "paperclip";
+import { SyntheticFrame } from "paperclip";
 
 export type SelectableToolsOuterProps = {
-  documents: SyntheticDocument[];
+  frames: SyntheticFrame[];
 };
 
 const BaseSelectableToolsComponent = ({
-  documents
+  frames
 }: SelectableToolsOuterProps) => {
-  if (!documents) {
+  if (!frames) {
     return null;
   }
 

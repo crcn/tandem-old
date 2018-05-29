@@ -1,4 +1,5 @@
 import "./index.scss";
+import * as path from "path";
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { PaneComponent } from "../../../../pane";
@@ -12,7 +13,8 @@ import {
   TreeNode,
   filterNestedNodes,
   FSItemNamespaces,
-  memoize
+  memoize,
+  FSItem
 } from "tandem-common";
 import {
   fileNavigatorItemClicked,
@@ -88,14 +90,8 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<
   reorganizable: false,
   depthOffset: 0,
   attributeOptions: {
-    nodeLabelAttr: {
-      namespace: FSItemNamespaces.CORE,
-      name: "basename"
-    },
-    expandAttr: {
-      namespace: FSItemNamespaces.CORE,
-      name: "expanded"
-    }
+    nodeLabelAttr: (node: FSItem) => path.basename(node.uri),
+    expandAttr: (node: FSItem) => node.expanded
   },
   hasChildren: (node: TreeNode<any>) => {
     return node.name === "directory";

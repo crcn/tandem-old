@@ -5,8 +5,8 @@ import { StylesPaneComponent } from "./styles";
 import { compose, pure } from "recompose";
 import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
-import { BehaviorPaneComponent } from "./behavior";
-import { VariantsComponent } from "./variants";
+// import { BehaviorPaneComponent } from "./behavior";
+// import { VariantsComponent } from "./variants";
 
 type RightGutterProps = {
   root: RootState;
@@ -19,8 +19,8 @@ const BaseRightGutterComponent = ({ dispatch, root }: RightGutterProps) => {
   }
   return (
     <GutterComponent>
-      <VariantsComponent dispatch={dispatch} root={root} />
-      <BehaviorPaneComponent dispatch={dispatch} root={root} />
+      {/* <VariantsComponent dispatch={dispatch} root={root} /> */}
+      {/* <BehaviorPaneComponent dispatch={dispatch} root={root} /> */}
       <StylesPaneComponent dispatch={dispatch} root={root} />
     </GutterComponent>
   );

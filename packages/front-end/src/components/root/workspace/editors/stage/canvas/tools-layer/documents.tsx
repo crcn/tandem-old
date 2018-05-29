@@ -7,13 +7,9 @@ import { wrapEventToDispatch } from "../../../../../../../utils";
 import { Dispatch } from "redux";
 import {
   PaperclipState,
-  SyntheticWindow,
-  getSyntheticWindow,
-  SyntheticDocument,
   DependencyGraph,
-  getSytheticNodeSource,
-  getSyntheticDocumentDependency,
-  getSyntheticNodeSourceComponent
+  SyntheticFrame,
+  getSyntheticFramesByDependencyUri
 } from "paperclip";
 import {
   canvasToolDocumentTitleClicked,
@@ -22,25 +18,23 @@ import {
 } from "../../../../../../../actions";
 
 type DocumentItemInnerProps = {
-  browser: PaperclipState;
-  document: SyntheticDocument;
+  frame: SyntheticFrame;
   dispatch: Dispatch<any>;
   translate: Translate;
 };
 
 const DocumentItemBase = ({
-  browser,
-  document,
+  frame,
   translate,
   dispatch
 }: DocumentItemInnerProps) => {
-  const { width, height } = getBoundsSize(document.bounds);
+  const { width, height } = getBoundsSize(frame.bounds);
 
   const style = {
     width,
     height,
-    left: document.bounds.left,
-    top: document.bounds.top,
+    left: frame.bounds.left,
+    top: frame.bounds.top,
     background: "transparent"
   };
 
@@ -72,14 +66,14 @@ const DocumentItemBase = ({
         style={titleStyle as any}
         onKeyDown={wrapEventToDispatch(
           dispatch,
-          canvasToolWindowKeyDown.bind(this, document.id)
+          canvasToolWindowKeyDown.bind(this, frame.source.nodeId)
         )}
         onClick={wrapEventToDispatch(
           dispatch,
-          canvasToolDocumentTitleClicked.bind(this, document.id)
+          canvasToolDocumentTitleClicked.bind(this, frame.source.nodeId)
         )}
       >
-        {document.root.attributes.core.label || "Untitled"}
+        {frame.root.label || "Untitled"}
       </div>
       <div
         className="m-documents-stage-tool-item-content"
@@ -106,9 +100,12 @@ export const DocumentsCanvasToolBase = ({
 }: DocumentsCanvasToolInnerProps) => {
   const { backgroundColor, fullScreen } = editor.canvas;
 
-  const activeWindow = getSyntheticWindow(editor.activeFilePath, root.browser);
+  const activeFrames = getSyntheticFramesByDependencyUri(
+    editor.activeFilePath,
+    root.paperclip
+  );
 
-  if (!activeWindow || !activeWindow.documents) {
+  if (!activeFrames || !activeFrames) {
     return null;
   }
 
@@ -129,11 +126,10 @@ export const DocumentsCanvasToolBase = ({
           canvasToolWindowBackgroundClicked
         )}
       />
-      {activeWindow.documents.map(document => (
+      {activeFrames.map(frame => (
         <DocumentItem
-          key={document.id}
-          browser={root.browser}
-          document={document}
+          key={frame.source.nodeId}
+          frame={frame}
           dispatch={dispatch}
           translate={translate}
         />
