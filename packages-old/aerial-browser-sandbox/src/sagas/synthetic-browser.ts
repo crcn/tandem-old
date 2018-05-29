@@ -1,23 +1,23 @@
-
 import { eventChannel, delay } from "redux-saga";
 import { difference, debounce, values, uniq } from "lodash";
-import { cancel, fork, take, put, call, spawn, actionChannel, select } from "redux-saga/effects";
+import {
+  cancel,
+  fork,
+  take,
+  put,
+  call,
+  spawn,
+  actionChannel,
+  select
+} from "redux-saga/effects";
 
+import { htmlContentEditorSaga } from "./html-content-editor";
+
+import { convertAbsoluteBoundsToRelative } from "../utils";
+
+import { fileEditorSaga } from "./file-editor";
 
 import {
-  htmlContentEditorSaga
-} from "./html-content-editor";
-
-import {
-  convertAbsoluteBoundsToRelative,
-} from "../utils";
-
-import {
-  fileEditorSaga
-} from "./file-editor";
-
-
-import { 
   SYNTHETIC_WINDOW_SCROLL,
   SyntheticWindowScroll,
   syntheticWindowScroll,
@@ -45,7 +45,7 @@ import {
   FILE_URI_CHANGED,
   FileUriChanged,
   syntheticWindowRectsUpdated,
-  OpenSyntheticBrowserWindow,
+  OpenPaperclipStateWindow,
   ToggleCSSDeclarationProperty,
   TOGGLE_CSS_DECLARATION_PROPERTY,
   SyntheticWindowOpened,
@@ -60,7 +60,7 @@ import {
   newSyntheticWindowEntryResolved
 } from "../actions";
 
-import { 
+import {
   watch,
   REMOVED,
   Removed,
@@ -71,7 +71,7 @@ import {
   roundBounds,
   createRequestResponse,
   Resized,
-  takeRequest, 
+  takeRequest,
   Moved,
   Bounds,
   Point,
@@ -79,11 +79,21 @@ import {
   generateDefaultId,
   pointToBounds,
   MOVED,
-  RESIZED,
-
+  RESIZED
 } from "aerial-common2";
 
-import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, RemoveChildMutation, createStringMutation, diffArray } from "source-mutation";
+import {
+  Mutation,
+  Mutator,
+  SetValueMutation,
+  SetPropertyMutation,
+  createPropertyMutation,
+  createSetValueMutation,
+  eachArrayValueMutation,
+  RemoveChildMutation,
+  createStringMutation,
+  diffArray
+} from "source-mutation";
 
 import {
   createSyntheticComment,
@@ -96,20 +106,20 @@ import {
   SyntheticTextNode,
   SyntheticCSSStyleDeclaration,
   SyntheticCSSStyleRule,
-  SyntheticBrowserRootState,
+  PaperclipStateRootState,
   isSyntheticNodeType,
   SYNTHETIC_ELEMENT,
   SYNTHETIC_CSS_STYLE_RULE,
-  getSyntheticBrowserBounds,
+  getPaperclipStateBounds,
   SyntheticComment,
   getSyntheticNodeById,
   SyntheticDocument,
   BasicValueNode,
   SyntheticWindow,
-  SyntheticBrowser,
+  PaperclipState,
   getSyntheticWindow,
-  getSyntheticBrowser,
-  getSyntheticBrowsers,
+  getPaperclipState,
+  getPaperclipStates
 } from "../state";
 
 import {
@@ -144,10 +154,10 @@ import {
   createSyntheticDOMRendererFactory,
   calculateUntransformedBoundingRect,
   createSetElementTextContentMutation,
-  createParentNodeRemoveChildMutation,
+  createParentNodeRemoveChildMutation
 } from "../environment";
 
-export function* syntheticBrowserSaga() {
+export function* PaperclipStateSaga() {
   yield fork(htmlContentEditorSaga);
   yield fork(fileEditorSaga);
   yield fork(handleToggleCSSProperty);
@@ -158,48 +168,70 @@ export function* syntheticBrowserSaga() {
 }
 
 function* handleOpenSyntheticWindow() {
-  while(true) {
-    const request = (yield take((action: OpenSyntheticBrowserWindow) => action.type === OPEN_SYNTHETIC_WINDOW)) as OpenSyntheticBrowserWindow;
-    const instance = (yield call(openSyntheticWindowEnvironment, request.state, request.syntheticBrowserId)) as SEnvWindowInterface;
+  while (true) {
+    const request = (yield take(
+      (action: OpenPaperclipStateWindow) =>
+        action.type === OPEN_SYNTHETIC_WINDOW
+    )) as OpenPaperclipStateWindow;
+    const instance = (yield call(
+      openSyntheticWindowEnvironment,
+      request.state,
+      request.PaperclipStateId
+    )) as SEnvWindowInterface;
   }
 }
 
-function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), location, bounds, scrollPosition }: SyntheticWindow, browserId: string) {
-
+function* openSyntheticWindowEnvironment(
+  {
+    $id: windowId = generateDefaultId(),
+    location,
+    bounds,
+    scrollPosition
+  }: SyntheticWindow,
+  browserId: string
+) {
   let main: SEnvWindowInterface;
   const documentId = generateDefaultId();
   const fetch = yield getFetch();
-  const { apiHost }: SyntheticBrowserRootState = yield select();
+  const { apiHost }: PaperclipStateRootState = yield select();
 
   let currentWindow: SEnvWindowInterface;
 
-  const reloadChan = yield eventChannel((emit) => {
-
+  const reloadChan = yield eventChannel(emit => {
     const reload = (bounds?: Bounds) => {
       if (currentWindow) {
         currentWindow.dispose();
       }
-      const SEnvWindow = getSEnvWindowClass({ 
-        console: getSEnvWindowConsole(), 
-        fetch, 
+      const SEnvWindow = getSEnvWindowClass({
+        console: getSEnvWindowConsole(),
+        fetch,
         reload: () => reload(),
         getProxyUrl: (url: string) => {
-          return apiHost && url.substr(0, 5) !== "data:" && url.indexOf(window.location.host) === -1 ? apiHost + "/proxy/" + encodeURIComponent(url) : url;
+          return apiHost &&
+            url.substr(0, 5) !== "data:" &&
+            url.indexOf(window.location.host) === -1
+            ? apiHost + "/proxy/" + encodeURIComponent(url)
+            : url;
         },
         createRenderer: (window: SEnvWindowInterface) => {
-          return window.top === window ? new SyntheticMirrorRenderer(window) : new SyntheticDOMRenderer(window, document)
+          return window.top === window
+            ? new SyntheticMirrorRenderer(window)
+            : new SyntheticDOMRenderer(window, document);
         }
       });
-      const window = currentWindow = new SEnvWindow(location, browserId);
-  
+      const window = (currentWindow = new SEnvWindow(location, browserId));
+
       // ick. Better to use seed function instead to generate UIDs <- TODO.
       window.$id = windowId;
       window.document.$id = documentId;
-  
+
       if (bounds) {
         window.moveTo(bounds.left, bounds.top);
         if (bounds.right) {
-          window.resizeTo(bounds.right - bounds.left, bounds.bottom - bounds.top);
+          window.resizeTo(
+            bounds.right - bounds.left,
+            bounds.bottom - bounds.top
+          );
         }
       }
 
@@ -210,12 +242,14 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
 
     reload(bounds);
 
-    return () => { };
+    return () => {};
   });
 
   yield spawn(function*() {
-    while(true) {
-      yield watchWindowExternalResourceUris(currentWindow, () => currentWindow.location.reload());
+    while (true) {
+      yield watchWindowExternalResourceUris(currentWindow, () =>
+        currentWindow.location.reload()
+      );
       currentWindow.$load();
       const isNew = !getSyntheticWindow(yield select(), currentWindow.$id);
       yield put(syntheticWindowOpened(currentWindow, null, isNew));
@@ -225,51 +259,65 @@ function* openSyntheticWindowEnvironment({ $id: windowId = generateDefaultId(), 
 }
 
 function* handleToggleCSSProperty() {
-  while(true) {
-    const { cssDeclarationId, propertyName, windowId }: ToggleCSSDeclarationProperty = yield take(TOGGLE_CSS_DECLARATION_PROPERTY);
-    const state: SyntheticBrowserRootState = yield select();
+  while (true) {
+    const {
+      cssDeclarationId,
+      propertyName,
+      windowId
+    }: ToggleCSSDeclarationProperty = yield take(
+      TOGGLE_CSS_DECLARATION_PROPERTY
+    );
+    const state: PaperclipStateRootState = yield select();
     const window: SyntheticWindow = getSyntheticWindow(state, windowId);
     const childObjects = flattenWindowObjectSources(window);
-    const cssDeclaration = childObjects[cssDeclarationId] as any as SEnvCSSStyleDeclarationInterface;
+    const cssDeclaration = (childObjects[
+      cssDeclarationId
+    ] as any) as SEnvCSSStyleDeclarationInterface;
     cssDeclaration.toggle(propertyName);
   }
-};
+}
 
 const PADDING = 10;
 
-function* getBestWindowPosition(browserId: string, filter?: (window: SyntheticWindow) => boolean) {
-  const state: SyntheticBrowserRootState = yield select();
-  const browser = getSyntheticBrowser(state, browserId);
-  const entireBounds = getSyntheticBrowserBounds(browser, filter);
+function* getBestWindowPosition(
+  browserId: string,
+  filter?: (window: SyntheticWindow) => boolean
+) {
+  const state: PaperclipStateRootState = yield select();
+  const browser = getPaperclipState(state, browserId);
+  const entireBounds = getPaperclipStateBounds(browser, filter);
   return {
     left: entireBounds.right ? entireBounds.right + PADDING : 0,
     top: entireBounds.top
-  }
-};
+  };
+}
 
-const getSEnvWindowConsole = () => ({
-  warn(...args) {
-    console.warn('VM ', ...args);
-  },
-  log(...args) {
-    console.log('VM ', ...args);
-  },
-  error(...args) {
-    console.error('VM ', ...args);
-  },
-  debug(...args) {
-    console.debug('VM ', ...args);
-  },
-  info(...args) {
-    console.info('VM ', ...args);
-  }
-} as any as Console);
+const getSEnvWindowConsole = () =>
+  (({
+    warn(...args) {
+      console.warn("VM ", ...args);
+    },
+    log(...args) {
+      console.log("VM ", ...args);
+    },
+    error(...args) {
+      console.error("VM ", ...args);
+    },
+    debug(...args) {
+      console.debug("VM ", ...args);
+    },
+    info(...args) {
+      console.info("VM ", ...args);
+    }
+  } as any) as Console);
 
-function* watchWindowExternalResourceUris(instance: SEnvWindowInterface, reload: () => any) {
-
+function* watchWindowExternalResourceUris(
+  instance: SEnvWindowInterface,
+  reload: () => any
+) {
   // watch for changes
   yield spawn(function*() {
-    while(true) {
+    while (true) {
       const { publicPath } = (yield take(FILE_URI_CHANGED)) as FileUriChanged;
       if (instance.externalResourceUris.indexOf(publicPath) !== -1) {
         yield call(reload);
@@ -281,12 +329,12 @@ function* watchWindowExternalResourceUris(instance: SEnvWindowInterface, reload:
 
 function* handleFetchRequests() {
   let _pending: any = {};
-  while(1) {
+  while (1) {
     const req: FetchRequest = yield take(FETCH_REQUEST);
     const { info } = req;
     const uri = String(info);
     yield spawn(function*() {
-      const state: SyntheticBrowserRootState = yield select();
+      const state: PaperclipStateRootState = yield select();
 
       let p: Promise<any>;
       let emitChange: boolean;
@@ -300,19 +348,20 @@ function* handleFetchRequests() {
           emitChange = true;
           let curl = uri;
           if (curl.charAt(0) === "/") {
-            curl = window.location.protocol + "//" + window.location.host + curl;
+            curl =
+              window.location.protocol + "//" + window.location.host + curl;
           }
-      
+
           if (curl.indexOf(window.location.host) === -1) {
             curl = `${state.apiHost}/proxy/${encodeURIComponent(String(info))}`;
           }
-          p = _pending[uri] = new Promise(async (resolve) => {
+          p = _pending[uri] = new Promise(async resolve => {
             const response = await fetch(curl);
             const blob = await response.blob();
             const fr = new FileReader();
             fr.onload = () => {
               resolve(fr.result);
-            }
+            };
             fr.readAsArrayBuffer(blob);
           });
         }
@@ -326,14 +375,12 @@ function* handleFetchRequests() {
       yield put(createRequestResponse(req.$id, buffer));
     });
   }
-  
-  
 }
 
 function* getFetch() {
   const externalResources: string[] = [];
   // const fetchQueue = createQueue();
-  const state: SyntheticBrowserRootState = yield select();
+  const state: PaperclipStateRootState = yield select();
 
   // yield spawn(function*() {
   //   while(1) {
@@ -347,9 +394,10 @@ function* getFetch() {
   //   }
   // });
 
-  return (info: RequestInfo) => new Promise((resolve, reject) => {
-    // fetchQueue.unshift([info, resolve]);
-  });
+  return (info: RequestInfo) =>
+    new Promise((resolve, reject) => {
+      // fetchQueue.unshift([info, resolve]);
+    });
 }
 
 function* handleOpenedSyntheticWindow() {
@@ -362,7 +410,15 @@ function* handleOpenedSyntheticWindow() {
     let disposeMirror: () => any;
     if (!containsProxy) {
       proxy = window.clone();
-      const position = window.screenLeft || window.screenTop ? { left: window.screenLeft, top: window.screenTop } : (yield call(getBestWindowPosition, window.browserId, (existingWindow: SyntheticWindow) => existingWindow.$id !== window.$id));
+      const position =
+        window.screenLeft || window.screenTop
+          ? { left: window.screenLeft, top: window.screenTop }
+          : yield call(
+              getBestWindowPosition,
+              window.browserId,
+              (existingWindow: SyntheticWindow) =>
+                existingWindow.$id !== window.$id
+            );
 
       proxy.moveTo(position.left, position.top);
       proxy.resizeTo(window.innerWidth, window.innerHeight);
@@ -376,23 +432,30 @@ function* handleOpenedSyntheticWindow() {
     }
 
     disposeMirror();
-    proxies.set(window.$id, [proxy, mirrorWindow(proxy, window)])
-  };
+    proxies.set(window.$id, [proxy, mirrorWindow(proxy, window)]);
+  }
 
-  while(true) {
-    const { instance, isNew } = (yield take(SYNTHETIC_WINDOW_OPENED)) as SyntheticWindowOpened;
+  while (true) {
+    const { instance, isNew } = (yield take(
+      SYNTHETIC_WINDOW_OPENED
+    )) as SyntheticWindowOpened;
     yield call(updateProxy, instance, isNew);
   }
 }
 
 function* handleOpenedSyntheticProxyWindow() {
-  while(true) {
-    const { instance } = (yield take(SYNTHETIC_WINDOW_PROXY_OPENED)) as SyntheticWindowOpened;
+  while (true) {
+    const { instance } = (yield take(
+      SYNTHETIC_WINDOW_PROXY_OPENED
+    )) as SyntheticWindowOpened;
     const thread = yield spawn(handleSyntheticWindowInstance, instance);
     yield fork(function*() {
-      yield take((action: Removed) => action.type === REMOVED && action.itemId === instance.$id);
+      yield take(
+        (action: Removed) =>
+          action.type === REMOVED && action.itemId === instance.$id
+      );
       yield cancel(thread);
-    })
+    });
   }
 }
 
@@ -402,60 +465,74 @@ function* handleSyntheticWindowInstance(window: SEnvWindowInterface) {
 }
 
 function* handleSyntheticWindowEvents(window: SEnvWindowInterface) {
-  const { SEnvMutationEvent, SEnvWindowOpenedEvent, SEnvURIChangedEvent, SEnvWindowEvent } = getSEnvEventClasses(window);
+  const {
+    SEnvMutationEvent,
+    SEnvWindowOpenedEvent,
+    SEnvURIChangedEvent,
+    SEnvWindowEvent
+  } = getSEnvEventClasses(window);
 
   const chan = eventChannel(function(emit) {
-    window.renderer.addEventListener(SyntheticWindowRendererEvent.PAINTED, ({ rects, styles }: SyntheticWindowRendererEvent) => {
-      emit(syntheticWindowRectsUpdated(window.$id, rects, styles));
-    });
-    
+    window.renderer.addEventListener(
+      SyntheticWindowRendererEvent.PAINTED,
+      ({ rects, styles }: SyntheticWindowRendererEvent) => {
+        emit(syntheticWindowRectsUpdated(window.$id, rects, styles));
+      }
+    );
+
     const emitStructChange = debounce(() => {
       emit(syntheticWindowChanged(window));
     }, 0);
 
-    window.addEventListener(SEnvMutationEvent.MUTATION, (event) => {
+    window.addEventListener(SEnvMutationEvent.MUTATION, event => {
       if (window.document.readyState !== "complete") return;
       emitStructChange();
     });
 
-    window.addEventListener("move", (event) => {
+    window.addEventListener("move", event => {
       emit(syntheticWindowMoved(window));
     });
 
-    window.addEventListener("close", (event) => {
-
+    window.addEventListener("close", event => {
       // TODO - need to properly clean up event listeners here
       emit(syntheticWindowClosed(window));
     });
 
-    window.addEventListener("scroll", (event) => {
-      emit(syntheticWindowScrolled(window.$id, {
-        left: window.scrollX,
-        top: window.scrollY
-      }));
+    window.addEventListener("scroll", event => {
+      emit(
+        syntheticWindowScrolled(window.$id, {
+          left: window.scrollX,
+          top: window.scrollY
+        })
+      );
     });
-    
+
     window.addEventListener(SEnvURIChangedEvent.URI_CHANGED, ({ uri }: any) => {
       emit(syntheticWindowResourceChanged(uri));
     });
 
-    window.addEventListener("resize", (event) => {
+    window.addEventListener("resize", event => {
       emit(syntheticWindowResized(window));
     });
 
     window.addEventListener(SEnvWindowEvent.EXTERNAL_URIS_CHANGED, () => {
       emitStructChange();
     });
-    
-    window.addEventListener(SEnvWindowOpenedEvent.WINDOW_OPENED, (event: SEnvWindowOpenedEventInterface) => {
-      emit(syntheticWindowOpened(event.window, window.$id, true));
-    })
 
-    window.addEventListener("scroll", (event) => {
-      emit(syntheticWindowScrolled(window.$id, {
-        left: window.scrollX,
-        top: window.scrollY
-      }));
+    window.addEventListener(
+      SEnvWindowOpenedEvent.WINDOW_OPENED,
+      (event: SEnvWindowOpenedEventInterface) => {
+        emit(syntheticWindowOpened(event.window, window.$id, true));
+      }
+    );
+
+    window.addEventListener("scroll", event => {
+      emit(
+        syntheticWindowScrolled(window.$id, {
+          left: window.scrollX,
+          top: window.scrollY
+        })
+      );
     });
 
     const triggerLoaded = () => {
@@ -466,30 +543,39 @@ function* handleSyntheticWindowEvents(window: SEnvWindowInterface) {
     window.document.addEventListener("readystatechange", triggerLoaded);
     triggerLoaded();
 
-    return () => { };
+    return () => {};
   });
 
   yield fork(function*() {
-    while(true) {
+    while (true) {
       const e = yield take(chan);
       yield spawn(function*() {
         yield put(e);
-      })
+      });
     }
   });
 }
 
-const getTargetStyleOwners = (element: SEnvElementInterface, propertyNames: string[], targetSelectors: TargetSelector[]): {
-  [identifier: string]: SEnvHTMLElementInterface | SEnvCSSStyleRuleInterface
+const getTargetStyleOwners = (
+  element: SEnvElementInterface,
+  propertyNames: string[],
+  targetSelectors: TargetSelector[]
+): {
+  [identifier: string]: SEnvHTMLElementInterface | SEnvCSSStyleRuleInterface;
 } => {
-
   return {};
 };
 
-const createStyleMutation = (target: SEnvElementInterface | SEnvCSSStyleRuleInterface) => {
+const createStyleMutation = (
+  target: SEnvElementInterface | SEnvCSSStyleRuleInterface
+) => {
   if (target.struct.$type === SYNTHETIC_ELEMENT) {
     const element = target as SEnvElementInterface;
-    return createSetElementAttributeMutation(element, "style", element.getAttribute("style"));
+    return createSetElementAttributeMutation(
+      element,
+      "style",
+      element.getAttribute("style")
+    );
   } else if (target.struct.$type === SYNTHETIC_CSS_STYLE_RULE) {
     const rule = target as SEnvCSSStyleRuleInterface;
     return cssStyleRuleSetStyle(rule, rule.style);
@@ -497,15 +583,25 @@ const createStyleMutation = (target: SEnvElementInterface | SEnvCSSStyleRuleInte
 };
 
 function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
-
-  const takeWindowAction = (type, test = (action) => action.syntheticWindowId === window.$id) => take((action) => action.type === type && test(action));
+  const takeWindowAction = (
+    type,
+    test = action => action.syntheticWindowId === window.$id
+  ) => take(action => action.type === type && test(action));
 
   yield fork(function* handleRemoveNode() {
-    while(true) {
-      const {itemType, itemId}: Removed = (yield take((action: Removed) => action.type === REMOVED && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
+    while (true) {
+      const { itemType, itemId }: Removed = yield take(
+        (action: Removed) =>
+          action.type === REMOVED &&
+          isSyntheticNodeType(action.itemType) &&
+          !!flattenWindowObjectSources(window.struct)[action.itemId]
+      );
       const target = flattenWindowObjectSources(window.struct)[itemId] as Node;
       const parent = target.parentNode;
-      const removeMutation = createParentNodeRemoveChildMutation(parent, target);
+      const removeMutation = createParentNodeRemoveChildMutation(
+        parent,
+        target
+      );
 
       // remove immediately so that it's reflected in the canvas
       parent.removeChild(target);
@@ -514,28 +610,45 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
   });
 
   yield fork(function* handleMoveNode() {
-    while(true) {
-      const { itemType, itemId, point, targetSelectors }: Moved = (yield take((action: Moved) => action.type === MOVED && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
+    while (true) {
+      const { itemType, itemId, point, targetSelectors }: Moved = yield take(
+        (action: Moved) =>
+          action.type === MOVED &&
+          isSyntheticNodeType(action.itemType) &&
+          !!flattenWindowObjectSources(window.struct)[action.itemId]
+      );
 
       // compute based on the data currently in the store
       const syntheticWindow = getSyntheticWindow(yield select(), window.$id);
       const syntheticNode = getSyntheticNodeById(yield select(), itemId);
-      
+
       const originalRect = syntheticWindow.allComputedBounds[syntheticNode.$id];
-      const computedStyle = syntheticWindow.allComputedStyles[syntheticNode.$id];
+      const computedStyle =
+        syntheticWindow.allComputedStyles[syntheticNode.$id];
 
       // TODO - computed boxes MUST also contain the offset of the parent.
-      const relativeRect = roundBounds(shiftBounds(convertAbsoluteBoundsToRelative(
-        pointToBounds(point),
-        syntheticNode as SyntheticElement,
-        syntheticWindow
-      ), {
-        left: -syntheticWindow.bounds.left,
-        top: -syntheticWindow.bounds.top
-      }));
+      const relativeRect = roundBounds(
+        shiftBounds(
+          convertAbsoluteBoundsToRelative(
+            pointToBounds(point),
+            syntheticNode as SyntheticElement,
+            syntheticWindow
+          ),
+          {
+            left: -syntheticWindow.bounds.left,
+            top: -syntheticWindow.bounds.top
+          }
+        )
+      );
 
-      const envElement = flattenWindowObjectSources(window.struct)[syntheticNode.$id] as any as SEnvHTMLElementInterface;
-      const { top, left, position } = getTargetStyleOwners(envElement, ["top", "left", "position"], targetSelectors);
+      const envElement = (flattenWindowObjectSources(window.struct)[
+        syntheticNode.$id
+      ] as any) as SEnvHTMLElementInterface;
+      const { top, left, position } = getTargetStyleOwners(
+        envElement,
+        ["top", "left", "position"],
+        targetSelectors
+      );
 
       // TODO - get best CSS style
       if (computedStyle.position === "static") {
@@ -553,34 +666,56 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
   });
 
   yield fork(function*() {
-    while(true) {
-      const { syntheticNodeId, textContent } = (yield takeWindowAction(SYNTHETIC_NODE_TEXT_CONTENT_CHANGED)) as SyntheticNodeTextContentChanged;
-      const syntheticNode = flattenWindowObjectSources(window.struct)[syntheticNodeId] as SEnvNodeInterface;
+    while (true) {
+      const { syntheticNodeId, textContent } = (yield takeWindowAction(
+        SYNTHETIC_NODE_TEXT_CONTENT_CHANGED
+      )) as SyntheticNodeTextContentChanged;
+      const syntheticNode = flattenWindowObjectSources(window.struct)[
+        syntheticNodeId
+      ] as SEnvNodeInterface;
       syntheticNode.textContent = textContent;
     }
-  }); 
+  });
 
   // TODO: deprecated. changes must be explicit in the editor instead of doing diff / patch work
   // since we may end up editing the wrong node otherwise (CC).
   yield fork(function* handleNodeStoppedEditing() {
-    while(true) {
-      const { nodeId } = (yield takeWindowAction(NODE_VALUE_STOPPED_EDITING)) as SyntheticNodeValueStoppedEditing;
-      const node = flattenWindowObjectSources(window.struct)[nodeId] as any as SEnvHTMLElementInterface;
-      const mutation = createSetElementTextContentMutation(node, node.textContent);
+    while (true) {
+      const { nodeId } = (yield takeWindowAction(
+        NODE_VALUE_STOPPED_EDITING
+      )) as SyntheticNodeValueStoppedEditing;
+      const node = (flattenWindowObjectSources(window.struct)[
+        nodeId
+      ] as any) as SEnvHTMLElementInterface;
+      const mutation = createSetElementTextContentMutation(
+        node,
+        node.textContent
+      );
 
       yield request(deferApplyFileMutationsRequest(mutation));
     }
   });
 
   yield fork(function* handleMoveNodeStopped() {
-    while(true) {
-      const {itemType, itemId, targetSelectors}: Moved = (yield take((action: Moved) => action.type === STOPPED_MOVING && isSyntheticNodeType(action.itemType) && !!flattenWindowObjectSources(window.struct)[action.itemId]));
+    while (true) {
+      const { itemType, itemId, targetSelectors }: Moved = yield take(
+        (action: Moved) =>
+          action.type === STOPPED_MOVING &&
+          isSyntheticNodeType(action.itemType) &&
+          !!flattenWindowObjectSources(window.struct)[action.itemId]
+      );
 
       yield spawn(function*() {
-        const target = flattenWindowObjectSources(window.struct)[itemId] as any as SEnvHTMLElementInterface;
+        const target = (flattenWindowObjectSources(window.struct)[
+          itemId
+        ] as any) as SEnvHTMLElementInterface;
 
         // TODO - clear non targets
-        const { top, left, position } = getTargetStyleOwners(target, ["top", "left", "position"], targetSelectors);
+        const { top, left, position } = getTargetStyleOwners(
+          target,
+          ["top", "left", "position"],
+          targetSelectors
+        );
         const mutations = uniq([top, left, position]).map(createStyleMutation);
 
         yield yield request(deferApplyFileMutationsRequest(...mutations));
@@ -589,22 +724,32 @@ function* handleSyntheticWindowMutations(window: SEnvWindowInterface) {
   });
 
   yield fork(function*() {
-    while(true) {
-      const { scrollPosition: { left, top }} = (yield takeWindowAction(SYNTHETIC_WINDOW_SCROLL)) as SyntheticWindowScroll;
+    while (true) {
+      const {
+        scrollPosition: { left, top }
+      } = (yield takeWindowAction(
+        SYNTHETIC_WINDOW_SCROLL
+      )) as SyntheticWindowScroll;
       window.scrollTo(left, top);
     }
   });
 
   yield fork(function* handleResized() {
-    while(true) {
-      const { point } = (yield takeWindowAction(MOVED, (action: Resized) => action.itemId === window.$id)) as Moved;
+    while (true) {
+      const { point } = (yield takeWindowAction(
+        MOVED,
+        (action: Resized) => action.itemId === window.$id
+      )) as Moved;
       window.moveTo(point.left, point.top);
     }
   });
 
   yield fork(function* handleResized() {
-    while(true) {
-      const { bounds } = (yield takeWindowAction(RESIZED, (action: Resized) => action.itemId === window.$id)) as Resized;
+    while (true) {
+      const { bounds } = (yield takeWindowAction(
+        RESIZED,
+        (action: Resized) => action.itemId === window.$id
+      )) as Resized;
       window.moveTo(bounds.left, bounds.top);
       window.resizeTo(bounds.right - bounds.left, bounds.bottom - bounds.top);
     }

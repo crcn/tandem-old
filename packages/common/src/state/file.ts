@@ -59,54 +59,36 @@ export const createDirectory = (uri: string): Directory => ({
   children: []
 });
 
-// export const getFilePath = memoize((file: File, directory: Directory) => {
-//   const childParentMap = getChildParentMap(directory);
-//   const path: string[] = [];
+const getFileName = (current: FSItem) => path.basename(current.uri);
 
-//   let current: TreeNode<any> = file;
-//   while (current) {
-//     path.unshift(getFileName(current));
-//     current = childParentMap[current.id];
-//   }
+export const getFilePath = memoize((file: File, directory: Directory) => {
+  const childParentMap = getChildParentMap(directory);
+  const path: string[] = [];
 
-//   return path.join("/");
-// });
+  let current: FSItem = file;
+  while (current) {
+    path.unshift(getFileName(current));
+    current = childParentMap[current.id] as FSItem;
+  }
 
-// export const getFilePathFromNodePath = (path: number[], directory: Directory) =>
-//   getFilePath(getTreeNodeFromPath(path, directory) as File, directory);
+  return path.join("/");
+});
 
-// export const getFileFromUri = (uri: string, root: Directory) =>
-//   findNestedNode(
-//     root,
-//     child =>
-//       child.attributes[FSItemNamespaces.CORE][FileAttributeNames.URI] === uri
-//   );
+export const getFilePathFromNodePath = (path: number[], directory: Directory) =>
+  getFilePath(getTreeNodeFromPath(path, directory) as File, directory);
 
-// const getSelectedFile = memoize((root: Directory) =>
-//   findNestedNode(
-//     root,
-//     child =>
-//       child.attributes[FSItemNamespaces.CORE][FileAttributeNames.SELECTED]
-//   )
-// );
+export const getFileFromUri = (uri: string, root: Directory) =>
+  findNestedNode(root, child => child.uri === uri);
 
-// const getSelectedFiles = memoize((root: Directory) =>
-//   filterNestedNodes(
-//     root,
-//     child =>
-//       child.attributes[FSItemNamespaces.CORE][FileAttributeNames.SELECTED]
-//   )
-// );
-
-// export const getFilesWithExtension = memoize(
-//   (extension: string, directory: Directory) => {
-//     const tester = new RegExp(`${extension}$`);
-//     return filterNestedNodes(
-//       directory,
-//       file => isFile(file) && tester.test(getFileName(file))
-//     );
-//   }
-// );
+export const getFilesWithExtension = memoize(
+  (extension: string, directory: Directory) => {
+    const tester = new RegExp(`${extension}$`);
+    return filterNestedNodes(
+      directory,
+      file => isFile(file) && tester.test(getFileName(file))
+    );
+  }
+);
 
 // export const convertFlatFilesToNested = (
 //   rootDir: string,

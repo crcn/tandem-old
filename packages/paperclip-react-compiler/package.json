@@ -12,12 +12,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/enzyme": "^3.1.10",
     "chai": "^4.1.2",
-    "mocha": "^5.1.1",
+    "enzyme": "^3.3.0",
+    "mocha": "^5.2.0",
     "typescript": "^2.8.3"
   },
   "dependencies": {
     "@types/lodash": "^4.14.108",
+    "@types/mocha": "^5.2.0",
     "lodash": "^4.17.10",
     "paperclip": "^9.0.0",
     "paperclip-migrator": "^1.0.0",

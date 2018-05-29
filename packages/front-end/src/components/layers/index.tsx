@@ -5,7 +5,7 @@ import { RootState } from "../../state";
 import { identity } from "lodash";
 import {
   SyntheticWindow,
-  SyntheticBrowser,
+  PaperclipState,
   SyntheticDocument,
   SyntheticObjectType,
   PCSourceNamespaces

@@ -6,7 +6,7 @@ import { RootState, Editor } from "../../../../../../../state";
 import { wrapEventToDispatch } from "../../../../../../../utils";
 import { Dispatch } from "redux";
 import {
-  SyntheticBrowser,
+  PaperclipState,
   SyntheticWindow,
   getSyntheticWindow,
   SyntheticDocument,
@@ -22,7 +22,7 @@ import {
 } from "../../../../../../../actions";
 
 type DocumentItemInnerProps = {
-  browser: SyntheticBrowser;
+  browser: PaperclipState;
   document: SyntheticDocument;
   dispatch: Dispatch<any>;
   translate: Translate;

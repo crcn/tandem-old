@@ -13,20 +13,19 @@ import {
 } from "tandem-common";
 import { publicActionCreator } from "tandem-common";
 import {
-  SyntheticWindow,
   Dependency,
   DependencyGraph,
   ComputedDisplayInfo,
   SyntheticNativeNodeMap,
-  SyntheticNode
+  SyntheticNode,
+  PCNodeClip
 } from "paperclip";
-import { TreeNodeClip, RegisteredComponent } from "..";
+import { RegisteredComponent } from "..";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
 export const SYNTHETIC_WINDOW_OPENED = "SYNTHETIC_WINDOW_OPENED";
 export const PROJECT_DIRECTORY_LOADED = "PROJECT_DIRECTORY_LOADED";
-export const DEPENDENCY_ENTRY_LOADED = "DEPENDENCY_ENTRY_LOADED";
 export const DOCUMENT_RENDERED = "DOCUMENT_RENDERERED";
 
 export const CANVAS_TOOL_OVERLAY_MOUSE_LEAVE =
@@ -131,11 +130,6 @@ export type DocumentRendered = {
   info: ComputedDisplayInfo;
 } & Action;
 
-export type DependencyEntryLoaded = {
-  entry: Dependency;
-  graph: DependencyGraph;
-} & Action;
-
 export type FileNavigatorItemClicked = {
   node: FSItem;
 } & Action;
@@ -150,10 +144,6 @@ export type RawCSSTextChanged = {
 
 export type ProjectDirectoryLoaded = {
   directory: Directory;
-} & Action;
-
-export type SyntheticWindowOpened = {
-  window: SyntheticWindow;
 } & Action;
 
 export type CanvasToolOverlayMousePanStart = {
@@ -306,7 +296,7 @@ export type InsertToolFinished = {
 } & Action;
 
 export type SyntheticNodesPasted = {
-  clips: TreeNodeClip[];
+  clips: PCNodeClip[];
 } & Action;
 
 export type FileNavigatorLabelClicked = {
@@ -350,14 +340,14 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
 });
 
 export const fileNavigatorItemClicked = (
-  node: TreeNode<any>
+  node: FSItem
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_CLICKED
 });
 
 export const fileNavigatorToggleDirectoryClicked = (
-  node: TreeNode<any>
+  node: FSItem
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
@@ -391,9 +381,7 @@ export const fileNavigatorNewDirectoryClicked = (): Action => ({
   type: FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED
 });
 
-export const quickSearchItemClicked = (
-  file: TreeNode<any>
-): QuickSearchItemClicked => ({
+export const quickSearchItemClicked = (file: File): QuickSearchItemClicked => ({
   file,
   type: QUICK_SEARCH_ITEM_CLICKED
 });
@@ -425,7 +413,7 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
 });
 
 export const fileNavigatorItemDoubleClicked = (
-  node: TreeNode<any>
+  node: FSItem
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED
@@ -552,14 +540,6 @@ export const textValueChanged = (value: string): TextValueChanged => ({
 });
 
 export const appLoaded = publicActionCreator(() => ({ type: APP_LOADED }));
-export const dependencyEntryLoaded = (
-  entry: Dependency,
-  graph: DependencyGraph
-): DependencyEntryLoaded => ({
-  entry,
-  graph,
-  type: DEPENDENCY_ENTRY_LOADED
-});
 
 export const newFileEntered = (basename: string): NewFileEntered => ({
   basename,
@@ -590,7 +570,7 @@ export const shortcutKeyDown = publicActionCreator(
 );
 
 export const syntheticNodesPasted = (
-  clips: TreeNodeClip[]
+  clips: PCNodeClip[]
 ): SyntheticNodesPasted => ({
   clips,
   type: SYNTHETIC_NODES_PASTED
@@ -614,13 +594,6 @@ export const savedFile = (uri: string): SavedFile => ({
 
 export const savedAllFiles = (uri: string): SavedAllFiles => ({
   type: SAVED_ALL_FILES
-});
-
-export const syntheticWindowOpened = (
-  window: SyntheticWindow
-): SyntheticWindowOpened => ({
-  window,
-  type: SYNTHETIC_WINDOW_OPENED
 });
 
 export const canvasToolOverlayMousePanStart = (

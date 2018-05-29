@@ -10,13 +10,10 @@ import {
   ProjectLoaded,
   SYNTHETIC_WINDOW_OPENED,
   CanvasToolOverlayMouseMoved,
-  SyntheticWindowOpened,
   PROJECT_DIRECTORY_LOADED,
   ProjectDirectoryLoaded,
   FILE_NAVIGATOR_ITEM_CLICKED,
   FileNavigatorItemClicked,
-  DEPENDENCY_ENTRY_LOADED,
-  DependencyEntryLoaded,
   DOCUMENT_RENDERED,
   DocumentRendered,
   CANVAS_WHEEL,
@@ -107,24 +104,14 @@ import {
   RootState,
   setActiveFilePath,
   updateRootState,
-  updateRootStateSyntheticBrowser,
-  updateRootStateSyntheticWindow,
-  updateRootStateSyntheticWindowDocument,
   updateEditorCanvas,
   getCanvasMouseTargetNodeId,
   setSelectedSyntheticNodeIds,
   getSelectionBounds,
-  updateRootSyntheticPosition,
   getBoundedSelection,
-  updateRootSyntheticBounds,
   ToolType,
-  getActiveWindows,
   setTool,
-  getCanvasMouseDocumentRootId,
-  getDocumentRootIdFromPoint,
   persistRootStateBrowser,
-  getInsertedWindowElementIds,
-  getInsertedDocumentElementIds,
   getOpenFile,
   addOpenFile,
   upsertOpenFile,
@@ -139,8 +126,7 @@ import {
   setInsertFile,
   undo,
   redo,
-  openSyntheticWindow,
-  openSyntheticNodeOriginWindow,
+  openSyntheticNodeOriginFile,
   setRootStateSyntheticNodeLabelEditing,
   getEditorWithActiveFileUri,
   openEditorFileUri,
@@ -150,69 +136,32 @@ import {
   updateEditor,
   getSyntheticWindowBounds,
   centerEditorCanvas,
-  snapBounds,
   getCanvasMouseTargetNodeIdFromPoint,
   isSelectionMovable
 } from "../state";
 import {
-  updateSyntheticBrowser,
-  addSyntheticWindow,
-  createSyntheticWindow,
-  SyntheticNode,
-  evaluateDependencyEntry,
-  createSyntheticDocument,
-  getSyntheticWindow,
-  getSyntheticNodeBounds,
-  getSyntheticDocumentWindow,
-  persistSyntheticItemPosition,
-  persistSyntheticItemBounds,
-  SyntheticObjectType,
-  getSyntheticDocumentById,
-  persistNewComponent,
-  persistDeleteSyntheticItems,
-  SyntheticDocument,
-  SyntheticBrowser,
-  persistPasteSyntheticNodes,
-  getSyntheticSourceNode,
-  getSyntheticNodeById,
-  SyntheticWindow,
-  getModifiedDependencies,
-  persistRawCSSText,
-  getSyntheticNodeDocument,
-  getSyntheticNodeWindow,
-  expandSyntheticNode,
-  persistMoveSyntheticNode,
-  getSyntheticOriginSourceNodeUri,
-  getSyntheticOriginSourceNode,
-  findSourceSyntheticNode,
-  persistToggleSlotContainer,
-  updateSyntheticNodeAttributes,
-  persistChangeNodeLabel,
-  persistChangeNodeType,
-  persistTextValue,
-  persistInsertNewComponentVariant,
-  persistComponentVariantChanged,
-  persistRemoveComponentVariant,
-  getSyntheticNodeSourceComponent,
-  persistSetElementVariants,
   PCSourceTagNames,
-  persistInsertNode,
   PCVisibleNode,
-  PCComponentNode,
-  persistConvertNodeToComponent,
-  isSyntheticDocumentRoot,
   PCTextNode,
   PCElement,
+  paperclipReducer,
+  PC_DEPENDENCY_LOADED,
+  PCDependencyLoaded,
+  PC_SYNTHETIC_FRAME_RENDERED,
   SyntheticElement,
   createPCElement,
-  createPCTextNode
+  createPCTextNode,
+  getSyntheticSourceFrame,
+  getSyntheticNodeBounds,
+  getSyntheticNodeFrame,
+  getSyntheticSourceNode,
+  getSyntheticNodeById,
+  SyntheticNode
 } from "paperclip";
 import {
   getTreeNodePath,
   getTreeNodeFromPath,
-  getFilePath,
   File,
-  getFilePathFromNodePath,
   EMPTY_OBJECT,
   TreeNode,
   StructReference,
@@ -228,7 +177,6 @@ import {
   shiftBounds,
   flipPoint,
   diffArray,
-  getFileFromUri,
   isDirectory,
   updateNestedNode,
   FileAttributeNames,
@@ -254,13 +202,12 @@ import {
   createTreeNode,
   FSItemNamespaces,
   FSItemTagNames,
-  mergeNodeAttributes,
-  FSItem
+  FSItem,
+  getFileFromUri,
+  createFile
 } from "tandem-common";
 import { difference, pull, clamp, merge } from "lodash";
 import { select } from "redux-saga/effects";
-import { PCSourceNamespaces } from "paperclip";
-import { isNullOrUndefined } from "util";
 
 const DEFAULT_RECT_COLOR = "#CCC";
 const INSERT_TEXT_OFFSET = {
@@ -275,9 +222,11 @@ const MAX_ZOOM = 6400 / 100;
 const INITIAL_ZOOM_PADDING = 50;
 
 export const rootReducer = (state: RootState, action: Action): RootState => {
+  state = paperclipReducer(state, action);
   state = canvasReducer(state, action);
   state = shortcutReducer(state, action);
   state = clipboardReducer(state, action);
+
   switch (action.type) {
     case PROJECT_DIRECTORY_LOADED: {
       const { directory } = action as ProjectDirectoryLoaded;
@@ -285,7 +234,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
-      const uri = node.attributes.core.uri;
+      const uri = node.uri;
       state = setSelectedFileNodeIds(state, node.id);
       state = setFileExpanded(node, true, state);
 
@@ -298,7 +247,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { file } = action as QuickSearchItemClicked;
-      const uri = file.attributes.core.uri;
+      const uri = file.uri;
       state = setSelectedFileNodeIds(state, file.id);
       state = setActiveFilePath(uri, state);
       state = upsertOpenFile(uri, false, state);
@@ -310,12 +259,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
-      state = setFileExpanded(node, !node.attributes.core.expanded, state);
+      state = setFileExpanded(node, !node.expanded, state);
       return state;
     }
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
-      const uri = node.attributes.core.uri;
+      const uri = node.uri;
       const file = getFileFromUri(uri, state.projectDirectory);
       if (isFile(file)) {
         state = upsertOpenFile(uri, false, state);
@@ -354,8 +303,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         node.id,
         state.projectDirectory
       );
-      const parentUri = parent.attributes.core.uri;
-      const nodeUri = node.attributes.core.uri;
+      const parentUri = parent.uri;
+      const nodeUri = node.uri;
       state = updateRootState(
         {
           projectDirectory: updateNestedNode(
@@ -371,7 +320,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         targetNode.name !== FSItemTagNames.FILE
           ? targetNode
           : getParentTreeNode(targetNode.id, state.projectDirectory);
-      const targetUri = targetDir.attributes.core.uri;
+      const targetUri = targetDir.uri;
       state = updateRootState(
         {
           projectDirectory: updateNestedNode(
@@ -379,11 +328,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             state.projectDirectory,
             targetNode => {
               return appendChildNode(
-                mergeNodeAttributes(node, {
-                  [FSItemNamespaces.CORE]: {
-                    uri: nodeUri.replace(parentUri, targetUri)
-                  }
-                }),
+                {
+                  ...node,
+                  uri: nodeUri.replace(parentUri, targetUri)
+                } as FSItem,
                 targetNode
               );
             }
@@ -400,7 +348,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         directoryId,
         state.projectDirectory
       );
-      let uri = directory.attributes.core.uri + basename;
+      let uri = directory.uri + basename;
       if (fileType === "directory") {
         uri += "/";
       }
@@ -413,15 +361,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             dir => {
               return {
                 ...dir,
-                children: [
-                  ...dir.children,
-                  createTreeNode(fileType, {
-                    [FSItemNamespaces.CORE]: {
-                      [FileAttributeNames.URI]: uri,
-                      [FileAttributeNames.BASENAME]: basename
-                    }
-                  })
-                ]
+                children: [...dir.children, createFile(uri)]
               };
             }
           )
@@ -460,64 +400,64 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
     }
     case ELEMENT_VARIANT_TOGGLED: {
-      const { newVariants } = action as ElementVariantToggled;
-      const sourceNode = getSyntheticSourceNode(
-        state.selectedNodeIds[0],
-        state.browser
-      );
-      state = persistRootStateBrowser(
-        browser =>
-          persistSetElementVariants(
-            newVariants,
-            sourceNode.id,
-            state.selectedComponentVariantName,
-            browser
-          ),
-        state
-      );
+      // const { newVariants } = action as ElementVariantToggled;
+      // const sourceNode = getSyntheticSourceNode(
+      //   state.selectedNodeIds[0],
+      //   state.paperclip
+      // );
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistSetElementVariants(
+      //       newVariants,
+      //       sourceNode.id,
+      //       state.selectedComponentVariantName,
+      //       browser
+      //     ),
+      //   state
+      // );
       return state;
     }
     case NEW_VARIANT_NAME_ENTERED: {
-      const { value } = action as NewVariantNameEntered;
-      const sourceNode = getSyntheticSourceNode(
-        state.selectedNodeIds[0],
-        state.browser
-      ) as PCComponentNode;
-      state = persistRootStateBrowser(
-        browser => persistInsertNewComponentVariant(value, sourceNode, browser),
-        state
-      );
+      // const { value } = action as NewVariantNameEntered;
+      // const sourceNode = getSyntheticSourceNode(
+      //   state.selectedNodeIds[0],
+      //   state.paperclip
+      // ) as PCComponentNode;
+      // state = persistRootStateBrowser(
+      //   browser => persistInsertNewComponentVariant(value, sourceNode, browser),
+      //   state
+      // );
       return state;
     }
     case COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK: {
       const { name, value } = action as ComponentVariantNameDefaultToggleClick;
-      const sourceComponent = getSyntheticNodeSourceComponent(
-        state.selectedNodeIds[0],
-        state.browser
-      );
-      state = persistRootStateBrowser(
-        browser =>
-          persistComponentVariantChanged(
-            { [PCSourceNamespaces.CORE]: { isDefault: value } },
-            name,
-            sourceComponent.id,
-            browser
-          ),
-        state
-      );
+      // const sourceComponent = getSyntheticNodeSourceComponent(
+      //   state.selectedNodeIds[0],
+      //   state.paperclip
+      // );
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistComponentVariantChanged(
+      //       { [PCSourceNamespaces.CORE]: { isDefault: value } },
+      //       name,
+      //       sourceComponent.id,
+      //       browser
+      //     ),
+      //   state
+      // );
       return state;
     }
     case COMPONENT_VARIANT_REMOVED: {
       const { name, value } = action as ComponentVariantNameDefaultToggleClick;
-      const sourceComponent = getSyntheticNodeSourceComponent(
-        state.selectedNodeIds[0],
-        state.browser
-      );
-      state = persistRootStateBrowser(
-        browser =>
-          persistRemoveComponentVariant(name, sourceComponent.id, browser),
-        state
-      );
+      // const sourceComponent = getSyntheticNodeSourceComponent(
+      //   state.selectedNodeIds[0],
+      //   state.paperclip
+      // );
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistRemoveComponentVariant(name, sourceComponent.id, browser),
+      //   state
+      // );
       return state;
     }
     case COMPONENT_VARIANT_NAME_CLICKED: {
@@ -527,22 +467,22 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case COMPONENT_VARIANT_NAME_CHANGED: {
       const { oldName, newName } = action as ComponentVariantNameChanged;
-      const sourceComponentNode = getSyntheticNodeSourceComponent(
-        state.selectedNodeIds[0],
-        state.browser
-      );
-      state = persistRootStateBrowser(
-        browser =>
-          persistComponentVariantChanged(
-            {
-              [PCSourceNamespaces.CORE]: { name: newName }
-            },
-            oldName,
-            sourceComponentNode.id,
-            browser
-          ),
-        state
-      );
+      // const sourceComponentNode = getSyntheticNodeSourceComponent(
+      //   state.selectedNodeIds[0],
+      //   state.paperclip
+      // );
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistComponentVariantChanged(
+      //       {
+      //         [PCSourceNamespaces.CORE]: { name: newName }
+      //       },
+      //       oldName,
+      //       sourceComponentNode.id,
+      //       browser
+      //     ),
+      //   state
+      // );
       return state;
     }
     case PC_LAYER_MOUSE_OVER: {
@@ -562,43 +502,40 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case PC_LAYER_LABEL_CHANGED: {
       const { label, node } = action as TreeLayerLabelChanged;
-      state = setRootStateSyntheticNodeLabelEditing(node.id, false, state);
-      state = persistRootStateBrowser(
-        browser =>
-          persistChangeNodeLabel(
-            label,
-            getSyntheticSourceNode(node.id, browser) as PCVisibleNode,
-            browser
-          ),
-        state
-      );
+      // state = setRootStateSyntheticNodeLabelEditing(node.id, false, state);
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistChangeNodeLabel(
+      //       label,
+      //       getSyntheticSourceNode(node.id, browser) as PCVisibleNode,
+      //       browser
+      //     ),
+      //   state
+      // );
       return state;
     }
     case PC_LAYER_DROPPED_NODE: {
       const { node, targetNode, offset } = action as TreeLayerDroppedNode;
-      const oldDocument = getSyntheticNodeDocument(
-        targetNode.id,
-        state.browser
-      );
-      const targetNodeWindow = getSyntheticNodeWindow(
-        targetNode.id,
-        state.browser
-      );
-      state = persistRootStateBrowser(
-        browser =>
-          persistMoveSyntheticNode(
-            node as SyntheticNode,
-            targetNode.id,
-            offset,
-            browser
-          ),
-        state
-      );
-      // if (!getSyntheticNodeById(node.id, state.browser)) {
-      //   state = setSelectedSyntheticNodeIds(state, ...getInsertedDocumentElementIds(oldDocument, state.browser));
-      // }
+      // const oldDocument = getSyntheticNodeDocument(
+      //   targetNode.id,
+      //   state.paperclip
+      // );
+      // const targetNodeWindow = getSyntheticNodeWindow(
+      //   targetNode.id,
+      //   state.paperclip
+      // );
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistMoveSyntheticNode(
+      //       node as SyntheticNode,
+      //       targetNode.id,
+      //       offset,
+      //       browser
+      //     ),
+      //   state
+      // );
 
-      state = setActiveFilePath(targetNodeWindow.location, state);
+      // state = setActiveFilePath(targetNodeWindow.location, state);
 
       // deselect until fixed -- exception thrown in various conditions
       // where synthetic node no longer exists.
@@ -613,25 +550,25 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case PC_LAYER_CLICK: {
       const { node, sourceEvent } = action as TreeLayerClick;
 
-      if (sourceEvent.altKey) {
-        state = openSyntheticNodeOriginWindow(node.id, state);
-      } else {
-        const window = getSyntheticNodeWindow(node.id, state.browser);
-        state = setActiveFilePath(window.location, state);
-        state = setSelectedSyntheticNodeIds(
-          state,
-          ...(sourceEvent.shiftKey
-            ? [...state.selectedNodeIds, node.id]
-            : [node.id])
-        );
-      }
+      // if (sourceEvent.altKey) {
+      //   state = openSyntheticNodeOriginFile(node.id, state);
+      // } else {
+      //   const window = getSyntheticNodeWindow(node.id, state.paperclip);
+      //   state = setActiveFilePath(window.location, state);
+      //   state = setSelectedSyntheticNodeIds(
+      //     state,
+      //     ...(sourceEvent.shiftKey
+      //       ? [...state.selectedNodeIds, node.id]
+      //       : [node.id])
+      //   );
+      // }
       return state;
     }
     case PC_LAYER_EXPAND_TOGGLE_CLICK: {
       const { node } = action as TreeLayerExpandToggleClick;
       state = setRootStateSyntheticNodeExpanded(
         node.id,
-        !(node as FSItem).attributes.core.expanded,
+        !(node as FSItem).expanded,
         state
       );
       return state;
@@ -652,34 +589,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const { uri } = action as EditorTabClicked;
       return openEditorFileUri(uri, state);
     }
-    case DEPENDENCY_ENTRY_LOADED: {
-      const { entry, graph } = action as DependencyEntryLoaded;
-
-      state = updateRootStateSyntheticBrowser(
-        {
-          graph: {
-            ...(state.browser.graph || EMPTY_OBJECT),
-            ...graph
-          }
-        },
-        state
-      );
-
-      state = openSyntheticWindow(entry.uri, state);
-      state = centerEditorCanvas(state, entry.uri);
-
+    case PC_DEPENDENCY_LOADED: {
+      const { uri, graph } = action as PCDependencyLoaded;
+      state = centerEditorCanvas(state, uri);
       return state;
-    }
-    case DOCUMENT_RENDERED: {
-      const { info, documentId, nativeMap } = action as DocumentRendered;
-      return updateRootStateSyntheticWindowDocument(
-        documentId,
-        {
-          nativeNodeMap: nativeMap,
-          computed: info
-        },
-        state
-      );
     }
   }
   return state;
@@ -687,70 +600,71 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
 export const canvasReducer = (state: RootState, action: Action) => {
   switch (action.type) {
-    case RESIZER_MOVED: {
-      const { point: newPoint } = action as ResizerMoved;
-      state = updateEditorCanvas(
-        {
-          movingOrResizing: true
-        },
-        state.activeEditorFilePath,
-        state
-      );
+    // case RESIZER_MOVED: {
+    //   const { point: newPoint } = action as ResizerMoved;
+    //   state = updateEditorCanvas(
+    //     {
+    //       movingOrResizing: true
+    //     },
+    //     state.activeEditorFilePath,
+    //     state
+    //   );
 
-      if (isSelectionMovable(state)) {
-        const selectionBounds = getSelectionBounds(state);
-        const nodeId = state.selectedNodeIds[0];
-        const document = getSyntheticNodeDocument(nodeId, state.browser);
-        let movedBounds = moveBounds(selectionBounds, newPoint);
+    //   if (isSelectionMovable(state)) {
+    //     const selectionBounds = getSelectionBounds(state);
+    //     const nodeId = state.selectedNodeIds[0];
 
-        for (const nodeId of state.selectedNodeIds) {
-          const itemBounds = getSyntheticNodeBounds(nodeId, state.browser);
-          const newBounds = roundBounds(
-            scaleInnerBounds(itemBounds, selectionBounds, movedBounds)
-          );
-          state = updateRootSyntheticPosition(newBounds, nodeId, state);
-        }
-      }
+    //     const frame = getSyntheticNodeFrame(nodeId, state.paperclip);
+    //     let movedBounds = moveBounds(selectionBounds, newPoint);
 
-      return state;
-    }
-    case RESIZER_MOUSE_DOWN: {
-      const { sourceEvent } = action as ResizerMouseDown;
-      if (sourceEvent.metaKey) {
-        state = openSyntheticNodeOriginWindow(state.selectedNodeIds[0], state);
-      }
-      return state;
-    }
-    case RESIZER_STOPPED_MOVING: {
-      const { point } = action as ResizerMoved;
-      const oldGraph = state.browser.graph;
+    //     for (const nodeId of state.selectedNodeIds) {
+    //       const itemBounds = getSyntheticNodeBounds(nodeId, state.paperclip);
+    //       const newBounds = roundBounds(
+    //         scaleInnerBounds(itemBounds, selectionBounds, movedBounds)
+    //       );
+    //       state = updateRootSyntheticPosition(newBounds, nodeId, state);
+    //     }
+    //   }
 
-      if (isSelectionMovable(state)) {
-        const selectionBounds = getSelectionBounds(state);
-        state = persistRootStateBrowser(browser => {
-          return state.selectedNodeIds.reduce((state, nodeId) => {
-            const itemBounds = getSyntheticNodeBounds(nodeId, browser);
-            const newBounds = roundBounds(
-              scaleInnerBounds(
-                itemBounds,
-                selectionBounds,
-                moveBounds(selectionBounds, point)
-              )
-            );
-            return persistSyntheticItemPosition(newBounds, nodeId, state);
-          }, browser);
-        }, state);
-      }
+    //   return state;
+    // }
+    // case RESIZER_MOUSE_DOWN: {
+    //   const { sourceEvent } = action as ResizerMouseDown;
+    //   if (sourceEvent.metaKey) {
+    //     state = openSyntheticNodeOriginFile(state.selectedNodeIds[0], state);
+    //   }
+    //   return state;
+    // }
+    // case RESIZER_STOPPED_MOVING: {
+    //   const { point } = action as ResizerMoved;
+    //   const oldGraph = state.paperclip.graph;
 
-      state = updateEditorCanvas(
-        {
-          movingOrResizing: false
-        },
-        state.activeEditorFilePath,
-        state
-      );
-      return state;
-    }
+    //   if (isSelectionMovable(state)) {
+    //     const selectionBounds = getSelectionBounds(state);
+    //     state = persistRootStateBrowser(browser => {
+    //       return state.selectedNodeIds.reduce((state, nodeId) => {
+    //         const itemBounds = getSyntheticNodeBounds(nodeId, browser);
+    //         const newBounds = roundBounds(
+    //           scaleInnerBounds(
+    //             itemBounds,
+    //             selectionBounds,
+    //             moveBounds(selectionBounds, point)
+    //           )
+    //         );
+    //         return persistSyntheticItemPosition(newBounds, nodeId, state);
+    //       }, browser);
+    //     }, state);
+    //   }
+
+    //   state = updateEditorCanvas(
+    //     {
+    //       movingOrResizing: false
+    //     },
+    //     state.activeEditorFilePath,
+    //     state
+    //   );
+    //   return state;
+    // }
 
     case CANVAS_WHEEL: {
       const {
@@ -802,40 +716,44 @@ export const canvasReducer = (state: RootState, action: Action) => {
       } = action as CanvasDroppedRegisteredComponent;
       const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
 
-      let sourceNode: TreeNode<any> = cloneTreeNode(item.template);
+      let sourceNode: PCVisibleNode = cloneTreeNode(item.template);
 
       let targetSourceId: string;
 
       if (targetNodeId) {
-        targetSourceId = getSyntheticSourceNode(targetNodeId, state.browser).id;
+        targetSourceId = getSyntheticSourceNode(
+          getSyntheticNodeById(targetNodeId, state.paperclip),
+          state.paperclip.graph
+        ).id;
       } else {
-        targetSourceId = state.browser.graph[editorUri].content.id;
+        targetSourceId = state.paperclip.graph[editorUri].content.id;
         point = normalizePoint(
           getEditorWithFileUri(editorUri, state).canvas.translate,
           point
         );
-        sourceNode = mergeNodeAttributes(sourceNode, {
-          [PCSourceNamespaces.CORE]: {
-            style: {
-              left: point.left,
-              top: point.top,
-              width: 200,
-              height: 200
-            }
+        sourceNode = {
+          ...sourceNode,
+          style: {
+            ...sourceNode.style,
+            left: point.left,
+            top: point.top,
+            width: 200,
+            height: 200
           }
-        });
+        };
       }
 
-      return persistRootStateBrowser(
-        browser =>
-          persistInsertNode(
-            sourceNode,
-            targetSourceId,
-            TreeMoveOffset.APPEND,
-            browser
-          ),
-        state
-      );
+      return state;
+      // return persistRootStateBrowser(
+      //   browser =>
+      //     persistInsertNode(
+      //       sourceNode,
+      //       targetSourceId,
+      //       TreeMoveOffset.APPEND,
+      //       browser
+      //     ),
+      //   state
+      // );
     }
 
     case SHORTCUT_ZOOM_IN_KEY_DOWN: {
@@ -911,7 +829,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         action as CanvasToolOverlayMouseMoved,
         node => node.name !== PCSourceTagNames.TEXT
       );
-      const node = getSyntheticNodeById(targetNodeId, state.browser);
+      const node = getSyntheticNodeById(targetNodeId, state.paperclip);
 
       state = updateRootState(
         {
@@ -924,215 +842,208 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     // TODO
-    case CANVAS_MOUSE_CLICKED: {
-      if (state.toolType != null) {
-        return state;
-      }
+    // case CANVAS_MOUSE_CLICKED: {
+    //   if (state.toolType != null) {
+    //     return state;
+    //   }
 
-      state = deselectRootProjectFiles(state);
+    //   state = deselectRootProjectFiles(state);
 
-      const { sourceEvent } = action as CanvasToolOverlayClicked;
-      if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
-        return state;
-      }
+    //   const { sourceEvent } = action as CanvasToolOverlayClicked;
+    //   if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
+    //     return state;
+    //   }
 
-      // alt key opens up a new link
-      const altKey = sourceEvent.altKey;
-      const metaKey = sourceEvent.metaKey;
+    //   // alt key opens up a new link
+    //   const altKey = sourceEvent.altKey;
+    //   const metaKey = sourceEvent.metaKey;
 
-      const editor = getActiveEditor(state);
+    //   const editor = getActiveEditor(state);
 
-      // do not allow selection while window is panning (scrolling)
-      if (editor.canvas.panning || editor.canvas.movingOrResizing) return state;
+    //   // do not allow selection while window is panning (scrolling)
+    //   if (editor.canvas.panning || editor.canvas.movingOrResizing) return state;
 
-      const targetNodeId = getCanvasMouseTargetNodeId(
-        state,
-        action as CanvasToolOverlayMouseMoved
-      );
+    //   const targetNodeId = getCanvasMouseTargetNodeId(
+    //     state,
+    //     action as CanvasToolOverlayMouseMoved
+    //   );
 
-      if (!targetNodeId) {
-        return state;
-      }
+    //   if (!targetNodeId) {
+    //     return state;
+    //   }
 
-      if (altKey) {
-        state = openSyntheticNodeOriginWindow(targetNodeId, state);
-        return state;
-      }
+    //   if (altKey) {
+    //     state = openSyntheticNodeOriginFile(targetNodeId, state);
+    //     return state;
+    //   }
 
-      if (!altKey) {
-        state = handleArtboardSelectionFromAction(
-          state,
-          targetNodeId,
-          action as CanvasToolOverlayMouseMoved
-        );
-        state = updateEditorCanvas(
-          {
-            secondarySelection: false
-          },
-          editor.activeFilePath,
-          state
-        );
-        return state;
-      }
-      return state;
-    }
-    case RESIZER_PATH_MOUSE_MOVED: {
-      state = updateEditorCanvas(
-        {
-          movingOrResizing: true
-        },
-        state.activeEditorFilePath,
-        state
-      );
+    //   if (!altKey) {
+    //     state = handleArtboardSelectionFromAction(
+    //       state,
+    //       targetNodeId,
+    //       action as CanvasToolOverlayMouseMoved
+    //     );
+    //     state = updateEditorCanvas(
+    //       {
+    //         secondarySelection: false
+    //       },
+    //       editor.activeFilePath,
+    //       state
+    //     );
+    //     return state;
+    //   }
+    //   return state;
+    // }
+    // case RESIZER_PATH_MOUSE_MOVED: {
+    //   state = updateEditorCanvas(
+    //     {
+    //       movingOrResizing: true
+    //     },
+    //     state.activeEditorFilePath,
+    //     state
+    //   );
 
-      // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
-      const newBounds = getResizeActionBounds(action as ResizerPathMoved);
-      for (const nodeId of getBoundedSelection(state)) {
-        state = updateRootSyntheticBounds(
-          getNewSyntheticNodeBounds(newBounds, nodeId, state),
-          nodeId,
-          state
-        );
-      }
+    //   // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
+    //   const newBounds = getResizeActionBounds(action as ResizerPathMoved);
+    //   for (const nodeId of getBoundedSelection(state)) {
+    //     state = updateRootSyntheticBounds(
+    //       getNewSyntheticNodeBounds(newBounds, nodeId, state),
+    //       nodeId,
+    //       state
+    //     );
+    //   }
 
-      return state;
-    }
-    case RESIZER_PATH_MOUSE_STOPPED_MOVING: {
-      state = updateEditorCanvas(
-        {
-          movingOrResizing: false
-        },
-        state.activeEditorFilePath,
-        state
-      );
+    //   return state;
+    // }
+    // case RESIZER_PATH_MOUSE_STOPPED_MOVING: {
+    //   state = updateEditorCanvas(
+    //     {
+    //       movingOrResizing: false
+    //     },
+    //     state.activeEditorFilePath,
+    //     state
+    //   );
 
-      // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
-      const newBounds = getResizeActionBounds(
-        action as ResizerPathStoppedMoving
-      );
+    //   // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
+    //   const newBounds = getResizeActionBounds(
+    //     action as ResizerPathStoppedMoving
+    //   );
 
-      state = persistRootStateBrowser(browser => {
-        return state.selectedNodeIds.reduce(
-          (browserState, nodeId) =>
-            persistSyntheticItemBounds(
-              getNewSyntheticNodeBounds(newBounds, nodeId, state),
-              nodeId,
-              browserState
-            ),
-          state.browser
-        );
-      }, state);
+    //   state = persistRootStateBrowser(browser => {
+    //     return state.selectedNodeIds.reduce(
+    //       (browserState, nodeId) =>
+    //         persistSyntheticItemBounds(
+    //           getNewSyntheticNodeBounds(newBounds, nodeId, state),
+    //           nodeId,
+    //           browserState
+    //         ),
+    //       state.paperclip
+    //     );
+    //   }, state);
 
-      return state;
-    }
-    case RAW_CSS_TEXT_CHANGED: {
-      const { value: cssText } = action as RawCSSTextChanged;
-      return persistRootStateBrowser(browser => {
-        return state.selectedNodeIds.reduce(
-          (browserState, nodeId) =>
-            persistRawCSSText(
-              cssText,
-              nodeId,
-              state.selectedComponentVariantName,
-              browserState
-            ),
-          state.browser
-        );
-      }, state);
-    }
-    case SLOT_TOGGLE_CLICK: {
-      state = persistRootStateBrowser(browser => {
-        return persistToggleSlotContainer(
-          getSyntheticSourceNode(state.selectedNodeIds[0], state.browser).id,
-          browser
-        );
-      }, state);
-      return state;
-    }
-    case NATIVE_NODE_TYPE_CHANGED: {
-      const { nativeType } = action as NativeNodeTypeChanged;
-      state = persistRootStateBrowser(browser => {
-        return persistChangeNodeType(
-          nativeType,
-          getSyntheticSourceNode(
-            state.selectedNodeIds[0],
-            state.browser
-          ) as PCElement,
-          browser
-        );
-      }, state);
-      return state;
-    }
-    case TEXT_VALUE_CHANGED: {
-      const { value } = action as TextValueChanged;
-      state = persistRootStateBrowser(browser => {
-        return persistTextValue(
-          value,
-          getSyntheticSourceNode(
-            state.selectedNodeIds[0],
-            state.browser
-          ) as PCTextNode,
-          browser
-        );
-      }, state);
-      return state;
-    }
-    case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
-      const {
-        documentId,
-        sourceEvent
-      } = action as CanvasToolArtboardTitleClicked;
-      const window = getSyntheticDocumentWindow(documentId, state.browser);
-      state = updateEditorCanvas({ smooth: false }, window.location, state);
-      return handleArtboardSelectionFromAction(
-        state,
-        getSyntheticDocumentById(documentId, state.browser).root.id,
-        action as CanvasToolArtboardTitleClicked
-      );
-    }
-    case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
-      return setSelectedSyntheticNodeIds(state);
-    }
-    case INSERT_TOOL_FINISHED: {
-      let { point, fileUri } = action as InsertToolFinished;
-      const editor = getEditorWithActiveFileUri(fileUri, state);
+    //   return state;
+    // }
+    // case RAW_CSS_TEXT_CHANGED: {
+    //   const { value: cssText } = action as RawCSSTextChanged;
+    //   return persistRootStateBrowser(browser => {
+    //     return state.selectedNodeIds.reduce(
+    //       (browserState, nodeId) =>
+    //         persistRawCSSText(
+    //           cssText,
+    //           nodeId,
+    //           state.selectedComponentVariantName,
+    //           browserState
+    //         ),
+    //       state.paperclip
+    //     );
+    //   }, state);
+    // }
+    // case SLOT_TOGGLE_CLICK: {
+    //   state = persistRootStateBrowser(browser => {
+    //     return persistToggleSlotContainer(
+    //       getSyntheticSourceNode(state.selectedNodeIds[0], state.paperclip).id,
+    //       browser
+    //     );
+    //   }, state);
+    //   return state;
+    // }
+    // case NATIVE_NODE_TYPE_CHANGED: {
+    //   const { nativeType } = action as NativeNodeTypeChanged;
+    //   state = persistRootStateBrowser(browser => {
+    //     return persistChangeNodeType(
+    //       nativeType,
+    //       getSyntheticSourceNode(
+    //         state.selectedNodeIds[0],
+    //         state.paperclip
+    //       ) as PCElement,
+    //       browser
+    //     );
+    //   }, state);
+    //   return state;
+    // }
+    // case TEXT_VALUE_CHANGED: {
+    //   const { value } = action as TextValueChanged;
+    //   state = persistRootStateBrowser(browser => {
+    //     return persistTextValue(
+    //       value,
+    //       getSyntheticSourceNode(
+    //         state.selectedNodeIds[0],
+    //         state.paperclip
+    //       ) as PCTextNode,
+    //       browser
+    //     );
+    //   }, state);
+    //   return state;
+    // }
+    // case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
+    //   const {
+    //     documentId,
+    //     sourceEvent
+    //   } = action as CanvasToolArtboardTitleClicked;
+    //   const window = getSyntheticDocumentWindow(documentId, state.paperclip);
+    //   state = updateEditorCanvas({ smooth: false }, window.location, state);
+    //   return handleArtboardSelectionFromAction(
+    //     state,
+    //     getSyntheticDocumentById(documentId, state.paperclip).root.id,
+    //     action as CanvasToolArtboardTitleClicked
+    //   );
+    // }
+    // case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
+    //   return setSelectedSyntheticNodeIds(state);
+    // }
+    // case INSERT_TOOL_FINISHED: {
+    //   let { point, fileUri } = action as InsertToolFinished;
+    //   const editor = getEditorWithActiveFileUri(fileUri, state);
 
-      const toolType = state.toolType;
-      state = setTool(null, state);
+    //   const toolType = state.toolType;
+    //   state = setTool(null, state);
 
-      switch (toolType) {
-        // case ToolType.ARTBOARD: {
-        //   state = persistRootStateBrowser(browser => persistNewComponent(point, fileUri, browser), state);
-        //   const newActiveWindow = getSyntheticWindow(fileUri, state.browser);
-        //   const newDocument = newActiveWindow.documents[newActiveWindow.documents.length - 1];
-        //   state = setSelectedSyntheticNodeIds(state, newDocument.root.id);
-        //   return state;
-        // }
-        case ToolType.ELEMENT: {
-          return persistInsertNodeFromPoint(
-            createPCElement({
-              [PCSourceNamespaces.CORE]: {}
-            }),
-            fileUri,
-            point,
-            state
-          );
-        }
+    //   switch (toolType) {
+    //     case ToolType.ELEMENT: {
+    //       return persistInsertNodeFromPoint(
+    //         createPCElement({
+    //           [PCSourceNamespaces.CORE]: {}
+    //         }),
+    //         fileUri,
+    //         point,
+    //         state
+    //       );
+    //     }
 
-        case ToolType.TEXT: {
-          return persistInsertNodeFromPoint(
-            createPCTextNode({
-              [PCSourceNamespaces.CORE]: {
-                value: "edit me"
-              }
-            }),
-            fileUri,
-            point,
-            state
-          );
-        }
-      }
-    }
+    //     case ToolType.TEXT: {
+    //       return persistInsertNodeFromPoint(
+    //         createPCTextNode({
+    //           [PCSourceNamespaces.CORE]: {
+    //             value: "edit me"
+    //           }
+    //         }),
+    //         fileUri,
+    //         point,
+    //         state
+    //       );
+    //     }
+    //   }
+    // }
   }
 
   return state;
@@ -1141,65 +1052,66 @@ export const canvasReducer = (state: RootState, action: Action) => {
 const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
 
-const persistInsertNodeFromPoint = (
-  node: PCVisibleNode,
-  fileUri: string,
-  point: Point,
-  state: RootState
-) => {
-  const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
-  const oldWindow = getSyntheticWindow(fileUri, state.browser);
-  const dep = state.browser.graph[oldWindow.location].content.id;
-  const document =
-    targetNodeId && getSyntheticNodeDocument(targetNodeId, state.browser);
-  state = persistRootStateBrowser(browser => {
-    return persistInsertNode(
-      targetNodeId
-        ? node
-        : mergeNodeAttributes(node, {
-            [PCSourceNamespaces.CORE]: {
-              style: {
-                ...shiftPoint(
-                  normalizePoint(
-                    getEditorWithFileUri(fileUri, state).canvas.translate,
-                    point
-                  ),
-                  {
-                    left: -(INSERT_ARTBOARD_WIDTH / 2),
-                    top: -(INSERT_ARTBOARD_HEIGHT / 2)
-                  }
-                ),
-                width: INSERT_ARTBOARD_WIDTH,
-                height: INSERT_ARTBOARD_HEIGHT
-              }
-            }
-          }),
-      targetNodeId
-        ? getSyntheticSourceNode(targetNodeId, browser).id
-        : browser.graph[oldWindow.location].content.id,
-      TreeMoveOffset.APPEND,
-      browser
-    );
-  }, state);
-  state = setSelectedSyntheticNodeIds(
-    state,
-    ...getInsertedWindowElementIds(
-      oldWindow,
-      document && document.id,
-      state.browser
-    )
-  );
-  return state;
-};
+// const persistInsertNodeFromPoint = (
+//   node: PCVisibleNode,
+//   fileUri: string,
+//   point: Point,
+//   state: RootState
+// ) => {
+//   const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
+//   const oldWindow = getSyntheticWindow(fileUri, state.paperclip);
+//   const dep = state.paperclip.graph[oldWindow.location].content.id;
+//   const document =
+//     targetNodeId && getSyntheticNodeDocument(targetNodeId, state.paperclip);
+//   state = persistRootStateBrowser(browser => {
+//     return persistInsertNode(
+//       targetNodeId
+//         ? node
+//         : mergeNodeAttributes(node, {
+//             [PCSourceNamespaces.CORE]: {
+//               style: {
+//                 ...shiftPoint(
+//                   normalizePoint(
+//                     getEditorWithFileUri(fileUri, state).canvas.translate,
+//                     point
+//                   ),
+//                   {
+//                     left: -(INSERT_ARTBOARD_WIDTH / 2),
+//                     top: -(INSERT_ARTBOARD_HEIGHT / 2)
+//                   }
+//                 ),
+//                 width: INSERT_ARTBOARD_WIDTH,
+//                 height: INSERT_ARTBOARD_HEIGHT
+//               }
+//             }
+//           }),
+//       targetNodeId
+//         ? getSyntheticSourceNode(targetNodeId, browser).id
+//         : browser.graph[oldWindow.location].content.id,
+//       TreeMoveOffset.APPEND,
+//       browser
+//     );
+//   }, state);
+//   state = setSelectedSyntheticNodeIds(
+//     state,
+//     ...getInsertedWindowElementIds(
+//       oldWindow,
+//       document && document.id,
+//       state.paperclip
+//     )
+//   );
+//   return state;
+// };
 
 const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
   state = updateRootState(
     {
-      projectDirectory: updateNestedNode(node, state.projectDirectory, node =>
-        mergeNodeAttributes(node, {
-          [FSItemNamespaces.CORE]: {
-            expanded: value
-          }
+      projectDirectory: updateNestedNode(
+        node,
+        state.projectDirectory,
+        (node: FSItem) => ({
+          ...node,
+          expanded: value
         })
       )
     },
@@ -1214,7 +1126,7 @@ const getNewSyntheticNodeBounds = (
   state: RootState
 ) => {
   const currentBounds = getSelectionBounds(state);
-  const innerBounds = getSyntheticNodeBounds(nodeId, state.browser);
+  const innerBounds = getSyntheticNodeBounds(nodeId, state.paperclip);
   return scaleInnerBounds(innerBounds, currentBounds, newBounds);
 };
 
@@ -1282,11 +1194,11 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       if (state.selectedNodeIds.length > 1) {
         return state;
       }
-      state = persistRootStateBrowser(
-        browser =>
-          persistConvertNodeToComponent(state.selectedNodeIds[0], browser),
-        state
-      );
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistConvertNodeToComponent(state.selectedNodeIds[0], browser),
+      //   state
+      // );
       state = setSelectedSyntheticNodeIds(state);
       return state;
     }
@@ -1308,12 +1220,14 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         return state;
       }
       const selection = state.selectedNodeIds;
-      return setSelectedSyntheticNodeIds(
-        persistRootStateBrowser(
-          browser => persistDeleteSyntheticItems(selection, state.browser),
-          state
-        )
-      );
+      // return setSelectedSyntheticNodeIds(
+      //   persistRootStateBrowser(
+      //     browser => persistDeleteSyntheticItems(selection, state.paperclip),
+      //     state
+      //   )
+      // );
+
+      return state;
     }
   }
 
@@ -1325,34 +1239,34 @@ const clipboardReducer = (state: RootState, action: Action) => {
     case SYNTHETIC_NODES_PASTED: {
       const { clips } = action as SyntheticNodesPasted;
 
-      let targetSourceNode: TreeNode<any>;
+      // let targetSourceNode: TreeNode<any>;
 
-      if (state.selectedNodeIds.length) {
-        const nodeId = state.selectedNodeIds[0];
-        targetSourceNode = getSyntheticSourceNode(nodeId, state.browser);
-      } else {
-        targetSourceNode =
-          state.browser.graph[state.activeEditorFilePath].content;
-      }
+      // if (state.selectedNodeIds.length) {
+      //   const nodeId = state.selectedNodeIds[0];
+      //   targetSourceNode = getSyntheticSourceNode(nodeId, state.paperclip);
+      // } else {
+      //   targetSourceNode =
+      //     state.paperclip.graph[state.activeEditorFilePath].content;
+      // }
 
-      const oldWindow = getSyntheticWindow(
-        state.activeEditorFilePath,
-        state.browser
-      );
+      // const oldWindow = getSyntheticWindow(
+      //   state.activeEditorFilePath,
+      //   state.paperclip
+      // );
 
-      state = persistRootStateBrowser(
-        browser =>
-          persistPasteSyntheticNodes(
-            state.activeEditorFilePath,
-            targetSourceNode.id,
-            clips,
-            browser
-          ),
-        state
-      );
+      // state = persistRootStateBrowser(
+      //   browser =>
+      //     persistPasteSyntheticNodes(
+      //       state.activeEditorFilePath,
+      //       targetSourceNode.id,
+      //       clips,
+      //       browser
+      //     ),
+      //   state
+      // );
 
       // TODO - selected new element IDS that are within the target synthetic node
-      // const elementIds = getInsertedWindowElementIds(oldWindow, state.browser);
+      // const elementIds = getInsertedWindowElementIds(oldWindow, state.paperclip);
       // state = setSelectedSyntheticNodeIds(state, elementIds[elementIds.length - 1]);
       return state;
     }
@@ -1364,7 +1278,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
 const isDroppableNode = (node: SyntheticNode) => {
   return (
     node.name !== "text" &&
-    !/input/.test(String((node as SyntheticElement).attributes.core.nativeType))
+    !/input/.test(String((node as SyntheticElement).name))
   );
 };
 

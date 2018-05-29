@@ -1,12 +1,19 @@
-import { PaperclipRoot, updateRootPaperclipState } from "./external-state";
+import { PaperclipRoot, updatePaperclipRootState } from "./external-state";
 import { Action } from "redux";
 import {
   PC_SYNTHETIC_FRAME_RENDERED,
-  PCSyntheticFrameRendered
+  PCSyntheticFrameRendered,
+  PCDependencyLoaded,
+  PC_DEPENDENCY_LOADED
 } from "./actions";
-import { updateSyntheticFrame } from "./synthetic";
+import { updateSyntheticFrame } from "./external-state";
+import { mergeSyntheticFrames } from "./synthetic";
+import { evaluatePCModule } from "./evaluate";
 
-export const paperclipReducer = (state: PaperclipRoot, action: Action) => {
+export const paperclipReducer = <TState extends PaperclipRoot>(
+  state: TState,
+  action: Action
+): TState => {
   switch (action.type) {
     case PC_SYNTHETIC_FRAME_RENDERED: {
       const {
@@ -14,15 +21,27 @@ export const paperclipReducer = (state: PaperclipRoot, action: Action) => {
         $container,
         computed
       } = action as PCSyntheticFrameRendered;
-      return updateRootPaperclipState(
-        updateSyntheticFrame(
-          {
-            computed,
-            $container
-          },
-          frame.source.nodeId,
-          state.paperclip
-        ),
+      return updateSyntheticFrame(
+        {
+          computed,
+          $container
+        },
+        frame.source.nodeId,
+        state
+      );
+    }
+    case PC_DEPENDENCY_LOADED: {
+      const { uri, graph } = action as PCDependencyLoaded;
+      const module = graph[uri].content;
+      return updatePaperclipRootState(
+        {
+          openDependencyUri: null,
+          graph,
+          syntheticFrames: mergeSyntheticFrames(
+            state.paperclip.syntheticFrames,
+            evaluatePCModule(module, graph)
+          )
+        },
         state
       );
     }

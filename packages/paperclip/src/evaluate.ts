@@ -83,6 +83,7 @@ const evaluatePCFrame = (
   context: EvalContext
 ): SyntheticFrame => ({
   source: createSyntheticSource(frame),
+  bounds: frame.bounds,
   root: evaluatePCFrameRootNode(
     frame.children[0],
     appendPath(parentPath, frame.id),

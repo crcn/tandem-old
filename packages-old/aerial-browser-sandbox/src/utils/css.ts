@@ -1,37 +1,34 @@
-import { weakMemo, ExpressionLocation } from "aerial-common2";
+import { weakMemo, ExpressionLocation } from "aerial-common2";
 
-import { 
-  SyntheticWindow, 
-  SyntheticCSSRule, 
-  SyntheticBrowser, 
-  SyntheticElement, 
+import {
+  SyntheticWindow,
+  SyntheticCSSRule,
+  PaperclipState,
+  SyntheticElement,
   SyntheticDocument,
-  getSyntheticNodeById, 
+  getSyntheticNodeById,
   SyntheticCSSStyleRule,
-  getSyntheticNodeWindow, 
-  SyntheticCSSStyleSheet, 
+  getSyntheticNodeWindow,
+  SyntheticCSSStyleSheet,
   SyntheticLightDocument,
-  getSyntheticWindowChild, 
+  getSyntheticWindowChild,
   getSyntheticNodeAncestors,
-  SyntheticCSSStyleDeclaration,
+  SyntheticCSSStyleDeclaration
 } from "../state";
 
-import { 
-  CSSRuleType, 
+import {
+  CSSRuleType,
   SEnvNodeTypes,
-  matchesSelector, 
-  SEnvCSSRuleInterface, 
-  SEnvDocumentInterface, 
-  SEnvCSSObjectInterface, 
+  matchesSelector,
+  SEnvCSSRuleInterface,
+  SEnvDocumentInterface,
+  SEnvCSSObjectInterface,
   SEnvHTMLElementInterface,
   flattenDocumentSources,
   SEnvCSSStyleRuleInterface,
   flattenWindowObjectSources,
-  SEnvCSSStyleSheetInterface, 
-  SEnvCSSStyleDeclarationInterface,
+  SEnvCSSStyleSheetInterface,
+  SEnvCSSStyleDeclarationInterface
 } from "../environment";
 
-import {
-  INHERITED_CSS_STYLE_PROPERTIES
-} from "../constants";
-
+import { INHERITED_CSS_STYLE_PROPERTIES } from "../constants";

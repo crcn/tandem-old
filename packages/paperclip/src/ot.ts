@@ -1,4 +1,4 @@
-import { SyntheticNode } from "index";
+import { SyntheticNode } from "./synthetic";
 import {
   updateNestedNode,
   updateNestedNodeFromPath,
@@ -115,6 +115,13 @@ export const diffSyntheticNode = (
   );
 };
 
+const PROHIBITED_DIFF_KEYS = {
+  children: true,
+  source: true,
+  id: true,
+  metadata: true
+};
+
 export const _diffSyntheticNode = (
   oldNode: SyntheticNode,
   newNode: SyntheticNode,
@@ -127,7 +134,7 @@ export const _diffSyntheticNode = (
   }
 
   for (const key in newNode) {
-    if (key === "children" || key === "source" || key === "id") {
+    if (PROHIBITED_DIFF_KEYS[key]) {
       continue;
     }
     const oldValue = oldNode[key];

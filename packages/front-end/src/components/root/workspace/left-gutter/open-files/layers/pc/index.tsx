@@ -4,7 +4,7 @@ import * as cx from "classnames";
 import { RootState } from "../../../../../../../state";
 import {
   SyntheticWindow,
-  SyntheticBrowser,
+  PaperclipState,
   SyntheticNode,
   SyntheticDocument,
   SyntheticObjectType,
@@ -108,7 +108,7 @@ type SyntheticWindowLayersOuterProps = {
   selectedReferences: string[];
   dispatch: Dispatch<any>;
   window: SyntheticWindow;
-  browser: SyntheticBrowser;
+  browser: PaperclipState;
 };
 
 type SyntheticWindowLayersInnerProps = {} & SyntheticWindowLayersOuterProps;

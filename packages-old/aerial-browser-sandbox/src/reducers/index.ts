@@ -1,16 +1,16 @@
-import { 
+import {
   Bounds,
-  Moved, 
-  MOVED, 
+  Moved,
+  MOVED,
   moveBounds,
-  Resized, 
+  Resized,
   Removed,
   REMOVED,
   RESIZED,
-  BaseEvent, 
+  BaseEvent
 } from "aerial-common2";
 import { uniq, map } from "lodash";
-import { 
+import {
   SyntheticWindowLoaded,
   windowPatched,
   SYNTHETIC_WINDOW_RESOURCE_LOADED,
@@ -32,39 +32,42 @@ import { 
   SYNTHETIC_WINDOW_RESIZED,
   SyntheticWindowRectsUpdated,
   SyntheticWindowSourceChanged,
-  OPEN_SYNTHETIC_WINDOW, 
+  OPEN_SYNTHETIC_WINDOW,
   SYNTHETIC_WINDOW_PROXY_OPENED,
   SyntheticWindowOpened,
-  OpenSyntheticBrowserWindow,
-  NewSyntheticWindowEntryResolved,
+  OpenPaperclipStateWindow,
+  NewSyntheticWindowEntryResolved
 } from "../actions";
-import { 
+import {
   SyntheticNode,
   SyntheticWindow,
   SYNTHETIC_WINDOW,
   removeSyntheticWindow,
   isSyntheticNodeType,
   getSyntheticWindow,
-  createSyntheticBrowser, 
+  createPaperclipState,
   updateSyntheticWindow,
-  updateSyntheticBrowser,
-  createSyntheticBrowserRootState, 
-  SyntheticBrowserRootState, 
+  updatePaperclipState,
+  createPaperclipStateRootState,
+  PaperclipStateRootState,
   upsertSyntheticWindow,
-  SyntheticBrowser, 
+  PaperclipState,
   setFileCacheItem,
-  addSyntheticBrowser, 
-  getSyntheticBrowser, 
-  createSyntheticWindow 
+  addPaperclipState,
+  getPaperclipState,
+  createSyntheticWindow
 } from "../state";
 
 const WINDOW_PADDING = 50;
 
-const getBestWindowBounds = (browser: SyntheticBrowser, bounds: Bounds) => {
+const getBestWindowBounds = (browser: PaperclipState, bounds: Bounds) => {
   if (!browser.windows.length) return bounds;
-  const rightMostWindow = browser.windows.length > 1 ? browser.windows.reduce((a, b) => {
-    return a.bounds.right > b.bounds.right ? a : b;
-  }) : browser.windows[0];
+  const rightMostWindow =
+    browser.windows.length > 1
+      ? browser.windows.reduce((a, b) => {
+          return a.bounds.right > b.bounds.right ? a : b;
+        })
+      : browser.windows[0];
 
   return moveBounds(bounds, {
     left: rightMostWindow.bounds.right + WINDOW_PADDING,
@@ -72,25 +75,35 @@ const getBestWindowBounds = (browser: SyntheticBrowser, bounds: Bounds) => {
   });
 };
 
-
-export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootState>(root: TRootState = createSyntheticBrowserRootState() as TRootState, event: BaseEvent): TRootState => {
-
-  switch(event.type) {
+export const PaperclipStateReducer = <
+  TRootState extends PaperclipStateRootState
+>(
+  root: TRootState = createPaperclipStateRootState() as TRootState,
+  event: BaseEvent
+): TRootState => {
+  switch (event.type) {
     case SYNTHETIC_WINDOW_PROXY_OPENED: {
       const { instance, parentWindowId } = event as SyntheticWindowOpened;
-      let syntheticBrowser: SyntheticBrowser;
-      syntheticBrowser = getSyntheticBrowser(root, instance.browserId);
-      if (!syntheticBrowser) {
-        console.warn(`Unable to find synthetic browser with ID ${instance.browserId}. It's likely that the app state was replaced.`);
+      let PaperclipState: PaperclipState;
+      PaperclipState = getPaperclipState(root, instance.browserId);
+      if (!PaperclipState) {
+        console.warn(
+          `Unable to find synthetic browser with ID ${
+            instance.browserId
+          }. It's likely that the app state was replaced.`
+        );
         return root;
       }
-      return upsertSyntheticWindow(root, syntheticBrowser.$id, instance.struct);
+      return upsertSyntheticWindow(root, PaperclipState.$id, instance.struct);
     }
-    
+
     case SYNTHETIC_WINDOW_SCROLLED: {
-      const { scrollPosition, syntheticWindowId } = event as SyntheticWindowScrolled;
-      return updateSyntheticWindow(root, syntheticWindowId, {
+      const {
         scrollPosition,
+        syntheticWindowId
+      } = event as SyntheticWindowScrolled;
+      return updateSyntheticWindow(root, syntheticWindowId, {
+        scrollPosition
       });
     }
 
@@ -99,21 +112,25 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
       return setFileCacheItem(publicPath, content, new Date(0), root);
     }
 
-    case SYNTHETIC_WINDOW_RESIZED: 
+    case SYNTHETIC_WINDOW_RESIZED:
     case SYNTHETIC_WINDOW_MOVED: {
-      const { instance: { $id, screenLeft, screenTop, innerWidth, innerHeight } } = event as SyntheticWindowChanged;
+      const {
+        instance: { $id, screenLeft, screenTop, innerWidth, innerHeight }
+      } = event as SyntheticWindowChanged;
       return updateSyntheticWindow(root, $id, {
         bounds: {
           left: screenLeft,
           top: screenTop,
           right: screenLeft + innerWidth,
-          bottom: screenTop + innerHeight,
+          bottom: screenTop + innerHeight
         }
       });
     }
 
     case SYNTHETIC_WINDOW_CLOSED: {
-      const { instance: { $id } } = event as SyntheticWindowChanged;
+      const {
+        instance: { $id }
+      } = event as SyntheticWindowChanged;
       return removeSyntheticWindow(root, $id);
     }
 
@@ -147,7 +164,11 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
     }
 
     case SYNTHETIC_WINDOW_RECTS_UPDATED: {
-      const { rects, styles, syntheticWindowId } = event as SyntheticWindowRectsUpdated;
+      const {
+        rects,
+        styles,
+        syntheticWindowId
+      } = event as SyntheticWindowRectsUpdated;
       return updateSyntheticWindow(root, syntheticWindowId, {
         allComputedBounds: rects,
         allComputedStyles: styles
@@ -164,4 +185,4 @@ export const syntheticBrowserReducer = <TRootState extends SyntheticBrowserRootS
   }
 
   return root;
-}
+};

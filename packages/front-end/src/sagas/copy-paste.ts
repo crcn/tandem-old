@@ -2,17 +2,12 @@ import { fork, take, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { RootState } from "../state";
 import * as path from "path";
+import { getPCImportedChildrenSourceUris } from "paperclip";
 import {
-  TreeNodeClip,
-  getImportedNodeSourceUris,
-  getPCImportedChildrenSourceUris
-} from "paperclip";
-import {
-  SyntheticObjectType,
-  getSyntheticDocumentById,
-  SyntheticDocument,
   getSyntheticNodeById,
   SyntheticNode,
+  PCNodeClip,
+  getSyntheticSourceUri,
   getSyntheticSourceNode
 } from "paperclip";
 import { syntheticNodesPasted } from "../actions";
@@ -47,13 +42,19 @@ function* handleCopy() {
           root.selectedNodeIds.map(
             nodeId =>
               ({
-                uri: getSyntheticNodeById(nodeId, root.browser).source.uri,
-                node: getSyntheticSourceNode(nodeId, root.browser),
+                uri: getSyntheticSourceUri(
+                  getSyntheticNodeById(nodeId, root.paperclip),
+                  root.paperclip
+                ),
+                node: getSyntheticSourceNode(
+                  getSyntheticNodeById(nodeId, root.paperclip),
+                  root.paperclip.graph
+                ),
                 imports: getPCImportedChildrenSourceUris(
-                  getSyntheticSourceNode(nodeId, root.browser).id,
-                  root.browser.graph
+                  getSyntheticNodeById(nodeId, root.paperclip).id,
+                  root.paperclip.graph
                 )
-              } as TreeNodeClip)
+              } as PCNodeClip)
           )
         )
       );
@@ -78,7 +79,7 @@ function* handlePaste() {
 
       const text = event.clipboardData.getData("text/plain");
       try {
-        const clips = JSON.parse(text) as TreeNodeClip[];
+        const clips = JSON.parse(text) as PCNodeClip[];
         yield put(syntheticNodesPasted(clips));
         event.preventDefault();
       } catch (e) {

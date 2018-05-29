@@ -1,29 +1,40 @@
-import { SEnvNodeInterface } from "../environment";
+import { SEnvNodeInterface } from "../environment";
 import { delay } from "redux-saga";
 import { fork, spawn, take, select, put, call } from "redux-saga/effects";
-import { SyntheticBrowserRootState } from "../state";
-import { apiEditFile } from "../utils";
+import { PaperclipStateRootState } from "../state";
+import { apiEditFile } from "../utils";
 import { request, createRequestResponse } from "aerial-common2";
 
-import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, StringMutation } from "source-mutation";
-import { 
-  ApplyFileMutations, 
-  APPLY_FILE_MUTATIONS, 
+import {
+  Mutation,
+  Mutator,
+  SetValueMutation,
+  SetPropertyMutation,
+  createPropertyMutation,
+  createSetValueMutation,
+  eachArrayValueMutation,
+  diffArray,
+  RemoveChildMutation,
+  createStringMutation,
+  StringMutation
+} from "source-mutation";
+import {
+  ApplyFileMutations,
+  APPLY_FILE_MUTATIONS,
   applyFileMutationsRequest,
   mutateSourceContentRequest,
   mutateSourceContentRequest2,
-  DEFER_APPLY_FILE_MUTATIONS, 
+  DEFER_APPLY_FILE_MUTATIONS
 } from "../actions";
 
 const DEFER_APPLY_EDIT_TIMEOUT = 10;
 
 export function* fileEditorSaga() {
-
   let _deferring: boolean;
   let _batchMutations: Mutation<any>[];
 
   yield fork(function* handleDeferFileEditRequest() {
-    while(true) {
+    while (true) {
       const req: ApplyFileMutations = yield take(DEFER_APPLY_FILE_MUTATIONS);
       if (!_batchMutations) {
         _batchMutations = [];
@@ -41,15 +52,15 @@ export function* fileEditorSaga() {
       });
     }
   });
-  
+
   yield fork(function* handleFileEditRequest() {
-    while(true) {
+    while (true) {
       const req: ApplyFileMutations = yield take(APPLY_FILE_MUTATIONS);
-      const { apiHost }: SyntheticBrowserRootState = yield select();
+      const { apiHost }: PaperclipStateRootState = yield select();
       const { mutations } = req;
       const state = yield select();
       const mutationsByUri: {
-        [identifier: string]: Mutation<any>[]
+        [identifier: string]: Mutation<any>[];
       } = {};
 
       for (const mutation of mutations) {
@@ -67,5 +78,5 @@ export function* fileEditorSaga() {
         yield call(apiEditFile, mutationsByUri, yield select());
       });
     }
-  }); 
+  });
 }

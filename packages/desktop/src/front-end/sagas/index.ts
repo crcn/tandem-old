@@ -27,7 +27,6 @@ import {
   PC_LAYER_CLICK,
   TreeLayerClick,
   SyntheticNode,
-  getSyntheticOriginSourceNodeUri,
   QUICK_SEARCH_ITEM_CLICKED,
   getEditorWithActiveFileUri,
   getActiveEditor
@@ -36,50 +35,50 @@ import {
 export function* rootSaga() {
   yield fork(ipcSaga);
   yield fork(handleSaveShortcut);
-  yield fork(handleActivePaperclipFile);
+  // yield fork(handleActivePaperclipFile);
   yield fork(handleNewFileEntered);
   yield fork(handleDroppedFile);
 }
 
-function* handleActivePaperclipFile() {
-  let oldState: RootState;
+// function* handleActivePaperclipFile() {
+//   let oldState: RootState;
 
-  while (1) {
-    yield take();
-    const state: RootState = yield select();
-    const { editors, browser } = state;
+//   while (1) {
+//     yield take();
+//     const state: RootState = yield select();
+//     const { editors, browser } = state;
 
-    const newPCEditors = editors.filter(editor => {
-      return (
-        !getEditorWithActiveFileUri(editor.activeFilePath, oldState) &&
-        editor.activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) !== -1
-      );
-    });
+//     const newPCEditors = editors.filter(editor => {
+//       return (
+//         !getEditorWithActiveFileUri(editor.activeFilePath, oldState) &&
+//         editor.activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) !== -1
+//       );
+//     });
 
-    oldState = state;
+//     oldState = state;
 
-    for (const editor of newPCEditors) {
-      yield call(openDependencyEntry, editor.activeFilePath);
-    }
-  }
-}
+//     for (const editor of newPCEditors) {
+//       yield call(openDependencyEntry, editor.activeFilePath);
+//     }
+//   }
+// }
 
-function* openDependencyEntry(activeFilePath: string) {
-  const { browser } = yield select();
-  let graph: DependencyGraph = browser.graph;
-  let entry: Dependency = graph && graph[activeFilePath];
+// function* openDependencyEntry(activeFilePath: string) {
+//   const { browser } = yield select();
+//   let graph: DependencyGraph = browser.graph;
+//   let entry: Dependency = graph && graph[activeFilePath];
 
-  if (!entry) {
-    const result = yield call(loadEntry, activeFilePath, {
-      graph: browser.graph,
-      openFile: uri => fs.readFileSync(uri.substr("file://".length), "utf8")
-    });
-    entry = result.entry;
-    graph = result.graph;
-  }
+//   if (!entry) {
+//     const result = yield call(loadEntry, activeFilePath, {
+//       graph: browser.graph,
+//       openFile: uri => fs.readFileSync(uri.substr("file://".length), "utf8")
+//     });
+//     entry = result.entry;
+//     graph = result.graph;
+//   }
 
-  yield put(dependencyEntryLoaded(entry, graph));
-}
+//   yield put(dependencyEntryLoaded(entry, graph));
+// }
 
 function* handleNewFileEntered() {
   while (1) {
@@ -121,8 +120,8 @@ function* handleDroppedFile() {
     );
     const root: RootState = yield select();
     const newNode = getNestedTreeNodeById(node.id, root.projectDirectory);
-    const newUri = newNode.attributes.core.uri;
-    const oldUri = node.attributes.core.uri;
+    const newUri = newNode.uri;
+    const oldUri = node.uri;
     fsa.moveSync(oldUri.replace("file:/", ""), newUri.replace("file:/", ""));
   }
 }

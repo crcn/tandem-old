@@ -4,17 +4,17 @@
 // import { createTestProtocolAdapter } from "./utils";
 // import { createStore, applyMiddleware } from "redux";
 // import { default as createSagaMiddleware, delay } from "redux-saga";
-// import { SyntheticBrowserRootState, createSyntheticBrowserRootState } from "../state";
-// import { syntheticBrowserReducer } from "../reducers";
-// import { syntheticBrowserSaga } from "../sagas";
+// import { PaperclipStateRootState, createPaperclipStateRootState } from "../state";
+// import { PaperclipStateReducer } from "../reducers";
+// import { PaperclipStateSaga } from "../sagas";
 // import { getSEnvWindowClass, openSyntheticEnvironmentWindow } from "../environment";
 // import { openSyntheticWindowRequest } from "../actions";
-// // import { 
-// //   getSyntheticBrowserRootState,
-// //   openSyntheticWindowRequest, 
-// //   syntheticBrowserSaga,
-// //   syntheticBrowserReducer,
-// //   createSyntheticBrowserRootState
+// // import {
+// //   getPaperclipStateRootState,
+// //   openSyntheticWindowRequest,
+// //   PaperclipStateSaga,
+// //   PaperclipStateReducer,
+// //   createPaperclipStateRootState
 // // } from "../index";
 
 // describe(__filename + "#", () => {
@@ -23,12 +23,12 @@
 
 //     const createMainState = () => ({
 //       dependencyGraph: createDependencyGraph(),
-//       SyntheticBrowserRootState: createSyntheticBrowserRootState()
+//       PaperclipStateRootState: createPaperclipStateRootState()
 //     });
 
 //     const mainReducer = (state = createMainState(), event) => {
 //       state = dependencyGraphReducer(state, event);
-//       state = syntheticBrowserReducer(state, event);
+//       state = PaperclipStateReducer(state, event);
 //       return state;
 //     };
 
@@ -40,7 +40,7 @@
 //     )
 //     sagas.run(function*() {
 //       // yield fork(createCommonJSSaga());
-//       yield fork(syntheticBrowserSaga);
+//       yield fork(PaperclipStateSaga);
 //       yield fork(createDependencyGraphSaga());
 //       yield fork(createURIProtocolSaga(createTestProtocolAdapter("local", testFiles)));
 //       yield call(run);

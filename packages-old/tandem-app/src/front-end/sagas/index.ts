@@ -4,8 +4,8 @@ import { mainWorkspaceSaga } from "./workspace";
 import { fork, call, select } from "redux-saga/effects";
 import { artboardSaga } from "./artboard";
 import { Dispatcher } from "aerial-common2";
-import { windowSaga } from "./window";
-import { frontEndSyntheticBrowserSaga } from "./synthetic-browser";
+import { windowSaga } from "./window";
+import { frontEndPaperclipStateSaga } from "./synthetic-browser";
 import { apiSaga } from "./api";
 
 export function* mainSaga() {
@@ -13,6 +13,6 @@ export function* mainSaga() {
   yield fork(windowSaga);
   yield fork(mainWorkspaceSaga);
   yield fork(shortcutsService);
-  yield fork(frontEndSyntheticBrowserSaga);
+  yield fork(frontEndPaperclipStateSaga);
   yield fork(apiSaga);
 }

@@ -16,7 +16,7 @@ import {
   SyntheticRemoveChildOperationalTransform
 } from "./ot";
 import { PCSourceTagNames, PCTextNode } from "./dsl";
-import { DependencyGraph } from "graph";
+import { DependencyGraph } from "./graph";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node;

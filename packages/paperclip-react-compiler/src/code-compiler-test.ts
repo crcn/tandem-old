@@ -1,2 +1,2 @@
 import { expect } from "chai";
-import {} from "./code-transpiler";
+import { translatePaperclipModuleToReact } from "./code-compiler";

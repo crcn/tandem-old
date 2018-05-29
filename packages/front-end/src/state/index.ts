@@ -16,7 +16,6 @@ import {
   getNestedTreeNodeById,
   boundsFromRect,
   getFileFromUri,
-  stringifyTreeNodeToXML,
   File,
   updateNestedNode,
   FileAttributeNames,
@@ -32,50 +31,44 @@ import {
   shiftPoint,
   flipPoint,
   moveBounds,
-  mergeNodeAttributes,
   FSItem,
   FSItemNamespaces
 } from "tandem-common";
 import {
-  SyntheticBrowser,
-  updateSyntheticBrowser,
-  SyntheticWindow,
-  updateSyntheticWindow,
-  SyntheticDocument,
-  getSyntheticWindow,
-  SyntheticObjectType,
-  getSyntheticWindowDependency,
-  getSyntheticDocumentById,
-  getSyntheticNodeDocument,
-  getSyntheticNodeBounds,
-  updateSyntheticItemPosition,
-  updateSyntheticItemBounds,
-  getSyntheticDocumentWindow,
-  getModifiedDependencies,
-  Dependency,
   SyntheticNode,
-  setSyntheticNodeExpanded,
+  PaperclipRoot,
+  PaperclipState,
+  getSyntheticFramesByDependencyUri,
+  getSyntheticSourceNode,
+  getPCNodeDependency,
+  findRootInstanceOfPCNode,
+  updatePaperclipRootState,
   getSyntheticNodeById,
-  replaceDependency,
-  createSyntheticWindow,
-  evaluateDependencyEntry,
-  createSyntheticDocument,
-  getSyntheticOriginSourceNode,
-  getSyntheticOriginSourceNodeUri,
-  findSourceSyntheticNode,
-  isSyntheticDocumentRoot,
-  getNodeStyle,
-  isNodeMovable,
-  isNodeResizable,
-  PCSourceNamespaces
+  getSyntheticNodeFrame,
+  updateSyntheticFrame,
+  SyntheticFrame,
+  getSyntheticFrameDependencyUri,
+  getSyntheticNodeBounds,
+  updateDependencyGraph,
+  updateSyntheticNodeMetadata,
+  queueLoadDependencyUri,
+  isSyntheticNodeMovable,
+  isSyntheticNodeResizable
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
   CanvasToolOverlayClicked,
   dependencyEntryLoaded
 } from "../actions";
-import { uniq, pull } from "lodash";
+import { uniq, pull, values } from "lodash";
 import { stat } from "fs";
+import {
+  replaceDependency,
+  PCDependency,
+  Dependency,
+  DependencyGraph,
+  getModifiedDependencies
+} from "paperclip";
 
 export enum ToolType {
   TEXT,
@@ -84,6 +77,11 @@ export enum ToolType {
 }
 
 export const REGISTERED_COMPONENT = "REGISTERED_COMPONENT";
+
+export enum SyntheticNodeMetadataKeys {
+  EDITING_LABEL = "editingLabel",
+  EXPANDED = "expanded"
+}
 
 export type RegisteredComponent = {
   uri?: string;
@@ -115,7 +113,7 @@ export type InsertFileInfo = {
 
 export type DependencyHistory = {
   index: number;
-  snapshots: Dependency[];
+  snapshots: Dependency<any>[];
 };
 
 export type GraphHistory = {
@@ -138,12 +136,11 @@ export type RootState = {
   selectedNodeIds: string[];
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
-  browser: SyntheticBrowser;
   projectDirectory?: Directory;
   insertFileInfo?: InsertFileInfo;
   history: GraphHistory;
   showQuickSearch?: boolean;
-};
+} & PaperclipRoot;
 
 export type OpenFile = {
   temporary: boolean;
@@ -168,28 +165,28 @@ export const deselectRootProjectFiles = (state: RootState) =>
   );
 
 export const persistRootStateBrowser = (
-  persistBrowserState: (state: SyntheticBrowser) => SyntheticBrowser,
+  persistPaperclipState: (state: PaperclipState) => PaperclipState,
   state: RootState
 ) => {
-  const oldGraph = state.browser.graph;
+  const oldGraph = state.paperclip.graph;
   state = keepActiveFileOpen(
     updateRootState(
       {
-        browser: persistBrowserState(state.browser)
+        paperclip: persistPaperclipState(state.paperclip)
       },
       state
     )
   );
-  const modifiedDeps = getModifiedDependencies(oldGraph, state.browser.graph);
+  const modifiedDeps = getModifiedDependencies(state.paperclip.graph, oldGraph);
   state = addHistory(state, modifiedDeps.map(dep => oldGraph[dep.uri]));
   state = modifiedDeps.reduce(
-    (state, dep: Dependency) => setOpenFileContent(dep, state),
+    (state, dep: Dependency<any>) => setOpenFileContent(dep, state),
     state
   );
   return state;
 };
 
-const setOpenFileContent = (dep: Dependency, state: RootState) =>
+const setOpenFileContent = (dep: Dependency<any>, state: RootState) =>
   updateOpenFile(
     {
       temporary: false,
@@ -199,7 +196,7 @@ const setOpenFileContent = (dep: Dependency, state: RootState) =>
     state
   );
 
-const addHistory = (root: RootState, modifiedDeps: Dependency[]) => {
+const addHistory = (root: RootState, modifiedDeps: Dependency<any>[]) => {
   return modifiedDeps.reduce((state, dep) => {
     const history: DependencyHistory = state.history[dep.uri] || {
       index: 0,
@@ -238,7 +235,7 @@ const moveDependencyRecordHistory = (
   );
 
   // if index exceeds snapshot count, then we're at the end.
-  const dep = record.snapshots[index] || root.browser.graph[uri];
+  const dep = record.snapshots[index] || root.paperclip.graph[uri];
 
   root = updateRootState(
     {
@@ -256,11 +253,7 @@ const moveDependencyRecordHistory = (
   );
 
   root = setOpenFileContent(dep, root);
-  root = updateRootStateSyntheticBrowser(
-    replaceDependency(dep, root.browser),
-    root
-  );
-
+  root = replaceDependency(dep, root);
   return root;
 };
 
@@ -270,157 +263,6 @@ const DEFAULT_CANVAS: Canvas = {
     left: 0,
     top: 0,
     zoom: 1
-  }
-};
-
-const SNAP_PADDING = 5;
-
-// Todo - restrict to viewport
-
-export const snapBounds = (
-  bounds: Bounds,
-  selectedNodeIds: string[],
-  browser: SyntheticBrowser
-) => {
-  // const guides = getSnapGuides(bounds, selectedNodeIds, browser);
-
-  return bounds;
-};
-
-export const getSnapGuides = memoize(
-  (bounds: Bounds, selectedNodeIds: string[], browser: SyntheticBrowser) => {
-    let alignableBounds: Bounds[];
-
-    const firstNode = getSyntheticNodeById(selectedNodeIds[0], browser);
-    const document = getSyntheticNodeDocument(firstNode.id, browser);
-
-    bounds = shiftBounds(bounds, flipPoint(document.bounds));
-
-    if (
-      isSyntheticDocumentRoot(getSyntheticNodeById(selectedNodeIds[0], browser))
-    ) {
-      const window = getSyntheticDocumentWindow(document.id, browser);
-      alignableBounds = window.documents
-        .map(
-          document =>
-            selectedNodeIds.indexOf(document.root.id) === -1 && document.bounds
-        )
-        .filter(Boolean);
-    } else {
-      const highestNode = selectedNodeIds
-        .concat()
-        .sort(
-          (a, b) =>
-            getTreeNodeHeight(a, document.root) >
-            getTreeNodeHeight(b, document.root)
-              ? 1
-              : -1
-        )[0];
-      const highestNodeParent = getParentTreeNode(highestNode, document.root);
-
-      // omit items that are being dragged
-      alignableBounds = flattenTreeNode(highestNodeParent)
-        .map(
-          node =>
-            node.id !== highestNodeParent.id &&
-            selectedNodeIds.indexOf(node.id) === -1 &&
-            document.computed[node.id] &&
-            document.computed[node.id].bounds
-        )
-        .filter(Boolean);
-    }
-
-    const { width, height } = getBoundsSize(bounds);
-    let left: number = bounds.left;
-    let top: number = bounds.top;
-    const orgLeft = bounds.left;
-    const orgTop = bounds.top;
-
-    let guideLeft;
-    let guideTop;
-
-    for (let i = 0, n = alignableBounds.length; i < n; i++) {
-      const nodeBounds = alignableBounds[i];
-
-      if (orgLeft === left) {
-        [guideLeft, left] = snap(
-          left,
-          nodeBounds.left,
-          width,
-          nodeBounds.right - nodeBounds.left
-        );
-      }
-
-      if (orgTop === top) {
-        [guideTop, top] = snap(
-          top,
-          nodeBounds.top,
-          height,
-          nodeBounds.bottom - nodeBounds.top
-        );
-      }
-
-      // when bounds intersect two items
-      if (orgLeft !== left && orgTop !== top) {
-        break;
-      }
-    }
-
-    return moveBounds(bounds, {
-      left: left + document.bounds.left,
-      top: top + document.bounds.top
-    });
-  }
-);
-
-const snap = (fromLeft, toLeft, fromWidth, toWidth, margin: number = 5) => {
-  const fromMidWidth = fromWidth / 2;
-  const fromMidLeft = fromLeft + fromMidWidth;
-  const toMidLeft = toLeft + toWidth / 2;
-  const toRight = toLeft + toWidth;
-  const fromRight = fromLeft + fromWidth;
-
-  const lines = [
-    // left matches left
-    [fromLeft, toLeft],
-
-    // right matches left
-    [fromRight, toLeft, -fromWidth],
-
-    // right matches right
-    [fromRight, toRight, -fromWidth],
-
-    // left matches right
-    [fromLeft, toRight],
-
-    // left matches mid
-    [fromLeft, toMidLeft],
-
-    // left matches mid
-    [fromRight, toMidLeft, -fromWidth],
-
-    // mid matches mide
-    [fromMidLeft, toMidLeft, -fromMidWidth],
-
-    // mid matches right
-    [fromMidLeft, toRight, -fromMidWidth],
-
-    // mid matches left
-    [fromMidLeft, toLeft, -fromMidWidth],
-
-    // default
-    [fromLeft]
-  ];
-
-  for (const [from, to = -1, offset = 0] of lines) {
-    // no guide. Return from.
-    if (to === -1) {
-      return [-1, from];
-    }
-
-    if (from < to + margin && from > to - margin) {
-      return [to, to + offset];
-    }
   }
 };
 
@@ -570,11 +412,9 @@ export const openSecondEditor = (uri: string, state: RootState) => {
 
 export const getSyntheticWindowBounds = memoize(
   (uri: string, state: RootState) => {
-    const window = getSyntheticWindow(uri, state.browser);
+    const frames = getSyntheticFramesByDependencyUri(uri, state.paperclip);
     if (!window) return createZeroBounds();
-    return mergeBounds(
-      ...(window.documents || EMPTY_ARRAY).map(document => document.bounds)
-    );
+    return mergeBounds(...(frames || EMPTY_ARRAY).map(frame => frame.bounds));
   }
 );
 
@@ -637,21 +477,17 @@ export const removeTemporaryOpenFiles = (state: RootState) => {
   };
 };
 
-export const openSyntheticNodeOriginWindow = (
-  nodeId: string,
+export const openSyntheticNodeOriginFile = (
+  node: SyntheticNode,
   state: RootState
 ) => {
-  const node = getSyntheticNodeById(nodeId, state.browser);
-  const sourceNode = getSyntheticOriginSourceNode(
+  const sourceNode = getSyntheticSourceNode(
     node as SyntheticNode,
-    state.browser
+    state.paperclip.graph
   );
-  const uri = getSyntheticOriginSourceNodeUri(
-    node as SyntheticNode,
-    state.browser
-  );
-  state = openSyntheticWindow(uri, state);
-  const instance = findSourceSyntheticNode(sourceNode, uri, state.browser);
+  const uri = getPCNodeDependency(sourceNode.id, state.paperclip.graph).uri;
+  state = openEditorFileUri(uri, state);
+  const instance = findRootInstanceOfPCNode(sourceNode, state.paperclip);
   state = setActiveFilePath(uri, state);
   state = setSelectedSyntheticNodeIds(state, instance.id);
   return state;
@@ -681,48 +517,48 @@ export const addOpenFile = (
   };
 };
 
-export const getInsertedWindowElementIds = (
-  oldWindow: SyntheticWindow,
-  targetDocumentId: string,
-  newBrowser: SyntheticBrowser
-): string[] => {
-  const elementIds = oldWindow.documents
-    .filter(document => !targetDocumentId || document.id === targetDocumentId)
-    .reduce((nodeIds, oldDocument) => {
-      return [
-        ...nodeIds,
-        ...getInsertedDocumentElementIds(oldDocument, newBrowser)
-      ];
-    }, []);
-  const newWindow = newBrowser.windows.find(
-    window => window.location === oldWindow.location
-  );
-  return [
-    ...elementIds,
-    ...newWindow.documents
-      .filter(document => {
-        const isInserted =
-          oldWindow.documents.find(oldDocument => {
-            return oldDocument.id === document.id;
-          }) == null;
-        return isInserted;
-      })
-      .map(document => document.root.id)
-  ];
-};
+// export const getInsertedWindowElementIds = (
+//   oldWindow: SyntheticWindow,
+//   targetFrameId: string,
+//   newBrowser: PaperclipState
+// ): string[] => {
+//   const elementIds = oldWindow.documents
+//     .filter(document => !targetFrameId || document.id === targetFrameId)
+//     .reduce((nodeIds, oldFrame) => {
+//       return [
+//         ...nodeIds,
+//         ...getInsertedFrameElementIds(oldFrame, newBrowser)
+//       ];
+//     }, []);
+//   const newWindow = newBrowser.windows.find(
+//     window => window.location === oldWindow.location
+//   );
+//   return [
+//     ...elementIds,
+//     ...newWindow.documents
+//       .filter(document => {
+//         const isInserted =
+//           oldWindow.documents.find(oldFrame => {
+//             return oldFrame.id === document.id;
+//           }) == null;
+//         return isInserted;
+//       })
+//       .map(document => document.root.id)
+//   ];
+// };
 
-export const getInsertedDocumentElementIds = (
-  oldDocument: SyntheticDocument,
-  newBrowser: SyntheticBrowser
-): string[] => {
-  const newDocument = getSyntheticDocumentById(oldDocument.id, newBrowser);
-  if (!newDocument) {
-    return [];
-  }
-  const oldIds = Object.keys(oldDocument.nativeNodeMap);
-  const newIds = Object.keys(newDocument.nativeNodeMap);
-  return pull(newIds, ...oldIds);
-};
+// export const getInsertedFrameElementIds = (
+//   oldFrame: SyntheticFrame,
+//   newBrowser: PaperclipState
+// ): string[] => {
+//   const newFrame = getSyntheticFrameById(oldFrame.id, newBrowser);
+//   if (!newFrame) {
+//     return [];
+//   }
+//   const oldIds = Object.keys(oldFrame.nativeNodeMap);
+//   const newIds = Object.keys(newFrame.nativeNodeMap);
+//   return pull(newIds, ...oldIds);
+// };
 
 export const keepActiveFileOpen = (state: RootState): RootState => {
   return {
@@ -734,72 +570,52 @@ export const keepActiveFileOpen = (state: RootState): RootState => {
   };
 };
 
-export const updateRootStateSyntheticBrowser = (
-  properties: Partial<SyntheticBrowser>,
-  root: RootState
-) =>
-  updateRootState(
-    {
-      browser: updateSyntheticBrowser(properties, root.browser)
-    },
-    root
-  );
-
-export const updateRootStateSyntheticWindow = (
-  location: string,
-  properties: Partial<SyntheticWindow>,
-  root: RootState
-) =>
-  updateRootState(
-    {
-      browser: updateSyntheticWindow(location, properties, root.browser)
-    },
-    root
-  );
-
-export const updateRootStateSyntheticWindowDocument = (
-  documentId: string,
-  properties: Partial<SyntheticDocument>,
-  root: RootState
-) => {
-  const window = getSyntheticDocumentWindow(documentId, root.browser);
-  const document = getSyntheticDocumentById(documentId, root.browser);
-  return updateRootState(
-    {
-      browser: updateSyntheticWindow(
-        window.location,
-        {
-          documents: arraySplice(
-            window.documents,
-            window.documents.indexOf(document),
-            1,
-            {
-              ...document,
-              ...properties
-            }
-          )
-        },
-        root.browser
-      )
-    },
-    root
-  );
-};
+// export const updateRootStateSyntheticWindowFrame = (
+//   documentId: string,
+//   properties: Partial<SyntheticFrame>,
+//   root: RootState
+// ) => {
+//   const window = getSyntheticFrameWindow(documentId, root.paperclip);
+//   const document = getSyntheticFrameById(documentId, root.paperclip);
+//   return updateRootState(
+//     {
+//       browser: updateSyntheticWindow(
+//         window.location,
+//         {
+//           documents: arraySplice(
+//             window.documents,
+//             window.documents.indexOf(document),
+//             1,
+//             {
+//               ...document,
+//               ...properties
+//             }
+//           )
+//         },
+//         root.paperclip
+//       )
+//     },
+//     root
+//   );
+// };
 
 export const setRootStateSyntheticNodeExpanded = (
   nodeId: string,
   value: boolean,
   state: RootState
 ) => {
-  const node = getSyntheticNodeById(nodeId, state.browser);
-  const document = getSyntheticNodeDocument(node.id, state.browser);
-  state = updateRootStateSyntheticWindowDocument(
-    document.id,
+  const node = getSyntheticNodeById(nodeId, state.paperclip);
+  const frame = getSyntheticNodeFrame(node.id, state.paperclip);
+
+  state = updateSyntheticFrame(
     {
-      root: setSyntheticNodeExpanded(node, value, document.root)
+      // root: setSyntheticNodeExpanded(node, value, document.root)
+      root: frame.root
     },
+    frame.source.nodeId,
     state
   );
+
   return state;
 };
 
@@ -808,22 +624,19 @@ export const setRootStateSyntheticNodeLabelEditing = (
   value: boolean,
   state: RootState
 ) => {
-  const node = getSyntheticNodeById(nodeId, state.browser);
-  const document = getSyntheticNodeDocument(node.id, state.browser);
-  state = updateRootStateSyntheticWindowDocument(
-    document.id,
+  const node = getSyntheticNodeById(nodeId, state.paperclip);
+  const frame = getSyntheticNodeFrame(node.id, state.paperclip);
+  state = updateSyntheticFrame(
     {
-      root: updateNestedNode(
+      root: updateSyntheticNodeMetadata(
+        {
+          [SyntheticNodeMetadataKeys.EDITING_LABEL]: value
+        },
         node,
-        document.root,
-        node =>
-          mergeNodeAttributes(node, {
-            [PCSourceNamespaces.EDITOR]: {
-              editingLabel: value
-            }
-          }) as SyntheticNode
+        frame.root
       )
     },
+    frame.source.nodeId,
     state
   );
   return state;
@@ -839,58 +652,27 @@ export const setRootStateFileNodeExpanded = (
       projectDirectory: updateNestedNode(
         getNestedTreeNodeById(nodeId, state.projectDirectory),
         state.projectDirectory,
-        (child: FSItem) => {
-          return mergeNodeAttributes(child, {
-            [FSItemNamespaces.CORE]: {
-              expanded: value
-            }
-          });
-        }
+        (child: FSItem) => ({
+          ...child,
+          expanded: value
+        })
       )
     },
     state
   );
 };
 
-export const openSyntheticWindow = (
+export const openSyntheticPCFile = (
   uri: string,
   state: RootState
 ): RootState => {
-  const graph = state.browser.graph;
+  const graph = state.paperclip.graph;
   const entry = graph[uri];
   if (!entry) {
     throw new Error(`Cannot open window if graph entry is not loaded`);
   }
 
-  const existingWindow = state.browser.windows.find(
-    window => window.location === uri
-  );
-
-  // return window -- should use updateDependencyAndRevaluate if dep changed
-  if (existingWindow) {
-    return state;
-  }
-
-  state = updateRootStateSyntheticBrowser(
-    {
-      windows: [...state.browser.windows, createSyntheticWindow(uri)]
-    },
-    state
-  );
-
-  const documents = evaluateDependencyEntry({ entry, graph }).documentNodes.map(
-    root => {
-      return createSyntheticDocument(root, graph[root.source.uri].content);
-    }
-  );
-
-  return updateRootStateSyntheticWindow(
-    entry.uri,
-    {
-      documents
-    },
-    state
-  );
+  return queueLoadDependencyUri(uri, state);
 };
 
 export const updateEditor = (
@@ -921,8 +703,11 @@ export const centerEditorCanvas = (
   zoomOrZoomToFit: boolean | number = true
 ) => {
   if (!innerBounds) {
-    const window = getSyntheticWindow(editorFileUri, state.browser);
-    if (!window || !window.documents || !window.documents.length) {
+    const frames = getSyntheticFramesByDependencyUri(
+      editorFileUri,
+      state.paperclip
+    );
+    if (!frames.length) {
       return state;
     }
 
@@ -1052,18 +837,14 @@ export const setTool = (toolType: ToolType, root: RootState) => {
   return root;
 };
 
-export const getActiveWindows = (root: RootState) =>
-  root.browser.windows.filter(window =>
-    root.editors.some(editor => editor.activeFilePath === window.location)
+export const getActiveSyntheticFrames = (root: RootState): SyntheticFrame[] =>
+  values(root.paperclip.syntheticFrames).filter(frame =>
+    root.editors.some(
+      editor =>
+        editor.activeFilePath ===
+        getSyntheticFrameDependencyUri(frame, root.paperclip)
+    )
   );
-
-export const getAllWindowDocuments = memoize(
-  (browser: SyntheticBrowser): SyntheticDocument[] => {
-    return browser.windows.reduce((documents, window) => {
-      return [...documents, ...(window.documents || EMPTY_ARRAY)];
-    }, []);
-  }
-);
 
 export const getCanvasTranslate = (canvas: Canvas) => canvas.translate;
 
@@ -1104,25 +885,25 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
 
   const scaledMousePos = getScaledMouseCanvasPosition(state, point);
 
-  const documentRootId = getDocumentRootIdFromPoint(scaledMousePos, state);
+  const frameRootId = getFrameRootIdFromPoint(scaledMousePos, state);
 
-  if (!documentRootId) return null;
+  if (!frameRootId) return null;
 
-  const document = getSyntheticNodeDocument(documentRootId, state.browser);
+  const frame = getSyntheticNodeFrame(frameRootId, state.paperclip);
 
   const { left: scaledPageX, top: scaledPageY } = scaledMousePos;
 
-  const mouseX = scaledPageX - document.bounds.left;
-  const mouseY = scaledPageY - document.bounds.top;
+  const mouseX = scaledPageX - frame.bounds.left;
+  const mouseY = scaledPageY - frame.bounds.top;
 
-  const computedInfo = document.computed || {};
+  const computedInfo = frame.computed || {};
   const intersectingBounds: Bounds[] = [];
   const intersectingBoundsMap = new Map<Bounds, string>();
   for (const $id in computedInfo) {
     const { bounds } = computedInfo[$id];
     if (
       pointIntersectsBounds({ left: mouseX, top: mouseY }, bounds) &&
-      (!filter || filter(getNestedTreeNodeById($id, document.root)))
+      (!filter || filter(getNestedTreeNodeById($id, frame.root)))
     ) {
       intersectingBounds.push(bounds);
       intersectingBoundsMap.set(bounds, $id);
@@ -1134,11 +915,11 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   return intersectingBoundsMap.get(smallestBounds);
 };
 
-export const getCanvasMouseDocumentRootId = (
+export const getCanvasMouseFrameRootId = (
   state: RootState,
   event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked
 ) => {
-  return getDocumentRootIdFromPoint(
+  return getFrameRootIdFromPoint(
     getScaledMouseCanvasPosition(state, {
       left: event.sourceEvent.pageX,
       top: event.sourceEvent.pageY
@@ -1147,16 +928,13 @@ export const getCanvasMouseDocumentRootId = (
   );
 };
 
-export const getDocumentRootIdFromPoint = (point: Point, state: RootState) => {
-  const activeWindows = getActiveWindows(state);
-  if (!activeWindows.length) return null;
-  for (let j = activeWindows.length; j--; ) {
-    const documents = activeWindows[j].documents || EMPTY_ARRAY;
-    for (let i = documents.length; i--; ) {
-      const document = documents[i];
-      if (pointIntersectsBounds(point, document.bounds)) {
-        return document.root.id;
-      }
+export const getFrameRootIdFromPoint = (point: Point, state: RootState) => {
+  const activeFrames = getActiveSyntheticFrames(state);
+  if (!activeFrames.length) return null;
+  for (let j = activeFrames.length; j--; ) {
+    const frame = activeFrames[j];
+    if (pointIntersectsBounds(point, frame.bounds)) {
+      return frame.root.id;
     }
   }
 };
@@ -1210,77 +988,54 @@ export const setHoveringSyntheticNodeIds = (
   );
 };
 
-const uniqRefs = (refs: StructReference<any>[]) => {
-  const used = {};
-  const uniq: StructReference<any>[] = [];
+// export const updateRootSyntheticPosition = (
+//   position: Point,
+//   nodeId: string,
+//   root: RootState
+// ) =>
+//   updateRootState(
+//     {
+//       browser: updateSyntheticItemPosition(position, nodeId, root.paperclip)
+//     },
+//     root
+//   );
 
-  for (const ref of refs) {
-    if (used[ref.id]) {
-      continue;
-    }
-    used[ref.id] = true;
-    uniq.push(ref);
-  }
-
-  return uniq;
-};
-
-export const getReference = (ref: StructReference<any>, root: RootState) => {
-  if (ref.type === SyntheticObjectType.DOCUMENT) {
-    return getSyntheticDocumentById(ref.id, root.browser);
-  }
-
-  const document = getSyntheticNodeDocument(ref.id, root.browser);
-  return document && getNestedTreeNodeById(ref.id, document.root);
-};
-
-export const updateRootSyntheticPosition = (
-  position: Point,
-  nodeId: string,
-  root: RootState
-) =>
-  updateRootState(
-    {
-      browser: updateSyntheticItemPosition(position, nodeId, root.browser)
-    },
-    root
-  );
-
-export const updateRootSyntheticBounds = (
-  bounds: Bounds,
-  nodeId: string,
-  root: RootState
-) =>
-  updateRootState(
-    {
-      browser: updateSyntheticItemBounds(bounds, nodeId, root.browser)
-    },
-    root
-  );
+// export const updateRootSyntheticBounds = (
+//   bounds: Bounds,
+//   nodeId: string,
+//   root: RootState
+// ) =>
+//   updateRootState(
+//     {
+//       browser: updateSyntheticItemBounds(bounds, nodeId, root.paperclip)
+//     },
+//     root
+//   );
 
 export const getBoundedSelection = memoize((root: RootState): string[] =>
   root.selectedNodeIds.filter(nodeId =>
-    getSyntheticNodeBounds(nodeId, root.browser)
+    getSyntheticNodeBounds(nodeId, root.paperclip)
   )
 );
+
 export const getSelectionBounds = memoize((root: RootState) =>
   mergeBounds(
     ...getBoundedSelection(root).map(nodeId =>
-      getSyntheticNodeBounds(nodeId, root.browser)
+      getSyntheticNodeBounds(nodeId, root.paperclip)
     )
   )
 );
 
 export const isSelectionMovable = memoize((root: RootState) => {
   return !root.selectedNodeIds.some(nodeId => {
-    const node = getSyntheticNodeById(nodeId, root.browser);
-    return !isNodeMovable(node);
+    const node = getSyntheticNodeById(nodeId, root.paperclip);
+    return !isSyntheticNodeMovable(node);
   });
 });
 
 export const isSelectionResizable = memoize((root: RootState) => {
   return !root.selectedNodeIds.some(nodeId => {
-    const node = getSyntheticNodeById(nodeId, root.browser);
-    return !isNodeResizable(node);
+    const node = getSyntheticNodeById(nodeId, root.paperclip);
+    return !isSyntheticNodeResizable(node);
   });
 });

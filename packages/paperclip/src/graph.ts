@@ -1,5 +1,4 @@
 import { memoize } from "tandem-common";
-import { PCModule } from "dsl";
 
 export type DependencyGraph = {
   [identifier: string]: Dependency<any>;
@@ -49,3 +48,16 @@ export const updateGraphDependency = (
     ...properties
   }
 });
+
+export const getModifiedDependencies = (
+  newGraph: DependencyGraph,
+  oldGraph: DependencyGraph
+) => {
+  const modified: Dependency<any>[] = [];
+  for (const uri in oldGraph) {
+    if (newGraph[uri] && newGraph[uri].content !== oldGraph[uri].content) {
+      modified.push(newGraph[uri]);
+    }
+  }
+  return modified;
+};

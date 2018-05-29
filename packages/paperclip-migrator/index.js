@@ -8,5 +8,5 @@ const migrators = {
 
 module.exports = (oldModule) => {
   const migrate = migrators[oldModule.version || "0.0.0"];
-  return migrate ? migrate(oldModule) : oldModule;
+  return migrate ? module.exports(migrate(oldModule)) : oldModule;
 };

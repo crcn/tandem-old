@@ -1,10 +1,10 @@
-import { 
-  Bounds, 
+import {
+  Bounds,
   Point,
   Bounded,
-  Struct, 
+  Struct,
   dsFind,
-  weakMemo, 
+  weakMemo,
   shiftBounds,
   dsIndex,
   DataStore,
@@ -20,14 +20,11 @@ import {
   ExpressionLocation,
   ExpressionPosition,
   createZeroBounds,
-  createStructFactory, 
-  nonSerializableFactory,
-} from "aerial-common2"
+  createStructFactory,
+  nonSerializableFactory
+} from "aerial-common2";
 
-import {
-  SEnvNodeTypes,
-  CSSRuleType,
-} from "../environment/constants";
+import { SEnvNodeTypes, CSSRuleType } from "../environment/constants";
 
 import {
   SEnvCSSStyleSheetInterface,
@@ -41,7 +38,7 @@ import {
   SEnvNodeInterface,
   SEnvCSSStyleDeclarationInterface,
   SEnvDocumentInterface,
-  SEnvLightDocumentInterface,
+  SEnvLightDocumentInterface
 } from "../environment";
 
 export const SYNTHETIC_BROWSER_STORE = "SYNTHETIC_BROWSER_STORE";
@@ -58,7 +55,8 @@ export const SYNTHETIC_CSS_UNKNOWN_RULE = "SYNTHETIC_CSS_UNKNOWN_RULE";
 export const SYNTHETIC_CSS_KEYFRAME_RULE = "SYNTHETIC_CSS_KEYFRAME_RULE";
 export const SYNTHETIC_CSS_FONT_FACE_RULE = "SYNTHETIC_CSS_FONT_FACE_RULE";
 export const SYNTHETIC_CSS_KEYFRAMES_RULE = "SYNTHETIC_CSS_KEYFRAMES_RULE";
-export const SYNTHETIC_CSS_STYLE_DECLARATION = "SYNTHETIC_CSS_STYLE_DECLARATION";
+export const SYNTHETIC_CSS_STYLE_DECLARATION =
+  "SYNTHETIC_CSS_STYLE_DECLARATION";
 
 /**
  * CSSOM
@@ -462,8 +460,8 @@ export type SyntheticCSSStyleDeclaration = {
   resize: string | null;
   userSelect: string | null;
   disabledPropertyNames?: {
-    [identifier: string]: string
-  }
+    [identifier: string]: string;
+  };
 } & Struct;
 
 /**
@@ -491,11 +489,10 @@ export type BasicDocumentFragment = {
 
 export type BasicAttribute = {
   name: string;
-  value: string; 
-}
+  value: string;
+};
 
-export type BasicLightDocument = {
-} & BasicParentNode;
+export type BasicLightDocument = {} & BasicParentNode;
 
 export type BasicElement = {
   shadowRoot?: BasicLightDocument;
@@ -503,7 +500,7 @@ export type BasicElement = {
 } & BasicParentNode;
 
 export type BasicValueNode = {
-  nodeValue
+  nodeValue;
 } & Node;
 
 export type BasicTextNode = BasicValueNode;
@@ -517,7 +514,8 @@ export type SyntheticBaseNode = {
   source: ExpressionLocation;
   parentId?: string;
   ownerDocumentId?: string;
-} & BasicNode & Struct;
+} & BasicNode &
+  Struct;
 
 export type SyntheticNode = {
   source: ExpressionLocation;
@@ -527,7 +525,8 @@ export type SyntheticNode = {
 
 export type SyntheticParentNode = {
   childNodes: SyntheticNode[];
-} & BasicParentNode & SyntheticNode;
+} & BasicParentNode &
+  SyntheticNode;
 
 export type SyntheticLightDocument = {
   instance: SEnvLightDocumentInterface;
@@ -535,35 +534,40 @@ export type SyntheticLightDocument = {
 
 export type SyntheticDocument = {
   instance: SEnvDocumentInterface;
-} & SyntheticParentNode & SyntheticLightDocument & BasicDocument;
+} & SyntheticParentNode &
+  SyntheticLightDocument &
+  BasicDocument;
 
 export type SyntheticDocumentFragment = {
   hostId?: string;
-} & SyntheticParentNode & BasicDocumentFragment;
+} & SyntheticParentNode &
+  BasicDocumentFragment;
 
-export type SyntheticAttribute = {
-} & BasicAttribute & SyntheticNode;
+export type SyntheticAttribute = {} & BasicAttribute & SyntheticNode;
 
 export type SyntheticElement = {
   shadowRoot: SyntheticLightDocument;
   instance: SEnvElementInterface;
   attributes: SyntheticAttribute[];
-} & BasicElement & SyntheticParentNode;
+} & BasicElement &
+  SyntheticParentNode;
 
-export type SyntheticValueNode = {
-} & BasicValueNode & SyntheticNode;
+export type SyntheticValueNode = {} & BasicValueNode & SyntheticNode;
 
-export type SyntheticComment = {
-  
-} & BasicComment & SyntheticValueNode;
+export type SyntheticComment = {} & BasicComment & SyntheticValueNode;
 
-export type SyntheticTextNode = {
-
-} & BasicTextNode & SyntheticValueNode;
+export type SyntheticTextNode = {} & BasicTextNode & SyntheticValueNode;
 
 export const isSyntheticNodeType = (value: string) => {
-  return [SYNTHETIC_DOCUMENT, SYNTHETIC_TEXT_NODE, SYNTHETIC_COMMENT, SYNTHETIC_ELEMENT].indexOf(value) !== -1;
-}
+  return (
+    [
+      SYNTHETIC_DOCUMENT,
+      SYNTHETIC_TEXT_NODE,
+      SYNTHETIC_COMMENT,
+      SYNTHETIC_ELEMENT
+    ].indexOf(value) !== -1
+  );
+};
 
 export type SyntheticWindow = {
   scrollPosition: Point;
@@ -576,13 +580,13 @@ export type SyntheticWindow = {
   allComputedBounds: {
     [identifier: string]: Bounds;
   };
-  externalResourceUris: string[],
+  externalResourceUris: string[];
   allComputedStyles: {
-    [identifier: string]: CSSStyleDeclaration
-  }
+    [identifier: string]: CSSStyleDeclaration;
+  };
 } & Struct;
 
-export type SyntheticBrowser = {
+export type PaperclipState = {
   windows: SyntheticWindow[];
 } & Struct;
 
@@ -593,45 +597,61 @@ export type FileCacheItem = {
 };
 
 export type FileCache = {
-  [identifier: string]: FileCacheItem
-}
+  [identifier: string]: FileCacheItem;
+};
 
-export type SyntheticBrowserRootState = {
+export type PaperclipStateRootState = {
   apiHost?: string;
-  browserStore: DataStore<SyntheticBrowser>;
+  browserStore: DataStore<PaperclipState>;
 
   // TODO - may want to elevate this to aerial-common2
   fileCache: FileCache;
 };
 
-export const createSyntheticBrowserStore = (syntheticBrowsers?: SyntheticBrowser[]) => dsIndex(createDataStore(syntheticBrowsers), "$id");
+export const createPaperclipStateStore = (PaperclipStates?: PaperclipState[]) =>
+  dsIndex(createDataStore(PaperclipStates), "$id");
 
-export const createSyntheticWindow = serializableKeysFactory(["scrollPosition", "bounds", "location", "$id", "browserId"], createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
-  externalResourceUris: []
-}));
+export const createSyntheticWindow = serializableKeysFactory(
+  ["scrollPosition", "bounds", "location", "$id", "browserId"],
+  createStructFactory<SyntheticWindow>(SYNTHETIC_WINDOW, {
+    externalResourceUris: []
+  })
+);
 
-export const createSyntheticBrowser = createStructFactory<SyntheticBrowser>(SYNTHETIC_BROWSER, {
-  windows: []
-});
+export const createPaperclipState = createStructFactory<PaperclipState>(
+  SYNTHETIC_BROWSER,
+  {
+    windows: []
+  }
+);
 
-export const createSyntheticBrowserRootState = (syntheticBrowsers?: SyntheticBrowser[]): SyntheticBrowserRootState => {
+export const createPaperclipStateRootState = (
+  PaperclipStates?: PaperclipState[]
+): PaperclipStateRootState => {
   return {
-    browserStore: createSyntheticBrowserStore(syntheticBrowsers),
-    fileCache: {},
-  };
-}
-
-export const addSyntheticBrowser = <TState extends SyntheticBrowserRootState>(root: TState, syntheticBrowser: SyntheticBrowser = createSyntheticBrowser()): TState => {
-  const store = root.browserStore;
-  return {
-    ...(root as any),
-    browserStore: dsInsert(root.browserStore, syntheticBrowser)
+    browserStore: createPaperclipStateStore(PaperclipStates),
+    fileCache: {}
   };
 };
 
-export const addSyntheticWindow = <TState extends SyntheticBrowserRootState>(root: TState, syntheticBrowserId: string, syntheticWindow: SyntheticWindow): TState => {
+export const addPaperclipState = <TState extends PaperclipStateRootState>(
+  root: TState,
+  PaperclipState: PaperclipState = createPaperclipState()
+): TState => {
   const store = root.browserStore;
-  const idQuery = getIdQuery(syntheticBrowserId);
+  return {
+    ...(root as any),
+    browserStore: dsInsert(root.browserStore, PaperclipState)
+  };
+};
+
+export const addSyntheticWindow = <TState extends PaperclipStateRootState>(
+  root: TState,
+  PaperclipStateId: string,
+  syntheticWindow: SyntheticWindow
+): TState => {
+  const store = root.browserStore;
+  const idQuery = getIdQuery(PaperclipStateId);
   const { windows } = dsFind(store, idQuery);
   return {
     ...(root as any),
@@ -639,57 +659,96 @@ export const addSyntheticWindow = <TState extends SyntheticBrowserRootState>(roo
       windows: [...windows, syntheticWindow]
     })
   };
-}
+};
 
-export const getSyntheticBrowserItemBounds = weakMemo((root: SyntheticBrowserRootState|SyntheticBrowser, item: Partial<Struct & Bounded>) => {
-  if (!item) return null;
-  if (item.bounds) return item.bounds;
-  const window = getSyntheticNodeWindow(root, item.$id);
-  return window && window.allComputedBounds[item.$id] && shiftBounds(window.allComputedBounds[item.$id], window.bounds);
-});
-
-export const getSyntheticBrowserStoreItemByReference = weakMemo((root: SyntheticBrowserRootState|SyntheticBrowser, [type, id]: StructReference) => {
-  if (type === SYNTHETIC_TEXT_NODE || type === SYNTHETIC_ELEMENT) {
-    return getSyntheticNodeById(root as any, id);
-  } else if (type === SYNTHETIC_WINDOW) {
-    return getSyntheticWindow(root as any, id);
+export const getPaperclipStateItemBounds = weakMemo(
+  (
+    root: PaperclipStateRootState | PaperclipState,
+    item: Partial<Struct & Bounded>
+  ) => {
+    if (!item) return null;
+    if (item.bounds) return item.bounds;
+    const window = getSyntheticNodeWindow(root, item.$id);
+    return (
+      window &&
+      window.allComputedBounds[item.$id] &&
+      shiftBounds(window.allComputedBounds[item.$id], window.bounds)
+    );
   }
-});
+);
 
-export const createSyntheticCSSStyleSheet = createStructFactory<SyntheticCSSStyleSheet>(SYNTHETIC_CSS_STYLE_SHEET);
+export const getPaperclipStateStoreItemByReference = weakMemo(
+  (
+    root: PaperclipStateRootState | PaperclipState,
+    [type, id]: StructReference
+  ) => {
+    if (type === SYNTHETIC_TEXT_NODE || type === SYNTHETIC_ELEMENT) {
+      return getSyntheticNodeById(root as any, id);
+    } else if (type === SYNTHETIC_WINDOW) {
+      return getSyntheticWindow(root as any, id);
+    }
+  }
+);
 
-export const createSyntheticCSSStyleRule = createStructFactory<SyntheticCSSStyleRule>(SYNTHETIC_CSS_STYLE_RULE, {
+export const createSyntheticCSSStyleSheet = createStructFactory<
+  SyntheticCSSStyleSheet
+>(SYNTHETIC_CSS_STYLE_SHEET);
+
+export const createSyntheticCSSStyleRule = createStructFactory<
+  SyntheticCSSStyleRule
+>(SYNTHETIC_CSS_STYLE_RULE, {
   type: CSSRuleType.STYLE_RULE
 });
 
-export const createSyntheticCSSMediaRule = createStructFactory<SyntheticCSSMediaRule>(SYNTHETIC_CSS_MEDIA_RULE, {
+export const createSyntheticCSSMediaRule = createStructFactory<
+  SyntheticCSSMediaRule
+>(SYNTHETIC_CSS_MEDIA_RULE, {
   type: CSSRuleType.MEDIA_RULE
 });
 
-export const createSyntheticCSSFontFaceRule = createStructFactory<SyntheticCSSFontFaceRule>(SYNTHETIC_CSS_FONT_FACE_RULE, {
+export const createSyntheticCSSFontFaceRule = createStructFactory<
+  SyntheticCSSFontFaceRule
+>(SYNTHETIC_CSS_FONT_FACE_RULE, {
   type: CSSRuleType.FONT_FACE_RULE
 });
 
-export const createSyntheticCSSKeyframeRule = createStructFactory<SyntheticCSSStyleRule>(SYNTHETIC_CSS_KEYFRAME_RULE, {
+export const createSyntheticCSSKeyframeRule = createStructFactory<
+  SyntheticCSSStyleRule
+>(SYNTHETIC_CSS_KEYFRAME_RULE, {
   type: CSSRuleType.KEYFRAME_RULE
 });
 
-export const createSyntheticCSSKeyframesRule = createStructFactory<SyntheticCSSKeyframesRule>(SYNTHETIC_CSS_KEYFRAMES_RULE, {
+export const createSyntheticCSSKeyframesRule = createStructFactory<
+  SyntheticCSSKeyframesRule
+>(SYNTHETIC_CSS_KEYFRAMES_RULE, {
   type: CSSRuleType.KEYFRAMES_RULE
 });
 
-export const createSyntheticCSSUnknownGroupingRule = createStructFactory<SyntheticCSSUnknownGroupingRule>(SYNTHETIC_CSS_UNKNOWN_RULE, {
+export const createSyntheticCSSUnknownGroupingRule = createStructFactory<
+  SyntheticCSSUnknownGroupingRule
+>(SYNTHETIC_CSS_UNKNOWN_RULE, {
   type: CSSRuleType.UNKNOWN_RULE
 });
 
-export const getFileCacheItem = (uri: string, state: SyntheticBrowserRootState): FileCacheItem => state.fileCache && state.fileCache[uri];
+export const getFileCacheItem = (
+  uri: string,
+  state: PaperclipStateRootState
+): FileCacheItem => state.fileCache && state.fileCache[uri];
 
-export const setFileCacheItem = <TState extends SyntheticBrowserRootState>(uri: string, content: ArrayBuffer, mtime: Date, state: TState) => {
-  if (getFileCacheItem(uri, state) && getFileCacheItem(uri, state).mtime.getTime() === mtime.getTime()) {
+export const setFileCacheItem = <TState extends PaperclipStateRootState>(
+  uri: string,
+  content: ArrayBuffer,
+  mtime: Date,
+  state: TState
+) => {
+  if (
+    getFileCacheItem(uri, state) &&
+    getFileCacheItem(uri, state).mtime.getTime() === mtime.getTime()
+  ) {
     return state;
   }
   return {
-    ...(state as any),
+    ...(state as any),
     fileCache: {
       ...(state.fileCache || {}),
       [uri]: {
@@ -697,230 +756,360 @@ export const setFileCacheItem = <TState extends SyntheticBrowserRootState>(uri: 
         mtime
       }
     }
+  };
+};
+
+export const createSyntheticCSSStyleDeclaration = createStructFactory<
+  SyntheticCSSStyleDeclaration
+>(SYNTHETIC_CSS_STYLE_DECLARATION);
+
+export const createSyntheticDocument = nonSerializableFactory(
+  createStructFactory<SyntheticDocument>(SYNTHETIC_DOCUMENT, {
+    nodeName: "#document",
+    nodeType: SEnvNodeTypes.DOCUMENT
+  })
+);
+
+export const createSyntheticElement = createStructFactory<SyntheticElement>(
+  SYNTHETIC_ELEMENT,
+  {
+    nodeType: SEnvNodeTypes.ELEMENT
   }
-}
-
-export const createSyntheticCSSStyleDeclaration = createStructFactory<SyntheticCSSStyleDeclaration>(SYNTHETIC_CSS_STYLE_DECLARATION);
-
-export const createSyntheticDocument = nonSerializableFactory(createStructFactory<SyntheticDocument>(SYNTHETIC_DOCUMENT, {
-  nodeName: "#document",
-  nodeType: SEnvNodeTypes.DOCUMENT
-}));
-
-export const createSyntheticElement  = createStructFactory<SyntheticElement>(SYNTHETIC_ELEMENT, {
-  nodeType: SEnvNodeTypes.ELEMENT
-});
-export const createSyntheticTextNode = createStructFactory<SyntheticTextNode>(SYNTHETIC_TEXT_NODE, {
-  nodeName: "#text",
-  nodeType: SEnvNodeTypes.TEXT
-});
-export const createSyntheticComment  = createStructFactory<SyntheticComment>(SYNTHETIC_COMMENT, {
-  nodeName: "#comment",
-  nodeType: SEnvNodeTypes.COMMENT
-});
+);
+export const createSyntheticTextNode = createStructFactory<SyntheticTextNode>(
+  SYNTHETIC_TEXT_NODE,
+  {
+    nodeName: "#text",
+    nodeType: SEnvNodeTypes.TEXT
+  }
+);
+export const createSyntheticComment = createStructFactory<SyntheticComment>(
+  SYNTHETIC_COMMENT,
+  {
+    nodeName: "#comment",
+    nodeType: SEnvNodeTypes.COMMENT
+  }
+);
 
 // TODO - move all utils here to utils folder
 
-export const isSyntheticDOMNode = (value) => value && value.constructor === Object && value.nodeType != null;
+export const isSyntheticDOMNode = value =>
+  value && value.constructor === Object && value.nodeType != null;
 
-export const getSyntheticBrowsers = weakMemo((root: SyntheticBrowserRootState): SyntheticBrowser[] => root.browserStore.records);
+export const getPaperclipStates = weakMemo(
+  (root: PaperclipStateRootState): PaperclipState[] => root.browserStore.records
+);
 
 const getIdQuery = weakMemo((id: string) => ({
   $id: id
 }));
 
-export const getSyntheticBrowser = (root: SyntheticBrowserRootState, id: string): SyntheticBrowser => dsFind(root.browserStore, getIdQuery(id));
-export const getSyntheticWindow = (root: SyntheticBrowserRootState|SyntheticBrowser, id: string): SyntheticWindow => {
+export const getPaperclipState = (
+  root: PaperclipStateRootState,
+  id: string
+): PaperclipState => dsFind(root.browserStore, getIdQuery(id));
+export const getSyntheticWindow = (
+  root: PaperclipStateRootState | PaperclipState,
+  id: string
+): SyntheticWindow => {
   const filter = (window: SyntheticWindow) => window.$id === id;
-  return (root as SyntheticBrowserRootState).browserStore ? eachSyntheticWindow(root as SyntheticBrowserRootState, filter) : (root as SyntheticBrowser).windows.find(filter);
+  return (root as PaperclipStateRootState).browserStore
+    ? eachSyntheticWindow(root as PaperclipStateRootState, filter)
+    : (root as PaperclipState).windows.find(filter);
 };
 
-export const getSyntheticBrowserBounds = (browser: SyntheticBrowser, filter = (window: SyntheticWindow) => true) => {
+export const getPaperclipStateBounds = (
+  browser: PaperclipState,
+  filter = (window: SyntheticWindow) => true
+) => {
   const availWindows = browser.windows.filter(filter);
-  return availWindows.length ? availWindows.map(window => window.bounds).reduce((a, b) => ({
-    left: Math.min(a.left, b.left),
-    top: Math.min(a.top, b.top),
-    right: Math.max(a.right, b.right),
-    bottom: Math.max(a.bottom, b.bottom)
-  }), { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity }) : createZeroBounds();
+  return availWindows.length
+    ? availWindows.map(window => window.bounds).reduce(
+        (a, b) => ({
+          left: Math.min(a.left, b.left),
+          top: Math.min(a.top, b.top),
+          right: Math.max(a.right, b.right),
+          bottom: Math.max(a.bottom, b.bottom)
+        }),
+        { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity }
+      )
+    : createZeroBounds();
 };
 
-export const updateSyntheticBrowser = <TState extends SyntheticBrowserRootState>(root: TState, browserId: string, properties: Partial<SyntheticBrowser>): TState => {
-  const browser = getSyntheticBrowser(root, browserId);
+export const updatePaperclipState = <TState extends PaperclipStateRootState>(
+  root: TState,
+  browserId: string,
+  properties: Partial<PaperclipState>
+): TState => {
+  const browser = getPaperclipState(root, browserId);
   return {
     ...(root as any),
-    browserStore: dsUpdate(root.browserStore, { $id: browser.$id }, {
-      ...browser,
-      ...properties
-    })
+    browserStore: dsUpdate(
+      root.browserStore,
+      { $id: browser.$id },
+      {
+        ...browser,
+        ...properties
+      }
+    )
   };
 };
 
-export const updateSyntheticWindow = <TState extends SyntheticBrowserRootState>(root: TState, windowId: string, properties: Partial<SyntheticWindow>): TState => {
+export const updateSyntheticWindow = <TState extends PaperclipStateRootState>(
+  root: TState,
+  windowId: string,
+  properties: Partial<SyntheticWindow>
+): TState => {
   const browser = getSyntheticWindowBrowser(root, windowId);
   const window = getSyntheticWindow(browser, windowId);
-  return updateSyntheticBrowser(root, browser.$id, {
+  return updatePaperclipState(root, browser.$id, {
     windows: arrayReplaceItem(browser.windows, window, {
       ...window,
       ...properties
     })
   });
-}
-export const upsertSyntheticWindow = <TState extends SyntheticBrowserRootState>(root: TState, browserId: string, newWindow: SyntheticWindow): TState => {
-  const browser = getSyntheticBrowser(root, browserId);
+};
+export const upsertSyntheticWindow = <TState extends PaperclipStateRootState>(
+  root: TState,
+  browserId: string,
+  newWindow: SyntheticWindow
+): TState => {
+  const browser = getPaperclipState(root, browserId);
   const window = getSyntheticWindow(browser, newWindow.$id);
   if (window) {
     return updateSyntheticWindow(root, window.$id, newWindow);
   }
 
-  return updateSyntheticBrowser(root, browser.$id, {
-    windows: [
-      ...browser.windows,
-      {...newWindow}
-    ]
-  })
-}
-
-export const getSyntheticWindowChildStructs = weakMemo((window: SyntheticWindow) => {
-  const instances = flattenWindowObjectSources(window);
-  const children = {};
-  for (const $id in instances) {
-    children[$id] = instances[$id].struct;
-  }
-
-  return children;
-});
-
-export const getSyntheticWindowChild = (window: SyntheticWindow, id: string) => getSyntheticWindowChildStructs(window)[id];
-
-export const getSyntheticNodeAncestors = weakMemo((node: SyntheticNode, window: SyntheticWindow) => {
-  let prev = node;
-  let current = node;
-  const ancestors: SyntheticNode[] = [];
-  const checkedShadowRoots: SyntheticLightDocument[] = [];
-  while(1) {
-    // if (current.nodeType === SEnvNodeTypes.ELEMENT) {
-    //   const element = current as SyntheticElement;
-    //   if (element.shadowRoot && ancestors.indexOf(element.shadowRoot) === -1) {
-
-    //   }
-    // }
-    prev = current;
-    current = getSyntheticWindowChild(window, current.parentId ||  (current as SyntheticDocumentFragment).hostId);
-
-    if (!current) {
-      break;
-    }
-
-    // dive into slots
-    if (current.nodeType === SEnvNodeTypes.ELEMENT) {
-      const element = current as SyntheticElement;
-      if (!(prev as SyntheticDocumentFragment).hostId && element.shadowRoot && checkedShadowRoots.indexOf(element.shadowRoot) === -1) {
-        checkedShadowRoots.push(element.shadowRoot);
-        const slotName = prev.nodeType === SEnvNodeTypes.ELEMENT ? getSyntheticElementAttribute("slot", prev as SyntheticElement) : null;
-
-        const slot = element.shadowRoot.instance.querySelector(slotName ? `slot[name=${slotName}]` : "slot") as SEnvHTMLElementInterface;
-
-        if (!slot) {
-          break;
-        }
-
-        current = slot.struct;
-      }
-    }
-
-    ancestors.push(current);
-  }
-  return ancestors;
-});
-
-export const getComputedStyle = weakMemo((elementId: string, window: SyntheticWindow): CSSStyleDeclaration => {
-  return window.allComputedStyles[elementId];
-});
-
-export const getSyntheticParentNode = (node: SyntheticNode, window: SyntheticWindow) => getSyntheticWindowChild(window, node.parentId);
-
-export const removeSyntheticWindow = <TState extends SyntheticBrowserRootState>(root: TState, windowId: string): TState => {
-  const browser = getSyntheticWindowBrowser(root, windowId);
-  return updateSyntheticBrowser(root, browser.$id, {
-    windows: arrayRemoveItem(browser.windows, getSyntheticWindow(browser, windowId))
+  return updatePaperclipState(root, browser.$id, {
+    windows: [...browser.windows, { ...newWindow }]
   });
-}
-
-export const getSyntheticWindowBrowser = weakMemo((root: SyntheticBrowserRootState, windowId: string): SyntheticBrowser => {
-  for (const browser of getSyntheticBrowsers(root)) {
-    for (const window of browser.windows) {
-      if (window.$id === windowId) return browser;
-    }
-  }
-  return null;
-});
-
-export function getSyntheticNodeById(root: SyntheticBrowserRootState, id: string): SyntheticNode;
-export function getSyntheticNodeById(root: SyntheticBrowser, id: string): SyntheticNode;
-export function getSyntheticNodeById(root: SyntheticWindow, id: string): SyntheticNode;
-export function getSyntheticNodeById (root: any, id: string): SyntheticNode {
-  const window = root.$type === SYNTHETIC_WINDOW ? root : getSyntheticNodeWindow(root, id);
-  return window && getSyntheticWindowChild(window, id);
 };
 
-export const getSyntheticNodeTextContent = weakMemo((node: SyntheticNode): string => {
-  let text = "";
-  traverseObject(node, (child) => {
-    if (isSyntheticDOMNode(child) && (child as SyntheticNode).nodeType === SEnvNodeTypes.TEXT) {
-      text += (child as SyntheticTextNode).nodeValue;
+export const getSyntheticWindowChildStructs = weakMemo(
+  (window: SyntheticWindow) => {
+    const instances = flattenWindowObjectSources(window);
+    const children = {};
+    for (const $id in instances) {
+      children[$id] = instances[$id].struct;
     }
+
+    return children;
+  }
+);
+
+export const getSyntheticWindowChild = (window: SyntheticWindow, id: string) =>
+  getSyntheticWindowChildStructs(window)[id];
+
+export const getSyntheticNodeAncestors = weakMemo(
+  (node: SyntheticNode, window: SyntheticWindow) => {
+    let prev = node;
+    let current = node;
+    const ancestors: SyntheticNode[] = [];
+    const checkedShadowRoots: SyntheticLightDocument[] = [];
+    while (1) {
+      // if (current.nodeType === SEnvNodeTypes.ELEMENT) {
+      //   const element = current as SyntheticElement;
+      //   if (element.shadowRoot && ancestors.indexOf(element.shadowRoot) === -1) {
+
+      //   }
+      // }
+      prev = current;
+      current = getSyntheticWindowChild(
+        window,
+        current.parentId || (current as SyntheticDocumentFragment).hostId
+      );
+
+      if (!current) {
+        break;
+      }
+
+      // dive into slots
+      if (current.nodeType === SEnvNodeTypes.ELEMENT) {
+        const element = current as SyntheticElement;
+        if (
+          !(prev as SyntheticDocumentFragment).hostId &&
+          element.shadowRoot &&
+          checkedShadowRoots.indexOf(element.shadowRoot) === -1
+        ) {
+          checkedShadowRoots.push(element.shadowRoot);
+          const slotName =
+            prev.nodeType === SEnvNodeTypes.ELEMENT
+              ? getSyntheticElementAttribute("slot", prev as SyntheticElement)
+              : null;
+
+          const slot = element.shadowRoot.instance.querySelector(
+            slotName ? `slot[name=${slotName}]` : "slot"
+          ) as SEnvHTMLElementInterface;
+
+          if (!slot) {
+            break;
+          }
+
+          current = slot.struct;
+        }
+      }
+
+      ancestors.push(current);
+    }
+    return ancestors;
+  }
+);
+
+export const getComputedStyle = weakMemo(
+  (elementId: string, window: SyntheticWindow): CSSStyleDeclaration => {
+    return window.allComputedStyles[elementId];
+  }
+);
+
+export const getSyntheticParentNode = (
+  node: SyntheticNode,
+  window: SyntheticWindow
+) => getSyntheticWindowChild(window, node.parentId);
+
+export const removeSyntheticWindow = <TState extends PaperclipStateRootState>(
+  root: TState,
+  windowId: string
+): TState => {
+  const browser = getSyntheticWindowBrowser(root, windowId);
+  return updatePaperclipState(root, browser.$id, {
+    windows: arrayRemoveItem(
+      browser.windows,
+      getSyntheticWindow(browser, windowId)
+    )
   });
-  return text;
-});
+};
 
-export const eachSyntheticWindow = weakMemo(({ browserStore }: SyntheticBrowserRootState, each: (syntheticWindow: SyntheticWindow) => void|boolean): SyntheticWindow => {
-  for (const syntheticBrowser of browserStore.records) {
-    for (const window of syntheticBrowser.windows) {
-      if (each(window) === true) return window;
+export const getSyntheticWindowBrowser = weakMemo(
+  (root: PaperclipStateRootState, windowId: string): PaperclipState => {
+    for (const browser of getPaperclipStates(root)) {
+      for (const window of browser.windows) {
+        if (window.$id === windowId) return browser;
+      }
     }
+    return null;
   }
-  return null;
-});
+);
 
-export const getSyntheticNodeWindow = weakMemo((root: SyntheticBrowserRootState|SyntheticBrowser, nodeId: string): SyntheticWindow => {
-  const filter = (window: SyntheticWindow) => syntheticWindowContainsNode(window, nodeId);
-  return (root as SyntheticBrowserRootState).browserStore ? eachSyntheticWindow(root as SyntheticBrowserRootState, filter) : (root as SyntheticBrowser).windows.find(filter);
-});
+export function getSyntheticNodeById(
+  root: PaperclipStateRootState,
+  id: string
+): SyntheticNode;
+export function getSyntheticNodeById(
+  root: PaperclipState,
+  id: string
+): SyntheticNode;
+export function getSyntheticNodeById(
+  root: SyntheticWindow,
+  id: string
+): SyntheticNode;
+export function getSyntheticNodeById(root: any, id: string): SyntheticNode {
+  const window =
+    root.$type === SYNTHETIC_WINDOW ? root : getSyntheticNodeWindow(root, id);
+  return window && getSyntheticWindowChild(window, id);
+}
 
-export const getMatchingElements = weakMemo((window: SyntheticWindow, selectorText: string): SyntheticElement[] => Array.prototype.map.call(window.document.instance.querySelectorAll(selectorText), (element) => element.struct));
-
-export const elementMatches = weakMemo((selectorText: string, element: SyntheticElement, window: SyntheticWindow): boolean => element.instance.matches(selectorText));
-
-export const syntheticWindowContainsNode = weakMemo((window: SyntheticWindow, nodeId: string): boolean => {
-  return Boolean(getSyntheticWindowChild(window, nodeId));
-});
-
-export const syntheticNodeIsRelative = weakMemo((window: SyntheticWindow, nodeId: string, refNodeId: string): boolean => {
-  const node = getSyntheticWindowChild(window, nodeId);
-  const refNode = getSyntheticWindowChild(window, refNodeId);
-  if (!node || !refNode) {
-    return false;
+export const getSyntheticNodeTextContent = weakMemo(
+  (node: SyntheticNode): string => {
+    let text = "";
+    traverseObject(node, child => {
+      if (
+        isSyntheticDOMNode(child) &&
+        (child as SyntheticNode).nodeType === SEnvNodeTypes.TEXT
+      ) {
+        text += (child as SyntheticTextNode).nodeValue;
+      }
+    });
+    return text;
   }
-  const nodeAncestors = getSyntheticNodeAncestors(node, window);
-  const refNodeAncestors = getSyntheticNodeAncestors(refNode, window);
-  return refNodeAncestors.indexOf(node) !== -1 || nodeAncestors.indexOf(refNode) !== -1;
-});
+);
 
-export const isSyntheticBrowserItemMovable = (root: SyntheticBrowserRootState, item: Struct) => {
+export const eachSyntheticWindow = weakMemo(
+  (
+    { browserStore }: PaperclipStateRootState,
+    each: (syntheticWindow: SyntheticWindow) => void | boolean
+  ): SyntheticWindow => {
+    for (const PaperclipState of browserStore.records) {
+      for (const window of PaperclipState.windows) {
+        if (each(window) === true) return window;
+      }
+    }
+    return null;
+  }
+);
+
+export const getSyntheticNodeWindow = weakMemo(
+  (
+    root: PaperclipStateRootState | PaperclipState,
+    nodeId: string
+  ): SyntheticWindow => {
+    const filter = (window: SyntheticWindow) =>
+      syntheticWindowContainsNode(window, nodeId);
+    return (root as PaperclipStateRootState).browserStore
+      ? eachSyntheticWindow(root as PaperclipStateRootState, filter)
+      : (root as PaperclipState).windows.find(filter);
+  }
+);
+
+export const getMatchingElements = weakMemo(
+  (window: SyntheticWindow, selectorText: string): SyntheticElement[] =>
+    Array.prototype.map.call(
+      window.document.instance.querySelectorAll(selectorText),
+      element => element.struct
+    )
+);
+
+export const elementMatches = weakMemo(
+  (
+    selectorText: string,
+    element: SyntheticElement,
+    window: SyntheticWindow
+  ): boolean => element.instance.matches(selectorText)
+);
+
+export const syntheticWindowContainsNode = weakMemo(
+  (window: SyntheticWindow, nodeId: string): boolean => {
+    return Boolean(getSyntheticWindowChild(window, nodeId));
+  }
+);
+
+export const syntheticNodeIsRelative = weakMemo(
+  (window: SyntheticWindow, nodeId: string, refNodeId: string): boolean => {
+    const node = getSyntheticWindowChild(window, nodeId);
+    const refNode = getSyntheticWindowChild(window, refNodeId);
+    if (!node || !refNode) {
+      return false;
+    }
+    const nodeAncestors = getSyntheticNodeAncestors(node, window);
+    const refNodeAncestors = getSyntheticNodeAncestors(refNode, window);
+    return (
+      refNodeAncestors.indexOf(node) !== -1 ||
+      nodeAncestors.indexOf(refNode) !== -1
+    );
+  }
+);
+
+export const isPaperclipStateItemMovable = (
+  root: PaperclipStateRootState,
+  item: Struct
+) => {
   if (item.$type === SYNTHETIC_WINDOW) return true;
-  if (isSyntheticNodeType(item.$type) && (item as SyntheticNode).nodeType === SEnvNodeTypes.ELEMENT) {
+  if (
+    isSyntheticNodeType(item.$type) &&
+    (item as SyntheticNode).nodeType === SEnvNodeTypes.ELEMENT
+  ) {
     const element = item as SyntheticElement;
   }
   return false;
-}
-
+};
 
 // TODO - use getElementLabel instead
-export const getSyntheticElementAttribute = (name: string, element: SyntheticElement) => {
-  const attr = element.attributes.find((attribute) => attribute.name === name);
+export const getSyntheticElementAttribute = (
+  name: string,
+  element: SyntheticElement
+) => {
+  const attr = element.attributes.find(attribute => attribute.name === name);
   return attr && attr.value;
-}
+};
 
 export const getSyntheticElementLabel = (element: SyntheticElement) => {
   let label = String(element.nodeName).toLowerCase();
@@ -934,4 +1123,4 @@ export const getSyntheticElementLabel = (element: SyntheticElement) => {
   }
 
   return label;
-}
+};

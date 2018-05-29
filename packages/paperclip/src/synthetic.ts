@@ -3,9 +3,14 @@ import {
   generateUID,
   EMPTY_ARRAY,
   TreeNodeUpdater,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  getNestedTreeNodeById,
+  memoize,
+  TreeNode,
+  Bounds,
+  updateNestedNode
 } from "tandem-common";
-import { TreeNode, Bounds } from "tandem-common";
+import { values } from "lodash";
 import { DependencyGraph } from "./graph";
 import {
   getPCNode,
@@ -23,6 +28,8 @@ export type ComputedDisplayInfo = {
 
 // what reducer stuff actally access
 export type PaperclipState = {
+  openDependencyUri?: string;
+
   // key = frame id, value = evaluated frame
   syntheticFrames: SyntheticFrames;
 
@@ -38,6 +45,7 @@ export type SyntheticSource = {
 export type SyntheticFrame = {
   root: SyntheticNode;
   source: SyntheticSource;
+  bounds: Bounds;
 
   // internal only
   $container?: HTMLIFrameElement;
@@ -45,7 +53,9 @@ export type SyntheticFrame = {
 };
 
 export type SyntheticBaseNode = {
+  metadata: KeyValue<any>;
   source: SyntheticSource;
+  isRoot?: boolean;
 } & TreeNode<string>;
 
 export type SyntheticElement = {
@@ -65,9 +75,10 @@ export const createSyntheticElement = (
   source: SyntheticSource,
   style: KeyValue<any> = {},
   attributes: KeyValue<string>,
-  children: SyntheticNode[] = []
+  children: SyntheticNode[] = EMPTY_ARRAY
 ): SyntheticElement => ({
   id: generateUID(),
+  metadata: EMPTY_OBJECT,
   source,
   name,
   attributes,
@@ -78,9 +89,10 @@ export const createSyntheticElement = (
 export const createSyntheticTextNode = (
   value: string,
   source: SyntheticSource,
-  style: KeyValue<any> = {}
+  style: KeyValue<any> = EMPTY_OBJECT
 ): SyntheticTextNode => ({
   id: generateUID(),
+  metadata: EMPTY_OBJECT,
   value,
   source,
   name,
@@ -92,6 +104,87 @@ export const getSyntheticSourceNode = (
   node: SyntheticNode,
   graph: DependencyGraph
 ) => getPCNode(node.source.nodeId, graph) as PCVisibleNode;
+
+export const getSyntheticFramesByDependencyUri = memoize(
+  (uri: string, state: PaperclipState): SyntheticFrame[] => {
+    return values(state.syntheticFrames).filter((frame: SyntheticFrame) => {
+      return getPCNodeDependency(frame.source.nodeId, state.graph).uri === uri;
+    });
+  }
+);
+
+export const getSyntheticFrameDependencyUri = (
+  frame: SyntheticFrame,
+  state: PaperclipState
+) => {
+  return getPCNodeDependency(frame.root.id, state.graph).uri;
+};
+
+export const getSyntheticNodeFrame = memoize(
+  (syntheticNodeId: string, state: PaperclipState): SyntheticFrame => {
+    for (const sourceFrameId in state.syntheticFrames) {
+      const frame = state.syntheticFrames[sourceFrameId];
+      if (getNestedTreeNodeById(syntheticNodeId, frame.root)) {
+        return frame;
+      }
+    }
+    return null;
+  }
+);
+
+export const getSyntheticSourceUri = (
+  syntheticNode: SyntheticNode,
+  state: PaperclipState
+) => {
+  return getPCNodeDependency(syntheticNode.source.nodeId, state.graph).uri;
+};
+
+export const updateSyntheticNodeMetadata = (
+  metadata: KeyValue<any>,
+  node: SyntheticNode,
+  root: SyntheticNode
+) =>
+  updateNestedNode(node, root, node => ({
+    ...node,
+    metadata: {
+      ...node.metadata,
+      ...metadata
+    }
+  }));
+
+export const getSyntheticNodeById = memoize(
+  (syntheticNodeId: string, state: PaperclipState): SyntheticNode => {
+    return getNestedTreeNodeById(
+      syntheticNodeId,
+      getSyntheticNodeFrame(syntheticNodeId, state).root
+    );
+  }
+);
+
+export const getSyntheticNodeBounds = (
+  syntheticNodeId: string,
+  state: PaperclipState
+): Bounds => {
+  const frame = getSyntheticNodeFrame(syntheticNodeId, state);
+  return (
+    frame.computed &&
+    frame.computed[syntheticNodeId] &&
+    frame.computed[syntheticNodeId].bounds
+  );
+};
+
+export const findRootInstanceOfPCNode = (
+  node: PCVisibleNode,
+  state: PaperclipState
+) => {
+  const frames = getSyntheticFramesByDependencyUri(
+    getPCNodeDependency(node.id, state.graph).uri,
+    state
+  );
+  const frame = frames.find(frame => frame.root.source.nodeId === node.id);
+  return frame && frame.root;
+};
+
 export const getSyntheticSourceFrame = (
   node: SyntheticNode,
   graph: DependencyGraph
@@ -123,12 +216,26 @@ export const mergeSyntheticFrames = (
     updatedFrames[sourceFrameId] = {
       ...oldFrame,
       root: patchedRoot,
+      bounds: newFrame.bounds,
       computed: newFrame.computed
     };
   }
 
   return updatedFrames;
 };
+
+export const isSyntheticDocumentRoot = (node: SyntheticNode) => {
+  return node.isRoot;
+};
+
+export const isSyntheticNodeMovable = (node: SyntheticNode) =>
+  isSyntheticDocumentRoot(node) ||
+  /fixed|relative|absolute/.test(node.style.position || "static");
+
+export const isSyntheticNodeResizable = (node: SyntheticNode) =>
+  isSyntheticDocumentRoot(node) ||
+  isSyntheticNodeMovable(node) ||
+  /block|inline-block|flex|inline-flex/.test(node.style.display || "inline");
 
 export const persistSyntheticNodeChanges = (
   node: SyntheticNode,
@@ -137,18 +244,3 @@ export const persistSyntheticNodeChanges = (
 ): PaperclipState => {
   return state;
 };
-
-export const updateSyntheticFrame = (
-  properties: Partial<SyntheticFrame>,
-  sourceFrameId: string,
-  state: PaperclipState
-) => ({
-  ...state,
-  syntheticFrames: {
-    ...state.syntheticFrames,
-    [sourceFrameId]: {
-      ...(state.syntheticFrames[sourceFrameId] || EMPTY_OBJECT),
-      ...properties
-    }
-  }
-});

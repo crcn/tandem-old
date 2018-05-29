@@ -2,11 +2,12 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* side effect API (PC)
-* nail re-selecting elements
-* nail down maintaining selection when patching
+* refactor front-end to use new API.
+* code compiler (compile CSS)
+* tandem config
 
-* override style
+  * execute command on save
+
 * code compiler should compile styles to CSS
 * ability to load images & other resources in PC file. **helps with arch**.
 * document bounds on element should be stored in editor namespace

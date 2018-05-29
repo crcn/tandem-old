@@ -7,10 +7,12 @@ import { default as createSagaMiddleware } from "redux-saga";
 import { fork } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
 import { rootSaga } from "./sagas";
+import { PaperclipSagaOptions, createPaperclipSaga } from "paperclip";
 import { RootState } from "./state";
 import { appLoaded } from "./actions";
 
 export const setup = <TState extends RootState>(
+  paperclipSagaOptions: PaperclipSagaOptions,
   reducer?: Reducer<TState>,
   saga?: () => IterableIterator<any>
 ) => {
@@ -31,6 +33,7 @@ export const setup = <TState extends RootState>(
       yield fork(rootSaga);
       if (saga) {
         yield fork(saga);
+        yield fork(createPaperclipSaga(paperclipSagaOptions));
       }
     });
 

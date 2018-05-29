@@ -20,7 +20,6 @@ export const PAPERCLIP_MODULE_VERSION = "0.0.1";
 export enum PCSourceTagNames {
   MODULE = "module",
   COMPONENT = "component",
-  STYLE = "style",
   TEMPLATE = "template",
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
@@ -258,8 +257,9 @@ export const createPCTextNode = (value: string): PCTextNode => ({
   children: []
 });
 
-export const extendsComponent = (element: PCElement | PCComponent) =>
-  element.is.length > 6;
+export const extendsComponent = (
+  element: PCElement | PCComponent | PCComponentInstanceElement
+) => element.is.length > 6;
 
 export const getModuleComponents = memoize((root: PCModule): PCComponent[] =>
   root.children.reduce((components, frame) => {
@@ -269,8 +269,13 @@ export const getModuleComponents = memoize((root: PCModule): PCComponent[] =>
   }, [])
 );
 
+export const isComponentFrame = (frame: PCFrame) =>
+  frame.children[0].name === PCSourceTagNames.COMPONENT;
+
 export const isVisibleNode = (node: PCNode) =>
-  node.name === PCSourceTagNames.ELEMENT || node.name === PCSourceTagNames.TEXT;
+  node.name === PCSourceTagNames.ELEMENT ||
+  node.name === PCSourceTagNames.TEXT ||
+  node.name === PCSourceTagNames.COMPONENT_INSTANCE;
 export const isPCOverride = (node: PCNode) =>
   node.name === PCSourceTagNames.OVERRIDE_ATTRIBUTES ||
   node.name === PCSourceTagNames.OVERRIDE_CHILDREN ||

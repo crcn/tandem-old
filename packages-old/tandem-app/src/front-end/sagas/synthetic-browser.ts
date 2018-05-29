@@ -2,31 +2,55 @@ import { uniq } from "lodash";
 import { delay } from "redux-saga";
 import { apiWatchUris } from "../utils";
 import { take, fork, select, put, call, spawn } from "redux-saga/effects";
-import { Point, shiftPoint, watch, resized, Bounds, REMOVED } from "aerial-common2";
+import {
+  Point,
+  shiftPoint,
+  watch,
+  resized,
+  Bounds,
+  REMOVED
+} from "aerial-common2";
 
-import { Mutation, Mutator, SetValueMutation, SetPropertyMutation, createPropertyMutation, createSetValueMutation, eachArrayValueMutation, diffArray, RemoveChildMutation, createStringMutation, createRemoveChildMutation, createInsertChildMutation, createMoveChildMutation, InsertChildMutation, MoveChildMutation, ARRAY_UPDATE } from "source-mutation";
-import { 
+import {
+  Mutation,
+  Mutator,
+  SetValueMutation,
+  SetPropertyMutation,
+  createPropertyMutation,
+  createSetValueMutation,
+  eachArrayValueMutation,
+  diffArray,
+  RemoveChildMutation,
+  createStringMutation,
+  createRemoveChildMutation,
+  createInsertChildMutation,
+  createMoveChildMutation,
+  InsertChildMutation,
+  MoveChildMutation,
+  ARRAY_UPDATE
+} from "source-mutation";
+import {
   ApplicationState,
   getWorkspaceById,
   getStageTranslate,
   createArtboard,
-  getSelectedWorkspace, 
-  getSyntheticNodeWorkspace, 
+  getSelectedWorkspace,
+  getSyntheticNodeWorkspace
 } from "front-end/state";
-import { 
+import {
   LOADED_SAVED_STATE,
   EMPTY_WINDOWS_URL_ADDED,
   EmptyWindowsUrlAdded,
   StageToolEditTextBlur,
-  DELETE_SHORCUT_PRESSED, 
-  StageToolEditTextChanged, 
-  STAGE_TOOL_EDIT_TEXT_BLUR, 
+  DELETE_SHORCUT_PRESSED,
+  StageToolEditTextChanged,
+  STAGE_TOOL_EDIT_TEXT_BLUR,
   StageToolOverlayMousePanEnd,
   StageToolEditTextKeyDown,
   StageToolOverlayMousePanning,
   StageToolOverlayMousePanStart,
   FULL_SCREEN_SHORTCUT_PRESSED,
-  STAGE_TOOL_EDIT_TEXT_CHANGED, 
+  STAGE_TOOL_EDIT_TEXT_CHANGED,
   STAGE_TOOL_EDIT_TEXT_KEY_DOWN,
   FULL_SCREEN_TARGET_DELETED,
   VISUAL_EDITOR_WHEEL,
@@ -48,7 +72,7 @@ import {
   OPEN_ARTBOARDS_REQUESTED
 } from "front-end/actions";
 
-export function* frontEndSyntheticBrowserSaga() {
+export function* frontEndPaperclipStateSaga() {
   yield fork(handleTextEditBlur);
   yield fork(handleWindowMousePanned);
   yield fork(handleScrollInFullScreenMode);
@@ -77,12 +101,11 @@ export function* frontEndSyntheticBrowserSaga() {
 //       REMOVED
 //     ]);
 //     const state: ApplicationState = yield select();
-//     const allUris = uniq(state.browserStore.records.reduce((a, b) => {
+//     const allUris = uniq(state.paperclipStore.records.reduce((a, b) => {
 //       return [...a, ...b.windows.reduce((a2, b2) => {
 //         return [...a2, ...b2.externalResourceUris ];
 //       }, [])];
 //     }, [])) as string[];
-    
 
 //     const updates = diffArray(allUris, watchingUris, (a, b) => a === b ? 0 : -1).mutations.filter((mutation) => mutation.type === ARRAY_UPDATE);
 
@@ -98,8 +121,10 @@ export function* frontEndSyntheticBrowserSaga() {
 // }
 
 function* handleTextEditorEscaped() {
-  while(true) {
-    const { sourceEvent, nodeId } = (yield take(STAGE_TOOL_EDIT_TEXT_KEY_DOWN)) as StageToolEditTextKeyDown;
+  while (true) {
+    const { sourceEvent, nodeId } = (yield take(
+      STAGE_TOOL_EDIT_TEXT_KEY_DOWN
+    )) as StageToolEditTextKeyDown;
     if (sourceEvent.key !== "Escape") {
       continue;
     }
@@ -110,7 +135,10 @@ function* handleTextEditorEscaped() {
   }
 }
 
-function* applyTextEditChanges(sourceEvent: React.SyntheticEvent<any>, nodeId: string) {
+function* applyTextEditChanges(
+  sourceEvent: React.SyntheticEvent<any>,
+  nodeId: string
+) {
   // const state = yield select();
   // const window = getSyntheticNodeWindow(state, nodeId);
   // const text = String((sourceEvent.target as any).textContent || "").trim();
@@ -121,7 +149,7 @@ function* applyTextEditChanges(sourceEvent: React.SyntheticEvent<any>, nodeId: s
 function* handleTextEditBlur() {
   // while(true) {
   //   const { sourceEvent, nodeId } = (yield take(STAGE_TOOL_EDIT_TEXT_BLUR)) as StageToolEditTextBlur;
-  //   yield call(applyTextEditChanges, sourceEvent, nodeId);    
+  //   yield call(applyTextEditChanges, sourceEvent, nodeId);
   //   yield call(nodeValueStoppedEditing, nodeId);
   // }
 }
@@ -132,7 +160,6 @@ function* nodeValueStoppedEditing(nodeId: string) {
   // yield put(syntheticNodeValueStoppedEditing(window.$id, nodeId));
 }
 
-
 function* handleScrollInFullScreenMode() {
   // while(true) {
   //   const { deltaX, deltaY } = (yield take(VISUAL_EDITOR_WHEEL)) as StageWheel;
@@ -141,9 +168,7 @@ function* handleScrollInFullScreenMode() {
   //   if (!workspace.stage.fullScreen) {
   //     continue;
   //   }
-    
   //   const window = getSyntheticWindow(state, workspace.stage.fullScreen.artboardId);
-
   //   yield put(syntheticWindowScroll(window.$id, shiftPoint(window.scrollPosition || { left: 0, top: 0 }, {
   //     left: 0,
   //     top: deltaY
@@ -156,12 +181,11 @@ function* handleFileChanged() {
   //   const { filePath, publicPath }: FileChanged = yield take([FILE_CONTENT_CHANGED, FILE_REMOVED]);
   //   const state: ApplicationState = yield select();
   //   const workspace = getSelectedWorkspace(state);
-  //   const windows = getSyntheticBrowser(state, workspace.browserId).windows;
+  //   const windows = getPaperclipState(state, workspace.browserId).windows;
   //   for (const window of windows) {
   //     const shouldReload = window.externalResourceUris.find((uri) => (
   //       (publicPath && uri.indexOf(publicPath) !== -1) || uri.indexOf(filePath) !== -1
   //     ));
-
   //     if (shouldReload) {
   //       window.instance.location.reload();
   //     }
@@ -174,17 +198,19 @@ function* handleLoadedSavedState() {
   //   yield take(LOADED_SAVED_STATE);
   //   const state: ApplicationState = yield select();
   //   const workspace = getSelectedWorkspace(state);
-  //   const browser = getSyntheticBrowser(state, workspace.browserId);
+  //   const browser = getPaperclipState(state, workspace.browserId);
   //   for (const window of browser.windows) {
   //     yield put(openSyntheticWindowRequest(window, browser.$id));
   //   }
   // }
 }
 
-function* persistDeclarationChange(declaration: any, name: string, value: string) {
-
+function* persistDeclarationChange(
+  declaration: any,
+  name: string,
+  value: string
+) {
   // const owner = declaration.$owner;
-  
   // // persist it
   // if ((owner as SEnvHTMLElementInterface).nodeType === SEnvNodeTypes.ELEMENT) {
   //   const element = owner as SEnvHTMLElementInterface;
@@ -205,9 +231,8 @@ function* handleCSSDeclarationChanges() {
   //     // const window = getSyntheticWindow(state, artboardId);
   //   }
   // });
-  
-  yield fork(function* handleValueChanges() {
 
+  yield fork(function* handleValueChanges() {
     // // TODO - consider disabled properties here
     // while(true) {
     //   const { name, value, artboardId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_VALUE_CHANGED);
@@ -215,18 +240,16 @@ function* handleCSSDeclarationChanges() {
     //   const window = getSyntheticWindow(state, artboardId);
     //   const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
     //   declaration
-
     //   // null or ""
     //   if (!value) {
     //     declaration.removeProperty(name);
     //   } else {
     //     declaration.setProperty(name, value);
     //   }
-
     //   yield call(persistDeclarationChange, declaration, name, value);
     // }
   });
-  
+
   yield fork(function* handleNewDeclaration() {
     // while(true) {
     //   const { name, value, artboardId, declarationId }: CSSDeclarationChanged = yield take(CSS_DECLARATION_CREATED);
@@ -234,7 +257,6 @@ function* handleCSSDeclarationChanges() {
     //   const window = getSyntheticWindow(state, artboardId);
     //   const declaration: SEnvCSSStyleDeclarationInterface = (getSyntheticWindowChild(window, declarationId) as SyntheticCSSStyleDeclaration).instance;
     //   declaration.setProperty(name, value);
-
     //   yield call(persistDeclarationChange, declaration, name, value);
     // }
   });
@@ -242,24 +264,22 @@ function* handleCSSDeclarationChanges() {
 
 // fugly quick momentum scrolling implementation
 function* handleWindowMousePanned() {
-
-  let deltaTop  = 0;
+  let deltaTop = 0;
   let deltaLeft = 0;
   let currentWindowId: string;
   let panStartScrollPosition: Point;
   let lastPaneEvent: StageToolOverlayMousePanning;
 
   yield fork(function*() {
-    while(true) {
-      const { artboardId } = (yield take(STAGE_TOOL_OVERLAY_MOUSE_PAN_START)) as StageToolOverlayMousePanStart;
+    while (true) {
+      const { artboardId } = (yield take(
+        STAGE_TOOL_OVERLAY_MOUSE_PAN_START
+      )) as StageToolOverlayMousePanStart;
       // panStartScrollPosition = getSyntheticWindow(yield select(), artboardId).scrollPosition || { left: 0, top: 0 };
     }
   });
 
-
-  yield fork(function*() {
-    
-  });
+  yield fork(function*() {});
 }
 
 const createDeferredPromise = () => {
@@ -268,13 +288,12 @@ const createDeferredPromise = () => {
   const promise = new Promise((resolve, reject) => {
     _resolve = resolve;
     _reject = reject;
-  })
+  });
   return {
     resolve: _resolve,
     reject: _reject,
     promise
   };
-}
+};
 
 const WINDOW_SYNC_MS = 1000 / 30;
-

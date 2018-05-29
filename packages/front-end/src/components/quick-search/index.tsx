@@ -81,7 +81,7 @@ export const QuickSearchComponent = compose<
           if (!isFile(file)) {
             return false;
           }
-          const uri = file.attributes.core.uri;
+          const uri = file.uri;
           let lastIndex = 0;
           for (const part of filter) {
             const i = uri.indexOf(part);
@@ -96,7 +96,7 @@ export const QuickSearchComponent = compose<
             <SearchResult
               file={file}
               key={file.id}
-              textChildren={file.attributes.core.uri}
+              textChildren={file.uri}
               dispatch={dispatch}
             />
           );
