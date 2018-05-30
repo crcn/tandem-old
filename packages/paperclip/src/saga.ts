@@ -49,6 +49,10 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
             continue;
           }
 
+          yield call(
+            () => new Promise(resolve => requestAnimationFrame(resolve))
+          );
+
           const prevFrames = currFrames;
           currFrames = syntheticFrames;
 
@@ -65,7 +69,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
               continue;
             }
 
-            yield spawn(
+            yield call(
               renderContainer,
               sourceFrameId,
               currFrame,
@@ -86,7 +90,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
       ) {
         if (!initedFrames[sourceFrameId]) {
           initedFrames[sourceFrameId] = 1;
-          yield call(initContainer, newFrame, graph);
+          yield spawn(initContainer, newFrame, graph);
         } else {
           yield call(patchContainer, newFrame, oldFrame, graph);
         }
@@ -172,7 +176,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
         return;
       }
 
-      if (oldFrame.root === newFrame.root) {
+      if (oldFrame.root !== newFrame.root) {
         const ots = diffSyntheticNode(oldFrame.root, newFrame.root);
         frameNodeMap[newFrame.source.nodeId] = patchDOM(
           ots,
