@@ -11,7 +11,8 @@ import { mergeBounds } from "tandem-common";
 import {
   RootState,
   getBoundedSelection,
-  Editor
+  Editor,
+  getSelectionBounds
 } from "../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../actions";
 import { getSyntheticNodeBounds } from "paperclip";
@@ -38,9 +39,7 @@ const SelectionBounds = ({
   editor: Editor;
 }) => {
   const selection = getBoundedSelection(root);
-  const entireBounds = mergeBounds(
-    ...selection.map(value => getSyntheticNodeBounds(value, root.paperclip))
-  );
+  const entireBounds = getSelectionBounds(root);
   const style = {};
   const borderWidth = 1 / zoom;
   const boundsStyle = {

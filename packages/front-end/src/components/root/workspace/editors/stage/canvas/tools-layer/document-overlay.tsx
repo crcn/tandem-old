@@ -215,7 +215,8 @@ export const NodeOverlaysToolBase = ({
 }: VisualToolsProps) => {
   const activeFrames = getSyntheticFramesByDependencyUri(
     editor.activeFilePath,
-    root.paperclip
+    root.syntheticFrames,
+    root.graph
   );
 
   return (

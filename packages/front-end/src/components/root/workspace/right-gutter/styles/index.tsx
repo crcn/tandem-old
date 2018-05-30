@@ -52,7 +52,10 @@ const BaseStylesPaneComponent = ({
 };
 
 const getSelectedNodeStyle = (root: RootState) => {
-  const node = getSyntheticNodeById(root.selectedNodeIds[0], root.paperclip);
+  const node = getSyntheticNodeById(
+    root.selectedNodeIds[0],
+    root.syntheticFrames
+  );
   return (
     node &&
     stringifyStyle(node.style || EMPTY_OBJECT)

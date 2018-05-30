@@ -13,10 +13,8 @@ setup<DesktopRootState>({ openFile }, rootReducer, rootSaga)({
   selectedNodeIds: [],
   selectedFileNodeIds: [],
   editors: [],
-  paperclip: {
-    syntheticFrames: {},
-    graph: {}
-  },
+  syntheticFrames: {},
+  graph: {},
   history: {},
   openFiles: []
 });

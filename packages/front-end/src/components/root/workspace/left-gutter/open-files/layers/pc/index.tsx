@@ -2,12 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { RootState } from "../../../../../../../state";
-import {
-  PaperclipState,
-  SyntheticNode,
-  SyntheticFrame,
-  SyntheticElement
-} from "paperclip";
+import { SyntheticNode, SyntheticFrame, SyntheticElement } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
 import {
   createTreeLayerComponents,

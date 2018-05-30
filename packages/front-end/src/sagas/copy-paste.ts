@@ -43,16 +43,16 @@ function* handleCopy() {
             nodeId =>
               ({
                 uri: getSyntheticSourceUri(
-                  getSyntheticNodeById(nodeId, root.paperclip),
-                  root.paperclip
+                  getSyntheticNodeById(nodeId, root.syntheticFrames),
+                  root.graph
                 ),
                 node: getSyntheticSourceNode(
-                  getSyntheticNodeById(nodeId, root.paperclip),
-                  root.paperclip.graph
+                  getSyntheticNodeById(nodeId, root.syntheticFrames),
+                  root.graph
                 ),
                 imports: getPCImportedChildrenSourceUris(
-                  getSyntheticNodeById(nodeId, root.paperclip).id,
-                  root.paperclip.graph
+                  getSyntheticNodeById(nodeId, root.syntheticFrames).id,
+                  root.graph
                 )
               } as PCNodeClip)
           )

@@ -8,8 +8,6 @@ init({
   selectedFileNodeIds: [],
   history: {},
   openFiles: [],
-  paperclip: {
-    syntheticFrames: {},
-    graph: {}
-  }
+  syntheticFrames: {},
+  graph: {}
 });

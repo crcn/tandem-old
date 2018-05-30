@@ -72,7 +72,8 @@ const BaseCanvasComponent = ({
 }: CanvasInnerProps) => {
   const activeFrames = getSyntheticFramesByDependencyUri(
     editor.activeFilePath,
-    root.paperclip
+    root.syntheticFrames,
+    root.graph
   );
 
   const translate = editor.canvas.translate;

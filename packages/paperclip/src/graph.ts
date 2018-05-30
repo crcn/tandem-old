@@ -1,5 +1,9 @@
 import { memoize } from "tandem-common";
 
+/*------------------------------------------
+ * TYPES
+ *-----------------------------------------*/
+
 export type DependencyGraph = {
   [identifier: string]: Dependency<any>;
 };
@@ -14,6 +18,10 @@ export type Dependency<TContent> = {
     [identifier: string]: string;
   };
 };
+
+/*------------------------------------------
+ * GETTERS
+ *-----------------------------------------*/
 
 export const getDependents = memoize((uri: string, graph: DependencyGraph) => {
   const dependents = [];
@@ -61,3 +69,7 @@ export const getModifiedDependencies = (
   }
   return modified;
 };
+
+/*------------------------------------------
+ * SETTERS
+ *-----------------------------------------*/

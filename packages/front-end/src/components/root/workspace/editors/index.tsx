@@ -26,10 +26,7 @@ const EditorBaseComponent = ({
   dispatch,
   onTabClick
 }: EditorInnerProps) => {
-  const dependency =
-    window &&
-    root.paperclip.graph &&
-    root.paperclip.graph[editor.activeFilePath];
+  const dependency = window && root.graph && root.graph[editor.activeFilePath];
 
   const items: TabItem[] = editor.tabUris.map(tabUri => ({
     selected: editor.activeFilePath === tabUri,

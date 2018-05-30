@@ -1,15 +1,12 @@
 import { eventChannel } from "redux-saga";
 import { take, fork, select, call, put, spawn } from "redux-saga/effects";
-import { SyntheticFrame, PaperclipState } from "./synthetic";
-import { PaperclipRoot } from "./external-state";
 import { getPCNode, PCFrame } from "./dsl";
 import {
   pcSyntheticFrameRendered,
   pcDependencyLoaded,
   pcSyntheticFrameContainerCreated,
   PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
-  PC_SYNTHETIC_FRAME_RENDERED,
-  pcSyntheticFrameContainerDestroyed
+  PC_SYNTHETIC_FRAME_RENDERED
 } from "./actions";
 import {
   SyntheticNativeNodeMap,
@@ -21,9 +18,13 @@ import { KeyValue } from "tandem-common";
 import { Dependency, DependencyGraph } from "./graph";
 import { loadEntry, FileLoader } from "./loader";
 import { diffSyntheticNode } from "./ot";
+import { SyntheticFrame } from "./synthetic";
+import { PCState } from "./state";
 
 // TODO - remote renderer here (Browsertap)
 
+// TODO - need to have special getState() function here in the
+// future to sandbox this saga from clobbering other state
 export type PaperclipSagaOptions = {
   openFile: FileLoader;
 };
@@ -42,9 +43,8 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
               action.type !== PC_SYNTHETIC_FRAME_CONTAINER_CREATED &&
               action.type !== PC_SYNTHETIC_FRAME_RENDERED
           );
-          const {
-            paperclip: { syntheticFrames, graph }
-          }: PaperclipRoot = yield select();
+          const { syntheticFrames, graph }: PCState = yield select();
+
           if (syntheticFrames == currFrames) {
             continue;
           }
@@ -65,87 +65,130 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
               continue;
             }
 
-            yield fork(renderFrame, sourceFrameId, currFrame, prevFrame, graph);
+            yield spawn(
+              renderContainer,
+              sourceFrameId,
+              currFrame,
+              prevFrame,
+              graph
+            );
           }
         }
       });
 
-      const frameNodeMap: KeyValue<SyntheticNativeNodeMap> = {};
+      const initedFrames = {};
 
-      function* renderFrame(
+      function* renderContainer(
         sourceFrameId: string,
         newFrame: SyntheticFrame,
         oldFrame: SyntheticFrame,
         graph: DependencyGraph
       ) {
-        let container: HTMLIFrameElement = newFrame.$container;
+        if (!initedFrames[sourceFrameId]) {
+          initedFrames[sourceFrameId] = 1;
+          yield call(initContainer, newFrame, graph);
+        } else {
+          yield call(patchContainer, newFrame, oldFrame, graph);
+        }
+      }
+    }
 
-        if (!container) {
-          container = createContainer();
+    const frameNodeMap: KeyValue<SyntheticNativeNodeMap> = {};
 
-          // notify of the new container
-          yield put(pcSyntheticFrameContainerCreated(newFrame, container));
+    function* initContainer(frame: SyntheticFrame, graph: DependencyGraph) {
+      const container = createContainer();
 
-          // wait until it's been mounted, then continue
-          const doneChan = eventChannel(emit => {
-            const onDone = event => {
-              container.removeEventListener("load", onDone);
-              emit(event);
-            };
-            container.addEventListener("load", onDone);
-            return () => {};
-          });
-          yield take(doneChan);
+      // notify of the new container
+      yield put(pcSyntheticFrameContainerCreated(frame, container));
+      yield call(watchContainer, container, frame.source.nodeId, graph);
+    }
 
-          yield spawn(function*() {
-            const unloadedChan = eventChannel(emit => {
-              const onUnload = event => {
-                container.contentWindow.removeEventListener("unload", onUnload);
-                emit(event);
-              };
-              container.contentWindow.addEventListener("unload", onUnload);
-              return () => {};
-            });
-            yield take(unloadedChan);
-            yield put(pcSyntheticFrameContainerDestroyed(newFrame));
-          });
-        } else if (oldFrame.root === newFrame.root) {
-          return;
+    // FIXME: This produces memory leaks when frames are removed from the store.
+    function* watchContainer(container: HTMLElement, frameSourceId: string) {
+      const iframe = container.children[0] as HTMLIFrameElement;
+      // wait until it's been mounted, then continue
+      const eventChan = eventChannel(emit => {
+        const onUnload = () => {
+          iframe.contentWindow.removeEventListener("unload", onUnload);
+          resetContainer(container);
+          emit("unload");
+        };
+        const onDone = () => {
+          iframe.contentWindow.addEventListener("unload", onUnload);
+          iframe.removeEventListener("load", onDone);
+          emit("load");
+        };
+
+        iframe.addEventListener("load", onDone);
+        if (iframe.contentDocument && iframe.contentDocument.body) {
+          setImmediate(onDone);
         }
 
-        const body = container.contentDocument.body;
+        return () => {};
+      });
 
-        if (!oldFrame || oldFrame.$container !== container) {
+      while (1) {
+        const eventType = yield take(eventChan);
+        if (eventType === "load") {
+          const state: PCState = yield select();
+          const frame = state.syntheticFrames[frameSourceId];
+          const graph = state.graph;
+          const body = iframe.contentDocument.body;
           yield put(
             pcSyntheticFrameRendered(
-              newFrame,
+              frame,
               computeDisplayInfo(
-                (frameNodeMap[sourceFrameId] = renderDOM(
+                (frameNodeMap[frame.source.nodeId] = renderDOM(
                   body,
-                  newFrame.root,
+                  frame.root,
                   graph
                 ))
               )
             )
           );
-        } else {
-          const ots = diffSyntheticNode(oldFrame.root, newFrame.root);
-          yield put(
-            pcSyntheticFrameRendered(
-              newFrame,
-              computeDisplayInfo(
-                (frameNodeMap[sourceFrameId] = patchDOM(
-                  ots,
-                  oldFrame.root,
-                  graph,
-                  body,
-                  frameNodeMap[sourceFrameId]
-                ))
-              )
-            )
-          );
+        } else if (eventType === "unload") {
+          break;
         }
       }
+
+      yield call(watchContainer, container, frameSourceId);
+    }
+
+    function* patchContainer(
+      newFrame: SyntheticFrame,
+      oldFrame: SyntheticFrame,
+      graph: DependencyGraph
+    ) {
+      if (
+        newFrame.root === oldFrame.root &&
+        newFrame.bounds === oldFrame.bounds
+      ) {
+        return;
+      }
+      const container: HTMLElement = newFrame.$container;
+      const iframe = container.children[0] as HTMLIFrameElement;
+      const body = iframe.contentDocument && iframe.contentDocument.body;
+      if (!body) {
+        return;
+      }
+
+      if (oldFrame.root === newFrame.root) {
+        const ots = diffSyntheticNode(oldFrame.root, newFrame.root);
+        frameNodeMap[newFrame.source.nodeId] = patchDOM(
+          ots,
+          oldFrame.root,
+          graph,
+          body,
+          frameNodeMap[newFrame.source.nodeId]
+        );
+      }
+
+      yield put(
+        pcSyntheticFrameRendered(
+          newFrame,
+          computeDisplayInfo(frameNodeMap[newFrame.source.nodeId])
+        )
+      );
     }
 
     function* dependencyLoader() {
@@ -154,9 +197,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
       // TODO - queue uris here
       while (1) {
         yield take();
-        const {
-          paperclip: { openDependencyUri, graph }
-        }: PaperclipRoot = yield select();
+        const { openDependencyUri, graph }: PCState = yield select();
         if (!openDependencyUri || openDependencyUri === prevUri) {
           continue;
         }
@@ -179,12 +220,23 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
 
 const createContainer = () => {
   if (typeof window === "undefined") return null;
-  const container = document.createElement("iframe");
-  container.style.width = "100%";
-  container.style.height = "100%";
-  container.style.background = "transparent";
-  container.addEventListener("load", () => {
-    container.contentDocument.body.style.margin = "0";
-  });
+  const container = document.createElement("div");
+  container.appendChild(createIframe());
   return container;
+};
+
+const resetContainer = (container: HTMLElement) => {
+  container.removeChild(container.children[0]);
+  container.appendChild(createIframe());
+};
+
+const createIframe = () => {
+  const iframe = document.createElement("iframe");
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.background = "transparent";
+  iframe.addEventListener("load", () => {
+    iframe.contentDocument.body.style.margin = "0";
+  });
+  return iframe;
 };

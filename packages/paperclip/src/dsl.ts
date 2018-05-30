@@ -34,12 +34,20 @@ export enum PCSourceTagNames {
   FRAME = "frame"
 }
 
+/*------------------------------------------
+ * CONSTANTS
+ *-----------------------------------------*/
+
 const DEFAULT_BOUNDS: Bounds = {
   left: 0,
   top: 0,
   right: 400,
   bottom: 300
 };
+
+/*------------------------------------------
+ * STATE
+ *-----------------------------------------*/
 
 type PCBaseSourceNode<TName extends PCSourceTagNames> = {
   children: PCBaseSourceNode<any>[];
@@ -136,6 +144,10 @@ export type PCNode =
   | PCVariant
   | PCOverride
   | PCVisibleNode;
+
+/*------------------------------------------
+ * FACTORIES
+ *-----------------------------------------*/
 
 export const createPCModule = (children: PCFrame[] = []): PCModule => ({
   id: generateUID(),
@@ -257,17 +269,19 @@ export const createPCTextNode = (value: string): PCTextNode => ({
   children: []
 });
 
-export const extendsComponent = (
-  element: PCElement | PCComponent | PCComponentInstanceElement
-) => element.is.length > 6;
+export const createPCDependency = (
+  uri: string,
+  module: PCModule
+): Dependency<PCModule> => ({
+  uri,
+  originalContent: module,
+  content: module,
+  importUris: {}
+});
 
-export const getModuleComponents = memoize((root: PCModule): PCComponent[] =>
-  root.children.reduce((components, frame) => {
-    return frame.children[0].name === PCSourceTagNames.COMPONENT
-      ? [...components, frame.children[0]]
-      : components;
-  }, [])
-);
+/*------------------------------------------
+ * TYPE UTILS
+ *-----------------------------------------*/
 
 export const isComponentFrame = (frame: PCFrame) =>
   frame.children[0].name === PCSourceTagNames.COMPONENT;
@@ -280,6 +294,22 @@ export const isPCOverride = (node: PCNode) =>
   node.name === PCSourceTagNames.OVERRIDE_ATTRIBUTES ||
   node.name === PCSourceTagNames.OVERRIDE_CHILDREN ||
   node.name === PCSourceTagNames.OVERRIDE_STYLE;
+
+export const extendsComponent = (
+  element: PCElement | PCComponent | PCComponentInstanceElement
+) => element.is.length > 6;
+
+/*------------------------------------------
+ * GETTERS
+ *-----------------------------------------*/
+
+export const getModuleComponents = memoize((root: PCModule): PCComponent[] =>
+  root.children.reduce((components, frame) => {
+    return frame.children[0].name === PCSourceTagNames.COMPONENT
+      ? [...components, frame.children[0]]
+      : components;
+  }, [])
+);
 
 export const getVisibleChildren = (node: PCVisibleNode | PCComponent) =>
   node.children.filter(isVisibleNode) as PCVisibleNode[];
@@ -349,20 +379,14 @@ export const getNodeSourceComponent = memoize(
     getModuleComponent(node.name, getPCNodeModule(node.id, graph))
 );
 
+/*------------------------------------------
+ * SETTERS
+ *-----------------------------------------*/
+
 export const addPCModuleNodeImport = (
   relativeUri: string,
   moduleNode: PCModule
 ): PCModule => ({
   ...moduleNode,
   imports: [...moduleNode.imports, relativeUri]
-});
-
-export const createPCDependency = (
-  uri: string,
-  module: PCModule
-): Dependency<PCModule> => ({
-  uri,
-  originalContent: module,
-  content: module,
-  importUris: {}
 });

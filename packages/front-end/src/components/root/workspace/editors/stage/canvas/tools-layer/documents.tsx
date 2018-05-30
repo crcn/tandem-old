@@ -6,7 +6,6 @@ import { RootState, Editor } from "../../../../../../../state";
 import { wrapEventToDispatch } from "../../../../../../../utils";
 import { Dispatch } from "redux";
 import {
-  PaperclipState,
   DependencyGraph,
   SyntheticFrame,
   getSyntheticFramesByDependencyUri
@@ -102,7 +101,8 @@ export const DocumentsCanvasToolBase = ({
 
   const activeFrames = getSyntheticFramesByDependencyUri(
     editor.activeFilePath,
-    root.paperclip
+    root.syntheticFrames,
+    root.graph
   );
 
   if (!activeFrames || !activeFrames) {

@@ -6,16 +6,10 @@ export const PC_SYNTHETIC_FRAME_RENDERED = "PC_SYNTHETIC_FRAME_RENDERED";
 export const PC_DEPENDENCY_LOADED = "PC_DEPENDENCY_LOADED";
 export const PC_SYNTHETIC_FRAME_CONTAINER_CREATED =
   "PC_SYNTHETIC_FRAME_CONTAINER_CREATED";
-export const PC_SYNTHETIC_FRAME_CONTAINER_DESTROYED =
-  "PC_SYNTHETIC_FRAME_CONTAINER_DESTROYED";
 
 export type PCSyntheticFrameContainerCreated = {
   frame: SyntheticFrame;
-  $container: HTMLIFrameElement;
-} & Action;
-
-export type PCSyntheticFrameContainerDestroyed = {
-  frame: SyntheticFrame;
+  $container: HTMLElement;
 } & Action;
 
 export type PCSyntheticFrameRendered = {
@@ -48,16 +42,9 @@ export const pcDependencyLoaded = (
 
 export const pcSyntheticFrameContainerCreated = (
   frame: SyntheticFrame,
-  $container: HTMLIFrameElement
+  $container: HTMLElement
 ): PCSyntheticFrameContainerCreated => ({
   frame,
   $container,
   type: PC_SYNTHETIC_FRAME_CONTAINER_CREATED
-});
-
-export const pcSyntheticFrameContainerDestroyed = (
-  frame: SyntheticFrame
-): PCSyntheticFrameContainerDestroyed => ({
-  frame,
-  type: PC_SYNTHETIC_FRAME_CONTAINER_DESTROYED
 });

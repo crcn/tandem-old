@@ -122,7 +122,7 @@ const PROHIBITED_DIFF_KEYS = {
   metadata: true
 };
 
-export const _diffSyntheticNode = (
+const _diffSyntheticNode = (
   oldNode: SyntheticNode,
   newNode: SyntheticNode,
   nodePath: number[],

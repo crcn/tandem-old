@@ -29,7 +29,11 @@ export const BaseLayersComponent = ({
           selectedReferences={root.selectedNodeIds}
           hoveringNodeIds={root.hoveringNodeIds}
           dispatch={dispatch}
-          frames={getSyntheticFramesByDependencyUri(uri, root.paperclip)}
+          frames={getSyntheticFramesByDependencyUri(
+            uri,
+            root.syntheticFrames,
+            root.graph
+          )}
         />
       ) : null}
     </div>

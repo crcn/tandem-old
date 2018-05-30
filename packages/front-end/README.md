@@ -2,12 +2,15 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* attach additional info to synthetic nodes
+* switching between files doesn't work
+* ability to move frames
 * persist raw style
-* insert commands
+* insert commands need to work
+* expanding / collapsing PC layers
+* renaming PC layers
 * start on _master_ doc
 
-* ability to load images & other resources in PC file. **helps with arch**.
+* ability to load images & other resources in PC file. (start with ionicons)
 * document bounds on element should be stored in editor namespace
 * when converting elements to artboards, move new artboard to BEST position
 * select newly inserted elements
@@ -23,6 +26,10 @@ HIGH PRIO:
 ideas around importing other design files like Sketch
 
 * **stronger source data type, don't use tree node structure**
+
+OPTIMIZATION:
+
+generate checksum for synthetic nodes and use those for tree diffing.
 
 HIGH IMPACT:
 
