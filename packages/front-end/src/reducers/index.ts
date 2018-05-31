@@ -138,7 +138,8 @@ import {
   centerEditorCanvas,
   getCanvasMouseTargetNodeIdFromPoint,
   isSelectionMovable,
-  SyntheticNodeMetadataKeys
+  SyntheticNodeMetadataKeys,
+  selectInsertedSyntheticNodes
 } from "../state";
 import {
   PCSourceTagNames,
@@ -173,8 +174,10 @@ import {
   getSyntheticNodeSourceDependency,
   persistConvertNodeToComponent,
   PCModule,
+  persistMoveSyntheticNode,
   persistInsertClips,
-  getPCNodeModule
+  getPCNodeModule,
+  persistRawCSSText
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -531,30 +534,21 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case PC_LAYER_DROPPED_NODE: {
       const { node, targetNode, offset } = action as TreeLayerDroppedNode;
-      // const oldDocument = getSyntheticNodeDocument(
-      //   targetNode.id,
-      //   state.paperclip
-      // );
-      // const targetNodeWindow = getSyntheticNodeWindow(
-      //   targetNode.id,
-      //   state.paperclip
-      // );
-      // state = persistRootState(
-      //   browser =>
-      //     persistMoveSyntheticNode(
-      //       node as SyntheticNode,
-      //       targetNode.id,
-      //       offset,
-      //       browser
-      //     ),
-      //   state
-      // );
 
-      // state = setActiveFilePath(targetNodeWindow.location, state);
+      const oldState = state;
 
-      // deselect until fixed -- exception thrown in various conditions
-      // where synthetic node no longer exists.
-      state = setSelectedSyntheticNodeIds(state);
+      state = persistRootState(
+        state =>
+          persistMoveSyntheticNode(
+            node as SyntheticNode,
+            targetNode as SyntheticNode,
+            offset,
+            state
+          ),
+        state
+      );
+
+      state = selectInsertedSyntheticNodes(oldState, state);
       return state;
     }
     case PC_LAYER_MOUSE_OUT: {
@@ -964,18 +958,17 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case RAW_CSS_TEXT_CHANGED: {
       const { value: cssText } = action as RawCSSTextChanged;
-      // state = persistRootState(browser => {
-      //   return state.selectedNodeIds.reduce(
-      //     (browserState, nodeId) =>
-      //       persistRawCSSText(
-      //         cssText,
-      //         nodeId,
-      //         state.selectedComponentVariantName,
-      //         browserState
-      //       ),
-      //     state.paperclip
-      //   );
-      // }, state);
+      state = persistRootState(browser => {
+        return state.selectedNodeIds.reduce(
+          (state, nodeId) =>
+            persistRawCSSText(
+              cssText,
+              getSyntheticNodeById(nodeId, state.syntheticFrames),
+              state
+            ),
+          state
+        );
+      }, state);
       return state;
     }
     case SLOT_TOGGLE_CLICK: {
@@ -1045,7 +1038,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       switch (toolType) {
         case ToolType.ELEMENT: {
           return persistInsertNodeFromPoint(
-            createPCElement("div"),
+            createPCElement("div", null, null, null, "Element"),
             fileUri,
             point,
             state
@@ -1054,7 +1047,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
         case ToolType.TEXT: {
           return persistInsertNodeFromPoint(
-            createPCTextNode("Click to edit"),
+            createPCTextNode("Click to edit", "Text"),
             fileUri,
             point,
             state
@@ -1076,6 +1069,7 @@ const persistInsertNodeFromPoint = (
   point: Point,
   state: RootState
 ) => {
+  const oldState = state;
   const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
   const targetNode =
     targetNodeId && getSyntheticNodeById(targetNodeId, state.syntheticFrames);
@@ -1109,6 +1103,8 @@ const persistInsertNodeFromPoint = (
       state
     );
   }, state);
+
+  state = selectInsertedSyntheticNodes(oldState, state);
   // state = setSelectedSyntheticNodeIds(
   //   state,
   //   ...getInsertedWindowElementIds(
@@ -1213,6 +1209,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         return state;
       }
 
+      const oldState = state;
+
       state = persistRootState(
         state =>
           persistConvertNodeToComponent(
@@ -1224,7 +1222,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           ),
         state
       );
-      state = setSelectedSyntheticNodeIds(state);
+      state = selectInsertedSyntheticNodes(oldState, state);
       return state;
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
@@ -1266,6 +1264,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
   switch (action.type) {
     case SYNTHETIC_NODES_PASTED: {
       const { clips } = action as SyntheticNodesPasted;
+      const oldState = state;
 
       let targetNode: PCVisibleNode | PCModule;
 
@@ -1285,6 +1284,8 @@ const clipboardReducer = (state: RootState, action: Action) => {
         state => persistInsertClips(clips, targetNode, state),
         state
       );
+
+      state = selectInsertedSyntheticNodes(oldState, state);
 
       return state;
     }
@@ -1316,16 +1317,6 @@ const handleArtboardSelectionFromAction = <
       : [nodeId])
   );
 };
-
-// const resizeFullScreenArtboard = (state: RootState, width: number, height: number) => {
-//   const workspace = getSelectedWorkspace(state);
-//   if (workspace.stage.fullScreen && workspace.stage.container) {
-
-//     // TODO - do not all getBoundingClientRect here. Dimensions need to be
-//     return updateArtboardSize(state, workspace.stage.fullScreen.documentId, width, height);
-//   }
-//   return state;
-// }
 
 const setCanvasZoom = (
   zoom: number,

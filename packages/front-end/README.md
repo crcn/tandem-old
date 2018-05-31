@@ -2,8 +2,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* moving layers
-* persist raw style
+* pasting existing component instances in root
+* dragging & dropping instances of components
 * editing text
 * back onto styling doc
 * select inserted elements

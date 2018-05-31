@@ -34,7 +34,8 @@ import {
   FSItem,
   FSItemNamespaces,
   getTreeNodePath,
-  updateNestedNodeTrail
+  updateNestedNodeTrail,
+  getTreeNodeFromPath
 } from "tandem-common";
 import {
   SyntheticNode,
@@ -54,7 +55,12 @@ import {
   queueLoadDependencyUri,
   isSyntheticNodeMovable,
   isSyntheticNodeResizable,
-  updateSyntheticFrame
+  updateSyntheticFrame,
+  diffSyntheticNode,
+  SyntheticOperationalTransformType,
+  SyntheticInsertChildOperationalTransform,
+  PCSourceTagNames,
+  patchSyntheticNode
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -172,6 +178,7 @@ export const persistRootState = (
   persistPaperclipState: (state: RootState) => RootState,
   state: RootState
 ) => {
+  const oldState = state;
   const oldGraph = state.graph;
   state = keepActiveFileOpen(
     updateRootState(persistPaperclipState(state), state)
@@ -183,6 +190,49 @@ export const persistRootState = (
     state
   );
   return state;
+};
+
+const getUpdatedSyntheticNodes = (newState: RootState, oldState: RootState) => {
+  let newSyntheticNodes: SyntheticNode[] = [];
+  for (const sourceFrameId in newState.syntheticFrames) {
+    const newFrame = newState.syntheticFrames[sourceFrameId];
+    const oldFrame = oldState.syntheticFrames[sourceFrameId];
+    if (!oldFrame) {
+      newSyntheticNodes.push(newFrame.root);
+      continue;
+    }
+
+    let model: SyntheticNode = oldFrame.root;
+
+    diffSyntheticNode(oldFrame.root, newFrame.root).forEach(ot => {
+      const target = getTreeNodeFromPath(ot.nodePath, model);
+      model = patchSyntheticNode([ot], model);
+      if (
+        ot.type === SyntheticOperationalTransformType.INSERT_CHILD &&
+        newFrame.root.name === PCSourceTagNames.COMPONENT &&
+        !ot.child.isCreatedFromComponent
+      ) {
+        newSyntheticNodes.push(ot.child);
+      } else if (
+        ot.type === SyntheticOperationalTransformType.SET_PROPERTY &&
+        ot.name === "source"
+      ) {
+        newSyntheticNodes.push(target);
+      }
+    });
+  }
+
+  return uniq(newSyntheticNodes);
+};
+
+export const selectInsertedSyntheticNodes = (
+  oldState: RootState,
+  newState: RootState
+) => {
+  return setSelectedSyntheticNodeIds(
+    newState,
+    ...getUpdatedSyntheticNodes(newState, oldState).map(node => node.id)
+  );
 };
 
 const setOpenFileContent = (dep: Dependency<any>, state: RootState) =>

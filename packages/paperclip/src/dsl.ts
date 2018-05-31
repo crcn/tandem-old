@@ -237,9 +237,11 @@ export const createPCElement = (
   is: string = "div",
   style: KeyValue<any> = {},
   attributes: KeyValue<string> = {},
-  children: (PCVisibleNode | PCOverride)[] = []
+  children: (PCVisibleNode | PCOverride)[] = [],
+  label?: string
 ): PCElement => ({
   id: generateUID(),
+  label,
   is: is || "div",
   name: PCSourceTagNames.ELEMENT,
   attributes: attributes || {},
@@ -263,9 +265,13 @@ export const createPCComponentInstance = (
   children
 });
 
-export const createPCTextNode = (value: string): PCTextNode => ({
+export const createPCTextNode = (
+  value: string,
+  label?: string
+): PCTextNode => ({
   id: generateUID(),
   name: PCSourceTagNames.TEXT,
+  label: label || value,
   value,
   style: {},
   children: []

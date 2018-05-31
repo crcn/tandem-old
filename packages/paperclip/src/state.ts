@@ -371,21 +371,12 @@ export const persistConvertNodeToComponent = <TState extends PCState>(
       return replaceDependencyGraphPCNode(component, sourceNode, state);
     }
 
-    const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
-    const syntheticNodeBounds = getSyntheticNodeBounds(
-      node.id,
-      state.syntheticFrames
-    );
-
-    let bestBounds = syntheticNodeBounds
-      ? moveBounds(syntheticNodeBounds, frame.bounds)
-      : DEFAULT_FRAME_BOUNDS;
-
-    bestBounds = moveBoundsToEmptySpace(bestBounds, state.syntheticFrames);
-
     const module = getPCNodeModule(sourceNode.id, state.graph);
     state = replaceDependencyGraphPCNode(
-      appendChildNode(createPCFrame([component], bestBounds), module),
+      appendChildNode(
+        createPCFrameFromSyntheticNode(node, component, state),
+        module
+      ),
       module,
       state
     );
@@ -552,6 +543,102 @@ export const persistSyntheticNodeBounds = <TState extends PCState>(
     }
   });
 
+// TODO - need to
+export const persistMoveSyntheticNode = <TState extends PCState>(
+  node: SyntheticNode,
+  newRelative: SyntheticNode,
+  offset: TreeMoveOffset,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const oldState = state;
+    const sourceNode = getSyntheticSourceNode(node, state.graph);
+    const newRelativeSourceNode = getSyntheticSourceNode(
+      newRelative,
+      state.graph
+    );
+
+    // remove the child first
+    if (node.isRoot) {
+      state = replaceDependencyGraphPCNode(
+        null,
+        getPCNodeFrame(
+          sourceNode.id,
+          getPCNodeModule(sourceNode.id, state.graph)
+        ),
+        state
+      );
+    } else {
+      state = replaceDependencyGraphPCNode(null, sourceNode, state);
+    }
+
+    const destDep = getPCNodeDependency(newRelativeSourceNode.id, state.graph);
+    let destContent = destDep.content;
+    let destParent =
+      offset === TreeMoveOffset.APPEND
+        ? newRelativeSourceNode
+        : (getParentTreeNode(newRelativeSourceNode.id, destContent) as PCNode);
+    const index =
+      offset === TreeMoveOffset.APPEND
+        ? destParent.children.length
+        : destParent.children.indexOf(newRelativeSourceNode) +
+          (offset === TreeMoveOffset.BEFORE ? 0 : 1);
+
+    if (destParent.name === PCSourceTagNames.FRAME) {
+      destParent = getParentTreeNode(destParent.id, destContent) as PCNode;
+    }
+
+    destContent = updateNestedNode(destParent, destContent, parent => {
+      let child = sourceNode as PCNode;
+      if (destParent.name === PCSourceTagNames.MODULE) {
+        child = createPCFrameFromSyntheticNode(node, sourceNode, oldState);
+      }
+      return insertChildNode(child, index, parent);
+    });
+
+    state = replaceDependencyGraphPCNode(destContent, destContent, state);
+
+    return state;
+  });
+
+const createPCFrameFromSyntheticNode = (
+  node: SyntheticNode,
+  child: PCVisibleNode | PCComponent,
+  state: PCState
+) => {
+  const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
+  const syntheticNodeBounds = getSyntheticNodeBounds(
+    node.id,
+    state.syntheticFrames
+  );
+
+  let bestBounds = syntheticNodeBounds
+    ? moveBounds(syntheticNodeBounds, frame.bounds)
+    : DEFAULT_FRAME_BOUNDS;
+  bestBounds = moveBoundsToEmptySpace(bestBounds, state.syntheticFrames);
+  return createPCFrame([child], bestBounds);
+};
+
+export const persistRawCSSText = <TState extends PCState>(
+  text: string,
+  node: SyntheticNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const style = parseStyle(text);
+    const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+    // todo - need to consider variants here
+    return replaceDependencyGraphPCNode(
+      {
+        ...sourceNode,
+        style: style
+      },
+      sourceNode,
+      state
+    );
+  });
+
 export const persistRemoveSyntheticNode = <TState extends PCState>(
   node: SyntheticNode,
   state: TState
@@ -563,3 +650,13 @@ export const persistRemoveSyntheticNode = <TState extends PCState>(
       : getSyntheticSourceNode(node, state.graph);
     return replaceDependencyGraphPCNode(null, sourceNode, state);
   });
+
+const parseStyle = (source: string) => {
+  const style = {};
+  source.split(";").forEach(decl => {
+    const [key, value] = decl.split(":");
+    if (!key || !value) return;
+    style[key.trim()] = value.trim();
+  });
+  return style;
+};

@@ -33,7 +33,10 @@
                   "id": "2399b466",
                   "name": "text",
                   "value": "Click to edit",
-                  "style": {},
+                  "style": {
+                    "color": "red",
+                    "font-family": "Helvetica"
+                  },
                   "children": []
                 }
               ]
@@ -43,24 +46,99 @@
       ]
     },
     {
-      "id": "4a1e92d377",
+      "id": "bdd02c564",
       "name": "frame",
       "bounds": {
-        "left": 184,
-        "top": 205,
-        "right": 377,
-        "bottom": 352
+        "left": 49.5,
+        "top": -70,
+        "right": 149.5,
+        "bottom": 30
       },
       "children": [
         {
-          "id": "4a1e92d376",
-          "variant": [],
-          "is": "2399b467",
-          "name": "component-instance",
+          "id": "bdd02c563",
+          "is": "div",
+          "name": "element",
           "attributes": {},
           "style": {},
-          "children": [],
-          "label": ""
+          "children": [
+            {
+              "id": "bf29ca614",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b6c162d16",
+      "name": "frame",
+      "bounds": {
+        "left": 393.75,
+        "top": -61.5,
+        "right": 597.912513062317,
+        "bottom": 74.41810795252309
+      },
+      "children": [
+        {
+          "label": "Pane",
+          "is": "div",
+          "style": {
+            "font-family": "Helvetica",
+            "display": "flex",
+            "flex-direction": "column"
+          },
+          "attributes": {},
+          "id": "b6c162d113",
+          "name": "component",
+          "children": [
+            {
+              "id": "b6c162d132",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "background": "red",
+                "width": "100%",
+                "padding": "4px 8px"
+              },
+              "children": [
+                {
+                  "id": "b6c162d1281",
+                  "name": "text",
+                  "value": "Click to edit",
+                  "style": {},
+                  "children": []
+                }
+              ],
+              "label": "Title"
+            },
+            {
+              "id": "b6c162d140",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "height": "100%",
+                "width": "100%",
+                "padding": "4px 8px"
+              },
+              "children": [
+                {
+                  "id": "6fd27ae1495",
+                  "name": "text",
+                  "value": "Click to edit",
+                  "style": {},
+                  "children": []
+                }
+              ],
+              "label": "Content"
+            }
+          ]
         }
       ]
     }

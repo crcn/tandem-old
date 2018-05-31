@@ -38,7 +38,7 @@ type PCLayerOuterProps = {
 } & TreeNodeLayerOuterProps;
 
 const isMovableNode = (node: SyntheticNode) =>
-  !node.isRoot || node.isComponentInstance;
+  !node.isRoot || !node.isCreatedFromComponent;
 
 const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
   {
@@ -66,10 +66,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       root: SyntheticNode
     ) {
       if (offset === TreeMoveOffset.APPEND) {
-        if (
-          !child.isRoot &&
-          (!near.isCreatedFromComponent || near.name !== "text")
-        ) {
+        if (!near.isCreatedFromComponent || near.name !== "text") {
           return true;
         }
       }

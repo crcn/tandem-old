@@ -26,6 +26,12 @@ import {
 import { diffSyntheticNode, patchSyntheticNode } from "./ot";
 
 /*------------------------------------------
+ * CONSTANTS
+ *-----------------------------------------*/
+
+const NO_BOUNDS = { left: 0, top: 0, right: 0, bottom: 0 };
+
+/*------------------------------------------
  * STATE
  *-----------------------------------------*/
 
@@ -227,9 +233,10 @@ export const getSyntheticNodeComputedBounds = (
   frame: SyntheticFrame
 ) => {
   return (
-    frame.computed &&
-    frame.computed[syntheticNodeId] &&
-    frame.computed[syntheticNodeId].bounds
+    (frame.computed &&
+      frame.computed[syntheticNodeId] &&
+      frame.computed[syntheticNodeId].bounds) ||
+    NO_BOUNDS
   );
 };
 

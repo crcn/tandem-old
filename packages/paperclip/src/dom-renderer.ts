@@ -80,7 +80,9 @@ const setStyleConstraintsIfRoot = (
   const isRoot = synthetic.isRoot;
   if (isRoot) {
     nativeElement.style.position = "fixed";
-    nativeElement.style.display = "block";
+    if (nativeElement.tagName === "SPAN") {
+      nativeElement.style.display = "block";
+    }
     nativeElement.style.top = "0px";
     nativeElement.style.left = "0px";
     nativeElement.style.width = "100vw";
