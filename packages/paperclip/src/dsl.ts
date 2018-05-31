@@ -40,7 +40,7 @@ export enum PCSourceTagNames {
  * CONSTANTS
  *-----------------------------------------*/
 
-const DEFAULT_BOUNDS: Bounds = {
+export const DEFAULT_FRAME_BOUNDS: Bounds = {
   left: 0,
   top: 0,
   right: 400,
@@ -118,7 +118,7 @@ export type PCOverride =
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;
-  style: KeyValue<string | number>;
+  style: KeyValue<any>;
 } & PCBaseSourceNode<TName>;
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
@@ -160,7 +160,7 @@ export const createPCModule = (children: PCFrame[] = []): PCModule => ({
 });
 export const createPCFrame = (
   children: Array<PCComponent | PCVisibleNode> = [],
-  bounds: Bounds = DEFAULT_BOUNDS
+  bounds: Bounds = DEFAULT_FRAME_BOUNDS
 ): PCFrame => ({
   id: generateUID(),
   name: PCSourceTagNames.FRAME,

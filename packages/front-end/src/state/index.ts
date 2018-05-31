@@ -32,7 +32,9 @@ import {
   flipPoint,
   moveBounds,
   FSItem,
-  FSItemNamespaces
+  FSItemNamespaces,
+  getTreeNodePath,
+  updateNestedNodeTrail
 } from "tandem-common";
 import {
   SyntheticNode,
@@ -607,14 +609,33 @@ export const setRootStateSyntheticNodeExpanded = (
 
   state = updateSyntheticFrame(
     {
-      // root: setSyntheticNodeExpanded(node, value, document.root)
-      root: frame.root
+      root: setSyntheticNodeExpanded(node, value, frame.root)
     },
     frame,
     state
   );
 
   return state;
+};
+
+const setSyntheticNodeExpanded = (
+  node: SyntheticNode,
+  value: boolean,
+  root: SyntheticNode
+): SyntheticNode => {
+  const path = getTreeNodePath(node.id, root);
+  const updater = (node: SyntheticNode) => {
+    return {
+      ...node,
+      metadata: {
+        ...node.metadata,
+        [SyntheticNodeMetadataKeys.EXPANDED]: value
+      }
+    };
+  };
+  return (value
+    ? updateNestedNodeTrail(path, root, updater)
+    : updateNestedNode(node, root, updater)) as SyntheticNode;
 };
 
 export const setRootStateSyntheticNodeLabelEditing = (

@@ -110,7 +110,6 @@ export const diffSyntheticNode = memoize(
 
 const PROHIBITED_DIFF_KEYS = {
   children: true,
-  source: true,
   id: true,
   metadata: true
 };

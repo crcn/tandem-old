@@ -8,10 +8,10 @@
       "id": "935b79f10",
       "name": "frame",
       "bounds": {
-        "left": -6,
-        "top": -19,
-        "right": 383,
-        "bottom": 301
+        "left": -22,
+        "top": -43,
+        "right": 367,
+        "bottom": 277
       },
       "children": [
         {
@@ -259,26 +259,6 @@
               "children": []
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "1bb03b8661",
-      "name": "frame",
-      "bounds": {
-        "left": 461.23841215741504,
-        "top": 219.6222793038346,
-        "right": 561.238412157415,
-        "bottom": 319.6222793038346
-      },
-      "children": [
-        {
-          "id": "1bb03b8660",
-          "is": "div",
-          "name": "element",
-          "attributes": {},
-          "style": {},
-          "children": []
         }
       ]
     }

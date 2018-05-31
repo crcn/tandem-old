@@ -232,6 +232,11 @@ export const getSyntheticNodeComputedBounds = (
   );
 };
 
+export const getSyntheticNodeSourceDependency = (
+  node: SyntheticNode,
+  graph: DependencyGraph
+) => getPCNodeDependency(node.source.nodeId, graph);
+
 export const getSyntheticNodeBounds = memoize(
   (syntheticNodeId: string, frames: SyntheticFrames): Bounds => {
     const frame = getSyntheticNodeFrame(syntheticNodeId, frames);

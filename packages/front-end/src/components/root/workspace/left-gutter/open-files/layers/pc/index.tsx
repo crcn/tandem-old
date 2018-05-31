@@ -1,7 +1,10 @@
 import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
-import { RootState } from "../../../../../../../state";
+import {
+  RootState,
+  SyntheticNodeMetadataKeys
+} from "../../../../../../../state";
 import { SyntheticNode, SyntheticFrame, SyntheticElement } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
 import {
@@ -49,6 +52,13 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       treeLayerLabelChanged: pcLayerLabelChanged,
       treeLayerEditLabelBlur: pcEditLayerLabelBlur
     },
+    attributeOptions: {
+      nodeLabelAttr: (node: SyntheticNode) => node.label,
+      expandAttr: (node: SyntheticNode) =>
+        node.metadata[SyntheticNodeMetadataKeys.EXPANDED],
+      editingLabelAttr: (node: SyntheticNode) =>
+        node.metadata[SyntheticNodeMetadataKeys.EDITING_LABEL]
+    },
     canDrop(
       child: SyntheticNode,
       near: SyntheticNode,
@@ -74,16 +84,11 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       className: cx(attribs.className, {
         "in-component-instance":
           props.node.isCreatedFromComponent || props.node.isComponentInstance,
-        "is-component-root": props.isComponentRoot
+        "is-component-root": props.isRoot && props.node.isComponentInstance
       })
     }),
     layerRenderer: Base => (props: PCLayerOuterProps) => {
-      return (
-        <Base
-          {...props}
-          isComponentRoot={(props.node as SyntheticNode).isRoot}
-        />
-      );
+      return <Base {...props} isRoot={(props.node as SyntheticNode).isRoot} />;
     }
   }
 );

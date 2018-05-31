@@ -18,7 +18,11 @@ import {
   removeNestedTreeNode,
   getTreeNodePath,
   getTreeNodeFromPath,
-  getParentTreeNode
+  getParentTreeNode,
+  appendChildNode,
+  cloneTreeNode,
+  pointIntersectsBounds,
+  mergeBounds
 } from "tandem-common";
 import { values, omit, pickBy } from "lodash";
 import { DependencyGraph, Dependency, updateGraphDependency } from "./graph";
@@ -26,13 +30,19 @@ import {
   PCNode,
   getPCNode,
   PCVisibleNode,
+  createPCComponent,
   getPCNodeFrame,
   getPCNodeDependency,
   PCSourceTagNames,
   PCFrame,
   replacePCNode,
+  DEFAULT_FRAME_BOUNDS,
   PCComponent,
-  assertValidPCModule
+  assertValidPCModule,
+  PCElement,
+  createPCComponentInstance,
+  getPCNodeModule,
+  createPCFrame
 } from "./dsl";
 import {
   SyntheticFrames,
@@ -44,7 +54,8 @@ import {
   updateSyntheticFrames,
   getSyntheticSourceNode,
   getSyntheticFramesByDependencyUri,
-  getSyntheticFrameDependencyUri
+  getSyntheticFrameDependencyUri,
+  SyntheticElement
 } from "./synthetic";
 import {
   diffSyntheticNode,
@@ -53,6 +64,12 @@ import {
 } from "./ot";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { evaluatePCModule } from ".";
+
+/*------------------------------------------
+ * CONSTANTS
+ *-----------------------------------------*/
+
+const FRAME_PADDING = 10;
 
 /*------------------------------------------
  * STATE
@@ -67,10 +84,6 @@ export type PCState = {
 
   graph: DependencyGraph;
 };
-
-/*------------------------------------------
- * GETTERS
- *-----------------------------------------*/
 
 /*------------------------------------------
  * SETTERS
@@ -99,6 +112,12 @@ export const updateDependencyGraph = <TState extends PCState>(
     },
     state
   );
+
+const replaceDependencyGraphPCNode = <TState extends PCState>(
+  newNode: PCNode,
+  oldNode: PCNode,
+  state: TState
+) => updateDependencyGraph(replacePCNode(newNode, oldNode, state.graph), state);
 
 export const replaceDependency = <TState extends PCState>(
   dep: Dependency<any>,
@@ -309,6 +328,85 @@ const persistChanges = <TState extends PCState>(
   return state;
 };
 
+export const persistChangeLabel = <TState extends PCState>(
+  newLabel: string,
+  node: SyntheticNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const sourceNode = getSyntheticSourceNode(node, state.graph);
+    return replaceDependencyGraphPCNode(
+      {
+        ...sourceNode,
+        label: newLabel
+      },
+      sourceNode,
+      state
+    );
+  });
+
+export const persistConvertNodeToComponent = <TState extends PCState>(
+  node: SyntheticNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+    const component = createPCComponent(
+      sourceNode.label,
+      (sourceNode as PCElement).is,
+      sourceNode.style,
+      (sourceNode as PCElement).attributes,
+      sourceNode.name === PCSourceTagNames.TEXT
+        ? [cloneTreeNode(sourceNode)]
+        : (sourceNode.children || []).map(node => cloneTreeNode(node))
+    );
+
+    if (node.isRoot) {
+      return replaceDependencyGraphPCNode(component, sourceNode, state);
+    }
+
+    const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
+    const syntheticNodeBounds = getSyntheticNodeBounds(
+      node.id,
+      state.syntheticFrames
+    );
+
+    let bestBounds = syntheticNodeBounds
+      ? moveBounds(syntheticNodeBounds, frame.bounds)
+      : DEFAULT_FRAME_BOUNDS;
+
+    bestBounds = moveBoundsToEmptySpace(bestBounds, state.syntheticFrames);
+
+    const module = getPCNodeModule(sourceNode.id, state.graph);
+    state = replaceDependencyGraphPCNode(
+      appendChildNode(createPCFrame([component], bestBounds), module),
+      module,
+      state
+    );
+
+    const componentInstance = createPCComponentInstance(component.id);
+
+    state = replaceDependencyGraphPCNode(componentInstance, sourceNode, state);
+
+    return state;
+  });
+
+const moveBoundsToEmptySpace = (bounds: Bounds, frames: SyntheticFrames) => {
+  const intersecting = values(frames).some((frame: SyntheticFrame) =>
+    pointIntersectsBounds(bounds, frame.bounds)
+  );
+  if (!intersecting) return bounds;
+  const entireBounds = getEntireFrameBounds(frames);
+  return moveBounds(bounds, {
+    left: entireBounds.right + FRAME_PADDING,
+    top: entireBounds.top
+  });
+};
+
+export const getEntireFrameBounds = (frames: SyntheticFrames) =>
+  mergeBounds(...values(frames).map(frame => frame.bounds));
+
 export const persistInsertNode = <TState extends PCState>(
   newChild: PCFrame | PCVisibleNode | PCComponent,
   relative: PCNode,
@@ -340,15 +438,12 @@ export const persistSyntheticNodeBounds = <TState extends PCState>(
         frame.source.nodeId,
         state.graph
       ) as PCFrame;
-      return updateDependencyGraph(
-        replacePCNode(
-          {
-            ...sourceFrame,
-            bounds: frame.bounds
-          },
-          sourceFrame,
-          state.graph
-        ),
+      return replaceDependencyGraphPCNode(
+        {
+          ...sourceFrame,
+          bounds: frame.bounds
+        },
+        sourceFrame,
         state
       );
     } else {
@@ -365,8 +460,5 @@ export const persistRemoveSyntheticNode = <TState extends PCState>(
     const sourceNode = node.isRoot
       ? (getPCNode(frame.source.nodeId, state.graph) as PCFrame)
       : getSyntheticSourceNode(node, state.graph);
-    return updateDependencyGraph(
-      replacePCNode(null, sourceNode, state.graph),
-      state
-    );
+    return replaceDependencyGraphPCNode(null, sourceNode, state);
   });

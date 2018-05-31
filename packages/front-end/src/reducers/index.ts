@@ -137,7 +137,8 @@ import {
   getSyntheticWindowBounds,
   centerEditorCanvas,
   getCanvasMouseTargetNodeIdFromPoint,
-  isSelectionMovable
+  isSelectionMovable,
+  SyntheticNodeMetadataKeys
 } from "../state";
 import {
   PCSourceTagNames,
@@ -165,9 +166,12 @@ import {
   updateSyntheticFrameBounds,
   updateSyntheticNodeBounds,
   persistInsertNode,
+  persistChangeLabel,
   removeSyntheticNode,
   persistSyntheticNodeBounds,
-  persistRemoveSyntheticNode
+  persistRemoveSyntheticNode,
+  getSyntheticNodeSourceDependency,
+  persistConvertNodeToComponent
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -514,16 +518,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case PC_LAYER_LABEL_CHANGED: {
       const { label, node } = action as TreeLayerLabelChanged;
-      // state = setRootStateSyntheticNodeLabelEditing(node.id, false, state);
-      // state = persistRootState(
-      //   browser =>
-      //     persistChangeNodeLabel(
-      //       label,
-      //       getSyntheticSourceNode(node.id, browser) as PCVisibleNode,
-      //       browser
-      //     ),
-      //   state
-      // );
+
+      state = setRootStateSyntheticNodeLabelEditing(node.id, false, state);
+      state = persistRootState(
+        browser => persistChangeLabel(label, node as SyntheticNode, browser),
+        state
+      );
       return state;
     }
     case PC_LAYER_DROPPED_NODE: {
@@ -561,26 +561,28 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case PC_LAYER_CLICK: {
       const { node, sourceEvent } = action as TreeLayerClick;
-
-      // if (sourceEvent.altKey) {
-      //   state = openSyntheticNodeOriginFile(node.id, state);
-      // } else {
-      //   const window = getSyntheticNodeWindow(node.id, state.paperclip);
-      //   state = setActiveFilePath(window.location, state);
-      //   state = setSelectedSyntheticNodeIds(
-      //     state,
-      //     ...(sourceEvent.shiftKey
-      //       ? [...state.selectedNodeIds, node.id]
-      //       : [node.id])
-      //   );
-      // }
+      if (sourceEvent.altKey) {
+        // state = openSyntheticNodeOriginFile(node.id, state);
+      } else {
+        const dep = getSyntheticNodeSourceDependency(
+          node as SyntheticNode,
+          state.graph
+        );
+        state = setActiveFilePath(dep.uri, state);
+        state = setSelectedSyntheticNodeIds(
+          state,
+          ...(sourceEvent.shiftKey
+            ? [...state.selectedNodeIds, node.id]
+            : [node.id])
+        );
+      }
       return state;
     }
     case PC_LAYER_EXPAND_TOGGLE_CLICK: {
       const { node } = action as TreeLayerExpandToggleClick;
       state = setRootStateSyntheticNodeExpanded(
         node.id,
-        !(node as FSItem).expanded,
+        !(node as SyntheticNode).metadata[SyntheticNodeMetadataKeys.EXPANDED],
         state
       );
       return state;
@@ -944,17 +946,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
         action as ResizerPathStoppedMoving
       );
 
-      // state = persistRootState(browser => {
-      //   return state.selectedNodeIds.reduce(
-      //     (browserState, nodeId) =>
-      //       persistSyntheticItemBounds(
-      //         getNewSyntheticNodeBounds(newBounds, nodeId, state),
-      //         nodeId,
-      //         browserState
-      //       ),
-      //     state.paperclip
-      //   );
-      // }, state);
+      state = persistRootState(state => {
+        return state.selectedNodeIds.reduce(
+          (state, nodeId) =>
+            persistSyntheticNodeBounds(
+              getSyntheticNodeById(nodeId, state.syntheticFrames),
+              state
+            ),
+          state
+        );
+      }, state);
 
       return state;
     }
@@ -1204,14 +1205,22 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return isInputSelected(state) ? state : setTool(ToolType.ELEMENT, state);
     }
     case SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN: {
+      // TODO - should be able to conver all selected nodes to components
       if (state.selectedNodeIds.length > 1) {
         return state;
       }
-      // state = persistRootState(
-      //   browser =>
-      //     persistConvertNodeToComponent(state.selectedNodeIds[0], browser),
-      //   state
-      // );
+
+      state = persistRootState(
+        state =>
+          persistConvertNodeToComponent(
+            getSyntheticNodeById(
+              state.selectedNodeIds[0],
+              state.syntheticFrames
+            ),
+            state
+          ),
+        state
+      );
       state = setSelectedSyntheticNodeIds(state);
       return state;
     }

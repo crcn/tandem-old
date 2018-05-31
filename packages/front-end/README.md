@@ -2,6 +2,9 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
+* editing text
+* instantiating new components
+* moving layers
 * persist raw style
 * expanding / collapsing PC layers
 * moving layers
