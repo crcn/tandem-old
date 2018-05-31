@@ -1233,15 +1233,17 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         return state;
       }
 
-      state = state.selectedNodeIds.reduce((state, nodeId) => {
-        return persistRemoveSyntheticNode(
-          getSyntheticNodeById(nodeId, state.syntheticFrames),
-          state
-        );
-      }, state);
+      return persistRootState(state => {
+        state = state.selectedNodeIds.reduce((state, nodeId) => {
+          return persistRemoveSyntheticNode(
+            getSyntheticNodeById(nodeId, state.syntheticFrames),
+            state
+          );
+        }, state);
 
-      state = setSelectedSyntheticNodeIds(state);
-      return state;
+        state = setSelectedSyntheticNodeIds(state);
+        return state;
+      }, state);
     }
   }
 

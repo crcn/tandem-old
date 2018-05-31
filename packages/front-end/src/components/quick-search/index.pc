@@ -263,30 +263,22 @@
       ]
     },
     {
-      "id": "eb03f26a62",
+      "id": "1bb03b8661",
       "name": "frame",
       "bounds": {
-        "left": 475.20917765942784,
-        "top": 221.2316344922483,
-        "right": 575.2091776594278,
-        "bottom": 321.2316344922483
+        "left": 461.23841215741504,
+        "top": 219.6222793038346,
+        "right": 561.238412157415,
+        "bottom": 319.6222793038346
       },
       "children": [
         {
-          "id": "eb03f26a61",
+          "id": "1bb03b8660",
           "is": "div",
           "name": "element",
           "attributes": {},
           "style": {},
-          "children": [
-            {
-              "id": "25189f5f466",
-              "name": "text",
-              "value": "Click to edit",
-              "style": {},
-              "children": []
-            }
-          ]
+          "children": []
         }
       ]
     }

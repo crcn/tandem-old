@@ -88,7 +88,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
         oldFrame: SyntheticFrame,
         graph: DependencyGraph
       ) {
-        if (!initedFrames[sourceFrameId]) {
+        if (!initedFrames[sourceFrameId] || !oldFrame) {
           initedFrames[sourceFrameId] = 1;
           yield spawn(initContainer, newFrame, graph);
         } else {
@@ -175,8 +175,6 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
       }
 
       if (oldFrame.root !== newFrame.root) {
-        // console.log(JSON.stringify(oldFrame.root, null, 2));
-        // console.log(JSON.stringify(newFrame.root, null, 2));
         const ots = diffSyntheticNode(oldFrame.root, newFrame.root);
         frameNodeMap[newFrame.source.nodeId] = patchDOM(
           ots,

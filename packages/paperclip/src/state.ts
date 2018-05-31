@@ -103,10 +103,10 @@ export const updateDependencyGraph = <TState extends PCState>(
 export const replaceDependency = <TState extends PCState>(
   dep: Dependency<any>,
   state: TState
-) => {
-  // TODO - need to re-evaluate
-  return updateDependencyGraph({ [dep.uri]: dep }, state);
-};
+) =>
+  persistChanges(state, state =>
+    updateDependencyGraph({ [dep.uri]: dep }, state)
+  );
 
 export const queueLoadDependencyUri = <TState extends PCState>(
   uri: string,

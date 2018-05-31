@@ -271,6 +271,7 @@ export const updateSyntheticFrames = (
   for (const sourceFrameId in newFrames) {
     const newFrame = newFrames[sourceFrameId];
     const oldFrame = oldFrames[sourceFrameId];
+
     if (oldFrame === newFrame) {
       updatedFrames[sourceFrameId] = oldFrame;
       continue;
