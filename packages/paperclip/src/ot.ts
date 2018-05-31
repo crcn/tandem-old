@@ -2,7 +2,8 @@ import { SyntheticNode } from "./synthetic";
 import {
   updateNestedNode,
   updateNestedNodeFromPath,
-  arraySplice
+  arraySplice,
+  memoize
 } from "tandem-common";
 
 export enum SyntheticOperationalTransformType {
@@ -100,20 +101,12 @@ const createSyntheticSetPropertyOperationalTransform = (
 
 const _diffSyntheticNodeMemos = {};
 
-export const diffSyntheticNode = (
-  oldNode: SyntheticNode,
-  newNode: SyntheticNode
-) => {
-  const memoKey = oldNode.id + newNode.id;
-  return (
-    _diffSyntheticNodeMemos[memoKey] ||
-    (_diffSyntheticNodeMemos[memoKey] = _diffSyntheticNode(
-      oldNode,
-      newNode,
-      []
-    ))
-  );
-};
+export const diffSyntheticNode = memoize(
+  (oldNode: SyntheticNode, newNode: SyntheticNode) => {
+    const ots = _diffSyntheticNode(oldNode, newNode, []);
+    return ots;
+  }
+);
 
 const PROHIBITED_DIFF_KEYS = {
   children: true,
@@ -193,6 +186,7 @@ const _diffSyntheticNode = (
         );
       }
     } else {
+      // console.log("NOT FOUND", oldNode, newNode);
       ots.push(
         createSyntheticRemoveChildOperationalTransform(nodePath, oldIndex)
       );
@@ -230,19 +224,19 @@ export const patchSyntheticNode = (
           }
           case SyntheticOperationalTransformType.INSERT_CHILD: {
             return {
-              ...node,
+              ...target,
               children: arraySplice(target.children, ot.index, 0, ot.child)
             };
           }
           case SyntheticOperationalTransformType.REMOVE_CHILD: {
             return {
-              ...node,
+              ...target,
               children: arraySplice(target.children, ot.index, 1)
             };
           }
           case SyntheticOperationalTransformType.MOVE_CHILD: {
             return {
-              ...node,
+              ...target,
               children: arraySplice(
                 arraySplice(target.children, ot.oldIndex, 1),
                 ot.newIndex,

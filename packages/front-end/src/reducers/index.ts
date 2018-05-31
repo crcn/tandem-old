@@ -151,17 +151,23 @@ import {
   SyntheticElement,
   createPCElement,
   createPCTextNode,
+  PCFrame,
   getSyntheticSourceFrame,
   getSyntheticNodeBounds,
   getSyntheticNodeFrame,
   getSyntheticSourceNode,
+  createPCFrame,
   getSyntheticNodeById,
   SyntheticNode,
   queueLoadDependencyUri,
   getPCNodeDependency,
   updateSyntheticNodePosition,
   updateSyntheticFrameBounds,
-  updateSyntheticNodeBounds
+  updateSyntheticNodeBounds,
+  persistInsertNode,
+  removeSyntheticNode,
+  persistSyntheticNodeBounds,
+  persistRemoveSyntheticNode
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -655,19 +661,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       if (isSelectionMovable(state)) {
         const selectionBounds = getSelectionBounds(state);
-        // state = persistRootState(browser => {
-        //   return state.selectedNodeIds.reduce((state, nodeId) => {
-        //     const itemBounds = getSyntheticNodeBounds(nodeId, browser);
-        //     const newBounds = roundBounds(
-        //       scaleInnerBounds(
-        //         itemBounds,
-        //         selectionBounds,
-        //         moveBounds(selectionBounds, point)
-        //       )
-        //     );
-        //     return persistSyntheticItemPosition(newBounds, nodeId, state);
-        //   }, browser);
-        // }, state);
+        state = persistRootState(state => {
+          return state.selectedNodeIds.reduce((state, nodeId) => {
+            return persistSyntheticNodeBounds(
+              getSyntheticNodeById(nodeId, state.syntheticFrames),
+              state
+            );
+          }, state);
+        }, state);
       }
 
       state = updateEditorCanvas(
@@ -1039,29 +1040,21 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       switch (toolType) {
         case ToolType.ELEMENT: {
-          // return persistInsertNodeFromPoint(
-          //   createPCElement({
-          //     [PCSourceNamespaces.CORE]: {}
-          //   }),
-          //   fileUri,
-          //   point,
-          //   state
-          // );
-          return state;
+          return persistInsertNodeFromPoint(
+            createPCElement("div"),
+            fileUri,
+            point,
+            state
+          );
         }
 
         case ToolType.TEXT: {
-          // return persistInsertNodeFromPoint(
-          //   createPCTextNode({
-          //     [PCSourceNamespaces.CORE]: {
-          //       value: "edit me"
-          //     }
-          //   }),
-          //   fileUri,
-          //   point,
-          //   state
-          // );
-          return state;
+          return persistInsertNodeFromPoint(
+            createPCTextNode("Click to edit"),
+            fileUri,
+            point,
+            state
+          );
         }
       }
     }
@@ -1073,56 +1066,55 @@ export const canvasReducer = (state: RootState, action: Action) => {
 const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
 
-// const persistInsertNodeFromPoint = (
-//   node: PCVisibleNode,
-//   fileUri: string,
-//   point: Point,
-//   state: RootState
-// ) => {
-//   const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
-//   const oldWindow = getSyntheticWindow(fileUri, state.paperclip);
-//   const dep = state.paperclip.graph[oldWindow.location].content.id;
-//   const document =
-//     targetNodeId && getSyntheticNodeDocument(targetNodeId, state.paperclip);
-//   state = persistRootState(browser => {
-//     return persistInsertNode(
-//       targetNodeId
-//         ? node
-//         : mergeNodeAttributes(node, {
-//             [PCSourceNamespaces.CORE]: {
-//               style: {
-//                 ...shiftPoint(
-//                   normalizePoint(
-//                     getEditorWithFileUri(fileUri, state).canvas.translate,
-//                     point
-//                   ),
-//                   {
-//                     left: -(INSERT_ARTBOARD_WIDTH / 2),
-//                     top: -(INSERT_ARTBOARD_HEIGHT / 2)
-//                   }
-//                 ),
-//                 width: INSERT_ARTBOARD_WIDTH,
-//                 height: INSERT_ARTBOARD_HEIGHT
-//               }
-//             }
-//           }),
-//       targetNodeId
-//         ? getSyntheticSourceNode(targetNodeId, browser).id
-//         : browser.graph[oldWindow.location].content.id,
-//       TreeMoveOffset.APPEND,
-//       browser
-//     );
-//   }, state);
-//   state = setSelectedSyntheticNodeIds(
-//     state,
-//     ...getInsertedWindowElementIds(
-//       oldWindow,
-//       document && document.id,
-//       state.paperclip
-//     )
-//   );
-//   return state;
-// };
+const persistInsertNodeFromPoint = (
+  node: PCVisibleNode | PCFrame,
+  fileUri: string,
+  point: Point,
+  state: RootState
+) => {
+  const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
+  const targetNode =
+    targetNodeId && getSyntheticNodeById(targetNodeId, state.syntheticFrames);
+
+  if (!targetNode) {
+    const newPoint = shiftPoint(
+      normalizePoint(
+        getEditorWithFileUri(fileUri, state).canvas.translate,
+        point
+      ),
+      {
+        left: -(INSERT_ARTBOARD_WIDTH / 2),
+        top: -(INSERT_ARTBOARD_HEIGHT / 2)
+      }
+    );
+
+    node = createPCFrame([node as PCVisibleNode], {
+      ...newPoint,
+      right: newPoint.left + INSERT_ARTBOARD_WIDTH,
+      bottom: newPoint.top + INSERT_ARTBOARD_HEIGHT
+    });
+  }
+
+  state = persistRootState(browser => {
+    return persistInsertNode(
+      node,
+      targetNode
+        ? getSyntheticSourceNode(targetNode, state.graph)
+        : state.graph[fileUri].content,
+      TreeMoveOffset.APPEND,
+      state
+    );
+  }, state);
+  // state = setSelectedSyntheticNodeIds(
+  //   state,
+  //   ...getInsertedWindowElementIds(
+  //     oldWindow,
+  //     document && document.id,
+  //     state.paperclip
+  //   )
+  // );
+  return state;
+};
 
 const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
   state = updateRootState(
@@ -1240,14 +1232,15 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       if (isInputSelected(state)) {
         return state;
       }
-      const selection = state.selectedNodeIds;
-      // return setSelectedSyntheticNodeIds(
-      //   persistRootState(
-      //     browser => persistDeleteSyntheticItems(selection, state.paperclip),
-      //     state
-      //   )
-      // );
 
+      state = state.selectedNodeIds.reduce((state, nodeId) => {
+        return persistRemoveSyntheticNode(
+          getSyntheticNodeById(nodeId, state.syntheticFrames),
+          state
+        );
+      }, state);
+
+      state = setSelectedSyntheticNodeIds(state);
       return state;
     }
   }

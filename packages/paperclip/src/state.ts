@@ -11,10 +11,17 @@ import {
   updateNestedNode,
   shiftBounds,
   Point,
-  moveBounds
+  moveBounds,
+  TreeMoveOffset,
+  insertChildNode,
+  dropChildNode,
+  removeNestedTreeNode,
+  getTreeNodePath,
+  getTreeNodeFromPath,
+  getParentTreeNode
 } from "tandem-common";
-import { values } from "lodash";
-import { DependencyGraph, Dependency } from "./graph";
+import { values, omit, pickBy } from "lodash";
+import { DependencyGraph, Dependency, updateGraphDependency } from "./graph";
 import {
   PCNode,
   getPCNode,
@@ -22,7 +29,10 @@ import {
   getPCNodeFrame,
   getPCNodeDependency,
   PCSourceTagNames,
-  PCFrame
+  PCFrame,
+  replacePCNode,
+  PCComponent,
+  assertValidPCModule
 } from "./dsl";
 import {
   SyntheticFrames,
@@ -30,10 +40,19 @@ import {
   SyntheticFrame,
   getSyntheticNodeFrame,
   getSyntheticNodeBounds,
-  getSyntheticNodeById
+  getSyntheticNodeById,
+  updateSyntheticFrames,
+  getSyntheticSourceNode,
+  getSyntheticFramesByDependencyUri,
+  getSyntheticFrameDependencyUri
 } from "./synthetic";
-import { diffSyntheticNode, patchSyntheticNode } from "./ot";
+import {
+  diffSyntheticNode,
+  patchSyntheticNode,
+  SyntheticOperationalTransformType
+} from "./ot";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
+import { evaluatePCModule } from ".";
 
 /*------------------------------------------
  * STATE
@@ -52,18 +71,6 @@ export type PCState = {
 /*------------------------------------------
  * GETTERS
  *-----------------------------------------*/
-
-/*------------------------------------------
- * PERSISTING
- *-----------------------------------------*/
-
-export const persistSyntheticNodeChanges = (
-  node: SyntheticNode,
-  state: PCState,
-  updater: TreeNodeUpdater<SyntheticNode>
-): PCState => {
-  return state;
-};
 
 /*------------------------------------------
  * SETTERS
@@ -96,13 +103,45 @@ export const updateDependencyGraph = <TState extends PCState>(
 export const replaceDependency = <TState extends PCState>(
   dep: Dependency<any>,
   state: TState
-) => updateDependencyGraph({ [dep.uri]: dep }, state);
+) => {
+  // TODO - need to re-evaluate
+  return updateDependencyGraph({ [dep.uri]: dep }, state);
+};
 
 export const queueLoadDependencyUri = <TState extends PCState>(
   uri: string,
   state: TState
 ) =>
   state.graph[uri] ? state : updatePCState({ openDependencyUri: uri }, state);
+
+export const removeSyntheticFrame = <TState extends PCState>(
+  frame: SyntheticFrame,
+  state: TState
+) =>
+  updatePCState(
+    {
+      syntheticFrames: omit(state.syntheticFrames, [frame.source.nodeId])
+    },
+    state
+  );
+
+export const removeSyntheticNode = <TState extends PCState>(
+  node: SyntheticNode,
+  state: TState
+) => {
+  const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
+
+  if (node.isRoot) {
+    return removeSyntheticFrame(frame, state);
+  }
+  return updateSyntheticFrame(
+    {
+      root: removeNestedTreeNode(node, frame.root)
+    },
+    frame,
+    state
+  );
+};
 
 export const updateSyntheticFrame = <TState extends PCState>(
   properties: Partial<SyntheticFrame>,
@@ -228,3 +267,106 @@ export const updateSyntheticNodeBounds = <TState extends PCState>(
   //   };
   // });
 };
+
+const assertValidDependencyGraph = memoize((graph: DependencyGraph) => {
+  for (const uri in graph) {
+    assertValidPCModule(graph[uri].content);
+  }
+});
+
+export const evaluateDependency = memoize(
+  <TState extends PCState>(uri: string, state: TState) =>
+    updatePCState(
+      {
+        // re-evaluate the updated dependency graph and merge those changes into the existing frames to ensure
+        // that references are still maintianed.
+        syntheticFrames: updateSyntheticFrames(
+          state.syntheticFrames,
+          evaluatePCModule(state.graph[uri].content, state.graph),
+          state.graph
+        )
+      },
+      state
+    )
+);
+
+/*------------------------------------------
+ * PERSISTING
+ *-----------------------------------------*/
+
+const persistChanges = <TState extends PCState>(
+  state: TState,
+  updater: (state: TState) => TState
+) => {
+  state = updater(state);
+
+  // sanity check.
+  assertValidDependencyGraph(state.graph);
+
+  for (const uri in state.graph) {
+    state = evaluateDependency(uri, state);
+  }
+  return state;
+};
+
+export const persistInsertNode = <TState extends PCState>(
+  newChild: PCFrame | PCVisibleNode | PCComponent,
+  relative: PCNode,
+  offset: TreeMoveOffset,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const dependency = getPCNodeDependency(relative.id, state.graph);
+    return updateDependencyGraph(
+      updateGraphDependency(
+        {
+          content: dropChildNode(newChild, offset, relative, dependency.content)
+        },
+        dependency.uri,
+        state.graph
+      ),
+      state
+    );
+  });
+
+export const persistSyntheticNodeBounds = <TState extends PCState>(
+  node: SyntheticNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
+    if (node.isRoot) {
+      const sourceFrame = getPCNode(
+        frame.source.nodeId,
+        state.graph
+      ) as PCFrame;
+      return updateDependencyGraph(
+        replacePCNode(
+          {
+            ...sourceFrame,
+            bounds: frame.bounds
+          },
+          sourceFrame,
+          state.graph
+        ),
+        state
+      );
+    } else {
+      throw new Error("TODO");
+    }
+  });
+
+export const persistRemoveSyntheticNode = <TState extends PCState>(
+  node: SyntheticNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
+    const sourceNode = node.isRoot
+      ? (getPCNode(frame.source.nodeId, state.graph) as PCFrame)
+      : getSyntheticSourceNode(node, state.graph);
+    return updateDependencyGraph(
+      replacePCNode(null, sourceNode, state.graph),
+      state
+    );
+  });

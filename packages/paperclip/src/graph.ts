@@ -11,6 +11,9 @@ export type DependencyGraph = {
 export type Dependency<TContent> = {
   // URI used here since it could be a url
   uri: string;
+
+  // TODO - json/paperclip
+  contentType?: string;
   dirty?: boolean; // TRUE if the contents have changed
   originalContent: TContent;
   content: TContent;

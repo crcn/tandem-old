@@ -49,10 +49,6 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
             continue;
           }
 
-          yield call(
-            () => new Promise(resolve => requestAnimationFrame(resolve))
-          );
-
           const prevFrames = currFrames;
           currFrames = syntheticFrames;
 
@@ -77,6 +73,10 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
               graph
             );
           }
+
+          yield call(
+            () => new Promise(resolve => requestAnimationFrame(resolve))
+          );
         }
       });
 
@@ -144,8 +144,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
               computeDisplayInfo(
                 (frameNodeMap[frame.source.nodeId] = renderDOM(
                   body,
-                  frame.root,
-                  graph
+                  frame.root
                 ))
               )
             )
@@ -160,8 +159,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
 
     function* patchContainer(
       newFrame: SyntheticFrame,
-      oldFrame: SyntheticFrame,
-      graph: DependencyGraph
+      oldFrame: SyntheticFrame
     ) {
       if (
         newFrame.root === oldFrame.root &&
@@ -177,11 +175,12 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
       }
 
       if (oldFrame.root !== newFrame.root) {
+        // console.log(JSON.stringify(oldFrame.root, null, 2));
+        // console.log(JSON.stringify(newFrame.root, null, 2));
         const ots = diffSyntheticNode(oldFrame.root, newFrame.root);
         frameNodeMap[newFrame.source.nodeId] = patchDOM(
           ots,
           oldFrame.root,
-          graph,
           body,
           frameNodeMap[newFrame.source.nodeId]
         );

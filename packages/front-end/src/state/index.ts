@@ -130,7 +130,11 @@ export type RootState = {
   openFiles: OpenFile[];
   toolType?: ToolType;
   activeEditorFilePath?: string;
+
+  // TODO - should be actual instances for type safety
   hoveringNodeIds: string[];
+
+  // TODO - this should be actual node instances
   selectedNodeIds: string[];
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
@@ -163,7 +167,7 @@ export const deselectRootProjectFiles = (state: RootState) =>
   );
 
 export const persistRootState = (
-  persistPaperclipState: (state: PCState) => PCState,
+  persistPaperclipState: (state: RootState) => RootState,
   state: RootState
 ) => {
   const oldGraph = state.graph;

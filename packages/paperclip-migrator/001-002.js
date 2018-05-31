@@ -1,9 +1,10 @@
 const { generateUID } = require("tandem-common");
 const { merge, values } = require("lodash");
 
-module.exports = (module) => {;
+module.exports = (module) => {
   const mapModule = ({ id, attributes, children }) => ({
     id: id,
+    name: "module",
     imports: values(attributes.xmlns || {}),
     version: "0.0.2",
     children: children.map(mapModuleChild)

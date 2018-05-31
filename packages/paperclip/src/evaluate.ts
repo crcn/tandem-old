@@ -36,7 +36,8 @@ import {
   generateUID,
   KeyValue,
   EMPTY_ARRAY,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  memoize
 } from "tandem-common";
 import { values } from "lodash";
 
@@ -59,21 +60,23 @@ type EvalContext = {
   graph: DependencyGraph;
 };
 
-export const evaluatePCModule = (
-  module: PCModule,
-  graph: DependencyGraph = wrapModuleInDependencyGraph(module)
-): SyntheticFrames =>
-  module.children.reduce(
-    (frames, frame) => ({
-      ...frames,
-      [frame.id]: evaluatePCFrame(frame, module.id, {
-        overrides: {},
-        graph,
-        currentVariantIds: []
-      })
-    }),
-    {}
-  );
+export const evaluatePCModule = memoize(
+  (
+    module: PCModule,
+    graph: DependencyGraph = wrapModuleInDependencyGraph(module)
+  ): SyntheticFrames =>
+    module.children.reduce(
+      (frames, frame) => ({
+        ...frames,
+        [frame.id]: evaluatePCFrame(frame, module.id, {
+          overrides: {},
+          graph,
+          currentVariantIds: []
+        })
+      }),
+      {}
+    )
+);
 
 const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
   [module.id]: createPCDependency(module.id, module)
@@ -128,7 +131,10 @@ const evaluatePCVisibleNode = (
       return createSyntheticTextNode(
         (node as PCTextNode).value,
         createSyntheticSource(node),
-        node.style
+        node.style,
+        node.label,
+        context.isRoot,
+        context.isCreatedFromComponent
       );
     }
     default: {

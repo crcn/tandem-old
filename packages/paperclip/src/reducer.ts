@@ -12,9 +12,10 @@ import {
   updateSyntheticNode,
   PCState,
   updatePCState,
-  updateSyntheticFrame
+  updateSyntheticFrame,
+  evaluateDependency
 } from "./state";
-import { mergeSyntheticFrames } from "./synthetic";
+import { updateSyntheticFrames } from "./synthetic";
 
 export const paperclipReducer = <TState extends PCState>(
   state: TState,
@@ -44,18 +45,33 @@ export const paperclipReducer = <TState extends PCState>(
     }
     case PC_DEPENDENCY_LOADED: {
       const { uri, graph } = action as PCDependencyLoaded;
-      const module = graph[uri].content;
-      return updatePCState(
-        {
-          openDependencyUri: null,
-          graph,
-          syntheticFrames: mergeSyntheticFrames(
-            state.syntheticFrames,
-            evaluatePCModule(module, graph)
-          )
-        },
-        state
+      return evaluateDependency(
+        uri,
+        updatePCState(
+          {
+            openDependencyUri: null,
+            graph: {
+              ...state.graph,
+              ...graph
+            }
+          },
+          state
+        )
       );
+      // return evaluateDependency(uri, {
+      //   openDependencyUri:
+      // })
+      // return updatePCState(
+      //   {
+      //     openDependencyUri: null,
+      //     graph,
+      //     syntheticFrames: updateSyntheticFrames(
+      //       state.syntheticFrames,
+      //       evaluatePCModule(module, graph)
+      //     )
+      //   },
+      //   state
+      // );
     }
   }
   return state;

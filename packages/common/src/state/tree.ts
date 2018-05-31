@@ -226,11 +226,13 @@ export const replaceNestedNode = (
   oldChildId: string,
   root: TreeNode<any>
 ) =>
-  updateNestedNodeFromPath(
-    getTreeNodePath(oldChildId, root),
-    root,
-    () => newChild
-  );
+  newChild
+    ? updateNestedNodeFromPath(
+        getTreeNodePath(oldChildId, root),
+        root,
+        () => newChild
+      )
+    : removeNestedTreeNode(getNestedTreeNodeById(oldChildId, root), root);
 
 export const updateNestedNodeFromPath = (
   path: number[],
@@ -293,6 +295,26 @@ export const insertChildNode = <TTree extends TreeNode<any>>(
   ...(parent as any),
   children: arraySplice(parent.children, index, 1, child)
 });
+export const dropChildNode = <TTree extends TreeNode<any>>(
+  child: TTree,
+  offset: TreeMoveOffset,
+  relative: TTree,
+  root: TTree
+): TTree => {
+  if (offset === TreeMoveOffset.APPEND) {
+    return updateNestedNode(relative, root, relative => {
+      return appendChildNode(child, relative);
+    });
+  } else {
+    const parent = getParentTreeNode(relative.id, root);
+    const index =
+      parent.children.findIndex(child => child.id === relative.id) +
+      (offset === TreeMoveOffset.BEFORE ? 0 : 1);
+    return updateNestedNode(parent, root, () =>
+      insertChildNode(child, index, parent)
+    );
+  }
+};
 
 export const cloneTreeNode = <TTree extends TreeNode<any>>(
   node: TTree,

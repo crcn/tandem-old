@@ -2,19 +2,16 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* switching between files doesn't work
-* ability to move frames
 * persist raw style
-* insert commands need to work
 * expanding / collapsing PC layers
+* moving layers
 * renaming PC layers
-* start on _master_ doc
+* back onto styling doc
 
 * ability to load images & other resources in PC file. (start with ionicons)
 * document bounds on element should be stored in editor namespace
 * when converting elements to artboards, move new artboard to BEST position
 * select newly inserted elements
-* When inserting new elements, only highlight slots when mouse is over component instance
 
 STYLING:
 

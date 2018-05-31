@@ -2,8 +2,7 @@ import { mapValues } from "lodash";
 import {
   ComputedDisplayInfo,
   SyntheticNode,
-  SyntheticElement,
-  isSyntheticNodeRoot
+  SyntheticElement
 } from "./synthetic";
 import { getTreeNodeFromPath, roundBounds, EMPTY_OBJECT } from "tandem-common";
 import {
@@ -25,7 +24,6 @@ export type SyntheticNativeNodeMap = {
 export const renderDOM = (
   native: HTMLElement,
   synthetic: SyntheticNode,
-  graph: DependencyGraph,
   document: Document = window.document
 ) => {
   let parentNative;
@@ -37,7 +35,7 @@ export const renderDOM = (
   }
 
   const nativeMap = {};
-  native.appendChild(createNativeNode(synthetic, graph, document, nativeMap));
+  native.appendChild(createNativeNode(synthetic, document, nativeMap));
 
   return nativeMap;
 };
@@ -77,11 +75,14 @@ export const computeDisplayInfo = (
 
 const setStyleConstraintsIfRoot = (
   synthetic: SyntheticNode,
-  graph: DependencyGraph,
   nativeElement: HTMLElement
 ) => {
-  const isRoot = isSyntheticNodeRoot(synthetic, graph);
+  const isRoot = synthetic.isRoot;
   if (isRoot) {
+    nativeElement.style.position = "fixed";
+    nativeElement.style.display = "block";
+    nativeElement.style.top = "0px";
+    nativeElement.style.left = "0px";
     nativeElement.style.width = "100vw";
     nativeElement.style.height = "100vh";
   }
@@ -89,7 +90,6 @@ const setStyleConstraintsIfRoot = (
 
 const createNativeNode = (
   synthetic: SyntheticNode,
-  graph: DependencyGraph,
   document: Document,
   map: SyntheticNativeNodeMap
 ) => {
@@ -106,7 +106,7 @@ const createNativeNode = (
   if (synthetic.style) {
     Object.assign(nativeElement.style, normalizeStyle(synthetic.style));
   }
-  setStyleConstraintsIfRoot(synthetic, graph, nativeElement);
+  setStyleConstraintsIfRoot(synthetic, nativeElement);
   if (isText) {
     nativeElement.appendChild(
       document.createTextNode((synthetic as PCTextNode).value)
@@ -115,12 +115,12 @@ const createNativeNode = (
     for (let i = 0, { length } = synthetic.children; i < length; i++) {
       const childSynthetic = synthetic.children[i] as SyntheticNode;
       nativeElement.appendChild(
-        createNativeNode(childSynthetic, graph, document, map)
+        createNativeNode(childSynthetic, document, map)
       );
     }
   }
 
-  makeElementClickable(nativeElement, synthetic, graph);
+  makeElementClickable(nativeElement, synthetic);
   return (map[synthetic.id] = nativeElement);
 };
 
@@ -137,7 +137,6 @@ const removeElementsFromMap = (
 export const patchDOM = (
   transforms: SyntheticOperationalTransform[],
   synthetic: SyntheticNode,
-  graph: DependencyGraph,
   root: HTMLElement,
   map: SyntheticNativeNodeMap
 ) => {
@@ -145,7 +144,11 @@ export const patchDOM = (
   let newSyntheticTree: SyntheticNode = synthetic;
 
   for (const transform of transforms) {
-    const target = getElementFromPath(transform.nodePath, root);
+    const oldSyntheticTarget = getTreeNodeFromPath(
+      transform.nodePath,
+      newSyntheticTree
+    );
+    const target = map[oldSyntheticTarget.id] as HTMLElement;
     newSyntheticTree = patchSyntheticNode([transform], newSyntheticTree);
     const syntheticTarget = getTreeNodeFromPath(
       transform.nodePath,
@@ -160,8 +163,8 @@ export const patchDOM = (
 
         if (name === "style") {
           resetElementStyle(target, syntheticTarget);
-          setStyleConstraintsIfRoot(syntheticTarget, graph, target);
-          makeElementClickable(target, syntheticTarget, graph);
+          setStyleConstraintsIfRoot(syntheticTarget, target);
+          makeElementClickable(target, syntheticTarget);
         } else if (name === "attributes") {
           for (const key in value) {
             syntheticTarget.setAttribute(key, value[key]);
@@ -173,7 +176,6 @@ export const patchDOM = (
           }
           const newTarget = createNativeNode(
             getTreeNodeFromPath(transform.nodePath, newSyntheticTree),
-            graph,
             root.ownerDocument,
             newMap
           );
@@ -196,7 +198,6 @@ export const patchDOM = (
         }
         const nativeChild = createNativeNode(
           child as SyntheticNode,
-          graph,
           root.ownerDocument,
           newMap
         );
@@ -208,6 +209,9 @@ export const patchDOM = (
       case SyntheticOperationalTransformType.REMOVE_CHILD: {
         const { index } = transform as SyntheticRemoveChildOperationalTransform;
         target.removeChild(target.childNodes[index]);
+        if (target.childNodes.length === 0) {
+          makeElementClickable(target, syntheticTarget);
+        }
         break;
       }
       case SyntheticOperationalTransformType.MOVE_CHILD: {
@@ -230,10 +234,9 @@ export const patchDOM = (
 
 const makeElementClickable = (
   target: HTMLElement,
-  synthetic: SyntheticNode,
-  graph: DependencyGraph
+  synthetic: SyntheticNode
 ) => {
-  const isRoot = isSyntheticNodeRoot(synthetic, graph);
+  const isRoot = synthetic.isRoot;
 
   if (synthetic.name !== "text" && !isRoot) {
     const style = synthetic.style || {};

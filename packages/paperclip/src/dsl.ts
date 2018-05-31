@@ -10,12 +10,14 @@ import {
   createTreeNode,
   generateUID,
   KeyValue,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  replaceNestedNode,
+  removeNestedTreeNode
 } from "tandem-common";
 import { mapValues, merge } from "lodash";
-import { Dependency, DependencyGraph } from "./graph";
+import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "0.0.1";
+export const PAPERCLIP_MODULE_VERSION = "0.0.2";
 
 export enum PCSourceTagNames {
   MODULE = "module",
@@ -299,6 +301,72 @@ export const extendsComponent = (
   element: PCElement | PCComponent | PCComponentInstanceElement
 ) => element.is.length > 6;
 
+export const assertValidPCModule = memoize((module: PCModule) => {
+  if (!validatePCModule(module)) {
+    throw new Error(`Malformed PC Module`);
+  }
+});
+
+// TODO - use schema here instead
+export const validatePCModule = (module: PCModule) => {
+  if (
+    module.name !== PCSourceTagNames.MODULE ||
+    module.version !== PAPERCLIP_MODULE_VERSION ||
+    !Array.isArray(module.imports)
+  ) {
+    return false;
+  }
+  return module.children.every(validatePCFrame);
+};
+
+const validatePCFrame = (frame: PCFrame) => {
+  if (
+    frame.name !== PCSourceTagNames.FRAME ||
+    !frame.bounds ||
+    frame.children.length > 1
+  ) {
+    return false;
+  }
+  return frame.children.every(validateFrameChild);
+};
+
+const validateFrameChild = (child: PCVisibleNode | PCComponent) => {
+  if (child.name === PCSourceTagNames.COMPONENT) {
+    return validateComponent(child);
+  } else {
+    return validatePCVisibleNode(child);
+  }
+};
+
+const validateComponent = (component: PCComponent) => {
+  // TODO
+  return true;
+};
+
+const validatePCVisibleNode = (child: PCVisibleNode) => {
+  if (child.name === PCSourceTagNames.ELEMENT) {
+    return validatePCElement(child);
+  }
+  return true;
+};
+
+const validatePCVisibleNodeChild = (child: PCVisibleNode | PCOverride) => {
+  // TODO - OVERRIDES
+  if (child.name === PCSourceTagNames.OVERRIDE_STYLE) {
+    // TODO
+    return true;
+  } else {
+    return validatePCVisibleNode(child as PCVisibleNode);
+  }
+};
+
+const validatePCElement = (element: PCElement) => {
+  if (!element.style || !element.attributes || !element.is) {
+    return false;
+  }
+  return element.children.every(validatePCVisibleNodeChild);
+};
+
 /*------------------------------------------
  * GETTERS
  *-----------------------------------------*/
@@ -390,3 +458,18 @@ export const addPCModuleNodeImport = (
   ...moduleNode,
   imports: [...moduleNode.imports, relativeUri]
 });
+
+export const replacePCNode = (
+  newNode: PCNode,
+  oldNode: PCNode,
+  graph: DependencyGraph
+) => {
+  const dependency = getPCNodeDependency(oldNode.id, graph);
+  return updateGraphDependency(
+    {
+      content: replaceNestedNode(newNode, oldNode.id, dependency.content)
+    },
+    dependency.uri,
+    graph
+  );
+};

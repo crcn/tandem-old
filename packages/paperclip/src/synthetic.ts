@@ -111,12 +111,14 @@ export const createSyntheticTextNode = (
   source: SyntheticSource,
   style: KeyValue<any> = EMPTY_OBJECT,
   label?: string,
+  isRoot?: boolean,
   isCreatedFromComponent?: boolean
 ): SyntheticTextNode => ({
   label,
   id: generateUID(),
   metadata: EMPTY_OBJECT,
   value,
+  isRoot,
   isCreatedFromComponent,
   source,
   name: PCSourceTagNames.TEXT,
@@ -254,15 +256,23 @@ export const findRootInstanceOfPCNode = (
  * SETTERS
  *-----------------------------------------*/
 
-export const mergeSyntheticFrames = (
+export const updateSyntheticFrames = (
   oldFrames: SyntheticFrames,
-  newFrames: SyntheticFrames
+  newFrames: SyntheticFrames,
+  graph: DependencyGraph
 ) => {
-  const updatedFrames: SyntheticFrames = { ...oldFrames };
+  const updatedFrames: SyntheticFrames = {};
+
+  for (const sourceId in oldFrames) {
+    if (getPCNodeDependency(sourceId, graph)) {
+      updatedFrames[sourceId] = oldFrames[sourceId];
+    }
+  }
   for (const sourceFrameId in newFrames) {
     const newFrame = newFrames[sourceFrameId];
     const oldFrame = oldFrames[sourceFrameId];
     if (oldFrame === newFrame) {
+      updatedFrames[sourceFrameId] = oldFrame;
       continue;
     }
 
