@@ -200,8 +200,7 @@ const evaluateComponentOrElement = (
     const isRoot = context.isRoot;
     context = removeIsRoot(context);
     const isComponentInstance =
-      instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
-      instanceNode.name === PCSourceTagNames.COMPONENT;
+      instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE;
     return applyPropertyOverrides(
       createSyntheticElement(
         elementOrComponent.is,

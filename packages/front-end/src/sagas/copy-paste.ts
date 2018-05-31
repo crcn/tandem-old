@@ -7,6 +7,7 @@ import {
   getSyntheticNodeById,
   SyntheticNode,
   PCNodeClip,
+  getPCNodeClip,
   getSyntheticSourceUri,
   getSyntheticSourceNode
 } from "paperclip";
@@ -39,23 +40,17 @@ function* handleCopy() {
       event.clipboardData.setData(
         "text/plain",
         JSON.stringify(
-          root.selectedNodeIds.map(
-            nodeId =>
-              ({
-                uri: getSyntheticSourceUri(
-                  getSyntheticNodeById(nodeId, root.syntheticFrames),
-                  root.graph
-                ),
-                node: getSyntheticSourceNode(
-                  getSyntheticNodeById(nodeId, root.syntheticFrames),
-                  root.graph
-                ),
-                imports: getPCImportedChildrenSourceUris(
-                  getSyntheticNodeById(nodeId, root.syntheticFrames).id,
-                  root.graph
-                )
-              } as PCNodeClip)
-          )
+          root.selectedNodeIds.map(nodeId => {
+            const syntheticNode = getSyntheticNodeById(
+              nodeId,
+              root.syntheticFrames
+            );
+            return getPCNodeClip(
+              syntheticNode,
+              root.syntheticFrames,
+              root.graph
+            );
+          })
         )
       );
       event.preventDefault();

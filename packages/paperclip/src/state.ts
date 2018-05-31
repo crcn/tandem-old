@@ -22,7 +22,8 @@ import {
   appendChildNode,
   cloneTreeNode,
   pointIntersectsBounds,
-  mergeBounds
+  mergeBounds,
+  replaceNestedNode
 } from "tandem-common";
 import { values, omit, pickBy } from "lodash";
 import { DependencyGraph, Dependency, updateGraphDependency } from "./graph";
@@ -42,7 +43,8 @@ import {
   PCElement,
   createPCComponentInstance,
   getPCNodeModule,
-  createPCFrame
+  createPCFrame,
+  addPCModuleNodeImport
 } from "./dsl";
 import {
   SyntheticFrames,
@@ -55,21 +57,24 @@ import {
   getSyntheticSourceNode,
   getSyntheticFramesByDependencyUri,
   getSyntheticFrameDependencyUri,
-  SyntheticElement
+  SyntheticElement,
+  PCNodeClip
 } from "./synthetic";
+import * as path from "path";
 import {
   diffSyntheticNode,
   patchSyntheticNode,
   SyntheticOperationalTransformType
 } from "./ot";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
-import { evaluatePCModule } from ".";
+import { evaluatePCModule } from "./evaluate";
 
 /*------------------------------------------
  * CONSTANTS
  *-----------------------------------------*/
 
 const FRAME_PADDING = 10;
+const PASTED_FRAME_OFFSET = { left: FRAME_PADDING, top: FRAME_PADDING };
 
 /*------------------------------------------
  * STATE
@@ -427,6 +432,102 @@ export const persistInsertNode = <TState extends PCState>(
     );
   });
 
+export const persistInsertClips = <TState extends PCState>(
+  clips: PCNodeClip[],
+  target: PCNode,
+  state: TState
+): TState =>
+  persistChanges(state, state => {
+    const targetDep = getPCNodeDependency(target.id, state.graph);
+    let targetNode =
+      getParentTreeNode(target.id, targetDep.content) ||
+      getNestedTreeNodeById(target.id, targetDep.content);
+
+    const targetNodeIsModuleRoot = targetNode === targetDep.content;
+    const moduleInfo = targetDep.content;
+
+    let content = targetDep.content;
+    let graph = state.graph;
+    let importUris = targetDep.importUris;
+
+    for (const { uri, node, imports } of clips) {
+      const sourceDep = state.graph[uri];
+      const sourceNode = node;
+
+      // If there is NO source node, then possibly create a detached node and add to target component
+      if (!sourceNode) {
+        throw new Error("not implemented");
+      }
+
+      // is component
+      if (sourceNode.name === PCSourceTagNames.COMPONENT) {
+        const sourceFrame = getPCNodeFrame(
+          sourceNode.id,
+          getPCNodeModule(sourceNode.id, state.graph)
+        );
+        const bounds = sourceFrame.bounds;
+
+        let namespace: string;
+
+        if (uri !== targetDep.uri) {
+          const relativePath = path.relative(
+            path.dirname(targetDep.uri),
+            sourceDep.uri
+          );
+          content = addPCModuleNodeImport(relativePath, content);
+          importUris = {
+            ...importUris,
+            [relativePath]: sourceDep.uri
+          };
+        }
+
+        const componentInstance = createPCComponentInstance(sourceNode.id);
+
+        if (targetNodeIsModuleRoot) {
+          content = appendChildNode(
+            createPCFrame(
+              [componentInstance],
+              shiftBounds(bounds, PASTED_FRAME_OFFSET)
+            ),
+            content
+          );
+        } else {
+          if (target.name === PCSourceTagNames.FRAME) {
+            target = target.children[0];
+          }
+          content = replaceNestedNode(
+            appendChildNode(componentInstance, target),
+            target.id,
+            content
+          );
+          // content = updateNestedNode(targetNode, content, target =>
+          // appendChildNode(componentInstance, target)
+          // );
+        }
+      } else {
+        const clonedChild = cloneTreeNode(sourceNode);
+        content = updateNestedNode(targetNode, content, target => {
+          target = appendChildNode(clonedChild, target);
+          return target;
+        });
+      }
+    }
+
+    state = {
+      ...(state as any),
+      graph: updateGraphDependency(
+        {
+          importUris
+        },
+        targetDep.uri,
+        state.graph
+      )
+    };
+
+    state = replaceDependencyGraphPCNode(content, content, state);
+
+    return state;
+  });
 export const persistSyntheticNodeBounds = <TState extends PCState>(
   node: SyntheticNode,
   state: TState

@@ -20,7 +20,8 @@ import {
   PCVisibleNode,
   getPCNodeFrame,
   getPCNodeDependency,
-  PCSourceTagNames
+  PCSourceTagNames,
+  getPCImportedChildrenSourceUris
 } from "./dsl";
 import { diffSyntheticNode, patchSyntheticNode } from "./ot";
 
@@ -255,6 +256,19 @@ export const findRootInstanceOfPCNode = (
     frame => frame.root.source.nodeId === node.id
   );
   return frame && frame.root;
+};
+
+export const getPCNodeClip = (
+  node: SyntheticNode,
+  frames: SyntheticFrames,
+  graph: DependencyGraph
+): PCNodeClip => {
+  const sourceNode = getSyntheticSourceNode(node, graph);
+  return {
+    uri: getSyntheticSourceUri(node, graph),
+    node: sourceNode,
+    imports: getPCImportedChildrenSourceUris(sourceNode, graph)
+  };
 };
 
 /*------------------------------------------

@@ -82,13 +82,25 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
     getLabelProps: (attribs, props: any) => ({
       ...attribs,
       className: cx(attribs.className, {
-        "in-component-instance":
-          props.node.isCreatedFromComponent || props.node.isComponentInstance,
-        "is-component-root": props.isRoot && props.node.isComponentInstance
+        "in-component-instance": props.inComponentInstance,
+        "is-component-root":
+          props.isRoot &&
+          props.node.isCreatedFromComponent &&
+          !props.inComponentInstance
       })
     }),
     layerRenderer: Base => (props: PCLayerOuterProps) => {
-      return <Base {...props} isRoot={(props.node as SyntheticNode).isRoot} />;
+      return (
+        <Base
+          {...props}
+          isRoot={(props.node as SyntheticNode).isRoot}
+          inComponentInstance={
+            props.inComponentInstance ||
+            ((props.node as SyntheticNode).isRoot &&
+              (props.node as SyntheticNode).isComponentInstance)
+          }
+        />
+      );
     }
   }
 );

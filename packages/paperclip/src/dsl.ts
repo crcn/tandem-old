@@ -385,7 +385,7 @@ export const getOverrides = (node: PCNode) =>
   node.children.filter(isPCOverride) as PCOverride[];
 
 export const getPCImportedChildrenSourceUris = (
-  nodeId: string,
+  { id: nodeId }: PCNode,
   graph: DependencyGraph
 ) => {
   const node = getPCNode(nodeId, graph);

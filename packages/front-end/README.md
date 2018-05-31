@@ -2,14 +2,11 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* editing text
-* instantiating new components
 * moving layers
 * persist raw style
-* expanding / collapsing PC layers
-* moving layers
-* renaming PC layers
+* editing text
 * back onto styling doc
+* select inserted elements
 
 * ability to load images & other resources in PC file. (start with ionicons)
 * document bounds on element should be stored in editor namespace

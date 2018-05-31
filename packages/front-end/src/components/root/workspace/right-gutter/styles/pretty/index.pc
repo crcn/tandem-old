@@ -8,28 +8,29 @@
       "id": "4b11d4db2",
       "name": "frame",
       "bounds": {
-        "left": 185,
-        "top": 80,
-        "right": 378,
-        "bottom": 227
+        "left": 177,
+        "top": 5,
+        "right": 370,
+        "bottom": 152
       },
       "children": [
         {
-          "id": "4b11d4db1",
+          "label": "Styler",
           "is": "div",
-          "name": "element",
-          "attributes": {},
           "style": {},
+          "attributes": {},
+          "id": "2399b467",
+          "name": "component",
           "children": [
             {
-              "id": "d8b505da7",
+              "id": "2399b465",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {},
               "children": [
                 {
-                  "id": "d8b505da10",
+                  "id": "2399b466",
                   "name": "text",
                   "value": "Click to edit",
                   "style": {},
@@ -37,37 +38,29 @@
                 }
               ]
             }
-          ],
-          "label": "Pretty Pane"
+          ]
         }
       ]
     },
     {
-      "id": "13475e367",
+      "id": "4a1e92d377",
       "name": "frame",
       "bounds": {
-        "left": 413,
-        "top": 19,
-        "right": 647,
-        "bottom": 256
+        "left": 184,
+        "top": 205,
+        "right": 377,
+        "bottom": 352
       },
       "children": [
         {
-          "id": "13475e366",
-          "is": "div",
-          "name": "element",
+          "id": "4a1e92d376",
+          "variant": [],
+          "is": "2399b467",
+          "name": "component-instance",
           "attributes": {},
           "style": {},
-          "children": [
-            {
-              "id": "7126abbc49",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {},
-              "children": []
-            }
-          ]
+          "children": [],
+          "label": ""
         }
       ]
     }

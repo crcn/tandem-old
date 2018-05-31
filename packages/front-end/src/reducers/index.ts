@@ -171,7 +171,10 @@ import {
   persistSyntheticNodeBounds,
   persistRemoveSyntheticNode,
   getSyntheticNodeSourceDependency,
-  persistConvertNodeToComponent
+  persistConvertNodeToComponent,
+  PCModule,
+  persistInsertClips,
+  getPCNodeModule
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -1264,35 +1267,25 @@ const clipboardReducer = (state: RootState, action: Action) => {
     case SYNTHETIC_NODES_PASTED: {
       const { clips } = action as SyntheticNodesPasted;
 
-      // let targetSourceNode: TreeNode<any>;
+      let targetNode: PCVisibleNode | PCModule;
 
-      // if (state.selectedNodeIds.length) {
-      //   const nodeId = state.selectedNodeIds[0];
-      //   targetSourceNode = getSyntheticSourceNode(nodeId, state.paperclip);
-      // } else {
-      //   targetSourceNode =
-      //     state.paperclip.graph[state.activeEditorFilePath].content;
-      // }
+      if (state.selectedNodeIds.length) {
+        const nodeId = state.selectedNodeIds[0];
+        const node = getSyntheticNodeById(nodeId, state.syntheticFrames);
+        targetNode = getSyntheticSourceNode(node, state.graph);
+        targetNode = getParentTreeNode(
+          targetNode.id,
+          getPCNodeModule(targetNode.id, state.graph)
+        );
+      } else {
+        targetNode = state.graph[state.activeEditorFilePath].content;
+      }
 
-      // const oldWindow = getSyntheticWindow(
-      //   state.activeEditorFilePath,
-      //   state.paperclip
-      // );
+      state = persistRootState(
+        state => persistInsertClips(clips, targetNode, state),
+        state
+      );
 
-      // state = persistRootState(
-      //   browser =>
-      //     persistPasteSyntheticNodes(
-      //       state.activeEditorFilePath,
-      //       targetSourceNode.id,
-      //       clips,
-      //       browser
-      //     ),
-      //   state
-      // );
-
-      // TODO - selected new element IDS that are within the target synthetic node
-      // const elementIds = getInsertedWindowElementIds(oldWindow, state.paperclip);
-      // state = setSelectedSyntheticNodeIds(state, elementIds[elementIds.length - 1]);
       return state;
     }
   }
