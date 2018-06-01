@@ -139,10 +139,10 @@
       "id": "44c8138c387",
       "name": "frame",
       "bounds": {
-        "left": 634,
-        "top": 471,
-        "right": 838.162513062317,
-        "bottom": 606.9181079525231
+        "left": 619,
+        "top": 456,
+        "right": 823.162513062317,
+        "bottom": 591.9181079525231
       },
       "children": [
         {
@@ -161,9 +161,9 @@
       "id": "5cf98475757",
       "name": "frame",
       "bounds": {
-        "left": 635,
+        "left": 616,
         "top": 275,
-        "right": 839.162513062317,
+        "right": 820.162513062317,
         "bottom": 410.9181079525231
       },
       "children": [
@@ -176,6 +176,132 @@
           "style": {},
           "children": [],
           "label": "Attributes"
+        }
+      ]
+    },
+    {
+      "id": "c116487553",
+      "name": "frame",
+      "bounds": {
+        "left": 391,
+        "top": 971,
+        "right": 632.2669258671694,
+        "bottom": 1133.3842993792973
+      },
+      "children": [
+        {
+          "label": "Tabs",
+          "is": "div",
+          "style": {
+            "display": "flex",
+            "flex-direction": "column"
+          },
+          "attributes": {},
+          "id": "c1164875358",
+          "name": "component",
+          "children": [
+            {
+              "id": "c11648755142",
+              "label": "bar",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "display": "flex",
+                "flex-grow": "0",
+                "flex-shrink": "0"
+              },
+              "children": [
+                {
+                  "id": "c11648755270",
+                  "variant": [],
+                  "is": "c1164875329",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": []
+                },
+                {
+                  "id": "c11648755564",
+                  "variant": [],
+                  "is": "c1164875329",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": []
+                },
+                {
+                  "id": "c11648755641",
+                  "variant": [],
+                  "is": "c1164875329",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "c11648755205",
+              "label": "content",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "height": "100%",
+                "flex": "1",
+                "background": "rgba(0,0,0,0.05)"
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c1164875244",
+      "name": "frame",
+      "bounds": {
+        "left": 730,
+        "top": 796,
+        "right": 830,
+        "bottom": 896
+      },
+      "children": [
+        {
+          "label": "Tab",
+          "is": "div",
+          "style": {},
+          "attributes": {},
+          "id": "c1164875329",
+          "name": "component",
+          "children": [
+            {
+              "id": "c1164875387",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "background": "rgba(0,0,0,0.05)",
+                "padding": "4px 12px",
+                "margin-right": "2px"
+              },
+              "children": [
+                {
+                  "id": "c1164875446",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "tab",
+                  "style": {
+                    "font-family": "Helvetica",
+                    "color": "#666"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
         }
       ]
     }
