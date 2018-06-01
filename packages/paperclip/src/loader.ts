@@ -38,18 +38,12 @@ export const loadEntry = async (
     if (graph[currentUri]) {
       continue;
     }
+
     const module = await loadModule(currentUri, options);
 
     const absolutePaths = [];
-    const importUris = {};
 
-    for (const relativePath of module.imports || EMPTY_ARRAY) {
-      const absolutePath = resolveFilePath(relativePath, currentUri);
-      importUris[relativePath] = absolutePath;
-      queue.push(absolutePath);
-    }
-
-    const dependency = createDependency(currentUri, module, importUris);
+    const dependency = createDependency(currentUri, module);
     graph[currentUri] = dependency;
   }
 
@@ -59,15 +53,10 @@ export const loadEntry = async (
   };
 };
 
-const createDependency = (
-  uri: string,
-  content: PCModule,
-  importUris
-): Dependency<any> => ({
+const createDependency = (uri: string, content: PCModule): Dependency<any> => ({
   uri,
   content,
-  originalContent: content,
-  importUris
+  originalContent: content
 });
 
 const parseNodeSource = (source: string) => {

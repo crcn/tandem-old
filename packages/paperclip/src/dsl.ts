@@ -58,7 +58,6 @@ type PCBaseSourceNode<TName extends PCSourceTagNames> = {
 export type PCDependency = Dependency<PCModule>;
 
 export type PCModule = {
-  imports: string[];
   version: string;
   children: PCFrame[];
 } & PCBaseSourceNode<PCSourceTagNames.MODULE>;
@@ -155,7 +154,6 @@ export const createPCModule = (children: PCFrame[] = []): PCModule => ({
   id: generateUID(),
   name: PCSourceTagNames.MODULE,
   version: PAPERCLIP_MODULE_VERSION,
-  imports: [],
   children
 });
 export const createPCFrame = (
@@ -283,8 +281,7 @@ export const createPCDependency = (
 ): Dependency<PCModule> => ({
   uri,
   originalContent: module,
-  content: module,
-  importUris: {}
+  content: module
 });
 
 /*------------------------------------------
@@ -317,8 +314,7 @@ export const assertValidPCModule = memoize((module: PCModule) => {
 export const validatePCModule = (module: PCModule) => {
   if (
     module.name !== PCSourceTagNames.MODULE ||
-    module.version !== PAPERCLIP_MODULE_VERSION ||
-    !Array.isArray(module.imports)
+    module.version !== PAPERCLIP_MODULE_VERSION
   ) {
     return false;
   }
@@ -456,14 +452,6 @@ export const getNodeSourceComponent = memoize(
 /*------------------------------------------
  * SETTERS
  *-----------------------------------------*/
-
-export const addPCModuleNodeImport = (
-  relativeUri: string,
-  moduleNode: PCModule
-): PCModule => ({
-  ...moduleNode,
-  imports: [...moduleNode.imports, relativeUri]
-});
 
 export const replacePCNode = (
   newNode: PCNode,

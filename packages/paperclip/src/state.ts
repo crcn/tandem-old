@@ -43,8 +43,7 @@ import {
   PCElement,
   createPCComponentInstance,
   getPCNodeModule,
-  createPCFrame,
-  addPCModuleNodeImport
+  createPCFrame
 } from "./dsl";
 import {
   SyntheticFrames,
@@ -439,9 +438,8 @@ export const persistInsertClips = <TState extends PCState>(
 
     let content = targetDep.content;
     let graph = state.graph;
-    let importUris = targetDep.importUris;
 
-    for (const { uri, node, imports } of clips) {
+    for (const { uri, node } of clips) {
       const sourceDep = state.graph[uri];
       const sourceNode = node;
 
@@ -459,18 +457,6 @@ export const persistInsertClips = <TState extends PCState>(
         const bounds = sourceFrame.bounds;
 
         let namespace: string;
-
-        if (uri !== targetDep.uri) {
-          const relativePath = path.relative(
-            path.dirname(targetDep.uri),
-            sourceDep.uri
-          );
-          content = addPCModuleNodeImport(relativePath, content);
-          importUris = {
-            ...importUris,
-            [relativePath]: sourceDep.uri
-          };
-        }
 
         const componentInstance = createPCComponentInstance(sourceNode.id);
 
@@ -503,17 +489,6 @@ export const persistInsertClips = <TState extends PCState>(
         });
       }
     }
-
-    state = {
-      ...(state as any),
-      graph: updateGraphDependency(
-        {
-          importUris
-        },
-        targetDep.uri,
-        state.graph
-      )
-    };
 
     state = replaceDependencyGraphPCNode(content, content, state);
 

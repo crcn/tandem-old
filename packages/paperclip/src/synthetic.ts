@@ -45,7 +45,6 @@ export type ComputedDisplayInfo = {
 export type PCNodeClip = {
   uri: string;
   node: PCNode;
-  imports: string[];
 };
 
 export type SyntheticFrames = KeyValue<SyntheticFrame>;
@@ -273,8 +272,7 @@ export const getPCNodeClip = (
   const sourceNode = getSyntheticSourceNode(node, graph);
   return {
     uri: getSyntheticSourceUri(node, graph),
-    node: sourceNode,
-    imports: getPCImportedChildrenSourceUris(sourceNode, graph)
+    node: sourceNode
   };
 };
 

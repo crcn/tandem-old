@@ -17,9 +17,6 @@ export type Dependency<TContent> = {
   dirty?: boolean; // TRUE if the contents have changed
   originalContent: TContent;
   content: TContent;
-  importUris: {
-    [identifier: string]: string;
-  };
 };
 
 /*------------------------------------------
@@ -35,14 +32,6 @@ export const getDependents = memoize((uri: string, graph: DependencyGraph) => {
     }
 
     const dep = graph[depUri];
-
-    for (const relativePath in dep.importUris) {
-      const importedUri = dep.importUris[relativePath];
-      if (importedUri === uri) {
-        dependents.push(dep);
-        continue;
-      }
-    }
   }
 
   return dependents;

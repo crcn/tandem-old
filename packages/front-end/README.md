@@ -8,6 +8,7 @@ IMMEDIATE:
 * back onto styling doc
 * select inserted elements
 
+* NO imports. All components should be global.
 * ability to load images & other resources in PC file. (start with ionicons)
 * document bounds on element should be stored in editor namespace
 * when converting elements to artboards, move new artboard to BEST position
