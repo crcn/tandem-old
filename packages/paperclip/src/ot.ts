@@ -1,4 +1,4 @@
-import { SyntheticNode } from "./synthetic";
+import { SyntheticNode, SyntheticSource } from "./synthetic";
 import {
   updateNestedNode,
   updateNestedNodeFromPath,

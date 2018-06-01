@@ -21,7 +21,9 @@ import {
   getPCNodeFrame,
   getPCNodeDependency,
   PCSourceTagNames,
-  getPCImportedChildrenSourceUris
+  getPCImportedChildrenSourceUris,
+  PCTextNode,
+  PCElement
 } from "./dsl";
 import { diffSyntheticNode, patchSyntheticNode } from "./ot";
 
@@ -45,6 +47,7 @@ export type ComputedDisplayInfo = {
 export type PCNodeClip = {
   uri: string;
   node: PCNode;
+  fixedBounds: Bounds;
 };
 
 export type SyntheticFrames = KeyValue<SyntheticFrame>;
@@ -244,11 +247,21 @@ export const getSyntheticNodeSourceDependency = (
   graph: DependencyGraph
 ) => getPCNodeDependency(node.source.nodeId, graph);
 
-export const getSyntheticNodeBounds = memoize(
+export const getSyntheticNodeRelativeBounds = memoize(
   (syntheticNodeId: string, frames: SyntheticFrames): Bounds => {
     const frame = getSyntheticNodeFrame(syntheticNodeId, frames);
     return shiftBounds(
       getSyntheticNodeComputedBounds(syntheticNodeId, frame),
+      frame.bounds
+    );
+  }
+);
+
+export const getSyntheticNodeFixedBounds = memoize(
+  (syntheticNodeId: string, frames: SyntheticFrames): Bounds => {
+    const frame = getSyntheticNodeFrame(syntheticNodeId, frames);
+    return shiftBounds(
+      getSyntheticNodeRelativeBounds(syntheticNodeId, frames),
       frame.bounds
     );
   }
@@ -270,9 +283,13 @@ export const getPCNodeClip = (
   graph: DependencyGraph
 ): PCNodeClip => {
   const sourceNode = getSyntheticSourceNode(node, graph);
+  const frame = getSyntheticNodeFrame(node.id, frames);
   return {
     uri: getSyntheticSourceUri(node, graph),
-    node: sourceNode
+    node: sourceNode,
+    fixedBounds: node.isRoot
+      ? frame.bounds
+      : getSyntheticNodeRelativeBounds(node.id, frames)
   };
 };
 

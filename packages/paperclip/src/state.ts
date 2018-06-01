@@ -43,21 +43,24 @@ import {
   PCElement,
   createPCComponentInstance,
   getPCNodeModule,
-  createPCFrame
+  createPCFrame,
+  PCModule,
+  PCTextNode
 } from "./dsl";
 import {
   SyntheticFrames,
   SyntheticNode,
   SyntheticFrame,
   getSyntheticNodeFrame,
-  getSyntheticNodeBounds,
+  getSyntheticNodeRelativeBounds,
   getSyntheticNodeById,
   updateSyntheticFrames,
   getSyntheticSourceNode,
   getSyntheticFramesByDependencyUri,
   getSyntheticFrameDependencyUri,
   SyntheticElement,
-  PCNodeClip
+  PCNodeClip,
+  SyntheticTextNode
 } from "./synthetic";
 import * as path from "path";
 import {
@@ -240,7 +243,10 @@ export const updateSyntheticNodePosition = <TState extends PCState>(
   }
 
   return updateSyntheticNode(node, state, node => {
-    const bounds = getSyntheticNodeBounds(node.id, state.syntheticFrames);
+    const bounds = getSyntheticNodeRelativeBounds(
+      node.id,
+      state.syntheticFrames
+    );
     const newBounds = convertFixedBoundsToRelative(
       moveBounds(bounds, position),
       node,
@@ -273,7 +279,7 @@ export const updateSyntheticNodeBounds = <TState extends PCState>(
 
   throw new Error("TODO");
   // return updateSyntheticNode(node, state, (node) => {
-  //   const bounds = getSyntheticNodeBounds(node.id, state.syntheticFrames);
+  //   const bounds = getSyntheticNodeRelativeBounds(node.id, state.syntheticFrames);
   //   const newBounds = convertFixedBoundsToRelative(
   //     moveBounds(bounds, position),
   //     node,
@@ -439,7 +445,7 @@ export const persistInsertClips = <TState extends PCState>(
     let content = targetDep.content;
     let graph = state.graph;
 
-    for (const { uri, node } of clips) {
+    for (const { uri, node, fixedBounds } of clips) {
       const sourceDep = state.graph[uri];
       const sourceNode = node;
 
@@ -450,21 +456,13 @@ export const persistInsertClips = <TState extends PCState>(
 
       // is component
       if (sourceNode.name === PCSourceTagNames.COMPONENT) {
-        const sourceFrame = getPCNodeFrame(
-          sourceNode.id,
-          getPCNodeModule(sourceNode.id, state.graph)
-        );
-        const bounds = sourceFrame.bounds;
-
-        let namespace: string;
-
         const componentInstance = createPCComponentInstance(sourceNode.id);
 
         if (targetNodeIsModuleRoot) {
           content = appendChildNode(
             createPCFrame(
               [componentInstance],
-              shiftBounds(bounds, PASTED_FRAME_OFFSET)
+              shiftBounds(fixedBounds, PASTED_FRAME_OFFSET)
             ),
             content
           );
@@ -477,16 +475,28 @@ export const persistInsertClips = <TState extends PCState>(
             target.id,
             content
           );
-          // content = updateNestedNode(targetNode, content, target =>
-          // appendChildNode(componentInstance, target)
-          // );
         }
       } else {
-        const clonedChild = cloneTreeNode(sourceNode);
-        content = updateNestedNode(targetNode, content, target => {
-          target = appendChildNode(clonedChild, target);
-          return target;
-        });
+        let clonedChild = cloneTreeNode(sourceNode);
+        if (
+          targetNodeIsModuleRoot &&
+          clonedChild.name !== PCSourceTagNames.FRAME
+        ) {
+          clonedChild = createPCFrame(
+            [clonedChild],
+            shiftBounds(fixedBounds, PASTED_FRAME_OFFSET)
+          );
+        }
+
+        if (targetNode.name === PCSourceTagNames.FRAME) {
+          targetNode = targetNode.children[0];
+        }
+
+        content = replaceNestedNode(
+          appendChildNode(clonedChild, targetNode),
+          targetNode.id,
+          content
+        );
       }
     }
 
@@ -494,6 +504,25 @@ export const persistInsertClips = <TState extends PCState>(
 
     return state;
   });
+
+export const persistChangeSyntheticTextNodeValue = <TState extends PCState>(
+  value: string,
+  node: SyntheticTextNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const sourceNode = getSyntheticSourceNode(node, state.graph) as PCTextNode;
+    state = replaceDependencyGraphPCNode(
+      {
+        ...sourceNode,
+        value
+      },
+      sourceNode,
+      state
+    );
+    return state;
+  });
+
 export const persistSyntheticNodeBounds = <TState extends PCState>(
   node: SyntheticNode,
   state: TState
@@ -582,7 +611,7 @@ const createPCFrameFromSyntheticNode = (
   state: PCState
 ) => {
   const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
-  const syntheticNodeBounds = getSyntheticNodeBounds(
+  const syntheticNodeBounds = getSyntheticNodeRelativeBounds(
     node.id,
     state.syntheticFrames
   );
@@ -591,6 +620,7 @@ const createPCFrameFromSyntheticNode = (
     ? moveBounds(syntheticNodeBounds, frame.bounds)
     : DEFAULT_FRAME_BOUNDS;
   bestBounds = moveBoundsToEmptySpace(bestBounds, state.syntheticFrames);
+
   return createPCFrame([child], bestBounds);
 };
 

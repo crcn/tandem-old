@@ -9,7 +9,8 @@ import { SyntheticNode, SyntheticFrame, SyntheticElement } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
 import {
   createTreeLayerComponents,
-  TreeNodeLayerOuterProps
+  TreeNodeLayerOuterProps,
+  defaultChildRender
 } from "../../../../../../layers";
 import {
   EMPTY_ARRAY,
@@ -37,8 +38,34 @@ type PCLayerOuterProps = {
   inComponentInstance?: boolean;
 } & TreeNodeLayerOuterProps;
 
-const isMovableNode = (node: SyntheticNode) =>
-  !node.isRoot || !node.isCreatedFromComponent;
+const isMovableNode = ({ node, inComponentInstance }: any) => {
+  const sn = node as SyntheticNode;
+  if (sn.isRoot) {
+    if (sn.isCreatedFromComponent) {
+      return sn.isComponentInstance;
+    }
+    return true;
+  }
+
+  if (node.isCreatedFromComponent && inComponentInstance) {
+    return false;
+  }
+
+  return true;
+};
+
+const canDropNode = (
+  child: SyntheticNode,
+  { node, inComponentInstance }: any,
+  offset: TreeMoveOffset
+) => {
+  // override children
+  if (inComponentInstance) {
+    return true;
+  }
+
+  return true;
+};
 
 const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
   {
@@ -59,45 +86,33 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       editingLabelAttr: (node: SyntheticNode) =>
         node.metadata[SyntheticNodeMetadataKeys.EDITING_LABEL]
     },
-    canDrop(
-      child: SyntheticNode,
-      near: SyntheticNode,
-      offset: number,
-      root: SyntheticNode
-    ) {
-      if (offset === TreeMoveOffset.APPEND) {
-        if (!near.isCreatedFromComponent || near.name !== "text") {
-          return true;
-        }
-      }
-
-      // sibling
-      return !near.isCreatedFromComponent;
-    },
+    canDrop: canDropNode,
     canDrag: isMovableNode,
     dragType: DRAG_TYPE,
     getLabelProps: (attribs, props: any) => ({
       ...attribs,
       className: cx(attribs.className, {
+        "is-component-instance": props.node.isComponentInstance,
         "in-component-instance": props.inComponentInstance,
         "is-component-root":
           props.isRoot &&
           props.node.isCreatedFromComponent &&
-          !props.inComponentInstance
+          !props.node.isComponentInstance
       })
     }),
     layerRenderer: Base => (props: PCLayerOuterProps) => {
-      return (
-        <Base
-          {...props}
-          isRoot={(props.node as SyntheticNode).isRoot}
-          inComponentInstance={
+      return <Base {...props} isRoot={(props.node as SyntheticNode).isRoot} />;
+    },
+    childRenderer: Base => {
+      const childRenderer = defaultChildRender(Base);
+      return (props: PCLayerOuterProps) => {
+        return childRenderer({
+          ...props,
+          inComponentInstance:
             props.inComponentInstance ||
-            ((props.node as SyntheticNode).isRoot &&
-              (props.node as SyntheticNode).isComponentInstance)
-          }
-        />
-      );
+            (props.node as SyntheticNode).isComponentInstance
+        } as any);
+      };
     }
   }
 );

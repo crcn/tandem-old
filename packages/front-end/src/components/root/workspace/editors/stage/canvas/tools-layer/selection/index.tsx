@@ -15,7 +15,7 @@ import {
   getSelectionBounds
 } from "../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../actions";
-import { getSyntheticNodeBounds } from "paperclip";
+import { getSyntheticNodeRelativeBounds } from "paperclip";
 
 export type SelectionOuterProps = {
   dispatch: Dispatch<any>;

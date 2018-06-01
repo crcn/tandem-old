@@ -183,7 +183,7 @@ export const patchDOM = (
           );
           parent.insertBefore(newTarget, target);
           parent.removeChild(target);
-        } else if (name === "text") {
+        } else if (syntheticTarget.name === "text" && name === "value") {
           target.childNodes[0].nodeValue = value;
         }
 

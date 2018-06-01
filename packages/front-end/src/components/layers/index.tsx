@@ -77,11 +77,10 @@ type TreeLayerOptions = {
   };
   canDrop?: (
     child: TreeNode<any>,
-    parent: TreeNode<any>,
-    offset: number,
-    root: TreeNode<any>
+    props: TreeNodeLayerOuterProps,
+    offset: number
   ) => boolean;
-  canDrag?: (child: TreeNode<any>) => boolean;
+  canDrag?: (props: TreeNodeLayerLabelOuterProps) => boolean;
   layersEditable?: boolean;
   reorganizable?: boolean;
   dragType: string;
@@ -101,7 +100,7 @@ const DEFAULT_NODE_EXPAND_ATTRIBUTE = node => node.expanded;
 const DEFAULT_NODE_LABEL_ATTRIBUTE = node => node.label;
 const DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE = node => node.editingLabel;
 
-const defaultRender = Base => ({
+export const defaultChildRender = Base => ({
   node,
   hoveringNodeIds,
   selectedNodeIds,
@@ -135,7 +134,7 @@ export const createTreeLayerComponents = <
     expandAttr = DEFAULT_NODE_EXPAND_ATTRIBUTE,
     editingLabelAttr = DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE
   } = {},
-  childRenderer = defaultRender,
+  childRenderer = defaultChildRender,
   hasChildren = defaultShowChildren,
   layerRenderer = defaultLayerRenderer,
   canDrop = () => true,
@@ -194,22 +193,12 @@ export const createTreeLayerComponents = <
     DropTarget(
       DRAG_TYPE,
       {
-        canDrop: (
-          {
-            node,
-            root
-          }: {
-            node: TreeNode<any>;
-            dispatch: Dispatch<any>;
-            root: TreeNode<any>;
-          },
-          monitor
-        ) => {
+        canDrop: (props: TreeNodeLayerOuterProps, monitor) => {
           const draggingNode = monitor.getItem() as TreeNode<any>;
           return (
-            node.id !== draggingNode.id &&
-            getNestedTreeNodeById(node.id, draggingNode) == null &&
-            canDrop(draggingNode, node, offset, root)
+            props.node.id !== draggingNode.id &&
+            getNestedTreeNodeById(props.node.id, draggingNode) == null &&
+            canDrop(draggingNode, props, offset)
           );
         },
         drop: ({ dispatch, node }, monitor) => {
@@ -354,8 +343,8 @@ export const createTreeLayerComponents = <
         beginDrag({ node }: TreeNodeLayerLabelOuterProps) {
           return node;
         },
-        canDrag({ node }) {
-          return canDrag(node);
+        canDrag(props) {
+          return canDrag(props);
         }
       },
       (connect, monitor) => ({

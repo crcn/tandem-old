@@ -2,10 +2,11 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* pasting existing component instances in root
-* dragging & dropping instances of components
-* editing text
+* text overrides
+* child overrides
 * back onto styling doc
+  * **color picker**
+* update code compiler to handle overrides
 * select inserted elements
 
 * NO imports. All components should be global.
@@ -13,6 +14,10 @@ IMMEDIATE:
 * document bounds on element should be stored in editor namespace
 * when converting elements to artboards, move new artboard to BEST position
 * select newly inserted elements
+* **highlight instances of a selected component**. Part of the function for this is to highlight how an element instance responds to layout constraints.
+* eiminate frames. Attach that information to element metadata
+* **separate evaluator for creating frames from root module instances**
+* evaluator should return a synthetic tree
 
 STYLING:
 

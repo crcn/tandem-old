@@ -293,7 +293,7 @@ export const insertChildNode = <TTree extends TreeNode<any>>(
   parent: TTree
 ): TTree => ({
   ...(parent as any),
-  children: arraySplice(parent.children, index, 1, child)
+  children: arraySplice(parent.children, index, 0, child)
 });
 export const dropChildNode = <TTree extends TreeNode<any>>(
   child: TTree,

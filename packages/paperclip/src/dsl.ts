@@ -244,7 +244,7 @@ export const createPCElement = (
   name: PCSourceTagNames.ELEMENT,
   attributes: attributes || {},
   style: style || {},
-  children
+  children: children || []
 });
 
 export const createPCComponentInstance = (

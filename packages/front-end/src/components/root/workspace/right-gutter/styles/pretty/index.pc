@@ -8,66 +8,48 @@
       "id": "4b11d4db2",
       "name": "frame",
       "bounds": {
-        "left": 177,
-        "top": 5,
-        "right": 370,
-        "bottom": 152
+        "left": 384,
+        "top": 86,
+        "right": 577,
+        "bottom": 449.12023745904196
       },
       "children": [
         {
           "label": "Styler",
           "is": "div",
-          "style": {},
+          "style": {
+            "height": "100%",
+            "display": "flex",
+            "flex-direction": "column"
+          },
           "attributes": {},
           "id": "2399b467",
           "name": "component",
           "children": [
             {
-              "id": "2399b465",
-              "is": "div",
-              "name": "element",
+              "id": "b41361d015",
+              "variant": [],
+              "is": "b6c162d113",
+              "name": "component-instance",
               "attributes": {},
-              "style": {},
-              "children": [
-                {
-                  "id": "2399b466",
-                  "name": "text",
-                  "value": "Click to edit",
-                  "style": {
-                    "color": "red",
-                    "font-family": "Helvetica"
-                  },
-                  "children": []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "bdd02c564",
-      "name": "frame",
-      "bounds": {
-        "left": 49.5,
-        "top": -70,
-        "right": 149.5,
-        "bottom": 30
-      },
-      "children": [
-        {
-          "id": "bdd02c563",
-          "is": "div",
-          "name": "element",
-          "attributes": {},
-          "style": {},
-          "children": [
+              "style": {
+                "font-family": "Helvetica",
+                "display": "flex",
+                "flex-direction": "column"
+              },
+              "children": []
+            },
             {
-              "id": "bf29ca614",
-              "is": "div",
-              "name": "element",
+              "id": "725ad83c16",
+              "variant": [],
+              "is": "b6c162d113",
+              "name": "component-instance",
               "attributes": {},
-              "style": {},
+              "style": {
+                "font-family": "Helvetica",
+                "display": "flex",
+                "flex-direction": "column"
+              },
               "children": []
             }
           ]
@@ -78,10 +60,10 @@
       "id": "b6c162d16",
       "name": "frame",
       "bounds": {
-        "left": 393.75,
-        "top": -61.5,
-        "right": 597.912513062317,
-        "bottom": 74.41810795252309
+        "left": 624,
+        "top": 92,
+        "right": 828.162513062317,
+        "bottom": 227.9181079525231
       },
       "children": [
         {
@@ -90,7 +72,10 @@
           "style": {
             "font-family": "Helvetica",
             "display": "flex",
-            "flex-direction": "column"
+            "flex-direction": "column",
+            "height": "100%",
+            "min-height": "150px",
+            "max-height": "200px"
           },
           "attributes": {},
           "id": "b6c162d113",
@@ -102,17 +87,22 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "background": "red",
+                "background": "rgba(0,0,0,0.01)",
                 "width": "100%",
-                "padding": "4px 8px"
+                "padding": "4px 8px",
+                "box-sizing": "border-box",
+                "border-bottom": "1px solid rgba(0,0,0,0.05)"
               },
               "children": [
                 {
                   "id": "b6c162d1281",
                   "name": "text",
-                  "value": "Click to edit",
-                  "style": {},
-                  "children": []
+                  "value": "Title",
+                  "style": {
+                    "text-transform": "uppercase"
+                  },
+                  "children": [],
+                  "label": "text"
                 }
               ],
               "label": "Title"
@@ -125,20 +115,67 @@
               "style": {
                 "height": "100%",
                 "width": "100%",
-                "padding": "4px 8px"
+                "padding": "4px 8px",
+                "box-sizing": "border-box",
+                "flex": "1"
               },
               "children": [
                 {
                   "id": "6fd27ae1495",
                   "name": "text",
-                  "value": "Click to edit",
+                  "value": "Content",
                   "style": {},
-                  "children": []
+                  "children": [],
+                  "label": "inner"
                 }
               ],
               "label": "Content"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "44c8138c387",
+      "name": "frame",
+      "bounds": {
+        "left": 634,
+        "top": 471,
+        "right": 838.162513062317,
+        "bottom": 606.9181079525231
+      },
+      "children": [
+        {
+          "id": "44c8138c386",
+          "variant": [],
+          "is": "b6c162d113",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "label": "Typograph"
+        }
+      ]
+    },
+    {
+      "id": "5cf98475757",
+      "name": "frame",
+      "bounds": {
+        "left": 635,
+        "top": 275,
+        "right": 839.162513062317,
+        "bottom": 410.9181079525231
+      },
+      "children": [
+        {
+          "id": "5cf98475756",
+          "variant": [],
+          "is": "b6c162d113",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "label": "Attributes"
         }
       ]
     }

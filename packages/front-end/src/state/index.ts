@@ -49,7 +49,7 @@ import {
   updateSyntheticNode,
   SyntheticFrame,
   getSyntheticFrameDependencyUri,
-  getSyntheticNodeBounds,
+  getSyntheticNodeRelativeBounds,
   updateDependencyGraph,
   updateSyntheticNodeMetadata,
   queueLoadDependencyUri,
@@ -207,11 +207,10 @@ const getUpdatedSyntheticNodes = (newState: RootState, oldState: RootState) => {
     diffSyntheticNode(oldFrame.root, newFrame.root).forEach(ot => {
       const target = getTreeNodeFromPath(ot.nodePath, model);
       model = patchSyntheticNode([ot], model);
-      if (
-        ot.type === SyntheticOperationalTransformType.INSERT_CHILD &&
-        newFrame.root.name === PCSourceTagNames.COMPONENT &&
-        !ot.child.isCreatedFromComponent
-      ) {
+
+      // TODO - will need to check if new parent is not in an instance of a component.
+      // Will also need to consider child overrides though.
+      if (ot.type === SyntheticOperationalTransformType.INSERT_CHILD) {
         newSyntheticNodes.push(ot.child);
       } else if (
         ot.type === SyntheticOperationalTransformType.SET_PROPERTY &&
@@ -1090,14 +1089,14 @@ export const setHoveringSyntheticNodeIds = (
 
 export const getBoundedSelection = memoize((root: RootState): string[] =>
   root.selectedNodeIds.filter(nodeId =>
-    getSyntheticNodeBounds(nodeId, root.syntheticFrames)
+    getSyntheticNodeRelativeBounds(nodeId, root.syntheticFrames)
   )
 );
 
 export const getSelectionBounds = memoize((root: RootState) =>
   mergeBounds(
     ...getBoundedSelection(root).map(nodeId =>
-      getSyntheticNodeBounds(nodeId, root.syntheticFrames)
+      getSyntheticNodeRelativeBounds(nodeId, root.syntheticFrames)
     )
   )
 );

@@ -155,7 +155,7 @@ import {
   createPCTextNode,
   PCFrame,
   getSyntheticSourceFrame,
-  getSyntheticNodeBounds,
+  getSyntheticNodeRelativeBounds,
   getSyntheticNodeFrame,
   getSyntheticSourceNode,
   createPCFrame,
@@ -177,7 +177,9 @@ import {
   persistMoveSyntheticNode,
   persistInsertClips,
   getPCNodeModule,
-  persistRawCSSText
+  persistChangeSyntheticTextNodeValue,
+  persistRawCSSText,
+  SyntheticTextNode
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -629,7 +631,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         let movedBounds = moveBounds(selectionBounds, newPoint);
 
         for (const nodeId of state.selectedNodeIds) {
-          const itemBounds = getSyntheticNodeBounds(
+          const itemBounds = getSyntheticNodeRelativeBounds(
             nodeId,
             state.syntheticFrames
           );
@@ -996,16 +998,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case TEXT_VALUE_CHANGED: {
       const { value } = action as TextValueChanged;
-      // state = persistRootState(browser => {
-      //   return persistTextValue(
-      //     value,
-      //     getSyntheticSourceNode(
-      //       state.selectedNodeIds[0],
-      //       state.paperclip
-      //     ) as PCTextNode,
-      //     browser
-      //   );
-      // }, state);
+      state = persistRootState(state => {
+        return persistChangeSyntheticTextNodeValue(
+          value,
+          getSyntheticNodeById(
+            state.selectedNodeIds[0],
+            state.syntheticFrames
+          ) as SyntheticTextNode,
+          state
+        );
+      }, state);
       return state;
     }
     case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
@@ -1139,7 +1141,10 @@ const getNewSyntheticNodeBounds = (
   state: RootState
 ) => {
   const currentBounds = getSelectionBounds(state);
-  const innerBounds = getSyntheticNodeBounds(nodeId, state.syntheticFrames);
+  const innerBounds = getSyntheticNodeRelativeBounds(
+    nodeId,
+    state.syntheticFrames
+  );
   return scaleInnerBounds(innerBounds, currentBounds, newBounds);
 };
 
