@@ -355,7 +355,6 @@ const validatePCVisibleNode = (child: PCVisibleNode) => {
 const validatePCVisibleNodeChild = (child: PCVisibleNode | PCOverride) => {
   // TODO - OVERRIDES
   if (child.name === PCSourceTagNames.OVERRIDE_STYLE) {
-    // TODO
     return true;
   } else {
     return validatePCVisibleNode(child as PCVisibleNode);
@@ -363,6 +362,7 @@ const validatePCVisibleNodeChild = (child: PCVisibleNode | PCOverride) => {
 };
 
 const validatePCElement = (element: PCElement) => {
+  // TODO - validate that style props are all camel case
   if (!element.style || !element.attributes || !element.is) {
     return false;
   }
