@@ -68,7 +68,7 @@ export const evaluatePCModule = memoize(
     module.children.reduce(
       (frames, frame) => ({
         ...frames,
-        [frame.id]: evaluatePCFrame(frame, module.id, {
+        [frame.id]: evaluatePCFrame(frame, {
           overrides: {},
           graph,
           currentVariantIds: []
@@ -84,66 +84,63 @@ const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
 
 const evaluatePCFrame = (
   frame: PCFrame,
-  parentPath: string,
   context: EvalContext
 ): SyntheticFrame => ({
   source: createSyntheticSource(frame),
   bounds: frame.bounds,
-  root: evaluatePCFrameRootNode(
-    frame.children[0],
-    appendPath(parentPath, frame.id),
-    context
-  )
+  root: evaluatePCFrameRootNode(frame.children[0], context)
 });
 
 const evaluatePCFrameRootNode = (
   root: PCComponent | PCVisibleNode,
-  parentPath: string,
   context: EvalContext
 ) => {
   context = { ...context, isRoot: true };
   switch (root.name) {
     case PCSourceTagNames.COMPONENT: {
-      return evaluateRootComponent(root, parentPath, context);
+      return evaluateRootComponent(root, context);
     }
     default: {
-      return evaluatePCVisibleNode(root, parentPath, context);
+      return evaluatePCVisibleNode(root, null, context);
     }
   }
 };
 
 const evaluateRootComponent = (
   root: PCComponent,
-  path: string,
   context: EvalContext,
   isRoot?: boolean
 ) => {
-  return evaluateComponentOrElementFromInstance(root, root, path, context);
+  return evaluateComponentOrElementFromInstance(root, root, null, context);
 };
 
 const evaluatePCVisibleNode = (
   node: PCVisibleNode | PCComponent,
-  parentPath: string,
+  instancePath: string,
   context: EvalContext
 ): SyntheticNode => {
   switch (node.name) {
     case PCSourceTagNames.TEXT: {
-      return createSyntheticTextNode(
-        (node as PCTextNode).value,
-        createSyntheticSource(node),
-        node.style,
-        node.label,
-        context.isRoot,
-        context.isCreatedFromComponent
+      return applyPropertyOverrides(
+        createSyntheticTextNode(
+          (node as PCTextNode).value,
+          createSyntheticSource(node),
+          node.style,
+          node.label,
+          context.isRoot,
+          context.isCreatedFromComponent
+        ),
+        appendPath(instancePath, node.id),
+        context
       );
     }
     default: {
       const pcElement = node as PCElement;
-      const nodePath = appendPath(parentPath, pcElement.id);
+
       return evaluateComponentOrElementFromInstance(
         pcElement,
         pcElement,
-        nodePath,
+        instancePath,
         context
       );
     }
@@ -188,7 +185,9 @@ const evaluateComponentOrElement = (
   instancePath: string,
   context: EvalContext
 ): SyntheticElement => {
-  context = registerOverrides(elementOrComponent, instancePath, context);
+  const selfIdPath = appendPath(instancePath, instanceNode.id);
+
+  context = registerOverrides(elementOrComponent, selfIdPath, context);
   if (extendsComponent(elementOrComponent)) {
     return evaluateComponentOrElement(
       getPCNode(elementOrComponent.is, context.graph) as PCComponent,
@@ -201,6 +200,9 @@ const evaluateComponentOrElement = (
     context = removeIsRoot(context);
     const isComponentInstance =
       instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE;
+
+    const childInstancePath = isComponentInstance ? selfIdPath : instancePath;
+
     return applyPropertyOverrides(
       createSyntheticElement(
         elementOrComponent.is,
@@ -211,7 +213,7 @@ const evaluateComponentOrElement = (
           instancePath,
           context,
           getVisibleChildren(elementOrComponent).map(child =>
-            evaluatePCVisibleNode(child, instancePath, context)
+            evaluatePCVisibleNode(child, childInstancePath, context)
           )
         ),
         instanceNode.label || elementOrComponent.label,
@@ -219,29 +221,38 @@ const evaluateComponentOrElement = (
         Boolean(context.isCreatedFromComponent),
         Boolean(isComponentInstance)
       ),
-      instancePath,
+      selfIdPath,
       context
     );
   }
 };
 
-const applyPropertyOverrides = (
-  element: SyntheticElement,
+const applyPropertyOverrides = <TNode extends SyntheticNode>(
+  node: TNode,
   nodePath: string,
   context: EvalContext
-): SyntheticElement => {
+): TNode => {
   const overrides = context.overrides[nodePath];
   if (!overrides) {
-    return element;
+    return node;
+  }
+  if (node.name === PCSourceTagNames.TEXT) {
+    return {
+      ...(node as any),
+      style: {
+        ...node.style,
+        ...overrides.style
+      }
+    };
   }
   return {
-    ...element,
+    ...(node as any),
     attributes: {
-      ...element.attributes,
+      ...(node as SyntheticElement).attributes,
       ...overrides.attributes
     },
     style: {
-      ...element.style,
+      ...node.style,
       ...overrides.style
     }
   };
@@ -374,5 +385,5 @@ const createSyntheticSource = (node: PCNode): SyntheticSource => ({
   nodeId: node.id
 });
 
-const appendPath = (parentPath: string, nodeId: string) =>
-  parentPath + " " + nodeId;
+const appendPath = (instancePath: string, nodeId: string) =>
+  instancePath ? instancePath + " " + nodeId : nodeId;

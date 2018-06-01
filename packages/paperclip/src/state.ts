@@ -25,7 +25,7 @@ import {
   mergeBounds,
   replaceNestedNode
 } from "tandem-common";
-import { values, omit, pickBy } from "lodash";
+import { values, omit, pickBy, last } from "lodash";
 import { DependencyGraph, Dependency, updateGraphDependency } from "./graph";
 import {
   PCNode,
@@ -45,7 +45,11 @@ import {
   getPCNodeModule,
   createPCFrame,
   PCModule,
-  PCTextNode
+  PCTextNode,
+  PCOverride,
+  createPCTextNode,
+  createPCOverride,
+  PCTextValueOverride
 } from "./dsl";
 import {
   SyntheticFrames,
@@ -60,7 +64,9 @@ import {
   getSyntheticFrameDependencyUri,
   SyntheticElement,
   PCNodeClip,
-  SyntheticTextNode
+  SyntheticTextNode,
+  findFurthestParentComponentInstance,
+  getAllParentComponentInstance
 } from "./synthetic";
 import * as path from "path";
 import {
@@ -509,19 +515,98 @@ export const persistChangeSyntheticTextNodeValue = <TState extends PCState>(
   value: string,
   node: SyntheticTextNode,
   state: TState
-) =>
-  persistChanges(state, state => {
-    const sourceNode = getSyntheticSourceNode(node, state.graph) as PCTextNode;
-    state = replaceDependencyGraphPCNode(
-      {
+) => {
+  const frame = getSyntheticNodeFrame(node.id, state.syntheticFrames);
+  return persistChanges(state, state => {
+    const updatedNode = maybeOverride(
+      "text",
+      value,
+      (sourceNode: PCTextNode) => ({
         ...sourceNode,
         value
-      },
-      sourceNode,
-      state
-    );
+      })
+    )(node, state.syntheticFrames, state.graph);
+
+    state = replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
     return state;
   });
+};
+
+const maybeOverride = (
+  propertyName: string,
+  value: any,
+  updater: (node: PCVisibleNode, value: any) => any
+) => <TState extends PCState>(
+  node: SyntheticNode,
+  frames: SyntheticFrames,
+  graph: DependencyGraph
+): PCVisibleNode => {
+  const sourceNode = getSyntheticSourceNode(node, graph);
+
+  if (node.isCreatedFromComponent) {
+    const frame = getSyntheticNodeFrame(node.id, frames);
+    const parentComponentInstances = getAllParentComponentInstance(
+      node,
+      frame.root
+    );
+    if (parentComponentInstances.length) {
+      const furthestInstance: SyntheticNode = last(parentComponentInstances);
+      const furthestInstanceSourceNode = getSyntheticSourceNode(
+        furthestInstance,
+        graph
+      );
+
+      const overrideIdPath = [
+        ...parentComponentInstances
+          .concat()
+          .reverse()
+          .slice(1)
+          .map(node => node.id),
+        sourceNode.id
+      ];
+
+      const existingOverride = furthestInstanceSourceNode.children.find(
+        (child: PCOverride) => {
+          if (propertyName === "text") {
+            return (
+              child.name === PCSourceTagNames.OVERRIDE_TEXT_VALUE &&
+              child.targetIdPath.join("/") === overrideIdPath.join("/")
+            );
+          }
+
+          if (propertyName === "style") {
+            return (
+              child.name === PCSourceTagNames.OVERRIDE_STYLE &&
+              child.targetIdPath.join("/") === overrideIdPath.join("/")
+            );
+          }
+
+          throw new Error("cannot override other props yet");
+        }
+      ) as PCTextValueOverride;
+
+      if (existingOverride) {
+        return replaceNestedNode(
+          {
+            ...existingOverride,
+            value
+          } as PCTextValueOverride,
+          existingOverride.id,
+          furthestInstanceSourceNode
+        );
+      } else {
+        const override = createPCOverride(
+          overrideIdPath,
+          propertyName as "text",
+          value
+        );
+        return appendChildNode(override, furthestInstanceSourceNode);
+      }
+    }
+  }
+
+  return updater(sourceNode, value);
+};
 
 export const persistSyntheticNodeBounds = <TState extends PCState>(
   node: SyntheticNode,
@@ -631,17 +716,19 @@ export const persistRawCSSText = <TState extends PCState>(
 ) =>
   persistChanges(state, state => {
     const style = parseStyle(text);
-    const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+    const updatedNode = maybeOverride(
+      "style",
+      style,
+      sourceNode =>
+        ({
+          ...sourceNode,
+          style
+        } as PCVisibleNode)
+    )(node, state.syntheticFrames, state.graph);
 
     // todo - need to consider variants here
-    return replaceDependencyGraphPCNode(
-      {
-        ...sourceNode,
-        style: style
-      },
-      sourceNode,
-      state
-    );
+    return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
   });
 
 export const persistRemoveSyntheticNode = <TState extends PCState>(

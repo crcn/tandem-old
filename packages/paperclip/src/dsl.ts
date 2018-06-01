@@ -88,22 +88,27 @@ export type PCBaseOverride<TName extends PCSourceTagNames> = {
   variantId: string;
 } & PCBaseSourceNode<TName>;
 
-export type PCStyleOverride = {
-  value: KeyValue<any>;
-} & PCBaseOverride<PCSourceTagNames.OVERRIDE_STYLE>;
+export type PCPropertyOverride<TName extends PCSourceTagNames, TValue> = {
+  value: TValue;
+} & PCBaseOverride<TName>;
 
-export type PCAttributesOverride = {
-  value: KeyValue<any>;
-} & PCBaseOverride<PCSourceTagNames.OVERRIDE_ATTRIBUTES>;
+export type PCStyleOverride = PCPropertyOverride<
+  PCSourceTagNames.OVERRIDE_STYLE,
+  KeyValue<any>
+>;
+export type PCAttributesOverride = PCPropertyOverride<
+  PCSourceTagNames.OVERRIDE_ATTRIBUTES,
+  KeyValue<any>
+>;
 
 export type PCChildrenOverride = {
   children: PCVisibleNode[];
 } & PCBaseOverride<PCSourceTagNames.OVERRIDE_CHILDREN>;
 
-export type PCTextValueOverride = {
-  value: string;
-  children: PCVisibleNode[];
-} & PCBaseOverride<PCSourceTagNames.OVERRIDE_TEXT_VALUE>;
+export type PCTextValueOverride = PCPropertyOverride<
+  PCSourceTagNames.OVERRIDE_TEXT_VALUE,
+  string
+>;
 
 export type PC = {
   value: string;
@@ -113,6 +118,7 @@ export type PC = {
 export type PCOverride =
   | PCStyleOverride
   | PCAttributesOverride
+  | PCTextValueOverride
   | PCChildrenOverride;
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
@@ -274,6 +280,39 @@ export const createPCTextNode = (
   style: {},
   children: []
 });
+
+export const createPCOverride = (
+  targetIdPath: string[],
+  key: "text" | "style",
+  value: any,
+  variantId?: string
+): PCOverride => {
+  const id = generateUID();
+
+  if (key === "text") {
+    return {
+      id,
+      variantId,
+      targetIdPath,
+      name: PCSourceTagNames.OVERRIDE_TEXT_VALUE,
+      value,
+      children: []
+    };
+  }
+
+  if (key === "style") {
+    return {
+      id,
+      variantId,
+      targetIdPath,
+      name: PCSourceTagNames.OVERRIDE_STYLE,
+      value,
+      children: []
+    };
+  }
+
+  throw new Error("not implemented yet");
+};
 
 export const createPCDependency = (
   uri: string,

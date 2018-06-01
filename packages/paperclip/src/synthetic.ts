@@ -10,7 +10,8 @@ import {
   Bounds,
   updateNestedNode,
   shiftBounds,
-  Point
+  Point,
+  findTreeNodeParent
 } from "tandem-common";
 import { values } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -292,6 +293,42 @@ export const getPCNodeClip = (
       : getSyntheticNodeRelativeBounds(node.id, frames)
   };
 };
+
+export const findClosestParentComponentInstance = memoize(
+  (node: SyntheticNode, root: SyntheticNode) => {
+    return findTreeNodeParent(
+      node.id,
+      root,
+      (parent: SyntheticNode) => parent.isComponentInstance
+    );
+  }
+);
+
+export const findFurthestParentComponentInstance = memoize(
+  (node: SyntheticNode, root: SyntheticNode) => {
+    const parentComponentInstances = getAllParentComponentInstance(node, root);
+    return parentComponentInstances.length
+      ? parentComponentInstances[parentComponentInstances.length - 1]
+      : null;
+  }
+);
+
+export const getAllParentComponentInstance = memoize(
+  (node: SyntheticNode, root: SyntheticNode) => {
+    let current = findClosestParentComponentInstance(node, root);
+    if (!current) return [];
+    const instances = [current];
+    while (current) {
+      const parent = findClosestParentComponentInstance(current, root);
+      if (!parent) break;
+      current = parent;
+
+      instances.push(current);
+    }
+
+    return instances;
+  }
+);
 
 /*------------------------------------------
  * SETTERS

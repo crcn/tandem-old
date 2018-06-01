@@ -2,7 +2,8 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* text overrides
+* generalize all overrides to <override key="name" value="a">OR value here</override>
+* update override tests
 * child overrides
 * back onto styling doc
   * **color picker**
