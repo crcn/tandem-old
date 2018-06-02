@@ -1,10 +1,13 @@
 module.exports = (module) => {
 
   const mapModule = (module) => {
-    return Object.assign({}, module, {
+    return {
+      id: module.id,
       version: "0.0.3",
+      metadata: {},
+      name: "module",
       children: module.children.map(mapFrame)
-    });
+    };
   };
 
   const mapFrame = (frame) => {

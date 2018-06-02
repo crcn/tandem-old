@@ -15,7 +15,6 @@ import {
   updateFrame,
   evaluateDependency
 } from "./edit";
-import { updateSyntheticDocuments } from "./synthetic";
 
 export const paperclipReducer = <TState extends PCEditorState>(
   state: TState,
@@ -58,20 +57,6 @@ export const paperclipReducer = <TState extends PCEditorState>(
           state
         )
       );
-      // return evaluateDependency(uri, {
-      //   openDependencyUri:
-      // })
-      // return updatePCEditorState(
-      //   {
-      //     openDependencyUri: null,
-      //     graph,
-      //     syntheticFrames: updateSyntheticDocuments(
-      //       state.frames,
-      //       evaluatePCModule(module, graph)
-      //     )
-      //   },
-      //   state
-      // );
     }
   }
   return state;

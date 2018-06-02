@@ -7,7 +7,7 @@
 // import { PaneComponent } from "../../../../pane";
 // import { FocusComponent } from "../../../../focus";
 // import {
-//   getSyntheticVisibleNodeById,
+//   getSyntheticNodeById,
 //   getSyntheticSourceNode,
 //   PCSourceTagNames,
 //   getComponentVariants,

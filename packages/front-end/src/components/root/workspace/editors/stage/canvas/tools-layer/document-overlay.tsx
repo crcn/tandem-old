@@ -12,7 +12,7 @@ import {
   SyntheticVisibleNode,
   Frame,
   getFramesByDependencyUri,
-  getSyntheticVisibleNodeById
+  getSyntheticNodeById
 } from "paperclip";
 import {
   Bounds,
@@ -203,7 +203,7 @@ const getHoveringSyntheticVisibleNodes = memoize(
     const allNodes =
       (frame &&
         getTreeNodeIdMap(
-          getSyntheticVisibleNodeById(frame.contentNodeId, root.documents)
+          getSyntheticNodeById(frame.contentNodeId, root.documents)
         )) ||
       {};
     const selectionRefIds = root.selectedNodeIds;

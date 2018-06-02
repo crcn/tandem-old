@@ -10,7 +10,7 @@ import {
   Frame,
   SyntheticVisibleNode,
   getFramesByDependencyUri,
-  getSyntheticVisibleNodeById
+  getSyntheticNodeById
 } from "paperclip";
 import {
   canvasToolDocumentTitleClicked,
@@ -73,7 +73,7 @@ const DocumentItemBase = ({
         )}
         onClick={wrapEventToDispatch(
           dispatch,
-          canvasToolDocumentTitleClicked.bind(this, frame.contentNodeId)
+          canvasToolDocumentTitleClicked.bind(this, frame)
         )}
       >
         {contentNode.label || "Untitled"}
@@ -134,7 +134,7 @@ export const DocumentsCanvasToolBase = ({
       {activeFrames.map(frame => (
         <DocumentItem
           key={frame.contentNodeId}
-          contentNode={getSyntheticVisibleNodeById(
+          contentNode={getSyntheticNodeById(
             frame.contentNodeId,
             root.documents
           )}

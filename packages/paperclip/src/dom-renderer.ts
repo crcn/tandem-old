@@ -10,7 +10,7 @@ import {
   SyntheticOperationalTransformType,
   SyntheticMoveChildOperationalTransform,
   SyntheticOperationalTransform,
-  patchSyntheticVisibleNode,
+  patchSyntheticNode,
   SyntheticSetPropertyOperationalTransform,
   SyntheticInsertChildOperationalTransform,
   SyntheticRemoveChildOperationalTransform
@@ -156,7 +156,7 @@ export const patchDOM = (
       newSyntheticTree
     );
     const target = map[oldSyntheticTarget.id] as HTMLElement;
-    newSyntheticTree = patchSyntheticVisibleNode([transform], newSyntheticTree);
+    newSyntheticTree = patchSyntheticNode([transform], newSyntheticTree);
     const syntheticTarget = getTreeNodeFromPath(
       transform.nodePath,
       newSyntheticTree

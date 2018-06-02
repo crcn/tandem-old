@@ -5,7 +5,7 @@ import { compose, pure } from "recompose";
 import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
 import { PrettyAttributesComponent } from "./attributes/pretty";
-import { getSyntheticVisibleNodeById } from "paperclip";
+import { getSyntheticNodeById } from "paperclip";
 // import { BehaviorPaneComponent } from "./behavior";
 // import { VariantsComponent } from "./variants";
 
@@ -19,7 +19,7 @@ const BaseRightGutterComponent = ({ dispatch, root }: RightGutterProps) => {
     return null;
   }
   const selectedNodes = root.selectedNodeIds.map(id =>
-    getSyntheticVisibleNodeById(id, root.documents)
+    getSyntheticNodeById(id, root.documents)
   );
   return (
     <GutterComponent>

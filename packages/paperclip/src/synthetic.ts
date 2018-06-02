@@ -13,7 +13,8 @@ import {
   Point,
   findTreeNodeParent,
   diffArray,
-  patchArray
+  patchArray,
+  arraySplice
 } from "tandem-common";
 import { values } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -28,7 +29,7 @@ import {
   PCTextNode,
   PCElement
 } from "./dsl";
-import { diffSyntheticVisibleNode, patchSyntheticVisibleNode } from "./ot";
+import { diffSyntheticNode, patchSyntheticNode } from "./ot";
 
 /*------------------------------------------
  * STATE
@@ -37,6 +38,8 @@ import { diffSyntheticVisibleNode, patchSyntheticVisibleNode } from "./ot";
 export type SyntheticSource = {
   nodeId: string;
 };
+
+export const SYNTHETIC_DOCUMENT_NODE_NAME = "document";
 
 export type SyntheticBaseNode = {
   metadata: KeyValue<any>;
@@ -76,7 +79,7 @@ export const createSytheticDocument = (
   id: generateUID(),
   metadata: EMPTY_OBJECT,
   source,
-  name: "document",
+  name: SYNTHETIC_DOCUMENT_NODE_NAME,
   children: children || EMPTY_ARRAY
 });
 
@@ -155,7 +158,7 @@ export const isSyntheticVisibleNodeResizable = (node: SyntheticVisibleNode) =>
  *-----------------------------------------*/
 
 export const getSyntheticSourceNode = (
-  node: SyntheticVisibleNode,
+  node: SyntheticVisibleNode | SyntheticDocument,
   graph: DependencyGraph
 ) => getPCNode(node.source.nodeId, graph) as PCVisibleNode;
 
@@ -205,7 +208,7 @@ export const getSyntheticSourceUri = (
   return getPCNodeDependency(syntheticNode.source.nodeId, graph).uri;
 };
 
-export const getSyntheticVisibleNodeById = memoize(
+export const getSyntheticNodeById = memoize(
   (
     syntheticNodeId: string,
     documents: SyntheticDocument[]
@@ -288,25 +291,24 @@ export const getAllParentComponentInstance = memoize(
  * SETTERS
  *-----------------------------------------*/
 
-export const updateSyntheticDocuments = (
+export const upsertSyntheticDocument = (
+  newDocument: SyntheticDocument,
   oldDocuments: SyntheticDocument[],
-  newDocuments: SyntheticDocument[],
   graph: DependencyGraph
 ) => {
-  const updatedDocuments: SyntheticDocument[] = [];
-  const ots = diffArray(
-    oldDocuments,
-    newDocuments,
-    (a, b) => (a.source.nodeId === b.source.nodeId ? 0 : -1)
+  const oldDocumentIndex = oldDocuments.findIndex(
+    oldDocument => oldDocument.source.nodeId === newDocument.source.nodeId
   );
-
-  return patchArray(oldDocuments, ots, (a, b) => {
-    if (a === b) {
-      return a;
-    }
-
-    return patchSyntheticVisibleNode(diffSyntheticVisibleNode(a, b), a);
-  });
+  if (oldDocumentIndex === -1) {
+    return [...oldDocuments, newDocument];
+  }
+  const oldDocument = oldDocuments[oldDocumentIndex];
+  return arraySplice(
+    oldDocuments,
+    oldDocumentIndex,
+    1,
+    patchSyntheticNode(diffSyntheticNode(oldDocument, newDocument), oldDocument)
+  );
 };
 
 export const updateSyntheticVisibleNodeMetadata = (

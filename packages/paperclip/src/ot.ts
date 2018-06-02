@@ -103,11 +103,11 @@ const createSyntheticSetPropertyOperationalTransform = (
   value
 });
 
-const _diffSyntheticVisibleNodeMemos = {};
+const _diffSyntheticNodeMemos = {};
 
-export const diffSyntheticVisibleNode = memoize(
+export const diffSyntheticNode = memoize(
   (oldNode: SyntheticBaseNode, newNode: SyntheticBaseNode) => {
-    const ots = _diffSyntheticVisibleNode(oldNode, newNode, []);
+    const ots = _diffSyntheticNode(oldNode, newNode, []);
     return ots;
   }
 );
@@ -118,15 +118,15 @@ const PROHIBITED_DIFF_KEYS = {
   metadata: true
 };
 
-const _diffSyntheticVisibleNode = (
+const _diffSyntheticNode = (
   oldNode: SyntheticBaseNode,
   newNode: SyntheticBaseNode,
   nodePath: number[],
   ots: SyntheticOperationalTransform[] = []
 ): SyntheticOperationalTransform[] => {
   const memoKey = oldNode.id + newNode.id;
-  if (_diffSyntheticVisibleNodeMemos[memoKey]) {
-    return _diffSyntheticVisibleNodeMemos[memoKey];
+  if (_diffSyntheticNodeMemos[memoKey]) {
+    return _diffSyntheticNodeMemos[memoKey];
   }
 
   for (const key in newNode) {
@@ -171,7 +171,7 @@ const _diffSyntheticVisibleNode = (
     const oldIndex = modelChildren.indexOf(oldChild);
 
     if (found) {
-      _diffSyntheticVisibleNode(
+      _diffSyntheticNode(
         oldChild,
         found,
         [...nodePath, modelChildren.indexOf(oldChild)],
@@ -209,7 +209,7 @@ const _diffSyntheticVisibleNode = (
   return ots;
 };
 
-export const patchSyntheticVisibleNode = (
+export const patchSyntheticNode = (
   ots: SyntheticOperationalTransform[],
   oldNode: SyntheticBaseNode
 ) =>

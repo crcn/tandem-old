@@ -18,7 +18,8 @@ import {
   ComputedDisplayInfo,
   SyntheticNativeNodeMap,
   SyntheticVisibleNode,
-  PCNodeClip
+  PCNodeClip,
+  Frame
 } from "paperclip";
 import { RegisteredComponent } from "..";
 
@@ -225,7 +226,7 @@ export type CanvasToolWindowKeyDown = {
 } & WrappedEvent<React.KeyboardEvent<any>>;
 
 export type CanvasToolArtboardTitleClicked = {
-  documentId: string;
+  frame: Frame;
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type SlotToggleClick = {} & Action;
@@ -722,11 +723,11 @@ export const canvasToolWindowKeyDown = (
   sourceEvent
 });
 export const canvasToolDocumentTitleClicked = (
-  documentId: string,
+  frame: Frame,
   sourceEvent: React.MouseEvent<any>
 ): CanvasToolArtboardTitleClicked => ({
   type: CANVAS_TOOL_ARTBOARD_TITLE_CLICKED,
-  documentId,
+  frame,
   sourceEvent
 });
 

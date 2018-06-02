@@ -1,690 +1,735 @@
 {
   "id": "4b11d4db0",
+  "version": "0.0.3",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.2",
-  "imports": [],
   "children": [
     {
-      "id": "4b11d4db2",
-      "name": "frame",
-      "bounds": {
-        "left": 384,
-        "top": 112,
-        "right": 577,
-        "bottom": 475.12023745904196
+      "label": "Styler",
+      "is": "div",
+      "style": {
+        "height": "100%",
+        "display": "flex",
+        "flex-direction": "column"
       },
+      "attributes": {},
+      "id": "2399b467",
+      "name": "component",
       "children": [
         {
-          "label": "Styler",
+          "id": "73b39db4591",
+          "variant": [],
+          "is": "73b39db4544",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "73b39db4401",
+          "variant": [],
+          "is": "73b39db4362",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 384,
+          "top": 112,
+          "right": 577,
+          "bottom": 475.12023745904196
+        }
+      }
+    },
+    {
+      "label": "Pane",
+      "is": "div",
+      "style": {
+        "font-family": "Helvetica",
+        "display": "flex",
+        "flex-direction": "column",
+        "height": "100%",
+        "min-height": "150px",
+        "max-height": "200px"
+      },
+      "attributes": {},
+      "id": "b6c162d113",
+      "name": "component",
+      "children": [
+        {
+          "id": "b6c162d132",
           "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "background": "rgba(0,0,0,0.01)",
+            "width": "100%",
+            "padding": "4px 8px",
+            "box-sizing": "border-box",
+            "border-bottom": "1px solid rgba(0,0,0,0.05)"
+          },
+          "children": [
+            {
+              "id": "b6c162d1281",
+              "name": "text",
+              "value": "pane",
+              "style": {
+                "text-transform": "uppercase"
+              },
+              "children": [],
+              "label": "text",
+              "metadata": {}
+            }
+          ],
+          "label": "Title",
+          "metadata": {}
+        },
+        {
+          "id": "b6c162d140",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
           "style": {
             "height": "100%",
-            "display": "flex",
-            "flex-direction": "column"
+            "width": "100%",
+            "padding": "4px 8px",
+            "box-sizing": "border-box",
+            "flex": "1"
           },
-          "attributes": {},
-          "id": "2399b467",
-          "name": "component",
           "children": [
             {
-              "id": "73b39db4591",
-              "variant": [],
-              "is": "73b39db4544",
-              "name": "component-instance",
-              "attributes": {},
+              "id": "6fd27ae1495",
+              "name": "text",
+              "value": "Content",
               "style": {},
-              "children": []
-            },
-            {
-              "id": "73b39db4401",
-              "variant": [],
-              "is": "73b39db4362",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {},
-              "children": []
+              "children": [],
+              "label": "inner",
+              "metadata": {}
             }
-          ]
+          ],
+          "label": "Content",
+          "metadata": {}
         }
-      ]
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 122,
+          "top": 117,
+          "right": 326,
+          "bottom": 215.35714109451038
+        }
+      }
     },
     {
-      "id": "b6c162d16",
-      "name": "frame",
-      "bounds": {
-        "left": 122,
-        "top": 117,
-        "right": 326,
-        "bottom": 215.35714109451038
-      },
+      "label": "Typograph",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "73b39db4362",
+      "name": "component",
       "children": [
         {
-          "label": "Pane",
-          "is": "div",
-          "style": {
-            "font-family": "Helvetica",
-            "display": "flex",
-            "flex-direction": "column",
-            "height": "100%",
-            "min-height": "150px",
-            "max-height": "200px"
-          },
-          "attributes": {},
-          "id": "b6c162d113",
-          "name": "component",
-          "children": [
-            {
-              "id": "b6c162d132",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {
-                "background": "rgba(0,0,0,0.01)",
-                "width": "100%",
-                "padding": "4px 8px",
-                "box-sizing": "border-box",
-                "border-bottom": "1px solid rgba(0,0,0,0.05)"
-              },
-              "children": [
-                {
-                  "id": "b6c162d1281",
-                  "name": "text",
-                  "value": "pane",
-                  "style": {
-                    "text-transform": "uppercase"
-                  },
-                  "children": [],
-                  "label": "text"
-                }
-              ],
-              "label": "Title"
-            },
-            {
-              "id": "b6c162d140",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {
-                "height": "100%",
-                "width": "100%",
-                "padding": "4px 8px",
-                "box-sizing": "border-box",
-                "flex": "1"
-              },
-              "children": [
-                {
-                  "id": "6fd27ae1495",
-                  "name": "text",
-                  "value": "Content",
-                  "style": {},
-                  "children": [],
-                  "label": "inner"
-                }
-              ],
-              "label": "Content"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "44c8138c387",
-      "name": "frame",
-      "bounds": {
-        "left": 621,
-        "top": 297,
-        "right": 825.162513062317,
-        "bottom": 432.9181079525231
-      },
-      "children": [
+          "id": "73b39db4357",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Typograph",
+          "name": "override",
+          "children": [],
+          "metadata": {}
+        },
         {
-          "label": "Typograph",
-          "is": "b6c162d113",
-          "style": {},
-          "attributes": {},
-          "id": "73b39db4362",
-          "name": "component",
+          "id": "73b39db4358",
+          "propertyName": "children",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "name": "override",
           "children": [
             {
-              "id": "73b39db4357",
-              "propertyName": "text",
-              "targetIdPath": [
-                "b6c162d1281"
-              ],
-              "value": "Typograph",
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "73b39db4358",
-              "propertyName": "children",
-              "targetIdPath": [
-                "b6c162d140"
-              ],
-              "name": "override",
-              "children": [
-                {
-                  "id": "73b39db4359",
-                  "label": "Element",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "display": "flex"
-                  },
-                  "children": [
-                    {
-                      "id": "73b39db4360",
-                      "name": "text",
-                      "label": "Text",
-                      "value": "Family",
-                      "style": {
-                        "width": "30%",
-                        "flex-shrink": "0"
-                      },
-                      "children": [
-                        {
-                          "id": "4c34637760",
-                          "name": "text",
-                          "label": "Text",
-                          "value": "Click to edit",
-                          "style": {},
-                          "children": []
-                        }
-                      ]
-                    },
-                    {
-                      "id": "73b39db4361",
-                      "label": "Element",
-                      "is": "div",
-                      "name": "element",
-                      "attributes": {},
-                      "style": {
-                        "width": "100%",
-                        "background": "red",
-                        "border-radius": "10px"
-                      },
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "5cf98475757",
-      "name": "frame",
-      "bounds": {
-        "left": 619,
-        "top": 117,
-        "right": 823.162513062317,
-        "bottom": 252.9181079525231
-      },
-      "children": [
-        {
-          "label": "Attributes",
-          "is": "b6c162d113",
-          "style": {},
-          "attributes": {},
-          "id": "73b39db4544",
-          "name": "component",
-          "children": [
-            {
-              "id": "73b39db4541",
-              "propertyName": "text",
-              "targetIdPath": [
-                "b6c162d1281"
-              ],
-              "value": "Attributes",
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "73b39db4542",
-              "propertyName": "children",
-              "targetIdPath": [
-                "b6c162d140"
-              ],
-              "name": "override",
-              "children": [
-                {
-                  "id": "73b39db4543",
-                  "label": "Element",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {},
-                  "children": []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "c116487553",
-      "name": "frame",
-      "bounds": {
-        "left": -501,
-        "top": 141,
-        "right": -259.73307413283055,
-        "bottom": 303.3842993792973
-      },
-      "children": [
-        {
-          "label": "Tabs",
-          "is": "div",
-          "style": {
-            "display": "flex",
-            "flex-direction": "column"
-          },
-          "attributes": {},
-          "id": "c1164875358",
-          "name": "component",
-          "children": [
-            {
-              "id": "c11648755142",
-              "label": "bar",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {
-                "display": "flex",
-                "flex-grow": "0",
-                "flex-shrink": "0"
-              },
-              "children": [
-                {
-                  "id": "c11648755270",
-                  "variant": [],
-                  "is": "c1164875329",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "41834d641",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "c1164875446"
-                      ],
-                      "value": "tab 1",
-                      "name": "override",
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "id": "c11648755564",
-                  "variant": [],
-                  "is": "c1164875329",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "e6b9350a41",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "c1164875387"
-                      ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "12d6eb8641",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "c1164875446"
-                      ],
-                      "value": "tab 2",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "12d6eb86124",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "c1164875446"
-                      ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "id": "c11648755641",
-                  "variant": [],
-                  "is": "c1164875329",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "41834d6124",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "c1164875446"
-                      ],
-                      "value": "tab 3",
-                      "name": "override",
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "c11648755205",
-              "label": "content",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {
-                "height": "100%",
-                "flex": "1",
-                "background": "rgba(0,0,0,0.05)"
-              },
-              "children": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "c1164875244",
-      "name": "frame",
-      "bounds": {
-        "left": -211,
-        "top": 155,
-        "right": -111,
-        "bottom": 255
-      },
-      "children": [
-        {
-          "label": "Tab",
-          "is": "div",
-          "style": {},
-          "attributes": {},
-          "id": "c1164875329",
-          "name": "component",
-          "children": [
-            {
-              "id": "c1164875387",
+              "id": "73b39db4359",
               "label": "Element",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
-                "background": "rgba(0,0,0,0,0.50",
-                "padding": "4px 12px",
-                "margin-right": "2px"
+                "display": "flex"
               },
               "children": [
                 {
-                  "id": "c1164875446",
+                  "id": "73b39db4360",
                   "name": "text",
                   "label": "Text",
-                  "value": "tab",
+                  "value": "Family",
                   "style": {
-                    "font-family": "Helvetica",
-                    "color": "#666"
+                    "width": "30%",
+                    "flex-shrink": "0"
                   },
-                  "children": []
+                  "children": [
+                    {
+                      "id": "4c34637760",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "Click to edit",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                },
+                {
+                  "id": "73b39db4361",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "width": "100%",
+                    "background": "red",
+                    "border-radius": "10px"
+                  },
+                  "children": [],
+                  "metadata": {}
                 }
-              ]
+              ],
+              "metadata": {}
             }
-          ]
+          ],
+          "metadata": {}
         }
-      ]
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 621,
+          "top": 297,
+          "right": 825.162513062317,
+          "bottom": 432.9181079525231
+        }
+      }
     },
     {
-      "id": "50e32bec1507",
-      "name": "frame",
-      "bounds": {
-        "left": -125,
-        "top": 497,
-        "right": 75.82128807755589,
-        "bottom": 597
-      },
+      "label": "Attributes",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "73b39db4544",
+      "name": "component",
       "children": [
         {
-          "label": "Dropdown",
-          "is": "div",
-          "style": {
-            "background": "red"
-          },
-          "attributes": {},
-          "id": "50e32bec2591",
-          "name": "component",
-          "children": []
+          "id": "73b39db4541",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Attributes",
+          "name": "override",
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "73b39db4542",
+          "propertyName": "children",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "73b39db4543",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
         }
-      ]
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 619,
+          "top": 117,
+          "right": 823.162513062317,
+          "bottom": 252.9181079525231
+        }
+      }
     },
     {
-      "id": "4c346464",
-      "name": "frame",
-      "bounds": {
-        "left": 865,
-        "top": 115,
-        "right": 1206.9731490569202,
-        "bottom": 392.26328497875284
+      "label": "Tabs",
+      "is": "div",
+      "style": {
+        "display": "flex",
+        "flex-direction": "column"
       },
+      "attributes": {},
+      "id": "c1164875358",
+      "name": "component",
       "children": [
         {
-          "id": "4c346463",
-          "label": "Color Input",
+          "id": "c11648755142",
+          "label": "bar",
           "is": "div",
           "name": "element",
           "attributes": {},
           "style": {
-            "padding": "10px",
-            "box-sizing": "border-box",
             "display": "flex",
-            "flex-direction": "column",
-            "font-family": "Helvetica",
-            "color": "grey"
+            "flex-grow": "0",
+            "flex-shrink": "0"
           },
           "children": [
             {
-              "id": "4c346567",
-              "label": "HSL",
+              "id": "c11648755270",
+              "variant": [],
+              "is": "c1164875329",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "41834d641",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "c1164875446"
+                  ],
+                  "value": "tab 1",
+                  "name": "override",
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "c11648755564",
+              "variant": [],
+              "is": "c1164875329",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "e6b9350a41",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "c1164875387"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "12d6eb8641",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "c1164875446"
+                  ],
+                  "value": "tab 4",
+                  "name": "override",
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "12d6eb86124",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "c1164875446"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "c11648755641",
+              "variant": [],
+              "is": "c1164875329",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "41834d6124",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "c1164875446"
+                  ],
+                  "value": "tab 3",
+                  "name": "override",
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "c11648755205",
+          "label": "content",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "height": "100%",
+            "flex": "1",
+            "background": "rgba(0,0,0,0.05)"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -501,
+          "top": 141,
+          "right": -259.73307413283055,
+          "bottom": 303.3842993792973
+        }
+      }
+    },
+    {
+      "label": "Tab",
+      "is": "div",
+      "style": {},
+      "attributes": {},
+      "id": "c1164875329",
+      "name": "component",
+      "children": [
+        {
+          "id": "c1164875387",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "background": "rgba(0,0,0,0,0.50",
+            "padding": "4px 12px",
+            "margin-right": "2px"
+          },
+          "children": [
+            {
+              "id": "c1164875446",
+              "name": "text",
+              "label": "Text",
+              "value": "tab",
+              "style": {
+                "font-family": "Helvetica",
+                "color": "#666"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -211,
+          "top": 155,
+          "right": -111,
+          "bottom": 255
+        }
+      }
+    },
+    {
+      "label": "Dropdown",
+      "is": "div",
+      "style": {
+        "background": "red"
+      },
+      "attributes": {},
+      "id": "50e32bec2591",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -125,
+          "top": 497,
+          "right": 75.82128807755589,
+          "bottom": 597
+        }
+      }
+    },
+    {
+      "id": "4c346463",
+      "label": "Color Input",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "padding": "10px",
+        "box-sizing": "border-box",
+        "display": "flex",
+        "flex-direction": "column",
+        "font-family": "Helvetica",
+        "color": "grey"
+      },
+      "children": [
+        {
+          "id": "4c346567",
+          "label": "HSL",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "width": "100%",
+            "height": "100%",
+            "background": "rgba(0,0,0,0.05)",
+            "border-radius": "2px"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "4c346620",
+          "label": "Spectrum",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "margin-top": "10px",
+            "height": "20px",
+            "background": "rgba(0,0,0,0.05)",
+            "flex-shrink": "0",
+            "border-radius": "2px"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "4c34610691",
+          "label": "Opacity",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "margin-top": "10px",
+            "height": "20px",
+            "background": "rgba(0,0,0,0.05)",
+            "flex-shrink": "0",
+            "border-radius": "2px"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "4c34610908",
+          "label": "RGBA",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "flex-shrink": "0",
+            "margin-top": "10px",
+            "display": "flex"
+          },
+          "children": [
+            {
+              "id": "4c34612394",
+              "name": "text",
+              "label": "Label",
+              "value": "RGBA",
+              "style": {
+                "font-size": "0.8em"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "4c34617684",
+              "label": "R",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
                 "width": "100%",
-                "height": "100%",
-                "background": "rgba(0,0,0,0.05)",
+                "margin-left": "8px",
+                "background": "white",
+                "border": "1px solid darkgrey",
+                "box-sizing": "border-box",
                 "border-radius": "2px"
               },
-              "children": []
+              "children": [],
+              "metadata": {}
             },
             {
-              "id": "4c346620",
-              "label": "Spectrum",
+              "id": "4c34626639",
+              "label": "G",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
-                "margin-top": "10px",
-                "height": "20px",
-                "background": "rgba(0,0,0,0.05)",
-                "flex-shrink": "0",
+                "width": "100%",
+                "margin-left": "8px",
+                "background": "white",
+                "border": "1px solid darkgrey",
+                "box-sizing": "border-box",
                 "border-radius": "2px"
               },
-              "children": []
+              "children": [],
+              "metadata": {}
             },
             {
-              "id": "4c34610691",
-              "label": "Opacity",
+              "id": "4c34626756",
+              "label": "B",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
-                "margin-top": "10px",
-                "height": "20px",
-                "background": "rgba(0,0,0,0.05)",
-                "flex-shrink": "0",
+                "width": "100%",
+                "margin-left": "8px",
+                "background": "white",
+                "border": "1px solid darkgrey",
+                "box-sizing": "border-box",
                 "border-radius": "2px"
               },
-              "children": []
+              "children": [],
+              "metadata": {}
             },
             {
-              "id": "4c34610908",
-              "label": "RGBA",
+              "id": "4c34634014",
+              "label": "A",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
-                "flex-shrink": "0",
-                "margin-top": "10px",
-                "display": "flex"
+                "width": "100%",
+                "margin-left": "8px",
+                "background": "white",
+                "border": "1px solid darkgrey",
+                "box-sizing": "border-box",
+                "border-radius": "2px"
               },
-              "children": [
-                {
-                  "id": "4c34612394",
-                  "name": "text",
-                  "label": "Label",
-                  "value": "RGBA",
-                  "style": {
-                    "font-size": "0.8em"
-                  },
-                  "children": []
-                },
-                {
-                  "id": "4c34617684",
-                  "label": "R",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "width": "100%",
-                    "margin-left": "8px",
-                    "background": "white",
-                    "border": "1px solid darkgrey",
-                    "box-sizing": "border-box",
-                    "border-radius": "2px"
-                  },
-                  "children": []
-                },
-                {
-                  "id": "4c34626639",
-                  "label": "G",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "width": "100%",
-                    "margin-left": "8px",
-                    "background": "white",
-                    "border": "1px solid darkgrey",
-                    "box-sizing": "border-box",
-                    "border-radius": "2px"
-                  },
-                  "children": []
-                },
-                {
-                  "id": "4c34626756",
-                  "label": "B",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "width": "100%",
-                    "margin-left": "8px",
-                    "background": "white",
-                    "border": "1px solid darkgrey",
-                    "box-sizing": "border-box",
-                    "border-radius": "2px"
-                  },
-                  "children": []
-                },
-                {
-                  "id": "4c34634014",
-                  "label": "A",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "width": "100%",
-                    "margin-left": "8px",
-                    "background": "white",
-                    "border": "1px solid darkgrey",
-                    "box-sizing": "border-box",
-                    "border-radius": "2px"
-                  },
-                  "children": []
-                }
-              ]
+              "children": [],
+              "metadata": {}
             }
-          ]
+          ],
+          "metadata": {}
         }
-      ]
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 865,
+          "top": 115,
+          "right": 1206.9731490569202,
+          "bottom": 392.26328497875284
+        }
+      }
     },
     {
-      "id": "4c34638274",
-      "name": "frame",
-      "bounds": {
-        "left": 622,
-        "top": 467,
-        "right": 826,
-        "bottom": 688.0847313639812
-      },
+      "id": "4c34638273",
+      "variant": [],
+      "is": "b6c162d113",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
       "children": [
         {
-          "id": "4c34638273",
-          "variant": [],
-          "is": "b6c162d113",
-          "name": "component-instance",
+          "id": "4c34638991",
+          "propertyName": "children",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "4c34638990",
+              "name": "text",
+              "label": "Text",
+              "value": "Click to edit",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "4c34639058",
+              "name": "text",
+              "label": "Text",
+              "value": "Click to edit",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "4c34639126",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Backgrounds",
+          "name": "override",
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 622,
+          "top": 467,
+          "right": 826,
+          "bottom": 688.0847313639812
+        }
+      }
+    },
+    {
+      "id": "962618dd68",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "962618dd209",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
           "attributes": {},
           "style": {},
           "children": [
             {
-              "id": "4c34638991",
-              "propertyName": "children",
-              "targetIdPath": [
-                "b6c162d1281"
-              ],
-              "name": "override",
-              "children": [
-                {
-                  "id": "4c34638990",
-                  "name": "text",
-                  "label": "Text",
-                  "value": "Click to edit",
-                  "style": {},
-                  "children": []
-                },
-                {
-                  "id": "4c34639058",
-                  "name": "text",
-                  "label": "Text",
-                  "value": "Click to edit",
-                  "style": {},
-                  "children": []
-                }
-              ]
-            },
-            {
-              "id": "4c34639126",
-              "propertyName": "text",
-              "targetIdPath": [
-                "b6c162d1281"
-              ],
-              "value": "Backgrounds",
-              "name": "override",
-              "children": []
+              "id": "962618dd138",
+              "name": "text",
+              "label": "Text",
+              "value": "Something",
+              "style": {
+                "color": "red",
+                "font-family": "HElvetica"
+              },
+              "children": [],
+              "metadata": {}
             }
-          ]
+          ],
+          "metadata": {}
         }
-      ]
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -333.6215992109374,
+          "top": 393.51804583980305,
+          "right": -233.6215992109374,
+          "bottom": 493.51804583980305
+        }
+      }
     }
   ]
 }

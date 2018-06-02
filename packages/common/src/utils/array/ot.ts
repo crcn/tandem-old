@@ -164,9 +164,9 @@ export function patchArray<T>(
         const patchedValue = mapUpdate(oldValue, newValue);
         if (patchedValue !== oldValue || patchedOldIndex !== index) {
           if (patchedOldIndex !== index) {
-            target.splice(patchedOldIndex, 1);
+            newTarget.splice(patchedOldIndex, 1);
           }
-          target.splice(index, 0, patchedValue);
+          newTarget.splice(index, 0, patchedValue);
         }
       }
     }

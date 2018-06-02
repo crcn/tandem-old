@@ -44,7 +44,7 @@ import {
   getSyntheticSourceNode,
   getPCNodeDependency,
   findRootInstanceOfPCNode,
-  getSyntheticVisibleNodeById,
+  getSyntheticNodeById,
   getSyntheticVisibleNodeDocument,
   updateSyntheticVisibleNode,
   Frame,
@@ -56,11 +56,11 @@ import {
   isSyntheticVisibleNodeMovable,
   isSyntheticVisibleNodeResizable,
   updateFrame,
-  diffSyntheticVisibleNode,
+  diffSyntheticNode,
   SyntheticOperationalTransformType,
   SyntheticInsertChildOperationalTransform,
   PCSourceTagNames,
-  patchSyntheticVisibleNode,
+  patchSyntheticNode,
   getSyntheticDocumentById,
   SyntheticDocument,
   updateSyntheticDocument,
@@ -213,9 +213,9 @@ const getUpdatedSyntheticVisibleNodes = (
 
     let model: SyntheticDocument = oldDocument;
 
-    diffSyntheticVisibleNode(oldDocument, newDocument).forEach(ot => {
+    diffSyntheticNode(oldDocument, newDocument).forEach(ot => {
       const target = getTreeNodeFromPath(ot.nodePath, model);
-      model = patchSyntheticVisibleNode([ot], model);
+      model = patchSyntheticNode([ot], model);
 
       // TODO - will need to check if new parent is not in an instance of a component.
       // Will also need to consider child overrides though.
@@ -666,7 +666,7 @@ export const setRootStateSyntheticVisibleNodeExpanded = (
   value: boolean,
   state: RootState
 ) => {
-  const node = getSyntheticVisibleNodeById(nodeId, state.documents);
+  const node = getSyntheticNodeById(nodeId, state.documents);
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
 
   state = updateSyntheticDocument(
@@ -703,7 +703,7 @@ export const setRootStateSyntheticVisibleNodeLabelEditing = (
   value: boolean,
   state: RootState
 ) => {
-  const node = getSyntheticVisibleNodeById(nodeId, state.documents);
+  const node = getSyntheticNodeById(nodeId, state.documents);
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   state = updateSyntheticDocument(
     updateSyntheticVisibleNodeMetadata(
@@ -972,7 +972,7 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   const frame = getFrameFromPoint(scaledMousePos, state);
 
   if (!frame) return null;
-  const contentNode = getSyntheticVisibleNodeById(
+  const contentNode = getSyntheticNodeById(
     frame.contentNodeId,
     state.documents
   );
@@ -1119,14 +1119,14 @@ export const getSelectionBounds = memoize((root: RootState) =>
 
 export const isSelectionMovable = memoize((root: RootState) => {
   return !root.selectedNodeIds.some(nodeId => {
-    const node = getSyntheticVisibleNodeById(nodeId, root.documents);
+    const node = getSyntheticNodeById(nodeId, root.documents);
     return !isSyntheticVisibleNodeMovable(node);
   });
 });
 
 export const isSelectionResizable = memoize((root: RootState) => {
   return !root.selectedNodeIds.some(nodeId => {
-    const node = getSyntheticVisibleNodeById(nodeId, root.documents);
+    const node = getSyntheticNodeById(nodeId, root.documents);
     return !isSyntheticVisibleNodeResizable(node);
   });
 });

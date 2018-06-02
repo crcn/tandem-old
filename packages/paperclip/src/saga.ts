@@ -17,10 +17,10 @@ import {
 import { KeyValue } from "tandem-common";
 import { Dependency, DependencyGraph } from "./graph";
 import { loadEntry, FileLoader } from "./loader";
-import { diffSyntheticVisibleNode } from "./ot";
+import { diffSyntheticNode } from "./ot";
 import { PCEditorState, Frame } from "./edit";
 import {
-  getSyntheticVisibleNodeById,
+  getSyntheticNodeById,
   SyntheticDocument,
   SyntheticVisibleNode
 } from "./synthetic";
@@ -60,11 +60,11 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
           currDocuments = documents;
 
           for (const currFrame of currFrames) {
-            const contentNode = getSyntheticVisibleNodeById(
+            const contentNode = getSyntheticNodeById(
               currFrame.contentNodeId,
               documents
             );
-            const prevContentNode = getSyntheticVisibleNodeById(
+            const prevContentNode = getSyntheticNodeById(
               currFrame.contentNodeId,
               prevDocuments
             );
@@ -150,7 +150,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
         const eventType = yield take(eventChan);
         if (eventType === "load") {
           const state: PCEditorState = yield select();
-          const contentNode = getSyntheticVisibleNodeById(
+          const contentNode = getSyntheticNodeById(
             frame.contentNodeId,
             state.documents
           );
@@ -191,7 +191,7 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
       }
 
       if (oldContentNode !== newContentNode) {
-        const ots = diffSyntheticVisibleNode(oldContentNode, newContentNode);
+        const ots = diffSyntheticNode(oldContentNode, newContentNode);
         frameNodeMap[frame.contentNodeId] = patchDOM(
           ots,
           oldContentNode,

@@ -157,7 +157,7 @@ import {
   getSyntheticVisibleNodeRelativeBounds,
   getSyntheticVisibleNodeDocument,
   getSyntheticSourceNode,
-  getSyntheticVisibleNodeById,
+  getSyntheticNodeById,
   SyntheticVisibleNode,
   queueLoadDependencyUri,
   getPCNodeDependency,
@@ -179,7 +179,12 @@ import {
   persistRawCSSText,
   SyntheticTextNode,
   updatePCNodeMetadata,
-  PCVisibleNodeMetadataKey
+  PCVisibleNodeMetadataKey,
+  getSyntheticDocumentByDependencyUri,
+  SyntheticBaseNode,
+  getFrameSyntheticNode,
+  SyntheticDocument,
+  getFrameByContentNodeId
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -655,7 +660,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
           state = updateSyntheticVisibleNodePosition(
             newBounds,
-            getSyntheticVisibleNodeById(nodeId, state.documents),
+            getSyntheticNodeById(nodeId, state.documents),
             state
           );
         }
@@ -679,7 +684,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state = persistRootState(state => {
           return state.selectedNodeIds.reduce((state, nodeId) => {
             return persistSyntheticVisibleNodeBounds(
-              getSyntheticVisibleNodeById(nodeId, state.documents),
+              getSyntheticNodeById(nodeId, state.documents),
               state
             );
           }, state);
@@ -752,7 +757,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       if (targetNodeId) {
         targetSourceId = getSyntheticSourceNode(
-          getSyntheticVisibleNodeById(targetNodeId, state.documents),
+          getSyntheticNodeById(targetNodeId, state.documents),
           state.graph
         ).id;
       } else {
@@ -859,7 +864,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         action as CanvasToolOverlayMouseMoved,
         node => node.name !== PCSourceTagNames.TEXT
       );
-      const node = getSyntheticVisibleNodeById(targetNodeId, state.documents);
+      const node = getSyntheticNodeById(targetNodeId, state.documents);
 
       state = updateRootState(
         {
@@ -938,7 +943,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       for (const nodeId of getBoundedSelection(state)) {
         state = updateSyntheticVisibleNodeBounds(
           getNewSyntheticVisibleNodeBounds(newBounds, nodeId, state),
-          getSyntheticVisibleNodeById(nodeId, state.documents),
+          getSyntheticNodeById(nodeId, state.documents),
           state
         );
       }
@@ -963,7 +968,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return state.selectedNodeIds.reduce(
           (state, nodeId) =>
             persistSyntheticVisibleNodeBounds(
-              getSyntheticVisibleNodeById(nodeId, state.documents),
+              getSyntheticNodeById(nodeId, state.documents),
               state
             ),
           state
@@ -979,7 +984,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           (state, nodeId) =>
             persistRawCSSText(
               cssText,
-              getSyntheticVisibleNodeById(nodeId, state.documents),
+              getSyntheticNodeById(nodeId, state.documents),
               state
             ),
           state
@@ -1015,7 +1020,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootState(state => {
         return persistChangeSyntheticTextNodeValue(
           value,
-          getSyntheticVisibleNodeById(
+          getSyntheticNodeById(
             state.selectedNodeIds[0],
             state.documents
           ) as SyntheticTextNode,
@@ -1025,19 +1030,19 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
     case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
-      const {
-        documentId,
-        sourceEvent
-      } = action as CanvasToolArtboardTitleClicked;
-      const frame = state.frames[documentId];
+      const { frame, sourceEvent } = action as CanvasToolArtboardTitleClicked;
+      const contentNode = getFrameSyntheticNode(frame, state.documents);
       state = updateEditorCanvas(
         { smooth: false },
-        getPCNodeDependency(frame.root.source.nodeId, state.graph).uri,
+        getPCNodeDependency(
+          getSyntheticSourceNode(contentNode, state.graph).id,
+          state.graph
+        ).uri,
         state
       );
       return handleArtboardSelectionFromAction(
         state,
-        frame.root.id,
+        frame.contentNodeId,
         action as CanvasToolArtboardTitleClicked
       );
     }
@@ -1087,8 +1092,8 @@ const persistInsertNodeFromPoint = (
 ) => {
   const oldState = state;
   const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
-  const targetNode =
-    targetNodeId && getSyntheticVisibleNodeById(targetNodeId, state.documents);
+  let targetNode: SyntheticVisibleNode | SyntheticDocument =
+    targetNodeId && getSyntheticNodeById(targetNodeId, state.documents);
 
   if (!targetNode) {
     const newPoint = shiftPoint(
@@ -1112,16 +1117,16 @@ const persistInsertNodeFromPoint = (
       },
       node
     );
+
+    targetNode = getSyntheticDocumentByDependencyUri(
+      fileUri,
+      state.documents,
+      state.graph
+    );
   }
 
   state = persistRootState(browser => {
-    return persistInsertNode(
-      fileUri,
-      node,
-      targetNode,
-      TreeMoveOffset.APPEND,
-      state
-    );
+    return persistInsertNode(node, targetNode, TreeMoveOffset.APPEND, state);
   }, state);
 
   state = selectInsertedSyntheticVisibleNodes(oldState, state);
@@ -1237,10 +1242,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       state = persistRootState(
         state =>
           persistConvertNodeToComponent(
-            getSyntheticVisibleNodeById(
-              state.selectedNodeIds[0],
-              state.documents
-            ),
+            getSyntheticNodeById(state.selectedNodeIds[0], state.documents),
             state
           ),
         state
@@ -1269,7 +1271,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return persistRootState(state => {
         state = state.selectedNodeIds.reduce((state, nodeId) => {
           return persistRemoveSyntheticVisibleNode(
-            getSyntheticVisibleNodeById(nodeId, state.documents),
+            getSyntheticNodeById(nodeId, state.documents),
             state
           );
         }, state);
@@ -1292,7 +1294,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
 
       if (state.selectedNodeIds.length) {
         const nodeId = state.selectedNodeIds[0];
-        const node = getSyntheticVisibleNodeById(nodeId, state.documents);
+        const node = getSyntheticNodeById(nodeId, state.documents);
         targetNode = getSyntheticSourceNode(node, state.graph);
         targetNode = getParentTreeNode(
           targetNode.id,

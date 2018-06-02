@@ -304,6 +304,7 @@ export const extendsComponent = (
 
 export const assertValidPCModule = memoize((module: PCModule) => {
   if (!validatePCModule(module)) {
+    console.warn(module);
     throw new Error(`Malformed PC Module`);
   }
 });
