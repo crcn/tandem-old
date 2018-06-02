@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+* paperclip tests for persisting + overrides
 * override children on drop
 * back onto styling doc
   * **color picker**
