@@ -1,4 +1,4 @@
-import { evaluateDependency } from "..";
+import { evaluateDependency, PCEditorState } from "..";
 
 describe(__filename + "#", () => {
   xit("");
