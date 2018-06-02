@@ -1,4 +1,8 @@
-import { SyntheticNode, SyntheticSource } from "./synthetic";
+import {
+  SyntheticVisibleNode,
+  SyntheticSource,
+  SyntheticBaseNode
+} from "./synthetic";
 import {
   updateNestedNode,
   updateNestedNodeFromPath,
@@ -23,7 +27,7 @@ export type BaseSyntheticOperationalTransform<
 export type SyntheticInsertChildOperationalTransform = {
   nodePath: number[];
   index: number;
-  child: SyntheticNode;
+  child: SyntheticVisibleNode;
 } & BaseSyntheticOperationalTransform<
   SyntheticOperationalTransformType.INSERT_CHILD
 >;
@@ -59,7 +63,7 @@ export type SyntheticOperationalTransform =
 
 const createSyntheticInsertChildOperationalTransform = (
   nodePath: number[],
-  child: SyntheticNode,
+  child: SyntheticVisibleNode,
   index: number
 ): SyntheticInsertChildOperationalTransform => ({
   type: SyntheticOperationalTransformType.INSERT_CHILD,
@@ -99,11 +103,11 @@ const createSyntheticSetPropertyOperationalTransform = (
   value
 });
 
-const _diffSyntheticNodeMemos = {};
+const _diffSyntheticVisibleNodeMemos = {};
 
-export const diffSyntheticNode = memoize(
-  (oldNode: SyntheticNode, newNode: SyntheticNode) => {
-    const ots = _diffSyntheticNode(oldNode, newNode, []);
+export const diffSyntheticVisibleNode = memoize(
+  (oldNode: SyntheticBaseNode, newNode: SyntheticBaseNode) => {
+    const ots = _diffSyntheticVisibleNode(oldNode, newNode, []);
     return ots;
   }
 );
@@ -114,15 +118,15 @@ const PROHIBITED_DIFF_KEYS = {
   metadata: true
 };
 
-const _diffSyntheticNode = (
-  oldNode: SyntheticNode,
-  newNode: SyntheticNode,
+const _diffSyntheticVisibleNode = (
+  oldNode: SyntheticBaseNode,
+  newNode: SyntheticBaseNode,
   nodePath: number[],
   ots: SyntheticOperationalTransform[] = []
 ): SyntheticOperationalTransform[] => {
   const memoKey = oldNode.id + newNode.id;
-  if (_diffSyntheticNodeMemos[memoKey]) {
-    return _diffSyntheticNodeMemos[memoKey];
+  if (_diffSyntheticVisibleNodeMemos[memoKey]) {
+    return _diffSyntheticVisibleNodeMemos[memoKey];
   }
 
   for (const key in newNode) {
@@ -145,18 +149,18 @@ const _diffSyntheticNode = (
     }
   }
 
-  const modelChildren = [...oldNode.children] as SyntheticNode[];
+  const modelChildren = [...oldNode.children] as SyntheticVisibleNode[];
   const oldChildIds = {};
 
   // DELETE
   for (let i = oldNode.children.length; i--; ) {
-    let found: SyntheticNode;
+    let found: SyntheticVisibleNode;
     let foundIndex: number;
-    const oldChild = oldNode.children[i] as SyntheticNode;
+    const oldChild = oldNode.children[i] as SyntheticVisibleNode;
     oldChildIds[oldChild.source.nodeId] = 1;
 
     for (let j = newNode.children.length; j--; ) {
-      const newChild = newNode.children[j] as SyntheticNode;
+      const newChild = newNode.children[j] as SyntheticVisibleNode;
       if (newChild.source.nodeId === oldChild.source.nodeId) {
         found = newChild;
         foundIndex = j;
@@ -167,7 +171,7 @@ const _diffSyntheticNode = (
     const oldIndex = modelChildren.indexOf(oldChild);
 
     if (found) {
-      _diffSyntheticNode(
+      _diffSyntheticVisibleNode(
         oldChild,
         found,
         [...nodePath, modelChildren.indexOf(oldChild)],
@@ -194,7 +198,7 @@ const _diffSyntheticNode = (
   }
 
   for (let i = 0, { length } = newNode.children; i < length; i++) {
-    const child = newNode.children[i] as SyntheticNode;
+    const child = newNode.children[i] as SyntheticVisibleNode;
     if (!oldChildIds[child.source.nodeId]) {
       ots.push(
         createSyntheticInsertChildOperationalTransform(nodePath, child, i)
@@ -205,15 +209,15 @@ const _diffSyntheticNode = (
   return ots;
 };
 
-export const patchSyntheticNode = (
+export const patchSyntheticVisibleNode = (
   ots: SyntheticOperationalTransform[],
-  oldNode: SyntheticNode
+  oldNode: SyntheticBaseNode
 ) =>
   ots.reduce((node, ot) => {
     return updateNestedNodeFromPath(
       ot.nodePath,
       node,
-      (target: SyntheticNode) => {
+      (target: SyntheticVisibleNode) => {
         switch (ot.type) {
           case SyntheticOperationalTransformType.SET_PROPERTY: {
             return {

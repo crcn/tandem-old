@@ -9,9 +9,10 @@ import { RootState, Editor } from "../../../../../../../state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import {
-  SyntheticNode,
-  SyntheticFrame,
-  getSyntheticFramesByDependencyUri
+  SyntheticVisibleNode,
+  Frame,
+  getFramesByDependencyUri,
+  getSyntheticVisibleNodeById
 } from "paperclip";
 import {
   Bounds,
@@ -42,7 +43,7 @@ export type VisualToolsProps = {
 
 type ArtboardOverlayToolsOuterProps = {
   dispatch: Dispatch<any>;
-  frame: SyntheticFrame;
+  frame: Frame;
   zoom: number;
   hoveringNodeIds: string[];
 };
@@ -83,7 +84,7 @@ const NodeOverlayBase = ({ zoom, bounds, dispatch }: NodeOverlayProps) => {
 
 const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
 
-const getDocumentRelativeBounds = memoize((document: SyntheticFrame) => ({
+const getDocumentRelativeBounds = memoize((document: Frame) => ({
   left: 0,
   top: 0,
   right: document.bounds.right - document.bounds.left,
@@ -130,7 +131,7 @@ const ArtboardOverlayToolsBase = ({
           style={{ width: "100%", height: "100%", position: "absolute" } as any}
           onDoubleClick={wrapEventToDispatch(
             dispatch,
-            canvasToolOverlayMouseDoubleClicked.bind(this, frame.source.nodeId)
+            canvasToolOverlayMouseDoubleClicked.bind(this, frame.contentNodeId)
           )}
         >
           {hoveringNodeIds.map(nodeId => (
@@ -138,7 +139,7 @@ const ArtboardOverlayToolsBase = ({
               zoom={zoom}
               key={nodeId}
               bounds={
-                frame.source.nodeId === nodeId
+                frame.contentNodeId === nodeId
                   ? getDocumentRelativeBounds(frame)
                   : frame.computed[nodeId] && frame.computed[nodeId].bounds
               }
@@ -161,12 +162,12 @@ const enhanceArtboardOverlayTools = compose<
       dispatch,
       frame
     }: ArtboardOverlayToolsOuterProps) => event => {
-      dispatch(canvasToolOverlayMousePanStart(frame.source.nodeId));
+      dispatch(canvasToolOverlayMousePanStart(frame.contentNodeId));
     },
     onPan: ({ dispatch, frame }: ArtboardOverlayToolsOuterProps) => event => {
       dispatch(
         canvasToolOverlayMousePanning(
-          frame.source.nodeId,
+          frame.contentNodeId,
           { left: event.center.x, top: event.center.y },
           event.deltaY,
           event.velocityY
@@ -179,7 +180,7 @@ const enhanceArtboardOverlayTools = compose<
     }: ArtboardOverlayToolsOuterProps) => event => {
       event.preventDefault();
       setImmediate(() => {
-        dispatch(canvasToolOverlayMousePanEnd(frame.source.nodeId));
+        dispatch(canvasToolOverlayMousePanEnd(frame.contentNodeId));
       });
     }
   })
@@ -197,9 +198,14 @@ const getNodes = memoize(
   }
 );
 
-const getHoveringSyntheticNodes = memoize(
-  (root: RootState, frame: SyntheticFrame): string[] => {
-    const allNodes = (frame && getTreeNodeIdMap(frame.root)) || {};
+const getHoveringSyntheticVisibleNodes = memoize(
+  (root: RootState, frame: Frame): string[] => {
+    const allNodes =
+      (frame &&
+        getTreeNodeIdMap(
+          getSyntheticVisibleNodeById(frame.contentNodeId, root.documents)
+        )) ||
+      {};
     const selectionRefIds = root.selectedNodeIds;
     return root.hoveringNodeIds.filter(
       nodeId => selectionRefIds.indexOf(nodeId) === -1
@@ -213,9 +219,10 @@ export const NodeOverlaysToolBase = ({
   dispatch,
   zoom
 }: VisualToolsProps) => {
-  const activeFrames = getSyntheticFramesByDependencyUri(
+  const activeFrames = getFramesByDependencyUri(
     editor.activeFilePath,
-    root.syntheticFrames,
+    root.frames,
+    root.documents,
     root.graph
   );
 
@@ -224,9 +231,9 @@ export const NodeOverlaysToolBase = ({
       {activeFrames.map((frame, i) => {
         return (
           <ArtboardOverlayTools
-            key={frame.source.nodeId}
+            key={frame.contentNodeId}
             frame={frame}
-            hoveringNodeIds={getHoveringSyntheticNodes(root, frame)}
+            hoveringNodeIds={getHoveringSyntheticVisibleNodes(root, frame)}
             dispatch={dispatch}
             zoom={zoom}
           />

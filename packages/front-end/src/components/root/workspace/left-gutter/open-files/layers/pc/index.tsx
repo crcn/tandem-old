@@ -3,9 +3,14 @@ import * as React from "react";
 import * as cx from "classnames";
 import {
   RootState,
-  SyntheticNodeMetadataKeys
+  SyntheticVisibleNodeMetadataKeys
 } from "../../../../../../../state";
-import { SyntheticNode, SyntheticFrame, SyntheticElement } from "paperclip";
+import {
+  SyntheticVisibleNode,
+  Frame,
+  SyntheticElement,
+  SyntheticDocument
+} from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
 import {
   createTreeLayerComponents,
@@ -39,8 +44,8 @@ type PCLayerOuterProps = {
 } & TreeNodeLayerOuterProps;
 
 const isMovableNode = ({ node, inComponentInstance }: any) => {
-  const sn = node as SyntheticNode;
-  if (sn.isRoot) {
+  const sn = node as SyntheticVisibleNode;
+  if (sn.isContentNode) {
     if (sn.isCreatedFromComponent) {
       return sn.isComponentInstance;
     }
@@ -55,7 +60,7 @@ const isMovableNode = ({ node, inComponentInstance }: any) => {
 };
 
 const canDropNode = (
-  child: SyntheticNode,
+  child: SyntheticVisibleNode,
   { node, inComponentInstance }: any,
   offset: TreeMoveOffset
 ) => {
@@ -80,11 +85,11 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       treeLayerEditLabelBlur: pcEditLayerLabelBlur
     },
     attributeOptions: {
-      nodeLabelAttr: (node: SyntheticNode) => node.label,
-      expandAttr: (node: SyntheticNode) =>
-        node.metadata[SyntheticNodeMetadataKeys.EXPANDED],
-      editingLabelAttr: (node: SyntheticNode) =>
-        node.metadata[SyntheticNodeMetadataKeys.EDITING_LABEL]
+      nodeLabelAttr: (node: SyntheticVisibleNode) => node.label,
+      expandAttr: (node: SyntheticVisibleNode) =>
+        node.metadata[SyntheticVisibleNodeMetadataKeys.EXPANDED],
+      editingLabelAttr: (node: SyntheticVisibleNode) =>
+        node.metadata[SyntheticVisibleNodeMetadataKeys.EDITING_LABEL]
     },
     canDrop: canDropNode,
     canDrag: isMovableNode,
@@ -95,13 +100,18 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
         "is-component-instance": props.node.isComponentInstance,
         "in-component-instance": props.inComponentInstance,
         "is-component-root":
-          props.isRoot &&
+          props.isContentNode &&
           props.node.isCreatedFromComponent &&
           !props.node.isComponentInstance
       })
     }),
     layerRenderer: Base => (props: PCLayerOuterProps) => {
-      return <Base {...props} isRoot={(props.node as SyntheticNode).isRoot} />;
+      return (
+        <Base
+          {...props}
+          isContentNode={(props.node as SyntheticVisibleNode).isContentNode}
+        />
+      );
     },
     childRenderer: Base => {
       const childRenderer = defaultChildRender(Base);
@@ -110,36 +120,38 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
           ...props,
           inComponentInstance:
             props.inComponentInstance ||
-            (props.node as SyntheticNode).isComponentInstance
+            (props.node as SyntheticVisibleNode).isComponentInstance
         } as any);
       };
     }
   }
 );
 
-type SyntheticFrameLayersOuterProps = {
+type FrameLayersOuterProps = {
+  document: SyntheticDocument;
   hoveringNodeIds: string[];
   selectedReferences: string[];
   dispatch: Dispatch<any>;
-  // window: SyntheticFrame;
-  frames: SyntheticFrame[];
+  // window: Frame;
+  frames: Frame[];
 };
 
-type SyntheticFrameLayersInnerProps = {} & SyntheticFrameLayersOuterProps;
+type FrameLayersInnerProps = {} & FrameLayersOuterProps;
 
-const BaseSyntheticFrameLayersComponent = ({
+const BaseFrameLayersComponent = ({
   hoveringNodeIds,
   selectedReferences,
   dispatch,
-  frames
-}: SyntheticFrameLayersInnerProps) => {
+  frames,
+  document
+}: FrameLayersInnerProps) => {
   return (
     <div className="m-synthetic-window-layers">
       {frames.map(frame => {
         return (
           <TreeNodeLayerComponent
-            key={frame.source.nodeId}
-            node={frame.root}
+            key={frame.contentNodeId}
+            node={getNestedTreeNodeById(frame.contentNodeId, document)}
             depth={0}
             hoveringNodeIds={hoveringNodeIds}
             selectedNodeIds={selectedReferences}
@@ -151,7 +163,7 @@ const BaseSyntheticFrameLayersComponent = ({
   );
 };
 
-export const SyntheticFrameLayersComponent = compose<
-  SyntheticFrameLayersInnerProps,
-  SyntheticFrameLayersOuterProps
->(pure)(BaseSyntheticFrameLayersComponent);
+export const FrameLayersComponent = compose<
+  FrameLayersInnerProps,
+  FrameLayersOuterProps
+>(pure)(BaseFrameLayersComponent);

@@ -5,12 +5,7 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-import { getSyntheticFramesByDependencyUri } from "paperclip";
-import {
-  RootState,
-  Editor,
-  getActiveSyntheticFrames
-} from "../../../../../../../state";
+import { RootState, Editor, getActiveFrames } from "../../../../../../../state";
 import { SelectableToolsComponent } from "./selectables";
 import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";
@@ -30,7 +25,6 @@ const BaseToolsLayerComponent = ({
   zoom,
   dispatch
 }: ToolsLayerComponent) => {
-  // const activeFrames = getSyntheticFramesByDependencyUri(editor.activeFilePath, root.paperclip);
   return (
     <div className="m-tools-layer">
       <InsertLayer

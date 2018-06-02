@@ -11,7 +11,9 @@ import {
   updateNestedNode,
   shiftBounds,
   Point,
-  findTreeNodeParent
+  findTreeNodeParent,
+  diffArray,
+  patchArray
 } from "tandem-common";
 import { values } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -19,62 +21,37 @@ import {
   PCNode,
   getPCNode,
   PCVisibleNode,
-  getPCNodeFrame,
+  getPCNodeContentNode,
   getPCNodeDependency,
   PCSourceTagNames,
   getPCImportedChildrenSourceUris,
   PCTextNode,
   PCElement
 } from "./dsl";
-import { diffSyntheticNode, patchSyntheticNode } from "./ot";
-
-/*------------------------------------------
- * CONSTANTS
- *-----------------------------------------*/
-
-const NO_BOUNDS = { left: 0, top: 0, right: 0, bottom: 0 };
+import { diffSyntheticVisibleNode, patchSyntheticVisibleNode } from "./ot";
 
 /*------------------------------------------
  * STATE
  *-----------------------------------------*/
 
-export type ComputedDisplayInfo = {
-  [identifier: string]: {
-    bounds: Bounds;
-    style: CSSStyleDeclaration;
-  };
-};
-
-export type PCNodeClip = {
-  uri: string;
-  node: PCNode;
-  fixedBounds: Bounds;
-};
-
-export type SyntheticFrames = KeyValue<SyntheticFrame>;
-
 export type SyntheticSource = {
   nodeId: string;
-};
-
-export type SyntheticFrame = {
-  root: SyntheticNode;
-  source: SyntheticSource;
-  bounds: Bounds;
-
-  // internal only
-  $container?: HTMLElement;
-  computed?: ComputedDisplayInfo;
 };
 
 export type SyntheticBaseNode = {
   metadata: KeyValue<any>;
   source: SyntheticSource;
-  isRoot?: boolean;
+
+  // TODO - this information should go in metadata
+  isContentNode?: boolean;
   isCreatedFromComponent?: boolean;
   isComponentInstance?: boolean;
   label?: string;
 } & TreeNode<string>;
+
+export type SyntheticDocument = {
+  children: SyntheticVisibleNode[];
+} & SyntheticBaseNode;
 
 export type SyntheticElement = {
   attributes: KeyValue<string>;
@@ -86,29 +63,41 @@ export type SyntheticTextNode = {
   style: KeyValue<any>;
 } & SyntheticBaseNode;
 
-export type SyntheticNode = SyntheticElement | SyntheticTextNode;
+export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;
 
 /*------------------------------------------
  * STATE FACTORIES
  *-----------------------------------------*/
+
+export const createSytheticDocument = (
+  source: SyntheticSource,
+  children?: SyntheticVisibleNode[]
+): SyntheticDocument => ({
+  id: generateUID(),
+  metadata: EMPTY_OBJECT,
+  source,
+  name: "document",
+  children: children || EMPTY_ARRAY
+});
 
 export const createSyntheticElement = (
   name: string,
   source: SyntheticSource,
   style: KeyValue<any> = {},
   attributes: KeyValue<string>,
-  children: SyntheticNode[] = EMPTY_ARRAY,
+  children: SyntheticVisibleNode[] = EMPTY_ARRAY,
   label?: string,
-  isRoot?: boolean,
+  isContentNode?: boolean,
   isCreatedFromComponent?: boolean,
-  isComponentInstance?: boolean
+  isComponentInstance?: boolean,
+  metadata?: KeyValue<any>
 ): SyntheticElement => ({
   id: generateUID(),
-  metadata: EMPTY_OBJECT,
+  metadata: metadata || EMPTY_OBJECT,
   label,
   isComponentInstance,
   isCreatedFromComponent,
-  isRoot,
+  isContentNode,
   source,
   name,
   attributes,
@@ -121,14 +110,15 @@ export const createSyntheticTextNode = (
   source: SyntheticSource,
   style: KeyValue<any> = EMPTY_OBJECT,
   label?: string,
-  isRoot?: boolean,
-  isCreatedFromComponent?: boolean
+  isContentNode?: boolean,
+  isCreatedFromComponent?: boolean,
+  metadata?: KeyValue<any>
 ): SyntheticTextNode => ({
   label,
   id: generateUID(),
-  metadata: EMPTY_OBJECT,
+  metadata: metadata || EMPTY_OBJECT,
   value,
-  isRoot,
+  isContentNode,
   isCreatedFromComponent,
   source,
   name: PCSourceTagNames.TEXT,
@@ -140,24 +130,24 @@ export const createSyntheticTextNode = (
  * TYPE UTILS
  *-----------------------------------------*/
 
-export const isPaperclipState = (state: any) => Boolean(state.syntheticFrames);
+export const isPaperclipState = (state: any) => Boolean(state.frames);
 
-export const isSyntheticNodeRoot = (
-  node: SyntheticNode,
+export const isSyntheticVisibleNodeRoot = (
+  node: SyntheticVisibleNode,
   graph: DependencyGraph
 ) => getSyntheticSourceFrame(node, graph).children[0].id === node.source.nodeId;
 
-export const isSyntheticDocumentRoot = (node: SyntheticNode) => {
-  return node.isRoot;
+export const isSyntheticDocumentRoot = (node: SyntheticVisibleNode) => {
+  return node.isContentNode;
 };
 
-export const isSyntheticNodeMovable = (node: SyntheticNode) =>
+export const isSyntheticVisibleNodeMovable = (node: SyntheticVisibleNode) =>
   isSyntheticDocumentRoot(node) ||
   /fixed|relative|absolute/.test(node.style.position || "static");
 
-export const isSyntheticNodeResizable = (node: SyntheticNode) =>
+export const isSyntheticVisibleNodeResizable = (node: SyntheticVisibleNode) =>
   isSyntheticDocumentRoot(node) ||
-  isSyntheticNodeMovable(node) ||
+  isSyntheticVisibleNodeMovable(node) ||
   /block|inline-block|flex|inline-flex/.test(node.style.display || "inline");
 
 /*------------------------------------------
@@ -165,147 +155,108 @@ export const isSyntheticNodeResizable = (node: SyntheticNode) =>
  *-----------------------------------------*/
 
 export const getSyntheticSourceNode = (
-  node: SyntheticNode,
+  node: SyntheticVisibleNode,
   graph: DependencyGraph
 ) => getPCNode(node.source.nodeId, graph) as PCVisibleNode;
 
 export const getSyntheticSourceFrame = (
-  node: SyntheticNode,
+  node: SyntheticVisibleNode,
   graph: DependencyGraph
 ) =>
-  getPCNodeFrame(
+  getPCNodeContentNode(
     node.source.nodeId,
     getPCNodeDependency(node.source.nodeId, graph).content
   );
 
-export const getSyntheticFramesByDependencyUri = memoize(
+export const getSyntheticDocumentByDependencyUri = memoize(
   (
     uri: string,
-    frames: SyntheticFrames,
+    documents: SyntheticDocument[],
     graph: DependencyGraph
-  ): SyntheticFrame[] => {
-    return values(frames).filter((frame: SyntheticFrame) => {
-      return getPCNodeDependency(frame.source.nodeId, graph).uri === uri;
+  ): SyntheticDocument => {
+    return documents.find((document: SyntheticDocument) => {
+      return getPCNodeDependency(document.source.nodeId, graph).uri === uri;
     });
   }
 );
 
-export const getSyntheticFrameDependencyUri = (
-  frame: SyntheticFrame,
+export const getSyntheticDocumentDependencyUri = (
+  document: SyntheticDocument,
   graph: DependencyGraph
 ) => {
-  return getPCNodeDependency(frame.root.source.nodeId, graph).uri;
+  return getPCNodeDependency(document.source.nodeId, graph).uri;
 };
 
-export const getSyntheticNodeFrame = memoize(
+export const getSyntheticVisibleNodeDocument = memoize(
   (
     syntheticNodeId: string,
-    syntheticFrames: SyntheticFrames
-  ): SyntheticFrame => {
-    for (const sourceFrameId in syntheticFrames) {
-      const frame = syntheticFrames[sourceFrameId];
-      if (getNestedTreeNodeById(syntheticNodeId, frame.root)) {
-        return frame;
+    syntheticDocuments: SyntheticDocument[]
+  ): SyntheticDocument => {
+    return syntheticDocuments.find(document => {
+      return getNestedTreeNodeById(syntheticNodeId, document);
+    });
+  }
+);
+
+export const getSyntheticSourceUri = (
+  syntheticNode: SyntheticVisibleNode,
+  graph: DependencyGraph
+) => {
+  return getPCNodeDependency(syntheticNode.source.nodeId, graph).uri;
+};
+
+export const getSyntheticVisibleNodeById = memoize(
+  (
+    syntheticNodeId: string,
+    documents: SyntheticDocument[]
+  ): SyntheticVisibleNode => {
+    const document = getSyntheticVisibleNodeDocument(
+      syntheticNodeId,
+      documents
+    );
+    if (!document) {
+      return null;
+    }
+    return getNestedTreeNodeById(syntheticNodeId, document);
+  }
+);
+
+export const getSyntheticVisibleNodeSourceDependency = (
+  node: SyntheticVisibleNode,
+  graph: DependencyGraph
+) => getPCNodeDependency(node.source.nodeId, graph);
+
+export const findRootInstanceOfPCNode = memoize(
+  (node: PCVisibleNode, documents: SyntheticDocument[]) => {
+    for (const document of documents) {
+      for (const contentNode of document.children) {
+        if (contentNode.source.nodeId === node.id) {
+          return contentNode;
+        }
       }
     }
     return null;
   }
 );
 
-export const getSyntheticSourceUri = (
-  syntheticNode: SyntheticNode,
-  graph: DependencyGraph
-) => {
-  return getPCNodeDependency(syntheticNode.source.nodeId, graph).uri;
-};
-
-export const getSyntheticNodeById = memoize(
-  (
-    syntheticNodeId: string,
-    syntheticFrames: SyntheticFrames
-  ): SyntheticNode => {
-    return getNestedTreeNodeById(
-      syntheticNodeId,
-      getSyntheticNodeFrame(syntheticNodeId, syntheticFrames).root
-    );
-  }
-);
-
-export const getSyntheticNodeComputedBounds = (
-  syntheticNodeId: string,
-  frame: SyntheticFrame
-) => {
-  return (
-    (frame.computed &&
-      frame.computed[syntheticNodeId] &&
-      frame.computed[syntheticNodeId].bounds) ||
-    NO_BOUNDS
-  );
-};
-
-export const getSyntheticNodeSourceDependency = (
-  node: SyntheticNode,
-  graph: DependencyGraph
-) => getPCNodeDependency(node.source.nodeId, graph);
-
-export const getSyntheticNodeRelativeBounds = memoize(
-  (syntheticNodeId: string, frames: SyntheticFrames): Bounds => {
-    const frame = getSyntheticNodeFrame(syntheticNodeId, frames);
-    return shiftBounds(
-      getSyntheticNodeComputedBounds(syntheticNodeId, frame),
-      frame.bounds
-    );
-  }
-);
-
-export const getSyntheticNodeFixedBounds = memoize(
-  (syntheticNodeId: string, frames: SyntheticFrames): Bounds => {
-    const frame = getSyntheticNodeFrame(syntheticNodeId, frames);
-    return shiftBounds(
-      getSyntheticNodeRelativeBounds(syntheticNodeId, frames),
-      frame.bounds
-    );
-  }
-);
-
-export const findRootInstanceOfPCNode = (
-  node: PCVisibleNode,
-  allFrames: SyntheticFrames
-) => {
-  const frame = values(allFrames).find(
-    frame => frame.root.source.nodeId === node.id
-  );
-  return frame && frame.root;
-};
-
-export const getPCNodeClip = (
-  node: SyntheticNode,
-  frames: SyntheticFrames,
-  graph: DependencyGraph
-): PCNodeClip => {
-  const sourceNode = getSyntheticSourceNode(node, graph);
-  const frame = getSyntheticNodeFrame(node.id, frames);
-  return {
-    uri: getSyntheticSourceUri(node, graph),
-    node: sourceNode,
-    fixedBounds: node.isRoot
-      ? frame.bounds
-      : getSyntheticNodeRelativeBounds(node.id, frames)
-  };
-};
-
 export const findClosestParentComponentInstance = memoize(
-  (node: SyntheticNode, root: SyntheticNode) => {
+  (
+    node: SyntheticVisibleNode,
+    root: SyntheticVisibleNode | SyntheticDocument
+  ) => {
     return findTreeNodeParent(
       node.id,
       root,
-      (parent: SyntheticNode) => parent.isComponentInstance
+      (parent: SyntheticVisibleNode) => parent.isComponentInstance
     );
   }
 );
 
 export const findFurthestParentComponentInstance = memoize(
-  (node: SyntheticNode, root: SyntheticNode) => {
+  (
+    node: SyntheticVisibleNode,
+    root: SyntheticVisibleNode | SyntheticDocument
+  ) => {
     const parentComponentInstances = getAllParentComponentInstance(node, root);
     return parentComponentInstances.length
       ? parentComponentInstances[parentComponentInstances.length - 1]
@@ -314,7 +265,10 @@ export const findFurthestParentComponentInstance = memoize(
 );
 
 export const getAllParentComponentInstance = memoize(
-  (node: SyntheticNode, root: SyntheticNode) => {
+  (
+    node: SyntheticVisibleNode,
+    root: SyntheticVisibleNode | SyntheticDocument
+  ) => {
     let current = findClosestParentComponentInstance(node, root);
     if (!current) return [];
     const instances = [current];
@@ -334,50 +288,33 @@ export const getAllParentComponentInstance = memoize(
  * SETTERS
  *-----------------------------------------*/
 
-export const updateSyntheticFrames = (
-  oldFrames: SyntheticFrames,
-  newFrames: SyntheticFrames,
+export const updateSyntheticDocuments = (
+  oldDocuments: SyntheticDocument[],
+  newDocuments: SyntheticDocument[],
   graph: DependencyGraph
 ) => {
-  const updatedFrames: SyntheticFrames = {};
+  const updatedDocuments: SyntheticDocument[] = [];
+  const ots = diffArray(
+    oldDocuments,
+    newDocuments,
+    (a, b) => (a.source.nodeId === b.source.nodeId ? 0 : -1)
+  );
 
-  for (const sourceId in oldFrames) {
-    if (getPCNodeDependency(sourceId, graph)) {
-      updatedFrames[sourceId] = oldFrames[sourceId];
-    }
-  }
-  for (const sourceFrameId in newFrames) {
-    const newFrame = newFrames[sourceFrameId];
-    const oldFrame = oldFrames[sourceFrameId];
-
-    if (oldFrame === newFrame) {
-      updatedFrames[sourceFrameId] = oldFrame;
-      continue;
+  return patchArray(oldDocuments, ots, (a, b) => {
+    if (a === b) {
+      return a;
     }
 
-    const patchedRoot = oldFrame
-      ? patchSyntheticNode(
-          diffSyntheticNode(oldFrame.root, newFrame.root),
-          oldFrame.root
-        )
-      : newFrame.root;
-
-    updatedFrames[sourceFrameId] = {
-      ...(oldFrame || EMPTY_OBJECT),
-      ...newFrame,
-      root: patchedRoot
-    };
-  }
-
-  return updatedFrames;
+    return patchSyntheticVisibleNode(diffSyntheticVisibleNode(a, b), a);
+  });
 };
 
-export const updateSyntheticNodeMetadata = (
+export const updateSyntheticVisibleNodeMetadata = (
   metadata: KeyValue<any>,
-  node: SyntheticNode,
-  root: SyntheticNode
+  node: SyntheticVisibleNode,
+  document: SyntheticDocument
 ) =>
-  updateNestedNode(node, root, node => ({
+  updateNestedNode(node, document, node => ({
     ...node,
     metadata: {
       ...node.metadata,

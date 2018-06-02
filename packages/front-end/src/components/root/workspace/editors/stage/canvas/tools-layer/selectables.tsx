@@ -1,10 +1,10 @@
 import "./selectables.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
-import { SyntheticFrame } from "paperclip";
+import { Frame } from "paperclip";
 
 export type SelectableToolsOuterProps = {
-  frames: SyntheticFrame[];
+  frames: Frame[];
 };
 
 const BaseSelectableToolsComponent = ({

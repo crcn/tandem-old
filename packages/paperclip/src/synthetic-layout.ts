@@ -6,7 +6,7 @@ TODO:
 - check flexbox
 - respect align-content
 */
-import { SyntheticNode, SyntheticFrame } from "./synthetic";
+import { SyntheticVisibleNode, SyntheticDocument } from "./synthetic";
 import {
   Point,
   getParentTreeNode,
@@ -15,9 +15,11 @@ import {
   Bounds,
   TreeNode,
   shiftBounds,
-  moveBounds
+  moveBounds,
+  getNestedTreeNodeById
 } from "tandem-common";
 import { negate } from "lodash";
+import { Frame } from "./edit";
 
 enum Axis {
   X,
@@ -25,7 +27,7 @@ enum Axis {
 }
 
 const getStyleProp = (
-  node: SyntheticNode,
+  node: SyntheticVisibleNode,
   prop: string,
   defaultValue?: string
 ) => {
@@ -33,14 +35,15 @@ const getStyleProp = (
   return (style && style[prop]) || defaultValue;
 };
 
-export const isRelativeNode = (node: SyntheticNode) =>
+export const isRelativeNode = (node: SyntheticVisibleNode) =>
   /relative|absolute|fixed/i.test(getStyleProp(node, "position", "static"));
-export const isAbsolutelyPositionedNode = (node: SyntheticNode) =>
+export const isAbsolutelyPositionedNode = (node: SyntheticVisibleNode) =>
   /absolute|fixed/i.test(getStyleProp(node, "position", "static"));
 export const getRelativeParent = memoize(
-  (node: SyntheticNode, frame: SyntheticFrame) => {
+  (node: SyntheticVisibleNode, document: SyntheticDocument, frame: Frame) => {
     return (
-      findTreeNodeParent(node.id, frame.root, isRelativeNode) || frame.root
+      findTreeNodeParent(node.id, document, isRelativeNode) ||
+      getNestedTreeNodeById(frame.contentNodeId, document)
     );
   }
 );
@@ -48,8 +51,8 @@ export const getRelativeParent = memoize(
 const measurementToPx = (
   measurment: string,
   axis: Axis,
-  node: SyntheticNode,
-  frame: SyntheticFrame
+  node: SyntheticVisibleNode,
+  frame: Frame
 ) => {
   if (!measurment || measurment === "auto") {
     return 0;
@@ -63,10 +66,14 @@ const measurementToPx = (
   throw new Error(`Cannot convert ${unit} to absolute`);
 };
 
-export const getFixedSyntheticNodeStaticPosition = memoize(
-  (node: SyntheticNode, frame: SyntheticFrame): Point => {
+export const getFixedSyntheticVisibleNodeStaticPosition = memoize(
+  (
+    node: SyntheticVisibleNode,
+    document: SyntheticDocument,
+    frame: Frame
+  ): Point => {
     const position = getStyleProp(node, "position");
-    if (position === "fixed" || frame.root.id === node.id) {
+    if (position === "fixed" || frame.contentNodeId === node.id) {
       return {
         left: 0,
         top: 0
@@ -74,7 +81,7 @@ export const getFixedSyntheticNodeStaticPosition = memoize(
     }
 
     if (position === "absolute") {
-      const relativeParent = getRelativeParent(node, frame);
+      const relativeParent = getRelativeParent(node, document, frame);
       return frame.computed[relativeParent.id].bounds;
     }
 
@@ -96,10 +103,15 @@ export const getFixedSyntheticNodeStaticPosition = memoize(
 
 export const convertFixedBoundsToRelative = (
   bounds: Bounds,
-  node: SyntheticNode,
-  frame: SyntheticFrame
+  node: SyntheticVisibleNode,
+  document: SyntheticDocument,
+  frame: Frame
 ) => {
-  const staticPosition = getFixedSyntheticNodeStaticPosition(node, frame);
+  const staticPosition = getFixedSyntheticVisibleNodeStaticPosition(
+    node,
+    document,
+    frame
+  );
   return shiftBounds(bounds, {
     left: -staticPosition.left,
     top: -staticPosition.top
@@ -116,12 +128,13 @@ export const convertFixedBoundsToRelative = (
 
 export const convertFixedBoundsToNewAbsoluteRelativeToParent = (
   bounds: Bounds,
-  newParent: SyntheticNode,
-  frame: SyntheticFrame
+  newParent: SyntheticVisibleNode,
+  document: SyntheticDocument,
+  frame: Frame
 ) => {
   const relativeParent = isRelativeNode(newParent)
     ? newParent
-    : getRelativeParent(newParent, frame);
+    : getRelativeParent(newParent, document, frame);
   const relativeParentBounds = frame.computed[relativeParent.id].bounds;
 
   // based on abs parent of new child.

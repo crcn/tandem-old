@@ -25,7 +25,7 @@ import {
   PC_LAYER_EXPAND_TOGGLE_CLICK,
   PC_LAYER_CLICK,
   TreeLayerClick,
-  SyntheticNode,
+  SyntheticVisibleNode,
   QUICK_SEARCH_ITEM_CLICKED,
   getEditorWithActiveFileUri,
   getActiveEditor

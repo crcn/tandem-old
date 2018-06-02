@@ -4,8 +4,8 @@ import { RootState } from "../state";
 import * as path from "path";
 import { getPCImportedChildrenSourceUris } from "paperclip";
 import {
-  getSyntheticNodeById,
-  SyntheticNode,
+  getSyntheticVisibleNodeById,
+  SyntheticVisibleNode,
   PCNodeClip,
   getPCNodeClip,
   getSyntheticSourceUri,
@@ -41,15 +41,11 @@ function* handleCopy() {
         "text/plain",
         JSON.stringify(
           root.selectedNodeIds.map(nodeId => {
-            const syntheticNode = getSyntheticNodeById(
+            const syntheticNode = getSyntheticVisibleNodeById(
               nodeId,
-              root.syntheticFrames
+              root.documents
             );
-            return getPCNodeClip(
-              syntheticNode,
-              root.syntheticFrames,
-              root.graph
-            );
+            return getPCNodeClip(syntheticNode, root.frames, root.graph);
           })
         )
       );

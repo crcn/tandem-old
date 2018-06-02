@@ -8,6 +8,7 @@ init({
   selectedFileNodeIds: [],
   history: {},
   openFiles: [],
-  syntheticFrames: {},
+  frames: [],
+  documents: [],
   graph: {}
 });

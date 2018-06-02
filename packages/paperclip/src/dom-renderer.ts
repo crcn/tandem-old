@@ -1,15 +1,16 @@
 import { mapValues } from "lodash";
 import {
-  ComputedDisplayInfo,
-  SyntheticNode,
-  SyntheticElement
+  SyntheticVisibleNode,
+  SyntheticElement,
+  SyntheticTextNode
 } from "./synthetic";
+import { ComputedDisplayInfo } from "./edit";
 import { getTreeNodeFromPath, roundBounds, EMPTY_OBJECT } from "tandem-common";
 import {
   SyntheticOperationalTransformType,
   SyntheticMoveChildOperationalTransform,
   SyntheticOperationalTransform,
-  patchSyntheticNode,
+  patchSyntheticVisibleNode,
   SyntheticSetPropertyOperationalTransform,
   SyntheticInsertChildOperationalTransform,
   SyntheticRemoveChildOperationalTransform
@@ -23,7 +24,7 @@ export type SyntheticNativeNodeMap = {
 
 export const renderDOM = (
   native: HTMLElement,
-  synthetic: SyntheticNode,
+  synthetic: SyntheticVisibleNode,
   document: Document = window.document
 ) => {
   let parentNative;
@@ -74,11 +75,11 @@ export const computeDisplayInfo = (
 };
 
 const setStyleConstraintsIfRoot = (
-  synthetic: SyntheticNode,
+  synthetic: SyntheticVisibleNode,
   nativeElement: HTMLElement
 ) => {
-  const isRoot = synthetic.isRoot;
-  if (isRoot) {
+  const isContentNode = synthetic.isContentNode;
+  if (isContentNode) {
     nativeElement.style.position = "fixed";
     if (nativeElement.tagName === "SPAN") {
       nativeElement.style.display = "block";
@@ -87,11 +88,15 @@ const setStyleConstraintsIfRoot = (
     nativeElement.style.left = "0px";
     nativeElement.style.width = "100vw";
     nativeElement.style.height = "100vh";
+    nativeElement.style.minHeight = "unset";
+    nativeElement.style.minWidth = "unset";
+    nativeElement.style.maxWidth = "unset";
+    nativeElement.style.maxHeight = "unset";
   }
 };
 
 const createNativeNode = (
-  synthetic: SyntheticNode,
+  synthetic: SyntheticVisibleNode,
   document: Document,
   map: SyntheticNativeNodeMap
 ) => {
@@ -111,11 +116,11 @@ const createNativeNode = (
   setStyleConstraintsIfRoot(synthetic, nativeElement);
   if (isText) {
     nativeElement.appendChild(
-      document.createTextNode((synthetic as PCTextNode).value)
+      document.createTextNode((synthetic as SyntheticTextNode).value)
     );
   } else {
     for (let i = 0, { length } = synthetic.children; i < length; i++) {
-      const childSynthetic = synthetic.children[i] as SyntheticNode;
+      const childSynthetic = synthetic.children[i] as SyntheticVisibleNode;
       nativeElement.appendChild(
         createNativeNode(childSynthetic, document, map)
       );
@@ -127,7 +132,7 @@ const createNativeNode = (
 };
 
 const removeElementsFromMap = (
-  synthetic: SyntheticNode,
+  synthetic: SyntheticVisibleNode,
   map: SyntheticNativeNodeMap
 ) => {
   map[synthetic.id] = undefined;
@@ -138,12 +143,12 @@ const removeElementsFromMap = (
 
 export const patchDOM = (
   transforms: SyntheticOperationalTransform[],
-  synthetic: SyntheticNode,
+  synthetic: SyntheticVisibleNode,
   root: HTMLElement,
   map: SyntheticNativeNodeMap
 ) => {
   let newMap = map;
-  let newSyntheticTree: SyntheticNode = synthetic;
+  let newSyntheticTree: SyntheticVisibleNode = synthetic;
 
   for (const transform of transforms) {
     const oldSyntheticTarget = getTreeNodeFromPath(
@@ -151,7 +156,7 @@ export const patchDOM = (
       newSyntheticTree
     );
     const target = map[oldSyntheticTarget.id] as HTMLElement;
-    newSyntheticTree = patchSyntheticNode([transform], newSyntheticTree);
+    newSyntheticTree = patchSyntheticVisibleNode([transform], newSyntheticTree);
     const syntheticTarget = getTreeNodeFromPath(
       transform.nodePath,
       newSyntheticTree
@@ -199,7 +204,7 @@ export const patchDOM = (
           newMap = { ...map };
         }
         const nativeChild = createNativeNode(
-          child as SyntheticNode,
+          child as SyntheticVisibleNode,
           root.ownerDocument,
           newMap
         );
@@ -236,11 +241,11 @@ export const patchDOM = (
 
 const makeElementClickable = (
   target: HTMLElement,
-  synthetic: SyntheticNode
+  synthetic: SyntheticVisibleNode
 ) => {
-  const isRoot = synthetic.isRoot;
+  const isContentNode = synthetic.isContentNode;
 
-  if (synthetic.name !== "text" && !isRoot) {
+  if (synthetic.name !== "text" && !isContentNode) {
     const style = synthetic.style || {};
     if (target.childNodes.length === 0 && Object.keys(style).length === 0) {
       target.dataset.empty = "1";
@@ -271,7 +276,10 @@ const makeElementClickable = (
   }
 };
 
-const resetElementStyle = (target: HTMLElement, synthetic: SyntheticNode) => {
+const resetElementStyle = (
+  target: HTMLElement,
+  synthetic: SyntheticVisibleNode
+) => {
   removeClickableStyle(target, synthetic);
   const style = synthetic.style || {};
   target.setAttribute("style", "");
@@ -280,7 +288,7 @@ const resetElementStyle = (target: HTMLElement, synthetic: SyntheticNode) => {
 
 const removeClickableStyle = (
   target: HTMLElement,
-  synthetic: SyntheticNode
+  synthetic: SyntheticVisibleNode
 ) => {
   if (target.dataset.empty === "1") {
     target.dataset.empty = null;

@@ -5,22 +5,20 @@
 // - imported deps
 import {
   PCModule,
-  PCFrame,
   PCVisibleNode,
   PCElement,
   PCComponent,
   PCComponentInstanceElement,
   PCSourceTagNames,
-  isComponentFrame,
   PCBaseVisibleNode,
   getModuleComponents,
   PCNode,
   extendsComponent,
   getVisibleChildren,
   isVisibleNode,
-  createPCFrame,
   getOverrides,
-  getPCNode
+  getPCNode,
+  isComponent
 } from "paperclip";
 import { repeat, camelCase, uniq, kebabCase } from "lodash";
 import {
@@ -67,9 +65,10 @@ export const translatePaperclipModuleToReact = (module: PCModule) =>
 const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addLine("\nvar React = require('react');", context);
 
-  if (module.imports.length) {
-    context = addLine(`\nvar _imports = {}`, context);
-  }
+  // TODO - need to identify imports
+  // if (module.imports.length) {
+  //   context = addLine(`\nvar _imports = {}`, context);
+  // }
 
   context = addOpenTag(`\nfunction _toNativeProps(props) {\n`, context);
   context = addLine(`var newProps = {};`, context);
@@ -86,19 +85,19 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addLine(`return newProps;`, context);
   context = addCloseTag(`}\n`, context);
 
-  for (const imp of module.imports) {
-    context = addLine(`Object.assign(_imports, require("${imp}"));`, context);
-  }
+  // for (const imp of module.imports) {
+  //   context = addLine(`Object.assign(_imports, require("${imp}"));`, context);
+  // }
 
   context = addLine("\nvar _EMPTY_OBJECT = {}", context);
 
   context = translateModuleStyles(module, context);
 
   context = module.children
-    .filter(isComponentFrame)
+    .filter(isComponent)
     .reduce(
-      (context, frame: PCFrame) =>
-        translateComponentFrame(frame, module, context),
+      (context, component: PCComponent) =>
+        translateContentNode(component, module, context),
       context
     );
 
@@ -119,12 +118,9 @@ const translateModuleStyles = (module: PCModule, context: TranslateContext) => {
     context
   );
   context = module.children
-    .filter(isComponentFrame)
-    .reduce((context, frame: PCFrame) => {
-      return translateComponentStyles(
-        frame.children[0] as PCComponent,
-        context
-      );
+    .filter(isComponent)
+    .reduce((context, component: PCComponent) => {
+      return translateComponentStyles(component as PCComponent, context);
     }, context);
   context = addCloseTag(`"")); \n\n`, context);
   context = addLine(`document.head.appendChild(${styleVarName});`, context);
@@ -176,12 +172,11 @@ const translateStyleValue = (key: string, value: any) => {
   return value;
 };
 
-const translateComponentFrame = (
-  frame: PCFrame,
+const translateContentNode = (
+  component: PCComponent,
   module: PCModule,
   context: TranslateContext
 ) => {
-  const [component] = frame.children as PCComponent[];
   context = setCurrentScope(module.id, context);
   context = addScopedLayerLabel(component, context);
   const internalVarName = getInternalVarName(component);

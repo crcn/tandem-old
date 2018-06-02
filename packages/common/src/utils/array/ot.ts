@@ -138,7 +138,7 @@ export function patchArray<T>(
   target: Array<T>,
   ots: ArrayOperationalTransform<T>[],
   mapUpdate: (a: T, b: T) => T,
-  mapInsert?: (b: T) => T
+  mapInsert: (b: T) => T = b => b
 ) {
   if (!ots.length) {
     return target;

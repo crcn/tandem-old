@@ -1,10 +1,10 @@
 import "./document.scss";
 import * as React from "react";
 import { compose, pure, lifecycle } from "recompose";
-import { SyntheticFrame, Dependency, DependencyGraph } from "paperclip";
+import { Frame, Dependency, DependencyGraph } from "paperclip";
 
 export type DocumentPreviewOuterProps = {
-  frame: SyntheticFrame;
+  frame: Frame;
   dependency: Dependency<any>;
 };
 

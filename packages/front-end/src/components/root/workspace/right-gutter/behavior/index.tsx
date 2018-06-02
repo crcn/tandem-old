@@ -5,7 +5,7 @@
 // import { compose, pure, withHandlers, lifecycle, withState } from "recompose";
 // import { PaneComponent } from "../../../../pane";
 // import {
-//   getSyntheticNodeById,
+//   getSyntheticVisibleNodeById,
 //   PCTextNode,
 //   getSyntheticSourceNode,
 //   PCVisibleNode,
@@ -50,7 +50,7 @@
 //   if (!selectedNodeId) {
 //     return null;
 //   }
-//   const syntheticNode = getSyntheticNodeById(selectedNodeId, root.browser);
+//   const syntheticNode = getSyntheticVisibleNodeById(selectedNodeId, root.browser);
 //   const sourceNode = getSyntheticSourceNode(
 //     selectedNodeId,
 //     root.browser
@@ -96,7 +96,7 @@
 // };
 
 // const getSelectedNodeStyle = (root: RootState) => {
-//   const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
+//   const node = getSyntheticVisibleNodeById(root.selectedNodeIds[0], root.browser);
 //   return (
 //     node &&
 //     stringifyStyle(node.attributes.core.style || EMPTY_OBJECT)

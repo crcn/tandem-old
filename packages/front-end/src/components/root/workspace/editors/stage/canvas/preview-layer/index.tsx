@@ -5,12 +5,12 @@
 import "./index.scss";
 import * as React from "react";
 import { EMPTY_ARRAY } from "tandem-common";
-import { SyntheticFrame, Dependency } from "paperclip";
+import { Frame, Dependency } from "paperclip";
 import { DocumentPreviewComponent } from "./document";
 import { compose, pure, withHandlers, lifecycle } from "recompose";
 
 export type PreviewLayerOuterProps = {
-  frames: SyntheticFrame[];
+  frames: Frame[];
   dependency: Dependency<any>;
 };
 
@@ -21,7 +21,7 @@ const BasePreviewLayerComponent = ({
   <div className="m-preview-layer">
     {frames.map(frame => (
       <DocumentPreviewComponent
-        key={frame.source.nodeId}
+        key={frame.contentNodeId}
         frame={frame}
         dependency={dependency}
       />

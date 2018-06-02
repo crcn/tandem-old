@@ -9,7 +9,7 @@ import {
   REGISTERED_COMPONENT,
   RegisteredComponent
 } from "../../../../../../state";
-import { Dependency, getSyntheticFramesByDependencyUri } from "paperclip";
+import { Dependency, getFramesByDependencyUri } from "paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
 import { ToolsLayerComponent } from "./tools-layer";
 import { Isolate } from "../../../../../isolated";
@@ -70,9 +70,10 @@ const BaseCanvasComponent = ({
   onMotionRest,
   onDragExit
 }: CanvasInnerProps) => {
-  const activeFrames = getSyntheticFramesByDependencyUri(
+  const activeFrames = getFramesByDependencyUri(
     editor.activeFilePath,
-    root.syntheticFrames,
+    root.frames,
+    root.documents,
     root.graph
   );
 

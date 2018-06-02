@@ -17,7 +17,7 @@ import {
   DependencyGraph,
   ComputedDisplayInfo,
   SyntheticNativeNodeMap,
-  SyntheticNode,
+  SyntheticVisibleNode,
   PCNodeClip
 } from "paperclip";
 import { RegisteredComponent } from "..";
@@ -176,7 +176,7 @@ export type CanvasToolOverlayMouseMoved = {} & WrappedEvent<
 >;
 
 export type ElementVariantToggled = {
-  node: SyntheticNode;
+  node: SyntheticVisibleNode;
   newVariants: string[];
 } & Action;
 
@@ -295,7 +295,7 @@ export type InsertToolFinished = {
   point: Point;
 } & Action;
 
-export type SyntheticNodesPasted = {
+export type SyntheticVisibleNodesPasted = {
   clips: PCNodeClip[];
 } & Action;
 
@@ -366,7 +366,7 @@ export const newFileAdded = (
 
 export const elementVariantToggled = (
   newVariants: string[],
-  node: SyntheticNode
+  node: SyntheticVisibleNode
 ): ElementVariantToggled => ({
   newVariants,
   node,
@@ -508,7 +508,7 @@ export const pcLayerExpandToggleClick = (
 });
 
 export const pcLayerDroppedNode = (
-  node: SyntheticNode,
+  node: SyntheticVisibleNode,
   targetNode: TreeNode<any>,
   offset?: 0 | -1 | 1
 ): TreeLayerDroppedNode => ({
@@ -571,7 +571,7 @@ export const shortcutKeyDown = publicActionCreator(
 
 export const syntheticNodesPasted = (
   clips: PCNodeClip[]
-): SyntheticNodesPasted => ({
+): SyntheticVisibleNodesPasted => ({
   clips,
   type: SYNTHETIC_NODES_PASTED
 });

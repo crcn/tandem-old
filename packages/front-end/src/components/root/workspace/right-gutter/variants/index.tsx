@@ -7,7 +7,7 @@
 // import { PaneComponent } from "../../../../pane";
 // import { FocusComponent } from "../../../../focus";
 // import {
-//   getSyntheticNodeById,
+//   getSyntheticVisibleNodeById,
 //   getSyntheticSourceNode,
 //   PCSourceTagNames,
 //   getComponentVariants,
@@ -196,7 +196,7 @@
 //       return null;
 //     }
 
-//     const document = getSyntheticNodeDocument(selectedNodeId, root.browser);
+//     const document = getSyntheticVisibleNodeDocument(selectedNodeId, root.browser);
 //     const documentSourceNode = getSyntheticSourceNode(
 //       document.root.id,
 //       root.browser

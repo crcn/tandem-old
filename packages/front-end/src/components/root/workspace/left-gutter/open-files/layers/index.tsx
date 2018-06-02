@@ -1,9 +1,12 @@
 import * as React from "react";
 import * as path from "path";
 import { pure, compose } from "recompose";
-import { SyntheticFrameLayersComponent } from "./pc";
+import { FrameLayersComponent } from "./pc";
 import { RootState, OpenFile } from "../../../../../../state";
-import { getSyntheticFramesByDependencyUri } from "paperclip";
+import {
+  getFramesByDependencyUri,
+  getSyntheticDocumentByDependencyUri
+} from "paperclip";
 import { Dispatch } from "redux";
 
 type LayersOuterProps = {
@@ -25,13 +28,19 @@ export const BaseLayersComponent = ({
   return (
     <div className="m-open-file-layers">
       {ext === ".pc" ? (
-        <SyntheticFrameLayersComponent
+        <FrameLayersComponent
           selectedReferences={root.selectedNodeIds}
           hoveringNodeIds={root.hoveringNodeIds}
           dispatch={dispatch}
-          frames={getSyntheticFramesByDependencyUri(
+          document={getSyntheticDocumentByDependencyUri(
             uri,
-            root.syntheticFrames,
+            root.documents,
+            root.graph
+          )}
+          frames={getFramesByDependencyUri(
+            uri,
+            root.frames,
+            root.documents,
             root.graph
           )}
         />

@@ -1,12 +1,11 @@
 import { expect } from "chai";
 import {
-  createPCFrame,
   createPCElement,
-  diffSyntheticNode,
-  patchSyntheticNode,
+  diffSyntheticVisibleNode,
+  patchSyntheticVisibleNode,
   evaluatePCModule,
   createPCModule
-} from "./index";
+} from "..";
 import { updateNestedNode, cloneTreeNode } from "tandem-common";
 
 describe(__filename + "#", () => {
@@ -22,20 +21,18 @@ describe(__filename + "#", () => {
     xit(`can transform from ${JSON.stringify(oldNode)} to ${JSON.stringify(
       updater(oldNode)
     )}`, () => {
-      const frame = createPCFrame([oldNode]);
-
-      const module = createPCModule([frame]);
+      const module = createPCModule([oldNode]);
 
       const updatedModule = updateNestedNode(oldNode, module, updater);
 
-      const oldFrame = evaluatePCModule(module)[frame.id];
-      const newFrame = evaluatePCModule(updatedModule)[frame.id];
+      const oldDocument = evaluatePCModule(module);
+      const newDocument = evaluatePCModule(updatedModule);
 
-      const ots = diffSyntheticNode(oldFrame.root, newFrame.root);
+      const ots = diffSyntheticVisibleNode(oldDocument, newDocument);
 
-      expect(nodeIdCleaner()(patchSyntheticNode(ots, oldFrame.root))).to.eql(
-        nodeIdCleaner()(newFrame.root)
-      );
+      expect(
+        nodeIdCleaner()(patchSyntheticVisibleNode(ots, oldDocument))
+      ).to.eql(nodeIdCleaner()(newDocument));
     });
   });
 });

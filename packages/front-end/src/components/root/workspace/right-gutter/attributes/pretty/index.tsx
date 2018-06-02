@@ -3,11 +3,15 @@ import { compose } from "recompose";
 import { uniq } from "lodash";
 import { TextSettingsComponent } from "./text";
 import { Dispatch } from "redux";
-import { SyntheticNode, PCSourceTagNames, SyntheticTextNode } from "paperclip";
+import {
+  SyntheticVisibleNode,
+  PCSourceTagNames,
+  SyntheticTextNode
+} from "paperclip";
 import { PaneComponent } from "../../../../../pane";
 
 type PropertiesProps = {
-  selectedNodes: SyntheticNode[];
+  selectedNodes: SyntheticVisibleNode[];
   dispatch: Dispatch<any>;
 };
 

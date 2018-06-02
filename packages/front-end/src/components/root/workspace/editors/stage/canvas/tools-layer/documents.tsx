@@ -7,8 +7,10 @@ import { wrapEventToDispatch } from "../../../../../../../utils";
 import { Dispatch } from "redux";
 import {
   DependencyGraph,
-  SyntheticFrame,
-  getSyntheticFramesByDependencyUri
+  Frame,
+  SyntheticVisibleNode,
+  getFramesByDependencyUri,
+  getSyntheticVisibleNodeById
 } from "paperclip";
 import {
   canvasToolDocumentTitleClicked,
@@ -17,13 +19,15 @@ import {
 } from "../../../../../../../actions";
 
 type DocumentItemInnerProps = {
-  frame: SyntheticFrame;
+  frame: Frame;
+  contentNode: SyntheticVisibleNode;
   dispatch: Dispatch<any>;
   translate: Translate;
 };
 
 const DocumentItemBase = ({
   frame,
+  contentNode,
   translate,
   dispatch
 }: DocumentItemInnerProps) => {
@@ -65,14 +69,14 @@ const DocumentItemBase = ({
         style={titleStyle as any}
         onKeyDown={wrapEventToDispatch(
           dispatch,
-          canvasToolWindowKeyDown.bind(this, frame.source.nodeId)
+          canvasToolWindowKeyDown.bind(this, frame.contentNodeId)
         )}
         onClick={wrapEventToDispatch(
           dispatch,
-          canvasToolDocumentTitleClicked.bind(this, frame.source.nodeId)
+          canvasToolDocumentTitleClicked.bind(this, frame.contentNodeId)
         )}
       >
-        {frame.root.label || "Untitled"}
+        {contentNode.label || "Untitled"}
       </div>
       <div
         className="m-documents-stage-tool-item-content"
@@ -99,9 +103,10 @@ export const DocumentsCanvasToolBase = ({
 }: DocumentsCanvasToolInnerProps) => {
   const { backgroundColor, fullScreen } = editor.canvas;
 
-  const activeFrames = getSyntheticFramesByDependencyUri(
+  const activeFrames = getFramesByDependencyUri(
     editor.activeFilePath,
-    root.syntheticFrames,
+    root.frames,
+    root.documents,
     root.graph
   );
 
@@ -128,7 +133,11 @@ export const DocumentsCanvasToolBase = ({
       />
       {activeFrames.map(frame => (
         <DocumentItem
-          key={frame.source.nodeId}
+          key={frame.contentNodeId}
+          contentNode={getSyntheticVisibleNodeById(
+            frame.contentNodeId,
+            root.documents
+          )}
           frame={frame}
           dispatch={dispatch}
           translate={translate}

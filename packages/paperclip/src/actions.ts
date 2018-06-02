@@ -1,4 +1,4 @@
-import { ComputedDisplayInfo, SyntheticFrame } from "./synthetic";
+import { ComputedDisplayInfo, Frame } from "./edit";
 import { Action } from "redux";
 import { Dependency, DependencyGraph } from "./graph";
 
@@ -7,13 +7,13 @@ export const PC_DEPENDENCY_LOADED = "PC_DEPENDENCY_LOADED";
 export const PC_SYNTHETIC_FRAME_CONTAINER_CREATED =
   "PC_SYNTHETIC_FRAME_CONTAINER_CREATED";
 
-export type PCSyntheticFrameContainerCreated = {
-  frame: SyntheticFrame;
+export type PCFrameContainerCreated = {
+  frame: Frame;
   $container: HTMLElement;
 } & Action;
 
-export type PCSyntheticFrameRendered = {
-  frame: SyntheticFrame;
+export type PCFrameRendered = {
+  frame: Frame;
   computed: ComputedDisplayInfo;
 } & Action;
 
@@ -22,10 +22,10 @@ export type PCDependencyLoaded = {
   graph: DependencyGraph;
 } & Action;
 
-export const pcSyntheticFrameRendered = (
-  frame: SyntheticFrame,
+export const pcFrameRendered = (
+  frame: Frame,
   computed: ComputedDisplayInfo
-): PCSyntheticFrameRendered => ({
+): PCFrameRendered => ({
   type: PC_SYNTHETIC_FRAME_RENDERED,
   frame,
   computed
@@ -40,10 +40,10 @@ export const pcDependencyLoaded = (
   type: PC_DEPENDENCY_LOADED
 });
 
-export const pcSyntheticFrameContainerCreated = (
-  frame: SyntheticFrame,
+export const pcFrameContainerCreated = (
+  frame: Frame,
   $container: HTMLElement
-): PCSyntheticFrameContainerCreated => ({
+): PCFrameContainerCreated => ({
   frame,
   $container,
   type: PC_SYNTHETIC_FRAME_CONTAINER_CREATED

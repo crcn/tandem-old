@@ -17,7 +17,11 @@ import {
 import { mapValues, merge } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "0.0.2";
+export const PAPERCLIP_MODULE_VERSION = "0.0.3";
+
+/*------------------------------------------
+ * CONSTANTS
+ *-----------------------------------------*/
 
 export enum PCSourceTagNames {
   MODULE = "module",
@@ -26,26 +30,22 @@ export enum PCSourceTagNames {
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
-  OVERRIDE_STYLE = "override-style",
-  OVERRIDE_ATTRIBUTES = "override-attributes",
-  OVERRIDE_REMOVE_VARIANT = "override-remove-variant",
-  OVERRIDE_ADD_VARIANT = "override-add-variant",
-  OVERRIDE_TEXT_VALUE = "override-text-value",
-  OVERRIDE_CHILDREN = "override-children",
-  TEXT = "text",
-  FRAME = "frame"
+  OVERRIDE = "override",
+  TEXT = "text"
 }
 
-/*------------------------------------------
- * CONSTANTS
- *-----------------------------------------*/
+export enum PCOverridablePropertyName {
+  TEXT = "text",
+  CHILDREN = "children",
+  VARIANT = "variant",
+  STYLE = "style",
+  ATTRIBUTES = "attributes"
+}
 
-export const DEFAULT_FRAME_BOUNDS: Bounds = {
-  left: 0,
-  top: 0,
-  right: 400,
-  bottom: 300
-};
+export enum PCVisibleNodeMetadataKey {
+  // defined when dropped into the root document
+  BOUNDS = "bounds"
+}
 
 /*------------------------------------------
  * STATE
@@ -53,21 +53,15 @@ export const DEFAULT_FRAME_BOUNDS: Bounds = {
 
 type PCBaseSourceNode<TName extends PCSourceTagNames> = {
   children: PCBaseSourceNode<any>[];
+  metadata: KeyValue<any>;
 } & TreeNode<TName>;
 
 export type PCDependency = Dependency<PCModule>;
 
 export type PCModule = {
   version: string;
-  children: PCFrame[];
-} & PCBaseSourceNode<PCSourceTagNames.MODULE>;
-
-export type PCFrame = {
-  // agent to use for DOM renderer
-  navigator?: string;
-  bounds: Bounds;
   children: Array<PCComponent | PCVisibleNode>;
-} & PCBaseSourceNode<PCSourceTagNames.FRAME>;
+} & PCBaseSourceNode<PCSourceTagNames.MODULE>;
 
 export type PCComponent = {
   label?: string;
@@ -83,43 +77,51 @@ export type PCVariant = {
   isDefault?: boolean;
 } & PCBaseSourceNode<PCSourceTagNames.VARIANT>;
 
-export type PCBaseOverride<TName extends PCSourceTagNames> = {
+export type PCBaseOverride<TPropertyName extends PCOverridablePropertyName> = {
+  propertyName: TPropertyName;
   targetIdPath: string[];
   variantId: string;
-} & PCBaseSourceNode<TName>;
+} & PCBaseSourceNode<PCSourceTagNames.OVERRIDE>;
 
-export type PCPropertyOverride<TName extends PCSourceTagNames, TValue> = {
+export type PCBaseValueOverride<
+  TPropertyName extends PCOverridablePropertyName,
+  TValue
+> = {
   value: TValue;
-} & PCBaseOverride<TName>;
+} & PCBaseOverride<TPropertyName>;
 
-export type PCStyleOverride = PCPropertyOverride<
-  PCSourceTagNames.OVERRIDE_STYLE,
+export type PCStyleOverride = PCBaseValueOverride<
+  PCOverridablePropertyName.STYLE,
   KeyValue<any>
 >;
-export type PCAttributesOverride = PCPropertyOverride<
-  PCSourceTagNames.OVERRIDE_ATTRIBUTES,
-  KeyValue<any>
->;
-
-export type PCChildrenOverride = {
-  children: PCVisibleNode[];
-} & PCBaseOverride<PCSourceTagNames.OVERRIDE_CHILDREN>;
-
-export type PCTextValueOverride = PCPropertyOverride<
-  PCSourceTagNames.OVERRIDE_TEXT_VALUE,
+export type PCTextOverride = PCBaseValueOverride<
+  PCOverridablePropertyName.TEXT,
   string
 >;
+export type PCChildrenOverride = PCBaseOverride<
+  PCOverridablePropertyName.CHILDREN
+>;
+export type PCAttributesOverride = PCBaseValueOverride<
+  PCOverridablePropertyName.ATTRIBUTES,
+  KeyValue<any>
+>;
+export type PCVariantOverride = PCBaseValueOverride<
+  PCOverridablePropertyName.VARIANT,
+  string[]
+>;
 
-export type PC = {
-  value: string;
-  children: PCVisibleNode[];
-} & PCBaseOverride<PCSourceTagNames.OVERRIDE_TEXT_VALUE>;
+export type PCVisibleNodeOverride = PCStyleOverride;
+export type PCTextNodeOverride = PCVisibleNodeOverride | PCTextOverride;
+export type PCParentOverride = PCVisibleNodeOverride | PCChildrenOverride;
+export type PCElementOverride = PCAttributesOverride | PCParentOverride;
+export type PCComponentInstanceOverride = PCElementOverride | PCVariantOverride;
 
 export type PCOverride =
   | PCStyleOverride
+  | PCTextOverride
+  | PCChildrenOverride
   | PCAttributesOverride
-  | PCTextValueOverride
-  | PCChildrenOverride;
+  | PCVariantOverride;
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;
@@ -146,7 +148,6 @@ export type PCTextNode = {
 export type PCVisibleNode = PCElement | PCTextNode | PCComponentInstanceElement;
 export type PCNode =
   | PCModule
-  | PCFrame
   | PCComponent
   | PCVariant
   | PCOverride
@@ -156,20 +157,14 @@ export type PCNode =
  * FACTORIES
  *-----------------------------------------*/
 
-export const createPCModule = (children: PCFrame[] = []): PCModule => ({
+export const createPCModule = (
+  children: Array<PCComponent | PCVisibleNode> = []
+): PCModule => ({
   id: generateUID(),
   name: PCSourceTagNames.MODULE,
   version: PAPERCLIP_MODULE_VERSION,
-  children
-});
-export const createPCFrame = (
-  children: Array<PCComponent | PCVisibleNode> = [],
-  bounds: Bounds = DEFAULT_FRAME_BOUNDS
-): PCFrame => ({
-  id: generateUID(),
-  name: PCSourceTagNames.FRAME,
-  bounds,
-  children
+  children,
+  metadata: {}
 });
 
 export const createPCComponent = (
@@ -185,7 +180,8 @@ export const createPCComponent = (
   attributes: attributes || EMPTY_OBJECT,
   id: generateUID(),
   name: PCSourceTagNames.COMPONENT,
-  children: children || EMPTY_ARRAY
+  children: children || EMPTY_ARRAY,
+  metadata: {}
 });
 
 export const createPCVariant = (
@@ -196,45 +192,8 @@ export const createPCVariant = (
   name: PCSourceTagNames.VARIANT,
   label,
   isDefault,
-  children: []
-});
-
-export const createPCChildrenOverride = (
-  targetIdPath: string[],
-  variantId?: string,
-  children?: PCVisibleNode[]
-): PCChildrenOverride => ({
-  id: generateUID(),
-  name: PCSourceTagNames.OVERRIDE_CHILDREN,
-  targetIdPath,
-  variantId,
-  children
-});
-
-export const createPCStyleOverride = (
-  targetIdPath: string[],
-  variantId?: string,
-  value?: KeyValue<any>
-): PCStyleOverride => ({
-  id: generateUID(),
-  name: PCSourceTagNames.OVERRIDE_STYLE,
-  targetIdPath,
-  variantId,
-  value: value || {},
-  children: []
-});
-
-export const createPCAttributesOverride = (
-  targetIdPath: string[],
-  variantId?: string,
-  value?: KeyValue<any>
-): PCStyleOverride => ({
-  id: generateUID(),
-  name: PCSourceTagNames.OVERRIDE_STYLE,
-  targetIdPath,
-  variantId,
-  value: value || {},
-  children: []
+  children: [],
+  metadata: {}
 });
 
 export const createPCElement = (
@@ -250,7 +209,8 @@ export const createPCElement = (
   name: PCSourceTagNames.ELEMENT,
   attributes: attributes || {},
   style: style || {},
-  children: children || []
+  children: children || [],
+  metadata: {}
 });
 
 export const createPCComponentInstance = (
@@ -266,7 +226,8 @@ export const createPCComponentInstance = (
   name: PCSourceTagNames.COMPONENT_INSTANCE,
   attributes: attributes || {},
   style: style || {},
-  children
+  children: children || [],
+  metadata: {}
 });
 
 export const createPCTextNode = (
@@ -278,40 +239,41 @@ export const createPCTextNode = (
   label: label || value,
   value,
   style: {},
-  children: []
+  children: [],
+  metadata: {}
 });
 
 export const createPCOverride = (
   targetIdPath: string[],
-  key: "text" | "style",
+  propertyName: PCOverridablePropertyName,
   value: any,
   variantId?: string
 ): PCOverride => {
   const id = generateUID();
 
-  if (key === "text") {
+  let children;
+
+  if (propertyName === PCOverridablePropertyName.CHILDREN) {
     return {
       id,
       variantId,
+      propertyName,
       targetIdPath,
-      name: PCSourceTagNames.OVERRIDE_TEXT_VALUE,
-      value,
-      children: []
+      name: PCSourceTagNames.OVERRIDE,
+      children: value || [],
+      metadata: {}
     };
   }
 
-  if (key === "style") {
-    return {
-      id,
-      variantId,
-      targetIdPath,
-      name: PCSourceTagNames.OVERRIDE_STYLE,
-      value,
-      children: []
-    };
-  }
-
-  throw new Error("not implemented yet");
+  return {
+    id,
+    variantId,
+    propertyName,
+    targetIdPath,
+    value,
+    name: PCSourceTagNames.OVERRIDE,
+    children: []
+  } as PCBaseValueOverride<any, any>;
 };
 
 export const createPCDependency = (
@@ -327,17 +289,14 @@ export const createPCDependency = (
  * TYPE UTILS
  *-----------------------------------------*/
 
-export const isComponentFrame = (frame: PCFrame) =>
-  frame.children[0].name === PCSourceTagNames.COMPONENT;
-
 export const isVisibleNode = (node: PCNode) =>
   node.name === PCSourceTagNames.ELEMENT ||
   node.name === PCSourceTagNames.TEXT ||
   node.name === PCSourceTagNames.COMPONENT_INSTANCE;
 export const isPCOverride = (node: PCNode) =>
-  node.name === PCSourceTagNames.OVERRIDE_ATTRIBUTES ||
-  node.name === PCSourceTagNames.OVERRIDE_CHILDREN ||
-  node.name === PCSourceTagNames.OVERRIDE_STYLE;
+  node.name === PCSourceTagNames.OVERRIDE;
+export const isComponent = (node: PCNode) =>
+  node.name === PCSourceTagNames.COMPONENT;
 
 export const extendsComponent = (
   element: PCElement | PCComponent | PCComponentInstanceElement
@@ -353,25 +312,15 @@ export const assertValidPCModule = memoize((module: PCModule) => {
 export const validatePCModule = (module: PCModule) => {
   if (
     module.name !== PCSourceTagNames.MODULE ||
-    module.version !== PAPERCLIP_MODULE_VERSION
+    module.version !== PAPERCLIP_MODULE_VERSION ||
+    module.metadata == null
   ) {
     return false;
   }
-  return module.children.every(validatePCFrame);
+  return module.children.every(validateModuleChild);
 };
 
-const validatePCFrame = (frame: PCFrame) => {
-  if (
-    frame.name !== PCSourceTagNames.FRAME ||
-    !frame.bounds ||
-    frame.children.length > 1
-  ) {
-    return false;
-  }
-  return frame.children.every(validateFrameChild);
-};
-
-const validateFrameChild = (child: PCVisibleNode | PCComponent) => {
+const validateModuleChild = (child: PCVisibleNode | PCComponent) => {
   if (child.name === PCSourceTagNames.COMPONENT) {
     return validateComponent(child);
   } else {
@@ -392,9 +341,24 @@ const validatePCVisibleNode = (child: PCVisibleNode) => {
 };
 
 const validatePCVisibleNodeChild = (child: PCVisibleNode | PCOverride) => {
-  // TODO - OVERRIDES
-  if (child.name === PCSourceTagNames.OVERRIDE_STYLE) {
-    return true;
+  if (child.name === PCSourceTagNames.OVERRIDE) {
+    switch (child.propertyName) {
+      case PCOverridablePropertyName.CHILDREN: {
+        return true;
+      }
+      case PCOverridablePropertyName.STYLE: {
+        return typeof child.value === "object";
+      }
+      case PCOverridablePropertyName.TEXT: {
+        return typeof child.value === "string";
+      }
+      case PCOverridablePropertyName.VARIANT: {
+        return Array.isArray(child.value);
+      }
+      case PCOverridablePropertyName.ATTRIBUTES: {
+        return typeof child.value === "object";
+      }
+    }
   } else {
     return validatePCVisibleNode(child as PCVisibleNode);
   }
@@ -402,7 +366,12 @@ const validatePCVisibleNodeChild = (child: PCVisibleNode | PCOverride) => {
 
 const validatePCElement = (element: PCElement) => {
   // TODO - validate that style props are all camel case
-  if (!element.style || !element.attributes || !element.is) {
+  if (
+    !element.style ||
+    !element.attributes ||
+    !element.is ||
+    element.metadata == null
+  ) {
     return false;
   }
   return element.children.every(validatePCVisibleNodeChild);
@@ -413,9 +382,9 @@ const validatePCElement = (element: PCElement) => {
  *-----------------------------------------*/
 
 export const getModuleComponents = memoize((root: PCModule): PCComponent[] =>
-  root.children.reduce((components, frame) => {
-    return frame.children[0].name === PCSourceTagNames.COMPONENT
-      ? [...components, frame.children[0]]
+  root.children.reduce((components, contentNode) => {
+    return contentNode.name === PCSourceTagNames.COMPONENT
+      ? [...components, contentNode]
       : components;
   }, [])
 );
@@ -459,16 +428,22 @@ export const getPCNodeModule = (nodeId: string, graph: DependencyGraph) => {
   return getPCNodeDependency(nodeId, graph).content;
 };
 
-export const getPCNodeFrame = (nodeId: string, module: PCModule) => {
-  return module.children.find(frame => getNestedTreeNodeById(nodeId, frame));
+export const getPCNodeContentNode = (nodeId: string, module: PCModule) => {
+  return module.children.find(contentNode =>
+    getNestedTreeNodeById(nodeId, contentNode)
+  );
 };
 
-export const getModuleComponent = memoize(
-  (componentId: string, module: PCModule): PCComponent => {
-    const frame = getPCNodeFrame(componentId, module);
-    return frame && (frame.children[0] as PCComponent);
+export const updatePCNodeMetadata = <TNode extends PCNode>(
+  metadata: KeyValue<any>,
+  node: TNode
+): TNode => ({
+  ...(node as any),
+  metadata: {
+    ...node.metadata,
+    ...metadata
   }
-);
+});
 
 export const getComponentTemplate = (component: PCComponent) =>
   component.children.find(isVisibleNode) as PCVisibleNode;
@@ -485,7 +460,7 @@ export const getDefaultVariantIds = (component: PCComponent) =>
 
 export const getNodeSourceComponent = memoize(
   (node: PCComponentInstanceElement, graph: DependencyGraph) =>
-    getModuleComponent(node.name, getPCNodeModule(node.id, graph))
+    getPCNodeContentNode(node.name, getPCNodeModule(node.id, graph))
 );
 
 /*------------------------------------------

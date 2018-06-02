@@ -2,10 +2,10 @@
 // import { Dispatch } from "redux";
 // import { compose, pure, withHandlers } from "recompose";
 // import {
-//   SyntheticNode,
-//   getSyntheticNodeSourceComponent,
-//   getComponentInstanceSyntheticNode,
-//   getSyntheticNodeOriginComponent,
+//   SyntheticVisibleNode,
+//   getSyntheticVisibleNodeSourceComponent,
+//   getComponentInstanceSyntheticVisibleNode,
+//   getSyntheticVisibleNodeOriginComponent,
 //   getSyntheticSourceNode,
 //   getComponentInstanceSourceNode,
 //   getSourceNodeById,
@@ -42,7 +42,7 @@
 // );
 
 // type VariantInputOuterProps = {
-//   node: SyntheticNode;
+//   node: SyntheticVisibleNode;
 //   root: RootState;
 //   dispatch: Dispatch<any>;
 // };
@@ -51,7 +51,7 @@
 //   onVariantToggle: (name: string) => any;
 // } & VariantInputOuterProps;
 
-// const getVariant = (node: SyntheticNode, root: RootState) => {
+// const getVariant = (node: SyntheticVisibleNode, root: RootState) => {
 //   const sourceNode = getSyntheticSourceNode(
 //     node.id,
 //     root.browser
@@ -71,11 +71,11 @@
 //   if (!isComponentInstanceSourceNode(sourceNode)) {
 //     return null;
 //   }
-//   const originComponent = getSyntheticNodeOriginComponent(
+//   const originComponent = getSyntheticVisibleNodeOriginComponent(
 //     node.id,
 //     root.browser
 //   );
-//   const component = getSyntheticNodeSourceComponent(node.id, root.browser);
+//   const component = getSyntheticVisibleNodeSourceComponent(node.id, root.browser);
 //   if (originComponent.id === component.id) {
 //     return null;
 //   }

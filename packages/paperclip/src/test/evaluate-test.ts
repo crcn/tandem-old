@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { evaluatePCModule } from "./evaluate";
-import { SyntheticFrame, createSyntheticElement } from "./synthetic";
+import { evaluatePCModule } from "../evaluate";
+import { Frame, createSyntheticElement } from "..";
 import { values } from "lodash";
 import {
   PCModule,
@@ -8,15 +8,14 @@ import {
   PCSourceTagNames,
   createPCComponent,
   createPCElement,
-  createPCFrame,
   createPCModule,
-  createPCChildrenOverride,
-  createPCStyleOverride,
   createPCComponentInstance,
   createPCVariant,
   getPCNodeDependency,
-  createPCDependency
-} from "./dsl";
+  createPCDependency,
+  createPCOverride,
+  PCOverridablePropertyName
+} from "../dsl";
 import {
   generateUID,
   generateTreeChecksum,
@@ -24,11 +23,11 @@ import {
   createTreeNode,
   appendChildNode
 } from "tandem-common";
-import { DependencyGraph } from "./graph";
+import { DependencyGraph } from "../graph";
 import { translateAbsoluteToRelativePoint } from "tandem-common/lib/utils/transform";
 
 describe(__filename + "#", () => {
-  type EvaluateCases = Array<[PCModule, SyntheticFrame[]]>;
+  type EvaluateCases = Array<[PCModule, Frame[]]>;
 
   const defaultBounds = {
     left: 0,
@@ -61,29 +60,27 @@ describe(__filename + "#", () => {
   it("can evaluate a simple component", () => {
     const module = nodeIdCleaner()(
       createPCModule([
-        createPCFrame([
-          createPCComponent("Test", "body", { a: "b" }, {}, [
-            createPCElement("div", { a: "b2" }, { c: "d" })
-          ])
+        createPCComponent("Test", "body", { a: "b" }, {}, [
+          createPCElement("div", { a: "b2" }, { c: "d" })
         ])
       ])
     );
 
-    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
+    const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(frames.length).to.eql(1);
+    expect(document.children.length).to.eql(1);
 
-    expect(nodeIdCleaner()(frames[0].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[0])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "body",
-          { nodeId: "000000002" },
+          { nodeId: "000000001" },
           { a: "b" },
           {},
           [
             createSyntheticElement(
               "div",
-              { nodeId: "000000003" },
+              { nodeId: "000000002" },
               { a: "b2" },
               { c: "d" },
               [],
@@ -113,22 +110,20 @@ describe(__filename + "#", () => {
 
     const module = cleanIds(
       createPCModule([
-        createPCFrame([component]),
-        createPCFrame([
-          createPCComponentInstance(component.id, null, { a: "b3" }, { c: "d" })
-        ])
+        component,
+        createPCComponentInstance(component.id, null, { a: "b3" }, { c: "d" })
       ])
     );
 
-    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
+    const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(frames.length).to.eql(2);
+    expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(frames[1].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[1])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "body",
-          { nodeId: "000000005" },
+          { nodeId: "000000003" },
           { a: "b3" },
           { c: "d" },
           [
@@ -168,15 +163,13 @@ describe(__filename + "#", () => {
       ])
     );
 
-    const module = cleanIds(
-      createPCModule([createPCFrame([component1]), createPCFrame([component2])])
-    );
+    const module = cleanIds(createPCModule([component1, component2]));
 
-    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
+    const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(frames.length).to.eql(2);
+    expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(frames[1].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[1])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "div",
@@ -216,21 +209,19 @@ describe(__filename + "#", () => {
 
     const component2 = cleanIds(
       createPCComponent("Test", component1.id, { a: "b2" }, { c: "a2" }, [
-        createPCChildrenOverride([container.id], null, [
+        createPCOverride([container.id], PCOverridablePropertyName.CHILDREN, [
           createPCElement("div", { a: "bb" }, { c: "dd" })
         ])
       ])
     );
 
-    const module = cleanIds(
-      createPCModule([createPCFrame([component1]), createPCFrame([component2])])
-    );
+    const module = cleanIds(createPCModule([component1, component2]));
 
-    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
+    const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(frames.length).to.eql(2);
+    expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(frames[1].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[1])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "div",
@@ -282,7 +273,7 @@ describe(__filename + "#", () => {
     const container2 = cleanIds(createPCElement("b", {}, {}));
     const component2 = cleanIds(
       createPCComponent("Test", component1.id, { color: "green" }, {}, [
-        createPCChildrenOverride([container1.id], null, [
+        createPCOverride([container1.id], PCOverridablePropertyName.CHILDREN, [
           container2,
           createPCElement("b2", {}, {})
         ])
@@ -292,31 +283,30 @@ describe(__filename + "#", () => {
     const container3 = cleanIds(createPCElement("c", {}, {}));
     const component3 = cleanIds(
       createPCComponent("Test", component2.id, { color: "blue" }, {}, [
-        createPCChildrenOverride([container2.id], null, [container3])
+        createPCOverride([container2.id], PCOverridablePropertyName.CHILDREN, [
+          container3
+        ])
       ])
     );
 
     const container4 = cleanIds(createPCElement("d", {}, {}));
     const component4 = cleanIds(
       createPCComponent("Test", component3.id, {}, {}, [
-        createPCChildrenOverride([container3.id], null, [container4])
+        createPCOverride([container3.id], PCOverridablePropertyName.CHILDREN, [
+          container4
+        ])
       ])
     );
 
     const module = cleanIds(
-      createPCModule([
-        createPCFrame([component1]),
-        createPCFrame([component2]),
-        createPCFrame([component3]),
-        createPCFrame([component4])
-      ])
+      createPCModule([component1, component2, component3, component4])
     );
 
-    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
+    const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(frames.length).to.eql(4);
+    expect(document.children.length).to.eql(4);
 
-    expect(nodeIdCleaner()(frames[3].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[3])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "div",
@@ -402,21 +392,19 @@ describe(__filename + "#", () => {
 
     const component2 = cleanIds(
       createPCComponent("Test", component1.id, {}, {}, [
-        createPCStyleOverride([container1.id], null, {
+        createPCOverride([container1.id], PCOverridablePropertyName.STYLE, {
           color: "red"
         })
       ])
     );
 
-    const module = cleanIds(
-      createPCModule([createPCFrame([component1]), createPCFrame([component2])])
-    );
+    const module = cleanIds(createPCModule([component1, component2]));
 
-    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
+    const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(frames.length).to.eql(2);
+    expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(frames[1].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[1])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "div",
@@ -451,7 +439,12 @@ describe(__filename + "#", () => {
     const variant1 = cleanIds(createPCVariant("a"));
     let container1 = cleanIds(
       createPCElement("a", { color: "blue" }, {}, [
-        createPCStyleOverride([], variant1.id, { color: "red" })
+        createPCOverride(
+          [],
+          PCOverridablePropertyName.STYLE,
+          { color: "red" },
+          variant1.id
+        )
       ])
     );
 
@@ -461,14 +454,14 @@ describe(__filename + "#", () => {
 
     const module = cleanIds(
       createPCModule([
-        createPCFrame([component1]),
-        createPCFrame([createPCComponentInstance(component1.id, [variant1.id])])
+        component1,
+        createPCComponentInstance(component1.id, [variant1.id])
       ])
     );
 
-    const frames = values(evaluatePCModule(module, createFakeGraph(module)));
+    const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(nodeIdCleaner()(frames[0].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[0])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "div",
@@ -496,11 +489,11 @@ describe(__filename + "#", () => {
       )
     );
 
-    expect(nodeIdCleaner()(frames[1].root)).to.eql(
+    expect(nodeIdCleaner()(document.children[1])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "div",
-          { nodeId: "000000007" },
+          { nodeId: "000000005" },
           {},
           {},
           [

@@ -10,4 +10,4 @@ export * from "./actions";
 export * from "./dom-renderer";
 export * from "./ot";
 export * from "./graph";
-export * from "./state";
+export * from "./edit";

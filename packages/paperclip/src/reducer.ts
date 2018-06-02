@@ -1,30 +1,30 @@
 import { Action } from "redux";
 import {
   PC_SYNTHETIC_FRAME_RENDERED,
-  PCSyntheticFrameRendered,
+  PCFrameRendered,
   PCDependencyLoaded,
   PC_DEPENDENCY_LOADED,
   PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
-  PCSyntheticFrameContainerCreated
+  PCFrameContainerCreated
 } from "./actions";
 import { evaluatePCModule } from "./evaluate";
 import {
-  updateSyntheticNode,
-  PCState,
-  updatePCState,
-  updateSyntheticFrame,
+  updateSyntheticVisibleNode,
+  PCEditorState,
+  updatePCEditorState,
+  updateFrame,
   evaluateDependency
-} from "./state";
-import { updateSyntheticFrames } from "./synthetic";
+} from "./edit";
+import { updateSyntheticDocuments } from "./synthetic";
 
-export const paperclipReducer = <TState extends PCState>(
+export const paperclipReducer = <TState extends PCEditorState>(
   state: TState,
   action: Action
 ): TState => {
   switch (action.type) {
     case PC_SYNTHETIC_FRAME_CONTAINER_CREATED: {
-      const { frame, $container } = action as PCSyntheticFrameContainerCreated;
-      return updateSyntheticFrame(
+      const { frame, $container } = action as PCFrameContainerCreated;
+      return updateFrame(
         {
           $container,
           computed: null
@@ -34,8 +34,8 @@ export const paperclipReducer = <TState extends PCState>(
       );
     }
     case PC_SYNTHETIC_FRAME_RENDERED: {
-      const { frame, computed } = action as PCSyntheticFrameRendered;
-      return updateSyntheticFrame(
+      const { frame, computed } = action as PCFrameRendered;
+      return updateFrame(
         {
           computed
         },
@@ -47,7 +47,7 @@ export const paperclipReducer = <TState extends PCState>(
       const { uri, graph } = action as PCDependencyLoaded;
       return evaluateDependency(
         uri,
-        updatePCState(
+        updatePCEditorState(
           {
             openDependencyUri: null,
             graph: {
@@ -61,12 +61,12 @@ export const paperclipReducer = <TState extends PCState>(
       // return evaluateDependency(uri, {
       //   openDependencyUri:
       // })
-      // return updatePCState(
+      // return updatePCEditorState(
       //   {
       //     openDependencyUri: null,
       //     graph,
-      //     syntheticFrames: updateSyntheticFrames(
-      //       state.syntheticFrames,
+      //     syntheticFrames: updateSyntheticDocuments(
+      //       state.frames,
       //       evaluatePCModule(module, graph)
       //     )
       //   },

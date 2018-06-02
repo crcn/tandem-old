@@ -2,9 +2,7 @@ MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TO
 
 IMMEDIATE:
 
-* generalize all overrides to <override key="name" value="a">OR value here</override>
-* update override tests
-* child overrides
+* override children on drop
 * back onto styling doc
   * **color picker**
 * update code compiler to handle overrides
@@ -16,9 +14,11 @@ IMMEDIATE:
 * when converting elements to artboards, move new artboard to BEST position
 * select newly inserted elements
 * **highlight instances of a selected component**. Part of the function for this is to highlight how an element instance responds to layout constraints.
-* eiminate frames. Attach that information to element metadata
-* **separate evaluator for creating frames from root module instances**
 * evaluator should return a synthetic tree
+
+SAFETY:
+
+* validation that there are no ID collisions.
 
 STYLING:
 
