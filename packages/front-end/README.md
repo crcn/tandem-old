@@ -1,5 +1,3 @@
-MILESTONE OBJECTIVE: get to point where styles panel can be created in Tandem.TOP:
-
 IMMEDIATE:
 
 * override children on drop
@@ -7,14 +5,7 @@ IMMEDIATE:
   * **color picker**
 * update code compiler to handle overrides
 * select inserted elements
-
-* NO imports. All components should be global.
 * ability to load images & other resources in PC file. (start with ionicons)
-* document bounds on element should be stored in editor namespace
-* when converting elements to artboards, move new artboard to BEST position
-* select newly inserted elements
-* **highlight instances of a selected component**. Part of the function for this is to highlight how an element instance responds to layout constraints.
-* evaluator should return a synthetic tree
 
 SAFETY:
 

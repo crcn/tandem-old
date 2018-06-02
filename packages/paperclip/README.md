@@ -11,7 +11,6 @@ import {
   DOMRenderer,
   evaluatePCModule,
   createPCModule,
-  createPCFrame,
   createPCComponent,
   createPCElement,
   createPCTextNode,
@@ -21,11 +20,11 @@ import {
 const component = createPCComponent("Test");
 
 const pcModule = createPCModule([
-  createPCFrame([component]),
-  createPCFrame([createPCComponentInstance(component.id)])
+  component,
+  createPCComponentInstance(component.id)
 ]);
 
-const syntheticFrames = evaluatePCModule(pcModule);
+const syntheticDocument = evaluatePCModule(pcModule);
 ```
 
 #### TODO
