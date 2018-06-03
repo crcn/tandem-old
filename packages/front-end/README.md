@@ -1,7 +1,8 @@
 IMMEDIATE:
 
 * paperclip tests for persisting + overrides
-* override children on drop
+* ability to move child overrides out of instance
+* move is\* to synthetic metadata
 * back onto styling doc
   * **color picker**
 * update code compiler to handle overrides

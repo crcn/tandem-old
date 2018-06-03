@@ -651,7 +651,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
         for (const nodeId of state.selectedNodeIds) {
           const itemBounds = getSyntheticVisibleNodeRelativeBounds(
-            nodeId,
+            getSyntheticNodeById(nodeId, state.documents),
             state.frames
           );
           const newBounds = roundBounds(
@@ -942,7 +942,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const newBounds = getResizeActionBounds(action as ResizerPathMoved);
       for (const nodeId of getBoundedSelection(state)) {
         state = updateSyntheticVisibleNodeBounds(
-          getNewSyntheticVisibleNodeBounds(newBounds, nodeId, state),
+          getNewSyntheticVisibleNodeBounds(
+            newBounds,
+            getSyntheticNodeById(nodeId, state.documents),
+            state
+          ),
           getSyntheticNodeById(nodeId, state.documents),
           state
         );
@@ -1160,14 +1164,11 @@ const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
 
 const getNewSyntheticVisibleNodeBounds = (
   newBounds: Bounds,
-  nodeId: string,
+  node: SyntheticVisibleNode,
   state: RootState
 ) => {
   const currentBounds = getSelectionBounds(state);
-  const innerBounds = getSyntheticVisibleNodeRelativeBounds(
-    nodeId,
-    state.frames
-  );
+  const innerBounds = getSyntheticVisibleNodeRelativeBounds(node, state.frames);
   return scaleInnerBounds(innerBounds, currentBounds, newBounds);
 };
 

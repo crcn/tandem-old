@@ -14,7 +14,6 @@ import {
   moveBounds,
   TreeMoveOffset,
   insertChildNode,
-  dropChildNode,
   removeNestedTreeNode,
   getTreeNodePath,
   getTreeNodeFromPath,
@@ -104,6 +103,7 @@ export type PCNodeClip = {
 
 // namespaced to ensure that key doesn't conflict with others
 export type PCEditorState = {
+  persisting?: boolean;
   openDependencyUri?: string;
 
   documents: SyntheticDocument[];
@@ -164,20 +164,20 @@ export const getFramesByDependencyUri = memoize(
 );
 
 export const getSyntheticVisibleNodeComputedBounds = (
-  syntheticNodeId: string,
+  { id }: SyntheticVisibleNode,
   frame: Frame
 ) => {
   return (
-    (frame.computed &&
-      frame.computed[syntheticNodeId] &&
-      frame.computed[syntheticNodeId].bounds) ||
+    (frame.computed && frame.computed[id] && frame.computed[id].bounds) ||
     NO_BOUNDS
   );
 };
 
 export const getSyntheticVisibleNodeFrame = memoize(
-  (nodeId: string, frames: Frame[]) =>
-    frames.find(frame => Boolean(frame.computed && frame.computed[nodeId]))
+  (syntheticNode: SyntheticVisibleNode, frames: Frame[]) =>
+    frames.find(frame =>
+      Boolean(frame.computed && frame.computed[syntheticNode.id])
+    )
 );
 export const getFrameByContentNodeId = memoize(
   (nodeId: string, frames: Frame[]) =>
@@ -185,11 +185,11 @@ export const getFrameByContentNodeId = memoize(
 );
 
 export const getSyntheticVisibleNodeRelativeBounds = memoize(
-  (syntheticNodeId: string, frames: Frame[]): Bounds => {
-    const frame = getSyntheticVisibleNodeFrame(syntheticNodeId, frames);
+  (syntheticNode: SyntheticVisibleNode, frames: Frame[]): Bounds => {
+    const frame = getSyntheticVisibleNodeFrame(syntheticNode, frames);
     return frame
       ? shiftBounds(
-          getSyntheticVisibleNodeComputedBounds(syntheticNodeId, frame),
+          getSyntheticVisibleNodeComputedBounds(syntheticNode, frame),
           frame.bounds
         )
       : NO_BOUNDS;
@@ -201,11 +201,11 @@ export const getFrameSyntheticNode = memoize(
     getSyntheticNodeById(frame.contentNodeId, documents)
 );
 export const getSyntheticVisibleNodeFixedBounds = memoize(
-  (syntheticNodeId: string, frames: Frame[]): Bounds => {
-    const frame = getSyntheticVisibleNodeFrame(syntheticNodeId, frames);
+  (syntheticNode: SyntheticVisibleNode, frames: Frame[]): Bounds => {
+    const frame = getSyntheticVisibleNodeFrame(syntheticNode, frames);
     return frame
       ? shiftBounds(
-          getSyntheticVisibleNodeRelativeBounds(syntheticNodeId, frames),
+          getSyntheticVisibleNodeRelativeBounds(syntheticNode, frames),
           frame.bounds
         )
       : NO_BOUNDS;
@@ -218,13 +218,13 @@ export const getPCNodeClip = (
   graph: DependencyGraph
 ): PCNodeClip => {
   const sourceNode = getSyntheticSourceNode(node, graph);
-  const frame = getSyntheticVisibleNodeFrame(node.id, frames);
+  const frame = getSyntheticVisibleNodeFrame(node, frames);
   return {
     uri: getSyntheticSourceUri(node, graph),
     node: sourceNode,
     fixedBounds: node.isContentNode
       ? frame.bounds
-      : getSyntheticVisibleNodeRelativeBounds(node.id, frames)
+      : getSyntheticVisibleNodeRelativeBounds(node, frames)
   };
 };
 
@@ -329,7 +329,7 @@ export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   if (node.isContentNode) {
     state = removeFrame(
-      getSyntheticVisibleNodeFrame(node.id, state.frames),
+      getSyntheticVisibleNodeFrame(node, state.frames),
       state
     );
   }
@@ -407,18 +407,18 @@ export const updateSyntheticVisibleNodePosition = <
   if (node.isContentNode) {
     return updateFramePosition(
       position,
-      getSyntheticVisibleNodeFrame(node.id, state.frames),
+      getSyntheticVisibleNodeFrame(node, state.frames),
       state
     );
   }
 
   return updateSyntheticVisibleNode(node, state, node => {
-    const bounds = getSyntheticVisibleNodeRelativeBounds(node.id, state.frames);
+    const bounds = getSyntheticVisibleNodeRelativeBounds(node, state.frames);
     const newBounds = convertFixedBoundsToRelative(
       moveBounds(bounds, position),
       node,
       getSyntheticVisibleNodeDocument(node.id, state.documents),
-      getSyntheticVisibleNodeFrame(node.id, state.frames)
+      getSyntheticVisibleNodeFrame(node, state.frames)
     );
 
     return {
@@ -440,7 +440,7 @@ export const updateSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
   if (node.isContentNode) {
     return updateFrameBounds(
       bounds,
-      getSyntheticVisibleNodeFrame(node.id, state.frames),
+      getSyntheticVisibleNodeFrame(node, state.frames),
       state
     );
   }
@@ -549,9 +549,9 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   state: TState
 ) =>
   persistChanges(state, state => {
-    const sourceNode = getSyntheticSourceNode(node, state.graph);
+    let sourceNode = getSyntheticSourceNode(node, state.graph);
 
-    const component = createPCComponent(
+    let component = createPCComponent(
       sourceNode.label,
       (sourceNode as PCElement).is,
       sourceNode.style,
@@ -562,6 +562,13 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
     );
 
     if (node.isContentNode) {
+      component = updatePCNodeMetadata(sourceNode.metadata, component);
+      sourceNode = updatePCNodeMetadata(
+        {
+          [PCVisibleNodeMetadataKey.BOUNDS]: undefined
+        },
+        sourceNode
+      );
       return replaceDependencyGraphPCNode(component, sourceNode, state);
     }
 
@@ -601,24 +608,46 @@ export const persistInsertNode = <TState extends PCEditorState>(
   state: TState
 ) =>
   persistChanges(state, state => {
-    let parent: PCVisibleNode;
+    let parentSource: PCVisibleNode;
 
     if (relative.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
-      parent = appendChildNode(
+      parentSource = appendChildNode(
         newChild,
         getSyntheticSourceNode(relative, state.graph)
       );
     } else {
-      parent = maybeOverride(
+      let parent: SyntheticVisibleNode;
+      let index: number;
+      if (offset === TreeMoveOffset.APPEND) {
+        parent = relative as SyntheticVisibleNode;
+        index = parent.children.length;
+      } else {
+        const document = getSyntheticVisibleNodeDocument(
+          relative.id,
+          state.documents
+        );
+
+        // reset reative so that we can fetch the index
+        relative = getSyntheticNodeById(relative.id, state.documents);
+        parent = getParentTreeNode(relative.id, document);
+        index =
+          parent.children.indexOf(relative) +
+          (offset === TreeMoveOffset.BEFORE ? 0 : TreeMoveOffset.APPEND);
+      }
+
+      parentSource = maybeOverride(
         PCOverridablePropertyName.CHILDREN,
         newChild,
-        (child, existing) =>
-          existing ? [...existing.children, newChild] : [newChild],
-        (parent, value) => dropChildNode(value, offset, parent, parent)
-      )(relative as SyntheticVisibleNode, state.documents, state.graph);
+        (child, override?: PCOverride) => {
+          return override
+            ? arraySplice(override.children, index, 0, newChild)
+            : [newChild];
+        },
+        (parent, value) => insertChildNode(value, index, parent)
+      )(parent, state.documents, state.graph);
     }
 
-    return replaceDependencyGraphPCNode(parent, parent, state);
+    return replaceDependencyGraphPCNode(parentSource, parentSource, state);
   });
 
 export const persistInsertClips = <TState extends PCEditorState>(
@@ -815,10 +844,7 @@ export const persistSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
   persistChanges(state, state => {
     const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
     if (node.isContentNode) {
-      const frame = getSyntheticVisibleNodeFrame(
-        node.source.nodeId,
-        state.frames
-      ) as Frame;
+      const frame = getSyntheticVisibleNodeFrame(node, state.frames) as Frame;
       const sourceNode = getSyntheticSourceNode(node, state.graph);
       return replaceDependencyGraphPCNode(
         updatePCNodeMetadata(
@@ -845,10 +871,6 @@ export const persistMoveSyntheticVisibleNode = <TState extends PCEditorState>(
   persistChanges(state, state => {
     const oldState = state;
     const sourceNode = getSyntheticSourceNode(node, state.graph);
-    const newRelativeSourceNode = getSyntheticSourceNode(
-      newRelative,
-      state.graph
-    );
 
     // remove the child first
     if (node.isContentNode) {
@@ -864,33 +886,7 @@ export const persistMoveSyntheticVisibleNode = <TState extends PCEditorState>(
       state = replaceDependencyGraphPCNode(null, sourceNode, state);
     }
 
-    const destDep = getPCNodeDependency(newRelativeSourceNode.id, state.graph);
-    let destContent = destDep.content;
-    let destParent =
-      offset === TreeMoveOffset.APPEND
-        ? newRelativeSourceNode
-        : (getParentTreeNode(newRelativeSourceNode.id, destContent) as PCNode);
-    const index =
-      offset === TreeMoveOffset.APPEND
-        ? destParent.children.length
-        : destParent.children.indexOf(newRelativeSourceNode) +
-          (offset === TreeMoveOffset.BEFORE ? 0 : 1);
-
-    // if (destParent.name === PCSourceTagNames.FRAME) {
-    //   destParent = getParentTreeNode(destParent.id, destContent) as PCNode;
-    // }
-
-    destContent = updateNestedNode(destParent, destContent, parent => {
-      let child = sourceNode as PCNode;
-      if (destParent.name === PCSourceTagNames.MODULE) {
-        child = addBoundsMetadata(node, sourceNode, oldState);
-      }
-      return insertChildNode(child, index, parent);
-    });
-
-    state = replaceDependencyGraphPCNode(destContent, destContent, state);
-
-    return state;
+    return persistInsertNode(sourceNode, newRelative, offset, state);
   });
 
 const addBoundsMetadata = (
@@ -898,9 +894,9 @@ const addBoundsMetadata = (
   child: PCVisibleNode | PCComponent,
   state: PCEditorState
 ) => {
-  const frame = getSyntheticVisibleNodeFrame(node.id, state.frames);
+  const frame = getSyntheticVisibleNodeFrame(node, state.frames);
   const syntheticNodeBounds = getSyntheticVisibleNodeRelativeBounds(
-    node.id,
+    node,
     state.frames
   );
 

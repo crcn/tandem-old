@@ -1105,14 +1105,20 @@ export const setHoveringSyntheticVisibleNodeIds = (
 
 export const getBoundedSelection = memoize((root: RootState): string[] =>
   root.selectedNodeIds.filter(nodeId =>
-    getSyntheticVisibleNodeRelativeBounds(nodeId, root.frames)
+    getSyntheticVisibleNodeRelativeBounds(
+      getSyntheticNodeById(nodeId, root.documents),
+      root.frames
+    )
   )
 );
 
 export const getSelectionBounds = memoize((root: RootState) =>
   mergeBounds(
     ...getBoundedSelection(root).map(nodeId =>
-      getSyntheticVisibleNodeRelativeBounds(nodeId, root.frames)
+      getSyntheticVisibleNodeRelativeBounds(
+        getSyntheticNodeById(nodeId, root.documents),
+        root.frames
+      )
     )
   )
 );

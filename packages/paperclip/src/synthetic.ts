@@ -27,7 +27,8 @@ import {
   PCSourceTagNames,
   getPCImportedChildrenSourceUris,
   PCTextNode,
-  PCElement
+  PCElement,
+  PCOverride
 } from "./dsl";
 import { diffSyntheticNode, patchSyntheticNode } from "./ot";
 
@@ -59,11 +60,13 @@ export type SyntheticDocument = {
 export type SyntheticElement = {
   attributes: KeyValue<string>;
   style: KeyValue<any>;
+  children: Array<SyntheticVisibleNode | PCOverride>;
 } & SyntheticBaseNode;
 
 export type SyntheticTextNode = {
   value: string;
   style: KeyValue<any>;
+  children: Array<PCOverride>;
 } & SyntheticBaseNode;
 
 export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;

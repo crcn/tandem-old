@@ -691,15 +691,15 @@
       }
     },
     {
-      "id": "962618dd68",
       "label": "Element",
       "is": "div",
-      "name": "element",
-      "attributes": {},
       "style": {},
+      "attributes": {},
+      "id": "29b6f18147",
+      "name": "component",
       "children": [
         {
-          "id": "962618dd209",
+          "id": "29b6f18145",
           "label": "Element",
           "is": "div",
           "name": "element",
@@ -707,7 +707,7 @@
           "style": {},
           "children": [
             {
-              "id": "962618dd138",
+              "id": "29b6f18146",
               "name": "text",
               "label": "Text",
               "value": "Something",
@@ -724,10 +724,71 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -333.6215992109374,
-          "top": 393.51804583980305,
-          "right": -233.6215992109374,
-          "bottom": 493.51804583980305
+          "left": -407,
+          "top": 374,
+          "right": -307,
+          "bottom": 474
+        }
+      }
+    },
+    {
+      "id": "29b6f18290",
+      "variant": [],
+      "is": "29b6f18147",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "29b6f18815",
+          "propertyName": "children",
+          "targetIdPath": [
+            "29b6f18145"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "29b6f18739",
+              "name": "text",
+              "label": "Text",
+              "value": "Click to edit",
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": -252.61152374307565,
+                  "top": 282.7764967447519,
+                  "right": -152.61152374307565,
+                  "bottom": 382.7764967447519
+                }
+              }
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -285,
+          "top": 378,
+          "right": -185,
+          "bottom": 478
+        }
+      }
+    },
+    {
+      "id": "29b6f18891",
+      "name": "text",
+      "label": "Text",
+      "value": "Something omething",
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -194.44182884175606,
+          "top": 296.5187951880332,
+          "right": -94.44182884175606,
+          "bottom": 396.5187951880332
         }
       }
     }
