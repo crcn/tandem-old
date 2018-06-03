@@ -12,9 +12,10 @@ import {
   KeyValue,
   getNestedTreeNodeById,
   replaceNestedNode,
-  removeNestedTreeNode
+  removeNestedTreeNode,
+  reduceTree
 } from "tandem-common";
-import { mapValues, merge } from "lodash";
+import { mapValues, merge, uniq } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
 export const PAPERCLIP_MODULE_VERSION = "0.0.3";
@@ -462,6 +463,37 @@ export const getDefaultVariantIds = (component: PCComponent) =>
 export const getNodeSourceComponent = memoize(
   (node: PCComponentInstanceElement, graph: DependencyGraph) =>
     getPCNodeContentNode(node.name, getPCNodeModule(node.id, graph))
+);
+
+export const getComponentRefIds = memoize((node: PCNode): string[] => {
+  return uniq(
+    reduceTree(
+      node,
+      (iss: string[], node: PCNode) => {
+        if (
+          node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+          (node.name === PCSourceTagNames.COMPONENT && extendsComponent(node))
+        ) {
+          return [...iss, node.is];
+        }
+        return iss;
+      },
+      []
+    )
+  );
+});
+
+export const getComponentGraphRefs = memoize(
+  (node: PCNode, graph: DependencyGraph) => {
+    const allRefs = [];
+    const refIds = getComponentRefIds(node);
+    for (let i = 0, { length } = refIds; i < length; i++) {
+      const ref = getPCNode(refIds[i], graph);
+      allRefs.push(ref);
+      allRefs.push(...getComponentGraphRefs(ref, graph));
+    }
+    return uniq(allRefs);
+  }
 );
 
 /*------------------------------------------

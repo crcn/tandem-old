@@ -45,15 +45,15 @@ type PCLayerOuterProps = {
 
 const isMovableNode = ({ node, inComponentInstance }: any) => {
   const sn = node as SyntheticVisibleNode;
+  if (node.immutable) {
+    return false;
+  }
+
   if (sn.isContentNode) {
     if (sn.isCreatedFromComponent) {
       return sn.isComponentInstance;
     }
     return true;
-  }
-
-  if (node.isCreatedFromComponent && inComponentInstance) {
-    return false;
   }
 
   return true;
@@ -64,11 +64,6 @@ const canDropNode = (
   { node, inComponentInstance }: any,
   offset: TreeMoveOffset
 ) => {
-  // override children
-  if (inComponentInstance) {
-    return true;
-  }
-
   return true;
 };
 
@@ -98,8 +93,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       ...attribs,
       className: cx(attribs.className, {
         "is-component-instance": props.node.isComponentInstance,
-        "in-component-instance":
-          props.inComponentInstance && props.node.isCreatedFromComponent,
+        immutable: props.node.immutable,
         "is-component-root":
           props.isContentNode &&
           props.node.isCreatedFromComponent &&
@@ -113,17 +107,6 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
           isContentNode={(props.node as SyntheticVisibleNode).isContentNode}
         />
       );
-    },
-    childRenderer: Base => {
-      const childRenderer = defaultChildRender(Base);
-      return (props: PCLayerOuterProps) => {
-        return childRenderer({
-          ...props,
-          inComponentInstance:
-            props.inComponentInstance ||
-            (props.node as SyntheticVisibleNode).isComponentInstance
-        } as any);
-      };
     }
   }
 );

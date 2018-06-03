@@ -29,7 +29,9 @@ import {
   PCComponentInstanceElement,
   getDefaultVariantIds,
   createPCDependency,
-  PCOverridablePropertyName
+  PCOverridablePropertyName,
+  getComponentRefIds,
+  getComponentGraphRefs
 } from "./dsl";
 import { DependencyGraph, Dependency } from "./graph";
 import {
@@ -51,13 +53,28 @@ type EvalOverride = {
 
 type EvalContext = {
   isContentNode?: boolean;
+  nodesAreImmutable?: boolean;
   isCreatedFromComponent?: boolean;
   currentVariantIds: string[];
   overrides: {
     [identifier: string]: EvalOverride;
   };
-  graph: DependencyGraph;
+  componentRefs: {
+    [identifier: string]: PCComponent;
+  };
 };
+
+const createContext = memoize((...refs: PCComponent[]) => {
+  const componentRefs = {};
+  for (let i = 0, { length } = refs; i < length; i++) {
+    componentRefs[refs[i].id] = refs[i];
+  }
+  return {
+    overrides: {},
+    currentVariantIds: [],
+    componentRefs
+  };
+});
 
 export const evaluatePCModule = memoize(
   (
@@ -67,11 +84,10 @@ export const evaluatePCModule = memoize(
     createSytheticDocument(
       createSyntheticSource(module),
       module.children.map(child => {
-        return evaluateContentNode(child, {
-          overrides: {},
-          graph,
-          currentVariantIds: []
-        });
+        return evaluateContentNode(
+          child,
+          createContext(...getComponentGraphRefs(child, graph))
+        );
       })
     )
 );
@@ -80,20 +96,19 @@ const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
   [module.id]: createPCDependency(module.id, module)
 });
 
-const evaluateContentNode = (
-  root: PCComponent | PCVisibleNode,
-  context: EvalContext
-) => {
-  context = { ...context, isContentNode: true };
-  switch (root.name) {
-    case PCSourceTagNames.COMPONENT: {
-      return evaluateRootComponent(root, context);
-    }
-    default: {
-      return evaluatePCVisibleNode(root, null, context);
+const evaluateContentNode = memoize(
+  (root: PCComponent | PCVisibleNode, context: EvalContext) => {
+    context = { ...context, isContentNode: true };
+    switch (root.name) {
+      case PCSourceTagNames.COMPONENT: {
+        return evaluateRootComponent(root, context);
+      }
+      default: {
+        return evaluatePCVisibleNode(root, null, context);
+      }
     }
   }
-};
+);
 
 const evaluateRootComponent = (
   root: PCComponent,
@@ -118,6 +133,7 @@ const evaluatePCVisibleNode = (
           node.label,
           context.isContentNode,
           context.isCreatedFromComponent,
+          Boolean(context.nodesAreImmutable),
           node.metadata
         ),
         appendPath(instancePath, node.id),
@@ -166,6 +182,24 @@ const evaluatePCVisibleNode = (
 //   );
 // };
 
+const maybeImmutable = (
+  node: PCNode,
+  instanceNode: PCNode,
+  context: EvalContext
+) => {
+  // parent component children are immutable
+  if (
+    node.name === PCSourceTagNames.COMPONENT &&
+    (instanceNode.name === PCSourceTagNames.COMPONENT ||
+      instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
+    node !== instanceNode
+  ) {
+    return { ...context, nodesAreImmutable: true };
+  }
+
+  return context;
+};
+
 const removeisContentNode = (context: EvalContext) =>
   context.isContentNode ? { ...context, isContentNode: false } : context;
 
@@ -191,7 +225,7 @@ const evaluateComponentOrElement = (
   );
   if (extendsComponent(elementOrComponent)) {
     return evaluateComponentOrElement(
-      getPCNode(elementOrComponent.is, context.graph) as PCComponent,
+      context.componentRefs[elementOrComponent.is],
       instanceNode,
       instancePath,
       context
@@ -219,6 +253,7 @@ const evaluateComponentOrElement = (
         Boolean(isContentNode),
         Boolean(context.isCreatedFromComponent),
         Boolean(isComponentInstance),
+        Boolean(context.nodesAreImmutable),
         instanceNode.metadata
       ),
       selfIdPath,
@@ -301,6 +336,11 @@ const registerOverride = (
       ...value,
       ...override[propertyName]
     };
+  } else if (
+    propertyName === PCOverridablePropertyName.TEXT &&
+    override.text != null
+  ) {
+    newValue = override[propertyName];
   }
 
   return {
@@ -341,7 +381,7 @@ const registerOverrides = (
           evaluatePCVisibleNode(
             child as PCVisibleNode,
             instancePath,
-            removeisContentNode(context)
+            maybeImmutable(node, instanceNode, removeisContentNode(context))
           )
         ),
         idPathStr,
@@ -381,7 +421,7 @@ const registerOverrides = (
       evaluatePCVisibleNode(
         child as PCVisibleNode,
         instancePath,
-        removeisContentNode(context)
+        maybeImmutable(node, instanceNode, removeisContentNode(context))
       )
     ),
     nodePath,

@@ -1,6 +1,9 @@
 IMMEDIATE:
 
-* back onto styling doc
+* ability to use images
+* start wiring up right gutter
+* look into how rust may be used
+* prohibit immutable children from being deleted
   * **color picker**
 * update code compiler to handle overrides
 * select inserted elements

@@ -964,8 +964,10 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   point: Point,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
-  const canvas = getActiveEditor(state).canvas;
+  const editor = getActiveEditor(state);
+  const canvas = editor.canvas;
   const translate = getCanvasTranslate(canvas);
+  const toolType = state.toolType;
 
   const scaledMousePos = getScaledMouseCanvasPosition(state, point);
 
@@ -993,6 +995,9 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
     if (
       pointIntersectsBounds(mouseFramePoint, bounds) &&
       !pointIntersectsBounds(scaledMousePos, deadZone) &&
+      (toolType == null ||
+        getNestedTreeNodeById($id, contentNode).name !==
+          PCSourceTagNames.TEXT) &&
       (!filter || filter(getNestedTreeNodeById($id, contentNode)))
     ) {
       intersectingBounds.push(bounds);

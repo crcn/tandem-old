@@ -124,6 +124,9 @@ const _diffSyntheticNode = (
   nodePath: number[],
   ots: SyntheticOperationalTransform[] = []
 ): SyntheticOperationalTransform[] => {
+  if (oldNode === newNode) {
+    return ots;
+  }
   const memoKey = oldNode.id + newNode.id;
   if (_diffSyntheticNodeMemos[memoKey]) {
     return _diffSyntheticNodeMemos[memoKey];

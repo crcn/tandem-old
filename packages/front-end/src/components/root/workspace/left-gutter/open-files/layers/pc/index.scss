@@ -3,16 +3,15 @@
 .m-synthetic-window-layers {
 
   .m-tree-node-layer {
-    .is-component-instance {
+    .immutable {
       background: $color-purple-7;
     }
-    .in-component-instance {
+    .is-component-instance {
       background: $color-purple-7;
     }
     .is-component-root {
       background: $color-green-10;
     }
-
     .is-slot-container {
       background: $color-tan-10;
     }

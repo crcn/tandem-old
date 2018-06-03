@@ -18,7 +18,7 @@ import { KeyValue } from "tandem-common";
 import { Dependency, DependencyGraph } from "./graph";
 import { loadEntry, FileLoader } from "./loader";
 import { diffSyntheticNode } from "./ot";
-import { PCEditorState, Frame } from "./edit";
+import { PCEditorState, Frame, getFrameByContentNodeId } from "./edit";
 import {
   getSyntheticNodeById,
   SyntheticDocument,
@@ -69,14 +69,24 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
               prevDocuments
             );
 
+            const oldFrame = getFrameByContentNodeId(
+              currFrame.contentNodeId,
+              prevFrames
+            );
+
             // if navigator is present, then we want to point to a remote renderer
-            if (contentNode && prevContentNode === contentNode) {
+            if (
+              contentNode &&
+              prevContentNode === contentNode &&
+              currFrame === oldFrame
+            ) {
               continue;
             }
 
             yield call(
               renderContainer,
               currFrame,
+              oldFrame,
               contentNode,
               prevContentNode,
               graph
@@ -92,18 +102,20 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
       const initedFrames = {};
 
       function* renderContainer(
-        frame: Frame,
+        newFrame: Frame,
+        oldFrame: Frame,
         newContentNode: SyntheticVisibleNode,
         oldContentNode: SyntheticVisibleNode,
         graph: DependencyGraph
       ) {
-        if (!initedFrames[frame.contentNodeId] || !oldContentNode) {
-          initedFrames[frame.contentNodeId] = 1;
-          yield spawn(initContainer, frame, graph);
+        if (!initedFrames[newFrame.contentNodeId] || !oldContentNode) {
+          initedFrames[newFrame.contentNodeId] = 1;
+          yield spawn(initContainer, newFrame, graph);
         } else {
           yield call(
             patchContainer,
-            frame,
+            newFrame,
+            oldFrame,
             newContentNode,
             oldContentNode,
             graph
@@ -176,14 +188,15 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
     }
 
     function* patchContainer(
-      frame: Frame,
+      newFrame: Frame,
+      oldFrame: Frame,
       newContentNode: SyntheticVisibleNode,
       oldContentNode: SyntheticVisibleNode
     ) {
-      if (newContentNode === oldContentNode) {
+      if (newContentNode === oldContentNode && newFrame === oldFrame) {
         return;
       }
-      const container: HTMLElement = frame.$container;
+      const container: HTMLElement = newFrame.$container;
       const iframe = container.children[0] as HTMLIFrameElement;
       const body = iframe.contentDocument && iframe.contentDocument.body;
       if (!body) {
@@ -192,18 +205,18 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
 
       if (oldContentNode !== newContentNode) {
         const ots = diffSyntheticNode(oldContentNode, newContentNode);
-        frameNodeMap[frame.contentNodeId] = patchDOM(
+        frameNodeMap[newFrame.contentNodeId] = patchDOM(
           ots,
           oldContentNode,
           body,
-          frameNodeMap[frame.contentNodeId]
+          frameNodeMap[newFrame.contentNodeId]
         );
       }
 
       yield put(
         pcFrameRendered(
-          frame,
-          computeDisplayInfo(frameNodeMap[frame.contentNodeId])
+          newFrame,
+          computeDisplayInfo(frameNodeMap[newFrame.contentNodeId])
         )
       );
     }

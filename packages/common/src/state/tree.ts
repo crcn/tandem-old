@@ -316,6 +316,18 @@ export const dropChildNode = <TTree extends TreeNode<any>>(
   }
 };
 
+export const reduceTree = <TTree extends TreeNode<any>, TArg>(
+  node: TTree,
+  reducer: (value: TArg, node: TTree) => TArg,
+  initial?: TArg
+) => {
+  let value = reducer(initial, node);
+  for (let i = 0, { length } = node.children; i < length; i++) {
+    value = reduceTree(node.children[i], reducer, value);
+  }
+  return value;
+};
+
 export const cloneTreeNode = <TTree extends TreeNode<any>>(
   node: TTree,
   generateID = node => generateUID()

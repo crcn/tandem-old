@@ -87,12 +87,14 @@ describe(__filename + "#", () => {
               undefined,
               false,
               true,
+              false,
               false
             )
           ],
           "Test",
           true,
           true,
+          false,
           false
         )
       )
@@ -136,13 +138,15 @@ describe(__filename + "#", () => {
               undefined,
               false,
               true,
-              false
+              false,
+              true
             )
           ],
           "Test",
           true,
           true,
-          true
+          true,
+          false
         )
       )
     );
@@ -184,12 +188,14 @@ describe(__filename + "#", () => {
               undefined,
               false,
               true,
-              false
+              false,
+              true
             )
           ],
           "Test",
           true,
           true,
+          false,
           false
         )
       )
@@ -242,18 +248,21 @@ describe(__filename + "#", () => {
                   undefined,
                   false,
                   true,
+                  false,
                   false
                 )
               ],
               undefined,
               false,
               true,
-              false
+              false,
+              true
             )
           ],
           "Test",
           true,
           true,
+          false,
           false
         )
       )
@@ -339,19 +348,22 @@ describe(__filename + "#", () => {
                           undefined,
                           false,
                           true,
+                          false,
                           false
                         )
                       ],
                       undefined,
                       false,
                       true,
-                      false
+                      false,
+                      true
                     )
                   ],
                   undefined,
                   false,
                   true,
-                  false
+                  false,
+                  true
                 ),
                 createSyntheticElement(
                   "b2",
@@ -362,18 +374,21 @@ describe(__filename + "#", () => {
                   undefined,
                   false,
                   true,
-                  false
+                  false,
+                  true
                 )
               ],
               undefined,
               false,
               true,
-              false
+              false,
+              true
             )
           ],
           "Test",
           true,
           true,
+          false,
           false
         )
       )
@@ -419,12 +434,14 @@ describe(__filename + "#", () => {
               undefined,
               false,
               true,
-              false
+              false,
+              true
             )
           ],
           "Test",
           true,
           true,
+          false,
           false
         )
       )

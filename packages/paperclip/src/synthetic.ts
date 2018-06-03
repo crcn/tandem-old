@@ -49,6 +49,7 @@ export type SyntheticBaseNode = {
   // TODO - this information should go in metadata
   isContentNode?: boolean;
   isCreatedFromComponent?: boolean;
+  immutable?: boolean;
   isComponentInstance?: boolean;
   label?: string;
 } & TreeNode<string>;
@@ -96,6 +97,7 @@ export const createSyntheticElement = (
   isContentNode?: boolean,
   isCreatedFromComponent?: boolean,
   isComponentInstance?: boolean,
+  immutable?: boolean,
   metadata?: KeyValue<any>
 ): SyntheticElement => ({
   id: generateUID(),
@@ -104,6 +106,7 @@ export const createSyntheticElement = (
   isComponentInstance,
   isCreatedFromComponent,
   isContentNode,
+  immutable,
   source,
   name,
   attributes,
@@ -118,6 +121,7 @@ export const createSyntheticTextNode = (
   label?: string,
   isContentNode?: boolean,
   isCreatedFromComponent?: boolean,
+  immutable?: boolean,
   metadata?: KeyValue<any>
 ): SyntheticTextNode => ({
   label,
@@ -126,6 +130,7 @@ export const createSyntheticTextNode = (
   value,
   isContentNode,
   isCreatedFromComponent,
+  immutable,
   source,
   name: PCSourceTagNames.TEXT,
   style,
@@ -250,11 +255,7 @@ export const findClosestParentComponentInstance = memoize(
     node: SyntheticVisibleNode,
     root: SyntheticVisibleNode | SyntheticDocument
   ) => {
-    return findTreeNodeParent(
-      node.id,
-      root,
-      (parent: SyntheticVisibleNode) => parent.isComponentInstance
-    );
+    return findTreeNodeParent(node.id, root, isComponentOrInstance);
   }
 );
 
@@ -290,13 +291,17 @@ export const getAllParentComponentInstance = memoize(
   }
 );
 
+export const isComponentOrInstance = (node: SyntheticVisibleNode) =>
+  node.isComponentInstance ||
+  (node.isContentNode && node.isCreatedFromComponent);
+
 export const getNearestComponentInstances = memoize(
   (
     node: SyntheticVisibleNode,
     root: SyntheticVisibleNode | SyntheticDocument
   ) => {
     const instances = getAllParentComponentInstance(node, root);
-    if (node.isComponentInstance) {
+    if (isComponentOrInstance(node)) {
       return [node, ...instances];
     }
     return instances;

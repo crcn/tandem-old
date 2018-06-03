@@ -25,7 +25,7 @@ import {
   replaceNestedNode,
   arraySplice
 } from "tandem-common";
-import { values, omit, pickBy, last, identity } from "lodash";
+import { values, omit, pickBy, last, identity, uniq } from "lodash";
 import { DependencyGraph, Dependency, updateGraphDependency } from "./graph";
 import {
   PCNode,
@@ -764,72 +764,70 @@ const maybeOverride = (
 ): PCVisibleNode => {
   const sourceNode = getSyntheticSourceNode(node, graph);
 
-  if (node.isCreatedFromComponent) {
+  if (node.immutable) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
     const nearestComponentInstances = getNearestComponentInstances(
       node,
       document
     );
-    if (nearestComponentInstances.length) {
-      const furthestInstance: SyntheticVisibleNode = last(
-        nearestComponentInstances
-      );
 
-      const furthestInstanceSourceNode = getSyntheticSourceNode(
-        furthestInstance,
-        graph
-      );
+    const mutableInstance: SyntheticVisibleNode = nearestComponentInstances.find(
+      instance => !instance.immutable
+    );
 
-      // source node is an override, so go through the normal updater
-      if (getNestedTreeNodeById(sourceNode.id, furthestInstanceSourceNode)) {
-        return updater(sourceNode, value);
-      }
+    const mutableInstanceSourceNode = getSyntheticSourceNode(
+      mutableInstance,
+      graph
+    );
 
-      const overrideIdPath = [
-        ...nearestComponentInstances
-          .concat()
-          .reverse()
-          .slice(1)
-          .map(node => node.id),
-        sourceNode.id
-      ];
+    // source node is an override, so go through the normal updater
+    // if (getNestedTreeNodeById(sourceNode.id, furthestInstanceSourceNode)) {
+    //   return updater(sourceNode, value);
+    // }
 
-      let existingOverride = furthestInstanceSourceNode.children.find(
-        (child: PCOverride) => {
-          return (
-            child.name === PCSourceTagNames.OVERRIDE &&
-            child.targetIdPath.join("/") === overrideIdPath.join("/") &&
-            child.propertyName === propertyName
-          );
-        }
-      ) as PCOverride;
+    const overrideIdPath = uniq([
+      ...nearestComponentInstances
+        .slice(0, nearestComponentInstances.indexOf(mutableInstance))
+        .reverse()
+        .map((node: SyntheticVisibleNode) => node.source.nodeId),
+      sourceNode.id
+    ]);
 
-      value = mapOverride(value, existingOverride);
-
-      if (existingOverride) {
-        if (
-          existingOverride.propertyName === PCOverridablePropertyName.CHILDREN
-        ) {
-          existingOverride = {
-            ...existingOverride,
-            children: value
-          };
-        } else {
-          existingOverride = {
-            ...existingOverride,
-            value
-          };
-        }
-
-        return replaceNestedNode(
-          existingOverride,
-          existingOverride.id,
-          furthestInstanceSourceNode
+    let existingOverride = mutableInstanceSourceNode.children.find(
+      (child: PCOverride) => {
+        return (
+          child.name === PCSourceTagNames.OVERRIDE &&
+          child.targetIdPath.join("/") === overrideIdPath.join("/") &&
+          child.propertyName === propertyName
         );
-      } else {
-        const override = createPCOverride(overrideIdPath, propertyName, value);
-        return appendChildNode(override, furthestInstanceSourceNode);
       }
+    ) as PCOverride;
+
+    value = mapOverride(value, existingOverride);
+
+    if (existingOverride) {
+      if (
+        existingOverride.propertyName === PCOverridablePropertyName.CHILDREN
+      ) {
+        existingOverride = {
+          ...existingOverride,
+          children: value
+        };
+      } else {
+        existingOverride = {
+          ...existingOverride,
+          value
+        };
+      }
+
+      return replaceNestedNode(
+        existingOverride,
+        existingOverride.id,
+        mutableInstanceSourceNode
+      );
+    } else {
+      const override = createPCOverride(overrideIdPath, propertyName, value);
+      return appendChildNode(override, mutableInstanceSourceNode);
     }
   }
 

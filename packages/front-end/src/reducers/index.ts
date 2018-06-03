@@ -904,7 +904,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
 
       if (!targetNodeId) {
-        return state;
+        return setSelectedSyntheticVisibleNodeIds(state);
       }
 
       // if (altKey) {
@@ -1035,6 +1035,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case CANVAS_TOOL_ARTBOARD_TITLE_CLICKED: {
       const { frame, sourceEvent } = action as CanvasToolArtboardTitleClicked;
+      sourceEvent.stopPropagation();
       const contentNode = getFrameSyntheticNode(frame, state.documents);
       state = updateEditorCanvas(
         { smooth: false },
@@ -1058,7 +1059,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const editor = getEditorWithActiveFileUri(fileUri, state);
 
       const toolType = state.toolType;
-      state = setTool(null, state);
 
       switch (toolType) {
         case ToolType.ELEMENT: {
@@ -1134,14 +1134,8 @@ const persistInsertNodeFromPoint = (
   }, state);
 
   state = selectInsertedSyntheticVisibleNodes(oldState, state);
-  // state = setSelectedSyntheticVisibleNodeIds(
-  //   state,
-  //   ...getInsertedWindowElementIds(
-  //     oldWindow,
-  //     document && document.id,
-  //     state.paperclip
-  //   )
-  // );
+
+  state = setTool(null, state);
   return state;
 };
 
