@@ -732,7 +732,7 @@
       }
     },
     {
-      "id": "29b6f18290",
+      "id": "11dda3b12458",
       "variant": [],
       "is": "29b6f18147",
       "name": "component-instance",
@@ -740,57 +740,24 @@
       "style": {},
       "children": [
         {
-          "id": "29b6f18815",
-          "propertyName": "children",
-          "targetIdPath": [
-            "29b6f18145"
-          ],
-          "name": "override",
-          "children": [
-            {
-              "id": "29b6f18739",
-              "name": "text",
-              "label": "Text",
-              "value": "Click to edit",
-              "style": {},
-              "children": [],
-              "metadata": {
-                "bounds": {
-                  "left": -252.61152374307565,
-                  "top": 282.7764967447519,
-                  "right": -152.61152374307565,
-                  "bottom": 382.7764967447519
-                }
-              }
-            }
-          ],
+          "id": "11dda3b12683",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
           "metadata": {}
         }
       ],
       "metadata": {
         "bounds": {
           "left": -285,
-          "top": 378,
+          "top": 372,
           "right": -185,
-          "bottom": 478
+          "bottom": 472
         }
-      }
-    },
-    {
-      "id": "29b6f18891",
-      "name": "text",
-      "label": "Text",
-      "value": "Something omething",
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -194.44182884175606,
-          "top": 296.5187951880332,
-          "right": -94.44182884175606,
-          "bottom": 396.5187951880332
-        }
-      }
+      },
+      "label": "Element Clone"
     }
   ]
 }

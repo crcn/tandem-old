@@ -100,7 +100,7 @@ const evaluateRootComponent = (
   context: EvalContext,
   isContentNode?: boolean
 ) => {
-  return evaluateComponentOrElementFromInstance(root, root, null, context);
+  return evaluateComponentOrElement(root, root, null, context);
 };
 
 const evaluatePCVisibleNode = (
@@ -127,7 +127,7 @@ const evaluatePCVisibleNode = (
     default: {
       const pcElement = node as PCElement;
 
-      return evaluateComponentOrElementFromInstance(
+      return evaluateComponentOrElement(
         pcElement,
         pcElement,
         instancePath,
@@ -137,34 +137,34 @@ const evaluatePCVisibleNode = (
   }
 };
 
-const evaluateComponentOrElementFromInstance = (
-  elementOrComponent: PCElement | PCComponent,
-  instanceNode: PCComponent | PCElement | PCComponentInstanceElement,
-  instancePath: string,
-  context: EvalContext
-): SyntheticElement => {
-  if (instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
-    // TODO - sort variants
-    context = {
-      ...context,
-      currentVariantIds: instanceNode.variant,
-      isCreatedFromComponent: true
-    };
-  } else if (instanceNode.name === PCSourceTagNames.COMPONENT) {
-    context = {
-      ...context,
-      isCreatedFromComponent: true,
-      currentVariantIds: getDefaultVariantIds(instanceNode)
-    };
-  }
+// const evaluateComponentOrElementFromInstance = (
+//   elementOrComponent: PCElement | PCComponent,
+//   instanceNode: PCComponent | PCElement | PCComponentInstanceElement,
+//   instancePath: string,
+//   context: EvalContext
+// ): SyntheticElement => {
+//   if (instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+//     // TODO - sort variants
+//     context = {
+//       ...context,
+//       currentVariantIds: instanceNode.variant,
+//       isCreatedFromComponent: true
+//     };
+//   } else if (instanceNode.name === PCSourceTagNames.COMPONENT) {
+//     context = {
+//       ...context,
+//       isCreatedFromComponent: true,
+//       currentVariantIds: getDefaultVariantIds(instanceNode)
+//     };
+//   }
 
-  return evaluateComponentOrElement(
-    elementOrComponent,
-    instanceNode,
-    instancePath,
-    context
-  );
-};
+//   return evaluateComponentOrElement(
+//     elementOrComponent,
+//     instanceNode,
+//     instancePath,
+//     context
+//   );
+// };
 
 const removeisContentNode = (context: EvalContext) =>
   context.isContentNode ? { ...context, isContentNode: false } : context;
@@ -178,6 +178,10 @@ const evaluateComponentOrElement = (
   const selfIdPath = appendPath(instancePath, instanceNode.id);
   const isComponentInstance =
     instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE;
+
+  if (elementOrComponent.name === PCSourceTagNames.COMPONENT) {
+    context = { ...context, isCreatedFromComponent: true };
+  }
 
   context = registerOverrides(
     elementOrComponent,
@@ -304,7 +308,7 @@ const registerOverride = (
     overrides: {
       ...context.overrides,
       [nodePath]: {
-        ...context.overrides[nodePath],
+        ...override,
         [propertyName]: newValue
       }
     }
@@ -366,6 +370,20 @@ const registerOverrides = (
     null,
     PCOverridablePropertyName.ATTRIBUTES,
     node.attributes,
+    nodePath,
+    context
+  );
+
+  context = registerOverride(
+    null,
+    PCOverridablePropertyName.CHILDREN,
+    getVisibleChildren(node).map(child =>
+      evaluatePCVisibleNode(
+        child as PCVisibleNode,
+        instancePath,
+        removeisContentNode(context)
+      )
+    ),
     nodePath,
     context
   );

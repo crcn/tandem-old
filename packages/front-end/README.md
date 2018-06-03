@@ -1,8 +1,5 @@
 IMMEDIATE:
 
-* paperclip tests for persisting + overrides
-* ability to move child overrides out of instance
-* move is\* to synthetic metadata
 * back onto styling doc
   * **color picker**
 * update code compiler to handle overrides
@@ -24,9 +21,9 @@ ideas around importing other design files like Sketch
 
 * **stronger source data type, don't use tree node structure**
 
-OPTIMIZATION:
+LOW PRIO:
 
-generate checksum for synthetic nodes and use those for tree diffing.
+* move is\* to synthetic metadata
 
 HIGH IMPACT:
 

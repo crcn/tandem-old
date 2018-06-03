@@ -290,6 +290,19 @@ export const getAllParentComponentInstance = memoize(
   }
 );
 
+export const getNearestComponentInstances = memoize(
+  (
+    node: SyntheticVisibleNode,
+    root: SyntheticVisibleNode | SyntheticDocument
+  ) => {
+    const instances = getAllParentComponentInstance(node, root);
+    if (node.isComponentInstance) {
+      return [node, ...instances];
+    }
+    return instances;
+  }
+);
+
 /*------------------------------------------
  * SETTERS
  *-----------------------------------------*/

@@ -64,7 +64,8 @@ import {
   getAllParentComponentInstance,
   SyntheticDocument,
   getSyntheticSourceUri,
-  SYNTHETIC_DOCUMENT_NODE_NAME
+  SYNTHETIC_DOCUMENT_NODE_NAME,
+  getNearestComponentInstances
 } from "./synthetic";
 import * as path from "path";
 import {
@@ -650,18 +651,15 @@ export const persistInsertNode = <TState extends PCEditorState>(
     return replaceDependencyGraphPCNode(parentSource, parentSource, state);
   });
 
-export const persistInsertClips = <TState extends PCEditorState>(
+export const persistAppendPCClips = <TState extends PCEditorState>(
   clips: PCNodeClip[],
-  target: PCNode,
+  parent: PCNode,
   state: TState
 ): TState =>
   persistChanges(state, state => {
-    const targetDep = getPCNodeDependency(target.id, state.graph);
-    let targetNode =
-      getParentTreeNode(target.id, targetDep.content) ||
-      getNestedTreeNodeById(target.id, targetDep.content);
+    const targetDep = getPCNodeDependency(parent.id, state.graph);
 
-    const targetNodeIsModule = targetNode === targetDep.content;
+    const targetNodeIsModule = parent === targetDep.content;
     const moduleInfo = targetDep.content;
 
     let content = targetDep.content;
@@ -695,8 +693,8 @@ export const persistInsertClips = <TState extends PCEditorState>(
           );
         } else {
           content = replaceNestedNode(
-            appendChildNode(componentInstance, target),
-            target.id,
+            appendChildNode(componentInstance, parent),
+            parent.id,
             content
           );
         }
@@ -718,8 +716,8 @@ export const persistInsertClips = <TState extends PCEditorState>(
         }
 
         content = replaceNestedNode(
-          appendChildNode(clonedChild, targetNode),
-          targetNode.id,
+          appendChildNode(clonedChild, parent),
+          parent.id,
           content
         );
       }
@@ -768,26 +766,27 @@ const maybeOverride = (
 
   if (node.isCreatedFromComponent) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
-    const parentComponentInstances = getAllParentComponentInstance(
+    const nearestComponentInstances = getNearestComponentInstances(
       node,
       document
     );
-    if (parentComponentInstances.length) {
+    if (nearestComponentInstances.length) {
       const furthestInstance: SyntheticVisibleNode = last(
-        parentComponentInstances
+        nearestComponentInstances
       );
+
       const furthestInstanceSourceNode = getSyntheticSourceNode(
         furthestInstance,
         graph
       );
 
-      // source node is an override, so go through the normal pr
+      // source node is an override, so go through the normal updater
       if (getNestedTreeNodeById(sourceNode.id, furthestInstanceSourceNode)) {
         return updater(sourceNode, value);
       }
 
       const overrideIdPath = [
-        ...parentComponentInstances
+        ...nearestComponentInstances
           .concat()
           .reverse()
           .slice(1)

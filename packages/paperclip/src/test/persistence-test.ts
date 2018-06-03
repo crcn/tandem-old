@@ -173,7 +173,7 @@ describe(__filename + "#", () => {
     describe("children", () => {
       xit("can replace an element's children");
       it("can insert a child into an already overridden child");
-      it("can move a node into an overridden child", () => {
+      it("can move a node into nested child", () => {
         const elementSource = createPCElement("div", {}, {}, [
           createPCTextNode("some text")
         ]);
@@ -219,6 +219,41 @@ describe(__filename + "#", () => {
           (newDocument.children[1].children[0].children[0] as SyntheticTextNode)
             .value
         ).to.eql("some other text");
+      });
+      it("can move a node into an instance root", () => {
+        const elementSource = createPCElement("div", {}, {}, [
+          createPCTextNode("some text")
+        ]);
+        const componentSource = createPCComponent("a", null, null, null, [
+          elementSource
+        ]);
+        const instanceSource = createPCComponentInstance(componentSource.id);
+        const childSource = createPCTextNode("some other text");
+
+        let state = createEditorState(
+          createPCModule([componentSource, instanceSource, childSource])
+        );
+
+        expect(state.documents[0].children.length).to.eql(3);
+        const child = state.documents[0].children[2];
+        expect(child.name).to.eql("text");
+        expect(
+          (state.documents[0].children[0].children[0]
+            .children[0] as SyntheticTextNode).value
+        ).to.eql("some text");
+        expect(
+          state.documents[0].children[0].children[0].children.length
+        ).to.eql(1);
+        const instance = state.documents[0].children[1];
+        state = persistMoveSyntheticVisibleNode(
+          child,
+          instance as SyntheticVisibleNode,
+          TreeMoveOffset.APPEND,
+          state
+        );
+
+        const [newDocument] = state.documents;
+        expect(newDocument.children[1].children[0].name).to.eql("text");
       });
       xit("can move an overridden child out of the component instance");
       xit("can replace the children of a nested component instance");

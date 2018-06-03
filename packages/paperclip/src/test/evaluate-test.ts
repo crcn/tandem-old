@@ -158,9 +158,7 @@ describe(__filename + "#", () => {
     );
 
     const component2 = cleanIds(
-      createPCComponent("Test", component1.id, { a: "b2" }, { c: "a2" }, [
-        createPCElement("div", { a: "bb" }, { c: "dd" })
-      ])
+      createPCComponent("Test", component1.id, { a: "b2" }, { c: "a2" }, [])
     );
 
     const module = cleanIds(createPCModule([component1, component2]));
@@ -433,7 +431,7 @@ describe(__filename + "#", () => {
     );
   });
 
-  it("can evaluate a component with a variant", () => {
+  xit("can evaluate a component with a variant", () => {
     const cleanIds = nodeIdCleaner();
 
     const variant1 = cleanIds(createPCVariant("a"));

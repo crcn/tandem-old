@@ -173,7 +173,7 @@ import {
   persistConvertNodeToComponent,
   PCModule,
   persistMoveSyntheticVisibleNode,
-  persistInsertClips,
+  persistAppendPCClips,
   getPCNodeModule,
   persistChangeSyntheticTextNodeValue,
   persistRawCSSText,
@@ -1306,7 +1306,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
       }
 
       state = persistRootState(
-        state => persistInsertClips(clips, targetNode, state),
+        state => persistAppendPCClips(clips, targetNode, state),
         state
       );
 

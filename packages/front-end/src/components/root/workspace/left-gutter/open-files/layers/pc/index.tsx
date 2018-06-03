@@ -98,7 +98,8 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
       ...attribs,
       className: cx(attribs.className, {
         "is-component-instance": props.node.isComponentInstance,
-        "in-component-instance": props.inComponentInstance,
+        "in-component-instance":
+          props.inComponentInstance && props.node.isCreatedFromComponent,
         "is-component-root":
           props.isContentNode &&
           props.node.isCreatedFromComponent &&
